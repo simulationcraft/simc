@@ -979,29 +979,29 @@ public:
   void apply_buff_effects()
   {
     // Shared
-    parse_buff_effects( p()->buff.avatar, p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
+    parse_effects( p()->buff.avatar, p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
 
     // Arms
-    parse_buff_effects( p()->buff.crushing_advance ); // T30 Arms 4pc
-    parse_buff_effects( p()->buff.juggernaut );
-    parse_buff_effects( p()->buff.merciless_bonegrinder );
-    parse_buff_effects( p()->buff.strike_vulnerabilities ); // T29 Arms
+    parse_effects( p()->buff.crushing_advance ); // T30 Arms 4pc
+    parse_effects( p()->buff.juggernaut );
+    parse_effects( p()->buff.merciless_bonegrinder );
+    parse_effects( p()->buff.strike_vulnerabilities ); // T29 Arms
 
     // Fury
-    parse_conditional_effects( p()->mastery.unshackled_fury, [ this ] { return p()->buff.enrage->check(); } );
-    parse_buff_effects( p()->buff.ashen_juggernaut );
-    parse_buff_effects( p()->buff.battering_ram );
-    parse_buff_effects( p()->buff.berserker_stance );
-    parse_buff_effects( p()->buff.bloodcraze, p()->talents.fury.bloodcraze );
-    parse_buff_effects( p()->buff.dancing_blades );
-    parse_buff_effects( p()->buff.recklessness );
-    parse_buff_effects( p()->buff.slaughtering_strikes_an );
-    parse_buff_effects( p()->buff.slaughtering_strikes_rb );
-    parse_buff_effects( p()->buff.merciless_assault );
+    parse_effects( p()->mastery.unshackled_fury, [ this ] { return p()->buff.enrage->check(); } );
+    parse_effects( p()->buff.ashen_juggernaut );
+    parse_effects( p()->buff.battering_ram );
+    parse_effects( p()->buff.berserker_stance );
+    parse_effects( p()->buff.bloodcraze, p()->talents.fury.bloodcraze );
+    parse_effects( p()->buff.dancing_blades );
+    parse_effects( p()->buff.recklessness );
+    parse_effects( p()->buff.slaughtering_strikes_an );
+    parse_effects( p()->buff.slaughtering_strikes_rb );
+    parse_effects( p()->buff.merciless_assault );
 
     // Protection
-    parse_buff_effects( p()->buff.juggernaut_prot );
-    parse_buff_effects( p()->buff.vanguards_determination );
+    parse_effects( p()->buff.juggernaut_prot );
+    parse_effects( p()->buff.vanguards_determination );
   }
 
   void apply_debuff_effects()

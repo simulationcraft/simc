@@ -238,31 +238,44 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_p
     }
   }
 
-  // Syntax: parse_buff_effects( buff[, ignore_mask|use_stacks[, value_type]][, spell][,...] )
-  //  buff = buff to be checked for to see if effect applies
-  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit, must be typed as unsigned
-  //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore
-  //  parameters value_type = optional, default USE_DATA, where the value comes from.
-  //               USE_DATA = spell data, USE_DEFAULT = buff default value, USE_CURRENT = buff current value
-  //  spell = optional list of spell with redirect effects that modify the effects on the buff
+  // Syntax: parse_effects( data[, spells|condition|ignore_mask|use_stacks|value_type|spells][,...] )
+  //   (buff_t*) or
+  //   (const spell_data_t*)   data: Buff or spell to be checked for to see if effect applies. If buff is used, effect
+  //                                 will require the buff to be active. If spell is used, effect will always apply
+  //                                 unless an optional condition function is provided.
+  //
+  // The following optional arguments can be used in any order:
+  //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the buff
+  //   (bool F())         condition: Function that takes no arguments and returns true if the effect should apply
+  //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
+  //   (bool)            use_stacks: Default true, whether to multiply value by stacks
+  //   (value_type_e)          type: Source of the value to be used for the effect
+  //                                 USE_DATA = spell data (default)
+  //                                 USE_DEFAULT = buff default value
+  //                                 USE_CURRENT = buff current value
   //
   // Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
-  //  parse_buff_effects<S,S>( buff1, 0b10101U, talent1, tier1 );
+  //   parse_effects( buff1, 0b10101U, talent1, tier1 );
   //
   // Example 2: Parse buff2, don't multiply by stacks, use the default value set on the buff instead of effect value:
-  //  parse_buff_effects( buff2, false, USE_DEFAULT );
+  //   parse_effects( buff2, false, USE_DEFAULT );
+  //
+  // Example 3: Parse spell1, modify by talent1, only apply if my_player_t::check1() returns true:
+  //   parse_effects( spell1, talent1, &my_player_t::check1 );
+  //
+  // Example 4: Parse buff3, only apply if my_player_t::check2() and my_player_t::check3() returns true:
+  //   parse_effects( buff3, [ this ] { return p()->check2() && p()->check3(); } );
+
   void apply_buff_effects()
   {
-    // using S = const spell_data_t*;
-
-    parse_buff_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
+    parse_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
 
     if ( p().o().specialization() == PRIEST_SHADOW )
     {
-      parse_buff_effects( p().o().buffs.voidform, 0x4U, false, USE_DATA );  // Skip E3 for AM
-      parse_buff_effects( p().o().buffs.shadowform );
-      parse_buff_effects( p().o().buffs.devoured_pride );
-      parse_buff_effects( p().o().buffs.dark_ascension, 0b1000U, false,
+      parse_effects( p().o().buffs.voidform, 0x4U, false, USE_DATA );  // Skip E3 for AM
+      parse_effects( p().o().buffs.shadowform );
+      parse_effects( p().o().buffs.devoured_pride );
+      parse_effects( p().o().buffs.dark_ascension, 0b1000U, false,
                           USE_DATA );  // Buffs non-periodic spells - Skip E4
     }
 
@@ -271,22 +284,22 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_p
       // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
       if ( p().o().talents.shadow.dark_ascension.enabled() )
       {
-        parse_buff_effects( p().o().buffs.ancient_madness, 0b0001U, true, USE_DEFAULT );  // Skip E1
+        parse_effects( p().o().buffs.ancient_madness, 0b0001U, true, USE_DEFAULT );  // Skip E1
       }
       else
       {
-        parse_buff_effects( p().o().buffs.ancient_madness, 0b0011U, true, USE_DEFAULT );  // Skip E1 and E2
+        parse_effects( p().o().buffs.ancient_madness, 0b0011U, true, USE_DEFAULT );  // Skip E1 and E2
       }
     }
 
     // DISCIPLINE BUFF EFFECTS
     if ( p().o().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_buff_effects( p().o().buffs.shadow_covenant, 0U, false, USE_DEFAULT,
+      parse_effects( p().o().buffs.shadow_covenant, 0U, false, USE_DEFAULT,
                           p().o().talents.discipline.twilight_corruption );
       // 280398 applies the buff to the correct spells, but does not contain the correct buff value
       // (12% instead of 40%) So, override to use our provided default_value (40%) instead
-      parse_buff_effects( p().o().buffs.sins_of_the_many, 0U, false, USE_CURRENT );
+      parse_effects( p().o().buffs.sins_of_the_many, 0U, false, USE_CURRENT );
     }
   }
   void apply_debuffs_effects()

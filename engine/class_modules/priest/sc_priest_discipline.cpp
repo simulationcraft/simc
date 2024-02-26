@@ -276,7 +276,7 @@ protected:
 
       // This is not found in the affected spells for Shadow Covenant, overriding it manually
       // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
-      force_buff_effect( p.buffs.shadow_covenant, 1, false, USE_DEFAULT, p.talents.discipline.twilight_corruption );
+      force_effect( p.buffs.shadow_covenant, 1, false, USE_DEFAULT, p.talents.discipline.twilight_corruption );
 
       triggers_atonement = true;
     }

@@ -3350,28 +3350,28 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
   void apply_buff_effects()
   {
     // Blood
-    parse_buff_effects( p()->buffs.sanguine_ground );
-    parse_buff_effects( p()->buffs.vigorous_lifeblood_4pc );
-    parse_buff_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
-    parse_buff_effects( p()->buffs.hemostasis );
-    parse_buff_effects( p()->buffs.crimson_scourge );
-    parse_buff_effects( p()->buffs.ossuary );
-    parse_buff_effects( p()->buffs.coagulopathy );
+    parse_effects( p()->buffs.sanguine_ground );
+    parse_effects( p()->buffs.vigorous_lifeblood_4pc );
+    parse_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
+    parse_effects( p()->buffs.hemostasis );
+    parse_effects( p()->buffs.crimson_scourge );
+    parse_effects( p()->buffs.ossuary );
+    parse_effects( p()->buffs.coagulopathy );
 
     // Frost
-    parse_buff_effects( p()->buffs.chilling_rage );
-    parse_buff_effects( p()->buffs.rime, p()->talent.frost.improved_rime );
-    parse_buff_effects( p()->buffs.gathering_storm );
-    parse_buff_effects( p()->buffs.killing_machine );
-    parse_passive_effects( p()->mastery.frozen_heart );
+    parse_effects( p()->buffs.chilling_rage );
+    parse_effects( p()->buffs.rime, p()->talent.frost.improved_rime );
+    parse_effects( p()->buffs.gathering_storm );
+    parse_effects( p()->buffs.killing_machine );
+    parse_effects( p()->mastery.frozen_heart );
 
     // Unholy
-    parse_buff_effects( p()->buffs.amplify_damage );
-    parse_buff_effects( p()->buffs.ghoulish_infusion );
-    parse_buff_effects( p()->buffs.unholy_assault );
-    parse_buff_effects( p()->buffs.sudden_doom, p()->talent.unholy.harbinger_of_doom );
-    parse_buff_effects( p()->buffs.plaguebringer, p()->talent.unholy.plaguebringer );
-    parse_passive_effects( p()->mastery.dreadblade );
+    parse_effects( p()->buffs.amplify_damage );
+    parse_effects( p()->buffs.ghoulish_infusion );
+    parse_effects( p()->buffs.unholy_assault );
+    parse_effects( p()->buffs.sudden_doom, p()->talent.unholy.harbinger_of_doom );
+    parse_effects( p()->buffs.plaguebringer, p()->talent.unholy.plaguebringer );
+    parse_effects( p()->mastery.dreadblade );
   }
 
   void apply_debuff_effects()

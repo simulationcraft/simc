@@ -1334,74 +1334,68 @@ public:
     return move_during_hover && p()->buff.hover->check();
   }
 
-  
-  template <typename... Ts>
-  void parse_buff_effects_mods( buff_t* buff, const bfun& f, unsigned ignore_mask, bool use_stacks, value_type_e value_type,
-                                Ts... mods )
-  {
-    if ( !buff )
-      return;
-
-    const spell_data_t* spell = &buff->data();
-
-    for ( size_t i = 1; i <= spell->effect_count(); i++ )
-    {
-      if ( ignore_mask & 1 << ( i - 1 ) )
-        continue;
-
-      parse_buff_effect( buff, f, spell, i, use_stacks, value_type, false, mods... );
-    }
-  }
-
-  // Syntax: parse_buff_effects( buff[, ignore_mask|use_stacks[, value_type]][, spell][,...] )
-  //  buff = buff to be checked for to see if effect applies
-  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit, must be typed as unsigned
-  //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore parameters
-  //  value_type = optional, default USE_DATA, where the value comes from.
-  //               USE_DATA = spell data, USE_DEFAULT = buff default value, USE_CURRENT = buff current value
-  //  spell = optional list of spell with redirect effects that modify the effects on the buff
+  // Syntax: parse_effects( data[, spells|condition|ignore_mask|use_stacks|value_type|spells][,...] )
+  //   (buff_t*) or
+  //   (const spell_data_t*)   data: Buff or spell to be checked for to see if effect applies. If buff is used, effect
+  //                                 will require the buff to be active. If spell is used, effect will always apply
+  //                                 unless an optional condition function is provided.
+  //
+  // The following optional arguments can be used in any order:
+  //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the buff
+  //   (bool F())         condition: Function that takes no arguments and returns true if the effect should apply
+  //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
+  //   (bool)            use_stacks: Default true, whether to multiply value by stacks
+  //   (value_type_e)          type: Source of the value to be used for the effect
+  //                                 USE_DATA = spell data (default)
+  //                                 USE_DEFAULT = buff default value
+  //                                 USE_CURRENT = buff current value
   //
   // Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
-  //  parse_buff_effects<S,S>( buff1, 0b10101U, talent1, tier1 );
+  //   parse_effects( buff1, 0b10101U, talent1, tier1 );
   //
   // Example 2: Parse buff2, don't multiply by stacks, use the default value set on the buff instead of effect value:
-  //  parse_buff_effects( buff2, false, USE_DEFAULT );
+  //   parse_effects( buff2, false, USE_DEFAULT );
+  //
+  // Example 3: Parse spell1, modify by talent1, only apply if my_player_t::check1() returns true:
+  //   parse_effects( spell1, talent1, &my_player_t::check1 );
+  //
+  // Example 4: Parse buff3, only apply if my_player_t::check2() and my_player_t::check3() returns true:
+  //   parse_effects( buff3, [ this ] { return p()->check2() && p()->check3(); } );
   void apply_buff_effects()
   {
-    // using S = const spell_data_t*;
+    parse_effects( p()->buff.ancient_flame );
+    parse_effects( p()->buff.burnout );
+    parse_effects( p()->buff.essence_burst, p()->talent.ignition_rush );
+    parse_effects( p()->buff.snapfire );
+    parse_effects( p()->buff.tip_the_scales );
 
-    parse_buff_effects( p()->buff.ancient_flame );
-    parse_buff_effects( p()->buff.burnout );
-    parse_buff_effects( p()->buff.essence_burst, p()->talent.ignition_rush );
-    parse_buff_effects( p()->buff.snapfire );
-    parse_buff_effects( p()->buff.tip_the_scales );
+    parse_effects( p()->buff.imminent_destruction );
 
-    parse_buff_effects( p()->buff.imminent_destruction );
-
-    parse_buff_effects( p()->buff.emerald_trance_stacking, true );
-    parse_buff_effects( p()->buff.emerald_trance, true );
+    parse_effects( p()->buff.emerald_trance_stacking, true );
+    parse_effects( p()->buff.emerald_trance, true );
 
     if ( p()->specialization() == EVOKER_AUGMENTATION )
     {
-      parse_buff_effects_mods(
+      parse_effects(
           p()->buff.ebon_might_self_buff, [ this ] { return p()->close_as_clutchmates; }, 0U, true, USE_DATA,
           p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ), p()->spec.close_as_clutchmates );
 
-      parse_buff_effects_mods(
+      parse_effects(
           p()->buff.ebon_might_self_buff, [ this ] { return !p()->close_as_clutchmates; }, 0U, true, USE_DATA,
           p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ) );
     }
 
   }
 
-  // Syntax: parse_debuff_effects( func, debuff[, spell][,...] )
-  //  func = function taking the class's target_data as argument and returning an integer
-  //  debuff = spell data of the debuff
-  //  spell = optional list of spells with redirect effects that modify the effects on the debuff
+  // Syntax: parse_debuff_effects( func, debuff[, spells|ignore_mask][,...] )
+  //   (int F(TD*))            func: Function taking the target_data as argument and returning an integer mutiplier
+  //   (const spell_data_t*) debuff: Spell data of the debuff
+  //
+  // The following optional arguments can be used in any order:
+  //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the debuff
+  //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
   void apply_debuffs_effects()
   {
-    // using S = const spell_data_t*;
-
     parse_debuff_effects( []( evoker_td_t* t ) { return t->debuffs.shattering_star->check(); },
                           p()->talent.shattering_star );
   }
@@ -3550,7 +3544,7 @@ struct pyre_t : public essence_spell_t
       if ( p->talent.raging_inferno->ok() )
         target_multiplier_dotdebuffs.emplace_back(
             []( evoker_td_t* t ) { return t->debuffs.in_firestorm->check() > 0; },
-            p->talent.raging_inferno->effectN( 2 ).percent(), false, p->talent.raging_inferno->effectN( 2 ) );
+            p->talent.raging_inferno->effectN( 2 ).percent(), false, &p->talent.raging_inferno->effectN( 2 ) );
     }
 
     action_state_t* new_state() override
