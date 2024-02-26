@@ -326,6 +326,8 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_p
   // skip as priest_pet_t doesn't have get_target_data()
   #undef PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
   #define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
+  #undef PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_CHANCE
+  #define PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_CHANCE
   #undef PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_DAMAGE_BONUS_MULTIPLIER
   #define PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_DAMAGE_BONUS_MULTIPLIER
 

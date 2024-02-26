@@ -126,14 +126,21 @@
   double composite_target_multiplier( player_t* t ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_target_multiplier( t ) * \
-           get_debuff_effects_value( target_multiplier_dotdebuffs, parse_buff_effects_target_data( t ) ); \
+           get_debuff_effects_value( target_multiplier_dotdebuffs, parse_effects_target_data( t ) ); \
+  }
+
+#define PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_CHANCE \
+  double composite_target_crit_chance( player_t* t ) const override \
+  { \
+    return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_target_crit_chance( t ) + \
+           get_debuff_effects_value( target_crit_chance_dotdebuffs, parse_effects_target_data( t ), true ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_DAMAGE_BONUS_MULTIPLIER \
   double composite_target_crit_damage_bonus_multiplier( player_t* t ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_target_crit_damage_bonus_multiplier( t ) * \
-           get_debuff_effects_value( target_crit_damage_dotdebuffs, parse_buff_effects_target_data( t ) ); \
+           get_debuff_effects_value( target_crit_damage_dotdebuffs, parse_effects_target_data( t ) ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_HTML_CUSTOMSECTION \
@@ -153,6 +160,7 @@
   PARSE_BUFF_EFFECTS_SETUP_COOLDOWN_DURATION \
   PARSE_BUFF_EFFECTS_SETUP_RECHARGE_MULTIPLIER \
   PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER \
+  PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_CHANCE \
   PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_DAMAGE_BONUS_MULTIPLIER \
   PARSE_BUFF_EFFECTS_SETUP_HTML_CUSTOMSECTION
 
@@ -226,6 +234,7 @@ public:
   std::vector<buff_effect_t> crit_chance_buffeffects;
   std::vector<dot_debuff_t> target_multiplier_dotdebuffs;
   std::vector<dot_debuff_t> target_crit_damage_dotdebuffs;
+  std::vector<dot_debuff_t> target_crit_chance_dotdebuffs;
 
   parse_buff_effects_t( PLAYER* p, action_t* a ) : player_( p ), action_( a ) {}
   virtual ~parse_buff_effects_t() = default;
@@ -585,7 +594,7 @@ public:
   }
 
   // method for getting target data as each module may have different action scoped method
-  TD* parse_buff_effects_target_data( player_t* t ) const
+  TD* parse_effects_target_data( player_t* t ) const
   {
     return player_->get_target_data( t );
   }
@@ -652,6 +661,10 @@ public:
         case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:
           vec = &target_multiplier_dotdebuffs;
           str = "damage";
+          break;
+        case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS:
+          vec = &target_crit_chance_dotdebuffs;
+          str = "crit chance";
           break;
         case A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS:
           vec = &target_crit_damage_dotdebuffs;
@@ -866,6 +879,7 @@ public:
     print_parsed_type( os, flat_cost_buffeffects, "Flat Cost" );
     print_parsed_type( os, cost_buffeffects, "Percent Cost" );
     print_parsed_type( os, target_multiplier_dotdebuffs, "Damage on Debuff" );
+    print_parsed_type( os, target_crit_chance_dotdebuffs, "Crit Chance on Debuff" );
     print_parsed_type( os, target_crit_damage_dotdebuffs, "Crit Damage on Debuff" );
     print_parsed_custom_type( os );
 
