@@ -8738,16 +8738,19 @@ struct druid_melee_t : public Base
     if ( p->specialization() != DRUID_BALANCE )
       ab::range -= 2;
 
-    // Manually add to da_multiplier as Tiger's Fury + Carnivorious Instinct effect on auto attacks is scripted
-    const auto& eff = find_effect( p->buff.tigers_fury, A_MOD_AUTO_ATTACK_PCT );
-    auto val = eff.percent();
-    // Carnivorous Instinct has no curvepoint for effect#3 which modifies AA, so we use effect#1 value instead
-    val += p->talent.carnivorous_instinct->effectN( 1 ).percent();
+    if ( p->talent.tigers_fury.ok() )
+    {
+      // Manually add to da_multiplier as Tiger's Fury + Carnivorious Instinct effect on auto attacks is scripted
+      const auto& eff = find_effect( p->buff.tigers_fury, A_MOD_AUTO_ATTACK_PCT );
+      auto val = eff.percent();
+      // Carnivorous Instinct has no curvepoint for effect#3 which modifies AA, so we use effect#1 value instead
+      val += p->talent.carnivorous_instinct->effectN( 1 ).percent();
 
-    ab::da_multiplier_buffeffects.emplace_back( p->buff.tigers_fury, val, USE_DATA, false, false, nullptr, eff );
+      ab::da_multiplier_buffeffects.emplace_back( p->buff.tigers_fury, val, USE_DATA, false, false, nullptr, eff );
 
-    ab::sim->print_debug( "buff-effects: {} ({}) direct_damage modified by {} with buff {} ({})", ab::name(), ab::id,
-                          val, p->buff.tigers_fury->name(), p->buff.tigers_fury->data().id() );
+      ab::sim->print_debug( "buff-effects: {} ({}) direct_damage modified by {} with buff {} ({})", ab::name(), ab::id,
+                            val, p->buff.tigers_fury->name(), p->buff.tigers_fury->data().id() );
+    }
 
     // 7.00 PPM via community testing (~368k auto attacks)
     // https://docs.google.com/spreadsheets/d/1vMvlq1k3aAuwC1iHyDjqAneojPZusdwkZGmatuWWZWs/edit#gid=1097586165
