@@ -538,6 +538,7 @@ struct evoker_t : public player_t
     double naszuro_bounce_chance                = 0.85;
     std::string force_clutchmates               = "";
     bool make_simplified_if_alone               = true;
+    bool remove_precombat_ancient_flame         = true;
   } option;
 
   // Action pointers
@@ -860,7 +861,7 @@ struct evoker_t : public player_t
   // void arise() override;
   void moving() override;
   void schedule_ready( timespan_t, bool ) override;
-  // void combat_begin() override;
+  void combat_begin() override;
   // void combat_end() override;
   void analyze( sim_t& ) override;
   void reset() override;
@@ -5200,20 +5201,6 @@ void evoker_t::init_finished()
       } );
     } );
   }
-
-  register_combat_begin( [ this ]( player_t* ) {
-    while ( !allies_with_my_prescience.empty() )
-    {
-      find_target_data( *allies_with_my_prescience.begin() )->buffs.prescience->cancel();
-    }
-
-    while ( !allies_with_my_ebon.empty() )
-    {
-      find_target_data( *allies_with_my_ebon.begin() )->buffs.prescience->cancel();
-    }
-
-    buff.ebon_might_self_buff->cancel();
-  } );
 }
 
 role_e evoker_t::primary_role() const
@@ -5733,6 +5720,7 @@ void evoker_t::create_options()
   add_option( opt_bool( "evoker.naszuro_accurate_behaviour", option.naszuro_accurate_behaviour ) );
   add_option( opt_string( "evoker.force_clutchmates", option.force_clutchmates ) );
   add_option( opt_bool( "evoker.make_simplified_if_alone", option.make_simplified_if_alone ) );
+  add_option( opt_bool( "evoker.remove_precombat_ancient_flame", option.remove_precombat_ancient_flame ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
@@ -5767,6 +5755,33 @@ void evoker_t::schedule_ready( timespan_t delta_time, bool waiting )
     return;
 
   player_t::schedule_ready( delta_time, waiting );
+}
+
+void evoker_t::combat_begin()
+{
+  player_t::combat_begin();
+
+  if ( talent.prescience.enabled() )
+  {
+    while ( !allies_with_my_prescience.empty() )
+    {
+      find_target_data( *allies_with_my_prescience.begin() )->buffs.prescience->cancel();
+    }
+  }
+
+  if ( talent.ebon_might.enabled() )
+  {
+    while ( !allies_with_my_ebon.empty() )
+    {
+      find_target_data( *allies_with_my_ebon.begin() )->buffs.prescience->cancel();
+    }
+    buff.ebon_might_self_buff->cancel();
+  }
+
+  if ( talent.ancient_flame.enabled() && option.remove_precombat_ancient_flame )
+  {
+    buff.ancient_flame->cancel();
+  }
 }
 
 void evoker_t::reset()
