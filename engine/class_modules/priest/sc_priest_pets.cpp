@@ -218,14 +218,14 @@ struct priest_pet_melee_t : public melee_attack_t
   }
 };
 
-struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_pet_t, priest_td_t, priest_t>
+struct priest_pet_spell_t : public spell_t, public parse_action_effects_t<priest_pet_t, priest_td_t, priest_t>
 {
   bool affected_by_shadow_weaving;
   bool triggers_atonement;
 
   priest_pet_spell_t( util::string_view token, priest_pet_t& p, const spell_data_t* s )
     : spell_t( token, &p, s ),
-      parse_buff_effects_t( &p, this ),
+      parse_action_effects_t( &p, this ),
       affected_by_shadow_weaving( false ),
       triggers_atonement( false )
   {
@@ -899,7 +899,7 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
 
     if ( p.o().bugs )
     {
-      da_multiplier_buffeffects.clear();  // This is in spelldata to scale with things but it does not in game
+      da_multiplier_effects.clear();  // This is in spelldata to scale with things but it does not in game
     }
   }
 

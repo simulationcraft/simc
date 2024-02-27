@@ -20,7 +20,7 @@
 #include "player/pet_spawner.hpp"
 #include "action/action_callback.hpp"
 #include "class_modules/apl/apl_death_knight.hpp"
-#include "action/parse_buff_effects.hpp"
+#include "action/parse_effects.hpp"
 
 namespace { // UNNAMED NAMESPACE
 
@@ -3270,7 +3270,7 @@ namespace { // UNNAMED NAMESPACE
 
 // Template for common death knight action code. See priest_action_t.
 template <class Base>
-struct death_knight_action_t : public Base, public parse_buff_effects_t<death_knight_t, death_knight_td_t>
+struct death_knight_action_t : public Base, public parse_action_effects_t<death_knight_t, death_knight_td_t>
 {
   using action_base_t = Base;
   using base_t = death_knight_action_t<Base>;
@@ -3281,7 +3281,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
 
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, p, s ), 
-    parse_buff_effects_t( p, this ),
+    parse_action_effects_t( p, this ),
     gain( nullptr ),
     hasted_gcd( false )
   {

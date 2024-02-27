@@ -5,7 +5,7 @@
 
 #include "config.hpp"
 
-#include "action/parse_buff_effects.hpp"
+#include "action/parse_effects.hpp"
 #include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
 #include "report/charts.hpp"
@@ -1401,7 +1401,7 @@ public:
 };
 
 template <class Base>
-struct druid_action_t : public Base, public parse_buff_effects_t<druid_t, druid_td_t>
+struct druid_action_t : public Base, public parse_action_effects_t<druid_t, druid_td_t>
 {
 private:
   using ab = Base;  // action base, eg. spell_t
@@ -1424,7 +1424,7 @@ public:
 
   druid_action_t( std::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
-      parse_buff_effects_t( player, this ),
+      parse_action_effects_t( player, this ),
       dot_name( n ),
       form_mask( ab::data().stance_mask() ),
       break_stealth( !ab::data().flags( spell_attribute::SX_NO_STEALTH_BREAK ) )
@@ -1617,7 +1617,7 @@ public:
   }
 
   template <typename T>
-  dfun d_fn( T d, bool stack = true )
+  std::function<int( druid_td_t* )> d_fn( T d, bool stack = true )
   {
     if constexpr ( std::is_invocable_v<T, druid_td_t::debuffs_t> )
     {
@@ -1682,9 +1682,9 @@ public:
 
     double c = ab::cost();
 
-    c += get_buff_effects_value( flat_cost_buffeffects, true, false );
+    c += get_buff_effects_value( flat_cost_effects, true, false );
 
-    c *= get_buff_effects_value( cost_buffeffects, false, false );
+    c *= get_buff_effects_value( cost_effects, false, false );
 
     return std::max( 0.0, c );
   }
@@ -2048,7 +2048,7 @@ protected:
   bool attack_critical;
 
 public:
-  std::vector<buff_effect_t> persistent_multiplier_buffeffects;
+  std::vector<action_effect_t> persistent_multiplier_effects;
 
   struct
   {
@@ -2122,23 +2122,23 @@ public:
   template <typename... Ts>
   bool parse_persistent_effects( buff_t* buff, Ts... mods )
   {
-    size_t ta_old   = ta_multiplier_buffeffects.size();
-    size_t da_old   = da_multiplier_buffeffects.size();
-    size_t cost_old = cost_buffeffects.size();
+    size_t ta_old   = ta_multiplier_effects.size();
+    size_t da_old   = da_multiplier_effects.size();
+    size_t cost_old = cost_effects.size();
 
     parse_effects( buff, mods... );
 
     // If there is a new entry in the ta_mul table, move it to the pers_mul table.
-    if ( ta_multiplier_buffeffects.size() > ta_old )
+    if ( ta_multiplier_effects.size() > ta_old )
     {
-      double &ta_val = ta_multiplier_buffeffects.back().value;
+      double &ta_val = ta_multiplier_effects.back().value;
       double da_val = 0;
 
       // Any corresponding increases in the da_mul table can be removed as pers_mul covers da_mul & ta_mul
-      if ( da_multiplier_buffeffects.size() > da_old )
+      if ( da_multiplier_effects.size() > da_old )
       {
-        da_val = da_multiplier_buffeffects.back().value;
-        da_multiplier_buffeffects.pop_back();
+        da_val = da_multiplier_effects.back().value;
+        da_multiplier_effects.pop_back();
 
         if ( da_val != ta_val )
         {
@@ -2152,18 +2152,18 @@ public:
       if ( da_val > ta_val )
         ta_val = da_val;
 
-      persistent_multiplier_buffeffects.push_back( ta_multiplier_buffeffects.back() );
-      ta_multiplier_buffeffects.pop_back();
+      persistent_multiplier_effects.push_back( ta_multiplier_effects.back() );
+      ta_multiplier_effects.pop_back();
 
       p()->sim->print_debug(
           "persistent-buffs: {} ({}) damage modified by {}% with buff {} ({}), tick table has {} entries.", name(), id,
-          persistent_multiplier_buffeffects.back().value * 100.0, buff->name(), buff->data().id(),
-          ta_multiplier_buffeffects.size() );
+          persistent_multiplier_effects.back().value * 100.0, buff->name(), buff->data().id(),
+          ta_multiplier_effects.size() );
 
       return true;
     }
     // no persistent multiplier, but does snapshot & consume the buff
-    if ( da_multiplier_buffeffects.size() > da_old || cost_buffeffects.size() > cost_old )
+    if ( da_multiplier_effects.size() > da_old || cost_effects.size() > cost_old )
       return true;
 
     return false;
@@ -2171,7 +2171,7 @@ public:
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    return base_t::composite_persistent_multiplier( s ) * get_buff_effects_value( persistent_multiplier_buffeffects );
+    return base_t::composite_persistent_multiplier( s ) * get_buff_effects_value( persistent_multiplier_effects );
   }
 
   snapshot_counter_t* get_counter( buff_t* buff )
@@ -2311,14 +2311,14 @@ public:
     residual_action::trigger( p()->active.frenzied_assault, t, d );
   }
 
-  size_t total_buffeffects_count() override
+  size_t total_effects_count() override
   {
-    return base_t::total_buffeffects_count() + persistent_multiplier_buffeffects.size();
+    return base_t::total_effects_count() + persistent_multiplier_effects.size();
   }
 
   void print_parsed_custom_type( report::sc_html_stream& os ) override
   {
-    print_parsed_type( os, persistent_multiplier_buffeffects, "Snapshots" );
+    print_parsed_type( os, persistent_multiplier_effects, "Snapshots" );
   }
 };
 
@@ -3779,7 +3779,7 @@ struct rake_t : public cat_attack_t
   {
     if ( p->talent.pouncing_strikes.ok() || p->spec.improved_prowl->ok() )
     {
-      persistent_multiplier_buffeffects.emplace_back( nullptr, data().effectN( 4 ).percent(), USE_DATA, true, false,
+      persistent_multiplier_effects.emplace_back( nullptr, data().effectN( 4 ).percent(), USE_DATA, true, false,
           [ this ] { return stealthed() || this->p()->buff.sudden_ambush->check(); }, &data().effectN( 4 ) );
     }
 
@@ -4067,7 +4067,7 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
       stealth_mul = data().effectN( 3 ).percent();
       stealth_cp = p->find_spell( 343232 )->effectN( 1 ).base_value();
 
-      da_multiplier_buffeffects.emplace_back( nullptr, stealth_mul, USE_DATA, true, false,
+      da_multiplier_effects.emplace_back( nullptr, stealth_mul, USE_DATA, true, false,
           [ this ] { return stealthed() || this->p()->buff.sudden_ambush->check(); }, &data().effectN( 3 ) );
     }
   }
@@ -5901,7 +5901,7 @@ public:
     // Umbral embrace is heavily scripted so we do all the auto parsing within the action itself
     if ( p_->talent.umbral_embrace.ok() )
     {
-      BASE::da_multiplier_buffeffects.emplace_back(
+      BASE::da_multiplier_effects.emplace_back(
           nullptr, p_->buff.umbral_embrace->default_value, USE_DEFAULT, false, false,
           [ this ] { return umbral_embrace_check(); }, &p_->buff.umbral_embrace->data().effectN( 1 ) );
 
@@ -8741,7 +8741,7 @@ struct druid_melee_t : public Base
       // Carnivorous Instinct has no curvepoint for effect#3 which modifies AA, so we use effect#1 value instead
       val += p->talent.carnivorous_instinct->effectN( 1 ).percent();
 
-      ab::da_multiplier_buffeffects.emplace_back( p->buff.tigers_fury, val, USE_DATA, false, false, nullptr, &eff );
+      ab::da_multiplier_effects.emplace_back( p->buff.tigers_fury, val, USE_DATA, false, false, nullptr, &eff );
 
       ab::sim->print_debug( "buff-effects: {} ({}) direct_damage modified by {} with buff {} ({})", ab::name(), ab::id,
                             val, p->buff.tigers_fury->name(), p->buff.tigers_fury->data().id() );

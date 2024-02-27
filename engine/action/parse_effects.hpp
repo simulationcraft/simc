@@ -16,14 +16,14 @@
 
 // Mixin to action base class to allow auto parsing and dynamic application of whitelist based buffs & auras.
 //
-// 1) Add `parse_buff_effects_t` as an additional parent with the player class and target data class as template
+// 1) Add `parse_action_effects_t` as an additional parent with the player class and target data class as template
 // parameter:
 //
-//    struct my_action_base_t : public action_t, parse_buff_effects_t<my_player_t, my_target_data_t>
+//    struct my_action_base_t : public action_t, parse_action_effects_t<my_player_t, my_target_data_t>
 //
 // 2) Construct the mixin with a pointer to the player and pointer to the action as arguments:
 //
-//    parse_buff_effects_t( *player, this );
+//    parse_action_effects_t( *player, this );
 //
 // 3) PARSE_BUFF_EFFECTS_SETUP macro can be used to add the necessary overrides to the action class. If custom overrides
 // are needed, individual methods can be left out and added manually.
@@ -37,10 +37,10 @@
 //       #define PARSE_BUFF_EFFECTS_SETUP_COST
 //       double cost() const override
 //       {
-//         auto c = spell_t::cost() + get_buff_effects_value( flat_cost_buffeffects, true, false );
+//         auto c = spell_t::cost() + get_buff_effects_value( flat_cost_effects, true, false );
 //         ...CUSTOM FLAT ADD CODE...
 //
-//         c *= get_buff_effects_value( cost_buffeffects, false, false );
+//         c *= get_buff_effects_value( cost_effects, false, false );
 //         ...CUSTOM MULTIPLIER CODE...
 //
 //         return std::max( 0.0, c );
@@ -50,7 +50,7 @@
 //       #define PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER
 //       double composite_ta_multiplier( const action_state_t* s ) const override
 //       {
-//         auto ta = spell_t::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
+//         auto ta = spell_t::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_effects );
 //         ...CUSTOM MULTIPLIER CODE...
 //
 //         return ta;
@@ -63,85 +63,85 @@
   double cost() const override \
   { \
     return std::max( 0.0, ( PARSE_BUFF_EFFECTS_SETUP_BASE::cost() + \
-                            get_buff_effects_value( flat_cost_buffeffects, true, false ) ) * \
-                          get_buff_effects_value( cost_buffeffects, false, false ) ); \
+                            get_buff_effects_value( flat_cost_effects, true, false ) ) * \
+                          get_buff_effects_value( cost_effects, false, false ) ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER \
   double composite_ta_multiplier( const action_state_t* s ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_ta_multiplier( s ) * \
-           get_buff_effects_value( ta_multiplier_buffeffects ); \
+           get_buff_effects_value( ta_multiplier_effects ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER \
   double composite_da_multiplier( const action_state_t* s ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_da_multiplier( s ) * \
-           get_buff_effects_value( da_multiplier_buffeffects ); \
+           get_buff_effects_value( da_multiplier_effects ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_CRIT_CHANCE \
   double composite_crit_chance() const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_crit_chance() + \
-           get_buff_effects_value( crit_chance_buffeffects, true ); \
+           get_buff_effects_value( crit_chance_effects, true ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_EXECUTE_TIME \
   timespan_t execute_time() const override \
   { \
     return std::max( 0_ms, PARSE_BUFF_EFFECTS_SETUP_BASE::execute_time() * \
-                           get_buff_effects_value( execute_time_buffeffects ) ); \
+                           get_buff_effects_value( execute_time_effects ) ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_DOT_DURATION \
   timespan_t composite_dot_duration( const action_state_t* s ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_dot_duration( s ) * \
-           get_buff_effects_value( dot_duration_buffeffects ); \
+           get_buff_effects_value( dot_duration_effects ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_TICK_TIME \
   timespan_t tick_time( const action_state_t* s ) const override \
   { \
     return std::max( 1_ms, PARSE_BUFF_EFFECTS_SETUP_BASE::tick_time( s ) * \
-                           get_buff_effects_value( tick_time_buffeffects ) ); \
+                           get_buff_effects_value( tick_time_effects ) ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_COOLDOWN_DURATION \
   timespan_t cooldown_duration() const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::cooldown_duration() * \
-           get_buff_effects_value( recharge_multiplier_buffeffects ); \
+           get_buff_effects_value( recharge_multiplier_effects ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_RECHARGE_MULTIPLIER \
   double recharge_multiplier( const cooldown_t& cd ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::recharge_multiplier( cd ) * \
-           get_buff_effects_value( recharge_multiplier_buffeffects ); \
+           get_buff_effects_value( recharge_multiplier_effects ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER \
   double composite_target_multiplier( player_t* t ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_target_multiplier( t ) * \
-           get_debuff_effects_value( target_multiplier_dotdebuffs, parse_effects_target_data( t ) ); \
+           get_debuff_effects_value( target_multiplier_effects, parse_effects_target_data( t ) ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_CHANCE \
   double composite_target_crit_chance( player_t* t ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_target_crit_chance( t ) + \
-           get_debuff_effects_value( target_crit_chance_dotdebuffs, parse_effects_target_data( t ), true ); \
+           get_debuff_effects_value( target_crit_chance_effects, parse_effects_target_data( t ), true ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_DAMAGE_BONUS_MULTIPLIER \
   double composite_target_crit_damage_bonus_multiplier( player_t* t ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_target_crit_damage_bonus_multiplier( t ) * \
-           get_debuff_effects_value( target_crit_damage_dotdebuffs, parse_effects_target_data( t ) ); \
+           get_debuff_effects_value( target_crit_damage_effects, parse_effects_target_data( t ) ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_HTML_CUSTOMSECTION \
@@ -172,78 +172,55 @@ enum value_type_e
   USE_CURRENT
 };
 
-template <typename PLAYER, typename TD, typename OWNER = PLAYER>
-struct parse_buff_effects_t
+struct action_effect_t
 {
-  using bfun = std::function<bool()>;
-  struct buff_effect_t
-  {
-    buff_t* buff;                   // nullptr
-    double value;                   // 0.0
-    value_type_e type;              // USE_DATA
-    bool use_stacks;                // true
-    bool mastery;                   // false
-    bfun func;                      // nullptr
-    const spelleffect_data_t* eff;  // &spelleffect_data_t::nil()
+  buff_t* buff;                   // nullptr
+  double value;                   // 0.0
+  value_type_e type;              // USE_DATA
+  bool use_stacks;                // true
+  bool mastery;                   // false
+  std::function<bool()> func;     // nullptr
+  const spelleffect_data_t* eff;  // &spelleffect_data_t::nil()
 
-    buff_effect_t( buff_t* b = nullptr, double v = 0.0, value_type_e t = USE_DATA, bool s = true, bool m = false,
-                   bfun f = nullptr, const spelleffect_data_t* e = &spelleffect_data_t::nil() )
-      : buff( b ), value( v ), type( t ), use_stacks( s ), mastery( m ), func( std::move( f ) ), eff( e )
-    {}
-  };
+  action_effect_t( buff_t* b = nullptr, double v = 0.0, value_type_e t = USE_DATA, bool s = true, bool m = false,
+                  std::function<bool()> f = nullptr, const spelleffect_data_t* e = &spelleffect_data_t::nil() )
+    : buff( b ), value( v ), type( t ), use_stacks( s ), mastery( m ), func( std::move( f ) ), eff( e )
+  {}
+};
 
-  // TODO: add value type to debuffs if it becomes necessary in the future
-  using dfun = std::function<int( TD* )>;
-  struct dot_debuff_t
-  {
-    dfun func;                      // nullptr
-    double value;                   // 0.0
-    bool mastery;                   // false
-    const spelleffect_data_t* eff;  // &spelleffect_data_t::nil()
+// TODO: add value type to debuffs if it becomes necessary in the future
+template <typename TD>
+struct target_effect_t
+{
+  std::function<int( TD* )> func;  // nullptr
+  double value;                    // 0.0
+  bool mastery;                    // false
+  const spelleffect_data_t* eff;   // &spelleffect_data_t::nil()
 
-    dot_debuff_t( dfun f = nullptr, double v = 0.0, bool m = false,
-                  const spelleffect_data_t* e = &spelleffect_data_t::nil() )
-      : func( std::move( f ) ), value( v ), mastery( m ), eff( e )
-    {}
-  };
+  target_effect_t( std::function<int( TD* )> f = nullptr, double v = 0.0, bool m = false,
+                const spelleffect_data_t* e = &spelleffect_data_t::nil() )
+    : func( std::move( f ) ), value( v ), mastery( m ), eff( e )
+  {}
+};
 
-  // used to store values from parameter pack recursion of parse_effect/parse_debuff_effects
-  template <typename T, typename = std::enable_if_t<std::is_default_constructible_v<T>>>
-  struct pack_t
-  {
-    T data;
-    std::vector<const spell_data_t*> list;
-    unsigned mask = 0U;
-  };
+// used to store values from parameter pack recursion of parse_effect/parse_debuff_effects
+template <typename T, typename = std::enable_if_t<std::is_default_constructible_v<T>>>
+struct pack_t
+{
+  T data;
+  std::vector<const spell_data_t*> list;
+  unsigned mask = 0U;
+};
 
-private:
-  PLAYER* player_;
-  action_t* action_;
-  std::vector<std::pair<size_t, double>> effect_flat_modifiers;
-  std::vector<std::pair<size_t, double>> effect_pct_modifiers;
-
-public:
-  // auto parsed dynamic effects
-  std::vector<buff_effect_t> ta_multiplier_buffeffects;
-  std::vector<buff_effect_t> da_multiplier_buffeffects;
-  std::vector<buff_effect_t> execute_time_buffeffects;
-  std::vector<buff_effect_t> dot_duration_buffeffects;
-  std::vector<buff_effect_t> tick_time_buffeffects;
-  std::vector<buff_effect_t> recharge_multiplier_buffeffects;
-  std::vector<buff_effect_t> cost_buffeffects;
-  std::vector<buff_effect_t> flat_cost_buffeffects;
-  std::vector<buff_effect_t> crit_chance_buffeffects;
-  std::vector<dot_debuff_t> target_multiplier_dotdebuffs;
-  std::vector<dot_debuff_t> target_crit_damage_dotdebuffs;
-  std::vector<dot_debuff_t> target_crit_chance_dotdebuffs;
-
-  parse_buff_effects_t( PLAYER* p, action_t* a ) : player_( p ), action_( a ) {}
-  virtual ~parse_buff_effects_t() = default;
+struct parse_effects_t
+{
+  parse_effects_t() = default;
+  virtual ~parse_effects_t() = default;
 
   double mod_spell_effects_value( const spell_data_t*, const spelleffect_data_t& e ) { return e.base_value(); }
 
   template <typename T>
-  void apply_affecting_mods( double& val, bool& mastery, const spell_data_t* base, size_t idx, T mod )
+  void apply_affecting_mod( double& val, bool& mastery, const spell_data_t* base, size_t idx, T mod )
   {
     bool mod_is_mastery = false;
 
@@ -279,6 +256,17 @@ public:
   }
 
   template <typename U>
+  void apply_affecting_mods( const pack_t<U>& tmp, double& val, bool& mastery, const spell_data_t* base, size_t idx )
+  {
+    // Apply effect modifying effects from mod list. Blizz only currently supports modifying effects 1-5
+    if ( idx > 5 )
+      return;
+
+    for ( size_t j = 0; j < tmp.list.size(); j++ )
+      apply_affecting_mod( val, mastery, base, idx, tmp.list[ j ] );
+  }
+
+  template <typename U>
   void parse_spell_effect_mods( pack_t<U>& ) {}
 
   template <typename U, typename T>
@@ -304,6 +292,34 @@ public:
     parse_spell_effect_mods( tmp, mod );
     parse_spell_effect_mods( tmp, mods... );
   }
+};
+
+template <typename PLAYER, typename TD, typename OWNER = PLAYER>
+struct parse_action_effects_t : public parse_effects_t
+{
+private:
+  PLAYER* player_;
+  action_t* action_;
+  std::vector<std::pair<size_t, double>> effect_flat_modifiers;
+  std::vector<std::pair<size_t, double>> effect_pct_modifiers;
+
+public:
+  // auto parsed dynamic effects
+  std::vector<action_effect_t> ta_multiplier_effects;
+  std::vector<action_effect_t> da_multiplier_effects;
+  std::vector<action_effect_t> execute_time_effects;
+  std::vector<action_effect_t> dot_duration_effects;
+  std::vector<action_effect_t> tick_time_effects;
+  std::vector<action_effect_t> recharge_multiplier_effects;
+  std::vector<action_effect_t> cost_effects;
+  std::vector<action_effect_t> flat_cost_effects;
+  std::vector<action_effect_t> crit_chance_effects;
+  std::vector<target_effect_t<TD>> target_multiplier_effects;
+  std::vector<target_effect_t<TD>> target_crit_damage_effects;
+  std::vector<target_effect_t<TD>> target_crit_chance_effects;
+
+  parse_action_effects_t( PLAYER* p, action_t* a ) : parse_effects_t(), player_( p ), action_( a ) {}
+  virtual ~parse_action_effects_t() = default;
 
   // Syntax: parse_effects( data[, spells|condition|ignore_mask|use_stacks|value_type|spells][,...] )
   //   (buff_t*) or
@@ -332,7 +348,7 @@ public:
   //
   // Example 4: Parse buff3, only apply if my_player_t::check2() and my_player_t::check3() returns true:
   //   parse_effects( buff3, [ this ] { return p()->check2() && p()->check3(); } );
-  void parse_spell_effect( pack_t<buff_effect_t>& tmp, const spell_data_t* s_data, size_t i, bool force )
+  void parse_spell_effect( pack_t<action_effect_t>& tmp, const spell_data_t* s_data, size_t i, bool force )
   {
     const auto& eff = s_data->effectN( i );
     bool mastery = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
@@ -361,12 +377,7 @@ public:
         return;
     }
 
-    // Apply effect modifying effects from mod list. Blizz only currently supports modifying effects 1-5
-    if ( i <= 5 )
-    {
-      for ( size_t j = 0; j < tmp.list.size(); j++ )
-        apply_affecting_mods( val, mastery, s_data, i, tmp.list[ j ] );
-    }
+    apply_affecting_mods( tmp, val, mastery, s_data, i );
 
     if ( !val )
       return;
@@ -411,12 +422,12 @@ public:
       }
     };
 
-    std::vector<buff_effect_t>* vec = nullptr;
+    std::vector<action_effect_t>* vec = nullptr;
     std::string str;
 
     if ( !action_->special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
     {
-      vec = &da_multiplier_buffeffects;
+      vec = &da_multiplier_effects;
       str = "auto attack";
     }
     else if ( !action_->data().affected_by_all( eff ) && !force )
@@ -428,31 +439,31 @@ public:
       switch ( eff.misc_value1() )
       {
         case P_GENERIC:
-          vec = &da_multiplier_buffeffects;
+          vec = &da_multiplier_effects;
           str = "direct damage";
           break;
         case P_DURATION:
-          vec = &dot_duration_buffeffects;
+          vec = &dot_duration_effects;
           str = "duration";
           break;
         case P_TICK_DAMAGE:
-          vec = &ta_multiplier_buffeffects;
+          vec = &ta_multiplier_effects;
           str = "tick damage";
           break;
         case P_CAST_TIME:
-          vec = &execute_time_buffeffects;
+          vec = &execute_time_effects;
           str = "cast time";
           break;
         case P_TICK_TIME:
-          vec = &tick_time_buffeffects;
+          vec = &tick_time_effects;
           str = "tick time";
           break;
         case P_COOLDOWN:
-          vec = &recharge_multiplier_buffeffects;
+          vec = &recharge_multiplier_effects;
           str = "cooldown";
           break;
         case P_RESOURCE_COST:
-          vec = &cost_buffeffects;
+          vec = &cost_effects;
           str = "cost percent";
           break;
         default:
@@ -464,12 +475,12 @@ public:
       switch ( eff.misc_value1() )
       {
         case P_CRIT:
-          vec = &crit_chance_buffeffects;
+          vec = &crit_chance_effects;
           str = "crit chance";
           break;
         case P_RESOURCE_COST:
           val_mul = eff.resource_multiplier( action_->current_resource() );
-          vec = &flat_cost_buffeffects;
+          vec = &flat_cost_effects;
           str = "flat cost";
           break;
         default:
@@ -489,7 +500,7 @@ public:
   }
 
   template <typename T>
-  const spell_data_t* resolve_parse_data( T data, pack_t<buff_effect_t>& tmp )
+  const spell_data_t* resolve_parse_data( T data, pack_t<action_effect_t>& tmp )
   {
     if constexpr ( std::is_invocable_v<decltype( &buff_t::data ), T> )
     {
@@ -512,8 +523,7 @@ public:
   template <typename T, typename... Ts>
   void parse_effects( T data, Ts... mods )
   {
-    pack_t<buff_effect_t> pack;
-
+    pack_t<action_effect_t> pack;
     const spell_data_t* spell = resolve_parse_data( data, pack );
 
     if ( !spell || !spell->ok() )
@@ -524,11 +534,11 @@ public:
 
     for ( size_t i = 1; i <= spell->effect_count(); i++ )
     {
-      // local copy of pack per effect
-      pack_t<buff_effect_t> tmp = pack;
-
       if ( pack.mask & 1 << ( i - 1 ) )
         continue;
+
+      // local copy of pack per effect
+      pack_t<action_effect_t> tmp = pack;
 
       parse_spell_effect( tmp, spell, i, false );
     }
@@ -537,8 +547,7 @@ public:
   template <typename T, typename... Ts>
   void force_effect( T data, unsigned idx, Ts... mods )
   {
-    pack_t<buff_effect_t> pack;
-
+    pack_t<action_effect_t> pack;
     const spell_data_t* spell = resolve_parse_data( data, pack );
 
     if ( !spell || !spell->ok() )
@@ -556,7 +565,7 @@ public:
     parse_spell_effect( pack, spell, idx, true );
   }
 
-  double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false,
+  double get_buff_effects_value( const std::vector<action_effect_t>& buffeffects, bool flat = false,
                                  bool benefit = true ) const
   {
     double return_value = flat ? 0.0 : 1.0;
@@ -611,7 +620,7 @@ public:
   //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the debuff
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
   template <typename... Ts>
-  void parse_debuff_effect( pack_t<dot_debuff_t>& tmp, const spell_data_t* s_data, size_t i, bool force )
+  void parse_debuff_effect( pack_t<target_effect_t<TD>>& tmp, const spell_data_t* s_data, size_t i, bool force )
   {
     const auto& eff = s_data->effectN( i );
     bool mastery = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
@@ -626,12 +635,7 @@ public:
     if ( eff.type() != E_APPLY_AURA )
       return;
 
-    // Apply effect modifying effects from mod list. Blizz only currently supports modifying effects 1-5
-    if ( i <= 5 )
-    {
-      for ( size_t j = 0; j < tmp.list.size(); j++ )
-        apply_affecting_mods( val, mastery, s_data, i, tmp.list[ j ] );
-    }
+    apply_affecting_mods( tmp, val, mastery, s_data, i );
 
     if ( !val )
       return;
@@ -645,12 +649,12 @@ public:
                                 s_data->name_cstr(), s_data->id(), i );
     };
 
-    std::vector<dot_debuff_t>* vec = nullptr;
+    std::vector<target_effect_t<TD>>* vec = nullptr;
     std::string str;
 
     if ( !action_->special && eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER )
     {
-      vec = &target_multiplier_dotdebuffs;
+      vec = &target_multiplier_effects;
       str = "auto attack";
     }
     else if ( !action_->data().affected_by_all( eff ) && !force )
@@ -663,15 +667,15 @@ public:
       {
         case A_MOD_DAMAGE_FROM_CASTER_SPELLS:
         case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:
-          vec = &target_multiplier_dotdebuffs;
+          vec = &target_multiplier_effects;
           str = "damage";
           break;
         case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS:
-          vec = &target_crit_chance_dotdebuffs;
+          vec = &target_crit_chance_effects;
           str = "crit chance";
           break;
         case A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS:
-          vec = &target_crit_damage_dotdebuffs;
+          vec = &target_crit_damage_effects;
           str = "crit damage";
           break;
         default:
@@ -691,9 +695,9 @@ public:
   }
 
   template <typename... Ts>
-  void parse_debuff_effects( const dfun& fn, const spell_data_t* spell, Ts... mods )
+  void parse_debuff_effects( const std::function<int( TD* )>& fn, const spell_data_t* spell, Ts... mods )
   {
-    pack_t<dot_debuff_t> pack;
+    pack_t<target_effect_t<TD>> pack;
 
     if ( !spell || !spell->ok() )
       return;
@@ -705,20 +709,20 @@ public:
 
     for ( size_t i = 1; i <= spell->effect_count(); i++ )
     {
-      // local copy of pack per effect
-      pack_t<dot_debuff_t> tmp = pack;
-
       if ( pack.mask & 1 << ( i - 1 ) )
         continue;
+
+      // local copy of pack per effect
+      pack_t<target_effect_t<TD>> tmp = pack;
 
       parse_debuff_effect( tmp, spell, i, false );
     }
   }
 
   template <typename... Ts>
-  void force_debuff_effect( const dfun& fn, const spell_data_t* spell, unsigned idx, Ts... mods )
+  void force_debuff_effect( const std::function<int( TD* )>& fn, const spell_data_t* spell, unsigned idx, Ts... mods )
   {
-    pack_t<dot_debuff_t> pack;
+    pack_t<target_effect_t<TD>> pack;
 
     if ( !spell || !spell->ok() )
       return;
@@ -737,8 +741,7 @@ public:
     parse_debuff_effect( pack, spell, idx, true );
   }
 
-  virtual double get_debuff_effects_value( const std::vector<dot_debuff_t>& dotdebuffs, TD* td,
-                                           bool flat = false ) const
+  double get_debuff_effects_value( const std::vector<target_effect_t<TD>>& dotdebuffs, TD* td, bool flat = false ) const
   {
     double return_value = flat ? 0.0 : 1.0;
 
@@ -815,12 +818,7 @@ public:
       double val = eff.base_value();
       bool m;  // dummy throwaway
 
-      // Apply effect modifying effects from mod list. Blizz only currently supports modifying effects 1-5
-      if ( i <= 5 )
-      {
-        for ( size_t j = 0; j < pack.list.size(); j++ )
-          apply_affecting_mods( val, m, s_data, i, pack.list[ j ] );
-      }
+      apply_affecting_mods( pack, val, m, s_data, i );
 
       switch ( subtype )
       {
@@ -856,7 +854,7 @@ public:
 
   void parsed_html_report( report::sc_html_stream& os )
   {
-    if ( !total_buffeffects_count() )
+    if ( !total_effects_count() )
       return;
 
     os << "<div>\n"
@@ -873,36 +871,36 @@ public:
        << "<th class=\"small\">Notes</th>\n"
        << "</tr>\n";
 
-    print_parsed_type( os, da_multiplier_buffeffects, "Direct Damage" );
-    print_parsed_type( os, ta_multiplier_buffeffects, "Periodic Damage" );
-    print_parsed_type( os, crit_chance_buffeffects, "Critical Strike Chance" );
-    print_parsed_type( os, execute_time_buffeffects, "Execute Time" );
-    print_parsed_type( os, dot_duration_buffeffects, "Dot Duration" );
-    print_parsed_type( os, tick_time_buffeffects, "Tick Time" );
-    print_parsed_type( os, recharge_multiplier_buffeffects, "Recharge Multiplier" );
-    print_parsed_type( os, flat_cost_buffeffects, "Flat Cost" );
-    print_parsed_type( os, cost_buffeffects, "Percent Cost" );
-    print_parsed_type( os, target_multiplier_dotdebuffs, "Damage on Debuff" );
-    print_parsed_type( os, target_crit_chance_dotdebuffs, "Crit Chance on Debuff" );
-    print_parsed_type( os, target_crit_damage_dotdebuffs, "Crit Damage on Debuff" );
+    print_parsed_type( os, da_multiplier_effects, "Direct Damage" );
+    print_parsed_type( os, ta_multiplier_effects, "Periodic Damage" );
+    print_parsed_type( os, crit_chance_effects, "Critical Strike Chance" );
+    print_parsed_type( os, execute_time_effects, "Execute Time" );
+    print_parsed_type( os, dot_duration_effects, "Dot Duration" );
+    print_parsed_type( os, tick_time_effects, "Tick Time" );
+    print_parsed_type( os, recharge_multiplier_effects, "Recharge Multiplier" );
+    print_parsed_type( os, flat_cost_effects, "Flat Cost" );
+    print_parsed_type( os, cost_effects, "Percent Cost" );
+    print_parsed_type( os, target_multiplier_effects, "Damage on Debuff" );
+    print_parsed_type( os, target_crit_chance_effects, "Crit Chance on Debuff" );
+    print_parsed_type( os, target_crit_damage_effects, "Crit Damage on Debuff" );
     print_parsed_custom_type( os );
 
     os << "</table>\n"
        << "</div>\n";
   }
 
-  virtual size_t total_buffeffects_count()
+  virtual size_t total_effects_count()
   {
-    return ta_multiplier_buffeffects.size() +
-           da_multiplier_buffeffects.size() +
-           execute_time_buffeffects.size() +
-           dot_duration_buffeffects.size() +
-           tick_time_buffeffects.size() +
-           recharge_multiplier_buffeffects.size() +
-           cost_buffeffects.size() +
-           flat_cost_buffeffects.size() +
-           crit_chance_buffeffects.size() +
-           target_multiplier_dotdebuffs.size();
+    return ta_multiplier_effects.size() +
+           da_multiplier_effects.size() +
+           execute_time_effects.size() +
+           dot_duration_effects.size() +
+           tick_time_effects.size() +
+           recharge_multiplier_effects.size() +
+           cost_effects.size() +
+           flat_cost_effects.size() +
+           crit_chance_effects.size() +
+           target_multiplier_effects.size();
   }
 
   virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
@@ -935,7 +933,7 @@ public:
     }
   }
 
-  void print_parsed_line( report::sc_html_stream& os, const buff_effect_t& entry )
+  void print_parsed_line( report::sc_html_stream& os, const action_effect_t& entry )
   {
     std::vector<std::string> notes;
 
@@ -957,7 +955,7 @@ public:
                util::string_join( notes ) );
   }
 
-  void print_parsed_line( report::sc_html_stream& os, const dot_debuff_t& entry )
+  void print_parsed_line( report::sc_html_stream& os, const target_effect_t<TD>& entry )
   {
     os.format( "<td>{}</td><td>{}</td><td>{}</td><td>{:.3f}</td><td>{}</td><td>{}</td></tr>\n",
                entry.eff->spell()->name_cstr(),

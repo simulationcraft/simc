@@ -41,7 +41,7 @@ BREWMASTER:
 #include "class_modules/apl/apl_monk.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
-#include "action/parse_buff_effects.hpp"
+#include "action/parse_effects.hpp"
 #include "report/charts.hpp"
 #include "report/highchart.hpp"
 #include "sc_enums.hpp"
@@ -64,7 +64,7 @@ namespace monk
   // Template for common monk action code. See priest_action_t.
 
     template <class Base>
-    struct monk_action_t : public Base, public parse_buff_effects_t<monk_t, monk_td_t>
+    struct monk_action_t : public Base, public parse_action_effects_t<monk_t, monk_td_t>
     {
       sef_ability_e sef_ability;
       // Whether the ability is affected by the Windwalker's Mastery.
@@ -97,7 +97,7 @@ namespace monk
 
       monk_action_t( util::string_view n, monk_t *player, const spell_data_t *s = spell_data_t::nil() )
         : ab( n, player, s ),
-        parse_buff_effects_t( player, this ),
+        parse_action_effects_t( player, this ),
         sef_ability( sef_ability_e::SEF_NONE ),
         ww_mastery( false ),
         may_combo_strike( false ),
@@ -721,7 +721,7 @@ namespace monk
       #define PARSE_BUFF_EFFECTS_SETUP_COST
       double cost() const override
       {
-        double c = ab::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
+        double c = ab::cost() * std::max( 0.0, get_buff_effects_value( cost_effects, false, false ) );
 
         if ( c == 0 )
           return c;
@@ -751,7 +751,7 @@ namespace monk
       #define PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER
       double composite_ta_multiplier( const action_state_t *s ) const override
       {
-        double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
+        double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_effects );
 
         if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 2 ) ) )
           ta *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 2 ).percent();
@@ -764,7 +764,7 @@ namespace monk
       #define PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER
       double composite_da_multiplier( const action_state_t *s ) const override
       {
-        double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
+        double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_effects );
 
         if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
           da *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 1 ).percent();
@@ -777,7 +777,7 @@ namespace monk
       #define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
       double composite_target_multiplier( player_t *t ) const override
       {
-        double tm = ab::composite_target_multiplier( t ) * get_debuff_effects_value( target_multiplier_dotdebuffs, get_td( t ) );
+        double tm = ab::composite_target_multiplier( t ) * get_debuff_effects_value( target_multiplier_effects, get_td( t ) );
 
         auto td = find_td( t );
 

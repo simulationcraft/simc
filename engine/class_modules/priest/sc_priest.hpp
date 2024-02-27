@@ -9,7 +9,7 @@
 // in the respective spec file if they are limited to one spec only.
 
 #pragma once
-#include "action/parse_buff_effects.hpp"
+#include "action/parse_effects.hpp"
 #include "player/pet_spawner.hpp"
 #include "sc_enums.hpp"
 
@@ -817,7 +817,7 @@ namespace actions
  * spell_t/heal_t or absorb_t directly.
  */
 template <typename Base>
-struct priest_action_t : public Base, public parse_buff_effects_t<priest_t, priest_td_t>
+struct priest_action_t : public Base, public parse_action_effects_t<priest_t, priest_td_t>
 {
 protected:
   priest_t& priest()
@@ -844,7 +844,7 @@ protected:
 
 public:
   priest_action_t( util::string_view name, priest_t& p, const spell_data_t* s = spell_data_t::nil() )
-    : ab( name, &p, s ), parse_buff_effects_t( &p, this )
+    : ab( name, &p, s ), parse_action_effects_t( &p, this )
   {
     if ( ab::data().ok() )
     {
@@ -1071,8 +1071,8 @@ public:
 
     c -= ab::player->current.resource_reduction[ ab::get_school() ];
 
-    c += get_buff_effects_value( flat_cost_buffeffects, true, false );
-    c *= get_buff_effects_value( cost_buffeffects, false, false );
+    c += get_buff_effects_value( flat_cost_effects, true, false );
+    c *= get_buff_effects_value( cost_effects, false, false );
 
     if ( c < 0 )
       c = 0;

@@ -5,7 +5,7 @@
 
 #include "config.hpp"
 
-#include "action/parse_buff_effects.hpp"
+#include "action/parse_effects.hpp"
 #include "class_modules/apl/apl_evoker.hpp"
 #include "dbc/trait_data.hpp"
 #include "sim/option.hpp"
@@ -1202,7 +1202,7 @@ public:
 
 // Template for base evoker action code.
 template <class Base>
-struct evoker_action_t : public Base, public parse_buff_effects_t<evoker_t, evoker_td_t>
+struct evoker_action_t : public Base, public parse_action_effects_t<evoker_t, evoker_td_t>
 {
 private:
   using ab = Base;  // action base, spell_t/heal_t/etc.
@@ -1214,7 +1214,7 @@ public:
 
   evoker_action_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil() )
     : ab( name, player, spell ),
-      parse_buff_effects_t( player, this ),
+      parse_action_effects_t( player, this ),
       spell_color( SPELL_COLOR_NONE ),
       proc_spell_type( proc_spell_type_e::NONE ),
       move_during_hover( false )
@@ -1408,8 +1408,8 @@ public:
     if ( ab::data().powers().size() > 1 && ab::current_resource() != ab::data().powers()[ 0 ].resource() )
       return ab::cost();
 
-    return std::max( 0.0, ( ab::cost() + get_buff_effects_value( flat_cost_buffeffects, true, false ) ) *
-                              get_buff_effects_value( cost_buffeffects, false, false ) );
+    return std::max( 0.0, ( ab::cost() + get_buff_effects_value( flat_cost_effects, true, false ) ) *
+                              get_buff_effects_value( cost_effects, false, false ) );
   }
 
   #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
@@ -1791,7 +1791,7 @@ struct empowered_charge_t : public empowered_base_t<BASE>
 
   timespan_t base_composite_dot_duration( const action_state_t* s ) const
   {
-    return ab::dot_duration * s->haste * ab::get_buff_effects_value( ab::dot_duration_buffeffects );
+    return ab::dot_duration * s->haste * ab::get_buff_effects_value( ab::dot_duration_effects );
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3542,7 +3542,7 @@ struct pyre_t : public essence_spell_t
       aoe  = -1;
 
       if ( p->talent.raging_inferno->ok() )
-        target_multiplier_dotdebuffs.emplace_back(
+        target_multiplier_effects.emplace_back(
             []( evoker_td_t* t ) { return t->debuffs.in_firestorm->check() > 0; },
             p->talent.raging_inferno->effectN( 2 ).percent(), false, &p->talent.raging_inferno->effectN( 2 ) );
     }

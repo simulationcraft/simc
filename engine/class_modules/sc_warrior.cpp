@@ -7,7 +7,7 @@
 #include "simulationcraft.hpp"
 #include "player/player_talent_points.hpp"
 #include "class_modules/apl/apl_warrior.hpp"
-#include "action/parse_buff_effects.hpp"
+#include "action/parse_effects.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE
@@ -914,7 +914,7 @@ namespace
 {  // UNNAMED NAMESPACE
 // Template for common warrior action code. See priest_action_t.
 template <class Base>
-struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_t, warrior_td_t>
+struct warrior_action_t : public Base, public parse_action_effects_t<warrior_t, warrior_td_t>
 {
   struct affected_by_t
   {
@@ -940,7 +940,7 @@ public:
   bool initialized;
   warrior_action_t( util::string_view n, warrior_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
-      parse_buff_effects_t( player, this ),
+      parse_action_effects_t( player, this ),
       usable_while_channeling( false ),
       tactician_per_rage( 0 ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
@@ -1103,7 +1103,7 @@ public:
       dm *= p()->spec.sweeping_strikes->effectN( 2 ).percent();
     }
 
-    dm *= get_buff_effects_value( da_multiplier_buffeffects );
+    dm *= get_buff_effects_value( da_multiplier_effects );
 
     return dm;
   }
