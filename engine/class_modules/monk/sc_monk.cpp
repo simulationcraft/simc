@@ -183,9 +183,9 @@ namespace monk
       // of abilities.
       void apply_debuffs_effects()
       {
-    //    parse_debuff_effects( []( monk_td_t* t ) { return t->debuffs.weapons_of_order->check(); },
+    //    parse_target_effects( []( monk_td_t* t ) { return t->debuffs.weapons_of_order->check(); },
     //                          p()->shared.weapons_of_order ); // True, true
-    //    parse_debuff_effects( []( monk_td_t* t ) { return t->debuffs.keefers_skyreach_debuff->check(); },
+    //    parse_target_effects( []( monk_td_t* t ) { return t->debuffs.keefers_skyreach_debuff->check(); },
     //                          p()->shared.skyreach );
       }
 
@@ -721,7 +721,7 @@ namespace monk
       #define PARSE_BUFF_EFFECTS_SETUP_COST
       double cost() const override
       {
-        double c = ab::cost() * std::max( 0.0, get_buff_effects_value( cost_effects, false, false ) );
+        double c = ab::cost() * std::max( 0.0, get_effects_value( cost_effects, false, false ) );
 
         if ( c == 0 )
           return c;
@@ -751,7 +751,7 @@ namespace monk
       #define PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER
       double composite_ta_multiplier( const action_state_t *s ) const override
       {
-        double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_effects );
+        double ta = ab::composite_ta_multiplier( s ) * get_effects_value( ta_multiplier_effects );
 
         if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 2 ) ) )
           ta *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 2 ).percent();
@@ -764,7 +764,7 @@ namespace monk
       #define PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER
       double composite_da_multiplier( const action_state_t *s ) const override
       {
-        double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_effects );
+        double da = ab::composite_da_multiplier( s ) * get_effects_value( da_multiplier_effects );
 
         if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
           da *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 1 ).percent();
@@ -777,7 +777,7 @@ namespace monk
       #define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
       double composite_target_multiplier( player_t *t ) const override
       {
-        double tm = ab::composite_target_multiplier( t ) * get_debuff_effects_value( target_multiplier_effects, get_td( t ) );
+        double tm = ab::composite_target_multiplier( t ) * get_target_effects_value( target_multiplier_effects, get_td( t ) );
 
         auto td = find_td( t );
 

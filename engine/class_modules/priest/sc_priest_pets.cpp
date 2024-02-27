@@ -309,7 +309,7 @@ struct priest_pet_spell_t : public spell_t, public parse_action_effects_t<priest
     // Doesn't work on the pet ayy lmao
     /*if ( p().o().specialization() == PRIEST_DISCIPLINE )
     {
-        parse_debuff_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); },
+        parse_target_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); },
     p().o().talents.discipline.schism_debuff );
     }*/
   }

@@ -37,10 +37,10 @@
 //       #define PARSE_BUFF_EFFECTS_SETUP_COST
 //       double cost() const override
 //       {
-//         auto c = spell_t::cost() + get_buff_effects_value( flat_cost_effects, true, false );
+//         auto c = spell_t::cost() + get_effects_value( flat_cost_effects, true, false );
 //         ...CUSTOM FLAT ADD CODE...
 //
-//         c *= get_buff_effects_value( cost_effects, false, false );
+//         c *= get_effects_value( cost_effects, false, false );
 //         ...CUSTOM MULTIPLIER CODE...
 //
 //         return std::max( 0.0, c );
@@ -50,7 +50,7 @@
 //       #define PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER
 //       double composite_ta_multiplier( const action_state_t* s ) const override
 //       {
-//         auto ta = spell_t::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_effects );
+//         auto ta = spell_t::composite_ta_multiplier( s ) * get_effects_value( ta_multiplier_effects );
 //         ...CUSTOM MULTIPLIER CODE...
 //
 //         return ta;
@@ -63,85 +63,85 @@
   double cost() const override \
   { \
     return std::max( 0.0, ( PARSE_BUFF_EFFECTS_SETUP_BASE::cost() + \
-                            get_buff_effects_value( flat_cost_effects, true, false ) ) * \
-                          get_buff_effects_value( cost_effects, false, false ) ); \
+                            get_effects_value( flat_cost_effects, true, false ) ) * \
+                          get_effects_value( cost_effects, false, false ) ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER \
   double composite_ta_multiplier( const action_state_t* s ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_ta_multiplier( s ) * \
-           get_buff_effects_value( ta_multiplier_effects ); \
+           get_effects_value( ta_multiplier_effects ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER \
   double composite_da_multiplier( const action_state_t* s ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_da_multiplier( s ) * \
-           get_buff_effects_value( da_multiplier_effects ); \
+           get_effects_value( da_multiplier_effects ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_CRIT_CHANCE \
   double composite_crit_chance() const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_crit_chance() + \
-           get_buff_effects_value( crit_chance_effects, true ); \
+           get_effects_value( crit_chance_effects, true ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_EXECUTE_TIME \
   timespan_t execute_time() const override \
   { \
     return std::max( 0_ms, PARSE_BUFF_EFFECTS_SETUP_BASE::execute_time() * \
-                           get_buff_effects_value( execute_time_effects ) ); \
+                           get_effects_value( execute_time_effects ) ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_DOT_DURATION \
   timespan_t composite_dot_duration( const action_state_t* s ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_dot_duration( s ) * \
-           get_buff_effects_value( dot_duration_effects ); \
+           get_effects_value( dot_duration_effects ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_TICK_TIME \
   timespan_t tick_time( const action_state_t* s ) const override \
   { \
     return std::max( 1_ms, PARSE_BUFF_EFFECTS_SETUP_BASE::tick_time( s ) * \
-                           get_buff_effects_value( tick_time_effects ) ); \
+                           get_effects_value( tick_time_effects ) ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_COOLDOWN_DURATION \
   timespan_t cooldown_duration() const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::cooldown_duration() * \
-           get_buff_effects_value( recharge_multiplier_effects ); \
+           get_effects_value( recharge_multiplier_effects ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_RECHARGE_MULTIPLIER \
   double recharge_multiplier( const cooldown_t& cd ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::recharge_multiplier( cd ) * \
-           get_buff_effects_value( recharge_multiplier_effects ); \
+           get_effects_value( recharge_multiplier_effects ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER \
   double composite_target_multiplier( player_t* t ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_target_multiplier( t ) * \
-           get_debuff_effects_value( target_multiplier_effects, parse_effects_target_data( t ) ); \
+           get_target_effects_value( target_multiplier_effects, parse_effects_target_data( t ) ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_CHANCE \
   double composite_target_crit_chance( player_t* t ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_target_crit_chance( t ) + \
-           get_debuff_effects_value( target_crit_chance_effects, parse_effects_target_data( t ), true ); \
+           get_target_effects_value( target_crit_chance_effects, parse_effects_target_data( t ), true ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_DAMAGE_BONUS_MULTIPLIER \
   double composite_target_crit_damage_bonus_multiplier( player_t* t ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_target_crit_damage_bonus_multiplier( t ) * \
-           get_debuff_effects_value( target_crit_damage_effects, parse_effects_target_data( t ) ); \
+           get_target_effects_value( target_crit_damage_effects, parse_effects_target_data( t ) ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_HTML_CUSTOMSECTION \
@@ -203,7 +203,7 @@ struct target_effect_t
   {}
 };
 
-// used to store values from parameter pack recursion of parse_effect/parse_debuff_effects
+// used to store values from parameter pack recursion of parse_effect/parse_target_effects
 template <typename T, typename = std::enable_if_t<std::is_default_constructible_v<T>>>
 struct pack_t
 {
@@ -283,7 +283,7 @@ struct parse_effects_t
     else if constexpr ( std::is_integral_v<T> )
       tmp.mask = mod;
     else
-      assert( false && "Invalid type for parse_spell_effect_mods" );
+      assert( false && "Invalid mod type for parse_spell_effect_mods" );
   }
 
   template <typename U, typename T, typename... Ts>
@@ -348,7 +348,7 @@ public:
   //
   // Example 4: Parse buff3, only apply if my_player_t::check2() and my_player_t::check3() returns true:
   //   parse_effects( buff3, [ this ] { return p()->check2() && p()->check3(); } );
-  void parse_spell_effect( pack_t<action_effect_t>& tmp, const spell_data_t* s_data, size_t i, bool force )
+  void parse_action_effect( pack_t<action_effect_t>& tmp, const spell_data_t* s_data, size_t i, bool force )
   {
     const auto& eff = s_data->effectN( i );
     bool mastery = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
@@ -540,7 +540,7 @@ public:
       // local copy of pack per effect
       pack_t<action_effect_t> tmp = pack;
 
-      parse_spell_effect( tmp, spell, i, false );
+      parse_action_effect( tmp, spell, i, false );
     }
   }
 
@@ -562,15 +562,14 @@ public:
     // parse mods and populate pack
     parse_spell_effect_mods( pack, mods... );
 
-    parse_spell_effect( pack, spell, idx, true );
+    parse_action_effect( pack, spell, idx, true );
   }
 
-  double get_buff_effects_value( const std::vector<action_effect_t>& buffeffects, bool flat = false,
-                                 bool benefit = true ) const
+  double get_effects_value( const std::vector<action_effect_t>& effects, bool flat = false, bool benefit = true ) const
   {
     double return_value = flat ? 0.0 : 1.0;
 
-    for ( const auto& i : buffeffects )
+    for ( const auto& i : effects )
     {
       double eff_val = i.value;
       int mod = 1;
@@ -603,16 +602,7 @@ public:
     return return_value;
   }
 
-  // method for getting target data as each module may have different action scoped method
-  TD* parse_effects_target_data( player_t* t ) const
-  {
-    if constexpr ( std::is_invocable_v<decltype( &pet_t::owner ), PLAYER> )
-      return static_cast<OWNER*>( player_->owner )->get_target_data( t );
-    else
-      return player_->get_target_data( t );
-  }
-
-  // Syntax: parse_debuff_effects( func, debuff[, spells|ignore_mask][,...] )
+  // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
   //   (int F(TD*))            func: Function taking the target_data as argument and returning an integer mutiplier
   //   (const spell_data_t*) debuff: Spell data of the debuff
   //
@@ -620,7 +610,7 @@ public:
   //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the debuff
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
   template <typename... Ts>
-  void parse_debuff_effect( pack_t<target_effect_t<TD>>& tmp, const spell_data_t* s_data, size_t i, bool force )
+  void parse_target_effect( pack_t<target_effect_t<TD>>& tmp, const spell_data_t* s_data, size_t i, bool force )
   {
     const auto& eff = s_data->effectN( i );
     bool mastery = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
@@ -694,8 +684,17 @@ public:
     }
   }
 
+  // method for getting target data as each module may have different action scoped method
+  TD* parse_effects_target_data( player_t* t ) const
+  {
+    if constexpr ( std::is_invocable_v<decltype( &pet_t::owner ), PLAYER> )
+      return static_cast<OWNER*>( player_->owner )->get_target_data( t );
+    else
+      return player_->get_target_data( t );
+  }
+
   template <typename... Ts>
-  void parse_debuff_effects( const std::function<int( TD* )>& fn, const spell_data_t* spell, Ts... mods )
+  void parse_target_effects( const std::function<int( TD* )>& fn, const spell_data_t* spell, Ts... mods )
   {
     pack_t<target_effect_t<TD>> pack;
 
@@ -715,12 +714,12 @@ public:
       // local copy of pack per effect
       pack_t<target_effect_t<TD>> tmp = pack;
 
-      parse_debuff_effect( tmp, spell, i, false );
+      parse_target_effect( tmp, spell, i, false );
     }
   }
 
   template <typename... Ts>
-  void force_debuff_effect( const std::function<int( TD* )>& fn, const spell_data_t* spell, unsigned idx, Ts... mods )
+  void force_target_effect( const std::function<int( TD* )>& fn, const spell_data_t* spell, unsigned idx, Ts... mods )
   {
     pack_t<target_effect_t<TD>> pack;
 
@@ -738,14 +737,14 @@ public:
     // parse mods and populate pack
     parse_spell_effect_mods( pack, mods... );
 
-    parse_debuff_effect( pack, spell, idx, true );
+    parse_target_effect( pack, spell, idx, true );
   }
 
-  double get_debuff_effects_value( const std::vector<target_effect_t<TD>>& dotdebuffs, TD* td, bool flat = false ) const
+  double get_target_effects_value( const std::vector<target_effect_t<TD>>& effects, TD* td, bool flat = false ) const
   {
     double return_value = flat ? 0.0 : 1.0;
 
-    for ( const auto& i : dotdebuffs )
+    for ( const auto& i : effects )
     {
       if ( auto check = i.func( td ) )
       {

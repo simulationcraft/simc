@@ -3381,22 +3381,22 @@ struct death_knight_action_t : public Base, public parse_action_effects_t<death_
     parse_dot_effects( &death_knight_td_t::dots_t::frost_fever, p()->spell.frost_fever, p()->talent.unholy.morbidity );
     parse_dot_effects( &death_knight_td_t::dots_t::blood_plague, p()->spell.blood_plague, p()->specialization() == DEATH_KNIGHT_UNHOLY ? p()->talent.unholy.morbidity : p()->talent.blood.coagulopathy );
     parse_dot_effects( &death_knight_td_t::dots_t::unholy_blight, p()->spell.unholy_blight_dot, false, p()->talent.unholy.morbidity );
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.apocalypse_war->check(); }, p()->spell.apocalypse_war_debuff, p()->talent.unholy_bond );
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.razorice->check(); }, p()->spell.razorice_debuff, p()->talent.unholy_bond );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.apocalypse_war->check(); }, p()->spell.apocalypse_war_debuff, p()->talent.unholy_bond );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.razorice->check(); }, p()->spell.razorice_debuff, p()->talent.unholy_bond );
 
     // Blood
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.tightening_grasp->check(); }, p()->spell.tightening_grasp_debuff );
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.ashen_decay->check(); }, p()->spell.ashen_decay_debuff );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.tightening_grasp->check(); }, p()->spell.tightening_grasp_debuff );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.ashen_decay->check(); }, p()->spell.ashen_decay_debuff );
 
     // Frost
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.everfrost->check(); }, p()->talent.frost.everfrost->effectN( 1 ).trigger(), p()->talent.frost.everfrost );
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.piercing_chill->check(); }, p()->spell.piercing_chill_debuff );
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.lingering_chill->check(); }, p()->spell.lingering_chill );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.everfrost->check(); }, p()->talent.frost.everfrost->effectN( 1 ).trigger(), p()->talent.frost.everfrost );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.piercing_chill->check(); }, p()->spell.piercing_chill_debuff );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.lingering_chill->check(); }, p()->spell.lingering_chill );
 
     // Unholy
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.brittle->check(); }, p()->spell.brittle_debuff );
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.death_rot->check(); }, p()->spell.death_rot_debuff );
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.rotten_touch->check(); }, p()->spell.rotten_touch_debuff );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.brittle->check(); }, p()->spell.brittle_debuff );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.death_rot->check(); }, p()->spell.death_rot_debuff );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.rotten_touch->check(); }, p()->spell.rotten_touch_debuff );
   }
 
   template <typename DOT, typename... Ts>
@@ -3404,14 +3404,14 @@ struct death_knight_action_t : public Base, public parse_action_effects_t<death_
   {
     if (stacks)
     {
-      parse_debuff_effects( [ dot ]( death_knight_td_t* t )
+      parse_target_effects( [ dot ]( death_knight_td_t* t )
                             {
                               return std::invoke( dot, t->dot )->current_stack();
                             }, spell, mods... );
     }
     else
     {
-      parse_debuff_effects( [ dot ]( death_knight_td_t* t )
+      parse_target_effects( [ dot ]( death_knight_td_t* t )
                             {
                               return std::invoke( dot, t->dot )->is_ticking();
                             }, spell, mods... );
@@ -3430,7 +3430,7 @@ struct death_knight_action_t : public Base, public parse_action_effects_t<death_
     if (this->data().affected_by_all( spell->effectN( idx ) ))
       return;
 
-    parse_debuff_effect( [ dot ]( death_knight_td_t* t )
+    parse_target_effect( [ dot ]( death_knight_td_t* t )
                          {
                            return std::invoke( dot, t->dot )->is_ticking();
                          }, spell, idx, true, mods... );

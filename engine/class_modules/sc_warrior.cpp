@@ -1012,24 +1012,24 @@ public:
     // Arms deep wounds spell data contains T30 2pc bonus, which is disabled/enabled via script.
     // To account for this, we parse the data twice, first ignoring effects #4 & #5 via mask, then if the T30 2pc is
     // active parse again ignoring effects #1, #2, & #3.
-    parse_debuff_effects( []( warrior_td_t* td ) { return td->dots_deep_wounds->is_ticking(); },
+    parse_target_effects( []( warrior_td_t* td ) { return td->dots_deep_wounds->is_ticking(); },
                           p()->spell.deep_wounds_arms, 0b11000,
                           p()->mastery.deep_wounds_ARMS );
     if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T30, B2 ) )
     {
-      parse_debuff_effects( []( warrior_td_t* td ) { return td->dots_deep_wounds->is_ticking(); },
+      parse_target_effects( []( warrior_td_t* td ) { return td->dots_deep_wounds->is_ticking(); },
                             p()->spell.deep_wounds_arms, 0b00111 );
     }
-    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_colossus_smash->check(); },
+    parse_target_effects( []( warrior_td_t* td ) { return td->debuffs_colossus_smash->check(); },
                           p()->spell.colossus_smash_debuff,
                           p()->talents.arms.blunt_instruments, p()->talents.arms.spiteful_serenity );
-    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_executioners_precision->check(); },
+    parse_target_effects( []( warrior_td_t* td ) { return td->debuffs_executioners_precision->check(); },
                           p()->talents.arms.executioners_precision->effectN( 1 ).trigger(),
                           p()->talents.arms.executioners_precision );
     // Fury
 
     // Protection
-    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_demoralizing_shout->check(); },
+    parse_target_effects( []( warrior_td_t* td ) { return td->debuffs_demoralizing_shout->check(); },
                           p()->talents.protection.demoralizing_shout,
                           p()->talents.protection.booming_voice );
   }
@@ -1103,7 +1103,7 @@ public:
       dm *= p()->spec.sweeping_strikes->effectN( 2 ).percent();
     }
 
-    dm *= get_buff_effects_value( da_multiplier_effects );
+    dm *= get_effects_value( da_multiplier_effects );
 
     return dm;
   }

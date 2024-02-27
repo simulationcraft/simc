@@ -1025,7 +1025,7 @@ public:
     }
   }
 
-  // Syntax: parse_debuff_effects( func, debuff[, spells|ignore_mask][,...] )
+  // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
   //   (int F(TD*))            func: Function taking the target_data as argument and returning an integer mutiplier
   //   (const spell_data_t*) debuff: Spell data of the debuff
   //
@@ -1037,7 +1037,7 @@ public:
     // DISCIPLINE DEBUFF EFFECTS
     if ( p().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_debuff_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); },
+      parse_target_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); },
                             p().talents.discipline.schism_debuff );
     }
   }
@@ -1071,8 +1071,8 @@ public:
 
     c -= ab::player->current.resource_reduction[ ab::get_school() ];
 
-    c += get_buff_effects_value( flat_cost_effects, true, false );
-    c *= get_buff_effects_value( cost_effects, false, false );
+    c += get_effects_value( flat_cost_effects, true, false );
+    c *= get_effects_value( cost_effects, false, false );
 
     if ( c < 0 )
       c = 0;

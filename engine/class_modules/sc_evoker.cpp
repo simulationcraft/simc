@@ -1387,7 +1387,7 @@ public:
 
   }
 
-  // Syntax: parse_debuff_effects( func, debuff[, spells|ignore_mask][,...] )
+  // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
   //   (int F(TD*))            func: Function taking the target_data as argument and returning an integer mutiplier
   //   (const spell_data_t*) debuff: Spell data of the debuff
   //
@@ -1396,7 +1396,7 @@ public:
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
   void apply_debuffs_effects()
   {
-    parse_debuff_effects( []( evoker_td_t* t ) { return t->debuffs.shattering_star->check(); },
+    parse_target_effects( []( evoker_td_t* t ) { return t->debuffs.shattering_star->check(); },
                           p()->talent.shattering_star );
   }
 
@@ -1408,8 +1408,8 @@ public:
     if ( ab::data().powers().size() > 1 && ab::current_resource() != ab::data().powers()[ 0 ].resource() )
       return ab::cost();
 
-    return std::max( 0.0, ( ab::cost() + get_buff_effects_value( flat_cost_effects, true, false ) ) *
-                              get_buff_effects_value( cost_effects, false, false ) );
+    return std::max( 0.0, ( ab::cost() + get_effects_value( flat_cost_effects, true, false ) ) *
+                              get_effects_value( cost_effects, false, false ) );
   }
 
   #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
@@ -1791,7 +1791,7 @@ struct empowered_charge_t : public empowered_base_t<BASE>
 
   timespan_t base_composite_dot_duration( const action_state_t* s ) const
   {
-    return ab::dot_duration * s->haste * ab::get_buff_effects_value( ab::dot_duration_effects );
+    return ab::dot_duration * s->haste * ab::get_effects_value( ab::dot_duration_effects );
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override

@@ -1642,25 +1642,25 @@ public:
 
   void apply_debuffs_effects()
   {
-    parse_debuff_effects( d_fn( &druid_td_t::dots_t::moonfire ),
+    parse_target_effects( d_fn( &druid_td_t::dots_t::moonfire ),
                           p()->spec.moonfire_dmg, p()->mastery.astral_invocation );
-    parse_debuff_effects( d_fn( &druid_td_t::dots_t::sunfire ),
+    parse_target_effects( d_fn( &druid_td_t::dots_t::sunfire ),
                           p()->spec.sunfire_dmg, p()->mastery.astral_invocation );
-    parse_debuff_effects( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage, false ),
+    parse_target_effects( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage, false ),
                           p()->spec.adaptive_swarm_damage, p()->spec_spell );
-    parse_debuff_effects( d_fn( &druid_td_t::dots_t::thrash_bear ),
+    parse_target_effects( d_fn( &druid_td_t::dots_t::thrash_bear ),
                           p()->spec.thrash_bear_bleed, p()->talent.rend_and_tear );
-    parse_debuff_effects( d_fn( &druid_td_t::debuffs_t::dire_fixation ),
+    parse_target_effects( d_fn( &druid_td_t::debuffs_t::dire_fixation ),
                           find_trigger( p()->talent.dire_fixation ).trigger() );
-    parse_debuff_effects( d_fn( &druid_td_t::debuffs_t::waning_twilight ),
+    parse_target_effects( d_fn( &druid_td_t::debuffs_t::waning_twilight ),
                           p()->spec.waning_twilight, p()->talent.waning_twilight );
 
     if ( p()->talent.incarnation_cat.ok() && p()->talent.ashamanes_guidance.ok() )
     {
-      parse_debuff_effects( [ p = p() ]( druid_td_t* td )
+      parse_target_effects( [ p = p() ]( druid_td_t* td )
           { return p->buff.ashamanes_guidance->check() && td->dots.rip->is_ticking(); },
           p()->talent.rip, p()->spec.ashamanes_guidance_buff );
-      parse_debuff_effects( [ p = p() ]( druid_td_t* td )
+      parse_target_effects( [ p = p() ]( druid_td_t* td )
           { return p->buff.ashamanes_guidance->check() && td->dots.rake->is_ticking(); },
           find_trigger( p()->talent.rake ).trigger(), p()->spec.ashamanes_guidance_buff );
     }
@@ -1682,9 +1682,9 @@ public:
 
     double c = ab::cost();
 
-    c += get_buff_effects_value( flat_cost_effects, true, false );
+    c += get_effects_value( flat_cost_effects, true, false );
 
-    c *= get_buff_effects_value( cost_effects, false, false );
+    c *= get_effects_value( cost_effects, false, false );
 
     return std::max( 0.0, c );
   }
@@ -2171,7 +2171,7 @@ public:
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    return base_t::composite_persistent_multiplier( s ) * get_buff_effects_value( persistent_multiplier_effects );
+    return base_t::composite_persistent_multiplier( s ) * get_effects_value( persistent_multiplier_effects );
   }
 
   snapshot_counter_t* get_counter( buff_t* buff )
@@ -5911,7 +5911,7 @@ public:
 
       BASE::force_effect( ecl, 1, [ this ] { return umbral_embrace_check(); } );
 
-      BASE::force_debuff_effect(
+      BASE::force_target_effect(
           [ this, dot ]( druid_td_t* t ) { return umbral_embrace_check() && std::invoke( dot, t->dots )->is_ticking(); },
           dmg, as<unsigned>( dmg->effect_count() ), p_->mastery.astral_invocation );
     }
