@@ -8,6 +8,7 @@
 #include "action/action.hpp"
 #include "buff/buff.hpp"
 #include "player/player.hpp"
+#include "player/pet.hpp"
 #include "sim/sim.hpp"
 #include "util/io.hpp"
 
@@ -171,7 +172,7 @@ enum value_type_e
   USE_CURRENT
 };
 
-template <typename PLAYER, typename TD>
+template <typename PLAYER, typename TD, typename OWNER = PLAYER>
 struct parse_buff_effects_t
 {
   using bfun = std::function<bool()>;
@@ -596,7 +597,10 @@ public:
   // method for getting target data as each module may have different action scoped method
   TD* parse_effects_target_data( player_t* t ) const
   {
-    return player_->get_target_data( t );
+    if constexpr ( std::is_invocable_v<decltype( &pet_t::owner ), PLAYER> )
+      return static_cast<OWNER*>( player_->owner )->get_target_data( t );
+    else
+      return player_->get_target_data( t );
   }
 
   // Syntax: parse_debuff_effects( func, debuff[, spells|ignore_mask][,...] )
