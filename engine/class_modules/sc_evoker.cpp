@@ -299,6 +299,15 @@ struct simplified_player_t : public player_t
     role = get_variant_settings().role;
   }
 
+
+  void init_defence()
+  {
+    player_t::init_defense();
+
+    collected_data.health_changes_tmi.collect = false;
+    collected_data.health_changes.collect     = false;
+  }
+
   struct simple_ability_t : public spell_t
   {
     simple_ability_t( player_t* p, bob_settings_t settings )
@@ -373,6 +382,7 @@ struct simplified_player_t : public player_t
     base.spell_power_per_intellect = 1;
     
     base.stats.attribute[ STAT_INTELLECT ] = 15103;
+    base.stats.attribute[ STAT_STAMINA ]   = 45317;
     
     // 15030 Secondaries
     base.stats.crit_rating        = 4675;
