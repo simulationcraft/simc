@@ -40,7 +40,7 @@ struct action_effect_t
   const spelleffect_data_t* eff;  // &spelleffect_data_t::nil()
 
   action_effect_t( buff_t* b = nullptr, double v = 0.0, value_type_e t = USE_DATA, bool s = true, bool m = false,
-                  std::function<bool()> f = nullptr, const spelleffect_data_t* e = &spelleffect_data_t::nil() )
+                   std::function<bool()> f = nullptr, const spelleffect_data_t* e = &spelleffect_data_t::nil() )
     : buff( b ), value( v ), type( t ), use_stacks( s ), mastery( m ), func( std::move( f ) ), eff( e )
   {}
 };
@@ -55,7 +55,7 @@ struct target_effect_t
   const spelleffect_data_t* eff;   // &spelleffect_data_t::nil()
 
   target_effect_t( std::function<int( TD* )> f = nullptr, double v = 0.0, bool m = false,
-                const spelleffect_data_t* e = &spelleffect_data_t::nil() )
+                   const spelleffect_data_t* e = &spelleffect_data_t::nil() )
     : func( std::move( f ) ), value( v ), mastery( m ), eff( e )
   {}
 };
@@ -180,8 +180,12 @@ public:
 
   double cost() const override
   {
-    return std::max( 0.0, ( BASE::cost() + get_effects_value( flat_cost_effects, true, false ) ) *
-                              get_effects_value( cost_effects, false, false ) );
+    return std::max( 0.0, ( BASE::cost() * get_effects_value( cost_effects, false, false ) ) );
+  }
+
+  double cost_flat_modifier() const override
+  {
+    return BASE::cost_flat_modifier() + get_effects_value( flat_cost_effects, true, false );
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
