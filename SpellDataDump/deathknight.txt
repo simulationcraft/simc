@@ -1,4 +1,4 @@
-SimulationCraft 1025-01 for World of Warcraft 10.2.5.53262 Live
+SimulationCraft 1025-01 for World of Warcraft 10.2.5.53441 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -4187,7 +4187,6 @@ Description      : Increases the damage and healing of your pet's abilities by $
 Increases the effectiveness of your pet's Predator's Thirst, Endurance Training, and Pathfinding passives by $s3%.
 
 Name             : Virulent Plague (id=191587) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
