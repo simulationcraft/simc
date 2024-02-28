@@ -218,14 +218,13 @@ struct priest_pet_melee_t : public melee_attack_t
   }
 };
 
-struct priest_pet_spell_t : public spell_t, public parse_action_effects_t<priest_pet_t, priest_td_t, priest_t>
+struct priest_pet_spell_t : public parse_action_effects_t<spell_t, priest_pet_t, priest_td_t, priest_t>
 {
   bool affected_by_shadow_weaving;
   bool triggers_atonement;
 
   priest_pet_spell_t( util::string_view token, priest_pet_t& p, const spell_data_t* s )
-    : spell_t( token, &p, s ),
-      parse_action_effects_t( &p, this ),
+    : ab( token, &p, s ),
       affected_by_shadow_weaving( false ),
       triggers_atonement( false )
   {
@@ -323,14 +322,9 @@ struct priest_pet_spell_t : public spell_t, public parse_action_effects_t<priest
     return static_cast<priest_pet_t&>( *player );
   }
 
-  // undef first as setup is also done in sc_priest.hpp for priest_action_t
-  #undef PARSE_BUFF_EFFECTS_SETUP_BASE
-  #define PARSE_BUFF_EFFECTS_SETUP_BASE spell_t
-  PARSE_BUFF_EFFECTS_SETUP
-
   double composite_target_da_multiplier( player_t* t ) const override
   {
-    double tdm = action_t::composite_target_da_multiplier( t );
+    double tdm = ab::composite_target_da_multiplier( t );
 
     if ( affected_by_shadow_weaving )
     {
@@ -342,7 +336,7 @@ struct priest_pet_spell_t : public spell_t, public parse_action_effects_t<priest
 
   double composite_target_ta_multiplier( player_t* t ) const override
   {
-    double ttm = spell_t::composite_target_ta_multiplier( t );
+    double ttm = ab::composite_target_ta_multiplier( t );
 
     if ( affected_by_shadow_weaving )
     {
@@ -354,7 +348,7 @@ struct priest_pet_spell_t : public spell_t, public parse_action_effects_t<priest
 
   void impact( action_state_t* s ) override
   {
-    spell_t::impact( s );
+    ab::impact( s );
 
     if ( result_is_hit( s->result ) )
     {
@@ -362,6 +356,10 @@ struct priest_pet_spell_t : public spell_t, public parse_action_effects_t<priest
         p().o().trigger_atonement( s );
     }
   }
+
+private:
+  // typedef for the templated action type, eg. spell_t, attack_t, heal_t
+  using ab = parse_action_effects_t<spell_t, priest_pet_t, priest_td_t, priest_t>;
 };
 
 namespace fiend

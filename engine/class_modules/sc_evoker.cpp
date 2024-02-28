@@ -1202,10 +1202,10 @@ public:
 
 // Template for base evoker action code.
 template <class Base>
-struct evoker_action_t : public Base, public parse_action_effects_t<evoker_t, evoker_td_t>
+struct evoker_action_t : public parse_action_effects_t<Base, evoker_t, evoker_td_t>
 {
 private:
-  using ab = Base;  // action base, spell_t/heal_t/etc.
+  using ab = parse_action_effects_t<Base, evoker_t, evoker_td_t>;
 
 public:
   spell_color_e spell_color;
@@ -1214,7 +1214,6 @@ public:
 
   evoker_action_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil() )
     : ab( name, player, spell ),
-      parse_action_effects_t( player, this ),
       spell_color( SPELL_COLOR_NONE ),
       proc_spell_type( proc_spell_type_e::NONE ),
       move_during_hover( false )
@@ -1400,20 +1399,18 @@ public:
                           p()->talent.shattering_star );
   }
 
-  // custom cost() for multiple power support
-  #undef PARSE_BUFF_EFFECTS_SETUP_COST
-  #define PARSE_BUFF_EFFECTS_SETUP_COST
+  template <typename... Ts>
+  void parse_effects( Ts&&... args ) { ab::parse_effects( std::forward<Ts>( args )... ); }
+  template <typename... Ts>
+  void parse_target_effects( Ts&&... args ) { ab::parse_target_effects( std::forward<Ts>( args )... ); }
+
   double cost() const override
   {
     if ( ab::data().powers().size() > 1 && ab::current_resource() != ab::data().powers()[ 0 ].resource() )
-      return ab::cost();
+      return Base::cost();
 
-    return std::max( 0.0, ( ab::cost() + get_effects_value( flat_cost_effects, true, false ) ) *
-                              get_effects_value( cost_effects, false, false ) );
+    return ab::cost();
   }
-
-  #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
-  PARSE_BUFF_EFFECTS_SETUP
 
   void init() override
   {

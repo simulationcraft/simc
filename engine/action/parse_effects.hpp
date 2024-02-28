@@ -16,154 +16,11 @@
 
 // Mixin to action base class to allow auto parsing and dynamic application of whitelist based buffs & auras.
 //
-// 1) Add `parse_action_effects_t` as an additional parent with the player class and target data class as template
-// parameter:
-//
-//    struct my_action_base_t : public action_t, parse_action_effects_t<my_player_t, my_target_data_t>
-//
-// 2) Construct the mixin with a pointer to the player and pointer to the action as arguments:
-//
-//    parse_action_effects_t( *player, this );
-//
-// 3) PARSE_BUFF_EFFECTS_SETUP macro can be used to add the necessary overrides to the action class. If custom overrides
-// are needed, individual methods can be left out and added manually.
-//
-//    a) #undef and #define the corresponding PARSE_BUFF_EFFECTS_SETUP_X macro for any custom overrides.
-//    b) #define PARSE_BUFF_EFFECTS_SETUP_BASE to the parent class of the action class.
-//    c) Call the PARSE_BUFF_EFFECTS_SETUP macro.
-//    d) For example, if your action is based on spell_t, and you have custom cost() and composite_ta_multiplier():
-//
-//       #undef PARSE_BUFF_EFFECTS_SETUP_COST
-//       #define PARSE_BUFF_EFFECTS_SETUP_COST
-//       double cost() const override
-//       {
-//         auto c = spell_t::cost() + get_effects_value( flat_cost_effects, true, false );
-//         ...CUSTOM FLAT ADD CODE...
-//
-//         c *= get_effects_value( cost_effects, false, false );
-//         ...CUSTOM MULTIPLIER CODE...
-//
-//         return std::max( 0.0, c );
-//       }
-//
-//       #undef PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER
-//       #define PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER
-//       double composite_ta_multiplier( const action_state_t* s ) const override
-//       {
-//         auto ta = spell_t::composite_ta_multiplier( s ) * get_effects_value( ta_multiplier_effects );
-//         ...CUSTOM MULTIPLIER CODE...
-//
-//         return ta;
-//       }
-//
-//       #define PARSE_BUFF_EFFECTS_SETUP_BASE spell_t
-//       PARSE_BUFF_EFFECTS_SETUP
-
-#define PARSE_BUFF_EFFECTS_SETUP_COST \
-  double cost() const override \
-  { \
-    return std::max( 0.0, ( PARSE_BUFF_EFFECTS_SETUP_BASE::cost() + \
-                            get_effects_value( flat_cost_effects, true, false ) ) * \
-                          get_effects_value( cost_effects, false, false ) ); \
-  }
-
-#define PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER \
-  double composite_ta_multiplier( const action_state_t* s ) const override \
-  { \
-    return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_ta_multiplier( s ) * \
-           get_effects_value( ta_multiplier_effects ); \
-  }
-
-#define PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER \
-  double composite_da_multiplier( const action_state_t* s ) const override \
-  { \
-    return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_da_multiplier( s ) * \
-           get_effects_value( da_multiplier_effects ); \
-  }
-
-#define PARSE_BUFF_EFFECTS_SETUP_CRIT_CHANCE \
-  double composite_crit_chance() const override \
-  { \
-    return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_crit_chance() + \
-           get_effects_value( crit_chance_effects, true ); \
-  }
-
-#define PARSE_BUFF_EFFECTS_SETUP_EXECUTE_TIME \
-  timespan_t execute_time() const override \
-  { \
-    return std::max( 0_ms, PARSE_BUFF_EFFECTS_SETUP_BASE::execute_time() * \
-                           get_effects_value( execute_time_effects ) ); \
-  }
-
-#define PARSE_BUFF_EFFECTS_SETUP_DOT_DURATION \
-  timespan_t composite_dot_duration( const action_state_t* s ) const override \
-  { \
-    return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_dot_duration( s ) * \
-           get_effects_value( dot_duration_effects ); \
-  }
-
-#define PARSE_BUFF_EFFECTS_SETUP_TICK_TIME \
-  timespan_t tick_time( const action_state_t* s ) const override \
-  { \
-    return std::max( 1_ms, PARSE_BUFF_EFFECTS_SETUP_BASE::tick_time( s ) * \
-                           get_effects_value( tick_time_effects ) ); \
-  }
-
-#define PARSE_BUFF_EFFECTS_SETUP_COOLDOWN_DURATION \
-  timespan_t cooldown_duration() const override \
-  { \
-    return PARSE_BUFF_EFFECTS_SETUP_BASE::cooldown_duration() * \
-           get_effects_value( recharge_multiplier_effects ); \
-  }
-
-#define PARSE_BUFF_EFFECTS_SETUP_RECHARGE_MULTIPLIER \
-  double recharge_multiplier( const cooldown_t& cd ) const override \
-  { \
-    return PARSE_BUFF_EFFECTS_SETUP_BASE::recharge_multiplier( cd ) * \
-           get_effects_value( recharge_multiplier_effects ); \
-  }
-
-#define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER \
-  double composite_target_multiplier( player_t* t ) const override \
-  { \
-    return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_target_multiplier( t ) * \
-           get_target_effects_value( target_multiplier_effects, parse_effects_target_data( t ) ); \
-  }
-
-#define PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_CHANCE \
-  double composite_target_crit_chance( player_t* t ) const override \
-  { \
-    return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_target_crit_chance( t ) + \
-           get_target_effects_value( target_crit_chance_effects, parse_effects_target_data( t ), true ); \
-  }
-
-#define PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_DAMAGE_BONUS_MULTIPLIER \
-  double composite_target_crit_damage_bonus_multiplier( player_t* t ) const override \
-  { \
-    return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_target_crit_damage_bonus_multiplier( t ) * \
-           get_target_effects_value( target_crit_damage_effects, parse_effects_target_data( t ) ); \
-  }
-
-#define PARSE_BUFF_EFFECTS_SETUP_HTML_CUSTOMSECTION \
-  void html_customsection( report::sc_html_stream& os ) override \
-  { \
-    parsed_html_report( os ); \
-  }
-
-#define PARSE_BUFF_EFFECTS_SETUP \
-  PARSE_BUFF_EFFECTS_SETUP_COST \
-  PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER \
-  PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER \
-  PARSE_BUFF_EFFECTS_SETUP_CRIT_CHANCE \
-  PARSE_BUFF_EFFECTS_SETUP_EXECUTE_TIME \
-  PARSE_BUFF_EFFECTS_SETUP_DOT_DURATION \
-  PARSE_BUFF_EFFECTS_SETUP_TICK_TIME \
-  PARSE_BUFF_EFFECTS_SETUP_COOLDOWN_DURATION \
-  PARSE_BUFF_EFFECTS_SETUP_RECHARGE_MULTIPLIER \
-  PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER \
-  PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_CHANCE \
-  PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_DAMAGE_BONUS_MULTIPLIER \
-  PARSE_BUFF_EFFECTS_SETUP_HTML_CUSTOMSECTION
+// Make `parse_action_effects_t` the parent of module action classe with the following parameters:
+//  1) BASE: The base class of the action class. This is usually spell_t, melee_attack_t, or a template parameter
+//  2) PLAYER: The player class
+//  3) TD: The target data class
+//  4) OWNER: Optional owner class if the player class is a pet
 
 enum value_type_e
 {
@@ -294,12 +151,11 @@ struct parse_effects_t
   }
 };
 
-template <typename PLAYER, typename TD, typename OWNER = PLAYER>
-struct parse_action_effects_t : public parse_effects_t
+template <typename BASE, typename PLAYER, typename TD, typename OWNER = PLAYER>
+struct parse_action_effects_t : public BASE, public parse_effects_t
 {
 private:
   PLAYER* player_;
-  action_t* action_;
   std::vector<std::pair<size_t, double>> effect_flat_modifiers;
   std::vector<std::pair<size_t, double>> effect_pct_modifiers;
 
@@ -318,8 +174,78 @@ public:
   std::vector<target_effect_t<TD>> target_crit_damage_effects;
   std::vector<target_effect_t<TD>> target_crit_chance_effects;
 
-  parse_action_effects_t( PLAYER* p, action_t* a ) : parse_effects_t(), player_( p ), action_( a ) {}
-  virtual ~parse_action_effects_t() = default;
+  parse_action_effects_t( std::string_view name, PLAYER* player, const spell_data_t* spell )
+    : BASE( name, player, spell ), parse_effects_t(), player_( player )
+  {}
+
+  double cost() const override
+  {
+    return std::max( 0.0, ( BASE::cost() + get_effects_value( flat_cost_effects, true, false ) ) *
+                              get_effects_value( cost_effects, false, false ) );
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    return BASE::composite_ta_multiplier( s ) * get_effects_value( ta_multiplier_effects );
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    return BASE::composite_da_multiplier( s ) * get_effects_value( da_multiplier_effects );
+  }
+
+  double composite_crit_chance() const override
+  {
+    return BASE::composite_crit_chance() + get_effects_value( crit_chance_effects, true );
+  }
+
+  timespan_t execute_time() const override
+  {
+    return std::max( 0_ms, BASE::execute_time() * get_effects_value( execute_time_effects ) );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return BASE::composite_dot_duration( s ) * get_effects_value( dot_duration_effects );
+  }
+
+  timespan_t tick_time( const action_state_t* s ) const override
+  {
+    return std::max( 1_ms, BASE::tick_time( s ) * get_effects_value( tick_time_effects ) );
+  }
+
+  timespan_t cooldown_duration() const override
+  {
+    return BASE::cooldown_duration() * get_effects_value( recharge_multiplier_effects );
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    return BASE::recharge_multiplier( cd ) * get_effects_value( recharge_multiplier_effects );
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    return BASE::composite_target_multiplier( t ) *
+           get_target_effects_value( target_multiplier_effects, _get_td( t ) );
+  }
+
+  double composite_target_crit_chance( player_t* t ) const override
+  {
+    return BASE::composite_target_crit_chance( t ) +
+           get_target_effects_value( target_crit_chance_effects, _get_td( t ), true );
+  }
+
+  double composite_target_crit_damage_bonus_multiplier( player_t* t ) const override
+  {
+    return BASE::composite_target_crit_damage_bonus_multiplier( t ) *
+           get_target_effects_value( target_crit_damage_effects, _get_td( t ) );
+  }
+
+  void html_customsection( report::sc_html_stream& os ) override
+  {
+    parsed_html_report( os );
+  }
 
   // Syntax: parse_effects( data[, spells|condition|ignore_mask|use_stacks|value_type|spells][,...] )
   //   (buff_t*) or
@@ -399,38 +325,36 @@ public:
         else
           val_str = fmt::format( "{}", val * val_mul );
 
-        action_->sim->print_debug( "buff-effects: {} ({}) {} modified by {} {} buff {} ({}#{})", action_->name(),
-                                   action_->id, type, val_str, tmp.data.use_stacks ? "per stack of" : "with",
-                                   tmp.data.buff->name(), tmp.data.buff->data().id(), i );
+        BASE::sim->print_debug( "action-effects: {} ({}) {} modified by {} {} buff {} ({}#{})", BASE::name(), BASE::id,
+                                type, val_str, tmp.data.use_stacks ? "per stack of" : "with", tmp.data.buff->name(),
+                                tmp.data.buff->data().id(), i );
       }
       else if ( mastery && !tmp.data.func )
       {
-        action_->sim->print_debug( "mastery-effects: {} ({}) {} modified by {}*mastery from {} ({}#{})",
-                                   action_->name(), action_->id, type, val * val_mul * 100, s_data->name_cstr(),
-                                   s_data->id(), i );
+        BASE::sim->print_debug( "action-effects: {} ({}) {} modified by {}*mastery from {} ({}#{})", BASE::name(),
+                                BASE::id, type, val * val_mul * 100, s_data->name_cstr(), s_data->id(), i );
       }
       else if ( tmp.data.func )
       {
-        action_->sim->print_debug( "conditional-effects: {} ({}) {} modified by {} with condition from {} ({}#{})",
-                                   action_->name(), action_->id, type, val * val_mul, s_data->name_cstr(), s_data->id(),
-                                   i );
+        BASE::sim->print_debug( "action-effects: {} ({}) {} modified by {} with condition from {} ({}#{})",
+                                BASE::name(), BASE::id, type, val * val_mul, s_data->name_cstr(), s_data->id(), i );
       }
       else
       {
-        action_->sim->print_debug( "passive-effects: {} ({}) {} modified by {} from {} ({}#{})", action_->name(),
-                                   action_->id, type, val * val_mul, s_data->name_cstr(), s_data->id(), i );
+        BASE::sim->print_debug( "action-effects: {} ({}) {} modified by {} from {} ({}#{})", BASE::name(), BASE::id,
+                                type, val * val_mul, s_data->name_cstr(), s_data->id(), i );
       }
     };
 
     std::vector<action_effect_t>* vec = nullptr;
     std::string str;
 
-    if ( !action_->special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
+    if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
     {
       vec = &da_multiplier_effects;
       str = "auto attack";
     }
-    else if ( !action_->data().affected_by_all( eff ) && !force )
+    else if ( !BASE::data().affected_by_all( eff ) && !force )
     {
       return;
     }
@@ -479,7 +403,7 @@ public:
           str = "crit chance";
           break;
         case P_RESOURCE_COST:
-          val_mul = eff.resource_multiplier( action_->current_resource() );
+          val_mul = eff.resource_multiplier( BASE::current_resource() );
           vec = &flat_cost_effects;
           str = "flat cost";
           break;
@@ -553,7 +477,7 @@ public:
     if ( !spell || !spell->ok() )
       return;
 
-    if ( action_->data().affected_by_all( spell->effectN( idx ) ) )
+    if ( BASE::data().affected_by_all( spell->effectN( idx ) ) )
     {
       assert( false && "Effect already affects action, no need to force" );
       return;
@@ -591,7 +515,7 @@ public:
       }
 
       if ( i.mastery )
-        eff_val *= action_->player->cache.mastery();
+        eff_val *= BASE::player->cache.mastery();
 
       if ( flat )
         return_value += eff_val * mod;
@@ -634,20 +558,20 @@ public:
       val_mul = 1.0;
 
     auto debug_message = [ & ]( std::string_view type ) {
-      action_->sim->print_debug( "dot-debuffs: {} ({}) {} modified by {}{} on targets with dot {} ({}#{})",
-                                action_->name(), action_->id, type, val * val_mul, mastery ? "*mastery" : "",
-                                s_data->name_cstr(), s_data->id(), i );
+      BASE::sim->print_debug( "target-effects: {} ({}) {} modified by {}{} on targets with dot {} ({}#{})", BASE::name(),
+                              BASE::id, type, val * val_mul, mastery ? "*mastery" : "", s_data->name_cstr(),
+                              s_data->id(), i );
     };
 
     std::vector<target_effect_t<TD>>* vec = nullptr;
     std::string str;
 
-    if ( !action_->special && eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER )
+    if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER )
     {
       vec = &target_multiplier_effects;
       str = "auto attack";
     }
-    else if ( !action_->data().affected_by_all( eff ) && !force )
+    else if ( !BASE::data().affected_by_all( eff ) && !force )
     {
       return;
     }
@@ -684,8 +608,9 @@ public:
     }
   }
 
+private:
   // method for getting target data as each module may have different action scoped method
-  TD* parse_effects_target_data( player_t* t ) const
+  TD* _get_td( player_t* t ) const
   {
     if constexpr ( std::is_invocable_v<decltype( &pet_t::owner ), PLAYER> )
       return static_cast<OWNER*>( player_->owner )->get_target_data( t );
@@ -693,6 +618,7 @@ public:
       return player_->get_target_data( t );
   }
 
+public:
   template <typename... Ts>
   void parse_target_effects( const std::function<int( TD* )>& fn, const spell_data_t* spell, Ts... mods )
   {
@@ -726,7 +652,7 @@ public:
     if ( !spell || !spell->ok() )
       return;
 
-    if ( action_->data().affected_by_all( spell->effectN( idx ) ) )
+    if ( BASE::data().affected_by_all( spell->effectN( idx ) ) )
     {
       assert( false && "Effect already affects action, no need to force" );
       return;
@@ -751,7 +677,7 @@ public:
         auto eff_val = i.value;
 
         if ( i.mastery )
-          eff_val *= action_->player->cache.mastery();
+          eff_val *= BASE::player->cache.mastery();
 
         if ( flat )
           return_value += eff_val * check;
@@ -811,7 +737,7 @@ public:
           continue;
       }
 
-      if ( !action_->data().affected_by_all( eff ) )
+      if ( !BASE::data().affected_by_all( eff ) )
         continue;
 
       double val = eff.base_value();
@@ -838,7 +764,7 @@ public:
   // return a copy of the effect with modified value
   spelleffect_data_t modified_effect( size_t idx )
   {
-    spelleffect_data_t temp = action_->data().effectN( idx );
+    spelleffect_data_t temp = BASE::data().effectN( idx );
 
     for ( auto [ i, v ] : effect_flat_modifiers )
       if ( i == idx  )

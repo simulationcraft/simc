@@ -1401,10 +1401,10 @@ public:
 };
 
 template <class Base>
-struct druid_action_t : public Base, public parse_action_effects_t<druid_t, druid_td_t>
+struct druid_action_t : public parse_action_effects_t<Base, druid_t, druid_td_t>
 {
 private:
-  using ab = Base;  // action base, eg. spell_t
+  using ab = parse_action_effects_t<Base, druid_t, druid_td_t>;
 
 public:
   using base_t = druid_action_t<Base>;
@@ -1424,7 +1424,6 @@ public:
 
   druid_action_t( std::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
-      parse_action_effects_t( player, this ),
       dot_name( n ),
       form_mask( ab::data().stance_mask() ),
       break_stealth( !ab::data().flags( spell_attribute::SX_NO_STEALTH_BREAK ) )
@@ -1666,9 +1665,11 @@ public:
     }
   }
 
-  // custom cost() to account for innervate and free spellss
-  #undef PARSE_BUFF_EFFECTS_SETUP_COST
-  #define PARSE_BUFF_EFFECTS_SETUP_COST
+  template <typename... Ts>
+  void parse_effects( Ts&&... args ) { ab::parse_effects( std::forward<Ts>( args )... ); }
+  template <typename... Ts>
+  void parse_target_effects( Ts&&... args ) { ab::parse_target_effects( std::forward<Ts>( args )... ); }
+
   double cost() const override
   {
     if ( is_free() )
@@ -1680,19 +1681,10 @@ public:
       return 0.0;
     }
 
-    double c = ab::cost();
-
-    c += get_effects_value( flat_cost_effects, true, false );
-
-    c *= get_effects_value( cost_effects, false, false );
-
-    return std::max( 0.0, c );
+    return ab::cost();
   }
 
-  #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
-  PARSE_BUFF_EFFECTS_SETUP
-
-  // Override this function for temporary effects that change the normal form restrictions of the spell. eg: Predatory
+    // Override this function for temporary effects that change the normal form restrictions of the spell. eg: Predatory
   // Swiftness
   virtual bool check_form_restriction()
   {

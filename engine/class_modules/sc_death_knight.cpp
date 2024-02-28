@@ -3270,9 +3270,9 @@ namespace { // UNNAMED NAMESPACE
 
 // Template for common death knight action code. See priest_action_t.
 template <class Base>
-struct death_knight_action_t : public Base, public parse_action_effects_t<death_knight_t, death_knight_td_t>
+struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_t, death_knight_td_t>
 {
-  using action_base_t = Base;
+  using action_base_t = parse_action_effects_t<Base, death_knight_t, death_knight_td_t>;
   using base_t = death_knight_action_t<Base>;
 
   gain_t* gain;
@@ -3281,7 +3281,6 @@ struct death_knight_action_t : public Base, public parse_action_effects_t<death_
 
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, p, s ), 
-    parse_action_effects_t( p, this ),
     gain( nullptr ),
     hasted_gcd( false )
   {
@@ -3436,8 +3435,10 @@ struct death_knight_action_t : public Base, public parse_action_effects_t<death_
                          }, spell, idx, true, mods... );
   }
 
-  #define PARSE_BUFF_EFFECTS_SETUP_BASE action_base_t
-  PARSE_BUFF_EFFECTS_SETUP
+  template <typename... Ts>
+  void parse_effects( Ts&&... args ) { action_base_t::parse_effects( std::forward<Ts>( args )... ); }
+  template <typename... Ts>
+  void parse_target_effects( Ts&&... args ) { action_base_t::parse_target_effects( std::forward<Ts>( args )... ); }
 
   double composite_energize_amount( const action_state_t* s ) const override
   {

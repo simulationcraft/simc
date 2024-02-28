@@ -817,7 +817,7 @@ namespace actions
  * spell_t/heal_t or absorb_t directly.
  */
 template <typename Base>
-struct priest_action_t : public Base, public parse_action_effects_t<priest_t, priest_td_t>
+struct priest_action_t : public parse_action_effects_t<Base, priest_t, priest_td_t>
 {
 protected:
   priest_t& priest()
@@ -844,7 +844,7 @@ protected:
 
 public:
   priest_action_t( util::string_view name, priest_t& p, const spell_data_t* s = spell_data_t::nil() )
-    : ab( name, &p, s ), parse_action_effects_t( &p, this )
+    : ab( name, &p, s )
   {
     if ( ab::data().ok() )
     {
@@ -1042,9 +1042,12 @@ public:
     }
   }
 
+  template <typename... Ts>
+  void parse_effects( Ts&&... args ) { ab::parse_effects( std::forward<Ts>( args )... ); }
+  template <typename... Ts>
+  void parse_target_effects( Ts&&... args ) { ab::parse_target_effects( std::forward<Ts>( args )... ); }
+
   // Reimplement base cost because I need to bypass the removal of precombat costs
-  #undef PARSE_BUFF_EFFECTS_SETUP_COST
-  #define PARSE_BUFF_EFFECTS_SETUP_COST
   double cost() const override
   {
     resource_e cr = ab::current_resource();
@@ -1071,8 +1074,8 @@ public:
 
     c -= ab::player->current.resource_reduction[ ab::get_school() ];
 
-    c += get_effects_value( flat_cost_effects, true, false );
-    c *= get_effects_value( cost_effects, false, false );
+    c += ab::get_effects_value( ab::flat_cost_effects, true, false );
+    c *= ab::get_effects_value( ab::cost_effects, false, false );
 
     if ( c < 0 )
       c = 0;
@@ -1083,9 +1086,6 @@ public:
 
     return floor( c );
   }
-
-  #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
-  PARSE_BUFF_EFFECTS_SETUP
 
   void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain ) override
   {
@@ -1101,7 +1101,7 @@ public:
 
 private:
   // typedef for the templated action type, eg. spell_t, attack_t, heal_t
-  using ab = Base;
+  using ab = parse_action_effects_t<Base, priest_t, priest_td_t>;
 };  // namespace actions
 
 struct priest_absorb_t : public priest_action_t<absorb_t>
