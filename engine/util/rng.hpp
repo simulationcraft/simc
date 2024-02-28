@@ -117,6 +117,9 @@ public:
 
   /// Timespan Gaussian Distribution
   timespan_t gauss( timespan_t mean, timespan_t stddev );
+  timespan_t gauss_ab( timespan_t mean, timespan_t stddev, timespan_t min, timespan_t max );
+  timespan_t gauss_a( timespan_t mean, timespan_t stddev, timespan_t min );
+  timespan_t gauss_b( timespan_t mean, timespan_t stddev, timespan_t max );
 
   /// Timespan Exponential Distribution
   timespan_t exponential( timespan_t nu );
@@ -321,6 +324,31 @@ timespan_t basic_rng_t<Engine>::gauss( timespan_t mean, timespan_t stddev )
 {
   return timespan_t::from_native( gauss_a( static_cast<double>( timespan_t::to_native( mean ) ),
                                            static_cast<double>( timespan_t::to_native( stddev ) ), 0.0 ) );
+}
+
+template <typename Engine>
+timespan_t basic_rng_t<Engine>::gauss_ab( timespan_t mean, timespan_t stddev, timespan_t min, timespan_t max )
+{
+  return timespan_t::from_native( gauss_ab( static_cast<double>( timespan_t::to_native( mean ) ),
+                                            static_cast<double>( timespan_t::to_native( stddev ) ),
+                                            static_cast<double>( timespan_t::to_native( min ) ),
+                                            static_cast<double>( timespan_t::to_native( max ) ) ) );
+}
+
+template <typename Engine>
+timespan_t basic_rng_t<Engine>::gauss_a( timespan_t mean, timespan_t stddev, timespan_t min )
+{
+  return timespan_t::from_native( gauss_a( static_cast<double>( timespan_t::to_native( mean ) ),
+                                           static_cast<double>( timespan_t::to_native( stddev ) ),
+                                           static_cast<double>( timespan_t::to_native( min ) ) ) );
+}
+
+template <typename Engine>
+timespan_t basic_rng_t<Engine>::gauss_b( timespan_t mean, timespan_t stddev, timespan_t max )
+{
+  return timespan_t::from_native( gauss_b( static_cast<double>( timespan_t::to_native( mean ) ),
+                                           static_cast<double>( timespan_t::to_native( stddev ) ),
+                                           static_cast<double>( timespan_t::to_native( max ) ) ) );
 }
 
 template <typename Engine>
