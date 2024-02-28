@@ -1115,14 +1115,16 @@ double action_t::cost() const
 
   c -= player->current.resource_reduction[ get_school() ];
 
+  c += cost_flat_modifier();
+
+  if ( c < 0 )
+    c = 0;
+
   if ( cr == RESOURCE_MANA && player->buffs.courageous_primal_diamond_lucidity &&
        player->buffs.courageous_primal_diamond_lucidity->check() )
   {
     c = 0;
   }
-
-  if ( c < 0 )
-    c = 0;
 
   if ( sim->debug )
     sim->out_debug.print( "{} action_t::cost: base_cost={} secondary_cost={} cost={} resource={}", *this,

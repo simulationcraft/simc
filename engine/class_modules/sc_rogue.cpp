@@ -3504,9 +3504,9 @@ struct dispatch_t: public rogue_attack_t
   {
   }
 
-  double cost() const override
+  double cost_flat_modifier() const override
   {
-    double c = rogue_attack_t::cost();
+    double c = rogue_attack_t::cost_flat_modifier();
 
     if ( p()->buffs.summarily_dispatched->check() )
     {

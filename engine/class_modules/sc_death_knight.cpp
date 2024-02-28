@@ -5702,9 +5702,9 @@ struct death_strike_t final : public death_knight_melee_attack_t
     return m;
   }
 
-  double cost() const override
+  double cost_flat_modifier() const override
   {
-    double c = death_knight_melee_attack_t::cost();
+    double c = death_knight_melee_attack_t::cost_flat_modifier();
 
     c += improved_death_strike_reduction;
 

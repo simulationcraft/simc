@@ -1071,6 +1071,8 @@ public:
 
     c -= ab::player->current.resource_reduction[ ab::get_school() ];
 
+    c += ab::cost_flat_modifier();
+
     c += get_buff_effects_value( flat_cost_buffeffects, true, false );
     c *= get_buff_effects_value( cost_buffeffects, false, false );
 
