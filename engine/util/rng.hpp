@@ -323,7 +323,8 @@ template <typename Engine>
 timespan_t basic_rng_t<Engine>::gauss( timespan_t mean, timespan_t stddev )
 {
   return timespan_t::from_native( gauss_a( static_cast<double>( timespan_t::to_native( mean ) ),
-                                           static_cast<double>( timespan_t::to_native( stddev ) ), 0.0 ) );
+                                           static_cast<double>( timespan_t::to_native( stddev ) ),
+                                           0.0 ) );
 }
 
 template <typename Engine>
@@ -346,9 +347,10 @@ timespan_t basic_rng_t<Engine>::gauss_a( timespan_t mean, timespan_t stddev, tim
 template <typename Engine>
 timespan_t basic_rng_t<Engine>::gauss_b( timespan_t mean, timespan_t stddev, timespan_t max )
 {
-  return timespan_t::from_native( gauss_b( static_cast<double>( timespan_t::to_native( mean ) ),
-                                           static_cast<double>( timespan_t::to_native( stddev ) ),
-                                           static_cast<double>( timespan_t::to_native( max ) ) ) );
+  return timespan_t::from_native( gauss_ab( static_cast<double>( timespan_t::to_native( mean ) ),
+                                            static_cast<double>( timespan_t::to_native( stddev ) ),
+                                            0.0,
+                                            static_cast<double>( timespan_t::to_native( max ) ) ) );
 }
 
 template <typename Engine>

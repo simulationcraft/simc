@@ -3160,7 +3160,7 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     if ( p()->bugs && tick_remains > 0_ms )
     {
       timespan_t mean_delay = p()->options.arcane_missiles_chain_delay;
-      timespan_t delay = rng().gauss_b( mean_delay, mean_delay * p()->options.arcane_missiles_chain_relstddev, tick_remains - 1_ms );
+      timespan_t delay = rng().gauss_ab( mean_delay, mean_delay * p()->options.arcane_missiles_chain_relstddev, 0_ms, tick_remains - 1_ms );
       timespan_t chain_remains = tick_remains - delay;
       // If tick_remains == 0_ms, this would subtract 1 from ticks.
       // This is not implemented in simc, but this actually appears
