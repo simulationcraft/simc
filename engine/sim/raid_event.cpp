@@ -2046,17 +2046,6 @@ void raid_event_t::reset()
   event_t::cancel( duration_event );
   event_t::cancel( start_event );
   event_t::cancel( end_event );
-
-  if ( cooldown_min == timespan_t::zero() )
-    cooldown_min = cooldown * 0.5;
-  if ( cooldown_max == timespan_t::zero() )
-    cooldown_max = cooldown * 1.5;
-
-  if ( duration_min == timespan_t::zero() )
-    duration_min = duration * 0.5;
-  if ( duration_max == timespan_t::zero() )
-    duration_max = duration * 1.5;
-
   affected_players.clear();
 }
 
@@ -2214,6 +2203,16 @@ void raid_event_t::init( sim_t* sim )
       {
         throw std::invalid_argument( "DungeonRoute fight style is required for pull events." );
       }
+
+      if ( raid_event->cooldown_min == timespan_t::zero() )
+        raid_event->cooldown_min = raid_event->cooldown * 0.5;
+      if ( raid_event->cooldown_max == timespan_t::zero() )
+        raid_event->cooldown_max = raid_event->cooldown * 1.5;
+
+      if ( raid_event->duration_min == timespan_t::zero() )
+        raid_event->duration_min = raid_event->duration * 0.5;
+      if ( raid_event->duration_max == timespan_t::zero() )
+        raid_event->duration_max = raid_event->duration * 1.5;
 
       // Collect other raid events assigned to a pull.
       if ( raid_event->pull > 0 && raid_event->type != "pull" )
