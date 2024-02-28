@@ -4673,7 +4673,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
     {
       buffs.shifting_sands =
           make_buff<e_buff_t>( *this, "shifting_sands_" + evoker->name_str, evoker->find_spell( 413984 ) )
-              ->set_default_value( evoker->cache.mastery_value() )
+              ->set_default_value( 0.0 )
               ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
               ->set_tick_callback( [ evoker ]( buff_t* b, int, timespan_t ) {
                 if ( b->current_value != evoker->cache.mastery_value() )
