@@ -13458,7 +13458,7 @@ void player_collected_data_t::reserve_memory( const player_t& p )
   heal_taken.reserve( size );
   deaths.reserve( size );
 
-  if ( !p.is_pet() && p.primary_role() == ROLE_TANK )
+  if ( !p.is_pet() && p.primary_role() == ROLE_TANK && p.type != PLAYER_SIMPLIFIED )
   {
     theck_meloree_index.reserve( size );
     effective_theck_meloree_index.reserve( size );
@@ -13773,7 +13773,7 @@ void player_collected_data_t::collect_data( const player_t& p )
 
   // Health Change Calculations - only needed for tanks
   double tank_metric = 0;
-  if ( !p.is_pet() && p.primary_role() == ROLE_TANK )
+  if ( !p.is_pet() && p.primary_role() == ROLE_TANK && p.type != PLAYER_SIMPLIFIED )
   {
     double tmi       = 0;  // TMI result
     double etmi      = 0;  // ETMI result
