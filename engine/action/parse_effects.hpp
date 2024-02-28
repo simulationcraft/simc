@@ -136,6 +136,7 @@ struct parse_effects_t
     }
     else if constexpr ( std::is_invocable_v<T> )
     {
+      static_assert( std::is_invocable_v<decltype( &U::func ), U>, "Pack data has no func member" );
       tmp.data.func = std::move( mod );
     }
     else if constexpr ( std::is_same_v<T, parse_flag_e> )
@@ -144,16 +145,18 @@ struct parse_effects_t
       {
         case USE_DEFAULT:
         case USE_CURRENT:
+          static_assert( std::is_invocable_v<decltype( &U::type ), U>, "Pack data has no type member" );
           tmp.data.type = mod;
           break;
         case IGNORE_STACKS:
+          static_assert( std::is_invocable_v<decltype( &U::use_stacks ), U>, "Pack data has no use_stacks member" );
           tmp.data.use_stacks = false;
           break;
         default:
           assert( false && "Invalid parse flag for parse_spell_effect_mods" );
       }
     }
-    else if constexpr ( std::is_integral_v<T> )
+    else if constexpr ( std::is_integral_v<T> && !std::is_same_v<T, bool> )
     {
       tmp.mask = mod;
     }
