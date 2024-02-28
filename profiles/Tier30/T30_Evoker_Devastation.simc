@@ -83,12 +83,9 @@ actions.aoe+=/deep_breath,if=!buff.dragonrage.up&essence.deficit>3
 actions.aoe+=/shattering_star,target_if=max:target.health.pct,if=buff.essence_burst.stack<buff.essence_burst.max_stack|!talent.arcane_vigor
 # Cast Firestorm before spending ressources
 actions.aoe+=/firestorm
-# Pyre logic  Pyre 5T+  Pyre 4T with if both EB & Irid Blue isn't up or not playing Eternity Span  Pyre 4t if playing Volatility  Pyre on 3T if playing CB+Volatility and neither EB or blue buff is up  Pyre on 3T if not playing Volatility if Irid red is up or EB isn't up.  Pyre with 15 stacks of CB
-actions.aoe+=/pyre,target_if=max:target.health.pct,if=active_enemies>=5
-actions.aoe+=/pyre,target_if=max:target.health.pct,if=active_enemies>=4&(!buff.essence_burst.up&!buff.iridescence_blue.up|!talent.eternitys_span)
-actions.aoe+=/pyre,target_if=max:target.health.pct,if=active_enemies>=4&talent.volatility
-actions.aoe+=/pyre,target_if=max:target.health.pct,if=active_enemies>=3&talent.volatility&talent.charged_blast&!buff.essence_burst.up&!buff.iridescence_blue.up
-actions.aoe+=/pyre,target_if=max:target.health.pct,if=active_enemies>=3&talent.volatility&!talent.charged_blast&(buff.iridescence_red.up|!buff.essence_burst.up)
+# Pyre logic  Pyre 4T+  Pyre 3T+ if playing Volatility  Pyre with 15 stacks of CB
+actions.aoe+=/pyre,target_if=max:target.health.pct,if=active_enemies>=4
+actions.aoe+=/pyre,target_if=max:target.health.pct,if=active_enemies>=3&talent.volatility
 actions.aoe+=/pyre,target_if=max:target.health.pct,if=buff.charged_blast.stack>=15
 # Cast LF with leaping flames up if: not playing burnout, burnout is up, more than 4 enemies, or scarlet adaptation is up.
 actions.aoe+=/living_flame,target_if=max:target.health.pct,if=(!talent.burnout|buff.burnout.up|active_enemies>=4|buff.scarlet_adaptation.up)&buff.leaping_flames.up&!buff.essence_burst.up&essence<essence.max-1

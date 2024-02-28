@@ -1,4 +1,4 @@
-SimulationCraft 1025-01 for World of Warcraft 10.2.5.53262 Live
+SimulationCraft 1025-01 for World of Warcraft 10.2.5.53441 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -13601,7 +13601,6 @@ Effects          :
 Description      : $@spelldesc320674
 
 Name             : Primordial Wave (id=375982) [Spell Family (11)] 
-Hotfixed         : Velocity (34 -> 40)
 Talent Entry     : Enhancement [tree=spec, row=8, col=1, max_rank=1, req_points=20]
                  : Elemental [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Shaman

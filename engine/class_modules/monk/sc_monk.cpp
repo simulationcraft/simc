@@ -2575,14 +2575,11 @@ namespace monk
           return dot_duration * ( tick_time( s ) / base_tick_time );
         }
 
-        double cost() const override
+        double cost_flat_modifier() const override
         {
-          double c = monk_melee_attack_t::cost();
+          double c = monk_melee_attack_t::cost_flat_modifier();
 
           c += p()->buff.dance_of_chiji_hidden->check_value();  // saved as -2
-
-          if ( c < 0 )
-            c = 0;
 
           return c;
         }

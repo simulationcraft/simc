@@ -1631,9 +1631,9 @@ public:
     return et;
   }
 
-  double cost() const override
+  double cost_flat_modifier() const override
   {
-    double c = ab::cost();
+    double c = ab::cost_flat_modifier();
 
     // check all effectN entries and apply them if appropriate
     for ( auto i = 1U; i <= p()->talent.eye_of_the_storm->effect_count(); i++ )
@@ -1643,6 +1643,13 @@ public:
           c += p()->talent.eye_of_the_storm->effectN( i ).base_value();
         }
     }
+
+    return c;
+  }
+
+  double cost() const override
+  {
+    double c = ab::cost();
 
     // set cost to zero after cost additions and reductions are applied to prevent negative cost values
     if ( affected_by_ns_cost && p()->buff.natures_swiftness->check() && !ab::background && ab::current_resource() != RESOURCE_MAELSTROM )

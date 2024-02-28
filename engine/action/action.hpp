@@ -691,6 +691,9 @@ public:
 
   virtual double cost() const;
 
+  virtual double cost_flat_modifier() const
+  { return 0.0; }
+
   virtual double base_cost() const;
 
   virtual double cost_per_tick( resource_e ) const;

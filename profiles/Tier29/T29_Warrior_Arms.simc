@@ -11,7 +11,7 @@ talents=BcEAAAAAAAAAAAAAAAAAAAAAAAQplIRkQkkSrkEAAAAQQkIKEQREQiQSoJRIAhECAAAAAAAA
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
 flask=iced_phial_of_corrupting_rage_3
-food=fated_fortune_cookie
+food=feisty_fish_sticks
 augmentation=draconic
 temporary_enchant=main_hand:howling_rune_3
 
@@ -100,7 +100,7 @@ actions.execute+=/cleave,if=spell_targets.whirlwind>2&dot.deep_wounds.remains<=g
 actions.execute+=/bladestorm,if=raid_event.adds.in>45&talent.hurricane&rage<40
 actions.execute+=/mortal_strike,if=debuff.executioners_precision.stack=2&debuff.colossus_smash.remains<=gcd
 actions.execute+=/overpower,if=rage<40&buff.martial_prowess.stack<2
-actions.execute+=/mortal_strike,if=debuff.executioners_precision.stack=2|!talent.executioners_precision&buff.martial_prowess.stack=2
+actions.execute+=/mortal_strike,if=debuff.executioners_precision.stack=2&buff.martial_prowess.stack=2|!talent.executioners_precision&buff.martial_prowess.stack=2
 actions.execute+=/skullsplitter,if=rage<40
 actions.execute+=/execute
 actions.execute+=/shockwave,if=talent.sonic_boom
@@ -136,7 +136,7 @@ actions.single_target+=/cleave
 actions.single_target+=/wrecking_throw
 
 # Trinkets
-actions.trinkets=use_item,name=fyralath_the_dreamrender,if=dot.mark_of_fyralath.ticking
+actions.trinkets=use_item,name=fyralath_the_dreamrender,,if=dot.mark_of_fyralath.ticking&!talent.blademasters_torment|dot.mark_of_fyralath.ticking&cooldown.avatar.remains>3&cooldown.bladestorm.remains>3&!debuff.colossus_smash.up
 actions.trinkets+=/use_item,use_off_gcd=1,name=algethar_puzzle_box,if=cooldown.avatar.remains<=3
 # Trinkets The trinket with the highest estimated value, will be used first and paired with Avatar.
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&!variable.trinket_1_manual&(!buff.avatar.up&trinket.1.cast_time>0|!trinket.1.cast_time>0)&buff.avatar.up&(variable.trinket_2_exclude|!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains
@@ -144,7 +144,7 @@ actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_bu
 # If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown.
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)|(trinket.1.cast_time>0&!buff.avatar.up|!trinket.1.cast_time>0)|cooldown.avatar.remains_expected>20)
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|(trinket.2.cast_time>0&!buff.avatar.up|!trinket.2.cast_time>0)|cooldown.avatar.remains_expected>20)
-actions.trinkets+=/use_item,use_off_gcd=1,slot=main_hand,if=(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)
+actions.trinkets+=/use_item,use_off_gcd=1,slot=main_hand,if=!equipped.fyralath_the_dreamrender&(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)
 
 # Variables
 actions.variables=variable,name=st_planning,value=active_enemies=1&(raid_event.adds.in>15|!raid_event.adds.exists)

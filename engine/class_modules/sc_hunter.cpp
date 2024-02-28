@@ -1163,19 +1163,16 @@ public:
     return cm;
   }
 
-  double cost() const override
+  double cost_flat_modifier() const override
   {
-    double c = ab::cost();
+    double c = ab::cost_flat_modifier();
 
     if ( affected_by.t29_sv_4pc_cost && p() -> buffs.bestial_barrage -> check() )
-    { 
+    {
       c += p() -> tier_set.t29_sv_4pc_buff -> effectN( 1 ).base_value();
     }
 
-    if ( c < 0 )
-      return 0;
-
-    return ceil( c );
+    return c;
   }
 
   void update_ready( timespan_t cd ) override
