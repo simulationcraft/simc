@@ -41,7 +41,7 @@ BREWMASTER:
 #include "class_modules/apl/apl_monk.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
-#include "action/parse_buff_effects.hpp"
+#include "action/parse_effects.hpp"
 #include "report/charts.hpp"
 #include "report/highchart.hpp"
 #include "sc_enums.hpp"
@@ -64,7 +64,7 @@ namespace monk
   // Template for common monk action code. See priest_action_t.
 
     template <class Base>
-    struct monk_action_t : public Base, public parse_buff_effects_t<monk_t, monk_td_t>
+    struct monk_action_t : public parse_action_effects_t<Base, monk_t, monk_td_t>
     {
       sef_ability_e sef_ability;
       // Whether the ability is affected by the Windwalker's Mastery.
@@ -91,13 +91,12 @@ namespace monk
 
       private:
       std::array<resource_e, MONK_MISTWEAVER + 1> _resource_by_stance;
-      using ab = Base;  // action base, eg. spell_t
+      using ab = parse_action_effects_t<Base, monk_t, monk_td_t>;
       public:
       using base_t = monk_action_t<Base>;
 
       monk_action_t( util::string_view n, monk_t *player, const spell_data_t *s = spell_data_t::nil() )
         : ab( n, player, s ),
-        parse_buff_effects_t( player, this ),
         sef_ability( sef_ability_e::SEF_NONE ),
         ww_mastery( false ),
         may_combo_strike( false ),
@@ -183,11 +182,16 @@ namespace monk
       // of abilities.
       void apply_debuffs_effects()
       {
-    //    parse_debuff_effects( []( monk_td_t* t ) { return t->debuffs.weapons_of_order->check(); },
+    //    parse_target_effects( []( monk_td_t* t ) { return t->debuffs.weapons_of_order->check(); },
     //                          p()->shared.weapons_of_order ); // True, true
-    //    parse_debuff_effects( []( monk_td_t* t ) { return t->debuffs.keefers_skyreach_debuff->check(); },
+    //    parse_target_effects( []( monk_td_t* t ) { return t->debuffs.keefers_skyreach_debuff->check(); },
     //                          p()->shared.skyreach );
       }
+
+      template <typename... Ts>
+      void parse_effects( Ts&&... args ) { ab::parse_effects( std::forward<Ts>( args )... ); }
+      template <typename... Ts>
+      void parse_target_effects( Ts&&... args ) { ab::parse_target_effects( std::forward<Ts>( args )... ); }
 
       // Utility function to search spell data for matching effect.
       // NOTE: This will return the FIRST effect that matches parameters.
@@ -716,12 +720,9 @@ namespace monk
         return pm;
       }
 
-      // custom cost() to account for serenity
-      #undef PARSE_BUFF_EFFECTS_SETUP_COST
-      #define PARSE_BUFF_EFFECTS_SETUP_COST
       double cost() const override
       {
-        double c = ab::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
+        double c = ab::cost();
 
         if ( c == 0 )
           return c;
@@ -746,12 +747,9 @@ namespace monk
         return c;
       }
 
-      // custom composite_ta_multiplier() to account for hit_combo
-      #undef PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER
-      #define PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER
       double composite_ta_multiplier( const action_state_t *s ) const override
       {
-        double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
+        double ta = ab::composite_ta_multiplier( s );
 
         if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 2 ) ) )
           ta *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 2 ).percent();
@@ -759,12 +757,9 @@ namespace monk
         return ta;
       }
 
-      // custom composite_da_multiplier() to account for hit_combo
-      #undef PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER
-      #define PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER
       double composite_da_multiplier( const action_state_t *s ) const override
       {
-        double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
+        double da = ab::composite_da_multiplier( s );
 
         if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
           da *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 1 ).percent();
@@ -773,11 +768,9 @@ namespace monk
       }
 
       // custom composite_target_multiplier() to account for weapons of order & jadefire brand
-      #undef PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
-      #define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
       double composite_target_multiplier( player_t *t ) const override
       {
-        double tm = ab::composite_target_multiplier( t ) * get_debuff_effects_value( target_multiplier_dotdebuffs, get_td( t ) );
+        double tm = ab::composite_target_multiplier( t );
 
         auto td = find_td( t );
 
@@ -792,9 +785,6 @@ namespace monk
 
         return tm;
       }
-
-      #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
-      PARSE_BUFF_EFFECTS_SETUP
 
       void trigger_storm_earth_and_fire( const action_t *a )
       {

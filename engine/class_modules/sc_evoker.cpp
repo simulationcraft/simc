@@ -5,7 +5,7 @@
 
 #include "config.hpp"
 
-#include "action/parse_buff_effects.hpp"
+#include "action/parse_effects.hpp"
 #include "class_modules/apl/apl_evoker.hpp"
 #include "dbc/trait_data.hpp"
 #include "sim/option.hpp"
@@ -1213,10 +1213,10 @@ public:
 
 // Template for base evoker action code.
 template <class Base>
-struct evoker_action_t : public Base, public parse_buff_effects_t<evoker_t, evoker_td_t>
+struct evoker_action_t : public parse_action_effects_t<Base, evoker_t, evoker_td_t>
 {
 private:
-  using ab = Base;  // action base, spell_t/heal_t/etc.
+  using ab = parse_action_effects_t<Base, evoker_t, evoker_td_t>;
 
 public:
   spell_color_e spell_color;
@@ -1225,7 +1225,6 @@ public:
 
   evoker_action_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil() )
     : ab( name, player, spell ),
-      parse_buff_effects_t( player, this ),
       spell_color( SPELL_COLOR_NONE ),
       proc_spell_type( proc_spell_type_e::NONE ),
       move_during_hover( false )
@@ -1345,7 +1344,7 @@ public:
     return move_during_hover && p()->buff.hover->check();
   }
 
-  // Syntax: parse_effects( data[, spells|condition|ignore_mask|use_stacks|value_type|spells][,...] )
+  // Syntax: parse_effects( data[, spells|condition|ignore_mask|flags|spells][,...] )
   //   (buff_t*) or
   //   (const spell_data_t*)   data: Buff or spell to be checked for to see if effect applies. If buff is used, effect
   //                                 will require the buff to be active. If spell is used, effect will always apply
@@ -1355,11 +1354,10 @@ public:
   //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the buff
   //   (bool F())         condition: Function that takes no arguments and returns true if the effect should apply
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
-  //   (bool)            use_stacks: Default true, whether to multiply value by stacks
-  //   (value_type_e)          type: Source of the value to be used for the effect
-  //                                 USE_DATA = spell data (default)
-  //                                 USE_DEFAULT = buff default value
-  //                                 USE_CURRENT = buff current value
+  //   (parse_flag_e)         flags: Various flags to control how the value is calculated when the action executes
+  //                    USE_DEFAULT: Use the buff's default value instead of spell effect data value
+  //                    USE_CURRENT: Use the buff's current value instead of spell effect data value
+  //                  IGNORE_STACKS: Ignore stacks of the buff and don't multiply the value
   //
   // Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
   //   parse_effects( buff1, 0b10101U, talent1, tier1 );
@@ -1382,23 +1380,23 @@ public:
 
     parse_effects( p()->buff.imminent_destruction );
 
-    parse_effects( p()->buff.emerald_trance_stacking, true );
-    parse_effects( p()->buff.emerald_trance, true );
+    parse_effects( p()->buff.emerald_trance_stacking );
+    parse_effects( p()->buff.emerald_trance );
 
     if ( p()->specialization() == EVOKER_AUGMENTATION )
     {
       parse_effects(
-          p()->buff.ebon_might_self_buff, [ this ] { return p()->close_as_clutchmates; }, 0U, true, USE_DATA,
+          p()->buff.ebon_might_self_buff, [ this ] { return p()->close_as_clutchmates; },
           p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ), p()->spec.close_as_clutchmates );
 
       parse_effects(
-          p()->buff.ebon_might_self_buff, [ this ] { return !p()->close_as_clutchmates; }, 0U, true, USE_DATA,
+          p()->buff.ebon_might_self_buff, [ this ] { return !p()->close_as_clutchmates; },
           p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ) );
     }
 
   }
 
-  // Syntax: parse_debuff_effects( func, debuff[, spells|ignore_mask][,...] )
+  // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
   //   (int F(TD*))            func: Function taking the target_data as argument and returning an integer mutiplier
   //   (const spell_data_t*) debuff: Spell data of the debuff
   //
@@ -1407,24 +1405,22 @@ public:
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
   void apply_debuffs_effects()
   {
-    parse_debuff_effects( []( evoker_td_t* t ) { return t->debuffs.shattering_star->check(); },
+    parse_target_effects( []( evoker_td_t* t ) { return t->debuffs.shattering_star->check(); },
                           p()->talent.shattering_star );
   }
 
-  // custom cost() for multiple power support
-  #undef PARSE_BUFF_EFFECTS_SETUP_COST
-  #define PARSE_BUFF_EFFECTS_SETUP_COST
+  template <typename... Ts>
+  void parse_effects( Ts&&... args ) { ab::parse_effects( std::forward<Ts>( args )... ); }
+  template <typename... Ts>
+  void parse_target_effects( Ts&&... args ) { ab::parse_target_effects( std::forward<Ts>( args )... ); }
+
   double cost() const override
   {
     if ( ab::data().powers().size() > 1 && ab::current_resource() != ab::data().powers()[ 0 ].resource() )
-      return ab::cost();
+      return Base::cost();
 
-    return std::max( 0.0, ( ab::cost() + get_buff_effects_value( flat_cost_buffeffects, true, false ) ) *
-                              get_buff_effects_value( cost_buffeffects, false, false ) );
+    return ab::cost();
   }
-
-  #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
-  PARSE_BUFF_EFFECTS_SETUP
 
   void init() override
   {
@@ -1802,7 +1798,7 @@ struct empowered_charge_t : public empowered_base_t<BASE>
 
   timespan_t base_composite_dot_duration( const action_state_t* s ) const
   {
-    return ab::dot_duration * s->haste * ab::get_buff_effects_value( ab::dot_duration_buffeffects );
+    return ab::dot_duration * s->haste * ab::get_effects_value( ab::dot_duration_effects );
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3553,7 +3549,7 @@ struct pyre_t : public essence_spell_t
       aoe  = -1;
 
       if ( p->talent.raging_inferno->ok() )
-        target_multiplier_dotdebuffs.emplace_back(
+        target_multiplier_effects.emplace_back(
             []( evoker_td_t* t ) { return t->debuffs.in_firestorm->check() > 0; },
             p->talent.raging_inferno->effectN( 2 ).percent(), false, &p->talent.raging_inferno->effectN( 2 ) );
     }

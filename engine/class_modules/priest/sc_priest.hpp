@@ -9,7 +9,7 @@
 // in the respective spec file if they are limited to one spec only.
 
 #pragma once
-#include "action/parse_buff_effects.hpp"
+#include "action/parse_effects.hpp"
 #include "player/pet_spawner.hpp"
 #include "sc_enums.hpp"
 
@@ -817,7 +817,7 @@ namespace actions
  * spell_t/heal_t or absorb_t directly.
  */
 template <typename Base>
-struct priest_action_t : public Base, public parse_buff_effects_t<priest_t, priest_td_t>
+struct priest_action_t : public parse_action_effects_t<Base, priest_t, priest_td_t>
 {
 protected:
   priest_t& priest()
@@ -844,7 +844,7 @@ protected:
 
 public:
   priest_action_t( util::string_view name, priest_t& p, const spell_data_t* s = spell_data_t::nil() )
-    : ab( name, &p, s ), parse_buff_effects_t( &p, this )
+    : ab( name, &p, s )
   {
     if ( ab::data().ok() )
     {
@@ -938,7 +938,7 @@ public:
     }
   }
 
-  // Syntax: parse_effects( data[, spells|condition|ignore_mask|use_stacks|value_type|spells][,...] )
+  // Syntax: parse_effects( data[, spells|condition|ignore_mask|flags|spells][,...] )
   //   (buff_t*) or
   //   (const spell_data_t*)   data: Buff or spell to be checked for to see if effect applies. If buff is used, effect
   //                                 will require the buff to be active. If spell is used, effect will always apply
@@ -948,11 +948,10 @@ public:
   //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the buff
   //   (bool F())         condition: Function that takes no arguments and returns true if the effect should apply
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
-  //   (bool)            use_stacks: Default true, whether to multiply value by stacks
-  //   (value_type_e)          type: Source of the value to be used for the effect
-  //                                 USE_DATA = spell data (default)
-  //                                 USE_DEFAULT = buff default value
-  //                                 USE_CURRENT = buff current value
+  //   (parse_flag_e)         flags: Various flags to control how the value is calculated when the action executes
+  //                    USE_DEFAULT: Use the buff's default value instead of spell effect data value
+  //                    USE_CURRENT: Use the buff's current value instead of spell effect data value
+  //                  IGNORE_STACKS: Ignore stacks of the buff and don't multiply the value
   //
   // Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
   //   parse_effects( buff1, 0b10101U, talent1, tier1 );
@@ -970,19 +969,18 @@ public:
     // GENERAL PRIEST BUFF EFFECTS
     parse_effects( p().buffs.twist_of_fate, p().talents.twist_of_fate );
     parse_effects( p().buffs.words_of_the_pious );  // Spell Direct amount for Smite and Holy Nova
-    parse_effects( p().buffs.rhapsody, true, p().specs.discipline_priest );
+    parse_effects( p().buffs.rhapsody, p().specs.discipline_priest );
 
     // SHADOW BUFF EFFECTS
     if ( p().specialization() == PRIEST_SHADOW )
     {
       parse_effects( p().buffs.devoured_pride );                   // Spell Direct and Periodic amount
-      parse_effects( p().buffs.voidform, 0x4U, false, USE_DATA );  // Skip E3 for AM
+      parse_effects( p().buffs.voidform, 0x4U, IGNORE_STACKS );  // Skip E3 for AM
       parse_effects( p().buffs.shadowform );
       parse_effects( p().buffs.mind_devourer );
       parse_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
-      parse_effects( p().buffs.dark_ascension, 0b1000U, false, USE_DATA );  // Buffs non-periodic spells - Skip E4
-      parse_effects( p().buffs.mind_melt,
-                          p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
+      parse_effects( p().buffs.dark_ascension, 0b1000U, IGNORE_STACKS );  // Buffs non-periodic spells - Skip E4
+      parse_effects( p().buffs.mind_melt, p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
       parse_effects( p().buffs.screams_of_the_void, p().talents.shadow.screams_of_the_void );
 
       if ( p().talents.shadow.ancient_madness.enabled() )
@@ -990,11 +988,11 @@ public:
         // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
         if ( p().talents.shadow.dark_ascension.enabled() )
         {
-          parse_effects( p().buffs.ancient_madness, 0b0001U, true, USE_DEFAULT );  // Skip E1
+          parse_effects( p().buffs.ancient_madness, 0b0001U, USE_DEFAULT );  // Skip E1
         }
         else
         {
-          parse_effects( p().buffs.ancient_madness, 0b0011U, true, USE_DEFAULT );  // Skip E1 and E2
+          parse_effects( p().buffs.ancient_madness, 0b0011U, USE_DEFAULT );  // Skip E1 and E2
         }
       }
 
@@ -1007,15 +1005,15 @@ public:
     // DISCIPLINE BUFF EFFECTS
     if ( p().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_effects( p().buffs.shadow_covenant, 0U, false, USE_DEFAULT,
-                          p().talents.discipline.twilight_corruption );
+      parse_effects( p().buffs.shadow_covenant, IGNORE_STACKS, USE_DEFAULT,
+                     p().talents.discipline.twilight_corruption );
       // 280398 applies the buff to the correct spells, but does not contain the correct buff value
       // (12% instead of 40%) So, override to use our provided default_value (40%) instead
-      parse_effects( p().buffs.sins_of_the_many, 0U, false, USE_CURRENT );
+      parse_effects( p().buffs.sins_of_the_many, IGNORE_STACKS, USE_CURRENT );
       parse_effects( p().buffs.twilight_equilibrium_shadow_amp );
       parse_effects( p().buffs.twilight_equilibrium_holy_amp );
       parse_effects( p().buffs.light_weaving );
-      parse_effects( p().buffs.weal_and_woe, true );
+      parse_effects( p().buffs.weal_and_woe );
     }
 
     // HOLY BUFF EFFECTS
@@ -1025,7 +1023,7 @@ public:
     }
   }
 
-  // Syntax: parse_debuff_effects( func, debuff[, spells|ignore_mask][,...] )
+  // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
   //   (int F(TD*))            func: Function taking the target_data as argument and returning an integer mutiplier
   //   (const spell_data_t*) debuff: Spell data of the debuff
   //
@@ -1037,14 +1035,17 @@ public:
     // DISCIPLINE DEBUFF EFFECTS
     if ( p().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_debuff_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); },
+      parse_target_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); },
                             p().talents.discipline.schism_debuff );
     }
   }
 
+  template <typename... Ts>
+  void parse_effects( Ts&&... args ) { ab::parse_effects( std::forward<Ts>( args )... ); }
+  template <typename... Ts>
+  void parse_target_effects( Ts&&... args ) { ab::parse_target_effects( std::forward<Ts>( args )... ); }
+
   // Reimplement base cost because I need to bypass the removal of precombat costs
-  #undef PARSE_BUFF_EFFECTS_SETUP_COST
-  #define PARSE_BUFF_EFFECTS_SETUP_COST
   double cost() const override
   {
     resource_e cr = ab::current_resource();
@@ -1073,8 +1074,7 @@ public:
 
     c += ab::cost_flat_modifier();
 
-    c += get_buff_effects_value( flat_cost_buffeffects, true, false );
-    c *= get_buff_effects_value( cost_buffeffects, false, false );
+    c *= ab::get_effects_value( ab::cost_effects, false, false );
 
     if ( c < 0 )
       c = 0;
@@ -1085,9 +1085,6 @@ public:
 
     return floor( c );
   }
-
-  #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
-  PARSE_BUFF_EFFECTS_SETUP
 
   void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain ) override
   {
@@ -1103,7 +1100,7 @@ public:
 
 private:
   // typedef for the templated action type, eg. spell_t, attack_t, heal_t
-  using ab = Base;
+  using ab = parse_action_effects_t<Base, priest_t, priest_td_t>;
 };  // namespace actions
 
 struct priest_absorb_t : public priest_action_t<absorb_t>

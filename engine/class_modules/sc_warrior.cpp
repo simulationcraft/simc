@@ -7,7 +7,7 @@
 #include "simulationcraft.hpp"
 #include "player/player_talent_points.hpp"
 #include "class_modules/apl/apl_warrior.hpp"
-#include "action/parse_buff_effects.hpp"
+#include "action/parse_effects.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE
@@ -914,7 +914,7 @@ namespace
 {  // UNNAMED NAMESPACE
 // Template for common warrior action code. See priest_action_t.
 template <class Base>
-struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_t, warrior_td_t>
+struct warrior_action_t : public parse_action_effects_t<Base, warrior_t, warrior_td_t>
 {
   struct affected_by_t
   {
@@ -931,7 +931,7 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_t, wa
   double tactician_per_rage;
 
 private:
-  using ab = Base;  // action base, eg. spell_t
+  using ab = parse_action_effects_t<Base, warrior_t, warrior_td_t>;
 public:
   using base_t = warrior_action_t<Base>;
   bool track_cd_waste;
@@ -940,7 +940,6 @@ public:
   bool initialized;
   warrior_action_t( util::string_view n, warrior_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
-      parse_buff_effects_t( player, this ),
       usable_while_channeling( false ),
       tactician_per_rage( 0 ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
@@ -1012,27 +1011,32 @@ public:
     // Arms deep wounds spell data contains T30 2pc bonus, which is disabled/enabled via script.
     // To account for this, we parse the data twice, first ignoring effects #4 & #5 via mask, then if the T30 2pc is
     // active parse again ignoring effects #1, #2, & #3.
-    parse_debuff_effects( []( warrior_td_t* td ) { return td->dots_deep_wounds->is_ticking(); },
+    parse_target_effects( []( warrior_td_t* td ) { return td->dots_deep_wounds->is_ticking(); },
                           p()->spell.deep_wounds_arms, 0b11000,
                           p()->mastery.deep_wounds_ARMS );
     if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T30, B2 ) )
     {
-      parse_debuff_effects( []( warrior_td_t* td ) { return td->dots_deep_wounds->is_ticking(); },
+      parse_target_effects( []( warrior_td_t* td ) { return td->dots_deep_wounds->is_ticking(); },
                             p()->spell.deep_wounds_arms, 0b00111 );
     }
-    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_colossus_smash->check(); },
+    parse_target_effects( []( warrior_td_t* td ) { return td->debuffs_colossus_smash->check(); },
                           p()->spell.colossus_smash_debuff,
                           p()->talents.arms.blunt_instruments, p()->talents.arms.spiteful_serenity );
-    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_executioners_precision->check(); },
+    parse_target_effects( []( warrior_td_t* td ) { return td->debuffs_executioners_precision->check(); },
                           p()->talents.arms.executioners_precision->effectN( 1 ).trigger(),
                           p()->talents.arms.executioners_precision );
     // Fury
 
     // Protection
-    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_demoralizing_shout->check(); },
+    parse_target_effects( []( warrior_td_t* td ) { return td->debuffs_demoralizing_shout->check(); },
                           p()->talents.protection.demoralizing_shout,
                           p()->talents.protection.booming_voice );
   }
+
+  template <typename... Ts>
+  void parse_effects( Ts&&... args ) { ab::parse_effects( std::forward<Ts>( args )... ); }
+  template <typename... Ts>
+  void parse_target_effects( Ts&&... args ) { ab::parse_target_effects( std::forward<Ts>( args )... ); }
 
   void init() override
   {
@@ -1091,9 +1095,6 @@ public:
     return ab::n_targets();
   }
 
-  // custom composite_da_multiplier() to account for sweeping strikes
-  #undef PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER
-  #define PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double dm = ab::composite_da_multiplier( s );
@@ -1103,13 +1104,8 @@ public:
       dm *= p()->spec.sweeping_strikes->effectN( 2 ).percent();
     }
 
-    dm *= get_buff_effects_value( da_multiplier_buffeffects );
-
     return dm;
   }
-
-  #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
-  PARSE_BUFF_EFFECTS_SETUP
 
   void execute() override
   {

@@ -5,7 +5,7 @@
 
 #include "config.hpp"
 
-#include "action/parse_buff_effects.hpp"
+#include "action/parse_effects.hpp"
 #include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
 #include "report/charts.hpp"
@@ -1401,10 +1401,10 @@ public:
 };
 
 template <class Base>
-struct druid_action_t : public Base, public parse_buff_effects_t<druid_t, druid_td_t>
+struct druid_action_t : public parse_action_effects_t<Base, druid_t, druid_td_t>
 {
 private:
-  using ab = Base;  // action base, eg. spell_t
+  using ab = parse_action_effects_t<Base, druid_t, druid_td_t>;
 
 public:
   using base_t = druid_action_t<Base>;
@@ -1424,7 +1424,6 @@ public:
 
   druid_action_t( std::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
-      parse_buff_effects_t( player, this ),
       dot_name( n ),
       form_mask( ab::data().stance_mask() ),
       break_stealth( !ab::data().flags( spell_attribute::SX_NO_STEALTH_BREAK ) )
@@ -1564,10 +1563,10 @@ public:
     parse_effects( p()->buff.balance_of_all_things_nature, p()->talent.balance_of_all_things );
     // due to 4t31, we parse the damage effects (#1/#7) separately and use the current buff value instead of data value
     parse_effects( p()->buff.eclipse_lunar, 0b1000001U, p()->talent.umbral_intensity );
-    parse_effects( p()->buff.eclipse_lunar, 0b0111110U, true, USE_CURRENT );
+    parse_effects( p()->buff.eclipse_lunar, 0b0111110U, USE_CURRENT );
     // due to 4t31, we parse the damage effects (#1/#8) separately and use the current buff value instead of data value
     parse_effects( p()->buff.eclipse_solar, 0b10000001U, p()->talent.umbral_intensity );
-    parse_effects( p()->buff.eclipse_solar, 0b01111110U, true, USE_CURRENT );
+    parse_effects( p()->buff.eclipse_solar, 0b01111110U, USE_CURRENT );
     parse_effects( p()->buff.friend_of_the_fae );
     parse_effects( p()->buff.gathering_starstuff );
     parse_effects( p()->buff.incarnation_moonkin, p()->talent.elunes_guidance );
@@ -1575,7 +1574,7 @@ public:
     parse_effects( p()->buff.starweavers_warp );
     parse_effects( p()->buff.starweavers_weft );
     parse_effects( p()->buff.touch_the_cosmos );
-    parse_effects( p()->buff.warrior_of_elune, false );
+    parse_effects( p()->buff.warrior_of_elune, IGNORE_STACKS );
 
     // Feral
     parse_effects( p()->buff.apex_predators_craving );
@@ -1605,7 +1604,7 @@ public:
     parse_effects( p()->buff.overpowering_aura );
     parse_effects( p()->buff.rage_of_the_sleeper );
     parse_effects( p()->talent.reinvigoration, p()->talent.innate_resolve.ok() ? 0b01U : 0b10U );
-    parse_effects( p()->buff.tooth_and_claw, false );
+    parse_effects( p()->buff.tooth_and_claw, IGNORE_STACKS );
     parse_effects( p()->buff.vicious_cycle_mangle, USE_DEFAULT );
     parse_effects( p()->buff.vicious_cycle_maul, USE_DEFAULT );
 
@@ -1617,7 +1616,7 @@ public:
   }
 
   template <typename T>
-  dfun d_fn( T d, bool stack = true )
+  std::function<int( druid_td_t* )> d_fn( T d, bool stack = true )
   {
     if constexpr ( std::is_invocable_v<T, druid_td_t::debuffs_t> )
     {
@@ -1642,33 +1641,35 @@ public:
 
   void apply_debuffs_effects()
   {
-    parse_debuff_effects( d_fn( &druid_td_t::dots_t::moonfire ),
+    parse_target_effects( d_fn( &druid_td_t::dots_t::moonfire ),
                           p()->spec.moonfire_dmg, p()->mastery.astral_invocation );
-    parse_debuff_effects( d_fn( &druid_td_t::dots_t::sunfire ),
+    parse_target_effects( d_fn( &druid_td_t::dots_t::sunfire ),
                           p()->spec.sunfire_dmg, p()->mastery.astral_invocation );
-    parse_debuff_effects( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage, false ),
+    parse_target_effects( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage, false ),
                           p()->spec.adaptive_swarm_damage, p()->spec_spell );
-    parse_debuff_effects( d_fn( &druid_td_t::dots_t::thrash_bear ),
+    parse_target_effects( d_fn( &druid_td_t::dots_t::thrash_bear ),
                           p()->spec.thrash_bear_bleed, p()->talent.rend_and_tear );
-    parse_debuff_effects( d_fn( &druid_td_t::debuffs_t::dire_fixation ),
+    parse_target_effects( d_fn( &druid_td_t::debuffs_t::dire_fixation ),
                           find_trigger( p()->talent.dire_fixation ).trigger() );
-    parse_debuff_effects( d_fn( &druid_td_t::debuffs_t::waning_twilight ),
+    parse_target_effects( d_fn( &druid_td_t::debuffs_t::waning_twilight ),
                           p()->spec.waning_twilight, p()->talent.waning_twilight );
 
     if ( p()->talent.incarnation_cat.ok() && p()->talent.ashamanes_guidance.ok() )
     {
-      parse_debuff_effects( [ p = p() ]( druid_td_t* td )
+      parse_target_effects( [ p = p() ]( druid_td_t* td )
           { return p->buff.ashamanes_guidance->check() && td->dots.rip->is_ticking(); },
           p()->talent.rip, p()->spec.ashamanes_guidance_buff );
-      parse_debuff_effects( [ p = p() ]( druid_td_t* td )
+      parse_target_effects( [ p = p() ]( druid_td_t* td )
           { return p->buff.ashamanes_guidance->check() && td->dots.rake->is_ticking(); },
           find_trigger( p()->talent.rake ).trigger(), p()->spec.ashamanes_guidance_buff );
     }
   }
 
-  // custom cost() to account for innervate and free spellss
-  #undef PARSE_BUFF_EFFECTS_SETUP_COST
-  #define PARSE_BUFF_EFFECTS_SETUP_COST
+  template <typename... Ts>
+  void parse_effects( Ts&&... args ) { ab::parse_effects( std::forward<Ts>( args )... ); }
+  template <typename... Ts>
+  void parse_target_effects( Ts&&... args ) { ab::parse_target_effects( std::forward<Ts>( args )... ); }
+
   double cost() const override
   {
     if ( is_free() )
@@ -1680,19 +1681,10 @@ public:
       return 0.0;
     }
 
-    double c = ab::cost();
-
-    c += get_buff_effects_value( flat_cost_buffeffects, true, false );
-
-    c *= get_buff_effects_value( cost_buffeffects, false, false );
-
-    return std::max( 0.0, c );
+    return ab::cost();
   }
 
-  #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
-  PARSE_BUFF_EFFECTS_SETUP
-
-  // Override this function for temporary effects that change the normal form restrictions of the spell. eg: Predatory
+    // Override this function for temporary effects that change the normal form restrictions of the spell. eg: Predatory
   // Swiftness
   virtual bool check_form_restriction()
   {
@@ -2048,7 +2040,7 @@ protected:
   bool attack_critical;
 
 public:
-  std::vector<buff_effect_t> persistent_multiplier_buffeffects;
+  std::vector<action_effect_t> persistent_multiplier_effects;
 
   struct
   {
@@ -2075,9 +2067,12 @@ public:
 
     if ( data().ok() )
     {
-      snapshots.bloodtalons = parse_persistent_effects( p->buff.bloodtalons, false );
-      snapshots.tigers_fury = parse_persistent_effects( p->buff.tigers_fury, p->talent.carnivorous_instinct );
-      snapshots.clearcasting = parse_persistent_effects( p->buff.clearcasting_cat, false, p->talent.moment_of_clarity );
+      snapshots.bloodtalons =
+          parse_persistent_effects( p->buff.bloodtalons, IGNORE_STACKS );
+      snapshots.tigers_fury =
+          parse_persistent_effects( p->buff.tigers_fury, p->talent.carnivorous_instinct );
+      snapshots.clearcasting =
+          parse_persistent_effects( p->buff.clearcasting_cat, IGNORE_STACKS, p->talent.moment_of_clarity );
 
       parse_effects( p->mastery.razor_claws );
     }
@@ -2122,23 +2117,23 @@ public:
   template <typename... Ts>
   bool parse_persistent_effects( buff_t* buff, Ts... mods )
   {
-    size_t ta_old   = ta_multiplier_buffeffects.size();
-    size_t da_old   = da_multiplier_buffeffects.size();
-    size_t cost_old = cost_buffeffects.size();
+    size_t ta_old   = ta_multiplier_effects.size();
+    size_t da_old   = da_multiplier_effects.size();
+    size_t cost_old = cost_effects.size();
 
     parse_effects( buff, mods... );
 
     // If there is a new entry in the ta_mul table, move it to the pers_mul table.
-    if ( ta_multiplier_buffeffects.size() > ta_old )
+    if ( ta_multiplier_effects.size() > ta_old )
     {
-      double &ta_val = ta_multiplier_buffeffects.back().value;
+      double &ta_val = ta_multiplier_effects.back().value;
       double da_val = 0;
 
       // Any corresponding increases in the da_mul table can be removed as pers_mul covers da_mul & ta_mul
-      if ( da_multiplier_buffeffects.size() > da_old )
+      if ( da_multiplier_effects.size() > da_old )
       {
-        da_val = da_multiplier_buffeffects.back().value;
-        da_multiplier_buffeffects.pop_back();
+        da_val = da_multiplier_effects.back().value;
+        da_multiplier_effects.pop_back();
 
         if ( da_val != ta_val )
         {
@@ -2152,18 +2147,18 @@ public:
       if ( da_val > ta_val )
         ta_val = da_val;
 
-      persistent_multiplier_buffeffects.push_back( ta_multiplier_buffeffects.back() );
-      ta_multiplier_buffeffects.pop_back();
+      persistent_multiplier_effects.push_back( ta_multiplier_effects.back() );
+      ta_multiplier_effects.pop_back();
 
       p()->sim->print_debug(
           "persistent-buffs: {} ({}) damage modified by {}% with buff {} ({}), tick table has {} entries.", name(), id,
-          persistent_multiplier_buffeffects.back().value * 100.0, buff->name(), buff->data().id(),
-          ta_multiplier_buffeffects.size() );
+          persistent_multiplier_effects.back().value * 100.0, buff->name(), buff->data().id(),
+          ta_multiplier_effects.size() );
 
       return true;
     }
     // no persistent multiplier, but does snapshot & consume the buff
-    if ( da_multiplier_buffeffects.size() > da_old || cost_buffeffects.size() > cost_old )
+    if ( da_multiplier_effects.size() > da_old || cost_effects.size() > cost_old )
       return true;
 
     return false;
@@ -2171,7 +2166,7 @@ public:
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    return base_t::composite_persistent_multiplier( s ) * get_buff_effects_value( persistent_multiplier_buffeffects );
+    return base_t::composite_persistent_multiplier( s ) * get_effects_value( persistent_multiplier_effects );
   }
 
   snapshot_counter_t* get_counter( buff_t* buff )
@@ -2311,14 +2306,14 @@ public:
     residual_action::trigger( p()->active.frenzied_assault, t, d );
   }
 
-  size_t total_buffeffects_count() override
+  size_t total_effects_count() override
   {
-    return base_t::total_buffeffects_count() + persistent_multiplier_buffeffects.size();
+    return base_t::total_effects_count() + persistent_multiplier_effects.size();
   }
 
   void print_parsed_custom_type( report::sc_html_stream& os ) override
   {
-    print_parsed_type( os, persistent_multiplier_buffeffects, "Snapshots" );
+    print_parsed_type( os, persistent_multiplier_effects, "Snapshots" );
   }
 };
 
@@ -3779,7 +3774,7 @@ struct rake_t : public cat_attack_t
   {
     if ( p->talent.pouncing_strikes.ok() || p->spec.improved_prowl->ok() )
     {
-      persistent_multiplier_buffeffects.emplace_back( nullptr, data().effectN( 4 ).percent(), USE_DATA, true, false,
+      persistent_multiplier_effects.emplace_back( nullptr, data().effectN( 4 ).percent(), USE_DATA, true, false,
           [ this ] { return stealthed() || this->p()->buff.sudden_ambush->check(); }, &data().effectN( 4 ) );
     }
 
@@ -4067,7 +4062,7 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
       stealth_mul = data().effectN( 3 ).percent();
       stealth_cp = p->find_spell( 343232 )->effectN( 1 ).base_value();
 
-      da_multiplier_buffeffects.emplace_back( nullptr, stealth_mul, USE_DATA, true, false,
+      da_multiplier_effects.emplace_back( nullptr, stealth_mul, USE_DATA, true, false,
           [ this ] { return stealthed() || this->p()->buff.sudden_ambush->check(); }, &data().effectN( 3 ) );
     }
   }
@@ -5853,7 +5848,7 @@ public:
       p_( p ),
       dreamstate_gcd( find_effect( &p->buff.dreamstate->data(), this, A_ADD_PCT_MODIFIER, P_GCD ).percent() )
   {
-    BASE::parse_effects( &p->buff.dreamstate->data(), [ this ] { return dreamstate; }, false );
+    BASE::parse_effects( &p->buff.dreamstate->data(), [ this ] { return dreamstate; }, IGNORE_STACKS );
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -5901,7 +5896,7 @@ public:
     // Umbral embrace is heavily scripted so we do all the auto parsing within the action itself
     if ( p_->talent.umbral_embrace.ok() )
     {
-      BASE::da_multiplier_buffeffects.emplace_back(
+      BASE::da_multiplier_effects.emplace_back(
           nullptr, p_->buff.umbral_embrace->default_value, USE_DEFAULT, false, false,
           [ this ] { return umbral_embrace_check(); }, &p_->buff.umbral_embrace->data().effectN( 1 ) );
 
@@ -5911,7 +5906,7 @@ public:
 
       BASE::force_effect( ecl, 1, [ this ] { return umbral_embrace_check(); } );
 
-      BASE::force_debuff_effect(
+      BASE::force_target_effect(
           [ this, dot ]( druid_td_t* t ) { return umbral_embrace_check() && std::invoke( dot, t->dots )->is_ticking(); },
           dmg, as<unsigned>( dmg->effect_count() ), p_->mastery.astral_invocation );
     }
@@ -7796,8 +7791,8 @@ struct starsurge_t : public ap_spender_t
       background = true;
       name_str_reporting = "goldrinns_fang";
 
-      force_effect( p->buff.eclipse_lunar, 1, true, USE_CURRENT );
-      force_effect( p->buff.eclipse_solar, 1, true, USE_CURRENT );
+      force_effect( p->buff.eclipse_lunar, 1, USE_CURRENT );
+      force_effect( p->buff.eclipse_solar, 1, USE_CURRENT );
 
       // in spell data, the crit effect is applied via label with effect#3. however, the talent only has P_EFFECT_1 and
       // thus does not modify effect#3 via proper methods, instead relying on hidden scripting. we get around this by
@@ -7996,8 +7991,8 @@ struct orbital_strike_t : public druid_spell_t
     flare->name_str_reporting = "stellar_flare";
     add_child( flare );
 
-    force_effect( p->buff.eclipse_lunar, 1, true, USE_CURRENT );
-    force_effect( p->buff.eclipse_solar, 1, true, USE_CURRENT );
+    force_effect( p->buff.eclipse_lunar, 1, USE_CURRENT );
+    force_effect( p->buff.eclipse_solar, 1, USE_CURRENT );
 
     // in spell data, the crit effect is applied via label with effect#3. however, the talent only has P_EFFECT_1 and
     // thus does not modify effect#3 via proper methods, instead relying on hidden scripting. we get around this by
@@ -8741,7 +8736,7 @@ struct druid_melee_t : public Base
       // Carnivorous Instinct has no curvepoint for effect#3 which modifies AA, so we use effect#1 value instead
       val += p->talent.carnivorous_instinct->effectN( 1 ).percent();
 
-      ab::da_multiplier_buffeffects.emplace_back( p->buff.tigers_fury, val, USE_DATA, false, false, nullptr, &eff );
+      ab::da_multiplier_effects.emplace_back( p->buff.tigers_fury, val, USE_DATA, false, false, nullptr, &eff );
 
       ab::sim->print_debug( "buff-effects: {} ({}) direct_damage modified by {} with buff {} ({})", ab::name(), ab::id,
                             val, p->buff.tigers_fury->name(), p->buff.tigers_fury->data().id() );
