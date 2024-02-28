@@ -3429,10 +3429,10 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     if (this->data().affected_by_all( spell->effectN( idx ) ))
       return;
 
-    parse_target_effect( [ dot ]( death_knight_td_t* t )
+    force_target_effect( [ dot ]( death_knight_td_t* t )
                          {
                            return std::invoke( dot, t->dot )->is_ticking();
-                         }, spell, idx, true, mods... );
+                         }, spell, idx, mods... );
   }
 
   template <typename... Ts>

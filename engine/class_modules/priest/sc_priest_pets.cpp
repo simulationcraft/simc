@@ -237,7 +237,7 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t, priest_pet_t,
     }
   }
 
-  // Syntax: parse_effects( data[, spells|condition|ignore_mask|use_stacks|value_type|spells][,...] )
+  // Syntax: parse_effects( data[, spells|condition|ignore_mask|flags|spells][,...] )
   //   (buff_t*) or
   //   (const spell_data_t*)   data: Buff or spell to be checked for to see if effect applies. If buff is used, effect
   //                                 will require the buff to be active. If spell is used, effect will always apply
@@ -247,11 +247,10 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t, priest_pet_t,
   //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the buff
   //   (bool F())         condition: Function that takes no arguments and returns true if the effect should apply
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
-  //   (bool)            use_stacks: Default true, whether to multiply value by stacks
-  //   (value_type_e)          type: Source of the value to be used for the effect
-  //                                 USE_DATA = spell data (default)
-  //                                 USE_DEFAULT = buff default value
-  //                                 USE_CURRENT = buff current value
+  //   (parse_flag_e)         flags: Various flags to control how the value is calculated when the action executes
+  //                    USE_DEFAULT: Use the buff's default value instead of spell effect data value
+  //                    USE_CURRENT: Use the buff's current value instead of spell effect data value
+  //                  IGNORE_STACKS: Ignore stacks of the buff and don't multiply the value
   //
   // Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
   //   parse_effects( buff1, 0b10101U, talent1, tier1 );
@@ -271,11 +270,10 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t, priest_pet_t,
 
     if ( p().o().specialization() == PRIEST_SHADOW )
     {
-      parse_effects( p().o().buffs.voidform, 0x4U, false, USE_DATA );  // Skip E3 for AM
+      parse_effects( p().o().buffs.voidform, 0x4U, IGNORE_STACKS );  // Skip E3 for AM
       parse_effects( p().o().buffs.shadowform );
       parse_effects( p().o().buffs.devoured_pride );
-      parse_effects( p().o().buffs.dark_ascension, 0b1000U, false,
-                          USE_DATA );  // Buffs non-periodic spells - Skip E4
+      parse_effects( p().o().buffs.dark_ascension, 0b1000U, IGNORE_STACKS );  // Buffs non-periodic spells - Skip E4
     }
 
     if ( p().o().talents.shadow.ancient_madness.enabled() )
@@ -283,22 +281,22 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t, priest_pet_t,
       // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
       if ( p().o().talents.shadow.dark_ascension.enabled() )
       {
-        parse_effects( p().o().buffs.ancient_madness, 0b0001U, true, USE_DEFAULT );  // Skip E1
+        parse_effects( p().o().buffs.ancient_madness, 0b0001U, USE_DEFAULT );  // Skip E1
       }
       else
       {
-        parse_effects( p().o().buffs.ancient_madness, 0b0011U, true, USE_DEFAULT );  // Skip E1 and E2
+        parse_effects( p().o().buffs.ancient_madness, 0b0011U, USE_DEFAULT );  // Skip E1 and E2
       }
     }
 
     // DISCIPLINE BUFF EFFECTS
     if ( p().o().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_effects( p().o().buffs.shadow_covenant, 0U, false, USE_DEFAULT,
-                          p().o().talents.discipline.twilight_corruption );
+      parse_effects( p().o().buffs.shadow_covenant, IGNORE_STACKS, USE_DEFAULT,
+                     p().o().talents.discipline.twilight_corruption );
       // 280398 applies the buff to the correct spells, but does not contain the correct buff value
       // (12% instead of 40%) So, override to use our provided default_value (40%) instead
-      parse_effects( p().o().buffs.sins_of_the_many, 0U, false, USE_CURRENT );
+      parse_effects( p().o().buffs.sins_of_the_many, IGNORE_STACKS, USE_DEFAULT );
     }
   }
   void apply_debuffs_effects()

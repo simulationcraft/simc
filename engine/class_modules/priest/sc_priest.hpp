@@ -938,7 +938,7 @@ public:
     }
   }
 
-  // Syntax: parse_effects( data[, spells|condition|ignore_mask|use_stacks|value_type|spells][,...] )
+  // Syntax: parse_effects( data[, spells|condition|ignore_mask|flags|spells][,...] )
   //   (buff_t*) or
   //   (const spell_data_t*)   data: Buff or spell to be checked for to see if effect applies. If buff is used, effect
   //                                 will require the buff to be active. If spell is used, effect will always apply
@@ -948,11 +948,10 @@ public:
   //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the buff
   //   (bool F())         condition: Function that takes no arguments and returns true if the effect should apply
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
-  //   (bool)            use_stacks: Default true, whether to multiply value by stacks
-  //   (value_type_e)          type: Source of the value to be used for the effect
-  //                                 USE_DATA = spell data (default)
-  //                                 USE_DEFAULT = buff default value
-  //                                 USE_CURRENT = buff current value
+  //   (parse_flag_e)         flags: Various flags to control how the value is calculated when the action executes
+  //                    USE_DEFAULT: Use the buff's default value instead of spell effect data value
+  //                    USE_CURRENT: Use the buff's current value instead of spell effect data value
+  //                  IGNORE_STACKS: Ignore stacks of the buff and don't multiply the value
   //
   // Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
   //   parse_effects( buff1, 0b10101U, talent1, tier1 );
@@ -970,19 +969,18 @@ public:
     // GENERAL PRIEST BUFF EFFECTS
     parse_effects( p().buffs.twist_of_fate, p().talents.twist_of_fate );
     parse_effects( p().buffs.words_of_the_pious );  // Spell Direct amount for Smite and Holy Nova
-    parse_effects( p().buffs.rhapsody, true, p().specs.discipline_priest );
+    parse_effects( p().buffs.rhapsody, p().specs.discipline_priest );
 
     // SHADOW BUFF EFFECTS
     if ( p().specialization() == PRIEST_SHADOW )
     {
       parse_effects( p().buffs.devoured_pride );                   // Spell Direct and Periodic amount
-      parse_effects( p().buffs.voidform, 0x4U, false, USE_DATA );  // Skip E3 for AM
+      parse_effects( p().buffs.voidform, 0x4U, IGNORE_STACKS );  // Skip E3 for AM
       parse_effects( p().buffs.shadowform );
       parse_effects( p().buffs.mind_devourer );
       parse_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
-      parse_effects( p().buffs.dark_ascension, 0b1000U, false, USE_DATA );  // Buffs non-periodic spells - Skip E4
-      parse_effects( p().buffs.mind_melt,
-                          p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
+      parse_effects( p().buffs.dark_ascension, 0b1000U, IGNORE_STACKS );  // Buffs non-periodic spells - Skip E4
+      parse_effects( p().buffs.mind_melt, p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
       parse_effects( p().buffs.screams_of_the_void, p().talents.shadow.screams_of_the_void );
 
       if ( p().talents.shadow.ancient_madness.enabled() )
@@ -990,11 +988,11 @@ public:
         // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
         if ( p().talents.shadow.dark_ascension.enabled() )
         {
-          parse_effects( p().buffs.ancient_madness, 0b0001U, true, USE_DEFAULT );  // Skip E1
+          parse_effects( p().buffs.ancient_madness, 0b0001U, USE_DEFAULT );  // Skip E1
         }
         else
         {
-          parse_effects( p().buffs.ancient_madness, 0b0011U, true, USE_DEFAULT );  // Skip E1 and E2
+          parse_effects( p().buffs.ancient_madness, 0b0011U, USE_DEFAULT );  // Skip E1 and E2
         }
       }
 
@@ -1007,15 +1005,15 @@ public:
     // DISCIPLINE BUFF EFFECTS
     if ( p().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_effects( p().buffs.shadow_covenant, 0U, false, USE_DEFAULT,
-                          p().talents.discipline.twilight_corruption );
+      parse_effects( p().buffs.shadow_covenant, IGNORE_STACKS, USE_DEFAULT,
+                     p().talents.discipline.twilight_corruption );
       // 280398 applies the buff to the correct spells, but does not contain the correct buff value
       // (12% instead of 40%) So, override to use our provided default_value (40%) instead
-      parse_effects( p().buffs.sins_of_the_many, 0U, false, USE_CURRENT );
+      parse_effects( p().buffs.sins_of_the_many, IGNORE_STACKS, USE_CURRENT );
       parse_effects( p().buffs.twilight_equilibrium_shadow_amp );
       parse_effects( p().buffs.twilight_equilibrium_holy_amp );
       parse_effects( p().buffs.light_weaving );
-      parse_effects( p().buffs.weal_and_woe, true );
+      parse_effects( p().buffs.weal_and_woe );
     }
 
     // HOLY BUFF EFFECTS

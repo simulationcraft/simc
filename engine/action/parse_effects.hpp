@@ -22,24 +22,25 @@
 //  3) TD: The target data class
 //  4) OWNER: Optional owner class if the player class is a pet
 
-enum value_type_e
+enum parse_flag_e
 {
   USE_DATA,
   USE_DEFAULT,
-  USE_CURRENT
+  USE_CURRENT,
+  IGNORE_STACKS
 };
 
 struct action_effect_t
 {
   buff_t* buff;                   // nullptr
   double value;                   // 0.0
-  value_type_e type;              // USE_DATA
+  parse_flag_e type;              // USE_DATA
   bool use_stacks;                // true
   bool mastery;                   // false
   std::function<bool()> func;     // nullptr
   const spelleffect_data_t* eff;  // &spelleffect_data_t::nil()
 
-  action_effect_t( buff_t* b = nullptr, double v = 0.0, value_type_e t = USE_DATA, bool s = true, bool m = false,
+  action_effect_t( buff_t* b = nullptr, double v = 0.0, parse_flag_e t = USE_DATA, bool s = true, bool m = false,
                    std::function<bool()> f = nullptr, const spelleffect_data_t* e = &spelleffect_data_t::nil() )
     : buff( b ), value( v ), type( t ), use_stacks( s ), mastery( m ), func( std::move( f ) ), eff( e )
   {}
@@ -130,17 +131,36 @@ struct parse_effects_t
   void parse_spell_effect_mods( pack_t<U>& tmp, T mod )
   {
     if constexpr ( std::is_invocable_v<decltype( &spell_data_t::ok ), T> )
+    {
       tmp.list.push_back( mod );
+    }
     else if constexpr ( std::is_invocable_v<T> )
+    {
       tmp.data.func = std::move( mod );
-    else if constexpr ( std::is_same_v<T, value_type_e> )
-      tmp.data.type = mod;
-    else if constexpr ( std::is_same_v<T, bool> )  // check bool before is_integral as bool is also integral
-      tmp.data.use_stacks = mod;
+    }
+    else if constexpr ( std::is_same_v<T, parse_flag_e> )
+    {
+      switch ( mod )
+      {
+        case USE_DEFAULT:
+        case USE_CURRENT:
+          tmp.data.type = mod;
+          break;
+        case IGNORE_STACKS:
+          tmp.data.use_stacks = false;
+          break;
+        default:
+          assert( false && "Invalid parse flag for parse_spell_effect_mods" );
+      }
+    }
     else if constexpr ( std::is_integral_v<T> )
+    {
       tmp.mask = mod;
+    }
     else
+    {
       assert( false && "Invalid mod type for parse_spell_effect_mods" );
+    }
   }
 
   template <typename U, typename T, typename... Ts>
@@ -251,7 +271,7 @@ public:
     parsed_html_report( os );
   }
 
-  // Syntax: parse_effects( data[, spells|condition|ignore_mask|use_stacks|value_type|spells][,...] )
+  // Syntax: parse_effects( data[, spells|condition|ignore_mask|flags|spells][,...] )
   //   (buff_t*) or
   //   (const spell_data_t*)   data: Buff or spell to be checked for to see if effect applies. If buff is used, effect
   //                                 will require the buff to be active. If spell is used, effect will always apply
@@ -261,11 +281,10 @@ public:
   //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the buff
   //   (bool F())         condition: Function that takes no arguments and returns true if the effect should apply
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
-  //   (bool)            use_stacks: Default true, whether to multiply value by stacks
-  //   (value_type_e)          type: Source of the value to be used for the effect
-  //                                 USE_DATA = spell data (default)
-  //                                 USE_DEFAULT = buff default value
-  //                                 USE_CURRENT = buff current value
+  //   (parse_flag_e)         flags: Various flags to control how the value is calculated when the action executes
+  //                    USE_DEFAULT: Use the buff's default value instead of spell effect data value
+  //                    USE_CURRENT: Use the buff's current value instead of spell effect data value
+  //                  IGNORE_STACKS: Ignore stacks of the buff and don't multiply the value
   //
   // Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
   //   parse_effects( buff1, 0b10101U, talent1, tier1 );
@@ -320,9 +339,9 @@ public:
       {
         std::string val_str;
 
-        if ( tmp.data.type == value_type_e::USE_CURRENT )
+        if ( tmp.data.type == parse_flag_e::USE_CURRENT )
           val_str = "current value";
-        else if ( tmp.data.type == value_type_e::USE_DEFAULT )
+        else if ( tmp.data.type == parse_flag_e::USE_DEFAULT )
           val_str = fmt::format( "default value ({})", val * val_mul );
         else if ( mastery )
           val_str = fmt::format( "{}*mastery", val * val_mul * 100 );
@@ -852,7 +871,7 @@ public:
     }
   }
 
-  std::string value_type_name( value_type_e t )
+  std::string value_type_name( parse_flag_e t )
   {
     switch ( t )
     {

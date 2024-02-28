@@ -1344,7 +1344,7 @@ public:
     return move_during_hover && p()->buff.hover->check();
   }
 
-  // Syntax: parse_effects( data[, spells|condition|ignore_mask|use_stacks|value_type|spells][,...] )
+  // Syntax: parse_effects( data[, spells|condition|ignore_mask|flags|spells][,...] )
   //   (buff_t*) or
   //   (const spell_data_t*)   data: Buff or spell to be checked for to see if effect applies. If buff is used, effect
   //                                 will require the buff to be active. If spell is used, effect will always apply
@@ -1354,11 +1354,10 @@ public:
   //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the buff
   //   (bool F())         condition: Function that takes no arguments and returns true if the effect should apply
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
-  //   (bool)            use_stacks: Default true, whether to multiply value by stacks
-  //   (value_type_e)          type: Source of the value to be used for the effect
-  //                                 USE_DATA = spell data (default)
-  //                                 USE_DEFAULT = buff default value
-  //                                 USE_CURRENT = buff current value
+  //   (parse_flag_e)         flags: Various flags to control how the value is calculated when the action executes
+  //                    USE_DEFAULT: Use the buff's default value instead of spell effect data value
+  //                    USE_CURRENT: Use the buff's current value instead of spell effect data value
+  //                  IGNORE_STACKS: Ignore stacks of the buff and don't multiply the value
   //
   // Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
   //   parse_effects( buff1, 0b10101U, talent1, tier1 );
@@ -1381,17 +1380,17 @@ public:
 
     parse_effects( p()->buff.imminent_destruction );
 
-    parse_effects( p()->buff.emerald_trance_stacking, true );
-    parse_effects( p()->buff.emerald_trance, true );
+    parse_effects( p()->buff.emerald_trance_stacking );
+    parse_effects( p()->buff.emerald_trance );
 
     if ( p()->specialization() == EVOKER_AUGMENTATION )
     {
       parse_effects(
-          p()->buff.ebon_might_self_buff, [ this ] { return p()->close_as_clutchmates; }, 0U, true, USE_DATA,
+          p()->buff.ebon_might_self_buff, [ this ] { return p()->close_as_clutchmates; },
           p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ), p()->spec.close_as_clutchmates );
 
       parse_effects(
-          p()->buff.ebon_might_self_buff, [ this ] { return !p()->close_as_clutchmates; }, 0U, true, USE_DATA,
+          p()->buff.ebon_might_self_buff, [ this ] { return !p()->close_as_clutchmates; },
           p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ) );
     }
 

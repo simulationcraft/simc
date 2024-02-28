@@ -1563,10 +1563,10 @@ public:
     parse_effects( p()->buff.balance_of_all_things_nature, p()->talent.balance_of_all_things );
     // due to 4t31, we parse the damage effects (#1/#7) separately and use the current buff value instead of data value
     parse_effects( p()->buff.eclipse_lunar, 0b1000001U, p()->talent.umbral_intensity );
-    parse_effects( p()->buff.eclipse_lunar, 0b0111110U, true, USE_CURRENT );
+    parse_effects( p()->buff.eclipse_lunar, 0b0111110U, USE_CURRENT );
     // due to 4t31, we parse the damage effects (#1/#8) separately and use the current buff value instead of data value
     parse_effects( p()->buff.eclipse_solar, 0b10000001U, p()->talent.umbral_intensity );
-    parse_effects( p()->buff.eclipse_solar, 0b01111110U, true, USE_CURRENT );
+    parse_effects( p()->buff.eclipse_solar, 0b01111110U, USE_CURRENT );
     parse_effects( p()->buff.friend_of_the_fae );
     parse_effects( p()->buff.gathering_starstuff );
     parse_effects( p()->buff.incarnation_moonkin, p()->talent.elunes_guidance );
@@ -1574,7 +1574,7 @@ public:
     parse_effects( p()->buff.starweavers_warp );
     parse_effects( p()->buff.starweavers_weft );
     parse_effects( p()->buff.touch_the_cosmos );
-    parse_effects( p()->buff.warrior_of_elune, false );
+    parse_effects( p()->buff.warrior_of_elune, IGNORE_STACKS );
 
     // Feral
     parse_effects( p()->buff.apex_predators_craving );
@@ -1604,7 +1604,7 @@ public:
     parse_effects( p()->buff.overpowering_aura );
     parse_effects( p()->buff.rage_of_the_sleeper );
     parse_effects( p()->talent.reinvigoration, p()->talent.innate_resolve.ok() ? 0b01U : 0b10U );
-    parse_effects( p()->buff.tooth_and_claw, false );
+    parse_effects( p()->buff.tooth_and_claw, IGNORE_STACKS );
     parse_effects( p()->buff.vicious_cycle_mangle, USE_DEFAULT );
     parse_effects( p()->buff.vicious_cycle_maul, USE_DEFAULT );
 
@@ -2067,9 +2067,12 @@ public:
 
     if ( data().ok() )
     {
-      snapshots.bloodtalons = parse_persistent_effects( p->buff.bloodtalons, false );
-      snapshots.tigers_fury = parse_persistent_effects( p->buff.tigers_fury, p->talent.carnivorous_instinct );
-      snapshots.clearcasting = parse_persistent_effects( p->buff.clearcasting_cat, false, p->talent.moment_of_clarity );
+      snapshots.bloodtalons =
+          parse_persistent_effects( p->buff.bloodtalons, IGNORE_STACKS );
+      snapshots.tigers_fury =
+          parse_persistent_effects( p->buff.tigers_fury, p->talent.carnivorous_instinct );
+      snapshots.clearcasting =
+          parse_persistent_effects( p->buff.clearcasting_cat, IGNORE_STACKS, p->talent.moment_of_clarity );
 
       parse_effects( p->mastery.razor_claws );
     }
@@ -5845,7 +5848,7 @@ public:
       p_( p ),
       dreamstate_gcd( find_effect( &p->buff.dreamstate->data(), this, A_ADD_PCT_MODIFIER, P_GCD ).percent() )
   {
-    BASE::parse_effects( &p->buff.dreamstate->data(), [ this ] { return dreamstate; }, false );
+    BASE::parse_effects( &p->buff.dreamstate->data(), [ this ] { return dreamstate; }, IGNORE_STACKS );
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -7788,8 +7791,8 @@ struct starsurge_t : public ap_spender_t
       background = true;
       name_str_reporting = "goldrinns_fang";
 
-      force_effect( p->buff.eclipse_lunar, 1, true, USE_CURRENT );
-      force_effect( p->buff.eclipse_solar, 1, true, USE_CURRENT );
+      force_effect( p->buff.eclipse_lunar, 1, USE_CURRENT );
+      force_effect( p->buff.eclipse_solar, 1, USE_CURRENT );
 
       // in spell data, the crit effect is applied via label with effect#3. however, the talent only has P_EFFECT_1 and
       // thus does not modify effect#3 via proper methods, instead relying on hidden scripting. we get around this by
@@ -7988,8 +7991,8 @@ struct orbital_strike_t : public druid_spell_t
     flare->name_str_reporting = "stellar_flare";
     add_child( flare );
 
-    force_effect( p->buff.eclipse_lunar, 1, true, USE_CURRENT );
-    force_effect( p->buff.eclipse_solar, 1, true, USE_CURRENT );
+    force_effect( p->buff.eclipse_lunar, 1, USE_CURRENT );
+    force_effect( p->buff.eclipse_solar, 1, USE_CURRENT );
 
     // in spell data, the crit effect is applied via label with effect#3. however, the talent only has P_EFFECT_1 and
     // thus does not modify effect#3 via proper methods, instead relying on hidden scripting. we get around this by
