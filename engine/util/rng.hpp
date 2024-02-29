@@ -271,10 +271,12 @@ double basic_rng_t<Engine>::gauss_ab( double mean, double stddev, double min, do
 {
   assert( stddev >= 0.0 && "Stddev must be non-negative." );
   assert( min <= max && "Minimum must be less than or equal to maximum." );
-  assert( mean >= min && mean <= max && "Mean must be contained within the interval [min, max]" );
 
   if ( stddev == 0.0 )
+  {
+    assert( mean >= min && mean <= max && "Mean must be contained within the interval [min, max]" );
     return mean;
+  }
 
   if ( min == max )
     return mean;
