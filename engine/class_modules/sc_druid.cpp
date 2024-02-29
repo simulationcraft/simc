@@ -287,6 +287,9 @@ struct druid_action_state_t : public Base, public Data
 };
 
 // Static helper functions
+template <typename>
+static constexpr bool static_false = false;
+
 template <typename V>
 static const spell_data_t* resolve_spell_data( V data )
 {
@@ -296,8 +299,9 @@ static const spell_data_t* resolve_spell_data( V data )
     return &data->data();
   else if constexpr( std::is_invocable_v<decltype( &action_t::data ), V> )
     return &data->data();
+  else
+    static_assert( static_false<V>, "Could not resolve find_effect argument to spell data." );
 
-  assert( false && "Could not resolve find_effect argument to spell data." );
   return nullptr;
 }
 
@@ -327,7 +331,6 @@ static const spelleffect_data_t& find_effect( T val, U type, Ts&&... args )
      return spell_data_t::find_spelleffect( *data, *affected, E_APPLY_AURA );
   }
 
-  assert( false && "Could not resolve find_effect argument to type/subtype." );
   return spelleffect_data_t::nil();
 }
 
@@ -1634,7 +1637,7 @@ public:
     }
     else
     {
-      assert( false );
+      static_assert( static_false<T>, "Not a valid member of druid_td_t" );
       return nullptr;
     }
   }

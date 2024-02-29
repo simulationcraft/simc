@@ -70,6 +70,9 @@ struct pack_t
   unsigned mask = 0U;
 };
 
+template <typename>
+static constexpr bool static_false = false;
+
 struct parse_effects_t
 {
   parse_effects_t() = default;
@@ -153,7 +156,7 @@ struct parse_effects_t
           tmp.data.use_stacks = false;
           break;
         default:
-          assert( false && "Invalid parse flag for parse_spell_effect_mods" );
+          break;
       }
     }
     else if constexpr ( std::is_floating_point_v<T> )
@@ -167,7 +170,7 @@ struct parse_effects_t
     }
     else
     {
-      assert( false && "Invalid mod type for parse_spell_effect_mods" );
+      static_assert( static_false<T>, "Invalid mod type for parse_spell_effect_mods" );
     }
   }
 
@@ -519,6 +522,7 @@ public:
     }
     else
     {
+      static_assert( static_false<T>, "Invalid data type for resolve_parse_data" );
       return nullptr;
     }
   }
