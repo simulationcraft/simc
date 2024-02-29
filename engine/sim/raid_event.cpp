@@ -1653,6 +1653,7 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
     affected_role( ROLE_NONE ),
     player_if_expr_str(),
     saved_duration( timespan_t::zero() ),
+    saved_cooldown( timespan_t::zero() ),
     player_expressions(),
     is_up( false ),
     activation_status( activation_status_e::not_yet_activated ),
@@ -2017,6 +2018,7 @@ void raid_event_t::schedule()
 
       if ( raid_event->activation_status == activation_status_e::activated )
       {
+        raid_event->saved_cooldown = ct;
         raid_event->cooldown_event = make_event<cooldown_event_t>( sim(), sim(), raid_event, ct );
       }
       else
@@ -2381,10 +2383,10 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
   }
 
   if ( filter == "duration" )
-    return e->duration_time().total_seconds();
+    return e->saved_duration.total_seconds() != 0.0 ? e->saved_duration.total_seconds() : e->duration.total_seconds();
 
   if ( filter == "cooldown" )
-    return e->cooldown_time().total_seconds();
+    return e->saved_cooldown.total_seconds() != 0.0 ? e->saved_cooldown.total_seconds() : e->cooldown.total_seconds();
 
   if ( filter == "distance" )
     return e->distance_max;
