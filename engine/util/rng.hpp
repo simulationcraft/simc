@@ -270,10 +270,13 @@ template <typename Engine>
 double basic_rng_t<Engine>::gauss_ab( double mean, double stddev, double min, double max )
 {
   assert( stddev >= 0.0 && "Stddev must be non-negative." );
-  assert( min < max && "Minimum must be less than maximum." );
+  assert( min <= max && "Minimum must be less than or equal to maximum." );
   assert( mean >= min && mean <= max && "Mean must be contained within the interval [min, max]" );
 
   if ( stddev == 0.0 )
+    return mean;
+
+  if ( min == max )
     return mean;
 
   double min_cdf      = stdnormal_cdf( ( min - mean ) / stddev );

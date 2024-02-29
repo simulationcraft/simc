@@ -2040,6 +2040,7 @@ void raid_event_t::reset()
   event_t::cancel( duration_event );
   event_t::cancel( start_event );
   event_t::cancel( end_event );
+
   affected_players.clear();
 }
 
