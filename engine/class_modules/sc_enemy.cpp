@@ -1515,6 +1515,16 @@ void enemy_t::add_tank_heal_raid_event( tank_dummy_e tank_dummy )
     throw std::invalid_argument( "Cooldown lower than cooldown standard deviation." );
   }
 
+  if ( raid_event->cooldown_min == timespan_t::zero() )
+    raid_event->cooldown_min = raid_event->cooldown * 0.5;
+  if ( raid_event->cooldown_max == timespan_t::zero() )
+    raid_event->cooldown_max = raid_event->cooldown * 1.5;
+
+  if ( raid_event->duration_min == timespan_t::zero() )
+    raid_event->duration_min = raid_event->duration * 0.5;
+  if ( raid_event->duration_max == timespan_t::zero() )
+    raid_event->duration_max = raid_event->duration * 1.5;
+
   sim->print_debug( "Successfully created '{}'.", *( raid_event.get() ) );
   sim->raid_events.push_back( std::move( raid_event ) );
 }
