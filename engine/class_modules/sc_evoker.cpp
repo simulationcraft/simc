@@ -3053,6 +3053,14 @@ struct disintegrate_t : public essence_spell_t
       p()->cooldown.fire_breath->adjust( cdr );
     }
   }
+
+  void last_tick( dot_t* d ) override
+  {
+    essence_spell_t::last_tick( d );
+
+    p()->buff.essence_burst_titanic_wrath_disintegrate->expire();
+    p()->buff.iridescence_blue_disintegrate->expire();
+  }
 };
 
 struct expunge_t : public evoker_spell_t
