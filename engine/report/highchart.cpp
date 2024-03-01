@@ -117,7 +117,7 @@ sc_js_t& highchart::theme( sc_js_t& json, highchart_theme_e theme )
   // json.set( "subtitle.style.textShadow", TEXT_OUTLINE );
 
   json.set( "tooltip.backgroundColor", "#3F3E38" );
-  json.set( "tooltip.borderWidth", "1" );
+  json.set( "tooltip.borderWidth", 1 );
   json.set( "tooltip.style.fontSize", "12px" );
   json.set( "tooltip.style.color", _text_color );
 
@@ -129,6 +129,7 @@ sc_js_t& highchart::theme( sc_js_t& json, highchart_theme_e theme )
 
   json.set( "plotOptions.pie.dataLabels.enabled", true );
   json.set( "plotOptions.pie.fillOpacity", 0.2 );
+  json.set( "plotOptions.pie.borderRadius", 0 );
 
   json.set( "plotOptions.bar.borderWidth", 0 );
   json.set( "plotOptions.bar.pointWidth", 18 );
