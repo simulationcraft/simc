@@ -279,7 +279,7 @@ double basic_rng_t<Engine>::gauss_ab( double mean, double stddev, double min, do
   }
 
   if ( min == max )
-    return mean;
+    return min;
 
   double min_cdf      = stdnormal_cdf( ( min - mean ) / stddev );
   double max_cdf      = stdnormal_cdf( ( max - mean ) / stddev );
