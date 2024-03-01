@@ -1487,9 +1487,9 @@ void anima_field_emitter( special_effect_t& effect )
       timespan_t buff_duration = max_duration;
       if ( listener->sim->shadowlands_opts.anima_field_emitter_mean != std::numeric_limits<double>::max() )
       {
-        double new_duration = rng().gauss( listener->sim->shadowlands_opts.anima_field_emitter_mean,
-            listener->sim->shadowlands_opts.anima_field_emitter_stddev );
-        buff_duration = timespan_t::from_seconds( clamp( new_duration, 0.0, max_duration.total_seconds() ) );
+        buff_duration = timespan_t::from_seconds( listener->sim->rng().gauss_ab( listener->sim->shadowlands_opts.anima_field_emitter_mean,
+                                                                                  listener->sim->shadowlands_opts.anima_field_emitter_stddev,
+                                                                                 0.0, max_duration.total_seconds() ) );
       }
 
       if ( buff_duration > timespan_t::zero() )

@@ -59,6 +59,7 @@ public:
   std::string player_if_expr_str;
 
   timespan_t saved_duration;
+  timespan_t saved_cooldown;
   std::vector<player_t*> affected_players;
   std::unordered_map<size_t, std::unique_ptr<expr_t>> player_expressions;
   std::vector<std::unique_ptr<option_t>> options;

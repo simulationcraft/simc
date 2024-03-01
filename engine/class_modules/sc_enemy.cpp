@@ -986,18 +986,12 @@ struct pause_action_t : public action_t
 
   timespan_t execute_time() const override
   {
-    timespan_t duration = sim->rng().gauss( base_execute_time, duration_stddev );
-
-    duration = clamp( duration, duration_min, duration_max );
-
-    return duration;
+    return sim->rng().gauss_ab( base_execute_time, duration_stddev, duration_min, duration_max );
   }
 
   void update_ready( timespan_t /* cd_duration */ ) override
   {
-    timespan_t cd = sim->rng().gauss( cooldown->duration, cooldown_stddev );
-
-    cd = clamp( cd, cooldown_min, cooldown_max );
+    timespan_t cd = sim->rng().gauss_ab( cooldown->duration, cooldown_stddev, cooldown_min, cooldown_max );
 
     action_t::update_ready( cd );
   }

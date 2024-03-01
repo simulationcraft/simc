@@ -1653,6 +1653,7 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
     affected_role( ROLE_NONE ),
     player_if_expr_str(),
     saved_duration( timespan_t::zero() ),
+    saved_cooldown( timespan_t::zero() ),
     player_expressions(),
     is_up( false ),
     activation_status( activation_status_e::not_yet_activated ),
@@ -1697,9 +1698,7 @@ timespan_t raid_event_t::cooldown_time()
   }
   else
   {
-    time = sim->rng().gauss( cooldown, cooldown_stddev );
-
-    time = clamp( time, cooldown_min, cooldown_max );
+    time = sim->rng().gauss_ab( cooldown, cooldown_stddev, cooldown_min, cooldown_max );
   }
 
   return time;
@@ -1707,11 +1706,7 @@ timespan_t raid_event_t::cooldown_time()
 
 timespan_t raid_event_t::duration_time()
 {
-  timespan_t time = sim->rng().gauss( duration, duration_stddev );
-
-  time = clamp( time, duration_min, duration_max );
-
-  return time;
+  return sim->rng().gauss_ab( duration, duration_stddev, duration_min, duration_max );
 }
 
 timespan_t raid_event_t::next_time() const
@@ -2023,6 +2018,7 @@ void raid_event_t::schedule()
 
       if ( raid_event->activation_status == activation_status_e::activated )
       {
+        raid_event->saved_cooldown = ct;
         raid_event->cooldown_event = make_event<cooldown_event_t>( sim(), sim(), raid_event, ct );
       }
       else
@@ -2046,6 +2042,7 @@ void raid_event_t::reset()
   event_t::cancel( duration_event );
   event_t::cancel( start_event );
   event_t::cancel( end_event );
+
   affected_players.clear();
 }
 
@@ -2386,10 +2383,10 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
   }
 
   if ( filter == "duration" )
-    return e->duration_time().total_seconds();
+    return e->saved_duration.total_seconds() != 0.0 ? e->saved_duration.total_seconds() : e->duration.total_seconds();
 
   if ( filter == "cooldown" )
-    return e->cooldown_time().total_seconds();
+    return e->saved_cooldown.total_seconds() != 0.0 ? e->saved_cooldown.total_seconds() : e->cooldown.total_seconds();
 
   if ( filter == "distance" )
     return e->distance_max;
