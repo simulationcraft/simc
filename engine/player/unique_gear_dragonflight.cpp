@@ -379,7 +379,7 @@ void chilled_clarity( special_effect_t& effect )
     return;
 
   auto buff = create_buff<buff_t>( effect.player, effect.trigger() );
-  buff->set_default_value_from_effect_type( A_355 )
+  buff->set_default_value_from_effect_type( A_HASTE_SPELLS )
       ->set_duration( timespan_t::from_seconds( effect.driver()->effectN( 1 ).base_value() ) )
       ->set_duration_multiplier( inhibitor_mul( effect.player ) );
 
