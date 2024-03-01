@@ -202,6 +202,7 @@ struct simplified_player_t : public player_t
       double value;
       timespan_t duration;
       timespan_t cooldown;
+      timespan_t delay_from_start;
     };
 
     role_e role;
@@ -225,23 +226,23 @@ struct simplified_player_t : public player_t
       { "tank",    { ROLE_TANK,  5,   true, 1.5_s, 0.45, -1, 8, 1, {} } },  // 157k
       { "healer",  { ROLE_HEAL,  2.5, true, 1.5_s, 0.25,  -1, 5, 1, {} } }, // 78.5k
       { "shadow",  { ROLE_SPELL, 5.7, true, 1.5_s, 0.45,  -1, 8, 1, {       // 244.3k
-          { "two_mins_cds", 0.6, 20_s, 120_s },
-          { "one_mins_cds", 0.5, 20_s,  60_s } } } },
+          { "two_mins_cds", 0.6, 20_s, 120_s, 3_s },
+          { "one_mins_cds", 0.5, 20_s,  60_s, 3_s } } } },
       { "bm",      { ROLE_SPELL, 6.2, true, 1.5_s, 0.4,  -1, 8, 1, {        // 243.6k
-          { "two_mins_cds", 0.5,  20_s, 120_s },
-          { "30s_cds",      0.25, 15_s,  30_s } } } },
+          { "two_mins_cds", 0.5,  20_s, 120_s, 3_s },
+          { "30s_cds",      0.25, 15_s,  30_s, 3_s } } } },
       { "assa",    { ROLE_SPELL, 2.75, false, 1_s, 0.5,  -1, 8, 1, {        // 236k
           { "ten_mins_cds", 0.2,  40_s, 600_s },
-          { "two_mins_cds", 1.25, 20_s, 120_s },
-          { "one_mins_cds", 1.1,  14_s,  60_s } } } },
+          { "two_mins_cds", 1.25, 20_s, 120_s, 6_s },
+          { "one_mins_cds", 1.1,  14_s,  60_s, 7_s } } } },
       { "unh",     { ROLE_SPELL, 3.3, true, 1.5_s, 0.2,  -1, 8, 1, {        // 250k
-          { "three_mins_cds", 1.2,  29_s, 180_s },
-          { "90s_cds", 0.25, 20_s, 90_s },
-          { "45s_cds", 1.4,  20_s,  45_s } } } },
+          { "three_mins_cds", 1.2,  29_s, 180_s, 6_s },
+          { "90s_cds", 0.25, 20_s, 90_s, 7_s },
+          { "45s_cds", 1.4,  20_s,  45_s ,8_s } } } },
       // Could probably use some RNG in the 40s cds to better emulate the 30-40s variance in use timing
       { "dk_frost",{ ROLE_SPELL, 7.25, true, 1.5_s, 0.2,  -1, 8, 1, {        // 260k
-          { "two_mins_cds", 0.2,  20_s, 120_s },
-          { "40s_cds", 0.25, 12_s, 34_s } } } },
+          { "two_mins_cds", 0.2,  20_s, 120_s, 3_s },
+          { "40s_cds", 0.25, 12_s, 34_s, 3_s } } } },
   };
 
   simplified_player_t( sim_t* sim, std::string_view name, race_e r = RACE_HUMAN )
@@ -254,7 +255,7 @@ struct simplified_player_t : public player_t
     ready_type = READY_TRIGGER;
   }
 
-  buff_t* make_damage_buff( std::string_view name, double value, timespan_t duration, timespan_t cooldown )
+  buff_t* make_damage_buff( std::string_view name, double value, timespan_t duration, timespan_t cooldown, timespan_t delay_from_start = 0_s )
   {
     buff_t* b = make_buff<simple_timed_buff_t>( this, name );
 
@@ -265,12 +266,16 @@ struct simplified_player_t : public player_t
 
     damage_buffs.push_back( b );
 
+    register_combat_begin( [ this, b, delay_from_start ]( player_t* ) {
+      make_event( sim, delay_from_start, [ this, b ]() { b->trigger(); } );
+    } );
+
     return b;
   }
 
   buff_t* make_damage_buff( bob_settings_t::bob_buff_t b )
   {
-    return make_damage_buff( b.name, b.value, b.duration, b.cooldown );
+    return make_damage_buff( b.name, b.value, b.duration, b.cooldown, b.delay_from_start );
   }
 
   void make_damage_buffs( bob_settings_t s )
@@ -354,12 +359,6 @@ struct simplified_player_t : public player_t
     player_t::init_finished();
 
     register_combat_begin( snapshot_stats );
-    register_combat_begin( [ this ]( player_t* ) {
-      for ( auto* b : damage_buffs )
-      {
-        b->trigger();
-      }
-    } );
 
     matching_gear = true;
   }
