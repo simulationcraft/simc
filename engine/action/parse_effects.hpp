@@ -70,9 +70,6 @@ struct pack_t
   unsigned mask = 0U;
 };
 
-template <typename>
-static constexpr bool static_false = false;
-
 struct parse_effects_t
 {
   parse_effects_t() = default;

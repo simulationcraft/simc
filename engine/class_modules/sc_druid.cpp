@@ -287,9 +287,6 @@ struct druid_action_state_t : public Base, public Data
 };
 
 // Static helper functions
-template <typename>
-static constexpr bool static_false = false;
-
 template <typename V>
 static const spell_data_t* resolve_spell_data( V data )
 {

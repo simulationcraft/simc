@@ -644,4 +644,8 @@ private:
   T _M_t;  // exposition only
 };
 
+// workaround to allow static_assert( false ) for if constexpr branches
+template <typename>
+static constexpr bool static_false = false;
+
 #endif  // SC_GENERIC_HPP
