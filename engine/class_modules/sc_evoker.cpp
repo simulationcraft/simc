@@ -216,31 +216,33 @@ struct simplified_player_t : public player_t
     int reduced_aoe_targets;
     int full_amount_targets;
 
+    double flat_damage_per_hit;
+
     std::vector<bob_buff_t> buffs;
   };
 
   std::string variant;
   
   std::map<std::string, bob_settings_t> bob_settings = {
-      { "default", { ROLE_SPELL, 8,   true, 1.5_s, 0.40, -1, 8, 1, {} } },  // 251k
-      { "tank",    { ROLE_TANK,  5,   true, 1.5_s, 0.45, -1, 8, 1, {} } },  // 157k
-      { "healer",  { ROLE_HEAL,  2.5, true, 1.5_s, 0.25,  -1, 5, 1, {} } }, // 78.5k
-      { "shadow",  { ROLE_SPELL, 5.7, true, 1.5_s, 0.45,  -1, 8, 1, {       // 244.3k
+      { "default", { ROLE_SPELL, 7.4,  true, 1.5_s, 0.40,  -1, 8, 1, 14100.0, {} } }, // 251.2k
+      { "tank",    { ROLE_TANK,  4.4,  true, 1.5_s, 0.45,  -1, 8, 1, 14100.0, {} } }, // 156.9k
+      { "healer",  { ROLE_HEAL,  1.9,  true, 1.5_s, 0.25,  -1, 5, 1, 14100.0, {} } }, // 78.3k
+      { "shadow",  { ROLE_SPELL, 5.27, true, 1.5_s, 0.45,  -1, 8, 1, 14100.0, {       // 244.8k
           { "two_mins_cds", 0.6, 20_s, 120_s, 3_s },
           { "one_mins_cds", 0.5, 20_s,  60_s, 3_s } } } },
-      { "bm",      { ROLE_SPELL, 6.2, true, 1.5_s, 0.4,  -1, 8, 1, {        // 243.6k
+      { "bm",      { ROLE_SPELL, 5.92, true, 1.5_s, 0.4,  -1, 8, 1, 8400.0, {         // 243.5k
           { "two_mins_cds", 0.5,  20_s, 120_s, 3_s },
           { "30s_cds",      0.25, 15_s,  30_s, 3_s } } } },
-      { "assa",    { ROLE_SPELL, 2.75, false, 1_s, 0.5,  -1, 8, 1, {        // 236k
+      { "assa",    { ROLE_SPELL, 2.47, false, 1_s, 0.5,  -1, 8, 1, 11100.0, {         // 233.6k
           { "ten_mins_cds", 0.2,  40_s, 600_s },
           { "two_mins_cds", 1.25, 20_s, 120_s, 6_s },
           { "one_mins_cds", 1.1,  14_s,  60_s, 7_s } } } },
-      { "unh",     { ROLE_SPELL, 3.3, true, 1.5_s, 0.2,  -1, 8, 1, {        // 250k
+      { "unh",     { ROLE_SPELL, 2.935, true, 1.5_s, 0.4,  -1, 8, 1, 22500.0, {       // 251.5k
           { "three_mins_cds", 1.2,  29_s, 180_s, 6_s },
           { "90s_cds", 0.25, 20_s, 90_s, 7_s },
           { "45s_cds", 1.4,  20_s,  45_s ,8_s } } } },
       // Could probably use some RNG in the 40s cds to better emulate the 30-40s variance in use timing
-      { "dk_frost",{ ROLE_SPELL, 7.25, true, 1.5_s, 0.2,  -1, 8, 1, {        // 260k
+      { "dk_frost",{ ROLE_SPELL, 6.83, true, 1.5_s, 0.4,  -1, 8, 1, 13900.0, {        // 262k
           { "two_mins_cds", 0.2,  20_s, 120_s, 3_s },
           { "40s_cds", 0.25, 12_s, 34_s, 3_s } } } },
   };
@@ -315,8 +317,34 @@ struct simplified_player_t : public player_t
 
   struct simple_ability_t : public spell_t
   {
-    simple_ability_t( player_t* p, bob_settings_t settings )
-      : spell_t( "simple_spell", p )
+    struct simple_proc_t : public spell_t
+    {
+      simple_proc_t( player_t* p, bob_settings_t settings ) : spell_t( "simple_proc", p )
+      {
+        background = true;
+
+        allow_class_ability_procs = false;
+        may_crit                  = true;
+
+        set_action_stats( settings );
+      }
+
+      void init() override
+      {
+        spell_t::init();
+        snapshot_flags &= ~STATE_MUL_PLAYER_DAM;
+      }
+
+      void set_action_stats( bob_settings_t settings )
+      {
+        school      = SCHOOL_MAGIC;
+        base_dd_min = base_dd_max = settings.flat_damage_per_hit;
+      }
+    };
+
+    action_t* damage_proc;
+
+    simple_ability_t( player_t* p, bob_settings_t settings ) : spell_t( "simple_spell", p ), damage_proc( nullptr )
     {
       background = repeating = true;
 
@@ -338,6 +366,12 @@ struct simplified_player_t : public player_t
       reduced_aoe_targets = settings.reduced_aoe_targets;
       full_amount_targets = settings.full_amount_targets;
       base_aoe_multiplier = settings.base_aoe_multiplier;
+
+      if ( settings.flat_damage_per_hit > 0.0 )
+      {
+        damage_proc = new simple_proc_t( player, settings );
+        add_child( damage_proc );
+      }
     }
 
     bool usable_moving() const override
@@ -352,6 +386,17 @@ struct simplified_player_t : public player_t
       // the started waiting trigger_ready would never function.
       player->started_waiting = sim->current_time();
     }
+
+    void impact( action_state_t* s )
+    {
+      spell_t::impact( s );
+
+      if ( s->chain_target == 0 && damage_proc )
+      {
+        damage_proc->execute_on_target( s->target );
+      }
+    }
+
   };
 
   void init_finished() override
