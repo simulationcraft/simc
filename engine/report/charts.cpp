@@ -474,7 +474,6 @@ void profilesets_insert_data( highchart::bar_chart_t& chart,
   {
     entry.set( "color", "#AA0000" );
     entry.set( "dataLabels.color", "#AA0000" );
-    entry.set( "dataLabels.style.fontWeight", "bold" );
   }
 
   double data_value = mean ? data.mean : data.median;
@@ -893,7 +892,7 @@ bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t& p, resou
 bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
 {
   pc.set_title( util::encode_html( p.name_str ) + " Spent Time" );
-  pc.set( "plotOptions.pie.dataLabels.format", "<b>{point.name}</b>: {point.y:.1f}s" );
+  pc.set( "plotOptions.pie.dataLabels.format", "{point.name}: {point.y:.1f}s" );
   if ( p.sim->player_no_pet_list.size() > 1 )
   {
     pc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
@@ -971,7 +970,7 @@ bool chart::generate_stats_sources( highchart::pie_chart_t& pc, const player_t& 
   }
 
   pc.set_title( title );
-  pc.set( "plotOptions.pie.dataLabels.format", "<b>{point.name}</b>: {point.percentage:.1f}%" );
+  pc.set( "plotOptions.pie.dataLabels.format", "{point.name}: {point.percentage:.1f}%" );
   if ( p.sim->player_no_pet_list.size() > 1 )
   {
     pc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
@@ -1267,8 +1266,6 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, std::
   bc.set( "plotOptions.bar.dataLabels.enabled", true );
   bc.set( "plotOptions.bar.dataLabels.align", "left" );
   bc.set( "plotOptions.bar.dataLabels.verticalAlign", "middle" );
-  bc.set( "plotOptions.bar.dataLabels.style.fontSize", "12px" );
-  bc.set( "plotOptions.bar.dataLabels.style.fontWeight", "none" );
   bc.set( "plotOptions.bar.dataLabels.style.textShadow", "none" );
 
   // Theme the candlebars
@@ -1773,8 +1770,6 @@ void chart::generate_profilesets_chart( highchart::bar_chart_t& chart, const sim
   chart.set( "plotOptions.bar.dataLabels.x", -data_label_width );
   chart.set( "plotOptions.bar.dataLabels.color", c.str() );
   chart.set( "plotOptions.bar.dataLabels.verticalAlign", "middle" );
-  chart.set( "plotOptions.bar.dataLabels.style.fontSize", "10pt" );
-  chart.set( "plotOptions.bar.dataLabels.style.fontWeight", "none" );
   chart.set( "plotOptions.bar.dataLabels.style.textShadow", "none" );
 
   chart.set( "xAxis.labels.style.color", c.str() );
