@@ -125,6 +125,7 @@ sc_js_t& highchart::theme( sc_js_t& json, highchart_theme_e theme )
   json.set( "plotOptions.series.dataLabels.style.color", _text_color );
   json.set( "plotOptions.series.dataLabels.style.fontSize", "12px" );
   json.set( "plotOptions.series.dataLabels.style.fontWeight", "normal" );
+  json.set( "plotOptions.series.dataLabels.style.textOutline", "none" );
   // json.set( "plotOptions.series.dataLabels.style.textShadow", TEXT_OUTLINE );
 
   json.set( "plotOptions.pie.dataLabels.enabled", true );
