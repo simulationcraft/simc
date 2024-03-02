@@ -132,9 +132,11 @@ sc_js_t& highchart::theme( sc_js_t& json, highchart_theme_e theme )
   json.set( "plotOptions.pie.borderRadius", 0 );
 
   json.set( "plotOptions.bar.borderWidth", 0 );
+  json.set( "plotOptions.bar.borderRadius", 0 );
   json.set( "plotOptions.bar.pointWidth", 18 );
 
   json.set( "plotOptions.column.borderWidth", 0 );
+  json.set( "plotOptions.column.borderRadius", 0 );
   json.set( "plotOptions.column.pointWidth", 8 );
 
   json.set( "plotOptions.area.lineWidth", 1.25 );
