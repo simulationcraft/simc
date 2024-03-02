@@ -122,6 +122,7 @@ sc_js_t& highchart::theme( sc_js_t& json, highchart_theme_e theme )
   json.set( "tooltip.style.color", _text_color );
 
   json.set( "plotOptions.series.shadow", true );
+  json.set( "plotOptions.series.tooltip.followPointer", true );
   json.set( "plotOptions.series.dataLabels.style.color", _text_color );
   json.set( "plotOptions.series.dataLabels.style.fontSize", "12px" );
   json.set( "plotOptions.series.dataLabels.style.fontWeight", "normal" );
