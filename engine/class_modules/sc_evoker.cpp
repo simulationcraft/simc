@@ -3044,12 +3044,22 @@ struct disintegrate_t : public essence_spell_t
 
   void execute() override
   {
+    action_state_t* state = get_state( pre_execute_state );
+
+    if ( !state )
+    {
+      snapshot_state( state, result_amount_type::NONE );
+      state->target = target;
+    }
+
+    timespan_t buff_duration = composite_dot_duration( state ) + 1_s;
+
     // trigger the buffs first so tick-zero can get buffed
     if ( p()->buff.essence_burst->check() )
-      p()->buff.essence_burst_titanic_wrath_disintegrate->trigger( num_ticks );
+      p()->buff.essence_burst_titanic_wrath_disintegrate->trigger( num_ticks, buff_duration );
 
     if ( p()->buff.iridescence_blue->check() )
-      p()->buff.iridescence_blue_disintegrate->trigger( num_ticks );
+      p()->buff.iridescence_blue_disintegrate->trigger( num_ticks, buff_duration );
 
     essence_spell_t::execute();
   }
@@ -3096,14 +3106,6 @@ struct disintegrate_t : public essence_spell_t
       p()->cooldown.eternity_surge->adjust( cdr );
       p()->cooldown.fire_breath->adjust( cdr );
     }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    essence_spell_t::last_tick( d );
-
-    p()->buff.essence_burst_titanic_wrath_disintegrate->expire();
-    p()->buff.iridescence_blue_disintegrate->expire();
   }
 };
 
