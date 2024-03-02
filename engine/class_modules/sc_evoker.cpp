@@ -3046,13 +3046,12 @@ struct disintegrate_t : public essence_spell_t
   {
     action_state_t* state = get_state( pre_execute_state );
 
-    if ( !state )
-    {
-      snapshot_state( state, result_amount_type::NONE );
-      state->target = target;
-    }
+    snapshot_state( state, result_amount_type::NONE );
+    state->target = target;
 
     timespan_t buff_duration = composite_dot_duration( state ) + 1_s;
+
+    action_state_t::release( state );
 
     // trigger the buffs first so tick-zero can get buffed
     if ( p()->buff.essence_burst->check() )
