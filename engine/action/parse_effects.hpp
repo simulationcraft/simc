@@ -124,11 +124,8 @@ struct parse_effects_t
       apply_affecting_mod( val, mastery, base, idx, tmp.list[ j ] );
   }
 
-  template <typename U>
-  void parse_spell_effect_mods( pack_t<U>& ) {}
-
   template <typename U, typename T>
-  void parse_spell_effect_mods( pack_t<U>& tmp, T mod )
+  void parse_spell_effect_mod( pack_t<U>& tmp, T mod )
   {
     if constexpr ( std::is_invocable_v<decltype( &spell_data_t::ok ), T> )
     {
@@ -171,11 +168,10 @@ struct parse_effects_t
     }
   }
 
-  template <typename U, typename T, typename... Ts>
-  void parse_spell_effect_mods( pack_t<U>& tmp, T mod, Ts... mods )
+  template <typename U, typename... Ts>
+  void parse_spell_effect_mods( pack_t<U>& tmp, Ts... mods )
   {
-    parse_spell_effect_mods( tmp, mod );
-    parse_spell_effect_mods( tmp, mods... );
+    ( parse_spell_effect_mod( tmp, mods ), ... );
   }
 };
 
