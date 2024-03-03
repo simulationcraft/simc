@@ -63,8 +63,7 @@ void sequence_t::init_finished()
   action_t::init_finished();
 
   // Clean-up invalid actions
-  sub_actions.erase( std::remove_if( sub_actions.begin(), sub_actions.end(), [] ( action_t* a ) { return a -> background; } ),
-                     sub_actions.end() );
+  range::erase_remove( sub_actions, []( action_t* a ) { return a->background; } );
 }
 
 // sequence_t::schedule_execute =============================================
@@ -186,8 +185,7 @@ void strict_sequence_t::init_finished()
   action_t::init_finished();
 
   // Clean-up invalid actions
-  sub_actions.erase( std::remove_if( sub_actions.begin(), sub_actions.end(), [] ( action_t* a ) { return a -> background; } ),
-                     sub_actions.end() );
+  range::erase_remove( sub_actions, []( action_t* a ) { return a->background; } );
 }
 
 void strict_sequence_t::cancel()

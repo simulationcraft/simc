@@ -222,8 +222,7 @@ std::string chart_t::to_string() const
 
   js_.Accept( writer );
   auto javascript = std::string{ b.GetStringView() };
-  javascript.erase( std::remove( javascript.begin(), javascript.end(), '\n' ),
-                    javascript.end() );
+  range::erase_remove( javascript, '\n' );
 
   auto out = fmt::memory_buffer();
   fmt::format_to( std::back_inserter( out ), "<div class=\"charts\" id=\"{}\" style=\"min-width: {}px;", id_str_,

@@ -3043,8 +3043,7 @@ std::string util::remove_special_chars( util::string_view s )
 {
   std::string r( s );
   // Allow alphanumeric characters, underscore and non-ASCII characters.
-  auto pred = [] ( char c ) { return !std::isalnum( c ) && c != '_' && (unsigned char)c < 128; };
-  r.erase( std::remove_if( r.begin(), r.end(), pred ), r.end() );
+  range::erase_remove( r, []( char c ) { return !std::isalnum( c ) && c != '_' && (unsigned char)c < 128; } );
   return r;
 }
 

@@ -1832,7 +1832,7 @@ public:
   void last_tick( dot_t* d ) override
   {
     assert( range::contains( *dot_list, d ) );
-    dot_list->erase( std::remove( dot_list->begin(), dot_list->end(), d ), dot_list->end() );
+    range::erase_remove( *dot_list, d );
 
     BASE::last_tick( d );
   }
@@ -3542,11 +3542,9 @@ struct ferocious_bite_t : public cat_finisher_t
     {
       target_cache.is_valid = false;
 
-      std::vector<player_t*>& tl = cat_attack_t::target_list();
+      auto& tl = cat_attack_t::target_list();
 
-      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) {
-        return !td( t )->dots.rip->is_ticking() || t == target;
-      } ), tl.end() );
+      range::erase_remove( tl, [ this ]( player_t* t ) { return !td( t )->dots.rip->is_ticking() || t == target; } );
 
       return tl;
     }
@@ -3981,11 +3979,9 @@ struct primal_wrath_t : public cat_finisher_t
     {
       target_cache.is_valid = false;
 
-      std::vector<player_t*>& tl = cat_attack_t::target_list();
+      auto& tl = cat_attack_t::target_list();
 
-      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) {
-        return !td( t )->dots.rip->is_ticking();
-      } ), tl.end() );
+      range::erase_remove( tl, [ this ]( player_t* t ) { return !td( t )->dots.rip->is_ticking(); } );
 
       return tl;
     }
@@ -4572,9 +4568,9 @@ struct mangle_t : public bear_attack_t
     {
       target_cache.is_valid = false;
 
-      std::vector<player_t*>& tl = base_t::target_list();
+      auto& tl = base_t::target_list();
 
-      tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+      range::erase_remove( tl, target );
 
       return tl;
     }
@@ -6196,10 +6192,10 @@ struct adaptive_swarm_t : public druid_spell_t
       // to explicitly remove it here as swarm should not pick an invulnerable target whenignore_invulnerable_targets is
       // enabled.
       if ( sim->ignore_invulnerable_targets && target->debuffs.invulnerable->check() )
-        tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+        range::erase_remove( tl, target );
 
       if ( exclude )
-        tl.erase( std::remove( tl.begin(), tl.end(), exclude ), tl.end() );
+        range::erase_remove( tl, exclude );
 
       if ( tl.empty() )
         return nullptr;
@@ -6264,7 +6260,7 @@ struct adaptive_swarm_t : public druid_spell_t
       auto tl = target_list();
 
       if ( exclude )
-        tl.erase( std::remove( tl.begin(), tl.end(), exclude ), tl.end() );
+        range::erase_remove( tl, exclude );
 
       if ( tl.empty() )
         return nullptr;

@@ -3706,7 +3706,7 @@ struct blade_flurry_attack_t : public rogue_attack_t
     rogue_attack_t::available_targets( tl );
 
     // Cannot hit the original target.
-    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) { return t == this->target; } ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }
@@ -5644,8 +5644,7 @@ struct black_powder_t: public rogue_attack_t
       rogue_attack_t::available_targets( tl );
 
       // Can only hit targets with the Find Weakness debuff
-      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) {
-        return !this->td( t )->debuffs.find_weakness->check(); } ), tl.end() );
+      range::erase_remove( tl, [ this ]( player_t* t ) { return !td( t )->debuffs.find_weakness->check(); } );
 
       return tl.size();
     }
@@ -6312,7 +6311,7 @@ struct caustic_spatter_t : public rogue_attack_t
     rogue_attack_t::available_targets( tl );
 
     // Cannot hit the original target.
-    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) { return t == this->target; } ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }

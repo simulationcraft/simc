@@ -403,7 +403,7 @@ struct malefic_rapture_t : public affliction_spell_t
   {
     affliction_spell_t::available_targets( tl );
 
-    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ) { return p()->get_target_data( target )->count_affliction_dots() == 0; } ), tl.end() );
+    range::erase_remove( tl, [ this ]( player_t* t ) { return p()->get_target_data( t )->count_affliction_dots() == 0; } );
 
     return tl.size();
   }

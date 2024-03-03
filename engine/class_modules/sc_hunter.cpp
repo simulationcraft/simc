@@ -2250,7 +2250,7 @@ struct beast_cleave_attack_t: public hunter_pet_action_t<hunter_pet_t, melee_att
     hunter_pet_action_t::available_targets( tl );
 
     // Cannot hit the original target.
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }
@@ -2308,7 +2308,7 @@ struct kill_cleave_t: public hunter_pet_action_t<hunter_pet_t, melee_attack_t>
     hunter_pet_action_t::available_targets( tl );
 
     // Cannot hit the original target.
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }

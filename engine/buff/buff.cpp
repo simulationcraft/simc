@@ -674,10 +674,9 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   if ( source )  // Player Buffs
   {
     // remove matching name from fallback buff list
-    auto &fl = player->fallback_buff_names;
-    fl.erase( std::remove_if( fl.begin(), fl.end(), [ name, source]( std::pair<std::string, player_t*> f ) {
+    range::erase_remove( player->fallback_buff_names, [ name, source ]( const auto& f ) {
       return f.first == name && f.second == source;
-    } ), fl.end() );
+    } );
     player->buff_list.push_back( this );
     cooldown = source->get_cooldown( "buff_" + name_str );
   }

@@ -4755,8 +4755,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
               evoker->allies_with_my_ebon.find_and_erase_unordered( target );
               if ( auto e = dynamic_cast<evoker_t*>( target ) )
               {
-                auto vec = e->allied_ebons_on_me;
-                vec.erase( std::remove( vec.begin(), vec.end(), b ), vec.end() );
+                range::erase_remove( e->allied_ebons_on_me, b );
               }
             }
             for ( auto& c : evoker->allied_ebon_callbacks )
