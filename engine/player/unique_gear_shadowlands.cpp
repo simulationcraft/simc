@@ -1452,7 +1452,9 @@ void grim_codex( special_effect_t& effect )
     size_t available_targets( std::vector< player_t* >& tl ) const override
     {
       proc_spell_t::available_targets( tl );
-      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) { return t == this->target; } ), tl.end() );
+
+      range::erase_remove( tl, target );
+
       return tl.size();
     }
   };
@@ -4945,9 +4947,9 @@ void judgment_of_the_arbiter( special_effect_t& effect )
     {
       proc_spell_t::available_targets( tl );
 
-      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* ) {
+      range::erase_remove( tl, [ this ]( player_t* ) {
         return !rng().roll( sim->shadowlands_opts.judgment_of_the_arbiter_arc_chance );
-      }), tl.end() );
+      } );
 
       return tl.size();
     }

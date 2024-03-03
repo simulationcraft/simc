@@ -438,7 +438,11 @@ struct seed_of_corruption_t : public warlock_spell_t
     }
 
     if ( valid_target )
-      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ){ return ( p()->get_target_data( target )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( target ) ); } ), tl.end() );
+    {
+      range::erase_remove( tl, [ this ]( player_t* t ) {
+        return ( td( t )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( t ) );
+      } );
+    }
 
     return tl.size();
   }

@@ -960,7 +960,7 @@ struct echoing_void_demise_t final : public priest_spell_t
 
     std::vector<player_t*>& tl = priest_spell_t::target_list();
 
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl;
   }

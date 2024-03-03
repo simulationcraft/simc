@@ -4525,8 +4525,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       if ( p()->talent.havoc.first_blood->ok() && !from_first_blood )
       {
         // Ensure the non-First Blood AoE spell doesn't hit the primary target
-        tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) { return t == this->target; } ),
-                  tl.end() );
+        range::erase_remove( tl, target );
       }
 
       return tl.size();

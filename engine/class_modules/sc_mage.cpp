@@ -3942,7 +3942,7 @@ struct shattered_ice_t final : public spell_t
   {
     spell_t::available_targets( tl );
 
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }
@@ -4318,7 +4318,7 @@ struct glacial_blast_t final : public spell_t
   {
     spell_t::available_targets( tl );
 
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }
@@ -5253,7 +5253,7 @@ struct splintering_ray_t final : public spell_t
   {
     spell_t::available_targets( tl );
 
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }

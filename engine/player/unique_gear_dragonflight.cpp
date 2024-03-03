@@ -2563,9 +2563,9 @@ void decoration_of_flame( special_effect_t& effect )
 
       auto& tl = proc_spell_t::target_list();
 
-      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* ) {
+      range::erase_remove( tl, [ this ]( player_t* ) {
         return rng().roll( sim->dragonflight_opts.decoration_of_flame_miss_chance );
-      } ), tl.end() );
+      } );
 
       return tl;
     }
@@ -2629,7 +2629,8 @@ void manic_grieftorch( special_effect_t& effect )
     size_t available_targets( std::vector< player_t* >& tl ) const override
     {
     proc_spell_t::available_targets( tl );
-    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t) {
+
+    range::erase_remove( tl, [ this ]( player_t* t) {
          if( t == target )
         {
           return false;
@@ -2639,7 +2640,7 @@ void manic_grieftorch( special_effect_t& effect )
           // Has very strange scaling behavior, where it scales with targets very slowly. Using this formula to reduce the cleave chance as target count increases
              return !rng().roll(0.2 * (sqrt(num_targets()) / num_targets()) );
         }
-      }), tl.end() );
+      });
 
       return tl.size();
     }
@@ -3867,10 +3868,9 @@ void iceblood_deathsnare( special_effect_t& effect )
 
       auto& tl = proc_spell_t::target_list();
 
-      tl.erase( std::remove_if(
-                    tl.begin(), tl.end(),
-                    [ this ]( player_t* t ) { return !player->get_target_data( t )->debuff.crystalline_web->up(); } ),
-                tl.end() );
+      range::erase_remove( tl, [ this ]( player_t* t ) {
+        return !player->get_target_data( t )->debuff.crystalline_web->up();
+      } );
 
       return tl;
     }
@@ -9797,7 +9797,7 @@ struct pestilent_plague_stone_aoe_t : public generic_aoe_proc_t
     generic_aoe_proc_t::available_targets( tl );
 
     // Remove the main target, this only hits everything else in range.
-    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) { return t == this->target; } ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }

@@ -5862,9 +5862,7 @@ struct epidemic_t final : public death_knight_spell_t
     death_knight_spell_t::available_targets( tl );
 
     // Remove enemies that are not affected by virulent plague
-    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ] ( player_t* t ) {
-      return ! this -> get_td( t ) -> dot.virulent_plague -> is_ticking();
-    } ), tl.end() );
+    range::erase_remove( tl, [ this ]( player_t* t ) { return !get_td( t )->dot.virulent_plague->is_ticking(); } );
 
     return tl.size();
   }
