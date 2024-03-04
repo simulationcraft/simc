@@ -1,3 +1,5 @@
+#pragma warning(push)
+#pragma warning(once: 4305)
 // Embellishment data, wow build 10.2.5.53584
 static const std::array<embellishment_data_t, 17> __ptr_embellishment_data { {
   { "Armor Spikes", 8188, 147859 },
@@ -19,3 +21,4 @@ static const std::array<embellishment_data_t, 17> __ptr_embellishment_data { {
   { "Verdant Tether", 9614, 180720 },
 } };
 
+#pragma warning(pop)

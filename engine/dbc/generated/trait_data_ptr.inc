@@ -1,3 +1,5 @@
+#pragma warning(push)
+#pragma warning(once: 4305)
 // Player trait definitions, wow build 10.2.5.53584
 static const std::array<trait_data_t, 2519> __ptr_trait_data_data { {
   { 1,  1, 112108, 90258, 2, 20, 117113, 384124,      0,      0,  8,  1,  -1,              "Armored to the Teeth", {   72,    0,    0,    0 }, {    0,    0,    0,    0 } },
@@ -3471,3 +3473,4 @@ static const std::array<uint16_t, 2519> __ptr_trait_spell_id_index { {
    2379,  2380,  2312,   682,   685,   574,   576,
 } };
 
+#pragma warning(pop)
