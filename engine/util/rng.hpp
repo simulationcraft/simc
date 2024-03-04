@@ -26,6 +26,9 @@
  */
 namespace rng {
 
+double stdnormal_cdf( double u );
+double stdnormal_inv( double u );
+
 /**\ingroup SC_RNG
  * @brief Random number generator wrapper around an rng engine
  *
@@ -65,20 +68,30 @@ public:
   /// Uniform distribution in the range [min..max)
   double range( double min, double max );
 
+  /// Uniform distribution in the range [0.0..max)
+  double range( double max );
+
   /// Uniform distribution in the range [min..max)
-  template <typename T, typename = std::enable_if_t<std::is_integral<T>::value>>
-  T range( T min, T max ) {
-    return static_cast<T>(range(static_cast<double>(min), static_cast<double>(max)));
+  template <typename T, typename = std::enable_if_t<std::numeric_limits<T>::is_integer>>
+  T range( T min, T max )
+  {
+    return static_cast<T>( std::floor( range( static_cast<double>( min ), static_cast<double>( max ) ) ) );
   }
 
-  /// Uniform distribution in the range [0..max)
-  template <typename T, typename = std::enable_if_t<std::is_integral<T>::value>>
-  T range( T max ) {
+  /// Uniform distribution in the range [0.0..max)
+  template <typename T, typename = std::enable_if_t<std::numeric_limits<T>::is_integer>>
+  T range( T max )
+  {
     return range<T>( T{}, max );
   }
 
   /// Gaussian Distribution
-  double gauss( double mean, double stddev, bool truncate_low_end = false );
+  double gauss( double mean, double stddev );
+
+  // Truncated Gaussian Distribution
+  double gauss_ab( double mean, double stddev, double min, double max );
+  double gauss_a( double mean, double stddev, double min );
+  double gauss_b( double mean, double stddev, double max );
 
   /// Exponential Distribution
   double exponential( double nu );
@@ -86,11 +99,30 @@ public:
   /// Exponentially Modified Gaussian Distribution
   double exgauss( double gauss_mean, double gauss_stddev, double exp_nu );
 
+  template <typename T, typename = std::enable_if_t<!std::numeric_limits<T>::is_signed>>
+  T gauss( T mean, T stddev )
+  {
+    return static_cast<T>( gauss_a( static_cast<double>( mean ), static_cast<double>( stddev ), 0.0 ) );
+  }
+
+  template <typename T, typename = std::enable_if_t<!std::numeric_limits<T>::is_signed>>
+  T exgauss( T gauss_mean, T gauss_stddev, T exp_nu )
+  {
+    return static_cast<T>( gauss_a( static_cast<double>( gauss_mean ), static_cast<double>( gauss_stddev ), 0.0 ) +
+                           exponential( static_cast<double>( exp_nu ) ) );
+  }
+
   /// Timespan uniform distribution in the range [min..max)
   timespan_t range( timespan_t min, timespan_t max );
 
   /// Timespan Gaussian Distribution
   timespan_t gauss( timespan_t mean, timespan_t stddev );
+  timespan_t gauss_ab( timespan_t mean, timespan_t stddev, timespan_t min, timespan_t max );
+  timespan_t gauss_a( timespan_t mean, timespan_t stddev, timespan_t min );
+  timespan_t gauss_b( timespan_t mean, timespan_t stddev, timespan_t max );
+
+  /// Timespan Exponential Distribution
+  timespan_t exponential( timespan_t nu );
 
   /// Timespan exponentially Modified Gaussian Distribution
   timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu );
@@ -182,6 +214,14 @@ double basic_rng_t<Engine>::range( double min, double max )
   return min + real() * ( max - min );
 }
 
+/// Uniform distribution in the range [0.0..max)
+template <typename Engine>
+double basic_rng_t<Engine>::range( double max )
+{
+  assert( 0.0 <= max );
+  return real() * max;
+}
+
 /**
  * @brief Gaussian Distribution
  *
@@ -194,49 +234,70 @@ double basic_rng_t<Engine>::range( double min, double max )
  *     copyright notice is preserved.
  */
 template <typename Engine>
-double basic_rng_t<Engine>::gauss( double mean, double stddev, bool truncate_low_end )
+double basic_rng_t<Engine>::gauss( double mean, double stddev )
 {
   assert(stddev >= 0 && "Calling gauss with negative stddev");
 
-  double z;
+  if ( stddev == 0 )
+    return mean;
 
-  if ( stddev != 0 )
+  if ( gauss_pair_use )
   {
-    if ( gauss_pair_use )
-    {
-      z = gauss_pair_value;
-      gauss_pair_use = false;
-    }
-    else
-    {
-      double x1, x2, w, y1, y2;
-      do
-      {
-        x1 = 2.0 * real() - 1.0;
-        x2 = 2.0 * real() - 1.0;
-        w = x1 * x1 + x2 * x2;
-      }
-      while ( w >= 1.0 || w == 0.0 );
-
-      w = std::sqrt( ( -2.0 * std::log( w ) ) / w );
-      y1 = x1 * w;
-      y2 = x2 * w;
-
-      z = y1;
-      gauss_pair_value = y2;
-      gauss_pair_use = true;
-    }
+    gauss_pair_use = false;
+    return mean + gauss_pair_value * stddev;
   }
-  else
-    z = 0.0;
 
-  double result = mean + z * stddev;
+  double x1, x2, w, y1, y2;
+  do
+  {
+    x1 = 2.0 * real() - 1.0;
+    x2 = 2.0 * real() - 1.0;
+    w = x1 * x1 + x2 * x2;
+  }
+  while ( w >= 1.0 || w == 0.0 );
 
-  // True gaussian distribution can of course yield any number at some probability.  So truncate on the low end.
-  if ( truncate_low_end && result < 0 )
-    result = 0;
+  w = std::sqrt( ( -2.0 * std::log( w ) ) / w );
+  y1 = x1 * w;
+  y2 = x2 * w;
 
-  return result;
+  gauss_pair_value = y2;
+  gauss_pair_use = true;
+
+  return mean + y1 * stddev;
+}
+
+template <typename Engine>
+double basic_rng_t<Engine>::gauss_ab( double mean, double stddev, double min, double max )
+{
+  assert( stddev >= 0.0 && "Stddev must be non-negative." );
+  assert( min <= max && "Minimum must be less than or equal to maximum." );
+
+  if ( stddev == 0.0 )
+  {
+    assert( mean >= min && mean <= max && "Mean must be contained within the interval [min, max]" );
+    return mean;
+  }
+
+  if ( min == max )
+    return min;
+
+  double min_cdf      = stdnormal_cdf( ( min - mean ) / stddev );
+  double max_cdf      = stdnormal_cdf( ( max - mean ) / stddev );
+  double uniform      = real();
+  double rescaled_cdf = min_cdf + uniform * ( max_cdf - min_cdf );
+  return mean + stddev * stdnormal_inv( rescaled_cdf );
+}
+
+template <typename Engine>
+double basic_rng_t<Engine>::gauss_a( double mean, double stddev, double min )
+{
+  return gauss_ab( mean, stddev, min, std::numeric_limits<double>::infinity() );
+}
+
+template <typename Engine>
+double basic_rng_t<Engine>::gauss_b( double mean, double stddev, double max )
+{
+  return gauss_ab( mean, stddev, -std::numeric_limits<double>::infinity(), max );
 }
 
 /// Exponential Distribution
@@ -244,7 +305,7 @@ template <typename Engine>
 double basic_rng_t<Engine>::exponential( double nu )
 {
   double x;
-  do { x = real(); } while ( x >= 1.0 ); // avoid ln(0)
+  do { x = real(); } while ( x >= 1.0 ); // avoid ln(k) where k <= 0. this should be guaranteed by `real()`, but just in case
   return - std::log( 1 - x ) * nu;
 }
 
@@ -252,8 +313,7 @@ double basic_rng_t<Engine>::exponential( double nu )
 template <typename Engine>
 double basic_rng_t<Engine>::exgauss( double gauss_mean, double gauss_stddev, double exp_nu )
 {
-  double v = gauss( gauss_mean, gauss_stddev ) + exponential( exp_nu );
-  return v > 0.0 ? v : 0.0;
+  return gauss( gauss_mean, gauss_stddev ) + exponential( exp_nu );
 }
 
 /// Timespan uniform distribution in the range [min..max)
@@ -267,17 +327,48 @@ timespan_t basic_rng_t<Engine>::range( timespan_t min, timespan_t max )
 template <typename Engine>
 timespan_t basic_rng_t<Engine>::gauss( timespan_t mean, timespan_t stddev )
 {
-  return timespan_t::from_native( gauss( static_cast<double>( timespan_t::to_native( mean ) ),
-                                         static_cast<double>( timespan_t::to_native( stddev ) ) ) );
+  return timespan_t::from_native( gauss_a( static_cast<double>( timespan_t::to_native( mean ) ),
+                                           static_cast<double>( timespan_t::to_native( stddev ) ),
+                                           0.0 ) );
+}
+
+template <typename Engine>
+timespan_t basic_rng_t<Engine>::gauss_ab( timespan_t mean, timespan_t stddev, timespan_t min, timespan_t max )
+{
+  return timespan_t::from_native( gauss_ab( static_cast<double>( timespan_t::to_native( mean ) ),
+                                            static_cast<double>( timespan_t::to_native( stddev ) ),
+                                            static_cast<double>( timespan_t::to_native( min ) ),
+                                            static_cast<double>( timespan_t::to_native( max ) ) ) );
+}
+
+template <typename Engine>
+timespan_t basic_rng_t<Engine>::gauss_a( timespan_t mean, timespan_t stddev, timespan_t min )
+{
+  return timespan_t::from_native( gauss_a( static_cast<double>( timespan_t::to_native( mean ) ),
+                                           static_cast<double>( timespan_t::to_native( stddev ) ),
+                                           static_cast<double>( timespan_t::to_native( min ) ) ) );
+}
+
+template <typename Engine>
+timespan_t basic_rng_t<Engine>::gauss_b( timespan_t mean, timespan_t stddev, timespan_t max )
+{
+  return timespan_t::from_native( gauss_ab( static_cast<double>( timespan_t::to_native( mean ) ),
+                                            static_cast<double>( timespan_t::to_native( stddev ) ),
+                                            0.0,
+                                            static_cast<double>( timespan_t::to_native( max ) ) ) );
+}
+
+template <typename Engine>
+timespan_t basic_rng_t<Engine>::exponential( timespan_t nu )
+{
+  return timespan_t::from_native( exponential( static_cast<double>( timespan_t::to_native( nu ) ) ) );
 }
 
 /// Timespan exponentially Modified Gaussian Distribution
 template <typename Engine>
 timespan_t basic_rng_t<Engine>::exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
 {
-  return timespan_t::from_native( exgauss( static_cast<double>( timespan_t::to_native( mean   ) ),
-                                           static_cast<double>( timespan_t::to_native( stddev ) ),
-                                           static_cast<double>( timespan_t::to_native( nu ) ) ) );
+  return gauss( mean, stddev ) + exponential( nu );
 }
 
 /// RNG Engines
@@ -335,8 +426,5 @@ private:
 // "Default" rng
 // Explicitly *NOT* a type alias to allow forward declaraions
 struct rng_t : public basic_rng_t<xoshiro256plus_t> {};
-
-double stdnormal_cdf( double );
-double stdnormal_inv( double );
 
 } // rng

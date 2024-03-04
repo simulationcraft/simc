@@ -403,7 +403,7 @@ struct malefic_rapture_t : public affliction_spell_t
   {
     affliction_spell_t::available_targets( tl );
 
-    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ) { return p()->get_target_data( target )->count_affliction_dots() == 0; } ), tl.end() );
+    range::erase_remove( tl, [ this ]( player_t* t ) { return p()->get_target_data( t )->count_affliction_dots() == 0; } );
 
     return tl.size();
   }
@@ -466,10 +466,12 @@ struct drain_soul_t : public affliction_spell_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    timespan_t dur = dot_duration * ( ( base_tick_time * s->haste ) / base_tick_time );
-
+    double modifier = 1.0;
+    
     if ( p()->buffs.nightfall->check() )
-      dur *= 1.0 + p()->talents.nightfall_buff->effectN( 4 ).percent();
+      modifier += p()->talents.nightfall_buff->effectN( 4 ).percent();
+
+    timespan_t dur = dot_duration * (( s->haste * modifier * base_tick_time ) / base_tick_time );
 
     return dur;
   }

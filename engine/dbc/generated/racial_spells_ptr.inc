@@ -1,4 +1,6 @@
-// Racial abilities, wow build 10.2.5.53262
+#pragma warning(push)
+#pragma warning(once: 4305)
+// Racial abilities, wow build 10.2.5.53584
 static const std::array<racial_spell_entry_t, 163> __ptr_racial_spell_data { {
   { 0x0000000000000001, 0x00000000,  20599, "Diplomacy"                          },
   { 0x0000000000000001, 0x00000000,  20598, "The Human Spirit"                   },
@@ -165,3 +167,4 @@ static const std::array<racial_spell_entry_t, 163> __ptr_racial_spell_data { {
   { 0x0000000080000000, 0x00000000, 291417, "Rime of the Ancient Mariner"        },
 } };
 
+#pragma warning(pop)

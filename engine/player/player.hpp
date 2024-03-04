@@ -717,6 +717,9 @@ struct player_t : public actor_t
     operator std::string_view() const { return current_value; }
 
     bool is_default() { return current_value == default_value; }
+
+    friend void sc_format_to( const player_option_t<T>& opt, fmt::format_context::iterator out )
+    { fmt::format_to( out, "{}", opt.current_value ); }
   };
 
   struct shadowlands_opt_t
@@ -1036,7 +1039,8 @@ public:
   virtual double composite_melee_haste() const;
   virtual double composite_melee_speed() const;
   virtual double composite_melee_attack_power() const;
-  virtual double composite_melee_attack_power_by_type(attack_power_type type ) const;
+  virtual double composite_weapon_attack_power_by_type( attack_power_type type ) const;
+  virtual double composite_total_attack_power_by_type( attack_power_type type ) const;
   virtual double composite_melee_hit() const;
   virtual double composite_melee_crit_chance() const;
   virtual double composite_melee_crit_chance_multiplier() const
@@ -1045,6 +1049,7 @@ public:
   virtual double composite_spell_haste() const;
   virtual double composite_spell_speed() const;
   virtual double composite_spell_power( school_e school ) const;
+  virtual double composite_total_spell_power( school_e school ) const;
   virtual double composite_spell_crit_chance() const;
   virtual double composite_spell_crit_chance_multiplier() const
   { return 1.0; }

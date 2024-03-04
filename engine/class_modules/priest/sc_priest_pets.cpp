@@ -218,14 +218,13 @@ struct priest_pet_melee_t : public melee_attack_t
   }
 };
 
-struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_td_t>
+struct priest_pet_spell_t : public parse_action_effects_t<spell_t, priest_pet_t, priest_td_t, priest_t>
 {
   bool affected_by_shadow_weaving;
   bool triggers_atonement;
 
   priest_pet_spell_t( util::string_view token, priest_pet_t& p, const spell_data_t* s )
-    : spell_t( token, &p, s ),
-      parse_buff_effects_t( this ),
+    : ab( token, &p, s ),
       affected_by_shadow_weaving( false ),
       triggers_atonement( false )
   {
@@ -238,32 +237,43 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
     }
   }
 
-  // Syntax: parse_buff_effects( buff[, ignore_mask|use_stacks[, value_type]][, spell][,...] )
-  //  buff = buff to be checked for to see if effect applies
-  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit, must be typed as unsigned
-  //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore
-  //  parameters value_type = optional, default USE_DATA, where the value comes from.
-  //               USE_DATA = spell data, USE_DEFAULT = buff default value, USE_CURRENT = buff current value
-  //  spell = optional list of spell with redirect effects that modify the effects on the buff
+  // Syntax: parse_effects( data[, spells|condition|ignore_mask|flags|spells][,...] )
+  //   (buff_t*) or
+  //   (const spell_data_t*)   data: Buff or spell to be checked for to see if effect applies. If buff is used, effect
+  //                                 will require the buff to be active. If spell is used, effect will always apply
+  //                                 unless an optional condition function is provided.
+  //
+  // The following optional arguments can be used in any order:
+  //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the buff
+  //   (bool F())         condition: Function that takes no arguments and returns true if the effect should apply
+  //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
+  //   (parse_flag_e)         flags: Various flags to control how the value is calculated when the action executes
+  //                    USE_DEFAULT: Use the buff's default value instead of spell effect data value
+  //                    USE_CURRENT: Use the buff's current value instead of spell effect data value
+  //                  IGNORE_STACKS: Ignore stacks of the buff and don't multiply the value
   //
   // Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
-  //  parse_buff_effects<S,S>( buff1, 0b10101U, talent1, tier1 );
+  //   parse_effects( buff1, 0b10101U, talent1, tier1 );
   //
   // Example 2: Parse buff2, don't multiply by stacks, use the default value set on the buff instead of effect value:
-  //  parse_buff_effects( buff2, false, USE_DEFAULT );
+  //   parse_effects( buff2, false, USE_DEFAULT );
+  //
+  // Example 3: Parse spell1, modify by talent1, only apply if my_player_t::check1() returns true:
+  //   parse_effects( spell1, talent1, &my_player_t::check1 );
+  //
+  // Example 4: Parse buff3, only apply if my_player_t::check2() and my_player_t::check3() returns true:
+  //   parse_effects( buff3, [ this ] { return p()->check2() && p()->check3(); } );
+
   void apply_buff_effects()
   {
-    // using S = const spell_data_t*;
-
-    parse_buff_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
+    parse_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
 
     if ( p().o().specialization() == PRIEST_SHADOW )
     {
-      parse_buff_effects( p().o().buffs.voidform, 0x4U, false, USE_DATA );  // Skip E3 for AM
-      parse_buff_effects( p().o().buffs.shadowform );
-      parse_buff_effects( p().o().buffs.devoured_pride );
-      parse_buff_effects( p().o().buffs.dark_ascension, 0b1000U, false,
-                          USE_DATA );  // Buffs non-periodic spells - Skip E4
+      parse_effects( p().o().buffs.voidform, 0x4U, IGNORE_STACKS );  // Skip E3 for AM
+      parse_effects( p().o().buffs.shadowform );
+      parse_effects( p().o().buffs.devoured_pride );
+      parse_effects( p().o().buffs.dark_ascension, 0b1000U, IGNORE_STACKS );  // Buffs non-periodic spells - Skip E4
     }
 
     if ( p().o().talents.shadow.ancient_madness.enabled() )
@@ -271,22 +281,22 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
       // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
       if ( p().o().talents.shadow.dark_ascension.enabled() )
       {
-        parse_buff_effects( p().o().buffs.ancient_madness, 0b0001U, true, USE_DEFAULT );  // Skip E1
+        parse_effects( p().o().buffs.ancient_madness, 0b0001U, USE_DEFAULT );  // Skip E1
       }
       else
       {
-        parse_buff_effects( p().o().buffs.ancient_madness, 0b0011U, true, USE_DEFAULT );  // Skip E1 and E2
+        parse_effects( p().o().buffs.ancient_madness, 0b0011U, USE_DEFAULT );  // Skip E1 and E2
       }
     }
 
     // DISCIPLINE BUFF EFFECTS
     if ( p().o().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_buff_effects( p().o().buffs.shadow_covenant, 0U, false, USE_DEFAULT,
-                          p().o().talents.discipline.twilight_corruption );
+      parse_effects( p().o().buffs.shadow_covenant, IGNORE_STACKS, USE_DEFAULT,
+                     p().o().talents.discipline.twilight_corruption );
       // 280398 applies the buff to the correct spells, but does not contain the correct buff value
       // (12% instead of 40%) So, override to use our provided default_value (40%) instead
-      parse_buff_effects( p().o().buffs.sins_of_the_many, 0U, false, USE_CURRENT );
+      parse_effects( p().o().buffs.sins_of_the_many, IGNORE_STACKS, USE_DEFAULT );
     }
   }
   void apply_debuffs_effects()
@@ -296,7 +306,7 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
     // Doesn't work on the pet ayy lmao
     /*if ( p().o().specialization() == PRIEST_DISCIPLINE )
     {
-        parse_debuff_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); },
+        parse_target_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); },
     p().o().talents.discipline.schism_debuff );
     }*/
   }
@@ -310,52 +320,9 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
     return static_cast<priest_pet_t&>( *player );
   }
 
-  double cost() const override
-  {
-    double c = spell_t::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
-    return c;
-  }
-
-  double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    double ta = spell_t::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
-    return ta;
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double da = spell_t::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
-    return da;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = spell_t::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
-    return cc;
-  }
-
-  timespan_t execute_time() const override
-  {
-    timespan_t et = spell_t::execute_time() * get_buff_effects_value( execute_time_buffeffects );
-    return et;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    timespan_t dd = spell_t::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
-    return dd;
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double rm =
-        action_t::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects, false, false );
-    return rm;
-  }
-
   double composite_target_da_multiplier( player_t* t ) const override
   {
-    double tdm = action_t::composite_target_da_multiplier( t );
+    double tdm = ab::composite_target_da_multiplier( t );
 
     if ( affected_by_shadow_weaving )
     {
@@ -367,7 +334,7 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
 
   double composite_target_ta_multiplier( player_t* t ) const override
   {
-    double ttm = spell_t::composite_target_ta_multiplier( t );
+    double ttm = ab::composite_target_ta_multiplier( t );
 
     if ( affected_by_shadow_weaving )
     {
@@ -379,7 +346,7 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
 
   void impact( action_state_t* s ) override
   {
-    spell_t::impact( s );
+    ab::impact( s );
 
     if ( result_is_hit( s->result ) )
     {
@@ -388,10 +355,9 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
     }
   }
 
-  void html_customsection( report::sc_html_stream& os ) override
-  {
-    parsed_html_report( os );
-  }
+private:
+  // typedef for the templated action type, eg. spell_t, attack_t, heal_t
+  using ab = parse_action_effects_t<spell_t, priest_pet_t, priest_td_t, priest_t>;
 };
 
 namespace fiend
@@ -929,7 +895,7 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
 
     if ( p.o().bugs )
     {
-      da_multiplier_buffeffects.clear();  // This is in spelldata to scale with things but it does not in game
+      da_multiplier_effects.clear();  // This is in spelldata to scale with things but it does not in game
     }
   }
 

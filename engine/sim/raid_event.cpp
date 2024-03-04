@@ -37,6 +37,8 @@ struct adds_event_t final : public raid_event_t
   double spawn_x_coord;
   double spawn_y_coord;
   int spawn_stacked;
+  double spawn_radius_min;
+  double spawn_radius_max;
   double spawn_radius;
   double spawn_angle_start;
   double spawn_angle_end;
@@ -57,6 +59,8 @@ struct adds_event_t final : public raid_event_t
       spawn_x_coord( 0 ),
       spawn_y_coord( 0 ),
       spawn_stacked( 0 ),
+      spawn_radius_min( 0 ),
+      spawn_radius_max( 0 ),
       spawn_radius( 0 ),
       spawn_angle_start( -1 ),
       spawn_angle_end( -1 ),
@@ -73,6 +77,8 @@ struct adds_event_t final : public raid_event_t
     add_option( opt_float( "spawn_x", spawn_x_coord ) );
     add_option( opt_float( "spawn_y", spawn_y_coord ) );
     add_option( opt_int( "stacked", spawn_stacked ) );
+    add_option( opt_float( "spawn_distance_min", spawn_radius_min ) );
+    add_option( opt_float( "spawn_distance_max", spawn_radius_max ) );
     add_option( opt_float( "distance", spawn_radius ) );
     add_option( opt_float( "angle_start", spawn_angle_start ) );
     add_option( opt_float( "angle_end", spawn_angle_end ) );
@@ -80,8 +86,8 @@ struct adds_event_t final : public raid_event_t
     add_option( opt_string( "type", enemy_type_str ) );
     add_option( opt_bool( "same_duration", same_duration ) );
 
-    add_option( opt_deprecated( "min_distance", "distance_min" ) );
-    add_option( opt_deprecated( "max_distance", "distance_max" ) );
+    add_option( opt_deprecated( "min_distance", "spawn_distance_min" ) );
+    add_option( opt_deprecated( "max_distance", "spawn_distance_max" ) );
     parse_options( options_str );
 
     if ( !master_str.empty() )
@@ -159,12 +165,12 @@ struct adds_event_t final : public raid_event_t
 
     sim->add_waves++;
 
-    if ( fabs( spawn_radius ) > 0 || fabs( distance_max ) > 0 || fabs( distance_min ) > 0 )
+    if ( fabs( spawn_radius ) > 0 || fabs( spawn_radius_max ) > 0 || fabs( spawn_radius_min ) > 0 )
     {
       sim->distance_targeting_enabled = true;
       if ( fabs( spawn_radius ) > 0 )
       {
-        distance_min = distance_max = fabs( spawn_radius );
+        spawn_radius_min = spawn_radius_max = fabs( spawn_radius );
       }
 
       double tempangle;
@@ -292,14 +298,14 @@ struct adds_event_t final : public raid_event_t
         continue;
       }
 
-      if ( std::fabs( distance_max ) > 0 )
+      if ( std::fabs( spawn_radius_max ) > 0 )
       {
         if ( spawn_stacked == 0 || !offset_computed )
         {
           double angle_start = spawn_angle_start * ( m_pi / 180 );
           double angle_end   = spawn_angle_end * ( m_pi / 180 );
           double angle       = sim->rng().range( angle_start, angle_end );
-          double radius      = sim->rng().range( std::fabs( distance_min ), std::fabs( distance_max ) );
+          double radius      = sim->rng().range( std::fabs( spawn_radius_min ), std::fabs( spawn_radius_max ) );
           x_offset           = radius * cos( angle );
           y_offset           = radius * sin( angle );
           offset_computed    = true;
@@ -1054,6 +1060,8 @@ struct movement_event_t final : public raid_event_t
   movement_direction_type direction;
   std::string move_direction;
   double distance_range;
+  double move_distance_min;
+  double move_distance_max;
   double move;
   double avg_player_movement_speed;
 
@@ -1062,12 +1070,16 @@ struct movement_event_t final : public raid_event_t
       move_distance( 0 ),
       direction( movement_direction_type::TOWARDS ),
       distance_range( 0 ),
+      move_distance_min( 0 ),
+      move_distance_max( 0 ),
       move(),
       avg_player_movement_speed( 7.0 )
   {
     add_option( opt_float( "distance", move_distance ) );
     add_option( opt_string( "direction", move_direction ) );
     add_option( opt_float( "distance_range", distance_range ) );
+    add_option( opt_float( "move_distance_min", move_distance_min ) );
+    add_option( opt_float( "move_distance_max", move_distance_max ) );
     parse_options( options_str );
 
     if ( duration > timespan_t::zero() )
@@ -1081,7 +1093,7 @@ struct movement_event_t final : public raid_event_t
       sim->error(
           "{} average player movement time ({}) is longer than cooldown movement time ({}). "
           "Capping it the lower value.",
-          name, move_distance / avg_player_movement_speed, cooldown_move );
+          log_name(), move_distance / avg_player_movement_speed, cooldown_move );
       move_distance = cooldown_move * avg_player_movement_speed;
     }
 
@@ -1091,18 +1103,18 @@ struct movement_event_t final : public raid_event_t
       distance_range = ( max - cooldown_move ) * avg_player_movement_speed;
     }
 
-    if ( distance_max < distance_min )
+    if ( move_distance_max < move_distance_min )
     {
-      distance_max = distance_min;
+      move_distance_max = move_distance_min;
     }
 
-    if ( distance_max / avg_player_movement_speed > cooldown_move )
+    if ( move_distance_max / avg_player_movement_speed > cooldown_move )
     {
-      distance_max = cooldown_move * avg_player_movement_speed;
+      move_distance_max = cooldown_move * avg_player_movement_speed;
     }
-    if ( distance_min / avg_player_movement_speed > cooldown_move )
+    if ( move_distance_min / avg_player_movement_speed > cooldown_move )
     {
-      distance_min = cooldown_move * avg_player_movement_speed;
+      move_distance_min = cooldown_move * avg_player_movement_speed;
     }
 
     if ( move_distance > 0 )
@@ -1128,13 +1140,13 @@ struct movement_event_t final : public raid_event_t
     if ( distance_range > 0 )
     {
       move = sim->rng().range( move_distance - distance_range, move_distance + distance_range );
-      if ( move < distance_min )
-        move = distance_min;
-      else if ( move > distance_max )
-        move = distance_max;
+      if ( move < move_distance_min )
+        move = move_distance_min;
+      else if ( move > move_distance_max )
+        move = move_distance_max;
     }
-    else if ( distance_min > 0 || distance_max > 0 )
-      move = sim->rng().range( distance_min, distance_max );
+    else if ( move_distance_min > 0 || move_distance_max > 0 )
+      move = sim->rng().range( move_distance_min, move_distance_max );
     else
       move = move_distance;
 
@@ -1331,7 +1343,7 @@ struct heal_event_t final : public raid_event_t
         if ( to_pct_range > 0 )
           pct_actual = sim->rng().range( to_pct - to_pct_range, to_pct + to_pct_range );
 
-        sim->print_debug( "{} heals {} {}% ({}) of max health, current health {}", name, p->name(), pct_actual,
+        sim->print_debug( "{} heals {} {}% ({}) of max health, current health {}", log_name(), p->name(), pct_actual,
                           p->resources.max[ RESOURCE_HEALTH ] * pct_actual / 100,
                           p->resources.current[ RESOURCE_HEALTH ] );
 
@@ -1350,7 +1362,7 @@ struct heal_event_t final : public raid_event_t
         raid_heal->target                               = p;
         raid_heal->execute();
 
-        sim->print_log( "Event {} healed {} for '{}' (before player modifiers).", name, p->name(),
+        sim->print_log( "Event {} healed {} for '{}' (before player modifiers).", log_name(), p->name(),
                         amount_to_heal );
       }
     }
@@ -1383,7 +1395,7 @@ struct damage_taken_debuff_event_t final : public raid_event_t
   {
     for ( auto p : affected_players )
     {
-      sim->print_log( "{} gains {} stacks of damage_taken debuff from {}.", p->name(), amount, name );
+      sim->print_log( "{} gains {} stacks of damage_taken debuff from {}.", p->name(), amount, log_name() );
 
       if ( p->debuffs.damage_taken )
         p->debuffs.damage_taken->trigger( amount );
@@ -1653,6 +1665,7 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
     affected_role( ROLE_NONE ),
     player_if_expr_str(),
     saved_duration( timespan_t::zero() ),
+    saved_cooldown( timespan_t::zero() ),
     player_expressions(),
     is_up( false ),
     activation_status( activation_status_e::not_yet_activated ),
@@ -1697,9 +1710,7 @@ timespan_t raid_event_t::cooldown_time()
   }
   else
   {
-    time = sim->rng().gauss( cooldown, cooldown_stddev );
-
-    time = clamp( time, cooldown_min, cooldown_max );
+    time = sim->rng().gauss_ab( cooldown, cooldown_stddev, cooldown_min, cooldown_max );
   }
 
   return time;
@@ -1707,11 +1718,7 @@ timespan_t raid_event_t::cooldown_time()
 
 timespan_t raid_event_t::duration_time()
 {
-  timespan_t time = sim->rng().gauss( duration, duration_stddev );
-
-  time = clamp( time, duration_min, duration_max );
-
-  return time;
+  return sim->rng().gauss_ab( duration, duration_stddev, duration_min, duration_max );
 }
 
 timespan_t raid_event_t::next_time() const
@@ -1763,7 +1770,7 @@ bool raid_event_t::up() const
 
 void raid_event_t::start()
 {
-  sim->print_log( "{} starts.", name );
+  sim->print_log( "{} starts.", log_name() );
 
   num_starts++;
   is_up = true;
@@ -1785,7 +1792,7 @@ void raid_event_t::start()
       }
       catch ( const std::exception& e )
       {
-        sim->error( "{} player_if expression error '{}': {}", name, player_if_expr_str, e.what() );
+        sim->error( "{} player_if expression error '{}': {}", log_name(), player_if_expr_str, e.what() );
         sim->cancel();
       }
     }
@@ -1804,15 +1811,13 @@ void raid_event_t::start()
 void raid_event_t::finish()
 {
   // Make sure we dont have any players which were active on start, but are now sleeping
-  auto filter_sleeping = []( const player_t* p ) { return p->is_sleeping(); };
-  affected_players.erase( std::remove_if( affected_players.begin(), affected_players.end(), filter_sleeping ),
-      affected_players.end() );
+  range::erase_remove( affected_players, []( const player_t* p ) { return p->is_sleeping(); } );
 
   is_up = false;
 
   _finish();
 
-  sim->print_log( "{} finishes.", name );
+  sim->print_log( "{} finishes.", log_name() );
 
   if ( type == "pull" )
   {
@@ -1833,7 +1838,7 @@ void raid_event_t::activate( util::string_view reason )
 {
   if ( activation_status == activation_status_e::deactivated )
   {
-    sim->print_debug( "{} already deactivated. (last/last_pct happened before first/first_pct).", name );
+    sim->print_debug( "{} already deactivated. (last/last_pct happened before first/first_pct).", log_name() );
     return;
   }
   if ( activation_status == activation_status_e::activated )
@@ -1841,7 +1846,7 @@ void raid_event_t::activate( util::string_view reason )
     // Already activated, do nothing.
     return;
   }
-  sim->print_debug( "{} activated ({}).", name, reason );
+  sim->print_debug( "{} activated ({}).", log_name(), reason );
   activation_status = activation_status_e::activated;
   if ( type == "pull" )
     start();
@@ -1856,12 +1861,12 @@ void raid_event_t::activate( util::string_view reason )
  */
 void raid_event_t::deactivate( std::string_view reason )
 {
-  sim->print_debug( "{} deactivated ({}).", name, reason );
+  sim->print_debug( "{} deactivated ({}).", log_name(), reason );
   activation_status = activation_status_e::deactivated;
   event_t::cancel( cooldown_event );
   if ( force_stop )
   {
-    sim->print_debug( "{} is force stopped.", name );
+    sim->print_debug( "{} is force stopped.", log_name() );
     event_t::cancel( duration_event );
     finish();
   }
@@ -1965,7 +1970,7 @@ void raid_event_t::combat_begin()
 
 void raid_event_t::schedule()
 {
-  sim->print_debug( "Scheduling {}", name );
+  sim->print_debug( "Scheduling {}", log_name() );
 
   struct duration_event_t : public event_t
   {
@@ -2023,6 +2028,7 @@ void raid_event_t::schedule()
 
       if ( raid_event->activation_status == activation_status_e::activated )
       {
+        raid_event->saved_cooldown = ct;
         raid_event->cooldown_event = make_event<cooldown_event_t>( sim(), sim(), raid_event, ct );
       }
       else
@@ -2047,16 +2053,6 @@ void raid_event_t::reset()
   event_t::cancel( start_event );
   event_t::cancel( end_event );
 
-  if ( cooldown_min == timespan_t::zero() )
-    cooldown_min = cooldown * 0.5;
-  if ( cooldown_max == timespan_t::zero() )
-    cooldown_max = cooldown * 1.5;
-
-  if ( duration_min == timespan_t::zero() )
-    duration_min = duration * 0.5;
-  if ( duration_max == timespan_t::zero() )
-    duration_max = duration * 1.5;
-
   affected_players.clear();
 }
 
@@ -2068,7 +2064,7 @@ void raid_event_t::parse_options( util::string_view options_str )
     return;
 
   opts::parse( sim, type, options, options_str,
-               [ this ]( opts::parse_status status, util::string_view name, util::string_view value ) {
+               [ this ]( opts::parse_status status, util::string_view option_name, util::string_view value ) {
                  // Fail parsing if strict parsing is used and the option is not found
                  if ( sim->strict_parsing && status == opts::parse_status::NOT_FOUND )
                  {
@@ -2078,8 +2074,8 @@ void raid_event_t::parse_options( util::string_view options_str )
                  // .. otherwise, just warn that there's an unknown option
                  if ( status == opts::parse_status::NOT_FOUND )
                  {
-                   sim->error( "Warning: Unknown raid event '{}' option '{}' with value '{}', ignoring", name, name,
-                               value );
+                   sim->error( "Warning: Unknown raid event '{}' option '{}' with value '{}', ignoring",
+                               log_name(), option_name, value );
                  }
 
                  return status;
@@ -2215,6 +2211,16 @@ void raid_event_t::init( sim_t* sim )
         throw std::invalid_argument( "DungeonRoute fight style is required for pull events." );
       }
 
+      if ( raid_event->cooldown_min == timespan_t::zero() )
+        raid_event->cooldown_min = raid_event->cooldown * 0.5;
+      if ( raid_event->cooldown_max == timespan_t::zero() )
+        raid_event->cooldown_max = raid_event->cooldown * 1.5;
+
+      if ( raid_event->duration_min == timespan_t::zero() )
+        raid_event->duration_min = raid_event->duration * 0.5;
+      if ( raid_event->duration_max == timespan_t::zero() )
+        raid_event->duration_max = raid_event->duration * 1.5;
+
       // Collect other raid events assigned to a pull.
       if ( raid_event->pull > 0 && raid_event->type != "pull" )
       {
@@ -2234,12 +2240,12 @@ void raid_event_t::init( sim_t* sim )
         if ( !raid_event->pull_target_str.empty() )
           raid_event->pull_target_str = pull_event->name + "_" + raid_event->pull_target_str;
 
-        sim->print_debug( "Successfully created '{}', child of {}.", name, pull_event->name );
+        sim->print_debug( "Successfully created '{}', child of {}.", raid_event->log_name(), pull_event->log_name() );
         pull_event->child_events.push_back( std::move( raid_event ) );
       }
       else
       {
-        sim->print_debug( "Successfully created '{}'.", name );
+        sim->print_debug( "Successfully created '{}'.", raid_event->log_name() );
         sim->raid_events.push_back( std::move( raid_event ) );
       }
     }
@@ -2387,10 +2393,10 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
   }
 
   if ( filter == "duration" )
-    return e->duration_time().total_seconds();
+    return e->saved_duration.total_seconds() != 0.0 ? e->saved_duration.total_seconds() : e->duration.total_seconds();
 
   if ( filter == "cooldown" )
-    return e->cooldown_time().total_seconds();
+    return e->saved_cooldown.total_seconds() != 0.0 ? e->saved_cooldown.total_seconds() : e->cooldown.total_seconds();
 
   if ( filter == "distance" )
     return e->distance_max;

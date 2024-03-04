@@ -1115,14 +1115,16 @@ double action_t::cost() const
 
   c -= player->current.resource_reduction[ get_school() ];
 
+  c += cost_flat_modifier();
+
+  if ( c < 0 )
+    c = 0;
+
   if ( cr == RESOURCE_MANA && player->buffs.courageous_primal_diamond_lucidity &&
        player->buffs.courageous_primal_diamond_lucidity->check() )
   {
     c = 0;
   }
-
-  if ( c < 0 )
-    c = 0;
 
   if ( sim->debug )
     sim->out_debug.print( "{} action_t::cost: base_cost={} secondary_cost={} cost={} resource={}", *this,
@@ -1501,20 +1503,21 @@ double action_t::calculate_crit_damage_bonus( action_state_t* state ) const
 result_amount_type action_t::report_amount_type( const action_state_t* state ) const
 { return state -> result_type; }
 
-double action_t::composite_attack_power() const
+double action_t::composite_total_attack_power() const
 {
-  return player->composite_melee_attack_power_by_type(get_attack_power_type());
+  return player->composite_total_attack_power_by_type( get_attack_power_type() );
 }
 
-double action_t::composite_spell_power() const
+double action_t::composite_total_spell_power() const
 {
   double spell_power = 0;
   double tmp;
 
-  for (auto base_school : base_schools)
+  for ( auto base_school : base_schools )
   {
-    tmp = player->cache.spell_power(base_school);
-    if (tmp > spell_power) spell_power = tmp;
+    tmp = player->composite_total_spell_power( base_school );
+    if ( tmp > spell_power )
+      spell_power = tmp;
   }
 
   return spell_power;
@@ -4007,10 +4010,10 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->haste = composite_haste();
 
   if ( flags & STATE_AP )
-    state->attack_power = composite_attack_power() * player->composite_attack_power_multiplier();
+    state->attack_power = composite_total_attack_power();
 
   if ( flags & STATE_SP )
-    state->spell_power = composite_spell_power() * player->composite_spell_power_multiplier();
+    state->spell_power = composite_total_spell_power();
 
   if ( flags & STATE_VERSATILITY )
     state->versatility = composite_versatility( state );

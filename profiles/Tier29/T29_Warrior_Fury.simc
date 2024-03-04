@@ -11,7 +11,7 @@ talents=BgEAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAChIoEARQISQUgEiARSIJpFRSkgQSSSkSASSk
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
 flask=iced_phial_of_corrupting_rage_3
-food=fated_fortune_cookie
+food=thousandbone_tongueslicer
 augmentation=draconic
 temporary_enchant=main_hand:hissing_rune_3/off_hand:hissing_rune_3
 
@@ -68,7 +68,7 @@ actions.multi_target+=/whirlwind,if=spell_targets.whirlwind>1&talent.improved_wh
 actions.multi_target+=/execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd
 actions.multi_target+=/thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)
 actions.multi_target+=/odyns_fury,if=active_enemies>1&buff.enrage.up&raid_event.adds.in>15
-actions.multi_target+=/bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95
+actions.multi_target+=/bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95|set_bonus.tier31_4pc
 actions.multi_target+=/bloodthirst,if=(set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95)|(!talent.reckless_abandon&buff.furious_bloodthirst.up&buff.enrage.up)
 actions.multi_target+=/crushing_blow,if=talent.wrath_and_fury&buff.enrage.up
 actions.multi_target+=/execute,if=buff.enrage.up
@@ -134,7 +134,7 @@ actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_bu
 # If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown.
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)|(trinket.1.cast_time>0&!buff.avatar.up|!trinket.1.cast_time>0)|cooldown.avatar.remains_expected>20)
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|(trinket.2.cast_time>0&!buff.avatar.up|!trinket.2.cast_time>0)|cooldown.avatar.remains_expected>20)
-actions.trinkets+=/use_item,use_off_gcd=1,slot=main_hand,if=(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)
+actions.trinkets+=/use_item,use_off_gcd=1,slot=main_hand,if=!equipped.fyralath_the_dreamrender&(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)
 
 # Variables
 actions.variables=variable,name=st_planning,value=active_enemies=1&(raid_event.adds.in>15|!raid_event.adds.exists)

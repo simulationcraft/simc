@@ -1,4 +1,6 @@
-// Rank class spells, wow build 10.2.5.53262
+#pragma warning(push)
+#pragma warning(once: 4305)
+// Rank class spells, wow build 10.2.5.53584
 static const std::array<rank_class_spell_t, 51> __ptr_rank_spells_data { {
   {  2,   66, 358934,      0, "Aegis of Light"                    , "Rank 2" },
   { 10,  269, 322719,      0, "Afterlife"                         , "Rank 2" },
@@ -53,3 +55,4 @@ static const std::array<rank_class_spell_t, 51> __ptr_rank_spells_data { {
   {  2,   66, 315921,      0, "Word of Glory"                     , "Rank 2" },
 } };
 
+#pragma warning(pop)

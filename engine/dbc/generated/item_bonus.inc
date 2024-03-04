@@ -1,4 +1,6 @@
-// Item bonuses, wow build 10.2.5.53262
+#pragma warning(push)
+#pragma warning(once: 4305)
+// Item bonuses, wow build 10.2.5.53441
 static const std::array<item_bonus_entry_t, 14376> __item_bonus_data { {
   {     2,    1,  2,       7,   15789,       0,       0,  0 },
   {   899,    1,  4,    2015,       0,       0,       0,  1 },
@@ -14378,3 +14380,4 @@ static const std::array<item_bonus_entry_t, 14376> __item_bonus_data { {
   { 22307, 10465, 13,       0,       0,     181,   72045,  0 },
 } };
 
+#pragma warning(pop)

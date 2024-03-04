@@ -168,7 +168,7 @@ struct burning_vehemence_t final : public priest_spell_t
     priest_spell_t::available_targets( tl );
 
     // Remove the main target, this only hits everything else in range.
-    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) { return t == this->target; } ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }

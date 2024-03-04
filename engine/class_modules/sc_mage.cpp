@@ -437,6 +437,7 @@ public:
   struct sample_data_t
   {
     std::unique_ptr<extended_sample_data_t> icy_veins_duration;
+    std::unique_ptr<simple_sample_data_t> low_mana_iteration;
   } sample_data;
 
   // Specializations
@@ -471,6 +472,7 @@ public:
     bool trigger_cc_channel;
     double spent_mana;
     timespan_t gained_full_icicles;
+    bool had_low_mana;
   } state;
 
   struct expression_support_t
@@ -1620,6 +1622,13 @@ public:
 
     if ( current_resource() == RESOURCE_MANA )
       p()->state.spent_mana += last_resource_cost;
+
+    if ( last_resource_cost > 0
+      && !p()->resources.is_infinite( RESOURCE_MANA )
+      && p()->resources.pct( RESOURCE_MANA ) < 0.1 )
+    {
+      p()->state.had_low_mana = true;
+    }
   }
 
   void execute() override
@@ -3160,8 +3169,8 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     if ( p()->bugs && tick_remains > 0_ms )
     {
       timespan_t mean_delay = p()->options.arcane_missiles_chain_delay;
-      timespan_t delay = rng().gauss( mean_delay, mean_delay * p()->options.arcane_missiles_chain_relstddev );
-      timespan_t chain_remains = tick_remains - clamp( delay, 0_ms, tick_remains - 1_ms );
+      timespan_t delay = rng().gauss_ab( mean_delay, mean_delay * p()->options.arcane_missiles_chain_relstddev, 0_ms, tick_remains - 1_ms );
+      timespan_t chain_remains = tick_remains - delay;
       // If tick_remains == 0_ms, this would subtract 1 from ticks.
       // This is not implemented in simc, but this actually appears
       // to happen in game, which can result in missing ticks if
@@ -3933,7 +3942,7 @@ struct shattered_ice_t final : public spell_t
   {
     spell_t::available_targets( tl );
 
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }
@@ -4309,7 +4318,7 @@ struct glacial_blast_t final : public spell_t
   {
     spell_t::available_targets( tl );
 
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }
@@ -5244,7 +5253,7 @@ struct splintering_ray_t final : public spell_t
   {
     spell_t::available_targets( tl );
 
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }
@@ -6206,6 +6215,9 @@ void mage_t::merge( player_t& other )
 
   switch ( specialization() )
   {
+    case MAGE_FIRE:
+      sample_data.low_mana_iteration->merge( *mage.sample_data.low_mana_iteration );
+      break;
     case MAGE_FROST:
       if ( talents.thermal_void.ok() )
         sample_data.icy_veins_duration->merge( *mage.sample_data.icy_veins_duration );
@@ -6221,6 +6233,11 @@ void mage_t::analyze( sim_t& s )
 
   switch ( specialization() )
   {
+    case MAGE_FIRE:
+      if ( double low_mana_mean = sample_data.low_mana_iteration->mean(); low_mana_mean > 0.1 )
+        sim->error( "{}: Actor went below 10% mana in a significant fraction of iterations ({:.1f}%)", *this,
+                    100.0 * low_mana_mean );
+      break;
     case MAGE_FROST:
       if ( talents.thermal_void.ok() )
         sample_data.icy_veins_duration->analyze();
@@ -6242,6 +6259,9 @@ void mage_t::datacollection_end()
   player_t::datacollection_end();
 
   range::for_each( shatter_source_list, std::mem_fn( &shatter_source_t::datacollection_end ) );
+
+  if ( specialization() == MAGE_FIRE )
+    sample_data.low_mana_iteration->add( as<double>( state.had_low_mana ) );
 }
 
 void mage_t::regen( timespan_t periodicity )
@@ -6901,6 +6921,9 @@ void mage_t::init_uptimes()
 
   switch ( specialization() )
   {
+    case MAGE_FIRE:
+      sample_data.low_mana_iteration = std::make_unique<simple_sample_data_t>();
+      break;
     case MAGE_FROST:
       if ( talents.thermal_void.ok() )
         sample_data.icy_veins_duration = std::make_unique<extended_sample_data_t>( "Icy Veins duration", false );

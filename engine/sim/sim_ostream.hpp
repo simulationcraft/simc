@@ -31,7 +31,7 @@ struct sc_raw_ostream_t {
   template <typename... Args>
   sc_raw_ostream_t& print( fmt::format_string<Args...> format, Args&& ... args )
   {
-    vprint( format, fmt::make_format_args( std::forward<Args>(args)... ) );
+    vprint( format, fmt::make_format_args( args... ) );
     return *this;
   }
 
@@ -94,7 +94,7 @@ struct sim_ostream_t
   template <typename... Args>
   sim_ostream_t& print( fmt::format_string<Args...> format, Args&& ... args)
   {
-    vprint( format, fmt::make_format_args( std::forward<Args>(args)... ) );
+    vprint( format, fmt::make_format_args( args... ) );
     return *this;
   }
 

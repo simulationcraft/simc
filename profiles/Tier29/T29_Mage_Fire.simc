@@ -165,7 +165,7 @@ actions.combustion_phase+=/scorch,if=improved_scorch.active&(debuff.improved_sco
 actions.combustion_phase+=/phoenix_flames,if=set_bonus.tier30_2pc&travel_time<buff.combustion.remains&buff.heating_up.react+hot_streak_spells_in_flight<2&(debuff.charring_embers.remains<4*gcd.max|buff.flames_fury.stack>1|buff.flames_fury.up)
 actions.combustion_phase+=/fireball,if=buff.combustion.remains>cast_time&buff.flame_accelerant.react
 # Use Phoenix Flames and Scorch in Combustion to help generate Hot Streaks when Fire Blasts are not available or need to be conserved.
-actions.combustion_phase+=/phoenix_flames,if=!set_bonus.tier30_2pc&!talent.alexstraszas_fury&travel_time<buff.combustion.remains&buff.heating_up.react+hot_streak_spells_in_flight<2
+actions.combustion_phase+=/phoenix_flames,if=(!searing_touch.active&talent.flame_accelerant|!talent.flame_accelerant)&!set_bonus.tier30_2pc&!talent.alexstraszas_fury&travel_time<buff.combustion.remains&buff.heating_up.react+hot_streak_spells_in_flight<2
 actions.combustion_phase+=/scorch,if=buff.combustion.remains>cast_time&cast_time>=gcd.max
 actions.combustion_phase+=/fireball,if=buff.combustion.remains>cast_time
 # If there isn't enough time left in Combustion for a Phoenix Flames or Scorch to hit inside of Combustion, use something else.

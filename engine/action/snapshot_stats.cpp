@@ -94,13 +94,12 @@ void snapshot_stats_t::execute()
   buffed_stats.corruption_resistance = p->cache.corruption_resistance();
   buffed_stats.leech = p->cache.leech();
 
-  buffed_stats.spell_power =
-    util::round(p->cache.spell_power(SCHOOL_MAX) * p->composite_spell_power_multiplier());
+  buffed_stats.spell_power = static_cast<int>( p->cache.spell_power( SCHOOL_MAX ) * p->composite_spell_power_multiplier() );
   buffed_stats.spell_hit = p->cache.spell_hit();
   buffed_stats.spell_crit_chance = p->cache.spell_crit_chance();
   buffed_stats.manareg_per_second = p->resource_regen_per_second(RESOURCE_MANA);
 
-  buffed_stats.attack_power = p->cache.attack_power() * p->composite_attack_power_multiplier();
+  buffed_stats.attack_power = static_cast<int>( p->cache.attack_power() * p->composite_attack_power_multiplier() );
   buffed_stats.attack_hit = p->cache.attack_hit();
   buffed_stats.mh_attack_expertise = p->composite_melee_expertise(&(p->main_hand_weapon));
   buffed_stats.oh_attack_expertise = p->composite_melee_expertise(&(p->off_hand_weapon));

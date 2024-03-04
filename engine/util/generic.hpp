@@ -476,6 +476,18 @@ iterator_t<Range> partition( Range& r, Pred pred_, Proj proj = Proj{} )
   return std::partition( range::begin( r ), range::end( r ), pred );
 }
 
+template <typename Range>
+inline void erase_remove( Range& r, value_type_t<Range> const& t )
+{
+  r.erase( std::remove( range::begin( r ), range::end( r ), t ), range::end( r ) );
+}
+
+template <typename Range, typename Pred, typename = std::invoke_result_t<Pred, value_type_t<Range>>>
+inline void erase_remove( Range& r, Pred p )
+{
+  r.erase( std::remove_if( range::begin( r ), range::end( r ), p ), range::end( r ) );
+}
+
 }  // namespace range ========================================================
 
 // Adapter for container of owned pointers; automatically deletes the
@@ -643,5 +655,9 @@ public:
 private:
   T _M_t;  // exposition only
 };
+
+// workaround to allow static_assert( false ) for if constexpr branches
+template <typename>
+static constexpr bool static_false = false;
 
 #endif  // SC_GENERIC_HPP

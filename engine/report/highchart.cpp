@@ -81,6 +81,7 @@ sc_js_t& highchart::theme( sc_js_t& json, highchart_theme_e theme )
 
   json.set( "chart.borderRadius", 4 );
   json.set( "chart.backgroundColor", _bg_color );
+  json.set( "chart.style.fontFamily", "'Lucida Grande', 'Lucida Sans Unicode', Arial, Helvetica, sans-serif" );
   json.set( "chart.style.fontSize", "13px" );
   json.add( "chart.spacing", 10 )
       .add( "chart.spacing", 10 )
@@ -90,6 +91,7 @@ sc_js_t& highchart::theme( sc_js_t& json, highchart_theme_e theme )
   json.set( "xAxis.lineColor", _text_color );
   json.set( "xAxis.tickColor", _text_color );
   json.set( "xAxis.title.style.color", _text_color );
+  json.set( "xAxis.title.style.fontSize", "13px" );
   // json.set( "xAxis.title.style.textShadow", TEXT_OUTLINE );
   json.set( "xAxis.labels.style.color", _text_color );
   json.set( "xAxis.labels.style.fontSize", "14px" );
@@ -98,12 +100,14 @@ sc_js_t& highchart::theme( sc_js_t& json, highchart_theme_e theme )
   json.set( "yAxis.lineColor", _text_color );
   json.set( "yAxis.tickColor", _text_color );
   json.set( "yAxis.title.style.color", _text_color );
+  json.set( "yAxis.title.style.fontSize", "13px" );
   // json.set( "yAxis.title.style.textShadow", TEXT_OUTLINE );
   json.set( "yAxis.labels.style.color", _text_color );
   json.set( "yAxis.labels.style.fontSize", "14px" );
   // json.set( "yAxis.labels.style.textShadow", TEXT_OUTLINE );
 
   json.set( "title.style.fontSize", "15px" );
+  json.set( "title.style.fontWeight", "normal" );
   json.set( "title.style.color", _text_color );
   json.set( "title.style.textOverflow", "ellipsis" );
   // json.set( "title.style.textShadow", TEXT_OUTLINE );
@@ -113,20 +117,28 @@ sc_js_t& highchart::theme( sc_js_t& json, highchart_theme_e theme )
   // json.set( "subtitle.style.textShadow", TEXT_OUTLINE );
 
   json.set( "tooltip.backgroundColor", "#3F3E38" );
+  json.set( "tooltip.borderWidth", 1 );
+  json.set( "tooltip.style.fontSize", "12px" );
   json.set( "tooltip.style.color", _text_color );
 
   json.set( "plotOptions.series.shadow", true );
+  json.set( "plotOptions.series.tooltip.followPointer", true );
   json.set( "plotOptions.series.dataLabels.style.color", _text_color );
+  json.set( "plotOptions.series.dataLabels.style.fontSize", "12px" );
+  json.set( "plotOptions.series.dataLabels.style.fontWeight", "normal" );
+  json.set( "plotOptions.series.dataLabels.style.textOutline", "none" );
   // json.set( "plotOptions.series.dataLabels.style.textShadow", TEXT_OUTLINE );
 
   json.set( "plotOptions.pie.dataLabels.enabled", true );
-  json.set( "plotOptions.pie.dataLabels.style.fontWeight", "none" );
   json.set( "plotOptions.pie.fillOpacity", 0.2 );
+  json.set( "plotOptions.pie.borderRadius", 0 );
 
   json.set( "plotOptions.bar.borderWidth", 0 );
+  json.set( "plotOptions.bar.borderRadius", 0 );
   json.set( "plotOptions.bar.pointWidth", 18 );
 
   json.set( "plotOptions.column.borderWidth", 0 );
+  json.set( "plotOptions.column.borderRadius", 0 );
   json.set( "plotOptions.column.pointWidth", 8 );
 
   json.set( "plotOptions.area.lineWidth", 1.25 );
@@ -210,8 +222,7 @@ std::string chart_t::to_string() const
 
   js_.Accept( writer );
   auto javascript = std::string{ b.GetStringView() };
-  javascript.erase( std::remove( javascript.begin(), javascript.end(), '\n' ),
-                    javascript.end() );
+  range::erase_remove( javascript, '\n' );
 
   auto out = fmt::memory_buffer();
   fmt::format_to( std::back_inserter( out ), "<div class=\"charts\" id=\"{}\" style=\"min-width: {}px;", id_str_,
@@ -406,7 +417,7 @@ chart_t& chart_t::add_yplotline( double value, std::string_view name,
 
     if ( rapidjson::Value* text_v = path_value( "subtitle.text" ) )
     {
-      auto mean_str = fmt::format( "<span style=\"color: {};\"{}{}</span>", *color,
+      auto mean_str = fmt::format( "<span style=\"color: {};\">{}{}</span>", *color,
                                    name.empty() ? "" : fmt::format( "{}=", name ), value );
 
       if ( text_v->GetType() == rapidjson::kStringType )

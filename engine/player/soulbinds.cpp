@@ -195,9 +195,9 @@ struct niyas_tools_proc_t : public unique_gear::proc_spell_t
       spell_power_mod.tick = mod;
   }
 
-  double composite_spell_power() const override
+  double composite_total_spell_power() const override
   {
-    return std::max( proc_spell_t::composite_spell_power(), proc_spell_t::composite_attack_power() );
+    return std::max( proc_spell_t::composite_total_spell_power(), proc_spell_t::composite_total_attack_power() );
   }
 };
 
@@ -1300,10 +1300,8 @@ void brons_call_to_action( special_effect_t& effect )
       // Just need to 1x Bron's AP, and 1x Bron's SP
       double attack_direct_power_coefficient( const action_state_t* s ) const override
       {
-        auto ap = spell_t::attack_direct_power_coefficient( s ) * composite_attack_power() *
-                  player->composite_attack_power_multiplier();
-        auto sp = spell_t::spell_direct_power_coefficient( s ) * composite_spell_power() *
-                  player->composite_spell_power_multiplier();
+        auto ap = spell_t::attack_direct_power_coefficient( s ) * composite_total_attack_power();
+        auto sp = spell_t::spell_direct_power_coefficient( s ) * composite_total_spell_power();
 
         if ( ap <= sp )
           return 0;
@@ -1313,10 +1311,8 @@ void brons_call_to_action( special_effect_t& effect )
 
       double spell_direct_power_coefficient( const action_state_t* s ) const override
       {
-        auto ap = spell_t::attack_direct_power_coefficient( s ) * composite_attack_power() *
-                  player->composite_attack_power_multiplier();
-        auto sp = spell_t::spell_direct_power_coefficient( s ) * composite_spell_power() *
-                  player->composite_spell_power_multiplier();
+        auto ap = spell_t::attack_direct_power_coefficient( s ) * composite_total_attack_power();
+        auto sp = spell_t::spell_direct_power_coefficient( s ) * composite_total_spell_power();
 
         if ( ap > sp )
           return 0;
@@ -1341,10 +1337,8 @@ void brons_call_to_action( special_effect_t& effect )
       // Just need to 1x Bron's AP, and 0.25x Bron's SP
       double attack_direct_power_coefficient( const action_state_t* s ) const override
       {
-        auto ap = spell_t::attack_direct_power_coefficient( s ) * composite_attack_power() *
-                  player->composite_attack_power_multiplier();
-        auto sp = spell_t::spell_direct_power_coefficient( s ) * composite_spell_power() *
-                  player->composite_spell_power_multiplier();
+        auto ap = spell_t::attack_direct_power_coefficient( s ) * composite_total_attack_power();
+        auto sp = spell_t::spell_direct_power_coefficient( s ) * composite_total_spell_power();
 
         if ( ap <= sp )
           return 0;
@@ -1354,10 +1348,8 @@ void brons_call_to_action( special_effect_t& effect )
 
       double spell_direct_power_coefficient( const action_state_t* s ) const override
       {
-        auto ap = spell_t::attack_direct_power_coefficient( s ) * composite_attack_power() *
-                  player->composite_attack_power_multiplier();
-        auto sp = spell_t::spell_direct_power_coefficient( s ) * composite_spell_power() *
-                  player->composite_spell_power_multiplier();
+        auto ap = spell_t::attack_direct_power_coefficient( s ) * composite_total_attack_power();
+        auto sp = spell_t::spell_direct_power_coefficient( s ) * composite_total_spell_power();
 
         if ( ap > sp )
           return 0;
@@ -1394,10 +1386,8 @@ void brons_call_to_action( special_effect_t& effect )
       // Just need to 2.3x Bron's AP, and 0.575x Bron's SP
       double attack_direct_power_coefficient( const action_state_t* s ) const override
       {
-        auto ap = heal_t::attack_direct_power_coefficient( s ) * composite_attack_power() *
-                  player->composite_attack_power_multiplier();
-        auto sp = heal_t::spell_direct_power_coefficient( s ) * composite_spell_power() *
-                  player->composite_spell_power_multiplier();
+        auto ap = heal_t::attack_direct_power_coefficient( s ) * composite_total_attack_power();
+        auto sp = heal_t::spell_direct_power_coefficient( s ) * composite_total_spell_power();
 
         if ( ap <= sp )
           return 0;
@@ -1407,10 +1397,8 @@ void brons_call_to_action( special_effect_t& effect )
 
       double spell_direct_power_coefficient( const action_state_t* s ) const override
       {
-        auto ap = heal_t::attack_direct_power_coefficient( s ) * composite_attack_power() *
-                  player->composite_attack_power_multiplier();
-        auto sp = heal_t::spell_direct_power_coefficient( s ) * composite_spell_power() *
-                  player->composite_spell_power_multiplier();
+        auto ap = heal_t::attack_direct_power_coefficient( s ) * composite_total_attack_power();
+        auto sp = heal_t::spell_direct_power_coefficient( s ) * composite_total_spell_power();
 
         if ( ap > sp )
           return 0;
@@ -1614,9 +1602,9 @@ void effusive_anima_accelerator( special_effect_t& effect )
       }
     }
 
-    double composite_spell_power() const override
+    double composite_total_spell_power() const override
     {
-      return std::max( super::composite_spell_power(), super::composite_attack_power() );
+      return std::max( super::composite_total_spell_power(), super::composite_total_attack_power() );
     }
 
     double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -2392,9 +2380,9 @@ void pustule_eruption( special_effect_t& effect )
       spell_power_mod.direct = 0.48; // Hardcoded in tooltip
     }
 
-    double composite_spell_power() const override
+    double composite_total_spell_power() const override
     {
-      return std::max( heal_t::composite_spell_power(), heal_t::composite_attack_power() );
+      return std::max( heal_t::composite_total_spell_power(), heal_t::composite_total_attack_power() );
     }
   };
 
@@ -2407,9 +2395,9 @@ void pustule_eruption( special_effect_t& effect )
       spell_power_mod.direct = 0.72; // Hardcoded in tooltip
     }
 
-    double composite_spell_power() const override
+    double composite_total_spell_power() const override
     {
-      return std::max( proc_spell_t::composite_spell_power(), proc_spell_t::composite_attack_power() );
+      return std::max( proc_spell_t::composite_total_spell_power(), proc_spell_t::composite_total_attack_power() );
     }
   };
   

@@ -1,4 +1,6 @@
-// Character Loadout data, wow build 10.2.5.53262
+#pragma warning(push)
+#pragma warning(once: 4305)
+// Character Loadout data, wow build 10.2.5.53584
 static const std::array<character_loadout_data_t, 599> __ptr_character_loadout_data { {
   { 1809, 1, 0, 154025 },
   { 1809, 1, 0, 154026 },
@@ -601,7 +603,10 @@ static const std::array<character_loadout_data_t, 599> __ptr_character_loadout_d
   { 1787, 13, 2, 194536 },
 } };
 
-// Trait Loadout data, wow build 10.2.5.53262
+#pragma warning(pop)
+#pragma warning(push)
+#pragma warning(once: 4305)
+// Trait Loadout data, wow build 10.2.5.53584
 static const std::array<trait_loadout_data_t, 2379> __ptr_trait_loadout_data { {
   { 62, 80307, 1, 1 },
   { 62, 80308, 1, 2 },
@@ -2984,3 +2989,4 @@ static const std::array<trait_loadout_data_t, 2379> __ptr_trait_loadout_data { {
   { 1473, 115509, 1, 61 },
 } };
 
+#pragma warning(pop)

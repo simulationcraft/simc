@@ -7,7 +7,7 @@
 #include "simulationcraft.hpp"
 #include "player/player_talent_points.hpp"
 #include "class_modules/apl/apl_warrior.hpp"
-#include "action/parse_buff_effects.hpp"
+#include "action/parse_effects.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE
@@ -800,11 +800,12 @@ public:
   void arise() override;
   void combat_begin() override;
   void init_rng() override;
+  bool validate_fight_style( fight_style_e style ) const override;
   double composite_attribute( attribute_e attr ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
   double composite_rating_multiplier( rating_e rating ) const override;
   double composite_player_multiplier( school_e school ) const override;
-  // double composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_player_target_crit_chance( player_t* target ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_melee_speed() const override;
@@ -913,23 +914,15 @@ namespace
 {  // UNNAMED NAMESPACE
 // Template for common warrior action code. See priest_action_t.
 template <class Base>
-struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
+struct warrior_action_t : public parse_action_effects_t<Base, warrior_t, warrior_td_t>
 {
   struct affected_by_t
   {
-    // mastery/buff damage increase.
-    bool fury_mastery_direct, fury_mastery_dot, arms_mastery;
     // talents
     bool sweeping_strikes;
-    // tier
-    bool t30_arms_2pc;
 
     affected_by_t()
-      : fury_mastery_direct( false ),
-        fury_mastery_dot( false ),
-        arms_mastery( false ),
-        sweeping_strikes( false ),
-        t30_arms_2pc( false )
+      : sweeping_strikes( false )
     {
     }
   } affected_by;
@@ -938,7 +931,7 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
   double tactician_per_rage;
 
 private:
-  using ab = Base;  // action base, eg. spell_t
+  using ab = parse_action_effects_t<Base, warrior_t, warrior_td_t>;
 public:
   using base_t = warrior_action_t<Base>;
   bool track_cd_waste;
@@ -947,7 +940,6 @@ public:
   bool initialized;
   warrior_action_t( util::string_view n, warrior_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
-      parse_buff_effects_t( this ),
       usable_while_channeling( false ),
       tactician_per_rage( 0 ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
@@ -986,25 +978,29 @@ public:
   void apply_buff_effects()
   {
     // Shared
-    parse_buff_effects( p()->buff.avatar, p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
+    parse_effects( p()->buff.avatar, p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
 
     // Arms
-    parse_buff_effects( p()->buff.crushing_advance ); // T30 Arms 4pc
-    parse_buff_effects( p()->buff.juggernaut );
-    parse_buff_effects( p()->buff.merciless_bonegrinder );
-    parse_buff_effects( p()->buff.strike_vulnerabilities ); // T29 Arms
+    parse_effects( p()->buff.crushing_advance ); // T30 Arms 4pc
+    parse_effects( p()->buff.juggernaut );
+    parse_effects( p()->buff.merciless_bonegrinder );
+    parse_effects( p()->buff.strike_vulnerabilities ); // T29 Arms
 
     // Fury
-    parse_buff_effects( p()->buff.ashen_juggernaut );
-    parse_buff_effects( p()->buff.bloodcraze, p()->talents.fury.bloodcraze );
-    parse_buff_effects( p()->buff.recklessness );
-    parse_buff_effects( p()->buff.slaughtering_strikes_an );
-    parse_buff_effects( p()->buff.slaughtering_strikes_rb );
-    parse_buff_effects( p()->buff.merciless_assault );
+    parse_effects( p()->mastery.unshackled_fury, [ this ] { return p()->buff.enrage->check(); } );
+    parse_effects( p()->buff.ashen_juggernaut );
+    parse_effects( p()->buff.battering_ram );
+    parse_effects( p()->buff.berserker_stance );
+    parse_effects( p()->buff.bloodcraze, p()->talents.fury.bloodcraze );
+    parse_effects( p()->buff.dancing_blades );
+    parse_effects( p()->buff.recklessness );
+    parse_effects( p()->buff.slaughtering_strikes_an );
+    parse_effects( p()->buff.slaughtering_strikes_rb );
+    parse_effects( p()->buff.merciless_assault );
 
     // Protection
-    parse_buff_effects( p()->buff.juggernaut_prot );
-    parse_buff_effects( p()->buff.vanguards_determination );
+    parse_effects( p()->buff.juggernaut_prot );
+    parse_effects( p()->buff.vanguards_determination );
   }
 
   void apply_debuff_effects()
@@ -1012,14 +1008,35 @@ public:
     // Shared
 
     // Arms
-    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_colossus_smash->check(); }, p()->spell.colossus_smash_debuff, p()->talents.arms.blunt_instruments, p()->talents.arms.spiteful_serenity );
-    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_executioners_precision->check(); }, p()->talents.arms.executioners_precision->effectN( 1 ).trigger(), p()->talents.arms.executioners_precision );
-
+    // Arms deep wounds spell data contains T30 2pc bonus, which is disabled/enabled via script.
+    // To account for this, we parse the data twice, first ignoring effects #4 & #5 via mask, then if the T30 2pc is
+    // active parse again ignoring effects #1, #2, & #3.
+    parse_target_effects( []( warrior_td_t* td ) { return td->dots_deep_wounds->is_ticking(); },
+                          p()->spell.deep_wounds_arms, 0b11000,
+                          p()->mastery.deep_wounds_ARMS );
+    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T30, B2 ) )
+    {
+      parse_target_effects( []( warrior_td_t* td ) { return td->dots_deep_wounds->is_ticking(); },
+                            p()->spell.deep_wounds_arms, 0b00111 );
+    }
+    parse_target_effects( []( warrior_td_t* td ) { return td->debuffs_colossus_smash->check(); },
+                          p()->spell.colossus_smash_debuff,
+                          p()->talents.arms.blunt_instruments, p()->talents.arms.spiteful_serenity );
+    parse_target_effects( []( warrior_td_t* td ) { return td->debuffs_executioners_precision->check(); },
+                          p()->talents.arms.executioners_precision->effectN( 1 ).trigger(),
+                          p()->talents.arms.executioners_precision );
     // Fury
 
     // Protection
-    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_demoralizing_shout->check(); }, p()->talents.protection.demoralizing_shout, p()->talents.protection.booming_voice );
+    parse_target_effects( []( warrior_td_t* td ) { return td->debuffs_demoralizing_shout->check(); },
+                          p()->talents.protection.demoralizing_shout,
+                          p()->talents.protection.booming_voice );
   }
+
+  template <typename... Ts>
+  void parse_effects( Ts&&... args ) { ab::parse_effects( std::forward<Ts>( args )... ); }
+  template <typename... Ts>
+  void parse_target_effects( Ts&&... args ) { ab::parse_target_effects( std::forward<Ts>( args )... ); }
 
   void init() override
   {
@@ -1037,10 +1054,6 @@ public:
     }
 
     affected_by.sweeping_strikes         = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
-    affected_by.fury_mastery_direct      = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
-    affected_by.fury_mastery_dot         = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
-    affected_by.arms_mastery             = ab::data().affected_by( p()->mastery.deep_wounds_ARMS -> effectN( 3 ).trigger()->effectN( 2 ) );
-    affected_by.t30_arms_2pc             = ab::data().affected_by( p()->spell.deep_wounds_arms->effectN( 5 ) );
 
     initialized = true;
   }
@@ -1082,138 +1095,16 @@ public:
     return ab::n_targets();
   }
 
-  double cost() const override
-  {
-    double c = ab::cost();
-
-    c += get_buff_effects_value( flat_cost_buffeffects, true, false );
-
-    c *= get_buff_effects_value( cost_buffeffects, false, false );
-
-    return std::max( 0.0, c );
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = ab::composite_target_multiplier( target );
-
-    warrior_td_t* td = p()->get_target_data( target );
-
-    if ( affected_by.arms_mastery && td->dots_deep_wounds->is_ticking() )
-    {
-      m *= 1.0 + p()->cache.mastery_value();
-    }
-
-    if ( td->debuffs_concussive_blows->check() )
-    {
-      m *= 1.0 + ( td->debuffs_concussive_blows->value() );
-    }
-
-    m *= get_debuff_effects_value( td );
-
-    return m;
-  }
-
-  double composite_target_crit_damage_bonus_multiplier( player_t* target ) const override
-  {
-    double tcdbm = ab::composite_target_crit_damage_bonus_multiplier( target );
-
-    warrior_td_t* td = p()->get_target_data( target );
-
-    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T30, B2 ) && td->dots_deep_wounds->is_ticking() &&
-         affected_by.t30_arms_2pc )
-    {
-      tcdbm *= 1.0 + ( p()->spell.deep_wounds_arms->effectN( 5 ).percent() );
-    }
-
-    return tcdbm;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = ab::composite_crit_chance();
-
-    c += get_buff_effects_value( crit_chance_buffeffects, true );
-
-    return c;
-  }
-
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double dm = ab::composite_da_multiplier( s );
-
-    if ( affected_by.fury_mastery_direct && p()->buff.enrage->up() )
-    {
-      dm *= 1.0 + p()->cache.mastery_value();
-    }
 
     if ( affected_by.sweeping_strikes && s->chain_target > 0 )
     {
       dm *= p()->spec.sweeping_strikes->effectN( 2 ).percent();
     }
 
-    dm *= get_buff_effects_value( da_multiplier_buffeffects );
-
     return dm;
-  }
-
-  double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    double tm = ab::composite_ta_multiplier( s );
-
-    if ( affected_by.fury_mastery_dot && p()->buff.enrage->up() )
-    {
-      tm *= 1.0 + p()->cache.mastery_value();
-    }
-
-    tm *= get_buff_effects_value( ta_multiplier_buffeffects );
-
-    return tm;
-  }
-
-  timespan_t execute_time() const override
-  {
-    timespan_t m = ab::execute_time();
-
-    m *= get_buff_effects_value( execute_time_buffeffects );
-
-    return std::max( 0_ms, m );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* state ) const override
-  {
-    timespan_t m = ab::composite_dot_duration( state );
-
-    m *= get_buff_effects_value( dot_duration_buffeffects );
-
-    return m;
-  }
-
-  timespan_t tick_time( const action_state_t* state ) const override
-  {
-    timespan_t m = ab::tick_time( state );
-
-    m *= get_buff_effects_value( tick_time_buffeffects );
-
-    return std::max( 1_ms, m );
-  }
-
-  timespan_t cooldown_duration() const override
-  {
-    timespan_t m = ab::cooldown_duration();
-
-    m *= get_buff_effects_value( recharge_multiplier_buffeffects );
-
-    return m;
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double m = ab::recharge_multiplier( cd );
-
-    m *= get_buff_effects_value( recharge_multiplier_buffeffects );
-
-    return m;
   }
 
   void execute() override
@@ -1438,11 +1329,6 @@ public:
         p()->cooldown.avatar->adjust( timespan_t::from_seconds( cd_time_reduction ) );
       }
     }
-  }
-
-  void html_customsection( report::sc_html_stream& os ) override
-  {
-    parsed_html_report( os );
   }
 
   // Delayed Execute Event ====================================================
@@ -1670,7 +1556,6 @@ struct melee_t : public warrior_attack_t
   double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier, seasoned_soldier_crit_mult;
   double sidearm_chance, enrage_chance;
   devastator_t* devastator;
-  double avatar_multi;
   melee_t( util::string_view name, warrior_t* p )
     : warrior_attack_t( name, p, spell_data_t::nil() ),
       annihilator( nullptr ),
@@ -1684,8 +1569,7 @@ struct melee_t : public warrior_attack_t
       seasoned_soldier_crit_mult( p->spec.seasoned_soldier->effectN( 1 ).percent() ),
       sidearm_chance( p->talents.warrior.sidearm->proc_chance() ),
       enrage_chance( p->talents.fury.frenzied_flurry->proc_chance() ),
-      devastator( nullptr ),
-      avatar_multi(0)
+      devastator( nullptr )
   {
     background = repeating = may_glance = usable_while_channeling = true;
     allow_class_ability_procs = not_a_proc = true;
@@ -1710,16 +1594,10 @@ struct melee_t : public warrior_attack_t
     {
       sidearm = new sidearm_t( p );
     }
-    const auto& eff = find_effect( p->talents.warrior.avatar, A_MOD_AUTO_ATTACK_PCT );
-    avatar_multi = eff.percent();
-    avatar_multi *= 1.0 + p->talents.arms.spiteful_serenity->effectN( 2 ).percent();
-  }
 
-  void init() override
-  {
-    warrior_attack_t::init();
-    affected_by.fury_mastery_direct = p()->mastery.unshackled_fury->ok();
-    affected_by.arms_mastery        = p()->mastery.deep_wounds_ARMS->ok();
+    // explicitly apply here as the calls in warrior_action_t require valid spell data
+    apply_buff_effects();
+    apply_debuff_effects();
   }
 
   void reset() override
@@ -1756,52 +1634,6 @@ struct melee_t : public warrior_attack_t
     {
       oh_lost_melee_contact = false;
     }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    am *= 1.0 + p()->buff.berserker_stance->check_stack_value();
-
-    am *= 1.0 + p()->buff.dancing_blades->check_value();
-
-    am *= 1.0 + p()->buff.battering_ram->check_value();
-
-    return am;
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = warrior_attack_t::composite_da_multiplier( s );
-
-    if ( p() -> buff.avatar -> up() )
-    {
-      m *= 1.0 + avatar_multi;
-    }
-
-    if ( p() -> buff.strike_vulnerabilities -> up() )
-      m *= 1.0 + p() -> buff.strike_vulnerabilities -> check_value();
-
-    return m;
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warrior_attack_t::composite_target_multiplier( target );
-
-    const warrior_td_t* td = p()->get_target_data( target );
-    if ( td && p() -> talents.arms.colossus_smash )
-    {
-      m *= 1.0 + td -> debuffs_colossus_smash -> check_stack_value();
-    }
-
-    if ( td && p() -> talents.protection.booming_voice && td -> debuffs_demoralizing_shout -> up() )
-    {
-      m *= 1.0 + p() -> talents.protection.booming_voice -> effectN( 3 ).percent();
-    }
-
-    return m;
   }
 
   double composite_hit() const override
@@ -7686,13 +7518,11 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_thunderous_roar = target->get_dot( "thunderous_roar_dot", &p );
 
   debuffs_colossus_smash = make_buff( *this , "colossus_smash", p.spell.colossus_smash_debuff )
-                            ->set_default_value_from_effect( 2 )
                             ->apply_affecting_aura( p.talents.arms.spiteful_serenity )
                             ->apply_affecting_aura( p.talents.arms.blunt_instruments );
 
-  debuffs_concussive_blows = make_buff( *this , "concussive_blows" )
-                               ->set_default_value( p.spell.concussive_blows_debuff->effectN( 1 ).percent() )
-                               ->set_duration( p.spell.concussive_blows_debuff->duration() );
+  debuffs_concussive_blows = make_buff( *this, "concussive_blows", p.spell.concussive_blows_debuff )
+                                 ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
 
   debuffs_executioners_precision = make_buff( *this, "executioners_precision", p.talents.arms.executioners_precision->effectN( 1 ).trigger() );
 
@@ -8024,6 +7854,24 @@ void warrior_t::init_rng()
                                                     talents.protection.sudden_death );
   rppm.t31_sudden_death = get_rppm( "t31_sudden_death", find_spell( 422923 ) );
 }
+
+// warrior_t::validate_fight_style ==========================================
+bool warrior_t::validate_fight_style( fight_style_e style ) const
+{
+  if ( specialization() == WARRIOR_PROTECTION )
+  {
+    switch ( style )
+    {
+      case FIGHT_STYLE_DUNGEON_ROUTE:
+      case FIGHT_STYLE_DUNGEON_SLICE:
+        return false;
+      default:
+        return true;
+    }
+  }
+  return true;
+}
+
 // warrior_t::init_scaling ==================================================
 
 void warrior_t::init_scaling()
@@ -8490,7 +8338,25 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-// rogue_t::composite_player_target_crit_chance =============================
+// warrior_t::composite_player_target_multiplier ==============================
+double warrior_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double m = player_t::composite_player_target_multiplier( target, school );
+
+  if ( talents.warrior.concussive_blows.ok() )
+  {
+    auto debuff = get_target_data( target )->debuffs_concussive_blows;
+
+    if ( debuff->check() && debuff->has_common_school( school ) )
+    {
+      m *= 1.0 + debuff->value();
+    }
+  }
+
+  return m;
+}
+
+// warrior_t::composite_player_target_crit_chance =============================
 
 double warrior_t::composite_player_target_crit_chance( player_t* target ) const
 {

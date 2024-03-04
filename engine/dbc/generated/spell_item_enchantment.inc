@@ -1,4 +1,6 @@
-// Item enchantment data, wow build 10.2.5.53262
+#pragma warning(push)
+#pragma warning(once: 4305)
+// Item enchantment data, wow build 10.2.5.53441
 static const std::array<item_enchantment_data_t, 4669> __spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 2, 50,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 8, 50,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened III"                     },
@@ -4671,3 +4673,4 @@ static const std::array<item_enchantment_data_t, 4669> __spell_item_ench_data { 
   { 7086, 211103, -1,   0,   0, 0, 0,   0,   0, {  11,  11,   0 }, {    0,    0,    0 }, {   9622,   9613,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "+Speed & +Haste"                   },
 } };
 
+#pragma warning(pop)

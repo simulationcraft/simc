@@ -1,4 +1,6 @@
-// Temporary item enchants, wow build 10.2.5.53262
+#pragma warning(push)
+#pragma warning(once: 4305)
+// Temporary item enchants, wow build 10.2.5.53441
 static const std::array<temporary_enchant_entry_t, 73> __temporary_enchant_data { {
   {  2713,  0,  29453, "adamantite_sharpening_stone"  },
   {  2955,  0,  34340, "adamantite_weightstone"       },
@@ -75,3 +77,4 @@ static const std::array<temporary_enchant_entry_t, 73> __temporary_enchant_data 
   {  2627,  0,  25121, "wizard_oil"                   },
 } };
 
+#pragma warning(pop)

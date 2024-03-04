@@ -1,4 +1,6 @@
-// Item effects, wow build 10.2.5.53262
+#pragma warning(push)
+#pragma warning(once: 4305)
+// Item effects, wow build 10.2.5.53441
 static const std::array<item_effect_t, 8727> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -9823,3 +9825,4 @@ static const std::array<uint16_t, 8727> __item_effect_id_index { {
    8721,  8722,  8723,  8724,  8725,  8519,  8726,
 } };
 
+#pragma warning(pop)

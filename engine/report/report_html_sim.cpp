@@ -1262,6 +1262,9 @@ void print_html_head( report::sc_html_stream& os, const sim_t& sim )
   os << "\n</script>\n"
      << "<script type=\"text/javascript\">\n";
   print_text_array( os, __highcharts_include );
+  os << "\n</script>\n"
+     << "<script type=\"text/javascript\">\n";
+  print_text_array( os, __highcharts_more_include );
   os << "\n</script>\n";
 
   print_html_style( os, sim );

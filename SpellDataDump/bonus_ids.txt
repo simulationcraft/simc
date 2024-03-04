@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.2.0.52038 Live
+SimulationCraft 1025-01 for World of Warcraft 10.2.5.53262 Live
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4787,6 +4787,7 @@ bonus_id={ 9474 }, ilevel_adjust={ -408 }
 bonus_id={ 9475 }, ilevel_adjust={ -409 }
 bonus_id={ 9476 }, ilevel_adjust={ -410 }
 bonus_id={ 9492 }, ilevel={ 21 @plvl 1 - 385 @plvl 70 }
+bonus_id={ 9496 }, suffix={ II }, effects={ Unknown Effect (id=178629) }
 bonus_id={ 9498 }, base_ilevel={ 450 }, desc={ Dream Crafted }
 bonus_id={ 9499 }, base_ilevel={ 463 }
 bonus_id={ 9500 }, base_ilevel={ 473 }
@@ -4843,8 +4844,184 @@ bonus_id={ 9576 }, quality={ epic }
 bonus_id={ 9577 }, quality={ epic }
 bonus_id={ 9578 }, quality={ epic }
 bonus_id={ 9581 }, quality={ epic }
+bonus_id={ 9598 }, ilevel={ 13 @plvl 10 - 342 @plvl 70 }
+bonus_id={ 9601 }, ilevel={ 13 @plvl 10 - 342 @plvl 70 }
+bonus_id={ 9610 }, socket={ 1 }
+bonus_id={ 9611 }, quality={ rare }, socket={ 2 }
+bonus_id={ 9612 }, quality={ epic }, socket={ 3 }
+bonus_id={ 9613 }, stats={ 100% Haste [1.2000] }
 bonus_id={ 9614 }, effects={ Verdant Tether (id=426552, index=0, type=equip) }
+bonus_id={ 9618 }, stats={ 100% Crit [1.2000] }
+bonus_id={ 9619 }, stats={ 100% Mastery [1.2000] }
+bonus_id={ 9620 }, stats={ 100% Leech [2.4000] }
+bonus_id={ 9621 }, stats={ 100% unknown [3.6000] }
+bonus_id={ 9622 }, stats={ 100% RunSpeed [0.8000] }
 bonus_id={ 9634 }, quality={ rare }
+bonus_id={ 9638 }, stats={ 100% StrAgiInt [0.4802] }
+bonus_id={ 9640 }, stats={ -2147483648% StrAgiInt [0.0000] }
+bonus_id={ 9641 }, stats={ 100% StrAgiInt [0.9604] }
+bonus_id={ 9642 }, stats={ -2147483648% Sta [0.0000] }
+bonus_id={ 9643 }, stats={ 100% Sta [0.4802] }
+bonus_id={ 9644 }, stats={ 100% Sta [0.9604] }
+bonus_id={ 9645 }, stats={ -2147483648% Crit [0.0000] }
+bonus_id={ 9646 }, stats={ 100% Crit [0.4802] }
+bonus_id={ 9647 }, stats={ 100% Crit [0.9604] }
+bonus_id={ 9648 }, stats={ -2147483648% Haste [0.0000] }
+bonus_id={ 9649 }, stats={ 100% Haste [0.4802] }
+bonus_id={ 9650 }, stats={ 100% Haste [0.9604] }
+bonus_id={ 9651 }, stats={ -2147483648% Leech [0.0000] }
+bonus_id={ 9652 }, stats={ 100% Leech [0.4802] }
+bonus_id={ 9653 }, stats={ 100% Leech [0.9604] }
+bonus_id={ 9654 }, stats={ -2147483648% Mastery [0.0000] }
+bonus_id={ 9655 }, stats={ 100% Mastery [0.4802] }
+bonus_id={ 9656 }, stats={ 100% Mastery [0.9604] }
+bonus_id={ 9657 }, stats={ -2147483648% unknown [0.0000] }
+bonus_id={ 9658 }, stats={ 100% unknown [0.4802] }
+bonus_id={ 9659 }, stats={ 100% unknown [0.9604] }
+bonus_id={ 9660 }, stats={ -2147483648% RunSpeed [0.0000] }
+bonus_id={ 9661 }, stats={ 100% RunSpeed [0.4802] }
+bonus_id={ 9662 }, stats={ 100% RunSpeed [0.9604] }
+bonus_id={ 9663 }, stats={ -2147483648% Vers [0.0000] }
+bonus_id={ 9664 }, stats={ 100% Vers [0.4802] }
+bonus_id={ 9665 }, stats={ 100% Vers [0.9604] }
+bonus_id={ 9666 }, stats={ 100% StrAgiInt [1.4406] }
+bonus_id={ 9667 }, stats={ 100% StrAgiInt [1.9208] }
+bonus_id={ 9668 }, stats={ 100% StrAgiInt [2.4010] }
+bonus_id={ 9669 }, stats={ 100% StrAgiInt [2.8812] }
+bonus_id={ 9670 }, stats={ 100% StrAgiInt [3.3614] }
+bonus_id={ 9671 }, stats={ 100% StrAgiInt [3.8416] }
+bonus_id={ 9672 }, stats={ 100% StrAgiInt [4.3218] }
+bonus_id={ 9673 }, stats={ 100% StrAgiInt [4.8020] }
+bonus_id={ 9674 }, stats={ 100% StrAgiInt [5.2822] }
+bonus_id={ 9675 }, stats={ 100% StrAgiInt [5.7624] }
+bonus_id={ 9676 }, stats={ 100% StrAgiInt [6.2426] }
+bonus_id={ 9677 }, stats={ 100% StrAgiInt [6.7228] }
+bonus_id={ 9678 }, stats={ 100% StrAgiInt [7.2030] }
+bonus_id={ 9679 }, stats={ 100% Crit [1.4406] }
+bonus_id={ 9680 }, stats={ 100% Crit [1.9208] }
+bonus_id={ 9681 }, stats={ 100% Crit [2.4010] }
+bonus_id={ 9682 }, stats={ 100% Crit [2.8812] }
+bonus_id={ 9683 }, stats={ 100% Crit [3.3614] }
+bonus_id={ 9684 }, stats={ 100% Crit [3.8416] }
+bonus_id={ 9685 }, stats={ 100% Crit [4.3218] }
+bonus_id={ 9686 }, stats={ 100% Crit [4.8020] }
+bonus_id={ 9687 }, stats={ 100% Crit [5.2822] }
+bonus_id={ 9688 }, stats={ 100% Crit [5.7624] }
+bonus_id={ 9689 }, stats={ 100% Crit [6.2426] }
+bonus_id={ 9690 }, stats={ 100% Crit [6.7228] }
+bonus_id={ 9691 }, stats={ 100% Crit [7.2030] }
+bonus_id={ 9692 }, stats={ 100% Haste [1.4406] }
+bonus_id={ 9693 }, stats={ 100% Haste [1.9208] }
+bonus_id={ 9694 }, stats={ 100% Haste [2.4010] }
+bonus_id={ 9695 }, stats={ 100% Haste [2.8812] }
+bonus_id={ 9696 }, stats={ 100% Haste [3.3614] }
+bonus_id={ 9697 }, stats={ 100% Haste [3.8416] }
+bonus_id={ 9698 }, stats={ 100% Haste [4.3218] }
+bonus_id={ 9699 }, stats={ 100% Haste [4.8020] }
+bonus_id={ 9700 }, stats={ 100% Haste [5.2822] }
+bonus_id={ 9701 }, stats={ 100% Haste [5.2822] }
+bonus_id={ 9702 }, stats={ 100% Haste [6.2426] }
+bonus_id={ 9703 }, stats={ 100% Haste [6.7228] }
+bonus_id={ 9704 }, stats={ 100% Haste [7.2030] }
+bonus_id={ 9705 }, stats={ 100% Leech [1.4406] }
+bonus_id={ 9706 }, stats={ 100% Leech [1.9208] }
+bonus_id={ 9707 }, stats={ 100% Leech [2.4010] }
+bonus_id={ 9708 }, stats={ 100% Leech [2.8812] }
+bonus_id={ 9709 }, stats={ 100% Leech [3.3614] }
+bonus_id={ 9710 }, stats={ 100% Leech [3.8416] }
+bonus_id={ 9711 }, stats={ 100% Leech [4.3218] }
+bonus_id={ 9712 }, stats={ 100% Leech [4.8020] }
+bonus_id={ 9713 }, stats={ 100% Leech [5.2822] }
+bonus_id={ 9714 }, stats={ 100% Leech [5.7624] }
+bonus_id={ 9715 }, stats={ 100% Leech [6.2426] }
+bonus_id={ 9716 }, stats={ 100% Leech [6.7228] }
+bonus_id={ 9717 }, stats={ 100% Leech [7.2030] }
+bonus_id={ 9718 }, stats={ 100% Mastery [1.4406] }
+bonus_id={ 9719 }, stats={ 100% Mastery [1.9208] }
+bonus_id={ 9720 }, stats={ 100% Mastery [2.4010] }
+bonus_id={ 9721 }, stats={ 100% Mastery [2.8812] }
+bonus_id={ 9722 }, stats={ 100% Mastery [3.3614] }
+bonus_id={ 9723 }, stats={ 100% Mastery [3.8416] }
+bonus_id={ 9724 }, stats={ 100% Mastery [4.3218] }
+bonus_id={ 9725 }, stats={ 100% Mastery [4.8020] }
+bonus_id={ 9726 }, stats={ 100% Mastery [5.2822] }
+bonus_id={ 9727 }, stats={ 100% Mastery [5.7624] }
+bonus_id={ 9728 }, stats={ 100% Mastery [6.2426] }
+bonus_id={ 9729 }, stats={ 100% Mastery [6.7228] }
+bonus_id={ 9730 }, stats={ 100% Mastery [7.2030] }
+bonus_id={ 9731 }, stats={ 100% unknown [1.4406] }
+bonus_id={ 9732 }, stats={ 100% unknown [1.9208] }
+bonus_id={ 9733 }, stats={ 100% unknown [2.4010] }
+bonus_id={ 9734 }, stats={ 100% unknown [2.8812] }
+bonus_id={ 9735 }, stats={ 100% unknown [3.3614] }
+bonus_id={ 9736 }, stats={ 100% unknown [3.8416] }
+bonus_id={ 9737 }, stats={ 100% unknown [4.3218] }
+bonus_id={ 9738 }, stats={ 100% unknown [4.8020] }
+bonus_id={ 9739 }, stats={ 100% unknown [5.2822] }
+bonus_id={ 9740 }, stats={ 100% unknown [5.7624] }
+bonus_id={ 9741 }, stats={ 100% unknown [6.2426] }
+bonus_id={ 9742 }, stats={ 100% unknown [6.7228] }
+bonus_id={ 9743 }, stats={ 100% unknown [7.2030] }
+bonus_id={ 9744 }, stats={ 100% RunSpeed [1.4406] }
+bonus_id={ 9745 }, stats={ 100% RunSpeed [1.9208] }
+bonus_id={ 9746 }, stats={ 100% RunSpeed [2.4010] }
+bonus_id={ 9747 }, stats={ 100% RunSpeed [2.8812] }
+bonus_id={ 9748 }, stats={ 100% RunSpeed [3.3614] }
+bonus_id={ 9749 }, stats={ 100% RunSpeed [3.8416] }
+bonus_id={ 9750 }, stats={ 100% RunSpeed [4.3218] }
+bonus_id={ 9751 }, stats={ 100% RunSpeed [4.8020] }
+bonus_id={ 9752 }, stats={ 100% RunSpeed [5.2822] }
+bonus_id={ 9753 }, stats={ 100% RunSpeed [5.7624] }
+bonus_id={ 9754 }, stats={ 100% RunSpeed [6.2426] }
+bonus_id={ 9755 }, stats={ 100% RunSpeed [6.7228] }
+bonus_id={ 9756 }, stats={ 100% RunSpeed [7.2030] }
+bonus_id={ 9757 }, stats={ 100% Sta [1.4406] }
+bonus_id={ 9758 }, stats={ 100% Sta [1.9208] }
+bonus_id={ 9759 }, stats={ 100% Sta [2.4010] }
+bonus_id={ 9760 }, stats={ 100% Sta [2.8812] }
+bonus_id={ 9761 }, stats={ 100% Sta [3.3614] }
+bonus_id={ 9762 }, stats={ 100% Sta [3.8416] }
+bonus_id={ 9763 }, stats={ 100% Sta [4.3218] }
+bonus_id={ 9764 }, stats={ 100% Sta [4.8020] }
+bonus_id={ 9765 }, stats={ 100% Sta [5.2822] }
+bonus_id={ 9766 }, stats={ 100% Sta [5.7624] }
+bonus_id={ 9767 }, stats={ 100% Sta [6.2426] }
+bonus_id={ 9768 }, stats={ 100% Sta [6.7228] }
+bonus_id={ 9769 }, stats={ 100% Sta [7.2030] }
+bonus_id={ 9770 }, stats={ 100% Vers [1.4406] }
+bonus_id={ 9771 }, stats={ 100% Vers [1.9208] }
+bonus_id={ 9772 }, stats={ 100% Vers [2.4010] }
+bonus_id={ 9773 }, stats={ 100% Vers [2.8812] }
+bonus_id={ 9774 }, stats={ 100% Vers [3.3614] }
+bonus_id={ 9775 }, stats={ 100% Vers [3.8416] }
+bonus_id={ 9776 }, stats={ 100% Vers [4.3218] }
+bonus_id={ 9777 }, stats={ 100% Vers [4.8020] }
+bonus_id={ 9778 }, stats={ 100% Vers [5.2822] }
+bonus_id={ 9779 }, stats={ 100% Vers [5.7624] }
+bonus_id={ 9780 }, stats={ 100% Vers [6.2426] }
+bonus_id={ 9781 }, stats={ 100% Vers [6.7228] }
+bonus_id={ 9782 }, stats={ 100% Vers [7.2030] }
+bonus_id={ 9783 }
+bonus_id={ 9784 }
+bonus_id={ 9785 }
+bonus_id={ 9786 }
+bonus_id={ 9787 }
+bonus_id={ 9788 }
+bonus_id={ 9789 }
+bonus_id={ 9790 }
+bonus_id={ 9791 }
+bonus_id={ 9792 }
+bonus_id={ 9793 }
+bonus_id={ 9794 }
+bonus_id={ 9795 }
+bonus_id={ 9796 }
+bonus_id={ 9797 }
+bonus_id={ 9798 }
+bonus_id={ 9799 }
+bonus_id={ 9800 }
+bonus_id={ 9801 }
+bonus_id={ 9802 }
+bonus_id={ 9803 }
 bonus_id={ 9834 }, ilevel_adjust={ 411 }
 bonus_id={ 9835 }, ilevel_adjust={ 412 }
 bonus_id={ 9836 }, ilevel_adjust={ 413 }
@@ -4926,3 +5103,40 @@ bonus_id={ 9911 }, ilevel_adjust={ -448 }
 bonus_id={ 9912 }, ilevel_adjust={ -449 }
 bonus_id={ 9913 }, ilevel_adjust={ -450 }
 bonus_id={ 9916 }, quality={ epic }
+bonus_id={ 9918 }, ilevel_adjust={ 451 }
+bonus_id={ 9919 }, ilevel_adjust={ 452 }
+bonus_id={ 9920 }, ilevel_adjust={ 453 }
+bonus_id={ 9921 }, ilevel_adjust={ 454 }
+bonus_id={ 9922 }, ilevel_adjust={ 455 }
+bonus_id={ 10068 }, ilevel_adjust={ -451 }
+bonus_id={ 10069 }, ilevel_adjust={ -452 }
+bonus_id={ 10070 }, ilevel_adjust={ -453 }
+bonus_id={ 10071 }, ilevel_adjust={ -454 }
+bonus_id={ 10072 }, ilevel_adjust={ -455 }
+bonus_id={ 10218 }, effects={ Sprint (id=427030, index=0, type=use) }
+bonus_id={ 10219 }, effects={ Blink (id=427053, index=0, type=use) }
+bonus_id={ 10220 }, effects={ Heroic Leap (id=427033, index=0, type=use) }
+bonus_id={ 10221 }, effects={ Roll (id=427026, index=0, type=use) }
+bonus_id={ 10223 }, effects={ Chill (id=428644, index=0, type=equip) }
+bonus_id={ 10224 }, effects={ Burn (id=428661, index=0, type=equip) }
+bonus_id={ 10225 }, effects={ Poison (id=428685, index=0, type=equip) }
+bonus_id={ 10226 }, effects={ Sanctify (id=428696, index=0, type=equip) }
+bonus_id={ 10227 }, effects={ Shock (id=428697, index=0, type=equip) }
+bonus_id={ 10229 }, effects={ Brilliance (id=429007, index=0, type=equip) }
+bonus_id={ 10230 }, effects={ Endurance (id=428914, index=0, type=equip) }
+bonus_id={ 10231 }, effects={ Unholy Vigor (id=428921, index=0, type=equip) }
+bonus_id={ 10232 }, effects={ Freedom (id=429026, index=0, type=equip) }
+bonus_id={ 10233 }, effects={ Grounding (id=428854, index=0, type=equip) }
+bonus_id={ 10234 }, effects={ Thorns (id=429001, index=0, type=equip) }
+bonus_id={ 10235 }, effects={ Fervor (id=429389, index=0, type=equip) }
+bonus_id={ 10236 }, effects={ Opportunist (id=427054, index=0, type=equip) }
+bonus_id={ 10237 }, effects={ Victory Pyre (id=429410, index=0, type=equip) }
+bonus_id={ 10238 }, effects={ Arcanist's Edge (id=429270, index=0, type=equip) }
+bonus_id={ 10239 }, effects={ Quick Strike (id=429373, index=0, type=equip) }
+bonus_id={ 10240 }, effects={ Slay (id=429378, index=0, type=equip) }
+bonus_id={ 10241 }, effects={ Mark of Arrogance (id=429241, index=0, type=equip) }
+bonus_id={ 10242 }, effects={ Sunstrider's Flourish (id=429214, index=0, type=equip) }
+bonus_id={ 10243 }, effects={ Tinkmaster's Shield (id=429230, index=0, type=equip) }
+bonus_id={ 10246 }, effects={ Chi-ji, the Red Crane (id=426268, index=0, type=use) }
+bonus_id={ 10426 }, ilevel={ 5 @plvl 1 - 441 @plvl 70 }
+bonus_id={ 10465 }, ilevel={ 5 @plvl 1 - 454 @plvl 70 }

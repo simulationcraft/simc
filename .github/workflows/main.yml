@@ -74,6 +74,8 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
+            generate_profiles_ci.sh
+            .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   ubuntu-clang-build:
@@ -139,6 +141,8 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
+            generate_profiles_ci.sh
+            .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   ubuntu-run:
@@ -182,6 +186,8 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
+            generate_profiles_ci.sh
+            .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Run
@@ -226,6 +232,8 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
+            generate_profiles_ci.sh
+            .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Install Python dependencies
@@ -239,6 +247,52 @@ jobs:
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
         run: ${{ github.workspace }}/tests/run.py ${{ matrix.spec }} -tests trinket baseline --max-profiles-to-use 1 --enable-all-talents --enable-all-sets
+  
+  simc-profiles:
+    name: Regenerate profiles
+    runs-on: ${{ matrix.os }}
+    needs: [ ubuntu-clang-build ]
+    if: ${{ github.event_name == 'push' }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        cppVersion: [17]
+        compiler: [clang++-15]        
+        include:
+          - compiler: clang++-15
+            os: ubuntu-22.04
+    
+    steps:
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ${{ runner.workspace }}/b/ninja/simc
+            profiles
+            tests
+            generate_profiles_ci.sh
+            .git
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+
+      - uses: actions/checkout@v4
+
+      - name: Run
+        env:
+          UBSAN_OPTIONS: print_stacktrace=1
+          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
+          SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
+          SIMC_THREADS: 2
+          SIMC_ITERATIONS: 2
+        run: | 
+          ${{ github.workspace }}/generate_profiles_ci.sh
+
+      - name: Commit Profiles
+        uses: EndBug/add-and-commit@v9.1.4
+        with:
+          message: 'Regenerate profiles'
+          default_author: github_actions
+          fetch: false
+          add: '*.simc'
 
   build-osx:
     name: macos-latest

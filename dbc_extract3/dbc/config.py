@@ -83,6 +83,13 @@ class Config:
                 ids = generator.filter()
 
                 logging.info('Outputting %s to %s ...', generator.__class__.__name__, output_file)
-                generator.generate(ids)
-                generator.close()
 
+                if generator._out and generator._out != sys.stdout:
+                    generator._out.write('#pragma warning(push)\n#pragma warning(once: 4305)\n')
+
+                generator.generate(ids)
+
+                if generator._out and generator._out != sys.stdout:
+                    generator._out.write('#pragma warning(pop)\n')
+
+                generator.close()

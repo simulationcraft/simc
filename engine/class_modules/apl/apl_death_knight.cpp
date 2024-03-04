@@ -41,7 +41,7 @@ std::string food( const player_t* p )
 
   if ( p->true_level >= 61 )
   {
-    frost_food  = ( p->dual_wield() ) ? "thousandbone_tongueslicer" : "sizzling_seafood_medley";
+    frost_food  = "sizzling_seafood_medley";
     unholy_food = "sizzling_seafood_medley";
     blood_food  = "great_cerulean_sea";
   }
@@ -246,8 +246,8 @@ void frost( player_t* p )
   breath->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority" );
   breath->add_action( "frostscythe,if=variable.frostscythe_priority&(buff.killing_machine.react|runic_power>45)" );
   breath->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>40|buff.pillar_of_frost.up" );
-  breath->add_action( "death_and_decay,if=runic_power<36&rune.time_to_2>runic_power%18" );
   breath->add_action( "remorseless_winter,if=runic_power<36&rune.time_to_2>runic_power%18" );
+  breath->add_action( "death_and_decay,if=variable.st_planning&talent.unholy_ground&!death_and_decay.ticking&runic_power.deficit>=10|runic_power<36&rune.time_to_2>runic_power%18" );
   breath->add_action( "howling_blast,if=runic_power<36&rune.time_to_2>runic_power%18" );
   breath->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>25" );
   breath->add_action( "howling_blast,if=buff.rime.react" );
@@ -470,7 +470,7 @@ void unholy( player_t* p )
   high_prio_actions->add_action( "unholy_blight,if=variable.st_planning&((!talent.apocalypse|cooldown.apocalypse.remains|!talent.summon_gargoyle)&talent.morbidity|!talent.morbidity)|variable.adds_remain|fight_remains<21" );
   high_prio_actions->add_action( "outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&(dot.virulent_plague.refreshable|talent.superstrain&(dot.frost_fever_superstrain.refreshable|dot.blood_plague_superstrain.refreshable))&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains>15%((talent.superstrain*3)+(talent.plaguebringer*2)+(talent.ebon_fever*2)))" );
 
-  racials->add_action( "arcane_torrent,if=runic_power.deficit>20&(cooldown.summon_gargoyle.remains<gcd|!talent.summon_gargoyle.enabled|pet.gargoyle.active&rune<2&debuff.festering_wound.stack<1)", "Racials" );
+  racials->add_action( "arcane_torrent,if=runic_power.deficit>20&(cooldown.summon_gargoyle.remains<gcd&time>15|!talent.summon_gargoyle.enabled|pet.gargoyle.active&rune<2&debuff.festering_wound.stack<1)", "Racials" );
   racials->add_action( "blood_fury,if=(buff.blood_fury.duration+3>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(pet.army_ghoul.active&pet.army_ghoul.remains<=buff.blood_fury.duration+3|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=buff.blood_fury.duration+3|active_enemies>=2&death_and_decay.ticking)|fight_remains<=buff.blood_fury.duration+3" );
   racials->add_action( "berserking,if=(buff.berserking.duration+3>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(pet.army_ghoul.active&pet.army_ghoul.remains<=buff.berserking.duration+3|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=buff.berserking.duration+3|active_enemies>=2&death_and_decay.ticking)|fight_remains<=buff.berserking.duration+3" );
   racials->add_action( "lights_judgment,if=buff.unholy_strength.up&(!talent.festermight|buff.festermight.remains<target.time_to_die|buff.unholy_strength.remains<target.time_to_die)" );
@@ -487,7 +487,7 @@ void unholy( player_t* p )
   st->add_action( "death_coil" );
   st->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=!variable.pop_wounds&debuff.festering_wound.stack>=4" );
 
-  trinkets->add_action( "use_item,name=fyralath_the_dreamrender,if=dot.mark_of_fyralath.ticking&(active_enemies<5|active_enemies>21|fight_remains<4)&(debuff.festering_wound.stack>2|time>15)", "Trinkets" );
+  trinkets->add_action( "use_item,name=fyralath_the_dreamrender,if=dot.mark_of_fyralath.ticking&(active_enemies<5|active_enemies>21|fight_remains<4)&(debuff.festering_wound.stack>=2|time>15)", "Trinkets" );
   trinkets->add_action( "use_item,use_off_gcd=1,name=algethar_puzzle_box,if=cooldown.summon_gargoyle.remains<5&rune<=4|!talent.summon_gargoyle&pet.army_ghoul.active|active_enemies>3&variable.adds_remain&(buff.dark_transformation.up|talent.bursting_sores&cooldown.any_dnd.remains<10&!death_and_decay.ticking)" );
   trinkets->add_action( "use_item,use_off_gcd=1,name=irideus_fragment,if=(pet.gargoyle.active&pet.gargoyle.remains<16|!talent.summon_gargoyle&pet.army_ghoul.active&pet.army_ghoul.remains<16)|active_enemies>3&variable.adds_remain&(buff.dark_transformation.up|talent.bursting_sores&death_and_decay.ticking)" );
   trinkets->add_action( "use_item,use_off_gcd=1,name=vial_of_animated_blood,if=pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=18|!talent.apocalypse&buff.dark_transformation.up|active_enemies>3&variable.adds_remain&(buff.dark_transformation.up|talent.bursting_sores&death_and_decay.ticking)" );

@@ -1163,19 +1163,16 @@ public:
     return cm;
   }
 
-  double cost() const override
+  double cost_flat_modifier() const override
   {
-    double c = ab::cost();
+    double c = ab::cost_flat_modifier();
 
     if ( affected_by.t29_sv_4pc_cost && p() -> buffs.bestial_barrage -> check() )
-    { 
+    {
       c += p() -> tier_set.t29_sv_4pc_buff -> effectN( 1 ).base_value();
     }
 
-    if ( c < 0 )
-      return 0;
-
-    return ceil( c );
+    return c;
   }
 
   void update_ready( timespan_t cd ) override
@@ -2253,7 +2250,7 @@ struct beast_cleave_attack_t: public hunter_pet_action_t<hunter_pet_t, melee_att
     hunter_pet_action_t::available_targets( tl );
 
     // Cannot hit the original target.
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }
@@ -2311,7 +2308,7 @@ struct kill_cleave_t: public hunter_pet_action_t<hunter_pet_t, melee_attack_t>
     hunter_pet_action_t::available_targets( tl );
 
     // Cannot hit the original target.
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }

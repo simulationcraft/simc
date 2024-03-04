@@ -794,6 +794,7 @@ public:
   void init_rng() override;
   void init_scaling() override;
   void init_spells() override;
+  bool validate_fight_style( fight_style_e style ) const override;
   void invalidate_cache( cache_e ) override;
   resource_e primary_resource() const override;
   role_e primary_role() const override;
@@ -1139,15 +1140,16 @@ struct soul_fragment_t
     if ( ( activation && consume_on_activation ) || velocity == 0 )
       return timespan_t::zero();
 
-    // 2023-06-26 -- Recent testing appears to show a roughly fixed 1s activation time for Havoc
     if ( activation )
     {
+      // 2023-06-26 -- Recent testing appears to show a roughly fixed 1s activation time for Havoc
       if ( dh->specialization() == DEMON_HUNTER_HAVOC )
       {
         return 1_s;
       }
-      // 2023-07-27 -- Recent testing appears to show a roughly 0.85s activation time for Vengeance
-      return 850_ms;
+      // 2024-02-12 -- Recent testing appears to show a roughly 0.76s activation time for Vengeance
+      //               with some slight variance
+      return dh->rng().gauss( 760_ms, 120_ms );
     }
 
     double distance = get_distance( dh );
@@ -4523,8 +4525,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       if ( p()->talent.havoc.first_blood->ok() && !from_first_blood )
       {
         // Ensure the non-First Blood AoE spell doesn't hit the primary target
-        tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) { return t == this->target; } ),
-                  tl.end() );
+        range::erase_remove( tl, target );
       }
 
       return tl.size();
@@ -7871,6 +7872,24 @@ void demon_hunter_t::init_spells()
         "throw_glaive_ds_throw", "", throw_glaive_t::glaive_source::DEATH_SWEEP_THROW );
     active.throw_glaive_ds_throw = throw_glaive_ds_throw;
   }
+}
+
+// demon_hunter_t::validate_fight_style =====================================
+
+bool demon_hunter_t::validate_fight_style( fight_style_e style ) const
+{
+  if ( specialization() == DEMON_HUNTER_VENGEANCE )
+  {
+    switch ( style )
+    {
+    case FIGHT_STYLE_DUNGEON_ROUTE:
+    case FIGHT_STYLE_DUNGEON_SLICE:
+      return false;
+    default:
+      return true;
+    }
+  }
+  return true;
 }
 
 // demon_hunter_t::invalidate_cache =========================================
