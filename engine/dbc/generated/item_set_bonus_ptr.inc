@@ -1,3 +1,5 @@
+#pragma warning(push)
+#pragma warning(once: 4305)
 // Set bonus data, wow build 10.2.5.53584
 static const std::array<item_set_bonus_t, 696> __ptr_set_bonus_data { {
   // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
@@ -725,3 +727,4 @@ static const std::array<item_set_bonus_t, 696> __ptr_set_bonus_data { {
   { "Werynkeeper's Timeless Vigil"              , "tier31"             ,     21,  1560,   31,   4,  13, 1467,  422871, { 207225, 207226, 207227, 207228, 207230,  0 } },
   { "Werynkeeper's Timeless Vigil"              , "tier31"             ,     21,  1560,   31,   4,  13, 1468,  422873, { 207225, 207226, 207227, 207228, 207230,  0 } },
 } };
+#pragma warning(pop)

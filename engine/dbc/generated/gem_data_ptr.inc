@@ -1,3 +1,5 @@
+#pragma warning(push)
+#pragma warning(once: 4305)
 // Gem properties, wow build 10.2.5.53584
 static const std::array<gem_property_data_t, 2105> __ptr_gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
@@ -2107,3 +2109,4 @@ static const std::array<gem_property_data_t, 2105> __ptr_gem_property_data { {
   { 4081,  7086, 0x0000000e }, // +Speed & +Haste
 } };
 
+#pragma warning(pop)

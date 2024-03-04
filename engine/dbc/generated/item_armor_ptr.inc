@@ -1,3 +1,5 @@
+#pragma warning(push)
+#pragma warning(once: 4305)
 // Item armor values data from ItemArmorQuality.db2, ilevels 1-1300, wow build 10.2.5.53584
 static const std::array<item_armor_quality_data_t, 1300> __ptr_item_armor_quality_data { {
   {    1, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
@@ -3910,6 +3912,9 @@ static const std::array<item_armor_total_data_t, 1300> __ptr_item_armor_total_da
   { 1300, {  5016676.00000,  8614579.00000, 12703104.00000, 19108462.00000 } },
 } };
 
+#pragma warning(pop)
+#pragma warning(push)
+#pragma warning(once: 4305)
 // Armor location based multipliers, wow build 10.2.5.53584
 static const std::array<item_armor_location_data_t, 23> __ptr_armor_location_data { {
   {  1, {     0.120,     0.120,     0.120,     0.120 } },
@@ -3937,3 +3942,4 @@ static const std::array<item_armor_location_data_t, 23> __ptr_armor_location_dat
   { 23, {     0.000,     0.000,     0.000,     0.000 } },
 } };
 
+#pragma warning(pop)
