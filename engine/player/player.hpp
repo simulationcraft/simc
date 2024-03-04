@@ -717,6 +717,9 @@ struct player_t : public actor_t
     operator std::string_view() const { return current_value; }
 
     bool is_default() { return current_value == default_value; }
+
+    friend void sc_format_to( const player_option_t<T>& opt, fmt::format_context::iterator out )
+    { fmt::format_to( out, "{}", opt.current_value ); }
   };
 
   struct shadowlands_opt_t

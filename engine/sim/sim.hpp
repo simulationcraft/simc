@@ -749,7 +749,7 @@ struct sim_t : private sc_thread_t
     if ( thread_index != 0 )
       return;
 
-    set_error( fmt::vformat( format, fmt::make_format_args( std::forward<Args>(args)... ) ) );
+    set_error( fmt::vformat( format, fmt::make_format_args( args... ) ) );
   }
 
   void abort();
@@ -803,7 +803,7 @@ struct sim_t : private sc_thread_t
     if ( ! debug )
       return;
 
-    out_debug.vprint( format, fmt::make_format_args( std::forward<Args>(args)... ) );
+    out_debug.vprint( format, fmt::make_format_args( args... ) );
   }
 
   /**
@@ -818,7 +818,7 @@ struct sim_t : private sc_thread_t
     if ( ! log )
       return;
 
-    out_log.vprint( format, fmt::make_format_args( std::forward<Args>(args)... ) );
+    out_log.vprint( format, fmt::make_format_args( args... ) );
   }
 
 private:
