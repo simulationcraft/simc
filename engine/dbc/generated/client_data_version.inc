@@ -1,3 +1,5 @@
+#pragma warning(push)
+#pragma warning(once: 4305)
 #ifndef CLIENT_DATA_VERSION_INC
 #define CLIENT_DATA_VERSION_INC
 
@@ -8,8 +10,9 @@
 
 // Hotfix data versioning information
 
-#define CLIENT_DATA_HOTFIX_DATE "2024-02-27"
+#define CLIENT_DATA_HOTFIX_DATE "2024-03-03"
 #define CLIENT_DATA_HOTFIX_BUILD (53441)
-#define CLIENT_DATA_HOTFIX_HASH "a9288662157f950e2070de946bfee471772ee6e0e148031ffbb09345c55c9baf"
+#define CLIENT_DATA_HOTFIX_HASH "f3003b3761e1ceda19017d80df134efc37d4605fea70e1bd5ed1ebba5c8c0745"
 
 #endif /* CLIENT_DATA_VERSION_INC*/
+#pragma warning(pop)

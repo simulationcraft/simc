@@ -1,3 +1,5 @@
+#pragma warning(push)
+#pragma warning(once: 4305)
 // Covenant abilities, wow build 10.2.5.53441
 static const std::array<covenant_ability_entry_t, 68> __covenant_ability_data { {
   {  6, 4, 0, 315443, "Abomination Limb"                   },
@@ -70,6 +72,9 @@ static const std::array<covenant_ability_entry_t, 68> __covenant_ability_data { 
   {  3, 3, 0, 328231, "Wild Spirits"                       },
 } };
 
+#pragma warning(pop)
+#pragma warning(push)
+#pragma warning(once: 4305)
 // Soulbind abilities, wow build 10.2.5.53441
 static const std::array<soulbind_ability_entry_t, 128> __soulbind_ability_data { {
   { 319191, 3,  824, "Field of Blossoms"                  },
@@ -202,6 +207,9 @@ static const std::array<soulbind_ability_entry_t, 128> __soulbind_ability_data {
   { 352806, 3, 1851, "Hunt's Exhilaration"                },
 } };
 
+#pragma warning(pop)
+#pragma warning(push)
+#pragma warning(once: 4305)
 // Conduits, wow build 10.2.5.53441
 static const std::array<conduit_entry_t, 286> __conduit_data { {
   {   5, 334993, "Stalwart Guardian"                  },
@@ -531,6 +539,9 @@ static const std::array<uint16_t, 286> __conduit_spell_id_index { {
     281,   280,   279,   277,   278,   276,
 } };
 
+#pragma warning(pop)
+#pragma warning(push)
+#pragma warning(once: 4305)
 // Conduit ranks, wow build 10.2.5.53441
 static const std::array<conduit_rank_entry_t, 4290> __conduit_rank_data { {
   {   5,  0, 334993, -20000.000000 },
@@ -4825,6 +4836,9 @@ static const std::array<conduit_rank_entry_t, 4290> __conduit_rank_data { {
   { 294, 14, 387198, 2.600000 },
 } };
 
+#pragma warning(pop)
+#pragma warning(push)
+#pragma warning(once: 4305)
 // Renown reward abilities, wow build 10.2.5.53441
 static const std::array<renown_reward_entry_t, 20> __renown_reward_ability_data { {
   { 1,   2, 344087, "Deepening Bond"                     }, // Kyrian
@@ -4849,6 +4863,9 @@ static const std::array<renown_reward_entry_t, 20> __renown_reward_ability_data 
   { 4,  59, 354129, "Deepening Bond"                     }, // Necrolord
 } };
 
+#pragma warning(pop)
+#pragma warning(push)
+#pragma warning(once: 4305)
 // Enhanced conduit renown levels, wow build 10.2.5.53441
 static const std::array<enhanced_conduit_entry_t, 120> __enhanced_conduit_data { {
   {  1,  1, 0,  63 }, // Niya
@@ -4973,3 +4990,4 @@ static const std::array<enhanced_conduit_entry_t, 120> __enhanced_conduit_data {
   { 18, 10, 2,  77 }, // Forgelite Prime Mikanikos
 } };
 
+#pragma warning(pop)

@@ -1,3 +1,5 @@
+#pragma warning(push)
+#pragma warning(once: 4305)
 // RPPM Modifiers, wow build 10.2.5.53441
 static const std::array<rppm_modifier_t, 1255> __rppm_modifier_data { {
   {   5301,    4,  1,  1.0000 },
@@ -1257,3 +1259,4 @@ static const std::array<rppm_modifier_t, 1255> __rppm_modifier_data { {
   { 429267,    4,  1,  1.0000 },
 } };
 
+#pragma warning(pop)

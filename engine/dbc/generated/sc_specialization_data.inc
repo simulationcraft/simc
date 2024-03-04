@@ -1,3 +1,5 @@
+#pragma warning(push)
+#pragma warning(once: 4305)
 enum specialization_e {
   SPEC_NONE              = 0,
   SPEC_PET               = 1,
@@ -45,3 +47,4 @@ enum specialization_e {
   EVOKER_AUGMENTATION    = 1473,
 };
 
+#pragma warning(pop)
