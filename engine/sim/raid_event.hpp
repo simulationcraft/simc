@@ -84,18 +84,6 @@ public:
   timespan_t until_next() const;
   virtual timespan_t remains() const;
   bool up() const;
-  double distance()
-  {
-    return distance_max;
-  }
-  double max_distance()
-  {
-    return distance_min;
-  }
-  double min_distance()
-  {
-    return distance_max;
-  }
   void schedule();
   void deactivate( util::string_view reason );
   virtual void reset();
