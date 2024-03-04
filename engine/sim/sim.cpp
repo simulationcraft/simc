@@ -2391,12 +2391,12 @@ void sim_t::init_fight_style()
     break;
 
     case FIGHT_STYLE_LIGHT_MOVEMENT:
-      raid_events_str += "/movement,players_only=1,cooldown=40,cooldown_stddev=10,distance=15,distance_min=10,distance_max=20,first=15";
+      raid_events_str += "/movement,players_only=1,cooldown=40,cooldown_stddev=10,distance=15,move_distance_min=10,move_distance_max=20,first=15";
       break;
 
     case FIGHT_STYLE_HEAVY_MOVEMENT:
-      raid_events_str += "/movement,players_only=1,cooldown=20,cooldown_stddev=15,distance=25,distance_min=20,distance_max=30,first=15";
-      raid_events_str += "/movement,players_only=1,cooldown=45,cooldown_stddev=15,distance=45,distance_min=40,distance_max=50,first=30";
+      raid_events_str += "/movement,players_only=1,cooldown=20,cooldown_stddev=15,distance=25,move_distance_min=20,move_distance_max=30,first=15";
+      raid_events_str += "/movement,players_only=1,cooldown=45,cooldown_stddev=15,distance=45,move_distance_min=40,move_distance_max=50,first=30";
       break;
 
     case FIGHT_STYLE_BEASTLORD:

@@ -1054,6 +1054,8 @@ struct movement_event_t final : public raid_event_t
   movement_direction_type direction;
   std::string move_direction;
   double distance_range;
+  double move_distance_min;
+  double move_distance_max;
   double move;
   double avg_player_movement_speed;
 
@@ -1062,12 +1064,16 @@ struct movement_event_t final : public raid_event_t
       move_distance( 0 ),
       direction( movement_direction_type::TOWARDS ),
       distance_range( 0 ),
+      move_distance_min( 0 ),
+      move_distance_max( 0 ),
       move(),
       avg_player_movement_speed( 7.0 )
   {
     add_option( opt_float( "distance", move_distance ) );
     add_option( opt_string( "direction", move_direction ) );
     add_option( opt_float( "distance_range", distance_range ) );
+    add_option( opt_float( "move_distance_min", move_distance_min ) );
+    add_option( opt_float( "move_distance_max", move_distance_max ) );
     parse_options( options_str );
 
     if ( duration > timespan_t::zero() )
@@ -1091,18 +1097,18 @@ struct movement_event_t final : public raid_event_t
       distance_range = ( max - cooldown_move ) * avg_player_movement_speed;
     }
 
-    if ( distance_max < distance_min )
+    if ( move_distance_max < move_distance_min )
     {
-      distance_max = distance_min;
+      move_distance_max = move_distance_min;
     }
 
-    if ( distance_max / avg_player_movement_speed > cooldown_move )
+    if ( move_distance_max / avg_player_movement_speed > cooldown_move )
     {
-      distance_max = cooldown_move * avg_player_movement_speed;
+      move_distance_max = cooldown_move * avg_player_movement_speed;
     }
-    if ( distance_min / avg_player_movement_speed > cooldown_move )
+    if ( move_distance_min / avg_player_movement_speed > cooldown_move )
     {
-      distance_min = cooldown_move * avg_player_movement_speed;
+      move_distance_min = cooldown_move * avg_player_movement_speed;
     }
 
     if ( move_distance > 0 )
@@ -1128,13 +1134,13 @@ struct movement_event_t final : public raid_event_t
     if ( distance_range > 0 )
     {
       move = sim->rng().range( move_distance - distance_range, move_distance + distance_range );
-      if ( move < distance_min )
-        move = distance_min;
-      else if ( move > distance_max )
-        move = distance_max;
+      if ( move < move_distance_min )
+        move = move_distance_min;
+      else if ( move > move_distance_max )
+        move = move_distance_max;
     }
-    else if ( distance_min > 0 || distance_max > 0 )
-      move = sim->rng().range( distance_min, distance_max );
+    else if ( move_distance_min > 0 || move_distance_max > 0 )
+      move = sim->rng().range( move_distance_min, move_distance_max );
     else
       move = move_distance;
 
