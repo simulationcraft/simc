@@ -37,6 +37,8 @@ struct adds_event_t final : public raid_event_t
   double spawn_x_coord;
   double spawn_y_coord;
   int spawn_stacked;
+  double spawn_radius_min;
+  double spawn_radius_max;
   double spawn_radius;
   double spawn_angle_start;
   double spawn_angle_end;
@@ -57,6 +59,8 @@ struct adds_event_t final : public raid_event_t
       spawn_x_coord( 0 ),
       spawn_y_coord( 0 ),
       spawn_stacked( 0 ),
+      spawn_radius_min( 0 ),
+      spawn_radius_max( 0 ),
       spawn_radius( 0 ),
       spawn_angle_start( -1 ),
       spawn_angle_end( -1 ),
@@ -73,6 +77,8 @@ struct adds_event_t final : public raid_event_t
     add_option( opt_float( "spawn_x", spawn_x_coord ) );
     add_option( opt_float( "spawn_y", spawn_y_coord ) );
     add_option( opt_int( "stacked", spawn_stacked ) );
+    add_option( opt_float( "spawn_distance_min", spawn_radius_min ) );
+    add_option( opt_float( "spawn_distance_max", spawn_radius_max ) );
     add_option( opt_float( "distance", spawn_radius ) );
     add_option( opt_float( "angle_start", spawn_angle_start ) );
     add_option( opt_float( "angle_end", spawn_angle_end ) );
@@ -80,8 +86,8 @@ struct adds_event_t final : public raid_event_t
     add_option( opt_string( "type", enemy_type_str ) );
     add_option( opt_bool( "same_duration", same_duration ) );
 
-    add_option( opt_deprecated( "min_distance", "distance_min" ) );
-    add_option( opt_deprecated( "max_distance", "distance_max" ) );
+    add_option( opt_deprecated( "min_distance", "spawn_distance_min" ) );
+    add_option( opt_deprecated( "max_distance", "spawn_distance_max" ) );
     parse_options( options_str );
 
     if ( !master_str.empty() )
@@ -159,12 +165,12 @@ struct adds_event_t final : public raid_event_t
 
     sim->add_waves++;
 
-    if ( fabs( spawn_radius ) > 0 || fabs( distance_max ) > 0 || fabs( distance_min ) > 0 )
+    if ( fabs( spawn_radius ) > 0 || fabs( spawn_radius_max ) > 0 || fabs( spawn_radius_min ) > 0 )
     {
       sim->distance_targeting_enabled = true;
       if ( fabs( spawn_radius ) > 0 )
       {
-        distance_min = distance_max = fabs( spawn_radius );
+        spawn_radius_min = spawn_radius_max = fabs( spawn_radius );
       }
 
       double tempangle;
@@ -292,14 +298,14 @@ struct adds_event_t final : public raid_event_t
         continue;
       }
 
-      if ( std::fabs( distance_max ) > 0 )
+      if ( std::fabs( spawn_radius_max ) > 0 )
       {
         if ( spawn_stacked == 0 || !offset_computed )
         {
           double angle_start = spawn_angle_start * ( m_pi / 180 );
           double angle_end   = spawn_angle_end * ( m_pi / 180 );
           double angle       = sim->rng().range( angle_start, angle_end );
-          double radius      = sim->rng().range( std::fabs( distance_min ), std::fabs( distance_max ) );
+          double radius      = sim->rng().range( std::fabs( spawn_radius_min ), std::fabs( spawn_radius_max ) );
           x_offset           = radius * cos( angle );
           y_offset           = radius * sin( angle );
           offset_computed    = true;
