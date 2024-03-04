@@ -1333,31 +1333,31 @@ public:
 
   // Delayed Execute Event ====================================================
 
-struct delayed_execute_event_t : public event_t
-{
-  action_t* action;
-  player_t* target;
-
-  delayed_execute_event_t( warrior_t* p, action_t* a, player_t* t, timespan_t delay )
-    : event_t( *p->sim, delay ), action( a ), target( t )
+  struct delayed_execute_event_t : public event_t
   {
-    assert( action->background );
-  }
+    action_t* action;
+    player_t* target;
 
-  const char* name() const override
-  {
-    return action->name();
-  }
-
-  void execute() override
-  {
-    if ( !target->is_sleeping() )
+    delayed_execute_event_t( warrior_t* p, action_t* a, player_t* t, timespan_t delay )
+      : event_t( *p->sim, delay ), action( a ), target( t )
     {
-      action->set_target( target );
-      action->execute();
+      assert( action->background );
     }
-  }
-};
+
+    const char* name() const override
+    {
+      return action->name();
+    }
+
+    void execute() override
+    {
+      if ( !target->is_sleeping() )
+      {
+        action->set_target( target );
+        action->execute();
+      }
+    }
+  };
 };
 
 struct warrior_heal_t : public warrior_action_t<heal_t>
