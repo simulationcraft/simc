@@ -1081,7 +1081,7 @@ struct movement_event_t final : public raid_event_t
       sim->error(
           "{} average player movement time ({}) is longer than cooldown movement time ({}). "
           "Capping it the lower value.",
-          name, move_distance / avg_player_movement_speed, cooldown_move );
+          log_name(), move_distance / avg_player_movement_speed, cooldown_move );
       move_distance = cooldown_move * avg_player_movement_speed;
     }
 
@@ -1331,7 +1331,7 @@ struct heal_event_t final : public raid_event_t
         if ( to_pct_range > 0 )
           pct_actual = sim->rng().range( to_pct - to_pct_range, to_pct + to_pct_range );
 
-        sim->print_debug( "{} heals {} {}% ({}) of max health, current health {}", name, p->name(), pct_actual,
+        sim->print_debug( "{} heals {} {}% ({}) of max health, current health {}", log_name(), p->name(), pct_actual,
                           p->resources.max[ RESOURCE_HEALTH ] * pct_actual / 100,
                           p->resources.current[ RESOURCE_HEALTH ] );
 
@@ -1350,7 +1350,7 @@ struct heal_event_t final : public raid_event_t
         raid_heal->target                               = p;
         raid_heal->execute();
 
-        sim->print_log( "Event {} healed {} for '{}' (before player modifiers).", name, p->name(),
+        sim->print_log( "Event {} healed {} for '{}' (before player modifiers).", log_name(), p->name(),
                         amount_to_heal );
       }
     }
@@ -1383,7 +1383,7 @@ struct damage_taken_debuff_event_t final : public raid_event_t
   {
     for ( auto p : affected_players )
     {
-      sim->print_log( "{} gains {} stacks of damage_taken debuff from {}.", p->name(), amount, name );
+      sim->print_log( "{} gains {} stacks of damage_taken debuff from {}.", p->name(), amount, log_name() );
 
       if ( p->debuffs.damage_taken )
         p->debuffs.damage_taken->trigger( amount );
@@ -1758,7 +1758,7 @@ bool raid_event_t::up() const
 
 void raid_event_t::start()
 {
-  sim->print_log( "{} starts.", name );
+  sim->print_log( "{} starts.", log_name() );
 
   num_starts++;
   is_up = true;
@@ -1780,7 +1780,7 @@ void raid_event_t::start()
       }
       catch ( const std::exception& e )
       {
-        sim->error( "{} player_if expression error '{}': {}", name, player_if_expr_str, e.what() );
+        sim->error( "{} player_if expression error '{}': {}", log_name(), player_if_expr_str, e.what() );
         sim->cancel();
       }
     }
@@ -1805,7 +1805,7 @@ void raid_event_t::finish()
 
   _finish();
 
-  sim->print_log( "{} finishes.", name );
+  sim->print_log( "{} finishes.", log_name() );
 
   if ( type == "pull" )
   {
@@ -1826,7 +1826,7 @@ void raid_event_t::activate( util::string_view reason )
 {
   if ( activation_status == activation_status_e::deactivated )
   {
-    sim->print_debug( "{} already deactivated. (last/last_pct happened before first/first_pct).", name );
+    sim->print_debug( "{} already deactivated. (last/last_pct happened before first/first_pct).", log_name() );
     return;
   }
   if ( activation_status == activation_status_e::activated )
@@ -1834,7 +1834,7 @@ void raid_event_t::activate( util::string_view reason )
     // Already activated, do nothing.
     return;
   }
-  sim->print_debug( "{} activated ({}).", name, reason );
+  sim->print_debug( "{} activated ({}).", log_name(), reason );
   activation_status = activation_status_e::activated;
   if ( type == "pull" )
     start();
@@ -1849,12 +1849,12 @@ void raid_event_t::activate( util::string_view reason )
  */
 void raid_event_t::deactivate( std::string_view reason )
 {
-  sim->print_debug( "{} deactivated ({}).", name, reason );
+  sim->print_debug( "{} deactivated ({}).", log_name(), reason );
   activation_status = activation_status_e::deactivated;
   event_t::cancel( cooldown_event );
   if ( force_stop )
   {
-    sim->print_debug( "{} is force stopped.", name );
+    sim->print_debug( "{} is force stopped.", log_name() );
     event_t::cancel( duration_event );
     finish();
   }
@@ -1958,7 +1958,7 @@ void raid_event_t::combat_begin()
 
 void raid_event_t::schedule()
 {
-  sim->print_debug( "Scheduling {}", name );
+  sim->print_debug( "Scheduling {}", log_name() );
 
   struct duration_event_t : public event_t
   {
@@ -2052,7 +2052,7 @@ void raid_event_t::parse_options( util::string_view options_str )
     return;
 
   opts::parse( sim, type, options, options_str,
-               [ this ]( opts::parse_status status, util::string_view name, util::string_view value ) {
+               [ this ]( opts::parse_status status, util::string_view option_name, util::string_view value ) {
                  // Fail parsing if strict parsing is used and the option is not found
                  if ( sim->strict_parsing && status == opts::parse_status::NOT_FOUND )
                  {
@@ -2062,8 +2062,8 @@ void raid_event_t::parse_options( util::string_view options_str )
                  // .. otherwise, just warn that there's an unknown option
                  if ( status == opts::parse_status::NOT_FOUND )
                  {
-                   sim->error( "Warning: Unknown raid event '{}' option '{}' with value '{}', ignoring", name, name,
-                               value );
+                   sim->error( "Warning: Unknown raid event '{}' option '{}' with value '{}', ignoring",
+                               log_name(), option_name, value );
                  }
 
                  return status;
@@ -2228,12 +2228,12 @@ void raid_event_t::init( sim_t* sim )
         if ( !raid_event->pull_target_str.empty() )
           raid_event->pull_target_str = pull_event->name + "_" + raid_event->pull_target_str;
 
-        sim->print_debug( "Successfully created '{}', child of {}.", name, pull_event->name );
+        sim->print_debug( "Successfully created '{}', child of {}.", raid_event->log_name(), pull_event->log_name() );
         pull_event->child_events.push_back( std::move( raid_event ) );
       }
       else
       {
-        sim->print_debug( "Successfully created '{}'.", name );
+        sim->print_debug( "Successfully created '{}'.", raid_event->log_name() );
         sim->raid_events.push_back( std::move( raid_event ) );
       }
     }

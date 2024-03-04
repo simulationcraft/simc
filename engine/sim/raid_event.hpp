@@ -74,6 +74,10 @@ public:
   {
     options.insert( options.begin(), std::move( new_option ) );
   }
+  const char* log_name() const
+  {
+    return name.empty() ? type.c_str() : name.c_str();
+  }
   timespan_t cooldown_time();
   virtual timespan_t duration_time();
   timespan_t next_time() const;
