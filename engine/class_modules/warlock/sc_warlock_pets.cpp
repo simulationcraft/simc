@@ -1530,12 +1530,59 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   }
 };
 
+struct dreadstalker_travel_t : public warlock_pet_t::travel_t
+{
+    dreadstalker_travel_t( player_t* player ) : warlock_pet_t::travel_t( player )
+    {
+      auto player_dreadstalker = debug_cast<dreadstalker_t*>(player);
+      const double distance = player_dreadstalker->o()->get_player_distance( *target );
+      const size_t distance_st = static_cast<size_t>(distance+0.5);
+      
+      if (distance_st > 5) {
+        // The dreadstalkers' travel speed is not constant, since it has a certain acceleration
+        // The average speed for various distances is extracted from the ingame behavior and the rest is interpolated, thus obtaining a lookup table
+        // 2024-03-03: lookup_table for speeds in [6-40]yd TO 1yd range ([0yd-5yd] excluded because we consider these melee range)
+        const std::array<double, 35> lookup_table_speed = {                     // 5yd => 14.81
+                                             15.50, 16.42, 18.89, 20.73, 22.19, // [ 6yd-10yd]
+          23.41, 24.45, 25.36, 26.17, 26.89, 27.55, 28.15, 28.70, 29.21, 29.69, // [11yd-20yd]
+          30.13, 30.54, 30.94, 31.31, 31.66, 31.99, 32.30, 32.61, 32.89, 33.17, // [21yd-30yd]
+          33.43, 33.69, 33.93, 34.17, 34.40, 34.61, 34.83, 35.03, 35.23, 35.42  // [31yd-40yd]
+        };
+        speed = lookup_table_speed[std::min(distance_st,static_cast<size_t>(40))-static_cast<size_t>(6)];
+      } else {
+        // No travel time if melee range (distance <= 5yd), so set very high travel speed for this case
+        speed = 1000;
+      }
+      // The calculated speed and distance values are saved so they can be used to schedule the time of the first melee attack
+      player_dreadstalker->initial_distance = distance;
+      player_dreadstalker->initial_travel_speed = speed;
+    }
+};
+
 // Carnivorous Stalkers talent handling requires special version of melee attack
 struct dreadstalker_melee_t : warlock_pet_melee_t
 {
   dreadstalker_melee_t( warlock_pet_t* p, double wm, const char* name = "melee" ) :
     warlock_pet_melee_t ( p, wm, name )
   {  }
+
+  timespan_t execute_time() const override
+  {
+    if (first) {
+      // For the first melee auto attack, both the initial delay (calculated when the summon) and the travel time (calculated in the 'travel' action) must be taken into account
+      const auto player = debug_cast<const dreadstalker_t*>( p() );
+      const timespan_t travel_time = timespan_t::from_seconds( ( player->initial_distance - dreadstalker_travel_t::default_melee_pos ) / player->initial_travel_speed );
+      timespan_t delay = 1_ms;
+      const double distance = player->initial_distance;
+      if (distance >= 5.5) {
+        const timespan_t first_attack_delay = player->first_attack_delay;
+        delay += first_attack_delay;
+      }
+      return travel_time + delay;
+    } else {
+      return warlock_pet_action_t::execute_time();
+    }
+  }
 
   void execute() override
   {
@@ -1564,6 +1611,8 @@ void dreadstalker_t::init_base_stats()
 
 void dreadstalker_t::arise()
 {
+  first_attack_delay = o()->dreadstalker_first_attack_delay_rng;
+
   warlock_pet_t::arise();
 
   o()->buffs.dreadstalkers->trigger();
@@ -1608,6 +1657,8 @@ action_t* dreadstalker_t::create_action( util::string_view name, util::string_vi
 {
   if ( name == "dreadbite" )
     return new dreadbite_t( this );
+  else if (name == "travel" )
+    return new dreadstalker_travel_t( this );
 
   return warlock_pet_t::create_action( name, options_str );
 }

@@ -123,6 +123,7 @@ public:
   int incinerate_last_target_count; // For use with T30 Destruction tier set
   double shadow_invocation_proc_chance; // 2023-09-10: Annoyingly, at this time there is no listed proc chance in data for Shadow Invocation
   double doom_brand_accumulator;
+  timespan_t dreadstalker_first_attack_delay_rng; // Used to set the same rng delay for the first melee auto-attack of the last pair of summoned dreadstalkers
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG
 
   unsigned active_pets;

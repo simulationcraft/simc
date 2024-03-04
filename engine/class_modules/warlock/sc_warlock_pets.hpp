@@ -98,6 +98,7 @@ struct warlock_pet_t : public pet_t
   // "Executes" for a length of time it would take to travel from current distance to 1.0 at 33 yds/sec
   struct travel_t : public action_t
   {
+    static constexpr double default_melee_pos = 1.0;
     double speed;
     double melee_pos;
 
@@ -105,7 +106,7 @@ struct warlock_pet_t : public pet_t
     {
       trigger_gcd = 0_ms;
       speed = 33.0;
-      melee_pos = 1.0;
+      melee_pos = default_melee_pos;
     }
 
     void execute() override
@@ -438,6 +439,9 @@ private:
 struct dreadstalker_t : public warlock_pet_t
 {
   int dreadbite_executes;
+  timespan_t first_attack_delay;
+  double initial_travel_speed;
+  double initial_distance;
 
   dreadstalker_t( warlock_t* );
   void init_base_stats() override;

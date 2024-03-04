@@ -502,8 +502,42 @@ struct call_dreadstalkers_t : public demonology_spell_t
     demonology_spell_t::execute();
 
     unsigned count = as<unsigned>( p()->talents.call_dreadstalkers->effectN( 1 ).base_value() );
+    
+    // 2024-03-03: The dreadstalker summon has an extra random duration that will be calculated on each summon
+    timespan_t extra_duration = 0_ms;
+    
+    // At range this value is also used to calculate the dreadstalkers' extra duration, although in these cases it is not a hard maximum
+    const timespan_t max_extraduration_sync_ts = 820_ms;
 
-    auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration(), count );
+    const double dist = p()->get_player_distance( *target );
+    // The minimum distance a user can set for the player is 5yd, which in simc is usually considered melee range
+    if (dist >= 5.5) {
+      // 2024-03-03: When the summon is cast at range, there will be a certain delay in the dreadstalkers' first melee attack
+      // This delay is independent of travel time (will be added to this), which will be taken into account within the dreadstalker pet class itself
+      // The delay of the dreadstalkers' first melee varies in a random range of approximately 30ms-990ms (last checked 2024-03-03)
+      p()->dreadstalker_first_attack_delay_rng = timespan_t::from_millis( rng().range( 30.0, 990.0 ) );
+
+      // 2024-03-03: The extra duration of dreadstalkers, although random within a range, is closely related to the delay of the previous first melee delay
+      // It is unknown why these values are related, although it is assumed that it has to do with how the WoW server internally processes the timings of these events
+
+      // There is a threshold (depending on the distance, varying 24_ms per yard approx) from which the extra duration can be related with first melee delay in a way that is quite close to the real in-game behavior
+      double part_threshold_dblval = 560.0 - std::min(dist, 40.0) * 24.0;
+      while(part_threshold_dblval < 0.0) part_threshold_dblval += as<double>(max_extraduration_sync_ts.total_millis());
+      const timespan_t part_threshold_ts = timespan_t::from_millis( rng().gauss( part_threshold_dblval, 25.0) );
+      if (p()->dreadstalker_first_attack_delay_rng < part_threshold_ts) {
+        extra_duration = p()->dreadstalker_first_attack_delay_rng + (max_extraduration_sync_ts - part_threshold_ts) + timespan_t::from_millis( rng().gauss( 0.0, 4.0));
+      } else {
+        extra_duration = (p()->dreadstalker_first_attack_delay_rng - part_threshold_ts) + timespan_t::from_millis( rng().gauss( 0.0, 4.0));
+      }
+    } else {
+      // There is no delay on the dreadstalkers' first hit when summoned from melee
+      p()->dreadstalker_first_attack_delay_rng = timespan_t::zero();
+      // In this case the extra duration of the dreadstalkers can be assumed random between 0 and a maximum [0_ms y 820_ms] (last checked 2024-03-03)
+      extra_duration = timespan_t::from_millis( rng().range( 0.0, as<double>(max_extraduration_sync_ts.total_millis()) ) );
+    }
+
+    const timespan_t normal_duration = p()->talents.call_dreadstalkers_2->duration();
+    auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( normal_duration + extra_duration, count );
 
     if ( p()->buffs.demonic_calling->up() )
     {  // benefit tracking
