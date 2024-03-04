@@ -1,3 +1,5 @@
+#pragma warning(push)
+#pragma warning(once: 4305)
 // Item child equipment, wow build 10.2.5.53441
 static const std::array<item_child_equipment_t, 21> __item_child_equipment_data { {
   {  2, 127417,   1728 }, // parent=0, child=Teebu's Blazing Longsword
@@ -23,3 +25,4 @@ static const std::array<item_child_equipment_t, 21> __item_child_equipment_data 
   { 63, 137661, 128867 }, // parent=Truthguard, child=Oathseeker
 } };
 
+#pragma warning(pop)

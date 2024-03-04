@@ -1,3 +1,5 @@
+#pragma warning(push)
+#pragma warning(once: 4305)
 // Active class spells, wow build 10.2.5.53441
 static const std::array<active_class_spell_t, 287> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
@@ -289,6 +291,9 @@ static const std::array<active_class_spell_t, 287> __active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
+#pragma warning(pop)
+#pragma warning(push)
+#pragma warning(once: 4305)
 // Pet active spells, wow build 10.2.5.53441
 static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
@@ -427,3 +432,4 @@ static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  9, 267964, "Soul Strike"                        },
 } };
 
+#pragma warning(pop)

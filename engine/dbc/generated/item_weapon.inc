@@ -1,3 +1,5 @@
+#pragma warning(push)
+#pragma warning(once: 4305)
 // Item damage data from ItemDamageOneHand.db2, wow build 10.2.5.53441
 static const std::array<item_damage_one_hand_data_t, 1300> __item_damage_one_hand_data { {
   {    1, {       0.17803,       0.28634,       0.29672,       0.29672,       0.29672,       0.29672,       0.29672 } },
@@ -5214,3 +5216,4 @@ static const std::array<item_damage_two_hand_caster_data_t, 1300> __item_damage_
   { 1300, {  405407.87500,  652031.00000,  675679.75000,  675679.75000,  675679.75000,  675679.75000,  675679.75000 } },
 } };
 
+#pragma warning(pop)
