@@ -1,6 +1,6 @@
 #pragma warning(push)
 #pragma warning(once: 4305)
-// Talent tree specialization abilities, wow build 10.2.5.53441
+// Talent tree specialization abilities, wow build 10.2.5.53584
 static const std::array<specialization_spell_entry_t, 391> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },

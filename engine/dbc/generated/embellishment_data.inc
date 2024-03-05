@@ -1,6 +1,6 @@
 #pragma warning(push)
 #pragma warning(once: 4305)
-// Embellishment data, wow build 10.2.5.53441
+// Embellishment data, wow build 10.2.5.53584
 static const std::array<embellishment_data_t, 17> __embellishment_data { {
   { "Armor Spikes", 8188, 147859 },
   { "Potion Absorption Inhibitor", 8175, 147812 },

@@ -1,6 +1,6 @@
 #pragma warning(push)
 #pragma warning(once: 4305)
-// Expected stat for levels 1-133, wow build 10.2.5.53441
+// Expected stat for levels 1-133, wow build 10.2.5.53584
 static const std::array<expected_stat_t, 133> __expected_stat_data { {
   {   1, 2.396496, 27.000000, 20.000000, 0.000000, 64.000000, 147.336594 },
   {   2, 2.636146, 30.000000, 22.000000, 0.000000, 70.000000, 162.070251 },
@@ -140,7 +140,7 @@ static const std::array<expected_stat_t, 133> __expected_stat_data { {
 #pragma warning(pop)
 #pragma warning(push)
 #pragma warning(once: 4305)
-// Expected stat mods, wow build 10.2.5.53441
+// Expected stat mods, wow build 10.2.5.53584
 static const std::array<expected_stat_mod_t, 18> __expected_stat_mod_data { {
   { 245, 1.050000, 1.000000, 1.000000, 1.000000, 1.000000, 1.050000, 8 },
   { 249, 2.099000, 1.000000, 1.695000, 1.833000, 1.587000, 2.099000, 8 },
