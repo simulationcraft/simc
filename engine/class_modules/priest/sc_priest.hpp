@@ -138,6 +138,8 @@ public:
     propagate_const<buff_t*> levitate;
 
     // Talents
+    propagate_const<buff_t*> twist_of_fate_heal_self_fake;
+    propagate_const<buff_t*> twist_of_fate_heal_ally_fake;
     propagate_const<buff_t*> twist_of_fate;
     propagate_const<buff_t*> rhapsody;
     propagate_const<buff_t*> rhapsody_timer;
@@ -676,6 +678,10 @@ public:
     // Forces Idol of Y'Shaarj to give a particular buff for every cast
     // default, pride, anger, despair, fear (NYI), violence
     std::string forced_yshaarj_type = "default";
+
+    double twist_of_fate_heal_rppm = 2;
+    timespan_t twist_of_fate_heal_duration_mean = 3_s;
+    timespan_t twist_of_fate_heal_duration_stddev = 0.5_s;
   } options;
 
   vector_with_callback<player_t*> allies_with_atonement;
