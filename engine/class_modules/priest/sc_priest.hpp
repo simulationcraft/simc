@@ -680,8 +680,8 @@ public:
     std::string forced_yshaarj_type = "default";
 
     double twist_of_fate_heal_rppm = 2;
-    timespan_t twist_of_fate_heal_duration_mean = 3_s;
-    timespan_t twist_of_fate_heal_duration_stddev = 0.5_s;
+    timespan_t twist_of_fate_heal_duration_mean = 2_s;
+    timespan_t twist_of_fate_heal_duration_stddev = 0.25_s;
   } options;
 
   vector_with_callback<player_t*> allies_with_atonement;
