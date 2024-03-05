@@ -1,6 +1,6 @@
 #pragma warning(push)
 #pragma warning(once: 4305)
-// Racial abilities, wow build 10.2.5.53441
+// Racial abilities, wow build 10.2.5.53584
 static const std::array<racial_spell_entry_t, 163> __racial_spell_data { {
   { 0x0000000000000001, 0x00000000,  20599, "Diplomacy"                          },
   { 0x0000000000000001, 0x00000000,  20598, "The Human Spirit"                   },
