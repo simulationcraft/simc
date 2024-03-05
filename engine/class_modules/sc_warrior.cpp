@@ -166,11 +166,11 @@ T_CONTAINER* get_data_entry( util::string_view name, std::vector<T_DATA*>& entri
 struct warrior_t : public player_t
 {
 public:
-  event_t *rampage_driver;
   std::vector<attack_t*> rampage_attacks;
   bool non_dps_mechanics, warrior_fixed_time;
   int into_the_fray_friends;
   int never_surrender_percentage;
+  bool first_rampage_attack_missed;
 
   auto_dispose<std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
   auto_dispose<std::vector<simple_data_t*> > cd_waste_iter;
@@ -767,8 +767,8 @@ public:
 
   warrior_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF )
     : player_t( sim, WARRIOR, name, r ),
-      rampage_driver( nullptr ),
       rampage_attacks( 0 ),
+      first_rampage_attack_missed( false ),
       active(),
       buff(),
       cooldown(),
@@ -1330,6 +1330,34 @@ public:
       }
     }
   }
+
+  // Delayed Execute Event ====================================================
+
+  struct delayed_execute_event_t : public event_t
+  {
+    action_t* action;
+    player_t* target;
+
+    delayed_execute_event_t( warrior_t* p, action_t* a, player_t* t, timespan_t delay )
+      : event_t( *p->sim, delay ), action( a ), target( t )
+    {
+      assert( action->background );
+    }
+
+    const char* name() const override
+    {
+      return action->name();
+    }
+
+    void execute() override
+    {
+      if ( !target->is_sleeping() )
+      {
+        action->set_target( target );
+        action->execute();
+      }
+    }
+  };
 };
 
 struct warrior_heal_t : public warrior_action_t<heal_t>
@@ -4632,14 +4660,13 @@ struct warbreaker_t : public warrior_attack_t
 struct rampage_attack_t : public warrior_attack_t
 {
   int aoe_targets;
-  bool first_attack, first_attack_missed, valarjar_berserking, simmering_rage;
+  bool first_attack, valarjar_berserking, simmering_rage;
   double rage_from_valarjar_berserking;
   double hack_and_slash_chance;
   rampage_attack_t( warrior_t* p, const spell_data_t* rampage, util::string_view name )
     : warrior_attack_t( name, p, rampage ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       first_attack( false ),
-      first_attack_missed( false ),
       valarjar_berserking( false ),
       simmering_rage( false ),
       rage_from_valarjar_berserking( p->find_spell( 248179 )->effectN( 1 ).base_value() / 10.0 ),
@@ -4648,7 +4675,7 @@ struct rampage_attack_t : public warrior_attack_t
     background = true;
     dual = true;
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    if ( p->talents.fury.rampage->effectN( 3 ).trigger() == rampage )
+    if ( p->talents.fury.rampage->effectN( 2 ).trigger() == rampage )
       first_attack = true;
   }
 
@@ -4657,20 +4684,28 @@ struct rampage_attack_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     if ( first_attack && result_is_miss( execute_state->result ) )
-      first_attack_missed = true;
+      p()->first_rampage_attack_missed = true;
     else if ( first_attack )
-      first_attack_missed = false;
+      p()->first_rampage_attack_missed = false;
 
     if ( p()->talents.fury.hack_and_slash->ok() && rng().roll( hack_and_slash_chance ) )
     {
       p()->cooldown.raging_blow->reset( true );
       p()->cooldown.crushing_blow->reset( true );
     }
+
+    // Expire buffs after the fourth attack triggers
+    if ( p()->talents.fury.rampage->effectN( 5 ).trigger()->id() == data().id() )
+    {
+      p()->buff.meat_cleaver->decrement();
+      p()->buff.slaughtering_strikes_rb->expire();
+      p()->buff.slaughtering_strikes_an->expire();
+    }
   }
 
   void impact( action_state_t* s ) override
   {
-    if ( !first_attack_missed )
+    if ( !p()->first_rampage_attack_missed )
     {  // If the first attack misses, all of the rest do as well. However, if any other attack misses, the attacks after
        // continue. The animations and timing of everything else still occur, so we can't just cancel rampage.
       warrior_attack_t::impact( s );
@@ -4684,63 +4719,6 @@ struct rampage_attack_t : public warrior_attack_t
       return aoe_targets + 1;
     }
     return warrior_attack_t::n_targets();
-  }
-};
-
-struct rampage_event_t : public event_t
-{
-  timespan_t duration;
-  warrior_t* warrior;
-  size_t attacks;
-  rampage_event_t( warrior_t* p, size_t current_attack ) : event_t( *p->sim ), warrior( p ), attacks( current_attack )
-  {
-    duration = next_execute();
-    schedule( duration );
-    if ( sim().debug )
-      sim().out_debug.printf( "New rampage event" );
-  }
-
-  timespan_t next_execute() const
-  {
-    timespan_t time_till_next_attack = timespan_t::zero();
-    switch ( attacks )
-    {
-      case 0:
-        break;  // First attack is instant.
-      case 1:
-        time_till_next_attack = timespan_t::from_millis( warrior->talents.fury.rampage->effectN( 3 ).misc_value1() );
-        break;
-      case 2:
-        time_till_next_attack = timespan_t::from_millis( warrior->talents.fury.rampage->effectN( 4 ).misc_value1() -
-                                                         warrior->talents.fury.rampage->effectN( 3 ).misc_value1() );
-        break;
-      case 3:
-        time_till_next_attack = timespan_t::from_millis( warrior->talents.fury.rampage->effectN( 5 ).misc_value1() -
-                                                         warrior->talents.fury.rampage->effectN( 4 ).misc_value1() );
-        break;
-    }
-    return time_till_next_attack;
-  }
-
-  void execute() override
-  {
-    warrior->rampage_attacks[ attacks ]->execute();
-    if ( attacks == 0 )
-    {
-      // Enrage/Frothing go here if not benefiting the first hit
-    }
-    attacks++;
-    if ( attacks < warrior->rampage_attacks.size() )
-    {
-      warrior->rampage_driver = make_event<rampage_event_t>( sim(), warrior, attacks );
-    }
-    else
-    {
-      warrior->rampage_driver = nullptr;
-      warrior->buff.meat_cleaver->decrement();
-      warrior->buff.slaughtering_strikes_rb->expire();
-      warrior->buff.slaughtering_strikes_an->expire();
-    }
   }
 };
 
@@ -4793,7 +4771,11 @@ struct rampage_parent_t : public warrior_attack_t
     }
 
     p()->enrage();
-    p()->rampage_driver = make_event<rampage_event_t>( *sim, p(), 0 );
+
+    make_event<delayed_execute_event_t>( *sim, p(), p()->rampage_attacks[0], p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 2 ).misc_value1()) );
+    make_event<delayed_execute_event_t>( *sim, p(), p()->rampage_attacks[1], p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 3 ).misc_value1()) );
+    make_event<delayed_execute_event_t>( *sim, p(), p()->rampage_attacks[2], p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 4 ).misc_value1()) );
+    make_event<delayed_execute_event_t>( *sim, p(), p()->rampage_attacks[3], p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 5 ).misc_value1()) );
   }
 
   bool ready() override
@@ -8304,8 +8286,7 @@ void warrior_t::activate()
 void warrior_t::reset()
 {
   player_t::reset();
-
-  rampage_driver = nullptr;
+  first_rampage_attack_missed = false;
 }
 
 // Movement related overrides. =============================================
