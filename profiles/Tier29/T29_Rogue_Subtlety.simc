@@ -71,11 +71,11 @@ actions.build+=/gloomblade
 actions.build+=/backstab
 
 # Cooldowns  Helper Variable for Flagellation for trinket synchronisation
-actions.cds=variable,name=trinket_conditions,value=(!equipped.witherbarks_branch&!equipped.ashes_of_the_embersoul|!equipped.witherbarks_branch&trinket.witherbarks_branch.cooldown.remains<=8|equipped.witherbarks_branch&trinket.witherbarks_branch.cooldown.remains<=8|equipped.bandolier_of_twisted_blades|talent.invigorating_shadowdust)
+actions.cds=variable,name=trinket_conditions,value=(!equipped.witherbarks_branch|equipped.witherbarks_branch&trinket.witherbarks_branch.cooldown.remains<=8|equipped.bandolier_of_twisted_blades|talent.invigorating_shadowdust)
 # Cold Blood on 5 combo points when not playing Secret Technique
 actions.cds+=/cold_blood,if=!talent.secret_technique&combo_points>=5
 actions.cds+=/sepsis,if=variable.snd_condition&target.time_to_die>=16&(buff.perforated_veins.up|!talent.perforated_veins)
-# Defines Flagellation use in a stacked maner with trinkets and Shadow Blades
+# Defines Flagellation use in a stacked manner with trinkets and Shadow Blades
 actions.cds+=/flagellation,target_if=max:target.time_to_die,if=variable.snd_condition&combo_points>=5&target.time_to_die>10&(variable.trinket_conditions&cooldown.shadow_blades.remains<=3|fight_remains<=28|cooldown.shadow_blades.remains>=14&talent.invigorating_shadowdust&talent.shadow_dance)&(!talent.invigorating_shadowdust|talent.sepsis|!talent.shadow_dance|talent.invigorating_shadowdust.rank=2&spell_targets.shuriken_storm>=2|cooldown.symbols_of_death.remains<=3|buff.symbols_of_death.remains>3)
 # Align Symbols of Death to Flagellation.
 actions.cds+=/symbols_of_death,if=variable.snd_condition&(!buff.the_rotten.up|!set_bonus.tier30_2pc)&buff.symbols_of_death.remains<=3&(!talent.flagellation|cooldown.flagellation.remains>10|buff.shadow_dance.remains>=2&talent.invigorating_shadowdust|cooldown.flagellation.up&combo_points>=5&!talent.invigorating_shadowdust)
@@ -90,8 +90,12 @@ actions.cds+=/shuriken_tornado,if=variable.snd_condition&!buff.shadow_dance.up&!
 actions.cds+=/shadow_dance,if=!buff.shadow_dance.up&fight_remains<=8+talent.subterfuge.enabled
 # Goremaws Bite during Shadow Dance if possible.
 actions.cds+=/goremaws_bite,if=variable.snd_condition&combo_points.deficit>=3&(!cooldown.shadow_dance.up|talent.shadow_dance&buff.shadow_dance.up&!talent.invigorating_shadowdust|spell_targets.shuriken_storm<4&!talent.invigorating_shadowdust|talent.the_rotten|raid_event.adds.up)
-# Thistle Tea during Shadow Dance when close to max stacks, default use is for energy.
-actions.cds+=/thistle_tea,if=(cooldown.symbols_of_death.remains>=3|buff.symbols_of_death.up)&!buff.thistle_tea.up&(energy.deficit>=(100)&(combo_points.deficit>=2|spell_targets.shuriken_storm>=3)|(cooldown.thistle_tea.charges_fractional>=(2.75-0.15*talent.invigorating_shadowdust.rank&cooldown.vanish.up))&buff.shadow_dance.up&dot.rupture.ticking&spell_targets.shuriken_storm<3)|buff.shadow_dance.remains>=4&!buff.thistle_tea.up&spell_targets.shuriken_storm>=3|!buff.thistle_tea.up&fight_remains<=(6*cooldown.thistle_tea.charges)
+# Thistle Tea during Shadow Dance when close to max stacks.
+actions.cds+=/thistle_tea,if=!buff.thistle_tea.up&cooldown.thistle_tea.charges_fractional>=2.5&buff.shadow_dance.remains>=4
+# Thistle Tea during Shadow Dance when Secret Techniques is up.
+actions.cds+=/thistle_tea,if=!buff.thistle_tea.up&buff.shadow_dance.remains>=4&cooldown.secret_technique.remains<=10
+# Thistle Tea for energy
+actions.cds+=/thistle_tea,if=!buff.thistle_tea.up&(energy.deficit>=(100)|!buff.thistle_tea.up&fight_remains<=(6*cooldown.thistle_tea.charges))&(cooldown.symbols_of_death.remains>=3|buff.symbols_of_death.up)&combo_points.deficit>=2
 actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)
 actions.cds+=/variable,name=racial_sync,value=buff.shadow_blades.up|!talent.shadow_blades&buff.symbols_of_death.up|fight_remains<20
 actions.cds+=/blood_fury,if=variable.racial_sync
@@ -104,11 +108,13 @@ actions.cds+=/use_item,name=witherbarks_branch,if=buff.flagellation_buff.up&tale
 actions.cds+=/use_item,name=mirror_of_fractured_tomorrows,if=buff.shadow_dance.up&(target.time_to_die>=15|equipped.ashes_of_the_embersoul)
 actions.cds+=/use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=!stealthed.all&(buff.deeper_daggers.up|!talent.deeper_daggers)&(!raid_event.adds.up|!equipped.stormeaters_boon|trinket.stormeaters_boon.cooldown.remains>20)
 actions.cds+=/use_item,name=manic_grieftorch,use_off_gcd=1,if=!stealthed.all&(!raid_event.adds.up|!equipped.stormeaters_boon|trinket.stormeaters_boon.cooldown.remains>20)
+# PI
+actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.shadow_dance.up
 # Default fallback for usable items: Use outside of Stealth/Shadow Dance.
 actions.cds+=/use_items,if=!stealthed.all&(!trinket.mirror_of_fractured_tomorrows.cooldown.ready|!equipped.mirror_of_fractured_tomorrows)&(!trinket.ashes_of_the_embersoul.cooldown.ready|!equipped.ashes_of_the_embersoul)|fight_remains<10
 
-# Finisher  Defines what abilitis need to be used for DM stacks before casting Secret Tchnique.
-actions.finish=variable,name=secret_condition,value=(action.shadowstrike.used_for_danse|action.shuriken_storm.used_for_danse)&(action.eviscerate.used_for_danse|action.black_powder.used_for_danse|action.rupture.used_for_danse)|!talent.danse_macabre
+# Finisher  Defines what abilities need to be used for DM stacks before casting Secret Technique.
+actions.finish=variable,name=secret_condition,value=(action.gloomblade.used_for_danse|action.shadowstrike.used_for_danse|action.backstab.used_for_danse|action.shuriken_storm.used_for_danse)&(action.eviscerate.used_for_danse|action.black_powder.used_for_danse|action.rupture.used_for_danse)|!talent.danse_macabre
 # Apply Rupture if its not up.
 actions.finish+=/rupture,if=!dot.rupture.ticking&target.time_to_die-remains>6
 actions.finish+=/variable,name=premed_snd_condition,value=talent.premeditation.enabled&spell_targets.shuriken_storm<5
@@ -120,7 +126,7 @@ actions.finish+=/rupture,if=(!variable.skip_rupture|variable.priority_rotation)&
 # Refresh Rupture during Shadow Dance with Finality.
 actions.finish+=/rupture,if=buff.finality_rupture.up&buff.shadow_dance.up&spell_targets.shuriken_storm<=4&!action.rupture.used_for_danse
 actions.finish+=/cold_blood,if=variable.secret_condition&cooldown.secret_technique.ready
-# Syncronizes Secret to Cold Blood if possible. Defualts to use once a builder and finisher is used.
+# Synchronizes Secret to Cold Blood if possible. Defaults to use once a builder and finisher is used.
 actions.finish+=/secret_technique,if=variable.secret_condition&(!talent.cold_blood|cooldown.cold_blood.remains>buff.shadow_dance.remains-2|!talent.improved_shadow_dance)
 # Multidotting targets that will live long enough, refresh during pandemic.
 actions.finish+=/rupture,cycle_targets=1,if=!variable.skip_rupture&!variable.priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(2*combo_points)&refreshable
@@ -129,22 +135,22 @@ actions.finish+=/rupture,if=!variable.skip_rupture&remains<cooldown.symbols_of_d
 actions.finish+=/black_powder,if=!variable.priority_rotation&spell_targets>=3
 actions.finish+=/eviscerate
 
-# Stealth Cooldowns   Helper Variable for Shadow Dance.
+# Stealth Cooldowns  Helper Variable for Shadow Dance.
 actions.stealth_cds=variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=0.75+talent.shadow_dance
-# Helper variavle to check for Cold Blood and The Rotten buff.
+# Helper variable to check for Cold Blood and The Rotten buff.
 actions.stealth_cds+=/variable,name=rotten_cb,value=(!buff.the_rotten.up|!set_bonus.tier30_2pc)&(!talent.cold_blood|cooldown.cold_blood.remains<4|cooldown.cold_blood.remains>10)
-# Consider Flagellation, Symbols and Secret Technique cooldown when using vanish with Shadow Dust.
+# Consider Flagellation, Symbols and Secret Technique cooldown when using Vanish with Shadow Dust.
 actions.stealth_cds+=/vanish,if=(combo_points.deficit>1|buff.shadow_blades.up&talent.invigorating_shadowdust)&!variable.shd_threshold&(cooldown.flagellation.remains>=60|!talent.flagellation|fight_remains<=(30*cooldown.vanish.charges))&(cooldown.symbols_of_death.remains>3|!set_bonus.tier30_2pc)&(cooldown.secret_technique.remains>=10|!talent.secret_technique|cooldown.vanish.charges>=2&talent.invigorating_shadowdust&(buff.the_rotten.up|!talent.the_rotten)&!raid_event.adds.up)
 # Pool for Shadowmeld unless we are about to cap on Dance charges.
 actions.stealth_cds+=/pool_resource,for_next=1,extra_amount=40,if=race.night_elf
 actions.stealth_cds+=/shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>4
 actions.stealth_cds+=/variable,name=shd_combo_points,value=combo_points.deficit>=3
-# Shadow dance when Rupture is up and syncronize depending on talent choice.
+# Shadow dance when Rupture is up and synchronize depending on talent choice.
 actions.stealth_cds+=/shadow_dance,if=(dot.rupture.ticking|talent.invigorating_shadowdust)&variable.rotten_cb&(!talent.the_first_dance|combo_points.deficit>=4|buff.shadow_blades.up)&(variable.shd_combo_points&variable.shd_threshold|(buff.shadow_blades.up|cooldown.symbols_of_death.up&!talent.sepsis|buff.symbols_of_death.remains>=4&!set_bonus.tier30_2pc|!buff.symbols_of_death.remains&set_bonus.tier30_2pc)&cooldown.secret_technique.remains<10+12*(!talent.invigorating_shadowdust|set_bonus.tier30_2pc))
 
-# Stealthed Rotation  Always Strike fro Stealth
+# Stealthed Rotation  Always Strike from Stealth
 actions.stealthed=shadowstrike,if=buff.stealth.up&(spell_targets.shuriken_storm<4|variable.priority_rotation)
-# Finish when on Anaima charged combo points or max combo points.
+# Finish when on Animacharged combo points or max combo points.
 actions.stealthed+=/call_action_list,name=finish,if=effective_combo_points>=cp_max_spend
 actions.stealthed+=/call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2
 actions.stealthed+=/call_action_list,name=finish,if=combo_points.deficit<=1+(talent.deeper_stratagem|talent.secret_stratagem)
