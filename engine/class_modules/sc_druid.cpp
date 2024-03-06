@@ -320,7 +320,9 @@ static const spelleffect_data_t& find_effect( T val, U type, Ts&&... args )
   {
     const spell_data_t* affected = resolve_spell_data<U>( type );
  
-    if constexpr( std::is_same_v<std::tuple_element_t<0, std::tuple<Ts...>>, effect_subtype_t> )
+    if constexpr( sizeof...( Ts ) == 0 )
+      return spell_data_t::find_spelleffect( *data, *affected, E_APPLY_AURA );
+    else if constexpr( std::is_same_v<std::tuple_element_t<0, std::tuple<Ts...>>, effect_subtype_t> )
       return spell_data_t::find_spelleffect( *data, *affected, E_APPLY_AURA, std::forward<Ts>( args )... );
     else if constexpr( std::is_same_v<std::tuple_element_t<0, std::tuple<Ts...>>, effect_type_t> )
       return spell_data_t::find_spelleffect( *data, *affected, std::forward<Ts>( args )... );
@@ -8724,7 +8726,7 @@ struct druid_melee_t : public Base
     ab::parse_effects( p->spec_spell );
     ab::parse_effects( p->talent.killer_instinct );
     ab::range += find_effect( p->talent.astral_influence, A_MOD_AUTO_ATTACK_RANGE ).base_value() +
-                 find_effect( p->spec_spell, p->talent.astral_influence, A_ADD_FLAT_MODIFIER, P_EFFECTS ).base_value();
+                 find_effect( p->spec_spell, p->talent.astral_influence ).base_value();
 
     if ( p->talent.tigers_fury.ok() )
     {
