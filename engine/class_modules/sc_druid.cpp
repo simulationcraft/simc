@@ -2779,9 +2779,6 @@ struct celestial_alignment_buff_t : public druid_buff_t
     {
       p()->eclipse_handler.trigger_both( remains() );
       p()->uptime.combined_ca_inc->update( true, sim->current_time() );
-
-      if ( p()->active.orbital_strike )
-        p()->active.orbital_strike->execute_on_target( p()->target );
     }
 
     return ret;
@@ -12779,6 +12776,12 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
 {
   if ( !enabled() ) return;
 
+  if ( p->bugs && p->active.orbital_strike && ( state == IN_LUNAR || state == IN_SOLAR ) )
+  {
+    p->buff.natures_grace->trigger();
+    p->buff.dreamstate->trigger();
+  }
+
   p->buff.eclipse_lunar->trigger( d );
   p->buff.eclipse_solar->trigger( d );
   p->buff.balance_of_all_things_arcane->trigger();
@@ -12793,6 +12796,9 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
   p->uptime.eclipse_lunar->update( false, p->sim->current_time() );
   p->uptime.eclipse_solar->update( false, p->sim->current_time() );
   reset_stacks();
+
+  if ( p->active.orbital_strike )
+    p->active.orbital_strike->execute_on_target( p->target );
 }
 
 void eclipse_handler_t::extend_both( timespan_t d )
