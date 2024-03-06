@@ -3772,8 +3772,10 @@ struct rake_t : public cat_attack_t
   {
     if ( p->talent.pouncing_strikes.ok() || p->spec.improved_prowl->ok() )
     {
-      persistent_multiplier_effects.emplace_back( nullptr, data().effectN( 4 ).percent(), USE_DATA, true, false,
-          [ this ] { return stealthed() || this->p()->buff.sudden_ambush->check(); }, &data().effectN( 4 ) );
+      add_parse_entry( persistent_multiplier_effects )
+          .set_value( data().effectN( 4 ).percent() )
+          .set_func( [ this, p ] { return stealthed() || p->buff.sudden_ambush->check(); } )
+          .set_eff( &data().effectN( 4 ) );
     }
 
     aoe = std::max( aoe, 1 ) + as<int>( p->talent.doubleclawed_rake->effectN( 1 ).base_value() );
@@ -4058,8 +4060,10 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
       stealth_mul = data().effectN( 3 ).percent();
       stealth_cp = p->find_spell( 343232 )->effectN( 1 ).base_value();
 
-      da_multiplier_effects.emplace_back( nullptr, stealth_mul, USE_DATA, true, false,
-          [ this ] { return stealthed() || this->p()->buff.sudden_ambush->check(); }, &data().effectN( 3 ) );
+      add_parse_entry( da_multiplier_effects )
+          .set_value( stealth_mul )
+          .set_func( [ this ] { return stealthed() || this->p()->buff.sudden_ambush->check(); } )
+          .set_eff( &data().effectN( 3 ) );
     }
   }
 
@@ -5892,13 +5896,12 @@ public:
     // Umbral embrace is heavily scripted so we do all the auto parsing within the action itself
     if ( p_->talent.umbral_embrace.ok() )
     {
-      BASE::da_multiplier_effects.emplace_back(
-          nullptr, p_->buff.umbral_embrace->default_value, USE_DEFAULT, false, false,
-          [ this ] { return umbral_embrace_check(); }, &p_->buff.umbral_embrace->data().effectN( 1 ) );
-
-      BASE::sim->print_debug( "buff-effects: {} ({}) direct_damage modified by {} with buff {} ({})", BASE::name(),
-                              BASE::id, p_->buff.umbral_embrace->default_value, p_->buff.umbral_embrace->name(),
-                              p_->buff.umbral_embrace->data().id() );
+      BASE::add_parse_entry( BASE::da_multiplier_effects )
+          .set_value( p_->buff.umbral_embrace->default_value )
+          .set_type( USE_DEFAULT )
+          .set_use_stacks( false )
+          .set_func( [ this ] { return umbral_embrace_check(); } )
+          .set_eff( &p_->buff.umbral_embrace->data().effectN( 1 ) );
 
       BASE::force_effect( ecl, 1, [ this ] { return umbral_embrace_check(); } );
 
@@ -8720,9 +8723,8 @@ struct druid_melee_t : public Base
     // Auto attack mods
     ab::parse_effects( p->spec_spell );
     ab::parse_effects( p->talent.killer_instinct );
-    ab::range += find_effect( p->talent.astral_influence, A_MOD_AUTO_ATTACK_RANGE ).base_value();
-    if ( p->specialization() != DRUID_BALANCE )
-      ab::range -= 2;
+    ab::range += find_effect( p->talent.astral_influence, A_MOD_AUTO_ATTACK_RANGE ).base_value() +
+                 find_effect( p->spec_spell, p->talent.astral_influence, A_ADD_FLAT_MODIFIER, P_EFFECTS ).base_value();
 
     if ( p->talent.tigers_fury.ok() )
     {
@@ -8732,10 +8734,10 @@ struct druid_melee_t : public Base
       // Carnivorous Instinct has no curvepoint for effect#3 which modifies AA, so we use effect#1 value instead
       val += p->talent.carnivorous_instinct->effectN( 1 ).percent();
 
-      ab::da_multiplier_effects.emplace_back( p->buff.tigers_fury, val, USE_DATA, false, false, nullptr, &eff );
-
-      ab::sim->print_debug( "buff-effects: {} ({}) direct_damage modified by {} with buff {} ({})", ab::name(), ab::id,
-                            val, p->buff.tigers_fury->name(), p->buff.tigers_fury->data().id() );
+      ab::add_parse_entry( ab::da_multiplier_effects )
+          .set_buff( p->buff.tigers_fury )
+          .set_value( val )
+          .set_eff( &eff );
     }
 
     // 7.00 PPM via community testing (~368k auto attacks)
