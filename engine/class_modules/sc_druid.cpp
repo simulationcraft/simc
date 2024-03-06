@@ -13250,7 +13250,13 @@ struct druid_module_t : public module_t
       .field( "spell_level" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 11 )
-      .verification_value( 18 ) ;
+      .verification_value( 18 );
+
+    hotfix::register_spell( "Druid", "", "Adjust rip spell level requirement", 1079 )
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 11 )
+      .verification_value( 21 );
   }
 
   void combat_begin( sim_t* ) const override {}
