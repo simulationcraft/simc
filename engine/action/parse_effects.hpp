@@ -44,6 +44,27 @@ struct action_effect_t
                    std::function<bool()> f = nullptr, const spelleffect_data_t* e = &spelleffect_data_t::nil() )
     : buff( b ), value( v ), type( t ), use_stacks( s ), mastery( m ), func( std::move( f ) ), eff( e )
   {}
+
+  action_effect_t& set_buff( buff_t* b )
+  { buff = b; return *this; }
+
+  action_effect_t& set_value( double v )
+  { value = v; return *this; }
+
+  action_effect_t& set_type( parse_flag_e t )
+  { type = t; return *this; }
+
+  action_effect_t& set_use_stacks( bool s )
+  { use_stacks = s; return *this; }
+
+  action_effect_t& set_mastery( bool m )
+  { mastery = m; return *this; }
+
+  action_effect_t& set_func( std::function<bool()> f )
+  { func = std::move( f ); return *this; }
+
+  action_effect_t& set_eff( const spelleffect_data_t* e )
+  { eff = e; return *this; }
 };
 
 // TODO: add value type to debuffs if it becomes necessary in the future
@@ -59,6 +80,18 @@ struct target_effect_t
                    const spelleffect_data_t* e = &spelleffect_data_t::nil() )
     : func( std::move( f ) ), value( v ), mastery( m ), eff( e )
   {}
+
+  target_effect_t& set_func( std::function<int( TD* )> f )
+  { func = std::move( f ); return *this; }
+
+  target_effect_t& set_value( double v )
+  { value = v; return *this; }
+
+  target_effect_t& set_mastery( bool m )
+  { mastery = m; return *this; }
+
+  target_effect_t& set_eff( const spelleffect_data_t* e )
+  { eff = e; return *this; }
 };
 
 // used to store values from parameter pack recursion of parse_effect/parse_target_effects
@@ -74,6 +107,10 @@ struct parse_effects_t
 {
   parse_effects_t() = default;
   virtual ~parse_effects_t() = default;
+
+  template <typename U>
+  U& add_parse_entry( std::vector<U>& vec )
+  { return vec.emplace_back(); }
 
   double mod_spell_effects_value( const spell_data_t*, const spelleffect_data_t& e ) { return e.base_value(); }
 
