@@ -1366,9 +1366,18 @@ std::function<void( pet_t* )> parent_pet_action_fn( action_t* parent )
     {
       auto it = range::find( parent->child_action, a->name_str, &action_t::name_str );
       if ( it != parent->child_action.end() )
-        a->stats = ( *it )->stats;
+      {
+        if ( a->stats != ( *it )->stats )
+        {
+          range::erase_remove( p->stats_list, a->stats );
+          delete a->stats;
+          a->stats = ( *it )->stats;
+        }
+      }
       else
+      {
         parent->add_child( a );
+      }
     }
   };
 }
@@ -1488,16 +1497,17 @@ public:
   void replace_stats( action_t* a, bool add = true )
   {
     if ( add )
+    {
+      range::erase_remove( ab::stats->action_list, a );
       ab::stats->action_list.push_back( a );
+    }
 
     if ( a->stats == ab::stats )
       return;
 
-    stats_t* old_stats = a->stats;
+    range::erase_remove( ab::player->stats_list, a->stats );
+    delete a->stats;
     a->stats = ab::stats;
-
-    range::erase_remove( ab::player->stats_list, old_stats );
-    delete old_stats;
   }
 
   bool ready() override
