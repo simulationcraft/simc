@@ -818,6 +818,22 @@ struct fel_barrage_t : public warlock_spell_t
   {
     background = dual = true;
   }
+
+  // Copied from destruction_spell_t as this needs to be a warlock_spell_t, prefer to look at unifying this in the future
+  double action_multiplier () const override 
+  {
+    double pm = warlock_spell_t::action_multiplier();
+
+    if ( p ()->warlock_base.chaotic_energies->ok () ) 
+    {
+      double destro_mastery_value = p ()->cache.mastery_value () / 2.0;
+      double chaotic_energies_rng = rng ().range (0, destro_mastery_value);
+
+      pm *= 1.0 + chaotic_energies_rng + (destro_mastery_value);
+    }
+
+    return pm;
+  }
 };
 
 struct soulburn_t : public warlock_spell_t
