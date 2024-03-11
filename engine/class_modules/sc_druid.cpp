@@ -6469,15 +6469,28 @@ struct celestial_alignment_base_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( p()->eclipse_handler.state == IN_LUNAR || p()->eclipse_handler.state == IN_SOLAR )
-      p()->buff.dreamstate->trigger();
-
     buff->trigger();
 
     p()->buff.balance_t31_4pc_buff_lunar->expire();
     p()->buff.balance_t31_4pc_buff_solar->expire();
 
     p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
+
+    switch ( p()->eclipse_handler.state )
+    {
+      case IN_SOLAR:
+      case IN_LUNAR:
+        p()->buff.dreamstate->trigger();
+        if ( p()->talent.orbital_strike.ok() )
+          p()->buff.natures_grace->trigger();
+        break;
+      case IN_BOTH:
+        p()->buff.dreamstate->trigger();
+        p()->buff.natures_grace->trigger();
+        break;
+      default:
+        break;
+    }
   }
 };
 
@@ -12794,12 +12807,6 @@ void eclipse_handler_t::advance_eclipse()
 void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
 {
   if ( !enabled() ) return;
-
-  if ( p->bugs && p->active.orbital_strike && ( state == IN_LUNAR || state == IN_SOLAR ) )
-  {
-    p->buff.natures_grace->trigger();
-    p->buff.dreamstate->trigger();
-  }
 
   p->buff.eclipse_lunar->trigger( d );
   p->buff.eclipse_solar->trigger( d );
