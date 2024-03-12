@@ -3603,7 +3603,7 @@ struct ferocious_bite_t : public cat_finisher_t
     }
 
     parse_effect_modifiers( p->talent.relentless_predator );
-    max_excess_energy = modified_effect( find_effect_index( this, E_POWER_BURN ) ).base_value();
+    max_excess_energy = modified_effectN( find_effect_index( this, E_POWER_BURN ) );
   }
 
   double maximum_energy() const
@@ -4039,7 +4039,7 @@ struct primal_wrath_t : public cat_finisher_t
     parse_effect_modifiers( p->talent.veinripper );
 
     rip = p->get_secondary_action<rip_t>( "rip_primal", p->find_spell( 1079 ) );
-    rip->dot_duration = timespan_t::from_seconds( modified_effect( 2 ).base_value() );
+    rip->dot_duration = timespan_t::from_seconds( modified_effectN( 2 ) );
     rip->dual = rip->background = true;
     replace_stats( rip );
     rip->base_costs[ RESOURCE_ENERGY ] = 0;
@@ -4623,7 +4623,7 @@ struct mangle_t : public bear_attack_t
       bleed_mul = data().effectN( 3 ).percent();
 
     parse_effect_modifiers( p->talent.soul_of_the_forest_bear );
-    energize_amount = modified_effect( find_effect_index( this, E_ENERGIZE ) ).resource( RESOURCE_RAGE );
+    energize_amount = modified_effectN_resource( find_effect_index( this, E_ENERGIZE ), RESOURCE_RAGE );
 
     if ( p->talent.incarnation_bear.ok() )
     {
@@ -5651,7 +5651,7 @@ struct wild_growth_t : public druid_heal_t
     inc_mod( as<int>( p->talent.incarnation_tree->effectN( 3 ).base_value() ) )
   {
     parse_effect_modifiers( p->talent.improved_wild_growth );
-    aoe = as<int>( modified_effect( 2 ).base_value() );
+    aoe = as<int>( modified_effectN( 2 ) );
 
     // '0-tick' coeff, also unknown if this is hard set to 0.175 or based on a formula as below
     spell_power_mod.tick += decay_coeff / 2.0;
@@ -7168,8 +7168,9 @@ struct moonfire_t : public druid_spell_t
     {
       parse_effect_modifiers( p->spec.astral_power );
       energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_amount =
-          modified_effect( find_effect_index( this, E_ENERGIZE, A_MAX, RESOURCE_ASTRAL_POWER ) ).resource( RESOURCE_ASTRAL_POWER );
+      // specify RESOURCE_ASTRAL_POWER as moonfire has both rage & AP energize effects
+      energize_amount = modified_effectN_resource( find_effect_index( this, E_ENERGIZE, A_MAX, RESOURCE_ASTRAL_POWER ),
+                                                   RESOURCE_ASTRAL_POWER );
     }
     else
     {
@@ -7663,17 +7664,14 @@ struct starfall_t : public ap_spender_t
 struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<consume_dreamstate_t<druid_spell_t>>>
 {
   size_t aoe_idx;
-  double aoe_base;
-  double aoe_eclipse;
-  double ap_base;
-  double ap_woe;
+  size_t ap_idx;
   double smolder_mul;
   double sotf_mul;
   unsigned sotf_cap;
 
   DRUID_ABILITY( starfire_t, base_t, "starfire", p->talent.starfire ),
     aoe_idx( p->specialization() == DRUID_BALANCE ? 3 : 2 ),
-    aoe_base( data().effectN( p->specialization() == DRUID_BALANCE ? 3 : 2 ).percent() ),
+    ap_idx( find_effect_index( this, E_ENERGIZE ) ),
     smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() ),
     sotf_mul( p->talent.soul_of_the_forest_moonkin->effectN( 2 ).percent() ),
     sotf_cap( as<unsigned>( p->talent.soul_of_the_forest_moonkin->effectN( 3 ).base_value() ) )
@@ -7684,15 +7682,9 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<con
     init_umbral_embrace( p->spec.eclipse_solar, &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg );
     init_astral_smolder( p->buff.eclipse_solar, &druid_td_t::dots_t::sunfire );
 
-    parse_effect_modifiers( p->spec.eclipse_lunar, p->talent.umbral_intensity );
-    aoe_base = data().effectN( aoe_idx ).percent();
-    aoe_eclipse = modified_effect( aoe_idx ).percent();
-
     parse_effect_modifiers( p->talent.wild_surges );
-    ap_base = modified_effect( find_effect_index( this, E_ENERGIZE ) ).resource( RESOURCE_ASTRAL_POWER );
-
-    parse_effect_modifiers( p->talent.warrior_of_elune );
-    ap_woe = modified_effect( find_effect_index( this, E_ENERGIZE ) ).resource( RESOURCE_ASTRAL_POWER );
+    parse_effect_modifiers( p->buff.eclipse_lunar, p->talent.umbral_intensity );
+    parse_effect_modifiers( p->buff.warrior_of_elune, IGNORE_STACKS );
   }
 
   void init_finished() override
@@ -7717,7 +7709,7 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<con
   // WARNING: this overrides any adjustments done in parent classes
   double composite_energize_amount( const action_state_t* s ) const override
   {
-    return ( p()->buff.warrior_of_elune->check() ? ap_woe : ap_base ) * sotf_multiplier( s );
+    return modified_effectN_resource( ap_idx, RESOURCE_ASTRAL_POWER ) * sotf_multiplier( s );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -7777,7 +7769,7 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<con
     double cam = base_t::composite_aoe_multiplier( s );
 
     if ( s->chain_target )
-      cam *= p()->buff.eclipse_lunar->check() ? aoe_eclipse : aoe_base;
+      cam *= modified_effectN_percent( aoe_idx );
 
     return cam;
   }
@@ -7956,11 +7948,8 @@ struct sunfire_t : public druid_spell_t
       damage = p->get_secondary_action<sunfire_damage_t>( "sunfire_dmg" );
       replace_stats( damage );
 
-      if ( p->spec.astral_power->ok() )
-      {
-        parse_effect_modifiers( p->spec.astral_power );
-        energize_amount = modified_effect( find_effect_index( this, E_ENERGIZE ) ).resource( RESOURCE_ASTRAL_POWER );
-      }
+      parse_effect_modifiers( p->spec.astral_power );
+      energize_amount = modified_effectN_resource( find_effect_index( this, E_ENERGIZE ), RESOURCE_ASTRAL_POWER );
     }
   }
 
@@ -8177,13 +8166,13 @@ struct wild_mushroom_t : public druid_spell_t
 // Wrath ====================================================================
 struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<consume_dreamstate_t<druid_spell_t>>>
 {
-  double ap_base;
-  double ap_eclipse;
+  size_t ap_idx;
   double gcd_mul;
   double smolder_mul;
   unsigned count = 0;
 
   DRUID_ABILITY( wrath_t, base_t, "wrath", p->spec.wrath ),
+    ap_idx( find_effect_index( this, E_ENERGIZE ) ),
     gcd_mul( find_effect( p->spec.eclipse_solar, this, A_ADD_PCT_MODIFIER, P_GCD ).percent() ),
     smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() )
   {
@@ -8194,16 +8183,13 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<consum
 
     parse_effect_modifiers( p->spec.astral_power );
     parse_effect_modifiers( p->talent.wild_surges );
-    ap_base = modified_effect( find_effect_index( this, E_ENERGIZE ) ).resource( RESOURCE_ASTRAL_POWER );
-
-    parse_effect_modifiers( p->spec.eclipse_solar, p->talent.soul_of_the_forest_moonkin );
-    ap_eclipse = modified_effect( find_effect_index( this, E_ENERGIZE ) ).resource( RESOURCE_ASTRAL_POWER );
+    parse_effect_modifiers( p->buff.eclipse_solar, p->talent.soul_of_the_forest_moonkin );
   }
 
   // WARNING: this overrides any adjustments done in parent classes
   double composite_energize_amount( const action_state_t* ) const override
   {
-    return p()->buff.eclipse_solar->check() ? ap_eclipse : ap_base;
+    return modified_effectN_resource( ap_idx, RESOURCE_ASTRAL_POWER );
   }
 
   timespan_t travel_time() const override

@@ -94,6 +94,35 @@ struct target_effect_t
   { eff = e; return *this; }
 };
 
+struct modify_effect_t
+{
+  buff_t* buff;                   // nullptr
+  std::function<bool()> func;     // nullptr
+  double value;                   // 0.0
+  bool use_stacks;                // true
+  bool flat;                      // false
+
+  modify_effect_t( buff_t* b = nullptr, std::function<bool()> f = nullptr, double v = 0.0, bool s = true,
+                   bool fl = false )
+    : buff( b ), func( std::move( f ) ), value( v ), use_stacks( s ), flat( fl )
+  {}
+
+  modify_effect_t& set_buff( buff_t* b )
+  { buff = b; return *this; }
+
+  modify_effect_t& set_func( std::function<bool()> f )
+  { func = std::move( f ); return *this; }
+
+  modify_effect_t& set_value( double v )
+  { value = v; return *this; }
+
+  modify_effect_t& set_use_stacks( bool s )
+  { use_stacks = s; return *this; }
+
+  modify_effect_t& set_flat( bool fl )
+  { flat = fl; return *this; }
+};
+
 // used to store values from parameter pack recursion of parse_effect/parse_target_effects
 template <typename U, typename = std::enable_if_t<std::is_default_constructible_v<U>>>
 struct pack_t
@@ -111,6 +140,32 @@ struct parse_effects_t
   template <typename U>
   U& add_parse_entry( std::vector<U>& vec )
   { return vec.emplace_back(); }
+
+  template <typename T> using detect_buff = decltype( T::buff );
+
+  template <typename T, typename U>
+  const spell_data_t* resolve_parse_data( T data, pack_t<U>& tmp )
+  {
+    if constexpr ( std::is_invocable_v<decltype( &buff_t::data ), T> )
+    {
+      if ( !data )
+        return nullptr;
+
+      if constexpr ( is_detected<detect_buff, U>::value )
+        tmp.data.buff = data;
+
+      return &data->data();
+    }
+    else if constexpr ( std::is_invocable_v<decltype( &spell_data_t::ok ), T> )
+    {
+      return data;
+    }
+    else
+    {
+      static_assert( static_false<T>, "Invalid data type for resolve_parse_data" );
+      return nullptr;
+    }
+  }
 
   double mod_spell_effects_value( const spell_data_t*, const spelleffect_data_t& e ) { return e.base_value(); }
 
@@ -161,6 +216,11 @@ struct parse_effects_t
       apply_affecting_mod( val, mastery, base, idx, tmp.list[ j ] );
   }
 
+  template <typename T> using detect_func = decltype( T::func );
+  template <typename T> using detect_use_stacks = decltype( T::use_stacks );
+  template <typename T> using detect_type = decltype( T::type );
+  template <typename T> using detect_value = decltype( T::value );
+
   template <typename U, typename T>
   void parse_spell_effect_mod( pack_t<U>& tmp, T mod )
   {
@@ -168,31 +228,26 @@ struct parse_effects_t
     {
       tmp.list.push_back( mod );
     }
-    else if constexpr ( std::is_invocable_v<T> )
+    else if constexpr ( std::is_invocable_v<T> && is_detected<detect_func, U>::value )
     {
-      static_assert( std::is_invocable_v<decltype( &U::func ), U>, "Pack data has no func member" );
       tmp.data.func = std::move( mod );
     }
     else if constexpr ( std::is_same_v<T, parse_flag_e> )
     {
-      switch ( mod )
+      if constexpr ( is_detected<detect_use_stacks, U>::value )
       {
-        case USE_DEFAULT:
-        case USE_CURRENT:
-          static_assert( std::is_invocable_v<decltype( &U::type ), U>, "Pack data has no type member" );
-          tmp.data.type = mod;
-          break;
-        case IGNORE_STACKS:
-          static_assert( std::is_invocable_v<decltype( &U::use_stacks ), U>, "Pack data has no use_stacks member" );
+        if ( mod == IGNORE_STACKS )
           tmp.data.use_stacks = false;
-          break;
-        default:
-          break;
+      }
+
+      if constexpr ( is_detected<detect_type, U>::value )
+      {
+        if ( mod == USE_DEFAULT || mod == USE_CURRENT )
+          tmp.data.type = mod;
       }
     }
-    else if constexpr ( std::is_floating_point_v<T> )
+    else if constexpr ( std::is_floating_point_v<T> && is_detected<detect_value, U>::value )
     {
-      static_assert( std::is_invocable_v<decltype( &U::value ), U>, "Pack data has no value member" );
       tmp.data.value = mod;
     }
     else if constexpr ( std::is_integral_v<T> && !std::is_same_v<T, bool> )
@@ -217,8 +272,7 @@ struct parse_action_effects_t : public BASE, public parse_effects_t
 {
 private:
   PLAYER* player_;
-  std::vector<std::pair<size_t, double>> effect_flat_modifiers;
-  std::vector<std::pair<size_t, double>> effect_pct_modifiers;
+  std::array<std::pair<double, std::vector<modify_effect_t>>, 5> effect_modifiers;
 
 public:
   // auto parsed dynamic effects
@@ -237,7 +291,10 @@ public:
 
   parse_action_effects_t( std::string_view name, PLAYER* player, const spell_data_t* spell )
     : BASE( name, player, spell ), parse_effects_t(), player_( player )
-  {}
+  {
+    for ( size_t i = 0; i < 5 && i < spell->effect_count(); i++ )
+      effect_modifiers[ i ].first = spell->effectN( i + 1 ).base_value();
+  }
 
   double cost() const override
   {
@@ -312,7 +369,7 @@ public:
     parsed_html_report( os );
   }
 
-  // Syntax: parse_effects( data[, spells|condition|ignore_mask|value|flags|spells][,...] )
+  // Syntax: parse_effects( data[, spells|condition|ignore_mask|value|flags][,...] )
   //   (buff_t*) or
   //   (const spell_data_t*)   data: Buff or spell to be checked for to see if effect applies. If buff is used, effect
   //                                 will require the buff to be active. If spell is used, effect will always apply
@@ -413,27 +470,39 @@ public:
         return;
     }
 
-    apply_affecting_mods( tmp, val, mastery, s_data, i );
+    if ( tmp.data.value != 0.0 )
+    {
+      val = tmp.data.value;
+      mastery = false;
+    }
+    else
+    {
+      apply_affecting_mods( tmp, val, mastery, s_data, i );
+
+      if ( mastery )
+        val_mul = 1.0;
+    }
 
     if ( !val )
       return;
 
-    if ( mastery )
-      val_mul = 1.0;
+    std::vector<action_effect_t>* vec = nullptr;
+    std::string str;
+    bool flat = false;
 
     auto debug_message = [ & ]( std::string_view type ) {
+      std::string val_str = mastery ? fmt::format( "{}*mastery", val * 100 )
+                            : flat  ? fmt::format( "{}", val )
+                                    : fmt::format( "{}%", val * 100 );
+
       if ( tmp.data.buff )
       {
-        std::string val_str;
-
-        if ( tmp.data.type == parse_flag_e::USE_CURRENT )
-          val_str = "current value";
+        if ( tmp.data.value != 0.0 )
+          val_str = val_str + " (overridden)";
+        else if ( tmp.data.type == parse_flag_e::USE_CURRENT )
+          val_str = flat ? "current value" : "current value percent";
         else if ( tmp.data.type == parse_flag_e::USE_DEFAULT )
-          val_str = fmt::format( "default value ({})", val * val_mul );
-        else if ( mastery )
-          val_str = fmt::format( "{}*mastery", val * val_mul * 100 );
-        else
-          val_str = fmt::format( "{}", val * val_mul );
+          val_str = val_str + " (default value)";
 
         BASE::sim->print_debug( "action-effects: {} ({}) {} modified by {} {} buff {} ({}#{})", BASE::name(), BASE::id,
                                 type, val_str, tmp.data.use_stacks ? "per stack of" : "with", tmp.data.buff->name(),
@@ -441,23 +510,20 @@ public:
       }
       else if ( mastery && !tmp.data.func )
       {
-        BASE::sim->print_debug( "action-effects: {} ({}) {} modified by {}*mastery from {} ({}#{})", BASE::name(),
-                                BASE::id, type, val * val_mul * 100, s_data->name_cstr(), s_data->id(), i );
+        BASE::sim->print_debug( "action-effects: {} ({}) {} modified by {} from {} ({}#{})", BASE::name(), BASE::id,
+                                type, val_str, s_data->name_cstr(), s_data->id(), i );
       }
       else if ( tmp.data.func )
       {
         BASE::sim->print_debug( "action-effects: {} ({}) {} modified by {} with condition from {} ({}#{})",
-                                BASE::name(), BASE::id, type, val * val_mul, s_data->name_cstr(), s_data->id(), i );
+                                BASE::name(), BASE::id, type, val_str, s_data->name_cstr(), s_data->id(), i );
       }
       else
       {
         BASE::sim->print_debug( "action-effects: {} ({}) {} modified by {} from {} ({}#{})", BASE::name(), BASE::id,
-                                type, val * val_mul, s_data->name_cstr(), s_data->id(), i );
+                                type, val_str, s_data->name_cstr(), s_data->id(), i );
       }
     };
-
-    std::vector<action_effect_t>* vec = nullptr;
-    std::string str;
 
     if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
     {
@@ -506,6 +572,8 @@ public:
     }
     else if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
     {
+      flat = true;
+
       switch ( eff.misc_value1() )
       {
         case P_CRIT:
@@ -513,7 +581,7 @@ public:
           str = "crit chance";
           break;
         case P_RESOURCE_COST:
-          val_mul = eff.resource_multiplier( BASE::current_resource() );
+          val_mul = spelleffect_data_t::resource_multiplier( BASE::current_resource() );
           vec = &flat_cost_effects;
           str = "flat cost";
           break;
@@ -522,39 +590,15 @@ public:
       }
     }
 
-    if ( vec )
-    {
-      if ( tmp.data.value == 0.0 )
-        tmp.data.value = val * val_mul;
+    if ( !vec )
+      return;
 
-      tmp.data.mastery = mastery;
-      tmp.data.eff = &eff;
-
-      vec->push_back( tmp.data );
-      debug_message( str );
-    }
-  }
-
-  template <typename T>
-  const spell_data_t* resolve_parse_data( T data, pack_t<action_effect_t>& tmp )
-  {
-    if constexpr ( std::is_invocable_v<decltype( &buff_t::data ), T> )
-    {
-      if ( !data )
-        return nullptr;
-
-      tmp.data.buff = data;
-      return &data->data();
-    }
-    else if constexpr ( std::is_invocable_v<decltype( &spell_data_t::ok ), T> )
-    {
-      return data;
-    }
-    else
-    {
-      static_assert( static_false<T>, "Invalid data type for resolve_parse_data" );
-      return nullptr;
-    }
+    val *= val_mul;
+    debug_message( str );
+    tmp.data.value = val;
+    tmp.data.mastery = mastery;
+    tmp.data.eff = &eff;
+    vec->push_back( tmp.data );
   }
 
   double get_effects_value( const std::vector<action_effect_t>& effects, bool flat = false, bool benefit = true ) const
@@ -576,7 +620,8 @@ public:
         if ( !stack )
           continue;  // continue to next effect if stacks == 0 (buff is down)
 
-        mod = i.use_stacks ? stack : 1;
+        if ( i.use_stacks )
+          mod = stack;
 
         if ( i.type == USE_CURRENT )
           eff_val = i.buff->check_value();
@@ -664,22 +709,38 @@ public:
     if ( eff.type() != E_APPLY_AURA )
       return;
 
-    apply_affecting_mods( tmp, val, mastery, s_data, i );
+    if ( tmp.data.value != 0.0 )
+    {
+      val = tmp.data.value;
+      mastery = false;
+    }
+    else
+    {
+      apply_affecting_mods( tmp, val, mastery, s_data, i );
+
+      if ( mastery )
+        val_mul = 1.0;
+    }
 
     if ( !val )
       return;
 
-    if ( mastery )
-      val_mul = 1.0;
-
-    auto debug_message = [ & ]( std::string_view type ) {
-      BASE::sim->print_debug( "target-effects: {} ({}) {} modified by {}{} on targets with dot {} ({}#{})", BASE::name(),
-                              BASE::id, type, val * val_mul, mastery ? "*mastery" : "", s_data->name_cstr(),
-                              s_data->id(), i );
-    };
-
     std::vector<target_effect_t<TD>>* vec = nullptr;
     std::string str;
+    bool flat = false;
+
+    auto debug_message = [ & ]( std::string_view type ) {
+      std::string val_str = mastery ? fmt::format( "{}*mastery", val * 100 )
+                            : flat  ? fmt::format( "{}", val )
+                                    : fmt::format( "{}%", val * 100 );
+
+      if ( tmp.data.value != 0.0 )
+        val_str = val_str + " (overridden)";
+
+      BASE::sim->print_debug( "target-effects: {} ({}) {} modified by {} on targets with dot {} ({}#{})", BASE::name(),
+                              BASE::id, type, val_str, s_data->name_cstr(), s_data->id(), i );
+    };
+
 
     if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER )
     {
@@ -700,6 +761,7 @@ public:
           str = "damage";
           break;
         case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS:
+          flat = true;
           vec = &target_crit_chance_effects;
           str = "crit chance";
           break;
@@ -712,17 +774,15 @@ public:
       }
     }
 
-    if ( vec )
-    {
-      if ( tmp.data.value == 0.0 )
-        tmp.data.value = val * val_mul;
+    if ( !vec )
+      return;
 
-      tmp.data.mastery = mastery;
-      tmp.data.eff = &eff;
-
-      vec->push_back( tmp.data );
-      debug_message( str );
-    }
+    val *= val_mul;
+    debug_message( str );
+    tmp.data.value = val;
+    tmp.data.mastery = mastery;
+    tmp.data.eff = &eff;
+    vec->push_back( tmp.data );
   }
 
 private:
@@ -759,92 +819,167 @@ public:
     return return_value;
   }
 
-  // Syntax: parse_effect_modifiers( modifier[, spell][,...] )
-  //  modifier = spell data containing effects that modify effects on the action
-  //  spell = optional list of spells with redirect effects that modify the effects of the modifier
-  // Syntax: modified_effect_<value|percent>( N )
-  //  returns base_value() or percent() of the action data's N-th effect, modified by any previously parsed effects.
-  //  Note that this is not a fast accessor and will iterate through all parsed modifiers.
-  template <typename... Ts>
-  void parse_effect_modifiers( const spell_data_t* s_data, Ts... mods )
-  {
-    pack_t<void*> pack;
+  // Syntax: parse_effect_modifiers( data[, spells|condition|ignore_mask|value|flags][,...])
+  //   (buff_t*) or
+  //   (const spell_data_t*)   data: Buff or spell to be checked for to see if effect applies. If buff is used,
+  //                                 modification will only apply if the buff is active. If spell is used, modification
+  //                                 will always apply unless an optional condition function is provided.
+  //
+  // The following optional arguments can be used in any order:
+  //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the buff
+  //   (bool F())         condition: Function that takes no arguments and returns true if the effect should apply
+  //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
+  //   (double)               value: Directly set the value, this overrides all other parsed values
+  //   (parse_flag_e)         flags: Various flags to control how the value is calculated when the action executes
+  //                  IGNORE_STACKS: Ignore stacks of the buff and don't multiply the value
+  //
+  // To access effect values of the action's spell data modified by parsed modifiers:
+  //   modified_effectN( idx )            : equivalent to effectN( idx ).base_value()
+  //   modified_effectN_percent( idx )    : equivalent to effectN( idx ).percent()
+  //   modified_effectN_resource( idx, r ): equivalent to effectN( idx ).resource( r )
 
-    if ( !s_data || !s_data->ok() )
+  template <typename T, typename... Ts>
+  void parse_effect_modifiers( T data, Ts... mods )
+  {
+    pack_t<modify_effect_t> pack;
+    const spell_data_t* spell = resolve_parse_data( data, pack );
+
+    if ( !spell || !spell->ok() )
       return;
 
     // parse mods and populate pack
     parse_spell_effect_mods( pack, mods... );
 
-    for ( size_t i = 1; i <= s_data->effect_count(); i++ )
+    for ( size_t i = 1; i <= spell->effect_count(); i++ )
     {
-      const auto& eff = s_data->effectN( i );
-      auto subtype = eff.subtype();
-      size_t target_idx = 0;
-
-      if ( eff.type() != E_APPLY_AURA )
+      if ( pack.mask & 1 << ( i - 1 ) )
         continue;
 
-      switch ( subtype )
-      {
-        case A_ADD_FLAT_MODIFIER:
-        case A_ADD_FLAT_LABEL_MODIFIER:
-        case A_ADD_PCT_MODIFIER:
-        case A_ADD_PCT_LABEL_MODIFIER:
-          break;
-        default:
-          continue;
-      }
+      // local copy of pack per effect
+      pack_t<modify_effect_t> tmp = pack;
 
-      switch ( eff.property_type() )
-      {
-        case P_EFFECT_1: target_idx = 1; break;
-        case P_EFFECT_2: target_idx = 2; break;
-        case P_EFFECT_3: target_idx = 3; break;
-        case P_EFFECT_4: target_idx = 4; break;
-        case P_EFFECT_5: target_idx = 5; break;
-        default:
-          continue;
-      }
-
-      if ( !BASE::data().affected_by_all( eff ) )
-        continue;
-
-      double val = eff.base_value();
-      bool m;  // dummy throwaway
-
-      apply_affecting_mods( pack, val, m, s_data, i );
-
-      switch ( subtype )
-      {
-        case A_ADD_FLAT_MODIFIER:
-        case A_ADD_FLAT_LABEL_MODIFIER:
-          effect_flat_modifiers.emplace_back( target_idx, val );
-          break;
-        case A_ADD_PCT_MODIFIER:
-        case A_ADD_PCT_LABEL_MODIFIER:
-          effect_pct_modifiers.emplace_back( target_idx, val * 0.01 );
-          break;
-        default:
-          break;
-      }
+      parse_effect_modifier( tmp, spell, i );
     }
   }
 
-  // return a copy of the effect with modified value
-  spelleffect_data_t modified_effect( size_t idx )
+  void parse_effect_modifier( pack_t<modify_effect_t>& tmp, const spell_data_t* s_data, size_t i )
   {
-    spelleffect_data_t temp = BASE::data().effectN( idx );
+    const auto& eff = s_data->effectN( i );
+    bool m;  // dummy throwaway
+    double val = eff.base_value();
+    double val_mul = 0.01;
+    int idx = -1;
+    bool flat = false;
 
-    for ( auto [ i, v ] : effect_flat_modifiers )
-      if ( i == idx  )
-        temp._base_value += v;
+    if ( eff.type() != E_APPLY_AURA )
+      return;
 
-    for ( auto [ i, v ] : effect_pct_modifiers )
-      if ( i == idx  )
-        temp._base_value *= 1.0 + v;
+    switch ( eff.subtype() )
+    {
+      case A_ADD_FLAT_MODIFIER:
+      case A_ADD_FLAT_LABEL_MODIFIER:
+        val_mul = 1.0;
+        flat = true;
+        break;
+      case A_ADD_PCT_MODIFIER:
+      case A_ADD_PCT_LABEL_MODIFIER:
+        break;
+      default:
+        return;
+    }
 
-    return temp;
+    switch ( eff.property_type() )
+    {
+      case P_EFFECT_1: idx = 0; break;
+      case P_EFFECT_2: idx = 1; break;
+      case P_EFFECT_3: idx = 2; break;
+      case P_EFFECT_4: idx = 3; break;
+      case P_EFFECT_5: idx = 4; break;
+      default: return;
+    }
+
+    if ( !BASE::data().affected_by_all( eff ) )
+      return;
+
+    if ( tmp.data.value != 0.0 )
+    {
+      val = tmp.data.value;
+    }
+    else
+    {
+      apply_affecting_mods( tmp, val, m, s_data, i );
+      val *= val_mul;
+    }
+
+    if ( !val )
+      return;
+
+    std::string val_str = flat ? fmt::format( "{}", val ) : fmt::format( "{}%", val * 100 );
+
+    // always active
+    if ( !tmp.data.buff && !tmp.data.func )
+    {
+      BASE::sim->print_debug( "modify-effects: {} ({}#{}) permanently modified by {} from {} ({}#{})", BASE::name(),
+                              BASE::id, idx + 1, val_str, s_data->name_cstr(), s_data->id(), i );
+
+      if ( flat )
+        effect_modifiers[ idx ].first += val;
+      else
+        effect_modifiers[ idx ].first *= 1.0 + val;
+    }
+    // conditionally active
+    else
+    {
+      BASE::sim->print_debug( "modify-effects: {} ({}#{}) conditionally modified by {} from {} ({}#{})", BASE::name(),
+                              BASE::id, idx + 1, val_str, s_data->name_cstr(), s_data->id(), i );
+
+      tmp.data.value = val;
+      tmp.data.flat = flat;
+
+      effect_modifiers[ idx ].second.push_back( tmp.data );
+    }
+  }
+
+  // return base value after modifiers
+  double modified_effectN( size_t idx ) const
+  {
+    auto return_value = effect_modifiers[ idx - 1 ].first;
+
+    for ( const auto& i : effect_modifiers[ idx - 1 ].second )
+    {
+      double eff_val = i.value;
+
+      if ( i.func && !i.func() )
+        continue;  // continue to next effect if conditional effect function is false
+
+      if ( i.buff )
+      {
+        auto stack = i.buff->check();
+
+        if ( !stack )
+          continue;  // continue to next effect if stacks == 0 (buff is down)
+
+        if ( i.use_stacks )
+          eff_val *= stack;
+      }
+
+      if ( i.flat )
+        return_value += eff_val;
+      else
+        return_value *= 1.0 + eff_val;
+    }
+
+    return return_value;
+  }
+
+  double modified_effectN_percent( size_t idx ) const
+  {
+    return modified_effectN( idx ) * 0.01;
+  }
+
+  double modified_effectN_resource( size_t idx, resource_e r ) const
+  {
+    return modified_effectN( idx ) * spelleffect_data_t::resource_multiplier( r );
   }
 
   void parsed_html_report( report::sc_html_stream& os )

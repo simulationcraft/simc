@@ -2354,8 +2354,6 @@ protected:
   using state_t = evoker_action_state_t<sands_of_time_state_t>;
 
 public:
-  double base_ebon_value        = 0.0;
-  double clutchmates_ebon_value = 0.0;
   timespan_t ebon_time          = timespan_t::min();
   mutable std::vector<player_t*> secondary_list, tertiary_list;
 
@@ -2381,12 +2379,7 @@ public:
     cooldown->base_duration = 0_s;
 
     parse_effect_modifiers( p->sets->set( EVOKER_AUGMENTATION, T30, B4 ) );
-
-    base_ebon_value = modified_effect( 1 ).percent();
-
-    parse_effect_modifiers( p->spec.close_as_clutchmates );
-
-    clutchmates_ebon_value = modified_effect( 1 ).percent();
+    parse_effect_modifiers( p->spec.close_as_clutchmates, [ p = p ] { return p->close_as_clutchmates; } );
   }
 
   action_state_t* new_state() override
@@ -2401,7 +2394,7 @@ public:
 
   double ebon_value() const
   {
-    return p()->close_as_clutchmates ? clutchmates_ebon_value : base_ebon_value;
+    return modified_effectN_percent( 1 );
   }
 
   const state_t* cast_state( const action_state_t* s ) const
