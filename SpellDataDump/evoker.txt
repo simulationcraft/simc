@@ -760,6 +760,14 @@ Effects          :
 #20 (id=1123736)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3131 (Label) | Target: Self (1)
                    Affected Spells (Label): Draconic Legacy (376166)
+#21 (id=1143151)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2973 (Label) | Target: Self (1)
+                   Affected Spells (Label): Attuned to the Dream (376930)
+Hotfixed         : NEW EFFECT
+#22 (id=1143153)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 2973 (Label) | Target: Self (1)
+                   Affected Spells (Label): Attuned to the Dream (376930)
+Hotfixed         : NEW EFFECT
 
 Name             : Preservation Evoker (id=356810) [Spell Family (224), Passive, Hidden] 
 Class            : Preservation Evoker
@@ -843,6 +851,22 @@ Effects          :
 #21 (id=1119178)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3043 (Label) | Target: Self (1)
                    Affected Spells (Label): Fragile Echoes (215266)
+#22 (id=1142881)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2972 (Label) | Target: Self (1)
+                   Affected Spells (Label): Inherent Resistance (375544)
+Hotfixed         : NEW EFFECT
+#23 (id=1142882)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2973 (Label) | Target: Self (1)
+                   Affected Spells (Label): Attuned to the Dream (376930)
+Hotfixed         : NEW EFFECT
+#24 (id=1143148)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2973 (Label) | Target: Self (1)
+                   Affected Spells (Label): Attuned to the Dream (376930)
+Hotfixed         : NEW EFFECT
+#25 (id=1143152)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 2973 (Label) | Target: Self (1)
+                   Affected Spells (Label): Attuned to the Dream (376930)
+Hotfixed         : NEW EFFECT
 
 Name             : Initial Evoker (id=356816) [Spell Family (224), Passive, Hidden] 
 Class            : Unknown (1465) Evoker
@@ -3622,7 +3646,7 @@ Description      : Reversion has ${$s1+1} charges.
 
 Name             : Life-Giver's Flame (id=371426) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=5, col=4, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(35, 70)]
+                 : Effect#1 [op=set, values=(40, 80)]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -4504,7 +4528,7 @@ Class            : Evoker
 School           : Physical
 Spell Type       : None
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
-                 : 2972: Devastation Evoker (356809 effect#17)
+                 : 2972: Devastation Evoker (356809 effect#17), Preservation Evoker (356810 effect#22)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5330,7 +5354,7 @@ Class            : Evoker
 School           : Nature
 Spell Type       : None
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
-                 : 2973: Devastation Evoker (356809 effect#18)
+                 : 2973: Devastation Evoker (356809 effect#18), Devastation Evoker (356809 effect#21), Devastation Evoker (356809 effect#22), Preservation Evoker (356810 effect#23), Preservation Evoker (356810 effect#24), Preservation Evoker (356810 effect#25)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
