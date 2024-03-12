@@ -114,6 +114,8 @@ def run(tests):
             print(err.cmd)
             if stderr:
                 print(stderr.rstrip('\r\n'))
+            if err.stdout:
+                print(err.stdout.rstrip('\r\n'))
             print('-' * 80)
             failure += 1
 

@@ -2699,6 +2699,7 @@ void sim_t::init()
   event_mgr.init();
 
   unique_gear::register_target_data_initializers( this );
+  fmt::print( "Target data initializers registered.\n" );
 
   // Seed RNG
   if ( seed == 0 )
@@ -2714,6 +2715,7 @@ void sim_t::init()
     }
   }
   _rng.seed( seed + thread_index );
+  fmt::print( "RNG seeded\n" );
 
   if (   queue_lag_stddev == timespan_t::zero() )   queue_lag_stddev =   queue_lag * 0.25;
   if (     gcd_lag_stddev == timespan_t::zero() )     gcd_lag_stddev =     gcd_lag * 0.25;
@@ -2792,10 +2794,12 @@ void sim_t::init()
   auras.power_word_fortitude = make_buff( this, "power_word_fortitude", dbc::find_spell( this, 21562 ) )
                                    ->set_default_value( dbc::find_spell( this, 21562 )->effectN( 1 ).percent() )
                                    ->add_invalidate( CACHE_STAMINA );
+  fmt::format( "Buffs created\n" );
 
   // Fight style initialization must be performed before target creation and raid event initialization, since fight
   // styles may define/override these things.
   init_fight_style();
+  fmt::format( "Fight style initialized\n" );
 
   // Find Already defined target, otherwise create a new one.
   print_debug( "Creating Enemies." );
@@ -2865,6 +2869,7 @@ void sim_t::init()
       throw std::invalid_argument(fmt::format("Unable to create enemy {}.", target_list.size() ));
     }
   }
+  fmt::format( "Target created\n" );
 
   if ( max_player_level < 0 )
   {
@@ -2898,9 +2903,11 @@ void sim_t::init()
   }
 
   raid_event_t::init( this );
+  fmt::format( "Raid events initialized\n" );
 
   // Initialize actors
   init_actors();
+  fmt::format( "Actors initialized\n" );
 
   if ( report_precision < 0 ) report_precision = 2;
 
