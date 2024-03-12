@@ -660,4 +660,27 @@ private:
 template <typename>
 static constexpr bool static_false = false;
 
+// std::experimental::is_detected implementation based on
+// https://en.cppreference.com/w/cpp/experimental/is_detected and
+// https://en.cppreference.com/w/cpp/experimental/nonesuch
+template <class Default, class AlwaysVoid, template<class...> class Op, class... Args>
+struct static_detector
+{ using value_t = std::false_type; using type = Default; };
+
+template <class Default, template<class...> class Op, class... Args>
+struct static_detector<Default, std::void_t<Op<Args...>>, Op, Args...>
+{ using value_t = std::true_type; using type = Op<Args...>; };
+
+struct nonesuch
+{ ~nonesuch() = delete; nonesuch( const nonesuch& ) = delete; void operator=( const nonesuch& ) = delete; };
+
+template<template<class...> class Op, class... Args>
+using is_detected = typename static_detector<nonesuch, void, Op, Args...>::value_t;
+
+template<template<class...> class Op, class... Args>
+using detected_t = typename static_detector<nonesuch, void, Op, Args...>::type;
+
+template<class Default, template<class...> class Op, class... Args>
+using detected_or = static_detector<Default, void, Op, Args...>;
+
 #endif  // SC_GENERIC_HPP

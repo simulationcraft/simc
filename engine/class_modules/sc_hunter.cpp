@@ -2566,7 +2566,7 @@ void hunter_main_pet_base_t::init_spells()
   if ( o() -> talents.kill_cleave.ok() )
     active.kill_cleave = new actions::kill_cleave_t( this );
 
-  if ( o() -> talents.stomp.ok() )
+  if ( o() -> talents.stomp.ok() || o() -> talents.bloody_frenzy.ok() )
     active.stomp = new actions::stomp_t( this );
 }
 

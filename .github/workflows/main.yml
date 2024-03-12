@@ -37,9 +37,9 @@ jobs:
             cppVersion: 20
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         env: { ccache-prefix: 'ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
         with:
           path: ${{ runner.workspace }}/.ccache
@@ -68,7 +68,7 @@ jobs:
           ninja -C '${{ runner.workspace }}/b/ninja'
           ccache -s
           
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
@@ -98,9 +98,9 @@ jobs:
             cppVersion: 20
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         env: { ccache-prefix: 'ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
         with:
           path: ${{ runner.workspace }}/.ccache
@@ -135,7 +135,7 @@ jobs:
           ninja -C '${{ runner.workspace }}/b/ninja'
           ccache -s
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
@@ -180,7 +180,7 @@ jobs:
             cppVersion: 20
 
     steps:
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
@@ -226,7 +226,7 @@ jobs:
             os: ubuntu-22.04
 
     steps:
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
@@ -264,7 +264,7 @@ jobs:
             os: ubuntu-22.04
     
     steps:
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
@@ -298,7 +298,7 @@ jobs:
     name: macos-latest
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Build
         run: make SANITIZE=1 -C engine debug -j 2
@@ -321,7 +321,7 @@ jobs:
        CMAKE_BUILD_DIR: ${{ github.workspace }}/builddir/
        
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
        # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
       - uses: lukka/get-cmake@latest

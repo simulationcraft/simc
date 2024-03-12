@@ -855,7 +855,6 @@ struct evoker_t : public player_t
   // Gains
   struct gains_t
   {
-    propagate_const<gain_t*> eye_of_infinity;
     propagate_const<gain_t*> roar_of_exhilaration;
     propagate_const<gain_t*> energizing_flame;
   } gain;
@@ -2355,8 +2354,6 @@ protected:
   using state_t = evoker_action_state_t<sands_of_time_state_t>;
 
 public:
-  double base_ebon_value        = 0.0;
-  double clutchmates_ebon_value = 0.0;
   timespan_t ebon_time          = timespan_t::min();
   mutable std::vector<player_t*> secondary_list, tertiary_list;
 
@@ -2382,12 +2379,7 @@ public:
     cooldown->base_duration = 0_s;
 
     parse_effect_modifiers( p->sets->set( EVOKER_AUGMENTATION, T30, B4 ) );
-
-    base_ebon_value = modified_effect( 1 ).percent();
-
-    parse_effect_modifiers( p->spec.close_as_clutchmates );
-
-    clutchmates_ebon_value = modified_effect( 1 ).percent();
+    parse_effect_modifiers( p->spec.close_as_clutchmates, [ p = p ] { return p->close_as_clutchmates; } );
   }
 
   action_state_t* new_state() override
@@ -2402,7 +2394,7 @@ public:
 
   double ebon_value() const
   {
-    return p()->close_as_clutchmates ? clutchmates_ebon_value : base_ebon_value;
+    return modified_effectN_percent( 1 );
   }
 
   const state_t* cast_state( const action_state_t* s ) const
@@ -2790,18 +2782,6 @@ struct fire_breath_t : public empowered_charge_spell_t
       return base_t::calculate_tick_amount( s, m );
     }
 
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      auto m = base_t::composite_da_multiplier( s );
-
-      if ( p()->talent.eye_of_infinity.enabled() )
-      {
-        m *= 1 + p()->talent.eye_of_infinity->effectN( 1 ).percent();
-      }
-
-      return m;
-    }
-
     void tick( dot_t* d ) override
     {
       empowered_release_spell_t::tick( d );
@@ -2844,11 +2824,9 @@ struct eternity_surge_t : public empowered_charge_spell_t
 {
   struct eternity_surge_damage_t : public empowered_release_spell_t
   {
-    double eoi_ess;  // essence gain on crit from Eye of Infinity
 
     eternity_surge_damage_t( evoker_t* p, std::string_view name )
-      : base_t( name, p, p->find_spell( 359077 ) ),
-        eoi_ess( p->talent.eye_of_infinity->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_ESSENCE ) )
+      : base_t( name, p, p->find_spell( 359077 ) )
     {
     }
 
@@ -2869,13 +2847,22 @@ struct eternity_surge_t : public empowered_charge_spell_t
 
       return n == 1 ? 0 : n;
     }
+        
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      auto m = base_t::composite_da_multiplier( s );
+
+      if ( p()->talent.eye_of_infinity.enabled() && s->chain_target == 0 )
+      {
+        m *= 1 + p()->talent.eye_of_infinity->effectN( 1 ).percent();
+      }
+
+      return m;
+    }
 
     void impact( action_state_t* s ) override
     {
       base_t::impact( s );
-
-      if ( eoi_ess && s->result == RESULT_CRIT )
-        p()->resource_gain( RESOURCE_ESSENCE, eoi_ess, p()->gain.eye_of_infinity );
     }
   };
 
@@ -5294,7 +5281,6 @@ void evoker_t::init_gains()
 {
   player_t::init_gains();
 
-  gain.eye_of_infinity      = get_gain( "Eye of Infinity" );
   gain.roar_of_exhilaration = get_gain( "Roar of Exhilaration" );
   gain.energizing_flame = get_gain( "Energizing Flame" );
 }
@@ -5947,7 +5933,6 @@ void evoker_t::apply_affecting_auras_late( action_t& action )
   action.apply_affecting_aura( talent.lay_waste );
   action.apply_affecting_aura( talent.onyx_legacy );
   action.apply_affecting_aura( talent.spellweavers_dominance );
-  action.apply_affecting_aura( talent.eye_of_infinity );
   action.apply_affecting_aura( talent.event_horizon );
   action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, T29, B2 ) );
   action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, T30, B4 ) );
