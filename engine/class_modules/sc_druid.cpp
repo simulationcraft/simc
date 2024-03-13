@@ -13085,7 +13085,7 @@ public:
                "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
                "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
                "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td></tr>",
-               report_decorators::decorated_spell_data( p.sim, spell ),
+               report_decorators::decorated_spell_data( *p.sim, spell ),
                none / iter, none / total * 100,
                solar / iter, solar / total * 100,
                lunar / iter, lunar / total * 100,
