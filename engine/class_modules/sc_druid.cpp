@@ -2178,12 +2178,13 @@ public:
       ta_multiplier_effects.pop_back();
 
       p()->sim->print_debug(
-          "persistent-buffs: {} ({}) damage modified by {}% with buff {} ({}), tick table has {} entries.", name(), id,
-          persistent_multiplier_effects.back().value * 100.0, buff->name(), buff->data().id(),
+          "persistent-effects: {} ({}) damage modified by {}% with buff {} ({}), tick table has {} entries.", name(),
+          id, persistent_multiplier_effects.back().value * 100.0, buff->name(), buff->data().id(),
           ta_multiplier_effects.size() );
 
       return true;
     }
+
     // no persistent multiplier, but does snapshot & consume the buff
     if ( da_multiplier_effects.size() > da_old || cost_effects.size() > cost_old )
       return true;
@@ -3602,6 +3603,22 @@ struct ferocious_bite_t : public cat_finisher_t
       add_child( rampant_ferocity );
     }
 
+    if ( p->talent.taste_for_blood.ok() )
+    {
+      add_parse_entry( target_multiplier_effects )
+          .set_func( []( druid_td_t* td ) {
+            return td->dots.rake->is_ticking() +
+                   td->dots.rip->is_ticking() +
+                   td->dots.thrash_bear->is_ticking() +
+                   td->dots.thrash_cat->is_ticking() +
+                   td->dots.frenzied_assault->is_ticking() +
+                   td->dots.feral_frenzy->is_ticking() +
+                   td->dots.tear->is_ticking();
+          } )
+          .set_value( p->talent.taste_for_blood->effectN( 1 ).percent() )
+          .set_eff( &p->talent.taste_for_blood->effectN( 1 ) );
+    }
+
     parse_effect_modifiers( p->talent.relentless_predator );
     max_excess_energy = modified_effectN( find_effect_index( this, E_POWER_BURN ) );
   }
@@ -3674,27 +3691,6 @@ struct ferocious_bite_t : public cat_finisher_t
 
     if ( hit_any_target && free_spell & free_spell_e::APEX )
       p()->buff.apex_predators_craving->expire();
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double tm = cat_finisher_t::composite_target_multiplier( t );
-
-    if ( p()->talent.taste_for_blood.ok() )
-    {
-      auto t_td  = td( t );
-      int bleeds = t_td->dots.rake->is_ticking() +
-                   t_td->dots.rip->is_ticking() +
-                   t_td->dots.thrash_bear->is_ticking() +
-                   t_td->dots.thrash_cat->is_ticking() +
-                   t_td->dots.frenzied_assault->is_ticking() +
-                   t_td->dots.feral_frenzy->is_ticking() +
-                   t_td->dots.tear->is_ticking();
-
-      tm *= 1.0 + p()->talent.taste_for_blood->effectN( 1 ).percent() * bleeds;
-    }
-
-    return tm;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -4020,7 +4016,7 @@ struct primal_wrath_t : public cat_finisher_t
     {
       cat_attack_t::impact( s );
 
-      td( s->target )->dots.rip->adjust_duration( -4_s );
+      td( s->target )->dots.rip->adjust_duration( -rip_dur );
     }
   };
 
@@ -4056,7 +4052,7 @@ struct primal_wrath_t : public cat_finisher_t
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    return cat_attack_t::composite_da_multiplier( s ) * ( 1.0 + cast_state( s )->combo_points );
+    return cat_attack_t::composite_da_multiplier( s ) * ( 1.0 + cp( s ) );
   }
 
   void impact( action_state_t* s ) override
@@ -4901,8 +4897,11 @@ struct thrash_bear_t : public trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t
     }
   };
 
+  double fc_pct;
+
   DRUID_ABILITY( thrash_bear_t, base_t, "thrash_bear",
-                 p->apply_override( p->talent.thrash, p->spec.bear_form_override ) )
+                 p->apply_override( p->talent.thrash, p->spec.bear_form_override ) ),
+      fc_pct( p->talent.flashing_claws->effectN( 1 ).percent() )
   {
     aoe = -1;
     impact_action = p->get_secondary_action<thrash_bear_bleed_t>( name_str + "_dot" );
@@ -4928,7 +4927,7 @@ struct thrash_bear_t : public trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t
   {
     base_t::execute();
 
-    if ( p()->talent.flashing_claws.ok() && rng().roll( p()->talent.flashing_claws->effectN( 1 ).percent() ) )
+    if ( rng().roll( fc_pct ) )
       make_event( *sim, 500_ms, [ this ]() { p()->active.thrash_bear_flashing->execute_on_target( target ); } );
   }
 
@@ -5113,23 +5112,24 @@ struct frenzied_regeneration_t : public bear_attacks::rage_spender_t<druid_heal_
   cooldown_t* dummy_cd;
   cooldown_t* orig_cd;
   double goe_mul = 0.0;
-  double ir_mul = 0.0;
+  double ir_mul;
+  double lm_pct;
 
   DRUID_ABILITY( frenzied_regeneration_t, base_t, "frenzied_regeneration", p->talent.frenzied_regeneration ),
     dummy_cd( p->get_cooldown( "dummy_cd" ) ),
-    orig_cd( cooldown )
+    orig_cd( cooldown ),
+    ir_mul( p->talent.innate_resolve->effectN( 1 ).percent() ),
+    lm_pct( p->talent.layered_mane->effectN( 2 ).percent() )
   {
     target = p;
 
     if ( p->talent.guardian_of_elune.ok() )
       goe_mul = p->buff.guardian_of_elune->data().effectN( 2 ).percent();
-
-    ir_mul = p->talent.innate_resolve->effectN( 1 ).percent();
   }
 
   void execute() override
   {
-    if ( p()->talent.layered_mane.ok() && rng().roll( p()->talent.layered_mane->effectN( 2 ).percent() ) )
+    if ( rng().roll( lm_pct ) )
       cooldown = dummy_cd;
 
     base_t::execute();
@@ -7685,6 +7685,14 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<con
     parse_effect_modifiers( p->talent.wild_surges );
     parse_effect_modifiers( p->buff.eclipse_lunar, p->talent.umbral_intensity );
     parse_effect_modifiers( p->buff.warrior_of_elune, IGNORE_STACKS );
+
+    if ( p->talent.master_shapeshifter.ok() )
+    {
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ p = p ] { return p->get_form() == MOONKIN_FORM; } )
+          .set_value( p->talent.master_shapeshifter->effectN( 2 ).percent() )
+          .set_eff( &p->talent.master_shapeshifter->effectN( 2 ) );
+    }
   }
 
   void init_finished() override
@@ -7714,11 +7722,7 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<con
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    auto da = base_t::composite_da_multiplier( s );
-
-    da *= sotf_multiplier( s );
-
-    return da;
+    return base_t::composite_da_multiplier( s ) * sotf_multiplier( s );
   }
 
   void execute() override
@@ -7773,14 +7777,6 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<con
 
     return cam;
   }
-
-  double action_multiplier() const override
-  {
-    if ( p()->talent.master_shapeshifter.ok() && p()->get_form() == MOONKIN_FORM )
-      return druid_spell_t::action_multiplier() * ( 1.0 + p()->talent.master_shapeshifter->effectN( 2 ).percent() );
-    else
-      return druid_spell_t::action_multiplier();
-  }
 };
 
 // Starsurge Spell ==========================================================
@@ -7791,14 +7787,14 @@ struct starsurge_offspec_t : public druid_spell_t
     form_mask = NO_FORM | MOONKIN_FORM;
     base_costs[ RESOURCE_MANA ] = 0.0;  // so we don't need to enable mana regen
     may_autounshift = true;
-  }
 
-  double action_multiplier() const override
-  {
-    if ( p()->talent.master_shapeshifter.ok() && p()->get_form() == MOONKIN_FORM )
-      return druid_spell_t::action_multiplier() * ( 1.0 + p()->talent.master_shapeshifter->effectN( 2 ).percent() );
-    else
-      return druid_spell_t::action_multiplier();
+    if ( p->talent.master_shapeshifter.ok() )
+    {
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ p = p ] { return p->get_form() == MOONKIN_FORM; } )
+          .set_value( p->talent.master_shapeshifter->effectN( 2 ).percent() )
+          .set_eff( &p->talent.master_shapeshifter->effectN( 2 ) );
+    }
   }
 };
 
@@ -7839,6 +7835,14 @@ struct starsurge_t : public ap_spender_t
       auto suf = get_suffix( name_str, "starsurge" );
       goldrinn = p->get_secondary_action<goldrinns_fang_t>( "goldrinns_fang" + suf );
       add_child( goldrinn );
+    }
+
+    if ( p->talent.master_shapeshifter.ok() )
+    {
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ p = p ] { return p->get_form() == MOONKIN_FORM; } )
+          .set_value( p->talent.master_shapeshifter->effectN( 2 ).percent() )
+          .set_eff( &p->talent.master_shapeshifter->effectN( 2 ) );
     }
   }
 
@@ -7901,14 +7905,6 @@ struct starsurge_t : public ap_spender_t
       p()->buff.starweavers_warp->trigger();
       p()->eclipse_handler.cast_starsurge();
     }
-  }
-
-  double action_multiplier() const override
-  {
-    if ( p()->talent.master_shapeshifter.ok() )
-      return druid_spell_t::action_multiplier() * ( 1.0 + p()->talent.master_shapeshifter->effectN( 2 ).percent() );
-    else
-      return druid_spell_t::action_multiplier();
   }
 };
 
@@ -8184,6 +8180,14 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<consum
     parse_effect_modifiers( p->spec.astral_power );
     parse_effect_modifiers( p->talent.wild_surges );
     parse_effect_modifiers( p->buff.eclipse_solar, p->talent.soul_of_the_forest_moonkin );
+
+    if ( p->talent.master_shapeshifter.ok() )
+    {
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ p = p ] { return p->get_form() == MOONKIN_FORM; } )
+          .set_value( p->talent.master_shapeshifter->effectN( 2 ).percent() )
+          .set_eff( &p->talent.master_shapeshifter->effectN( 2 ) );
+    }
   }
 
   // WARNING: this overrides any adjustments done in parent classes
@@ -8246,14 +8250,6 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<consum
     {
       p()->eclipse_handler.cast_wrath();
     }
-  }
-
-  double action_multiplier() const override
-  {
-    if ( p()->talent.master_shapeshifter.ok() && p()->get_form() == MOONKIN_FORM )
-      return druid_spell_t::action_multiplier() * ( 1.0 + p()->talent.master_shapeshifter->effectN( 2 ).percent() );
-    else
-      return druid_spell_t::action_multiplier();
   }
 };
 
