@@ -1,7 +1,5 @@
-#pragma warning(push)
-#pragma warning(once: 4305)
 // Spell text, wow build 10.2.5.53584
-static const std::array<spelltext_data_t, 20602> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20603> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20585,6 +20583,7 @@ static const std::array<spelltext_data_t, 20602> __ptr_spelltext_data { {
   { 429617, "$@spelldesc426950", 0, 0 },
   { 429951, "$@spelldesc13877", 0, 0 },
   { 430023, "Ambush the target, causing $s1 Physical damage.$?s383281[\r\n\r\nHas a $193315s3% chance to hit an additional time, making your next Pistol Shot half cost and double damage.][]\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points;$?s383281[ each time it strikes][].|r", 0, 0 },
+  { 430836, "Heals $o1 damage over $d.", "Healing $w1 damage every second.", 0 },
   { 430846, "Your Soar is empowered after co-opting new flight techniques from the dragons of the Dragon Isles.\r\n\r\nSoar is now equivalent to dragonriding, granting access to vigor and all dragonriding abilities. \r\n\r\n", 0, "Racial Passive" },
   { 430935, "Soar's cooldown is reduced to $m2 sec.", 0, "Racial Passive" },
   { 431156, "Your next Rapid Fire will shoot $s1% additional shots during its channel.", "Your next Rapid Fire will shoot $s1% additional shots during its channel.", 0 },
@@ -20610,9 +20609,6 @@ static const std::array<spelltext_data_t, 20602> __ptr_spelltext_data { {
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-#pragma warning(pop)
-#pragma warning(push)
-#pragma warning(once: 4305)
 // Spell description variables, wow build 10.2.5.53584
 static const std::array<spelldesc_vars_data_t, 415> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
@@ -21036,4 +21032,3 @@ static const std::array<spelldesc_vars_data_t, 415> __ptr_spelldesc_vars_data { 
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
-#pragma warning(pop)

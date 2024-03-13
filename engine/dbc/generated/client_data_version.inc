@@ -1,5 +1,3 @@
-#pragma warning(push)
-#pragma warning(once: 4305)
 #ifndef CLIENT_DATA_VERSION_INC
 #define CLIENT_DATA_VERSION_INC
 
@@ -12,7 +10,6 @@
 
 #define CLIENT_DATA_HOTFIX_DATE "2024-03-12"
 #define CLIENT_DATA_HOTFIX_BUILD (53584)
-#define CLIENT_DATA_HOTFIX_HASH "7d6efdf97f1e0382cb8d3981ad743d29297879a6e21eff87582ae48a2c0816ce"
+#define CLIENT_DATA_HOTFIX_HASH "c4ad3554539700119e27ba574c2a6e4cfb35f23b4b2afc1f0250b385b187d808"
 
 #endif /* CLIENT_DATA_VERSION_INC*/
-#pragma warning(pop)

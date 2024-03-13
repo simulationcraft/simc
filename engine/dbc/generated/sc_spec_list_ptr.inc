@@ -1,5 +1,3 @@
-#pragma warning(push)
-#pragma warning(once: 4305)
 #define MAX_SPECS_PER_CLASS (4)
 #define MAX_SPEC_CLASS  (14)
 
@@ -91,4 +89,3 @@ static constexpr specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_
   },
 };
 
-#pragma warning(pop)

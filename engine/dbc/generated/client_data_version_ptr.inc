@@ -1,5 +1,3 @@
-#pragma warning(push)
-#pragma warning(once: 4305)
 #ifndef PTR_CLIENT_DATA_VERSION_INC
 #define PTR_CLIENT_DATA_VERSION_INC
 
@@ -10,9 +8,8 @@
 
 // Hotfix data versioning information
 
-#define PTR_CLIENT_DATA_HOTFIX_DATE "2024-03-04"
+#define PTR_CLIENT_DATA_HOTFIX_DATE "2024-03-13"
 #define PTR_CLIENT_DATA_HOTFIX_BUILD (53584)
-#define PTR_CLIENT_DATA_HOTFIX_HASH "491204dcfa0bc2c1536729a9a7e04608df4b6da96e345edc0c70b9b22c78ce59"
+#define PTR_CLIENT_DATA_HOTFIX_HASH "c7aff7eb8886cbd66c4be9da21f1cdfca2b170768e308566f72df2e6542c95e9"
 
 #endif /* PTR_CLIENT_DATA_VERSION_INC*/
-#pragma warning(pop)

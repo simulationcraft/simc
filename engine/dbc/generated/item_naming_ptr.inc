@@ -1,5 +1,3 @@
-#pragma warning(push)
-#pragma warning(once: 4305)
 // Item name descriptions, wow build 10.2.5.53584
 static const std::array<item_name_description_t, 828> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
@@ -832,4 +830,3 @@ static const std::array<item_name_description_t, 828> __ptr_item_name_descriptio
   { 14134, "Cycle"                                       },
 } };
 
-#pragma warning(pop)

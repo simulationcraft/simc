@@ -1,5 +1,3 @@
-#pragma warning(push)
-#pragma warning(once: 4305)
 // Permanent item enchants, wow build 10.2.5.53584
 static const std::array<permanent_enchant_entry_t, 790> __ptr_permanent_enchant_data { {
   { 6614,  1,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
@@ -794,4 +792,3 @@ static const std::array<permanent_enchant_entry_t, 790> __ptr_permanent_enchant_
   { 5935,  0,  4, 0x00000400, 0x0000001f, "zandalari_surveying"               },
 } };
 
-#pragma warning(pop)

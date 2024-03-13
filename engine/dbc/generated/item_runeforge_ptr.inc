@@ -1,5 +1,3 @@
-#pragma warning(push)
-#pragma warning(once: 4305)
 // Runeforge legendary bonuses, wow build 10.2.5.53584
 static const std::array<runeforge_legendary_entry_t, 789> __ptr_runeforge_legendary_data { {
   { 6823, 64, 327508, 0x000000c0, 0, "Slick Ice" },
@@ -793,4 +791,3 @@ static const std::array<runeforge_legendary_entry_t, 789> __ptr_runeforge_legend
   { 8934, 1473, 387431, 0x00010fee, 0, "Unity" },
 } };
 
-#pragma warning(pop)
