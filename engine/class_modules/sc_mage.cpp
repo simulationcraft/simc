@@ -3533,6 +3533,20 @@ struct conflagration_t final : public fire_mage_spell_t
   {
     background = true;
   }
+
+  double composite_rolling_ta_multiplier( const action_state_t* s ) const override
+  {
+    // When refreshing Conflagration, there is a bug where the duration must change to roll in the new damage.
+    if ( p()->bugs )
+    {
+      dot_t* dot = find_dot( s->target );
+      timespan_t refresh_duration = calculate_dot_refresh_duration( dot, composite_dot_duration( s ) );
+      if ( refresh_duration == dot->remains() )
+        return s->rolling_ta_multiplier;
+    }
+
+    return fire_mage_spell_t::composite_rolling_ta_multiplier( s );
+  }
 };
 
 struct conflagration_flare_up_t final : public fire_mage_spell_t
