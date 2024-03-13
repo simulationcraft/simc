@@ -867,6 +867,8 @@ struct evoker_t : public player_t
     propagate_const<proc_t*> emerald_trance;
     propagate_const<proc_t*> anachronism_essence_burst;
     propagate_const<proc_t*> echoing_strike;
+    propagate_const<proc_t*> overwritten_leaping_flames;
+    
   } proc;
 
   // RPPMs
@@ -2745,7 +2747,16 @@ struct fire_breath_t : public empowered_charge_spell_t
     {
       base_t::execute();
 
-      p()->buff.leaping_flames->trigger( empower_value( execute_state ) );
+      if ( p()->talent.leaping_flames.ok() )
+      {
+        if ( p()->buff.leaping_flames->check() )
+        {
+          p()->proc.overwritten_leaping_flames->occur();
+          p()->buff.leaping_flames->expire();
+        }
+
+        p()->buff.leaping_flames->trigger( empower_value( execute_state ) );
+      }
 
       if ( p()->talent.infernos_blessing.ok() )
       {
@@ -5289,11 +5300,12 @@ void evoker_t::init_procs()
 {
   player_t::init_procs();
 
-  proc.ruby_essence_burst        = get_proc( "Ruby Essence Burst" );
-  proc.azure_essence_burst       = get_proc( "Azure Essence Burst" );
-  proc.emerald_trance            = get_proc( "Emerald Trance" );
-  proc.anachronism_essence_burst = get_proc( "Anachronism" );
-  proc.echoing_strike            = get_proc( "Echoing Strike" );
+  proc.ruby_essence_burst         = get_proc( "Ruby Essence Burst" );
+  proc.azure_essence_burst        = get_proc( "Azure Essence Burst" );
+  proc.emerald_trance             = get_proc( "Emerald Trance" );
+  proc.anachronism_essence_burst  = get_proc( "Anachronism" );
+  proc.echoing_strike             = get_proc( "Echoing Strike" );
+  proc.overwritten_leaping_flames = get_proc( "Overwritten Leaping Flames" );
 }
 
 void evoker_t::init_base_stats()
