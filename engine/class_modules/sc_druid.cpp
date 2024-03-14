@@ -3460,10 +3460,7 @@ struct incarnation_cat_t : public berserk_cat_base_t
 // Brutal Slash =============================================================
 struct brutal_slash_t : public trigger_thrashing_claws_t<cat_attack_t>
 {
-  double berserk_swipe_cp;
-
-  DRUID_ABILITY( brutal_slash_t, base_t, "brutal_slash", p->talent.brutal_slash ),
-    berserk_swipe_cp( p->spec.berserk_cat->effectN( 2 ).base_value() )
+  DRUID_ABILITY( brutal_slash_t, base_t, "brutal_slash", p->talent.brutal_slash )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
@@ -3476,16 +3473,6 @@ struct brutal_slash_t : public trigger_thrashing_claws_t<cat_attack_t>
   resource_e current_resource() const override
   {
     return p()->buff.cat_form->check() ? RESOURCE_ENERGY : RESOURCE_NONE;
-  }
-
-  double composite_energize_amount( const action_state_t* s ) const override
-  {
-    auto ea = base_t::composite_energize_amount( s );
-
-    if ( p()->buff.b_inc_cat->check() )
-      ea += berserk_swipe_cp;
-
-    return ea;
   }
 
   void execute() override
