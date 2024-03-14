@@ -943,6 +943,9 @@ public:
   // return base value after modifiers
   double modified_effectN( size_t idx ) const
   {
+    if ( !idx )
+      return 0.0;
+
     auto return_value = effect_modifiers[ idx - 1 ].first;
 
     for ( const auto& i : effect_modifiers[ idx - 1 ].second )
