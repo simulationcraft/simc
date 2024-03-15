@@ -13,7 +13,7 @@ on:
 env:
   SIMC_PROFILE: profiles/CI.simc
   CCACHE_COMPRESS: true # always enable ccache compression
-  ccache-generation: 1 # bump if you need to "clean" ccache
+  ccache-generation: 2 # bump if you need to "clean" ccache
 
 jobs:
   ubuntu-gcc-build:
@@ -62,7 +62,7 @@ jobs:
         env:
           CCACHE_BASEDIR: ${{ runner.workspace }}
           CCACHE_DIR: ${{ runner.workspace }}/.ccache
-          CCACHE_MAXSIZE: 192M # full build consumes around ~80, ~2x that to be safe
+          CCACHE_MAXSIZE: 400M # full build consumes around ~80, ~2x that to be safe
         run: |
           ccache -z
           ninja -C '${{ runner.workspace }}/b/ninja'
@@ -129,7 +129,7 @@ jobs:
         env:
           CCACHE_BASEDIR: ${{ runner.workspace }}
           CCACHE_DIR: ${{ runner.workspace }}/.ccache
-          CCACHE_MAXSIZE: 256M # full build consumes around ~124, ~2x that to be safe
+          CCACHE_MAXSIZE: 500M # full build consumes around ~124, ~2x that to be safe
         run: |
           ccache -z
           ninja -C '${{ runner.workspace }}/b/ninja'
