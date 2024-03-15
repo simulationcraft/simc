@@ -42,7 +42,7 @@ jobs:
       - uses: actions/cache@v4
         env: { ccache-prefix: 'ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
         with:
-          path: ${{ runner.workspace }}/.ccache
+          path: ${{ runner.temp }}/.ccache
           key: ${{ env.ccache-prefix }}-${{ github.sha }}
           restore-keys: ${{ env.ccache-prefix }}-
 
@@ -52,26 +52,27 @@ jobs:
           sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache ${{ matrix.packages }}
 
       - name: Configure
-        run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
-              -DCMAKE_BUILD_TYPE=Debug
-              -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.compiler }}
-              -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-              -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }} 
+        run: |
+          cmake -H. -B'${{ runner.temp }}/b/ninja' -GNinja -DBUILD_GUI=OFF \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.compiler }} \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }}
 
       - name: Build
         env:
-          CCACHE_BASEDIR: ${{ runner.workspace }}
-          CCACHE_DIR: ${{ runner.workspace }}/.ccache
+          CCACHE_BASEDIR: ${{ runner.temp }}
+          CCACHE_DIR: ${{ runner.temp }}/.ccache
           CCACHE_MAXSIZE: 192M # full build consumes around ~80, ~2x that to be safe
         run: |
           ccache -z
-          ninja -C '${{ runner.workspace }}/b/ninja'
+          ninja -C '${{ runner.temp }}/b/ninja'
           ccache -s
-          
+
       - uses: actions/cache@v4
         with:
           path: |
-            ${{ runner.workspace }}/b/ninja/simc
+            ${{ runner.temp }}/b/ninja/simc
             profiles
             tests
             generate_profiles_ci.sh
@@ -103,7 +104,7 @@ jobs:
       - uses: actions/cache@v4
         env: { ccache-prefix: 'ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
         with:
-          path: ${{ runner.workspace }}/.ccache
+          path: ${{ runner.temp }}/.ccache
           key: ${{ env.ccache-prefix }}-${{ github.sha }}
           restore-keys: ${{ env.ccache-prefix }}-
 
@@ -114,11 +115,11 @@ jobs:
 
       - name: Configure
         env:
-          UBSAN_STRIP_COUNT: "`echo \"${{ runner.workspace }}//\" | grep -o '/' - | wc -l`"
-        run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
+          UBSAN_STRIP_COUNT: "`echo \"${{ runner.temp }}//\" | grep -o '/' - | wc -l`"
+        run: cmake -H. -B'${{ runner.temp }}/b/ninja' -GNinja -DBUILD_GUI=OFF
               -DCMAKE_BUILD_TYPE=Debug
               -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
-              -DCMAKE_CXX_FLAGS="-Og ${{ matrix.enable_file_prefix_map && format('-ffile-prefix-map={0}/=/', runner.workspace) || ''}}
+              -DCMAKE_CXX_FLAGS="-Og ${{ matrix.enable_file_prefix_map && format('-ffile-prefix-map={0}/=/', runner.temp || '')}}
                 -fno-omit-frame-pointer -fsanitize=address,undefined
                 -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
               -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -fsanitize=address,undefined"
@@ -127,18 +128,18 @@ jobs:
 
       - name: Build
         env:
-          CCACHE_BASEDIR: ${{ runner.workspace }}
-          CCACHE_DIR: ${{ runner.workspace }}/.ccache
+          CCACHE_BASEDIR: ${{ runner.temp }}
+          CCACHE_DIR: ${{ runner.temp }}/.ccache
           CCACHE_MAXSIZE: 256M # full build consumes around ~124, ~2x that to be safe
         run: |
           ccache -z
-          ninja -C '${{ runner.workspace }}/b/ninja'
+          ninja -C '${{ runner.temp }}/b/ninja'
           ccache -s
 
       - uses: actions/cache@v4
         with:
           path: |
-            ${{ runner.workspace }}/b/ninja/simc
+            ${{ runner.temp }}/b/ninja/simc
             profiles
             tests
             generate_profiles_ci.sh
@@ -180,10 +181,11 @@ jobs:
             cppVersion: 20
 
     steps:
-      - uses: actions/cache@v4
+      - uses: actions/cache/restore@v4
+        id: cache
         with:
           path: |
-            ${{ runner.workspace }}/b/ninja/simc
+            ${{ runner.temp }}/b/ninja/simc
             profiles
             tests
             generate_profiles_ci.sh
@@ -193,7 +195,7 @@ jobs:
       - name: Run
         env:
           UBSAN_OPTIONS: print_stacktrace=1
-        run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null json3=/dev/null ${{ matrix.simc_flags }}
+        run: ${{ runner.temp }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null json3=/dev/null ${{ matrix.simc_flags }}
 
   simc-tests:
     name: test-${{ matrix.tier }}-${{ matrix.spec }}
@@ -226,10 +228,11 @@ jobs:
             os: ubuntu-22.04
 
     steps:
-      - uses: actions/cache@v4
+      - uses: actions/cache/restore@v4
+        id: cache
         with:
           path: |
-            ${{ runner.workspace }}/b/ninja/simc
+            ${{ runner.temp }}/b/ninja/simc
             profiles
             tests
             generate_profiles_ci.sh
@@ -242,12 +245,12 @@ jobs:
       - name: Run
         env:
           UBSAN_OPTIONS: print_stacktrace=1
-          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
+          SIMC_CLI_PATH: ${{ runner.temp }}/b/ninja/simc
           SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
         run: ${{ github.workspace }}/tests/run.py ${{ matrix.spec }} -tests trinket baseline --max-profiles-to-use 1 --enable-all-talents --enable-all-sets
-  
+
   simc-profiles:
     name: Regenerate profiles
     runs-on: ${{ matrix.os }}
@@ -262,12 +265,13 @@ jobs:
         include:
           - compiler: gcc-12
             os: ubuntu-22.04
-    
+
     steps:
-      - uses: actions/cache@v4
+      - uses: actions/cache/restore@v4
+        id: cache
         with:
           path: |
-            ${{ runner.workspace }}/b/ninja/simc
+            ${{ runner.temp }}/b/ninja/simc
             profiles
             tests
             generate_profiles_ci.sh
@@ -279,11 +283,11 @@ jobs:
       - name: Run
         env:
           UBSAN_OPTIONS: print_stacktrace=1
-          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
+          SIMC_CLI_PATH: ${{ runner.temp }}/b/ninja/simc
           SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
-        run: | 
+        run: |
           ${{ github.workspace }}/generate_profiles_ci.sh
 
       - name: Commit Profiles
@@ -319,22 +323,22 @@ jobs:
 
     env:
        CMAKE_BUILD_DIR: ${{ github.workspace }}/builddir/
-       
+
     steps:
       - uses: actions/checkout@v4
 
        # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
       - uses: lukka/get-cmake@latest
-      
+
       # On Windows runners, let's ensure to have the Developer Command Prompt environment setup correctly. As used here the Developer Command Prompt created is targeting x64 and using the default the Windows SDK.
-      - uses: ilammy/msvc-dev-cmd@v1       
+      - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: ${{ matrix.arch }}
 
       - name: Generate project files
         run: |
           cmake -B "${{ env.CMAKE_BUILD_DIR }}" -GNinja -DBUILD_GUI=OFF -DCMAKE_BUILD_TYPE=Debug
-      
+
       - name: Build
         run: |
           cmake --build "${{ env.CMAKE_BUILD_DIR }}"
