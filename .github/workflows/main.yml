@@ -13,7 +13,7 @@ on:
 env:
   SIMC_PROFILE: profiles/CI.simc
   CCACHE_COMPRESS: true # always enable ccache compression
-  ccache-generation: 0 # bump if you need to "clean" ccache
+  ccache-generation: 1 # bump if you need to "clean" ccache
 
 jobs:
   ubuntu-gcc-build:
