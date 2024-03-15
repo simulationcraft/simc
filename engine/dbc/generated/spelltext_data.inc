@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.5.53584
-static const std::array<spelltext_data_t, 20606> __spelltext_data { {
+static const std::array<spelltext_data_t, 20602> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20085,7 +20085,6 @@ static const std::array<spelltext_data_t, 20606> __spelltext_data { {
   { 417713, "$@spelldesc417710", "Damage taken from $@auracaster's attacks increased by $s1%.", 0 },
   { 417714, "Increases your damage and healing by $s1% during the day.", "Damage and healing increased by $s1%.", 0 },
   { 417715, "Increases your Versatility by $s1% during the night.", "Versatility increased by $s1%.", 0 },
-  { 417775, "Add a Downy Liner and Crystal Ocular Lenses to the Thought Calculating Apparatus.", 0, 0 },
   { 417792, "$@spelldesc417534", 0, 0 },
   { 417855, "Holy Shock, Holy Light, and Flash of Light critical healing increased by $s1%.", 0, 0 },
   { 417939, "Activate the Tyrstone, recording $s1% of your healing done over the next $d, up to $417959s2 healing done.", "Recording $w1% of all healing done.", 0 },
@@ -20478,8 +20477,6 @@ static const std::array<spelltext_data_t, 20606> __spelltext_data { {
   { 427064, "Suffering lethal damage will consume this item to restore you.", "Suffering lethal damage will consume this item to restore you.", 0 },
   { 427072, "$@spelldesc422956", "Mastery increased by $w1.", 0 },
   { 427113, "Weave a web of dreams beneath your target after $d, dealing $427110s1 Nature damage split between all enemies within 8 yds. Your target is immobilized for $427215d while additional enemies are slowed by $427110s2%. Less effective against enemy players.\r\n\r\nDamage increased per enemy struck, up to 5. ", 0, 0 },
-  { 427130, "Toss the Moonfish back into the waters of Amirdrassil, applying a stack of Moonfish Essence.", "The essence of the Dream fades fast. Applying more Moonfish Essence might strengthen its resolve.", 0 },
-  { 427134, "Toss the Sunfish back into the waters of Amirdrassil, applying a stack of Sunfish Essence.", "The essence of the Dream fades fast. Applying more Sunfish Essence might strengthen its resolve.", 0 },
   { 427161, "$@spelldesc422956", 0, 0 },
   { 427209, "$@spelldesc427113", 0, 0 },
   { 427212, "$@spelldesc427113", "Slowed by $w1%.", 0 },
@@ -20586,7 +20583,6 @@ static const std::array<spelltext_data_t, 20606> __spelltext_data { {
   { 429617, "$@spelldesc426950", 0, 0 },
   { 429951, "$@spelldesc13877", 0, 0 },
   { 430023, "Ambush the target, causing $s1 Physical damage.$?s383281[\r\n\r\nHas a $193315s3% chance to hit an additional time, making your next Pistol Shot half cost and double damage.][]\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points;$?s383281[ each time it strikes][].|r", 0, 0 },
-  { 430836, "Heals $o1 damage over $d.", "Healing $w1 damage every second.", 0 },
   { 430846, "Your Soar is empowered after co-opting new flight techniques from the dragons of the Dragon Isles.\r\n\r\nSoar is now equivalent to dragonriding, granting access to vigor and all dragonriding abilities. \r\n\r\n", 0, "Racial Passive" },
   { 430935, "Soar's cooldown is reduced to $m2 sec.", 0, "Racial Passive" },
   { 431156, "Your next Rapid Fire will shoot $s1% additional shots during its channel.", "Your next Rapid Fire will shoot $s1% additional shots during its channel.", 0 },
