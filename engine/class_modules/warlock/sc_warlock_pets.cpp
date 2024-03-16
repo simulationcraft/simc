@@ -204,7 +204,7 @@ void warlock_pet_t::init_special_effects()
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
   dot_t* d;
-  if ( melee_attack && !melee_attack->execute_event && 
+  if ( melee_attack && !melee_attack->execute_event &&
        ( melee_on_summon || !debug_cast<pets::warlock_pet_melee_t*>( melee_attack )->first ) &&
        !( special_action && ( d = special_action->get_dot() ) && d->is_ticking() ) )
   {
@@ -1576,9 +1576,9 @@ struct dreadstalker_leap_t : warlock_pet_t::travel_t
     warlock_pet_t::travel_t::execute();
 
     // There is an observed delay of up to 1 second before a melee attack begins again for pets after a movement action like the leap (possibly server tick?)
-    make_event( sim, timespan_t::from_seconds( rng().range( 1.0 ) ), [ this ]{ 
-      debug_cast<warlock_pet_t*>( player )->melee_attack->reset(); 
-      debug_cast<warlock_pet_t*>( player )->melee_attack->execute(); 
+    make_event( sim, timespan_t::from_seconds( rng().range( 1.0 ) ), [ this ]{
+      debug_cast<warlock_pet_t*>( player )->melee_attack->reset();
+      debug_cast<warlock_pet_t*>( player )->melee_attack->execute();
     } );
   }
 };
