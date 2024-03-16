@@ -2622,7 +2622,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::arise();
     timespan_t duration = 2.8_s;
-    buffs.stunned -> trigger( duration + rng().gauss( 200_ms, 0_ms ) );
+    buffs.stunned -> trigger( duration + rng().gauss( 200_ms, 25_ms ) );
     stun();
     reschedule_gargoyle();
   }
