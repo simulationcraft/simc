@@ -321,6 +321,9 @@ void warlock_pet_t::demise()
       }
     }
   }
+
+  if ( melee_attack )
+    melee_attack->reset();
 }
 
 warlock_pet_td_t::warlock_pet_td_t( player_t* target, warlock_pet_t& p ) :
@@ -1579,7 +1582,7 @@ struct dreadstalker_leap_t : warlock_pet_t::travel_t
     // There is an observed delay of up to 1 second before a melee attack begins again for pets after a movement action like the leap (possibly server tick?)
     make_event( sim, debug_cast<dreadstalker_t*>( player )->server_action_delay, [ this ]{
       debug_cast<warlock_pet_t*>( player )->melee_attack->reset();
-      debug_cast<warlock_pet_t*>( player )->melee_attack->execute();
+      debug_cast<warlock_pet_t*>( player )->melee_attack->schedule_execute();
     } );
   }
 };
