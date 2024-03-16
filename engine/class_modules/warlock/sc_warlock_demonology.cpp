@@ -505,6 +505,14 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
     auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration(), count );
 
+    // Set a randomized offset on first melee attacks after travel time. Make sure it's the same value for each dog so they're synced
+    timespan_t delay = rng().range( 0_s, 1_s );
+    for ( auto d : dogs )
+    {
+      if ( d->is_active() )
+        d->server_action_delay = delay;
+    }
+
     if ( p()->buffs.demonic_calling->up() )
     {  // benefit tracking
 

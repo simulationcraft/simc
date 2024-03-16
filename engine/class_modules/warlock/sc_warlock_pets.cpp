@@ -1481,6 +1481,7 @@ dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "drea
   owner_coeff.health = 0.4;
 
   melee_on_summon = false; // Dreadstalkers leap from the player location to target, which has a non-negligible travel time
+  server_action_delay = 0_ms; // Will be set when spawning Dreadstalkers to ensure pets are synced on delay
 }
 
 struct dreadbite_t : public warlock_pet_melee_attack_t
@@ -1576,7 +1577,7 @@ struct dreadstalker_leap_t : warlock_pet_t::travel_t
     warlock_pet_t::travel_t::execute();
 
     // There is an observed delay of up to 1 second before a melee attack begins again for pets after a movement action like the leap (possibly server tick?)
-    make_event( sim, timespan_t::from_seconds( rng().range( 1.0 ) ), [ this ]{
+    make_event( sim, debug_cast<dreadstalker_t*>( player )->server_action_delay, [ this ]{
       debug_cast<warlock_pet_t*>( player )->melee_attack->reset();
       debug_cast<warlock_pet_t*>( player )->melee_attack->execute();
     } );
