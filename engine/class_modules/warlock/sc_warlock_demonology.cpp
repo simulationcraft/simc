@@ -503,7 +503,19 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
     unsigned count = as<unsigned>( p()->talents.call_dreadstalkers->effectN( 1 ).base_value() );
 
-    auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration(), count );
+    // Set a randomized offset on first melee attacks after travel time. Make sure it's the same value for each dog so they're synced
+    timespan_t delay = rng().range( 0_s, 1_s );
+
+    timespan_t dur_adjust = duration_adjustment( delay );
+
+    auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration() + dur_adjust, count );
+
+
+    for ( auto d : dogs )
+    {
+      if ( d->is_active() )
+        d->server_action_delay = delay;
+    }
 
     if ( p()->buffs.demonic_calling->up() )
     {  // benefit tracking
@@ -552,6 +564,14 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
       p()->buffs.dread_calling->expire();
     }
+  }
+
+  timespan_t duration_adjustment( timespan_t delay )
+  {
+    // Despawn events appear to be offset from the melee attack check in a correlated manner
+    // Starting with this function which mimics despawns on the "off-beats" compared to the 1s heartbeat for the melee attack
+    // This may require updating if better understanding is found for the behavior, such as a fudge from Blizzard related to player distance
+    return ( delay + 500_ms ) % 1_s;
   }
 };
 

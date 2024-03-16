@@ -205,6 +205,7 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
   dot_t* d;
   if ( melee_attack && !melee_attack->execute_event &&
+       ( melee_on_summon || !debug_cast<pets::warlock_pet_melee_t*>( melee_attack )->first ) &&
        !( special_action && ( d = special_action->get_dot() ) && d->is_ticking() ) )
   {
     melee_attack->schedule_execute();
@@ -281,7 +282,7 @@ double warlock_pet_t::composite_melee_speed() const
 
 void warlock_pet_t::arise()
 {
-  if ( melee_attack )
+  if ( melee_attack && melee_on_summon )
     melee_attack->reset();
 
   pet_t::arise();
@@ -1468,7 +1469,7 @@ double wild_imp_pet_t::composite_player_multiplier( school_e school ) const
 
 dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "dreadstalker", PET_DREADSTALKER, true )
 {
-  action_list_str = "travel/dreadbite";
+  action_list_str = "leap/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
 
   // 2023-09-20: Coefficient updated
@@ -1478,6 +1479,9 @@ dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "drea
     owner_coeff.ap_from_sp = 0.55;
 
   owner_coeff.health = 0.4;
+
+  melee_on_summon = false; // Dreadstalkers leap from the player location to target, which has a non-negligible travel time
+  server_action_delay = 0_ms; // Will be set when spawning Dreadstalkers to ensure pets are synced on delay
 }
 
 struct dreadbite_t : public warlock_pet_melee_attack_t
@@ -1554,6 +1558,32 @@ struct dreadstalker_melee_t : warlock_pet_melee_t
   }
 };
 
+struct dreadstalker_leap_t : warlock_pet_t::travel_t
+{
+  dreadstalker_leap_t( dreadstalker_t* p ) : warlock_pet_t::travel_t( p, "leap" )
+  {
+    speed = 30.0; // Note: this is an approximation - leap may have some variation with distance. This could be updated with a function in the future by overriding execute_time()
+  }
+
+  void schedule_execute( action_state_t* s ) override
+  {
+    debug_cast<warlock_pet_t*>( player )->melee_attack->cancel();
+
+    warlock_pet_t::travel_t::schedule_execute( s );
+  }
+
+  void execute() override
+  {
+    warlock_pet_t::travel_t::execute();
+
+    // There is an observed delay of up to 1 second before a melee attack begins again for pets after a movement action like the leap (possibly server tick?)
+    make_event( sim, debug_cast<dreadstalker_t*>( player )->server_action_delay, [ this ]{
+      debug_cast<warlock_pet_t*>( player )->melee_attack->reset();
+      debug_cast<warlock_pet_t*>( player )->melee_attack->execute();
+    } );
+  }
+};
+
 void dreadstalker_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
@@ -1574,6 +1604,11 @@ void dreadstalker_t::arise()
   }
 
   dreadbite_executes = 1;
+
+  if ( position() <= 1.0 )
+  {
+    melee_on_summon = true; // Within this range, Dreadstalkers will not do a leap, so they immediately start using auto attacks
+  }
 }
 
 void dreadstalker_t::demise()
@@ -1608,6 +1643,8 @@ action_t* dreadstalker_t::create_action( util::string_view name, util::string_vi
 {
   if ( name == "dreadbite" )
     return new dreadbite_t( this );
+  if ( name == "leap" )
+    return new dreadstalker_leap_t( this );
 
   return warlock_pet_t::create_action( name, options_str );
 }
