@@ -1607,7 +1607,7 @@ void dreadstalker_t::arise()
 
   if ( position() <= 1.0 )
   {
-    melee_attack->reset(); // Within this range, Dreadstalkers will not do a leap, so they immediately start using auto attacks
+    melee_on_summon = true; // Within this range, Dreadstalkers will not do a leap, so they immediately start using auto attacks
   }
 }
 
