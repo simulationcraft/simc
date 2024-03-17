@@ -6082,23 +6082,22 @@ struct frostscythe_t final : public death_knight_melee_attack_t
       p() -> buffs.enduring_strength_builder -> trigger();
       p() -> cooldown.enduring_strength_icd -> start();
     }
+
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) && p()->buffs.killing_machine->up() )
+    {
+      p()->consume_killing_machine( p()->procs.killing_machine_fsc );
+      p()->trigger_killing_machine( p()->sets->set( DEATH_KNIGHT_FROST, T29, B4 )->effectN( 1 ).percent(),
+                                    p()->procs.km_from_t29_4pc, p()->procs.km_from_t29_4pc_wasted );
+    }
+    else
+    {
+      p()->consume_killing_machine( p()->procs.killing_machine_fsc );
+    }
   }
 
   void execute() override
   {
     death_knight_melee_attack_t::execute();
-
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) &&
-          p() -> buffs.killing_machine -> up() )
-    {
-      p() -> consume_killing_machine( p() -> procs.killing_machine_fsc );
-      p() -> trigger_killing_machine( p() -> sets -> set( DEATH_KNIGHT_FROST, T29, B4 ) -> effectN( 1 ).percent(),
-                                      p() -> procs.km_from_t29_4pc, p() -> procs.km_from_t29_4pc_wasted );
-    }
-    else
-    {
-      p() -> consume_killing_machine( p() -> procs.killing_machine_fsc );
-    }
 
     // Frostscythe procs rime at half the chance of Obliterate
     p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> buffs.rime->manual_chance / 2.0 );
@@ -6776,6 +6775,17 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
       p() -> buffs.inexorable_assault -> decrement();
       p() -> cooldown.inexorable_assault_icd -> start();
     }
+
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) && p()->buffs.killing_machine->up() )
+    {
+      p()->consume_killing_machine( p()->procs.killing_machine_oblit );
+      p()->trigger_killing_machine( p()->sets->set( DEATH_KNIGHT_FROST, T29, B4 )->effectN( 1 ).percent(),
+                                    p()->procs.km_from_t29_4pc, p()->procs.km_from_t29_4pc_wasted );
+    }
+    else
+    {
+      p()->consume_killing_machine( p()->procs.killing_machine_oblit );
+    }
   }
 
   void execute() override
@@ -6860,18 +6870,6 @@ struct obliterate_t final : public death_knight_melee_attack_t
       }
 
       p() -> buffs.rime -> trigger();
-    }
-
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) &&
-          p() -> buffs.killing_machine -> up() )
-    {
-      p() -> consume_killing_machine( p() -> procs.killing_machine_oblit );
-      p() -> trigger_killing_machine( p() -> sets -> set( DEATH_KNIGHT_FROST, T29, B4 ) -> effectN( 1 ).percent(),
-                                      p() -> procs.km_from_t29_4pc, p() -> procs.km_from_t29_4pc_wasted );
-    }
-    else
-    {
-      p() -> consume_killing_machine( p() -> procs.killing_machine_oblit );
     }
   }
 
