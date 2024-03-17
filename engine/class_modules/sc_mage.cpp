@@ -421,15 +421,15 @@ public:
 
     struct
     {
-      double splinters = 0.1;
-      double splinter_dot = 0.00625;
-      double volatile_magic = 0.1;
+      double splinters = 0.05;
+      double splinter_dot = 0.002;
+      double volatile_magic = 0.05;
       double spellfrost_teachings = 0.33327;
-      double splinterstorm = 0.2;
+      double splinterstorm = 0.1;
     } sp;
 
     timespan_t augury_abounds_tick_time = 250_ms;
-    timespan_t splinterstorm_delay = 1_s;
+    timespan_t splinterstorm_delay = 500_ms;
   } options;
 
   // Pets
@@ -465,6 +465,7 @@ public:
     proc_t* flurry_cast;
     proc_t* winters_chill_applied;
     proc_t* winters_chill_consumed;
+    proc_t* winters_chill_stacks_wasted;
 
     proc_t* icicles_generated;
     proc_t* icicles_fired;
@@ -1814,15 +1815,18 @@ public:
 
   void trigger_winters_chill( const action_state_t* s, int stacks = -1 )
   {
-    if ( !result_is_hit( s->result ) || p()->specialization() != MAGE_FROST )
+    if ( !result_is_hit( s->result ) )
       return;
 
     auto wc = get_td( s->target )->debuffs.winters_chill;
     if ( stacks < 0 )
       stacks = wc->max_stack();
     wc->trigger( stacks );
-    for ( int i = 0; i < stacks; i++ )
-      p()->procs.winters_chill_applied->occur();
+    if ( p()->procs.winters_chill_applied )
+    {
+      for ( int i = 0; i < stacks; i++ )
+        p()->procs.winters_chill_applied->occur();
+    }
   }
 };
 
@@ -6005,8 +6009,18 @@ struct splinterstorm_barrage_t final : public spellslinger_spell_t
   {
     spellslinger_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) )
+    if ( p()->specialization() == MAGE_FROST )
+    {
+      auto wc = get_td( s->target )->debuffs.winters_chill;
+      for ( size_t i = 0; i < wc->check(); i++ )
+        p()->procs.winters_chill_stacks_wasted->occur();
+
+      // TODO: This is not correct because spells that consume Winter's Chill
+      // could already be in the air at this point. For now, Frost Mages should
+      // sim in melee range to minimize this effect until this is improved.
+      p()->expression_support.remaining_winters_chill = 2;
       trigger_winters_chill( s );
+    }
   }
 };
 
@@ -7317,6 +7331,7 @@ void mage_t::init_procs()
       procs.flurry_cast                     = get_proc( "Flurry cast" );
       procs.winters_chill_applied           = get_proc( "Winter's Chill stacks applied" );
       procs.winters_chill_consumed          = get_proc( "Winter's Chill stacks consumed" );
+      procs.winters_chill_stacks_wasted     = get_proc( "Winter's Chill stacks wasted by Splinterstorm" );
 
       procs.icicles_generated  = get_proc( "Icicles generated" );
       procs.icicles_fired      = get_proc( "Icicles fired" );
