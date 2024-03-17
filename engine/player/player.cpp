@@ -12851,6 +12851,8 @@ void player_t::create_options()
   add_option( opt_timespan( "dragonflight.balefire_branch_loss_tick", dragonflight_opts.balefire_branch_loss_tick, 1_ms, 20_s ) );
   add_option( opt_int( "dragonflight.balefire_branch_loss_stacks", dragonflight_opts.balefire_branch_loss_stacks, 0, 20 ) );
   add_option( opt_uint( "dragonflight.verdant_conduit_allies", dragonflight_opts.verdant_conduit_allies, 0, 2 ) );
+  add_option( opt_bool( "dragonflight.player.rashoks_use_true_overheal", dragonflight_opts.rashoks_use_true_overheal ) );
+  add_option( opt_float( "dragonflight.rashoks_fake_overheal", dragonflight_opts.rashoks_fake_overheal, 0.0, 1.0 ) );
 
   // Obsolete options
 

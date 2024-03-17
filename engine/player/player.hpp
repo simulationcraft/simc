@@ -792,6 +792,8 @@ struct player_t : public actor_t
     int balefire_branch_loss_stacks = 2;
     // Amount of allies using Verdant Conduit to increase the amount and reduce RPPM
     unsigned int verdant_conduit_allies = 0;
+    bool rashoks_use_true_overheal      = false;
+    double rashoks_fake_overheal        = 0.4;
   } dragonflight_opts;
 
 private:

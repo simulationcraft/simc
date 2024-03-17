@@ -1567,6 +1567,247 @@ void emerald_coachs_whistle( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, *coached );
 }
 
+// 401183 => Item Driver
+// 409898 => Buff Triggered on Player
+// 401186 => Heal
+// 401187 => Vers Buff
+// 402314 => ??? Dummy script
+void rashoks_molten_heart( special_effect_t& effect )
+{
+  if ( create_fallback_buffs( effect, { "molten_radiance" } ) )
+  {
+    return;
+  }
+
+  struct molten_radiance_helper_t : buff_t
+  {
+    std::map<player_t*, double> stored_amount;
+    std::vector<player_t*> current_players;
+
+    molten_radiance_helper_t( player_t* p ) : buff_t( p, "molten_radiance_helper" ), stored_amount(), current_players()
+    {
+      set_constant_behavior( buff_constant_behavior::ALWAYS_CONSTANT );
+      set_quiet( true );
+    }
+
+    void player_trigger( player_t* player )
+    {
+      current_players.push_back( player );
+
+      for ( auto* p : current_players )
+      {
+        stored_amount[ p ] = 0.0;
+      }
+    }
+
+    void player_expire( player_t* player )
+    {
+      stored_amount[ player ] = 0.0;
+      range::erase_remove( current_players, player );
+    }
+
+    void add_amount( player_t* player, double amount )
+    {
+      stored_amount[ player ] += amount;
+    }
+
+    double get_amount( player_t* player )
+    {
+      return stored_amount[ player ];
+    }
+
+    void reset() override
+    {
+      buff_t::reset();
+      current_players.clear();
+      stored_amount.clear();
+    }
+  };
+
+  struct molten_radiance_heal_t : proc_heal_t
+  {
+    target_specific_t<molten_radiance_helper_t> helpers;
+    target_specific_t<buff_t> buffs;
+    const special_effect_t& base_driver;
+    double versatility_per_tick;
+    bool use_true_overheal;
+    double fake_overheal;
+
+    molten_radiance_heal_t( const special_effect_t& base_driver, const spell_data_t* s )
+      : proc_heal_t( "molten_radiance_heal", base_driver.player, s, base_driver.item ),
+        helpers{ false },
+        buffs{ false },
+        versatility_per_tick( base_driver.driver()->effectN( 2 ).average( base_driver.item ) ),
+        use_true_overheal( base_driver.player->dragonflight_opts.rashoks_use_true_overheal ),
+        fake_overheal( base_driver.player->dragonflight_opts.rashoks_fake_overheal ),
+        base_driver( base_driver )
+    {
+      base_td = base_driver.driver()->effectN( 1 ).average( base_driver.item );
+      versatility_per_tick *= ( base_tick_time / dot_duration );
+
+      // If sim is counting overhealing as healing, reduce the healing done by set overhealing value.
+      if ( sim->count_overheal_as_heal )
+        base_td *= ( 1 - fake_overheal );
+    }
+
+    molten_radiance_helper_t* get_helper( player_t* target )
+    {
+      if ( helpers[ target ] )
+        return helpers[ target ];
+
+      buff_t* buff = buff_t::find( target, "molten_radiance_helper", target );
+
+      if ( buff != nullptr )
+      {
+        helpers[ target ] = debug_cast<molten_radiance_helper_t*>( buff );
+        return helpers[ target ];
+      }
+
+      molten_radiance_helper_t* helper_buff = make_buff<molten_radiance_helper_t>( target );
+      helpers[ target ]                     = helper_buff;
+
+      assert( helper_buff );
+
+      return helper_buff;
+    }
+
+    buff_t* get_buff( player_t* buff_player )
+    {
+      if ( buffs[ buff_player ] )
+        return buffs[ buff_player ];
+
+      auto spell = player->find_spell( 401187 );
+      auto buff  = make_buff<stat_buff_t>( actor_pair_t{ buff_player, player }, "molten_overflow", spell );
+      buff->set_stat_from_effect( 1, base_driver.driver()->effectN( 2 ).average( base_driver.item ) );
+      buffs[ buff_player ] = buff;
+
+      return buff;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      proc_heal_t::impact( s );
+
+      auto helper = get_helper( s->target );
+
+      helper->player_trigger( player );
+    }
+
+    void assess_damage( result_amount_type heal_type, action_state_t* s ) override
+    {
+      proc_heal_t::assess_damage( heal_type, s );
+
+      if ( s->result_total > 0 )
+      {
+        double overheal = use_true_overheal ? s->result_amount / s->result_total : fake_overheal;
+        get_helper( s->target )->add_amount( player, overheal * versatility_per_tick );
+      }
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      proc_heal_t::last_tick( d );
+
+      auto helper = get_helper( d->state->target );
+      auto vers   = helper->get_amount( player );
+
+      auto buff               = debug_cast<stat_buff_t*>( get_buff( d->state->target ) );
+      buff->stats[ 0 ].amount = vers;
+      buff->trigger();
+
+      helper->player_expire( player );
+    }
+  };
+
+  struct molten_radiance_cb_t : public dbc_proc_callback_t
+  {
+    action_t* heal;
+    buff_t* molten_radiance;
+
+    int max_triggers;
+
+    molten_radiance_cb_t( const special_effect_t& e, const special_effect_t& base_driver, buff_t* molten_radiance )
+      : dbc_proc_callback_t( e.player, e ), max_triggers( 10 ), molten_radiance( molten_radiance )
+    {
+      heal = new molten_radiance_heal_t( base_driver, effect.player->find_spell( 401186 ) );
+      molten_radiance->set_default_value( 0 );
+    }
+
+    void activate() override
+    {
+      dbc_proc_callback_t::activate();
+    }
+
+    void trigger( action_t* a, action_state_t* state ) override
+    {
+      player_t* target          = state->target->is_enemy() ? effect.player : state->target;
+      player_t* original_target = state->target;
+      state->target             = target;
+
+      dbc_proc_callback_t::trigger( a, state );
+
+      state->target = original_target;
+    }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      player_t* target = state->target->is_enemy() ? effect.player : state->target;
+
+      heal->execute_on_target( target );
+      molten_radiance->current_value += 1;
+
+      if ( molten_radiance->current_value >= max_triggers )
+        deactivate();
+    }
+  };
+
+  auto radiance_mana        = effect.player->get_gain( "molten_radiance" );
+  auto radiance_mana_gained = effect.driver()->effectN( 3 ).average( effect.item );
+
+  // Molten Radiance Driver
+  auto driver      = new special_effect_t( effect.player );
+  driver->type     = SPECIAL_EFFECT_EQUIP;
+  driver->source   = SPECIAL_EFFECT_SOURCE_ITEM;
+  driver->spell_id = effect.driver()->effectN( 4 ).trigger()->id();
+
+  if ( driver->player->specialization() == PRIEST_SHADOW )
+  {
+    driver->proc_flags_ = effect.driver()->effectN( 4 ).trigger()->proc_flags();
+    driver->proc_flags_ |= PF_MAGIC_SPELL | PF_MELEE_ABILITY;
+  }
+
+  effect.player->special_effects.push_back( driver );
+
+  auto molten_radiance =
+      create_buff<buff_t>( effect.player, "molten_radiance", effect.driver()->effectN( 4 ).trigger() )
+          ->set_tick_callback( [ radiance_mana, radiance_mana_gained, effect ]( buff_t* buff, int /* current_tick */,
+                                                                                timespan_t /* tick_time */ ) {
+            buff->player->resource_gain( RESOURCE_MANA, radiance_mana_gained, radiance_mana );
+          } );
+
+  auto cb = new molten_radiance_cb_t( *driver, effect, molten_radiance );
+  cb->initialize();
+  cb->deactivate();
+
+  molten_radiance->set_stack_change_callback( [ cb ]( buff_t*, int o, int n ) {
+    if ( n > o )
+      cb->activate();
+    else
+      cb->deactivate();
+  } );
+
+  effect.custom_buff = molten_radiance;
+
+  // driver procs off shadow hostile abilities
+  if ( driver->player->specialization() == PRIEST_SHADOW )
+  {
+    effect.proc_flags_ = effect.driver()->proc_flags();
+    effect.proc_flags_ |= PF_MAGIC_SPELL | PF_MELEE_ABILITY;
+  }
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void erupting_spear_fragment( special_effect_t& effect )
 {
   struct erupting_spear_fragment_t : public generic_aoe_proc_t
@@ -10370,6 +10611,7 @@ void register_special_effects()
   register_special_effect( 421990, items::gift_of_ursine_vengeance );
   register_special_effect( 422750, items::fyrakks_tainted_rageheart );
   register_special_effect( 423925, items::fang_of_the_frenzied_nightclaw );
+  register_special_effect( 401183, items::rashoks_molten_heart, true );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
