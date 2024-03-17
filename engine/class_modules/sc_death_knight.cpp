@@ -8718,7 +8718,7 @@ void death_knight_t::consume_killing_machine( proc_t* proc )
 
   proc -> occur();
 
-  buffs.killing_machine -> decrement();
+  make_event( sim, rng().range( 10_ms, 25_ms ), [ this ] { buffs.killing_machine->decrement(); } );
 
   if ( rng().roll( talent.frost.murderous_efficiency -> effectN( 1 ).percent() ) )
   {
