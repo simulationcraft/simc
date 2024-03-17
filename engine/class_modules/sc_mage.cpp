@@ -91,6 +91,7 @@ struct mage_td_t final : public actor_target_data_t
 {
   struct dots_t
   {
+    dot_t* embedded_splinter;
     dot_t* nether_tempest;
     dot_t* radiant_spark;
   } dots;
@@ -101,6 +102,7 @@ struct mage_td_t final : public actor_target_data_t
     buff_t* improved_scorch;
     buff_t* numbing_blast;
     buff_t* radiant_spark_vulnerability;
+    buff_t* spellfrost_teachings;
     buff_t* touch_of_the_magi;
     buff_t* winters_chill;
 
@@ -219,6 +221,7 @@ public:
     event_t* icicle;
     event_t* merged_buff_execute;
     event_t* time_anomaly;
+    event_t* augury_abounds;
   } events;
 
   // Ground AoE tracking
@@ -245,6 +248,9 @@ public:
     action_t* pet_freeze;
     action_t* pet_water_jet;
     action_t* shattered_ice;
+    action_t* splinters;
+    action_t* splinterstorm;
+    action_t* splinterstorm_barrage;
     action_t* touch_of_the_magi_explosion;
 
     struct icicles_t
@@ -335,6 +341,7 @@ public:
     buff_t* overflowing_energy;
     buff_t* temporal_warp;
     buff_t* time_warp;
+    buff_t* unerring_proficiency;
 
 
     // Set Bonuses
@@ -387,6 +394,42 @@ public:
     timespan_t arcane_missiles_chain_delay = 200_ms;
     double arcane_missiles_chain_relstddev = 0.1;
     timespan_t glacial_spike_delay = 100_ms;
+
+    // TODO: Spellslinger Early Implementation
+    struct
+    {
+      // Keystone
+      bool splintering_sorcery = false;
+      // Row 1
+      bool augury_abounds = false;
+      bool controlled_instincts = false;
+      bool splintering_orbs = false;
+      // Row 2
+      bool slippery_slinging = false;
+      // bool look_again = false;
+      bool reactive_barrier = false;
+      bool phantasmal_image = false;
+      bool volatile_magic = false;
+      bool unerring_proficiency = false;
+      // Row 3
+      bool shifting_shards = false;
+      bool spellfrost_teachings = false;
+      bool force_of_will = false;
+      // Capstone
+      bool splinterstorm = false;
+    } spellslinger;
+
+    struct
+    {
+      double splinters = 0.1;
+      double splinter_dot = 0.00625;
+      double volatile_magic = 0.1;
+      double spellfrost_teachings = 0.33327;
+      double splinterstorm = 0.2;
+    } sp;
+
+    timespan_t augury_abounds_tick_time = 250_ms;
+    timespan_t splinterstorm_delay = 1_s;
   } options;
 
   // Pets
@@ -473,6 +516,9 @@ public:
     double spent_mana;
     timespan_t gained_full_icicles;
     bool had_low_mana;
+    int augury_abounds_remaining;
+    int splintering_orbs_remaining;
+    int active_splinters; // TODO: add more robust core support for counting DoT stacks instead
   } state;
 
   struct expression_support_t
@@ -837,6 +883,9 @@ public:
   void trigger_time_manipulation();
   void update_enlightened( bool double_regen = false );
   void update_from_the_ashes();
+  void trigger_splinter( player_t* target );
+  void trigger_augury_abounds( player_t* target );
+  void trigger_splinterstorm();
 };
 
 namespace pets {
@@ -1344,10 +1393,12 @@ struct mage_spell_t : public spell_t
     bool arcane_overload = true;
     bool charring_embers = true;
     bool forethought = true;
+    bool spellfrost_teachings = true;
     bool touch_of_ice = true;
 
     // Misc
     bool combustion = true;
+    bool force_of_will = true;
     bool ice_floes = false;
     bool overflowing_energy = true;
     bool radiant_spark = true;
@@ -1439,6 +1490,9 @@ public:
     if ( affected_by.frost_mage )
       base_multiplier *= 1.0 + p()->spec.frost_mage->effectN( 1 ).percent();
 
+    if ( affected_by.force_of_will && p()->options.spellslinger.force_of_will )
+      crit_bonus_multiplier *= 1.05; // TODO: spell data
+
     if ( affected_by.overflowing_energy )
       crit_bonus_multiplier *= 1.0 + p()->talents.overflowing_energy->effectN( 1 ).percent();
 
@@ -1524,6 +1578,8 @@ public:
         m *= 1.0 + td->debuffs.radiant_spark_vulnerability->check_stack_value();
       if ( affected_by.charring_embers )
         m *= 1.0 + td->debuffs.charring_embers->check_value();
+      if ( affected_by.spellfrost_teachings )
+        m *= 1.0 + td->debuffs.spellfrost_teachings->check_value();
     }
 
     return m;
@@ -1754,6 +1810,19 @@ public:
       // doesn't benefit from the buff it just triggered.
       make_event( *sim, [ b = p()->buffs.flames_fury ] { b->trigger( b->max_stack() ); } );
     }
+  }
+
+  void trigger_winters_chill( const action_state_t* s, int stacks = -1 )
+  {
+    if ( !result_is_hit( s->result ) || p()->specialization() != MAGE_FROST )
+      return;
+
+    auto wc = get_td( s->target )->debuffs.winters_chill;
+    if ( stacks < 0 )
+      stacks = wc->max_stack();
+    wc->trigger( stacks );
+    for ( int i = 0; i < stacks; i++ )
+      p()->procs.winters_chill_applied->occur();
   }
 };
 
@@ -2426,6 +2495,7 @@ struct frost_mage_spell_t : public mage_spell_t
         if ( consumes_winters_chill && td->debuffs.winters_chill->check() )
         {
           td->debuffs.winters_chill->decrement();
+          p()->trigger_splinter( s->target );
           proc_winters_chill_consumed->occur();
           p()->procs.winters_chill_consumed->occur();
         }
@@ -2438,19 +2508,6 @@ struct frost_mage_spell_t : public mage_spell_t
     p()->trigger_merged_buff( p()->buffs.bone_chilling, true );
     if ( p()->rng().roll( p()->talents.frostbite->proc_chance() ) )
       p()->trigger_crowd_control( s, MECHANIC_ROOT, -0.5_s ); // Frostbite only has the initial grace period
-  }
-
-  void trigger_winters_chill( const action_state_t* s, int stacks = -1 )
-  {
-    if ( !result_is_hit( s->result ) )
-      return;
-
-    auto wc = get_td( s->target )->debuffs.winters_chill;
-    if ( stacks < 0 )
-      stacks = wc->max_stack();
-    wc->trigger( stacks );
-    for ( int i = 0; i < stacks; i++ )
-      p()->procs.winters_chill_applied->occur();
   }
 
   void trigger_cold_front( int stacks = 1 )
@@ -2624,11 +2681,19 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
   {
     background = true;
     affected_by.savant = triggers.radiant_spark = true;
+    if ( p->options.spellslinger.splintering_orbs )
+      base_multiplier *= 1.1; // TODO: spell data
   }
 
   void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) && p()->state.splintering_orbs_remaining > 0 )
+    {
+      p()->trigger_splinter( s->target );
+      p()->state.splintering_orbs_remaining--;
+    }
 
     // AC is triggered even if the spell misses.
     p()->trigger_arcane_charge();
@@ -2660,6 +2725,9 @@ struct arcane_orb_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
     p()->trigger_arcane_charge();
+    // TODO: add spell data and check implementation
+    if ( p()->options.spellslinger.splintering_orbs )
+      p()->state.splintering_orbs_remaining += 8;
   }
 };
 
@@ -2802,6 +2870,9 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
     if ( p()->buffs.presence_of_mind->up() )
       p()->buffs.presence_of_mind->decrement();
+
+    if ( p()->buffs.nether_precision->check() )
+      p()->trigger_splinter( target );
 
     p()->buffs.concentration->trigger();
     p()->buffs.nether_precision->decrement();
@@ -3243,6 +3314,8 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     p()->buffs.arcane_surge->trigger();
 
     arcane_mage_spell_t::execute();
+
+    p()->trigger_augury_abounds( target );
   }
 
   void impact( action_state_t* s ) override
@@ -3520,7 +3593,11 @@ struct cone_of_cold_t final : public frost_mage_spell_t
 
     // Cone of Cold currently consumes its own Winter's Chill without benefiting
     if ( p()->talents.coldest_snap.ok() && num_targets_hit >= as<int>( p()->talents.coldest_snap->effectN( 3 ).base_value() ) )
+    {
       trigger_winters_chill( s, p()->bugs ? 1 : -1 );
+      if ( p()->bugs )
+        p()->trigger_splinter( s->target );
+    }
   }
 };
 
@@ -4231,6 +4308,8 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
     reduced_aoe_targets = data().effectN( 2 ).base_value();
     base_multiplier *= 1.0 + p->talents.everlasting_frost->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T29, B2 )->effectN( 1 ).percent();
+    if ( p->options.spellslinger.splintering_orbs )
+      base_multiplier *= 1.1; // TODO: spell data
     background = triggers.chill = true;
     affected_by.icicles_aoe = true;
   }
@@ -4247,6 +4326,17 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
 
     if ( hit_any_target )
       p()->trigger_fof( p()->talents.fingers_of_frost->effectN( 2 ).percent(), proc_fof );
+  }
+
+  void impact( action_state_t* s )
+  {
+    frost_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) && p()->state.splintering_orbs_remaining > 0 )
+    {
+      p()->trigger_splinter( s->target );
+      p()->state.splintering_orbs_remaining--;
+    }
   }
 };
 
@@ -4292,6 +4382,9 @@ struct frozen_orb_t final : public frost_mage_spell_t
 
     p()->buffs.freezing_winds->trigger();
     if ( !background ) p()->buffs.freezing_rain->trigger();
+    // TODO: add spell data and check implementation
+    if ( p()->options.spellslinger.splintering_orbs )
+      p()->state.splintering_orbs_remaining += 8;
   }
 
   void impact( action_state_t* s ) override
@@ -4698,6 +4791,22 @@ struct ice_nova_t final : public frost_mage_spell_t
     consumes_winters_chill = triggers.radiant_spark = affected_by.time_manipulation = true;
   }
 
+  double action_multiplier() const override
+  {
+    double am = frost_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.unerring_proficiency->check_stack_value();
+
+    return am;
+  }
+
+  void execute() override
+  {
+    frost_mage_spell_t::execute();
+
+    p()->buffs.unerring_proficiency->expire();
+  }
+
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
@@ -4724,6 +4833,7 @@ struct icy_veins_t final : public frost_mage_spell_t
     p()->buffs.slick_ice->expire();
     p()->buffs.icy_veins->trigger();
     p()->buffs.cryopathy->trigger( p()->buffs.cryopathy->max_stack() );
+    p()->trigger_augury_abounds( p()->target );
 
     if ( p()->pets.water_elemental->is_sleeping() )
       p()->pets.water_elemental->summon();
@@ -5422,6 +5532,22 @@ struct supernova_t final : public arcane_mage_spell_t
     base_multiplier     *= sn_mult;
     base_aoe_multiplier /= sn_mult;
   }
+
+  double action_multiplier() const override
+  {
+    double am = arcane_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.unerring_proficiency->check_stack_value();
+
+    return am;
+  }
+
+  void execute() override
+  {
+    arcane_mage_spell_t::execute();
+
+    p()->buffs.unerring_proficiency->expire();
+  }
 };
 
 // Time Warp Spell ==========================================================
@@ -5659,6 +5785,15 @@ struct shifting_power_t final : public mage_spell_t
 
     for ( auto cd : shifting_power_cooldowns )
       cd->adjust( reduction, false );
+
+    // TODO: spell data and check implementation
+    if ( p()->action.splinters && p()->options.spellslinger.shifting_shards )
+    {
+      // During the full duration of Shifting Power (4 ticks), 8 splinters are triggered.
+      std::vector<player_t*>& targets = p()->action.splinters->target_list();
+      p()->trigger_splinter( targets[ rng().range( targets.size() ) ] );
+      p()->trigger_splinter( targets[ rng().range( targets.size() ) ] );
+    }
   }
 
   std::unique_ptr<expr_t> create_expression( std::string_view name ) override
@@ -5670,6 +5805,218 @@ struct shifting_power_t final : public mage_spell_t
       return expr_t::create_constant( name, data().ok() ? -reduction.total_seconds() * dot_duration / base_tick_time : 0.0 );
 
     return mage_spell_t::create_expression( name );
+  }
+};
+
+// ==========================================================================
+// Spellslinger Spells
+// TODO: add spell data
+// ==========================================================================
+
+// Spellslinger Base Spell ==================================================
+// TODO: Remove once spell data is available, this simply sets common spell
+// data values that will be shared by most spellslinger spells.
+struct spellslinger_spell_t : public mage_spell_t
+{
+  spellslinger_spell_t( std::string_view n, mage_t* p ) :
+    mage_spell_t( n, p )
+  {
+    background = may_crit = callbacks = true;
+    harmful = allow_class_ability_procs = true;
+    set_school( p->specialization() == MAGE_ARCANE ? SCHOOL_ARCANE : SCHOOL_FROST );
+    range = 100.0;
+  }
+};
+
+// Controlled Instincts Spell ===============================================
+
+struct controlled_instincts_t final : public spellslinger_spell_t
+{
+  controlled_instincts_t( std::string_view n, mage_t* p ) :
+    spellslinger_spell_t( n, p )
+  {
+    base_dd_min = base_dd_max = 1.0;
+    aoe = -1;
+    reduced_aoe_targets = 5.0;
+    radius = 8.0;
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    spell_t::available_targets( tl );
+
+    range::erase_remove( tl, target );
+
+    return tl.size();
+  }
+};
+
+// Spellfrost Teachings =====================================================
+
+struct spellfrost_teachings_t final : public spellslinger_spell_t
+{
+  spellfrost_teachings_t( std::string_view n, mage_t* p ) :
+    spellslinger_spell_t( n, p )
+  {
+    spell_power_mod.direct = p->options.sp.spellfrost_teachings;
+    travel_delay = 1.0;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    spellslinger_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+      get_td( s->target )->debuffs.spellfrost_teachings->trigger();
+  }
+};
+
+// Volatile Magic Spell =====================================================
+
+struct volatile_magic_t final : public spellslinger_spell_t
+{
+  volatile_magic_t( std::string_view n, mage_t* p ) :
+    spellslinger_spell_t( n, p )
+  {
+    base_dd_min = base_dd_max = 1.0;
+    spell_power_mod.direct = p->options.sp.volatile_magic;
+    aoe = -1;
+    reduced_aoe_targets = 5.0;
+    radius = 8.0;
+  }
+};
+
+// Splinters Spell ==========================================================
+
+struct embedded_splinter_t final : public spellslinger_spell_t
+{
+  action_t* volatile_magic;
+
+  embedded_splinter_t( std::string_view n, mage_t* p ) :
+    spellslinger_spell_t( n, p ),
+    volatile_magic()
+  {
+    base_tick_time = 1_s;
+    dot_duration = 16_s;
+    dot_max_stack = 99;
+    spell_power_mod.tick = p->options.sp.splinter_dot;
+    if ( p->options.spellslinger.volatile_magic )
+    {
+      volatile_magic = get_action<volatile_magic_t>( "volatile_magic", p );
+      add_child( volatile_magic );
+    }
+  }
+
+  void trigger_dot( action_state_t* s ) override
+  {
+    dot_t* d = get_dot( s->target );
+    int old_stack = d ? d->current_stack() : 0;
+    spellslinger_spell_t::trigger_dot( s );
+
+    p()->state.active_splinters += d->current_stack() - old_stack;
+
+    if ( p()->target && p()->state.active_splinters >= 8 )
+      p()->trigger_splinterstorm();
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    p()->state.active_splinters -= d->current_stack();
+    assert( p()->state.active_splinters >= 0 );
+    if ( volatile_magic )
+    {
+      for ( size_t i = 0; i < d->current_stack(); i++ )
+        volatile_magic->execute_on_target( d->target );
+    }
+
+    spellslinger_spell_t::last_tick( d );
+  }
+};
+
+struct splinters_t final : public spellslinger_spell_t
+{
+  action_t* controlled_instincts;
+  action_t* spellfrost_teachings;
+
+  splinters_t( std::string_view n, mage_t* p ) :
+    spellslinger_spell_t( n, p ),
+    controlled_instincts(),
+    spellfrost_teachings()
+  {
+    base_dd_min = base_dd_max = 1.0;
+    spell_power_mod.direct = p->options.sp.splinters;
+    travel_speed = 45.0;
+    if ( p->options.spellslinger.controlled_instincts )
+    {
+      controlled_instincts = get_action<controlled_instincts_t>( "controlled_instincts", p );
+      add_child( controlled_instincts );
+    }
+    if ( p->options.spellslinger.spellfrost_teachings )
+    {
+      spellfrost_teachings = get_action<spellfrost_teachings_t>( p->specialization() == MAGE_ARCANE ? "arcane_echo_teachings" : "icy_comet_teachings", p );
+      add_child( spellfrost_teachings );
+    }
+    impact_action = get_action<embedded_splinter_t>( "embedded_splinter", p );
+    add_child( impact_action );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    spellslinger_spell_t::impact( s );
+
+    if ( !result_is_hit( s->result ) )
+      return;
+
+    // Ensure target data is created for embedded_splinter.
+    auto td = get_td( s->target );
+
+    if ( controlled_instincts )
+    {
+      if ( td->debuffs.winters_chill->check() || td->dots.nether_tempest->is_ticking() )
+        controlled_instincts->execute_on_target( s->target, 0.2 * s->result_total );
+
+      td->dots.nether_tempest->refresh_duration( 0 );
+    }
+
+    if ( spellfrost_teachings && rng().roll( 0.05 ) )
+      spellfrost_teachings->execute_on_target( s->target );
+  }
+};
+
+// Splinterstorm Spell ======================================================
+
+struct splinterstorm_barrage_t final : public spellslinger_spell_t
+{
+  splinterstorm_barrage_t( std::string_view n, mage_t* p ) :
+    spellslinger_spell_t( n, p )
+  {
+    spell_power_mod.direct = p->options.sp.splinterstorm;
+    travel_speed = 45.0;
+  }
+
+  void execute() override
+  {
+    spellslinger_spell_t::execute();
+
+    p()->buffs.clearcasting->trigger();
+  }
+
+  void impact( action_state_t* s )
+  {
+    spellslinger_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+      trigger_winters_chill( s );
+  }
+};
+
+struct splinterstorm_t final : public spellslinger_spell_t
+{
+  splinterstorm_t( std::string_view n, mage_t* p ) :
+    spellslinger_spell_t( n, p )
+  {
+    base_dd_min = base_dd_max = 1.0;
+    snapshot_flags &= STATE_NO_MULTIPLIER;
   }
 };
 
@@ -5994,6 +6341,41 @@ struct time_anomaly_tick_event_t final : public mage_event_t
   }
 };
 
+struct augury_abounds_event_t final : public mage_event_t
+{
+  player_t* target;
+
+  augury_abounds_event_t( mage_t& m, player_t* t ) :
+    mage_event_t( m, m.options.augury_abounds_tick_time ),
+    target( t )
+  { }
+
+  const char* name() const override
+  { return "augury_abounds_event"; }
+
+  void execute() override
+  {
+    mage->events.augury_abounds = nullptr;
+
+    // If the target is dead, stop the chain and remove the remaining charges
+    if ( target->is_sleeping() )
+    {
+      sim().print_debug( "{} augury_abounds on {} (sleeping target), stopping", mage->name(), target->name() );
+      mage->state.augury_abounds_remaining = 0;
+      return;
+    }
+
+    mage->action.splinters->execute_on_target( target );
+    mage->state.augury_abounds_remaining--;
+
+    if ( mage->state.augury_abounds_remaining > 0 )
+    {
+      sim().print_debug( "{} augury_abounds on {}, remaining={}", mage->name(), target->name(), mage->state.augury_abounds_remaining );
+      mage->events.augury_abounds = make_event<augury_abounds_event_t>( sim(), *mage, target );
+    }
+  }
+};
+
 }  // namespace events
 
 // ==========================================================================
@@ -6006,8 +6388,9 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs()
 {
   // Baseline
-  dots.nether_tempest = target->get_dot( "nether_tempest", mage );
-  dots.radiant_spark  = target->get_dot( "radiant_spark", mage );
+  dots.embedded_splinter = target->get_dot( "embedded_splinter", mage );
+  dots.nether_tempest    = target->get_dot( "nether_tempest", mage );
+  dots.radiant_spark     = target->get_dot( "radiant_spark", mage );
 
   debuffs.frozen                      = make_buff( *this, "frozen" )
                                           ->set_refresh_behavior( buff_refresh_behavior::MAX );
@@ -6020,6 +6403,9 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                           ->set_activated( false )
                                           ->set_default_value_from_effect( 1 )
                                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+  debuffs.spellfrost_teachings        = make_buff( *this, "spellfrost_teachings" ) // TODO: spell data
+                                          ->set_duration( 6_s )
+                                          ->set_default_value( 0.06 );
   debuffs.touch_of_the_magi           = make_buff<buffs::touch_of_the_magi_t>( this );
   debuffs.winters_chill               = make_buff( *this, "winters_chill", mage->find_spell( 228358 ) );
 
@@ -6189,6 +6575,17 @@ void mage_t::create_actions()
   if ( sets->has_set_bonus( MAGE_FROST, T30, B2 ) )
     action.shattered_ice = get_action<shattered_ice_t>( "shattered_ice", this );
 
+  if ( options.spellslinger.splintering_sorcery )
+    action.splinters = get_action<splinters_t>( specialization() == MAGE_ARCANE ? "arcane_splinters": "frost_splinters", this );
+
+  if ( options.spellslinger.splinterstorm )
+  {
+    action.splinterstorm = get_action<splinterstorm_t>( "splinterstorm", this );
+    action.splinterstorm_barrage = get_action<splinterstorm_barrage_t>( "splinterstorm_barrage", this );
+    if ( action.splinters )
+      action.splinters->add_child( action.splinterstorm );
+  }
+
   player_t::create_actions();
 
   // Ensure the cooldown of Phoenix Flames is properly initialized.
@@ -6203,6 +6600,29 @@ void mage_t::create_options()
   add_option( opt_timespan( "mage.arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_timespan( "mage.glacial_spike_delay", options.glacial_spike_delay, 0_ms, timespan_t::max() ) );
+
+  // TODO: Spellslinger Early Implementation
+  add_option( opt_bool( "mage.spellslinger.splintering_sorcery", options.spellslinger.splintering_sorcery ) );
+  add_option( opt_bool( "mage.spellslinger.augury_abounds", options.spellslinger.augury_abounds ) );
+  add_option( opt_bool( "mage.spellslinger.controlled_instincts", options.spellslinger.controlled_instincts ) );
+  add_option( opt_bool( "mage.spellslinger.splintering_orbs", options.spellslinger.splintering_orbs ) );
+  add_option( opt_bool( "mage.spellslinger.slippery_slinging", options.spellslinger.slippery_slinging ) );
+  // add_option( opt_bool( "mage.spellslinger.look_again", options.spellslinger.look_again ) );
+  add_option( opt_bool( "mage.spellslinger.reactive_barrier", options.spellslinger.reactive_barrier ) );
+  add_option( opt_bool( "mage.spellslinger.phantasmal_image", options.spellslinger.phantasmal_image ) );
+  add_option( opt_bool( "mage.spellslinger.volatile_magic", options.spellslinger.volatile_magic ) );
+  add_option( opt_bool( "mage.spellslinger.unerring_proficiency", options.spellslinger.unerring_proficiency ) );
+  add_option( opt_bool( "mage.spellslinger.shifting_shards", options.spellslinger.shifting_shards ) );
+  add_option( opt_bool( "mage.spellslinger.spellfrost_teachings", options.spellslinger.spellfrost_teachings ) );
+  add_option( opt_bool( "mage.spellslinger.force_of_will", options.spellslinger.force_of_will ) );
+  add_option( opt_bool( "mage.spellslinger.splinterstorm", options.spellslinger.splinterstorm ) );
+  add_option( opt_float( "mage.sp.splinters", options.sp.splinters, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_float( "mage.sp.splinter_dot", options.sp.splinter_dot, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_float( "mage.sp.volatile_magic", options.sp.volatile_magic, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_float( "mage.sp.spellfrost_teachings", options.sp.spellfrost_teachings, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_float( "mage.sp.splinterstorm", options.sp.splinterstorm, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_timespan( "mage.augury_abounds_tick_time", options.augury_abounds_tick_time, 1_ms, timespan_t::max() ) );
+  add_option( opt_timespan( "mage.splinterstorm_delay", options.splinterstorm_delay, 1_ms, timespan_t::max() ) );
 
   player_t::create_options();
 }
@@ -6313,7 +6733,10 @@ void mage_t::create_pets()
 
   if ( talents.mirror_image.ok() && find_action( "mirror_image" ) )
   {
-    for ( int i = 0; i < as<int>( talents.mirror_image->effectN( 2 ).base_value() ); i++ )
+    int num_images = as<int>( talents.mirror_image->effectN( 2 ).base_value() );
+    if ( num_images && options.spellslinger.phantasmal_image )
+      num_images++;
+    for ( int i = 0; i < num_images; i++ )
     {
       auto image = new pets::mirror_image::mirror_image_pet_t( sim, this );
       if ( i > 0 )
@@ -6762,18 +7185,22 @@ void mage_t::create_buffs()
 
 
   // Shared
-  buffs.ice_floes          = make_buff<buffs::ice_floes_t>( this );
-  buffs.incanters_flow     = make_buff<buffs::incanters_flow_t>( this );
-  buffs.overflowing_energy = make_buff( this, "overflowing_energy", find_spell( 394195 ) )
-                               ->set_default_value_from_effect( 1 )
-                               ->set_chance( talents.overflowing_energy.ok() );
-  buffs.temporal_warp      = make_buff( this, "temporal_warp", find_spell( 386540 ) )
-                               ->set_default_value_from_effect( 1 )
-                               ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                               ->set_chance( talents.temporal_warp.ok() );
-  buffs.time_warp          = make_buff( this, "time_warp", find_spell( 342242 ) )
-                               ->set_default_value_from_effect( 1 )
-                               ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  buffs.ice_floes            = make_buff<buffs::ice_floes_t>( this );
+  buffs.incanters_flow       = make_buff<buffs::incanters_flow_t>( this );
+  buffs.overflowing_energy   = make_buff( this, "overflowing_energy", find_spell( 394195 ) )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->set_chance( talents.overflowing_energy.ok() );
+  buffs.temporal_warp        = make_buff( this, "temporal_warp", find_spell( 386540 ) )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                 ->set_chance( talents.temporal_warp.ok() );
+  buffs.time_warp            = make_buff( this, "time_warp", find_spell( 342242 ) )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  buffs.unerring_proficiency = make_buff( this, "unerring_proficiency" ) // TODO: spell data
+                                 ->set_chance( options.spellslinger.unerring_proficiency )
+                                 ->set_max_stack( 30 )
+                                 ->set_default_value( specialization() == MAGE_ARCANE ? 0.18 : 0.06 );
 
 
   // Set Bonuses
@@ -7154,6 +7581,8 @@ double mage_t::composite_melee_crit_chance() const
   double c = player_t::composite_melee_crit_chance();
 
   c += talents.tome_of_rhonin->effectN( 1 ).percent();
+  if ( options.spellslinger.force_of_will )
+    c += 0.02; // TODO: spell data
 
   return c;
 }
@@ -7164,6 +7593,8 @@ double mage_t::composite_spell_crit_chance() const
 
   c += talents.tome_of_rhonin->effectN( 1 ).percent();
   c += talents.critical_mass->effectN( 1 ).percent();
+  if ( options.spellslinger.force_of_will )
+    c += 0.02; // TODO: spell data
 
   return c;
 }
@@ -7796,6 +8227,67 @@ void mage_t::trigger_arcane_charge( int stacks )
 
   if ( before < 3 && buffs.arcane_charge->check() >= 3 )
     buffs.rule_of_threes->trigger();
+}
+
+void mage_t::trigger_splinter( player_t* splinter_target )
+{
+  assert( splinter_target );
+  if ( !options.spellslinger.splintering_sorcery )
+    return;
+
+  bool has_cd = ( buffs.icy_veins->check() || buffs.arcane_surge->check() );
+  buffs.unerring_proficiency->trigger( has_cd ? 2 : 1 );
+  action.splinters->execute_on_target( splinter_target );
+  if ( options.spellslinger.augury_abounds && has_cd )
+    action.splinters->execute_on_target( splinter_target );
+}
+
+void mage_t::trigger_augury_abounds( player_t* splinter_target )
+{
+  assert( splinter_target );
+  if ( !options.spellslinger.augury_abounds )
+    return;
+
+  state.augury_abounds_remaining += 8;
+  buffs.unerring_proficiency->trigger( 8 );
+
+  if ( !events.augury_abounds )
+  {
+    events.augury_abounds = make_event<events::augury_abounds_event_t>( *sim, *this, splinter_target );
+    sim->print_debug( "{} icicle use on {} (chained), total={}", name(), splinter_target->name(), icicles.size() );
+  }
+}
+
+void mage_t::trigger_splinterstorm()
+{
+  if ( !options.spellslinger.splinterstorm )
+    return;
+
+  int num_bolts = 0;
+  for ( auto t : sim->target_non_sleeping_list )
+  {
+    if ( !t->is_enemy() )
+      continue;
+
+    if ( auto td = find_target_data( t ) )
+    {
+      dot_t* dot = td->dots.embedded_splinter;
+      if ( dot->is_ticking() )
+      {
+        double tick_amount = dot->current_action->calculate_tick_amount( dot->state, dot->current_stack() );
+        double remaining_damage = dot->ticks_left_fractional() * tick_amount;
+        num_bolts += dot->current_stack();
+        dot->cancel();
+        action.splinterstorm->execute_on_target( t, remaining_damage );
+      }
+    }
+  }
+
+  make_event( *sim, options.splinterstorm_delay, [ this, num_bolts ]
+  {
+    action.splinterstorm_barrage->base_multiplier = num_bolts;
+    action.splinterstorm_barrage->execute_on_target( target );
+  } );
 }
 
 /* Report Extension Class
