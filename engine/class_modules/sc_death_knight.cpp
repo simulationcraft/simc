@@ -1391,7 +1391,7 @@ public:
   void      bone_shield_handler( const action_state_t* ) const;
   // Frost
   void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
-  void      consume_killing_machine( proc_t* proc );
+  void      consume_killing_machine( proc_t* proc, timespan_t total_delay );
   void      trigger_runic_empowerment( double rpcost );
   void      chill_streak_bounce( player_t* target );
   // Unholy
@@ -6082,17 +6082,6 @@ struct frostscythe_t final : public death_knight_melee_attack_t
       p() -> buffs.enduring_strength_builder -> trigger();
       p() -> cooldown.enduring_strength_icd -> start();
     }
-
-    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) && p()->buffs.killing_machine->up() )
-    {
-      p()->consume_killing_machine( p()->procs.killing_machine_fsc );
-      p()->trigger_killing_machine( p()->sets->set( DEATH_KNIGHT_FROST, T29, B4 )->effectN( 1 ).percent(),
-                                    p()->procs.km_from_t29_4pc, p()->procs.km_from_t29_4pc_wasted );
-    }
-    else
-    {
-      p()->consume_killing_machine( p()->procs.killing_machine_fsc );
-    }
   }
 
   void execute() override
@@ -6102,6 +6091,16 @@ struct frostscythe_t final : public death_knight_melee_attack_t
     // Frostscythe procs rime at half the chance of Obliterate
     p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> buffs.rime->manual_chance / 2.0 );
 
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) && p()->buffs.killing_machine->up() )
+    {
+      p()->consume_killing_machine( p()->procs.killing_machine_fsc, 0_ms );
+      p()->trigger_killing_machine( p()->sets->set( DEATH_KNIGHT_FROST, T29, B4 )->effectN( 1 ).percent(),
+                                    p()->procs.km_from_t29_4pc, p()->procs.km_from_t29_4pc_wasted );
+    }
+    else
+    {
+      p()->consume_killing_machine( p()->procs.killing_machine_fsc, 0_ms );
+    }
   }
 private:
     propagate_const<action_t*> inexorable_assault;
@@ -6775,20 +6774,6 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
       p() -> buffs.inexorable_assault -> decrement();
       p() -> cooldown.inexorable_assault_icd -> start();
     }
-
-    if ( weapon != &p() -> off_hand_weapon )
-    {
-      if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) && p()->buffs.killing_machine->up() )
-      {
-          p()->consume_killing_machine( p()->procs.killing_machine_oblit );
-          p()->trigger_killing_machine( p()->sets->set( DEATH_KNIGHT_FROST, T29, B4 )->effectN( 1 ).percent(),
-                                        p()->procs.km_from_t29_4pc, p()->procs.km_from_t29_4pc_wasted );
-      }
-      else
-      {
-          p()->consume_killing_machine( p()->procs.killing_machine_oblit );
-      }
-    }
   }
 
   void execute() override
@@ -6811,15 +6796,26 @@ private:
 struct obliterate_t final : public death_knight_melee_attack_t
 {
   obliterate_strike_t *mh, *oh, *km_mh, *km_oh;
+  timespan_t mh_delay;
+  timespan_t oh_delay;
+  timespan_t total_delay;
 
   obliterate_t( death_knight_t* p, util::string_view options_str = {} ) :
     death_knight_melee_attack_t( "obliterate", p, p -> talent.frost.obliterate ),
-    mh( nullptr ), oh( nullptr ), km_mh( nullptr ), km_oh( nullptr )
+    mh( nullptr ), oh( nullptr ), km_mh( nullptr ), km_oh( nullptr ), mh_delay( 0_ms ), oh_delay( 0_ms )
   {
     parse_options( options_str );
     dual = true;
 
     const spell_data_t* mh_data = p -> main_hand_weapon.group() == WEAPON_2H ? data().effectN( 4 ).trigger() : data().effectN( 2 ).trigger();
+
+    mh_delay = timespan_t::from_millis( as<int>( p -> main_hand_weapon.group() == WEAPON_2H ? data().effectN( 4 ).misc_value1() : data().effectN( 2 ).misc_value1() ) );
+    if( p -> off_hand_weapon.type != WEAPON_NONE )
+    {
+      oh_delay = timespan_t::from_millis( as<int>( data().effectN( 3 ).misc_value1() ) );
+    }
+
+    total_delay = mh_delay + oh_delay;
 
     mh = new obliterate_strike_t( p, "obliterate", &( p -> main_hand_weapon ), mh_data );
     add_child( mh );
@@ -6860,19 +6856,29 @@ struct obliterate_t final : public death_knight_melee_attack_t
       }
       if ( km_mh && p() -> buffs.killing_machine -> up() )
       {
-        km_mh -> execute_on_target( target );
+        make_event( sim, mh_delay, [ this ] { km_mh->execute_on_target( target ); } );
         if ( oh && km_oh )
-
-          km_oh -> execute_on_target( target );
+          make_event( sim, oh_delay, [ this ] { km_oh->execute_on_target( target ); } );
       }
       else
       {
-        mh -> execute_on_target( target );
+        make_event( sim, mh_delay, [ this ] { mh->execute_on_target( target ); } );
         if ( oh )
-          oh -> execute_on_target( target );
+          make_event( sim, oh_delay, [ this ] { oh->execute_on_target( target ); } );
       }
 
       p() -> buffs.rime -> trigger();
+    }
+
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) && p()->buffs.killing_machine->up() )
+    {
+      p()->consume_killing_machine( p()->procs.killing_machine_oblit, total_delay );
+      p()->trigger_killing_machine( p()->sets->set( DEATH_KNIGHT_FROST, T29, B4 )->effectN( 1 ).percent(),
+                                    p()->procs.km_from_t29_4pc, p()->procs.km_from_t29_4pc_wasted );
+    }
+    else
+    {
+      p()->consume_killing_machine( p()->procs.killing_machine_oblit, total_delay );
     }
   }
 
@@ -8709,7 +8715,7 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
   }
 }
 
-void death_knight_t::consume_killing_machine( proc_t* proc )
+void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_delay )
 {
   if ( ! buffs.killing_machine -> up() )
   {
@@ -8718,7 +8724,7 @@ void death_knight_t::consume_killing_machine( proc_t* proc )
 
   proc -> occur();
 
-  make_event( sim, rng().range( 10_ms, 25_ms ), [ this ] { buffs.killing_machine->decrement(); } );
+  make_event( sim, total_delay + 20_ms, [ this ] { buffs.killing_machine->decrement(); } );
 
   if ( rng().roll( talent.frost.murderous_efficiency -> effectN( 1 ).percent() ) )
   {
