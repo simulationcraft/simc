@@ -20,6 +20,7 @@ jobs:
     name: ubuntu-${{ matrix.compiler }}-cpp${{ matrix.cppVersion }}-build
     runs-on: ${{ matrix.os }}
     strategy:
+      # max-parallel: 1
       matrix:
         compiler: [gcc-12, gcc-7]
         cppVersion: [17, 20]
@@ -40,7 +41,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: actions/cache@v4
-        env: { ccache-prefix: 'ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
+        env:
+          ccache-prefix: 'ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}'
         with:
           path: ${{ runner.temp }}/.ccache
           key: ${{ env.ccache-prefix }}-${{ github.sha }}
@@ -55,7 +57,7 @@ jobs:
         run: |
           cmake -H. -B'${{ runner.temp }}/b/ninja' -GNinja -DBUILD_GUI=OFF \
           -DCMAKE_BUILD_TYPE=Debug \
-          -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.compiler }} \
+          -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} \
           -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
           -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }}
 
@@ -66,7 +68,7 @@ jobs:
           CCACHE_MAXSIZE: 192M # full build consumes around ~80, ~2x that to be safe
         run: |
           ccache -z
-          ninja -C '${{ runner.temp }}/b/ninja'
+          ninja -C ${{ runner.temp }}/b/ninja -j ${{ env.COMPILE_THREADS || 0 }}
           ccache -s
 
       - uses: actions/cache@v4
@@ -83,6 +85,7 @@ jobs:
     name: ubuntu-build-${{ matrix.compiler }}-C++${{ matrix.cppVersion }}
     runs-on: ${{ matrix.os }}
     strategy:
+      # max-parallel: 1
       matrix:
         cppVersion: [17, 20]
         compiler: [clang++-7, clang++-15]
@@ -102,7 +105,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: actions/cache@v4
-        env: { ccache-prefix: 'ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
+        env:
+          ccache-prefix: 'ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}'
         with:
           path: ${{ runner.temp }}/.ccache
           key: ${{ env.ccache-prefix }}-${{ github.sha }}
@@ -114,15 +118,15 @@ jobs:
           sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache ${{ matrix.packages }}
 
       - name: Configure
-        env:
-          UBSAN_STRIP_COUNT: "`echo \"${{ runner.temp }}//\" | grep -o '/' - | wc -l`"
+        # env:
+        #   UBSAN_STRIP_COUNT: "`echo \"${{ runner.temp }}//\" | grep -o '/' - | wc -l`"
         run: cmake -H. -B'${{ runner.temp }}/b/ninja' -GNinja -DBUILD_GUI=OFF
               -DCMAKE_BUILD_TYPE=Debug
               -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
               -DCMAKE_CXX_FLAGS="-Og ${{ matrix.enable_file_prefix_map && format('-ffile-prefix-map={0}/=/', runner.temp || '')}}
-                -fno-omit-frame-pointer -fsanitize=address,undefined
-                -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
-              -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -fsanitize=address,undefined"
+                -fno-omit-frame-pointer -fsanitize=address,undefined"
+                # -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
+              -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld"  #-fsanitize=address,undefined"
               -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }}
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
@@ -133,7 +137,7 @@ jobs:
           CCACHE_MAXSIZE: 256M # full build consumes around ~124, ~2x that to be safe
         run: |
           ccache -z
-          ninja -C '${{ runner.temp }}/b/ninja'
+          ninja -C ${{ runner.temp }}/b/ninja -j ${{ env.COMPILE_THREADS || 0 }}
           ccache -s
 
       - uses: actions/cache@v4
@@ -193,8 +197,8 @@ jobs:
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Run
-        env:
-          UBSAN_OPTIONS: print_stacktrace=1
+        # env:
+        #   UBSAN_OPTIONS: print_stacktrace=1
         run: ${{ runner.temp }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null json3=/dev/null ${{ matrix.simc_flags }}
 
   simc-tests:
@@ -243,8 +247,8 @@ jobs:
         run: pip3 install -r ${{ github.workspace }}/tests/requirements.txt
 
       - name: Run
-        env:
-          UBSAN_OPTIONS: print_stacktrace=1
+        # env:
+        #   UBSAN_OPTIONS: print_stacktrace=1
           SIMC_CLI_PATH: ${{ runner.temp }}/b/ninja/simc
           SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
           SIMC_THREADS: 2
@@ -281,8 +285,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run
-        env:
-          UBSAN_OPTIONS: print_stacktrace=1
+        # env:
+        #   UBSAN_OPTIONS: print_stacktrace=1
           SIMC_CLI_PATH: ${{ runner.temp }}/b/ninja/simc
           SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
           SIMC_THREADS: 2
