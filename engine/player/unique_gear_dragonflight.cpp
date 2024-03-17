@@ -1606,9 +1606,12 @@ void rashoks_molten_heart( special_effect_t& effect )
       range::erase_remove( current_players, player );
     }
 
-    void add_amount( player_t* player, double amount )
+    void add_amount( double amount )
     {
-      stored_amount[ player ] += amount;
+      for ( auto* p : current_players )
+      {
+        stored_amount[ p ] += amount;
+      }
     }
 
     double get_amount( player_t* player )
@@ -1700,7 +1703,7 @@ void rashoks_molten_heart( special_effect_t& effect )
       if ( s->result_total > 0 )
       {
         double overheal = use_true_overheal ? s->result_amount / s->result_total : fake_overheal;
-        get_helper( s->target )->add_amount( player, overheal * versatility_per_tick );
+        get_helper( s->target )->add_amount( overheal * versatility_per_tick );
       }
     }
 
