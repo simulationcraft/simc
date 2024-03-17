@@ -6091,13 +6091,7 @@ struct frostscythe_t final : public death_knight_melee_attack_t
     // Frostscythe procs rime at half the chance of Obliterate
     p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> buffs.rime->manual_chance / 2.0 );
 
-    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) && p()->buffs.killing_machine->up() )
-    {
-      p()->consume_killing_machine( p()->procs.killing_machine_fsc, 0_ms );
-      p()->trigger_killing_machine( p()->sets->set( DEATH_KNIGHT_FROST, T29, B4 )->effectN( 1 ).percent(),
-                                    p()->procs.km_from_t29_4pc, p()->procs.km_from_t29_4pc_wasted );
-    }
-    else
+    if ( p()->buffs.killing_machine->up() )
     {
       p()->consume_killing_machine( p()->procs.killing_machine_fsc, 0_ms );
     }
@@ -6870,15 +6864,10 @@ struct obliterate_t final : public death_knight_melee_attack_t
       p() -> buffs.rime -> trigger();
     }
 
-    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) && p()->buffs.killing_machine->up() )
+    if ( p()->buffs.killing_machine->up() )
     {
       p()->consume_killing_machine( p()->procs.killing_machine_oblit, total_delay );
-      p()->trigger_killing_machine( p()->sets->set( DEATH_KNIGHT_FROST, T29, B4 )->effectN( 1 ).percent(),
-                                    p()->procs.km_from_t29_4pc, p()->procs.km_from_t29_4pc_wasted );
-    }
-    else
-    {
-      p()->consume_killing_machine( p()->procs.killing_machine_oblit, total_delay );
+
     }
   }
 
@@ -8724,7 +8713,16 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
 
   proc -> occur();
 
-  make_event( sim, total_delay + 20_ms, [ this ] { buffs.killing_machine->decrement(); } );
+  make_event( sim, total_delay + 20_ms, [ this ] 
+              { 
+                buffs.killing_machine->decrement();
+
+                if ( sets->has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) )
+                {
+                  trigger_killing_machine( sets->set( DEATH_KNIGHT_FROST, T29, B4 )->effectN( 1 ).percent(),
+                                           procs.km_from_t29_4pc, procs.km_from_t29_4pc_wasted );
+                }
+              } );
 
   if ( rng().roll( talent.frost.murderous_efficiency -> effectN( 1 ).percent() ) )
   {
