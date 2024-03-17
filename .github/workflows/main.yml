@@ -123,7 +123,6 @@ jobs:
               -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
               -DCMAKE_CXX_FLAGS="-Og ${{ matrix.enable_file_prefix_map && format('-ffile-prefix-map={0}/=/', runner.temp || '')}}
                 -fno-omit-frame-pointer -fsanitize=address,undefined"
-                # -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
               -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld"  #-fsanitize=address,undefined"
               -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }}
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
