@@ -6776,15 +6776,18 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
       p() -> cooldown.inexorable_assault_icd -> start();
     }
 
-    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) && p()->buffs.killing_machine->up() )
+    if ( weapon != &p() -> off_hand_weapon )
     {
-      p()->consume_killing_machine( p()->procs.killing_machine_oblit );
-      p()->trigger_killing_machine( p()->sets->set( DEATH_KNIGHT_FROST, T29, B4 )->effectN( 1 ).percent(),
-                                    p()->procs.km_from_t29_4pc, p()->procs.km_from_t29_4pc_wasted );
-    }
-    else
-    {
-      p()->consume_killing_machine( p()->procs.killing_machine_oblit );
+      if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) && p()->buffs.killing_machine->up() )
+      {
+          p()->consume_killing_machine( p()->procs.killing_machine_oblit );
+          p()->trigger_killing_machine( p()->sets->set( DEATH_KNIGHT_FROST, T29, B4 )->effectN( 1 ).percent(),
+                                        p()->procs.km_from_t29_4pc, p()->procs.km_from_t29_4pc_wasted );
+      }
+      else
+      {
+          p()->consume_killing_machine( p()->procs.killing_machine_oblit );
+      }
     }
   }
 
