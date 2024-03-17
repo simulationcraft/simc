@@ -1371,9 +1371,32 @@ public:
 // ==========================================================================
 // Holy Nova
 // ==========================================================================
+struct holy_nova_heal_t final : public priest_heal_t
+{
+  holy_nova_heal_t( util::string_view n, priest_t& p ) : priest_heal_t( n, p, p.talents.holy_nova_heal )
+  {
+    aoe          = -1;
+    background   = true;
+
+    reduced_aoe_targets = p.talents.holy_nova->effectN( 2 ).base_value();
+    disc_mastery        = true;
+  }
+
+  void execute() override
+  {
+    priest_heal_t::execute();
+
+    if ( priest().buffs.twist_of_fate_heal_ally_fake->check() )
+    {
+      priest().buffs.twist_of_fate->trigger();
+    }
+  }
+};
+
 struct holy_nova_t final : public priest_spell_t
 {
   action_t* child_light_eruption;
+  action_t* child_heal;
   holy_nova_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "holy_nova", p, p.talents.holy_nova ),
       child_light_eruption( priest().background_actions.light_eruption )
@@ -1383,16 +1406,16 @@ struct holy_nova_t final : public priest_spell_t
     full_amount_targets = as<int>( priest().talents.holy_nova->effectN( 3 ).base_value() );
     reduced_aoe_targets = priest().talents.holy_nova->effectN( 3 ).base_value();
     triggers_atonement  = true;
+
+    child_heal = new holy_nova_heal_t( "holy_nova_heal", p );
+    add_child( child_heal );
   }
 
   void execute() override
   {
     priest_spell_t::execute();
 
-    if ( priest().buffs.twist_of_fate_heal_ally_fake->check() )
-    {
-      priest().buffs.twist_of_fate->trigger();
-    }
+    child_heal->execute();
 
     if ( priest().talents.rhapsody )
     {
@@ -1400,7 +1423,7 @@ struct holy_nova_t final : public priest_spell_t
 
       if ( priest().buffs.rhapsody->check() )
       {
-        priest().buffs.rhapsody->expire();
+        make_event( sim, 0_ms, [ this ]() { priest().buffs.rhapsody->expire(); } );
       }
     }
 
@@ -2709,6 +2732,7 @@ void priest_t::init_spells()
   // Row 3
   talents.focused_mending            = CT( "Focused Mending" );  // NYI
   talents.holy_nova                  = CT( "Holy Nova" );
+  talents.holy_nova_heal             = find_spell( 281265 );
   talents.protective_light           = CT( "Protective Light" );
   talents.protective_light_buff      = find_spell( 193065 );
   talents.from_darkness_comes_light  = CT( "From Darkness Comes Light" );

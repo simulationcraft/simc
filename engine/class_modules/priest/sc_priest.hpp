@@ -226,6 +226,7 @@ public:
     // Row 3
     player_talent_t focused_mending;
     player_talent_t holy_nova;
+    const spell_data_t* holy_nova_heal;
     player_talent_t protective_light;
     const spell_data_t* protective_light_buff;
     player_talent_t from_darkness_comes_light;
