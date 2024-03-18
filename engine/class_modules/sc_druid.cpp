@@ -3943,10 +3943,12 @@ struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
 
     if ( tear && result_is_hit( s->result ) )
     {
-      auto dot_total = calculate_tick_amount( s, 1.0 ) * find_dot( s->target )->remains() / tick_time( s );
+      auto tick_amount = calculate_tick_amount( s, 1.0 );
 
       // increased damage from sabertooth is not counted for tear calculations
-      dot_total /= 1.0 + p()->buff.sabertooth->check_stack_value();
+      tick_amount  /= 1.0 + p()->buff.sabertooth->check_stack_value();
+
+      auto dot_total = tick_amount * find_dot( s->target )->ticks_left_fractional();
 
       tear->snapshot_and_execute( s, true, [ this, dot_total ]( const action_state_t*, action_state_t* to ) {
         tear->set_amount( to, dot_total );
