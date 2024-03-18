@@ -242,6 +242,9 @@ jobs:
       - name: Install Python dependencies
         run: pip3 install -r ${{ github.workspace }}/tests/requirements.txt
 
+      - name: Temporary Workaround for clang-15 Builds
+        run: sudo sysctl vm.mmap_rnd_bits=28
+
       - name: Run
         env:
           UBSAN_OPTIONS: print_stacktrace=1
@@ -278,6 +281,9 @@ jobs:
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - uses: actions/checkout@v4
+
+      - name: Temporary Workaround for clang-15 Builds
+        run: sudo sysctl vm.mmap_rnd_bits=28
 
       - name: Run
         env:
