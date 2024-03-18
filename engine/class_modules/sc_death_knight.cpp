@@ -2737,6 +2737,20 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     }
   };
 
+  void acquire_target( retarget_source event, player_t* context ) override
+  {
+    if ( skulker_shot->execute_event && skulker_shot->target->is_sleeping() )
+    {
+      event_t::cancel( skulker_shot->execute_event );
+      started_waiting = sim->current_time();
+    }
+
+    player_t::acquire_target( event, context );
+
+    if ( !skulker_shot->execute_event )
+      trigger_ready();
+  }
+
   void init_base_stats() override
   {
     death_knight_pet_t::init_base_stats();
