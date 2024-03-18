@@ -6238,14 +6238,14 @@ struct frost_strike_t final : public death_knight_melee_attack_t
 
     dual = true;
 
-    if ( p->main_hand_weapon.group() != WEAPON_2H )
+    if ( p->main_hand_weapon.group() == WEAPON_2H )
     {
       mh_delay = timespan_t::from_millis( as<int>( data().effectN( 4 ).misc_value1() ) );
+    }
 
-      if ( p->off_hand_weapon.type != WEAPON_NONE )
-      {
-        oh_delay = timespan_t::from_millis( as<int>( data().effectN( 3 ).misc_value1() ) );
-      }
+    if ( p->off_hand_weapon.type != WEAPON_NONE )
+    {
+      oh_delay = timespan_t::from_millis( as<int>( data().effectN( 3 ).misc_value1() ) );
     }
 
     add_child( mh );
