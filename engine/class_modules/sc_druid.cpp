@@ -2095,13 +2095,11 @@ public:
   snapshot_counter_t* bt_counter = nullptr;
   snapshot_counter_t* tf_counter = nullptr;
 
-  double berserk_cp;
   double primal_fury_cp;
 
   cat_attack_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil() )
     : base_t( n, p, s ),
       snapshots(),
-      berserk_cp( p->spec.berserk_cat->effectN( 2 ).base_value() ),
       primal_fury_cp(
           find_effect( find_trigger( p->talent.primal_fury ).trigger(), E_ENERGIZE ).resource( RESOURCE_COMBO_POINT ) )
   {
@@ -2118,24 +2116,26 @@ public:
           parse_persistent_effects( p->buff.clearcasting_cat, IGNORE_STACKS, p->talent.moment_of_clarity );
 
       parse_effects( p->mastery.razor_claws );
+
+      if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount && !p->buff.b_inc_cat->is_fallback )
+      {
+        energize_idx = find_effect_index( this, E_ENERGIZE, A_MAX, POWER_COMBO_POINT );
+        add_parse_entry( modified_effect_vec( energize_idx ) )
+            .set_buff( p->buff.b_inc_cat )
+            .set_flat( true )
+            .set_value( p->spec.berserk_cat->effectN( 2 ).base_value() );
+      }
     }
   }
 
-  virtual bool stealthed() const  // For effects that require any form of stealth.
+  bool stealthed() const  // For effects that require any form of stealth.
   {
-    // Make sure we call all for accurate benefit tracking. Berserk/Incarn/Sudden Assault handled in shred_t & rake_t -
-    // move here if buff while stealthed becomes more widespread
     return p()->buff.prowl->up() || p()->buffs.shadowmeld->up();
   }
 
-  double composite_energize_amount( const action_state_t* s ) const override
+  bool stealthed_any() const
   {
-    auto ea = base_t::composite_energize_amount( s );
-
-    if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 && p()->buff.b_inc_cat->check() )
-      ea += berserk_cp;
-
-    return ea;
+    return stealthed() || p()->buff.sudden_ambush->up();
   }
 
   void consume_resource() override
@@ -3496,7 +3496,7 @@ struct feral_frenzy_t : public cat_attack_t
       direct_bleed = false;
 
       dot_name = "feral_frenzy_tick";
-      berserk_cp = 0;  // feral frenzy does not count as a cp generator for berserk extra cp
+      energize_idx = 0;  // feral frenzy does not count as a cp generator for berserk extra cp
     }
 
     // Small hack to properly distinguish instant ticks from the driver, from actual periodic ticks from the bleed
@@ -3806,7 +3806,7 @@ struct rake_t : public cat_attack_t
       const auto& eff = data().effectN( 4 );
       add_parse_entry( persistent_multiplier_effects )
           .set_value( eff.percent() )
-          .set_func( [ this, p ] { return stealthed() || p->buff.sudden_ambush->check(); } )
+          .set_func( [ this, p ] { return stealthed_any(); } )
           .set_eff( &eff );
     }
 
@@ -4079,7 +4079,6 @@ struct primal_wrath_t : public cat_finisher_t
 struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
 {
   double stealth_mul = 0.0;
-  double stealth_cp = 0.0;
 
   DRUID_ABILITY( shred_t, base_t, "shred", p->find_class_spell( "Shred" ) )
   {
@@ -4090,23 +4089,17 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
     if ( p->talent.pouncing_strikes.ok() )
     {
       stealth_mul = data().effectN( 3 ).percent();
-      stealth_cp = p->find_spell( 343232 )->effectN( 1 ).base_value();
 
       add_parse_entry( da_multiplier_effects )
           .set_value( stealth_mul )
-          .set_func( [ this ] { return stealthed() || this->p()->buff.sudden_ambush->check(); } )
+          .set_func( [ this ] { return stealthed_any(); } )
           .set_eff( &data().effectN( 3 ) );
+
+      add_parse_entry( modified_effect_vec( energize_idx ) )
+          .set_func( [ this ] { return stealthed_any(); } )
+          .set_flat( true )
+          .set_value( p->find_spell( 343232 )->effectN( 1 ).base_value() );
     }
-  }
-
-  double composite_energize_amount( const action_state_t* s ) const override
-  {
-    double e = base_t::composite_energize_amount( s );
-
-    if ( stealthed() || p()->buff.sudden_ambush->check() )
-      e += stealth_cp;
-
-    return e;
   }
 
   void execute() override
@@ -4144,7 +4137,7 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
   {
     double cm = base_t::composite_crit_chance_multiplier();
 
-    if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->check() ) )
+    if ( stealth_mul && stealthed_any() )
       cm *= 2.0;
 
     return cm;

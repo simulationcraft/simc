@@ -985,6 +985,11 @@ public:
     return modified_effectN( idx ) * spelleffect_data_t::resource_multiplier( r );
   }
 
+  std::vector<modify_effect_t>& modified_effect_vec( size_t idx )
+  {
+    return effect_modifiers[ idx - 1 ].second;
+  }
+
   void parsed_html_report( report::sc_html_stream& os )
   {
     if ( !total_effects_count() )
