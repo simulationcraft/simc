@@ -1,5 +1,5 @@
-#define MAX_SPECS_PER_CLASS (4)
-#define MAX_SPEC_CLASS  (14)
+#define MAX_SPECS_PER_CLASS (5)
+#define MAX_SPEC_CLASS  (15)
 
 static constexpr specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] =
 {
@@ -86,6 +86,13 @@ static constexpr specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_
     EVOKER_PRESERVATION,
     EVOKER_AUGMENTATION,
     SPEC_NONE,
+  },
+  {
+    SPEC_NONE,
+    SPEC_NONE,
+    SPEC_NONE,
+    SPEC_NONE,
+    ADVENTURER_ADVENTURER,
   },
 };
 

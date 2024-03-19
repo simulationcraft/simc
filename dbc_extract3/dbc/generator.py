@@ -2366,6 +2366,7 @@ class SpellDataGenerator(DataGenerator):
         (  102,  103,  104, 105 ), # Druid
         (  577,  581,    0,   0 ), # Demon Hunter
         ( 1467, 1468, 1473,   0 ), # Evoker
+        ( 1478,    0,    0,   0 ), # Adventurer
     ]
 
     _race_categories = [

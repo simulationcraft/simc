@@ -138,7 +138,8 @@ CLASS_INFO = [
   { 'id': 10, 'bit':  9, 'name': 'Monk',         'skill': 829,  'family': 53  },
   { 'id': 11, 'bit': 10, 'name': 'Druid',        'skill': 798,  'family': 7   },
   { 'id': 12, 'bit': 11, 'name': 'Demon Hunter', 'skill': 1848, 'family': 107 },
-  { 'id': 13, 'bit': 12, 'name': 'Evoker',       'skill': 2810, 'family': 224 }
+  { 'id': 13, 'bit': 12, 'name': 'Evoker',       'skill': 2810, 'family': 224 },
+  { 'id': 14, 'bit': 14, 'name': 'Adventurer',   'skill': 0,    'family': 0   }
 ]
 
 PET_SKILL_CATEGORIES = [

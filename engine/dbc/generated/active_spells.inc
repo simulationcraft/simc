@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.2.5.53584
-static const std::array<active_class_spell_t, 287> __active_spells_data { {
+// Active class spells, wow build 10.2.6.53840
+static const std::array<active_class_spell_t, 292> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -42,12 +42,13 @@ static const std::array<active_class_spell_t, 287> __active_spells_data { {
   {  2,    0, 363613,      0, "Summon Lightforged Ruinstrider"     },
   {  2,    0, 391054,      0, "Intercession"                       },
   {  2,   65,    498,      0, "Divine Protection"                  },
-  {  2,   65,   4987,      0, "Cleanse"                            },
+  {  2,   65,   4987, 440013, "Cleanse"                            },
   {  2,   65,  53563,      0, "Beacon of Light"                    },
   {  2,   65,  82326,      0, "Holy Light"                         },
   {  2,   65, 212056,      0, "Absolution"                         },
   {  2,   65, 275773,  20271, "Judgment"                           },
   {  2,   65, 415091,  53600, "Shield of the Righteous"            },
+  {  2,   65, 440013,      0, "Cleanse Toxins"                     },
   {  2,   66, 275779,  20271, "Judgment"                           },
   {  2,   70,  85256,      0, "Templar's Verdict"                  },
   {  2,   70, 403876,      0, "Divine Protection"                  },
@@ -127,13 +128,15 @@ static const std::array<active_class_spell_t, 287> __active_spells_data { {
   {  5,    0,   8122,      0, "Psychic Scream"                     },
   {  5,    0,  19236,      0, "Desperate Prayer"                   },
   {  5,    0,  21562,      0, "Power Word: Fortitude"              },
-  {  5,  256,    527,      0, "Purify"                             },
+  {  5,  256,    527, 440006, "Purify"                             },
   {  5,  256,  47540,      0, "Penance"                            },
   {  5,  256, 212036,      0, "Mass Resurrection"                  },
-  {  5,  257,    527,      0, "Purify"                             },
+  {  5,  256, 440006,      0, "Purify Disease"                     },
+  {  5,  257,    527, 440006, "Purify"                             },
   {  5,  257,   2060,      0, "Heal"                               },
   {  5,  257,  14914,   8092, "Holy Fire"                          },
   {  5,  257, 212036,      0, "Mass Resurrection"                  },
+  {  5,  257, 440006,      0, "Purify Disease"                     },
   {  5,  258,  15407,    585, "Mind Flay"                          },
   {  5,  258,  34914,      0, "Vampiric Touch"                     },
   {  5,  258, 232698,      0, "Shadowform"                         },
@@ -164,8 +167,9 @@ static const std::array<active_class_spell_t, 287> __active_spells_data { {
   {  7,    0, 192106,      0, "Lightning Shield"                   },
   {  7,    0, 318038,      0, "Flametongue Weapon"                 },
   {  7,  264,  52127,      0, "Water Shield"                       },
-  {  7,  264,  77130,      0, "Purify Spirit"                      },
+  {  7,  264,  77130, 440012, "Purify Spirit"                      },
   {  7,  264, 212048,      0, "Ancestral Vision"                   },
+  {  7,  264, 440012,      0, "Cleanse Spirit"                     },
   {  8,    0,     66,      0, "Invisibility"                       },
   {  8,    0,    116,      0, "Frostbolt"                          },
   {  8,    0,    120,      0, "Cone of Cold"                       },
@@ -248,8 +252,9 @@ static const std::array<active_class_spell_t, 287> __active_spells_data { {
   { 11,    0,  50769,      0, "Revive"                             },
   { 11,    0, 213764,      0, "Swipe"                              },
   { 11,  102, 190984,   5176, "Wrath"                              },
-  { 11,  105,  88423,      0, "Nature's Cure"                      },
+  { 11,  105,  88423, 440015, "Nature's Cure"                      },
   { 11,  105, 212040,      0, "Revitalize"                         },
+  { 11,  105, 440015,      0, "Remove Corruption"                  },
   { 12,    0, 131347,      0, "Glide"                              },
   { 12,    0, 183752,      0, "Disrupt"                            },
   { 12,    0, 185123,      0, "Throw Glaive"                       },
@@ -289,7 +294,7 @@ static const std::array<active_class_spell_t, 287> __active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.2.5.53584
+// Pet active spells, wow build 10.2.6.53840
 static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

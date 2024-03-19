@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.2.5.53584
-static const std::array<item_name_description_t, 828> __item_name_description_data { {
+// Item name descriptions, wow build 10.2.6.53840
+static const std::array<item_name_description_t, 846> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -651,8 +651,13 @@ static const std::array<item_name_description_t, 828> __item_name_description_da
   { 13899, "Cyphers of the First Ones"                   },
   { 13900, "Usable with:"                                },
   { 13901, "Shadowlands recipes for rare (blue) and better armor." },
+  { 13902, "Offensive"                                   },
+  { 13903, "Utility"                                     },
+  { 13904, "Weapon"                                      },
+  { 13906, "Wildcard"                                    },
   { 13907, "Sustaining"                                  },
   { 13908, "Fated"                                       },
+  { 13910, "Consumable"                                  },
   { 13911, "Shadowlands Season 2"                        },
   { 13912, "Quality 4 of 5"                              },
   { 13914, "Protoform Synthesis"                         },
@@ -735,6 +740,8 @@ static const std::array<item_name_description_t, 828> __item_name_description_da
   { 14003, "Zskera Vaults"                               },
   { 14004, "Primordial Stone"                            },
   { 14005, "Artisan Curios"                              },
+  { 14006, "Passive"                                     },
+  { 14007, "Off-Hand"                                    },
   { 14008, "Dragonflight Season 2"                       },
   { 14009, "The Forbidden Reach"                         },
   { 14011, "Ingenuity Crafted"                           },
@@ -820,6 +827,7 @@ static const std::array<item_name_description_t, 828> __item_name_description_da
   { 14099, "Heroic|n"                                    },
   { 14100, "Mythic|n"                                    },
   { 14101, "Raid Finder|n"                               },
+  { 14103, "Awakened Crafted"                            },
   { 14104, "Kalimdor and Eastern Kingdoms Cups"          },
   { 14105, "Outland Cup"                                 },
   { 14106, "Northrend Cup"                               },
@@ -828,5 +836,15 @@ static const std::array<item_name_description_t, 828> __item_name_description_da
   { 14132, "Moon"                                        },
   { 14133, "Sun"                                         },
   { 14134, "Cycle"                                       },
+  { 14135, "Dragonflight Season 4"                       },
+  { 14136, "Awakened"                                    },
+  { 14137, "Trading Post - Dandelion"                    },
+  { 14138, "Trading Post - Lavender"                     },
+  { 14139, "Trading Post - Cornsilk"                     },
+  { 14140, "Trading Post - Red"                          },
+  { 14141, "Trading Post - Blue"                         },
+  { 14142, "Trading Post - Orange"                       },
+  { 14143, "Trading Post - Love Witch"                   },
+  { 14144, "Trading Post - Sky Witch"                    },
 } };
 
