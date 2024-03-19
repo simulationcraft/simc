@@ -1453,6 +1453,8 @@ class SpellDataGenerator(DataGenerator):
          426474, # Verdant Tether embellishment stat buff
          424051, 424057, # String of Delicacies
          417138, # Fyr'alath the Dreamrender
+         # 10.2.6
+         433889, 433930, 433954, 433957, 433958, 434021, 434070, 434071, 434072, # reworked Tome of Unstable Power
         ),
 
         # Warrior:

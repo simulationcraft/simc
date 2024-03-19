@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.6.53840
-static const std::array<spelltext_data_t, 21035> __spelltext_data { {
+static const std::array<spelltext_data_t, 21044> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20934,7 +20934,16 @@ static const std::array<spelltext_data_t, 21035> __spelltext_data { {
   { 433759, "$@spelldesc432995", "The Inexorable Resonator has fallen dormant and is unable to protect you.", 0 },
   { 433770, "$@spelldesc432995", "Absorbing $s2% of damage taken, up to $w1 total damage. Dealing damage to nearby enemies every $t3 sec.", 0 },
   { 433772, "$@spelldesc432995", 0, 0 },
+  { 433889, "$@spelldesc432777", 0, 0 },
+  { 433930, "$@spelldesc432777", 0, 0 },
+  { 433954, "$@spelldesc432777", 0, 0 },
+  { 433957, "$@spelldesc432777", 0, 0 },
+  { 433958, "$@spelldesc432777", 0, 0 },
+  { 434021, "$@spelldesc432777", 0, 0 },
   { 434064, "Reduce damage taken by $s3% for $d or until $433000s1 damage has been absorbed. Your Armor is increased by $433000s2 while the shield holds, further increasing by $433000s4 when struck, stacking up to $434270u times. The shield explodes when broken, dealing $433000s3 Physical damage split between all nearby enemies.\r\n\r\nDamage increased per enemy struck, up to 5.", "Damage reduced by $w3%, absorbing up to $w1 damage. Armor increased by $w2. Gain an additional $433000w4 armor when hit.", 0 },
+  { 434070, "$@spelldesc432777", 0, 0 },
+  { 434071, "$@spelldesc432777", 0, 0 },
+  { 434072, "$@spelldesc432777", 0, 0 },
   { 434173, "Eat me.", 0, 0 },
   { 434218, "$@spelldesc432692", "Absorb $w4 damage.", 0 },
   { 434251, "$@spelldesc421990", "Counterattacking all incoming damage from enemies within $421996r yards. Regenerating $w1 every $t sec.", 0 },

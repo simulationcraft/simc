@@ -7537,6 +7537,87 @@ void fang_of_the_frenzied_nightclaw( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 10.2.6 reworked trinkets
+
+// 432777 driver
+// 433889 big damage
+// 433930 damage cast
+// 433954 summon image 1
+// 433957 summon image 2
+// 433958 summon image 3
+// 434021 small damage
+// 434070	channel 1
+// 434071	channel 2
+// 434072	channel 3
+// TODO: determine if 1.1 multiplier from tooltip desc has conditions
+// TODO: determine how annihilation gets used, currently using barrage only
+// TODO: confirm damage happens at end of channel trigger (3.05s) instead of end of cast (3s)
+// TODO: confirm # of summons is uniformly random
+// TODO: determine if overlapping areas have a spread
+// TODO: determine if procs can happen while previous proc is still casting
+void tome_of_unstable_power_new( special_effect_t& effect )
+{
+  struct tome_of_unstable_power_cb_t : public dbc_proc_callback_t
+  {
+    struct arcane_barrage_t : public generic_proc_t
+    {
+      arcane_barrage_t( const special_effect_t& e, double dam )
+        : generic_proc_t( e, "arcane_barrage", e.player->find_spell( 434021 ) )
+      {
+        aoe = -1;
+        base_dd_min = base_dd_max = dam;
+      }
+    };
+
+    struct arcane_annihilation_t : public generic_proc_t
+    {
+      arcane_annihilation_t( const special_effect_t& e, double dam )
+        : generic_proc_t( e, "arcane_annihilation", e.player->find_spell( 433889 ) )
+      {
+        aoe = -1;
+        base_dd_min = base_dd_max = dam;
+      }
+    };
+
+    action_t* annihilation;
+    action_t* barrage;
+    timespan_t cast_time;
+
+    tome_of_unstable_power_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      auto dam = e.driver()->effectN( 1 ).average( e.item );
+      // TODO: determine if 1.1 multiplier from tooltip desc has conditions
+      dam *= 1.1;
+
+      // TODO: determine how annihilation gets used, currently using barrage only
+      annihilation = create_proc_action<arcane_annihilation_t>( "arcane_annihilation", e, dam );
+      barrage = create_proc_action<arcane_barrage_t>( "arcane_barrage", e, dam );
+
+      // TODO: confirm damage happens at end of channel trigger (3.05s) instead of end of cast (3s)
+      cast_time = e.player->find_spell( 434070 )->duration();
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      // TODO: confirm # of summons is uniformly random
+      auto count = rng().range( 1U, 3U );
+
+      // TODO: determine if overlapping areas have a spread
+      for ( size_t i = 0; i < count; i++ )
+      {
+        make_event<ground_aoe_event_t>( *listener->sim, listener,
+            ground_aoe_params_t()
+                .target( s->target )
+                .pulse_time( cast_time )
+                .action( barrage )
+                .n_pulses( 1U ) );
+      }
+    }
+  };
+
+  new tome_of_unstable_power_cb_t( effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -10615,6 +10696,8 @@ void register_special_effects()
   register_special_effect( 422750, items::fyrakks_tainted_rageheart );
   register_special_effect( 423925, items::fang_of_the_frenzied_nightclaw );
   register_special_effect( 401183, items::rashoks_molten_heart, true );
+  // 10.2.6 reworked trinkets
+  register_special_effect( 432777, items::tome_of_unstable_power_new );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
