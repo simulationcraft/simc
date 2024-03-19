@@ -1,5 +1,5 @@
 cd ..
-set classes=warrior,hunter,monk,paladin,rogue,shaman,mage,warlock,druid,deathknight,priest,demonhunter,evoker,adventurer
+set classes=warrior,hunter,monk,paladin,rogue,shaman,mage,warlock,druid,deathknight,priest,demonhunter,evoker
 
 for %%i in (%classes%) do (
 simc display_build="0" spell_query="spell.class=%%i">spelldatadump/%%i.txt
