@@ -8381,7 +8381,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
     if ( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ) )
     {
-      auto extension_time = sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 )->effectN( 1 ).time_value();
+      auto extension_time = sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 )->effectN( 1 ).time_value() * as<int>( amount );
 
       for ( auto& apoc_magus : pets.apoc_magus )
       {
