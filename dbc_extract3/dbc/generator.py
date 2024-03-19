@@ -457,9 +457,9 @@ class SpecializationEnumGenerator(DataGenerator):
 
         max_specialization = 0
         for spec_id, spec_data in sorted(self.db('ChrSpecialization').items()):
-            # Ignore "Initial" specializations for now
+            # Ignore "Initial" and "Adventurer" specializations for now
             # TODO: Revisit
-            if spec_data.name == 'Initial':
+            if spec_data.name == 'Initial' or spec_data.name == 'Adventurer':
                 continue
 
             if spec_data.class_id > 0:
@@ -2366,7 +2366,6 @@ class SpellDataGenerator(DataGenerator):
         (  102,  103,  104, 105 ), # Druid
         (  577,  581,    0,   0 ), # Demon Hunter
         ( 1467, 1468, 1473,   0 ), # Evoker
-        ( 1478,    0,    0,   0 ), # Adventurer
     ]
 
     _race_categories = [
