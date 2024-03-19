@@ -225,7 +225,7 @@ struct class_info_t {
   unsigned mask;
   unsigned spell_family;
 };
-static constexpr std::array<class_info_t, 13> _class_info { {
+static constexpr std::array<class_info_t, 14> _class_info { {
   { "Warrior",       1U <<  0,   4 },
   { "Paladin",       1U <<  1,  10 },
   { "Hunter",        1U <<  2,   9 },
@@ -238,7 +238,8 @@ static constexpr std::array<class_info_t, 13> _class_info { {
   { "Monk",          1U <<  9,  53 },
   { "Druid",         1U << 10,   7 },
   { "DemonHunter",   1U << 11, 107 },
-  { "Evoker",        1U << 12, 224 }
+  { "Evoker",        1U << 12, 224 },
+  { "Adventurer",    1U << 13, 227 }
 } };
 
 static constexpr std::array<util::string_view, 33> _race_strings { {
@@ -851,6 +852,10 @@ struct spell_class_expr_t : public spell_list_expr_t
       if ( check_spell( driver_spell->id(), dbc.ptr ) )
         return true;
     }
+
+    // Check adventurer spells from patch 10.2.6 event by spell family
+    if ( spell.class_family() == 227 )
+      return true;
 
     return false;
   }
