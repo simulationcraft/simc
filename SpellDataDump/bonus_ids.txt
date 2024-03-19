@@ -1,4 +1,4 @@
-SimulationCraft 1025-01 for World of Warcraft 10.2.5.53262 Live
+SimulationCraft 1025-01 for World of Warcraft 10.2.6.53840 Live
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4423,6 +4423,7 @@ bonus_id={ 8165 }, ilevel={ 5 @plvl 1 - 272 @plvl 60 }
 bonus_id={ 8170 }, quality={ rare }, ilevel={ 219 @plvl 45 - 340 @plvl 80 }
 bonus_id={ 8171 }, quality={ rare }, ilevel={ 21 @plvl 1 - 359 @plvl 70 }
 bonus_id={ 8172 }, desc={ Timewarped }, ilevel={ 21 @plvl 1 - 346 @plvl 70 }
+bonus_id={ 8173 }, quality={ legendary }
 bonus_id={ 8174 }, effects={ Alchemical Flavor Pocket (id=372120, index=0, type=equip) }
 bonus_id={ 8175 }, effects={ Potion Absorption Inhibitor (id=371700, index=0, type=equip) }
 bonus_id={ 8176 }, suffix={ of the Fireflash }, stats={ 71% Crit [0.5000], 29% Haste [0.2000] }
@@ -4441,6 +4442,87 @@ bonus_id={ 8188 }, effects={ Armor Spikes (id=396581, index=0, type=equip) }
 bonus_id={ 8289 }, socket={ 1 }
 bonus_id={ 8402 }, desc={ Timewarped }, quality={ rare }, ilevel={ 3 @plvl 1 - 210 @plvl 60 }
 bonus_id={ 8403 }, desc={ Timewarped }, ilevel={ 5 @plvl 1 - 200 @plvl 60 }
+bonus_id={ 8404 }, quality={ uncommon }, effects={ Alter Time (id=397315, index=0, type=equip) }
+bonus_id={ 8405 }, quality={ rare }, effects={ Alter Time (id=397316, index=0, type=equip) }
+bonus_id={ 8406 }, quality={ epic }, effects={ Alter Time (id=397317, index=0, type=equip) }
+bonus_id={ 8408 }, quality={ uncommon }, effects={ Anti-Magic Shell (id=397272, index=0, type=equip) }
+bonus_id={ 8409 }, quality={ rare }, effects={ Anti-Magic Shell (id=397273, index=0, type=equip) }
+bonus_id={ 8410 }, quality={ epic }, effects={ Anti-Magic Shell (id=397274, index=0, type=equip) }
+bonus_id={ 8412 }, quality={ uncommon }, effects={ Anti-Magic Zone (id=397306, index=0, type=equip) }
+bonus_id={ 8413 }, quality={ rare }, effects={ Anti-Magic Zone (id=397307, index=0, type=equip) }
+bonus_id={ 8414 }, quality={ epic }, effects={ Anti-Magic Zone (id=397308, index=0, type=equip) }
+bonus_id={ 8424 }, quality={ uncommon }, effects={ Arcanosphere (id=397622, index=0, type=equip) }
+bonus_id={ 8425 }, quality={ rare }, effects={ Arcanosphere (id=397623, index=0, type=equip) }
+bonus_id={ 8426 }, quality={ epic }, effects={ Arcanosphere (id=397624, index=0, type=equip) }
+bonus_id={ 8436 }, quality={ uncommon }, effects={ Blessed Hammer (id=397661, index=0, type=equip) }
+bonus_id={ 8437 }, quality={ rare }, effects={ Blessed Hammer (id=397663, index=0, type=equip) }
+bonus_id={ 8438 }, quality={ epic }, effects={ Blessed Hammer (id=397665, index=0, type=equip) }
+bonus_id={ 8452 }, quality={ uncommon }, effects={ Capacitor Totem (id=397230, index=0, type=equip) }
+bonus_id={ 8453 }, quality={ rare }, effects={ Capacitor Totem (id=397231, index=0, type=equip) }
+bonus_id={ 8454 }, quality={ epic }, effects={ Capacitor Totem (id=397232, index=0, type=equip) }
+bonus_id={ 8476 }, quality={ uncommon }, effects={ Darkness (id=397309, index=0, type=equip) }
+bonus_id={ 8477 }, quality={ rare }, effects={ Darkness (id=397310, index=0, type=equip) }
+bonus_id={ 8478 }, quality={ epic }, effects={ Darkness (id=397311, index=0, type=equip) }
+bonus_id={ 8480 }, quality={ uncommon }, effects={ Death Grip (id=397224, index=0, type=equip) }
+bonus_id={ 8481 }, quality={ rare }, effects={ Death Grip (id=397225, index=0, type=equip) }
+bonus_id={ 8482 }, quality={ epic }, effects={ Death Grip (id=397226, index=0, type=equip) }
+bonus_id={ 8492 }, quality={ uncommon }, effects={ Dispersion (id=397275, index=0, type=equip) }
+bonus_id={ 8493 }, quality={ rare }, effects={ Dispersion (id=397276, index=0, type=equip) }
+bonus_id={ 8494 }, quality={ epic }, effects={ Dispersion (id=397278, index=0, type=equip) }
+bonus_id={ 8496 }, quality={ uncommon }, effects={ Dark Star (id=397632, index=0, type=equip) }
+bonus_id={ 8497 }, quality={ rare }, effects={ Dark Star (id=397634, index=0, type=equip) }
+bonus_id={ 8498 }, quality={ epic }, effects={ Dark Star (id=397636, index=0, type=equip) }
+bonus_id={ 8504 }, quality={ uncommon }, effects={ Dragon's Breath (id=397233, index=0, type=equip) }
+bonus_id={ 8505 }, quality={ rare }, effects={ Dragon's Breath (id=397234, index=0, type=equip) }
+bonus_id={ 8506 }, quality={ epic }, effects={ Dragon's Breath (id=397235, index=0, type=equip) }
+bonus_id={ 8512 }, quality={ uncommon }, effects={ Earthbreaker (id=397639, index=0, type=equip) }
+bonus_id={ 8513 }, quality={ rare }, effects={ Earthbreaker (id=397641, index=0, type=equip) }
+bonus_id={ 8514 }, quality={ epic }, effects={ Earthbreaker (id=397643, index=0, type=equip) }
+bonus_id={ 8524 }, quality={ uncommon }, effects={ Feign Death (id=397279, index=0, type=equip) }
+bonus_id={ 8525 }, quality={ rare }, effects={ Feign Death (id=397280, index=0, type=equip) }
+bonus_id={ 8526 }, quality={ epic }, effects={ Feign Death (id=397281, index=0, type=equip) }
+bonus_id={ 8544 }, quality={ uncommon }, effects={ Frost Nova (id=397236, index=0, type=equip) }
+bonus_id={ 8545 }, quality={ rare }, effects={ Frost Nova (id=397237, index=0, type=equip) }
+bonus_id={ 8546 }, quality={ epic }, effects={ Frost Nova (id=397238, index=0, type=equip) }
+bonus_id={ 8560 }, quality={ uncommon }, effects={ Frozen Orb (id=397646, index=0, type=equip) }
+bonus_id={ 8561 }, quality={ rare }, effects={ Frozen Orb (id=397710, index=0, type=equip) }
+bonus_id={ 8562 }, quality={ epic }, effects={ Frozen Orb (id=397712, index=0, type=equip) }
+bonus_id={ 8572 }, quality={ uncommon }, effects={ Grounding Totem (id=397324, index=0, type=equip) }
+bonus_id={ 8573 }, quality={ rare }, effects={ Grounding Totem (id=397325, index=0, type=equip) }
+bonus_id={ 8574 }, quality={ epic }, effects={ Grounding Totem (id=397326, index=0, type=equip) }
+bonus_id={ 8600 }, quality={ uncommon }, effects={ Ice Block (id=397291, index=0, type=equip) }
+bonus_id={ 8601 }, quality={ rare }, effects={ Ice Block (id=397292, index=0, type=equip) }
+bonus_id={ 8602 }, quality={ epic }, effects={ Ice Block (id=397293, index=0, type=equip) }
+bonus_id={ 8604 }, quality={ uncommon }, effects={ Ice Wall (id=397239, index=0, type=equip) }
+bonus_id={ 8605 }, quality={ rare }, effects={ Ice Wall (id=397240, index=0, type=equip) }
+bonus_id={ 8606 }, quality={ epic }, effects={ Ice Wall (id=397241, index=0, type=equip) }
+bonus_id={ 8612 }, quality={ uncommon }, effects={ Intimidating Shout (id=397242, index=0, type=equip) }
+bonus_id={ 8613 }, quality={ rare }, effects={ Intimidating Shout (id=397243, index=0, type=equip) }
+bonus_id={ 8614 }, quality={ epic }, effects={ Intimidating Shout (id=397244, index=0, type=equip) }
+bonus_id={ 8636 }, quality={ uncommon }, effects={ Mighty Ox Kick (id=397248, index=0, type=equip) }
+bonus_id={ 8637 }, quality={ rare }, effects={ Mighty Ox Kick (id=397249, index=0, type=equip) }
+bonus_id={ 8638 }, quality={ epic }, effects={ Mighty Ox Kick (id=397250, index=0, type=equip) }
+bonus_id={ 8652 }, quality={ uncommon }, effects={ Mass Polymorph (id=361095, index=0, type=equip) }
+bonus_id={ 8653 }, quality={ rare }, effects={ Unknown Effect (id=0) }
+bonus_id={ 8654 }, quality={ epic }, effects={ Unknown Effect (id=0) }
+bonus_id={ 8688 }, quality={ uncommon }, effects={ Shield Wall (id=372406, index=0, type=equip) }
+bonus_id={ 8689 }, quality={ rare }, effects={ Unknown Effect (id=0) }
+bonus_id={ 8690 }, quality={ epic }, effects={ Unknown Effect (id=0) }
+bonus_id={ 8700 }, quality={ uncommon }, effects={ Smoke Bomb (id=397312, index=0, type=equip) }
+bonus_id={ 8701 }, quality={ rare }, effects={ Smoke Bomb (id=397313, index=0, type=equip) }
+bonus_id={ 8702 }, quality={ epic }, effects={ Smoke Bomb (id=397314, index=0, type=equip) }
+bonus_id={ 8708 }, quality={ uncommon }, effects={ Spell Reflection (id=397294, index=0, type=equip) }
+bonus_id={ 8709 }, quality={ rare }, effects={ Spell Reflection (id=397295, index=0, type=equip) }
+bonus_id={ 8710 }, quality={ epic }, effects={ Spell Reflection (id=397296, index=0, type=equip) }
+bonus_id={ 8724 }, quality={ uncommon }, effects={ Thunderstorm (id=397265, index=0, type=equip) }
+bonus_id={ 8725 }, quality={ rare }, effects={ Thunderstorm (id=397266, index=0, type=equip) }
+bonus_id={ 8726 }, quality={ epic }, effects={ Thunderstorm (id=397267, index=0, type=equip) }
+bonus_id={ 8732 }, quality={ uncommon }, effects={ Typhoon (id=371793, index=0, type=equip) }
+bonus_id={ 8733 }, quality={ rare }, effects={ Unknown Effect (id=0) }
+bonus_id={ 8734 }, quality={ epic }, effects={ Unknown Effect (id=0) }
+bonus_id={ 8740 }, quality={ uncommon }, effects={ Vanish (id=397209, index=0, type=equip) }
+bonus_id={ 8741 }, quality={ rare }, effects={ Vanish (id=397301, index=0, type=equip) }
+bonus_id={ 8742 }, quality={ epic }, effects={ Vanish (id=397302, index=0, type=equip) }
 bonus_id={ 8760 }, desc={ Timewarped }, quality={ rare }, ilevel={ 3 @plvl 1 - 236 @plvl 60 }
 bonus_id={ 8766 }, quality={ rare }
 bonus_id={ 8767 }, quality={ epic }
@@ -4504,9 +4586,33 @@ bonus_id={ 8862 }, mod_to_stat={ unknown (100) }
 bonus_id={ 8863 }, effects={ Tinker Safety Fuses (id=384338, index=0, type=equip) }
 bonus_id={ 8864 }, effects={ Critical Failure Prevention Unit (id=384341, index=0, type=equip) }
 bonus_id={ 8865 }, effects={ Spring-Loaded Capacitor Casing (id=384489, index=0, type=equip) }
+bonus_id={ 8866 }, quality={ uncommon }, effects={ Spitfire (id=397625, index=0, type=equip) }
+bonus_id={ 8867 }, quality={ rare }, effects={ Spitfire (id=397626, index=0, type=equip) }
+bonus_id={ 8868 }, quality={ epic }, effects={ Spitfire (id=397627, index=0, type=equip) }
+bonus_id={ 8872 }, quality={ uncommon }, effects={ Holy Dragon Punch (id=397648, index=0, type=equip) }
+bonus_id={ 8873 }, quality={ rare }, effects={ Holy Dragon Punch (id=397650, index=0, type=equip) }
+bonus_id={ 8874 }, quality={ epic }, effects={ Holy Dragon Punch (id=397652, index=0, type=equip) }
+bonus_id={ 8887 }, quality={ uncommon }, effects={ Arcane Storm (id=397654, index=0, type=equip) }
+bonus_id={ 8888 }, quality={ rare }, effects={ Arcane Storm (id=397656, index=0, type=equip) }
+bonus_id={ 8889 }, quality={ epic }, effects={ Arcane Storm (id=397658, index=0, type=equip) }
+bonus_id={ 8890 }, quality={ uncommon }, effects={ Icebind (id=397258, index=0, type=equip) }
+bonus_id={ 8891 }, quality={ rare }, effects={ Icebind (id=397261, index=0, type=equip) }
+bonus_id={ 8892 }, quality={ epic }, effects={ Icebind (id=397262, index=0, type=equip) }
+bonus_id={ 8893 }, quality={ uncommon }, effects={ Dispersion (id=373016, index=0, type=equip) }
+bonus_id={ 8894 }, quality={ rare }, effects={ Unknown Effect (id=0) }
+bonus_id={ 8895 }, quality={ epic }, effects={ Unknown Effect (id=0) }
+bonus_id={ 8896 }, quality={ uncommon }, effects={ Flying Serpent Kick (id=397680, index=0, type=equip) }
+bonus_id={ 8897 }, quality={ rare }, effects={ Flying Serpent Kick (id=397683, index=0, type=equip) }
+bonus_id={ 8898 }, quality={ epic }, effects={ Flying Serpent Kick (id=397686, index=0, type=equip) }
 bonus_id={ 8903 }, base_ilevel={ 1 }
 bonus_id={ 8912 }, effects={ Room for Dessert (id=385336, index=0, type=equip) }
 bonus_id={ 8913 }, effects={ Magazine of Healing Darts (id=415446, index=0, type=equip) }
+bonus_id={ 8917 }, quality={ uncommon }
+bonus_id={ 8918 }, quality={ rare }
+bonus_id={ 8919 }, quality={ epic }
+bonus_id={ 8921 }, quality={ uncommon }, effects={ Gorefiend's Grasp (id=397268, index=0, type=equip) }
+bonus_id={ 8922 }, quality={ rare }, effects={ Gorefiend's Grasp (id=397269, index=0, type=equip) }
+bonus_id={ 8923 }, quality={ epic }, effects={ Gorefiend's Grasp (id=397270, index=0, type=equip) }
 bonus_id={ 8932 }, effects={ Blue Silken Lining (id=387335, index=0, type=equip) }
 bonus_id={ 8933 }
 bonus_id={ 8934 }, quality={ legendary }, effects={ Unity (id=387431, index=0, type=equip) }
@@ -4652,13 +4758,108 @@ bonus_id={ 9124 }, desc={ Heroic }, quality={ epic }, ilevel={ 41 @plvl 1 - 214 
 bonus_id={ 9125 }, desc={ Mythic }, quality={ epic }, ilevel={ 43 @plvl 1 - 216 @plvl 70 }
 bonus_id={ 9128 }, base_ilevel={ 333 }
 bonus_id={ 9129 }, quality={ rare }
+bonus_id={ 9131 }, quality={ uncommon }, effects={ Fire Whirl (id=397207, index=0, type=equip) }
+bonus_id={ 9132 }, quality={ rare }, effects={ Fire Whirl (id=397715, index=0, type=equip) }
+bonus_id={ 9133 }, quality={ epic }, effects={ Fire Whirl (id=397717, index=0, type=equip) }
+bonus_id={ 9134 }, quality={ uncommon }, effects={ Arcanobomb (id=376600, index=0, type=equip) }
 bonus_id={ 9136 }, quality={ epic }
+bonus_id={ 9138 }, quality={ uncommon }, effects={ Hellfire (id=397667, index=0, type=equip) }
+bonus_id={ 9139 }, quality={ rare }, effects={ Hellfire (id=397669, index=0, type=equip) }
+bonus_id={ 9140 }, quality={ epic }, effects={ Hellfire (id=397671, index=0, type=equip) }
+bonus_id={ 9141 }, quality={ uncommon }, effects={ Shadow Barrage (id=397673, index=0, type=equip) }
+bonus_id={ 9142 }, quality={ rare }, effects={ Shadow Barrage (id=397675, index=0, type=equip) }
+bonus_id={ 9143 }, quality={ epic }, effects={ Shadow Barrage (id=397677, index=0, type=equip) }
+bonus_id={ 9152 }, quality={ uncommon }, effects={ Fists of Earthen Fury (id=398378, index=0, type=equip) }
+bonus_id={ 9153 }, quality={ rare }, effects={ Fists of Earthen Fury (id=398383, index=0, type=equip) }
+bonus_id={ 9154 }, quality={ epic }, effects={ Fists of Earthen Fury (id=398389, index=0, type=equip) }
+bonus_id={ 9155 }, quality={ common }, effects={ Shadow Barrage (id=395758, index=0, type=equip) }
 bonus_id={ 9156 }, ilevel={ 206 @plvl 45 - 327 @plvl 80 }
+bonus_id={ 9157 }, quality={ common }, effects={ Death Grip (id=361126, index=0, type=equip) }
+bonus_id={ 9159 }, quality={ uncommon }, effects={ Snowdrift (id=398735, index=0, type=equip) }
+bonus_id={ 9160 }, quality={ rare }, effects={ Snowdrift (id=398737, index=0, type=equip) }
+bonus_id={ 9161 }, quality={ epic }, effects={ Snowdrift (id=398739, index=0, type=equip) }
+bonus_id={ 9162 }, quality={ common }, effects={ Snowdrift (id=398721, index=0, type=equip) }
+bonus_id={ 9163 }, quality={ common }, effects={ Spitfire (id=373272, index=0, type=equip) }
+bonus_id={ 9164 }, quality={ common }, effects={ Fire Whirl (id=361451, index=0, type=equip) }
+bonus_id={ 9165 }, quality={ common }, effects={ Frozen Orb (id=361372, index=0, type=equip) }
+bonus_id={ 9166 }, quality={ common }, effects={ Arcanosphere (id=361382, index=0, type=equip) }
+bonus_id={ 9167 }, quality={ common }, effects={ Blessed Hammer (id=362914, index=0, type=equip) }
+bonus_id={ 9168 }, quality={ common }, effects={ Dark Star (id=369774, index=0, type=equip) }
+bonus_id={ 9169 }, quality={ common }, effects={ Fists of Earthen Fury (id=361622, index=0, type=equip) }
+bonus_id={ 9170 }, quality={ common }, effects={ Flying Serpent Kick (id=373231, index=0, type=equip) }
+bonus_id={ 9171 }, quality={ common }, effects={ Holy Dragon Punch (id=373235, index=0, type=equip) }
+bonus_id={ 9172 }, quality={ common }, effects={ Earthbreaker (id=375685, index=0, type=equip) }
+bonus_id={ 9173 }, quality={ common }, effects={ Arcane Storm (id=387111, index=0, type=equip) }
+bonus_id={ 9174 }, quality={ common }, effects={ Capacitor Totem (id=362919, index=0, type=equip) }
+bonus_id={ 9175 }, quality={ common }, effects={ Dragon's Breath (id=371846, index=0, type=equip) }
+bonus_id={ 9176 }, quality={ common }, effects={ Frost Nova (id=363355, index=0, type=equip) }
+bonus_id={ 9177 }, quality={ common }, effects={ Ice Wall (id=352278, index=0, type=equip) }
+bonus_id={ 9178 }, quality={ common }, effects={ Intimidating Shout (id=372405, index=0, type=equip) }
+bonus_id={ 9179 }, quality={ common }, effects={ Mighty Ox Kick (id=361618, index=0, type=equip) }
+bonus_id={ 9180 }, quality={ common }, effects={ Icebind (id=373239, index=0, type=equip) }
+bonus_id={ 9181 }, quality={ common }, effects={ Thunderstorm (id=372532, index=0, type=equip) }
+bonus_id={ 9182 }, quality={ common }, effects={ Alter Time (id=361147, index=0, type=equip) }
+bonus_id={ 9183 }, quality={ common }, effects={ Anti-Magic Shell (id=371909, index=0, type=equip) }
+bonus_id={ 9184 }, quality={ common }, effects={ Dispersion (id=373016, index=0, type=equip) }
+bonus_id={ 9185 }, quality={ common }, effects={ Feign Death (id=361063, index=0, type=equip) }
+bonus_id={ 9186 }, quality={ common }, effects={ Grounding Totem (id=372519, index=0, type=equip) }
+bonus_id={ 9187 }, quality={ common }, effects={ Ice Block (id=361059, index=0, type=equip) }
+bonus_id={ 9188 }, quality={ common }, effects={ Spell Reflection (id=361062, index=0, type=equip) }
+bonus_id={ 9189 }, quality={ common }, effects={ Vanish (id=361061, index=0, type=equip) }
+bonus_id={ 9190 }, quality={ common }, effects={ Anti-Magic Zone (id=361629, index=0, type=equip) }
+bonus_id={ 9191 }, quality={ common }, effects={ Gorefiend's Grasp (id=374050, index=0, type=equip) }
+bonus_id={ 9192 }, quality={ common }, effects={ Darkness (id=361628, index=0, type=equip) }
+bonus_id={ 9193 }, quality={ common }, effects={ Smoke Bomb (id=361150, index=0, type=equip) }
+bonus_id={ 9194 }, quality={ common }, effects={ Arclight Cannon (id=395724, index=0, type=equip) }
+bonus_id={ 9195 }, quality={ uncommon }, effects={ Snowdrift (id=398735, index=0, type=equip) }
+bonus_id={ 9196 }, quality={ rare }, effects={ Snowdrift (id=398737, index=0, type=equip) }
+bonus_id={ 9197 }, quality={ epic }, effects={ Snowdrift (id=398739, index=0, type=equip) }
+bonus_id={ 9198 }, quality={ common }, effects={ Hunting Bow (id=385804, index=0, type=equip) }
+bonus_id={ 9199 }, quality={ uncommon }, effects={ Snowdrift (id=398735, index=0, type=equip) }
+bonus_id={ 9200 }, quality={ rare }, effects={ Snowdrift (id=398737, index=0, type=equip) }
+bonus_id={ 9201 }, quality={ epic }, effects={ Snowdrift (id=398739, index=0, type=equip) }
+bonus_id={ 9202 }, quality={ common }, effects={ Vanguard Sword (id=395014, index=0, type=equip) }
+bonus_id={ 9203 }, quality={ uncommon }, effects={ Vanguard Sword (id=395014, index=0, type=equip) }
+bonus_id={ 9204 }, quality={ rare }, effects={ Vanguard Sword (id=395014, index=0, type=equip) }
+bonus_id={ 9205 }, quality={ epic }, effects={ Vanguard Sword (id=395014, index=0, type=equip) }
+bonus_id={ 9206 }, quality={ common }, effects={ Frostscythe (id=372331, index=0, type=equip) }
+bonus_id={ 9207 }, quality={ uncommon }, effects={ Frostscythe (id=372331, index=0, type=equip) }
+bonus_id={ 9208 }, quality={ rare }, effects={ Frostscythe (id=372331, index=0, type=equip) }
+bonus_id={ 9209 }, quality={ epic }, effects={ Frostscythe (id=372331, index=0, type=equip) }
+bonus_id={ 9210 }, quality={ common }, effects={ Blitzfire Revolver (id=401321, index=0, type=equip) }
+bonus_id={ 9211 }, quality={ uncommon }, effects={ Blitzfire Revolver (id=401321, index=0, type=equip) }
+bonus_id={ 9212 }, quality={ rare }, effects={ Blitzfire Revolver (id=401321, index=0, type=equip) }
+bonus_id={ 9213 }, quality={ epic }, effects={ Blitzfire Revolver (id=401321, index=0, type=equip) }
 bonus_id={ 9232 }, ilevel={ 249 @plvl 60 - 340 @plvl 72 }
 bonus_id={ 9233 }, quality={ rare }, ilevel={ 21 @plvl 1 - 236 @plvl 70 }
 bonus_id={ 9234 }, base_ilevel={ 424 }
 bonus_id={ 9236 }, quality={ rare }, ilevel={ 252 @plvl 60 - 353 @plvl 72 }
 bonus_id={ 9237 }, effects={ Griftah's All-Purpose Embellishing Powder (id=400698, index=0, type=equip) }
+bonus_id={ 9238 }, quality={ common }, effects={ Disengage (id=361151, index=0, type=equip) }
+bonus_id={ 9239 }, quality={ uncommon }, effects={ Horn of the Frostwyrm (id=363344, index=0, type=equip) }
+bonus_id={ 9240 }, quality={ rare }, effects={ Disengage (id=361151, index=0, type=equip) }
+bonus_id={ 9241 }, quality={ epic }, effects={ Disengage (id=361151, index=0, type=equip) }
+bonus_id={ 9242 }, quality={ common }, effects={ Horn of the Frostwyrm (id=363344, index=0, type=equip) }
+bonus_id={ 9243 }, quality={ uncommon }, effects={ Horn of the Frostwyrm (id=363344, index=0, type=equip) }
+bonus_id={ 9244 }, quality={ rare }, effects={ Horn of the Frostwyrm (id=363344, index=0, type=equip) }
+bonus_id={ 9245 }, quality={ epic }, effects={ Horn of the Frostwyrm (id=363344, index=0, type=equip) }
+bonus_id={ 9246 }, quality={ common }, effects={ Roll (id=361138, index=0, type=equip) }
+bonus_id={ 9247 }, quality={ uncommon }, effects={ Roll (id=361138, index=0, type=equip) }
+bonus_id={ 9248 }, quality={ rare }, effects={ Roll (id=361138, index=0, type=equip) }
+bonus_id={ 9249 }, quality={ epic }, effects={ Roll (id=361138, index=0, type=equip) }
+bonus_id={ 9250 }, quality={ common }, effects={ Arclight Spanner (id=401219, index=0, type=equip) }
+bonus_id={ 9251 }, quality={ uncommon }, effects={ Arclight Spanner (id=401219, index=0, type=equip) }
+bonus_id={ 9252 }, quality={ rare }, effects={ Arclight Spanner (id=401219, index=0, type=equip) }
+bonus_id={ 9253 }, quality={ epic }, effects={ Arclight Spanner (id=401219, index=0, type=equip) }
+bonus_id={ 9254 }, quality={ common }, effects={ Shield Block (id=394809, index=0, type=equip) }
+bonus_id={ 9255 }, quality={ uncommon }, effects={ Shield Block (id=394809, index=0, type=equip) }
+bonus_id={ 9256 }, quality={ rare }, effects={ Shield Block (id=394809, index=0, type=equip) }
+bonus_id={ 9257 }, quality={ epic }, effects={ Shield Block (id=394809, index=0, type=equip) }
+bonus_id={ 9258 }, quality={ common }, effects={ Molten Boulder (id=402380, index=0, type=equip) }
+bonus_id={ 9259 }, quality={ uncommon }, effects={ Molten Boulder (id=402436, index=0, type=equip) }
+bonus_id={ 9260 }, quality={ rare }, effects={ Molten Boulder (id=402442, index=0, type=equip) }
+bonus_id={ 9261 }, quality={ epic }, effects={ Molten Boulder (id=402449, index=0, type=equip) }
+bonus_id={ 9262 }, quality={ uncommon }, effects={ Arclight Spanner (id=401219, index=0, type=equip) }
 bonus_id={ 9263 }, quality={ legendary }, ilevel={ 29 @plvl 1 - 202 @plvl 70 }
 bonus_id={ 9264 }, quality={ legendary }, ilevel={ 33 @plvl 1 - 206 @plvl 70 }
 bonus_id={ 9265 }, quality={ legendary }, ilevel={ 41 @plvl 1 - 214 @plvl 70 }
@@ -4712,6 +4913,8 @@ bonus_id={ 9335 }, quality={ epic }
 bonus_id={ 9336 }, quality={ epic }
 bonus_id={ 9337 }, quality={ epic }
 bonus_id={ 9351 }, base_ilevel={ 408 }
+bonus_id={ 9352 }, quality={ common }, effects={ Fisticuffs (id=394019, index=0, type=equip) }
+bonus_id={ 9353 }, quality={ common }, effects={ Guard (id=385212, index=0, type=equip) }
 bonus_id={ 9354 }, ilevel={ 14 @plvl 1 - 329 @plvl 70 }
 bonus_id={ 9355 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 9356 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
@@ -4721,6 +4924,7 @@ bonus_id={ 9359 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 9360 }, effects={ Unknown Effect (id=173912) }
 bonus_id={ 9362 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 9363 }, quality={ epic }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
+bonus_id={ 9364 }, quality={ common }, effects={ Hellfire (id=376361, index=0, type=equip) }
 bonus_id={ 9365 }, base_ilevel={ 382 }, desc={ Ingenuity Crafted }
 bonus_id={ 9366 }, base_ilevel={ 411 }, desc={ Shadowflame Crafted }
 bonus_id={ 9367 }, base_ilevel={ 411 }
@@ -4800,50 +5004,50 @@ bonus_id={ 9532 }, effects={ Dreamtender's Charm (id=419368, index=0, type=equip
 bonus_id={ 9533 }, desc={ Timewarped }, ilevel={ 21 @plvl 1 - 411 @plvl 70 }
 bonus_id={ 9534 }, quality={ rare }, ilevel={ 21 @plvl 1 - 428 @plvl 70 }
 bonus_id={ 9535 }, ilevel={ 21 @plvl 1 - 428 @plvl 70 }
-bonus_id={ 9536 }, quality={ rare }
-bonus_id={ 9537 }, quality={ rare }
-bonus_id={ 9538 }, quality={ rare }
-bonus_id={ 9539 }, quality={ rare }
-bonus_id={ 9540 }, quality={ epic }
-bonus_id={ 9541 }, quality={ epic }
-bonus_id={ 9542 }, quality={ epic }
-bonus_id={ 9543 }, quality={ epic }
-bonus_id={ 9544 }, quality={ uncommon }
-bonus_id={ 9545 }, quality={ uncommon }
-bonus_id={ 9546 }, quality={ rare }
-bonus_id={ 9547 }, quality={ rare }
-bonus_id={ 9548 }, quality={ rare }
-bonus_id={ 9549 }, quality={ rare }
-bonus_id={ 9550 }, quality={ rare }
-bonus_id={ 9551 }, quality={ rare }
-bonus_id={ 9552 }, quality={ epic }
-bonus_id={ 9553 }, quality={ epic }
-bonus_id={ 9554 }, quality={ epic }
-bonus_id={ 9555 }, quality={ epic }
-bonus_id={ 9556 }, quality={ epic }
-bonus_id={ 9557 }, quality={ epic }
-bonus_id={ 9558 }, quality={ epic }
-bonus_id={ 9559 }, quality={ epic }
-bonus_id={ 9560 }, quality={ epic }
-bonus_id={ 9561 }, quality={ epic }
-bonus_id={ 9562 }, quality={ epic }
-bonus_id={ 9563 }, quality={ epic }
-bonus_id={ 9564 }, quality={ epic }
-bonus_id={ 9565 }, quality={ epic }
-bonus_id={ 9566 }, quality={ epic }
-bonus_id={ 9567 }, quality={ epic }
-bonus_id={ 9568 }, quality={ epic }
-bonus_id={ 9569 }, quality={ epic }
-bonus_id={ 9570 }, quality={ epic }
-bonus_id={ 9571 }, quality={ epic }
-bonus_id={ 9572 }, quality={ epic }
-bonus_id={ 9573 }, quality={ epic }
-bonus_id={ 9574 }, quality={ epic }
-bonus_id={ 9575 }, quality={ epic }
-bonus_id={ 9576 }, quality={ epic }
-bonus_id={ 9577 }, quality={ epic }
-bonus_id={ 9578 }, quality={ epic }
-bonus_id={ 9581 }, quality={ epic }
+bonus_id={ 9536 }, desc={ Dragonflight Season 3 }, quality={ rare }
+bonus_id={ 9537 }, desc={ Dragonflight Season 3 }, quality={ rare }
+bonus_id={ 9538 }, desc={ Dragonflight Season 3 }, quality={ rare }
+bonus_id={ 9539 }, desc={ Dragonflight Season 3 }, quality={ rare }
+bonus_id={ 9540 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9541 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9542 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9543 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9544 }, desc={ Dragonflight Season 3 }, quality={ uncommon }
+bonus_id={ 9545 }, desc={ Dragonflight Season 3 }, quality={ uncommon }
+bonus_id={ 9546 }, desc={ Dragonflight Season 3 }, quality={ rare }
+bonus_id={ 9547 }, desc={ Dragonflight Season 3 }, quality={ rare }
+bonus_id={ 9548 }, desc={ Dragonflight Season 3 }, quality={ rare }
+bonus_id={ 9549 }, desc={ Dragonflight Season 3 }, quality={ rare }
+bonus_id={ 9550 }, desc={ Dragonflight Season 3 }, quality={ rare }
+bonus_id={ 9551 }, desc={ Dragonflight Season 3 }, quality={ rare }
+bonus_id={ 9552 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9553 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9554 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9555 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9556 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9557 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9558 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9559 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9560 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9561 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9562 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9563 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9564 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9565 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9566 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9567 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9568 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9569 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9570 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9571 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9572 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9573 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9574 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9575 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9576 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9577 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9578 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9581 }, desc={ Dragonflight Season 3 }, quality={ epic }
 bonus_id={ 9598 }, ilevel={ 13 @plvl 10 - 342 @plvl 70 }
 bonus_id={ 9601 }, ilevel={ 13 @plvl 10 - 342 @plvl 70 }
 bonus_id={ 9610 }, socket={ 1 }
@@ -5108,11 +5312,301 @@ bonus_id={ 9919 }, ilevel_adjust={ 452 }
 bonus_id={ 9920 }, ilevel_adjust={ 453 }
 bonus_id={ 9921 }, ilevel_adjust={ 454 }
 bonus_id={ 9922 }, ilevel_adjust={ 455 }
+bonus_id={ 9923 }, ilevel_adjust={ 456 }
+bonus_id={ 9924 }, ilevel_adjust={ 457 }
+bonus_id={ 9925 }, ilevel_adjust={ 458 }
+bonus_id={ 9926 }, ilevel_adjust={ 459 }
+bonus_id={ 9927 }, ilevel_adjust={ 460 }
+bonus_id={ 9928 }, ilevel_adjust={ 461 }
+bonus_id={ 9929 }, ilevel_adjust={ 462 }
+bonus_id={ 9930 }, ilevel_adjust={ 463 }
+bonus_id={ 9931 }, ilevel_adjust={ 464 }
+bonus_id={ 9932 }, ilevel_adjust={ 465 }
+bonus_id={ 9933 }, ilevel_adjust={ 466 }
+bonus_id={ 9934 }, ilevel_adjust={ 467 }
+bonus_id={ 9935 }, ilevel_adjust={ 468 }
+bonus_id={ 9936 }, ilevel_adjust={ 469 }
+bonus_id={ 9937 }, ilevel_adjust={ 470 }
+bonus_id={ 9938 }, ilevel_adjust={ 471 }
+bonus_id={ 9939 }, ilevel_adjust={ 472 }
+bonus_id={ 9940 }, ilevel_adjust={ 473 }
+bonus_id={ 9941 }, ilevel_adjust={ 474 }
+bonus_id={ 9942 }, ilevel_adjust={ 475 }
+bonus_id={ 9943 }, ilevel_adjust={ 476 }
+bonus_id={ 9944 }, ilevel_adjust={ 477 }
+bonus_id={ 9945 }, ilevel_adjust={ 478 }
+bonus_id={ 9946 }, ilevel_adjust={ 479 }
+bonus_id={ 9947 }, ilevel_adjust={ 480 }
+bonus_id={ 9948 }, ilevel_adjust={ 481 }
+bonus_id={ 9949 }, ilevel_adjust={ 482 }
+bonus_id={ 9950 }, ilevel_adjust={ 483 }
+bonus_id={ 9951 }, ilevel_adjust={ 484 }
+bonus_id={ 9952 }, ilevel_adjust={ 485 }
+bonus_id={ 9953 }, ilevel_adjust={ 486 }
+bonus_id={ 9954 }, ilevel_adjust={ 487 }
+bonus_id={ 9955 }, ilevel_adjust={ 488 }
+bonus_id={ 9956 }, ilevel_adjust={ 489 }
+bonus_id={ 9957 }, ilevel_adjust={ 490 }
+bonus_id={ 9958 }, ilevel_adjust={ 491 }
+bonus_id={ 9959 }, ilevel_adjust={ 492 }
+bonus_id={ 9960 }, ilevel_adjust={ 493 }
+bonus_id={ 9961 }, ilevel_adjust={ 494 }
+bonus_id={ 9962 }, ilevel_adjust={ 495 }
+bonus_id={ 9963 }, ilevel_adjust={ 496 }
+bonus_id={ 9964 }, ilevel_adjust={ 497 }
+bonus_id={ 9965 }, ilevel_adjust={ 498 }
+bonus_id={ 9966 }, ilevel_adjust={ 499 }
+bonus_id={ 9967 }, ilevel_adjust={ 500 }
+bonus_id={ 9968 }, ilevel_adjust={ 501 }
+bonus_id={ 9969 }, ilevel_adjust={ 502 }
+bonus_id={ 9970 }, ilevel_adjust={ 503 }
+bonus_id={ 9971 }, ilevel_adjust={ 504 }
+bonus_id={ 9972 }, ilevel_adjust={ 505 }
+bonus_id={ 9973 }, ilevel_adjust={ 506 }
+bonus_id={ 9974 }, ilevel_adjust={ 507 }
+bonus_id={ 9975 }, ilevel_adjust={ 508 }
+bonus_id={ 9976 }, ilevel_adjust={ 509 }
+bonus_id={ 9977 }, ilevel_adjust={ 510 }
+bonus_id={ 9978 }, ilevel_adjust={ 511 }
+bonus_id={ 9979 }, ilevel_adjust={ 512 }
+bonus_id={ 9980 }, ilevel_adjust={ 513 }
+bonus_id={ 9981 }, ilevel_adjust={ 514 }
+bonus_id={ 9982 }, ilevel_adjust={ 515 }
+bonus_id={ 9983 }, ilevel_adjust={ 516 }
+bonus_id={ 9984 }, ilevel_adjust={ 517 }
+bonus_id={ 9985 }, ilevel_adjust={ 518 }
+bonus_id={ 9986 }, ilevel_adjust={ 519 }
+bonus_id={ 9987 }, ilevel_adjust={ 520 }
+bonus_id={ 9988 }, ilevel_adjust={ 521 }
+bonus_id={ 9989 }, ilevel_adjust={ 522 }
+bonus_id={ 9990 }, ilevel_adjust={ 523 }
+bonus_id={ 9991 }, ilevel_adjust={ 524 }
+bonus_id={ 9992 }, ilevel_adjust={ 525 }
+bonus_id={ 9993 }, ilevel_adjust={ 526 }
+bonus_id={ 9994 }, ilevel_adjust={ 527 }
+bonus_id={ 9995 }, ilevel_adjust={ 528 }
+bonus_id={ 9996 }, ilevel_adjust={ 529 }
+bonus_id={ 9997 }, ilevel_adjust={ 530 }
+bonus_id={ 9998 }, ilevel_adjust={ 531 }
+bonus_id={ 9999 }, ilevel_adjust={ 532 }
+bonus_id={ 10000 }, ilevel_adjust={ 533 }
+bonus_id={ 10001 }, ilevel_adjust={ 534 }
+bonus_id={ 10002 }, ilevel_adjust={ 535 }
+bonus_id={ 10003 }, ilevel_adjust={ 536 }
+bonus_id={ 10004 }, ilevel_adjust={ 537 }
+bonus_id={ 10005 }, ilevel_adjust={ 538 }
+bonus_id={ 10006 }, ilevel_adjust={ 539 }
+bonus_id={ 10007 }, ilevel_adjust={ 540 }
+bonus_id={ 10008 }, ilevel_adjust={ 541 }
+bonus_id={ 10009 }, ilevel_adjust={ 542 }
+bonus_id={ 10010 }, ilevel_adjust={ 543 }
+bonus_id={ 10011 }, ilevel_adjust={ 544 }
+bonus_id={ 10012 }, ilevel_adjust={ 545 }
+bonus_id={ 10013 }, ilevel_adjust={ 546 }
+bonus_id={ 10014 }, ilevel_adjust={ 547 }
+bonus_id={ 10015 }, ilevel_adjust={ 548 }
+bonus_id={ 10016 }, ilevel_adjust={ 549 }
+bonus_id={ 10017 }, ilevel_adjust={ 550 }
+bonus_id={ 10018 }, ilevel_adjust={ 551 }
+bonus_id={ 10019 }, ilevel_adjust={ 552 }
+bonus_id={ 10020 }, ilevel_adjust={ 553 }
+bonus_id={ 10021 }, ilevel_adjust={ 554 }
+bonus_id={ 10022 }, ilevel_adjust={ 555 }
+bonus_id={ 10023 }, ilevel_adjust={ 556 }
+bonus_id={ 10024 }, ilevel_adjust={ 557 }
+bonus_id={ 10025 }, ilevel_adjust={ 558 }
+bonus_id={ 10026 }, ilevel_adjust={ 559 }
+bonus_id={ 10027 }, ilevel_adjust={ 560 }
+bonus_id={ 10028 }, ilevel_adjust={ 561 }
+bonus_id={ 10029 }, ilevel_adjust={ 562 }
+bonus_id={ 10030 }, ilevel_adjust={ 563 }
+bonus_id={ 10031 }, ilevel_adjust={ 564 }
+bonus_id={ 10032 }, ilevel_adjust={ 565 }
+bonus_id={ 10033 }, ilevel_adjust={ 566 }
+bonus_id={ 10034 }, ilevel_adjust={ 567 }
+bonus_id={ 10035 }, ilevel_adjust={ 568 }
+bonus_id={ 10036 }, ilevel_adjust={ 569 }
+bonus_id={ 10037 }, ilevel_adjust={ 570 }
+bonus_id={ 10038 }, ilevel_adjust={ 571 }
+bonus_id={ 10039 }, ilevel_adjust={ 572 }
+bonus_id={ 10040 }, ilevel_adjust={ 573 }
+bonus_id={ 10041 }, ilevel_adjust={ 574 }
+bonus_id={ 10042 }, ilevel_adjust={ 575 }
+bonus_id={ 10043 }, ilevel_adjust={ 576 }
+bonus_id={ 10044 }, ilevel_adjust={ 577 }
+bonus_id={ 10045 }, ilevel_adjust={ 578 }
+bonus_id={ 10046 }, ilevel_adjust={ 579 }
+bonus_id={ 10047 }, ilevel_adjust={ 580 }
+bonus_id={ 10048 }, ilevel_adjust={ 581 }
+bonus_id={ 10049 }, ilevel_adjust={ 582 }
+bonus_id={ 10050 }, ilevel_adjust={ 583 }
+bonus_id={ 10051 }, ilevel_adjust={ 584 }
+bonus_id={ 10052 }, ilevel_adjust={ 585 }
+bonus_id={ 10053 }, ilevel_adjust={ 586 }
+bonus_id={ 10054 }, ilevel_adjust={ 587 }
+bonus_id={ 10055 }, ilevel_adjust={ 588 }
+bonus_id={ 10056 }, ilevel_adjust={ 589 }
+bonus_id={ 10057 }, ilevel_adjust={ 590 }
+bonus_id={ 10058 }, ilevel_adjust={ 591 }
+bonus_id={ 10059 }, ilevel_adjust={ 592 }
+bonus_id={ 10060 }, ilevel_adjust={ 593 }
+bonus_id={ 10061 }, ilevel_adjust={ 594 }
+bonus_id={ 10062 }, ilevel_adjust={ 595 }
+bonus_id={ 10063 }, ilevel_adjust={ 596 }
+bonus_id={ 10064 }, ilevel_adjust={ 597 }
+bonus_id={ 10065 }, ilevel_adjust={ 598 }
+bonus_id={ 10066 }, ilevel_adjust={ 599 }
+bonus_id={ 10067 }, ilevel_adjust={ 600 }
 bonus_id={ 10068 }, ilevel_adjust={ -451 }
 bonus_id={ 10069 }, ilevel_adjust={ -452 }
 bonus_id={ 10070 }, ilevel_adjust={ -453 }
 bonus_id={ 10071 }, ilevel_adjust={ -454 }
 bonus_id={ 10072 }, ilevel_adjust={ -455 }
+bonus_id={ 10073 }, ilevel_adjust={ -456 }
+bonus_id={ 10074 }, ilevel_adjust={ -457 }
+bonus_id={ 10075 }, ilevel_adjust={ -458 }
+bonus_id={ 10076 }, ilevel_adjust={ -459 }
+bonus_id={ 10077 }, ilevel_adjust={ -460 }
+bonus_id={ 10078 }, ilevel_adjust={ -461 }
+bonus_id={ 10079 }, ilevel_adjust={ -462 }
+bonus_id={ 10080 }, ilevel_adjust={ -463 }
+bonus_id={ 10081 }, ilevel_adjust={ -464 }
+bonus_id={ 10082 }, ilevel_adjust={ -465 }
+bonus_id={ 10083 }, ilevel_adjust={ -466 }
+bonus_id={ 10084 }, ilevel_adjust={ -467 }
+bonus_id={ 10085 }, ilevel_adjust={ -468 }
+bonus_id={ 10086 }, ilevel_adjust={ -469 }
+bonus_id={ 10087 }, ilevel_adjust={ -470 }
+bonus_id={ 10088 }, ilevel_adjust={ -471 }
+bonus_id={ 10089 }, ilevel_adjust={ -472 }
+bonus_id={ 10090 }, ilevel_adjust={ -473 }
+bonus_id={ 10091 }, ilevel_adjust={ -474 }
+bonus_id={ 10092 }, ilevel_adjust={ -475 }
+bonus_id={ 10093 }, ilevel_adjust={ -476 }
+bonus_id={ 10094 }, ilevel_adjust={ -477 }
+bonus_id={ 10095 }, ilevel_adjust={ -478 }
+bonus_id={ 10096 }, ilevel_adjust={ -479 }
+bonus_id={ 10097 }, ilevel_adjust={ -480 }
+bonus_id={ 10098 }, ilevel_adjust={ -481 }
+bonus_id={ 10099 }, ilevel_adjust={ -482 }
+bonus_id={ 10100 }, ilevel_adjust={ -483 }
+bonus_id={ 10101 }, ilevel_adjust={ -484 }
+bonus_id={ 10102 }, ilevel_adjust={ -485 }
+bonus_id={ 10103 }, ilevel_adjust={ -486 }
+bonus_id={ 10104 }, ilevel_adjust={ -487 }
+bonus_id={ 10105 }, ilevel_adjust={ -488 }
+bonus_id={ 10106 }, ilevel_adjust={ -489 }
+bonus_id={ 10107 }, ilevel_adjust={ -490 }
+bonus_id={ 10108 }, ilevel_adjust={ -491 }
+bonus_id={ 10109 }, ilevel_adjust={ -492 }
+bonus_id={ 10110 }, ilevel_adjust={ -493 }
+bonus_id={ 10111 }, ilevel_adjust={ -494 }
+bonus_id={ 10112 }, ilevel_adjust={ -495 }
+bonus_id={ 10113 }, ilevel_adjust={ -496 }
+bonus_id={ 10114 }, ilevel_adjust={ -497 }
+bonus_id={ 10115 }, ilevel_adjust={ -498 }
+bonus_id={ 10116 }, ilevel_adjust={ -499 }
+bonus_id={ 10117 }, ilevel_adjust={ -500 }
+bonus_id={ 10118 }, ilevel_adjust={ -501 }
+bonus_id={ 10119 }, ilevel_adjust={ -502 }
+bonus_id={ 10120 }, ilevel_adjust={ -503 }
+bonus_id={ 10121 }, ilevel_adjust={ -504 }
+bonus_id={ 10122 }, ilevel_adjust={ -505 }
+bonus_id={ 10123 }, ilevel_adjust={ -506 }
+bonus_id={ 10124 }, ilevel_adjust={ -507 }
+bonus_id={ 10125 }, ilevel_adjust={ -508 }
+bonus_id={ 10126 }, ilevel_adjust={ -509 }
+bonus_id={ 10127 }, ilevel_adjust={ -510 }
+bonus_id={ 10128 }, ilevel_adjust={ -511 }
+bonus_id={ 10129 }, ilevel_adjust={ -512 }
+bonus_id={ 10130 }, ilevel_adjust={ -513 }
+bonus_id={ 10131 }, ilevel_adjust={ -514 }
+bonus_id={ 10132 }, ilevel_adjust={ -515 }
+bonus_id={ 10133 }, ilevel_adjust={ -516 }
+bonus_id={ 10134 }, ilevel_adjust={ -517 }
+bonus_id={ 10135 }, ilevel_adjust={ -518 }
+bonus_id={ 10136 }, ilevel_adjust={ -519 }
+bonus_id={ 10137 }, ilevel_adjust={ -520 }
+bonus_id={ 10138 }, ilevel_adjust={ -521 }
+bonus_id={ 10139 }, ilevel_adjust={ -522 }
+bonus_id={ 10140 }, ilevel_adjust={ -523 }
+bonus_id={ 10141 }, ilevel_adjust={ -524 }
+bonus_id={ 10142 }, ilevel_adjust={ -525 }
+bonus_id={ 10143 }, ilevel_adjust={ -526 }
+bonus_id={ 10144 }, ilevel_adjust={ -527 }
+bonus_id={ 10145 }, ilevel_adjust={ -528 }
+bonus_id={ 10146 }, ilevel_adjust={ -529 }
+bonus_id={ 10147 }, ilevel_adjust={ -530 }
+bonus_id={ 10148 }, ilevel_adjust={ -531 }
+bonus_id={ 10149 }, ilevel_adjust={ -532 }
+bonus_id={ 10150 }, ilevel_adjust={ -533 }
+bonus_id={ 10151 }, ilevel_adjust={ -534 }
+bonus_id={ 10152 }, ilevel_adjust={ -535 }
+bonus_id={ 10153 }, ilevel_adjust={ -536 }
+bonus_id={ 10154 }, ilevel_adjust={ -537 }
+bonus_id={ 10155 }, ilevel_adjust={ -538 }
+bonus_id={ 10156 }, ilevel_adjust={ -539 }
+bonus_id={ 10157 }, ilevel_adjust={ -540 }
+bonus_id={ 10158 }, ilevel_adjust={ -541 }
+bonus_id={ 10159 }, ilevel_adjust={ -542 }
+bonus_id={ 10160 }, ilevel_adjust={ -543 }
+bonus_id={ 10161 }, ilevel_adjust={ -544 }
+bonus_id={ 10162 }, ilevel_adjust={ -545 }
+bonus_id={ 10163 }, ilevel_adjust={ -546 }
+bonus_id={ 10164 }, ilevel_adjust={ -547 }
+bonus_id={ 10165 }, ilevel_adjust={ -548 }
+bonus_id={ 10166 }, ilevel_adjust={ -549 }
+bonus_id={ 10167 }, ilevel_adjust={ -550 }
+bonus_id={ 10168 }, ilevel_adjust={ -551 }
+bonus_id={ 10169 }, ilevel_adjust={ -552 }
+bonus_id={ 10170 }, ilevel_adjust={ -553 }
+bonus_id={ 10171 }, ilevel_adjust={ -554 }
+bonus_id={ 10172 }, ilevel_adjust={ -555 }
+bonus_id={ 10173 }, ilevel_adjust={ -556 }
+bonus_id={ 10174 }, ilevel_adjust={ -557 }
+bonus_id={ 10175 }, ilevel_adjust={ -558 }
+bonus_id={ 10176 }, ilevel_adjust={ -559 }
+bonus_id={ 10177 }, ilevel_adjust={ -560 }
+bonus_id={ 10178 }, ilevel_adjust={ -561 }
+bonus_id={ 10179 }, ilevel_adjust={ -562 }
+bonus_id={ 10180 }, ilevel_adjust={ -563 }
+bonus_id={ 10181 }, ilevel_adjust={ -564 }
+bonus_id={ 10182 }, ilevel_adjust={ -565 }
+bonus_id={ 10183 }, ilevel_adjust={ -566 }
+bonus_id={ 10184 }, ilevel_adjust={ -567 }
+bonus_id={ 10185 }, ilevel_adjust={ -568 }
+bonus_id={ 10186 }, ilevel_adjust={ -569 }
+bonus_id={ 10187 }, ilevel_adjust={ -570 }
+bonus_id={ 10188 }, ilevel_adjust={ -571 }
+bonus_id={ 10189 }, ilevel_adjust={ -572 }
+bonus_id={ 10190 }, ilevel_adjust={ -573 }
+bonus_id={ 10191 }, ilevel_adjust={ -574 }
+bonus_id={ 10192 }, ilevel_adjust={ -575 }
+bonus_id={ 10193 }, ilevel_adjust={ -576 }
+bonus_id={ 10194 }, ilevel_adjust={ -577 }
+bonus_id={ 10195 }, ilevel_adjust={ -578 }
+bonus_id={ 10196 }, ilevel_adjust={ -579 }
+bonus_id={ 10197 }, ilevel_adjust={ -580 }
+bonus_id={ 10198 }, ilevel_adjust={ -581 }
+bonus_id={ 10199 }, ilevel_adjust={ -582 }
+bonus_id={ 10200 }, ilevel_adjust={ -583 }
+bonus_id={ 10201 }, ilevel_adjust={ -584 }
+bonus_id={ 10202 }, ilevel_adjust={ -585 }
+bonus_id={ 10203 }, ilevel_adjust={ -586 }
+bonus_id={ 10204 }, ilevel_adjust={ -587 }
+bonus_id={ 10205 }, ilevel_adjust={ -588 }
+bonus_id={ 10206 }, ilevel_adjust={ -589 }
+bonus_id={ 10207 }, ilevel_adjust={ -590 }
+bonus_id={ 10208 }, ilevel_adjust={ -591 }
+bonus_id={ 10209 }, ilevel_adjust={ -592 }
+bonus_id={ 10210 }, ilevel_adjust={ -593 }
+bonus_id={ 10211 }, ilevel_adjust={ -594 }
+bonus_id={ 10212 }, ilevel_adjust={ -595 }
+bonus_id={ 10213 }, ilevel_adjust={ -596 }
+bonus_id={ 10214 }, ilevel_adjust={ -597 }
+bonus_id={ 10215 }, ilevel_adjust={ -598 }
+bonus_id={ 10216 }, ilevel_adjust={ -599 }
+bonus_id={ 10217 }, ilevel_adjust={ -600 }
 bonus_id={ 10218 }, effects={ Sprint (id=427030, index=0, type=use) }
 bonus_id={ 10219 }, effects={ Blink (id=427053, index=0, type=use) }
 bonus_id={ 10220 }, effects={ Heroic Leap (id=427033, index=0, type=use) }
@@ -5138,5 +5632,172 @@ bonus_id={ 10241 }, effects={ Mark of Arrogance (id=429241, index=0, type=equip)
 bonus_id={ 10242 }, effects={ Sunstrider's Flourish (id=429214, index=0, type=equip) }
 bonus_id={ 10243 }, effects={ Tinkmaster's Shield (id=429230, index=0, type=equip) }
 bonus_id={ 10246 }, effects={ Chi-ji, the Red Crane (id=426268, index=0, type=use) }
+bonus_id={ 10249 }, base_ilevel={ 486 }, desc={ Awakened Crafted }
+bonus_id={ 10250 }, base_ilevel={ 438 }
+bonus_id={ 10305 }, quality={ rare }
+bonus_id={ 10306 }, quality={ rare }
+bonus_id={ 10307 }, quality={ rare }
+bonus_id={ 10308 }, quality={ rare }
+bonus_id={ 10309 }, quality={ epic }
+bonus_id={ 10310 }, quality={ epic }
+bonus_id={ 10311 }, quality={ epic }
+bonus_id={ 10312 }, quality={ epic }
+bonus_id={ 10313 }, quality={ epic }
+bonus_id={ 10314 }, quality={ epic }
+bonus_id={ 10315 }, quality={ epic }
+bonus_id={ 10316 }, quality={ epic }
+bonus_id={ 10317 }, quality={ epic }
+bonus_id={ 10318 }, quality={ epic }
+bonus_id={ 10319 }, quality={ epic }
+bonus_id={ 10320 }, quality={ epic }
+bonus_id={ 10321 }, quality={ uncommon }
+bonus_id={ 10322 }, quality={ uncommon }
+bonus_id={ 10323 }, quality={ rare }
+bonus_id={ 10324 }, quality={ rare }
+bonus_id={ 10325 }, quality={ rare }
+bonus_id={ 10326 }, quality={ rare }
+bonus_id={ 10327 }, quality={ rare }
+bonus_id={ 10328 }, quality={ rare }
+bonus_id={ 10329 }, quality={ epic }
+bonus_id={ 10330 }, quality={ epic }
+bonus_id={ 10331 }, quality={ epic }
+bonus_id={ 10332 }, quality={ epic }
+bonus_id={ 10333 }, quality={ epic }
+bonus_id={ 10334 }, quality={ epic }
+bonus_id={ 10335 }, quality={ epic }
+bonus_id={ 10336 }, quality={ epic }
+bonus_id={ 10337 }, quality={ epic }
+bonus_id={ 10338 }, quality={ epic }
+bonus_id={ 10339 }, quality={ epic }
+bonus_id={ 10340 }, quality={ epic }
+bonus_id={ 10341 }, quality={ epic }
+bonus_id={ 10342 }, quality={ epic }
+bonus_id={ 10343 }, quality={ epic }
+bonus_id={ 10344 }, quality={ epic }
+bonus_id={ 10345 }, quality={ epic }
+bonus_id={ 10346 }, quality={ epic }
+bonus_id={ 10347 }, quality={ epic }
+bonus_id={ 10348 }, quality={ epic }
+bonus_id={ 10357 }, base_ilevel={ 470 }, quality={ epic }
+bonus_id={ 10358 }, base_ilevel={ 499 }
+bonus_id={ 10359 }, base_ilevel={ 509 }
+bonus_id={ 10381 }, quality={ common }, effects={ Health Brew (id=438407, index=0, type=equip) }
+bonus_id={ 10391 }, quality={ common }, effects={ Slash (id=431147, index=0, type=equip) }
+bonus_id={ 10407 }, quality={ epic }
+bonus_id={ 10408 }, quality={ epic }
+bonus_id={ 10409 }, quality={ epic }
+bonus_id={ 10410 }, quality={ epic }
+bonus_id={ 10411 }, quality={ epic }
+bonus_id={ 10412 }, quality={ epic }
+bonus_id={ 10413 }, quality={ epic }
+bonus_id={ 10414 }, quality={ epic }
+bonus_id={ 10415 }, quality={ epic }
+bonus_id={ 10416 }, quality={ epic }
+bonus_id={ 10417 }, quality={ epic }
+bonus_id={ 10418 }, quality={ epic }
 bonus_id={ 10426 }, ilevel={ 5 @plvl 1 - 441 @plvl 70 }
+bonus_id={ 10427 }, quality={ common }, effects={ Mana Sphere (id=431501, index=0, type=equip) }
+bonus_id={ 10428 }, quality={ common }, effects={ Searing Axe (id=432490, index=0, type=equip) }
+bonus_id={ 10429 }, quality={ common }, effects={ Rime Arrow (id=435276, index=0, type=equip) }
+bonus_id={ 10430 }, quality={ common }, effects={ Fire Whirl (id=431777, index=0, type=equip) }
+bonus_id={ 10431 }, quality={ common }, effects={ Fade to Shadow (id=432547, index=0, type=equip) }
+bonus_id={ 10432 }, quality={ common }, effects={ Steel Traps (id=434598, index=0, type=equip) }
+bonus_id={ 10433 }, quality={ common }, effects={ Faeform (id=432594, index=0, type=equip) }
+bonus_id={ 10434 }, quality={ common }, effects={ Explosive Caltrops (id=432541, index=0, type=equip) }
+bonus_id={ 10435 }, quality={ common }, effects={ Unknown Effect (id=181874) }
+bonus_id={ 10436 }, quality={ uncommon }, effects={ Searing Axe (id=432752, index=0, type=equip) }
+bonus_id={ 10437 }, quality={ rare }, effects={ Searing Axe (id=432754, index=0, type=equip) }
+bonus_id={ 10438 }, quality={ epic }, effects={ Searing Axe (id=432756, index=0, type=equip) }
+bonus_id={ 10439 }, quality={ uncommon }, effects={ Steel Traps (id=434679, index=0, type=equip) }
+bonus_id={ 10440 }, quality={ rare }, effects={ Steel Traps (id=434681, index=0, type=equip) }
+bonus_id={ 10441 }, quality={ epic }, effects={ Steel Traps (id=434684, index=0, type=equip) }
+bonus_id={ 10442 }, quality={ uncommon }, effects={ Mana Sphere (id=432730, index=0, type=equip) }
+bonus_id={ 10443 }, quality={ rare }, effects={ Mana Sphere (id=432737, index=0, type=equip) }
+bonus_id={ 10444 }, quality={ epic }, effects={ Mana Sphere (id=432744, index=0, type=equip) }
+bonus_id={ 10445 }, quality={ uncommon }, effects={ Faeform (id=432768, index=0, type=equip) }
+bonus_id={ 10446 }, quality={ rare }, effects={ Faeform (id=432769, index=0, type=equip) }
+bonus_id={ 10447 }, quality={ epic }, effects={ Faeform (id=432770, index=0, type=equip) }
+bonus_id={ 10448 }, quality={ uncommon }, effects={ Fade to Shadow (id=432765, index=0, type=equip) }
+bonus_id={ 10449 }, quality={ rare }, effects={ Fade to Shadow (id=432766, index=0, type=equip) }
+bonus_id={ 10450 }, quality={ epic }, effects={ Fade to Shadow (id=432767, index=0, type=equip) }
+bonus_id={ 10451 }, quality={ uncommon }, effects={ Rime Arrow (id=435288, index=0, type=equip) }
+bonus_id={ 10452 }, quality={ rare }, effects={ Rime Arrow (id=435290, index=0, type=equip) }
+bonus_id={ 10453 }, quality={ epic }, effects={ Rime Arrow (id=435295, index=0, type=equip) }
+bonus_id={ 10454 }, quality={ uncommon }, effects={ Fire Whirl (id=432746, index=0, type=equip) }
+bonus_id={ 10455 }, quality={ rare }, effects={ Fire Whirl (id=432748, index=0, type=equip) }
+bonus_id={ 10456 }, quality={ epic }, effects={ Fire Whirl (id=432750, index=0, type=equip) }
+bonus_id={ 10457 }, quality={ uncommon }, effects={ Unknown Effect (id=181904) }
+bonus_id={ 10458 }, quality={ rare }, effects={ Unknown Effect (id=181905) }
+bonus_id={ 10459 }, quality={ epic }, effects={ Unknown Effect (id=181906) }
+bonus_id={ 10460 }, quality={ uncommon }, effects={ Explosive Caltrops (id=432759, index=0, type=equip) }
+bonus_id={ 10461 }, quality={ rare }, effects={ Explosive Caltrops (id=432762, index=0, type=equip) }
+bonus_id={ 10462 }, quality={ epic }, effects={ Explosive Caltrops (id=432764, index=0, type=equip) }
 bonus_id={ 10465 }, ilevel={ 5 @plvl 1 - 454 @plvl 70 }
+bonus_id={ 10469 }, quality={ common }, effects={ Slicing Winds (id=433082, index=0, type=equip) }
+bonus_id={ 10470 }, quality={ uncommon }, effects={ Slicing Winds (id=433184, index=0, type=equip) }
+bonus_id={ 10471 }, quality={ rare }, effects={ Slicing Winds (id=433185, index=0, type=equip) }
+bonus_id={ 10472 }, quality={ epic }, effects={ Slicing Winds (id=433186, index=0, type=equip) }
+bonus_id={ 10473 }, quality={ common }, effects={ Earthbreaker (id=435018, index=0, type=equip) }
+bonus_id={ 10474 }, quality={ uncommon }, effects={ Earthbreaker (id=435021, index=0, type=equip) }
+bonus_id={ 10475 }, quality={ rare }, effects={ Earthbreaker (id=435023, index=0, type=equip) }
+bonus_id={ 10476 }, quality={ epic }, effects={ Earthbreaker (id=435025, index=0, type=equip) }
+bonus_id={ 10478 }, quality={ common }, effects={ Windstorm (id=433263, index=0, type=equip) }
+bonus_id={ 10479 }, quality={ uncommon }, effects={ Windstorm (id=433256, index=0, type=equip) }
+bonus_id={ 10480 }, quality={ rare }, effects={ Windstorm (id=433264, index=0, type=equip) }
+bonus_id={ 10481 }, quality={ epic }, effects={ Windstorm (id=433265, index=0, type=equip) }
+bonus_id={ 10482 }, quality={ common }, effects={ Snowdrift (id=433364, index=0, type=equip) }
+bonus_id={ 10483 }, quality={ uncommon }, effects={ Snowdrift (id=433373, index=0, type=equip) }
+bonus_id={ 10484 }, quality={ rare }, effects={ Snowdrift (id=433374, index=0, type=equip) }
+bonus_id={ 10485 }, quality={ epic }, effects={ Snowdrift (id=433375, index=0, type=equip) }
+bonus_id={ 10486 }, quality={ common }, effects={ Holy Shield (id=433380, index=0, type=equip) }
+bonus_id={ 10487 }, quality={ uncommon }, effects={ Holy Shield (id=433472, index=0, type=equip) }
+bonus_id={ 10488 }, quality={ rare }, effects={ Holy Shield (id=433473, index=0, type=equip) }
+bonus_id={ 10489 }, quality={ epic }, effects={ Holy Shield (id=433474, index=0, type=equip) }
+bonus_id={ 10490 }, quality={ epic }
+bonus_id={ 10491 }, quality={ epic }
+bonus_id={ 10492 }, quality={ epic }
+bonus_id={ 10493 }, quality={ epic }
+bonus_id={ 10494 }, quality={ epic }
+bonus_id={ 10495 }, quality={ epic }
+bonus_id={ 10496 }, quality={ epic }
+bonus_id={ 10497 }, quality={ epic }
+bonus_id={ 10498 }, quality={ epic }
+bonus_id={ 10499 }, quality={ epic }
+bonus_id={ 10500 }, quality={ epic }
+bonus_id={ 10501 }, quality={ epic }
+bonus_id={ 10502 }, quality={ epic }
+bonus_id={ 10503 }, quality={ epic }
+bonus_id={ 10504 }, quality={ common }, effects={ Star Bomb (id=434880, index=0, type=equip) }
+bonus_id={ 10505 }, quality={ uncommon }, effects={ Star Bomb (id=435030, index=0, type=equip) }
+bonus_id={ 10506 }, quality={ rare }, effects={ Star Bomb (id=435032, index=0, type=equip) }
+bonus_id={ 10507 }, quality={ epic }, effects={ Star Bomb (id=435034, index=0, type=equip) }
+bonus_id={ 10510 }, quality={ common }, effects={ Repel (id=435286, index=0, type=equip) }
+bonus_id={ 10511 }, quality={ uncommon }, effects={ Repel (id=435292, index=0, type=equip) }
+bonus_id={ 10512 }, quality={ rare }, effects={ Repel (id=435296, index=0, type=equip) }
+bonus_id={ 10513 }, quality={ epic }, effects={ Repel (id=435298, index=0, type=equip) }
+bonus_id={ 10514 }, quality={ common }, effects={ Quaking Leap (id=435454, index=0, type=equip) }
+bonus_id={ 10515 }, quality={ uncommon }, effects={ Quaking Leap (id=435510, index=0, type=equip) }
+bonus_id={ 10516 }, quality={ rare }, effects={ Quaking Leap (id=435729, index=0, type=equip) }
+bonus_id={ 10517 }, quality={ epic }, effects={ Quaking Leap (id=435757, index=0, type=equip) }
+bonus_id={ 10519 }, quality={ common }, effects={ Hunter's Chains (id=436031, index=0, type=equip) }
+bonus_id={ 10524 }, quality={ uncommon }, effects={ Hunter's Chains (id=436211, index=0, type=equip) }
+bonus_id={ 10525 }, quality={ rare }, effects={ Hunter's Chains (id=436229, index=0, type=equip) }
+bonus_id={ 10526 }, quality={ epic }, effects={ Hunter's Chains (id=436240, index=0, type=equip) }
+bonus_id={ 10527 }, quality={ common }, effects={ Toxic Smackerel (id=436254, index=0, type=equip) }
+bonus_id={ 10528 }, quality={ uncommon }, effects={ Toxic Smackerel (id=436308, index=0, type=equip) }
+bonus_id={ 10529 }, quality={ rare }, effects={ Toxic Smackerel (id=436310, index=0, type=equip) }
+bonus_id={ 10530 }, quality={ epic }, effects={ Toxic Smackerel (id=436312, index=0, type=equip) }
+bonus_id={ 10531 }, socket={ 1 }
+bonus_id={ 10845 }, desc={ Timewarped }, ilevel={ 21 @plvl 1 - 450 @plvl 70 }
+bonus_id={ 10861 }, quality={ rare }, ilevel={ 21 @plvl 1 - 467 @plvl 70 }
+bonus_id={ 10862 }, quality={ rare }, ilevel={ 21 @plvl 1 - 467 @plvl 70 }
+bonus_id={ 10882 }, ilevel={ 5 @plvl 1 - 493 @plvl 70 }
+bonus_id={ 10883 }, ilevel={ 5 @plvl 1 - 480 @plvl 70 }
+bonus_id={ 11075 }, quality={ common }, effects={ Lightning Bulwark (id=442371, index=0, type=equip) }
+bonus_id={ 11076 }, quality={ uncommon }, effects={ Lightning Bulwark (id=442404, index=0, type=equip) }
+bonus_id={ 11077 }, quality={ rare }, effects={ Lightning Bulwark (id=442407, index=0, type=equip) }
+bonus_id={ 11078 }, quality={ epic }, effects={ Lightning Bulwark (id=442411, index=0, type=equip) }
+bonus_id={ 11096 }, quality={ common }, effects={ Storm Archon (id=442445, index=0, type=equip) }
+bonus_id={ 11097 }, quality={ uncommon }, effects={ Storm Archon (id=442819, index=0, type=equip) }
+bonus_id={ 11098 }, quality={ rare }, effects={ Storm Archon (id=442840, index=0, type=equip) }
+bonus_id={ 11099 }, quality={ epic }, effects={ Storm Archon (id=442862, index=0, type=equip) }

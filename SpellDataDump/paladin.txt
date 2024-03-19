@@ -1,4 +1,4 @@
-SimulationCraft 1025-01 for World of Warcraft 10.2.5.53584 Live
+SimulationCraft 1025-01 for World of Warcraft 10.2.6.53840 Live
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -319,7 +319,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=849)      : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.17900 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (1.87 -> 3.179)
 #2 (id=850)      : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=1087985)  : Trigger Spell w/ Value (142): Lightforged Blessing
@@ -330,6 +329,7 @@ Description      : Casts down the enemy with a bolt of Holy Light, causing $s1 H
 Tooltip          : Incapable of causing a critical effect.
 
 Name             : Cleanse (id=4987) [Spell Family (10)] 
+Replaces         : Cleanse Toxins (id=440013)
 Class            : Holy Paladin
 School           : Holy
 Spell Type       : Magic
@@ -2669,7 +2669,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ........ .....
                  : Allow While Sitting (27), Ignore Line of Sight (66), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), Not On Player Controlled NPC (168), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=139112)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.48000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE friendly (31)
 Description      : $@spelldesc114158
 
 Name             : Contemplation (id=121183) [Spell Family (10)] 
@@ -5095,7 +5095,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=318059)   : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Lay on Hands (633), Cleanse (4987), Flash of Light (19750), Holy Shock (20473), Holy Shock (25912), Holy Shock (25914), Beacon of Light (53563), Beacon of Light (53652), Holy Light (82326), Word of Glory (85673), Light's Hammer (114158), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Beacon of Faith (156910), Light of the Martyr (183998), Beacon of Virtue (200025), Cleanse Toxins (213644), Bestow Faith (223306), Divine Toll (304971), Bestow Faith (343618), Divine Toll (375576), Divine Resonance (386731), Divine Resonance (387896)
+                   Affected Spells: Lay on Hands (633), Cleanse (4987), Flash of Light (19750), Holy Shock (20473), Holy Shock (25912), Holy Shock (25914), Beacon of Light (53563), Beacon of Light (53652), Holy Light (82326), Word of Glory (85673), Light's Hammer (114158), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Beacon of Faith (156910), Light of the Martyr (183998), Beacon of Virtue (200025), Cleanse Toxins (213644), Bestow Faith (223306), Divine Toll (304971), Bestow Faith (343618), Divine Toll (375576), Divine Resonance (386731), Divine Resonance (387896), Cleanse Toxins (440013)
                    Family Flags: 12, 15, 21, 30, 48, 56, 67, 74, 78, 90, 92, 97, 100, 124
 #2 (id=318060)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
@@ -5549,7 +5549,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349470)   : Apply Aura (6) | Dummy (4)
                    Base Value: 184 | Scaled Value: 184 | PvP Coefficient: 1.30000 | Misc Value: 12 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 1.3)
 Description      : Judgment deems the target unworthy, preventing the next $<shield> damage dealt by the target.
 
 Variables        : $shield=${($SPS*$231644s1/100)*(1+$@versadmg)}
@@ -16022,7 +16021,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : No Threat (42), Include In Advanced Combat Log (72)
 Effects          :
 #1 (id=1034635)  : Apply Aura (6) | Modify Versatility% (471)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc393673
 Tooltip          : Versatility increased by $s1%.
 
@@ -16043,7 +16042,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : No Threat (42), Include In Advanced Combat Log (72)
 Effects          :
 #1 (id=1034654)  : Apply Aura (6) | Modify Parry% (47)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc393674
 Tooltip          : Parry chance increased by $s1%.
 
@@ -17172,7 +17171,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053883)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Holy Shock (25914)
                    Family Flags: 48
 #2 (id=1072761)  : Apply Aura (6) | Dummy (4)
@@ -17201,7 +17200,7 @@ Effects          :
 #2 (id=1072767)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=1072768)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Self (1)
 #4 (id=1072769)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=1072770)  : Apply Aura (6) | Dummy (4)
@@ -19560,12 +19559,36 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (275773), Judgment (275779)
                    Family Flags: 23
-Hotfixed         : NEW EFFECT
 #7 (id=1141804)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -33 | Scaled Value: -33 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (275773), Judgment (275779)
                    Family Flags: 23
-Hotfixed         : NEW EFFECT
 Description      : Holy Paladin core passive
+
+Name             : Cleanse Toxins (id=440013) [Spell Family (10)] 
+Class            : Holy Paladin
+School           : Holy
+Spell Type       : Magic
+Range            : 40 yards
+GCD              : 1.5 seconds
+Cooldown         : 8 seconds
+Charges          : 1 (8 seconds cooldown)
+Category         : 1512
+Category Cooldown: 8 seconds
+Affecting spells : Rule of Law (214202 effect#1)
+Family Flags     : 12
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow On Charmed Targets (201), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1133651)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
+Description      : $@spelldesc213644.
 
 

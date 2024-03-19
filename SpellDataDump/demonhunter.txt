@@ -1,4 +1,4 @@
-SimulationCraft 1025-01 for World of Warcraft 10.2.5.53584 Live
+SimulationCraft 1025-01 for World of Warcraft 10.2.6.53840 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -7587,7 +7587,6 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.50000 | Target: Enemy (6)
                    Affected Spells: Blade Dance (188499), Chaos Strike (199547), Blade Dance (199552), Blade Dance (200685), Annihilation (201428), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Chaos Strike (222031), Annihilation (227518), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055)
                    Family Flags: 6, 14, 25, 37, 50, 127
-Hotfixed         : PvP Coefficient (0.625 -> 0.5)
 Description      : $@spelldesc258860
 Tooltip          : The Demon Hunter's Chaos Strike and Blade Dance inflict $s2% additional damage.
 
@@ -8220,7 +8219,7 @@ Cooldown         : 90 seconds
 Labels           : 976
 Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effects: #1, #3, #4), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 32, 82
-Attributes       : ....x... ........ x.x...x. .....x..   ........ ..x..... ........ ........ 
+Attributes       : ....x... ........ x.x...x. .....x..   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ..x..... ........ 
@@ -8228,7 +8227,7 @@ Attributes       : ....x... ........ x.x...x. .....x..   ........ ..x..... .....
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Track Target in Cast (Player Only) (22), No Immunities (29), No Threat (42), Always Hit (114), Taps immediately (215), Attack on Charge to Unit (242), Not In Spellbook Until Learned (269), Haste Affects Melee Ability Casttime (301), Allow Defense While Casting (337)
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Track Target in Cast (Player Only) (22), No Immunities (29), No Threat (42), No Aura Icon (60), Always Hit (114), Taps immediately (215), Attack on Charge to Unit (242), Not In Spellbook Until Learned (269), Haste Affects Melee Ability Casttime (301), Allow Defense While Casting (337)
 Effects          :
 #1 (id=812702)   : Charge (96)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2 | PvP Coefficient: 1.00000 | Misc Value 2: 0x177ce | Trigger Spell: 323802 | Target: Enemy (6)
@@ -9033,7 +9032,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=837492)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Demonic Wards (203513), Demonic Wards (278386)
+                   Affected Spells: Demonic Wards (203513), Demonic Wards (278386), Darkness (398130), Darkness (398131), Darkness (398132)
                    Family Flags: 63
 Description      : Demonic Wards $?c2[also ][]reduces magic damage taken by $?c1[an additional ][]|cFFFFFFFF${$s1}.1%|r.
 
@@ -10607,10 +10606,12 @@ Spell Level      : 48
 Range            : 50 yards
 Cast Time        : 1 seconds
 GCD              : 1.5 seconds
+Duration         : 2 seconds
 Cooldown         : 90 seconds
 Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effects: #1, #3, #4), Demon Hide (428241 effects: #1, #3)
+Triggered by     : The Hunt (370966)
 Family Flags     : 32, 82
-Attributes       : ....x... ........ x.x...x. .....x..   ........ ..x..... ........ ........ 
+Attributes       : ....x... ........ x.x...x. .....x..   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ..x..... ........ 
@@ -10618,14 +10619,16 @@ Attributes       : ....x... ........ x.x...x. .....x..   ........ ..x..... .....
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Track Target in Cast (Player Only) (22), No Immunities (29), No Threat (42), Always Hit (114), Taps immediately (215), Attack on Charge to Unit (242), Not In Spellbook Until Learned (269), Haste Affects Melee Ability Casttime (301), Allow Defense While Casting (337)
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Track Target in Cast (Player Only) (22), No Immunities (29), No Threat (42), No Aura Icon (60), Always Hit (114), Taps immediately (215), Attack on Charge to Unit (242), Not In Spellbook Until Learned (269), Haste Affects Melee Ability Casttime (301), Allow Defense While Casting (337)
 Effects          :
 #1 (id=982574)   : Charge (96)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2 | PvP Coefficient: 1.00000 | Misc Value 2: 0x21b4e | Trigger Spell: 370966 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 370966 | Target: Enemy (6)
 #2 (id=982575)   : Trigger Spell (64): The Hunt
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 370967 | Target: Enemy (6)
 #3 (id=982576)   : Trigger Spell (64): The Hunt
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 370968 | Target: Self (1)
+#4 (id=1134775)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Charge to your target, striking them for $370966s1 Chaos damage, rooting them in place for $370970d and inflicting $370969o1 Chaos damage over $370969d to up to $370967s2 enemies in your path. 
 
 The pursuit invigorates your soul, healing you for $?c1[$370968s1%][$370968s2%] of the damage you deal to your Hunt target for $370966d.
@@ -10658,6 +10661,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 370970 | Target: Enemy (6)
 #4 (id=982635)   : Trigger Spell (64): The Hunt
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 370969 | Target: Enemy (6)
+#5 (id=1134777)  : Cancel Aura (164)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 370965 | Target: Self (1)
 Description      : $@spelldesc323639
 Tooltip          : Marked by the Demon Hunter, converting $?c1[$345422s1%][$345422s2%] of the damage done to healing.
 
@@ -11123,7 +11128,6 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=1026101)  : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.60000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : Increases maximum health by $s1%.
 
 Name             : Illidari Knowledge (id=389696) [Spell Family (107), Passive] 
@@ -11144,7 +11148,6 @@ Effects          :
 #1 (id=1026102)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0.60000 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : Reduces magic damage taken by $s1%.
 
 Name             : Fel Flame Fortification (id=389705) [Spell Family (107), Passive] 
@@ -13785,7 +13788,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1108394)  : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1108395)  : Apply Aura (6) | Threat (10)
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 Description      : Increases Versatility by $s1% and reduces threat generated by ${$s2*-1}%.
@@ -13813,7 +13815,6 @@ Effects          :
 #2 (id=1108535)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0.60000 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 #3 (id=1117851)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Soul Fragment (203795), Demon Blades (203796), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (306830), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), The Hunt (345396), The Hunt (345422), Burning Wound (346278), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Elysian Decree (389815), Elysian Decree (389858), Elysian Decree (389860), Inner Demon (390137), Elysian Decree (390163), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Fodder to the Flame (391430), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Elysian Decree (394985), Sigil of Flame (425672)
