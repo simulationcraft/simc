@@ -7618,6 +7618,113 @@ void tome_of_unstable_power_new( special_effect_t& effect )
   new tome_of_unstable_power_cb_t( effect );
 }
 
+// 432775 driver/buff
+// 433824 values
+// 433826 debuff
+// 433829 damage
+// 433830 aoe damage
+// TODO: confirm procs on impact
+// TODO: confirm split damage increases by 15% per target
+// TODO: determine if final stack procs the damage before aoe, or aoe only
+struct wellsprings_frost_initializer_t : public item_targetdata_initializer_t
+{
+  wellsprings_frost_initializer_t() : item_targetdata_initializer_t( 432775, 433826 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    bool active = init( td->source );
+
+    td->debuff.wellsprings_frost = make_buff_fallback( active, *td, "wellsprings_frost", debuffs[ td->source ] );
+    td->debuff.wellsprings_frost->reset();
+  }
+};
+
+void frozen_wellspring( special_effect_t& effect )
+{
+  auto damage_value = effect.player->find_spell( 433824 );
+
+  // TODO: confirm split damage increases by 15% per target
+  auto shatter = create_proc_action<generic_aoe_proc_t>( "shatter", effect, "shatter", 433830, true );
+  shatter->base_dd_min = shatter->base_dd_max = damage_value->effectN( 2 ).average( effect.item );
+
+  auto proc = create_proc_action<generic_proc_t>( "wellsprings_frost", effect, "wellsprings_frost", 433829 );
+  proc->base_dd_min = proc->base_dd_max = damage_value->effectN( 1 ).average( effect.item );
+
+  // proxy action for reporting
+  struct frozen_wellspring_proxy_t : public action_t
+  {
+    frozen_wellspring_proxy_t( const special_effect_t& e )
+      : action_t( action_e::ACTION_OTHER, "frozen_wellspring", e.player, e.driver() )
+    {
+      callbacks = false;
+    }
+
+    result_e calculate_result( action_state_t* ) const override
+    {
+      return result_e::RESULT_NONE;
+    }
+  };
+
+  auto proxy = create_proc_action<frozen_wellspring_proxy_t>( "frozen_wellspring", effect );
+  proxy->add_child( shatter );
+  proxy->add_child( proc );
+
+  auto buff = create_buff<buff_t>( effect.player, effect.driver() )
+    ->set_duration( effect.driver()->duration() - 1_ms )  // ensure buff expires before next use
+    ->set_reverse( true );
+
+  auto proc_driver = new special_effect_t( effect.player );
+  proc_driver->name_str = "wellsprings_frost_proc";
+  proc_driver->cooldown_ = 0_ms;
+  proc_driver->spell_id = effect.spell_id;
+  proc_driver->proc_flags_ = effect.proc_flags_;
+  // TODO: confirm procs on impact
+  proc_driver->proc_flags2_ = PF2_ALL_HIT;
+  effect.player->special_effects.push_back( proc_driver );
+
+  auto cb = new dbc_proc_callback_t( effect.player, *proc_driver );
+  cb->initialize();
+  cb->deactivate();
+
+  // TODO: determine if final stack procs the damage before aoe, or aoe only
+  effect.player->callbacks.register_callback_execute_function(
+      proc_driver->spell_id,
+      [ p = effect.player, proc, buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+        proc->execute_on_target( s->target );
+
+        auto td = p->get_target_data( s->target );
+        assert( td );
+
+        td->debuff.wellsprings_frost->trigger();
+        buff->trigger();
+      } );
+
+  buff->set_stack_change_callback( [ cb, proxy, shatter ]( buff_t* b, int old_, int new_ ) {
+    if ( !old_ )
+    {
+      cb->activate();
+      proxy->execute();
+    }
+    else if ( !new_ )
+    {
+      cb->deactivate();
+
+      range::for_each( b->sim->target_non_sleeping_list, [ p = b->player, shatter ]( player_t* t ) {
+        auto td = p->get_target_data( t );
+        assert( td );
+
+        if ( auto stack = td->debuff.wellsprings_frost->stack() )
+        {
+          shatter->base_multiplier = stack;
+          shatter->execute_on_target( t );
+        }
+      } );
+    }
+  } );
+
+  effect.custom_buff = buff;
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -10698,6 +10805,7 @@ void register_special_effects()
   register_special_effect( 401183, items::rashoks_molten_heart, true );
   // 10.2.6 reworked trinkets
   register_special_effect( 432777, items::tome_of_unstable_power_new );
+  register_special_effect( 432775, items::frozen_wellspring );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
@@ -10809,6 +10917,7 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::embed_blade_initializer_t() );
   sim.register_target_data_initializer( items::web_of_dreams_initializer_t() );
   sim.register_target_data_initializer( items::dream_shackles_initializer_t() );
+  sim.register_target_data_initializer( items::wellsprings_frost_initializer_t() );
 }
 
 void register_hotfixes()

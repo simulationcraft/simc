@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.6.53840
-static const std::array<spelltext_data_t, 21044> __spelltext_data { {
+static const std::array<spelltext_data_t, 21047> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20934,6 +20934,9 @@ static const std::array<spelltext_data_t, 21044> __spelltext_data { {
   { 433759, "$@spelldesc432995", "The Inexorable Resonator has fallen dormant and is unable to protect you.", 0 },
   { 433770, "$@spelldesc432995", "Absorbing $s2% of damage taken, up to $w1 total damage. Dealing damage to nearby enemies every $t3 sec.", 0 },
   { 433772, "$@spelldesc432995", 0, 0 },
+  { 433826, "$@spelldesc432775", "When Frozen Wellspring is fully consumed shatter this target dealing $433824w2 Frost damage per stack split between all nearby targets.", 0 },
+  { 433829, "$@spelldesc432775", 0, 0 },
+  { 433830, "$@spelldesc432775", 0, 0 },
   { 433889, "$@spelldesc432777", 0, 0 },
   { 433930, "$@spelldesc432777", 0, 0 },
   { 433954, "$@spelldesc432777", 0, 0 },
