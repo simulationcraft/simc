@@ -5825,7 +5825,9 @@ public:
 
   void post_execute()
   {
-    p()->buff.touch_the_cosmos->expire();
+    if ( !p()->bugs || !is_free( free_spell_e::STARWEAVER ) )
+      p()->buff.touch_the_cosmos->expire();
+
     p()->buff.gathering_starstuff->trigger();
 
     if ( p()->sets->has_set_bonus( DRUID_BALANCE, T31, B4 ) )
@@ -7616,10 +7618,15 @@ struct starfall_t : public ap_spender_t
 
   void execute() override
   {
-    if ( !is_free() && p()->buff.starweavers_warp->up() && p()->active.starfall_starweaver )
+    if ( !is_free() && p()->buff.starweavers_warp->check() )
     {
       p()->active.starfall_starweaver->execute_on_target( target );
-      p()->buff.starweavers_warp->expire();
+
+      if ( p()->bugs && p()->buff.touch_the_cosmos->check() )
+        p()->buff.touch_the_cosmos->expire();
+      else
+        p()->buff.starweavers_warp->expire();
+
       return;
     }
 
@@ -7880,10 +7887,15 @@ struct starsurge_t : public ap_spender_t
 
   void execute() override
   {
-    if ( !is_free() && p()->buff.starweavers_weft->up() && p()->active.starsurge_starweaver )
+    if ( !is_free() && p()->buff.starweavers_weft->check() )
     {
       p()->active.starsurge_starweaver->execute_on_target( target );
-      p()->buff.starweavers_weft->expire();
+
+      if ( p()->bugs && p()->buff.touch_the_cosmos->check() )
+        p()->buff.touch_the_cosmos->expire();
+      else
+        p()->buff.starweavers_weft->expire();
+
       return;
     }
 
