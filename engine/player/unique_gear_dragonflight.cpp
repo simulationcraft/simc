@@ -7563,8 +7563,11 @@ void tome_of_unstable_power_new( special_effect_t& effect )
     struct arcane_barrage_t : public generic_proc_t
     {
       arcane_barrage_t( const special_effect_t& e, double dam )
-        : generic_proc_t( e, "arcane_barrage", e.player->find_spell( 434021 ) )
+        : generic_proc_t( e, "arcane_barrage_tome", e.player->find_spell( 434021 ) )
       {
+        // adjust for action rename due to arcane mage action conflict
+        name_str_reporting = "arcane_barrage";
+
         aoe = -1;
         base_dd_min = base_dd_max = dam;
       }
@@ -7592,7 +7595,7 @@ void tome_of_unstable_power_new( special_effect_t& effect )
 
       // TODO: determine how annihilation gets used, currently using barrage only
       annihilation = create_proc_action<arcane_annihilation_t>( "arcane_annihilation", e, dam );
-      barrage = create_proc_action<arcane_barrage_t>( "arcane_barrage", e, dam );
+      barrage = create_proc_action<arcane_barrage_t>( "arcane_barrage_tome", e, dam );
 
       // TODO: confirm damage happens at end of channel trigger (3.05s) instead of end of cast (3s)
       cast_time = e.player->find_spell( 434070 )->duration();
