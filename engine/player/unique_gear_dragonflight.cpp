@@ -2402,7 +2402,8 @@ void voidmenders_shadowgem( special_effect_t& effect )
 
 void umbrelskuls_fractured_heart( special_effect_t& effect )
 {
-  auto dot = create_proc_action<generic_proc_t>( "crystal_sickness", effect, "crystal_sickness", effect.trigger() );
+  auto dot =
+      create_proc_action<generic_proc_t>( "crystal_sickness_old", effect, "crystal_sickness_old", effect.trigger() );
   dot->base_td = effect.driver()->effectN( 2 ).average( effect.item );
 
   effect.execute_action = dot;
@@ -2419,7 +2420,7 @@ void umbrelskuls_fractured_heart( special_effect_t& effect )
     if ( p->sim->event_mgr.canceled )
       return;
 
-    auto d = t->find_dot( "crystal_sickness", p );
+    auto d = t->find_dot( "crystal_sickness_old", p );
     if ( d && d->remains() > 0_ms )
       explode->execute();
   } );
@@ -7725,6 +7726,118 @@ void frozen_wellspring( special_effect_t& effect )
   effect.custom_buff = buff;
 }
 
+// 432699 driver
+// 433522 debuff
+// 433768 maximum jump tracker
+// 433786 unknown
+// TODO: confirm increment happens after tick, as suggested by tooltip var
+// TODO: determines what happens to damage increase if you proc on an existing dot
+// TODO: approximate execute by checking on tick. if more accuracy is required, implement in assessor.
+// TODO: determine maximum jump distance, if any
+// TODO: determine if it can jump to a dotted enemy
+// TODO: determine what happens to the counter if you proc while dot is still active
+void umbrelskuls_fractured_heart_new( special_effect_t& effect )
+{
+  struct crystal_sickness_t : public generic_proc_t
+  {
+    struct crystal_sickness_execute_t : public generic_proc_t
+    {
+      crystal_sickness_execute_t( const special_effect_t& e )
+        : generic_proc_t( e, "crystal_sickness_execute", e.player->find_spell( 433522 ) )
+      {
+        callbacks = false;
+        may_miss = may_crit = false;
+
+        dot_duration = 0_ms;
+        base_td = 0.0;
+
+        name_str_reporting = "Execute";
+      }
+    };
+
+    buff_t* counter;
+    action_t* execute_damage;
+    double hp_pct;  // NOTE: in base_value, not decimal
+
+    crystal_sickness_t( const special_effect_t& e )
+      : generic_proc_t( e, "crystal_sickness", e.player->find_spell( 433522 ) ),
+        hp_pct( e.driver()->effectN( 2 ).base_value() )
+    {
+      base_td = e.driver()->effectN( 1 ).average( e.item );
+
+      counter = create_buff<buff_t>( e.player, e.player->find_spell( 433768 ) )
+        ->set_quiet( true )
+        ->set_expire_at_max_stack( true );
+
+      execute_damage = create_proc_action<crystal_sickness_execute_t>( "crystal_sickness_execute", e );
+      add_child( execute_damage );
+    }
+
+    void execute() override
+    {
+      // TODO: determine what happens to the counter if you proc while dot is still active
+      if ( !get_dot( target )->is_ticking() )
+        counter->trigger();
+
+      generic_proc_t::execute();
+    }
+
+    void tick( dot_t* d ) override
+    {
+      generic_proc_t::tick( d );
+
+      // TODO: confirm increment happens after tick, as suggested by tooltip var
+      // TODO: determines what happens to damage increase if you proc on an existing dot
+      d->increment( 1 );
+
+      // TODO: approximate execute by checking on tick. if more accuracy is required, implement in assessor.
+      if ( auto t = get_jump_target( d ) )
+      {
+        d->cancel();
+
+        execute_damage->execute_on_target( d->target, d->target->current_health() );
+        execute_on_target( t );
+      }
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      generic_proc_t::last_tick( d );
+
+      if ( d->remains() == 0_ms || d->target->is_sleeping() )  // expired naturally or dead
+        counter->expire();
+    }
+
+    player_t* get_jump_target( dot_t* d )
+    {
+      if ( !counter->check() )
+        return nullptr;
+
+      if ( d->target->health_percentage() > hp_pct )
+        return nullptr;
+
+      // TODO: determine maximum jump distance, if any
+      target_cache.is_valid = false;
+      auto tl = target_list();  // make a copy
+
+      range::erase_remove( tl, [ tar = d->target ]( player_t* t ) { return t == tar || t->is_boss(); } );
+
+      if ( tl.empty() )
+        return nullptr;
+
+      // TODO: determine if it can jump to a dotted enemy
+      if ( tl.size() > 1 )
+        rng().shuffle( tl.begin(), tl.end() );
+
+      return tl.front();
+    }
+  };
+
+  effect.execute_action = create_proc_action<crystal_sickness_t>( "crystal_sickness", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -10806,6 +10919,7 @@ void register_special_effects()
   // 10.2.6 reworked trinkets
   register_special_effect( 432777, items::tome_of_unstable_power_new );
   register_special_effect( 432775, items::frozen_wellspring );
+  register_special_effect( 432699, items::umbrelskuls_fractured_heart_new );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment

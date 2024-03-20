@@ -1456,6 +1456,7 @@ class SpellDataGenerator(DataGenerator):
          # 10.2.6
          433889, 433930, 433954, 433957, 433958, 434021, 434070, 434071, 434072, # reworked Tome of Unstable Power
          433826, 433829, 433830, # reworked globe of jagged ice
+         433768, 433786, # reworked umbrelskul's fractured heart
         ),
 
         # Warrior:
