@@ -588,7 +588,8 @@ struct evoker_t : public player_t
     // How much time should prepulling with Deep Breath delay opener
     timespan_t prepull_deep_breath_delay        = timespan_t::from_seconds( 0.3 );
     timespan_t prepull_deep_breath_delay_stddev = timespan_t::from_seconds( 0.05 );
-    bool naszuro_accurate_behaviour             = false;
+    bool naszuro_accurate_behaviour             = true;
+    bool naszuro_bounce_destroy_solo            = true;
     double naszuro_bounce_chance                = 0.85;
     std::string force_clutchmates               = "";
     bool make_simplified_if_alone               = true;
@@ -5774,6 +5775,7 @@ void evoker_t::create_options()
       opt_timespan( "evoker.prepull_deep_breath_delay_stddev", option.prepull_deep_breath_delay_stddev, 0_s, 1.5_s ) );
   add_option( opt_float( "evoker.naszuro_bounce_chance", option.naszuro_bounce_chance, 0.0, 1.0 ) );
   add_option( opt_bool( "evoker.naszuro_accurate_behaviour", option.naszuro_accurate_behaviour ) );
+  add_option( opt_bool( "evoker.naszuro_bounce_destroy_solo", option.naszuro_bounce_destroy_solo ) );
   add_option( opt_string( "evoker.force_clutchmates", option.force_clutchmates ) );
   add_option( opt_bool( "evoker.make_simplified_if_alone", option.make_simplified_if_alone ) );
   add_option( opt_bool( "evoker.remove_precombat_ancient_flame", option.remove_precombat_ancient_flame ) );
@@ -6165,13 +6167,16 @@ void evoker_t::bounce_naszuro( player_t* s, timespan_t remains = timespan_t::min
   if ( !naszuro )
     return;
 
+  if ( option.naszuro_bounce_destroy_solo )
+    return;
+
   if ( remains <= 0_s && remains != timespan_t::min() )
     return;
 
-  player_t* p = sim->player_no_pet_list[ rng().range( sim->player_no_pet_list.size() ) ];
+  player_t* p = s;
 
   // TODO: Improve target selection (CD Based)
-  if ( sim->player_no_pet_list.size() > 1 )
+  if ( sim->player_no_pet_list.size() > 1 && !sim->single_actor_batch )
   {
     while ( p == s )
     {
