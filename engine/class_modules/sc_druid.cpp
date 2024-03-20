@@ -1605,6 +1605,8 @@ public:
     parse_effects( p()->buff.gathering_starstuff );
     parse_effects( p()->buff.incarnation_moonkin, p()->talent.elunes_guidance );
     parse_effects( p()->buff.owlkin_frenzy );
+    // TODO: remove when action_t::apply_affecting_aura order of operations for cost modifiers is established
+    parse_effects( p()->talent.rattle_the_stars );
     parse_effects( p()->buff.starweavers_warp );
     parse_effects( p()->buff.starweavers_weft );
     parse_effects( p()->buff.touch_the_cosmos );
@@ -12960,7 +12962,8 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.radiant_moonlight );
   action.apply_affecting_aura( talent.twin_moons );
   action.apply_affecting_aura( talent.wild_surges );
-  action.apply_affecting_aura( talent.rattle_the_stars );
+  // TODO: uncomment when action_t::apply_affecting_aura order of operations for cost modifiers is established
+  // action.apply_affecting_aura( talent.rattle_the_stars );
   action.apply_affecting_aura( sets->set( DRUID_BALANCE, T30, B2 ) );
   
   // Feral 
