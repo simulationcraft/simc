@@ -1836,14 +1836,14 @@ struct arcane_mage_spell_t : public mage_spell_t
     }
   }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = mage_spell_t::cost();
+    double c = mage_spell_t::cost_pct_multiplier();
 
     for ( auto cr : cost_reductions )
       c *= 1.0 + cr->check_value();
 
-    return std::max( c, 0.0 );
+    return c;
   }
 
   double arcane_charge_multiplier( bool arcane_barrage = false ) const
@@ -2775,9 +2775,9 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     return std::max( arcane_mage_spell_t::travel_time(), 6_ms );
   }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = arcane_mage_spell_t::cost();
+    double c = arcane_mage_spell_t::cost_pct_multiplier();
 
     c *= 1.0 + p()->buffs.arcane_charge->check() * p()->buffs.arcane_charge->data().effectN( 5 ).percent();
 

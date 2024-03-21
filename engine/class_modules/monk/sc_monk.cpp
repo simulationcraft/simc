@@ -720,16 +720,11 @@ namespace monk
         return pm;
       }
 
-      double cost() const override
+      double cost_pct_multiplier() const override
       {
-        double c = ab::cost();
-
-        if ( c == 0 )
-          return c;
+        double c = ab::cost_pct_multiplier();
 
         c *= 1.0 + cost_reduction();
-        if ( c < 0 )
-          c = 0;
 
         return c;
       }
@@ -5657,9 +5652,9 @@ namespace monk
           return am;
         }
 
-        double cost() const override
+        double cost_pct_multiplier() const override
         {
-          double c = monk_heal_t::cost();
+          double c = monk_heal_t::cost_pct_multiplier();
 
           if ( p()->buff.thunder_focus_tea->check() )
             c *= 1 + p()->talent.mistweaver.thunder_focus_tea->effectN( 2 ).percent();  // saved as -100

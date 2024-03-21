@@ -903,12 +903,6 @@ public:
     spell_t::reset();
   }
 
-  double cost() const override
-  {
-    double c = spell_t::cost();
-    return c;
-  }
-
   void consume_resource() override
   {
     spell_t::consume_resource();

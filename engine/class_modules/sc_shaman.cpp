@@ -1647,11 +1647,10 @@ public:
     return c;
   }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = ab::cost();
+    double c = ab::cost_pct_multiplier();
 
-    // set cost to zero after cost additions and reductions are applied to prevent negative cost values
     if ( affected_by_ns_cost && p()->buff.natures_swiftness->check() && !ab::background && ab::current_resource() != RESOURCE_MAELSTROM )
     {
       c *= 1.0 + p()->talent.natures_swiftness->effectN( 1 ).percent();

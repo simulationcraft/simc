@@ -1091,46 +1091,65 @@ double action_t::cost() const
   if ( !harmful && is_precombat )
     return 0;
 
-  resource_e cr = current_resource();
+  auto cr = current_resource();
+  const auto& bc = base_costs[ cr ];
+  auto mul = bc.pct_mul * cost_pct_multiplier();
 
-  double c;
-  if ( secondary_costs[ cr ] == 0 )
+  if ( mul <= 0 )
   {
-    c = base_costs[ cr ];
-  }
-  // For now, treat secondary cost as "maximum of player current resource, min + max cost". Entirely
-  // possible we need to add some additional functionality (such as an overridable method) to
-  // determine the cost, if the default behavior is not universal.
-  else
-  {
-    if ( player->resources.current[ cr ] >= base_costs[ cr ] )
-    {
-      c = std::min( base_cost(), player->resources.current[ cr ] );
-    }
-    else
-    {
-      c = base_costs[ cr ];
-    }
+    if ( sim->debug )
+      sim->out_debug.print( "{} action_t::cost: cost=FREE resource={}", *this, cr );
+
+    return 0;
   }
 
-  c -= player->current.resource_reduction[ get_school() ];
+  auto base = bc.base;
+  auto add = bc.flat_add + cost_flat_modifier();
+  double c = ( base + add ) * mul;
 
-  c += cost_flat_modifier();
+  // For now, treat secondary cost as "maximum of player current resource, min + max cost". Entirely possible we need to
+  // add some additional functionality (such as an overridable method) to determine the cost, if the default behavior is
+  // not universal.
+
+  // Also for now, cost reductions to base cost are assumed to not apply to secondary cost, such that the 'min' cost can
+  // be modified but the 'max' cost cannot. There are currently no spells with secondary cost that gets their cost
+  // modified so this assumption remains untested. Fix accordingly if it is proven incorrect in the future.
+
+  if ( auto sec = secondary_costs[ cr ] )
+  {
+    auto cur = player->resources.current[ cr ];
+    if ( cur >= c )
+    {
+      c = std::min( c + sec, cur );
+    }
+  }
 
   if ( c < 0 )
     c = 0;
 
-  if ( cr == RESOURCE_MANA && player->buffs.courageous_primal_diamond_lucidity &&
-       player->buffs.courageous_primal_diamond_lucidity->check() )
+  if ( sim->debug )
   {
-    c = 0;
+    sim->out_debug.print( "{} action_t::cost: base={} add={} mul={} secondary_cost={} cost={} resource={}", *this, base,
+                          add, mul, secondary_costs[ cr ], c, cr );
   }
 
-  if ( sim->debug )
-    sim->out_debug.print( "{} action_t::cost: base_cost={} secondary_cost={} cost={} resource={}", *this,
-                           base_costs[ cr ], secondary_costs[ cr ], c, cr );
+  return c;
+}
 
-  return floor( c );
+double action_t::cost_flat_modifier() const
+{
+  return -player->current.resource_reduction[ get_school() ];
+}
+
+double action_t::cost_pct_multiplier() const
+{
+  if ( player->buffs.courageous_primal_diamond_lucidity && current_resource() == RESOURCE_MANA &&
+       player->buffs.courageous_primal_diamond_lucidity->check() )
+  {
+    return 0.0;
+  }
+
+  return 1.0;
 }
 
 double action_t::cost_per_tick( resource_e r ) const

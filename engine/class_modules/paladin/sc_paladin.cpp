@@ -1244,9 +1244,9 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
     return am;
   }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = holy_power_consumer_t::cost();
+    double c = holy_power_consumer_t::cost_pct_multiplier();
 
     if ( p()->buffs.shining_light_free->check() )
       c *= 1.0 + p()->buffs.shining_light_free->data().effectN( 1 ).percent();

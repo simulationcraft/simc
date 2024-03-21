@@ -1070,9 +1070,9 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                   "<ul>\n" );
       fmt::print( os, "<li><span class=\"label\">resource:</span>{}</li>\n",
                   util::resource_type_string( a->current_resource() ) );
-      fmt::print( os, "<li><span class=\"label\">base_cost:</span>{:.1f}</li>\n",
+      fmt::print( os, "<li><span class=\"label\">base_cost:</span>{}</li>\n",
                   a->base_costs[ a->current_resource() ] );
-      fmt::print( os, "<li><span class=\"label\">secondary_cost:</span>{:.1f}</li>\n",
+      fmt::print( os, "<li><span class=\"label\">secondary_cost:</span>{}</li>\n",
                   a->secondary_costs[ a->current_resource() ] );
       fmt::print( os, "<li><span class=\"label\">energize_type:</span>{}</li>\n", a->energize_type );
       fmt::print( os, "<li><span class=\"label\">energize_resource:</span>{}</li>\n", a->energize_resource );

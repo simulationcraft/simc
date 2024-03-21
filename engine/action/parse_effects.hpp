@@ -296,14 +296,14 @@ public:
       effect_modifiers[ i ].first = spell->effectN( i + 1 ).base_value();
   }
 
-  double cost() const override
-  {
-    return std::max( 0.0, ( BASE::cost() * get_effects_value( cost_effects, false, false ) ) );
-  }
-
   double cost_flat_modifier() const override
   {
     return BASE::cost_flat_modifier() + get_effects_value( flat_cost_effects, true, false );
+  }
+
+  double cost_pct_multiplier() const override
+  {
+    return BASE::cost_pct_multiplier() * get_effects_value( cost_effects, false, false );
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
