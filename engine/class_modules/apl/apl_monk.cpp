@@ -727,7 +727,7 @@ namespace monk_apl
     serenity_aoelust->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_chiji.up" );
     serenity_aoelust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=active_enemies<6&combo_strike&set_bonus.tier30_2pc" );
     serenity_aoelust->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&spinning_crane_kick.max" );
-    serenity_aoelust->add_action( "tiger_palm,,target_if=min:debuff.mark_of_the_crane.remains,if=!debuff.skyreach_exhaustion.up*20&combo_strike&active_enemies=5" );
+    serenity_aoelust->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!debuff.skyreach_exhaustion.up*20&combo_strike&active_enemies=5" );
     serenity_aoelust->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
     serenity_aoelust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=talent.shadowboxing_treads&active_enemies>=3&combo_strike" );
     serenity_aoelust->add_action( "strike_of_the_windlord,target_if=max:debuff.keefers_skyreach.remains" );
@@ -787,7 +787,7 @@ namespace monk_apl
     serenity_aoe->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_chiji.up" );
     serenity_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=active_enemies<6&combo_strike&set_bonus.tier30_2pc" );
     serenity_aoe->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&spinning_crane_kick.max" );
-    serenity_aoe->add_action( "tiger_palm,,target_if=min:debuff.mark_of_the_crane.remains,if=!debuff.skyreach_exhaustion.up*20&combo_strike&active_enemies=5" );
+    serenity_aoe->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!debuff.skyreach_exhaustion.up*20&combo_strike&active_enemies=5" );
     serenity_aoe->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
     serenity_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=talent.shadowboxing_treads&active_enemies>=3&combo_strike" );
     serenity_aoe->add_action( "strike_of_the_windlord,target_if=max:debuff.keefers_skyreach.remains" );
