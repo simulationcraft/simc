@@ -1311,9 +1311,9 @@ struct fel_firebolt_t : public warlock_pet_spell_t
     }
   }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = warlock_pet_spell_t::cost();
+    double c = warlock_pet_spell_t::cost_pct_multiplier();
 
     if ( p()->o()->warlock_base.fel_firebolt_2->ok() )
       c *= 1.0 + p()->o()->warlock_base.fel_firebolt_2->effectN( 1 ).percent();

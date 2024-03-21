@@ -1055,42 +1055,41 @@ public:
   // Reimplement base cost because I need to bypass the removal of precombat costs
   double cost() const override
   {
-    resource_e cr = ab::current_resource();
+    auto cr = ab::current_resource();
+    const auto& bc = ab::base_costs[ cr ];
+    auto base = bc.base;
+    auto add = bc.flat_add + this->cost_flat_modifier();
+    auto mul = bc.pct_mul * this->cost_pct_multiplier();
 
-    double c;
-    if ( ab::secondary_costs[ cr ] == 0 )
+    double c = ( base + add ) * mul;
+
+    // For now, treat secondary cost as "maximum of player current resource, min + max cost". Entirely possible we need to
+    // add some additional functionality (such as an overridable method) to determine the cost, if the default behavior is
+    // not universal.
+
+    // Also for now, cost reductions to base cost are assumed to not apply to secondary cost, such that the 'min' cost can
+    // be modified but the 'max' cost cannot. There are currently no spells with secondary cost that gets their cost
+    // modified so this assumption remains untested. Fix accordingly if it is proven incorrect in the future.
+
+    if ( auto sec = ab::secondary_costs[ cr ] )
     {
-      c = ab::base_costs[ cr ];
-    }
-    // For now, treat secondary cost as "maximum of player current resource, min + max cost". Entirely
-    // possible we need to add some additional functionality (such as an overridable method) to
-    // determine the cost, if the default behavior is not universal.
-    else
-    {
-      if ( ab::player->resources.current[ cr ] >= ab::base_costs[ cr ] )
+      auto cur = ab::player->resources.current[ cr ];
+      if ( cur >= c )
       {
-        c = std::min( ab::base_cost(), ab::player->resources.current[ cr ] );
-      }
-      else
-      {
-        c = ab::base_costs[ cr ];
+        c = std::min( c + sec, cur );
       }
     }
-
-    c -= ab::player->current.resource_reduction[ ab::get_school() ];
-
-    c += ab::cost_flat_modifier();
-
-    c *= ab::get_effects_value( ab::cost_effects, false, false );
 
     if ( c < 0 )
       c = 0;
 
     if ( ab::sim->debug )
-      ab::sim->out_debug.print( "{} action_t::cost: base_cost={} secondary_cost={} cost={} resource={}", *this,
-                                ab::base_costs[ cr ], ab::secondary_costs[ cr ], c, cr );
+    {
+      ab::sim->out_debug.print( "{} action_t::cost: base={} add={} mul={} secondary_cost={} cost={} resource={}", *this,
+                                base, add, mul, ab::secondary_costs[ cr ], c, cr );
+    }
 
-    return floor( c );
+    return c;
   }
 
   void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain ) override

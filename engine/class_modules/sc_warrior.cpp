@@ -1076,13 +1076,16 @@ public:
 
   virtual double tactician_cost() const
   {
+    double base = ab::base_cost();
+
     if ( ab::sim->log )
     {
       ab::sim->out_debug.printf(
           "Rage used to calculate tactician chance from ability %s: %4.4f, actual rage used: %4.4f", ab::name(),
-          ab::cost(), base_t::cost() );
+          base, this->cost() );
     }
-    return ab::cost();
+
+    return base;
   }
 
   int n_targets() const override
@@ -2904,11 +2907,6 @@ struct cleave_t : public warrior_attack_t
     reduced_aoe_targets = 5.0;
   }
 
-  double cost() const override
-  {
-    return warrior_attack_t::cost();
-  }
-
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
@@ -3621,15 +3619,24 @@ struct fury_execute_parent_t : public warrior_attack_t
     }
   }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = warrior_attack_t::cost();
-    c        = std::min( max_rage, std::max( p()->resources.current[ RESOURCE_RAGE ], c ) );
+    auto c = warrior_attack_t::cost_pct_multiplier();
 
     if ( p()->talents.fury.improved_execute->ok() )
     {
       c *= 1.0 + p()->talents.fury.improved_execute->effectN( 1 ).percent();
     }
+
+    return c;
+  }
+
+  double cost() const override
+  {
+    double c = warrior_attack_t::cost();
+
+    c = std::min( max_rage, std::max( p()->resources.current[ RESOURCE_RAGE ], c ) );
+
     return c;
   }
 
@@ -4904,9 +4911,9 @@ struct revenge_t : public warrior_attack_t
       }
   }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double cost = warrior_attack_t::cost();
+    double cost = warrior_attack_t::cost_pct_multiplier();
     cost *= 1.0 + p()->buff.revenge->check_value();
     //cost *= 1.0 + p()->buff.vengeance_revenge->check_value();
     return cost;
@@ -6496,15 +6503,6 @@ struct ignore_pain_t : public warrior_spell_t
 
     base_dd_max = base_dd_min = 0;
     resource_current = RESOURCE_RAGE;
-  }
-
-  double cost() const override
-  {
-    double c = warrior_spell_t::cost();
-
-    //c *= 1.0 + p() -> buff.vengeance_ignore_pain -> value();
-
-    return c;
   }
 
   void execute() override

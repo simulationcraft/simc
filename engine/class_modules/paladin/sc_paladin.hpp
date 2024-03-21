@@ -1321,7 +1321,12 @@ struct holy_power_consumer_t : public Base
       return 0.0;
     }
 
-    double c = ab::cost();
+    return ab::cost();
+  }
+
+  double cost_flat_modifier() const override
+  {
+    double c = ab::cost_flat_modifier();
 
     if ( ab::p()->talents.vanguard_of_justice->ok() &&
          this->data().affected_by( ab::p()->talents.vanguard_of_justice->effectN( 1 ) ) )
@@ -1329,7 +1334,7 @@ struct holy_power_consumer_t : public Base
       c += ab::p()->talents.vanguard_of_justice->effectN( 1 ).base_value();
     }
 
-    return std::max( c, 0.0 );
+    return c;
   }
 
   void impact( action_state_t* s ) override
@@ -1354,7 +1359,10 @@ struct holy_power_consumer_t : public Base
     if ( ab::background && is_divine_storm )
       return;
 
-    bool isFreeSLDPSpender = p->buffs.divine_purpose->up() || ( is_wog && p->buffs.shining_light_free->up() ) || (is_divine_storm && p->buffs.empyrean_power->up());
+    bool isFreeSLDPSpender = p->buffs.divine_purpose->up() ||
+                           ( is_wog && p->buffs.shining_light_free->up() ) ||
+                           ( is_divine_storm && p->buffs.empyrean_power->up() ) ||
+                           ( ( is_wog || is_sotr ) && p->buffs.bastion_of_light->up() );
 
     int num_hopo_spent = holy_power_consumer_t::cost();
     // Free spenders seem to count as 3 Holy Power, regardless the cost

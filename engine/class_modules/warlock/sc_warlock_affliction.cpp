@@ -343,9 +343,9 @@ struct malefic_rapture_t : public affliction_spell_t
     add_child( impact_action );
   }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = affliction_spell_t::cost();
+    double c = affliction_spell_t::cost_pct_multiplier();
 
     if ( p()->buffs.tormented_crescendo->check() )
     {

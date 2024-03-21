@@ -6636,7 +6636,7 @@ struct howling_blast_t final : public death_knight_spell_t
     // If Pillar of Frost is up, Rime procs still increases its value
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> buffs.rime -> up() )
     {
-      p() -> buffs.pillar_of_frost_bonus -> trigger( as<int>( base_costs[ RESOURCE_RUNE ] ) );
+      p() -> buffs.pillar_of_frost_bonus -> trigger( static_cast<int>( base_costs[ RESOURCE_RUNE ] ) );
     }
 
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.frost.obliteration.ok() )
@@ -6927,18 +6927,6 @@ struct obliterate_t final : public death_knight_melee_attack_t
     {
       p()->consume_killing_machine( p()->procs.killing_machine_oblit, total_delay );
     }
-  }
-
-  double cost() const override
-  {
-    double c = death_knight_melee_attack_t::cost();
-
-    if ( c < 0 )
-    {
-      c = 0;
-    }
-
-    return c;
   }
 
   // Allow on-cast procs

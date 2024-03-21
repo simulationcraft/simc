@@ -2363,12 +2363,9 @@ public:
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = ab::cost();
-
-    if ( c <= 0 )
-      return 0;
+    double c = ab::cost_pct_multiplier();
 
     if ( p()->talent.subtlety.shadow_focus->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
     {
@@ -2384,9 +2381,6 @@ public:
     {
       c *= 1.0 + p()->buffs.goremaws_bite->check_value();
     }
-
-    if ( c <= 0 )
-      c = 0;
 
     return c;
   }
@@ -4735,9 +4729,9 @@ struct pistol_shot_t : public rogue_attack_t
     }
   }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = rogue_attack_t::cost();
+    double c = rogue_attack_t::cost_pct_multiplier();
 
     if ( p()->buffs.opportunity->check() )
     {

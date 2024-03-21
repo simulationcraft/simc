@@ -473,9 +473,9 @@ struct call_dreadstalkers_t : public demonology_spell_t
     may_crit = false;
   }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = demonology_spell_t::cost();
+    double c = demonology_spell_t::cost_pct_multiplier();
 
     if ( p()->buffs.demonic_calling->check() )
     {
@@ -521,10 +521,10 @@ struct call_dreadstalkers_t : public demonology_spell_t
     {  // benefit tracking
 
       //Despite having no cost when Demonic Calling is up, this spell will still proc effects based on shard spending (last checked 2022-10-04)
-      double base_cost = demonology_spell_t::cost();
+      double base_shards = base_cost();
 
       if ( p()->talents.grand_warlocks_design->ok() && !p()->min_version_check( VERSION_10_2_0 ) )
-        p()->cooldowns.demonic_tyrant->adjust( -base_cost * p()->talents.grand_warlocks_design->effectN( 2 ).time_value(), false );
+        p()->cooldowns.demonic_tyrant->adjust( -base_shards * p()->talents.grand_warlocks_design->effectN( 2 ).time_value(), false );
 
       if ( p()->buffs.nether_portal->up() )
       {
@@ -546,7 +546,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
       if ( p()->talents.soul_conduit->ok() )
       {
-        make_event<sc_event_t>( *p()->sim, p(), as<int>( base_cost ) );
+        make_event<sc_event_t>( *p()->sim, p(), as<int>( base_shards ) );
       }
 
       p()->buffs.demonic_calling->decrement();
