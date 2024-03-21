@@ -5980,9 +5980,9 @@ struct avatar_t : public warrior_spell_t
     else  // avatar always triggers to 20s duration when it's hard cast
     {
       auto extended_duration = p()->buff.avatar->buff_duration();
-      if ( p()->buff.avatar->remains() + extended_duration > 20_s )
+      if ( p()->buff.avatar->remains() + extended_duration > p()->buff.avatar->base_buff_duration )
       {
-        extended_duration = 20_s - p()->buff.avatar->remains();
+        extended_duration = p()->buff.avatar->base_buff_duration - p()->buff.avatar->remains();
       }
       p()->buff.avatar->extend_duration_or_trigger( extended_duration );
     }
