@@ -324,6 +324,10 @@ public:
   /// Maximum number of DoT stacks.
   int dot_max_stack;
 
+  /// Container to hold base cost and all permanent/passive modifiers. We need to hold these separate because flat
+  /// modifiers, including those from dynamic sources, are calculated before percent multipliers. The final cost is
+  /// properly reconstituted in action_t::cost(). Also includes operator overloads for ease of use/compatibility with
+  /// operations to double type previously used to store base cost.
   struct base_cost_t
   {
     double base = 0.0;
