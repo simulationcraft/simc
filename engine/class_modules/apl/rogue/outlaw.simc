@@ -106,6 +106,8 @@ actions.finish+=/dispatch
 # Stealth
 actions.stealth=blade_flurry,if=talent.subterfuge&talent.hidden_opportunity&spell_targets>=2&buff.blade_flurry.remains<gcd
 actions.stealth+=/cold_blood,if=variable.finish_condition
+# Ensure Crackshot BtE is not skipped because of low energy
+actions.stealth+=/pool_resource,for_next=1
 # High priority Between the Eyes for Crackshot, except not directly out of Shadowmeld
 actions.stealth+=/between_the_eyes,if=variable.finish_condition&talent.crackshot&(!buff.shadowmeld.up|stealthed.rogue)
 actions.stealth+=/dispatch,if=variable.finish_condition
