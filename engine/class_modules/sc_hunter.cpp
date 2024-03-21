@@ -1055,16 +1055,16 @@ public:
     ab::execute();
 
     if ( triggers_calling_the_shots )
-      p() -> trigger_calling_the_shots( this, this->cost() );
+      p() -> trigger_calling_the_shots( this, this -> cost() );
 
     if ( affected_by.t29_sv_4pc_cost )
       p() -> buffs.bestial_barrage -> expire();
     
     if ( triggers_t30_sv_4p )
-      p() -> trigger_t30_sv_4p( this, this->cost() );
+      p() -> trigger_t30_sv_4p( this, this -> cost() );
 
     if ( triggers_rapid_reload )
-      p() -> trigger_rapid_reload( this, this->cost() );
+      p() -> trigger_rapid_reload( this, this -> cost() );
   }
 
   void impact( action_state_t* s ) override
