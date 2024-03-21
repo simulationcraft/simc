@@ -208,7 +208,7 @@ jobs:
       matrix:
         cppVersion: [17]
         tier: [ Tier30, Tier31 ]
-        compiler: [gcc-12]
+        compiler: [clang++-15]
         spec: [
             Death_Knight_Blood, Death_Knight_Frost, Death_Knight_Unholy,
             Demon_Hunter_Havoc, Demon_Hunter_Vengeance,
@@ -225,7 +225,7 @@ jobs:
             Warrior_Arms, Warrior_Fury, Warrior_Protection,
           ]
         include:
-          - compiler: gcc-12
+          - compiler: clang++-15
             os: ubuntu-22.04
 
     steps:
@@ -241,6 +241,9 @@ jobs:
 
       - name: Install Python dependencies
         run: pip3 install -r ${{ github.workspace }}/tests/requirements.txt
+
+      - name: Temporary Workaround for clang-15 Builds
+        run: sudo sysctl vm.mmap_rnd_bits=28
 
       - name: Run
         env:
@@ -261,9 +264,9 @@ jobs:
       fail-fast: false
       matrix:
         cppVersion: [17]
-        compiler: [gcc-12]
+        compiler: [clang++-15]
         include:
-          - compiler: gcc-12
+          - compiler: clang++-15
             os: ubuntu-22.04
     
     steps:
@@ -278,6 +281,9 @@ jobs:
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - uses: actions/checkout@v4
+
+      - name: Temporary Workaround for clang-15 Builds
+        run: sudo sysctl vm.mmap_rnd_bits=28
 
       - name: Run
         env:

@@ -2607,9 +2607,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
-    // Using a background repeating action as a replacement for a foreground action. Change Ready Type to trigger so we
-    // can wake up the pet when it needs to re-execute this action.
-    ready_type = READY_TRIGGER;
   }
 
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
@@ -2618,14 +2615,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
       pet_spell_t( p, "gargoyle_strike", p -> dk() -> pet_spell.gargoyle_strike )
     { 
       background = repeating = true;
-    }
-
-    void schedule_execute( action_state_t* state ) override
-    {
-      pet_spell_t<gargoyle_pet_t>::schedule_execute( state );
-      // This pet uses a background repeating event with a ready type of READY_TRIGGER. Without constantly re-updating
-      // the started waiting trigger_ready would never function.
-      player->started_waiting = sim->current_time();
     }
   };
 
@@ -2665,20 +2654,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::create_actions();
     gargoyle_strike = new gargoyle_strike_t( this );
-  }
-
-  void acquire_target( retarget_source event, player_t* context ) override
-  {
-    if ( gargoyle_strike->execute_event && gargoyle_strike->target->is_sleeping() )
-    {
-      event_t::cancel( gargoyle_strike->execute_event );
-      started_waiting = sim->current_time();
-    }
-
-    player_t::acquire_target( event, context );
-
-    if ( !gargoyle_strike->execute_event )
-      trigger_ready();
   }
 
   void reschedule_gargoyle()
@@ -2762,19 +2737,6 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     }
   };
 
-  void init_base_stats() override
-  {
-    death_knight_pet_t::init_base_stats();
-
-    owner_coeff.ap_from_ap = 1.0;
-  }
-
-  void create_actions() override
-  {
-    death_knight_pet_t::create_actions();
-    skulker_shot = new skulker_shot_t( this );
-  }
-
   void acquire_target( retarget_source event, player_t* context ) override
   {
     if ( skulker_shot->execute_event && skulker_shot->target->is_sleeping() )
@@ -2787,6 +2749,19 @@ struct risen_skulker_pet_t : public death_knight_pet_t
 
     if ( !skulker_shot->execute_event )
       trigger_ready();
+  }
+
+  void init_base_stats() override
+  {
+    death_knight_pet_t::init_base_stats();
+
+    owner_coeff.ap_from_ap = 1.0;
+  }
+
+  void create_actions() override
+  {
+    death_knight_pet_t::create_actions();
+    skulker_shot = new skulker_shot_t( this );
   }
 
   void reschedule_skulker()
@@ -8406,7 +8381,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
     if ( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ) )
     {
-      auto extension_time = sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 )->effectN( 1 ).time_value();
+      auto extension_time = sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 )->effectN( 1 ).time_value() * as<int>( amount );
 
       for ( auto& apoc_magus : pets.apoc_magus )
       {

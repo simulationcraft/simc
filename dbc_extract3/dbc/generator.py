@@ -457,9 +457,9 @@ class SpecializationEnumGenerator(DataGenerator):
 
         max_specialization = 0
         for spec_id, spec_data in sorted(self.db('ChrSpecialization').items()):
-            # Ignore "Initial" specializations for now
+            # Ignore "Initial" and "Adventurer" specializations for now
             # TODO: Revisit
-            if spec_data.name == 'Initial':
+            if spec_data.name == 'Initial' or spec_data.name == 'Adventurer':
                 continue
 
             if spec_data.class_id > 0:
@@ -1453,6 +1453,10 @@ class SpellDataGenerator(DataGenerator):
          426474, # Verdant Tether embellishment stat buff
          424051, 424057, # String of Delicacies
          417138, # Fyr'alath the Dreamrender
+         # 10.2.6
+         433889, 433930, 433954, 433957, 433958, 434021, 434070, 434071, 434072, # reworked Tome of Unstable Power
+         433826, 433829, 433830, # reworked globe of jagged ice
+         433768, 433786, # reworked umbrelskul's fractured heart
         ),
 
         # Warrior:

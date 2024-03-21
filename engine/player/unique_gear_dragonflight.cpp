@@ -2402,7 +2402,8 @@ void voidmenders_shadowgem( special_effect_t& effect )
 
 void umbrelskuls_fractured_heart( special_effect_t& effect )
 {
-  auto dot = create_proc_action<generic_proc_t>( "crystal_sickness", effect, "crystal_sickness", effect.trigger() );
+  auto dot =
+      create_proc_action<generic_proc_t>( "crystal_sickness_old", effect, "crystal_sickness_old", effect.trigger() );
   dot->base_td = effect.driver()->effectN( 2 ).average( effect.item );
 
   effect.execute_action = dot;
@@ -2419,7 +2420,7 @@ void umbrelskuls_fractured_heart( special_effect_t& effect )
     if ( p->sim->event_mgr.canceled )
       return;
 
-    auto d = t->find_dot( "crystal_sickness", p );
+    auto d = t->find_dot( "crystal_sickness_old", p );
     if ( d && d->remains() > 0_ms )
       explode->execute();
   } );
@@ -7537,6 +7538,309 @@ void fang_of_the_frenzied_nightclaw( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 10.2.6 reworked trinkets
+
+// 432777 driver
+// 433889 big damage
+// 433930 damage cast
+// 433954 summon image 1
+// 433957 summon image 2
+// 433958 summon image 3
+// 434021 small damage
+// 434070	channel 1
+// 434071	channel 2
+// 434072	channel 3
+// TODO: determine if 1.1 multiplier from tooltip desc has conditions
+// TODO: determine how annihilation gets used, currently using barrage only
+// TODO: confirm damage happens at end of channel trigger (3.05s) instead of end of cast (3s)
+// TODO: confirm # of summons is uniformly random
+// TODO: determine if overlapping areas have a spread
+// TODO: determine if procs can happen while previous proc is still casting
+void tome_of_unstable_power_new( special_effect_t& effect )
+{
+  struct tome_of_unstable_power_cb_t : public dbc_proc_callback_t
+  {
+    struct arcane_barrage_t : public generic_proc_t
+    {
+      arcane_barrage_t( const special_effect_t& e, double dam )
+        : generic_proc_t( e, "arcane_barrage_tome", e.player->find_spell( 434021 ) )
+      {
+        // adjust for action rename due to arcane mage action conflict
+        name_str_reporting = "arcane_barrage";
+
+        aoe = -1;
+        base_dd_min = base_dd_max = dam;
+      }
+    };
+
+    struct arcane_annihilation_t : public generic_proc_t
+    {
+      arcane_annihilation_t( const special_effect_t& e, double dam )
+        : generic_proc_t( e, "arcane_annihilation", e.player->find_spell( 433889 ) )
+      {
+        aoe = -1;
+        base_dd_min = base_dd_max = dam;
+      }
+    };
+
+    action_t* annihilation;
+    action_t* barrage;
+    timespan_t cast_time;
+
+    tome_of_unstable_power_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      auto dam = e.driver()->effectN( 1 ).average( e.item );
+      // TODO: determine if 1.1 multiplier from tooltip desc has conditions
+      dam *= 1.1;
+
+      // TODO: determine how annihilation gets used, currently using barrage only
+      annihilation = create_proc_action<arcane_annihilation_t>( "arcane_annihilation", e, dam );
+      barrage = create_proc_action<arcane_barrage_t>( "arcane_barrage_tome", e, dam );
+
+      // TODO: confirm damage happens at end of channel trigger (3.05s) instead of end of cast (3s)
+      cast_time = e.player->find_spell( 434070 )->duration();
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      // TODO: confirm # of summons is uniformly random
+      auto count = rng().range( 1U, 3U );
+
+      // TODO: determine if overlapping areas have a spread
+      for ( size_t i = 0; i < count; i++ )
+      {
+        make_event<ground_aoe_event_t>( *listener->sim, listener,
+            ground_aoe_params_t()
+                .target( s->target )
+                .pulse_time( cast_time )
+                .action( barrage )
+                .n_pulses( 1U ) );
+      }
+    }
+  };
+
+  new tome_of_unstable_power_cb_t( effect );
+}
+
+// 432775 driver/buff
+// 433824 values
+// 433826 debuff
+// 433829 damage
+// 433830 aoe damage
+// TODO: confirm procs on impact
+// TODO: confirm split damage increases by 15% per target
+// TODO: determine if final stack procs the damage before aoe, or aoe only
+struct wellsprings_frost_initializer_t : public item_targetdata_initializer_t
+{
+  wellsprings_frost_initializer_t() : item_targetdata_initializer_t( 432775, 433826 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    bool active = init( td->source );
+
+    td->debuff.wellsprings_frost = make_buff_fallback( active, *td, "wellsprings_frost", debuffs[ td->source ] );
+    td->debuff.wellsprings_frost->reset();
+  }
+};
+
+void frozen_wellspring( special_effect_t& effect )
+{
+  auto damage_value = effect.player->find_spell( 433824 );
+
+  // TODO: confirm split damage increases by 15% per target
+  auto shatter = create_proc_action<generic_aoe_proc_t>( "shatter", effect, "shatter", 433830, true );
+  shatter->base_dd_min = shatter->base_dd_max = damage_value->effectN( 2 ).average( effect.item );
+
+  auto proc = create_proc_action<generic_proc_t>( "wellsprings_frost", effect, "wellsprings_frost", 433829 );
+  proc->base_dd_min = proc->base_dd_max = damage_value->effectN( 1 ).average( effect.item );
+
+  // proxy action for reporting
+  struct frozen_wellspring_proxy_t : public action_t
+  {
+    frozen_wellspring_proxy_t( const special_effect_t& e )
+      : action_t( action_e::ACTION_OTHER, "frozen_wellspring", e.player, e.driver() )
+    {
+      callbacks = false;
+    }
+
+    result_e calculate_result( action_state_t* ) const override
+    {
+      return result_e::RESULT_NONE;
+    }
+  };
+
+  auto proxy = create_proc_action<frozen_wellspring_proxy_t>( "frozen_wellspring", effect );
+  proxy->add_child( shatter );
+  proxy->add_child( proc );
+
+  auto buff = create_buff<buff_t>( effect.player, effect.driver() )
+    ->set_duration( effect.driver()->duration() - 1_ms )  // ensure buff expires before next use
+    ->set_reverse( true );
+
+  auto proc_driver = new special_effect_t( effect.player );
+  proc_driver->name_str = "wellsprings_frost_proc";
+  proc_driver->cooldown_ = 0_ms;
+  proc_driver->spell_id = effect.spell_id;
+  proc_driver->proc_flags_ = effect.proc_flags_;
+  // TODO: confirm procs on impact
+  proc_driver->proc_flags2_ = PF2_ALL_HIT;
+  effect.player->special_effects.push_back( proc_driver );
+
+  auto cb = new dbc_proc_callback_t( effect.player, *proc_driver );
+  cb->initialize();
+  cb->deactivate();
+
+  // TODO: determine if final stack procs the damage before aoe, or aoe only
+  effect.player->callbacks.register_callback_execute_function(
+      proc_driver->spell_id,
+      [ p = effect.player, proc, buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+        proc->execute_on_target( s->target );
+
+        auto td = p->get_target_data( s->target );
+        assert( td );
+
+        td->debuff.wellsprings_frost->trigger();
+        buff->trigger();
+      } );
+
+  buff->set_stack_change_callback( [ cb, proxy, shatter ]( buff_t* b, int old_, int new_ ) {
+    if ( !old_ )
+    {
+      cb->activate();
+      proxy->execute();
+    }
+    else if ( !new_ )
+    {
+      cb->deactivate();
+
+      range::for_each( b->sim->target_non_sleeping_list, [ p = b->player, shatter ]( player_t* t ) {
+        auto td = p->get_target_data( t );
+        assert( td );
+
+        if ( auto stack = td->debuff.wellsprings_frost->stack() )
+        {
+          shatter->base_multiplier = stack;
+          shatter->execute_on_target( t );
+        }
+      } );
+    }
+  } );
+
+  effect.custom_buff = buff;
+}
+
+// 432699 driver
+// 433522 debuff
+// 433768 maximum jump tracker
+// 433786 unknown
+// TODO: confirm increment happens after tick, as suggested by tooltip var
+// TODO: determines what happens to damage increase if you proc on an existing dot
+// TODO: approximate execute by checking on tick. if more accuracy is required, implement in assessor.
+// TODO: determine maximum jump distance, if any
+// TODO: determine if it can jump to a dotted enemy
+// TODO: determine what happens to the counter if you proc while dot is still active
+void umbrelskuls_fractured_heart_new( special_effect_t& effect )
+{
+  struct crystal_sickness_t : public generic_proc_t
+  {
+    struct crystal_sickness_execute_t : public generic_proc_t
+    {
+      crystal_sickness_execute_t( const special_effect_t& e )
+        : generic_proc_t( e, "crystal_sickness_execute", e.player->find_spell( 433522 ) )
+      {
+        callbacks = false;
+        may_miss = may_crit = false;
+
+        dot_duration = 0_ms;
+        base_td = 0.0;
+
+        name_str_reporting = "Execute";
+      }
+    };
+
+    buff_t* counter;
+    action_t* execute_damage;
+    double hp_pct;  // NOTE: in base_value, not decimal
+
+    crystal_sickness_t( const special_effect_t& e )
+      : generic_proc_t( e, "crystal_sickness", e.player->find_spell( 433522 ) ),
+        hp_pct( e.driver()->effectN( 2 ).base_value() )
+    {
+      base_td = e.driver()->effectN( 1 ).average( e.item );
+
+      counter = create_buff<buff_t>( e.player, e.player->find_spell( 433768 ) )
+        ->set_quiet( true )
+        ->set_expire_at_max_stack( true );
+
+      execute_damage = create_proc_action<crystal_sickness_execute_t>( "crystal_sickness_execute", e );
+      add_child( execute_damage );
+    }
+
+    void execute() override
+    {
+      // TODO: determine what happens to the counter if you proc while dot is still active
+      if ( !get_dot( target )->is_ticking() )
+        counter->trigger();
+
+      generic_proc_t::execute();
+    }
+
+    void tick( dot_t* d ) override
+    {
+      generic_proc_t::tick( d );
+
+      // TODO: confirm increment happens after tick, as suggested by tooltip var
+      // TODO: determines what happens to damage increase if you proc on an existing dot
+      d->increment( 1 );
+
+      // TODO: approximate execute by checking on tick. if more accuracy is required, implement in assessor.
+      if ( auto t = get_jump_target( d ) )
+      {
+        d->cancel();
+
+        execute_damage->execute_on_target( d->target, d->target->current_health() );
+        execute_on_target( t );
+      }
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      generic_proc_t::last_tick( d );
+
+      if ( d->remains() == 0_ms || d->target->is_sleeping() )  // expired naturally or dead
+        counter->expire();
+    }
+
+    player_t* get_jump_target( dot_t* d )
+    {
+      if ( !counter->check() )
+        return nullptr;
+
+      if ( d->target->health_percentage() > hp_pct )
+        return nullptr;
+
+      // TODO: determine maximum jump distance, if any
+      target_cache.is_valid = false;
+      auto tl = target_list();  // make a copy
+
+      range::erase_remove( tl, [ tar = d->target ]( player_t* t ) { return t == tar || t->is_boss(); } );
+
+      if ( tl.empty() )
+        return nullptr;
+
+      // TODO: determine if it can jump to a dotted enemy
+      if ( tl.size() > 1 )
+        rng().shuffle( tl.begin(), tl.end() );
+
+      return tl.front();
+    }
+  };
+
+  effect.execute_action = create_proc_action<crystal_sickness_t>( "crystal_sickness", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -10615,6 +10919,10 @@ void register_special_effects()
   register_special_effect( 422750, items::fyrakks_tainted_rageheart );
   register_special_effect( 423925, items::fang_of_the_frenzied_nightclaw );
   register_special_effect( 401183, items::rashoks_molten_heart, true );
+  // 10.2.6 reworked trinkets
+  register_special_effect( 432777, items::tome_of_unstable_power_new );
+  register_special_effect( 432775, items::frozen_wellspring );
+  register_special_effect( 432699, items::umbrelskuls_fractured_heart_new );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
@@ -10726,6 +11034,7 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::embed_blade_initializer_t() );
   sim.register_target_data_initializer( items::web_of_dreams_initializer_t() );
   sim.register_target_data_initializer( items::dream_shackles_initializer_t() );
+  sim.register_target_data_initializer( items::wellsprings_frost_initializer_t() );
 }
 
 void register_hotfixes()

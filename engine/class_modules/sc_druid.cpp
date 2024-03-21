@@ -1605,6 +1605,8 @@ public:
     parse_effects( p()->buff.gathering_starstuff );
     parse_effects( p()->buff.incarnation_moonkin, p()->talent.elunes_guidance );
     parse_effects( p()->buff.owlkin_frenzy );
+    // TODO: remove when action_t::apply_affecting_aura order of operations for cost modifiers is established
+    parse_effects( p()->talent.rattle_the_stars );
     parse_effects( p()->buff.starweavers_warp );
     parse_effects( p()->buff.starweavers_weft );
     parse_effects( p()->buff.touch_the_cosmos );
@@ -2095,13 +2097,11 @@ public:
   snapshot_counter_t* bt_counter = nullptr;
   snapshot_counter_t* tf_counter = nullptr;
 
-  double berserk_cp;
   double primal_fury_cp;
 
   cat_attack_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil() )
     : base_t( n, p, s ),
       snapshots(),
-      berserk_cp( p->spec.berserk_cat->effectN( 2 ).base_value() ),
       primal_fury_cp(
           find_effect( find_trigger( p->talent.primal_fury ).trigger(), E_ENERGIZE ).resource( RESOURCE_COMBO_POINT ) )
   {
@@ -2118,24 +2118,26 @@ public:
           parse_persistent_effects( p->buff.clearcasting_cat, IGNORE_STACKS, p->talent.moment_of_clarity );
 
       parse_effects( p->mastery.razor_claws );
+
+      if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount && !p->buff.b_inc_cat->is_fallback )
+      {
+        energize_idx = find_effect_index( this, E_ENERGIZE, A_MAX, POWER_COMBO_POINT );
+        add_parse_entry( modified_effect_vec( energize_idx ) )
+            .set_buff( p->buff.b_inc_cat )
+            .set_flat( true )
+            .set_value( p->spec.berserk_cat->effectN( 2 ).base_value() );
+      }
     }
   }
 
-  virtual bool stealthed() const  // For effects that require any form of stealth.
+  bool stealthed() const  // For effects that require any form of stealth.
   {
-    // Make sure we call all for accurate benefit tracking. Berserk/Incarn/Sudden Assault handled in shred_t & rake_t -
-    // move here if buff while stealthed becomes more widespread
     return p()->buff.prowl->up() || p()->buffs.shadowmeld->up();
   }
 
-  double composite_energize_amount( const action_state_t* s ) const override
+  bool stealthed_any() const
   {
-    auto ea = base_t::composite_energize_amount( s );
-
-    if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 && p()->buff.b_inc_cat->check() )
-      ea += berserk_cp;
-
-    return ea;
+    return stealthed() || p()->buff.sudden_ambush->up();
   }
 
   void consume_resource() override
@@ -3496,7 +3498,7 @@ struct feral_frenzy_t : public cat_attack_t
       direct_bleed = false;
 
       dot_name = "feral_frenzy_tick";
-      berserk_cp = 0;  // feral frenzy does not count as a cp generator for berserk extra cp
+      energize_idx = 0;  // feral frenzy does not count as a cp generator for berserk extra cp
     }
 
     // Small hack to properly distinguish instant ticks from the driver, from actual periodic ticks from the bleed
@@ -3806,7 +3808,7 @@ struct rake_t : public cat_attack_t
       const auto& eff = data().effectN( 4 );
       add_parse_entry( persistent_multiplier_effects )
           .set_value( eff.percent() )
-          .set_func( [ this, p ] { return stealthed() || p->buff.sudden_ambush->check(); } )
+          .set_func( [ this, p ] { return stealthed_any(); } )
           .set_eff( &eff );
     }
 
@@ -3943,10 +3945,12 @@ struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
 
     if ( tear && result_is_hit( s->result ) )
     {
-      auto dot_total = calculate_tick_amount( s, 1.0 ) * find_dot( s->target )->remains() / tick_time( s );
+      auto tick_amount = calculate_tick_amount( s, 1.0 );
 
       // increased damage from sabertooth is not counted for tear calculations
-      dot_total /= 1.0 + p()->buff.sabertooth->check_stack_value();
+      tick_amount  /= 1.0 + p()->buff.sabertooth->check_stack_value();
+
+      auto dot_total = tick_amount * find_dot( s->target )->ticks_left_fractional();
 
       tear->snapshot_and_execute( s, true, [ this, dot_total ]( const action_state_t*, action_state_t* to ) {
         tear->set_amount( to, dot_total );
@@ -4077,7 +4081,6 @@ struct primal_wrath_t : public cat_finisher_t
 struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
 {
   double stealth_mul = 0.0;
-  double stealth_cp = 0.0;
 
   DRUID_ABILITY( shred_t, base_t, "shred", p->find_class_spell( "Shred" ) )
   {
@@ -4088,23 +4091,17 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
     if ( p->talent.pouncing_strikes.ok() )
     {
       stealth_mul = data().effectN( 3 ).percent();
-      stealth_cp = p->find_spell( 343232 )->effectN( 1 ).base_value();
 
       add_parse_entry( da_multiplier_effects )
           .set_value( stealth_mul )
-          .set_func( [ this ] { return stealthed() || this->p()->buff.sudden_ambush->check(); } )
+          .set_func( [ this ] { return stealthed_any(); } )
           .set_eff( &data().effectN( 3 ) );
+
+      add_parse_entry( modified_effect_vec( energize_idx ) )
+          .set_func( [ this ] { return stealthed_any(); } )
+          .set_flat( true )
+          .set_value( p->find_spell( 343232 )->effectN( 1 ).base_value() );
     }
-  }
-
-  double composite_energize_amount( const action_state_t* s ) const override
-  {
-    double e = base_t::composite_energize_amount( s );
-
-    if ( stealthed() || p()->buff.sudden_ambush->check() )
-      e += stealth_cp;
-
-    return e;
   }
 
   void execute() override
@@ -4142,7 +4139,7 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
   {
     double cm = base_t::composite_crit_chance_multiplier();
 
-    if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->check() ) )
+    if ( stealth_mul && stealthed_any() )
       cm *= 2.0;
 
     return cm;
@@ -5830,7 +5827,9 @@ public:
 
   void post_execute()
   {
-    p()->buff.touch_the_cosmos->expire();
+    if ( !p()->bugs || !is_free( free_spell_e::STARWEAVER ) )
+      p()->buff.touch_the_cosmos->expire();
+
     p()->buff.gathering_starstuff->trigger();
 
     if ( p()->sets->has_set_bonus( DRUID_BALANCE, T31, B4 ) )
@@ -7621,10 +7620,15 @@ struct starfall_t : public ap_spender_t
 
   void execute() override
   {
-    if ( !is_free() && p()->buff.starweavers_warp->up() && p()->active.starfall_starweaver )
+    if ( !is_free() && p()->buff.starweavers_warp->check() )
     {
       p()->active.starfall_starweaver->execute_on_target( target );
-      p()->buff.starweavers_warp->expire();
+
+      if ( p()->bugs && p()->buff.touch_the_cosmos->check() )
+        p()->buff.touch_the_cosmos->expire();
+      else
+        p()->buff.starweavers_warp->expire();
+
       return;
     }
 
@@ -7885,10 +7889,15 @@ struct starsurge_t : public ap_spender_t
 
   void execute() override
   {
-    if ( !is_free() && p()->buff.starweavers_weft->up() && p()->active.starsurge_starweaver )
+    if ( !is_free() && p()->buff.starweavers_weft->check() )
     {
       p()->active.starsurge_starweaver->execute_on_target( target );
-      p()->buff.starweavers_weft->expire();
+
+      if ( p()->bugs && p()->buff.touch_the_cosmos->check() )
+        p()->buff.touch_the_cosmos->expire();
+      else
+        p()->buff.starweavers_weft->expire();
+
       return;
     }
 
@@ -12953,7 +12962,8 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.radiant_moonlight );
   action.apply_affecting_aura( talent.twin_moons );
   action.apply_affecting_aura( talent.wild_surges );
-  action.apply_affecting_aura( talent.rattle_the_stars );
+  // TODO: uncomment when action_t::apply_affecting_aura order of operations for cost modifiers is established
+  // action.apply_affecting_aura( talent.rattle_the_stars );
   action.apply_affecting_aura( sets->set( DRUID_BALANCE, T30, B2 ) );
   
   // Feral 
