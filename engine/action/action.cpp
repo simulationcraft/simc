@@ -1074,7 +1074,8 @@ bool action_t::verify_actor_weapon() const
 double action_t::base_cost() const
 {
   resource_e cr = current_resource();
-  double c      = base_costs[ cr ];
+  double c = base_costs[ cr ].base;
+
   if ( secondary_costs[ cr ] != 0 )
   {
     c += secondary_costs[ cr ];

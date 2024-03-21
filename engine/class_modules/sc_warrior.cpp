@@ -1076,7 +1076,7 @@ public:
 
   virtual double tactician_cost() const
   {
-    double base = ab::base_costs[ ab::current_resource() ].base;
+    double base = ab::base_cost();
 
     if ( ab::sim->log )
     {

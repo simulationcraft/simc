@@ -2140,7 +2140,7 @@ public:
 
   void consume_resource() override
   {
-    double eff_cost = base_costs[ RESOURCE_ENERGY ].base;
+    double eff_cost = base_cost();
 
     base_t::consume_resource();
 
@@ -5790,7 +5790,7 @@ public:
       p_buff->trigger();
 
     // pulsar accumulate based on the cost before any talents and effects
-    p_buff->current_value += base_costs[ RESOURCE_ASTRAL_POWER ].base;
+    p_buff->current_value += base_cost();
 
     if ( p_buff->check_value() >= p_cap )
     {
