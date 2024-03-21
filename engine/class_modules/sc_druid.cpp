@@ -70,11 +70,10 @@ enum free_spell_e : unsigned
   TWIN       = 0x0040,  // twin moons talent
   // free casts
   APEX       = 0x0100,  // apex predators's craving
-  STARWEAVER = 0x0200,  // starweaver talent
-  TOOTH      = 0x0400,  // tooth and claw talent
+  TOOTH      = 0x0200,  // tooth and claw talent
 
   PROCS = CONVOKE | FIRMAMENT | FLASHING | GALACTIC | ORBIT | TWIN,
-  CASTS = APEX | STARWEAVER | TOOTH
+  CASTS = APEX | TOOTH
 };
 
 struct druid_td_t : public actor_target_data_t
@@ -463,8 +462,6 @@ public:
     action_t* shooting_stars_moonfire;
     action_t* shooting_stars_sunfire;
     action_t* crashing_stars;        // 4t30
-    action_t* starfall_starweaver;   // free starfall from starweaver's warp
-    action_t* starsurge_starweaver;  // free starsurge from starweaver's weft
     action_t* sundered_firmament;
     action_t* orbital_strike;
 
@@ -562,8 +559,8 @@ public:
     buff_t* shooting_stars_moonfire;
     buff_t* shooting_stars_sunfire;
     buff_t* shooting_stars_stellar_flare;
-    buff_t* starweavers_warp;  // free starfall
-    buff_t* starweavers_weft;  // free starsurge
+    buff_t* starweavers_free_starfall;  // free starfall
+    buff_t* starweavers_free_starsurge;  // free starsurge
     buff_t* primordial_arcanic_pulsar;
     buff_t* solstice;
     buff_t* starfall;
@@ -1605,8 +1602,8 @@ public:
     parse_effects( p()->buff.gathering_starstuff );
     parse_effects( p()->buff.incarnation_moonkin, p()->talent.elunes_guidance );
     parse_effects( p()->buff.owlkin_frenzy );
-    parse_effects( p()->buff.starweavers_warp );
-    parse_effects( p()->buff.starweavers_weft );
+    parse_effects( p()->buff.starweavers_free_starfall );
+    parse_effects( p()->buff.starweavers_free_starsurge );
     parse_effects( p()->buff.touch_the_cosmos );
     parse_effects( p()->buff.warrior_of_elune, IGNORE_STACKS );
 
@@ -5769,15 +5766,25 @@ protected:
 
 public:
   buff_t* p_buff;
+  buff_t* weaver_buff;
   timespan_t p_time;
   double p_cap;
 
   ap_spender_t( std::string_view n, druid_t* p, const spell_data_t* s )
     : druid_spell_t( n, p, s ),
       p_buff( p->buff.primordial_arcanic_pulsar ),
+      weaver_buff( p->sim->auras.fallback ),
       p_time( timespan_t::from_seconds( p->talent.primordial_arcanic_pulsar->effectN( 2 ).base_value() ) ),
       p_cap( p->talent.primordial_arcanic_pulsar->effectN( 1 ).base_value() )
   {}
+
+  double cost() const override
+  {
+    if ( weaver_buff->check() )
+      return 0.0;
+
+    return druid_spell_t::cost();
+  }
 
   void consume_resource() override
   {
@@ -5802,8 +5809,17 @@ public:
         p()->active.shift_to_moonkin->execute();
       }
 
+      // if both touch the cosmos and weaver are up when CA is triggered, both are expired after CA is triggered
+      bool expire_buffs = p()->buff.touch_the_cosmos->check() && weaver_buff->check();
+
       p()->buff.ca_inc->extend_duration_or_trigger( p_time, p() );
       p()->proc.pulsar->occur();
+
+      if ( expire_buffs )
+      {
+        p()->buff.touch_the_cosmos->expire();
+        weaver_buff->expire();
+      }
 
       // Touch the cosmos will proc again after being used shortly after Pulsar is consumed in game
       make_event( *sim, [ this ]() { p()->buff.touch_the_cosmos->trigger(); } );
@@ -5821,13 +5837,16 @@ public:
       p_buff->increment( stack_value_difference );
     else
       p_buff->decrement( abs( stack_value_difference ) );
+
+    // will consume touch the cosmos first, although weaver makes the cost 0
+    if ( p()->buff.touch_the_cosmos->check() )
+      p()->buff.touch_the_cosmos->expire();
+    else
+      weaver_buff->expire();
   }
 
   void post_execute()
   {
-    if ( !p()->bugs || !is_free( free_spell_e::STARWEAVER ) )
-      p()->buff.touch_the_cosmos->expire();
-
     p()->buff.gathering_starstuff->trigger();
 
     if ( p()->sets->has_set_bonus( DRUID_BALANCE, T31, B4 ) )
@@ -7614,22 +7633,12 @@ struct starfall_t : public ap_spender_t
       replace_stats( driver, false );
       replace_stats( driver->damage );
     }
+
+    weaver_buff = p->buff.starweavers_free_starfall;
   }
 
   void execute() override
   {
-    if ( !is_free() && p()->buff.starweavers_warp->check() )
-    {
-      p()->active.starfall_starweaver->execute_on_target( target );
-
-      if ( p()->bugs && p()->buff.touch_the_cosmos->check() )
-        p()->buff.touch_the_cosmos->expire();
-      else
-        p()->buff.starweavers_warp->expire();
-
-      return;
-    }
-
     if ( p()->talent.aetherial_kindling.ok() )
     {
       for ( auto t : p()->sim->target_non_sleeping_list )
@@ -7654,7 +7663,7 @@ struct starfall_t : public ap_spender_t
     post_execute();
 
     if ( !is_free_proc() )
-      p()->buff.starweavers_weft->trigger();
+      p()->buff.starweavers_free_starsurge->trigger();
   }
 };
 
@@ -7845,6 +7854,8 @@ struct starsurge_t : public ap_spender_t
           .set_value( eff.percent() )
           .set_eff( &eff );
     }
+
+    weaver_buff = p->buff.starweavers_free_starsurge;
   }
 
   void init() override
@@ -7887,18 +7898,6 @@ struct starsurge_t : public ap_spender_t
 
   void execute() override
   {
-    if ( !is_free() && p()->buff.starweavers_weft->check() )
-    {
-      p()->active.starsurge_starweaver->execute_on_target( target );
-
-      if ( p()->bugs && p()->buff.touch_the_cosmos->check() )
-        p()->buff.touch_the_cosmos->expire();
-      else
-        p()->buff.starweavers_weft->expire();
-
-      return;
-    }
-
     base_t::execute();
 
     if ( goldrinn && rng().roll( p()->talent.power_of_goldrinn->proc_chance() ) )
@@ -7908,7 +7907,7 @@ struct starsurge_t : public ap_spender_t
 
     if ( !is_free_proc() )
     {
-      p()->buff.starweavers_warp->trigger();
+      p()->buff.starweavers_free_starfall->trigger();
       p()->eclipse_handler.cast_starsurge();
     }
   }
@@ -9889,23 +9888,26 @@ void druid_t::create_buffs()
       make_buff_fallback( talent.solstice.ok(), this, "solstice", find_trigger( talent.solstice ).trigger() )
           ->set_default_value( find_trigger( talent.solstice ).percent() );
 
-  buff.starfall = make_buff_fallback( talent.starfall.ok() || ( talent.convoke_the_spirits.ok() && talent.moonkin_form.ok() ),
-      this, "starfall", find_spell( 191034 ) )  // lookup via spellid for convoke
-          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-          ->set_freeze_stacks( true )
-          ->set_partial_tick( true )  // TODO: confirm true?
-          ->set_tick_behavior( buff_tick_behavior::REFRESH );  // TODO: confirm true?
+  bool make_starfall = talent.starfall.ok() || ( talent.convoke_the_spirits.ok() && talent.moonkin_form.ok() );
+  // lookup via spellid for convoke
+  buff.starfall = make_buff_fallback( make_starfall, this, "starfall", find_spell( 191034 ) )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+    ->set_freeze_stacks( true )
+    ->set_partial_tick( true )                           // TODO: confirm true?
+    ->set_tick_behavior( buff_tick_behavior::REFRESH );  // TODO: confirm true?
 
   buff.starlord = make_buff_fallback( talent.starlord.ok(), this, "starlord", find_spell( 279709 ) )
     ->set_default_value( talent.starlord->effectN( 1 ).percent() )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
-  buff.starweavers_warp = make_buff_fallback( talent.starweaver.ok(), this, "starweavers_warp", find_spell( 393942 ) )
-    ->set_chance( talent.starweaver->effectN( 1 ).percent() );
+  buff.starweavers_free_starfall =
+      make_buff_fallback( talent.starweaver.ok(), this, "starweavers_warp", find_spell( 393942 ) )
+          ->set_chance( talent.starweaver->effectN( 1 ).percent() );
 
-  buff.starweavers_weft = make_buff_fallback( talent.starweaver.ok(), this, "starweavers_weft", find_spell( 393944 ) )
-    ->set_chance( talent.starweaver->effectN( 2 ).percent() );
+  buff.starweavers_free_starsurge =
+      make_buff_fallback( talent.starweaver.ok(), this, "starweavers_weft", find_spell( 393944 ) )
+          ->set_chance( talent.starweaver->effectN( 2 ).percent() );
 
   buff.touch_the_cosmos = make_buff_fallback( sets->has_set_bonus( DRUID_BALANCE, T29, B4 ),
       this, "touch_the_cosmos", sets->set( DRUID_BALANCE, T29, B4 )->effectN( 1 ).trigger() );
@@ -10280,27 +10282,6 @@ void druid_t::create_actions()
     }
   }
 
-  if ( talent.starweaver.ok() )
-  {
-    if ( talent.starsurge.ok() )
-    {
-      auto ss = get_secondary_action<starsurge_t>( "starsurge_starweaver", talent.starsurge );
-      ss->name_str_reporting = "starweavers_weft";
-      ss->s_data_reporting = &buff.starweavers_weft->data();
-      ss->set_free_cast( free_spell_e::STARWEAVER );
-      active.starsurge_starweaver = ss;
-    }
-
-    if ( talent.starfall.ok() )
-    {
-      auto sf = get_secondary_action<starfall_t>( "starfall_starweaver", talent.starfall );
-      sf->name_str_reporting = "starweavers_warp";
-      sf->s_data_reporting = &buff.starweavers_warp->data();
-      sf->set_free_cast( free_spell_e::STARWEAVER );
-      active.starfall_starweaver = sf;
-    }
-  }
-
   if ( talent.sundered_firmament.ok() )
   {
     auto firmament = get_secondary_action<fury_of_elune_t>(
@@ -10413,8 +10394,6 @@ void druid_t::create_actions()
   find_parent( active.galactic_guardian, "moonfire" );
   find_parent( active.maul_tooth_and_claw, "maul" );
   find_parent( active.raze_tooth_and_claw, "raze" );
-  find_parent( active.starsurge_starweaver, "starsurge" );
-  find_parent( active.starfall_starweaver, "starfall" );
   find_parent( active.thrash_bear_flashing, "thrash_bear" );
 }
 
