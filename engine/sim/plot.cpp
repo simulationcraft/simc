@@ -5,13 +5,13 @@
 
 #include "plot.hpp"
 
-#include "player/player_scaling.hpp"
 #include "player/player.hpp"
+#include "player/player_scaling.hpp"
 #include "player/scaling_metric_data.hpp"
 #include "report/reports.hpp"
+#include "scale_factor_control.hpp"
 #include "sim.hpp"
 #include "sim/work_queue.hpp"
-#include "scale_factor_control.hpp"
 #include "util/io.hpp"
 #include "util/plot_data.hpp"
 
@@ -103,9 +103,7 @@ double plot_t::progress( std::string& phase, std::string* detailed )
 
   stat_progress += point_progress / num_plot_stats;
 
-  sim->detailed_progress( detailed,
-                          completed_plot_stats + completed_plot_points,
-                          num_plot_stats + dps_plot_points );
+  sim->detailed_progress( detailed, completed_plot_stats + completed_plot_points, num_plot_stats + dps_plot_points );
 
   return stat_progress;
 }
@@ -144,17 +142,17 @@ void plot_t::analyze_stats()
     if ( dps_plot_positive )
     {
       start = 0;
-      end   = dps_plot_points;
+      end = dps_plot_points;
     }
     else if ( dps_plot_negative )
     {
       start = -dps_plot_points;
-      end   = 0;
+      end = 0;
     }
     else
     {
       start = -dps_plot_points / 2;
-      end   = -start;
+      end = -start;
     }
 
     for ( int j = start; j <= end; j++ )
@@ -173,15 +171,14 @@ void plot_t::analyze_stats()
         }
         if ( dps_plot_target_error > 0 )
           delta_sim->target_error = dps_plot_target_error;
-        //delta_sim->enchant.add_stat( i, j * dps_plot_step );
+        // delta_sim->enchant.add_stat( i, j * dps_plot_step );
         delta_sim->scaling->scale_stat = i;
         delta_sim->scaling->scale_value = j * dps_plot_step;
         delta_sim->progress_bar.set_base( util::to_string( j * dps_plot_step ) + " " + util::stat_type_abbrev( i ) );
         delta_sim->execute();
         if ( dps_plot_debug )
         {
-          sim->out_debug.raw().print( "Stat={} Point={}\n",
-                                      util::stat_type_string( i ), j );
+          sim->out_debug.raw().print( "Stat={} Point={}\n", util::stat_type_string( i ), j );
           report::print_text( delta_sim.get(), true );
         }
       }
@@ -197,16 +194,14 @@ void plot_t::analyze_stats()
         {
           player_t* delta_p = delta_sim->find_player( p->name() );
 
-          scaling_metric_data_t scaling_data =
-              delta_p->scaling_for_metric( p->sim->scaling->scaling_metric );
+          scaling_metric_data_t scaling_data = delta_p->scaling_for_metric( p->sim->scaling->scaling_metric );
 
           data.value = scaling_data.value;
           data.error = scaling_data.stddev * delta_sim->confidence_estimator;
         }
         else
         {
-          scaling_metric_data_t scaling_data =
-              p->scaling_for_metric( p->sim->scaling->scaling_metric );
+          scaling_metric_data_t scaling_data = p->scaling_for_metric( p->sim->scaling->scaling_metric );
           data.value = scaling_data.value;
           data.error = scaling_data.stddev * sim->confidence_estimator;
         }
@@ -235,8 +230,7 @@ void plot_t::write_output_file()
   out.open( sim->reforge_plot_output_file_str );
   if ( !out.is_open() )
   {
-    sim->error( "Unable to open output file '{}' . \n",
-                 sim->reforge_plot_output_file_str );
+    sim->error( "Unable to open output file '{}' . \n", sim->reforge_plot_output_file_str );
     return;
   }
 
@@ -256,8 +250,7 @@ void plot_t::write_output_file()
 
       for ( const plot_data_t& p_data : player->dps_plot_data[ j ] )
       {
-        out << p_data.plot_step << ", " << p_data.value << ", " << p_data.error
-            << "\n";
+        out << p_data.plot_step << ", " << p_data.value << ", " << p_data.error << "\n";
       }
       out << "\n";
     }
@@ -269,8 +262,7 @@ void plot_t::write_output_file()
 void plot_t::create_options()
 {
   sim->add_option( opt_int( "dps_plot_iterations", dps_plot_iterations ) );
-  sim->add_option(
-      opt_float( "dps_plot_target_error", dps_plot_target_error ) );
+  sim->add_option( opt_float( "dps_plot_target_error", dps_plot_target_error ) );
   sim->add_option( opt_int( "dps_plot_points", dps_plot_points ) );
   sim->add_option( opt_string( "dps_plot_stat", dps_plot_stat_str ) );
   sim->add_option( opt_float( "dps_plot_step", dps_plot_step ) );
