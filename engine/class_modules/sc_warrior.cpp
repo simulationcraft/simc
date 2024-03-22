@@ -5974,18 +5974,7 @@ struct avatar_t : public warrior_spell_t
     if ( p()->talents.warrior.immovable_object->ok() )
       p()->buff.shield_wall->trigger( p()->talents.warrior.immovable_object->effectN( 2 ).time_value() );
 
-
-    if ( ! p()->bugs )
-      p()->buff.avatar->extend_duration_or_trigger();
-    else  // avatar always triggers to 20s duration when it's hard cast
-    {
-      auto extended_duration = p()->buff.avatar->buff_duration();
-      if ( p()->buff.avatar->remains() + extended_duration > p()->buff.avatar->base_buff_duration )
-      {
-        extended_duration = p()->buff.avatar->base_buff_duration - p()->buff.avatar->remains();
-      }
-      p()->buff.avatar->extend_duration_or_trigger( extended_duration );
-    }
+    p()->buff.avatar->extend_duration_or_trigger();
 
     if ( p()->talents.warrior.berserkers_torment.ok() )
     {
