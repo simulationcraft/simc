@@ -16,35 +16,6 @@
 
 #include <sstream>
 
-namespace
-{  // UNNAMED NAMESPACE ==========================================
-
-/// Will stat be reforge-plotted?
-bool is_plot_stat( sim_t* sim, stat_e stat )
-{
-  // search for explicit stat option
-  if ( !sim->reforge_plot->reforge_plot_stat_str.empty() )
-  {
-    auto stat_list =
-        util::string_split<util::string_view>( sim->reforge_plot->reforge_plot_stat_str, ",:;/|" );
-
-    if ( !range::any_of( stat_list, [stat]( util::string_view s ) {
-      return stat == util::parse_stat_type( s );
-    } ) )
-    {
-      // not found
-      return false;
-    }
-  }
-
-  // also check if any player scales_with that stat
-  return range::any_of( sim->player_no_pet_list, [stat]( const player_t* p ) {
-        return !p->quiet && p->scaling->scales_with[ stat ];
-      } );
-}
-
-}  // UNNAMED NAMESPACE ====================================================
-
 // ==========================================================================
 // Reforge Plot
 // ==========================================================================
@@ -63,6 +34,29 @@ reforge_plot_t::reforge_plot_t( sim_t* s )
     num_stat_combos( 0 )
 {
   create_options();
+}
+
+/// Will stat be reforge-plotted?
+bool reforge_plot_t::is_plot_stat( stat_e stat ) const
+{
+  // search for explicit stat option
+  if ( !reforge_plot_stat_str.empty() )
+  {
+    auto stat_list = util::string_split<util::string_view>( reforge_plot_stat_str, ",:;/|" );
+
+    if ( !range::any_of( stat_list, [ stat ]( util::string_view s ) {
+           return stat == util::parse_stat_type( s );
+         } ) )
+    {
+      // not found
+      return false;
+    }
+  }
+
+  // also check if any player scales_with that stat
+  return range::any_of( sim->player_no_pet_list, [ stat ]( const player_t* p ) {
+    return !p->quiet && p->scaling->scales_with[ stat ];
+  } );
 }
 
 // generate_stat_mods =======================================================
@@ -129,7 +123,7 @@ void reforge_plot_t::analyze_stats()
   reforge_plot_stat_indices.clear();
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    if ( is_plot_stat( sim, i ) )
+    if ( is_plot_stat( i ) )
       reforge_plot_stat_indices.push_back( i );
   }
 

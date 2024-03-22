@@ -34,6 +34,7 @@ struct reforge_plot_t
                            std::vector<int> cur_stat_mods );
   void analyze();
   void analyze_stats();
+  bool is_plot_stat( stat_e ) const;
   double progress( std::string& phase, std::string* detailed = nullptr );
 private:
   void write_output_file();

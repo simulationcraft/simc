@@ -27,6 +27,7 @@ public:
 
   plot_t( sim_t* s );
   void analyze();
+  bool is_plot_stat( stat_e ) const;
   double progress( std::string& phase, std::string* detailed = nullptr );
 private:
   void analyze_stats();

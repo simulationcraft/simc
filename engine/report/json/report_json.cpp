@@ -3,24 +3,27 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "report/reports.hpp"
 #include "interfaces/sc_js.hpp"
 #include "player/player_talent_points.hpp"
+#include "rapidjson/document.h"
+#include "rapidjson/filewritestream.h"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/writer.h"
 #include "report/json/report_configuration.hpp"
 #include "report/report_timer.hpp"
-#include "sim/scale_factor_control.hpp"
+#include "report/reports.hpp"
 #include "sim/iteration_data_entry.hpp"
+#include "sim/plot.hpp"
 #include "sim/profileset.hpp"
-#include "simulationcraft.hpp"
+#include "sim/reforge_plot.hpp"
+#include "sim/scale_factor_control.hpp"
 #include "util/git_info.hpp"
+#include "util/plot_data.hpp"
 
 #include <ctime>
 
-#include "rapidjson/filewritestream.h"
-#include "rapidjson/document.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/prettywriter.h"
+#include "simulationcraft.hpp"
 
 using namespace rapidjson;
 using namespace js;
@@ -1085,7 +1088,8 @@ void profileset_json3( const profileset::profilesets_t& profilesets, const sim_t
 }
 #endif
 
-void profileset_json( const ::report::json::report_configuration_t& report_configuration, const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
+void profileset_json( const ::report::json::report_configuration_t& report_configuration,
+                      const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
 {
 #ifndef SC_NO_THREADING
   if ( report_configuration.version_intersects( ">=3.0.0" ) )
@@ -1097,6 +1101,67 @@ void profileset_json( const ::report::json::report_configuration_t& report_confi
     profileset_json2( profileset, sim, root );
   }
 #endif
+}
+
+void dps_plot_json( const ::report::json::report_configuration_t& report_configuration,
+                    const plot_t& dps_plot, const sim_t& sim, js::JsonOutput& root )
+{
+  for ( auto player : sim.player_list )
+  {
+    if ( player->quiet )
+      continue;
+
+    auto&& obj = root.add();
+    obj[ "name" ] = player->name();
+    auto data_obj = obj[ "data" ].make_array();
+
+    for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
+    {
+      if ( !dps_plot.is_plot_stat( j ) )
+        continue;
+
+      auto&& dobj = data_obj.add();
+      auto stat_obj = dobj[ util::stat_type_abbrev( j ) ].make_array();
+
+      for ( const auto& data : player->dps_plot_data[ j ] )
+      {
+        auto&& sobj = stat_obj.add();
+        sobj[ "rating" ] = data.plot_step;
+        sobj[ "dps" ] = data.value;
+        sobj[ "dps-error" ] = data.error;
+      }
+    }
+  }
+}
+
+void reforge_plot_json( const ::report::json::report_configuration_t& report_configuration,
+                        const reforge_plot_t& reforge_plot, const sim_t& sim, js::JsonOutput& root )
+{
+  const auto& stat_list = reforge_plot.reforge_plot_stat_indices;
+
+  for ( auto player : sim.player_list )
+  {
+    if ( player->quiet )
+      continue;
+
+    auto&& obj = root.add();
+    obj[ "name" ] = player->name();
+    auto data_obj = obj[ "data" ].make_array();
+
+    for ( size_t i = 0; i < player->reforge_plot_data.size(); i++ )
+    {
+      auto&& dobj = data_obj.add();
+      size_t j = 0;
+
+      while( j < stat_list.size() )
+      {
+        dobj[ util::stat_type_abbrev( stat_list[ j++ ] ) ] = player->reforge_plot_data[ i ][ j ].value;
+      }
+
+      dobj[ "dps" ] = player->reforge_plot_data[ i ][ j ].value;
+      dobj[ "dps-error" ] = player->reforge_plot_data[ i ][ j ].error;
+    }
+  }
 }
 
 void to_json( const ::report::json::report_configuration_t& report_configuration, JsonOutput root, const sim_t& sim )
@@ -1204,6 +1269,19 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
     auto profileset_root = root[ "profilesets" ];
     profileset_json( report_configuration, *sim.profilesets, sim, profileset_root );
   }
+
+  if ( !sim.plot->dps_plot_stat_str.empty() )
+  {
+    auto dps_plot_root = root[ "dps_plot" ].make_array();
+    dps_plot_json( report_configuration, *sim.plot, sim, dps_plot_root );
+  }
+
+  if ( !sim.reforge_plot->reforge_plot_stat_str.empty() )
+  {
+    auto reforge_plot_root = root[ "reforge_plot" ].make_array();
+    reforge_plot_json( report_configuration, *sim.reforge_plot, sim, reforge_plot_root );
+  }
+
 
   auto stats_root = root[ "statistics" ];
   stats_root[ "elapsed_cpu_seconds" ] = chrono::to_fp_seconds(sim.elapsed_cpu);

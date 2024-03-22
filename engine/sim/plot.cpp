@@ -17,35 +17,6 @@
 
 #include <memory>
 
-namespace
-{  // UNNAMED NAMESPACE ==========================================
-
-/// Will stat be plotted?
-bool is_plot_stat( sim_t* sim, stat_e stat )
-{
-  // check if stat is in plot stat option
-  if ( !sim->plot->dps_plot_stat_str.empty() )
-  {
-    auto stat_list =
-        util::string_split<util::string_view>( sim->plot->dps_plot_stat_str, ",:;/|" );
-
-    if ( !range::any_of( stat_list, [stat]( util::string_view s ) {
-      return stat == util::parse_stat_type( s );
-    } ) )
-    {
-      // not found
-      return false;
-    }
-  }
-
-  // also check if any player scales with that stat
-  return range::any_of( sim->player_no_pet_list, [stat]( player_t* p ) {
-    return !p->quiet && p->scaling->scales_with[ stat ];
-  } );
-}
-
-}  // UNNAMED NAMESPACE ====================================================
-
 // ==========================================================================
 // Plot
 // ==========================================================================
@@ -67,6 +38,29 @@ plot_t::plot_t( sim_t* s )
     dps_plot_negative( false )
 {
   create_options();
+}
+
+/// Will stat be plotted?
+bool plot_t::is_plot_stat( stat_e stat ) const
+{
+  // check if stat is in plot stat option
+  if ( !dps_plot_stat_str.empty() )
+  {
+    auto stat_list = util::string_split<util::string_view>( dps_plot_stat_str, ",:;/|" );
+
+    if ( !range::any_of( stat_list, [ stat ]( util::string_view s ) {
+           return stat == util::parse_stat_type( s );
+         } ) )
+    {
+      // not found
+      return false;
+    }
+  }
+
+  // also check if any player scales with that stat
+  return range::any_of( sim->player_no_pet_list, [ stat ]( player_t* p ) {
+    return !p->quiet && p->scaling->scales_with[ stat ];
+  } );
 }
 
 /// execute plotting
@@ -128,7 +122,7 @@ void plot_t::analyze_stats()
 
   remaining_plot_stats = 0;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-    if ( is_plot_stat( sim, i ) )
+    if ( is_plot_stat( i ) )
       remaining_plot_stats++;
   num_plot_stats = remaining_plot_stats;
 
@@ -137,7 +131,7 @@ void plot_t::analyze_stats()
     if ( sim->is_canceled() )
       break;
 
-    if ( !is_plot_stat( sim, i ) )
+    if ( !is_plot_stat( i ) )
       continue;
 
     current_plot_stat = i;
@@ -255,7 +249,7 @@ void plot_t::write_output_file()
 
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
-      if ( !is_plot_stat( sim, j ) )
+      if ( !is_plot_stat( j ) )
         continue;
 
       out << util::stat_type_string( j ) << ", DPS, DPS-Error\n";
