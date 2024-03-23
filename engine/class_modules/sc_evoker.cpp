@@ -891,6 +891,7 @@ struct evoker_t : public player_t
   evoker_t( sim_t* sim, std::string_view name, race_e r = RACE_DRACTHYR_HORDE );
 
   // Character Definitions
+  void validate_sim_options() override;
   unsigned int specialization_aura_id();
   void init_action_list() override;
   void init_finished() override;
@@ -4958,6 +4959,18 @@ void insight_of_naszuro( special_effect_t& effect )
   if ( auto e = dynamic_cast<evoker_t*>( effect.player ) )
   {
     e->naszuro = &effect;
+  }
+}
+
+void evoker_t::validate_sim_options()
+{
+  if ( specialization() == EVOKER_AUGMENTATION )
+  {
+    if ( sim->single_actor_batch )
+    {
+      sim->error( "Single actor batch is not supported for Augmentation, disabling." );
+      sim->single_actor_batch = false;
+    }
   }
 }
 
