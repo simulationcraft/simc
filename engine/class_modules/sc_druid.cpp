@@ -4093,7 +4093,7 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
           .set_func( [ this ] { return stealthed_any(); } )
           .set_eff( &data().effectN( 3 ) );
 
-      auto eff = p->find_spell( 343232 )->effectN( 1 );
+      const auto& eff = p->find_spell( 343232 )->effectN( 1 );
       add_parse_entry( modified_effect_vec( energize_idx ) )
           .set_func( [ this ] { return stealthed_any(); } )
           .set_flat( true )
