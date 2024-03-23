@@ -8376,6 +8376,8 @@ struct convoke_the_spirits_t : public druid_spell_t
     a->set_free_cast( free_spell_e::CONVOKE );
     stats->add_child( a->stats );
     a->gain = gain;
+    // get_convoke_action is called in init() so newly created actions need to be init'd
+    a->init();
     return a;
   }
 
