@@ -1112,7 +1112,7 @@ public:
 
   virtual void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain );
 
-  virtual void html_customsection( report::sc_html_stream& ) {}
+  virtual void html_customsection( report::sc_html_stream& );
 
   // ================
   // Static functions

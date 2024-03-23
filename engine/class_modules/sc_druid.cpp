@@ -2117,10 +2117,12 @@ public:
       if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount && !p->buff.b_inc_cat->is_fallback )
       {
         energize_idx = find_effect_index( this, E_ENERGIZE, A_MAX, POWER_COMBO_POINT );
+        const auto& eff = p->spec.berserk_cat->effectN( 2 );
         add_parse_entry( modified_effect_vec( energize_idx ) )
             .set_buff( p->buff.b_inc_cat )
             .set_flat( true )
-            .set_value( p->spec.berserk_cat->effectN( 2 ).base_value() );
+            .set_value( eff.base_value() )
+            .set_eff( &eff );
       }
     }
   }
@@ -3940,10 +3942,9 @@ struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
 
     if ( tear && result_is_hit( s->result ) )
     {
-      auto tick_amount = calculate_tick_amount( s, 1.0 );
-
       // increased damage from sabertooth is not counted for tear calculations
-      tick_amount  /= 1.0 + p()->buff.sabertooth->check_stack_value();
+      auto tick_amount = calculate_tick_amount( s, 1.0 );
+      tick_amount /= 1.0 + p()->buff.sabertooth->check_stack_value();
 
       auto dot_total = tick_amount * find_dot( s->target )->ticks_left_fractional();
 
@@ -4092,10 +4093,12 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
           .set_func( [ this ] { return stealthed_any(); } )
           .set_eff( &data().effectN( 3 ) );
 
+      auto eff = p->find_spell( 343232 )->effectN( 1 );
       add_parse_entry( modified_effect_vec( energize_idx ) )
           .set_func( [ this ] { return stealthed_any(); } )
           .set_flat( true )
-          .set_value( p->find_spell( 343232 )->effectN( 1 ).base_value() );
+          .set_value( eff.base_value() )
+          .set_eff( &eff );
     }
   }
 

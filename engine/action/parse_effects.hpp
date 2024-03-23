@@ -101,10 +101,11 @@ struct modify_effect_t
   double value;                   // 0.0
   bool use_stacks;                // true
   bool flat;                      // false
+  const spelleffect_data_t* eff;  // &spelleffect_data_t::nil()
 
   modify_effect_t( buff_t* b = nullptr, std::function<bool()> f = nullptr, double v = 0.0, bool s = true,
-                   bool fl = false )
-    : buff( b ), func( std::move( f ) ), value( v ), use_stacks( s ), flat( fl )
+                   bool fl = false, const spelleffect_data_t* e = &spelleffect_data_t::nil() )
+    : buff( b ), func( std::move( f ) ), value( v ), use_stacks( s ), flat( fl ), eff( e )
   {}
 
   modify_effect_t& set_buff( buff_t* b )
@@ -121,6 +122,9 @@ struct modify_effect_t
 
   modify_effect_t& set_flat( bool fl )
   { flat = fl; return *this; }
+
+  modify_effect_t& set_eff( const spelleffect_data_t* e )
+  { eff = e; return *this; }
 };
 
 // used to store values from parameter pack recursion of parse_effect/parse_target_effects
@@ -272,7 +276,15 @@ struct parse_action_effects_t : public BASE, public parse_effects_t
 {
 private:
   PLAYER* player_;
-  std::array<std::pair<double, std::vector<modify_effect_t>>, 5> effect_modifiers;
+
+  struct effect_pack_t
+  {
+    std::vector<const spelleffect_data_t*> permanent;
+    double value = 0.0;
+    std::vector<modify_effect_t> conditional;
+  };
+
+  std::array<effect_pack_t, 5> effect_modifiers;
 
 public:
   // auto parsed dynamic effects
@@ -293,7 +305,7 @@ public:
     : BASE( name, player, spell ), parse_effects_t(), player_( player )
   {
     for ( size_t i = 0; i < 5 && i < spell->effect_count(); i++ )
-      effect_modifiers[ i ].first = spell->effectN( i + 1 ).base_value();
+      effect_modifiers[ i ].value = spell->effectN( i + 1 ).base_value();
   }
 
   double cost_flat_modifier() const override
@@ -366,7 +378,17 @@ public:
 
   void html_customsection( report::sc_html_stream& os ) override
   {
-    parsed_html_report( os );
+    os << "<div>\n";
+
+    BASE::html_customsection( os );
+    modified_effects_html( os );
+
+    os << "</div>\n"
+       << "<div>\n";
+
+    parsed_effects_html( os );
+
+    os << "</div>\n";
   }
 
   // Syntax: parse_effects( data[, spells|condition|ignore_mask|value|flags][,...] )
@@ -915,6 +937,7 @@ public:
       return;
 
     std::string val_str = flat ? fmt::format( "{}", val ) : fmt::format( "{}%", val * 100 );
+    auto &effN = effect_modifiers[ idx ];
 
     // always active
     if ( !tmp.data.buff && !tmp.data.func )
@@ -923,9 +946,11 @@ public:
                               BASE::id, idx + 1, val_str, s_data->name_cstr(), s_data->id(), i );
 
       if ( flat )
-        effect_modifiers[ idx ].first += val;
+        effN.value += val;
       else
-        effect_modifiers[ idx ].first *= 1.0 + val;
+        effN.value *= 1.0 + val;
+
+      effN.permanent.push_back( &eff );
     }
     // conditionally active
     else
@@ -935,8 +960,9 @@ public:
 
       tmp.data.value = val;
       tmp.data.flat = flat;
+      tmp.data.eff = &eff;
 
-      effect_modifiers[ idx ].second.push_back( tmp.data );
+      effN.conditional.push_back( tmp.data );
     }
   }
 
@@ -946,9 +972,9 @@ public:
     if ( !idx )
       return 0.0;
 
-    auto return_value = effect_modifiers[ idx - 1 ].first;
+    auto return_value = effect_modifiers[ idx - 1 ].value;
 
-    for ( const auto& i : effect_modifiers[ idx - 1 ].second )
+    for ( const auto& i : effect_modifiers[ idx - 1 ].conditional )
     {
       double eff_val = i.value;
 
@@ -987,44 +1013,75 @@ public:
 
   std::vector<modify_effect_t>& modified_effect_vec( size_t idx )
   {
-    return effect_modifiers[ idx - 1 ].second;
+    return effect_modifiers[ idx - 1 ].conditional;
   }
 
-  void parsed_html_report( report::sc_html_stream& os )
+  void modified_effects_html( report::sc_html_stream& os )
   {
-    if ( !total_effects_count() )
-      return;
+    if ( range::count_if( effect_modifiers, []( const effect_pack_t& e ) {
+           return e.permanent.size() + e.conditional.size();
+         } ) )
+    {
+      os << "<div>\n"
+         << "<h4>Modified Effects</h4>\n"
+         << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
 
-    os << "<div>\n"
-       << "<h4>Affected By (Dynamic)</h4>\n"
-       << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
+      os << "<tr>\n"
+         << "<th class=\"small\">Effect</th>\n"
+         << "<th class=\"small\">Type</th>\n"
+         << "<th class=\"small\">Spell</th>\n"
+         << "<th class=\"small\">ID</th>\n"
+         << "<th class=\"small\">#</th>\n"
+         << "<th class=\"small\">+/%</th>\n"
+         << "<th class=\"small\">Value</th>\n"
+         << "</tr>\n";
 
-    os << "<tr>\n"
-       << "<th class=\"small\">Type</th>\n"
-       << "<th class=\"small\">Spell</th>\n"
-       << "<th class=\"small\">ID</th>\n"
-       << "<th class=\"small\">#</th>\n"
-       << "<th class=\"small\">Value</th>\n"
-       << "<th class=\"small\">Source</th>\n"
-       << "<th class=\"small\">Notes</th>\n"
-       << "</tr>\n";
+      print_parsed_effect( os, effect_modifiers[ 0 ], "Effect 1" );
+      print_parsed_effect( os, effect_modifiers[ 1 ], "Effect 2" );
+      print_parsed_effect( os, effect_modifiers[ 2 ], "Effect 3" );
+      print_parsed_effect( os, effect_modifiers[ 3 ], "Effect 4" );
+      print_parsed_effect( os, effect_modifiers[ 4 ], "Effect 5" );
 
-    print_parsed_type( os, da_multiplier_effects, "Direct Damage" );
-    print_parsed_type( os, ta_multiplier_effects, "Periodic Damage" );
-    print_parsed_type( os, crit_chance_effects, "Critical Strike Chance" );
-    print_parsed_type( os, execute_time_effects, "Execute Time" );
-    print_parsed_type( os, dot_duration_effects, "Dot Duration" );
-    print_parsed_type( os, tick_time_effects, "Tick Time" );
-    print_parsed_type( os, recharge_multiplier_effects, "Recharge Multiplier" );
-    print_parsed_type( os, flat_cost_effects, "Flat Cost" );
-    print_parsed_type( os, cost_effects, "Percent Cost" );
-    print_parsed_type( os, target_multiplier_effects, "Damage on Debuff" );
-    print_parsed_type( os, target_crit_chance_effects, "Crit Chance on Debuff" );
-    print_parsed_type( os, target_crit_damage_effects, "Crit Damage on Debuff" );
-    print_parsed_custom_type( os );
+      os << "</table>\n"
+         << "</div>\n";
+    }
+  }
 
-    os << "</table>\n"
-       << "</div>\n";
+  void parsed_effects_html( report::sc_html_stream& os )
+  {
+    if ( total_effects_count() )
+    {
+      os << "<div>\n"
+         << "<h4>Affected By (Dynamic)</h4>\n"
+         << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
+
+      os << "<tr>\n"
+         << "<th class=\"small\">Type</th>\n"
+         << "<th class=\"small\">Spell</th>\n"
+         << "<th class=\"small\">ID</th>\n"
+         << "<th class=\"small\">#</th>\n"
+         << "<th class=\"small\">Value</th>\n"
+         << "<th class=\"small\">Source</th>\n"
+         << "<th class=\"small\">Notes</th>\n"
+         << "</tr>\n";
+
+      print_parsed_type( os, da_multiplier_effects, "Direct Damage" );
+      print_parsed_type( os, ta_multiplier_effects, "Periodic Damage" );
+      print_parsed_type( os, crit_chance_effects, "Critical Strike Chance" );
+      print_parsed_type( os, execute_time_effects, "Execute Time" );
+      print_parsed_type( os, dot_duration_effects, "Dot Duration" );
+      print_parsed_type( os, tick_time_effects, "Tick Time" );
+      print_parsed_type( os, recharge_multiplier_effects, "Recharge Multiplier" );
+      print_parsed_type( os, flat_cost_effects, "Flat Cost" );
+      print_parsed_type( os, cost_effects, "Percent Cost" );
+      print_parsed_type( os, target_multiplier_effects, "Damage on Debuff" );
+      print_parsed_type( os, target_crit_chance_effects, "Crit Chance on Debuff" );
+      print_parsed_type( os, target_crit_damage_effects, "Crit Damage on Debuff" );
+      print_parsed_custom_type( os );
+
+      os << "</table>\n"
+         << "</div>\n";
+    }
   }
 
   virtual size_t total_effects_count()
@@ -1102,5 +1159,74 @@ public:
                entry.value * ( entry.mastery ? 100 : 1 ),
                "",
                entry.mastery ? "Mastery" : "" );
+  }
+
+  void print_parsed_effect( report::sc_html_stream& os, const effect_pack_t& effN, std::string_view n )
+  {
+    auto p = effN.permanent.size();
+    auto c = effN.conditional.size();
+
+    if ( p + c == 0 )
+      return;
+
+    bool first_row = true;
+
+    os.format( "<tr><td rowspan=\"{}\">{}</td>\n", p + c, n );
+
+    if ( p )
+    {
+      first_row = false;
+
+      os.format( "<td rowspan=\"{}\">Permanent</td>", p );
+      for ( size_t i = 0; i < p; i++ )
+      {
+        if ( i > 0 )
+          os << "<tr>";
+
+        print_parsed_effect_line( os, *effN.permanent[ i ] );
+      }
+    }
+
+    if ( c )
+    {
+      if ( !first_row )
+        os << "<tr>";
+
+      os.format( "<td rowspan=\"{}\">Conditional</td>", c );
+      for ( size_t i = 0; i < c; i++ )
+      {
+        if ( i > 0 )
+          os << "<tr>";
+
+        print_parsed_effect_line( os, *effN.conditional[ i ].eff );
+      }
+    }
+  }
+
+  void print_parsed_effect_line( report::sc_html_stream& os, const spelleffect_data_t& eff )
+  {
+    std::string op_str;
+
+    switch ( eff.subtype() )
+    {
+      case A_ADD_PCT_MODIFIER:
+      case A_ADD_PCT_LABEL_MODIFIER:
+        op_str = "PCT";
+        break;
+      case A_ADD_FLAT_MODIFIER:
+      case A_ADD_FLAT_LABEL_MODIFIER:
+        op_str = "ADD";
+        break;
+      default:
+        op_str = "UNK";
+        break;
+    }
+
+    os.format( "<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>\n",
+                eff.spell()->name_cstr(),
+                eff.spell()->id(),
+                eff.index() + 1,
+                op_str,
+                eff.base_value() );
   }
 };

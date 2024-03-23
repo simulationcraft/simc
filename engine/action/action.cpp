@@ -11,6 +11,7 @@
 #include "buff/buff.hpp"
 #include "dbc/data_enums.hh"
 #include "dbc/dbc.hpp"
+#include "dbc/sc_spell_info.hpp"
 #include "player/action_priority_list.hpp"
 #include "player/actor_target_data.hpp"
 #include "player/covenant.hpp"
@@ -5042,6 +5043,66 @@ player_t* action_t::select_target_if_target()
 timespan_t action_t::distance_targeting_travel_time( action_state_t* /*s*/ ) const
 {
   return timespan_t::zero();
+}
+
+void action_t::html_customsection( report::sc_html_stream& os )
+{
+  if ( affecting_list.size() )
+  {
+    os << "<div>\n"
+        << "<h4>Affected By (Passive)</h4>\n"
+        << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
+
+    os << "<tr>\n"
+        << "<th class=\"small\">Type</th>\n"
+        << "<th class=\"small\">Spell</th>\n"
+        << "<th class=\"small\">ID</th>\n"
+        << "<th class=\"small\">#</th>\n"
+        << "<th class=\"small\">+/%</th>\n"
+        << "<th class=\"small\">Value</th>\n"
+        << "</tr>\n";
+
+    for ( auto [ eff, val ] : affecting_list )
+    {
+      std::string op_str;
+      std::string type_str;
+      std::string val_str = fmt::format( "{:.3f}", val );
+
+      switch ( eff->subtype() )
+      {
+        case A_ADD_FLAT_LABEL_MODIFIER:
+        case A_ADD_FLAT_MODIFIER:
+          op_str = "ADD";
+          type_str = spell_info::effect_property_str( eff );
+          break;
+        case A_ADD_PCT_LABEL_MODIFIER:
+        case A_ADD_PCT_MODIFIER:
+          op_str = "PCT";
+          type_str = spell_info::effect_property_str( eff );
+          break;
+        case A_MODIFY_SCHOOL:
+          op_str = "SET";
+          type_str = spell_info::effect_subtype_str( eff );
+          val_str = util::school_type_string( eff->school_type() );
+          break;
+        default:
+          op_str = "SET";
+          type_str = spell_info::effect_subtype_str( eff );
+          break;
+      }
+
+      os.format( "<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>",
+        type_str,
+        eff->spell()->name_cstr(),
+        eff->spell()->id(),
+        eff->index() + 1,
+        op_str,
+        val_str );
+    }
+
+    os << "</table>\n"
+        << "</div>\n";
+  }
 }
 
 void action_t::apply_affecting_aura( const spell_data_t* spell )

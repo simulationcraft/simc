@@ -1194,64 +1194,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
     if ( s.action_list.size() )
     {
-      os << "<div class=\"flex\">\n";
-
-      if ( s.action_list.back()->affecting_list.size() )
-      {
-        os << "<div>\n"
-           << "<h4>Affected By (Passive)</h4>\n"
-           << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
-
-        os << "<tr>\n"
-           << "<th class=\"small\">Type</th>\n"
-           << "<th class=\"small\">Spell</th>\n"
-           << "<th class=\"small\">ID</th>\n"
-           << "<th class=\"small\">#</th>\n"
-           << "<th class=\"small\">+/%</th>\n"
-           << "<th class=\"small\">Value</th>\n"
-           << "</tr>\n";
-
-        for ( auto [ eff, val ] : s.action_list.back()->affecting_list )
-        {
-          std::string op_str;
-          std::string type_str;
-          std::string val_str = fmt::format( "{:.3f}", val );
-
-          switch ( eff->subtype() )
-          {
-            case A_ADD_FLAT_LABEL_MODIFIER:
-            case A_ADD_FLAT_MODIFIER:
-              op_str = "ADD";
-              type_str = spell_info::effect_property_str( eff );
-              break;
-            case A_ADD_PCT_LABEL_MODIFIER:
-            case A_ADD_PCT_MODIFIER:
-              op_str = "PCT";
-              type_str = spell_info::effect_property_str( eff );
-              break;
-            case A_MODIFY_SCHOOL:
-              op_str = "SET";
-              type_str = spell_info::effect_subtype_str( eff );
-              val_str = util::school_type_string( eff->school_type() );
-              break;
-            default:
-              op_str = "SET";
-              type_str = spell_info::effect_subtype_str( eff );
-              break;
-          }
-
-          os.format( "<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>",
-            type_str,
-            eff->spell()->name_cstr(),
-            eff->spell()->id(),
-            eff->index() + 1,
-            op_str,
-            val_str );
-        }
-
-        os << "</table>\n"
-           << "</div>\n";
-      }
+      os << "<div class=\"flexwrap\">\n";
 
       s.action_list.back()->html_customsection( os );
 
