@@ -968,6 +968,7 @@ public:
   // Virtual methods
   virtual void invalidate_cache( cache_e c );
   virtual void init();
+  virtual void validate_sim_options() {}
   virtual bool validate_fight_style( fight_style_e ) const
   { return true; }
   virtual void override_talent( util::string_view override_str );

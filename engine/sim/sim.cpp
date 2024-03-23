@@ -4222,6 +4222,8 @@ void sim_t::setup( sim_control_t* c )
     throw std::runtime_error( "Nothing to sim!" );
   }
 
+  range::for_each( player_list, []( player_t* p ) { p->validate_sim_options(); } );
+
   if ( parent )
   {
     debug = false;
