@@ -70,7 +70,7 @@ struct evoker_td_t : public actor_target_data_t
     buff_t* blistering_scales;
     buff_t* prescience;
     buff_t* infernos_blessing;
-    stat_buff_t* ebon_might;
+    buff_t* ebon_might;
     buff_t* shifting_sands;
 
     // Legendary
@@ -2465,7 +2465,7 @@ public:
 
     for ( auto ally : p()->allies_with_my_ebon )
     {
-      auto ebon = p()->get_target_data( ally )->buffs.ebon_might;
+      auto ebon = debug_cast<stat_buff_t*>( p()->get_target_data( ally )->buffs.ebon_might );
       update_stat( ebon, _ebon_int );
     }
   }
@@ -3798,8 +3798,8 @@ struct eruption_t : public essence_spell_t
   {
     timespan_t extend_ebon;
 
-    eruption_4pc_t( evoker_t* p )
-      : evoker_spell_t( "eruption_4pc", p, p->find_spell( 424428 ) ),
+    eruption_4pc_t( evoker_t* p, std::string_view n )
+      : evoker_spell_t( n, p, p->find_spell( 424428 ) ),
         extend_ebon( p->sets->set( EVOKER_AUGMENTATION, T31, B4 )->effectN( 1 ).time_value() * 100 )
     {
       aoe              = -1;
@@ -3844,7 +3844,7 @@ struct eruption_t : public essence_spell_t
   {
     aoe              = -1;
     split_aoe_damage = true;
-    t31_4pc_eruption = p->get_secondary_action<eruption_4pc_t>( "eruption_4pc" );
+    t31_4pc_eruption = p->get_secondary_action<eruption_4pc_t>( name_str + "_4pc", name_str + "_4pc" );
 
     if ( t31_4pc_eruption )
       add_child( t31_4pc_eruption );
@@ -4644,16 +4644,20 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   dots.fire_breath  = target->get_dot( "fire_breath_damage", evoker );
   dots.disintegrate = target->get_dot( "disintegrate", evoker );
 
-  debuffs.shattering_star = make_buff( *this, "shattering_star_debuff", evoker->talent.shattering_star )
+  debuffs.shattering_star = make_buff_fallback( evoker->talent.shattering_star.ok(), *this, "shattering_star_debuff",
+                                                evoker->talent.shattering_star )
                                 ->set_cooldown( 0_ms )
                                 ->apply_affecting_aura( evoker->talent.focusing_iris );
 
-  debuffs.in_firestorm = make_buff( *this, "in_firestorm" )->set_max_stack( 20 )->set_duration( timespan_t::zero() );
+  debuffs.in_firestorm = make_buff_fallback( evoker->talent.firestorm.ok(), *this, "in_firestorm" )
+                             ->set_max_stack( 20 )
+                             ->set_duration( 0_ms );
 
-  if ( evoker->naszuro && !target->is_enemy() && !target->is_pet() )
+  bool make_unbound_surge = evoker->naszuro && !target->is_enemy() && !target->is_pet();
+  buffs.unbound_surge = make_buff_fallback<stat_buff_t>( make_unbound_surge, *this, "unbound_surge_" + evoker->name_str,
+                                                         evoker->find_spell( 403275 ), evoker->naszuro->item );
+  if ( make_unbound_surge )
   {
-    buffs.unbound_surge = make_buff<stat_buff_t>( *this, "unbound_surge_" + evoker->name_str,
-                                                  evoker->find_spell( 403275 ), evoker->naszuro->item );
     buffs.unbound_surge->set_period( 0_s );
 
     switch ( evoker->specialization() )
@@ -4679,164 +4683,161 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       buffs.unbound_surge->set_period( 3_s );
       if ( auto* _target = dynamic_cast<evoker_t*>( target ) )
       {
-        buffs.unbound_surge->set_tick_callback( [ _target, evoker ]( buff_t* b, int /*current_tick*/, timespan_t /*tick_time*/ ) {
-          {
-            if ( b->remains() > 0_s && !_target->buff.dragonrage->check() &&
-                 _target->rng().roll( evoker->option.naszuro_bounce_chance ) )
-              make_event( _target->sim, [ _target, evoker, b ] {
-                evoker->bounce_naszuro( _target, b->remains() );
-                b->expire();
-              } );
-          }
-        } );
+        buffs.unbound_surge->set_tick_callback(
+            [ _target, evoker ]( buff_t* b, int /*current_tick*/, timespan_t /*tick_time*/ ) {
+              {
+                if ( b->remains() > 0_s && !_target->buff.dragonrage->check() &&
+                     _target->rng().roll( evoker->option.naszuro_bounce_chance ) )
+                  make_event( _target->sim, [ _target, evoker, b ] {
+                    evoker->bounce_naszuro( _target, b->remains() );
+                    b->expire();
+                  } );
+              }
+            } );
       }
       else
       {
-        buffs.unbound_surge->set_tick_callback( [ target, evoker ]( buff_t* b, int /*current_tick*/, timespan_t /*tick_time*/ ) {
-          {
-            if ( b->remains() > 0_s && target->rng().roll( evoker->option.naszuro_bounce_chance ) )
-              make_event( target->sim, [ target, evoker, b ] {
-                evoker->bounce_naszuro( target, b->remains() );
-                b->expire();
-              } );
-          }
-        } );
+        buffs.unbound_surge->set_tick_callback(
+            [ target, evoker ]( buff_t* b, int /*current_tick*/, timespan_t /*tick_time*/ ) {
+              {
+                if ( b->remains() > 0_s && target->rng().roll( evoker->option.naszuro_bounce_chance ) )
+                  make_event( target->sim, [ target, evoker, b ] {
+                    evoker->bounce_naszuro( target, b->remains() );
+                    b->expire();
+                  } );
+              }
+            } );
       }
     }
   }
 
-  if ( evoker->specialization() == EVOKER_AUGMENTATION )
+  using e_buff_t = buffs::evoker_buff_t<buff_t>;
+  using namespace buffs;
+
+  bool is_aug = evoker->specialization() == EVOKER_AUGMENTATION;
+  bool is_ally = is_aug && !target->is_enemy() && !target->is_pet();
+
+  bool make_temporal_wound = is_aug && evoker->talent.breath_of_eons.ok() && target->is_enemy();
+  debuffs.temporal_wound = make_buff_fallback<temporal_wound_buff_t>( make_temporal_wound, *this, "temporal_wound",
+                                                                      evoker->talent.temporal_wound );
+
+  buffs.shifting_sands = make_buff_fallback<e_buff_t>( is_ally, *this, "shifting_sands_" + evoker->name_str,
+                                                       evoker->find_spell( 413984 ) );
+  if ( is_ally )
   {
-    using e_buff_t = buffs::evoker_buff_t<buff_t>;
+    buffs.shifting_sands->set_default_value( 0.0 )
+        ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
+        ->set_tick_callback( [ evoker ]( buff_t* b, int, timespan_t ) {
+          if ( b->current_value != evoker->cache.mastery_value() )
+          {
+            b->current_value = evoker->cache.mastery_value();
+            b->invalidate_cache();
+          }
+        } )
+        ->set_freeze_stacks( true );
+  }
 
-    if ( evoker->talent.breath_of_eons.ok() )
-    {
-      if ( target->is_enemy() )
-      {
-        debuffs.temporal_wound =
-            make_buff<buffs::temporal_wound_buff_t>( *this, "temporal_wound", evoker->talent.temporal_wound );
-      }
-    }
+  buffs.ebon_might = make_buff_fallback<evoker_buff_t<stat_buff_t>>( is_ally, *this, "ebon_might_" + evoker->name_str,
+                                                                     evoker->find_spell( 395152 ) );
+  if ( is_ally )
+  {
+    debug_cast<stat_buff_t*>( buffs.ebon_might )->set_stat_from_effect( 2, 0 );
 
-    if ( !target->is_enemy() && !target->is_pet() )
-    {
-      buffs.shifting_sands =
-          make_buff<e_buff_t>( *this, "shifting_sands_" + evoker->name_str, evoker->find_spell( 413984 ) )
-              ->set_default_value( 0.0 )
-              ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-              ->set_tick_callback( [ evoker ]( buff_t* b, int, timespan_t ) {
-                if ( b->current_value != evoker->cache.mastery_value() )
-                {
-                  b->current_value = evoker->cache.mastery_value();
-                  b->invalidate_cache();
-                }
-              } )
-              ->set_freeze_stacks( true );
-
-      buffs.ebon_might = make_buff<buffs::evoker_buff_t<stat_buff_t>>( *this, "ebon_might_" + evoker->name_str,
-                                                                       evoker->find_spell( 395152 ) )
-                             ->set_stat_from_effect( 2, 0 );
-
-      buffs.ebon_might->set_cooldown( 0_ms )
-          ->set_period( timespan_t::zero() )
-          ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-          ->add_invalidate( CACHE_STR_AGI_INT )
-          ->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
-            if ( new_ )
-            {
-              evoker->allies_with_my_ebon.push_back( target );
-              if ( auto e = dynamic_cast<evoker_t*>( target ) )
-              {
-                e->allied_ebons_on_me.push_back( b );
-              }
-            }
-            else
-            {
-              evoker->allies_with_my_ebon.find_and_erase_unordered( target );
-              if ( auto e = dynamic_cast<evoker_t*>( target ) )
-              {
-                range::erase_remove( e->allied_ebons_on_me, b );
-              }
-            }
-            for ( auto& c : evoker->allied_ebon_callbacks )
-            {
-              c();
-            }
-          } );
-
-      buffs.prescience = new buffs::prescience_buff_t( *this );
-
-      // TODO: Move into the buff itself
-      if ( evoker->talent.fate_mirror.ok() )
-      {
-        auto fate_mirror_effect      = new special_effect_t( target );
-        fate_mirror_effect->name_str = "fate_mirror_" + evoker->name_str;
-        fate_mirror_effect->type     = SPECIAL_EFFECT_EQUIP;
-        fate_mirror_effect->spell_id = evoker->talent.prescience_buff->id();
-        fate_mirror_effect->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
-        if ( evoker->talent.prescience_buff->effect_count() > 2 )
-        {
-          fate_mirror_effect->proc_chance_ = evoker->talent.prescience_buff->effectN( 3 ).percent();
-        }
-        target->special_effects.push_back( fate_mirror_effect );
-
-        auto fate_mirror_cb = new buffs::fate_mirror_cb_t( target, *fate_mirror_effect, evoker );
-
-        buffs.prescience->set_stack_change_callback( [ fate_mirror_cb, target, evoker ]( buff_t*, int, int new_ ) {
+    buffs.ebon_might->set_cooldown( 0_ms )
+        ->set_period( 0_ms )
+        ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+        ->add_invalidate( CACHE_STR_AGI_INT )
+        ->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
           if ( new_ )
           {
-            fate_mirror_cb->activate();
-            evoker->allies_with_my_prescience.push_back( target );
+            evoker->allies_with_my_ebon.push_back( target );
+            if ( auto e = dynamic_cast<evoker_t*>( target ) )
+            {
+              e->allied_ebons_on_me.push_back( b );
+            }
           }
           else
           {
-            fate_mirror_cb->deactivate();
-            evoker->allies_with_my_prescience.find_and_erase_unordered( target );
+            evoker->allies_with_my_ebon.find_and_erase_unordered( target );
+            if ( auto e = dynamic_cast<evoker_t*>( target ) )
+            {
+              range::erase_remove( e->allied_ebons_on_me, b );
+            }
+          }
+          for ( auto& c : evoker->allied_ebon_callbacks )
+          {
+            c();
           }
         } );
+  }
+
+  buffs.prescience = make_buff_fallback<prescience_buff_t>( is_ally, *this, "prescience" );
+  // TODO: Move into the buff itself
+  if ( is_ally && evoker->talent.fate_mirror.ok() )
+  {
+    auto fate_mirror_effect = new special_effect_t( target );
+    fate_mirror_effect->name_str = "fate_mirror_" + evoker->name_str;
+    fate_mirror_effect->type = SPECIAL_EFFECT_EQUIP;
+    fate_mirror_effect->spell_id = evoker->talent.prescience_buff->id();
+    fate_mirror_effect->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+    if ( evoker->talent.prescience_buff->effect_count() > 2 )
+    {
+      fate_mirror_effect->proc_chance_ = evoker->talent.prescience_buff->effectN( 3 ).percent();
+    }
+    target->special_effects.push_back( fate_mirror_effect );
+
+    auto fate_mirror_cb = new fate_mirror_cb_t( target, *fate_mirror_effect, evoker );
+
+    buffs.prescience->set_stack_change_callback( [ fate_mirror_cb, target, evoker ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+      {
+        fate_mirror_cb->activate();
+        evoker->allies_with_my_prescience.push_back( target );
       }
       else
       {
-        buffs.prescience->set_stack_change_callback( [ target, evoker ]( buff_t*, int /*old_stack*/, int new_stack ) {
-          if ( new_stack )
-          {
-            evoker->allies_with_my_prescience.push_back( target );
-          }
-          else
-          {
-            evoker->allies_with_my_prescience.find_and_erase_unordered( target );
-          }
-        } );
+        fate_mirror_cb->deactivate();
+        evoker->allies_with_my_prescience.find_and_erase_unordered( target );
       }
-
-      if ( evoker->talent.blistering_scales )
+    } );
+  }
+  else
+  {
+    buffs.prescience->set_stack_change_callback( [ target, evoker ]( buff_t*, int /*old_stack*/, int new_stack ) {
+      if ( new_stack )
       {
-        buffs.blistering_scales = make_buff<buffs::blistering_scales_buff_t>(
-            *this, "blistering_scales_" + evoker->name_str, evoker->talent.blistering_scales );
+        evoker->allies_with_my_prescience.push_back( target );
       }
-
-      if ( evoker->talent.infernos_blessing.ok() )
+      else
       {
-        buffs.infernos_blessing =
-            make_buff<e_buff_t>( *this, "infernos_blessing", evoker->talent.infernos_blessing_buff );
-
-        auto infernos_blessing_effect      = new special_effect_t( target );
-        infernos_blessing_effect->name_str = "infernos_blessing_" + target->name_str;
-        infernos_blessing_effect->type     = SPECIAL_EFFECT_EQUIP;
-        infernos_blessing_effect->spell_id = evoker->talent.infernos_blessing_buff->id();
-        target->special_effects.push_back( infernos_blessing_effect );
-
-        auto infernos_blessing_cb =
-            new buffs::infernos_blessing_cb_t( target, *infernos_blessing_effect, evoker );
-
-        buffs.infernos_blessing->set_stack_change_callback( [ infernos_blessing_cb ]( buff_t*, int, int new_ ) {
-          if ( new_ )
-            infernos_blessing_cb->activate();
-          else
-            infernos_blessing_cb->deactivate();
-        } );
+        evoker->allies_with_my_prescience.find_and_erase_unordered( target );
       }
-    }
+    } );
+  }
+
+  bool make_blistering_scales = is_ally && evoker->talent.blistering_scales.ok();
+  buffs.blistering_scales = make_buff_fallback<blistering_scales_buff_t>(
+      make_blistering_scales, *this, "blistering_scales_" + evoker->name_str, evoker->talent.blistering_scales );
+
+  bool make_infernos_blessing = is_ally && evoker->talent.infernos_blessing.ok();
+  buffs.infernos_blessing = make_buff_fallback<e_buff_t>( make_infernos_blessing, *this, "infernos_blessing",
+                                                          evoker->talent.infernos_blessing_buff );
+  if ( make_infernos_blessing )
+  {
+    auto infernos_blessing_effect = new special_effect_t( target );
+    infernos_blessing_effect->name_str = "infernos_blessing_" + target->name_str;
+    infernos_blessing_effect->type = SPECIAL_EFFECT_EQUIP;
+    infernos_blessing_effect->spell_id = evoker->talent.infernos_blessing_buff->id();
+    target->special_effects.push_back( infernos_blessing_effect );
+
+    auto infernos_blessing_cb = new infernos_blessing_cb_t( target, *infernos_blessing_effect, evoker );
+
+    buffs.infernos_blessing->set_stack_change_callback( [ infernos_blessing_cb ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        infernos_blessing_cb->activate();
+      else
+        infernos_blessing_cb->deactivate();
+    } );
   }
 }
 
@@ -5581,67 +5582,73 @@ void evoker_t::create_buffs()
   using namespace buffs;
   using e_buff_t = evoker_buff_t<buff_t>;
 
+  auto MB = [ this ]( auto&&... args ) {
+    return make_buff<e_buff_t>( std::forward<decltype( args )>( args )... );
+  };
+
+  auto MBF = [ this ]( auto&&... args ) {
+    return make_buff_fallback<e_buff_t>( std::forward<decltype( args )>( args )... );
+  };
+
   // Baseline Abilities
 
   switch ( specialization() )
   {
     case EVOKER_PRESERVATION:
-      buff.essence_burst = make_buff<e_buff_t>( this, "essence_burst", find_spell( 369299 ) )
-                               ->apply_affecting_aura( talent.essence_attunement );
+      buff.essence_burst =
+          MB( this, "essence_burst", find_spell( 369299 ) )->apply_affecting_aura( talent.essence_attunement );
       break;
     case EVOKER_AUGMENTATION:
-      buff.essence_burst = make_buff<e_buff_t>( this, "essence_burst", find_spell( 392268 ) )
-                               ->apply_affecting_aura( talent.essence_attunement );
+      buff.essence_burst =
+          MB( this, "essence_burst", find_spell( 392268 ) )->apply_affecting_aura( talent.essence_attunement );
       break;
     case EVOKER_DEVASTATION:
     default:
-      buff.essence_burst = make_buff<e_buff_t>( this, "essence_burst", find_spell( 359618 ) )
-                               ->apply_affecting_aura( talent.essence_attunement );
+      buff.essence_burst =
+          MB( this, "essence_burst", find_spell( 359618 ) )->apply_affecting_aura( talent.essence_attunement );
       break;
   }
 
   buff.essence_burst_titanic_wrath_disintegrate =
-      make_buff<e_buff_t>( this, "essence_burst_titanic_wrath_disintegrate", find_spell( 397870 ) )
-          ->set_quiet( true )
-          ->set_trigger_spell( talent.titanic_wrath );
+      MBF( talent.titanic_wrath.ok(), this, "essence_burst_titanic_wrath_disintegrate", find_spell( 397870 ) )
+          ->set_quiet( true );
 
-  buff.hover = make_buff<e_buff_t>( this, "hover", find_class_spell( "Hover" ) )
+  buff.hover = MB( this, "hover", find_class_spell( "Hover" ) )
                    ->set_cooldown( 0_ms )
                    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
 
-  buff.tailwind =
-      make_buff<e_buff_t>( this, "tailwind", find_spelleffect( talent.tailwind, A_PROC_TRIGGER_SPELL )->trigger() )
-          ->set_default_value_from_effect( 1 );
+  buff.tailwind = MBF( talent.tailwind.ok(), this, "tailwind",
+                       find_spelleffect( talent.tailwind, A_PROC_TRIGGER_SPELL )->trigger() )
+                      ->set_default_value_from_effect( 1 );
 
   // Class Traits
-  buff.ancient_flame = make_buff<e_buff_t>( this, "ancient_flame", find_spell( 375583 ) )
-                           ->set_trigger_spell( talent.ancient_flame )
+  buff.ancient_flame = MBF( talent.ancient_flame.ok(), this, "ancient_flame", find_spell( 375583 ) )
                            ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
-  buff.leaping_flames =
-      make_buff<e_buff_t>( this, "leaping_flames", find_spell( 370901 ) )->set_trigger_spell( talent.leaping_flames );
+  buff.leaping_flames = MBF( talent.leaping_flames.ok(), this, "leaping_flames", find_spell( 370901 ) );
 
-  buff.obsidian_scales = make_buff<e_buff_t>( this, "obsidian_scales", talent.obsidian_scales )->set_cooldown( 0_ms );
+  buff.obsidian_scales =
+      MBF( talent.obsidian_scales.ok(), this, "obsidian_scales", talent.obsidian_scales )->set_cooldown( 0_ms );
 
-  buff.scarlet_adaptation = make_buff<e_buff_t>( this, "scarlet_adaptation", find_spell( 372470 ) )
-                                ->set_trigger_spell( talent.scarlet_adaptation )
+  buff.scarlet_adaptation = MBF( talent.scarlet_adaptation.ok(), this, "scarlet_adaptation", find_spell( 372470 ) )
                                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
-  buff.tip_the_scales = make_buff<e_buff_t>( this, "tip_the_scales", talent.tip_the_scales )->set_cooldown( 0_ms );
+  buff.tip_the_scales =
+      MBF( talent.tip_the_scales.ok(), this, "tip_the_scales", talent.tip_the_scales )->set_cooldown( 0_ms );
 
   // Devastation
-  buff.blazing_shards = make_buff<e_buff_t>( this, "blazing_shards", find_spell( 409848 ) )
-                            ->set_trigger_spell( sets->set( EVOKER_DEVASTATION, T30, B4 ) );
+  buff.blazing_shards =
+      MBF( sets->has_set_bonus( EVOKER_DEVASTATION, T30, B4 ), this, "blazing_shards", find_spell( 409848 ) );
 
-  buff.burnout = make_buff<e_buff_t>( this, "burnout", find_spell( 375802 ) )
-                     ->set_trigger_spell( talent.burnout )
+  buff.burnout = MBF( talent.burnout.ok(), this, "burnout", find_spell( 375802 ) )
                      ->set_cooldown( talent.burnout->internal_cooldown() )
                      ->set_chance( talent.burnout->effectN( 1 ).percent() );
 
-  buff.charged_blast = make_buff<e_buff_t>( this, "charged_blast", talent.charged_blast->effectN( 1 ).trigger() )
-                           ->set_default_value_from_effect( 1 );
+  buff.charged_blast =
+      MBF( talent.charged_blast.ok(), this, "charged_blast", talent.charged_blast->effectN( 1 ).trigger() )
+          ->set_default_value_from_effect( 1 );
 
-  buff.dragonrage = make_buff<e_buff_t>( this, "dragonrage", talent.dragonrage )
+  buff.dragonrage = MBF( talent.dragonrage.ok(), this, "dragonrage", talent.dragonrage )
                         ->set_cooldown( 0_ms )
                         ->set_stack_change_callback( [ this ]( buff_t*, int old, int ) {
                           if ( old )
@@ -5650,41 +5657,37 @@ void evoker_t::create_buffs()
                           }
                         } );
 
-  buff.fury_of_the_aspects =
-      make_buff<e_buff_t>( this, "fury_of_the_aspects", find_class_spell( "Fury of the Aspects" ) )
-          ->set_default_value_from_effect( 1 )
-          ->set_cooldown( 0_s )
-          ->add_invalidate( CACHE_HASTE );
+  buff.fury_of_the_aspects = MB( this, "fury_of_the_aspects", find_class_spell( "Fury of the Aspects" ) )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->set_cooldown( 0_s )
+                                 ->add_invalidate( CACHE_HASTE );
 
-  buff.imminent_destruction = make_buff<e_buff_t>( this, "imminent_destruction", find_spell( 411055 ) );
+  buff.imminent_destruction =
+      MBF( talent.imminent_destruction.ok(), this, "imminent_destruction", find_spell( 411055 ) );
 
-  buff.iridescence_blue = make_buff<e_buff_t>( this, "iridescence_blue", find_spell( 386399 ) )
-                              ->set_trigger_spell( talent.iridescence )
+  buff.iridescence_blue = MBF( talent.iridescence.ok(), this, "iridescence_blue", find_spell( 386399 ) )
                               ->set_default_value_from_effect( 1 );
   buff.iridescence_blue->set_initial_stack( buff.iridescence_blue->max_stack() );
 
   buff.iridescence_blue_disintegrate =
-      make_buff<e_buff_t>( this, "iridescence_blue_disintegrate", find_spell( 399370 ) )
+      MBF( talent.iridescence.ok(), this, "iridescence_blue_disintegrate", find_spell( 399370 ) )
           ->set_quiet( true )
-          ->set_default_value( buff.iridescence_blue->default_value )
-          ->set_trigger_spell( talent.iridescence );
+          ->set_default_value( buff.iridescence_blue->default_value );
 
-  buff.iridescence_red = make_buff<e_buff_t>( this, "iridescence_red", find_spell( 386353 ) )
-                             ->set_trigger_spell( talent.iridescence )
-                             ->set_default_value_from_effect( 1 );
+  buff.iridescence_red =
+      MBF( talent.iridescence.ok(), this, "iridescence_red", find_spell( 386353 ) )->set_default_value_from_effect( 1 );
   buff.iridescence_red->set_initial_stack( buff.iridescence_red->max_stack() );
 
-  buff.limitless_potential = make_buff<e_buff_t>( this, "limitless_potential", find_spell( 394402 ) )
-                                 ->set_trigger_spell( sets->set( EVOKER_DEVASTATION, T29, B2 ) )
-                                 ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-                                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+  buff.limitless_potential =
+      MBF( sets->has_set_bonus( EVOKER_DEVASTATION, T29, B2 ), this, "limitless_potential", find_spell( 394402 ) )
+          ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+          ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
-  buff.power_swell = make_buff<e_buff_t>( this, "power_swell", find_spell( 376850 ) )
-                         ->set_trigger_spell( talent.power_swell )
+  buff.power_swell = MBF( talent.power_swell.ok(), this, "power_swell", find_spell( 376850 ) )
                          ->set_affects_regen( true )
                          ->set_default_value_from_effect_type( A_MOD_POWER_REGEN_PERCENT );
 
-  buff.snapfire = make_buff<e_buff_t>( this, "snapfire", talent.snapfire->effectN( 1 ).trigger() )
+  buff.snapfire = MBF( talent.snapfire.ok(), this, "snapfire", talent.snapfire->effectN( 1 ).trigger() )
                       ->set_chance( talent.snapfire->effectN( 1 ).percent() )
                       ->set_default_value_from_effect( 2 )
                       ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
@@ -5692,15 +5695,16 @@ void evoker_t::create_buffs()
                           cooldown.firestorm->adjust( b->data().effectN( 3 ).time_value() );
                       } );
 
-  buff.reactive_hide =
-      make_buff<e_buff_t>( this, "reactive_hide", talent.reactive_hide_buff )->set_default_value_from_effect( 1, 0.01 );
+  buff.reactive_hide = MBF( talent.reactive_hide.ok(), this, "reactive_hide", talent.reactive_hide_buff )
+                           ->set_default_value_from_effect( 1, 0.01 );
 
-  buff.time_skip = make_buff<buffs::time_skip_t>( this );
+  buff.time_skip = make_buff_fallback<time_skip_t>( talent.time_skip.ok(), this, "time_skip" );
 
-  buff.feed_the_flames_stacking = make_buff<e_buff_t>( this, "feed_the_flames", find_spell( 405874 ) );
-  buff.feed_the_flames_pyre     = make_buff<e_buff_t>( this, "feed_the_flames_pyre", talent.feed_the_flames_pyre_buff );
+  buff.feed_the_flames_stacking = MBF( talent.feed_the_flames.ok(), this, "feed_the_flames", find_spell( 405874 ) );
+  buff.feed_the_flames_pyre =
+      MBF( talent.feed_the_flames.ok(), this, "feed_the_flames_pyre", talent.feed_the_flames_pyre_buff );
 
-  if ( talent.feed_the_flames.enabled() )
+  if ( talent.feed_the_flames.ok() )
   {
     buff.feed_the_flames_stacking
         ->set_max_stack( as<int>( -talent.feed_the_flames_pyre_buff->effectN( 2 ).base_value() ) )
@@ -5708,51 +5712,54 @@ void evoker_t::create_buffs()
         ->set_stack_change_callback( [ this ]( buff_t* b, int old, int ) {
           if ( old == b->max_stack() )
           {
-            make_event( *sim, [ this ]() { buff.feed_the_flames_pyre->trigger(); } );
+            make_event( *sim, [ this ]() {
+              buff.feed_the_flames_pyre->trigger();
+            } );
           }
         } );
   }
 
   buff.emerald_trance_stacking =
-      make_buff<e_buff_t>( this, "emerald_trance_stacking", find_spell( 424155 ) )
-          ->set_stack_change_callback( [ this ]( buff_t*, int old, int _new) {
-            if ( _new < old && sets->has_set_bonus( EVOKER_DEVASTATION, T31, B4 ) )
-            {
-              buff.emerald_trance->trigger( old, old * buff.emerald_trance->buff_duration() );
-            }
-          } )
+      MBF( sets->has_set_bonus( EVOKER_DEVASTATION, T31, B2 ), this, "emerald_trance_stacking", find_spell( 424155 ) )
           ->set_duration( 0_s )
           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
+  if ( sets->has_set_bonus( EVOKER_DEVASTATION, T31, B4 ) )
+  {
+    buff.emerald_trance_stacking->set_stack_change_callback( [ this ]( buff_t*, int old, int _new ) {
+      if ( _new < old )
+      {
+        buff.emerald_trance->trigger( old, old * buff.emerald_trance->buff_duration() );
+      }
+    } );
+  }
+
   buff.emerald_trance =
-      make_buff<e_buff_t>( this, "emerald_trance", find_spell( 424402 ) )
-                            ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                              buff.essence_burst->trigger();
-                              proc.emerald_trance->occur();
-                            } )
+      MBF( sets->has_set_bonus( EVOKER_DEVASTATION, T31, B4 ), this, "emerald_trance", find_spell( 424402 ) )
+          ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+            buff.essence_burst->trigger();
+            proc.emerald_trance->occur();
+          } )
           ->set_freeze_stacks( true );
 
   // Preservation
 
   // Augmentation
-  buff.ebon_might_self_buff = make_buff<e_buff_t>( this, "ebon_might_self", talent.ebon_might_self_buff )
-                                  ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+  buff.ebon_might_self_buff =
+      MBF( talent.ebon_might.ok(), this, "ebon_might_self", talent.ebon_might_self_buff )
+          ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+          ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+            static_cast<spells::ebon_might_t*>( background_actions.ebon_might.get() )->update_stats();
+          } );
 
-  if ( talent.ebon_might->ok() )
-  {
-    buff.ebon_might_self_buff->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-      if ( background_actions.ebon_might )
-        static_cast<spells::ebon_might_t*>( background_actions.ebon_might.get() )->update_stats();
-    } );
-  }
-
-  buff.t31_2pc_proc = make_buff<e_buff_t>( this, "t31_2pc_proc", sets->set( EVOKER_AUGMENTATION, T31, B2 ) )
+  buff.t31_2pc_proc = MBF( sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B2 ), this, "t31_2pc_proc",
+                           sets->set( EVOKER_AUGMENTATION, T31, B2 ) )
                           ->set_can_cancel( false )
                           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                           ->set_default_value_from_effect( 1, 0.01 )
                           ->set_duration( 0_s );
 
-  buff.t31_2pc_stacks = make_buff<e_buff_t>( this, "t31_2pc_stacks" )
+  buff.t31_2pc_stacks = MBF( sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B2 ), this, "t31_2pc_stacks" )
                             ->set_can_cancel( false )
                             ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                             ->set_duration( 0_s )
@@ -5765,12 +5772,12 @@ void evoker_t::create_buffs()
                               }
                             } );
 
-  buff.trembling_earth = make_buff<e_buff_t>( this, "trembling_earth", find_spell( 424368 ) )
-                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                             ->set_cooldown( 0_s );
+  buff.trembling_earth =
+      MBF( sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B4 ), this, "trembling_earth", find_spell( 424368 ) )
+          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+          ->set_cooldown( 0_s );
 
-
-  buff.momentum_shift = make_buff<e_buff_t>( this, "momentum_shift", find_spell( 408005 ) )
+  buff.momentum_shift = MBF( talent.momentum_shift.ok(), this, "momentum_shift", find_spell( 408005 ) )
                             ->set_default_value_from_effect( 1 )
                             ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
 }
