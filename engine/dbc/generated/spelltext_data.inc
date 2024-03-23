@@ -1,4 +1,4 @@
-// Spell text, wow build 10.2.6.53840
+// Spell text, wow build 10.2.6.53877
 static const std::array<spelltext_data_t, 21047> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -20971,14 +20971,14 @@ static const std::array<spelltext_data_t, 21047> __spelltext_data { {
   { 435278, "$@spelldesc435276", 0, 0 },
   { 435286, "|CFFFFFFFF- Caster buff|R\r\n|CFFFFFFFF- Immunity|R\r\n|CFFFFFFFF- Silences|R\r\n\r\n|CFFFFFFFF22 sec cooldown|R\r\nErect a powerful arcane barrier that repels all damage and harmful debuffs. Then, silence and knockback enemies around the caster.", 0, "Utility" },
   { 435287, "$@spelldesc435288", 0, 0 },
-  { 435288, "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF8 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies.\r\n", 0, "Offensive" },
+  { 435288, "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF8.5 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies.\r\n", 0, "Offensive" },
   { 435289, "$@spelldesc435290", 0, 0 },
-  { 435290, "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF6 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies.\r\n", 0, "Offensive" },
+  { 435290, "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF7 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies.\r\n", 0, "Offensive" },
   { 435291, "$@spelldesc435292", 0, 0 },
   { 435292, "|CFFFFFFFF- Caster buff|R\r\n|CFFFFFFFF- Immunity|R\r\n|CFFFFFFFF- Silences|R\r\n\r\n|CFFFFFFFF20 sec cooldown|R\r\nErect a powerful arcane barrier that repels all damage and harmful debuffs. Then, silence and knockback enemies around the caster.", 0, "Utility" },
   { 435293, "$@spelldesc435295", 0, 0 },
   { 435294, "$@spelldesc435296", 0, 0 },
-  { 435295, "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF4 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies.", 0, "Offensive" },
+  { 435295, "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF5.5 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies.", 0, "Offensive" },
   { 435296, "|CFFFFFFFF- Caster buff|R\r\n|CFFFFFFFF- Immunity|R\r\n|CFFFFFFFF- Silences|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nErect a powerful arcane barrier that repels all damage and harmful debuffs. Then, silence and knockback enemies around the caster.", 0, "Utility" },
   { 435297, "$@spelldesc435298", 0, 0 },
   { 435298, "|CFFFFFFFF- Caster buff|R\r\n|CFFFFFFFF- Immunity|R\r\n|CFFFFFFFF- Silences|R\r\n\r\n|CFFFFFFFF16 sec cooldown|R\r\nErect a powerful arcane barrier that repels all damage and harmful debuffs. Then, silence and knockback enemies around the caster.", 0, "Utility" },
@@ -21049,14 +21049,17 @@ static const std::array<spelltext_data_t, 21047> __spelltext_data { {
   { 443937, "$@spelldesc432750", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.6.53840
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 10.2.6.53877
+static constexpr std::array<hotfix::client_hotfix_entry_t, 6> __spelltext_hotfix_data { {
+  {  435288,  0, "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF8 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies.\r\n", "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF8.5 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies.\r\n" },
+  {  435290,  0, "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF6 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies.\r\n", "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF7 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies.\r\n" },
+  {  435295,  0, "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF4 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies.", "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF5.5 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies." },
   {  436254,  0, "|CFFFFFFFF- Frontal cone|R\r\n|CFFFFFFFF- Melee attack|R\r\n|CFFFFFFFF- Poisons|R\r\n\r\n|CFFFFFFFF7 sec cooldown|R\r\nSmack targets in front of you with a toxic mackerel, poisoning them and inflicting damage.\r\n\r\nPoison inflicts damage-over-time. If a target is already poisoned, Toxic Smackerel deals bonus damage.", "|CFFFFFFFF- Frontal cone|R\r\n|CFFFFFFFF- Melee attack|R\r\n|CFFFFFFFF- Poisons|R\r\n\r\n|CFFFFFFFF5.5 sec cooldown|R\r\nSmack targets in front of you with a toxic mackerel, poisoning them and inflicting damage.\r\n\r\nPoison inflicts damage-over-time. If a target is already poisoned, Toxic Smackerel deals bonus damage." },
   {  436308,  0, "|CFFFFFFFF- Frontal cone|R\r\n|CFFFFFFFF- Melee attack|R\r\n|CFFFFFFFF- Poisons|R\r\n\r\n|CFFFFFFFF6 sec cooldown|R\r\nSmack targets in front of you with a toxic mackerel, poisoning them and inflicting damage.\r\n\r\nPoison inflicts damage-over-time. If a target is already poisoned, Toxic Smackerel deals bonus damage.", "|CFFFFFFFF- Frontal cone|R\r\n|CFFFFFFFF- Melee attack|R\r\n|CFFFFFFFF- Poisons|R\r\n\r\n|CFFFFFFFF5 sec cooldown|R\r\nSmack targets in front of you with a toxic mackerel, poisoning them and inflicting damage.\r\n\r\nPoison inflicts damage-over-time. If a target is already poisoned, Toxic Smackerel deals bonus damage." },
   {  436310,  0, "|CFFFFFFFF- Frontal cone|R\r\n|CFFFFFFFF- Melee attack|R\r\n|CFFFFFFFF- Poisons|R\r\n\r\n|CFFFFFFFF5 sec cooldown|R\r\nSmack targets in front of you with a toxic mackerel, poisoning them and inflicting damage.\r\n\r\nPoison inflicts damage-over-time. If a target is already poisoned, Toxic Smackerel deals bonus damage.", "|CFFFFFFFF- Frontal cone|R\r\n|CFFFFFFFF- Melee attack|R\r\n|CFFFFFFFF- Poisons|R\r\n\r\n|CFFFFFFFF4.5 sec cooldown|R\r\nSmack targets in front of you with a toxic mackerel, poisoning them and inflicting damage.\r\n\r\nPoison inflicts damage-over-time. If a target is already poisoned, Toxic Smackerel deals bonus damage." },
 } };
 
-// Spell description variables, wow build 10.2.6.53840
+// Spell description variables, wow build 10.2.6.53877
 static const std::array<spelldesc_vars_data_t, 449> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -21509,7 +21512,7 @@ static const std::array<spelldesc_vars_data_t, 449> __spelldesc_vars_data { {
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.6.53840
+// spelldesc_vars hotfix entries, wow build 10.2.6.53877
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
