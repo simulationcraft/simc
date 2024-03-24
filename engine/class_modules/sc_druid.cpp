@@ -13239,20 +13239,7 @@ struct druid_module_t : public module_t
 
   void static_init() const override {}
 
-  void register_hotfixes() const override
-  {
-    hotfix::register_spell( "Druid", "", "Adjust bear thrash periodic damage spell level requirement", 192090 )
-      .field( "spell_level" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 11 )
-      .verification_value( 18 );
-
-    hotfix::register_spell( "Druid", "", "Adjust rip spell level requirement", 1079 )
-      .field( "spell_level" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 11 )
-      .verification_value( 21 );
-  }
+  void register_hotfixes() const override {}
 
   void combat_begin( sim_t* ) const override {}
   void combat_end( sim_t* ) const override {}
