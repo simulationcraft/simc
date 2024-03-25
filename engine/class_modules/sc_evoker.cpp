@@ -1092,7 +1092,11 @@ public:
 
   int num_targets() const override
   {
-    return as<int>( sim->player_no_pet_list.size() );
+    return as<int>( range::count_if( sim->player_no_pet_list, [ this ]( player_t* t ) {
+      if ( t->is_sleeping() )
+        return false;
+      return true;
+    } ) );
   }
 
   size_t available_targets( std::vector<player_t*>& target_list ) const override
@@ -1102,6 +1106,9 @@ public:
 
     for ( const auto& t : sim->player_no_pet_list )
     {
+      if ( t->is_sleeping() )
+        continue;
+
       if ( t != target )
         target_list.push_back( t );
     }
@@ -1611,14 +1618,17 @@ struct empowered_release_t : public empowered_base_t<BASE>
       if ( sim->player_no_pet_list.size() <= n_targets() )
       {
         for ( const auto& t : sim->player_no_pet_list )
-          target_list.push_back( t );
+        {
+          if ( !t->is_sleeping() )
+            target_list.push_back( t );
+        }
 
         return target_list.size();
       }
 
       for ( const auto& t : sim->player_no_pet_list )
       {
-        if ( t != player )
+        if ( !t->is_sleeping() && t != player )
         {
           if ( t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
                t->specialization() != EVOKER_AUGMENTATION && p()->get_target_data( t )->buffs.ebon_might->check() &&
@@ -2537,6 +2547,11 @@ public:
 
       for ( auto& _p : sim->player_no_pet_list )
       {
+        if ( _p->is_sleeping() )
+        {
+          _str += "S ";
+          continue;
+        }
         auto td = p()->get_target_data( _p );
 
         if ( td->buffs.ebon_might->up() )
@@ -2568,6 +2583,11 @@ public:
 
         for ( auto& _p : sim->player_no_pet_list )
         {
+          if ( _p->is_sleeping() )
+          {
+            _str += "S ";
+            continue;
+          }
           auto td = _e->get_target_data( _p );
 
           if ( td->buffs.ebon_might->up() )
@@ -2655,7 +2675,7 @@ public:
 
     for ( const auto& t : sim->player_no_pet_list )
     {
-      if ( t != player && !p()->get_target_data( t )->buffs.ebon_might->up() )
+      if ( !t->is_sleeping() && t != player && !p()->get_target_data( t )->buffs.ebon_might->up() )
       {
         if ( range::find( p()->allies_with_my_prescience, t ) == p()->allies_with_my_prescience.end() )
         {
@@ -5037,7 +5057,7 @@ void evoker_t::init_action_list()
 void evoker_t::create_pets()
 {
   player_t::create_pets();
-  if ( specialization() == EVOKER_AUGMENTATION && sim->player_no_pet_list.size() == 1 && option.make_simplified_if_alone )
+  if ( specialization() == EVOKER_AUGMENTATION && sim->player_no_pet_list.size() == 1 && option.make_simplified_if_alone && !sim->single_actor_batch )
   {
     const module_t* module = module_t::get( PLAYER_SIMPLIFIED );
 
@@ -6195,13 +6215,18 @@ void evoker_t::bounce_naszuro( player_t* s, timespan_t remains = timespan_t::min
 
   player_t* p = s;
 
-  // TODO: Improve target selection (CD Based)
-  if ( sim->player_no_pet_list.size() > 1 && !sim->single_actor_batch )
+  std::vector<player_t*> non_sleeping_players = {};
+
+  for ( auto p : sim->player_no_pet_list )
   {
-    while ( p == s )
-    {
-      p = sim->player_no_pet_list[ rng().range( sim->player_no_pet_list.size() ) ];
-    }
+    if ( !p->is_sleeping() && p != s )
+      non_sleeping_players.push_back( p );
+  }
+
+  // TODO: Improve target selection (CD Based)
+  if ( non_sleeping_players.size() > 1 && !sim->single_actor_batch )
+  {
+    p = non_sleeping_players[ rng().range( sim->player_no_pet_list.size() ) ];
   }
 
   get_target_data( p )->buffs.unbound_surge->trigger( remains );
