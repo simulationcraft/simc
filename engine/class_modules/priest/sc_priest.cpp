@@ -654,12 +654,12 @@ struct smite_base_t : public priest_spell_t
       child_holy_fire->execute();
     }
 
-    // T31 Background set bonus triggers the shadow amp. Core logic ignores background spell execution so manually trigger this here.
+    // T31 Background set bonus triggers the shadow amp. Core logic ignores background spell execution so manually
+    // trigger this here.
     if ( priest().talents.discipline.twilight_equilibrium.enabled() && background )
     {
       priest().buffs.twilight_equilibrium_shadow_amp->trigger();
     }
-
   }
 
   void impact( action_state_t* s ) override
@@ -1375,8 +1375,8 @@ struct holy_nova_heal_t final : public priest_heal_t
 {
   holy_nova_heal_t( util::string_view n, priest_t& p ) : priest_heal_t( n, p, p.talents.holy_nova_heal )
   {
-    aoe          = -1;
-    background   = true;
+    aoe        = -1;
+    background = true;
 
     reduced_aoe_targets = p.talents.holy_nova->effectN( 2 ).base_value();
     disc_mastery        = true;
@@ -2394,7 +2394,7 @@ double priest_t::composite_melee_haste() const
   {
     h *= 1.0 / ( 1.0 + buffs.devoured_anger->check_value() );
   }
-  
+
   if ( buffs.borrowed_time->check() )
   {
     h *= 1.0 / ( 1.0 + buffs.borrowed_time->check_value() );
@@ -2825,7 +2825,7 @@ void priest_t::create_buffs()
 
   buffs.twist_of_fate_heal_ally_fake = make_buff( this, "twist_of_fate_can_trigger_on_ally_heal" )
                                            ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-    
+
   // TODO: Extend functionality to use this.
   buffs.twist_of_fate_heal_self_fake = make_buff( this, "twist_of_fate_can_trigger_on_self_heal" )
                                            ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
@@ -2941,6 +2941,37 @@ void priest_t::invalidate_cache( cache_e cache )
       break;
     default:
       break;
+  }
+}
+
+void priest_t::init_items()
+{
+  player_t::init_items();
+
+  set_bonus_type_e tier_to_enable;
+  switch ( specialization() )
+  {
+    case PRIEST_DISCIPLINE:
+      tier_to_enable = T31;
+      break;
+    case PRIEST_HOLY:
+      tier_to_enable = T31;
+      break;
+    case PRIEST_SHADOW:
+      tier_to_enable = T30;
+      break;
+    default:
+      return;
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+  {
+    sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+  {
+    sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
   }
 }
 

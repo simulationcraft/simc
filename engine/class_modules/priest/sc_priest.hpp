@@ -680,8 +680,8 @@ public:
     // default, pride, anger, despair, fear (NYI), violence
     std::string forced_yshaarj_type = "default";
 
-    double twist_of_fate_heal_rppm = 2;
-    timespan_t twist_of_fate_heal_duration_mean = 2_s;
+    double twist_of_fate_heal_rppm                = 2;
+    timespan_t twist_of_fate_heal_duration_mean   = 2_s;
     timespan_t twist_of_fate_heal_duration_stddev = 0.25_s;
   } options;
 
@@ -736,6 +736,7 @@ public:
   void apply_affecting_auras( action_t& ) override;
   void apply_affecting_auras_late( action_t& );
   void invalidate_cache( cache_e ) override;
+  void init_items() override;
 
 private:
   void create_cooldowns();
@@ -981,12 +982,12 @@ public:
     // SHADOW BUFF EFFECTS
     if ( p().specialization() == PRIEST_SHADOW )
     {
-      parse_effects( p().buffs.devoured_pride );                   // Spell Direct and Periodic amount
+      parse_effects( p().buffs.devoured_pride );                 // Spell Direct and Periodic amount
       parse_effects( p().buffs.voidform, 0x4U, IGNORE_STACKS );  // Skip E3 for AM
       parse_effects( p().buffs.shadowform );
       parse_effects( p().buffs.mind_devourer );
       parse_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
-      parse_effects( p().buffs.dark_ascension, 0b1000U, IGNORE_STACKS );  // Buffs non-periodic spells - Skip E4
+      parse_effects( p().buffs.dark_ascension, 0b1000U, IGNORE_STACKS );   // Buffs non-periodic spells - Skip E4
       parse_effects( p().buffs.mind_melt, p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
       parse_effects( p().buffs.screams_of_the_void, p().talents.shadow.screams_of_the_void );
 
@@ -1048,27 +1049,33 @@ public:
   }
 
   template <typename... Ts>
-  void parse_effects( Ts&&... args ) { ab::parse_effects( std::forward<Ts>( args )... ); }
+  void parse_effects( Ts&&... args )
+  {
+    ab::parse_effects( std::forward<Ts>( args )... );
+  }
   template <typename... Ts>
-  void parse_target_effects( Ts&&... args ) { ab::parse_target_effects( std::forward<Ts>( args )... ); }
+  void parse_target_effects( Ts&&... args )
+  {
+    ab::parse_target_effects( std::forward<Ts>( args )... );
+  }
 
   // Reimplement base cost because I need to bypass the removal of precombat costs
   double cost() const override
   {
-    auto cr = ab::current_resource();
+    auto cr        = ab::current_resource();
     const auto& bc = ab::base_costs[ cr ];
-    auto base = bc.base;
-    auto add = bc.flat_add + this->cost_flat_modifier();
-    auto mul = bc.pct_mul * this->cost_pct_multiplier();
+    auto base      = bc.base;
+    auto add       = bc.flat_add + this->cost_flat_modifier();
+    auto mul       = bc.pct_mul * this->cost_pct_multiplier();
 
     double c = ( base + add ) * mul;
 
-    // For now, treat secondary cost as "maximum of player current resource, min + max cost". Entirely possible we need to
-    // add some additional functionality (such as an overridable method) to determine the cost, if the default behavior is
-    // not universal.
+    // For now, treat secondary cost as "maximum of player current resource, min + max cost". Entirely possible we need
+    // to add some additional functionality (such as an overridable method) to determine the cost, if the default
+    // behavior is not universal.
 
-    // Also for now, cost reductions to base cost are assumed to not apply to secondary cost, such that the 'min' cost can
-    // be modified but the 'max' cost cannot. There are currently no spells with secondary cost that gets their cost
+    // Also for now, cost reductions to base cost are assumed to not apply to secondary cost, such that the 'min' cost
+    // can be modified but the 'max' cost cannot. There are currently no spells with secondary cost that gets their cost
     // modified so this assumption remains untested. Fix accordingly if it is proven incorrect in the future.
 
     if ( auto sec = ab::secondary_costs[ cr ] )
