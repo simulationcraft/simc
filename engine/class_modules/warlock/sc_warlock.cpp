@@ -1740,7 +1740,7 @@ void warlock_t::init_procs()
 void warlock_t::init_base_stats()
 {
   if ( base.distance < 1.0 )
-    base.distance = 40.0;
+    base.distance = 30.0;
 
   player_t::init_base_stats();
 
