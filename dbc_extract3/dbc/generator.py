@@ -3702,117 +3702,117 @@ class SetBonusListGenerator(DataGenerator):
         {
             'name'   : 'march_of_the_legion',
             'bonuses': [ 1293 ],
-            'tier'   : 19
+            'tier'   : 'T19_MOTL'
         },
         # Legion Dungeon, Journey Through Time
         {
             'name'   : 'journey_through_time',
             'bonuses': [ 1294 ],
-            'tier'   : 19
+            'tier'   : 'T19_JTT'
         },
         # Legion Dungeon, Cloth
         {
             'name'   : 'tier19p_cloth',
             'bonuses': [ 1295 ],
-            'tier'   : 19
+            'tier'   : 'T19_C'
         },
         # Legion Dungeon, Leather
         {
             'name'   : 'tier19p_leather',
             'bonuses': [ 1296 ],
-            'tier'   : 19
+            'tier'   : 'T19_L'
         },
         # Legion Dungeon, Mail
         {
             'name'   : 'tier19p_mail',
             'bonuses': [ 1297 ],
-            'tier'   : 19
+            'tier'   : 'T19_M'
         },
         # Legion Dungeon, Plate
         {
             'name'   : 'tier19p_plate',
             'bonuses': [ 1298 ],
-            'tier'   : 19
+            'tier'   : 'T19_P'
         },
         {
             'name'   : 'waycrests_legacy',
             'bonuses': [ 1439 ],
-            'tier'   : 21
+            'tier'   : 'T21_WL'
         },
         {
             'name'   : 'gift_of_the_loa',
             'bonuses': [ 1442 ],
-            'tier'   : 23
+            'tier'   : 'T23_GOTL'
         },
         {
             'name'   : 'keepsakes',
             'bonuses': [ 1443 ],
-            'tier'   : 23
+            'tier'   : 'T23_KS'
         },
         {
             'name'   : 'titanic_empowerment',
             'bonuses': [ 1452 ],
-            'tier'   : 24
+            'tier'   : 'T24_TE'
         },
         {
             'name'   : 'hack_and_gore',
             'bonuses': [ 1457 ],
-            'tier'   : 26
+            'tier'   : 'T26_HG'
         },
         {
             'name'   : 'tier28',
             'bonuses': [ 1496, 1497, 1498, 1499, 1500, 1501, 1502, 1503, 1504, 1505, 1506, 1507],
-            'tier'   : 28
+            'tier'   : 'T28'
         },
         {
             'name'   : 'ripped_secrets',
             'bonuses': [ 1508 ],
-            'tier'   : 28
+            'tier'   : 'T28_RS'
         },
         {
             'name'   : 'tier29',
             'bonuses': [ 1526, 1527, 1528, 1529, 1530, 1531, 1532, 1533, 1534, 1535, 1536, 1537, 1538 ],
-            'tier'   : 29
+            'tier'   : 'T29'
         },
         {
             'name'   : 'playful_spirits_fur',
             'bonuses': [ 1509 ],
-            'tier'   : 29
+            'tier'   : 'T29_PSF'
         },
         {
             'name'   : 'horizon_striders_garments',
             'bonuses': [ 1510 ],
-            'tier'   : 29
+            'tier'   : 'T29_HSG'
         },
         {
             'name'   : 'azureweave_vestments',
             'bonuses': [ 1516 ],
-            'tier'   : 29
+            'tier'   : 'T29_AV'
         },
         {
             'name'   : 'woven_chronocloth',
             'bonuses': [ 1515 ],
-            'tier'   : 29
+            'tier'   : 'T29_WC'
         },
         {
             'name'   : 'raging_tempests',
             'bonuses': [ 1521, 1523, 1524, 1525 ],
-            'tier'   : 29
+            'tier'   : 'T29_RT'
         },
         {
             'name'   : 'tier30',
             'bonuses': [ 1540, 1541, 1542, 1543, 1544, 1545, 1546, 1547, 1548, 1549, 1550, 1551, 1552 ],
-            'tier'   : 30
+            'tier'   : 'T30'
         },
         {
             'name'   : 'might_of_the_drogbar',
             'bonuses': [ 1539 ],
-            'tier'   : 30
+            'tier'   : 'T30_MOTD'
         },
         {
             'name'   : 'tier31',
             'bonuses': [ 1557, 1558, 1559, 1560, 1561, 1562, 1563, 1564, 1565, 1566, 1567, 1568, 1569 ],
-            'tier'   : 31
+            'tier'   : 'T31'
         },
     ]
 
@@ -3889,17 +3889,15 @@ class SetBonusListGenerator(DataGenerator):
                 length = len(data))
 
         _hdr_specifiers = (
-            '{: <43}', '{: <21}', '{: <6}', '{: <5}', '{: <4}', '{: <3}', '{: <3}', '{: <4}', '{: <7}', '{}'
+            '{: <43}', '{: <21}', '{: <10}', '{: <6}', '{: <5}', '{: <3}', '{: <3}', '{: <4}', '{: <7}', '{}'
         )
 
         _data_specifiers = (
-            '{: <44}', '{: <21}', '{: >6}', '{: >5}', '{: >4}', '{: >3}', '{: >3}', '{: >4}', '{: >7}', '{}'
+            '{: <44}', '{: <21}', '{: >10}', '{: >6}', '{: >5}', '{: >3}', '{: >3}', '{: >4}', '{: >7}', '{}'
         )
 
         _hdr_format = ', '.join(_hdr_specifiers)
-        _hdr = _hdr_format.format(
-            'SetBonusName', 'OptName', 'EnumID', 'SetID', 'Tier', 'Bns', 'Cls', 'Spec',
-            'SpellID', 'ItemIDs')
+        _hdr = _hdr_format.format('SetBonusName', 'OptName', 'Tier', 'EnumID', 'SetID', 'Bns', 'Cls', 'Spec', 'SpellID', 'ItemIDs')
 
         _data_format = ', '.join(_data_specifiers)
 
@@ -3928,9 +3926,9 @@ class SetBonusListGenerator(DataGenerator):
             self._out.write('  {{ {} }},\n'.format(_data_format.format(
                 '"%s"' % item_set.name.replace('"', '\\"'),
                 '"%s"' % map_entry['name'].replace('"', '\\"'),
+                '"%s"' % map_entry['tier'].replace('"', '\\"'),
                 entry['index'],
                 set_id,
-                map_entry['tier'],
                 entry['bonus'],
                 entry['class'],
                 entry['spec'],

@@ -17,9 +17,9 @@ struct item_set_bonus_t
 {
   const char* set_name;
   const char* set_opt_name;
+  const char* tier;
   unsigned    enum_id; // tier_e enum value.
   unsigned    set_id;
-  unsigned    tier;
   unsigned    bonus;
   int         class_id;
   int         spec; // -1 "all"
