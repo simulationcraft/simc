@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.6.53877 Live
+SimulationCraft 1026-01 for World of Warcraft 10.2.6.53913 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -228,7 +228,7 @@ School           : Physical
 Spell Type       : Melee
 Resource         : 20 Energy (3) (id=113)
 Resource         : 1 - 5 Combo Points (4) (id=10588)
-Spell Level      : 11
+Spell Level      : 21
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
@@ -6310,7 +6310,7 @@ Name             : Thrash (id=192090) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
-Spell Level      : 11
+Spell Level      : 18
 Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 3 maximum
