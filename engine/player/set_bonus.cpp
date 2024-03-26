@@ -126,15 +126,10 @@ std::vector<const item_set_bonus_t*> set_bonus_t::enabled_set_bonus_data() const
     {
       for ( auto& bonus_data : bonus_type )
       {
-        // Most specs have the fourth specialization empty, or only have
-        // limited number of roles, so there's no set bonuses for those entries
-        if ( bonus_data.bonus == nullptr )
+        // Most specs have the fourth specialization empty, or only have limited number of roles, so there's no set
+        // bonuses for those entries
+        if ( !bonus_data.bonus || bonus_data.quiet || !bonus_data.spell->ok() )
           continue;
-
-        if ( bonus_data.spell->id() == 0 )
-        {
-          continue;
-        }
 
         bonuses.push_back( bonus_data.bonus );
       }
@@ -244,6 +239,18 @@ void set_bonus_t::enable_all_sets()
   for ( const auto& bonus : set_bonuses )
     if ( bonus.class_id == util::class_id( actor->type ) && bonus.spec == spec )
       set_bonus_spec_data[ bonus.enum_id ][ dbc::spec_idx( spec ) ][ bonus.bonus - 1 ].overridden = 1;
+}
+
+void set_bonus_t::enable_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus, bool quiet )
+{
+  if ( dbc::spec_idx( spec ) < 0 )
+    return;
+
+  auto& entry = set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( spec ) ][ bonus ];
+
+  entry.enabled = true;
+  entry.spell = actor->find_spell( entry.bonus->spell_id );
+  entry.quiet = quiet;
 }
 
 bool set_bonus_t::has_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
