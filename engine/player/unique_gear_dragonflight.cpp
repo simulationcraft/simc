@@ -9785,10 +9785,10 @@ namespace sets
 {
 void playful_spirits_fur( special_effect_t& effect )
 {
-  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_PLAYFUL_SPIRITS_FUR, B2 ) )
+  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_PSF, B2 ) )
     return;
 
-  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T29_PLAYFUL_SPIRITS_FUR, B2 )->id();
+  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T29_PSF, B2 )->id();
 
   if ( effect.driver()->id() == set_driver_id )
   {
@@ -9805,11 +9805,11 @@ void playful_spirits_fur( special_effect_t& effect )
 
 void horizon_striders_garments( special_effect_t& effect )
 {
-  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_HORIZON_STRIDERS_GARMENTS, B2 ) )
+  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_HSG, B2 ) )
     return;
 
   auto set_driver_id =
-      effect.player->sets->set( effect.player->specialization(), T29_HORIZON_STRIDERS_GARMENTS, B2 )->id();
+      effect.player->sets->set( effect.player->specialization(), T29_HSG, B2 )->id();
 
   if ( effect.driver()->id() == set_driver_id )
   {
@@ -9830,10 +9830,10 @@ void horizon_striders_garments( special_effect_t& effect )
 // TODO: Healing buff - 388064
 void azureweave_vestments( special_effect_t& effect )
 {
-  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_AZUREWEAVE_VESTMENTS, B2 ) )
+  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_AV, B2 ) )
     return;
 
-  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T29_AZUREWEAVE_VESTMENTS, B2 )->id();
+  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T29_AV, B2 )->id();
 
   if ( effect.driver()->id() == set_driver_id )
   {
@@ -9854,10 +9854,10 @@ void azureweave_vestments( special_effect_t& effect )
 // haste - 387142 (unleashed_time)
 void woven_chronocloth( special_effect_t& effect )
 {
-  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_WOVEN_CHRONOCLOTH, B2 ) )
+  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_WC, B2 ) )
     return;
 
-  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T29_WOVEN_CHRONOCLOTH, B2 )->id();
+  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T29_WC, B2 )->id();
 
   if ( effect.driver()->id() == set_driver_id )
   {
@@ -9888,8 +9888,8 @@ void woven_chronocloth( special_effect_t& effect )
 void raging_tempests( special_effect_t& effect )
 {
   auto check_set = [ effect ]( set_bonus_e b ) {
-    return effect.player->sets->has_set_bonus( effect.player->specialization(), T29_RAGING_TEMPESTS, b ) &&
-           effect.player->sets->set( effect.player->specialization(), T29_RAGING_TEMPESTS, b )->id() ==
+    return effect.player->sets->has_set_bonus( effect.player->specialization(), T29_RT, b ) &&
+           effect.player->sets->set( effect.player->specialization(), T29_RT, b )->id() ==
                effect.driver()->id();
   };
 
@@ -9951,10 +9951,10 @@ void raging_tempests( special_effect_t& effect )
 //407939 primary stat value
 void might_of_the_drogbar( special_effect_t& effect )
 {
-  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T30_MIGHT_OF_THE_DROGBAR, B2 ) )
+  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T30_MOTD, B2 ) )
     return;
 
-  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T30_MIGHT_OF_THE_DROGBAR, B2 )->id();
+  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T30_MOTD, B2 )->id();
 
   if ( effect.driver()->id() == set_driver_id )
   {

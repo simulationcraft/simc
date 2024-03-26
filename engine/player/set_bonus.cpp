@@ -195,13 +195,12 @@ void set_bonus_t::initialize()
         if ( data.overridden >= 1 ||
              ( set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus && data.overridden == -1 ) ||
              ( data.bonus->has_spec( actor->_spec ) &&
-               ( !util::str_in_str_ci( data.bonus->set_opt_name, "lfr" ) &&
-                 ( ( actor->sim->enable_2_set == data.bonus->tier && data.bonus->bonus == 2 ) ||
-                   ( actor->sim->enable_4_set == data.bonus->tier && data.bonus->bonus == 4 ) ) ) ) )
+               ( ( util::str_compare_ci( actor->sim->enable_2_set, data.bonus->tier ) && data.bonus->bonus == 2 ) ||
+                 ( util::str_compare_ci( actor->sim->enable_4_set, data.bonus->tier ) && data.bonus->bonus == 4 ) ) ) )
         {
           if ( data.bonus->bonus == 2 )
           {
-            if ( actor->sim->disable_2_set != data.bonus->tier )
+            if ( !util::str_compare_ci( actor->sim->disable_2_set, data.bonus->tier ) )
             {
               data.spell = actor->find_spell( data.bonus->spell_id );
               data.enabled = true;
@@ -213,7 +212,7 @@ void set_bonus_t::initialize()
           }
           else if ( data.bonus->bonus == 4 )
           {
-            if ( actor->sim->disable_4_set != data.bonus->tier )
+            if ( !util::str_compare_ci( actor->sim->disable_4_set, data.bonus->tier ) )
             {
               data.spell = actor->find_spell( data.bonus->spell_id );
               data.enabled = true;
@@ -363,14 +362,14 @@ bool set_bonus_t::parse_set_bonus_option( util::string_view opt_str, set_bonus_t
 
   auto set_name = opt_str.substr( 0, opt_str.size() - split.back().size() - 1 );
 
-  auto set_bonuses = item_set_bonus_t::data( SC_USE_PTR );
+  auto set_bonuses = item_set_bonus_t::data( actor->dbc->ptr );
 
   for ( const auto& bonus : set_bonuses )
   {
     if ( bonus.class_id != -1 && bonus.class_id != util::class_id( actor->type ) )
       continue;
 
-    if ( set_bonus == SET_BONUS_NONE && util::str_compare_ci( set_name, bonus.set_opt_name ) )
+    if ( util::str_compare_ci( set_name, bonus.set_opt_name ) || util::str_compare_ci( set_name, bonus.tier ) )
     {
       set_bonus = static_cast<set_bonus_type_e>( bonus.enum_id );
       break;
@@ -384,7 +383,7 @@ std::string set_bonus_t::generate_set_bonus_options() const
 {
   std::vector<std::string> opts;
 
-  auto set_bonuses = item_set_bonus_t::data( SC_USE_PTR );
+  auto set_bonuses = item_set_bonus_t::data( actor->dbc->ptr );
 
   for ( const auto& bonus : set_bonuses )
   {
