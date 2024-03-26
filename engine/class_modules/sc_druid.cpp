@@ -1089,6 +1089,7 @@ public:
   void init_rng() override;
   void init_special_effects() override;
   void init_spells() override;
+  void init_items() override;
   void init_scaling() override;
   void init_finished() override;
   void create_buffs() override;
@@ -9523,6 +9524,29 @@ void druid_t::init_spells()
   mastery.astral_invocation   = find_mastery_spell( DRUID_BALANCE );
 
   eclipse_handler.init();  // initialize this here since we need talent info to properly init
+}
+
+// druid_t::init_items ======================================================
+void druid_t::init_items()
+{
+  player_t::init_items();
+
+  set_bonus_type_e tier_to_enable;
+
+  switch ( specialization() )
+  {
+    case DRUID_BALANCE:     tier_to_enable = T29; break;
+    case DRUID_FERAL:       tier_to_enable = T31; break;
+    case DRUID_GUARDIAN:    tier_to_enable = T30; break;
+    case DRUID_RESTORATION: tier_to_enable = T31; break;
+    default: return;
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+    sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
+
+  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+    sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
 }
 
 // druid_t::init_base =======================================================
