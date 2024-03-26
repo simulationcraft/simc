@@ -179,10 +179,10 @@ struct sim_t : private sc_thread_t
   bool disable_set_bonuses; // Disables all set bonuses.
   bool enable_taunts;
   bool use_item_verification;  // Disable use-item action verification in the simulator
-  unsigned int disable_2_set; // Disables all 2 set bonuses for this tier/integer that this is set as
-  unsigned int disable_4_set; // Disables all 4 set bonuses for this tier/integer that this is set as
-  unsigned int enable_2_set;// Enables all 2 set bonuses for the tier/integer that this is set as
-  unsigned int enable_4_set; // Enables all 4 set bonuses for the tier/integer that this is set as
+  std::string disable_2_set; // Disables all 2 set bonuses for the tier that this is set as
+  std::string disable_4_set; // Disables all 4 set bonuses for the tier that this is set as
+  std::string enable_2_set;// Enables all 2 set bonuses for the tier that this is set as
+  std::string enable_4_set; // Enables all 4 set bonuses for the tier that this is set as
   const spell_data_t* pvp_rules; // Hidden aura that contains the PvP crit damage reduction
   bool pvp_mode; // Enables PvP mode - reduces crit damage, adjusts PvP gear iLvl
   bool auto_attacks_always_land; /// Allow Auto Attacks (white attacks) to always hit the enemy

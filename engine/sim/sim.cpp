@@ -1532,10 +1532,6 @@ sim_t::sim_t()
     disable_set_bonuses( false ),
     enable_taunts( false ),
     use_item_verification( true ),
-    disable_2_set( 1 ),
-    disable_4_set( 1 ),
-    enable_2_set( 1 ),
-    enable_4_set( 1 ),
     pvp_rules(),
     pvp_mode( false ),
     auto_attacks_always_land( false ),
@@ -3774,10 +3770,10 @@ void sim_t::create_options()
   add_option( opt_int( "scale_to_itemlevel", scale_to_itemlevel ) );
   add_option( opt_bool( "scale_itemlevel_down_only", scale_itemlevel_down_only ) );
   add_option( opt_bool( "disable_set_bonuses", disable_set_bonuses ) );
-  add_option( opt_uint( "disable_2_set", disable_2_set ) );
-  add_option( opt_uint( "disable_4_set", disable_4_set ) );
-  add_option( opt_uint( "enable_2_set", enable_2_set ) );
-  add_option( opt_uint( "enable_4_set", enable_4_set ) );
+  add_option( opt_string( "disable_2_set", disable_2_set ) );
+  add_option( opt_string( "disable_4_set", disable_4_set ) );
+  add_option( opt_string( "enable_2_set", enable_2_set ) );
+  add_option( opt_string( "enable_4_set", enable_4_set ) );
   add_option( opt_bool( "pvp", pvp_mode ) );
   add_option( opt_bool( "auto_attacks_always_land", auto_attacks_always_land ) );
   add_option( opt_bool( "log_spell_id", log_spell_id ) );

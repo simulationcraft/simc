@@ -195,13 +195,12 @@ void set_bonus_t::initialize()
         if ( data.overridden >= 1 ||
              ( set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus && data.overridden == -1 ) ||
              ( data.bonus->has_spec( actor->_spec ) &&
-               ( !util::str_in_str_ci( data.bonus->set_opt_name, "lfr" ) &&
-                 ( ( actor->sim->enable_2_set == data.bonus->tier && data.bonus->bonus == 2 ) ||
-                   ( actor->sim->enable_4_set == data.bonus->tier && data.bonus->bonus == 4 ) ) ) ) )
+               ( ( util::str_compare_ci( actor->sim->enable_2_set, data.bonus->tier ) && data.bonus->bonus == 2 ) ||
+                 ( util::str_compare_ci( actor->sim->enable_4_set, data.bonus->tier ) && data.bonus->bonus == 4 ) ) ) )
         {
           if ( data.bonus->bonus == 2 )
           {
-            if ( actor->sim->disable_2_set != data.bonus->tier )
+            if ( !util::str_compare_ci( actor->sim->disable_2_set, data.bonus->tier ) )
             {
               data.spell = actor->find_spell( data.bonus->spell_id );
               data.enabled = true;
@@ -213,7 +212,7 @@ void set_bonus_t::initialize()
           }
           else if ( data.bonus->bonus == 4 )
           {
-            if ( actor->sim->disable_4_set != data.bonus->tier )
+            if ( !util::str_compare_ci( actor->sim->disable_4_set, data.bonus->tier ) )
             {
               data.spell = actor->find_spell( data.bonus->spell_id );
               data.enabled = true;
