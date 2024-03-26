@@ -3814,6 +3814,11 @@ class SetBonusListGenerator(DataGenerator):
             'bonuses': [ 1557, 1558, 1559, 1560, 1561, 1562, 1563, 1564, 1565, 1566, 1567, 1568, 1569 ],
             'tier'   : 'T31'
         },
+        {
+            'name'   : 'dragonflight_season_4',
+            'bonuses': [ 1594, 1595, 1596, 1597, 1598, 1599, 1600, 1601, 1602, 1603, 1604, 1605, 1606 ],
+            'tier'   : 'DF4'
+        },
     ]
 
     @staticmethod
