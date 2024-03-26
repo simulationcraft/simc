@@ -794,6 +794,7 @@ public:
   void init_rng() override;
   void init_scaling() override;
   void init_spells() override;
+  void init_items() override;
   bool validate_fight_style( fight_style_e style ) const override;
   void invalidate_cache( cache_e ) override;
   resource_e primary_resource() const override;
@@ -7872,6 +7873,32 @@ void demon_hunter_t::init_spells()
         "throw_glaive_ds_throw", "", throw_glaive_t::glaive_source::DEATH_SWEEP_THROW );
     active.throw_glaive_ds_throw = throw_glaive_ds_throw;
   }
+}
+
+// demon_hunter_t::init_items ===============================================
+
+void demon_hunter_t::init_items()
+{
+  player_t::init_items();
+
+  set_bonus_type_e tier_to_enable;
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_HAVOC:
+      tier_to_enable = T31;
+      break;
+    case DEMON_HUNTER_VENGEANCE:
+      tier_to_enable = T31;
+      break;
+    default:
+      return;
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+    sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
+
+  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+    sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
 }
 
 // demon_hunter_t::validate_fight_style =====================================
