@@ -7097,7 +7097,6 @@ namespace monk
           ( int )p.sets->set( MONK_WINDWALKER, T29, B4 )->effectN( 2 ).base_value() : 0 ) );
         set_reverse_stack_count( s->max_stacks() + ( p.sets->has_set_bonus( MONK_WINDWALKER, T29, B4 ) ?
           ( int )p.sets->set( MONK_WINDWALKER, T29, B4 )->effectN( 2 ).base_value() : 0 ) );
-
       }
 
       void decrement( int stacks, double value = DEFAULT_VALUE() ) override
@@ -8396,6 +8395,33 @@ namespace monk
 
     if ( off_hand_weapon.type != WEAPON_NONE )
       scaling->enable( STAT_WEAPON_OFFHAND_DPS );
+  }
+
+  // monk_t::init_items =====================================================
+
+  void monk_t::init_items()
+  {
+    base_t::init_items();
+    
+    set_bonus_type_e tier_to_enable;
+    switch( specialization() )
+    {
+      case MONK_WINDWALKER:
+        tier_to_enable = T29;
+        break;
+      case MONK_BREWMASTER:
+      case MONK_MISTWEAVER:
+        tier_to_enable = T31;
+        break;
+      default:
+        return;
+    }
+
+    if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+      sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
+
+    if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+      sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
   }
 
   // monk_t::create_buffs =====================================================
