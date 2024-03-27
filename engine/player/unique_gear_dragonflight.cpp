@@ -7716,8 +7716,6 @@ void frozen_wellspring( special_effect_t& effect )
 // 433522 debuff
 // 433768 maximum jump tracker
 // 433786 unknown
-// TODO: confirm increment happens after tick, as suggested by tooltip var
-// TODO: determines what happens to damage increase if you proc on an existing dot
 // TODO: approximate execute by checking on tick. if more accuracy is required, implement in assessor.
 // TODO: determine maximum jump distance, if any
 // TODO: determine if it can jump to a dotted enemy
@@ -7750,6 +7748,7 @@ void umbrelskuls_fractured_heart_new( special_effect_t& effect )
         hp_pct( e.driver()->effectN( 2 ).base_value() )
     {
       base_td = e.driver()->effectN( 1 ).average( e.item );
+      dot_max_stack -= 1;  // cannot go above 10 stacks despite data showing 11
 
       counter = create_buff<buff_t>( e.player, e.player->find_spell( 433768 ) )
         ->set_quiet( true )
@@ -7772,8 +7771,6 @@ void umbrelskuls_fractured_heart_new( special_effect_t& effect )
     {
       generic_proc_t::tick( d );
 
-      // TODO: confirm increment happens after tick, as suggested by tooltip var
-      // TODO: determines what happens to damage increase if you proc on an existing dot
       d->increment( 1 );
 
       // TODO: approximate execute by checking on tick. if more accuracy is required, implement in assessor.
