@@ -1215,11 +1215,8 @@ struct denizen_of_the_dream_t : public pet_t
       da *= 1.0 + o->buff.eclipse_lunar->check_value();
       da *= 1.0 + o->buff.eclipse_solar->check_value();
 
-      if ( !o->bugs )
-      {
-        da *= 1.0 + o->cache.mastery() * mastery_passive;
-        da *= 1.0 + o->cache.mastery() * mastery_passive;
-      }
+      da *= 1.0 + o->cache.mastery() * mastery_passive;
+      da *= 1.0 + o->cache.mastery() * mastery_passive;
 
       return da;
     }
