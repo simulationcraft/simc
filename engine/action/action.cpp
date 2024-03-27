@@ -1313,13 +1313,14 @@ double action_t::calculate_weapon_damage( double attack_power ) const
 
 double action_t::calculate_tick_amount( action_state_t* state, double dot_multiplier ) const
 {
-  double amount = 0;
+  double amount = base_ta( state );
 
-  if ( base_ta( state ) == 0 && spell_tick_power_coefficient( state ) == 0 &&
-       attack_tick_power_coefficient( state ) == 0 )
+  if ( !amount && !spell_tick_power_coefficient( state ) && !attack_tick_power_coefficient( state ) )
     return 0;
 
-  amount = floor( base_ta( state ) + 0.5 );
+  // Base amount rounded to some decimal, but the exact precision is currently unknown. For now assume 3 digits as that
+  // is what AP/SP multipliers seem to be rounded to.
+  amount = std::round( amount * 1000 ) * 0.001;
   amount += bonus_ta( state );
   double rolling_ta_multiplier = state->composite_rolling_ta_multiplier();
   amount += state->composite_spell_power() * spell_tick_power_coefficient( state ) * rolling_ta_multiplier;
