@@ -4675,7 +4675,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
   bool make_unbound_surge = evoker->naszuro && !target->is_enemy() && !target->is_pet();
   buffs.unbound_surge = make_buff_fallback<stat_buff_t>( make_unbound_surge, *this, "unbound_surge_" + evoker->name_str,
-                                                         evoker->find_spell( 403275 ), evoker->naszuro->item );
+                                                         evoker->find_spell( 403275 ), evoker->naszuro ? evoker->naszuro->item : nullptr );
   if ( make_unbound_surge )
   {
     buffs.unbound_surge->set_period( 0_s );
