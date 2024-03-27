@@ -7610,9 +7610,6 @@ void tome_of_unstable_power_new( special_effect_t& effect )
 // 433826 debuff
 // 433829 damage
 // 433830 aoe damage
-// TODO: confirm procs on impact
-// TODO: confirm split damage increases by 15% per target
-// TODO: determine if final stack procs the damage before aoe, or aoe only
 struct wellsprings_frost_initializer_t : public item_targetdata_initializer_t
 {
   wellsprings_frost_initializer_t() : item_targetdata_initializer_t( 432775, 433826 ) {}
@@ -7630,7 +7627,6 @@ void frozen_wellspring( special_effect_t& effect )
 {
   auto damage_value = effect.player->find_spell( 433824 );
 
-  // TODO: confirm split damage increases by 15% per target
   auto shatter = create_proc_action<generic_aoe_proc_t>( "shatter", effect, "shatter", 433830, true );
   shatter->base_dd_min = shatter->base_dd_max = damage_value->effectN( 2 ).average( effect.item );
 
@@ -7665,7 +7661,6 @@ void frozen_wellspring( special_effect_t& effect )
   proc_driver->cooldown_ = 0_ms;
   proc_driver->spell_id = effect.spell_id;
   proc_driver->proc_flags_ = effect.proc_flags_;
-  // TODO: confirm procs on impact
   proc_driver->proc_flags2_ = PF2_ALL_HIT;
   effect.player->special_effects.push_back( proc_driver );
 
@@ -7673,7 +7668,6 @@ void frozen_wellspring( special_effect_t& effect )
   cb->initialize();
   cb->deactivate();
 
-  // TODO: determine if final stack procs the damage before aoe, or aoe only
   effect.player->callbacks.register_callback_execute_function(
       proc_driver->spell_id,
       [ p = effect.player, proc, buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
