@@ -7568,33 +7568,26 @@ void tome_of_unstable_power_new( special_effect_t& effect )
         // adjust for action rename due to arcane mage action conflict
         name_str_reporting = "arcane_barrage";
 
-        aoe = -1;
+        aoe         = -1;
         base_dd_min = base_dd_max = dam;
       }
-    };
 
-    struct arcane_annihilation_t : public generic_proc_t
-    {
-      arcane_annihilation_t( const special_effect_t& e, double dam )
-        : generic_proc_t( e, "arcane_annihilation", e.player->find_spell( 433889 ) )
+      void snapshot_state( action_state_t* s, result_amount_type rt ) override
       {
-        aoe = -1;
-        base_dd_min = base_dd_max = dam;
+        generic_proc_t::snapshot_state( s, rt );
+
+        auto count = rng().range( 3U );
+        s->persistent_multiplier *= ( 0.9 + 0.1 * count );
       }
     };
 
-    action_t* annihilation;
     action_t* barrage;
     timespan_t cast_time;
 
     tome_of_unstable_power_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
     {
       auto dam = e.driver()->effectN( 1 ).average( e.item );
-      // TODO: determine if 1.1 multiplier from tooltip desc has conditions
-      dam *= 1.1;
 
-      // TODO: determine how annihilation gets used, currently using barrage only
-      annihilation = create_proc_action<arcane_annihilation_t>( "arcane_annihilation", e, dam );
       barrage = create_proc_action<arcane_barrage_t>( "arcane_barrage_tome", e, dam );
 
       // TODO: confirm damage happens at end of channel trigger (3.05s) instead of end of cast (3s)
@@ -7603,19 +7596,9 @@ void tome_of_unstable_power_new( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* s ) override
     {
-      // TODO: confirm # of summons is uniformly random
-      auto count = rng().range( 1U, 3U );
-
-      // TODO: determine if overlapping areas have a spread
-      for ( size_t i = 0; i < count; i++ )
-      {
-        make_event<ground_aoe_event_t>( *listener->sim, listener,
-            ground_aoe_params_t()
-                .target( s->target )
-                .pulse_time( cast_time )
-                .action( barrage )
-                .n_pulses( 1U ) );
-      }
+      make_event<ground_aoe_event_t>(
+          *listener->sim, listener,
+          ground_aoe_params_t().target( s->target ).pulse_time( cast_time ).action( barrage ).n_pulses( 1U ) );
     }
   };
 
