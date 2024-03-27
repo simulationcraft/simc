@@ -1319,6 +1319,7 @@ public:
   void      init_spells() override;
   void      init_action_list() override;
   void      init_rng() override;
+  void      init_items() override;
   void      init_base_stats() override;
   void      init_scaling() override;
   void      create_buffs() override;
@@ -9447,6 +9448,36 @@ void death_knight_t::init_rng()
 
   rppm.bloodworms = get_rppm( "bloodworms", talent.blood.bloodworms );
   rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation );
+}
+
+// death_knight_t::init_items ===============================================
+void death_knight_t::init_items()
+{
+  player_t::init_items();
+
+  set_bonus_type_e tier_to_enable;
+
+  switch ( specialization() )
+  {
+    case DEATH_KNIGHT_BLOOD:
+      tier_to_enable = T30;
+      break;
+    case DEATH_KNIGHT_FROST:
+      tier_to_enable = T30;
+      break;
+    case DEATH_KNIGHT_UNHOLY:
+      tier_to_enable = T31;
+      break;
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+  {
+    sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
+  }
+  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+  {
+    sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
+  }
 }
 
 // death_knight_t::init_base ================================================
