@@ -759,6 +759,7 @@ public:
   void init_benefits() override;
   void init_uptimes() override;
   void init_rng() override;
+  void init_items() override;
   void init_finished() override;
   void add_precombat_buff_state( buff_t*, int, double, timespan_t ) override;
   void invalidate_cache( cache_e ) override;
@@ -6954,6 +6955,15 @@ void mage_t::init_rng()
   // TODO: There's no data about this in game. Keep an eye out in case Blizzard
   // changes this behind the scenes.
   shuffled_rng.time_anomaly = get_shuffled_rng( "time_anomaly", 1, 16 );
+}
+
+void mage_t::init_items()
+{
+  player_t::init_items();
+
+  auto s = specialization();
+  for ( auto b : { B2, B4 } )
+    if ( sets->has_set_bonus( s, DF4, b ) ) sets->enable_set_bonus( s, s == MAGE_FIRE ? T30 : T31, b );
 }
 
 void mage_t::init_finished()
