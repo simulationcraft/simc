@@ -790,6 +790,7 @@ public:
 
   // Character Definition
   void init_spells() override;
+  void init_items() override;
   void init_base_stats() override;
   void init_scaling() override;
   void create_buffs() override;
@@ -7226,6 +7227,36 @@ void warrior_t::init_spells()
   cooldown.t31_fury_4pc_icd                 = get_cooldown( "t31_fury_4pc_icd" );
   cooldown.t31_fury_4pc_icd->duration = find_spell( 422926 )->internal_cooldown();
 }
+
+// warrior_t::init_items ===============================================
+
+void warrior_t::init_items()
+{
+  player_t::init_items();
+
+  set_bonus_type_e tier_to_enable;
+  switch ( specialization() )
+  {
+    case WARRIOR_ARMS:
+      tier_to_enable = T29;
+      break;
+    case WARRIOR_FURY:
+      tier_to_enable = T30;
+      break;
+    case WARRIOR_PROTECTION:
+      tier_to_enable = T31;
+      break;
+    default:
+      return;
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+    sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
+
+  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+    sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
+}
+
 
 // warrior_t::init_base =====================================================
 
