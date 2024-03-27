@@ -779,6 +779,7 @@ public:
   void      init_position() override;
   void      init_procs() override;
   void      init_rng() override;
+  void      init_items() override;
   void      init_scaling() override;
   void      init_assessors() override;
   void      init_action_list() override;
@@ -6945,6 +6946,34 @@ void hunter_t::init_spells()
 
   // Cooldowns
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
+}
+
+// hunter_t::init_items =====================================================
+void hunter_t::init_items()
+{
+  player_t::init_items();
+
+  set_bonus_type_e tier_to_enable;
+
+  switch ( specialization() )
+  {
+    case HUNTER_BEAST_MASTERY:
+    case HUNTER_MARKSMANSHIP:
+      tier_to_enable = T31;
+      break;
+    case HUNTER_SURVIVAL:
+      tier_to_enable = T29;
+      break;
+  }
+
+  if ( sets -> has_set_bonus( specialization(), DF4, B2 ) )
+  {
+    sets -> enable_set_bonus( specialization(), tier_to_enable, B2 );
+  }
+  if ( sets -> has_set_bonus( specialization(), DF4, B4 ) )
+  {
+    sets -> enable_set_bonus( specialization(), tier_to_enable, B4 );
+  }
 }
 
 // hunter_t::init_base ======================================================
