@@ -6708,16 +6708,28 @@ void belorrelos_the_sunstone( special_effect_t& effect )
     }
   };
 
-  // Create self-damage DoT
-  auto dot         = create_proc_action<generic_proc_t>( "solar_maelstrom_dot", effect, "solar_maelstrom_dot",
-                                                 effect.player->find_spell( 425417 ) );
-  auto num_ticks   = dot->dot_duration / dot->base_tick_time;
-  dot->base_td     = effect.player->find_spell( 422141 )->effectN( 2 ).average( effect.item ) / num_ticks;
-  dot->not_a_proc  = true;
-  dot->stats->type = stats_e::STATS_NEUTRAL;
-  dot->target      = effect.player;
+  struct belorrelos_self_dot_t : public generic_proc_t
+  {
+    belorrelos_self_dot_t( const special_effect_t& e )
+      : generic_proc_t( e, "solar_maelstrom_dot", e.player->find_spell( 425417 ) )
+    {
+      auto num_ticks = dot_duration / base_tick_time;
+      base_td = e.player->find_spell( 422141 )->effectN( 2 ).average( e.item ) / num_ticks;
+      not_a_proc = true;
+      stats->type = stats_e::STATS_NEUTRAL;
+      target = e.player;
+    }
 
-  auto damage           = create_proc_action<belorrelos_channel_t>( "belorrelos_channel", effect, dot );
+    result_amount_type amount_type( const action_state_t*, bool ) const override
+    {
+      return result_amount_type::HEAL_OVER_TIME;
+    }
+  };
+
+  // Create self-damage DoT
+  auto dot = create_proc_action<belorrelos_self_dot_t>( "solar_maelstrom_dot", effect );
+  auto damage = create_proc_action<belorrelos_channel_t>( "belorrelos_channel", effect, dot );
+
   effect.execute_action = damage;
 }
 
