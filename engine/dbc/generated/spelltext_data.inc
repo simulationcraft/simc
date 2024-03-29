@@ -1,4 +1,4 @@
-// Spell text, wow build 10.2.6.53913
+// Spell text, wow build 10.2.6.53989
 static const std::array<spelltext_data_t, 21047> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -21049,22 +21049,11 @@ static const std::array<spelltext_data_t, 21047> __spelltext_data { {
   { 443937, "$@spelldesc432750", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.6.53913
-static constexpr std::array<hotfix::client_hotfix_entry_t, 11> __spelltext_hotfix_data { {
-  {  432594,  0, "|CFFFFFFFF- Caster buff|R\r\n|CFFFFFFFF- Breaks crowd-control|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nTransform into a Fae creature, gaining immunity to harmful debuffs, increased movement speed, and damage reduction for a short duration.\r\n\r\nCannot attack while transformed.", "|CFFFFFFFF- Caster buff|R\r\n|CFFFFFFFF- Breaks crowd-control|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nTransform into a Fae creature, gaining immunity to harmful debuffs and increased movement speed for a short duration.\r\n\r\nCannot attack while transformed." },
-  {  432768,  0, "|CFFFFFFFF- Caster buff|R\r\n|CFFFFFFFF- Breaks crowd-control|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF16 sec cooldown|R\r\nTransform into a Fae creature, gaining immunity to harmful debuffs, increased movement speed, and damage reduction for a short duration.\r\n\r\nCannot attack while transformed.", "|CFFFFFFFF- Caster buff|R\r\n|CFFFFFFFF- Breaks crowd-control|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF16 sec cooldown|R\r\nTransform into a Fae creature, gaining immunity to harmful debuffs and increased movement speed for a short duration.\r\n\r\nCannot attack while transformed." },
-  {  432769,  0, "|CFFFFFFFF- Caster buff|R\r\n|CFFFFFFFF- Breaks crowd-control|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF14 sec cooldown|R\r\nTransform into a Fae creature, gaining immunity to harmful debuffs, increased movement speed, and damage reduction for a short duration.\r\n\r\nCannot attack while transformed.", "|CFFFFFFFF- Caster buff|R\r\n|CFFFFFFFF- Breaks crowd-control|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF14 sec cooldown|R\r\nTransform into a Fae creature, gaining immunity to harmful debuffs and increased movement speed for a short duration.\r\n\r\nCannot attack while transformed." },
-  {  432770,  0, "|CFFFFFFFF- Caster buff|R\r\n|CFFFFFFFF- Breaks crowd-control|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF12 sec cooldown|R\r\nTransform into a Fae creature, gaining immunity to harmful debuffs, increased movement speed, and damage reduction for a short duration.\r\n\r\nCannot attack while transformed.", "|CFFFFFFFF- Caster buff|R\r\n|CFFFFFFFF- Breaks crowd-control|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF12 sec cooldown|R\r\nTransform into a Fae creature, gaining immunity to harmful debuffs and increased movement speed for a short duration.\r\n\r\nCannot attack while transformed." },
-  {  435018,  0, "|CFFFFFFFF- Caster AoE|R\r\n|CFFFFFFFF- Stuns|R\r\n|CFFFFFFFF- Large area|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nSunder the earth in an area around the caster, damaging and stunning enemies hit.", "|CFFFFFFFF- Caster AoE|R\r\n|CFFFFFFFF- Stuns|R\r\n|CFFFFFFFF- Crowd Control Immunity|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nSunder the earth in an area around the caster, damaging and stunning enemies hit.\r\n\r\nWhile casting, you are immune to crowd control." },
-  {  435021,  0, "|CFFFFFFFF- Caster AoE|R\r\n|CFFFFFFFF- Stuns|R\r\n|CFFFFFFFF- Large area|R\r\n\r\n|CFFFFFFFF16 sec cooldown|R\r\nSunder the earth in an area around the caster, damaging and stunning enemies hit.", "|CFFFFFFFF- Caster AoE|R\r\n|CFFFFFFFF- Stuns|R\r\n|CFFFFFFFF- Crowd Control Immunity|R\r\n\r\n|CFFFFFFFF16 sec cooldown|R\r\nSunder the earth in an area around the caster, damaging and stunning enemies hit.\r\n\r\nWhile casting, you are immune to crowd control." },
-  {  435023,  0, "|CFFFFFFFF- Caster AoE|R\r\n|CFFFFFFFF- Stuns|R\r\n|CFFFFFFFF- Large area|R\r\n\r\n|CFFFFFFFF14 sec cooldown|R\r\nSunder the earth in an area around the caster, damaging and stunning enemies hit. \r\n", "|CFFFFFFFF- Caster AoE|R\r\n|CFFFFFFFF- Stuns|R\r\n|CFFFFFFFF-Crowd Control Immunity|R\r\n\r\n|CFFFFFFFF14 sec cooldown|R\r\nSunder the earth in an area around the caster, damaging and stunning enemies hit. \r\n\r\nWhile casting, you are immune to crowd control.\r\n" },
-  {  435025,  0, "|CFFFFFFFF- Caster AoE|R\r\n|CFFFFFFFF- Stuns|R\r\n|CFFFFFFFF- Large area|R\r\n\r\n|CFFFFFFFF12 sec cooldown|R\r\nSunder the earth in an area around the caster, damaging and stunning enemies hit.", "|CFFFFFFFF- Caster AoE|R\r\n|CFFFFFFFF- Stuns|R\r\n|CFFFFFFFF- Crowd Control Immunity|R\r\n\r\n|CFFFFFFFF12 sec cooldown|R\r\nSunder the earth in an area around the caster, damaging and stunning enemies hit.\r\n\r\nWhile casting, you are immune to crowd control." },
-  {  435288,  0, "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF8 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies.\r\n", "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF8.5 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies.\r\n" },
-  {  435290,  0, "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF6 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies.\r\n", "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF7 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies.\r\n" },
-  {  435295,  0, "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF4 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies.", "|CFFFFFFFF- Current target|R\r\n|CFFFFFFFF- Cannot miss|R\r\n|CFFFFFFFF- Shorter cooldown|R\r\n\r\n|CFFFFFFFF5.5 sec cooldown|R\r\nFire an icy arrow that seeks your current target, damaging them and nearby enemies." },
+// spelltext hotfix entries, wow build 10.2.6.53989
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.2.6.53913
+// Spell description variables, wow build 10.2.6.53989
 static const std::array<spelldesc_vars_data_t, 449> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -21517,7 +21506,7 @@ static const std::array<spelldesc_vars_data_t, 449> __spelldesc_vars_data { {
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.6.53913
+// spelldesc_vars hotfix entries, wow build 10.2.6.53989
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
