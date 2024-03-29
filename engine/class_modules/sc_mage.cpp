@@ -5980,6 +5980,7 @@ struct time_anomaly_tick_event_t final : public mage_event_t
             break;
           case TA_ICY_VEINS:
             mage->buffs.icy_veins->trigger( 1000 * mage->talents.time_anomaly->effectN( 5 ).time_value() );
+            mage->buffs.cryopathy->trigger( mage->buffs.cryopathy->max_stack() );
             break;
           case TA_TIME_WARP:
             mage->buffs.time_warp->trigger();
