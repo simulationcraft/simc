@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.6.53877 PTR
+SimulationCraft 1026-01 for World of Warcraft 10.2.6.53989 PTR
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -12613,7 +12613,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 372845 | Target: Self (1)
 
 Name             : Lightwell Trigger (id=372845) [Spell Family (6), Hidden] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : None
