@@ -11130,6 +11130,13 @@ void rogue_t::init_items()
     // Restore primary off hand weapon after secondary weapon init
     main_hand_weapon = weapon_data[ WEAPON_OFF_HAND ].weapon_data[ WEAPON_PRIMARY ];
   }
+
+  // Dragonflight Season 4 Set Bonuses
+  // All 3 Rogue specs use T31 Bonuses for S4, so no fancy logic here
+  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+    sets->enable_set_bonus( specialization(), T31, B2 );
+  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+    sets->enable_set_bonus( specialization(), T31, B4 );
 }
 
 // rogue_t::init_special_effects ============================================
