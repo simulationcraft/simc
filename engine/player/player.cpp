@@ -6524,6 +6524,21 @@ void player_t::demise()
   event_t::cancel( off_gcd );
   event_t::cancel( cast_while_casting_poll_event );
 
+  if ( is_enemy() )
+  {
+    sim->active_enemies--;
+    sim->target_non_sleeping_list.find_and_erase_unordered( this );
+
+    // When an enemy dies, trigger players to acquire a new target
+    range::for_each( sim->player_non_sleeping_list,
+                     [ this ]( player_t* p ) { p->acquire_target( retarget_source::ACTOR_DEMISE, this ); } );
+  }
+  else
+  {
+    sim->active_allies--;
+    sim->player_non_sleeping_list.find_and_erase_unordered( this );
+  }
+
   // If an enemy mob dies, trigger on-kill callback on all active players
   if ( is_enemy() )
   {
@@ -6564,20 +6579,6 @@ void player_t::demise()
   for ( size_t i = 0; i < dot_list.size(); ++i )
     dot_list[ i ]->cancel();
 
-  if ( is_enemy() )
-  {
-    sim->active_enemies--;
-    sim->target_non_sleeping_list.find_and_erase_unordered( this );
-
-    // When an enemy dies, trigger players to acquire a new target
-    range::for_each( sim->player_non_sleeping_list,
-                     [this]( player_t* p ) { p->acquire_target( retarget_source::ACTOR_DEMISE, this ); } );
-  }
-  else
-  {
-    sim->active_allies--;
-    sim->player_non_sleeping_list.find_and_erase_unordered( this );
-  }
 }
 
 // Player enters/leaves "combat". Primarily relevant for DungeonSlice/DungeonRoute sims where "combat" is defined as
