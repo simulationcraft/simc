@@ -908,6 +908,7 @@ struct evoker_t : public player_t
   void init_procs() override;
   // void init_rng() override;
   // void init_uptimes() override;
+  void init_items() override;
   void init_spells() override;
   void init_special_effects() override;
   // void init_finished() override;
@@ -5369,6 +5370,37 @@ void evoker_t::init_background_actions()
   {
     background_actions.ebon_might =
         get_secondary_action<spells::ebon_might_t>( "ebon_might_helper", timespan_t::min(), "ebon_might_helper" );
+  }
+}
+
+void evoker_t::init_items()
+{
+  player_t::init_items();
+
+  set_bonus_type_e tier_to_enable;
+  switch ( specialization() )
+  {
+    case EVOKER_PRESERVATION:
+      tier_to_enable = T29;
+      break;
+    case EVOKER_AUGMENTATION:
+      tier_to_enable = T31;
+      break;
+    case EVOKER_DEVASTATION:
+      tier_to_enable = T30;
+      break;
+    default:
+      return;
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+  {
+    sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+  {
+    sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
   }
 }
 
