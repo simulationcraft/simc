@@ -2656,6 +2656,33 @@ void paladin_t::init_spells()
   tier_sets.t31_4pc = sets->set( PALADIN_PROTECTION, T31, B4 );
 }
 
+void paladin_t::init_items()
+{
+  player_t::init_items();
+
+  set_bonus_type_e tier_to_enable;
+  switch ( specialization() )
+  {
+    case PALADIN_PROTECTION:
+      tier_to_enable = T29;
+      break;
+    case PALADIN_HOLY:
+      tier_to_enable = T30;
+      break;
+    case PALADIN_RETRIBUTION:
+      tier_to_enable = T31;
+      break;
+    default:
+      return;
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+    sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
+
+  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+    sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
+}
+
 // paladin_t::primary_role ==================================================
 
 role_e paladin_t::primary_role() const
