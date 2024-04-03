@@ -6239,9 +6239,6 @@ void evoker_t::bounce_naszuro( player_t* s, timespan_t remains = timespan_t::min
   if ( !naszuro )
     return;
 
-  if ( option.naszuro_bounce_destroy_solo )
-    return;
-
   if ( remains <= 0_s && remains != timespan_t::min() )
     return;
 
@@ -6260,6 +6257,9 @@ void evoker_t::bounce_naszuro( player_t* s, timespan_t remains = timespan_t::min
   {
     p = non_sleeping_players[ rng().range( sim->player_no_pet_list.size() ) ];
   }
+    
+  if ( option.naszuro_bounce_destroy_solo && non_sleeping_players.size() == 1 )
+    return;
 
   get_target_data( p )->buffs.unbound_surge->trigger( remains );
 }
