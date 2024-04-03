@@ -802,8 +802,12 @@ enum slot_e  // these enum values match armory settings
 };
 
 // T29, T30, T31, ... + PVP
+// TODO: remove after Dragonflight ends
 const unsigned N_TIER   = 6;
 const unsigned MIN_TIER = 29;
+// 1, 2, 3, 4
+const unsigned N_SEASON = 5;
+const unsigned MIN_SEASON = 1;
 
 // Set bonus .. bonus. They map to a vector internally, so each enum value is just the vector
 // element index.
