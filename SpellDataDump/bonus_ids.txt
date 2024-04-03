@@ -1,4 +1,4 @@
-SimulationCraft 1025-01 for World of Warcraft 10.2.6.53840 Live
+SimulationCraft 1026-01 for World of Warcraft 10.2.6.53989 Live
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -5062,30 +5062,30 @@ bonus_id={ 9621 }, stats={ 100% unknown [3.6000] }
 bonus_id={ 9622 }, stats={ 100% RunSpeed [0.8000] }
 bonus_id={ 9634 }, quality={ rare }
 bonus_id={ 9638 }, stats={ 100% StrAgiInt [0.4802] }
-bonus_id={ 9640 }, stats={ -2147483648% StrAgiInt [0.0000] }
+bonus_id={ 9640 }, stats={ -nan% StrAgiInt [0.0000] }
 bonus_id={ 9641 }, stats={ 100% StrAgiInt [0.9604] }
-bonus_id={ 9642 }, stats={ -2147483648% Sta [0.0000] }
+bonus_id={ 9642 }, stats={ -nan% Sta [0.0000] }
 bonus_id={ 9643 }, stats={ 100% Sta [0.4802] }
 bonus_id={ 9644 }, stats={ 100% Sta [0.9604] }
-bonus_id={ 9645 }, stats={ -2147483648% Crit [0.0000] }
+bonus_id={ 9645 }, stats={ -nan% Crit [0.0000] }
 bonus_id={ 9646 }, stats={ 100% Crit [0.4802] }
 bonus_id={ 9647 }, stats={ 100% Crit [0.9604] }
-bonus_id={ 9648 }, stats={ -2147483648% Haste [0.0000] }
+bonus_id={ 9648 }, stats={ -nan% Haste [0.0000] }
 bonus_id={ 9649 }, stats={ 100% Haste [0.4802] }
 bonus_id={ 9650 }, stats={ 100% Haste [0.9604] }
-bonus_id={ 9651 }, stats={ -2147483648% Leech [0.0000] }
+bonus_id={ 9651 }, stats={ -nan% Leech [0.0000] }
 bonus_id={ 9652 }, stats={ 100% Leech [0.4802] }
 bonus_id={ 9653 }, stats={ 100% Leech [0.9604] }
-bonus_id={ 9654 }, stats={ -2147483648% Mastery [0.0000] }
+bonus_id={ 9654 }, stats={ -nan% Mastery [0.0000] }
 bonus_id={ 9655 }, stats={ 100% Mastery [0.4802] }
 bonus_id={ 9656 }, stats={ 100% Mastery [0.9604] }
-bonus_id={ 9657 }, stats={ -2147483648% unknown [0.0000] }
+bonus_id={ 9657 }, stats={ -nan% unknown [0.0000] }
 bonus_id={ 9658 }, stats={ 100% unknown [0.4802] }
 bonus_id={ 9659 }, stats={ 100% unknown [0.9604] }
-bonus_id={ 9660 }, stats={ -2147483648% RunSpeed [0.0000] }
+bonus_id={ 9660 }, stats={ -nan% RunSpeed [0.0000] }
 bonus_id={ 9661 }, stats={ 100% RunSpeed [0.4802] }
 bonus_id={ 9662 }, stats={ 100% RunSpeed [0.9604] }
-bonus_id={ 9663 }, stats={ -2147483648% Vers [0.0000] }
+bonus_id={ 9663 }, stats={ -nan% Vers [0.0000] }
 bonus_id={ 9664 }, stats={ 100% Vers [0.4802] }
 bonus_id={ 9665 }, stats={ 100% Vers [0.9604] }
 bonus_id={ 9666 }, stats={ 100% StrAgiInt [1.4406] }
@@ -5633,7 +5633,7 @@ bonus_id={ 10242 }, effects={ Sunstrider's Flourish (id=429214, index=0, type=eq
 bonus_id={ 10243 }, effects={ Tinkmaster's Shield (id=429230, index=0, type=equip) }
 bonus_id={ 10246 }, effects={ Chi-ji, the Red Crane (id=426268, index=0, type=use) }
 bonus_id={ 10249 }, base_ilevel={ 486 }, desc={ Awakened Crafted }
-bonus_id={ 10250 }, base_ilevel={ 438 }
+bonus_id={ 10250 }, base_ilevel={ 399 }
 bonus_id={ 10305 }, quality={ rare }
 bonus_id={ 10306 }, quality={ rare }
 bonus_id={ 10307 }, quality={ rare }
