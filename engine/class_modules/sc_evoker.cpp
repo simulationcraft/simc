@@ -6255,7 +6255,7 @@ void evoker_t::bounce_naszuro( player_t* s, timespan_t remains = timespan_t::min
   // TODO: Improve target selection (CD Based)
   if ( non_sleeping_players.size() > 1 && !sim->single_actor_batch )
   {
-    p = non_sleeping_players[ rng().range( sim->player_no_pet_list.size() ) ];
+    p = non_sleeping_players[ rng().range( non_sleeping_players.size() ) ];
   }
     
   if ( option.naszuro_bounce_destroy_solo && non_sleeping_players.size() == 1 )
