@@ -4710,8 +4710,9 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                 if ( b->remains() > 0_s && !_target->buff.dragonrage->check() &&
                      _target->rng().roll( evoker->option.naszuro_bounce_chance ) )
                   make_event( _target->sim, [ _target, evoker, b ] {
-                    evoker->bounce_naszuro( _target, b->remains() );
+                    timespan_t remains = b->remains();
                     b->expire();
+                    evoker->bounce_naszuro( _target, remains );
                   } );
               }
             } );
@@ -4723,8 +4724,9 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
               {
                 if ( b->remains() > 0_s && target->rng().roll( evoker->option.naszuro_bounce_chance ) )
                   make_event( target->sim, [ target, evoker, b ] {
-                    evoker->bounce_naszuro( target, b->remains() );
+                    timespan_t remains = b->remains();
                     b->expire();
+                    evoker->bounce_naszuro( target, remains );
                   } );
               }
             } );
@@ -6242,23 +6244,47 @@ void evoker_t::bounce_naszuro( player_t* s, timespan_t remains = timespan_t::min
   if ( remains <= 0_s && remains != timespan_t::min() )
     return;
 
+  if ( sim->single_actor_batch )
+  {
+    if ( option.naszuro_bounce_destroy_solo )
+      return;
+
+    get_target_data( s )->buffs.unbound_surge->trigger( remains );
+    return;
+  }
+
   player_t* p = s;
 
-  std::vector<player_t*> non_sleeping_players = {};
+  std::vector<player_t*> non_sleeping_players_unbound_surge = {};
+  std::vector<player_t*> non_sleeping_players_no_unbound_surge = {};
 
   for ( auto p : sim->player_no_pet_list )
   {
-    if ( !p->is_sleeping() && p != s )
-      non_sleeping_players.push_back( p );
+    if ( !p->is_sleeping() )
+    {
+      if ( get_target_data( p )->buffs.unbound_surge->check() )
+      {
+        non_sleeping_players_unbound_surge.push_back( p );
+      }
+      else
+      {
+        non_sleeping_players_no_unbound_surge.push_back( p );
+      }
+    }
   }
 
   // TODO: Improve target selection (CD Based)
-  if ( non_sleeping_players.size() > 1 && !sim->single_actor_batch )
+  if ( non_sleeping_players_no_unbound_surge.size() > 0 )
   {
-    p = non_sleeping_players[ rng().range( non_sleeping_players.size() ) ];
+    p = non_sleeping_players_no_unbound_surge[ rng().range( non_sleeping_players_no_unbound_surge.size() ) ];
   }
-    
-  if ( option.naszuro_bounce_destroy_solo && non_sleeping_players.size() == 1 )
+  else if ( non_sleeping_players_unbound_surge.size() > 0 )
+  {
+    p = non_sleeping_players_unbound_surge[ rng().range( non_sleeping_players_unbound_surge.size() ) ];
+  }
+
+  if ( option.naszuro_bounce_destroy_solo &&
+       ( non_sleeping_players_no_unbound_surge.size() + non_sleeping_players_unbound_surge.size() ) == 1 )
     return;
 
   get_target_data( p )->buffs.unbound_surge->trigger( remains );
