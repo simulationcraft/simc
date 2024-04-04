@@ -13,11 +13,11 @@ neck=terross_captive_core,id=195502,bonus_id=8782,ilevel=528,gem_id=192964/19296
 shoulders=amice_of_the_sinister_savant,id=217214,ilevel=528
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498,ilevel=535
 chest=cursed_robes_of_the_sinister_savant,id=217215,ilevel=528,enchant_id=6625
-wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9500/9405/9379/8960/523/8793,ilevel=525,gem_id=192964,crafted_stats=40/49
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9500/9405/9379/8960/523/8793,ilevel=522,gem_id=192964,crafted_stats=40/49
 hands=grips_of_the_sinister_savant,id=217211,ilevel=528
 waist=magathas_spiritual_sash,id=195515,bonus_id=1808,ilevel=528,gem_id=192964,enchant_id=6904
 legs=leggings_of_the_sinister_savant,id=217213,ilevel=528,enchant_id=6830
-feet=vibrant_wildercloth_slippers,id=193519,bonus_id=8932/8960/8793,ilevel=525
+feet=vibrant_wildercloth_slippers,id=193519,bonus_id=8932/8960/8793,ilevel=522
 finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498/523,ilevel=535,gem_id=192964,enchant_id=6550
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=1808,ilevel=528,gem_id=192964,enchant_id=6550
 trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498,ilevel=528
