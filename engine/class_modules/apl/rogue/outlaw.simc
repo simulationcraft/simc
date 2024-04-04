@@ -33,6 +33,8 @@ actions+=/variable,name=ambush_condition,value=(talent.hidden_opportunity|combo_
 actions+=/variable,name=finish_condition,value=effective_combo_points>=cp_max_spend-1-(stealthed.all&talent.crackshot)
 # With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry
 actions+=/variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.remains>gcd
+# Variable to use certain off-gcd actions at least halfway through the gcd instead of instantly, which is more realistic
+actions+=/variable,name=halfway_through_gcd,value=gcd.remains<=0.5-(buff.adrenaline_rush.up*0.1)
 actions+=/call_action_list,name=cds
 # High priority stealth list, will fall through if no conditions are met
 actions+=/call_action_list,name=stealth,if=stealthed.all
@@ -85,9 +87,10 @@ actions.cds+=/berserking
 actions.cds+=/fireblood
 actions.cds+=/ancestral_call
 # Default conditions for usable items.
-actions.cds+=/use_item,name=manic_grieftorch,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!stealthed.all&buff.between_the_eyes.up|fight_remains<=5
-actions.cds+=/use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=(!trinket.1.is.dragonfire_bomb_dispenser&trinket.1.cooldown.remains>10|trinket.2.cooldown.remains>10)|cooldown.dragonfire_bomb_dispenser.charges>2|fight_remains<20|!trinket.2.has_cooldown|!trinket.1.has_cooldown
-actions.cds+=/use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!stealthed.all&buff.between_the_eyes.up|fight_remains<=5
+actions.cds+=/use_item,name=manic_grieftorch,use_off_gcd=1,if=variable.halfway_through_gcd&(!stealthed.all&buff.between_the_eyes.up|fight_remains<=5)
+# Use Bomb Dispenser on cooldown, but hold if 2nd trinket is nearly off cooldown, unless at max charges or sim duration ends soon
+actions.cds+=/use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=variable.halfway_through_gcd&((!trinket.1.is.dragonfire_bomb_dispenser&trinket.1.cooldown.remains>10|trinket.2.cooldown.remains>10)|cooldown.dragonfire_bomb_dispenser.charges>2|fight_remains<20|!trinket.2.has_cooldown|!trinket.1.has_cooldown)
+actions.cds+=/use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=variable.halfway_through_gcd&(!stealthed.all&buff.between_the_eyes.up|fight_remains<=5)
 actions.cds+=/use_item,name=stormeaters_boon,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|fight_remains<10
 actions.cds+=/use_item,name=windscar_whetstone,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|fight_remains<7
 actions.cds+=/use_items,slots=trinket1,if=buff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20
