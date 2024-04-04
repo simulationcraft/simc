@@ -2112,15 +2112,19 @@ public:
 
       parse_effects( p->mastery.razor_claws );
 
-      if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount && !p->buff.b_inc_cat->is_fallback )
+      if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount )
       {
         energize_idx = find_effect_index( this, E_ENERGIZE, A_MAX, POWER_COMBO_POINT );
-        const auto& eff = p->spec.berserk_cat->effectN( 2 );
-        add_parse_entry( modified_effect_vec( energize_idx ) )
-            .set_buff( p->buff.b_inc_cat )
-            .set_flat( true )
-            .set_value( eff.base_value() )
-            .set_eff( &eff );
+
+        if ( !p->buff.b_inc_cat->is_fallback )
+        {
+          const auto& eff = p->spec.berserk_cat->effectN( 2 );
+          add_parse_entry( modified_effect_vec( energize_idx ) )
+              .set_buff( p->buff.b_inc_cat )
+              .set_flat( true )
+              .set_value( eff.base_value() )
+              .set_eff( &eff );
+        }
       }
     }
   }
