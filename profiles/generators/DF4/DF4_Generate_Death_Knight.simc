@@ -92,11 +92,11 @@ spec=unholy
 talents=BwPAAAAAAAAAAAAAAAAAAAAAAAAIIJRiIRESSECJJJRAAAAAAAAAgSSSgIJAASSINRSSikA
 
 head=piercing_gaze_of_the_risen_nightmare,id=217223,bonus_id=10359/1491/10884/6935,gem_id=192988,enchant=incandescent_essence
-neck=torc_of_passed_time,id=201759,bonus_id=10249/1508/8932/8960/8782,gem_id=192964/192964/192964,crafted_stats=32/36
+neck=torc_of_passed_time,id=201759,bonus_id=10249/1511/8932/8960/8782,gem_id=192964/192964/192964,crafted_stats=32/36
 shoulders=skewers_of_the_risen_nightmare,id=217225,bonus_id=10359/1491/10884
 back=voice_of_the_silent_star,id=204465,bonus_id=10359/1498/10884
 chest=breastplate_of_soaring_terror,id=193753,bonus_id=10359/1491/10884,enchant=waking_stats_3
-wrists=primal_molten_vambraces,id=190502,bonus_id=10249/1508/8932/6935/8960,gem_id=192964,crafted_stats=36/40
+wrists=primal_molten_vambraces,id=190502,bonus_id=10249/1511/8932/6935/8960,gem_id=192964,crafted_stats=36/40
 hands=thorns_of_the_risen_nightmare,id=217222,bonus_id=10359/1491/10884
 waist=recycled_golemskin_waistguard,id=204400,bonus_id=10359/1491/10884/6935,gem_id=192964,enchant=shadowed_belt_clasp_3
 legs=greaves_of_the_risen_nightmare,id=217224,bonus_id=10359/1491/10884,enchant=lambent_armor_kit_3

@@ -166,11 +166,11 @@ actions.variables+=/variable,name=adds_remain,op=setif,value=1,value_else=0,cond
 actions.variables+=/variable,name=spend_rp,op=setif,value=1,value_else=0,condition=(!talent.rotten_touch|talent.rotten_touch&!debuff.rotten_touch.up|runic_power.deficit<20)&(!set_bonus.tier31_4pc|set_bonus.tier31_4pc&!(pet.apoc_magus.active|pet.army_magus.active)|runic_power.deficit<20|rune<3)&((talent.improved_death_coil&(active_enemies=2|talent.coil_of_devastation)|rune<3|pet.gargoyle.active|buff.sudden_doom.react|cooldown.apocalypse.remains<10&debuff.festering_wound.stack>3|!variable.pop_wounds&debuff.festering_wound.stack>=4))
 
 head=piercing_gaze_of_the_risen_nightmare,id=217223,bonus_id=10359/1491/10884/6935,gem_id=192988,enchant=incandescent_essence
-neck=torc_of_passed_time,id=201759,bonus_id=10249/1508/8932/8960/8782,gem_id=192964/192964/192964,crafted_stats=32/36
+neck=torc_of_passed_time,id=201759,bonus_id=10249/1511/8932/8960/8782,gem_id=192964/192964/192964,crafted_stats=32/36
 shoulders=skewers_of_the_risen_nightmare,id=217225,bonus_id=10359/1491/10884
 back=voice_of_the_silent_star,id=204465,bonus_id=10359/1498/10884
 chest=breastplate_of_soaring_terror,id=193753,bonus_id=10359/1491/10884,enchant=waking_stats_3
-wrists=primal_molten_vambraces,id=190502,bonus_id=10249/1508/8932/6935/8960,gem_id=192964,crafted_stats=36/40
+wrists=primal_molten_vambraces,id=190502,bonus_id=10249/1511/8932/6935/8960,gem_id=192964,crafted_stats=36/40
 hands=thorns_of_the_risen_nightmare,id=217222,bonus_id=10359/1491/10884
 waist=recycled_golemskin_waistguard,id=204400,bonus_id=10359/1491/10884/6935,gem_id=192964,enchant=shadowed_belt_clasp_3
 legs=greaves_of_the_risen_nightmare,id=217224,bonus_id=10359/1491/10884,enchant=lambent_armor_kit_3
@@ -182,13 +182,13 @@ trinket2=whispering_incarnate_icon,id=194301,bonus_id=10359/1491/10884
 main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1507/10884,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=528.13
-# gear_strength=13932
-# gear_stamina=58773
-# gear_crit_rating=2823
-# gear_haste_rating=6518
+# gear_ilvl=528.53
+# gear_strength=13952
+# gear_stamina=59011
+# gear_crit_rating=2836
+# gear_haste_rating=6534
 # gear_mastery_rating=5167
-# gear_versatility_rating=2820
-# gear_armor=15415
+# gear_versatility_rating=2823
+# gear_armor=15445
 # set_bonus=dragonflight_season_4_2pc=1
 # set_bonus=dragonflight_season_4_4pc=1
