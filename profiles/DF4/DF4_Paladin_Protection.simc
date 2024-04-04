@@ -1,8 +1,8 @@
-paladin="T30_Paladin_Protection"
+paladin="DF4_Paladin_Protection"
 source=default
 spec=protection
 level=70
-race=tauren
+race=human
 role=tank
 position=front
 talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKkCSSiWTSiESIBAAIAAAAAAAASEJNBSQSKCJJAACIAEIAB
@@ -75,31 +75,32 @@ actions.standard+=/consecration,if=!buff.sanctification_empower.up
 actions.trinkets=use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)
 actions.trinkets+=/use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)
 
-head=heartfire_sentinels_forgehelm,id=202452,bonus_id=4800/4786/1504/8780,gem_id=192945
-neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/8960/8783/8782/8802/8790/8846/1501,gem_id=192985/192945/192945,crafted_stats=32/49
-shoulders=heartfire_sentinels_steelwings,id=202450,bonus_id=4800/4786/1507
-back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
-chest=breastplate_of_arterial_protection,id=206197,bonus_id=4800/4786/1669,enchant=waking_stats_3
-wrists=bonds_of_desperate_ascension,id=204390,bonus_id=6652/7981/8095/1498/8780/4786,gem_id=192945
-hands=heartfire_sentinels_protectors,id=202453,bonus_id=7981/6652/8829/1501/8767
-waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/8780/8802/8846/1501,gem_id=192945
-legs=heartfire_sentinels_faulds,id=202451,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
-feet=primal_molten_sabatons,id=190496,bonus_id=8836/8840/8902/9405/8790/9379/8960/9366/1495,crafted_stats=36/32
-finger1=onyx_impostors_birthright,id=204398,bonus_id=6652/7981/1498/8767/8780,gem_id=192945,enchant=devotion_of_haste_3
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/7981/1498/8767/8780,gem_id=192945,enchant=devotion_of_haste_3
-trinket1=elementium_pocket_anvil,id=202617,bonus_id=9410/9380/6652/1498/8767
-trinket2=beacon_to_the_beyond,id=203963,bonus_id=6652/9324/7979/1498/8767
-main_hand=forgestorm,id=193785,bonus_id=4800/4786/1669,enchant=shadowflame_wreathe_3
-off_hand=calamitys_herald,id=202558,bonus_id=6652/7981/1498/8767
+head=heartfire_sentinels_forgehelm,id=217198,bonus_id=1520/6935/7187/8767,gem_id=192935,enchant=incandescent_essence
+neck=kagnis_scorching_talisman,id=202618,bonus_id=1520/5910/7187/8767/8782,gem_id=192985/192935/192935
+shoulders=heartfire_sentinels_steelwings,id=217200,bonus_id=1520/7187/8767
+back=voice_of_the_silent_star,id=204465,bonus_id=5949/7187/8767,enchant=homebound_speed_3
+chest=datheas_cyclonic_cage,id=195494,bonus_id=1520/5930/7187/8767,enchant=waking_stats_3
+wrists=primal_molten_vambraces,id=190502,bonus_id=8836/8840/8902/8790/9379/8960/10249/10359/9405,gem_id=192945
+hands=heartfire_sentinels_protectors,id=217197,bonus_id=1520/7187/8767
+waist=primal_molten_greatbelt,id=190501,bonus_id=8836/8840/8902/8790/9379/8960/10249/10359/9405,gem_id=192945
+legs=heartfire_sentinels_faulds,id=217199,bonus_id=1520/7187/8767,enchant=fierce_armor_kit_3
+feet=spittleresistant_sollerets,id=204396,bonus_id=5952/7187/8767,enchant=plainsrunners_breeze_3
+finger1=emissarys_flamewrought_seal,id=201992,bonus_id=5978/6935/7187/8767,gem_id=192935,enchant=devotion_of_haste_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=5978/6935/7187/8767,gem_id=192935,enchant=devotion_of_haste_3
+trinket1=cataclysmic_signet_brand,id=207166,bonus_id=5932/7187/8767
+trinket2=elementium_pocket_anvil,id=202617,bonus_id=5958/7187/8767
+main_hand=gholak_the_final_conflagration,id=207786,bonus_id=5932/7187/8767,enchant=wafting_devotion_3
+off_hand=defender_of_the_ancient,id=207797,bonus_id=5932/7187/8767
 
 # Gear Summary
-# gear_ilvl=446.75
-# gear_strength=5892
-# gear_stamina=22186
-# gear_crit_rating=5111
-# gear_haste_rating=4978
-# gear_mastery_rating=1097
-# gear_versatility_rating=1962
-# gear_armor=12931
-# set_bonus=tier30_2pc=1
-# set_bonus=tier30_4pc=1
+# gear_ilvl=527.69
+# gear_strength=13889
+# gear_stamina=57856
+# gear_crit_rating=5351
+# gear_haste_rating=7165
+# gear_mastery_rating=563
+# gear_versatility_rating=4158
+# gear_speed_rating=375
+# gear_armor=23227
+# set_bonus=dragonflight_season_4_2pc=1
+# set_bonus=dragonflight_season_4_4pc=1
