@@ -9,17 +9,16 @@ talents=BIQAAAAAAAAAAAAAAAAAAAAAAASkEAAAAAAAAAAAAgQaEJJl4ASSSkkIIFSSSkGBiIki0CJB
 # temporary_enchant=main_hand:hissing_rune_3
 # food=feisty_fish_sticks
 
-# TODO: fix ilevel hard-coding
 head=mask_of_the_furnace_seraph,id=202542,ilevel=528,gem_id=192919,enchant_id=7052
 neck=eye_of_the_rising_flame,id=207163,ilevel=528,gem_id=192988/192919/192919
 shoulder=devotion_of_the_furnace_seraph,id=202540,ilevel=528
 back=voice_of_the_silent_star,id=204465,ilevel=535
 chest=vesture_of_the_smoldering_serpent,id=207121,ilevel=528,enchant=waking_stats_3
-wrist=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/8802/8793/8932,ilevel=522,gem_id=192919
+wrist=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/8802/8793/8932,ilevel=525,gem_id=192919
 hands=grasp_of_the_furnace_seraph,id=202543,ilevel=528
 waist=blooming_redeemers_sash,id=207124,ilevel=528,gem_id=192919
 legs=breeches_of_the_furnace_seraph,id=202541,ilevel=528,enchant=frozen_spellthread_3
-feet=vibrant_wildercloth_slippers,id=193519,bonus_id=8836/8840/8902/8802/8793/8932,ilevel=522
+feet=vibrant_wildercloth_slippers,id=193519,bonus_id=8836/8840/8902/8802/8793/8932,ilevel=525
 finger1=seal_of_filial_duty,id=195526,ilevel=535,enchant=devotion_of_mastery_3,gem_id=192919
 finger2=seal_of_diurnas_chosen,id=195480,ilevel=528,enchant=devotion_of_mastery_3,gem_id=192919
 trinket1=neltharions_call_to_suffering,id=204211,ilevel=535
