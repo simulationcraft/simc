@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.6.53989
-static const std::array<spelltext_data_t, 21047> __spelltext_data { {
+static const std::array<spelltext_data_t, 21048> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20055,6 +20055,7 @@ static const std::array<spelltext_data_t, 21047> __spelltext_data { {
   { 409096, "$@spelldesc408631", 0, 0 },
   { 409265, "Lure out magmaclaws to attach themselves to you and your surrounding party members granting up to $409269s1 Absorb Shield for $409296d. \r\nThe shield is more effective on allies that are closer to you.", 0, 0 },
   { 409267, "Essence abilities have a chance to form a mote of diverted time near you. Anyone who comes in contact with the mote gains $s1 seconds of reduced cooldown to their major ability.", 0, 0 },
+  { 409276, "$@spelldesc409267", "Major cooldown is recovering $<time> sec.", 0 },
   { 409296, "$@spelldesc409265", "Absorb $w1 damage.", 0 },
   { 409309, "Lure out a deepflayer to pounce on your target dealing $s1 Physical damage and granting you $409308s1 bonus maximum health for $409347d.", 0, 0 },
   { 409311, "Grant an ally the gift of foresight, increasing their critical strike chance by $410089s1% $?s412774[and occasionally copying their damage and healing spells at $412774s1% power ][]for $410089d.\r\n\r\nAffects the nearest ally within $s2 yds, preferring damage dealers, if you do not have an ally targeted.", 0, "Bronze" },
@@ -21054,7 +21055,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix
 } };
 
 // Spell description variables, wow build 10.2.6.53989
-static const std::array<spelldesc_vars_data_t, 449> __spelldesc_vars_data { {
+static const std::array<spelldesc_vars_data_t, 450> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -21487,6 +21488,7 @@ static const std::array<spelldesc_vars_data_t, 449> __spelldesc_vars_data { {
   {  407480, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
   {  408092, "$radiusI=${3}\r\n$radiusII=${6}\r\n$radiusIII=${9}\r\n$radiusIV=${12}" },
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
+  {  409276, "$time=${$s1/100}" },
   {  410261, "$coeff=${0.88}\r\n$dmg=${$INT*$<coeff>*(1+$@versadmg)*$pctD}" },
   {  410643, "$shield=${$SP*9*(1+$@versadmg)}" },
   {  412774, "$doses=${50}" },
