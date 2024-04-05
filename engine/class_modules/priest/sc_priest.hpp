@@ -680,7 +680,7 @@ public:
     // default, pride, anger, despair, fear (NYI), violence
     std::string forced_yshaarj_type = "default";
 
-    double twist_of_fate_heal_rppm                = 2;
+    double twist_of_fate_heal_rppm                = 0.0;
     timespan_t twist_of_fate_heal_duration_mean   = 2_s;
     timespan_t twist_of_fate_heal_duration_stddev = 0.25_s;
   } options;

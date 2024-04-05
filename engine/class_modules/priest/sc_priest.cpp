@@ -3109,7 +3109,7 @@ void priest_t::combat_begin()
                              priest->options.twist_of_fate_heal_duration_stddev, 0_s ) );
 
         double rate = priest->options.twist_of_fate_heal_rppm;
-        if ( rate > 0 )
+        if ( rate > 0.0 )
         {
           // Model the time between events with a Poisson process.
           timespan_t t = timespan_t::from_minutes( rng().exponential( 1 / rate ) );
@@ -3118,7 +3118,8 @@ void priest_t::combat_begin()
       }
     };
 
-    make_event<twist_of_fate_event_t>( *sim, this );
+    if ( options.twist_of_fate_heal_rppm )
+      make_event<twist_of_fate_event_t>( *sim, this );
   }
 }
 
