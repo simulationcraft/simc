@@ -742,6 +742,8 @@ namespace monk_apl
     serenity_lust->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&buff.serenity.remains<1.5&combo_strike&!buff.blackout_reinforcement.remains&set_bonus.tier31_2pc" );
     serenity_lust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=combo_strike&buff.teachings_of_the_monastery.stack=3&buff.teachings_of_the_monastery.remains<1" );
     serenity_lust->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_chiji.up&!buff.blackout_reinforcement.up&set_bonus.tier31_2pc&active_enemies>2" );
+    serenity_lust->add_action( "rising_sun_kick,target_if=max:debuff.keefers_skyreach.remains,if=combo_strike&buff.kicks_of_flowing_momentum.up&active_enemies=1" );
+    serenity_lust->add_action( "fists_of_fury,target_if=max:debuff.keefers_skyreach.remains,if=debuff.skyreach_exhaustion.remains>55&set_bonus.tier29_4pc&active_enemies=1,interrupt=1" );
     serenity_lust->add_action( "strike_of_the_windlord,target_if=max:debuff.keefers_skyreach.remains,if=talent.thunderfist" );
     serenity_lust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=combo_strike&buff.blackout_reinforcement.up&active_enemies>2" );
     serenity_lust->add_action( "rising_sun_kick,target_if=max:debuff.keefers_skyreach.remains,if=combo_strike&(active_enemies<3|!set_bonus.tier31_2pc)" );
