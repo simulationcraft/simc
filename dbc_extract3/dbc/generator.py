@@ -2325,6 +2325,7 @@ class SpellDataGenerator(DataGenerator):
           ( 360828, 3 ), # Blistering Scales
           ( 410265, 3 ), # Inferno's Blessing
           ( 424368, 3 ), # T31 4pc Buff Trembling Earth
+          ( 409276, 3 ), # Motes of Possibility Buff
        ),
     ]
 
