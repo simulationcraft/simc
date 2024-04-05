@@ -33,8 +33,8 @@ actions+=/variable,name=ambush_condition,value=(talent.hidden_opportunity|combo_
 actions+=/variable,name=finish_condition,value=effective_combo_points>=cp_max_spend-1-(stealthed.all&talent.crackshot)
 # With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry
 actions+=/variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.remains>gcd
-# Variable to use certain off-gcd actions at least halfway through the gcd instead of instantly, which is more realistic
-actions+=/variable,name=halfway_through_gcd,value=gcd.remains<=0.5-(buff.adrenaline_rush.up*0.1)
+# Variable to use certain off-gcd actions at least halfway through the gcd instead of instantly
+actions+=/variable,name=halfway_through_gcd,value=gcd.remains<=action.sinister_strike.gcd%2
 actions+=/call_action_list,name=cds
 # High priority stealth list, will fall through if no conditions are met
 actions+=/call_action_list,name=stealth,if=stealthed.all
