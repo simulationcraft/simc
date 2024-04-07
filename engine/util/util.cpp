@@ -1237,6 +1237,7 @@ item_subclass_armor util::matching_armor_type( player_e ptype )
     case WARRIOR:
     case PALADIN:
     case DEATH_KNIGHT:
+    case PLAYER_SIMPLIFIED:
       return ITEM_SUBCLASS_ARMOR_PLATE;
     case HUNTER:
     case SHAMAN:
