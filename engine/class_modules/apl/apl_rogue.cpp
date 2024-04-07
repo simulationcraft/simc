@@ -233,9 +233,9 @@ void outlaw( player_t* p )
   cds->add_action( "berserking" );
   cds->add_action( "fireblood" );
   cds->add_action( "ancestral_call" );
-  cds->add_action( "use_item,name=manic_grieftorch,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!stealthed.all&buff.between_the_eyes.up|fight_remains<=5", "Default conditions for usable items." );
-  cds->add_action( "use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=(!trinket.1.is.dragonfire_bomb_dispenser&trinket.1.cooldown.remains>10|trinket.2.cooldown.remains>10)|cooldown.dragonfire_bomb_dispenser.charges>2|fight_remains<20|!trinket.2.has_cooldown|!trinket.1.has_cooldown" );
-  cds->add_action( "use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!stealthed.all&buff.between_the_eyes.up|fight_remains<=5" );
+  cds->add_action( "use_item,name=manic_grieftorch,use_off_gcd=1,if=gcd.remains<=action.sinister_strike.gcd%2&(!stealthed.all&buff.between_the_eyes.up|fight_remains<=5)", "Default conditions for usable items." );
+  cds->add_action( "use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=gcd.remains<=action.sinister_strike.gcd%2&((!trinket.1.is.dragonfire_bomb_dispenser&trinket.1.cooldown.remains>10|trinket.2.cooldown.remains>10)|cooldown.dragonfire_bomb_dispenser.charges>2|fight_remains<20|!trinket.2.has_cooldown|!trinket.1.has_cooldown)", "Use Bomb Dispenser on cooldown, but hold if 2nd trinket is nearly off cooldown, unless at max charges or sim duration ends soon" );
+  cds->add_action( "use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=gcd.remains<=action.sinister_strike.gcd%2&(!stealthed.all&buff.between_the_eyes.up|fight_remains<=5)" );
   cds->add_action( "use_item,name=stormeaters_boon,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|fight_remains<10" );
   cds->add_action( "use_item,name=windscar_whetstone,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|fight_remains<7" );
   cds->add_action( "use_items,slots=trinket1,if=buff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20" );

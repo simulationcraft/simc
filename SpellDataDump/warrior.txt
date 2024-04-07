@@ -2350,7 +2350,7 @@ Spell Level      : 32
 Duration         : 20 seconds
 Cooldown         : 90 seconds
 Labels           : 771: Strive for Perfection (296320 effect#9), Immovable Object (394314 effect#1), Immovable Object (394314 effect#2), Immovable Object (394314 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unstoppable Force (275336 effects: #1, #2), Unnerving Focus (337155 effect#6), Outburst (364639 effects: #1, #2), Unnerving Focus (384043 effect#3), Spiteful Serenity (400314 effects: #1, #2, #3, #4)
 Family Flags     : 8, 32
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x....x x....... ........ 
@@ -3293,7 +3293,7 @@ Velocity         : 30 yards/sec
 Duration         : 12 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 45 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
 Affecting spells : Warrior (137047 effect#2), Storm of Steel (382953 effects: #1, #3), Dance of Death (393966 effects: #1, #2)
 Family Flags     : 8, 107
 Attributes       : ....x... ........ x....... .......x   ........ ........ ........ ....x... 
@@ -17435,7 +17435,7 @@ Spell Level      : 32
 Duration         : 20 seconds
 Cooldown         : 90 seconds
 Labels           : 771: Strive for Perfection (296320 effect#9), Immovable Object (394314 effect#1), Immovable Object (394314 effect#2), Immovable Object (394314 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unstoppable Force (275336 effects: #1, #2), Unnerving Focus (337155 effect#6), Outburst (364639 effects: #1, #2), Unnerving Focus (384043 effect#3), Spiteful Serenity (400314 effects: #1, #2, #3, #4)
 Family Flags     : 8, 32
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x....x x....... ........ 
