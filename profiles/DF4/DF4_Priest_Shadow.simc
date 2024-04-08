@@ -10,7 +10,7 @@ talents=BIQAAAAAAAAAAAAAAAAAAAAAAASkEAAAAAAAAAAAAgQaEJJl4ASSSkkIIFSSSkGBiIki0CJB
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
 flask=iced_phial_of_corrupting_rage_3
-food=fated_fortune_cookie
+food=aromatic_seafood_platter
 augmentation=draconic_augment_rune
 temporary_enchant=main_hand:howling_rune_3
 
@@ -190,7 +190,7 @@ actions.trinkets+=/use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=gcd.remai
 actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60)|fight_remains<20
 actions.trinkets+=/use_item,name=desperate_invokers_codex,if=equipped.desperate_invokers_codex
 
-head=mask_of_the_furnace_seraph,id=202542,ilevel=528,gem_id=192919,enchant_id=7052
+head=mask_of_the_furnace_seraph,id=202542,ilevel=528,gem_id=192919,enchant=incandescent_essence
 neck=eye_of_the_rising_flame,id=207163,ilevel=528,gem_id=192988/192919/192919
 shoulders=devotion_of_the_furnace_seraph,id=202540,ilevel=528
 back=voice_of_the_silent_star,id=204465,ilevel=535
@@ -198,23 +198,23 @@ chest=vesture_of_the_smoldering_serpent,id=207121,ilevel=528,enchant=waking_stat
 wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/8802/8793/8932,ilevel=525,gem_id=192919
 hands=grasp_of_the_furnace_seraph,id=202543,ilevel=528
 waist=blooming_redeemers_sash,id=207124,ilevel=528,gem_id=192919
-legs=breeches_of_the_furnace_seraph,id=202541,ilevel=528,enchant=frozen_spellthread_3
+legs=breeches_of_the_furnace_seraph,id=202541,ilevel=528,enchant=lambent_armor_kit_3
 feet=vibrant_wildercloth_slippers,id=193519,bonus_id=8836/8840/8902/8802/8793/8932,ilevel=525
 finger1=seal_of_filial_duty,id=195526,ilevel=535,gem_id=192919,enchant=devotion_of_mastery_3
 finger2=seal_of_diurnas_chosen,id=195480,ilevel=528,gem_id=192919,enchant=devotion_of_mastery_3
 trinket1=neltharions_call_to_suffering,id=204211,ilevel=535
 trinket2=whispering_incarnate_icon,id=194301,ilevel=528
 main_hand=vakash_the_shadowed_inferno,id=207788,ilevel=528,enchant=wafting_devotion_3
-off_hand=tricksters_captivating_chime,id=207796,ilevel=528
+off_hand=scripture_of_primal_devotion,id=195513,ilevel=528
 
 # Gear Summary
 # gear_ilvl=528.94
-# gear_stamina=58443
-# gear_intellect=17304
+# gear_stamina=58312
+# gear_intellect=17282
 # gear_crit_rating=2679
-# gear_haste_rating=5849
-# gear_mastery_rating=6564
-# gear_versatility_rating=3084
+# gear_haste_rating=6058
+# gear_mastery_rating=6172
+# gear_versatility_rating=3308
 # gear_armor=4424
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1
