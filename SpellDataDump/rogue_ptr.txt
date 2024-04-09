@@ -1135,7 +1135,7 @@ Spell Type       : Melee
 Spell Level      : 42
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
 Affecting spells : Celerity (340087 effect#1)
 Family Flags     : 39
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
@@ -2989,7 +2989,7 @@ Spell Type       : None
 Spell Level      : 42
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
 Proc Chance      : 100%
 Proc Flags       : ..x.x... x...x... x.x..... ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -11596,7 +11596,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 16 seconds
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
 Mechanic         : Bleed
 Affecting spells : Nightstalker (130493 effect#1), Acrobatic Strikes (196924 effect#1), Shiv (319504 effect#3), Septic Wounds (394845 effect#1), Sudden Demise (423136 effect#1), Natureblight (426568 effects: #2, #3)
 Family Flags     : 59
