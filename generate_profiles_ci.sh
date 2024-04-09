@@ -24,7 +24,7 @@ do
     continue
   fi
   cd $PROFDIR/
-  ${SIMC} '../generators/'$season'/'$season'_Generate.simc'
+  ${SIMC_CLI_PATH} '../generators/'$season'/'$season'_Generate.simc'
   cd ../
 done
 for tier in 29 30 31
