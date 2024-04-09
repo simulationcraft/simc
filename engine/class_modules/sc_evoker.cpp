@@ -218,6 +218,8 @@ struct simplified_player_t : public player_t
 
     double flat_damage_per_hit;
 
+    double scaling_factor;
+
     std::vector<bob_buff_t> buffs;
   };
 
@@ -230,25 +232,25 @@ struct simplified_player_t : public player_t
 
   
   std::map<std::string, bob_settings_t> bob_settings = {
-      { "default", { ROLE_SPELL, 7,    true, 1.5_s, 0.40,  -1, 8, 1, 14100.0, {} } },  // 250.9k
-      { "tank",    { ROLE_TANK,  4.16, true, 1.5_s, 0.45,  -1, 8, 1, 14100.0, {} } },  // 157.4k
-      { "healer",  { ROLE_HEAL,  1.8,  true, 1.5_s, 0.25,  -1, 5, 1, 14100.0, {} } },  // 78k
-      { "shadow",  { ROLE_SPELL, 5,    true, 1.5_s, 0.45,  -1, 8, 1, 14100.0, {        // 244.8k
+      { "default", { ROLE_SPELL, 7,    true, 1.5_s, 0.40,  -1, 8, 1, 14100.0, 0, {} } },  // 250.9k
+      { "tank",    { ROLE_TANK,  4.16, true, 1.5_s, 0.45,  -1, 8, 1, 14100.0, 0, {} } },  // 157.4k
+      { "healer",  { ROLE_HEAL,  1.8,  true, 1.5_s, 0.25,  -1, 5, 1, 14100.0, 0, {} } },  // 78k
+      { "shadow",  { ROLE_SPELL, 5,    true, 1.5_s, 0.45,  -1, 8, 1, 14100.0, 0.0011, {   // 244.8k
           { "two_mins_cds", 0.6, 20_s, 120_s, 3_s },
           { "one_mins_cds", 0.5, 20_s,  60_s, 3_s } } } },
-      { "bm",      { ROLE_SPELL, 5.6,  true, 1.5_s, 0.4,  -1, 8, 1, 8400.0, {          // 243.5k
+      { "bm",      { ROLE_SPELL, 5.6,  true, 1.5_s, 0.4,  -1, 8, 1, 8400.0, 0, {          // 243.5k
           { "two_mins_cds", 0.5,  20_s, 120_s, 3_s },
           { "30s_cds",      0.25, 15_s,  30_s, 3_s } } } },
-      { "assa",    { ROLE_SPELL, 2.33, false, 1_s, 0.5,  -1, 8, 1, 11100.0, {          // 234.6k
+      { "assa",    { ROLE_SPELL, 2.33, false, 1_s, 0.5,  -1, 8, 1, 11100.0, 0, {          // 234.6k
           { "ten_mins_cds", 0.2,  40_s, 600_s },
           { "two_mins_cds", 1.25, 20_s, 120_s, 6_s },
           { "one_mins_cds", 1.1,  14_s,  60_s, 7_s } } } },
-      { "unh",     { ROLE_SPELL, 2.73, true, 1.5_s, 0.4,  -1, 8, 1, 22500.0, {         // 251.4k
+      { "unh",     { ROLE_SPELL, 2.73, true, 1.5_s, 0.4,  -1, 8, 1, 22500.0, 0, {         // 251.4k
           { "three_mins_cds", 1.2,  29_s, 180_s, 6_s },
           { "90s_cds", 0.25, 20_s, 90_s, 7_s },
           { "45s_cds", 1.4,  20_s,  45_s ,8_s } } } },
       // Could probably use some RNG in the 40s cds to better emulate the 30-40s variance in use timing
-      { "dk_frost",{ ROLE_SPELL, 6.47, true, 1.5_s, 0.4,  -1, 8, 1, 13900.0, {         // 262.4k
+      { "dk_frost",{ ROLE_SPELL, 6.47, true, 1.5_s, 0.4,  -1, 8, 1, 13900.0, 0, {         // 262.4k
           { "two_mins_cds", 0.2,  20_s, 120_s, 3_s },
           { "40s_cds", 0.25, 12_s, 34_s, 3_s } } } },
   };
@@ -364,7 +366,9 @@ struct simplified_player_t : public player_t
 
     void set_action_stats( bob_settings_t settings, simplified_player_t* p )
     {
-      spell_power_mod.direct = settings.sp_coeff;
+      double scaling_factor = pow( 1 + settings.scaling_factor, ( p->option.item_level - 489 ) );
+
+      spell_power_mod.direct = settings.sp_coeff * scaling_factor;
       gcd_type               = settings.hasted_gcds ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
       base_execute_time      = settings.gcd_time;
       
