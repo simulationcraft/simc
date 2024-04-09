@@ -7802,23 +7802,29 @@ void umbrelskuls_fractured_heart_new( special_effect_t& effect )
       if ( !counter->check() )
         return nullptr;
 
+      if ( d->target->is_boss() )
+        return nullptr;
+
       if ( d->target->health_percentage() > hp_pct )
         return nullptr;
 
       // TODO: determine maximum jump distance, if any
       target_cache.is_valid = false;
-      auto tl = target_list();  // make a copy
+      const auto& tl = target_list();
+      if ( tl.size() <= 1 )
+        return nullptr;  // need at least 2 targets to jump
 
-      range::erase_remove( tl, [ tar = d->target ]( player_t* t ) { return t == tar || t->is_boss(); } );
+      auto tmp_tl = tl;  // make a copy
+      range::erase_remove( tmp_tl, [ tar = d->target ]( player_t* t ) { return t == tar; } );
 
-      if ( tl.empty() )
+      if ( tmp_tl.empty() )
         return nullptr;
 
       // TODO: determine if it can jump to a dotted enemy
-      if ( tl.size() > 1 )
-        rng().shuffle( tl.begin(), tl.end() );
+      if ( tmp_tl.size() > 1 )
+        rng().shuffle( tmp_tl.begin(), tmp_tl.end() );
 
-      return tl.front();
+      return tmp_tl.front();
     }
   };
 
