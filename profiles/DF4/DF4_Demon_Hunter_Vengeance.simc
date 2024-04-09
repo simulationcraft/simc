@@ -138,14 +138,14 @@ main_hand=thorncaller_claw,id=207784,bonus_id=10359/1491,enchant=sophic_devotion
 off_hand=stormslash,id=193688,bonus_id=10359/1491,enchant=wafting_devotion_3
 
 # Gear Summary
-# gear_ilvl=528.44
-# gear_agility=12364
-# gear_stamina=58283
-# gear_crit_rating=9587
-# gear_haste_rating=4811
-# gear_mastery_rating=851
-# gear_versatility_rating=2878
-# gear_armor=7260
+# gear_ilvl=531.44
+# gear_agility=12704
+# gear_stamina=60400
+# gear_crit_rating=9679
+# gear_haste_rating=4856
+# gear_mastery_rating=859
+# gear_versatility_rating=2909
+# gear_armor=7436
 # gear_bonus_armor=141
 # set_bonus=dragonflight_season_4_2pc=1
 # set_bonus=dragonflight_season_4_4pc=1
