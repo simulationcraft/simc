@@ -853,7 +853,7 @@ public:
   bool is_player() const { return type > PLAYER_NONE && type < PLAYER_PET; }
   bool is_pet() const { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD || type == ENEMY_ADD_BOSS; }
   bool is_enemy() const { return _is_enemy( type ); }
-  bool is_boss() const { return type == ENEMY || type == ENEMY_ADD_BOSS; }
+  bool is_boss() const { return type == ENEMY || type == ENEMY_ADD_BOSS || type == TANK_DUMMY; }
   bool is_add() const { return type == ENEMY_ADD || type == ENEMY_ADD_BOSS; }
   bool is_sleeping() const { return _is_sleeping( this ); }
   bool is_my_pet( const player_t* t ) const;
