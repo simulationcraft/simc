@@ -914,7 +914,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
 Proc Chance      : 100%
 Stance Mask      : 0x01000000
 Proc Flags       : ....x... x...x.x. x.x..... ........   ........ ........ ........ ........   
@@ -1369,7 +1369,7 @@ Spell Type       : Magic
 Spell Level      : 29
 Duration         : 12 seconds
 Cooldown         : 60 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
 Proc Chance      : 101%
 Stance Mask      : 0x01000000
 Proc Flags       : ....x... ..x.x.x. x.x..x.. ........   ........ ........ ........ ........   
@@ -1741,7 +1741,7 @@ Spell Type       : None
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Category         : 1641
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
                  : 1284: Symbol of Hope (265144 effect#2)
 Stance Mask      : 0x01000000
 Affecting spells : Improved Vampiric Blood (317133 effects: #1, #2, #3), Vampiric Aura (334547 effects: #2, #3)
@@ -8298,7 +8298,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
 Stance Mask      : 0x01000000
 Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #7, #8), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), Army of the Damned (276837 effect#3), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2)
 Family Flags     : 43, 56, 78, 127
