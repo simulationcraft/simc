@@ -221,34 +221,40 @@ struct simplified_player_t : public player_t
     std::vector<bob_buff_t> buffs;
   };
 
-  std::string variant;
+  // Options
+  struct options_t
+  {
+    int item_level = 489;
+    std::string variant = "default";
+  } option;
+
   
   std::map<std::string, bob_settings_t> bob_settings = {
-      { "default", { ROLE_SPELL, 7.4,  true, 1.5_s, 0.40,  -1, 8, 1, 14100.0, {} } }, // 251.2k
-      { "tank",    { ROLE_TANK,  4.4,  true, 1.5_s, 0.45,  -1, 8, 1, 14100.0, {} } }, // 156.9k
-      { "healer",  { ROLE_HEAL,  1.9,  true, 1.5_s, 0.25,  -1, 5, 1, 14100.0, {} } }, // 78.3k
-      { "shadow",  { ROLE_SPELL, 5.27, true, 1.5_s, 0.45,  -1, 8, 1, 14100.0, {       // 244.8k
+      { "default", { ROLE_SPELL, 7,    true, 1.5_s, 0.40,  -1, 8, 1, 14100.0, {} } },  // 250.9k
+      { "tank",    { ROLE_TANK,  4.16, true, 1.5_s, 0.45,  -1, 8, 1, 14100.0, {} } },  // 157.4k
+      { "healer",  { ROLE_HEAL,  1.8,  true, 1.5_s, 0.25,  -1, 5, 1, 14100.0, {} } },  // 78k
+      { "shadow",  { ROLE_SPELL, 5,    true, 1.5_s, 0.45,  -1, 8, 1, 14100.0, {        // 244.8k
           { "two_mins_cds", 0.6, 20_s, 120_s, 3_s },
           { "one_mins_cds", 0.5, 20_s,  60_s, 3_s } } } },
-      { "bm",      { ROLE_SPELL, 5.92, true, 1.5_s, 0.4,  -1, 8, 1, 8400.0, {         // 243.5k
+      { "bm",      { ROLE_SPELL, 5.6,  true, 1.5_s, 0.4,  -1, 8, 1, 8400.0, {          // 243.5k
           { "two_mins_cds", 0.5,  20_s, 120_s, 3_s },
           { "30s_cds",      0.25, 15_s,  30_s, 3_s } } } },
-      { "assa",    { ROLE_SPELL, 2.47, false, 1_s, 0.5,  -1, 8, 1, 11100.0, {         // 233.6k
+      { "assa",    { ROLE_SPELL, 2.33, false, 1_s, 0.5,  -1, 8, 1, 11100.0, {          // 234.6k
           { "ten_mins_cds", 0.2,  40_s, 600_s },
           { "two_mins_cds", 1.25, 20_s, 120_s, 6_s },
           { "one_mins_cds", 1.1,  14_s,  60_s, 7_s } } } },
-      { "unh",     { ROLE_SPELL, 2.935, true, 1.5_s, 0.4,  -1, 8, 1, 22500.0, {       // 251.5k
+      { "unh",     { ROLE_SPELL, 2.73, true, 1.5_s, 0.4,  -1, 8, 1, 22500.0, {         // 251.4k
           { "three_mins_cds", 1.2,  29_s, 180_s, 6_s },
           { "90s_cds", 0.25, 20_s, 90_s, 7_s },
           { "45s_cds", 1.4,  20_s,  45_s ,8_s } } } },
       // Could probably use some RNG in the 40s cds to better emulate the 30-40s variance in use timing
-      { "dk_frost",{ ROLE_SPELL, 6.83, true, 1.5_s, 0.4,  -1, 8, 1, 13900.0, {        // 262k
+      { "dk_frost",{ ROLE_SPELL, 6.47, true, 1.5_s, 0.4,  -1, 8, 1, 13900.0, {         // 262.4k
           { "two_mins_cds", 0.2,  20_s, 120_s, 3_s },
           { "40s_cds", 0.25, 12_s, 34_s, 3_s } } } },
   };
 
   simplified_player_t( sim_t* sim, std::string_view name, race_e r = RACE_HUMAN )
-    : player_t( sim, PLAYER_SIMPLIFIED, name, r ), damage_buffs(), variant( "default" )
+    : player_t( sim, PLAYER_SIMPLIFIED, name, r ), damage_buffs()
   {
     resource_regeneration = regen_type::DISABLED;
 
@@ -290,7 +296,7 @@ struct simplified_player_t : public player_t
 
   bob_settings_t& get_variant_settings()
   {
-    auto it = bob_settings.find( variant );
+    auto it = bob_settings.find( option.variant );
     if ( it != bob_settings.end() )
     {
       return it->second;
@@ -306,7 +312,6 @@ struct simplified_player_t : public player_t
     role = get_variant_settings().role;
   }
 
-
   void init_defence()
   {
     player_t::init_defense();
@@ -319,14 +324,14 @@ struct simplified_player_t : public player_t
   {
     struct simple_proc_t : public spell_t
     {
-      simple_proc_t( player_t* p, bob_settings_t settings ) : spell_t( "simple_proc", p )
+      simple_proc_t( simplified_player_t* p, bob_settings_t settings ) : spell_t( "simple_proc", p )
       {
         background = true;
 
         allow_class_ability_procs = false;
         may_crit                  = true;
 
-        set_action_stats( settings );
+        set_action_stats( settings, p );
       }
 
       void init() override
@@ -335,26 +340,29 @@ struct simplified_player_t : public player_t
         snapshot_flags &= ~STATE_MUL_PLAYER_DAM;
       }
 
-      void set_action_stats( bob_settings_t settings )
+      void set_action_stats( bob_settings_t settings, simplified_player_t* p )
       {
         school      = SCHOOL_MAGIC;
-        base_dd_min = base_dd_max = settings.flat_damage_per_hit;
+
+        double scaling_factor = pow( 1.15, ( p->option.item_level - 489 ) / 15.0 );
+        base_dd_min = base_dd_max = settings.flat_damage_per_hit * scaling_factor;
       }
     };
 
     action_t* damage_proc;
 
-    simple_ability_t( player_t* p, bob_settings_t settings ) : spell_t( "simple_spell", p ), damage_proc( nullptr )
+    simple_ability_t( simplified_player_t* p, bob_settings_t settings )
+      : spell_t( "simple_spell", p ), damage_proc( nullptr )
     {
       background = repeating = true;
 
       allow_class_ability_procs = true;
       may_crit                  = true;
 
-      set_action_stats( settings );
+      set_action_stats( settings, p );
     }
 
-    void set_action_stats( bob_settings_t settings )
+    void set_action_stats( bob_settings_t settings, simplified_player_t* p )
     {
       spell_power_mod.direct = settings.sp_coeff;
       gcd_type               = settings.hasted_gcds ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
@@ -369,7 +377,7 @@ struct simplified_player_t : public player_t
 
       if ( settings.flat_damage_per_hit > 0.0 )
       {
-        damage_proc = new simple_proc_t( player, settings );
+        damage_proc = new simple_proc_t( p, settings );
         add_child( damage_proc );
       }
     }
@@ -421,18 +429,54 @@ struct simplified_player_t : public player_t
 
   void init_base_stats() override
   {
+    // Become a Priest temporarily to steal its base stat initialisation.
+    type = PRIEST;
     player_t::init_base_stats();
+    type = PLAYER_SIMPLIFIED;
 
     base.spell_power_per_intellect = 1;
-    
-    base.stats.attribute[ STAT_INTELLECT ] = 15103;
-    base.stats.attribute[ STAT_STAMINA ]   = 45317;
-    
-    // 15030 Secondaries
-    base.stats.crit_rating        = 4675;
-    base.stats.haste_rating       = 4675;
-    base.stats.mastery_rating     = 4675;
-    base.stats.versatility_rating = 1005;
+  }
+
+  void init_items() override
+  {
+    int item_level = option.item_level;
+
+    std::map<slot_e, std::string> default_items = {
+        { SLOT_HEAD,      fmt::format( ",id=195476,ilevel={},gem_id=192919", item_level ) },
+        { SLOT_NECK,      fmt::format( ",id=207163,ilevel={},gem_id=192988/192919/192919", item_level ) },
+        { SLOT_SHOULDERS, fmt::format( ",id=193637,ilevel={}", item_level ) },
+        { SLOT_BACK,      fmt::format( ",id=195482,ilevel={}", item_level ) },
+        { SLOT_CHEST,     fmt::format( ",id=193801,ilevel={},enchant=waking_stats_3", item_level ) },
+        { SLOT_WRISTS,    fmt::format( ",id=193812,ilevel={},gem_id=192919", item_level ) },
+        { SLOT_HANDS,     fmt::format( ",id=193818,ilevel={}", item_level ) },
+        { SLOT_WAIST,     fmt::format( ",id=207144,ilevel={},gem_id=192919", item_level ) },
+        { SLOT_LEGS,      fmt::format( ",id=193759,ilevel={},enchant=frozen_spellthread_3", item_level ) },
+        { SLOT_FEET,      fmt::format( ",id=207139,ilevel={}", item_level ) },
+        { SLOT_FINGER_1,  fmt::format( ",id=207159,ilevel={},gem_id=192919,enchant=devotion_of_mastery_3", item_level ) },
+        { SLOT_FINGER_2,  fmt::format( ",id=204398,ilevel={},gem_id=192919,enchant=devotion_of_mastery_3", item_level ) },
+        { SLOT_TRINKET_1, fmt::format( ",id=153816,ilevel={}", item_level ) },
+        { SLOT_TRINKET_2, fmt::format( ",id=153819,ilevel={}", item_level ) },
+        { SLOT_MAIN_HAND, fmt::format( ",id=202565,ilevel={}", item_level ) },
+    };
+
+    for ( auto item : default_items )
+    {
+      if ( items[ item.first ].options_str.empty() )
+      {
+        items[ item.first ].options_str = item.second;
+        sim->print_debug( "{} setting gearslot {} string to {}", *this, util::slot_type_string( item.first ),
+                          item.second );
+      }
+      else
+      {
+        sim->print_debug( "{} already has gearslot {} string {}", *this, util::slot_type_string( item.first ),
+                          items[ item.first ].options_str );
+      }
+    }
+
+    player_t::init_items();
+
+    matching_gear = true;
   }
 
   void create_actions() override
@@ -528,7 +572,8 @@ struct simplified_player_t : public player_t
   {
     player_t::create_options();
 
-    add_option( opt_string( "variant", variant ) );
+    add_option( opt_string( "variant", option.variant ) );
+    add_option( opt_int( "item_level", option.item_level, 0, 4096 ) );
   }
 
   void arise() override
@@ -594,6 +639,7 @@ struct evoker_t : public player_t
     std::string force_clutchmates               = "";
     bool make_simplified_if_alone               = true;
     bool remove_precombat_ancient_flame         = true;
+    int simplified_actor_ilevel                 = -1;
   } option;
 
   // Action pointers
@@ -5084,7 +5130,11 @@ void evoker_t::create_pets()
     for ( auto& pair : bobs )
     {
       simplified_player_t* p = dynamic_cast<simplified_player_t*>( module->create_player( sim, pair.first ) );
-      p->variant             = pair.second;
+      p->option.variant      = pair.second;
+      if ( option.simplified_actor_ilevel >= 0 )
+      {
+        p->option.item_level = option.simplified_actor_ilevel;
+      }
     }
   }
 }
@@ -5853,6 +5903,7 @@ void evoker_t::create_options()
   add_option( opt_string( "evoker.force_clutchmates", option.force_clutchmates ) );
   add_option( opt_bool( "evoker.make_simplified_if_alone", option.make_simplified_if_alone ) );
   add_option( opt_bool( "evoker.remove_precombat_ancient_flame", option.remove_precombat_ancient_flame ) );
+  add_option( opt_int( "evoker.simplified_actor_ilevel", option.simplified_actor_ilevel, 0, 4096 ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
