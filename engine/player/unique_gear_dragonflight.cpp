@@ -7645,26 +7645,8 @@ void frozen_wellspring( special_effect_t& effect )
   auto proc = create_proc_action<generic_proc_t>( "wellsprings_frost", effect, "wellsprings_frost", 433829 );
   proc->base_dd_min = proc->base_dd_max = damage_value->effectN( 1 ).average( effect.item );
 
-  // proxy action for reporting
-  struct frozen_wellspring_proxy_t : public action_t
-  {
-    frozen_wellspring_proxy_t( const special_effect_t& e )
-      : action_t( action_e::ACTION_OTHER, "frozen_wellspring", e.player, e.driver() )
-    {
-      callbacks = false;
-    }
-
-    result_e calculate_result( action_state_t* ) const override
-    {
-      return result_e::RESULT_NONE;
-    }
-  };
-
-  auto proxy = create_proc_action<frozen_wellspring_proxy_t>( "frozen_wellspring", effect );
-  proxy->add_child( shatter );
-  proxy->add_child( proc );
-
   auto buff = create_buff<buff_t>( effect.player, effect.driver() )
+    ->set_cooldown( 0_ms )
     ->set_duration( effect.driver()->duration() - 1_ms )  // ensure buff expires before next use
     ->set_reverse( true );
 
@@ -7683,6 +7665,9 @@ void frozen_wellspring( special_effect_t& effect )
   effect.player->callbacks.register_callback_execute_function(
       proc_driver->spell_id,
       [ p = effect.player, proc, buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+        if ( !buff->check() )
+          return;
+
         proc->execute_on_target( s->target );
 
         auto td = p->get_target_data( s->target );
@@ -7692,11 +7677,38 @@ void frozen_wellspring( special_effect_t& effect )
         buff->trigger();
       } );
 
+  // proxy action for reporting
+  struct frozen_wellspring_proxy_t : public action_t
+  {
+    buff_t* buff;
+
+    frozen_wellspring_proxy_t( const special_effect_t& e, buff_t* b )
+      : action_t( action_e::ACTION_OTHER, "frozen_wellspring", e.player, e.driver() ), buff( b )
+    {
+      callbacks = false;
+    }
+
+    result_e calculate_result( action_state_t* ) const override
+    {
+      return result_e::RESULT_NONE;
+    }
+
+    void execute() override
+    {
+      action_t::execute();
+
+      buff->trigger();
+    }
+  };
+
+  auto proxy = create_proc_action<frozen_wellspring_proxy_t>( "frozen_wellspring", effect, buff );
+  proxy->add_child( shatter );
+  proxy->add_child( proc );
+
   buff->set_stack_change_callback( [ cb, proxy, shatter ]( buff_t* b, int old_, int new_ ) {
     if ( !old_ )
     {
       cb->activate();
-      proxy->execute();
     }
     else if ( !new_ )
     {
@@ -7715,7 +7727,7 @@ void frozen_wellspring( special_effect_t& effect )
     }
   } );
 
-  effect.custom_buff = buff;
+  effect.execute_action = proxy;
 }
 
 // 432699 driver
