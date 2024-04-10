@@ -910,7 +910,7 @@ void dragonfire_bomb_dispenser( special_effect_t& effect )
   auto coeff_data = effect.player->find_spell( 408667 );
 
   // AoE Explosion
-  auto explode = create_proc_action<generic_aoe_proc_t>( "dragonfire_bomb_aoe", effect, "dragonfire_bomb_aoe", 408694 );
+  auto explode = create_proc_action<generic_aoe_proc_t>( "dragonfire_bomb_aoe", effect, "dragonfire_bomb_aoe", 408694, true );
   explode->name_str_reporting = "AOE";
   explode->base_dd_min = explode->base_dd_max = coeff_data->effectN( 2 ).average( effect.item );
   effect.player->register_on_kill_callback( [ p = effect.player, explode ]( player_t* t ) {
