@@ -1,29 +1,30 @@
-# shaman="DF4_Shaman_Elemental"
-# level=70
-# race=tauren
-# role=spell
-# spec=elemental
-# talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSpUSCgDk0SShSgkkEBAAAAAoEgUSCpJpg0SSaKBIkEgA
-# # https://www.wowhead.com/talent-calc/shaman/elemental/DAQBFUFRBBBSKJBUhBRDEUANVRRRVFSJVBoAUDAQA
+shaman="DF4_Shaman_Elemental"
+level=70
+race=tauren
+role=spell
+spec=elemental
+talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSrUSCgDk0SShSgkkEBAAAAAoEQSJJoJg0SSahACJSgA
+# https://www.wowhead.com/talent-calc/shaman/elemental/DAQRFUVBRAASqJBUJAQCFQNVRRRVFSJVBoAUDBQA
 
-# head=morningscale_cowl,id=109984,bonus_id=9888/9576,enchant=incandescent_essence,gem_id=192988
-# neck=eye_of_the_rising_flame,id=207163,bonus_id=7187/1520/9576,gem_id=192961/192961/192961
-# shoulder=greatwolf_outcasts_companions,id=207207,bonus_id=7187/1520/9576
-# back=drape_of_the_loyal_vassal,id=158375,bonus_id=9853/9576,enchant=graceful_avoidance_3
-# chest=greatwolf_outcasts_harness,id=207212,bonus_id=7187/1520/9576,enchant=waking_stats_3
-# wrist=adaptive_dracothyst_armguards,id=204704,bonus_id=9500/9405/8960,gem_id=192961,enchant=devotion_of_avoidance_3
-# hands=greatwolf_outcasts_grips,id=207210,bonus_id=7187/1520/9576
-# waist=jeweled_sash_of_the_viper,id=207146,bonus_id=7187/1520/9576,enchant=shadowed_belt_clasp_3,gem_id=192961
-# legs=greatwolf_outcasts_furlined_kilt,id=207208,bonus_id=7187/1520/9576,enchant=frozen_spellthread_3
-# feet=whelp_handlers_lined_boots,id=134464,bonus_id=9882/9576,enchant=watchers_loam_3
-# finger1=thornwoven_band,id=162548,bonus_id=9853/9576,enchant=devotion_of_versatility_3,gem_id=192961
-# finger2=archdruids_tainted_seal,id=134487,bonus_id=9882/9576,enchant=devotion_of_mastery_3,gem_id=192961
-# trinket1=sea_star,id=133201,bonus_id=9466/1514/8767/9576
-# trinket2=belorrelos_the_suncaller,id=207172,bonus_id=7187/1520/9576
-# main_hand=vakash_the_shadowed_inferno,id=207788,bonus_id=7187/1520/9576,enchant=wafting_devotion_3
-# off_hand=witherrot_tome,id=193496,bonus_id=9500/9405/8960,crafted_stats=36/49
+head=blazebound_lieutenants_helm,id=193765,bonus_id=1808,ilevel=528,gem_id=192988,enchant_id=7052
+neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/1615/8782,gem_id=192961/192961/192961,crafted_stats=36/40
+shoulders=greatwolf_outcasts_companions,id=207207,ilevel=528
+back=voice_of_the_silent_star,id=204465,bonus_id=3524,ilevel=535
+chest=greatwolf_outcasts_harness,id=207212,ilevel=528,enchant_id=6625
+wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=8960/8840/8836/8902/1615/1808,gem_id=192961,crafted_stats=36/40
+hands=greatwolf_outcasts_grips,id=207210,ilevel=528
+waist=gloomfused_chemistry_belt,id=202605,bonus_id=3524/1808,ilevel=528,gem_id=192961,enchant_id=6904
+legs=greatwolf_outcasts_furlined_kilt,id=207208,ilevel=528,enchant_id=6541
+feet=lightningcharged_striders,id=193685,ilevel=528
+finger1=seal_of_filial_duty,id=195526,bonus_id=1808,ilevel=535,gem_id=192961,enchant_id=6562
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=1808,ilevel=528,gem_id=192961,enchant_id=6562
+trinket1=whispering_incarnate_icon,id=194301,ilevel=528
+trinket2=belorrelos_the_suncaller,id=207172,ilevel=528
+main_hand=vakash_the_shadowed_inferno,id=207788,ilevel=528,enchant_id=6655
+off_hand=broodsworn_legionnaires_pavise,id=195520,bonus_id=3524,ilevel=528
 
-# save=DF4_Shaman_Elemental.simc
+
+save=DF4_Shaman_Elemental.simc
 
 # shaman="DF4_Shaman_Enhancement_Storm"
 # level=70

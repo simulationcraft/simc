@@ -4,13 +4,13 @@ optimal_raid=1
 default_actions=1
 
 # DF4_Death_Knight_Blood.simc
-# DF4_Death_Knight_Frost.simc
-# DF4_Death_Knight_Frost_2h.simc
+DF4_Death_Knight_Frost.simc
+DF4_Death_Knight_Frost_2h.simc
 DF4_Death_Knight_Unholy.simc
 
 # DF4_Demon_Hunter_Havoc.simc
 # DF4_Demon_Hunter_Havoc_SD.simc
-# DF4_Demon_Hunter_Vengeance.simc
+DF4_Demon_Hunter_Vengeance.simc
 
 # DF4_Druid_Balance.simc
 # DF4_Druid_Feral.simc
@@ -40,7 +40,7 @@ DF4_Priest_Shadow.simc
 # DF4_Rogue_Outlaw.simc
 # DF4_Rogue_Subtlety.simc
 
-# DF4_Shaman_Elemental.simc
+DF4_Shaman_Elemental.simc
 # DF4_Shaman_Enhancement.simc
 # DF4_Shaman_Enhancement_Storm.simc
 
