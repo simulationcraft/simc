@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.6.53989 PTR
+SimulationCraft 1026-01 for World of Warcraft 10.2.7.54171 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4278,7 +4278,7 @@ bonus_id={ 7956 }, effects={ Treasurefinder (id=364478, index=0, type=equip) }
 bonus_id={ 7957 }, effects={ Pocopoc Resonance (id=364477, index=0, type=equip) }
 bonus_id={ 7960 }, effects={ Ephemera Harmonizing Stone (id=365457, index=0, type=equip) }
 bonus_id={ 7962 }, ilevel_adjust={ 3 }
-bonus_id={ 7963 }, ilevel={ 206 @plvl 45 - 327 @plvl 80 }
+bonus_id={ 7963 }
 bonus_id={ 7964 }, quality={ rare }, ilevel={ 219 @plvl 45 - 340 @plvl 80 }
 bonus_id={ 7965 }, quality={ epic }, ilevel={ 232 @plvl 45 - 353 @plvl 80 }
 bonus_id={ 7966 }, ilevel={ 180 @plvl 50 - 180 @plvl 80 }
@@ -4773,7 +4773,7 @@ bonus_id={ 9152 }, quality={ uncommon }, effects={ Fists of Earthen Fury (id=398
 bonus_id={ 9153 }, quality={ rare }, effects={ Fists of Earthen Fury (id=398383, index=0, type=equip) }
 bonus_id={ 9154 }, quality={ epic }, effects={ Fists of Earthen Fury (id=398389, index=0, type=equip) }
 bonus_id={ 9155 }, quality={ common }, effects={ Shadow Barrage (id=395758, index=0, type=equip) }
-bonus_id={ 9156 }, ilevel={ 206 @plvl 45 - 327 @plvl 80 }
+bonus_id={ 9156 }
 bonus_id={ 9157 }, quality={ common }, effects={ Death Grip (id=361126, index=0, type=equip) }
 bonus_id={ 9159 }, quality={ uncommon }, effects={ Snowdrift (id=398735, index=0, type=equip) }
 bonus_id={ 9160 }, quality={ rare }, effects={ Snowdrift (id=398737, index=0, type=equip) }
@@ -5050,161 +5050,14 @@ bonus_id={ 9578 }, desc={ Dragonflight Season 3 }, quality={ epic }
 bonus_id={ 9581 }, desc={ Dragonflight Season 3 }, quality={ epic }
 bonus_id={ 9598 }, ilevel={ 13 @plvl 10 - 342 @plvl 70 }
 bonus_id={ 9601 }, ilevel={ 13 @plvl 10 - 342 @plvl 70 }
-bonus_id={ 9610 }, socket={ 1 }
-bonus_id={ 9611 }, quality={ rare }, socket={ 2 }
-bonus_id={ 9612 }, quality={ epic }, socket={ 3 }
-bonus_id={ 9613 }, stats={ 100% Haste [1.2000] }
+bonus_id={ 9613 }, stats={ 100% Haste [0.4779] }
 bonus_id={ 9614 }, effects={ Verdant Tether (id=426552, index=0, type=equip) }
-bonus_id={ 9618 }, stats={ 100% Crit [1.2000] }
-bonus_id={ 9619 }, stats={ 100% Mastery [1.2000] }
-bonus_id={ 9620 }, stats={ 100% Leech [2.4000] }
-bonus_id={ 9621 }, stats={ 100% unknown [3.6000] }
-bonus_id={ 9622 }, stats={ 100% RunSpeed [0.8000] }
+bonus_id={ 9618 }, stats={ 100% Crit [0.4779] }
+bonus_id={ 9619 }, stats={ 100% Mastery [0.9558] }
+bonus_id={ 9620 }, stats={ 100% Leech [0.9558] }
+bonus_id={ 9621 }, stats={ 100% unknown [1.4337] }
+bonus_id={ 9622 }, stats={ 100% RunSpeed [0.2390] }
 bonus_id={ 9634 }, quality={ rare }
-bonus_id={ 9638 }, stats={ 100% StrAgiInt [0.4802] }
-bonus_id={ 9640 }, stats={ -2147483648% StrAgiInt [0.0000] }
-bonus_id={ 9641 }, stats={ 100% StrAgiInt [0.9604] }
-bonus_id={ 9642 }, stats={ -2147483648% Sta [0.0000] }
-bonus_id={ 9643 }, stats={ 100% Sta [0.4802] }
-bonus_id={ 9644 }, stats={ 100% Sta [0.9604] }
-bonus_id={ 9645 }, stats={ -2147483648% Crit [0.0000] }
-bonus_id={ 9646 }, stats={ 100% Crit [0.4802] }
-bonus_id={ 9647 }, stats={ 100% Crit [0.9604] }
-bonus_id={ 9648 }, stats={ -2147483648% Haste [0.0000] }
-bonus_id={ 9649 }, stats={ 100% Haste [0.4802] }
-bonus_id={ 9650 }, stats={ 100% Haste [0.9604] }
-bonus_id={ 9651 }, stats={ -2147483648% Leech [0.0000] }
-bonus_id={ 9652 }, stats={ 100% Leech [0.4802] }
-bonus_id={ 9653 }, stats={ 100% Leech [0.9604] }
-bonus_id={ 9654 }, stats={ -2147483648% Mastery [0.0000] }
-bonus_id={ 9655 }, stats={ 100% Mastery [0.4802] }
-bonus_id={ 9656 }, stats={ 100% Mastery [0.9604] }
-bonus_id={ 9657 }, stats={ -2147483648% unknown [0.0000] }
-bonus_id={ 9658 }, stats={ 100% unknown [0.4802] }
-bonus_id={ 9659 }, stats={ 100% unknown [0.9604] }
-bonus_id={ 9660 }, stats={ -2147483648% RunSpeed [0.0000] }
-bonus_id={ 9661 }, stats={ 100% RunSpeed [0.4802] }
-bonus_id={ 9662 }, stats={ 100% RunSpeed [0.9604] }
-bonus_id={ 9663 }, stats={ -2147483648% Vers [0.0000] }
-bonus_id={ 9664 }, stats={ 100% Vers [0.4802] }
-bonus_id={ 9665 }, stats={ 100% Vers [0.9604] }
-bonus_id={ 9666 }, stats={ 100% StrAgiInt [1.4406] }
-bonus_id={ 9667 }, stats={ 100% StrAgiInt [1.9208] }
-bonus_id={ 9668 }, stats={ 100% StrAgiInt [2.4010] }
-bonus_id={ 9669 }, stats={ 100% StrAgiInt [2.8812] }
-bonus_id={ 9670 }, stats={ 100% StrAgiInt [3.3614] }
-bonus_id={ 9671 }, stats={ 100% StrAgiInt [3.8416] }
-bonus_id={ 9672 }, stats={ 100% StrAgiInt [4.3218] }
-bonus_id={ 9673 }, stats={ 100% StrAgiInt [4.8020] }
-bonus_id={ 9674 }, stats={ 100% StrAgiInt [5.2822] }
-bonus_id={ 9675 }, stats={ 100% StrAgiInt [5.7624] }
-bonus_id={ 9676 }, stats={ 100% StrAgiInt [6.2426] }
-bonus_id={ 9677 }, stats={ 100% StrAgiInt [6.7228] }
-bonus_id={ 9678 }, stats={ 100% StrAgiInt [7.2030] }
-bonus_id={ 9679 }, stats={ 100% Crit [1.4406] }
-bonus_id={ 9680 }, stats={ 100% Crit [1.9208] }
-bonus_id={ 9681 }, stats={ 100% Crit [2.4010] }
-bonus_id={ 9682 }, stats={ 100% Crit [2.8812] }
-bonus_id={ 9683 }, stats={ 100% Crit [3.3614] }
-bonus_id={ 9684 }, stats={ 100% Crit [3.8416] }
-bonus_id={ 9685 }, stats={ 100% Crit [4.3218] }
-bonus_id={ 9686 }, stats={ 100% Crit [4.8020] }
-bonus_id={ 9687 }, stats={ 100% Crit [5.2822] }
-bonus_id={ 9688 }, stats={ 100% Crit [5.7624] }
-bonus_id={ 9689 }, stats={ 100% Crit [6.2426] }
-bonus_id={ 9690 }, stats={ 100% Crit [6.7228] }
-bonus_id={ 9691 }, stats={ 100% Crit [7.2030] }
-bonus_id={ 9692 }, stats={ 100% Haste [1.4406] }
-bonus_id={ 9693 }, stats={ 100% Haste [1.9208] }
-bonus_id={ 9694 }, stats={ 100% Haste [2.4010] }
-bonus_id={ 9695 }, stats={ 100% Haste [2.8812] }
-bonus_id={ 9696 }, stats={ 100% Haste [3.3614] }
-bonus_id={ 9697 }, stats={ 100% Haste [3.8416] }
-bonus_id={ 9698 }, stats={ 100% Haste [4.3218] }
-bonus_id={ 9699 }, stats={ 100% Haste [4.8020] }
-bonus_id={ 9700 }, stats={ 100% Haste [5.2822] }
-bonus_id={ 9701 }, stats={ 100% Haste [5.2822] }
-bonus_id={ 9702 }, stats={ 100% Haste [6.2426] }
-bonus_id={ 9703 }, stats={ 100% Haste [6.7228] }
-bonus_id={ 9704 }, stats={ 100% Haste [7.2030] }
-bonus_id={ 9705 }, stats={ 100% Leech [1.4406] }
-bonus_id={ 9706 }, stats={ 100% Leech [1.9208] }
-bonus_id={ 9707 }, stats={ 100% Leech [2.4010] }
-bonus_id={ 9708 }, stats={ 100% Leech [2.8812] }
-bonus_id={ 9709 }, stats={ 100% Leech [3.3614] }
-bonus_id={ 9710 }, stats={ 100% Leech [3.8416] }
-bonus_id={ 9711 }, stats={ 100% Leech [4.3218] }
-bonus_id={ 9712 }, stats={ 100% Leech [4.8020] }
-bonus_id={ 9713 }, stats={ 100% Leech [5.2822] }
-bonus_id={ 9714 }, stats={ 100% Leech [5.7624] }
-bonus_id={ 9715 }, stats={ 100% Leech [6.2426] }
-bonus_id={ 9716 }, stats={ 100% Leech [6.7228] }
-bonus_id={ 9717 }, stats={ 100% Leech [7.2030] }
-bonus_id={ 9718 }, stats={ 100% Mastery [1.4406] }
-bonus_id={ 9719 }, stats={ 100% Mastery [1.9208] }
-bonus_id={ 9720 }, stats={ 100% Mastery [2.4010] }
-bonus_id={ 9721 }, stats={ 100% Mastery [2.8812] }
-bonus_id={ 9722 }, stats={ 100% Mastery [3.3614] }
-bonus_id={ 9723 }, stats={ 100% Mastery [3.8416] }
-bonus_id={ 9724 }, stats={ 100% Mastery [4.3218] }
-bonus_id={ 9725 }, stats={ 100% Mastery [4.8020] }
-bonus_id={ 9726 }, stats={ 100% Mastery [5.2822] }
-bonus_id={ 9727 }, stats={ 100% Mastery [5.7624] }
-bonus_id={ 9728 }, stats={ 100% Mastery [6.2426] }
-bonus_id={ 9729 }, stats={ 100% Mastery [6.7228] }
-bonus_id={ 9730 }, stats={ 100% Mastery [7.2030] }
-bonus_id={ 9731 }, stats={ 100% unknown [1.4406] }
-bonus_id={ 9732 }, stats={ 100% unknown [1.9208] }
-bonus_id={ 9733 }, stats={ 100% unknown [2.4010] }
-bonus_id={ 9734 }, stats={ 100% unknown [2.8812] }
-bonus_id={ 9735 }, stats={ 100% unknown [3.3614] }
-bonus_id={ 9736 }, stats={ 100% unknown [3.8416] }
-bonus_id={ 9737 }, stats={ 100% unknown [4.3218] }
-bonus_id={ 9738 }, stats={ 100% unknown [4.8020] }
-bonus_id={ 9739 }, stats={ 100% unknown [5.2822] }
-bonus_id={ 9740 }, stats={ 100% unknown [5.7624] }
-bonus_id={ 9741 }, stats={ 100% unknown [6.2426] }
-bonus_id={ 9742 }, stats={ 100% unknown [6.7228] }
-bonus_id={ 9743 }, stats={ 100% unknown [7.2030] }
-bonus_id={ 9744 }, stats={ 100% RunSpeed [1.4406] }
-bonus_id={ 9745 }, stats={ 100% RunSpeed [1.9208] }
-bonus_id={ 9746 }, stats={ 100% RunSpeed [2.4010] }
-bonus_id={ 9747 }, stats={ 100% RunSpeed [2.8812] }
-bonus_id={ 9748 }, stats={ 100% RunSpeed [3.3614] }
-bonus_id={ 9749 }, stats={ 100% RunSpeed [3.8416] }
-bonus_id={ 9750 }, stats={ 100% RunSpeed [4.3218] }
-bonus_id={ 9751 }, stats={ 100% RunSpeed [4.8020] }
-bonus_id={ 9752 }, stats={ 100% RunSpeed [5.2822] }
-bonus_id={ 9753 }, stats={ 100% RunSpeed [5.7624] }
-bonus_id={ 9754 }, stats={ 100% RunSpeed [6.2426] }
-bonus_id={ 9755 }, stats={ 100% RunSpeed [6.7228] }
-bonus_id={ 9756 }, stats={ 100% RunSpeed [7.2030] }
-bonus_id={ 9757 }, stats={ 100% Sta [1.4406] }
-bonus_id={ 9758 }, stats={ 100% Sta [1.9208] }
-bonus_id={ 9759 }, stats={ 100% Sta [2.4010] }
-bonus_id={ 9760 }, stats={ 100% Sta [2.8812] }
-bonus_id={ 9761 }, stats={ 100% Sta [3.3614] }
-bonus_id={ 9762 }, stats={ 100% Sta [3.8416] }
-bonus_id={ 9763 }, stats={ 100% Sta [4.3218] }
-bonus_id={ 9764 }, stats={ 100% Sta [4.8020] }
-bonus_id={ 9765 }, stats={ 100% Sta [5.2822] }
-bonus_id={ 9766 }, stats={ 100% Sta [5.7624] }
-bonus_id={ 9767 }, stats={ 100% Sta [6.2426] }
-bonus_id={ 9768 }, stats={ 100% Sta [6.7228] }
-bonus_id={ 9769 }, stats={ 100% Sta [7.2030] }
-bonus_id={ 9770 }, stats={ 100% Vers [1.4406] }
-bonus_id={ 9771 }, stats={ 100% Vers [1.9208] }
-bonus_id={ 9772 }, stats={ 100% Vers [2.4010] }
-bonus_id={ 9773 }, stats={ 100% Vers [2.8812] }
-bonus_id={ 9774 }, stats={ 100% Vers [3.3614] }
-bonus_id={ 9775 }, stats={ 100% Vers [3.8416] }
-bonus_id={ 9776 }, stats={ 100% Vers [4.3218] }
-bonus_id={ 9777 }, stats={ 100% Vers [4.8020] }
-bonus_id={ 9778 }, stats={ 100% Vers [5.2822] }
-bonus_id={ 9779 }, stats={ 100% Vers [5.7624] }
-bonus_id={ 9780 }, stats={ 100% Vers [6.2426] }
-bonus_id={ 9781 }, stats={ 100% Vers [6.7228] }
-bonus_id={ 9782 }, stats={ 100% Vers [7.2030] }
 bonus_id={ 9783 }
 bonus_id={ 9784 }
 bonus_id={ 9785 }
@@ -5607,31 +5460,8 @@ bonus_id={ 10214 }, ilevel_adjust={ -597 }
 bonus_id={ 10215 }, ilevel_adjust={ -598 }
 bonus_id={ 10216 }, ilevel_adjust={ -599 }
 bonus_id={ 10217 }, ilevel_adjust={ -600 }
-bonus_id={ 10218 }, effects={ Sprint (id=427030, index=0, type=use) }
-bonus_id={ 10219 }, effects={ Blink (id=427053, index=0, type=use) }
-bonus_id={ 10220 }, effects={ Heroic Leap (id=427033, index=0, type=use) }
-bonus_id={ 10221 }, effects={ Roll (id=427026, index=0, type=use) }
-bonus_id={ 10223 }, effects={ Chill (id=428644, index=0, type=equip) }
-bonus_id={ 10224 }, effects={ Burn (id=428661, index=0, type=equip) }
-bonus_id={ 10225 }, effects={ Poison (id=428685, index=0, type=equip) }
-bonus_id={ 10226 }, effects={ Sanctify (id=428696, index=0, type=equip) }
-bonus_id={ 10227 }, effects={ Shock (id=428697, index=0, type=equip) }
-bonus_id={ 10229 }, effects={ Brilliance (id=429007, index=0, type=equip) }
-bonus_id={ 10230 }, effects={ Endurance (id=428914, index=0, type=equip) }
-bonus_id={ 10231 }, effects={ Unholy Vigor (id=428921, index=0, type=equip) }
-bonus_id={ 10232 }, effects={ Freedom (id=429026, index=0, type=equip) }
-bonus_id={ 10233 }, effects={ Grounding (id=428854, index=0, type=equip) }
-bonus_id={ 10234 }, effects={ Thorns (id=429001, index=0, type=equip) }
-bonus_id={ 10235 }, effects={ Fervor (id=429389, index=0, type=equip) }
 bonus_id={ 10236 }, effects={ Opportunist (id=427054, index=0, type=equip) }
-bonus_id={ 10237 }, effects={ Victory Pyre (id=429410, index=0, type=equip) }
-bonus_id={ 10238 }, effects={ Arcanist's Edge (id=429270, index=0, type=equip) }
-bonus_id={ 10239 }, effects={ Quick Strike (id=429373, index=0, type=equip) }
-bonus_id={ 10240 }, effects={ Slay (id=429378, index=0, type=equip) }
-bonus_id={ 10241 }, effects={ Mark of Arrogance (id=429241, index=0, type=equip) }
 bonus_id={ 10242 }, effects={ Sunstrider's Flourish (id=429214, index=0, type=equip) }
-bonus_id={ 10243 }, effects={ Tinkmaster's Shield (id=429230, index=0, type=equip) }
-bonus_id={ 10246 }, effects={ Chi-ji, the Red Crane (id=426268, index=0, type=use) }
 bonus_id={ 10249 }, base_ilevel={ 489 }, desc={ Awakened Crafted }
 bonus_id={ 10250 }, base_ilevel={ 399 }
 bonus_id={ 10305 }, quality={ rare }
@@ -5683,6 +5513,8 @@ bonus_id={ 10358 }, base_ilevel={ 502 }
 bonus_id={ 10359 }, base_ilevel={ 512 }
 bonus_id={ 10381 }, quality={ common }, effects={ Health Brew (id=438407, index=0, type=equip) }
 bonus_id={ 10391 }, quality={ common }, effects={ Slash (id=431147, index=0, type=equip) }
+bonus_id={ 10405 }, effects={ Fervor (id=429389, index=0, type=equip) }
+bonus_id={ 10406 }, effects={ Arcanist's Edge (id=429270, index=0, type=equip) }
 bonus_id={ 10407 }, quality={ epic }
 bonus_id={ 10408 }, quality={ epic }
 bonus_id={ 10409 }, quality={ epic }
@@ -5732,7 +5564,12 @@ bonus_id={ 10459 }, quality={ epic }, effects={ Unknown Effect (id=181906) }
 bonus_id={ 10460 }, quality={ uncommon }, effects={ Explosive Caltrops (id=432759, index=0, type=equip) }
 bonus_id={ 10461 }, quality={ rare }, effects={ Explosive Caltrops (id=432762, index=0, type=equip) }
 bonus_id={ 10462 }, quality={ epic }, effects={ Explosive Caltrops (id=432764, index=0, type=equip) }
+bonus_id={ 10463 }, effects={ Enkindle (id=432442, index=0, type=equip) }
+bonus_id={ 10464 }, effects={ Explosive Barrage (id=432333, index=0, type=equip) }
 bonus_id={ 10465 }, ilevel={ 5 @plvl 1 - 454 @plvl 70 }
+bonus_id={ 10466 }, effects={ Wildfire (id=432445, index=0, type=equip) }
+bonus_id={ 10467 }, effects={ Meteor Storm (id=432402, index=0, type=equip) }
+bonus_id={ 10468 }, effects={ Incendiary Terror (id=432438, index=0, type=equip) }
 bonus_id={ 10469 }, quality={ common }, effects={ Slicing Winds (id=433082, index=0, type=equip) }
 bonus_id={ 10470 }, quality={ uncommon }, effects={ Slicing Winds (id=433184, index=0, type=equip) }
 bonus_id={ 10471 }, quality={ rare }, effects={ Slicing Winds (id=433185, index=0, type=equip) }
@@ -5741,6 +5578,7 @@ bonus_id={ 10473 }, quality={ common }, effects={ Earthbreaker (id=435018, index
 bonus_id={ 10474 }, quality={ uncommon }, effects={ Earthbreaker (id=435021, index=0, type=equip) }
 bonus_id={ 10475 }, quality={ rare }, effects={ Earthbreaker (id=435023, index=0, type=equip) }
 bonus_id={ 10476 }, quality={ epic }, effects={ Earthbreaker (id=435025, index=0, type=equip) }
+bonus_id={ 10477 }, effects={ Frost Armor (id=433214, index=0, type=equip) }
 bonus_id={ 10478 }, quality={ common }, effects={ Windstorm (id=433263, index=0, type=equip) }
 bonus_id={ 10479 }, quality={ uncommon }, effects={ Windstorm (id=433256, index=0, type=equip) }
 bonus_id={ 10480 }, quality={ rare }, effects={ Windstorm (id=433264, index=0, type=equip) }
@@ -5788,11 +5626,400 @@ bonus_id={ 10528 }, quality={ uncommon }, effects={ Toxic Smackerel (id=436308, 
 bonus_id={ 10529 }, quality={ rare }, effects={ Toxic Smackerel (id=436310, index=0, type=equip) }
 bonus_id={ 10530 }, quality={ epic }, effects={ Toxic Smackerel (id=436312, index=0, type=equip) }
 bonus_id={ 10531 }, socket={ 1 }
+bonus_id={ 10539 }
+bonus_id={ 10540 }
+bonus_id={ 10541 }
+bonus_id={ 10542 }
+bonus_id={ 10543 }
+bonus_id={ 10544 }
+bonus_id={ 10545 }
+bonus_id={ 10546 }
+bonus_id={ 10547 }
+bonus_id={ 10548 }
+bonus_id={ 10549 }
+bonus_id={ 10550 }
+bonus_id={ 10551 }
+bonus_id={ 10552 }
+bonus_id={ 10553 }
+bonus_id={ 10554 }
+bonus_id={ 10555 }
+bonus_id={ 10556 }
+bonus_id={ 10557 }
+bonus_id={ 10558 }
+bonus_id={ 10559 }
+bonus_id={ 10560 }
+bonus_id={ 10561 }
+bonus_id={ 10562 }
+bonus_id={ 10563 }
+bonus_id={ 10564 }
+bonus_id={ 10565 }
+bonus_id={ 10566 }
+bonus_id={ 10567 }
+bonus_id={ 10568 }
+bonus_id={ 10569 }
+bonus_id={ 10570 }
+bonus_id={ 10571 }
+bonus_id={ 10572 }
+bonus_id={ 10573 }
+bonus_id={ 10574 }
+bonus_id={ 10575 }
+bonus_id={ 10576 }
+bonus_id={ 10577 }
+bonus_id={ 10578 }
+bonus_id={ 10579 }
+bonus_id={ 10580 }
+bonus_id={ 10581 }
+bonus_id={ 10582 }
+bonus_id={ 10583 }
+bonus_id={ 10584 }
+bonus_id={ 10585 }
+bonus_id={ 10586 }
+bonus_id={ 10587 }
+bonus_id={ 10588 }
+bonus_id={ 10589 }, socket={ 1 }
+bonus_id={ 10591 }, socket={ 1 }
+bonus_id={ 10592 }
+bonus_id={ 10593 }, socket={ 1 }
+bonus_id={ 10594 }
+bonus_id={ 10595 }
+bonus_id={ 10596 }, socket={ 1 }
+bonus_id={ 10597 }, socket={ 1 }
+bonus_id={ 10598 }
+bonus_id={ 10599 }, socket={ 1 }
+bonus_id={ 10600 }
+bonus_id={ 10601 }, socket={ 2 }
+bonus_id={ 10602 }, socket={ 2 }
+bonus_id={ 10603 }, socket={ 1 }
+bonus_id={ 10604 }
+bonus_id={ 10605 }
+bonus_id={ 10606 }, socket={ 1 }
+bonus_id={ 10607 }
+bonus_id={ 10608 }, socket={ 2 }
+bonus_id={ 10609 }, socket={ 2 }
+bonus_id={ 10610 }, socket={ 2 }
+bonus_id={ 10611 }
+bonus_id={ 10612 }
+bonus_id={ 10613 }, socket={ 2 }
+bonus_id={ 10614 }
+bonus_id={ 10615 }, socket={ 2 }
+bonus_id={ 10616 }, socket={ 2 }
+bonus_id={ 10617 }, socket={ 2 }
+bonus_id={ 10618 }
+bonus_id={ 10619 }
+bonus_id={ 10620 }, socket={ 2 }
+bonus_id={ 10621 }
+bonus_id={ 10622 }, socket={ 2 }
+bonus_id={ 10623 }, socket={ 2 }
+bonus_id={ 10624 }, socket={ 2 }
+bonus_id={ 10625 }
+bonus_id={ 10626 }
+bonus_id={ 10627 }, socket={ 2 }
+bonus_id={ 10628 }
+bonus_id={ 10629 }, socket={ 3 }
+bonus_id={ 10630 }, socket={ 3 }
+bonus_id={ 10631 }, socket={ 2 }
+bonus_id={ 10632 }
+bonus_id={ 10633 }
+bonus_id={ 10634 }, socket={ 2 }
+bonus_id={ 10635 }
+bonus_id={ 10636 }, socket={ 3 }
+bonus_id={ 10637 }, socket={ 3 }
+bonus_id={ 10638 }, socket={ 3 }
+bonus_id={ 10639 }
+bonus_id={ 10640 }
+bonus_id={ 10641 }, socket={ 3 }
+bonus_id={ 10642 }
+bonus_id={ 10643 }, socket={ 3 }
+bonus_id={ 10644 }, socket={ 3 }
+bonus_id={ 10645 }, socket={ 3 }
+bonus_id={ 10646 }
+bonus_id={ 10647 }
+bonus_id={ 10648 }, socket={ 3 }
+bonus_id={ 10649 }
+bonus_id={ 10650 }, socket={ 3 }
+bonus_id={ 10651 }, socket={ 3 }
+bonus_id={ 10652 }, socket={ 3 }
+bonus_id={ 10653 }
+bonus_id={ 10654 }
+bonus_id={ 10655 }, socket={ 3 }
+bonus_id={ 10656 }
+bonus_id={ 10657 }, socket={ 3 }
+bonus_id={ 10658 }, socket={ 3 }
+bonus_id={ 10659 }, socket={ 3 }
+bonus_id={ 10660 }
+bonus_id={ 10661 }, socket={ 3 }
+bonus_id={ 10662 }, socket={ 3 }
+bonus_id={ 10663 }, socket={ 3 }
+bonus_id={ 10664 }
+bonus_id={ 10665 }
+bonus_id={ 10666 }, socket={ 3 }
+bonus_id={ 10667 }
+bonus_id={ 10668 }, socket={ 3 }
+bonus_id={ 10669 }, socket={ 3 }
+bonus_id={ 10670 }, socket={ 3 }
+bonus_id={ 10671 }
+bonus_id={ 10672 }
+bonus_id={ 10673 }
+bonus_id={ 10674 }, socket={ 3 }
+bonus_id={ 10675 }, socket={ 3 }
+bonus_id={ 10676 }, socket={ 3 }
+bonus_id={ 10677 }, socket={ 3 }
+bonus_id={ 10678 }
+bonus_id={ 10679 }
+bonus_id={ 10680 }
+bonus_id={ 10681 }, socket={ 3 }
+bonus_id={ 10682 }, socket={ 3 }
+bonus_id={ 10683 }, socket={ 3 }
+bonus_id={ 10684 }, socket={ 3 }
+bonus_id={ 10685 }
+bonus_id={ 10686 }
+bonus_id={ 10687 }
+bonus_id={ 10688 }, socket={ 3 }
+bonus_id={ 10689 }, socket={ 3 }
+bonus_id={ 10690 }, socket={ 3 }
+bonus_id={ 10691 }, socket={ 3 }
+bonus_id={ 10693 }
+bonus_id={ 10694 }
+bonus_id={ 10695 }, socket={ 3 }
+bonus_id={ 10696 }, socket={ 3 }
+bonus_id={ 10697 }, socket={ 3 }
+bonus_id={ 10698 }, socket={ 3 }
+bonus_id={ 10699 }
+bonus_id={ 10700 }
+bonus_id={ 10701 }
+bonus_id={ 10702 }, socket={ 3 }
+bonus_id={ 10703 }, socket={ 3 }
+bonus_id={ 10704 }, socket={ 3 }
+bonus_id={ 10705 }, socket={ 3 }
+bonus_id={ 10706 }
+bonus_id={ 10707 }
+bonus_id={ 10708 }
+bonus_id={ 10709 }, socket={ 3 }
+bonus_id={ 10710 }, socket={ 3 }
+bonus_id={ 10711 }, socket={ 3 }
+bonus_id={ 10712 }, socket={ 3 }
+bonus_id={ 10713 }
+bonus_id={ 10714 }
+bonus_id={ 10715 }
+bonus_id={ 10716 }, socket={ 3 }
+bonus_id={ 10717 }, socket={ 3 }
+bonus_id={ 10718 }, socket={ 3 }
+bonus_id={ 10719 }, socket={ 3 }
+bonus_id={ 10720 }
+bonus_id={ 10721 }
+bonus_id={ 10722 }
+bonus_id={ 10723 }
+bonus_id={ 10724 }
+bonus_id={ 10725 }
+bonus_id={ 10726 }
+bonus_id={ 10727 }
+bonus_id={ 10728 }
+bonus_id={ 10729 }
+bonus_id={ 10730 }
+bonus_id={ 10731 }
+bonus_id={ 10732 }
+bonus_id={ 10733 }, socket={ 3 }
+bonus_id={ 10734 }, socket={ 3 }
+bonus_id={ 10735 }, socket={ 3 }
+bonus_id={ 10736 }, socket={ 3 }
+bonus_id={ 10737 }, socket={ 3 }
+bonus_id={ 10738 }, socket={ 3 }
+bonus_id={ 10739 }, socket={ 3 }
+bonus_id={ 10740 }, socket={ 3 }
+bonus_id={ 10741 }, socket={ 3 }
+bonus_id={ 10742 }, socket={ 3 }
+bonus_id={ 10743 }, socket={ 3 }
+bonus_id={ 10744 }, socket={ 3 }
+bonus_id={ 10745 }, socket={ 3 }
+bonus_id={ 10746 }, socket={ 3 }
+bonus_id={ 10747 }, socket={ 3 }
+bonus_id={ 10748 }, socket={ 3 }
+bonus_id={ 10749 }, socket={ 3 }
+bonus_id={ 10750 }, socket={ 3 }
+bonus_id={ 10751 }, socket={ 3 }
+bonus_id={ 10752 }, socket={ 3 }
+bonus_id={ 10753 }, socket={ 3 }
+bonus_id={ 10754 }, socket={ 3 }
+bonus_id={ 10755 }, socket={ 3 }
+bonus_id={ 10756 }, socket={ 3 }
+bonus_id={ 10757 }, socket={ 3 }
+bonus_id={ 10758 }, socket={ 3 }
+bonus_id={ 10759 }, socket={ 3 }
+bonus_id={ 10760 }, socket={ 3 }
+bonus_id={ 10761 }, socket={ 3 }
+bonus_id={ 10762 }, socket={ 3 }
+bonus_id={ 10763 }, socket={ 3 }
+bonus_id={ 10764 }, socket={ 3 }
+bonus_id={ 10765 }, socket={ 3 }
+bonus_id={ 10766 }, socket={ 3 }
+bonus_id={ 10767 }, socket={ 3 }
+bonus_id={ 10768 }, socket={ 3 }
+bonus_id={ 10769 }, socket={ 3 }
+bonus_id={ 10770 }, socket={ 3 }
+bonus_id={ 10771 }, socket={ 3 }
+bonus_id={ 10772 }, socket={ 3 }
+bonus_id={ 10773 }, socket={ 3 }
+bonus_id={ 10774 }, socket={ 3 }
+bonus_id={ 10775 }, socket={ 3 }
+bonus_id={ 10776 }, socket={ 3 }
+bonus_id={ 10777 }
+bonus_id={ 10778 }
+bonus_id={ 10779 }
+bonus_id={ 10780 }
+bonus_id={ 10781 }
+bonus_id={ 10782 }
+bonus_id={ 10783 }
+bonus_id={ 10784 }
+bonus_id={ 10785 }
+bonus_id={ 10786 }
+bonus_id={ 10787 }
+bonus_id={ 10788 }
+bonus_id={ 10789 }
+bonus_id={ 10790 }
+bonus_id={ 10791 }
+bonus_id={ 10792 }
+bonus_id={ 10793 }
+bonus_id={ 10794 }
+bonus_id={ 10795 }
+bonus_id={ 10796 }
+bonus_id={ 10797 }
+bonus_id={ 10798 }
+bonus_id={ 10799 }
+bonus_id={ 10800 }, effects={ Mark of Arrogance (id=429241, index=0, type=equip) }
+bonus_id={ 10801 }, effects={ Quick Strike (id=429373, index=0, type=equip) }
+bonus_id={ 10802 }, effects={ Slay (id=429378, index=0, type=equip) }
+bonus_id={ 10803 }, effects={ Tinkmaster's Shield (id=429230, index=0, type=equip) }
+bonus_id={ 10804 }, effects={ Victory Fire (id=429410, index=0, type=equip) }
+bonus_id={ 10805 }, effects={ Blink (id=439081, index=0, type=equip) }
+bonus_id={ 10806 }, effects={ Heroic Leap (id=439054, index=0, type=equip) }
+bonus_id={ 10807 }, effects={ Roll (id=439082, index=0, type=equip) }
+bonus_id={ 10808 }, effects={ Sprint (id=439083, index=0, type=equip) }
+bonus_id={ 10809 }, stats={ 100% Crit [0.7168] }
+bonus_id={ 10810 }, stats={ 100% Haste [0.7168] }
+bonus_id={ 10811 }, stats={ 100% unknown [2.1504] }
+bonus_id={ 10812 }, stats={ 100% Leech [1.4336] }
+bonus_id={ 10813 }, stats={ 100% Mastery [1.4336] }
+bonus_id={ 10814 }, stats={ 100% RunSpeed [0.3584] }
+bonus_id={ 10815 }, stats={ 100% Crit [0.9556] }
+bonus_id={ 10816 }, stats={ 100% Haste [0.9556] }
+bonus_id={ 10817 }, stats={ 100% unknown [2.8668] }
+bonus_id={ 10818 }, stats={ 100% Leech [1.9112] }
+bonus_id={ 10819 }, stats={ 100% Mastery [1.9112] }
+bonus_id={ 10820 }, stats={ 100% RunSpeed [0.4778] }
+bonus_id={ 10821 }, stats={ 100% Sta [0.3871] }
+bonus_id={ 10822 }, effects={ Hailstorm (id=436565, index=0, type=equip) }
+bonus_id={ 10823 }, effects={ Cold Front (id=436573, index=0, type=equip) }
+bonus_id={ 10824 }, effects={ Brittle (id=436578, index=0, type=equip), Brittle (id=436579, index=0, type=equip) }
+bonus_id={ 10825 }, effects={ Memory of Vengeance (id=436583, index=0, type=equip) }
+bonus_id={ 10826 }, effects={ Searing Light (id=436586, index=0, type=equip) }
+bonus_id={ 10839 }, effects={ Oblivion Sphere (id=435854, index=0, type=equip) }
+bonus_id={ 10843 }, effects={ Thundering Orb (id=436789, index=0, type=equip) }
 bonus_id={ 10845 }, desc={ Timewarped }, ilevel={ 21 @plvl 1 - 450 @plvl 70 }
+bonus_id={ 10846 }, effects={ Lifestorm (id=437014, index=0, type=equip) }
+bonus_id={ 10847 }, effects={ Chi-ji, the Red Crane (id=437072, index=0, type=equip) }
+bonus_id={ 10848 }, effects={ Morphing Elements (id=437495, index=0, type=use) }
+bonus_id={ 10849 }, quality={ rare }, stats={ 100% StrInt [0.0330] }
+bonus_id={ 10850 }, quality={ epic }, stats={ 100% StrInt [0.0659] }
+bonus_id={ 10851 }, quality={ rare }, stats={ 100% Sta [0.3871] }
+bonus_id={ 10852 }, quality={ epic }, stats={ 100% Sta [0.7741] }
+bonus_id={ 10853 }, quality={ rare }, stats={ 100% AgiInt [0.0330] }
+bonus_id={ 10854 }, quality={ epic }, stats={ 100% AgiInt [0.0659] }
+bonus_id={ 10855 }, quality={ rare }, stats={ 100% AgiInt [0.0330] }
+bonus_id={ 10856 }, quality={ epic }, stats={ 100% AgiInt [0.0659] }
+bonus_id={ 10857 }, quality={ rare }, stats={ 100% Int [0.0330] }
+bonus_id={ 10858 }, quality={ epic }, stats={ 100% Int [0.0659] }
+bonus_id={ 10859 }, effects={ Timerunner's Grip (id=438570, index=0, type=equip) }
 bonus_id={ 10861 }, quality={ rare }, ilevel={ 21 @plvl 1 - 467 @plvl 70 }
 bonus_id={ 10862 }, quality={ rare }, ilevel={ 21 @plvl 1 - 467 @plvl 70 }
+bonus_id={ 10881 }, effects={ [DNT] Socket Gem Tutorial Credit (id=438884, index=0, type=equip) }
 bonus_id={ 10882 }, ilevel={ 5 @plvl 1 - 493 @plvl 70 }
 bonus_id={ 10883 }, ilevel={ 5 @plvl 1 - 480 @plvl 70 }
+bonus_id={ 10891 }, socket={ 1 }
+bonus_id={ 10892 }, socket={ 1 }
+bonus_id={ 10893 }, socket={ 1 }
+bonus_id={ 10894 }, socket={ 1 }
+bonus_id={ 10895 }, socket={ 2 }
+bonus_id={ 10896 }, socket={ 2 }
+bonus_id={ 10897 }, socket={ 2 }
+bonus_id={ 10898 }, socket={ 2 }
+bonus_id={ 10899 }, socket={ 3 }
+bonus_id={ 10900 }, socket={ 3 }
+bonus_id={ 10901 }, socket={ 3 }
+bonus_id={ 10902 }, socket={ 3 }
+bonus_id={ 10903 }, socket={ 3 }
+bonus_id={ 10904 }, socket={ 3 }
+bonus_id={ 10905 }, socket={ 3 }
+bonus_id={ 10906 }, socket={ 3 }
+bonus_id={ 10907 }, socket={ 3 }
+bonus_id={ 10908 }, socket={ 3 }
+bonus_id={ 10909 }, socket={ 3 }
+bonus_id={ 10910 }, socket={ 3 }
+bonus_id={ 10911 }, socket={ 3 }
+bonus_id={ 10912 }, socket={ 3 }
+bonus_id={ 10913 }, socket={ 3 }
+bonus_id={ 10914 }, socket={ 3 }
+bonus_id={ 10915 }, socket={ 3 }
+bonus_id={ 10916 }, socket={ 3 }
+bonus_id={ 10917 }, socket={ 3 }
+bonus_id={ 10918 }, socket={ 3 }
+bonus_id={ 10919 }, socket={ 3 }
+bonus_id={ 10920 }, socket={ 1 }
+bonus_id={ 10921 }, socket={ 1 }
+bonus_id={ 10922 }, socket={ 1 }
+bonus_id={ 10923 }, socket={ 1 }
+bonus_id={ 10924 }, socket={ 2 }
+bonus_id={ 10925 }, socket={ 2 }
+bonus_id={ 10926 }, socket={ 2 }
+bonus_id={ 10927 }, socket={ 2 }
+bonus_id={ 10928 }, socket={ 3 }
+bonus_id={ 10929 }, socket={ 3 }
+bonus_id={ 10930 }, socket={ 3 }
+bonus_id={ 10931 }, socket={ 3 }
+bonus_id={ 10932 }, socket={ 3 }
+bonus_id={ 10933 }, socket={ 3 }
+bonus_id={ 10934 }, socket={ 3 }
+bonus_id={ 10935 }, socket={ 3 }
+bonus_id={ 10936 }, socket={ 3 }
+bonus_id={ 10937 }, socket={ 3 }
+bonus_id={ 10938 }, socket={ 3 }
+bonus_id={ 10939 }, socket={ 3 }
+bonus_id={ 10940 }, socket={ 3 }
+bonus_id={ 10941 }, socket={ 3 }
+bonus_id={ 10942 }, socket={ 3 }
+bonus_id={ 10943 }, socket={ 3 }
+bonus_id={ 10944 }, socket={ 3 }
+bonus_id={ 10945 }, socket={ 3 }
+bonus_id={ 10946 }, socket={ 3 }
+bonus_id={ 10947 }, socket={ 3 }
+bonus_id={ 10948 }, socket={ 3 }
+bonus_id={ 10965 }, stats={ 100% Avoidance [1.1946] }
+bonus_id={ 10966 }, stats={ 100% Crit [1.1946] }
+bonus_id={ 10967 }, stats={ 100% Haste [1.1946] }
+bonus_id={ 10968 }, stats={ 100% unknown [3.5838] }
+bonus_id={ 10969 }, stats={ 100% Leech [2.3892] }
+bonus_id={ 10970 }, stats={ 100% Mastery [2.3892] }
+bonus_id={ 10971 }, stats={ 100% RunSpeed [0.5973] }
+bonus_id={ 10972 }, stats={ 100% Vers [1.1946] }
+bonus_id={ 11029 }, effects={ Vindication (id=441092, index=0, type=equip) }
+bonus_id={ 11030 }, effects={ Warmth (id=441115, index=0, type=equip) }
+bonus_id={ 11031 }, effects={ Savior (id=441150, index=0, type=equip) }
+bonus_id={ 11032 }, effects={ Deliverance (id=441165, index=0, type=equip) }
+bonus_id={ 11033 }, effects={ Righteous Frenzy (id=441198, index=0, type=equip) }
+bonus_id={ 11034 }, effects={ Holy Martyr (id=441209, index=0, type=equip) }
+bonus_id={ 11035 }, effects={ Disengage (id=441304, index=0, type=equip) }
+bonus_id={ 11038 }, effects={ Trailblazer (id=441355, index=0, type=equip), Trailblazer (id=441348, index=0, type=equip) }
+bonus_id={ 11039 }, effects={ Leap of Faith (id=441472, index=0, type=equip) }
+bonus_id={ 11040 }, effects={ Vanish (id=441491, index=0, type=equip) }
+bonus_id={ 11041 }, effects={ Stampeding Roar (id=441497, index=0, type=equip) }
+bonus_id={ 11042 }, effects={ Wild Charge (id=441560, index=0, type=equip) }
+bonus_id={ 11043 }, effects={ Pursuit of Justice (id=441566, index=0, type=equip), Pursuit of Justice (id=441564, index=0, type=equip) }
+bonus_id={ 11044 }, effects={ Door of Shadows (id=441570, index=0, type=equip) }
+bonus_id={ 11045 }, effects={ Spirit Walk (id=441577, index=0, type=equip) }
+bonus_id={ 11046 }, effects={ Spiritwalker's Grace (id=441619, index=0, type=equip) }
+bonus_id={ 11047 }, effects={ Dark Pact (id=441744, index=0, type=equip) }
+bonus_id={ 11048 }, effects={ Death's Advance (id=441751, index=0, type=equip) }
+bonus_id={ 11049 }, effects={ Soulshape (id=441765, index=0, type=equip) }
+bonus_id={ 11073 }, ilevel={ 14 @plvl 1 - 415 @plvl 70 }
 bonus_id={ 11075 }, quality={ common }, effects={ Lightning Bulwark (id=442371, index=0, type=equip) }
 bonus_id={ 11076 }, quality={ uncommon }, effects={ Lightning Bulwark (id=442404, index=0, type=equip) }
 bonus_id={ 11077 }, quality={ rare }, effects={ Lightning Bulwark (id=442407, index=0, type=equip) }
@@ -5801,3 +6028,71 @@ bonus_id={ 11096 }, quality={ common }, effects={ Storm Archon (id=442445, index
 bonus_id={ 11097 }, quality={ uncommon }, effects={ Storm Archon (id=442819, index=0, type=equip) }
 bonus_id={ 11098 }, quality={ rare }, effects={ Storm Archon (id=442840, index=0, type=equip) }
 bonus_id={ 11099 }, quality={ epic }, effects={ Storm Archon (id=442862, index=0, type=equip) }
+bonus_id={ 11100 }, effects={ Locus of Power (id=443417, index=0, type=equip) }
+bonus_id={ 11101 }, effects={ Lightning Rod (id=443471, index=0, type=equip) }
+bonus_id={ 11102 }, effects={ Static Charge (id=443663, index=0, type=equip) }
+bonus_id={ 11104 }, effects={ Windweaver (id=443770, index=0, type=equip) }
+bonus_id={ 11107 }, effects={ Storm Overload (id=443772, index=0, type=equip) }
+bonus_id={ 11108 }, effects={ Vampiric Aura (id=443855, index=0, type=equip) }
+bonus_id={ 11110 }, effects={ Grounding (id=428854, index=0, type=equip) }
+bonus_id={ 11111 }, effects={ Ankh of Reincarnation (id=427064, index=0, type=equip) }
+bonus_id={ 11112 }, effects={ Freedom (id=429026, index=0, type=equip) }
+bonus_id={ 11113 }, effects={ Brilliance (id=429007, index=0, type=equip) }
+bonus_id={ 11114 }, effects={ Tireless Spirit (id=444136, index=0, type=equip) }
+bonus_id={ 11115 }, effects={ Bloodthirsty Coral (id=444435, index=0, type=equip) }
+bonus_id={ 11116 }, effects={ Soul Tether (id=444666, index=0, type=equip) }
+bonus_id={ 11117 }, effects={ Ward of Salvation (id=445055, index=0, type=equip) }
+bonus_id={ 11118 }, effects={ Precipice of Madness (id=444982, index=0, type=equip) }
+bonus_id={ 11119 }, stats={ 100% BonusArmor [0.8000] }
+bonus_id={ 11120 }, stats={ 100% BonusArmor [1.2000] }
+bonus_id={ 11121 }, stats={ 100% BonusArmor [1.6000] }
+bonus_id={ 11123 }, stats={ 100% Vers [0.4779] }
+bonus_id={ 11124 }, stats={ 100% Vers [0.7168] }
+bonus_id={ 11125 }, stats={ 100% Vers [0.4778] }
+bonus_id={ 11134 }, effects={ Funeral Pyre (id=447565, index=0, type=equip) }
+bonus_id={ 11135 }, effects={ Bulwark of the Black Ox (id=447592, index=0, type=equip) }
+bonus_id={ 11145 }, socket={ 3 }
+bonus_id={ 11146 }, socket={ 3 }
+bonus_id={ 11147 }, socket={ 3 }
+bonus_id={ 11148 }, socket={ 3 }
+bonus_id={ 11149 }, socket={ 3 }
+bonus_id={ 11150 }, socket={ 3 }
+bonus_id={ 11151 }, socket={ 3 }
+bonus_id={ 11152 }, socket={ 3 }
+bonus_id={ 11153 }, socket={ 3 }
+bonus_id={ 11154 }, socket={ 3 }
+bonus_id={ 11155 }
+bonus_id={ 11156 }
+bonus_id={ 11157 }
+bonus_id={ 11158 }
+bonus_id={ 11159 }
+bonus_id={ 11160 }
+bonus_id={ 11161 }
+bonus_id={ 11162 }
+bonus_id={ 11163 }
+bonus_id={ 11164 }
+bonus_id={ 11165 }, socket={ 3 }
+bonus_id={ 11166 }, socket={ 3 }
+bonus_id={ 11167 }, socket={ 3 }
+bonus_id={ 11168 }, socket={ 3 }
+bonus_id={ 11169 }, socket={ 3 }
+bonus_id={ 11170 }, socket={ 3 }
+bonus_id={ 11171 }, socket={ 3 }
+bonus_id={ 11172 }, socket={ 3 }
+bonus_id={ 11173 }, socket={ 3 }
+bonus_id={ 11174 }, socket={ 3 }
+bonus_id={ 11175 }
+bonus_id={ 11176 }
+bonus_id={ 11177 }
+bonus_id={ 11178 }
+bonus_id={ 11179 }
+bonus_id={ 11180 }, socket={ 3 }
+bonus_id={ 11181 }, socket={ 3 }
+bonus_id={ 11182 }, socket={ 3 }
+bonus_id={ 11183 }, socket={ 3 }
+bonus_id={ 11184 }, socket={ 3 }
+bonus_id={ 11185 }, socket={ 3 }
+bonus_id={ 11186 }, socket={ 3 }
+bonus_id={ 11187 }, socket={ 3 }
+bonus_id={ 11188 }, socket={ 3 }
+bonus_id={ 11189 }, socket={ 3 }
