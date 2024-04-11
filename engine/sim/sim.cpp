@@ -2194,6 +2194,8 @@ void sim_t::analyze_error()
 
   current_error = 0;
 
+  bool is_multiactor_metric = false;
+
   if ( single_actor_batch )
   {
     auto p = player_no_pet_list[ current_index ];
@@ -2212,6 +2214,9 @@ void sim_t::analyze_error()
   }
   else
   {
+    is_multiactor_metric = profileset_enabled && std::find_if( profileset_metric.begin(), profileset_metric.end(),
+                                                             util::scale_metric_is_raid ) != profileset_metric.end();
+
     for ( size_t i = 0; i < actor_list.size(); i++ )
     {
       player_t* p = actor_list[i];
@@ -2225,7 +2230,15 @@ void sim_t::analyze_error()
         if ( mean != 0 )
         {
           double error = sim_t::distribution_mean_error( *this, cd.target_metric ) / mean;
-          if ( error > current_error ) current_error = error;
+          if ( is_multiactor_metric )
+          {
+             current_error += error * error;
+          }
+          else
+          {
+             if ( error > current_error )
+              current_error = error;
+          }
           mean_total += mean;
           mean_count++;
         }
@@ -2236,6 +2249,11 @@ void sim_t::analyze_error()
   if( mean_count > 0 )
   {
     current_mean = mean_total / mean_count;
+  }
+
+  if ( is_multiactor_metric )
+  {
+    current_error = sqrt( current_error );
   }
 
   current_error *= 100;
