@@ -2214,8 +2214,9 @@ void sim_t::analyze_error()
   }
   else
   {
-    is_multiactor_metric = profileset_enabled && std::find_if( profileset_metric.begin(), profileset_metric.end(),
-                                                             util::scale_metric_is_raid ) != profileset_metric.end();
+    is_multiactor_metric =
+        player_no_pet_list.size() > 1 && std::find_if( profileset_metric.begin(), profileset_metric.end(),
+                                                       util::scale_metric_is_raid ) != profileset_metric.end();
 
     for ( size_t i = 0; i < actor_list.size(); i++ )
     {
@@ -2229,13 +2230,14 @@ void sim_t::analyze_error()
         double mean = cd.target_metric.mean();
         if ( mean != 0 )
         {
-          double error = sim_t::distribution_mean_error( *this, cd.target_metric ) / mean;
           if ( is_multiactor_metric )
-          {
-             current_error += error * error;
+           {
+             double error = sim_t::distribution_mean_error( *this, cd.target_metric );
+             current_error += error;
           }
           else
           {
+             double error = sim_t::distribution_mean_error( *this, cd.target_metric ) / mean;
              if ( error > current_error )
               current_error = error;
           }
@@ -2246,14 +2248,18 @@ void sim_t::analyze_error()
     }
   }
 
-  if( mean_count > 0 )
+  if ( mean_count > 0 )
   {
-    current_mean = mean_total / mean_count;
-  }
-
-  if ( is_multiactor_metric )
-  {
-    current_error = sqrt( current_error );
+    if ( is_multiactor_metric )
+    {
+      current_error = current_error / current_mean;
+      // We're going to lie and call the sum the mean for multiactor metrics.
+      current_mean  = mean_total;
+    }
+    else
+    {
+      current_mean = mean_total / mean_count;
+    }
   }
 
   current_error *= 100;
