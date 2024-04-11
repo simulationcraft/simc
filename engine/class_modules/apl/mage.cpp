@@ -105,7 +105,7 @@ void arcane( player_t* p )
   default_->add_action( "use_item,name=darkmoon_deck_inferno,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down" );
   default_->add_action( "use_item,name=desperate_invokers_codex,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down" );
   default_->add_action( "use_item,name=iceblood_deathsnare,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down" );
-  default_->add_action( "use_item,name=belorrelos_the_suncaller,!variable.steroid_trinket_equipped|buff.siphon_storm.down|equipped.nymues_unraveling_spindle" );
+  default_->add_action( "use_item,name=belorrelos_the_suncaller,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down|equipped.nymues_unraveling_spindle" );
   default_->add_action( "use_item,name=dreambinder_loom_of_the_great_cycle" );
   default_->add_action( "use_item,name=iridal_the_earths_master,use_off_gcd=1,if=gcd.remains" );
   default_->add_action( "variable,name=aoe_cooldown_phase,op=set,value=1,if=active_enemies>=variable.aoe_target_count&(action.arcane_orb.charges>0|buff.arcane_charge.stack>=3)&(cooldown.radiant_spark.ready|!talent.radiant_spark)&(cooldown.touch_of_the_magi.remains<=(gcd.max*2)|!talent.touch_of_the_magi)" );
