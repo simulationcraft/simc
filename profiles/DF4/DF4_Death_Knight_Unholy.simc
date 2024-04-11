@@ -178,17 +178,17 @@ feet=fused_obsidian_sabatons,id=207156,bonus_id=10359/1488/10884
 finger1=seal_of_diurnas_chosen,id=195480,bonus_id=10359/1488/10884/6935,gem_id=192964,enchant=devotion_of_versatility_3
 finger2=seal_of_filial_duty,id=195526,bonus_id=10359/1495/10884/6935,gem_id=192964,enchant=devotion_of_haste_3
 trinket1=mirror_of_fractured_tomorrows,id=207581,bonus_id=10359/1481
-trinket2=whispering_incarnate_icon,id=194301,bonus_id=10359/1488/10884
+trinket2=neltharions_call_to_suffering,id=204211,bonus_id=10359/1495/10884
 main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1507/10884,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=528.53
-# gear_strength=13952
+# gear_ilvl=529.00
+# gear_strength=12669
 # gear_stamina=59011
 # gear_crit_rating=2836
 # gear_haste_rating=6534
 # gear_mastery_rating=5167
-# gear_versatility_rating=2823
+# gear_versatility_rating=3687
 # gear_armor=15445
 # set_bonus=dragonflight_season_4_2pc=1
 # set_bonus=dragonflight_season_4_4pc=1
