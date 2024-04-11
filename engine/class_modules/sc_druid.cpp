@@ -5795,53 +5795,58 @@ public:
   {
     druid_spell_t::consume_resource();
 
-    if ( is_free_proc() || !p()->talent.primordial_arcanic_pulsar.ok() )
+    if ( is_free_proc() )
       return;
 
-    if ( !p_buff->check() )
-      p_buff->trigger();
-
-    // pulsar accumulate based on the cost before any talents and effects
-    p_buff->current_value += base_cost();
-
-    if ( p_buff->check_value() >= p_cap )
+    if ( p()->talent.primordial_arcanic_pulsar.ok() )
     {
-      p_buff->current_value -= p_cap;
+      if ( !p_buff->check() )
+        p_buff->trigger();
 
-      if ( p()->talent.incarnation_moonkin.ok() && p()->get_form() != form_e::MOONKIN_FORM &&
-           !p()->buff.incarnation_moonkin->check() )
+      // pulsar accumulate based on the cost before any talents and effects
+      p_buff->current_value += base_cost();
+
+      if ( p_buff->check_value() >= p_cap )
       {
-        p()->active.shift_to_moonkin->execute();
+        p_buff->current_value -= p_cap;
+
+        if ( p()->talent.incarnation_moonkin.ok() && p()->get_form() != form_e::MOONKIN_FORM &&
+             !p()->buff.incarnation_moonkin->check() )
+        {
+          p()->active.shift_to_moonkin->execute();
+        }
+
+        // if both touch the cosmos and weaver are up when CA is triggered, both are expired after CA is triggered
+        bool expire_buffs = p()->buff.touch_the_cosmos->check() && weaver_buff->check();
+
+        p()->buff.ca_inc->extend_duration_or_trigger( p_time, p() );
+        p()->proc.pulsar->occur();
+
+        if ( expire_buffs )
+        {
+          p()->buff.touch_the_cosmos->expire();
+          weaver_buff->expire();
+        }
+
+        // Touch the cosmos will proc again after being used shortly after Pulsar is consumed in game
+        make_event( *sim, [ this ]() {
+          p()->buff.touch_the_cosmos->trigger();
+        } );
+
+        p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
+
+        make_event( *sim, p_time, [ this ]() {
+          p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
+        } );
       }
 
-      // if both touch the cosmos and weaver are up when CA is triggered, both are expired after CA is triggered
-      bool expire_buffs = p()->buff.touch_the_cosmos->check() && weaver_buff->check();
-
-      p()->buff.ca_inc->extend_duration_or_trigger( p_time, p() );
-      p()->proc.pulsar->occur();
-
-      if ( expire_buffs )
-      {
-        p()->buff.touch_the_cosmos->expire();
-        weaver_buff->expire();
-      }
-
-      // Touch the cosmos will proc again after being used shortly after Pulsar is consumed in game
-      make_event( *sim, [ this ]() { p()->buff.touch_the_cosmos->trigger(); } );
-
-      p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
-
-      make_event( *sim, p_time, [ this ]() {
-        p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
-      } );
+      // Purely visual indicator for the sample sequence
+      auto stack_value_difference = as<int>( p_buff->current_value ) / 10 - p_buff->check();
+      if ( stack_value_difference >= 0 )
+        p_buff->increment( stack_value_difference );
+      else
+        p_buff->decrement( abs( stack_value_difference ) );
     }
-
-    // Purely visual indicator for the sample sequence
-    auto stack_value_difference = as<int>( p_buff->current_value ) / 10 - p_buff->check();
-    if ( stack_value_difference >= 0 )
-      p_buff->increment( stack_value_difference );
-    else
-      p_buff->decrement( abs( stack_value_difference ) );
 
     // will consume touch the cosmos first, although weaver makes the cost 0
     if ( p()->buff.touch_the_cosmos->check() )
