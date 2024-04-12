@@ -6,6 +6,8 @@ race=human
 role=attack
 position=back
 talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAIikkEiERISSIISSkECIRkIJJJJJplAAAAAAAAAAAAA
+dragonflight.ominous_chromatic_essence_dragonflight=bronze
+dragonflight.ominous_chromatic_essence_allies=azure/emerald/obsidian/ruby
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -202,31 +204,31 @@ actions.variables+=/variable,name=breath_pooling_time,op=setif,value=((cooldown.
 actions.variables+=/variable,name=pooling_runes,value=rune<4&talent.obliteration&cooldown.pillar_of_frost.remains_expected<variable.oblit_pooling_time
 actions.variables+=/variable,name=pooling_runic_power,value=talent.breath_of_sindragosa&cooldown.breath_of_sindragosa.remains<variable.breath_pooling_time|talent.obliteration&runic_power<35&cooldown.pillar_of_frost.remains_expected<variable.oblit_pooling_time
 
-head=piercing_gaze_of_the_risen_nightmare,id=217223,bonus_id=10359/1488/6935,gem_id=192988,enchant=incandescent_essence
-neck=torc_of_passed_time,id=201759,bonus_id=10249/1508/8932/8782,gem_id=192945/192945/192945,crafted_stats=36/49
+head=piercing_gaze_of_the_risen_nightmare,id=217223,bonus_id=10359/1488/6935,gem_id=192982,enchant=incandescent_essence
+neck=torc_of_passed_time,id=201759,bonus_id=10249/1508/8932/8782,gem_id=192945/192945/192945,crafted_stats=32/49
 shoulders=skewers_of_the_risen_nightmare,id=217225,bonus_id=10359/1488
 back=voice_of_the_silent_star,id=204465,bonus_id=10359/1495
 chest=casket_of_the_risen_nightmare,id=217221,bonus_id=10359/1488,enchant=waking_stats_3
-wrists=primal_molten_vambraces,id=190502,bonus_id=10249/1508/8932/6935,gem_id=192948,crafted_stats=32/49
+wrists=primal_molten_vambraces,id=190502,bonus_id=10249/1508/8932/6935,gem_id=192945,crafted_stats=32/49
 hands=diamondetched_gauntlets,id=195506,bonus_id=10359/1488
-waist=phlegethic_girdle,id=207149,bonus_id=10359/1488/6935,ilevel=528,gem_id=192948
-legs=greaves_of_the_risen_nightmare,id=217224,bonus_id=10359/1488,ilevel=528,enchant=lambent_armor_kit_3
-feet=fused_obsidian_sabatons,id=207156,bonus_id=10359/1488
-finger1=seal_of_filial_duty,id=195526,bonus_id=10359/1488/6935,ilevel=535,gem_id=192945,enchant=devotion_of_haste_3
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=10359/1488/6935,gem_id=192948,enchant=devotion_of_haste_3
-trinket1=neltharions_call_to_suffering,id=204211,bonus_id=10359/1495
-trinket2=whispering_incarnate_icon,id=194301,bonus_id=10359/1488
+waist=smoldering_chevaliers_greatbelt,id=207157,bonus_id=10359/1488/6935,gem_id=192961
+legs=greaves_of_the_risen_nightmare,id=217224,bonus_id=10359/1488,enchant=lambent_armor_kit_3
+feet=lavaforged_sollerets,id=207148,bonus_id=10359/1488
+finger1=band_of_burning_thorns,id=207159,bonus_id=10359/1488/6935,gem_id=192961,enchant=devotion_of_critical_strike_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=10359/1488/6935,gem_id=192945,enchant=devotion_of_haste_3
+trinket1=cataclysmic_signet_brand,id=207166,bonus_id=10359/1488
+trinket2=ominous_chromatic_essence,id=203729,bonus_id=10359/1488
 main_hand=gholak_the_final_conflagration,id=207786,bonus_id=10359/1488,enchant=rune_of_the_fallen_crusader
 off_hand=strike_twice,id=193700,bonus_id=10359/1488,enchant=rune_of_hysteria
 
 # Gear Summary
-# gear_ilvl=528.94
-# gear_strength=12659
-# gear_stamina=58353
-# gear_crit_rating=4773
-# gear_haste_rating=4935
-# gear_mastery_rating=6031
-# gear_versatility_rating=2768
+# gear_ilvl=528.06
+# gear_strength=13942
+# gear_stamina=58043
+# gear_crit_rating=6003
+# gear_haste_rating=4978
+# gear_mastery_rating=4962
+# gear_versatility_rating=1640
 # gear_armor=15445
 # set_bonus=dragonflight_season_4_2pc=1
 # set_bonus=dragonflight_season_4_4pc=1
