@@ -426,7 +426,6 @@ public:
     // Balance
     double initial_astral_power = 0.0;
     int initial_moon_stage = static_cast<int>( moon_stage_e::NEW_MOON );
-    double initial_pulsar_value = 0.0;
     int initial_orbit_breaker_stacks = -1;
 
     // Feral
@@ -11537,19 +11536,6 @@ void druid_t::precombat_init()
       buff.orbit_breaker->trigger( stacks );
   }
 
-  if ( talent.primordial_arcanic_pulsar.ok() && options.initial_pulsar_value > 0 )
-  {
-    // Stacks are a purely visual indicator for the sample sequence
-    auto stacks = static_cast<int>( options.initial_pulsar_value / 10 );
-
-    // TODO: this doesn't work properly for values < 10
-    if ( stacks )
-    {
-      buff.primordial_arcanic_pulsar->trigger( stacks );
-      buff.primordial_arcanic_pulsar->current_value = options.initial_pulsar_value;
-    }
-  }
-
   if ( talent.rising_light_falling_night.ok() )
   {
     if ( timeofday == timeofday_e::DAY_TIME )
@@ -12226,7 +12212,7 @@ void druid_t::create_options()
   // Balance
   add_option( opt_float( "druid.initial_astral_power", options.initial_astral_power ) );
   add_option( opt_int( "druid.initial_moon_stage", options.initial_moon_stage ) );
-  add_option( opt_float( "druid.initial_pulsar_value", options.initial_pulsar_value ) );
+  add_option( opt_deprecated( "druid.initial_pulsar_value", "no longer applicable" ) );
   add_option( opt_int( "druid.initial_orbit_breaker_stacks", options.initial_orbit_breaker_stacks ) );
 
   // Feral
