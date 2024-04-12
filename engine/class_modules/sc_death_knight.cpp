@@ -9468,6 +9468,8 @@ void death_knight_t::init_items()
     case DEATH_KNIGHT_UNHOLY:
       tier_to_enable = T31;
       break;
+    default:
+      return;
   }
 
   if ( sets->has_set_bonus( specialization(), DF4, B2 ) )

@@ -1640,10 +1640,10 @@ void rashoks_molten_heart( special_effect_t& effect )
       : proc_heal_t( "molten_radiance_heal", base_driver.player, s, base_driver.item ),
         helpers{ false },
         buffs{ false },
+        base_driver( base_driver ),
         versatility_per_tick( base_driver.driver()->effectN( 2 ).average( base_driver.item ) ),
         use_true_overheal( base_driver.player->dragonflight_opts.rashoks_use_true_overheal ),
-        fake_overheal( base_driver.player->dragonflight_opts.rashoks_fake_overheal ),
-        base_driver( base_driver )
+        fake_overheal( base_driver.player->dragonflight_opts.rashoks_fake_overheal )
     {
       base_td = base_driver.driver()->effectN( 1 ).average( base_driver.item );
       versatility_per_tick *= ( base_tick_time / dot_duration );
@@ -1726,11 +1726,10 @@ void rashoks_molten_heart( special_effect_t& effect )
   {
     action_t* heal;
     buff_t* molten_radiance;
-
     int max_triggers;
 
     molten_radiance_cb_t( const special_effect_t& e, const special_effect_t& base_driver, buff_t* molten_radiance )
-      : dbc_proc_callback_t( e.player, e ), max_triggers( 10 ), molten_radiance( molten_radiance )
+      : dbc_proc_callback_t( e.player, e ), molten_radiance( molten_radiance ), max_triggers( 10 )
     {
       heal = new molten_radiance_heal_t( base_driver, effect.player->find_spell( 401186 ) );
       molten_radiance->set_default_value( 0 );

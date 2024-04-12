@@ -6964,6 +6964,8 @@ void hunter_t::init_items()
     case HUNTER_SURVIVAL:
       tier_to_enable = T29;
       break;
+    default:
+      return;
   }
 
   if ( sets -> has_set_bonus( specialization(), DF4, B2 ) )
