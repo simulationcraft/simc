@@ -267,7 +267,7 @@ namespace monk
 
         // These abilities are able to be used during Spinning Crane Kick
         if ( this->cast_during_sck )
-          this->usable_while_casting = p()->channeling && p()->spec.spinning_crane_kick && p()->channeling->id == p()->spec.spinning_crane_kick->id;
+          this->usable_while_casting = p()->channeling && p()->spec.spinning_crane_kick && ( p()->channeling->id == p()->spec.spinning_crane_kick->id() );
 
         return ab::ready();
       }
