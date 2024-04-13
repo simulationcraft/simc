@@ -11037,7 +11037,7 @@ std::string shaman_t::default_flask() const
 
 std::string shaman_t::default_food() const
 {
-  std::string elemental_food = ( true_level >= 61 ) ? "fated_fortune_cookie" :
+  std::string elemental_food = ( true_level >= 61 ) ? "sizzling_seafood_medley" :
                                ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
                                ( true_level >= 45 ) ? "mechdowels_big_mech" :
                                "disabled";
