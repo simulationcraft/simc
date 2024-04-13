@@ -6,20 +6,20 @@ spec=elemental
 talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSrUSCgDk0SShSgkkEBAAAAAoEQSJJoJg0SSahACJSgA
 # https://www.wowhead.com/talent-calc/shaman/elemental/DAQRFUVBRAASqJBUJAQCFQNVRRRVFSJVBoAUDBQA
 
-head=blazebound_lieutenants_helm,id=193765,bonus_id=1808,ilevel=528,gem_id=192988,enchant_id=7052
-neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/1615/8782,gem_id=192961/192961/192961,crafted_stats=36/40
+head=gatecrasher_giants_coif,id=202591,bonus_id=1808,ilevel=528,gem_id=192988,enchant_id=7052
+neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/1615/8782,gem_id=192964/192964/192964,crafted_stats=36/40
 shoulders=greatwolf_outcasts_companions,id=207207,ilevel=528
 back=voice_of_the_silent_star,id=204465,bonus_id=3524,ilevel=535
 chest=greatwolf_outcasts_harness,id=207212,ilevel=528,enchant_id=6625
-wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=8960/8840/8836/8902/1615/1808,gem_id=192961,crafted_stats=36/40
+wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=8960/8840/8836/8902/1615/1808,gem_id=192964,crafted_stats=36/40
 hands=greatwolf_outcasts_grips,id=207210,ilevel=528
-waist=gloomfused_chemistry_belt,id=202605,bonus_id=3524/1808,ilevel=528,gem_id=192961,enchant_id=6904
-legs=greatwolf_outcasts_furlined_kilt,id=207208,ilevel=528,enchant_id=6541
+waist=azure_belt_of_competition,id=193722,bonus_id=3524/1808,ilevel=528,gem_id=192964,enchant_id=6904
+legs=greatwolf_outcasts_furlined_kilt,id=207208,ilevel=528,enchant_id=6830
 feet=lightningcharged_striders,id=193685,ilevel=528
-finger1=seal_of_filial_duty,id=195526,bonus_id=1808,ilevel=535,gem_id=192961,enchant_id=6562
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=1808,ilevel=528,gem_id=192961,enchant_id=6562
-trinket1=whispering_incarnate_icon,id=194301,ilevel=528
-trinket2=belorrelos_the_suncaller,id=207172,ilevel=528
+finger1=seal_of_filial_duty,id=195526,bonus_id=1808,ilevel=535,gem_id=192964,enchant_id=6556
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=1808,ilevel=528,gem_id=192964,enchant_id=6568
+trinket1=umbrelskuls_fractured_heart,id=212684,bonus_id=3524,ilevel=528
+trinket2=ominous_chromatic_essence,id=203729,ilevel=528
 main_hand=vakash_the_shadowed_inferno,id=207788,ilevel=528,enchant_id=6655
 off_hand=broodsworn_legionnaires_pavise,id=195520,bonus_id=3524,ilevel=528
 
