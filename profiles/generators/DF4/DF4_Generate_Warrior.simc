@@ -53,7 +53,7 @@ trinket2=cataclysmic_signet_brand,id=207166,ilevel=528
 main_hand=fyralath_the_dreamrender,id=206448,ilevel=535,enchant=wafting_devotion_3
 off_hand=ashkandur_fall_of_the_brotherhood,id=202606,ilevel=528,enchant=wafting_devotion_3
 
-# save=DF4_Warrior_Fury.simc
+save=DF4_Warrior_Fury.simc
 
 # warrior="DF4_Warrior_Protection"
 # spec=protection
