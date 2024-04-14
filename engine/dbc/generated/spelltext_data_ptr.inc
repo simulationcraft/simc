@@ -1,5 +1,5 @@
-// Spell text, wow build 10.2.7.54171
-static const std::array<spelltext_data_t, 21142> __ptr_spelltext_data { {
+// Spell text, wow build 10.2.7.54253
+static const std::array<spelltext_data_t, 21145> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20841,6 +20841,7 @@ static const std::array<spelltext_data_t, 21142> __ptr_spelltext_data { {
   { 429921, "Combine $M2 Splintered Spark of Awakening with $M3 Flightstones to create a Spark of Awakening.", 0, 0 },
   { 429951, "$@spelldesc13877", 0, 0 },
   { 430023, "Ambush the target, causing $s1 Physical damage.$?s383281[\r\n\r\nHas a $193315s3% chance to hit an additional time, making your next Pistol Shot half cost and double damage.][]\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points;$?s383281[ each time it strikes][].|r", 0, 0 },
+  { 430836, "Heals $o1 damage over $d.", "Healing $w1 damage every second.", 0 },
   { 430846, "Your Soar is empowered after co-opting new flight techniques from the dragons of the Dragon Isles.\r\n\r\nSoar is now equivalent to dragonriding, granting access to vigor and all dragonriding abilities. \r\n\r\n", 0, "Racial Passive" },
   { 430935, "Soar's cooldown is reduced to $m2 sec.", 0, "Racial Passive" },
   { 431147, "Slash enemies in a short range in front of you.", 0, "Main Hand" },
@@ -20850,6 +20851,7 @@ static const std::array<spelltext_data_t, 21142> __ptr_spelltext_data { {
   { 431284, "Increases an Ally's Agility, Intellect and Strength by $s1 for $d, stacking up to 3 times.", "Agility, Intellect and Strength increased by $w1.", 0 },
   { 431501, "|CFFFFFFFF- Projectile|R\r\n|CFFFFFFFF- Hold to charge|R\r\n|CFFFFFFFF- Long range|R\r\n\r\n|CFFFFFFFF14 sec cooldown|R\r\nConjure a Mana Sphere, then project it forward damaging and knocking back enemies it passes through.\r\n\r\nHold to increase sphere size.", 0, "Offensive" },
   { 431709, "Embrace infinity, randomizing the look of your customizable dragonriding mounts.", "Each time you mount a customizable dragonriding mount, the customizations will be randomized.", 0 },
+  { 431760, "Grants the following aura.\r\n\r\n$@spellicon440393 $@spellname440393\r\n\r\nThe threads of time you find will be woven into this cloak, permanently increasing its power.", 0, 0 },
   { 431777, "|CFFFFFFFF- Caster AoE|R\r\n|CFFFFFFFF- Forced movement|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nEngulf yourself in flames and rush forward, damaging enemies you pass through.", 0, "Offensive" },
   { 431949, "Pull out a fancy white parasol for $d, allowing you to safely float down the next time you fall.", "Feeling fancy... and ready to float down safely in case of a fall.", 0 },
   { 431962, "Reduces your falling speed for $d.", "Falling speed reduced.", 0 },
@@ -21045,6 +21047,7 @@ static const std::array<spelltext_data_t, 21142> __ptr_spelltext_data { {
   { 440012, "$@spelldesc51886", 0, 0 },
   { 440013, "$@spelldesc213644.", 0, 0 },
   { 440015, "$@spelldesc2782", 0, 0 },
+  { 440393, 0, "|CFF20FF20Your cloak grants you the following stats:|R\r\n+$w1 $pri\r\n+$w2 Stamina\r\n+$w3 Critical Strike\r\n+$w4 Haste\r\n+$w5 Leech\r\n+$w6 Mastery\r\n+$w7 Speed\r\n+$w8 Versatility\r\n+$w9% Experience Gain", 0 },
   { 440537, "Awaken the power within Nasz'uro, the Unbound Legacy, increasing its item level to $s1 and allowing it to be upgraded further.\r\n", 0, 0 },
   { 440572, "Awaken the power within Fyr'alath the Dreamrender, increasing its item level to $s1 and allowing it to be upgraded further.", 0, 0 },
   { 441090, "$@spelldesc441092", 0, 0 },
@@ -21144,11 +21147,11 @@ static const std::array<spelltext_data_t, 21142> __ptr_spelltext_data { {
   { 447599, "$@spelldesc447598", "Absorbs $w2 damage.\r\nMovement speed decreased by $s3%.\r\nImmune to stuns and roots.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.7.54171
+// spelltext hotfix entries, wow build 10.2.7.54253
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.2.7.54171
+// Spell description variables, wow build 10.2.7.54253
 static const std::array<spelldesc_vars_data_t, 450> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -21602,7 +21605,7 @@ static const std::array<spelldesc_vars_data_t, 450> __ptr_spelldesc_vars_data { 
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.7.54171
+// spelldesc_vars hotfix entries, wow build 10.2.7.54253
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
