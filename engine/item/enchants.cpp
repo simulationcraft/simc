@@ -176,10 +176,15 @@ void enchant::initialize_item_enchant( item_t& item, std::vector<stat_pair_t>& s
       }
       case ITEM_ENCHANTMENT_APPLY_BONUS:
       {
-        auto bonuses = item.player->dbc->item_bonus( enchant.ench_prop[ i ] );
-        for ( auto& bonus : bonuses )
+        // If the bonus is already there, assume that it does not need to be applied because
+        // item strings may already contain the bonuses if the item was exported from the game.
+        if ( range::find( item.parsed.bonus_id, enchant.ench_prop[ i ] ) == item.parsed.bonus_id.end() )
         {
-          item_database::apply_item_bonus( item, bonus );
+          auto bonuses = item.player->dbc->item_bonus( enchant.ench_prop[ i ] );
+          for ( auto& bonus : bonuses )
+          {
+            item_database::apply_item_bonus( item, bonus );
+          }
         }
         break;
       }
