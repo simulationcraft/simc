@@ -12854,6 +12854,7 @@ void player_t::create_options()
   add_option( opt_uint( "dragonflight.verdant_conduit_allies", dragonflight_opts.verdant_conduit_allies, 0, 2 ) );
   add_option( opt_bool( "dragonflight.rashoks_use_true_overheal", dragonflight_opts.rashoks_use_true_overheal ) );
   add_option( opt_float( "dragonflight.rashoks_fake_overheal", dragonflight_opts.rashoks_fake_overheal, 0.0, 1.0 ) );
+  add_option( opt_string( "dragonflight.timerunners_advantage", dragonflight_opts.timerunners_advantage ) );
 
   // Obsolete options
 

@@ -794,6 +794,8 @@ struct player_t : public actor_t
     unsigned int verdant_conduit_allies = 0;
     bool rashoks_use_true_overheal      = false;
     double rashoks_fake_overheal        = 0.4;
+    // A list of stat amounts provided by the Timerunner's Advantage buff.
+    player_option_t<std::string> timerunners_advantage;
   } dragonflight_opts;
 
 private:

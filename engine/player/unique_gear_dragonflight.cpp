@@ -10783,6 +10783,53 @@ void obscure_pastel_stone( special_effect_t& effect )
 }
 }  // namespace primordial_stones
 
+namespace timerunning
+{
+/**Cloak of Infinite Potential
+ * 431760 item effect spell
+ * 440393 permanent stat aura
+ */
+void cloak_of_infinite_potential( special_effect_t& effect )
+{
+  std::map<stat_e, double> stat_amounts;
+  auto splits = util::string_split<std::string_view>( effect.player->dragonflight_opts.timerunners_advantage, "/" );
+  for ( auto s : splits )
+  {
+    auto pair = util::string_split<std::string_view>( s, ":" );
+    if ( pair.size() != 2 )
+      throw std::invalid_argument( fmt::format( "Invalid stat string for dragonflight.timerunners_advantage: {}.", s ) );
+    stat_e stat_type = util::parse_stat_type( pair[ 0 ] );
+    switch ( stat_type )
+    {
+      case STAT_STRENGTH:
+      case STAT_AGILITY:
+      case STAT_INTELLECT:
+      case STAT_AGI_INT:
+      case STAT_STR_AGI:
+      case STAT_STR_INT:
+      case STAT_STR_AGI_INT:
+      case STAT_STAMINA:
+      case STAT_CRIT_RATING:
+      case STAT_HASTE_RATING:
+      case STAT_LEECH_RATING:
+      case STAT_MASTERY_RATING:
+      case STAT_SPEED_RATING:
+      case STAT_VERSATILITY_RATING:
+        stat_amounts[ effect.player->convert_hybrid_stat( stat_type ) ] = util::to_double( pair[ 1 ] );
+        break;
+      default:
+        throw std::invalid_argument( fmt::format( "Invalid stat type in dragonflight.timerunners_advantage: {}.", pair[ 0 ] ) );
+    }
+  }
+
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 440393 ) );
+  for ( const auto [ stat_type, amount ] : stat_amounts )
+    debug_cast<stat_buff_t*>( buff )->add_stat( stat_type, amount );
+
+  effect.player->register_precombat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
+}
+}
+
 void register_special_effects()
 {
   // Food
@@ -10996,6 +11043,9 @@ void register_special_effects()
   // Divergent
   register_special_effect( 419290, items::timestrike );
   register_special_effect( 419261, items::demonsbane );
+
+  // Timerunning 10.2.7
+  register_special_effect( 431760, timerunning::cloak_of_infinite_potential );
 
   // Disabled
   register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)
