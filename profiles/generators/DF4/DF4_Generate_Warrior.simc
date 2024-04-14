@@ -1,54 +1,57 @@
-# warrior="DF4_Arms_Warrior"
-# spec=arms
-# level=70
-# race=human
-# role=attack
-# professions=blacksmithing=100/alchemy=100
-# talents=BcEAAAAAAAAAAAAAAAAAAAAAAAQplIRkQOQiSrkEAAAAQQEiCBUEJQEkEaSECQIhAAAAAAAAQSQSCIENEA
-
-# head=verdant_plate_crown,id=109986,bonus_id=6808/4786/9888/6935,gem_id=192982,enchant=incandescent_essence
-# neck=amulet_of_eonars_chosen,id=208445,bonus_id=7187/1520/8782,gem_id=192919/192919/192919
-# shoulders=molten_vanguards_shouldervents,id=207180,bonus_id=7187/1520
-# back=vibrant_wildercloth_shawl,id=193511,bonus_id=9500/9405/9379/8960,crafted_stats=36/40,enchant=graceful_avoidance_3
-# chest=molten_vanguards_plackart,id=207185,bonus_id=7187/1520,enchant=waking_stats_3
-# wrists=allied_wristguard_of_companionship,id=190526,bonus_id=9500/9405/8960/6935,gem_id=192919,enchant=devotion_of_avoidance_3
-# hands=molten_vanguards_crushers,id=207183,bonus_id=7187/1520
-# waist=unwinding_eon_girdle,id=207858,bonus_id=1582/6935,gem_id=192919,enchant=shadowed_belt_clasp_3
-# legs=molten_vanguards_steel_tassets,id=207181,bonus_id=7187/1520,enchant=frosted_armor_kit_3
-# feet=molten_vanguards_greatboots,id=207184,bonus_id=7187/1520,enchant=watchers_loam_3
-# finger1=ring_of_contempt,id=134490,bonus_id=3326/1514/6536/6646/6935,gem_id=192919,enchant=devotion_of_haste_3
-# finger2=archdruids_tainted_seal,id=134487,bonus_id=1514/3326/6646/6935,gem_id=192919,enchant=devotion_of_haste_3
-# trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-# trinket2=rezans_gleaming_eye,id=158712,bonus_id=1514/3317/6646
-# main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1468,enchant=wafting_devotion_3
-
-# save=DF4_Warrior_Arms.simc
+warrior="DF4_Arms_Warrior"
+spec=arms
+level=70
+race=human
+role=attack
+professions=blacksmithing=100/alchemy=100
+talents=BcEAAAAAAAAAAAAAAAAAAAAAAAQplIRkQkkSrkEAAAAQQEiCBUEJQIkEaSECQIhAAAAAAAAQSQSCIENEA
+dragonflight.ominous_chromatic_essence_dragonflight=emerald
+dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
 
 
-# warrior="DF4_Fury_Warrior"
-# spec=fury
-# level=70
-# race=human
-# role=attack
-# professions=blacksmithing=100/alchemy=100
-# talents=BgEAfuKaizEAgP2qANDB2hmf7HAAAAAAAAAACBCKBQESICENQICEJhEQkkESSSkERapkkAkEAAAEQQA
+head=thraexhelm_of_the_onyx_crucible,id=217218,bonus_id=523,ilevel=528,gem_id=192982,enchant=incandescent_essence
+neck=torc_of_passed_time,id=201759,bonus_id=8782/8932/8960/10249,ilevel=525,gem_id=192932/192932/192932,crafted_stats=36/49
+shoulders=pauldrons_of_the_onyx_crucible,id=217220,ilevel=528
+back=voice_of_the_silent_star,id=204465,ilevel=535,enchant=graceful_avoidance_3
+chest=battlechest_of_the_onyx_crucible,id=217216,ilevel=528,enchant=waking_stats_3
+wrists=allied_wristguard_of_companionship,id=190526,bonus_id=523/8960/10249,ilevel=525,gem_id=192932,enchant=devotion_of_avoidance_3
+hands=handguards_of_the_onyx_crucible,id=217217,ilevel=528
+waist=smoldering_chevaliers_greatbelt,id=207157,bonus_id=523,ilevel=528,gem_id=192932,enchant=shadowed_belt_clasp_3
+legs=obsidian_guards_chausses,id=202597,ilevel=528,enchant=frosted_armor_kit_3
+feet=fused_obsidian_sabatons,id=207156,ilevel=528,enchant=watchers_loam_3
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=523,ilevel=528,gem_id=192932,enchant=devotion_of_critical_strike_3
+finger2=seal_of_filial_duty,id=195526,bonus_id=523,ilevel=535,gem_id=192932,enchant=devotion_of_critical_strike_3
+trinket1=cataclysmic_signet_brand,id=207166,ilevel=528
+trinket2=ominous_chromatic_essence,id=203729,ilevel=528
+main_hand=fyralath_the_dreamrender,id=206448,ilevel=535,enchant=wafting_devotion_3
 
-# head=molten_vanguards_domeplate,id=207182,bonus_id=7187/1520/6935,gem_id=192988,enchant=incandescent_essence
-# neck=raven_filigree_pendant,id=134499,bonus_id=1514/3326/6646/8782,gem_id=192964/192964/192964
-# shoulders=molten_vanguards_shouldervents,id=207180,bonus_id=7187/1520
-# back=vibrant_wildercloth_shawl,id=193511,bonus_id=9500/9405/9379/8960,crafted_stats=36/40,enchant=graceful_avoidance_3
-# chest=molten_vanguards_plackart,id=207185,bonus_id=7187/1520,enchant=waking_stats_3
-# wrist=primal_molten_vambraces,id=190502,bonus_id=9500/9405/9379/8960/6935,gem_id=192919,crafted_stats=36/40,enchant=devotion_of_avoidance_3
-# hands=molten_vanguards_crushers,id=207183,bonus_id=7187/1520
-# waist=greatbelt_of_disruption,id=137310,bonus_id=1514/3326/6646/6935,gem_id=192964,enchant=shadowed_belt_clasp_3
-# legs=greaves_of_parallel_lives,id=207824,bonus_id=1579,enchant=lambent_armor_kit_3
-# feet=fatty_hooves_of_gory_comfort,id=159452,bonus_id=3317/1514/6646
-# finger1=signet_of_the_last_elder,id=207162,bonus_id=7187/1520/6935,gem_id=192964,enchant=devotion_of_mastery_3
-# finger2=archdruids_tainted_seal,id=134487,bonus_id=1514/3326/6646/6935,gem_id=192964,enchant=devotion_of_mastery_3 
-# trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-# trinket2=augury_of_the_primal_flame,id=208614,bonus_id=7187/1527
-# main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1468,enchant=wafting_devotion_3
-# off_hand=gnarlroots_bonecrusher,id=207800,bonus_id=7187/1520,enchant=wafting_devotion_3
+save=DF4_Warrior_Arms.simc
+
+
+warrior="DF4_Fury_Warrior"
+spec=fury
+level=70
+race=human
+role=attack
+professions=blacksmithing=100/alchemy=100
+talents=BgEAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAACBSoEARQISQUgEiARSIJpFRSSQyBkkkEpEgkQEAAAAEE
+
+head=thraexhelm_of_the_onyx_crucible,id=217218,bonus_id=523,ilevel=528,gem_id=192991,enchant=incandescent_essence
+neck=terross_captive_core,id=195502,bonus_id=8782,ilevel=528,gem_id=192961/192961/192961
+shoulders=pauldrons_of_the_onyx_crucible,id=217220,ilevel=528
+back=voice_of_the_silent_star,id=204465,ilevel=535,enchant=graceful_avoidance_3
+chest=battlechest_of_the_onyx_crucible,id=217216,ilevel=528,enchant=waking_stats_3
+wrists=primal_molten_vambraces,id=190502,bonus_id=523/9379/8960/10249,ilevel=525,gem_id=192961,crafted_stats=36/40,enchant=devotion_of_avoidance_3
+hands=handguards_of_the_onyx_crucible,id=217217,ilevel=528
+waist=matriarchs_opulent_girdle,id=195524,bonus_id=523,ilevel=528,gem_id=192961,enchant=shadowed_belt_clasp_3
+legs=seared_ironwood_greaves,id=207153,ilevel=528,enchant=frosted_armor_kit_3
+feet=primal_molten_sabatons,id=190496,bonus_id=9379/8960/10249,ilevel=525,crafted_stats=36/40,enchant=watchers_loam_3
+finger1=seal_of_filial_duty,id=195526,bonus_id=523,ilevel=535,gem_id=192961,enchant=devotion_of_haste_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=523,ilevel=528,gem_id=192961,enchant=devotion_of_haste_3
+trinket1=augury_of_the_primal_flame,id=208614,ilevel=535
+trinket2=cataclysmic_signet_brand,id=207166,ilevel=528
+main_hand=fyralath_the_dreamrender,id=206448,ilevel=535,enchant=wafting_devotion_3
+off_hand=ashkandur_fall_of_the_brotherhood,id=202606,ilevel=528,enchant=wafting_devotion_3
 
 # save=DF4_Warrior_Fury.simc
 

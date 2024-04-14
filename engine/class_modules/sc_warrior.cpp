@@ -8085,7 +8085,7 @@ std::string warrior_t::default_temporary_enchant() const
                               : "disabled";
 
   std::string arms_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:howling_rune_3"
+                              ? "main_hand:buzzing_rune_3"
                               : "disabled";
 
   std::string protection_temporary_enchant = ( true_level >= 60 )
