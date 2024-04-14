@@ -13,7 +13,7 @@ potion=elemental_potion_of_ultimate_power_3
 flask=iced_phial_of_corrupting_rage_3
 food=feisty_fish_sticks
 augmentation=draconic
-temporary_enchant=main_hand:howling_rune_3
+temporary_enchant=main_hand:buzzing_rune_3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -170,8 +170,8 @@ main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1468,enchant=wafting_devot
 # gear_ilvl=489.07
 # gear_strength=9844
 # gear_stamina=39357
-# gear_crit_rating=4331
-# gear_haste_rating=6769
+# gear_crit_rating=4641
+# gear_haste_rating=6459
 # gear_mastery_rating=2219
 # gear_versatility_rating=1737
 # gear_avoidance_rating=325

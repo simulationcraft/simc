@@ -15,7 +15,7 @@ potion=elemental_potion_of_ultimate_power_3
 flask=iced_phial_of_corrupting_rage_3
 food=feisty_fish_sticks
 augmentation=draconic
-temporary_enchant=main_hand:howling_rune_3
+temporary_enchant=main_hand:buzzing_rune_3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -172,8 +172,8 @@ main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,en
 # gear_ilvl=448.67
 # gear_strength=6254
 # gear_stamina=22503
-# gear_crit_rating=4845
-# gear_haste_rating=5909
+# gear_crit_rating=5155
+# gear_haste_rating=5599
 # gear_mastery_rating=1817
 # gear_versatility_rating=793
 # gear_armor=8558
