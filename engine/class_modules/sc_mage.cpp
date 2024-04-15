@@ -2050,14 +2050,17 @@ struct fire_mage_spell_t : public mage_spell_t
 
   void spread_ignite( player_t* primary )
   {
-    auto source = primary->get_dot( "ignite", player );
+    if ( !p()->action.ignite )
+      return;
+
+    auto source = p()->action.ignite->get_dot( primary );
     if ( source->is_ticking() )
     {
       std::vector<dot_t*> ignites;
 
       // Collect the Ignite DoT objects of all targets that are in range.
       for ( auto t : target_list() )
-        ignites.push_back( t->get_dot( "ignite", player ) );
+        ignites.push_back( p()->action.ignite->get_dot( t ) );
 
       // Sort candidate Ignites by ascending bank size.
       std::stable_sort( ignites.begin(), ignites.end(), [] ( dot_t* a, dot_t* b )
