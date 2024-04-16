@@ -4,6 +4,8 @@ race=tauren
 role=spell
 spec=elemental
 talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSrUSCgDk0SShSgkkEBAAAAAoEQSJJoJg0SSahACJSgA
+dragonflight.ominous_chromatic_essence_dragonflight=azure
+dragonflight.ominous_chromatic_essence_allies=emerald/bronze/obsidian/ruby
 # https://www.wowhead.com/talent-calc/shaman/elemental/DAQRFUVBRAASqJBUJAQCFQNVRRRVFSJVBoAUDBQA
 
 head=gatecrasher_giants_coif,id=202591,bonus_id=1808,ilevel=528,gem_id=192988,enchant_id=7052
