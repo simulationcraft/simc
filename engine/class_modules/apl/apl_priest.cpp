@@ -215,8 +215,6 @@ void shadow_ptr( player_t* p )
   cds->add_action( "blood_fury,if=buff.power_infusion.up|fight_remains<=15" );
   cds->add_action( "ancestral_call,if=buff.power_infusion.up|fight_remains<=15" );
   cds->add_action( "use_item,name=nymues_unraveling_spindle,if=variable.dots_up&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<3+gcd.max|fight_remains<15)", "Use Nymue's before we go into our cooldowns" );
-  cds->add_action( "use_item,name=belorrelos_the_suncaller,use_off_gcd=1,if=gcd.remains>0&(!raid_event.adds.exists&!prev_gcd.1.mindbender|raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5)|fight_remains<20", "Use Belor'relos, the Suncaller before we go into our cooldowns" );
-  cds->add_action( "divine_star,if=(raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5)&equipped.belorrelos_the_suncaller&trinket.belorrelos_the_suncaller.cooldown.remains<=gcd.max", "Fit in a Divine Star as you cast Belor's for the free GCD." );
   cds->add_action( "power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)", "Sync Power Infusion with Voidform or Dark Ascension" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)&!buff.power_infusion.up", "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=194249/voidform'>Voidform</a> or <a href='https://www.wowhead.com/spell=391109/dark-ascension'>Dark Ascension</a> is active. Chain directly after your own <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a>." );
   cds->add_action( "void_eruption,if=!cooldown.fiend.up&(pet.fiend.active&cooldown.fiend.remains>=4|!talent.mindbender|active_enemies>2&!talent.inescapable_torment.rank)&(cooldown.mind_blast.charges=0|time>15)", "Make sure Mindbender is active before popping Void Eruption and dump charges of Mind Blast before casting" );
@@ -234,6 +232,7 @@ void shadow_ptr( player_t* p )
   filler->add_action( "halo,if=spell_targets>1", "Save up to 20s if adds are coming soon." );
   filler->add_action( "power_word_life,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up", "Using a heal with no damage kickbacks for TOF is damage neutral, so we will do it." );
   filler->add_action( "call_action_list,name=empowered_filler" );
+  filler->add_action( "divine_star,if=equipped.rashoks_molten_heart&(active_allies-(10-buff.molten_radiance.value))>=10&buff.molten_radiance.up" );
   filler->add_action( "mind_spike,target_if=max:dot.devouring_plague.remains" );
   filler->add_action( "mind_flay,target_if=max:dot.devouring_plague.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
   filler->add_action( "divine_star" );
@@ -256,14 +255,15 @@ void shadow_ptr( player_t* p )
   main->add_action( "void_bolt,if=variable.dots_up" );
   main->add_action( "call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up&(talent.rhapsody|talent.divine_star|talent.halo)" );
   main->add_action( "devouring_plague,if=fight_remains<=duration+4", "Spend your Insanity on Devouring Plague at will if the fight will end in less than 10s" );
-  main->add_action( "devouring_plague,target_if=!talent.distorted_reality|active_enemies=1|remains<=gcd.max,if=insanity.deficit<=35&talent.distorted_reality|buff.power_infusion.up|buff.dark_ascension.up", "Use Devouring Plague to maximize uptime. Short circuit if you are capping on Insanity within 20 or to get out an extra Void Bolt by extending Voidform. With Distorted Reality can maintain more than one at a time in multi-target." );
-  main->add_action( "shadow_word_death,if=set_bonus.tier31_2pc", ",if=(remains<=gcd.max|remains<3&cooldown.void_torrent.remains<=gcd)|insanity.deficit<=20|buff.voidform.up&cooldown.void_bolt.remains>buff.voidform.remains&cooldown.void_bolt.remains<=buff.voidform.remains+2|buff.mind_devourer.up&pmultiplier<1.2" );
+  main->add_action( "devouring_plague,target_if=!talent.distorted_reality|active_enemies=1|remains<=gcd.max,if=insanity.deficit<=35&talent.distorted_reality|buff.voidform.up|buff.dark_ascension.up", "Use Devouring Plague to maximize uptime. Short circuit if you are capping on Insanity within 20 or to get out an extra Void Bolt by extending Voidform. With Distorted Reality can maintain more than one at a time in multi-target." );
+  main->add_action( "void_torrent,if=!variable.holding_crash&talent.idol_of_cthun&cooldown.mind_blast.full_recharge_time>=3&talent.void_eruption,target_if=dot.devouring_plague.remains>=2.5" );
+  main->add_action( "shadow_word_death,if=set_bonus.tier31_2pc" );
   main->add_action( "shadow_crash,if=!variable.holding_crash&(dot.vampiric_touch.refreshable|buff.deaths_torment.stack>9&set_bonus.tier31_4pc&active_enemies>1)", "Use Shadow Crash as long as you are not holding for adds and Vampiric Touch is within pandemic range" );
   main->add_action( "shadow_word_pain,if=buff.deaths_torment.stack>9&set_bonus.tier31_4pc&active_enemies=1", "Consume T31 4pc SWPs" );
   main->add_action( "shadow_word_death,if=variable.dots_up&talent.inescapable_torment&pet.fiend.active&((!talent.insidious_ire&!talent.idol_of_yoggsaron)|buff.deathspeaker.up)&!set_bonus.tier31_2pc", "Use Shadow Word: Death with Inescapable Torment and Mindbender active and not talented into Insidious Ire and Yogg or Deathspeaker is active" );
   main->add_action( "vampiric_touch,target_if=min:remains,if=refreshable&target.time_to_die>=12&(cooldown.shadow_crash.remains>=dot.vampiric_touch.remains|variable.holding_crash|!talent.whispering_shadows)&(!action.shadow_crash.in_flight|!talent.whispering_shadows)", "Put out Vampiric Touch on enemies that will live at least 12s and Shadow Crash is not available soon" );
   main->add_action( "mind_blast,if=(!buff.mind_devourer.up|cooldown.void_eruption.up&talent.void_eruption)", "Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );
-  main->add_action( "void_torrent,if=!variable.holding_crash,target_if=dot.devouring_plague.remains>=2.5,interrupt_if=cooldown.shadow_word_death.ready&pet.fiend.active&set_bonus.tier31_2pc", "Void Torrent if you are not holding Shadow Crash for an add pack coming, prefer the target with the most DoTs active. Only cast if Devouring Plague is on that target and will last at least 2 seconds" );
+  main->add_action( "void_torrent,if=!variable.holding_crash&(!talent.idol_of_cthun|!talent.void_eruption),target_if=dot.devouring_plague.remains>=2.5,interrupt_if=cooldown.shadow_word_death.ready&pet.fiend.active&set_bonus.tier31_2pc", "Void Torrent if you are not holding Shadow Crash for an add pack coming, prefer the target with the most DoTs active. Only cast if Devouring Plague is on that target and will last at least 2 seconds" );
   main->add_action( "call_action_list,name=filler", "Cast Mindgames if all DoTs will be active by the time the cast finishes" );
 
   heal_for_tof->add_action( "halo", "Use Halo to acquire Twist of Fate if an ally can be healed for it and it is not currently up." );
@@ -279,7 +279,8 @@ void shadow_ptr( player_t* p )
   trinkets->add_action( "use_item,name=conjured_chillglobe" );
   trinkets->add_action( "use_item,name=iceblood_deathsnare,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.iceblood_deathsnare>=5)|fight_remains<20" );
   trinkets->add_action( "use_item,name=erupting_spear_fragment,if=(buff.power_infusion.up|raid_event.adds.up|fight_remains<20)&equipped.erupting_spear_fragment", "Use Erupting Spear Fragment with cooldowns, adds are currently active, or the fight will end in less than 20 seconds" );
-  trinkets->add_action( "use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=gcd.remains>0&(!raid_event.adds.exists|raid_event.adds.up|spell_targets.beacon_to_the_beyond>=5|fight_remains<20)&equipped.beacon_to_the_beyond", "Use Beacon to the Beyond on cooldown except to hold for incoming adds or if already facing 5 or more targets" );
+  trinkets->add_action( "use_item,name=belorrelos_the_suncaller,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5|fight_remains<20)&equipped.belorrelos_the_suncaller", "Use Belor'relos on cooldown except to hold for incoming adds or if already facing 5 or more targets" );
+  trinkets->add_action( "use_item,name=beacon_to_the_beyond,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.beacon_to_the_beyond>=5|fight_remains<20)&equipped.beacon_to_the_beyond", "Use Beacon to the Beyond on cooldown except to hold for incoming adds or if already facing 5 or more targets" );
   trinkets->add_action( "use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60)|fight_remains<20" );
   trinkets->add_action( "use_item,name=desperate_invokers_codex,if=equipped.desperate_invokers_codex" );
 }
