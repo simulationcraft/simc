@@ -1356,6 +1356,47 @@ public:
           player->find_spelleffect( player->find_class_spell( "Hover" ), A_CAST_WHILE_MOVING_WHITELIST, 0, &ab::data() )
               ->ok();
 
+      const auto spell_powers = ab::data().powers();
+      if ( spell_powers.size() == 1 && spell_powers.front().aura_id() == 0 )
+      {
+        ab::resource_current = spell_powers.front().resource();
+      }
+      else
+      {
+        // Find the first power entry without a aura id
+        auto it = range::find( spell_powers, 0U, &spellpower_data_t::aura_id );
+        if ( it != spell_powers.end() )
+        {
+          ab::resource_current = it->resource();
+        }
+        else
+        {
+          auto it = range::find( spell_powers, p()->specialization_aura_id(), &spellpower_data_t::aura_id );
+          if ( it != spell_powers.end() )
+          {
+            ab::resource_current = it->resource();
+          }
+        }
+      }
+
+      for ( const spellpower_data_t& pd : spell_powers )
+      {
+        if ( pd.aura_id() != 0 && pd.aura_id() != p()->specialization_aura_id() )
+          continue;
+
+        if ( pd._cost != 0 )
+          ab::base_costs[ pd.resource() ] = pd.cost();
+        else
+          ab::base_costs[ pd.resource() ] = floor( pd.cost() * p()->resources.base[ pd.resource() ] );
+
+        ab::secondary_costs[ pd.resource() ] = pd.max_cost();
+
+        if ( pd._cost_per_tick != 0 )
+          ab::base_costs_per_tick[ pd.resource() ] = pd.cost_per_tick();
+        else
+          ab::base_costs_per_tick[ pd.resource() ] = floor( pd.cost_per_tick() * p()->resources.base[ pd.resource() ] );
+      }
+
       p()->apply_affecting_auras_late( *this );
 
       apply_buff_effects();
@@ -1482,7 +1523,7 @@ public:
   {
     if ( ab::data().powers().size() > 1 && ab::current_resource() != ab::data().powers()[ 0 ].resource() )
       return Base::cost_flat_modifier();
-    
+
     return ab::cost_flat_modifier();
   }
 
