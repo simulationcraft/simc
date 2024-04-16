@@ -225,14 +225,15 @@ void shadow_ptr( player_t* p )
   filler->add_action( "vampiric_touch,target_if=min:remains,if=buff.unfurling_darkness.up", "Cast Vampiric Touch to consume Unfurling Darkness, prefering the target with the lowest DoT duration active" );
   filler->add_action( "call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up&(talent.rhapsody|talent.divine_star|talent.halo)" );
   filler->add_action( "power_word_shield,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up&talent.crystalline_reflection", "Use PWS with CR talented to trigger TOF if there are no better alternatives available to do this as we still get insanity for a PWS cast." );
-  filler->add_action( "shadow_word_death,target_if=target.health.pct<20|(buff.deathspeaker.up|set_bonus.tier31_2pc)&dot.devouring_plague.ticking" );
   filler->add_action( "call_action_list,name=empowered_filler,if=dot.devouring_plague.remains>action.mind_spike.cast_time|!talent.mind_spike" );
-  filler->add_action( "mindgames,target_if=max:dot.devouring_plague.remains" );
+  filler->add_action( "shadow_word_death,target_if=target.health.pct<20|(buff.deathspeaker.up|set_bonus.tier31_2pc)&dot.devouring_plague.ticking" );
   filler->add_action( "shadow_word_death,target_if=min:target.time_to_die,if=talent.inescapable_torment&pet.fiend.active" );
+  filler->add_action( "mindgames,target_if=max:dot.devouring_plague.remains" );
+  filler->add_action( "devouring_plague,if=buff.voidform.up|cooldown.dark_ascension.up|buff.mind_devourer.up" );
   filler->add_action( "halo,if=spell_targets>1", "Save up to 20s if adds are coming soon." );
   filler->add_action( "power_word_life,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up", "Using a heal with no damage kickbacks for TOF is damage neutral, so we will do it." );
   filler->add_action( "call_action_list,name=empowered_filler" );
-  filler->add_action( "divine_star,if=equipped.rashoks_molten_heart&(active_allies-(10-buff.molten_radiance.value))>=10&buff.molten_radiance.up" );
+  filler->add_action( "call_action_list,name=heal_for_tof,if=equipped.rashoks_molten_heart&(active_allies-(10-buff.molten_radiance.value))>=10&buff.molten_radiance.up,line_cd=5" );
   filler->add_action( "mind_spike,target_if=max:dot.devouring_plague.remains" );
   filler->add_action( "mind_flay,target_if=max:dot.devouring_plague.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
   filler->add_action( "divine_star" );
@@ -255,7 +256,7 @@ void shadow_ptr( player_t* p )
   main->add_action( "void_bolt,if=variable.dots_up" );
   main->add_action( "call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up&(talent.rhapsody|talent.divine_star|talent.halo)" );
   main->add_action( "devouring_plague,if=fight_remains<=duration+4", "Spend your Insanity on Devouring Plague at will if the fight will end in less than 10s" );
-  main->add_action( "devouring_plague,target_if=!talent.distorted_reality|active_enemies=1|remains<=gcd.max,if=insanity.deficit<=35&talent.distorted_reality|buff.voidform.up|buff.dark_ascension.up", "Use Devouring Plague to maximize uptime. Short circuit if you are capping on Insanity within 20 or to get out an extra Void Bolt by extending Voidform. With Distorted Reality can maintain more than one at a time in multi-target." );
+  main->add_action( "devouring_plague,target_if=!talent.distorted_reality|active_enemies=1|remains<=gcd.max,if=insanity.deficit<=35&talent.distorted_reality|buff.dark_ascension.up|buff.mind_devourer.up&cooldown.mind_blast.up", "Use Devouring Plague to maximize uptime. Short circuit if you are capping on Insanity within 20 or to get out an extra Void Bolt by extending Voidform. With Distorted Reality can maintain more than one at a time in multi-target." );
   main->add_action( "void_torrent,if=!variable.holding_crash&talent.idol_of_cthun&cooldown.mind_blast.full_recharge_time>=3&talent.void_eruption,target_if=dot.devouring_plague.remains>=2.5" );
   main->add_action( "shadow_word_death,if=set_bonus.tier31_2pc" );
   main->add_action( "shadow_crash,if=!variable.holding_crash&(dot.vampiric_touch.refreshable|buff.deaths_torment.stack>9&set_bonus.tier31_4pc&active_enemies>1)", "Use Shadow Crash as long as you are not holding for adds and Vampiric Touch is within pandemic range" );
