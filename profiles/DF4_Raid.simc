@@ -48,6 +48,6 @@ DF4_Shaman_Elemental.simc
 # DF4_Warlock_Demonology.simc
 # DF4_Warlock_Destruction.simc
 
-# DF4_Warrior_Arms.simc
-# DF4_Warrior_Fury.simc
-# DF4_Warrior_Protection.simc
+DF4_Warrior_Arms.simc
+DF4_Warrior_Fury.simc
+DF4_Warrior_Protection.simc
