@@ -1683,6 +1683,37 @@ void warlock_t::init_spells()
   talents.soulburn_buff = find_spell( 387626 );
 }
 
+void warlock_t::init_items()
+{
+  player_t::init_items();
+  
+  set_bonus_type_e tier_to_enable;
+  switch ( specialization() )
+  {
+    case WARLOCK_AFFLICTION:
+      tier_to_enable = T31;
+      break;
+    case WARLOCK_DEMONOLOGY:
+      tier_to_enable = T31;
+      break;
+    case WARLOCK_DESTRUCTION:
+      tier_to_enable = T29;
+      break;
+    default:
+      return;
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+  {
+    sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+  {
+    sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
+  }
+}
+
 void warlock_t::init_rng()
 {
   if ( specialization() == WARLOCK_AFFLICTION )
