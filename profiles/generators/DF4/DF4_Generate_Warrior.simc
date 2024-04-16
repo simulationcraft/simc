@@ -55,30 +55,30 @@ off_hand=ashkandur_fall_of_the_brotherhood,id=202606,ilevel=528,enchant=wafting_
 
 save=DF4_Warrior_Fury.simc
 
-# warrior="DF4_Warrior_Protection"
-# spec=protection
-# level=70
-# race=dwarf
-# role=tank
-# position=front
-# professions=blacksmithing=100/jewelcrafting=100
-# talents=BkEAAAAAAAAAAAAAAAAAAAAAAIEBAAAASSCJJItkSSSaNEBCFJQJJBgIJJ0QSCAOQkAAAAAAAARAApoAAC
+warrior="DF4_Warrior_Protection"
+spec=protection
+level=70
+race=dwarf
+role=tank
+position=front
+professions=blacksmithing=100/jewelcrafting=100
+talents=BkEAAAAAAAAAAAAAAAAAAAAAAIEBAAAASSCJJItkSSSaNEBCFJQJJBgIJJ0QSCAOQkAAAAAAAARAApoAAC
 
-# head=molten_vanguards_domeplate,id=207182,bonus_id=7187/1520/6935,gem_id=192991,enchant=incandescent_essence
-# neck=amulet_of_eonars_chosen,id=208445,bonus_id=7187/1520/8782,gem_id=192945/192945/192945
-# shoulder=molten_vanguards_shouldervents,id=207180,bonus_id=7187/1520
-# back=vibrant_wildercloth_shawl,id=193511,bonus_id=9500/9405/9379/8960,crafted_stats=32/36
-# chest=carapace_of_the_unbending_flame,id=207154,bonus_id=7187/1520,enchant=waking_stats_3
-# wrist=primal_molten_vambraces,id=190502,bonus_id=9500/9405/9379/6935/8960,gem_id=192945,crafted_stats=36/40
-# hands=molten_vanguards_crushers,id=207183,bonus_id=7187/1520
-# waist=girdle_of_burgeoning_apathy,id=159450,bonus_id=3317/1514/6935,gem_id=192945,enchant=shadowed_belt_clasp_3
-# legs=molten_vanguards_steel_tassets,id=207181,bonus_id=7187/1520,enchant=frosted_armor_kit_3
-# feet=goldsteel_sabatons,id=109795,bonus_id=6808/4786/9888
-# finger1=ring_of_contempt,id=134490,bonus_id=3326/1514/6536/6646/6935,gem_id=192945,enchant=devotion_of_versatility_3
-# finger2=seal_of_the_regal_loa,id=159458,bonus_id=3317/1514/6935,gem_id=192945,enchant=devotion_of_versatility_3
-# trinket1=augury_of_the_primal_flame,id=208614,bonus_id=7187/1527
-# trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-# main_hand=gholak_the_final_conflagration,id=207786,bonus_id=7187/1520,enchant=wafting_devotion_3
-# off_hand=defender_of_the_ancient,id=207797,bonus_id=4800/4786/1520/9576
+head=thraexhelm_of_the_onyx_crucible,id=217218,bonus_id=6935,ilevel=528,gem_id=192985,enchant=incandescent_essence
+neck=terross_captive_core,id=195502,bonus_id=8782,gem_id=192952/192952/192952,ilevel=528
+shoulders=pauldrons_of_the_onyx_crucible,id=217220,ilevel=528
+back=voice_of_the_silent_star,id=204465,bonus_id=8767,ilevel=535,enchant=homebound_speed_3
+chest=datheas_cyclonic_cage,id=195494,ilevel=528,enchant=waking_stats_3
+wrists=primal_molten_vambraces,id=190502,bonus_id=9379/6935/8960,gem_id=192945,ilevel=525,crafted_stats=32/36
+hands=handguards_of_the_onyx_crucible,id=217217,ilevel=528
+waist=primal_molten_greatbelt,id=190501,bonus_id=9379/8960/10249/6935,gem_id=192952,ilevel=525,crafted_stats=32/36
+legs=legplates_of_the_onyx_crucible,id=217219,ilevel=528,enchant=frosted_armor_kit_3
+feet=spittleresistant_sollerets,id=204396,bonus_id=8767,ilevel=528,enchant=plainsrunners_breeze_3
+finger1=emissarys_flamewrought_seal,id=201992,bonus_id=6935/8767,gem_id=192952,ilevel=528,enchant=devotion_of_haste_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6935/8767,gem_id=192952,ilevel=528,enchant=devotion_of_haste_3
+trinket1=cataclysmic_signet_brand,id=207166,bonus_id=8767,ilevel=528
+trinket2=elementium_pocket_anvil,id=202617,bonus_id=8767,ilevel=528
+main_hand=gholak_the_final_conflagration,id=207786,bonus_id=8767,ilevel=528,enchant=wafting_devotion_3
+off_hand=defender_of_the_ancient,id=207797,bonus_id=8767,ilevel=528
 
-# save=DF4_Warrior_Protection.simc
+save=DF4_Warrior_Protection.simc
