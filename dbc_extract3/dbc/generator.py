@@ -2080,7 +2080,12 @@ class SpellDataGenerator(DataGenerator):
           ( 393565, 3 ), # Thunderfist buff
           ( 395413, 3 ), # Fae Exposure Healing Buff
           ( 395414, 3 ), # Fae Exposure Damage Debuff
-
+          ( 451298, 3 ), # Momentum Boost (Buff)
+          ( 451433, 3 ), # Acclamation (Buff)
+          ( 451833, 3 ), # Dual Threat (Buff)
+          ( 451457, 3 ), # Martial Mixture (Buff)
+          ( 451582, 3 ), # Gale Force (Debuff)
+            
           # Covenant
           ( 325217, 0 ), # Necrolord Bonedust Brew damage
           ( 325218, 0 ), # Necrolord Bonedust Brew heal
@@ -2149,6 +2154,31 @@ class SpellDataGenerator(DataGenerator):
           ( 425298, 1 ), # BrM 2-piece Charred Dreams Healing
           ( 425299, 1 ), # BrM 2-piece Charred Dreams Damage
           ( 425965, 1 ), # BrM 4-piece Celestial Brew Guard
+            
+          # Shado-Pan
+
+          ( 451061, 0 ), # Against All Odds (Buff)
+          ( 451021, 0 ), # Flurry Charge (Buff)
+          ( 451085, 0 ), # Veteran's Eye (Buff)
+          ( 451233, 0 ), # Vigilant Watch (Buff)
+          ( 451242, 0 ), # Wisdom of the Wall (Buff)
+            
+          # Conduit of the Celestials
+
+          ( 442850, 0 ), # August Dynasty (Buff)
+          ( 443572, 0 ), # Crane Stance
+          ( 443424, 0 ), # Heart of the Jade Serpent (Stacking Buff)
+          ( 443616, 0 ), # Heart of the Jade Serpent (Buff)
+          ( 443574, 0 ), # Ox Stance
+          ( 443576, 0 ), # Serpent Stance
+          ( 443112, 0 ), # Strength of the Black Ox (Buff)
+          ( 443575, 0 ), # Tiger Stance
+
+          # Master of Harmony
+
+          ( 450711, 0 ), # Aspect of Harmony (Buff) (Vitality)
+          ( 451299, 0 ), # Mantra of Tenacity Chi Cocoon 
+        
         ),
 
         # Druid:
