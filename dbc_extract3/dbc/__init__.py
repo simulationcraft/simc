@@ -118,6 +118,7 @@ KEY_FIELD_HOTFIX_RECORD = {
     'TraitCond'                   : 'id_trait_tree',
     'TraitNode'                   : 'id_trait_tree',
     'TraitNodeGroup'              : 'id_trait_tree',
+    'TraitSubTree'                : 'id_trait_tree',
     'TraitTreeLoadout'            : 'id_trait_tree',
     'TraitTreeLoadoutEntry'       : 'id_trait_tree_loadout',
     'TraitTreeXTraitCurrency'     : 'id_trait_tree',

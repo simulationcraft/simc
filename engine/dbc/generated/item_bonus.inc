@@ -1,5 +1,5 @@
 // Item bonuses, wow build 11.0.0.54311
-static const std::array<item_bonus_entry_t, 16911> __item_bonus_data { {
+static const std::array<item_bonus_entry_t, 16912> __item_bonus_data { {
   {     2,    1,  2,       7,   15789,       0,       0,  0 },
   {   899,    1,  4,    2015,       0,       0,       0,  1 },
   {   971,    1,  7,       1,       1,       0,       0,  2 },
@@ -16911,5 +16911,6 @@ static const std::array<item_bonus_entry_t, 16911> __item_bonus_data { {
   { 23923, 11189,  6,       3,      24,       0,       0,  2 },
   { 23924, 11190, 11,       0,       0,       0,   75318,  0 },
   { 23925, 11190, 27,   70856,       0,       0,       0,  1 },
+  { 23926, 11191, 13,       0,     200,       0,   71409,  0 },
 } };
 
