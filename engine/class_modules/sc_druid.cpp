@@ -5188,6 +5188,23 @@ struct frenzied_regeneration_t : public bear_attacks::rage_spender_t<druid_heal_
 
     if ( p->talent.guardian_of_elune.ok() )
       goe_mul = p->buff.guardian_of_elune->data().effectN( 2 ).percent();
+
+    if ( p->talent.empowered_shapeshifting.ok() )
+    {
+      form_mask |= CAT_FORM;
+
+      base_costs[ RESOURCE_ENERGY ] =
+          find_effect( p->talent.empowered_shapeshifting, this, A_ADD_FLAT_MODIFIER, P_RESOURCE_COST_1 )
+              .resource( RESOURCE_ENERGY );
+    }
+  }
+
+  resource_e current_resource() const override
+  {
+    if ( p()->talent.empowered_shapeshifting.ok() && p()->buff.cat_form->check() )
+      return RESOURCE_ENERGY;
+    else
+      return base_t::current_resource();
   }
 
   void execute() override
