@@ -4784,7 +4784,7 @@ class TraitGenerator(DataGenerator):
     def filter(self):
         return TraitSet(self._options).get()
 
-    def _generate_table(self, data):
+    def _generate_table(self, data, subtrees):
         for entry in data:
             fields = []
 
@@ -4811,10 +4811,12 @@ class TraitGenerator(DataGenerator):
             fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["specs"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["specs"]))])} }}')
             fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["starter"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["starter"]))])} }}')
 
-            if entry['entry'].id_trait_sub_tree != 0:
-                fields += entry['entry'].field('id_trait_sub_tree')
-            else:
-                fields += entry['node'].field('id_trait_sub_tree')
+            _subtree = entry['entry'].id_trait_sub_tree
+            if _subtree == 0:
+                _subtree = entry['node'].id_trait_sub_tree
+            if _subtree != 0:
+                subtrees.add(_subtree)
+            fields.append(f'{_subtree}')
 
             self.output_record(fields)
 
@@ -4824,13 +4826,15 @@ class TraitGenerator(DataGenerator):
             key=lambda v: (v['tree'], v['class_'], v['entry'].id)
         )
 
+        subtrees = set()
+
         self.output_header(
                 header='Player trait definitions',
                 type='trait_data_t',
                 array='trait_data',
                 length=len(data))
 
-        self._generate_table(sorted_data)
+        self._generate_table(sorted_data, subtrees)
 
         self.output_footer()
 
@@ -4860,6 +4864,19 @@ class TraitGenerator(DataGenerator):
         self.output_id_index(
             index = [ index for _, index in sorted(trait_spell_index) ],
             array = 'trait_spell')
+
+        # Hero trees
+        self.output_header(
+            header='Hero trees',
+            type='std::pair<unsigned, std::string>',
+            array='trait_sub_tree',
+            length=len(subtrees)
+        )
+
+        for e in sorted(subtrees):
+            self.output_record([str(e), '"{}"'.format(self.db('TraitSubTree')[e].name)])
+
+        self.output_footer()
 
         """
         print(

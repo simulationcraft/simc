@@ -40,6 +40,7 @@ struct trait_data_t
   static const trait_data_t* find_tokenized( talent_tree tree, util::string_view name, unsigned class_id, specialization_e spec, bool ptr = false );
   static std::vector<const trait_data_t*> find_by_spell( talent_tree tree, unsigned spell_id, unsigned class_id = 0, specialization_e spec = SPEC_NONE, bool ptr = false );
   static const trait_data_t* find_by_trait_definition( unsigned trait_definition_id, bool ptr = false );
+  static const std::string_view get_hero_tree_name( unsigned id_sub_tree, bool ptr = false );
 
   static util::span<const trait_data_t> data( bool ptr = false );
   static util::span<const trait_data_t> data( talent_tree tree, bool ptr = false );
@@ -47,6 +48,7 @@ struct trait_data_t
 
   static const trait_data_t& nil()
   { return dbc::nil<trait_data_t>; }
+
 };
 
 struct trait_definition_effect_entry_t

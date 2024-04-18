@@ -192,6 +192,18 @@ const trait_data_t* trait_data_t::find_by_trait_definition( unsigned trait_defin
   return &( nil() );
 }
 
+const std::string_view trait_data_t::get_hero_tree_name( unsigned id_sub_tree, bool ptr )
+{
+  auto _data = SC_DBC_GET_DATA( __trait_sub_tree_data, __ptr_trait_sub_tree_data, ptr );
+  auto _it = range::find( _data, id_sub_tree, &std::pair<unsigned, std::string>::first );
+
+  if ( _it != _data.end() )
+  {
+    return _it->second;
+  }
+
+  return {};
+}
 
 util::span<const trait_definition_effect_entry_t> trait_definition_effect_entry_t::data( bool ptr )
 {

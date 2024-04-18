@@ -1997,6 +1997,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   size_t class_points = 0;
   size_t spec_points = 0;
   size_t hero_points = 0;
+  std::set<unsigned> hero_trees;  // future proof for multiple trees
 
   for ( auto t : p.player_traits )
   {
@@ -2004,12 +2005,25 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
     auto trait = trait_data_t::find( std::get<1>( t ), maybe_ptr( p.dbc->ptr ) );
     auto rank = std::get<2>( t );
 
+    // TODO: confirm if some of the tree=0 nodes are indicators of selected hero tree which we can use instead of
+    // inserting the sub tree id for every hero talent
     switch ( std::get<0>( t ) )
     {
-      case talent_tree::CLASS:          tree = &class_traits; class_points += rank; break;
-      case talent_tree::SPECIALIZATION: tree = &spec_traits;  spec_points += rank;  break;
-      case talent_tree::HERO:           tree = &hero_traits;  hero_points += rank;  break;
-      default: continue;
+      case talent_tree::CLASS:
+        tree = &class_traits;
+        class_points += rank;
+        break;
+      case talent_tree::SPECIALIZATION:
+        tree = &spec_traits;
+        spec_points += rank;
+        break;
+      case talent_tree::HERO:
+        tree = &hero_traits;
+        hero_points += rank;
+        hero_trees.insert( trait->id_sub_tree );
+        break;
+      default:
+        continue;
     }
 
     tree->at( trait->row - 1 ).emplace_back( trait, rank );
@@ -2083,25 +2097,30 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   }
   os << "</table>\n";
 
-  os.format( "<table class=\"sc\"><tr><th>Row</th><th>Hero Talents [{}]</th></tr>\n", hero_points );
-
-  for ( uint32_t row = 0; row < HERO_TREE_ROWS; row++ )
+  for ( auto id : hero_trees )
   {
-    os.format( "<tr><th class=\"left\">{}</th><td><ul class=\"float\">\n", row + 1 );
+    os.format( "<table class=\"sc\"><tr><th>Row</th><th>{} Talents [{}]</th></tr>\n",
+               trait_data_t::get_hero_tree_name( id ),
+               hero_points );
 
-    for ( auto entry : hero_traits[ row ] )
+    for ( uint32_t row = 0; row < HERO_TREE_ROWS; row++ )
     {
-      bool partial = entry.second != entry.first->max_ranks;
+      os.format( "<tr><th class=\"left\">{}</th><td><ul class=\"float\">\n", row + 1 );
 
-      os.format( "<li class=\"nowrap{}\">{} [{}]{}</li>\n",
-                  partial ? " filler" : "",
-                  report_decorators::decorated_spell_data( *p.sim, p.find_spell( entry.first->id_spell ) ),
-                  entry.second,
-                  partial ? "<b>*</b>" : "" );
+      for ( auto entry : hero_traits[ row ] )
+      {
+        bool partial = entry.second != entry.first->max_ranks;
+
+        os.format( "<li class=\"nowrap{}\">{} [{}]{}</li>\n",
+                    partial ? " filler" : "",
+                    report_decorators::decorated_spell_data( *p.sim, p.find_spell( entry.first->id_spell ) ),
+                    entry.second,
+                    partial ? "<b>*</b>" : "" );
+      }
+      os << "</ul></td></tr>\n";
     }
-    os << "</ul></td></tr>\n";
+    os << "</table>\n";
   }
-  os << "</table>\n";
 
   // Close the talent table div only if it exists.
   if ( num_players == 1 )
