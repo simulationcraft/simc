@@ -789,6 +789,9 @@ public:
     heal_t* frailty_heal        = nullptr;
     spell_t* fiery_brand_t30    = nullptr;
     spell_t* sigil_of_flame_t31 = nullptr;
+
+    // Aldrachi Reaver
+    attack_t* art_of_the_glaive = nullptr;
   } active;
 
   // Pets
@@ -4623,6 +4626,14 @@ struct blade_dance_base_t : public demon_hunter_attack_t
           p()->buff.restless_hunter->expire();
         }
       }
+
+      if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.glaive_flurry->up() &&
+           p()->active.art_of_the_glaive )
+      {
+        // TOCHECK: how does this apply AoE scaling, so let's make it only primary target for now
+        p()->active.art_of_the_glaive->execute_on_target( target );
+        p()->buff.glaive_flurry->expire();
+      }
     }
   };
 
@@ -5812,6 +5823,14 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
     // Soul fragments consumed are capped for Soul Cleave
     p()->consume_soul_fragments( soul_fragment::ANY, true, static_cast<unsigned>( data().effectN( 3 ).base_value() ) );
+
+    if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.glaive_flurry->up() &&
+         p()->active.art_of_the_glaive )
+    {
+      // TOCHECK: how does this apply AoE scaling, so let's make it only primary target for now
+      p()->active.art_of_the_glaive->execute_on_target( target );
+      p()->buff.glaive_flurry->expire();
+    }
   }
 };
 
@@ -6026,6 +6045,8 @@ struct reavers_glaive_t : public demon_hunter_attack_t
   reavers_glaive_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_attack_t( "reavers_glaive", p, p->hero_spec.reavers_glaive, options_str )
   {
+    apply_affecting_aura( p->talent.aldrachi_reaver.keen_engagement );
+
     execute_action        = p->get_background_action<reavers_glaive_damage_t>( "reavers_glaive_damage" );
     execute_action->stats = stats;
   }
@@ -6159,6 +6180,32 @@ struct soul_carver_t : public demon_hunter_attack_t
     demon_hunter_attack_t::tick( d );
 
     p()->spawn_soul_fragment( soul_fragment::LESSER, as<unsigned int>( data().effectN( 4 ).base_value() ) );
+  }
+};
+
+struct art_of_the_glaive_t : public demon_hunter_attack_t
+{
+  struct art_of_the_glaive_damage_t : public demon_hunter_attack_t
+  {
+    art_of_the_glaive_damage_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_attack_t( name, p, p->hero_spec.art_of_the_glaive_damage->effectN( 1 ).trigger() )
+    {
+      background = dual = true;
+      may_miss = may_parry = may_dodge = false;  // TOCHECK
+    }
+  };
+
+  art_of_the_glaive_damage_t *first, *second, *third;
+
+  art_of_the_glaive_t( util::string_view name, demon_hunter_t* p )
+    : demon_hunter_attack_t( name, p, p->hero_spec.art_of_the_glaive_damage )
+  {
+    background = dual = true;
+
+    first        = p->get_background_action<art_of_the_glaive_damage_t>( fmt::format( "{}_first", name ) );
+    second       = p->get_background_action<art_of_the_glaive_damage_t>( fmt::format( "{}_second", name ) );
+    third        = p->get_background_action<art_of_the_glaive_damage_t>( fmt::format( "{}_third", name ) );
+    first->stats = second->stats = third->stats = stats;
   }
 };
 
@@ -7849,7 +7896,7 @@ void demon_hunter_t::init_spells()
   hero_spec.art_of_the_glaive_buff =
       talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444661 ) : spell_data_t::not_found();
   hero_spec.art_of_the_glaive_damage =
-      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444806 ) : spell_data_t::not_found();
+      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444810 ) : spell_data_t::not_found();
 
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };
@@ -8003,6 +8050,11 @@ void demon_hunter_t::init_spells()
     throw_glaive_t* throw_glaive_ds_throw = get_background_action<throw_glaive_t>(
         "throw_glaive_ds_throw", "", throw_glaive_t::glaive_source::DEATH_SWEEP_THROW );
     active.throw_glaive_ds_throw = throw_glaive_ds_throw;
+  }
+
+  if ( talent.aldrachi_reaver.art_of_the_glaive->ok() )
+  {
+    active.art_of_the_glaive = get_background_action<art_of_the_glaive_t>( "art_of_the_glaive" );
   }
 }
 
