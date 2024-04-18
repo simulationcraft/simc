@@ -32,6 +32,7 @@ struct trait_data_t
   const char* name;
   std::array<unsigned, 5> id_spec;
   std::array<unsigned, 5> id_spec_starter;
+  unsigned    id_sub_tree;  // hero talent tree
 
   // static functions
   static const trait_data_t* find( unsigned trait_node_entry_id, bool ptr = false );
