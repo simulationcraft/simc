@@ -756,7 +756,6 @@ public:
     player_talent_t starfire;
     player_talent_t starsurge;
     player_talent_t sunfire;
-    player_talent_t swiftmend;
     player_talent_t thick_hide;
     player_talent_t thrash;
     player_talent_t tiger_dash;
@@ -5647,7 +5646,7 @@ struct renewal_t : public druid_heal_t
 // Swiftmend ================================================================
 struct swiftmend_t : public druid_heal_t
 {
-  DRUID_ABILITY( swiftmend_t, druid_heal_t, "swiftmend", p->talent.swiftmend ) {}
+  DRUID_ABILITY( swiftmend_t, druid_heal_t, "swiftmend", p->find_specialization_spell( "Swiftmend" ) ) {}
 
   bool target_ready( player_t* t ) override
   {
@@ -9339,7 +9338,6 @@ void druid_t::init_spells()
   talent.starfire                       = CT( "Starfire" );
   talent.starsurge                      = CT( "Starsurge" );
   talent.sunfire                        = CT( "Sunfire" );
-  talent.swiftmend                      = CT( "Swiftmend" );
   talent.thick_hide                     = CT( "Thick Hide" );
   talent.thrash                         = CT( "Thrash" );
   talent.tireless_pursuit               = CT( "Tireless Pursuit" );
