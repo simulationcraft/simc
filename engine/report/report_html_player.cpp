@@ -1988,12 +1988,15 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
     return;
 
   static constexpr unsigned TREE_ROWS = 10;
+  static constexpr unsigned HERO_TREE_ROWS = 5;
   using talentrank_t = std::pair<const trait_data_t*, unsigned>;
 
   std::array<std::vector<talentrank_t>, TREE_ROWS> class_traits;
   std::array<std::vector<talentrank_t>, TREE_ROWS> spec_traits;
+  std::array<std::vector<talentrank_t>, TREE_ROWS> hero_traits;
   size_t class_points = 0;
   size_t spec_points = 0;
+  size_t hero_points = 0;
 
   for ( auto t : p.player_traits )
   {
@@ -2005,6 +2008,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
     {
       case talent_tree::CLASS:          tree = &class_traits; class_points += rank; break;
       case talent_tree::SPECIALIZATION: tree = &spec_traits;  spec_points += rank;  break;
+      case talent_tree::HERO:           tree = &hero_traits;  hero_points += rank;  break;
       default: continue;
     }
 
@@ -2015,6 +2019,9 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
     range::sort( row, []( talentrank_t a, talentrank_t b ) { return a.first->col < b.first->col; } );
 
   for ( auto &row : spec_traits )
+    range::sort( row, []( talentrank_t a, talentrank_t b ) { return a.first->col < b.first->col; } );
+
+  for ( auto &row : hero_traits )
     range::sort( row, []( talentrank_t a, talentrank_t b ) { return a.first->col < b.first->col; } );
 
   os << "<div class=\"player-section talents\">\n"
@@ -2071,6 +2078,26 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
                  report_decorators::decorated_spell_data( *p.sim, p.find_spell( entry.first->id_spell ) ),
                  entry.second,
                  partial ? "<b>*</b>" : "" );
+    }
+    os << "</ul></td></tr>\n";
+  }
+  os << "</table>\n";
+
+  os.format( "<table class=\"sc\"><tr><th>Row</th><th>Hero Talents [{}]</th></tr>\n", hero_points );
+
+  for ( uint32_t row = 0; row < HERO_TREE_ROWS; row++ )
+  {
+    os.format( "<tr><th class=\"left\">{}</th><td><ul class=\"float\">\n", row + 1 );
+
+    for ( auto entry : hero_traits[ row ] )
+    {
+      bool partial = entry.second != entry.first->max_ranks;
+
+      os.format( "<li class=\"nowrap{}\">{} [{}]{}</li>\n",
+                  partial ? " filler" : "",
+                  report_decorators::decorated_spell_data( *p.sim, p.find_spell( entry.first->id_spell ) ),
+                  entry.second,
+                  partial ? "<b>*</b>" : "" );
     }
     os << "</ul></td></tr>\n";
   }

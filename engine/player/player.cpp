@@ -2561,11 +2561,15 @@ static bool generate_tree_nodes( player_t* player,
 
   auto class_data = trait_data_t::data( class_idx, talent_tree::CLASS, maybe_ptr( player->dbc->ptr ) );
   auto spec_data = trait_data_t::data( class_idx, talent_tree::SPECIALIZATION, maybe_ptr( player->dbc->ptr ) );
+  auto hero_data = trait_data_t::data( class_idx, talent_tree::HERO, maybe_ptr( player->dbc->ptr ) );
 
   for ( const auto& trait : class_data )
     tree_nodes[ trait.id_node ].emplace_back( &trait, 0 );
 
   for ( const auto& trait : spec_data )
+    tree_nodes[ trait.id_node ].emplace_back( &trait, 0 );
+
+  for ( const auto& trait : hero_data )
     tree_nodes[ trait.id_node ].emplace_back( &trait, 0 );
 
   return true;
@@ -2905,6 +2909,7 @@ void player_t::init_talents()
 
     parse_traits( talent_tree::CLASS, class_talents_str, this );
     parse_traits( talent_tree::SPECIALIZATION, spec_talents_str, this );
+    parse_traits( talent_tree::HERO, hero_talents_str, this );
   }
 
   // Generate talent effect overrides based on parsed trait information
@@ -11689,23 +11694,22 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   // talents
   if ( splits.size() >= 2 && splits[ 0 ] == "talent" )
   {
-    const auto ctalent = find_talent_spell( talent_tree::CLASS,
-        splits[ 1 ], specialization(), true );
-    const auto stalent = find_talent_spell( talent_tree::SPECIALIZATION,
-        splits[ 1 ], specialization(), true );
+    const auto ctalent = find_talent_spell( talent_tree::CLASS, splits[ 1 ], specialization(), true );
+    const auto stalent = find_talent_spell( talent_tree::SPECIALIZATION, splits[ 1 ], specialization(), true );
+    const auto htalent = find_talent_spell( talent_tree::HERO, splits[ 1 ], specialization(), true );
 
-    if ( ctalent.invalid() && stalent.invalid() )
+    if ( ctalent.invalid() && stalent.invalid() && htalent.invalid() )
     {
       throw std::invalid_argument(fmt::format("Cannot find talent '{}'.", splits[ 1 ]));
     }
 
     if ( splits.size() == 2 || ( splits.size() == 3 && splits[ 2 ] == "enabled" ) )
     {
-      return expr_t::create_constant( expression_str, ctalent.enabled() || stalent.enabled() );
+      return expr_t::create_constant( expression_str, ctalent.enabled() || stalent.enabled() || htalent.enabled() );
     }
     else if ( splits.size() == 3 && splits[ 2 ] == "rank" )
     {
-      return expr_t::create_constant( expression_str, std::max( ctalent.rank(), stalent.rank() ) );
+      return expr_t::create_constant( expression_str, std::max( { ctalent.rank(), stalent.rank(), htalent.rank() } ) );
     }
 
     throw std::invalid_argument(
@@ -12163,6 +12167,11 @@ std::string player_t::create_profile( save_e stype )
       profile_str += "spec_talents=" + spec_talents_str + term;
     }
 
+    if ( !hero_talents_str.empty() )
+    {
+      profile_str += "hero_talents=" + hero_talents_str + term;
+    }
+
     if ( !talent_overrides_str.empty() )
     {
       auto splits = util::string_split<util::string_view>( talent_overrides_str, "/" );
@@ -12473,6 +12482,7 @@ void player_t::copy_from( player_t* source )
   parse_talent_url( sim, "talents", source->talents_str );
   class_talents_str = source->class_talents_str;
   spec_talents_str  = source->spec_talents_str;
+  hero_talents_str  = source->hero_talents_str;
   player_traits     = source->player_traits;
   shadowlands_opts  = source->shadowlands_opts;
   dragonflight_opts = source->dragonflight_opts;
@@ -12584,12 +12594,15 @@ void player_t::create_options()
   add_option( opt_bool( "disable_hotfixes", disable_hotfixes ) );
   add_option( opt_func( "min_gcd", parse_min_gcd ) );
 
+  // Talents
   add_option( opt_string( "class_talents", class_talents_str ) );
   add_option( opt_append( "class_talents+", class_talents_str ) );
-
   add_option( opt_string( "spec_talents", spec_talents_str ) );
   add_option( opt_append( "spec_talents+", spec_talents_str ) );
-  // Cosumables
+  add_option( opt_string( "hero_talents", hero_talents_str ) );
+  add_option( opt_append( "hero_talents+", hero_talents_str ) );
+
+  // Consumables
   add_option( opt_string( "potion", potion_str ) );
   add_option( opt_string( "flask", flask_str ) );
   add_option( opt_string( "phial", flask_str ) );
