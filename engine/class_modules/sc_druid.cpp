@@ -12489,6 +12489,25 @@ void druid_t::target_mitigation( school_e school, result_amount_type type, actio
   if ( spec.ursine_adept->ok() && buff.bear_form->check() )
     s->result_amount *= 1.0 + spec.ursine_adept->effectN( 2 ).percent();
 
+  // as this is run-time, we can't use find_effect. TODO: possibly cache these values somewhere
+  if ( talent.glistening_fur.ok() )
+  {
+    if ( buff.bear_form->check() )
+    {
+      if ( dbc::has_common_school( school, SCHOOL_ARCANE ) )
+        s->result_amount *= 1.0 + buff.bear_form->data().effectN( 14 ).percent();
+      else
+        s->result_amount *= 1.0 + buff.bear_form->data().effectN( 13 ).percent();
+    }
+    else if ( buff.moonkin_form->check() )
+    {
+      if ( dbc::has_common_school( school, SCHOOL_ARCANE ) )
+        s->result_amount *= 1.0 + buff.moonkin_form->data().effectN( 13 ).percent();
+      else
+        s->result_amount *= 1.0 + buff.moonkin_form->data().effectN( 12 ).percent();
+    }
+  }
+
   if ( s->action->player != this )
   {
     if ( talent.pulverize.ok() )
