@@ -1656,8 +1656,8 @@ public:
     parse_effects( p()->buff.balance_of_all_things_arcane, p()->talent.balance_of_all_things );
     parse_effects( p()->buff.balance_of_all_things_nature, p()->talent.balance_of_all_things );
     // due to 4t31, we parse the damage effects (#1/#7) separately and use the current buff value instead of data value
-    parse_effects( p()->buff.eclipse_lunar, 0b1000001U, p()->talent.umbral_intensity );
-    parse_effects( p()->buff.eclipse_lunar, 0b0111110U, USE_CURRENT );
+    parse_effects( p()->buff.eclipse_lunar, 0b01000001U, p()->talent.umbral_intensity );
+    parse_effects( p()->buff.eclipse_lunar, 0b10111110U, USE_CURRENT );
     // due to 4t31, we parse the damage effects (#1/#8) separately and use the current buff value instead of data value
     parse_effects( p()->buff.eclipse_solar, 0b10000001U, p()->talent.umbral_intensity );
     parse_effects( p()->buff.eclipse_solar, 0b01111110U, USE_CURRENT );
