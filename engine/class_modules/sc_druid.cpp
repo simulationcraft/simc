@@ -8201,7 +8201,7 @@ struct wild_mushroom_t : public druid_spell_t
   struct wild_mushroom_damage_t : public druid_spell_t
   {
     action_t* fungal = nullptr;
-    double ap_per = 5.0;  // not in spell data
+    double ap_per = 4.0;  // not in spell data
     double ap_max;
 
     wild_mushroom_damage_t( druid_t* p )
