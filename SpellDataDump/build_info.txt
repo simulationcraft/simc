@@ -1,1 +1,1 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.6.54205 Live (hotfix 2024-04-17/54205, git build data-update-live-54205 9802626)
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54311 thewarwithin-BETA ()
