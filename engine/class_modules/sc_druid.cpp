@@ -1038,6 +1038,7 @@ public:
     // Baseline
     const spell_data_t* bear_form_override;  // swipe/thrash
     const spell_data_t* bear_form_passive;
+    const spell_data_t* bear_form_passive_2;
     const spell_data_t* cat_form_override;  // swipe/thrash
     const spell_data_t* cat_form_passive;
     const spell_data_t* cat_form_speed;
@@ -9606,6 +9607,7 @@ void druid_t::init_spells()
   // Baseline
   spec.bear_form_override       = find_spell( 106829 );
   spec.bear_form_passive        = find_spell( 1178 );
+  spec.bear_form_passive_2      = find_spell( 21178 );
   spec.cat_form_override        = find_spell( 48629 );
   spec.cat_form_passive         = find_spell( 3025 );
   spec.cat_form_speed           = find_spell( 113636 );
@@ -12506,6 +12508,13 @@ void druid_t::target_mitigation( school_e school, result_amount_type type, actio
       else
         s->result_amount *= 1.0 + buff.moonkin_form->data().effectN( 12 ).percent();
     }
+  }
+
+  // TODO: this is currently bugged as it modifies the wrong effect
+  if ( !bugs && talent.empowered_shapeshifting.ok() && buff.bear_form->check() &&
+       spec.bear_form_passive_2->effectN( 3 ).has_common_school( school ) )
+  {
+    s->result_amount *= 1.0 + talent.empowered_shapeshifting->effectN( 4 ).percent();
   }
 
   if ( s->action->player != this )
