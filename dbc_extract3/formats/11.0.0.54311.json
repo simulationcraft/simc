@@ -1834,7 +1834,7 @@
       { "data_type": "i", "field": "pos_y" },
       { "data_type": "B", "field": "type" },
       { "data_type": "i", "field": "flags" },
-      { "data_type": "i", "field": "id_trait_sub_tree" }
+      { "data_type": "i", "field": "id_trait_sub_tree", "ref": "TraitSubTree" }
     ]
   },
   "TraitNodeEntry": {
@@ -1843,7 +1843,7 @@
       { "data_type": "i", "field": "id_trait_definition", "ref": "TraitDefinition" },
       { "data_type": "i", "field": "max_ranks" },
       { "data_type": "B", "field": "type" },
-      { "data_type": "i", "field": "id_trait_sub_tree" }
+      { "data_type": "i", "field": "id_trait_sub_tree", "ref": "TraitSubTree" }
     ]
   },
   "TraitNodeGroup": {

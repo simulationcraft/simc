@@ -542,6 +542,10 @@ class TraitSet(DataSet):
                     for cond in node['cond'] if cond.type == 2
                 )
 
+                # hero tree nodes have a non-zero TraitNode.id_trait_sub_tree
+                if node['node'].id_trait_sub_tree != 0:
+                    tree_index = 3
+
                 for entry, db2_id in node['entries']:
                     key = entry.id
                     definition = entry.ref('id_trait_definition')
