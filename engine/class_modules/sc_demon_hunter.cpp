@@ -395,9 +395,9 @@ public:
       player_talent_t agonizing_flames;
       player_talent_t extended_spikes;
       player_talent_t burning_blood;
-      player_talent_t soul_barrier;     // NYI
+      player_talent_t soul_barrier;  // NYI
       player_talent_t bulk_extraction;
-      player_talent_t revel_in_pain;    // NYI
+      player_talent_t revel_in_pain;  // NYI
 
       player_talent_t void_reaver;
       player_talent_t fallout;
@@ -430,6 +430,27 @@ public:
 
     } vengeance;
 
+    struct aldrachi_reaver_talents_t
+    {
+      player_talent_t art_of_the_glaive;  // NYI
+
+      player_talent_t keen_engagement;     // NYI
+      player_talent_t preemptive_strike;   // NYI
+      player_talent_t evasive_action;      // NYI
+      player_talent_t unhindered_assault;  // NYI
+      player_talent_t incisive_blade;      // NYI
+
+      player_talent_t aldrachi_tactics;      // NYI
+      player_talent_t army_unto_oneself;     // NYI
+      player_talent_t incorruptible_spirit;  // NYI
+      player_talent_t wounded_quarry;        // NYI
+
+      player_talent_t intent_pursuit;    // NYI
+      player_talent_t escalation;        // NYI
+      player_talent_t warblades_hunger;  // NYI
+
+      player_talent_t thrill_of_the_fight;  // NYI
+    } aldrachi_reaver;
   } talent;
 
   // Spell Data
@@ -2862,7 +2883,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
     dot_t* get_dot( player_t* t ) override
     {
-      if (!data().ok())
+      if ( !data().ok() )
         return nullptr;
 
       if ( !t )
@@ -2964,7 +2985,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
   dot_t* get_dot( player_t* t ) override
   {
-    if (!data().ok())
+    if ( !data().ok() )
       return nullptr;
     return dot_action->get_dot( t );
   }
@@ -3077,7 +3098,8 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
   timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
   {
     // 2023-10-21 -- Ascending Flame Sigil of Flame refreshes use normal DoT REFRESH_DURATION dot_behavior.
-    if (p()->talent.vengeance.ascending_flame->ok()) {
+    if ( p()->talent.vengeance.ascending_flame->ok() )
+    {
       return action_t::calculate_dot_refresh_duration( dot, triggered_duration );
     }
     // 2023-10-21 -- Non-Ascending Flame Sigil of Flame refreshes _truncate_ the existing DoT and apply a fresh DoT.
@@ -3455,9 +3477,9 @@ struct immolation_aura_t : public demon_hunter_spell_t
     }
   };
 
-  //TODO: 2023-12-19: With the change from 30% to 25% proc chance, AFI seems to no longer be
-  //                  a simple deck of cards system. Need to figure out exactly how it works
-  //                  but until then we use a flat chance from spell data again.                        
+  // TODO: 2023-12-19: With the change from 30% to 25% proc chance, AFI seems to no longer be
+  //                   a simple deck of cards system. Need to figure out exactly how it works
+  //                   but until then we use a flat chance from spell data again.
   double afi_chance;
 
   immolation_aura_t( demon_hunter_t* p, util::string_view options_str )
@@ -4185,8 +4207,8 @@ struct sigil_of_misery_t : public demon_hunter_spell_t
   {
     if ( data().ok() )
     {
-      sigil = p->get_background_action<sigil_of_misery_sigil_t>( "sigil_of_misery_sigil",
-                                                                 p->spec.sigil_of_misery_debuff, ground_aoe_duration );
+      sigil        = p->get_background_action<sigil_of_misery_sigil_t>( "sigil_of_misery_sigil",
+                                                                        p->spec.sigil_of_misery_debuff, ground_aoe_duration );
       sigil->stats = stats;
     }
   }
@@ -4231,8 +4253,8 @@ struct sigil_of_silence_t : public demon_hunter_spell_t
   {
     if ( data().ok() )
     {
-      sigil = p->get_background_action<sigil_of_silence_sigil_t>( "sigil_of_silence_sigil",
-                                                                  p->spec.sigil_of_silence_debuff, ground_aoe_duration );
+      sigil = p->get_background_action<sigil_of_silence_sigil_t>(
+          "sigil_of_silence_sigil", p->spec.sigil_of_silence_debuff, ground_aoe_duration );
       sigil->stats = stats;
     }
   }
@@ -4277,8 +4299,8 @@ struct sigil_of_chains_t : public demon_hunter_spell_t
   {
     if ( data().ok() )
     {
-      sigil = p->get_background_action<sigil_of_chains_sigil_t>( "sigil_of_chains_sigil",
-                                                                 p->spec.sigil_of_chains_debuff, ground_aoe_duration );
+      sigil        = p->get_background_action<sigil_of_chains_sigil_t>( "sigil_of_chains_sigil",
+                                                                        p->spec.sigil_of_chains_debuff, ground_aoe_duration );
       sigil->stats = stats;
     }
   }
@@ -6433,7 +6455,7 @@ struct calcified_spikes_t : public demon_hunter_buff_t<buff_t>
 {
   calcified_spikes_t( demon_hunter_t* p ) : base_t( *p, "calcified_spikes", p->spec.calcified_spikes_buff )
   {
-    auto max_stacks = std::max( 1, as<int>( data().duration() / 1_s ) );
+    auto max_stacks    = std::max( 1, as<int>( data().duration() / 1_s ) );
     auto default_value = data().effectN( 1 ).percent() / max_stacks;
 
     set_period( 1_s );
@@ -6573,8 +6595,9 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
                           ->set_period( 0_ms )
                           ->apply_affecting_aura( p.talent.vengeance.soulcrush );
     debuffs.t29_vengeance_4pc =
-        make_buff( *this, "decrepit_souls",
-                   p.set_bonuses.t29_vengeance_4pc->ok() ? p.set_bonuses.t29_vengeance_4pc_debuff : spell_data_t::not_found() )
+        make_buff(
+            *this, "decrepit_souls",
+            p.set_bonuses.t29_vengeance_4pc->ok() ? p.set_bonuses.t29_vengeance_4pc_debuff : spell_data_t::not_found() )
             ->set_default_value_from_effect( 1 )
             ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
@@ -6591,14 +6614,14 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
           ->apply_affecting_aura( p.talent.vengeance.chains_of_anger )
           ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
             auto current_stacks = this->dots.sigil_of_flame->current_stack();
-            auto difference = new_ - current_stacks;
+            auto difference     = new_ - current_stacks;
             if ( difference > 0 )
             {
               this->dots.sigil_of_flame->increment( difference );
             }
-            else if (difference < 0)
+            else if ( difference < 0 )
             {
-              this->dots.sigil_of_flame->decrement( abs(difference) );
+              this->dots.sigil_of_flame->decrement( abs( difference ) );
             }
           } );
 
@@ -7651,6 +7674,28 @@ void demon_hunter_t::init_spells()
   talent.vengeance.down_in_flames     = find_talent_spell( talent_tree::SPECIALIZATION, "Down in Flames" );
   talent.vengeance.illuminated_sigils = find_talent_spell( talent_tree::SPECIALIZATION, "Illuminated Sigils" );
 
+  // Hero Talents ===========================================================
+
+  // Aldrachi Reaver talents
+  talent.aldrachi_reaver.art_of_the_glaive = find_talent_spell( talent_tree::HERO, "Art of the Glaive" );
+
+  talent.aldrachi_reaver.keen_engagement      = find_talent_spell( talent_tree::HERO, "Keen Engagement" );
+  talent.aldrachi_reaver.preemptive_strike    = find_talent_spell( talent_tree::HERO, "Preemptive Strike" );
+  talent.aldrachi_reaver.evasive_action       = find_talent_spell( talent_tree::HERO, "Evasive Action" );
+  talent.aldrachi_reaver.unhindered_assault   = find_talent_spell( talent_tree::HERO, "Unhindered Assault" );
+  talent.aldrachi_reaver.incisive_blade       = find_talent_spell( talent_tree::HERO, "Incisive Blade" );
+
+  talent.aldrachi_reaver.aldrachi_tactics     = find_talent_spell( talent_tree::HERO, "Aldrachi Tactics" );
+  talent.aldrachi_reaver.army_unto_oneself    = find_talent_spell( talent_tree::HERO, "Army Unto Oneself" );
+  talent.aldrachi_reaver.incorruptible_spirit = find_talent_spell( talent_tree::HERO, "Incorruptible Spirit" );
+  talent.aldrachi_reaver.wounded_quarry       = find_talent_spell( talent_tree::HERO, "Wounded Quarry" );
+
+  talent.aldrachi_reaver.intent_pursuit       = find_talent_spell( talent_tree::HERO, "Intent Pursuit" );
+  talent.aldrachi_reaver.escalation           = find_talent_spell( talent_tree::HERO, "Escalation" );
+  talent.aldrachi_reaver.warblades_hunger     = find_talent_spell( talent_tree::HERO, "Warblade's Hunger" );
+
+  talent.aldrachi_reaver.thrill_of_the_fight  = find_talent_spell( talent_tree::HERO, "Thrill of the Fight" );
+
   // Class Background Spells
   spell.felblade_damage      = talent.demon_hunter.felblade->ok() ? find_spell( 213243 ) : spell_data_t::not_found();
   spell.felblade_reset_havoc = talent.demon_hunter.felblade->ok() ? find_spell( 236167 ) : spell_data_t::not_found();
@@ -7764,7 +7809,8 @@ void demon_hunter_t::init_spells()
   set_bonuses.t31_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, T31, B4 );
 
   // Set Bonus Auxilliary
-  set_bonuses.t29_vengeance_4pc_debuff = set_bonuses.t29_vengeance_4pc->ok() ? find_spell( 394958 ) : spell_data_t::not_found();
+  set_bonuses.t29_vengeance_4pc_debuff =
+      set_bonuses.t29_vengeance_4pc->ok() ? find_spell( 394958 ) : spell_data_t::not_found();
   set_bonuses.t30_havoc_2pc_buff   = set_bonuses.t30_havoc_2pc->ok() ? find_spell( 408737 ) : spell_data_t::not_found();
   set_bonuses.t30_havoc_4pc_buff   = set_bonuses.t30_havoc_4pc->ok() ? find_spell( 408754 ) : spell_data_t::not_found();
   set_bonuses.t30_havoc_4pc_refund = set_bonuses.t30_havoc_4pc->ok() ? find_spell( 408757 ) : spell_data_t::not_found();
@@ -7803,7 +7849,7 @@ void demon_hunter_t::init_spells()
     chaotic_disposition_effect->type         = SPECIAL_EFFECT_EQUIP;
     chaotic_disposition_effect->spell_id     = talent.havoc.chaotic_disposition->id();
     chaotic_disposition_effect->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
-    chaotic_disposition_effect->proc_chance_ = 1.0; // 2023-11-14 -- Proc chance removed from talent spell
+    chaotic_disposition_effect->proc_chance_ = 1.0;  // 2023-11-14 -- Proc chance removed from talent spell
     special_effects.push_back( chaotic_disposition_effect );
 
     auto chaotic_disposition_cb = new chaotic_disposition_cb_t( this, *chaotic_disposition_effect );
@@ -7909,11 +7955,11 @@ bool demon_hunter_t::validate_fight_style( fight_style_e style ) const
   {
     switch ( style )
     {
-    case FIGHT_STYLE_DUNGEON_ROUTE:
-    case FIGHT_STYLE_DUNGEON_SLICE:
-      return false;
-    default:
-      return true;
+      case FIGHT_STYLE_DUNGEON_ROUTE:
+      case FIGHT_STYLE_DUNGEON_SLICE:
+        return false;
+      default:
+        return true;
     }
   }
   return true;
@@ -8515,7 +8561,7 @@ void demon_hunter_t::combat_begin()
   if ( talent.vengeance.spirit_bomb->ok() )
   {
     frailty_driver = make_event<frailty_event_t>( *sim, this, true );
-  }  
+  }
 
   // Cap starting fury
   double fury_cap     = 20.0;
@@ -9193,7 +9239,6 @@ using namespace actions::attacks;
 namespace items
 {
 }  // end namespace items
-
 
 // MODULE INTERFACE ==================================================
 
