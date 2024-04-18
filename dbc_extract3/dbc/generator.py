@@ -1749,6 +1749,22 @@ class SpellDataGenerator(DataGenerator):
             ( 394609, 0 ),          # Light Weaving 2-set buff
             ( 393681, 0 ),          # Priest Discipline Class Set 4-set
             ( 394624, 0 ),          # Shield of Absolution 4-set buff
+            # Oracle Hero Talents
+            ( 438733, 0 ), ( 443126, 0 ), # Premonition of Piety
+            ( 438734, 0 ),                # Premonition of Insight
+            ( 438854, 0 ),                # Premonition of Solace
+            ( 443056, 0 ), ( 450796, 0 ), # Premonition
+            ( 438855, 0 ), ( 440725, 0 ), # Clairvoyance
+            ( 440762, 0 ),                # Grand Reveal
+            # Voidweaver Hero Talents
+            ( 449887, 0 ),                # Voidheart
+            ( 450983, 0 ), ( 450404, 0 ), # Void Blast
+            ( 447445, 0 ), ( 449485, 0 ), # Entropic Rift
+            ( 451210, 0 ),                # No Escape
+            ( 451847, 0 ),                # Devour Matter
+            ( 450140, 0 ), ( 450150, 0 ), # Void Empowerment
+            ( 451963, 0 ), ( 451964, 0 ), # Void Leech
+            ( 451571, 0 ),                # Embrace the Shadow
         ),
 
         # Death Knight:
