@@ -2191,6 +2191,11 @@ public:
               .set_eff( &eff );
         }
       }
+
+      // assume all cat attacks are done in cat form, thus get the extra range.
+      // NOTE: this is incorrect for convoke, but we assume this for now.
+      range += find_effect( p->buff.cat_form, this, A_ADD_FLAT_MODIFIER, P_RANGE ).base_value();
+      radius += find_effect( p->buff.cat_form, this, A_ADD_FLAT_MODIFIER, P_RADIUS ).base_value();
     }
   }
 
@@ -8814,8 +8819,6 @@ struct druid_melee_t : public Base
     // Auto attack mods
     ab::parse_effects( p->spec_spell );
     ab::parse_effects( p->talent.killer_instinct );
-    ab::range += find_effect( p->talent.astral_influence, A_MOD_AUTO_ATTACK_RANGE ).base_value() +
-                 find_effect( p->spec_spell, p->talent.astral_influence ).base_value();
 
     if ( p->talent.tigers_fury.ok() )
     {
@@ -8903,8 +8906,9 @@ struct cat_melee_t : public druid_melee_t<cat_attack_t>
   cat_melee_t( druid_t* p ) : base_t( "cat_melee", p )
   {
     form_mask = form_e::CAT_FORM;
-
     snapshots.tigers_fury = true;
+
+    range += find_effect( p->buff.cat_form, A_MOD_AUTO_ATTACK_RANGE ).base_value();
   }
 };
 
