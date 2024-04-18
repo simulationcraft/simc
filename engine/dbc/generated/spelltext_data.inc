@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.6.54205
-static const std::array<spelltext_data_t, 21048> __spelltext_data { {
+static const std::array<spelltext_data_t, 21049> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20856,6 +20856,7 @@ static const std::array<spelltext_data_t, 21048> __spelltext_data { {
   { 429921, "Combine $M2 Splintered Spark of Awakening with $M3 Flightstones to create a Spark of Awakening.", 0, 0 },
   { 429951, "$@spelldesc13877", 0, 0 },
   { 430023, "Ambush the target, causing $s1 Physical damage.$?s383281[\r\n\r\nHas a $193315s3% chance to hit an additional time, making your next Pistol Shot half cost and double damage.][]\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points;$?s383281[ each time it strikes][].|r", 0, 0 },
+  { 430836, "Heals $o1 damage over $d.", "Healing $w1 damage every second.", 0 },
   { 430846, "Your Soar is empowered after co-opting new flight techniques from the dragons of the Dragon Isles.\r\n\r\nSoar is now equivalent to dragonriding, granting access to vigor and all dragonriding abilities. \r\n\r\n", 0, "Racial Passive" },
   { 430935, "Soar's cooldown is reduced to $m2 sec.", 0, "Racial Passive" },
   { 431147, "Slash enemies in a short range in front of you.", 0, "Main Hand" },
@@ -20882,7 +20883,7 @@ static const std::array<spelltext_data_t, 21048> __spelltext_data { {
   { 432541, "|CFFFFFFFF- Backwards leap|R\r\n|CFFFFFFFF- Traps snare|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nEvade backwards while spreading explosive caltrops that slow and damage enemies that trigger them.", 0, "Utility" },
   { 432547, "|CFFFFFFFF- Teleport|R\r\n|CFFFFFFFF- Stealth|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nFade into the shadows, teleporting in the direction you are moving while entering stealth for a short duration.", 0, "Utility" },
   { 432594, "|CFFFFFFFF- Caster buff|R\r\n|CFFFFFFFF- Breaks crowd-control|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nTransform into a Fae creature, gaining immunity to harmful debuffs and increased movement speed for a short duration.\r\n\r\nCannot attack while transformed.", 0, "Utility" },
-  { 432692, "Periodically imbue yourself while in combat with tainted Primal Wellspring water reducing your versatility by $s3 and movement speed by $433726s3% for $433726d.\r\nDispelling the water's impurities reverse the effect, increasing your versatility by $s1, movement speed by $433734s3% and granting all nearby allies a $s2 shield for $433734d.", 0, 0 },
+  { 432692, "Periodically imbue yourself while in combat with tainted Primal Wellspring water reducing your Versatility by $s3 and movement speed by $433726s3% for $433726d.\r\nDispelling the water's impurities reverse the effect, increasing your Versatility by $s1, movement speed by $433734s3% and granting all nearby allies a $s2 shield for $433734d.", 0, 0 },
   { 432699, "Your harmful spells and abilities have a low chance to call upon tragic arcane powers to infect your target with Crystal Sickness, dealing ${($s1*$433522d/$433522t1*$433522u)/2} Arcane damage over $433522d, increasing every second. \r\n\r\nCreatures, other than players and bosses, who drop below $s2% health while afflicted will crystallize, die and infect a nearby enemy with Crystal Sickness. This can happen up to $s4 times. ", 0, 0 },
   { 432730, "|CFFFFFFFF- Projectile|R\r\n|CFFFFFFFF- Hold to charge|R\r\n|CFFFFFFFF- Long range|R\r\n\r\n|CFFFFFFFF12 sec cooldown|R\r\nConjure a Mana Sphere, then project it forward damaging and knocking back enemies it passes through.\r\n\r\nHold to increase sphere size.\r\n", 0, "Offensive" },
   { 432737, "|CFFFFFFFF- Projectile|R\r\n|CFFFFFFFF- Hold to charge|R\r\n|CFFFFFFFF- Long range|R\r\n\r\n|CFFFFFFFF10 sec cooldown|R\r\nConjure a Mana Sphere, then project it forward damaging and knocking back enemies it passes through.\r\n\r\nHold to increase sphere size.", 0, "Offensive" },
@@ -20930,8 +20931,8 @@ static const std::array<spelltext_data_t, 21048> __spelltext_data { {
   { 433473, "|CFFFFFFFF- Projectile|R\r\n|CFFFFFFFF- Recast actions|R\r\n|CFFFFFFFF- Close range|R\r\n\r\n|CFFFFFFFF10 sec cooldown|R\r\nHurl a blessed shield forward, damaging enemies in its path before returning to you. \r\n\r\nRecast to trigger a holy explosion at the shield's location.", 0, "Offensive" },
   { 433474, "|CFFFFFFFF- Projectile|R\r\n|CFFFFFFFF- Recast actions|R\r\n|CFFFFFFFF- Close range|R\r\n\r\n|CFFFFFFFF8 sec cooldown|R\r\nHurl a blessed shield forward, damaging enemies in its path before returning to you. \r\n\r\nRecast to trigger a holy explosion at the shield's location.", 0, "Offensive" },
   { 433522, "$@spelldesc432699", "Deal ${$432699w1*$432699w3} Arcane damage over $433522d.", 0 },
-  { 433726, "$@spelldesc432692", "$w1 reduced versatility and $w3% reduced movement speed.", 0 },
-  { 433734, "$@spelldesc432692", "$?e0[$w1 increased versatility and $w3% increased movement speed.][]Absorb $432692w2 damage.", 0 },
+  { 433726, "$@spelldesc432692", "$w1 reduced Versatility and $w3% reduced movement speed.", 0 },
+  { 433734, "$@spelldesc432692", "$?e0[$w1 increased Versatility and $w3% increased movement speed.][]", 0 },
   { 433759, "$@spelldesc432995", "The Inexorable Resonator has fallen dormant and is unable to protect you.", 0 },
   { 433770, "$@spelldesc432995", "Absorbing $s2% of damage taken, up to $w1 total damage. Dealing damage to nearby enemies every $t3 sec.", 0 },
   { 433772, "$@spelldesc432995", 0, 0 },
@@ -21051,7 +21052,10 @@ static const std::array<spelltext_data_t, 21048> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.2.6.54205
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+  {  432692,  0, "Periodically imbue yourself while in combat with tainted Primal Wellspring water reducing your versatility by $s3 and movement speed by $433726s3% for $433726d.\r\nDispelling the water's impurities reverse the effect, increasing your versatility by $s1, movement speed by $433734s3% and granting all nearby allies a $s2 shield for $433734d.", "Periodically imbue yourself while in combat with tainted Primal Wellspring water reducing your Versatility by $s3 and movement speed by $433726s3% for $433726d.\r\nDispelling the water's impurities reverse the effect, increasing your Versatility by $s1, movement speed by $433734s3% and granting all nearby allies a $s2 shield for $433734d." },
+  {  433726,  1, "$w1 reduced versatility and $w3% reduced movement speed.", "$w1 reduced Versatility and $w3% reduced movement speed." },
+  {  433734,  1, "$?e0[$w1 increased versatility and $w3% increased movement speed.][]Absorb $432692w2 damage.", "$?e0[$w1 increased Versatility and $w3% increased movement speed.][]" },
 } };
 
 // Spell description variables, wow build 10.2.6.54205
