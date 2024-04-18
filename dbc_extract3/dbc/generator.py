@@ -1817,7 +1817,28 @@ class SpellDataGenerator(DataGenerator):
           ( 196782, 0 ), # Outbreak Intermediate AoE spell
           ( 281327, 0 ), # Obliteration Rune Generation Spell
           ( 47466, 0 ), # DK Pet Stun
+          ( 166441, 0 ), # Fallen Crusader
+          ( 50401, 0 ),  # Razorice
+          ( 327087, 0 ), # Rune of the Apocalypse
+          ( 62157, 0 ),  # Stoneskin Gargoyle
+          ( 326913, 0 ), # Hysteria
+          ( 326801, 0 ), # Sanguination
+          ( 326864, 0 ), # Spellwarding
+          ( 326982, 0 ), # Unending Thirst
           ( 425721, 0 ), # T31 Blood 2pc buff
+          # The War Within
+          ( 444505, 0 ), # Mograines Might Buff
+          ( 444826, 0 ), # Trollbanes Chains of Ice Main
+          ( 444828, 0 ), # Trollbanes Chains of Ice Debuff
+          ( 444474, 0 ), # Mograine's Death and Decay
+          ( 444741, 0 ), # Rider AMS Buff
+          ( 444740, 0 ), # Rider AMS Data
+          ( 444763, 0 ), # Apocalyptic Conquest
+          ( 444248, 0 ), # Summon Mograine
+          ( 444252, 0 ), # Summon Nazgrim
+          ( 444254, 0 ), # Summon Trollbane
+          ( 444251, 0 ), # Summon Whitemane
+          ( 448229, 0 ), # Soul Reaper
         ),
 
         # Shaman:
