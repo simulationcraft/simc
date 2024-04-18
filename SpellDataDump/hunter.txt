@@ -7526,7 +7526,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=707038)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.731762e-308 (coefficient=82.454) | PvP Coefficient: 0.20000 | Trigger Spell: 270568 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=82.454) | PvP Coefficient: 0.20000 | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
 Name             : Azerite Empowered (id=263978) [Passive] 
@@ -7585,9 +7585,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=707069)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.970293e-308 (coefficient=28.34356) | PvP Coefficient: 0.50000 | Trigger Spell: 271681 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=28.34356) | PvP Coefficient: 0.50000 | Trigger Spell: 271681 | Target: Self (1)
 #2 (id=713642)   : Dummy (3) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 8.444112e-309 (coefficient=12.14724) | PvP Coefficient: 0.50000
+                   Base Value: 0 | Scaled Value: 0 (coefficient=12.14724) | PvP Coefficient: 0.50000
 Description      : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 Tooltip          : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 
@@ -8083,7 +8083,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=713207)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 9.382347e-309 (coefficient=13.49693) | PvP Coefficient: 0.50000 | Trigger Spell: 279955 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=13.49693) | PvP Coefficient: 0.50000 | Trigger Spell: 279955 | Target: Self (1)
 #2 (id=739251)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 Description      : Your damaging abilities have a chance to implant an Azerite Globule on your enemies. When an enemy collects $s2 Azerite Globules, they explode, dealing $s1 Fire damage to nearby enemies.
@@ -8106,7 +8106,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=713208)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 9.940596e-309 (coefficient=14.3) | PvP Coefficient: 0.50000 | Trigger Spell: 270668 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=14.3) | PvP Coefficient: 0.50000 | Trigger Spell: 270668 | Target: Self (1)
 #2 (id=720336)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : Your damaging abilities have a chance to deal $s1 Physical damage to the target. Gutripper occurs much more often against targets below $s2% health. 
@@ -8244,7 +8244,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=714531)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 3.475733e-308 (coefficient=50) | PvP Coefficient: 0.50000 | Trigger Spell: 270673 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=50) | PvP Coefficient: 0.50000 | Trigger Spell: 270673 | Target: Self (1)
 Description      : Taking damage has a chance to grant you Azerite Veins, healing you for $s1 every $270674t1 sec. Lasts $270674d or until you are fully healed.
 
 Name             : On My Way (id=267879) [Passive] 
@@ -8305,7 +8305,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=714798)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.08544e-310 (coefficient=0.3) | PvP Coefficient: 0.50000 | Trigger Spell: 272258 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.3) | PvP Coefficient: 0.50000 | Trigger Spell: 272258 | Target: Self (1)
 Description      : Your healing effects have a chance to grant the target ${$s1*2} additional healing every $272260t1 sec for $272260d. This effect doubles every $272260t1 sec. 
 
 Name             : Savior (id=267883) [Passive] 
@@ -8325,7 +8325,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=714801)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.08544e-308 (coefficient=30) | PvP Coefficient: 0.50000 | Trigger Spell: 270679 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=30) | PvP Coefficient: 0.50000 | Trigger Spell: 270679 | Target: Self (1)
 #2 (id=720348)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : Your heals on targets below $s2% health have a chance to heal for an additional $s1.
@@ -8346,7 +8346,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=714803)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.147205e-308 (coefficient=16.50307) | PvP Coefficient: 0.50000 | Trigger Spell: 272275 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=16.50307) | PvP Coefficient: 0.50000 | Trigger Spell: 272275 | Target: Self (1)
 Description      : Your heals have a chance to apply Bracing Chill. Healing a target with Bracing Chill will heal for an additional $s1 and move Bracing Chill to a nearby ally (up to $272276u times).
 
 Name             : Ephemeral Recovery (id=267886) [Passive] 
@@ -8426,7 +8426,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=715936)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.820797e-308 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Trigger Spell: 270658 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Trigger Spell: 270658 | Target: Self (1)
 Description      : When stunned, immobilized, or knocked back, you heal for $s1.
 Tooltip          : When stunned, immobilized, or knocked back, you heal for $s1.
 
@@ -8451,7 +8451,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=715939)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.006117e-308 (coefficient=28.8589) | PvP Coefficient: 0.20000 | Trigger Spell: 270654 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=28.8589) | PvP Coefficient: 0.20000 | Trigger Spell: 270654 | Target: Self (1)
 Description      : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 
@@ -8516,7 +8516,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=716159)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.256319e-308 (coefficient=90) | PvP Coefficient: 0.20000 | Trigger Spell: 309366 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=90) | PvP Coefficient: 0.20000 | Trigger Spell: 309366 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : When you are surrounded by $s2 or more enemies, gain a shield that absorbs $s1 damage. Cannot occur more than once every $270656d.
@@ -8586,7 +8586,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=716167)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.349645e-309 (coefficient=7.695707) | PvP Coefficient: 0.20000 | Trigger Spell: 309352 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.695707) | PvP Coefficient: 0.20000 | Trigger Spell: 309352 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
 Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
@@ -9261,7 +9261,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=721853)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 3.947835e-308 (coefficient=56.79141) | PvP Coefficient: 0.50000 | Trigger Spell: 271547 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=56.79141) | PvP Coefficient: 0.50000 | Trigger Spell: 271547 | Target: Self (1)
 Description      : Taking damage has a chance to increase your maximum health by $s1 for each enemy within $271548A1 yds, up to $271550u enemies. Lasts $271550d.
 
 Name             : Shimmering Haven (id=271557) [Passive] 
@@ -9381,7 +9381,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=723789)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 9.808817e-309 (coefficient=14.11043) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=14.11043) | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=723790)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=723805)   : Dummy (3)
@@ -9405,7 +9405,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=723832)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.814703e-309 (coefficient=4.049079) | PvP Coefficient: 0.50000 | Trigger Spell: 272743 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=4.049079) | PvP Coefficient: 0.50000 | Trigger Spell: 272743 | Target: Self (1)
 Description      : Wildfire Bomb drops a small cluster of bombs around the target, each exploding for $s1 damage.
 
 Name             : Wildfire Cluster (id=272743) [Spell Family (9), Hidden] 
@@ -9518,7 +9518,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724558)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 7.902494e-309 (coefficient=11.3681) | PvP Coefficient: 0.50000 | Trigger Spell: 273825 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=11.3681) | PvP Coefficient: 0.50000 | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul blasts a nearby enemy every $280204t2 sec, dealing $s1 Shadow damage.
 
 Name             : Haze of Rage (id=273262) [Spell Family (9), Passive] 
@@ -9575,7 +9575,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724785)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 4.477938e-309 (coefficient=6.441718) | PvP Coefficient: 0.50000 | Trigger Spell: 273284 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=6.441718) | PvP Coefficient: 0.50000 | Trigger Spell: 273284 | Target: Self (1)
 Description      : Serpent Sting damage applies Latent Poison, stacking up to $273286u times. Your $?s259387[Mongoose Bite][Raptor Strike] consumes all applications of Latent Poison to deal $s1 Nature damage per stack.
 
 Name             : Latent Poison (id=273284) [Spell Family (9), Hidden] 
@@ -9687,9 +9687,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=725706)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.343382e-308 (coefficient=19.32515) | PvP Coefficient: 0.50000 | Trigger Spell: 273153 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=19.32515) | PvP Coefficient: 0.50000 | Trigger Spell: 273153 | Target: Self (1)
 #2 (id=725707)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.716908e-309 (coefficient=9.662577) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=9.662577) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your damaging abilities have a chance to call a Child of Rezan to viciously rend your target, dealing $s1 Physical damage and causing them to bleed for ${($273794d/$273794t2)*$s2} damage over $273794d.
 
 Name             : Blightborne Infusion (id=273823) [Passive] 
@@ -9751,7 +9751,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=725772)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.047349e-309 (coefficient=8.699387) | PvP Coefficient: 0.50000 | Trigger Spell: 273835 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=8.699387) | PvP Coefficient: 0.50000 | Trigger Spell: 273835 | Target: Self (1)
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
 
 Name             : Killer Instinct (id=273887) [Spell Family (9), Passive] 
@@ -9795,7 +9795,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=726630)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 9.62936e-309 (coefficient=13.85227) | PvP Coefficient: 0.20000 | Trigger Spell: 274356 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=13.85227) | PvP Coefficient: 0.20000 | Trigger Spell: 274356 | Target: Self (1)
 Description      : Every $274357t1 sec Aspect of the Turtle is active, heal for $s1.
 
 Name             : Dance of Death (id=274441) [Spell Family (9), Passive] 
@@ -9854,7 +9854,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=726998)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.03235e-309 (coefficient=7.239264) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.239264) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your pet's Basic Attack deals $s1 additional damage to enemies suffering from your Serpent Sting.
 
 Name             : Steady Aim (id=277651) [Spell Family (9), Passive] 
@@ -9874,7 +9874,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=732950)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.117644e-309 (coefficient=7.361963) | PvP Coefficient: 0.50000 | Trigger Spell: 277957 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.361963) | PvP Coefficient: 0.50000 | Trigger Spell: 277957 | Target: Self (1)
 Description      : Steady Shot increases the damage of your next Aimed Shot against the target by $s1, stacking up to $277959u times.
 
 Name             : Blur of Talons (id=277653) [Spell Family (9), Passive] 
@@ -9916,7 +9916,7 @@ Effects          :
 #1 (id=734283)   : Apply Aura (6) | Unknown(285)
                    Base Value: 9000 | Scaled Value: 9000 | PvP Coefficient: 1.00000 | Trigger Spell: 279607 | Target: Self (1)
 #2 (id=734284)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 3.070586e-309 (coefficient=4.417178) | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=4.417178) | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Barbed Shot (217200), Frenzy (272790)
                    Family Flags: 78
 Description      : Barbed Shot deals ${$s2*($217200d/$217200t1)} additional damage over its duration, and Frenzy's duration is increased to ${$s1/1000}.1 sec.
@@ -9938,7 +9938,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734285)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.330879e-309 (coefficient=7.668712) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.668712) | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=734286)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 #3 (id=734287)   : None (0)
@@ -9963,7 +9963,7 @@ Effects          :
 #1 (id=734288)   : Apply Aura (6) | Unknown(285)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 279636 | Target: Self (1)
 #2 (id=734289)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.974558e-309 (coefficient=2.840491) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=2.840491) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Rapid Fire (257045)
                    Family Flags: 3
 Description      : Rapid Fire deals an additional $<damage> damage over its duration, and each shot has a $279636h% chance to generate $s1 additional Focus.
@@ -9987,11 +9987,11 @@ Effects          :
 #1 (id=734291)   : Apply Aura (6) | Unknown(285)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Trigger Spell: 279589 | Target: Self (1)
 #2 (id=734292)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.652645e-309 (coefficient=3.815951) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=3.815951) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Mongoose Bite (259387), Mongoose Bite (265888)
                    Family Flags: 96
 #3 (id=743265)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.897793e-309 (coefficient=2.730061) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=2.730061) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Raptor Strike (186270), Raptor Strike (265189)
                    Family Flags: 80
 Description      : $?s259387[Mongoose Bite][Raptor Strike] deals an additional $s2 damage and reduces the remaining cooldown of Wildfire Bomb by ${$s1/1000}.1 sec.
@@ -10099,7 +10099,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=737267)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 8.024466e-308 (coefficient=115.4356) | PvP Coefficient: 0.20000 | Trigger Spell: 280169 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=115.4356) | PvP Coefficient: 0.20000 | Trigger Spell: 280169 | Target: Self (1)
 #2 (id=737268)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000
 Description      : Using Feign Death allows you to absorb $s1 damage over $280170d, and Feign Death's cooldown is reduced to $s2 seconds.
@@ -10163,7 +10163,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Allow Entering Arena (149), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=737505)   : Apply Aura (6) | Proc Trigger Spell (42): Barrage Of Many Bombs | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 4.970298e-309 (coefficient=7.15) | PvP Coefficient: 0.50000 | Trigger Spell: 280662 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.15) | PvP Coefficient: 0.50000 | Trigger Spell: 280662 | Target: Self (1)
 #2 (id=737506)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=737507)   : Dummy (3)
@@ -10226,7 +10226,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=737533)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.820797e-308 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Target: Self (1)
 #2 (id=737534)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
@@ -10261,7 +10261,7 @@ Effects          :
 #2 (id=738958)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.461025e-309 (coefficient=9.294479) | PvP Coefficient: 0.50000
+                   Base Value: 0 | Scaled Value: 0 (coefficient=9.294479) | PvP Coefficient: 0.50000
 Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $s3 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
@@ -10315,7 +10315,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=737557)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.146992e-307 (coefficient=165) | PvP Coefficient: 0.20000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=165) | PvP Coefficient: 0.20000 | Target: Self (1)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing $280661s1% of damage taken over $280660d, up to $280660s1.
@@ -10339,7 +10339,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=737714)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.573676e-309 (coefficient=2.263804) | PvP Coefficient: 0.50000 | Trigger Spell: 280285 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=2.263804) | PvP Coefficient: 0.50000 | Trigger Spell: 280285 | Target: Self (1)
 #2 (id=737715)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
@@ -10361,7 +10361,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=737878)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.241405e-309 (coefficient=7.54) | PvP Coefficient: 0.50000 | Trigger Spell: 280383 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.54) | PvP Coefficient: 0.50000 | Trigger Spell: 280383 | Target: Self (1)
 #2 (id=738006)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Dealing damage has a chance to call down a Thunderous Blast, dealing $s1 Nature damage to the enemy and increasing the damage of Thunderous Blast by $280385s1%. At ${$s2*$280385s1}% increased damage, Thunderous Blast will critically hit and reset this effect.
@@ -10382,7 +10382,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=737915)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.612058e-308 (coefficient=23.19018) | PvP Coefficient: 0.50000 | Trigger Spell: 280403 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=23.19018) | PvP Coefficient: 0.50000 | Trigger Spell: 280403 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to release a tidal surge, dealing $s1 Frost damage to your target and slowing their movement speed by $280404s2% for $280404d.
 
 Name             : Blood Rite (id=280407) [Passive] 
@@ -10489,9 +10489,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=738156)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.815344e-308 (coefficient=40.5) | PvP Coefficient: 0.50000 | Trigger Spell: 280702 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=40.5) | PvP Coefficient: 0.50000 | Trigger Spell: 280702 | Target: Self (1)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.037893e-308 (coefficient=72.47239) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=72.47239) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
 
 Enables $@spellname280573 within Uldir.
@@ -10604,7 +10604,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=738194)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.066467e-309 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280816 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280816 | Target: Self (1)
 #2 (id=738645)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=738646)   : Dummy (3)
@@ -10741,7 +10741,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=738287)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.066467e-309 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280854 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280854 | Target: Self (1)
 #2 (id=738705)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=738706)   : Dummy (3)
@@ -10870,9 +10870,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=749861)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 4.691173e-309 (coefficient=6.748466) | PvP Coefficient: 0.50000 | Trigger Spell: 287097 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=6.748466) | PvP Coefficient: 0.50000 | Trigger Spell: 287097 | Target: Self (1)
 #2 (id=749869)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 3.15588e-309 (coefficient=4.539877) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=4.539877) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Kill Command deals $<damage> additional damage, and has a chance to summon a Dire Beast.
 Variables        : $damage=$?a137017[${$s2}][${$s1}]
 
@@ -10932,9 +10932,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=750714)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 4.179409e-309 (coefficient=6.01227) | PvP Coefficient: 0.50000 | Trigger Spell: 287633 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=6.01227) | PvP Coefficient: 0.50000 | Trigger Spell: 287633 | Target: Self (1)
 #2 (id=750715)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 7.996319e-309 (coefficient=11.50307) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=11.50307) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=750716)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 Description      : Your damaging abilities have a chance to deal $<dmg> Plague damage over $287638d, and your healing abilities have a chance to restore $<heal> health over $287639d. These effects are increased by up to $s3% based on the target's missing health.
@@ -10980,7 +10980,7 @@ Effects          :
 #1 (id=750851)   : Apply Aura (6) | Unknown(285)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 287711 | Target: Self (1)
 #2 (id=750852)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 5 | Scaled Value: 1.202646e-309 (coefficient=1.730061) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 0 (coefficient=1.730061) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Rapid Fire damage is increased by up to ${$m2*1.5} per shot fired, this damage starts lower and increases per shot of Rapid Fire. Aimed Shot has a $s1% chance to reset the cooldown of Rapid Fire.
 
 Name             : Fight or Flight (id=287818) [Passive] 
@@ -11020,7 +11020,7 @@ Effects          :
 #1 (id=751259)   : Apply Aura (6) | Unknown(285)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 287940 | Target: Self (1)
 #2 (id=751260)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 5 | Scaled Value: 1.028646e-307 (coefficient=147.9755) | PvP Coefficient: 0.20000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 0 (coefficient=147.9755) | PvP Coefficient: 0.20000 | Target: Self (1)
 Description      : Exhilaration heals you for an additional $s2 health, and the cooldown is reduced by ${$287940m1/-1000}.1 sec.
 
 Name             : Primeval Intuition (id=288570) [Spell Family (9), Passive] 
@@ -11294,11 +11294,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=778211)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.672098e-308 (coefficient=24.05389) | PvP Coefficient: 0.50000 | Trigger Spell: 303388 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=24.05389) | PvP Coefficient: 0.50000 | Trigger Spell: 303388 | Target: Self (1)
 #2 (id=778212)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=778215)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 50 | Scaled Value: 1.311205e-307 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 0 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
 #4 (id=778216)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to crash a wave upon your target for $s1 Frost damage.
@@ -16246,7 +16246,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1028379)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Mind Blast (8092)
+                   Affected Spells: Mind Blast (8092), Void Blast (450983)
                    Family Flags: 13
 Description      : $@spelldesc391090
 Tooltip          : The critical strike chance of your next Mind Blast is increased by $w1%.
@@ -17663,7 +17663,7 @@ Description      : $@spelldesc422879
 Tooltip          : Your next Wildfire Bomb will not incur a cooldown.
 
 Name             : Black Arrow (id=430703) [Spell Family (9)] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=2, col=1, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Shadow
 Spell Type       : Ranged
@@ -17695,7 +17695,7 @@ Each time Black Arrow deals damage, you have a $s2% chance to generate a charge 
 Tooltip          : Suffering $s1 Shadow damage every $t1 sec.
 
 Name             : Embrace the Shadows (id=430704) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=6, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17717,7 +17717,7 @@ Effects          :
 Description      : You heal for $s1% of all Shadow damage dealt by you or your pets.
 
 Name             : Shadow Hounds (id=430707) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=4, col=2, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17736,7 +17736,7 @@ Effects          :
 Description      : Each time Black Arrow deals damage, you have a $s1% chance to manifest a Dark Hound to charge to your target and deal Shadow damage.
 
 Name             : Smoke Screen (id=430709) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=6, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17759,7 +17759,7 @@ Description      : Exhilaration grants you $s1 sec of Survival of the Fittest.
 Survival of the Fittest activates Exhilaration at $s2% effectiveness.
 
 Name             : Death Shade (id=430711) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=4, col=3, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17778,7 +17778,7 @@ Effects          :
 Description      : When you apply Black Arrow to a target, you gain $?a137015[Hunter's Prey]?a137016[Deathblow][Deathblow or Hunter's Prey] effect.
 
 Name             : Dark Chains (id=430712) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=6, col=3, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17797,7 +17797,7 @@ Effects          :
 Description      : Disengage will chain the closest target to the ground, causing them to move 40% slower until they move 8 yards away.
 
 Name             : Shadow Surge (id=430714) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=8, col=2, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17822,7 +17822,7 @@ Description      : When Multi-Shot hits a target affected by Black Arrow, a burs
 This can only occur once every $s1 sec.
 
 Name             : Withering Fire (id=430715) [Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=10, col=1, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17841,7 +17841,7 @@ Effects          :
 Description      : When Black Arrow resets the cooldown of Aimed Shot or Barbed Shot, a barrage of dark arrows will strike your target for Shadow damage and increase the damage you and your pets deal by 10% for 6 sec.
 
 Name             : Overshadow (id=430716) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=4, col=1, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17867,7 +17867,7 @@ Description      : Aimed Shot and Rapid Fire deal $s1% increased damage.
 Barbed Shot and Kill Command deal $s2% increased damage.
 
 Name             : Shadow Lash (id=430717) [Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=8, col=1, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17886,7 +17886,7 @@ Effects          :
 Description      : When $?a137015[Call of the Wild]?a137016[Trueshot][Call of the Wild or Trueshot] is active, Black Arrow deals damage 50% faster.
 
 Name             : Dark Empowerment (id=430718) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=6, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17905,7 +17905,7 @@ Effects          :
 Description      : When Black Arrow resets the cooldown of an ability, gain $442511s1 Focus.
 
 Name             : Grave Reaper (id=430719) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=6, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17924,7 +17924,7 @@ Effects          :
 Description      : When a target affected by Black Arrow dies, the cooldown of Black Arrow is reduced by $s1 sec.
 
 Name             : Shadow Erasure (id=430720) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=8, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17947,7 +17947,7 @@ Effects          :
 Description      : Kill Shot a $s2% chance to generate a charge of $?a137015[Barbed Shot]?a137016[Aimed Shot][Barbed Shot or Aimed Shot] when used on a target affected by Black Arrow.
 
 Name             : Darkness Calls (id=430722) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=8, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18059,7 +18059,7 @@ Effects          :
 Description      : $@spelldesc430718
 
 Name             : Vicious Hunt (id=445404) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=6, col=1, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18098,7 +18098,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 
 Name             : Pack Coordination (id=445505) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=7, col=1, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18117,7 +18117,7 @@ Effects          :
 Description      : Attacking with Vicious Hunt instructs your pet to strike with their Basic Attack along side your next $?a137015[Barbed Shot]?s259387[Mongoose Bite]?a137017[Raptor Strike][Barbed Shot or Raptor Strike].
 
 Name             : Frenzied Tear (id=445696) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=8, col=3, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18138,7 +18138,7 @@ Effects          :
 Description      : Your pet's Basic Attack has a $s1% chance to reset the cooldown and cause Kill Command to strike a second time for $s2% of normal damage.
 
 Name             : Furious Assault (id=445699) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=9, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18161,7 +18161,7 @@ Effects          :
 Description      : Consuming Frenzied Tear has a $s1% chance to $?a137015[reset the cooldown of Barbed Shot]?s259387[reduce the cost of your next Mongoose Bite by $s2%]?a137017[reduce the cost of your next Raptor Strike by $s2%][reset the cooldown of Barbed Shot or reduce the cost of Raptor Strike by $s2%] and deal $s3% more damage.
 
 Name             : Beast of Opportunity (id=445700) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=9, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18180,7 +18180,7 @@ Effects          :
 Description      : $?a137015[Bestial Wrath]?s137017[Coordinated Assault][Bestial Wrath or Coordinated Assault] calls on the pack, summoning a pet from your stable for $s1 sec.
 
 Name             : Tireless Hunt (id=445701) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=8, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18201,7 +18201,7 @@ Effects          :
 Description      : Aspect of the Cheetah now increases movement speed by $s1% for another $s2 sec.
 
 Name             : Cornered Prey (id=445702) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=8, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18222,7 +18222,7 @@ Effects          :
 Description      : Disengage increases the range of all your attacks by $s1 yds for $s2 sec.
 
 Name             : Howl of the Pack (id=445707) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=7, col=2, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18245,7 +18245,7 @@ Effects          :
 Description      : Your pet's Basic Attack critical strikes increase your critical strike damage by $s1% for $s2 sec stacking up to $s3 times.
 
 Name             : Wild Attacks (id=445708) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=7, col=3, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18264,7 +18264,7 @@ Effects          :
 Description      : Every third pet Basic Attack is a guaranteed critical strike, with damage further increased by critical strike chance.
 
 Name             : Den Recovery (id=445710) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=8, col=1, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18289,7 +18289,7 @@ Effects          :
 Description      : Aspect of the Turtle, Survival of the Fittest, and Mend Pet heal the target for $s1% of maximum health over $s2 sec. Duration increased by $s3 sec when healing a target under $s4% maximum health.
 
 Name             : Covering Fire (id=445715) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=9, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18312,7 +18312,7 @@ Effects          :
 Description      : $?a137015[Kill Command increases the duration of Beast Cleave by $s1 sec.]?s212436[Wildfire Bomb reduces the cooldown of Butchery by $s3 sec.][Wildfire Bomb reduces the cooldown of Carve by $s2 sec.]
 
 Name             : Cull the Herd (id=445717) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=9, col=2, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18338,7 +18338,7 @@ Effects          :
 Description      : Kill Shot deals an additional $s1% damage over $449233d and increases the bleed damage you and your pet deal to the target by $s3%.
 
 Name             : Pack Assault (id=445721) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=10, col=1, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18357,7 +18357,7 @@ Effects          :
 Description      : Vicious Hunt and Pack Coordination now stack and apply twice, and are always active during $?a137015[Call of the Wild]?a137017[Coordinated Assault][Call of the Wild and Coordinated Assault].
 
 Name             : Scattered Prey (id=445768) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=9, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18399,7 +18399,7 @@ Description      : $@spelldesc445717
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
 Name             : Sentinel (id=450369) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18424,7 +18424,7 @@ While Sentinel stacks are higher than $s1, applying Sentinel has a chance to tri
 
 
 Name             : Don't Look Back (id=450373) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=2, col=1, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18448,7 +18448,7 @@ Effects          :
 Description      : Each time Sentinel deals damage to an enemy you gain an absorb shield equal to $s1% of your maximum health, up to $s2%.
 
 Name             : Extrapolated Shots (id=450374) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=2, col=2, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18467,7 +18467,7 @@ Effects          :
 Description      : When you apply Sentinel to a target not affected by Sentinel, you apply $s1 additional stack.
 
 Name             : Sentinel Precision (id=450375) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=2, col=3, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18500,7 +18500,7 @@ Effects          :
 Description      : $?s137016[Aimed Shot and Rapid Fire][Raptor Strike, Mongoose Bite and Wildfire Bomb] deals $?s137016[$s1][$s3]% increased damage. 
 
 Name             : Release and Reload (id=450376) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=3, col=1, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18519,7 +18519,7 @@ Effects          :
 Description      : When you apply Sentinel on a target, you have a $s1% chance to apply a second stack.
 
 Name             : Sideline (id=450378) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18538,7 +18538,7 @@ Effects          :
 Description      : When Sentinel starts dealing damage, the target is snared by $450845s1% for $450845d.
 
 Name             : Invigorating Pulse (id=450379) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=3, col=3, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18564,7 +18564,7 @@ Description      : Each time Sentinel deals damage to an enemy it has an up to $
 Chances decrease with each additional Sentinel currently imploding applied to enemies.
 
 Name             : Eyes Closed (id=450381) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=4, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18586,7 +18586,7 @@ Effects          :
 Description      : For $451180d after activating $?s137016[Trueshot][Coordinated Assault], all abilities are guaranteed to apply Sentinel.
 
 Name             : Symphonic Arsenal (id=450383) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=4, col=2, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18609,7 +18609,7 @@ Effects          :
 Description      : Multi-Shot $?s137016[causes][, Carve and Butchery cause] any target affected by Sentinel to explode, dealing Arcane damage to up to $s1 targets within $451194A1 yds.
 
 Name             : Overwatch (id=450384) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18628,7 +18628,7 @@ Effects          :
 Description      : All Sentinel debuffs implode when a target affected by more than 3 stacks of your Sentinel falls below $s1% health.
 
 Name             : Lunar Storm (id=450385) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18830,7 +18830,7 @@ Effects          :
 Description      : $@spelldesc450383
 
 Name             : Catch Out (id=451516) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18896,7 +18896,7 @@ Description      : $@spelldesc451516
 Tooltip          : Rooted
 
 Name             : Crescent Steel (id=451530) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18915,7 +18915,7 @@ Effects          :
 Description      : Targets you damage below $s1% health gain a stack of Sentinel every 3 sec.
 
 Name             : Sentinel Watch (id=451546) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=4, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None

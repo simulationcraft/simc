@@ -319,7 +319,7 @@ Resource         : 40 Fury (17) (id=10198)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, War Glaive, Fist Weapon
-Affecting spells : Metamorphosis (162264 effect#6), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Thirsting Blades (278736 effect#2), Critical Chaos (320413 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#2), Chaos Theory (390195 effect#2), Burning Blood (390213 effects: #1, #2), Demon Hide (428241 effects: #1, #3)
+Affecting spells : Metamorphosis (162264 effect#6), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Thirsting Blades (278736 effect#2), Critical Chaos (320413 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#2), Chaos Theory (390195 effect#2), Burning Blood (390213 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Rending Strike (442442 effect#1)
 Family Flags     : 32, 43, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
@@ -1008,7 +1008,7 @@ Internal Cooldown: 0.5 seconds
 Proc Chance      : 20%
 Proc Flags       : ....x... ....x... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell
-Affecting spells : Metamorphosis (162264 effect#6), Thirsting Blades (278736 effect#2), Critical Chaos (320413 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#2), Chaos Theory (390195 effect#2)
+Affecting spells : Metamorphosis (162264 effect#6), Thirsting Blades (278736 effect#2), Critical Chaos (320413 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#2), Chaos Theory (390195 effect#2), Rending Strike (442442 effect#1)
 Family Flags     : 52
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1192,7 +1192,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Serrated Glaive (390155 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Serrated Glaive (390155 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Rending Strike (442442 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1)
 Triggered by     : Chaos Strike (162794)
 Family Flags     : 6, 16, 43
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -4042,7 +4042,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Serrated Glaive (390155 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Serrated Glaive (390155 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Rending Strike (442442 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1)
 Triggered by     : Chaos Strike (162794)
 Family Flags     : 14, 16, 43
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -4225,7 +4225,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, War Glaive, Fist Weapon
-Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Immolation Aura (258920 effect#6), Mark of the Ogre (326486 effect#3)
+Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Immolation Aura (258920 effect#6), Mark of the Ogre (326486 effect#3), Glaive Flurry (442435 effect#1), Rending Strike (442442 effect#1)
 Triggered by     : Soul Fragments (203981)
 Family Flags     : 32, 34
 Attributes       : ....x... ........ x.x..... ........   ........ .xx..... ........ ........ 
@@ -4261,7 +4261,7 @@ Spell Type       : Melee
 Range            : 5 yards
 Max Targets      : 5
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Immolation Aura (258920 effect#6), Mark of the Ogre (326486 effect#3), Demon Soul (347765 effects: #1, #2), Soul Furnace (391172 effect#1), Fiery Resolve (425653 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Immolation Aura (258920 effect#6), Mark of the Ogre (326486 effect#3), Demon Soul (347765 effects: #1, #2), Soul Furnace (391172 effect#1), Fiery Resolve (425653 effects: #1, #2), Glaive Flurry (442435 effect#1), Rending Strike (442442 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1)
 Triggered by     : Soul Cleave (228477)
 Family Flags     : 31, 34, 70
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -5147,7 +5147,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=707038)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.731762e-308 (coefficient=82.454) | PvP Coefficient: 0.20000 | Trigger Spell: 270568 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=82.454) | PvP Coefficient: 0.20000 | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
 Name             : Azerite Empowered (id=263978) [Passive] 
@@ -5206,9 +5206,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=707069)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.970293e-308 (coefficient=28.34356) | PvP Coefficient: 0.50000 | Trigger Spell: 271681 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=28.34356) | PvP Coefficient: 0.50000 | Trigger Spell: 271681 | Target: Self (1)
 #2 (id=713642)   : Dummy (3) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 8.444112e-309 (coefficient=12.14724) | PvP Coefficient: 0.50000
+                   Base Value: 0 | Scaled Value: 0 (coefficient=12.14724) | PvP Coefficient: 0.50000
 Description      : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 Tooltip          : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 
@@ -5272,7 +5272,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=713207)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 9.382347e-309 (coefficient=13.49693) | PvP Coefficient: 0.50000 | Trigger Spell: 279955 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=13.49693) | PvP Coefficient: 0.50000 | Trigger Spell: 279955 | Target: Self (1)
 #2 (id=739251)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 Description      : Your damaging abilities have a chance to implant an Azerite Globule on your enemies. When an enemy collects $s2 Azerite Globules, they explode, dealing $s1 Fire damage to nearby enemies.
@@ -5295,7 +5295,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=713208)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 9.940596e-309 (coefficient=14.3) | PvP Coefficient: 0.50000 | Trigger Spell: 270668 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=14.3) | PvP Coefficient: 0.50000 | Trigger Spell: 270668 | Target: Self (1)
 #2 (id=720336)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : Your damaging abilities have a chance to deal $s1 Physical damage to the target. Gutripper occurs much more often against targets below $s2% health. 
@@ -5362,7 +5362,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=714531)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 3.475733e-308 (coefficient=50) | PvP Coefficient: 0.50000 | Trigger Spell: 270673 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=50) | PvP Coefficient: 0.50000 | Trigger Spell: 270673 | Target: Self (1)
 Description      : Taking damage has a chance to grant you Azerite Veins, healing you for $s1 every $270674t1 sec. Lasts $270674d or until you are fully healed.
 
 Name             : On My Way (id=267879) [Passive] 
@@ -5423,7 +5423,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=714798)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.08544e-310 (coefficient=0.3) | PvP Coefficient: 0.50000 | Trigger Spell: 272258 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.3) | PvP Coefficient: 0.50000 | Trigger Spell: 272258 | Target: Self (1)
 Description      : Your healing effects have a chance to grant the target ${$s1*2} additional healing every $272260t1 sec for $272260d. This effect doubles every $272260t1 sec. 
 
 Name             : Savior (id=267883) [Passive] 
@@ -5443,7 +5443,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=714801)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.08544e-308 (coefficient=30) | PvP Coefficient: 0.50000 | Trigger Spell: 270679 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=30) | PvP Coefficient: 0.50000 | Trigger Spell: 270679 | Target: Self (1)
 #2 (id=720348)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : Your heals on targets below $s2% health have a chance to heal for an additional $s1.
@@ -5464,7 +5464,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=714803)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.147205e-308 (coefficient=16.50307) | PvP Coefficient: 0.50000 | Trigger Spell: 272275 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=16.50307) | PvP Coefficient: 0.50000 | Trigger Spell: 272275 | Target: Self (1)
 Description      : Your heals have a chance to apply Bracing Chill. Healing a target with Bracing Chill will heal for an additional $s1 and move Bracing Chill to a nearby ally (up to $272276u times).
 
 Name             : Ephemeral Recovery (id=267886) [Passive] 
@@ -5570,7 +5570,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=715936)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.820797e-308 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Trigger Spell: 270658 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Trigger Spell: 270658 | Target: Self (1)
 Description      : When stunned, immobilized, or knocked back, you heal for $s1.
 Tooltip          : When stunned, immobilized, or knocked back, you heal for $s1.
 
@@ -5595,7 +5595,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=715939)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.006117e-308 (coefficient=28.8589) | PvP Coefficient: 0.20000 | Trigger Spell: 270654 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=28.8589) | PvP Coefficient: 0.20000 | Trigger Spell: 270654 | Target: Self (1)
 Description      : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 
@@ -5637,7 +5637,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=716159)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.256319e-308 (coefficient=90) | PvP Coefficient: 0.20000 | Trigger Spell: 309366 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=90) | PvP Coefficient: 0.20000 | Trigger Spell: 309366 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : When you are surrounded by $s2 or more enemies, gain a shield that absorbs $s1 damage. Cannot occur more than once every $270656d.
@@ -5707,7 +5707,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=716167)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.349645e-309 (coefficient=7.695707) | PvP Coefficient: 0.20000 | Trigger Spell: 309352 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.695707) | PvP Coefficient: 0.20000 | Trigger Spell: 309352 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
 Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
@@ -5773,7 +5773,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=721853)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 3.947835e-308 (coefficient=56.79141) | PvP Coefficient: 0.50000 | Trigger Spell: 271547 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=56.79141) | PvP Coefficient: 0.50000 | Trigger Spell: 271547 | Target: Self (1)
 Description      : Taking damage has a chance to increase your maximum health by $s1 for each enemy within $271548A1 yds, up to $271550u enemies. Lasts $271550d.
 
 Name             : Shimmering Haven (id=271557) [Passive] 
@@ -5833,7 +5833,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724558)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 7.902494e-309 (coefficient=11.3681) | PvP Coefficient: 0.50000 | Trigger Spell: 273825 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=11.3681) | PvP Coefficient: 0.50000 | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul blasts a nearby enemy every $280204t2 sec, dealing $s1 Shadow damage.
 
 Name             : Furious Gaze (id=273231) [Spell Family (107), Passive] 
@@ -5942,9 +5942,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=725706)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.343382e-308 (coefficient=19.32515) | PvP Coefficient: 0.50000 | Trigger Spell: 273153 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=19.32515) | PvP Coefficient: 0.50000 | Trigger Spell: 273153 | Target: Self (1)
 #2 (id=725707)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.716908e-309 (coefficient=9.662577) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=9.662577) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your damaging abilities have a chance to call a Child of Rezan to viciously rend your target, dealing $s1 Physical damage and causing them to bleed for ${($273794d/$273794t2)*$s2} damage over $273794d.
 
 Name             : Blightborne Infusion (id=273823) [Passive] 
@@ -6006,7 +6006,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=725772)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.047349e-309 (coefficient=8.699387) | PvP Coefficient: 0.50000 | Trigger Spell: 273835 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=8.699387) | PvP Coefficient: 0.50000 | Trigger Spell: 273835 | Target: Self (1)
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
 
 Name             : Soulmonger (id=274344) [Passive] 
@@ -6026,7 +6026,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=726617)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.337411e-308 (coefficient=19.23927) | PvP Coefficient: 0.20000 | Trigger Spell: 274345 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=19.23927) | PvP Coefficient: 0.20000 | Trigger Spell: 274345 | Target: Self (1)
 Description      : Consuming a Soul Fragment shields you, granting $s1 Absorb for $274346d
 
 Name             : Unbound Chaos (id=275144) [Spell Family (107), Passive] 
@@ -6195,7 +6195,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734217)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.524646e-310 (coefficient=0.9386) | PvP Coefficient: 0.50000 | Trigger Spell: 278729 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.9386) | PvP Coefficient: 0.50000 | Trigger Spell: 278729 | Target: Self (1)
 #2 (id=734218)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 Description      : Every $278729t1 sec, increase the damage of Chaos Strike by $s1 and reduce its cost by $s2 Fury. This effect stacks.
@@ -6240,7 +6240,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734236)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 7.249995e-309 (coefficient=10.42945) | PvP Coefficient: 0.50000 | Trigger Spell: 279449 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=10.42945) | PvP Coefficient: 0.50000 | Trigger Spell: 279449 | Target: Self (1)
 #2 (id=734237)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : $?s263642[Fracture][Shear] has a chance to rip Lesser Soul Fragments from up to $s2 nearby enemies, dealing $s1 Fire damage to each.
@@ -6262,7 +6262,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734239)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.352629e-310 (coefficient=0.77) | PvP Coefficient: 0.50000 | Trigger Spell: 278766 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.77) | PvP Coefficient: 0.50000 | Trigger Spell: 278766 | Target: Self (1)
 #2 (id=734240)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : Afflicting an enemy with a Sigil grants you $s1 Agility for $278769d and reduces the cooldown of your Sigils by $s2 sec. 
@@ -6285,7 +6285,7 @@ Effects          :
 #1 (id=735979)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 279582 | Target: Self (1)
 #2 (id=735980)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.219705e-309 (coefficient=1.754601) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=1.754601) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055)
                    Family Flags: 25, 37
 Description      : Blade Dance deals ${$s2*4} additional damage, and the cost of your next Blade Dance is reduced by $279584s1 Fury for each enemy struck by the final slash.
@@ -6347,7 +6347,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=737265)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.731762e-308 (coefficient=82.454) | PvP Coefficient: 0.20000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=82.454) | PvP Coefficient: 0.20000 | Target: Self (1)
 Description      : When your Consume Magic consumes a beneficial Magic effect from the target, gain $s1 Absorb for $274289d and shatter a Soul Fragment from the target.
 
 Name             : Barrage Of Many Bombs (id=280163) [Passive] 
@@ -6370,7 +6370,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Allow Entering Arena (149), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=737505)   : Apply Aura (6) | Proc Trigger Spell (42): Barrage Of Many Bombs | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 4.970298e-309 (coefficient=7.15) | PvP Coefficient: 0.50000 | Trigger Spell: 280662 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.15) | PvP Coefficient: 0.50000 | Trigger Spell: 280662 | Target: Self (1)
 #2 (id=737506)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=737507)   : Dummy (3)
@@ -6433,7 +6433,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=737533)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.820797e-308 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Target: Self (1)
 #2 (id=737534)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
@@ -6468,7 +6468,7 @@ Effects          :
 #2 (id=738958)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.461025e-309 (coefficient=9.294479) | PvP Coefficient: 0.50000
+                   Base Value: 0 | Scaled Value: 0 (coefficient=9.294479) | PvP Coefficient: 0.50000
 Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $s3 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
@@ -6522,7 +6522,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=737557)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.146992e-307 (coefficient=165) | PvP Coefficient: 0.20000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=165) | PvP Coefficient: 0.20000 | Target: Self (1)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing $280661s1% of damage taken over $280660d, up to $280660s1.
@@ -6546,7 +6546,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=737714)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.573676e-309 (coefficient=2.263804) | PvP Coefficient: 0.50000 | Trigger Spell: 280285 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=2.263804) | PvP Coefficient: 0.50000 | Trigger Spell: 280285 | Target: Self (1)
 #2 (id=737715)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
@@ -6568,7 +6568,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=737878)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.241405e-309 (coefficient=7.54) | PvP Coefficient: 0.50000 | Trigger Spell: 280383 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.54) | PvP Coefficient: 0.50000 | Trigger Spell: 280383 | Target: Self (1)
 #2 (id=738006)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Dealing damage has a chance to call down a Thunderous Blast, dealing $s1 Nature damage to the enemy and increasing the damage of Thunderous Blast by $280385s1%. At ${$s2*$280385s1}% increased damage, Thunderous Blast will critically hit and reset this effect.
@@ -6589,7 +6589,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=737915)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.612058e-308 (coefficient=23.19018) | PvP Coefficient: 0.50000 | Trigger Spell: 280403 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=23.19018) | PvP Coefficient: 0.50000 | Trigger Spell: 280403 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to release a tidal surge, dealing $s1 Frost damage to your target and slowing their movement speed by $280404s2% for $280404d.
 
 Name             : Blood Rite (id=280407) [Passive] 
@@ -6696,9 +6696,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=738156)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.815344e-308 (coefficient=40.5) | PvP Coefficient: 0.50000 | Trigger Spell: 280702 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=40.5) | PvP Coefficient: 0.50000 | Trigger Spell: 280702 | Target: Self (1)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.037893e-308 (coefficient=72.47239) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=72.47239) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
 
 Enables $@spellname280573 within Uldir.
@@ -6811,7 +6811,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=738194)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.066467e-309 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280816 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280816 | Target: Self (1)
 #2 (id=738645)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=738646)   : Dummy (3)
@@ -6948,7 +6948,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=738287)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.066467e-309 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280854 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280854 | Target: Self (1)
 #2 (id=738705)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=738706)   : Dummy (3)
@@ -7093,9 +7093,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=750714)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 4.179409e-309 (coefficient=6.01227) | PvP Coefficient: 0.50000 | Trigger Spell: 287633 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=6.01227) | PvP Coefficient: 0.50000 | Trigger Spell: 287633 | Target: Self (1)
 #2 (id=750715)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 7.996319e-309 (coefficient=11.50307) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=11.50307) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=750716)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 Description      : Your damaging abilities have a chance to deal $<dmg> Plague damage over $287638d, and your healing abilities have a chance to restore $<heal> health over $287639d. These effects are increased by up to $s3% based on the target's missing health.
@@ -7182,7 +7182,7 @@ Effects          :
 #1 (id=752671)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=752672)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
-                   Base Value: 5 | Scaled Value: 2.814703e-309 (coefficient=4.049079) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 0 (coefficient=4.049079) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Demon Blades (203796), Demon's Bite (344859)
                    Family Flags: 0, 44
 Description      : $?s203555[Demon Blades][Demon's Bite] deals $s2 additional damage. When you activate Metamorphosis, the cooldown of Eye Beam and Blade Dance is immediately reset.
@@ -7225,7 +7225,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=752867)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 4.179409e-309 (coefficient=6.01227) | PvP Coefficient: 0.50000 | Trigger Spell: 288880 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=6.01227) | PvP Coefficient: 0.50000 | Trigger Spell: 288880 | Target: Self (1)
 Description      : Lesser Soul Fragments restore $s1 additional health, and every $288882u Soul Fragments you consume causes your next Soul Cleave to grant you a Soul Barrier.
 
 Name             : Treacherous Covenant (id=288953) [Passive] 
@@ -7271,9 +7271,9 @@ Effects          :
 #1 (id=753014)   : Apply Aura (6) | Unknown(285)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 288997 | Target: Self (1)
 #2 (id=753015)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 5 | Scaled Value: 9.382324e-311 (coefficient=0.134969) | PvP Coefficient: 0.20000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 0 (coefficient=0.134969) | PvP Coefficient: 0.20000 | Target: Self (1)
 #3 (id=753016)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 5 | Scaled Value: 2.217643e-310 (coefficient=0.319018) | PvP Coefficient: 0.20000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 0 (coefficient=0.319018) | PvP Coefficient: 0.20000 | Target: Self (1)
 Description      : Each Fury spent heals you for $?s185164[$s2][$s3] Health.
 
 Name             : Person-Computer Interface (id=300168) [Passive, Hidden] 
@@ -7390,11 +7390,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=778211)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.672098e-308 (coefficient=24.05389) | PvP Coefficient: 0.50000 | Trigger Spell: 303388 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=24.05389) | PvP Coefficient: 0.50000 | Trigger Spell: 303388 | Target: Self (1)
 #2 (id=778212)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=778215)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 50 | Scaled Value: 1.311205e-307 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 0 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
 #4 (id=778216)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to crash a wave upon your target for $s1 Frost damage.
@@ -12401,7 +12401,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1028379)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Mind Blast (8092)
+                   Affected Spells: Mind Blast (8092), Void Blast (450983)
                    Family Flags: 13
 Description      : $@spelldesc391090
 Tooltip          : The critical strike chance of your next Mind Blast is increased by $w1%.
@@ -14101,7 +14101,7 @@ Effects          :
 Description      : Throw Glaive has ${$s2+1} charges and $s1 yard increased range.
 
 Name             : Art of the Glaive (id=442290) [Spell Family (107), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14159,8 +14159,60 @@ $?a212612[$@spellname162794]?s263642[$@spellname263642][$@spellname203782] appli
 
 $?a212612[$@spellname188499][$@spellname228477] deals 3 additional glaive slashes to nearby targets for $AP damage.
 
+Name             : Glaive Flurry (id=442435) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 30 seconds
+Labels           : 3348: Incisive Blade (442492 effect#1)
+Proc Chance      : 101%
+Proc Flags       : ....x... ....x... ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee, Generic Hostile Spell
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Nameplate Personal Buffs/Debuffs (423)
+Effects          :
+#1 (id=1137640)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Soul Cleave (228477), Soul Cleave (228478)
+                   Family Flags: 31, 34
+Description      : $@spelldesc442290
+Tooltip          : Your next $?a212612[$@spellicon188499 Blade Dance]?a212613[$@spellicon228477 Soul Cleave][Blade Dance or Soul Cleave] deals 3 additional glaive slashes to nearby targets for $AP damage.
+
+Name             : Rending Strike (id=442442) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 30 seconds
+Labels           : 3348: Incisive Blade (442492 effect#1)
+Proc Chance      : 101%
+Proc Flags       : ....x... ....x... ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee, Generic Hostile Spell
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Nameplate Personal Buffs/Debuffs (423)
+Effects          :
+#1 (id=1137648)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Chaos Strike (162794), Chaos Strike (197125), Chaos Strike (199547), Chaos Strike (222031), Soul Cleave (228477), Soul Cleave (228478)
+                   Family Flags: 6, 14, 31, 34, 52
+Description      : $@spelldesc442290
+Tooltip          : $?a212612[$@spellicon162794 Chaos Strike]?s263642[$@spellicon263642 Fracture]?a212613[$@spellicon203782 Shear][Chaos Strike, Fracture, or Shear] applies Reaver's Mark which causes the target to take 15% increased damage for 5 sec
+
 Name             : Incisive Blade (id=442492) [Spell Family (107), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=2, col=3, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14176,10 +14228,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1137751)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3348 (Label) | Target: Self (1)
+                   Affected Spells (Label): Glaive Flurry (442435), Rending Strike (442442)
 Description      : When enhanced, Chaos Strike and Soul Cleave deal $s1% increased damage.
 
 Name             : Keen Engagement (id=442497) [Spell Family (107), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14199,7 +14252,7 @@ Effects          :
 Description      : Reaver's Glaive generates $s1 Fury.
 
 Name             : Warblade's Hunger (id=442502) [Spell Family (107), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=4, col=3, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14268,7 +14321,7 @@ Description      : $@spelldesc442502
 Tooltip          : Taking $s1% increased damage from $@auracaster.
 
 Name             : Intent Pursuit (id=442679) [Spell Family (107), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=4, col=1, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14287,7 +14340,7 @@ Effects          :
 Description      : Casting an enhanced ability reduces the reamining cooldown of The Hunt by ${$s1/1000} sec
 
 Name             : Aldrachi Tactics (id=442683) [Spell Family (107), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=3, col=1, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14306,8 +14359,8 @@ Effects          :
 Description      : The second enhanced ability in a pattern shatters an additional Soul Fragment.
 
 Name             : Thrill of the Fight (id=442686) [Spell Family (107), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
-                 : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=7, col=3, max_rank=1, req_points=1]
+                 : Generic [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14369,7 +14422,7 @@ Description      : @spelldesc442686
 Tooltip          : Attack Speed increased by $w1%
 
 Name             : Army Unto Oneself (id=442714) [Spell Family (107), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14408,7 +14461,7 @@ Description      : @spelldesc442714
 Tooltip          : Physical damage taken reduced by $s1%.
 
 Name             : Escalation (id=442718) [Spell Family (107), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=4, col=2, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14429,7 +14482,7 @@ Effects          :
 Description      : Each successive enhanced ability deals $s1% increased damage. The effect of the second enhancement is increased by $s2%.
 
 Name             : Incorruptible Spirit (id=442736) [Spell Family (107), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14451,7 +14504,7 @@ Effects          :
 Description      : Consuming a Soul Fragment also heals you for an additional $s1% over time.
 
 Name             : Wounded Quarry (id=442806) [Spell Family (107), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=3, col=3, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14495,8 +14548,25 @@ Effects          :
 Description      : $@spelldesc442290
 Tooltip          : $w1 Soul Fragments consumed. At $?a212612[$442290w1][$442290w2], Reaver's Glaive is available to cast.
 
+Name             : Art of the Glaive (id=444806) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : Melee
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1141407)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+Description      : $@spelldesc442502
+
 Name             : Evasive Action (id=444926) [Spell Family (107), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=2, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14544,7 +14614,7 @@ Description      : $@spelldesc444926
 Tooltip          : Vengeful Retreat may be cast again.
 
 Name             : Unhindered Assault (id=444931) [Spell Family (107), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=2, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14585,7 +14655,7 @@ Effects          :
 Description      : $@spelldesc444997
 
 Name             : Preemptive Strike (id=444997) [Spell Family (107), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
