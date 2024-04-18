@@ -845,7 +845,6 @@ public:
     player_talent_t predator;
     player_talent_t predatory_swiftness;
     player_talent_t primal_wrath;
-    player_talent_t protective_growth;
     player_talent_t raging_fury;
     player_talent_t rampant_ferocity;
     player_talent_t relentless_predator;
@@ -959,6 +958,73 @@ public:
     player_talent_t waking_dream;
     player_talent_t wild_synthesis;
     player_talent_t yseras_gift;
+
+    // Druid of the Claw
+    player_talent_t aggravate_wounds;
+    player_talent_t bestial_strength;
+    player_talent_t claw_rampage;
+    player_talent_t dreadful_wound;
+    player_talent_t empowered_shapeshifting;
+    player_talent_t fount_of_strength;
+    player_talent_t killing_strikes;
+    player_talent_t packs_endurance;
+    player_talent_t ravage;
+    player_talent_t ruthless_aggression;
+    player_talent_t strike_for_the_heart;
+    player_talent_t tear_down_the_mighty;
+    player_talent_t wildpower_surge;
+    player_talent_t wildshape_mastery;
+
+    // Wildstalker
+    player_talent_t bond_with_nature;
+    player_talent_t bursting_growth;
+    player_talent_t entangling_vortex;
+    player_talent_t flower_walk;
+    player_talent_t harmonious_constitution;
+    player_talent_t hunt_beneath_the_open_skies;
+    player_talent_t implant;
+    player_talent_t resilient_flourishing;
+    player_talent_t root_network;
+    player_talent_t strategic_infusion;
+    player_talent_t thriving_growth;
+    player_talent_t twin_sprouts;
+    player_talent_t vigorous_creepers;
+    player_talent_t wildstalkers_persistence;
+    player_talent_t wildstalkers_power;
+
+    // Keeper of the Grove
+    player_talent_t bloom_infusion;
+    player_talent_t bounteous_bloom;
+    player_talent_t cenarius_might;
+    player_talent_t control_the_dream;
+    player_talent_t dream_surge;
+    player_talent_t durability_of_nature;
+    player_talent_t early_spring;
+    player_talent_t expansiveness;
+    player_talent_t groves_inspiration;
+    player_talent_t harmoney_of_the_grove;
+    player_talent_t persistent_enchantments;
+    player_talent_t power_of_nature;
+    player_talent_t power_of_the_dream;
+    player_talent_t protective_growth;
+    player_talent_t treants_of_the_moon;
+
+    // Elune's Chosen
+    player_talent_t arcane_affinity;
+    player_talent_t astral_insight;
+    player_talent_t atmospheric_exposure;
+    player_talent_t boundless_moonlight;
+    player_talent_t elunes_grace;
+    player_talent_t glistening_fur;
+    player_talent_t lunar_amplification;
+    player_talent_t lunar_calling;
+    player_talent_t lunar_insight;
+    player_talent_t lunation;
+    player_talent_t moondust;
+    player_talent_t moon_guardian;
+    player_talent_t stellar_command;
+    player_talent_t the_eternal_moon;
+    player_talent_t the_light_of_elune;
   } talent;
 
   // Class Specializations
@@ -9207,6 +9273,7 @@ void druid_t::init_spells()
   auto STS = [ this ]( std::string_view n, specialization_e s ) {
     return find_talent_spell( talent_tree::SPECIALIZATION, n, s );
   };
+  auto HT = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::HERO, n ); };
 
   // Class tree
   sim->print_debug( "Initializing class talents..." );
@@ -9457,6 +9524,75 @@ void druid_t::init_spells()
   talent.waking_dream                   = ST( "Waking Dream" );  // TODO: increased healing per rejuv NYI
   talent.wild_synthesis                 = ST( "Wild Synthesis" );  // TODO: NYI
   talent.yseras_gift                    = ST( "Ysera's Gift" );
+
+  sim->print_debug( "Initializing hero talents..." );
+
+  // Druid of the Claw
+  talent.aggravate_wounds               = HT( "Aggravate Wounds" );
+  talent.bestial_strength               = HT( "Bestial Strength" );
+  talent.claw_rampage                   = HT( "Claw Rampage" );
+  talent.dreadful_wound                 = HT( "Dreadful Wounds" );
+  talent.empowered_shapeshifting        = HT( "Empowered Shapeshifting" );
+  talent.fount_of_strength              = HT( "Fount of Strength" );
+  talent.killing_strikes                = HT( "Killing Strikes" );
+  talent.packs_endurance                = HT( "Pack's Endurance" );
+  talent.ravage                         = HT( "Ravage" );
+  talent.ruthless_aggression            = HT( "Ruthless Aggression" );
+  talent.strike_for_the_heart           = HT( "Strike for the Heart" );
+  talent.tear_down_the_mighty           = HT( "Tear Down the Mighty" );
+  talent.wildpower_surge                = HT( "Wildpower Surge" );
+  talent.wildshape_mastery              = HT( "Wildshape Mastery" );
+
+  // Wildstalker
+  talent.bond_with_nature               = HT( "Bond with Nature" );
+  talent.bursting_growth                = HT( "Bursting Growth" );
+  talent.entangling_vortex              = HT( "Entangling Vortex" );
+  talent.flower_walk                    = HT( "Flower Walk" );
+  talent.harmonious_constitution        = HT( "Harmonious Constitution" );
+  talent.hunt_beneath_the_open_skies    = HT( "Hunt Beneath the Open Skies" );
+  talent.implant                        = HT( "Implant" );
+  talent.resilient_flourishing          = HT( "Resilient Flourishing" );
+  talent.root_network                   = HT( "Root Network" );
+  talent.strategic_infusion             = HT( "Strategic Infusion" );
+  talent.thriving_growth                = HT( "Thriving Growth" );
+  talent.twin_sprouts                   = HT( "Twin Sprouts" );
+  talent.vigorous_creepers              = HT( "Vigorous Creepers" );
+  talent.wildstalkers_persistence       = HT( "Wildstalker's Persistence" );
+  talent.wildstalkers_power             = HT( "Wildstalker's Power" );
+
+  // Keeper of the Grove
+  talent.bloom_infusion                 = HT( "Bloom Infusion" );
+  talent.bounteous_bloom                = HT( "Bounteous Bloom" );
+  talent.cenarius_might                 = HT( "Cenarius' Might" );
+  talent.control_the_dream              = HT( "Control the Dream" );
+  talent.dream_surge                    = HT( "Dream Surge" );
+  talent.durability_of_nature           = HT( "Durability of Nature" );
+  talent.early_spring                   = HT( "Early Spring" );
+  talent.expansiveness                  = HT( "Expansiveness" );
+  talent.groves_inspiration             = HT( "Grove's Inspiration" );
+  talent.harmoney_of_the_grove          = HT( "Harmony of the Grove" );
+  talent.persistent_enchantments        = HT( "Persistent Enchantments" );
+  talent.power_of_nature                = HT( "Power of Nature" );
+  talent.power_of_the_dream             = HT( "Power of the Dream" );
+  talent.protective_growth              = HT( "Protective Growth" );
+  talent.treants_of_the_moon            = HT( "Treants of the Moon" );
+
+  // Elune's Chosen
+  talent.arcane_affinity                = HT( "Arcane Affinity" );
+  talent.astral_insight                 = HT( "Astral Insight" );
+  talent.atmospheric_exposure           = HT( "Atmospheric Exposure" );
+  talent.boundless_moonlight            = HT( "Boundless Moonlight" );
+  talent.elunes_grace                   = HT( "Elune's Grace" );
+  talent.glistening_fur                 = HT( "Glistening Fur" );
+  talent.lunar_amplification            = HT( "Lunar Amplification" );
+  talent.lunar_calling                  = HT( "Lunar Calling" );
+  talent.lunar_insight                  = HT( "Lunar Insight" );
+  talent.lunation                       = HT( "Lunation" );
+  talent.moondust                       = HT( "Moondust" );
+  talent.moon_guardian                  = HT( "Moon Guardian" );
+  talent.stellar_command                = HT( "Stellar Command" );
+  talent.the_eternal_moon               = HT( "The Eternal Moon" );
+  talent.the_light_of_elune             = HT( "The Light of Elune" );
 
   // Passive Auras
   spec.druid                    = find_spell( 137009 );
