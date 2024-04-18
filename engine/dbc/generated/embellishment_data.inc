@@ -1,10 +1,10 @@
-// Embellishment data, wow build 10.2.6.54205
-static const std::array<embellishment_data_t, 17> __embellishment_data { {
-  { "Armor Spikes", 8188, 147859 },
+// Embellishment data, wow build 11.0.0.54311
+static const std::array<embellishment_data_t, 21> __embellishment_data { {
+  { "Arathor Armor Patch", 8188, 147859 },
   { "Potion Absorption Inhibitor", 8175, 147812 },
   { "Alchemical Flavor Pocket", 8174, 147811 },
-  { "Blue Silken Lining", 8932, 170917 },
-  { "Bronzed Grip Wrappings", 8937, 171010 },
+  { "Duskthread Lining", 8932, 170917 },
+  { "Dawnthread Lining", 8937, 171010 },
   { "Fang Adornments", 8796, 167059 },
   { "Toxified Armor Patch", 8797, 167064 },
   { "Magazine of Healing Darts", 8913, 170400 },
@@ -12,10 +12,14 @@ static const std::array<embellishment_data_t, 17> __embellishment_data { {
   { "Shadowflame-Tempered Armor Patch", 9379, 174110 },
   { "Statuette of Foreseen Power", 9399, 174198 },
   { "Figurine of the Gathering Storm", 9400, 178239 },
-  { "Reserve Parachute", 9412, 174517 },
-  { "Medical Wrap Kit", 9416, 174553 },
+  { "Weaverthread Parachute Kit", 9412, 174517 },
+  { "Reinforced Wrap Kit", 9416, 174553 },
   { "Verdant Conduit", 9521, 179513 },
   { "Dreamtender's Charm", 9532, 179870 },
   { "Verdant Tether", 9614, 180720 },
+  { "Elemental Focusing Lens", 10520, 182921 },
+  { "Prismatic Null Stone", 10518, 182911 },
+  { "Captured Starlight", 10521, 182939 },
+  { "Writhing Armor Banding", 11109, 183927 },
 } };
 

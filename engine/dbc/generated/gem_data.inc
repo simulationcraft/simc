@@ -1,5 +1,5 @@
-// Gem properties, wow build 10.2.6.54205
-static const std::array<gem_property_data_t, 2105> __gem_property_data { {
+// Gem properties, wow build 11.0.0.54311
+static const std::array<gem_property_data_t, 2259> __gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -2090,20 +2090,174 @@ static const std::array<gem_property_data_t, 2105> __gem_property_data { {
   { 4064,  7062, 0x0000000e }, // +Leech
   { 4065,  7064, 0x0000000e }, // +Health Regen
   { 4066,  7063, 0x0000000e }, // +Speed
-  { 4067,  7072, 0x0000000e }, // +Critical Strike & +Haste
-  { 4068,  7073, 0x0000000e }, // +Critical Strike & +Health Regen
-  { 4069,  7074, 0x0000000e }, // +Critical Strike & +Leech
-  { 4070,  7075, 0x0000000e }, // +Haste & +Health Regen
-  { 4071,  7076, 0x0000000e }, // +Haste & +Leech
-  { 4072,  7077, 0x0000000e }, // +Health Regen & +Leech
-  { 4073,  7078, 0x0000000e }, // +Health Regen & +Mastery
-  { 4074,  7079, 0x0000000e }, // +Health Regen & +Speed
-  { 4075,  7080, 0x0000000e }, // +Leech & +Mastery
-  { 4076,  7081, 0x0000000e }, // +Leech & +Speed
-  { 4077,  7082, 0x0000000e }, // +Mastery & +Critical Strike
-  { 4078,  7083, 0x0000000e }, // +Mastery & +Haste
-  { 4079,  7084, 0x0000000e }, // +Mastery & +Speed
-  { 4080,  7085, 0x0000000e }, // +Speed & +Critical Strike
-  { 4081,  7086, 0x0000000e }, // +Speed & +Haste
+  { 4067,  7072, 0x0000000e }, // +++Critical Strike & +Stamina
+  { 4068,  7073, 0x0000000e }, // +++Haste & +Stamina
+  { 4069,  7235, 0x0000000e }, // +++Mastery & +Stamina
+  { 4070,  7075, 0x0000000e }, // +++Haste
+  { 4071,  7076, 0x0000000e }, // +++Critical Strike
+  { 4072,  7077, 0x0000000e }, // +++Mastery
+  { 4073,  7078, 0x0000000e }, // +++Leech
+  { 4074,  7079, 0x0000000e }, // +++Speed
+  { 4075,  7080, 0x0000000e }, // +++Health Regen
+  { 4076,  7081, 0x0000000e }, // ++Haste
+  { 4077,  7082, 0x0000000e }, // ++Critical Strike
+  { 4078,  7083, 0x0000000e }, // ++Mastery
+  { 4079,  7084, 0x0000000e }, // ++Speed
+  { 4080,  7085, 0x0000000e }, // ++Leech
+  { 4081,  7086, 0x0000000e }, // ++Health Regen
+  { 4082,  7119, 0x01000000 }, // Opportunist
+  { 4083,  7120, 0x01000000 }, // Sunstrider's Flourish
+  { 4084,  7121, 0x01000000 }, // Fervor
+  { 4085,  7122, 0x01000000 }, // Arcanist's Edge
+  { 4087,  7136, 0x01000000 }, // Enkindle
+  { 4088,  7137, 0x01000000 }, // Explosive Barrage
+  { 4089,  7138, 0x01000000 }, // Wildfire
+  { 4090,  7139, 0x01000000 }, // Meteor Storm
+  { 4091,  7140, 0x01000000 }, // Incendiary Terror
+  { 4092,  7142, 0x01000000 }, // Frost Armor
+  { 4093,  7146, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste
+  { 4094,  7147, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste
+  { 4095,  7208, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste
+  { 4096,  7148, 0x0000000e }, // +$k1 Critical Strike and +$k2 Mastery
+  { 4097,  7149, 0x0000000e }, // +$k1 Critical Strike and +$k2 Mastery
+  { 4098,  7150, 0x0000000e }, // +$k1 Critical Strike and +$k2 Mastery
+  { 4099,  7151, 0x0000000e }, // +$k1 Critical Strike and +$k2 Versatility
+  { 4100,  7152, 0x0000000e }, // +$k1 Critical Strike and +$k2 Versatility
+  { 4101,  7153, 0x0000000e }, // +$k1 Critical Strike and +$k2 Versatility
+  { 4102,  7154, 0x0000000e }, // +$k1 Critical Strike
+  { 4103,  7155, 0x0000000e }, // +$k1 Critical Strike
+  { 4104,  7156, 0x0000000e }, // +$k1 Critical Strike
+  { 4105,  7157, 0x0000000e }, // +$k1 Versatility and +$k2 Critical Strike
+  { 4106,  7158, 0x0000000e }, // +$k1 Versatility and +$k2 Critical Strike
+  { 4107,  7159, 0x0000000e }, // +$k1 Versatility and +$k2 Critical Strike
+  { 4108,  7160, 0x0000000e }, // +$k1 Versatility and +$k2 Haste
+  { 4109,  7161, 0x0000000e }, // +$k1 Versatility and +$k2 Haste
+  { 4110,  7162, 0x0000000e }, // +$k1 Versatility and +$k2 Haste
+  { 4111,  7163, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery
+  { 4112,  7164, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery
+  { 4113,  7165, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery
+  { 4114,  7166, 0x0000000e }, // +$k1 Versatility
+  { 4115,  7167, 0x0000000e }, // +$k1 Versatility
+  { 4116,  7168, 0x0000000e }, // +$k1 Versatility
+  { 4117,  7169, 0x0000000e }, // +$k1 Haste and +$k2 Critical Strike
+  { 4118,  7170, 0x0000000e }, // +$k1 Haste and +$k2 Critical Strike
+  { 4119,  7171, 0x0000000e }, // +$k1 Haste and +$k2 Critical Strike
+  { 4120,  7172, 0x0000000e }, // +$k1 Haste and +$k2 Mastery
+  { 4121,  7173, 0x0000000e }, // +$k1 Haste and +$k2 Mastery
+  { 4122,  7174, 0x0000000e }, // +$k1 Haste and +$k2 Mastery
+  { 4123,  7175, 0x0000000e }, // +$k1 Haste and +$k2 Versatility
+  { 4124,  7176, 0x0000000e }, // +$k1 Haste and +$k2 Versatility
+  { 4125,  7177, 0x0000000e }, // +$k1 Haste and +$k2 Versatility
+  { 4126,  7178, 0x0000000e }, // +$k1 Haste
+  { 4127,  7179, 0x0000000e }, // +$k1 Haste
+  { 4128,  7180, 0x0000000e }, // +$k1 Haste
+  { 4129,  7181, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike
+  { 4130,  7182, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike
+  { 4131,  7183, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike
+  { 4132,  7184, 0x0000000e }, // +$k1 Mastery and +$k2 Haste
+  { 4133,  7185, 0x0000000e }, // +$k1 Mastery and +$k2 Haste
+  { 4134,  7186, 0x0000000e }, // +$k1 Mastery and +$k2 Haste
+  { 4135,  7187, 0x0000000e }, // +$k1 Mastery and +$k2 Versatility
+  { 4136,  7188, 0x0000000e }, // +$k1 Mastery and +$k2 Versatility
+  { 4137,  7189, 0x0000000e }, // +$k1 Mastery and +$k2 Versatility
+  { 4138,  7190, 0x0000000e }, // +$k1 Mastery
+  { 4139,  7191, 0x0000000e }, // +$k1 Mastery
+  { 4140,  7192, 0x0000000e }, // +$k1 Mastery
+  { 4141,  7193, 0x0000000e }, // +$k1 Stamina and +$k2 Critical Strike
+  { 4142,  7194, 0x0000000e }, // +$k1 Stamina and +$k2 Critical Strike
+  { 4143,  7195, 0x0000000e }, // +$k1 Stamina and +$k2 Critical Strike
+  { 4144,  7196, 0x0000000e }, // +$k1 Stamina and +$k2 Haste
+  { 4145,  7197, 0x0000000e }, // +$k1 Stamina and +$k2 Haste
+  { 4146,  7198, 0x0000000e }, // +$k1 Stamina and +$k2 Haste
+  { 4147,  7199, 0x0000000e }, // +$k1 Stamina and +$k2 Mastery
+  { 4148,  7200, 0x0000000e }, // +$k1 Stamina and +$k2 Mastery
+  { 4149,  7201, 0x0000000e }, // +$k1 Stamina and +$k2 Mastery
+  { 4150,  7202, 0x0000000e }, // +$k1 Stamina and +$k2 Versatility
+  { 4151,  7203, 0x0000000e }, // +$k1 Stamina and +$k2 Versatility
+  { 4152,  7204, 0x0000000e }, // +$k1 Stamina and +$k2 Versatility
+  { 4153,  7205, 0x0000000e }, // +$k1 Stamina
+  { 4154,  7206, 0x0000000e }, // +$k1 Stamina
+  { 4155,  7207, 0x0000000e }, // +$k1 Stamina
+  { 4156,  7211, 0x0000000e }, // +$k1 Primary Stat and +$435488s1% Maximum Mana per unique Algarian gem color
+  { 4157,  7212, 0x0000000e }, // +$k1 Primary Stat and +$435488s1% Maximum Mana per unique Algarian gem color
+  { 4158,  7213, 0x0000000e }, // +$k1 Primary Stat and +$435488s1% Maximum Mana per unique Algarian gem color
+  { 4159,  7214, 0x0000000e }, // +$k1 Primary Stat and +$435500s1% Critical Effect per unique Algarian gem color
+  { 4160,  7215, 0x0000000e }, // +$k1 Primary Stat and +$435500s1% Critical Effect per unique Algarian gem color
+  { 4161,  7216, 0x0000000e }, // +$k1 Primary Stat and +$435500s1% Critical Effect per unique Algarian gem color
+  { 4162,  7217, 0x0000000e }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algarian gem color
+  { 4163,  7218, 0x0000000e }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algarian gem color
+  { 4164,  7219, 0x0000000e }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algarian gem color
+  { 4165,  7220, 0x0000000e }, // +$k1 Primary Stat and +$435550s1% Damage Reduction when affected by Crowd Control
+  { 4166,  7221, 0x0000000e }, // +$k1 Primary Stat and opponent's failed interrupt attempts grant Precognition
+  { 4167,  7222, 0x0000000e }, // +$k1 Primary Stat and getting snared increases damage of your next attack by $411132s1 per stack
+  { 4168,  7225, 0x01000000 }, // Mark of Arrogance
+  { 4169,  7226, 0x01000000 }, // Quick Strike
+  { 4170,  7227, 0x01000000 }, // Slay
+  { 4171,  7228, 0x01000000 }, // Tinkmaster's Shield
+  { 4172,  7229, 0x01000000 }, // Victory Fire
+  { 4173,  7230, 0x00000020 }, // Blink
+  { 4174,  7231, 0x00000020 }, // Heroic Leap
+  { 4175,  7232, 0x00000020 }, // Roll
+  { 4176,  7233, 0x00000020 }, // Sprint
+  { 4177,  7234, 0x0000000e }, // +++Leech & +Stamina
+  { 4178,  7236, 0x0000000e }, // +++Speed & +Stamina
+  { 4179,  7074, 0x0000000e }, // +++Health Regen & +Stamina
+  { 4180,  7237, 0x01000000 }, // Hailstorm
+  { 4181,  7238, 0x01000000 }, // Cold Front
+  { 4182,  7239, 0x01000000 }, // Brittle
+  { 4183,  7240, 0x01000000 }, // Memory of Vengeance
+  { 4184,  7241, 0x01000000 }, // Searing Light
+  { 4185,  7243, 0x00000001 }, // Oblivion Sphere
+  { 4186,  7244, 0x00000001 }, // Thundering Orb
+  { 4187,  7245, 0x00000001 }, // Lifestorm
+  { 4188,  7246, 0x00000001 }, // Chi-ji, the Red Crane
+  { 4189,  7250, 0x00000001 }, // Morphing Elements
+  { 4190,  7251, 0x0000000e }, // +$k1 Primary Stat and +$438874s1% perceived fame and fortune per unique Algarian gem color socketed
+  { 4191,  7252, 0x0000000e }, // +$k1 Primary Stat and +$438874s1% perceived fame and fortune per unique Algarian gem color socketed
+  { 4192,  7253, 0x0000000e }, // +$k1 Primary Stat and +$438874s1% perceived fame and fortune per unique Algarian gem color socketed
+  { 4194,  7276, 0x01000000 }, // Vindication
+  { 4195,  7277, 0x01000000 }, // Warmth
+  { 4196,  7278, 0x01000000 }, // Savior
+  { 4197,  7279, 0x01000000 }, // Deliverance
+  { 4198,  7280, 0x01000000 }, // Righteous Frenzy
+  { 4199,  7281, 0x01000000 }, // Holy Martyr
+  { 4200,  7283, 0x00000020 }, // Disengage
+  { 4201,  7284, 0x00000020 }, // Trailblazer
+  { 4202,  7285, 0x00000020 }, // Leap of Faith
+  { 4203,  7286, 0x00000020 }, // Vanish
+  { 4204,  7287, 0x00000020 }, // Stampeding Roar
+  { 4205,  7288, 0x00000020 }, // Wild Charge
+  { 4206,  7289, 0x00000020 }, // Pursuit of Justice
+  { 4207,  7290, 0x00000020 }, // Door of Shadows
+  { 4208,  7291, 0x00000020 }, // Spirit Walk
+  { 4209,  7292, 0x00000020 }, // Spiritwalker's Grace
+  { 4210,  7293, 0x00000020 }, // Dark Pact
+  { 4211,  7294, 0x00000020 }, // Death's Advance
+  { 4212,  7295, 0x00000020 }, // Soulshape
+  { 4213,  7297, 0x00000001 }, // Locus of Power
+  { 4214,  7298, 0x01000000 }, // Lightning Rod
+  { 4215,  7299, 0x01000000 }, // Static Charge
+  { 4216,  7300, 0x01000000 }, // Windweaver
+  { 4217,  7301, 0x01000000 }, // Storm Overload
+  { 4218,  7302, 0x01000000 }, // Vampiric Aura
+  { 4219,  7303, 0x01000000 }, // Grounding
+  { 4220,  7304, 0x01000000 }, // Ankh of Reincarnation
+  { 4221,  7305, 0x01000000 }, // Freedom
+  { 4222,  7306, 0x01000000 }, // Brilliance
+  { 4223,  7307, 0x00000001 }, // Tireless Spirit
+  { 4224,  7308, 0x01000000 }, // Bloodthirsty Coral
+  { 4225,  7309, 0x00000001 }, // Soul Tether
+  { 4227,  7310, 0x00000001 }, // Ward of Salvation
+  { 4228,  7311, 0x00000001 }, // Precipice of Madness
+  { 4229,  7312, 0x0000000e }, // +Armor
+  { 4230,  7313, 0x0000000e }, // ++Armor
+  { 4231,  7314, 0x0000000e }, // +++Armor & +Stamina
+  { 4232,  7315, 0x0000000e }, // +++Armor
+  { 4233,  7316, 0x0000000e }, // +Versatility
+  { 4234,  7317, 0x0000000e }, // ++Versatility
+  { 4235,  7318, 0x0000000e }, // +++Versatility & +Stamina
+  { 4236,  7319, 0x0000000e }, // +++Versatility
+  { 4237,  7465, 0x00000001 }, // Funeral Pyre
+  { 4238,  7466, 0x00000001 }, // Bulwark of the Black Ox
 } };
 

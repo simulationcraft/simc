@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.2.6.54205
-static const std::array<active_class_spell_t, 292> __active_spells_data { {
+// Active class spells, wow build 11.0.0.54311
+static const std::array<active_class_spell_t, 294> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -8,6 +8,7 @@ static const std::array<active_class_spell_t, 292> __active_spells_data { {
   {  1,    0,   2565,      0, "Shield Block"                       },
   {  1,    0,   6552,      0, "Pummel"                             },
   {  1,    0,   6673,      0, "Battle Shout"                       },
+  {  1,    0,  18499,      0, "Berserker Rage"                     },
   {  1,    0,  23922,      0, "Shield Slam"                        },
   {  1,    0,  34428,      0, "Victory Rush"                       },
   {  1,    0,  57755,      0, "Heroic Throw"                       },
@@ -215,8 +216,6 @@ static const std::array<active_class_spell_t, 292> __active_spells_data { {
   {  9,  265,    980,      0, "Agony"                              },
   {  9,  266,  30146,      0, "Summon Felguard"                    },
   {  9,  266, 105174,      0, "Hand of Gul'dan"                    },
-  {  9,  267,    348,    172, "Immolate"                           },
-  {  9,  267,  29722,    686, "Incinerate"                         },
   { 10,    0, 100780,      0, "Tiger Palm"                         },
   { 10,    0, 100784,      0, "Blackout Kick"                      },
   { 10,    0, 101546,      0, "Spinning Crane Kick"                },
@@ -230,6 +229,7 @@ static const std::array<active_class_spell_t, 292> __active_spells_data { {
   { 10,    0, 322101,      0, "Expel Harm"                         },
   { 10,    0, 322109,      0, "Touch of Death"                     },
   { 10,  268, 322729, 101546, "Spinning Crane Kick"                },
+  { 10,  269, 122470,      0, "Touch of Karma"                     },
   { 10,  270, 115450,      0, "Detox"                              },
   { 10,  270, 212051,      0, "Reawaken"                           },
   { 11,    0,    339,      0, "Entangling Roots"                   },
@@ -251,7 +251,9 @@ static const std::array<active_class_spell_t, 292> __active_spells_data { {
   { 11,    0,  33917,      0, "Mangle"                             },
   { 11,    0,  50769,      0, "Revive"                             },
   { 11,    0, 213764,      0, "Swipe"                              },
+  { 11,  102,  24858,      0, "Moonkin Form"                       },
   { 11,  102, 190984,   5176, "Wrath"                              },
+  { 11,  105,  18562,      0, "Swiftmend"                          },
   { 11,  105,  88423, 440015, "Nature's Cure"                      },
   { 11,  105, 212040,      0, "Revitalize"                         },
   { 11,  105, 440015,      0, "Remove Corruption"                  },
@@ -294,7 +296,7 @@ static const std::array<active_class_spell_t, 292> __active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.2.6.54205
+// Pet active spells, wow build 11.0.0.54311
 static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

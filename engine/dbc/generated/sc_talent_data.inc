@@ -1,5 +1,5 @@
-// 572 talents, wow build 10.2.6.54205
-static std::array<talent_data_t, 572> __talent_data { {
+// 571 talents, wow build 11.0.0.54311
+static std::array<talent_data_t, 571> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
   { "War Machine"                       , 15760, 0x00, 0x0001,   73,   0,   0,  316733,       0,  0 },
@@ -134,7 +134,6 @@ static std::array<talent_data_t, 572> __talent_data { {
   { "Soul of the Forest"                , 21709, 0x00, 0x0400,  104,   0,   4,  158477,       0,  0 },
   { "Soul of the Forest"                , 21710, 0x00, 0x0400,  105,   0,   4,  158478,       0,  0 },
   { "Brutal Slash"                      , 21711, 0x00, 0x0400,  103,   1,   5,  202028,       0,  0 },
-  { "Stellar Drift"                     , 21712, 0x00, 0x0400,  102,   1,   5,  202354,       0,  0 },
   { "Survival of the Fittest"           , 21713, 0x00, 0x0400,  104,   1,   5,  203965,       0,  0 },
   { "Scent of Blood"                    , 21714, 0x00, 0x0400,  103,   0,   5,  285564,       0,  0 },
   { "Inner Peace"                       , 21716, 0x00, 0x0400,  105,   0,   5,  197073,       0,  0 },

@@ -1,5 +1,5 @@
-// Rank class spells, wow build 10.2.6.54205
-static const std::array<rank_class_spell_t, 51> __rank_spells_data { {
+// Rank class spells, wow build 11.0.0.54311
+static const std::array<rank_class_spell_t, 50> __rank_spells_data { {
   {  2,   66, 358934,      0, "Aegis of Light"                    , "Rank 2" },
   { 10,  269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9,  265, 231792,      0, "Agony"                             , "Rank 2" },
@@ -17,7 +17,6 @@ static const std::array<rank_class_spell_t, 51> __rank_spells_data { {
   { 11,    0, 343238,      0, "Entangling Roots"                  , "Rank 2" },
   {  4,  261, 231716,      0, "Eviscerate"                        , "Rank 2" },
   { 10,  268, 322102,      0, "Expel Harm"                        , "Rank 2" },
-  { 10,  269, 322106,      0, "Expel Harm"                        , "Rank 2" },
   { 10,  270, 322104,      0, "Expel Harm"                        , "Rank 2" },
   {  9,    0, 342914,      0, "Fear"                              , "Rank 2" },
   { 12,  581, 320639,      0, "Fel Devastation"                   , "Rank 2" },

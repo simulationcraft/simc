@@ -1,11 +1,11 @@
-// Mastery abilities, wow build 10.2.6.54205
+// Mastery abilities, wow build 11.0.0.54311
 static const std::array<mastery_spell_entry_t, 39> __mastery_spell_data { {
   {   62, 190740 }, // Mastery: Savant (Arcane Mage)
   {   63,  12846 }, // Mastery: Ignite (Fire Mage)
   {   64,  76613 }, // Mastery: Icicles (Frost Mage)
   {   65, 183997 }, // Mastery: Lightbringer (Holy Paladin)
   {   66,  76671 }, // Mastery: Divine Bulwark (Protection Paladin)
-  {   70, 267316 }, // Mastery: Hand of Light (Retribution Paladin)
+  {   70, 267316 }, // Mastery: Highlord's Judgment (Retribution Paladin)
   {   71, 262111 }, // Mastery: Deep Wounds (Arms Warrior)
   {   72,  76856 }, // Mastery: Unshackled Fury (Fury Warrior)
   {   73,  76857 }, // Mastery: Critical Block (Protection Warrior)
