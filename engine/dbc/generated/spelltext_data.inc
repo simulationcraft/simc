@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54311
-static const std::array<spelltext_data_t, 22347> __spelltext_data { {
+static const std::array<spelltext_data_t, 22348> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21795,6 +21795,7 @@ static const std::array<spelltext_data_t, 22347> __spelltext_data { {
   { 444802, "Warped by the blood of the Old Gods, its sickly pale skin stretches over its skeletal body. Anglers across Khaz Algar speak of this fish as a messenger of doom, cursing any Angler unfortunate enough to reel it in. Staring into the eyes of this creature will only elaborate its depravity as any reflection is consumed by the abyss. ", 0, 0 },
   { 444803, "A humble, dormant creature. When awake its scales shimmer with reflective brilliance despite being in contact with little light. A quiet majesty and a fitting goal for any aspiring Angler.", 0, 0 },
   { 444806, "$@spelldesc442502", 0, 0 },
+  { 444810, "$@spelldesc442502", 0, 0 },
   { 444827, "Your $?c1[$@spellname235450][$@spellname11426] can absorb up to $s1% more damage based on your missing Health.\r\n\r\n(Max effectiveness when under $s1% health.)", 0, 0 },
   { 444834, "$@spelldesc444097", "Movement slowed $w1%.", 0 },
   { 444843, "Critical strike chance against targets above $s2% health increased by $s1%.", 0, "Red" },
