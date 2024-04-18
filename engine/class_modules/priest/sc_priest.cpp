@@ -149,6 +149,11 @@ public:
     {
       priest().buffs.shadowy_insight->decrement();
     }
+
+    if ( priest().specialization() == PRIEST_DISCIPLINE && priest().talents.voidweaver.entropic_rift.enabled() )
+    {
+      priest().trigger_entropic_rift();
+    }
   }
 
   bool insidious_ire_active() const
@@ -1484,9 +1489,20 @@ struct entropic_rift_t final : public priest_spell_t
     radius     = priest().talents.voidweaver.entropic_rift_aoe->effectN( 2 ).radius_max();
   }
 
-  void execute() override
+  timespan_t travel_time() const override
   {
-    priest_spell_t::execute();
+    timespan_t t = priest_spell_t::travel_time();
+
+    // TODO: this is super feelycraft based on videos
+    // Entropic Rift activates after about 0.5 s, even in melee range.
+    t = std::max( t, 0.5_s );
+
+    return t;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
 
     make_event<ground_aoe_event_t>(
         *sim, &priest(),

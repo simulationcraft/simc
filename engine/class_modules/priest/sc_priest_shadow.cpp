@@ -1373,6 +1373,16 @@ struct void_torrent_t final : public priest_spell_t
     return dot_duration;
   }
 
+  bool usable_moving() const override
+  {
+    if ( priest().talents.voidweaver.dark_energy.enabled() )
+    {
+      return true;
+    }
+
+    return priest_spell_t::usable_moving();
+  }
+
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
