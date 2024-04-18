@@ -1683,15 +1683,33 @@ public:
     // Guardian
     parse_effects( p()->buff.bear_form );
 
-    unsigned berserk_ignore_mask = p()->talent.berserk_persistence.ok() ? 0b11111100000U
-                                                                        : 0b11111100110U;
-                                                                          //10987654321
-    parse_effects( p()->buff.berserk_bear, berserk_ignore_mask,
-                        p()->talent.berserk_ravage,
-                        p()->talent.berserk_unchecked_aggression );
-    parse_effects( p()->buff.incarnation_bear, berserk_ignore_mask,
-                        p()->talent.berserk_ravage,
-                        p()->talent.berserk_unchecked_aggression );
+    // for readability, we build the mask for effects to enable, rather than mask to disable.
+    unsigned base_mask = 0b11001U;
+
+    if ( p()->talent.berserk_persistence.ok() )
+      base_mask |= 0b110U;
+
+    if ( p()->talent.incarnation_bear.ok() && p()->talent.astral_insight.ok() )
+    {
+      // enable effects #14 & #15
+      base_mask |= 1 << 13;
+      base_mask |= 1 << 14;
+
+      if ( p()->talent.lunar_calling.ok() )
+      {
+        // enable effects #16 & #17
+        base_mask |= 1 << 15;
+        base_mask |= 1 << 16;
+      }
+    }
+
+    // bitwise NOT to conver to ignore mask.
+    base_mask = ~base_mask;
+
+    parse_effects( p()->buff.berserk_bear, base_mask, p()->talent.berserk_ravage,
+                   p()->talent.berserk_unchecked_aggression );
+    parse_effects( p()->buff.incarnation_bear, base_mask, p()->talent.berserk_ravage,
+                   p()->talent.berserk_unchecked_aggression );
     parse_effects( p()->buff.dream_of_cenarius );
     parse_effects( p()->buff.furious_regeneration );
     parse_effects( p()->buff.gory_fur );
