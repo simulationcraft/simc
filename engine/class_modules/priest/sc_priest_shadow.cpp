@@ -649,7 +649,7 @@ struct shadow_word_pain_t final : public priest_spell_t
       }
     }
   }
-    
+
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
     auto m = priest_spell_t::composite_persistent_multiplier( s );
@@ -1420,6 +1420,11 @@ struct void_torrent_t final : public priest_spell_t
     priest_spell_t::last_tick( d );
 
     priest().buffs.void_torrent->expire();
+
+    if ( priest().talents.voidweaver.entropic_rift.enabled() )
+    {
+      priest().trigger_entropic_rift();
+    }
   }
 
   void execute() override

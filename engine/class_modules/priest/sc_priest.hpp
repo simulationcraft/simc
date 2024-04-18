@@ -66,6 +66,7 @@ struct expiation_t;
 struct purge_the_wicked_t;
 struct holy_fire_t;
 struct burning_vehemence_t;
+struct entropic_rift_t;
 }  // namespace actions::spells
 
 namespace actions::heals
@@ -496,6 +497,8 @@ public:
     struct
     {
       player_talent_t entropic_rift;
+      const spell_data_t* entropic_rift_aoe;
+      const spell_data_t* entropic_rift_damage;
       player_talent_t no_escape;
       player_talent_t dark_energy;
       player_talent_t void_blast;
@@ -678,6 +681,7 @@ public:
     propagate_const<actions::heals::essence_devourer_t*> essence_devourer;
     propagate_const<actions::heals::atonement_t*> atonement;
     propagate_const<actions::heals::divine_aegis_t*> divine_aegis;
+    propagate_const<actions::spells::entropic_rift_t*> entropic_rift;
   } background_actions;
 
   // Items
@@ -829,6 +833,9 @@ public:
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   void trigger_essence_devourer();
+  // Stores the currently active Entropic Rift event
+  ground_aoe_event_t* active_entropic_rift;
+  void trigger_entropic_rift();
 
   unsigned int specialization_aura_id()
   {

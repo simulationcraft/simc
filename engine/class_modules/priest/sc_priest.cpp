@@ -1455,6 +1455,66 @@ struct psychic_scream_t final : public priest_spell_t
   }
 };
 
+// ==========================================================================
+// Entropic Rift
+// TODO:
+// - Move the rift if the target dies
+// - Check travel time
+// - Check if tick rate is hasted
+// ==========================================================================
+struct entropic_rift_damage_t final : public priest_spell_t
+{
+  entropic_rift_damage_t( priest_t& p )
+    : priest_spell_t( "entropic_rift", p, p.talents.voidweaver.entropic_rift_damage )
+  {
+    aoe        = -1;
+    background = dual = true;
+  }
+};
+
+struct entropic_rift_t final : public priest_spell_t
+{
+  propagate_const<entropic_rift_damage_t*> damage;
+
+  entropic_rift_t( priest_t& p )
+    : priest_spell_t( "entropic_rift", p, p.talents.voidweaver.entropic_rift ),
+      damage( new entropic_rift_damage_t( priest() ) )
+  {
+    ground_aoe = true;
+    radius     = priest().talents.voidweaver.entropic_rift_aoe->effectN( 2 ).radius_max();
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    make_event<ground_aoe_event_t>(
+        *sim, &priest(),
+        ground_aoe_params_t()
+            .target( target )
+            .duration( priest().talents.voidweaver.entropic_rift_aoe->duration() )
+            .pulse_time( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
+            .action( damage )
+            .x( target->x_position )
+            .y( target->y_position )
+            // Keep track of on-going rift events
+            .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+              switch ( type )
+              {
+                case ground_aoe_params_t::EVENT_CREATED:
+                  priest().active_entropic_rift = event;
+                  break;
+                case ground_aoe_params_t::EVENT_DESTRUCTED:
+                  priest().active_entropic_rift = nullptr;
+                  break;
+                default:
+                  break;
+              }
+            } ),
+        true /* Immediate pulse */ );
+  }
+};
+
 }  // namespace spells
 
 namespace heals
@@ -2825,21 +2885,23 @@ void priest_t::init_spells()
   talents.oracle.grand_reveal          = HT( "Grand Reveal" );           // NYI
 
   // Voidweaver Hero Talents (Discipline/Shadow)
-  talents.voidweaver.entropic_rift      = HT( "Entropic Rift" );       // NYI
-  talents.voidweaver.no_escape          = HT( "No Escape" );           // NYI
-  talents.voidweaver.dark_energy        = HT( "Dark Energy" );         // NYI
-  talents.voidweaver.void_blast         = HT( "Void Blast" );          // NYI
-  talents.voidweaver.inner_quietus      = HT( "Inner Quietus" );       // NYI
-  talents.voidweaver.devour_matter      = HT( "Devour Matter" );       // NYI
-  talents.voidweaver.void_empowerment   = HT( "Void Empowerment" );    // NYI
-  talents.voidweaver.darkening_horizon  = HT( "Darkening Horizon" );   // NYI
-  talents.voidweaver.depth_of_shadows   = HT( "Depth of Shadows" );    // NYI
-  talents.voidweaver.voidwraith         = HT( "Voidwraith" );          // NYI
-  talents.voidweaver.voidheart          = HT( "Voidheart" );           // NYI
-  talents.voidweaver.void_infusion      = HT( "Void Infusion" );       // NYI
-  talents.voidweaver.void_leech         = HT( "Void Leech" );          // NYI
-  talents.voidweaver.embrace_the_shadow = HT( "Embrace the Shadow" );  // NYI
-  talents.voidweaver.collapsing_void    = HT( "Collapsing Void" );     // NYI
+  talents.voidweaver.entropic_rift        = HT( "Entropic Rift" );
+  talents.voidweaver.entropic_rift_aoe    = find_spell( 450193 );        // Contains AoE radius info
+  talents.voidweaver.entropic_rift_damage = find_spell( 447448 );        // Contains damage coeff
+  talents.voidweaver.no_escape            = HT( "No Escape" );           // NYI
+  talents.voidweaver.dark_energy          = HT( "Dark Energy" );         // NYI
+  talents.voidweaver.void_blast           = HT( "Void Blast" );          // NYI
+  talents.voidweaver.inner_quietus        = HT( "Inner Quietus" );       // NYI
+  talents.voidweaver.devour_matter        = HT( "Devour Matter" );       // NYI
+  talents.voidweaver.void_empowerment     = HT( "Void Empowerment" );    // NYI
+  talents.voidweaver.darkening_horizon    = HT( "Darkening Horizon" );   // NYI
+  talents.voidweaver.depth_of_shadows     = HT( "Depth of Shadows" );    // NYI
+  talents.voidweaver.voidwraith           = HT( "Voidwraith" );          // NYI
+  talents.voidweaver.voidheart            = HT( "Voidheart" );           // NYI
+  talents.voidweaver.void_infusion        = HT( "Void Infusion" );       // NYI
+  talents.voidweaver.void_leech           = HT( "Void Leech" );          // NYI
+  talents.voidweaver.embrace_the_shadow   = HT( "Embrace the Shadow" );  // NYI
+  talents.voidweaver.collapsing_void      = HT( "Collapsing Void" );     // NYI
 }
 
 void priest_t::create_buffs()
@@ -2913,6 +2975,7 @@ void priest_t::init_background_actions()
   background_actions.echoing_void        = new actions::spells::echoing_void_t( *this );
   background_actions.shadow_word_death   = new actions::spells::shadow_word_death_t( *this, 200_ms );
   background_actions.echoing_void_demise = new actions::spells::echoing_void_demise_t( *this );
+  background_actions.entropic_rift       = new actions::spells::entropic_rift_t( *this );
   background_actions.essence_devourer    = new actions::heals::essence_devourer_t( *this );
   background_actions.atonement           = new actions::heals::atonement_t( *this );
   if ( talents.discipline.divine_aegis.enabled() )
@@ -3363,6 +3426,11 @@ double priest_t::shadow_weaving_multiplier( const player_t* target, const unsign
 void priest_t::trigger_void_shield( double result_amount )
 {
   ( debug_cast<buffs::power_word_shield_buff_t*>( buffs.power_word_shield ) )->trigger_void_shield( result_amount );
+}
+
+void priest_t::trigger_entropic_rift()
+{
+  background_actions.entropic_rift->execute();
 }
 
 struct priest_module_t final : public module_t
