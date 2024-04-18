@@ -175,16 +175,16 @@ constexpr double m_pi = 3.14159265358979323846;
 // Simc related value definitions
 // ==========================================================================
 
-#define SC_MAJOR_VERSION "1026"
+#define SC_MAJOR_VERSION "1100"
 #define SC_MINOR_VERSION "01"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
-#define SC_BETA 0
+#define SC_BETA 1
 #if SC_BETA
-#define SC_BETA_STR "dragonflight"
+#define SC_BETA_STR "thewarwithin"
 #endif
 
-constexpr int MAX_LEVEL = 70;
-constexpr int MAX_SCALING_LEVEL = 70;
+constexpr int MAX_LEVEL = 80;
+constexpr int MAX_SCALING_LEVEL = 80;
 constexpr int MAX_ILEVEL = 1300;
 constexpr int MAX_CLASS = 14;
 
