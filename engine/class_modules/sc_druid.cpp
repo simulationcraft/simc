@@ -739,7 +739,6 @@ public:
     player_talent_t matted_fur;
     player_talent_t mass_entanglement;
     player_talent_t mighty_bash;
-    player_talent_t moonkin_form;
     player_talent_t natural_recovery;
     player_talent_t natures_vigil;
     player_talent_t nurturing_instinct;
@@ -1068,6 +1067,7 @@ public:
     const spell_data_t* full_moon;
     const spell_data_t* half_moon;
     const spell_data_t* incarnation_moonkin;
+    const spell_data_t* moonkin_form;
     const spell_data_t* shooting_stars_dmg;
     const spell_data_t* waning_twilight;
     const spell_data_t* starfall;
@@ -2649,7 +2649,7 @@ struct cat_form_buff_t : public druid_buff_t, public swap_melee_t
 // Moonkin Form =============================================================
 struct moonkin_form_buff_t : public druid_buff_t
 {
-  moonkin_form_buff_t( druid_t* p ) : base_t( p, "moonkin_form", p->talent.moonkin_form )
+  moonkin_form_buff_t( druid_t* p ) : base_t( p, "moonkin_form", p->spec.moonkin_form )
   {
     add_invalidate( CACHE_ARMOR );
     add_invalidate( CACHE_EXP );
@@ -3305,7 +3305,7 @@ struct cat_form_t : public druid_form_t
 // Moonkin Form Spell =======================================================
 struct moonkin_form_t : public druid_form_t
 {
-  DRUID_ABILITY_B( moonkin_form_t, druid_form_t, "moonkin_form", p->talent.moonkin_form, MOONKIN_FORM ) {}
+  DRUID_ABILITY_B( moonkin_form_t, druid_form_t, "moonkin_form", p->spec.moonkin_form, MOONKIN_FORM ) {}
 };
 
 // Cancelform (revert to caster form)========================================
@@ -9322,7 +9322,6 @@ void druid_t::init_spells()
   talent.mass_entanglement              = CT( "Mass Entanglement" );
   talent.matted_fur                     = CT( "Matted Fur" );
   talent.mighty_bash                    = CT( "Mighty Bash" );
-  talent.moonkin_form                   = CT( "Moonkin Form" );
   talent.natural_recovery               = CT( "Natural Recovery" );
   talent.natures_vigil                  = CT( "Nature's Vigil" );
   talent.nurturing_instinct             = CT( "Nurturing Instinct" );
@@ -9656,6 +9655,7 @@ void druid_t::init_spells()
   spec.full_moon                = check( talent.new_moon, 274283 );
   spec.half_moon                = check( talent.new_moon, 274282 );
   spec.incarnation_moonkin      = check( talent.incarnation_moonkin, 102560 );
+  spec.moonkin_form             = find_specialization_spell( "Moonkin Form" );
   spec.shooting_stars_dmg       = check( talent.shooting_stars, 202497 );  // shooting stars damage
   spec.waning_twilight          = check( talent.waning_twilight, 393957 );
   spec.starfall                 = check( talent.starfall, 191034 );
@@ -9916,7 +9916,7 @@ void druid_t::create_buffs()
 
   buff.matted_fur = make_buff_fallback<matted_fur_buff_t>( talent.matted_fur.ok(), this, "matted_fur" );
 
-  buff.moonkin_form = make_buff_fallback<moonkin_form_buff_t>( talent.moonkin_form.ok(), this, "moonkin_form" );
+  buff.moonkin_form = make_buff_fallback<moonkin_form_buff_t>( spec.moonkin_form->ok(), this, "moonkin_form" );
 
   buff.natures_vigil = make_buff_fallback( talent.natures_vigil.ok(), this, "natures_vigil", talent.natures_vigil )
     ->set_default_value( 0 )
@@ -10063,8 +10063,7 @@ void druid_t::create_buffs()
     ->set_quiet( true )
     ->set_max_stack( std::max( 1, as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) ) );
 
-  buff.owlkin_frenzy = make_buff_fallback( talent.moonkin_form.ok() && talent.moonkin_form->proc_flags(),
-      this, "owlkin_frenzy", find_spell( 157228 ) );
+  buff.owlkin_frenzy = make_buff_fallback( spec.moonkin_form->ok(), this, "owlkin_frenzy", find_spell( 157228 ) );
 
   buff.primordial_arcanic_pulsar = make_buff_fallback( talent.primordial_arcanic_pulsar.ok(),
       this, "primordial_arcanic_pulsar", find_spell( 393961 ) )
@@ -10081,7 +10080,7 @@ void druid_t::create_buffs()
       make_buff_fallback( talent.solstice.ok(), this, "solstice", find_trigger( talent.solstice ).trigger() )
           ->set_default_value( find_trigger( talent.solstice ).percent() );
 
-  bool make_starfall = talent.starfall.ok() || ( talent.convoke_the_spirits.ok() && talent.moonkin_form.ok() );
+  bool make_starfall = talent.starfall.ok() || ( talent.convoke_the_spirits.ok() && spec.moonkin_form->ok() );
   // lookup via spellid for convoke
   buff.starfall = make_buff_fallback( make_starfall, this, "starfall", find_spell( 191034 ) )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
@@ -11170,7 +11169,7 @@ void druid_t::init_special_effects()
     new denizen_of_the_dream_cb_t( this, *driver );
   }
 
-  if ( talent.moonkin_form.ok() && talent.moonkin_form->proc_flags() )
+  if ( spec.moonkin_form->ok() )
   {
     struct owlkin_frenzy_cb_t : public druid_cb_t
     {
@@ -11185,7 +11184,7 @@ void druid_t::init_special_effects()
 
     const auto driver = new special_effect_t( this );
     driver->name_str = buff.owlkin_frenzy->name();
-    driver->spell_id = talent.moonkin_form->id();
+    driver->spell_id = spec.moonkin_form->id();
     driver->proc_chance_ =
         find_effect( find_specialization_spell( "Owlkin Frenzy" ), A_ADD_FLAT_MODIFIER, P_PROC_CHANCE ).percent();
     driver->custom_buff = buff.owlkin_frenzy;
