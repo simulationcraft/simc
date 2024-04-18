@@ -986,18 +986,12 @@ struct pause_action_t : public action_t
 
   timespan_t execute_time() const override
   {
-    timespan_t duration = sim->rng().gauss( base_execute_time, duration_stddev );
-
-    duration = clamp( duration, duration_min, duration_max );
-
-    return duration;
+    return sim->rng().gauss_ab( base_execute_time, duration_stddev, duration_min, duration_max );
   }
 
   void update_ready( timespan_t /* cd_duration */ ) override
   {
-    timespan_t cd = sim->rng().gauss( cooldown->duration, cooldown_stddev );
-
-    cd = clamp( cd, cooldown_min, cooldown_max );
+    timespan_t cd = sim->rng().gauss_ab( cooldown->duration, cooldown_stddev, cooldown_min, cooldown_max );
 
     action_t::update_ready( cd );
   }
@@ -1514,6 +1508,16 @@ void enemy_t::add_tank_heal_raid_event( tank_dummy_e tank_dummy )
   {
     throw std::invalid_argument( "Cooldown lower than cooldown standard deviation." );
   }
+
+  if ( raid_event->cooldown_min == timespan_t::zero() )
+    raid_event->cooldown_min = raid_event->cooldown * 0.5;
+  if ( raid_event->cooldown_max == timespan_t::zero() )
+    raid_event->cooldown_max = raid_event->cooldown * 1.5;
+
+  if ( raid_event->duration_min == timespan_t::zero() )
+    raid_event->duration_min = raid_event->duration * 0.5;
+  if ( raid_event->duration_max == timespan_t::zero() )
+    raid_event->duration_max = raid_event->duration * 1.5;
 
   sim->print_debug( "Successfully created '{}'.", *( raid_event.get() ) );
   sim->raid_events.push_back( std::move( raid_event ) );

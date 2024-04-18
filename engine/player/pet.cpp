@@ -215,28 +215,26 @@ void pet_t::update_stats()
   if ( owner_coeff.ap_from_ap > 0 )
   {
     current_pet_stats.attack_power_from_ap =
-        owner->cache.total_melee_attack_power() * owner->composite_attack_power_multiplier() * owner_coeff.ap_from_ap;
+        owner->composite_total_attack_power_by_type( owner->default_ap_type() ) * owner_coeff.ap_from_ap;
     sim->print_debug( "{} refreshed AP from owner (ap={})", name(), composite_melee_attack_power() );
   }
 
   if ( owner_coeff.ap_from_sp > 0 )
   {
-    current_pet_stats.attack_power_from_sp =
-        owner->cache.spell_power( SCHOOL_MAX ) * owner->composite_spell_power_multiplier() * owner_coeff.ap_from_sp;
+    current_pet_stats.attack_power_from_sp = owner->composite_total_spell_power( SCHOOL_MAX ) * owner_coeff.ap_from_sp;
     sim->print_debug( "{} refreshed AP from owner (ap={}) ", name(), composite_melee_attack_power() );
   }
 
   if ( owner_coeff.sp_from_ap > 0 )
   {
     current_pet_stats.spell_power_from_ap =
-        owner->cache.attack_power() * owner->composite_attack_power_multiplier() * owner_coeff.sp_from_ap;
+        owner->composite_total_attack_power_by_type( owner->default_ap_type() ) * owner_coeff.sp_from_ap;
     sim->print_debug( "{} refreshed SP from owner (sp={}) ", name(), composite_spell_power( SCHOOL_MAX ) );
   }
 
   if ( owner_coeff.sp_from_sp > 0 )
   {
-    current_pet_stats.spell_power_from_sp =
-        owner->cache.spell_power( SCHOOL_MAX ) * owner->composite_spell_power_multiplier() * owner_coeff.sp_from_sp;
+    current_pet_stats.spell_power_from_sp = owner->composite_total_spell_power( SCHOOL_MAX ) * owner_coeff.sp_from_sp;
     sim->print_debug( "{} refreshed SP from owner (sp={})", name(), composite_spell_power( SCHOOL_MAX ) );
   }
 

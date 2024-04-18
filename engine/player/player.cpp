@@ -4230,11 +4230,6 @@ double player_t::composite_melee_speed() const
 
 double player_t::composite_melee_attack_power() const
 {
-  if ( current.attack_power_per_spell_power > 0 )
-  {
-    return current.attack_power_per_spell_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
-  }
-
   double ap = current.stats.attack_power;
 
   ap += current.attack_power_per_strength * cache.strength();
@@ -4243,15 +4238,9 @@ double player_t::composite_melee_attack_power() const
   return ap;
 }
 
-double player_t::composite_melee_attack_power_by_type( attack_power_type type ) const
+double player_t::composite_weapon_attack_power_by_type( attack_power_type type ) const
 {
-  if ( current.attack_power_per_spell_power > 0 )
-  {
-    return current.attack_power_per_spell_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
-  }
-
-  double base_ap = cache.attack_power();
-  double ap = 0;
+  double wdps = 0;
   bool has_mh = main_hand_weapon.type != WEAPON_NONE;
   bool has_oh = off_hand_weapon.type != WEAPON_NONE;
 
@@ -4260,62 +4249,74 @@ double player_t::composite_melee_attack_power_by_type( attack_power_type type ) 
     case attack_power_type::WEAPON_MAINHAND:
       if ( has_mh )
       {
-        ap = base_ap + main_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
+        wdps = main_hand_weapon.dps;
       }
-      // Unarmed is apparently a 0.5 dps weapon, Bruce Lee would be ashamed.
-      else
+      else  // Unarmed is apparently a 0.5 dps weapon, Bruce Lee would be ashamed.
       {
-        ap = base_ap + .5 * WEAPON_POWER_COEFFICIENT;
+        wdps = .5;
       }
       break;
+
     case attack_power_type::WEAPON_OFFHAND:
       if ( has_oh )
       {
-        ap = base_ap + off_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
+        wdps = off_hand_weapon.dps;
       }
       else
       {
-        ap = base_ap + .5 * WEAPON_POWER_COEFFICIENT;
+        wdps = .5;
       }
       break;
-    case attack_power_type::WEAPON_BOTH:
-    {
-      // Don't use with weapon = player -> off_hand_weapon or the OH penalty will be applied to the whole spell
-      ap = ( has_mh ? main_hand_weapon.dps : .5 ) + ( has_oh ? off_hand_weapon.dps : .5 ) / 2;
-      ap *= 2.0 / 3.0 * WEAPON_POWER_COEFFICIENT;
-      ap += base_ap;
 
+    case attack_power_type::WEAPON_BOTH:
+      // Don't use with weapon = player -> off_hand_weapon or the OH penalty will be applied to the whole spell
+      wdps = ( has_mh ? main_hand_weapon.dps : .5 ) + ( has_oh ? off_hand_weapon.dps : .5 ) / 2;
+      wdps *= 2.0 / 3.0;
       break;
-    }
-    // Nohand, just base AP then
-    default:
-      ap = base_ap;
+
+    default:  // Nohand, just base AP then
       break;
   }
 
   // 2022-08-25 -- Aura type 141 works as a general base weapon damage modifier which affects AP calculations
   //               This is normalized to AP based on weapon speed in a similar way as base weapon DPS above
   //               Aura type 530 does not apply to this, as it is only added to the result of white hits
-  double aa_bonus_ap = 0;
   if ( auto_attack_base_modifier > 0 )
   {
     if ( type == attack_power_type::WEAPON_MAINHAND )
     {
-      aa_bonus_ap = auto_attack_base_modifier / main_hand_weapon.swing_time.total_seconds();
+      wdps += auto_attack_base_modifier / main_hand_weapon.swing_time.total_seconds();
     }
     else if ( type == attack_power_type::WEAPON_OFFHAND )
     {
-      aa_bonus_ap = auto_attack_base_modifier / off_hand_weapon.swing_time.total_seconds();
+      wdps += auto_attack_base_modifier / off_hand_weapon.swing_time.total_seconds();
     }
     else if ( type == attack_power_type::WEAPON_BOTH )
     {
-      aa_bonus_ap = ( auto_attack_base_modifier / main_hand_weapon.swing_time.total_seconds()
+      wdps += ( auto_attack_base_modifier / main_hand_weapon.swing_time.total_seconds()
               + auto_attack_base_modifier / off_hand_weapon.swing_time.total_seconds() * 0.5 ) * ( 2.0 / 3.0 );
     }
-    aa_bonus_ap *= WEAPON_POWER_COEFFICIENT;
   }
 
-  return ap + aa_bonus_ap;
+  // weapon attack power is truncated to integer
+  return static_cast<int>( wdps * WEAPON_POWER_COEFFICIENT );
+}
+
+double player_t::composite_total_attack_power_by_type( attack_power_type type ) const
+{
+  // duplicate code to prevent recursion
+  if ( current.attack_power_per_spell_power > 0 )
+  {
+    // total spell power is rounded to integer
+    auto sp = std::round( cache.spell_power( SCHOOL_MAX ) * composite_spell_power_multiplier() );
+
+    return std::round( current.attack_power_per_spell_power * sp );
+  }
+
+  auto mul = composite_attack_power_multiplier();
+
+  // total attack power is rounded to integer
+  return std::round( cache.attack_power() * mul + cache.weapon_attack_power( type ) * mul );
 }
 
 double player_t::composite_attack_power_multiplier() const
@@ -4329,7 +4330,8 @@ double player_t::composite_attack_power_multiplier() const
 
   m *= 1.0 + sim->auras.battle_shout->check_value();
 
-  return m;
+  // multiplier is rounded to 3 digits
+  return std::round( m * 1000 ) * 0.001;
 }
 
 double player_t::composite_melee_crit_chance() const
@@ -4605,18 +4607,29 @@ double player_t::composite_spell_speed() const
 
 double player_t::composite_spell_power( school_e /* school */ ) const
 {
-  if ( current.spell_power_per_attack_power > 0 )
-  {
-    return current.spell_power_per_attack_power *
-           composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
-           composite_attack_power_multiplier();
-  }
-
   double sp = current.stats.spell_power;
 
   sp += current.spell_power_per_intellect * cache.intellect();
 
   return sp;
+}
+
+double player_t::composite_total_spell_power( school_e school ) const
+{
+  // dupplicate code to prevent recursion
+  if ( current.spell_power_per_attack_power > 0 )
+  {
+    auto mul = composite_attack_power_multiplier();
+
+    // total attack power is rounded to integer
+    auto ap = std::round( cache.attack_power() * mul +
+                          cache.weapon_attack_power( attack_power_type::WEAPON_MAINHAND ) * mul );
+
+    return std::round( current.spell_power_per_attack_power * ap );
+  }
+
+  // total spell power is rounded to integer
+  return std::round( cache.spell_power( school ) * composite_spell_power_multiplier() );
 }
 
 double player_t::composite_spell_power_multiplier() const
@@ -4626,7 +4639,8 @@ double player_t::composite_spell_power_multiplier() const
     return 1.0;
   }
 
-  return current.spell_power_multiplier;
+  // multiplier is rounded to 3 digits
+  return std::round( current.spell_power_multiplier * 1000 ) * 0.001;
 }
 
 double player_t::composite_spell_crit_chance() const
@@ -5278,59 +5292,59 @@ void player_t::invalidate_cache( cache_e c )
   {
     case CACHE_STRENGTH:
       if ( current.attack_power_per_strength > 0 )
-      {
         invalidate_cache( CACHE_ATTACK_POWER );
-        invalidate_cache( CACHE_TOTAL_MELEE_ATTACK_POWER );
-      }
       if ( current.parry_per_strength > 0 )
         invalidate_cache( CACHE_PARRY );
       break;
+
     case CACHE_AGILITY:
       if ( current.attack_power_per_agility > 0 )
-      {
         invalidate_cache( CACHE_ATTACK_POWER );
-        invalidate_cache( CACHE_TOTAL_MELEE_ATTACK_POWER );
-      }
       if ( current.dodge_per_agility > 0 )
         invalidate_cache( CACHE_DODGE );
       if ( current.attack_crit_per_agility > 0 )
         invalidate_cache( CACHE_ATTACK_CRIT_CHANCE );
       break;
+
     case CACHE_INTELLECT:
       if ( current.spell_power_per_intellect > 0 )
         invalidate_cache( CACHE_SPELL_POWER );
       if ( current.spell_crit_per_intellect > 0 )
         invalidate_cache( CACHE_SPELL_CRIT_CHANCE );
       break;
+
     case CACHE_SPELL_POWER:
       if ( current.attack_power_per_spell_power > 0 )
-      {
         invalidate_cache( CACHE_ATTACK_POWER );
-        invalidate_cache( CACHE_TOTAL_MELEE_ATTACK_POWER );
-      }
       break;
+
     case CACHE_ATTACK_POWER:
-      invalidate_cache( CACHE_TOTAL_MELEE_ATTACK_POWER );
       if ( current.spell_power_per_attack_power > 0 )
         invalidate_cache( CACHE_SPELL_POWER );
       break;
+
     case CACHE_ATTACK_HASTE:
       invalidate_cache( CACHE_ATTACK_SPEED );
       invalidate_cache( CACHE_RPPM_HASTE );
       break;
+
     case CACHE_SPELL_HASTE:
       invalidate_cache( CACHE_SPELL_SPEED );
       invalidate_cache( CACHE_RPPM_HASTE );
       break;
+
     case CACHE_BONUS_ARMOR:
       invalidate_cache( CACHE_ARMOR );
       break;
+
     case CACHE_ATTACK_CRIT_CHANCE:
       invalidate_cache( CACHE_RPPM_CRIT );
       break;
+
     case CACHE_SPELL_CRIT_CHANCE:
       invalidate_cache( CACHE_RPPM_CRIT );
       break;
+
     default:
       break;
   }
@@ -5342,32 +5356,35 @@ void player_t::invalidate_cache( cache_e c )
       invalidate_cache( CACHE_ATTACK_EXP );
       invalidate_cache( CACHE_SPELL_HIT );
       break;
+
     case CACHE_HIT:
       invalidate_cache( CACHE_ATTACK_HIT );
       invalidate_cache( CACHE_SPELL_HIT );
       break;
+
     case CACHE_CRIT_CHANCE:
       invalidate_cache( CACHE_ATTACK_CRIT_CHANCE );
       invalidate_cache( CACHE_SPELL_CRIT_CHANCE );
       break;
+
     case CACHE_HASTE:
       invalidate_cache( CACHE_ATTACK_HASTE );
       invalidate_cache( CACHE_SPELL_HASTE );
       break;
+
     case CACHE_VERSATILITY:
       invalidate_cache( CACHE_DAMAGE_VERSATILITY );
       invalidate_cache( CACHE_HEAL_VERSATILITY );
       invalidate_cache( CACHE_MITIGATION_VERSATILITY );
       break;
+
     default:
       cache.invalidate( c );
       break;
   }
 }
 #else
-void invalidate_cache( cache_e )
-{
-}
+void invalidate_cache( cache_e ) {}
 #endif
 
 void player_t::sequence_add_wait( timespan_t amount, timespan_t ts )
@@ -6507,6 +6524,21 @@ void player_t::demise()
   event_t::cancel( off_gcd );
   event_t::cancel( cast_while_casting_poll_event );
 
+  if ( is_enemy() )
+  {
+    sim->active_enemies--;
+    sim->target_non_sleeping_list.find_and_erase_unordered( this );
+
+    // When an enemy dies, trigger players to acquire a new target
+    range::for_each( sim->player_non_sleeping_list,
+                     [ this ]( player_t* p ) { p->acquire_target( retarget_source::ACTOR_DEMISE, this ); } );
+  }
+  else
+  {
+    sim->active_allies--;
+    sim->player_non_sleeping_list.find_and_erase_unordered( this );
+  }
+
   // If an enemy mob dies, trigger on-kill callback on all active players
   if ( is_enemy() )
   {
@@ -6547,20 +6579,6 @@ void player_t::demise()
   for ( size_t i = 0; i < dot_list.size(); ++i )
     dot_list[ i ]->cancel();
 
-  if ( is_enemy() )
-  {
-    sim->active_enemies--;
-    sim->target_non_sleeping_list.find_and_erase_unordered( this );
-
-    // When an enemy dies, trigger players to acquire a new target
-    range::for_each( sim->player_non_sleeping_list,
-                     [this]( player_t* p ) { p->acquire_target( retarget_source::ACTOR_DEMISE, this ); } );
-  }
-  else
-  {
-    sim->active_allies--;
-    sim->player_non_sleeping_list.find_and_erase_unordered( this );
-  }
 }
 
 // Player enters/leaves "combat". Primarily relevant for DungeonSlice/DungeonRoute sims where "combat" is defined as
@@ -6769,7 +6787,7 @@ double player_t::get_stat_value(stat_e stat)
   case STAT_INTELLECT:
     return cache.intellect();
   case STAT_SPELL_POWER:
-    return cache.spell_power(SCHOOL_NONE);
+    return cache.spell_power( SCHOOL_NONE );
   case STAT_ATTACK_POWER:
     return cache.attack_power();
   case STAT_CRIT_RATING:
@@ -8583,8 +8601,8 @@ struct lights_judgment_t : public racial_spell_t
 
     double attack_direct_power_coefficient( const action_state_t* s ) const override
     {
-      auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-      auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+      auto ap = composite_total_attack_power();
+      auto sp = composite_total_spell_power();
 
       if ( ap <= sp )
         return 0;
@@ -8593,8 +8611,8 @@ struct lights_judgment_t : public racial_spell_t
 
     double spell_direct_power_coefficient( const action_state_t* s ) const override
     {
-      auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-      auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+      auto ap = composite_total_attack_power();
+      auto sp = composite_total_spell_power();
 
       if ( ap > sp )
         return 0;
@@ -8667,8 +8685,8 @@ struct arcane_pulse_t : public racial_spell_t
 
   double attack_direct_power_coefficient( const action_state_t* s ) const override
   {
-    auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-    auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+    auto ap = composite_total_attack_power();
+    auto sp = composite_total_spell_power();
 
     if ( ap <= sp )
       return 0;
@@ -8677,8 +8695,8 @@ struct arcane_pulse_t : public racial_spell_t
 
   double spell_direct_power_coefficient( const action_state_t* s ) const override
   {
-    auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-    auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+    auto ap = composite_total_attack_power();
+    auto sp = composite_total_spell_power();
 
     if ( ap > sp )
       return 0;
@@ -8760,8 +8778,8 @@ struct haymaker_t : public racial_spell_t
 
   double attack_direct_power_coefficient( const action_state_t* s ) const override
   {
-    auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-    auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+    auto ap = composite_total_attack_power();
+    auto sp = composite_total_spell_power();
 
     if ( ap <= sp )
       return 0;
@@ -8771,8 +8789,8 @@ struct haymaker_t : public racial_spell_t
 
   double spell_direct_power_coefficient( const action_state_t* s ) const override
   {
-    auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-    auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+    auto ap = composite_total_attack_power();
+    auto sp = composite_total_spell_power();
 
     if ( ap > sp )
       return 0;
@@ -8819,8 +8837,8 @@ struct bag_of_tricks_t : public racial_spell_t
 
   double attack_direct_power_coefficient( const action_state_t* s ) const override
   {
-    auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-    auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+    auto ap = composite_total_attack_power();
+    auto sp = composite_total_spell_power();
 
     if ( ap <= sp )
       return 0;
@@ -8830,8 +8848,8 @@ struct bag_of_tricks_t : public racial_spell_t
 
   double spell_direct_power_coefficient( const action_state_t* s ) const override
   {
-    auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-    auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+    auto ap = composite_total_attack_power();
+    auto sp = composite_total_spell_power();
 
     if ( ap > sp )
       return 0;
@@ -11465,17 +11483,23 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
         case STAT_INTELLECT:
         case STAT_SPIRIT:
         {
-          return make_fn_expr(expression_str, [this, stat] {return cache.get_attribute( static_cast<attribute_e>( stat ) );});
+          return make_fn_expr( expression_str, [ this, stat ] {
+            return cache.get_attribute( static_cast<attribute_e>( stat ) );
+          } );
         }
 
         case STAT_SPELL_POWER:
         {
-          return make_fn_expr(expression_str, [this] {return cache.spell_power( SCHOOL_MAX ) * composite_spell_power_multiplier();});
+          return make_fn_expr( expression_str, [ this ] {
+            return static_cast<int>( cache.spell_power( SCHOOL_MAX ) * composite_spell_power_multiplier() );
+          } );
         }
 
         case STAT_ATTACK_POWER:
         {
-          return make_fn_expr(expression_str, [this] {return cache.attack_power() * composite_attack_power_multiplier();});
+          return make_fn_expr( expression_str, [ this ] {
+            return static_cast<int>( cache.attack_power() * composite_attack_power_multiplier() );
+          } );
         }
 
         case STAT_EXPERTISE_RATING:
@@ -12828,6 +12852,9 @@ void player_t::create_options()
   add_option( opt_timespan( "dragonflight.balefire_branch_loss_tick", dragonflight_opts.balefire_branch_loss_tick, 1_ms, 20_s ) );
   add_option( opt_int( "dragonflight.balefire_branch_loss_stacks", dragonflight_opts.balefire_branch_loss_stacks, 0, 20 ) );
   add_option( opt_uint( "dragonflight.verdant_conduit_allies", dragonflight_opts.verdant_conduit_allies, 0, 2 ) );
+  add_option( opt_bool( "dragonflight.rashoks_use_true_overheal", dragonflight_opts.rashoks_use_true_overheal ) );
+  add_option( opt_float( "dragonflight.rashoks_fake_overheal", dragonflight_opts.rashoks_fake_overheal, 0.0, 1.0 ) );
+  add_option( opt_string( "dragonflight.timerunners_advantage", dragonflight_opts.timerunners_advantage ) );
 
   // Obsolete options
 
@@ -13435,7 +13462,7 @@ void player_collected_data_t::reserve_memory( const player_t& p )
   heal_taken.reserve( size );
   deaths.reserve( size );
 
-  if ( !p.is_pet() && p.primary_role() == ROLE_TANK )
+  if ( !p.is_pet() && p.primary_role() == ROLE_TANK && p.type != PLAYER_SIMPLIFIED )
   {
     theck_meloree_index.reserve( size );
     effective_theck_meloree_index.reserve( size );
@@ -13750,7 +13777,7 @@ void player_collected_data_t::collect_data( const player_t& p )
 
   // Health Change Calculations - only needed for tanks
   double tank_metric = 0;
-  if ( !p.is_pet() && p.primary_role() == ROLE_TANK )
+  if ( !p.is_pet() && p.primary_role() == ROLE_TANK && p.type != PLAYER_SIMPLIFIED )
   {
     double tmi       = 0;  // TMI result
     double etmi      = 0;  // ETMI result

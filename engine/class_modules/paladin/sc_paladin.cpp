@@ -1244,9 +1244,9 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
     return am;
   }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = holy_power_consumer_t::cost();
+    double c = holy_power_consumer_t::cost_pct_multiplier();
 
     if ( p()->buffs.shining_light_free->check() )
       c *= 1.0 + p()->buffs.shining_light_free->data().effectN( 1 ).percent();
@@ -2524,6 +2524,23 @@ void paladin_t::init_action_list()
   player_t::init_action_list();
 }
 
+// paladin_t::validate_fight_style ==========================================
+bool paladin_t::validate_fight_style( fight_style_e style ) const
+{
+  if ( specialization() == PALADIN_PROTECTION )
+  {
+    switch ( style )
+    {
+      case FIGHT_STYLE_DUNGEON_ROUTE:
+      case FIGHT_STYLE_DUNGEON_SLICE:
+        return false;
+      default:
+        return true;
+    }
+  }
+  return true;
+}
+
 void paladin_t::init_special_effects()
 {
   player_t::init_special_effects();
@@ -2637,6 +2654,33 @@ void paladin_t::init_spells()
   tier_sets.heartfire_sentinels_authority_4pc = sets->set( PALADIN_PROTECTION, T30, B4 );
   tier_sets.t31_2pc = sets->set( PALADIN_PROTECTION, T31, B2 );
   tier_sets.t31_4pc = sets->set( PALADIN_PROTECTION, T31, B4 );
+}
+
+void paladin_t::init_items()
+{
+  player_t::init_items();
+
+  set_bonus_type_e tier_to_enable;
+  switch ( specialization() )
+  {
+    case PALADIN_PROTECTION:
+      tier_to_enable = T29;
+      break;
+    case PALADIN_HOLY:
+      tier_to_enable = T30;
+      break;
+    case PALADIN_RETRIBUTION:
+      tier_to_enable = T31;
+      break;
+    default:
+      return;
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+    sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
+
+  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+    sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
 }
 
 // paladin_t::primary_role ==================================================

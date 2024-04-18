@@ -1,0 +1,107 @@
+warrior="DF4_Warrior_Protection"
+source=default
+spec=protection
+level=70
+race=dwarf
+role=tank
+position=front
+professions=blacksmithing=100/jewelcrafting=100
+talents=BkEAAAAAAAAAAAAAAAAAAAAAAIEBAAAASSCJJItkSSSaNEBCFJQJJBgIJJ0QSCAOQkAAAAAAAARAApoAAC
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_corrupting_rage_3
+food=feisty_fish_sticks
+augmentation=draconic
+temporary_enchant=main_hand:howling_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/snapshot_stats
+actions.precombat+=/battle_stance,toggle=on
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/charge,if=time=0
+actions+=/use_items
+actions+=/avatar
+actions+=/shield_wall,if=talent.immovable_object.enabled&buff.avatar.down
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent
+actions+=/lights_judgment
+actions+=/fireblood
+actions+=/ancestral_call
+actions+=/bag_of_tricks
+actions+=/potion,if=buff.avatar.up|buff.avatar.up&target.health.pct<=20
+actions+=/ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=40&cooldown.shield_charge.ready&talent.champions_bulwark.enabled|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=30&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=20&cooldown.avatar.ready|rage.deficit<=45&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=30&cooldown.avatar.ready&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=20|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&talent.unnerving_focus.enabled&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.impenetrable_wall.enabled)|(rage>=70|buff.seeing_red.stack=7&rage>=35)&cooldown.shield_slam.remains<=1&buff.shield_block.remains>=4&set_bonus.tier31_2pc,use_off_gcd=1
+actions+=/last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled|set_bonus.tier30_2pc|set_bonus.tier30_4pc
+actions+=/ravager
+actions+=/demoralizing_shout,if=talent.booming_voice.enabled
+actions+=/champions_spear
+actions+=/thunderous_roar
+actions+=/shield_slam,if=buff.fervid.up
+actions+=/shockwave,if=talent.sonic_boom.enabled&buff.avatar.up&talent.unstoppable_force.enabled&!talent.rumbling_earth.enabled|talent.sonic_boom.enabled&talent.rumbling_earth.enabled&spell_targets.shockwave>=3
+actions+=/shield_charge
+actions+=/shield_block,if=buff.shield_block.duration<=10
+actions+=/run_action_list,name=aoe,if=spell_targets.thunder_clap>=3
+actions+=/call_action_list,name=generic
+
+actions.aoe=thunder_clap,if=dot.rend.remains<=1
+actions.aoe+=/shield_slam,if=(set_bonus.tier30_2pc|set_bonus.tier30_4pc)&spell_targets.thunder_clap<=7|buff.earthen_tenacity.up
+actions.aoe+=/thunder_clap,if=buff.violent_outburst.up&spell_targets.thunderclap>6&buff.avatar.up&talent.unstoppable_force.enabled
+actions.aoe+=/revenge,if=rage>=70&talent.seismic_reverberation.enabled&spell_targets.revenge>=3
+actions.aoe+=/shield_slam,if=rage<=60|buff.violent_outburst.up&spell_targets.thunderclap<=7
+actions.aoe+=/thunder_clap
+actions.aoe+=/revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled
+
+actions.generic=shield_slam
+actions.generic+=/thunder_clap,if=dot.rend.remains<=2&buff.violent_outburst.down
+actions.generic+=/execute,if=buff.sudden_death.up&talent.sudden_death.enabled
+actions.generic+=/execute
+actions.generic+=/thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)
+actions.generic+=/revenge,if=(rage>=80&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20)|(rage>=80&target.health.pct>35|buff.revenge.up&target.health.pct<=35&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>35)&talent.massacre.enabled
+actions.generic+=/execute,if=spell_targets.revenge=1
+actions.generic+=/revenge,if=target.health>20
+actions.generic+=/thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains&buff.violent_outburst.up)
+actions.generic+=/devastate
+
+head=thraexhelm_of_the_onyx_crucible,id=217218,bonus_id=6935,ilevel=528,gem_id=192985,enchant=incandescent_essence
+neck=terross_captive_core,id=195502,bonus_id=8782,ilevel=528,gem_id=192952/192952/192952
+shoulders=pauldrons_of_the_onyx_crucible,id=217220,ilevel=528
+back=voice_of_the_silent_star,id=204465,bonus_id=8767,ilevel=535,enchant=homebound_speed_3
+chest=datheas_cyclonic_cage,id=195494,ilevel=528,enchant=waking_stats_3
+wrists=primal_molten_vambraces,id=190502,bonus_id=9379/6935/8960,ilevel=525,gem_id=192945,crafted_stats=32/36
+hands=handguards_of_the_onyx_crucible,id=217217,ilevel=528
+waist=primal_molten_greatbelt,id=190501,bonus_id=9379/8960/10249/6935,ilevel=525,gem_id=192952,crafted_stats=32/36
+legs=legplates_of_the_onyx_crucible,id=217219,ilevel=528,enchant=frosted_armor_kit_3
+feet=spittleresistant_sollerets,id=204396,bonus_id=8767,ilevel=528,enchant=plainsrunners_breeze_3
+finger1=emissarys_flamewrought_seal,id=201992,bonus_id=6935/8767,ilevel=528,gem_id=192952,enchant=devotion_of_haste_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6935/8767,ilevel=528,gem_id=192952,enchant=devotion_of_haste_3
+trinket1=cataclysmic_signet_brand,id=207166,bonus_id=8767,ilevel=528
+trinket2=elementium_pocket_anvil,id=202617,bonus_id=8767,ilevel=528
+main_hand=gholak_the_final_conflagration,id=207786,bonus_id=8767,ilevel=528,enchant=wafting_devotion_3
+off_hand=defender_of_the_ancient,id=207797,bonus_id=8767,ilevel=528
+
+# Gear Summary
+# gear_ilvl=528.06
+# gear_strength=13936
+# gear_stamina=58002
+# gear_intellect=2070
+# gear_crit_rating=4815
+# gear_haste_rating=6836
+# gear_mastery_rating=776
+# gear_versatility_rating=4824
+# gear_speed_rating=375
+# gear_armor=23292
+# gear_bonus_armor=141
+# set_bonus=dragonflight_season_4_2pc=1
+# set_bonus=dragonflight_season_4_4pc=1

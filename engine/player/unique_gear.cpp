@@ -2465,13 +2465,13 @@ struct felmouth_frenzy_driver_t : public spell_t
     return base_tick_time * ticks;
   }
 
-  double composite_spell_power() const override
+  double composite_total_spell_power() const override
   {
     // Fel Lash uses the player's highest primary school spellpower.
     double csp = 0.0;
 
     for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX_PRIMARY; i++ )
-      csp = std::max( csp, p -> cache.spell_power( i ) );
+      csp = std::max( csp, p->composite_total_spell_power( i ) );
 
     return csp;
   }

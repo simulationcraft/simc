@@ -439,6 +439,7 @@ namespace monk_apl
         { "beacon_to_the_beyond", ",use_off_gcd=1,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&!buff.serenity.up&!pet.xuen_the_white_tiger.active|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>30&cooldown.serenity.remains|fight_remains<10" },
         { "djaruun_pillar_of_the_elder_flame", ",if=cooldown.fists_of_fury.remains<2&cooldown.invoke_xuen_the_white_tiger.remains>10|fight_remains<12" },
         { "dragonfire_bomb_dispenser", ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>10&cooldown.serenity.remains|fight_remains<10" },
+       { "irideus_fragment",",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|trinket.2.has_use_buff)&(buff.invokers_delight.up|cooldown.invoke_xuen_the_white_tiger.remains>45&fight_remains>180)&buff.serenity.up|fight_remains<20"},
 
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&buff.serenity.up|fight_remains<25" },
@@ -516,7 +517,7 @@ namespace monk_apl
 
     // Snapshot stats
     pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-    pre->add_action( "variable,name=sync_serenity,default=0,value=1,if=(equipped.neltharions_call_to_dominance|equipped.ashes_of_the_embersoul|equipped.mirror_of_fractured_tomorrows|equipped.witherbarks_branch)&!(fight_style.dungeonslice|fight_style.dungeonroute)" );
+    pre->add_action( "variable,name=sync_serenity,default=0,value=1,if=(equipped.neltharions_call_to_dominance|equipped.ashes_of_the_embersoul|equipped.mirror_of_fractured_tomorrows|equipped.witherbarks_branch|equipped.irideus_fragment)&!(fight_style.dungeonslice|fight_style.dungeonroute)|equipped.neltharions_call_to_dominance&equipped.ashes_of_the_embersoul" );
 
     pre->add_action( "summon_white_tiger_statue" );
     pre->add_action( "expel_harm,if=chi<chi.max" );
@@ -610,12 +611,10 @@ namespace monk_apl
     // Storm, Earth and Fire Cooldowns
     cd_sef->add_action( "invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active",
       "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active." );
-    cd_sef->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&target.time_to_die>25&talent.bonedust_brew&cooldown.bonedust_brew.remains<=5&(active_enemies<3&chi>=3|active_enemies>=3&chi>=2)|fight_remains<25" );
-    cd_sef->add_action( "invoke_xuen_the_white_tiger,if=target.time_to_die>25&fight_remains>120&(!trinket.1.is.ashes_of_the_embersoul&!trinket.1.is.witherbarks_branch&!trinket.2.is.ashes_of_the_embersoul&!trinket.2.is.witherbarks_branch|(trinket.1.is.ashes_of_the_embersoul|trinket.1.is.witherbarks_branch)&!trinket.1.cooldown.remains|(trinket.2.is.ashes_of_the_embersoul|trinket.2.is.witherbarks_branch)&!trinket.2.cooldown.remains)" );
-    cd_sef->add_action( "invoke_xuen_the_white_tiger,if=fight_remains<60&(debuff.skyreach_exhaustion.remains<2|debuff.skyreach_exhaustion.remains>55)&!cooldown.serenity.remains&active_enemies<3" );
-    cd_sef->add_action( "storm_earth_and_fire,if=talent.bonedust_brew&(fight_remains<30&cooldown.bonedust_brew.remains<4&chi>=4|buff.bonedust_brew.up|!spinning_crane_kick.max&active_enemies>=3&cooldown.bonedust_brew.remains<=2&chi>=2)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)" );
-    cd_sef->add_action( "storm_earth_and_fire,if=!talent.bonedust_brew&(pet.xuen_the_white_tiger.active|target.time_to_die>15&cooldown.storm_earth_and_fire.full_recharge_time<cooldown.invoke_xuen_the_white_tiger.remains)" );
-    cd_sef->add_action( "bonedust_brew,if=(!buff.bonedust_brew.up&buff.storm_earth_and_fire.up&buff.storm_earth_and_fire.remains<11&spinning_crane_kick.max)|(!buff.bonedust_brew.up&fight_remains<30&fight_remains>10&spinning_crane_kick.max&chi>=4)|fight_remains<10|(!debuff.skyreach_exhaustion.up&active_enemies>=4&spinning_crane_kick.modifier>=2)|(pet.xuen_the_white_tiger.active&spinning_crane_kick.max&active_enemies>=4)" );
+    cd_sef->add_action( "invoke_xuen_the_white_tiger,target_if=max:target.health,if=(target.time_to_die>35&fight_style.dungeonroute|target.time_to_die>14&!fight_style.dungeonroute)&fight_remains>120&(!trinket.1.is.ashes_of_the_embersoul&!trinket.1.is.witherbarks_branch&!trinket.2.is.ashes_of_the_embersoul&!trinket.2.is.witherbarks_branch|(trinket.1.is.ashes_of_the_embersoul|trinket.1.is.witherbarks_branch)&!trinket.1.cooldown.remains|(trinket.2.is.ashes_of_the_embersoul|trinket.2.is.witherbarks_branch)&!trinket.2.cooldown.remains)" );
+    cd_sef->add_action( "invoke_xuen_the_white_tiger,if=fight_remains<60&(debuff.skyreach_exhaustion.remains<2|debuff.skyreach_exhaustion.remains>55)&!cooldown.serenity.remains&active_enemies<3|fight_remains<25" );
+    cd_sef->add_action( "storm_earth_and_fire,if=(pet.xuen_the_white_tiger.active|target.time_to_die>15&cooldown.storm_earth_and_fire.full_recharge_time<cooldown.invoke_xuen_the_white_tiger.remains)" );
+    cd_sef->add_action( "bonedust_brew,if=cooldown.invoke_xuen_the_white_tiger.remains>45&(!buff.bonedust_brew.up&buff.storm_earth_and_fire.up&buff.storm_earth_and_fire.remains<11&spinning_crane_kick.max)|(!buff.bonedust_brew.up&fight_remains<30&fight_remains>10&spinning_crane_kick.max&chi>=4)|fight_remains<10|(!debuff.skyreach_exhaustion.up&active_enemies>=4&spinning_crane_kick.modifier>=2)|(pet.xuen_the_white_tiger.active&spinning_crane_kick.max&active_enemies>=4|fight_remains<15|cooldown.invoke_xuen_the_white_tiger.remains>45&(debuff.skyreach_exhaustion.remains>55|debuff.skyreach_exhaustion.remains<2)|cooldown.invoke_xuen_the_white_tiger.remains>45&target.time_to_die>10)" );
     cd_sef->add_action( "call_action_list,name=bdb_setup,if=!buff.bonedust_brew.up&talent.bonedust_brew&cooldown.bonedust_brew.remains<=2&(fight_remains>60&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>10)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|variable.hold_xuen)|((pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>13)&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>13|buff.storm_earth_and_fire.up)))" );
     cd_sef->add_action( "storm_earth_and_fire,if=fight_remains<20|(cooldown.storm_earth_and_fire.charges=2&cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12" );
     cd_sef->add_action( "touch_of_death,target_if=max:target.health,if=fight_style.dungeonroute&!buff.serenity.up&(combo_strike&target.health<health)|(buff.hidden_masters_forbidden_touch.remains<2)|(buff.hidden_masters_forbidden_touch.remains>target.time_to_die)" );
@@ -654,10 +653,9 @@ namespace monk_apl
     // Serenity Cooldowns
     cd_serenity->add_action( "invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active",
       "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active." );
-    cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=target.time_to_die>16&!variable.hold_xuen&talent.bonedust_brew&cooldown.bonedust_brew.remains<=1|buff.bloodlust.up|fight_remains<25" );
-    cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=(target.time_to_die>16|(fight_style.dungeonslice|fight_style.dungeonroute)&cooldown.serenity.remains<2)&fight_remains>120&(!trinket.1.is.ashes_of_the_embersoul&!trinket.1.is.witherbarks_branch&!trinket.2.is.ashes_of_the_embersoul&!trinket.2.is.witherbarks_branch|(trinket.1.is.ashes_of_the_embersoul|trinket.1.is.witherbarks_branch)&!trinket.1.cooldown.remains|(trinket.2.is.ashes_of_the_embersoul|trinket.2.is.witherbarks_branch)&!trinket.2.cooldown.remains)" );
+    cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=buff.bloodlust.up|fight_remains<25" );
+    cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=(target.time_to_die>16|(fight_style.dungeonslice|fight_style.dungeonroute)&cooldown.serenity.remains<2)&fight_remains>120&(!trinket.1.is.ashes_of_the_embersoul&!trinket.1.is.witherbarks_branch&!trinket.2.is.ashes_of_the_embersoul&!trinket.2.is.witherbarks_branch|(trinket.1.is.ashes_of_the_embersoul|trinket.1.is.witherbarks_branch)&!trinket.1.cooldown.remains|(trinket.2.is.ashes_of_the_embersoul|trinket.2.is.witherbarks_branch)&!trinket.2.cooldown.remains)&target.time_to_die>14" );
     cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=target.time_to_die>16&fight_remains<60&(debuff.skyreach_exhaustion.remains<2|debuff.skyreach_exhaustion.remains>55)&!cooldown.serenity.remains&active_enemies<3" );
-    cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=fight_style.dungeonslice&talent.bonedust_brew&target.time_to_die>16&!cooldown.serenity.remains&cooldown.bonedust_brew.remains<2");
     cd_serenity->add_action( "bonedust_brew,if=buff.invokers_delight.up|!buff.bonedust_brew.up&cooldown.xuen_the_white_tiger.remains&!pet.xuen_the_white_tiger.active|cooldown.serenity.remains>15|fight_remains<30&fight_remains>10|fight_remains<10" );
     cd_serenity->add_action( "serenity,if=variable.sync_serenity&(buff.invokers_delight.up|variable.hold_xuen&(talent.drinking_horn_cover&fight_remains>110|!talent.drinking_horn_cover&fight_remains>105))|!talent.invoke_xuen_the_white_tiger|fight_remains<15" );
     cd_serenity->add_action( "serenity,if=!variable.sync_serenity&(buff.invokers_delight.up|cooldown.invoke_xuen_the_white_tiger.remains>fight_remains|fight_remains>(cooldown.invoke_xuen_the_white_tiger.remains+10)&fight_remains>90)" );
@@ -727,7 +725,7 @@ namespace monk_apl
     serenity_aoelust->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_chiji.up" );
     serenity_aoelust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=active_enemies<6&combo_strike&set_bonus.tier30_2pc" );
     serenity_aoelust->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&spinning_crane_kick.max" );
-    serenity_aoelust->add_action( "tiger_palm,,target_if=min:debuff.mark_of_the_crane.remains,if=!debuff.skyreach_exhaustion.up*20&combo_strike&active_enemies=5" );
+    serenity_aoelust->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!debuff.skyreach_exhaustion.up*20&combo_strike&active_enemies=5" );
     serenity_aoelust->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
     serenity_aoelust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=talent.shadowboxing_treads&active_enemies>=3&combo_strike" );
     serenity_aoelust->add_action( "strike_of_the_windlord,target_if=max:debuff.keefers_skyreach.remains" );
@@ -742,6 +740,8 @@ namespace monk_apl
     serenity_lust->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&buff.serenity.remains<1.5&combo_strike&!buff.blackout_reinforcement.remains&set_bonus.tier31_2pc" );
     serenity_lust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=combo_strike&buff.teachings_of_the_monastery.stack=3&buff.teachings_of_the_monastery.remains<1" );
     serenity_lust->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_chiji.up&!buff.blackout_reinforcement.up&set_bonus.tier31_2pc&active_enemies>2" );
+    serenity_lust->add_action( "rising_sun_kick,target_if=max:debuff.keefers_skyreach.remains,if=combo_strike&buff.kicks_of_flowing_momentum.up&active_enemies=1" );
+    serenity_lust->add_action( "fists_of_fury,target_if=max:debuff.keefers_skyreach.remains,if=debuff.skyreach_exhaustion.remains>55&set_bonus.tier29_4pc&active_enemies=1,interrupt=1" );
     serenity_lust->add_action( "strike_of_the_windlord,target_if=max:debuff.keefers_skyreach.remains,if=talent.thunderfist" );
     serenity_lust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=combo_strike&buff.blackout_reinforcement.up&active_enemies>2" );
     serenity_lust->add_action( "rising_sun_kick,target_if=max:debuff.keefers_skyreach.remains,if=combo_strike&(active_enemies<3|!set_bonus.tier31_2pc)" );
@@ -787,7 +787,7 @@ namespace monk_apl
     serenity_aoe->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_chiji.up" );
     serenity_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=active_enemies<6&combo_strike&set_bonus.tier30_2pc" );
     serenity_aoe->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&spinning_crane_kick.max" );
-    serenity_aoe->add_action( "tiger_palm,,target_if=min:debuff.mark_of_the_crane.remains,if=!debuff.skyreach_exhaustion.up*20&combo_strike&active_enemies=5" );
+    serenity_aoe->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!debuff.skyreach_exhaustion.up*20&combo_strike&active_enemies=5" );
     serenity_aoe->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
     serenity_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=talent.shadowboxing_treads&active_enemies>=3&combo_strike" );
     serenity_aoe->add_action( "strike_of_the_windlord,target_if=max:debuff.keefers_skyreach.remains" );

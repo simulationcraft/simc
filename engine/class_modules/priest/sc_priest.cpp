@@ -314,10 +314,10 @@ struct divine_star_spell_t final : public priest_spell_t
     triggers_atonement         = true;
 
     // This is not found in the affected spells for Dark Ascension, overriding it manually
-    force_buff_effect( p.buffs.dark_ascension, 1 );
+    force_effect( p.buffs.dark_ascension, 1 );
     // This is not found in the affected spells for Shadow Covenant, overriding it manually
     // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
-    force_buff_effect( p.buffs.shadow_covenant, 1, false, USE_DEFAULT, p.talents.discipline.twilight_corruption );
+    force_effect( p.buffs.shadow_covenant, 1, IGNORE_STACKS, USE_DEFAULT, p.talents.discipline.twilight_corruption );
   }
 
   // Hits twice, but only if you are at the correct distance
@@ -357,20 +357,19 @@ struct divine_star_heal_t final : public priest_heal_t
 
   // Hits twice, but only if you are at the correct distance
   // 24 yards or less for 2 hits, 28 yards or less for 1 hit
+  // As this is the heal - Always hit.
   void execute() override
   {
-    double distance;
+    priest_heal_t::execute();
 
-    distance = priest_heal_t::player->get_player_distance( *target );
-
-    if ( distance <= 28 )
+    if ( return_spell )
     {
-      priest_heal_t::execute();
+      return_spell->execute();
+    }
 
-      if ( return_spell && distance <= 24 )
-      {
-        return_spell->execute();
-      }
+    if ( priest().buffs.twist_of_fate_heal_ally_fake->check() )
+    {
+      priest().buffs.twist_of_fate->trigger();
     }
   }
 };
@@ -433,10 +432,10 @@ struct halo_spell_t final : public priest_spell_t
     affected_by_shadow_weaving = true;
 
     // This is not found in the affected spells for Dark Ascension, overriding it manually
-    force_buff_effect( p.buffs.dark_ascension, 1 );
+    force_effect( p.buffs.dark_ascension, 1 );
     // This is not found in the affected spells for Shadow Covenant, overriding it manually
     // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
-    force_buff_effect( p.buffs.shadow_covenant, 1, false, USE_DEFAULT, p.talents.discipline.twilight_corruption );
+    force_effect( p.buffs.shadow_covenant, 1, IGNORE_STACKS, USE_DEFAULT, p.talents.discipline.twilight_corruption );
 
     triggers_atonement = true;
   }
@@ -454,6 +453,16 @@ struct halo_heal_t final : public priest_heal_t
 
     reduced_aoe_targets = p.talents.halo->effectN( 1 ).base_value();
     disc_mastery        = true;
+  }
+
+  void execute() override
+  {
+    priest_heal_t::execute();
+
+    if ( priest().buffs.twist_of_fate_heal_ally_fake->check() )
+    {
+      priest().buffs.twist_of_fate->trigger();
+    }
   }
 };
 
@@ -645,12 +654,12 @@ struct smite_base_t : public priest_spell_t
       child_holy_fire->execute();
     }
 
-    // T31 Background set bonus triggers the shadow amp. Core logic ignores background spell execution so manually trigger this here.
+    // T31 Background set bonus triggers the shadow amp. Core logic ignores background spell execution so manually
+    // trigger this here.
     if ( priest().talents.discipline.twilight_equilibrium.enabled() && background )
     {
       priest().buffs.twilight_equilibrium_shadow_amp->trigger();
     }
-
   }
 
   void impact( action_state_t* s ) override
@@ -960,7 +969,7 @@ struct echoing_void_demise_t final : public priest_spell_t
 
     std::vector<player_t*>& tl = priest_spell_t::target_list();
 
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl;
   }
@@ -1362,9 +1371,32 @@ public:
 // ==========================================================================
 // Holy Nova
 // ==========================================================================
+struct holy_nova_heal_t final : public priest_heal_t
+{
+  holy_nova_heal_t( util::string_view n, priest_t& p ) : priest_heal_t( n, p, p.talents.holy_nova_heal )
+  {
+    aoe        = -1;
+    background = true;
+
+    reduced_aoe_targets = p.talents.holy_nova->effectN( 2 ).base_value();
+    disc_mastery        = true;
+  }
+
+  void execute() override
+  {
+    priest_heal_t::execute();
+
+    if ( priest().buffs.twist_of_fate_heal_ally_fake->check() )
+    {
+      priest().buffs.twist_of_fate->trigger();
+    }
+  }
+};
+
 struct holy_nova_t final : public priest_spell_t
 {
   action_t* child_light_eruption;
+  action_t* child_heal;
   holy_nova_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "holy_nova", p, p.talents.holy_nova ),
       child_light_eruption( priest().background_actions.light_eruption )
@@ -1374,11 +1406,16 @@ struct holy_nova_t final : public priest_spell_t
     full_amount_targets = as<int>( priest().talents.holy_nova->effectN( 3 ).base_value() );
     reduced_aoe_targets = priest().talents.holy_nova->effectN( 3 ).base_value();
     triggers_atonement  = true;
+
+    child_heal = new holy_nova_heal_t( "holy_nova_heal", p );
+    add_child( child_heal );
   }
 
   void execute() override
   {
     priest_spell_t::execute();
+
+    child_heal->execute();
 
     if ( priest().talents.rhapsody )
     {
@@ -1386,7 +1423,7 @@ struct holy_nova_t final : public priest_spell_t
 
       if ( priest().buffs.rhapsody->check() )
       {
-        priest().buffs.rhapsody->expire();
+        make_event( sim, 0_ms, [ this ]() { priest().buffs.rhapsody->expire(); } );
       }
     }
 
@@ -1499,6 +1536,11 @@ struct flash_heal_t final : public priest_heal_t
   void execute() override
   {
     priest_heal_t::execute();
+
+    if ( priest().talents.crystalline_reflection.enabled() && priest().buffs.twist_of_fate_heal_ally_fake->check() )
+    {
+      priest().buffs.twist_of_fate->trigger();
+    }
 
     priest().buffs.protective_light->trigger();
 
@@ -1689,6 +1731,11 @@ struct power_word_shield_t final : public priest_absorb_t
       priest().buffs.borrowed_time->trigger();
     }
 
+    if ( priest().talents.crystalline_reflection.enabled() && priest().buffs.twist_of_fate_heal_ally_fake->check() )
+    {
+      priest().buffs.twist_of_fate->trigger();
+    }
+
     priest_absorb_t::execute();
   }
 
@@ -1720,42 +1767,23 @@ struct power_word_shield_t final : public priest_absorb_t
 struct power_word_life_t final : public priest_heal_t
 {
   double execute_percent;
-  double execute_modifier;
 
   power_word_life_t( priest_t& p, util::string_view options_str )
     : priest_heal_t( "power_word_life", p, p.talents.power_word_life ),
-      execute_percent( data().effectN( 2 ).base_value() ),
-      execute_modifier( data().effectN( 3 ).percent() )
+      execute_percent( data().effectN( 2 ).base_value() )
   {
     parse_options( options_str );
     harmful      = false;
     disc_mastery = true;
   }
 
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = priest_heal_t::composite_da_multiplier( s );
-
-    if ( s->target->health_percentage() < execute_percent )
-    {
-      if ( sim->debug )
-      {
-        sim->print_debug( "{} below {}% HP. Increasing {} healing by {}", s->target->name_str, execute_percent, *this,
-                          execute_modifier );
-      }
-      m *= 1 + execute_modifier;
-    }
-
-    return m;
-  }
-
   void execute() override
   {
     priest_heal_t::execute();
 
-    if ( target->health_percentage() <= execute_percent )
+    if ( priest().buffs.twist_of_fate_heal_ally_fake->check() )
     {
-      cooldown->adjust( timespan_t::from_seconds( data().effectN( 4 ).base_value() ) );
+      priest().buffs.twist_of_fate->trigger();
     }
   }
 };
@@ -2366,7 +2394,7 @@ double priest_t::composite_melee_haste() const
   {
     h *= 1.0 / ( 1.0 + buffs.devoured_anger->check_value() );
   }
-  
+
   if ( buffs.borrowed_time->check() )
   {
     h *= 1.0 / ( 1.0 + buffs.borrowed_time->check_value() );
@@ -2704,6 +2732,7 @@ void priest_t::init_spells()
   // Row 3
   talents.focused_mending            = CT( "Focused Mending" );  // NYI
   talents.holy_nova                  = CT( "Holy Nova" );
+  talents.holy_nova_heal             = find_spell( 281265 );
   talents.protective_light           = CT( "Protective Light" );
   talents.protective_light_buff      = find_spell( 193065 );
   talents.from_darkness_comes_light  = CT( "From Darkness Comes Light" );
@@ -2793,6 +2822,14 @@ void priest_t::create_buffs()
                             ->set_default_value_from_effect( 1 )
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+
+  buffs.twist_of_fate_heal_ally_fake = make_buff( this, "twist_of_fate_can_trigger_on_ally_heal" )
+                                           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+
+  // TODO: Extend functionality to use this.
+  buffs.twist_of_fate_heal_self_fake = make_buff( this, "twist_of_fate_can_trigger_on_self_heal" )
+                                           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+
   buffs.rhapsody =
       make_buff( this, "rhapsody", talents.rhapsody_buff )->set_stack_change_callback( ( [ this ]( buff_t*, int, int ) {
         buffs.rhapsody_timer->trigger();
@@ -2907,6 +2944,37 @@ void priest_t::invalidate_cache( cache_e cache )
   }
 }
 
+void priest_t::init_items()
+{
+  player_t::init_items();
+
+  set_bonus_type_e tier_to_enable;
+  switch ( specialization() )
+  {
+    case PRIEST_DISCIPLINE:
+      tier_to_enable = T31;
+      break;
+    case PRIEST_HOLY:
+      tier_to_enable = T31;
+      break;
+    case PRIEST_SHADOW:
+      tier_to_enable = T30;
+      break;
+    default:
+      return;
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+  {
+    sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+  {
+    sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
+  }
+}
+
 std::string priest_t::default_potion() const
 {
   return priest_apl::potion( this );
@@ -3013,6 +3081,46 @@ void priest_t::combat_begin()
   {
     buffs.sins_of_the_many->trigger();
   }
+
+  if ( talents.twist_of_fate->ok() )
+  {
+    struct twist_of_fate_event_t final : public event_t
+    {
+      timespan_t delta_time;
+      priest_t* priest;
+
+      twist_of_fate_event_t( priest_t* p, timespan_t t = 0_ms ) : event_t( *p->sim, t ), delta_time( t ), priest( p )
+      {
+      }
+
+      const char* name() const override
+      {
+        return "twist_of_fate_event";
+      }
+
+      void execute() override
+      {
+        // TODO: Add damage event types and make it change the number of affected players. Additionally whether the
+        // priest themselves is affected. This is relevant for random aoe heals (Essence Deovurer) or for self damage
+        // from SWD.
+        if ( delta_time > 0_ms )
+          priest->buffs.twist_of_fate_heal_ally_fake->trigger(
+              rng().gauss_a( priest->options.twist_of_fate_heal_duration_mean,
+                             priest->options.twist_of_fate_heal_duration_stddev, 0_s ) );
+
+        double rate = priest->options.twist_of_fate_heal_rppm;
+        if ( rate > 0.0 )
+        {
+          // Model the time between events with a Poisson process.
+          timespan_t t = timespan_t::from_minutes( rng().exponential( 1 / rate ) );
+          make_event<twist_of_fate_event_t>( sim(), priest, t );
+        }
+      }
+    };
+
+    if ( options.twist_of_fate_heal_rppm )
+      make_event<twist_of_fate_event_t>( *sim, this );
+  }
 }
 
 // priest_t::reset ==========================================================
@@ -3064,6 +3172,11 @@ void priest_t::create_options()
   add_option( opt_float( "priest.prayer_of_mending_bounce_rate", options.prayer_of_mending_bounce_rate, 1, 12 ) );
   add_option( opt_bool( "priest.init_insanity", options.init_insanity ) );
   add_option( opt_string( "priest.forced_yshaarj_type", options.forced_yshaarj_type ) );
+  add_option( opt_float( "priest.twist_of_fate_heal_rppm", options.twist_of_fate_heal_rppm, 0, 120 ) );
+  add_option( opt_timespan( "priest.twist_of_fate_heal_duration_mean", options.twist_of_fate_heal_duration_mean, 0_s,
+                            timespan_t::max() ) );
+  add_option( opt_timespan( "priest.twist_of_fate_heal_duration_stddev", options.twist_of_fate_heal_duration_stddev,
+                            0_s, timespan_t::max() ) );
 }
 
 std::string priest_t::create_profile( save_e type )

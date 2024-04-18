@@ -5,8 +5,8 @@
 
 #include "reforge_plot.hpp"
 
-#include "player/player_scaling.hpp"
 #include "player/player.hpp"
+#include "player/player_scaling.hpp"
 #include "player/scaling_metric_data.hpp"
 #include "scale_factor_control.hpp"
 #include "sim/sim.hpp"
@@ -15,35 +15,6 @@
 #include "util/plot_data.hpp"
 
 #include <sstream>
-
-namespace
-{  // UNNAMED NAMESPACE ==========================================
-
-/// Will stat be reforge-plotted?
-bool is_plot_stat( sim_t* sim, stat_e stat )
-{
-  // search for explicit stat option
-  if ( !sim->reforge_plot->reforge_plot_stat_str.empty() )
-  {
-    auto stat_list =
-        util::string_split<util::string_view>( sim->reforge_plot->reforge_plot_stat_str, ",:;/|" );
-
-    if ( !range::any_of( stat_list, [stat]( util::string_view s ) {
-      return stat == util::parse_stat_type( s );
-    } ) )
-    {
-      // not found
-      return false;
-    }
-  }
-
-  // also check if any player scales_with that stat
-  return range::any_of( sim->player_no_pet_list, [stat]( const player_t* p ) {
-        return !p->quiet && p->scaling->scales_with[ stat ];
-      } );
-}
-
-}  // UNNAMED NAMESPACE ====================================================
 
 // ==========================================================================
 // Reforge Plot
@@ -65,12 +36,34 @@ reforge_plot_t::reforge_plot_t( sim_t* s )
   create_options();
 }
 
+/// Will stat be reforge-plotted?
+bool reforge_plot_t::is_plot_stat( stat_e stat ) const
+{
+  // search for explicit stat option
+  if ( !reforge_plot_stat_str.empty() )
+  {
+    auto stat_list = util::string_split<util::string_view>( reforge_plot_stat_str, ",:;/|" );
+
+    if ( !range::any_of( stat_list, [ stat ]( util::string_view s ) {
+           return stat == util::parse_stat_type( s );
+         } ) )
+    {
+      // not found
+      return false;
+    }
+  }
+
+  // also check if any player scales_with that stat
+  return range::any_of( sim->player_no_pet_list, [ stat ]( const player_t* p ) {
+    return !p->quiet && p->scaling->scales_with[ stat ];
+  } );
+}
+
 // generate_stat_mods =======================================================
 
-void reforge_plot_t::generate_stat_mods(
-    std::vector<std::vector<int>>& stat_mods,
-    const std::vector<stat_e>& stat_indices, int cur_mod_stat,
-    std::vector<int> cur_stat_mods )
+void reforge_plot_t::generate_stat_mods( std::vector<std::vector<int>>& stat_mods,
+                                         const std::vector<stat_e>& stat_indices, int cur_mod_stat,
+                                         std::vector<int> cur_stat_mods )
 {
   if ( cur_mod_stat >= (int)stat_indices.size() - 1 )
   {
@@ -83,7 +76,7 @@ void reforge_plot_t::generate_stat_mods(
 
     for ( auto* p : sim->player_no_pet_list )
     {
-       if ( p->quiet )
+      if ( p->quiet )
         continue;
       if ( p->initial.stats.get_stat( stat_indices[ cur_mod_stat ] ) - sum < 0 )
         return;
@@ -94,17 +87,14 @@ void reforge_plot_t::generate_stat_mods(
     return;
   }
 
-  for ( int mod_amount = -reforge_plot_amount;
-        mod_amount <= reforge_plot_amount; mod_amount += reforge_plot_step )
+  for ( int mod_amount = -reforge_plot_amount; mod_amount <= reforge_plot_amount; mod_amount += reforge_plot_step )
   {
     bool negative_stat = false;
     for ( auto* p : sim->player_no_pet_list )
     {
-       if ( p->quiet )
+      if ( p->quiet )
         continue;
-      if ( p->initial.stats.get_stat( stat_indices[ cur_mod_stat ] ) +
-               mod_amount <
-           0 )
+      if ( p->initial.stats.get_stat( stat_indices[ cur_mod_stat ] ) + mod_amount < 0 )
       {
         negative_stat = true;
         break;
@@ -114,8 +104,7 @@ void reforge_plot_t::generate_stat_mods(
       continue;
 
     cur_stat_mods[ cur_mod_stat ] = mod_amount;
-    generate_stat_mods( stat_mods, stat_indices, cur_mod_stat + 1,
-                        cur_stat_mods );
+    generate_stat_mods( stat_mods, stat_indices, cur_mod_stat + 1, cur_stat_mods );
   }
 }
 
@@ -129,7 +118,7 @@ void reforge_plot_t::analyze_stats()
   reforge_plot_stat_indices.clear();
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    if ( is_plot_stat( sim, i ) )
+    if ( is_plot_stat( i ) )
       reforge_plot_stat_indices.push_back( i );
   }
 
@@ -149,9 +138,7 @@ void reforge_plot_t::analyze_stats()
     sim->out_debug.raw() << "Reforge Plot Stats:";
     for ( size_t i = 0; i < reforge_plot_stat_indices.size(); i++ )
     {
-      sim->out_log.raw().print(
-          "{}{}", i ? ", " : " ",
-          util::stat_type_string( reforge_plot_stat_indices[ i ] ) );
+      sim->out_log.raw().print( "{}{}", i ? ", " : " ", util::stat_type_string( reforge_plot_stat_indices[ i ] ) );
     }
     sim->out_log.raw() << "\n";
 
@@ -159,9 +146,7 @@ void reforge_plot_t::analyze_stats()
     for ( const auto& combo : stat_mod_combos )
     {
       for ( size_t j = 0; j < combo.size(); j++ )
-        sim->out_log.raw().print(
-            "{}: {} ", util::stat_type_string( reforge_plot_stat_indices[ j ] ),
-            combo[ j ] );
+        sim->out_log.raw().print( "{}: {} ", util::stat_type_string( reforge_plot_stat_indices[ j ] ), combo[ j ] );
       sim->out_log.raw() << "\n";
     }
   }
@@ -183,9 +168,9 @@ void reforge_plot_t::analyze_stats()
     for ( size_t j = 0; j < stat_mod_combos[ i ].size(); j++ )
     {
       stat_e stat = reforge_plot_stat_indices[ j ];
-      int mod     = stat_mod_combos[ i ][ j ];
+      int mod = stat_mod_combos[ i ][ j ];
 
-      current_reforge_sim -> enchant.add_stat( stat, mod );
+      current_reforge_sim->enchant.add_stat( stat, mod );
       delta_result[ j ].value = mod;
       delta_result[ j ].error = 0;
 
@@ -197,8 +182,8 @@ void reforge_plot_t::analyze_stats()
     }
 
     current_stat_combo = as<int>( i );
-    current_reforge_sim -> progress_bar.set_base( s.str() );
-    current_reforge_sim -> execute();
+    current_reforge_sim->progress_bar.set_base( s.str() );
+    current_reforge_sim->execute();
 
     for ( player_t* player : sim->players_by_name )
     {
@@ -207,12 +192,10 @@ void reforge_plot_t::analyze_stats()
         plot_data_t& data = delta_result[ stat_mod_combos[ i ].size() ];
         player_t* delta_p = current_reforge_sim->find_player( player->name() );
 
-        scaling_metric_data_t scaling_data =
-            delta_p->scaling_for_metric( player->sim->scaling->scaling_metric );
+        scaling_metric_data_t scaling_data = delta_p->scaling_for_metric( player->sim->scaling->scaling_metric );
 
         data.value = scaling_data.value;
-        data.error =
-            scaling_data.stddev * current_reforge_sim->confidence_estimator;
+        data.error = scaling_data.stddev * current_reforge_sim->confidence_estimator;
 
         player->reforge_plot_data.push_back( delta_result );
       }
@@ -231,12 +214,10 @@ void reforge_plot_t::write_output_file()
   }
 
   io::ofstream out;
-  out.open( sim->reforge_plot_output_file_str,
-            io::ofstream::out | io::ofstream::app );
+  out.open( sim->reforge_plot_output_file_str, io::ofstream::out | io::ofstream::app );
   if ( !out.is_open() )
   {
-    sim->error( "Unable to open plot output file '{}'.\n",
-                 sim->reforge_plot_output_file_str );
+    sim->error( "Unable to open plot output file '{}'.\n", sim->reforge_plot_output_file_str );
     return;
   }
 
@@ -299,42 +280,33 @@ double reforge_plot_t::progress( std::string& phase, std::string* detailed )
       phase += " to ";
   }
 
-  int total_iter =
-      num_stat_combos * ( reforge_plot_iterations > 0 ? reforge_plot_iterations
-                                                      : sim->iterations );
-  int reforge_iter = current_stat_combo * ( reforge_plot_iterations > 0
-                                                ? reforge_plot_iterations
-                                                : sim->iterations );
+  int total_iter = num_stat_combos * ( reforge_plot_iterations > 0 ? reforge_plot_iterations : sim->iterations );
+  int reforge_iter = current_stat_combo * ( reforge_plot_iterations > 0 ? reforge_plot_iterations : sim->iterations );
 
   if ( current_reforge_sim && current_reforge_sim->current_iteration > 0 )
   {
     // Add current reforge iterations only if the update does not land on a
     // partition
     // operation
-    if ( (int)current_reforge_sim->children.size() ==
-         current_reforge_sim->threads - 1 )
+    if ( (int)current_reforge_sim->children.size() == current_reforge_sim->threads - 1 )
       reforge_iter += current_reforge_sim->current_iteration * sim->threads;
     // At partition, add an extra amount of iterations to keep the iterations
     // correct
     else
-      reforge_iter += ( reforge_plot_iterations > 0 ? reforge_plot_iterations
-                                                    : sim->iterations );
+      reforge_iter += ( reforge_plot_iterations > 0 ? reforge_plot_iterations : sim->iterations );
   }
 
   sim->detailed_progress( detailed, (int)reforge_iter, (int)total_iter );
 
-  return static_cast<double>( reforge_iter ) /
-         static_cast<double>( total_iter );
+  return static_cast<double>( reforge_iter ) / static_cast<double>( total_iter );
 }
 
 // reforge_plot_t::create_options ===========================================
 
 void reforge_plot_t::create_options()
 {
-  sim->add_option(
-      opt_int( "reforge_plot_iterations", reforge_plot_iterations ) );
-  sim->add_option(
-      opt_float( "reforge_plot_target_error", reforge_plot_target_error ) );
+  sim->add_option( opt_int( "reforge_plot_iterations", reforge_plot_iterations ) );
+  sim->add_option( opt_float( "reforge_plot_target_error", reforge_plot_target_error ) );
   sim->add_option( opt_int( "reforge_plot_step", reforge_plot_step ) );
   sim->add_option( opt_int( "reforge_plot_amount", reforge_plot_amount ) );
   sim->add_option( opt_string( "reforge_plot_stat", reforge_plot_stat_str ) );

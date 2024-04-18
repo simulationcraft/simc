@@ -276,9 +276,9 @@ void lightless_force( special_effect_t& effect )
       spell_power_mod.direct = data().effectN( 2 ).percent();
     }
 
-    double composite_spell_power() const override
+    double composite_total_spell_power() const override
     {
-      return std::max( proc_spell_t::composite_spell_power(), proc_spell_t::composite_attack_power() );
+      return std::max( proc_spell_t::composite_total_spell_power(), proc_spell_t::composite_total_attack_power() );
     }
   };
 
@@ -1452,7 +1452,9 @@ void grim_codex( special_effect_t& effect )
     size_t available_targets( std::vector< player_t* >& tl ) const override
     {
       proc_spell_t::available_targets( tl );
-      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) { return t == this->target; } ), tl.end() );
+
+      range::erase_remove( tl, target );
+
       return tl.size();
     }
   };
@@ -1487,9 +1489,9 @@ void anima_field_emitter( special_effect_t& effect )
       timespan_t buff_duration = max_duration;
       if ( listener->sim->shadowlands_opts.anima_field_emitter_mean != std::numeric_limits<double>::max() )
       {
-        double new_duration = rng().gauss( listener->sim->shadowlands_opts.anima_field_emitter_mean,
-            listener->sim->shadowlands_opts.anima_field_emitter_stddev );
-        buff_duration = timespan_t::from_seconds( clamp( new_duration, 0.0, max_duration.total_seconds() ) );
+        buff_duration = timespan_t::from_seconds( listener->sim->rng().gauss_ab( listener->sim->shadowlands_opts.anima_field_emitter_mean,
+                                                                                  listener->sim->shadowlands_opts.anima_field_emitter_stddev,
+                                                                                 0.0, max_duration.total_seconds() ) );
       }
 
       if ( buff_duration > timespan_t::zero() )
@@ -4945,9 +4947,9 @@ void judgment_of_the_arbiter( special_effect_t& effect )
     {
       proc_spell_t::available_targets( tl );
 
-      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* ) {
+      range::erase_remove( tl, [ this ]( player_t* ) {
         return !rng().roll( sim->shadowlands_opts.judgment_of_the_arbiter_arc_chance );
-      }), tl.end() );
+      } );
 
       return tl.size();
     }

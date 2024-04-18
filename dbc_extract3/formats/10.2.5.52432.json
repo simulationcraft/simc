@@ -1,11 +1,11 @@
 {
   "ArmorLocation": {
     "fields": [
-      { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%9.3f" } },
-      { "data_type": "f", "field": "v_2",    "formats": { "cpp": "%9.3f" } },
-      { "data_type": "f", "field": "v_3",    "formats": { "cpp": "%9.3f" } },
-      { "data_type": "f", "field": "v_4",    "formats": { "cpp": "%9.3f" } },
-      { "data_type": "f", "field": "v_5",    "formats": { "cpp": "%9.3f" } }
+      { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%9.3ff" } },
+      { "data_type": "f", "field": "v_2",    "formats": { "cpp": "%9.3ff" } },
+      { "data_type": "f", "field": "v_3",    "formats": { "cpp": "%9.3ff" } },
+      { "data_type": "f", "field": "v_4",    "formats": { "cpp": "%9.3ff" } },
+      { "data_type": "f", "field": "v_5",    "formats": { "cpp": "%9.3ff" } }
     ]
   },
   "Artifact": {
@@ -333,8 +333,8 @@
   },
   "CurvePoint": {
     "fields": [
-      { "data_type": "f", "field": "val", "elements": 2, "formats": { "cpp": "%10.5f" } },
-      { "data_type": "f", "field": "level", "elements": 2, "formats": { "cpp": "%10.5f" } },
+      { "data_type": "f", "field": "val", "elements": 2, "formats": { "cpp": "%10.5ff" } },
+      { "data_type": "f", "field": "level", "elements": 2, "formats": { "cpp": "%10.5ff" } },
       { "data_type": "i", "field": "id" },
       { "data_type": "i", "field": "id_distribution", "formats": { "cpp": "%4u"    }, "ref": "Curve" },
       { "data_type": "B", "field": "curve_index",     "formats": { "cpp": "%2u"    } }
@@ -369,29 +369,29 @@
   },
   "ExpectedStat": {
     "fields": [
-      { "data_type": "i", "field": "id_expansion" },
-      { "data_type": "f", "field": "creature_health" },
-      { "data_type": "f", "field": "player_health" },
-      { "data_type": "f", "field": "creature_auto_attack_dps" },
-      { "data_type": "f", "field": "creature_armor" },
-      { "data_type": "f", "field": "player_mana" },
-      { "data_type": "f", "field": "player_primary_stat" },
-      { "data_type": "f", "field": "player_secondary_stat" },
-      { "data_type": "f", "field": "armor_constant" },
-      { "data_type": "f", "field": "creature_spell_damage" }
+      { "data_type": "i", "field": "id_expansion",             "formats": { "cpp": "%13.5ff" } },
+      { "data_type": "f", "field": "creature_health",          "formats": { "cpp": "%13.5ff" } },
+      { "data_type": "f", "field": "player_health",            "formats": { "cpp": "%13.5ff" } },
+      { "data_type": "f", "field": "creature_auto_attack_dps", "formats": { "cpp": "%13.5ff" } },
+      { "data_type": "f", "field": "creature_armor",           "formats": { "cpp": "%13.5ff" } },
+      { "data_type": "f", "field": "player_mana",              "formats": { "cpp": "%13.5ff" } },
+      { "data_type": "f", "field": "player_primary_stat",      "formats": { "cpp": "%13.5ff" } },
+      { "data_type": "f", "field": "player_secondary_stat",    "formats": { "cpp": "%13.5ff" } },
+      { "data_type": "f", "field": "armor_constant",           "formats": { "cpp": "%13.5ff" } },
+      { "data_type": "f", "field": "creature_spell_damage",    "formats": { "cpp": "%13.5ff" } }
     ]
   },
   "ExpectedStatMod": {
     "fields": [
-      { "data_type": "f", "field": "mod_creature_health" },
-      { "data_type": "f", "field": "mod_player_health" },
-      { "data_type": "f", "field": "mod_creature_auto_attack_dps" },
-      { "data_type": "f", "field": "mod_creature_armor" },
-      { "data_type": "f", "field": "mod_player_mana" },
-      { "data_type": "f", "field": "mod_player_primary_stat" },
-      { "data_type": "f", "field": "mod_player_secondary_stat" },
-      { "data_type": "f", "field": "mod_armor_constant" },
-      { "data_type": "f", "field": "mod_creature_spell_damage" }
+      { "data_type": "f", "field": "mod_creature_health",          "formats": { "cpp": "%ff" } },
+      { "data_type": "f", "field": "mod_player_health",            "formats": { "cpp": "%ff" } },
+      { "data_type": "f", "field": "mod_creature_auto_attack_dps", "formats": { "cpp": "%ff" } },
+      { "data_type": "f", "field": "mod_creature_armor",           "formats": { "cpp": "%ff" } },
+      { "data_type": "f", "field": "mod_player_mana",              "formats": { "cpp": "%ff" } },
+      { "data_type": "f", "field": "mod_player_primary_stat",      "formats": { "cpp": "%ff" } },
+      { "data_type": "f", "field": "mod_player_secondary_stat",    "formats": { "cpp": "%ff" } },
+      { "data_type": "f", "field": "mod_armor_constant",           "formats": { "cpp": "%ff" } },
+      { "data_type": "f", "field": "mod_creature_spell_damage",    "formats": { "cpp": "%ff" } }
     ]
   },
   "GarrTalent": {
@@ -491,15 +491,15 @@
       { "data_type": "S", "field": "name" },
 
       { "data_type": "i", "field": "id_expansion" },
-      { "data_type": "f", "field": "dmg_range" },
+      { "data_type": "f", "field": "dmg_range", "formats": { "cpp": "%ff" } },
       { "data_type": "i", "field": "item_limit_category", "ref": "ItemLimitCategory" },
       { "data_type": "I", "field": "duration" },
-      { "data_type": "f", "field": "item_damage_modifier" },
+      { "data_type": "f", "field": "item_damage_modifier", "formats": { "cpp": "%ff" } },
       { "data_type": "I", "field": "bag_family" },
       { "data_type": "i", "field": "start_quest" },
       { "data_type": "i", "field": "id_lang" },
       { "data_type": "f", "field": "ranged_mod_range" },
-      { "data_type": "f", "field": "stat_socket_mul", "elements": 10 },
+      { "data_type": "f", "field": "stat_socket_mul", "elements": 10, "formats": { "cpp": "%ff" } },
       { "data_type": "i", "field": "stat_alloc", "elements": 10 },
       { "data_type": "i", "field": "stackable" },
       { "data_type": "i", "field": "max_count" },
@@ -563,22 +563,22 @@
   },
   "ItemArmorQuality": {
     "fields": [
-      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%6.3f" } }
+      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%6.3ff" } }
     ]
   },
   "ItemArmorShield": {
     "fields": [
-      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } },
+      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5ff" } },
       { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } }
     ]
   },
   "ItemArmorTotal": {
     "fields": [
       { "data_type": "h", "field": "ilevel", "formats": { "cpp": "%4u"   } },
-      { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%14.5f" } },
-      { "data_type": "f", "field": "v_2",    "formats": { "cpp": "%14.5f" } },
-      { "data_type": "f", "field": "v_3",    "formats": { "cpp": "%14.5f" } },
-      { "data_type": "f", "field": "v_4",    "formats": { "cpp": "%14.5f" } }
+      { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%14.5ff" } },
+      { "data_type": "f", "field": "v_2",    "formats": { "cpp": "%14.5ff" } },
+      { "data_type": "f", "field": "v_3",    "formats": { "cpp": "%14.5ff" } },
+      { "data_type": "f", "field": "v_4",    "formats": { "cpp": "%14.5ff" } }
     ]
   },
   "ItemBonus": {
@@ -694,25 +694,25 @@
   "ItemDamageOneHand": {
     "fields": [
       { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } },
-      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } }
+      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5ff" } }
     ]
   },
   "ItemDamageOneHandCaster": {
     "fields": [
       { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } },
-      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } }
+      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5ff" } }
     ]
   },
   "ItemDamageTwoHand": {
     "fields": [
       { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } },
-      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } }
+      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5ff" } }
     ]
   },
   "ItemDamageTwoHandCaster": {
     "fields": [
       { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } },
-      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } }
+      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5ff" } }
     ]
   },
   "ItemEffect": {
@@ -1191,13 +1191,13 @@
   },
   "RandPropPoints": {
     "fields": [
-      { "data_type": "f", "field": "damage_replace_stat", "formats": { "cpp": "%#.8f" } },
-      { "data_type": "f", "field": "damage_secondary", "formats": { "cpp": "%#.8f" } },
+      { "data_type": "f", "field": "damage_replace_stat", "formats": { "cpp": "%#.8ff" } },
+      { "data_type": "f", "field": "damage_secondary", "formats": { "cpp": "%#.8ff" } },
       { "data_type": "i", "field": "damage_replace_stat_int", "formats": { "cpp": "%8u" } },
       { "data_type": "i", "field": "damage_secondary_int", "formats": { "cpp": "%8u" } },
-      { "data_type": "f", "field": "epic_points", "elements": 5, "formats": { "cpp": "%#.8f" } },
-      { "data_type": "f", "field": "rare_points", "elements": 5, "formats": { "cpp": "%#.8f" } },
-      { "data_type": "f", "field": "uncm_points", "elements": 5, "formats": { "cpp": "%#.8f" } },
+      { "data_type": "f", "field": "epic_points", "elements": 5, "formats": { "cpp": "%#.8ff" } },
+      { "data_type": "f", "field": "rare_points", "elements": 5, "formats": { "cpp": "%#.8ff" } },
+      { "data_type": "f", "field": "uncm_points", "elements": 5, "formats": { "cpp": "%#.8ff" } },
       { "data_type": "I", "field": "epic_points_int", "elements": 5, "formats": { "cpp": "%8u" } },
       { "data_type": "I", "field": "rare_points_int", "elements": 5, "formats": { "cpp": "%8u" } },
       { "data_type": "I", "field": "uncm_points_int", "elements": 5, "formats": { "cpp": "%8u" } }
@@ -1564,7 +1564,7 @@
       { "data_type": "S", "field": "desc_2" },
       { "data_type": "i", "field": "unk_2" },
       { "data_type": "I", "field": "id_property", "elements": 3, "formats": { "cpp": "%6u" } },
-      { "data_type": "f", "field": "coeff", "elements": 3, "formats": { "cpp": "%7.4f" } },
+      { "data_type": "f", "field": "coeff", "elements": 3, "formats": { "cpp": "%7.4ff" } },
       { "data_type": "I", "field": "unk_20" },
       { "data_type": "i", "field": "min_item_level" },
       { "data_type": "i", "field": "max_item_level" },

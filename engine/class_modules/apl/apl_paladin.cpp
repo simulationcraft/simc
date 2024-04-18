@@ -105,7 +105,7 @@ void protection( player_t* p )
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=standard" );
 
-  cooldowns->add_action( "avengers_shield,if=time=0&set_bonus.tier29_2pc", "Use Avenger's Shield as first priority before anything else, if t29 2pc is equipped." );
+  cooldowns->add_action( "avengers_shield,if=time=0&(set_bonus.tier29_2pc|set_bonus.DF4_2pc)", "Use Avenger's Shield as first priority before anything else, if t29 2pc is equipped." );
   cooldowns->add_action( "lights_judgment,if=spell_targets.lights_judgment>=2|!raid_event.adds.exists|raid_event.adds.in>75|raid_event.adds.up" );
   cooldowns->add_action( "avenging_wrath" );
   cooldowns->add_action( "potion,if=buff.avenging_wrath.up" );
@@ -117,6 +117,7 @@ void protection( player_t* p )
 
   standard->add_action( "consecration,if=buff.sanctification.stack=buff.sanctification.max_stack" );
   standard->add_action( "shield_of_the_righteous,if=(((!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&holy_power>2)|buff.bastion_of_light.up|buff.divine_purpose.up)&(!buff.sanctification.up|buff.sanctification.stack<buff.sanctification.max_stack)", "Use Shield of the Righteous according to Righteous Protector's ICD, but use it asap if it's a free proc (Bugged interaction, this ignores ICD). Don't use it when on max Sanctification Stacks (Very next GCD will trigger Consecration, so we want the bonus damage)" );
+  standard->add_action( "avengers_shield,if=(set_bonus.tier29_2pc|set_bonus.DF4_2pc)&(!buff.ally_of_the_light.up|buff.ally_of_the_light.remains<gcd)", "Use Avenger's Shield as First Priority when 2pc buff is missing." );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=spell_targets.shield_of_the_righteous>3&buff.bulwark_of_righteous_fury.stack>=3&holy_power<3" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=!buff.sanctification_empower.up&set_bonus.tier31_2pc", "Use Judgment with higher priority if we need to build Sanctification Stacks" );
   standard->add_action( "hammer_of_wrath" );

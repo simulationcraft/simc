@@ -1,4 +1,4 @@
-SimulationCraft 1025-01 for World of Warcraft 10.2.5.53262 Live
+SimulationCraft 1026-01 for World of Warcraft 10.2.6.54205 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -1135,7 +1135,7 @@ Spell Type       : Melee
 Spell Level      : 42
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
 Affecting spells : Celerity (340087 effect#1)
 Family Flags     : 39
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
@@ -2989,7 +2989,7 @@ Spell Type       : None
 Spell Level      : 42
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
 Proc Chance      : 100%
 Proc Flags       : ..x.x... x...x... x.x..... ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -3774,7 +3774,7 @@ Effects          :
 #3 (id=269974)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #4 (id=1108646)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0.60000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
 Description      : Draw a concealed pistol and fire a quick shot at an enemy, dealing ${$s1*$<CAP>/$AP} Physical damage$?a428377[, also reducing movement speed by $s3% and reducing the target's damage done to you by $s4% for $d.][ and reducing movement speed by $s3% for $d.]
 
@@ -4288,7 +4288,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=288959)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22346 | PvP Coefficient: 0.90000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.21000 | PvP Coefficient: 0.95000 | Target: Enemy (6)
 Description      : Finishing move that disembowels the target, causing damage per combo point.$?s382511[ Targets with Find Weakness suffer an additional $382511s1% damage as Shadow.][]
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -5531,7 +5531,7 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Triggered by     : Sprint (245751)
+Triggered by     : Sprint (245751), Rapid Retreat (372409), Icy Feet (396713)
 Attributes       : .......x ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ...x.... .x...... .xx..... ........ 
@@ -9502,7 +9502,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=819933)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22346 | PvP Coefficient: 0.90000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.21000 | PvP Coefficient: 0.95000 | Target: Enemy (6)
 Description      : $@spelldesc196819
 
 Name             : Blindside (id=328085) [Spell Family (8), Passive] 
@@ -11514,7 +11514,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=887644)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Restless Blades now also reduces the remaining cooldown of Evasion and Feint by ${$s1/10}.1 sec per combo point spent.
 
 Name             : Seeds of Rampant Growth (id=356218) [Spell Family (8), Hidden] 
@@ -11596,7 +11596,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 16 seconds
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
 Mechanic         : Bleed
 Affecting spells : Nightstalker (130493 effect#1), Acrobatic Strikes (196924 effect#1), Shiv (319504 effect#3), Septic Wounds (394845 effect#1), Sudden Demise (423136 effect#1), Natureblight (426568 effects: #2, #3)
 Family Flags     : 59

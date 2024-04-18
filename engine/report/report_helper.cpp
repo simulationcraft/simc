@@ -392,6 +392,12 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     max_ilevel_allowed = 496;
     legendary_ilevel   = 496;
   }
+  else if ( p.report_information.save_str.find( "DF4" ) != std::string::npos )
+  {
+    tier_name          = "DF4";
+    max_ilevel_allowed = 535;
+    legendary_ilevel   = 535;
+  }
   else
   {
     return true;

@@ -1,0 +1,78 @@
+paladin="DF4_Paladin_Protection"
+level=70
+race=human
+role=tank
+spec=protection
+position=front
+talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKkCSSiWTSiESIBAAIAAAAAAAASEJNBSQSKCJJAACIAEIAB
+
+head=heartfire_sentinels_forgehelm,id=217198,bonus_id=1520/6935/7187/8767,gem_id=192935,enchant=incandescent_essence
+neck=kagnis_scorching_talisman,id=202618,bonus_id=1520/5910/7187/8767/8782,gem_id=192985/192935/192935
+shoulders=heartfire_sentinels_steelwings,id=217200,bonus_id=1520/7187/8767
+back=voice_of_the_silent_star,id=204465,bonus_id=5949/7187/8767,enchant=homebound_speed_3
+chest=datheas_cyclonic_cage,id=195494,bonus_id=1520/5930/7187/8767,enchant=waking_stats_3
+wrists=primal_molten_vambraces,id=190502,bonus_id=8836/8840/8902/8790/9379/8960/10249/10359/9405,gem_id=192945
+hands=heartfire_sentinels_protectors,id=217197,bonus_id=1520/7187/8767
+waist=primal_molten_greatbelt,id=190501,bonus_id=8836/8840/8902/8790/9379/8960/10249/10359/9405,gem_id=192945
+legs=heartfire_sentinels_faulds,id=217199,bonus_id=1520/7187/8767,enchant=fierce_armor_kit_3
+feet=spittleresistant_sollerets,id=204396,bonus_id=5952/7187/8767,enchant=plainsrunners_breeze_3
+finger1=emissarys_flamewrought_seal,id=201992,bonus_id=5978/6935/7187/8767,gem_id=192935,enchant=devotion_of_haste_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=5978/6935/7187/8767,gem_id=192935,enchant=devotion_of_haste_3
+trinket1=cataclysmic_signet_brand,id=207166,bonus_id=5932/7187/8767
+trinket2=elementium_pocket_anvil,id=202617,bonus_id=5958/7187/8767
+main_hand=gholak_the_final_conflagration,id=207786,bonus_id=5932/7187/8767,enchant=wafting_devotion_3
+off_hand=defender_of_the_ancient,id=207797,bonus_id=5932/7187/8767
+
+save=DF4_Paladin_Protection.simc
+
+# paladin="DF4_Paladin_Retribution"
+# spec=retribution
+# level=70
+# race=tauren
+# role=attack
+# position=back
+# talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAiWp0KJtSjoFJplEAAAAAAQEkkQgEEpEhkQKpkQkICJiShGAA
+
+# head=mask_of_the_unbidden_grim,id=208426,bonus_id=7187/1520/6935,gem_id=192985,enchant_id=7052
+# neck=ouroboreal_necklet,id=210214,bonus_id=7187/1520/6935/6935/6935,gem_id=192935/192935/192935
+# shoulders=zealous_pyreknights_ailettes,id=207189,bonus_id=7187/1520
+# back=vibrant_wildercloth_shawl,id=193511,bonus_id=9379/9500/9405,crafted_stats=40/36
+# chest=zealous_pyreknights_warplate,id=207194,bonus_id=7187/1520,enchant_id=6625
+# wrists=primal_molten_vambraces,id=190502,bonus_id=9379/9500/9405,gem_id=192935,crafted_stats=40/36
+# hands=zealous_pyreknights_jeweled_gauntlets,id=207192,bonus_id=7187/1520
+# waist=unwinding_eon_girdle,id=207858,bonus_id=1540/1514/6646/6935,gem_id=192935,enchant_id=6904
+# legs=zealous_pyreknights_cuisses,id=207190,bonus_id=7187/1520,enchant_id=6830
+# feet=insurgent_flame_warboots,id=208427,bonus_id=7187/1520
+# finger1=band_of_burning_thorns,id=207159,bonus_id=7187/1520/6935,gem_id=192935,enchant=devotion_of_haste_3
+# finger2=signet_of_the_last_elder,id=207162,bonus_id=7187/1520/6935,gem_id=192935,enchant=devotion_of_haste_3
+# trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
+# trinket2=augury_of_the_primal_flame,id=208614,bonus_id=7187/1527
+# main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1468,enchant=wafting_devotion_3
+
+# save=DF4_Paladin_Retribution.simc
+
+# # paladin="DF4_Paladin_Retribution_CS"
+# # spec=retribution
+# # level=70
+# # race=tauren
+# # role=attack
+# # position=back
+# # talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAiWp0KJtSjoFJplEAAAAAAQEkkQgEEpEhkQKplQkICJiCaBAA
+
+# # head=heartfire_sentinels_forgehelm,id=202452,bonus_id=4800/4786/1504/6935,gem_id=192991
+# # neck=ionized_choker,id=206181,bonus_id=1795/6808/4786/1669/6935/6935/6935,gem_id=192952/192952/192952
+# # shoulders=heartfire_sentinels_steelwings,id=202450,bonus_id=4800/4786/1507
+# # back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
+# # chest=rockbound_chestguard,id=134135,bonus_id=1795/6808/4786/3326,enchant_id=6625
+# # wrists=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192952
+# # hands=heartfire_sentinels_protectors,id=202453,bonus_id=4800/4786/1501
+# # waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8802/8960/1527,gem_id=192952
+# # legs=heartfire_sentinels_faulds,id=202451,bonus_id=4800/4786/1504,enchant_id=6490
+# # feet=primal_molten_sabatons,id=190496,bonus_id=8840/8836/8902/1537/9379/8960,crafted_stats=40/36
+# # finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/6935,gem_id=192952,enchant=devotion_of_haste_3
+# # finger2=onyx_impostors_birthright,id=204398,bonus_id=4800/4786/1498/6935,gem_id=192952,enchant=devotion_of_haste_3
+# # trinket1=elementium_pocket_anvil,id=202617,bonus_id=4800/4786/1504
+# # trinket2=beacon_to_the_beyond,id=203963,bonus_id=4800/4786/1498
+# # main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+
+# # save=DF4_Paladin_Retribution_CS.simc

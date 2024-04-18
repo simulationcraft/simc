@@ -1,0 +1,88 @@
+# mage="DF4_Mage_Arcane"
+# spec=arcane
+# level=70
+# race=human
+# role=spell
+# position=back
+# talents=B4DAAAAAAAAAAAAAAAAAAAAAAQEUSDJRSKCikQEJhEJQSQSLJAAAAAAAAAAAgIJJJRSSSgA
+
+# potion=elemental_potion_of_ultimate_power_3
+# flask=phial_of_corrupting_rage_3
+# food=fated_fortune_cookie
+# augmentation=draconic
+# temporary_enchant=main_hand:buzzing_rune_3
+
+# head=wayward_chronomancers_chronocap,id=207290,bonus_id=8780,ilevel=489,gem_id=192988,enchant_id=7052
+# neck=eye_of_the_rising_flame,id=207163,bonus_id=4800/4786/8782/1520/9576,gem_id=192958/192958/192958
+# shoulders=wayward_chronomancers_metronomes,id=207288,ilevel=489
+# back=vibrant_wildercloth_shawl,id=193511,bonus_id=9379/8960,ilevel=486,enchant_id=6592,crafted_stats=49/40
+# chest=wayward_chronomancers_patchwork,id=207293,ilevel=489,enchant_id=6625
+# wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9498/9369/9369/9368/9402/9379/8960/8780,gem_id=192958,enchant_id=6574,crafted_stats=32/49
+# hands=wayward_chronomancers_gloves,id=207291,ilevel=489
+# waist=wayward_chronomancers_synchronous_belt,id=207287,bonus_id=8780,ilevel=489,gem_id=192958,enchant_id=6904
+# legs=wayward_chronomancers_pantaloons,id=207289,bonus_id=6652/7979/9562/9512/1491/8767,ilevel=489,enchant_id=6544
+# feet=wayward_chronomancers_strapped_boots,id=207292,ilevel=489,enchant_id=6613
+# finger1=daydreamers_glimmering_ring,id=208442,bonus_id=8780,ilevel=489,gem_id=192958,enchant_id=6556
+# finger2=signet_of_the_last_elder,id=207162,bonus_id=8780,ilevel=489,gem_id=192958,enchant_id=6556
+# trinket1=mirror_of_fractured_tomorrows,id=207581,ilevel=489
+# trinket2=belorrelos_the_suncaller,id=207172,ilevel=489
+# main_hand=iridal_the_earths_master,id=208321,ilevel=489,enchant_id=6655
+
+# save=DF4_Mage_Arcane.simc
+
+# mage="DF4_Mage_Fire"
+# spec=fire
+# level=70
+# race=dwarf
+# role=spell
+# position=back
+# talents=B8DAAAAAAAAAAAAAAAAAAAAAAQCSRDJEpJISCRkEJJAAAAAAAAAiISSiDUSOQJJRSSSSAAAACA
+
+# head=crown_of_the_infinite_lord,id=207927,enchant_id=7052,gem_id=192952,ilevel=489
+# neck=amulet_of_eonars_chosen,id=208445,gem_id=192985/192952/192952,ilevel=489
+# shoulder=wayward_chronomancers_metronomes,id=207288,bonus_id=6652/7979/9562/9511/1491/8767,ilevel=489
+# back=vibrant_wildercloth_shawl,id=193511,enchant_id=6598,bonus_id=8836/8840/8902/9405/8846/8790/9379/8960/9365,crafted_stats=36/40,crafting_quality=5,ilevel=486
+# chest=wayward_chronomancers_patchwork,id=207293,ilevel=489,enchant_id=6625
+# wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9498/9369/9369/9368/9402/8792/9379/8960,crafting_quality=5,enchant_id=6574,gem_id=192952,ilevel=486
+# hands=wayward_chronomancers_gloves,id=207291,ilevel=489
+# waist=mobius_strap,id=207898,gem_id=192952,ilevel=489
+# legs=wayward_chronomancers_pantaloons,id=207289,enchant_id=6541,bonus_id=6652/7979/9562/9512/1491/8767,ilevel=489
+# feet=lost_scholars_belted_treads,id=207122,ilevel=489,enchant_id=6613
+# finger1=ringbound_hourglass,id=193000,enchant_id=6556,gem_id=192952,bonus_id=8836/8840/8902/8780/9405/8795/9376/9366,crafted_stats=49/32,crafting_quality=5,ilevel=486
+# finger2=ring_of_contempt,id=134490,enchant_id=6556,gem_id=192952,ilevel=489
+# trinket1=augury_of_the_primal_flame,id=208614,ilevel=496
+# trinket2=belorrelos_the_suncaller,id=207172,ilevel=489
+# main_hand=iridal_the_earths_master,id=208321,enchant_id=6655,ilevel=489
+
+# flask=phial_of_corrupting_rage_3
+
+# save=DF4_Mage_Fire.simc
+
+# mage="DF4_Mage_Frost"
+# spec=frost
+# level=70
+# race=dwarf
+# role=spell
+# position=ranged_back
+# talents=BAEAAAAAAAAAAAAAAAAAAAAAAIJhQDJJJpBISERSkkAAAIlEJhEJJhkkkkkEAAAAAAAAAICA
+
+# head=wayward_chronomancers_chronocap,id=207290,bonus_id=8780,ilevel=489,gem_id=192988,enchant_id=7052
+# neck=ouroboreal_necklet,id=210214,bonus_id=8782,ilevel=489,gem_id=192948/192948/192948
+# shoulders=wayward_chronomancers_metronomes,id=207288,ilevel=489
+# back=vibrant_wildercloth_shawl,id=193511,bonus_id=9379/8960,ilevel=486,enchant_id=6592,crafted_stats=49/36
+# chest=wayward_chronomancers_patchwork,id=207293,ilevel=489,enchant_id=6625
+# wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9379/8960/8780/8793,ilevel=486,gem_id=192948,enchant_id=6586,crafted_stats=32/36
+# hands=wayward_chronomancers_gloves,id=207291,ilevel=489
+# waist=urctoss_hibernal_dial,id=207119,bonus_id=8780,ilevel=489,gem_id=192948,enchant_id=6904
+# legs=bloodstained_sous_chef_pants,id=159285,ilevel=489,enchant_id=6541
+# feet=devilsaur_worshipers_sandals,id=158303,ilevel=489,enchant_id=6613
+# finger1=daydreamers_glimmering_ring,id=208442,bonus_id=8780,ilevel=489,gem_id=192958,enchant_id=6556
+# finger2=signet_of_titanic_insight,id=192999,bonus_id=523,ilevel=486,gem_id=192935,enchant_id=6562,crafted_stats=49/40
+# trinket1=balefire_branch,id=159630,bonus_id=6652/7979/9563/1494/8767,ilevel=489
+# trinket2=belorrelos_the_suncaller,id=207172,bonus_id=6652/7979/9563/1494/8767,ilevel=489
+# main_hand=iridal_the_earths_master,id=208321,ilevel=489,enchant_id=6655
+
+# flask=phial_of_corrupting_rage_3
+# temporary_enchant=main_hand:howling_rune_3
+
+# save=DF4_Mage_Frost.simc

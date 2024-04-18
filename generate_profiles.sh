@@ -28,6 +28,19 @@ fi
 #   echo 'Skipped DungeonSlice, directory not found.'
 # fi
 # TierXX profiles generation
+for season in DF4
+do
+  PROFDIR="$season"
+  echo "---$PROFDIR---"
+  if [ ! -d $PROFDIR ]; then
+    echo "Skipped $PROFDIR, directory not found."
+    continue
+  fi
+  cd $PROFDIR/
+  ${SIMC} '../generators/'$season'/'$season'_Generate.simc'
+  cd ../
+done
+# TODO: remove after Dragonflight ends
 for tier in 29 30 31
 do
   PROFDIR="Tier$tier"

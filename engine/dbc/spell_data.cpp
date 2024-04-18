@@ -55,7 +55,7 @@ resource_e spelleffect_data_t::resource_gain_type() const
   return util::translate_power_type( static_cast<power_e>( misc_value1() ) );
 }
 
-double spelleffect_data_t::resource_multiplier( resource_e resource_type ) const
+double spelleffect_data_t::resource_multiplier( resource_e resource_type )
 {
   switch ( resource_type )
   {

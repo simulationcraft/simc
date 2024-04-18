@@ -222,7 +222,7 @@ struct spelleffect_data_t
 
   resource_e resource_gain_type() const;
 
-  double resource_multiplier( resource_e resource_type ) const;
+  static double resource_multiplier( resource_e resource_type );
 
   double resource( resource_e resource_type ) const
   { return base_value() * resource_multiplier( resource_type ); }

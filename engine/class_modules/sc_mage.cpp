@@ -437,6 +437,7 @@ public:
   struct sample_data_t
   {
     std::unique_ptr<extended_sample_data_t> icy_veins_duration;
+    std::unique_ptr<simple_sample_data_t> low_mana_iteration;
   } sample_data;
 
   // Specializations
@@ -471,6 +472,7 @@ public:
     bool trigger_cc_channel;
     double spent_mana;
     timespan_t gained_full_icicles;
+    bool had_low_mana;
   } state;
 
   struct expression_support_t
@@ -757,6 +759,7 @@ public:
   void init_benefits() override;
   void init_uptimes() override;
   void init_rng() override;
+  void init_items() override;
   void init_finished() override;
   void add_precombat_buff_state( buff_t*, int, double, timespan_t ) override;
   void invalidate_cache( cache_e ) override;
@@ -1620,6 +1623,13 @@ public:
 
     if ( current_resource() == RESOURCE_MANA )
       p()->state.spent_mana += last_resource_cost;
+
+    if ( last_resource_cost > 0
+      && !p()->resources.is_infinite( RESOURCE_MANA )
+      && p()->resources.pct( RESOURCE_MANA ) < 0.1 )
+    {
+      p()->state.had_low_mana = true;
+    }
   }
 
   void execute() override
@@ -1827,14 +1837,14 @@ struct arcane_mage_spell_t : public mage_spell_t
     }
   }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = mage_spell_t::cost();
+    double c = mage_spell_t::cost_pct_multiplier();
 
     for ( auto cr : cost_reductions )
       c *= 1.0 + cr->check_value();
 
-    return std::max( c, 0.0 );
+    return c;
   }
 
   double arcane_charge_multiplier( bool arcane_barrage = false ) const
@@ -2040,14 +2050,17 @@ struct fire_mage_spell_t : public mage_spell_t
 
   void spread_ignite( player_t* primary )
   {
-    auto source = primary->get_dot( "ignite", player );
+    if ( !p()->action.ignite )
+      return;
+
+    auto source = p()->action.ignite->get_dot( primary );
     if ( source->is_ticking() )
     {
       std::vector<dot_t*> ignites;
 
       // Collect the Ignite DoT objects of all targets that are in range.
       for ( auto t : target_list() )
-        ignites.push_back( t->get_dot( "ignite", player ) );
+        ignites.push_back( p()->action.ignite->get_dot( t ) );
 
       // Sort candidate Ignites by ascending bank size.
       std::stable_sort( ignites.begin(), ignites.end(), [] ( dot_t* a, dot_t* b )
@@ -2766,9 +2779,9 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     return std::max( arcane_mage_spell_t::travel_time(), 6_ms );
   }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = arcane_mage_spell_t::cost();
+    double c = arcane_mage_spell_t::cost_pct_multiplier();
 
     c *= 1.0 + p()->buffs.arcane_charge->check() * p()->buffs.arcane_charge->data().effectN( 5 ).percent();
 
@@ -3160,8 +3173,8 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     if ( p()->bugs && tick_remains > 0_ms )
     {
       timespan_t mean_delay = p()->options.arcane_missiles_chain_delay;
-      timespan_t delay = rng().gauss( mean_delay, mean_delay * p()->options.arcane_missiles_chain_relstddev );
-      timespan_t chain_remains = tick_remains - clamp( delay, 0_ms, tick_remains - 1_ms );
+      timespan_t delay = rng().gauss_ab( mean_delay, mean_delay * p()->options.arcane_missiles_chain_relstddev, 0_ms, tick_remains - 1_ms );
+      timespan_t chain_remains = tick_remains - delay;
       // If tick_remains == 0_ms, this would subtract 1 from ticks.
       // This is not implemented in simc, but this actually appears
       // to happen in game, which can result in missing ticks if
@@ -3523,6 +3536,20 @@ struct conflagration_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( 226757 ) )
   {
     background = true;
+  }
+
+  double composite_rolling_ta_multiplier( const action_state_t* s ) const override
+  {
+    // When refreshing Conflagration, there is a bug where the duration must change to roll in the new damage.
+    dot_t* dot = find_dot( s->target );
+    if ( p()->bugs && dot )
+    {
+      timespan_t refresh_duration = calculate_dot_refresh_duration( dot, composite_dot_duration( s ) );
+      if ( refresh_duration == dot->remains() )
+        return s->rolling_ta_multiplier;
+    }
+
+    return fire_mage_spell_t::composite_rolling_ta_multiplier( s );
   }
 };
 
@@ -3933,7 +3960,7 @@ struct shattered_ice_t final : public spell_t
   {
     spell_t::available_targets( tl );
 
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }
@@ -4309,7 +4336,7 @@ struct glacial_blast_t final : public spell_t
   {
     spell_t::available_targets( tl );
 
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }
@@ -5244,7 +5271,7 @@ struct splintering_ray_t final : public spell_t
   {
     spell_t::available_targets( tl );
 
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }
@@ -5956,6 +5983,7 @@ struct time_anomaly_tick_event_t final : public mage_event_t
             break;
           case TA_ICY_VEINS:
             mage->buffs.icy_veins->trigger( 1000 * mage->talents.time_anomaly->effectN( 5 ).time_value() );
+            mage->buffs.cryopathy->trigger( mage->buffs.cryopathy->max_stack() );
             break;
           case TA_TIME_WARP:
             mage->buffs.time_warp->trigger();
@@ -6206,6 +6234,9 @@ void mage_t::merge( player_t& other )
 
   switch ( specialization() )
   {
+    case MAGE_FIRE:
+      sample_data.low_mana_iteration->merge( *mage.sample_data.low_mana_iteration );
+      break;
     case MAGE_FROST:
       if ( talents.thermal_void.ok() )
         sample_data.icy_veins_duration->merge( *mage.sample_data.icy_veins_duration );
@@ -6221,6 +6252,11 @@ void mage_t::analyze( sim_t& s )
 
   switch ( specialization() )
   {
+    case MAGE_FIRE:
+      if ( double low_mana_mean = sample_data.low_mana_iteration->mean(); low_mana_mean > 0.1 )
+        sim->error( "{}: Actor went below 10% mana in a significant fraction of iterations ({:.1f}%)", *this,
+                    100.0 * low_mana_mean );
+      break;
     case MAGE_FROST:
       if ( talents.thermal_void.ok() )
         sample_data.icy_veins_duration->analyze();
@@ -6242,6 +6278,9 @@ void mage_t::datacollection_end()
   player_t::datacollection_end();
 
   range::for_each( shatter_source_list, std::mem_fn( &shatter_source_t::datacollection_end ) );
+
+  if ( specialization() == MAGE_FIRE )
+    sample_data.low_mana_iteration->add( as<double>( state.had_low_mana ) );
 }
 
 void mage_t::regen( timespan_t periodicity )
@@ -6901,6 +6940,9 @@ void mage_t::init_uptimes()
 
   switch ( specialization() )
   {
+    case MAGE_FIRE:
+      sample_data.low_mana_iteration = std::make_unique<simple_sample_data_t>();
+      break;
     case MAGE_FROST:
       if ( talents.thermal_void.ok() )
         sample_data.icy_veins_duration = std::make_unique<extended_sample_data_t>( "Icy Veins duration", false );
@@ -6917,6 +6959,15 @@ void mage_t::init_rng()
   // TODO: There's no data about this in game. Keep an eye out in case Blizzard
   // changes this behind the scenes.
   shuffled_rng.time_anomaly = get_shuffled_rng( "time_anomaly", 1, 16 );
+}
+
+void mage_t::init_items()
+{
+  player_t::init_items();
+
+  auto s = specialization();
+  for ( auto b : { B2, B4 } )
+    if ( sets->has_set_bonus( s, DF4, b ) ) sets->enable_set_bonus( s, s == MAGE_FIRE ? T30 : T31, b );
 }
 
 void mage_t::init_finished()

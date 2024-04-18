@@ -1532,10 +1532,6 @@ sim_t::sim_t()
     disable_set_bonuses( false ),
     enable_taunts( false ),
     use_item_verification( true ),
-    disable_2_set( 1 ),
-    disable_4_set( 1 ),
-    enable_2_set( 1 ),
-    enable_4_set( 1 ),
     pvp_rules(),
     pvp_mode( false ),
     auto_attacks_always_land( false ),
@@ -2198,6 +2194,8 @@ void sim_t::analyze_error()
 
   current_error = 0;
 
+  bool is_multiactor_metric = false;
+
   if ( single_actor_batch )
   {
     auto p = player_no_pet_list[ current_index ];
@@ -2216,6 +2214,10 @@ void sim_t::analyze_error()
   }
   else
   {
+    is_multiactor_metric =
+        player_no_pet_list.size() > 1 && std::find_if( profileset_metric.begin(), profileset_metric.end(),
+                                                       util::scale_metric_is_raid ) != profileset_metric.end();
+
     for ( size_t i = 0; i < actor_list.size(); i++ )
     {
       player_t* p = actor_list[i];
@@ -2228,8 +2230,17 @@ void sim_t::analyze_error()
         double mean = cd.target_metric.mean();
         if ( mean != 0 )
         {
-          double error = sim_t::distribution_mean_error( *this, cd.target_metric ) / mean;
-          if ( error > current_error ) current_error = error;
+          if ( is_multiactor_metric )
+           {
+             double error = sim_t::distribution_mean_error( *this, cd.target_metric );
+             current_error += error;
+          }
+          else
+          {
+             double error = sim_t::distribution_mean_error( *this, cd.target_metric ) / mean;
+             if ( error > current_error )
+              current_error = error;
+          }
           mean_total += mean;
           mean_count++;
         }
@@ -2237,9 +2248,18 @@ void sim_t::analyze_error()
     }
   }
 
-  if( mean_count > 0 )
+  if ( mean_count > 0 )
   {
-    current_mean = mean_total / mean_count;
+    if ( is_multiactor_metric )
+    {
+      current_error = current_error / current_mean;
+      // We're going to lie and call the sum the mean for multiactor metrics.
+      current_mean  = mean_total;
+    }
+    else
+    {
+      current_mean = mean_total / mean_count;
+    }
   }
 
   current_error *= 100;
@@ -2391,12 +2411,12 @@ void sim_t::init_fight_style()
     break;
 
     case FIGHT_STYLE_LIGHT_MOVEMENT:
-      raid_events_str += "/movement,players_only=1,cooldown=40,cooldown_stddev=10,distance=15,distance_min=10,distance_max=20,first=15";
+      raid_events_str += "/movement,players_only=1,cooldown=40,cooldown_stddev=10,distance=15,move_distance_min=10,move_distance_max=20,first=15";
       break;
 
     case FIGHT_STYLE_HEAVY_MOVEMENT:
-      raid_events_str += "/movement,players_only=1,cooldown=20,cooldown_stddev=15,distance=25,distance_min=20,distance_max=30,first=15";
-      raid_events_str += "/movement,players_only=1,cooldown=45,cooldown_stddev=15,distance=45,distance_min=40,distance_max=50,first=30";
+      raid_events_str += "/movement,players_only=1,cooldown=20,cooldown_stddev=15,distance=25,move_distance_min=20,move_distance_max=30,first=15";
+      raid_events_str += "/movement,players_only=1,cooldown=45,cooldown_stddev=15,distance=45,move_distance_min=40,move_distance_max=50,first=30";
       break;
 
     case FIGHT_STYLE_BEASTLORD:
@@ -3774,10 +3794,10 @@ void sim_t::create_options()
   add_option( opt_int( "scale_to_itemlevel", scale_to_itemlevel ) );
   add_option( opt_bool( "scale_itemlevel_down_only", scale_itemlevel_down_only ) );
   add_option( opt_bool( "disable_set_bonuses", disable_set_bonuses ) );
-  add_option( opt_uint( "disable_2_set", disable_2_set ) );
-  add_option( opt_uint( "disable_4_set", disable_4_set ) );
-  add_option( opt_uint( "enable_2_set", enable_2_set ) );
-  add_option( opt_uint( "enable_4_set", enable_4_set ) );
+  add_option( opt_string( "disable_2_set", disable_2_set ) );
+  add_option( opt_string( "disable_4_set", disable_4_set ) );
+  add_option( opt_string( "enable_2_set", enable_2_set ) );
+  add_option( opt_string( "enable_4_set", enable_4_set ) );
   add_option( opt_bool( "pvp", pvp_mode ) );
   add_option( opt_bool( "auto_attacks_always_land", auto_attacks_always_land ) );
   add_option( opt_bool( "log_spell_id", log_spell_id ) );
@@ -4221,6 +4241,8 @@ void sim_t::setup( sim_control_t* c )
   {
     throw std::runtime_error( "Nothing to sim!" );
   }
+
+  range::for_each( player_list, []( player_t* p ) { p->validate_sim_options(); } );
 
   if ( parent )
   {

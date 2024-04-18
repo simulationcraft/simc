@@ -117,6 +117,9 @@ public:
 
   /// Timespan Gaussian Distribution
   timespan_t gauss( timespan_t mean, timespan_t stddev );
+  timespan_t gauss_ab( timespan_t mean, timespan_t stddev, timespan_t min, timespan_t max );
+  timespan_t gauss_a( timespan_t mean, timespan_t stddev, timespan_t min );
+  timespan_t gauss_b( timespan_t mean, timespan_t stddev, timespan_t max );
 
   /// Timespan Exponential Distribution
   timespan_t exponential( timespan_t nu );
@@ -267,11 +270,16 @@ template <typename Engine>
 double basic_rng_t<Engine>::gauss_ab( double mean, double stddev, double min, double max )
 {
   assert( stddev >= 0.0 && "Stddev must be non-negative." );
-  assert( min < max && "Minimum must be less than maximum." );
-  assert( mean >= min && mean <= max && "Mean must be contained within the interval [min, max]" );
+  assert( min <= max && "Minimum must be less than or equal to maximum." );
 
   if ( stddev == 0.0 )
+  {
+    assert( mean >= min && mean <= max && "Mean must be contained within the interval [min, max]" );
     return mean;
+  }
+
+  if ( min == max )
+    return min;
 
   double min_cdf      = stdnormal_cdf( ( min - mean ) / stddev );
   double max_cdf      = stdnormal_cdf( ( max - mean ) / stddev );
@@ -320,7 +328,34 @@ template <typename Engine>
 timespan_t basic_rng_t<Engine>::gauss( timespan_t mean, timespan_t stddev )
 {
   return timespan_t::from_native( gauss_a( static_cast<double>( timespan_t::to_native( mean ) ),
-                                           static_cast<double>( timespan_t::to_native( stddev ) ), 0.0 ) );
+                                           static_cast<double>( timespan_t::to_native( stddev ) ),
+                                           0.0 ) );
+}
+
+template <typename Engine>
+timespan_t basic_rng_t<Engine>::gauss_ab( timespan_t mean, timespan_t stddev, timespan_t min, timespan_t max )
+{
+  return timespan_t::from_native( gauss_ab( static_cast<double>( timespan_t::to_native( mean ) ),
+                                            static_cast<double>( timespan_t::to_native( stddev ) ),
+                                            static_cast<double>( timespan_t::to_native( min ) ),
+                                            static_cast<double>( timespan_t::to_native( max ) ) ) );
+}
+
+template <typename Engine>
+timespan_t basic_rng_t<Engine>::gauss_a( timespan_t mean, timespan_t stddev, timespan_t min )
+{
+  return timespan_t::from_native( gauss_a( static_cast<double>( timespan_t::to_native( mean ) ),
+                                           static_cast<double>( timespan_t::to_native( stddev ) ),
+                                           static_cast<double>( timespan_t::to_native( min ) ) ) );
+}
+
+template <typename Engine>
+timespan_t basic_rng_t<Engine>::gauss_b( timespan_t mean, timespan_t stddev, timespan_t max )
+{
+  return timespan_t::from_native( gauss_ab( static_cast<double>( timespan_t::to_native( mean ) ),
+                                            static_cast<double>( timespan_t::to_native( stddev ) ),
+                                            0.0,
+                                            static_cast<double>( timespan_t::to_native( max ) ) ) );
 }
 
 template <typename Engine>

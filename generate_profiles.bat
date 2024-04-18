@@ -17,10 +17,17 @@ cd ..\
 :: "%~dp0simc.exe" DS_Generate.simc
 :: cd ..\
 :: TierXX profiles generation
+:: TODO: remove after Dragonflight ends
 for %%g in (29 30 31) do (
   cd Tier%%g
   echo Running T%%g_Generate.simc in %cd%
   "%~dp0simc.exe" T%%g_Generate.simc
+  cd ..\
+)
+for %%g in (DF4) do (
+  cd %%g
+  echo Running %%g_Generate.simc in %cd%
+  "%~dp0simc.exe" %%g_Generate.simc
   cd ..\
 )
 goto pause

@@ -352,7 +352,7 @@ void print_spell_stats( std::ostream& os, const player_t& p )
       "crit={:.2f}%|{:.2f}%({:.0f})  haste={:.2f}%|{:.2f}%({:.0f})  "
       "speed={:.2f}%|{:.2f}%  manareg={:.0f}|{:.0f}({})\n",
       buffed_stats.spell_power,
-      p.composite_spell_power( SCHOOL_MAX ) * p.composite_spell_power_multiplier(),
+      p.composite_total_spell_power( SCHOOL_MAX ),
       p.initial.stats.spell_power,
       100 * buffed_stats.spell_hit,
       100 * p.composite_spell_hit(),

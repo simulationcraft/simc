@@ -3,24 +3,27 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "report/reports.hpp"
 #include "interfaces/sc_js.hpp"
 #include "player/player_talent_points.hpp"
+#include "rapidjson/document.h"
+#include "rapidjson/filewritestream.h"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/writer.h"
 #include "report/json/report_configuration.hpp"
 #include "report/report_timer.hpp"
-#include "sim/scale_factor_control.hpp"
+#include "report/reports.hpp"
 #include "sim/iteration_data_entry.hpp"
+#include "sim/plot.hpp"
 #include "sim/profileset.hpp"
-#include "simulationcraft.hpp"
+#include "sim/reforge_plot.hpp"
+#include "sim/scale_factor_control.hpp"
 #include "util/git_info.hpp"
+#include "util/plot_data.hpp"
 
 #include <ctime>
 
-#include "rapidjson/filewritestream.h"
-#include "rapidjson/document.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/prettywriter.h"
+#include "simulationcraft.hpp"
 
 using namespace rapidjson;
 using namespace js;
@@ -33,7 +36,8 @@ namespace
  * root.
  */
 template <typename T>
-auto add_non_default( JsonOutput root, util::string_view name, const T& container ) -> std::void_t<decltype(container.mean())>
+auto add_non_default( JsonOutput root, util::string_view name, const T& container )
+    -> std::void_t<decltype( container.mean() )>
 {
   if ( container.mean() != 0 )
   {
@@ -52,23 +56,36 @@ void add_non_default( JsonOutput root, util::string_view name, const T& v, const
 
 /* Template helper to add only non-zero "containers" (sample data essentially) to the JSON root. */
 template <typename T>
-auto add_non_zero( JsonOutput root, util::string_view name, const T& container ) -> std::void_t<decltype(container.mean())>
-{ add_non_default( root, name, container ); }
+auto add_non_zero( JsonOutput root, util::string_view name, const T& container )
+    -> std::void_t<decltype( container.mean() )>
+{
+  add_non_default( root, name, container );
+}
 
 void add_non_zero( JsonOutput root, util::string_view name, timespan_t v )
-{ add_non_default( root, name, v, timespan_t::zero() ); }
+{
+  add_non_default( root, name, v, timespan_t::zero() );
+}
 
 void add_non_zero( JsonOutput root, util::string_view name, double v )
-{ add_non_default( root, name, v, 0.0 ); }
+{
+  add_non_default( root, name, v, 0.0 );
+}
 
 void add_non_zero( JsonOutput root, util::string_view name, int v )
-{ add_non_default( root, name, v, 0 ); }
+{
+  add_non_default( root, name, v, 0 );
+}
 
 void add_non_zero( JsonOutput root, util::string_view name, unsigned v )
-{ add_non_default( root, name, v, 0U ); }
+{
+  add_non_default( root, name, v, 0U );
+}
 
 void add_non_zero( JsonOutput root, util::string_view name, bool v )
-{ add_non_default( root, name, v, false ); }
+{
+  add_non_default( root, name, v, false );
+}
 
 void add_non_zero( JsonOutput root, util::string_view name, util::string_view v )
 {
@@ -80,40 +97,45 @@ void add_non_zero( JsonOutput root, util::string_view name, util::string_view v 
 
 bool has_resources( const gain_t* gain )
 {
-  return range::any_of( gain -> count, []( double v ) { return v != 0; } );
+  return range::any_of( gain->count, []( double v ) {
+    return v != 0;
+  } );
 }
 
 bool has_resources( const gain_t& gain )
-{ return has_resources( &gain ); }
+{
+  return has_resources( &gain );
+}
 
 void gain_to_json( JsonOutput root, const gain_t* g )
 {
-  root[ "name" ] = g -> name();
+  root[ "name" ] = g->name();
 
   for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
-    if ( g -> count[ r ] == 0 )
+    if ( g->count[ r ] == 0 )
     {
       continue;
     }
     auto node = root[ util::resource_type_string( r ) ];
 
-    node[ "actual" ] = g -> actual[ r ];
-    node[ "overflow" ] = g -> overflow[ r ];
-    node[ "count" ] = g -> count[ r ];
+    node[ "actual" ] = g->actual[ r ];
+    node[ "overflow" ] = g->overflow[ r ];
+    node[ "count" ] = g->count[ r ];
   }
 }
 
 void gain_to_json( JsonOutput root, const gain_t& g )
-{ gain_to_json( root, &g ); }
-
+{
+  gain_to_json( root, &g );
+}
 
 void gains_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
 
   range::for_each( p.gain_list, [ & ]( const gain_t* g ) {
-    if ( ! has_resources( g ) )
+    if ( !has_resources( g ) )
     {
       return;
     }
@@ -124,50 +146,50 @@ void gains_to_json( JsonOutput root, const player_t& p )
 
 void to_json( JsonOutput root, const buff_t* b )
 {
-  root[ "name" ] = b -> name();
+  root[ "name" ] = b->name();
   root[ "spell_name" ] = b->data_reporting().name_cstr();
-  root[ "spell_school" ] = util::school_type_string( b->data_reporting().get_school_type());
-  add_non_zero( root, "spell", b -> data_reporting().id() );
-  if ( b -> item )
+  root[ "spell_school" ] = util::school_type_string( b->data_reporting().get_school_type() );
+  add_non_zero( root, "spell", b->data_reporting().id() );
+  if ( b->item )
   {
-    root[ "item" ][ "id" ] = b -> item -> parsed.data.id;
-    root[ "item" ][ "ilevel" ] = b -> item -> item_level();
+    root[ "item" ][ "id" ] = b->item->parsed.data.id;
+    root[ "item" ][ "ilevel" ] = b->item->item_level();
   }
 
-  if ( b -> source && b -> source != b -> player )
+  if ( b->source && b->source != b->player )
   {
-    root[ "source" ] = b -> source -> name();
+    root[ "source" ] = b->source->name();
   }
 
-  if ( b -> cooldown && b -> cooldown -> duration > timespan_t::zero() )
+  if ( b->cooldown && b->cooldown->duration > timespan_t::zero() )
   {
-    root[ "cooldown" ] = *b -> cooldown;
+    root[ "cooldown" ] = *b->cooldown;
   }
 
-  root[ "start_count" ] = b -> avg_start.mean();
-  add_non_zero( root, "refresh_count", b -> avg_refresh.mean() );
-  add_non_zero( root, "interval", b -> start_intervals.mean() );
-  add_non_zero( root, "trigger", b -> trigger_intervals.mean() );
-  add_non_zero( root, "duration", b -> duration_lengths.mean() );
-  add_non_zero( root, "uptime", b -> uptime_pct.mean() );
-  add_non_zero( root, "benefit", b -> benefit_pct.mean() );
-  add_non_zero( root, "overflow_stacks", b -> avg_overflow_count.mean() );
-  add_non_zero( root, "overflow_total" , b -> avg_overflow_total.mean() );
-  add_non_zero( root, "expire_count", b -> avg_expire.mean() );
+  root[ "start_count" ] = b->avg_start.mean();
+  add_non_zero( root, "refresh_count", b->avg_refresh.mean() );
+  add_non_zero( root, "interval", b->start_intervals.mean() );
+  add_non_zero( root, "trigger", b->trigger_intervals.mean() );
+  add_non_zero( root, "duration", b->duration_lengths.mean() );
+  add_non_zero( root, "uptime", b->uptime_pct.mean() );
+  add_non_zero( root, "benefit", b->benefit_pct.mean() );
+  add_non_zero( root, "overflow_stacks", b->avg_overflow_count.mean() );
+  add_non_zero( root, "overflow_total", b->avg_overflow_total.mean() );
+  add_non_zero( root, "expire_count", b->avg_expire.mean() );
 
-  add_non_default( root, "default_value", b -> default_value, buff_t::DEFAULT_VALUE() );
+  add_non_default( root, "default_value", b->default_value, buff_t::DEFAULT_VALUE() );
 
-  if ( b -> sim -> buff_uptime_timeline != 0 && b -> uptime_array.mean() != 0 )
+  if ( b->sim->buff_uptime_timeline != 0 && b->uptime_array.mean() != 0 )
   {
-    root[ "stack_uptime" ] = b -> uptime_array;
+    root[ "stack_uptime" ] = b->uptime_array;
   }
 }
 
 void buffs_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
-  range::for_each( p.report_information.dynamic_buffs, [ &]( const buff_t* b ) {
-    if ( b -> avg_start.sum() == 0 )
+  range::for_each( p.report_information.dynamic_buffs, [ & ]( const buff_t* b ) {
+    if ( b->avg_start.sum() == 0 )
     {
       return;
     }
@@ -178,8 +200,8 @@ void constant_buffs_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
   // constant buffs
-  range::for_each( p.report_information.constant_buffs, [ &]( const buff_t* b ) {
-    if ( b -> avg_start.sum() == 0 )
+  range::for_each( p.report_information.constant_buffs, [ & ]( const buff_t* b ) {
+    if ( b->avg_start.sum() == 0 )
     {
       return;
     }
@@ -203,21 +225,21 @@ void procs_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
   range::for_each( p.proc_list, [ & ]( const proc_t* proc ) {
-    if ( proc -> count.mean() == 0 )
+    if ( proc->count.mean() == 0 )
     {
       return;
     }
 
     auto node = root.add();
-    node[ "name" ] = proc -> name();
-    node[ "interval" ] = proc -> interval_sum.mean();
-    node[ "count" ] = proc -> count.mean();
+    node[ "name" ] = proc->name();
+    node[ "interval" ] = proc->interval_sum.mean();
+    node[ "count" ] = proc->count.mean();
   } );
 }
 
 bool has_valid_stats( const std::vector<stats_t*>& stats_list, int level = 0 )
 {
-  return range::any_of( stats_list, [level]( const stats_t* stats ) {
+  return range::any_of( stats_list, [ level ]( const stats_t* stats ) {
     if ( stats->quiet )
     {
       return false;
@@ -225,7 +247,7 @@ bool has_valid_stats( const std::vector<stats_t*>& stats_list, int level = 0 )
 
     if ( level == 0 )
     {
-      if ( stats->num_executes.mean() == 0  && stats->compound_amount == 0)
+      if ( stats->num_executes.mean() == 0 && stats->compound_amount == 0 )
       {
         return false;
       }
@@ -252,24 +274,27 @@ void stats_to_json( JsonOutput root, const std::vector<stats_t*>& stats_list, in
   root.make_array();
 
   range::for_each( stats_list, [ & ]( const stats_t* s ) {
-    if ( s -> quiet )
+    if ( s->quiet )
     {
       return;
     }
-    if (level == 0)
+    if ( level == 0 )
     {
       // top-level is just abilities that were executed or did some damage
-      if (s -> num_executes.mean() == 0 && s -> compound_amount == 0)
+      if ( s->num_executes.mean() == 0 && s->compound_amount == 0 )
       {
         return;
       }
       // probably a pet ability that matchs a player ability, e.g. Kill Command
-      if ( s -> parent ) {
+      if ( s->parent )
+      {
         return;
       }
-    } else {
+    }
+    else
+    {
       // children show anything with an amount to catch dots and effects of spells
-      if (s -> compound_amount == 0)
+      if ( s->compound_amount == 0 )
       {
         return;
       }
@@ -278,72 +303,70 @@ void stats_to_json( JsonOutput root, const std::vector<stats_t*>& stats_list, in
     auto node = root.add();
 
     // find action for this stat
-    action_t* a            = nullptr;
+    action_t* a = nullptr;
     for ( const auto& action : s->action_list )
     {
       if ( ( a = action )->id > 1 )
         break;
     }
 
-    if (a != nullptr) {
-      node[ "id" ] = a -> id;
-      node[ "spell_name" ] = a -> data_reporting().name_cstr();
-      if (a->item)
+    if ( a != nullptr )
+    {
+      node[ "id" ] = a->id;
+      node[ "spell_name" ] = a->data_reporting().name_cstr();
+      if ( a->item )
       {
         // grab item ID if available, can link trinket pets back to the item
         node[ "item_id" ] = a->item->parsed.data.id;
       }
     }
-    node[ "name" ] = s -> name();
-    if ( s -> school != SCHOOL_NONE )
+    node[ "name" ] = s->name();
+    if ( s->school != SCHOOL_NONE )
     {
-      node[ "school" ] = util::school_type_string( s -> school );
+      node[ "school" ] = util::school_type_string( s->school );
     }
-    node[ "type" ] = util::stats_type_string( s -> type );
+    node[ "type" ] = util::stats_type_string( s->type );
 
-    if ( has_resources( s -> resource_gain ) )
+    if ( has_resources( s->resource_gain ) )
     {
-      gain_to_json( node[ "resource_gain" ], s -> resource_gain );
-    }
-
-
-    node[ "num_executes" ] = s -> num_executes;
-    node[ "compound_amount" ] = s -> compound_amount;
-
-    add_non_zero( node, "total_execute_time", s -> total_execute_time );
-    add_non_zero( node, "portion_aps", s -> portion_aps );
-    add_non_zero( node, "portion_apse", s -> portion_apse );
-    add_non_zero( node, "portion_amount", s -> portion_amount );
-    add_non_zero( node, "actual_amount", s -> actual_amount );
-    add_non_zero( node, "total_amount", s -> total_amount );
-
-    if ( s -> num_executes.mean() > 1.0 )
-    {
-      node[ "total_intervals" ] = s -> total_intervals;
+      gain_to_json( node[ "resource_gain" ], s->resource_gain );
     }
 
-    add_non_zero( node, "num_ticks", s -> num_ticks );
-    add_non_zero( node, "num_tick_results", s -> num_tick_results );
-    add_non_zero( node, "total_tick_time", s -> total_tick_time );
-    add_non_zero( node, "num_refreshes", s -> num_refreshes );
+    node[ "num_executes" ] = s->num_executes;
+    node[ "compound_amount" ] = s->compound_amount;
 
-    add_non_zero( node, "num_direct_results", s -> num_direct_results );
+    add_non_zero( node, "total_execute_time", s->total_execute_time );
+    add_non_zero( node, "portion_aps", s->portion_aps );
+    add_non_zero( node, "portion_apse", s->portion_apse );
+    add_non_zero( node, "portion_amount", s->portion_amount );
+    add_non_zero( node, "actual_amount", s->actual_amount );
+    add_non_zero( node, "total_amount", s->total_amount );
+
+    if ( s->num_executes.mean() > 1.0 )
+    {
+      node[ "total_intervals" ] = s->total_intervals;
+    }
+
+    add_non_zero( node, "num_ticks", s->num_ticks );
+    add_non_zero( node, "num_tick_results", s->num_tick_results );
+    add_non_zero( node, "total_tick_time", s->total_tick_time );
+    add_non_zero( node, "num_refreshes", s->num_refreshes );
+
+    add_non_zero( node, "num_direct_results", s->num_direct_results );
 
     for ( full_result_e r = FULLTYPE_NONE; r < FULLTYPE_MAX; ++r )
     {
-      if ( s -> direct_results[ r ].count.sum() != 0 )
+      if ( s->direct_results[ r ].count.sum() != 0 )
       {
-        to_json( node[ "direct_results" ][ util::full_result_type_string( r ) ],
-                 s -> direct_results[ r ] );
+        to_json( node[ "direct_results" ][ util::full_result_type_string( r ) ], s->direct_results[ r ] );
       }
     }
 
     for ( result_e r = RESULT_NONE; r < RESULT_MAX; ++r )
     {
-      if ( s -> tick_results[ r ].count.sum() != 0 )
+      if ( s->tick_results[ r ].count.sum() != 0 )
       {
-        to_json( node[ "tick_results" ][ util::result_type_string( r ) ],
-                 s -> tick_results[ r ] );
+        to_json( node[ "tick_results" ][ util::result_type_string( r ) ], s->tick_results[ r ] );
       }
     }
 
@@ -373,7 +396,7 @@ void gear_to_json( JsonOutput root, const player_t& p )
     for ( size_t i = 0; i < std::size( item.parsed.data.stat_type_e ); i++ )
     {
       auto val = item.stat_value( i );
-      if ( val <= 0)
+      if ( val <= 0 )
       {
         continue;
       }
@@ -382,9 +405,8 @@ void gear_to_json( JsonOutput root, const player_t& p )
   }
 }
 
-void to_json( JsonOutput root, const player_t& p,
-                               const player_collected_data_t::buffed_stats_t& bs,
-                               const std::vector<resource_e>& relevant_resources )
+void to_json( JsonOutput root, const player_t& p, const player_collected_data_t::buffed_stats_t& bs,
+              const std::vector<resource_e>& relevant_resources )
 {
   for ( attribute_e a = ATTRIBUTE_NONE; a < ATTRIBUTE_MAX; ++a )
   {
@@ -414,36 +436,30 @@ void to_json( JsonOutput root, const player_t& p,
   // doll stats in-game. crit and haste pick the max between melee/spell which seems to be the game logic
 
   add_non_zero( root[ "stats" ], "crit_rating",
-                                p.composite_melee_crit_rating() > p.composite_spell_crit_rating()
-                                ? p.composite_melee_crit_rating()
-                                : p.composite_spell_crit_rating());
+                p.composite_melee_crit_rating() > p.composite_spell_crit_rating() ? p.composite_melee_crit_rating()
+                                                                                  : p.composite_spell_crit_rating() );
   add_non_zero( root[ "stats" ], "crit_pct",
-                                 bs.attack_crit_chance > bs.spell_crit_chance
-                                 ? bs.attack_crit_chance
-                                 : bs.spell_crit_chance);
+                bs.attack_crit_chance > bs.spell_crit_chance ? bs.attack_crit_chance : bs.spell_crit_chance );
 
   double attack_haste_pct = bs.attack_haste != 0 ? 1 / bs.attack_haste - 1 : 0;
   double spell_haste_pct = bs.spell_haste != 0 ? 1 / bs.spell_haste - 1 : 0;
   add_non_zero( root[ "stats" ], "haste_rating",
-                                 p.composite_melee_haste_rating() > p.composite_spell_haste_rating()
-                                 ? p.composite_melee_haste_rating()
-                                 : p.composite_spell_haste_rating());
-  add_non_zero( root[ "stats" ], "haste_pct",
-                                 attack_haste_pct > spell_haste_pct
-                                 ? attack_haste_pct
-                                 : spell_haste_pct);
+                p.composite_melee_haste_rating() > p.composite_spell_haste_rating()
+                    ? p.composite_melee_haste_rating()
+                    : p.composite_spell_haste_rating() );
+  add_non_zero( root[ "stats" ], "haste_pct", attack_haste_pct > spell_haste_pct ? attack_haste_pct : spell_haste_pct );
 
-  add_non_zero( root[ "stats" ], "mastery_rating", p.composite_mastery_rating());
-  add_non_zero( root[ "stats" ], "mastery_pct", bs.mastery_value);
+  add_non_zero( root[ "stats" ], "mastery_rating", p.composite_mastery_rating() );
+  add_non_zero( root[ "stats" ], "mastery_pct", bs.mastery_value );
 
-  add_non_zero( root[ "stats" ], "versatility_rating", p.composite_damage_versatility_rating());
-  add_non_zero( root[ "stats" ], "versatility_pct", bs.damage_versatility);
+  add_non_zero( root[ "stats" ], "versatility_rating", p.composite_damage_versatility_rating() );
+  add_non_zero( root[ "stats" ], "versatility_pct", bs.damage_versatility );
 
-  add_non_zero( root[ "stats" ], "avoidance_rating", p.composite_avoidance_rating());
+  add_non_zero( root[ "stats" ], "avoidance_rating", p.composite_avoidance_rating() );
   add_non_zero( root[ "stats" ], "avoidance_pct", bs.avoidance );
-  add_non_zero( root[ "stats" ], "leech_rating", p.composite_leech_rating());
+  add_non_zero( root[ "stats" ], "leech_rating", p.composite_leech_rating() );
   add_non_zero( root[ "stats" ], "leech_pct", bs.leech );
-  add_non_zero( root[ "stats" ], "speed_rating", p.composite_speed_rating());
+  add_non_zero( root[ "stats" ], "speed_rating", p.composite_speed_rating() );
   add_non_zero( root[ "stats" ], "speed_pct", bs.run_speed );
 
   add_non_zero( root[ "stats" ], "manareg_per_second", bs.manareg_per_second );
@@ -457,25 +473,26 @@ void to_json( JsonOutput root, const player_t& p,
   add_non_zero( root[ "stats" ], "corruption_resistance", bs.corruption_resistance );
 }
 
-void to_json( JsonOutput root,
-              const ::report::json::report_configuration_t& report_configuration,
+void to_json( JsonOutput root, const ::report::json::report_configuration_t& report_configuration,
               const std::vector<player_collected_data_t::action_sequence_data_t>& asd,
               const std::vector<resource_e>& relevant_resources )
 {
   root.make_array();
 
-  range::for_each( asd, [ &root, &relevant_resources, &report_configuration ]( const player_collected_data_t::action_sequence_data_t& entry ) {
+  range::for_each( asd, [ &root, &relevant_resources,
+                          &report_configuration ]( const player_collected_data_t::action_sequence_data_t& entry ) {
     auto json = root.add();
 
     json[ "time" ] = entry.time;
     if ( entry.action )
     {
-      json[ "id" ] = entry.action -> id;
-      json[ "name" ] = entry.action -> name();
+      json[ "id" ] = entry.action->id;
+      json[ "name" ] = entry.action->name();
       json[ "target" ] = entry.action->harmful ? entry.target_name : "none";
       json[ "spell_name" ] = entry.action->data_reporting().name_cstr();
       json[ "queue_failed" ] = entry.queue_failed;
-      if (entry.action->item) {
+      if ( entry.action->item )
+      {
         json[ "item_name" ] = entry.action->item->name_str;
       }
     }
@@ -484,7 +501,6 @@ void to_json( JsonOutput root,
       json[ "wait" ] = entry.wait_time;
     }
 
-
     if ( !entry.buff_list.empty() )
     {
       auto buffs = json[ "buffs" ];
@@ -492,8 +508,8 @@ void to_json( JsonOutput root,
       range::for_each( entry.buff_list, [ &buffs, &report_configuration ]( const auto& data ) {
         auto entry = buffs.add();
 
-        entry[ "id" ] = data.object -> data_reporting().id();
-        entry[ "name" ] = data.object -> name();
+        entry[ "id" ] = data.object->data_reporting().id();
+        entry[ "name" ] = data.object->name();
         entry[ "stacks" ] = data.value;
         if ( report_configuration.full_states )
         {
@@ -510,7 +526,7 @@ void to_json( JsonOutput root,
       range::for_each( entry.cooldown_list, [ &cooldowns ]( const auto& data ) {
         auto entry = cooldowns.add();
 
-        entry[ "name" ] = data.object -> name();
+        entry[ "name" ] = data.object->name();
         entry[ "stacks" ] = data.value;
         entry[ "remains" ] = data.time_value;
       } );
@@ -520,14 +536,14 @@ void to_json( JsonOutput root,
     {
       auto targets = json[ "targets" ];
       targets.make_array();
-      range::for_each( entry.target_list, [ &targets ] ( const auto& target_data ) {
+      range::for_each( entry.target_list, [ &targets ]( const auto& target_data ) {
         auto target_entry = targets.add();
-        target_entry[ "name" ] = target_data.first -> name();
+        target_entry[ "name" ] = target_data.first->name();
         auto debuffs = target_entry[ "debuffs" ];
         debuffs.make_array();
         range::for_each( target_data.second, [ &debuffs ]( const auto& data ) {
           auto entry = debuffs.add();
-          entry[ "name" ] = data.object -> name();
+          entry[ "name" ] = data.object->name();
           entry[ "stack" ] = data.value;
           entry[ "remains" ] = data.time_value;
         } );
@@ -537,14 +553,15 @@ void to_json( JsonOutput root,
     auto resources = json[ "resources" ];
     auto resources_max = json[ "resources_max" ];
     range::for_each( relevant_resources, [ &resources, &resources_max, &entry ]( resource_e r ) {
-      resources[ util::resource_type_string( r ) ] = util::round(entry.resource_snapshot[ r ], 2);
+      resources[ util::resource_type_string( r ) ] = util::round( entry.resource_snapshot[ r ], 2 );
       // TODO: Why do we have this instead of using some static one?
-      resources_max[ util::resource_type_string( r ) ] = util::round(entry.resource_max_snapshot[ r ], 2);
+      resources_max[ util::resource_type_string( r ) ] = util::round( entry.resource_max_snapshot[ r ], 2 );
     } );
   } );
 }
 
-void collected_data_to_json( JsonOutput root, const ::report::json::report_configuration_t& report_configuration, const player_t& p )
+void collected_data_to_json( JsonOutput root, const ::report::json::report_configuration_t& report_configuration,
+                             const player_t& p )
 {
   const auto& sim = *p.sim;
   const auto& cd = p.collected_data;
@@ -619,7 +636,7 @@ void collected_data_to_json( JsonOutput root, const ::report::json::report_confi
     // Rest of the resource summaries are printed only based on relevant resources
     range::for_each( relevant_resources, [ &root, &cd ]( resource_e r ) {
       root[ "resource_lost" ][ util::resource_type_string( r ) ] = cd.resource_lost[ r ];
-      
+
       root[ "resource_overflowed" ][ util::resource_type_string( r ) ] = cd.resource_overflowed[ r ];
 
       if ( r < cd.combat_end_resource.size() )
@@ -629,19 +646,21 @@ void collected_data_to_json( JsonOutput root, const ::report::json::report_confi
       }
 
       // Resource timeline for a given resource with loss
-      auto it = range::find_if( cd.resource_timelines, [ r ]( const player_collected_data_t::resource_timeline_t& rtl ) {
-        return rtl.type == r;
-      } );
+      auto it =
+          range::find_if( cd.resource_timelines, [ r ]( const player_collected_data_t::resource_timeline_t& rtl ) {
+            return rtl.type == r;
+          } );
 
       if ( it != cd.resource_timelines.end() )
       {
-        root[ "resource_timelines" ][ util::resource_type_string( r ) ] = it -> timeline;
-        if ( r == RESOURCE_HEALTH ) root[ "resource_timelines" ][ "health_pct" ] = cd.health_pct;
+        root[ "resource_timelines" ][ util::resource_type_string( r ) ] = it->timeline;
+        if ( r == RESOURCE_HEALTH )
+          root[ "resource_timelines" ][ "health_pct" ] = cd.health_pct;
       }
     } );
 
     // Stat timelines, if they exist
-    range::for_each( cd.stat_timelines, [ &root]( const player_collected_data_t::stat_timeline_t& stl ) {
+    range::for_each( cd.stat_timelines, [ &root ]( const player_collected_data_t::stat_timeline_t& stl ) {
       add_non_zero( root[ "stat_timelines" ], util::stat_type_string( stl.type ), stl.timeline );
     } );
 
@@ -655,12 +674,13 @@ void collected_data_to_json( JsonOutput root, const ::report::json::report_confi
       root[ "health_changes_tmi" ] = cd.health_changes_tmi.merged_timeline;
     }
 
-    if ( ! cd.action_sequence_precombat.empty() )
+    if ( !cd.action_sequence_precombat.empty() )
     {
-      to_json( root[ "action_sequence_precombat" ], report_configuration, cd.action_sequence_precombat, relevant_resources );
+      to_json( root[ "action_sequence_precombat" ], report_configuration, cd.action_sequence_precombat,
+               relevant_resources );
     }
 
-    if ( ! cd.action_sequence.empty() )
+    if ( !cd.action_sequence.empty() )
     {
       to_json( root[ "action_sequence" ], report_configuration, cd.action_sequence, relevant_resources );
     }
@@ -676,7 +696,7 @@ void to_json( JsonOutput root, const dbc_t& dbc )
     root[ dbc::wow_ptr_status( ptr ) ][ "wow_version" ] = dbc::client_data_version_str( ptr );
     root[ dbc::wow_ptr_status( ptr ) ][ "hotfix_date" ] = dbc::hotfix_date_str( ptr );
     root[ dbc::wow_ptr_status( ptr ) ][ "hotfix_build" ] = dbc::hotfix_build_version( ptr );
-    root[ dbc::wow_ptr_status( ptr ) ][ "hotfix_hash" ]  = dbc::hotfix_hash_str( ptr );
+    root[ dbc::wow_ptr_status( ptr ) ][ "hotfix_hash" ] = dbc::hotfix_hash_str( ptr );
   }
 
   root[ "version_used" ] = StringRef( dbc::wow_ptr_status( dbc.ptr ) );
@@ -684,13 +704,12 @@ void to_json( JsonOutput root, const dbc_t& dbc )
 
 void scale_factors_to_json( JsonOutput root, const player_t& p )
 {
-  if ( p.sim -> report_precision < 0 )
-    p.sim -> report_precision = 2;
+  if ( p.sim->report_precision < 0 )
+    p.sim->report_precision = 2;
 
-  auto sm = p.sim -> scaling -> scaling_metric;
-  const auto& sf = ( p.sim -> scaling -> normalize_scale_factors )
-                   ? p.scaling->scaling_normalized[ sm ]
-                   : p.scaling->scaling[ sm ];
+  auto sm = p.sim->scaling->scaling_metric;
+  const auto& sf =
+      ( p.sim->scaling->normalize_scale_factors ) ? p.scaling->scaling_normalized[ sm ] : p.scaling->scaling[ sm ];
 
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
@@ -703,16 +722,15 @@ void scale_factors_to_json( JsonOutput root, const player_t& p )
 
 void scale_factors_all_to_json( JsonOutput root, const player_t& p )
 {
-  if ( p.sim -> report_precision < 0 )
-    p.sim -> report_precision = 2;
+  if ( p.sim->report_precision < 0 )
+    p.sim->report_precision = 2;
 
   for ( scale_metric_e sm = SCALE_METRIC_DPS; sm < SCALE_METRIC_MAX; sm++ )
   {
     auto node = root[ util::scale_metric_type_abbrev( sm ) ];
 
-    const auto& sf = ( p.sim -> scaling -> normalize_scale_factors )
-                    ? p.scaling->scaling_normalized[ sm ]
-                    : p.scaling->scaling[ sm ];
+    const auto& sf =
+        ( p.sim->scaling->normalize_scale_factors ) ? p.scaling->scaling_normalized[ sm ] : p.scaling->scaling[ sm ];
 
     for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
@@ -737,7 +755,7 @@ void scale_deltas_to_json( JsonOutput root, const player_t& p )
 
 void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& report_configuration, const player_t& p )
 {
-  auto root = arr.add(); // Add a fresh object to the players array and use it as root
+  auto root = arr.add();  // Add a fresh object to the players array and use it as root
 
   root[ "name" ] = p.name();
   root[ "race" ] = util::race_type_string( p.race );
@@ -749,19 +767,21 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
   root[ "party" ] = p.party;
   root[ "ready_type" ] = p.ready_type;
   root[ "bugs" ] = p.bugs;
-  root[ "valid_fight_style" ] = p.validate_fight_style( p.sim->fight_style);
+  root[ "valid_fight_style" ] = p.validate_fight_style( p.sim->fight_style );
   root[ "scale_player" ] = p.scale_player;
   root[ "potion_used" ] = p.potion_used;
   root[ "timeofday" ] = p.timeofday == player_t::NIGHT_TIME ? "NIGHT_TIME" : "DAY_TIME";
-  root[ "zandalari_loa" ] = p.zandalari_loa == player_t::AKUNDA ? "akunda" : p.zandalari_loa == player_t::BWONSAMDI ? "bwonsamdi"
-    : p.zandalari_loa == player_t::GONK ? "gonk" : p.zandalari_loa == player_t::KIMBUL ? "kimbul" : p.zandalari_loa == player_t::KRAGWA ? "kragwa" : "paku";
-  root[ "vulpera_tricks" ] = p.vulpera_tricks == player_t::HOLY
-                                 ? "holy"
-                                 : p.vulpera_tricks == player_t::FLAMES
-                                       ? "flames"
-                                       : p.vulpera_tricks == player_t::SHADOWS
-                                             ? "shadows"
-                                             : p.vulpera_tricks == player_t::HEALING ? "healing" : "corrosive";
+  root[ "zandalari_loa" ] = p.zandalari_loa == player_t::AKUNDA      ? "akunda"
+                            : p.zandalari_loa == player_t::BWONSAMDI ? "bwonsamdi"
+                            : p.zandalari_loa == player_t::GONK      ? "gonk"
+                            : p.zandalari_loa == player_t::KIMBUL    ? "kimbul"
+                            : p.zandalari_loa == player_t::KRAGWA    ? "kragwa"
+                                                                     : "paku";
+  root[ "vulpera_tricks" ] = p.vulpera_tricks == player_t::HOLY      ? "holy"
+                             : p.vulpera_tricks == player_t::FLAMES  ? "flames"
+                             : p.vulpera_tricks == player_t::SHADOWS ? "shadows"
+                             : p.vulpera_tricks == player_t::HEALING ? "healing"
+                                                                     : "corrosive";
 
   if ( p.is_enemy() )
   {
@@ -770,7 +790,7 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
     root[ "combat_reach" ] = p.combat_reach;
   }
 
-  if ( p.sim -> report_pets_separately )
+  if ( p.sim->report_pets_separately )
   {
     // TODO: Pet reporting
   }
@@ -832,7 +852,7 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
   to_json( root[ "consumables" ], p.consumables );
   */
 
-  if ( p.sim -> scaling -> has_scale_factors() )
+  if ( p.sim->scaling->has_scale_factors() )
   {
     scale_factors_to_json( root[ "scale_factors" ], p );
     scale_factors_all_to_json( root[ "scale_factors_all" ], p );
@@ -841,7 +861,7 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
 
   collected_data_to_json( root[ "collected_data" ], report_configuration, p );
 
-  if ( p.sim -> report_details != 0 )
+  if ( p.sim->report_details != 0 )
   {
     buffs_to_json( root[ "buffs" ], p );
     constant_buffs_to_json( root[ "buffs_constant" ], p );
@@ -922,170 +942,173 @@ void profileset_fetch_output_data( const profileset::profile_output_data_t& outp
   if ( !output_data.talents().empty() )
   {
     const auto& talents = output_data.talents();
-    auto ovr_talents    = ovr[ "talents" ].make_array();
+    auto ovr_talents = ovr[ "talents" ].make_array();
     for ( auto talent : talents )
     {
-      auto ovr_talent          = ovr_talents.add();
-      ovr_talent[ "tier" ]     = talent->row();
-      ovr_talent[ "id" ]       = talent->id();
+      auto ovr_talent = ovr_talents.add();
+      ovr_talent[ "tier" ] = talent->row();
+      ovr_talent[ "id" ] = talent->id();
       ovr_talent[ "spell_id" ] = talent->spell_id();
-      ovr_talent[ "name" ]     = talent->name_cstr();
+      ovr_talent[ "name" ] = talent->name_cstr();
     }
   }
   if ( !output_data.gear().empty() )
   {
     const auto& gear = output_data.gear();
-    auto ovr_gear    = ovr[ "gear" ];
+    auto ovr_gear = ovr[ "gear" ];
     for ( const auto& item : gear )
     {
-      auto ovr_slot            = ovr_gear[ item.slot_name() ];
-      ovr_slot[ "item_id" ]    = item.item_id();
+      auto ovr_slot = ovr_gear[ item.slot_name() ];
+      ovr_slot[ "item_id" ] = item.item_id();
       ovr_slot[ "item_level" ] = item.item_level();
     }
   }
   if ( output_data.agility() )
   {
-    ovr[ "stats" ][ "stamina" ]   = output_data.stamina();
-    ovr[ "stats" ][ "agility" ]   = output_data.agility();
+    ovr[ "stats" ][ "stamina" ] = output_data.stamina();
+    ovr[ "stats" ][ "agility" ] = output_data.agility();
     ovr[ "stats" ][ "intellect" ] = output_data.strength();
-    ovr[ "stats" ][ "strength" ]  = output_data.intellect();
+    ovr[ "stats" ][ "strength" ] = output_data.intellect();
 
-    ovr[ "stats" ][ "crit_rating" ]        = output_data.crit_rating();
-    ovr[ "stats" ][ "crit_pct" ]           = output_data.crit_pct();
-    ovr[ "stats" ][ "haste_rating" ]       = output_data.haste_rating();
-    ovr[ "stats" ][ "haste_pct" ]          = output_data.haste_pct();
-    ovr[ "stats" ][ "mastery_rating" ]     = output_data.mastery_rating();
-    ovr[ "stats" ][ "mastery_pct" ]        = output_data.mastery_pct();
+    ovr[ "stats" ][ "crit_rating" ] = output_data.crit_rating();
+    ovr[ "stats" ][ "crit_pct" ] = output_data.crit_pct();
+    ovr[ "stats" ][ "haste_rating" ] = output_data.haste_rating();
+    ovr[ "stats" ][ "haste_pct" ] = output_data.haste_pct();
+    ovr[ "stats" ][ "mastery_rating" ] = output_data.mastery_rating();
+    ovr[ "stats" ][ "mastery_pct" ] = output_data.mastery_pct();
     ovr[ "stats" ][ "versatility_rating" ] = output_data.versatility_rating();
-    ovr[ "stats" ][ "versatility_pct" ]    = output_data.versatility_pct();
+    ovr[ "stats" ][ "versatility_pct" ] = output_data.versatility_pct();
 
     ovr[ "stats" ][ "avoidance_rating" ] = output_data.avoidance_rating();
-    ovr[ "stats" ][ "avoidance_pct" ]    = output_data.avoidance_pct();
-    ovr[ "stats" ][ "leech_rating" ]     = output_data.leech_rating();
-    ovr[ "stats" ][ "leech_pct" ]        = output_data.leech_pct();
-    ovr[ "stats" ][ "speed_rating" ]     = output_data.speed_rating();
-    ovr[ "stats" ][ "speed_pct" ]        = output_data.speed_pct();
+    ovr[ "stats" ][ "avoidance_pct" ] = output_data.avoidance_pct();
+    ovr[ "stats" ][ "leech_rating" ] = output_data.leech_rating();
+    ovr[ "stats" ][ "leech_pct" ] = output_data.leech_pct();
+    ovr[ "stats" ][ "speed_rating" ] = output_data.speed_rating();
+    ovr[ "stats" ][ "speed_pct" ] = output_data.speed_pct();
 
-    ovr[ "stats" ][ "corruption" ]            = output_data.corruption();
+    ovr[ "stats" ][ "corruption" ] = output_data.corruption();
     ovr[ "stats" ][ "corruption_resistance" ] = output_data.corruption_resistance();
   }
 }
 
 void profileset_json2( const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
 {
-root[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric.front() );
+  root[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric.front() );
 
   auto results = root[ "results" ].make_array();
 
-  range::for_each( profileset.profilesets(), [ &results, &sim ]( const profileset::profilesets_t::profileset_entry_t& profileset ) {
-    const auto& result = profileset -> result();
+  range::for_each( profileset.profilesets(),
+                   [ &results, &sim ]( const profileset::profilesets_t::profileset_entry_t& profileset ) {
+                     const auto& result = profileset->result();
 
-    if ( result.mean() == 0 )
-    {
-      return;
-    }
+                     if ( result.mean() == 0 )
+                     {
+                       return;
+                     }
 
-    auto&& obj = results.add();
+                     auto&& obj = results.add();
 
-    obj[ "name" ] = profileset -> name();
-    obj[ "mean" ] = result.mean();
-    obj[ "min" ] = result.min();
-    obj[ "max" ] = result.max();
-    obj[ "stddev" ] = result.stddev();
-    obj["mean_stddev"] = result.mean_stddev();
-    obj["mean_error"] = result.mean_stddev() * sim.confidence_estimator;
+                     obj[ "name" ] = profileset->name();
+                     obj[ "mean" ] = result.mean();
+                     obj[ "min" ] = result.min();
+                     obj[ "max" ] = result.max();
+                     obj[ "stddev" ] = result.stddev();
+                     obj[ "mean_stddev" ] = result.mean_stddev();
+                     obj[ "mean_error" ] = result.mean_stddev() * sim.confidence_estimator;
 
-    if ( result.median() != 0 )
-    {
-      obj[ "median" ] = result.median();
-      obj[ "first_quartile" ] = result.first_quartile();
-      obj[ "third_quartile" ] = result.third_quartile();
-    }
+                     if ( result.median() != 0 )
+                     {
+                       obj[ "median" ] = result.median();
+                       obj[ "first_quartile" ] = result.first_quartile();
+                       obj[ "third_quartile" ] = result.third_quartile();
+                     }
 
-    obj[ "iterations" ] = as<uint64_t>( result.iterations() );
+                     obj[ "iterations" ] = as<uint64_t>( result.iterations() );
 
-    if ( profileset -> results() > 1 )
-    {
-      auto results2 = obj[ "additional_metrics" ].make_array();
-      for ( size_t midx = 1; midx < sim.profileset_metric.size(); ++midx )
-      {
-        auto obj2 = results2.add();
-        const auto& result = profileset -> result( sim.profileset_metric[ midx ] );
+                     if ( profileset->results() > 1 )
+                     {
+                       auto results2 = obj[ "additional_metrics" ].make_array();
+                       for ( size_t midx = 1; midx < sim.profileset_metric.size(); ++midx )
+                       {
+                         auto obj2 = results2.add();
+                         const auto& result = profileset->result( sim.profileset_metric[ midx ] );
 
-        obj2[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric[ midx ] );
-        obj2[ "mean" ] = result.mean();
-        obj2[ "min" ] = result.min();
-        obj2[ "max" ] = result.max();
-        obj2[ "stddev" ] = result.stddev();
-        obj2[ "mean_stddev" ] = result.mean_stddev();
-        obj2[ "mean_error" ] = result.mean_stddev() * sim.confidence_estimator;
+                         obj2[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric[ midx ] );
+                         obj2[ "mean" ] = result.mean();
+                         obj2[ "min" ] = result.min();
+                         obj2[ "max" ] = result.max();
+                         obj2[ "stddev" ] = result.stddev();
+                         obj2[ "mean_stddev" ] = result.mean_stddev();
+                         obj2[ "mean_error" ] = result.mean_stddev() * sim.confidence_estimator;
 
-        if ( result.median() != 0 )
-        {
-          obj2[ "median" ] = result.median();
-          obj2[ "first_quartile" ] = result.first_quartile();
-          obj2[ "third_quartile" ] = result.third_quartile();
-        }
-      }
-    }
+                         if ( result.median() != 0 )
+                         {
+                           obj2[ "median" ] = result.median();
+                           obj2[ "first_quartile" ] = result.first_quartile();
+                           obj2[ "third_quartile" ] = result.third_quartile();
+                         }
+                       }
+                     }
 
-    // Optional override ouput data
-    if ( ! sim.profileset_output_data.empty() ) {
-      const auto& output_data = profileset -> output_data();
-      // TODO: Create the overrides object only if there is at least one override registered
-      auto ovr = obj[ "overrides" ];
-      profileset_fetch_output_data( output_data, ovr);
-    }
-  } );
+                     // Optional override ouput data
+                     if ( !sim.profileset_output_data.empty() )
+                     {
+                       const auto& output_data = profileset->output_data();
+                       // TODO: Create the overrides object only if there is at least one override registered
+                       auto ovr = obj[ "overrides" ];
+                       profileset_fetch_output_data( output_data, ovr );
+                     }
+                   } );
 }
 
 void profileset_json3( const profileset::profilesets_t& profilesets, const sim_t& sim, js::JsonOutput& root )
 {
   auto results = root[ "results" ].make_array();
 
-  range::for_each( profilesets.profilesets(), [ &results, &sim ]( const profileset::profilesets_t::profileset_entry_t& profileset ) {
-    
-    auto&& obj = results.add();
-    obj[ "name" ] = profileset -> name();
-    auto results_obj = obj[ "metrics" ].make_array();
-    
-    for ( size_t midx = 0; midx < sim.profileset_metric.size(); ++midx )
-    {
-      const auto& result = profileset -> result( sim.profileset_metric[ midx ] );
+  range::for_each( profilesets.profilesets(),
+                   [ &results, &sim ]( const profileset::profilesets_t::profileset_entry_t& profileset ) {
+                     auto&& obj = results.add();
+                     obj[ "name" ] = profileset->name();
+                     auto results_obj = obj[ "metrics" ].make_array();
 
-      
-      auto&& obj = results_obj.add();
+                     for ( size_t midx = 0; midx < sim.profileset_metric.size(); ++midx )
+                     {
+                       const auto& result = profileset->result( sim.profileset_metric[ midx ] );
 
-      obj[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric[ midx ] );
-      obj[ "mean" ] = result.mean();
-      obj[ "min" ] = result.min();
-      obj[ "max" ] = result.max();
-      obj[ "stddev" ] = result.stddev();
-      obj["mean_stddev"] = result.mean_stddev();
-      obj["mean_error"] = result.mean_stddev() * sim.confidence_estimator;
+                       auto&& obj = results_obj.add();
 
-      if ( result.median() != 0 )
-      {
-        obj[ "median" ] = result.median();
-        obj[ "first_quartile" ] = result.first_quartile();
-        obj[ "third_quartile" ] = result.third_quartile();
-      }
+                       obj[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric[ midx ] );
+                       obj[ "mean" ] = result.mean();
+                       obj[ "min" ] = result.min();
+                       obj[ "max" ] = result.max();
+                       obj[ "stddev" ] = result.stddev();
+                       obj[ "mean_stddev" ] = result.mean_stddev();
+                       obj[ "mean_error" ] = result.mean_stddev() * sim.confidence_estimator;
 
-      obj[ "iterations" ] = as<uint64_t>( result.iterations() );
-    }
-    
-    // Optional override ouput data
-    if ( ! sim.profileset_output_data.empty() ) {
-      const auto& output_data = profileset -> output_data();
-      // TODO: Create the overrides object only if there is at least one override registered
-      auto ovr = obj[ "overrides" ];
-      profileset_fetch_output_data( output_data, ovr);
-    }
-  } );
+                       if ( result.median() != 0 )
+                       {
+                         obj[ "median" ] = result.median();
+                         obj[ "first_quartile" ] = result.first_quartile();
+                         obj[ "third_quartile" ] = result.third_quartile();
+                       }
+
+                       obj[ "iterations" ] = as<uint64_t>( result.iterations() );
+                     }
+
+                     // Optional override ouput data
+                     if ( !sim.profileset_output_data.empty() )
+                     {
+                       const auto& output_data = profileset->output_data();
+                       // TODO: Create the overrides object only if there is at least one override registered
+                       auto ovr = obj[ "overrides" ];
+                       profileset_fetch_output_data( output_data, ovr );
+                     }
+                   } );
 }
 #endif
 
-void profileset_json( const ::report::json::report_configuration_t& report_configuration, const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
+void profileset_json( const ::report::json::report_configuration_t& report_configuration,
+                      const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
 {
 #ifndef SC_NO_THREADING
   if ( report_configuration.version_intersects( ">=3.0.0" ) )
@@ -1097,6 +1120,67 @@ void profileset_json( const ::report::json::report_configuration_t& report_confi
     profileset_json2( profileset, sim, root );
   }
 #endif
+}
+
+void dps_plot_json( const ::report::json::report_configuration_t& report_configuration, const plot_t& dps_plot,
+                    const sim_t& sim, js::JsonOutput& root )
+{
+  for ( auto player : sim.player_list )
+  {
+    if ( player->quiet )
+      continue;
+
+    auto&& obj = root.add();
+    obj[ "name" ] = player->name();
+    auto data_obj = obj[ "data" ].make_array();
+
+    for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
+    {
+      if ( !dps_plot.is_plot_stat( j ) )
+        continue;
+
+      auto&& dobj = data_obj.add();
+      auto stat_obj = dobj[ util::stat_type_abbrev( j ) ].make_array();
+
+      for ( const auto& data : player->dps_plot_data[ j ] )
+      {
+        auto&& sobj = stat_obj.add();
+        sobj[ "rating" ] = data.plot_step;
+        sobj[ "dps" ] = data.value;
+        sobj[ "dps-error" ] = data.error;
+      }
+    }
+  }
+}
+
+void reforge_plot_json( const ::report::json::report_configuration_t& report_configuration,
+                        const reforge_plot_t& reforge_plot, const sim_t& sim, js::JsonOutput& root )
+{
+  const auto& stat_list = reforge_plot.reforge_plot_stat_indices;
+
+  for ( auto player : sim.player_list )
+  {
+    if ( player->quiet )
+      continue;
+
+    auto&& obj = root.add();
+    obj[ "name" ] = player->name();
+    auto data_obj = obj[ "data" ].make_array();
+
+    for ( size_t i = 0; i < player->reforge_plot_data.size(); i++ )
+    {
+      auto&& dobj = data_obj.add();
+      size_t j = 0;
+
+      while ( j < stat_list.size() )
+      {
+        dobj[ util::stat_type_abbrev( stat_list[ j++ ] ) ] = player->reforge_plot_data[ i ][ j ].value;
+      }
+
+      dobj[ "dps" ] = player->reforge_plot_data[ i ][ j ].value;
+      dobj[ "dps-error" ] = player->reforge_plot_data[ i ][ j ].error;
+    }
+  }
 }
 
 void to_json( const ::report::json::report_configuration_t& report_configuration, JsonOutput root, const sim_t& sim )
@@ -1123,13 +1207,13 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   options_root[ "strict_gcd_queue" ] = sim.strict_gcd_queue;
   options_root[ "confidence" ] = sim.confidence;
   options_root[ "confidence_estimator" ] = sim.confidence_estimator;
-  options_root[ "world_lag" ] =  sim.world_lag;
-  options_root[ "world_lag_stddev" ] =  sim.world_lag_stddev;
+  options_root[ "world_lag" ] = sim.world_lag;
+  options_root[ "world_lag_stddev" ] = sim.world_lag_stddev;
   options_root[ "travel_variance" ] = sim.travel_variance;
   options_root[ "default_skill" ] = sim.default_skill;
-  options_root[ "reaction_time" ] =  sim.reaction_time;
-  options_root[ "regen_periodicity" ] =  sim.regen_periodicity;
-  options_root[ "ignite_sampling_delta" ] =  sim.ignite_sampling_delta;
+  options_root[ "reaction_time" ] = sim.reaction_time;
+  options_root[ "regen_periodicity" ] = sim.regen_periodicity;
+  options_root[ "ignite_sampling_delta" ] = sim.ignite_sampling_delta;
   options_root[ "fixed_time" ] = sim.fixed_time;
   options_root[ "optimize_expressions" ] = sim.optimize_expressions;
   options_root[ "optimal_raid" ] = sim.optimal_raid;
@@ -1157,18 +1241,18 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
 
   to_json( options_root[ "dbc" ], *sim.dbc );
 
-  if ( sim.scaling -> calculate_scale_factors )
+  if ( sim.scaling->calculate_scale_factors )
   {
     auto scaling_root = options_root[ "scaling" ];
-    scaling_root[ "calculate_scale_factors" ] = sim.scaling -> calculate_scale_factors;
-    scaling_root[ "normalize_scale_factors" ] = sim.scaling -> normalize_scale_factors;
-    add_non_zero( scaling_root, "scale_only", sim.scaling -> scale_only_str );
-    add_non_zero( scaling_root, "scale_over",  sim.scaling -> scale_over );
-    add_non_zero( scaling_root, "scale_over_player", sim.scaling -> scale_over_player );
-    add_non_default( scaling_root, "scale_delta_multiplier", sim.scaling -> scale_delta_multiplier, 1.0 );
-    add_non_zero( scaling_root, "positive_scale_delta", sim.scaling -> positive_scale_delta );
-    add_non_zero( scaling_root, "scale_lag", sim.scaling -> scale_lag );
-    add_non_zero( scaling_root, "center_scale_delta", sim.scaling -> center_scale_delta );
+    scaling_root[ "calculate_scale_factors" ] = sim.scaling->calculate_scale_factors;
+    scaling_root[ "normalize_scale_factors" ] = sim.scaling->normalize_scale_factors;
+    add_non_zero( scaling_root, "scale_only", sim.scaling->scale_only_str );
+    add_non_zero( scaling_root, "scale_over", sim.scaling->scale_over );
+    add_non_zero( scaling_root, "scale_over_player", sim.scaling->scale_over_player );
+    add_non_default( scaling_root, "scale_delta_multiplier", sim.scaling->scale_delta_multiplier, 1.0 );
+    add_non_zero( scaling_root, "positive_scale_delta", sim.scaling->positive_scale_delta );
+    add_non_zero( scaling_root, "scale_lag", sim.scaling->scale_lag );
+    add_non_zero( scaling_root, "center_scale_delta", sim.scaling->center_scale_delta );
   }
 
   // Overrides
@@ -1187,7 +1271,7 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
     add_non_zero( overrides, "bloodlust_time", sim.bloodlust_time );
   }
 
-  if ( ! sim.overrides.target_health.empty() )
+  if ( !sim.overrides.target_health.empty() )
   {
     overrides[ "target_health" ] = sim.overrides.target_health;
   }
@@ -1205,12 +1289,24 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
     profileset_json( report_configuration, *sim.profilesets, sim, profileset_root );
   }
 
+  if ( !sim.plot->dps_plot_stat_str.empty() )
+  {
+    auto dps_plot_root = root[ "dps_plot" ].make_array();
+    dps_plot_json( report_configuration, *sim.plot, sim, dps_plot_root );
+  }
+
+  if ( !sim.reforge_plot->reforge_plot_stat_str.empty() )
+  {
+    auto reforge_plot_root = root[ "reforge_plot" ].make_array();
+    reforge_plot_json( report_configuration, *sim.reforge_plot, sim, reforge_plot_root );
+  }
+
   auto stats_root = root[ "statistics" ];
-  stats_root[ "elapsed_cpu_seconds" ] = chrono::to_fp_seconds(sim.elapsed_cpu);
-  stats_root[ "elapsed_time_seconds" ] = chrono::to_fp_seconds(sim.elapsed_time);
-  stats_root[ "init_time_seconds" ] = chrono::to_fp_seconds(sim.init_time);
-  stats_root[ "merge_time_seconds" ] = chrono::to_fp_seconds(sim.merge_time);
-  stats_root[ "analyze_time_seconds" ] = chrono::to_fp_seconds(sim.analyze_time);
+  stats_root[ "elapsed_cpu_seconds" ] = chrono::to_fp_seconds( sim.elapsed_cpu );
+  stats_root[ "elapsed_time_seconds" ] = chrono::to_fp_seconds( sim.elapsed_time );
+  stats_root[ "init_time_seconds" ] = chrono::to_fp_seconds( sim.init_time );
+  stats_root[ "merge_time_seconds" ] = chrono::to_fp_seconds( sim.merge_time );
+  stats_root[ "analyze_time_seconds" ] = chrono::to_fp_seconds( sim.analyze_time );
   stats_root[ "simulation_length" ] = sim.simulation_length;
   stats_root[ "total_events_processed" ] = sim.event_mgr.total_events_processed;
   add_non_zero( stats_root, "raid_dps", sim.raid_dps );
@@ -1230,7 +1326,7 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
     } );
 
     // Raid events
-    if ( ! sim.raid_events.empty() )
+    if ( !sim.raid_events.empty() )
     {
       auto arr = root[ "raid_events" ].make_array();
 
@@ -1243,7 +1339,7 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
     {
       JsonOutput buffs_arr = root[ "sim_auras" ].make_array();
       range::for_each( sim.buff_list, [ & ]( const buff_t* b ) {
-        if ( b -> avg_start.mean() == 0 )
+        if ( b->avg_start.mean() == 0 )
         {
           return;
         }
@@ -1263,31 +1359,33 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   }
 }
 
-void normal_print(FileWriteStream& stream, Document& doc, const ::report::json::report_configuration_t& report_configuration  )
+void normal_print( FileWriteStream& stream, Document& doc,
+                   const ::report::json::report_configuration_t& report_configuration )
 {
   Writer<FileWriteStream> writer( stream );
-  if (report_configuration.decimal_places > 0)
+  if ( report_configuration.decimal_places > 0 )
   {
-    writer.SetMaxDecimalPlaces(report_configuration.decimal_places);
+    writer.SetMaxDecimalPlaces( report_configuration.decimal_places );
   }
   auto accepted = doc.Accept( writer );
   if ( !accepted )
   {
-    throw std::runtime_error("JSON Writer did not accept document.");
+    throw std::runtime_error( "JSON Writer did not accept document." );
   }
 }
 
-void pretty_print(FileWriteStream& stream, Document& doc, const ::report::json::report_configuration_t& report_configuration  )
+void pretty_print( FileWriteStream& stream, Document& doc,
+                   const ::report::json::report_configuration_t& report_configuration )
 {
   PrettyWriter<FileWriteStream> writer( stream );
-  if (report_configuration.decimal_places > 0)
+  if ( report_configuration.decimal_places > 0 )
   {
-    writer.SetMaxDecimalPlaces(report_configuration.decimal_places);
+    writer.SetMaxDecimalPlaces( report_configuration.decimal_places );
   }
   auto accepted = doc.Accept( writer );
   if ( !accepted )
   {
-    throw std::runtime_error("JSON Writer did not accept document.");
+    throw std::runtime_error( "JSON Writer did not accept document." );
   }
 }
 
@@ -1299,9 +1397,10 @@ void print_json_pretty( FILE* o, const sim_t& sim, const ::report::json::report_
 
   JsonOutput root( doc, v );
 
-  if (report_configuration.version_intersects(">=3.0.0"))
+  if ( report_configuration.version_intersects( ">=3.0.0" ) )
   {
-    root["$id"] = fmt::format("https://www.simulationcraft.org/reports/{}.schema.json", report_configuration.version());
+    root[ "$id" ] =
+        fmt::format( "https://www.simulationcraft.org/reports/{}.schema.json", report_configuration.version() );
   }
   root[ "version" ] = SC_VERSION;
   root[ "report_version" ] = report_configuration.version();
@@ -1315,7 +1414,7 @@ void print_json_pretty( FILE* o, const sim_t& sim, const ::report::json::report_
     root[ "no_networking" ] = true;
   }
 
-  if ( git_info::available())
+  if ( git_info::available() )
   {
     root[ "git_revision" ] = git_info::revision();
     root[ "git_branch" ] = git_info::branch();
@@ -1330,39 +1429,37 @@ void print_json_pretty( FILE* o, const sim_t& sim, const ::report::json::report_
 
   std::array<char, 16384> buffer;
   FileWriteStream b( o, buffer.data(), buffer.size() );
-  if (report_configuration.pretty_print)
+  if ( report_configuration.pretty_print )
   {
-    pretty_print(b, doc, report_configuration);
+    pretty_print( b, doc, report_configuration );
   }
   else
   {
-    normal_print(b, doc, report_configuration);
+    normal_print( b, doc, report_configuration );
   }
-  
 }
 
-void print_json_report( sim_t& sim, const ::report::json::report_configuration_t& report_configuration)
+void print_json_report( sim_t& sim, const ::report::json::report_configuration_t& report_configuration )
 {
-  if ( ! report_configuration.destination().empty() )
+  if ( !report_configuration.destination().empty() )
   {
     // Setup file stream and open file
     io::cfile s( report_configuration.destination(), "w" );
     if ( !s )
     {
-      sim.errorf( "Failed to open JSON output file '%s'.",
-                  report_configuration.destination().c_str() );
+      sim.errorf( "Failed to open JSON output file '%s'.", report_configuration.destination().c_str() );
       return;
     }
 
     // Print JSON report
     try
     {
-      if( report_configuration.full_states )
+      if ( report_configuration.full_states )
       {
         fmt::print( "\nReport will be generated with full state for each action.\n" );
       }
       report_timer_t t( fmt::format( "JSON report version {}", report_configuration.version() ), stdout );
-      if ( ! sim.profileset_enabled )
+      if ( !sim.profileset_enabled )
       {
         t.start();
       }
@@ -1378,12 +1475,12 @@ void print_json_report( sim_t& sim, const ::report::json::report_configuration_t
 
 namespace report
 {
-  void print_json( sim_t& sim )
+void print_json( sim_t& sim )
+{
+  for ( const auto& report_configuration : sim.json_reports )
   {
-    for(const auto& report_configuration : sim.json_reports)
-    {
-      print_json_report(sim, report_configuration);
-    }
+    print_json_report( sim, report_configuration );
   }
+}
 
-}  // report
+}  // namespace report

@@ -1,4 +1,4 @@
-SimulationCraft 1025-01 for World of Warcraft 10.2.5.53262 Live
+SimulationCraft 1026-01 for World of Warcraft 10.2.7.54253 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -667,7 +667,7 @@ Spell Level      : 2
 Range            : 40 yards
 Velocity         : 35 yards/sec
 Min Travel Time  : 0.1 seconds
-Affecting spells : Veteran of the Third War (48263 effect#2), Sudden Doom (81340 effect#1), Death March (235556 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1)
+Affecting spells : Veteran of the Third War (48263 effect#2), Sudden Doom (81340 effect#1), Death March (235556 effect#2), Veteran of the Fourth War (319278 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1)
 Family Flags     : 13, 31
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ..x..... ........ 
@@ -687,6 +687,7 @@ Name             : Veteran of the Third War (id=48263) [Spell Family (15), Passi
 Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Death Knight
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen (0x2007ff)
 School           : Physical
 Spell Type       : None
 Spell Level      : 8
@@ -724,7 +725,7 @@ Cooldown         : 1 seconds
 Charges          : 1 (45 seconds cooldown)
 Category         : 1941: Death's Echo (356367 effect#3), Blessing of the Bronze (381732 effect#1)
 Stance Mask      : 0x01000000
-Affecting spells : March of the Damned (280143 effect#2)
+Affecting spells : March of the Damned (280143 effect#2), Death's Advance (343257 effects: #1, #2)
 Family Flags     : 123
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -913,7 +914,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
 Proc Chance      : 100%
 Stance Mask      : 0x01000000
 Proc Flags       : ....x... x...x.x. x.x..... ........   ........ ........ ........ ........   
@@ -1368,7 +1369,7 @@ Spell Type       : Magic
 Spell Level      : 29
 Duration         : 12 seconds
 Cooldown         : 60 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
 Proc Chance      : 101%
 Stance Mask      : 0x01000000
 Proc Flags       : ....x... ..x.x.x. x.x..x.. ........   ........ ........ ........ ........   
@@ -1605,7 +1606,7 @@ Labels           : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374
                  : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2)
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Veteran of the Third War (48263 effect#2)
+Affecting spells : Veteran of the Third War (48263 effect#2), Veteran of the Fourth War (319278 effect#2)
 Triggered by     : Fallen Crusader (166441)
 Family Flags     : 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1740,7 +1741,8 @@ Spell Type       : None
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Category         : 1641
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+                 : 1284: Symbol of Hope (265144 effect#2)
 Stance Mask      : 0x01000000
 Affecting spells : Improved Vampiric Blood (317133 effects: #1, #2, #3), Vampiric Aura (334547 effects: #2, #3)
 Family Flags     : 35
@@ -3231,8 +3233,6 @@ Attributes       : ........ ........ x....... ......x.   x....... ..x..... .x...
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Heartbeat Resist (30), Dismiss Pet First (32), No Threat (42), No AutoCast (AI) (49), Cannot cast on tapped (70), Allow While Not Shapeshifted (caster form) (83), No Partial Immunity (139), Aura Bounce Fails Spell (157), Not On Player (167), Taps immediately (215), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=124129)   : Apply Aura (6) | Charm (6)
-                   Base Value: 38 | Scaled Value: 71 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Enemy (6)
 #2 (id=124130)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
@@ -3644,7 +3644,7 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
 #13 (id=752802)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3
-                   Affected Spells: Veteran of the Third War (48263)
+                   Affected Spells: Veteran of the Third War (48263), Veteran of the Fourth War (319278)
                    Family Flags: 107
 #14 (id=844542)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 27.65 | Scaled Value: 27.65 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3763,6 +3763,16 @@ Effects          :
                    Base Value: -13 | Scaled Value: -13 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443)
                    Family Flags: 1, 34, 63, 101
+#26 (id=1142940)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349), Tempest Strikes (428078)
+                   Family Flags: 39
+#27 (id=1142941)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349), Tempest Strikes (428078)
+                   Family Flags: 39
+#28 (id=1142942)  : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.00000 | Target: Self (1)
 Description      : Elemental Shaman baseline passive
 
 Name             : Anti-Magic Zone (desc=PvP Talent) (id=145629) [Spell Family (15)] 
@@ -4204,10 +4214,10 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : ........ .......x ....x..x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ...x.... ........ ........ ........ 
-                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ....x... ....x... ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log Aura Refresh (291), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428), Periodic Refresh Extends Duration (436)
+                 : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log Aura Refresh (291), Bypass Visibility Check (320), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17250 | PvP Coefficient: 0.95700 | Misc Value: 127 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
@@ -4221,8 +4231,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
 #5 (id=1038114)  : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
-#6 (id=1133658)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : A disease that deals $o Shadow damage over $d. It erupts when the infected target dies, dealing $191685s1 Shadow damage to nearby enemies.
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 Erupts for $191685s1 damage split among all nearby enemies when the infected dies.
@@ -4429,7 +4437,7 @@ GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 60 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Veteran of the Third War (48263 effect#2)
+Affecting spells : Veteran of the Third War (48263 effect#2), Veteran of the Fourth War (319278 effect#2)
 Family Flags     : 109
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4886,7 +4894,7 @@ Name             : Bonestorm (id=196528) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
-Affecting spells : Veteran of the Third War (48263 effect#2), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #7, #8), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2)
+Affecting spells : Veteran of the Third War (48263 effect#2), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #7, #8), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), Veteran of the Fourth War (319278 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2)
 Triggered by     : Bonestorm (194844)
 Family Flags     : 43, 109
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8290,7 +8298,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
 Stance Mask      : 0x01000000
 Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #7, #8), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), Army of the Damned (276837 effect#3), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2)
 Family Flags     : 43, 56, 78, 127
@@ -10785,6 +10793,7 @@ Description      : Generates ${$s1/10} additional Runic Power.
 
 Name             : Veteran of the Third War (desc=Rank 2) (id=316714) [Spell Family (15), Passive] 
 Class            : Death Knight
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xff207fff)
 School           : Physical
 Spell Type       : None
 Spell Level      : 49
@@ -10800,15 +10809,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=801399)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Veteran of the Third War (48263)
+                   Affected Spells: Veteran of the Third War (48263), Veteran of the Fourth War (319278)
                    Family Flags: 107
 #2 (id=884939)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Veteran of the Third War (48263)
+                   Affected Spells: Veteran of the Third War (48263), Veteran of the Fourth War (319278)
                    Family Flags: 107
 #3 (id=884940)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
-                   Affected Spells: Veteran of the Third War (48263)
+                   Affected Spells: Veteran of the Third War (48263), Veteran of the Fourth War (319278)
                    Family Flags: 107
 Description      : Increases Stamina by $s1%.
 Damage taken reduced by ${$abs($s2)}%.
@@ -11292,6 +11301,35 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 319240 | Target: Self (1)
 Description      : $@spelldesc319230
 Tooltip          : Deals $s1 Fire damage.
+
+Name             : Veteran of the Fourth War (id=319278) [Spell Family (15), Passive] 
+Class            : Death Knight
+Race             : Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xff007800)
+School           : Physical
+Spell Type       : None
+Affecting spells : Blood Death Knight (137008 effect#13), Veteran of the Third War (316714 effects: #1, #2, #3)
+Family Flags     : 107
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ x.......   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Update Passives on Apply/Remove (344)
+Effects          :
+#1 (id=805636)   : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 2 | Misc Value 2: 0x4 | Target: Self (1)
+#2 (id=805637)   : Apply Aura (6) | Add Percent Modifier (108): Spell Generated Threat (2)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
+                   Affected Spells: Death Coil (47633), Unholy Strength (53365), Bonestorm (194844), Bonestorm (196528)
+                   Family Flags: 31, 106, 109
+#3 (id=885222)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Description      : Stamina increased by $s1%.
+$?s316714[Damage taken reduced by $s3%.][]
 
 Name             : Hypothermic Presence (id=321995) [Spell Family (15)] 
 Class            : Death Knight
@@ -12528,7 +12566,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=835968)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Anti-Magic Zone (51052), Anti-Magic Zone (145629)
+                   Affected Spells: Anti-Magic Zone (51052), Anti-Magic Zone (145629), Anti-Magic Zone (396883), Anti-Magic Zone (397303), Anti-Magic Zone (397304), Anti-Magic Zone (397305)
                    Family Flags: 51
 #2 (id=835969)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
@@ -13073,6 +13111,31 @@ Effects          :
 #1 (id=842306)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
 Description      : $@spelldesc341724
+
+Name             : Death's Advance (desc=Rank 2) (id=343257) [Spell Family (15), Passive] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Spell Level      : 49
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
+Effects          :
+#1 (id=844903)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Death's Advance (48265)
+                   Family Flags: 123
+#2 (id=844904)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Death's Advance (48265)
+                   Family Flags: 123
+Description      : Death's Advance movement speed increased by $s1% and the duration is increased by ${$s2/1000} sec.
 
 Name             : Soul Reaper (id=343294) [Spell Family (15)] 
 Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20]
@@ -15029,7 +15092,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.66670 | Target: Self (1)
 #2 (id=1005396)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your Soul Reaper, Scourge Strike, Festering Strike, and Death Coil deal $s1% addtional damage to enemies below $s2% health.
+Description      : Your Soul Reaper, Scourge Strike, Festering Strike, and Death Coil deal $s1% additional damage to enemies below $s2% health.
 
 Name             : Death Rot (id=377537) [Spell Family (15), Passive] 
 Talent Entry     : Unholy [tree=spec, row=8, col=1, max_rank=1, req_points=20]
@@ -16458,10 +16521,10 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : ........ ........ ........ ........   
                  : No Reflection (39), Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1029156)  : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
+#1 (id=1029156)  : Apply Aura (6) | Modify Melee Attack Speed% (319)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc391566
-Tooltip          : Time between attacks increased by $w1%.
+Tooltip          : Time between auto-attacks increased by $w1%.
 
 Name             : Gloom Ward (id=391571) [Spell Family (15), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=1, req_points=8]
@@ -16894,11 +16957,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053830)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Blood Boil (50842), Heart Strike (206930), Heart Strike (228645)
                    Family Flags: 18, 24
 #2 (id=1072384)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1072385)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Heart Strike and Blood Boil deal $s1% increased damage and have a $s2% chance to grant Vampiric Blood for ${$s3/1000} sec.
@@ -16942,11 +17005,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053833)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Howling Blast (49184), Howling Blast (237680)
                    Family Flags: 33
 #2 (id=1072443)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Howling Blast damage increased by $s1%. Consuming Rime increases the damage of your next Frostwyrm's Fury by $408368s1%, stacking $408368u times. Pillar of Frost calls a Frostwyrm's Fury at $s2% effectiveness that cannot Freeze enemies.
 
 Name             : Death Knight Frost 10.1 Class Set 4pc (id=405502) [Spell Family (15), Passive, Hidden] 
@@ -17134,7 +17197,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=1072448)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc405502
 Tooltip          : Frostwyrm's Fury damage increased by $w1%.
 

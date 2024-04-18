@@ -126,15 +126,10 @@ std::vector<const item_set_bonus_t*> set_bonus_t::enabled_set_bonus_data() const
     {
       for ( auto& bonus_data : bonus_type )
       {
-        // Most specs have the fourth specialization empty, or only have
-        // limited number of roles, so there's no set bonuses for those entries
-        if ( bonus_data.bonus == nullptr )
+        // Most specs have the fourth specialization empty, or only have limited number of roles, so there's no set
+        // bonuses for those entries
+        if ( !bonus_data.bonus || bonus_data.quiet || !bonus_data.spell->ok() )
           continue;
-
-        if ( bonus_data.spell->id() == 0 )
-        {
-          continue;
-        }
 
         bonuses.push_back( bonus_data.bonus );
       }
@@ -195,13 +190,12 @@ void set_bonus_t::initialize()
         if ( data.overridden >= 1 ||
              ( set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus && data.overridden == -1 ) ||
              ( data.bonus->has_spec( actor->_spec ) &&
-               ( !util::str_in_str_ci( data.bonus->set_opt_name, "lfr" ) &&
-                 ( ( actor->sim->enable_2_set == data.bonus->tier && data.bonus->bonus == 2 ) ||
-                   ( actor->sim->enable_4_set == data.bonus->tier && data.bonus->bonus == 4 ) ) ) ) )
+               ( ( util::str_compare_ci( actor->sim->enable_2_set, data.bonus->tier ) && data.bonus->bonus == 2 ) ||
+                 ( util::str_compare_ci( actor->sim->enable_4_set, data.bonus->tier ) && data.bonus->bonus == 4 ) ) ) )
         {
           if ( data.bonus->bonus == 2 )
           {
-            if ( actor->sim->disable_2_set != data.bonus->tier )
+            if ( !util::str_compare_ci( actor->sim->disable_2_set, data.bonus->tier ) )
             {
               data.spell = actor->find_spell( data.bonus->spell_id );
               data.enabled = true;
@@ -213,7 +207,7 @@ void set_bonus_t::initialize()
           }
           else if ( data.bonus->bonus == 4 )
           {
-            if ( actor->sim->disable_4_set != data.bonus->tier )
+            if ( !util::str_compare_ci( actor->sim->disable_4_set, data.bonus->tier ) )
             {
               data.spell = actor->find_spell( data.bonus->spell_id );
               data.enabled = true;
@@ -245,6 +239,18 @@ void set_bonus_t::enable_all_sets()
   for ( const auto& bonus : set_bonuses )
     if ( bonus.class_id == util::class_id( actor->type ) && bonus.spec == spec )
       set_bonus_spec_data[ bonus.enum_id ][ dbc::spec_idx( spec ) ][ bonus.bonus - 1 ].overridden = 1;
+}
+
+void set_bonus_t::enable_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus, bool quiet )
+{
+  if ( dbc::spec_idx( spec ) < 0 )
+    return;
+
+  auto& entry = set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( spec ) ][ bonus ];
+
+  entry.enabled = true;
+  entry.spell = actor->find_spell( entry.bonus->spell_id );
+  entry.quiet = quiet;
 }
 
 bool set_bonus_t::has_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
@@ -363,14 +369,14 @@ bool set_bonus_t::parse_set_bonus_option( util::string_view opt_str, set_bonus_t
 
   auto set_name = opt_str.substr( 0, opt_str.size() - split.back().size() - 1 );
 
-  auto set_bonuses = item_set_bonus_t::data( SC_USE_PTR );
+  auto set_bonuses = item_set_bonus_t::data( actor->dbc->ptr );
 
   for ( const auto& bonus : set_bonuses )
   {
     if ( bonus.class_id != -1 && bonus.class_id != util::class_id( actor->type ) )
       continue;
 
-    if ( set_bonus == SET_BONUS_NONE && util::str_compare_ci( set_name, bonus.set_opt_name ) )
+    if ( util::str_compare_ci( set_name, bonus.set_opt_name ) || util::str_compare_ci( set_name, bonus.tier ) )
     {
       set_bonus = static_cast<set_bonus_type_e>( bonus.enum_id );
       break;
@@ -384,7 +390,7 @@ std::string set_bonus_t::generate_set_bonus_options() const
 {
   std::vector<std::string> opts;
 
-  auto set_bonuses = item_set_bonus_t::data( SC_USE_PTR );
+  auto set_bonuses = item_set_bonus_t::data( actor->dbc->ptr );
 
   for ( const auto& bonus : set_bonuses )
   {

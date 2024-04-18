@@ -76,6 +76,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* embed_blade; // Bandolier of Twisted Blades
     buff_t* web_of_dreams; // Dreambinder, Loom of the Great Cycle ST Root
     buff_t* dream_shackles; // Dreambinder, Loom of the Great Cycle AoE Slow
+    buff_t* wellsprings_frost; // reworked Globe of Jagged Ice
   } debuff;
 
   struct atd_dot_t

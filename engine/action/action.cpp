@@ -11,6 +11,7 @@
 #include "buff/buff.hpp"
 #include "dbc/data_enums.hh"
 #include "dbc/dbc.hpp"
+#include "dbc/sc_spell_info.hpp"
 #include "player/action_priority_list.hpp"
 #include "player/actor_target_data.hpp"
 #include "player/covenant.hpp"
@@ -1074,7 +1075,8 @@ bool action_t::verify_actor_weapon() const
 double action_t::base_cost() const
 {
   resource_e cr = current_resource();
-  double c      = base_costs[ cr ];
+  double c = base_costs[ cr ].base;
+
   if ( secondary_costs[ cr ] != 0 )
   {
     c += secondary_costs[ cr ];
@@ -1091,44 +1093,65 @@ double action_t::cost() const
   if ( !harmful && is_precombat )
     return 0;
 
-  resource_e cr = current_resource();
+  auto cr = current_resource();
+  const auto& bc = base_costs[ cr ];
+  auto mul = bc.pct_mul * cost_pct_multiplier();
 
-  double c;
-  if ( secondary_costs[ cr ] == 0 )
+  if ( mul <= 0 )
   {
-    c = base_costs[ cr ];
-  }
-  // For now, treat secondary cost as "maximum of player current resource, min + max cost". Entirely
-  // possible we need to add some additional functionality (such as an overridable method) to
-  // determine the cost, if the default behavior is not universal.
-  else
-  {
-    if ( player->resources.current[ cr ] >= base_costs[ cr ] )
-    {
-      c = std::min( base_cost(), player->resources.current[ cr ] );
-    }
-    else
-    {
-      c = base_costs[ cr ];
-    }
+    if ( sim->debug )
+      sim->out_debug.print( "{} action_t::cost: cost=FREE resource={}", *this, cr );
+
+    return 0;
   }
 
-  c -= player->current.resource_reduction[ get_school() ];
+  auto base = bc.base;
+  auto add = bc.flat_add + cost_flat_modifier();
+  double c = ( base + add ) * mul;
 
-  if ( cr == RESOURCE_MANA && player->buffs.courageous_primal_diamond_lucidity &&
-       player->buffs.courageous_primal_diamond_lucidity->check() )
+  // For now, treat secondary cost as "maximum of player current resource, min + max cost". Entirely possible we need to
+  // add some additional functionality (such as an overridable method) to determine the cost, if the default behavior is
+  // not universal.
+
+  // Also for now, cost reductions to base cost are assumed to not apply to secondary cost, such that the 'min' cost can
+  // be modified but the 'max' cost cannot. There are currently no spells with secondary cost that gets their cost
+  // modified so this assumption remains untested. Fix accordingly if it is proven incorrect in the future.
+
+  if ( auto sec = secondary_costs[ cr ] )
   {
-    c = 0;
+    auto cur = player->resources.current[ cr ];
+    if ( cur >= c )
+    {
+      c = std::min( c + sec, cur );
+    }
   }
 
   if ( c < 0 )
     c = 0;
 
   if ( sim->debug )
-    sim->out_debug.print( "{} action_t::cost: base_cost={} secondary_cost={} cost={} resource={}", *this,
-                           base_costs[ cr ], secondary_costs[ cr ], c, cr );
+  {
+    sim->out_debug.print( "{} action_t::cost: base={} add={} mul={} secondary_cost={} cost={} resource={}", *this, base,
+                          add, mul, secondary_costs[ cr ], c, cr );
+  }
 
-  return floor( c );
+  return c;
+}
+
+double action_t::cost_flat_modifier() const
+{
+  return -player->current.resource_reduction[ get_school() ];
+}
+
+double action_t::cost_pct_multiplier() const
+{
+  if ( player->buffs.courageous_primal_diamond_lucidity && current_resource() == RESOURCE_MANA &&
+       player->buffs.courageous_primal_diamond_lucidity->check() )
+  {
+    return 0.0;
+  }
+
+  return 1.0;
 }
 
 double action_t::cost_per_tick( resource_e r ) const
@@ -1290,13 +1313,14 @@ double action_t::calculate_weapon_damage( double attack_power ) const
 
 double action_t::calculate_tick_amount( action_state_t* state, double dot_multiplier ) const
 {
-  double amount = 0;
+  double amount = base_ta( state );
 
-  if ( base_ta( state ) == 0 && spell_tick_power_coefficient( state ) == 0 &&
-       attack_tick_power_coefficient( state ) == 0 )
+  if ( !amount && !spell_tick_power_coefficient( state ) && !attack_tick_power_coefficient( state ) )
     return 0;
 
-  amount = floor( base_ta( state ) + 0.5 );
+  // Base amount rounded to some decimal, but the exact precision is currently unknown. For now assume 3 digits as that
+  // is what AP/SP multipliers seem to be rounded to.
+  amount = std::round( amount * 1000 ) * 0.001;
   amount += bonus_ta( state );
   double rolling_ta_multiplier = state->composite_rolling_ta_multiplier();
   amount += state->composite_spell_power() * spell_tick_power_coefficient( state ) * rolling_ta_multiplier;
@@ -1501,20 +1525,21 @@ double action_t::calculate_crit_damage_bonus( action_state_t* state ) const
 result_amount_type action_t::report_amount_type( const action_state_t* state ) const
 { return state -> result_type; }
 
-double action_t::composite_attack_power() const
+double action_t::composite_total_attack_power() const
 {
-  return player->composite_melee_attack_power_by_type(get_attack_power_type());
+  return player->composite_total_attack_power_by_type( get_attack_power_type() );
 }
 
-double action_t::composite_spell_power() const
+double action_t::composite_total_spell_power() const
 {
   double spell_power = 0;
   double tmp;
 
-  for (auto base_school : base_schools)
+  for ( auto base_school : base_schools )
   {
-    tmp = player->cache.spell_power(base_school);
-    if (tmp > spell_power) spell_power = tmp;
+    tmp = player->composite_total_spell_power( base_school );
+    if ( tmp > spell_power )
+      spell_power = tmp;
   }
 
   return spell_power;
@@ -4007,10 +4032,10 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->haste = composite_haste();
 
   if ( flags & STATE_AP )
-    state->attack_power = composite_attack_power() * player->composite_attack_power_multiplier();
+    state->attack_power = composite_total_attack_power();
 
   if ( flags & STATE_SP )
-    state->spell_power = composite_spell_power() * player->composite_spell_power_multiplier();
+    state->spell_power = composite_total_spell_power();
 
   if ( flags & STATE_VERSATILITY )
     state->versatility = composite_versatility( state );
@@ -5019,6 +5044,66 @@ player_t* action_t::select_target_if_target()
 timespan_t action_t::distance_targeting_travel_time( action_state_t* /*s*/ ) const
 {
   return timespan_t::zero();
+}
+
+void action_t::html_customsection( report::sc_html_stream& os )
+{
+  if ( affecting_list.size() )
+  {
+    os << "<div>\n"
+        << "<h4>Affected By (Passive)</h4>\n"
+        << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
+
+    os << "<tr>\n"
+        << "<th class=\"small\">Type</th>\n"
+        << "<th class=\"small\">Spell</th>\n"
+        << "<th class=\"small\">ID</th>\n"
+        << "<th class=\"small\">#</th>\n"
+        << "<th class=\"small\">+/%</th>\n"
+        << "<th class=\"small\">Value</th>\n"
+        << "</tr>\n";
+
+    for ( auto [ eff, val ] : affecting_list )
+    {
+      std::string op_str;
+      std::string type_str;
+      std::string val_str = fmt::format( "{:.3f}", val );
+
+      switch ( eff->subtype() )
+      {
+        case A_ADD_FLAT_LABEL_MODIFIER:
+        case A_ADD_FLAT_MODIFIER:
+          op_str = "ADD";
+          type_str = spell_info::effect_property_str( eff );
+          break;
+        case A_ADD_PCT_LABEL_MODIFIER:
+        case A_ADD_PCT_MODIFIER:
+          op_str = "PCT";
+          type_str = spell_info::effect_property_str( eff );
+          break;
+        case A_MODIFY_SCHOOL:
+          op_str = "SET";
+          type_str = spell_info::effect_subtype_str( eff );
+          val_str = util::school_type_string( eff->school_type() );
+          break;
+        default:
+          op_str = "SET";
+          type_str = spell_info::effect_subtype_str( eff );
+          break;
+      }
+
+      os.format( "<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>",
+        type_str,
+        eff->spell()->name_cstr(),
+        eff->spell()->id(),
+        eff->index() + 1,
+        op_str,
+        val_str );
+    }
+
+    os << "</table>\n"
+        << "</div>\n";
+  }
 }
 
 void action_t::apply_affecting_aura( const spell_data_t* spell )
