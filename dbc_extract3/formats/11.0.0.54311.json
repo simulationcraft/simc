@@ -1898,6 +1898,8 @@
   },
   "TraitSubTree": {
     "fields": [
+        { "data_type": "S", "field": "name" },
+        { "data_type": "S", "field": "desc" },
         { "data_type": "i", "field": "id" },
         { "data_type": "i", "field": "id_texture" },
         { "data_type": "i", "field": "id_trait_tree", "ref": "TraitTree" }

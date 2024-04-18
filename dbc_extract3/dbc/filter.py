@@ -543,7 +543,7 @@ class TraitSet(DataSet):
                 )
 
                 # hero tree nodes have a non-zero TraitNode.id_trait_sub_tree
-                if node['node'].id_trait_sub_tree != 0:
+                if node['node'].id_trait_sub_tree != 0 and node['node'].ref('id_trait_sub_tree').id_trait_tree == node['node'].id_trait_tree:
                     tree_index = 3
 
                 for entry, db2_id in node['entries']:
