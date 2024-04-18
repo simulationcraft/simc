@@ -6197,7 +6197,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=707038)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.731762e-308 (coefficient=82.454) | PvP Coefficient: 0.20000 | Trigger Spell: 270568 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=82.454) | PvP Coefficient: 0.20000 | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
 Name             : Azerite Empowered (id=263978) [Passive] 
@@ -6256,9 +6256,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=707069)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.970293e-308 (coefficient=28.34356) | PvP Coefficient: 0.50000 | Trigger Spell: 271681 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=28.34356) | PvP Coefficient: 0.50000 | Trigger Spell: 271681 | Target: Self (1)
 #2 (id=713642)   : Dummy (3) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 8.444112e-309 (coefficient=12.14724) | PvP Coefficient: 0.50000
+                   Base Value: 0 | Scaled Value: 0 (coefficient=12.14724) | PvP Coefficient: 0.50000
 Description      : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 Tooltip          : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 
@@ -6889,7 +6889,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=713207)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 9.382347e-309 (coefficient=13.49693) | PvP Coefficient: 0.50000 | Trigger Spell: 279955 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=13.49693) | PvP Coefficient: 0.50000 | Trigger Spell: 279955 | Target: Self (1)
 #2 (id=739251)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 Description      : Your damaging abilities have a chance to implant an Azerite Globule on your enemies. When an enemy collects $s2 Azerite Globules, they explode, dealing $s1 Fire damage to nearby enemies.
@@ -6912,7 +6912,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=713208)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 9.940596e-309 (coefficient=14.3) | PvP Coefficient: 0.50000 | Trigger Spell: 270668 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=14.3) | PvP Coefficient: 0.50000 | Trigger Spell: 270668 | Target: Self (1)
 #2 (id=720336)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : Your damaging abilities have a chance to deal $s1 Physical damage to the target. Gutripper occurs much more often against targets below $s2% health. 
@@ -7243,7 +7243,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=714531)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 3.475733e-308 (coefficient=50) | PvP Coefficient: 0.50000 | Trigger Spell: 270673 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=50) | PvP Coefficient: 0.50000 | Trigger Spell: 270673 | Target: Self (1)
 Description      : Taking damage has a chance to grant you Azerite Veins, healing you for $s1 every $270674t1 sec. Lasts $270674d or until you are fully healed.
 
 Name             : On My Way (id=267879) [Passive] 
@@ -7304,7 +7304,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=714798)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.08544e-310 (coefficient=0.3) | PvP Coefficient: 0.50000 | Trigger Spell: 272258 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.3) | PvP Coefficient: 0.50000 | Trigger Spell: 272258 | Target: Self (1)
 Description      : Your healing effects have a chance to grant the target ${$s1*2} additional healing every $272260t1 sec for $272260d. This effect doubles every $272260t1 sec. 
 
 Name             : Savior (id=267883) [Passive] 
@@ -7324,7 +7324,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=714801)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.08544e-308 (coefficient=30) | PvP Coefficient: 0.50000 | Trigger Spell: 270679 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=30) | PvP Coefficient: 0.50000 | Trigger Spell: 270679 | Target: Self (1)
 #2 (id=720348)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : Your heals on targets below $s2% health have a chance to heal for an additional $s1.
@@ -7345,7 +7345,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=714803)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.147205e-308 (coefficient=16.50307) | PvP Coefficient: 0.50000 | Trigger Spell: 272275 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=16.50307) | PvP Coefficient: 0.50000 | Trigger Spell: 272275 | Target: Self (1)
 Description      : Your heals have a chance to apply Bracing Chill. Healing a target with Bracing Chill will heal for an additional $s1 and move Bracing Chill to a nearby ally (up to $272276u times).
 
 Name             : Ephemeral Recovery (id=267886) [Passive] 
@@ -7782,7 +7782,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=715936)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.820797e-308 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Trigger Spell: 270658 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Trigger Spell: 270658 | Target: Self (1)
 Description      : When stunned, immobilized, or knocked back, you heal for $s1.
 Tooltip          : When stunned, immobilized, or knocked back, you heal for $s1.
 
@@ -7807,7 +7807,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=715939)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.006117e-308 (coefficient=28.8589) | PvP Coefficient: 0.20000 | Trigger Spell: 270654 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=28.8589) | PvP Coefficient: 0.20000 | Trigger Spell: 270654 | Target: Self (1)
 Description      : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 
@@ -7849,7 +7849,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=716159)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.256319e-308 (coefficient=90) | PvP Coefficient: 0.20000 | Trigger Spell: 309366 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=90) | PvP Coefficient: 0.20000 | Trigger Spell: 309366 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : When you are surrounded by $s2 or more enemies, gain a shield that absorbs $s1 damage. Cannot occur more than once every $270656d.
@@ -7919,7 +7919,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=716167)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.349645e-309 (coefficient=7.695707) | PvP Coefficient: 0.20000 | Trigger Spell: 309352 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.695707) | PvP Coefficient: 0.20000 | Trigger Spell: 309352 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
 Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
@@ -8060,7 +8060,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=721853)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 3.947835e-308 (coefficient=56.79141) | PvP Coefficient: 0.50000 | Trigger Spell: 271547 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=56.79141) | PvP Coefficient: 0.50000 | Trigger Spell: 271547 | Target: Self (1)
 Description      : Taking damage has a chance to increase your maximum health by $s1 for each enemy within $271548A1 yds, up to $271550u enemies. Lasts $271550d.
 
 Name             : Shimmering Haven (id=271557) [Passive] 
@@ -8348,7 +8348,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724173)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.098161e-308 (coefficient=15.79754) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=15.79754) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : When your summoned Dreadstalkers fade away, they increase the damage of your Demonbolt by $s1 for $272945d.
 
 Name             : Shadow's Bite (id=272945) [Spell Family (5)] 
@@ -8392,7 +8392,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724558)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 7.902494e-309 (coefficient=11.3681) | PvP Coefficient: 0.50000 | Trigger Spell: 273825 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=11.3681) | PvP Coefficient: 0.50000 | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul blasts a nearby enemy every $280204t2 sec, dealing $s1 Shadow damage.
 
 Name             : Inevitable Demise (id=273521) [Spell Family (5), Passive] 
@@ -8412,7 +8412,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=725219)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.799997e-310 (coefficient=0.834356) | PvP Coefficient: 0.50000 | Trigger Spell: 273522 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.834356) | PvP Coefficient: 0.50000 | Trigger Spell: 273522 | Target: Self (1)
 Description      : Damaging an enemy with Agony increases the damage of your next Drain Life by $s1. This effect stacks up to $273525u times.
 
 Name             : Umbral Blaze (id=273523) [Passive] 
@@ -8432,7 +8432,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=725221)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.627411e-308 (coefficient=23.41104) | PvP Coefficient: 0.50000 | Trigger Spell: 273524 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=23.41104) | PvP Coefficient: 0.50000 | Trigger Spell: 273524 | Target: Self (1)
 #2 (id=725222)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
 Description      : Your Hand of Guldan has a $s2% chance to burn its target for $s1 additional Shadowflame damage every $273526t1 sec for $273526d.
@@ -8479,9 +8479,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=725706)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.343382e-308 (coefficient=19.32515) | PvP Coefficient: 0.50000 | Trigger Spell: 273153 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=19.32515) | PvP Coefficient: 0.50000 | Trigger Spell: 273153 | Target: Self (1)
 #2 (id=725707)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.716908e-309 (coefficient=9.662577) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=9.662577) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your damaging abilities have a chance to call a Child of Rezan to viciously rend your target, dealing $s1 Physical damage and causing them to bleed for ${($273794d/$273794t2)*$s2} damage over $273794d.
 
 Name             : Blightborne Infusion (id=273823) [Passive] 
@@ -8543,7 +8543,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=725772)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.047349e-309 (coefficient=8.699387) | PvP Coefficient: 0.50000 | Trigger Spell: 273835 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=8.699387) | PvP Coefficient: 0.50000 | Trigger Spell: 273835 | Target: Self (1)
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
 
 Name             : Lifeblood (id=274418) [Passive] 
@@ -8643,7 +8643,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=732939)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.981319e-309 (coefficient=10.04294) | PvP Coefficient: 0.50000 | Trigger Spell: 277705 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=10.04294) | PvP Coefficient: 0.50000 | Trigger Spell: 277705 | Target: Self (1)
 #2 (id=732940)   : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 #3 (id=782162)   : Dummy (3)
@@ -8693,7 +8693,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734606)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 7.761312e-311 (coefficient=0.11165) | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.11165) | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Agony (980)
                    Family Flags: 10
 #2 (id=734607)   : Dummy (3)
@@ -8719,7 +8719,7 @@ Effects          :
 #1 (id=734619)   : Apply Aura (6) | Unknown(285)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Trigger Spell: 279650 | Target: Self (1)
 #2 (id=734620)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 7.299039e-310 (coefficient=1.05) | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=1.05) | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Unstable Affliction (30108), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Unstable Affliction (316099)
                    Family Flags: 40
 Description      : Unstable Affliction deals ${$s2*($233490d/$233490t1)} additional damage, and casting Unstable Affliction reduces the cooldown of Summon Darkglare by ${$s1/1000} sec.
@@ -8785,7 +8785,7 @@ Effects          :
 #1 (id=734667)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 279672 | Target: Self (1)
 #2 (id=734668)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 3.705131e-309 (coefficient=5.33) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=5.33) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Chaos Bolt (116858), Ruination (434635), Ruination (434636)
                    Family Flags: 45
 Description      : Chaos Bolt deals $s2 additional damage, and has a $279672h% chance to make your next Incinerate instant.
@@ -8908,7 +8908,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=737281)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.20367e-308 (coefficient=17.31534) | PvP Coefficient: 0.20000 | Trigger Spell: 280207 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=17.31534) | PvP Coefficient: 0.20000 | Trigger Spell: 280207 | Target: Self (1)
 #2 (id=737282)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : While below $s2% health, your Drain Life heals for an additional $s1 health each $234153t1 sec.
@@ -8933,7 +8933,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Allow Entering Arena (149), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=737505)   : Apply Aura (6) | Proc Trigger Spell (42): Barrage Of Many Bombs | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 4.970298e-309 (coefficient=7.15) | PvP Coefficient: 0.50000 | Trigger Spell: 280662 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.15) | PvP Coefficient: 0.50000 | Trigger Spell: 280662 | Target: Self (1)
 #2 (id=737506)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=737507)   : Dummy (3)
@@ -8996,7 +8996,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=737533)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.820797e-308 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Target: Self (1)
 #2 (id=737534)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
@@ -9031,7 +9031,7 @@ Effects          :
 #2 (id=738958)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.461025e-309 (coefficient=9.294479) | PvP Coefficient: 0.50000
+                   Base Value: 0 | Scaled Value: 0 (coefficient=9.294479) | PvP Coefficient: 0.50000
 Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $s3 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
@@ -9085,7 +9085,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=737557)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.146992e-307 (coefficient=165) | PvP Coefficient: 0.20000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=165) | PvP Coefficient: 0.20000 | Target: Self (1)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing $280661s1% of damage taken over $280660d, up to $280660s1.
@@ -9109,7 +9109,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=737714)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.573676e-309 (coefficient=2.263804) | PvP Coefficient: 0.50000 | Trigger Spell: 280285 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=2.263804) | PvP Coefficient: 0.50000 | Trigger Spell: 280285 | Target: Self (1)
 #2 (id=737715)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
@@ -9131,7 +9131,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=737878)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.241405e-309 (coefficient=7.54) | PvP Coefficient: 0.50000 | Trigger Spell: 280383 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.54) | PvP Coefficient: 0.50000 | Trigger Spell: 280383 | Target: Self (1)
 #2 (id=738006)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Dealing damage has a chance to call down a Thunderous Blast, dealing $s1 Nature damage to the enemy and increasing the damage of Thunderous Blast by $280385s1%. At ${$s2*$280385s1}% increased damage, Thunderous Blast will critically hit and reset this effect.
@@ -9152,7 +9152,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=737915)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.612058e-308 (coefficient=23.19018) | PvP Coefficient: 0.50000 | Trigger Spell: 280403 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=23.19018) | PvP Coefficient: 0.50000 | Trigger Spell: 280403 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to release a tidal surge, dealing $s1 Frost damage to your target and slowing their movement speed by $280404s2% for $280404d.
 
 Name             : Blood Rite (id=280407) [Passive] 
@@ -9259,9 +9259,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=738156)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.815344e-308 (coefficient=40.5) | PvP Coefficient: 0.50000 | Trigger Spell: 280702 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=40.5) | PvP Coefficient: 0.50000 | Trigger Spell: 280702 | Target: Self (1)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.037893e-308 (coefficient=72.47239) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=72.47239) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
 
 Enables $@spellname280573 within Uldir.
@@ -9374,7 +9374,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=738194)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.066467e-309 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280816 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280816 | Target: Self (1)
 #2 (id=738645)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=738646)   : Dummy (3)
@@ -9511,7 +9511,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=738287)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.066467e-309 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280854 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280854 | Target: Self (1)
 #2 (id=738705)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=738706)   : Dummy (3)
@@ -9694,9 +9694,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=750714)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 4.179409e-309 (coefficient=6.01227) | PvP Coefficient: 0.50000 | Trigger Spell: 287633 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=6.01227) | PvP Coefficient: 0.50000 | Trigger Spell: 287633 | Target: Self (1)
 #2 (id=750715)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 7.996319e-309 (coefficient=11.50307) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=11.50307) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=750716)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 Description      : Your damaging abilities have a chance to deal $<dmg> Plague damage over $287638d, and your healing abilities have a chance to restore $<heal> health over $287639d. These effects are increased by up to $s3% based on the target's missing health.
@@ -9721,7 +9721,7 @@ Effects          :
 #1 (id=750725)   : Apply Aura (6) | Unknown(285)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Trigger Spell: 287656 | Target: Self (1)
 #2 (id=750726)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
-                   Base Value: 5 | Scaled Value: 2.772057e-309 (coefficient=3.98773) | PvP Coefficient: 0.50000
+                   Base Value: 5 | Scaled Value: 0 (coefficient=3.98773) | PvP Coefficient: 0.50000
                    Affected Spells: Incinerate (29722), Incinerate (244670), Infernal Bolt (434506)
                    Family Flags: 38
 Description      : Incinerate damage is increased by $s2, and when you fill up a Soul Shard, you have a ${$m1/10}.1% chance to generate an additional full Soul Shard over $287660d.
@@ -9784,7 +9784,7 @@ Effects          :
 #1 (id=751043)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=751044)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 5 | Scaled Value: 7.642348e-309 (coefficient=10.99386) | PvP Coefficient: 0.20000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 0 (coefficient=10.99386) | PvP Coefficient: 0.20000 | Target: Self (1)
 Description      : Soul Leech gains $s2 absorption every $287828t1 sec while a target is affected by Fear.
 
 Name             : Seductive Power (id=288749) [Passive] 
@@ -9892,7 +9892,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=753682)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 4.976908e-309 (coefficient=7.159509) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=7.159509) | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=753683)   : Dummy (3)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000
 #3 (id=753684)   : Dummy (3)
@@ -10038,11 +10038,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=778211)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.672098e-308 (coefficient=24.05389) | PvP Coefficient: 0.50000 | Trigger Spell: 303388 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=24.05389) | PvP Coefficient: 0.50000 | Trigger Spell: 303388 | Target: Self (1)
 #2 (id=778212)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=778215)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 50 | Scaled Value: 1.311205e-307 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 0 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
 #4 (id=778216)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to crash a wave upon your target for $s1 Frost damage.
@@ -16112,7 +16112,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1028379)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Mind Blast (8092)
+                   Affected Spells: Mind Blast (8092), Void Blast (450983)
                    Family Flags: 13
 Description      : $@spelldesc391090
 Tooltip          : The critical strike chance of your next Mind Blast is increased by $w1%.
@@ -17911,7 +17911,7 @@ Effects          :
 Description      : $@spelldesc428351
 
 Name             : Diabolic Ritual (id=428514) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=6, col=1, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -17935,7 +17935,7 @@ Description      : Spending a Soul Shard grants Diabolic Ritual for $428524d. Wh
 When Diabolic Ritual expires you gain Demonic Art, causing your next Soul Shard spending ability to summon an Overlord, Mother of Chaos, or Pit Lord that unleashes a devastating attack against your enemies.
 
 Name             : Cloven Souls (id=428517) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=7, col=1, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -17954,7 +17954,7 @@ Effects          :
 Description      : Enemies damaged by your Overlord have their souls cloven, increasing damage taken by you and your pets by $434424s1% for $434424d.
 
 Name             : Secrets of the Coven (id=428518) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=7, col=3, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -17976,7 +17976,7 @@ $@spellicon434506 $@spellname434506
 $@spelldesc434506
 
 Name             : Ruination (id=428522) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=10, col=1, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18029,7 +18029,7 @@ Description      : Your next Soul Shard spent summons an Overlord that unleashes
 Tooltip          : Your next Soul Shard spent summons an Overlord that unleashes a devastating attack.
 
 Name             : Soul-Etched Circles (id=428911) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=8, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18048,7 +18048,7 @@ Effects          :
 Description      : You always gain the benefit of Soulburn when casting Demonic Circle: Teleport, increasing your movement speed by 50% and making you immune to snares and roots for 6 sec.
 
 Name             : Annihilan's Bellow (id=429072) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=8, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18073,7 +18073,7 @@ Effects          :
 Description      : Howl of Terror cooldown is reduced by ${$s1/-1000} sec and range is increased by $s2 yds.
 
 Name             : Infernal Vitality (id=429115) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=8, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18095,7 +18095,7 @@ Effects          :
 Description      : Unending Resolve heals you for ${$434559s1*($434559d/$434559t1)}% of your maximum health over $434559d.
 
 Name             : Infernal Bulwark (id=429130) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=8, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18117,7 +18117,7 @@ Effects          :
 Description      : Unending Resolve grants Soul Leech equal to $434561s1% of your maximum health and increases the maximum amount Soul Leech can absorb by $434561s1% for $434561d.
 
 Name             : Abyssal Dominion (id=429581) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=9, col=2, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18144,7 +18144,7 @@ Effects          :
 Description      : $?s137044[Grimoire: Felguard lasts ${$s4/1000} sec longer and its cooldown is reduced by ${$s1/-1000} sec.][Cataclysm summons an Overfiend that casts Chaos Bolt $s2 times at $s3% effectiveness before departing.]
 
 Name             : Flames of Xoroth (id=429657) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=9, col=1, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18173,7 +18173,7 @@ Effects          :
 Description      : Fire damage increased $s1% and damage dealt by your demons is increased $s3%.
 
 Name             : Touch of Rancora (id=429893) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=7, col=2, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18196,7 +18196,7 @@ Effects          :
 Description      : Diabolic Ritual increases the damage of your next Soul Shard spending ability by $s1% and reduces its cast time by $s2%.
 
 Name             : Gloom of Nathreza (id=429899) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=9, col=3, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18219,7 +18219,7 @@ Effects          :
 Description      : $?s137044[Hand of Gul'dan deals $s1% increased damage for each Soul Shard spent.][Enemies marked by your Havoc take $s2% increased damage from your single target spells.]
 
 Name             : Cruelty of Kerxan (id=429902) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=8, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18241,7 +18241,7 @@ Effects          :
 Description      : Nether Portal, Summon Demonic Tyrant, and Summon Infernal grant Diabolic Ritual and reduce its duration by ${$s1/1000} sec.
 
 Name             : Infernal Machine (id=429917) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=8, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18260,7 +18260,7 @@ Effects          :
 Description      : Your Soul Shard spending abilities decrease the duration of Diabolic Ritual by 1 additional sec while your Demonic Tyrant, Nether Portal, or Infernal is active.
 
 Name             : Malevolence (id=430014) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18449,7 +18449,7 @@ Effects          :
 Description      : $@spelldesc434635
 
 Name             : Xalan's Cruelty (id=440040) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=2, col=3, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18474,7 +18474,7 @@ Effects          :
 Description      : Fire critical strike chance increased $s1%. Shadow critical strike chance increased $s2%.
 
 Name             : Blackened Soul (id=440043) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=2, col=2, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18504,7 +18504,7 @@ Each time Wither increases it has a chance to become acute, dealing $445736s1 Sh
 Wither will always become acute after reaching $s2 stacks or when its host reaches $s3% health.
 
 Name             : Xalan's Ferocity (id=440044) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=2, col=1, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18537,7 +18537,7 @@ Effects          :
 Description      : Shadow damage increased by $s1%. Fire damage increased by $s2%.
 
 Name             : Mark of Xavius (id=440045) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=4, col=1, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18575,7 +18575,7 @@ Agony is now a combo skill. Directly recasting Agony within $446427d applies Ago
 Wither is now a combo skill. Directly recasting Wither within $446427d applies Wither to ${$s4-1} other nearby enemy.]
 
 Name             : Mark of Peroth'arn (id=440046) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=4, col=3, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18607,7 +18607,7 @@ Description      : $?s980[Agony deals damage $s1% faster.][Wither deals damage $
 Blackened Soul deals $s3% increased damage per stack of Wither.
 
 Name             : Hatefury Rituals (id=440048) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18630,7 +18630,7 @@ Effects          :
 Description      : Wither deals $s1% increased periodic damage but its duration is $s2% shorter.
 
 Name             : Bleakheart Tactics (id=440051) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18655,7 +18655,7 @@ Effects          :
 Description      : Wither damage increased $s1%. When Wither gains a stack from Blackened Soul, it has a chance to gain $s3 more.
 
 Name             : Seeds of Their Demise (id=440055) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=4, col=2, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18679,7 +18679,7 @@ Effects          :
 Description      : Blackened Soul damage increased by $s3%. Casting Wither directly or refreshing Wither with less than $s1 sec remaining causes Wither to gain $s2 stacks.
 
 Name             : Curse of the Satyr (id=440057) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18706,7 +18706,7 @@ $@spellicon442804 $@spellname442804
 $@spelldesc442804
 
 Name             : Aura of Enfeeblement (id=440059) [Spell Family (5), Passive] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18725,7 +18725,7 @@ Effects          :
 Description      : While Unending Resolve is active, enemies within $449587a1 yds are affected by Curse of  Tongues and Curse of Weakness at $s1% effectiveness.
 
 Name             : Zevrim's Resilience (id=440065) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18744,7 +18744,7 @@ Effects          :
 Description      : Dark Pact heals you for $108416s5 every $108416t5 sec while active.
 
 Name             : Illhoof's Design (id=440070) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18835,7 +18835,7 @@ Description      : Increases the time between an enemy's attacks by $s1% and the
 Tooltip          : Time between attacks increased by $w1% and casting time increased by $w3%. $?e1[Chance to critically strike reduced by $w2%.][]
 
 Name             : Wither (id=445465) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19031,7 +19031,7 @@ Description      : $@spelldesc440059
 Tooltip          : Time between attacks increased $w1% and casting speed increased by $w2%.
 
 Name             : Demonic Soul (id=449614) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19060,7 +19060,7 @@ Description      : A demonic entity now inhabits your soul, allowing you to dete
 A Succulent Soul empowers your next $?s137043[Malefic Rapture, reducing its Soul Shard cost by ${$449793s1/-10},  increasing its damage by $449793s2%, and unleashing your demonic soul to deal an additional $449801s1 Shadow damage.][Hand of Gul'dan, reducing its Soul Shard cost by ${$449793s3/-10}, summoning $449793s4 additional Wild Imp, and unleashing your demonic soul to deal an additional $449801s1 Shadow damage.]
 
 Name             : Necrolyte Teachings (id=449620) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=2, col=1, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19090,7 +19090,7 @@ Effects          :
 Description      : $?s137043[Shadow Bolt and Drain Soul damage increased by $s2%. Nightfall increases the damage of Shadow Bolt and Drain Soul by an additional $s1%.][Shadow Bolt damage increased by $s2%. Power Siphon increases the damage of Demonbolt by an additional $s3%.]
 
 Name             : Soul Anathema (id=449624) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=2, col=2, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19112,7 +19112,7 @@ Effects          :
 Description      : Unleashing your demonic soul bestows a fiendish entity unto the soul of its targets, dealing $450538o1 Shadow damage over $450538d.
 
 Name             : Demoniac's Fervor (id=449629) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=2, col=3, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19131,7 +19131,7 @@ Effects          :
 Description      : Your demonic soul deals $s1% increased damage to $?s137043[targets affected by your Unstable Affliction.][the main target of Hand of Gul'dan.]
 
 Name             : Sataiel's Ambition (id=449631) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=4, col=1, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19155,7 +19155,7 @@ Description      : Damage dealt by your demonic soul is increased by $s1%.
 Consuming $?s137043[Nightfall][Demonic Core] feeds the demonic entity within you, causing it to appear and deal $?s137043[$449826s1][${$449826s1*($s2/100)}] Shadow damage to your target.
 
 Name             : Quietus (id=449634) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=4, col=2, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19180,7 +19180,7 @@ Description      : Soul Anathema damage increased by $s1% and is dealt $s2% fast
 Consuming $?s137043[Nightfall][Demonic Core] activates Shared Fate or Feast of Souls.
 
 Name             : Mantle of the Harvester (id=449637) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=4, col=3, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19207,7 +19207,7 @@ Effects          :
 Description      : $?s137043[Corruption deals damage $s1% faster and Haunt grants Nightfall.][Wild Imp damage increased by $s2% and Wild Imps that are imploded have an additional $s3% chance to grant a Demonic Core.]
 
 Name             : Shadow of Death (id=449638) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1]
+Talent Entry     : Generic [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19231,7 +19231,7 @@ Description      : $?s137043[Soul Rot grants][Nether Portal and Summon Demonic T
 While Shadow of Death is active, casting $?s137043[Malefic Rapture][Hand of Gul'dan] always invokes your demonic soul and your demonic soul deals $449858s1% increased damage.
 
 Name             : Gorebound Fortitude (id=449701) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19250,7 +19250,7 @@ Effects          :
 Description      : You always gain the benefit of Soulburn when consuming a Healthstone, increasing its healing by 30% and increasing your maximum health by 20% for 12 sec.
 
 Name             : Friends In Dark Places (id=449703) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19269,7 +19269,7 @@ Effects          :
 Description      : Dark Pact now shields you for an additional $s1% of the sacrificed health.
 
 Name             : Shared Fate (id=449704) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19291,7 +19291,7 @@ Effects          :
 Description      : When you kill a target, its tortured soul is flung into a nearby enemy for $450591d. This effect inflicts $450593s1 Shadow damage to enemies within $450593a1 yds every $450591t1 sec.
 
 Name             : Feast of Souls (id=449706) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19313,7 +19313,7 @@ Effects          :
 Description      : When you kill a target, you have a chance to generate a Soul Shard that is guaranteed to be a Succulent Soul.
 
 Name             : Eternal Servitude (id=449707) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Generic [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19334,7 +19334,7 @@ Effects          :
 Description      : Fel Domination cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Spirited Away (id=449708) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=unknown, row=-1, col=-1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Generic [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
