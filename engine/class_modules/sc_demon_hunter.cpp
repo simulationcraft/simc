@@ -4989,6 +4989,12 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       {
         td( s->target )->debuffs.serrated_glaive->trigger();
       }
+
+      if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
+      {
+        td( target )->debuffs.reavers_mark->trigger();
+        p()->buff.rending_strike->expire();
+      }
     }
   };
 
@@ -5578,6 +5584,12 @@ struct fracture_t : public demon_hunter_attack_t
         p()->spawn_soul_fragment( soul_fragment::LESSER );
         p()->proc.soul_fragment_from_t29_2pc->occur();
       }
+
+      if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
+      {
+        td( target )->debuffs.reavers_mark->trigger();
+        p()->buff.rending_strike->expire();
+      }
     }
   }
 };
@@ -5633,6 +5645,12 @@ struct shear_t : public demon_hunter_attack_t
     {
       p()->active.fiery_brand_t30->execute_on_target( s->target );
       p()->buff.t30_vengeance_4pc->expire();
+    }
+
+    if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
+    {
+      td( target )->debuffs.reavers_mark->trigger();
+      p()->buff.rending_strike->expire();
     }
   }
 
