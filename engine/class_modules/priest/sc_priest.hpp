@@ -470,6 +470,48 @@ public:
       player_talent_t miracle_worker;
     } holy;
 
+    struct
+    {
+      /* data */
+    } archon;
+
+    struct
+    {
+      player_talent_t premonition;
+      player_talent_t preventive_measures;
+      player_talent_t preemptive_care;
+      player_talent_t waste_no_time;
+      player_talent_t miraculous_recovery;
+      player_talent_t assured_safety;
+      player_talent_t prompt_deliverance;
+      player_talent_t divine_feathers;
+      player_talent_t forseen_circumstances;
+      player_talent_t perfect_vision;
+      player_talent_t clairvoyance;
+      player_talent_t narrowed_visions;
+      player_talent_t fatebender;
+      player_talent_t grand_reveal;
+    } oracle;
+
+    struct
+    {
+      player_talent_t entropic_rift;
+      player_talent_t no_escape;
+      player_talent_t dark_energy;
+      player_talent_t void_blast;
+      player_talent_t inner_quietus;
+      player_talent_t devour_matter;
+      player_talent_t void_empowerment;
+      player_talent_t darkening_horizon;
+      player_talent_t depth_of_shadows;
+      player_talent_t voidwraith;
+      player_talent_t voidheart;
+      player_talent_t void_infusion;
+      player_talent_t void_leech;
+      player_talent_t embrace_the_shadow;
+      player_talent_t collapsing_void;
+    } voidweaver;
+
     // Shared
     const spell_data_t* shining_force;
 

@@ -2688,6 +2688,7 @@ void priest_t::init_spells()
 
   auto CT = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::CLASS, n ); };
   auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
+  auto HT = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::HERO, n ); };
 
   init_spells_shadow();
   init_spells_discipline();
@@ -2803,6 +2804,42 @@ void priest_t::init_spells()
   talents.essence_devourer_mindbender  = find_spell( 415676 );  // actual healing spell for Mindbender
   talents.void_shift                   = CT( "Void Shift" );    // NYI
   talents.shattered_perceptions        = CT( "Shattered Perceptions" );
+
+  // Archon Hero Talents (Holy/Shadow)
+  // TBD
+
+  // Oracle Hero Talents (Holy/Discipline)
+  talents.oracle.premonition           = HT( "Premonition" );            // NYI
+  talents.oracle.preventive_measures   = HT( "Preventive Measures" );    // NYI
+  talents.oracle.preemptive_care       = HT( "Preemptive Care" );        // NYI
+  talents.oracle.waste_no_time         = HT( "Waste No Time" );          // NYI
+  talents.oracle.miraculous_recovery   = HT( "Miraculous Recovery" );    // NYI
+  talents.oracle.assured_safety        = HT( "Assured Safety" );         // NYI
+  talents.oracle.prompt_deliverance    = HT( "Prompt Deliverance" );     // NYI
+  talents.oracle.divine_feathers       = HT( "Divine Feathers" );        // NYI
+  talents.oracle.forseen_circumstances = HT( "Forseen Circumstances" );  // NYI
+  talents.oracle.perfect_vision        = HT( "Perfect Vision" );         // NYI
+  talents.oracle.clairvoyance          = HT( "Clairvoyance" );           // NYI
+  talents.oracle.narrowed_visions      = HT( "Narrowed Visions" );       // NYI
+  talents.oracle.fatebender            = HT( "Fatebender" );             // NYI
+  talents.oracle.grand_reveal          = HT( "Grand Reveal" );           // NYI
+
+  // Voidweaver Hero Talents (Discipline/Shadow)
+  talents.voidweaver.entropic_rift      = HT( "Entropic Rift" );       // NYI
+  talents.voidweaver.no_escape          = HT( "No Escape" );           // NYI
+  talents.voidweaver.dark_energy        = HT( "Dark Energy" );         // NYI
+  talents.voidweaver.void_blast         = HT( "Void Blast" );          // NYI
+  talents.voidweaver.inner_quietus      = HT( "Inner Quietus" );       // NYI
+  talents.voidweaver.devour_matter      = HT( "Devour Matter" );       // NYI
+  talents.voidweaver.void_empowerment   = HT( "Void Empowerment" );    // NYI
+  talents.voidweaver.darkening_horizon  = HT( "Darkening Horizon" );   // NYI
+  talents.voidweaver.depth_of_shadows   = HT( "Depth of Shadows" );    // NYI
+  talents.voidweaver.voidwraith         = HT( "Voidwraith" );          // NYI
+  talents.voidweaver.voidheart          = HT( "Voidheart" );           // NYI
+  talents.voidweaver.void_infusion      = HT( "Void Infusion" );       // NYI
+  talents.voidweaver.void_leech         = HT( "Void Leech" );          // NYI
+  talents.voidweaver.embrace_the_shadow = HT( "Embrace the Shadow" );  // NYI
+  talents.voidweaver.collapsing_void    = HT( "Collapsing Void" );     // NYI
 }
 
 void priest_t::create_buffs()
