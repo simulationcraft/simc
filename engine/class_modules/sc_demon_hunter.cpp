@@ -592,6 +592,7 @@ public:
 
   struct hero_spec_t
   {
+    const spell_data_t* reavers_glaive;
     const spell_data_t* reavers_mark;
     const spell_data_t* glaive_flurry;
     const spell_data_t* rending_strike;
@@ -6010,6 +6011,47 @@ struct throw_glaive_t : public demon_hunter_attack_t
   }
 };
 
+// Reaver's Glaive ==========================================================
+struct reavers_glaive_t : public demon_hunter_attack_t
+{
+  struct reavers_glaive_damage_t : public demon_hunter_attack_t
+  {
+    reavers_glaive_damage_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_attack_t( name, p, p->hero_spec.reavers_glaive )
+    {
+      background = dual = true;
+    }
+  };
+
+  reavers_glaive_t( demon_hunter_t* p, util::string_view options_str )
+    : demon_hunter_attack_t( "reavers_glaive", p, p->hero_spec.reavers_glaive, options_str )
+  {
+    execute_action        = p->get_background_action<reavers_glaive_damage_t>( "reavers_glaive_damage" );
+    execute_action->stats = stats;
+  }
+
+  void execute() override
+  {
+    demon_hunter_attack_t::execute();
+    p()->buff.art_of_the_glaive->expire();
+    p()->buff.glaive_flurry->trigger();
+    p()->buff.rending_strike->trigger();
+  }
+
+  bool ready() override
+  {
+    auto target_stacks = p()->specialization() == DEMON_HUNTER_HAVOC
+                             ? p()->talent.aldrachi_reaver.art_of_the_glaive->effectN( 1 ).base_value()
+                             : p()->talent.aldrachi_reaver.art_of_the_glaive->effectN( 2 ).base_value();
+    if ( p()->buff.art_of_the_glaive->current_stack < static_cast<int>( target_stacks ) )
+    {
+      return false;
+    }
+
+    return demon_hunter_attack_t::ready();
+  }
+};
+
 // Vengeful Retreat =========================================================
 
 struct vengeful_retreat_t : public demon_hunter_spell_t
@@ -6620,7 +6662,8 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   }
 
   // TODO: make this conditional on hero spec
-  debuffs.reavers_mark = make_buff(*this, "reavers_mark", p.hero_spec.reavers_mark)->set_default_value_from_effect( 1 );
+  debuffs.reavers_mark =
+      make_buff( *this, "reavers_mark", p.hero_spec.reavers_mark )->set_default_value_from_effect( 1 );
 
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
   dots.the_hunt       = target->get_dot( "the_hunt_dot", &p );
@@ -6815,6 +6858,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new vengeful_retreat_t( this, options_str );
   if ( name == "soul_carver" )
     return new soul_carver_t( this, options_str );
+  if ( name == "reavers_glaive" )
+    return new reavers_glaive_t( this, options_str );
 
   return base_t::create_action( name, options_str );
 }
@@ -6945,9 +6990,9 @@ void demon_hunter_t::create_buffs()
 
   // Aldrachi Reaver ========================================================
 
-  buff.art_of_the_glaive = make_buff(this, "art_of_the_glaive", hero_spec.art_of_the_glaive_buff);
-  buff.glaive_flurry = make_buff(this, "glaive_flurry", hero_spec.glaive_flurry);
-  buff.rending_strike = make_buff(this, "rending_strike", hero_spec.rending_strike);
+  buff.art_of_the_glaive = make_buff( this, "art_of_the_glaive", hero_spec.art_of_the_glaive_buff );
+  buff.glaive_flurry     = make_buff( this, "glaive_flurry", hero_spec.glaive_flurry );
+  buff.rending_strike    = make_buff( this, "rending_strike", hero_spec.rending_strike );
 
   // Set Bonus Items ========================================================
 
@@ -7793,12 +7838,18 @@ void demon_hunter_t::init_spells()
   spec.fel_devastation_heal = talent.vengeance.fel_devastation->ok() ? find_spell( 212106 ) : spell_data_t::not_found();
 
   // Hero spec background spells
+  hero_spec.reavers_glaive =
+      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442294 ) : spell_data_t::not_found();
   hero_spec.reavers_mark =
       talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442624 ) : spell_data_t::not_found();
-  hero_spec.glaive_flurry = talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442435 ) : spell_data_t::not_found();
-  hero_spec.rending_strike = talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442442 ) : spell_data_t::not_found();
-  hero_spec.art_of_the_glaive_buff = talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444661 ) : spell_data_t::not_found();
-  hero_spec.art_of_the_glaive_damage = talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444806 ) : spell_data_t::not_found();
+  hero_spec.glaive_flurry =
+      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442435 ) : spell_data_t::not_found();
+  hero_spec.rending_strike =
+      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442442 ) : spell_data_t::not_found();
+  hero_spec.art_of_the_glaive_buff =
+      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444661 ) : spell_data_t::not_found();
+  hero_spec.art_of_the_glaive_damage =
+      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444806 ) : spell_data_t::not_found();
 
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };
@@ -8890,6 +8941,7 @@ unsigned demon_hunter_t::consume_soul_fragments( soul_fragment type, bool heal, 
   if ( souls_consumed > 0 )
   {
     buff.painbringer->trigger( souls_consumed );
+    buff.art_of_the_glaive->trigger( souls_consumed );
   }
 
   return souls_consumed;
