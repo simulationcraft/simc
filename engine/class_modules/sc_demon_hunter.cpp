@@ -595,7 +595,8 @@ public:
     const spell_data_t* reavers_mark;
     const spell_data_t* glaive_flurry;
     const spell_data_t* rending_strike;
-    const spell_data_t* art_of_the_glaive;
+    const spell_data_t* art_of_the_glaive_buff;
+    const spell_data_t* art_of_the_glaive_damage;
   } hero_spec;
 
   // Set Bonus effects
@@ -6944,7 +6945,7 @@ void demon_hunter_t::create_buffs()
 
   // Aldrachi Reaver ========================================================
 
-  buff.art_of_the_glaive = make_buff(this, "art_of_the_glaive", talent.aldrachi_reaver.art_of_the_glaive);
+  buff.art_of_the_glaive = make_buff(this, "art_of_the_glaive", hero_spec.art_of_the_glaive_buff);
   buff.glaive_flurry = make_buff(this, "glaive_flurry", hero_spec.glaive_flurry);
   buff.rending_strike = make_buff(this, "rending_strike", hero_spec.rending_strike);
 
@@ -7796,7 +7797,8 @@ void demon_hunter_t::init_spells()
       talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442624 ) : spell_data_t::not_found();
   hero_spec.glaive_flurry = talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442435 ) : spell_data_t::not_found();
   hero_spec.rending_strike = talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442442 ) : spell_data_t::not_found();
-  hero_spec.art_of_the_glaive = talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444806 ) : spell_data_t::not_found();
+  hero_spec.art_of_the_glaive_buff = talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444661 ) : spell_data_t::not_found();
+  hero_spec.art_of_the_glaive_damage = talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444806 ) : spell_data_t::not_found();
 
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };
