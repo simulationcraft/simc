@@ -2149,6 +2149,19 @@ class SpellDataGenerator(DataGenerator):
           ( 425298, 1 ), # BrM 2-piece Charred Dreams Healing
           ( 425299, 1 ), # BrM 2-piece Charred Dreams Damage
           ( 425965, 1 ), # BrM 4-piece Celestial Brew Guard
+
+          # Shado-Pan
+          ( 451021, 0 ), # Flurry Charge (Buff)
+
+          # Conduit of the Celestials
+          ( 443616, 0 ), # Heart of the Jade Serpent (Buff)
+          ( 443574, 0 ), # Ox Stance
+          ( 443576, 0 ), # Serpent Stance
+          ( 443575, 0 ), # Tiger Stance
+
+          # Master of Harmony
+          ( 451299, 0 ), # Mantra of Tenacity Chi Cocoon
+
         ),
 
         # Druid:
