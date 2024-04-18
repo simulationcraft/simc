@@ -1456,7 +1456,8 @@ enum class talent_tree : unsigned
 {
   INVALID = 0,
   CLASS,
-  SPECIALIZATION
+  SPECIALIZATION,
+  HERO
 };
 
 enum trait_definition_op : int

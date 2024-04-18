@@ -440,7 +440,7 @@ elif options.type == 'scale':
 
     g = CSVDataGenerator(options, {
         'file': 'AzeriteLevelToItemLevel.txt',
-        'key': 'Azerite Level',
+        'key': 'Level',
         'comment': '// Azerite level to item level 1 - %d, wow build %s\n' % (
             300, options.build),
         'values': [ 'Item Level' ],

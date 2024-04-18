@@ -409,20 +409,21 @@ class TraitSet(DataSet):
             if currency.id == 0:
                 continue
 
-            cost = currency.child_ref('TraitCost')
-            if cost.id == 0:
+            costs = currency.child_refs('TraitCost')
+            if len(costs) == 0:
                 continue
 
-            node_groups = cost.child_ref('TraitNodeGroupXTraitCost')
-            if node_groups.id == 0:
-                continue
+            for cost in costs:
+                node_groups = cost.child_ref('TraitNodeGroupXTraitCost')
+                if node_groups.id == 0:
+                    continue
 
-            index = 0
-            if currency.flags == 0x4:
-                index = 1
-            elif currency.flags == 0x8:
-                index = 2
-            _trait_node_group_map[node_groups.id_trait_node_group] = index
+                index = 0
+                if currency.flags == 0x4:
+                    index = 1
+                elif currency.flags == 0x8:
+                    index = 2
+                _trait_node_group_map[node_groups.id_trait_node_group] = index
 
         # Map of trait_node_id, node_data
         _trait_nodes = dict()
