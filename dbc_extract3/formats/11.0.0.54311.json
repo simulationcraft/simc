@@ -1562,6 +1562,7 @@
       { "data_type": "S", "field": "desc_2" },
       { "data_type": "i", "field": "unk_2" },
       { "data_type": "I", "field": "id_property", "elements": 3, "formats": { "cpp": "%6u" } },
+      { "data_type": "i", "field": "unk_3" },
       { "data_type": "f", "field": "coeff", "elements": 3, "formats": { "cpp": "%7.4ff" } },
       { "data_type": "I", "field": "unk_20" },
       { "data_type": "i", "field": "min_item_level" },
