@@ -87,6 +87,9 @@ public:
     // Vengeance
     buff_t* frailty;
 
+    // Aldrachi Reaver
+    buff_t* reavers_mark;
+
     // Set Bonuses
     buff_t* t29_vengeance_4pc;
   } debuffs;
@@ -238,6 +241,11 @@ public:
     buff_t* soul_furnace_damage_amp;
     buff_t* soul_furnace_stack;
     buff_t* soul_fragments;
+
+    // Aldrachi Reaver
+    buff_t* art_of_the_glaive;
+    buff_t* glaive_flurry;
+    buff_t* rending_strike;
 
     // Set Bonuses
     damage_buff_t* t29_havoc_4pc;
@@ -581,6 +589,14 @@ public:
     const spell_data_t* fel_devastation_2;
     const spell_data_t* fel_devastation_heal;
   } spec;
+
+  struct hero_spec_t
+  {
+    const spell_data_t* reavers_mark;
+    const spell_data_t* glaive_flurry;
+    const spell_data_t* rending_strike;
+    const spell_data_t* art_of_the_glaive;
+  } hero_spec;
 
   // Set Bonus effects
   struct set_bonuses_t
@@ -6602,6 +6618,9 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
             ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
 
+  // TODO: make this conditional on hero spec
+  debuffs.reavers_mark = make_buff(*this, "reavers_mark", p.hero_spec.reavers_mark)->set_default_value_from_effect( 1 );
+
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
   dots.the_hunt       = target->get_dot( "the_hunt_dot", &p );
 
@@ -6922,6 +6941,12 @@ void demon_hunter_t::create_buffs()
       ->set_absorb_gain( get_gain( "soul_barrier" ) )
       ->set_absorb_high_priority( true )  // TOCHECK
       ->set_cooldown( timespan_t::zero() );
+
+  // Aldrachi Reaver ========================================================
+
+  buff.art_of_the_glaive = make_buff(this, "art_of_the_glaive", talent.aldrachi_reaver.art_of_the_glaive);
+  buff.glaive_flurry = make_buff(this, "glaive_flurry", hero_spec.glaive_flurry);
+  buff.rending_strike = make_buff(this, "rending_strike", hero_spec.rending_strike);
 
   // Set Bonus Items ========================================================
 
@@ -7679,22 +7704,22 @@ void demon_hunter_t::init_spells()
   // Aldrachi Reaver talents
   talent.aldrachi_reaver.art_of_the_glaive = find_talent_spell( talent_tree::HERO, "Art of the Glaive" );
 
-  talent.aldrachi_reaver.keen_engagement      = find_talent_spell( talent_tree::HERO, "Keen Engagement" );
-  talent.aldrachi_reaver.preemptive_strike    = find_talent_spell( talent_tree::HERO, "Preemptive Strike" );
-  talent.aldrachi_reaver.evasive_action       = find_talent_spell( talent_tree::HERO, "Evasive Action" );
-  talent.aldrachi_reaver.unhindered_assault   = find_talent_spell( talent_tree::HERO, "Unhindered Assault" );
-  talent.aldrachi_reaver.incisive_blade       = find_talent_spell( talent_tree::HERO, "Incisive Blade" );
+  talent.aldrachi_reaver.keen_engagement    = find_talent_spell( talent_tree::HERO, "Keen Engagement" );
+  talent.aldrachi_reaver.preemptive_strike  = find_talent_spell( talent_tree::HERO, "Preemptive Strike" );
+  talent.aldrachi_reaver.evasive_action     = find_talent_spell( talent_tree::HERO, "Evasive Action" );
+  talent.aldrachi_reaver.unhindered_assault = find_talent_spell( talent_tree::HERO, "Unhindered Assault" );
+  talent.aldrachi_reaver.incisive_blade     = find_talent_spell( talent_tree::HERO, "Incisive Blade" );
 
   talent.aldrachi_reaver.aldrachi_tactics     = find_talent_spell( talent_tree::HERO, "Aldrachi Tactics" );
   talent.aldrachi_reaver.army_unto_oneself    = find_talent_spell( talent_tree::HERO, "Army Unto Oneself" );
   talent.aldrachi_reaver.incorruptible_spirit = find_talent_spell( talent_tree::HERO, "Incorruptible Spirit" );
   talent.aldrachi_reaver.wounded_quarry       = find_talent_spell( talent_tree::HERO, "Wounded Quarry" );
 
-  talent.aldrachi_reaver.intent_pursuit       = find_talent_spell( talent_tree::HERO, "Intent Pursuit" );
-  talent.aldrachi_reaver.escalation           = find_talent_spell( talent_tree::HERO, "Escalation" );
-  talent.aldrachi_reaver.warblades_hunger     = find_talent_spell( talent_tree::HERO, "Warblade's Hunger" );
+  talent.aldrachi_reaver.intent_pursuit   = find_talent_spell( talent_tree::HERO, "Intent Pursuit" );
+  talent.aldrachi_reaver.escalation       = find_talent_spell( talent_tree::HERO, "Escalation" );
+  talent.aldrachi_reaver.warblades_hunger = find_talent_spell( talent_tree::HERO, "Warblade's Hunger" );
 
-  talent.aldrachi_reaver.thrill_of_the_fight  = find_talent_spell( talent_tree::HERO, "Thrill of the Fight" );
+  talent.aldrachi_reaver.thrill_of_the_fight = find_talent_spell( talent_tree::HERO, "Thrill of the Fight" );
 
   // Class Background Spells
   spell.felblade_damage      = talent.demon_hunter.felblade->ok() ? find_spell( 213243 ) : spell_data_t::not_found();
@@ -7765,6 +7790,13 @@ void demon_hunter_t::init_spells()
   spec.feast_of_souls_heal  = talent.vengeance.feast_of_souls->ok() ? find_spell( 207693 ) : spell_data_t::not_found();
   spec.fel_devastation_2    = find_rank_spell( "Fel Devastation", "Rank 2" );
   spec.fel_devastation_heal = talent.vengeance.fel_devastation->ok() ? find_spell( 212106 ) : spell_data_t::not_found();
+
+  // Hero spec background spells
+  hero_spec.reavers_mark =
+      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442624 ) : spell_data_t::not_found();
+  hero_spec.glaive_flurry = talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442435 ) : spell_data_t::not_found();
+  hero_spec.rending_strike = talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442442 ) : spell_data_t::not_found();
+  hero_spec.art_of_the_glaive = talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444806 ) : spell_data_t::not_found();
 
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };

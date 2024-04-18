@@ -2331,6 +2331,11 @@ class SpellDataGenerator(DataGenerator):
           ( 336640, 2 ), # Charred Flesh
           ( 203981, 2 ), # Soul Fragments
           ( 409877, 2 ), # T30 4pc Recrimination buff
+
+          # Aldrachi Reaver
+          ( 442435, 0 ), # Glaive Flurry
+          ( 442442, 0 ), # Rending Strike
+          ( 444806, 0 ), # Art of the Glaive
        ),
 
        # Evoker:
