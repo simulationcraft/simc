@@ -9552,7 +9552,7 @@ void druid_t::init_spells()
   talent.bond_with_nature               = HT( "Bond with Nature" );
   talent.bursting_growth                = HT( "Bursting Growth" );
   talent.entangling_vortex              = HT( "Entangling Vortex" );
-  talent.flower_walk                    = HT( "Flower Walk" );
+  talent.flower_walk                    = HT( "Flower Walk" );  // TODO: heal NYI
   talent.harmonious_constitution        = HT( "Harmonious Constitution" );
   talent.hunt_beneath_the_open_skies    = HT( "Hunt Beneath the Open Skies" );
   talent.implant                        = HT( "Implant" );
@@ -11975,6 +11975,9 @@ double druid_t::temporary_movement_modifier() const
     active = std::max( active, buff.tiger_dash->check_value() );
 
   active += buff.forestwalk->check_value();
+
+  if ( talent.flower_walk.ok() && buff.barkskin->check() )
+    active += talent.flower_walk->effectN( 1 ).percent();
 
   return active;
 }
