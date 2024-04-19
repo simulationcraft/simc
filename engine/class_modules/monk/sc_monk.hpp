@@ -175,9 +175,6 @@ struct monk_absorb_t : public monk_action_t<absorb_t>
 
 struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 {
-  weapon_t *mainhand;
-  weapon_t *offhand;
-
   monk_melee_attack_t( std::string_view name, monk_t *player, const spell_data_t *spell = spell_data_t::nil() );
   double composite_target_crit_chance( player_t *target ) const override;
   double action_multiplier() const override;

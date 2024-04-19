@@ -954,7 +954,7 @@ monk_absorb_t::monk_absorb_t( std::string_view name, monk_t &player, const spell
 }
 
 monk_melee_attack_t::monk_melee_attack_t( std::string_view name, monk_t *player, const spell_data_t *spell )
-  : base_t( name, player, spell ), mainhand( nullptr ), offhand( nullptr )
+  : base_t( name, player, spell )
 {
   special    = true;
   may_glance = false;
