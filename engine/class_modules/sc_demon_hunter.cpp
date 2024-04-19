@@ -791,7 +791,7 @@ public:
     spell_t* sigil_of_flame_t31 = nullptr;
 
     // Aldrachi Reaver
-    attack_t* art_of_the_glaive = nullptr;
+    spell_t* art_of_the_glaive = nullptr;
   } active;
 
   // Pets
@@ -4344,6 +4344,15 @@ struct sigil_of_chains_t : public demon_hunter_spell_t
   }
 };
 
+struct art_of_the_glaive_t : public demon_hunter_spell_t
+{
+  art_of_the_glaive_t( util::string_view name, demon_hunter_t* p )
+    : demon_hunter_spell_t( name, p, p->hero_spec.art_of_the_glaive_damage->effectN( 2 ).trigger() )
+  {
+    background = dual = true;
+  }
+};
+
 }  // end namespace spells
 
 // ==========================================================================
@@ -4630,8 +4639,19 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.glaive_flurry->up() &&
            p()->active.art_of_the_glaive )
       {
-        // TOCHECK: how does this apply AoE scaling, so let's make it only primary target for now
-        p()->active.art_of_the_glaive->execute_on_target( target );
+        int number_of_slashes = p()->buff.glaive_flurry->up() && p()->buff.rending_strike->up() ? 1 : 2;
+        for ( int slash = 0; slash < number_of_slashes; slash++ )
+        {
+          for ( const spelleffect_data_t& effect : p()->hero_spec.art_of_the_glaive_damage->effects() )
+          {
+            if ( effect.type() != E_TRIGGER_SPELL )
+              continue;
+
+            make_event<delayed_execute_event_t>( *sim, p(), p()->active.art_of_the_glaive, target,
+                                                 timespan_t::from_millis( effect.misc_value1() ) );
+          }
+        }
+
         p()->buff.glaive_flurry->expire();
       }
     }
@@ -5845,8 +5865,19 @@ struct soul_cleave_t : public demon_hunter_attack_t
     if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.glaive_flurry->up() &&
          p()->active.art_of_the_glaive )
     {
-      // TOCHECK: how does this apply AoE scaling, so let's make it only primary target for now
-      p()->active.art_of_the_glaive->execute_on_target( target );
+      int number_of_slashes = p()->buff.glaive_flurry->up() && p()->buff.rending_strike->up() ? 1 : 2;
+      for ( int slash = 0; slash < number_of_slashes; slash++ )
+      {
+        for ( const spelleffect_data_t& effect : p()->hero_spec.art_of_the_glaive_damage->effects() )
+        {
+          if ( effect.type() != E_TRIGGER_SPELL )
+            continue;
+
+          make_event<delayed_execute_event_t>( *sim, p(), p()->active.art_of_the_glaive, target,
+                                               timespan_t::from_millis( effect.misc_value1() ) );
+        }
+      }
+
       p()->buff.glaive_flurry->expire();
     }
   }
@@ -6198,32 +6229,6 @@ struct soul_carver_t : public demon_hunter_attack_t
     demon_hunter_attack_t::tick( d );
 
     p()->spawn_soul_fragment( soul_fragment::LESSER, as<unsigned int>( data().effectN( 4 ).base_value() ) );
-  }
-};
-
-struct art_of_the_glaive_t : public demon_hunter_attack_t
-{
-  struct art_of_the_glaive_damage_t : public demon_hunter_attack_t
-  {
-    art_of_the_glaive_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_attack_t( name, p, p->hero_spec.art_of_the_glaive_damage->effectN( 1 ).trigger() )
-    {
-      background = dual = true;
-      may_miss = may_parry = may_dodge = false;  // TOCHECK
-    }
-  };
-
-  art_of_the_glaive_damage_t *first, *second, *third;
-
-  art_of_the_glaive_t( util::string_view name, demon_hunter_t* p )
-    : demon_hunter_attack_t( name, p, p->hero_spec.art_of_the_glaive_damage )
-  {
-    background = dual = true;
-
-    first        = p->get_background_action<art_of_the_glaive_damage_t>( fmt::format( "{}_first", name ) );
-    second       = p->get_background_action<art_of_the_glaive_damage_t>( fmt::format( "{}_second", name ) );
-    third        = p->get_background_action<art_of_the_glaive_damage_t>( fmt::format( "{}_third", name ) );
-    first->stats = second->stats = third->stats = stats;
   }
 };
 

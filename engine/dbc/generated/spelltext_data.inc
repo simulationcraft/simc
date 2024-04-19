@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54311
-static const std::array<spelltext_data_t, 22365> __spelltext_data { {
+static const std::array<spelltext_data_t, 22367> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -4526,6 +4526,7 @@ static const std::array<spelltext_data_t, 22365> __spelltext_data { {
   { 145109, "$@spelldesc145108", 0, 0 },
   { 145110, "$@spelldesc145108", 0, 0 },
   { 145152, "$@spelldesc155672", "Your next Rip or Ferocious Bite deals $s1% increased damage.", 0 },
+  { 145153, "$@spelldesc158504", 0, 0 },
   { 145166, "Set out a Noodle Cart to sell Noodle Soup!\r\n\r\nEach Noodle Soup restores $104935o1 health and $104270s1 mana over $104935d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $104273s1 in a useful stat for $104273d.", 0, 0 },
   { 145169, "Set out a Deluxe Noodle Cart to sell Deluxe Noodle Soup!\r\n\r\nEach Deluxe Noodle Soup restores $104935o1 health and $104270s1 mana over $104935d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $104274s1 in a useful stat for $104274d.", 0, 0 },
   { 145196, "Set out a Pandaren Treasure Noodle Cart to sell Pandaren Treasure Noodle Soup!\r\n\r\nEach Pandaren Treasure Noodle Soup restores $104935o1 health and $104270s1 mana over $104935d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $104275s1 in a useful stat for $104275d.", 0, 0 },
@@ -21805,6 +21806,7 @@ static const std::array<spelltext_data_t, 22365> __spelltext_data { {
   { 444802, "Warped by the blood of the Old Gods, its sickly pale skin stretches over its skeletal body. Anglers across Khaz Algar speak of this fish as a messenger of doom, cursing any Angler unfortunate enough to reel it in. Staring into the eyes of this creature will only elaborate its depravity as any reflection is consumed by the abyss. ", 0, 0 },
   { 444803, "A humble, dormant creature. When awake its scales shimmer with reflective brilliance despite being in contact with little light. A quiet majesty and a fitting goal for any aspiring Angler.", 0, 0 },
   { 444806, "$@spelldesc442502", 0, 0 },
+  { 444810, "$@spelldesc442502", 0, 0 },
   { 444826, "Shackles the target $?a373930[and $373930s1 nearby enemy ][]with frozen chains, reducing movement speed by $s1% for $d.", "Movement slowed $w1% $?$w5!=0[and Haste reduced $w5% ][]by frozen chains.", 0 },
   { 444827, "Your $?c1[$@spellname235450][$@spellname11426] can absorb up to $s1% more damage based on your missing Health.\r\n\r\n(Max effectiveness when under $s1% health.)", 0, 0 },
   { 444828, "$@spelldesc373931\r\n", "Damage taken from $@auracaster increased by $s1%.", 0 },
