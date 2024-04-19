@@ -291,6 +291,7 @@ public:
   std::vector<action_effect_t> ta_multiplier_effects;
   std::vector<action_effect_t> da_multiplier_effects;
   std::vector<action_effect_t> execute_time_effects;
+  std::vector<action_effect_t> gcd_effects;
   std::vector<action_effect_t> dot_duration_effects;
   std::vector<action_effect_t> tick_time_effects;
   std::vector<action_effect_t> recharge_multiplier_effects;
@@ -341,6 +342,11 @@ public:
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return BASE::composite_dot_duration( s ) * get_effects_value( dot_duration_effects );
+  }
+
+  timespan_t gcd() const override
+  {
+    return std::max( BASE::min_gcd, BASE::gcd() * get_effects_value( gcd_effects ) );
   }
 
   timespan_t tick_time( const action_state_t* s ) const override
@@ -575,6 +581,10 @@ public:
         case P_CAST_TIME:
           vec = &execute_time_effects;
           str = "cast time";
+          break;
+        case P_GCD:
+          vec = &gcd_effects;
+          str = "gcd";
           break;
         case P_TICK_TIME:
           vec = &tick_time_effects;
@@ -1069,6 +1079,7 @@ public:
       print_parsed_type( os, ta_multiplier_effects, "Periodic Damage" );
       print_parsed_type( os, crit_chance_effects, "Critical Strike Chance" );
       print_parsed_type( os, execute_time_effects, "Execute Time" );
+      print_parsed_type( os, gcd_effects, "GCD" );
       print_parsed_type( os, dot_duration_effects, "Dot Duration" );
       print_parsed_type( os, tick_time_effects, "Tick Time" );
       print_parsed_type( os, recharge_multiplier_effects, "Recharge Multiplier" );
@@ -1089,6 +1100,7 @@ public:
     return ta_multiplier_effects.size() +
            da_multiplier_effects.size() +
            execute_time_effects.size() +
+           gcd_effects.size() +
            dot_duration_effects.size() +
            tick_time_effects.size() +
            recharge_multiplier_effects.size() +
