@@ -2301,7 +2301,14 @@ class SpellDataGenerator(DataGenerator):
           ( 395942, 3 ), # 2t29 Mangle AoE
           ( 400360, 3 ), # Moonless Night
           ( 425441, 3 ), ( 425448, 3 ), # Blazing Thorns (4t31)
+
+          # The War Within
+          # Class
+          # Balance
+          # Feral
+          # Guardian
           # Restoration
+          ( 145153, 4 ), # Dream of Cenarius heal
         ),
         # Demon Hunter:
         (
