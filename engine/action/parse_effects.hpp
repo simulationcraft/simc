@@ -505,7 +505,7 @@ public:
         val_mul = 1.0;
     }
 
-    if ( !val )
+    if ( !val && tmp.data.type == parse_flag_e::USE_DATA )
       return;
 
     std::vector<action_effect_t>* vec = nullptr;
