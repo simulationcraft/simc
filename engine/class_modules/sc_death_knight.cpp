@@ -3409,11 +3409,6 @@ struct horseman_pet_t : public death_knight_pet_t
       : pet_spell_t( p, name, spell )
     {
     }
-
-    double cost() const override
-    {
-      return 0;
-    }
   };
 
   struct horseman_melee_t : public pet_melee_attack_t<horseman_pet_t>
@@ -3486,9 +3481,8 @@ struct mograine_pet_t : public horseman_pet_t
       : horseman_melee_t( p, name, p->dk()->pet_spell.mograine_heart_strike )
     {
       parse_options( options_str );
-      // Need to figure out whatever formula they are using for this
-      attack_power_mod.direct = data().effectN( 1 ).percent();
       aoe = data().effectN( 4 ).base_value();
+      base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_spell_damage * data().effectN( 1 ).percent();
     }
   };
 
@@ -3506,6 +3500,7 @@ struct mograine_pet_t : public horseman_pet_t
 
   mograine_pet_t( death_knight_t* owner, util::string_view name ) : horseman_pet_t( owner, name )
   {
+    npc_id = owner->spell.summon_mograine->effectN( 1 ).misc_value1();
   }
 
   void init_spells() override
@@ -3610,8 +3605,7 @@ struct whitemane_pet_t : public horseman_pet_t
       : horseman_spell_t( p, name, p->dk()->pet_spell.whitemane_death_coil )
     {
       parse_options( options_str );
-      // Need to figure out whatever formula they are using for this
-      attack_power_mod.direct = data().effectN( 1 ).percent();
+      base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_spell_damage * data().effectN( 1 ).percent();
     }
   };
 
@@ -3622,6 +3616,7 @@ struct whitemane_pet_t : public horseman_pet_t
 
   whitemane_pet_t( death_knight_t* owner, util::string_view name ) : horseman_pet_t( owner, name )
   {
+    npc_id = owner->spell.summon_whitemane->effectN( 1 ).misc_value1();
   }
 
   void init_spells() override
@@ -3692,8 +3687,7 @@ struct trollbane_pet_t : public horseman_pet_t
       : horseman_melee_t( p, name, p->dk()->pet_spell.trollbane_obliterate )
     {
       parse_options( options_str );
-      // Need to figure out whatever formula they are using for this
-      attack_power_mod.direct = data().effectN( 1 ).percent();
+      base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_spell_damage * data().effectN( 1 ).percent();
     }
   };
 
@@ -3704,6 +3698,7 @@ struct trollbane_pet_t : public horseman_pet_t
 
   trollbane_pet_t( death_knight_t* owner, util::string_view name ) : horseman_pet_t( owner, name )
   {
+    npc_id = owner->spell.summon_trollbane->effectN( 1 ).misc_value1();
   }
 
   void arise() override
@@ -3743,6 +3738,7 @@ struct nazgrim_pet_t : public horseman_pet_t
 {
   nazgrim_pet_t( death_knight_t* owner, util::string_view name ) : horseman_pet_t( owner, name )
   {
+    npc_id = owner->spell.summon_nazgrim->effectN( 1 ).misc_value1();
   }
 
   struct scourge_strike_shadow_nazgrim_t final : public horseman_melee_t
@@ -3751,8 +3747,7 @@ struct nazgrim_pet_t : public horseman_pet_t
       : horseman_melee_t( p, name, p->dk()->pet_spell.nazgrim_scourge_strike_shadow )
     {
       background = true;
-      // Need to figure out whatever formula they are using for this
-      attack_power_mod.direct = data().effectN( 1 ).percent();
+      base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_spell_damage * data().effectN( 1 ).percent();
     }
   };
 
@@ -3764,9 +3759,8 @@ struct nazgrim_pet_t : public horseman_pet_t
       scourge_strike_shadow( new scourge_strike_shadow_nazgrim_t( "scourge_strike_shadow", p ) )
     {
       parse_options( options_str );
-      // Need to figure out whatever formula they are using for this
-      attack_power_mod.direct = data().effectN( 1 ).percent();
       impact_action = scourge_strike_shadow;
+      base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_spell_damage * data().effectN( 1 ).percent();
       add_child( scourge_strike_shadow );
     }
   };
