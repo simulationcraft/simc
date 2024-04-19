@@ -114,6 +114,7 @@ struct druid_td_t : public actor_target_data_t
   {
     buff_t* dire_fixation;
     buff_t* pulverize;
+    buff_t* sabertooth;
     buff_t* tooth_and_claw;
     buff_t* waning_twilight;
   } debuff;
@@ -588,7 +589,6 @@ public:
     buff_t* predator_revealed;  // 4t30
     buff_t* predatory_swiftness;
     buff_t* protective_growth;
-    buff_t* sabertooth;
     buff_t* shadows_of_the_predator;  // 2t30
     buff_t* sharpened_claws;  // 4t29
     buff_t* smoldering_frenzy;  // 2t31
@@ -1072,6 +1072,7 @@ public:
     const spell_data_t* ashamanes_guidance;
     const spell_data_t* ashamanes_guidance_buff;  // buff spell for ashamanes guidance 421442
     const spell_data_t* berserk_cat;  // berserk cast/buff spell
+    const spell_data_t* sabertooth;  // sabertooth debuff
 
     // Guardian
     const spell_data_t* bear_form_2;
@@ -1693,7 +1694,6 @@ public:
     parse_effects( p()->buff.incarnation_cat );
     parse_effects( p()->buff.predator, USE_CURRENT );
     parse_effects( p()->buff.predatory_swiftness );
-    parse_effects( p()->buff.sabertooth, USE_DEFAULT );
     parse_effects( p()->buff.sharpened_claws );
     parse_effects( p()->buff.smoldering_frenzy );
     parse_effects( p()->spec.feral_overrides, [ this ] { return !p()->buff.moonkin_form->check(); } );
@@ -1783,6 +1783,9 @@ public:
                           find_trigger( p()->talent.dire_fixation ).trigger() );
     parse_target_effects( d_fn( &druid_td_t::debuffs_t::waning_twilight ),
                           p()->spec.waning_twilight, p()->talent.waning_twilight );
+    parse_target_effects( d_fn( &druid_td_t::debuffs_t::sabertooth ),
+                          p()->spec.sabertooth, p()->talent.sabertooth->effectN( 2 ).base_value() );
+
 
     if ( p()->talent.incarnation_cat.ok() && p()->talent.ashamanes_guidance.ok() )
     {
@@ -4123,8 +4126,7 @@ struct ferocious_bite_t : public cat_finisher_t
     if ( !result_is_hit( s->result ) )
       return;
 
-    p()->buff.sabertooth->expire();  // existing buff is replaced with new buff, regardless of CP
-    p()->buff.sabertooth->trigger( cp( s ) );
+    td( s->target )->debuff.sabertooth->trigger( cp( s ) );
 
     if ( rampant_ferocity && s->result_amount > 0 && !rampant_ferocity->target_list().empty() )
     {
@@ -4394,10 +4396,7 @@ struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
 
     if ( tear && result_is_hit( s->result ) )
     {
-      // increased damage from sabertooth is not counted for tear calculations
       auto tick_amount = calculate_tick_amount( s, 1.0 );
-      tick_amount /= 1.0 + p()->buff.sabertooth->check_stack_value();
-
       auto dot_total = tick_amount * find_dot( s->target )->ticks_left_fractional();
 
       tear->snapshot_and_execute( s, true, [ this, dot_total ]( const action_state_t*, action_state_t* to ) {
@@ -9670,6 +9669,7 @@ void druid_t::init_spells()
   spec.ashamanes_guidance       = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 421440 );
   spec.ashamanes_guidance_buff  = check( talent.ashamanes_guidance, 421442 );
   spec.berserk_cat              = talent.berserk.find_override_spell();
+  spec.sabertooth               = check( talent.sabertooth, 391722 );
 
   // Guardian Abilities
   spec.bear_form_2              = find_rank_spell( "Bear Form", "Rank 2" );
@@ -10229,10 +10229,6 @@ void druid_t::create_buffs()
   buff.protective_growth =
       make_buff_fallback( talent.protective_growth.ok(), this, "protective_growth", find_spell( 391955 ) )
           ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
-
-  buff.sabertooth = make_buff_fallback( talent.sabertooth.ok(), this, "sabertooth", find_spell( 391722 ) )
-    ->set_default_value( talent.sabertooth->effectN( 2 ).percent() )
-    ->set_max_stack( as<int>( resources.base[ RESOURCE_COMBO_POINT ] ) );
 
   buff.shadows_of_the_predator = make_buff_fallback<shadows_of_the_predator_buff_t>(
       sets->has_set_bonus( DRUID_FERAL, T30, B2 ), this, "shadows_of_the_predator", sets->set( DRUID_FERAL, T30, B2 ) );
@@ -12625,6 +12621,10 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
           ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
           ->apply_affecting_aura( source.talent.circle_of_life_and_death );
+
+  debuff.sabertooth = make_buff_fallback( source.talent.sabertooth.ok() && target.is_enemy(),
+      *this, "sabertooth_debuff", source.spec.sabertooth )
+          ->set_max_stack( as<int>( source.resources.base[ RESOURCE_COMBO_POINT ] ) );
 
   debuff.tooth_and_claw = make_buff_fallback( source.talent.tooth_and_claw.ok() && target.is_enemy(),
       *this, "tooth_and_claw_debuff", find_trigger( find_trigger( source.talent.tooth_and_claw ).trigger() ).trigger() )
