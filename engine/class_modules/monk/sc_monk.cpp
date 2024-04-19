@@ -1033,34 +1033,34 @@ void monk_melee_attack_t::apply_dual_wield_two_handed_scaling()
   }
 }
 
-monk_buff_t::monk_buff_t( monk_td_t *target, util::string_view name, const spell_data_t *spell, const item_t *item )
-  : buff_t( *target, name, spell, item )
+monk_buff_t::monk_buff_t( monk_td_t &target, util::string_view name, const spell_data_t *spell, const item_t *item )
+  : buff_t( target, name, spell, item )
 {
 }
 
-monk_buff_t::monk_buff_t( monk_t *player, util::string_view name, const spell_data_t *spell, const item_t *item )
-  : buff_t( player, name, spell, item )
+monk_buff_t::monk_buff_t( monk_t &player, util::string_view name, const spell_data_t *spell, const item_t *item )
+  : buff_t( &player, name, spell, item )
 {
 }
 
-monk_td_t *monk_buff_t::get_td( player_t *target )
+monk_td_t &monk_buff_t::get_td( player_t *t )
 {
-  return p()->get_target_data( target );
+  return *( p().get_target_data( t ) );
 }
 
-const monk_td_t *monk_buff_t::find_td( player_t *target ) const
+const monk_td_t *monk_buff_t::find_td( player_t *t ) const
 {
-  return p()->find_target_data( target );
+  return p().find_target_data( t );
 }
 
-monk_t *monk_buff_t::p()
+monk_t &monk_buff_t::p()
 {
-  return debug_cast<monk_t *>( buff_t::source );
+  return *debug_cast<monk_t *>( buff_t::source );
 }
 
-const monk_t *monk_buff_t::p() const
+const monk_t &monk_buff_t::p() const
 {
-  return debug_cast<monk_t *>( buff_t::source );
+  return *debug_cast<monk_t *>( buff_t::source );
 }
 
 struct monk_snapshot_stats_t : public snapshot_stats_t
@@ -6479,53 +6479,15 @@ using namespace absorbs;
 
 namespace buffs
 {
+using namespace actions;
 // ==========================================================================
 // Monk Buffs
 // ==========================================================================
 
-template <typename buff_t>
-struct monk_buff_t : public buff_t
-{
-public:
-  using base_t = monk_buff_t;
-
-  monk_buff_t( monk_td_t &p, util::string_view name, const spell_data_t *s = spell_data_t::nil(),
-               const item_t *item = nullptr )
-    : buff_t( p, name, s, item )
-  {
-  }
-
-  monk_buff_t( monk_t &p, util::string_view name, const spell_data_t *s = spell_data_t::nil(),
-               const item_t *item = nullptr )
-    : buff_t( &p, name, s, item )
-  {
-  }
-
-  monk_td_t &get_td( player_t *t )
-  {
-    return *( p().get_target_data( t ) );
-  }
-
-  const monk_td_t *find_td( player_t *t ) const
-  {
-    return p()->find_target_data( t );
-  }
-
-  monk_t &p()
-  {
-    return *debug_cast<monk_t *>( buff_t::source );
-  }
-
-  const monk_t &p() const
-  {
-    return *debug_cast<monk_t *>( buff_t::source );
-  }
-};
-
 // ===============================================================================
 // Fortifying Brew Buff
 // ===============================================================================
-struct fortifying_brew_t : public monk_buff_t<buff_t>
+struct fortifying_brew_t : public monk_buff_t
 {
   int health_gain;
   fortifying_brew_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s ), health_gain( 0 )
@@ -6562,7 +6524,7 @@ struct fortifying_brew_t : public monk_buff_t<buff_t>
 // ===============================================================================
 // Serenity Buff
 // ===============================================================================
-struct serenity_buff_t : public monk_buff_t<buff_t>
+struct serenity_buff_t : public monk_buff_t
 {
   monk_t &m;
   serenity_buff_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s ), m( p )
@@ -6595,7 +6557,7 @@ struct serenity_buff_t : public monk_buff_t<buff_t>
 // ===============================================================================
 // Touch of Karma Buff
 // ===============================================================================
-struct touch_of_karma_buff_t : public monk_buff_t<buff_t>
+struct touch_of_karma_buff_t : public monk_buff_t
 {
   touch_of_karma_buff_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
@@ -6623,7 +6585,7 @@ struct touch_of_karma_buff_t : public monk_buff_t<buff_t>
 // ===============================================================================
 // Rushing Jade Wind Buff
 // ===============================================================================
-struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
+struct rushing_jade_wind_buff_t : public monk_buff_t
 {
   // gonna assume this is 1 buff per monk combatant
   timespan_t _period;
@@ -6673,7 +6635,7 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
 // ===============================================================================
 // Gift of the Ox Buff
 // ===============================================================================
-struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
+struct gift_of_the_ox_buff_t : public monk_buff_t
 {
   gift_of_the_ox_buff_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
@@ -6709,7 +6671,7 @@ struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
 // Invoke Xuen the White Tiger
 // ===============================================================================
 
-struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<buff_t>
+struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t
 {
   static void invoke_xuen_callback( buff_t *b, int, timespan_t )
   {
@@ -6760,7 +6722,7 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<buff_t>
 // ===============================================================================
 // Fury of Xuen Stacking Buff
 // ===============================================================================
-struct fury_of_xuen_stacking_buff_t : public monk_buff_t<buff_t>
+struct fury_of_xuen_stacking_buff_t : public monk_buff_t
 {
   fury_of_xuen_stacking_buff_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
@@ -6782,7 +6744,7 @@ struct fury_of_xuen_stacking_buff_t : public monk_buff_t<buff_t>
 // ===============================================================================
 // Fury of Xuen Haste Buff
 // ===============================================================================
-struct fury_of_xuen_haste_buff_t : public monk_buff_t<buff_t>
+struct fury_of_xuen_haste_buff_t : public monk_buff_t
 {
   static void fury_of_xuen_callback( buff_t *b, int, timespan_t )
   {
@@ -6835,7 +6797,7 @@ struct fury_of_xuen_haste_buff_t : public monk_buff_t<buff_t>
 // ===============================================================================
 // Niuzao Rank 2 Purifying Buff
 // ===============================================================================
-struct purifying_buff_t : public monk_buff_t<buff_t>
+struct purifying_buff_t : public monk_buff_t
 {
   std::deque<double> values;
   // tracking variable for debug code
@@ -6917,7 +6879,7 @@ struct purifying_buff_t : public monk_buff_t<buff_t>
 // Chi. Given we want to provide the chi but apply it slowly if the player is at
 // max chi, then we need to set up so that it triggers on it's own.
 
-struct touch_of_death_ww_buff_t : public monk_buff_t<buff_t>
+struct touch_of_death_ww_buff_t : public monk_buff_t
 {
   touch_of_death_ww_buff_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
@@ -6949,7 +6911,7 @@ struct touch_of_death_ww_buff_t : public monk_buff_t<buff_t>
 // ===============================================================================
 // Close to Heart Buff
 // ===============================================================================
-struct close_to_heart_driver_t : public monk_buff_t<buff_t>
+struct close_to_heart_driver_t : public monk_buff_t
 {
   double leech_increase;
   close_to_heart_driver_t( monk_t &p, util::string_view n, const spell_data_t *s )
@@ -6972,7 +6934,7 @@ struct close_to_heart_driver_t : public monk_buff_t<buff_t>
 // ===============================================================================
 // Generous Pour Buff
 // ===============================================================================
-struct generous_pour_driver_t : public monk_buff_t<buff_t>
+struct generous_pour_driver_t : public monk_buff_t
 {
   double avoidance_increase;
   generous_pour_driver_t( monk_t &p, util::string_view n, const spell_data_t *s )
@@ -6995,7 +6957,7 @@ struct generous_pour_driver_t : public monk_buff_t<buff_t>
 // ===============================================================================
 // Windwalking Buff
 // ===============================================================================
-struct windwalking_driver_t : public monk_buff_t<buff_t>
+struct windwalking_driver_t : public monk_buff_t
 {
   double movement_increase;
   windwalking_driver_t( monk_t &p, util::string_view n, const spell_data_t *s )
@@ -7018,7 +6980,7 @@ struct windwalking_driver_t : public monk_buff_t<buff_t>
 // ===============================================================================
 // Stagger Buff
 // ===============================================================================
-struct stagger_buff_t : public monk_buff_t<buff_t>
+struct stagger_buff_t : public monk_buff_t
 {
   stagger_buff_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
@@ -7039,7 +7001,7 @@ struct stagger_buff_t : public monk_buff_t<buff_t>
 // Hidden Master's Forbidden Touch Legendary
 // ===============================================================================
 
-struct hidden_masters_forbidden_touch_t : public monk_buff_t<buff_t>
+struct hidden_masters_forbidden_touch_t : public monk_buff_t
 {
   hidden_masters_forbidden_touch_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
@@ -7047,7 +7009,7 @@ struct hidden_masters_forbidden_touch_t : public monk_buff_t<buff_t>
   }
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    base_t::expire_override( expiration_stacks, remaining_duration );
+    buff_t::expire_override( expiration_stacks, remaining_duration );
     cooldown_t *touch_of_death = source->get_cooldown( "touch_of_death" );
     if ( touch_of_death->up() )
       touch_of_death->start();
@@ -7058,7 +7020,7 @@ struct hidden_masters_forbidden_touch_t : public monk_buff_t<buff_t>
 // Tier 29 Kicks of Flowing Momentum
 // ===============================================================================
 
-struct kicks_of_flowing_momentum_t : public monk_buff_t<buff_t>
+struct kicks_of_flowing_momentum_t : public monk_buff_t
 {
   kicks_of_flowing_momentum_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
@@ -7079,7 +7041,7 @@ struct kicks_of_flowing_momentum_t : public monk_buff_t<buff_t>
     if ( p().buff.kicks_of_flowing_momentum->up() )
       p().buff.fists_of_flowing_momentum->trigger();
 
-    base_t::decrement( stacks, value );
+    buff_t::decrement( stacks, value );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -7095,7 +7057,7 @@ struct kicks_of_flowing_momentum_t : public monk_buff_t<buff_t>
 // Tier 30 Leverage SCK Helper
 // ===============================================================================
 
-struct leverage_helper_t : public monk_buff_t<buff_t>
+struct leverage_helper_t : public monk_buff_t
 {
   leverage_helper_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
@@ -7112,7 +7074,7 @@ struct leverage_helper_t : public monk_buff_t<buff_t>
 // Tier 31 Blackout Reinforcement
 // ===============================================================================
 
-struct blackout_reinforcement_t : public monk_buff_t<buff_t>
+struct blackout_reinforcement_t : public monk_buff_t
 {
   blackout_reinforcement_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
@@ -7151,7 +7113,7 @@ struct blackout_reinforcement_t : public monk_buff_t<buff_t>
     p().cooldown.strike_of_the_windlord->adjust( cooldown_reduction );
     p().cooldown.whirling_dragon_punch->adjust( cooldown_reduction );
 
-    base_t::decrement( stacks, value );
+    buff_t::decrement( stacks, value );
   }
 };
 
@@ -7159,7 +7121,7 @@ struct blackout_reinforcement_t : public monk_buff_t<buff_t>
 // Expel Harm Helper
 // ===============================================================================
 
-struct expel_harm_helper_t : public monk_buff_t<buff_t>
+struct expel_harm_helper_t : public monk_buff_t
 {
   expel_harm_helper_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {

@@ -188,15 +188,15 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
 struct monk_buff_t : public buff_t
 {
-  // TODO: FIX TO USE * INSTEAD OF & FOR CONSISTENCY
-  monk_buff_t( monk_td_t *player, std::string_view name, const spell_data_t *spell = spell_data_t::nil(),
+  // TODO: FIX TO USE * INSTEAD OF & FOR CONSISTENCY IF POSSIBLE
+  monk_buff_t( monk_td_t &target, std::string_view name, const spell_data_t *spell = spell_data_t::nil(),
                const item_t *item = nullptr );
-  monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell = spell_data_t::nil(),
+  monk_buff_t( monk_t &player, std::string_view name, const spell_data_t *spell = spell_data_t::nil(),
                const item_t *item = nullptr );
-  monk_td_t *get_td( player_t *target );
+  monk_td_t &get_td( player_t *target );
   const monk_td_t *find_td( player_t *target ) const;
-  monk_t *p();
-  const monk_t *p() const;
+  monk_t &p();
+  const monk_t &p() const;
 };
 }  // namespace actions
 
