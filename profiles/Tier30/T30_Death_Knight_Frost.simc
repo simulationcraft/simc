@@ -175,7 +175,7 @@ actions.single_target+=/horn_of_winter,if=rune<4&runic_power.deficit>25+(5*buff.
 actions.single_target+=/frost_strike,if=!variable.pooling_runic_power&(variable.rp_buffs|runic_power.deficit<25+(5*buff.rune_of_hysteria.up)|debuff.razorice.stack=5&talent.shattering_blade)
 actions.single_target+=/howling_blast,if=variable.rime_buffs
 actions.single_target+=/glacial_advance,if=!variable.pooling_runic_power&!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<gcd*3)
-actions.single_target+=/obliterate,if=!variable.pooling_runes
+actions.single_target+=/obliterate,if=!variable.pooling_runes&buff.remorseless_winter.up
 actions.single_target+=/horn_of_winter,if=rune<4&runic_power.deficit>25&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>cooldown.horn_of_winter.duration)
 actions.single_target+=/arcane_torrent,if=runic_power.deficit>20
 actions.single_target+=/frost_strike,if=!variable.pooling_runic_power
