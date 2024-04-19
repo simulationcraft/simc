@@ -986,10 +986,10 @@ public:
     player_talent_t wildstalkers_power;
 
     // Keeper of the Grove
-    player_talent_t bloom_infusion;
+    player_talent_t blooming_infusion;
     player_talent_t bounteous_bloom;
     player_talent_t cenarius_might;
-    player_talent_t control_the_dream;
+    player_talent_t control_of_the_dream;
     player_talent_t dream_surge;
     player_talent_t durability_of_nature;
     player_talent_t early_spring;
@@ -9550,12 +9550,11 @@ void druid_t::init_spells()
   talent.yseras_gift                    = ST( "Ysera's Gift" );
 
   sim->print_debug( "Initializing hero talents..." );
-
   // Druid of the Claw
   talent.aggravate_wounds               = HT( "Aggravate Wounds" );
   talent.bestial_strength               = HT( "Bestial Strength" );
   talent.claw_rampage                   = HT( "Claw Rampage" );
-  talent.dreadful_wound                 = HT( "Dreadful Wounds" );
+  talent.dreadful_wound                 = HT( "Dreadful Wound" );
   talent.empowered_shapeshifting        = HT( "Empowered Shapeshifting" );
   talent.fount_of_strength              = HT( "Fount of Strength" );
   talent.killing_strikes                = HT( "Killing Strikes" );
@@ -9585,10 +9584,10 @@ void druid_t::init_spells()
   talent.wildstalkers_power             = HT( "Wildstalker's Power" );
 
   // Keeper of the Grove
-  talent.bloom_infusion                 = HT( "Bloom Infusion" );
+  talent.blooming_infusion              = HT( "Blooming Infusion" );
   talent.bounteous_bloom                = HT( "Bounteous Bloom" );
   talent.cenarius_might                 = HT( "Cenarius' Might" );
-  talent.control_the_dream              = HT( "Control the Dream" );
+  talent.control_of_the_dream           = HT( "Control of the Dream" );
   talent.dream_surge                    = HT( "Dream Surge" );
   talent.durability_of_nature           = HT( "Durability of Nature" );
   talent.early_spring                   = HT( "Early Spring" );
