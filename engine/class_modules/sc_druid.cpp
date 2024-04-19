@@ -7727,11 +7727,8 @@ struct starfall_t : public ap_spender_t
   {
     if ( p()->talent.aetherial_kindling.ok() )
     {
-      for ( auto t : p()->sim->target_non_sleeping_list )
-      {
-        td( t )->dots.moonfire->adjust_duration( dot_ext, max_ext );
-        td( t )->dots.sunfire->adjust_duration( dot_ext, max_ext );
-      }
+      range::for_each( p()->dot_list.moonfire, [ this ]( dot_t* d ) { d->adjust_duration( dot_ext, max_ext ); } );
+      range::for_each( p()->dot_list.sunfire, [ this ]( dot_t* d ) { d->adjust_duration( dot_ext, max_ext ); } );
     }
 
     base_t::execute();
