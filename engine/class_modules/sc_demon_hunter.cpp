@@ -440,7 +440,7 @@ public:
 
     struct aldrachi_reaver_talents_t
     {
-      player_talent_t art_of_the_glaive;  // NYI
+      player_talent_t art_of_the_glaive;
 
       player_talent_t keen_engagement;
       player_talent_t preemptive_strike;   // NYI
@@ -1456,6 +1456,9 @@ public:
     bool fiery_demise      = false;
     bool fires_of_fel      = false;
     bool t31_vengeance_2pc = true;
+
+    // Aldrachi Reaver
+    bool reavers_mark = false;
   } affected_by;
 
   std::vector<damage_buff_t*> direct_damage_buffs;
@@ -1593,6 +1596,11 @@ public:
                                    ab::data().affected_by( p->set_bonuses.t30_vengeance_2pc_buff->effectN( 2 ) );
       }
     }
+
+    if (p->talent.aldrachi_reaver.art_of_the_glaive->ok())
+    {
+      affected_by.reavers_mark = ab::data().affected_by( p->hero_spec.reavers_mark->effectN( 1 ) );
+    }
   }
 
   demon_hunter_t* p()
@@ -1705,6 +1713,11 @@ public:
     if ( affected_by.fiery_demise && td( target )->dots.fiery_brand->is_ticking() )
     {
       m *= 1.0 + p()->talent.vengeance.fiery_demise->effectN( 1 ).percent();
+    }
+
+    if ( affected_by.reavers_mark && td( target )->debuffs.reavers_mark->check() )
+    {
+      m *= 1.0 + p()->hero_spec.reavers_mark->effectN( 1 ).percent();
     }
 
     return m;
