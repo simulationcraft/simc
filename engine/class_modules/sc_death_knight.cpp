@@ -560,6 +560,8 @@ public:
   struct buffs_t {
     // Shared
     buff_t* antimagic_shell;
+    buff_t* antimagic_shell_horsemen;
+    buff_t* antimagic_shell_horsemen_icd;
     buff_t* antimagic_zone;
     buff_t* amz_timing;
     propagate_const<buff_t*> icebound_fortitude;
@@ -723,6 +725,7 @@ public:
     // Shared
     propagate_const<gain_t*> antimagic_shell; // RP from magic damage absorbed
     propagate_const<gain_t*> antimagic_zone; // RP from magic damage absorbed
+    propagate_const<gain_t*> antimagic_shell_horsemen; // RP from magic damage absorbed
     gain_t* rune; // Rune regeneration
     propagate_const<gain_t*> rune_of_hysteria;
     propagate_const<gain_t*> spirit_drain;
@@ -1030,7 +1033,7 @@ public:
       player_talent_t on_a_paler_horse; // NYI
       player_talent_t death_charge; // NYI
       player_talent_t mograines_might;
-      player_talent_t horsemens_aid; // NYI
+      player_talent_t horsemens_aid;
       player_talent_t pact_of_the_apocalypse; // NYI
       player_talent_t whitemanes_famine;
       player_talent_t nazgrims_conquest;
@@ -1369,6 +1372,7 @@ public:
     bool amz_specified = false;
     double average_cs_travel_time = 0.4;
     timespan_t first_ams_cast = 20_s;
+    double horsemen_ams_absorb_percent = 0.6;
   } options;
 
   // Runes
@@ -3419,6 +3423,29 @@ struct horseman_pet_t : public death_knight_pet_t
     }
   };
 
+  struct horseman_ams_t : public horseman_spell_t
+  {
+    horseman_ams_t( util::string_view name, horseman_pet_t* p, util::string_view options_str ) :
+      horseman_spell_t( p, name, p -> dk() -> pet_spell.rider_ams )
+    {
+      parse_options( options_str );
+      set_target( p -> owner );
+    }
+
+    void execute() override
+    {
+      horseman_spell_t::execute();
+      pet() -> dk() -> buffs.antimagic_shell_horsemen -> trigger();
+      pet() -> dk() -> buffs.antimagic_shell_horsemen_icd -> trigger();
+    }
+
+    bool ready() override
+    {
+      horseman_spell_t::ready();
+      return !pet() -> dk() -> buffs.antimagic_shell_horsemen_icd -> check();
+    }
+  };
+
   horseman_pet_t( death_knight_t* owner, util::string_view name, bool guardian = false, bool dynamic = true )
     : death_knight_pet_t( owner, name, guardian, true, dynamic ), rp_spent( 0 ), current_pool( 0 )
   {
@@ -3450,6 +3477,25 @@ struct horseman_pet_t : public death_knight_pet_t
     death_knight_pet_t::reset();
     rp_spent = 0;
     current_pool = 0;
+  }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    // Default "auto-pilot" pet APL (if everything is left on auto-cast
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    if ( dk()->talent.rider.horsemens_aid.ok() )
+    {
+      def->add_action( "antimagic_shell_horsemen" );
+    }
+  }
+
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
+  {
+    if (name == "antimagic_shell_horsemen") return new horseman_ams_t( name, this, options_str );
+
+    return death_knight_pet_t::create_action( name, options_str );
   }
 
   attack_t* create_auto_attack() override
@@ -3531,7 +3577,7 @@ struct mograine_pet_t : public horseman_pet_t
 
   void init_action_list() override
   {
-    death_knight_pet_t::init_action_list();
+    horseman_pet_t::init_action_list();
 
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
@@ -3542,7 +3588,7 @@ struct mograine_pet_t : public horseman_pet_t
   {
     if (name == "heart_strike") return new heart_strike_mograine_t( name, this, options_str );
 
-    return death_knight_pet_t::create_action( name, options_str );
+    return horseman_pet_t::create_action( name, options_str );
   }
 };
 
@@ -3633,7 +3679,7 @@ struct whitemane_pet_t : public horseman_pet_t
 
   void init_action_list() override
   {
-    death_knight_pet_t::init_action_list();
+    horseman_pet_t::init_action_list();
 
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
@@ -3644,7 +3690,7 @@ struct whitemane_pet_t : public horseman_pet_t
   {
     if (name == "death_coil") return new death_coil_whitemane_t( name, this, options_str );
 
-    return death_knight_pet_t::create_action( name, options_str );
+    return horseman_pet_t::create_action( name, options_str );
   }
 };
 
@@ -3716,7 +3762,7 @@ struct trollbane_pet_t : public horseman_pet_t
 
   void init_action_list() override
   {
-    death_knight_pet_t::init_action_list();
+    horseman_pet_t::init_action_list();
 
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
@@ -3727,7 +3773,7 @@ struct trollbane_pet_t : public horseman_pet_t
   {
     if (name == "obliterate") return new obliterate_trollbane_t( name, this, options_str );
 
-    return death_knight_pet_t::create_action( name, options_str );
+    return horseman_pet_t::create_action( name, options_str );
   }
 };
 
@@ -3780,7 +3826,7 @@ struct nazgrim_pet_t : public horseman_pet_t
 
   void init_action_list() override
   {
-    death_knight_pet_t::init_action_list();
+    horseman_pet_t::init_action_list();
 
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
@@ -3791,7 +3837,7 @@ struct nazgrim_pet_t : public horseman_pet_t
   {
     if (name == "scourge_strike") return new scourge_strike_nazgrim_t( name, this, options_str );
 
-    return death_knight_pet_t::create_action( name, options_str );
+    return horseman_pet_t::create_action( name, options_str );
   }
 };
 
@@ -8240,37 +8286,42 @@ struct unholy_assault_t final : public death_knight_melee_attack_t
 
 // Anti-magic Shell =========================================================
 
-struct antimagic_shell_buff_t final : public buff_t
+struct ams_parent_buff_t : public buff_t
 {
   double remaining_absorb;
   double damage;
+  bool horsemen;
 
-  antimagic_shell_buff_t( death_knight_t* p ) :
-    buff_t( p, "antimagic_shell", p -> talent.antimagic_shell ),
-    remaining_absorb( 0.0 ), damage( 0 )
+  ams_parent_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell, bool horsemen ) 
+    : buff_t( p, name, spell ), remaining_absorb( 0 ), damage( 0 ), horsemen( horsemen )
   {
-    cooldown -> duration = 0_ms;
-    apply_affecting_aura( p->talent.antimagic_barrier );
+    cooldown->duration = 0_ms;
+    double horsemen_reduction = 1.0;
+    if ( horsemen )
+      horsemen_reduction = 0.8;  // Doesnt Appear to be in spell data, using tooltip value for now
 
-    if( p -> options.ams_absorb_percent > 0 )
+    if ( p->options.ams_absorb_percent > 0 || p->options.horsemen_ams_absorb_percent > 0 )
     {
       set_period( 1_s );
       set_tick_time_behavior( buff_tick_time_behavior::HASTED );
-      set_tick_callback( [ this, p ] ( buff_t*, int, timespan_t )
-      {
-        if ( p -> specialization() == DEATH_KNIGHT_UNHOLY || p -> specialization() == DEATH_KNIGHT_FROST )
+      set_tick_callback( [ this, p, horsemen_reduction, horsemen ]( buff_t*, int, timespan_t ) {
+        if ( p->specialization() == DEATH_KNIGHT_UNHOLY || p->specialization() == DEATH_KNIGHT_FROST )
         {
-          double opt = p -> options.ams_absorb_percent;
+          double opt   = horsemen ? p->options.horsemen_ams_absorb_percent : p->options.ams_absorb_percent;
           double ticks = buff_duration() / tick_time();
-          double pct = opt / ticks;
-          damage = ( p->resources.max[ RESOURCE_HEALTH ] * ( p -> talent.antimagic_shell -> effectN( 2 ).percent() ) * ( 1.0 + p->cache.heal_versatility() ) * ( 1.0 + p->talent.gloom_ward->effectN( 1 ).percent() ) * ( 1.0 + p -> talent.antimagic_barrier -> effectN( 3 ).percent() ) ) * pct;
-          double absorbed = std::min( damage,
-                                  debug_cast< antimagic_shell_buff_t* >( p -> buffs.antimagic_shell ) -> calc_absorb() );
+          double pct   = opt / ticks;
+
+          damage       = ( p->resources.max[ RESOURCE_HEALTH ] * ( p->talent.antimagic_shell->effectN( 2 ).percent() ) *
+                     ( 1.0 + p->cache.heal_versatility() ) * ( 1.0 + p->talent.gloom_ward->effectN( 1 ).percent() ) *
+                     ( 1.0 + p->talent.antimagic_barrier->effectN( 3 ).percent() ) ) *
+                   pct * horsemen_reduction;
+          double absorbed =
+              std::min( damage, debug_cast<ams_parent_buff_t*>( p->buffs.antimagic_shell )->calc_absorb() );
 
           // AMS generates 0.833~ runic power per percentage max health absorbed.
-          double rp_generated = absorbed / p->resources.max[RESOURCE_HEALTH] * 83.333;
+          double rp_generated = absorbed / p->resources.max[ RESOURCE_HEALTH ] * 83.333;
 
-          p -> resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), p -> gains.antimagic_shell );
+          p->resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), horsemen ? p->gains.antimagic_shell_horsemen : p->gains.antimagic_shell );
         }
       } );
     }
@@ -8293,22 +8344,25 @@ struct antimagic_shell_buff_t final : public buff_t
   double calc_absorb()
   {
     death_knight_t* dk = debug_cast< death_knight_t* >( player );
-    double max_absorb = dk -> resources.max[ RESOURCE_HEALTH ] * dk -> talent.antimagic_shell -> effectN( 2 ).percent();
+    double max_absorb = dk->resources.max[ RESOURCE_HEALTH ] * dk->talent.antimagic_shell->effectN( 2 ).percent();
 
-    max_absorb *= 1.0 + dk -> talent.antimagic_barrier -> effectN( 2 ).percent();
+    max_absorb *= 1.0 + dk->talent.antimagic_barrier->effectN( 2 ).percent();
 
-    max_absorb *= 1.0 + dk -> cache.heal_versatility();
+    max_absorb *= 1.0 + dk->cache.heal_versatility();
 
-    max_absorb *= 1.0 + dk -> talent.gloom_ward -> effectN( 1 ).percent();
+    max_absorb *= 1.0 + dk->talent.gloom_ward->effectN( 1 ).percent();
+
+    if( horsemen )
+      max_absorb *= 0.8;
 
     return max_absorb;
   }
 
-  double absorb_damage( double incoming_damage )
+  virtual double absorb_damage( double incoming_damage )
   {
-    if ( incoming_damage >= remaining_absorb )
+    if (incoming_damage >= remaining_absorb)
     {
-      this -> expire();
+      this->expire();
 
       return remaining_absorb;
     }
@@ -8316,6 +8370,24 @@ struct antimagic_shell_buff_t final : public buff_t
     remaining_absorb -= incoming_damage;
 
     return incoming_damage;
+  }
+};
+
+struct antimagic_shell_buff_t : public ams_parent_buff_t
+{
+  antimagic_shell_buff_t( death_knight_t* p )
+    : ams_parent_buff_t( p, "antimagic_shell", p->talent.antimagic_shell, false )
+  {
+    apply_affecting_aura( p->talent.antimagic_barrier );
+  }
+};
+
+struct antimagic_shell_buff_horseman_t : public ams_parent_buff_t
+{
+  antimagic_shell_buff_horseman_t( death_knight_t* p )
+    : ams_parent_buff_t( p, "antimagic_shell_horseman", p->pet_spell.rider_ams, true )
+  {
+    apply_affecting_aura( p->talent.antimagic_barrier );
   }
 };
 
@@ -9083,6 +9155,7 @@ void death_knight_t::create_options()
   add_option( opt_float( "deathknight.average_cs_travel_time", options.average_cs_travel_time, 0.0, 5.0 ) );
   add_option( opt_specified_buff_times( "deathknight.amz_use_time", options.amz_use_time ) );
   add_option( opt_timespan( "deathknight.first_ams_cast", options.first_ams_cast ) );
+  add_option( opt_float( "deathknight.horsemen_ams_absorb_percent", options.horsemen_ams_absorb_percent, 0.0, 1.0 ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -10788,6 +10861,10 @@ void death_knight_t::create_buffs()
         -> set_trigger_spell( talent.icy_talons );
 
   // Rider of the Apocalypse
+  buffs.antimagic_shell_horsemen = new antimagic_shell_buff_horseman_t( this );
+
+  buffs.antimagic_shell_horsemen_icd = make_buff( this, "antimagic_shell_horsemen_icd", pet_spell.rider_ams_icd )
+    ->set_quiet( true );
 
   buffs.apocalyptic_conquest = make_buff( this, "apocalyptic_conquest", pet_spell.apocalyptic_conquest )
     -> add_invalidate( CACHE_STRENGTH )
@@ -11096,13 +11173,14 @@ void death_knight_t::init_gains()
 
   // Shared
   gains.antimagic_shell                  = get_gain( "Antimagic Shell" );
+  gains.antimagic_shell_horsemen         = get_gain( "Antimagic Shell Horsemen" );
   gains.antimagic_zone                   = get_gain( "Antimagic Zone");
   gains.rune                             = get_gain( "Rune Regeneration" );
   gains.rune_of_hysteria                 = get_gain( "Rune of Hysteria" );
   gains.spirit_drain                     = get_gain( "Spirit Drain" );
   gains.start_of_combat_overflow         = get_gain( "Start of Combat Overflow" );
   gains.coldthirst                       = get_gain( "Coldthirst" );
-  gains.feast_of_souls                   = get_gain( "Feast of Souls" );
+  gains.feast_of_souls                   = get_gain( "A Feast of Souls" );
 
   // Blood
   gains.blood_tap                        = get_gain( "Blood Tap" );
