@@ -13176,6 +13176,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.incessant_tempest );
   action.apply_affecting_aura( talent.killer_instinct );
   action.apply_affecting_aura( talent.nurturing_instinct );
+  action.apply_affecting_aura( talent.primal_fury );
 
   // Multi-spec
   action.apply_affecting_aura( talent.circle_of_life_and_death );
