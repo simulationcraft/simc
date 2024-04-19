@@ -244,8 +244,8 @@ public:
 
     // Aldrachi Reaver
     buff_t* art_of_the_glaive;
-    buff_t* glaive_flurry;
-    buff_t* rending_strike;
+    damage_buff_t* glaive_flurry;
+    damage_buff_t* rending_strike;
 
     // Set Bonuses
     damage_buff_t* t29_havoc_4pc;
@@ -446,7 +446,7 @@ public:
       player_talent_t preemptive_strike;   // NYI
       player_talent_t evasive_action;      // NYI
       player_talent_t unhindered_assault;  // NYI
-      player_talent_t incisive_blade;      // NYI
+      player_talent_t incisive_blade;
 
       player_talent_t aldrachi_tactics;      // NYI
       player_talent_t army_unto_oneself;     // NYI
@@ -1597,7 +1597,7 @@ public:
       }
     }
 
-    if (p->talent.aldrachi_reaver.art_of_the_glaive->ok())
+    if ( p->talent.aldrachi_reaver.art_of_the_glaive->ok() )
     {
       affected_by.reavers_mark = ab::data().affected_by( p->hero_spec.reavers_mark->effectN( 1 ) );
     }
@@ -1648,6 +1648,8 @@ public:
     register_damage_buff( p()->buff.restless_hunter );
     register_damage_buff( p()->buff.t29_havoc_4pc );
     register_damage_buff( p()->buff.t31_vengeance_2pc );
+    register_damage_buff( p()->buff.glaive_flurry );
+    register_damage_buff( p()->buff.rending_strike );
 
     if ( track_cd_waste )
     {
@@ -7074,8 +7076,10 @@ void demon_hunter_t::create_buffs()
   // Aldrachi Reaver ========================================================
 
   buff.art_of_the_glaive = make_buff( this, "art_of_the_glaive", hero_spec.art_of_the_glaive_buff );
-  buff.glaive_flurry     = make_buff( this, "glaive_flurry", hero_spec.glaive_flurry );
-  buff.rending_strike    = make_buff( this, "rending_strike", hero_spec.rending_strike );
+  buff.glaive_flurry     = make_buff<damage_buff_t>( this, "glaive_flurry", hero_spec.glaive_flurry );
+  buff.glaive_flurry->set_default_value_from_effect( 1 )->apply_affecting_aura(talent.aldrachi_reaver.incisive_blade);
+  buff.rending_strike = make_buff<damage_buff_t>( this, "rending_strike", hero_spec.rending_strike );
+  buff.rending_strike->set_default_value_from_effect( 1 )->apply_affecting_aura(talent.aldrachi_reaver.incisive_blade);
 
   // Set Bonus Items ========================================================
 
