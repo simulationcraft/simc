@@ -1501,6 +1501,8 @@ public:
   void      summon_rider( timespan_t duration, bool random );
   void      extend_rider( double amount );
   void      trigger_whitemanes_famine( player_t* target );
+  void      trigger_dnd_buffs();
+  void      expire_dnd_buffs();
   // Blood
   void      bone_shield_handler( const action_state_t* ) const;
   // Frost
@@ -3540,13 +3542,22 @@ struct mograine_pet_t : public horseman_pet_t
                    ->set_tick_zero( true )
                    ->set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */,
                                                   timespan_t /* tick_time */ ) { dnd_damage->execute(); } )
-                   ->set_stack_change_callback( [ this ]( buff_t* buff, int /*old_*/ , int new_) {
-                     if ( dk()->talent.rider.mograines_might.ok() )
+                   ->set_stack_change_callback( [ this ]( buff_t* buff, int /*old_*/, int new_ ) {
+                     if ( new_ )
                      {
-                       if( new_ )
-                         dk()->buffs.mograines_might -> trigger();
-                       else
-                         dk()->buffs.mograines_might -> expire();
+                       if ( dk()->talent.rider.mograines_might.ok())
+                       {
+                         dk()->buffs.mograines_might->trigger();
+                       }
+                       dk()->trigger_dnd_buffs();
+                     }
+                     else
+                     {
+                       if (dk()->talent.rider.mograines_might.ok())
+                       {
+                          dk()->buffs.mograines_might->expire();
+                       }
+                       dk()->expire_dnd_buffs();
                      }
                    } );
   }
@@ -5864,18 +5875,6 @@ struct death_and_decay_base_t : public death_knight_spell_t
         p() -> buffs.perseverance_of_the_ebon_blade -> trigger();
     }
 
-    if ( p() -> talent.unholy_ground.ok() )
-    {
-      p() -> buffs.unholy_ground -> trigger();
-      p() -> buffs.unholy_ground -> set_duration( data().duration() );
-    }
-
-    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && p() -> talent.blood.sanguine_ground.ok() )
-    {
-      p() -> buffs.sanguine_ground -> trigger();
-      p() -> buffs.sanguine_ground -> set_duration( data().duration() );
-    }
-
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .target( target )
       .duration( data().duration() )
@@ -5889,9 +5888,11 @@ struct death_and_decay_base_t : public death_knight_spell_t
         {
           case ground_aoe_params_t::EVENT_CREATED:
             p() -> active_dnd = event;
+            p() -> trigger_dnd_buffs();
             break;
           case ground_aoe_params_t::EVENT_DESTRUCTED:
             p() -> active_dnd = nullptr;
+            p() -> expire_dnd_buffs();
             break;
           default:
             break;
@@ -9308,17 +9309,15 @@ void death_knight_t::trigger_virulent_plague_death( player_t* target )
 
 bool death_knight_t::in_death_and_decay() const
 {
-  if ( ! sim -> distance_targeting_enabled || ! active_dnd )
-    return active_dnd != nullptr;
-  
-  bool in_dnd = false;
-  if (get_ground_aoe_distance( *active_dnd->pulse_state ) <= active_dnd->pulse_state->action->radius ||
-       talent.rider.mograines_might.ok() && buffs.mograines_might->check())
+  if ( talent.rider.mograines_might.ok() && buffs.mograines_might->check() )
   {
-    in_dnd = true;
+    return true;
   }
 
-  return in_dnd;
+  if ( !sim->distance_targeting_enabled || !active_dnd )
+    return active_dnd != nullptr;
+  
+  return get_ground_aoe_distance( *active_dnd->pulse_state ) <= active_dnd->pulse_state->action->radius;
 }
 
 unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
@@ -9713,6 +9712,36 @@ void death_knight_t::trigger_whitemanes_famine( player_t* main_target )
       }
     }
   }
+}
+
+void death_knight_t::trigger_dnd_buffs()
+{
+  if ( !talent.unholy_ground.ok() && !talent.blood.sanguine_ground.ok() )
+    return;
+
+  if ( !in_death_and_decay() )
+    return;
+
+  if ( talent.unholy_ground.ok() )
+    buffs.unholy_ground->trigger();
+
+  if ( talent.blood.sanguine_ground.ok() )
+    buffs.sanguine_ground->trigger();
+}
+
+void death_knight_t::expire_dnd_buffs()
+{
+  if ( !talent.unholy_ground.ok() && !talent.blood.sanguine_ground.ok() )
+    return;
+
+  if ( in_death_and_decay() )
+    return;
+
+  if ( talent.unholy_ground.ok() )
+    buffs.unholy_ground->expire();
+
+  if ( talent.blood.sanguine_ground.ok() )
+    buffs.sanguine_ground->expire();
 }
 // ==========================================================================
 // Death Knight Character Definition
@@ -10824,8 +10853,9 @@ void death_knight_t::create_buffs()
         -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
         -> apply_affecting_aura( talent.unholy_bond );
 
-  buffs.unholy_ground = make_buff( this, "unholy_ground", spell.unholy_ground_buff)
+  buffs.unholy_ground = make_buff( this, "unholy_ground", spell.unholy_ground_buff )
         -> set_default_value_from_effect( 1 )
+        -> set_duration( 0_ms ) // Handled by trigger_dnd_buffs() & expire_dnd_buffs()
         -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buffs.rune_of_hysteria = make_buff( this, "rune_of_hysteria", spell.rune_of_hysteria_buff )
@@ -10869,7 +10899,7 @@ void death_knight_t::create_buffs()
 
   buffs.nazgrims_conquest = make_buff( this, "nazgrims_conquest", talent.rider.nazgrims_conquest )
     -> add_invalidate( CACHE_STRENGTH )
-    -> set_default_value_from_effect( 3 )
+    -> set_default_value_from_effect( 2 )
     -> set_max_stack( 999 );
 
   buffs.mograines_might = make_buff( this , "mograines_might", pet_spell.mograines_might_buff )
@@ -10954,6 +10984,7 @@ void death_knight_t::create_buffs()
 
   buffs.sanguine_ground = make_buff( this, "sanguine_ground", spell.sanguine_ground )
         ->set_default_value_from_effect( 1 )
+        ->set_duration( 0_ms ) // Handled by trigger_dnd_buffs() & expire_dnd_buffs()
         ->set_schools_from_effect( 1 );
 
   buffs.tombstone = make_buff<absorb_buff_t>( this, "tombstone", talent.blood.tombstone )
