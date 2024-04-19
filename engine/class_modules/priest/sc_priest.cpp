@@ -1540,7 +1540,7 @@ public:
   entropic_rift_t( priest_t& p )
     : priest_spell_t( "entropic_rift", p, p.talents.voidweaver.entropic_rift ),
       damage( new entropic_rift_damage_t( priest() ) ),
-      duration( priest().talents.voidweaver.entropic_rift_aoe->duration() - 1_s )
+      duration( priest().talents.voidweaver.entropic_rift_aoe->duration() )
   {
     ground_aoe = true;
     // TODO: This is extremely small to start with for some reason
@@ -1577,7 +1577,7 @@ public:
     state_t* s = cast_state( get_state() );
 
     // radius   = radius + s->size_extension;
-    duration = duration + timespan_t::from_seconds( s->duration_extension );
+    // duration = duration + timespan_t::from_seconds( s->duration_extension );
 
     priest_spell_t::update_state( s, flags, rt );
   }
@@ -1591,12 +1591,31 @@ public:
     snapshot_state( s, amount_type( s ) );
   }
 
+  void try_extend_duration()
+  {
+    if ( !p().active_entropic_rift )
+      return;
+
+    if ( p().active_entropic_rift->current_pulse > 0 )
+    {
+      p().active_entropic_rift->current_pulse--;
+      sim->print_debug( "{} extends entropic rift by removing a pulse. New Current Pulse: {} ", p().name(),
+                        p().active_entropic_rift->current_pulse );
+    }
+    else
+    {
+      make_event( sim, 1_s, [ this ] { try_extend_duration(); } );
+    }
+  }
+
   void extend_rift_duration()
   {
     state_t* s            = cast_state( get_state() );
     s->duration_extension = s->duration_extension + 1;
 
     snapshot_state( s, amount_type( s ) );
+    
+    try_extend_duration();
   }
 
   void execute() override
@@ -1630,7 +1649,7 @@ public:
         ground_aoe_params_t()
             .target( target )
             // Remove 1_s to compensate for travel
-            .duration( duration )
+            .n_pulses( static_cast<uint32_t>(duration / timespan_t::from_seconds( data().effectN( 2 ).base_value() )))
             .pulse_time( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
             .action( damage )
             .x( target->x_position )
@@ -3622,7 +3641,8 @@ void priest_t::extend_entropic_rift()
   // TODO: refactor this to make more sense
   if ( buffs.darkening_horizon->check() < max_stacks )
   {
-    auto remains   = active_entropic_rift->remains();
+    auto remains = ( active_entropic_rift->params->n_pulses() - active_entropic_rift->current_pulse ) *
+                   active_entropic_rift->pulse_time();
     auto extension = timespan_t::from_seconds( talents.voidweaver.darkening_horizon->effectN( 3 ).base_value() );
     sim->print_debug( "Extending active Entropic Rift by {}. {} duration left.", extension, extension + remains );
 
