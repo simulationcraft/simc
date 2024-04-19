@@ -1039,6 +1039,7 @@ public:
     const spell_data_t* bear_form_passive_2;
     const spell_data_t* cat_form_override;  // swipe/thrash
     const spell_data_t* cat_form_passive;
+    const spell_data_t* cat_form_passive_2;
     const spell_data_t* cat_form_speed;
     const spell_data_t* feral_affinity;
     const spell_data_t* improved_prowl;  // stealth rake
@@ -1639,6 +1640,8 @@ public:
   {
     // Class
     parse_effects( p()->buff.cat_form );
+    parse_effects( p()->spec.cat_form_passive_2, p()->talent.hunt_beneath_the_open_skies,
+                   [ this ] { return p()->buff.cat_form->check(); } );
     parse_effects( p()->buff.moonkin_form );
     parse_effects( p()->buff.rising_light_falling_night_day );
 
@@ -9662,6 +9665,7 @@ void druid_t::init_spells()
   spec.bear_form_passive_2      = find_spell( 21178 );
   spec.cat_form_override        = find_spell( 48629 );
   spec.cat_form_passive         = find_spell( 3025 );
+  spec.cat_form_passive_2       = find_spell( 106840 );
   spec.cat_form_speed           = find_spell( 113636 );
   spec.feral_affinity           = find_specialization_spell( "Feral Affinity" );
   spec.improved_prowl           = find_specialization_spell( "Improved Prowl" );
