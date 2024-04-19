@@ -29,7 +29,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/chi_burst,if=talent.chi_burst.enabled
 actions.precombat+=/chi_wave,if=talent.chi_wave.enabled
-actions.precombat+=/summon_white_tiger_statue,if=talent.summon_white_tiger_statue.enabled
+actions.precombat+=/summon_white_tiger_statue
 
 # Executed every time the actor is available.
 actions=auto_attack
