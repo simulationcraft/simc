@@ -1644,10 +1644,10 @@ public:
 
     switch( p()->specialization() )
     {
-      case DRUID_BALANCE:     parse_effects( p()->buff.heart_of_the_wild, 0b01000000000111U ); break;
-      case DRUID_FERAL:       parse_effects( p()->buff.heart_of_the_wild, 0b10000000111000U ); break;
-      case DRUID_GUARDIAN:    parse_effects( p()->buff.heart_of_the_wild, 0b00000111000000U ); break;
-      case DRUID_RESTORATION: parse_effects( p()->buff.heart_of_the_wild, 0b00111000000000U ); break;
+      case DRUID_BALANCE:     parse_effects( p()->buff.heart_of_the_wild, 0b101000000000111U ); break;
+      case DRUID_FERAL:       parse_effects( p()->buff.heart_of_the_wild, 0b010000000111000U ); break;
+      case DRUID_GUARDIAN:    parse_effects( p()->buff.heart_of_the_wild, 0b000000111000000U ); break;
+      case DRUID_RESTORATION: parse_effects( p()->buff.heart_of_the_wild, 0b000111000000000U ); break;
       default: break;
     }
 
