@@ -443,8 +443,8 @@ public:
       player_talent_t art_of_the_glaive;
 
       player_talent_t keen_engagement;
-      player_talent_t preemptive_strike;   // NYI
-      player_talent_t evasive_action;      // NYI
+      player_talent_t preemptive_strike;  // NYI
+      player_talent_t evasive_action;     // NYI
       player_talent_t unhindered_assault;
       player_talent_t incisive_blade;
 
@@ -792,6 +792,7 @@ public:
 
     // Aldrachi Reaver
     spell_t* art_of_the_glaive = nullptr;
+    spell_t* preemptive_strike = nullptr;
   } active;
 
   // Pets
@@ -4368,6 +4369,15 @@ struct art_of_the_glaive_t : public demon_hunter_spell_t
   }
 };
 
+struct preemptive_strike_t : public demon_hunter_spell_t
+{
+  preemptive_strike_t( util::string_view name, demon_hunter_t* p )
+    : demon_hunter_spell_t( name, p, p->talent.aldrachi_reaver.preemptive_strike->effectN( 1 ).trigger() )
+  {
+    background = dual = true;
+  }
+};
+
 }  // end namespace spells
 
 // ==========================================================================
@@ -6091,6 +6101,9 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
     if ( td( target )->debuffs.serrated_glaive->up() )
       p()->proc.throw_glaive_in_serrated_glaive->occur();
+
+    if ( p()->active.preemptive_strike )
+      p()->active.preemptive_strike->execute_on_target( target );
   }
 };
 
@@ -6118,6 +6131,10 @@ struct reavers_glaive_t : public demon_hunter_attack_t
   void execute() override
   {
     demon_hunter_attack_t::execute();
+
+    if ( p()->active.preemptive_strike )
+      p()->active.preemptive_strike->execute_on_target( target );
+
     p()->buff.art_of_the_glaive->expire();
     p()->buff.glaive_flurry->trigger();
     p()->buff.rending_strike->trigger();
@@ -7083,9 +7100,10 @@ void demon_hunter_t::create_buffs()
 
   buff.art_of_the_glaive = make_buff( this, "art_of_the_glaive", hero_spec.art_of_the_glaive_buff );
   buff.glaive_flurry     = make_buff<damage_buff_t>( this, "glaive_flurry", hero_spec.glaive_flurry );
-  buff.glaive_flurry->set_default_value_from_effect( 1 )->apply_affecting_aura(talent.aldrachi_reaver.incisive_blade);
+  buff.glaive_flurry->set_default_value_from_effect( 1 )->apply_affecting_aura( talent.aldrachi_reaver.incisive_blade );
   buff.rending_strike = make_buff<damage_buff_t>( this, "rending_strike", hero_spec.rending_strike );
-  buff.rending_strike->set_default_value_from_effect( 1 )->apply_affecting_aura(talent.aldrachi_reaver.incisive_blade);
+  buff.rending_strike->set_default_value_from_effect( 1 )->apply_affecting_aura(
+      talent.aldrachi_reaver.incisive_blade );
 
   // Set Bonus Items ========================================================
 
@@ -8101,6 +8119,10 @@ void demon_hunter_t::init_spells()
   if ( talent.aldrachi_reaver.art_of_the_glaive->ok() )
   {
     active.art_of_the_glaive = get_background_action<art_of_the_glaive_t>( "art_of_the_glaive" );
+  }
+  if ( talent.aldrachi_reaver.preemptive_strike->ok() )
+  {
+    active.preemptive_strike = get_background_action<preemptive_strike_t>( "preemptive_strike" );
   }
 }
 
