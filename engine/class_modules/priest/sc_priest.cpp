@@ -154,6 +154,12 @@ public:
     {
       priest().trigger_entropic_rift();
     }
+
+    // TODO: Should only come from Void Blast (NYI)
+    if ( priest().talents.voidweaver.darkening_horizon.enabled() )
+    {
+      priest().extend_entropic_rift();
+    }
   }
 
   bool insidious_ire_active() const
@@ -1486,29 +1492,42 @@ struct entropic_rift_t final : public priest_spell_t
       damage( new entropic_rift_damage_t( priest() ) )
   {
     ground_aoe = true;
-    radius     = priest().talents.voidweaver.entropic_rift_aoe->effectN( 2 ).radius_max();
+    // TODO: This is extremely small to start with for some reason
+    radius = priest().talents.voidweaver.entropic_rift_aoe->effectN( 2 ).radius_max() / 2;
   }
 
   timespan_t travel_time() const override
   {
     timespan_t t = priest_spell_t::travel_time();
 
-    // TODO: this is super feelycraft based on videos
-    // Entropic Rift activates after about 0.5 s, even in melee range.
-    t = std::max( t, 0.5_s );
+    // Entropic Rift activates after 1s, even in melee range.
+    t = std::max( t, 1_s );
 
     return t;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( priest().talents.voidweaver.voidheart.enabled() )
+    {
+      priest().buffs.voidheart->trigger();
+    }
   }
 
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
 
+    priest().buffs.entropic_rift->trigger();
+
     make_event<ground_aoe_event_t>(
         *sim, &priest(),
         ground_aoe_params_t()
             .target( target )
-            .duration( priest().talents.voidweaver.entropic_rift_aoe->duration() )
+            // Remove 1_s to compensate for travel
+            .duration( priest().talents.voidweaver.entropic_rift_aoe->duration() - 1_s )
             .pulse_time( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
             .action( damage )
             .x( target->x_position )
@@ -1522,6 +1541,10 @@ struct entropic_rift_t final : public priest_spell_t
                   break;
                 case ground_aoe_params_t::EVENT_DESTRUCTED:
                   priest().active_entropic_rift = nullptr;
+                  break;
+                case ground_aoe_params_t::EVENT_STOPPED:
+                  priest().buffs.entropic_rift->expire();
+                  priest().buffs.darkening_horizon->expire();
                   break;
                 default:
                   break;
@@ -2523,6 +2546,12 @@ double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
+  if ( specialization() == PRIEST_SHADOW && talents.voidweaver.voidheart.enabled() && buffs.voidheart->check() &&
+       dbc::is_school( school, SCHOOL_SHADOW ) )
+  {
+    m *= 1.0 + talents.voidweaver.voidheart->effectN( 1 ).percent();
+  }
+
   return m;
 }
 
@@ -2902,18 +2931,19 @@ void priest_t::init_spells()
 
   // Voidweaver Hero Talents (Discipline/Shadow)
   talents.voidweaver.entropic_rift        = HT( "Entropic Rift" );
-  talents.voidweaver.entropic_rift_aoe    = find_spell( 450193 );        // Contains AoE radius info
-  talents.voidweaver.entropic_rift_damage = find_spell( 447448 );        // Contains damage coeff
-  talents.voidweaver.no_escape            = HT( "No Escape" );           // NYI
-  talents.voidweaver.dark_energy          = HT( "Dark Energy" );         // NYI
-  talents.voidweaver.void_blast           = HT( "Void Blast" );          // NYI
-  talents.voidweaver.inner_quietus        = HT( "Inner Quietus" );       // NYI
-  talents.voidweaver.devour_matter        = HT( "Devour Matter" );       // NYI
-  talents.voidweaver.void_empowerment     = HT( "Void Empowerment" );    // NYI
-  talents.voidweaver.darkening_horizon    = HT( "Darkening Horizon" );   // NYI
-  talents.voidweaver.depth_of_shadows     = HT( "Depth of Shadows" );    // NYI
-  talents.voidweaver.voidwraith           = HT( "Voidwraith" );          // NYI
-  talents.voidweaver.voidheart            = HT( "Voidheart" );           // NYI
+  talents.voidweaver.entropic_rift_aoe    = find_spell( 450193 );       // Contains AoE radius info
+  talents.voidweaver.entropic_rift_damage = find_spell( 447448 );       // Contains damage coeff
+  talents.voidweaver.no_escape            = HT( "No Escape" );          // NYI
+  talents.voidweaver.dark_energy          = HT( "Dark Energy" );        // NYI
+  talents.voidweaver.void_blast           = HT( "Void Blast" );         // NYI
+  talents.voidweaver.inner_quietus        = HT( "Inner Quietus" );      // NYI
+  talents.voidweaver.devour_matter        = HT( "Devour Matter" );      // NYI
+  talents.voidweaver.void_empowerment     = HT( "Void Empowerment" );   // NYI
+  talents.voidweaver.darkening_horizon    = HT( "Darkening Horizon" );  // NYI
+  talents.voidweaver.depth_of_shadows     = HT( "Depth of Shadows" );   // NYI
+  talents.voidweaver.voidwraith           = HT( "Voidwraith" );         // NYI
+  talents.voidweaver.voidheart            = HT( "Voidheart" );
+  talents.voidweaver.voidheart_buff       = find_spell( 449887 );        // Voidheart Buff
   talents.voidweaver.void_infusion        = HT( "Void Infusion" );       // NYI
   talents.voidweaver.void_leech           = HT( "Void Leech" );          // NYI
   talents.voidweaver.embrace_the_shadow   = HT( "Embrace the Shadow" );  // NYI
@@ -2969,6 +2999,18 @@ void priest_t::create_buffs()
           ->set_default_value_from_effect( 1 );
   buffs.words_of_the_pious = make_buff( this, "words_of_the_pious", talents.words_of_the_pious->effectN( 1 ).trigger() )
                                  ->set_default_value_from_effect( 1 );
+
+  // Voidweaver
+  buffs.voidheart = make_buff( this, "voidheart", talents.voidweaver.voidheart_buff )
+                        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  // Tracking buff for the APL
+  buffs.entropic_rift = make_buff( this, "entropic_rift", talents.voidweaver.entropic_rift_aoe );
+  // Tracking buff for Darkening Horizon extension
+  // TODO: use some other buff id or make quiet
+  buffs.darkening_horizon = make_buff( this, "darkening_horizon", talents.voidweaver.entropic_rift_aoe )
+                                ->set_max_stack( talents.voidweaver.darkening_horizon.enabled()
+                                                     ? talents.voidweaver.darkening_horizon->effectN( 2 ).base_value()
+                                                     : 1 );
 
   create_buffs_shadow();
   create_buffs_discipline();
@@ -3447,6 +3489,42 @@ void priest_t::trigger_void_shield( double result_amount )
 void priest_t::trigger_entropic_rift()
 {
   background_actions.entropic_rift->execute();
+}
+
+void priest_t::extend_entropic_rift()
+{
+  if ( !talents.voidweaver.darkening_horizon.enabled() || !active_entropic_rift || !buffs.entropic_rift->check() )
+  {
+    return;
+  }
+
+  auto max_stacks = talents.voidweaver.darkening_horizon->effectN( 2 ).base_value();
+
+  // TODO: refactor this to make more sense
+  if ( buffs.darkening_horizon->check() < max_stacks )
+  {
+    auto remains   = active_entropic_rift->remains();
+    auto extension = timespan_t::from_seconds( talents.voidweaver.darkening_horizon->effectN( 3 ).base_value() );
+    sim->print_debug( "Extending active Entropic Rift by {}. {} duration left.", extension, extension + remains );
+    // TODO: figure out how to extend the active_entropic_rift
+
+    buffs.entropic_rift->extend_duration( this, extension );
+
+    if ( buffs.voidheart->check() )
+    {
+      buffs.voidheart->extend_duration( this, extension );
+    }
+
+    if ( buffs.darkening_horizon->check() )
+    {
+      buffs.darkening_horizon->extend_duration( this, extension );
+      buffs.darkening_horizon->increment();
+    }
+    else
+    {
+      buffs.darkening_horizon->trigger();
+    }
+  }
 }
 
 struct priest_module_t final : public module_t

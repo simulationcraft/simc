@@ -208,6 +208,11 @@ public:
     propagate_const<buff_t*> darkflame_embers;
     propagate_const<buff_t*> darkflame_shroud;
     propagate_const<buff_t*> deaths_torment;
+
+    // Voidweaver
+    propagate_const<buff_t*> voidheart;
+    propagate_const<buff_t*> entropic_rift;
+    propagate_const<buff_t*> darkening_horizon;
   } buffs;
 
   // Talents
@@ -509,6 +514,7 @@ public:
       player_talent_t depth_of_shadows;
       player_talent_t voidwraith;
       player_talent_t voidheart;
+      const spell_data_t* voidheart_buff;
       player_talent_t void_infusion;
       player_talent_t void_leech;
       player_talent_t embrace_the_shadow;
@@ -836,6 +842,7 @@ public:
   // Stores the currently active Entropic Rift event
   ground_aoe_event_t* active_entropic_rift;
   void trigger_entropic_rift();
+  void extend_entropic_rift();
 
   unsigned int specialization_aura_id()
   {
