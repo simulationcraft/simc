@@ -868,7 +868,7 @@ public:
     player_talent_t blood_frenzy;
     player_talent_t brambles;
     player_talent_t bristling_fur;
-    player_talent_t dream_of_cenarius;
+    player_talent_t dream_of_cenarius_bear;
     player_talent_t earthwarden;
     player_talent_t elunes_favored;
     player_talent_t flashing_claws;
@@ -911,6 +911,7 @@ public:
     player_talent_t cenarion_ward;
     player_talent_t cenarius_guidance;
     player_talent_t cultivation;
+    player_talent_t dream_of_cenarius_tree;
     player_talent_t dreamstate;
     player_talent_t efflorescence;
     player_talent_t embrace_of_the_dream;
@@ -9495,7 +9496,7 @@ void druid_t::init_spells()
   talent.blood_frenzy                   = ST( "Blood Frenzy" );
   talent.brambles                       = ST( "Brambles" );
   talent.bristling_fur                  = ST( "Bristling Fur" );
-  talent.dream_of_cenarius              = ST( "Dream of Cenarius" );
+  talent.dream_of_cenarius_bear         = STS( "Dream of Cenarius", DRUID_GUARDIAN );
   talent.earthwarden                    = ST( "Earthwarden" );
   talent.elunes_favored                 = ST( "Elune's Favored" );
   talent.flashing_claws                 = ST( "Flashing Claws" );
@@ -9539,6 +9540,7 @@ void druid_t::init_spells()
   talent.cenarion_ward                  = ST( "Cenarion Ward" );
   talent.cenarius_guidance              = ST( "Cenarius' Guidance" );  // TODO: Incarn bonus NYI
   talent.cultivation                    = ST( "Cultivation" );
+  talent.dream_of_cenarius_tree         = STS( "Dream of Cenarius", DRUID_RESTORATION );  // TODO: NYI
   talent.dreamstate                     = ST( "Dreamstate" );  // TODO: NYI
   talent.efflorescence                  = ST( "Efflorescence" );
   talent.embrace_of_the_dream           = ST( "Embrace of the Dream" );  // TODO: NYI
@@ -10296,8 +10298,8 @@ void druid_t::create_buffs()
   buff.bristling_fur = make_buff_fallback( talent.bristling_fur.ok(), this, "bristling_fur", talent.bristling_fur )
     ->set_cooldown( 0_ms );
 
-  buff.dream_of_cenarius = make_buff_fallback( talent.dream_of_cenarius.ok(),
-      this, "dream_of_cenarius", talent.dream_of_cenarius->effectN( 1 ).trigger() );
+  buff.dream_of_cenarius = make_buff_fallback( talent.dream_of_cenarius_bear.ok(),
+      this, "dream_of_cenarius", talent.dream_of_cenarius_bear->effectN( 1 ).trigger() );
 
   buff.dream_thorns =
       make_buff_fallback<dream_thorns_buff_t>( sets->has_set_bonus( DRUID_GUARDIAN, T31, B2 ), this, "dream_thorns",
@@ -11382,7 +11384,7 @@ void druid_t::init_special_effects()
     create_buff_callback<bristling_fur_cb_t>( driver, buff.bristling_fur );
   }
 
-  if ( talent.dream_of_cenarius.ok() )
+  if ( talent.dream_of_cenarius_bear.ok() )
   {
     struct dream_of_cenarius_cb_t : public druid_cb_t
     {
@@ -11397,8 +11399,8 @@ void druid_t::init_special_effects()
     };
 
     const auto driver = new special_effect_t( this );
-    driver->name_str = talent.dream_of_cenarius->name_cstr();
-    driver->spell_id = talent.dream_of_cenarius->id();
+    driver->name_str = talent.dream_of_cenarius_bear->name_cstr();
+    driver->spell_id = talent.dream_of_cenarius_bear->id();
     driver->cooldown_ = find_spell( 372523 )->duration();
     driver->custom_buff = buff.dream_of_cenarius;
     special_effects.push_back( driver );
