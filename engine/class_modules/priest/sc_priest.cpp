@@ -210,8 +210,10 @@ public:
         priest().trigger_inescapable_torment( s->target );
       }
 
-      if ( priest().buffs.mind_devourer->trigger() )
+      if ( priest().talents.shadow.mind_devourer.enabled() &&
+           rng().roll( priest().talents.shadow.mind_devourer->effectN( 1 ).percent() ) )
       {
+        priest().buffs.mind_devourer->trigger();
         priest().procs.mind_devourer->occur();
       }
 
@@ -1513,6 +1515,12 @@ struct entropic_rift_t final : public priest_spell_t
     if ( priest().talents.voidweaver.voidheart.enabled() )
     {
       priest().buffs.voidheart->trigger();
+    }
+
+    if ( priest().talents.voidweaver.void_empowerment.enabled() )
+    {
+      priest().buffs.mind_devourer->trigger();
+      priest().procs.mind_devourer->occur();
     }
   }
 
@@ -2931,14 +2939,14 @@ void priest_t::init_spells()
 
   // Voidweaver Hero Talents (Discipline/Shadow)
   talents.voidweaver.entropic_rift        = HT( "Entropic Rift" );
-  talents.voidweaver.entropic_rift_aoe    = find_spell( 450193 );       // Contains AoE radius info
-  talents.voidweaver.entropic_rift_damage = find_spell( 447448 );       // Contains damage coeff
-  talents.voidweaver.no_escape            = HT( "No Escape" );          // NYI
-  talents.voidweaver.dark_energy          = HT( "Dark Energy" );        // NYI
-  talents.voidweaver.void_blast           = HT( "Void Blast" );         // NYI
-  talents.voidweaver.inner_quietus        = HT( "Inner Quietus" );      // NYI
-  talents.voidweaver.devour_matter        = HT( "Devour Matter" );      // NYI
-  talents.voidweaver.void_empowerment     = HT( "Void Empowerment" );   // NYI
+  talents.voidweaver.entropic_rift_aoe    = find_spell( 450193 );  // Contains AoE radius info
+  talents.voidweaver.entropic_rift_damage = find_spell( 447448 );  // Contains damage coeff
+  talents.voidweaver.no_escape            = HT( "No Escape" );     // NYI
+  talents.voidweaver.dark_energy          = HT( "Dark Energy" );   // NYI
+  talents.voidweaver.void_blast           = HT( "Void Blast" );    // NYI
+  talents.voidweaver.inner_quietus        = HT( "Inner Quietus" );
+  talents.voidweaver.devour_matter        = HT( "Devour Matter" );  // NYI
+  talents.voidweaver.void_empowerment     = HT( "Void Empowerment" );
   talents.voidweaver.darkening_horizon    = HT( "Darkening Horizon" );  // NYI
   talents.voidweaver.depth_of_shadows     = HT( "Depth of Shadows" );   // NYI
   talents.voidweaver.voidwraith           = HT( "Voidwraith" );         // NYI
@@ -3085,6 +3093,9 @@ void priest_t::apply_affecting_auras_late( action_t& action )
 
   // Disc T31 2pc
   action.apply_affecting_aura( sets->set( PRIEST_DISCIPLINE, T31, B2 ) );
+
+  // Voidweaver Talents
+  action.apply_affecting_aura( talents.voidweaver.inner_quietus );
 }
 
 void priest_t::invalidate_cache( cache_e cache )

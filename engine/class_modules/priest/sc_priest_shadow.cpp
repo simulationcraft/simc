@@ -2150,9 +2150,7 @@ void priest_t::create_buffs_shadow()
 
   buffs.void_torrent = make_buff<buffs::void_torrent_t>( *this );
 
-  buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 373204 ) )
-                            ->set_trigger_spell( talents.shadow.mind_devourer )
-                            ->set_chance( talents.shadow.mind_devourer->effectN( 1 ).percent() );
+  buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 373204 ) );
 
   buffs.shadowy_insight = make_buff<buffs::shadowy_insight_t>( *this );
 
