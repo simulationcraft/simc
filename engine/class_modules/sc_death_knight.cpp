@@ -3536,12 +3536,19 @@ struct mograine_pet_t : public horseman_pet_t
   {
     death_knight_pet_t::create_buffs();
 
-    dnd_aura =
-        make_buff( this, "death_and_decay", dk()->pet_spell.mograines_death_and_decay )
-            ->set_tick_zero( true )
-            ->set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
-              dnd_damage->execute();
-            } );
+    dnd_aura = make_buff( this, "death_and_decay", dk()->pet_spell.mograines_death_and_decay )
+                   ->set_tick_zero( true )
+                   ->set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */,
+                                                  timespan_t /* tick_time */ ) { dnd_damage->execute(); } )
+                   ->set_stack_change_callback( [ this ]( buff_t* buff, int /*old_*/ , int new_) {
+                     if ( dk()->talent.rider.mograines_might.ok() )
+                     {
+                       if( new_ )
+                         dk()->buffs.mograines_might -> trigger();
+                       else
+                         dk()->buffs.mograines_might -> expire();
+                     }
+                   } );
   }
 
   mograine_pet_t( death_knight_t* owner, util::string_view name ) : horseman_pet_t( owner, name )
@@ -3559,20 +3566,12 @@ struct mograine_pet_t : public horseman_pet_t
   {
     horseman_pet_t::arise();
     dnd_aura->trigger();
-    if( dk() -> talent.rider.mograines_might.ok() )
-    {
-      dk()->buffs.mograines_might->trigger();
-    }
   }
 
   void demise() override
   {
     horseman_pet_t::demise();
     dnd_aura->expire();
-    if ( dk()->talent.rider.mograines_might.ok() )
-    {
-      dk()->buffs.mograines_might->expire();
-    }
   }
 
   void init_action_list() override
