@@ -941,6 +941,7 @@ public:
     player_talent_t passing_seasons;
     player_talent_t photosynthesis;
     player_talent_t power_of_the_archdruid;
+    player_talent_t prosperity;
     player_talent_t rampant_growth;
     player_talent_t reforestation;
     player_talent_t regenerative_heartwood;
@@ -9570,6 +9571,7 @@ void druid_t::init_spells()
   talent.passing_seasons                = ST( "Passing Seasons" );
   talent.photosynthesis                 = ST( "Photosynthesis" );
   talent.power_of_the_archdruid         = ST( "Power of the Archdruid" );  // TODO: NYI
+  talent.prosperity                     = ST( "Prosperity" );  // TODO: NYI
   talent.rampant_growth                 = ST( "Rampant Growth" );  // TODO: copy on lb target NYI
   talent.reforestation                  = ST( "Reforestation" );  // TODO: NYI
   talent.regenesis                      = ST( "Regenesis" );  // TODO: NYI
