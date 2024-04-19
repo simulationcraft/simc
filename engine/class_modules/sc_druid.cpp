@@ -13184,7 +13184,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.inner_peace );
   action.apply_affecting_aura( talent.liveliness );
   action.apply_affecting_aura( talent.master_shapeshifter );
-  action.apply_affecting_aura( talent.natural_recovery );
   action.apply_affecting_aura( talent.passing_seasons );
   action.apply_affecting_aura( talent.rampant_growth );
   action.apply_affecting_aura( talent.sabertooth );
