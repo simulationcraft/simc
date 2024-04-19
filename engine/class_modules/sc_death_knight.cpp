@@ -9001,8 +9001,8 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       buffs.rune_mastery -> trigger();
     }
 
-    // Proc Chance currently unknown
-    if ( talent.rider.riders_champion.ok() && rng().roll( 0.15 ) )
+    // Proc Chance does not appear to be in data, using testing data that is current as of 4/19/2024
+    if ( talent.rider.riders_champion.ok() && rng().roll( 0.2 ) )
     {
       summon_rider( spell.summon_whitemane -> duration() , true);
     }
@@ -9649,7 +9649,6 @@ void death_knight_t::chill_streak_bounce( player_t* t )
 
 void death_knight_t::summon_rider( timespan_t duration, bool random )
 {
-  auto last_spawn = pets.riders.begin();
   for ( auto& rider : pets.riders )
   {
     if ( rider->is_sleeping() )
@@ -9657,8 +9656,7 @@ void death_knight_t::summon_rider( timespan_t duration, bool random )
       rider->summon( duration );
       if ( random )
       {
-        last_spawn = range::find( pets.riders, rider );
-        std::rotate( pets.riders.begin(), last_spawn + 1, pets.riders.end() );
+        std::rotate( pets.riders.begin(), pets.riders.begin() + ( rng().range( pets.riders.size() ) ), pets.riders.end() );
         return;
       }
     }
