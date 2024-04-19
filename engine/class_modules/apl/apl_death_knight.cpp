@@ -335,7 +335,7 @@ void frost( player_t* p )
   single_target->add_action( "frost_strike,if=!variable.pooling_runic_power&(variable.rp_buffs|runic_power.deficit<25+(5*buff.rune_of_hysteria.up)|debuff.razorice.stack=5&talent.shattering_blade)" );
   single_target->add_action( "howling_blast,if=variable.rime_buffs" );
   single_target->add_action( "glacial_advance,if=!variable.pooling_runic_power&!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<gcd*3)" );
-  single_target->add_action( "obliterate,if=!variable.pooling_runes" );
+  single_target->add_action( "obliterate,if=!variable.pooling_runes&buff.remorseless_winter.up" );
   single_target->add_action( "horn_of_winter,if=rune<4&runic_power.deficit>25&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>cooldown.horn_of_winter.duration)" );
   single_target->add_action( "arcane_torrent,if=runic_power.deficit>20" );
   single_target->add_action( "frost_strike,if=!variable.pooling_runic_power" );
