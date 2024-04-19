@@ -1457,7 +1457,9 @@ enum class talent_tree : unsigned
   INVALID = 0,
   CLASS,
   SPECIALIZATION,
-  HERO
+  HERO,
+  CONTROL,
+  MAX
 };
 
 enum trait_definition_op : int

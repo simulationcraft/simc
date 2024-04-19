@@ -190,6 +190,12 @@ struct player_t : public actor_t
   // Player selected (trait entry id, rank) tuples
   std::vector<std::tuple<talent_tree, unsigned, unsigned>> player_traits;
 
+  // Player activated sub trees
+  std::set<unsigned> player_sub_trees;
+
+  // Player added sub tree traits that don't require activated sub tree
+  std::vector<unsigned> player_sub_traits;
+
   // Profs
   std::array<int, PROFESSION_MAX> profession;
 

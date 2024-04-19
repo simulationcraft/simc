@@ -4843,7 +4843,7 @@ class TraitGenerator(DataGenerator):
                 if override.startswith('$@spellname') and override[11:].isnumeric():
                     _name = self.db('SpellName')[int(override[11:])].name
 
-            fields.append("{:>35s}".format(f'"{_name}"'))
+            fields.append("{:>40s}".format(f'"{_name}"'))
             fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["specs"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["specs"]))])} }}')
             fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["starter"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["starter"]))])} }}')
 

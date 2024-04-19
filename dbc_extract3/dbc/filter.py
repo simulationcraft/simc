@@ -382,6 +382,15 @@ class TemporaryEnchantItemSet(DataSet):
         return list(set(v[0] for v in self.get()))
 
 class TraitSet(DataSet):
+    # NOTE: assumption is that sub tree ID is at least 5, so there is no conflict with tree enum
+    def _coord_key(self, entry, spec):
+        key_1 = entry['tree']
+
+        if key_1 == 3:
+            key_1 = entry['node'].id_trait_sub_tree
+
+        return (key_1, entry['class_'], spec)
+
     def _filter(self, **kwargs):
         _spec_map = dict(
             (entry.id_parent, entry.id_spec) for entry in self.db('SpecSetMember').values()
@@ -543,7 +552,7 @@ class TraitSet(DataSet):
                 )
 
                 # hero tree nodes have a non-zero TraitNode.id_trait_sub_tree
-                if node['node'].id_trait_sub_tree != 0 and node['node'].ref('id_trait_sub_tree').id_trait_tree == node['node'].id_trait_tree:
+                if node['node'].id_trait_sub_tree != 0:
                     tree_index = 3
 
                 for entry, db2_id in node['entries']:
@@ -559,6 +568,10 @@ class TraitSet(DataSet):
                     _traits[key]['class_'] = class_id if class_id else node_class_id
                     _traits[key]['specs'] |= group_specs | node_specs
                     _traits[key]['starter'] |= group_starter | node_starter
+
+                    # control nodes have a non-zero TraitNodeEntry.id_trait_sub_tree
+                    if entry.id_trait_sub_tree != 0:
+                        _traits[key]['tree'] = 4
 
                     if tree_index != 0 and _traits[key]['tree'] == 0:
                         _traits[key]['tree'] = tree_index
@@ -583,7 +596,7 @@ class TraitSet(DataSet):
                 if entry['tree'] == 1 and spec != 0:
                     continue
 
-                key = (entry['tree'], entry['class_'], spec)
+                key = self._coord_key(entry, spec)
 
                 if key not in _coords:
                     _coords[key] = {
@@ -624,7 +637,7 @@ class TraitSet(DataSet):
                 if entry['tree'] == 1 and spec != 0:
                     continue
 
-                key = (entry['tree'], entry['class_'], spec)
+                key = self._coord_key(entry, spec)
 
                 if key not in _coords:
                     continue

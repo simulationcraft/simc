@@ -1982,6 +1982,33 @@ std::string raidbots_talent_render_src( std::string_view talent_str, unsigned le
                       ptr ? "mimiron" : "www", base64_to_url( talent_str ), level, width, mini ? "&mini=1" : "" );
 }
 
+template <typename T>
+void print_html_talent_table( report::sc_html_stream& os, const player_t& p, std::string_view title, size_t points, const T& traits )
+{
+  if ( !points )
+    return;
+
+  os.format( "<table class=\"sc\"><tr><th></th><th>{} Talents [{}]</th></tr>\n", title, points );
+
+  for ( unsigned row = 0; row < traits.size(); row++ )
+  {
+    os.format( "<tr><th class=\"left\">{}</th><td><ul class=\"float\">\n", row + 1 );
+
+    for ( const auto& [ trait, rank ] : traits[ row ] )
+    {
+      bool partial = rank != trait->max_ranks;
+
+      os.format( "<li class=\"nowrap{}\">{} [{}]{}</li>\n",
+                 partial ? " filler" : "",
+                 report_decorators::decorated_spell_data( *p.sim, p.find_spell( trait->id_spell ) ),
+                 rank,
+                 partial ? "<b>*</b>" : "" );
+    }
+    os << "</ul></td></tr>\n";
+  }
+  os << "</table>\n";
+}
+
 void print_html_talents( report::sc_html_stream& os, const player_t& p )
 {
   if ( !p.collected_data.fight_length.mean() || p.player_traits.empty() )
@@ -1993,40 +2020,43 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
 
   std::array<std::vector<talentrank_t>, TREE_ROWS> class_traits;
   std::array<std::vector<talentrank_t>, TREE_ROWS> spec_traits;
-  std::array<std::vector<talentrank_t>, TREE_ROWS> hero_traits;
+  std::map<unsigned, std::array<std::vector<talentrank_t>, HERO_TREE_ROWS>> hero_traits;
   size_t class_points = 0;
   size_t spec_points = 0;
-  size_t hero_points = 0;
-  std::set<unsigned> hero_trees;  // future proof for multiple trees
+  std::map<unsigned, size_t> hero_points;
 
   for ( auto t : p.player_traits )
   {
-    std::array<std::vector<talentrank_t>, TREE_ROWS>* tree;
     auto trait = trait_data_t::find( std::get<1>( t ), maybe_ptr( p.dbc->ptr ) );
     auto rank = std::get<2>( t );
 
-    // TODO: confirm if some of the tree=0 nodes are indicators of selected hero tree which we can use instead of
-    // inserting the sub tree id for every hero talent
     switch ( std::get<0>( t ) )
     {
       case talent_tree::CLASS:
-        tree = &class_traits;
+        class_traits.at( trait->row - 1 ).emplace_back( trait, rank );
         class_points += rank;
         break;
+
       case talent_tree::SPECIALIZATION:
-        tree = &spec_traits;
+        spec_traits.at( trait->row - 1 ).emplace_back( trait, rank );
         spec_points += rank;
         break;
+
       case talent_tree::HERO:
-        tree = &hero_traits;
-        hero_points += rank;
-        hero_trees.insert( trait->id_sub_tree );
+        {
+          auto id = trait->id_sub_tree;
+          if ( range::contains( p.player_sub_trees, id ) ||
+                range::contains( p.player_sub_traits, trait->id_trait_node_entry ) )
+          {
+            hero_traits[ id ].at( trait->row - 1 ).emplace_back( trait, rank );
+            hero_points[ id ] += rank;
+          }
+        }
         break;
+
       default:
         continue;
     }
-
-    tree->at( trait->row - 1 ).emplace_back( trait, rank );
   }
 
   for ( auto &row : class_traits )
@@ -2035,8 +2065,9 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   for ( auto &row : spec_traits )
     range::sort( row, []( talentrank_t a, talentrank_t b ) { return a.first->col < b.first->col; } );
 
-  for ( auto &row : hero_traits )
-    range::sort( row, []( talentrank_t a, talentrank_t b ) { return a.first->col < b.first->col; } );
+  for ( auto& [ id, traits ] : hero_traits )
+    for ( auto &row : traits )
+      range::sort( row, []( talentrank_t a, talentrank_t b ) { return a.first->col < b.first->col; } );
 
   os << "<div class=\"player-section talents\">\n"
      << "<h3 class=\"toggle\">Talents</h3>\n"
@@ -2054,72 +2085,17 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
        << "<div class=\"toggle-content hide\">\n";
   }
 
-  os.format( "<table class=\"sc\"><tr><th>Row</th><th>{} Talents [{}]</th></tr>\n",
-             util::player_type_string_long( p.type ),
-             class_points );
+  print_html_talent_table( os, p, util::player_type_string_long( p.type ), class_points, class_traits );
+  print_html_talent_table( os, p, util::spec_string_no_class( p ), spec_points, spec_traits );
 
-  for ( uint32_t row = 0; row < TREE_ROWS; row++ )
+  if ( !hero_traits.empty() )
   {
-    os.format( "<tr><th class=\"left\">{}</th><td><ul class=\"float\">\n", row + 1 );
+    os << "<div class=\"flexwrap\">\n";
 
-    for ( auto entry : class_traits[ row ] )
-    {
-      bool partial = entry.second != entry.first->max_ranks;
+    for ( const auto& [ id, traits ] : hero_traits )
+      print_html_talent_table( os, p, trait_data_t::get_hero_tree_name( id ), hero_points[ id ], traits );
 
-      os.format( "<li class=\"nowrap{}\">{} [{}]{}</li>\n",
-                 partial ? " filler" : "",
-                 report_decorators::decorated_spell_data( *p.sim, p.find_spell( entry.first->id_spell ) ),
-                 entry.second,
-                 partial ? "<b>*</b>" : "" );
-    }
-    os << "</ul></td></tr>\n";
-  }
-  os << "</table>\n";
-
-  os.format( "<table class=\"sc\"><tr><th>Row</th><th>{} Talents [{}]</th></tr>\n",
-             util::spec_string_no_class( p ), spec_points );
-
-  for ( uint32_t row = 0; row < TREE_ROWS; row++ )
-  {
-    os.format( "<tr><th class=\"left\">{}</th><td><ul class=\"float\">\n", row + 1 );
-
-    for ( auto entry : spec_traits[ row ] )
-    {
-      bool partial = entry.second != entry.first->max_ranks;
-
-      os.format( "<li class=\"nowrap{}\">{} [{}]{}</li>\n",
-                 partial ? " filler" : "",
-                 report_decorators::decorated_spell_data( *p.sim, p.find_spell( entry.first->id_spell ) ),
-                 entry.second,
-                 partial ? "<b>*</b>" : "" );
-    }
-    os << "</ul></td></tr>\n";
-  }
-  os << "</table>\n";
-
-  for ( auto id : hero_trees )
-  {
-    os.format( "<table class=\"sc\"><tr><th>Row</th><th>{} Talents [{}]</th></tr>\n",
-               trait_data_t::get_hero_tree_name( id ),
-               hero_points );
-
-    for ( uint32_t row = 0; row < HERO_TREE_ROWS; row++ )
-    {
-      os.format( "<tr><th class=\"left\">{}</th><td><ul class=\"float\">\n", row + 1 );
-
-      for ( auto entry : hero_traits[ row ] )
-      {
-        bool partial = entry.second != entry.first->max_ranks;
-
-        os.format( "<li class=\"nowrap{}\">{} [{}]{}</li>\n",
-                    partial ? " filler" : "",
-                    report_decorators::decorated_spell_data( *p.sim, p.find_spell( entry.first->id_spell ) ),
-                    entry.second,
-                    partial ? "<b>*</b>" : "" );
-      }
-      os << "</ul></td></tr>\n";
-    }
-    os << "</table>\n";
+    os << "</div>\n";
   }
 
   // Close the talent table div only if it exists.

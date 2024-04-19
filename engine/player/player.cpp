@@ -2454,10 +2454,7 @@ void player_t::override_talent( util::string_view override_str )
   }
 }
 
-static void parse_traits(
-    talent_tree tree,
-    const std::string& opt_str,
-    player_t* player )
+static void parse_traits( talent_tree tree, const std::string& opt_str, player_t* player )
 {
   auto talents = util::string_split<util::string_view>( opt_str, "/" );
   for ( const auto talent : talents )
@@ -2472,8 +2469,7 @@ static void parse_traits(
 
     bool is_spell_id = false;
     auto entry_id = 0U;
-    if ( !talent_split[ 0 ].empty() &&
-         ( talent_split[ 0 ][ 0 ] == 's' || talent_split[ 0 ][ 0 ] == 'S' ) )
+    if ( !talent_split[ 0 ].empty() && ( talent_split[ 0 ][ 0 ] == 's' || talent_split[ 0 ][ 0 ] == 'S' ) )
     {
       entry_id = util::to_unsigned_ignore_error( talent_split[ 0 ].substr( 1 ), 0 );
       is_spell_id = true;
@@ -2483,22 +2479,21 @@ static void parse_traits(
       entry_id = util::to_unsigned_ignore_error( talent_split[ 0 ], 0 );
     }
 
-    auto ranks = util::to_unsigned( talent_split[1] );
+    auto ranks = util::to_unsigned( talent_split[ 1 ] );
     const trait_data_t* trait_obj = nullptr;
     if ( entry_id != 0 )
     {
       if ( is_spell_id )
       {
         auto objs = trait_data_t::find_by_spell( tree, entry_id, util::class_id( player->type ),
-            player->specialization(), player->dbc->ptr );
+                                                 player->specialization(), player->dbc->ptr );
         if ( objs.empty() )
         {
           trait_obj = &( trait_data_t::nil() );
         }
         else if ( objs.size() > 1U )
         {
-          player->sim->error( "Multiple talents for spell id {} found",
-              talent_split[ 0 ].substr( 1 ) );
+          player->sim->error( "Multiple talents for spell id {} found", talent_split[ 0 ].substr( 1 ) );
           player->sim->cancel();
         }
         else
@@ -2513,30 +2508,30 @@ static void parse_traits(
     }
     else
     {
-      trait_obj = trait_data_t::find_tokenized( tree,
-        talent_split[0], util::class_id( player->type ), player->specialization(), player->dbc->ptr );
+      trait_obj = trait_data_t::find_tokenized( tree, talent_split[ 0 ], util::class_id( player->type ),
+                                                player->specialization(), player->dbc->ptr );
     }
 
     if ( trait_obj->id_spell == 0 )
     {
-      player->sim->error( "Unable to find talent {}", talent_split[0] );
+      player->sim->error( "Unable to find talent {}", talent_split[ 0 ] );
       player->sim->cancel();
     }
     else
     {
-      auto it = range::find_if( player->player_traits, [trait_obj]( const auto& entry ) {
+      auto it = range::find_if( player->player_traits, [ trait_obj ]( const auto& entry ) {
         return std::get<1>( entry ) == trait_obj->id_trait_node_entry;
       } );
 
-      auto entry = std::make_tuple( tree, trait_obj->id_trait_node_entry,
-          std::min( ranks, trait_obj->max_ranks ));
+      auto id_entry = trait_obj->id_trait_node_entry;
+      auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait_obj->max_ranks ) );
+
       if ( it != player->player_traits.end() )
       {
         if ( std::get<2>( *it ) != std::get<2>( entry ) )
         {
-          player->sim->print_log( "Overwriting talent {} ({}), rank {} -> {}",
-            trait_obj->name, trait_obj->id_trait_node_entry,
-            std::get<2>( *it ), std::get<2>( entry ) );
+          player->sim->print_log( "Overwriting talent {} ({}), rank {} -> {}", trait_obj->name, id_entry,
+                                  std::get<2>( *it ), std::get<2>( entry ) );
         }
 
         *it = entry;
@@ -2544,7 +2539,11 @@ static void parse_traits(
       else
       {
         player->player_traits.push_back( entry );
+
       }
+
+      if ( tree == talent_tree::HERO )
+        player->player_sub_traits.push_back( id_entry );
     }
   }
 }
@@ -2559,18 +2558,11 @@ static bool generate_tree_nodes( player_t* player,
   if ( !player->dbc->spec_idx( spec, class_idx, spec_idx ) )
     return false;
 
-  auto class_data = trait_data_t::data( class_idx, talent_tree::CLASS, maybe_ptr( player->dbc->ptr ) );
-  auto spec_data = trait_data_t::data( class_idx, talent_tree::SPECIALIZATION, maybe_ptr( player->dbc->ptr ) );
-  auto hero_data = trait_data_t::data( class_idx, talent_tree::HERO, maybe_ptr( player->dbc->ptr ) );
-
-  for ( const auto& trait : class_data )
-    tree_nodes[ trait.id_node ].emplace_back( &trait, 0 );
-
-  for ( const auto& trait : spec_data )
-    tree_nodes[ trait.id_node ].emplace_back( &trait, 0 );
-
-  for ( const auto& trait : hero_data )
-    tree_nodes[ trait.id_node ].emplace_back( &trait, 0 );
+  for ( auto i = talent_tree::INVALID; i != talent_tree::MAX; i++ )
+  {
+    for ( const auto& trait : trait_data_t::data( class_idx, i, maybe_ptr( player->dbc->ptr ) ) )
+      tree_nodes[ trait.id_node ].emplace_back( &trait, 0 );
+  }
 
   return true;
 }
@@ -2776,6 +2768,8 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
   // Clear all existing traits
   player->player_traits.clear();
+  player->player_sub_trees.clear();
+  player->player_sub_traits.clear();
 
   // As per Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua: treeHash is a 128bit hash,
   // passed as an array of 16, 8-bit values. For SimC purposes we can ignore it, as invalid/outdated strings can error
@@ -2844,9 +2838,22 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
         trait = node[ index ].first;
       }
 
-      player->sim->print_debug( "Player {} adding talent {}", player->name(), trait->name );
-      player->player_traits.emplace_back( static_cast<talent_tree>( trait->tree_index ), trait->id_trait_node_entry,
-                                          as<unsigned>( rank ) );
+      auto _tree = static_cast<talent_tree>( trait->tree_index );
+
+      player->player_traits.emplace_back( _tree, trait->id_trait_node_entry, as<unsigned>( rank ) );
+
+      if ( _tree == talent_tree::CONTROL )
+      {
+        player->player_sub_trees.insert( trait->id_sub_tree );
+
+        player->sim->print_debug( "{} activating sub tree {} ({})", *player,
+                                  trait_data_t::get_hero_tree_name( trait->id_sub_tree, player->is_ptr() ),
+                                  trait->id_sub_tree );
+      }
+      else
+      {
+        player->sim->print_debug( "{} adding {} talent {}", *player, util::talent_tree_string( _tree ), trait->name );
+      }
     }
   }
 }
@@ -2870,10 +2877,12 @@ static void enable_all_talents( player_t* player )
       if ( std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) ||
            range::contains( trait->id_spec, player->specialization() ) )
       {
-        player->sim->print_debug( "Player {} adding talent {}", player->name(), trait->name );
-        player->player_traits.emplace_back( static_cast<talent_tree>( trait->tree_index ), trait->id_trait_node_entry,
-                                            trait->max_ranks );
-      }
+        auto _tree = static_cast<talent_tree>( trait->tree_index );
+
+        player->player_traits.emplace_back( _tree, trait->id_trait_node_entry, trait->max_ranks );
+
+        player->sim->print_debug( "{} adding {} talent {}", *player, util::talent_tree_string( _tree ), trait->name );
+     }
     }
   }
 }
@@ -10702,27 +10711,36 @@ const spell_data_t* player_t::find_talent_spell( util::string_view n, specializa
   return spell_data_t::not_found();
 }
 
-static player_talent_t create_talent_obj(
-    const player_t*     player,
-    specialization_e    spec,
-    const trait_data_t* trait )
+static player_talent_t create_talent_obj( const player_t* player, specialization_e spec, const trait_data_t* trait )
 {
-  auto it = range::find_if( player->player_traits, [trait]( const auto& entry ) {
+  auto it = range::find_if( player->player_traits, [ trait ]( const auto& entry ) {
     return std::get<1>( entry ) == trait->id_trait_node_entry;
   } );
 
-  // check if the trait is a free class trait for the spec, or the initial starting node on the spec tree (1,1)
+  auto _tree = static_cast<talent_tree>( trait->tree_index );
+
+  // check if the trait is a free class trait for the spec, or the initial starting node on the spec/hero tree (1,1)
   bool is_starter =
       range::find( trait->id_spec_starter, spec == SPEC_NONE ? player->_spec : spec ) != trait->id_spec_starter.end() ||
-      trait->tree_index == static_cast<unsigned>( talent_tree::SPECIALIZATION ) && trait->col == 1 && trait->row == 1;
+      ( ( _tree == talent_tree::SPECIALIZATION || _tree == talent_tree::HERO ) && trait->col == 1 && trait->row == 1 );
 
-  if ( ( it != player->player_traits.end() && std::get<2>( *it ) == 0U ) ||
-      ( it == player->player_traits.end() && !is_starter ) )
+  auto rank = std::get<2>( *it );
+
+  // all allocated hero talents are present but disabled if the control talent is not active unless it has been manually
+  // added to the profile
+  if ( _tree == talent_tree::HERO && !range::contains( player->player_sub_trees, trait->id_sub_tree ) &&
+       !range::contains( player->player_sub_traits, trait->id_trait_node_entry ) )
+  {
+    is_starter = false;
+    rank = 0U;
+  }
+
+  if ( ( it != player->player_traits.end() && rank == 0U ) || ( it == player->player_traits.end() && !is_starter ) )
   {
     return { player };  // Trait not found on player
   }
 
-  return { player, trait, is_starter ? trait->max_ranks : std::get<2>( *it ) };
+  return { player, trait, is_starter ? trait->max_ranks : rank };
 }
 
 player_talent_t player_t::find_talent_spell(
@@ -12465,27 +12483,29 @@ std::string player_t::create_profile( save_e stype )
 
 void player_t::copy_from( player_t* source )
 {
-  origin_str        = source->origin_str;
-  profile_source_   = source->profile_source_;
-  true_level        = source->true_level;
-  race_str          = source->race_str;
-  timeofday         = source->timeofday;
-  zandalari_loa     = source->zandalari_loa;
-  vulpera_tricks    = source->vulpera_tricks;
-  race              = source->race;
-  role              = source->role;
-  _spec             = source->_spec;
-  base.distance     = source->base.distance;
-  position_str      = source->position_str;
-  professions_str   = source->professions_str;
+  origin_str            = source->origin_str;
+  profile_source_       = source->profile_source_;
+  true_level            = source->true_level;
+  race_str              = source->race_str;
+  timeofday             = source->timeofday;
+  zandalari_loa         = source->zandalari_loa;
+  vulpera_tricks        = source->vulpera_tricks;
+  race                  = source->race;
+  role                  = source->role;
+  _spec                 = source->_spec;
+  base.distance         = source->base.distance;
+  position_str          = source->position_str;
+  professions_str       = source->professions_str;
   this->recreate_talent_str( talent_format::UNCHANGED );
   parse_talent_url( sim, "talents", source->talents_str );
-  class_talents_str = source->class_talents_str;
-  spec_talents_str  = source->spec_talents_str;
-  hero_talents_str  = source->hero_talents_str;
-  player_traits     = source->player_traits;
-  shadowlands_opts  = source->shadowlands_opts;
-  dragonflight_opts = source->dragonflight_opts;
+  class_talents_str     = source->class_talents_str;
+  spec_talents_str      = source->spec_talents_str;
+  hero_talents_str      = source->hero_talents_str;
+  player_traits         = source->player_traits;
+  player_sub_trees      = source->player_sub_trees;
+  player_sub_traits     = source->player_sub_traits;
+  shadowlands_opts      = source->shadowlands_opts;
+  dragonflight_opts     = source->dragonflight_opts;
   resources.initial_opt = source->resources.initial_opt;
 
   if ( azerite )
