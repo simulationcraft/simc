@@ -2366,9 +2366,12 @@ class SpellDataGenerator(DataGenerator):
           ( 409877, 2 ), # T30 4pc Recrimination buff
 
           # Aldrachi Reaver
+          ( 442294, 0 ), # Reaver's Glaive
+          ( 442624, 0 ), # Reaver's Mark
           ( 442435, 0 ), # Glaive Flurry
           ( 442442, 0 ), # Rending Strike
-          ( 444806, 0 ), # Art of the Glaive
+          ( 444806, 0 ), # Art of the Glaive damage
+          ( 444810, 0 ), # Art of the Glaive container
        ),
 
        # Evoker:
