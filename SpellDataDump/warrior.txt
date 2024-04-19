@@ -6067,7 +6067,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=707038)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.731651e-308 (coefficient=82.454) | PvP Coefficient: 0.20000 | Trigger Spell: 270568 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5.731577e-308 (coefficient=82.454) | PvP Coefficient: 0.20000 | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
 Name             : Azerite Empowered (id=263978) [Passive] 
@@ -6126,9 +6126,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=707069)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.970255e-308 (coefficient=28.34356) | PvP Coefficient: 0.50000 | Trigger Spell: 271681 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1.970229e-308 (coefficient=28.34356) | PvP Coefficient: 0.50000 | Trigger Spell: 271681 | Target: Self (1)
 #2 (id=713642)   : Dummy (3) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 8.443948e-309 (coefficient=12.14724) | PvP Coefficient: 0.50000
+                   Base Value: 0 | Scaled Value: 8.44384e-309 (coefficient=12.14724) | PvP Coefficient: 0.50000
 Description      : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 Tooltip          : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 
@@ -6192,7 +6192,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=713207)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 9.382166e-309 (coefficient=13.49693) | PvP Coefficient: 0.50000 | Trigger Spell: 279955 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 9.382045e-309 (coefficient=13.49693) | PvP Coefficient: 0.50000 | Trigger Spell: 279955 | Target: Self (1)
 #2 (id=739251)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 Description      : Your damaging abilities have a chance to implant an Azerite Globule on your enemies. When an enemy collects $s2 Azerite Globules, they explode, dealing $s1 Fire damage to nearby enemies.
@@ -6215,7 +6215,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=713208)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 9.940404e-309 (coefficient=14.3) | PvP Coefficient: 0.50000 | Trigger Spell: 270668 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 9.940276e-309 (coefficient=14.3) | PvP Coefficient: 0.50000 | Trigger Spell: 270668 | Target: Self (1)
 #2 (id=720336)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : Your damaging abilities have a chance to deal $s1 Physical damage to the target. Gutripper occurs much more often against targets below $s2% health. 
@@ -6282,7 +6282,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=714531)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 3.475666e-308 (coefficient=50) | PvP Coefficient: 0.50000 | Trigger Spell: 270673 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3.475621e-308 (coefficient=50) | PvP Coefficient: 0.50000 | Trigger Spell: 270673 | Target: Self (1)
 Description      : Taking damage has a chance to grant you Azerite Veins, healing you for $s1 every $270674t1 sec. Lasts $270674d or until you are fully healed.
 
 Name             : On My Way (id=267879) [Passive] 
@@ -6343,7 +6343,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=714798)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.085399e-310 (coefficient=0.3) | PvP Coefficient: 0.50000 | Trigger Spell: 272258 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2.085373e-310 (coefficient=0.3) | PvP Coefficient: 0.50000 | Trigger Spell: 272258 | Target: Self (1)
 Description      : Your healing effects have a chance to grant the target ${$s1*2} additional healing every $272260t1 sec for $272260d. This effect doubles every $272260t1 sec. 
 
 Name             : Savior (id=267883) [Passive] 
@@ -6363,7 +6363,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=714801)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.085399e-308 (coefficient=30) | PvP Coefficient: 0.50000 | Trigger Spell: 270679 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2.085373e-308 (coefficient=30) | PvP Coefficient: 0.50000 | Trigger Spell: 270679 | Target: Self (1)
 #2 (id=720348)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : Your heals on targets below $s2% health have a chance to heal for an additional $s1.
@@ -6384,7 +6384,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=714803)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.147183e-308 (coefficient=16.50307) | PvP Coefficient: 0.50000 | Trigger Spell: 272275 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1.147168e-308 (coefficient=16.50307) | PvP Coefficient: 0.50000 | Trigger Spell: 272275 | Target: Self (1)
 Description      : Your heals have a chance to apply Bracing Chill. Healing a target with Bracing Chill will heal for an additional $s1 and move Bracing Chill to a nearby ally (up to $272276u times).
 
 Name             : Ephemeral Recovery (id=267886) [Passive] 
@@ -6464,7 +6464,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=715936)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.820665e-308 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Trigger Spell: 270658 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6.820577e-308 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Trigger Spell: 270658 | Target: Self (1)
 Description      : When stunned, immobilized, or knocked back, you heal for $s1.
 Tooltip          : When stunned, immobilized, or knocked back, you heal for $s1.
 
@@ -6489,7 +6489,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=715939)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.006078e-308 (coefficient=28.8589) | PvP Coefficient: 0.20000 | Trigger Spell: 270654 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2.006052e-308 (coefficient=28.8589) | PvP Coefficient: 0.20000 | Trigger Spell: 270654 | Target: Self (1)
 Description      : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 
@@ -6531,7 +6531,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=716159)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.256198e-308 (coefficient=90) | PvP Coefficient: 0.20000 | Trigger Spell: 309366 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6.256118e-308 (coefficient=90) | PvP Coefficient: 0.20000 | Trigger Spell: 309366 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : When you are surrounded by $s2 or more enemies, gain a shield that absorbs $s1 damage. Cannot occur more than once every $270656d.
@@ -6601,7 +6601,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=716167)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.349541e-309 (coefficient=7.695707) | PvP Coefficient: 0.20000 | Trigger Spell: 309352 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5.349472e-309 (coefficient=7.695707) | PvP Coefficient: 0.20000 | Trigger Spell: 309352 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
 Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
@@ -6667,7 +6667,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=721853)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 3.947759e-308 (coefficient=56.79141) | PvP Coefficient: 0.50000 | Trigger Spell: 271547 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3.947708e-308 (coefficient=56.79141) | PvP Coefficient: 0.50000 | Trigger Spell: 271547 | Target: Self (1)
 Description      : Taking damage has a chance to increase your maximum health by $s1 for each enemy within $271548A1 yds, up to $271550u enemies. Lasts $271550d.
 
 Name             : Shimmering Haven (id=271557) [Passive] 
@@ -6709,7 +6709,7 @@ Effects          :
 #1 (id=723960)   : Apply Aura (6) | Unknown(285)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Trigger Spell: 279006 | Target: Self (1)
 #2 (id=723961)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.599233e-309 (coefficient=2.300614) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1.599212e-309 (coefficient=2.300614) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Thunder Blast (435222)
                    Family Flags: 7
 #3 (id=752814)   : Dummy (3)
@@ -6732,7 +6732,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724558)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 7.902341e-309 (coefficient=11.3681) | PvP Coefficient: 0.50000 | Trigger Spell: 273825 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7.902239e-309 (coefficient=11.3681) | PvP Coefficient: 0.50000 | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul blasts a nearby enemy every $280204t2 sec, dealing $s1 Shadow damage.
 
 Name             : Gathering Storm (id=273409) [Spell Family (4), Passive] 
@@ -6798,9 +6798,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=725706)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.343356e-308 (coefficient=19.32515) | PvP Coefficient: 0.50000 | Trigger Spell: 273153 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1.343338e-308 (coefficient=19.32515) | PvP Coefficient: 0.50000 | Trigger Spell: 273153 | Target: Self (1)
 #2 (id=725707)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.716778e-309 (coefficient=9.662577) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6.716691e-309 (coefficient=9.662577) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your damaging abilities have a chance to call a Child of Rezan to viciously rend your target, dealing $s1 Physical damage and causing them to bleed for ${($273794d/$273794t2)*$s2} damage over $273794d.
 
 Name             : Blightborne Infusion (id=273823) [Passive] 
@@ -6862,7 +6862,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=725772)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.047232e-309 (coefficient=8.699387) | PvP Coefficient: 0.50000 | Trigger Spell: 273835 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6.047154e-309 (coefficient=8.699387) | PvP Coefficient: 0.50000 | Trigger Spell: 273835 | Target: Self (1)
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
 
 Name             : Punish (id=275334) [Spell Family (4), Passive, Hidden] 
@@ -7023,7 +7023,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=728800)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.441442e-309 (coefficient=2.07362) | PvP Coefficient: 0.50000 | Trigger Spell: 275670 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1.441423e-309 (coefficient=2.07362) | PvP Coefficient: 0.50000 | Trigger Spell: 275670 | Target: Self (1)
 Description      : Raging Blow causes every strike of your next Rampage to deal an additional $s1 damage. Stacks up to $275672u times.
 
 Name             : Brace for Impact (id=277636) [Passive] 
@@ -7084,7 +7084,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=732931)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.618691e-309 (coefficient=9.521472) | PvP Coefficient: 0.50000 | Trigger Spell: 278495 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6.618606e-309 (coefficient=9.521472) | PvP Coefficient: 0.50000 | Trigger Spell: 278495 | Target: Self (1)
 #2 (id=732932)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
 Description      : Overpower causes a seismic wave that deals $s1 Physical damage to enemies in a $s2 yd line.
@@ -7151,7 +7151,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734678)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 4.60579e-308 (coefficient=66.25767) | PvP Coefficient: 0.50000 | Trigger Spell: 278824 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4.605731e-308 (coefficient=66.25767) | PvP Coefficient: 0.50000 | Trigger Spell: 278824 | Target: Self (1)
 #2 (id=734679)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000
 Description      : Your melee abilities have a chance to increase the damage of your next Slam by $s1 and reduce its Rage cost by ${$s2/10}.
@@ -7174,7 +7174,7 @@ Effects          :
 #1 (id=734680)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 279202 | Target: Self (1)
 #2 (id=734681)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 4.017007e-308 (coefficient=57.78759) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4.016955e-308 (coefficient=57.78759) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Colossus Smash (167105), Colossus Smash (208086), Warbreaker (262161)
                    Family Flags: 23, 62
 Description      : $?s262161[Warbreaker][Colossus Smash] deals an additional $s2 damage and generates ${$279203s1/10} Rage.
@@ -7198,7 +7198,7 @@ Effects          :
 #1 (id=734698)   : Apply Aura (6) | Unknown(285)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Trigger Spell: 278840 | Target: Self (1)
 #2 (id=734699)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.083213e-309 (coefficient=1.558282) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1.0832e-309 (coefficient=1.558282) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364)
                    Family Flags: 108
 Description      : Rampage deals an additional ${$184367s1*$s2} damage and generates ${$s1/10} Rage per strike.
@@ -7222,7 +7222,7 @@ Effects          :
 #1 (id=734700)   : Apply Aura (6) | Unknown(285)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 279632 | Target: Self (1)
 #2 (id=734701)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 3.070527e-309 (coefficient=4.417178) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3.070487e-309 (coefficient=4.417178) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Auto attacks deal $s2 additional damage and reduce the cooldown of Recklessness by ${$s1/1000}.1 sec.
 
 Name             : Callous Reprisal (id=278760) [Spell Family (4), Passive] 
@@ -7244,7 +7244,7 @@ Effects          :
 #1 (id=734706)   : Apply Aura (6) | Unknown(285)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Trigger Spell: 278991 | Target: Self (1)
 #2 (id=734707)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.791141e-309 (coefficient=2.576687) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1.791117e-309 (coefficient=2.576687) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Revenge (6572)
                    Family Flags: 10
 Description      : Revenge deals $s2 additional damage and reduces the damage enemies deal to you by ${-$s1/100}.1% for $278999d, stacking up to $278999u times.
@@ -7334,9 +7334,9 @@ Effects          :
 #1 (id=735376)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 279193 | Target: Self (1)
 #2 (id=735377)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.832897e-310 (coefficient=0.407533) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2.832861e-310 (coefficient=0.407533) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=735378)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.13231e-308 (coefficient=30.67485) | PvP Coefficient: 0.50000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2.132283e-308 (coefficient=30.67485) | PvP Coefficient: 0.50000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Ignore Pain (190456)
                    Family Flags: 109
 Description      : Ignore Pain prevents $s3 additional damage, and grants you $s2 Leech for $279194d.
@@ -7440,7 +7440,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=737283)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 3.411696e-308 (coefficient=49.07975) | PvP Coefficient: 0.20000 | Trigger Spell: 280209 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3.411652e-308 (coefficient=49.07975) | PvP Coefficient: 0.20000 | Trigger Spell: 280209 | Target: Self (1)
 #2 (id=737284)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
 Description      : Your Rallying Cry grants $s1 additional Max Health to affected allies, and its duration is increased to $s2 sec.
@@ -7462,7 +7462,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=737445)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 7.22188e-308 (coefficient=103.892) | PvP Coefficient: 0.20000 | Trigger Spell: 280211 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7.221787e-308 (coefficient=103.892) | PvP Coefficient: 0.20000 | Trigger Spell: 280211 | Target: Self (1)
 #2 (id=737446)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
 Description      : When you use $?s202168[Impending Victory][Victory Rush], gain $s1 Physical absorb for $280212d.
@@ -7487,7 +7487,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Allow Entering Arena (149), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=737505)   : Apply Aura (6) | Proc Trigger Spell (42): Barrage Of Many Bombs | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 4.970202e-309 (coefficient=7.15) | PvP Coefficient: 0.50000 | Trigger Spell: 280662 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4.970138e-309 (coefficient=7.15) | PvP Coefficient: 0.50000 | Trigger Spell: 280662 | Target: Self (1)
 #2 (id=737506)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=737507)   : Dummy (3)
@@ -7550,7 +7550,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=737533)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.820665e-308 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6.820577e-308 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Target: Self (1)
 #2 (id=737534)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
@@ -7585,7 +7585,7 @@ Effects          :
 #2 (id=738958)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.4609e-309 (coefficient=9.294479) | PvP Coefficient: 0.50000
+                   Base Value: 0 | Scaled Value: 6.460817e-309 (coefficient=9.294479) | PvP Coefficient: 0.50000
 Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $s3 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
@@ -7639,7 +7639,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=737557)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.14697e-307 (coefficient=165) | PvP Coefficient: 0.20000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1.146955e-307 (coefficient=165) | PvP Coefficient: 0.20000 | Target: Self (1)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing $280661s1% of damage taken over $280660d, up to $280660s1.
@@ -7663,7 +7663,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=737714)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.573645e-309 (coefficient=2.263804) | PvP Coefficient: 0.50000 | Trigger Spell: 280285 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1.573625e-309 (coefficient=2.263804) | PvP Coefficient: 0.50000 | Trigger Spell: 280285 | Target: Self (1)
 #2 (id=737715)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
@@ -7685,7 +7685,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=737878)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.241304e-309 (coefficient=7.54) | PvP Coefficient: 0.50000 | Trigger Spell: 280383 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5.241236e-309 (coefficient=7.54) | PvP Coefficient: 0.50000 | Trigger Spell: 280383 | Target: Self (1)
 #2 (id=738006)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Dealing damage has a chance to call down a Thunderous Blast, dealing $s1 Nature damage to the enemy and increasing the damage of Thunderous Blast by $280385s1%. At ${$s2*$280385s1}% increased damage, Thunderous Blast will critically hit and reset this effect.
@@ -7733,7 +7733,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=737915)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.612027e-308 (coefficient=23.19018) | PvP Coefficient: 0.50000 | Trigger Spell: 280403 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1.612006e-308 (coefficient=23.19018) | PvP Coefficient: 0.50000 | Trigger Spell: 280403 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to release a tidal surge, dealing $s1 Frost damage to your target and slowing their movement speed by $280404s2% for $280404d.
 
 Name             : Blood Rite (id=280407) [Passive] 
@@ -7840,9 +7840,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=738156)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2.815289e-308 (coefficient=40.5) | PvP Coefficient: 0.50000 | Trigger Spell: 280702 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2.815253e-308 (coefficient=40.5) | PvP Coefficient: 0.50000 | Trigger Spell: 280702 | Target: Self (1)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.037796e-308 (coefficient=72.47239) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5.037731e-308 (coefficient=72.47239) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
 
 Enables $@spellname280573 within Uldir.
@@ -7955,7 +7955,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=738194)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.066369e-309 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280816 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5.066304e-309 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280816 | Target: Self (1)
 #2 (id=738645)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=738646)   : Dummy (3)
@@ -8092,7 +8092,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=738287)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5.066369e-309 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280854 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5.066304e-309 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280854 | Target: Self (1)
 #2 (id=738705)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=738706)   : Dummy (3)
@@ -8481,9 +8481,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=750714)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 4.179328e-309 (coefficient=6.01227) | PvP Coefficient: 0.50000 | Trigger Spell: 287633 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4.179274e-309 (coefficient=6.01227) | PvP Coefficient: 0.50000 | Trigger Spell: 287633 | Target: Self (1)
 #2 (id=750715)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 7.996164e-309 (coefficient=11.50307) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7.996061e-309 (coefficient=11.50307) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=750716)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 Description      : Your damaging abilities have a chance to deal $<dmg> Plague damage over $287638d, and your healing abilities have a chance to restore $<heal> health over $287639d. These effects are increased by up to $s3% based on the target's missing health.
@@ -8548,7 +8548,7 @@ Effects          :
 #1 (id=751443)   : Apply Aura (6) | Unknown(285)
                    Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Trigger Spell: 288060 | Target: Self (1)
 #2 (id=751444)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.083213e-309 (coefficient=1.558282) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1.0832e-309 (coefficient=1.558282) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364)
                    Family Flags: 108
 Description      : Rampage deals an additional ${$184367s1*$s2} damage and has a $288060h% chance to grant you Recklessness for ${$s1/1000} sec.
@@ -8572,7 +8572,7 @@ Effects          :
 #1 (id=751474)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 288084 | Target: Self (1)
 #2 (id=751475)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6.610162e-309 (coefficient=9.509202) | PvP Coefficient: 0.50000 | Trigger Spell: 288085 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6.610076e-309 (coefficient=9.509202) | PvP Coefficient: 0.50000 | Trigger Spell: 288085 | Target: Self (1)
 Description      : Bloodthirst critical strikes generate $<rage> additional Rage, and inflict a Gushing Wound that leeches $<damage> health over $288091d.
 Variables        : $rage=${$288087s1/10}
 $damage=${$s2*3}
@@ -8686,7 +8686,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=752078)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 8.955703e-309 (coefficient=12.88344) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8.955587e-309 (coefficient=12.88344) | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=752079)   : Dummy (3)
                    Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000
 Description      : The Tactician effect improves your next Overpower, causing it to deal $s1 additional damage and reduce the remaining cooldown of Mortal Strike by ${$s2/1000}.1 sec.
@@ -8707,7 +8707,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=752488)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 7.249855e-308 (coefficient=104.2945) | PvP Coefficient: 0.20000 | Trigger Spell: 288642 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7.249762e-308 (coefficient=104.2945) | PvP Coefficient: 0.20000 | Trigger Spell: 288642 | Target: Self (1)
 Description      : Intimidating Shout reduces the movement speed of affected enemies by $288644s1%, and prevents the next $s1 damage they deal after Intimidating Shout ends.
 
 Name             : Seductive Power (id=288749) [Passive] 
@@ -8944,11 +8944,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=778211)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1.672066e-308 (coefficient=24.05389) | PvP Coefficient: 0.50000 | Trigger Spell: 303388 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1.672044e-308 (coefficient=24.05389) | PvP Coefficient: 0.50000 | Trigger Spell: 303388 | Target: Self (1)
 #2 (id=778212)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=778215)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 50 | Scaled Value: 1.311179e-307 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 1.311162e-307 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
 #4 (id=778216)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to crash a wave upon your target for $s1 Frost damage.

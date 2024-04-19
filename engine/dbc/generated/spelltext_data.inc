@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54311
-static const std::array<spelltext_data_t, 22360> __spelltext_data { {
+static const std::array<spelltext_data_t, 22365> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21898,7 +21898,12 @@ static const std::array<spelltext_data_t, 22360> __spelltext_data { {
   { 445468, "Bestows a vile malediction upon the target, burning the sinew and muscle of its host, dealing $s1 Shadowflame damage immediately and an additional $445474o1 Shadowflame damage over $445474d.$?s137046[\r\n\r\n|cFFFFFFFFPeriodic damage generates 1 Soul Shard Fragment and has a $s2% chance to generate an additional 1 on critical strikes.|r][]", 0, 0 },
   { 445474, "$@spelldesc445468", "Suffering $w1 Shadowflame damage every $t1 sec.$?a339892[ \r\nDamage taken by Chaos Bolt and Incinerate increased by $w2%.][]", 0 },
   { 445475, "Draw a bow from the Arsenal to unleash a barrage of arrows in front of you, dealing $445203s6 Shadow damage to all enemies. \r\n\r\nUntil the next weapon is drawn, gain $445203s7% increased move speed for 6 sec upon moving after remaining stationary for at least 3 sec.\r\n", 0, 0 },
+  { 445504, "Instantly strike the target and 1 other nearby enemy, causing $s1 Physical damage.", 0, 0 },
   { 445505, "Attacking with Vicious Hunt instructs your pet to strike with their Basic Attack along side your next $?a137015[Barbed Shot]?s259387[Mongoose Bite]?a137017[Raptor Strike][Barbed Shot or Raptor Strike].", 0, 0 },
+  { 445507, "A brutal attack that deals $s1 Physical damage.", 0, 0 },
+  { 445508, "Instantly strike the target, causing $s1 Physical damage and $445509s1 Shadow damage.", 0, 0 },
+  { 445509, "$@spelldesc445508", 0, 0 },
+  { 445513, "Fires a blast of unholy energy at the target, causing $s1 Shadow damage to an enemy or healing an Undead ally for ${$s1/4}.", 0, 0 },
   { 445560, "Suspend the Egg's incubation state for $d.", "Deliberate Incubation and Hasty Incubation are unaffected by your movements.", 0 },
   { 445579, "$@spelldesc444767", 0, 0 },
   { 445584, "$@spelldesc444767\r\n", "Execute damage from $@auracaster increased by $w1%.", 0 },

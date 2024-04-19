@@ -1257,6 +1257,11 @@ public:
     const spell_data_t* mograines_might_buff;
     const spell_data_t* rider_ams;
     const spell_data_t* rider_ams_icd;
+    const spell_data_t* whitemane_death_coil;
+    const spell_data_t* mograine_heart_strike;
+    const spell_data_t* trollbane_obliterate;
+    const spell_data_t* nazgrim_scourge_strike_phys;
+    const spell_data_t* nazgrim_scourge_strike_shadow;
   } pet_spell;
 
   // RPPM
@@ -3411,6 +3416,14 @@ struct horseman_pet_t : public death_knight_pet_t
     }
   };
 
+  struct horseman_melee_t : public pet_melee_attack_t<horseman_pet_t>
+  {
+    horseman_melee_t( horseman_pet_t* p, util::string_view name, const spell_data_t* spell )
+      : pet_melee_attack_t( p, name, spell )
+    {
+    }
+  };
+
   horseman_pet_t( death_knight_t* owner, util::string_view name, bool guardian = false, bool dynamic = true )
     : death_knight_pet_t( owner, name, guardian, true, dynamic ), rp_spent( 0 ), current_pool( 0 )
   {
@@ -3467,6 +3480,18 @@ struct mograine_pet_t : public horseman_pet_t
     }
   };
 
+  struct heart_strike_mograine_t final : public horseman_melee_t
+  {
+    heart_strike_mograine_t( util::string_view name, horseman_pet_t* p, util::string_view options_str )
+      : horseman_melee_t( p, name, p->dk()->pet_spell.mograine_heart_strike )
+    {
+      parse_options( options_str );
+      // Need to figure out whatever formula they are using for this
+      attack_power_mod.direct = data().effectN( 1 ).percent();
+      aoe = data().effectN( 4 ).base_value();
+    }
+  };
+
   void create_buffs() override
   {
     death_knight_pet_t::create_buffs();
@@ -3507,6 +3532,22 @@ struct mograine_pet_t : public horseman_pet_t
     {
       dk()->buffs.mograines_might->expire();
     }
+  }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    // Default "auto-pilot" pet APL (if everything is left on auto-cast
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "heart_strike" );
+  }
+
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
+  {
+    if (name == "heart_strike") return new heart_strike_mograine_t( name, this, options_str );
+
+    return death_knight_pet_t::create_action( name, options_str );
   }
 };
 
@@ -3563,6 +3604,17 @@ struct whitemane_pet_t : public horseman_pet_t
     }
   };
 
+  struct death_coil_whitemane_t final : public horseman_spell_t
+  {
+    death_coil_whitemane_t( util::string_view name, horseman_pet_t* p, util::string_view options_str )
+      : horseman_spell_t( p, name, p->dk()->pet_spell.whitemane_death_coil )
+    {
+      parse_options( options_str );
+      // Need to figure out whatever formula they are using for this
+      attack_power_mod.direct = data().effectN( 1 ).percent();
+    }
+  };
+
   struct abilities_t
   {
     action_t* undeath_dot;
@@ -3582,6 +3634,22 @@ struct whitemane_pet_t : public horseman_pet_t
   {
     horseman_pet_t::arise();
     ability.undeath_dot -> execute_on_target( dk() -> target );
+  }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    // Default "auto-pilot" pet APL (if everything is left on auto-cast
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "death_coil" );
+  }
+
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
+  {
+    if (name == "death_coil") return new death_coil_whitemane_t( name, this, options_str );
+
+    return death_knight_pet_t::create_action( name, options_str );
   }
 };
 
@@ -3618,6 +3686,17 @@ struct trollbane_pet_t : public horseman_pet_t
     }
   };
 
+  struct obliterate_trollbane_t final : public horseman_melee_t
+  {
+    obliterate_trollbane_t( util::string_view name, horseman_pet_t* p, util::string_view options_str )
+      : horseman_melee_t( p, name, p->dk()->pet_spell.trollbane_obliterate )
+    {
+      parse_options( options_str );
+      // Need to figure out whatever formula they are using for this
+      attack_power_mod.direct = data().effectN( 1 ).percent();
+    }
+  };
+
   struct abilities_t
   {
     action_t* chains_of_ice;
@@ -3639,6 +3718,22 @@ struct trollbane_pet_t : public horseman_pet_t
     dk()->active_spells.trollbanes_icy_fury = get_action<trollbanes_icy_fury_t>( "trollbanes_icy_fury", this );
     ability.chains_of_ice = get_action<trollbane_chains_of_ice_t>( "chains_of_ice", this );
   }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    // Default "auto-pilot" pet APL (if everything is left on auto-cast
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "obliterate" );
+  }
+
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
+  {
+    if (name == "obliterate") return new obliterate_trollbane_t( name, this, options_str );
+
+    return death_knight_pet_t::create_action( name, options_str );
+  }
 };
 
 // ==========================================================================
@@ -3649,6 +3744,32 @@ struct nazgrim_pet_t : public horseman_pet_t
   nazgrim_pet_t( death_knight_t* owner, util::string_view name ) : horseman_pet_t( owner, name )
   {
   }
+
+  struct scourge_strike_shadow_nazgrim_t final : public horseman_melee_t
+  {
+    scourge_strike_shadow_nazgrim_t( util::string_view name, horseman_pet_t* p )
+      : horseman_melee_t( p, name, p->dk()->pet_spell.nazgrim_scourge_strike_shadow )
+    {
+      background = true;
+      // Need to figure out whatever formula they are using for this
+      attack_power_mod.direct = data().effectN( 1 ).percent();
+    }
+  };
+
+  struct scourge_strike_nazgrim_t final : public horseman_melee_t
+  {
+    action_t* scourge_strike_shadow;
+    scourge_strike_nazgrim_t( util::string_view name, horseman_pet_t* p, util::string_view options_str )
+      : horseman_melee_t( p, name, p->dk()->pet_spell.nazgrim_scourge_strike_phys ),
+      scourge_strike_shadow( new scourge_strike_shadow_nazgrim_t( "scourge_strike_shadow", p ) )
+    {
+      parse_options( options_str );
+      // Need to figure out whatever formula they are using for this
+      attack_power_mod.direct = data().effectN( 1 ).percent();
+      impact_action = scourge_strike_shadow;
+      add_child( scourge_strike_shadow );
+    }
+  };
 
   void arise() override
   {
@@ -3661,6 +3782,22 @@ struct nazgrim_pet_t : public horseman_pet_t
     horseman_pet_t::demise();
     dk()->buffs.apocalyptic_conquest->expire();
     dk()->buffs.nazgrims_conquest->expire();
+  }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    // Default "auto-pilot" pet APL (if everything is left on auto-cast
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "scourge_strike" );
+  }
+
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
+  {
+    if (name == "scourge_strike") return new scourge_strike_nazgrim_t( name, this, options_str );
+
+    return death_knight_pet_t::create_action( name, options_str );
   }
 };
 
@@ -9459,13 +9596,14 @@ void death_knight_t::summon_rider( timespan_t duration, bool random )
         return;
       }
     }
+    /* Currently Riders do not get extended if Army or Frostwyrm is cast while they are active
     if ( !rider -> is_sleeping() && !random )
     {
       if( duration >= rider -> expiration -> remains() )
       {
         rider->adjust_duration( duration - rider->expiration->remains() );
       }
-    }
+    }*/
   }
 }
 
@@ -10499,6 +10637,11 @@ void death_knight_t::init_spells()
   pet_spell.mograines_might_buff             = find_spell( 444505 );
   pet_spell.rider_ams                        = find_spell( 444741 );
   pet_spell.rider_ams_icd                    = find_spell( 451777 );
+  pet_spell.whitemane_death_coil             = find_spell( 445513 );
+  pet_spell.mograine_heart_strike            = find_spell( 445504 );
+  pet_spell.trollbane_obliterate             = find_spell( 445507 );
+  pet_spell.nazgrim_scourge_strike_phys      = find_spell( 445508 );
+  pet_spell.nazgrim_scourge_strike_shadow    = find_spell( 445509 );
 
   // Custom/Internal cooldowns default durations
   cooldown.bone_shield_icd -> duration = spell.bone_shield -> internal_cooldown();

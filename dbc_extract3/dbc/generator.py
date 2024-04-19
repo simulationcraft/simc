@@ -1839,6 +1839,11 @@ class SpellDataGenerator(DataGenerator):
           ( 444254, 0 ), # Summon Trollbane
           ( 444251, 0 ), # Summon Whitemane
           ( 448229, 0 ), # Soul Reaper
+          ( 445513, 0 ), # Whitemane Death Coil
+          ( 445504, 0 ), # Mograine Heart Strike
+          ( 445507, 0 ), # Trollbane Obliterate
+          ( 445508, 0 ), # Nazgrim Scourge Strike Phys
+          ( 445509, 0 ), # Nazgrim Scourge Strike Shadow
         ),
 
         # Shaman:
