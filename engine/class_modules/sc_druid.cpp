@@ -1663,7 +1663,27 @@ public:
     parse_effects( p()->buff.eclipse_solar, 0b01111110U, USE_CURRENT );
     parse_effects( p()->buff.friend_of_the_fae );
     parse_effects( p()->buff.gathering_starstuff );
-    parse_effects( p()->buff.incarnation_moonkin, p()->talent.elunes_guidance );
+
+    // for readability, we build the mask for effects to enable, rather than mask to disable.
+    unsigned owl_mask = 0b1111;
+
+    if ( p()->talent.astral_insight.ok() )
+    {
+      // enable effects #6 & #7
+      owl_mask |= 1 << 5;
+      owl_mask |= 1 << 6;
+
+      if ( p()->talent.lunar_calling.ok() )
+      {
+        // enable effects #8 & #9
+        owl_mask |= 1 << 7;
+        owl_mask |= 1 << 8;
+      }
+    }
+
+    owl_mask = ~owl_mask;
+
+    parse_effects( p()->buff.incarnation_moonkin, owl_mask, p()->talent.elunes_guidance );
     parse_effects( p()->buff.owlkin_frenzy );
     parse_effects( p()->buff.starweavers_free_starfall );
     parse_effects( p()->buff.starweavers_free_starsurge );
@@ -1684,31 +1704,31 @@ public:
     parse_effects( p()->buff.bear_form );
 
     // for readability, we build the mask for effects to enable, rather than mask to disable.
-    unsigned base_mask = 0b11001U;
+    unsigned bear_mask = 0b11001U;
 
     if ( p()->talent.berserk_persistence.ok() )
-      base_mask |= 0b110U;
+      bear_mask |= 0b110U;
 
     if ( p()->talent.incarnation_bear.ok() && p()->talent.astral_insight.ok() )
     {
       // enable effects #14 & #15
-      base_mask |= 1 << 13;
-      base_mask |= 1 << 14;
+      bear_mask |= 1 << 13;
+      bear_mask |= 1 << 14;
 
       if ( p()->talent.lunar_calling.ok() )
       {
         // enable effects #16 & #17
-        base_mask |= 1 << 15;
-        base_mask |= 1 << 16;
+        bear_mask |= 1 << 15;
+        bear_mask |= 1 << 16;
       }
     }
 
     // bitwise NOT to conver to ignore mask.
-    base_mask = ~base_mask;
+    bear_mask = ~bear_mask;
 
-    parse_effects( p()->buff.berserk_bear, base_mask, p()->talent.berserk_ravage,
+    parse_effects( p()->buff.berserk_bear, bear_mask, p()->talent.berserk_ravage,
                    p()->talent.berserk_unchecked_aggression );
-    parse_effects( p()->buff.incarnation_bear, base_mask, p()->talent.berserk_ravage,
+    parse_effects( p()->buff.incarnation_bear, bear_mask, p()->talent.berserk_ravage,
                    p()->talent.berserk_unchecked_aggression );
     parse_effects( p()->buff.dream_of_cenarius );
     parse_effects( p()->buff.furious_regeneration );
