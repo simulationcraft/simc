@@ -66,7 +66,7 @@ namespace monk
   template <class Base>
   monk_action_t<Base>::monk_action_t( std::string_view name, monk_t *player, const spell_data_t *spell )
     : ab( name, player, spell ),
-      sef_ability( sef_ability_e::SEF_NONE ),
+      sef_ability( actions::sef_ability_e::SEF_NONE ),
       ww_mastery( false ),
       may_combo_strike( false ),
       trigger_chiji( false ),
@@ -1376,7 +1376,7 @@ namespace monk
           may_combo_strike = true;
           trigger_chiji = true;
           trigger_jadefire_stomp = true;
-          sef_ability = sef_ability_e::SEF_TIGER_PALM;
+          sef_ability = actions::sef_ability_e::SEF_TIGER_PALM;
           cast_during_sck = true;
 
           if ( !p->talent.brewmaster.press_the_advantage->ok() )
@@ -1542,7 +1542,7 @@ namespace monk
         {
           background = true;
           ww_mastery = true;
-          sef_ability = sef_ability_e::SEF_GLORY_OF_THE_DAWN;
+          sef_ability = actions::sef_ability_e::SEF_GLORY_OF_THE_DAWN;
           //trigger_jadefire_stomp   = TODO;
 
           apply_dual_wield_two_handed_scaling();
@@ -1723,7 +1723,7 @@ namespace monk
 
           may_combo_strike = true;
           trigger_jadefire_stomp = true;
-          sef_ability = sef_ability_e::SEF_RISING_SUN_KICK;
+          sef_ability = actions::sef_ability_e::SEF_RISING_SUN_KICK;
           ap_type = attack_power_type::NONE;
           cast_during_sck = true;
 
@@ -1891,7 +1891,7 @@ namespace monk
 
           may_combo_strike = true;
           trigger_jadefire_stomp = true;
-          sef_ability = sef_ability_e::SEF_RISING_SUN_KICK;
+          sef_ability = actions::sef_ability_e::SEF_RISING_SUN_KICK;
           ap_type = attack_power_type::NONE;
           cast_during_sck = true;
           background = dual = true;
@@ -1923,7 +1923,7 @@ namespace monk
         blackout_kick_totm_proc_t( monk_t *p )
           : monk_melee_attack_t( "blackout_kick_totm_proc", p, p->passives.totm_bok_proc )
         {
-          sef_ability = sef_ability_e::SEF_BLACKOUT_KICK_TOTM;
+          sef_ability = actions::sef_ability_e::SEF_BLACKOUT_KICK_TOTM;
           ww_mastery = false;
           cooldown->duration = timespan_t::zero();
           background = dual = true;
@@ -2029,7 +2029,7 @@ namespace monk
           ww_mastery = true;
 
           parse_options( options_str );
-          sef_ability = sef_ability_e::SEF_BLACKOUT_KICK;
+          sef_ability = actions::sef_ability_e::SEF_BLACKOUT_KICK;
           may_combo_strike = true;
           trigger_chiji = true;
           trigger_jadefire_stomp = true;
@@ -2270,7 +2270,7 @@ namespace monk
           : monk_melee_attack_t( "rushing_jade_wind", p, p->shared.rushing_jade_wind )
         {
           parse_options( options_str );
-          sef_ability = sef_ability_e::SEF_RUSHING_JADE_WIND;
+          sef_ability = actions::sef_ability_e::SEF_RUSHING_JADE_WIND;
           may_combo_strike = true;
           trigger_jadefire_stomp = true;
           gcd_type = gcd_haste_type::NONE;
@@ -2486,7 +2486,7 @@ namespace monk
         {
           parse_options( options_str );
 
-          sef_ability = sef_ability_e::SEF_SPINNING_CRANE_KICK;
+          sef_ability = actions::sef_ability_e::SEF_SPINNING_CRANE_KICK;
           may_combo_strike = true;
           trigger_jadefire_stomp = true;
 
@@ -2716,7 +2716,7 @@ namespace monk
           parse_options( options_str );
 
           cooldown = p->cooldown.fists_of_fury;
-          sef_ability = sef_ability_e::SEF_FISTS_OF_FURY;
+          sef_ability = actions::sef_ability_e::SEF_FISTS_OF_FURY;
           may_combo_strike = true;
           trigger_jadefire_stomp = true;
 
@@ -2864,7 +2864,7 @@ namespace monk
         whirling_dragon_punch_t( monk_t *p, util::string_view options_str )
           : monk_melee_attack_t( "whirling_dragon_punch", p, p->talent.windwalker.whirling_dragon_punch )
         {
-          sef_ability = sef_ability_e::SEF_WHIRLING_DRAGON_PUNCH;
+          sef_ability = actions::sef_ability_e::SEF_WHIRLING_DRAGON_PUNCH;
 
           parse_options( options_str );
           interrupt_auto_attack = false;
@@ -2926,7 +2926,7 @@ namespace monk
         strike_of_the_windlord_main_hand_t( monk_t *p, const char *name, const spell_data_t *s )
           : monk_melee_attack_t( name, p, s )
         {
-          sef_ability = sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD;
+          sef_ability = actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD;
 
           ww_mastery = true;
           trigger_jadefire_stomp = true;
@@ -2963,7 +2963,7 @@ namespace monk
         strike_of_the_windlord_off_hand_t( monk_t *p, const char *name, const spell_data_t *s )
           : monk_melee_attack_t( name, p, s )
         {
-          sef_ability = sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH;
+          sef_ability = actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH;
           ww_mastery = true;
           trigger_jadefire_stomp = true;
           ap_type = attack_power_type::WEAPON_OFFHAND;
@@ -4013,7 +4013,7 @@ namespace monk
         crackling_jade_lightning_t( monk_t &p, util::string_view options_str )
           : monk_spell_t( "crackling_jade_lightning", &p, p.spec.crackling_jade_lightning )
         {
-          sef_ability = sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING;
+          sef_ability = actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING;
           may_combo_strike = true;
           trigger_jadefire_stomp = true;
 
@@ -6072,7 +6072,7 @@ namespace monk
           damage( new chi_wave_dmg_tick_t( player, "chi_wave_damage" ) ),
           dmg( true )
         {
-          sef_ability = sef_ability_e::SEF_CHI_WAVE;
+          sef_ability = actions::sef_ability_e::SEF_CHI_WAVE;
           may_combo_strike = true;
           trigger_jadefire_stomp = true;
           cast_during_sck = true;

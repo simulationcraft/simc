@@ -33,6 +33,8 @@ namespace monk
     SEF_PET_MAX
   };
 
+  namespace actions
+  {
   enum class sef_ability_e
   {
     SEF_NONE = -1,
@@ -63,8 +65,6 @@ namespace monk
     SEF_MAX
   };
 
-  namespace actions
-  {
   template <class Base>
   struct monk_action_t : public parse_action_effects_t<Base, monk_t, monk_td_t>
   {
@@ -156,7 +156,7 @@ namespace monk
 
   inline int sef_spell_index( int x )
   {
-    return x - static_cast< int >( sef_ability_e::SEF_SPELL_MIN );
+    return x - static_cast< int >( actions::sef_ability_e::SEF_SPELL_MIN );
   }
 
   struct monk_td_t : public actor_target_data_t
@@ -1210,7 +1210,7 @@ namespace monk
     void retarget_storm_earth_and_fire_pets() const;
 
     void bonedust_brew_assessor( action_state_t * );
-    void trigger_storm_earth_and_fire( const action_t *a, sef_ability_e sef_ability, bool combo_strike );
+    void trigger_storm_earth_and_fire( const action_t *a, actions::sef_ability_e sef_ability, bool combo_strike );
     void trigger_spirit_of_forged_vermillion( action_state_t *s );
     void storm_earth_and_fire_fixate( player_t *target );
     bool storm_earth_and_fire_fixate_ready( player_t *target );

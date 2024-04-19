@@ -1210,8 +1210,8 @@ namespace monk
 
       storm_earth_and_fire_pet_t( util::string_view name, monk_t *owner, bool dual_wield, weapon_e weapon_type )
         : monk_pet_t( owner, name, PET_NONE, true, true ),
-        attacks( ( int )sef_ability_e::SEF_ATTACK_MAX ),
-        spells( ( int )sef_ability_e::SEF_SPELL_MAX - ( int )sef_ability_e::SEF_SPELL_MIN ),
+          attacks( ( int )actions::sef_ability_e::SEF_ATTACK_MAX ),
+          spells( ( int )actions::sef_ability_e::SEF_SPELL_MAX - ( int )actions::sef_ability_e::SEF_SPELL_MIN ),
         sticky_target( false ),
         active_actions(),
         buff()
@@ -1255,20 +1255,20 @@ namespace monk
       {
         monk_pet_t::init_spells();
 
-        attacks.at( ( int )sef_ability_e::SEF_TIGER_PALM ) = new sef_tiger_palm_t( this );
-        attacks.at( ( int )sef_ability_e::SEF_BLACKOUT_KICK ) = new sef_blackout_kick_t( this );
-        attacks.at( ( int )sef_ability_e::SEF_BLACKOUT_KICK_TOTM ) = new sef_blackout_kick_totm_proc_t( this );
-        attacks.at( ( int )sef_ability_e::SEF_RISING_SUN_KICK ) = new sef_rising_sun_kick_t( this );
-        attacks.at( ( int )sef_ability_e::SEF_GLORY_OF_THE_DAWN ) = new sef_glory_of_the_dawn_t( this );
-        attacks.at( ( int )sef_ability_e::SEF_FISTS_OF_FURY ) = new sef_fists_of_fury_t( this );
-        attacks.at( ( int )sef_ability_e::SEF_SPINNING_CRANE_KICK ) = new sef_spinning_crane_kick_t( this );
-        attacks.at( ( int )sef_ability_e::SEF_RUSHING_JADE_WIND ) = new sef_rushing_jade_wind_t( this );
-        attacks.at( ( int )sef_ability_e::SEF_WHIRLING_DRAGON_PUNCH ) = new sef_whirling_dragon_punch_t( this );
-        attacks.at( ( int )sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD ) = new sef_strike_of_the_windlord_t( this );
-        attacks.at( ( int )sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH ) = new sef_strike_of_the_windlord_oh_t( this );
+        attacks.at( ( int )actions::sef_ability_e::SEF_TIGER_PALM ) = new sef_tiger_palm_t( this );
+        attacks.at( ( int )actions::sef_ability_e::SEF_BLACKOUT_KICK ) = new sef_blackout_kick_t( this );
+        attacks.at( ( int )actions::sef_ability_e::SEF_BLACKOUT_KICK_TOTM ) = new sef_blackout_kick_totm_proc_t( this );
+        attacks.at( ( int )actions::sef_ability_e::SEF_RISING_SUN_KICK ) = new sef_rising_sun_kick_t( this );
+        attacks.at( ( int )actions::sef_ability_e::SEF_GLORY_OF_THE_DAWN ) = new sef_glory_of_the_dawn_t( this );
+        attacks.at( ( int )actions::sef_ability_e::SEF_FISTS_OF_FURY ) = new sef_fists_of_fury_t( this );
+        attacks.at( ( int )actions::sef_ability_e::SEF_SPINNING_CRANE_KICK ) = new sef_spinning_crane_kick_t( this );
+        attacks.at( ( int )actions::sef_ability_e::SEF_RUSHING_JADE_WIND ) = new sef_rushing_jade_wind_t( this );
+        attacks.at( ( int )actions::sef_ability_e::SEF_WHIRLING_DRAGON_PUNCH ) = new sef_whirling_dragon_punch_t( this );
+        attacks.at( ( int )actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD ) = new sef_strike_of_the_windlord_t( this );
+        attacks.at( ( int )actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH ) = new sef_strike_of_the_windlord_oh_t( this );
 
-        spells.at( sef_spell_index( ( int )sef_ability_e::SEF_CHI_WAVE ) ) = new sef_chi_wave_t( this );
-        spells.at( sef_spell_index( ( int )sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING ) ) = new sef_crackling_jade_lightning_t( this );
+        spells.at( sef_spell_index( ( int )actions::sef_ability_e::SEF_CHI_WAVE ) ) = new sef_chi_wave_t( this );
+        spells.at( sef_spell_index( ( int )actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING ) ) = new sef_crackling_jade_lightning_t( this );
       }
 
       void init_action_list() override
@@ -1333,21 +1333,21 @@ namespace monk
         } );
       }
 
-      void trigger_attack( sef_ability_e ability, const action_t *source_action, bool combo_strike = false )
+      void trigger_attack( actions::sef_ability_e ability, const action_t *source_action, bool combo_strike = false )
       {
         if ( channeling )
         {
 // the only time we're not cancellign is if we use something instant
 // and we're channeling spinning crane kick
           if ( dynamic_cast< sef_spinning_crane_kick_t * >( channeling ) == nullptr ||
-            ability == sef_ability_e::SEF_FISTS_OF_FURY ||
-            ability == sef_ability_e::SEF_SPINNING_CRANE_KICK )
+               ability == actions::sef_ability_e::SEF_FISTS_OF_FURY ||
+               ability == actions::sef_ability_e::SEF_SPINNING_CRANE_KICK )
           {
             channeling->cancel();
           }
         }
 
-        if ( ( int )ability >= ( int )sef_ability_e::SEF_SPELL_MIN )
+        if ( ( int )ability >= ( int )actions::sef_ability_e::SEF_SPELL_MIN )
         {
           auto spell_index = sef_spell_index( ( int )ability );
           assert( spells[spell_index] );
@@ -1988,7 +1988,7 @@ namespace monk
     }
   }
 
-  void monk_t::trigger_storm_earth_and_fire( const action_t *a, sef_ability_e sef_ability, bool combo_strike = false )
+  void monk_t::trigger_storm_earth_and_fire( const action_t *a, actions::sef_ability_e sef_ability, bool combo_strike = false )
   {
     if ( specialization() != MONK_WINDWALKER )
       return;
@@ -1996,7 +1996,7 @@ namespace monk
     if ( !talent.windwalker.storm_earth_and_fire->ok() )
       return;
 
-    if ( sef_ability == sef_ability_e::SEF_NONE )
+    if ( sef_ability == actions::sef_ability_e::SEF_NONE )
       return;
 
     if ( !buff.storm_earth_and_fire->up() )
@@ -2005,8 +2005,8 @@ namespace monk
     // Trigger pet retargeting if sticky target is not defined, and the Monk used one of the Cyclone
     // Strike triggering abilities
     if ( !pets.sef[( int )sef_pet_e::SEF_EARTH]->sticky_target &&
-      ( sef_ability == sef_ability_e::SEF_TIGER_PALM || sef_ability == sef_ability_e::SEF_BLACKOUT_KICK ||
-      sef_ability == sef_ability_e::SEF_RISING_SUN_KICK ) )
+         ( sef_ability == actions::sef_ability_e::SEF_TIGER_PALM || sef_ability == actions::sef_ability_e::SEF_BLACKOUT_KICK ||
+           sef_ability == actions::sef_ability_e::SEF_RISING_SUN_KICK ) )
     {
       retarget_storm_earth_and_fire_pets();
     }
