@@ -1497,8 +1497,8 @@ namespace monk
           // Combo Breaker calculation
           if ( p()->spec.combo_breaker->ok() && p()->buff.bok_proc->trigger() && p()->buff.storm_earth_and_fire->up() )
           {
-            p()->trigger_storm_earth_and_fire_bok_proc( sef_pet_e::SEF_FIRE );
-            p()->trigger_storm_earth_and_fire_bok_proc( sef_pet_e::SEF_EARTH );
+            p()->trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e::SEF_FIRE );
+            p()->trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e::SEF_EARTH );
           }
 
           // Reduces the remaining cooldown on your Brews by 1 sec

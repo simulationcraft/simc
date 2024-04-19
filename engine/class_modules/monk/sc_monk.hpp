@@ -26,12 +26,25 @@ namespace monk
   struct monk_t;
   struct monk_td_t;
 
-  enum class sef_pet_e
+  namespace pets
   {
-    SEF_FIRE = 0,
-    SEF_EARTH,
-    SEF_PET_MAX
-  };
+    struct storm_earth_and_fire_pet_t;
+    struct xuen_pet_t;
+    struct niuzao_pet_t;
+    struct call_to_arms_niuzao_pet_t;
+    struct chiji_pet_t;
+    struct yulon_pet_t;
+    struct white_tiger_statue_t;
+    struct fury_of_xuen_pet_t;
+    struct spirit_of_forged_vermillion_t;
+
+    enum class sef_pet_e
+    {
+      SEF_FIRE = 0,
+      SEF_EARTH,
+      SEF_PET_MAX
+    };
+  }
 
   namespace actions
   {
@@ -141,18 +154,6 @@ namespace monk
   {
     struct stagger_self_damage_t;
   }  // namespace actions::spells
-  namespace pets
-  {
-    struct storm_earth_and_fire_pet_t;
-    struct xuen_pet_t;
-    struct niuzao_pet_t;
-    struct call_to_arms_niuzao_pet_t;
-    struct chiji_pet_t;
-    struct yulon_pet_t;
-    struct white_tiger_statue_t;
-    struct fury_of_xuen_pet_t;
-    struct spirit_of_forged_vermillion_t;
-  }
 
   inline int sef_spell_index( int x )
   {
@@ -1055,7 +1056,7 @@ namespace monk
 
     struct pets_t
     {
-      std::array<pets::storm_earth_and_fire_pet_t *, ( int )sef_pet_e::SEF_PET_MAX> sef;
+      std::array<pets::storm_earth_and_fire_pet_t *, ( int )pets::sef_pet_e::SEF_PET_MAX> sef;
       spawner::pet_spawner_t<pet_t, monk_t> xuen;
       spawner::pet_spawner_t<pet_t, monk_t> niuzao;
       spawner::pet_spawner_t<pet_t, monk_t> yulon;
@@ -1214,8 +1215,8 @@ namespace monk
     void trigger_spirit_of_forged_vermillion( action_state_t *s );
     void storm_earth_and_fire_fixate( player_t *target );
     bool storm_earth_and_fire_fixate_ready( player_t *target );
-    player_t *storm_earth_and_fire_fixate_target( sef_pet_e sef_pet );
-    void trigger_storm_earth_and_fire_bok_proc( sef_pet_e sef_pet );
+    player_t *storm_earth_and_fire_fixate_target( pets::sef_pet_e sef_pet );
+    void trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e sef_pet );
   };
   struct sef_despawn_cb_t
   {
