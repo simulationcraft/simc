@@ -11892,11 +11892,11 @@ void death_knight_t::arise()
   if ( talent.rider.a_feast_of_souls.ok() )
   {
     make_repeating_event( *sim, talent.rider.a_feast_of_souls->effectN( 1 ).period(), [ this ]() {
-      if ( active_riders >= talent.rider.a_feast_of_souls->effectN( 1 ).base_value() )
+      if ( active_riders >= talent.rider.a_feast_of_souls->effectN( 1 ).base_value() && !buffs.a_feast_of_souls -> check() )
       {
         buffs.a_feast_of_souls->trigger();
       }
-      if ( active_riders < talent.rider.a_feast_of_souls->effectN( 1 ).base_value() )
+      if ( active_riders < talent.rider.a_feast_of_souls->effectN( 1 ).base_value() && buffs.a_feast_of_souls -> check() )
       {
         buffs.a_feast_of_souls->expire();
       }
