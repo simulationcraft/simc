@@ -1517,7 +1517,7 @@ struct entropic_rift_t final : public priest_spell_t
       priest().buffs.voidheart->trigger();
     }
 
-    if ( priest().talents.voidweaver.void_empowerment.enabled() )
+    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.voidweaver.void_empowerment.enabled() )
     {
       priest().buffs.mind_devourer->trigger();
       priest().procs.mind_devourer->occur();
