@@ -3034,13 +3034,15 @@ struct fury_of_elune_buff_t : public druid_buff_t
     set_cooldown( 0_ms );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
 
-    const auto& eff = find_effect( this, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
-    auto ap = eff.resource( RESOURCE_ASTRAL_POWER );
-    set_default_value( ap / eff.period().total_seconds() );
+    auto resource = p->specialization() == DRUID_GUARDIAN ? RESOURCE_RAGE : RESOURCE_ASTRAL_POWER;
+
+    const auto& eff = find_effect( this, A_PERIODIC_ENERGIZE, resource );
+    auto amt = eff.resource( resource );
+    set_default_value( amt / eff.period().total_seconds() );
 
     auto gain = p->get_gain( n );
-    set_tick_callback( [ ap, gain, this ]( buff_t*, int, timespan_t ) {
-      player->resource_gain( RESOURCE_ASTRAL_POWER, ap, gain );
+    set_tick_callback( [ &, this ]( buff_t*, int, timespan_t ) {
+      player->resource_gain( resource, amt, gain );
     } );
   }
 };
