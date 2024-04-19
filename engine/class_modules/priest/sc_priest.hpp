@@ -843,6 +843,7 @@ public:
   ground_aoe_event_t* active_entropic_rift;
   void trigger_entropic_rift();
   void extend_entropic_rift();
+  void expand_entropic_rift();
 
   unsigned int specialization_aura_id()
   {

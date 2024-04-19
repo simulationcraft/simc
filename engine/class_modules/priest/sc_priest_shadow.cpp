@@ -1119,6 +1119,11 @@ struct devouring_plague_t final : public priest_spell_t
     {
       priest().buffs.darkflame_embers->trigger();
     }
+
+    if ( priest().talents.voidweaver.collapsing_void.enabled() )
+    {
+      priest().expand_entropic_rift();
+    }
   }
 };
 
