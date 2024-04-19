@@ -6354,13 +6354,9 @@ private:
 public:
   using base_t = consume_dreamstate_t<BASE>;
 
-  double dreamstate_gcd;
   bool dreamstate = false;
 
-  consume_dreamstate_t( std::string_view n, druid_t* p, const spell_data_t* s )
-    : BASE( n, p, s ),
-      p_( p ),
-      dreamstate_gcd( find_effect( &p->buff.dreamstate->data(), this, A_ADD_PCT_MODIFIER, P_GCD ).percent() )
+  consume_dreamstate_t( std::string_view n, druid_t* p, const spell_data_t* s ) : BASE( n, p, s ), p_( p )
   {
     BASE::parse_effects( &p->buff.dreamstate->data(), [ this ] { return dreamstate; }, IGNORE_STACKS );
   }
@@ -6373,16 +6369,6 @@ public:
       p_->buff.dreamstate->decrement();
 
     BASE::schedule_execute( s );
-  }
-
-  timespan_t gcd() const override
-  {
-    timespan_t g = BASE::gcd();
-
-    if ( dreamstate )
-      g *= 1.0 + dreamstate_gcd;
-
-    return std::max( BASE::min_gcd, g );
   }
 
   void execute() override { BASE::execute(); dreamstate = false; }
@@ -6649,16 +6635,6 @@ struct dash_t : public druid_spell_t
 
     form_mask = CAT_FORM;
     autoshift = p->active.shift_to_cat;
-  }
-
-  timespan_t gcd() const override
-  {
-    timespan_t g = druid_spell_t::gcd();
-
-    if ( p()->buff.cat_form->check() )
-      g *= 1.0 + gcd_mul;
-
-    return g;
   }
 
   void execute() override
@@ -8315,17 +8291,6 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<consum
     // for each additional wrath in precombat apl, reduce the travel time by the cast time
     player->invalidate_cache( CACHE_SPELL_HASTE );
     return std::max( 1_ms, base_t::travel_time() - base_execute_time * composite_haste() * count );
-  }
-
-  timespan_t gcd() const override
-  {
-    timespan_t g = base_t::gcd();
-
-    // Move this into parse_buff_effects if it becomes more prevalent. Currently only used for wrath & dash
-    if ( p()->buff.eclipse_solar->up() )
-      g *= 1.0 + gcd_mul;
-
-    return std::max( min_gcd, g );
   }
 
   // return false on invulnerable targets as this action is !harmful to allow for self-healing, thus will pass the
