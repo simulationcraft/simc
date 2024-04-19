@@ -9,35 +9,29 @@
 #include "action/action_callback.hpp"
 #include "sc_enums.hpp"
 
+#include "action/parse_effects.hpp"
+#include "sim/proc.hpp"
+#include "dbc/spell_data.hpp"
+#include "player/player.hpp"
+#include "dbc/data_enums.hh"
+
+#include <string_view>
+#include <array>
+#include <memory>
+
 #include "simulationcraft.hpp"
 
 namespace monk
 {
-  namespace actions::spells
-  {
-    struct stagger_self_damage_t;
-  }  // namespace actions::spells
-  namespace pets
-  {
-    struct storm_earth_and_fire_pet_t;
-    struct xuen_pet_t;
-    struct niuzao_pet_t;
-    struct call_to_arms_niuzao_pet_t;
-    struct chiji_pet_t;
-    struct yulon_pet_t;
-    struct white_tiger_statue_t;
-    struct fury_of_xuen_pet_t;
-    struct spirit_of_forged_vermillion_t;
-  }
-
   struct monk_t;
+  struct monk_td_t;
 
   enum class sef_pet_e
   {
     SEF_FIRE = 0,
     SEF_EARTH,
     SEF_PET_MAX
-  };  // Player becomes storm spirit.
+  };
 
   enum class sef_ability_e
   {
@@ -68,6 +62,97 @@ namespace monk
     SEF_ATTACK_MIN = SEF_TIGER_PALM,
     SEF_MAX
   };
+
+  namespace actions
+  {
+  template <class Base>
+  struct monk_action_t : public parse_action_effects_t<Base, monk_t, monk_td_t>
+  {
+    sef_ability_e sef_ability;
+    bool ww_mastery;
+    bool may_combo_strike;
+    bool trigger_chiji;
+    bool trigger_jadefire_stomp;
+    bool cast_during_sck;
+
+    proc_t *skytouch;
+
+  private:
+    std::array<resource_e, MONK_MISTWEAVER + 1> _resource_by_stance;
+    using ab = parse_action_effects_t<Base, monk_t, monk_td_t>;
+
+  public:
+    using base_t = monk_action_t<Base>;
+
+    monk_action_t( std::string_view name, monk_t *player, const spell_data_t *s = spell_data_t::nil() );
+    std::string full_name() const;
+    monk_t *p();
+    const monk_t *p() const;
+    monk_td_t *get_td( player_t *target ) const;
+    const monk_td_t *find_td( player_t *target ) const;
+    void apply_buff_effects();
+    void apply_debuff_effects();
+
+    template <typename... Ts>
+    void parse_effects( Ts &&...args )
+    {
+      ab::parse_effects( std::forward<Ts>( args )... );
+    }
+    template <typename... Ts>
+    void parse_target_effects( Ts &&...args )
+    {
+      ab::parse_target_effects( std::forward<Ts>( args )... );
+    }
+
+    const spelleffect_data_t *find_spelleffect( const spell_data_t *spell, effect_subtype_t subtype, int misc_value,
+                                                const spell_data_t *affected, effect_type_t type );
+    const spell_data_t *find_spell_override( const spell_data_t *base, const spell_data_t *passive );
+
+    std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override;
+
+    bool usable_moving() const override;
+    bool ready() override;
+    void init() override;
+    void init_finished() override;
+    void reset_swing();
+    resource_e current_resource() const override;
+    bool is_combo_strike();
+    bool is_combo_break();
+    void combo_strikes_trigger();
+    void brew_cooldown_reduction( double time_reduction );
+    void trigger_shuffle( double time_extension );
+    void consume_resource() override;
+    void execute() override;
+    void impact( action_state_t *state ) override;
+    void tick( dot_t *dot ) override;
+    void last_tick( dot_t *dot ) override;
+    double composite_persistent_multiplier( const action_state_t *state ) const override;
+    double cost_pct_multiplier() const override;
+    double cost_reduction() const;
+    double composite_ta_multiplier( const action_state_t *state ) const override;
+    double composite_da_multiplier( const action_state_t *state ) const override;
+    double composite_target_multiplier( player_t *target ) const override;
+    void trigger_storm_earth_and_fire( const action_t *action );
+    void trigger_mystic_touch( action_state_t *state );
+  };
+  }  // namespace actions
+
+  namespace actions::spells
+  {
+    struct stagger_self_damage_t;
+  }  // namespace actions::spells
+  namespace pets
+  {
+    struct storm_earth_and_fire_pet_t;
+    struct xuen_pet_t;
+    struct niuzao_pet_t;
+    struct call_to_arms_niuzao_pet_t;
+    struct chiji_pet_t;
+    struct yulon_pet_t;
+    struct white_tiger_statue_t;
+    struct fury_of_xuen_pet_t;
+    struct spirit_of_forged_vermillion_t;
+  }
 
   inline int sef_spell_index( int x )
   {
@@ -468,6 +553,7 @@ namespace monk
       propagate_const<proc_t *> tranquil_spirit_expel_harm;
       propagate_const<proc_t *> tranquil_spirit_goto;
       propagate_const<proc_t *> xuens_battlegear_reduction;
+      propagate_const<proc_t *> skytouch;
 
       // Tier 30
       propagate_const<proc_t *> spirit_of_forged_vermillion_spawn;
