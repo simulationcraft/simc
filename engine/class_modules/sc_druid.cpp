@@ -366,6 +366,7 @@ static const spelleffect_data_t& find_trigger( T val )
           case A_PROC_TRIGGER_SPELL_WITH_VALUE:
           case A_PERIODIC_TRIGGER_SPELL:
           case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
+          case A_285:
             return eff;
           default:
             break;
@@ -436,13 +437,6 @@ public:
     // Restoration
     double time_spend_healing = 0.0;
   } options;
-
-  // RPPM objects
-  struct rppms_t
-  {
-    // Feral
-    real_ppm_t* predator;  // Optional RPPM approximation
-  } rppm;
 
   struct active_actions_t
   {
@@ -590,6 +584,7 @@ public:
     buff_t* incarnation_cat;
     buff_t* incarnation_cat_prowl;
     buff_t* overflowing_power;
+    buff_t* predator;
     buff_t* predator_revealed;  // 4t30
     buff_t* predatory_swiftness;
     buff_t* protective_growth;
@@ -702,8 +697,6 @@ public:
     // Feral
     proc_t* clearcasting;
     proc_t* clearcasting_wasted;
-    proc_t* predator;
-    proc_t* predator_wasted;
     proc_t* primal_fury;
 
     // Guardian
@@ -1154,7 +1147,6 @@ public:
   void init_procs() override;
   void init_uptimes() override;
   void init_resources( bool ) override;
-  void init_rng() override;
   void init_special_effects() override;
   void init_spells() override;
   void init_items() override;
@@ -1699,6 +1691,7 @@ public:
     parse_effects( p()->buff.apex_predators_craving );
     parse_effects( p()->buff.berserk_cat );
     parse_effects( p()->buff.incarnation_cat );
+    parse_effects( p()->buff.predator, USE_CURRENT );
     parse_effects( p()->buff.predatory_swiftness );
     parse_effects( p()->buff.sabertooth, USE_DEFAULT );
     parse_effects( p()->buff.sharpened_claws );
@@ -2381,8 +2374,6 @@ public:
   {
     base_t::tick( d );
 
-    trigger_predator();
-
     if ( snapshots.bloodtalons && bt_counter )
       bt_counter->count_tick();
 
@@ -2437,21 +2428,6 @@ public:
 
     p()->proc.primal_fury->occur();
     p()->resource_gain( RESOURCE_COMBO_POINT, primal_fury_cp, p()->gain.primal_fury );
-  }
-
-  void trigger_predator()
-  {
-    if ( !( p()->talent.predator.ok() && p()->options.predator_rppm_rate > 0 ) )
-      return;
-
-    if ( !p()->rppm.predator->trigger() )
-      return;
-
-    if ( !p()->cooldown.tigers_fury->down() )
-      p()->proc.predator_wasted->occur();
-
-    p()->cooldown.tigers_fury->reset( true );
-    p()->proc.predator->occur();
   }
 
   void trigger_berserk_frenzy( player_t* t, const action_state_t* s )
@@ -9092,21 +9068,6 @@ void druid_t::activate()
     } );
   }
 
-  if ( talent.predator.ok() )
-  {
-    register_on_kill_callback( [ this ]( player_t* t ) {
-      auto td = get_target_data( t );
-      if ( td->dots.thrash_cat->is_ticking() || td->dots.rip->is_ticking() || td->dots.rake->is_ticking() )
-      {
-        if ( !cooldown.tigers_fury->down() )
-          proc.predator_wasted->occur();
-
-        cooldown.tigers_fury->reset( true );
-        proc.predator->occur();
-      }
-    } );
-  }
-
   if ( spec.astral_power->ok() )
   {
     // Create repeating resource_loss event once OOC for 20s
@@ -10240,6 +10201,16 @@ void druid_t::create_buffs()
 
   buff.overflowing_power = make_buff_fallback( talent.berserk.ok(), this, "overflowing_power", find_spell( 405189 ) );
 
+  // TODO: confirm this is how the value is calculated
+  auto predator_buff = find_trigger( talent.predator ).trigger();
+  buff.predator = make_buff_fallback( talent.predator.ok(), this, "predator", predator_buff )
+    ->set_quiet( true )
+    ->set_tick_zero( true )
+    ->set_freeze_stacks( true )  // prevent buff_t::bump it buff_t::tick_t overwriting current value
+    ->set_tick_callback( [ this, mul = predator_buff->effectN( 2 ).percent() ]( buff_t* b, int, timespan_t ) {
+      b->current_value = ( 1.0 / composite_melee_haste() - 1.0 ) * mul;
+    } );
+
   buff.predator_revealed =
       make_buff_fallback( sets->has_set_bonus( DRUID_FERAL, T30, B4 ), this, "predator_revealed", find_spell( 408468 ) )
           ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
@@ -10930,8 +10901,6 @@ void druid_t::init_procs()
   proc.pulsar               = get_proc( "Primordial Arcanic Pulsar" )->collect_interval();
 
   // Feral
-  proc.predator             = get_proc( "Predator" );
-  proc.predator_wasted      = get_proc( "Predator (Wasted)" );
   proc.primal_fury          = get_proc( "Primal Fury" );
   proc.clearcasting         = get_proc( "Clearcasting" );
   proc.clearcasting_wasted  = get_proc( "Clearcasting (Wasted)" );
@@ -10977,15 +10946,6 @@ void druid_t::init_resources( bool force )
     resources.current[ RESOURCE_ASTRAL_POWER ] = options.initial_astral_power;
   }
   expected_max_health = calculate_expected_max_health();
-}
-
-// druid_t::init_rng ========================================================
-void druid_t::init_rng()
-{
-  player_t::init_rng();
-
-  // RPPM objects
-  rppm.predator = get_rppm( "predator", options.predator_rppm_rate );  // Predator: optional RPPM approximation.
 }
 
 template <typename T>
@@ -11745,6 +11705,9 @@ void druid_t::precombat_init()
     else
       buff.rising_light_falling_night_night->trigger();
   }
+
+  if ( talent.predator.ok() )
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.predator ) );
 
   if ( talent.shooting_stars.ok() )
   {
