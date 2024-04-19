@@ -11057,7 +11057,7 @@ void death_knight_t::create_buffs()
   buffs.festermight = make_buff( this, "festermight", spell.festermight_buff )
         -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
         -> set_default_value( talent.unholy.festermight->effectN( 1 ).percent() )
-        -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
+        -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   buffs.ghoulish_infusion = make_buff( this, "ghoulish_infusion", spell.ghoulish_infusion )
         -> set_duration( spell.ghoulish_infusion -> duration() )
