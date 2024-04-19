@@ -231,6 +231,9 @@ struct eclipse_handler_t
   unsigned starfire_counter_base = 2;
   eclipse_state_e state = eclipse_state_e::DISABLED;
 
+  gain_t* ac_gain = nullptr;
+  double ac_ap = 0.0;
+
   eclipse_handler_t( druid_t* player ) : data(), iter(), p( player ) {}
 
   bool enabled() { return state != eclipse_state_e::DISABLED; }
@@ -1054,7 +1057,6 @@ public:
     const spell_data_t* adaptive_swarm_heal;
 
     // Balance
-    const spell_data_t* astral_communion;
     const spell_data_t* astral_power;
     const spell_data_t* celestial_alignment;
     const spell_data_t* eclipse_lunar;
@@ -6496,15 +6498,6 @@ public:
   }
 };
 
-// Astral Communion =========================================================
-struct astral_communion_t : public druid_spell_t
-{
-  DRUID_ABILITY( astral_communion_t, druid_spell_t, "astral_communion", p->spec.astral_communion )
-  {
-    harmful = false;
-  }
-};
-
 // Astral Smolder ===========================================================
 struct astral_smolder_t
   : public residual_action::residual_periodic_action_t<trigger_waning_twilight_t<druid_spell_t>>
@@ -9182,7 +9175,6 @@ action_t* druid_t::create_action( std::string_view name, std::string_view opt )
   else if ( name == "survival_instincts"    ) a = new    survival_instincts_t( this );
 
   // Balance
-  else if ( name == "astral_communion"      ) a = new      astral_communion_t( this );
   else if ( name == "celestial_alignment"   ) a = new   celestial_alignment_t( this );
   else if ( name == "force_of_nature"       ) a = new       force_of_nature_t( this );
   else if ( name == "fury_of_elune"         ) a = new         fury_of_elune_t( this );
@@ -9650,7 +9642,6 @@ void druid_t::init_spells()
   spec.adaptive_swarm_heal      = check( talent.adaptive_swarm, 391891 );
 
   // Balance Abilities
-  spec.astral_communion         = check( talent.astral_communion, 202359 );
   spec.astral_power             = find_specialization_spell( "Astral Power" );
   spec.celestial_alignment      = talent.celestial_alignment.find_override_spell();
   spec.eclipse_lunar            = check( talent.eclipse, 48518 );
@@ -12843,6 +12834,12 @@ void eclipse_handler_t::init()
     iter.half_moon = &iter.arrays.emplace_back();
   if ( fm )
     iter.full_moon = &iter.arrays.emplace_back();
+
+  if ( p->talent.astral_communion.ok() )
+  {
+    ac_gain = p->get_gain( "Astral Communion" );
+    ac_ap = p->find_spell( 450599 )->effectN( 1 ).resource();
+  }
 }
 
 void eclipse_handler_t::cast_wrath()
@@ -12926,6 +12923,8 @@ void eclipse_handler_t::advance_eclipse()
         p->uptime.eclipse_none->update( false, p->sim->current_time() );
         p->uptime.eclipse_solar->update( true, p->sim->current_time() );
         reset_stacks();
+
+        p->resource_gain( RESOURCE_ASTRAL_POWER, ac_ap, ac_gain );
       }
       else if ( !wrath_counter )
       {
@@ -12939,6 +12938,8 @@ void eclipse_handler_t::advance_eclipse()
         p->uptime.eclipse_none->update( false, p->sim->current_time() );
         p->uptime.eclipse_lunar->update( true, p->sim->current_time() );
         reset_stacks();
+
+        p->resource_gain( RESOURCE_ASTRAL_POWER, ac_ap, ac_gain );
       }
       break;
 
@@ -12994,6 +12995,8 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
   p->uptime.eclipse_lunar->update( false, p->sim->current_time() );
   p->uptime.eclipse_solar->update( false, p->sim->current_time() );
   reset_stacks();
+
+  p->resource_gain( RESOURCE_ASTRAL_POWER, ac_ap, ac_gain );
 
   if ( p->active.orbital_strike )
     p->active.orbital_strike->execute_on_target( p->target );
