@@ -198,6 +198,20 @@ struct monk_buff_t : public buff_t
   monk_t &p();
   const monk_t &p() const;
 };
+
+struct summon_pet_t : public monk_spell_t
+{
+  timespan_t summoning_duration;
+  std::string_view pet_name;
+  pet_t *pet;
+
+  summon_pet_t( std::string_view name, std::string_view pname, monk_t *player,
+                const spell_data_t *spell = spell_data_t::nil() );
+
+  void init_finished() override;
+  void execute() override;
+  bool ready() override;
+};
 }  // namespace actions
 
 namespace actions::spells

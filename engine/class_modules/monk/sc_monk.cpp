@@ -1063,6 +1063,35 @@ const monk_t &monk_buff_t::p() const
   return *debug_cast<monk_t *>( buff_t::source );
 }
 
+summon_pet_t::summon_pet_t( util::string_view name, util::string_view pname, monk_t *player, const spell_data_t *spell )
+  : monk_spell_t( name, player, spell ), summoning_duration( timespan_t::zero() ), pet_name( pname ), pet( nullptr )
+{
+  harmful = false;
+}
+
+void summon_pet_t::init_finished()
+{
+  pet = player->find_pet( pet_name );
+  if ( !pet )
+    background = true;
+
+  monk_spell_t::init_finished();
+}
+
+void summon_pet_t::execute()
+{
+  pet->summon( summoning_duration );
+
+  monk_spell_t::execute();
+}
+
+bool summon_pet_t::ready()
+{
+  if ( !pet )
+    return false;
+  return monk_spell_t::ready();
+}
+
 struct monk_snapshot_stats_t : public snapshot_stats_t
 {
   monk_snapshot_stats_t( monk_t *player, util::string_view options ) : snapshot_stats_t( player, options )
@@ -1083,47 +1112,6 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
 
 namespace pet_summon
 {
-struct summon_pet_t : public monk_spell_t
-{
-  timespan_t summoning_duration;
-  std::string pet_name;
-  pet_t *pet;
-
-public:
-  summon_pet_t( util::string_view n, util::string_view pname, monk_t *p, const spell_data_t *sd = spell_data_t::nil() )
-    : monk_spell_t( n, p, sd ), summoning_duration( timespan_t::zero() ), pet_name( pname ), pet( nullptr )
-  {
-    harmful = false;
-  }
-
-  void init_finished() override
-  {
-    pet = player->find_pet( pet_name );
-    if ( !pet )
-    {
-      background = true;
-    }
-
-    monk_spell_t::init_finished();
-  }
-
-  void execute() override
-  {
-    pet->summon( summoning_duration );
-
-    monk_spell_t::execute();
-  }
-
-  bool ready() override
-  {
-    if ( !pet )
-    {
-      return false;
-    }
-    return monk_spell_t::ready();
-  }
-};
-
 // ==========================================================================
 // Storm, Earth, and Fire
 // ==========================================================================
