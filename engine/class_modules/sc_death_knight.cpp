@@ -3482,7 +3482,7 @@ struct mograine_pet_t : public horseman_pet_t
     {
       parse_options( options_str );
       aoe = data().effectN( 4 ).base_value();
-      base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_spell_damage * data().effectN( 1 ).percent();
+      base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_auto_attack_dps * data().effectN( 1 ).percent();
     }
   };
 
@@ -3605,7 +3605,7 @@ struct whitemane_pet_t : public horseman_pet_t
       : horseman_spell_t( p, name, p->dk()->pet_spell.whitemane_death_coil )
     {
       parse_options( options_str );
-      base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_spell_damage * data().effectN( 1 ).percent();
+      base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_auto_attack_dps * data().effectN( 1 ).percent();
     }
   };
 
@@ -3687,7 +3687,7 @@ struct trollbane_pet_t : public horseman_pet_t
       : horseman_melee_t( p, name, p->dk()->pet_spell.trollbane_obliterate )
     {
       parse_options( options_str );
-      base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_spell_damage * data().effectN( 1 ).percent();
+      base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_auto_attack_dps * data().effectN( 1 ).percent();
     }
   };
 
@@ -3747,7 +3747,7 @@ struct nazgrim_pet_t : public horseman_pet_t
       : horseman_melee_t( p, name, p->dk()->pet_spell.nazgrim_scourge_strike_shadow )
     {
       background = true;
-      base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_spell_damage * data().effectN( 1 ).percent();
+      base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_auto_attack_dps * data().effectN( 1 ).percent();
     }
   };
 
@@ -3760,7 +3760,7 @@ struct nazgrim_pet_t : public horseman_pet_t
     {
       parse_options( options_str );
       impact_action = scourge_strike_shadow;
-      base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_spell_damage * data().effectN( 1 ).percent();
+      base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_auto_attack_dps * data().effectN( 1 ).percent();
       add_child( scourge_strike_shadow );
     }
   };
