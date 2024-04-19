@@ -953,6 +953,116 @@ monk_absorb_t::monk_absorb_t( std::string_view name, monk_t &player, const spell
   track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
 }
 
+monk_melee_attack_t::monk_melee_attack_t( std::string_view name, monk_t *player, const spell_data_t *spell )
+  : base_t( name, player, spell ), mainhand( nullptr ), offhand( nullptr )
+{
+  special    = true;
+  may_glance = false;
+
+  track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
+}
+
+double monk_melee_attack_t::composite_target_crit_chance( player_t *target ) const
+{
+  double c = base_t::composite_target_crit_chance( target );
+
+  if ( auto *td = this->find_td( target ) )
+  {
+    if ( base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
+      c += td->debuff.keefers_skyreach->check_value();
+  }
+
+  return c;
+}
+
+double monk_melee_attack_t::action_multiplier() const
+{
+  double am = base_t::action_multiplier();
+
+  if ( ww_mastery && p()->buff.combo_strikes->check() )
+    am *= 1 + p()->cache.mastery_value();
+
+  // Storm, Earth, and Fire
+  if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
+    am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+
+  // Serenity
+  if ( p()->buff.serenity->check() && base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
+    am *= 1 + p()->talent.windwalker.serenity->effectN( 2 ).percent();
+
+  if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
+    am *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
+
+  return am;
+}
+
+// Physical tick_action abilities need amount_type() override, so the
+// tick_action are properly physically mitigated.
+result_amount_type monk_melee_attack_t::amount_type( const action_state_t *state, bool periodic ) const
+{
+  if ( tick_action && tick_action->school == SCHOOL_PHYSICAL )
+  {
+    return result_amount_type::DMG_DIRECT;
+  }
+  else
+  {
+    return base_t::amount_type( state, periodic );
+  }
+}
+
+void monk_melee_attack_t::impact( action_state_t *s )
+{
+  base_t::impact( s );
+
+  if ( !sim->overrides.mystic_touch && s->action->result_is_hit( s->result ) && p()->passives.mystic_touch->ok() &&
+        s->result_amount > 0.0 )
+  {
+    s->target->debuffs.mystic_touch->trigger();
+  }
+}
+
+void monk_melee_attack_t::apply_dual_wield_two_handed_scaling()
+{
+  ap_type = attack_power_type::WEAPON_BOTH;
+
+  if ( player->main_hand_weapon.group() == WEAPON_2H )
+  {
+    ap_type = attack_power_type::WEAPON_MAINHAND;
+    // 0.98 multiplier found only in tooltip
+    base_multiplier *= 0.98;
+  }
+}
+
+monk_buff_t::monk_buff_t( monk_td_t *target, util::string_view name, const spell_data_t *spell, const item_t *item )
+  : buff_t( *target, name, spell, item )
+{
+}
+
+monk_buff_t::monk_buff_t( monk_t *player, util::string_view name, const spell_data_t *spell, const item_t *item )
+  : buff_t( player, name, spell, item )
+{
+}
+
+monk_td_t *monk_buff_t::get_td( player_t *target )
+{
+  return p()->get_target_data( target );
+}
+
+const monk_td_t *monk_buff_t::find_td( player_t *target ) const
+{
+  return p()->find_target_data( target );
+}
+
+monk_t *monk_buff_t::p()
+{
+  return debug_cast<monk_t *>( buff_t::source );
+}
+
+const monk_t *monk_buff_t::p() const
+{
+  return debug_cast<monk_t *>( buff_t::source );
+}
+
 struct monk_snapshot_stats_t : public snapshot_stats_t
 {
   monk_snapshot_stats_t( monk_t *player, util::string_view options ) : snapshot_stats_t( player, options )
@@ -1080,91 +1190,6 @@ struct storm_earth_and_fire_fixate_t : public monk_spell_t
 
 namespace attacks
 {
-struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
-{
-  weapon_t *mh;
-  weapon_t *oh;
-
-  monk_melee_attack_t( util::string_view n, monk_t *player, const spell_data_t *s = spell_data_t::nil() )
-    : base_t( n, player, s ), mh( nullptr ), oh( nullptr )
-  {
-    special    = true;
-    may_glance = false;
-
-    track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
-  }
-
-  double composite_target_crit_chance( player_t *target ) const override
-  {
-    double c = base_t::composite_target_crit_chance( target );
-
-    if ( auto *td = this->find_td( target ) )
-    {
-      if ( base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
-        c += td->debuff.keefers_skyreach->check_value();
-    }
-
-    return c;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = base_t::action_multiplier();
-
-    if ( ww_mastery && p()->buff.combo_strikes->check() )
-      am *= 1 + p()->cache.mastery_value();
-
-    // Storm, Earth, and Fire
-    if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
-      am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
-
-    // Serenity
-    if ( p()->buff.serenity->check() && base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
-      am *= 1 + p()->talent.windwalker.serenity->effectN( 2 ).percent();
-
-    if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
-      am *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
-
-    return am;
-  }
-
-  // Physical tick_action abilities need amount_type() override, so the
-  // tick_action are properly physically mitigated.
-  result_amount_type amount_type( const action_state_t *state, bool periodic ) const override
-  {
-    if ( tick_action && tick_action->school == SCHOOL_PHYSICAL )
-    {
-      return result_amount_type::DMG_DIRECT;
-    }
-    else
-    {
-      return base_t::amount_type( state, periodic );
-    }
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    base_t::impact( s );
-
-    if ( !sim->overrides.mystic_touch && s->action->result_is_hit( s->result ) && p()->passives.mystic_touch->ok() &&
-         s->result_amount > 0.0 )
-    {
-      s->target->debuffs.mystic_touch->trigger();
-    }
-  }
-
-  void apply_dual_wield_two_handed_scaling()
-  {
-    ap_type = attack_power_type::WEAPON_BOTH;
-
-    if ( player->main_hand_weapon.group() == WEAPON_2H )
-    {
-      ap_type = attack_power_type::WEAPON_MAINHAND;
-      // 0.98 multiplier found only in tooltip
-      base_multiplier *= 0.98;
-    }
-  }
-};
 
 // ==========================================================================
 // Close to Heart Aura Toggle

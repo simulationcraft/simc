@@ -172,6 +172,32 @@ struct monk_absorb_t : public monk_action_t<absorb_t>
   monk_absorb_t( std::string_view name, monk_t &player, const spell_data_t *s = spell_data_t::nil() );
   // TODO: FIX TO USE * INSTEAD OF & FOR CONSISTENCY
 };
+
+struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
+{
+  weapon_t *mainhand;
+  weapon_t *offhand;
+
+  monk_melee_attack_t( std::string_view name, monk_t *player, const spell_data_t *spell = spell_data_t::nil() );
+  double composite_target_crit_chance( player_t *target ) const override;
+  double action_multiplier() const override;
+  result_amount_type amount_type( const action_state_t *state, bool periodic ) const override;
+  void impact( action_state_t *state ) override;
+  void apply_dual_wield_two_handed_scaling();
+};
+
+struct monk_buff_t : public buff_t
+{
+  // TODO: FIX TO USE * INSTEAD OF & FOR CONSISTENCY
+  monk_buff_t( monk_td_t *player, std::string_view name, const spell_data_t *spell = spell_data_t::nil(),
+               const item_t *item = nullptr );
+  monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell = spell_data_t::nil(),
+               const item_t *item = nullptr );
+  monk_td_t *get_td( player_t *target );
+  const monk_td_t *find_td( player_t *target ) const;
+  monk_t *p();
+  const monk_t *p() const;
+};
 }  // namespace actions
 
 namespace actions::spells
