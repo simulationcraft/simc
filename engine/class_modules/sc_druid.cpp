@@ -530,7 +530,6 @@ public:
     buff_t* rising_light_falling_night_day;
     buff_t* rising_light_falling_night_night;
     buff_t* tiger_dash;
-    buff_t* tireless_pursuit;
     buff_t* ursine_vigor;
     buff_t* wild_charge_movement;
 
@@ -755,7 +754,6 @@ public:
     player_talent_t thick_hide;
     player_talent_t thrash;
     player_talent_t tiger_dash;
-    player_talent_t tireless_pursuit;
     player_talent_t typhoon;
     player_talent_t ursine_vigor;
     player_talent_t ursols_vortex;
@@ -9299,7 +9297,6 @@ void druid_t::init_spells()
   talent.sunfire                        = CT( "Sunfire" );
   talent.thick_hide                     = CT( "Thick Hide" );
   talent.thrash                         = CT( "Thrash" );
-  talent.tireless_pursuit               = CT( "Tireless Pursuit" );
   talent.typhoon                        = CT( "Typhoon" );
   talent.ursine_vigor                   = CT( "Ursine Vigor" );
   talent.ursols_vortex                  = CT( "Ursol's Vortex" );
@@ -9901,11 +9898,6 @@ void druid_t::create_buffs()
     ->set_tick_callback( []( buff_t* b, int, timespan_t ) {
       b->current_value -= b->data().effectN( 2 ).percent();
     } );
-
-  buff.tireless_pursuit =
-      make_buff_fallback( talent.tireless_pursuit.ok(), this, "tireless_pursuit", find_spell( 340546 ) )
-          ->set_default_value( spec.cat_form_speed->effectN( 1 ).percent() )  // only switching from cat form supported
-          ->set_duration( talent.tireless_pursuit->effectN( 1 ).time_value() );
 
   buff.ursine_vigor = make_buff_fallback<ursine_vigor_buff_t>( talent.ursine_vigor.ok(), this, "ursine_vigor" );
 
