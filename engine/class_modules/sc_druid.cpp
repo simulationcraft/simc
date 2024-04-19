@@ -13151,22 +13151,31 @@ void druid_t::apply_affecting_auras( action_t& action )
 
   // elune's favored applies to periodic effects via script, and fury of nature only applies to those spells that are
   // affected by elune's favored
+  auto apply_ef = [ &action ]( const spell_data_t* s, double v ) {
+    action.base_dd_multiplier *= 1.0 + v;
+    action.sim->print_debug( "{} base_dd_multiplier modified by {} from {}", action.name(), v, s->name_cstr() );
+
+    action.base_td_multiplier *= 1.0 + v;
+    action.sim->print_debug( "{} base_td_multiplier modified by {} from {}", action.name(), v, s->name_cstr() );
+  };
+
   if ( action.data().affected_by_all( spec.elunes_favored->effectN( 1 ) ) )
   {
-    auto apply_effect_ = [ &action ]( const spell_data_t* s, double v ) {
-      action.base_dd_multiplier *= 1.0 + v;
-      action.sim->print_debug( "{} base_dd_multiplier modified by {} from {}", action.name(), v, s->name_cstr() );
-
-      action.base_td_multiplier *= 1.0 + v;
-      action.sim->print_debug( "{} base_td_multiplier modified by {} from {}", action.name(), v, s->name_cstr() );
-    };
-
     if ( talent.elunes_favored.ok() )
-      apply_effect_( spec.elunes_favored, spec.elunes_favored->effectN( 1 ).percent() );
+      apply_ef( spec.elunes_favored, spec.elunes_favored->effectN( 1 ).percent() );
 
     if ( talent.fury_of_nature.ok() )
-      apply_effect_( talent.fury_of_nature, talent.fury_of_nature->effectN( 1 ).percent() );
+      apply_ef( talent.fury_of_nature, talent.fury_of_nature->effectN( 1 ).percent() );
   }
+  else if ( talent.lunar_calling.ok() && action.data().affected_by_all( spec.elunes_favored->effectN( 3 ) ) )
+  {
+    if ( talent.elunes_favored.ok() )
+      apply_ef( spec.elunes_favored, spec.elunes_favored->effectN( 3 ).percent() );
+
+    if ( talent.fury_of_nature.ok() )
+      apply_ef( talent.fury_of_nature, talent.fury_of_nature->effectN( 1 ).percent() );
+  }
+
 
   // Restoration
   action.apply_affecting_aura( spec.cenarius_guidance );
