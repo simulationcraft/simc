@@ -71,7 +71,8 @@ namespace monk
       may_combo_strike( false ),
       trigger_chiji( false ),
       trigger_jadefire_stomp( false ),
-      cast_during_sck( false )
+      cast_during_sck( false ),
+      track_cd_waste( false )
   {
     range::fill( _resource_by_stance, RESOURCE_MAX );
 
@@ -802,160 +803,156 @@ namespace monk
     }
   }
 
-    struct monk_spell_t : public monk_action_t<spell_t>
+  monk_spell_t::monk_spell_t( std::string_view name, monk_t *player, const spell_data_t *spell )
+    : base_t( name, player, spell )
+  {
+    ap_type = attack_power_type::WEAPON_MAINHAND;
+
+    track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
+  }
+
+  double monk_spell_t::composite_target_crit_chance( player_t *target ) const
+  {
+    double c = base_t::composite_target_crit_chance( target );
+
+    if ( auto *td = this->find_td( target ) )
     {
-      monk_spell_t( util::string_view n, monk_t *player, const spell_data_t *s = spell_data_t::nil() )
-        : base_t( n, player, s )
-      {
-        ap_type = attack_power_type::WEAPON_MAINHAND;
-        track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
-      }
+      if ( base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
+        c += td->debuff.keefers_skyreach->check_value();
+    }
 
-      double composite_target_crit_chance( player_t *target ) const override
-      {
-        double c = base_t::composite_target_crit_chance( target );
+    return c;
+  }
 
-        if ( auto *td = this->find_td( target ) )
+  double monk_spell_t::composite_persistent_multiplier( const action_state_t *state ) const
+  {
+    double pm = base_t::composite_persistent_multiplier( state );
+
+    // Windwalker Mastery: Combo Strikes
+    if ( ww_mastery && p()->buff.combo_strikes->check() )
+      pm *= 1 + p()->cache.mastery_value();
+
+    // Brewmaster Tier Set
+    if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
+      pm *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
+
+    return pm;
+  }
+
+  double monk_spell_t::action_multiplier() const
+  {
+    double am = base_t::action_multiplier();
+
+    // Storm, Earth, and Fire
+    if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
+      am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+
+    // Serenity
+    if ( p()->buff.serenity->check() && base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
+      am *= 1 + p()->talent.windwalker.serenity->effectN( 2 ).percent();
+
+    return am;
+  }
+
+  monk_heal_t::monk_heal_t( std::string_view name, monk_t &player, const spell_data_t *spell )
+    : base_t( name, &player, spell )
+  {
+    harmful = false;
+    ap_type = attack_power_type::WEAPON_MAINHAND;
+
+    track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
+  }
+
+  double monk_heal_t::composite_target_multiplier( player_t *target ) const
+  {
+    double m = base_t::composite_target_multiplier( target );
+
+    return m;
+  }
+
+  double monk_heal_t::composite_target_crit_chance( player_t *target ) const
+  {
+    double c = base_t::composite_target_crit_chance( target );
+
+    if ( auto *td = this->find_td( target ) )
+    {
+      if ( base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
+        c += td->debuff.keefers_skyreach->check_value();
+    }
+
+    return c;
+  }
+
+  double monk_heal_t::composite_persistent_multiplier( const action_state_t *state ) const
+  {
+    double pm = base_t::composite_persistent_multiplier( state );
+
+    if ( base_t::data().affected_by( p()->passives.jadefire_brand_heal->effectN( 1 ) ) &&
+         p()->buff.jadefire_brand->check() )
+      pm *= 1 + p()->passives.jadefire_brand_heal->effectN( 1 ).percent();
+
+    return pm;
+  }
+
+  double monk_heal_t::action_multiplier() const
+  {
+    double am = base_t::action_multiplier();
+
+    am *= 1 + p()->talent.general.grace_of_the_crane->effectN( 1 ).percent();
+
+    player_t *t = ( execute_state ) ? execute_state->target : target;
+
+    switch ( p()->specialization() )
+    {
+      case MONK_MISTWEAVER:
+
+        if ( auto td = this->get_td( t ) )  // Use get_td since we can have a ticking dot without target-data
         {
-          if ( base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
-            c += td->debuff.keefers_skyreach->check_value();
+          if ( td->dots.enveloping_mist->is_ticking() )
+          {
+            if ( p()->talent.mistweaver.mist_wrap->ok() )
+              am *= 1.0 + p()->talent.mistweaver.enveloping_mist->effectN( 2 ).percent() +
+                    p()->talent.mistweaver.mist_wrap->effectN( 2 ).percent();
+            else
+              am *= 1.0 + p()->talent.mistweaver.enveloping_mist->effectN( 2 ).percent();
+          }
         }
 
-        return c;
-      }
+        if ( p()->buff.life_cocoon->check() )
+          am *= 1.0 + p()->talent.mistweaver.life_cocoon->effectN( 2 ).percent();
 
-      double composite_persistent_multiplier( const action_state_t *action_state ) const override
-      {
-        double pm = base_t::composite_persistent_multiplier( action_state );
+        break;
 
-        // Windwalker Mastery: Combo Strikes
-        if ( ww_mastery && p()->buff.combo_strikes->check() )
-          pm *= 1 + p()->cache.mastery_value();
-
-        // Brewmaster Tier Set
-        if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
-          pm *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
-
-        return pm;
-      }
-
-      double action_multiplier() const override
-      {
-        double am = base_t::action_multiplier();
+      case MONK_WINDWALKER:
 
         // Storm, Earth, and Fire
         if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
           am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
         // Serenity
-        if ( p()->buff.serenity->check() && base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
+        if ( p()->buff.serenity->check() &&
+             base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
           am *= 1 + p()->talent.windwalker.serenity->effectN( 2 ).percent();
 
-        return am;
-      }
-    };
+        break;
 
-    struct monk_heal_t : public monk_action_t<heal_t>
-    {
-      monk_heal_t( util::string_view n, monk_t &p, const spell_data_t *s = spell_data_t::nil() ) : base_t( n, &p, s )
-      {
-        harmful = false;
-        ap_type = attack_power_type::WEAPON_MAINHAND;
-        track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
-      }
+      case MONK_BREWMASTER:
 
-      double composite_target_multiplier( player_t *target ) const override
-      {
-        double m = base_t::composite_target_multiplier( target );
+        break;
 
-        return m;
-      }
+      default:
+        assert( 0 );
+        break;
+    }
 
-      double composite_target_crit_chance( player_t *target ) const override
-      {
-        double c = base_t::composite_target_crit_chance( target );
+    return am;
+  }
 
-        if ( auto *td = this->find_td( target ) )
-        {
-          if ( base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
-            c += td->debuff.keefers_skyreach->check_value();
-        }
-
-        return c;
-      }
-
-      double composite_persistent_multiplier( const action_state_t *action_state ) const override
-      {
-        double pm = base_t::composite_persistent_multiplier( action_state );
-
-        if ( base_t::data().affected_by( p()->passives.jadefire_brand_heal->effectN( 1 ) ) && p()->buff.jadefire_brand->check() )
-          pm *= 1 + p()->passives.jadefire_brand_heal->effectN( 1 ).percent();
-
-        return pm;
-      }
-
-      double action_multiplier() const override
-      {
-        double am = base_t::action_multiplier();
-
-        am *= 1 + p()->talent.general.grace_of_the_crane->effectN( 1 ).percent();
-
-        player_t *t = ( execute_state ) ? execute_state->target : target;
-
-        switch ( p()->specialization() )
-        {
-          case MONK_MISTWEAVER:
-
-            if ( auto td = this->get_td( t ) )  // Use get_td since we can have a ticking dot without target-data
-            {
-              if ( td->dots.enveloping_mist->is_ticking() )
-              {
-                if ( p()->talent.mistweaver.mist_wrap->ok() )
-                  am *=
-                  1.0 + p()->talent.mistweaver.enveloping_mist->effectN( 2 ).percent() + p()->talent.mistweaver.mist_wrap->effectN( 2 ).percent();
-                else
-                  am *= 1.0 + p()->talent.mistweaver.enveloping_mist->effectN( 2 ).percent();
-              }
-            }
-
-            if ( p()->buff.life_cocoon->check() )
-              am *= 1.0 + p()->talent.mistweaver.life_cocoon->effectN( 2 ).percent();
-
-            break;
-
-          case MONK_WINDWALKER:
-
-            // Storm, Earth, and Fire
-            if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
-              am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
-
-            // Serenity
-            if ( p()->buff.serenity->check() && base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
-              am *= 1 + p()->talent.windwalker.serenity->effectN( 2 ).percent();
-
-            break;
-
-          case MONK_BREWMASTER:
-
-            break;
-
-          default:
-            assert( 0 );
-            break;
-        }
-
-        return am;
-      }
-    };
-
-    struct monk_absorb_t : public monk_action_t<absorb_t>
-    {
-      monk_absorb_t( util::string_view n, monk_t &player, const spell_data_t *s = spell_data_t::nil() )
-        : base_t( n, &player, s )
-      {
-        track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
-      }
-    };
+  monk_absorb_t::monk_absorb_t( std::string_view name, monk_t &player, const spell_data_t *spell )
+    : base_t( name, &player, spell )
+  {
+    track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
+  }
 
     struct monk_snapshot_stats_t : public snapshot_stats_t
     {

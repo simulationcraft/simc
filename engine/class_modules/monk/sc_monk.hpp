@@ -87,6 +87,7 @@ namespace monk
     bool trigger_chiji;
     bool trigger_jadefire_stomp;
     bool cast_during_sck;
+    bool track_cd_waste;
 
     proc_t *skytouch;
 
@@ -147,6 +148,30 @@ namespace monk
     double composite_target_multiplier( player_t *target ) const override;
     void trigger_storm_earth_and_fire( const action_t *action );
     void trigger_mystic_touch( action_state_t *state );
+  };
+
+  struct monk_spell_t : public monk_action_t<spell_t>
+  {
+    monk_spell_t( std::string_view name, monk_t *player, const spell_data_t *spell = spell_data_t::nil() );
+    double composite_target_crit_chance( player_t *target ) const override;
+    double composite_persistent_multiplier( const action_state_t *state ) const override;
+    double action_multiplier() const override;
+  };
+
+  struct monk_heal_t : public monk_action_t<heal_t>
+  {
+    monk_heal_t( std::string_view name, monk_t &player, const spell_data_t *spell = spell_data_t::nil() );
+    // TODO: FIX TO USE * INSTEAD OF & FOR CONSISTENCY
+    double composite_target_multiplier( player_t *target ) const override;
+    double composite_target_crit_chance( player_t *target ) const override;
+    double composite_persistent_multiplier( const action_state_t *action_state ) const override;
+    double action_multiplier() const override;
+  };
+
+  struct monk_absorb_t : public monk_action_t<absorb_t>
+  {
+    monk_absorb_t( std::string_view name, monk_t &player, const spell_data_t *s = spell_data_t::nil() );
+    // TODO: FIX TO USE * INSTEAD OF & FOR CONSISTENCY
   };
   }  // namespace actions
 
