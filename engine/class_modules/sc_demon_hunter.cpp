@@ -445,7 +445,7 @@ public:
       player_talent_t keen_engagement;
       player_talent_t preemptive_strike;   // NYI
       player_talent_t evasive_action;      // NYI
-      player_talent_t unhindered_assault;  // NYI
+      player_talent_t unhindered_assault;
       player_talent_t incisive_blade;
 
       player_talent_t aldrachi_tactics;      // NYI
@@ -6193,6 +6193,12 @@ struct vengeful_retreat_t : public demon_hunter_spell_t
     if ( p()->specialization() != DEMON_HUNTER_VENGEANCE )
     {
       p()->consume_nearby_soul_fragments( soul_fragment::LESSER );
+    }
+
+    if ( p()->talent.aldrachi_reaver.unhindered_assault->ok() )
+    {
+      p()->proc.felblade_reset->occur();
+      p()->cooldown.felblade->reset( true );
     }
   }
 
