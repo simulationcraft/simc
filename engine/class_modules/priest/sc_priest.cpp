@@ -83,18 +83,16 @@ struct expiation_t final : public priest_spell_t
 // ==========================================================================
 // Mind Blast
 // ==========================================================================
-struct mind_blast_t final : public priest_spell_t
+struct mind_blast_base_t : public priest_spell_t
 {
 private:
-  double mind_blast_insanity;
   timespan_t manipulation_cdr;
   timespan_t void_summoner_cdr;
   propagate_const<expiation_t*> child_expiation;
 
 public:
-  mind_blast_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "mind_blast", p, p.specs.mind_blast ),
-      mind_blast_insanity( p.specs.shadow_priest->effectN( 9 ).resource( RESOURCE_INSANITY ) ),
+  mind_blast_base_t( priest_t& p, util::string_view options_str, const spell_data_t* s )
+    : priest_spell_t( s->name_cstr(), p, s ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
       void_summoner_cdr(
           priest()
@@ -104,10 +102,10 @@ public:
   {
     parse_options( options_str );
     affected_by_shadow_weaving = true;
+    cooldown                   = p.cooldowns.mind_blast;
     cooldown->hasted           = true;
 
     // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
-    energize_amount = mind_blast_insanity;
     if ( priest().talents.discipline.expiation.enabled() )
     {
       child_expiation             = new expiation_t( priest() );
@@ -153,12 +151,6 @@ public:
     if ( priest().specialization() == PRIEST_DISCIPLINE && priest().talents.voidweaver.entropic_rift.enabled() )
     {
       priest().trigger_entropic_rift();
-    }
-
-    // TODO: Should only come from Void Blast (NYI)
-    if ( priest().talents.voidweaver.darkening_horizon.enabled() )
-    {
-      priest().extend_entropic_rift();
     }
   }
 
@@ -272,6 +264,65 @@ public:
     priest().buffs.voidform->up();  // Benefit tracking
 
     priest_spell_t::update_ready( cd_duration );
+  }
+};
+
+struct mind_blast_t final : public mind_blast_base_t
+{
+  double mind_blast_insanity;
+
+  mind_blast_t( priest_t& p, util::string_view options_str )
+    : mind_blast_base_t( p, options_str, p.specs.mind_blast ),
+      mind_blast_insanity( p.specs.shadow_priest->effectN( 9 ).resource( RESOURCE_INSANITY ) )
+  {
+    energize_amount = mind_blast_insanity;
+  }
+
+  bool action_ready() override
+  {
+    if ( p().buffs.entropic_rift->check() && p().talents.voidweaver.void_blast->ok() &&
+         priest().specialization() == PRIEST_SHADOW )
+      return false;
+
+    return mind_blast_base_t::action_ready();
+  }
+};
+
+
+struct void_blast_shadow_t final : public mind_blast_base_t
+{
+  void_blast_shadow_t( priest_t& p, util::string_view options_str )
+    : mind_blast_base_t( p, options_str,
+                         p.talents.voidweaver.void_blast->ok() ? p.find_spell( 450983 ) : spell_data_t::nil() )
+  {
+    energize_amount   = -base_costs[ RESOURCE_INSANITY ];
+    energize_type     = action_energize::ON_CAST;
+    energize_resource = RESOURCE_INSANITY;
+
+    if ( p.talents.voidweaver.void_infusion.ok() )
+    {
+      energize_amount *= 1 + p.talents.voidweaver.void_infusion->effectN( 1 ).percent();
+    }
+
+    base_costs[ RESOURCE_INSANITY ] = 0;
+  }
+
+  void execute() override {
+    mind_blast_base_t::execute();
+
+    if ( priest().talents.voidweaver.darkening_horizon.enabled() )
+    {
+      priest().extend_entropic_rift();
+    }
+  }
+
+  bool action_ready() override
+  {
+    if ( !p().buffs.entropic_rift->check() || !p().talents.voidweaver.void_blast->ok() ||
+         priest().specialization() != PRIEST_SHADOW )
+      return false;
+
+    return mind_blast_base_t::action_ready();
   }
 };
 
@@ -2823,6 +2874,10 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   if ( name == "renew" )
   {
     return new renew_t( *this, options_str );
+  }
+  if ( name == "void_blast" && specialization() == PRIEST_SHADOW )
+  {
+    return new void_blast_shadow_t( *this, options_str );
   }
 
   return base_t::create_action( name, options_str );
