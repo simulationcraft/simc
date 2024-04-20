@@ -356,9 +356,6 @@ public:
   double spiritual_focus_count;
   double shuffle_count_secs;
 
-  // Blurred time cooldown shenanigans
-  std::vector<cooldown_t *> serenity_cooldowns;
-
   struct stagger_tick_entry_t
   {
     double value;
@@ -525,7 +522,6 @@ public:
     propagate_const<buff_t *> invoke_xuen;
     propagate_const<buff_t *> pressure_point;
     propagate_const<buff_t *> storm_earth_and_fire;
-    propagate_const<buff_t *> serenity;
     propagate_const<buff_t *> the_emperors_capacitor;
     propagate_const<buff_t *> thunderfist;
     propagate_const<buff_t *> touch_of_death_ww;
@@ -571,7 +567,6 @@ public:
     propagate_const<gain_t *> open_palm_strikes;
     propagate_const<gain_t *> power_strikes;
     propagate_const<gain_t *> rushing_jade_wind_tick;
-    propagate_const<gain_t *> serenity;
     propagate_const<gain_t *> spirit_of_the_crane;
     propagate_const<gain_t *> tiger_palm;
     propagate_const<gain_t *> touch_of_death_ww;
@@ -591,8 +586,6 @@ public:
     propagate_const<proc_t *> blackout_combo_rising_sun_kick;
     propagate_const<proc_t *> blackout_kick_cdr_with_woo;
     propagate_const<proc_t *> blackout_kick_cdr;
-    propagate_const<proc_t *> blackout_kick_cdr_serenity_with_woo;
-    propagate_const<proc_t *> blackout_kick_cdr_serenity;
     propagate_const<proc_t *> blackout_reinforcement_melee;
     propagate_const<proc_t *> blackout_reinforcement_sck;
     propagate_const<proc_t *> blackout_reinforcement_waste;
@@ -854,7 +847,6 @@ public:
       player_talent_t shadowboxing_treads;
       player_talent_t inner_peace;
       player_talent_t storm_earth_and_fire;
-      player_talent_t serenity;
       player_talent_t meridian_strikes;
       player_talent_t strike_of_the_windlord;
       // Row 6
@@ -1007,7 +999,6 @@ public:
     propagate_const<cooldown_t *> strike_of_the_windlord;
     propagate_const<cooldown_t *> thunder_focus_tea;
     propagate_const<cooldown_t *> touch_of_death;
-    propagate_const<cooldown_t *> serenity;
     propagate_const<cooldown_t *> weapons_of_order;
     propagate_const<cooldown_t *> whirling_dragon_punch;
 

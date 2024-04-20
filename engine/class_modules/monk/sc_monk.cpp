@@ -495,10 +495,6 @@ void monk_action_t<Base>::consume_resource()
             p()->cooldown.storm_earth_and_fire->adjust(
                 -1 * p()->talent.windwalker.spiritual_focus->effectN( 2 ).time_value() );
 
-          // Serenity brings all spells down to 0 chi spent so don't reduce while Serenity is up
-          if ( p()->talent.windwalker.serenity->ok() && !p()->buff.serenity->up() )
-            p()->cooldown.serenity->adjust( -1 * p()->talent.windwalker.spiritual_focus->effectN( 3 ).time_value() );
-
           p()->spiritual_focus_count -= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value();
         }
       }
@@ -515,12 +511,6 @@ void monk_action_t<Base>::consume_resource()
 
         p()->find_pet( "earth_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
         p()->find_pet( "fire_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
-      }
-      if ( p()->buff.serenity->up() )
-      {
-        p()->buff.serenity->extend_duration(
-            p(),
-            timespan_t::from_seconds( p()->talent.windwalker.drinking_horn_cover->effectN( 2 ).base_value() / 10 ) );
       }
       p()->cooldown.drinking_horn_cover->start( p()->talent.windwalker.drinking_horn_cover->internal_cooldown() );
     }
@@ -705,12 +695,6 @@ double monk_action_t<Base>::cost_reduction() const
 {
   double c = 0.0;
 
-  if ( p()->specialization() == MONK_WINDWALKER )
-  {
-    if ( p()->buff.serenity->check() && ab::data().affected_by( p()->talent.windwalker.serenity->effectN( 1 ) ) )
-      c += p()->talent.windwalker.serenity->effectN( 1 ).percent();  // Saved as -100
-  }
-
   return c;
 }
 
@@ -832,10 +816,6 @@ double monk_spell_t::action_multiplier() const
   if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
     am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
-  // Serenity
-  if ( p()->buff.serenity->check() && base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
-    am *= 1 + p()->talent.windwalker.serenity->effectN( 2 ).percent();
-
   return am;
 }
 
@@ -914,10 +894,6 @@ double monk_heal_t::action_multiplier() const
       if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
         am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
-      // Serenity
-      if ( p()->buff.serenity->check() && base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
-        am *= 1 + p()->talent.windwalker.serenity->effectN( 2 ).percent();
-
       break;
 
     case MONK_BREWMASTER:
@@ -970,10 +946,6 @@ double monk_melee_attack_t::action_multiplier() const
   // Storm, Earth, and Fire
   if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
     am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
-
-  // Serenity
-  if ( p()->buff.serenity->check() && base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
-    am *= 1 + p()->talent.windwalker.serenity->effectN( 2 ).percent();
 
   if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
     am *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
@@ -1743,15 +1715,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
       add_child( p->active_actions.rising_sun_kick_press_the_advantage );
   }
 
-  void consume_resource() override
-  {
-    monk_melee_attack_t::consume_resource();
-
-    // Register how much chi is saved without actually refunding the chi
-    if ( p()->buff.serenity->up() )
-      p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
-  }
-
   void execute() override
   {
     monk_melee_attack_t::execute();
@@ -2070,15 +2033,10 @@ struct blackout_kick_t : public monk_melee_attack_t
     monk_melee_attack_t::consume_resource();
 
     // Register how much chi is saved without actually refunding the chi
-    if ( p()->buff.serenity->up() )
-      p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
-
-    // Register how much chi is saved without actually refunding the chi
     if ( p()->buff.bok_proc->up() )
     {
       p()->buff.bok_proc->expire();
-      if ( !p()->buff.serenity->up() )
-        p()->gain.bok_proc->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
+      p()->gain.bok_proc->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
     }
   }
 
@@ -2134,17 +2092,11 @@ struct blackout_kick_t : public monk_melee_attack_t
       if ( p()->buff.weapons_of_order->up() )
       {
         cd_reduction += ( -1 * p()->talent.brewmaster.weapons_of_order->effectN( 8 ).time_value() );
-        if ( p()->buff.serenity->up() )
-          p()->proc.blackout_kick_cdr_serenity_with_woo->occur();
-        else
-          p()->proc.blackout_kick_cdr_with_woo->occur();
+        p()->proc.blackout_kick_cdr_with_woo->occur();
       }
       else
       {
-        if ( p()->buff.serenity->up() )
-          p()->proc.blackout_kick_cdr_serenity->occur();
-        else
-          p()->proc.blackout_kick_cdr->occur();
+        p()->proc.blackout_kick_cdr->occur();
       }
 
       p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
@@ -2535,24 +2487,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     return c;
   }
 
-  void consume_resource() override
-  {
-    monk_melee_attack_t::consume_resource();
-
-    double cost = base_costs[ RESOURCE_CHI ];
-
-    // Register how much chi is saved without actually refunding the chi
-    if ( p()->buff.serenity->up() )
-    {
-      cost += p()->buff.dance_of_chiji_hidden->check_value();
-
-      if ( cost < 0 )
-        cost = 0;
-
-      p()->gain.serenity->add( RESOURCE_CHI, cost );
-    }
-  }
-
   void execute() override
   {
     //===========
@@ -2729,17 +2663,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
       dot_duration = trigger_gcd;
 
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
-  }
-
-  void consume_resource() override
-  {
-    monk_melee_attack_t::consume_resource();
-
-    // Register how much chi is saved without actually refunding the chi
-    if ( p()->buff.serenity->up() )
-    {
-      p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
-    }
   }
 
   bool usable_moving() const override
@@ -3092,9 +3015,6 @@ struct melee_t : public monk_melee_attack_t
 
     if ( p()->buff.storm_earth_and_fire->check() )
       am *= 1.0 + p()->talent.windwalker.storm_earth_and_fire->effectN( 3 ).percent();
-
-    if ( p()->buff.serenity->check() )
-      am *= 1 + p()->talent.windwalker.serenity->effectN( 7 ).percent();
 
     if ( p()->buff.hit_combo->check() )
       am *= 1 + p()->passives.hit_combo->effectN( 3 ).percent();
@@ -3962,30 +3882,6 @@ struct chi_torpedo_t : public monk_spell_t
 
     p()->buff.chi_torpedo->trigger();
     p()->movement.chi_torpedo->trigger();
-  }
-};
-
-// ==========================================================================
-// Serenity
-// ==========================================================================
-
-struct serenity_t : public monk_spell_t
-{
-  serenity_t( monk_t *player, util::string_view options_str )
-    : monk_spell_t( "serenity", player, player->talent.windwalker.serenity )
-  {
-    parse_options( options_str );
-
-    harmful         = false;
-    cast_during_sck = true;
-    trigger_gcd     = timespan_t::zero();
-  }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    p()->buff.serenity->trigger();
   }
 };
 
@@ -6472,39 +6368,6 @@ struct fortifying_brew_t : public monk_buff_t
 };
 
 // ===============================================================================
-// Serenity Buff
-// ===============================================================================
-struct serenity_buff_t : public monk_buff_t
-{
-  monk_t &m;
-  serenity_buff_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s ), m( p )
-  {
-    set_default_value_from_effect( 2 );
-    set_cooldown( timespan_t::zero() );
-
-    set_duration( s->duration() );
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-    set_stack_change_callback( [ this ]( buff_t * /* b */, int /* old */, int new_ ) {
-      double recharge_mult = 1.0 / ( 1 + m.talent.windwalker.serenity->effectN( 4 ).percent() );
-      int label            = data().effectN( 4 ).misc_value1();
-      for ( auto a : m.action_list )
-      {
-        if ( a->data().affected_by_label( label ) && a->cooldown->duration != 0_ms )
-        {
-          if ( new_ > 0 )
-            a->dynamic_recharge_rate_multiplier *= recharge_mult;
-          else
-            a->dynamic_recharge_rate_multiplier /= recharge_mult;
-
-          a->cooldown->adjust_recharge_multiplier();
-        }
-      }
-    } );
-  }
-};
-
-// ===============================================================================
 // Touch of Karma Buff
 // ===============================================================================
 struct touch_of_karma_buff_t : public monk_buff_t
@@ -7262,7 +7125,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   cooldown.strike_of_the_windlord = get_cooldown( "strike_of_the_windlord" );
   cooldown.thunder_focus_tea      = get_cooldown( "thunder_focus_tea" );
   cooldown.touch_of_death         = get_cooldown( "touch_of_death" );
-  cooldown.serenity               = get_cooldown( "serenity" );
   cooldown.weapons_of_order       = get_cooldown( "weapons_of_order" );
   cooldown.whirling_dragon_punch  = get_cooldown( "whirling_dragon_punch" );
 
@@ -7410,8 +7272,6 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
     return new rushing_jade_wind_t( this, options_str );
   if ( name == "whirling_dragon_punch" )
     return new whirling_dragon_punch_t( this, options_str );
-  if ( name == "serenity" )
-    return new serenity_t( this, options_str );
 
   // Covenant Abilities
   if ( name == "bonedust_brew" )
@@ -7891,7 +7751,6 @@ void monk_t::init_spells()
   ;
   talent.windwalker.inner_peace            = _ST( "Inner Peace" );
   talent.windwalker.storm_earth_and_fire   = _ST( "Storm, Earth, and Fire" );
-  talent.windwalker.serenity               = _ST( "Serenity" );
   talent.windwalker.meridian_strikes       = _ST( "Meridian Strikes" );
   talent.windwalker.strike_of_the_windlord = _ST( "Strike of the Windlord" );
   // Row 6
@@ -8545,8 +8404,6 @@ void monk_t::create_buffs()
                             ->set_default_value_from_effect( 1 )
                             ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
-  buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.windwalker.serenity );
-
   buff.storm_earth_and_fire =
       make_buff( this, "storm_earth_and_fire", talent.windwalker.storm_earth_and_fire )
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -8642,7 +8499,6 @@ void monk_t::init_gains()
   gain.open_palm_strikes        = get_gain( "open_palm_strikes" );
   gain.power_strikes            = get_gain( "power_strikes" );
   gain.rushing_jade_wind_tick   = get_gain( "rushing_jade_wind_tick" );
-  gain.serenity                 = get_gain( "serenity" );
   gain.spirit_of_the_crane      = get_gain( "spirit_of_the_crane" );
   gain.tiger_palm               = get_gain( "tiger_palm" );
   gain.touch_of_death_ww        = get_gain( "touch_of_death_ww" );
@@ -8665,8 +8521,6 @@ void monk_t::init_procs()
   proc.blackout_combo_rising_sun_kick      = get_proc( "Blackout Combo - Rising Sun Kick (Press the Advantage)" );
   proc.blackout_kick_cdr_with_woo          = get_proc( "Blackout Kick CDR with WoO" );
   proc.blackout_kick_cdr                   = get_proc( "Blackout Kick CDR" );
-  proc.blackout_kick_cdr_serenity_with_woo = get_proc( "Blackout Kick CDR with Serenity with WoO" );
-  proc.blackout_kick_cdr_serenity          = get_proc( "Blackout Kick CDR with Serenity" );
   proc.blackout_reinforcement_melee        = get_proc( "Blackout Reinforcement" );
   proc.blackout_reinforcement_sck          = get_proc( "Blackout Reinforcement (Free SCKs)" );
   proc.blackout_reinforcement_waste        = get_proc( "Blackout Reinforcement Waste" );
