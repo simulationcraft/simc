@@ -3536,7 +3536,6 @@ struct mograine_pet_t : public horseman_pet_t
       : horseman_melee_t( p, name, p->dk()->pet_spell.mograine_heart_strike )
     {
       parse_options( options_str );
-      aoe = data().effectN( 4 ).base_value();
       base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_auto_attack_dps * data().effectN( 1 ).percent();
     }
   };
@@ -7478,7 +7477,7 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
       p() -> cooldown.inexorable_assault_icd -> start();
     }
 
-    if ( p()->talent.rider.trollbanes_icy_fury.ok() && td->debuff.chains_of_ice_trollbane_slow->check() )
+    if ( p()->talent.rider.trollbanes_icy_fury.ok() && td->debuff.chains_of_ice_trollbane_slow->check() && p()->pets.trollbane.active_pet() != nullptr )
     {
       td->debuff.chains_of_ice_trollbane_slow->expire();
       p()->active_spells.trollbanes_icy_fury->execute_on_target( state->target );
@@ -8039,7 +8038,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
       p()->buffs.plaguebringer->trigger();
     }
 
-    if ( p()->talent.rider.trollbanes_icy_fury.ok() && td->debuff.chains_of_ice_trollbane_slow->check())
+    if ( p()->talent.rider.trollbanes_icy_fury.ok() && td->debuff.chains_of_ice_trollbane_slow->check() && p()->pets.trollbane.active_pet() != nullptr )
     {
       td->debuff.chains_of_ice_trollbane_slow->expire();
       p()->active_spells.trollbanes_icy_fury->execute_on_target( state->target );
@@ -9755,10 +9754,10 @@ void death_knight_t::summon_rider( timespan_t duration, bool random )
 
 void death_knight_t::extend_rider( double amount )
 {
-  int threshold       = talent.rider.fury_of_the_horsemen->effectN( 1 ).base_value();
-  int max_time        = talent.rider.fury_of_the_horsemen->effectN( 2 ).base_value();
+  double threshold       = talent.rider.fury_of_the_horsemen->effectN( 1 ).base_value();
+  double max_time        = talent.rider.fury_of_the_horsemen->effectN( 2 ).base_value();
   timespan_t duration = timespan_t::from_seconds( talent.rider.fury_of_the_horsemen->effectN( 3 ).base_value() );
-  int limit = threshold * max_time;
+  double limit = threshold * max_time;
 
   for ( auto& rider : pets.riders )
   {
@@ -9786,7 +9785,7 @@ void death_knight_t::trigger_whitemanes_famine( player_t* main_target, std::vect
   if ( target_list.size() > 1 )
   {
     std::vector<player_t*>& current_targets = target_list;
-    auto duration                           = td->dot.undeath->remains() - pet_spell.undeath_dot->duration();
+    auto duration = td->dot.undeath->remains() - pet_spell.undeath_dot->duration();
 
     // first target, the action target, needs to be left in place
     std::sort( current_targets.begin() + 1, current_targets.end(), [ this ]( player_t* a, player_t* b ) {
@@ -11494,7 +11493,7 @@ void death_knight_t::activate()
       target->register_on_demise_callback( this, [ this ]( player_t* t ) {
         if ( pets.nazgrim.active_pet() != nullptr )
         {
-          buffs.nazgrims_conquest->trigger( talent.rider.nazgrims_conquest->effectN( 3 ).base_value() );
+          buffs.nazgrims_conquest->trigger( as<int>( talent.rider.nazgrims_conquest->effectN( 3 ).base_value() ) );
         }
       } );
     }
