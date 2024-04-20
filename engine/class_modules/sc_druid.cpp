@@ -556,7 +556,6 @@ public:
     buff_t* shooting_stars_stellar_flare;
     buff_t* starweavers_free_starfall;  // free starfall
     buff_t* starweavers_free_starsurge;  // free starsurge
-    buff_t* primordial_arcanic_pulsar;
     buff_t* solstice;
     buff_t* starfall;
     buff_t* starlord;  // talent
@@ -694,7 +693,6 @@ public:
   {
     // Balance
     proc_t* denizen_of_the_dream;
-    proc_t* pulsar;
 
     // Feral
     proc_t* clearcasting;
@@ -788,7 +786,6 @@ public:
     player_talent_t orbit_breaker;
     player_talent_t orbital_strike;
     player_talent_t power_of_goldrinn;
-    player_talent_t primordial_arcanic_pulsar;
     player_talent_t radiant_moonlight;
     player_talent_t rattle_the_stars;
     player_talent_t shooting_stars;
@@ -1090,7 +1087,6 @@ public:
     uptime_t* eclipse_none;
     uptime_t* friend_of_the_fae;
     uptime_t* incarnation_cat;
-    uptime_t* primordial_arcanic_pulsar;
     uptime_t* tooth_and_claw_debuff;
   } uptime;
 
@@ -2925,7 +2921,6 @@ struct celestial_alignment_buff_t : public druid_buff_t
     base_t::expire_override( s, d );
 
     p()->eclipse_handler.expire_both();
-    p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
     p()->uptime.combined_ca_inc->update( false, sim->current_time() );
   }
 };
@@ -6116,17 +6111,10 @@ protected:
   using base_t = ap_spender_t;
 
 public:
-  buff_t* p_buff;
   buff_t* weaver_buff;
-  timespan_t p_time;
-  double p_cap;
 
   ap_spender_t( std::string_view n, druid_t* p, const spell_data_t* s )
-    : druid_spell_t( n, p, s ),
-      p_buff( p->buff.primordial_arcanic_pulsar ),
-      weaver_buff( p->sim->auras.fallback ),
-      p_time( timespan_t::from_seconds( p->talent.primordial_arcanic_pulsar->effectN( 2 ).base_value() ) ),
-      p_cap( p->talent.primordial_arcanic_pulsar->effectN( 1 ).base_value() )
+    : druid_spell_t( n, p, s ), weaver_buff( p->sim->auras.fallback )
   {}
 
   double cost() const override
@@ -6143,56 +6131,6 @@ public:
 
     if ( is_free_proc() )
       return;
-
-    if ( p()->talent.primordial_arcanic_pulsar.ok() )
-    {
-      if ( !p_buff->check() )
-        p_buff->trigger();
-
-      // pulsar accumulate based on the cost before any talents and effects
-      p_buff->current_value += base_cost();
-
-      if ( p_buff->check_value() >= p_cap )
-      {
-        p_buff->current_value -= p_cap;
-
-        if ( p()->talent.incarnation_moonkin.ok() && p()->get_form() != form_e::MOONKIN_FORM &&
-             !p()->buff.incarnation_moonkin->check() )
-        {
-          p()->active.shift_to_moonkin->execute();
-        }
-
-        // if both touch the cosmos and weaver are up when CA is triggered, both are expired after CA is triggered
-        bool expire_buffs = p()->buff.touch_the_cosmos->check() && weaver_buff->check();
-
-        p()->buff.ca_inc->extend_duration_or_trigger( p_time, p() );
-        p()->proc.pulsar->occur();
-
-        if ( expire_buffs )
-        {
-          p()->buff.touch_the_cosmos->expire();
-          weaver_buff->expire();
-        }
-
-        // Touch the cosmos will proc again after being used shortly after Pulsar is consumed in game
-        make_event( *sim, [ this ]() {
-          p()->buff.touch_the_cosmos->trigger();
-        } );
-
-        p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
-
-        make_event( *sim, p_time, [ this ]() {
-          p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
-        } );
-      }
-
-      // Purely visual indicator for the sample sequence
-      auto stack_value_difference = as<int>( p_buff->current_value ) / 10 - p_buff->check();
-      if ( stack_value_difference >= 0 )
-        p_buff->increment( stack_value_difference );
-      else
-        p_buff->decrement( abs( stack_value_difference ) );
-    }
 
     // will consume touch the cosmos first, although weaver makes the cost 0
     if ( p()->buff.touch_the_cosmos->check() )
@@ -6458,8 +6396,6 @@ struct celestial_alignment_base_t : public druid_spell_t
 
     p()->buff.balance_t31_4pc_buff_lunar->expire();
     p()->buff.balance_t31_4pc_buff_solar->expire();
-
-    p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
 
     switch ( p()->eclipse_handler.state )
     {
@@ -9166,7 +9102,6 @@ void druid_t::init_spells()
   talent.orbit_breaker                  = ST( "Orbit Breaker" );
   talent.orbital_strike                 = ST( "Orbital Strike" );
   talent.power_of_goldrinn              = ST( "Power of Goldrinn" );
-  talent.primordial_arcanic_pulsar      = ST( "Primordial Arcanic Pulsar" );
   talent.radiant_moonlight              = ST( "Radiant Moonlight" );
   talent.rattle_the_stars               = ST( "Rattle the Stars" );
   talent.shooting_stars                 = ST( "Shooting Stars" );
@@ -9838,11 +9773,6 @@ void druid_t::create_buffs()
     ->set_max_stack( std::max( 1, as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) ) );
 
   buff.owlkin_frenzy = make_buff_fallback( spec.moonkin_form->ok(), this, "owlkin_frenzy", find_spell( 157228 ) );
-
-  buff.primordial_arcanic_pulsar = make_buff_fallback( talent.primordial_arcanic_pulsar.ok(),
-      this, "primordial_arcanic_pulsar", find_spell( 393961 ) )
-          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-          ->set_max_stack( 99 );
 
   buff.shooting_stars_moonfire = make_buff_fallback<shooting_stars_buff_t>( talent.shooting_stars.ok(),
       this, "shooting_stars_moonfire", dot_list.moonfire, active.shooting_stars_moonfire );
@@ -10663,7 +10593,6 @@ void druid_t::init_procs()
 
   // Balance
   proc.denizen_of_the_dream = get_proc( "Denizen of the Dream" )->collect_count();
-  proc.pulsar               = get_proc( "Primordial Arcanic Pulsar" )->collect_interval();
 
   // Feral
   proc.primal_fury          = get_proc( "Primal Fury" );
@@ -10685,7 +10614,6 @@ void druid_t::init_uptimes()
 
   uptime.astral_smolder            = get_uptime( "Astral Smolder" )->collect_uptime( *sim );
   uptime.combined_ca_inc           = get_uptime( ca_inc_str + " (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
-  uptime.primordial_arcanic_pulsar = get_uptime( ca_inc_str + " (Pulsar)" )->collect_uptime( *sim );
   uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" )->collect_uptime( *sim );
   uptime.eclipse_solar             = get_uptime( "Solar Eclipse Only" )->collect_uptime( *sim );
   uptime.eclipse_none              = get_uptime( "No Eclipse" )->collect_uptime( *sim );
@@ -12056,7 +11984,6 @@ void druid_t::create_options()
   // Balance
   add_option( opt_float( "druid.initial_astral_power", options.initial_astral_power ) );
   add_option( opt_int( "druid.initial_moon_stage", options.initial_moon_stage ) );
-  add_option( opt_deprecated( "druid.initial_pulsar_value", "no longer applicable" ) );
   add_option( opt_int( "druid.initial_orbit_breaker_stacks", options.initial_orbit_breaker_stacks ) );
 
   // Feral
