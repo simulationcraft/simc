@@ -530,19 +530,6 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     background = true;
   }
 
-  add_option( opt_deprecated( "bloodlust", "if=buff.bloodlust.react" ) );
-  add_option( opt_deprecated( "haste<", "if=spell_haste>= or if=attack_haste>=" ) );
-  add_option( opt_deprecated( "health_percentage<", "if=target.health.pct<=" ) );
-  add_option( opt_deprecated( "health_percentage>", "if=target.health.pct>=" ) );
-  add_option( opt_deprecated( "invulnerable", "if=target.debuff.invulnerable.react" ) );
-  add_option( opt_deprecated( "not_flying", "if=target.debuff.flying.down" ) );
-  add_option( opt_deprecated( "flying", "if=target.debuff.flying.react" ) );
-  add_option( opt_deprecated( "time<", "if=time<=" ) );
-  add_option( opt_deprecated( "time>", "if=time>=" ) );
-  add_option( opt_deprecated( "travel_speed", "if=travel_speed" ) );
-  add_option( opt_deprecated( "vulnerable", "if=target.debuff.vulnerable.react" ) );
-  add_option( opt_deprecated( "label", "N/A" ) );
-
   add_option( opt_string( "if", option.if_expr_str ) );
   add_option( opt_string( "interrupt_if", option.interrupt_if_expr_str ) );
   add_option( opt_string( "early_chain_if", option.early_chain_if_expr_str ) );

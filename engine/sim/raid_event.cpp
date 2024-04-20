@@ -86,8 +86,6 @@ struct adds_event_t final : public raid_event_t
     add_option( opt_string( "type", enemy_type_str ) );
     add_option( opt_bool( "same_duration", same_duration ) );
 
-    add_option( opt_deprecated( "min_distance", "spawn_distance_min" ) );
-    add_option( opt_deprecated( "max_distance", "spawn_distance_max" ) );
     parse_options( options_str );
 
     if ( !master_str.empty() )
@@ -1696,8 +1694,6 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
   add_option( opt_bool( "force_stop", force_stop ) );
   add_option( opt_int( "pull", pull ) );
   add_option( opt_string( "pull_target", pull_target_str ) );
-
-  add_option( opt_deprecated( "period", "cooldown" ) );
 }
 
 timespan_t raid_event_t::cooldown_time()

@@ -839,7 +839,6 @@ void item_t::parse_options()
     opt_string("mythic", option_mythic_str),
     opt_string("type", option_armor_type_str),
     opt_string("reforge", DUMMY_REFORGE),
-    opt_deprecated("suffix", "bonus_id"),
     opt_string("ilevel", option_ilevel_str),
     opt_string("quality", option_quality_str),
     opt_string("source", option_data_source_str),
