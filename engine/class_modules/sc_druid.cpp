@@ -4335,11 +4335,13 @@ struct primal_wrath_t : public cat_finisher_t
   struct tear_open_wounds_t : public cat_attack_t
   {
     timespan_t rip_dur;
+    timespan_t rip_dur_zerk;
     double rip_mul;
 
     tear_open_wounds_t( druid_t* p )
       : cat_attack_t( "tear_open_wounds", p, p->find_spell( 391786 ) ),
         rip_dur( timespan_t::from_seconds( p->talent.tear_open_wounds->effectN( 1 ).base_value() ) ),
+        rip_dur_zerk( timespan_t::from_seconds( p->talent.tear_open_wounds->effectN( 4 ).base_value() ) ),
         rip_mul( p->talent.tear_open_wounds->effectN( 2 ).percent() )
     {
       background = true;
@@ -4351,10 +4353,15 @@ struct primal_wrath_t : public cat_finisher_t
       base_dd_min = base_dd_max = 1.0;
     }
 
+    timespan_t _rip_dur() const
+    {
+      return p()->buff.b_inc_cat->check() ? rip_dur_zerk : rip_dur;
+    }
+
     double _get_amount( const action_state_t* s ) const
     {
       auto rip = td( s->target )->dots.rip;
-      auto dur = std::min( rip_dur, rip->remains() );
+      auto dur = std::min( _rip_dur(), rip->remains() );
       auto tic = dur / rip->current_action->tick_time( rip->state );
       auto amt = rip->state->result_total;
 
@@ -4386,7 +4393,7 @@ struct primal_wrath_t : public cat_finisher_t
     {
       cat_attack_t::impact( s );
 
-      td( s->target )->dots.rip->adjust_duration( -rip_dur );
+      td( s->target )->dots.rip->adjust_duration( -( _rip_dur() ) );
     }
   };
 
