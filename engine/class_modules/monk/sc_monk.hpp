@@ -13,7 +13,12 @@
 #include "player/player.hpp"
 #include "sc_enums.hpp"
 #include "sim/proc.hpp"
+#include "buff/buff.hpp"
+#include "util/timeline.hpp"
+#include "action/residual_action.hpp"
 
+#include <vector>
+#include <unordered_map>
 #include <array>
 #include <memory>
 #include <string_view>
@@ -209,11 +214,6 @@ struct summon_pet_t : public monk_spell_t
   bool ready() override;
 };
 }  // namespace actions
-
-namespace actions::spells
-{
-struct stagger_self_damage_t;
-}  // namespace actions::spells
 
 inline int sef_spell_index( int x )
 {
@@ -1239,6 +1239,106 @@ public:
   const double moderate_stagger_threshold;
   const double heavy_stagger_threshold;
 
+  struct stagger_t
+  {
+    enum stagger_level_e
+    {
+      LIGHT_STAGGER    = 0,
+      MODERATE_STAGGER = 1,
+      HEAVY_STAGGER    = 2,
+      MAX_STAGGER      = 3
+    };
+
+    struct stagger_level_t
+    {
+      const stagger_level_e level;
+      const double max_percent;
+      propagate_const<buff_t *> debuff;
+      sample_data_helper_t *taken;
+      sample_data_helper_t *mitigated;
+    };
+
+    std::vector<stagger_level_t *> stagger_levels;
+    stagger_level_t *current;
+
+    struct sample_data_t
+    {
+      sc_timeline_t effective_damage;  // raw stagger in pool
+      sc_timeline_t pool_size;         // pool as a fraction of current maximum hp
+      sc_timeline_t effectiveness;     // stagger effectiveness
+      // assert(absorbed == taken + mitigated)
+      // assert(sum(cleared) == mitigated)
+      sample_data_helper_t *absorbed;
+      sample_data_helper_t *taken;
+      sample_data_helper_t *mitigated;
+      std::unordered_map<std::string_view, sample_data_helper_t *> mitigated_by_ability;
+    } sample_data;
+
+    struct self_damage_t : residual_action::residual_periodic_action_t<monk_spell_t>
+    {
+      dot_t *dot;
+
+      self_damage_t( monk_t *player );
+      void init() override;
+      proc_types proc_type() const override;
+      void impact( action_state_t *state ) override;
+      void assess_damage( result_amount_type type, action_state_t *state );
+      void last_tick( dot_t *d ) override;
+    } self_damage;
+
+    monk_t *player;
+
+    stagger_t( monk_t* player );
+
+    double pool_size();
+    double pool_size_percent();
+    double tick_size();
+    double tick_size_percent();
+
+    void damage_changed( bool last_tick = false );
+    double purify_flat( double amount );
+    double purify_percent( double amount );
+    double purify_all();
+    void delay_tick( timespan_t delay ):
+  /*
+hc   * TODO:
+    *   * double buffed_stagger_base, buffed_stagger_pct_player_level, buffed_stagger_pct_target_level; // stagger effectiveness after permanent buffs have been applied
+x    *   * action_t* stagger_self_damage; // action to deal self damage
+    *   * std::vector<double> stagger_tick_damage; // calculate_last_stagger_tick_damage( uint k ) -> magnitude of last k ticks
+x    *   * const double <stagger_level_e>_threshold; // stagger thresholds, currently hardcoded.
+x    *   * void stagger_damage_changed( bool last_tick = false );
+    *       * determines previous debuff
+    *       * finds old dot from stagger_self_damage
+    *       * if not last tick, dot is found and dot is active
+    *           * calculate current_stagger_tick_dmg()
+    *           * calculate current_stagger_tick_dmg_percent
+    *           * check based on thresholds which is the appropriate new debuff
+    *           * update training of niuzao buff TODO: WHY IS HT NOT DONE IN THE SAME WAY
+    *       * if stagger debuff changed and a previous debuff was found
+    *           * expire old debuff
+    *           * expire current training of niuzao
+    *       * if stagger debuff is changed and a new debuff was found
+    *           * trigger new debuff
+    *           * apply new training of niuzao buff
+x    *   * double current_stagger_tick_dmg(); // tick_amount of stagger_self_damage, reduced by invoke niuzao -> self_damage_t::assess_damage
+    *   * double current_stagger_tick_dmg_percent(); // tick_amount of stagger_self_damage, reduced by invoke niuzao, divided by current maximum hp
+    *   * double current_stagger_amount_remains_percent(); // amount remaining to be ticked out divided by current maximum hp
+    *   * double current_stagger_amount_remains(); // amount remaining to be ticked out
+    *   * double current_stagger_amount_remains_to_total_percent(); // approximation of damage remaining to be ticked out
+    *   * timespan_t current_stagger_dot_remains(); // time until stagger expires
+    *   * double stagger_base_value(); // stagger effectiveness base value
+    *   * double stagger_pct( int target_level ); // diminish base effectiveness with k, clamp to [0,0.99]
+    *   * double stagger_total(); // estimated total amount in pool ( ta * tick count )
+    *   * double clear_stagger(); // cancels dot, returns amount remaining
+    *   * double partial_clear_stagger_pct( double ); // if ticking, find how much remains after clear, reset ta based on new pool size / ticks_left
+    *   * double partial_clear_stagger_amount( double ); // if ticking, find how much remains after clear, reset ta based on new pool size / ticks_left
+    *   * bool has_stagger(); // is_ticking() on active dot
+    *   * double calculate_last_stagger_tick_damage( int n ) const; // used by exprn to return last k stagger ticks taken
+    what does get_dot do for residual_periodic_action_t
+    */
+  } stagger;
+
+
 private:
   target_specific_t<monk_td_t> target_data;
 
@@ -1370,6 +1470,7 @@ public:
   player_t *storm_earth_and_fire_fixate_target( pets::sef_pet_e sef_pet );
   void trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e sef_pet );
 };
+
 struct sef_despawn_cb_t
 {
   monk_t *monk;
