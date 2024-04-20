@@ -495,6 +495,9 @@ struct death_knight_td_t : public actor_target_data_t {
     propagate_const<dot_t*> soul_reaper;
     propagate_const<dot_t*> virulent_plague;
     propagate_const<dot_t*> unholy_blight;
+
+    // Rider of the Apocalypse
+    propagate_const<dot_t*> undeath;
   } dot;
 
   struct debuffs_t
@@ -692,10 +695,20 @@ public:
     propagate_const<action_t*> runeforge_razorice;
     propagate_const<action_t*> runeforge_sanguination;
     action_t* abomination_limb_damage;
-    propagate_const<action_t*> trollbanes_icy_fury;
 
     // Class Tree
     propagate_const<action_t*> blood_draw;
+
+    // Rider of the Apocalypse
+    action_t* summon_whitemane;
+    action_t* summon_trollbane;
+    action_t* summon_nazgrim;
+    action_t* summon_mograine;
+    action_t* last_rider_summoned;
+    std::vector<action_t*> rider_summon_spells;
+    propagate_const<action_t*> undeath_dot;
+    propagate_const<action_t*> trollbanes_icy_fury;
+    propagate_const<action_t*> mograines_death_and_decay;
 
     // Blood
     propagate_const<action_t*> mark_of_blood_heal;
@@ -1287,10 +1300,10 @@ public:
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> army_magus;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> apoc_magus;
-    pets::mograine_pet_t* mograine;
-    pets::whitemane_pet_t* whitemane;
-    pets::trollbane_pet_t* trollbane;
-    pets::nazgrim_pet_t* nazgrim;
+    spawner::pet_spawner_t<pets::mograine_pet_t, death_knight_t> mograine;
+    spawner::pet_spawner_t<pets::whitemane_pet_t, death_knight_t> whitemane;
+    spawner::pet_spawner_t<pets::trollbane_pet_t, death_knight_t> trollbane;
+    spawner::pet_spawner_t<pets::nazgrim_pet_t, death_knight_t> nazgrim;
     std::vector<pets::horseman_pet_t*> riders;
 
     pets_t(death_knight_t* p) :
@@ -1303,7 +1316,11 @@ public:
         apoc_ghouls( "apoc_ghoul", p ),
         bloodworms( "bloodworm", p ),
         army_magus( "army_magus", p ),
-        apoc_magus( "apoc_magus", p )
+        apoc_magus( "apoc_magus", p ),
+        mograine( "mograine", p ),
+        whitemane( "whitemane", p ),
+        trollbane( "trollbane", p ),
+        nazgrim( "nazgrim", p )
     {}
   } pets;
 
@@ -1500,7 +1517,7 @@ public:
   bool      in_death_and_decay() const;
   void      summon_rider( timespan_t duration, bool random );
   void      extend_rider( double amount );
-  void      trigger_whitemanes_famine( player_t* target );
+  void      trigger_whitemanes_famine( player_t* target, std::vector<player_t*>& target_list );
   void      trigger_dnd_buffs();
   void      expire_dnd_buffs();
   // Blood
@@ -1569,6 +1586,9 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   dot.unholy_blight        = target -> get_dot( "unholy_blight_dot", p );
   // Other dots
   dot.soul_reaper          = target -> get_dot( "soul_reaper", p );
+
+  // Rider of the Apocalypse
+  dot.undeath              = target -> get_dot( "undeath", p );
   
   // General Talents
   debuff.brittle          = make_buff( *this, "brittle", p -> spell.brittle_debuff )
@@ -2156,6 +2176,23 @@ struct death_knight_pet_t : public pet_t
     pet_t::init_action_list();
   }
 };
+
+std::function<void( death_knight_pet_t* )> parent_pet_action_fn( action_t* parent )
+{
+  return [ parent ]( death_knight_pet_t* p ) {
+    if ( !p->dk()->options.individual_pet_reporting )
+    {
+      for ( auto a : p->action_list )
+      {
+        auto it = range::find( parent->child_action, a->name_str, &action_t::name_str );
+        if ( it != parent->child_action.end() )
+          a->stats = ( *it )->stats;
+        else
+          parent->add_child( a );
+      }
+    }
+  };
+}
 
 // ==========================================================================
 // Base Death Knight Pet Action
@@ -3386,29 +3423,13 @@ struct magus_pet_t : public death_knight_pet_t
   }
 };
 
-std::function<void( death_knight_pet_t* )> parent_pet_action_fn( action_t* parent )
-{
-  return [ parent ]( death_knight_pet_t* p ) {
-    if ( !p->dk()->options.individual_pet_reporting )
-    {
-      for ( auto a : p->action_list )
-      {
-        auto it = range::find( parent->child_action, a->name_str, &action_t::name_str );
-        if ( it != parent->child_action.end() )
-          a->stats = ( *it )->stats;
-        else
-          parent->add_child( a );
-      }
-    }
-  };
-}
-
 // ==========================================================================
 // Horsemen Parent Class
 // ==========================================================================
 struct horseman_pet_t : public death_knight_pet_t
 {
   double rp_spent, current_pool;
+
   struct horseman_spell_t : public pet_spell_t<horseman_pet_t>
   {
     horseman_spell_t( horseman_pet_t* p, util::string_view name, const spell_data_t* spell )
@@ -3431,24 +3452,23 @@ struct horseman_pet_t : public death_knight_pet_t
       horseman_spell_t( p, name, p -> dk() -> pet_spell.rider_ams )
     {
       parse_options( options_str );
-      set_target( p -> owner );
     }
 
     void execute() override
     {
       horseman_spell_t::execute();
-      pet() -> dk() -> buffs.antimagic_shell_horsemen -> trigger();
-      pet() -> dk() -> buffs.antimagic_shell_horsemen_icd -> trigger();
-    }
-
-    bool ready() override
-    {
-      horseman_spell_t::ready();
-      return !pet() -> dk() -> buffs.antimagic_shell_horsemen_icd -> check();
+      if ( !pet()->dk()->buffs.antimagic_shell_horsemen_icd->check() )
+      {
+        set_target( pet()->dk() );
+        pet()->dk()->buffs.antimagic_shell_horsemen->trigger();
+        pet()->dk()->buffs.antimagic_shell_horsemen_icd->trigger();
+      }
+      else
+        set_target( pet() );
     }
   };
 
-  horseman_pet_t( death_knight_t* owner, util::string_view name, bool guardian = false, bool dynamic = true )
+  horseman_pet_t( death_knight_t* owner, util::string_view name, bool guardian = true, bool dynamic = true )
     : death_knight_pet_t( owner, name, guardian, true, dynamic ), rp_spent( 0 ), current_pool( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -3487,10 +3507,7 @@ struct horseman_pet_t : public death_knight_pet_t
 
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
-    if ( dk()->talent.rider.horsemens_aid.ok() )
-    {
-      def->add_action( "antimagic_shell_horsemen" );
-    }
+    def->add_action( "antimagic_shell_horsemen" );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -3512,16 +3529,6 @@ struct horseman_pet_t : public death_knight_pet_t
 struct mograine_pet_t : public horseman_pet_t
 {
   buff_t* dnd_aura;
-  action_t* dnd_damage;
-  struct dnd_damage_mograine_t final : public horseman_spell_t
-  {
-    dnd_damage_mograine_t( util::string_view name, horseman_pet_t* p )
-      : horseman_spell_t( p, name, p->dk()->spell.death_and_decay_damage )
-    {
-      background = true;
-      aoe        = -1;
-    }
-  };
 
   struct heart_strike_mograine_t final : public horseman_melee_t
   {
@@ -3529,7 +3536,6 @@ struct mograine_pet_t : public horseman_pet_t
       : horseman_melee_t( p, name, p->dk()->pet_spell.mograine_heart_strike )
     {
       parse_options( options_str );
-      aoe = data().effectN( 4 ).base_value();
       base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_auto_attack_dps * data().effectN( 1 ).percent();
     }
   };
@@ -3538,39 +3544,35 @@ struct mograine_pet_t : public horseman_pet_t
   {
     death_knight_pet_t::create_buffs();
 
-    dnd_aura = make_buff( this, "death_and_decay", dk()->pet_spell.mograines_death_and_decay )
-                   ->set_tick_zero( true )
-                   ->set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */,
-                                                  timespan_t /* tick_time */ ) { dnd_damage->execute(); } )
-                   ->set_stack_change_callback( [ this ]( buff_t* buff, int /*old_*/, int new_ ) {
-                     if ( new_ )
-                     {
-                       if ( dk()->talent.rider.mograines_might.ok())
-                       {
-                         dk()->buffs.mograines_might->trigger();
-                       }
-                       dk()->trigger_dnd_buffs();
-                     }
-                     else
-                     {
-                       if (dk()->talent.rider.mograines_might.ok())
-                       {
-                          dk()->buffs.mograines_might->expire();
-                       }
-                       dk()->expire_dnd_buffs();
-                     }
-                   } );
+    dnd_aura =
+        make_buff( this, "death_and_decay", dk()->pet_spell.mograines_death_and_decay )
+            ->set_tick_zero( true )
+            ->set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
+              dk()->active_spells.mograines_death_and_decay->execute();
+            } )
+            ->set_stack_change_callback( [ this ]( buff_t* buff, int /*old_*/, int new_ ) {
+              if ( new_ )
+              {
+                if ( dk()->talent.rider.mograines_might.ok() )
+                {
+                  dk()->buffs.mograines_might->trigger();
+                }
+                dk()->trigger_dnd_buffs();
+              }
+              else
+              {
+                if ( dk()->talent.rider.mograines_might.ok() )
+                {
+                  dk()->buffs.mograines_might->expire();
+                }
+                dk()->expire_dnd_buffs();
+              }
+            } );
   }
 
-  mograine_pet_t( death_knight_t* owner, util::string_view name ) : horseman_pet_t( owner, name )
+  mograine_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "mograine" )
   {
     npc_id = owner->spell.summon_mograine->effectN( 1 ).misc_value1();
-  }
-
-  void init_spells() override
-  {
-    horseman_pet_t::init_spells();
-    dnd_damage = get_action<dnd_damage_mograine_t>( "death_and_decay", this );
   }
 
   void arise() override
@@ -3607,7 +3609,7 @@ struct mograine_pet_t : public horseman_pet_t
 // ==========================================================================
 struct whitemane_pet_t : public horseman_pet_t
 {
-  struct whitemane_td_t : public actor_target_data_t
+  /*struct whitemane_td_t : public actor_target_data_t
   {
     struct dots_t
     {
@@ -3635,25 +3637,7 @@ struct whitemane_pet_t : public horseman_pet_t
       td = new whitemane_td_t( target, const_cast<whitemane_pet_t*>( this ) );
     }
     return td;
-  }
-
-  struct undeath_dot_t final : public horseman_spell_t
-  {
-    undeath_dot_t( util::string_view name, horseman_pet_t* p )
-      : horseman_spell_t( p, name, p->dk()->pet_spell.undeath_dot )
-    {
-      background = true;
-      may_miss = may_dodge = may_parry = false;
-      dot_behavior                     = DOT_NONE;
-    }
-
-    void tick( dot_t* d ) override
-    {
-      horseman_spell_t::tick( d );
-      auto td = dk()->pets.whitemane->get_target_data( d->target );
-      td->whitemane_dot.undeath_dot->increment( 1 );
-    }
-  };
+  } */
 
   struct death_coil_whitemane_t final : public horseman_spell_t
   {
@@ -3665,26 +3649,15 @@ struct whitemane_pet_t : public horseman_pet_t
     }
   };
 
-  struct abilities_t
-  {
-    action_t* undeath_dot;
-  } ability;
-
-  whitemane_pet_t( death_knight_t* owner, util::string_view name ) : horseman_pet_t( owner, name )
+  whitemane_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "whitemane" )
   {
     npc_id = owner->spell.summon_whitemane->effectN( 1 ).misc_value1();
-  }
-
-  void init_spells() override
-  {
-    horseman_pet_t::init_spells();
-    ability.undeath_dot = get_action<undeath_dot_t>( "undeath", this );
   }
 
   void arise() override
   {
     horseman_pet_t::arise();
-    ability.undeath_dot -> execute_on_target( dk() -> target );
+    dk()->active_spells.undeath_dot->execute_on_target( dk()->target );
   }
 
   void init_action_list() override
@@ -3709,23 +3682,12 @@ struct whitemane_pet_t : public horseman_pet_t
 // ==========================================================================
 struct trollbane_pet_t : public horseman_pet_t
 {
-  struct trollbanes_icy_fury_t final : public horseman_spell_t
-  {
-    trollbanes_icy_fury_t( util::string_view name, horseman_pet_t* p )
-      : horseman_spell_t( p, name, p->dk()->pet_spell.trollbanes_icy_fury_ability )
-    {
-      background = true;
-    }
-  };
-
   struct trollbane_chains_of_ice_t final : public horseman_spell_t
   {
-    trollbane_chains_of_ice_t( util::string_view n, horseman_pet_t* p /*, util::string_view options_str*/)
+    trollbane_chains_of_ice_t( util::string_view n, horseman_pet_t* p , util::string_view options_str )
       : horseman_spell_t( p, n, p->dk()->pet_spell.trollbanes_chains_of_ice_ability )
     {
-      // parse_options( options_str );
-      background = true;
-      add_child( dk()->active_spells.trollbanes_icy_fury );
+      parse_options( options_str );
     }
 
     void impact( action_state_t* a ) override
@@ -3734,6 +3696,12 @@ struct trollbane_pet_t : public horseman_pet_t
       auto dk_td = dk() -> get_target_data( a -> target );
       dk_td -> debuff.chains_of_ice_trollbane_slow -> trigger();
       dk_td -> debuff.chains_of_ice_trollbane_damage -> trigger();
+    }
+
+    bool ready() override
+    {
+      horseman_spell_t::ready();
+      return !dk() -> get_target_data( target ) -> debuff.chains_of_ice_trollbane_slow -> check();
     }
   };
 
@@ -3747,27 +3715,9 @@ struct trollbane_pet_t : public horseman_pet_t
     }
   };
 
-  struct abilities_t
-  {
-    action_t* chains_of_ice;
-  } ability;
-
-  trollbane_pet_t( death_knight_t* owner, util::string_view name ) : horseman_pet_t( owner, name )
+  trollbane_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "trollbane" )
   {
     npc_id = owner->spell.summon_trollbane->effectN( 1 ).misc_value1();
-  }
-
-  void arise() override
-  {
-    horseman_pet_t::arise();
-    ability.chains_of_ice -> execute_on_target( dk() -> target );
-  }
-
-  void init_spells() override
-  {
-    horseman_pet_t::init_spells();
-    dk()->active_spells.trollbanes_icy_fury = get_action<trollbanes_icy_fury_t>( "trollbanes_icy_fury", this );
-    ability.chains_of_ice = get_action<trollbane_chains_of_ice_t>( "chains_of_ice", this );
   }
 
   void init_action_list() override
@@ -3776,12 +3726,14 @@ struct trollbane_pet_t : public horseman_pet_t
 
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "chains_of_ice" );
     def->add_action( "obliterate" );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if (name == "obliterate") return new obliterate_trollbane_t( name, this, options_str );
+    if (name == "chains_of_ice") return new trollbane_chains_of_ice_t( name, this, options_str );
 
     return horseman_pet_t::create_action( name, options_str );
   }
@@ -3792,7 +3744,7 @@ struct trollbane_pet_t : public horseman_pet_t
 // ==========================================================================
 struct nazgrim_pet_t : public horseman_pet_t
 {
-  nazgrim_pet_t( death_knight_t* owner, util::string_view name ) : horseman_pet_t( owner, name )
+  nazgrim_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "nazgrim" )
   {
     npc_id = owner->spell.summon_nazgrim->effectN( 1 ).misc_value1();
   }
@@ -3817,7 +3769,6 @@ struct nazgrim_pet_t : public horseman_pet_t
       parse_options( options_str );
       impact_action = scourge_strike_shadow;
       base_dd_min = base_dd_max = p->dbc->expected_stat( p->dk()->true_level ).creature_auto_attack_dps * data().effectN( 1 ).percent();
-      add_child( scourge_strike_shadow );
     }
   };
 
@@ -4360,6 +4311,131 @@ private:
 // ==========================================================================
 // Triggers
 // ==========================================================================
+
+// ==========================================================================
+// Horsemen Summon Actions
+// ==========================================================================
+struct summon_rider_t : public death_knight_spell_t
+{
+  timespan_t duration;
+  summon_rider_t( util::string_view name, death_knight_t* p, const spell_data_t* s, timespan_t duration = 10_s )
+    : death_knight_spell_t( name, p, s ), duration( duration )
+  {
+    background = true;
+  }
+};
+
+struct undeath_dot_t final : public death_knight_spell_t
+{
+  undeath_dot_t( util::string_view name, death_knight_t* p ) : death_knight_spell_t( name, p, p->pet_spell.undeath_dot )
+  {
+    background = true;
+    may_miss = may_dodge = may_parry = false;
+    dot_behavior                     = DOT_NONE;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    death_knight_spell_t::tick( d );
+    auto td = p()->get_target_data( d->target );
+    td->dot.undeath->increment( 1 );
+  }
+};
+
+struct trollbanes_icy_fury_t final : public death_knight_spell_t
+{
+  trollbanes_icy_fury_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->pet_spell.trollbanes_icy_fury_ability )
+  {
+    background = true;
+    aoe        = -1;
+  }
+};
+
+struct dnd_damage_mograine_t final : public death_knight_spell_t
+{
+  dnd_damage_mograine_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.death_and_decay_damage )
+  {
+    background = true;
+    aoe        = -1;
+  }
+};
+
+struct summon_whitemane_t final : public summon_rider_t
+{
+  summon_whitemane_t( util::string_view name, death_knight_t* p ) : summon_rider_t( name, p, p->spell.summon_whitemane )
+  {
+    if ( !p->options.individual_pet_reporting )
+      p->pets.whitemane.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    add_child( get_action<undeath_dot_t>( "undeath", p ) );
+  }
+
+  void execute() override
+  {
+    if ( p()->pets.whitemane.active_pet() == nullptr )
+    {
+      death_knight_spell_t::execute();
+      p()->pets.whitemane.spawn( duration );
+    }
+  }
+};
+
+struct summon_trollbane_t final : public summon_rider_t
+{
+  summon_trollbane_t( util::string_view name, death_knight_t* p ) : summon_rider_t( name, p, p->spell.summon_trollbane )
+  {
+    if ( !p->options.individual_pet_reporting )
+      p->pets.trollbane.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    add_child( get_action<trollbanes_icy_fury_t>( "trollbanes_icy_fury", p ) );
+  }
+
+  void execute() override
+  {
+    if ( p()->pets.trollbane.active_pet() == nullptr )
+    {
+      death_knight_spell_t::execute();
+      p()->pets.trollbane.spawn( duration );
+    }
+  }
+};
+
+struct summon_nazgrim_t final : public summon_rider_t
+{
+  summon_nazgrim_t( util::string_view name, death_knight_t* p ) : summon_rider_t( name, p, p->spell.summon_nazgrim )
+  {
+    if ( !p->options.individual_pet_reporting )
+      p->pets.nazgrim.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+  }
+
+  void execute() override
+  {
+    if ( p()->pets.nazgrim.active_pet() == nullptr )
+    {
+      death_knight_spell_t::execute();
+      p()->pets.nazgrim.spawn( duration );
+    }
+  }
+};
+
+struct summon_mograine_t final : public summon_rider_t
+{
+  summon_mograine_t( util::string_view name, death_knight_t* p ) : summon_rider_t( name, p, p->spell.summon_mograine )
+  {
+    if ( !p->options.individual_pet_reporting )
+      p->pets.mograine.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    add_child( get_action<dnd_damage_mograine_t>( "death_and_decay_mograine", p ) );
+  }
+
+  void execute() override
+  {
+    if ( p()->pets.mograine.active_pet() == nullptr )
+    {
+      death_knight_spell_t::execute();
+      p()->pets.mograine.spawn( duration );
+    }
+  }
+};
 
 // ==========================================================================
 // Death Knight Attack Methods
@@ -7401,7 +7477,7 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
       p() -> cooldown.inexorable_assault_icd -> start();
     }
 
-    if ( p()->talent.rider.trollbanes_icy_fury.ok() && td->debuff.chains_of_ice_trollbane_slow->check() )
+    if ( p()->talent.rider.trollbanes_icy_fury.ok() && td->debuff.chains_of_ice_trollbane_slow->check() && p()->pets.trollbane.active_pet() != nullptr )
     {
       td->debuff.chains_of_ice_trollbane_slow->expire();
       p()->active_spells.trollbanes_icy_fury->execute_on_target( state->target );
@@ -7409,11 +7485,9 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
 
     if ( p()->talent.rider.whitemanes_famine.ok() )
     {
-      auto whitemane_td = p()->pets.whitemane->get_target_data( state->target );
-
-      if ( whitemane_td->whitemane_dot.undeath_dot->is_ticking() )
+      if ( td->dot.undeath->is_ticking() )
       {
-          p()->trigger_whitemanes_famine( state->target );
+        p()->trigger_whitemanes_famine( state->target, death_knight_melee_attack_t::target_list() );
       }
     }
   }
@@ -7964,7 +8038,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
       p()->buffs.plaguebringer->trigger();
     }
 
-    if ( p()->talent.rider.trollbanes_icy_fury.ok() && td->debuff.chains_of_ice_trollbane_slow->check())
+    if ( p()->talent.rider.trollbanes_icy_fury.ok() && td->debuff.chains_of_ice_trollbane_slow->check() && p()->pets.trollbane.active_pet() != nullptr )
     {
       td->debuff.chains_of_ice_trollbane_slow->expire();
       p()->active_spells.trollbanes_icy_fury->execute_on_target( state->target );
@@ -7972,11 +8046,9 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
     if ( p()->talent.rider.whitemanes_famine.ok() )
     {
-      auto whitemane_td = p()->pets.whitemane->get_target_data( state->target );
-
-      if ( whitemane_td->whitemane_dot.undeath_dot->is_ticking() )
+      if ( td->dot.undeath->is_ticking() )
       {
-        p()->trigger_whitemanes_famine( state->target );
+        p()->trigger_whitemanes_famine( state->target, death_knight_melee_attack_t::target_list() );
       }
     }
   }
@@ -9648,38 +9720,48 @@ void death_knight_t::chill_streak_bounce( player_t* t )
 
 void death_knight_t::summon_rider( timespan_t duration, bool random )
 {
-  for ( auto& rider : pets.riders )
+  std::vector<action_t*> random_rider_spells = active_spells.rider_summon_spells;
+  // Can not randomly summon the same rider twice in a row
+  if ( active_spells.last_rider_summoned != nullptr )
   {
-    if ( rider->is_sleeping() )
+    auto it = std::find( random_rider_spells.begin(), random_rider_spells.end(), active_spells.last_rider_summoned );
+    random_rider_spells.erase( it );
+  }
+
+  if ( !random )
+  {
+    for ( auto& rider : active_spells.rider_summon_spells )
     {
-      rider->summon( duration );
-      if ( random )
-      {
-        std::rotate( pets.riders.begin(), pets.riders.begin() + ( rng().range( pets.riders.size() ) ), pets.riders.end() );
-        return;
-      }
+      debug_cast<summon_rider_t*>( rider )->duration = duration;
+      rider->execute();
     }
-    /* Currently Riders do not get extended if Army or Frostwyrm is cast while they are active
-    if ( !rider -> is_sleeping() && !random )
+  }
+  else
+  {
+    for ( auto& rider : random_rider_spells )
     {
-      if( duration >= rider -> expiration -> remains() )
-      {
-        rider->adjust_duration( duration - rider->expiration->remains() );
-      }
-    }*/
+      debug_cast<summon_rider_t*>( rider )->duration = duration;
+      rider->execute();
+      active_spells.last_rider_summoned = rider;
+      std::rotate(
+          active_spells.rider_summon_spells.begin(),
+          active_spells.rider_summon_spells.begin() + ( rng().range( active_spells.rider_summon_spells.size() ) ),
+          active_spells.rider_summon_spells.end() );
+      return;
+    }
   }
 }
 
 void death_knight_t::extend_rider( double amount )
 {
-  int threshold       = talent.rider.fury_of_the_horsemen->effectN( 1 ).base_value();
-  int max_time        = talent.rider.fury_of_the_horsemen->effectN( 2 ).base_value();
+  double threshold       = talent.rider.fury_of_the_horsemen->effectN( 1 ).base_value();
+  double max_time        = talent.rider.fury_of_the_horsemen->effectN( 2 ).base_value();
   timespan_t duration = timespan_t::from_seconds( talent.rider.fury_of_the_horsemen->effectN( 3 ).base_value() );
-  int limit = threshold * max_time;
+  double limit = threshold * max_time;
 
   for ( auto& rider : pets.riders )
   {
-    if ( !rider->is_sleeping() )
+    if ( rider != nullptr )
     {
       if ( rider->rp_spent < limit )
       {
@@ -9695,21 +9777,33 @@ void death_knight_t::extend_rider( double amount )
   }
 }
 
-void death_knight_t::trigger_whitemanes_famine( player_t* main_target )
+void death_knight_t::trigger_whitemanes_famine( player_t* main_target, std::vector<player_t*>& target_list )
 {
-  auto whitemane_td = pets.whitemane->get_target_data( main_target );
-  whitemane_td->whitemane_dot.undeath_dot->increment( 1 );
+  auto td = get_target_data( main_target );
+  td->dot.undeath->increment( 1 );
 
-  if ( sim->target_non_sleeping_list.size() > 1 )
+  if ( target_list.size() > 1 )
   {
-    for ( auto& target : sim->target_non_sleeping_list )
+    std::vector<player_t*>& current_targets = target_list;
+    auto duration = td->dot.undeath->remains() - pet_spell.undeath_dot->duration();
+
+    // first target, the action target, needs to be left in place
+    std::sort( current_targets.begin() + 1, current_targets.end(), [ this ]( player_t* a, player_t* b ) {
+      return get_target_data( a )->dot.undeath->current_stack() > get_target_data( b )->dot.undeath->current_stack();
+    } );
+
+    // Set the new target to the 2nd element in the sorted vector
+    auto& new_target = current_targets[ 2 ];
+    auto undeath_td  = get_target_data( new_target );
+
+    if ( undeath_td->dot.undeath->is_ticking() )
     {
-      auto undeath_td = pets.whitemane->get_target_data( target );
-      if ( target != main_target && !undeath_td->whitemane_dot.undeath_dot->is_ticking() )
-      {
-        pets.whitemane->ability.undeath_dot->execute_on_target( target );
-        return;
-      }
+      undeath_td->dot.undeath->increment( 1 );
+    }
+    else
+    {
+      active_spells.undeath_dot->execute_on_target( new_target );
+      undeath_td->dot.undeath->adjust_duration( duration );
     }
   }
 }
@@ -9760,6 +9854,25 @@ void death_knight_t::create_actions()
   if ( talent.abomination_limb.ok() )
   {
     active_spells.abomination_limb_damage = get_action<abomination_limb_damage_t>( "abomination_limb_damage", this );
+  }
+
+  // Rider of the Apocalypse
+  if ( talent.rider.riders_champion.ok() )
+  {
+    active_spells.summon_whitemane = get_action<summon_whitemane_t>( "summon_whitemane", this );
+    active_spells.rider_summon_spells.push_back( active_spells.summon_whitemane );
+    active_spells.undeath_dot = get_action<undeath_dot_t>( "undeath", this );
+
+    active_spells.summon_mograine  = get_action<summon_mograine_t>( "summon_mograine", this );
+    active_spells.rider_summon_spells.push_back( active_spells.summon_mograine );
+    active_spells.mograines_death_and_decay = get_action<dnd_damage_mograine_t>( "death_and_decay_mograine", this );
+
+    active_spells.summon_trollbane = get_action<summon_trollbane_t>( "summon_trollbane", this );
+    active_spells.rider_summon_spells.push_back( active_spells.summon_trollbane );
+    active_spells.trollbanes_icy_fury = get_action<trollbanes_icy_fury_t>( "trollbanes_icy_fury", this );
+
+    active_spells.summon_nazgrim   = get_action<summon_nazgrim_t>( "summon_nazgrim", this );
+    active_spells.rider_summon_spells.push_back( active_spells.summon_nazgrim );
   }
 
   // Blood
@@ -10116,15 +10229,14 @@ void death_knight_t::create_pets()
 
   if ( talent.rider.riders_champion.ok() )
   {
-    pets.mograine  = new pets::mograine_pet_t( this, "mograine" );
-    pets.whitemane = new pets::whitemane_pet_t( this, "whitemane" );
-    pets.trollbane = new pets::trollbane_pet_t( this, "trollbane" );
-    pets.nazgrim   = new pets::nazgrim_pet_t( this, "nazgrim" );
-
-    pets.riders.push_back( pets.mograine );
-    pets.riders.push_back( pets.whitemane );
-    pets.riders.push_back( pets.trollbane );
-    pets.riders.push_back( pets.nazgrim );
+    pets.whitemane.set_creation_callback( []( death_knight_t* p ) { return new pets::whitemane_pet_t( p ); } );
+    pets.riders.push_back( pets.whitemane.active_pet() );
+    pets.mograine.set_creation_callback( []( death_knight_t* p ) { return new pets::mograine_pet_t( p ); } );
+    pets.riders.push_back( pets.mograine.active_pet() );
+    pets.trollbane.set_creation_callback( []( death_knight_t* p ) { return new pets::trollbane_pet_t( p ); } );
+    pets.riders.push_back( pets.trollbane.active_pet() );
+    pets.nazgrim.set_creation_callback( []( death_knight_t* p ) { return new pets::nazgrim_pet_t( p ); } );
+    pets.riders.push_back( pets.nazgrim.active_pet() );
   }
 
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
@@ -11379,9 +11491,9 @@ void death_knight_t::activate()
     if ( talent.rider.nazgrims_conquest.ok() )
     {
       target->register_on_demise_callback( this, [ this ]( player_t* t ) {
-        if ( !pets.nazgrim->is_sleeping() )
+        if ( pets.nazgrim.active_pet() != nullptr )
         {
-          buffs.nazgrims_conquest->trigger( talent.rider.nazgrims_conquest->effectN( 3 ).base_value() );
+          buffs.nazgrims_conquest->trigger( as<int>( talent.rider.nazgrims_conquest->effectN( 3 ).base_value() ) );
         }
       } );
     }
@@ -11992,7 +12104,7 @@ void death_knight_t::arise()
 
   if( talent.rider.riders_champion.ok() )
   {
-    std::rotate( pets.riders.begin(), pets.riders.begin() + ( rng().range( pets.riders.size() ) ), pets.riders.end() );
+    std::rotate( active_spells.rider_summon_spells.begin(), active_spells.rider_summon_spells.begin() + ( rng().range( active_spells.rider_summon_spells.size() ) ), active_spells.rider_summon_spells.end() );
   }
   
   if ( talent.rider.a_feast_of_souls.ok() )

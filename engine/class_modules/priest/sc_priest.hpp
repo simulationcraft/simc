@@ -67,6 +67,7 @@ struct purge_the_wicked_t;
 struct holy_fire_t;
 struct burning_vehemence_t;
 struct entropic_rift_t;
+struct collapsing_void_damage_t;
 }  // namespace actions::spells
 
 namespace actions::heals
@@ -213,6 +214,7 @@ public:
     propagate_const<buff_t*> voidheart;
     propagate_const<buff_t*> entropic_rift;
     propagate_const<buff_t*> darkening_horizon;
+    propagate_const<buff_t*> collapsing_void;
   } buffs;
 
   // Talents
@@ -240,6 +242,7 @@ public:
     player_talent_t phantasm;
     player_talent_t death_and_madness;
     const spell_data_t* death_and_madness_insanity;
+    const spell_data_t* death_and_madness_reset_buff;
     // Row 4
     player_talent_t spell_warding;
     player_talent_t blessed_recovery;
@@ -270,6 +273,7 @@ public:
     // Row 7
     player_talent_t unwavering_will;
     player_talent_t twist_of_fate;
+    const spell_data_t* twist_of_fate_buff;
     player_talent_t throes_of_pain;
     // Row 8
     player_talent_t angels_mercy;
@@ -369,6 +373,8 @@ public:
       player_talent_t idol_of_nzoth;
       player_talent_t idol_of_yoggsaron;
       player_talent_t idol_of_cthun;
+      const spell_data_t* echoing_void;
+      const spell_data_t* echoing_void_debuff;
     } shadow;
 
     struct
@@ -507,18 +513,21 @@ public:
       player_talent_t no_escape;
       player_talent_t dark_energy;
       player_talent_t void_blast;
+      const spell_data_t* void_blast_shadow;
       player_talent_t inner_quietus;
       player_talent_t devour_matter;
       player_talent_t void_empowerment;
       player_talent_t darkening_horizon;
       player_talent_t depth_of_shadows;
       player_talent_t voidwraith;
+      const spell_data_t* voidwraith_spell;
       player_talent_t voidheart;
       const spell_data_t* voidheart_buff;
       player_talent_t void_infusion;
       player_talent_t void_leech;
       player_talent_t embrace_the_shadow;
       player_talent_t collapsing_void;
+      const spell_data_t* collapsing_void_damage;
     } voidweaver;
 
     // Shared
@@ -536,6 +545,7 @@ public:
     const spell_data_t* shadow_word_death_self_damage;
     const spell_data_t* psychic_scream;
     const spell_data_t* fade;
+    const spell_data_t* levitate_buff;
 
     // Discipline
     const spell_data_t* discipline_priest;  // General discipline data
@@ -585,6 +595,7 @@ public:
     propagate_const<cooldown_t*> mindgames;
     propagate_const<cooldown_t*> mindbender;
     propagate_const<cooldown_t*> shadowfiend;
+    propagate_const<cooldown_t*> voidwraith;
     propagate_const<cooldown_t*> fiend;
 
     // Shadow
@@ -617,6 +628,7 @@ public:
     propagate_const<gain_t*> insanity_death_and_madness;
     propagate_const<gain_t*> mindbender;
     propagate_const<gain_t*> shadowfiend;
+    propagate_const<gain_t*> voidwraith;
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> power_word_solace;
     propagate_const<gain_t*> throes_of_pain;
@@ -688,6 +700,7 @@ public:
     propagate_const<actions::heals::atonement_t*> atonement;
     propagate_const<actions::heals::divine_aegis_t*> divine_aegis;
     propagate_const<actions::spells::entropic_rift_t*> entropic_rift;
+    propagate_const<actions::spells::collapsing_void_damage_t*> collapsing_void;
   } background_actions;
 
   // Items
@@ -695,11 +708,19 @@ public:
   {
   } active_items;
 
+  // Player Data State
+  vector_with_callback<player_t*> allies_with_atonement;
+  struct state_t
+  {
+    ground_aoe_event_t* active_entropic_rift;
+  } state;
+
   // Pets
   struct priest_pets_t
   {
     spawner::pet_spawner_t<pet_t, priest_t> shadowfiend;
     spawner::pet_spawner_t<pet_t, priest_t> mindbender;
+    spawner::pet_spawner_t<pet_t, priest_t> voidwraith;
     spawner::pet_spawner_t<pet_t, priest_t> void_tendril;
     spawner::pet_spawner_t<pet_t, priest_t> void_lasher;
     spawner::pet_spawner_t<pet_t, priest_t> thing_from_beyond;
@@ -736,8 +757,6 @@ public:
     timespan_t twist_of_fate_heal_duration_mean   = 2_s;
     timespan_t twist_of_fate_heal_duration_stddev = 0.25_s;
   } options;
-
-  vector_with_callback<player_t*> allies_with_atonement;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -840,7 +859,6 @@ public:
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   void trigger_essence_devourer();
   // Stores the currently active Entropic Rift event
-  ground_aoe_event_t* active_entropic_rift;
   void trigger_entropic_rift();
   void extend_entropic_rift();
   void expand_entropic_rift();

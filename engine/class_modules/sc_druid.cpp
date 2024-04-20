@@ -27,6 +27,9 @@ namespace pets
 struct denizen_of_the_dream_t;
 struct force_of_nature_t;
 struct grove_guardian_t;
+
+template <typename T>
+std::function<void( T* )> parent_pet_action_fn( action_t* parent );
 }
 
 enum form_e : unsigned
@@ -68,11 +71,12 @@ enum free_spell_e : unsigned
   GALACTIC   = 0x0008,  // galactic guardian talent
   ORBIT      = 0x0020,  // orbit breaker talent
   TWIN       = 0x0040,  // twin moons talent
+  TREANT     = 0x0080,  // treants of the moon moonfire
   // free casts
-  APEX       = 0x0100,  // apex predators's craving
-  TOOTH      = 0x0200,  // tooth and claw talent
+  APEX       = 0x1000,  // apex predators's craving
+  TOOTH      = 0x2000,  // tooth and claw talent
 
-  PROCS = CONVOKE | FIRMAMENT | FLASHING | GALACTIC | ORBIT | TWIN,
+  PROCS = CONVOKE | FIRMAMENT | FLASHING | GALACTIC | ORBIT | TWIN | TREANT,
   CASTS = APEX | TOOTH
 };
 
@@ -477,6 +481,10 @@ public:
 
     // Restoration
     action_t* yseras_gift;
+
+    // Hero talents
+    action_t* boundless_moonlight_heal;
+    action_t* treants_of_the_moon_mf;
   } active;
 
   // Pets
@@ -628,6 +636,7 @@ public:
     buff_t* yseras_gift;
 
     // Hero talents
+    buff_t* boundless_moonlight_heal;
     buff_t* protective_growth;
 
     // Helper pointers
@@ -884,6 +893,7 @@ public:
     // Restoration
     player_talent_t abundance;
     player_talent_t budding_leaves;
+    player_talent_t call_of_the_elder_druid;
     player_talent_t cenarion_ward;
     player_talent_t cenarius_guidance;
     player_talent_t cultivation;
@@ -1213,207 +1223,6 @@ private:
 
   target_specific_t<druid_td_t> target_data;
 };
-
-namespace pets
-{
-// ==========================================================================
-// Pets and Guardians
-// ==========================================================================
-
-// Denizen of the Dream =============================================
-struct denizen_of_the_dream_t : public pet_t
-{
-  struct fey_missile_t : public spell_t
-  {
-    druid_t* o;
-    double mastery_passive;
-    double mastery_dot;
-
-    fey_missile_t( pet_t* p )
-      : spell_t( "fey_missile", p, p->find_spell( 188046 ) ),
-        o( static_cast<druid_t*>( p->owner ) ),
-        mastery_passive( o->mastery.astral_invocation->effectN( 1 ).mastery_value() ),
-        mastery_dot( o->mastery.astral_invocation->effectN( 5 ).mastery_value() )
-    {
-      name_str_reporting = "fey_missile";
-    }
-
-    void execute() override
-    {
-      // TODO: has server batching behavior, using a random value for now
-      cooldown->duration = rng().range( 0_ms, 600_ms );
-
-      spell_t::execute();
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      auto da = spell_t::composite_da_multiplier( s );
-
-      da *= 1.0 + o->buff.eclipse_lunar->check_value();
-      da *= 1.0 + o->buff.eclipse_solar->check_value();
-
-      da *= 1.0 + o->cache.mastery() * mastery_passive;
-      da *= 1.0 + o->cache.mastery() * mastery_passive;
-
-      return da;
-    }
-
-    double composite_target_multiplier( player_t* t ) const override
-    {
-      auto tm = spell_t::composite_target_multiplier( t );
-      auto td = o->get_target_data( t );
-
-      if ( td->dots.moonfire->is_ticking() )
-        tm *= 1.0 + o->cache.mastery() * mastery_dot;
-
-      if ( td->dots.sunfire->is_ticking() )
-        tm *= 1.0 + o->cache.mastery() * mastery_dot;
-
-      return tm;
-    }
-  };
-
-  denizen_of_the_dream_t( druid_t* p ) : pet_t( p->sim, p, "Denizen of the Dream", true, true )
-  {
-    owner_coeff.sp_from_sp = 1.0;
-
-    action_list_str = "fey_missile";
-  }
-
-  action_t* create_action( std::string_view n, std::string_view opt ) override
-  {
-    if ( n == "fey_missile" ) return new fey_missile_t( this );
-
-    return pet_t::create_action( n, opt );
-  }
-
-  druid_t* o() { return static_cast<druid_t*>( owner ); }
-};
-
-// Force of Nature ==================================================
-struct force_of_nature_t : public pet_t
-{
-  struct fon_melee_t : public melee_attack_t
-  {
-    bool first_attack = true;
-
-    fon_melee_t( pet_t* pet, const char* name = "Melee" ) : melee_attack_t( name, pet, spell_data_t::nil() )
-    {
-      school            = SCHOOL_PHYSICAL;
-      weapon            = &( pet->main_hand_weapon );
-      weapon_multiplier = 1.0;
-      base_execute_time = weapon->swing_time;
-      may_crit = background = repeating = true;
-    }
-
-    timespan_t execute_time() const override
-    {
-      return first_attack ? 0_ms : melee_attack_t::execute_time();
-    }
-
-    void cancel() override
-    {
-      melee_attack_t::cancel();
-      first_attack = true;
-    }
-
-    void schedule_execute( action_state_t* s ) override
-    {
-      melee_attack_t::schedule_execute( s );
-      first_attack = false;
-    }
-  };
-
-  struct auto_attack_t : public melee_attack_t
-  {
-    auto_attack_t( pet_t* pet ) : melee_attack_t( "auto_attack", pet )
-    {
-      assert( pet->main_hand_weapon.type != WEAPON_NONE );
-      pet->main_hand_attack = new fon_melee_t( pet );
-      trigger_gcd = 0_ms;
-    }
-
-    void execute() override { player->main_hand_attack->schedule_execute(); }
-
-    bool ready() override { return ( player->main_hand_attack->execute_event == nullptr ); }
-  };
-
-  druid_t* o() { return static_cast<druid_t*>( owner ); }
-
-  force_of_nature_t( druid_t* p ) : pet_t( p->sim, p, "Treant", true, true )
-  {
-    // Treants have base weapon damage + ap from player's sp.
-    owner_coeff.ap_from_sp = 0.6;
-
-    double base_dps = o()->dbc->expected_stat( o()->true_level ).creature_auto_attack_dps;
-
-    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = base_dps * main_hand_weapon.swing_time.total_seconds() / 1000;
-
-    resource_regeneration = regen_type::DISABLED;
-    main_hand_weapon.type = WEAPON_BEAST;
-
-    action_list_str = "auto_attack";
-  }
-
-  void init_base_stats() override
-  {
-    pet_t::init_base_stats();
-
-    // TODO: confirm these values
-    resources.base[ RESOURCE_HEALTH ] = owner->resources.max[ RESOURCE_HEALTH ] * 0.4;
-    resources.base[ RESOURCE_MANA ]   = 0;
-
-    initial.stats.attribute[ ATTR_INTELLECT ] = 0;
-    initial.spell_power_per_intellect         = 0;
-    intellect_per_owner                       = 0;
-    stamina_per_owner                         = 0;
-  }
-
-  resource_e primary_resource() const override { return RESOURCE_NONE; }
-
-  action_t* create_action( std::string_view name, std::string_view options_str ) override
-  {
-    if ( name == "auto_attack" ) return new auto_attack_t( this );
-
-    return pet_t::create_action( name, options_str );
-  }
-};
-
-// Grove Guardian ===========================================================
-struct grove_guardian_t : public pet_t
-{
-  grove_guardian_t( druid_t* p ) : pet_t( p->sim, p, "Grove Guardian", true, true )
-  {
-
-  }
-
-  druid_t* o() { return static_cast<druid_t*>( owner ); }
-};
-
-std::function<void( pet_t* )> parent_pet_action_fn( action_t* parent )
-{
-  return [ parent ]( pet_t* p ) {
-    for ( auto a : p->action_list )
-    {
-      auto it = range::find( parent->child_action, a->name_str, &action_t::name_str );
-      if ( it != parent->child_action.end() )
-      {
-        if ( a->stats != ( *it )->stats )
-        {
-          range::erase_remove( p->stats_list, a->stats );
-          delete a->stats;
-          a->stats = ( *it )->stats;
-        }
-      }
-      else
-      {
-        parent->add_child( a );
-      }
-    }
-  };
-}
-}  // end namespace pets
 
 // ==========================================================================
 // Base template classes
@@ -5263,6 +5072,29 @@ struct after_the_wildfire_heal_t : public druid_heal_t
   }
 };
 
+// Boundless Moonlight Heal =================================================
+struct boundless_moonlight_heal_t : public druid_heal_t
+{
+  boundless_moonlight_heal_t( druid_t* p )
+    : druid_heal_t( "boundless_moonlight", p, p->find_spell( 425206 ) )
+  {
+    background = proc = true;
+
+    // 1 point to allow proper snapshot/update flag parsing
+    base_dd_min = base_dd_max = 1.0;
+  }
+
+  double base_da_min( const action_state_t* ) const override
+  {
+    return p()->buff.boundless_moonlight_heal->check_value();
+  }
+
+  double base_da_max( const action_state_t* ) const override
+  {
+    return p()->buff.boundless_moonlight_heal->check_value();
+  }
+};
+
 // Cenarion Ward ============================================================
 struct cenarion_ward_t : public druid_heal_t
 {
@@ -6451,8 +6283,16 @@ struct force_of_nature_t : public druid_spell_t
   {
     harmful = false;
 
-    p->pets.force_of_nature.set_default_duration( find_trigger( p->talent.force_of_nature ).trigger()->duration() + 1_ms );
-    p->pets.force_of_nature.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    if ( data().ok() )
+    {
+      p->pets.force_of_nature.set_default_duration(
+          find_trigger( p->talent.force_of_nature ).trigger()->duration() + 1_ms );
+      p->pets.force_of_nature.set_creation_event_callback(
+          pets::parent_pet_action_fn<pets::force_of_nature_t>( this ) );
+
+      if ( p->active.treants_of_the_moon_mf )
+        add_child( p->active.treants_of_the_moon_mf );
+    }
   }
 
   void execute() override
@@ -6484,9 +6324,33 @@ struct fury_of_elune_t : public druid_spell_t
     }
   };
 
+  struct boundless_moonlight_t : public druid_spell_t
+  {
+    boundless_moonlight_t( druid_t* p, std::string_view n ) : druid_spell_t( n, p, p->find_spell( 428682 ) )
+    {
+      background = true;
+      aoe = -1;  // TODO: aoe DR?
+      name_str_reporting = "boundless_moonlight";
+
+      if ( p->talent.the_eternal_moon.ok() )
+      {
+        auto energize_power = p->specialization() == DRUID_GUARDIAN ? POWER_RAGE : POWER_ASTRAL_POWER;
+        auto e_idx = find_effect_index( this, E_ENERGIZE, A_MAX, energize_power );
+
+        energize_resource = util::translate_power_type( energize_power );
+        energize_amount = data().effectN( e_idx ).resource( energize_resource );
+      }
+      else
+      {
+        energize_type = action_energize::NONE;
+      }
+    }
+  };
+
   const spell_data_t* tick_spell;
   buff_t* energize;
   action_t* damage = nullptr;
+  action_t* boundless = nullptr;
   timespan_t tick_period;
 
   DRUID_ABILITY_C( fury_of_elune_t, druid_spell_t, "fury_of_elune", p->talent.fury_of_elune,
@@ -6504,6 +6368,12 @@ struct fury_of_elune_t : public druid_spell_t
     {
       damage = p->get_secondary_action<fury_of_elune_tick_t>( name_str + "_tick", tick_spell );
       replace_stats( damage );
+
+      if ( p->talent.boundless_moonlight.ok() )
+      {
+        boundless = p->get_secondary_action<boundless_moonlight_t>( name_str + "boundless" );
+        add_child( boundless );
+      }
     }
   }
 
@@ -6516,12 +6386,17 @@ struct fury_of_elune_t : public druid_spell_t
 
     energize->trigger();
 
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+    auto params = ground_aoe_params_t()
       .target( target )
       .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
       .pulse_time( tick_period )
       .duration( data().duration() )
-      .action( damage ) );
+      .action( damage );
+
+    if ( boundless )
+      params.expiration_callback( [ this ] { boundless->execute_on_target( target ); } );
+
+    make_event<ground_aoe_event_t>( *sim, p(), params );
   }
 };
 
@@ -6626,7 +6501,7 @@ struct lunar_beam_t : public druid_spell_t
       .x( p()->x_position )
       .y( p()->y_position )
       .pulse_time( 1_s )
-      .duration( data().duration() )
+      .duration( p()->buff.lunar_beam->buff_duration() )
       .action( damage ) );
   }
 };
@@ -6655,11 +6530,38 @@ struct mark_of_the_wild_t : public druid_spell_t
 // Moon Spells ==============================================================
 struct moon_base_t : public druid_spell_t
 {
+  struct crescent_moon_t : public druid_spell_t
+  {
+    crescent_moon_t( druid_t* p, std::string_view n ) : druid_spell_t( n, p, p->find_spell( 424588 ) )
+    {
+      background = true;
+      aoe = -1;
+      reduced_aoe_targets = 1.0;
+      full_amount_targets = 1;
+      name_str_reporting = "crescent_moon";
+    }
+
+    void init() override
+    {
+      druid_spell_t::init();
+
+      if ( get_suffix( name_str, "crescent_moon" ).empty() )
+        p()->active.moons->add_child( this );
+    }
+  };
+
   moon_stage_e stage;
+  action_t* crescent = nullptr;
+  unsigned num_crescent = 0;
 
   moon_base_t( std::string_view n, druid_t* p, const spell_data_t* s, moon_stage_e moon )
     : druid_spell_t( n, p, s ), stage( moon )
-  {}
+  {
+    if ( data().ok() && p->talent.boundless_moonlight.ok() )
+    {
+      crescent = p->get_secondary_action<crescent_moon_t>( "crescent_moon" );
+    }
+  }
 
   void init() override
   {
@@ -6724,19 +6626,30 @@ struct moon_base_t : public druid_spell_t
     }
 
     advance_stage();
+
+    // TODO: any delay/stagger?
+    if ( crescent && num_crescent )
+      for ( unsigned i = 0; i < num_crescent; i++ )
+        crescent->execute_on_target( target );
   }
 };
 
 // New Moon Spell ===========================================================
 struct new_moon_t : public moon_base_t
 {
-  DRUID_ABILITY_B( new_moon_t, moon_base_t, "new_moon", p->talent.new_moon, moon_stage_e::NEW_MOON ) {}
+  DRUID_ABILITY_B( new_moon_t, moon_base_t, "new_moon", p->talent.new_moon, moon_stage_e::NEW_MOON )
+  {
+    num_crescent = as<unsigned>( p->talent.the_eternal_moon->effectN( 3 ).base_value() );
+  }
 };
 
 // Half Moon Spell ==========================================================
 struct half_moon_t : public moon_base_t
 {
-  DRUID_ABILITY_B( half_moon_t, moon_base_t, "half_moon", p->spec.half_moon, moon_stage_e::HALF_MOON ) {}
+  DRUID_ABILITY_B( half_moon_t, moon_base_t, "half_moon", p->spec.half_moon, moon_stage_e::HALF_MOON )
+  {
+    num_crescent = as<unsigned>( p->talent.the_eternal_moon->effectN( 3 ).base_value() );
+  }
 };
 
 // Full Moon Spell ==========================================================
@@ -6751,6 +6664,15 @@ struct full_moon_t : public moon_base_t
     // Since this can be free_cast, only energize for Balance
     if ( !p->spec.astral_power->ok() )
       energize_type = action_energize::NONE;
+
+    num_crescent = as<unsigned>( p->talent.boundless_moonlight->effectN( 1 ).base_value() );
+
+    auto suf = get_suffix( name_str, "full_moon" );
+    if ( !suf.empty() )
+    {
+      crescent = p->get_secondary_action<crescent_moon_t>( "crescent_moon" + suf );
+      add_child( crescent );
+    }
   }
 
   bool check_stage() const override
@@ -6971,32 +6893,36 @@ struct moonfire_t : public druid_spell_t
     if ( !is_free( free_spell_e::GALACTIC ) )
       p()->buff.galactic_guardian->expire();
 
-    if ( auto twin_target = get_twinned_target() )
-      twin->execute_on_target( twin_target );
+    if ( twin )
+    {
+      const auto& tl = target_list();
+      if ( tl.size() > 1 )
+      {
+        if ( auto twin_target = get_smart_target( tl, target ) )
+          twin->execute_on_target( twin_target );
+      }
+    }
   }
 
-  player_t* get_twinned_target()
+  player_t* get_smart_target( const std::vector<player_t*>& _tl, player_t* exclude = nullptr,
+                              bool really_smart = false )
   {
-    if ( !twin )
-      return nullptr;
+    auto tl = _tl;  // make a copy
 
-    auto tl = target_list();  // make a copy
-
-    // requires at least 2 targets
-    if ( tl.size() < 2 )
-      return nullptr;
-
-    if ( sim->distance_targeting_enabled )
+    if ( exclude )
     {
-      // remove target & out of range
-      range::erase_remove( tl, [ this ]( player_t* t ) {
-        return t == target || t->get_player_distance( *target ) > twin_range;
-      } );
-    }
-    else
-    {
-      // remove target
-      range::erase_remove( tl, target );
+      if ( sim->distance_targeting_enabled )
+      {
+        // remove exclude & out of range
+        range::erase_remove( tl, [ exclude, this ]( player_t* t ) {
+          return t == exclude || t->get_player_distance( *exclude ) > twin_range;
+        } );
+      }
+      else
+      {
+        // remove exclude
+        range::erase_remove( tl, exclude );
+      }
     }
 
     if ( tl.size() > 1 )
@@ -7004,10 +6930,20 @@ struct moonfire_t : public druid_spell_t
       // randomize remaining targets
       rng().shuffle( tl.begin(), tl.end() );
 
-      // prioritize undotted over dotted
-      std::partition( tl.begin(), tl.end(), [ this ]( player_t* t ) {
-        return !td( t )->dots.moonfire->is_ticking();
-      } );
+      if ( really_smart )
+      {
+        // sort by time remaining
+        range::sort( tl, [ this ]( player_t* a, player_t* b ) {
+          return td( a )->dots.moonfire->remains() < td( b )->dots.moonfire->remains();
+        } );
+      }
+      else
+      {
+        // prioritize undotted over dotted
+        std::partition( tl.begin(), tl.end(), [ this ]( player_t* t ) {
+          return !td( t )->dots.moonfire->is_ticking();
+        } );
+      }
     }
 
     if ( tl.size() )
@@ -8634,6 +8570,248 @@ struct auto_attack_t : public melee_attack_t
 };
 }  // namespace auto_attacks
 
+namespace pets
+{
+// ==========================================================================
+// Pets and Guardians
+// ==========================================================================
+
+// Denizen of the Dream =============================================
+struct denizen_of_the_dream_t : public pet_t
+{
+  struct fey_missile_t : public spell_t
+  {
+    druid_t* o;
+    double mastery_passive;
+    double mastery_dot;
+
+    fey_missile_t( pet_t* p )
+      : spell_t( "fey_missile", p, p->find_spell( 188046 ) ),
+        o( static_cast<druid_t*>( p->owner ) ),
+        mastery_passive( o->mastery.astral_invocation->effectN( 1 ).mastery_value() ),
+        mastery_dot( o->mastery.astral_invocation->effectN( 5 ).mastery_value() )
+    {
+      name_str_reporting = "fey_missile";
+    }
+
+    void execute() override
+    {
+      // TODO: has server batching behavior, using a random value for now
+      cooldown->duration = rng().range( 0_ms, 600_ms );
+
+      spell_t::execute();
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      auto da = spell_t::composite_da_multiplier( s );
+
+      da *= 1.0 + o->buff.eclipse_lunar->check_value();
+      da *= 1.0 + o->buff.eclipse_solar->check_value();
+
+      da *= 1.0 + o->cache.mastery() * mastery_passive;
+      da *= 1.0 + o->cache.mastery() * mastery_passive;
+
+      return da;
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      auto tm = spell_t::composite_target_multiplier( t );
+      auto td = o->get_target_data( t );
+
+      if ( td->dots.moonfire->is_ticking() )
+        tm *= 1.0 + o->cache.mastery() * mastery_dot;
+
+      if ( td->dots.sunfire->is_ticking() )
+        tm *= 1.0 + o->cache.mastery() * mastery_dot;
+
+      return tm;
+    }
+  };
+
+  denizen_of_the_dream_t( druid_t* p ) : pet_t( p->sim, p, "Denizen of the Dream", true, true )
+  {
+    owner_coeff.sp_from_sp = 1.0;
+
+    action_list_str = "fey_missile";
+  }
+
+  action_t* create_action( std::string_view n, std::string_view opt ) override
+  {
+    if ( n == "fey_missile" ) return new fey_missile_t( this );
+
+    return pet_t::create_action( n, opt );
+  }
+
+  druid_t* o() { return static_cast<druid_t*>( owner ); }
+};
+
+// Treant Base ======================================================
+struct treant_base_t : public pet_t
+{
+  cooldown_t* mf_cd = nullptr;
+  buff_t* mf_cycle = nullptr;
+  spells::moonfire_t* mf = nullptr;
+
+  treant_base_t( druid_t* p ) : pet_t( p->sim, p, "Treant", true, true )
+  {
+    if ( o()->active.treants_of_the_moon_mf )
+    {
+      mf = static_cast<spells::moonfire_t*>( o()->active.treants_of_the_moon_mf );
+
+      mf_cd = get_cooldown( "treants_of_the_moon" );
+      mf_cd->duration = o()->find_spell( 428545 )->cooldown();
+
+      mf_cycle = make_buff( this, "treants_of_the_moon" )
+        ->set_quiet( true )
+        ->set_period( 1.5_s )
+        ->set_freeze_stacks( true )
+        ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+          if ( mf_cd->up() )
+          {
+            const auto& tl = mf->target_list();
+            if ( auto target = mf->get_smart_target( tl, nullptr, true ) )
+              mf->execute_on_target( target );
+
+            mf_cd->start();
+          }
+        } );
+    }
+  }
+  
+  void arise() override
+  {
+    pet_t::arise();
+
+    if ( mf )
+      make_event( *sim, rng().range( 0_s, 1.5_s ), [ this ] { mf_cycle->trigger(); } );
+  }
+
+  druid_t* o() { return static_cast<druid_t*>( owner ); }
+};
+
+// Force of Nature ==================================================
+struct force_of_nature_t : public treant_base_t
+{
+  struct fon_melee_t : public melee_attack_t
+  {
+    bool first_attack = true;
+
+    fon_melee_t( pet_t* pet, const char* name = "Melee" ) : melee_attack_t( name, pet, spell_data_t::nil() )
+    {
+      school            = SCHOOL_PHYSICAL;
+      weapon            = &( pet->main_hand_weapon );
+      weapon_multiplier = 1.0;
+      base_execute_time = weapon->swing_time;
+      may_crit = background = repeating = true;
+    }
+
+    timespan_t execute_time() const override
+    {
+      return first_attack ? 0_ms : melee_attack_t::execute_time();
+    }
+
+    void cancel() override
+    {
+      melee_attack_t::cancel();
+      first_attack = true;
+    }
+
+    void schedule_execute( action_state_t* s ) override
+    {
+      melee_attack_t::schedule_execute( s );
+      first_attack = false;
+    }
+  };
+
+  struct auto_attack_t : public melee_attack_t
+  {
+    auto_attack_t( pet_t* pet ) : melee_attack_t( "auto_attack", pet )
+    {
+      assert( pet->main_hand_weapon.type != WEAPON_NONE );
+      pet->main_hand_attack = new fon_melee_t( pet );
+      trigger_gcd = 0_ms;
+    }
+
+    void execute() override { player->main_hand_attack->schedule_execute(); }
+
+    bool ready() override { return ( player->main_hand_attack->execute_event == nullptr ); }
+  };
+
+  force_of_nature_t( druid_t* p ) : treant_base_t( p )
+  {
+    // Treants have base weapon damage + ap from player's sp.
+    owner_coeff.ap_from_sp = 0.6;
+
+    double base_dps = o()->dbc->expected_stat( o()->true_level ).creature_auto_attack_dps;
+
+    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = base_dps * main_hand_weapon.swing_time.total_seconds() / 1000;
+
+    resource_regeneration = regen_type::DISABLED;
+    main_hand_weapon.type = WEAPON_BEAST;
+
+    action_list_str = "auto_attack";
+  }
+
+  void init_base_stats() override
+  {
+    pet_t::init_base_stats();
+
+    // TODO: confirm these values
+    resources.base[ RESOURCE_HEALTH ] = owner->resources.max[ RESOURCE_HEALTH ] * 0.4;
+    resources.base[ RESOURCE_MANA ]   = 0;
+
+    initial.stats.attribute[ ATTR_INTELLECT ] = 0;
+    initial.spell_power_per_intellect         = 0;
+    intellect_per_owner                       = 0;
+    stamina_per_owner                         = 0;
+  }
+
+  resource_e primary_resource() const override { return RESOURCE_NONE; }
+
+  action_t* create_action( std::string_view name, std::string_view options_str ) override
+  {
+    if ( name == "auto_attack" ) return new auto_attack_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+};
+
+// Grove Guardian ===========================================================
+struct grove_guardian_t : public treant_base_t
+{
+  grove_guardian_t( druid_t* p ) : treant_base_t( p )
+  {
+
+  }
+};
+
+template <typename T>
+std::function<void( T* )> parent_pet_action_fn( action_t* parent )
+{
+  return [ parent ]( T* p ) {
+    for ( auto a : p->action_list )
+    {
+      auto it = range::find( parent->child_action, a->name_str, &action_t::name_str );
+      if ( it != parent->child_action.end() )
+      {
+        if ( a->stats != ( *it )->stats )
+        {
+          range::erase_remove( p->stats_list, a->stats );
+          delete a->stats;
+          a->stats = ( *it )->stats;
+        }
+      }
+      else
+      {
+        parent->add_child( a );
+      }
+    }
+  };
+}
+}  // end namespace pets
+
 // Persistent Delay Event ===================================================
 // Delay triggering the event a random amount. This prevents fixed-period drivers from ticking at the exact same times
 // on every iteration. Buffs that use the event to activate should implement tick_zero-like behavior.
@@ -8693,8 +8871,10 @@ struct denizen_of_the_dream_t : public action_t
   denizen_of_the_dream_t( druid_t* p )
     : action_t( action_e::ACTION_OTHER, "denizen_of_the_dream", p, p->talent.denizen_of_the_dream ), druid( p )
   {
-    p->pets.denizen_of_the_dream.set_default_duration( p->find_spell( 394076 )->duration() );
-    p->pets.denizen_of_the_dream.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    p->pets.denizen_of_the_dream.set_default_duration(
+        p->find_spell( 394076 )->duration() );
+    p->pets.denizen_of_the_dream.set_creation_event_callback(
+        pets::parent_pet_action_fn<pets::denizen_of_the_dream_t>( this ) );
   }
 
   result_e calculate_result( action_state_t* ) const override
@@ -9135,6 +9315,7 @@ void druid_t::init_spells()
   sim->print_debug( "Initializing restoration talents..." );
   talent.abundance                      = ST( "Abundance" );
   talent.budding_leaves                 = ST( "Budding Leaves" );  // TODO: NYI
+  talent.call_of_the_elder_druid        = ST( "Call of the Elder Druid" );  // TODO: NYI
   talent.cenarion_ward                  = ST( "Cenarion Ward" );
   talent.cenarius_guidance              = ST( "Cenarius' Guidance" );  // TODO: Incarn bonus NYI
   talent.cultivation                    = ST( "Cultivation" );
@@ -9929,7 +10110,15 @@ void druid_t::create_buffs()
   buff.lunar_beam = make_buff_fallback( talent.lunar_beam.ok(), this, "lunar_beam", talent.lunar_beam )
     ->set_cooldown( 0_ms )
     ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
-    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+    ->apply_affecting_aura( talent.boundless_moonlight )  // TODO: hidden buff?
+    ->apply_affecting_aura( talent.the_eternal_moon )
+    ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+      if ( new_ )
+        buff.boundless_moonlight_heal->trigger();
+      else
+        buff.boundless_moonlight_heal->expire();
+    } );
 
   buff.overpowering_aura = make_buff_fallback( sets->has_set_bonus( DRUID_GUARDIAN, T29, B2 ),
       this, "overpowering_aura", find_spell( 395944 ) )
@@ -9998,6 +10187,19 @@ void druid_t::create_buffs()
       } );
 
   // Hero talents
+  buff.boundless_moonlight_heal = make_buff_fallback( talent.boundless_moonlight.ok() && talent.lunar_beam.ok(),
+      this, "boundless_moonlight_heal", find_spell( 425217 ) )
+          ->set_quiet( true )
+          ->set_freeze_stacks( true )
+          ->set_default_value( 0 )
+          ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+            if ( b->check_value() )
+            {
+              active.boundless_moonlight_heal->execute();
+              b->current_value = 0;
+            }
+          } );
+
   buff.protective_growth =
       make_buff_fallback( talent.protective_growth.ok(), this, "protective_growth", find_spell( 433749 ) )
           ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
@@ -10182,6 +10384,18 @@ void druid_t::create_actions()
   // Restoration
   if ( talent.yseras_gift.ok() )
     active.yseras_gift = get_secondary_action<yseras_gift_t>( "yseras_gift" );
+
+  // Hero talents
+  if ( talent.boundless_moonlight.ok() && talent.lunar_beam.ok() )
+    active.boundless_moonlight_heal = get_secondary_action<boundless_moonlight_heal_t>( "boundless_moonlight_heal" );
+
+  if ( talent.treants_of_the_moon.ok() )
+  {
+    auto mf = get_secondary_action<moonfire_t>( "moonfire_treants" );
+    mf->name_str_reporting = "Treants";
+    mf->set_free_cast( free_spell_e::TREANT );
+    active.treants_of_the_moon_mf = mf;
+  }
 
   player_t::create_actions();
 
@@ -11022,6 +11236,24 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     new furious_regeneration_cb_t( this, *driver );
+  }
+
+  // Hero talents
+    if ( talent.boundless_moonlight.ok() && talent.lunar_beam.ok() )
+  {
+    struct boundless_moonlight_heal_cb_t : public druid_cb_t
+    {
+      double mul;
+
+      boundless_moonlight_heal_cb_t( druid_t* p, const special_effect_t& e )
+        : druid_cb_t( p, e ), mul( p->buff.boundless_moonlight_heal->data().effectN( 1 ).percent() )
+      {}
+
+      void execute( action_t*, action_state_t* s ) override
+      {
+        p()->buff.boundless_moonlight_heal->current_value += s->result_amount * mul;
+      }
+    };
   }
 
   // blanket proc callback initialization happens here. anything further needs to be individually initialized
@@ -12733,6 +12965,9 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.rampant_growth );
   action.apply_affecting_aura( talent.sabertooth );
   action.apply_affecting_aura( talent.soul_of_the_forest_cat );
+
+  // Hero talents
+  action.apply_affecting_aura( talent.the_eternal_moon );
 }
 
 /* Report Extension Class

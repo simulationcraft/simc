@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54311
-static const std::array<spelltext_data_t, 22367> __spelltext_data { {
+static const std::array<spelltext_data_t, 22369> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20588,6 +20588,7 @@ static const std::array<spelltext_data_t, 22367> __spelltext_data { {
   { 425156, "$@spelldesc422479", 0, 0 },
   { 425180, "$@spelldesc422479", "Taking $w2 Fire damage per $t2 sec.", 0 },
   { 425181, "$@spelldesc424406", 0, 0 },
+  { 425206, "$@spelldesc204066", 0, 0 },
   { 425261, "$@spelldesc422896", 0, 0 },
   { 425262, "$@spelldesc422896", 0, 0 },
   { 425298, "$@spelldesc422886", 0, 0 },
@@ -20744,6 +20745,7 @@ static const std::array<spelltext_data_t, 22367> __spelltext_data { {
   { 428522, "Summoning a Pit Lord causes your next Hand of Gul'dan or Chaos Bolt to become Ruination.\r\n\r\n$@spellicon434635 $@spellname434635\r\n$@spelldesc434635", 0, 0 },
   { 428524, "Your next Soul Shard spent summons an Overlord that unleashes a devastating attack.", "Your next Soul Shard spent summons an Overlord that unleashes a devastating attack.", 0 },
   { 428544, "Your treants cast Moonfire on nearby targets about once every $s1 sec.", 0, 0 },
+  { 428545, "$@spelldesc428544", 0, 0 },
   { 428557, "Sigil skills have $s2 additional $lcharge:charges;.\r\n\r\nYou have $s6% increased chance to parry attacks from enemies afflicted by your Sigil of Flame.", 0, 0 },
   { 428603, "Sigil of Flame's initial damage is increased by $s2%.\r\n\r\nMultiple applications of Sigil of Flame may overlap.", 0, 0 },
   { 428607, "When you parry an attack or have one of your attacks parried, restore $428608s2% of max health and $428608s1 Fury. \r\n\r\nThis effect may only occur once every $s1 sec.", 0, 0 },
