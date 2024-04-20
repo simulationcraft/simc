@@ -710,7 +710,6 @@ public:
     player_talent_t feline_swiftness;
     player_talent_t forestwalk;
     player_talent_t frenzied_regeneration;
-    player_talent_t gale_winds;
     player_talent_t heart_of_the_wild;
     player_talent_t hibernate;
     player_talent_t improved_barkskin;
@@ -719,7 +718,6 @@ public:
     player_talent_t improved_sunfire;
     player_talent_t improved_swipe;
     player_talent_t incapacitating_roar;
-    player_talent_t incessant_tempest;
     player_talent_t innervate;
     player_talent_t ironfur;
     player_talent_t killer_instinct;
@@ -8989,7 +8987,6 @@ void druid_t::init_spells()
   talent.feline_swiftness               = CT( "Feline Swiftness" );
   talent.forestwalk                     = CT( "Forestwalk" );
   talent.frenzied_regeneration          = CT( "Frenzied Regeneration" );
-  talent.gale_winds                     = CT( "Gale Winds" );
   talent.heart_of_the_wild              = CT( "Heart of the Wild" );
   talent.hibernate                      = CT( "Hibernate" );
   talent.improved_barkskin              = CT( "Improved Barkskin" );
@@ -8998,7 +8995,6 @@ void druid_t::init_spells()
   talent.improved_sunfire               = CT( "Improved Sunfire" );
   talent.improved_swipe                 = CT( "Improved Swipe" );
   talent.incapacitating_roar            = CT( "Incapacitating Roar" );
-  talent.incessant_tempest              = CT( "Incessant Tempest" );
   talent.innervate                      = CT( "Innervate" );
   talent.ironfur                        = CT( "Ironfur" );
   talent.killer_instinct                = CT( "Killer Instinct" );
@@ -12698,7 +12694,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.improved_rejuvenation );
   action.apply_affecting_aura( talent.improved_stampeding_roar );
   action.apply_affecting_aura( talent.improved_swipe );
-  action.apply_affecting_aura( talent.incessant_tempest );
   action.apply_affecting_aura( talent.killer_instinct );
   action.apply_affecting_aura( talent.nurturing_instinct );
   action.apply_affecting_aura( talent.primal_fury );
