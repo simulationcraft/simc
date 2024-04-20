@@ -6310,6 +6310,8 @@ public:
       BASE::clear_school_override();
       p_->buff.umbral_embrace->expire();
     }
+
+    p_->buff.umbral_embrace->trigger();
   }
 };
 
@@ -9891,9 +9893,12 @@ void druid_t::create_buffs()
           ->set_max_stack( buff.starfall->max_stack() )
           ->set_quiet( true );
 
-  buff.umbral_embrace = make_buff_fallback( talent.umbral_embrace.ok(),
-      this, "umbral_embrace", find_trigger( talent.umbral_embrace ).trigger() )
-          ->set_default_value( find_effect( talent.umbral_embrace, A_ADD_FLAT_LABEL_MODIFIER, P_EFFECT_1 ).percent() );
+  auto ue_buff = find_trigger( talent.umbral_embrace ).trigger();
+  buff.umbral_embrace =
+      make_buff_fallback( talent.umbral_embrace.ok(), this, "umbral_embrace", ue_buff )
+          ->set_chance( 0.2 )  // TODO: harcoded value
+          ->set_default_value(
+              find_effect( talent.umbral_embrace, ue_buff, A_ADD_FLAT_LABEL_MODIFIER, P_EFFECT_1 ).percent() );
 
   buff.warrior_of_elune =
       make_buff_fallback( talent.warrior_of_elune.ok(), this, "warrior_of_elune", talent.warrior_of_elune )
@@ -10901,28 +10906,6 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     create_buff_callback<owlkin_frenzy_cb_t>( driver, buff.moonkin_form );
-  }
-
-  if ( talent.umbral_embrace.ok() )
-  {
-    struct umbral_embrace_cb_t : public druid_cb_t
-    {
-      umbral_embrace_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
-
-      void trigger( action_t* a, action_state_t* s ) override
-      {
-        if ( a->get_school() == SCHOOL_ASTRAL )
-          druid_cb_t::trigger( a, s );
-      }
-    };
-
-    const auto driver = new special_effect_t( this );
-    driver->name_str = talent.umbral_embrace->name_cstr();
-    driver->spell_id = talent.umbral_embrace->id();
-    driver->custom_buff = buff.umbral_embrace;
-    special_effects.push_back( driver );
-
-    new umbral_embrace_cb_t( this, *driver );
   }
 
   // Feral
