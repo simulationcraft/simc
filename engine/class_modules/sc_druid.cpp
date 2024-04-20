@@ -837,7 +837,6 @@ public:
     player_talent_t predatory_swiftness;
     player_talent_t primal_wrath;
     player_talent_t raging_fury;
-    player_talent_t relentless_predator;
     player_talent_t rip_and_tear;
     player_talent_t saber_jaws;
     player_talent_t sabertooth;
@@ -3997,7 +3996,6 @@ struct ferocious_bite_t : public cat_finisher_t
         .set_eff( &eff );
     }
 
-    parse_effect_modifiers( p->talent.relentless_predator );
     max_excess_energy = modified_effectN( find_effect_index( this, E_POWER_BURN ) );
   }
 
@@ -9222,7 +9220,6 @@ void druid_t::init_spells()
   talent.predatory_swiftness            = ST( "Predatory Swiftness" );
   talent.primal_wrath                   = ST( "Primal Wrath" );
   talent.predator                       = ST( "Predator" );
-  talent.relentless_predator            = ST( "Relentless Predator" );
   talent.raging_fury                    = ST( "Raging Fury" );
   talent.rip_and_tear                   = ST( "Rip and Tear" );
   talent.saber_jaws                     = ST( "Saber Jaws" );
@@ -12869,7 +12866,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.dreadful_bleeding );
   action.apply_affecting_aura( talent.infected_wounds_cat );
   action.apply_affecting_aura( talent.lions_strength );
-  action.apply_affecting_aura( talent.relentless_predator );
   action.apply_affecting_aura( talent.taste_for_blood );
   action.apply_affecting_aura( talent.veinripper );
   action.apply_affecting_aura( talent.wild_slashes );
