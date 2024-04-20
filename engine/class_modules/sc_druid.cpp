@@ -761,8 +761,6 @@ public:
     player_talent_t wild_growth;
 
     // Multi-spec
-    player_talent_t adaptive_swarm;
-    player_talent_t unbridled_swarm;
     player_talent_t circle_of_life_and_death;
     player_talent_t convoke_the_spirits;
     player_talent_t survival_instincts;
@@ -811,6 +809,7 @@ public:
     player_talent_t wild_surges;
 
     // Feral
+    player_talent_t adaptive_swarm;
     player_talent_t apex_predators_craving;
     player_talent_t ashamanes_guidance;
     player_talent_t berserk;
@@ -848,6 +847,7 @@ public:
     player_talent_t tigers_fury;
     player_talent_t tigers_tenacity;
     player_talent_t tireless_energy;
+    player_talent_t unbridled_swarm;
     player_talent_t veinripper;
     player_talent_t wild_slashes;
 
@@ -1047,10 +1047,6 @@ public:
     const spell_data_t* thrash_bear_bleed;
     const spell_data_t* thrash_cat_bleed;
 
-    // Multi-Spec
-    const spell_data_t* adaptive_swarm_damage;
-    const spell_data_t* adaptive_swarm_heal;
-
     // Balance
     const spell_data_t* astral_power;
     const spell_data_t* celestial_alignment;
@@ -1065,6 +1061,8 @@ public:
     const spell_data_t* starfall;
 
     // Feral
+    const spell_data_t* adaptive_swarm_damage;
+    const spell_data_t* adaptive_swarm_heal;
     const spell_data_t* feral_overrides;
     const spell_data_t* ashamanes_guidance;
     const spell_data_t* ashamanes_guidance_buff;  // buff spell for ashamanes guidance 421442
@@ -8954,7 +8952,6 @@ action_t* druid_t::create_action( std::string_view name, std::string_view opt )
   else if ( name == "wild_growth"           ) a = new           wild_growth_t( this );
 
   // Multispec Talents
-  else if ( name == "adaptive_swarm"        ) a = new        adaptive_swarm_t( this );
   else if ( name == "berserk" )
   {
     if ( specialization() == DRUID_GUARDIAN )
@@ -8991,6 +8988,7 @@ action_t* druid_t::create_action( std::string_view name, std::string_view opt )
   else if ( name == "wild_mushroom"         ) a = new         wild_mushroom_t( this );
 
   // Feral
+  else if ( name == "adaptive_swarm"        ) a = new        adaptive_swarm_t( this );
   else if ( name == "berserk_cat"           ) a = new           berserk_cat_t( this );
   else if ( name == "brutal_slash"          ) a = new          brutal_slash_t( this );
   else if ( name == "feral_frenzy"          ) a = new          feral_frenzy_t( this );
@@ -9146,11 +9144,9 @@ void druid_t::init_spells()
 
   // Multi-Spec
   sim->print_debug( "Initializing multi-spec talents..." );
-  talent.adaptive_swarm                 = ST( "Adaptive Swarm" );
   talent.circle_of_life_and_death       = ST( "Circle of Life and Death" );
   talent.convoke_the_spirits            = ST( "Convoke the Spirits" );
   talent.survival_instincts             = ST( "Survival Instincts" );
-  talent.unbridled_swarm                = ST( "Unbridled Swarm" );
 
   // Balance
   sim->print_debug( "Initializing balance talents..." );
@@ -9198,6 +9194,7 @@ void druid_t::init_spells()
 
   // Feral
   sim->print_debug( "Initializing feral talents..." );
+  talent.adaptive_swarm                 = ST( "Adaptive Swarm" );
   talent.apex_predators_craving         = ST( "Apex Predator's Craving" );
   talent.ashamanes_guidance             = ST( "Ashamane's Guidance" );
   talent.berserk                        = ST( "Berserk" );
@@ -9236,6 +9233,7 @@ void druid_t::init_spells()
   talent.tigers_fury                    = ST( "Tiger's Fury" );
   talent.tigers_tenacity                = ST( "Tiger's Tenacity" );
   talent.tireless_energy                = ST( "Tireless Energy" );
+  talent.unbridled_swarm                = ST( "Unbridled Swarm" );
   talent.veinripper                     = ST( "Veinripper" );
   talent.wild_slashes                   = ST( "Wild Slashes" );
 
@@ -9436,10 +9434,6 @@ void druid_t::init_spells()
   spec.thrash_bear_bleed        = find_spell( 192090 );
   spec.thrash_cat_bleed         = find_spell( 405233 );
 
-  // Multi-Spec Abilities
-  spec.adaptive_swarm_damage    = check( talent.adaptive_swarm, 391889 );
-  spec.adaptive_swarm_heal      = check( talent.adaptive_swarm, 391891 );
-
   // Balance Abilities
   spec.astral_power             = find_specialization_spell( "Astral Power" );
   spec.celestial_alignment      = talent.celestial_alignment.find_override_spell();
@@ -9454,6 +9448,8 @@ void druid_t::init_spells()
   spec.starfall                 = check( talent.starfall, 191034 );
 
   // Feral Abilities
+  spec.adaptive_swarm_damage    = check( talent.adaptive_swarm, 391889 );
+  spec.adaptive_swarm_heal      = check( talent.adaptive_swarm, 391891 );
   spec.feral_overrides          = find_specialization_spell( "Feral Overrides Passive" );
   spec.ashamanes_guidance       = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 421440 );
   spec.ashamanes_guidance_buff  = check( talent.ashamanes_guidance, 421442 );
