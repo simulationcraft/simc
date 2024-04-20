@@ -923,7 +923,6 @@ public:
     player_talent_t ironbark;
     player_talent_t lifebloom;
     player_talent_t liveliness;
-    player_talent_t luxuriant_soil;
     player_talent_t master_shapeshifter;
     player_talent_t natures_splendor;
     player_talent_t natures_swiftness;
@@ -9310,7 +9309,6 @@ void druid_t::init_spells()
   talent.ironbark                       = ST( "Ironbark" );
   talent.lifebloom                      = ST( "Lifebloom" );
   talent.liveliness                     = ST( "Liveliness" );
-  talent.luxuriant_soil                 = ST( "Luxuriant Soil" );  // TODO: NYI
   talent.master_shapeshifter            = ST( "Master Shapeshifter" );
   talent.natures_splendor               = ST( "Nature's Splendor" );
   talent.natures_swiftness              = ST( "Nature's Swiftness" );
