@@ -1290,10 +1290,16 @@ public:
 
     stagger_t( monk_t* player );
 
+    double base_value();
+    double percent( unsigned target_level );
+
     double pool_size();
     double pool_size_percent();
     double tick_size();
     double tick_size_percent();
+    bool is_ticking();
+    timespan_t remains();
+    bool current_threshold( stagger_level_e level );
 
     void damage_changed( bool last_tick = false );
     double purify_flat( double amount );
@@ -1302,42 +1308,41 @@ public:
     void delay_tick( timespan_t delay ):
   /*
 hc   * TODO:
-    *   * double buffed_stagger_base, buffed_stagger_pct_player_level, buffed_stagger_pct_target_level; // stagger effectiveness after permanent buffs have been applied
+     *   * double buffed_stagger_base, buffed_stagger_pct_player_level, buffed_stagger_pct_target_level; // stagger effectiveness after permanent buffs have been applied
 x    *   * action_t* stagger_self_damage; // action to deal self damage
-    *   * std::vector<double> stagger_tick_damage; // calculate_last_stagger_tick_damage( uint k ) -> magnitude of last k ticks
+     *   * std::vector<double> stagger_tick_damage; // calculate_last_stagger_tick_damage( uint k ) -> magnitude of last k ticks
 x    *   * const double <stagger_level_e>_threshold; // stagger thresholds, currently hardcoded.
 x    *   * void stagger_damage_changed( bool last_tick = false );
-    *       * determines previous debuff
-    *       * finds old dot from stagger_self_damage
-    *       * if not last tick, dot is found and dot is active
-    *           * calculate current_stagger_tick_dmg()
-    *           * calculate current_stagger_tick_dmg_percent
-    *           * check based on thresholds which is the appropriate new debuff
-    *           * update training of niuzao buff TODO: WHY IS HT NOT DONE IN THE SAME WAY
-    *       * if stagger debuff changed and a previous debuff was found
-    *           * expire old debuff
-    *           * expire current training of niuzao
-    *       * if stagger debuff is changed and a new debuff was found
-    *           * trigger new debuff
-    *           * apply new training of niuzao buff
+     *       * determines previous debuff
+     *       * finds old dot from stagger_self_damage
+     *       * if not last tick, dot is found and dot is active
+     *           * calculate current_stagger_tick_dmg()
+     *           * calculate current_stagger_tick_dmg_percent
+     *           * check based on thresholds which is the appropriate new debuff
+     *           * update training of niuzao buff TODO: WHY IS HT NOT DONE IN THE SAME WAY
+     *       * if stagger debuff changed and a previous debuff was found
+     *           * expire old debuff
+     *           * expire current training of niuzao
+     *       * if stagger debuff is changed and a new debuff was found
+     *           * trigger new debuff
+     *           * apply new training of niuzao buff
 x    *   * double current_stagger_tick_dmg(); // tick_amount of stagger_self_damage, reduced by invoke niuzao -> self_damage_t::assess_damage
-    *   * double current_stagger_tick_dmg_percent(); // tick_amount of stagger_self_damage, reduced by invoke niuzao, divided by current maximum hp
-    *   * double current_stagger_amount_remains_percent(); // amount remaining to be ticked out divided by current maximum hp
-    *   * double current_stagger_amount_remains(); // amount remaining to be ticked out
-    *   * double current_stagger_amount_remains_to_total_percent(); // approximation of damage remaining to be ticked out
-    *   * timespan_t current_stagger_dot_remains(); // time until stagger expires
-    *   * double stagger_base_value(); // stagger effectiveness base value
-    *   * double stagger_pct( int target_level ); // diminish base effectiveness with k, clamp to [0,0.99]
-    *   * double stagger_total(); // estimated total amount in pool ( ta * tick count )
-    *   * double clear_stagger(); // cancels dot, returns amount remaining
-    *   * double partial_clear_stagger_pct( double ); // if ticking, find how much remains after clear, reset ta based on new pool size / ticks_left
-    *   * double partial_clear_stagger_amount( double ); // if ticking, find how much remains after clear, reset ta based on new pool size / ticks_left
-    *   * bool has_stagger(); // is_ticking() on active dot
-    *   * double calculate_last_stagger_tick_damage( int n ) const; // used by exprn to return last k stagger ticks taken
-    what does get_dot do for residual_periodic_action_t
-    */
+x    *   * double current_stagger_tick_dmg_percent(); // tick_amount of stagger_self_damage, reduced by invoke niuzao, divided by current maximum hp
+x    *   * double current_stagger_amount_remains_percent(); // amount remaining to be ticked out divided by current maximum hp
+x    *   * double current_stagger_amount_remains(); // amount remaining to be ticked out
+     *   * double current_stagger_amount_remains_to_total_percent(); // approximation of damage remaining to be ticked out
+x    *   * timespan_t current_stagger_dot_remains(); // time until stagger expires
+x    *   * double stagger_base_value(); // stagger effectiveness base value
+x    *   * double stagger_pct( int target_level ); // diminish base effectiveness with k, clamp to [0,0.99]
+x    *   * double stagger_total(); // estimated total amount in pool ( ta * tick count )
+x    *   * double clear_stagger(); // cancels dot, returns amount remaining
+x    *   * double partial_clear_stagger_pct( double ); // if ticking, find how much remains after clear, reset ta based on new pool size / ticks_left
+x    *   * double partial_clear_stagger_amount( double ); // if ticking, find how much remains after clear, reset ta based on new pool size / ticks_left
+x    *   * bool has_stagger(); // is_ticking() on active dot
+     *   * double calculate_last_stagger_tick_damage( int n ) const; // used by exprn to return last k stagger ticks taken
+     what does get_dot do for residual_periodic_action_t
+     */
   } stagger;
-
 
 private:
   target_specific_t<monk_td_t> target_data;
