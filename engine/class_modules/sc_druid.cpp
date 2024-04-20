@@ -477,6 +477,9 @@ public:
 
     // Restoration
     action_t* yseras_gift;
+
+    // Hero talents
+    action_t* boundless_moonlight_heal;
   } active;
 
   // Pets
@@ -628,6 +631,7 @@ public:
     buff_t* yseras_gift;
 
     // Hero talents
+    buff_t* boundless_moonlight_heal;
     buff_t* protective_growth;
 
     // Helper pointers
@@ -5263,6 +5267,29 @@ struct after_the_wildfire_heal_t : public druid_heal_t
   }
 };
 
+// Boundless Moonlight Heal =================================================
+struct boundless_moonlight_heal_t : public druid_heal_t
+{
+  boundless_moonlight_heal_t( druid_t* p )
+    : druid_heal_t( "boundless_moonlight", p, p->find_spell( 425206 ) )
+  {
+    background = proc = true;
+
+    // 1 point to allow proper snapshot/update flag parsing
+    base_dd_min = base_dd_max = 1.0;
+  }
+
+  double base_da_min( const action_state_t* ) const override
+  {
+    return p()->buff.boundless_moonlight_heal->check_value();
+  }
+
+  double base_da_max( const action_state_t* ) const override
+  {
+    return p()->buff.boundless_moonlight_heal->check_value();
+  }
+};
+
 // Cenarion Ward ============================================================
 struct cenarion_ward_t : public druid_heal_t
 {
@@ -6484,9 +6511,33 @@ struct fury_of_elune_t : public druid_spell_t
     }
   };
 
+  struct boundless_moonlight_t : public druid_spell_t
+  {
+    boundless_moonlight_t( druid_t* p, std::string_view n ) : druid_spell_t( n, p, p->find_spell( 428682 ) )
+    {
+      background = true;
+      aoe = -1;  // TODO: aoe DR?
+      name_str_reporting = "boundless_moonlight";
+
+      if ( p->talent.the_eternal_moon.ok() )
+      {
+        auto energize_power = p->specialization() == DRUID_GUARDIAN ? POWER_RAGE : POWER_ASTRAL_POWER;
+        auto e_idx = find_effect_index( this, E_ENERGIZE, A_MAX, energize_power );
+
+        energize_resource = util::translate_power_type( energize_power );
+        energize_amount = data().effectN( e_idx ).resource( energize_resource );
+      }
+      else
+      {
+        energize_type = action_energize::NONE;
+      }
+    }
+  };
+
   const spell_data_t* tick_spell;
   buff_t* energize;
   action_t* damage = nullptr;
+  action_t* boundless = nullptr;
   timespan_t tick_period;
 
   DRUID_ABILITY_C( fury_of_elune_t, druid_spell_t, "fury_of_elune", p->talent.fury_of_elune,
@@ -6504,6 +6555,12 @@ struct fury_of_elune_t : public druid_spell_t
     {
       damage = p->get_secondary_action<fury_of_elune_tick_t>( name_str + "_tick", tick_spell );
       replace_stats( damage );
+
+      if ( p->talent.boundless_moonlight.ok() )
+      {
+        boundless = p->get_secondary_action<boundless_moonlight_t>( name_str + "boundless" );
+        add_child( boundless );
+      }
     }
   }
 
@@ -6516,12 +6573,17 @@ struct fury_of_elune_t : public druid_spell_t
 
     energize->trigger();
 
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+    auto params = ground_aoe_params_t()
       .target( target )
       .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
       .pulse_time( tick_period )
       .duration( data().duration() )
-      .action( damage ) );
+      .action( damage );
+
+    if ( boundless )
+      params.expiration_callback( [ this ] { boundless->execute_on_target( target ); } );
+
+    make_event<ground_aoe_event_t>( *sim, p(), params );
   }
 };
 
@@ -6742,7 +6804,21 @@ struct half_moon_t : public moon_base_t
 // Full Moon Spell ==========================================================
 struct full_moon_t : public moon_base_t
 {
-  DRUID_ABILITY_B( full_moon_t, moon_base_t, "full_moon", p->spec.full_moon, moon_stage_e::FULL_MOON )
+  struct crescent_moon_t : public druid_spell_t
+  {
+    crescent_moon_t( druid_t* p, std::string_view n ) : druid_spell_t( n, p, p->find_spell( 424588 ) )
+    {
+      background = true;
+      aoe = -1;  // TODO: aoe DR?
+      name_str_reporting = "crescent_moon";
+    }
+  };
+
+  action_t* crescent = nullptr;
+  unsigned num_crescent;
+
+  DRUID_ABILITY_B( full_moon_t, moon_base_t, "full_moon", p->spec.full_moon, moon_stage_e::FULL_MOON ),
+      num_crescent( as<unsigned>( p->talent.boundless_moonlight->effectN( 1 ).base_value() ) )
   {
     aoe = -1;
     reduced_aoe_targets = 1.0;
@@ -6751,6 +6827,13 @@ struct full_moon_t : public moon_base_t
     // Since this can be free_cast, only energize for Balance
     if ( !p->spec.astral_power->ok() )
       energize_type = action_energize::NONE;
+
+    if ( p->talent.boundless_moonlight.ok() )
+    {
+      auto suf = get_suffix( name_str, "full_moon" );
+      crescent = p->get_secondary_action<crescent_moon_t>( "crescent_moon" + suf );
+      add_child( crescent );
+    }
   }
 
   bool check_stage() const override
@@ -6769,6 +6852,16 @@ struct full_moon_t : public moon_base_t
       p()->moon_stage = moon_stage_e::NEW_MOON;
     else
       moon_base_t::advance_stage();
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    // TODO: any delays?
+    if ( crescent )
+      for ( unsigned i = 0; i < num_crescent; i++ )
+        crescent->execute_on_target( target );
   }
 };
 
@@ -9929,7 +10022,14 @@ void druid_t::create_buffs()
   buff.lunar_beam = make_buff_fallback( talent.lunar_beam.ok(), this, "lunar_beam", talent.lunar_beam )
     ->set_cooldown( 0_ms )
     ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
-    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+    ->apply_affecting_aura( talent.boundless_moonlight )  // TODO: hidden buff?
+    ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+      if ( new_ )
+        buff.boundless_moonlight_heal->trigger();
+      else
+        buff.boundless_moonlight_heal->expire();
+    } );
 
   buff.overpowering_aura = make_buff_fallback( sets->has_set_bonus( DRUID_GUARDIAN, T29, B2 ),
       this, "overpowering_aura", find_spell( 395944 ) )
@@ -9998,6 +10098,19 @@ void druid_t::create_buffs()
       } );
 
   // Hero talents
+  buff.boundless_moonlight_heal = make_buff_fallback( talent.boundless_moonlight.ok() && talent.lunar_beam.ok(),
+      this, "boundless_moonlight_heal", find_spell( 425217 ) )
+          ->set_quiet( true )
+          ->set_freeze_stacks( true )
+          ->set_default_value( 0 )
+          ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+            if ( b->check_value() )
+            {
+              active.boundless_moonlight_heal->execute();
+              b->current_value = 0;
+            }
+          } );
+
   buff.protective_growth =
       make_buff_fallback( talent.protective_growth.ok(), this, "protective_growth", find_spell( 433749 ) )
           ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
@@ -10182,6 +10295,10 @@ void druid_t::create_actions()
   // Restoration
   if ( talent.yseras_gift.ok() )
     active.yseras_gift = get_secondary_action<yseras_gift_t>( "yseras_gift" );
+
+  // Hero talents
+  if ( talent.boundless_moonlight.ok() && talent.lunar_beam.ok() )
+    active.boundless_moonlight_heal = get_secondary_action<boundless_moonlight_heal_t>( "boundless_moonlight_heal" );
 
   player_t::create_actions();
 
@@ -11022,6 +11139,24 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     new furious_regeneration_cb_t( this, *driver );
+  }
+
+  // Hero talents
+    if ( talent.boundless_moonlight.ok() && talent.lunar_beam.ok() )
+  {
+    struct boundless_moonlight_heal_cb_t : public druid_cb_t
+    {
+      double mul;
+
+      boundless_moonlight_heal_cb_t( druid_t* p, const special_effect_t& e )
+        : druid_cb_t( p, e ), mul( p->buff.boundless_moonlight_heal->data().effectN( 1 ).percent() )
+      {}
+
+      void execute( action_t*, action_state_t* s ) override
+      {
+        p()->buff.boundless_moonlight_heal->current_value += s->result_amount * mul;
+      }
+    };
   }
 
   // blanket proc callback initialization happens here. anything further needs to be individually initialized

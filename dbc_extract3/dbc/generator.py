@@ -2310,6 +2310,7 @@ class SpellDataGenerator(DataGenerator):
           # The War Within
           # Class
           # Balance
+          ( 425206, 1 ), ( 425217, 1 ), ( 425219, 1 ), # boundless moonlight
           # Feral
           # Guardian
           # Restoration
