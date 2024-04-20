@@ -4064,19 +4064,11 @@ struct ferocious_bite_t : public cat_finisher_t
 
     if ( p->talent.taste_for_blood.ok() )
     {
-      const auto& eff = p->talent.taste_for_blood->effectN( 1 );
-      add_parse_entry( target_multiplier_effects )
-          .set_func( []( druid_td_t* td ) {
-            return td->dots.rake->is_ticking() +
-                   td->dots.rip->is_ticking() +
-                   td->dots.thrash_bear->is_ticking() +
-                   td->dots.thrash_cat->is_ticking() +
-                   td->dots.frenzied_assault->is_ticking() +
-                   td->dots.feral_frenzy->is_ticking() +
-                   td->dots.tear->is_ticking();
-          } )
-          .set_value( eff.percent() )
-          .set_eff( &eff );
+      const auto& eff = p->talent.taste_for_blood->effectN( 2 );
+      add_parse_entry( da_multiplier_effects )
+        .set_buff( p->buff.tigers_fury )
+        .set_value( eff.percent() )
+        .set_eff( &eff );
     }
 
     parse_effect_modifiers( p->talent.relentless_predator );
@@ -12971,6 +12963,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.infected_wounds_cat );
   action.apply_affecting_aura( talent.lions_strength );
   action.apply_affecting_aura( talent.relentless_predator );
+  action.apply_affecting_aura( talent.taste_for_blood );
   action.apply_affecting_aura( talent.veinripper );
   action.apply_affecting_aura( talent.wild_slashes );
   action.apply_affecting_aura( sets->set( DRUID_FERAL, T29, B2 ) );
