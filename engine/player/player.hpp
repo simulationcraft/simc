@@ -804,6 +804,10 @@ struct player_t : public actor_t
     player_option_t<std::string> timerunners_advantage;
   } dragonflight_opts;
 
+  struct thewarwithin_opt_t
+  {
+  } thewarwithin_opts;
+
 private:
   /// Flag to activate/deactive resource callback checks. Motivation: performance.
   bool has_active_resource_callbacks;

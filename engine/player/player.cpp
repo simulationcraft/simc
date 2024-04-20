@@ -12506,6 +12506,7 @@ void player_t::copy_from( player_t* source )
   player_sub_traits     = source->player_sub_traits;
   shadowlands_opts      = source->shadowlands_opts;
   dragonflight_opts     = source->dragonflight_opts;
+  thewarwithin_opts     = source->thewarwithin_opts;
   resources.initial_opt = source->resources.initial_opt;
 
   if ( azerite )
@@ -12889,14 +12890,7 @@ void player_t::create_options()
   add_option( opt_float( "dragonflight.rashoks_fake_overheal", dragonflight_opts.rashoks_fake_overheal, 0.0, 1.0 ) );
   add_option( opt_string( "dragonflight.timerunners_advantage", dragonflight_opts.timerunners_advantage ) );
 
-  // Obsolete options
-
-  // Dummy artifact options
-  // TODO: Remove when 8.0 goes live
-  add_option( opt_obsoleted( "artifact" ) );
-  add_option( opt_obsoleted( "crucible" ) );
-  add_option( opt_obsoleted( "artifact_override" ) );
-  add_option( opt_obsoleted( "disable_artifact" ) );
+  // The War Within options
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )
