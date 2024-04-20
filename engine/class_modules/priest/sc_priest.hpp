@@ -520,6 +520,7 @@ public:
       player_talent_t darkening_horizon;
       player_talent_t depth_of_shadows;
       player_talent_t voidwraith;
+      const spell_data_t* voidwraith_spell;
       player_talent_t voidheart;
       const spell_data_t* voidheart_buff;
       player_talent_t void_infusion;
@@ -594,6 +595,7 @@ public:
     propagate_const<cooldown_t*> mindgames;
     propagate_const<cooldown_t*> mindbender;
     propagate_const<cooldown_t*> shadowfiend;
+    propagate_const<cooldown_t*> voidwraith;
     propagate_const<cooldown_t*> fiend;
 
     // Shadow
@@ -626,6 +628,7 @@ public:
     propagate_const<gain_t*> insanity_death_and_madness;
     propagate_const<gain_t*> mindbender;
     propagate_const<gain_t*> shadowfiend;
+    propagate_const<gain_t*> voidwraith;
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> power_word_solace;
     propagate_const<gain_t*> throes_of_pain;
@@ -717,6 +720,7 @@ public:
   {
     spawner::pet_spawner_t<pet_t, priest_t> shadowfiend;
     spawner::pet_spawner_t<pet_t, priest_t> mindbender;
+    spawner::pet_spawner_t<pet_t, priest_t> voidwraith;
     spawner::pet_spawner_t<pet_t, priest_t> void_tendril;
     spawner::pet_spawner_t<pet_t, priest_t> void_lasher;
     spawner::pet_spawner_t<pet_t, priest_t> thing_from_beyond;

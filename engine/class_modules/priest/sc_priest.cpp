@@ -281,7 +281,7 @@ struct mind_blast_t final : public mind_blast_base_t
   {
     if ( ( p().buffs.entropic_rift->check() ||
            p().channeling && p().channeling->id == p().talents.shadow.void_torrent->id() ) &&
-         p().talents.voidweaver.void_blast->ok() && priest().specialization() == PRIEST_SHADOW )
+         p().talents.voidweaver.void_blast.enabled() && priest().specialization() == PRIEST_SHADOW )
       return false;
 
     return mind_blast_base_t::action_ready();
@@ -293,13 +293,13 @@ struct void_blast_shadow_t final : public mind_blast_base_t
   void_blast_shadow_t( priest_t& p, util::string_view options_str )
     : mind_blast_base_t(
           p, options_str,
-          p.talents.voidweaver.void_blast->ok() ? p.talents.voidweaver.void_blast_shadow : spell_data_t::nil() )
+          p.talents.voidweaver.void_blast.enabled() ? p.talents.voidweaver.void_blast_shadow : spell_data_t::nil() )
   {
     energize_amount   = -base_costs[ RESOURCE_INSANITY ];
     energize_type     = action_energize::ON_CAST;
     energize_resource = RESOURCE_INSANITY;
 
-    if ( p.talents.voidweaver.void_infusion.ok() )
+    if ( p.talents.voidweaver.void_infusion.enabled() )
     {
       energize_amount *= 1 + p.talents.voidweaver.void_infusion->effectN( 1 ).percent();
     }
@@ -327,7 +327,7 @@ struct void_blast_shadow_t final : public mind_blast_base_t
     bool can_cast = ( p().buffs.entropic_rift->check() ||
                       p().channeling && p().channeling->id == p().talents.shadow.void_torrent->id() );
 
-    if ( !can_cast || !p().talents.voidweaver.void_blast->ok() || priest().specialization() != PRIEST_SHADOW )
+    if ( !can_cast || !p().talents.voidweaver.void_blast.enabled() || priest().specialization() != PRIEST_SHADOW )
       return false;
 
     return mind_blast_base_t::action_ready();
@@ -833,7 +833,7 @@ struct power_infusion_t final : public priest_spell_t
     priest_spell_t::execute();
 
     // Trigger PI on the actor only if casting on itself
-    if ( priest().options.self_power_infusion || priest().talents.twins_of_the_sun_priestess->ok() )
+    if ( priest().options.self_power_infusion || priest().talents.twins_of_the_sun_priestess.enabled() )
     {
       player->buffs.power_infusion->trigger();
     }
@@ -980,11 +980,34 @@ struct summon_fiend_t final : public priest_spell_t
   timespan_t default_duration;
   spawner::pet_spawner_t<pet_t, priest_t>* spawner;
 
+  std::string pet_name( priest_t& p )
+  {
+    if ( p.talents.voidweaver.voidwraith.enabled() )
+      return "voidwraith";
+
+    return p.talents.shared.mindbender.enabled() ? "mindbender" : "shadowfiend";
+  }
+
+  spawner::pet_spawner_t<pet_t, priest_t>* pet_spawner( priest_t& p )
+  {
+    if ( p.talents.voidweaver.voidwraith.enabled() )
+      return &p.pets.voidwraith;
+
+    return p.talents.shared.mindbender.enabled() ? &p.pets.mindbender : &p.pets.shadowfiend;
+  }
+
+  const spell_data_t* pet_summon_spell( priest_t& p )
+  {
+    if ( p.talents.voidweaver.voidwraith.enabled() )
+      return p.talents.voidweaver.voidwraith_spell;
+
+    return p.talents.shared.mindbender.enabled() ? p.talents.shared.mindbender : p.talents.shadowfiend;
+  }
+
   summon_fiend_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( p.talents.shared.mindbender.enabled() ? "mindbender" : "shadowfiend", p,
-                      p.talents.shared.mindbender.enabled() ? p.talents.shared.mindbender : p.talents.shadowfiend ),
+    : priest_spell_t( pet_name( p ), p, pet_summon_spell( p ) ),
       default_duration( data().duration() ),
-      spawner( p.talents.shared.mindbender.enabled() ? &p.pets.mindbender : &p.pets.shadowfiend )
+      spawner( pet_spawner( p ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -1006,7 +1029,8 @@ struct summon_fiend_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-    if ( priest().talents.shadow.idol_of_yshaarj.enabled() )
+    if ( priest().talents.shadow.idol_of_yshaarj.enabled() &&
+         ( priest().bugs || !priest().talents.voidweaver.voidwraith.enabled() ) )
     {
       make_event( sim, [ this, s ] { priest().trigger_idol_of_yshaarj( s->target ); } );
     }
@@ -1225,7 +1249,7 @@ public:
     : ab( "shadow_word_death", p, p.talents.shadow_word_death ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() + priest().specs.shadow_priest->effectN( 25 ).percent() ),
-      deathspeaker_mult( p.talents.shadow.deathspeaker.ok() ? 1 + p.buffs.deathspeaker->data().effectN( 2 ).percent()
+      deathspeaker_mult( p.talents.shadow.deathspeaker.enabled() ? 1 + p.buffs.deathspeaker->data().effectN( 2 ).percent()
                                                             : 1.0 ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       child_expiation( nullptr ),
@@ -2081,7 +2105,7 @@ struct power_word_shield_t final : public priest_absorb_t
   {
     priest_absorb_t::impact( s );
 
-    if ( priest().talents.body_and_soul->ok() && s->target->buffs.body_and_soul )
+    if ( priest().talents.body_and_soul.enabled() && s->target->buffs.body_and_soul )
     {
       s->target->buffs.body_and_soul->trigger();
     }
@@ -2533,6 +2557,7 @@ void priest_t::create_cooldowns()
   cooldowns.mindgames                     = get_cooldown( "mindgames" );
   cooldowns.mindbender                    = get_cooldown( "mindbender" );
   cooldowns.shadowfiend                   = get_cooldown( "shadowfiend" );
+  cooldowns.voidwraith                    = get_cooldown( "voidwraith" );
   cooldowns.penance                       = get_cooldown( "penance" );
   cooldowns.maddening_touch_icd           = get_cooldown( "maddening_touch_icd" );
   cooldowns.maddening_touch_icd->duration = 1_s;
@@ -2545,6 +2570,7 @@ void priest_t::create_gains()
   gains.insanity_death_and_madness       = get_gain( "Death and Madness" );
   gains.shadowfiend                      = get_gain( "Shadowfiend" );
   gains.mindbender                       = get_gain( "Mindbender" );
+  gains.voidwraith                       = get_gain( "Voidwraith" );
   gains.power_word_solace                = get_gain( "Mana Gained from Power Word: Solace" );
   gains.throes_of_pain                   = get_gain( "Throes of Pain" );
   gains.insanity_idol_of_cthun_mind_flay = get_gain( "Insanity Gained from Idol of C'thun Mind Flay's" );
@@ -2682,7 +2708,7 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
 
       if ( util::str_compare_ci( splits[ 1 ], "cthun_last_trigger_attempt" ) )
       {
-        if ( talents.shadow.idol_of_cthun.ok() )
+        if ( talents.shadow.idol_of_cthun.enabled() )
           // std::min( sim->current_time() - last_trigger, max_interval() ).total_seconds();
           return make_fn_expr( "cthun_last_trigger_attempt", [ this ] {
             return std::min( sim->current_time() - rppm.idol_of_cthun->get_last_trigger_attempt(), 3.5_s )
@@ -2887,7 +2913,7 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   {
     return new power_word_fortitude_t( *this, options_str );
   }
-  if ( ( name == "shadowfiend" ) || ( name == "mindbender" ) || ( name == "fiend" ) )
+  if ( ( name == "shadowfiend" ) || ( name == "mindbender" ) || ( name == "fiend" ) || ( name == "voidwraith" ) )
   {
     return new summon_fiend_t( *this, options_str );
   }
@@ -3028,7 +3054,9 @@ void priest_t::init_scaling()
 void priest_t::init_finished()
 {
   base_t::init_finished();
-  cooldowns.fiend = talents.shared.mindbender.enabled() ? cooldowns.mindbender : cooldowns.shadowfiend;
+  cooldowns.fiend = talents.voidweaver.voidwraith.enabled()
+                        ? cooldowns.voidwraith
+                        : ( talents.shared.mindbender.enabled() ? cooldowns.mindbender : cooldowns.shadowfiend );
 }
 
 void priest_t::init_spells()
@@ -3195,6 +3223,7 @@ void priest_t::init_spells()
   talents.voidweaver.darkening_horizon      = HT( "Darkening Horizon" );
   talents.voidweaver.depth_of_shadows       = HT( "Depth of Shadows" );  // NYI
   talents.voidweaver.voidwraith             = HT( "Voidwraith" );        // NYI
+  talents.voidweaver.voidwraith_spell       = find_spell( 451235 );
   talents.voidweaver.voidheart              = HT( "Voidheart" );
   talents.voidweaver.voidheart_buff         = find_spell( 449887 );  // Voidheart Buff
   talents.voidweaver.void_infusion          = HT( "Void Infusion" );
@@ -3280,7 +3309,7 @@ void priest_t::create_buffs()
                                 }
                               } );
 
-  if ( talents.voidweaver.collapsing_void.ok() )
+  if ( talents.voidweaver.collapsing_void.enabled() )
   {
     buffs.collapsing_void->set_max_stack(
         static_cast<int>( talents.voidweaver.collapsing_void->effectN( 2 ).base_value() ) );
@@ -3521,7 +3550,7 @@ void priest_t::combat_begin()
     buffs.sins_of_the_many->trigger();
   }
 
-  if ( talents.twist_of_fate->ok() )
+  if ( talents.twist_of_fate.enabled() )
   {
     struct twist_of_fate_event_t final : public event_t
     {

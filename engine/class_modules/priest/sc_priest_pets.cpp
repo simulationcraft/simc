@@ -381,6 +381,7 @@ struct base_fiend_pet_t : public priest_pet_t
 
   enum class fiend_type
   {
+    Voidwraith,
     Shadowfiend,
     Mindbender
   } fiend_type;
@@ -413,11 +414,12 @@ struct base_fiend_pet_t : public priest_pet_t
 
     switch ( fiend_type )
     {
+      case fiend_type::Voidwraith:
+        gains.fiend = o().gains.voidwraith;
+        break;
       case fiend_type::Mindbender:
-      {
         gains.fiend = o().gains.mindbender;
-      }
-      break;
+        break;
       default:
         gains.fiend = o().gains.shadowfiend;
         break;
@@ -444,6 +446,93 @@ struct base_fiend_pet_t : public priest_pet_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
+
+struct voidwraith_pet_t final : public base_fiend_pet_t
+{
+  double power_leech_insanity;
+  double power_leech_mana;
+
+  voidwraith_pet_t( priest_t* owner, util::string_view name = "voidwraith" )
+    : base_fiend_pet_t( owner, name, fiend_type::Voidwraith ),
+      power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
+      power_leech_mana( o().specialization() == PRIEST_SHADOW ? 0.0
+                                                              : o().talents.shadowfiend->effectN( 4 ).percent() / 10 )
+  {
+    direct_power_mod = 1.0;
+
+    npc_id = 224466;
+
+    main_hand_weapon.min_dmg = owner->dbc->spell_scaling( owner->type, owner->level() ) * 2;
+    main_hand_weapon.max_dmg = owner->dbc->spell_scaling( owner->type, owner->level() ) * 2;
+
+    main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+  }
+
+  void init_action_list() override
+  {
+    priest_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "void_flay" );
+  }
+
+  double mana_return_percent() const override
+  {
+    return power_leech_mana;
+  }
+
+  double insanity_gain() const override
+  {
+    return power_leech_insanity;
+  }
+
+  action_t* create_action( util::string_view name, util::string_view options_str );
+};
+
+ struct void_flay_t final : public priest_pet_spell_t
+{
+  double damage_mul;
+  void_flay_t( voidwraith_pet_t& p, util::string_view options )
+    : priest_pet_spell_t( "void_flay", p, p.o().find_spell( 451435 ) )
+  {
+    parse_options( options );
+
+    gcd_type                   = p.o().bugs ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
+    affected_by_shadow_weaving = p.o().bugs;
+
+    damage_mul = data().effectN( 2 ).percent();
+  }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats( p().o(), p(), *this );
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    auto m = player->composite_player_target_multiplier( target, get_school() );
+
+    if ( target->health_percentage() >= 50 )
+    {
+      m *= 1.0 + damage_mul;
+    }
+
+    return m;
+  }
+};
+
+action_t* voidwraith_pet_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "void_flay" )
+  {
+    return new void_flay_t( *this, options_str );
+  }
+
+  return priest_pet_t::create_action( name, options_str );
+}
+
 
 struct shadowfiend_pet_t final : public base_fiend_pet_t
 {
@@ -1046,7 +1135,9 @@ action_t* thing_from_beyond_t::create_action( util::string_view name, util::stri
 // summoned through the action list, so please check for null.
 spawner::pet_spawner_t<pet_t, priest_t>& get_current_main_pet( priest_t& priest )
 {
-  return priest.talents.shared.mindbender.enabled() ? priest.pets.mindbender : priest.pets.shadowfiend;
+  return priest.talents.voidweaver.voidwraith.enabled() ? priest.pets.voidwraith
+         : priest.talents.shared.mindbender.enabled()   ? priest.pets.mindbender
+                                                        : priest.pets.shadowfiend;
 }
 
 }  // namespace
@@ -1136,14 +1227,19 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
   else if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "cooldown" ) )
   {
     if ( util::str_compare_ci( splits[ 1 ], "fiend" ) || util::str_compare_ci( splits[ 1 ], "shadowfiend" ) ||
-         util::str_compare_ci( splits[ 1 ], "bender" ) || util::str_compare_ci( splits[ 1 ], "mindbender" ) )
+         util::str_compare_ci( splits[ 1 ], "bender" ) || util::str_compare_ci( splits[ 1 ], "mindbender" ) ||
+         util::str_compare_ci( splits[ 1 ], "voidwraith" ) )
     {
-      if ( cooldown_t* cooldown = get_cooldown( talents.shared.mindbender.enabled() ? "mindbender" : "shadowfiend" ) )
+      if ( cooldown_t* cooldown = get_cooldown( talents.voidweaver.voidwraith.enabled() ? "voidwraith"
+                                                : talents.shared.mindbender.enabled()   ? "mindbender"
+                                                                                        : "shadowfiend" ) )
       {
         return cooldown->create_expression( splits[ 2 ] );
       }
       throw std::invalid_argument( fmt::format( "Cannot find any cooldown with name '{}'.",
-                                                talents.shared.mindbender.enabled() ? "mindbender" : "shadowfiend" ) );
+                                                talents.voidweaver.voidwraith.enabled() ? "voidwraith"
+                                                : talents.shared.mindbender.enabled()   ? "mindbender"
+                                                                                        : "shadowfiend" ) );
     }
   }
 
@@ -1153,6 +1249,7 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
 priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   : shadowfiend( "shadowfiend", &p, []( priest_t* priest ) { return new fiend::shadowfiend_pet_t( priest ); } ),
     mindbender( "mindbender", &p, []( priest_t* priest ) { return new fiend::mindbender_pet_t( priest ); } ),
+    voidwraith( "voidwraith", &p, []( priest_t* priest ) { return new fiend::voidwraith_pet_t( priest ); } ),
     void_tendril( "void_tendril", &p, []( priest_t* priest ) { return new void_tendril_t( priest ); } ),
     void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new void_lasher_t( priest ); } ),
     thing_from_beyond( "thing_from_beyond", &p, []( priest_t* priest ) { return new thing_from_beyond_t( priest ); } )
