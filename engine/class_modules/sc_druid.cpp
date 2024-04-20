@@ -836,7 +836,6 @@ public:
     player_talent_t predatory_swiftness;
     player_talent_t primal_wrath;
     player_talent_t raging_fury;
-    player_talent_t rampant_ferocity;
     player_talent_t relentless_predator;
     player_talent_t rip_and_tear;
     player_talent_t saber_jaws;
@@ -3982,50 +3981,6 @@ struct feral_frenzy_t : public cat_attack_t
 // Ferocious Bite ===========================================================
 struct ferocious_bite_t : public cat_finisher_t
 {
-  struct rampant_ferocity_t : public cat_attack_t
-  {
-    using state_t = druid_action_state_t<cat_finisher_data_t>;
-
-    rampant_ferocity_t( druid_t* p, std::string_view n ) : cat_attack_t( n, p, p->find_spell( 391710 ) )
-    {
-      aoe = -1;
-      reduced_aoe_targets = p->talent.rampant_ferocity->effectN( 1 ).base_value();
-      name_str_reporting = "rampant_ferocity";
-    }
-
-    action_state_t* new_state() override
-    {
-      return new state_t( this, target );
-    }
-
-    state_t* cast_state( action_state_t* s )
-    {
-      return static_cast<state_t*>( s );
-    }
-
-    const state_t* cast_state( const action_state_t* s ) const
-    {
-      return static_cast<const state_t*>( s );
-    }
-
-    std::vector<player_t*>& target_list() const override
-    {
-      target_cache.is_valid = false;
-
-      auto& tl = cat_attack_t::target_list();
-
-      range::erase_remove( tl, [ this ]( player_t* t ) { return !td( t )->dots.rip->is_ticking() || t == target; } );
-
-      return tl;
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      return cat_attack_t::composite_da_multiplier( s ) * cast_state( s )->combo_points;
-    }
-  };
-
-  cat_attack_t* rampant_ferocity = nullptr;
   double excess_energy = 0.0;
   double max_excess_energy;
   bool max_energy = false;
@@ -4033,15 +3988,6 @@ struct ferocious_bite_t : public cat_finisher_t
   DRUID_ABILITY( ferocious_bite_t, cat_finisher_t, "ferocious_bite", p->find_class_spell( "Ferocious Bite" ) )
   {
     add_option( opt_bool( "max_energy", max_energy ) );
-
-    if ( p->talent.rampant_ferocity.ok() )
-    {
-      auto suf = get_suffix( name_str, "ferocious_bite" );
-
-      rampant_ferocity = p->get_secondary_action<rampant_ferocity_t>( "rampant_ferocity" + suf );
-      rampant_ferocity->background = true;
-      add_child( rampant_ferocity );
-    }
 
     if ( p->talent.taste_for_blood.ok() )
     {
@@ -4100,13 +4046,6 @@ struct ferocious_bite_t : public cat_finisher_t
       return;
 
     td( s->target )->debuff.sabertooth->trigger( cp( s ) );
-
-    if ( rampant_ferocity && s->result_amount > 0 && !rampant_ferocity->target_list().empty() )
-    {
-      rampant_ferocity->snapshot_and_execute( s, false, [ this ]( const action_state_t* from, action_state_t* to ) {
-        debug_cast<rampant_ferocity_t*>( rampant_ferocity )->cast_state( to )->combo_points = cp( from );
-      } );
-    }
   }
 
   void consume_resource() override
@@ -9279,7 +9218,6 @@ void druid_t::init_spells()
   talent.protective_growth              = ST( "Protective Growth" );
   talent.relentless_predator            = ST( "Relentless Predator" );
   talent.raging_fury                    = ST( "Raging Fury" );
-  talent.rampant_ferocity               = ST( "Rampant Ferocity" );
   talent.rip_and_tear                   = ST( "Rip and Tear" );
   talent.saber_jaws                     = ST( "Saber Jaws" );
   talent.sabertooth                     = ST( "Sabertooth" );
