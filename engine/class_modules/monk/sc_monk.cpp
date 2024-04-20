@@ -41,7 +41,7 @@ BREWMASTER:
 #include "class_modules/apl/apl_monk.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
-#include "action/parse_buff_effects.hpp"
+#include "action/parse_effects.hpp"
 #include "report/charts.hpp"
 #include "report/highchart.hpp"
 #include "sc_enums.hpp"
@@ -64,7 +64,7 @@ namespace monk
   // Template for common monk action code. See priest_action_t.
 
     template <class Base>
-    struct monk_action_t : public Base, public parse_buff_effects_t<monk_t, monk_td_t>
+    struct monk_action_t : public parse_action_effects_t<Base, monk_t, monk_td_t>
     {
       sef_ability_e sef_ability;
       // Whether the ability is affected by the Windwalker's Mastery.
@@ -91,13 +91,12 @@ namespace monk
 
       private:
       std::array<resource_e, MONK_MISTWEAVER + 1> _resource_by_stance;
-      using ab = Base;  // action base, eg. spell_t
+      using ab = parse_action_effects_t<Base, monk_t, monk_td_t>;
       public:
       using base_t = monk_action_t<Base>;
 
       monk_action_t( util::string_view n, monk_t *player, const spell_data_t *s = spell_data_t::nil() )
         : ab( n, player, s ),
-        parse_buff_effects_t( player, this ),
         sef_ability( sef_ability_e::SEF_NONE ),
         ww_mastery( false ),
         may_combo_strike( false ),
@@ -148,32 +147,32 @@ namespace monk
       {
         // Brewmaster
         //    TODO: only effect 1
-        //    parse_buff_effects( p()->buff.brewmasters_rhythm );
-        //    parse_buff_effects( p()->buff.counterstrike );
-        //    parse_buff_effects( p()->buff.hit_scheme );
-        //    parse_buff_effects( p()->buff.mighty_pour );
-        //    parse_buff_effects( p()->buff.purified_chi );
-        // parse_buff_effects( p()->buff.press_the_advantage );
+        //    parse_effects( p()->buff.brewmasters_rhythm );
+        //    parse_effects( p()->buff.counterstrike );
+        //    parse_effects( p()->buff.hit_scheme );
+        //    parse_effects( p()->buff.mighty_pour );
+        //    parse_effects( p()->buff.purified_chi );
+        // parse_effects( p()->buff.press_the_advantage );
         // Mistweaver
-        parse_buff_effects( p()->buff.invoke_chiji_evm, USE_DEFAULT );
-        parse_buff_effects( p()->buff.lifecycles_enveloping_mist );
-        parse_buff_effects( p()->buff.lifecycles_vivify );
-        parse_buff_effects( p()->buff.mana_tea );
-        parse_buff_effects( p()->buff.touch_of_death_mw );
+        parse_effects( p()->buff.invoke_chiji_evm, USE_DEFAULT );
+        parse_effects( p()->buff.lifecycles_enveloping_mist );
+        parse_effects( p()->buff.lifecycles_vivify );
+        parse_effects( p()->buff.mana_tea );
+        parse_effects( p()->buff.touch_of_death_mw );
      // Windwalker
-        parse_buff_effects( p()->buff.bok_proc );
-     //    parse_buff_effects( p()->buff.chi_energy, true, true );
-     //    parse_buff_effects( p()->buff.dance_of_chiji_hidden );
-     //    parse_buff_effects( p()->buff.fists_of_flowing_momentum, true, true );
-     //    parse_buff_effects( p()->buff.fists_of_flowing_momentum_fof );
+        parse_effects( p()->buff.bok_proc );
+     //    parse_effects( p()->buff.chi_energy, true, true );
+     //    parse_effects( p()->buff.dance_of_chiji_hidden );
+     //    parse_effects( p()->buff.fists_of_flowing_momentum, true, true );
+     //    parse_effects( p()->buff.fists_of_flowing_momentum_fof );
      //    TODO: Look into using stack value for both Effect 1 and Effect 2
-     //    parse_buff_effects( p()->buff.hit_combo, true, true );
-     //    parse_buff_effects( p()->buff.kicks_of_flowing_momentum );
-     //    parse_buff_effects( p()->buff.storm_earth_and_fire );
-     //    parse_buff_effects( p()->buff.serenity );
+     //    parse_effects( p()->buff.hit_combo, true, true );
+     //    parse_effects( p()->buff.kicks_of_flowing_momentum );
+     //    parse_effects( p()->buff.storm_earth_and_fire );
+     //    parse_effects( p()->buff.serenity );
      //    TODO: Look into using stack value for both Effect 1 and Effect 2
-     //    parse_buff_effects( p()->buff.the_emperors_capacitor );
-     //    parse_buff_effects( p()->buff.transfer_the_power, true, true );
+     //    parse_effects( p()->buff.the_emperors_capacitor );
+     //    parse_effects( p()->buff.transfer_the_power, true, true );
       }
 
       // Action-related parsing of debuffs. Does not work on spells
@@ -183,11 +182,16 @@ namespace monk
       // of abilities.
       void apply_debuffs_effects()
       {
-    //    parse_debuff_effects( []( monk_td_t* t ) { return t->debuffs.weapons_of_order->check(); },
+    //    parse_target_effects( []( monk_td_t* t ) { return t->debuffs.weapons_of_order->check(); },
     //                          p()->shared.weapons_of_order ); // True, true
-    //    parse_debuff_effects( []( monk_td_t* t ) { return t->debuffs.keefers_skyreach_debuff->check(); },
+    //    parse_target_effects( []( monk_td_t* t ) { return t->debuffs.keefers_skyreach_debuff->check(); },
     //                          p()->shared.skyreach );
       }
+
+      template <typename... Ts>
+      void parse_effects( Ts&&... args ) { ab::parse_effects( std::forward<Ts>( args )... ); }
+      template <typename... Ts>
+      void parse_target_effects( Ts&&... args ) { ab::parse_target_effects( std::forward<Ts>( args )... ); }
 
       // Utility function to search spell data for matching effect.
       // NOTE: This will return the FIRST effect that matches parameters.
@@ -263,7 +267,7 @@ namespace monk
 
         // These abilities are able to be used during Spinning Crane Kick
         if ( this->cast_during_sck )
-          this->usable_while_casting = p()->channeling && p()->find_action( "spinning_crane_kick" ) && p()->channeling->id == p()->find_action( "spinning_crane_kick" )->id;
+          this->usable_while_casting = p()->channeling && p()->spec.spinning_crane_kick && ( p()->channeling->id == p()->spec.spinning_crane_kick->id() );
 
         return ab::ready();
       }
@@ -716,19 +720,11 @@ namespace monk
         return pm;
       }
 
-      // custom cost() to account for serenity
-      #undef PARSE_BUFF_EFFECTS_SETUP_COST
-      #define PARSE_BUFF_EFFECTS_SETUP_COST
-      double cost() const override
+      double cost_pct_multiplier() const override
       {
-        double c = ab::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
-
-        if ( c == 0 )
-          return c;
+        double c = ab::cost_pct_multiplier();
 
         c *= 1.0 + cost_reduction();
-        if ( c < 0 )
-          c = 0;
 
         return c;
       }
@@ -746,12 +742,9 @@ namespace monk
         return c;
       }
 
-      // custom composite_ta_multiplier() to account for hit_combo
-      #undef PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER
-      #define PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER
       double composite_ta_multiplier( const action_state_t *s ) const override
       {
-        double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
+        double ta = ab::composite_ta_multiplier( s );
 
         if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 2 ) ) )
           ta *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 2 ).percent();
@@ -759,12 +752,9 @@ namespace monk
         return ta;
       }
 
-      // custom composite_da_multiplier() to account for hit_combo
-      #undef PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER
-      #define PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER
       double composite_da_multiplier( const action_state_t *s ) const override
       {
-        double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
+        double da = ab::composite_da_multiplier( s );
 
         if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
           da *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 1 ).percent();
@@ -773,11 +763,9 @@ namespace monk
       }
 
       // custom composite_target_multiplier() to account for weapons of order & jadefire brand
-      #undef PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
-      #define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
       double composite_target_multiplier( player_t *t ) const override
       {
-        double tm = ab::composite_target_multiplier( t ) * get_debuff_effects_value( target_multiplier_dotdebuffs, get_td( t ) );
+        double tm = ab::composite_target_multiplier( t );
 
         auto td = find_td( t );
 
@@ -792,9 +780,6 @@ namespace monk
 
         return tm;
       }
-
-      #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
-      PARSE_BUFF_EFFECTS_SETUP
 
       void trigger_storm_earth_and_fire( const action_t *a )
       {
@@ -2585,14 +2570,11 @@ namespace monk
           return dot_duration * ( tick_time( s ) / base_tick_time );
         }
 
-        double cost() const override
+        double cost_flat_modifier() const override
         {
-          double c = monk_melee_attack_t::cost();
+          double c = monk_melee_attack_t::cost_flat_modifier();
 
           c += p()->buff.dance_of_chiji_hidden->check_value();  // saved as -2
-
-          if ( c < 0 )
-            c = 0;
 
           return c;
         }
@@ -5670,9 +5652,9 @@ namespace monk
           return am;
         }
 
-        double cost() const override
+        double cost_pct_multiplier() const override
         {
-          double c = monk_heal_t::cost();
+          double c = monk_heal_t::cost_pct_multiplier();
 
           if ( p()->buff.thunder_focus_tea->check() )
             c *= 1 + p()->talent.mistweaver.thunder_focus_tea->effectN( 2 ).percent();  // saved as -100
@@ -7115,7 +7097,6 @@ namespace monk
           ( int )p.sets->set( MONK_WINDWALKER, T29, B4 )->effectN( 2 ).base_value() : 0 ) );
         set_reverse_stack_count( s->max_stacks() + ( p.sets->has_set_bonus( MONK_WINDWALKER, T29, B4 ) ?
           ( int )p.sets->set( MONK_WINDWALKER, T29, B4 )->effectN( 2 ).base_value() : 0 ) );
-
       }
 
       void decrement( int stacks, double value = DEFAULT_VALUE() ) override
@@ -8414,6 +8395,33 @@ namespace monk
 
     if ( off_hand_weapon.type != WEAPON_NONE )
       scaling->enable( STAT_WEAPON_OFFHAND_DPS );
+  }
+
+  // monk_t::init_items =====================================================
+
+  void monk_t::init_items()
+  {
+    base_t::init_items();
+    
+    set_bonus_type_e tier_to_enable;
+    switch( specialization() )
+    {
+      case MONK_WINDWALKER:
+        tier_to_enable = T29;
+        break;
+      case MONK_BREWMASTER:
+      case MONK_MISTWEAVER:
+        tier_to_enable = T31;
+        break;
+      default:
+        return;
+    }
+
+    if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+      sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
+
+    if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+      sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
   }
 
   // monk_t::create_buffs =====================================================

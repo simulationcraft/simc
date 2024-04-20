@@ -1,0 +1,64 @@
+# TODO: remove after season 4 goes live
+ptr=1
+# DF4
+# Dragonflight Season 4
+# * Using ilevel= is permitted as long as itemlevels and bonus ids aren't stable on test server.
+# * Set pieces are permitted up to the item level cap (528). ["bonus_id=?/?"]
+# * Raid gear is permitted up to the Mythic item level cap (528). ["bonus_id=?/?"]
+#   * NOTE: Very Rare Items from the last two bosses of each raid are permitted up to 535. ["bonus_id=?/?"]
+# * Mythic+ gear is permitted up to the Mythic+ item level cap (528).
+# * Honor PvP gear is permitted up to the item level cap (?). ["bonus_id=?"]
+# * Conquest PvP gear is permitted up to the item level cap (Duelist, ?). ["bonus_id=?"]
+# * Crafted gear is permitted up to the item level cap (525), with a maximum of two embellished pieces, and without profession requirements. ["bonus_id=?/?"]
+#   * NOTE: You may use however many crafted pieces you wish, just as long as its possible to wear it all in-game.
+# * World Bosses gear is permitted.
+# * World Drop gear is permitted.
+# * World Quests gear is permitted as long as item level is only scaled from Renown / Average Character Item Level.
+# * Use sockets on the slots head, neck (x3 with jewelcrafting), wrist, waist, finger1, finger2.
+# * Must use gem ids (ex: ",gem_id=173127") instead of hardcoded stats.
+#    * 192985: Primary Stat & Haste
+#    * 192964: Mastery > Vers
+# * No Tertiary Stats.
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, or the item no longer exists in-game).
+# * Must use enchant name (ex: ",enchant=devotion_of_haste_3") instead of ids/hardcoded stats if possible. Rank 3 enchants are permitted.
+# * Use ,enchant=incandescent_essence on head.
+
+
+# Death Knight
+DF4_Generate_Death_Knight.simc
+
+# Demon Hunter
+DF4_Generate_Demon_Hunter.simc
+
+# Druid
+# DF4_Generate_Druid.simc
+
+# Evoker
+# DF4_Generate_Evoker.simc
+
+# Hunter
+# DF4_Generate_Hunter.simc
+
+# Mage
+# DF4_Generate_Mage.simc
+
+# Monk
+DF4_Generate_Monk.simc
+
+# Paladin
+DF4_Generate_Paladin.simc
+
+# Priest
+DF4_Generate_Priest.simc
+
+# Rogue
+# DF4_Generate_Rogue.simc
+
+# Shaman
+DF4_Generate_Shaman.simc
+
+# Warlock
+# DF4_Generate_Warlock.simc
+
+# Warrior
+DF4_Generate_Warrior.simc

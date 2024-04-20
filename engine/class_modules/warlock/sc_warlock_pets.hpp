@@ -54,6 +54,7 @@ struct warlock_pet_t : public pet_t
   } buffs;
 
   bool is_main_pet          = false;
+  bool melee_on_summon = true; // Set this to false for a pet to prevent t=0 melees. You MUST schedule a new auto attack manually elsewhere in the implementation if this is disabled
 
   warlock_pet_t( warlock_t*, util::string_view, pet_e, bool = false );
   void init_base_stats() override;
@@ -101,7 +102,10 @@ struct warlock_pet_t : public pet_t
     double speed;
     double melee_pos;
 
-    travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player )
+    travel_t( warlock_pet_t* player ) : travel_t( player, "travel" )
+    {  }
+
+    travel_t( warlock_pet_t* player, util::string_view action_name ) : action_t( ACTION_OTHER, action_name, player )
     {
       trigger_gcd = 0_ms;
       speed = 33.0;
@@ -438,6 +442,7 @@ private:
 struct dreadstalker_t : public warlock_pet_t
 {
   int dreadbite_executes;
+  timespan_t server_action_delay;
 
   dreadstalker_t( warlock_t* );
   void init_base_stats() override;

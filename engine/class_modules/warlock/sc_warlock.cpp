@@ -438,7 +438,11 @@ struct seed_of_corruption_t : public warlock_spell_t
     }
 
     if ( valid_target )
-      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ){ return ( p()->get_target_data( target )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( target ) ); } ), tl.end() );
+    {
+      range::erase_remove( tl, [ this ]( player_t* t ) {
+        return ( td( t )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( t ) );
+      } );
+    }
 
     return tl.size();
   }
@@ -813,6 +817,22 @@ struct fel_barrage_t : public warlock_spell_t
   fel_barrage_t( warlock_t* p ) : warlock_spell_t( "Fel Barrage", p, p->talents.fel_barrage )
   {
     background = dual = true;
+  }
+
+  // Copied from destruction_spell_t as this needs to be a warlock_spell_t, prefer to look at unifying this in the future
+  double action_multiplier () const override 
+  {
+    double pm = warlock_spell_t::action_multiplier();
+
+    if ( p ()->warlock_base.chaotic_energies->ok () ) 
+    {
+      double destro_mastery_value = p ()->cache.mastery_value () / 2.0;
+      double chaotic_energies_rng = rng ().range (0, destro_mastery_value);
+
+      pm *= 1.0 + chaotic_energies_rng + (destro_mastery_value);
+    }
+
+    return pm;
   }
 };
 
@@ -1663,6 +1683,37 @@ void warlock_t::init_spells()
   talents.soulburn_buff = find_spell( 387626 );
 }
 
+void warlock_t::init_items()
+{
+  player_t::init_items();
+  
+  set_bonus_type_e tier_to_enable;
+  switch ( specialization() )
+  {
+    case WARLOCK_AFFLICTION:
+      tier_to_enable = T31;
+      break;
+    case WARLOCK_DEMONOLOGY:
+      tier_to_enable = T31;
+      break;
+    case WARLOCK_DESTRUCTION:
+      tier_to_enable = T29;
+      break;
+    default:
+      return;
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+  {
+    sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+  {
+    sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
+  }
+}
+
 void warlock_t::init_rng()
 {
   if ( specialization() == WARLOCK_AFFLICTION )
@@ -1720,7 +1771,7 @@ void warlock_t::init_procs()
 void warlock_t::init_base_stats()
 {
   if ( base.distance < 1.0 )
-    base.distance = 40.0;
+    base.distance = 30.0;
 
   player_t::init_base_stats();
 

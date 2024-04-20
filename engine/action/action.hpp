@@ -321,14 +321,62 @@ public:
   /// Default full duration of dot.
   timespan_t dot_duration;
 
-  // Maximum number of DoT stacks.
+  /// Maximum number of DoT stacks.
   int dot_max_stack;
 
+  /// Container to hold base cost and all permanent/passive modifiers. We need to hold these separate because flat
+  /// modifiers, including those from dynamic sources, are calculated before percent multipliers. The final cost is
+  /// properly reconstituted in action_t::cost(). Also includes operator overloads for ease of use/compatibility with
+  /// operations to double type previously used to store base cost.
+  struct base_cost_t
+  {
+    double base = 0.0;
+    double flat_add = 0.0;
+    double pct_mul = 1.0;
+
+    base_cost_t() = default;
+
+    template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
+    base_cost_t( T c ) : base( c ) {}
+
+    double cost() const
+    { return ( base + flat_add ) * pct_mul; }
+
+    operator double() const
+    { return cost(); }
+
+    template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
+    base_cost_t& operator=( T c )
+    { base = c; flat_add = 0.0; pct_mul = 1.0; return *this; }
+
+    template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
+    base_cost_t& operator+=( T flat )
+    { flat_add += flat; return *this; }
+
+    template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
+    base_cost_t& operator-=( T flat )
+    { flat_add -= flat; return *this; }
+
+    template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
+    base_cost_t& operator*=( T pct )
+    { pct_mul *= pct; return *this; }
+
+    template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
+    base_cost_t& operator/=( T pct )
+    { pct_mul /= pct; return *this; }
+
+    friend void sc_format_to( const base_cost_t& c, fmt::format_context::iterator out )
+    { fmt::format_to( out, "{}", c.cost() ); }
+  };
+
   /// Cost of using the ability.
-  std::array< double, RESOURCE_MAX > base_costs, secondary_costs;
+  std::array<base_cost_t, RESOURCE_MAX> base_costs;
+  
+  /// Maximum amount of additional resource that can be expended.
+  std::array<double, RESOURCE_MAX> secondary_costs;
 
   /// Cost of using ability per periodic effect tick.
-  std::array< double, RESOURCE_MAX > base_costs_per_tick;
+  std::array<double, RESOURCE_MAX> base_costs_per_tick;
 
   /// Minimum base direct damage
   double base_dd_min;
@@ -690,6 +738,10 @@ public:
   virtual bool verify_actor_weapon() const;
 
   virtual double cost() const;
+
+  virtual double cost_flat_modifier() const;
+
+  virtual double cost_pct_multiplier() const;
 
   virtual double base_cost() const;
 
@@ -1060,7 +1112,7 @@ public:
 
   virtual void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain );
 
-  virtual void html_customsection( report::sc_html_stream& ) {}
+  virtual void html_customsection( report::sc_html_stream& );
 
   // ================
   // Static functions

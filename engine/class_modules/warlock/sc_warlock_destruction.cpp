@@ -26,7 +26,7 @@ public:
     warlock_spell_t::consume_resource();
 
     int shards_used = as<int>( cost() );
-    int base_cost = as<int>( destruction_spell_t::cost() ); // Power Overwhelming is ignoring any cost changes
+    int base_shards = as<int>( base_cost() ); // Power Overwhelming is ignoring any cost changes
 
     // Do cost changes reduce number of draws appropriately? This may be difficult to check
     if ( resource_current == RESOURCE_SOUL_SHARD && p()->buffs.rain_of_chaos->check() && shards_used > 0 )
@@ -49,15 +49,15 @@ public:
         make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
     }
 
-    if ( p()->talents.power_overwhelming->ok() && resource_current == RESOURCE_SOUL_SHARD && base_cost > 0 )
+    if ( p()->talents.power_overwhelming->ok() && resource_current == RESOURCE_SOUL_SHARD && base_shards > 0 )
     {
-      p()->buffs.power_overwhelming->trigger( base_cost );
+      p()->buffs.power_overwhelming->trigger( base_shards );
     }
 
     // 2022-10-17: Spell data is missing the % chance!
     // Need to test further, but chance appears independent of shard cost
     // Also procs even if the cast is free due to other effects
-    if ( resource_current == RESOURCE_SOUL_SHARD && base_cost > 0 && p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T29, B2 ) && rng().roll( 0.2 ) )
+    if ( resource_current == RESOURCE_SOUL_SHARD && base_shards > 0 && p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T29, B2 ) && rng().roll( 0.2 ) )
     {
       p()->buffs.chaos_maelstrom->trigger();
       p()->procs.chaos_maelstrom->occur();
@@ -718,9 +718,9 @@ struct chaos_bolt_t : public destruction_spell_t
     }
   }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = destruction_spell_t::cost();
+    double c = destruction_spell_t::cost_pct_multiplier();
 
     if ( p()->buffs.ritual_of_ruin->check() )
       c *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 2 ).percent();
@@ -914,7 +914,9 @@ struct rain_of_fire_t : public destruction_spell_t
 
       if ( p()->talents.inferno->ok() && result_is_hit( s->result ) )
       {
-        if ( rng().roll( p()->talents.inferno->effectN( 1 ).percent() * ( 5.0 / std::max(5u, s->n_targets ) ) ) )
+        auto target_scaling = p()->bugs ? 1.0 : ( 5.0 / std::max( 5u, s->n_targets ) );
+
+        if ( rng().roll( p()->talents.inferno->effectN( 1 ).percent() * target_scaling ) )
         {
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.inferno );
         }
@@ -962,9 +964,9 @@ struct rain_of_fire_t : public destruction_spell_t
     }
   }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = destruction_spell_t::cost();
+    double c = destruction_spell_t::cost_pct_multiplier();
 
     if ( p()->buffs.ritual_of_ruin->check() )
       c *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 5 ).percent();

@@ -1140,7 +1140,7 @@ enum effect_subtype_t : unsigned {
     A_MOD_MINIMUM_SPEED = 305,
     A_MOD_CRIT_CHANCE_FROM_CASTER = 306,
     A_307 = 307,
-    A_308 = 308,
+    A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS = 308,
     A_309 = 309,
     A_310 = 310,
     A_311 = 311,

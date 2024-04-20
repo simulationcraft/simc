@@ -802,8 +802,12 @@ enum slot_e  // these enum values match armory settings
 };
 
 // T29, T30, T31, ... + PVP
+// TODO: remove after Dragonflight ends
 const unsigned N_TIER   = 6;
 const unsigned MIN_TIER = 29;
+// 1, 2, 3, 4
+const unsigned N_SEASON = 5;
+const unsigned MIN_SEASON = 1;
 
 // Set bonus .. bonus. They map to a vector internally, so each enum value is just the vector
 // element index.
@@ -831,28 +835,29 @@ enum set_bonus_type_e
   SET_BONUS_NONE = -1,
 
   // Actual tier support in SIMC
-  T19P_G1,
-  T19P_G2,
-  T19P_CLOTH,
-  T19P_LEATHER,
-  T19P_MAIL,
-  T19P_PLATE,
-  T21P_G1,
-  T23_GIFT_OF_THE_LOA,
-  T23_KEEPSAKES,
-  T23_TITANIC_EMPOWERMENT,
-  T26_HACK_AND_GORE,
+  T19_MOTL,
+  T19_JTT,
+  T19_C,
+  T19_L,
+  T19_M,
+  T19_P,
+  T21_WL,
+  T23_GOTL,
+  T24_KS,
+  T23_TE,
+  T26_HG,
   T28,
-  T28_RIPPED_SECRETS,
+  T28_RS,
   T29,
-  T29_PLAYFUL_SPIRITS_FUR,
-  T29_HORIZON_STRIDERS_GARMENTS,
-  T29_AZUREWEAVE_VESTMENTS,
-  T29_WOVEN_CHRONOCLOTH,
-  T29_RAGING_TEMPESTS,
+  T29_PSF,
+  T29_HSG,
+  T29_AV,
+  T29_WC,
+  T29_RT,
   T30,
-  T30_MIGHT_OF_THE_DROGBAR,
+  T30_MOTD,
   T31,
+  DF4,
   SET_BONUS_MAX
 };
 

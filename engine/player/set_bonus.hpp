@@ -25,7 +25,7 @@ struct player_t;
 struct set_bonus_t
 {
   // Some magic constants
-  static const unsigned N_BONUSES = 8;  // Number of set bonuses in tier gear
+  static constexpr unsigned N_BONUSES = 8;  // Number of set bonuses in tier gear
 
   struct set_bonus_data_t
   {
@@ -33,8 +33,10 @@ struct set_bonus_t
     const item_set_bonus_t* bonus;
     int overridden;
     bool enabled;
+    bool quiet;
 
-    set_bonus_data_t( const spell_data_t* spell ) : spell( spell ), bonus( nullptr ), overridden( -1 ), enabled( false )
+    set_bonus_data_t( const spell_data_t* spell )
+      : spell( spell ), bonus( nullptr ), overridden( -1 ), enabled( false ), quiet( false )
     {}
   };
 
@@ -63,6 +65,9 @@ struct set_bonus_t
 
   // Override all set bonuses to be enabled
   void enable_all_sets();
+
+  // Enable a specific set bonus, set quiet by default
+  void enable_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus, bool quiet = true );
 
   std::unique_ptr<expr_t> create_expression( const player_t*, util::string_view type );
 

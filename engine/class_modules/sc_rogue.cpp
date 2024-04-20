@@ -2363,12 +2363,9 @@ public:
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = ab::cost();
-
-    if ( c <= 0 )
-      return 0;
+    double c = ab::cost_pct_multiplier();
 
     if ( p()->talent.subtlety.shadow_focus->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
     {
@@ -2384,9 +2381,6 @@ public:
     {
       c *= 1.0 + p()->buffs.goremaws_bite->check_value();
     }
-
-    if ( c <= 0 )
-      c = 0;
 
     return c;
   }
@@ -3504,9 +3498,9 @@ struct dispatch_t: public rogue_attack_t
   {
   }
 
-  double cost() const override
+  double cost_flat_modifier() const override
   {
-    double c = rogue_attack_t::cost();
+    double c = rogue_attack_t::cost_flat_modifier();
 
     if ( p()->buffs.summarily_dispatched->check() )
     {
@@ -3706,7 +3700,7 @@ struct blade_flurry_attack_t : public rogue_attack_t
     rogue_attack_t::available_targets( tl );
 
     // Cannot hit the original target.
-    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) { return t == this->target; } ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }
@@ -4735,9 +4729,9 @@ struct pistol_shot_t : public rogue_attack_t
     }
   }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = rogue_attack_t::cost();
+    double c = rogue_attack_t::cost_pct_multiplier();
 
     if ( p()->buffs.opportunity->check() )
     {
@@ -5644,8 +5638,7 @@ struct black_powder_t: public rogue_attack_t
       rogue_attack_t::available_targets( tl );
 
       // Can only hit targets with the Find Weakness debuff
-      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) {
-        return !this->td( t )->debuffs.find_weakness->check(); } ), tl.end() );
+      range::erase_remove( tl, [ this ]( player_t* t ) { return !td( t )->debuffs.find_weakness->check(); } );
 
       return tl.size();
     }
@@ -6312,7 +6305,7 @@ struct caustic_spatter_t : public rogue_attack_t
     rogue_attack_t::available_targets( tl );
 
     // Cannot hit the original target.
-    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) { return t == this->target; } ), tl.end() );
+    range::erase_remove( tl, target );
 
     return tl.size();
   }
@@ -11137,6 +11130,13 @@ void rogue_t::init_items()
     // Restore primary off hand weapon after secondary weapon init
     main_hand_weapon = weapon_data[ WEAPON_OFF_HAND ].weapon_data[ WEAPON_PRIMARY ];
   }
+
+  // Dragonflight Season 4 Set Bonuses
+  // All 3 Rogue specs use T31 Bonuses for S4, so no fancy logic here
+  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+    sets->enable_set_bonus( specialization(), T31, B2 );
+  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+    sets->enable_set_bonus( specialization(), T31, B4 );
 }
 
 // rogue_t::init_special_effects ============================================

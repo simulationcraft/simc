@@ -6524,6 +6524,21 @@ void player_t::demise()
   event_t::cancel( off_gcd );
   event_t::cancel( cast_while_casting_poll_event );
 
+  if ( is_enemy() )
+  {
+    sim->active_enemies--;
+    sim->target_non_sleeping_list.find_and_erase_unordered( this );
+
+    // When an enemy dies, trigger players to acquire a new target
+    range::for_each( sim->player_non_sleeping_list,
+                     [ this ]( player_t* p ) { p->acquire_target( retarget_source::ACTOR_DEMISE, this ); } );
+  }
+  else
+  {
+    sim->active_allies--;
+    sim->player_non_sleeping_list.find_and_erase_unordered( this );
+  }
+
   // If an enemy mob dies, trigger on-kill callback on all active players
   if ( is_enemy() )
   {
@@ -6564,20 +6579,6 @@ void player_t::demise()
   for ( size_t i = 0; i < dot_list.size(); ++i )
     dot_list[ i ]->cancel();
 
-  if ( is_enemy() )
-  {
-    sim->active_enemies--;
-    sim->target_non_sleeping_list.find_and_erase_unordered( this );
-
-    // When an enemy dies, trigger players to acquire a new target
-    range::for_each( sim->player_non_sleeping_list,
-                     [this]( player_t* p ) { p->acquire_target( retarget_source::ACTOR_DEMISE, this ); } );
-  }
-  else
-  {
-    sim->active_allies--;
-    sim->player_non_sleeping_list.find_and_erase_unordered( this );
-  }
 }
 
 // Player enters/leaves "combat". Primarily relevant for DungeonSlice/DungeonRoute sims where "combat" is defined as
@@ -12851,6 +12852,9 @@ void player_t::create_options()
   add_option( opt_timespan( "dragonflight.balefire_branch_loss_tick", dragonflight_opts.balefire_branch_loss_tick, 1_ms, 20_s ) );
   add_option( opt_int( "dragonflight.balefire_branch_loss_stacks", dragonflight_opts.balefire_branch_loss_stacks, 0, 20 ) );
   add_option( opt_uint( "dragonflight.verdant_conduit_allies", dragonflight_opts.verdant_conduit_allies, 0, 2 ) );
+  add_option( opt_bool( "dragonflight.rashoks_use_true_overheal", dragonflight_opts.rashoks_use_true_overheal ) );
+  add_option( opt_float( "dragonflight.rashoks_fake_overheal", dragonflight_opts.rashoks_fake_overheal, 0.0, 1.0 ) );
+  add_option( opt_string( "dragonflight.timerunners_advantage", dragonflight_opts.timerunners_advantage ) );
 
   // Obsolete options
 
@@ -13458,7 +13462,7 @@ void player_collected_data_t::reserve_memory( const player_t& p )
   heal_taken.reserve( size );
   deaths.reserve( size );
 
-  if ( !p.is_pet() && p.primary_role() == ROLE_TANK )
+  if ( !p.is_pet() && p.primary_role() == ROLE_TANK && p.type != PLAYER_SIMPLIFIED )
   {
     theck_meloree_index.reserve( size );
     effective_theck_meloree_index.reserve( size );
@@ -13773,7 +13777,7 @@ void player_collected_data_t::collect_data( const player_t& p )
 
   // Health Change Calculations - only needed for tanks
   double tank_metric = 0;
-  if ( !p.is_pet() && p.primary_role() == ROLE_TANK )
+  if ( !p.is_pet() && p.primary_role() == ROLE_TANK && p.type != PLAYER_SIMPLIFIED )
   {
     double tmi       = 0;  // TMI result
     double etmi      = 0;  // ETMI result

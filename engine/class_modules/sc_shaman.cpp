@@ -1631,9 +1631,9 @@ public:
     return et;
   }
 
-  double cost() const override
+  double cost_flat_modifier() const override
   {
-    double c = ab::cost();
+    double c = ab::cost_flat_modifier();
 
     // check all effectN entries and apply them if appropriate
     for ( auto i = 1U; i <= p()->talent.eye_of_the_storm->effect_count(); i++ )
@@ -1644,7 +1644,13 @@ public:
         }
     }
 
-    // set cost to zero after cost additions and reductions are applied to prevent negative cost values
+    return c;
+  }
+
+  double cost_pct_multiplier() const override
+  {
+    double c = ab::cost_pct_multiplier();
+
     if ( affected_by_ns_cost && p()->buff.natures_swiftness->check() && !ab::background && ab::current_resource() != RESOURCE_MAELSTROM )
     {
       c *= 1.0 + p()->talent.natures_swiftness->effectN( 1 ).percent();
@@ -11031,7 +11037,7 @@ std::string shaman_t::default_flask() const
 
 std::string shaman_t::default_food() const
 {
-  std::string elemental_food = ( true_level >= 61 ) ? "fated_fortune_cookie" :
+  std::string elemental_food = ( true_level >= 61 ) ? "sizzling_seafood_medley" :
                                ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
                                ( true_level >= 45 ) ? "mechdowels_big_mech" :
                                "disabled";
@@ -12132,7 +12138,7 @@ public:
   {
     highchart::pie_chart_t mw_cons( highchart::build_id( p, "mw_con" ), *p.sim );
     mw_cons.set_title( "Maelstrom Weapon Consumers" );
-    mw_cons.set( "plotOptions.pie.dataLabels.format", "<b>{point.name}</b>: {point.y:.1f}" );
+    mw_cons.set( "plotOptions.pie.dataLabels.format", "{point.name}: {point.y:.1f}" );
 
     std::vector<std::pair<action_t*, double>> processed_data;
 
@@ -12204,7 +12210,7 @@ public:
   {
     highchart::pie_chart_t mw_src( highchart::build_id( p, "mw_src" ), *p.sim );
     mw_src.set_title( "Maelstrom Weapon Sources" );
-    mw_src.set( "plotOptions.pie.dataLabels.format", "<b>{point.name}</b>: {point.y:.1f}" );
+    mw_src.set( "plotOptions.pie.dataLabels.format", "{point.name}: {point.y:.1f}" );
 
     double overflow = 0.0;
     std::vector<std::pair<action_t*, double>> processed_data;

@@ -41,7 +41,7 @@ aoe_builder->add_action( "rake,target_if=max:(dot.rake.pmultiplier<1.6|dot.rake.
 aoe_builder->add_action( "thrash_cat,if=refreshable&!talent.thrashing_claws" );
 aoe_builder->add_action( "brutal_slash,if=!(variable.need_bt&buff.bt_brutal_slash.up)" );
 aoe_builder->add_action( "swipe_cat,if=spell_targets.swipe_cat>4&!(variable.need_bt&buff.bt_swipe.up)" );
-aoe_builder->add_action( "moonfire_cat,target_if=max:(3*refreshable)+dot.adaptive_swarm_damage.ticking,if=dot.moonfire.refreshable&!(variable.need_bt&buff.bt_moonfire.up)","prio targets with swarm debuff for moonfire" );
+aoe_builder->add_action( "moonfire_cat,target_if=max:(3*refreshable)+dot.adaptive_swarm_damage.ticking,if=refreshable&!(variable.need_bt&buff.bt_moonfire.up)","prio targets with swarm debuff for moonfire" );
 aoe_builder->add_action( "swipe_cat,if=!(variable.need_bt&buff.bt_swipe.up)" );
 aoe_builder->add_action( "shred,target_if=max:target.time_to_die,if=(spell_targets.swipe_cat<4|talent.dire_fixation.enabled)&!buff.sudden_ambush.up&!(variable.easy_swipe&talent.wild_slashes)&!(variable.need_bt&buff.bt_shred.up)","if we have brs and nothing better to cast, refresh thrash early at 4+ targets unless dire fixation is talented" );
 aoe_builder->add_action( "thrash_cat,if=!(variable.need_bt&buff.bt_thrash.up)" );

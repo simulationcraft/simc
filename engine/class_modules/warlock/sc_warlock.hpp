@@ -694,6 +694,7 @@ public:
 
   // Character Definition
   void init_spells() override;
+  void init_items() override;
   void init_base_stats() override;
   void create_buffs() override;
   void init_gains() override;
@@ -901,12 +902,6 @@ public:
   void reset() override
   {
     spell_t::reset();
-  }
-
-  double cost() const override
-  {
-    double c = spell_t::cost();
-    return c;
   }
 
   void consume_resource() override

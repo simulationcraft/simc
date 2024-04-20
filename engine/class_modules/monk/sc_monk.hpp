@@ -1039,6 +1039,7 @@ namespace monk
     void init_spells() override;
     void init_base_stats() override;
     void init_scaling() override;
+    void init_items() override;
     void create_buffs() override;
     void init_gains() override;
     void init_procs() override;

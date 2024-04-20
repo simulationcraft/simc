@@ -6,7 +6,9 @@
 #pragma once
 
 #include "config.hpp"
+
 #include "sc_enums.hpp"
+
 #include <string>
 
 struct sim_t;
@@ -17,17 +19,19 @@ public:
   sim_t* sim;
   std::string dps_plot_stat_str;
   double dps_plot_step;
-  int    dps_plot_points;
-  int    dps_plot_iterations;
+  int dps_plot_points;
+  int dps_plot_iterations;
   double dps_plot_target_error;
-  int    dps_plot_debug;
+  int dps_plot_debug;
   stat_e current_plot_stat;
-  int    num_plot_stats, remaining_plot_stats, remaining_plot_points;
-  bool   dps_plot_positive, dps_plot_negative;
+  int num_plot_stats, remaining_plot_stats, remaining_plot_points;
+  bool dps_plot_positive, dps_plot_negative;
 
   plot_t( sim_t* s );
   void analyze();
+  bool is_plot_stat( stat_e ) const;
   double progress( std::string& phase, std::string* detailed = nullptr );
+
 private:
   void analyze_stats();
   void write_output_file();

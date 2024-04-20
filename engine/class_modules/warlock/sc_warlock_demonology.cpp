@@ -473,9 +473,9 @@ struct call_dreadstalkers_t : public demonology_spell_t
     may_crit = false;
   }
 
-  double cost() const override
+  double cost_pct_multiplier() const override
   {
-    double c = demonology_spell_t::cost();
+    double c = demonology_spell_t::cost_pct_multiplier();
 
     if ( p()->buffs.demonic_calling->check() )
     {
@@ -503,16 +503,28 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
     unsigned count = as<unsigned>( p()->talents.call_dreadstalkers->effectN( 1 ).base_value() );
 
-    auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration(), count );
+    // Set a randomized offset on first melee attacks after travel time. Make sure it's the same value for each dog so they're synced
+    timespan_t delay = rng().range( 0_s, 1_s );
+
+    timespan_t dur_adjust = duration_adjustment( delay );
+
+    auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration() + dur_adjust, count );
+
+
+    for ( auto d : dogs )
+    {
+      if ( d->is_active() )
+        d->server_action_delay = delay;
+    }
 
     if ( p()->buffs.demonic_calling->up() )
     {  // benefit tracking
 
       //Despite having no cost when Demonic Calling is up, this spell will still proc effects based on shard spending (last checked 2022-10-04)
-      double base_cost = demonology_spell_t::cost();
+      double base_shards = base_cost();
 
       if ( p()->talents.grand_warlocks_design->ok() && !p()->min_version_check( VERSION_10_2_0 ) )
-        p()->cooldowns.demonic_tyrant->adjust( -base_cost * p()->talents.grand_warlocks_design->effectN( 2 ).time_value(), false );
+        p()->cooldowns.demonic_tyrant->adjust( -base_shards * p()->talents.grand_warlocks_design->effectN( 2 ).time_value(), false );
 
       if ( p()->buffs.nether_portal->up() )
       {
@@ -534,7 +546,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
       if ( p()->talents.soul_conduit->ok() )
       {
-        make_event<sc_event_t>( *p()->sim, p(), as<int>( base_cost ) );
+        make_event<sc_event_t>( *p()->sim, p(), as<int>( base_shards ) );
       }
 
       p()->buffs.demonic_calling->decrement();
@@ -552,6 +564,14 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
       p()->buffs.dread_calling->expire();
     }
+  }
+
+  timespan_t duration_adjustment( timespan_t delay )
+  {
+    // Despawn events appear to be offset from the melee attack check in a correlated manner
+    // Starting with this function which mimics despawns on the "off-beats" compared to the 1s heartbeat for the melee attack
+    // This may require updating if better understanding is found for the behavior, such as a fudge from Blizzard related to player distance
+    return ( delay + 500_ms ) % 1_s;
   }
 };
 

@@ -20,7 +20,7 @@
 #include "player/pet_spawner.hpp"
 #include "action/action_callback.hpp"
 #include "class_modules/apl/apl_death_knight.hpp"
-#include "action/parse_buff_effects.hpp"
+#include "action/parse_effects.hpp"
 
 namespace { // UNNAMED NAMESPACE
 
@@ -1319,6 +1319,7 @@ public:
   void      init_spells() override;
   void      init_action_list() override;
   void      init_rng() override;
+  void      init_items() override;
   void      init_base_stats() override;
   void      init_scaling() override;
   void      create_buffs() override;
@@ -1391,7 +1392,7 @@ public:
   void      bone_shield_handler( const action_state_t* ) const;
   // Frost
   void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
-  void      consume_killing_machine( proc_t* proc );
+  void      consume_killing_machine( proc_t* proc, timespan_t total_delay );
   void      trigger_runic_empowerment( double rpcost );
   void      chill_streak_bounce( player_t* target );
   // Unholy
@@ -2622,7 +2623,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::arise();
     timespan_t duration = 2.8_s;
-    buffs.stunned -> trigger( duration + rng().gauss( 200_ms, 0_ms ) );
+    buffs.stunned -> trigger( duration + rng().gauss( 200_ms, 25_ms ) );
     stun();
     reschedule_gargoyle();
   }
@@ -2736,6 +2737,20 @@ struct risen_skulker_pet_t : public death_knight_pet_t
       player->started_waiting = sim->current_time();
     }
   };
+
+  void acquire_target( retarget_source event, player_t* context ) override
+  {
+    if ( skulker_shot->execute_event && skulker_shot->target->is_sleeping() )
+    {
+      event_t::cancel( skulker_shot->execute_event );
+      started_waiting = sim->current_time();
+    }
+
+    player_t::acquire_target( event, context );
+
+    if ( !skulker_shot->execute_event )
+      trigger_ready();
+  }
 
   void init_base_stats() override
   {
@@ -3270,9 +3285,9 @@ namespace { // UNNAMED NAMESPACE
 
 // Template for common death knight action code. See priest_action_t.
 template <class Base>
-struct death_knight_action_t : public Base, public parse_buff_effects_t<death_knight_t, death_knight_td_t>
+struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_t, death_knight_td_t>
 {
-  using action_base_t = Base;
+  using action_base_t = parse_action_effects_t<Base, death_knight_t, death_knight_td_t>;
   using base_t = death_knight_action_t<Base>;
 
   gain_t* gain;
@@ -3281,7 +3296,6 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
 
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, p, s ), 
-    parse_buff_effects_t( p, this ),
     gain( nullptr ),
     hasted_gcd( false )
   {
@@ -3350,28 +3364,28 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
   void apply_buff_effects()
   {
     // Blood
-    parse_buff_effects( p()->buffs.sanguine_ground );
-    parse_buff_effects( p()->buffs.vigorous_lifeblood_4pc );
-    parse_buff_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
-    parse_buff_effects( p()->buffs.hemostasis );
-    parse_buff_effects( p()->buffs.crimson_scourge );
-    parse_buff_effects( p()->buffs.ossuary );
-    parse_buff_effects( p()->buffs.coagulopathy );
+    parse_effects( p()->buffs.sanguine_ground );
+    parse_effects( p()->buffs.vigorous_lifeblood_4pc );
+    parse_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
+    parse_effects( p()->buffs.hemostasis );
+    parse_effects( p()->buffs.crimson_scourge );
+    parse_effects( p()->buffs.ossuary );
+    parse_effects( p()->buffs.coagulopathy );
 
     // Frost
-    parse_buff_effects( p()->buffs.chilling_rage );
-    parse_buff_effects( p()->buffs.rime, p()->talent.frost.improved_rime );
-    parse_buff_effects( p()->buffs.gathering_storm );
-    parse_buff_effects( p()->buffs.killing_machine );
-    parse_passive_effects( p()->mastery.frozen_heart );
+    parse_effects( p()->buffs.chilling_rage );
+    parse_effects( p()->buffs.rime, p()->talent.frost.improved_rime );
+    parse_effects( p()->buffs.gathering_storm );
+    parse_effects( p()->buffs.killing_machine );
+    parse_effects( p()->mastery.frozen_heart );
 
     // Unholy
-    parse_buff_effects( p()->buffs.amplify_damage );
-    parse_buff_effects( p()->buffs.ghoulish_infusion );
-    parse_buff_effects( p()->buffs.unholy_assault );
-    parse_buff_effects( p()->buffs.sudden_doom, p()->talent.unholy.harbinger_of_doom );
-    parse_buff_effects( p()->buffs.plaguebringer, p()->talent.unholy.plaguebringer );
-    parse_passive_effects( p()->mastery.dreadblade );
+    parse_effects( p()->buffs.amplify_damage );
+    parse_effects( p()->buffs.ghoulish_infusion );
+    parse_effects( p()->buffs.unholy_assault );
+    parse_effects( p()->buffs.sudden_doom, p()->talent.unholy.harbinger_of_doom );
+    parse_effects( p()->buffs.plaguebringer, p()->talent.unholy.plaguebringer );
+    parse_effects( p()->mastery.dreadblade );
   }
 
   void apply_debuff_effects()
@@ -3381,22 +3395,22 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     parse_dot_effects( &death_knight_td_t::dots_t::frost_fever, p()->spell.frost_fever, p()->talent.unholy.morbidity );
     parse_dot_effects( &death_knight_td_t::dots_t::blood_plague, p()->spell.blood_plague, p()->specialization() == DEATH_KNIGHT_UNHOLY ? p()->talent.unholy.morbidity : p()->talent.blood.coagulopathy );
     parse_dot_effects( &death_knight_td_t::dots_t::unholy_blight, p()->spell.unholy_blight_dot, false, p()->talent.unholy.morbidity );
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.apocalypse_war->check(); }, p()->spell.apocalypse_war_debuff, p()->talent.unholy_bond );
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.razorice->check(); }, p()->spell.razorice_debuff, p()->talent.unholy_bond );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.apocalypse_war->check(); }, p()->spell.apocalypse_war_debuff, p()->talent.unholy_bond );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.razorice->check(); }, p()->spell.razorice_debuff, p()->talent.unholy_bond );
 
     // Blood
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.tightening_grasp->check(); }, p()->spell.tightening_grasp_debuff );
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.ashen_decay->check(); }, p()->spell.ashen_decay_debuff );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.tightening_grasp->check(); }, p()->spell.tightening_grasp_debuff );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.ashen_decay->check(); }, p()->spell.ashen_decay_debuff );
 
     // Frost
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.everfrost->check(); }, p()->talent.frost.everfrost->effectN( 1 ).trigger(), p()->talent.frost.everfrost );
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.piercing_chill->check(); }, p()->spell.piercing_chill_debuff );
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.lingering_chill->check(); }, p()->spell.lingering_chill );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.everfrost->check(); }, p()->talent.frost.everfrost->effectN( 1 ).trigger(), p()->talent.frost.everfrost );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.piercing_chill->check(); }, p()->spell.piercing_chill_debuff );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.lingering_chill->check(); }, p()->spell.lingering_chill );
 
     // Unholy
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.brittle->check(); }, p()->spell.brittle_debuff );
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.death_rot->check(); }, p()->spell.death_rot_debuff );
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.rotten_touch->check(); }, p()->spell.rotten_touch_debuff );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.brittle->check(); }, p()->spell.brittle_debuff );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.death_rot->check(); }, p()->spell.death_rot_debuff );
+    parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.rotten_touch->check(); }, p()->spell.rotten_touch_debuff );
   }
 
   template <typename DOT, typename... Ts>
@@ -3404,14 +3418,14 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
   {
     if (stacks)
     {
-      parse_debuff_effects( [ dot ]( death_knight_td_t* t )
+      parse_target_effects( [ dot ]( death_knight_td_t* t )
                             {
                               return std::invoke( dot, t->dot )->current_stack();
                             }, spell, mods... );
     }
     else
     {
-      parse_debuff_effects( [ dot ]( death_knight_td_t* t )
+      parse_target_effects( [ dot ]( death_knight_td_t* t )
                             {
                               return std::invoke( dot, t->dot )->is_ticking();
                             }, spell, mods... );
@@ -3430,14 +3444,16 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     if (this->data().affected_by_all( spell->effectN( idx ) ))
       return;
 
-    parse_debuff_effect( [ dot ]( death_knight_td_t* t )
+    force_target_effect( [ dot ]( death_knight_td_t* t )
                          {
                            return std::invoke( dot, t->dot )->is_ticking();
-                         }, spell, idx, true, mods... );
+                         }, spell, idx, mods... );
   }
 
-  #define PARSE_BUFF_EFFECTS_SETUP_BASE action_base_t
-  PARSE_BUFF_EFFECTS_SETUP
+  template <typename... Ts>
+  void parse_effects( Ts&&... args ) { action_base_t::parse_effects( std::forward<Ts>( args )... ); }
+  template <typename... Ts>
+  void parse_target_effects( Ts&&... args ) { action_base_t::parse_target_effects( std::forward<Ts>( args )... ); }
 
   double composite_energize_amount( const action_state_t* s ) const override
   {
@@ -3510,6 +3526,34 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
   void update_ready( timespan_t cd ) override
   {
     action_base_t::update_ready( cd );
+  }
+};
+
+// Delayed Execute Event ====================================================
+
+struct delayed_execute_event_t : public event_t
+{
+  action_t* action;
+  player_t* target;
+
+  delayed_execute_event_t( death_knight_t* p, action_t* a, player_t* t, timespan_t delay )
+    : event_t( *p->sim, delay ), action( a ), target( t )
+  {
+    assert( action->background );
+  }
+
+  const char* name() const override
+  {
+    return action->name();
+  }
+
+  void execute() override
+  {
+    if (!target->is_sleeping())
+    {
+      action->set_target( target );
+      action->execute();
+    }
   }
 };
 
@@ -5702,9 +5746,9 @@ struct death_strike_t final : public death_knight_melee_attack_t
     return m;
   }
 
-  double cost() const override
+  double cost_flat_modifier() const override
   {
-    double c = death_knight_melee_attack_t::cost();
+    double c = death_knight_melee_attack_t::cost_flat_modifier();
 
     c += improved_death_strike_reduction;
 
@@ -5861,9 +5905,7 @@ struct epidemic_t final : public death_knight_spell_t
     death_knight_spell_t::available_targets( tl );
 
     // Remove enemies that are not affected by virulent plague
-    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ] ( player_t* t ) {
-      return ! this -> get_td( t ) -> dot.virulent_plague -> is_ticking();
-    } ), tl.end() );
+    range::erase_remove( tl, [ this ]( player_t* t ) { return !get_td( t )->dot.virulent_plague->is_ticking(); } );
 
     return tl.size();
   }
@@ -6089,21 +6131,13 @@ struct frostscythe_t final : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) &&
-          p() -> buffs.killing_machine -> up() )
-    {
-      p() -> consume_killing_machine( p() -> procs.killing_machine_fsc );
-      p() -> trigger_killing_machine( p() -> sets -> set( DEATH_KNIGHT_FROST, T29, B4 ) -> effectN( 1 ).percent(),
-                                      p() -> procs.km_from_t29_4pc, p() -> procs.km_from_t29_4pc_wasted );
-    }
-    else
-    {
-      p() -> consume_killing_machine( p() -> procs.killing_machine_fsc );
-    }
-
     // Frostscythe procs rime at half the chance of Obliterate
     p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> buffs.rime->manual_chance / 2.0 );
 
+    if ( p()->buffs.killing_machine->up() )
+    {
+      p()->consume_killing_machine( p()->procs.killing_machine_fsc, 0_ms );
+    }
   }
 private:
     propagate_const<action_t*> inexorable_assault;
@@ -6202,6 +6236,8 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
 struct frost_strike_t final : public death_knight_melee_attack_t
 {
   action_t *&mh, *&oh, *&mh_sb, *&oh_sb;
+  timespan_t mh_delay;
+  timespan_t oh_delay;
   bool sb;
   frost_strike_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_melee_attack_t( "frost_strike", p, p -> talent.frost.frost_strike ),
@@ -6209,12 +6245,24 @@ struct frost_strike_t final : public death_knight_melee_attack_t
     oh( p->active_spells.frost_strike_offhand ), 
     mh_sb( p->active_spells.frost_strike_sb_main ), 
     oh_sb( p->active_spells.frost_strike_sb_offhand), 
+    mh_delay( 0_ms ), oh_delay ( 0_ms ),
     sb( false )
   {
     parse_options( options_str );
     may_crit = false;
 
     dual = true;
+
+    if ( p->main_hand_weapon.group() == WEAPON_2H )
+    {
+      mh_delay = timespan_t::from_millis( as<int>( data().effectN( 4 ).misc_value1() ) );
+    }
+
+    if ( p->off_hand_weapon.type != WEAPON_NONE )
+    {
+      oh_delay = timespan_t::from_millis( as<int>( data().effectN( 3 ).misc_value1() ) );
+    }
+
     add_child( mh );
     if( p -> talent.frost.shattering_blade.ok() )
     {
@@ -6247,18 +6295,18 @@ struct frost_strike_t final : public death_knight_melee_attack_t
     {
       if( !sb )
       {
-        mh -> execute_on_target( target );
+        make_event<delayed_execute_event_t>( *sim, p(), mh, p()->target, mh_delay );
         if ( oh )
         {
-          oh -> execute_on_target( target );
+          make_event<delayed_execute_event_t>( *sim, p(), oh, p()->target, oh_delay );
         }
       }
       if( sb )
       {
-        mh_sb -> execute_on_target( target );
+        make_event<delayed_execute_event_t>( *sim, p(), mh_sb, p()->target, mh_delay );
         if ( oh_sb )
         {
-          oh_sb -> execute_on_target( target );
+          make_event<delayed_execute_event_t>( *sim, p(), oh_sb, p()->target, oh_delay );
         }
         sb = false;
       }
@@ -6589,7 +6637,7 @@ struct howling_blast_t final : public death_knight_spell_t
     // If Pillar of Frost is up, Rime procs still increases its value
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> buffs.rime -> up() )
     {
-      p() -> buffs.pillar_of_frost_bonus -> trigger( as<int>( base_costs[ RESOURCE_RUNE ] ) );
+      p() -> buffs.pillar_of_frost_bonus -> trigger( static_cast<int>( base_costs[ RESOURCE_RUNE ] ) );
     }
 
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.frost.obliteration.ok() )
@@ -6799,15 +6847,29 @@ private:
 struct obliterate_t final : public death_knight_melee_attack_t
 {
   obliterate_strike_t *mh, *oh, *km_mh, *km_oh;
+  timespan_t mh_delay;
+  timespan_t oh_delay;
+  timespan_t total_delay;
 
   obliterate_t( death_knight_t* p, util::string_view options_str = {} ) :
     death_knight_melee_attack_t( "obliterate", p, p -> talent.frost.obliterate ),
-    mh( nullptr ), oh( nullptr ), km_mh( nullptr ), km_oh( nullptr )
+    mh( nullptr ), oh( nullptr ), km_mh( nullptr ), km_oh( nullptr ), 
+    mh_delay( 0_ms ), oh_delay( 0_ms ), total_delay( 0_ms )
   {
     parse_options( options_str );
     dual = true;
 
     const spell_data_t* mh_data = p -> main_hand_weapon.group() == WEAPON_2H ? data().effectN( 4 ).trigger() : data().effectN( 2 ).trigger();
+
+    // Misc_value1 contains the delay in milliseconds for the spells being executed
+    mh_delay = timespan_t::from_millis( as<int>( p -> main_hand_weapon.group() == WEAPON_2H ? data().effectN( 4 ).misc_value1() : data().effectN( 2 ).misc_value1() ) );
+    if( p -> off_hand_weapon.type != WEAPON_NONE )
+    {
+      oh_delay = timespan_t::from_millis( as<int>( data().effectN( 3 ).misc_value1() ) );
+    }
+
+    // Snag total delay to schedule Killing Machine for after the final hit
+    total_delay = mh_delay + oh_delay;
 
     mh = new obliterate_strike_t( p, "obliterate", &( p -> main_hand_weapon ), mh_data );
     add_child( mh );
@@ -6848,44 +6910,24 @@ struct obliterate_t final : public death_knight_melee_attack_t
       }
       if ( km_mh && p() -> buffs.killing_machine -> up() )
       {
-        km_mh -> execute_on_target( target );
+        make_event<delayed_execute_event_t>( *sim, p(), km_mh, p()->target, mh_delay );
         if ( oh && km_oh )
-
-          km_oh -> execute_on_target( target );
+          make_event<delayed_execute_event_t>( *sim, p(), km_oh, p()->target, oh_delay );
       }
       else
       {
-        mh -> execute_on_target( target );
+        make_event<delayed_execute_event_t>( *sim, p(), mh, p()->target, mh_delay );
         if ( oh )
-          oh -> execute_on_target( target );
+          make_event<delayed_execute_event_t>( *sim, p(), oh, p()->target, oh_delay );
       }
 
       p() -> buffs.rime -> trigger();
     }
 
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) &&
-          p() -> buffs.killing_machine -> up() )
+    if ( p()->buffs.killing_machine->up() )
     {
-      p() -> consume_killing_machine( p() -> procs.killing_machine_oblit );
-      p() -> trigger_killing_machine( p() -> sets -> set( DEATH_KNIGHT_FROST, T29, B4 ) -> effectN( 1 ).percent(),
-                                      p() -> procs.km_from_t29_4pc, p() -> procs.km_from_t29_4pc_wasted );
+      p()->consume_killing_machine( p()->procs.killing_machine_oblit, total_delay );
     }
-    else
-    {
-      p() -> consume_killing_machine( p() -> procs.killing_machine_oblit );
-    }
-  }
-
-  double cost() const override
-  {
-    double c = death_knight_melee_attack_t::cost();
-
-    if ( c < 0 )
-    {
-      c = 0;
-    }
-
-    return c;
   }
 
   // Allow on-cast procs
@@ -8328,7 +8370,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
     if ( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ) )
     {
-      auto extension_time = sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 )->effectN( 1 ).time_value();
+      auto extension_time = sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 )->effectN( 1 ).time_value() * as<int>( amount );
 
       for ( auto& apoc_magus : pets.apoc_magus )
       {
@@ -8709,7 +8751,7 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
   }
 }
 
-void death_knight_t::consume_killing_machine( proc_t* proc )
+void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_delay )
 {
   if ( ! buffs.killing_machine -> up() )
   {
@@ -8718,22 +8760,32 @@ void death_knight_t::consume_killing_machine( proc_t* proc )
 
   proc -> occur();
 
-  buffs.killing_machine -> decrement();
+  // Killing Machine Consumption appears to be delayed by 20ms after the final consumption action was executed
+  make_event( sim, total_delay + 20_ms, [ this ] {
+    buffs.killing_machine->decrement();
 
-  if ( rng().roll( talent.frost.murderous_efficiency -> effectN( 1 ).percent() ) )
-  {
-    replenish_rune( as<int>( spell.murderous_efficiency_gain -> effectN( 1 ).base_value() ), gains.murderous_efficiency );
-  }
-
-  if ( talent.frost.bonegrinder.ok() && !buffs.bonegrinder_frost -> up() )
-  {
-    buffs.bonegrinder_crit -> trigger();
-    if ( buffs.bonegrinder_crit -> at_max_stacks() )
+    if ( sets->has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) )
     {
-      buffs.bonegrinder_frost -> trigger();
-      buffs.bonegrinder_crit -> expire();
+      trigger_killing_machine( sets->set( DEATH_KNIGHT_FROST, T29, B4 )->effectN( 1 ).percent(), procs.km_from_t29_4pc,
+                               procs.km_from_t29_4pc_wasted );
     }
-  }
+
+    if ( rng().roll( talent.frost.murderous_efficiency->effectN( 1 ).percent() ) )
+    {
+      replenish_rune( as<int>( spell.murderous_efficiency_gain->effectN( 1 ).base_value() ),
+                      gains.murderous_efficiency );
+    }
+
+    if ( talent.frost.bonegrinder.ok() && !buffs.bonegrinder_frost->up() )
+    {
+      buffs.bonegrinder_crit->trigger();
+      if ( buffs.bonegrinder_crit->at_max_stacks() )
+      {
+        buffs.bonegrinder_frost->trigger();
+        buffs.bonegrinder_crit->expire();
+      }
+    }
+  } );
 }
 
 void death_knight_t::trigger_runic_empowerment( double rpcost )
@@ -9396,6 +9448,38 @@ void death_knight_t::init_rng()
 
   rppm.bloodworms = get_rppm( "bloodworms", talent.blood.bloodworms );
   rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation );
+}
+
+// death_knight_t::init_items ===============================================
+void death_knight_t::init_items()
+{
+  player_t::init_items();
+
+  set_bonus_type_e tier_to_enable;
+
+  switch ( specialization() )
+  {
+    case DEATH_KNIGHT_BLOOD:
+      tier_to_enable = T30;
+      break;
+    case DEATH_KNIGHT_FROST:
+      tier_to_enable = T30;
+      break;
+    case DEATH_KNIGHT_UNHOLY:
+      tier_to_enable = T31;
+      break;
+    default:
+      return;
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+  {
+    sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
+  }
+  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+  {
+    sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
+  }
 }
 
 // death_knight_t::init_base ================================================

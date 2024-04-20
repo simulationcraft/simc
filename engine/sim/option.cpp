@@ -866,10 +866,19 @@ option_db_t::option_db_t()
     auto_path.push_back( path + "DungeonSlice" );
 
     // Add profiles for each tier
+    // TODO: remove after Dragonflight ends
     for ( unsigned i = 0; i < N_TIER; ++i )
     {
       auto_path.push_back( fmt::format( "{}generators/Tier{}", path, MIN_TIER + i ) );
       auto_path.push_back( fmt::format( "{}Tier{}", path, MIN_TIER + i ) );
+    }
+    // Add profiles for each season
+    // DF1, DF2, DF3, DF4
+    std::string expansion = "DF";
+    for ( unsigned i = 0; i < N_SEASON; ++i )
+    {
+      auto_path.push_back( fmt::format( "{}generators/{}{}", path, expansion, MIN_SEASON + i ) );
+      auto_path.push_back( fmt::format( "{}{}{}", path, expansion, MIN_SEASON + i ) );
     }
   }
 

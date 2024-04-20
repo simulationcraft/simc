@@ -369,13 +369,7 @@ public:
 
   std::string token() const override
   {
-    auto tok = util::encode_html( m_bonus->set_opt_name );
-    util::tolower( tok );
-
-    if ( tok.find( "tier" ) != std::string::npos )
-      util::replace_all( tok, "tier", "Tier " );
-
-    return tok;
+    return util::encode_html( m_bonus->tier );
   }
 };
 
@@ -388,7 +382,7 @@ std::string decoration_domain( const sim_t& sim )
 #if SC_BETA == 0
   if ( maybe_ptr( sim.dbc->ptr ) )
   {
-    return "ptr-2";
+    return "ptr";
   }
   else
   {
