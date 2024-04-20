@@ -526,7 +526,6 @@ public:
     buff_t* matted_fur;
     buff_t* moonkin_form;
     buff_t* natures_vigil;
-    buff_t* protector_of_the_pack;
     buff_t* rising_light_falling_night_day;
     buff_t* rising_light_falling_night_night;
     buff_t* tiger_dash;
@@ -738,7 +737,6 @@ public:
     player_talent_t natures_vigil;
     player_talent_t nurturing_instinct;
     player_talent_t primal_fury;
-    player_talent_t protector_of_the_pack;
     player_talent_t rake;
     player_talent_t rejuvenation;
     player_talent_t remove_corruption;
@@ -5783,29 +5781,6 @@ struct nourish_t : public druid_heal_t
 // Regrowth =================================================================
 struct regrowth_t : public druid_heal_t
 {
-  struct protector_of_the_pack_regrowth_t : public druid_heal_t
-  {
-    protector_of_the_pack_regrowth_t( druid_t* p, std::string_view n ) : druid_heal_t( n, p, p->find_spell( 400204 ) )
-    {
-      // 1 point to allow proper snapshot/update flag parsing
-      base_dd_min = base_dd_max = 1.0;
-      proc = true;
-
-      name_str_reporting = "protector_of_the_pack";
-    }
-
-    double base_da_min( const action_state_t* ) const override
-    {
-      return p()->buff.protector_of_the_pack->check_value();
-    }
-
-    double base_da_max( const action_state_t* ) const override
-    {
-      return p()->buff.protector_of_the_pack->check_value();
-    }
-  };
-
-  action_t* potp = nullptr;
   timespan_t gcd_add;
   double bonus_crit;
   double sotf_mul;
@@ -5820,12 +5795,6 @@ struct regrowth_t : public druid_heal_t
     may_autounshift = true;
 
     affected_by.soul_of_the_forest = true;
-
-    if ( p->specialization() != DRUID_RESTORATION &&  p->talent.protector_of_the_pack.ok() )
-    {
-      potp = p->get_secondary_action<protector_of_the_pack_regrowth_t>( "protector_of_the_pack_" + name_str );
-      add_child( potp );
-    }
   }
 
   timespan_t gcd() const override
@@ -5885,12 +5854,6 @@ struct regrowth_t : public druid_heal_t
 
     if ( target == p() )
       p()->buff.protective_growth->trigger();
-
-    if ( potp && p()->buff.protector_of_the_pack->check() )
-    {
-      potp->execute_on_target( target );
-      p()->buff.protector_of_the_pack->expire();
-    }
 
     if ( is_free() )
       return;
@@ -7106,31 +7069,6 @@ struct moonfire_t : public druid_spell_t
 {
   struct moonfire_damage_t : public trigger_gore_t<use_dot_list_t<trigger_waning_twilight_t<druid_spell_t>>>
   {
-    struct protector_of_the_pack_moonfire_t : public druid_spell_t
-    {
-      protector_of_the_pack_moonfire_t( druid_t* p )
-        : druid_spell_t( "protector_of_the_pack_moonfire", p, p->find_spell( 400202 ) )
-      {
-        // 1 point to allow proper snapshot/update flag parsing
-        base_dd_min = base_dd_max = 1.0;
-        proc = true;
-
-        name_str_reporting = "protector_of_the_pack";
-      }
-
-      double base_da_min( const action_state_t* ) const override
-      {
-        return p()->buff.protector_of_the_pack->check_value();
-      }
-
-      double base_da_max( const action_state_t* ) const override
-      {
-        return p()->buff.protector_of_the_pack->check_value();
-      }
-    };
-
-    action_t* potp = nullptr;
-
     moonfire_damage_t( druid_t* p, std::string_view n, free_spell_e free ) : base_t( n, p, p->spec.moonfire_dmg )
     {
       may_miss = false;
@@ -7149,23 +7087,6 @@ struct moonfire_t : public druid_spell_t
             .set_buff( p->buff.galactic_guardian )
             .set_value( eff.percent() )
             .set_eff( &eff );
-      }
-
-      if ( p->specialization() == DRUID_RESTORATION && p->talent.protector_of_the_pack.ok() )
-        potp = p->get_secondary_action<protector_of_the_pack_moonfire_t>( "protector_of_the_pack_moonfire" );
-    }
-
-    void execute() override
-    {
-      base_t::execute();
-
-      if ( hit_any_target )
-      {
-        if ( potp && p()->buff.protector_of_the_pack->check() )
-        {
-          potp->execute_on_target( target );
-          p()->buff.protector_of_the_pack->expire();
-        }
       }
     }
 
@@ -9282,7 +9203,6 @@ void druid_t::init_spells()
   talent.natures_vigil                  = CT( "Nature's Vigil" );
   talent.nurturing_instinct             = CT( "Nurturing Instinct" );
   talent.primal_fury                    = CT( "Primal Fury" );
-  talent.protector_of_the_pack          = CT( "Protector of the Pack" );
   talent.rake                           = CT( "Rake" );
   talent.rejuvenation                   = CT( "Rejuvenation" );
   talent.remove_corruption              = CT( "Remove Corruption" );
@@ -9878,10 +9798,6 @@ void druid_t::create_buffs()
     ->set_default_value( 0 )
     ->set_cooldown( 0_ms )
     ->set_freeze_stacks( true );
-
-  buff.protector_of_the_pack =
-      make_buff_fallback( talent.protector_of_the_pack.ok(), this, "protector_of_the_pack",
-                          find_spell( specialization() == DRUID_RESTORATION ? 378987 : 395336 ) );
 
   buff.rising_light_falling_night_day = make_buff_fallback( talent.rising_light_falling_night.ok(),
       this, "rising_light_falling_night__day", find_spell( 417714 ) );
@@ -11017,73 +10933,6 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     create_buff_callback<natures_vigil_cb_t>( driver, buff.natures_vigil );
-  }
-
-  if ( talent.protector_of_the_pack.ok() )
-  {
-    using amt_fn = std::function<double( action_state_t* )>;
-
-    struct protector_of_the_pack_cb_t : public druid_cb_t
-    {
-      amt_fn amount;
-      buff_t* buff;
-      double mul;
-      double cap_coeff = 0.0;
-
-      protector_of_the_pack_cb_t( druid_t* p, const special_effect_t& e, amt_fn f )
-        : druid_cb_t( p, e ),
-          amount( std::move( f ) ),
-          buff( p->buff.protector_of_the_pack ),
-          mul( p->talent.protector_of_the_pack->effectN( 1 ).percent() )
-      {}
-
-      void trigger( action_t* a, action_state_t* s ) override
-      {
-        if ( !amount( s ) )
-          return;
-
-        druid_cb_t::trigger( a, s );
-      }
-
-      void execute( action_t*, action_state_t* s ) override
-      {
-        if ( !buff->check() )
-          buff->trigger();
-
-        auto cap = p()->composite_total_spell_power( SCHOOL_MAX ) * cap_coeff;
-        auto cur = buff->check_value();
-
-        if ( cur < cap )
-          buff->current_value = std::min( cap, cur + amount( s ) * mul );
-      }
-    };
-
-    const auto driver = new special_effect_t( this );
-    driver->name_str = talent.protector_of_the_pack->name_cstr();
-    driver->spell_id = talent.protector_of_the_pack->id();
-    driver->proc_flags2_ = PF2_ALL_HIT;
-
-    amt_fn func = []( action_state_t* s ) { return s->result_amount; };
-
-    if ( specialization() == DRUID_RESTORATION )
-    {
-      driver->proc_flags_ = ( PF_MAGIC_HEAL | PF_HELPFUL_PERIODIC );
-      driver->proc_flags2_ |= PF2_PERIODIC_HEAL;
-
-      if ( sim->count_overheal_as_heal )
-      {
-        func = []( action_state_t* s ) { return s->result_total; };
-      }
-    }
-    else
-    {
-      driver->proc_flags_ = talent.protector_of_the_pack->proc_flags() & ~( PF_MAGIC_HEAL | PF_HELPFUL_PERIODIC );
-      driver->proc_flags2_ |= PF2_PERIODIC_DAMAGE;
-    }
-
-    special_effects.push_back( driver );
-
-    new protector_of_the_pack_cb_t( this, *driver, func );
   }
 
   // Balance
