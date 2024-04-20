@@ -589,7 +589,6 @@ public:
     buff_t* predator;
     buff_t* predator_revealed;  // 4t30
     buff_t* predatory_swiftness;
-    buff_t* protective_growth;
     buff_t* shadows_of_the_predator;  // 2t30
     buff_t* sharpened_claws;  // 4t29
     buff_t* smoldering_frenzy;  // 2t31
@@ -632,6 +631,9 @@ public:
     buff_t* natures_swiftness;
     buff_t* soul_of_the_forest_tree;
     buff_t* yseras_gift;
+
+    // Hero talents
+    buff_t* protective_growth;
 
     // Helper pointers
     buff_t* clearcasting;  // clearcasting_cat or clearcasting_tree
@@ -9219,7 +9221,6 @@ void druid_t::init_spells()
   talent.predatory_swiftness            = ST( "Predatory Swiftness" );
   talent.primal_wrath                   = ST( "Primal Wrath" );
   talent.predator                       = ST( "Predator" );
-  talent.protective_growth              = ST( "Protective Growth" );
   talent.relentless_predator            = ST( "Relentless Predator" );
   talent.raging_fury                    = ST( "Raging Fury" );
   talent.rip_and_tear                   = ST( "Rip and Tear" );
@@ -10002,10 +10003,6 @@ void druid_t::create_buffs()
   buff.predatory_swiftness =
       make_buff_fallback( talent.predatory_swiftness.ok(), this, "predatory_swiftness", find_spell( 69369 ) );
 
-  buff.protective_growth =
-      make_buff_fallback( talent.protective_growth.ok(), this, "protective_growth", find_spell( 391955 ) )
-          ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
-
   buff.shadows_of_the_predator = make_buff_fallback<shadows_of_the_predator_buff_t>(
       sets->has_set_bonus( DRUID_FERAL, T30, B2 ), this, "shadows_of_the_predator", sets->set( DRUID_FERAL, T30, B2 ) );
 
@@ -10168,6 +10165,11 @@ void druid_t::create_buffs()
     ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
         active.yseras_gift->schedule_execute();
       } );
+
+  // Hero talents
+  buff.protective_growth =
+      make_buff_fallback( talent.protective_growth.ok(), this, "protective_growth", find_spell( 433749 ) )
+          ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   buff.b_inc_cat  = talent.incarnation_cat.ok()     ? buff.incarnation_cat     : buff.berserk_cat;
   buff.b_inc_bear = talent.incarnation_bear.ok()    ? buff.incarnation_bear    : buff.berserk_bear;
