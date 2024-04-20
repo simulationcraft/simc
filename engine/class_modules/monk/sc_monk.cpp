@@ -70,7 +70,6 @@ monk_action_t<Base>::monk_action_t( std::string_view name, monk_t *player, const
     ww_mastery( false ),
     may_combo_strike( false ),
     trigger_chiji( false ),
-    trigger_jadefire_stomp( false ),
     cast_during_sck( false ),
     track_cd_waste( false )
 {
@@ -570,20 +569,6 @@ void monk_action_t<Base>::execute()
   ab::execute();
 
   trigger_storm_earth_and_fire( this );
-
-  if ( p()->current.distance_to_move <= 5 && p()->buff.jadefire_stomp->up() && trigger_jadefire_stomp &&
-       p()->rng().roll( p()->user_options.jadefire_stomp_uptime ) )
-  {
-    double reset_value = p()->buff.jadefire_stomp->value();
-
-    reset_value *= 1 + p()->talent.windwalker.jadefire_harmony->effectN( 2 ).percent();
-
-    if ( p()->rng().roll( reset_value ) )
-    {
-      p()->cooldown.jadefire_stomp->reset( true, 1 );
-      p()->buff.jadefire_stomp_reset->trigger();
-    }
-  }
 }
 
 template <class Base>
@@ -1385,7 +1370,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     ww_mastery             = true;
     may_combo_strike       = true;
     trigger_chiji          = true;
-    trigger_jadefire_stomp = true;
     sef_ability            = actions::sef_ability_e::SEF_TIGER_PALM;
     cast_during_sck        = true;
 
@@ -1553,7 +1537,6 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
     background  = true;
     ww_mastery  = true;
     sef_ability = actions::sef_ability_e::SEF_GLORY_OF_THE_DAWN;
-    // trigger_jadefire_stomp   = TODO;
 
     apply_dual_wield_two_handed_scaling();
   }
@@ -1616,7 +1599,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, p, p->talent.general.rising_sun_kick->effectN( 1 ).trigger() )
   {
     ww_mastery             = true;
-    trigger_jadefire_stomp = true;
 
     background = dual = true;
     may_crit          = true;
@@ -1733,7 +1715,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     parse_options( options_str );
 
     may_combo_strike       = true;
-    trigger_jadefire_stomp = true;
     sef_ability            = actions::sef_ability_e::SEF_RISING_SUN_KICK;
     ap_type                = attack_power_type::NONE;
     cast_during_sck        = true;
@@ -1901,7 +1882,6 @@ struct rising_sun_kick_press_the_advantage_t : public monk_melee_attack_t
     // parse_options( options_str );
 
     may_combo_strike       = true;
-    trigger_jadefire_stomp = true;
     sef_ability            = actions::sef_ability_e::SEF_RISING_SUN_KICK;
     ap_type                = attack_power_type::NONE;
     cast_during_sck        = true;
@@ -2045,7 +2025,6 @@ struct blackout_kick_t : public monk_melee_attack_t
     sef_ability            = actions::sef_ability_e::SEF_BLACKOUT_KICK;
     may_combo_strike       = true;
     trigger_chiji          = true;
-    trigger_jadefire_stomp = true;
     cast_during_sck        = true;
 
     aoe = 1 + (int)p->shared.shadowboxing_treads->effectN( 1 ).base_value();
@@ -2285,7 +2264,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     parse_options( options_str );
     sef_ability            = actions::sef_ability_e::SEF_RUSHING_JADE_WIND;
     may_combo_strike       = true;
-    trigger_jadefire_stomp = true;
     gcd_type               = gcd_haste_type::NONE;
 
     // Set dot data to 0, since we handle everything through the buff.
@@ -2502,7 +2480,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     sef_ability            = actions::sef_ability_e::SEF_SPINNING_CRANE_KICK;
     may_combo_strike       = true;
-    trigger_jadefire_stomp = true;
 
     may_crit = may_miss = may_block = may_dodge = may_parry = false;
     tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
@@ -2735,7 +2712,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
     cooldown               = p->cooldown.fists_of_fury;
     sef_ability            = actions::sef_ability_e::SEF_FISTS_OF_FURY;
     may_combo_strike       = true;
-    trigger_jadefire_stomp = true;
 
     channeled = tick_zero = true;
     interrupt_auto_attack = true;
@@ -2826,7 +2802,6 @@ struct whirling_dragon_punch_tick_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, p, s ), delay( delay )
   {
     ww_mastery             = true;
-    trigger_jadefire_stomp = true;
 
     background = true;
     aoe        = -1;
@@ -2886,7 +2861,6 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     interrupt_auto_attack  = false;
     channeled              = false;
     may_combo_strike       = true;
-    trigger_jadefire_stomp = true;
     cast_during_sck        = true;
 
     spell_power_mod.direct = 0.0;
@@ -2944,7 +2918,6 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
     sef_ability = actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD;
 
     ww_mastery             = true;
-    trigger_jadefire_stomp = true;
     ap_type                = attack_power_type::WEAPON_MAINHAND;
 
     aoe       = -1;
@@ -2980,7 +2953,6 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
   {
     sef_ability            = actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH;
     ww_mastery             = true;
-    trigger_jadefire_stomp = true;
     ap_type                = attack_power_type::WEAPON_OFFHAND;
 
     aoe       = -1;
@@ -3247,7 +3219,6 @@ struct keg_smash_t : public monk_melee_attack_t
 
     aoe                    = -1;
     reduced_aoe_targets    = p->talent.brewmaster.keg_smash->effectN( 7 ).base_value();
-    trigger_jadefire_stomp = true;
     cast_during_sck        = true;
 
     attack_power_mod.direct = p->talent.brewmaster.keg_smash->effectN( 2 ).ap_coeff();
@@ -3438,7 +3409,6 @@ struct touch_of_death_t : public monk_melee_attack_t
     ww_mastery = true;
     may_crit = hasted_ticks = false;
     may_combo_strike        = true;
-    trigger_jadefire_stomp  = true;
     cast_during_sck         = true;
     parse_options( options_str );
 
@@ -4030,7 +4000,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
   {
     sef_ability            = actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING;
     may_combo_strike       = true;
-    trigger_jadefire_stomp = true;
 
     parse_options( options_str );
 
@@ -4194,7 +4163,6 @@ struct breath_of_fire_t : public monk_spell_t
     aoe                    = -1;
     reduced_aoe_targets    = 1.0;
     full_amount_targets    = 1;
-    trigger_jadefire_stomp = true;
     cast_during_sck        = true;
 
     add_child( p.active_actions.breath_of_fire );
@@ -5039,7 +5007,6 @@ struct summon_white_tiger_statue_spell_t : public monk_spell_t
     parse_options( options_str );
 
     harmful                = false;
-    trigger_jadefire_stomp = true;
     gcd_type               = gcd_haste_type::NONE;
   }
 
@@ -5412,7 +5379,6 @@ struct jadefire_stomp_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    p()->buff.jadefire_stomp_reset->expire();
     p()->buff.jadefire_stomp->trigger();
     p()->buff.jadefire_brand->trigger();
   }
@@ -6090,7 +6056,6 @@ struct chi_wave_t : public monk_spell_t
   {
     sef_ability            = actions::sef_ability_e::SEF_CHI_WAVE;
     may_combo_strike       = true;
-    trigger_jadefire_stomp = true;
     cast_during_sck        = true;
     parse_options( options_str );
     hasted_ticks = harmful = false;
@@ -6133,7 +6098,6 @@ struct chi_burst_heal_t : public monk_heal_t
   chi_burst_heal_t( monk_t &player ) : monk_heal_t( "chi_burst_heal", player, player.passives.chi_burst_heal )
   {
     background             = true;
-    trigger_jadefire_stomp = true;
     target                 = p();
     // If we are using the user option, each heal just heals 1 target, otherwise use the old SimC code
     aoe = ( p()->user_options.chi_burst_healing_targets > 1 ? 1 : -1 );
@@ -6163,7 +6127,6 @@ struct chi_burst_damage_t : public monk_spell_t
   {
     background             = true;
     ww_mastery             = true;
-    trigger_jadefire_stomp = true;
     aoe                    = -1;
   }
 
@@ -6200,7 +6163,6 @@ struct chi_burst_t : public monk_spell_t
   {
     parse_options( options_str );
     may_combo_strike       = true;
-    trigger_jadefire_stomp = true;
 
     add_child( damage );
     add_child( heal );
@@ -7314,7 +7276,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
   }
   user_options.initial_chi               = 1;
-  user_options.jadefire_stomp_uptime     = 1.0;
   user_options.chi_burst_healing_targets = 8;
   user_options.motc_override             = 0;
   user_options.squirm_frequency          = 15;
@@ -8372,9 +8333,6 @@ void monk_t::create_buffs()
   buff.jadefire_stomp = make_buff( this, "jadefire_stomp", find_spell( 388193 ) )
                             ->set_trigger_spell( shared.jadefire_stomp )
                             ->set_default_value_from_effect( 2 );
-
-  buff.jadefire_stomp_reset =
-      make_buff( this, "jadefire_stomp_reset", find_spell( 388203 ) )->set_trigger_spell( shared.jadefire_stomp );
 
   buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", passives.fortifying_brew );
 
@@ -9630,7 +9588,6 @@ void monk_t::create_options()
   base_t::create_options();
 
   add_option( opt_int( "monk.initial_chi", user_options.initial_chi, 0, 6 ) );
-  add_option( opt_float( "monk.jadefire_stomp_uptime", user_options.jadefire_stomp_uptime, 0.0, 1.0 ) );
   add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
   add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
   add_option( opt_float( "monk.squirm_frequency", user_options.squirm_frequency, 0, 30 ) );

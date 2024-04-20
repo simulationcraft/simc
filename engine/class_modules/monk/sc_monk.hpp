@@ -84,7 +84,6 @@ struct monk_action_t : public parse_action_effects_t<Base, monk_t, monk_td_t>
   bool ww_mastery;
   bool may_combo_strike;
   bool trigger_chiji;
-  bool trigger_jadefire_stomp;
   bool cast_during_sck;
   bool track_cd_waste;
 
@@ -460,7 +459,6 @@ public:
     propagate_const<buff_t *> dampen_harm;
     propagate_const<buff_t *> diffuse_magic;
     propagate_const<buff_t *> jadefire_stomp;
-    propagate_const<buff_t *> jadefire_stomp_reset;
     propagate_const<buff_t *> generous_pour_driver;
     propagate_const<buff_t *> invokers_delight;
     propagate_const<buff_t *> rushing_jade_wind;
