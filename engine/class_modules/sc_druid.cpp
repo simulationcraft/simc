@@ -543,7 +543,6 @@ public:
     buff_t* dreamstate;
     buff_t* eclipse_lunar;
     buff_t* eclipse_solar;
-    buff_t* friend_of_the_fae;
     buff_t* fury_of_elune;  // AP ticks
     buff_t* gathering_starstuff;  // 2t29
     buff_t* incarnation_moonkin;
@@ -775,7 +774,6 @@ public:
     player_talent_t eclipse;
     player_talent_t elunes_guidance;
     player_talent_t force_of_nature;
-    player_talent_t friend_of_the_fae;
     player_talent_t fury_of_elune;
     player_talent_t incarnation_moonkin;
     player_talent_t light_of_the_sun;
@@ -1085,7 +1083,6 @@ public:
     uptime_t* eclipse_solar;
     uptime_t* eclipse_lunar;
     uptime_t* eclipse_none;
-    uptime_t* friend_of_the_fae;
     uptime_t* incarnation_cat;
     uptime_t* tooth_and_claw_debuff;
   } uptime;
@@ -1299,13 +1296,6 @@ struct denizen_of_the_dream_t : public pet_t
     if ( n == "fey_missile" ) return new fey_missile_t( this );
 
     return pet_t::create_action( n, opt );
-  }
-
-  void arise() override
-  {
-    pet_t::arise();
-
-    o()->buff.friend_of_the_fae->trigger();
   }
 
   druid_t* o() { return static_cast<druid_t*>( owner ); }
@@ -1649,7 +1639,6 @@ public:
     // due to 4t31, we parse the damage effects (#1/#8) separately and use the current buff value instead of data value
     parse_effects( p()->buff.eclipse_solar, 0b10000001U, p()->talent.umbral_intensity );
     parse_effects( p()->buff.eclipse_solar, 0b01111110U, USE_CURRENT );
-    parse_effects( p()->buff.friend_of_the_fae );
     parse_effects( p()->buff.gathering_starstuff );
 
     // for readability, we build the mask for effects to enable, rather than mask to disable.
@@ -9082,7 +9071,6 @@ void druid_t::init_spells()
   talent.eclipse                        = ST( "Eclipse" );
   talent.elunes_guidance                = ST( "Elune's Guidance" );
   talent.force_of_nature                = ST( "Force of Nature" );
-  talent.friend_of_the_fae              = ST( "Friend of the Fae" );
   talent.fury_of_elune                  = ST( "Fury of Elune" );
   talent.incarnation_moonkin            = ST( "Incarnation: Chosen of Elune" );
   talent.light_of_the_sun               = ST( "Light of the Sun" );
@@ -9708,15 +9696,6 @@ void druid_t::create_buffs()
         eclipse_handler.advance_eclipse();
       }
     } );
-
-  buff.friend_of_the_fae =
-      make_buff_fallback( talent.friend_of_the_fae.ok(), this, "friend_of_the_fae", find_spell( 394083 ) )
-          ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
-            if ( !old_ )
-              uptime.friend_of_the_fae->update( true, sim->current_time() );
-            else if ( !new_ )
-              uptime.friend_of_the_fae->update( false, sim->current_time() );
-          } );
 
   buff.fury_of_elune = make_buff_fallback<fury_of_elune_buff_t>( talent.fury_of_elune.ok(),
       this, "fury_of_elune", talent.fury_of_elune );
@@ -10608,7 +10587,6 @@ void druid_t::init_uptimes()
   uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" )->collect_uptime( *sim );
   uptime.eclipse_solar             = get_uptime( "Solar Eclipse Only" )->collect_uptime( *sim );
   uptime.eclipse_none              = get_uptime( "No Eclipse" )->collect_uptime( *sim );
-  uptime.friend_of_the_fae         = get_uptime( "Friend of the Fae" )->collect_uptime( *sim );
   uptime.incarnation_cat           = get_uptime( "Incarnation: Avatar of Ashamane" )->collect_uptime( *sim );
   uptime.tooth_and_claw_debuff     = get_uptime( "Tooth and Claw Debuff" )->collect_uptime( *sim );
 }
