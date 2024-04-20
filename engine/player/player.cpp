@@ -10724,7 +10724,7 @@ static player_talent_t create_talent_obj( const player_t* player, specialization
       range::find( trait->id_spec_starter, spec == SPEC_NONE ? player->_spec : spec ) != trait->id_spec_starter.end() ||
       ( ( _tree == talent_tree::SPECIALIZATION || _tree == talent_tree::HERO ) && trait->col == 1 && trait->row == 1 );
 
-  auto rank = std::get<2>( *it );
+  auto rank = it == player->player_traits.end() ? 0U : std::get<2>( *it );
 
   // all allocated hero talents are present but disabled if the control talent is not active unless it has been manually
   // added to the profile
