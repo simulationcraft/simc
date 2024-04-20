@@ -242,6 +242,7 @@ public:
     player_talent_t phantasm;
     player_talent_t death_and_madness;
     const spell_data_t* death_and_madness_insanity;
+    const spell_data_t* death_and_madness_reset_buff;
     // Row 4
     player_talent_t spell_warding;
     player_talent_t blessed_recovery;
@@ -272,6 +273,7 @@ public:
     // Row 7
     player_talent_t unwavering_will;
     player_talent_t twist_of_fate;
+    const spell_data_t* twist_of_fate_buff;
     player_talent_t throes_of_pain;
     // Row 8
     player_talent_t angels_mercy;
@@ -371,6 +373,8 @@ public:
       player_talent_t idol_of_nzoth;
       player_talent_t idol_of_yoggsaron;
       player_talent_t idol_of_cthun;
+      const spell_data_t* echoing_void;
+      const spell_data_t* echoing_void_debuff;
     } shadow;
 
     struct
@@ -509,6 +513,7 @@ public:
       player_talent_t no_escape;
       player_talent_t dark_energy;
       player_talent_t void_blast;
+      const spell_data_t* void_blast_shadow;
       player_talent_t inner_quietus;
       player_talent_t devour_matter;
       player_talent_t void_empowerment;
@@ -521,6 +526,7 @@ public:
       player_talent_t void_leech;
       player_talent_t embrace_the_shadow;
       player_talent_t collapsing_void;
+      const spell_data_t* collapsing_void_damage;
     } voidweaver;
 
     // Shared
@@ -538,6 +544,7 @@ public:
     const spell_data_t* shadow_word_death_self_damage;
     const spell_data_t* psychic_scream;
     const spell_data_t* fade;
+    const spell_data_t* levitate_buff;
 
     // Discipline
     const spell_data_t* discipline_priest;  // General discipline data
@@ -704,7 +711,6 @@ public:
   {
     ground_aoe_event_t* active_entropic_rift;
   } state;
-
 
   // Pets
   struct priest_pets_t
