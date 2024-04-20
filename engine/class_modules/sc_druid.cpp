@@ -540,6 +540,7 @@ public:
     buff_t* balance_of_all_things_nature;
     buff_t* celestial_alignment;
     buff_t* denizen_of_the_dream;  // proxy buff to track stack uptime
+    buff_t* dreamstate;
     buff_t* eclipse_lunar;
     buff_t* eclipse_solar;
     buff_t* friend_of_the_fae;
@@ -547,7 +548,6 @@ public:
     buff_t* gathering_starstuff;  // 2t29
     buff_t* incarnation_moonkin;
     buff_t* natures_balance;
-    buff_t* natures_grace;
     buff_t* orbit_breaker;
     buff_t* owlkin_frenzy;
     buff_t* parting_skies;  // sundered firmament tracker
@@ -567,7 +567,6 @@ public:
     buff_t* warrior_of_elune;
     buff_t* balance_t31_4pc_buff_solar; // buff to track t31 4pc value
     buff_t* balance_t31_4pc_buff_lunar;  // buff to track t31 4pc value
-    buff_t* dreamstate;  // 2t31
 
     // Feral
     buff_t* apex_predators_craving;
@@ -6466,13 +6465,8 @@ struct celestial_alignment_base_t : public druid_spell_t
     {
       case IN_SOLAR:
       case IN_LUNAR:
-        p()->buff.dreamstate->trigger();
-        if ( p()->talent.orbital_strike.ok() )
-          p()->buff.natures_grace->trigger();
-        break;
       case IN_BOTH:
         p()->buff.dreamstate->trigger();
-        p()->buff.natures_grace->trigger();
         break;
       default:
         break;
@@ -9764,6 +9758,11 @@ void druid_t::create_buffs()
           ->set_max_stack( 10 )
           ->set_rppm( rppm_scale_e::RPPM_DISABLE );
 
+  buff.dreamstate =
+      make_buff_fallback( talent.natures_grace.ok(), this, "dreamstate", find_spell( 424248 ) )
+          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  buff.dreamstate->set_initial_stack( buff.dreamstate->max_stack() );
+
   buff.eclipse_lunar = make_buff_fallback( talent.eclipse.ok(), this, "eclipse_lunar", spec.eclipse_lunar )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
     ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
@@ -9833,10 +9832,6 @@ void druid_t::create_buffs()
           }
           resource_gain( RESOURCE_ASTRAL_POWER, ap, g );
         } );
-
-  buff.natures_grace = make_buff_fallback( talent.natures_grace.ok(), this, "natures_grace", find_spell( 393959 ) )
-    ->set_default_value_from_effect_type( A_HASTE_ALL )
-    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buff.orbit_breaker = make_buff_fallback( talent.orbit_breaker.ok(), this, "orbit_breaker" )
     ->set_quiet( true )
@@ -9926,11 +9921,6 @@ void druid_t::create_buffs()
           ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
             buff.eclipse_lunar->current_value = buff.eclipse_lunar->default_value + b->check_stack_value();
           } );
-
-  buff.dreamstate =
-      make_buff_fallback( sets->has_set_bonus( DRUID_BALANCE, T31, B2 ), this, "dreamstate", find_spell( 424248 ) )
-          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  buff.dreamstate->set_initial_stack( buff.dreamstate->max_stack() );
 
   // Feral buffs
   buff.ashamanes_guidance = make_buff_fallback( talent.ashamanes_guidance.ok() && talent.incarnation_cat.ok(),
@@ -12644,7 +12634,6 @@ void eclipse_handler_t::advance_eclipse()
       break;
 
     case IN_SOLAR:
-      p->buff.natures_grace->trigger();
       p->buff.dreamstate->trigger();
 
       state = ANY_NEXT;
@@ -12653,7 +12642,6 @@ void eclipse_handler_t::advance_eclipse()
       break;
 
     case IN_LUNAR:
-      p->buff.natures_grace->trigger();
       p->buff.dreamstate->trigger();
 
       state = ANY_NEXT;
@@ -12662,7 +12650,6 @@ void eclipse_handler_t::advance_eclipse()
       break;
 
     case IN_BOTH:
-      p->buff.natures_grace->trigger();
       p->buff.dreamstate->trigger();
 
       state = ANY_NEXT;
