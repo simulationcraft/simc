@@ -663,9 +663,6 @@ public:
     // Multiple Specs / Forms
     gain_t* clearcasting;        // Feral & Restoration
 
-    // Balance
-    gain_t* stellar_innervation;
-
     // Feral (Cat)
     gain_t* energy_refund;
     gain_t* overflowing_power;
@@ -794,7 +791,6 @@ public:
     player_talent_t starlord;
     player_talent_t starweaver;
     player_talent_t stellar_flare;
-    player_talent_t stellar_innervation;
     player_talent_t sundered_firmament;
     player_talent_t twin_moons;
     player_talent_t umbral_embrace;
@@ -6989,14 +6985,6 @@ struct moonfire_t : public druid_spell_t
   // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
 
-  void gain_energize_resource( resource_e rt, double amt, gain_t* gain ) override
-  {
-    druid_spell_t::gain_energize_resource( rt, amt, gain );
-
-    if ( p()->talent.stellar_innervation.ok() && p()->buff.eclipse_lunar->check() )
-      p()->resource_gain( rt, amt, p()->gain.stellar_innervation, this );
-  }
-
   void execute() override
   {
     druid_spell_t::execute();
@@ -7784,14 +7772,6 @@ struct sunfire_t : public druid_spell_t
 
   // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
-
-  void gain_energize_resource( resource_e rt, double amt, gain_t* gain ) override
-  {
-    druid_spell_t::gain_energize_resource( rt, amt, gain );
-
-    if ( p()->talent.stellar_innervation.ok() && p()->buff.eclipse_solar->check() )
-      p()->resource_gain( rt, amt, p()->gain.stellar_innervation, this );
-  }
 
   void execute() override
   {
@@ -9091,7 +9071,6 @@ void druid_t::init_spells()
   talent.starlord                       = ST( "Starlord" );
   talent.starweaver                     = ST( "Starweaver" );
   talent.stellar_flare                  = ST( "Stellar Flare" );
-  talent.stellar_innervation            = ST( "Stellar Innervation" );
   talent.sundered_firmament             = ST( "Sundered Firmament" );
   talent.twin_moons                     = ST( "Twin Moons" );
   talent.umbral_embrace                 = ST( "Umbral Embrace" );
@@ -10534,11 +10513,7 @@ void druid_t::init_gains()
 {
   player_t::init_gains();
 
-  if ( specialization() == DRUID_BALANCE )
-  {
-    gain.stellar_innervation = get_gain( "Stellar Innervation" );
-  }
-  else if ( specialization() == DRUID_FERAL )
+  if ( specialization() == DRUID_FERAL )
   {
     gain.energy_refund       = get_gain( "Energy Refund" );
     gain.overflowing_power   = get_gain( "Overflowing Power" );
