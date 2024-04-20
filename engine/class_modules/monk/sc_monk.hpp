@@ -622,64 +622,75 @@ public:
     {
       // Row 1
       player_talent_t soothing_mist;
-      player_talent_t rising_sun_kick;
-      player_talent_t tigers_lust;
-      // Row 2
-      player_talent_t improved_roll;
-      player_talent_t calming_presence;
-      player_talent_t disable;
-      // Row 3
-      player_talent_t tiger_tail_sweep;
-      player_talent_t vigorous_expulsion;
-      player_talent_t improved_vivify;
-      player_talent_t detox;
-      player_talent_t improved_detox;
       player_talent_t paralysis;
-      // Row 4
+      player_talent_t rising_sun_kick;
+      // Row 2
+      player_talent_t elusive_mists;
+      player_talent_t tigers_lust;
+      player_talent_t crashing_momentum;
+      player_talent_t disable;
+      player_talent_t fast_feet;
+      // Row 3
       player_talent_t grace_of_the_crane;
+      player_talent_t bounding_agility;
+      player_talent_t calming_presence;
+      player_talent_t winds_reach;
+      player_talent_t detox;
+      // Row 4
       player_talent_t vivacious_vivification;
-      player_talent_t ferocity_of_xuen;
-      player_talent_t improved_paralysis;
+      player_talent_t jade_walk;
+      player_talent_t pressure_points;
+      player_talent_t spear_hand_strike;
+      player_talent_t ancient_arts;
       // 8 Required
       // Row 5
-      player_talent_t elusive_mists;
-      player_talent_t transcendence;
-      player_talent_t spear_hand_strike;
-      player_talent_t fortifying_brew;
-      // Row 6
       player_talent_t chi_wave;
       player_talent_t chi_burst;
-      player_talent_t hasty_provocation;
-      player_talent_t ring_of_peace;
-      player_talent_t fast_feet;
+      player_talent_t transcendence;
+      player_talent_t energy_transfer;
       player_talent_t celerity;
       player_talent_t chi_torpedo;
-      player_talent_t ironshell_brew;
-      player_talent_t expeditious_fortification;
+      // Row 6
+      player_talent_t quick_footed;
+      player_talent_t resonant_fists;
+      player_talent_t ring_of_peace;
+      player_talent_t song_of_chi_ji;
+      player_talent_t spirits_essence;
+      player_talent_t tiger_tail_sweep;
+      player_talent_t improved_touch_of_death;
       // Row 7
-      player_talent_t profound_rebuttal;
+      player_talent_t vigorous_expulsion;
       player_talent_t yulons_grace;
       player_talent_t diffuse_magic;
-      player_talent_t eye_of_the_tiger;
+      player_talent_t peace_and_prosperity;
+      player_talent_t fortifying_brew;
       player_talent_t dance_of_the_wind;
-      player_talent_t dampen_harm;
-      player_talent_t improved_touch_of_death;
-      player_talent_t strength_of_spirit;
       // 20 Required
       // Row 8
-      player_talent_t close_to_heart;
-      player_talent_t escape_from_reality;
-      player_talent_t windwalking;
-      player_talent_t fatal_touch;
-      player_talent_t generous_pour;
-      // Row 9
       player_talent_t save_them_all;
-      player_talent_t resonant_fists;
-      player_talent_t bounce_back;
-      // Row 10
+      player_talent_t swift_art;
+      player_talent_t strength_of_spirit;
+      player_talent_t profound_rebuttal;
+      player_talent_t summon_black_ox_statue;
       player_talent_t summon_jade_serpent_statue;
       player_talent_t summon_white_tiger_statue;
-      player_talent_t summon_black_ox_statue;
+      player_talent_t ironshell_brew;
+      player_talent_t expeditious_fortification;
+      player_talent_t celestial_determination;
+      // Row 9
+      player_talent_t chi_proficiency;
+      player_talent_t healing_winds;
+      player_talent_t windwalking;
+      player_talent_t bounce_back;
+      player_talent_t martial_instincts;
+      // Row 10
+      player_talent_t lighter_than_air;
+      player_talent_t flow_of_chi;
+      player_talent_t escape_from_reality;
+      player_talent_t transcendence_linked_spirits;
+      player_talent_t fatal_touch;
+      player_talent_t rushing_reflexes;
+      player_talent_t clash;
     } general;
 
     // Brewmaster
@@ -726,7 +737,7 @@ public:
       player_talent_t light_brewing;
       player_talent_t training_of_niuzao;
       player_talent_t pretense_of_instability;
-      player_talent_t face_palm;
+      player_talent_t counterstrike;
       // 20 Required
       // Row 8
       player_talent_t dragonfire_brew;
@@ -735,7 +746,7 @@ public:
       player_talent_t walk_with_the_ox;
       player_talent_t elusive_footwork;
       player_talent_t anvil_and_stave;
-      player_talent_t counterstrike;
+      player_talent_t face_palm;
       // Row 9
       player_talent_t bonedust_brew;
       player_talent_t improved_invoke_niuzao_the_black_ox;
@@ -757,63 +768,62 @@ public:
       // Row 1
       player_talent_t enveloping_mist;
       // Row 2
-      player_talent_t essence_font;
+      player_talent_t thunder_focus_tea;
       player_talent_t renewing_mist;
       // Row 3
       player_talent_t life_cocoon;
-      player_talent_t thunder_focus_tea;
-      player_talent_t invigorating_mists;
+      player_talent_t mana_tea;
+      player_talent_t healing_elixir;
       // Row 4
       player_talent_t teachings_of_the_monastery;
+      player_talent_t crane_style;
       player_talent_t revival;
       player_talent_t restoral;
-      player_talent_t song_of_chi_ji;
-      player_talent_t mastery_of_mist;
+      player_talent_t invigorating_mists;
       // 8 Required
       // Row 5
-      player_talent_t spirit_of_the_crane;
-      player_talent_t mists_of_life;
-      player_talent_t uplifting_spirits;
-      player_talent_t font_of_life;
-      player_talent_t zen_pulse;
-      player_talent_t healing_elixir;
-      // Row 6
       player_talent_t nourishing_chi;
+      player_talent_t calming_coalescence;
+      player_talent_t uplifting_spirits;
+      player_talent_t energizing_brew;
+      player_talent_t lifecycles;
+      player_talent_t zen_pulse;
+      // Row 6
+      player_talent_t mists_of_life;
       player_talent_t overflowing_mists;
       player_talent_t invoke_yulon_the_jade_serpent;
       player_talent_t invoke_chi_ji_the_red_crane;
-      player_talent_t echoing_reverberation;
-      player_talent_t accumulating_mist;
+      player_talent_t deep_clarity;
       player_talent_t rapid_diffusion;
       // Row 7
-      player_talent_t calming_coalescence;
+      player_talent_t chrysalis;
+      player_talent_t burst_of_life;
       player_talent_t yulons_whisper;
       player_talent_t mist_wrap;
       player_talent_t refreshing_jade_wind;
-      player_talent_t enveloping_breath;
+      player_talent_t celestial_harmony;
       player_talent_t dancing_mists;
-      player_talent_t lifecycles;
-      player_talent_t mana_tea;
+      player_talent_t chi_harmony;
       // 20 Required
       // Row 8
       player_talent_t jadefire_stomp;
-      player_talent_t ancient_teachings;
-      player_talent_t clouded_focus;
+      player_talent_t peer_into_peace;
       player_talent_t jade_bond;
       player_talent_t gift_of_the_celestials;
       player_talent_t focused_thunder;
-      player_talent_t upwelling;
-      //      player_talent_t bonedust_brew;
+      player_talent_t sheiluns_gift;
       // Row 9
       player_talent_t ancient_concordance;
+      player_talent_t ancient_teachings;
       player_talent_t resplendent_mist;
       player_talent_t secret_infusion;
       player_talent_t misty_peaks;
       player_talent_t peaceful_mending;
-      player_talent_t bountiful_brew;
-      player_talent_t attenuation;
+      player_talent_t veil_of_pride;
+      player_talent_t shaohaos_lessons;
       // Row 10
       player_talent_t awakened_jadefire;
+      player_talent_t dance_of_chiji;
       player_talent_t tea_of_serenity;
       player_talent_t tea_of_plenty;
       player_talent_t unison;
@@ -821,6 +831,7 @@ public:
       player_talent_t invokers_delight;
       player_talent_t tear_of_morning;
       player_talent_t rising_mist;
+      player_talent_t legacy_of_wisdom;
     } mistweaver;
 
     // Windwalker
@@ -829,13 +840,18 @@ public:
       // Row 1
       player_talent_t fists_of_fury;
       // Row 2
-      player_talent_t touch_of_karma;
-      player_talent_t ascension;
+      player_talent_t momentum_boost;
+      player_talent_t combat_wisdom;
+      player_talent_t acclamation;
+
       player_talent_t power_strikes;
       // Row 3
-      player_talent_t widening_whirl;
       player_talent_t touch_of_the_tiger;
       player_talent_t hardened_soles;
+      player_talent_t ascension;
+      player_talent_t dual_threat;
+
+      player_talent_t widening_whirl;
       player_talent_t flashing_fists;
       player_talent_t open_palm_strikes;
       // Row 4
@@ -845,46 +861,124 @@ public:
       // 8 Required
       // Row 5
       player_talent_t shadowboxing_treads;
-      player_talent_t inner_peace;
-      player_talent_t storm_earth_and_fire;
-      player_talent_t meridian_strikes;
-      player_talent_t strike_of_the_windlord;
-      // Row 6
-      player_talent_t dance_of_chiji;
       player_talent_t jade_ignition;
+      player_talent_t teachings_of_the_monastery;
+      player_talent_t storm_earth_and_fire;
+      player_talent_t hit_combo;
+      player_talent_t brawlers_intensity;
+      player_talent_t meridian_strikes;
+      // Row 6
+      player_talent_t martial_mixture;
+      player_talent_t courageous_impulse;
       player_talent_t drinking_horn_cover;
       player_talent_t spiritual_focus;
-      player_talent_t hit_combo;
+      player_talent_t ordered_elements;
+      player_talent_t strike_of_the_windlord;
       // Row 7
-      player_talent_t rushing_jade_wind;
-      player_talent_t forbidden_technique;
+      player_talent_t dance_of_chiji;
+      player_talent_t energy_burst;
       player_talent_t invoke_xuen_the_white_tiger;
-      player_talent_t teachings_of_the_monastery;
+      player_talent_t inner_peace;
+      player_talent_t rushing_jade_wind;
       player_talent_t thunderfist;
       // 20 Required
       // Row 8
-      player_talent_t crane_vortex;
-      player_talent_t xuens_bond;
-      player_talent_t fury_of_xuen;
-      player_talent_t empowered_tiger_lightning;
+      player_talent_t sequenced_strikes;
       player_talent_t rising_star;
+      player_talent_t invokers_delight;
+      player_talent_t crane_vortex;
+      player_talent_t gale_force;
       // Row 9
-      player_talent_t bonedust_brew;
-      player_talent_t fatal_flying_guillotine;
       player_talent_t last_emperors_capacitor;
+      player_talent_t whirling_dragon_punch;
+      player_talent_t xuens_bond;
       player_talent_t xuens_battlegear;
       player_talent_t transfer_the_power;
-      player_talent_t whirling_dragon_punch;
       player_talent_t jadefire_stomp;
+      player_talent_t communion_with_wind;
       // Row 10
-      player_talent_t attenuation;
-      player_talent_t dust_in_the_wind;
-      player_talent_t skyreach;
+      player_talent_t revolving_whirl;
+      player_talent_t knowledge_of_the_broken_temple;
       player_talent_t skytouch;
-      player_talent_t invokers_delight;
+      player_talent_t fury_of_xuen;
       player_talent_t path_of_jade;
+      player_talent_t singularly_focused_jade;
       player_talent_t jadefire_harmony;
     } windwalker;
+
+    // Master of Harmony
+    struct
+    {
+      // Row 1
+      player_talent_t aspect_of_harmony;
+      // Row 2
+      player_talent_t manifestation;
+      player_talent_t purified_spirit;
+      player_talent_t harmonic_gambit;
+      player_talent_t balanced_strategem;
+      // Row 3
+      player_talent_t tigers_vigor;
+      player_talent_t roar_from_the_heavens;
+      player_talent_t endless_draught;
+      player_talent_t mantra_of_purity;
+      player_talent_t mantra_of_tenacity;
+      // Row 4
+      player_talent_t overwhelming_force;
+      player_talent_t path_of_resurgence;
+      player_talent_t way_of_a_thousand_strikes;
+      player_talent_t clarity_of_purpose;
+      // Row 5
+      player_talent_t resonance;
+    } master_of_harmony;
+
+    // Shado-Pan
+    struct
+    {
+      // Row 1
+      player_talent_t flurry_strikes;
+      // Row 2
+      player_talent_t pride_of_pandaria;
+      player_talent_t high_impact;
+      player_talent_t veterans_eye;
+      player_talent_t martial_precision;
+      // Row 3
+      player_talent_t protect_and_serve;
+      player_talent_t lead_from_the_front;
+      player_talent_t one_versus_many;
+      player_talent_t whirling_steel;
+      player_talent_t predictive_training;
+      // Row 4
+      player_talent_t against_all_odds;
+      player_talent_t efficient_training;
+      player_talent_t vigilant_watch;
+      // Row 5
+      player_talent_t wisdom_of_the_wall;
+    } shado_pan;
+
+    // Conduit of the Celestials
+    struct
+    {
+      // Row 1
+      player_talent_t celestial_conduit;
+      // Row 2
+      player_talent_t temple_training;
+      player_talent_t xuens_guidance;
+      player_talent_t courage_of_the_white_tiger;
+      player_talent_t restore_balance;
+      player_talent_t yulons_knowledge;
+      // Row 3
+      player_talent_t heart_of_the_jade_serpent;
+      player_talent_t strength_of_the_black_ox;
+      player_talent_t flight_of_the_red_crane;
+      // Row 4
+      player_talent_t niuzaos_protection;
+      player_talent_t jade_sanctuary;
+      player_talent_t chi_jis_swiftness;
+      player_talent_t inner_compass;
+      player_talent_t august_dynasty;
+      // Row 5
+      player_talent_t unity_within;
+    } conduit_of_the_celestials;
   } talent;
 
   // Shared
