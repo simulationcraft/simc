@@ -1719,7 +1719,7 @@ public:
       }
     }
 
-    // bitwise NOT to conver to ignore mask.
+    // bitwise NOT to convert to ignore mask.
     bear_mask = ~bear_mask;
 
     parse_effects( p()->buff.berserk_bear, bear_mask, p()->talent.berserk_ravage,
@@ -3434,14 +3434,6 @@ public:
 
     p()->buff.predatory_swiftness->trigger( 1, buff_t::DEFAULT_VALUE(),
                                             consumed * p()->talent.predatory_swiftness->effectN( 3 ).percent() );
-
-    // TODO: implement 0.1s ICD
-    if ( p()->talent.raging_fury.ok() )
-    {
-      auto dur_ = timespan_t::from_seconds( p()->talent.raging_fury->effectN( 1 ).base_value() * consumed * 0.1 );
-
-      p()->buff.tigers_fury->extend_duration( p(), dur_ );
-    }
 
     if ( p()->talent.soul_of_the_forest_cat.ok() )
     {
@@ -10099,6 +10091,7 @@ void druid_t::create_buffs()
   buff.tigers_fury = make_buff_fallback( talent.tigers_fury.ok(), this, "tigers_fury", talent.tigers_fury )
     ->set_cooldown( 0_ms )
     ->apply_affecting_aura( talent.predator )
+    ->apply_affecting_aura( talent.raging_fury )
     // TODO: hack for bug where frenzied assault ignores benefit from tigers fury
     ->set_default_value_from_effect( 1 )
     ->apply_affecting_aura( talent.carnivorous_instinct );
