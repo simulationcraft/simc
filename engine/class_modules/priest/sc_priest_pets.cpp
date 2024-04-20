@@ -449,14 +449,9 @@ struct base_fiend_pet_t : public priest_pet_t
 
 struct voidwraith_pet_t final : public base_fiend_pet_t
 {
-  double power_leech_insanity;
-  double power_leech_mana;
 
   voidwraith_pet_t( priest_t* owner, util::string_view name = "voidwraith" )
-    : base_fiend_pet_t( owner, name, fiend_type::Voidwraith ),
-      power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
-      power_leech_mana( o().specialization() == PRIEST_SHADOW ? 0.0
-                                                              : o().talents.shadowfiend->effectN( 4 ).percent() / 10 )
+    : base_fiend_pet_t( owner, name, fiend_type::Voidwraith )
   {
     direct_power_mod = 1.0;
 
@@ -478,12 +473,12 @@ struct voidwraith_pet_t final : public base_fiend_pet_t
 
   double mana_return_percent() const override
   {
-    return power_leech_mana;
+    return 0;
   }
 
   double insanity_gain() const override
   {
-    return power_leech_insanity;
+    return 0;
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str );
@@ -492,8 +487,15 @@ struct voidwraith_pet_t final : public base_fiend_pet_t
  struct void_flay_t final : public priest_pet_spell_t
 {
   double damage_mul;
+  double void_flay_insanity;
+  double void_flay_mana;
+
   void_flay_t( voidwraith_pet_t& p, util::string_view options )
-    : priest_pet_spell_t( "void_flay", p, p.o().find_spell( 451435 ) )
+    : priest_pet_spell_t( "void_flay", p, p.o().find_spell( 451435 ) ),
+      void_flay_insanity( p.o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ), // Sfiend Power Leech
+      void_flay_mana( p.o().specialization() == PRIEST_SHADOW
+                          ? 0.0
+                          : p.o().find_spell( 34433 )->effectN( 4 ).percent() / 10 )  // Sfiend Spell
   {
     parse_options( options );
 
@@ -520,6 +522,28 @@ struct voidwraith_pet_t final : public base_fiend_pet_t
     }
 
     return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_pet_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      p().o().trigger_atonement( s );
+
+      p().o().trigger_essence_devourer();
+
+      if ( p().o().specialization() == PRIEST_SHADOW )
+      {
+        p().o().resource_gain( RESOURCE_INSANITY, void_flay_insanity, p().o().gains.voidwraith, nullptr );
+      }
+      else
+      {
+        p().o().resource_gain( RESOURCE_MANA, p().o().resources.max[ RESOURCE_MANA ] * void_flay_mana,
+                               p().o().gains.voidwraith );
+      }
+    }
   }
 };
 
