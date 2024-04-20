@@ -11,7 +11,7 @@ food=feisty_fish_sticks
 
 # TODO: fix ilevel hard-coding
 head=crest_of_lunar_communion,id=207281,ilevel=489,gem_id=192925,enchant_id=7052
-neck=eye_of_the_rising_flame,id=207163,ilevel=489,gem_id=192985/192925/192925
+neck=raven_filigree_pendant,id=134499,ilevel=489,gem_id=192985/192925/192925
 shoulders=shoulderguardians_of_lunar_communion,id=207279,ilevel=489
 back=vibrant_wildercloth_shawl,id=193511,ilevel=486,bonus_id=8932/8960,crafted_stats=36/49
 chest=vesture_of_the_smoldering_serpent,id=207121,ilevel=489,enchant=waking_stats_3
@@ -24,7 +24,7 @@ finger1=band_of_burning_thorns,id=207159,ilevel=489,enchant=devotion_of_mastery_
 finger2=archdruids_tainted_seal,id=134487,ilevel=489,enchant=devotion_of_mastery_3,gem_id=192925
 trinket1=pips_emerald_friendship_badge,id=207168,ilevel=489
 trinket2=belorrelos_the_suncaller,id=207172,ilevel=489
-main_hand=vakash_the_shadowed_inferno,id=207788,ilevel=489,enchant=sophic_devotion_3
+main_hand=vakash_the_shadowed_inferno,id=207788,ilevel=489,enchant=wafting_devotion_3
 off_hand=tricksters_captivating_chime,id=207796,ilevel=489
 
 save=T31_Priest_Shadow.simc

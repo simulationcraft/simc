@@ -654,9 +654,9 @@ namespace monk
         }
 
         // A wild equation appears
-        double composite_attack_power() const override
+        double composite_total_attack_power() const override
         {
-          double ap = sef_melee_attack_t::composite_attack_power();
+          double ap = 0;
 
           if ( o()->main_hand_weapon.group() == WEAPON_2H )
           {
@@ -677,7 +677,7 @@ namespace monk
             ap += total_dps * 3.5 * dw_mul;
           }
 
-          return ap;
+          return ap * o()->composite_attack_power_multiplier() + sef_melee_attack_t::composite_total_attack_power();
         }
 
         void execute() override

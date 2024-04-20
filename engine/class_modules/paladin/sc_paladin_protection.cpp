@@ -1051,7 +1051,7 @@ void paladin_t::trigger_grand_crusader( grand_crusader_source source )
     return;
 
   double gc_proc_chance = talents.grand_crusader->effectN( 1 ).percent();
-  
+
   if ( source == GC_JUDGMENT )
   {
     // TODO: according to Woliance; proc chance not obvious in spelldata

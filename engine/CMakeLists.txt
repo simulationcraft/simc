@@ -41,9 +41,13 @@ if(NOT SC_NO_NETWORKING)
     endif()
 endif()
 
+if(SC_EVENT_QUEUE_DEBUG)
+    target_compile_definitions(engine PUBLIC EVENT_QUEUE_DEBUG)
+endif()
+
 target_compile_definitions(engine PRIVATE "SC_GIT_REV=\"${GIT_COMMIT_HASH}\"" "SC_GIT_BRANCH=\"${GIT_BRANCH}\"")
 
-add_custom_target(file_toucher 
+add_custom_target(file_toucher
         COMMAND ${CMAKE_COMMAND} -E touch_nocreate ${CMAKE_CURRENT_SOURCE_DIR}/util/git_info.cpp)
 
 add_dependencies(engine file_toucher)

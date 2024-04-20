@@ -1535,7 +1535,6 @@ public:
     bool lethal_dose = false;
     bool maim_mangle = false;           // Renamed Systemic Failure for DF talent
     bool master_assassin = false;
-    bool nightstalker = false;
     bool relentless_strikes = false;    // Trigger
     bool ruthlessness = false;          // Trigger
     bool sepsis = false;                // Stance Mask
@@ -3211,8 +3210,8 @@ struct melee_t : public rogue_attack_t
 
     // Class Passives
     m *= 1.0 + p()->spec.outlaw_rogue->effectN( 18 ).percent();
-    // TOCHECK -- Removed on 10.2.0 PTR build
-    // m *= 1.0 + p()->spec.assassination_rogue->effectN( 22 ).percent();
+    m *= 1.0 + p()->spec.assassination_rogue->effectN( 22 ).percent();
+    m *= 1.0 + p()->spec.assassination_rogue->effectN( 23 ).percent();
 
     return m;
   }
@@ -3347,21 +3346,39 @@ struct ambush_t : public rogue_attack_t
   };
 
   hidden_opportunity_extra_attack_t* extra_attack;
+  ambush_t* audacity_extra_attack;
 
   ambush_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->spell.ambush, options_str ),
-    extra_attack( nullptr )
+    extra_attack( nullptr ), audacity_extra_attack( nullptr )
   {
-    if ( p->talent.outlaw.hidden_opportunity->ok() )
-    {
-      extra_attack = p->get_secondary_trigger_action<hidden_opportunity_extra_attack_t>(
-        secondary_trigger::HIDDEN_OPPORTUNITY, "ambush_hidden_opportunity" );
-      add_child( extra_attack );
-    }
-
     if ( p->talent.assassination.vicious_venoms->ok() )
     {
       add_child( p->active.vicious_venoms.ambush );
+    }
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    if ( p()->talent.outlaw.hidden_opportunity->ok() )
+    {
+      extra_attack = p()->get_secondary_trigger_action<hidden_opportunity_extra_attack_t>(
+        secondary_trigger::HIDDEN_OPPORTUNITY, "ambush_hidden_opportunity" );
+
+      if ( !is_secondary_action() )
+      {
+        add_child( extra_attack );
+
+        // 2023-11-24 -- Self-trigger Ambush proc for Audacy override spell bug
+        if ( p()->bugs && p()->talent.outlaw.audacity->ok() )
+        {
+          audacity_extra_attack = p()->get_secondary_trigger_action<ambush_t>(
+            secondary_trigger::HIDDEN_OPPORTUNITY, "ambush_hidden_opportunity_audacity" );
+          add_child( audacity_extra_attack );
+        }
+      }
     }
   }
 
@@ -3379,7 +3396,12 @@ struct ambush_t : public rogue_attack_t
 
     if ( p()->talent.outlaw.hidden_opportunity->ok() )
     {
-      trigger_opportunity( state, extra_attack, p()->talent.outlaw.hidden_opportunity->effectN( 1 ).percent() );
+      // 2023-11-24 -- The Audacity replacement spell currently triggers the normal Ambush spell from HO
+      //               This allows it to trigger up to twice, rather than just a single time
+      if ( p()->bugs && audacity_extra_attack && p()->buffs.audacity->check() )
+        trigger_opportunity( state, audacity_extra_attack, p()->talent.outlaw.hidden_opportunity->effectN( 1 ).percent() );
+      else
+        trigger_opportunity( state, extra_attack, p()->talent.outlaw.hidden_opportunity->effectN( 1 ).percent() );
     }
 
     trigger_vicious_venoms( state, p()->active.vicious_venoms.ambush );
@@ -3648,7 +3670,7 @@ struct between_the_eyes_t : public rogue_attack_t
         }
       }
 
-      if ( p()->talent.outlaw.crackshot->ok() && p()->stealthed( STEALTH_STANCE ) )
+      if ( p()->talent.outlaw.crackshot->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE | STEALTH_SEPSIS ) )
       {
         p()->cooldowns.between_the_eyes->reset( false );
         dispatch->trigger_secondary_action( execute_state->target, cp_spend );
@@ -4050,7 +4072,7 @@ struct envenom_t : public rogue_attack_t
 
       if ( target_list().size() == 1 )
       {
-        m *= 1.0 + p()->set_bonuses.t31_assassination_4pc->effectN(3).percent();
+        m *= 1.0 + p()->set_bonuses.t31_assassination_4pc->effectN( 3 ).percent();
       }
 
       return m;
@@ -4215,9 +4237,6 @@ struct eviscerate_t : public rogue_attack_t
     }
 
     bool procs_poison() const override
-    { return false; }
-
-    bool procs_shadow_blades_damage() const override
     { return false; }
   };
 
@@ -5011,9 +5030,6 @@ struct rupture_t : public rogue_attack_t
       snapshot_state( damage_state, result_amount_type::DMG_OVER_TIME );
       trigger_secondary_action( damage_state, 1_s );
     }
-
-    bool procs_shadow_blades_damage() const override
-    { return false; }
   };
 
   replicating_shadows_tick_t* replicating_shadows_tick;
@@ -5674,9 +5690,6 @@ struct black_powder_t: public rogue_attack_t
 
     bool procs_poison() const override
     { return false; }
-
-    bool procs_shadow_blades_damage() const override
-    { return false; }
   };
 
   black_powder_bonus_t* bonus_attack;
@@ -5710,29 +5723,31 @@ struct black_powder_t: public rogue_attack_t
 
     rogue_attack_t::execute();
 
-    if ( p()->spec.finality_black_powder_buff->ok() )
+    // BUG: Finality BP seems to affect every instance of shadow damage due to, err, spaghetti with the bonus attack trigger order and travel time?
+    // See https://github.com/SimCMinMax/WoW-BugTracker/issues/747
+    bool triggered_finality = false;
+    if ( p()->spec.finality_black_powder_buff->ok() && !p()->buffs.finality_black_powder->check() )
     {
-      if ( p()->buffs.finality_black_powder->check() )
-        p()->buffs.finality_black_powder->expire();
-      else
-        p()->buffs.finality_black_powder->trigger();
+      p()->buffs.finality_black_powder->trigger();
+      triggered_finality = true;
+    }
+
+    if ( bonus_attack )
+    {
+      bonus_attack->last_cp = cast_state( execute_state )->get_combo_points();
+      bonus_attack->execute_on_target( execute_state->target );
+    }
+
+    // See bug above.
+    if ( !triggered_finality )
+    {
+      p()->buffs.finality_black_powder->expire();
     }
 
     if ( p()->set_bonuses.t29_subtlety_2pc->ok() )
     {
       p()->buffs.t29_subtlety_2pc->expire();
       p()->buffs.t29_subtlety_2pc->trigger( cast_state( execute_state )->get_combo_points() );
-    }
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    rogue_attack_t::impact( state );
-
-    if ( bonus_attack && state->chain_target == 0 )
-    {
-      bonus_attack->last_cp = cast_state( state )->get_combo_points();
-      bonus_attack->execute_on_target( state->target );
     }
   }
 
@@ -6837,6 +6852,8 @@ struct weapon_swap_t : public action_t
       rogue -> swap_weapon( WEAPON_MAIN_HAND, swap_to_type );
       rogue -> swap_weapon( WEAPON_OFF_HAND, swap_to_type );
     }
+
+    rogue->invalidate_cache( CACHE_WEAPON_DPS );
   }
 
   bool ready() override

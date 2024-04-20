@@ -21,6 +21,7 @@ void player_stat_cache_t::invalidate_all()
   range::fill( spell_power_valid, false );
   range::fill( player_mult_valid, false );
   range::fill( player_heal_mult_valid, false );
+  range::fill( weapon_attack_power_valid, false );
 }
 
 /**
@@ -33,12 +34,19 @@ void player_stat_cache_t::invalidate( cache_e c )
     case CACHE_SPELL_POWER:
       range::fill( spell_power_valid, false );
       break;
+
+    case CACHE_WEAPON_DPS:
+      range::fill( weapon_attack_power_valid, false );
+      break;
+
     case CACHE_PLAYER_DAMAGE_MULTIPLIER:
       range::fill( player_mult_valid, false );
       break;
+
     case CACHE_PLAYER_HEAL_MULTIPLIER:
       range::fill( player_heal_mult_valid, false );
       break;
+
     default:
       valid[ c ] = false;
       break;
@@ -155,16 +163,18 @@ double player_stat_cache_t::attack_power() const
   return _attack_power;
 }
 
-double player_stat_cache_t::total_melee_attack_power() const
+double player_stat_cache_t::weapon_attack_power( attack_power_type t ) const
 {
-  if( !active || !valid[ CACHE_TOTAL_MELEE_ATTACK_POWER ] )
+  auto type = static_cast<unsigned>( t );
+
+  if ( !active || !weapon_attack_power_valid[ type ] )
   {
-    valid[ CACHE_TOTAL_MELEE_ATTACK_POWER ] = true;
-    _total_melee_attack_power               = player->composite_melee_attack_power_by_type( player->default_ap_type() );
+    weapon_attack_power_valid[ type ] = true;
+    _weapon_attack_power[ type ] = player->composite_weapon_attack_power_by_type( t );
   }
   else
-   assert( _total_melee_attack_power == player->composite_melee_attack_power_by_type( player->default_ap_type() ) );
-  return _total_melee_attack_power;
+    assert( _weapon_attack_power[ type ] == player->composite_weapon_attack_power_by_type( t ) );
+  return _weapon_attack_power[ type ];
 }
 
 double player_stat_cache_t::attack_expertise() const
@@ -560,38 +570,38 @@ double player_stat_cache_t::player_heal_multiplier( const action_state_t* s ) co
 
 #else
   // Passthrough cache stat functions for inactive cache
-  double player_stat_cache_t::strength() const  { return _player -> strength();  }
-  double player_stat_cache_t::agility() const   { return _player -> agility();   }
-  double player_stat_cache_t::stamina() const   { return _player -> stamina();   }
-  double player_stat_cache_t::intellect() const { return _player -> intellect(); }
-  double player_stat_cache_t::spirit() const    { return _player -> spirit();    }
-  double player_stat_cache_t::spell_power( school_e s ) const { return _player -> composite_spell_power( s ); }
-  double player_stat_cache_t::attack_power() const            { return _player -> composite_melee_attack_power();   }
-  double player_stat_cache_t::total_melee_attack_power() const { return _player->composite_melee_attack_power_by_type( _player -> default_ap_type() ); }
-  double player_stat_cache_t::attack_expertise() const { return _player -> composite_melee_expertise(); }
-  double player_stat_cache_t::attack_hit() const       { return _player -> composite_melee_hit();       }
-  double player_stat_cache_t::attack_crit_chance() const      { return _player -> composite_melee_crit_chance();      }
-  double player_stat_cache_t::attack_haste() const     { return _player -> composite_melee_haste();     }
-  double player_stat_cache_t::attack_speed() const     { return _player -> composite_melee_speed();     }
-  double player_stat_cache_t::spell_hit() const        { return _player -> composite_spell_hit();       }
-  double player_stat_cache_t::spell_crit_chance() const       { return _player -> composite_spell_crit_chance();      }
-  double player_stat_cache_t::spell_haste() const      { return _player -> composite_spell_haste();     }
-  double player_stat_cache_t::spell_speed() const      { return _player -> composite_spell_speed();     }
-  double player_stat_cache_t::dodge() const            { return _player -> composite_dodge();      }
-  double player_stat_cache_t::parry() const            { return _player -> composite_parry();      }
-  double player_stat_cache_t::block() const            { return _player -> composite_block();      }
-  double player_stat_cache_t::crit_block() const       { return _player -> composite_crit_block(); }
-  double player_stat_cache_t::crit_avoidance() const   { return _player -> composite_crit_avoidance();       }
-  double player_stat_cache_t::miss() const             { return _player -> composite_miss();       }
-  double player_stat_cache_t::armor() const            { return _player -> composite_armor();           }
-  double player_stat_cache_t::mastery() const          { return _player -> composite_mastery();   }
-  double player_stat_cache_t::mastery_value() const    { return _player -> composite_mastery_value();   }
-  double player_stat_cache_t::damage_versatility() const { return _player -> composite_damage_versatility(); }
-  double player_stat_cache_t::heal_versatility() const { return _player -> composite_heal_versatility(); }
-  double player_stat_cache_t::mitigation_versatility() const { return _player -> composite_mitigation_versatility(); }
-  double player_stat_cache_t::leech() const { return _player -> composite_leech(); }
-  double player_stat_cache_t::run_speed() const { return _player -> composite_run_speed(); }
-  double player_stat_cache_t::avoidance() const { return _player -> composite_avoidance(); }
-  double player_stat_cache_t::corruption() const { return _player -> composite_corruption(); }
-  double player_stat_cache_t::corruption_resistance() const { return _player -> composite_corruption_resistance(); }
+double player_stat_cache_t::strength() const { return _player->strength(); }
+double player_stat_cache_t::agility() const { return _player->agility(); }
+double player_stat_cache_t::stamina() const { return _player->stamina(); }
+double player_stat_cache_t::intellect() const { return _player->intellect(); }
+double player_stat_cache_t::spirit() const { return _player->spirit(); }
+double player_stat_cache_t::spell_power( school_e s ) const { return _player->composite_spell_power( s ); }
+double player_stat_cache_t::attack_power() const { return _player->composite_melee_attack_power(); }
+double player_stat_cache_t::weapon_attack_power( attack_power_type t ) { const return _player->composite_weapon_attack_power_by_type( t ); }
+double player_stat_cache_t::attack_expertise() const { return _player->composite_melee_expertise(); }
+double player_stat_cache_t::attack_hit() const { return _player->composite_melee_hit(); }
+double player_stat_cache_t::attack_crit_chance() const { return _player->composite_melee_crit_chance(); }
+double player_stat_cache_t::attack_haste() const { return _player->composite_melee_haste(); }
+double player_stat_cache_t::attack_speed() const { return _player->composite_melee_speed(); }
+double player_stat_cache_t::spell_hit() const { return _player->composite_spell_hit(); }
+double player_stat_cache_t::spell_crit_chance() const { return _player->composite_spell_crit_chance(); }
+double player_stat_cache_t::spell_haste() const { return _player->composite_spell_haste(); }
+double player_stat_cache_t::spell_speed() const { return _player->composite_spell_speed(); }
+double player_stat_cache_t::dodge() const { return _player->composite_dodge(); }
+double player_stat_cache_t::parry() const { return _player->composite_parry(); }
+double player_stat_cache_t::block() const { return _player->composite_block(); }
+double player_stat_cache_t::crit_block() const { return _player->composite_crit_block(); }
+double player_stat_cache_t::crit_avoidance() const { return _player->composite_crit_avoidance(); }
+double player_stat_cache_t::miss() const { return _player->composite_miss(); }
+double player_stat_cache_t::armor() const { return _player->composite_armor(); }
+double player_stat_cache_t::mastery() const { return _player->composite_mastery(); }
+double player_stat_cache_t::mastery_value() const { return _player->composite_mastery_value(); }
+double player_stat_cache_t::damage_versatility() const { return _player->composite_damage_versatility(); }
+double player_stat_cache_t::heal_versatility() const { return _player->composite_heal_versatility(); }
+double player_stat_cache_t::mitigation_versatility() const { return _player->composite_mitigation_versatility(); }
+double player_stat_cache_t::leech() const { return _player->composite_leech(); }
+double player_stat_cache_t::run_speed() const { return _player->composite_run_speed(); }
+double player_stat_cache_t::avoidance() const { return _player->composite_avoidance(); }
+double player_stat_cache_t::corruption() const { return _player->composite_corruption(); }
+double player_stat_cache_t::corruption_resistance() const { return _player->composite_corruption_resistance(); }
 #endif

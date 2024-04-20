@@ -170,6 +170,9 @@ public:
   /// Used with DoT Drivers, tells simc that the direct hit is actually a tick.
   bool direct_tick;
 
+  /// Used with direct damage effects that trigger periodic proc flags
+  bool treat_as_periodic;
+
   /// Used with psudo-DoT effects, tells us to ignore armor even if the physical damage is direct
   bool ignores_armor;
 
@@ -852,9 +855,9 @@ public:
   virtual attack_power_type get_attack_power_type() const
   { return ap_type; }
 
-  virtual double composite_attack_power() const;
+  virtual double composite_total_attack_power() const;
 
-  virtual double composite_spell_power() const;
+  virtual double composite_total_spell_power() const;
 
   virtual double composite_target_armor( player_t* t ) const;
 

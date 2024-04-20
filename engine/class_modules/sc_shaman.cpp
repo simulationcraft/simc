@@ -430,7 +430,8 @@ public:
     buff_t* elemental_blast_mastery;
 
     // Elemental
-    buff_t* echoes_of_great_sundering;
+    buff_t* echoes_of_great_sundering_es;
+    buff_t* echoes_of_great_sundering_eb;
     buff_t* elemental_equilibrium;
     buff_t* elemental_equilibrium_debuff;
     buff_t* elemental_equilibrium_fire;
@@ -1185,7 +1186,7 @@ struct splintered_elements_buff_t : public buff_t
 {
   shaman_t* shaman;
   splintered_elements_buff_t( shaman_t* p ) :
-    buff_t( p, "splintered_elements", p->find_spell( 354648 ) ), shaman( p )
+    buff_t( p, "splintered_elements", p->find_spell( 382043 ) ), shaman( p )
   {
     unsigned max_targets = as<unsigned>(
       shaman->find_class_spell( "Flame Shock" )->max_targets() );
@@ -1443,9 +1444,9 @@ public:
     cast_state( s )->exec_type = this->exec_type;
   }
 
-  double composite_attack_power() const override
+  double composite_total_attack_power() const override
   {
-    double m = ab::composite_attack_power();
+    double m = ab::composite_total_attack_power();
 
     return m;
   }
@@ -2276,12 +2277,12 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
     parse_options( options );
   }
 
-  double composite_spell_power() const override
+  double composite_total_spell_power() const override
   {
-    double sp = base_t::composite_spell_power();
+    double sp = base_t::composite_total_spell_power();
 
     if ( p()->main_hand_weapon.buff_type == EARTHLIVING_IMBUE )
-      sp += p()->main_hand_weapon.buff_value;
+      sp += p()->main_hand_weapon.buff_value * p()->composite_spell_power_multiplier();
 
     return sp;
   }
@@ -6267,7 +6268,8 @@ struct elemental_blast_t : public shaman_spell_t
 
     if ( p()->talent.echoes_of_great_sundering.ok() )
     {
-      p()->buff.echoes_of_great_sundering->trigger();
+      p()->buff.echoes_of_great_sundering_es->expire();
+      p()->buff.echoes_of_great_sundering_eb->trigger();
     }
 
     if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
@@ -6403,7 +6405,10 @@ struct feral_spirit_spell_t : public shaman_spell_t
 
   feral_spirit_spell_t( shaman_t* player, util::string_view options_str,
                         feral_spirit_cast c = feral_spirit_cast::NORMAL ) :
-    shaman_spell_t( "feral_spirit", player, player->talent.feral_spirit ), type( c )
+    shaman_spell_t( "feral_spirit", player,
+                   c == feral_spirit_cast::NORMAL
+                   ? player->talent.feral_spirit
+                   : player->find_spell( 51533 ) ), type( c )
   {
     parse_options( options_str );
     harmful = true;
@@ -6581,7 +6586,8 @@ struct earthquake_damage_base_t : public shaman_spell_t
       m *= 1.0 + p()->buff.master_of_the_elements->default_value;
     }
 
-    m *= 1.0 + p()->buff.echoes_of_great_sundering->value();
+    m *= 1.0 + p()->buff.echoes_of_great_sundering_es->value();
+    m *= 1.0 + p()->buff.echoes_of_great_sundering_eb->value();
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
     m *= 1.0 + p()->buff.t29_2pc_ele->stack_value();
 
@@ -6632,7 +6638,8 @@ struct earthquake_base_t : public shaman_spell_t
       m *= 1.0 + p()->buff.master_of_the_elements->default_value;
     }
 
-    m *= 1.0 + p()->buff.echoes_of_great_sundering->value();
+    m *= 1.0 + p()->buff.echoes_of_great_sundering_es->value();
+    m *= 1.0 + p()->buff.echoes_of_great_sundering_eb->value();
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
     m *= 1.0 + p()->buff.t29_2pc_ele->stack_value();
 
@@ -6658,7 +6665,10 @@ struct earthquake_overload_damage_t : public earthquake_damage_base_t
     earthquake_damage_base_t( player, "earthquake_overload_damage", player->find_spell( 298765 ), parent )
   {
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    spell_power_mod.direct = 0.213 * player->talent.mountains_will_fall->effectN( 1 ).percent();
+    spell_power_mod.direct = 0.3195 * player->talent.mountains_will_fall->effectN( 1 ).percent();
+    // TODO: implement spellpower coefficient extracttion from spell variable
+    // auto spell_desc = player->dbc->spell_desc_vars( this->data().id() );
+    // spell_desc.desc_vars()
   }
 };
 
@@ -6692,7 +6702,7 @@ struct earthquake_damage_t : public earthquake_damage_base_t
     earthquake_damage_base_t( player, "earthquake_damage", player->find_spell( 77478 ), parent )
   {
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    spell_power_mod.direct = 0.213;
+    spell_power_mod.direct = 0.3915;
   }
 };
 
@@ -6766,7 +6776,8 @@ struct earthquake_t : public earthquake_base_t
     p()->buff.magma_chamber->expire();
 
     p()->buff.master_of_the_elements->decrement();
-    p()->buff.echoes_of_great_sundering->decrement();
+    p()->buff.echoes_of_great_sundering_es->decrement();
+    p()->buff.echoes_of_great_sundering_eb->decrement();
 
     if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
@@ -6985,7 +6996,8 @@ struct earth_shock_t : public shaman_spell_t
 
     if ( p()->talent.echoes_of_great_sundering.ok() )
     {
-      p()->buff.echoes_of_great_sundering->trigger();
+      p()->buff.echoes_of_great_sundering_eb->expire();
+      p()->buff.echoes_of_great_sundering_es->trigger();
     }
 
     if (p()->talent.surge_of_power->ok() )
@@ -10638,11 +10650,13 @@ void shaman_t::create_buffs()
   buff.wind_gust = make_buff( this, "wind_gust", find_spell( 263806 ) )
                        ->set_default_value( find_spell( 263806 )->effectN( 1 ).percent() );
 
-  buff.echoes_of_great_sundering =
-      make_buff( this, "echoes_of_great_sundering", find_spell( 336217 ) )
-        ->set_default_value( talent.elemental_blast.ok()
-                ? talent.echoes_of_great_sundering->effectN( 2 ).percent()
-                : talent.echoes_of_great_sundering->effectN( 1 ).percent() )
+  buff.echoes_of_great_sundering_es =
+      make_buff( this, "echoes_of_great_sundering_es", find_spell( 336217 ) )
+        ->set_default_value( talent.echoes_of_great_sundering->effectN( 1 ).percent() )
+        ->set_trigger_spell( talent.echoes_of_great_sundering );
+  buff.echoes_of_great_sundering_eb =
+      make_buff( this, "echoes_of_great_sundering_eb", find_spell( 336217 ) )
+        ->set_default_value( talent.echoes_of_great_sundering->effectN( 2 ).percent() )
         ->set_trigger_spell( talent.echoes_of_great_sundering );
 
   buff.flux_melting = make_buff( this, "flux_melting", talent.flux_melting->effectN( 1 ).trigger() )
@@ -11142,14 +11156,14 @@ void shaman_t::init_action_list_elemental()
                      "Spread Flame Shock using Surge of Power on up to 4 for Lightning builds with Windspeaker's Lava Resurgence." );
     aoe->add_action( "flame_shock,target_if=refreshable,if=buff.surge_of_power.up&(!talent.lightning_rod.enabled|talent.skybreakers_fiery_demise.enabled)&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6",
                      "Spread Flame Shock using Surge of Power up to 6." );
-    aoe->add_action( "flame_shock,target_if=refreshable,if=talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6",
+    aoe->add_action( "flame_shock,target_if=refreshable,if=talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled&!talent.surge_of_power.enabled&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6",
                      "Spread Flame Shock against low target counts if Master of the Elements was selected up to 6." );
     aoe->add_action( "flame_shock,target_if=refreshable,if=talent.deeply_rooted_elements.enabled&!talent.surge_of_power.enabled&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6",
                      "Spread Flame Shock to gamble on Deeply Rooted Element procs up to 6." );
     
     aoe->add_action( "flame_shock,target_if=refreshable,if=buff.surge_of_power.up&(!talent.lightning_rod.enabled|talent.skybreakers_fiery_demise.enabled)&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0",
                      "Refresh Flame Shock using Surge of Power up to 6." );
-    aoe->add_action( "flame_shock,target_if=refreshable,if=talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0",
+    aoe->add_action( "flame_shock,target_if=refreshable,if=talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled&!talent.surge_of_power.enabled&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0",
                      "Refresh Flame Shock against low target counts if Master of the Elements was selected up to 6." );
     aoe->add_action( "flame_shock,target_if=refreshable,if=talent.deeply_rooted_elements.enabled&!talent.surge_of_power.enabled&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0",
                      "Refresh Flame Shock to gamble on Deeply Rooted Element procs up to 6." );
@@ -11160,7 +11174,16 @@ void shaman_t::init_action_list_elemental()
                      "Shia_LaBeouf__Just_Do_It__Motivational_Speech_(Original_Video_by_LaBeouf__R%C3%B6nkk%C3%B6___"
                      "Turner)_0-4_screenshot.jpg" );
     aoe->add_action(
-        "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=60-5*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled)&(!talent.echoes_of_great_sundering.enabled&!talent.lightning_rod.enabled|buff.echoes_of_great_sundering.up)&(!buff.ascendance.up&active_enemies>3&talent.unrelenting_calamity.enabled|active_enemies>3&!talent.unrelenting_calamity.enabled|active_enemies=3)",
+        "lava_burst,target_if=dot.flame_shock.remains,if=active_enemies=3&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Lava burst is top prio on 3 targets.");
+    aoe->add_action(
+        "earthquake,if=buff.master_of_the_elements.up&(buff.magma_chamber.stack>15&active_enemies>=(7-talent.unrelenting_calamity.enabled)|talent.splintered_elements.enabled&active_enemies>=(10-talent.unrelenting_calamity.enabled)|talent.mountains_will_fall.enabled&active_enemies>=9)&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)",
+        "{T31 fire} Earthquake is still good with Mote and either 15+ Magma Chamber stacks on 6(7)+ targets or 9+ targets.");
+    aoe->add_action("lava_beam,if=buff.stormkeeper.up&(buff.surge_of_power.up&active_enemies>=6|buff.master_of_the_elements.up&(active_enemies<6|!talent.surge_of_power.enabled))&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Stormkeeper is strong and should be used."); 
+    aoe->add_action("chain_lightning,if=buff.stormkeeper.up&(buff.surge_of_power.up&active_enemies>=6|buff.master_of_the_elements.up&(active_enemies<6|!talent.surge_of_power.enabled))&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Stormkeeper is strong and should be used.");
+    aoe->add_action(
+        "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Lava Surge is strong.");
+    aoe->add_action(
+        "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=60-5*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled)&(!talent.echoes_of_great_sundering.enabled&!talent.lightning_rod.enabled|buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up)&(!buff.ascendance.up&active_enemies>3&talent.unrelenting_calamity.enabled|active_enemies>3&!talent.unrelenting_calamity.enabled|active_enemies=3)",
         "Cast Lava Burst to buff your immediately follow-up Earthquake with Master of the Elements." );
     aoe->add_action(
         "earthquake,if=!talent.echoes_of_great_sundering.enabled&active_enemies>3&(spell_targets.chain_lightning>3|spell_targets.lava_beam>3)",
@@ -11169,7 +11192,7 @@ void shaman_t::init_action_list_elemental()
         "earthquake,if=!talent.echoes_of_great_sundering.enabled&!talent.elemental_blast.enabled&active_enemies=3&(spell_targets.chain_lightning=3|spell_targets.lava_beam=3)",
         "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease." );
     aoe->add_action(
-        "earthquake,if=buff.echoes_of_great_sundering.up",
+        "earthquake,if=buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up",
         "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease." );
     aoe->add_action(
         "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=talent.echoes_of_great_sundering.enabled",
@@ -11251,14 +11274,14 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( "lava_beam,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&buff.power_of_the_maelstrom.up&buff.ascendance.remains>cast_time&!set_bonus.tier31_4pc" );
     single_target->add_action( "frost_shock,if=buff.icefury.up&buff.stormkeeper.up&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.primordial_surge.enabled&talent.elemental_blast.enabled&(maelstrom>=61&maelstrom<75&cooldown.lava_burst.remains>gcd|maelstrom>=49&maelstrom<63&cooldown.lava_burst.ready)", "{EB/SoP Lightning builds} Spend extra Frost Shock if it gives you the ability to get to next spender without using Stormkeeper charge." );
     single_target->add_action( "frost_shock,if=buff.icefury.up&buff.stormkeeper.up&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.elemental_blast.enabled&(maelstrom>=36&maelstrom<50&cooldown.lava_burst.remains>gcd|maelstrom>=24&maelstrom<38&cooldown.lava_burst.ready)", "{ES/SoP Lightning builds} Spend extra Frost Shock if it gives you the ability to get to next spender without using Stormkeeper charge." );
-    single_target->add_action( "lava_burst,if=buff.windspeakers_lava_resurgence.up&(talent.echo_of_the_elements.enabled|talent.lava_surge.enabled|talent.primordial_surge.enabled|maelstrom>=63&talent.master_of_the_elements.enabled|maelstrom>=38&buff.echoes_of_great_sundering.up&active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)|!talent.elemental_blast.enabled)", "Windspeaker's Lava Resurgence is strong. Don't sit on it...Unless it's Lightning build and you save it to buff Elemental Blast." );
+    single_target->add_action( "lava_burst,if=buff.windspeakers_lava_resurgence.up&(talent.echo_of_the_elements.enabled|talent.lava_surge.enabled|talent.primordial_surge.enabled|maelstrom>=63&talent.master_of_the_elements.enabled|maelstrom>=38&(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up)&active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)|!talent.elemental_blast.enabled)", "Windspeaker's Lava Resurgence is strong. Don't sit on it...Unless it's Lightning build and you save it to buff Elemental Blast." );
     single_target->add_action( "lava_burst,if=cooldown_react&buff.lava_surge.up&(talent.echo_of_the_elements.enabled|talent.lava_surge.enabled|talent.primordial_surge.enabled|!talent.master_of_the_elements.enabled|!talent.elemental_blast.enabled)", "Lava Surge is neat. Utilize it...Unless it's Lightning build and you save it to buff Elemental Blast." );
     single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=buff.ascendance.up&(set_bonus.tier31_4pc|!talent.elemental_blast.enabled)&(!talent.further_beyond.enabled|fb_extension_remaining<2)", "Spam Lava burst in Ascendance (if running Elemental Blast - only with T31 4p, otherwise always) if Further Beyond extension is depleted." );
     single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=!buff.ascendance.up&(!talent.elemental_blast.enabled|!talent.mountains_will_fall.enabled)&!talent.lightning_rod.enabled&set_bonus.tier31_4pc", "{Fire builds, T31 4p} Spam Lava Burst with T31 4p as much as you can (unless you running Elemental Blast + Mountains will fall)." );
     single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&!talent.lightning_rod.enabled", "{Fire builds} Buff your next <anything> with MotE." );
     single_target->add_action( "lava_burst,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=75|maelstrom>=50&!talent.elemental_blast.enabled)&talent.swelling_maelstrom.enabled&maelstrom<=130", "{Lightning builds} Buff your next Maelstrom Spender with MotE if it won't cap your maelstrom." );
     single_target->add_action(
-        "earthquake,if=buff.echoes_of_great_sundering.up&(!talent.elemental_blast.enabled&active_enemies<2|active_enemies>1)",
+        "earthquake,if=(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up)&(!talent.elemental_blast.enabled&active_enemies<2|active_enemies>1)",
         "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease. Additionally Elemental Blast is stronger than EoGS. In this case don't use Earthquake on single target." );
     single_target->add_action(
         "earthquake,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&!talent.echoes_of_great_sundering.enabled&!talent.elemental_blast.enabled",

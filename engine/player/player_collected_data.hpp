@@ -68,6 +68,9 @@ struct player_collected_data_t
   };
   // Druid requires 4 resource timelines health/mana/energy/rage
   std::vector<resource_timeline_t> resource_timelines;
+  // For some actors (typically enemies), health and health percentage
+  // timelines might not match. Track health percentage separately.
+  sc_timeline_t health_pct;
 
   std::vector<simple_sample_data_t> combat_start_resource;
   std::vector<simple_sample_data_with_min_max_t> combat_end_resource;

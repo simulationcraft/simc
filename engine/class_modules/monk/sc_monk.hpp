@@ -105,11 +105,11 @@ namespace monk
 
       // Covenant Abilities
       propagate_const<buff_t *> bonedust_brew;
-      propagate_const<buff_t *> faeline_stomp;
+      propagate_const<buff_t *> jadefire_stomp;
       propagate_const<buff_t *> weapons_of_order;
 
       // Shadowland Legendaries
-      propagate_const<buff_t *> fae_exposure;
+      propagate_const<buff_t *> jadefire_brand;
       propagate_const<buff_t *> keefers_skyreach;
       propagate_const<buff_t *> skyreach_exhaustion;
 
@@ -311,8 +311,8 @@ namespace monk
       propagate_const<buff_t *> close_to_heart_driver;
       propagate_const<buff_t *> dampen_harm;
       propagate_const<buff_t *> diffuse_magic;
-      propagate_const<buff_t *> faeline_stomp;
-      propagate_const<buff_t *> faeline_stomp_reset;
+      propagate_const<buff_t *> jadefire_stomp;
+      propagate_const<buff_t *> jadefire_stomp_reset;
       propagate_const<buff_t *> generous_pour_driver;
       propagate_const<buff_t *> invokers_delight;
       propagate_const<buff_t *> rushing_jade_wind;
@@ -370,7 +370,7 @@ namespace monk
       propagate_const<buff_t *> dance_of_chiji;
       propagate_const<buff_t *> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
       propagate_const<buff_t *> dizzying_kicks;
-      propagate_const<buff_t *> fae_exposure;
+      propagate_const<buff_t *> jadefire_brand;
       propagate_const<buff_t *> flying_serpent_kick_movement;
       propagate_const<buff_t *> fury_of_xuen_stacks;
       propagate_const<buff_t *> fury_of_xuen_haste;
@@ -656,7 +656,7 @@ namespace monk
         player_talent_t mana_tea;
         // 20 Required
         // Row 8
-        player_talent_t faeline_stomp;
+        player_talent_t jadefire_stomp;
         player_talent_t ancient_teachings;
         player_talent_t clouded_focus;
         player_talent_t jade_bond;
@@ -673,7 +673,7 @@ namespace monk
         player_talent_t bountiful_brew;
         player_talent_t attenuation;
         // Row 10
-        player_talent_t awakened_faeline;
+        player_talent_t awakened_jadefire;
         player_talent_t tea_of_serenity;
         player_talent_t tea_of_plenty;
         player_talent_t unison;
@@ -736,15 +736,15 @@ namespace monk
         player_talent_t xuens_battlegear;
         player_talent_t transfer_the_power;
         player_talent_t whirling_dragon_punch;
-        player_talent_t faeline_stomp;
+        player_talent_t jadefire_stomp;
         // Row 10
         player_talent_t attenuation;
         player_talent_t dust_in_the_wind;
         player_talent_t skyreach;
         player_talent_t skytouch;
         player_talent_t invokers_delight;
-        player_talent_t way_of_the_fae;
-        player_talent_t faeline_harmony;
+        player_talent_t path_of_jade;
+        player_talent_t jadefire_harmony;
       } windwalker;
     } talent;
 
@@ -753,7 +753,7 @@ namespace monk
     {
       const spell_data_t *attenuation;
       const spell_data_t *bonedust_brew;
-      const spell_data_t *faeline_stomp;
+      const spell_data_t *jadefire_stomp;
       const spell_data_t *healing_elixir;
       const spell_data_t *invokers_delight;
       const spell_data_t *rushing_jade_wind;
@@ -840,7 +840,7 @@ namespace monk
       propagate_const<cooldown_t *> chi_torpedo;
       propagate_const<cooldown_t *> drinking_horn_cover;
       propagate_const<cooldown_t *> expel_harm;
-      propagate_const<cooldown_t *> faeline_stomp;
+      propagate_const<cooldown_t *> jadefire_stomp;
       propagate_const<cooldown_t *> fists_of_fury;
       propagate_const<cooldown_t *> flying_serpent_kick;
       propagate_const<cooldown_t *> fortifying_brew;
@@ -882,8 +882,8 @@ namespace monk
       const spell_data_t *chi_wave_damage;
       const spell_data_t *chi_wave_heal;
       const spell_data_t *claw_of_the_white_tiger;
-      const spell_data_t *faeline_stomp_damage;
-      const spell_data_t *faeline_stomp_ww_damage;
+      const spell_data_t *jadefire_stomp_damage;
+      const spell_data_t *jadefire_stomp_ww_damage;
       const spell_data_t *fortifying_brew;
       const spell_data_t *healing_elixir;
       const spell_data_t *mystic_touch;
@@ -926,8 +926,8 @@ namespace monk
       const spell_data_t *dance_of_chiji_bug;
       const spell_data_t *dizzying_kicks;
       const spell_data_t *empowered_tiger_lightning;
-      const spell_data_t *fae_exposure_dmg;
-      const spell_data_t *fae_exposure_heal;
+      const spell_data_t *jadefire_brand_dmg;
+      const spell_data_t *jadefire_brand_heal;
       const spell_data_t *fists_of_fury_tick;
       const spell_data_t *flying_serpent_kick_damage;
       const spell_data_t *focus_of_xuen;
@@ -989,7 +989,7 @@ namespace monk
     {
       int initial_chi;
       double expel_harm_effectiveness;
-      double faeline_stomp_uptime;
+      double jadefire_stomp_uptime;
       int chi_burst_healing_targets;
       int motc_override;
       double squirm_frequency;
@@ -1063,6 +1063,7 @@ namespace monk
     void init_action_list() override;
     void activate() override;
     void collect_resource_timeline_information() override;
+    bool validate_fight_style( fight_style_e style ) const override;
     std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
     const monk_td_t *find_target_data( const player_t *target ) const override
     {

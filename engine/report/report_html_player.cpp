@@ -1636,7 +1636,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           "<td class=\"right\">%.0f</td>\n"
           "</tr>\n",
           buffed_stats.spell_power,
-          p.composite_spell_power( SCHOOL_MAX ) * p.composite_spell_power_multiplier(),
+          p.composite_total_spell_power( SCHOOL_MAX ),
           p.initial.stats.spell_power );
     }
     if ( p.composite_melee_crit_chance() == p.composite_spell_crit_chance() )
@@ -3181,6 +3181,16 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p 
 
     os << ts.to_target_div();
     p.sim->add_chart_data( ts );
+
+    if ( p.is_enemy() && timeline.type == RESOURCE_HEALTH )
+    {
+      highchart::time_series_t pct_ts( highchart::build_id( p, "resource_health_pct" ), *p.sim );
+      chart::generate_actor_timeline( pct_ts, p, "health_pct", color::resource_color( RESOURCE_HEALTH ), p.collected_data.health_pct );
+      pct_ts.set_mean( p.collected_data.health_pct.mean() );
+
+      os << pct_ts.to_target_div();
+      p.sim->add_chart_data( pct_ts );
+    }
   }
 
   if ( p.primary_role() == ROLE_TANK && !p.is_enemy() )  // Experimental, restrict to tanks for now

@@ -265,7 +265,7 @@ class WDC2Parser(WDC1Parser):
     def __init__(self, options, fname):
         super().__init__(options, fname)
 
-        # Set heder format
+        # Set header format
         self.header_format = self.__WDC2_HEADER_FIELDS
         self.section_data = []
 

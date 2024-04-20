@@ -362,6 +362,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     ignore_false_positive(),
     action_skill( p->base.skill ),
     direct_tick(),
+    treat_as_periodic(),
     ignores_armor(),
     repeating(),
     harmful( true ),
@@ -631,7 +632,8 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   hasted_ticks        = spell_data.flags( spell_attribute::SX_DOT_HASTED );
   tick_on_application = spell_data.flags( spell_attribute::SX_TICK_ON_APPLICATION );
   rolling_periodic    = spell_data.flags( spell_attribute::SX_ROLLING_PERIODIC );
-  ignores_armor       = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
+  treat_as_periodic   = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
+  ignores_armor       = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );  // TODO: better way to parse this?
   may_miss            = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
   may_dodge = may_parry = may_block = !spell_data.flags( spell_attribute::SX_NO_D_P_B );
   allow_class_ability_procs         = spell_data.flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS );
@@ -1499,20 +1501,21 @@ double action_t::calculate_crit_damage_bonus( action_state_t* state ) const
 result_amount_type action_t::report_amount_type( const action_state_t* state ) const
 { return state -> result_type; }
 
-double action_t::composite_attack_power() const
+double action_t::composite_total_attack_power() const
 {
-  return player->composite_melee_attack_power_by_type(get_attack_power_type());
+  return player->composite_total_attack_power_by_type( get_attack_power_type() );
 }
 
-double action_t::composite_spell_power() const
+double action_t::composite_total_spell_power() const
 {
   double spell_power = 0;
   double tmp;
 
-  for (auto base_school : base_schools)
+  for ( auto base_school : base_schools )
   {
-    tmp = player->cache.spell_power(base_school);
-    if (tmp > spell_power) spell_power = tmp;
+    tmp = player->composite_total_spell_power( base_school );
+    if ( tmp > spell_power )
+      spell_power = tmp;
   }
 
   return spell_power;
@@ -4005,10 +4008,10 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->haste = composite_haste();
 
   if ( flags & STATE_AP )
-    state->attack_power = composite_attack_power() * player->composite_attack_power_multiplier();
+    state->attack_power = composite_total_attack_power();
 
   if ( flags & STATE_SP )
-    state->spell_power = composite_spell_power() * player->composite_spell_power_multiplier();
+    state->spell_power = composite_total_spell_power();
 
   if ( flags & STATE_VERSATILITY )
     state->versatility = composite_versatility( state );

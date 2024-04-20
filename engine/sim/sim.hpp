@@ -150,6 +150,7 @@ struct sim_t : private sc_thread_t
   bool        enable_all_sets;
   int         progressbar_type;
   int         armory_retries;
+  std::unordered_map<std::string, std::string> item_slot_overrides;
 
   // Target options
   double      enemy_death_pct;
@@ -158,6 +159,7 @@ struct sim_t : private sc_thread_t
   int         target_adds;
   std::string sim_progress_base_str, sim_progress_phase_str;
   int         desired_targets; // desired number of targets
+  int         desired_tank_targets; // desired number of tank target dummy npcs
 
 
   // Data access
@@ -220,6 +222,7 @@ struct sim_t : private sc_thread_t
     // Debuff overrides
     int chaos_brand;
     int mystic_touch;
+    int hunters_mark;
     int mortal_wounds;
     int bleeding;
 
@@ -534,7 +537,7 @@ struct sim_t : private sc_thread_t
     // Standard Deviation of interval
     timespan_t embersoul_dire_interval_stddev = 2.5_s;
     // Sets the base interval for Gift of Ursine Vengeance to attempt to proc
-    timespan_t gift_of_ursine_vengeance_period = 3_s;
+    timespan_t gift_of_ursine_vengeance_period = 750_ms;
   } dragonflight_opts;
 
   // Auras and De-Buffs
@@ -627,7 +630,7 @@ struct sim_t : private sc_thread_t
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
   computer_process::priority_e process_priority;
-  
+
   std::shared_ptr<work_queue_t> work_queue;
 
   // Related Simulations

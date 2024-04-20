@@ -32,7 +32,7 @@ level=70
 race=orc
 role=dps
 position=back
-talents=B0QAK5xc05YQdq4E+VOLrE2vpCAAAAAAAIRSS0icgEAAAAgEJJFAJJJJBJtIRkQrIJplk0SAAAA
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhEJJRLiEBAAAASkkUAkkkkAJlIRkQpIJRSSLBAAA0A
 
 head=flaring_cowl,id=193494,bonus_id=8780,ilevel=418,gem_id=192991
 neck=elemental_lariat,id=193001,bonus_id=3524/8782,ilevel=418,gem_id=192932/192932/192932,crafted_stats=32/40
@@ -59,7 +59,7 @@ level=70
 race=orc
 role=dps
 position=back
-talents=B0QAK5xc05YQdq4E+VOLrE2vpCAAAAAAAIRSSUicgEAAAAgEJJFAJJJJBJtIRkQrIJplk0SAAAA
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhEJJRJiEBAAAASkkUAkkkkAJlIRkQpIJRSSLBAAA0A
 
 head=flaring_cowl,id=193494,bonus_id=8780,ilevel=418,gem_id=192991
 neck=elemental_lariat,id=193001,bonus_id=3524/8782,ilevel=418,gem_id=192932/192932/192932,crafted_stats=32/40

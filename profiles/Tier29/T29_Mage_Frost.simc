@@ -60,10 +60,10 @@ actions.cds+=/use_item,name=spoils_of_neltharus,if=buff.spoils_of_neltharus_mast
 actions.cds+=/potion,if=prev_off_gcd.icy_veins|fight_remains<60
 actions.cds+=/use_item,name=dreambinder_loom_of_the_great_cycle,if=(equipped.nymues_unraveling_spindle&prev_gcd.1.nymues_unraveling_spindle)|fight_remains>2
 actions.cds+=/use_item,name=belorrelos_the_suncaller,use_off_gcd=1,if=(gcd.remains>gcd.max-0.1|fight_remains<5)&time>5
-actions.cds+=/use_item,name=balefire_branch,if=cooldown.ray_of_frost.up&time>1|fight_remains<20
+actions.cds+=/use_item,name=balefire_branch,if=(!talent.ray_of_frost&active_enemies<=2&buff.icy_veins.up&prev_gcd.1.glacial_spike|remaining_winters_chill=1&cooldown.ray_of_frost.up&time>1&active_enemies<=2|cooldown.cone_of_cold.up&prev_gcd.1.comet_storm&active_enemies>=3)|fight_remains<20
 actions.cds+=/flurry,if=time=0&active_enemies<=2
 actions.cds+=/icy_veins
-actions.cds+=/use_items
+actions.cds+=/use_items,if=!equipped.balefire_branch|time>5
 actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.power_infusion.down
 actions.cds+=/invoke_external_buff,name=blessing_of_summer,if=buff.blessing_of_summer.down
 actions.cds+=/blood_fury

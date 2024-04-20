@@ -150,19 +150,21 @@ const char* xorshift1024_t::name() const noexcept
 }
 
 /**
- * @brief The standard normal CDF, for one random variable.
- *
- *   Author:  W. J. Cody
- *   URL:     http://www.netlib.org/specfun/erf
- *   Source:  http://home.online.no/~pjacklam/notes/invnorm/
- *
- * This is the erfc() routine only, adapted by the
- * transform stdnormal_cdf(u)=(erfc(-u/sqrt(2))/2;
- */
+* @brief The standard normal CDF, for one random variable.
+*
+*   Author:  W. J. Cody
+*   URL:     http://www.netlib.org/specfun/erf
+*   Source:  http://home.online.no/~pjacklam/notes/invnorm/
+*
+* This is the erfc() routine only, adapted by the
+* transform stdnormal_cdf(u)=(erfc(-u/sqrt(2))/2;
+*/
 double stdnormal_cdf( double u )
 {
   if ( u == std::numeric_limits<double>::infinity() )
-    return ( u < 0 ? 0.0 : 1.0 );
+    return 1.0;
+  if ( u == -std::numeric_limits<double>::infinity() )
+    return 0.0;
 
   double y;
   double z;
@@ -243,19 +245,19 @@ double stdnormal_cdf( double u )
 }
 
 /**
- * @brief The inverse standard normal distribution.
- *
- * This is used to get the normal distribution inverse for our user-specifiable confidence levels.
- * For example for the default 95% confidence level, this function will return the well known number of
- * 1.96, so we know that 95% of the distribution is between -1.96 and +1.96 std deviations from the mean.
- *
- *   Author:      Peter John Acklam <pjacklam@online.no>
- *   URL:         http://home.online.no/~pjacklam
- *   Source:      http://home.online.no/~pjacklam/notes/invnorm/
- *
- * This function is based on the MATLAB code from the address above,
- * translated to C, and adapted for our purposes.
- */
+* @brief The inverse standard normal distribution.
+*
+* This is used to get the normal distribution inverse for our user-specifiable confidence levels.
+* For example for the default 95% confidence level, this function will return the well known number of
+* 1.96, so we know that 95% of the distribution is between -1.96 and +1.96 std deviations from the mean.
+*
+*   Author:      Peter John Acklam <pjacklam@online.no>
+*   URL:         http://home.online.no/~pjacklam
+*   Source:      http://home.online.no/~pjacklam/notes/invnorm/
+*
+* This function is based on the MATLAB code from the address above,
+* translated to C, and adapted for our purposes.
+*/
 double stdnormal_inv( double p )
 {
   if ( p > 1.0 || p < 0.0 )
@@ -265,18 +267,15 @@ double stdnormal_inv( double p )
   }
 
   if ( p == 0.0 )
-    return - std::numeric_limits<double>::infinity();
+    return -std::numeric_limits<double>::infinity();
 
   if ( p == 1.0 )
     return std::numeric_limits<double>::infinity();
 
-  double q;
+  double q = std::min( p, 1 - p );
 
   double t;
-
   double u;
-
-  q = std::min( p, 1 - p );
 
   if ( q > 0.02425 )
   {
@@ -320,8 +319,8 @@ double stdnormal_inv( double p )
   }
 
   /* The relative error of the approximation has absolute value less
-     than 1.15e-9.  One iteration of Halley's rational method (third
-     order) gives full machine precision... */
+    than 1.15e-9.  One iteration of Halley's rational method (third
+    order) gives full machine precision... */
   t = stdnormal_cdf( u ) - q;    /* error */
   t = t * 2.0 / sqrt( m_pi ) * exp( u * u / 2 ); /* f(u)/df(u) */
   u = u - t / ( 1 + u * t / 2 );   /* Halley's method */

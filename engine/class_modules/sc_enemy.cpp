@@ -1178,6 +1178,7 @@ struct tank_dummy_enemy_t : public enemy_t
 
   void init() override
   {
+    enemy_t::init();
     tank_dummy_enum = convert_tank_dummy_string( tank_dummy_str );
     // Try parsing the name
     if ( tank_dummy_enum == tank_dummy_e::NONE )
@@ -1445,14 +1446,15 @@ void enemy_t::init_target()
 
 // enemy_t::init_actions ====================================================
 
+// default provided to be overloaded for tank_dummy_enemy_t::generate_action_list()
 std::string enemy_t::generate_action_list()
 {
-  return generate_tank_action_list( tank_dummy_e::MYTHIC );
+  return "/";
 }
 
 void enemy_t::generate_heal_raid_event()
 {
-  add_tank_heal_raid_event( tank_dummy_e::HEROIC );
+  // add_tank_heal_raid_event( tank_dummy_e::HEROIC );
 }
 
 std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
@@ -1469,8 +1471,8 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // A Normal Dungeon estimate was then added below LFR. Prior to this update, it was approximately 3.9, but the rest of the
   // values were a bit lower, so this one was also lowered.
   std::array<double, numTankDummies> tank_dummy_index_scalar = { 0, 3.6, 2.8, 2.1, 1.5, 1};
-  int aa_damage_base                                         = 830000;
-  int dummy_strike_base                                      = aa_damage_base * 1.5;
+  int aa_damage_base                                         = 1500000;
+  int dummy_strike_base                                      = aa_damage_base * 2;
   int background_spell_base                                  = aa_damage_base * 0.04;
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
@@ -1482,7 +1484,7 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
          ",attack_speed=2,cooldown=30,aoe_tanks=1";
   als += "/spell_dot,damage=" + util::to_string( floor( background_spell_base / tank_dummy_index_scalar[ tank_dummy_index ] ) ) +
          ",range=" + util::to_string( floor( background_spell_base / tank_dummy_index_scalar[ tank_dummy_index ] * 0.02 ) ) +
-         ",tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=30,bleed=1";
+         ",tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=60,bleed=1";
   // pause periodically to mimic a tank swap
   als += "/pause_action,duration=30,cooldown=30,if=time>=30";
   return als;
@@ -1496,7 +1498,7 @@ void enemy_t::add_tank_heal_raid_event( tank_dummy_e tank_dummy )
   //                                           NONE, WEAK, DUNGEON, RAID,  HEROIC, MYTHIC
   std::array<int, numTankDummies> heal_value = { 0, 12000, 24000, 36000, 48000, 60000 };
   size_t tank_dummy_index                    = static_cast<size_t>( tank_dummy );
-  std::string heal_raid_event = fmt::format( "heal,name=tank_heal,amount={},period=0.5,duration=0,player_if=role.tank",
+  std::string heal_raid_event = fmt::format( "heal,name=tank_heal,amount={},cooldown=0.5,duration=0,player_if=role.tank",
                                              heal_value[ tank_dummy_index ] );
   sim->raid_events_str += "/" + heal_raid_event;
   std::string::size_type cut_pt = heal_raid_event.find_first_of( ',' );

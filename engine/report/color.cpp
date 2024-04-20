@@ -64,6 +64,8 @@ rgb class_color( player_e type )
       return color::COLOR_WARLOCK;
     case WARRIOR:
       return color::COLOR_WARRIOR;
+    case PLAYER_SIMPLIFIED:
+      return color::COLOR_PLAYER_SIMPLIFIED;
     case ENEMY:
       return color::GREY;
     case ENEMY_ADD:

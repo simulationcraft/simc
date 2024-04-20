@@ -46,7 +46,7 @@ actions+=/ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield
 actions+=/last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled|set_bonus.tier30_2pc|set_bonus.tier30_4pc
 actions+=/ravager
 actions+=/demoralizing_shout,if=talent.booming_voice.enabled
-actions+=/spear_of_bastion
+actions+=/champions_spear
 actions+=/thunderous_roar
 actions+=/shield_slam,if=buff.fervid.up
 actions+=/shockwave,if=talent.sonic_boom.enabled&buff.avatar.up&talent.unstoppable_force.enabled&!talent.rumbling_earth.enabled|talent.sonic_boom.enabled&talent.rumbling_earth.enabled&spell_targets.shockwave>=3

@@ -363,7 +363,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
     if ( p->talents.blade_of_vengeance->ok() )
     {
-      attack_power_mod.direct = p->find_spell( 404358 )->effectN( 1 ).ap_coeff();
+      base_aoe_multiplier *= p->find_spell( 404358 )->effectN( 1 ).ap_coeff() / attack_power_mod.direct;
       aoe = -1;
       reduced_aoe_targets = 5;
     }
@@ -565,7 +565,7 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 struct templars_verdict_echo_t : public paladin_melee_attack_t
 {
   bool is_fv;
-  templars_verdict_echo_t( paladin_t* p ) : 
+  templars_verdict_echo_t( paladin_t* p ) :
     paladin_melee_attack_t(( p->talents.final_verdict->ok() ) ? "final_verdict_echo" : "templars_verdict_echo",
       p,
       ( p->talents.final_verdict->ok() ) ? ( p->find_spell( 383328 ) ) : ( p->find_specialization_spell( "Templar's Verdict" ) ) ),
@@ -875,7 +875,7 @@ struct judgment_ret_t : public judgment_t
     judgment_t::impact( s );
     // Only main target triggers Wrathful Sanction for Blessed Champion
     // T31 proc for Divine Toll in divine_toll_t, the others are here
-    if ( s->chain_target == 0 && procsT31 ) 
+    if ( s->chain_target == 0 && procsT31 )
     {
       if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B2 ) && td( s->target )->dots.expurgation->is_ticking() )
       {

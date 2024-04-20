@@ -108,7 +108,7 @@ double heal_t::composite_versatility( const action_state_t* state ) const
 
 result_amount_type heal_t::amount_type( const action_state_t* /* state */, bool periodic ) const
 {
-  if ( periodic )
+  if ( periodic || treat_as_periodic )
     return result_amount_type::HEAL_OVER_TIME;
   else
     return result_amount_type::HEAL_DIRECT;
@@ -240,6 +240,17 @@ void heal_t::assess_damage( result_amount_type heal_type, action_state_t* s )
         pt_taken = PROC1_HELPFUL_PERIODIC_TAKEN;
 
       s->target->trigger_callbacks( pt_taken, pt2, this, s );
+    }
+  }
+   
+  if ( player->spells.leech )
+  {
+    double leech_pct = 0;
+
+    if ( player != s->target && s->result_amount > 0 &&
+         ( leech_pct = s->action->composite_leech( s ) ) > 0 )
+    {
+      player->leech_pool += leech_pct * s->result_amount;
     }
   }
 

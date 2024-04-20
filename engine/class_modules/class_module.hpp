@@ -54,6 +54,7 @@ struct module_t
   static const module_t* shaman();
   static const module_t* warlock();
   static const module_t* warrior();
+  static const module_t* player_simplified();
   static const module_t* enemy();
   static const module_t* tank_dummy_enemy();
   static const module_t* heal_enemy();
@@ -88,6 +89,8 @@ struct module_t
         return warlock();
       case WARRIOR:
         return warrior();
+      case PLAYER_SIMPLIFIED:
+        return player_simplified();
       case ENEMY:
         return enemy();
       case TANK_DUMMY:

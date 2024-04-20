@@ -60,10 +60,10 @@ actions.cds+=/use_item,name=spoils_of_neltharus,if=buff.spoils_of_neltharus_mast
 actions.cds+=/potion,if=prev_off_gcd.icy_veins|fight_remains<60
 actions.cds+=/use_item,name=dreambinder_loom_of_the_great_cycle,if=(equipped.nymues_unraveling_spindle&prev_gcd.1.nymues_unraveling_spindle)|fight_remains>2
 actions.cds+=/use_item,name=belorrelos_the_suncaller,use_off_gcd=1,if=(gcd.remains>gcd.max-0.1|fight_remains<5)&time>5
-actions.cds+=/use_item,name=balefire_branch,if=cooldown.ray_of_frost.up&time>1|fight_remains<20
+actions.cds+=/use_item,name=balefire_branch,if=(!talent.ray_of_frost&active_enemies<=2&buff.icy_veins.up&prev_gcd.1.glacial_spike|remaining_winters_chill=1&cooldown.ray_of_frost.up&time>1&active_enemies<=2|cooldown.cone_of_cold.up&prev_gcd.1.comet_storm&active_enemies>=3)|fight_remains<20
 actions.cds+=/flurry,if=time=0&active_enemies<=2
 actions.cds+=/icy_veins
-actions.cds+=/use_items
+actions.cds+=/use_items,if=!equipped.balefire_branch|time>5
 actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.power_infusion.down
 actions.cds+=/invoke_external_buff,name=blessing_of_summer,if=buff.blessing_of_summer.down
 actions.cds+=/blood_fury
@@ -114,25 +114,25 @@ neck=ouroboreal_necklet,id=210214,bonus_id=8782,ilevel=489,gem_id=192948/192948/
 shoulders=wayward_chronomancers_metronomes,id=207288,ilevel=489
 back=vibrant_wildercloth_shawl,id=193511,bonus_id=9379/8960,ilevel=486,enchant_id=6592,crafted_stats=49/36
 chest=wayward_chronomancers_patchwork,id=207293,ilevel=489,enchant_id=6625
-wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9379/8960/8780,ilevel=486,gem_id=192948,enchant_id=6586,crafted_stats=32/36
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9379/8960/8780/8793,ilevel=486,gem_id=192948,enchant_id=6586,crafted_stats=32/36
 hands=wayward_chronomancers_gloves,id=207291,ilevel=489
 waist=urctoss_hibernal_dial,id=207119,bonus_id=8780,ilevel=489,gem_id=192948,enchant_id=6904
 legs=bloodstained_sous_chef_pants,id=159285,ilevel=489,enchant_id=6541
 feet=devilsaur_worshipers_sandals,id=158303,ilevel=489,enchant_id=6613
-finger1=signet_of_the_highborne_magi,id=134537,bonus_id=8780,ilevel=489,gem_id=192948,enchant_id=6562
-finger2=signet_of_the_last_elder,id=207162,bonus_id=8780,ilevel=489,gem_id=192948,enchant_id=6562
+finger1=daydreamers_glimmering_ring,id=208442,bonus_id=8780,ilevel=489,gem_id=192958,enchant_id=6556
+finger2=signet_of_titanic_insight,id=192999,bonus_id=523,ilevel=486,gem_id=192935,enchant_id=6562,crafted_stats=49/40
 trinket1=balefire_branch,id=159630,bonus_id=6652/7979/9563/1494/8767,ilevel=489
 trinket2=belorrelos_the_suncaller,id=207172,bonus_id=6652/7979/9563/1494/8767,ilevel=489
-main_hand=dreambinder_loom_of_the_great_cycle,id=208616,ilevel=489,enchant_id=6643
+main_hand=iridal_the_earths_master,id=208321,ilevel=489,enchant_id=6655
 
 # Gear Summary
-# gear_ilvl=488.60
-# gear_stamina=39137
+# gear_ilvl=488.40
+# gear_stamina=39062
 # gear_intellect=12122
-# gear_crit_rating=3399
-# gear_haste_rating=3364
-# gear_mastery_rating=5592
-# gear_versatility_rating=3411
+# gear_crit_rating=3718
+# gear_haste_rating=3204
+# gear_mastery_rating=5488
+# gear_versatility_rating=3332
 # gear_speed_rating=200
 # gear_avoidance_rating=125
 # gear_armor=3251

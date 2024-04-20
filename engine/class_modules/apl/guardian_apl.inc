@@ -4,18 +4,20 @@ action_priority_list_t* bear = get_action_priority_list( "bear" );
 action_priority_list_t* catweave = get_action_priority_list( "catweave" );
 
 precombat->add_action( "variable,name=If_build,value=1,value_else=0,if=talent.thorns_of_iron.enabled&talent.reinforced_fur.enabled","Executed before combat begins. Accepts non-harmful actions only." );
-precombat->add_action( "cat_form,if=(druid.catweave_bear=1&(cooldown.pause_action.remains|time>30))" );
-precombat->add_action( "moonkin_form,if=(!druid.catweave_bear=1)&(cooldown.pause_action.remains|time>30)" );
+precombat->add_action( "variable,name=catweave_bear,op=reset" );
+precombat->add_action( "variable,name=owlweave_bear,op=reset" );
+precombat->add_action( "cat_form,if=(variable.catweave_bear&(cooldown.pause_action.remains|time>30))" );
+precombat->add_action( "moonkin_form,if=(!variable.catweave_bear)&(cooldown.pause_action.remains|time>30)" );
 precombat->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled" );
-precombat->add_action( "prowl,if=druid.catweave_bear=1&(cooldown.pause_action.remains|time>30)" );
+precombat->add_action( "prowl,if=variable.catweave_bear&(cooldown.pause_action.remains|time>30)" );
 precombat->add_action( "bear_form,if=(!buff.prowl.up)" );
 
 def->add_action( "auto_attack,if=!buff.prowl.up","Executed every time the actor is available." );
 def->add_action( "use_item,slot=trinket1" );
 def->add_action( "use_item,slot=trinket2" );
 def->add_action( "use_item,name=djaruun_pillar_of_the_elder_flame,if=dot.moonfire.ticking" );
-def->add_action( "potion,if=((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)|((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!druid.catweave_bear&!druid.owlweave_bear)))" );
-def->add_action( "run_action_list,name=catweave,if=(target.cooldown.pause_action.remains|time>=30)&druid.catweave_bear=1&buff.tooth_and_claw.remains>1.5&(buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down)&(cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&dot.moonfire.remains>=2)|(buff.cat_form.up&energy>25&druid.catweave_bear=1&buff.tooth_and_claw.remains>1.5)|(buff.heart_of_the_wild.up&energy>90&druid.catweave_bear=1&buff.tooth_and_claw.remains>1.5)" );
+def->add_action( "potion,if=((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)|((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!variable.catweave_bear&!variable.owlweave_bear)))" );
+def->add_action( "run_action_list,name=catweave,if=(target.cooldown.pause_action.remains|time>=30)&variable.catweave_bear&buff.tooth_and_claw.remains>1.5&(buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down)&(cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&dot.moonfire.remains>=2)|(buff.cat_form.up&energy>25&variable.catweave_bear&buff.tooth_and_claw.remains>1.5)|(buff.heart_of_the_wild.up&energy>90&variable.catweave_bear&buff.tooth_and_claw.remains>1.5)" );
 def->add_action( "run_action_list,name=bear" );
 
 bear->add_action( "bear_form,if=!buff.bear_form.up" );

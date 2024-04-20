@@ -1519,6 +1519,7 @@ sim_t::sim_t()
     target_level( -1 ),
     target_adds( 0 ),
     desired_targets( 1 ),
+    desired_tank_targets( 1 ),
     dbc( new dbc_t() ),
     dbc_override( std::make_unique<dbc_override_t>() ),
     timewalk( -1 ),
@@ -2330,11 +2331,11 @@ void sim_t::init_fight_style()
     case FIGHT_STYLE_PATCHWERK:
       raid_events_str.clear();
       break;
-    
+
     case FIGHT_STYLE_CASTING_PATCHWERK:
       raid_events_str += "/casting,cooldown=500,duration=500";
       break;
-    
+
     case FIGHT_STYLE_HECTIC_ADD_CLEAVE:
     {
       // Phase 1 - Adds and move into position to fight adds
@@ -2356,7 +2357,7 @@ void sim_t::init_fight_style()
                                       first2, cooldown2 );
     }
     break;
-    
+
     case FIGHT_STYLE_DUNGEON_SLICE:
       desired_targets = 1;
       max_time = timespan_t::from_seconds( 360.0 );
@@ -2369,7 +2370,7 @@ void sim_t::init_fight_style()
         "/adds,name=SmallAdd,count=5,count_range=1,first=140,cooldown=45,duration=18,duration_stddev=2"
         "/adds,name=BigAdd,count=2,count_range=1,first=160,cooldown=50,duration=30,duration_stddev=2";
       break;
-    
+
     case FIGHT_STYLE_DUNGEON_ROUTE:
       // To be used in conjunction with "pull" raid events for a simulated dungeon run.
       desired_targets = 1;
@@ -2377,7 +2378,7 @@ void sim_t::init_fight_style()
       // Bloodlust is handled by an option on each pull raid event.
       overrides.bloodlust = 0;
       break;
-    
+
     case FIGHT_STYLE_CLEAVE_ADD:
     {
       auto first_and_duration = static_cast<unsigned>( max_time.total_seconds() * 0.05 );
@@ -2388,16 +2389,16 @@ void sim_t::init_fight_style()
                                       first_and_duration, cooldown, first_and_duration, last );
     }
     break;
-    
+
     case FIGHT_STYLE_LIGHT_MOVEMENT:
       raid_events_str += "/movement,players_only=1,cooldown=40,cooldown_stddev=10,distance=15,distance_min=10,distance_max=20,first=15";
       break;
-    
+
     case FIGHT_STYLE_HEAVY_MOVEMENT:
       raid_events_str += "/movement,players_only=1,cooldown=20,cooldown_stddev=15,distance=25,distance_min=20,distance_max=30,first=15";
       raid_events_str += "/movement,players_only=1,cooldown=45,cooldown_stddev=15,distance=45,distance_min=40,distance_max=50,first=30";
       break;
-    
+
     case FIGHT_STYLE_BEASTLORD:
     {
       deprecated = true;
@@ -2420,7 +2421,7 @@ void sim_t::init_fight_style()
                                       beast_last );
     }
     break;
-    
+
     case FIGHT_STYLE_HELTER_SKELTER:
       deprecated = true;
       raid_events_str += "/casting,cooldown=30,duration=3,first=15";
@@ -2428,7 +2429,7 @@ void sim_t::init_fight_style()
       raid_events_str += "/stun,cooldown=60,duration=2";
       raid_events_str += "/invulnerable,cooldown=120,duration=3";
       break;
-    
+
     case FIGHT_STYLE_ULTRAXION:
       deprecated = true;
       max_time = timespan_t::from_seconds( 366.0 );
@@ -2436,16 +2437,16 @@ void sim_t::init_fight_style()
       vary_combat_length = 0.0;
       raid_events_str += "/flying,first=0,duration=500,cooldown=500";
       raid_events_str += "/position_switch,first=0,duration=500,cooldown=500";
-      raid_events_str += "/stun,duration=1.0,first=45.0,period=45.0";
-      raid_events_str += "/stun,duration=1.0,first=57.0,period=57.0";
-      raid_events_str += "/damage,first=6.0,period=6.0,last=59.5,amount=44000,type=shadow";
-      raid_events_str += "/damage,first=60.0,period=5.0,last=119.5,amount=44855,type=shadow";
-      raid_events_str += "/damage,first=120.0,period=4.0,last=179.5,amount=44855,type=shadow";
-      raid_events_str += "/damage,first=180.0,period=3.0,last=239.5,amount=44855,type=shadow";
-      raid_events_str += "/damage,first=240.0,period=2.0,last=299.5,amount=44855,type=shadow";
-      raid_events_str += "/damage,first=300.0,period=1.0,amount=44855,type=shadow";
+      raid_events_str += "/stun,duration=1.0,first=45.0,cooldown=45.0";
+      raid_events_str += "/stun,duration=1.0,first=57.0,cooldown=57.0";
+      raid_events_str += "/damage,first=6.0,cooldown=6.0,last=59.5,amount=44000,type=shadow";
+      raid_events_str += "/damage,first=60.0,cooldown=5.0,last=119.5,amount=44855,type=shadow";
+      raid_events_str += "/damage,first=120.0,cooldown=4.0,last=179.5,amount=44855,type=shadow";
+      raid_events_str += "/damage,first=180.0,cooldown=3.0,last=239.5,amount=44855,type=shadow";
+      raid_events_str += "/damage,first=240.0,cooldown=2.0,last=299.5,amount=44855,type=shadow";
+      raid_events_str += "/damage,first=300.0,cooldown=1.0,amount=44855,type=shadow";
       break;
-    
+
     default:
       fight_style = FIGHT_STYLE_PATCHWERK;
       break;
@@ -2832,14 +2833,33 @@ void sim_t::init()
   }
   else
   {
-    target = module_t::enemy()->create_player( this, "Fluffy_Pillow" );
+    // Default enemy used if no explicity enemy declarations are found.
+    // Only the first enemy uses the tank_dummy_enemy module, to prevent approximately
+    // linear scaling of damage intake from using the `desired_targets` sim opt
+    target = module_t::tank_dummy_enemy()->create_player( this, "Fluffy_Pillow" );
   }
 
-  // create additional enemies here
+  // create additional non-tank enemies here
+  int count_additional_enemy = 1;
   while ( as<int>(target_list.size()) < desired_targets )
   {
     active_player = nullptr;
-    active_player = module_t::enemy() -> create_player( this, "enemy" + util::to_string( target_list.size() + 1 ) );
+    active_player = module_t::enemy() -> create_player( this, "Dummy_Enemy_" + util::to_string( count_additional_enemy ) );
+    count_additional_enemy++;
+    if ( ! active_player )
+    {
+      throw std::invalid_argument(fmt::format("Unable to create enemy {}.", target_list.size() ));
+    }
+  }
+
+  // create additional tank enemies here
+  int desired_target_count = as<int>( target_list.size() ) + desired_tank_targets - 1;
+  count_additional_enemy = 1;
+  while ( as<int>(target_list.size()) < desired_target_count )
+  {
+    active_player = nullptr;
+    active_player = module_t::tank_dummy_enemy() -> create_player( this, "Tank_Dummy_Enemy_" + util::to_string( count_additional_enemy ) );
+    count_additional_enemy++;
     if ( ! active_player )
     {
       throw std::invalid_argument(fmt::format("Unable to create enemy {}.", target_list.size() ));
@@ -2973,8 +2993,21 @@ void sim_t::analyze()
     std::fflush( stdout );
   }
 
+  
+  assert( iterations > 0 );
+
+  // Run core analyze for all actor collected data before proceeding to full analysis. This is to prevent errors from
+  // when actors access information from each other, e.g. buffs.
+  for ( size_t i = 0; i < actor_list.size(); i++ )
+  {
+    actor_list[ i ] -> pre_analyze_hook();
+    actor_list[ i ] -> collected_data.analyze( *actor_list[ i ] );
+  }
+
   for ( size_t i = 0; i < actor_list.size(); i++ )
     actor_list[ i ] -> analyze( *this );
+
+  raid_event_t::analyze( this );
 
   range::sort( players_by_dps,  compare_dps() );
   range::sort( players_by_priority_dps, compare_priority_dps() );
@@ -3185,6 +3218,8 @@ void sim_t::merge( sim_t& other_sim )
     player -> merge( *other_p );
   }
 
+  raid_event_t::merge( this, &other_sim );
+
   // After normal player merging, merge all dynamically spawned players. This is done after the
   // normal player merging because the dynamic spawner merging process may need to create new actors
   // into the parent (e.g., thread 0) sim to accommodate child sims managing to create more actors
@@ -3391,6 +3426,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
 
   overrides.chaos_brand             = optimal_raid;
   overrides.mystic_touch            = optimal_raid;
+  overrides.hunters_mark            = optimal_raid;
   overrides.mortal_wounds           = optimal_raid;
   overrides.bleeding                = optimal_raid;
 
@@ -3412,6 +3448,9 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
 {
   if ( name_str == "desired_targets" )
     return expr_t::create_constant( name_str, desired_targets );
+
+  if ( name_str == "desired_tank_targets" )
+    return expr_t::create_constant( name_str, desired_tank_targets );
 
   if ( name_str == "initial_targets" )
     return expr_t::create_constant( name_str, target_list.size() );
@@ -3652,6 +3691,7 @@ void sim_t::create_options()
   add_option( opt_int( "override.windfury_totem", overrides.windfury_totem ) );
   add_option( opt_int( "override.chaos_brand", overrides.chaos_brand ) );
   add_option( opt_int( "override.mystic_touch", overrides.mystic_touch ) );
+  add_option( opt_int( "override.hunters_mark", overrides.hunters_mark ) );
   add_option( opt_int( "override.mortal_wounds", overrides.mortal_wounds ) );
   add_option( opt_int( "override.bleeding", overrides.bleeding ) );
   add_option( opt_func( "override.spell_data", parse_override_spell_data ) );
@@ -3742,6 +3782,7 @@ void sim_t::create_options()
   add_option( opt_bool( "auto_attacks_always_land", auto_attacks_always_land ) );
   add_option( opt_bool( "log_spell_id", log_spell_id ) );
   add_option( opt_int( "desired_targets", desired_targets ) );
+  add_option( opt_int( "desired_tank_targets", desired_tank_targets ) );
   add_option( opt_bool( "show_etmi", show_etmi ) );
   add_option( opt_float( "tmi_window_global", tmi_window_global ) );
   add_option( opt_float( "tmi_bin_size", tmi_bin_size ) );
@@ -3765,6 +3806,7 @@ void sim_t::create_options()
   add_option( opt_func( "shaman", parse_player ) );
   add_option( opt_func( "warlock", parse_player ) );
   add_option( opt_func( "warrior", parse_player ) );
+  add_option( opt_func( "player_simplified", parse_player ) );
   add_option( opt_func( "enemy", parse_player ) );
   add_option( opt_func( "tank_dummy", parse_player ) );
   add_option( opt_func( "pet", parse_player ) );
@@ -3783,6 +3825,8 @@ void sim_t::create_options()
   add_option( opt_bool( "save_talent_str", save_talent_str ) );
   add_option( opt_func( "talent_format", parse_talent_format ) );
   add_option( opt_int( "armory_retries", armory_retries ) );
+  add_option( opt_map( "override.item_slot.", item_slot_overrides ) );
+
   // Stat Enchants
   add_option( opt_float( "default_enchant_strength", enchant.attribute[ATTR_STRENGTH] ) );
   add_option( opt_float( "default_enchant_agility", enchant.attribute[ATTR_AGILITY] ) );
@@ -4580,6 +4624,24 @@ void sim_t::activate_actors()
       progress_bar.set_phase( player_no_pet_list[ current_index ] -> name_str );
     }
   }
+
+  if ( overrides.hunters_mark )
+    target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+      player_t* new_mark = nullptr;
+      for (size_t i = 0; i < target_non_sleeping_list.size(); i++)
+      {
+        player_t* t = target_non_sleeping_list[ i ];
+        if ( !t->debuffs.hunters_mark )
+          continue;
+
+        if ( !new_mark )
+          new_mark = t;
+        else
+          t->debuffs.hunters_mark->expire();
+      }
+      if ( new_mark )
+        new_mark->debuffs.hunters_mark->trigger();
+    } );
 
   progress_bar.progress();
 

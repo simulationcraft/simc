@@ -261,8 +261,6 @@ int sim_t::main( const std::vector<std::string>& args )
 
     special_effect_initializer_t special_effect_init;
 
-    print_version_info( *dbc );
-
     sim_control_t control;
 
     try
@@ -271,6 +269,7 @@ int sim_t::main( const std::vector<std::string>& args )
     }
     catch ( const std::exception& )
     {
+      print_version_info( *dbc );
       fmt::print( "\n" );
       std::throw_with_nested( std::invalid_argument( "Incorrect option format" ) );
     }
@@ -284,9 +283,13 @@ int sim_t::main( const std::vector<std::string>& args )
     }
     catch ( const std::exception& )
     {
+      print_version_info( *dbc );
       fmt::print( "\n" );
       std::throw_with_nested( std::runtime_error( "Setup failure" ) );
     }
+
+    // print version info if it hasn't been displayed already
+    print_version_info( *dbc );
 
     if ( display_build > 0 )
       print_build_info( *dbc );
