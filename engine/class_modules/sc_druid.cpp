@@ -4139,7 +4139,7 @@ struct rake_t : public cat_attack_t
       const auto& eff = data().effectN( 4 );
       add_parse_entry( persistent_multiplier_effects )
           .set_value( eff.percent() )
-          .set_func( [ this, p ] { return stealthed_any(); } )
+          .set_func( [ this ] { return stealthed_any(); } )
           .set_eff( &eff );
     }
 
@@ -11898,12 +11898,6 @@ void druid_t::create_options()
 
   // Restoration
   add_option( opt_float( "druid.time_spend_healing", options.time_spend_healing ) );
-
-  // TODO: remove
-  add_option( opt_obsoleted( "druid.affinity_resources" ) );
-  add_option( opt_deprecated( "druid.owlweave_cat", "apl_variable.owlweave_cat=1" ) );
-  add_option( opt_deprecated( "druid.catweave_bear", "apl_variable.catweave_bear=1" ) );
-  add_option( opt_deprecated( "druid.owlweave_bear", "apl_variable.owlweave_bear=1" ) );
 }
 
 std::string druid_t::create_profile( save_e type )
