@@ -3418,17 +3418,6 @@ public:
 
     auto consumed = _combo_points();
 
-    if ( p()->talent.berserk_heart_of_the_lion.ok() )
-    {
-      auto dur_ = timespan_t::from_seconds( p()->talent.berserk_heart_of_the_lion->effectN( 1 ).base_value() *
-                                            consumed * -0.1 );
-
-      if ( p()->talent.incarnation_cat.ok() )
-        p()->cooldown.incarnation_cat->adjust( dur_ );
-      else
-        p()->cooldown.berserk_cat->adjust( dur_ );
-    }
-
     p()->buff.frantic_momentum->trigger( 1, buff_t::DEFAULT_VALUE(),
                                          consumed * p()->talent.frantic_momentum->effectN( 1 ).percent() );
 
@@ -12952,6 +12941,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   
   // Feral 
   action.apply_affecting_aura( spec.ashamanes_guidance );
+  action.apply_affecting_aura( talent.berserk_heart_of_the_lion );
   action.apply_affecting_aura( talent.dreadful_bleeding );
   action.apply_affecting_aura( talent.infected_wounds_cat );
   action.apply_affecting_aura( talent.lions_strength );
