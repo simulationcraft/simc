@@ -1439,6 +1439,11 @@ struct void_torrent_t final : public priest_spell_t
     if ( priest().talents.voidweaver.entropic_rift.enabled() )
     {
       priest().trigger_entropic_rift();
+      if ( p().channeling && p().channeling->id == p().specs.mind_blast->id() )
+      {
+        event_t::cancel( p().queueing->queue_event );
+        p().queueing = nullptr;
+      }
     }
   }
 

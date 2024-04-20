@@ -695,6 +695,14 @@ public:
   {
   } active_items;
 
+  // Player Data State
+  vector_with_callback<player_t*> allies_with_atonement;
+  struct state_t
+  {
+    ground_aoe_event_t* active_entropic_rift;
+  } state;
+
+
   // Pets
   struct priest_pets_t
   {
@@ -736,8 +744,6 @@ public:
     timespan_t twist_of_fate_heal_duration_mean   = 2_s;
     timespan_t twist_of_fate_heal_duration_stddev = 0.25_s;
   } options;
-
-  vector_with_callback<player_t*> allies_with_atonement;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -840,7 +846,6 @@ public:
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   void trigger_essence_devourer();
   // Stores the currently active Entropic Rift event
-  ground_aoe_event_t* active_entropic_rift;
   void trigger_entropic_rift();
   void extend_entropic_rift();
   void expand_entropic_rift();
