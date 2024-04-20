@@ -3754,7 +3754,6 @@ void sim_t::create_options()
   add_option( opt_bool( "save_gear_comments", save_gear_comments ) );
   add_option( opt_bool( "buff_uptime_timeline", buff_uptime_timeline ) );
   add_option( opt_bool( "buff_stack_uptime_timeline", buff_stack_uptime_timeline ) );
-  add_option( opt_deprecated( "json_full_states", "json=,full_states=" ) );
   // Bloodlust
   add_option( opt_int( "bloodlust_percent", bloodlust_percent ) );
   add_option( opt_timespan( "bloodlust_time", bloodlust_time ) );
@@ -3767,7 +3766,6 @@ void sim_t::create_options()
   // Regen
   add_option( opt_timespan( "regen_periodicity", regen_periodicity ) );
   // RNG
-  add_option( opt_obsoleted( "rng" ) );
   add_option( opt_bool( "deterministic", deterministic ) );
   add_option( opt_bool( "strict_work_queue", strict_work_queue ) );
   add_option( opt_float( "report_iteration_data", report_iteration_data ) );
@@ -3887,7 +3885,6 @@ void sim_t::create_options()
   add_option( opt_bool( "count_overheal_as_heal", count_overheal_as_heal ) );
   add_option( opt_float( "scaling_normalized", scaling_normalized ) );
   add_option( opt_bool( "merge_enemy_priority_dmg", merge_enemy_priority_dmg ) );
-  add_option( opt_obsoleted( "global_item_upgrade_level" ) );
   add_option( opt_int( "decorated_tooltips", decorated_tooltips ) );
   // Charts
   add_option( opt_bool( "chart_show_relative_difference", chart_show_relative_difference ) );
@@ -3906,9 +3903,6 @@ void sim_t::create_options()
   add_option( opt_int( "legion.engine_of_eradication_orbs", legion_opts.engine_of_eradication_orbs, 0, 4 ) );
   add_option( opt_int( "legion.void_stalkers_contract_targets", legion_opts.void_stalkers_contract_targets ) );
   add_option( opt_float( "legion.specter_of_betrayal_overlap", legion_opts.specter_of_betrayal_overlap, 0, 1 ) );
-  add_option( opt_obsoleted( "legion.pantheon_trinket_users" ) );
-  add_option( opt_obsoleted( "legion.pantheon_trinket_interval" ) );
-  add_option( opt_obsoleted( "legion.pantheon_trinket_interval_stddev" ) );
   add_option( opt_func( "legion.cradle_of_anguish_resets", []( sim_t* sim, util::string_view, util::string_view value ) {
     auto split = util::string_split<util::string_view>( value, ":/," );
     range::for_each( split, [ sim ]( util::string_view str ) {
@@ -4050,14 +4044,9 @@ void sim_t::create_options()
                             1_s, timespan_t::max() ) );
   add_option( opt_uint( "bfa.manifesto_allies_start", bfa_opts.manifesto_allies_start, 0, 12 ) );
   add_option( opt_uint( "bfa.manifesto_allies_end", bfa_opts.manifesto_allies_end, 0, 5 ) );
-  add_option( opt_obsoleted( "bfa.echoing_void_collapse_chance" ) );
-  add_option( opt_obsoleted( "bfa.void_ritual_increased_chance_active" ) );
   add_option( opt_timespan( "bfa.symbiotic_presence_interval", bfa_opts.symbiotic_presence_interval, 1_s, timespan_t::max() ) );
   add_option( opt_float( "bfa.whispered_truths_offensive_chance", bfa_opts.whispered_truths_offensive_chance, 0.0, 1.0 ) );
   add_option( opt_bool( "bfa.nyalotha", bfa_opts.nyalotha ) );
-  add_option( opt_obsoleted( "bfa.infinite_stars_miss_chance" ) );
-
-  add_option( opt_deprecated( "feast_as_dps", "no longer necessary" ) );
 
   // Shadowlands
   add_option( opt_bool( "shadowlands.enabled", shadowlands_opts.enabled ) );
@@ -4125,7 +4114,6 @@ void sim_t::create_options()
   add_option( opt_float( "dragonflight.hood_of_surging_time_chance", dragonflight_opts.hood_of_surging_time_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "dragonflight.hood_of_surging_time_period", dragonflight_opts.hood_of_surging_time_period, 1_s, timespan_t::max() ) );
   add_option( opt_uint( "dragonflight.hood_of_surging_time_stacks", dragonflight_opts.hood_of_surging_time_stacks, 0, 5 ) );
-  add_option( opt_deprecated( "dragonflight.whelp_training_weights", "dragonflight.ruby_whelp_shell_training" ) );
   add_option( opt_string( "dragonflight.ruby_whelp_shell_training", dragonflight_opts.ruby_whelp_shell_training ) );
   add_option( opt_string( "dragonflight.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context ) );
   add_option( opt_float( "dragonflight.blue_silken_lining_uptime", dragonflight_opts.blue_silken_lining_uptime, 0.0, 1.0 ) );
@@ -4143,6 +4131,8 @@ void sim_t::create_options()
   add_option( opt_timespan( "dragonflight.embersoul_dire_interval", dragonflight_opts.embersoul_dire_interval, 1_s, timespan_t::max() ) );
   add_option( opt_timespan( "dragonflight.embersoul_dire_interval_stddev", dragonflight_opts.embersoul_dire_interval_stddev, 1_s, timespan_t::max() ) );
   add_option( opt_timespan( "dragonflight.gift_of_ursine_vengeance_period", dragonflight_opts.gift_of_ursine_vengeance_period, 3_s, timespan_t::max() ) );
+
+  // The War Within
 }
 
 // sim_t::parse_option ======================================================

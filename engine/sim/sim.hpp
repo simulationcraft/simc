@@ -540,6 +540,10 @@ struct sim_t : private sc_thread_t
     timespan_t gift_of_ursine_vengeance_period = 750_ms;
   } dragonflight_opts;
 
+  struct thewarwithin_opt_t
+  {
+  } thewarwithin_opts;
+
   // Auras and De-Buffs
   auto_dispose<std::vector<buff_t*>> buff_list;
 
