@@ -4349,6 +4349,7 @@ struct trollbanes_icy_fury_t final : public death_knight_spell_t
     : death_knight_spell_t( name, p, p->pet_spell.trollbanes_icy_fury_ability )
   {
     background = true;
+    aoe        = -1;
   }
 };
 
