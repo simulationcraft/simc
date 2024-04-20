@@ -1500,7 +1500,7 @@ public:
   bool      in_death_and_decay() const;
   void      summon_rider( timespan_t duration, bool random );
   void      extend_rider( double amount );
-  void      trigger_whitemanes_famine( player_t* target );
+  void      trigger_whitemanes_famine( player_t* target, std::vector<player_t*>& target_list );
   void      trigger_dnd_buffs();
   void      expire_dnd_buffs();
   // Blood
@@ -3720,11 +3720,10 @@ struct trollbane_pet_t : public horseman_pet_t
 
   struct trollbane_chains_of_ice_t final : public horseman_spell_t
   {
-    trollbane_chains_of_ice_t( util::string_view n, horseman_pet_t* p /*, util::string_view options_str*/)
+    trollbane_chains_of_ice_t( util::string_view n, horseman_pet_t* p , util::string_view options_str )
       : horseman_spell_t( p, n, p->dk()->pet_spell.trollbanes_chains_of_ice_ability )
     {
-      // parse_options( options_str );
-      background = true;
+      parse_options( options_str );
       add_child( dk()->active_spells.trollbanes_icy_fury );
     }
 
@@ -3734,6 +3733,12 @@ struct trollbane_pet_t : public horseman_pet_t
       auto dk_td = dk() -> get_target_data( a -> target );
       dk_td -> debuff.chains_of_ice_trollbane_slow -> trigger();
       dk_td -> debuff.chains_of_ice_trollbane_damage -> trigger();
+    }
+
+    bool ready() override
+    {
+      horseman_spell_t::ready();
+      return !dk() -> get_target_data( target ) -> debuff.chains_of_ice_trollbane_slow -> check();
     }
   };
 
@@ -3747,27 +3752,15 @@ struct trollbane_pet_t : public horseman_pet_t
     }
   };
 
-  struct abilities_t
-  {
-    action_t* chains_of_ice;
-  } ability;
-
   trollbane_pet_t( death_knight_t* owner, util::string_view name ) : horseman_pet_t( owner, name )
   {
     npc_id = owner->spell.summon_trollbane->effectN( 1 ).misc_value1();
-  }
-
-  void arise() override
-  {
-    horseman_pet_t::arise();
-    ability.chains_of_ice -> execute_on_target( dk() -> target );
   }
 
   void init_spells() override
   {
     horseman_pet_t::init_spells();
     dk()->active_spells.trollbanes_icy_fury = get_action<trollbanes_icy_fury_t>( "trollbanes_icy_fury", this );
-    ability.chains_of_ice = get_action<trollbane_chains_of_ice_t>( "chains_of_ice", this );
   }
 
   void init_action_list() override
@@ -3776,12 +3769,14 @@ struct trollbane_pet_t : public horseman_pet_t
 
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "chains_of_ice" );
     def->add_action( "obliterate" );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if (name == "obliterate") return new obliterate_trollbane_t( name, this, options_str );
+    if (name == "chains_of_ice") return new trollbane_chains_of_ice_t( name, this, options_str );
 
     return horseman_pet_t::create_action( name, options_str );
   }
@@ -7413,7 +7408,7 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
 
       if ( whitemane_td->whitemane_dot.undeath_dot->is_ticking() )
       {
-          p()->trigger_whitemanes_famine( state->target );
+          p()->trigger_whitemanes_famine( state->target, death_knight_melee_attack_t::target_list() );
       }
     }
   }
@@ -7976,7 +7971,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
       if ( whitemane_td->whitemane_dot.undeath_dot->is_ticking() )
       {
-        p()->trigger_whitemanes_famine( state->target );
+        p()->trigger_whitemanes_famine( state->target, death_knight_melee_attack_t::target_list() );
       }
     }
   }
@@ -9695,21 +9690,34 @@ void death_knight_t::extend_rider( double amount )
   }
 }
 
-void death_knight_t::trigger_whitemanes_famine( player_t* main_target )
+void death_knight_t::trigger_whitemanes_famine( player_t* main_target, std::vector<player_t*>& target_list )
 {
   auto whitemane_td = pets.whitemane->get_target_data( main_target );
   whitemane_td->whitemane_dot.undeath_dot->increment( 1 );
+  auto duration = whitemane_td->whitemane_dot.undeath_dot->remains() - pet_spell.undeath_dot->duration();
 
-  if ( sim->target_non_sleeping_list.size() > 1 )
+  if ( target_list.size() > 1 )
   {
-    for ( auto& target : sim->target_non_sleeping_list )
+    std::vector<player_t*>& current_targets = target_list;
+
+    // first target, the action target, needs to be left in place
+    std::sort( current_targets.begin() + 1, current_targets.end(), [ this, whitemane_td ]( player_t* a, player_t* b ) {
+      return pets.whitemane->get_target_data( a )->whitemane_dot.undeath_dot->current_stack() >
+             pets.whitemane->get_target_data( b )->whitemane_dot.undeath_dot->current_stack();
+    } );
+
+    // Set the new target to the 2nd element in the sorted vector
+    auto& new_target = current_targets[ 2 ];
+    auto undeath_td = pets.whitemane->get_target_data( new_target );
+
+    if ( undeath_td->whitemane_dot.undeath_dot->is_ticking() )
     {
-      auto undeath_td = pets.whitemane->get_target_data( target );
-      if ( target != main_target && !undeath_td->whitemane_dot.undeath_dot->is_ticking() )
-      {
-        pets.whitemane->ability.undeath_dot->execute_on_target( target );
-        return;
-      }
+      undeath_td->whitemane_dot.undeath_dot->increment( 1 );
+    }
+    else
+    {
+      pets.whitemane->ability.undeath_dot->execute_on_target( new_target );
+      undeath_td->whitemane_dot.undeath_dot->adjust_duration( duration );
     }
   }
 }
