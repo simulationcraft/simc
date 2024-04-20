@@ -2807,15 +2807,13 @@ struct fury_of_elune_buff_t : public druid_buff_t
     set_cooldown( 0_ms );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
 
-    auto resource = p->specialization() == DRUID_GUARDIAN ? RESOURCE_RAGE : RESOURCE_ASTRAL_POWER;
+    auto power = p->specialization() == DRUID_GUARDIAN ? POWER_RAGE : POWER_ASTRAL_POWER;
+    const auto& eff = find_effect( this, A_PERIODIC_ENERGIZE, power );
+    auto amt = eff.resource();
 
-    const auto& eff = find_effect( this, A_PERIODIC_ENERGIZE, resource );
-    auto amt = eff.resource( resource );
     set_default_value( amt / eff.period().total_seconds() );
-
-    auto gain = p->get_gain( n );
-    set_tick_callback( [ &, this ]( buff_t*, int, timespan_t ) {
-      player->resource_gain( resource, amt, gain );
+    set_tick_callback( [ this, amt, r = eff.resource_gain_type(), g = p->get_gain( n ) ]( buff_t*, int, timespan_t ) {
+      player->resource_gain( r, amt, g );
     } );
   }
 };
@@ -6334,11 +6332,10 @@ struct fury_of_elune_t : public druid_spell_t
 
       if ( p->talent.the_eternal_moon.ok() )
       {
-        auto energize_power = p->specialization() == DRUID_GUARDIAN ? POWER_RAGE : POWER_ASTRAL_POWER;
-        auto e_idx = find_effect_index( this, E_ENERGIZE, A_MAX, energize_power );
+        auto power = p->specialization() == DRUID_GUARDIAN ? POWER_RAGE : POWER_ASTRAL_POWER;
+        const auto& eff = find_effect( this, E_ENERGIZE, A_MAX, power );
 
-        energize_resource = util::translate_power_type( energize_power );
-        energize_amount = data().effectN( e_idx ).resource( energize_resource );
+        energize_amount = eff.resource();
       }
       else
       {
@@ -6371,7 +6368,7 @@ struct fury_of_elune_t : public druid_spell_t
 
       if ( p->talent.boundless_moonlight.ok() )
       {
-        boundless = p->get_secondary_action<boundless_moonlight_t>( name_str + "boundless" );
+        boundless = p->get_secondary_action<boundless_moonlight_t>( name_str + "_boundless" );
         add_child( boundless );
       }
     }
