@@ -290,7 +290,6 @@ struct mind_blast_t final : public mind_blast_base_t
   }
 };
 
-
 struct void_blast_shadow_t final : public mind_blast_base_t
 {
   void_blast_shadow_t( priest_t& p, util::string_view options_str )
@@ -1589,6 +1588,30 @@ struct er_state_t final : public action_state_t
   }
 };
 
+
+struct collapsing_void_damage_t final : public priest_spell_t
+{
+  collapsing_void_damage_t( priest_t& p ) : priest_spell_t( "collapsing_void", p, p.find_spell( 448405 ) )
+  {
+  }
+
+  void execute() override
+  {
+    if ( target == player )
+    {
+      auto tl = target_list();
+      if ( tl.size() == 0 )
+        return;
+      target  = tl[ rng().range( tl.size() ) ];
+    }
+
+    if ( target == player )
+      return;
+
+    priest_spell_t::execute();
+  }
+};
+
 struct entropic_rift_t final : public priest_spell_t
 {
 protected:
@@ -1646,8 +1669,10 @@ public:
 
   void extend_rift_size()
   {
-    //if ( !p().buffs.entropic_rift->check() )
-    //  return;
+    if ( !p().buffs.entropic_rift->check() )
+      return;
+
+    p().buffs.collapsing_void->trigger();
 
     //if ( p().state.active_entropic_rift && p().state.active_entropic_rift->current_pulse > 0 )
     //{
@@ -1735,6 +1760,7 @@ public:
                 case ground_aoe_params_t::EVENT_STOPPED:
                   priest().buffs.entropic_rift->expire();
                   priest().buffs.darkening_horizon->expire();
+                  priest().buffs.collapsing_void->expire();
                   break;
                 default:
                   break;
@@ -3207,6 +3233,26 @@ void priest_t::create_buffs()
                                                      ? talents.voidweaver.darkening_horizon->effectN( 2 ).base_value()
                                                      : 1 );
 
+  buffs.collapsing_void = make_buff( this, "collapsing_void", talents.voidweaver.collapsing_void )
+                              ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                              ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+                                if ( new_ == 0 )
+                                {
+                                  for ( int i = 0; i < old_; i++ )
+                                  {
+                                    make_event( sim, i * 200_ms, [ this ] {
+                                      background_actions.collapsing_void->execute_on_target( this );
+                                    } );
+                                  }
+                                }
+                              } );
+
+  if ( talents.voidweaver.collapsing_void.ok() )
+  {
+    buffs.collapsing_void->set_max_stack(
+        static_cast<int>( talents.voidweaver.collapsing_void->effectN( 2 ).base_value() ) );
+  }
+
   create_buffs_shadow();
   create_buffs_discipline();
   create_buffs_holy();
@@ -3228,9 +3274,13 @@ void priest_t::init_background_actions()
   background_actions.echoing_void        = new actions::spells::echoing_void_t( *this );
   background_actions.shadow_word_death   = new actions::spells::shadow_word_death_t( *this, 200_ms );
   background_actions.echoing_void_demise = new actions::spells::echoing_void_demise_t( *this );
-  background_actions.entropic_rift       = new actions::spells::entropic_rift_t( *this );
   background_actions.essence_devourer    = new actions::heals::essence_devourer_t( *this );
   background_actions.atonement           = new actions::heals::atonement_t( *this );
+  
+  // Voidweaver
+  background_actions.entropic_rift   = new actions::spells::entropic_rift_t( *this );
+  background_actions.collapsing_void = new actions::spells::collapsing_void_damage_t( *this );
+
   if ( talents.discipline.divine_aegis.enabled() )
   {
     background_actions.divine_aegis = new actions::heals::divine_aegis_t( *this );

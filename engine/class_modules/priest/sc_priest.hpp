@@ -67,6 +67,7 @@ struct purge_the_wicked_t;
 struct holy_fire_t;
 struct burning_vehemence_t;
 struct entropic_rift_t;
+struct collapsing_void_damage_t;
 }  // namespace actions::spells
 
 namespace actions::heals
@@ -213,6 +214,7 @@ public:
     propagate_const<buff_t*> voidheart;
     propagate_const<buff_t*> entropic_rift;
     propagate_const<buff_t*> darkening_horizon;
+    propagate_const<buff_t*> collapsing_void;
   } buffs;
 
   // Talents
@@ -688,6 +690,7 @@ public:
     propagate_const<actions::heals::atonement_t*> atonement;
     propagate_const<actions::heals::divine_aegis_t*> divine_aegis;
     propagate_const<actions::spells::entropic_rift_t*> entropic_rift;
+    propagate_const<actions::spells::collapsing_void_damage_t*> collapsing_void;
   } background_actions;
 
   // Items
