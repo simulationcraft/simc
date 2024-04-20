@@ -307,6 +307,11 @@ struct void_blast_shadow_t final : public mind_blast_base_t
     }
 
     base_costs[ RESOURCE_INSANITY ] = 0;
+
+    if ( cooldown->duration == 0_s )
+    {
+      new mind_blast_t( p, options_str );
+    }
   }
 
   void execute() override {
