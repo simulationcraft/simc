@@ -6688,7 +6688,7 @@ struct lunar_beam_t : public druid_spell_t
       .x( p()->x_position )
       .y( p()->y_position )
       .pulse_time( 1_s )
-      .duration( data().duration() )
+      .duration( p()->buff.lunar_beam->buff_duration() )
       .action( damage ) );
   }
 };
@@ -6717,11 +6717,38 @@ struct mark_of_the_wild_t : public druid_spell_t
 // Moon Spells ==============================================================
 struct moon_base_t : public druid_spell_t
 {
+  struct crescent_moon_t : public druid_spell_t
+  {
+    crescent_moon_t( druid_t* p, std::string_view n ) : druid_spell_t( n, p, p->find_spell( 424588 ) )
+    {
+      background = true;
+      aoe = -1;
+      reduced_aoe_targets = 1.0;
+      full_amount_targets = 1;
+      name_str_reporting = "crescent_moon";
+    }
+
+    void init() override
+    {
+      druid_spell_t::init();
+
+      if ( get_suffix( name_str, "crescent_moon" ).empty() )
+        p()->active.moons->add_child( this );
+    }
+  };
+
   moon_stage_e stage;
+  action_t* crescent = nullptr;
+  unsigned num_crescent = 0;
 
   moon_base_t( std::string_view n, druid_t* p, const spell_data_t* s, moon_stage_e moon )
     : druid_spell_t( n, p, s ), stage( moon )
-  {}
+  {
+    if ( data().ok() && p->talent.boundless_moonlight.ok() )
+    {
+      crescent = p->get_secondary_action<crescent_moon_t>( "crescent_moon" );
+    }
+  }
 
   void init() override
   {
@@ -6786,39 +6813,36 @@ struct moon_base_t : public druid_spell_t
     }
 
     advance_stage();
+
+    // TODO: any delay/stagger?
+    if ( crescent && num_crescent )
+      for ( unsigned i = 0; i < num_crescent; i++ )
+        crescent->execute_on_target( target );
   }
 };
 
 // New Moon Spell ===========================================================
 struct new_moon_t : public moon_base_t
 {
-  DRUID_ABILITY_B( new_moon_t, moon_base_t, "new_moon", p->talent.new_moon, moon_stage_e::NEW_MOON ) {}
+  DRUID_ABILITY_B( new_moon_t, moon_base_t, "new_moon", p->talent.new_moon, moon_stage_e::NEW_MOON )
+  {
+    num_crescent = as<unsigned>( p->talent.the_eternal_moon->effectN( 3 ).base_value() );
+  }
 };
 
 // Half Moon Spell ==========================================================
 struct half_moon_t : public moon_base_t
 {
-  DRUID_ABILITY_B( half_moon_t, moon_base_t, "half_moon", p->spec.half_moon, moon_stage_e::HALF_MOON ) {}
+  DRUID_ABILITY_B( half_moon_t, moon_base_t, "half_moon", p->spec.half_moon, moon_stage_e::HALF_MOON )
+  {
+    num_crescent = as<unsigned>( p->talent.the_eternal_moon->effectN( 3 ).base_value() );
+  }
 };
 
 // Full Moon Spell ==========================================================
 struct full_moon_t : public moon_base_t
 {
-  struct crescent_moon_t : public druid_spell_t
-  {
-    crescent_moon_t( druid_t* p, std::string_view n ) : druid_spell_t( n, p, p->find_spell( 424588 ) )
-    {
-      background = true;
-      aoe = -1;  // TODO: aoe DR?
-      name_str_reporting = "crescent_moon";
-    }
-  };
-
-  action_t* crescent = nullptr;
-  unsigned num_crescent;
-
-  DRUID_ABILITY_B( full_moon_t, moon_base_t, "full_moon", p->spec.full_moon, moon_stage_e::FULL_MOON ),
-      num_crescent( as<unsigned>( p->talent.boundless_moonlight->effectN( 1 ).base_value() ) )
+  DRUID_ABILITY_B( full_moon_t, moon_base_t, "full_moon", p->spec.full_moon, moon_stage_e::FULL_MOON )
   {
     aoe = -1;
     reduced_aoe_targets = 1.0;
@@ -6828,9 +6852,11 @@ struct full_moon_t : public moon_base_t
     if ( !p->spec.astral_power->ok() )
       energize_type = action_energize::NONE;
 
-    if ( p->talent.boundless_moonlight.ok() )
+    num_crescent = as<unsigned>( p->talent.boundless_moonlight->effectN( 1 ).base_value() );
+
+    auto suf = get_suffix( name_str, "full_moon" );
+    if ( !suf.empty() )
     {
-      auto suf = get_suffix( name_str, "full_moon" );
       crescent = p->get_secondary_action<crescent_moon_t>( "crescent_moon" + suf );
       add_child( crescent );
     }
@@ -6852,16 +6878,6 @@ struct full_moon_t : public moon_base_t
       p()->moon_stage = moon_stage_e::NEW_MOON;
     else
       moon_base_t::advance_stage();
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    // TODO: any delays?
-    if ( crescent )
-      for ( unsigned i = 0; i < num_crescent; i++ )
-        crescent->execute_on_target( target );
   }
 };
 
@@ -10024,6 +10040,7 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
     ->apply_affecting_aura( talent.boundless_moonlight )  // TODO: hidden buff?
+    ->apply_affecting_aura( talent.the_eternal_moon )
     ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
       if ( new_ )
         buff.boundless_moonlight_heal->trigger();
@@ -12868,6 +12885,9 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.rampant_growth );
   action.apply_affecting_aura( talent.sabertooth );
   action.apply_affecting_aura( talent.soul_of_the_forest_cat );
+
+  // Hero talents
+  action.apply_affecting_aura( talent.the_eternal_moon );
 }
 
 /* Report Extension Class
