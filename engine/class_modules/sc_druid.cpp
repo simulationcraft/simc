@@ -716,7 +716,6 @@ public:
     player_talent_t improved_rejuvenation;
     player_talent_t improved_stampeding_roar;
     player_talent_t improved_sunfire;
-    player_talent_t improved_swipe;
     player_talent_t incapacitating_roar;
     player_talent_t innervate;
     player_talent_t ironfur;
@@ -8993,7 +8992,6 @@ void druid_t::init_spells()
   talent.improved_rejuvenation          = CT( "Improved Rejuvenation" );
   talent.improved_stampeding_roar       = CT( "Improved Stampeding Roar");
   talent.improved_sunfire               = CT( "Improved Sunfire" );
-  talent.improved_swipe                 = CT( "Improved Swipe" );
   talent.incapacitating_roar            = CT( "Incapacitating Roar" );
   talent.innervate                      = CT( "Innervate" );
   talent.ironfur                        = CT( "Ironfur" );
@@ -12693,7 +12691,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.astral_influence );
   action.apply_affecting_aura( talent.improved_rejuvenation );
   action.apply_affecting_aura( talent.improved_stampeding_roar );
-  action.apply_affecting_aura( talent.improved_swipe );
   action.apply_affecting_aura( talent.killer_instinct );
   action.apply_affecting_aura( talent.nurturing_instinct );
   action.apply_affecting_aura( talent.primal_fury );
