@@ -112,7 +112,6 @@ struct druid_td_t : public actor_target_data_t
 
   struct debuffs_t
   {
-    buff_t* dire_fixation;
     buff_t* pulverize;
     buff_t* sabertooth;
     buff_t* tooth_and_claw;
@@ -408,7 +407,6 @@ public:
     std::vector<dot_t*> sunfire;
     std::vector<dot_t*> thrash_bear;
   } dot_list;
-  player_t* dire_fixation_target;
   // !!!==========================================================================!!!
 
   // Options
@@ -807,7 +805,6 @@ public:
     player_talent_t bloodtalons;
     player_talent_t brutal_slash;
     player_talent_t carnivorous_instinct;
-    player_talent_t dire_fixation;
     player_talent_t doubleclawed_rake;
     player_talent_t dreadful_bleeding;
     player_talent_t feral_frenzy;
@@ -1751,8 +1748,6 @@ public:
                           p()->spec.adaptive_swarm_damage, p()->spec_spell );
     parse_target_effects( d_fn( &druid_td_t::dots_t::thrash_bear ),
                           p()->spec.thrash_bear_bleed, p()->talent.rend_and_tear );
-    parse_target_effects( d_fn( &druid_td_t::debuffs_t::dire_fixation ),
-                          find_trigger( p()->talent.dire_fixation ).trigger() );
     parse_target_effects( d_fn( &druid_td_t::debuffs_t::waning_twilight ),
                           p()->spec.waning_twilight, p()->talent.waning_twilight );
     parse_target_effects( d_fn( &druid_td_t::debuffs_t::sabertooth ),
@@ -4455,24 +4450,6 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
 
       if ( !stealthed() )
         p()->buff.sudden_ambush->expire();
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    base_t::impact( s );
-
-    if ( result_is_hit( s->result ) && p()->talent.dire_fixation.ok() )
-    {
-      if ( p()->dire_fixation_target != s->target )
-      {
-        if ( p()->dire_fixation_target )
-          td( p()->dire_fixation_target )->debuff.dire_fixation->expire();
-
-        p()->dire_fixation_target = s->target;
-      }
-
-      td( p()->dire_fixation_target )->debuff.dire_fixation->trigger();
     }
   }
 
@@ -8740,14 +8717,6 @@ struct denizen_of_the_dream_t : public action_t
 // druid_t::activate ========================================================
 void druid_t::activate()
 {
-  if ( talent.dire_fixation.ok() )
-  {
-    register_on_kill_callback( [ this ]( player_t* t ) {
-      if ( t == dire_fixation_target )
-        dire_fixation_target = nullptr;
-    } );
-  }
-
   if ( spec.astral_power->ok() )
   {
     // Create repeating resource_loss event once OOC for 20s
@@ -9085,7 +9054,6 @@ void druid_t::init_spells()
   talent.bloodtalons                    = ST( "Bloodtalons" );
   talent.brutal_slash                   = ST( "Brutal Slash" );
   talent.carnivorous_instinct           = ST( "Carnivorous Instinct" );
-  talent.dire_fixation                  = ST( "Dire Fixation" );
   talent.doubleclawed_rake              = ST( "Double-Clawed Rake" );
   talent.dreadful_bleeding              = ST( "Dreadful Bleeding" );
   talent.feral_frenzy                   = ST( "Feral Frenzy" );
@@ -11113,7 +11081,6 @@ void druid_t::reset()
   dot_list.moonfire.clear();
   dot_list.sunfire.clear();
   dot_list.thrash_bear.clear();
-  dire_fixation_target = nullptr;
 }
 
 // druid_t::merge ===========================================================
@@ -12156,9 +12123,6 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     hots.spring_blossoms       = target.get_dot( "spring_blossoms", &source );
     hots.wild_growth           = target.get_dot( "wild_growth", &source );
   }
-
-  debuff.dire_fixation = make_buff_fallback( source.talent.dire_fixation.ok() && target.is_enemy(),
-      *this, "dire_fixation", find_trigger( source.talent.dire_fixation ).trigger() );
 
   debuff.pulverize = make_buff_fallback( source.talent.pulverize.ok() && target.is_enemy(),
       *this, "pulverize_debuff", source.talent.pulverize )
