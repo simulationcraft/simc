@@ -1186,20 +1186,21 @@ struct tiger_palm_t : public monk_melee_attack_t
   bool face_palm;
   bool blackout_combo;
   bool counterstrike;
+  bool combat_wisdom;
 
   tiger_palm_t( monk_t *p, util::string_view options_str )
     : monk_melee_attack_t( "tiger_palm", p, p->spec.tiger_palm ),
-      face_palm( false ),
-      blackout_combo( false ),
-      counterstrike( false )
+    face_palm( false ),
+    blackout_combo( false ),
+    counterstrike( false )
   {
     parse_options( options_str );
 
-    ww_mastery             = true;
-    may_combo_strike       = true;
-    trigger_chiji          = true;
-    sef_ability            = actions::sef_ability_e::SEF_TIGER_PALM;
-    cast_during_sck        = true;
+    ww_mastery = true;
+    may_combo_strike = true;
+    trigger_chiji = true;
+    sef_ability = actions::sef_ability_e::SEF_TIGER_PALM;
+    cast_during_sck = true;
 
     if ( p->specialization() == MONK_WINDWALKER )
       energize_amount = p->spec.windwalker_monk->effectN( 4 ).base_value();
@@ -1223,6 +1224,9 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( counterstrike )
       am *= 1 + p()->buff.counterstrike->data().effectN( 1 ).percent();
+
+    if ( combat_wisdom )
+       am *= 1 + p()->talent.windwalker.combat_wisdom->effectN( 2 ).percent();
 
     am *= 1 + p()->talent.windwalker.touch_of_the_tiger->effectN( 1 ).percent();
 
@@ -1265,6 +1269,9 @@ struct tiger_palm_t : public monk_melee_attack_t
       p()->buff.counterstrike->expire();
     }
 
+    if ( p()->buff.combat_wisdom->up() )
+      combat_wisdom = true;
+
     //------------
 
     monk_melee_attack_t::execute();
@@ -1293,9 +1300,13 @@ struct tiger_palm_t : public monk_melee_attack_t
     if ( face_palm )
       brew_cooldown_reduction( p()->talent.brewmaster.face_palm->effectN( 3 ).base_value() / 1000.0 );
 
+    if ( combat_wisdom )
+      p()->passive_actions.combat_wisdom_eh->execute();
+
     face_palm      = false;
     blackout_combo = false;
     counterstrike  = false;
+    combat_wisdom  = false;
   }
 
   void impact( action_state_t *s ) override
@@ -1748,7 +1759,9 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
       p()->proc.rsk_reset_totm->occur();
     }
 
-    p()->trigger_mark_of_the_crane( s );
+    // Mark of the Crane is only triggered on the initial target
+    if ( s->chain_target == 0 )
+      p()->trigger_mark_of_the_crane( s );
   }
 };
 
@@ -2335,6 +2348,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       p()->active_actions.breath_of_fire->target = execute_state->target;
       p()->active_actions.breath_of_fire->execute();
     }
+
+    if ( p()->talent.windwalker.transfer_the_power->ok() )
+      p()->buff.transfer_the_power->trigger();
   }
 
   void last_tick( dot_t *dot ) override
@@ -2494,18 +2510,45 @@ struct fists_of_fury_t : public monk_melee_attack_t
 // Whirling Dragon Punch
 // ==========================================================================
 
-struct whirling_dragon_punch_tick_t : public monk_melee_attack_t
+struct whirling_dragon_punch_aoe_tick_t : public monk_melee_attack_t
 {
   timespan_t delay;
-  whirling_dragon_punch_tick_t( util::string_view name, monk_t *p, const spell_data_t *s, timespan_t delay )
+  whirling_dragon_punch_aoe_tick_t( util::string_view name, monk_t *p, const spell_data_t *s, timespan_t delay )
     : monk_melee_attack_t( name, p, s ), delay( delay )
   {
-    ww_mastery             = true;
+    ww_mastery = true;
 
     background = true;
     aoe        = -1;
-    radius     = s->effectN( 1 ).radius();
+    reduced_aoe_targets = s->effectN( 1 ).base_value();
+
     apply_dual_wield_two_handed_scaling();
+
+    name_str_reporting = "wdp_aoe";
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
+
+    return am;
+  }
+};
+
+struct whirling_dragon_punch_st_tick_t : public monk_melee_attack_t
+{
+  whirling_dragon_punch_st_tick_t( util::string_view name, monk_t *p, const spell_data_t *s )
+    : monk_melee_attack_t( name, p, s )
+  {
+    ww_mastery = true;
+
+    background = true;
+
+    apply_dual_wield_two_handed_scaling();
+
+    name_str_reporting = "wdp_st";
   }
 
   double action_multiplier() const override
@@ -2534,13 +2577,14 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     }
   };
 
-  std::array<whirling_dragon_punch_tick_t *, 3> ticks;
+  std::array<whirling_dragon_punch_aoe_tick_t *, 3> aoe_ticks;
+  whirling_dragon_punch_st_tick_t *st_tick;
 
   struct whirling_dragon_punch_tick_event_t : public event_t
   {
-    whirling_dragon_punch_tick_t *tick;
+    whirling_dragon_punch_aoe_tick_t *tick;
 
-    whirling_dragon_punch_tick_event_t( whirling_dragon_punch_tick_t *tick, timespan_t delay )
+    whirling_dragon_punch_tick_event_t( whirling_dragon_punch_aoe_tick_t *tick, timespan_t delay )
       : event_t( *tick->player, delay ), tick( tick )
     {
     }
@@ -2565,14 +2609,18 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
 
     // 3 server-side hardcoded ticks
-    for ( size_t i = 0; i < ticks.size(); ++i )
+    for ( size_t i = 0; i < aoe_ticks.size(); ++i )
     {
       auto delay = base_tick_time * i;
-      ticks[ i ] = new whirling_dragon_punch_tick_t( "whirling_dragon_punch_tick", p,
-                                                     p->passives.whirling_dragon_punch_tick, delay );
+      aoe_ticks[ i ] = new whirling_dragon_punch_aoe_tick_t( "whirling_dragon_punch_aoe_tick", p,
+                                                     p->passives.whirling_dragon_punch_st_tick, delay );
 
-      add_child( ticks[ i ] );
+      add_child( aoe_ticks[ i ] );
     }
+    
+    st_tick = new whirling_dragon_punch_st_tick_t( "whirling_dragon_punch_st_tick", p, p->passives.whirling_dragon_punch_st_tick );
+
+    add_child( st_tick );
   }
 
   action_state_t *new_state() override
@@ -2586,10 +2634,10 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
 
     p()->movement.whirling_dragon_punch->trigger();
 
-    for ( auto &tick : ticks )
-    {
+    for ( auto &tick : aoe_ticks )
       make_event<whirling_dragon_punch_tick_event_t>( *sim, tick, tick->delay );
-    }
+    
+    st_tick->execute();
   }
 
   bool ready() override
@@ -2683,7 +2731,15 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    p()->buff.thunderfist->trigger();
+    if ( p()->talent.windwalker.thunderfist.ok() )
+    {
+      int thunderfist_stacks = 1;
+
+      if ( s->chain_target == 0 )
+        thunderfist_stacks += ( int )p()->talent.windwalker.thunderfist->effectN( 1 ).base_value();
+
+      p()->buff.thunderfist->trigger( thunderfist_stacks );
+    }
   }
 };
 
@@ -3422,13 +3478,6 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
 
       first_charge = !first_charge;
     }
-  }
-
-  void impact( action_state_t *state ) override
-  {
-    monk_melee_attack_t::impact( state );
-
-    get_td( state->target )->debuff.flying_serpent_kick->trigger();
   }
 };
 
@@ -5369,7 +5418,7 @@ struct expel_harm_t : public monk_heal_t
 {
   expel_harm_dmg_t *dmg;
   expel_harm_t( monk_t &p, util::string_view options_str )
-    : monk_heal_t( "expel_harm", p, p.spec.expel_harm ), dmg( new expel_harm_dmg_t( &p ) )
+    : monk_heal_t( "expel_harm", p, p.talent.windwalker.combat_wisdom ? p.passives.combat_wisdom_expel_harm : p.spec.expel_harm ), dmg( new expel_harm_dmg_t( &p ) )
   {
     parse_options( options_str );
 
@@ -5415,9 +5464,6 @@ struct expel_harm_t : public monk_heal_t
 
     monk_heal_t::execute();
 
-    if ( p()->specialization() == MONK_WINDWALKER )
-      p()->resource_gain( RESOURCE_CHI, p()->spec.expel_harm_2_ww->effectN( 1 ).base_value(), p()->gain.expel_harm );
-
     if ( p()->talent.brewmaster.tranquil_spirit->ok() )
     {
       // Reduce stagger damage
@@ -5432,7 +5478,7 @@ struct expel_harm_t : public monk_heal_t
   {
     monk_heal_t::impact( s );
 
-    // Expel Harm is based on raw healign instead of effective healing as of Shadowlands
+    // Expel Harm is based on raw healing instead of effective healing as of Shadowlands
     double result = s->result_total;
 
     if ( p()->specialization() == MONK_BREWMASTER )
@@ -5448,7 +5494,7 @@ struct expel_harm_t : public monk_heal_t
       }
     }
 
-    result *= p()->spec.expel_harm->effectN( 2 ).percent();
+    result *= data().effectN( 2 ).percent();
 
     dmg->base_dd_min = result;
     dmg->base_dd_max = result;
@@ -6583,9 +6629,6 @@ namespace monk
 monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( target, p ), dots(), debuff(), monk( *p )
 {
   // Windwalker
-  debuff.flying_serpent_kick = make_buff( *this, "flying_serpent_kick", p->passives.flying_serpent_kick_damage )
-                                   ->set_trigger_spell( p->talent.windwalker.flying_serpent_kick )
-                                   ->set_default_value_from_effect( 2 );
   debuff.empowered_tiger_lightning = make_buff( *this, "empowered_tiger_lightning", spell_data_t::nil() )
                                          ->set_trigger_spell( p->spec.empowered_tiger_lightning )
                                          ->set_quiet( true )
@@ -7574,6 +7617,7 @@ void monk_t::init_spells()
   passives.chi_explosion                    = find_spell( 337342 );
   passives.crackling_tiger_lightning        = find_spell( 123996 );
   passives.crackling_tiger_lightning_driver = find_spell( 123999 );
+  passives.combat_wisdom_expel_harm         = find_spell( 451968 );
   passives.cyclone_strikes                  = find_spell( 220358 );
   passives.dance_of_chiji                   = find_spell( 325202 );
   passives.dance_of_chiji_bug               = find_spell( 286585 );
@@ -7583,7 +7627,6 @@ void monk_t::init_spells()
   passives.jadefire_brand_heal              = find_spell( 395413 );
   passives.jadefire_stomp_ww_damage         = find_spell( 388201 );
   passives.fists_of_fury_tick               = find_spell( 117418 );
-  passives.flying_serpent_kick_damage       = find_spell( 123586 );
   passives.focus_of_xuen                    = find_spell( 252768 );
   passives.fury_of_xuen_stacking_buff       = find_spell( 396167 );
   passives.fury_of_xuen_haste_buff          = find_spell( 396168 );
@@ -7593,11 +7636,11 @@ void monk_t::init_spells()
   passives.improved_touch_of_death          = find_spell( 322113 );
   passives.keefers_skyreach_debuff          = find_spell( 393047 );
   passives.mark_of_the_crane                = find_spell( 228287 );
-  passives.power_strikes_chi                = find_spell( 121283 );
   passives.thunderfist                      = find_spell( 393565 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
-  passives.whirling_dragon_punch_tick       = find_spell( 158221 );
-
+  passives.whirling_dragon_punch_aoe_tick   = find_spell( 158221 );
+  passives.whirling_dragon_punch_st_tick    = find_spell( 451767 );
+  
   // Tier 29
   passives.kicks_of_flowing_momentum = find_spell( 394944 );
   passives.fists_of_flowing_momentum = find_spell( 394949 );
@@ -7700,6 +7743,7 @@ void monk_t::init_spells()
   }
 
   // Passive Action Spells
+  passive_actions.combat_wisdom_eh    = new actions::heals::expel_harm_t( *this, "" );
   passive_actions.thunderfist         = new actions::thunderfist_t( this );
   passive_actions.press_the_advantage = new actions::press_the_advantage_t( this );
 }
@@ -7858,6 +7902,10 @@ void monk_t::create_buffs()
   buff.chi_torpedo = make_buff( this, "chi_torpedo", find_spell( 119085 ) )
                          ->set_trigger_spell( talent.general.chi_torpedo )
                          ->set_default_value_from_effect( 1 );
+
+  buff.combat_wisdom = make_buff( this, "combat_wisdom", find_spell( 129914 ) )
+                        ->set_trigger_spell( talent.windwalker.combat_wisdom )
+                        ->set_default_value_from_effect( 1 );
 
   buff.jadefire_stomp = make_buff( this, "jadefire_stomp", find_spell( 388193 ) )
                             ->set_trigger_spell( shared.jadefire_stomp )
@@ -8152,7 +8200,6 @@ void monk_t::init_gains()
   gain.energizing_elixir_energy = get_gain( "energizing_elixir_energy" );
   gain.energizing_elixir_chi    = get_gain( "energizing_elixir_chi" );
   gain.energy_refund            = get_gain( "energy_refund" );
-  gain.expel_harm               = get_gain( "expel_harm" );
   gain.focus_of_xuen            = get_gain( "focus_of_xuen" );
   gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
   gain.glory_of_the_dawn        = get_gain( "glory_of_the_dawn" );
@@ -9246,6 +9293,18 @@ void monk_t::combat_begin()
           clamp( as<double>( user_options.initial_chi + resources.current[ RESOURCE_CHI ] ), 0.0,
                  resources.max[ RESOURCE_CHI ] );
       sim->print_debug( "Combat starting chi has been set to {}", resources.current[ RESOURCE_CHI ] );
+    }
+
+    if ( talent.windwalker.combat_wisdom->ok() )
+    {
+      // Player starts combat with buff
+      buff.combat_wisdom->trigger();
+      // ... and then regains the buff in time intervals while in combat
+      make_repeating_event( sim, talent.windwalker.combat_wisdom->effectN( 2 ).period(),
+        [ this ] ()
+      {
+        buff.combat_wisdom->trigger();
+      } );
     }
   }
 

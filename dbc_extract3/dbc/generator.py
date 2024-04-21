@@ -2072,6 +2072,8 @@ class SpellDataGenerator(DataGenerator):
           ( 389685, 0 ), # Generous Pour Avoidance Buff
           ( 392883, 0 ), # Vivacious Vivification buff
           ( 414143, 0 ), # Yu'lon's Grace buff
+          ( 450380, 0 ), # Chi Wave Buff
+
           # Brewmaster
           ( 195630, 1 ), # Brewmaster Mastery Buff
           ( 115129, 1 ), # Expel Harm Damage

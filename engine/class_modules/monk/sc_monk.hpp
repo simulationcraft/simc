@@ -343,6 +343,7 @@ public:
 
   struct passive_actions_t
   {
+    action_t *combat_wisdom_eh;
     action_t *thunderfist;
     action_t *press_the_advantage;
   } passive_actions;
@@ -503,6 +504,7 @@ public:
     // Windwalker
     propagate_const<buff_t *> bok_proc;
     propagate_const<buff_t *> chi_energy;
+    propagate_const<buff_t *> combat_wisdom;
     propagate_const<buff_t *> combo_strikes;
     propagate_const<buff_t *> dance_of_chiji;
     propagate_const<buff_t *> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
@@ -1139,6 +1141,7 @@ public:
     const spell_data_t *chi_explosion;
     const spell_data_t *crackling_tiger_lightning;
     const spell_data_t *crackling_tiger_lightning_driver;
+    const spell_data_t *combat_wisdom_expel_harm;
     const spell_data_t *cyclone_strikes;
     const spell_data_t *dance_of_chiji;
     const spell_data_t *dance_of_chiji_bug;
@@ -1160,7 +1163,8 @@ public:
     const spell_data_t *power_strikes_chi;
     const spell_data_t *thunderfist;
     const spell_data_t *touch_of_karma_tick;
-    const spell_data_t *whirling_dragon_punch_tick;
+    const spell_data_t *whirling_dragon_punch_aoe_tick;
+    const spell_data_t *whirling_dragon_punch_st_tick;
 
     // Tier 29
     const spell_data_t *kicks_of_flowing_momentum;
