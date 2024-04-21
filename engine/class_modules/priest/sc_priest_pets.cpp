@@ -224,9 +224,7 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t, priest_pet_t,
   bool triggers_atonement;
 
   priest_pet_spell_t( util::string_view token, priest_pet_t& p, const spell_data_t* s )
-    : ab( token, &p, s ),
-      affected_by_shadow_weaving( false ),
-      triggers_atonement( false )
+    : ab( token, &p, s ), affected_by_shadow_weaving( false ), triggers_atonement( false )
   {
     may_crit = true;
 
@@ -449,7 +447,6 @@ struct base_fiend_pet_t : public priest_pet_t
 
 struct voidwraith_pet_t final : public base_fiend_pet_t
 {
-
   voidwraith_pet_t( priest_t* owner, util::string_view name = "voidwraith" )
     : base_fiend_pet_t( owner, name, fiend_type::Voidwraith )
   {
@@ -484,7 +481,7 @@ struct voidwraith_pet_t final : public base_fiend_pet_t
   action_t* create_action( util::string_view name, util::string_view options_str );
 };
 
- struct void_flay_t final : public priest_pet_spell_t
+struct void_flay_t final : public priest_pet_spell_t
 {
   double damage_mul;
   double void_flay_insanity;
@@ -492,15 +489,27 @@ struct voidwraith_pet_t final : public base_fiend_pet_t
 
   void_flay_t( voidwraith_pet_t& p, util::string_view options )
     : priest_pet_spell_t( "void_flay", p, p.o().find_spell( 451435 ) ),
-      void_flay_insanity( p.o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ), // Sfiend Power Leech
+      void_flay_insanity(
+          p.o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ),  // Sfiend Power Leech
       void_flay_mana( p.o().specialization() == PRIEST_SHADOW
                           ? 0.0
                           : p.o().find_spell( 34433 )->effectN( 4 ).percent() / 10 )  // Sfiend Spell
   {
     parse_options( options );
 
-    gcd_type                   = !p.o().bugs ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
-    affected_by_shadow_weaving = !p.o().bugs;
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1182
+    gcd_type = !p.o().bugs ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1180
+    if ( !p.o().bugs )
+    {
+      affected_by_shadow_weaving = true;
+      force_effect( p.o().buffs.twist_of_fate, 1 );
+      force_effect( p.o().buffs.shadowform, 1 );
+      force_effect( p.o().buffs.devoured_pride, 1 );
+      force_effect( p.o().buffs.voidform, 1 );
+      force_effect( p.o().buffs.voidform, 3 );        // Ancient Madness
+      force_effect( p.o().buffs.dark_ascension, 4 );  // Ancient Madness
+    }
 
     damage_mul = data().effectN( 2 ).percent();
   }
@@ -556,7 +565,6 @@ action_t* voidwraith_pet_t::create_action( util::string_view name, util::string_
 
   return priest_pet_t::create_action( name, options_str );
 }
-
 
 struct shadowfiend_pet_t final : public base_fiend_pet_t
 {
@@ -1159,9 +1167,9 @@ action_t* thing_from_beyond_t::create_action( util::string_view name, util::stri
 // summoned through the action list, so please check for null.
 spawner::pet_spawner_t<pet_t, priest_t>& get_current_main_pet( priest_t& priest )
 {
-  return priest.talents.voidweaver.voidwraith.enabled() ? priest.pets.voidwraith
-         : priest.talents.shared.mindbender.enabled()   ? priest.pets.mindbender
-                                                        : priest.pets.shadowfiend;
+  return priest.talents.voidweaver.voidwraith.enabled()
+             ? priest.pets.voidwraith
+             : priest.talents.shared.mindbender.enabled() ? priest.pets.mindbender : priest.pets.shadowfiend;
 }
 
 }  // namespace
@@ -1254,16 +1262,18 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
          util::str_compare_ci( splits[ 1 ], "bender" ) || util::str_compare_ci( splits[ 1 ], "mindbender" ) ||
          util::str_compare_ci( splits[ 1 ], "voidwraith" ) )
     {
-      if ( cooldown_t* cooldown = get_cooldown( talents.voidweaver.voidwraith.enabled() ? "voidwraith"
-                                                : talents.shared.mindbender.enabled()   ? "mindbender"
-                                                                                        : "shadowfiend" ) )
+      if ( cooldown_t* cooldown =
+               get_cooldown( talents.voidweaver.voidwraith.enabled()
+                                 ? "voidwraith"
+                                 : talents.shared.mindbender.enabled() ? "mindbender" : "shadowfiend" ) )
       {
         return cooldown->create_expression( splits[ 2 ] );
       }
-      throw std::invalid_argument( fmt::format( "Cannot find any cooldown with name '{}'.",
-                                                talents.voidweaver.voidwraith.enabled() ? "voidwraith"
-                                                : talents.shared.mindbender.enabled()   ? "mindbender"
-                                                                                        : "shadowfiend" ) );
+      throw std::invalid_argument(
+          fmt::format( "Cannot find any cooldown with name '{}'.",
+                       talents.voidweaver.voidwraith.enabled()
+                           ? "voidwraith"
+                           : talents.shared.mindbender.enabled() ? "mindbender" : "shadowfiend" ) );
     }
   }
 

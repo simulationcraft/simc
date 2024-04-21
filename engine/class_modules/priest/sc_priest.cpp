@@ -1029,6 +1029,7 @@ struct summon_fiend_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1180
     if ( priest().talents.shadow.idol_of_yshaarj.enabled() &&
          ( !priest().bugs || !priest().talents.voidweaver.voidwraith.enabled() ) )
     {
@@ -1249,8 +1250,8 @@ public:
     : ab( "shadow_word_death", p, p.talents.shadow_word_death ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() + priest().specs.shadow_priest->effectN( 25 ).percent() ),
-      deathspeaker_mult( p.talents.shadow.deathspeaker.enabled() ? 1 + p.buffs.deathspeaker->data().effectN( 2 ).percent()
-                                                            : 1.0 ),
+      deathspeaker_mult(
+          p.talents.shadow.deathspeaker.enabled() ? 1 + p.buffs.deathspeaker->data().effectN( 2 ).percent() : 1.0 ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       child_expiation( nullptr ),
       child_searing_light( priest().background_actions.searing_light ),
