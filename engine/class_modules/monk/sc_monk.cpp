@@ -1748,7 +1748,9 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
       p()->proc.rsk_reset_totm->occur();
     }
 
-    p()->trigger_mark_of_the_crane( s );
+    // Mark of the Crane is only triggered on the initial target
+    if ( s->chain_target == 0 )
+      p()->trigger_mark_of_the_crane( s );
   }
 };
 
