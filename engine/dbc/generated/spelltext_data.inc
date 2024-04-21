@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54311
-static const std::array<spelltext_data_t, 22371> __spelltext_data { {
+static const std::array<spelltext_data_t, 22373> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20840,6 +20840,7 @@ static const std::array<spelltext_data_t, 22371> __spelltext_data { {
   { 429563, "$@spellaura429501", "Damage of your next Starsurge or Starfall increased by $w1%.", 0 },
   { 429581, "$?s137044[Grimoire: Felguard lasts ${$s4/1000} sec longer and its cooldown is reduced by ${$s1/-1000} sec.][Cataclysm summons an Overfiend that casts Chaos Bolt $s2 times at $s3% effectiveness before departing.]", 0, 0 },
   { 429604, "$@spelldesc436975", 0, 0 },
+  { 429625, "$@spellaura429501", "Healing of your next Regrowth, Wild Growth, or Swiftmend increased by $w1%.", 0 },
   { 429633, "Every $426268t3 sec, inflicts Fire damage or restores health to $s1 enemies or allies within $436975A1 yards.", 0, 0 },
   { 429634, "Colossal Might increases damage dealt by your next Demolish by $440989s1%.\r\n\r\nMortal Strike and Shield Slam grant a stack of Colossal Might, stacking up to $440989u times.", 0, 0 },
   { 429636, "Colossal Might now stacks up to 10 times. If you would gain a stack of Colossal Might and are at max stacks, the cooldown of Demolish is reduced by $s2 sec.\r\n\r\nEnemies affected by Demolish take up to ${$447513s2*$447513u}% more damage from you and deal up to ${$447513s1*$447513u*-1}% less damage to you for $447513d based on the number of stacks of Colossal Might consumed by Demolish.", 0, 0 },
@@ -20852,6 +20853,7 @@ static const std::array<spelltext_data_t, 22371> __spelltext_data { {
   { 429647, "Mortal Strike and Shield Slam damage increased by $s1%.", 0, 0 },
   { 429657, "Fire damage increased $s1% and damage dealt by your demons is increased $s3%.", 0, 0 },
   { 429668, "Increases the damage of Fury of Elune and Full Moon by $s1%.\r\n\r\nIncreases the damage of Lunar Beam by $s3%.", 0, 0 },
+  { 429676, "$@spelldesc429501", "Starfall deals $429563s1% increased damage.", 0 },
   { 429826, "$@spelldesc427453", 0, 0 },
   { 429893, "Diabolic Ritual increases the damage of your next Soul Shard spending ability by $s1% and reduces its cast time by $s2%.", 0, 0 },
   { 429899, "$?s137044[Hand of Gul'dan deals $s1% increased damage for each Soul Shard spent.][Enemies marked by your Havoc take $s2% increased damage from your single target spells.]", 0, 0 },

@@ -641,6 +641,8 @@ public:
     buff_t* blooming_infusion_heal_counter;
     buff_t* boundless_moonlight_heal;
     buff_t* bounteous_bloom;
+    buff_t* cenarius_might;
+    buff_t* cenarius_might_starfall;
     buff_t* harmony_of_the_grove;
     buff_t* protective_growth;
     buff_t* treants_of_the_moon;  // treant moonfire background heartbeat
@@ -1651,6 +1653,17 @@ public:
     {
       p()->buff.prowl->expire();
       p()->buffs.shadowmeld->expire();
+    }
+
+    switch ( ab::data().id() )
+    {
+      case 78674:   // starsurge
+      case 197626:  // offspec starsurge
+      case 191034:  // starfall
+        break;
+      default:
+        p()->buff.cenarius_might->expire();
+        break;
     }
   }
 
@@ -6235,6 +6248,7 @@ public:
 
     // TODO: do free procs trigger?
     p()->buff.blooming_infusion_heal_counter->trigger();
+    p()->buff.cenarius_might->trigger();
   }
 
   void post_execute()
@@ -7543,6 +7557,15 @@ struct starfall_t : public ap_spender_t
         cosmos_mul( p->sets->set( DRUID_BALANCE, T29, B4 )->effectN( 1 ).trigger()->effectN( 2 ).percent() )
     {
       background = dual = true;
+
+      if ( p->talent.cenarius_might.ok () )
+      {
+        const auto& eff = p->buff.cenarius_might->data().effectN( 1 );
+        add_parse_entry( da_multiplier_effects )
+            .set_buff( p->buff.cenarius_might_starfall )
+            .set_value( eff.percent() )
+            .set_eff( &eff );
+      }
     }
 
     double action_multiplier() const override
@@ -7821,6 +7844,15 @@ struct starsurge_t : public ap_spender_t
       const auto& eff = p->talent.master_shapeshifter->effectN( 2 );
       add_parse_entry( da_multiplier_effects )
           .set_func( [ p = p ] { return p->get_form() == MOONKIN_FORM; } )
+          .set_value( eff.percent() )
+          .set_eff( &eff );
+    }
+
+    if ( p->talent.cenarius_might.ok() )
+    {
+      const auto& eff = p->buff.cenarius_might->data().effectN( 1 );
+      add_parse_entry( da_multiplier_effects )
+          .set_buff( p->buff.cenarius_might )
           .set_value( eff.percent() )
           .set_eff( &eff );
     }
@@ -10246,7 +10278,17 @@ void druid_t::create_buffs()
           ( buff_t* b, int, timespan_t ) {
             resource_gain( RESOURCE_ASTRAL_POWER, ap * b->check(), g );
           } );
-  auto a = buff.bounteous_bloom;
+
+  buff.cenarius_might =
+      make_buff_fallback( talent.cenarius_might.ok() && ( talent.starsurge.ok() || talent.starfall.ok() ),
+          this, "cenarius_might", find_spell( 429563 ) );
+
+  buff.cenarius_might_starfall =
+      make_buff_fallback( talent.cenarius_might.ok() && ( talent.starsurge.ok() || talent.starfall.ok() ),
+          this, "cenarius_might_starfall", find_spell( 429676 ) )
+              ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+              ->set_quiet( true );
+
   buff.harmony_of_the_grove =
       make_buff_fallback( talent.harmony_of_the_grove.ok(), this, "harmony_of_the_grove",
                           find_spell( specialization() == DRUID_RESTORATION ? 428737 : 428735 ) )
