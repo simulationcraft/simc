@@ -69,11 +69,12 @@ enum free_spell_e : unsigned
   ORBIT      = 0x0020,  // orbit breaker talent
   TWIN       = 0x0040,  // twin moons talent
   TREANT     = 0x0080,  // treants of the moon moonfire
+  LIGHTELUNE = 0x0100,  // light of elune talent
   // free casts
   APEX       = 0x1000,  // apex predators's craving
   TOOTH      = 0x2000,  // tooth and claw talent
 
-  PROCS = CONVOKE | FIRMAMENT | FLASHING | GALACTIC | ORBIT | TWIN | TREANT,
+  PROCS = CONVOKE | FIRMAMENT | FLASHING | GALACTIC | ORBIT | TWIN | TREANT | LIGHTELUNE,
   CASTS = APEX | TOOTH
 };
 
@@ -481,6 +482,7 @@ public:
 
     // Hero talents
     action_t* boundless_moonlight_heal;
+    action_t* the_light_of_elune;
     action_t* treants_of_the_moon_mf;
   } active;
 
@@ -705,6 +707,12 @@ public:
     proc_t* gore;
     proc_t* tooth_and_claw;
   } proc;
+
+  // RPPM
+  struct rppms_t
+  {
+    real_ppm_t* the_light_of_elune;
+  } rppm;
 
   // Talents
   struct talents_t
@@ -1097,6 +1105,7 @@ public:
       gain(),
       mastery(),
       proc(),
+      rppm(),
       talent(),
       spec(),
       uptime()
@@ -1131,6 +1140,7 @@ public:
   void init_stats() override;
   void init_gains() override;
   void init_procs() override;
+  void init_rng() override;
   void init_uptimes() override;
   void init_resources( bool ) override;
   void init_special_effects() override;
@@ -6609,6 +6619,7 @@ struct fury_of_elune_t : public druid_spell_t
   action_t* damage = nullptr;
   action_t* boundless = nullptr;
   timespan_t tick_period;
+  timespan_t duration_override = timespan_t::min();
 
   DRUID_ABILITY_C( fury_of_elune_t, druid_spell_t, "fury_of_elune", p->talent.fury_of_elune,
                    const spell_data_t* sd = nullptr, buff_t* b = nullptr ),
@@ -6641,13 +6652,13 @@ struct fury_of_elune_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    energize->trigger();
+    energize->trigger( duration_override );
 
     auto params = ground_aoe_params_t()
       .target( target )
       .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
       .pulse_time( tick_period )
-      .duration( data().duration() )
+      .duration( duration_override != timespan_t::min() ? duration_override : data().duration() )
       .action( damage );
 
     if ( boundless )
@@ -7088,6 +7099,17 @@ struct moonfire_t : public druid_spell_t
         return;
 
       base_t::tick( d );
+
+      if ( p()->rppm.the_light_of_elune->trigger() )
+        p()->active.the_light_of_elune->execute_on_target( d->target );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      base_t::impact( s );
+
+      if ( p()->rppm.the_light_of_elune->trigger() )
+        p()->active.the_light_of_elune->execute_on_target( s->target );
     }
   };
 
@@ -9781,8 +9803,9 @@ void druid_t::create_buffs()
       }
     } );
 
-  buff.fury_of_elune = make_buff_fallback<fury_of_elune_buff_t>( talent.fury_of_elune.ok(),
-      this, "fury_of_elune", talent.fury_of_elune );
+  buff.fury_of_elune =
+      make_buff_fallback<fury_of_elune_buff_t>( talent.fury_of_elune.ok() || talent.the_light_of_elune.ok(),
+          this, "fury_of_elune", find_spell( 202770 ) );  // hardcoded for the light of elune
 
   buff.sundered_firmament = make_buff_fallback<fury_of_elune_buff_t>( talent.sundered_firmament.ok(),
       this, "sundered_firmament", find_spell( 394108 ) )
@@ -10265,6 +10288,9 @@ void druid_t::create_actions()
     }
   }
 
+  if ( talent.orbital_strike.ok() )
+    active.orbital_strike = get_secondary_action<orbital_strike_t>( "orbital_strike" );
+
   if ( talent.sundered_firmament.ok() )
   {
     auto firmament = get_secondary_action<fury_of_elune_t>(
@@ -10276,9 +10302,6 @@ void druid_t::create_actions()
     active.sundered_firmament = firmament;
   }
 
-  if ( talent.orbital_strike.ok() )
-    active.orbital_strike = get_secondary_action<orbital_strike_t>( "orbital_strike" );
-  
   // Feral
   if ( talent.apex_predators_craving.ok() )
   {
@@ -10356,6 +10379,17 @@ void druid_t::create_actions()
   // Hero talents
   if ( talent.boundless_moonlight.ok() && talent.lunar_beam.ok() )
     active.boundless_moonlight_heal = get_secondary_action<boundless_moonlight_heal_t>( "boundless_moonlight_heal" );
+
+  if ( talent.the_light_of_elune.ok() )
+  {
+    auto foe = get_secondary_action<fury_of_elune_t>(
+        "the_light_of_elune", find_spell( 202770 ), find_spell( 211545 ), buff.fury_of_elune );
+    foe->s_data_reporting = talent.the_light_of_elune;
+    foe->set_free_cast( free_spell_e::LIGHTELUNE );
+    foe->background = true;
+    foe->duration_override = talent.the_light_of_elune->effectN( 2 ).time_value();
+    active.the_light_of_elune = foe;
+  }
 
   if ( talent.treants_of_the_moon.ok() )
   {
@@ -10692,6 +10726,15 @@ void druid_t::init_procs()
   proc.galactic_guardian    = get_proc( "Galactic Guardian" )->collect_count();
   proc.gore                 = get_proc( "Gore" )->collect_interval();
   proc.tooth_and_claw       = get_proc( "Tooth and Claw" )->collect_interval();
+}
+
+// druid_t::init_rng ========================================================
+void druid_t::init_rng()
+{
+  player_t::init_rng();
+
+  if ( talent.the_light_of_elune.ok() )
+    rppm.the_light_of_elune = get_rppm( "The Light of Elune", talent.the_light_of_elune );
 }
 
 // druid_t::init_uptimes ====================================================
@@ -11207,7 +11250,7 @@ void druid_t::init_special_effects()
   }
 
   // Hero talents
-    if ( talent.boundless_moonlight.ok() && talent.lunar_beam.ok() )
+  if ( talent.boundless_moonlight.ok() && talent.lunar_beam.ok() )
   {
     struct boundless_moonlight_heal_cb_t : public druid_cb_t
     {
@@ -11222,6 +11265,13 @@ void druid_t::init_special_effects()
         p()->buff.boundless_moonlight_heal->current_value += s->result_amount * mul;
       }
     };
+
+    const auto driver = new special_effect_t( this );
+    driver->name_str = talent.boundless_moonlight->name_cstr();
+    driver->spell_id = talent.boundless_moonlight->id();
+    special_effects.push_back( driver );
+
+    new boundless_moonlight_heal_cb_t( this, *driver );
   }
 
   // blanket proc callback initialization happens here. anything further needs to be individually initialized
