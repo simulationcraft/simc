@@ -9413,7 +9413,7 @@ void druid_t::init_spells()
   talent.cenarius_might                 = HT( "Cenarius' Might" );
   talent.control_of_the_dream           = HT( "Control of the Dream" );
   talent.dream_surge                    = HT( "Dream Surge" );
-  talent.durability_of_nature           = HT( "Durability of Nature" );
+  talent.durability_of_nature           = HT( "Durability of Nature" );  // TODO: NYI
   talent.early_spring                   = HT( "Early Spring" );
   talent.expansiveness                  = HT( "Expansiveness" );
   talent.groves_inspiration             = HT( "Grove's Inspiration" );
@@ -9554,8 +9554,13 @@ void druid_t::init_base_stats()
   // Resources
   resources.base[ RESOURCE_RAGE ]         = 100;
   resources.base[ RESOURCE_COMBO_POINT ]  = 5;
-  resources.base[ RESOURCE_ASTRAL_POWER ] = 100 + find_effect( talent.astral_communion, A_MOD_MAX_RESOURCE ).resource( RESOURCE_ASTRAL_POWER );
-  resources.base[ RESOURCE_ENERGY ]       = 100 + find_effect( talent.tireless_energy, A_MOD_INCREASE_ENERGY ).resource( RESOURCE_ENERGY );
+  resources.base[ RESOURCE_ASTRAL_POWER ] = 100 +
+                                            find_effect( talent.astral_communion, A_MOD_MAX_RESOURCE ).resource() +
+                                            find_effect( talent.expansiveness, A_MOD_MAX_RESOURCE ).resource();
+  resources.base[ RESOURCE_ENERGY ]       = 100 +
+                                            find_effect( talent.tireless_energy, A_MOD_INCREASE_ENERGY ).resource();
+
+  resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + find_effect( talent.expansiveness, A_MOD_MANA_POOL_PCT ).percent();
 
   // only intially activate required resources. others will be dynamcally activated depending on apl
   resources.active_resource[ RESOURCE_HEALTH ]       = specialization() == DRUID_GUARDIAN;
