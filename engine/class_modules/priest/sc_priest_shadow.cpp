@@ -609,6 +609,16 @@ struct shadow_word_pain_t final : public priest_spell_t
     parse_options( options_str );
   }
 
+  bool ready() override
+  {
+    if ( priest().specialization() == PRIEST_DISCIPLINE && priest().talents.discipline.purge_the_wicked.enabled() )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
+  }
+
   void trigger( player_t* target )
   {
     background = true;
