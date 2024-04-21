@@ -483,16 +483,17 @@ public:
     else
       val = eff.base_value();
 
-    // TODO: more robust logic around 'party' buffs with radius
-    if ( eff.radius() )
-      return;
-
     // Only parse apply aura effects
     switch ( eff.type() )
     {
       case E_APPLY_AURA:
-      case E_APPLY_AREA_AURA_PARTY:
       case E_APPLY_AURA_PET:
+        // TODO: more robust logic around 'party' buffs with radius
+        if ( eff.radius() )
+          return;
+        break;
+      case E_APPLY_AREA_AURA_PARTY:
+      case E_APPLY_AREA_AURA_PET:
         break;
       default:
         return;
