@@ -670,6 +670,67 @@ public:
     spell_data_ptr_t birds_of_prey;
     spell_data_ptr_t bombardier;
     spell_data_ptr_t deadly_duo;
+
+    // Dark Ranger
+    spell_data_ptr_t black_arrow;
+
+    spell_data_ptr_t overshadow;
+    spell_data_ptr_t shadow_hounds;
+    spell_data_ptr_t death_shade;
+
+    spell_data_ptr_t dark_empowerment;
+    spell_data_ptr_t grave_reaper;
+    spell_data_ptr_t embrace_the_shadows;
+    spell_data_ptr_t smoke_screen;
+    spell_data_ptr_t dark_chains;
+
+    spell_data_ptr_t shadow_lash;
+    spell_data_ptr_t shadow_surge;
+    spell_data_ptr_t darkness_calls;
+    spell_data_ptr_t shadow_erasure;
+
+    spell_data_ptr_t withering_fire;
+
+    // Pack Leader
+    spell_data_ptr_t vicious_hunt;
+
+    spell_data_ptr_t pack_coordination;
+    spell_data_ptr_t howl_of_the_pack;
+    spell_data_ptr_t wild_attacks;
+
+    spell_data_ptr_t den_recovery;
+    spell_data_ptr_t tireless_hunt;
+    spell_data_ptr_t cornered_prey;
+    spell_data_ptr_t frenzied_tear;
+
+    spell_data_ptr_t scattered_prey;
+    spell_data_ptr_t covering_fire;
+    spell_data_ptr_t cull_the_herd;
+    spell_data_ptr_t furious_assault;
+    spell_data_ptr_t beast_of_opportunity;
+
+    spell_data_ptr_t pack_assault;
+
+    // Sentinel
+    spell_data_ptr_t sentinel;
+
+    spell_data_ptr_t dont_look_back;
+    spell_data_ptr_t extrapolated_shots;
+    spell_data_ptr_t sentinel_precision;
+
+    spell_data_ptr_t release_and_reload;
+    spell_data_ptr_t catch_out;
+    spell_data_ptr_t sideline;
+    spell_data_ptr_t invigorating_pulse;
+
+    spell_data_ptr_t sentinel_watch;
+    spell_data_ptr_t eyes_closed;
+    spell_data_ptr_t symphonic_arsenal;
+    spell_data_ptr_t overwatch;
+    spell_data_ptr_t crescent_steel;
+
+    spell_data_ptr_t lunar_storm;
+
   } talents;
 
   // Specialization Spells
@@ -3752,6 +3813,39 @@ struct death_chakram_t : death_chakram::base_t
   }
 };
 
+// Black Arrow ===============================================================
+
+struct black_arrow_t : public hunter_ranged_attack_t
+{
+  double recharge_chance;
+  cooldown_t* recharge_cooldown = nullptr;
+
+  black_arrow_t( hunter_t* p, util::string_view options_str )
+    : hunter_ranged_attack_t( "black_arrow", p, p->talents.black_arrow )
+  {
+    parse_options( options_str );
+
+    recharge_chance = data().effectN( 2 ).percent();
+
+    if ( p->specialization() == HUNTER_MARKSMANSHIP )
+      recharge_cooldown = p->cooldowns.aimed_shot;
+    if ( p->specialization() == HUNTER_BEAST_MASTERY )
+      recharge_cooldown = p->cooldowns.barbed_shot;
+
+    tick_zero = true;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    hunter_ranged_attack_t::tick( d );
+
+    if ( recharge_cooldown && rng().roll( recharge_chance ) )
+    {
+      recharge_cooldown->reset( true );
+    }
+  }
+};
+
 //==============================
 // Beast Mastery attacks
 //==============================
@@ -6601,6 +6695,7 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "barbed_shot"           ) return new            barbed_shot_t( this, options_str );
   if ( name == "barrage"               ) return new                barrage_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
+  if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
   if ( name == "bloodshed"             ) return new              bloodshed_t( this, options_str );
   if ( name == "bursting_shot"         ) return new          bursting_shot_t( this, options_str );
   if ( name == "butchery"              ) return new               butchery_t( this, options_str );
@@ -6896,6 +6991,66 @@ void hunter_t::init_spells()
     talents.bombardier                        = find_talent_spell( talent_tree::SPECIALIZATION, "Bombardier", HUNTER_SURVIVAL );
     talents.deadly_duo                        = find_talent_spell( talent_tree::SPECIALIZATION, "Deadly Duo", HUNTER_SURVIVAL );
   }
+
+  // Dark Ranger
+  talents.black_arrow = find_talent_spell( talent_tree::HERO, "Black Arrow" );
+
+  talents.overshadow    = find_talent_spell( talent_tree::HERO, "Overshadow" );
+  talents.shadow_hounds = find_talent_spell( talent_tree::HERO, "Shadow Hounds" );
+  talents.death_shade   = find_talent_spell( talent_tree::HERO, "Death Shade" );
+
+  talents.dark_empowerment    = find_talent_spell( talent_tree::HERO, "Dark Empowerment" );
+  talents.grave_reaper        = find_talent_spell( talent_tree::HERO, "Grave Reaper" );
+  talents.embrace_the_shadows = find_talent_spell( talent_tree::HERO, "Embrace the Shadows" );
+  talents.smoke_screen        = find_talent_spell( talent_tree::HERO, "Smoke Screen" );
+  talents.dark_chains         = find_talent_spell( talent_tree::HERO, "Dark Chains" );
+
+  talents.shadow_lash    = find_talent_spell( talent_tree::HERO, "Shadow Lash" );
+  talents.shadow_surge   = find_talent_spell( talent_tree::HERO, "Shadow Surge" );
+  talents.darkness_calls = find_talent_spell( talent_tree::HERO, "Darkness Calls" );
+  talents.shadow_erasure = find_talent_spell( talent_tree::HERO, "Shadow Erasure" );
+
+  talents.withering_fire = find_talent_spell( talent_tree::HERO, "Withering Fire" );
+
+  // Pack Leader
+  talents.vicious_hunt = find_talent_spell( talent_tree::HERO, "Vicious Hunt" );
+
+  talents.pack_coordination = find_talent_spell( talent_tree::HERO, "Pack Coordination" );
+  talents.howl_of_the_pack  = find_talent_spell( talent_tree::HERO, "Howl of the Pack" );
+  talents.wild_attacks      = find_talent_spell( talent_tree::HERO, "Wild Attacks" );
+
+  talents.den_recovery  = find_talent_spell( talent_tree::HERO, "Den Recovery" );
+  talents.tireless_hunt = find_talent_spell( talent_tree::HERO, "Tireless Hunt" );
+  talents.cornered_prey = find_talent_spell( talent_tree::HERO, "Cornered Prey" );
+  talents.frenzied_tear = find_talent_spell( talent_tree::HERO, "Frenzied Tear" );
+
+  talents.scattered_prey       = find_talent_spell( talent_tree::HERO, "Scattered Prey" );
+  talents.covering_fire        = find_talent_spell( talent_tree::HERO, "Covering Fire" );
+  talents.cull_the_herd        = find_talent_spell( talent_tree::HERO, "Cull the Herd" );
+  talents.furious_assault      = find_talent_spell( talent_tree::HERO, "Furious Assault" );
+  talents.beast_of_opportunity = find_talent_spell( talent_tree::HERO, "Beast of Opportunity" );
+
+  talents.pack_assault = find_talent_spell( talent_tree::HERO, "Pack Assault" );
+
+  // Sentinel
+  talents.sentinel = find_talent_spell( talent_tree::HERO, "Sentinel" );
+
+  talents.dont_look_back     = find_talent_spell( talent_tree::HERO, "Don't Look Back" );
+  talents.extrapolated_shots = find_talent_spell( talent_tree::HERO, "Extrapolated Shots" );
+  talents.sentinel_precision = find_talent_spell( talent_tree::HERO, "Sentinel Precision" );
+
+  talents.release_and_reload = find_talent_spell( talent_tree::HERO, "Release and Reload" );
+  talents.catch_out          = find_talent_spell( talent_tree::HERO, "Catch Out" );
+  talents.sideline           = find_talent_spell( talent_tree::HERO, "Sideline" );
+  talents.invigorating_pulse = find_talent_spell( talent_tree::HERO, "Invigorating Pulse" );
+
+  talents.sentinel_watch    = find_talent_spell( talent_tree::HERO, "Sentinel Watch" );
+  talents.eyes_closed       = find_talent_spell( talent_tree::HERO, "Eyes Closed" );
+  talents.symphonic_arsenal = find_talent_spell( talent_tree::HERO, "Symphonic Arsenal" );
+  talents.overwatch         = find_talent_spell( talent_tree::HERO, "Overwatch" );
+  talents.crescent_steel    = find_talent_spell( talent_tree::HERO, "Crescent Steel" );
+
+  talents.lunar_storm = find_talent_spell( talent_tree::HERO, "Lunar Storm" );
 
   // Mastery
   mastery.master_of_beasts     = find_mastery_spell( HUNTER_BEAST_MASTERY );
