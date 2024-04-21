@@ -2103,6 +2103,7 @@ class SpellDataGenerator(DataGenerator):
           ( 116768, 3 ), # Combo Breaker: Blackout Kick
           ( 121283, 3 ), # Chi Sphere from Power Strikes
           ( 125174, 3 ), # Touch of Karma redirect buff
+          ( 129914, 3 ), # Combat Wisdom Buff
           ( 195651, 3 ), # Crosswinds Artifact trait trigger spell
           ( 196061, 3 ), # Crosswinds Artifact trait damage spell
           ( 196741, 3 ), # Hit Combo Buff

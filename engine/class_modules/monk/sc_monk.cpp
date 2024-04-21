@@ -7464,7 +7464,7 @@ void monk_t::init_spells()
   // Row 4
   talent.conduit_of_the_celestials.niuzaos_protection = _HT( "Niuzao's Protection" );
   talent.conduit_of_the_celestials.jade_sanctuary     = _HT( "Jade Sanctuary" );
-  talent.conduit_of_the_celestials.chi_jis_swiftness  = _HT( "chi-ji's Swiftness" );
+  talent.conduit_of_the_celestials.chi_jis_swiftness  = _HT( "Chi-Ji's Swiftness" );
   talent.conduit_of_the_celestials.inner_compass      = _HT( "Inner Compass" );
   talent.conduit_of_the_celestials.august_dynasty     = _HT( "August Dynasty" );
   // Row 5
