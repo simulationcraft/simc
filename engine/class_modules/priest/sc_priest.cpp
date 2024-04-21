@@ -1030,7 +1030,7 @@ struct summon_fiend_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
     if ( priest().talents.shadow.idol_of_yshaarj.enabled() &&
-         ( priest().bugs || !priest().talents.voidweaver.voidwraith.enabled() ) )
+         ( !priest().bugs || !priest().talents.voidweaver.voidwraith.enabled() ) )
     {
       make_event( sim, [ this, s ] { priest().trigger_idol_of_yshaarj( s->target ); } );
     }

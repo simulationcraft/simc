@@ -499,8 +499,8 @@ struct voidwraith_pet_t final : public base_fiend_pet_t
   {
     parse_options( options );
 
-    gcd_type                   = p.o().bugs ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
-    affected_by_shadow_weaving = p.o().bugs;
+    gcd_type                   = !p.o().bugs ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
+    affected_by_shadow_weaving = !p.o().bugs;
 
     damage_mul = data().effectN( 2 ).percent();
   }
