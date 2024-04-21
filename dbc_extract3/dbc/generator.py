@@ -2316,6 +2316,7 @@ class SpellDataGenerator(DataGenerator):
           # Restoration
           ( 145153, 4 ), # Dream of Cenarius heal
           # Hero talents
+          ( 429438, 0 ), # blooming infusion
           ( 425206, 0 ), ( 425217, 0 ), ( 425219, 0 ), # boundless moonlight
           ( 428545, 0 ), # treants of the moon
         ),

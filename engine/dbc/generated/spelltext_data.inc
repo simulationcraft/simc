@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54311
-static const std::array<spelltext_data_t, 22369> __spelltext_data { {
+static const std::array<spelltext_data_t, 22371> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -4227,6 +4227,7 @@ static const std::array<spelltext_data_t, 22369> __spelltext_data { {
   { 129787, "Throw a hard shell, dismounting the target. Unusable on targets above level $ctrmax2067.", 0, 0 },
   { 129812, "Increases your haste by $s1 for $d.", "Increases haste by $s1.", 0 },
   { 129864, "Blend into the shadows for $d and summon a Salyin Warscout. The Warscout will draw the attention of nearby monsters and run into the distance. Only effective in Pandaria.", "Stealthed.", 0 },
+  { 129914, "$@spelldesc121817", "Your next Tiger Palm deals $s2% increased damage and casts Expel Harm.", 0 },
   { 130100, "Allows opening of locks that require up to $s1 lockpicking skill.  The skeleton key is consumed in the process.", 0, 0 },
   { 130146, "Summons a Tranquil Spout to heal you for $d.", 0, 0 },
   { 130327, "Restores ${$s1*$d/5} health over $d.  Must remain seated while eating.", "Restores $/5;s1 health per second.", 0 },
@@ -20822,6 +20823,7 @@ static const std::array<spelltext_data_t, 22369> __spelltext_data { {
   { 429412, "$@spelldesc429410", 0, 0 },
   { 429420, "$?a137013[Orbital Strike applies Stellar Flare for ${$s1/1000} additional seconds. \r\n\r\nPrimordial Arcanic Pulsar grants ][]$?s394013[Incarnation: Chosen of Elune]?s194223[Celestial Alignment][]$?a137013[ for $s2 additional seconds.][Reforestation grants Tree of Life for $s3 additional sec.]", 0, 0 },
   { 429433, "Every $s1 Regrowths you cast makes your next Wrath, Starfire, or Entangling Roots instant and increases damage it deals by $429474s2%.\r\n\r\nEvery $s1 Starsurges $?a137013[or Starfalls ][]you cast makes your next Regrowth or Entangling roots instant.", 0, 0 },
+  { 429438, "$@spelldesc429433", "Your next Regrowth or Entangling Roots is instant.", 0 },
   { 429474, "$@spelldesc429433", "Your next Wrath, Starfire, or Entangling Roots is instant and deals $w2% increased damage.", 0 },
   { 429483, "Hover now warps you through time and space and its cooldown is reduced by ${$s1/-1000} sec.\r\n\r\nHover continues to allow Evoker spells to be cast while moving.", 0, "Bronze" },
   { 429501, "Casting Starsurge $?a137013[or Starfall ][]increases the damage of your next Starsurge $?a137013[or Starfall ][]by $429563s1%, stacking up to $429563u times. Casting another spell cancels this effect.\r\n\r\nCasting Regrowth$?a137012[, Wild Growth, or Swiftmend increase][ increases] the healing of your next Regrowth$?a137012[, Wild Growth, or Swiftmend][] by $429563s1%, stacking up to $429563u times. Casting another spell cancels this effect.", 0, 0 },

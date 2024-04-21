@@ -635,6 +635,10 @@ public:
     buff_t* yseras_gift;
 
     // Hero talents
+    buff_t* blooming_infusion_damage;
+    buff_t* blooming_infusion_damage_counter;
+    buff_t* blooming_infusion_heal;
+    buff_t* blooming_infusion_heal_counter;
     buff_t* boundless_moonlight_heal;
     buff_t* bounteous_bloom;
     buff_t* harmony_of_the_grove;
@@ -1763,6 +1767,8 @@ public:
     parse_effects( p()->buff.natures_swiftness, p()->talent.natures_splendor );
 
     // Hero talents
+    parse_effects( p()->buff.blooming_infusion_damage );
+    parse_effects( p()->buff.blooming_infusion_heal );
     parse_effects( p()->buff.harmony_of_the_grove );
   }
 
@@ -5854,6 +5860,11 @@ struct regrowth_t : public druid_heal_t
 
     p()->buff.dream_of_cenarius->expire();
     p()->buff.natures_swiftness->expire();
+
+    // TODO: do free procs trigger?
+    p()->buff.blooming_infusion_damage_counter->trigger();
+
+    p()->buff.blooming_infusion_heal->expire();
   }
 
   void last_tick( dot_t* d ) override
@@ -6221,6 +6232,9 @@ public:
       p()->buff.touch_the_cosmos->expire();
     else
       weaver_buff->expire();
+
+    // TODO: do free procs trigger?
+    p()->buff.blooming_infusion_heal_counter->trigger();
   }
 
   void post_execute()
@@ -6243,138 +6257,115 @@ public:
   }
 };
 
-template <typename BASE>
-struct consume_dreamstate_t : public BASE
+struct ap_generator_t : public druid_spell_t
 {
-private:
-  druid_t* p_;
+protected:
+  using base_t = ap_generator_t;
 
 public:
-  using base_t = consume_dreamstate_t<BASE>;
-
-  bool dreamstate = false;
-
-  consume_dreamstate_t( std::string_view n, druid_t* p, const spell_data_t* s ) : BASE( n, p, s ), p_( p )
-  {
-    BASE::parse_effects( &p->buff.dreamstate->data(), [ this ] { return dreamstate; }, IGNORE_STACKS );
-  }
-
-  void schedule_execute( action_state_t* s ) override
-  {
-    dreamstate = p_->buff.dreamstate->up();
-
-    if ( dreamstate )
-      p_->buff.dreamstate->decrement();
-
-    BASE::schedule_execute( s );
-  }
-
-  void execute() override { BASE::execute(); dreamstate = false; }
-
-  void reset() override { BASE::reset(); dreamstate = false; }
-
-  void cancel() override { BASE::cancel(); dreamstate = false; }
-
-  void interrupt_action() override { BASE::interrupt_action(); dreamstate = false; }
-};
-
-template <typename BASE>
-struct consume_umbral_embrace_t : public BASE
-{
-private:
-  druid_t* p_;
-
-public:
-  using base_t = consume_umbral_embrace_t<BASE>;
-
-  consume_umbral_embrace_t( std::string_view n, druid_t* p, const spell_data_t* s ) : BASE( n, p, s ), p_( p ) {}
-
-  void init_umbral_embrace( const spell_data_t* ecl, dot_t* druid_td_t::dots_t::*dot, const spell_data_t* dmg )
-  {
-    // Umbral embrace is heavily scripted so we do all the auto parsing within the action itself
-    if ( p_->talent.umbral_embrace.ok() )
-    {
-      BASE::add_parse_entry( BASE::da_multiplier_effects )
-          .set_value( p_->buff.umbral_embrace->default_value )
-          .set_type( USE_DEFAULT )
-          .set_use_stacks( false )
-          .set_func( [ this ] { return umbral_embrace_check(); } )
-          .set_eff( &p_->buff.umbral_embrace->data().effectN( 1 ) );
-
-      BASE::force_effect( ecl, 1, [ this ] { return umbral_embrace_check(); } );
-
-      BASE::force_target_effect(
-          [ this, dot ]( druid_td_t* t ) { return umbral_embrace_check() && std::invoke( dot, t->dots )->is_ticking(); },
-          dmg, as<unsigned>( dmg->effect_count() ), p_->mastery.astral_invocation );
-    }
-  }
-
-  bool umbral_embrace_check()
-  {
-    return p_->buff.umbral_embrace->check() &&
-           ( p_->eclipse_handler.state == IN_SOLAR || p_->eclipse_handler.state == IN_LUNAR ||
-             p_->eclipse_handler.state == IN_BOTH );
-  }
-
-  void execute() override
-  {
-    auto embrace = umbral_embrace_check();
-    if ( embrace )
-      BASE::set_school_override( SCHOOL_ASTRAL );
-
-    BASE::execute();
-
-    if ( embrace )
-    {
-      BASE::clear_school_override();
-      p_->buff.umbral_embrace->expire();
-    }
-
-    p_->buff.umbral_embrace->trigger();
-  }
-};
-
-template <typename BASE>
-struct trigger_astral_smolder_t : public BASE
-{
-private:
-  druid_t* p_;
   buff_t* other_ecl = nullptr;
-  double mul;
+  double smolder_mul;
   double mastery_passive;
   double mastery_dot;
-  double pct;
+  double smolder_pct;
+  bool dreamstate = false;
 
-public:
-  using base_t = trigger_astral_smolder_t<BASE>;
-
-  trigger_astral_smolder_t( std::string_view n, druid_t* p, const spell_data_t* s )
-    : BASE( n, p, s ),
-      p_( p ),
-      mul( p->talent.astral_smolder->effectN( 1 ).percent() ),
+  ap_generator_t( std::string_view n, druid_t* p, const spell_data_t* s )
+    : druid_spell_t( n, p, s ),
+      smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() ),
       mastery_passive( p->mastery.astral_invocation->effectN( 1 ).mastery_value() ),
       mastery_dot( p->mastery.astral_invocation->effectN( 5 ).mastery_value() ),
-      pct( p->talent.astral_smolder->proc_chance() )
-  {}
+      smolder_pct( p->talent.astral_smolder->proc_chance() )
+  {
+    parse_effects( &p->buff.dreamstate->data(), [ this ] { return dreamstate; }, IGNORE_STACKS );
+  }
 
   void init_astral_smolder( buff_t* b )
   {
     other_ecl = b;
   }
 
-  void impact( action_state_t* s ) override
+  void init_umbral_embrace( const spell_data_t* ecl, dot_t* druid_td_t::dots_t::*dot, const spell_data_t* dmg )
   {
-    BASE::impact( s );
+    // Umbral embrace is heavily scripted so we do all the auto parsing within the action itself
+    if ( p()->talent.umbral_embrace.ok() )
+    {
+      add_parse_entry( da_multiplier_effects )
+          .set_value( p()->buff.umbral_embrace->default_value )
+          .set_type( USE_DEFAULT )
+          .set_use_stacks( false )
+          .set_func( [ this ] { return umbral_embrace_check(); } )
+          .set_eff( &p()->buff.umbral_embrace->data().effectN( 1 ) );
 
-    if ( !p_->active.astral_smolder || !s->result_amount || BASE::is_free_proc() || !BASE::rng().roll( pct ) )
+      force_effect( ecl, 1, [ this ] { return umbral_embrace_check(); } );
+
+      force_target_effect( [ this, dot ]( druid_td_t* t ) {
+            return umbral_embrace_check() && std::invoke( dot, t->dots )->is_ticking();
+          }, dmg, as<unsigned>( dmg->effect_count() ), p()->mastery.astral_invocation );
+    }
+  }
+
+  bool umbral_embrace_check()
+  {
+    return p()->buff.umbral_embrace->check() &&
+           ( p()->eclipse_handler.state == IN_SOLAR || p()->eclipse_handler.state == IN_LUNAR ||
+             p()->eclipse_handler.state == IN_BOTH );
+  }
+
+  void schedule_execute( action_state_t* s ) override
+  {
+    dreamstate = p()->buff.dreamstate->up();
+
+    if ( dreamstate )
+      p()->buff.dreamstate->decrement();
+
+    druid_spell_t::schedule_execute( s );
+  }
+
+  void execute() override
+  {
+    auto embrace = umbral_embrace_check();
+    if ( embrace )
+      set_school_override( SCHOOL_ASTRAL );
+
+    druid_spell_t::execute();
+    dreamstate = false;
+
+    if ( embrace )
+    {
+      clear_school_override();
+      p()->buff.umbral_embrace->expire();
+    }
+
+    p()->buff.umbral_embrace->trigger();
+
+    if ( is_free_proc() )
       return;
 
-    assert( other_ecl );
-    auto amount = s->result_amount * mul;
+    p()->buff.blooming_infusion_damage->expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    druid_spell_t::impact( s );
+
+    if ( !other_ecl || !p()->active.astral_smolder || !s->result_amount || is_free_proc() ||
+         !rng().roll( smolder_pct ) )
+    {
+      return;
+    }
+
+    auto amount = s->result_amount * smolder_mul;
     amount *= 1.0 + other_ecl->check_value();
 
-    residual_action::trigger( p_->active.astral_smolder, s->target, amount );
+    residual_action::trigger( p()->active.astral_smolder, s->target, amount );
   }
+
+  void reset() override { druid_spell_t::reset(); dreamstate = false; }
+
+  void cancel() override { druid_spell_t::cancel(); dreamstate = false; }
+
+  void interrupt_action() override { druid_spell_t::interrupt_action(); dreamstate = false; }
 };
 
 // Astral Smolder ===========================================================
@@ -7647,7 +7638,7 @@ struct starfall_t : public ap_spender_t
 };
 
 // Starfire =============================================================
-struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<consume_dreamstate_t<druid_spell_t>>>
+struct starfire_t : public ap_generator_t
 {
   size_t aoe_idx;
   double smolder_mul;
@@ -8136,7 +8127,7 @@ struct wild_mushroom_t : public druid_spell_t
 };
 
 // Wrath ====================================================================
-struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<consume_dreamstate_t<druid_spell_t>>>
+struct wrath_t : public ap_generator_t
 {
   double gcd_mul;
   double smolder_mul;
@@ -9418,7 +9409,7 @@ void druid_t::init_spells()
   talent.expansiveness                  = HT( "Expansiveness" );
   talent.groves_inspiration             = HT( "Grove's Inspiration" );
   talent.harmony_of_the_grove           = HT( "Harmony of the Grove" );
-  talent.persistent_enchantments        = HT( "Persistent Enchantments" );
+  talent.persistent_enchantments        = HT( "Persistent Enchantments" );  // TODO: NYI
   talent.power_of_nature                = HT( "Power of Nature" );  // TODO: grove guardian buff NYI
   talent.power_of_the_dream             = HT( "Power of the Dream" );
   talent.protective_growth              = HT( "Protective Growth" );
@@ -10201,6 +10192,34 @@ void druid_t::create_buffs()
       } );
 
   // Hero talents
+  buff.blooming_infusion_damage =
+      make_buff_fallback( talent.blooming_infusion.ok(), this, "blooming_infusion_damage", find_spell( 429474 ) )
+          ->set_name_reporting( "Damage" );
+
+  buff.blooming_infusion_damage_counter =
+      make_buff_fallback( talent.blooming_infusion.ok(), this, "blooming_infusion_damage_counter" )
+          ->set_quiet( true )
+          ->set_max_stack( as<int>( talent.blooming_infusion->effectN( 1 ).base_value() ) )
+          ->set_expire_at_max_stack( true )
+          ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+            if ( !new_ )
+              buff.blooming_infusion_damage->trigger();
+          } );
+
+  buff.blooming_infusion_heal =
+      make_buff_fallback( talent.blooming_infusion.ok(), this, "blooming_infusion_heal", find_spell( 429438 ) )
+          ->set_name_reporting( "Heal" );
+
+  buff.blooming_infusion_heal_counter =
+      make_buff_fallback( talent.blooming_infusion.ok(), this, "blooming_infusion_heal_counter" )
+          ->set_quiet( true )
+          ->set_max_stack( as<int>( talent.blooming_infusion->effectN( 1 ).base_value() ) )
+          ->set_expire_at_max_stack( true )
+          ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+            if ( !new_ )
+              buff.blooming_infusion_heal->trigger();
+          } );
+
   buff.boundless_moonlight_heal = make_buff_fallback( talent.boundless_moonlight.ok() && talent.lunar_beam.ok(),
       this, "boundless_moonlight_heal", find_spell( 425217 ) )
           ->set_quiet( true )
