@@ -503,6 +503,7 @@ public:
     // Windwalker
     propagate_const<buff_t *> bok_proc;
     propagate_const<buff_t *> chi_energy;
+    propagate_const<buff_t *> combat_wisdom;
     propagate_const<buff_t *> combo_strikes;
     propagate_const<buff_t *> dance_of_chiji;
     propagate_const<buff_t *> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks

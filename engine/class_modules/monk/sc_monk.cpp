@@ -1186,20 +1186,23 @@ struct tiger_palm_t : public monk_melee_attack_t
   bool face_palm;
   bool blackout_combo;
   bool counterstrike;
+  bool combat_wisdom;
+
+  action_t *combat_wisdom_expel_harm;
 
   tiger_palm_t( monk_t *p, util::string_view options_str )
     : monk_melee_attack_t( "tiger_palm", p, p->spec.tiger_palm ),
-      face_palm( false ),
-      blackout_combo( false ),
-      counterstrike( false )
+    face_palm( false ),
+    blackout_combo( false ),
+    counterstrike( false )
   {
     parse_options( options_str );
 
-    ww_mastery             = true;
-    may_combo_strike       = true;
-    trigger_chiji          = true;
-    sef_ability            = actions::sef_ability_e::SEF_TIGER_PALM;
-    cast_during_sck        = true;
+    ww_mastery = true;
+    may_combo_strike = true;
+    trigger_chiji = true;
+    sef_ability = actions::sef_ability_e::SEF_TIGER_PALM;
+    cast_during_sck = true;
 
     if ( p->specialization() == MONK_WINDWALKER )
       energize_amount = p->spec.windwalker_monk->effectN( 4 ).base_value();
@@ -1209,6 +1212,9 @@ struct tiger_palm_t : public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
 
     range += p->talent.windwalker.skytouch->effectN( 1 ).base_value();
+
+    if ( p->talent.windwalker.combat_wisdom.ok() )
+      combat_wisdom_expel_harm = p->find_action( "expel_harm" );
   }
 
   double action_multiplier() const override
@@ -1223,6 +1229,9 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( counterstrike )
       am *= 1 + p()->buff.counterstrike->data().effectN( 1 ).percent();
+
+    if ( combat_wisdom )
+       am *= 1 + p()->talent.windwalker.combat_wisdom->effectN( 2 ).percent();
 
     am *= 1 + p()->talent.windwalker.touch_of_the_tiger->effectN( 1 ).percent();
 
@@ -1293,9 +1302,13 @@ struct tiger_palm_t : public monk_melee_attack_t
     if ( face_palm )
       brew_cooldown_reduction( p()->talent.brewmaster.face_palm->effectN( 3 ).base_value() / 1000.0 );
 
+    if ( combat_wisdom )
+      combat_wisdom_expel_harm->execute();
+
     face_palm      = false;
     blackout_combo = false;
     counterstrike  = false;
+    combat_wisdom  = false;
   }
 
   void impact( action_state_t *s ) override
@@ -7584,7 +7597,6 @@ void monk_t::init_spells()
   passives.improved_touch_of_death          = find_spell( 322113 );
   passives.keefers_skyreach_debuff          = find_spell( 393047 );
   passives.mark_of_the_crane                = find_spell( 228287 );
-  passives.power_strikes_chi                = find_spell( 121283 );
   passives.thunderfist                      = find_spell( 393565 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.whirling_dragon_punch_tick       = find_spell( 158221 );
@@ -7849,6 +7861,10 @@ void monk_t::create_buffs()
   buff.chi_torpedo = make_buff( this, "chi_torpedo", find_spell( 119085 ) )
                          ->set_trigger_spell( talent.general.chi_torpedo )
                          ->set_default_value_from_effect( 1 );
+
+  buff.combat_wisdom = make_buff( this, "combat_wisdom", find_spell( 129914 ) )
+                        ->set_trigger_spell( talent.windwalker.combat_wisdom )
+                        ->set_default_value_from_effect( 1 );
 
   buff.jadefire_stomp = make_buff( this, "jadefire_stomp", find_spell( 388193 ) )
                             ->set_trigger_spell( shared.jadefire_stomp )
@@ -9237,6 +9253,18 @@ void monk_t::combat_begin()
           clamp( as<double>( user_options.initial_chi + resources.current[ RESOURCE_CHI ] ), 0.0,
                  resources.max[ RESOURCE_CHI ] );
       sim->print_debug( "Combat starting chi has been set to {}", resources.current[ RESOURCE_CHI ] );
+    }
+
+    if ( talent.windwalker.combat_wisdom->ok() )
+    {
+      // Player starts combat with buff
+      buff.combat_wisdom->trigger();
+      // ... and then regains the buff in time intervals while in combat
+      make_repeating_event( sim, talent.windwalker.combat_wisdom->effectN( 2 ).period(),
+        [ this ] ()
+      {
+        buff.combat_wisdom->trigger();
+      } );
     }
   }
 
