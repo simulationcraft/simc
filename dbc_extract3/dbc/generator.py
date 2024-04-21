@@ -2365,6 +2365,23 @@ class SpellDataGenerator(DataGenerator):
           ( 410265, 3 ), # Inferno's Blessing
           ( 424368, 3 ), # T31 4pc Buff Trembling Earth
           ( 409276, 3 ), # Motes of Possibility Buff
+          # Flameshaper
+          ( 444249, 0 ), # Firebreath copied by Travelling Flame
+          ( 444089, 0 ), # Consume Flame Fire Breath Damage
+          ( 444017, 0 ), # Enkindle Damage
+          # Scalecommander
+          ( 441248, 0 ), # Unrelenting Siege
+          ( 436336, 0 ), # Mass Disintegrate
+          ( 433874, 0 ), # Deepbreath
+          ( 438653, 0 ), # Mass Eruption Child Damage
+          ( 438588, 0 ), # Mass Eruption Buff
+          ( 442204, 0 ), # Breath of Eons
+          # Chronowarden
+          ( 431583, 0 ), # Chrono Flame
+          ( 431620, 0 ), # Upheaval Dot
+          ( 431654, 0 ), # Primacy Buff
+          ( 431991, 0 ), # Time Convergence Buff
+          ( 432895, 0 ), # Thread of Fate Damage
        ),
     ]
 
