@@ -1001,6 +1001,9 @@ buff_t* buff_t::modify_initial_stack( int initial_stack )
 
 buff_t* buff_t::set_expire_at_max_stack( bool expire )
 {
+  if ( is_fallback )
+    return this;
+
   if ( expire && _max_stack <= 1 )
   {
     sim->error( "{} being set to expire with max stack <= 1. Setting expire_at_max_stack to false.", *this );
