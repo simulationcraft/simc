@@ -636,6 +636,7 @@ public:
 
     // Hero talents
     buff_t* boundless_moonlight_heal;
+    buff_t* bounteous_bloom;
     buff_t* harmony_of_the_grove;
     buff_t* protective_growth;
     buff_t* treants_of_the_moon;  // treant moonfire background heartbeat
@@ -3276,6 +3277,7 @@ void treant_base_t::arise()
 {
   pet_t::arise();
 
+  o()->buff.bounteous_bloom->trigger();
   o()->buff.harmony_of_the_grove->trigger();
 
   if ( !o()->buff.treants_of_the_moon->is_fallback )
@@ -3286,6 +3288,7 @@ void treant_base_t::demise()
 {
   pet_t::demise();
 
+  o()->buff.bounteous_bloom->decrement();
   o()->buff.harmony_of_the_grove->decrement();
 
   if ( !o()->buff.treants_of_the_moon->is_fallback )
@@ -9847,10 +9850,9 @@ void druid_t::create_buffs()
           ->set_quiet( true )
           ->set_freeze_stacks( true );
   const auto& nb_eff = find_effect( buff.natures_balance, A_PERIODIC_ENERGIZE );
-  buff.natures_balance
-    ->set_default_value( nb_eff.resource( RESOURCE_ASTRAL_POWER ) / nb_eff.period().total_seconds() )
+  buff.natures_balance->set_default_value( nb_eff.resource() / nb_eff.period().total_seconds() )
     ->set_tick_callback(
-        [ ap = nb_eff.resource( RESOURCE_ASTRAL_POWER ),
+        [ ap = nb_eff.resource(),
           cap = talent.natures_balance->effectN( 2 ).percent(),
           g = get_gain( "Natures Balance" ),
           this ]
@@ -10207,6 +10209,20 @@ void druid_t::create_buffs()
             }
           } );
 
+  buff.bounteous_bloom =
+      make_buff_fallback( talent.bounteous_bloom.ok(), this, "bounteous_bloom", find_spell( 429217 ) )
+          ->set_freeze_stacks( true )
+          ->set_cooldown( 0_ms );
+  const auto& bb_eff = find_effect( buff.bounteous_bloom, E_APPLY_AREA_AURA_PET, A_PERIODIC_ENERGIZE );
+  buff.bounteous_bloom->set_default_value( bb_eff.resource() / bb_eff.period().total_seconds() )
+      ->set_tick_callback(
+          [ ap = bb_eff.resource(),
+            g = get_gain( "Bounteous Bloom" ),
+            this ]
+          ( buff_t* b, int, timespan_t ) {
+            resource_gain( RESOURCE_ASTRAL_POWER, ap * b->check(), g );
+          } );
+  auto a = buff.bounteous_bloom;
   buff.harmony_of_the_grove =
       make_buff_fallback( talent.harmony_of_the_grove.ok(), this, "harmony_of_the_grove",
                           find_spell( specialization() == DRUID_RESTORATION ? 428737 : 428735 ) )
