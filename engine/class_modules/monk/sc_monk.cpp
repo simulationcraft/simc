@@ -1262,62 +1262,6 @@ struct windwalking_aura_t : public monk_spell_t
 // ==========================================================================
 // Tiger Palm
 // ==========================================================================
-
-// Eye of the Tiger ========================================================
-struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
-{
-  eye_of_the_tiger_heal_tick_t( monk_t &p, util::string_view name )
-    : monk_heal_t( name, p, p.talent.general.eye_of_the_tiger->effectN( 1 ).trigger() )
-  {
-    background   = true;
-    hasted_ticks = false;
-    may_crit = tick_may_crit = true;
-    target                   = player;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-
-    if ( p()->buff.storm_earth_and_fire->check() )
-    {
-      // Hard code Patch 9.0.5
-      // Eye of the Tiger's heal is now increased by 26% when Storm, Earth, and Fire is out
-      am *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;  // Results in 126%
-    }
-
-    return am;
-  }
-};
-
-struct eye_of_the_tiger_dmg_tick_t : public monk_spell_t
-{
-  eye_of_the_tiger_dmg_tick_t( monk_t *player, util::string_view name )
-    : monk_spell_t( name, player, player->talent.general.eye_of_the_tiger->effectN( 1 ).trigger() )
-  {
-    background   = true;
-    hasted_ticks = false;
-    may_crit = tick_may_crit = true;
-    aoe                      = 1;
-    attack_power_mod.direct  = 0;
-    attack_power_mod.tick    = data().effectN( 2 ).ap_coeff();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    if ( p()->buff.storm_earth_and_fire->check() )
-    {
-      // Hard code Patch 9.0.5
-      // Eye of the Tiger's damage is now increased by 26% when Storm, Earth, and Fire is out
-      am *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;  // Results in 126%
-    }
-
-    return am;
-  }
-};
-
 // Tiger Palm base ability ===================================================
 struct tiger_palm_t : public monk_melee_attack_t
 {
@@ -1330,12 +1274,9 @@ struct tiger_palm_t : public monk_melee_attack_t
 
   tiger_palm_t( monk_t *p, util::string_view options_str )
     : monk_melee_attack_t( "tiger_palm", p, p->spec.tiger_palm ),
-      eye_of_the_tiger_heal( new eye_of_the_tiger_heal_tick_t( *p, "eye_of_the_tiger_heal" ) ),
-      eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) ),
       face_palm( false ),
       blackout_combo( false ),
-      counterstrike( false ),
-      power_strikes( false )
+      counterstrike( false )
   {
     parse_options( options_str );
 
@@ -1358,7 +1299,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     spell_power_mod.direct = 0.0;
 
-    range += p->talent.windwalker.skyreach->effectN( 1 ).base_value();
+    range += p->talent.windwalker.skytouch->effectN( 1 ).base_value();
   }
 
   double action_multiplier() const override
@@ -1373,9 +1314,6 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( counterstrike )
       am *= 1 + p()->buff.counterstrike->data().effectN( 1 ).percent();
-
-    if ( power_strikes )
-      am *= 1 + p()->talent.windwalker.power_strikes->effectN( 2 ).percent();
 
     am *= 1 + p()->talent.windwalker.touch_of_the_tiger->effectN( 1 ).percent();
 
@@ -1440,23 +1378,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     //============
     // Post-hit
     //============
-
-    if ( p()->talent.general.eye_of_the_tiger->ok() )
-    {
-      // Need to remove any Eye of the Tiger on targets that are not the current target
-      // Only the damage dot needs to be removed. The healing buff gets pandemic refreshed
-      for ( auto non_sleeping_target : p()->sim->target_non_sleeping_list )
-      {
-        if ( target == non_sleeping_target )
-          continue;
-
-        get_td( non_sleeping_target )->dots.eye_of_the_tiger_damage->cancel();
-      }
-      eye_of_the_tiger_damage->target = p()->target;
-      eye_of_the_tiger_damage->execute();
-
-      eye_of_the_tiger_heal->execute();
-    }
 
     p()->buff.teachings_of_the_monastery->trigger();
 
