@@ -1055,7 +1055,7 @@ buff_t* buff_t::set_period( timespan_t period )
     for ( size_t i = 1; i <= s_data->effect_count(); i++ )
     {
       const spelleffect_data_t& e = s_data->effectN( i );
-      if ( !e.ok() || e.type() != E_APPLY_AURA )
+      if ( !e.ok() || ( e.type() != E_APPLY_AURA && e.type() != E_APPLY_AREA_AURA_PET ) )
         continue;
 
       switch ( e.subtype() )

@@ -1381,6 +1381,8 @@ struct force_of_nature_t : public treant_base_t
     bool ready() override { return ( player->main_hand_attack->execute_event == nullptr ); }
   };
 
+  double power_of_nature_mul = 0.0;
+
   force_of_nature_t( druid_t* p ) : treant_base_t( p )
   {
     // Treants have base weapon damage + ap from player's sp.
@@ -1394,6 +1396,9 @@ struct force_of_nature_t : public treant_base_t
     main_hand_weapon.type = WEAPON_BEAST;
 
     action_list_str = "auto_attack";
+
+    if ( o()->talent.power_of_nature.ok() )
+      power_of_nature_mul = o()->find_spell( 449001 )->effectN( 1 ).percent();
   }
 
   void init_base_stats() override
@@ -1417,6 +1422,11 @@ struct force_of_nature_t : public treant_base_t
     if ( name == "auto_attack" ) return new auto_attack_t( this );
 
     return pet_t::create_action( name, options_str );
+  }
+
+  double composite_player_multiplier( school_e s ) const override
+  {
+    return treant_base_t::composite_player_multiplier( s ) * ( 1.0 + power_of_nature_mul );
   }
 };
 
@@ -9406,7 +9416,7 @@ void druid_t::init_spells()
   talent.groves_inspiration             = HT( "Grove's Inspiration" );
   talent.harmony_of_the_grove           = HT( "Harmony of the Grove" );
   talent.persistent_enchantments        = HT( "Persistent Enchantments" );
-  talent.power_of_nature                = HT( "Power of Nature" );
+  talent.power_of_nature                = HT( "Power of Nature" );  // TODO: grove guardian buff NYI
   talent.power_of_the_dream             = HT( "Power of the Dream" );
   talent.protective_growth              = HT( "Protective Growth" );
   talent.treants_of_the_moon            = HT( "Treants of the Moon" );
@@ -13040,6 +13050,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.soul_of_the_forest_cat );
 
   // Hero talents
+  action.apply_affecting_aura( talent.early_spring );
   action.apply_affecting_aura( talent.the_eternal_moon );
 }
 

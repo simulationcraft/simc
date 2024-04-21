@@ -1719,21 +1719,23 @@ static std::string trait_data_to_str( const dbc_t& dbc, const spell_data_t* spel
           fmt::format( "override=\"{}\" (id={})", override_spell->name_cstr(), trait->id_override_spell ) );
     }
 
-    spec_idx = 0U;
     std::vector<std::string> spec_strs;
-    while ( trait->id_spec[ spec_idx ] != 0 && spec_idx < trait->id_spec.size() )
+    for ( auto spec_idx : trait->id_spec )
     {
-      auto specialization_str = util::inverse_tokenize(
-          dbc::specialization_string( static_cast<specialization_e>( trait->id_spec[ spec_idx ] ) ) );
+      if ( spec_idx == 0 )
+        continue;
+
+      auto specialization_str =
+          util::inverse_tokenize( dbc::specialization_string( static_cast<specialization_e>( spec_idx ) ) );
+
       if ( util::str_compare_ci( specialization_str, "Unknown" ) )
       {
-        spec_strs.emplace_back( fmt::format( "{} ({})", specialization_str, trait->id_spec[ spec_idx ] ) );
+        spec_strs.emplace_back( fmt::format( "{} ({})", specialization_str, spec_idx ) );
       }
       else
       {
         spec_strs.emplace_back( fmt::format( "{}", specialization_str ) );
       }
-      ++spec_idx;
     }
 
     strings.emplace_back( fmt::format( "{} [{}]", !spec_strs.empty() ? util::string_join( spec_strs, ", " ) : "Generic",
