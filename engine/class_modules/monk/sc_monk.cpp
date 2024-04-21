@@ -7117,6 +7117,8 @@ void monk_t::init_spells()
   */
   auto _ST = [ this ]( util::string_view name ) { return find_talent_spell( talent_tree::SPECIALIZATION, name ); };
 
+  auto _HT = [ this ]( util::string_view name ) { return find_talent_spell( talent_tree::HERO, name ); };
+
   auto _STID = [ this ]( int id ) { return find_talent_spell( talent_tree::SPECIALIZATION, id ); };
 
   // ========
@@ -7397,6 +7399,76 @@ void monk_t::init_spells()
   talent.windwalker.path_of_jade                   = _ST( "Path of Jade" );
   talent.windwalker.singularly_focused_jade        = _ST( "Singularly Focusted Jade" );
   talent.windwalker.jadefire_harmony               = _ST( "Jadefire Harmony" );
+
+  // ========
+  // Master of Harmony
+  // ========
+  // Row 1
+  talent.master_of_harmony.aspect_of_harmony = _HT( "Aspect of Harmony" );
+  // Row 2
+  talent.master_of_harmony.manifestation      = _HT( "Manifestation" );
+  talent.master_of_harmony.purified_spirit    = _HT( "Purified Spirit" );
+  talent.master_of_harmony.harmonic_gambit    = _HT( "Harmonic Gambit" );
+  talent.master_of_harmony.balanced_strategem = _HT( "Balanced Strategem" );
+  // Row 3
+  talent.master_of_harmony.tigers_vigor          = _HT( "Tiger's Vigor" );
+  talent.master_of_harmony.roar_from_the_heavens = _HT( "Roar from the Heavens" );
+  talent.master_of_harmony.endless_draught       = _HT( "Endless Draught" );
+  talent.master_of_harmony.mantra_of_purity      = _HT( "Mantra of Purity" );
+  talent.master_of_harmony.mantra_of_tenacity    = _HT( "Mantra of Tenacity" );
+  // Row 4
+  talent.master_of_harmony.overwhelming_force        = _HT( "Overwhelming Force" );
+  talent.master_of_harmony.path_of_resurgence        = _HT( "Path of Resurgence" );
+  talent.master_of_harmony.way_of_a_thousand_strikes = _HT( "Way of a Thousand Strikes" );
+  talent.master_of_harmony.clarity_of_purpose        = _HT( "Clarity of Purpose" );
+  // Row 5
+  talent.master_of_harmony.resonance = _HT( "Resonance" );
+
+  // ========
+  // Shado-Pan
+  // ========
+  // Row 1
+  talent.shado_pan.flurry_strikes = _HT( "Flurry Strikes" );
+  // Row 2
+  talent.shado_pan.pride_of_pandaria = _HT( "Pride of Pandaria" );
+  talent.shado_pan.high_impact       = _HT( "High Impact" );
+  talent.shado_pan.veterans_eye      = _HT( "Veteran's Eye" );
+  talent.shado_pan.martial_precision = _HT( "Martial Precision" );
+  // Row 3
+  talent.shado_pan.protect_and_serve   = _HT( "Protect and Serve" );
+  talent.shado_pan.lead_from_the_front = _HT( "Lead from the Front" );
+  talent.shado_pan.one_versus_many     = _HT( "One Versus Many" );
+  talent.shado_pan.whirling_steel      = _HT( "Whirling Steel" );
+  talent.shado_pan.predictive_training = _HT( "Predictive Training" );
+  // Row 4
+  talent.shado_pan.against_all_odds   = _HT( "Against All Odds" );
+  talent.shado_pan.efficient_training = _HT( "Efficient Training" );
+  talent.shado_pan.vigilant_watch     = _HT( "Vigilant Watch" );
+  // Row 5
+  talent.shado_pan.wisdom_of_the_wall = _HT( "Wisdom of the Wall" );
+
+  // ========
+  // Conduit of the Celestials
+  // ========
+  // Row 1
+  talent.conduit_of_the_celestials.celestial_conduit = _HT( "Celestial Conduit" );
+  // Row 2
+  talent.conduit_of_the_celestials.temple_training            = _HT( "Temple Training" );
+  talent.conduit_of_the_celestials.xuens_guidance             = _HT( "Xuen's Guidance" );
+  talent.conduit_of_the_celestials.courage_of_the_white_tiger = _HT( "Courage of the White Tiger" );
+  talent.conduit_of_the_celestials.restore_balance            = _HT( "Restore Balance" );
+  // Row 3
+  talent.conduit_of_the_celestials.heart_of_the_jade_serpent = _HT( "Heart of the_Jade Serpent" );
+  talent.conduit_of_the_celestials.strength_of_the_black_ox  = _HT( "Strength of the Black Ox" );
+  talent.conduit_of_the_celestials.flight_of_the_red_crane   = _HT( "Flight of the Red Crane" );
+  // Row 4
+  talent.conduit_of_the_celestials.niuzaos_protection = _HT( "Niuzao's Protection" );
+  talent.conduit_of_the_celestials.jade_sanctuary     = _HT( "Jade Sanctuary" );
+  talent.conduit_of_the_celestials.chi_jis_swiftness  = _HT( "chi-ji's Swiftness" );
+  talent.conduit_of_the_celestials.inner_compass      = _HT( "Inner Compass" );
+  talent.conduit_of_the_celestials.august_dynasty     = _HT( "August Dynasty" );
+  // Row 5
+  talent.conduit_of_the_celestials.unity_within = _HT( "Unity Within" );
 
   // Specialization spells ====================================
   // Multi-Specialization & Class Spells
