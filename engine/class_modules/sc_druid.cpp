@@ -7156,6 +7156,7 @@ struct moonfire_t : public druid_spell_t
     if ( p->spec.astral_power->ok() && !is_free( free_spell_e::TWIN ) )
     {
       parse_effect_modifiers( p->spec.astral_power );
+      parse_effect_modifiers( p->talent.moon_guardian );
       energize_type = action_energize::ON_CAST;
       energize_resource = RESOURCE_ASTRAL_POWER;
       energize_idx = find_effect_index( this, E_ENERGIZE, A_MAX, POWER_ASTRAL_POWER );
@@ -7167,6 +7168,16 @@ struct moonfire_t : public druid_spell_t
       energize_type = action_energize::ON_CAST;
       energize_resource = RESOURCE_RAGE;
       energize_idx = find_effect_index( this, E_ENERGIZE, A_MAX, POWER_RAGE );
+    }
+    else if ( p->talent.moon_guardian.ok() && is_free( free_spell_e::GALACTIC ) )
+    {
+      auto rage_spell = p->find_spell( 430581 );
+      const auto& eff = find_effect( rage_spell, E_ENERGIZE );
+
+      energize_type = action_energize::ON_CAST;
+      energize_resource = eff.resource_gain_type();
+      energize_amount = eff.resource();
+      gain = p->get_gain( "Moon Guardian" );
     }
     else
     {
@@ -7683,6 +7694,7 @@ struct starfire_t : public ap_generator_t
     parse_effect_modifiers( p->talent.wild_surges );
     parse_effect_modifiers( p->buff.eclipse_lunar, p->talent.umbral_intensity );
     parse_effect_modifiers( p->buff.warrior_of_elune, IGNORE_STACKS );
+    parse_effect_modifiers( p->talent.moon_guardian );
 
     energize_idx = find_effect_index( this, E_ENERGIZE );
     energize_amount = modified_effectN_resource( energize_idx, energize_resource );
