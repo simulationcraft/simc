@@ -28,7 +28,7 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/arcane_intellect
 # defining a group of trinkets as Steroids
-actions.precombat+=/variable,name=steroid_trinket_equipped,op=set,value=equipped.gladiators_badge|equipped.irideus_fragment|equipped.erupting_spear_fragment|equipped.spoils_of_neltharus|equipped.tome_of_unstable_power|equipped.timebreaching_talon|equipped.horn_of_valor|equipped.mirror_of_fractured_tomorrows|equipped.ashes_of_the_embersoul|equipped.balefire_branch|equipped.time_theifs_gambit|equipped.nymues_unraveling_spindle
+actions.precombat+=/variable,name=steroid_trinket_equipped,op=set,value=equipped.gladiators_badge|equipped.irideus_fragment|equipped.erupting_spear_fragment|equipped.spoils_of_neltharus|equipped.timebreaching_talon|equipped.horn_of_valor|equipped.mirror_of_fractured_tomorrows|equipped.ashes_of_the_embersoul|equipped.balefire_branch|equipped.time_theifs_gambit|equipped.nymues_unraveling_spindle
 # APL Variable Option: If set to a non-zero value, the Combustion action and cooldowns that are constrained to only be used when Combustion is up will not be used during the simulation.
 actions.precombat+=/variable,name=disable_combustion,op=reset
 # APL Variable Option: This variable specifies whether Combustion should be used during Firestarter.
@@ -56,7 +56,7 @@ actions.precombat+=/variable,name=time_to_combustion,value=fight_remains+100,if=
 # The duration of a Sun King's Blessing Combustion.
 actions.precombat+=/variable,name=skb_duration,value=dbc.effect.1016075.base_value
 # Whether a usable item used to buff Combustion is equipped.
-actions.precombat+=/variable,name=combustion_on_use,value=equipped.gladiators_badge|equipped.moonlit_prism|equipped.irideus_fragment|equipped.spoils_of_neltharus|equipped.tome_of_unstable_power|equipped.timebreaching_talon|equipped.horn_of_valor
+actions.precombat+=/variable,name=combustion_on_use,value=equipped.gladiators_badge|equipped.moonlit_prism|equipped.irideus_fragment|equipped.spoils_of_neltharus|equipped.timebreaching_talon|equipped.horn_of_valor
 # How long before Combustion should trinkets that trigger a shared category cooldown on other trinkets not be used?
 actions.precombat+=/variable,name=on_use_cutoff,value=20,if=variable.combustion_on_use
 actions.precombat+=/snapshot_stats
@@ -167,7 +167,7 @@ actions.combustion_phase+=/scorch,if=improved_scorch.active&(debuff.improved_sco
 actions.combustion_phase+=/phoenix_flames,if=set_bonus.tier30_2pc&travel_time<buff.combustion.remains&buff.heating_up.react+hot_streak_spells_in_flight<2&(debuff.charring_embers.remains<4*gcd.max|buff.flames_fury.stack>1|buff.flames_fury.up)
 actions.combustion_phase+=/fireball,if=buff.combustion.remains>cast_time&buff.flame_accelerant.react
 # Use Phoenix Flames and Scorch in Combustion to help generate Hot Streaks when Fire Blasts are not available or need to be conserved.
-actions.combustion_phase+=/phoenix_flames,if=(!searing_touch.active&talent.flame_accelerant|!talent.flame_accelerant)&!set_bonus.tier30_2pc&!talent.alexstraszas_fury&travel_time<buff.combustion.remains&buff.heating_up.react+hot_streak_spells_in_flight<2
+actions.combustion_phase+=/phoenix_flames,if=(!talent.alexstraszas_fury&travel_time<buff.combustion.remains|talent.alexstraszas_fury)&buff.heating_up.react+hot_streak_spells_in_flight<2
 actions.combustion_phase+=/scorch,if=buff.combustion.remains>cast_time&cast_time>=gcd.max
 actions.combustion_phase+=/fireball,if=buff.combustion.remains>cast_time
 # If there isn't enough time left in Combustion for a Phoenix Flames or Scorch to hit inside of Combustion, use something else.
