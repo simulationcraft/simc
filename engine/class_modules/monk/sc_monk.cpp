@@ -2348,6 +2348,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       p()->active_actions.breath_of_fire->target = execute_state->target;
       p()->active_actions.breath_of_fire->execute();
     }
+
+    if ( p()->talent.windwalker.transfer_the_power->ok() )
+      p()->buff.transfer_the_power->trigger();
   }
 
   void last_tick( dot_t *dot ) override
