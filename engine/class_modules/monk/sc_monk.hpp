@@ -636,6 +636,7 @@ public:
       player_talent_t calming_presence;
       player_talent_t winds_reach;
       player_talent_t detox;
+      player_talent_t improved_detox;
       // Row 4
       player_talent_t vivacious_vivification;
       player_talent_t jade_walk;
@@ -665,6 +666,7 @@ public:
       player_talent_t peace_and_prosperity;
       player_talent_t fortifying_brew;
       player_talent_t dance_of_the_wind;
+      player_talent_t dampen_harm;
       // 20 Required
       // Row 8
       player_talent_t save_them_all;
@@ -843,17 +845,11 @@ public:
       player_talent_t momentum_boost;
       player_talent_t combat_wisdom;
       player_talent_t acclamation;
-
-      player_talent_t power_strikes;
       // Row 3
       player_talent_t touch_of_the_tiger;
       player_talent_t hardened_soles;
       player_talent_t ascension;
       player_talent_t dual_threat;
-
-      player_talent_t widening_whirl;
-      player_talent_t flashing_fists;
-      player_talent_t open_palm_strikes;
       // Row 4
       player_talent_t mark_of_the_crane;
       player_talent_t flying_serpent_kick;
@@ -1034,7 +1030,6 @@ public:
     const spell_data_t *mistweaver_monk;
     const spell_data_t *mistweaver_monk_2;
     const spell_data_t *reawaken;
-    const spell_data_t *touch_of_death_3_mw;
 
     // Windwalker
     const spell_data_t *afterlife;
@@ -1044,11 +1039,13 @@ public:
     const spell_data_t *combat_conditioning;
     const spell_data_t *combo_breaker;
     const spell_data_t *disable_2;
+    const spell_data_t *empowered_tiger_lightning;
     const spell_data_t *expel_harm_2_ww;
     const spell_data_t *flying_serpent_kick_2;
     const spell_data_t *leather_specialization_ww;
     const spell_data_t *spinning_crane_kick_2_ww;
     const spell_data_t *touch_of_death_3_ww;
+    const spell_data_t *touch_of_karma;
     const spell_data_t *two_hand_adjustment_ww;
     const spell_data_t *windwalker_monk;
   } spec;
