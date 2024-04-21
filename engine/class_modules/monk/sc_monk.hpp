@@ -227,8 +227,6 @@ public:
   {
     propagate_const<dot_t *> breath_of_fire;
     propagate_const<dot_t *> enveloping_mist;
-    propagate_const<dot_t *> eye_of_the_tiger_damage;
-    propagate_const<dot_t *> eye_of_the_tiger_heal;
     propagate_const<dot_t *> renewing_mist;
     propagate_const<dot_t *> rushing_jade_wind;
     propagate_const<dot_t *> soothing_mist;
@@ -455,6 +453,7 @@ public:
     propagate_const<buff_t *> close_to_heart_driver;
     propagate_const<buff_t *> dampen_harm;
     propagate_const<buff_t *> diffuse_magic;
+    propagate_const<buff_t *> fatal_touch;
     propagate_const<buff_t *> jadefire_stomp;
     propagate_const<buff_t *> generous_pour_driver;
     propagate_const<buff_t *> invokers_delight;
@@ -528,7 +527,6 @@ public:
     propagate_const<buff_t *> touch_of_karma;
     propagate_const<buff_t *> transfer_the_power;
     propagate_const<buff_t *> whirling_dragon_punch;
-    propagate_const<buff_t *> power_strikes;
 
     // T29 Set Bonus
     propagate_const<buff_t *> kicks_of_flowing_momentum;
@@ -567,7 +565,6 @@ public:
     propagate_const<gain_t *> open_palm_strikes;
     propagate_const<gain_t *> power_strikes;
     propagate_const<gain_t *> rushing_jade_wind_tick;
-    propagate_const<gain_t *> spirit_of_the_crane;
     propagate_const<gain_t *> tiger_palm;
     propagate_const<gain_t *> touch_of_death_ww;
     propagate_const<gain_t *> weapons_of_order;
@@ -980,8 +977,6 @@ public:
   // Shared
   struct shared_t
   {
-    const spell_data_t *attenuation;
-    const spell_data_t *bonedust_brew;
     const spell_data_t *jadefire_stomp;
     const spell_data_t *healing_elixir;
     const spell_data_t *invokers_delight;
@@ -1139,7 +1134,6 @@ public:
     const spell_data_t *renewing_mist_heal;
     const spell_data_t *soothing_mist_heal;
     const spell_data_t *soothing_mist_statue;
-    const spell_data_t *spirit_of_the_crane;
     const spell_data_t *totm_bok_proc;
     const spell_data_t *zen_pulse_heal;
     const spell_data_t *zen_pulse_echo_damage;
