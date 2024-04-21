@@ -2133,52 +2133,10 @@ class SpellDataGenerator(DataGenerator):
           ( 328296, 0 ), # Necrolord Bonedust Chi Refund
           ( 342330, 0 ), # Necrolord Bonedust Brew Grounding Breath Buff
           ( 394514, 0 ), # Necrolord Bonedust Brew Attenuation Buff
-          ( 327257, 0 ), # Ardenweald Faeline Stomp debuff
-          ( 327264, 0 ), # Ardenweald Faeline Stomp damage
-          ( 327276, 0 ), # Ardenweald Faeline Stomp reset buff notification
-          ( 345727, 0 ), # Ardenweald Faeline Stomp damage 2
-          ( 327004, 0 ), # Venthyr Fallen Monk Tiger Adept Summon
-          ( 327005, 0 ), # Venthyr Fallen Monk Ox Adept Summon
-          ( 327006, 0 ), # Venthyr Fallen Monk Crane Adept Summon
-          ( 328283, 0 ), # Venthyr Fallen Monk Soothing Mist Heal
-          ( 330898, 0 ), # Venthyr Fallen Monk Fists of Fury
-          ( 330901, 0 ), # Venthyr Fallen Monk Spinning Crane Kick
-          ( 330903, 0 ), # Venthyr Fallen Monk Spinning Crane Kick damage
-          ( 330907, 0 ), # Venthyr Fallen Monk Breath of Fire
-          ( 330909, 0 ), # Venthyr Fallen Monk Clash
-          ( 330911, 0 ), # Venthyr Fallen Monk Keg Smash
-          ( 344008, 0 ), # Venthyr Fallen Monk Enveloping Mist Heal
-          ( 344239, 0 ), # Venthyr Fallen Monk Soothing Mist
-          ( 344240, 0 ), # Venthyr Fallen Monk Enveloping Mist
-          ( 346602, 0 ), # Venthyr Fallen Monk Tiger Palm
-          ( 345714, 0 ), # Venthyr Fallen Monk Fists of Fury damage
-          ( 347826, 0 ), # Venthyr Fallen Monk Specialization Duration
-          ( 363041, 0 ), # Venthyr Fallen Monk Fallen Brew
-          ( 364944, 0 ), # Venthyr Fallen Monk Windwalking
-
-          # Conduits
-          ( 336874, 0 ), # Fortifying Ingredients
-          ( 343764, 1 ), # Evasive Stride Heal
 
           # Shadowland Legendaries
           ( 337342, 3 ), # Jade Ignition Damage
           ( 337482, 3 ), # Pressure Point Buff
-          ( 338141, 1 ), # Flaming Kicks Legendary damage
-          ( 343249, 0 ), # Escape from Reality Buff
-          ( 343250, 0 ), # Escape from Reality
-          ( 343539, 0 ), # Escape from Reality Mana Refund
-          ( 343543, 0 ), # Escape from Reality Energy Refund
-          ( 344021, 3 ), # Keefer's Skyreach Debuff
-          ( 337341, 3 ), # Keefer's Skyreach Exhaustion Debuff
-          ( 347687, 1 ), # Charred Passions
-          ( 347688, 1 ), # Charred Passions
-          ( 356773, 0 ), # Fae Exposure Damage Debuff
-          ( 356774, 0 ), # Fae Exposure Heal Buff
-          ( 358518, 3 ), # Call to Arms Invoke Xuen Duration
-          ( 358520, 1 ), # Call to Arms Invoke Niuzao Duration
-          ( 358521, 2 ), # Call to Arms Invoke Yu'lon Duration
-          ( 358522, 2 ), # Call to Arms Invoke Chi-Ji Duration
-          ( 360829, 3 ), # Call to Arms Empowered Tiger Lightning
 
           # Tier 28
           ( 366793, 1 ), # BrM 4-piece Keg of the Heavens Heal
