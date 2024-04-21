@@ -3423,13 +3423,6 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
       first_charge = !first_charge;
     }
   }
-
-  void impact( action_state_t *state ) override
-  {
-    monk_melee_attack_t::impact( state );
-
-    get_td( state->target )->debuff.flying_serpent_kick->trigger();
-  }
 };
 
 // ==========================================================================
@@ -6583,9 +6576,6 @@ namespace monk
 monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( target, p ), dots(), debuff(), monk( *p )
 {
   // Windwalker
-  debuff.flying_serpent_kick = make_buff( *this, "flying_serpent_kick", p->passives.flying_serpent_kick_damage )
-                                   ->set_trigger_spell( p->talent.windwalker.flying_serpent_kick )
-                                   ->set_default_value_from_effect( 2 );
   debuff.empowered_tiger_lightning = make_buff( *this, "empowered_tiger_lightning", spell_data_t::nil() )
                                          ->set_trigger_spell( p->spec.empowered_tiger_lightning )
                                          ->set_quiet( true )
@@ -7583,7 +7573,6 @@ void monk_t::init_spells()
   passives.jadefire_brand_heal              = find_spell( 395413 );
   passives.jadefire_stomp_ww_damage         = find_spell( 388201 );
   passives.fists_of_fury_tick               = find_spell( 117418 );
-  passives.flying_serpent_kick_damage       = find_spell( 123586 );
   passives.focus_of_xuen                    = find_spell( 252768 );
   passives.fury_of_xuen_stacking_buff       = find_spell( 396167 );
   passives.fury_of_xuen_haste_buff          = find_spell( 396168 );
