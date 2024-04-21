@@ -13072,6 +13072,7 @@ void druid_t::apply_affecting_auras( action_t& action )
 
   // Hero talents
   action.apply_affecting_aura( talent.early_spring );
+  action.apply_affecting_aura( talent.groves_inspiration );
   action.apply_affecting_aura( talent.the_eternal_moon );
 }
 
