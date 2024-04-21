@@ -466,7 +466,7 @@ namespace monk_apl
       // -----------------------------------------
 
       std::string concat = "";
-      auto talent_map = monk->talent.windwalker.serenity->ok() ? serenity_trinkets : sef_trinkets;
+      auto talent_map = sef_trinkets;
       try
       {
         concat = talent_map.at( item.name_str );

@@ -215,22 +215,6 @@ struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
     }
   }
 
-  double action_multiplier() const override
-  {
-    double am = pet_action_base_t::action_multiplier();
-
-    if ( o()->specialization() == MONK_WINDWALKER )
-    {
-      if ( o()->buff.serenity->check() )
-      {
-        if ( data().affected_by( o()->talent.windwalker.serenity->effectN( 2 ) ) )
-          am *= 1 + o()->talent.windwalker.serenity->effectN( 2 ).percent();
-      }
-    }
-
-    return am;
-  }
-
   // Physical tick_action abilities need amount_type() override, so the
   // tick_action multistrikes are properly physically mitigated.
   result_amount_type amount_type( const action_state_t *state, bool periodic ) const override
