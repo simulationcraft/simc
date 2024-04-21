@@ -3388,7 +3388,11 @@ struct horseman_pet_t : public death_knight_pet_t
 
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "antimagic_shell_horsemen" );
+    // Limit them casting AMS to only if this is talented and may impact player dps
+    if( dk()->talent.rider.horsemens_aid.ok() )
+    {
+      def->add_action( "antimagic_shell_horsemen" );
+    }
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -3748,7 +3752,8 @@ struct nazgrim_pet_t : public horseman_pet_t
     scourge_strike_shadow_nazgrim_t( util::string_view name, horseman_pet_t* p )
       : horseman_melee_t( p, name, p->dk()->pet_spell.nazgrim_scourge_strike_shadow )
     {
-      background  = true;
+      background  = dual = true;
+      name_str_reporting = "scourge_strike";
       base_dd_min = base_dd_max =
           p->dbc->expected_stat( p->dk()->true_level ).creature_auto_attack_dps * data().effectN( 1 ).percent();
     }
@@ -3760,11 +3765,12 @@ struct nazgrim_pet_t : public horseman_pet_t
     action_t* scourge_strike_shadow;
     scourge_strike_nazgrim_t( util::string_view name, horseman_pet_t* p, util::string_view options_str )
       : horseman_melee_t( p, name, p->dk()->pet_spell.nazgrim_scourge_strike_phys ),
-        scourge_strike_shadow( new scourge_strike_shadow_nazgrim_t( "scourge_strike_shadow", p ) ),
+        scourge_strike_shadow( get_action<scourge_strike_shadow_nazgrim_t>( "scourge_strike_shadow", p ) ),
         used( false )
     {
       parse_options( options_str );
       impact_action = scourge_strike_shadow;
+      impact_action->stats = stats;
       base_dd_min   = base_dd_max =
           p->dbc->expected_stat( p->dk()->true_level ).creature_auto_attack_dps * data().effectN( 1 ).percent();
     }
@@ -5654,6 +5660,7 @@ struct dark_transformation_damage_t final : public death_knight_spell_t
     death_knight_spell_t( name, p, p -> spell.dark_transformation_damage )
   {
     background = dual = true;
+    name_str_reporting = "dark_transformation";
     aoe = as<int>( data().effectN( 2 ).base_value() );
   }
 };
@@ -5701,6 +5708,7 @@ struct dark_transformation_t final : public death_knight_spell_t
 
     execute_action = get_action<dark_transformation_damage_t>( "dark_transformation_damage", p );
     add_child( execute_action );
+    execute_action->stats = stats;
 
     parse_options( options_str );
   }
@@ -7944,7 +7952,7 @@ struct soul_reaper_execute_t : public death_knight_spell_t
   soul_reaper_execute_t( util::string_view name, death_knight_t* p ) :
     death_knight_spell_t( name, p, p -> spell.soul_reaper_execute )
   {
-    background = true;
+    background = dual = true;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -9437,28 +9445,19 @@ void death_knight_t::summon_rider( timespan_t duration, bool random )
 {
   std::vector<action_t*> random_rider_spells = active_spells.rider_summon_spells;
   // Can not randomly summon the same rider twice in a row
-  if ( active_spells.last_rider_summoned != nullptr )
+  if ( random && active_spells.last_rider_summoned != nullptr )
   {
     auto it = std::find( random_rider_spells.begin(), random_rider_spells.end(), active_spells.last_rider_summoned );
     random_rider_spells.erase( it );
   }
 
-  if ( !random )
+  for ( auto& rider : random_rider_spells )
   {
-    for ( auto& rider : active_spells.rider_summon_spells )
+    debug_cast<summon_rider_t*>( rider )->duration = duration;
+    debug_cast<summon_rider_t*>( rider )->random   = random;
+    rider->execute();
+    if ( random )
     {
-      debug_cast<summon_rider_t*>( rider )->duration = duration;
-      debug_cast<summon_rider_t*>( rider )->random = random;
-      rider->execute();
-    }
-  }
-  else
-  {
-    for ( auto& rider : random_rider_spells )
-    {
-      debug_cast<summon_rider_t*>( rider )->duration = duration;
-      debug_cast<summon_rider_t*>( rider )->random = random;
-      rider->execute();
       active_spells.last_rider_summoned = rider;
       rng().shuffle( active_spells.rider_summon_spells.begin(), active_spells.rider_summon_spells.end() );
       return;
