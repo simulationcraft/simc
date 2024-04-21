@@ -3223,7 +3223,7 @@ void priest_t::init_spells()
   talents.voidweaver.void_empowerment       = HT( "Void Empowerment" );
   talents.voidweaver.darkening_horizon      = HT( "Darkening Horizon" );
   talents.voidweaver.depth_of_shadows       = HT( "Depth of Shadows" );  // NYI
-  talents.voidweaver.voidwraith             = HT( "Voidwraith" );        // NYI
+  talents.voidweaver.voidwraith             = HT( "Voidwraith" );
   talents.voidweaver.voidwraith_spell       = find_spell( 451235 );
   talents.voidweaver.voidheart              = HT( "Voidheart" );
   talents.voidweaver.voidheart_buff         = find_spell( 449887 );  // Voidheart Buff
