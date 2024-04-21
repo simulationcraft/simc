@@ -636,6 +636,7 @@ public:
 
     // Hero talents
     buff_t* boundless_moonlight_heal;
+    buff_t* harmony_of_the_grove;
     buff_t* protective_growth;
     buff_t* treants_of_the_moon;  // treant moonfire background heartbeat
 
@@ -993,7 +994,7 @@ public:
     player_talent_t early_spring;
     player_talent_t expansiveness;
     player_talent_t groves_inspiration;
-    player_talent_t harmoney_of_the_grove;
+    player_talent_t harmony_of_the_grove;
     player_talent_t persistent_enchantments;
     player_talent_t power_of_nature;
     player_talent_t power_of_the_dream;
@@ -1329,7 +1330,7 @@ struct treant_base_t : public pet_t
   void arise() override;
   void demise() override;
 
-  druid_t* o() { return static_cast<druid_t*>( owner ); }
+  druid_t* o() const { return static_cast<druid_t*>( owner ); }
 };
 
 // Force of Nature ==================================================
@@ -1749,6 +1750,9 @@ public:
     parse_effects( p()->buff.clearcasting_tree, p()->talent.flash_of_clarity );
     parse_effects( p()->buff.incarnation_tree );
     parse_effects( p()->buff.natures_swiftness, p()->talent.natures_splendor );
+
+    // Hero talents
+    parse_effects( p()->buff.harmony_of_the_grove );
   }
 
   template <typename T>
@@ -3262,14 +3266,20 @@ void treant_base_t::arise()
 {
   pet_t::arise();
 
-  static_cast<buffs::treants_of_the_moon_buff_t*>( o()->buff.treants_of_the_moon )->pet_list.insert( this );
+  o()->buff.harmony_of_the_grove->trigger();
+
+  if ( !o()->buff.treants_of_the_moon->is_fallback )
+    static_cast<buffs::treants_of_the_moon_buff_t*>( o()->buff.treants_of_the_moon )->pet_list.insert( this );
 }
 
 void treant_base_t::demise()
 {
   pet_t::demise();
 
-  static_cast<buffs::treants_of_the_moon_buff_t*>( o()->buff.treants_of_the_moon )->pet_list.erase( this );
+  o()->buff.harmony_of_the_grove->decrement();
+
+  if ( !o()->buff.treants_of_the_moon->is_fallback )
+    static_cast<buffs::treants_of_the_moon_buff_t*>( o()->buff.treants_of_the_moon )->pet_list.erase( this );
 }
 }  // namespace pets
 
@@ -9394,7 +9404,7 @@ void druid_t::init_spells()
   talent.early_spring                   = HT( "Early Spring" );
   talent.expansiveness                  = HT( "Expansiveness" );
   talent.groves_inspiration             = HT( "Grove's Inspiration" );
-  talent.harmoney_of_the_grove          = HT( "Harmony of the Grove" );
+  talent.harmony_of_the_grove           = HT( "Harmony of the Grove" );
   talent.persistent_enchantments        = HT( "Persistent Enchantments" );
   talent.power_of_nature                = HT( "Power of Nature" );
   talent.power_of_the_dream             = HT( "Power of the Dream" );
@@ -10186,6 +10196,11 @@ void druid_t::create_buffs()
               b->current_value = 0;
             }
           } );
+
+  buff.harmony_of_the_grove =
+      make_buff_fallback( talent.harmony_of_the_grove.ok(), this, "harmony_of_the_grove",
+                          find_spell( specialization() == DRUID_RESTORATION ? 428737 : 428735 ) )
+          ->set_cooldown( 0_ms );
 
   buff.protective_growth =
       make_buff_fallback( talent.protective_growth.ok(), this, "protective_growth", find_spell( 433749 ) )
