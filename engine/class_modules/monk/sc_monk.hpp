@@ -343,6 +343,7 @@ public:
 
   struct passive_actions_t
   {
+    action_t *combat_wisdom_eh;
     action_t *thunderfist;
     action_t *press_the_advantage;
   } passive_actions;
@@ -1140,6 +1141,7 @@ public:
     const spell_data_t *chi_explosion;
     const spell_data_t *crackling_tiger_lightning;
     const spell_data_t *crackling_tiger_lightning_driver;
+    const spell_data_t *combat_wisdom_expel_harm;
     const spell_data_t *cyclone_strikes;
     const spell_data_t *dance_of_chiji;
     const spell_data_t *dance_of_chiji_bug;

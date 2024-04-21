@@ -1188,8 +1188,6 @@ struct tiger_palm_t : public monk_melee_attack_t
   bool counterstrike;
   bool combat_wisdom;
 
-  action_t *combat_wisdom_expel_harm;
-
   tiger_palm_t( monk_t *p, util::string_view options_str )
     : monk_melee_attack_t( "tiger_palm", p, p->spec.tiger_palm ),
     face_palm( false ),
@@ -1212,9 +1210,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
 
     range += p->talent.windwalker.skytouch->effectN( 1 ).base_value();
-
-    if ( p->talent.windwalker.combat_wisdom.ok() )
-      combat_wisdom_expel_harm = p->find_action( "expel_harm" );
   }
 
   double action_multiplier() const override
@@ -1274,6 +1269,9 @@ struct tiger_palm_t : public monk_melee_attack_t
       p()->buff.counterstrike->expire();
     }
 
+    if ( p()->buff.combat_wisdom->up() )
+      combat_wisdom = true;
+
     //------------
 
     monk_melee_attack_t::execute();
@@ -1302,8 +1300,8 @@ struct tiger_palm_t : public monk_melee_attack_t
     if ( face_palm )
       brew_cooldown_reduction( p()->talent.brewmaster.face_palm->effectN( 3 ).base_value() / 1000.0 );
 
-    if ( combat_wisdom && combat_wisdom_expel_harm )
-      combat_wisdom_expel_harm->execute();
+    if ( combat_wisdom )
+      p()->passive_actions.combat_wisdom_eh->execute();
 
     face_palm      = false;
     blackout_combo = false;
@@ -5417,7 +5415,7 @@ struct expel_harm_t : public monk_heal_t
 {
   expel_harm_dmg_t *dmg;
   expel_harm_t( monk_t &p, util::string_view options_str )
-    : monk_heal_t( "expel_harm", p, p.spec.expel_harm ), dmg( new expel_harm_dmg_t( &p ) )
+    : monk_heal_t( "expel_harm", p, p.talent.windwalker.combat_wisdom ? p.passives.combat_wisdom_expel_harm : p.spec.expel_harm ), dmg( new expel_harm_dmg_t( &p ) )
   {
     parse_options( options_str );
 
@@ -5463,9 +5461,6 @@ struct expel_harm_t : public monk_heal_t
 
     monk_heal_t::execute();
 
-    if ( p()->specialization() == MONK_WINDWALKER )
-      p()->resource_gain( RESOURCE_CHI, p()->spec.expel_harm_2_ww->effectN( 1 ).base_value(), p()->gain.expel_harm );
-
     if ( p()->talent.brewmaster.tranquil_spirit->ok() )
     {
       // Reduce stagger damage
@@ -5480,7 +5475,7 @@ struct expel_harm_t : public monk_heal_t
   {
     monk_heal_t::impact( s );
 
-    // Expel Harm is based on raw healign instead of effective healing as of Shadowlands
+    // Expel Harm is based on raw healing instead of effective healing as of Shadowlands
     double result = s->result_total;
 
     if ( p()->specialization() == MONK_BREWMASTER )
@@ -5496,7 +5491,7 @@ struct expel_harm_t : public monk_heal_t
       }
     }
 
-    result *= p()->spec.expel_harm->effectN( 2 ).percent();
+    result *= data().effectN( 2 ).percent();
 
     dmg->base_dd_min = result;
     dmg->base_dd_max = result;
@@ -7619,6 +7614,7 @@ void monk_t::init_spells()
   passives.chi_explosion                    = find_spell( 337342 );
   passives.crackling_tiger_lightning        = find_spell( 123996 );
   passives.crackling_tiger_lightning_driver = find_spell( 123999 );
+  passives.combat_wisdom_expel_harm         = find_spell( 451968 );
   passives.cyclone_strikes                  = find_spell( 220358 );
   passives.dance_of_chiji                   = find_spell( 325202 );
   passives.dance_of_chiji_bug               = find_spell( 286585 );
@@ -7744,6 +7740,7 @@ void monk_t::init_spells()
   }
 
   // Passive Action Spells
+  passive_actions.combat_wisdom_eh    = new actions::heals::expel_harm_t( *this, "" );
   passive_actions.thunderfist         = new actions::thunderfist_t( this );
   passive_actions.press_the_advantage = new actions::press_the_advantage_t( this );
 }
@@ -8200,7 +8197,6 @@ void monk_t::init_gains()
   gain.energizing_elixir_energy = get_gain( "energizing_elixir_energy" );
   gain.energizing_elixir_chi    = get_gain( "energizing_elixir_chi" );
   gain.energy_refund            = get_gain( "energy_refund" );
-  gain.expel_harm               = get_gain( "expel_harm" );
   gain.focus_of_xuen            = get_gain( "focus_of_xuen" );
   gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
   gain.glory_of_the_dawn        = get_gain( "glory_of_the_dawn" );
