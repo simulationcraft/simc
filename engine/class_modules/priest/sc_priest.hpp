@@ -215,6 +215,7 @@ public:
     propagate_const<buff_t*> entropic_rift;
     propagate_const<buff_t*> darkening_horizon;
     propagate_const<buff_t*> collapsing_void;
+    propagate_const<buff_t*> void_empowerment;
   } buffs;
 
   // Talents
@@ -517,6 +518,7 @@ public:
       player_talent_t inner_quietus;
       player_talent_t devour_matter;
       player_talent_t void_empowerment;
+      const spell_data_t* void_empowerment_buff;
       player_talent_t darkening_horizon;
       player_talent_t depth_of_shadows;
       player_talent_t voidwraith;

@@ -1779,10 +1779,20 @@ public:
       priest().buffs.voidheart->trigger();
     }
 
-    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.voidweaver.void_empowerment.enabled() )
+    if ( priest().talents.voidweaver.void_empowerment.enabled() )
     {
-      priest().buffs.mind_devourer->trigger();
-      priest().procs.mind_devourer->occur();
+      switch ( priest().specialization() )
+      {
+        case PRIEST_SHADOW:
+          priest().buffs.mind_devourer->trigger();
+          priest().procs.mind_devourer->occur();
+          break;
+        case PRIEST_DISCIPLINE:
+          priest().buffs.void_empowerment->trigger();
+          break;
+        default:
+          break;
+      }
     }
   }
 
@@ -2097,6 +2107,18 @@ struct power_word_shield_t final : public priest_absorb_t
     return priest().buffs.power_word_shield;
   }
 
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_absorb_t::composite_da_multiplier( s );
+
+    if ( priest().specialization() == PRIEST_DISCIPLINE && priest().talents.voidweaver.void_empowerment.enabled() &&
+         priest().buffs.void_empowerment->check() )
+    {
+      m *= 1 + priest().buffs.void_empowerment->check_value();
+    }
+    return m;
+  }
+
   void execute() override
   {
     if ( priest().specs.hallucinations->ok() )
@@ -2119,6 +2141,11 @@ struct power_word_shield_t final : public priest_absorb_t
     }
 
     priest_absorb_t::execute();
+
+    if ( priest().buffs.void_empowerment->check() )
+    {
+      priest().buffs.void_empowerment->expire();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3240,6 +3267,7 @@ void priest_t::init_spells()
   talents.voidweaver.inner_quietus          = HT( "Inner Quietus" );
   talents.voidweaver.devour_matter          = HT( "Devour Matter" );  // NYI
   talents.voidweaver.void_empowerment       = HT( "Void Empowerment" );
+  talents.voidweaver.void_empowerment_buff  = find_spell( 450140 );
   talents.voidweaver.darkening_horizon      = HT( "Darkening Horizon" );
   talents.voidweaver.depth_of_shadows       = HT( "Depth of Shadows" );  // NYI
   talents.voidweaver.voidwraith             = HT( "Voidwraith" );
@@ -3314,7 +3342,6 @@ void priest_t::create_buffs()
                                 ->set_max_stack( talents.voidweaver.darkening_horizon.enabled()
                                                      ? talents.voidweaver.darkening_horizon->effectN( 2 ).base_value()
                                                      : 1 );
-
   buffs.collapsing_void = make_buff( this, "collapsing_void", talents.voidweaver.collapsing_void )
                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                               ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
@@ -3328,12 +3355,14 @@ void priest_t::create_buffs()
                                   }
                                 }
                               } );
-
   if ( talents.voidweaver.collapsing_void.enabled() )
   {
     buffs.collapsing_void->set_max_stack(
         static_cast<int>( talents.voidweaver.collapsing_void->effectN( 2 ).base_value() ) );
   }
+  // Currently only used for Discipline
+  buffs.void_empowerment = make_buff( this, "void_empowerment", talents.voidweaver.void_empowerment_buff )
+                               ->set_default_value_from_effect( 1 );
 
   create_buffs_shadow();
   create_buffs_discipline();
