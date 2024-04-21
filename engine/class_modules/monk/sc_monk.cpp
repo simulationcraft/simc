@@ -131,7 +131,6 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.lifecycles_enveloping_mist );
   parse_effects( p()->buff.lifecycles_vivify );
   parse_effects( p()->buff.mana_tea );
-  parse_effects( p()->buff.touch_of_death_mw );
   // Windwalker
   parse_effects( p()->buff.bok_proc );
   //    parse_effects( p()->buff.chi_energy, true, true );
@@ -1136,88 +1135,6 @@ struct storm_earth_and_fire_fixate_t : public monk_spell_t
 
 namespace attacks
 {
-
-// ==========================================================================
-// Close to Heart Aura Toggle
-// ==========================================================================
-
-struct close_to_heart_aura_t : public monk_spell_t
-{
-  close_to_heart_aura_t( monk_t *player ) : monk_spell_t( "close_to_heart_aura_toggle", player )
-  {
-    harmful     = false;
-    background  = true;
-    trigger_gcd = timespan_t::zero();
-  }
-
-  size_t available_targets( std::vector<player_t *> &tl ) const override
-  {
-    tl.clear();
-
-    for ( auto t : sim->player_non_sleeping_list )
-    {
-      tl.push_back( t );
-    }
-
-    return tl.size();
-  }
-
-  std::vector<player_t *> &check_distance_targeting( std::vector<player_t *> &tl ) const override
-  {
-    size_t i = tl.size();
-    while ( i > 0 )
-    {
-      i--;
-      player_t *target_to_buff = tl[ i ];
-
-      if ( p()->get_player_distance( *target_to_buff ) > 10.0 )
-        tl.erase( tl.begin() + i );
-    }
-
-    return tl;
-  }
-};
-
-// ==========================================================================
-// Generous Pour Aura Toggle
-// ==========================================================================
-
-struct generous_pour_aura_t : public monk_spell_t
-{
-  generous_pour_aura_t( monk_t *player ) : monk_spell_t( "generous_pour_aura_toggle", player )
-  {
-    harmful     = false;
-    background  = true;
-    trigger_gcd = timespan_t::zero();
-  }
-
-  size_t available_targets( std::vector<player_t *> &tl ) const override
-  {
-    tl.clear();
-
-    for ( auto t : sim->player_non_sleeping_list )
-    {
-      tl.push_back( t );
-    }
-
-    return tl.size();
-  }
-
-  std::vector<player_t *> &check_distance_targeting( std::vector<player_t *> &tl ) const override
-  {
-    size_t i = tl.size();
-    while ( i > 0 )
-    {
-      i--;
-      player_t *target_to_buff = tl[ i ];
-
-      if ( p()->get_player_distance( *target_to_buff ) > 10.0 )
-        tl.erase( tl.begin() + i );
-    }
-
-    return tl;
-  }
-};
 
 // ==========================================================================
 // Windwalking Aura Toggle
@@ -3206,8 +3123,6 @@ struct touch_of_death_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     p()->buff.touch_of_death_ww->trigger();
-
-    p()->buff.touch_of_death_mw->trigger();
   }
 
   void impact( action_state_t *s ) override
@@ -6773,8 +6688,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     heavy_stagger_threshold( 0.03333 )      // Heavy transfers at 66.6% Stagger; 3.34% every 1/2 sec
 {
   // actives
-  close_to_heart_aura = nullptr;
-  generous_pour_aura  = nullptr;
   windwalking_aura    = nullptr;
 
   cooldown.anvil_and_stave        = get_cooldown( "anvil_and_stave" );
@@ -7679,8 +7592,6 @@ void monk_t::init_spells()
   active_actions.bonedust_brew_heal = new actions::spells::bonedust_brew_heal_t( *this );
   active_actions.bountiful_brew     = new actions::spells::bountiful_brew_t( *this );
   active_actions.resonant_fists     = new actions::spells::resonant_fists_t( *this );
-  close_to_heart_aura               = new actions::close_to_heart_aura_t( this );
-  generous_pour_aura                = new actions::generous_pour_aura_t( this );
   windwalking_aura                  = new actions::windwalking_aura_t( this );
 
   // Brewmaster
@@ -10273,10 +10184,6 @@ struct monk_module_t : public module_t
 
   void init( player_t *p ) const override
   {
-    // TODO: healing received bonus NYI
-    p->buffs.close_to_heart_aura = make_buff( p, "close_to_heart_aura", p->find_spell( 389684 ) );
-    // TODO: grants A_MOD_DAMAGE_AVOIDANCE, not avoidance rating. NYI.
-    p->buffs.generous_pour_aura = make_buff( p, "generous_pour_aura", p->find_spell( 389685 ) );
     p->buffs.windwalking_movement_aura =
         make_buff( p, "windwalking_movement_aura", p->find_spell( 365080 ) )->add_invalidate( CACHE_RUN_SPEED );
   }

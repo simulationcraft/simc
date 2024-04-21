@@ -271,8 +271,6 @@ public:
   using base_t = player_t;
 
   // Active
-  action_t *close_to_heart_aura;
-  action_t *generous_pour_aura;
   action_t *windwalking_aura;
 
   // For Debug reporting, used by create_proc_callback in init_special_effects
@@ -450,12 +448,10 @@ public:
     propagate_const<buff_t *> bonedust_brew;
     propagate_const<buff_t *> bonedust_brew_attenuation_hidden;
     propagate_const<buff_t *> chi_torpedo;
-    propagate_const<buff_t *> close_to_heart_driver;
     propagate_const<buff_t *> dampen_harm;
     propagate_const<buff_t *> diffuse_magic;
     propagate_const<buff_t *> fatal_touch;
     propagate_const<buff_t *> jadefire_stomp;
-    propagate_const<buff_t *> generous_pour_driver;
     propagate_const<buff_t *> invokers_delight;
     propagate_const<buff_t *> rushing_jade_wind;
     propagate_const<buff_t *> spinning_crane_kick;
@@ -502,7 +498,6 @@ public:
     propagate_const<buff_t *> mana_tea;
     propagate_const<buff_t *> refreshing_jade_wind;
     propagate_const<buff_t *> teachings_of_the_monastery;
-    propagate_const<buff_t *> touch_of_death_mw;
     propagate_const<buff_t *> thunder_focus_tea;
 
     // Windwalker
