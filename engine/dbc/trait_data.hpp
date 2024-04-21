@@ -30,8 +30,8 @@ struct trait_data_t
   short       col;
   short       selection_index;
   const char* name;
-  std::array<unsigned, 5> id_spec;
-  std::array<unsigned, 5> id_spec_starter;
+  std::array<unsigned, 4> id_spec;
+  std::array<unsigned, 4> id_spec_starter;
   unsigned    id_sub_tree;  // hero talent tree
 
   // static functions
