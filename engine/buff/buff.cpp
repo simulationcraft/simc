@@ -2352,9 +2352,10 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
       event_t::cancel( expiration.front() );
       expiration.erase( expiration.begin() );
     }
-    // Infinite ticking buff refreshes shouldnt happen, but cancel ongoing
-    // tick event just to be sure.
-    event_t::cancel( tick_event );
+    // Infinite ticking buff refreshes shouldnt happen, but cancel ongoing tick event just to be sure.
+    // However, if stacks are frozen assume infinitely ticking event is explicitly intended and do not cancel.
+    if ( !freeze_stacks )
+      event_t::cancel( tick_event );
   }
   else
   {
