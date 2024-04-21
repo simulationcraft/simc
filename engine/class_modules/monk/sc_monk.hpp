@@ -293,24 +293,6 @@ public:
                              bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag2 PF2_OVERRIDE,
                              action_t *proc_action_override = nullptr );
 
-  struct sample_data_t
-  {
-    sc_timeline_t stagger_effective_damage_timeline;
-    sc_timeline_t stagger_damage_pct_timeline;
-    sc_timeline_t stagger_pct_timeline;
-    sample_data_helper_t *stagger_damage;
-    sample_data_helper_t *stagger_total_damage;
-    sample_data_helper_t *light_stagger_damage;
-    sample_data_helper_t *moderate_stagger_damage;
-    sample_data_helper_t *heavy_stagger_damage;
-    sample_data_helper_t *purified_damage;
-    sample_data_helper_t *quick_sip_cleared;
-    sample_data_helper_t *staggering_strikes_cleared;
-    sample_data_helper_t *tranquil_spirit;
-    double buffed_stagger_base;
-    double buffed_stagger_pct_player_level, buffed_stagger_pct_target_level;
-  } sample_datas;
-
   struct active_actions_t
   {
     // General
@@ -329,7 +311,6 @@ public:
     propagate_const<heal_t *> gift_of_the_ox_trigger;
     propagate_const<heal_t *> gift_of_the_ox_expire;
     propagate_const<action_t *> niuzao_call_to_arms_summon;
-    propagate_const<actions::spells::stagger_self_damage_t *> stagger_self_damage;
 
     propagate_const<action_t *> rising_sun_kick_press_the_advantage;
     propagate_const<action_t *> keg_smash_press_the_advantage;
@@ -358,12 +339,6 @@ public:
   double squirm_timer;
   double spiritual_focus_count;
   double shuffle_count_secs;
-
-  struct stagger_tick_entry_t
-  {
-    double value;
-  };
-  std::vector<stagger_tick_entry_t> stagger_tick_damage;  // record stagger tick damage for expression
 
   double gift_of_the_ox_proc_chance;
 
@@ -1243,23 +1218,27 @@ public:
   {
     enum stagger_level_e
     {
-      LIGHT_STAGGER    = 0,
-      MODERATE_STAGGER = 1,
-      HEAVY_STAGGER    = 2,
-      MAX_STAGGER      = 3
+      NONE_STAGGER     = 0,
+      LIGHT_STAGGER    = 1,
+      MODERATE_STAGGER = 2,
+      HEAVY_STAGGER    = 3,
+      MAX_STAGGER      = 4
+    };
+
+    struct stagger_buff_t : public actions::monk_buff_t
+    {
+      stagger_buff_t( monk_t &player, std::string_view name, const spell_data_t* spell );
     };
 
     struct stagger_level_t
     {
-      const stagger_level_e level;
       const double max_percent;
-      propagate_const<buff_t *> debuff;
+      propagate_const<stagger_buff_t *> debuff;
       sample_data_helper_t *taken;
       sample_data_helper_t *mitigated;
-    };
 
-    std::vector<stagger_level_t *> stagger_levels;
-    stagger_level_t *current;
+      stagger_level_t( stagger_level_e level, monk_t* player );
+    };
 
     struct sample_data_t
     {
@@ -1272,26 +1251,32 @@ public:
       sample_data_helper_t *taken;
       sample_data_helper_t *mitigated;
       std::unordered_map<std::string_view, sample_data_helper_t *> mitigated_by_ability;
-    } sample_data;
+    };
 
-    struct self_damage_t : residual_action::residual_periodic_action_t<monk_spell_t>
+    struct self_damage_t : residual_action::residual_periodic_action_t<actions::monk_spell_t>
     {
+      using base_t = residual_action::residual_periodic_action_t<actions::monk_spell_t>;
       dot_t *dot;
 
       self_damage_t( monk_t *player );
-      void init() override;
-      proc_types proc_type() const override;
-      void impact( action_state_t *state ) override;
-      void assess_damage( result_amount_type type, action_state_t *state );
-      void last_tick( dot_t *d ) override;
-    } self_damage;
+      // void init() override;
+      // proc_types proc_type() const override;
+      // void impact( action_state_t *state ) override;
+      // void assess_damage( result_amount_type type, action_state_t *state ) override;
+      // void last_tick( dot_t *d ) override;
+    };
 
+    sample_data_t sample_data;
+    std::vector<stagger_level_t *> stagger_levels;
+    stagger_level_t *current;
+    self_damage_t *self_damage;
     monk_t *player;
 
     stagger_t( monk_t* player );
 
     double base_value();
     double percent( unsigned target_level );
+    static double max_threshold( stagger_level_e level );
 
     double pool_size();
     double pool_size_percent();
@@ -1305,8 +1290,8 @@ public:
     double purify_flat( double amount );
     double purify_percent( double amount );
     double purify_all();
-    void delay_tick( timespan_t delay ):
-  /*
+    void delay_tick( timespan_t delay );
+    /*
 hc   * TODO:
      *   * double buffed_stagger_base, buffed_stagger_pct_player_level, buffed_stagger_pct_target_level; // stagger effectiveness after permanent buffs have been applied
 x    *   * action_t* stagger_self_damage; // action to deal self damage

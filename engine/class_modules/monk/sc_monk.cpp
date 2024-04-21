@@ -445,9 +445,9 @@ void monk_action_t<Base>::trigger_shuffle( double time_extension )
       if ( p()->shuffle_count_secs >= quick_sip_seconds )
       {
         // Reduce stagger damage
-        auto amount_cleared = p()->active_actions.stagger_self_damage->clear_partial_damage_pct(
-            p()->talent.brewmaster.quick_sip->effectN( 1 ).percent() );
-        p()->sample_datas.quick_sip_cleared->add( amount_cleared );
+        // auto amount_cleared = p()->active_actions.stagger_self_damage->clear_partial_damage_pct(
+        //     p()->talent.brewmaster.quick_sip->effectN( 1 ).percent() );
+        // p()->sample_datas.quick_sip_cleared->add( amount_cleared );
         p()->proc.quick_sip->occur();
 
         p()->shuffle_count_secs -= quick_sip_seconds;
@@ -1082,9 +1082,9 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
 
     auto *monk = debug_cast<monk_t *>( player );
 
-    monk->sample_datas.buffed_stagger_base             = monk->stagger_base_value();
-    monk->sample_datas.buffed_stagger_pct_player_level = monk->stagger_pct( player->level() );
-    monk->sample_datas.buffed_stagger_pct_target_level = monk->stagger_pct( target->level() );
+    // monk->sample_datas.buffed_stagger_base             = monk->stagger_base_value();
+    // monk->sample_datas.buffed_stagger_pct_player_level = monk->stagger_pct( player->level() );
+    // monk->sample_datas.buffed_stagger_pct_target_level = monk->stagger_pct( target->level() );
   }
 };
 
@@ -2022,7 +2022,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       auto ap = s->composite_attack_power();
       auto amount_cleared =
           p()->partial_clear_stagger_amount( ap * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() );
-      p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
+      // p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
     }
 
     // Martial Mixture triggers from each BoK impact
@@ -4149,225 +4149,226 @@ struct exploding_keg_t : public monk_spell_t
 // Stagger Damage
 // ==========================================================================
 
-struct stagger_self_damage_t : public residual_action::residual_periodic_action_t<monk_spell_t>
-{
-  stagger_self_damage_t( monk_t *p ) : base_t( "stagger_self_damage", p, p->passives.stagger_self_damage )
-  {
-    // Just get dot duration from heavy stagger spell data
-    auto s = p->find_spell( 124273 );
-    assert( s );
+// struct stagger_self_damage_t : public residual_action::residual_periodic_action_t<monk_spell_t>
+// {
+//   stagger_self_damage_t( monk_t *p )
+// : base_t( "stagger_self_damage", p, p->passives.stagger_self_damage )
+//   {
+//     // Just get dot duration from heavy stagger spell data
+//     auto s = p->find_spell( 124273 );
+//     assert( s );
 
-    dot_duration = s->duration();
-    dot_duration += timespan_t::from_seconds( p->talent.brewmaster.bob_and_weave->effectN( 1 ).base_value() / 10 );
-    base_tick_time = timespan_t::from_millis( 500 );
-    hasted_ticks = tick_may_crit = false;
-    target                       = p;
-  }
+//     dot_duration = s->duration();
+//     dot_duration += timespan_t::from_seconds( p->talent.brewmaster.bob_and_weave->effectN( 1 ).base_value() / 10 );
+//     base_tick_time = timespan_t::from_millis( 500 );
+//     hasted_ticks = tick_may_crit = false;
+//     target                       = p;
+//   }
 
-  void impact( action_state_t *s ) override
-  {
-    base_t::impact( s );
+//   void impact( action_state_t *s ) override
+//   {
+//     base_t::impact( s );
 
-    p()->buff.shuffle->up();  // benefit tracking
-    p()->stagger_damage_changed();
-  }
+//     p()->buff.shuffle->up();  // benefit tracking
+//     p()->stagger_damage_changed();
+//   }
 
-  void assess_damage( result_amount_type type, action_state_t *s ) override
-  {
-    base_t::assess_damage( type, s );
+//   void assess_damage( result_amount_type type, action_state_t *s ) override
+//   {
+//     base_t::assess_damage( type, s );
 
-    p()->stagger_tick_damage.push_back( { s->result_amount } );
+//     p()->stagger_tick_damage.push_back( { s->result_amount } );
 
-    p()->sample_datas.stagger_effective_damage_timeline.add( sim->current_time(), s->result_amount );
-    p()->sample_datas.stagger_damage->add( s->result_amount );
+//     p()->sample_datas.stagger_effective_damage_timeline.add( sim->current_time(), s->result_amount );
+//     p()->sample_datas.stagger_damage->add( s->result_amount );
 
-    if ( p()->buff.light_stagger->check() )
-    {
-      p()->sample_datas.light_stagger_damage->add( s->result_amount );
-    }
-    else if ( p()->buff.moderate_stagger->check() )
-    {
-      p()->sample_datas.moderate_stagger_damage->add( s->result_amount );
-    }
-    else if ( p()->buff.heavy_stagger->check() )
-    {
-      p()->sample_datas.heavy_stagger_damage->add( s->result_amount );
-    }
-  }
+//     if ( p()->buff.light_stagger->check() )
+//     {
+//       p()->sample_datas.light_stagger_damage->add( s->result_amount );
+//     }
+//     else if ( p()->buff.moderate_stagger->check() )
+//     {
+//       p()->sample_datas.moderate_stagger_damage->add( s->result_amount );
+//     }
+//     else if ( p()->buff.heavy_stagger->check() )
+//     {
+//       p()->sample_datas.heavy_stagger_damage->add( s->result_amount );
+//     }
+//   }
 
-  void last_tick( dot_t *d ) override
-  {
-    base_t::last_tick( d );
-    p()->stagger_damage_changed( true );
-  }
+//   void last_tick( dot_t *d ) override
+//   {
+//     base_t::last_tick( d );
+//     p()->stagger_damage_changed( true );
+//   }
 
-  proc_types proc_type() const override
-  {
-    return PROC1_ANY_DAMAGE_TAKEN;
-  }
+//   proc_types proc_type() const override
+//   {
+//     return PROC1_ANY_DAMAGE_TAKEN;
+//   }
 
-  void init() override
-  {
-    base_t::init();
+//   void init() override
+//   {
+//     base_t::init();
 
-    // We don't want this counted towards our dps
-    stats->type = stats_e::STATS_NEUTRAL;
-  }
+//     // We don't want this counted towards our dps
+//     stats->type = stats_e::STATS_NEUTRAL;
+//   }
 
-  void delay_tick( timespan_t seconds )
-  {
-    dot_t *d = get_dot();
-    if ( d->is_ticking() )
-    {
-      if ( d->tick_event )
-      {
-        d->tick_event->reschedule( d->tick_event->remains() + seconds );
-        if ( d->end_event )
-        {
-          d->end_event->reschedule( d->end_event->remains() + seconds );
-        }
-      }
-    }
-  }
+//   void delay_tick( timespan_t seconds )
+//   {
+//     dot_t *d = get_dot();
+//     if ( d->is_ticking() )
+//     {
+//       if ( d->tick_event )
+//       {
+//         d->tick_event->reschedule( d->tick_event->remains() + seconds );
+//         if ( d->end_event )
+//         {
+//           d->end_event->reschedule( d->end_event->remains() + seconds );
+//         }
+//       }
+//     }
+//   }
 
-  /* Clears the dot and all damage. Used by Purifying Brew
-   * Returns amount purged
-   */
-  double clear_all_damage()
-  {
-    dot_t *d              = get_dot();
-    double amount_cleared = amount_remaining();
+//   /* Clears the dot and all damage. Used by Purifying Brew
+//    * Returns amount purged
+//    */
+//   double clear_all_damage()
+//   {
+//     dot_t *d              = get_dot();
+//     double amount_cleared = amount_remaining();
 
-    d->cancel();
-    cancel();
-    p()->stagger_damage_changed();
+//     d->cancel();
+//     cancel();
+//     p()->stagger_damage_changed();
 
-    return amount_cleared;
-  }
+//     return amount_cleared;
+//   }
 
-  /* Clears part of the stagger dot. Used by Purifying Brew
-   * Returns amount purged
-   */
-  double clear_partial_damage_pct( double percent_amount )
-  {
-    dot_t *d              = get_dot();
-    double amount_cleared = 0.0;
+//   /* Clears part of the stagger dot. Used by Purifying Brew
+//    * Returns amount purged
+//    */
+//   double clear_partial_damage_pct( double percent_amount )
+//   {
+//     dot_t *d              = get_dot();
+//     double amount_cleared = 0.0;
 
-    if ( d->is_ticking() )
-    {
-      debug_cast<residual_action::residual_periodic_state_t *>( d->state );
+//     if ( d->is_ticking() )
+//     {
+//       debug_cast<residual_action::residual_periodic_state_t *>( d->state );
 
-      auto ticks_left                   = d->ticks_left();
-      auto damage_remaining_initial     = amount_remaining();
-      auto damage_remaining_after_clear = damage_remaining_initial * ( 1.0 - percent_amount );
-      amount_cleared                    = damage_remaining_initial - damage_remaining_after_clear;
-      set_tick_amount( damage_remaining_after_clear / ticks_left );
-      assert( std::fabs( amount_remaining() - damage_remaining_after_clear ) < 1.0 &&
-              "stagger remaining amount after clear does not match" );
+//       auto ticks_left                   = d->ticks_left();
+//       auto damage_remaining_initial     = amount_remaining();
+//       auto damage_remaining_after_clear = damage_remaining_initial * ( 1.0 - percent_amount );
+//       amount_cleared                    = damage_remaining_initial - damage_remaining_after_clear;
+//       set_tick_amount( damage_remaining_after_clear / ticks_left );
+//       assert( std::fabs( amount_remaining() - damage_remaining_after_clear ) < 1.0 &&
+//               "stagger remaining amount after clear does not match" );
 
-      sim->print_debug( "{} partially clears stagger by {} (requested:  {:.2f}%). Damage remaining is {}.",
-                        player->name(), amount_cleared, percent_amount * 100.0, damage_remaining_after_clear );
-    }
-    else
-    {
-      sim->print_debug( "{} no active stagger to clear (requested pct: {}).", player->name(), percent_amount * 100.0 );
-    }
+//       sim->print_debug( "{} partially clears stagger by {} (requested:  {:.2f}%). Damage remaining is {}.",
+//                         player->name(), amount_cleared, percent_amount * 100.0, damage_remaining_after_clear );
+//     }
+//     else
+//     {
+//       sim->print_debug( "{} no active stagger to clear (requested pct: {}).", player->name(), percent_amount * 100.0 );
+//     }
 
-    p()->stagger_damage_changed();
+//     p()->stagger_damage_changed();
 
-    return amount_cleared;
-  }
+//     return amount_cleared;
+//   }
 
-  /* Clears part of the stagger dot. Used by Staggering Strikes Azerite Trait
-   * Returns amount purged
-   */
-  double clear_partial_damage_amount( double amount )
-  {
-    dot_t *d              = get_dot();
-    double amount_cleared = 0.0;
+//   /* Clears part of the stagger dot. Used by Staggering Strikes Azerite Trait
+//    * Returns amount purged
+//    */
+//   double clear_partial_damage_amount( double amount )
+//   {
+//     dot_t *d              = get_dot();
+//     double amount_cleared = 0.0;
 
-    if ( d->is_ticking() )
-    {
-      debug_cast<residual_action::residual_periodic_state_t *>( d->state );
-      auto ticks_left                   = d->ticks_left();
-      auto damage_remaining_initial     = amount_remaining();
-      auto damage_remaining_after_clear = std::fmax( damage_remaining_initial - amount, 0 );
-      amount_cleared                    = damage_remaining_initial - damage_remaining_after_clear;
-      set_tick_amount( damage_remaining_after_clear / ticks_left );
-      assert( std::fabs( amount_remaining() - damage_remaining_after_clear ) < 1.0 &&
-              "stagger remaining amount after clear does not match" );
+//     if ( d->is_ticking() )
+//     {
+//       debug_cast<residual_action::residual_periodic_state_t *>( d->state );
+//       auto ticks_left                   = d->ticks_left();
+//       auto damage_remaining_initial     = amount_remaining();
+//       auto damage_remaining_after_clear = std::fmax( damage_remaining_initial - amount, 0 );
+//       amount_cleared                    = damage_remaining_initial - damage_remaining_after_clear;
+//       set_tick_amount( damage_remaining_after_clear / ticks_left );
+//       assert( std::fabs( amount_remaining() - damage_remaining_after_clear ) < 1.0 &&
+//               "stagger remaining amount after clear does not match" );
 
-      sim->print_debug( "{} partially clears stagger by {} (requested: {}). Damage remaining is {}.", player->name(),
-                        amount_cleared, amount, damage_remaining_after_clear );
-    }
-    else
-    {
-      sim->print_debug( "{} no active stagger to clear (requested amount: {}).", player->name(), amount );
-    }
+//       sim->print_debug( "{} partially clears stagger by {} (requested: {}). Damage remaining is {}.", player->name(),
+//                         amount_cleared, amount, damage_remaining_after_clear );
+//     }
+//     else
+//     {
+//       sim->print_debug( "{} no active stagger to clear (requested amount: {}).", player->name(), amount );
+//     }
 
-    p()->stagger_damage_changed();
+//     p()->stagger_damage_changed();
 
-    return amount_cleared;
-  }
+//     return amount_cleared;
+//   }
 
-  // adds amount to residual actions tick amount
-  void set_tick_amount( double amount )
-  {
-    dot_t *dot = get_dot();
-    if ( dot )
-    {
-      auto rd_state         = debug_cast<residual_action::residual_periodic_state_t *>( dot->state );
-      rd_state->tick_amount = amount;
-    }
-  }
+//   // adds amount to residual actions tick amount
+//   void set_tick_amount( double amount )
+//   {
+//     dot_t *dot = get_dot();
+//     if ( dot )
+//     {
+//       auto rd_state         = debug_cast<residual_action::residual_periodic_state_t *>( dot->state );
+//       rd_state->tick_amount = amount;
+//     }
+//   }
 
-  bool stagger_ticking()
-  {
-    dot_t *d = get_dot();
-    return d->is_ticking();
-  }
+//   bool stagger_ticking()
+//   {
+//     dot_t *d = get_dot();
+//     return d->is_ticking();
+//   }
 
-  double tick_amount()
-  {
-    dot_t *d = get_dot();
-    if ( d && d->state )
-      return base_ta( d->state );
-    return 0;
-  }
+//   double tick_amount()
+//   {
+//     dot_t *d = get_dot();
+//     if ( d && d->state )
+//       return base_ta( d->state );
+//     return 0;
+//   }
 
-  double tick_ratio_to_hp()
-  {
-    dot_t *d = get_dot();
-    if ( d && d->state )
-      return base_ta( d->state ) / p()->resources.max[ RESOURCE_HEALTH ];
-    return 0;
-  }
+//   double tick_ratio_to_hp()
+//   {
+//     dot_t *d = get_dot();
+//     if ( d && d->state )
+//       return base_ta( d->state ) / p()->resources.max[ RESOURCE_HEALTH ];
+//     return 0;
+//   }
 
-  double amount_remaining()
-  {
-    dot_t *d = get_dot();
-    if ( d && d->state )
-      return base_ta( d->state ) * d->ticks_left();
-    return 0;
-  }
+//   double amount_remaining()
+//   {
+//     dot_t *d = get_dot();
+//     if ( d && d->state )
+//       return base_ta( d->state ) * d->ticks_left();
+//     return 0;
+//   }
 
-  double stagger_total()
-  {
-    dot_t *d = get_dot();
-    if ( d && d->state )
-      return base_ta( d->state ) * static_cast<double>( dot_duration / base_tick_time );
-    return 0;
-  }
+//   double stagger_total()
+//   {
+//     dot_t *d = get_dot();
+//     if ( d && d->state )
+//       return base_ta( d->state ) * static_cast<double>( dot_duration / base_tick_time );
+//     return 0;
+//   }
 
-  double amount_remaining_to_total()
-  {
-    dot_t *d = get_dot();
-    if ( d && d->state )
-      return ( base_ta( d->state ) * d->ticks_left() ) /
-             ( base_ta( d->state ) * static_cast<double>( dot_duration / base_tick_time ) );
-    return 0;
-  }
-};
+//   double amount_remaining_to_total()
+//   {
+//     dot_t *d = get_dot();
+//     if ( d && d->state )
+//       return ( base_ta( d->state ) * d->ticks_left() ) /
+//              ( base_ta( d->state ) * static_cast<double>( dot_duration / base_tick_time ) );
+//     return 0;
+//   }
+// };
 
 // ==========================================================================
 // Purifying Brew
@@ -4414,8 +4415,8 @@ struct purifying_brew_t : public monk_spell_t
   bool ready() override
   {
     // Irrealistic of in-game, but let's make sure stagger is actually present
-    if ( !p()->active_actions.stagger_self_damage->stagger_ticking() )
-      return false;
+    // if ( !p()->active_actions.stagger_self_damage->stagger_ticking() )
+    //   return false;
 
     return monk_spell_t::ready();
   }
@@ -4436,8 +4437,8 @@ struct purifying_brew_t : public monk_spell_t
 
     if ( p()->buff.blackout_combo->up() )
     {
-      p()->active_actions.stagger_self_damage->delay_tick(
-          timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() ) );
+      // p()->active_actions.stagger_self_damage->delay_tick(
+      //     timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() ) );
       p()->proc.blackout_combo_purifying_brew->occur();
       p()->buff.blackout_combo->expire();
     }
@@ -4460,18 +4461,18 @@ struct purifying_brew_t : public monk_spell_t
     purifying_percent +=
         p()->buff.brewmasters_rhythm->stack() * p()->sets->set( MONK_BREWMASTER, T29, B4 )->effectN( 1 ).percent();
 
-    auto amount_cleared = p()->active_actions.stagger_self_damage->clear_partial_damage_pct( purifying_percent );
-    p()->sample_datas.purified_damage->add( amount_cleared );
-    p()->buff.recent_purifies->trigger( 1, amount_cleared );
+    // auto amount_cleared = p()->active_actions.stagger_self_damage->clear_partial_damage_pct( purifying_percent );
+    // p()->sample_datas.purified_damage->add( amount_cleared );
+    // p()->buff.recent_purifies->trigger( 1, amount_cleared );
 
-    if ( p()->talent.brewmaster.gai_plins_imperial_brew->ok() )
-    {
-      auto amount_healed    = amount_cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
-      gai_plin->base_dd_min = amount_healed;
-      gai_plin->base_dd_max = amount_healed;
-      gai_plin->target      = p();
-      gai_plin->execute();
-    }
+    // if ( p()->talent.brewmaster.gai_plins_imperial_brew->ok() )
+    // {
+    //   auto amount_healed    = amount_cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
+    //   gai_plin->base_dd_min = amount_healed;
+    //   gai_plin->base_dd_max = amount_healed;
+    //   gai_plin->target      = p();
+    //   gai_plin->execute();
+    // }
   }
 };
 
@@ -5524,9 +5525,9 @@ struct gift_of_the_ox_t : public monk_heal_t
     if ( p()->talent.brewmaster.tranquil_spirit->ok() )
     {
       // Reduce stagger damage
-      auto amount_cleared = p()->active_actions.stagger_self_damage->clear_partial_damage_pct(
-          p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent() );
-      p()->sample_datas.tranquil_spirit->add( amount_cleared );
+      // auto amount_cleared = p()->active_actions.stagger_self_damage->clear_partial_damage_pct(
+      //     p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent() );
+      // p()->sample_datas.tranquil_spirit->add( amount_cleared );
       p()->proc.tranquil_spirit_goto->occur();
     }
   }
@@ -5663,9 +5664,9 @@ struct expel_harm_t : public monk_heal_t
     if ( p()->talent.brewmaster.tranquil_spirit->ok() )
     {
       // Reduce stagger damage
-      auto amount_cleared = p()->active_actions.stagger_self_damage->clear_partial_damage_pct(
-          p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent() );
-      p()->sample_datas.tranquil_spirit->add( amount_cleared );
+      // auto amount_cleared = p()->active_actions.stagger_self_damage->clear_partial_damage_pct(
+      //     p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent() );
+      // p()->sample_datas.tranquil_spirit->add( amount_cleared );
       p()->proc.tranquil_spirit_expel_harm->occur();
     }
   }
@@ -6627,22 +6628,22 @@ struct windwalking_driver_t : public monk_buff_t
 // ===============================================================================
 // Stagger Buff
 // ===============================================================================
-struct stagger_buff_t : public monk_buff_t
-{
-  stagger_buff_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
-  {
-    timespan_t stagger_duration = s->duration();
-    stagger_duration += timespan_t::from_seconds( p.talent.brewmaster.bob_and_weave->effectN( 1 ).base_value() / 10 );
+// struct stagger_buff_t : public monk_buff_t
+// {
+//   stagger_buff_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
+//   {
+//     timespan_t stagger_duration = s->duration();
+//     stagger_duration += timespan_t::from_seconds( p.talent.brewmaster.bob_and_weave->effectN( 1 ).base_value() / 10 );
 
-    // set_duration(stagger_duration);
-    set_duration( timespan_t::zero() );
-    set_trigger_spell( p.spec.stagger );
-    if ( p.talent.brewmaster.high_tolerance->ok() )
-    {
-      add_invalidate( CACHE_HASTE );
-    }
-  }
-};
+//     // set_duration(stagger_duration);
+//     set_duration( timespan_t::zero() );
+//     set_trigger_spell( p.spec.stagger );
+//     if ( p.talent.brewmaster.high_tolerance->ok() )
+//     {
+//       add_invalidate( CACHE_HASTE );
+//     }
+//   }
+// };
 
 // ===============================================================================
 // Tier 29 Kicks of Flowing Momentum
@@ -6883,7 +6884,6 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
 
 monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   : player_t( sim, MONK, name, r ),
-    sample_datas( sample_data_t() ),
     active_actions(),
     passive_actions(),
     squirm_timer( 0 ),
@@ -6903,7 +6903,8 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     user_options( options_t() ),
     light_stagger_threshold( 0 ),
     moderate_stagger_threshold( 0.01666 ),  // Moderate transfers at 33.3% Stagger; 1.67% every 1/2 sec
-    heavy_stagger_threshold( 0.03333 )      // Heavy transfers at 66.6% Stagger; 3.34% every 1/2 sec
+    heavy_stagger_threshold( 0.03333 ),      // Heavy transfers at 66.6% Stagger; 3.34% every 1/2 sec
+    stagger( this )
 {
   // actives
   windwalking_aura = nullptr;
@@ -7282,10 +7283,10 @@ void monk_t::collect_resource_timeline_information()
 {
   base_t::collect_resource_timeline_information();
 
-  sample_datas.stagger_damage_pct_timeline.add( sim->current_time(), current_stagger_amount_remains_percent() * 100.0 );
+  // sample_datas.stagger_damage_pct_timeline.add( sim->current_time(), current_stagger_amount_remains_percent() * 100.0 );
 
   auto stagger_pct_val = stagger_pct( target->level() );
-  sample_datas.stagger_pct_timeline.add( sim->current_time(), stagger_pct_val * 100.0 );
+  // sample_datas.stagger_pct_timeline.add( sim->current_time(), stagger_pct_val * 100.0 );
 }
 
 bool monk_t::validate_fight_style( fight_style_e style ) const
@@ -7840,15 +7841,15 @@ void monk_t::init_spells()
   mastery.gust_of_mists   = find_mastery_spell( MONK_MISTWEAVER );
 
   // Sample Data
-  sample_datas.stagger_total_damage       = get_sample_data( "Damage added to stagger pool" );
-  sample_datas.stagger_damage             = get_sample_data( "Effective stagger damage" );
-  sample_datas.light_stagger_damage       = get_sample_data( "Effective light stagger damage" );
-  sample_datas.moderate_stagger_damage    = get_sample_data( "Effective moderate stagger damage" );
-  sample_datas.heavy_stagger_damage       = get_sample_data( "Effective heavy stagger damage" );
-  sample_datas.purified_damage            = get_sample_data( "Stagger damage that was purified" );
-  sample_datas.staggering_strikes_cleared = get_sample_data( "Stagger damage that was cleared by Staggering Strikes" );
-  sample_datas.quick_sip_cleared          = get_sample_data( "Stagger damage that was cleared by Quick Sip" );
-  sample_datas.tranquil_spirit            = get_sample_data( "Stagger damage that was cleared by Tranquil Spirit" );
+  // sample_datas.stagger_total_damage       = get_sample_data( "Damage added to stagger pool" );
+  // sample_datas.stagger_damage             = get_sample_data( "Effective stagger damage" );
+  // sample_datas.light_stagger_damage       = get_sample_data( "Effective light stagger damage" );
+  // sample_datas.moderate_stagger_damage    = get_sample_data( "Effective moderate stagger damage" );
+  // sample_datas.heavy_stagger_damage       = get_sample_data( "Effective heavy stagger damage" );
+  // sample_datas.purified_damage            = get_sample_data( "Stagger damage that was purified" );
+  // sample_datas.staggering_strikes_cleared = get_sample_data( "Stagger damage that was cleared by Staggering Strikes" );
+  // sample_datas.quick_sip_cleared          = get_sample_data( "Stagger damage that was cleared by Quick Sip" );
+  // sample_datas.tranquil_spirit            = get_sample_data( "Stagger damage that was cleared by Tranquil Spirit" );
 
   //================================================================================
   // Shared Spells
@@ -7899,7 +7900,7 @@ void monk_t::init_spells()
     active_actions.gift_of_the_ox_trigger     = new actions::gift_of_the_ox_trigger_t( *this );
     active_actions.gift_of_the_ox_expire      = new actions::gift_of_the_ox_expire_t( *this );
     active_actions.niuzao_call_to_arms_summon = new actions::niuzao_call_to_arms_summon_t( this );
-    active_actions.stagger_self_damage        = new actions::stagger_self_damage_t( this );
+    // active_actions.stagger_self_damage        = new actions::stagger_self_damage_t( this );
 
     active_actions.rising_sun_kick_press_the_advantage =
         new actions::attacks::rising_sun_kick_press_the_advantage_t( this );
@@ -8219,12 +8220,12 @@ void monk_t::create_buffs()
                               ->set_cooldown( timespan_t::zero() )
                               ->add_invalidate( CACHE_MASTERY );
 
-  buff.light_stagger = make_buff<buffs::stagger_buff_t>( *this, "light_stagger", find_spell( 124275 ) )
-                           ->set_trigger_spell( spec.stagger );
-  buff.moderate_stagger = make_buff<buffs::stagger_buff_t>( *this, "moderate_stagger", find_spell( 124274 ) )
-                              ->set_trigger_spell( spec.stagger );
-  buff.heavy_stagger = make_buff<buffs::stagger_buff_t>( *this, "heavy_stagger", passives.heavy_stagger )
-                           ->set_trigger_spell( spec.stagger );
+  // buff.light_stagger = make_buff<buffs::stagger_buff_t>( *this, "light_stagger", find_spell( 124275 ) )
+  //                          ->set_trigger_spell( spec.stagger );
+  // buff.moderate_stagger = make_buff<buffs::stagger_buff_t>( *this, "moderate_stagger", find_spell( 124274 ) )
+  //                             ->set_trigger_spell( spec.stagger );
+  // buff.heavy_stagger = make_buff<buffs::stagger_buff_t>( *this, "heavy_stagger", passives.heavy_stagger )
+  //                          ->set_trigger_spell( spec.stagger );
   buff.recent_purifies = new buffs::purifying_buff_t( *this, "recent_purifies", spell_data_t::nil() );
 
   buff.leverage = make_buff( this, "leverage", passives.leverage )
@@ -8761,7 +8762,7 @@ void monk_t::reset()
   squirm_timer          = 0;
   spiritual_focus_count = 0;
   combo_strike_actions.clear();
-  stagger_tick_damage.clear();
+  // stagger_tick_damage.clear();
 
   // ===================================
   // Proc Tracking
@@ -9021,7 +9022,8 @@ void monk_t::retarget_storm_earth_and_fire( pet_t *pet, std::vector<player_t *> 
 
 bool monk_t::has_stagger()
 {
-  return active_actions.stagger_self_damage->stagger_ticking();
+  return true;
+  // return active_actions.stagger_self_damage->stagger_ticking();
 }
 
 // monk_t::partial_clear_stagger_pct ====================================================
@@ -9031,7 +9033,8 @@ double monk_t::partial_clear_stagger_pct( double clear_percent )
   if ( specialization() != MONK_BREWMASTER )
     return 0;
 
-  return active_actions.stagger_self_damage->clear_partial_damage_pct( clear_percent );
+  // return active_actions.stagger_self_damage->clear_partial_damage_pct( clear_percent );
+  return 0;
 }
 
 // monk_t::partial_clear_stagger_amount =================================================
@@ -9041,21 +9044,24 @@ double monk_t::partial_clear_stagger_amount( double clear_amount )
   if ( specialization() != MONK_BREWMASTER )
     return 0;
 
-  return active_actions.stagger_self_damage->clear_partial_damage_amount( clear_amount );
+  // return active_actions.stagger_self_damage->clear_partial_damage_amount( clear_amount );
+  return 0;
 }
 
 // monk_t::clear_stagger ==================================================
 
 double monk_t::clear_stagger()
 {
-  return active_actions.stagger_self_damage->clear_all_damage();
+  return 0;
+  // return active_actions.stagger_self_damage->clear_all_damage();
 }
 
 // monk_t::stagger_total ==================================================
 
 double monk_t::stagger_total()
 {
-  return active_actions.stagger_self_damage->stagger_total();
+  // return active_actions.stagger_self_damage->stagger_total();
+  return 0;
 }
 
 /**
@@ -9481,9 +9487,9 @@ stat_e monk_t::convert_hybrid_stat( stat_e s ) const
 
 void monk_t::pre_analyze_hook()
 {
-  sample_datas.stagger_effective_damage_timeline.adjust( *sim );
-  sample_datas.stagger_damage_pct_timeline.adjust( *sim );
-  sample_datas.stagger_pct_timeline.adjust( *sim );
+  // sample_datas.stagger_effective_damage_timeline.adjust( *sim );
+  // sample_datas.stagger_damage_pct_timeline.adjust( *sim );
+  // sample_datas.stagger_pct_timeline.adjust( *sim );
 
   base_t::pre_analyze_hook();
 }
@@ -9768,17 +9774,17 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_t
         buff.brewmaster_t31_4p_fake_absorb->expire();
       }
       // Blizzard is putting a cap on how much damage can go into stagger
-      double amount_remains = active_actions.stagger_self_damage->amount_remaining();
-      double cap            = max_health() * spec.stagger->effectN( 4 ).percent();
-      if ( amount_remains + stagger_dmg >= cap )
-      {
-        double diff = ( amount_remains + stagger_dmg ) - cap;
-        s->result_amount += std::fmax( stagger_dmg - diff, 0 );
-        s->result_mitigated += std::fmax( stagger_dmg - diff, 0 );
-        stagger_dmg = std::fmax( stagger_dmg - diff, 0 );
-      }
-      sample_datas.stagger_total_damage->add( stagger_dmg );
-      residual_action::trigger( active_actions.stagger_self_damage, this, stagger_dmg );
+      // double amount_remains = active_actions.stagger_self_damage->amount_remaining();
+      // double cap            = max_health() * spec.stagger->effectN( 4 ).percent();
+      // if ( amount_remains + stagger_dmg >= cap )
+      // {
+      //   double diff = ( amount_remains + stagger_dmg ) - cap;
+      //   s->result_amount += std::fmax( stagger_dmg - diff, 0 );
+      //   s->result_mitigated += std::fmax( stagger_dmg - diff, 0 );
+      //   stagger_dmg = std::fmax( stagger_dmg - diff, 0 );
+      // }
+      // // sample_datas.stagger_total_damage->add( stagger_dmg );
+      // residual_action::trigger( active_actions.stagger_self_damage, this, stagger_dmg );
     }
   }
 }
@@ -9926,8 +9932,8 @@ double monk_t::stagger_pct( int target_level )
 double monk_t::current_stagger_tick_dmg()
 {
   double dmg = 0;
-  if ( active_actions.stagger_self_damage )
-    dmg = active_actions.stagger_self_damage->tick_amount();
+  // if ( active_actions.stagger_self_damage )
+  //   dmg = active_actions.stagger_self_damage->tick_amount();
 
   if ( buff.invoke_niuzao->up() )
     dmg *= 1 - buff.invoke_niuzao->value();  // Saved as 25%
@@ -9948,47 +9954,48 @@ void monk_t::stagger_damage_changed( bool last_tick )
   }
   sim->print_debug( "Previous stagger buff was {}.", previous_buff ? previous_buff->name() : "none" );
 
-  buff_t *new_buff = nullptr;
-  dot_t *dot       = nullptr;
-  int niuzao       = 0;
-  if ( active_actions.stagger_self_damage )
-    dot = active_actions.stagger_self_damage->get_dot();
-  if ( !last_tick && dot && dot->is_ticking() )  // fake dot not active on last tick
-  {
-    auto current_tick_dmg                = current_stagger_tick_dmg();
-    auto current_tick_dmg_per_max_health = current_stagger_tick_dmg_percent();
-    sim->print_debug( "Stagger dmg: {} ({}%):", current_tick_dmg, current_tick_dmg_per_max_health * 100.0 );
-    if ( current_tick_dmg_per_max_health > 0.045 )
-    {
-      new_buff = buff.heavy_stagger;
-      niuzao   = 3;
-    }
-    else if ( current_tick_dmg_per_max_health > 0.03 )
-    {
-      new_buff = buff.moderate_stagger;
-      niuzao   = 2;
-    }
-    else if ( current_tick_dmg_per_max_health > 0.0 )
-    {
-      new_buff = buff.light_stagger;
-      niuzao   = 1;
-    }
-  }
-  sim->print_debug( "Stagger new buff is {}.", new_buff ? new_buff->name() : "none" );
+  return;
+  // buff_t *new_buff = nullptr;
+  // dot_t *dot       = nullptr;
+  // int niuzao       = 0;
+  // if ( active_actions.stagger_self_damage )
+  //   dot = active_actions.stagger_self_damage->get_dot();
+  // if ( !last_tick && dot && dot->is_ticking() )  // fake dot not active on last tick
+  // {
+  //   auto current_tick_dmg                = current_stagger_tick_dmg();
+  //   auto current_tick_dmg_per_max_health = current_stagger_tick_dmg_percent();
+  //   sim->print_debug( "Stagger dmg: {} ({}%):", current_tick_dmg, current_tick_dmg_per_max_health * 100.0 );
+  //   if ( current_tick_dmg_per_max_health > 0.045 )
+  //   {
+  //     new_buff = buff.heavy_stagger;
+  //     niuzao   = 3;
+  //   }
+  //   else if ( current_tick_dmg_per_max_health > 0.03 )
+  //   {
+  //     new_buff = buff.moderate_stagger;
+  //     niuzao   = 2;
+  //   }
+  //   else if ( current_tick_dmg_per_max_health > 0.0 )
+  //   {
+  //     new_buff = buff.light_stagger;
+  //     niuzao   = 1;
+  //   }
+  // }
+  // sim->print_debug( "Stagger new buff is {}.", new_buff ? new_buff->name() : "none" );
 
-  if ( previous_buff && previous_buff != new_buff )
-  {
-    previous_buff->expire();
-    if ( buff.training_of_niuzao->check() )
-      buff.training_of_niuzao->expire();
-  }
-  if ( new_buff && previous_buff != new_buff )
-  {
-    new_buff->trigger();
-    if ( talent.brewmaster.training_of_niuzao.ok() )
-      buff.training_of_niuzao->trigger( 1, niuzao * talent.brewmaster.training_of_niuzao->effectN( 1 ).base_value(), -1,
-                                        timespan_t::min() );
-  }
+  // if ( previous_buff && previous_buff != new_buff )
+  // {
+  //   previous_buff->expire();
+  //   if ( buff.training_of_niuzao->check() )
+  //     buff.training_of_niuzao->expire();
+  // }
+  // if ( new_buff && previous_buff != new_buff )
+  // {
+  //   new_buff->trigger();
+  //   if ( talent.brewmaster.training_of_niuzao.ok() )
+  //     buff.training_of_niuzao->trigger( 1, niuzao * talent.brewmaster.training_of_niuzao->effectN( 1 ).base_value(), -1,
+  //                                       timespan_t::min() );
+  // }
 }
 
 // monk_t::current_stagger_total ==================================================
@@ -9996,8 +10003,9 @@ void monk_t::stagger_damage_changed( bool last_tick )
 double monk_t::current_stagger_amount_remains()
 {
   double dmg = 0;
-  if ( active_actions.stagger_self_damage )
-    dmg = active_actions.stagger_self_damage->amount_remaining();
+  return dmg;
+  // if ( active_actions.stagger_self_damage )
+  //   dmg = active_actions.stagger_self_damage->amount_remaining();
   return dmg;
 }
 
@@ -10005,7 +10013,8 @@ double monk_t::current_stagger_amount_remains()
 
 double monk_t::current_stagger_amount_remains_to_total_percent()
 {
-  return active_actions.stagger_self_damage->amount_remaining_to_total();
+  return 0;
+  // return active_actions.stagger_self_damage->amount_remaining_to_total();
 }
 
 // monk_t::current_stagger_dmg_percent ==================================================
@@ -10024,12 +10033,12 @@ double monk_t::current_stagger_amount_remains_percent()
 
 timespan_t monk_t::current_stagger_dot_remains()
 {
-  if ( active_actions.stagger_self_damage )
-  {
-    dot_t *dot = active_actions.stagger_self_damage->get_dot();
+  // if ( active_actions.stagger_self_damage )
+  // {
+  //   dot_t *dot = active_actions.stagger_self_damage->get_dot();
 
-    return dot->remains();
-  }
+  //   return dot->remains();
+  // }
 
   return timespan_t::zero();
 }
@@ -10041,12 +10050,12 @@ double monk_t::calculate_last_stagger_tick_damage( int n ) const
 {
   double amount = 0.0;
 
-  assert( n > 0 );
+  // assert( n > 0 );
 
-  for ( size_t i = stagger_tick_damage.size(), j = n; i-- && j--; )
-  {
-    amount += stagger_tick_damage[ i ].value;
-  }
+  // for ( size_t i = stagger_tick_damage.size(), j = n; i-- && j--; )
+  // {
+  //   amount += stagger_tick_damage[ i ].value;
+  // }
 
   return amount;
 }
@@ -10286,9 +10295,9 @@ void monk_t::merge( player_t &other )
 
   auto &other_monk = static_cast<const monk_t &>( other );
 
-  sample_datas.stagger_effective_damage_timeline.merge( other_monk.sample_datas.stagger_effective_damage_timeline );
-  sample_datas.stagger_damage_pct_timeline.merge( other_monk.sample_datas.stagger_damage_pct_timeline );
-  sample_datas.stagger_pct_timeline.merge( other_monk.sample_datas.stagger_pct_timeline );
+  // sample_datas.stagger_effective_damage_timeline.merge( other_monk.sample_datas.stagger_effective_damage_timeline );
+  // sample_datas.stagger_damage_pct_timeline.merge( other_monk.sample_datas.stagger_damage_pct_timeline );
+  // sample_datas.stagger_pct_timeline.merge( other_monk.sample_datas.stagger_pct_timeline );
 }
 
 // monk_t::monk_report =================================================
@@ -10374,144 +10383,144 @@ public:
     // Custom Class Section
     if ( p.specialization() == MONK_BREWMASTER )
     {
-      double stagger_tick_dmg   = p.sample_datas.stagger_damage->mean();
-      double purified_dmg       = p.sample_datas.purified_damage->mean();
-      double staggering_strikes = p.sample_datas.staggering_strikes_cleared->mean();
-      double quick_sip          = p.sample_datas.quick_sip_cleared->mean();
-      double tranquil_spirit    = p.sample_datas.tranquil_spirit->mean();
-      double stagger_total_dmg  = p.sample_datas.stagger_total_damage->mean();
+      // double stagger_tick_dmg   = p.sample_datas.stagger_damage->mean();
+      // double purified_dmg       = p.sample_datas.purified_damage->mean();
+      // double staggering_strikes = p.sample_datas.staggering_strikes_cleared->mean();
+      // double quick_sip          = p.sample_datas.quick_sip_cleared->mean();
+      // double tranquil_spirit    = p.sample_datas.tranquil_spirit->mean();
+      // double stagger_total_dmg  = p.sample_datas.stagger_total_damage->mean();
 
-      os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-         << "\t\t\t\t\t<h3 class=\"toggle open\">Stagger Analysis</h3>\n"
-         << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+      // os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
+      //    << "\t\t\t\t\t<h3 class=\"toggle open\">Stagger Analysis</h3>\n"
+      //    << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-      highchart::time_series_t chart_stagger_damage( highchart::build_id( p, "stagger_damage" ), *p.sim );
-      chart::generate_actor_timeline( chart_stagger_damage, p, "Stagger effective damage",
-                                      color::resource_color( RESOURCE_HEALTH ),
-                                      p.sample_datas.stagger_effective_damage_timeline );
-      chart_stagger_damage.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
-      chart_stagger_damage.set( "chart.width", "575" );
-      os << chart_stagger_damage.to_target_div();
-      p.sim->add_chart_data( chart_stagger_damage );
+      // highchart::time_series_t chart_stagger_damage( highchart::build_id( p, "stagger_damage" ), *p.sim );
+      // chart::generate_actor_timeline( chart_stagger_damage, p, "Stagger effective damage",
+      //                                 color::resource_color( RESOURCE_HEALTH ),
+      //                                 p.sample_datas.stagger_effective_damage_timeline );
+      // chart_stagger_damage.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      // chart_stagger_damage.set( "chart.width", "575" );
+      // os << chart_stagger_damage.to_target_div();
+      // p.sim->add_chart_data( chart_stagger_damage );
 
-      highchart::time_series_t chart_stagger_damage_pct( highchart::build_id( p, "stagger_damage_pct" ), *p.sim );
-      chart::generate_actor_timeline( chart_stagger_damage_pct, p, "Stagger pool / health %",
-                                      color::resource_color( RESOURCE_HEALTH ),
-                                      p.sample_datas.stagger_damage_pct_timeline );
-      chart_stagger_damage_pct.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
-      chart_stagger_damage_pct.set( "chart.width", "575" );
-      os << chart_stagger_damage_pct.to_target_div();
-      p.sim->add_chart_data( chart_stagger_damage_pct );
+      // highchart::time_series_t chart_stagger_damage_pct( highchart::build_id( p, "stagger_damage_pct" ), *p.sim );
+      // chart::generate_actor_timeline( chart_stagger_damage_pct, p, "Stagger pool / health %",
+      //                                 color::resource_color( RESOURCE_HEALTH ),
+      //                                 p.sample_datas.stagger_damage_pct_timeline );
+      // chart_stagger_damage_pct.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      // chart_stagger_damage_pct.set( "chart.width", "575" );
+      // os << chart_stagger_damage_pct.to_target_div();
+      // p.sim->add_chart_data( chart_stagger_damage_pct );
 
-      highchart::time_series_t chart_stagger_pct( highchart::build_id( p, "stagger_pct" ), *p.sim );
-      chart::generate_actor_timeline( chart_stagger_pct, p, "Stagger %", color::resource_color( RESOURCE_HEALTH ),
-                                      p.sample_datas.stagger_pct_timeline );
-      chart_stagger_pct.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
-      chart_stagger_pct.set( "chart.width", "575" );
-      os << chart_stagger_pct.to_target_div();
-      p.sim->add_chart_data( chart_stagger_pct );
+      // highchart::time_series_t chart_stagger_pct( highchart::build_id( p, "stagger_pct" ), *p.sim );
+      // chart::generate_actor_timeline( chart_stagger_pct, p, "Stagger %", color::resource_color( RESOURCE_HEALTH ),
+      //                                 p.sample_datas.stagger_pct_timeline );
+      // chart_stagger_pct.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      // chart_stagger_pct.set( "chart.width", "575" );
+      // os << chart_stagger_pct.to_target_div();
+      // p.sim->add_chart_data( chart_stagger_pct );
 
-      fmt::print( os, "\t\t\t\t\t\t<p>Stagger base Unbuffed: {} Raid Buffed: {}</p>\n", p.stagger_base_value(),
-                  p.sample_datas.buffed_stagger_base );
+      // fmt::print( os, "\t\t\t\t\t\t<p>Stagger base Unbuffed: {} Raid Buffed: {}</p>\n", p.stagger_base_value(),
+      //             p.sample_datas.buffed_stagger_base );
 
-      fmt::print( os, "\t\t\t\t\t\t<p>Stagger pct (player level) Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
-                  100.0 * p.stagger_pct( p.level() ), 100.0 * p.sample_datas.buffed_stagger_pct_player_level );
+      // fmt::print( os, "\t\t\t\t\t\t<p>Stagger pct (player level) Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
+      //             100.0 * p.stagger_pct( p.level() ), 100.0 * p.sample_datas.buffed_stagger_pct_player_level );
 
-      fmt::print( os, "\t\t\t\t\t\t<p>Stagger pct (target level) Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
-                  100.0 * p.stagger_pct( p.target->level() ), 100.0 * p.sample_datas.buffed_stagger_pct_target_level );
+      // fmt::print( os, "\t\t\t\t\t\t<p>Stagger pct (target level) Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
+      //             100.0 * p.stagger_pct( p.target->level() ), 100.0 * p.sample_datas.buffed_stagger_pct_target_level );
 
-      fmt::print( os, "\t\t\t\t\t\t<p>Total Stagger damage added: {} / {:.2f}%</p>\n", stagger_total_dmg, 100.0 );
-      fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Purifying Brew: {} / {:.2f}%</p>\n", purified_dmg,
-                  ( purified_dmg / stagger_total_dmg ) * 100.0 );
-      fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Quick Sip: {} / {:.2f}%</p>\n", quick_sip,
-                  ( quick_sip / stagger_total_dmg ) * 100.0 );
-      fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Staggering Strikes: {} / {:.2f}%</p>\n", staggering_strikes,
-                  ( staggering_strikes / stagger_total_dmg ) * 100.0 );
-      fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Tranquil Spirit: {} / {:.2f}%</p>\n", tranquil_spirit,
-                  ( tranquil_spirit / stagger_total_dmg ) * 100.0 );
-      fmt::print( os, "\t\t\t\t\t\t<p>Stagger that directly damaged the player: {} / {:.2f}%</p>\n", stagger_tick_dmg,
-                  ( stagger_tick_dmg / stagger_total_dmg ) * 100.0 );
+      // fmt::print( os, "\t\t\t\t\t\t<p>Total Stagger damage added: {} / {:.2f}%</p>\n", stagger_total_dmg, 100.0 );
+      // fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Purifying Brew: {} / {:.2f}%</p>\n", purified_dmg,
+      //             ( purified_dmg / stagger_total_dmg ) * 100.0 );
+      // fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Quick Sip: {} / {:.2f}%</p>\n", quick_sip,
+      //             ( quick_sip / stagger_total_dmg ) * 100.0 );
+      // fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Staggering Strikes: {} / {:.2f}%</p>\n", staggering_strikes,
+      //             ( staggering_strikes / stagger_total_dmg ) * 100.0 );
+      // fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Tranquil Spirit: {} / {:.2f}%</p>\n", tranquil_spirit,
+      //             ( tranquil_spirit / stagger_total_dmg ) * 100.0 );
+      // fmt::print( os, "\t\t\t\t\t\t<p>Stagger that directly damaged the player: {} / {:.2f}%</p>\n", stagger_tick_dmg,
+      //             ( stagger_tick_dmg / stagger_total_dmg ) * 100.0 );
 
-      os << "\t\t\t\t\t\t<table class=\"sc\">\n"
-         << "\t\t\t\t\t\t\t<tbody>\n"
-         << "\t\t\t\t\t\t\t\t<tr>\n"
-         << "\t\t\t\t\t\t\t\t\t<th class=\"left\">Damage Stats</th>\n"
-         << "\t\t\t\t\t\t\t\t\t<th>Total</th>\n"
-         //        << "\t\t\t\t\t\t\t\t\t<th>DTPS%</th>\n"
-         << "\t\t\t\t\t\t\t\t\t<th>Execute</th>\n"
-         << "\t\t\t\t\t\t\t\t</tr>\n";
+      // os << "\t\t\t\t\t\t<table class=\"sc\">\n"
+      //    << "\t\t\t\t\t\t\t<tbody>\n"
+      //    << "\t\t\t\t\t\t\t\t<tr>\n"
+      //    << "\t\t\t\t\t\t\t\t\t<th class=\"left\">Damage Stats</th>\n"
+      //    << "\t\t\t\t\t\t\t\t\t<th>Total</th>\n"
+      //    //        << "\t\t\t\t\t\t\t\t\t<th>DTPS%</th>\n"
+      //    << "\t\t\t\t\t\t\t\t\t<th>Execute</th>\n"
+      //    << "\t\t\t\t\t\t\t\t</tr>\n";
 
-      // Stagger info
-      os << "\t\t\t\t\t\t\t\t<tr>\n"
-         << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">\n"
-         << "\t\t\t\t\t\t\t\t\t\t<span class=\"toggle - details\">\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<a href = \"https://www.wowhead.com/spell=124255\" class = \" icontinyl icontinyl "
-            "icontinyl\" "
-         << "style = \"background: url(https://wowimg.zamimg.com/images/wow/icons/tiny/ability_rogue_cheatdeath.gif) "
-            "0% "
-            "50% no-repeat;\"> "
-         << "<span style = \"margin - left: 18px; \">Stagger</span></a></span>\n"
-         << "\t\t\t\t\t\t\t\t\t</td>\n";
-      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << ( p.sample_datas.stagger_damage->mean() )
-         << "</td>\n";
-      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << p.sample_datas.stagger_damage->count()
-         << "</td>\n";
-      os << "\t\t\t\t\t\t\t\t</tr>\n";
+      // // Stagger info
+      // os << "\t\t\t\t\t\t\t\t<tr>\n"
+      //    << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">\n"
+      //    << "\t\t\t\t\t\t\t\t\t\t<span class=\"toggle - details\">\n"
+      //    << "\t\t\t\t\t\t\t\t\t\t\t<a href = \"https://www.wowhead.com/spell=124255\" class = \" icontinyl icontinyl "
+      //       "icontinyl\" "
+      //    << "style = \"background: url(https://wowimg.zamimg.com/images/wow/icons/tiny/ability_rogue_cheatdeath.gif) "
+      //       "0% "
+      //       "50% no-repeat;\"> "
+      //    << "<span style = \"margin - left: 18px; \">Stagger</span></a></span>\n"
+      //    << "\t\t\t\t\t\t\t\t\t</td>\n";
+      // os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << ( p.sample_datas.stagger_damage->mean() )
+      //    << "</td>\n";
+      // os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << p.sample_datas.stagger_damage->count()
+      //    << "</td>\n";
+      // os << "\t\t\t\t\t\t\t\t</tr>\n";
 
-      // Light Stagger info
-      os << "\t\t\t\t\t\t\t\t<tr>\n"
-         << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">\n"
-         << "\t\t\t\t\t\t\t\t\t\t<span class=\"toggle - details\">\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<a href = \"https://www.wowhead.com/spell=124275\" class = \" icontinyl icontinyl "
-            "icontinyl\" "
-         << "style = \"background: url(https://wowimg.zamimg.com/images/wow/icons/tiny/priest_icon_chakra_green.gif) "
-            "0% "
-            "50% no-repeat;\"> "
-         << "<span style = \"margin - left: 18px; \">Light Stagger</span></a></span>\n"
-         << "\t\t\t\t\t\t\t\t\t</td>\n";
-      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-         << ( p.sample_datas.light_stagger_damage->mean() ) << "</td>\n";
-      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << p.sample_datas.light_stagger_damage->count()
-         << "</td>\n";
-      os << "\t\t\t\t\t\t\t\t</tr>\n";
+      // // Light Stagger info
+      // os << "\t\t\t\t\t\t\t\t<tr>\n"
+      //    << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">\n"
+      //    << "\t\t\t\t\t\t\t\t\t\t<span class=\"toggle - details\">\n"
+      //    << "\t\t\t\t\t\t\t\t\t\t\t<a href = \"https://www.wowhead.com/spell=124275\" class = \" icontinyl icontinyl "
+      //       "icontinyl\" "
+      //    << "style = \"background: url(https://wowimg.zamimg.com/images/wow/icons/tiny/priest_icon_chakra_green.gif) "
+      //       "0% "
+      //       "50% no-repeat;\"> "
+      //    << "<span style = \"margin - left: 18px; \">Light Stagger</span></a></span>\n"
+      //    << "\t\t\t\t\t\t\t\t\t</td>\n";
+      // os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+      //    << ( p.sample_datas.light_stagger_damage->mean() ) << "</td>\n";
+      // os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << p.sample_datas.light_stagger_damage->count()
+      //    << "</td>\n";
+      // os << "\t\t\t\t\t\t\t\t</tr>\n";
 
-      // Moderate Stagger info
-      os << "\t\t\t\t\t\t\t\t<tr>\n"
-         << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">\n"
-         << "\t\t\t\t\t\t\t\t\t\t<span class=\"toggle - details\">\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<a href = \"https://www.wowhead.com/spell=124274\" class = \" icontinyl icontinyl "
-            "icontinyl\" "
-         << "style = \"background: url(https://wowimg.zamimg.com/images/wow/icons/tiny/priest_icon_chakra.gif) 0% 50% "
-            "no-repeat;\"> "
-         << "<span style = \"margin - left: 18px; \">Moderate Stagger</span></a></span>\n"
-         << "\t\t\t\t\t\t\t\t\t</td>\n";
-      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-         << ( p.sample_datas.moderate_stagger_damage->mean() ) << "</td>\n";
-      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-         << p.sample_datas.moderate_stagger_damage->count() << "</td>\n";
-      os << "\t\t\t\t\t\t\t\t</tr>\n";
+      // // Moderate Stagger info
+      // os << "\t\t\t\t\t\t\t\t<tr>\n"
+      //    << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">\n"
+      //    << "\t\t\t\t\t\t\t\t\t\t<span class=\"toggle - details\">\n"
+      //    << "\t\t\t\t\t\t\t\t\t\t\t<a href = \"https://www.wowhead.com/spell=124274\" class = \" icontinyl icontinyl "
+      //       "icontinyl\" "
+      //    << "style = \"background: url(https://wowimg.zamimg.com/images/wow/icons/tiny/priest_icon_chakra.gif) 0% 50% "
+      //       "no-repeat;\"> "
+      //    << "<span style = \"margin - left: 18px; \">Moderate Stagger</span></a></span>\n"
+      //    << "\t\t\t\t\t\t\t\t\t</td>\n";
+      // os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+      //    << ( p.sample_datas.moderate_stagger_damage->mean() ) << "</td>\n";
+      // os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+      //    << p.sample_datas.moderate_stagger_damage->count() << "</td>\n";
+      // os << "\t\t\t\t\t\t\t\t</tr>\n";
 
-      // Heavy Stagger info
-      os << "\t\t\t\t\t\t\t\t<tr>\n"
-         << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">\n"
-         << "\t\t\t\t\t\t\t\t\t\t<span class=\"toggle - details\">\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<a href = \"https://www.wowhead.com/spell=124273\" class = \" icontinyl icontinyl "
-            "icontinyl\" "
-         << "style = \"background: url(https://wowimg.zamimg.com/images/wow/icons/tiny/priest_icon_chakra_red.gif) 0% "
-            "50% no-repeat;\"> "
-         << "<span style = \"margin - left: 18px; \">Heavy Stagger</span></a></span>\n"
-         << "\t\t\t\t\t\t\t\t\t</td>\n";
-      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-         << ( p.sample_datas.heavy_stagger_damage->mean() ) << "</td>\n";
-      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << p.sample_datas.heavy_stagger_damage->count()
-         << "</td>\n";
-      os << "\t\t\t\t\t\t\t\t</tr>\n";
+      // // Heavy Stagger info
+      // os << "\t\t\t\t\t\t\t\t<tr>\n"
+      //    << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">\n"
+      //    << "\t\t\t\t\t\t\t\t\t\t<span class=\"toggle - details\">\n"
+      //    << "\t\t\t\t\t\t\t\t\t\t\t<a href = \"https://www.wowhead.com/spell=124273\" class = \" icontinyl icontinyl "
+      //       "icontinyl\" "
+      //    << "style = \"background: url(https://wowimg.zamimg.com/images/wow/icons/tiny/priest_icon_chakra_red.gif) 0% "
+      //       "50% no-repeat;\"> "
+      //    << "<span style = \"margin - left: 18px; \">Heavy Stagger</span></a></span>\n"
+      //    << "\t\t\t\t\t\t\t\t\t</td>\n";
+      // os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+      //    << ( p.sample_datas.heavy_stagger_damage->mean() ) << "</td>\n";
+      // os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << p.sample_datas.heavy_stagger_damage->count()
+      //    << "</td>\n";
+      // os << "\t\t\t\t\t\t\t\t</tr>\n";
 
-      os << "\t\t\t\t\t\t\t</tbody>\n"
-         << "\t\t\t\t\t\t</table>\n";
+      // os << "\t\t\t\t\t\t\t</tbody>\n"
+      //    << "\t\t\t\t\t\t</table>\n";
 
-      os << "\t\t\t\t\t\t</div>\n"
-         << "\t\t\t\t\t</div>\n";
+      // os << "\t\t\t\t\t\t</div>\n"
+      //    << "\t\t\t\t\t</div>\n";
     }
     else
       (void)p;
@@ -10570,6 +10579,70 @@ struct monk_module_t : public module_t
   void combat_end( sim_t * ) const override
   {
   }
+};
+
+// monk_t::stagger_t implementation
+
+double monk_t::stagger_t::max_threshold( stagger_level_e level )
+{
+  switch ( level )
+  {
+    // TODO: Is this in spell data?
+    case NONE_STAGGER:
+      return 0.0;
+    case LIGHT_STAGGER:
+      return 0.2;
+    case MODERATE_STAGGER:
+      return 0.6;
+    case HEAVY_STAGGER:
+    case MAX_STAGGER:
+      return 10.0;
+  }
+}
+
+monk_t::stagger_t::stagger_buff_t::stagger_buff_t( monk_t &player, std::string_view name, const spell_data_t *spell )
+  : actions::monk_buff_t( player, name, spell )
+{}
+
+monk_t::stagger_t::stagger_level_t::stagger_level_t( stagger_level_e level, monk_t *player )
+  : max_percent( monk_t::stagger_t::max_threshold( level ) )
+{
+  switch ( level )
+  {
+    // TODO: Is this in spell data?
+    // TODO: Convert to use references
+    case LIGHT_STAGGER:
+      debuff = make_buff<monk_t::stagger_t::stagger_buff_t>( *player, "light_stagger", player->find_spell( 124275 ) );
+      break;
+    case MODERATE_STAGGER:
+      debuff = make_buff<monk_t::stagger_t::stagger_buff_t>( *player, "moderate_stagger", player->find_spell( 124274 ) );
+      break;
+    case HEAVY_STAGGER:
+      debuff = make_buff<monk_t::stagger_t::stagger_buff_t>( *player, "heavy_stagger", player->find_spell( 124273 ) );
+      break;
+    case NONE_STAGGER:
+    case MAX_STAGGER:
+      break;
+  }
+};
+
+monk_t::stagger_t::self_damage_t::self_damage_t( monk_t* player )
+  : base_t( "stagger_self_damage", player, player->passives.stagger_self_damage )
+{}
+
+monk_t::stagger_t::stagger_t( monk_t* player )
+  : player( player )
+{
+  if ( !stagger_levels.size() )
+  {
+    for ( stagger_level_e level = NONE_STAGGER; level < MAX_STAGGER; level++ )
+    {
+      stagger_level_t *tmp = new stagger_level_t( level, player );
+      stagger_levels.emplace_back( tmp );
+    }
+  }
+
+  self_damage = new self_damage_t( player );
 };
 
 }  // end namespace monk
