@@ -499,6 +499,7 @@ struct void_flay_t final : public priest_pet_spell_t
 
     // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1182
     gcd_type = !p.o().bugs ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
+    trigger_gcd = 1.5_s;
     // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1180
     if ( !p.o().bugs )
     {
@@ -1163,25 +1164,25 @@ action_t* thing_from_beyond_t::create_action( util::string_view name, util::stri
   return priest_pet_t::create_action( name, options_str );
 }
 
-// Returns mindbender or shadowfiend, depending on talent choice. The returned pointer can be null if no fiend is
-// summoned through the action list, so please check for null.
-spawner::pet_spawner_t<pet_t, priest_t>& get_current_main_pet( priest_t& priest )
-{
-  return priest.talents.voidweaver.voidwraith.enabled()
-             ? priest.pets.voidwraith
-             : priest.talents.shared.mindbender.enabled() ? priest.pets.mindbender : priest.pets.shadowfiend;
-}
-
 }  // namespace
 
 namespace priestspace
 {
+// Returns mindbender or shadowfiend, depending on talent choice. The returned pointer can be null if no fiend is
+// summoned through the action list, so please check for null.
+spawner::pet_spawner_t<pet_t, priest_t>& priest_t::get_current_main_pet()
+{
+  return talents.voidweaver.voidwraith.enabled() ? pets.voidwraith
+         : talents.shared.mindbender.enabled()   ? pets.mindbender
+                                                 : pets.shadowfiend;
+}
+
 void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double mod )
 {
   if ( !talents.shared.inescapable_torment.enabled() )
     return;
 
-  if ( get_current_main_pet( *this ).n_active_pets() > 0 )
+  if ( get_current_main_pet().n_active_pets() > 0 )
   {
     auto extend = talents.shared.inescapable_torment->effectN( 2 ).time_value() * mod;
     buffs.devoured_pride->extend_duration( this, extend );
@@ -1189,7 +1190,7 @@ void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double 
     buffs.devoured_despair->extend_duration( this, extend );
     buffs.shadow_covenant->extend_duration( this, extend );
 
-    for ( auto a_pet : get_current_main_pet( *this ) )
+    for ( auto a_pet : get_current_main_pet() )
     {
       auto pet = debug_cast<fiend::base_fiend_pet_t*>( a_pet );
       assert( pet->inescapable_torment );
@@ -1222,7 +1223,7 @@ void priest_t::trigger_idol_of_yshaarj( player_t* target )
   {
     auto duration = timespan_t::from_seconds( talents.shadow.devoured_violence->effectN( 1 ).base_value() );
 
-    for ( auto pet : get_current_main_pet( *this ) )
+    for ( auto pet : get_current_main_pet() )
     {
       pet->adjust_duration( duration );
       procs.idol_of_yshaarj_extra_duration->occur();
@@ -1245,7 +1246,7 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
       // pet.fiend.X refers to either shadowfiend or mindbender
 
       auto expr =
-          get_current_main_pet( *this ).create_expression( util::make_span( splits ).subspan( 2 ), expression_str );
+          get_current_main_pet().create_expression( util::make_span( splits ).subspan( 2 ), expression_str );
       if ( expr )
       {
         return expr;

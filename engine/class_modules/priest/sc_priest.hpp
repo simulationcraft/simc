@@ -858,6 +858,7 @@ public:
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   void trigger_essence_devourer();
+  spawner::pet_spawner_t<pet_t, priest_t>& get_current_main_pet();
   // Stores the currently active Entropic Rift event
   void trigger_entropic_rift();
   void extend_entropic_rift();

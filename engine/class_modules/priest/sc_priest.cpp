@@ -1241,6 +1241,8 @@ public:
   double execute_percent;
   double execute_modifier;
   double deathspeaker_mult;
+  timespan_t depth_of_shadows_duration;
+  double depth_of_shadows_chance;
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
   propagate_const<expiation_t*> child_expiation;
   action_t* child_searing_light;
@@ -1253,6 +1255,9 @@ public:
       deathspeaker_mult(
           p.talents.shadow.deathspeaker.enabled() ? 1 + p.buffs.deathspeaker->data().effectN( 2 ).percent() : 1.0 ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
+      depth_of_shadows_duration(
+          timespan_t::from_seconds( p.talents.voidweaver.depth_of_shadows->effectN( 1 ).base_value() ) ),
+      depth_of_shadows_chance( p.talents.voidweaver.depth_of_shadows->effectN( 2 ).percent() ),
       child_expiation( nullptr ),
       child_searing_light( priest().background_actions.searing_light ),
       execute_override( execute_override )
@@ -1271,6 +1276,8 @@ public:
       energize_resource = RESOURCE_INSANITY;
       energize_amount   = priest().specs.shadow_priest->effectN( 23 ).resource( RESOURCE_INSANITY );
     }
+
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
 
     triggers_atonement = true;
   }
@@ -1390,6 +1397,18 @@ public:
     if ( result_is_hit( s->result ) )
     {
       double save_health_percentage = s->target->health_percentage();
+
+      if ( priest().talents.voidweaver.depth_of_shadows.enabled() )
+      {
+        if ( save_health_percentage <= 20 || rng().roll( depth_of_shadows_chance ) )
+        {
+          priest().get_current_main_pet().spawn( depth_of_shadows_duration );
+          if ( priest().bugs )
+          {
+            priest().cooldowns.fiend->start();
+          }
+        }
+      }
 
       if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B2 ) )
       {
