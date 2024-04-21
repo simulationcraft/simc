@@ -1302,7 +1302,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     if ( face_palm )
       brew_cooldown_reduction( p()->talent.brewmaster.face_palm->effectN( 3 ).base_value() / 1000.0 );
 
-    if ( combat_wisdom )
+    if ( combat_wisdom && combat_wisdom_expel_harm )
       combat_wisdom_expel_harm->execute();
 
     face_palm      = false;
@@ -2509,18 +2509,44 @@ struct fists_of_fury_t : public monk_melee_attack_t
 // Whirling Dragon Punch
 // ==========================================================================
 
-struct whirling_dragon_punch_tick_t : public monk_melee_attack_t
+struct whirling_dragon_punch_aoe_tick_t : public monk_melee_attack_t
 {
   timespan_t delay;
-  whirling_dragon_punch_tick_t( util::string_view name, monk_t *p, const spell_data_t *s, timespan_t delay )
+  whirling_dragon_punch_aoe_tick_t( util::string_view name, monk_t *p, const spell_data_t *s, timespan_t delay )
     : monk_melee_attack_t( name, p, s ), delay( delay )
   {
-    ww_mastery             = true;
+    ww_mastery = true;
 
     background = true;
     aoe        = -1;
     radius     = s->effectN( 1 ).radius();
     apply_dual_wield_two_handed_scaling();
+
+    name_str_reporting = "wdp_aoe";
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
+
+    return am;
+  }
+};
+
+struct whirling_dragon_punch_st_tick_t : public monk_melee_attack_t
+{
+  whirling_dragon_punch_st_tick_t( util::string_view name, monk_t *p, const spell_data_t *s )
+    : monk_melee_attack_t( name, p, s )
+  {
+    ww_mastery = true;
+
+    background = true;
+
+    apply_dual_wield_two_handed_scaling();
+
+    name_str_reporting = "wdp_st";
   }
 
   double action_multiplier() const override
@@ -2549,13 +2575,14 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     }
   };
 
-  std::array<whirling_dragon_punch_tick_t *, 3> ticks;
+  std::array<whirling_dragon_punch_aoe_tick_t *, 3> aoe_ticks;
+  whirling_dragon_punch_st_tick_t *st_tick;
 
   struct whirling_dragon_punch_tick_event_t : public event_t
   {
-    whirling_dragon_punch_tick_t *tick;
+    whirling_dragon_punch_aoe_tick_t *tick;
 
-    whirling_dragon_punch_tick_event_t( whirling_dragon_punch_tick_t *tick, timespan_t delay )
+    whirling_dragon_punch_tick_event_t( whirling_dragon_punch_aoe_tick_t *tick, timespan_t delay )
       : event_t( *tick->player, delay ), tick( tick )
     {
     }
@@ -2580,14 +2607,18 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
 
     // 3 server-side hardcoded ticks
-    for ( size_t i = 0; i < ticks.size(); ++i )
+    for ( size_t i = 0; i < aoe_ticks.size(); ++i )
     {
       auto delay = base_tick_time * i;
-      ticks[ i ] = new whirling_dragon_punch_tick_t( "whirling_dragon_punch_tick", p,
-                                                     p->passives.whirling_dragon_punch_tick, delay );
+      aoe_ticks[ i ] = new whirling_dragon_punch_aoe_tick_t( "whirling_dragon_punch_aoe_tick", p,
+                                                     p->passives.whirling_dragon_punch_st_tick, delay );
 
-      add_child( ticks[ i ] );
+      add_child( aoe_ticks[ i ] );
     }
+    
+    st_tick = new whirling_dragon_punch_st_tick_t( "whirling_dragon_punch_st_tick", p, p->passives.whirling_dragon_punch_st_tick );
+
+    add_child( st_tick );
   }
 
   action_state_t *new_state() override
@@ -2601,10 +2632,10 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
 
     p()->movement.whirling_dragon_punch->trigger();
 
-    for ( auto &tick : ticks )
-    {
+    for ( auto &tick : aoe_ticks )
       make_event<whirling_dragon_punch_tick_event_t>( *sim, tick, tick->delay );
-    }
+    
+    st_tick->execute();
   }
 
   bool ready() override
@@ -2703,7 +2734,7 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
       int thunderfist_stacks = 1;
 
       if ( s->chain_target == 0 )
-        thunderfist_stacks += p()->talent.windwalker.thunderfist->effectN( 1 ).base_value();
+        thunderfist_stacks += ( int )p()->talent.windwalker.thunderfist->effectN( 1 ).base_value();
 
       p()->buff.thunderfist->trigger( thunderfist_stacks );
     }
@@ -7607,8 +7638,9 @@ void monk_t::init_spells()
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.thunderfist                      = find_spell( 393565 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
-  passives.whirling_dragon_punch_tick       = find_spell( 158221 );
-
+  passives.whirling_dragon_punch_aoe_tick   = find_spell( 158221 );
+  passives.whirling_dragon_punch_st_tick    = find_spell( 451767 );
+  
   // Tier 29
   passives.kicks_of_flowing_momentum = find_spell( 394944 );
   passives.fists_of_flowing_momentum = find_spell( 394949 );

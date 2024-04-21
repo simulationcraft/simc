@@ -1161,7 +1161,8 @@ public:
     const spell_data_t *power_strikes_chi;
     const spell_data_t *thunderfist;
     const spell_data_t *touch_of_karma_tick;
-    const spell_data_t *whirling_dragon_punch_tick;
+    const spell_data_t *whirling_dragon_punch_aoe_tick;
+    const spell_data_t *whirling_dragon_punch_st_tick;
 
     // Tier 29
     const spell_data_t *kicks_of_flowing_momentum;

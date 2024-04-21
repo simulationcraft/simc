@@ -982,29 +982,44 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     }
   };
 
-  struct sef_whirling_dragon_punch_tick_t : public sef_tick_action_t
+  struct sef_whirling_dragon_punch_aoe_tick_t : public sef_tick_action_t
   {
     timespan_t delay;
 
-    sef_whirling_dragon_punch_tick_t( storm_earth_and_fire_pet_t *p, timespan_t delay )
-      : sef_tick_action_t( "whirling_dragon_punch_tick", p, p->o()->passives.whirling_dragon_punch_tick ),
+    sef_whirling_dragon_punch_aoe_tick_t( storm_earth_and_fire_pet_t *p, timespan_t delay )
+      : sef_tick_action_t( "whirling_dragon_punch_aoe_tick", p, p->o()->passives.whirling_dragon_punch_aoe_tick ),
         delay( delay )
     {
       aoe = -1;
+      name_str_reporting = "sef_wdp_aoe";
+    }
+  };
+
+  struct sef_whirling_dragon_punch_st_tick_t : public sef_tick_action_t
+  {
+    timespan_t delay;
+
+    sef_whirling_dragon_punch_st_tick_t( storm_earth_and_fire_pet_t *p )
+      : sef_tick_action_t( "whirling_dragon_punch_st_tick", p, p->o()->passives.whirling_dragon_punch_st_tick )
+    {
+      name_str_reporting = "sef_wdp_st";
     }
   };
 
   struct sef_whirling_dragon_punch_t : public sef_melee_attack_t
   {
-    std::array<sef_whirling_dragon_punch_tick_t *, 3> ticks;
+    std::array<sef_whirling_dragon_punch_aoe_tick_t *, 3> aoe_ticks;
+
+    sef_whirling_dragon_punch_st_tick_t *st_tick;
 
     struct sef_whirling_dragon_punch_tick_event_t : public event_t
     {
-      sef_whirling_dragon_punch_tick_t *tick;
+      sef_whirling_dragon_punch_aoe_tick_t *tick;
 
-      sef_whirling_dragon_punch_tick_event_t( sef_whirling_dragon_punch_tick_t *tick, timespan_t delay )
+      sef_whirling_dragon_punch_tick_event_t( sef_whirling_dragon_punch_aoe_tick_t *tick, timespan_t delay )
         : event_t( *tick->player, delay ), tick( tick )
       {
+
       }
 
       void execute() override
@@ -1022,23 +1037,27 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       weapon_power_mod = 0;
 
-      for ( size_t i = 0; i < ticks.size(); ++i )
+      for ( size_t i = 0; i < aoe_ticks.size(); ++i )
       {
         auto delay = base_tick_time * i;
-        ticks[ i ] = new sef_whirling_dragon_punch_tick_t( player, delay );
+        aoe_ticks[ i ] = new sef_whirling_dragon_punch_aoe_tick_t( player, delay );
 
-        add_child( ticks[ i ] );
+        add_child( aoe_ticks[ i ] );
       }
+
+      st_tick = new sef_whirling_dragon_punch_st_tick_t( player );
+
+      add_child( st_tick );
     }
 
     void execute() override
     {
       sef_melee_attack_t::execute();
 
-      for ( auto &tick : ticks )
-      {
+      for ( auto &tick : aoe_ticks )
         make_event<sef_whirling_dragon_punch_tick_event_t>( *sim, tick, tick->delay );
-      }
+
+      st_tick->execute();
     }
   };
 
