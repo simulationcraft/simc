@@ -2698,7 +2698,15 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    p()->buff.thunderfist->trigger();
+    if ( p()->talent.windwalker.thunderfist.ok() )
+    {
+      int thunderfist_stacks = 1;
+
+      if ( s->chain_target == 0 )
+        thunderfist_stacks += p()->talent.windwalker.thunderfist->effectN( 1 ).base_value();
+
+      p()->buff.thunderfist->trigger( thunderfist_stacks );
+    }
   }
 };
 
