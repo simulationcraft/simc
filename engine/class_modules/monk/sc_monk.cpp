@@ -2519,7 +2519,8 @@ struct whirling_dragon_punch_aoe_tick_t : public monk_melee_attack_t
 
     background = true;
     aoe        = -1;
-    radius     = s->effectN( 1 ).radius();
+    reduced_aoe_targets = s->effectN( 1 ).base_value();
+
     apply_dual_wield_two_handed_scaling();
 
     name_str_reporting = "wdp_aoe";
