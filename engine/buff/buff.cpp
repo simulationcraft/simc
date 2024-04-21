@@ -887,6 +887,12 @@ buff_t* buff_t::set_dynamic_time_duration_multiplier( double new_multiplier )
 
 buff_t* buff_t::set_max_stack( int max_stack )
 {
+  if ( is_fallback )
+  {
+    _max_stack = 1;
+    return this;
+  }
+
   // _max_stack is initialized at -1, then set_max_stack is called in the buff_t base constructor
   if ( max_stack == -1 )
   {
