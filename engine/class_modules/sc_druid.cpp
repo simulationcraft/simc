@@ -9667,7 +9667,7 @@ void druid_t::init_spells()
   // Wildstalker
   talent.bond_with_nature               = HT( "Bond with Nature" );
   talent.bursting_growth                = HT( "Bursting Growth" );
-  talent.entangling_vortex              = HT( "Entangling Vortex" );
+  talent.entangling_vortex              = HT( "Entangling Vortex" );  // NYI
   talent.flower_walk                    = HT( "Flower Walk" );  // TODO: heal NYI
   talent.harmonious_constitution        = HT( "Harmonious Constitution" );
   talent.hunt_beneath_the_open_skies    = HT( "Hunt Beneath the Open Skies" );
@@ -13433,6 +13433,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.stellar_command );
   action.apply_affecting_aura( talent.the_eternal_moon );
   action.apply_affecting_aura( talent.wildstalkers_persistence );
+  action.apply_affecting_aura( talent.wildstalkers_power );
 }
 
 /* Report Extension Class
