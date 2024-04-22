@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54311
-static const std::array<spelltext_data_t, 22366> __spelltext_data { {
+static const std::array<spelltext_data_t, 22368> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21471,8 +21471,10 @@ static const std::array<spelltext_data_t, 22366> __spelltext_data { {
   { 441564, "Increases movement and mounted movement speed by $s1%.", "Movement speed increased by $w1%.", 0 },
   { 441576, "Removes all movement impairing effects and increases your movement speed by $s1% for $d.", "Increases movement speed by $s1%.", 0 },
   { 441583, "Your auto-attacks have a chance to make your next $?a137010[Maul][Ferocious Bite] become Ravage.\r\n\r\n$?a137010[$@spellicon441605|cFFFFFFFF$@spellname441605|r\r\n$@spelldesc441605]$?a137011[$@spellicon441591|cFFFFFFFF$@spellname441591|r\r\n$@spelldesc441591]", 0, 0 },
+  { 441585, "$@spelldesc439460", "Your next Ferocious Bite becomes Ravage.", 0 },
   { 441587, "Throws a distraction, attracting the attention of all nearby monsters and leaving a cloud of smoke for $d. Usable while stealthed.\r\n\r\nAttacks from within the cloud afflict targets with Distracted for $441224d.", 0, 0 },
   { 441591, "Finishing move that slashes through your target in a wide arc, dealing Physical damage per combo point to your target and consuming up to $?a102543[${$s2*(1+$102543s3/100)}][$s2] additional Energy to increase that damage by up to 100%. Hits all other enemies in front of you for reduced damage per combo point spent. \r\n\r\n  1 point: ${$m1*1/5} damage, ${$m3*1/5} in an arc\r\n  2 points: ${$m1*2/5} damage, ${$m3*2/5} in an arc\r\n  3 points: ${$m1*3/5} damage, ${$m3*3/5} in an arc\r\n  4 points: ${$m1*4/5} damage, ${$m3*4/5} in an arc\r\n  5 points: ${$m1*5/5} damage, ${$m3*5/5} in an arc", 0, 0 },
+  { 441602, "$@spelldesc439460", "Your next Maul becomes Ravage.", 0 },
   { 441605, "Slash through your target in a wide arc, dealing $s1 Physical damage to your target and $s2 to all other enemies in front of you.", 0, 0 },
   { 441617, "Calls upon the guidance of the spirits for $d, permitting movement while casting spells. Castable while casting.", "Able to move while casting spells.", 0 },
   { 441675, "Your maximum Energy and Rage are increased by $s1.\r\n\r\nFrenzied Regeneration also increases your maximum health by $s3%.", 0, 0 },

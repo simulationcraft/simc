@@ -6099,6 +6099,8 @@ struct regrowth_t : public druid_heal_t
 
     if ( t == player )
       ctm *= 1.0 + p()->talent.harmonious_constitution->effectN( 1 ).percent();
+
+    return ctm;
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
