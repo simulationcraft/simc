@@ -2520,7 +2520,7 @@ struct whirling_dragon_punch_aoe_tick_t : public monk_melee_attack_t
 
     background          = true;
     aoe                 = -1;
-    reduced_aoe_targets = s->effectN( 1 ).base_value();
+    reduced_aoe_targets = p->talent.windwalker.whirling_dragon_punch->effectN( 1 ).base_value();
 
     apply_dual_wield_two_handed_scaling();
 
@@ -2613,7 +2613,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     {
       auto delay     = base_tick_time * i;
       aoe_ticks[ i ] = new whirling_dragon_punch_aoe_tick_t( "whirling_dragon_punch_aoe_tick", p,
-                                                             p->passives.whirling_dragon_punch_st_tick, delay );
+                                                             p->passives.whirling_dragon_punch_aoe_tick, delay );
 
       add_child( aoe_ticks[ i ] );
     }

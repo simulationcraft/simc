@@ -991,6 +991,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
         delay( delay )
     {
       aoe = -1;
+      reduced_aoe_targets = p->o()->talent.windwalker.whirling_dragon_punch->effectN( 1 ).base_value();
       name_str_reporting = "sef_wdp_aoe";
     }
   };
