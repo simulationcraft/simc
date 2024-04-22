@@ -13384,6 +13384,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.lunar_insight );
   action.apply_affecting_aura( talent.stellar_command );
   action.apply_affecting_aura( talent.the_eternal_moon );
+  action.apply_affecting_aura( talent.wildstalkers_persistence );
 }
 
 /* Report Extension Class
