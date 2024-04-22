@@ -669,6 +669,10 @@ public:
     buff_t* root_network;
     buff_t* strategic_infusion;
     buff_t* treants_of_the_moon;  // treant moonfire background heartbeat
+    buff_t* feline_potential;          // wildpower surge
+    buff_t* feline_potential_counter;  // wildpower surge
+    buff_t* ursine_potential;          // wildpower surge
+    buff_t* ursine_potential_counter;  // wildpower surge
     buff_t* wildshape_mastery;
 
     // Helper pointers
@@ -1835,9 +1839,11 @@ public:
     // Hero talents
     parse_effects( p()->buff.blooming_infusion_damage );
     parse_effects( p()->buff.blooming_infusion_heal );
+    parse_effects( p()->buff.feline_potential );
     parse_effects( p()->buff.harmony_of_the_grove );
     parse_effects( p()->buff.root_network );
     parse_effects( p()->buff.strategic_infusion );
+    parse_effects( p()->buff.ursine_potential );
   }
 
   template <typename T>
@@ -2054,6 +2060,48 @@ public:
       p_->proc.gore->occur();
       p_->cooldown.mangle->reset( true );
     }
+  }
+};
+
+template <typename BASE>
+struct trigger_ursine_potential_t : public BASE
+{
+private:
+  druid_t* p_;
+
+public:
+  using base_t = trigger_ursine_potential_t<BASE>;
+
+  trigger_ursine_potential_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f ), p_( p )
+  {}
+
+  void execute() override
+  {
+    BASE::execute();
+
+    p_->buff.ursine_potential_counter->trigger();
+  }
+};
+
+template <typename BASE>
+struct consume_ursine_potential_t : public BASE
+{
+private:
+  druid_t* p_;
+
+public:
+  using base_t = consume_ursine_potential_t<BASE>;
+
+  consume_ursine_potential_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f ), p_( p )
+  {}
+
+  void execute() override
+  {
+    BASE::execute();
+
+    p_->buff.ursine_potential->expire();
   }
 };
 
@@ -2790,6 +2838,12 @@ struct bear_form_buff_t : public druid_buff_t, public swap_melee_t
 
     p()->resource_gain( RESOURCE_RAGE, rage_gain, p()->gain.bear_form );
     p()->recalculate_resource_max( RESOURCE_HEALTH );
+
+    if ( p()->buff.ursine_potential_counter->at_max_stacks() )
+    {
+      p()->buff.ursine_potential_counter->expire();
+      p()->buff.ursine_potential->trigger();
+    }
   }
 };
 
@@ -2815,6 +2869,12 @@ struct cat_form_buff_t : public druid_buff_t, public swap_melee_t
     swap_melee( p()->cat_melee_attack, p()->cat_weapon );
 
     base_t::start( stacks, value, duration );
+
+    if ( p()->buff.feline_potential_counter->at_max_stacks() )
+    {
+      p()->buff.feline_potential_counter->expire();
+      p()->buff.feline_potential->trigger();
+    }
   }
 };
 
@@ -3675,6 +3735,7 @@ public:
 
     p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.overflowing_power->check(), p()->gain.overflowing_power );
     p()->buff.overflowing_power->expire();
+    p()->buff.feline_potential->expire();
   }
 };
 
@@ -4138,7 +4199,7 @@ struct bloodseeker_vines_t : public cat_attack_t
 };
 
 // Brutal Slash =============================================================
-struct brutal_slash_t : public trigger_thrashing_claws_t<cat_attack_t>
+struct brutal_slash_t : public consume_ursine_potential_t<trigger_thrashing_claws_t<cat_attack_t>>
 {
   DRUID_ABILITY( brutal_slash_t, base_t, "brutal_slash", p->talent.brutal_slash )
   {
@@ -4611,6 +4672,15 @@ struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
       auto suf = get_suffix( name_str, "rip" );
       tear = p->get_secondary_action<tear_t>( "tear" + suf, f );
     }
+
+    if ( !p->buff.feline_potential->is_fallback )
+    {
+      const auto& eff = p->buff.feline_potential->data().effectN( 1 );
+      add_parse_entry( persistent_multiplier_effects )
+        .set_buff( p->buff.feline_potential )
+        .set_value( eff.percent() )
+        .set_eff( &eff );
+    }
   }
 
   void init_finished() override
@@ -4774,7 +4844,7 @@ struct primal_wrath_t : public cat_finisher_t
 };
 
 // Shred ====================================================================
-struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
+struct shred_t : public trigger_ursine_potential_t<trigger_thrashing_claws_t<cat_attack_t>>
 {
   double stealth_mul = 0.0;
 
@@ -4827,7 +4897,7 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
 };
 
 // Swipe (Cat) ====================================================================
-struct swipe_cat_t : public trigger_thrashing_claws_t<cat_attack_t>
+struct swipe_cat_t : public trigger_ursine_potential_t<trigger_thrashing_claws_t<cat_attack_t>>
 {
   DRUID_ABILITY( swipe_cat_t, base_t, "swipe_cat", p->apply_override( p->spec.swipe, p->spec.cat_form_override ) )
   {
@@ -5329,7 +5399,7 @@ struct lunar_beam_t : public bear_attack_t
 };
 
 // Mangle ===================================================================
-struct mangle_t : public bear_attack_t
+struct mangle_t : public consume_ursine_potential_t<bear_attack_t>
 {
   struct swiping_mangle_t : public druid_residual_action_t<bear_attack_t>
   {
@@ -5365,7 +5435,7 @@ struct mangle_t : public bear_attack_t
   action_t* healing = nullptr;
   int inc_targets = 0;
 
-  DRUID_ABILITY( mangle_t, bear_attack_t, "mangle", p->find_class_spell( "Mangle" ) )
+  DRUID_ABILITY( mangle_t, base_t, "mangle", p->find_class_spell( "Mangle" ) )
   {
     track_cd_waste = true;
 
@@ -5400,7 +5470,7 @@ struct mangle_t : public bear_attack_t
 
   int n_targets() const override
   {
-    auto n = bear_attack_t::n_targets();
+    auto n = base_t::n_targets();
 
     if ( p()->buff.incarnation_bear->check() )
       n += inc_targets;
@@ -5410,7 +5480,7 @@ struct mangle_t : public bear_attack_t
 
   void impact( action_state_t* s ) override
   {
-    bear_attack_t::impact( s );
+    base_t::impact( s );
 
     if ( !result_is_hit( s->result ) )
       return;
@@ -5433,7 +5503,7 @@ struct mangle_t : public bear_attack_t
     if ( p()->buff.gore->check() )
       p()->buff.overpowering_aura->trigger();
 
-    bear_attack_t::execute();
+    base_t::execute();
 
     if ( !hit_any_target )
       return;
@@ -5444,6 +5514,9 @@ struct mangle_t : public bear_attack_t
 
       if ( healing )
         healing->execute();
+
+      p()->buff.feline_potential_counter->trigger();
+      p()->buff.ursine_potential->expire();
     }
 
     p()->buff.gory_fur->trigger();
@@ -5650,7 +5723,7 @@ struct raze_t : public trigger_indomitable_guardian_t<trigger_ursocs_fury_t<trig
 };
 
 // Swipe (Bear) =============================================================
-struct swipe_bear_t : public trigger_gore_t<bear_attack_t>
+struct swipe_bear_t : public consume_ursine_potential_t<trigger_gore_t<bear_attack_t>>
 {
   DRUID_ABILITY( swipe_bear_t, base_t, "swipe_bear",
                  p->apply_override( p->spec.swipe, p->spec.bear_form_override ) )
@@ -10762,6 +10835,34 @@ void druid_t::create_buffs()
   buff.treants_of_the_moon = make_buff_fallback<treants_of_the_moon_buff_t>(
       talent.treants_of_the_moon.ok() && ( talent.force_of_nature.ok() || talent.grove_guardians.ok() ),
           this, "treants_of_the_moon" );
+
+  buff.feline_potential = make_buff_fallback( talent.wildpower_surge.ok() && specialization() == DRUID_GUARDIAN,
+      this, "feline_potential", find_spell( 441702 ) )
+          ->set_stack_change_callback(
+              [ this,
+                g = get_gain( "Wildpower Surge" ),
+                amt = find_effect( find_spell( 441704 ), E_ENERGIZE ).resource() ]
+              ( buff_t*, int, int new_ ) {
+                if ( new_ )
+                  resource_gain( RESOURCE_COMBO_POINT, amt, g );
+              } );
+
+  buff.feline_potential_counter = make_buff_fallback( talent.wildpower_surge.ok() && specialization() == DRUID_GUARDIAN,
+      this, "feline_potential_counter", find_spell( 441701 ) );
+
+  buff.ursine_potential = make_buff_fallback( talent.wildpower_surge.ok() && specialization() == DRUID_FERAL,
+      this, "ursine_potential", find_spell( 441698 ) )
+          ->set_stack_change_callback(
+              [ this,
+                g = get_gain( "Wildpower Surge" ),
+                amt = find_effect( find_spell( 442562 ), E_ENERGIZE ).resource() ]
+              ( buff_t*, int, int new_ ) {
+                if ( !new_ )
+                  resource_gain( RESOURCE_RAGE, amt, g );
+              } );
+
+  buff.ursine_potential_counter = make_buff_fallback( talent.wildpower_surge.ok() && specialization() == DRUID_FERAL,
+      this, "ursine_potential_counter", find_spell( 441695 ) );
 
   buff.wildshape_mastery =
       make_buff_fallback( talent.wildshape_mastery.ok(), this, "wildshape_mastery", find_spell( 441685 ) )
