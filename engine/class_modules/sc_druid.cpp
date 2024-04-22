@@ -4090,6 +4090,17 @@ struct incarnation_cat_t : public berserk_cat_base_t
 // Bloodseeker Vines ========================================================
 struct bloodseeker_vines_t : public cat_attack_t
 {
+  struct bursting_growth_t : public cat_attack_t
+  {
+    bursting_growth_t( druid_t* p ) : cat_attack_t( "bursting_growth", p, p->find_spell( 440122 ) )
+    {
+      background = true;
+      aoe = -1;
+      reduced_aoe_targets = 5;  // TODO: not in data, from tooltip
+    }
+  };
+
+  action_t* bursting = nullptr;
   timespan_t orig_dur;
   double twin_pct;
 
@@ -4101,6 +4112,12 @@ struct bloodseeker_vines_t : public cat_attack_t
     dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
 
     orig_dur = dot_duration;
+
+    if ( p->talent.bursting_growth.ok() )
+    {
+      bursting = p->get_secondary_action<bursting_growth_t>( "bursting_growth" );
+      add_child( bursting );
+    }
   }
 
   void trigger_dot( action_state_t* s ) override
@@ -4117,6 +4134,15 @@ struct bloodseeker_vines_t : public cat_attack_t
       if ( auto tar = p()->get_smart_target( tl, &druid_td_t::dots_t::bloodseeker_vines, s->target ) )
         execute_on_target( tar );
     }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    cat_attack_t::last_tick( d );
+
+    // TODO: confirm this procs on target death
+    if ( bursting )
+      bursting->execute_on_target( d->target );
   }
 
   double composite_target_multiplier( player_t* t ) const override
