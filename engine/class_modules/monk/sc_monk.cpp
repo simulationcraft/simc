@@ -5235,7 +5235,7 @@ struct vivify_t : public monk_heal_t
   {
     parse_options( options_str );
 
-    spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
 
     base_execute_time += p.talent.general.vivacious_vivification->effectN( 1 ).time_value();
 
