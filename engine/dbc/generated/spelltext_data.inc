@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54311
-static const std::array<spelltext_data_t, 22358> __spelltext_data { {
+static const std::array<spelltext_data_t, 22359> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21031,6 +21031,7 @@ static const std::array<spelltext_data_t, 22358> __spelltext_data { {
   { 432804, "The cooldown of Holy Armaments is reduced by $s1%.", 0, 0 },
   { 432821, "The effect of your active Aura is increased by $s1% on targets with your Armaments.", 0, 0 },
   { 432834, "While wielding an Armament the duration of Fear effects is reduced by $s1%.", 0, 0 },
+  { 432846, "$@spelldesc429529", 0, 0 },
   { 432866, "When an Armament fades from you, the cooldown of Lay on Hands is reduced by ${$s1/1000}.1 sec and you gain Shining Light or Infusion of Light", 0, 0 },
   { 432877, "Place a cauldron that allows party and raid members to take flasks of their choosing from among the recipes known by the specialized alchemists in the Warband of the individual who placed the cauldron.\r\r\n\r\r\nThe cauldron lasts for $d and has $432893M1 charges.", 0, 0 },
   { 432878, "$@spelldesc432877", 0, 0 },
