@@ -9557,7 +9557,7 @@ void druid_t::init_spells()
   talent.lunar_calling                  = HT( "Lunar Calling" );
   talent.lunar_insight                  = HT( "Lunar Insight" );
   talent.lunation                       = HT( "Lunation" );
-  talent.moondust                       = HT( "Moondust" );
+  talent.moondust                       = HT( "Moondust" );  // TODO: NYI
   talent.moon_guardian                  = HT( "Moon Guardian" );
   talent.stellar_command                = HT( "Stellar Command" );
   talent.the_eternal_moon               = HT( "The Eternal Moon" );
@@ -13235,6 +13235,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.soul_of_the_forest_cat );
 
   // Hero talents
+  action.apply_affecting_aura( talent.astral_insight );
   action.apply_affecting_aura( talent.early_spring );
   action.apply_affecting_aura( talent.groves_inspiration );
   action.apply_affecting_aura( talent.lunar_calling );
