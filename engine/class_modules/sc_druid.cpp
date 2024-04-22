@@ -669,6 +669,7 @@ public:
     buff_t* root_network;
     buff_t* strategic_infusion;
     buff_t* treants_of_the_moon;  // treant moonfire background heartbeat
+    buff_t* wildshape_mastery;
 
     // Helper pointers
     buff_t* clearcasting;  // clearcasting_cat or clearcasting_tree
@@ -2771,8 +2772,14 @@ struct bear_form_buff_t : public druid_buff_t, public swap_melee_t
     p()->resource_loss( RESOURCE_RAGE, p()->resources.current[ RESOURCE_RAGE ] );
     p()->recalculate_resource_max( RESOURCE_HEALTH );
 
-    p()->buff.ironfur->expire();
     p()->buff.rage_of_the_sleeper->expire();
+
+    make_event( *sim, [ this ] {
+      if ( p()->talent.wildshape_mastery.ok() && p()->get_form() == CAT_FORM )
+        p()->buff.wildshape_mastery->trigger();
+      else
+        p()->buff.ironfur->expire();
+    } );
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -9834,7 +9841,7 @@ void druid_t::init_spells()
   talent.strike_for_the_heart           = HT( "Strike for the Heart" );
   talent.tear_down_the_mighty           = HT( "Tear Down the Mighty" );
   talent.wildpower_surge                = HT( "Wildpower Surge" );
-  talent.wildshape_mastery              = HT( "Wildshape Mastery" );
+  talent.wildshape_mastery              = HT( "Wildshape Mastery" );  // TODO:: heal NYI
 
   // Wildstalker
   talent.bond_with_nature               = HT( "Bond with Nature" );
@@ -10755,6 +10762,10 @@ void druid_t::create_buffs()
   buff.treants_of_the_moon = make_buff_fallback<treants_of_the_moon_buff_t>(
       talent.treants_of_the_moon.ok() && ( talent.force_of_nature.ok() || talent.grove_guardians.ok() ),
           this, "treants_of_the_moon" );
+
+  buff.wildshape_mastery =
+      make_buff_fallback( talent.wildshape_mastery.ok(), this, "wildshape_mastery", find_spell( 441685 ) )
+          ->set_default_value_from_effect( 1, 0.01 );
 
   buff.b_inc_cat  = talent.incarnation_cat.ok()     ? buff.incarnation_cat     : buff.berserk_cat;
   buff.b_inc_bear = talent.incarnation_bear.ok()    ? buff.incarnation_bear    : buff.berserk_bear;
@@ -12210,8 +12221,12 @@ double druid_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
 
+  auto bear_form_mul = buff.bear_form->data().effectN( 4 ).percent();
+
   if ( buff.bear_form->check() )
-    a *= 1.0 + buff.bear_form->data().effectN( 4 ).percent();
+    a *= 1.0 + bear_form_mul;
+  else if ( buff.wildshape_mastery->check() )
+    a *= 1.0 + bear_form_mul * buff.wildshape_mastery->default_value;
 
   a *= 1.0 + buff.ursine_vigor->check_value();
 
@@ -12268,10 +12283,17 @@ double druid_t::composite_attribute_multiplier( attribute_e attr ) const
   switch ( attr )
   {
     case ATTR_STAMINA:
+    {
+      auto bear_form_mul = spec.bear_form_passive->effectN( 2 ).percent() + spec.bear_form_2->effectN( 1 ).percent();
+
       if ( buff.bear_form->check() )
-        m *= 1.0 + spec.bear_form_passive->effectN( 2 ).percent() + spec.bear_form_2->effectN( 1 ).percent();
+        m *= 1.0 + bear_form_mul;
+      else if ( buff.wildshape_mastery->check() )
+        m *= 1.0 + bear_form_mul * buff.wildshape_mastery->default_value;
       break;
-    default: break;
+    }
+    default:
+      break;
   }
 
   return m;
