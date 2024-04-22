@@ -45,9 +45,9 @@ actions.rota+=/whirling_dragon_punch
 actions.rota+=/fists_of_fury
 actions.rota+=/rising_sun_kick
 actions.rota+=/chi_burst
+actions.rota+=/tiger_palm
+actions.rota+=/spinning_crane_kick
 actions.rota+=/blackout_kick
-actions.rota+=/tiger_palm,if=time<120
-actions.rota+=/spinning_crane_kick,if=time>120
 # actions.rota+=/rushing_jade_wind
 
 actions=auto_attack
