@@ -960,6 +960,7 @@ public:
   } talent;
 
   // Shared
+  // TODO: exterminate this strut
   struct shared_t
   {
     const spell_data_t *jadefire_stomp;
@@ -971,6 +972,7 @@ public:
   } shared;
 
   // Specialization
+  // TODO: these are just baseline abilities, renaming this possibly makes sense
   struct specs_t
   {
     // GENERAL
@@ -989,6 +991,9 @@ public:
     const spell_data_t *touch_of_fatality;
     const spell_data_t *vivify;
 
+    struct {
+    } general;
+
     // Brewmaster
     const spell_data_t *blackout_kick_brm;
     const spell_data_t *brewmasters_balance;
@@ -1002,6 +1007,9 @@ public:
     const spell_data_t *touch_of_death_3_brm;
     const spell_data_t *two_hand_adjustment_brm;
 
+    struct {
+    } brewmaster;
+
     // Mistweaver
     const spell_data_t *detox;
     const spell_data_t *expel_harm_2_mw;
@@ -1010,6 +1018,9 @@ public:
     const spell_data_t *mistweaver_monk;
     const spell_data_t *mistweaver_monk_2;
     const spell_data_t *reawaken;
+
+    struct {
+    } mistweaver;
 
     // Windwalker
     const spell_data_t *afterlife;
@@ -1028,6 +1039,9 @@ public:
     const spell_data_t *touch_of_karma;
     const spell_data_t *two_hand_adjustment_ww;
     const spell_data_t *windwalker_monk;
+
+    struct {
+    } windwalker;
   } spec;
 
   struct mastery_spells_t
@@ -1099,6 +1113,9 @@ public:
     const spell_data_t *rushing_jade_wind;
     const spell_data_t *rushing_jade_wind_tick;
 
+    struct {
+    } general;
+
     // Brewmaster
     const spell_data_t *breath_of_fire_dot;
     const spell_data_t *call_to_arms_invoke_niuzao;
@@ -1117,6 +1134,12 @@ public:
     const spell_data_t *heavy_stagger;
     const spell_data_t *stomp;
 
+    struct {
+      const spell_data_t *light_stagger;
+      const spell_data_t *moderate_stagger;
+      const spell_data_t *heavy_stagger;
+    } brewmaster;
+
     // Mistweaver
     const spell_data_t *renewing_mist_heal;
     const spell_data_t *soothing_mist_heal;
@@ -1125,6 +1148,9 @@ public:
     const spell_data_t *zen_pulse_heal;
     const spell_data_t *zen_pulse_echo_damage;
     const spell_data_t *zen_pulse_echo_heal;
+
+    struct {
+    } mistweaver;
 
     // Windwalker
     const spell_data_t *bok_proc;
@@ -1157,6 +1183,9 @@ public:
     const spell_data_t *touch_of_karma_tick;
     const spell_data_t *whirling_dragon_punch_aoe_tick;
     const spell_data_t *whirling_dragon_punch_st_tick;
+
+    struct {
+    } windwalker;
 
     // Tier 29
     const spell_data_t *kicks_of_flowing_momentum;
@@ -1208,23 +1237,18 @@ public:
     double squirm_frequency;
   } user_options;
 
-  // Blizzard rounds it's stagger damage; anything higher than half a percent beyond
-  // the threshold will switch to the next threshold
-  const double light_stagger_threshold;
-  const double moderate_stagger_threshold;
-  const double heavy_stagger_threshold;
-
   struct stagger_t
   {
     enum stagger_level_e
     {
-      NONE_STAGGER     = 0,
-      LIGHT_STAGGER    = 1,
-      MODERATE_STAGGER = 2,
-      HEAVY_STAGGER    = 3,
-      MAX_STAGGER      = 4
+      NONE_STAGGER     = 3,
+      LIGHT_STAGGER    = 2,
+      MODERATE_STAGGER = 1,
+      HEAVY_STAGGER    = 0,
+      MAX_STAGGER      = -1
     };
 
+    // TODO: use this buff to carry the effects of HT and ToN
     struct stagger_buff_t : public actions::monk_buff_t
     {
       stagger_buff_t( monk_t &player, std::string_view name, const spell_data_t* spell );
@@ -1233,7 +1257,9 @@ public:
     struct stagger_level_t
     {
       const double max_percent;
+      const stagger_level_e level;
       propagate_const<stagger_buff_t *> debuff;
+      sample_data_helper_t *absorbed;
       sample_data_helper_t *taken;
       sample_data_helper_t *mitigated;
 
@@ -1242,41 +1268,48 @@ public:
 
     struct sample_data_t
     {
-      sc_timeline_t effective_damage;  // raw stagger in pool
-      sc_timeline_t pool_size;         // pool as a fraction of current maximum hp
-      sc_timeline_t effectiveness;     // stagger effectiveness
+      sc_timeline_t *pool_size;         // raw stagger in pool
+      sc_timeline_t *pool_size_percent; // pool as a fraction of current maximum hp
+      sc_timeline_t *effectiveness;     // stagger effectiveness
       // assert(absorbed == taken + mitigated)
       // assert(sum(cleared) == mitigated)
       sample_data_helper_t *absorbed;
       sample_data_helper_t *taken;
       sample_data_helper_t *mitigated;
       std::unordered_map<std::string_view, sample_data_helper_t *> mitigated_by_ability;
+
+      sample_data_t( monk_t *player );
     };
 
     struct self_damage_t : residual_action::residual_periodic_action_t<actions::monk_spell_t>
     {
       using base_t = residual_action::residual_periodic_action_t<actions::monk_spell_t>;
-      dot_t *dot;
 
       self_damage_t( monk_t *player );
-      // void init() override;
-      // proc_types proc_type() const override;
-      // void impact( action_state_t *state ) override;
-      // void assess_damage( result_amount_type type, action_state_t *state ) override;
-      // void last_tick( dot_t *d ) override;
+      proc_types proc_type() const override;
+      void impact( action_state_t *state ) override;                                  // add to pool
+      void assess_damage( result_amount_type type, action_state_t *state ) override;  // tick from pool
+      void last_tick( dot_t *d ) override;                                            // callback on last tick
     };
 
-    sample_data_t sample_data;
+  private:
+    monk_t *player;
     std::vector<stagger_level_t *> stagger_levels;
     stagger_level_t *current;
-    self_damage_t *self_damage;
-    monk_t *player;
 
+    void damage_changed( bool last_tick = false );
+    void set_pool( double amount );
+
+  public:
+    self_damage_t *self_damage;
+    sample_data_t *sample_data;
     stagger_t( monk_t* player );
 
     double base_value();
     double percent( unsigned target_level );
     static double max_threshold( stagger_level_e level );
+    stagger_level_e current_threshold();
+    static std::string level_name( stagger_level_e level );
 
     double pool_size();
     double pool_size_percent();
@@ -1284,10 +1317,8 @@ public:
     double tick_size_percent();
     bool is_ticking();
     timespan_t remains();
-    bool current_threshold( stagger_level_e level );
 
-    void damage_changed( bool last_tick = false );
-    double purify_flat( double amount );
+    double purify_flat( double amount, bool report_amount = true );
     double purify_percent( double amount );
     double purify_all();
     void delay_tick( timespan_t delay );
@@ -1327,7 +1358,9 @@ x    *   * bool has_stagger(); // is_ticking() on active dot
      *   * double calculate_last_stagger_tick_damage( int n ) const; // used by exprn to return last k stagger ticks taken
      what does get_dot do for residual_periodic_action_t
      */
-  } stagger;
+  };
+
+  stagger_t *stagger;
 
 private:
   target_specific_t<monk_td_t> target_data;
