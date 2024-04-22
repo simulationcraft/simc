@@ -313,6 +313,7 @@ struct hunter_td_t: public actor_target_data_t
     dot_t* a_murder_of_crows;
     dot_t* pheromone_bomb;
     dot_t* shrapnel_bomb;
+    dot_t* black_arrow;
   } dots;
 
   hunter_td_t( player_t* target, hunter_t* p );
@@ -449,6 +450,8 @@ public:
     cooldown_t* flanking_strike;
     cooldown_t* fury_of_the_eagle;
     cooldown_t* ruthless_marauder;
+
+    cooldown_t* black_arrow;
   } cooldowns;
 
   // Gains
@@ -461,6 +464,8 @@ public:
 
     gain_t* terms_of_engagement;
     gain_t* coordinated_kill;
+
+    gain_t* dark_empowerment;
   } gains;
 
   // Procs
@@ -675,23 +680,23 @@ public:
     spell_data_ptr_t black_arrow;
 
     spell_data_ptr_t overshadow;
-    spell_data_ptr_t shadow_hounds;
+    spell_data_ptr_t shadow_hounds; // TODO
     spell_data_ptr_t death_shade;
 
     spell_data_ptr_t dark_empowerment;
     spell_data_ptr_t grave_reaper;
-    spell_data_ptr_t embrace_the_shadows;
-    spell_data_ptr_t smoke_screen;
-    spell_data_ptr_t dark_chains;
+    spell_data_ptr_t embrace_the_shadows;  // TODO
+    spell_data_ptr_t smoke_screen;         // TODO
+    spell_data_ptr_t dark_chains;          // TODO
 
-    spell_data_ptr_t shadow_lash;
-    spell_data_ptr_t shadow_surge;
-    spell_data_ptr_t darkness_calls;
-    spell_data_ptr_t shadow_erasure;
+    spell_data_ptr_t shadow_lash;   // TODO partial
+    spell_data_ptr_t shadow_surge;  // TODO
+    spell_data_ptr_t darkness_calls;  // TODO
+    spell_data_ptr_t shadow_erasure;  // TODO
 
-    spell_data_ptr_t withering_fire;
+    spell_data_ptr_t withering_fire;  // TODO
 
-    // Pack Leader
+    // TODO: Pack Leader
     spell_data_ptr_t vicious_hunt;
 
     spell_data_ptr_t pack_coordination;
@@ -711,7 +716,7 @@ public:
 
     spell_data_ptr_t pack_assault;
 
-    // Sentinel
+    // TODO: Sentinel
     spell_data_ptr_t sentinel;
 
     spell_data_ptr_t dont_look_back;
@@ -822,6 +827,8 @@ public:
     cooldowns.flanking_strike       = get_cooldown( "flanking_strike");
     cooldowns.fury_of_the_eagle     = get_cooldown( "fury_of_the_eagle" );
     cooldowns.ruthless_marauder     = get_cooldown( "ruthless_marauder" );
+
+    cooldowns.black_arrow = get_cooldown( "black_arrow" );
 
     base_gcd = 1.5_s;
 
@@ -1012,13 +1019,13 @@ public:
     ab::apply_affecting_aura( p -> talents.dead_eye );
     ab::apply_affecting_aura( p -> talents.tactical_reload );
 
-    // Beast Mastery Tree Passives
+    // Beast Mastery Tree passives
     ab::apply_affecting_aura( p -> talents.killer_command );
     ab::apply_affecting_aura( p -> talents.sharp_barbs );
     ab::apply_affecting_aura( p -> talents.war_orders );
     ab::apply_affecting_aura( p -> talents.savagery );
 
-    // Survival Tree Passives
+    // Survival Tree passives
     ab::apply_affecting_aura( p -> talents.terms_of_engagement );
     ab::apply_affecting_aura( p -> talents.guerrilla_tactics );
     ab::apply_affecting_aura( p -> talents.lunge );
@@ -1029,7 +1036,7 @@ public:
     ab::apply_affecting_aura( p -> talents.ranger );
     ab::apply_affecting_aura( p -> talents.explosives_expert );
 
-    // passive set bonuses
+    // Set Bonus passives
     ab::apply_affecting_aura( p -> tier_set.t29_bm_4pc );
     ab::apply_affecting_aura( p -> tier_set.t29_sv_2pc );
 
@@ -1039,6 +1046,9 @@ public:
     ab::apply_affecting_aura( p -> tier_set.t30_sv_2pc );
 
     ab::apply_affecting_aura( p -> tier_set.t31_mm_2pc );
+
+    // Hero Tree passives
+    ab::apply_affecting_aura( p->talents.overshadow );
   }
 
   hunter_t* p()             { return static_cast<hunter_t*>( ab::player ); }
@@ -1491,6 +1501,7 @@ public:
     ab::apply_affecting_aura( o() -> talents.killer_command );
     ab::apply_affecting_aura( o() -> tier_set.t30_bm_2pc );
     ab::apply_affecting_aura( o() -> talents.savagery );
+    ab::apply_affecting_aura( o() -> talents.overshadow );
   }
 
   T_PET* p()             { return static_cast<T_PET*>( ab::player ); }
@@ -3819,6 +3830,9 @@ struct black_arrow_t : public hunter_ranged_attack_t
 {
   double recharge_chance;
   cooldown_t* recharge_cooldown = nullptr;
+  buff_t* impact_buff = nullptr;
+  double focus_gain;
+  buff_t* cooldown_buff = nullptr;
 
   black_arrow_t( hunter_t* p, util::string_view options_str )
     : hunter_ranged_attack_t( "black_arrow", p, p->talents.black_arrow )
@@ -3828,20 +3842,56 @@ struct black_arrow_t : public hunter_ranged_attack_t
     recharge_chance = data().effectN( 2 ).percent();
 
     if ( p->specialization() == HUNTER_MARKSMANSHIP )
+    {
       recharge_cooldown = p->cooldowns.aimed_shot;
+      impact_buff       = p->buffs.deathblow;
+      cooldown_buff     = p->buffs.trueshot;
+    }
+
     if ( p->specialization() == HUNTER_BEAST_MASTERY )
+    {
       recharge_cooldown = p->cooldowns.barbed_shot;
+      impact_buff       = p->buffs.hunters_prey;
+      cooldown_buff     = p->buffs.call_of_the_wild;
+    }
+
+    if ( p->talents.dark_empowerment.ok() )
+      focus_gain = p->find_spell( 442511 )->effectN(1).base_value();
 
     tick_zero = true;
+  }
+
+  timespan_t tick_time( const action_state_t* state ) const override
+  {
+    timespan_t t = hunter_ranged_attack_t::tick_time( state );
+
+    if ( p()->talents.shadow_lash.ok() && cooldown_buff->up() )
+    {
+      // TODO: use 444354
+      t /= 1.5;
+    }
+
+    return t;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( p()->talents.death_shade.ok() )
+      impact_buff->trigger();
   }
 
   void tick( dot_t* d ) override
   {
     hunter_ranged_attack_t::tick( d );
 
-    if ( recharge_cooldown && rng().roll( recharge_chance ) )
+    if ( rng().roll( recharge_chance ) )
     {
       recharge_cooldown->reset( true );
+
+      if ( p()->talents.dark_empowerment )
+        p()->resource_gain( RESOURCE_FOCUS, focus_gain, p()->gains.dark_empowerment, this );
     }
   }
 };
@@ -5614,8 +5664,8 @@ struct kill_command_t: public hunter_spell_t
     p() -> buffs.cobra_sting -> up(); // benefit tracking
     p() -> buffs.cobra_sting -> decrement();
 
-    if ( p() -> buffs.hunters_prey -> trigger() )
-      p() -> cooldowns.kill_shot -> reset( true );
+    if ( rng().roll( p()->talents.hunters_prey->effectN( 1 ).percent() ) )
+      p()->buffs.hunters_prey->trigger();
 
     if ( rng().roll( p() -> tier_set.t29_bm_2pc -> proc_chance() ) )
       p() -> cooldowns.barbed_shot -> reset( true );
@@ -6576,6 +6626,7 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
   dots.pheromone_bomb = target -> get_dot( "pheromone_bomb", p );
   dots.shrapnel_bomb = target -> get_dot( "shrapnel_bomb", p );
+  dots.black_arrow = target->get_dot( "black_arrow", p );
 
   target -> register_on_demise_callback( p, [this](player_t*) { target_demise(); } );
 }
@@ -6597,6 +6648,12 @@ void hunter_td_t::target_demise()
   {
     p -> sim -> print_debug( "{} harpoon cooldown reset on damaged target death.", p -> name() );
     p -> cooldowns.harpoon -> reset( true );
+  }
+
+  if ( p->talents.grave_reaper.ok() && dots.black_arrow->is_ticking() )
+  {
+    p->sim->print_debug( "{} black_arrow cooldown reduces on target death.", p->name() );
+    p->cooldowns.black_arrow->adjust( -timespan_t::from_seconds( p->talents.grave_reaper->effectN( 1 ).base_value() ) );
   }
 
   damaged = false;
@@ -6992,25 +7049,28 @@ void hunter_t::init_spells()
     talents.deadly_duo                        = find_talent_spell( talent_tree::SPECIALIZATION, "Deadly Duo", HUNTER_SURVIVAL );
   }
 
-  // Dark Ranger
-  talents.black_arrow = find_talent_spell( talent_tree::HERO, "Black Arrow" );
+  if ( specialization() == HUNTER_MARKSMANSHIP || specialization() == HUNTER_BEAST_MASTERY )
+  {
+    // Dark Ranger
+    talents.black_arrow = find_talent_spell( talent_tree::HERO, "Black Arrow" );
 
-  talents.overshadow    = find_talent_spell( talent_tree::HERO, "Overshadow" );
-  talents.shadow_hounds = find_talent_spell( talent_tree::HERO, "Shadow Hounds" );
-  talents.death_shade   = find_talent_spell( talent_tree::HERO, "Death Shade" );
+    talents.overshadow    = find_talent_spell( talent_tree::HERO, "Overshadow" );
+    talents.shadow_hounds = find_talent_spell( talent_tree::HERO, "Shadow Hounds" );
+    talents.death_shade   = find_talent_spell( talent_tree::HERO, "Death Shade" );
 
-  talents.dark_empowerment    = find_talent_spell( talent_tree::HERO, "Dark Empowerment" );
-  talents.grave_reaper        = find_talent_spell( talent_tree::HERO, "Grave Reaper" );
-  talents.embrace_the_shadows = find_talent_spell( talent_tree::HERO, "Embrace the Shadows" );
-  talents.smoke_screen        = find_talent_spell( talent_tree::HERO, "Smoke Screen" );
-  talents.dark_chains         = find_talent_spell( talent_tree::HERO, "Dark Chains" );
+    talents.dark_empowerment    = find_talent_spell( talent_tree::HERO, "Dark Empowerment" );
+    talents.grave_reaper        = find_talent_spell( talent_tree::HERO, "Grave Reaper" );
+    talents.embrace_the_shadows = find_talent_spell( talent_tree::HERO, "Embrace the Shadows" );
+    talents.smoke_screen        = find_talent_spell( talent_tree::HERO, "Smoke Screen" );
+    talents.dark_chains         = find_talent_spell( talent_tree::HERO, "Dark Chains" );
 
-  talents.shadow_lash    = find_talent_spell( talent_tree::HERO, "Shadow Lash" );
-  talents.shadow_surge   = find_talent_spell( talent_tree::HERO, "Shadow Surge" );
-  talents.darkness_calls = find_talent_spell( talent_tree::HERO, "Darkness Calls" );
-  talents.shadow_erasure = find_talent_spell( talent_tree::HERO, "Shadow Erasure" );
+    talents.shadow_lash    = find_talent_spell( talent_tree::HERO, "Shadow Lash" );
+    talents.shadow_surge   = find_talent_spell( talent_tree::HERO, "Shadow Surge" );
+    talents.darkness_calls = find_talent_spell( talent_tree::HERO, "Darkness Calls" );
+    talents.shadow_erasure = find_talent_spell( talent_tree::HERO, "Shadow Erasure" );
 
-  talents.withering_fire = find_talent_spell( talent_tree::HERO, "Withering Fire" );
+    talents.withering_fire = find_talent_spell( talent_tree::HERO, "Withering Fire" );
+  }
 
   // Pack Leader
   talents.vicious_hunt = find_talent_spell( talent_tree::HERO, "Vicious Hunt" );
@@ -7359,8 +7419,14 @@ void hunter_t::create_buffs()
       -> set_default_value_from_effect( 1 );
 
   buffs.hunters_prey =
-    make_buff( this, "hunters_prey", talents.hunters_prey -> effectN( 1 ).trigger() )
-      -> set_chance( talents.hunters_prey -> effectN( 1 ).percent() );
+    make_buff( this, "hunters_prey", find_spell( 378215 ) )
+      -> set_stack_change_callback(
+        [ this ]( buff_t*, int old, int ) {
+          if ( old == 0 ) {
+            cooldowns.kill_shot -> reset( true );
+          }
+        } )
+      -> set_activated( false );
 
   buffs.call_of_the_wild =
     make_buff( this, "call_of_the_wild", talents.call_of_the_wild )
@@ -7548,6 +7614,8 @@ void hunter_t::init_gains()
 
   gains.terms_of_engagement    = get_gain( "Terms of Engagement" );
   gains.coordinated_kill       = get_gain( "Coordinated Kill" );
+
+  gains.dark_empowerment = get_gain( "Dark Empowerment" );
 }
 
 // hunter_t::init_position ==================================================

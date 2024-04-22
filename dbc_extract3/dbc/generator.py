@@ -1585,6 +1585,8 @@ class SpellDataGenerator(DataGenerator):
           ( 361736, 5 ), # Coordinated Assault (pet buff)
           ( 219199, 1 ), # Dire Beast (summon)
           ( 426703, 5), # Dire Beast Kill Command
+          # Hero Talents
+          ( 444354, 0), # Shadow Lash
         ),
 
         # Rogue:
