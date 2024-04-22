@@ -13379,6 +13379,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.astral_insight );
   action.apply_affecting_aura( talent.early_spring );
   action.apply_affecting_aura( talent.groves_inspiration );
+  action.apply_affecting_aura( talent.hunt_beneath_the_open_skies );
   action.apply_affecting_aura( talent.lunar_calling );
   action.apply_affecting_aura( talent.lunar_insight );
   action.apply_affecting_aura( talent.stellar_command );
