@@ -9826,7 +9826,7 @@ void druid_t::init_spells()
   talent.claw_rampage                   = HT( "Claw Rampage" );
   talent.dreadful_wound                 = HT( "Dreadful Wound" );
   talent.empowered_shapeshifting        = HT( "Empowered Shapeshifting" );
-  talent.fount_of_strength              = HT( "Fount of Strength" );
+  talent.fount_of_strength              = HT( "Fount of Strength" );  // TODO: FR hp buff NYI
   talent.killing_strikes                = HT( "Killing Strikes" );
   talent.packs_endurance                = HT( "Pack's Endurance" );
   talent.ravage                         = HT( "Ravage" );
@@ -9997,18 +9997,20 @@ void druid_t::init_base_stats()
 
   player_t::init_base_stats();
 
-  base.attack_power_per_agility = specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ? 1.0 : 0.0;
+  base.attack_power_per_agility  = specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ? 1.0 : 0.0;
   base.spell_power_per_intellect = specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION ? 1.0 : 0.0;
   base.armor_multiplier *= 1.0 + find_effect( talent.killer_instinct, A_MOD_BASE_RESISTANCE_PCT ).percent();
 
   // Resources
-  resources.base[ RESOURCE_RAGE ]         = 100;
+  resources.base[ RESOURCE_RAGE ]         = 100 +
+                                            find_effect( talent.fount_of_strength, A_MOD_MAX_RESOURCE ).resource( RESOURCE_RAGE );
   resources.base[ RESOURCE_COMBO_POINT ]  = 5;
   resources.base[ RESOURCE_ASTRAL_POWER ] = 100 +
-                                            find_effect( talent.astral_communion, A_MOD_MAX_RESOURCE ).resource() +
-                                            find_effect( talent.expansiveness, A_MOD_MAX_RESOURCE ).resource();
+                                            find_effect( talent.astral_communion, A_MOD_MAX_RESOURCE ).resource( RESOURCE_ASTRAL_POWER ) +
+                                            find_effect( talent.expansiveness, A_MOD_MAX_RESOURCE ).resource( RESOURCE_ASTRAL_POWER );
   resources.base[ RESOURCE_ENERGY ]       = 100 +
-                                            find_effect( talent.tireless_energy, A_MOD_INCREASE_ENERGY ).resource();
+                                            find_effect( talent.tireless_energy, A_MOD_INCREASE_ENERGY ).resource( RESOURCE_ENERGY ) +
+                                            find_effect( talent.fount_of_strength, A_MOD_MAX_RESOURCE ).resource( RESOURCE_ENERGY );
 
   resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + find_effect( talent.expansiveness, A_MOD_MANA_POOL_PCT ).percent();
 
