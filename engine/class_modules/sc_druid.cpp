@@ -4208,6 +4208,9 @@ struct feral_frenzy_t : public cat_attack_t
     cat_attack_t::execute();
 
     p()->buff.bt_feral_frenzy->trigger();
+
+    if ( p()->talent.implant.ok() && !is_free_proc() && p()->active.bloodseeker_vines )
+      p()->active.bloodseeker_vines->execute_on_target( target );
   }
 };
 
