@@ -119,6 +119,7 @@ struct druid_td_t : public actor_target_data_t
 
   struct debuffs_t
   {
+    buff_t* atmospheric_exposure;
     buff_t* pulverize;
     buff_t* sabertooth;
     buff_t* tooth_and_claw;
@@ -1100,6 +1101,9 @@ public:
 
     // Resto
     const spell_data_t* cenarius_guidance;
+
+    // Hero Talent
+    const spell_data_t* atmospheric_exposure;  // atmospheric exposure debuff
   } spec;
 
   struct uptimes_t
@@ -1824,20 +1828,17 @@ public:
 
   void apply_debuffs_effects()
   {
+    // Balance
     parse_target_effects( d_fn( &druid_td_t::dots_t::moonfire ),
                           p()->spec.moonfire_dmg, p()->mastery.astral_invocation );
     parse_target_effects( d_fn( &druid_td_t::dots_t::sunfire ),
                           p()->spec.sunfire_dmg, p()->mastery.astral_invocation );
-    parse_target_effects( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage, false ),
-                          p()->spec.adaptive_swarm_damage, p()->spec_spell );
-    parse_target_effects( d_fn( &druid_td_t::dots_t::thrash_bear ),
-                          p()->spec.thrash_bear_bleed, p()->talent.rend_and_tear );
     parse_target_effects( d_fn( &druid_td_t::debuffs_t::waning_twilight ),
                           p()->spec.waning_twilight, p()->talent.waning_twilight );
-    parse_target_effects( d_fn( &druid_td_t::debuffs_t::sabertooth ),
-                          p()->spec.sabertooth, p()->talent.sabertooth->effectN( 2 ).base_value() );
 
-
+    // Feral
+    parse_target_effects( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage, false ),
+                          p()->spec.adaptive_swarm_damage, p()->spec_spell );
     if ( p()->talent.incarnation_cat.ok() && p()->talent.ashamanes_guidance.ok() )
     {
       parse_target_effects( [ p = p() ]( druid_td_t* td )
@@ -1847,6 +1848,16 @@ public:
           { return p->buff.ashamanes_guidance->check() && td->dots.rake->is_ticking(); },
           find_trigger( p()->talent.rake ).trigger(), p()->spec.ashamanes_guidance_buff );
     }
+    parse_target_effects( d_fn( &druid_td_t::debuffs_t::sabertooth ),
+                          p()->spec.sabertooth, p()->talent.sabertooth->effectN( 2 ).base_value() );
+
+    // Guardian
+    parse_target_effects( d_fn( &druid_td_t::dots_t::thrash_bear ),
+                          p()->spec.thrash_bear_bleed, p()->talent.rend_and_tear );
+
+    // Hero talent
+    parse_target_effects( d_fn( &druid_td_t::debuffs_t::atmospheric_exposure ),
+                          p()->spec.atmospheric_exposure );
   }
 
   // lazy shortcuts so i don't have to type 'ab::'
@@ -1929,6 +1940,30 @@ public:
 };
 
 template <typename BASE>
+struct trigger_atmospheric_exposure_t : public BASE
+{
+private:
+  druid_t* p_;
+
+public:
+  using base_t = trigger_atmospheric_exposure_t<BASE>;
+
+  trigger_atmospheric_exposure_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f ), p_( p )
+  {}
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+
+    if ( !action_t::result_is_hit( s->result ) )
+      return;
+
+    BASE::td( s->target )->debuff.atmospheric_exposure->trigger();
+  }
+};
+
+template <typename BASE>
 struct trigger_gore_t : public BASE
 {
 private:
@@ -1945,13 +1980,13 @@ public:
   {
     BASE::impact( s );
 
-    if ( action_t::result_is_hit ( s->result ) )
+    if ( !action_t::result_is_hit ( s->result ) )
+      return;
+
+    if ( p_->buff.gore->trigger() )
     {
-      if ( p_->buff.gore->trigger() )
-      {
-        p_->proc.gore->occur();
-        p_->cooldown.mangle->reset( true );
-      }
+      p_->proc.gore->occur();
+      p_->cooldown.mangle->reset( true );
     }
   }
 };
@@ -5028,6 +5063,74 @@ struct ironfur_t : public trigger_indomitable_guardian_t<rage_spender_t<>>
   }
 };
 
+// Lunar Beam ===============================================================
+struct lunar_beam_t : public bear_attack_t
+{
+  struct lunar_beam_heal_t : public druid_heal_t
+  {
+    lunar_beam_heal_t( druid_t* p, flag_e f ) : druid_heal_t( "lunar_beam_heal", p, p->find_spell( 204069 ), f )
+    {
+      background = true;
+      name_str_reporting = "Heal";
+
+      target = p;
+    }
+  };
+
+  struct lunar_beam_tick_t : public trigger_atmospheric_exposure_t<bear_attack_t>
+  {
+    lunar_beam_tick_t( druid_t* p, flag_e f ) : base_t( "lunar_beam_tick", p, p->find_spell( 414613 ), f )
+    {
+      background = dual = ground_aoe = true;
+      aoe = -1;
+
+      execute_action = p->get_secondary_action<lunar_beam_heal_t>( "lunar_beam_heal", f );
+
+      if ( !p->buff.lunar_amplification->is_fallback && !is_free_proc() )
+      {
+        range::erase_remove( da_multiplier_effects, [ & ]( const auto& e ) {
+          return e.buff == p->buff.lunar_amplification;
+        } );
+
+        const auto& eff = p->buff.lunar_amplification->data().effectN( 1 );
+        add_parse_entry( persistent_multiplier_effects )
+          .set_buff( p->buff.lunar_amplification )
+          .set_value( eff.percent() )
+          .set_eff( &eff );
+      }
+    }
+  };
+
+  action_t* damage = nullptr;
+
+  DRUID_ABILITY( lunar_beam_t, bear_attack_t, "lunar_beam", p->talent.lunar_beam )
+  {
+    if ( data().ok() )
+    {
+      damage = p->get_secondary_action<lunar_beam_tick_t>( "lunar_beam_tick", f );
+      replace_stats( damage );
+    }
+  }
+
+  // needed to allow on-cast procs
+  bool has_amount_result() const override { return damage->has_amount_result(); }
+
+  void execute() override
+  {
+    bear_attack_t::execute();
+
+    p()->buff.lunar_beam->trigger();
+
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+      .target( target )
+      .x( p()->x_position )
+      .y( p()->y_position )
+      .pulse_time( 1_s )
+      .duration( p()->buff.lunar_beam->buff_duration() )
+      .action( damage ) );
+  }
+};
+
 // Mangle ===================================================================
 struct mangle_t : public bear_attack_t
 {
@@ -6622,9 +6725,9 @@ struct force_of_nature_t : public druid_spell_t
 // Fury of Elune =========================================================
 struct fury_of_elune_t : public druid_spell_t
 {
-  struct fury_of_elune_tick_t : public druid_spell_t
+  struct fury_of_elune_tick_t : public trigger_atmospheric_exposure_t<druid_spell_t>
   {
-    fury_of_elune_tick_t( druid_t* p, std::string_view n, const spell_data_t* s, flag_e f ) : druid_spell_t( n, p, s, f )
+    fury_of_elune_tick_t( druid_t* p, std::string_view n, const spell_data_t* s, flag_e f ) : base_t( n, p, s, f )
     {
       background = dual = ground_aoe = true;
       aoe = -1;
@@ -6647,7 +6750,7 @@ struct fury_of_elune_t : public druid_spell_t
 
     void impact( action_state_t* s ) override
     {
-      druid_spell_t::impact( s );
+      base_t::impact( s );
 
       p()->eclipse_handler.tick_fury_of_elune();
     }
@@ -6780,74 +6883,6 @@ struct innervate_t : public druid_spell_t
   }
 };
 
-// Lunar Beam ===============================================================
-struct lunar_beam_t : public druid_spell_t
-{
-  struct lunar_beam_heal_t : public druid_heal_t
-  {
-    lunar_beam_heal_t( druid_t* p, flag_e f ) : druid_heal_t( "lunar_beam_heal", p, p->find_spell( 204069 ), f )
-    {
-      background = true;
-      name_str_reporting = "Heal";
-
-      target = p;
-    }
-  };
-
-  struct lunar_beam_tick_t : public druid_spell_t
-  {
-    lunar_beam_tick_t( druid_t* p, flag_e f ) : druid_spell_t( "lunar_beam_tick", p, p->find_spell( 414613 ), f )
-    {
-      background = dual = ground_aoe = true;
-      aoe = -1;
-
-      execute_action = p->get_secondary_action<lunar_beam_heal_t>( "lunar_beam_heal", f );
-
-      if ( !p->buff.lunar_amplification->is_fallback && !is_free_proc() )
-      {
-        range::erase_remove( da_multiplier_effects, [ & ]( const auto& e ) {
-          return e.buff == p->buff.lunar_amplification;
-        } );
-
-        const auto& eff = p->buff.lunar_amplification->data().effectN( 1 );
-        add_parse_entry( persistent_multiplier_effects )
-          .set_buff( p->buff.lunar_amplification )
-          .set_value( eff.percent() )
-          .set_eff( &eff );
-      }
-    }
-  };
-
-  action_t* damage = nullptr;
-
-  DRUID_ABILITY( lunar_beam_t, druid_spell_t, "lunar_beam", p->talent.lunar_beam )
-  {
-    if ( data().ok() )
-    {
-      damage = p->get_secondary_action<lunar_beam_tick_t>( "lunar_beam_tick", f );
-      replace_stats( damage );
-    }
-  }
-
-  // needed to allow on-cast procs
-  bool has_amount_result() const override { return damage->has_amount_result(); }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p()->buff.lunar_beam->trigger();
-
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-      .target( target )
-      .x( p()->x_position )
-      .y( p()->y_position )
-      .pulse_time( 1_s )
-      .duration( p()->buff.lunar_beam->buff_duration() )
-      .action( damage ) );
-  }
-};
-
 // Mark of the Wild =========================================================
 struct mark_of_the_wild_t : public druid_spell_t
 {
@@ -6896,7 +6931,8 @@ struct moon_base_t : public druid_spell_t
   action_t* crescent = nullptr;
   unsigned num_crescent = 0;
 
-  moon_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f, moon_stage_e moon )
+  moon_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f,
+               moon_stage_e moon = moon_stage_e::FULL_MOON )
     : druid_spell_t( n, p, s, f ), stage( moon )
   {
     if ( data().ok() && p->talent.boundless_moonlight.ok() )
@@ -6993,9 +7029,9 @@ struct half_moon_t : public moon_base_t
 };
 
 // Full Moon Spell ==========================================================
-struct full_moon_t : public moon_base_t
+struct full_moon_t : public trigger_atmospheric_exposure_t<moon_base_t>
 {
-  DRUID_ABILITY_B( full_moon_t, moon_base_t, "full_moon", p->spec.full_moon, moon_stage_e::FULL_MOON )
+  DRUID_ABILITY( full_moon_t, base_t, "full_moon", p->spec.full_moon )
   {
     aoe = -1;
     reduced_aoe_targets = 1.0;
@@ -7030,7 +7066,7 @@ struct full_moon_t : public moon_base_t
     if ( p()->moon_stage == max_stage )
       p()->moon_stage = moon_stage_e::NEW_MOON;
     else
-      moon_base_t::advance_stage();
+      base_t::advance_stage();
   }
 };
 
@@ -9590,6 +9626,9 @@ void druid_t::init_spells()
 
   // Restoration Abilities
   spec.cenarius_guidance        = check( talent.cenarius_guidance, talent.convoke_the_spirits.ok() ? 393374 : 393381 );
+
+  // Hero Talents
+  spec.atmospheric_exposure    =  check( talent.atmospheric_exposure, 430589 );
 
   // Masteries ==============================================================
   mastery.harmony             = find_mastery_spell( DRUID_RESTORATION );
@@ -12524,6 +12563,9 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     hots.spring_blossoms       = target.get_dot( "spring_blossoms", &source );
     hots.wild_growth           = target.get_dot( "wild_growth", &source );
   }
+
+  debuff.atmospheric_exposure = make_buff_fallback( source.talent.atmospheric_exposure.ok() && target.is_enemy(),
+      *this, "atmospheric_exposure", source.spec.atmospheric_exposure );
 
   debuff.pulverize = make_buff_fallback( source.talent.pulverize.ok() && target.is_enemy(),
       *this, "pulverize_debuff", source.talent.pulverize )
