@@ -89,6 +89,7 @@ struct druid_td_t : public actor_target_data_t
   {
     dot_t* adaptive_swarm_damage;
     dot_t* astral_smolder;
+    dot_t* bloodseeker_vines;
     dot_t* feral_frenzy;
     dot_t* frenzied_assault;
     dot_t* fungal_growth;
@@ -120,6 +121,7 @@ struct druid_td_t : public actor_target_data_t
   struct debuffs_t
   {
     buff_t* atmospheric_exposure;
+    buff_t* bloodseeker_vines;
     buff_t* pulverize;
     buff_t* sabertooth;
     buff_t* tooth_and_claw;
@@ -492,6 +494,7 @@ public:
     action_t* yseras_gift;
 
     // Hero talents
+    action_t* bloodseeker_vines;
     action_t* boundless_moonlight_heal;
     action_t* dream_burst;
     action_t* the_light_of_elune;
@@ -1108,6 +1111,7 @@ public:
 
     // Hero Talent
     const spell_data_t* atmospheric_exposure;  // atmospheric exposure debuff
+    const spell_data_t* bloodseeker_vines;
   } spec;
 
   struct uptimes_t
@@ -4072,6 +4076,29 @@ struct incarnation_cat_t : public berserk_cat_base_t
   }
 };
 
+// Bloodseeker Vines ========================================================
+struct bloodseeker_vines_t : public cat_attack_t
+{
+  bloodseeker_vines_t( druid_t* p ) : cat_attack_t( "bloodseeker_vines", p, p->spec.bloodseeker_vines )
+  {
+    dot_max_stack = 1;
+    dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
+  }
+
+  void trigger_dot( action_state_t* s ) override
+  {
+    cat_attack_t::trigger_dot( s );
+
+    // execute() instead of trigger() to avoid proc delay
+    td( s->target )->debuff.bloodseeker_vines->execute();
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    return cat_attack_t::composite_target_multiplier( t ) * td( t )->debuff.bloodseeker_vines->check();
+  }
+};
+
 // Brutal Slash =============================================================
 struct brutal_slash_t : public trigger_thrashing_claws_t<cat_attack_t>
 {
@@ -4335,6 +4362,15 @@ struct rake_t : public cat_attack_t
       dot_name = "rake";
     }
 
+    void tick( dot_t* d ) override
+    {
+      base_t::tick( d );
+
+      // TODO: placeholder value
+      if ( rng().roll( 0.2 ) )
+        p()->active.bloodseeker_vines->execute_on_target( d->target );
+    }
+
     // read persistent mul off the parent rake's table for reporting
     void print_parsed_custom_type( report::sc_html_stream& os ) override
     {
@@ -4505,6 +4541,10 @@ struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
 
     if ( rng().roll( c ) )
       p()->buff.apex_predators_craving->trigger();
+
+    // TODO: placeholder value
+    if ( rng().roll( 0.2 ) )
+      p()->active.bloodseeker_vines->execute_on_target( d->target );
   }
 };
 
@@ -9603,7 +9643,7 @@ void druid_t::init_spells()
   talent.resilient_flourishing          = HT( "Resilient Flourishing" );
   talent.root_network                   = HT( "Root Network" );
   talent.strategic_infusion             = HT( "Strategic Infusion" );
-  talent.thriving_growth                = HT( "Thriving Growth" );
+  talent.thriving_growth                = HT( "Thriving Growth" );  // TODO: heal NYI
   talent.twin_sprouts                   = HT( "Twin Sprouts" );
   talent.vigorous_creepers              = HT( "Vigorous Creepers" );
   talent.wildstalkers_persistence       = HT( "Wildstalker's Persistence" );
@@ -9708,7 +9748,8 @@ void druid_t::init_spells()
   spec.cenarius_guidance        = check( talent.cenarius_guidance, talent.convoke_the_spirits.ok() ? 393374 : 393381 );
 
   // Hero Talents
-  spec.atmospheric_exposure    =  check( talent.atmospheric_exposure, 430589 );
+  spec.atmospheric_exposure     = check( talent.atmospheric_exposure, 430589 );
+  spec.bloodseeker_vines        = check( talent.thriving_growth, 439531 );
 
   // Masteries ==============================================================
   mastery.harmony             = find_mastery_spell( DRUID_RESTORATION );
@@ -10687,6 +10728,9 @@ void druid_t::create_actions()
     foe->duration_override = talent.the_light_of_elune->effectN( 2 ).time_value();
     active.the_light_of_elune = foe;
   }
+
+  if ( talent.thriving_growth.ok() )
+    active.bloodseeker_vines = get_secondary_action<bloodseeker_vines_t>( "bloodseeker_vines" );
 
   if ( talent.treants_of_the_moon.ok() )
   {
@@ -12626,6 +12670,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   {
     dots.adaptive_swarm_damage = target.get_dot( "adaptive_swarm_damage", &source );
     dots.astral_smolder        = target.get_dot( "astral_smolder", &source );
+    dots.bloodseeker_vines     = target.get_dot( "bloodseeker_vines", &source );
     dots.feral_frenzy          = target.get_dot( "feral_frenzy_tick", &source );  // damage dot is triggered by feral_frenzy_tick_t
     dots.frenzied_assault      = target.get_dot( "frenzied_assault", &source );
     dots.fungal_growth         = target.get_dot( "fungal_growth", &source );
@@ -12655,6 +12700,12 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
 
   debuff.atmospheric_exposure = make_buff_fallback( source.talent.atmospheric_exposure.ok() && target.is_enemy(),
       *this, "atmospheric_exposure", source.spec.atmospheric_exposure );
+
+  debuff.bloodseeker_vines = make_buff_fallback( source.talent.thriving_growth.ok() && target.is_enemy(),
+      *this, "bloodseeker_vines_debuff", source.spec.bloodseeker_vines )
+          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+          ->set_activated( true )
+          ->set_quiet( true );
 
   debuff.pulverize = make_buff_fallback( source.talent.pulverize.ok() && target.is_enemy(),
       *this, "pulverize_debuff", source.talent.pulverize )
