@@ -2282,6 +2282,7 @@ class SpellDataGenerator(DataGenerator):
           ( 429438, 0 ), # blooming infusion
           ( 425206, 0 ), ( 425217, 0 ), ( 425219, 0 ), # boundless moonlight
           ( 429625, 0 ), ( 429676, 0 ), # cenarius' might
+          ( 433832, 0 ), ( 434112, 0 ), # dream surge
           ( 432846, 0 ), # lunar amplification
           ( 428545, 0 ), # treants of the moon
         ),

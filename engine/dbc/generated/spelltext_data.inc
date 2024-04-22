@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54311
-static const std::array<spelltext_data_t, 22359> __spelltext_data { {
+static const std::array<spelltext_data_t, 22361> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21096,6 +21096,7 @@ static const std::array<spelltext_data_t, 22359> __spelltext_data { {
   { 433829, "$@spelldesc432775", 0, 0 },
   { 433830, "$@spelldesc432775", 0, 0 },
   { 433831, "$?a137013[Force of Nature grants $s1 charges of Dream Burst, causing your next Wrath or Starfire to explode on the target, dealing ${$433850s1*(1+$393014s3/100)} Nature damage to nearby enemies. Damage reduced above $433850s2 targets.][Grove Guardians causes your next targeted heal to create $s2 Dream Petals near the target, healing up to 3 nearby allies for $434141s1. Stacks up to 3 charges.]", 0, 0 },
+  { 433832, "$@spellaura433831", "Wrath or Starfire explode with a Dream Burst on the target, dealing $433850s1 Nature damage to nearby enemies.", 0 },
   { 433850, "$@spelldesc433831", 0, 0 },
   { 433871, "Deep Breath can now be steered in your desired direction.\r\n\r\nIn addition, Deep Breath burns targets for $441172o1 Volcanic damage over $441172d.", 0, "Black" },
   { 433874, "Take in a deep breath and fly forward, spewing molten cinders dealing $353759o1 Volcanic damage to enemies in your path.\r\n\r\nRemoves all root effects. You are immune to movement impairing and loss of control effects while flying.$?s395153[\r\n\r\nIncreases the duration of your active Ebon Might effects by ${$395153s3/1000} sec.][]", "Spewing molten cinders. Immune to crowd control.", "Black" },
@@ -21123,6 +21124,7 @@ static const std::array<spelltext_data_t, 22359> __spelltext_data { {
   { 434075, "Essence of the Blood Queen stacks $s1 additional times and increases the damage of your Death Coil and Death Strike by $s2% per stack.", 0, 0 },
   { 434100, "Your Leech is increased by $s1%.\r\n\r\nWhile Lichborne is active, the Leech bonus of this effect is increased by $434105s1%, and it affects $s2 nearby allies. ", 0, 0 },
   { 434105, "$@spelldesc434100", "Vampiric Aura's Leech amount increased by $s1% and is affecting $s2 nearby allies.", 0 },
+  { 434112, "$@spellaura433831", "Your next targeted heal creates $433831s2 Dream Petals near the target, healing up to $434141s2 nearby allies for $434141s1.", 0 },
   { 434136, "Icebound Fortitude reduces all damage you take by up to an additional $s1% based on your missing health.\r\n\r\nKilling enemies that grant honor or experience reduce the cooldown of Icebound Fortitude by $s2 sec.", 0, 0 },
   { 434141, "Blooms near your heal target, restoring $s1 health to $s2 injured allies within $A1 yds.", 0, 0 },
   { 434143, "When Vampiric Strike damages an enemy affected by Virulent Plague or Blood Plague it consumes the disease to deal $s1% of their remaining damage to the target.\r\n\r\nWhile Gift of the San'layn is active, Vampiric Strike no longer consumes your disease and instead extends the duration of your disease by $s3 sec and deals $s2% of the remaining damage to the enemy.", 0, 0 },

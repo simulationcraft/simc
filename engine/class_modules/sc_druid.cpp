@@ -493,6 +493,7 @@ public:
 
     // Hero talents
     action_t* boundless_moonlight_heal;
+    action_t* dream_burst;
     action_t* the_light_of_elune;
     action_t* treants_of_the_moon_mf;
   } active;
@@ -654,6 +655,7 @@ public:
     buff_t* bounteous_bloom;
     buff_t* cenarius_might;
     buff_t* cenarius_might_starfall;
+    buff_t* dream_burst;
     buff_t* harmony_of_the_grove;
     buff_t* lunar_amplification;
     buff_t* lunar_amplification_starfall;
@@ -6503,16 +6505,20 @@ public:
   {
     druid_spell_t::impact( s );
 
-    if ( !other_ecl || !p()->active.astral_smolder || !s->result_amount || is_free_proc() ||
-         !rng().roll( smolder_pct ) )
+    if ( p()->active.astral_smolder && s->result_amount && !is_free_proc() && rng().roll( smolder_pct ) )
     {
-      return;
+      assert( other_ecl );
+      auto amount = s->result_amount * smolder_mul;
+      amount *= 1.0 + other_ecl->check_value();
+
+      residual_action::trigger( p()->active.astral_smolder, s->target, amount );
     }
 
-    auto amount = s->result_amount * smolder_mul;
-    amount *= 1.0 + other_ecl->check_value();
-
-    residual_action::trigger( p()->active.astral_smolder, s->target, amount );
+    if ( p()->active.dream_burst && p()->buff.dream_burst->check() && s->chain_target == 0 )
+    {
+      p()->active.dream_burst->execute_on_target( s->target );
+      p()->buff.dream_burst->decrement();
+    }  
   }
 
   void reset() override { druid_spell_t::reset(); dreamstate = false; }
@@ -6674,6 +6680,20 @@ struct dash_t : public druid_spell_t
   }
 };
 
+// Dream Burst ==============================================================
+struct dream_burst_t : public druid_spell_t
+{
+  dream_burst_t( druid_t* p ) : druid_spell_t( "dream_burst", p, p->find_spell( 433850 ) )
+  {
+    background = true;
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
+
+    // TODO: tooltip suggests only affected by passive mastery and not dot mastery
+    force_effect( p->mastery.astral_invocation, 3 );
+  }
+};
+
 // Entangling Roots =========================================================
 struct entangling_roots_t : public druid_spell_t
 {
@@ -6715,9 +6735,11 @@ struct entangling_roots_t : public druid_spell_t
 struct force_of_nature_t : public druid_spell_t
 {
   unsigned num;
+  unsigned dream_surge_num;
 
   DRUID_ABILITY( force_of_nature_t, druid_spell_t, "force_of_nature", p->talent.force_of_nature ),
-    num( as<unsigned>( p->talent.force_of_nature->effectN( 1 ).base_value() ) )
+    num( as<unsigned>( p->talent.force_of_nature->effectN( 1 ).base_value() ) ),
+    dream_surge_num( as<unsigned>( p->talent.dream_surge->effectN( 1 ).base_value() ) )
   {
     harmful = false;
 
@@ -6736,6 +6758,7 @@ struct force_of_nature_t : public druid_spell_t
     druid_spell_t::execute();
 
     p()->pets.force_of_nature.spawn( num );
+    p()->buff.dream_burst->trigger( dream_surge_num );
   }
 };
 
@@ -10408,6 +10431,8 @@ void druid_t::create_buffs()
               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
               ->set_quiet( true );
 
+  buff.dream_burst = make_buff_fallback( talent.dream_surge.ok(), this, "dream_burst", find_spell( 433832 ) );
+
   buff.harmony_of_the_grove =
       make_buff_fallback( talent.harmony_of_the_grove.ok(), this, "harmony_of_the_grove",
                           find_spell( specialization() == DRUID_RESTORATION ? 428737 : 428735 ) )
@@ -10605,6 +10630,9 @@ void druid_t::create_actions()
   // Hero talents
   if ( talent.boundless_moonlight.ok() && talent.lunar_beam.ok() )
     active.boundless_moonlight_heal = get_secondary_action<boundless_moonlight_heal_t>( "boundless_moonlight_heal" );
+
+  if ( talent.dream_surge.ok() && talent.force_of_nature.ok() )
+    active.dream_burst = get_secondary_action<dream_burst_t>( "dream_burst" );
 
   if ( talent.the_light_of_elune.ok() )
   {
