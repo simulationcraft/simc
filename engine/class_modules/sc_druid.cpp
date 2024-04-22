@@ -1200,6 +1200,7 @@ public:
   void datacollection_end() override;
   void analyze( sim_t& ) override;
   timespan_t available() const override;
+  double composite_player_target_multiplier( player_t*, school_e ) const;
   double composite_attack_power_multiplier() const override;
   double composite_armor() const override;
   double composite_armor_multiplier() const override;
@@ -12018,6 +12019,15 @@ void druid_t::invalidate_cache( cache_e c )
 }
 
 // Composite combat stat override functions =================================
+double druid_t::composite_player_target_multiplier( player_t* t, school_e s ) const
+{
+  double tm = player_t::composite_player_target_multiplier( t, s );
+
+  if ( talent.vigorous_creepers.ok() )
+    tm *= 1.0 + get_target_data( t )->debuff.bloodseeker_vines->check_stack_value();
+
+  return tm;
+}
 
 // Attack Power =============================================================
 double druid_t::composite_attack_power_multiplier() const
@@ -12770,7 +12780,9 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   debuff.bloodseeker_vines = make_buff_fallback( source.talent.thriving_growth.ok() && target.is_enemy(),
       *this, "bloodseeker_vines_debuff", source.spec.bloodseeker_vines )
           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+          ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
           ->apply_affecting_aura( source.talent.resilient_flourishing )
+          ->apply_affecting_aura( source.talent.vigorous_creepers )
           ->set_quiet( true );
   if ( !debuff.bloodseeker_vines->is_fallback && source.talent.root_network.ok() )
   {
