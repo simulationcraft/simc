@@ -144,7 +144,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Warrior
+  { // Warrior TODO: Verify Agi and Int 71-80
     // Agi = 0.69 of Primary
     // Int = 0.68 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -218,9 +218,9 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {   1671,   1153,   3077,   1136,      0 },
     {   1903,   1313,   3506,   1294,      0 },
     {   2089,   1442,   3848,   1421,      0 }, // 70
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
+    {   2565,   1770,   9423,   1744,      0 },
+    {   3148,   2172,  11996,   2141,      0 },
+    {   3864,   2666,  15251,   2628,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 75
     {      0,      0,      0,      0,      0 },
@@ -269,7 +269,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Paladin TODO: Verify 12-21 Stamina
+  { // Paladin TODO: Verify 12-21 Stamina, Agi 71-80
     // Agi = 0.35 of Primary
     //    Str     Agi     Sta     Int     Spi
     {     18,      6,     37,     20,      0 },
@@ -342,9 +342,9 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {   1671,    585,   3077,   1671,      0 },
     {   1903,    666,   3506,   1903,      0 },
     {   2089,    731,   3848,   2089,      0 }, // 70
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
+    {   2565,    898,   9423,   2565,      0 },
+    {   3148,   1102,  11996,   3148,      0 },
+    {   3864,   1352,  15251,   3864,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 75
     {      0,      0,      0,      0,      0 },
@@ -393,7 +393,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Hunter TODO: Verify 12-21 Stamina
+  { // Hunter TODO: Verify 12-21 Stamina, Str and Int 71-80
     // Str = 0.61 of Primary
     // Int = 0.82 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -467,9 +467,9 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {   1019,   1671,   3077,   1370,      0 },
     {   1161,   1903,   3506,   1561,      0 },
     {   1275,   2089,   3848,   1713,      0 }, // 70
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
+    {   1565,   2565,   9423,   2103,      0 },
+    {   1920,   3148,  11996,   2579,      0 },
+    {   2357,   3864,  15251,   3168,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 75
     {      0,      0,      0,      0,      0 },
@@ -518,7 +518,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Rogue TODO: Verify 12-21 Stamina
+  { // Rogue TODO: Verify 12-21 Stamina, Str and Int 71-80
     // Str = 0.83 of Primary
     // Int = 0.68 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -592,9 +592,9 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {   1387,   1671,   3077,   1136,      0 },
     {   1580,   1903,   3506,   1294,      0 },
     {   1734,   2089,   3848,   1421,      0 }, // 70
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
+    {   2129,   2565,   9423,   1744,      0 },
+    {   2613,   3148,  11996,   2139,      0 },
+    {   3207,   3864,  15251,   2628,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 75
     {      0,      0,      0,      0,      0 },
@@ -643,7 +643,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Priest TODO: Verify 12-21 Stamina
+  { // Priest TODO: Verify 12-21 Stamina, Str and Agi 71-80
     // Str = 0.58 of Primary
     // Agi = 0.83 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -717,9 +717,9 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {    969,   1387,   3077,   1671,      0 },
     {   1104,   1580,   3506,   1903,      0 },
     {   1212,   1734,   3848,   2089,      0 }, // 70
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,  15250,   3867,      0 },
+    {   1488,   2129,   9423,   2565,      0 },
+    {   1826,   2613,  11996,   3148,      0 },
+    {   2241,   3207,  15251,   3864,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 75
     {      0,      0,      0,      0,      0 },
@@ -768,7 +768,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Death Knight TODO: Verify 61-69 values
+  { // Death Knight TODO: Verify 61-69 values, Agi and Int 71-80
     // Agi = 0.83 of Primary
     // Int = 0.54 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -842,9 +842,9 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {   1671,   1387,   3077,    902,      0 },
     {   1903,   1580,   3506,   1028,      0 },
     {   2089,   1734,   3848,   1128,      0 }, // 70
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
+    {   2565,   2129,   9423,   1385,      0 },
+    {   3148,   2613,  11996,   1700,      0 },
+    {   3864,   3207,  15251,   2087,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 75
     {      0,      0,      0,      0,      0 },
@@ -893,7 +893,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Shaman TODO: Verify 12-21 Stamina
+  { // Shaman TODO: Verify 12-21 Stamina, Str 71-80
     // Str = 0.43 of Primary
     //    Str     Agi     Sta     Int     Spi
     {      8,     18,     30,     20,      0 },
@@ -966,9 +966,9 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {    718,   1671,   3077,   1671,      0 },
     {    819,   1903,   3506,   1903,      0 },
     {    898,   2089,   3848,   2089,      0 }, // 70
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
+    {   1103,   2565,   9423,   2565,      0 },
+    {   1354,   3148,  11996,   3148,      0 },
+    {   1662,   3864,  15251,   3864,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 75
     {      0,      0,      0,      0,      0 },
@@ -1017,7 +1017,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Mage TODO: Verify 12-21 Stamina values
+  { // Mage TODO: Verify 12-21 Stamina values, Str and Agi 71-80
     // Str = 0.44 of Primary
     // Agi = 0.68 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -1091,9 +1091,9 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {    735,   1136,   3077,   1671,      0 },
     {    838,   1294,   3506,   1903,      0 },
     {    919,   1421,   3848,   2089,      0 }, // 70
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
+    {   1129,   1744,   9423,   2565,      0 },
+    {   1385,   2141,  11996,   3148,      0 },
+    {   1700,   2628,  15251,   3864,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 75
     {      0,      0,      0,      0,      0 },
@@ -1142,7 +1142,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Warlock TODO: Verify 12-21 Stamina
+  { // Warlock TODO: Verify 12-21 Stamina, Str and Agi 71-80
     // Str = 0.38 of Primary
     // Agi = 0.77 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -1216,9 +1216,9 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {    635,   1287,   3077,   1671,      0 },
     {    723,   1466,   3506,   1903,      0 },
     {    794,   1609,   3848,   2089,      0 }, // 70
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
+    {    975,   1975,   9423,   2565,      0 },
+    {   1196,   2424,  11996,   3148,      0 },
+    {   1468,   2975,  15251,   3864,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 75
     {      0,      0,      0,      0,      0 },
@@ -1267,7 +1267,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Monk
+  { // Monk TODO: Verify Str 71-80
     // Str = 0.43 of Primary
     //    Str     Agi     Sta     Int     Spi
     {      8,     18,     37,     20,      0 },
@@ -1340,9 +1340,9 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {    718,   1671,   3077,   1671,      0 },
     {    819,   1903,   3506,   1903,      0 },
     {    898,   2089,   3848,   2089,      0 }, // 70
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
+    {   1103,   2565,   9423,   2565,      0 },
+    {   1354,   3148,  11996,   3148,      0 },
+    {   1662,   3864,  15251,   3864,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 75
     {      0,      0,      0,      0,      0 },
@@ -1391,7 +1391,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Druid TODO: Verify 12-21 Stamina
+  { // Druid TODO: Verify 12-21 Stamina, Str 71-80
     // Str = 0.43 of Primary
     //    Str     Agi     Sta     Int     Spi
     {      8,     18,     37,     20,      0 },
@@ -1464,9 +1464,9 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {    718,   1671,   3077,   1671,      0 },
     {    819,   1903,   3506,   1903,      0 },
     {    898,   2089,   3848,   2089,      0 }, // 70
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
+    {   1103,   2565,   9423,   2565,      0 },
+    {   1354,   3148,  11996,   3148,      0 },
+    {   1662,   3864,  15251,   3864,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 75
     {      0,      0,      0,      0,      0 },
@@ -1515,7 +1515,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Demon Hunter
+  { // Demon Hunter TODO: Verify Str and Int 71-80
     // Str = 0.83 of Primary
     // Int = 0.68 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -1589,9 +1589,9 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {   1387,   1671,   3077,   1136,      0 },
     {   1580,   1903,   3506,   1294,      0 },
     {   1734,   2089,   3848,   1421,      0 }, // 70
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
+    {   2129,   2565,   9423,   1744,      0 },
+    {   2613,   3148,  11996,   2139,      0 },
+    {   3207,   3864,  15251,   2628,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 75
     {      0,      0,      0,      0,      0 },
@@ -1640,7 +1640,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Evoker
+  { // Evoker TODO: Verify Str and Agi 71-80
     // Str = 0.44 of Primary
     // Agi = 0.68 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -1714,9 +1714,9 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {    735,   1136,   3077,   1671,      0 },
     {    838,   1294,   3506,   1903,      0 },
     {    919,   1421,   3848,   2089,      0 }, // 70
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
+    {   1129,   1744,   9423,   2565,      0 },
+    {   1385,   2141,  11996,   3148,      0 },
+    {   1700,   2628,  15251,   3864,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 75
     {      0,      0,      0,      0,      0 },
