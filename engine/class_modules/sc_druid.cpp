@@ -664,6 +664,8 @@ public:
     buff_t* lunar_amplification;
     buff_t* lunar_amplification_starfall;
     buff_t* protective_growth;
+    buff_t* ravage_fb;
+    buff_t* ravage_maul;
     buff_t* root_network;
     buff_t* strategic_infusion;
     buff_t* treants_of_the_moon;  // treant moonfire background heartbeat
@@ -1779,6 +1781,8 @@ public:
     parse_effects( p()->buff.predatory_swiftness );
     parse_effects( p()->buff.sharpened_claws );
     parse_effects( p()->buff.smoldering_frenzy );
+    parse_effects( p()->talent.taste_for_blood, [ this ] { return p()->buff.tigers_fury->check();},
+                   p()->talent.taste_for_blood->effectN( 2 ).percent() );
     parse_effects( p()->spec.feral_overrides, [ this ] { return !p()->buff.moonkin_form->check(); } );
 
     // Guardian
@@ -4228,24 +4232,17 @@ struct feral_frenzy_t : public cat_attack_t
 };
 
 // Ferocious Bite ===========================================================
-struct ferocious_bite_t : public cat_finisher_t
+struct ferocious_bite_base_t : public cat_finisher_t
 {
   double excess_energy = 0.0;
   double max_excess_energy;
+  double saber_jaws_mul;
   bool max_energy = false;
 
-  DRUID_ABILITY( ferocious_bite_t, cat_finisher_t, "ferocious_bite", p->find_class_spell( "Ferocious Bite" ) )
+  ferocious_bite_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
+    : cat_finisher_t( n, p, s, f ), saber_jaws_mul( p->talent.saber_jaws->effectN( 1 ).percent() )
   {
     add_option( opt_bool( "max_energy", max_energy ) );
-
-    if ( p->talent.taste_for_blood.ok() )
-    {
-      const auto& eff = p->talent.taste_for_blood->effectN( 2 );
-      add_parse_entry( da_multiplier_effects )
-        .set_buff( p->buff.tigers_fury )
-        .set_value( eff.percent() )
-        .set_eff( &eff );
-    }
 
     max_excess_energy = modified_effectN( find_effect_index( this, E_POWER_BURN ) );
   }
@@ -4272,12 +4269,6 @@ struct ferocious_bite_t : public cat_finisher_t
 
   void execute() override
   {
-    if ( !is_free() && p()->buff.apex_predators_craving->up() )
-    {
-      p()->active.ferocious_bite_apex->execute_on_target( target );
-      return;
-    }
-
     // Incarn does affect the additional energy consumption.
     double _max_used = max_excess_energy * ( 1.0 + p()->buff.incarnation_cat->check_value() );
 
@@ -4307,17 +4298,17 @@ struct ferocious_bite_t : public cat_finisher_t
     }
 
     cat_finisher_t::consume_resource();
+  }
 
-    if ( hit_any_target && has_flag( flag_e::APEX ) )
-      p()->buff.apex_predators_craving->expire();
+  virtual double energy_multiplier( const action_state_t* s ) const
+  {
+    return 1.0 + ( excess_energy / max_excess_energy ) * ( 1.0 + saber_jaws_mul );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     auto dam = cat_finisher_t::composite_da_multiplier( s );
-    auto energy_mul = is_free() ? 2.0
-                                : 1.0 + ( excess_energy / max_excess_energy ) *
-                                            ( 1 + p()->talent.saber_jaws->effectN( 1 ).percent() );
+    auto energy_mul = is_free() ? 2.0 : energy_multiplier( s );
     // base spell coeff is for 5CP, so we reduce if lower than 5.
     auto combo_mul = cp( s ) / p()->resources.max[ RESOURCE_COMBO_POINT ];
 
@@ -4334,7 +4325,78 @@ struct ferocious_bite_t : public cat_finisher_t
   }
 };
 
-// Frenzied Assault
+struct ferocious_bite_t : public ferocious_bite_base_t
+{
+  struct ravage_ferocious_bite_t : public ferocious_bite_base_t
+  {
+    double aoe_coeff;
+
+    ravage_ferocious_bite_t( druid_t* p, std::string_view n, flag_e f )
+      : ferocious_bite_base_t( n, p, p->find_spell( 441591 ), f )
+    {
+      name_str_reporting = "ravage";
+
+      // the aoe effect is parsed last and overwrites the st effect, so we need to cache the aoe coeff and re-parse the
+      // st effect
+      aoe_coeff = attack_power_mod.direct;
+      parse_effect_direct_mods( data().effectN( 1 ), false );
+      aoe = -1;
+    }
+
+    double attack_direct_power_coefficient( const action_state_t* s ) const override
+    {
+      return s->chain_target == 0 ? ferocious_bite_base_t::attack_direct_power_coefficient( s ) : aoe_coeff;
+    }
+
+    double energy_multiplier( const action_state_t* s ) const override
+    {
+      return s->chain_target == 0 ? ferocious_bite_base_t::energy_multiplier( s ) : 1.0;
+    }
+  };
+
+  ravage_ferocious_bite_t* ravage = nullptr;
+
+  DRUID_ABILITY( ferocious_bite_t, ferocious_bite_base_t, "ferocious_bite", p->find_class_spell( "Ferocious Bite" ) )
+  {
+    if ( !p->buff.ravage_fb->is_fallback )
+    {
+      ravage = p->get_secondary_action<ravage_ferocious_bite_t>( "ravage_" + name_str, f );
+      add_child( ravage );
+    }
+  }
+
+  void init() override
+  {
+    ferocious_bite_base_t::init();
+
+    if ( ravage )
+      ravage->max_energy = max_energy;
+  }
+
+  void execute() override
+  {
+    if ( !is_free() && p()->buff.apex_predators_craving->up() )
+    {
+      p()->active.ferocious_bite_apex->execute_on_target( target );
+      p()->buff.apex_predators_craving->expire();
+      return;
+    }
+
+    if ( ravage && p()->buff.ravage_fb->check() )
+    {
+      ravage->execute_on_target( target );
+
+      if ( !has_flag( flag_e::CONVOKE ) )  // TODO: prolly bug
+        p()->buff.ravage_fb->expire();
+
+      return;
+    }
+
+    ferocious_bite_base_t::execute();
+  }
+};
+
+// Frenzied Assault =========================================================
 struct frenzied_assault_t : public residual_action::residual_periodic_action_t<cat_attack_t>
 {
   frenzied_assault_t( druid_t* p ) : residual_action_t( "frenzied_assault", p, p->find_spell( 391140 ) )
@@ -5386,9 +5448,9 @@ struct mangle_t : public bear_attack_t
 };
 
 // Maul =====================================================================
-struct maul_t : public trigger_indomitable_guardian_t<trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t<>>>>
+struct maul_base_t : public trigger_indomitable_guardian_t<trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t<>>>>
 {
-  DRUID_ABILITY( maul_t, base_t, "maul", p->talent.maul ) {}
+  maul_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : base_t( n, p, s, f ) {}
 
   void impact( action_state_t* s ) override
   {
@@ -5418,6 +5480,59 @@ struct maul_t : public trigger_indomitable_guardian_t<trigger_ursocs_fury_t<trig
     p()->buff.vicious_cycle_mangle->trigger();
 
     p()->buff.tooth_and_claw->decrement();
+  }
+};
+
+struct maul_t : public maul_base_t
+{
+  struct ravage_maul_t : public maul_base_t
+  {
+    double aoe_coeff;
+
+    ravage_maul_t( druid_t* p, std::string_view n, flag_e f ) : maul_base_t( n, p, p->find_spell( 441605 ), f )
+    {
+      name_str_reporting = "ravage";
+
+      // the aoe effect is parsed last and overwrites the st effect, so we need to cache the aoe coeff and re-parse the
+      // st effect
+      aoe_coeff = attack_power_mod.direct;
+      parse_effect_direct_mods( data().effectN( 1 ), false );
+      aoe = -1;
+    }
+
+    double attack_direct_power_coefficient( const action_state_t* s ) const override
+    {
+      return s->chain_target == 0 ? maul_base_t::attack_direct_power_coefficient( s ) : aoe_coeff;
+    }
+  };
+
+  action_t* ravage = nullptr;
+
+  DRUID_ABILITY( maul_t, maul_base_t, "maul", p->talent.maul )
+  {
+    if ( !p->buff.ravage_maul->is_fallback )
+    {
+      ravage = p->get_secondary_action<ravage_maul_t>( "ravage_" + name_str, f );
+      add_child( ravage );
+    }
+  }
+
+  void execute() override
+  {
+    if ( !is_free() && p()->buff.tooth_and_claw->up() )
+    {
+      p()->active.maul_tooth_and_claw->execute_on_target( target );
+      p()->buff.tooth_and_claw->decrement();
+      return;
+    }
+
+    if ( ravage && p()->buff.ravage_maul->check() )
+    {
+      ravage->execute_on_target( target );
+      return;
+    }
+
+    maul_base_t::execute();
   }
 };
 
@@ -8982,6 +9097,7 @@ struct druid_melee_t : public Base
   using base_t = druid_melee_t<Base>;
 
   double ooc_chance = 0.0;
+  double ravage_chance = 0.0;
 
   druid_melee_t( std::string_view n, druid_t* p ) : Base( n, p, spell_data_t::nil(), flag_e::AUTOATTACK )
   {
@@ -9020,6 +9136,9 @@ struct druid_melee_t : public Base
 
     if ( p->talent.moment_of_clarity.ok() )
       ooc_chance *= 1.0 + p->talent.moment_of_clarity->effectN( 2 ).percent();
+
+    if ( p->talent.ravage.ok() )
+      ravage_chance = 7.00;  // TODO: placeholder. test if rppm or proc, different for spec/form
   }
 
   timespan_t execute_time() const override
@@ -9034,18 +9153,28 @@ struct druid_melee_t : public Base
   {
     ab::impact( s );
 
-    if ( ooc_chance && ab::result_is_hit( s->result ) )
+    if ( ab::result_is_hit( s->result ) )
     {
-      int active = ab::p()->buff.clearcasting_cat->check();
-      double chance = ab::weapon->proc_chance_on_swing( ooc_chance );
-
-      // Internal cooldown is handled by buff.
-      if ( ab::p()->buff.clearcasting_cat->trigger( 1, buff_t::DEFAULT_VALUE(), chance ) )
+      if ( ooc_chance )
       {
-        ab::p()->proc.clearcasting->occur();
+        int active = ab::p()->buff.clearcasting_cat->check();
+        double chance = ab::weapon->proc_chance_on_swing( ooc_chance );
 
-        for ( int i = 0; i < active; i++ )
-          ab::p()->proc.clearcasting_wasted->occur();
+        // Internal cooldown is handled by buff.
+        if ( ab::p()->buff.clearcasting_cat->trigger( 1, buff_t::DEFAULT_VALUE(), chance ) )
+        {
+          ab::p()->proc.clearcasting->occur();
+
+          for ( int i = 0; i < active; i++ )
+            ab::p()->proc.clearcasting_wasted->occur();
+        }
+      }
+
+      if ( ravage_chance )
+      {
+        double chance = ab::weapon->proc_chance_on_swing( ravage_chance );
+        ab::p()->buff.ravage_fb->trigger( 1, buff_t::DEFAULT_VALUE(), chance );
+        ab::p()->buff.ravage_maul->trigger( 1, buff_t::DEFAULT_VALUE(), chance );
       }
     }
   }
@@ -10608,6 +10737,12 @@ void druid_t::create_buffs()
   buff.protective_growth =
       make_buff_fallback( talent.protective_growth.ok(), this, "protective_growth", find_spell( 433749 ) )
           ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
+
+  buff.ravage_fb = make_buff_fallback( talent.ravage.ok() && specialization() == DRUID_FERAL,
+      this, "ravage", find_spell( 441585 ) );
+
+  buff.ravage_maul = make_buff_fallback( talent.ravage.ok() && specialization() == DRUID_GUARDIAN,
+      this, "ravage", find_spell( 441602 ) );
 
   buff.root_network = make_buff_fallback( talent.root_network.ok() && talent.thriving_growth.ok(),
       this, "root_network", find_spell( 439887 ) );
