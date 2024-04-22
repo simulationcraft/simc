@@ -738,6 +738,8 @@ double monk_action_t<Base>::composite_target_multiplier( player_t *t ) const
     if ( ab::data().affected_by( p()->passives.jadefire_brand_dmg->effectN( 1 ) ) &&
          td->debuff.jadefire_brand->check() )
       tm *= 1 + p()->passives.jadefire_brand_dmg->effectN( 1 ).percent();
+
+    tm *= 1 + td->debuff.acclamation->check_stack_value();
   }
 
   return tm;
