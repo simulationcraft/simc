@@ -673,10 +673,12 @@ public:
     cooldown_t* berserk_bear;
     cooldown_t* berserk_cat;
     cooldown_t* frenzied_regeneration;
+    cooldown_t* fury_of_elune;
     cooldown_t* incarnation_bear;
     cooldown_t* incarnation_cat;
     cooldown_t* incarnation_moonkin;
     cooldown_t* incarnation_tree;
+    cooldown_t* lunar_beam;
     cooldown_t* mangle;
     cooldown_t* moon_cd;  // New / Half / Full Moon
     cooldown_t* natures_swiftness;
@@ -1137,10 +1139,12 @@ public:
     cooldown.berserk_bear          = get_cooldown( "berserk_bear" );
     cooldown.berserk_cat           = get_cooldown( "berserk_cat" );
     cooldown.frenzied_regeneration = get_cooldown( "frenzied_regeneration" );
+    cooldown.fury_of_elune         = get_cooldown( "fury_of_elune" );
     cooldown.incarnation_bear      = get_cooldown( "incarnation_guardian_of_ursoc" );
     cooldown.incarnation_cat       = get_cooldown( "incarnation_avatar_of_ashamane" );
     cooldown.incarnation_moonkin   = get_cooldown( "incarnation_chosen_of_elune" );
     cooldown.incarnation_tree      = get_cooldown( "incarnation_tree_of_life" );
+    cooldown.lunar_beam            = get_cooldown( "lunar_beam" );
     cooldown.mangle                = get_cooldown( "mangle" );
     cooldown.moon_cd               = get_cooldown( "moon_cd" );
     cooldown.natures_swiftness     = get_cooldown( "natures_swiftness" );
@@ -1675,13 +1679,26 @@ public:
         break;
     }
 
-    if ( has_flag( flag_e::FOREGROUND ) )
+    if ( !p()->buff.lunar_amplification->is_fallback && ab::harmful && has_flag( flag_e::FOREGROUND ) )
     {
       if ( dbc::is_school( ab::school, SCHOOL_ARCANE ) )
         make_event( *ab::sim, [ this ] { p()->buff.lunar_amplification->expire(); } );
       else
         p()->buff.lunar_amplification->trigger();
     }
+
+    // TODO: while this has a driver, it doesn't seem to actually be using that data, and appears to be scripted to
+    // behave like a CAST_SUCCESS proc. For now assuming it only procs off foreground abilities. Whitelist by ID if
+    // necessary.
+    if ( p()->talent.lunation.ok() && has_flag( flag_e::FOREGROUND ) && dbc::is_school( ab::school, SCHOOL_ARCANE ) )
+    {
+      assert( p()->talent.lunation->effects().size() == 3 );
+      auto eff = p()->talent.lunation->effects().begin();
+
+      for ( auto cd : { p()->cooldown.fury_of_elune, p()->cooldown.moon_cd, p()->cooldown.lunar_beam } )
+        cd->adjust( ( *eff++ ).time_value() );
+    }
+
   }
 
   void apply_buff_effects()
@@ -7079,9 +7096,9 @@ struct moon_proxy_t : public druid_spell_t
 
   moon_proxy_t( druid_t* p )
     : druid_spell_t( "moons", p, p->talent.new_moon.ok() ? spell_data_t::nil() : spell_data_t::not_found() ),
-      new_moon( new new_moon_t( p ) ),
-      half_moon( new half_moon_t( p ) ),
-      full_moon( new full_moon_t( p ) )
+      new_moon( ( new new_moon_t( p ) )->set_forground() ),
+      half_moon( ( new half_moon_t( p ) )->set_forground() ),
+      full_moon( ( new full_moon_t( p ) )->set_forground() )
   {
     set_school( SCHOOL_ASTRAL );
   }
@@ -7397,8 +7414,8 @@ struct swipe_proxy_t : public druid_spell_t
 
   swipe_proxy_t( druid_t* p )
     : druid_spell_t( "swipe", p, p->spec.swipe ),
-      swipe_cat( new cat_attacks::swipe_cat_t( p ) ),
-      swipe_bear( new bear_attacks::swipe_bear_t( p ) )
+      swipe_cat( ( new cat_attacks::swipe_cat_t( p ) )->set_forground() ),
+      swipe_bear( ( new bear_attacks::swipe_bear_t( p ) )->set_forground() )
   {
     set_school( SCHOOL_PHYSICAL );
   }
@@ -7481,8 +7498,8 @@ struct thrash_proxy_t : public druid_spell_t
 
   thrash_proxy_t( druid_t* p )
     : druid_spell_t( "thrash", p, p->talent.thrash ),
-      thrash_bear( new bear_attacks::thrash_bear_t( p ) ),
-      thrash_cat( new cat_attacks::thrash_cat_t( p ) )
+      thrash_bear( ( new bear_attacks::thrash_bear_t( p ) )->set_forground() ),
+      thrash_cat( ( new cat_attacks::thrash_cat_t( p ) )->set_forground() )
   {
     // At the moment, both versions of these spells are the same (and only the cat version has a talent that changes
     // this) so we use this spell data here. If this changes we will have to think of something more robust. These two
