@@ -496,6 +496,7 @@ public:
     // Hero talents
     action_t* bloodseeker_vines;
     action_t* boundless_moonlight_heal;
+    action_t* bursting_growth;
     action_t* dream_burst;
     action_t* the_light_of_elune;
     action_t* treants_of_the_moon_mf;
@@ -4090,17 +4091,6 @@ struct incarnation_cat_t : public berserk_cat_base_t
 // Bloodseeker Vines ========================================================
 struct bloodseeker_vines_t : public cat_attack_t
 {
-  struct bursting_growth_t : public cat_attack_t
-  {
-    bursting_growth_t( druid_t* p ) : cat_attack_t( "bursting_growth", p, p->find_spell( 440122 ) )
-    {
-      background = true;
-      aoe = -1;
-      reduced_aoe_targets = 5;  // TODO: not in data, from tooltip
-    }
-  };
-
-  action_t* bursting = nullptr;
   timespan_t orig_dur;
   double twin_pct;
 
@@ -4112,12 +4102,6 @@ struct bloodseeker_vines_t : public cat_attack_t
     dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
 
     orig_dur = dot_duration;
-
-    if ( p->talent.bursting_growth.ok() )
-    {
-      bursting = p->get_secondary_action<bursting_growth_t>( "bursting_growth" );
-      add_child( bursting );
-    }
   }
 
   void trigger_dot( action_state_t* s ) override
@@ -4134,15 +4118,6 @@ struct bloodseeker_vines_t : public cat_attack_t
       if ( auto tar = p()->get_smart_target( tl, &druid_td_t::dots_t::bloodseeker_vines, s->target ) )
         execute_on_target( tar );
     }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    cat_attack_t::last_tick( d );
-
-    // TODO: confirm this procs on target death
-    if ( bursting )
-      bursting->execute_on_target( d->target );
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -4174,6 +4149,17 @@ struct brutal_slash_t : public trigger_thrashing_claws_t<cat_attack_t>
     base_t::execute();
 
     p()->buff.bt_brutal_slash->trigger();
+  }
+};
+
+// Bursting Growth ==========================================================
+struct bursting_growth_t : public cat_attack_t
+{
+  bursting_growth_t( druid_t* p ) : cat_attack_t( "bursting_growth", p, p->find_spell( 440122 ) )
+  {
+    background = true;
+    aoe = -1;
+    reduced_aoe_targets = 5;  // TODO: not in data, from tooltip
   }
 };
 
@@ -10811,6 +10797,9 @@ void druid_t::create_actions()
   if ( talent.boundless_moonlight.ok() && talent.lunar_beam.ok() )
     active.boundless_moonlight_heal = get_secondary_action<boundless_moonlight_heal_t>( "boundless_moonlight_heal" );
 
+  if ( talent.bursting_growth.ok() && talent.thriving_growth.ok() )
+    active.bursting_growth = get_secondary_action<bursting_growth_t>( "bursting_growth" );
+
   if ( talent.dream_surge.ok() && talent.force_of_nature.ok() )
     active.dream_burst = get_secondary_action<dream_burst_t>( "dream_burst" );
 
@@ -10854,6 +10843,7 @@ void druid_t::create_actions()
     }
   };
 
+  find_parent( active.bursting_growth, "bloodseeker_vines" );
   find_parent( active.ferocious_bite_apex, "ferocious_bite" );
   find_parent( active.galactic_guardian, "moonfire" );
   find_parent( active.maul_tooth_and_claw, "maul" );
@@ -12812,13 +12802,21 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
           ->apply_affecting_aura( source.talent.resilient_flourishing )
           ->apply_affecting_aura( source.talent.vigorous_creepers )
           ->set_quiet( true );
-  if ( !debuff.bloodseeker_vines->is_fallback && source.talent.root_network.ok() )
+  if ( !debuff.bloodseeker_vines->is_fallback &&
+       ( source.talent.bursting_growth.ok() || source.talent.root_network.ok() ) )
   {
-    debuff.bloodseeker_vines->set_stack_change_callback( [ & ]( buff_t*, int old_, int new_ ) {
+    debuff.bloodseeker_vines->set_stack_change_callback( [ & ]( buff_t* b, int old_, int new_ ) {
       if ( new_ > old_ )
+      {
         source.buff.root_network->trigger();
+      }
       else
+      {
         source.buff.root_network->decrement();
+
+        if ( source.active.bursting_growth )
+          source.active.bursting_growth->execute_on_target( b->player );
+      }
     } );
   }
 
