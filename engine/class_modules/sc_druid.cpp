@@ -2287,6 +2287,8 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
         ctm *= 1.0 + imp_fr_mul;
 
       ctm *= 1.0 + p()->talent.natural_recovery->effectN( 3 ).percent();
+
+      ctm *= 1.0 + p()->talent.bond_with_nature->effectN( 1 ).percent();
     }
 
     return ctm;
@@ -4087,10 +4089,17 @@ struct incarnation_cat_t : public berserk_cat_base_t
 // Bloodseeker Vines ========================================================
 struct bloodseeker_vines_t : public cat_attack_t
 {
-  bloodseeker_vines_t( druid_t* p ) : cat_attack_t( "bloodseeker_vines", p, p->spec.bloodseeker_vines )
+  timespan_t orig_dur;
+  double twin_pct;
+
+  bloodseeker_vines_t( druid_t* p )
+    : cat_attack_t( "bloodseeker_vines", p, p->spec.bloodseeker_vines ),
+      twin_pct( p->talent.twin_sprouts->effectN( 1 ).percent() )
   {
     dot_max_stack = 1;
     dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
+
+    orig_dur = dot_duration;
   }
 
   void trigger_dot( action_state_t* s ) override
@@ -4099,6 +4108,14 @@ struct bloodseeker_vines_t : public cat_attack_t
 
     // execute() instead of trigger() to avoid proc delay
     td( s->target )->debuff.bloodseeker_vines->execute( 1, buff_t::DEFAULT_VALUE(), dot_duration );
+
+    // TODO: can this trigger itself? what about spread from killed target?
+    if ( rng().roll( twin_pct ) && orig_dur == dot_duration )
+    {
+      const auto& tl = target_list();
+      if ( auto tar = p()->get_smart_target( tl, &druid_td_t::dots_t::bloodseeker_vines, s->target ) )
+        execute_on_target( tar );
+    }
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -6044,6 +6061,14 @@ struct regrowth_t : public druid_heal_t
       tcc += bonus_crit;
 
     return tcc;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double ctm = druid_heal_t::composite_target_multiplier( t );
+
+    if ( t == player )
+      ctm *= 1.0 + p()->talent.harmonious_constitution->effectN( 1 ).percent();
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
