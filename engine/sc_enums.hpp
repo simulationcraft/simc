@@ -1458,7 +1458,7 @@ enum class talent_tree : unsigned
   CLASS,
   SPECIALIZATION,
   HERO,
-  CONTROL,
+  SELECTION,
   MAX
 };
 

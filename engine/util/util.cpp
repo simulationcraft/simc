@@ -2659,8 +2659,8 @@ const char* util::talent_tree_string( talent_tree tree )
       return "spec";
     case talent_tree::HERO:
       return "hero";
-    case talent_tree::CONTROL:
-      return "control";
+    case talent_tree::SELECTION:
+      return "selection";
     default:
       return "unknown";
   }

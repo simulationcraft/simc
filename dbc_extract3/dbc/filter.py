@@ -551,8 +551,11 @@ class TraitSet(DataSet):
                     for cond in node['cond'] if cond.type == 2
                 )
 
+                # tree selection nodes are type 3
+                if node['node'].type == 3:
+                    tree_index = 4
                 # hero tree nodes have a non-zero TraitNode.id_trait_sub_tree
-                if node['node'].id_trait_sub_tree != 0:
+                elif node['node'].id_trait_sub_tree != 0:
                     tree_index = 3
 
                 for entry, db2_id in node['entries']:
@@ -568,10 +571,6 @@ class TraitSet(DataSet):
                     _traits[key]['class_'] = class_id if class_id else node_class_id
                     _traits[key]['specs'] |= group_specs | node_specs
                     _traits[key]['starter'] |= group_starter | node_starter
-
-                    # control nodes have a non-zero TraitNodeEntry.id_trait_sub_tree
-                    if entry.id_trait_sub_tree != 0:
-                        _traits[key]['tree'] = 4
 
                     if tree_index != 0 and _traits[key]['tree'] == 0:
                         _traits[key]['tree'] = tree_index

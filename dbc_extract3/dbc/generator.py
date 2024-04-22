@@ -4819,12 +4819,12 @@ class TraitGenerator(DataGenerator):
             fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["specs"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["specs"]))])} }}')
             fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["starter"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["starter"]))])} }}')
 
-            _subtree = entry['entry'].id_trait_sub_tree
-            if _subtree == 0:
-                _subtree = entry['node'].id_trait_sub_tree
+            _subtree = entry['entry'].id_trait_sub_tree if entry['tree'] == 4 else entry['node'].id_trait_sub_tree
             if _subtree != 0:
                 subtrees.add(_subtree)
-            fields.append(f'{_subtree}')
+
+            fields.append(f'{_subtree:2d}')
+            fields += entry['node'].field('type')
 
             self.output_record(fields)
 

@@ -2664,6 +2664,7 @@ static std::string generate_traits_hash( player_t* player )
     const trait_data_t* trait = nullptr;
     unsigned rank = 0;
     unsigned index = 0;
+    bool is_choice = node[ 0 ].first->node_type == 2 || node[ 0 ].first->node_type == 3;
 
     for ( size_t i = 0; i < node.size(); i++ )
     {
@@ -2696,14 +2697,14 @@ static std::string generate_traits_hash( player_t* player )
       put_bit( rank_bits, rank );
     }
 
-    if ( node.size() == 1 )  // is choice nodes?
-    {
-      put_bit( 1, 0 );
-    }
-    else
+    if ( is_choice )  // is choice node?
     {
       put_bit( 1, 1 );
       put_bit( choice_bits, index );
+    }
+    else
+    {
+      put_bit( 1, 0 );
     }
   }
 
@@ -2828,6 +2829,12 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
       if ( get_bit( 1 ) )  // choice trait
       {
+        if ( node[ 0 ].first->node_type != 2 && node[ 0 ].first->node_type != 3 )
+        {
+          do_error( fmt::format( "node {} is not a choice node but has index selection.", id ) );
+          return;
+        }
+
         size_t index = get_bit( choice_bits );
         if ( index >= node.size() )
         {
@@ -2842,7 +2849,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
       player->player_traits.emplace_back( _tree, trait->id_trait_node_entry, as<unsigned>( rank ) );
 
-      if ( _tree == talent_tree::CONTROL )
+      if ( _tree == talent_tree::SELECTION )
       {
         player->player_sub_trees.insert( trait->id_sub_tree );
 
