@@ -857,9 +857,8 @@ double monk_heal_t::composite_persistent_multiplier( const action_state_t *state
        p()->buff.jadefire_brand->check() )
     pm *= 1 + p()->passives.jadefire_brand_heal->effectN( 1 ).percent();
 
-  if ( p()->talent.general.chi_proficiency && base_t::data().affected_by( p()->talent.general.chi_proficiency->effectN( 2 ) ) )
+  if ( p()->talent.general.chi_proficiency.ok() && base_t::data().affected_by(p()->talent.general.chi_proficiency->effectN(2)) )
     pm *= 1.0 + p()->talent.general.chi_proficiency->effectN( 2 ).percent();
-
 
   return pm;
 }
@@ -1374,30 +1373,6 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
   }
 };
 
-// T30 Shadowflame Nova =====================================================
-struct shadowflame_nova_t : public monk_melee_attack_t
-{
-  shadowflame_nova_t( monk_t *p ) : monk_melee_attack_t( "shadowflame_nova", p, p->passives.shadowflame_nova )
-  {
-    background = true;
-    aoe        = -1;
-
-    apply_dual_wield_two_handed_scaling();
-  }
-
-  double composite_target_da_multiplier( player_t *target ) const
-  {
-    double multiplier = monk_melee_attack_t::composite_target_da_multiplier( target );
-
-    auto td = p()->find_target_data( target );
-
-    if ( td && td->debuff.shadowflame_vulnerability->check() )
-      multiplier *= 1 + td->debuff.shadowflame_vulnerability->check_value();
-
-    return multiplier;
-  }
-};
-
 // Rising Sun Kick Damage Trigger ===========================================
 
 struct rising_sun_kick_dmg_t : public monk_melee_attack_t
@@ -1506,12 +1481,15 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     {
       p()->buff.kicks_of_flowing_momentum->decrement();
     }
+
+    if ( p()->talent.windwalker.acclamation.ok() )
+      get_td( s->target )->debuff.acclamation->trigger();
+
   }
 };
 
 struct rising_sun_kick_t : public monk_melee_attack_t
 {
-  shadowflame_nova_t *nova;
   rising_sun_kick_dmg_t *trigger_attack;
   glory_of_the_dawn_t *gotd;
   bool is_base_rsk;
@@ -1539,13 +1517,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
       add_child( gotd );
     }
 
-    if ( p->sets->set( MONK_WINDWALKER, T30, B2 )->ok() )
-    {
-      nova = new shadowflame_nova_t( p );
-
-      add_child( nova );
-    }
-
     if ( p->talent.brewmaster.press_the_advantage->ok() )
       add_child( p->active_actions.rising_sun_kick_press_the_advantage );
   }
@@ -1561,13 +1532,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     {
       gotd->target = p()->target;
       gotd->execute();
-    }
-
-    // T30 Set Bonus
-    if ( p()->sets->set( MONK_WINDWALKER, T30, B2 )->ok() )
-    {
-      nova->target = p()->target;
-      nova->execute();
     }
 
     if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.fists_of_fury->down() )
@@ -6655,6 +6619,11 @@ namespace monk
 monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( target, p ), dots(), debuff(), monk( *p )
 {
   // Windwalker
+  debuff.acclamation = make_buff( *this, "acclamation", p->find_spell( 451433 ) )
+    ->set_trigger_spell( p->talent.windwalker.acclamation )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+    ->set_default_value_from_effect( 1 );
+
   debuff.empowered_tiger_lightning = make_buff( *this, "empowered_tiger_lightning", spell_data_t::nil() )
                                          ->set_trigger_spell( p->spec.empowered_tiger_lightning )
                                          ->set_quiet( true )
@@ -9077,7 +9046,7 @@ double monk_t::composite_player_multiplier( school_e school ) const
 {
   double multiplier = player_t::composite_player_multiplier( school );
 
-  if ( talent.general.chi_proficiency && ( talent.general.chi_proficiency->effectN( 1 ).affected_schools() & school ) == school )
+  if ( talent.general.chi_proficiency.ok() && ( talent.general.chi_proficiency->effectN(1).affected_schools() & school ) == school )
     multiplier *= 1.0 + talent.general.chi_proficiency->effectN( 1 ).percent();
 
   return multiplier;
