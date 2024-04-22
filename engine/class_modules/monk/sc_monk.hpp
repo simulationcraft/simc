@@ -240,6 +240,7 @@ public:
     propagate_const<buff_t *> exploding_keg;
 
     // Windwalker
+    propagate_const<buff_t *> acclamation;
     propagate_const<buff_t *> flying_serpent_kick;
     propagate_const<buff_t *> empowered_tiger_lightning;
     propagate_const<buff_t *> fury_of_xuen_empowered_tiger_lightning;
