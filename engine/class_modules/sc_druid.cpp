@@ -664,6 +664,7 @@ public:
     buff_t* lunar_amplification_starfall;
     buff_t* protective_growth;
     buff_t* root_network;
+    buff_t* strategic_infusion;
     buff_t* treants_of_the_moon;  // treant moonfire background heartbeat
 
     // Helper pointers
@@ -1671,6 +1672,10 @@ public:
 
     if ( !has_flag( flag_e::ALLOWSTEALTH ) )
     {
+      // TODO: does this also work from meld?
+      if ( p()->talent.strategic_infusion.ok() && p()->buff.prowl->check() )
+        p()->buff.strategic_infusion->trigger();
+
       p()->buff.prowl->expire();
       p()->buffs.shadowmeld->expire();
     }
@@ -1825,6 +1830,7 @@ public:
     parse_effects( p()->buff.blooming_infusion_heal );
     parse_effects( p()->buff.harmony_of_the_grove );
     parse_effects( p()->buff.root_network );
+    parse_effects( p()->buff.strategic_infusion );
   }
 
   template <typename T>
@@ -4764,8 +4770,8 @@ struct tigers_fury_t : public cat_attack_t
     cat_attack_t::execute();
 
     p()->buff.tigers_fury->trigger();
-    
     p()->buff.tigers_tenacity->trigger();
+    p()->buff.strategic_infusion->trigger();
   }
 };
 
@@ -9668,7 +9674,7 @@ void druid_t::init_spells()
   talent.implant                        = HT( "Implant" );
   talent.resilient_flourishing          = HT( "Resilient Flourishing" );
   talent.root_network                   = HT( "Root Network" );  // TODO: symbiotic bloom buff NYI
-  talent.strategic_infusion             = HT( "Strategic Infusion" );
+  talent.strategic_infusion             = HT( "Strategic Infusion" );  // TODO: heal buff NYI
   talent.thriving_growth                = HT( "Thriving Growth" );  // TODO: heal NYI
   talent.twin_sprouts                   = HT( "Twin Sprouts" );
   talent.vigorous_creepers              = HT( "Vigorous Creepers" );
@@ -10562,6 +10568,9 @@ void druid_t::create_buffs()
 
   buff.root_network = make_buff_fallback( talent.root_network.ok() && talent.thriving_growth.ok(),
       this, "root_network", find_spell( 439887 ) );
+
+  buff.strategic_infusion = make_buff_fallback( talent.strategic_infusion.ok() && talent.tigers_fury.ok(),
+      this, "strategic_infusion", find_spell( 439891 ) );
 
   buff.treants_of_the_moon = make_buff_fallback<treants_of_the_moon_buff_t>(
       talent.treants_of_the_moon.ok() && ( talent.force_of_nature.ok() || talent.grove_guardians.ok() ),

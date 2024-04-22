@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54311
-static const std::array<spelltext_data_t, 22364> __spelltext_data { {
+static const std::array<spelltext_data_t, 22366> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21336,6 +21336,8 @@ static const std::array<spelltext_data_t, 22364> __spelltext_data { {
   { 439887, "$@spelldesc439882", "Bloodseeker Vines increase the damage your abilities deal by $w1%.", 0 },
   { 439888, "$@spelldesc439882", "Symbiotic Blooms increase the healing of your Lifebloom and Wild Growth by $w1%.", 0 },
   { 439890, "Tiger's Fury and attacking from Prowl increases the chance for Shred, Rake, and $?s202028[Brutal Slash][Swipe] to critically strike by 8% for 6 sec.\r\n\r\nCasting Regrowth increases the chance for your periodic heals to critically heal by 10% for 6 sec.", 0, 0 },
+  { 439891, "$@spelldesc439893", "Chance for Shred, Rake, and $?s202028[Brutal Slash][Swipe] to critically strike increased by $w1%.", 0 },
+  { 439893, "$@spelldesc439893", "Chance for your periodic heals to critically strike increased by $w1%.", 0 },
   { 439895, "Enemies pulled into Ursol's Vortex are rooted in place for $339d. Damage may cancel the effect.", 0, 0 },
   { 439901, "During Barkskin your movement speed is increased by $s1% and every second flowers grow beneath your feet that heal up to $439902s2 nearby injured allies for $439902s1.", 0, 0 },
   { 439902, "$@spelldesc439901", 0, 0 },

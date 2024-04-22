@@ -2285,6 +2285,7 @@ class SpellDataGenerator(DataGenerator):
           ( 433832, 0 ), ( 434112, 0 ), # dream surge
           ( 432846, 0 ), # lunar amplification
           ( 439887, 0 ), ( 439888, 0 ), # root network
+          ( 439891, 0 ), ( 439893, 0 ), # strategic infusion
           ( 428545, 0 ), # treants of the moon
         ),
         # Demon Hunter:
