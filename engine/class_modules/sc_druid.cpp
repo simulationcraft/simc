@@ -1983,6 +1983,34 @@ public:
 };
 
 template <typename BASE>
+struct trigger_control_of_the_dream_t : public BASE
+{
+private:
+  druid_t* p_;
+  timespan_t max_diff;
+
+public:
+  using base_t = trigger_control_of_the_dream_t<BASE>;
+
+  trigger_control_of_the_dream_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f ),
+      p_( p ),
+      max_diff( timespan_t::from_seconds( p->talent.control_of_the_dream->effectN( 1 ).base_value() ) )
+  {}
+
+  void update_ready( timespan_t cd ) override
+  {
+    if ( p_->talent.control_of_the_dream.ok() && cd == timespan_t::min() && BASE::cooldown_duration() > 0_ms )
+    {
+      auto diff = std::min( max_diff, p_->sim->current_time() - BASE::cooldown->ready );
+      cd = BASE::cooldown_duration() - diff;
+    }
+
+    BASE::update_ready( cd );
+  }
+};
+
+template <typename BASE>
 struct trigger_gore_t : public BASE
 {
 private:
@@ -5888,9 +5916,9 @@ struct natures_cure_t : public druid_heal_t
 };
 
 // Nature's Swiftness =======================================================
-struct natures_swiftness_t : public druid_heal_t
+struct natures_swiftness_t : public trigger_control_of_the_dream_t<druid_heal_t>
 {
-  DRUID_ABILITY( natures_swiftness_t, druid_heal_t, "natures_swiftness", p->talent.natures_swiftness ) {}
+  DRUID_ABILITY( natures_swiftness_t, base_t, "natures_swiftness", p->talent.natures_swiftness ) {}
 
   timespan_t cooldown_duration() const override
   {
@@ -5899,7 +5927,7 @@ struct natures_swiftness_t : public druid_heal_t
 
   void execute() override
   {
-    druid_heal_t::execute();
+    base_t::execute();
 
     p()->buff.natures_swiftness->trigger();
   }
@@ -5909,7 +5937,7 @@ struct natures_swiftness_t : public druid_heal_t
     if ( p()->buff.natures_swiftness->check() )
       return false;
 
-    return druid_heal_t::ready();
+    return base_t::ready();
   }
 };
 
@@ -6603,12 +6631,12 @@ struct barkskin_t : public druid_spell_t
 };
 
 // Celestial Alignment ======================================================
-struct celestial_alignment_base_t : public druid_spell_t
+struct celestial_alignment_base_t : public trigger_control_of_the_dream_t<druid_spell_t>
 {
   buff_t* buff;
 
   celestial_alignment_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
-    : druid_spell_t( n, p, p->apply_override( s, p->talent.orbital_strike ), f ),
+    : base_t( n, p, p->apply_override( s, p->talent.orbital_strike ), f ),
       buff( p->buff.celestial_alignment )
   {
     harmful = false;
@@ -6616,7 +6644,7 @@ struct celestial_alignment_base_t : public druid_spell_t
 
   void execute() override
   {
-    druid_spell_t::execute();
+    base_t::execute();
 
     buff->trigger();
 
@@ -6732,12 +6760,12 @@ struct entangling_roots_t : public druid_spell_t
 };
 
 // Force of Nature ==========================================================
-struct force_of_nature_t : public druid_spell_t
+struct force_of_nature_t : public trigger_control_of_the_dream_t<druid_spell_t>
 {
   unsigned num;
   unsigned dream_surge_num;
 
-  DRUID_ABILITY( force_of_nature_t, druid_spell_t, "force_of_nature", p->talent.force_of_nature ),
+  DRUID_ABILITY( force_of_nature_t, base_t, "force_of_nature", p->talent.force_of_nature ),
     num( as<unsigned>( p->talent.force_of_nature->effectN( 1 ).base_value() ) ),
     dream_surge_num( as<unsigned>( p->talent.dream_surge->effectN( 1 ).base_value() ) )
   {
@@ -6750,12 +6778,24 @@ struct force_of_nature_t : public druid_spell_t
 
       if ( p->active.treants_of_the_moon_mf )
         add_child( p->active.treants_of_the_moon_mf );
+
+      if ( p->active.dream_burst )
+      {
+        add_child( p->active.dream_burst );
+
+        if ( p->talent.power_of_the_dream.ok() )
+        {
+          dream_surge_num += as<unsigned>(
+              find_effect( p->talent.power_of_the_dream, p->talent.dream_surge, A_ADD_FLAT_LABEL_MODIFIER, P_EFFECT_1 )
+                  .base_value() );
+        }
+      }
     }
   }
 
   void execute() override
   {
-    druid_spell_t::execute();
+    base_t::execute();
 
     p()->pets.force_of_nature.spawn( num );
     p()->buff.dream_burst->trigger( dream_surge_num );
@@ -6890,9 +6930,9 @@ struct heart_of_the_wild_t : public druid_spell_t
 };
 
 // Incarnation (Tree) =========================================================
-struct incarnation_tree_t : public druid_spell_t
+struct incarnation_tree_t : public trigger_control_of_the_dream_t<druid_spell_t>
 {
-  DRUID_ABILITY( incarnation_tree_t, druid_spell_t, "incarnation_tree_of_life", p->talent.incarnation_tree )
+  DRUID_ABILITY( incarnation_tree_t, base_t, "incarnation_tree_of_life", p->talent.incarnation_tree )
   {
     harmful   = false;
     form_mask = NO_FORM;
@@ -6901,7 +6941,7 @@ struct incarnation_tree_t : public druid_spell_t
 
   void execute() override
   {
-    druid_spell_t::execute();
+    base_t::execute();
 
     p()->buff.incarnation_tree->trigger();
   }
@@ -7696,7 +7736,7 @@ struct starfall_t : public ap_spender_t
         const auto& eff = p->buff.cenarius_might->data().effectN( 1 );
         add_parse_entry( da_multiplier_effects )
             .set_buff( p->buff.cenarius_might_starfall )
-            .set_value( eff.percent() )
+            .set_value( p->buff.cenarius_might_starfall->default_value )
             .set_eff( &eff );
       }
 
@@ -7999,7 +8039,7 @@ struct starsurge_t : public ap_spender_t
       const auto& eff = p->buff.cenarius_might->data().effectN( 1 );
       add_parse_entry( da_multiplier_effects )
           .set_buff( p->buff.cenarius_might )
-          .set_value( eff.percent() )
+          .set_value( p->buff.cenarius_might->default_value )
           .set_eff( &eff );
     }
 
@@ -8385,7 +8425,7 @@ struct wrath_t : public ap_generator_t
 
 // Convoke the Spirits ======================================================
 // NOTE must be defined after all other spells
-struct convoke_the_spirits_t : public druid_spell_t
+struct convoke_the_spirits_t : public trigger_control_of_the_dream_t<druid_spell_t>
 {
   enum convoke_cast_e
   {
@@ -8449,7 +8489,7 @@ struct convoke_the_spirits_t : public druid_spell_t
   unsigned off_count = 0;
   bool guidance;
 
-  DRUID_ABILITY( convoke_the_spirits_t, druid_spell_t, "convoke_the_spirits", p->talent.convoke_the_spirits ),
+  DRUID_ABILITY( convoke_the_spirits_t, base_t, "convoke_the_spirits", p->talent.convoke_the_spirits ),
     actions(),
     guidance( p->talent.elunes_guidance.ok() || p->talent.ursocs_guidance.ok() ||
               p->talent.ashamanes_guidance.ok() || p->talent.cenarius_guidance.ok() )
@@ -8468,7 +8508,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   void init() override
   {
-    druid_spell_t::init();
+    base_t::init();
 
     using namespace bear_attacks;
     using namespace cat_attacks;
@@ -8776,7 +8816,7 @@ struct convoke_the_spirits_t : public druid_spell_t
   void execute() override
   {
     // Generic routine
-    druid_spell_t::execute();
+    base_t::execute();
 
     cast_list.clear();
     main_count = 0;
@@ -8794,7 +8834,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   void tick( dot_t* d ) override
   {
-    druid_spell_t::tick( d );
+    base_t::tick( d );
 
     // The last partial tick does nothing
     if ( d->time_to_tick() < base_tick_time )
@@ -9574,7 +9614,7 @@ void druid_t::init_spells()
   talent.bounteous_bloom                = HT( "Bounteous Bloom" );
   talent.cenarius_might                 = HT( "Cenarius' Might" );
   talent.control_of_the_dream           = HT( "Control of the Dream" );
-  talent.dream_surge                    = HT( "Dream Surge" );
+  talent.dream_surge                    = HT( "Dream Surge" );  // TODO: heal NYI
   talent.durability_of_nature           = HT( "Durability of Nature" );  // TODO: NYI
   talent.early_spring                   = HT( "Early Spring" );
   talent.expansiveness                  = HT( "Expansiveness" );
@@ -10423,11 +10463,15 @@ void druid_t::create_buffs()
 
   buff.cenarius_might =
       make_buff_fallback( talent.cenarius_might.ok() && ( talent.starsurge.ok() || talent.starfall.ok() ),
-          this, "cenarius_might", find_spell( 429563 ) );
+          this, "cenarius_might", find_spell( 429563 ) )
+              ->set_default_value_from_effect( 1, 0.01 )
+              ->apply_affecting_aura( talent.power_of_the_dream );
 
+  // TODO: confirm this is how it works
   buff.cenarius_might_starfall =
       make_buff_fallback( talent.cenarius_might.ok() && ( talent.starsurge.ok() || talent.starfall.ok() ),
           this, "cenarius_might_starfall", find_spell( 429676 ) )
+              ->set_default_value( buff.cenarius_might->default_value )
               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
               ->set_quiet( true );
 
