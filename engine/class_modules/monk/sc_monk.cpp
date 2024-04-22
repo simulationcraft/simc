@@ -5688,8 +5688,8 @@ struct chi_wave_t : public monk_spell_t
     cooldown->hasted       = false;
     tick_zero = true;
 
-    base_tick_time  = timespan_t::from_seconds( 1.0 );
-    dot_duration = timespan_t::from_seconds( 7.0 );
+    dot_duration = timespan_t::from_seconds( data().effectN( 1 ).base_value() );
+    base_tick_time = dot_duration / 8;
 
     radius = player->find_spell( 132466 )->effectN( 2 ).base_value();
     gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -9311,7 +9311,6 @@ void monk_t::combat_begin()
 
   if ( talent.general.chi_wave->ok() )
   {
-    // TODO: Appears to work the same as Combat Wisdom, but should verify buff behavior at some point 
     // Player starts combat with buff
     buff.chi_wave->trigger();
     // ... and then regains the buff in time intervals while in combat
