@@ -1,3 +1,7 @@
+max_time=400
+vary_combat_length=0.0
+override.target_health=0.05
+
 monk="TWW Windwalker Test"
 source=default
 spec=windwalker

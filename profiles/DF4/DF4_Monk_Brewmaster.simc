@@ -1,3 +1,8 @@
+max_time=400
+vary_combat_length=0.0
+override.target_health=0.05
+enable_all_talents=1
+
 monk="TWW Brewmaster Test"
 spec=brewmaster
 level=70
