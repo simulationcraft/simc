@@ -1,29 +1,40 @@
 max_time=400
 vary_combat_length=0.0
 override.target_health=0.05
+enable_all_talents=1
 
-monk="TWW Windwalker Test"
-source=default
-spec=windwalker
+monk="TWW Brewmaster Test"
+spec=brewmaster
 level=70
 race=void_elf
-role=dps
-position=back
-talents=B0QAyDc16vWbNHtgLBW3PSstWAAAAAAAAAAAAKpJpFiIJpVkISiSSAAAAAAAAAEgECkIJBJSaRQIJRCJSSSCA
 
 actions.ogcd+=/fortifying_brew
+actions.ogcd+=/dampen_harm
 actions.ogcd+=/diffuse_magic
+actions.ogcd+=/black_ox_brew
+# actions.ogcd+=/healing_elixir
+actions.ogcd+=/purifying_brew
 actions.ogcd+=/provoke
 actions.ogcd+=/spear_hand_strike
-actions.ogcd+=/storm_earth_and_fire
 
-# actions.igcd+=/summon_white_tiger_statue
-actions.igcd+=/invoke_xuen_the_white_tiger
+actions.igcd+=/invoke_niuzao_the_black_ox
+actions.igcd+=/weapons_of_order
 actions.igcd+=/touch_of_death
-# actions.igcd+=/celestial_conduit
-actions.igcd+=/strike_of_the_windlord
-actions.igcd+=/jadefire_stomp
+actions.igcd+=/exploding_keg
+actions.igcd+=/celestial_brew
+actions.igcd+=/bonedust_brew
 
+actions.rota+=/chi_burst
+actions.rota+=/blackout_kick
+actions.rota+=/rising_sun_kick
+actions.rota+=/breath_of_fire
+actions.rota+=/keg_smash
+actions.rota+=/expel_harm
+actions.rota+=/tiger_palm,if=time<120
+actions.rota+=/spinning_crane_kick,if=time>120
+actions.rota+=/rushing_jade_wind
+
+# actions.dumb+=/zen_meditation
 # actions.dumb+=/ring_of_peace
 # actions.dumb+=/tigers_lust
 # actions.dumb+=/transcendence
@@ -33,22 +44,12 @@ actions.dumb+=/leg_sweep
 actions.dumb+=/paralysis
 actions.dumb+=/chi_torpedo
 actions.dumb+=/roll
+# actions.dumb+=/summon_black_ox_statue
 # actions.dumb+=/detox
-actions.dumb+=/flying_serpent_kick
-actions.dumb+=/expel_harm
 # actions.dumb+=/disable,if=time<260
 actions.dumb+=/crackling_jade_lightning,if=time<280
 # actions.dumb+=/soothing_mist,if=time<300
 actions.dumb+=/vivify,if=time<320
-
-actions.rota+=/whirling_dragon_punch
-actions.rota+=/fists_of_fury
-actions.rota+=/rising_sun_kick
-actions.rota+=/chi_burst
-actions.rota+=/blackout_kick
-actions.rota+=/tiger_palm,if=time<120
-actions.rota+=/spinning_crane_kick,if=time>120
-# actions.rota+=/rushing_jade_wind
 
 actions=auto_attack
 actions+=/potion
