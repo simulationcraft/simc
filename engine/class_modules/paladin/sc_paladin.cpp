@@ -29,6 +29,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     options( options_t() ),
     beacon_target( nullptr ),
     next_season( SUMMER ),
+    next_armament( HOLY_BULWARK ),
     holy_power_generators_used( 0 ),
     melee_swing_count( 0 )
 {
@@ -1059,7 +1060,16 @@ struct crusader_strike_t : public paladin_melee_attack_t
       background = true;
     }
   }
-
+  double action_multiplier() const override
+  {
+    double m = paladin_melee_attack_t::action_multiplier();
+    if (p()->buffs.blessed_assurance->up())
+    {
+        //TODO add spell data
+      m *= 1.0 + 1.0;
+    }
+    return m;
+  }
   void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
@@ -1674,6 +1684,73 @@ struct blessing_of_the_seasons_t : public paladin_spell_t
   }
 };
 
+// Holy Armaments
+// TODO: Add spelldata once fetched
+//Sacred Weapon Driver 
+struct sacred_weapon_proc_t : public spell_t
+{
+  sacred_weapon_proc_t( player_t* p ) : spell_t( "sacred_weapon_proc", p )
+  {
+    may_dodge = may_parry = may_block = callbacks = may_crit = false;
+    background                                               = true;
+    base_dd_min = base_dd_max = 10000;
+  }
+};
+    // Sacred Weapon Buff
+struct sacred_weapon_t : public paladin_spell_t
+{
+    //TODO Add Spelldat
+    timespan_t buff_duration = 12_s;
+
+    sacred_weapon_t(paladin_t* p) : paladin_spell_t("sacred_weapon", p)
+   {}
+   void execute() override
+   {
+    paladin_spell_t::execute();
+    p()->buffs.sacred_weapon->trigger( buff_duration );
+   }
+};
+
+struct holy_bulwark_t : public paladin_spell_t
+{
+   timespan_t buff_duration = 12_s;
+
+   holy_bulwark_t( paladin_t* p ) : paladin_spell_t( "holy_bulwark", p )
+   {
+   }
+   void execute() override
+   {
+    paladin_spell_t::execute();
+    p()->buffs.holy_bulwark->trigger( buff_duration );
+   }
+};
+
+// Holy Armaments
+
+struct holy_armament_t : public paladin_spell_t
+{
+   holy_armament_t( paladin_t* p, util::string_view options_str ) : paladin_spell_t( "holy_armament", p, spell_data_t::nil()) 
+   {
+    parse_options( options_str );
+    harmful = false;
+    hasted_gcd = true;
+    cooldown->duration = 20_s;
+    cooldown->charges  = 2;
+   }
+
+   timespan_t execute_time() const override
+   {
+    return p()->active.armament[ p()->next_armament ]->execute_time();
+   }
+   void execute() override
+   {
+    paladin_spell_t::execute();
+    p()->active.armament[ p()->next_armament ]->execute();
+    p()->next_armament = armament( ( p()->next_armament + 1 ) & NUM_ARMAMENT );
+   }
+};
+
+
 // Hammer of Wrath
 
 struct hammer_of_wrath_t : public paladin_melee_attack_t
@@ -2057,6 +2134,9 @@ void paladin_t::create_actions()
   active.seasons[ AUTUMN ] = new blessing_of_autumn_t( this );
   active.seasons[ WINTER ] = new blessing_of_winter_t( this );
   active.seasons[ SPRING ] = new blessing_of_spring_t( this );
+  
+  active.armament[ HOLY_BULWARK ]  = new holy_bulwark_t( this );
+  active.armament[ SACRED_WEAPON ] = new sacred_weapon_t( this );
 
   if ( talents.incandescence->ok() )
   {
@@ -2131,6 +2211,8 @@ action_t* paladin_t::create_action( util::string_view name, util::string_view op
     return new blessing_of_the_seasons_t( this, options_str );
   if ( name == "word_of_glory" )
     return new word_of_glory_t( this, options_str );
+  if ( name == "holy_armament" )
+    return new holy_armament_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2206,6 +2288,7 @@ void paladin_t::reset()
   active_aura         = nullptr;
 
   next_season = SUMMER;
+  next_armament = HOLY_BULWARK;
   holy_power_generators_used = 0;
   melee_swing_count = 0;
 }
@@ -2378,6 +2461,9 @@ void paladin_t::create_buffs()
               this->active.divine_resonance->set_target( this->target );
               this->active.divine_resonance->schedule_execute();
           } );
+  buffs.sacred_weapon     = make_buff( this, "sacred_weapon", find_spell( 432502 ) );
+  buffs.holy_bulwark  = make_buff( this,  "holy_bulwark" );
+  buffs.blessed_assurance = make_buff( this,  "blessed_assurance" );
 }
 
 // paladin_t::default_potion ================================================
@@ -3712,6 +3798,7 @@ struct paladin_module_t : public module_t
       } );
     }
   }
+
 
   void register_hotfixes() const override
   {

@@ -29,6 +29,12 @@ enum season : unsigned int {
   NUM_SEASONS = 4,
 };
 
+enum armament : unsigned int {
+  HOLY_BULWARK = 0,
+  SACRED_WEAPON = 1,
+  NUM_ARMAMENT = 2,
+};
+
 enum consecration_source : unsigned int {
   HARDCAST = 0,
   BLADE_OF_JUSTICE = 1,
@@ -96,6 +102,7 @@ public:
     // Covenant stuff
     action_t* divine_toll;
     action_t* seasons[NUM_SEASONS];
+    action_t* armament[NUM_ARMAMENT];
     action_t* divine_resonance;
 
     // talent stuff
@@ -190,6 +197,14 @@ public:
     buff_t* divine_arbiter;
 
     buff_t* echoes_of_wrath; // T31 4pc
+
+    // TWW Hero Talents
+    buff_t* blessed_assurance;
+    buff_t* rite_of_sanctification;
+    buff_t* rite_of_adjuration;
+    buff_t* sacred_weapon;
+    buff_t* holy_bulwark;
+
   } buffs;
 
   // Gains
@@ -261,6 +276,7 @@ public:
     cooldown_t* wake_of_ashes;
 
     cooldown_t* blessing_of_the_seasons;
+    cooldown_t* holy_armament;
     cooldown_t* ashen_hallow; // Radiant Embers Legendary
 
     cooldown_t* ret_aura_icd;
@@ -561,6 +577,7 @@ public:
   player_t* beacon_target;
 
   season next_season;
+  armament next_armament;
 
   int holy_power_generators_used;
   int melee_swing_count;
@@ -1505,6 +1522,7 @@ struct holy_power_consumer_t : public Base
       p->buffs.blessing_of_dawn->expire();
       p->buffs.blessing_of_dusk->trigger();
     }
+    //todo: add blessed assurance here
   }
 };
 
