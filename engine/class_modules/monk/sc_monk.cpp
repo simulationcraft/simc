@@ -1580,6 +1580,13 @@ struct rising_sun_kick_t : public monk_melee_attack_t
       p()->active_actions.rising_sun_kick_press_the_advantage->schedule_execute();
       p()->buff.press_the_advantage->expire();
     }
+
+    if ( p()->buff.chi_wave->up() )
+    {
+      p()->active_actions.chi_wave->set_target( this->execute_state->target );
+      p()->active_actions.chi_wave->schedule_execute();
+      p()->buff.chi_wave->expire();
+    }
   }
 };
 
@@ -5267,6 +5274,13 @@ struct vivify_t : public monk_heal_t
 
     if ( p()->mastery.gust_of_mists->ok() )
       mastery->execute();
+
+    if ( p()->buff.chi_wave->up() )
+    {
+      p()->active_actions.chi_wave->set_target( this->execute_state->target );
+      p()->active_actions.chi_wave->schedule_execute();
+      p()->buff.chi_wave->expire();
+    }
   }
 };
 
@@ -5660,25 +5674,28 @@ struct chi_wave_t : public monk_spell_t
   heal_t *heal;
   spell_t *damage;
   bool dmg;
-  chi_wave_t( monk_t *player, util::string_view options_str )
+  chi_wave_t( monk_t *player )
     : monk_spell_t( "chi_wave", player, player->talent.general.chi_wave ),
       heal( new chi_wave_heal_tick_t( *player, "chi_wave_heal" ) ),
       damage( new chi_wave_dmg_tick_t( player, "chi_wave_damage" ) ),
       dmg( true )
   {
+
     sef_ability      = actions::sef_ability_e::SEF_CHI_WAVE;
-    may_combo_strike = true;
-    cast_during_sck  = true;
-    parse_options( options_str );
+
+    background = true;
     hasted_ticks = harmful = false;
     cooldown->hasted       = false;
-    dot_duration           = timespan_t::from_seconds( player->talent.general.chi_wave->effectN( 1 ).base_value() );
-    base_tick_time         = timespan_t::from_seconds( 1.0 );
+    tick_zero = true;
+
+    base_tick_time  = timespan_t::from_seconds( 1.0 );
+    dot_duration = timespan_t::from_seconds( 7.0 );
+
+    radius = player->find_spell( 132466 )->effectN( 2 ).base_value();
+    gcd_type = gcd_haste_type::SPELL_HASTE;
+
     add_child( heal );
     add_child( damage );
-    tick_zero = true;
-    radius    = player->find_spell( 132466 )->effectN( 2 ).base_value();
-    gcd_type  = gcd_haste_type::SPELL_HASTE;
   }
 
   void impact( action_state_t *s ) override
@@ -6892,8 +6909,6 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
     return new chi_burst_t( this, options_str );
   if ( name == "chi_torpedo" )
     return new chi_torpedo_t( this, options_str );
-  if ( name == "chi_wave" )
-    return new chi_wave_t( this, options_str );
   if ( name == "black_ox_brew" )
     return new black_ox_brew_t( *this, options_str );
   if ( name == "dampen_harm" )
@@ -7580,7 +7595,7 @@ void monk_t::init_spells()
   passives.bonedust_brew_chi         = find_spell( 328296 );
   passives.bonedust_brew_attenuation = find_spell( 394514 );
   passives.chi_burst_energize        = find_spell( 261682 );
-  passives.chi_burst_heal            = find_spell( 130654 );
+  passives.chi_burst_heal            = find_spell( 130654 ); 
   passives.chi_wave_damage           = find_spell( 132467 );
   passives.chi_wave_heal             = find_spell( 132463 );
   passives.claw_of_the_white_tiger   = find_spell( 389541 );
@@ -7710,6 +7725,7 @@ void monk_t::init_spells()
   active_actions.bonedust_brew_dmg  = new actions::spells::bonedust_brew_damage_t( *this );
   active_actions.bonedust_brew_heal = new actions::spells::bonedust_brew_heal_t( *this );
   active_actions.bountiful_brew     = new actions::spells::bountiful_brew_t( *this );
+  active_actions.chi_wave           = new actions::chi_wave_t( this );
   active_actions.resonant_fists     = new actions::spells::resonant_fists_t( *this );
   windwalking_aura                  = new actions::windwalking_aura_t( this );
 
@@ -7906,6 +7922,10 @@ void monk_t::create_buffs()
   buff.chi_torpedo = make_buff( this, "chi_torpedo", find_spell( 119085 ) )
                          ->set_trigger_spell( talent.general.chi_torpedo )
                          ->set_default_value_from_effect( 1 );
+
+  buff.chi_wave = make_buff( this, "chi_wave", find_spell( 450380 ) )
+                      ->set_trigger_spell( talent.general.chi_wave )
+                      ->set_default_value_from_effect( 1 );
 
   buff.combat_wisdom = make_buff( this, "combat_wisdom", find_spell( 129914 ) )
                            ->set_trigger_spell( talent.windwalker.combat_wisdom )
@@ -9287,6 +9307,16 @@ void monk_t::combat_begin()
       buffs.windwalking_movement_aura->trigger( 1, buffs.windwalking_movement_aura->data().effectN( 1 ).percent(), 1,
                                                 timespan_t::zero() );
     }
+  }
+
+  if ( talent.general.chi_wave->ok() )
+  {
+    // TODO: Appears to work the same as Combat Wisdom, but should verify buff behavior at some point 
+    // Player starts combat with buff
+    buff.chi_wave->trigger();
+    // ... and then regains the buff in time intervals while in combat
+    make_repeating_event( sim, talent.general.chi_wave->effectN( 1 ).period(),
+                            [ this ]() { buff.chi_wave->trigger(); } );
   }
 
   if ( specialization() == MONK_WINDWALKER )
