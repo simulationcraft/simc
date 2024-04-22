@@ -1,0 +1,9 @@
+max_time=400
+vary_combat_length=0.0
+override.target_health=0.05
+enable_all_talents=1
+use_item_verification=0
+
+input=DF4_Monk_Brewmaster.simc
+
+input=DF4_Monk_Windwalker.simc
