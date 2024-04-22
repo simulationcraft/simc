@@ -4090,7 +4090,7 @@ struct bloodseeker_vines_t : public cat_attack_t
     cat_attack_t::trigger_dot( s );
 
     // execute() instead of trigger() to avoid proc delay
-    td( s->target )->debuff.bloodseeker_vines->execute();
+    td( s->target )->debuff.bloodseeker_vines->execute( 1, buff_t::DEFAULT_VALUE(), dot_duration );
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -9170,6 +9170,30 @@ void druid_t::activate()
     } );
   }
 
+  if ( talent.resilient_flourishing.ok() && talent.thriving_growth.ok() )
+  {
+    register_on_kill_callback( [ this ]( player_t* t ) {
+      auto dur = get_target_data( t )->dots.bloodseeker_vines->remains();
+      if ( dur > 0_ms )
+      {
+        const auto& tl = active.bloodseeker_vines->target_list();
+        if ( auto tar = get_smart_target( tl, &druid_td_t::dots_t::bloodseeker_vines, t ) )
+        {
+          // TODO: ugly hack. possibly use custom action_state
+          auto orig_dur = active.bloodseeker_vines->dot_duration;
+
+          active.bloodseeker_vines->dot_duration = dur;
+          active.bloodseeker_vines->dual = true;
+
+          active.bloodseeker_vines->execute_on_target( tar );
+
+          active.bloodseeker_vines->dot_duration = orig_dur;
+          active.bloodseeker_vines->dual = false;
+        }
+      }
+    } );
+  }
+
   player_t::activate();
 }
 
@@ -12704,7 +12728,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   debuff.bloodseeker_vines = make_buff_fallback( source.talent.thriving_growth.ok() && target.is_enemy(),
       *this, "bloodseeker_vines_debuff", source.spec.bloodseeker_vines )
           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-          ->set_activated( true )
+          ->apply_affecting_aura( source.talent.resilient_flourishing )
           ->set_quiet( true );
 
   debuff.pulverize = make_buff_fallback( source.talent.pulverize.ok() && target.is_enemy(),
@@ -13382,6 +13406,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.hunt_beneath_the_open_skies );
   action.apply_affecting_aura( talent.lunar_calling );
   action.apply_affecting_aura( talent.lunar_insight );
+  action.apply_affecting_aura( talent.resilient_flourishing );
   action.apply_affecting_aura( talent.stellar_command );
   action.apply_affecting_aura( talent.the_eternal_moon );
   action.apply_affecting_aura( talent.wildstalkers_persistence );
