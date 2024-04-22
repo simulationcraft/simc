@@ -240,6 +240,7 @@ public:
     propagate_const<buff_t *> exploding_keg;
 
     // Windwalker
+    propagate_const<buff_t *> acclamation;
     propagate_const<buff_t *> flying_serpent_kick;
     propagate_const<buff_t *> empowered_tiger_lightning;
     propagate_const<buff_t *> fury_of_xuen_empowered_tiger_lightning;
@@ -313,6 +314,7 @@ public:
     propagate_const<action_t *> bonedust_brew_dmg;
     propagate_const<action_t *> bonedust_brew_heal;
     propagate_const<action_t *> bountiful_brew;
+    propagate_const<action_t *> chi_wave;
     propagate_const<action_t *> resonant_fists;
     propagate_const<action_t *> rushing_jade_wind;
 
@@ -449,6 +451,7 @@ public:
     propagate_const<buff_t *> bonedust_brew;
     propagate_const<buff_t *> bonedust_brew_attenuation_hidden;
     propagate_const<buff_t *> chi_torpedo;
+    propagate_const<buff_t *> chi_wave;
     propagate_const<buff_t *> dampen_harm;
     propagate_const<buff_t *> diffuse_magic;
     propagate_const<buff_t *> fatal_touch;

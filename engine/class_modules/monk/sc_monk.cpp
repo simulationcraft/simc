@@ -677,6 +677,7 @@ template <class Base>
 double monk_action_t<Base>::composite_persistent_multiplier( const action_state_t *action_state ) const
 {
   double pm = ab::composite_persistent_multiplier( action_state );
+
   return pm;
 }
 
@@ -737,6 +738,8 @@ double monk_action_t<Base>::composite_target_multiplier( player_t *t ) const
     if ( ab::data().affected_by( p()->passives.jadefire_brand_dmg->effectN( 1 ) ) &&
          td->debuff.jadefire_brand->check() )
       tm *= 1 + p()->passives.jadefire_brand_dmg->effectN( 1 ).percent();
+
+    tm *= 1 + td->debuff.acclamation->check_stack_value();
   }
 
   return tm;
@@ -855,6 +858,9 @@ double monk_heal_t::composite_persistent_multiplier( const action_state_t *state
   if ( base_t::data().affected_by( p()->passives.jadefire_brand_heal->effectN( 1 ) ) &&
        p()->buff.jadefire_brand->check() )
     pm *= 1 + p()->passives.jadefire_brand_heal->effectN( 1 ).percent();
+
+  if ( p()->talent.general.chi_proficiency.ok() && base_t::data().affected_by(p()->talent.general.chi_proficiency->effectN(2)) )
+    pm *= 1.0 + p()->talent.general.chi_proficiency->effectN( 2 ).percent();
 
   return pm;
 }
@@ -1369,30 +1375,6 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
   }
 };
 
-// T30 Shadowflame Nova =====================================================
-struct shadowflame_nova_t : public monk_melee_attack_t
-{
-  shadowflame_nova_t( monk_t *p ) : monk_melee_attack_t( "shadowflame_nova", p, p->passives.shadowflame_nova )
-  {
-    background = true;
-    aoe        = -1;
-
-    apply_dual_wield_two_handed_scaling();
-  }
-
-  double composite_target_da_multiplier( player_t *target ) const
-  {
-    double multiplier = monk_melee_attack_t::composite_target_da_multiplier( target );
-
-    auto td = p()->find_target_data( target );
-
-    if ( td && td->debuff.shadowflame_vulnerability->check() )
-      multiplier *= 1 + td->debuff.shadowflame_vulnerability->check_value();
-
-    return multiplier;
-  }
-};
-
 // Rising Sun Kick Damage Trigger ===========================================
 
 struct rising_sun_kick_dmg_t : public monk_melee_attack_t
@@ -1501,12 +1483,15 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     {
       p()->buff.kicks_of_flowing_momentum->decrement();
     }
+
+    if ( p()->talent.windwalker.acclamation.ok() )
+      get_td( s->target )->debuff.acclamation->trigger();
+
   }
 };
 
 struct rising_sun_kick_t : public monk_melee_attack_t
 {
-  shadowflame_nova_t *nova;
   rising_sun_kick_dmg_t *trigger_attack;
   glory_of_the_dawn_t *gotd;
   bool is_base_rsk;
@@ -1534,13 +1519,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
       add_child( gotd );
     }
 
-    if ( p->sets->set( MONK_WINDWALKER, T30, B2 )->ok() )
-    {
-      nova = new shadowflame_nova_t( p );
-
-      add_child( nova );
-    }
-
     if ( p->talent.brewmaster.press_the_advantage->ok() )
       add_child( p->active_actions.rising_sun_kick_press_the_advantage );
   }
@@ -1558,13 +1536,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
       gotd->execute();
     }
 
-    // T30 Set Bonus
-    if ( p()->sets->set( MONK_WINDWALKER, T30, B2 )->ok() )
-    {
-      nova->target = p()->target;
-      nova->execute();
-    }
-
     if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.fists_of_fury->down() )
     {
       if ( this->cooldown_duration() <= p()->cooldown.fists_of_fury->remains() )
@@ -1579,6 +1550,13 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     {
       p()->active_actions.rising_sun_kick_press_the_advantage->schedule_execute();
       p()->buff.press_the_advantage->expire();
+    }
+
+    if ( p()->buff.chi_wave->up() )
+    {
+      p()->active_actions.chi_wave->set_target( this->execute_state->target );
+      p()->active_actions.chi_wave->schedule_execute();
+      p()->buff.chi_wave->expire();
     }
   }
 };
@@ -2520,7 +2498,7 @@ struct whirling_dragon_punch_aoe_tick_t : public monk_melee_attack_t
 
     background          = true;
     aoe                 = -1;
-    reduced_aoe_targets = s->effectN( 1 ).base_value();
+    reduced_aoe_targets = p->talent.windwalker.whirling_dragon_punch->effectN( 1 ).base_value();
 
     apply_dual_wield_two_handed_scaling();
 
@@ -2613,7 +2591,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     {
       auto delay     = base_tick_time * i;
       aoe_ticks[ i ] = new whirling_dragon_punch_aoe_tick_t( "whirling_dragon_punch_aoe_tick", p,
-                                                             p->passives.whirling_dragon_punch_st_tick, delay );
+                                                             p->passives.whirling_dragon_punch_aoe_tick, delay );
 
       add_child( aoe_ticks[ i ] );
     }
@@ -5235,7 +5213,7 @@ struct vivify_t : public monk_heal_t
   {
     parse_options( options_str );
 
-    spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
 
     base_execute_time += p.talent.general.vivacious_vivification->effectN( 1 ).time_value();
 
@@ -5267,6 +5245,13 @@ struct vivify_t : public monk_heal_t
 
     if ( p()->mastery.gust_of_mists->ok() )
       mastery->execute();
+
+    if ( p()->buff.chi_wave->up() )
+    {
+      p()->active_actions.chi_wave->set_target( this->execute_state->target );
+      p()->active_actions.chi_wave->schedule_execute();
+      p()->buff.chi_wave->expire();
+    }
   }
 };
 
@@ -5660,25 +5645,28 @@ struct chi_wave_t : public monk_spell_t
   heal_t *heal;
   spell_t *damage;
   bool dmg;
-  chi_wave_t( monk_t *player, util::string_view options_str )
+  chi_wave_t( monk_t *player )
     : monk_spell_t( "chi_wave", player, player->talent.general.chi_wave ),
       heal( new chi_wave_heal_tick_t( *player, "chi_wave_heal" ) ),
       damage( new chi_wave_dmg_tick_t( player, "chi_wave_damage" ) ),
       dmg( true )
   {
+
     sef_ability      = actions::sef_ability_e::SEF_CHI_WAVE;
-    may_combo_strike = true;
-    cast_during_sck  = true;
-    parse_options( options_str );
+
+    background = true;
     hasted_ticks = harmful = false;
     cooldown->hasted       = false;
-    dot_duration           = timespan_t::from_seconds( player->talent.general.chi_wave->effectN( 1 ).base_value() );
-    base_tick_time         = timespan_t::from_seconds( 1.0 );
+    tick_zero = true;
+
+    dot_duration = timespan_t::from_seconds( data().effectN( 1 ).base_value() );
+    base_tick_time = dot_duration / 8;
+
+    radius = player->find_spell( 132466 )->effectN( 2 ).base_value();
+    gcd_type = gcd_haste_type::SPELL_HASTE;
+
     add_child( heal );
     add_child( damage );
-    tick_zero = true;
-    radius    = player->find_spell( 132466 )->effectN( 2 ).base_value();
-    gcd_type  = gcd_haste_type::SPELL_HASTE;
   }
 
   void impact( action_state_t *s ) override
@@ -6633,6 +6621,11 @@ namespace monk
 monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( target, p ), dots(), debuff(), monk( *p )
 {
   // Windwalker
+  debuff.acclamation = make_buff( *this, "acclamation", p->find_spell( 451433 ) )
+    ->set_trigger_spell( p->talent.windwalker.acclamation )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+    ->set_default_value_from_effect( 1 );
+
   debuff.empowered_tiger_lightning = make_buff( *this, "empowered_tiger_lightning", spell_data_t::nil() )
                                          ->set_trigger_spell( p->spec.empowered_tiger_lightning )
                                          ->set_quiet( true )
@@ -6892,8 +6885,6 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
     return new chi_burst_t( this, options_str );
   if ( name == "chi_torpedo" )
     return new chi_torpedo_t( this, options_str );
-  if ( name == "chi_wave" )
-    return new chi_wave_t( this, options_str );
   if ( name == "black_ox_brew" )
     return new black_ox_brew_t( *this, options_str );
   if ( name == "dampen_harm" )
@@ -7580,7 +7571,7 @@ void monk_t::init_spells()
   passives.bonedust_brew_chi         = find_spell( 328296 );
   passives.bonedust_brew_attenuation = find_spell( 394514 );
   passives.chi_burst_energize        = find_spell( 261682 );
-  passives.chi_burst_heal            = find_spell( 130654 );
+  passives.chi_burst_heal            = find_spell( 130654 ); 
   passives.chi_wave_damage           = find_spell( 132467 );
   passives.chi_wave_heal             = find_spell( 132463 );
   passives.claw_of_the_white_tiger   = find_spell( 389541 );
@@ -7710,6 +7701,7 @@ void monk_t::init_spells()
   active_actions.bonedust_brew_dmg  = new actions::spells::bonedust_brew_damage_t( *this );
   active_actions.bonedust_brew_heal = new actions::spells::bonedust_brew_heal_t( *this );
   active_actions.bountiful_brew     = new actions::spells::bountiful_brew_t( *this );
+  active_actions.chi_wave           = new actions::chi_wave_t( this );
   active_actions.resonant_fists     = new actions::spells::resonant_fists_t( *this );
   windwalking_aura                  = new actions::windwalking_aura_t( this );
 
@@ -7906,6 +7898,10 @@ void monk_t::create_buffs()
   buff.chi_torpedo = make_buff( this, "chi_torpedo", find_spell( 119085 ) )
                          ->set_trigger_spell( talent.general.chi_torpedo )
                          ->set_default_value_from_effect( 1 );
+
+  buff.chi_wave = make_buff( this, "chi_wave", find_spell( 450380 ) )
+                      ->set_trigger_spell( talent.general.chi_wave )
+                      ->set_default_value_from_effect( 1 );
 
   buff.combat_wisdom = make_buff( this, "combat_wisdom", find_spell( 129914 ) )
                            ->set_trigger_spell( talent.windwalker.combat_wisdom )
@@ -9052,6 +9048,9 @@ double monk_t::composite_player_multiplier( school_e school ) const
 {
   double multiplier = player_t::composite_player_multiplier( school );
 
+  if ( talent.general.chi_proficiency.ok() && ( talent.general.chi_proficiency->effectN(1).affected_schools() & school ) == school )
+    multiplier *= 1.0 + talent.general.chi_proficiency->effectN( 1 ).percent();
+
   return multiplier;
 }
 
@@ -9287,6 +9286,15 @@ void monk_t::combat_begin()
       buffs.windwalking_movement_aura->trigger( 1, buffs.windwalking_movement_aura->data().effectN( 1 ).percent(), 1,
                                                 timespan_t::zero() );
     }
+  }
+
+  if ( talent.general.chi_wave->ok() )
+  {
+    // Player starts combat with buff
+    buff.chi_wave->trigger();
+    // ... and then regains the buff in time intervals while in combat
+    make_repeating_event( sim, talent.general.chi_wave->effectN( 1 ).period(),
+                            [ this ]() { buff.chi_wave->trigger(); } );
   }
 
   if ( specialization() == MONK_WINDWALKER )
