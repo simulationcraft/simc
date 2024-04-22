@@ -11,7 +11,7 @@ neck=ouroboreal_necklet,id=210214,bonus_id=8782,gem_id=192961/192961/192961,ilev
 shoulder=wayward_chronomancers_metronomes,id=207288,ilevel=528
 back=voice_of_the_silent_star,id=204465,enchant_id=6592,ilevel=535
 chest=wayward_chronomancers_patchwork,id=207293,enchant_id=6625,ilevel=528
-wrist=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8780/8932/8960,enchant_id=6586,gem_id=192961,ilevel=525,crafted_stats=32/36
+wrist=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8780/9379/8960,enchant_id=6586,gem_id=192961,ilevel=525,crafted_stats=32/36
 hands=wayward_chronomancers_gloves,id=207291,ilevel=528
 waist=vibrant_wildercloth_girdle,id=193516,bonus_id=8780/8932/8960,ilevel=525,gem_id=192961,crafted_stats=40/49
 legs=wayward_chronomancers_pantaloons,id=207289,ilevel=528,enchant_id=6544
@@ -68,7 +68,7 @@ neck=eye_of_the_rising_flame,id=207163,ilevel=528,gem_id=192958/192958/192958
 shoulder=wayward_chronomancers_metronomes,id=207288,ilevel=528
 back=voice_of_the_silent_star,id=204465,ilevel=535,enchant_id=6592
 chest=compressed_cultists_frock,id=195500,ilevel=528,enchant_id=6625
-wrist=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8932/8960/8780/8790,ilevel=525,gem_id=192935,enchant_id=6586,crafted_stats=32/36
+wrist=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9379/8960/8780/8790,ilevel=525,gem_id=192935,enchant_id=6586,crafted_stats=32/36
 hands=wayward_chronomancers_gloves,id=207291,ilevel=528
 waist=vibrant_wildercloth_girdle,id=193516,bonus_id=8780/8792/8932/8960,ilevel=525,gem_id=192935,enchant_id=6904
 legs=wayward_chronomancers_pantaloons,id=207289,ilevel=528,enchant_id=6830
