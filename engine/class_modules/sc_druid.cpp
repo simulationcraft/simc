@@ -663,6 +663,7 @@ public:
     buff_t* lunar_amplification;
     buff_t* lunar_amplification_starfall;
     buff_t* protective_growth;
+    buff_t* root_network;
     buff_t* treants_of_the_moon;  // treant moonfire background heartbeat
 
     // Helper pointers
@@ -1823,6 +1824,7 @@ public:
     parse_effects( p()->buff.blooming_infusion_damage );
     parse_effects( p()->buff.blooming_infusion_heal );
     parse_effects( p()->buff.harmony_of_the_grove );
+    parse_effects( p()->buff.root_network );
   }
 
   template <typename T>
@@ -9665,7 +9667,7 @@ void druid_t::init_spells()
   talent.hunt_beneath_the_open_skies    = HT( "Hunt Beneath the Open Skies" );
   talent.implant                        = HT( "Implant" );
   talent.resilient_flourishing          = HT( "Resilient Flourishing" );
-  talent.root_network                   = HT( "Root Network" );
+  talent.root_network                   = HT( "Root Network" );  // TODO: symbiotic bloom buff NYI
   talent.strategic_infusion             = HT( "Strategic Infusion" );
   talent.thriving_growth                = HT( "Thriving Growth" );  // TODO: heal NYI
   talent.twin_sprouts                   = HT( "Twin Sprouts" );
@@ -10557,6 +10559,9 @@ void druid_t::create_buffs()
   buff.protective_growth =
       make_buff_fallback( talent.protective_growth.ok(), this, "protective_growth", find_spell( 433749 ) )
           ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
+
+  buff.root_network = make_buff_fallback( talent.root_network.ok() && talent.thriving_growth.ok(),
+      this, "root_network", find_spell( 439887 ) );
 
   buff.treants_of_the_moon = make_buff_fallback<treants_of_the_moon_buff_t>(
       talent.treants_of_the_moon.ok() && ( talent.force_of_nature.ok() || talent.grove_guardians.ok() ),
@@ -12730,6 +12735,15 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
           ->apply_affecting_aura( source.talent.resilient_flourishing )
           ->set_quiet( true );
+  if ( !debuff.bloodseeker_vines->is_fallback && source.talent.root_network.ok() )
+  {
+    debuff.bloodseeker_vines->set_stack_change_callback( [ & ]( buff_t*, int old_, int new_ ) {
+      if ( new_ > old_ )
+        source.buff.root_network->trigger();
+      else
+        source.buff.root_network->decrement();
+    } );
+  }
 
   debuff.pulverize = make_buff_fallback( source.talent.pulverize.ok() && target.is_enemy(),
       *this, "pulverize_debuff", source.talent.pulverize )

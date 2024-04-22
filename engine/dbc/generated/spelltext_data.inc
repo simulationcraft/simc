@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54311
-static const std::array<spelltext_data_t, 22361> __spelltext_data { {
+static const std::array<spelltext_data_t, 22364> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21333,6 +21333,8 @@ static const std::array<spelltext_data_t, 22361> __spelltext_data { {
   { 439874, "Wild Growth and Rake last $s1% longer.", 0, 0 },
   { 439880, "Bloodseeker Vines and Symbiotic Blooms last ${$s1/1000} additional sec.\r\n\r\nWhen a target afflicted by Bloodseeker Vines dies, the vines jump to a nearby unaffected target for their remaining duration.", 0, 0 },
   { 439882, "Each active Bloodseeker Vine increases the damage your abilities deal by 2%.\r\n\r\nEach active Symbiotic Bloom increases the healing of your Lifebloom and Wild Growth by 2%.", 0, 0 },
+  { 439887, "$@spelldesc439882", "Bloodseeker Vines increase the damage your abilities deal by $w1%.", 0 },
+  { 439888, "$@spelldesc439882", "Symbiotic Blooms increase the healing of your Lifebloom and Wild Growth by $w1%.", 0 },
   { 439890, "Tiger's Fury and attacking from Prowl increases the chance for Shred, Rake, and $?s202028[Brutal Slash][Swipe] to critically strike by 8% for 6 sec.\r\n\r\nCasting Regrowth increases the chance for your periodic heals to critically heal by 10% for 6 sec.", 0, 0 },
   { 439895, "Enemies pulled into Ursol's Vortex are rooted in place for $339d. Damage may cancel the effect.", 0, 0 },
   { 439901, "During Barkskin your movement speed is increased by $s1% and every second flowers grow beneath your feet that heal up to $439902s2 nearby injured allies for $439902s1.", 0, 0 },
@@ -21735,6 +21737,7 @@ static const std::array<spelltext_data_t, 22361> __spelltext_data { {
   { 444318, "Engulf reignites Enkindle, extending its duration and effectiveness by $s1%.", 0, "Red" },
   { 444322, "Renewing Blaze also applies to $s1 nearby injured $Lally:allies; when cast.", 0, "Red" },
   { 444347, "$@spelldesc444010", "Your movement speed is increased by $?a391547[${$w5+$391547w1}][$w5]%, you cannot be slowed below $s10% of normal speed, and you are immune to forced movement effects and knockbacks.", 0 },
+  { 444354, "$@spelldesc430717", 0, 0 },
   { 444409, "$@spelldesc444410", "Suffering $w1 Shadow damage split between other nearby targets every $t.", 0 },
   { 444410, "Dealing Fire damage has a chance to apply Seething Hate, causing ${$s1*($444409d/$444409t)} Shadow damage split between them and other nearby enemies over $444409d.\r\n\r\nDamage is increased for each enemy struck, up to $s2 enemies.", 0, 0 },
   { 444434, "$@spelldesc444435", "Healing for $w2 every $t1 sec. \r\n$w1 healing remaining.", 0 },
