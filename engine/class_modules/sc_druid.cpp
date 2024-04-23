@@ -38,6 +38,8 @@ enum form_e : unsigned
   BEAR_FORM      = 0x10,
   DIRE_BEAR_FORM = 0x40,  // Legacy
   MOONKIN_FORM   = 0x40000000,
+
+  ANY_FORM = CAT_FORM | NO_FORM | TRAVEL_FORM | BEAR_FORM | MOONKIN_FORM
 };
 
 enum moon_stage_e
@@ -763,6 +765,7 @@ public:
     player_talent_t astral_influence;
     player_talent_t cyclone;
     player_talent_t feline_swiftness;
+    player_talent_t fluid_form;
     player_talent_t forestwalk;
     player_talent_t frenzied_regeneration;
     player_talent_t heart_of_the_wild;
@@ -1217,7 +1220,7 @@ public:
   void datacollection_end() override;
   void analyze( sim_t& ) override;
   timespan_t available() const override;
-  double composite_player_target_multiplier( player_t*, school_e ) const;
+  double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_melee_speed() const override;
   double composite_attack_power_multiplier() const override;
   double composite_armor() const override;
@@ -2074,6 +2077,37 @@ public:
   }
 };
 
+template <specialization_e S, typename BASE>
+struct use_fluid_form_t : public BASE
+{
+private:
+  druid_t* p_;
+
+public:
+  using base_t = use_fluid_form_t<S, BASE>;
+
+  use_fluid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f ), p_( p )
+  {
+    if ( p_->talent.fluid_form.ok() )
+    {
+      if constexpr ( S == DRUID_BALANCE )
+      {
+        if ( p_->specialization() == DRUID_BALANCE )
+          BASE::autoshift = p_->active.shift_to_moonkin;
+      }
+      else if constexpr ( S == DRUID_FERAL )
+      {
+        BASE::autoshift = p_->active.shift_to_cat;
+      }
+      else if constexpr ( S == DRUID_GUARDIAN )
+      {
+        BASE::autoshift = p_->active.shift_to_bear;
+      }
+    }
+  }
+};
+
 template <typename BASE>
 struct trigger_gore_t : public BASE
 {
@@ -2099,6 +2133,75 @@ public:
       p_->proc.gore->occur();
       p_->cooldown.mangle->reset( true );
     }
+  }
+};
+
+template <typename BASE, typename AB>
+struct ravage_base_t : public BASE
+{
+private:
+  druid_t* p_;
+
+public:
+  using base_t = ravage_base_t<BASE, AB>;
+
+  struct dreadful_wound_t : public AB
+  {
+    dreadful_wound_t( druid_t* p, std::string_view n, flag_e f )
+      : AB( n, p, p->find_spell( p->specialization() == DRUID_GUARDIAN ? 451177 : 441812 ), f )
+    {
+      AB::name_str_reporting = "dreadful_wound";
+      AB::dot_name = "dreadful_wound";
+    }
+
+    // TODO: use custom action state if non-TF persistent multipliers are applied
+    void snapshot_state( action_state_t* s, unsigned fl, result_amount_type rt ) override
+    {
+      auto prev_mul = 1.0;
+      auto prev_dot = AB::get_dot( s->target );
+
+      if ( prev_dot->is_ticking() )
+        prev_mul = prev_dot->state->persistent_multiplier;
+
+      AB::snapshot_state( s, fl, rt );
+
+      if ( s->persistent_multiplier < prev_mul )
+        s->persistent_multiplier = prev_mul;
+    }
+  };
+
+  double aoe_coeff;
+
+  ravage_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f ), p_( p )
+  {
+    BASE::name_str_reporting = "ravage";
+
+    // the aoe effect is parsed last and overwrites the st effect, so we need to cache the aoe coeff and re-parse the
+    // st effect
+    aoe_coeff = BASE::attack_power_mod.direct;
+    BASE::parse_effect_direct_mods( BASE::data().effectN( 1 ), false );
+    BASE::aoe = -1;
+
+    if ( p->talent.dreadful_wound.ok() )
+    {
+      auto suf = get_suffix( BASE::name_str, "ravage" );
+      BASE::impact_action = p->get_secondary_action<dreadful_wound_t>( "dreadful_wound_" + suf, f );
+      BASE::add_child( BASE::impact_action );
+    }
+  }
+
+  double attack_direct_power_coefficient( const action_state_t* s ) const override
+  {
+    return s->chain_target == 0 ? BASE::attack_direct_power_coefficient( s ) : aoe_coeff;
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    p_->buff.killing_strikes->trigger();
+    p_->buff.ruthless_aggression->trigger();
   }
 };
 
@@ -2192,75 +2295,6 @@ public:
     BASE::last_tick( d );
 
     update_waning_twilight( d->target );
-  }
-};
-
-template <typename BASE, typename AB>
-struct ravage_base_t : public BASE
-{
-private:
-  druid_t* p_;
-
-public:
-  using base_t = ravage_base_t<BASE, AB>;
-
-  struct dreadful_wound_t : public AB
-  {
-    dreadful_wound_t( druid_t* p, std::string_view n, flag_e f )
-      : AB( n, p, p->find_spell( p->specialization() == DRUID_GUARDIAN ? 451177 : 441812 ), f )
-    {
-      AB::name_str_reporting = "dreadful_wound";
-      AB::dot_name = "dreadful_wound";
-    }
-
-    // TODO: use custom action state if non-TF persistent multipliers are applied
-    void snapshot_state( action_state_t* s, unsigned fl, result_amount_type rt ) override
-    {
-      auto prev_mul = 1.0;
-      auto prev_dot = AB::get_dot( s->target );
-
-      if ( prev_dot->is_ticking() )
-        prev_mul = prev_dot->state->persistent_multiplier;
-
-      AB::snapshot_state( s, fl, rt );
-
-      if ( s->persistent_multiplier < prev_mul )
-        s->persistent_multiplier = prev_mul;
-    }
-  };
-
-  double aoe_coeff;
-
-  ravage_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), p_( p )
-  {
-    BASE::name_str_reporting = "ravage";
-
-    // the aoe effect is parsed last and overwrites the st effect, so we need to cache the aoe coeff and re-parse the
-    // st effect
-    aoe_coeff = BASE::attack_power_mod.direct;
-    BASE::parse_effect_direct_mods( BASE::data().effectN( 1 ), false );
-    BASE::aoe = -1;
-
-    if ( p->talent.dreadful_wound.ok() )
-    {
-      auto suf = get_suffix( BASE::name_str, "ravage" );
-      BASE::impact_action = p->get_secondary_action<dreadful_wound_t>( "dreadful_wound_" + suf, f );
-      BASE::add_child( BASE::impact_action );
-    }
-  }
-
-  double attack_direct_power_coefficient( const action_state_t* s ) const override
-  {
-    return s->chain_target == 0 ? BASE::attack_direct_power_coefficient( s ) : aoe_coeff;
-  }
-
-  void execute() override
-  {
-    BASE::execute();
-
-    p_->buff.killing_strikes->trigger();
-    p_->buff.ruthless_aggression->trigger();
   }
 };
 
@@ -4610,7 +4644,7 @@ struct maim_t : public cat_finisher_t
 };
 
 // Rake =====================================================================
-struct rake_t : public cat_attack_t
+struct rake_t : public use_fluid_form_t<DRUID_FERAL,cat_attack_t>
 {
   struct rake_bleed_t : public trigger_waning_twilight_t<cat_attack_t>
   {
@@ -4643,7 +4677,7 @@ struct rake_t : public cat_attack_t
 
   rake_bleed_t* bleed;
 
-  DRUID_ABILITY( rake_t, cat_attack_t, "rake", p->talent.rake )
+  DRUID_ABILITY( rake_t, base_t, "rake", p->talent.rake )
   {
     if ( p->talent.pouncing_strikes.ok() || p->spec.improved_prowl->ok() )
     {
@@ -4672,7 +4706,7 @@ struct rake_t : public cat_attack_t
     if ( !target_cache.is_valid )
       bleed->target_cache.is_valid = false;
 
-    auto& tl = cat_attack_t::target_list();
+    auto& tl = base_t::target_list();
 
     // When Double-Clawed Rake is active, this is an AoE action meaning it will impact onto the first 2 targets in the
     // target list. Instead, we want it to impact on the target of the action and 1 additional, so we'll override the
@@ -4699,7 +4733,7 @@ struct rake_t : public cat_attack_t
     // Force invalidate target cache so that it will impact on the correct targets.
     target_cache.is_valid = false;
 
-    cat_attack_t::execute();
+    base_t::execute();
 
     if ( hit_any_target )
     {
@@ -4712,7 +4746,7 @@ struct rake_t : public cat_attack_t
 
   void impact( action_state_t* s ) override
   {
-    cat_attack_t::impact( s );
+    base_t::impact( s );
 
     bleed->snapshot_and_execute( s, true, nullptr, []( const action_state_t* from, action_state_t* to ) {
       // Copy persistent multipliers from the direct attack.
@@ -4937,7 +4971,9 @@ struct primal_wrath_t : public cat_finisher_t
 
 // Shred ====================================================================
 struct shred_t
-  : public trigger_claw_rampage_t<DRUID_FERAL, trigger_ursine_potential_t<trigger_thrashing_claws_t<cat_attack_t>>>
+  : public use_fluid_form_t<DRUID_FERAL,
+        trigger_claw_rampage_t<DRUID_FERAL,
+            trigger_ursine_potential_t<trigger_thrashing_claws_t<cat_attack_t>>>>
 {
   double stealth_mul = 0.0;
 
@@ -5498,7 +5534,10 @@ struct lunar_beam_t : public bear_attack_t
 };
 
 // Mangle ===================================================================
-struct mangle_t : public trigger_claw_rampage_t<DRUID_GUARDIAN, consume_ursine_potential_t<bear_attack_t>>
+struct mangle_t
+  : public use_fluid_form_t<DRUID_GUARDIAN,
+        trigger_claw_rampage_t<DRUID_GUARDIAN,
+            consume_ursine_potential_t<bear_attack_t>>>
 {
   struct swiping_mangle_t : public druid_residual_action_t<bear_attack_t>
   {
@@ -8224,7 +8263,7 @@ struct starfall_t : public ap_spender_t
 };
 
 // Starfire =============================================================
-struct starfire_t : public ap_generator_t
+struct starfire_t : public use_fluid_form_t<DRUID_BALANCE,ap_generator_t>
 {
   size_t aoe_idx;
   double smolder_mul;
@@ -8730,7 +8769,7 @@ struct wild_mushroom_t : public druid_spell_t
 };
 
 // Wrath ====================================================================
-struct wrath_t : public ap_generator_t
+struct wrath_t : public use_fluid_form_t<DRUID_BALANCE,ap_generator_t>
 {
   double gcd_mul;
   double smolder_mul;
@@ -9765,6 +9804,7 @@ void druid_t::init_spells()
   talent.astral_influence               = CT( "Astral Influence" );
   talent.cyclone                        = CT( "Cyclone" );
   talent.feline_swiftness               = CT( "Feline Swiftness" );
+  talent.fluid_form                     = CT( "Fluid Form" );
   talent.forestwalk                     = CT( "Forestwalk" );
   talent.frenzied_regeneration          = CT( "Frenzied Regeneration" );
   talent.heart_of_the_wild              = CT( "Heart of the Wild" );
