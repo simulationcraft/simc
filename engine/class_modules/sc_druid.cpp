@@ -801,6 +801,7 @@ public:
     player_talent_t tiger_dash;
     player_talent_t typhoon;
     player_talent_t ursine_vigor;
+    player_talent_t ursocs_spirit;
     player_talent_t ursols_vortex;
     player_talent_t verdant_heart;
     player_talent_t wellhoned_instincts;
@@ -982,6 +983,7 @@ public:
     player_talent_t soul_of_the_forest_tree;
     player_talent_t spring_blossoms;
     player_talent_t stonebark;
+    player_talent_t thriving_vegetation;
     player_talent_t tranquil_mind;
     player_talent_t tranquility;
     player_talent_t undergrowth;
@@ -9789,6 +9791,7 @@ void druid_t::init_spells()
   talent.thrash                         = CT( "Thrash" );
   talent.typhoon                        = CT( "Typhoon" );
   talent.ursine_vigor                   = CT( "Ursine Vigor" );
+  talent.ursocs_spirit                  = CT( "Ursoc's Spirit" );
   talent.ursols_vortex                  = CT( "Ursol's Vortex" );
   talent.verdant_heart                  = CT( "Verdant Heart" );
   talent.wellhoned_instincts            = CT( "Well-Honed Instincts" );
@@ -9975,6 +9978,7 @@ void druid_t::init_spells()
   talent.soul_of_the_forest_tree        = STS( "Soul of the Forest", DRUID_RESTORATION );
   talent.spring_blossoms                = ST( "Spring Blossoms" );
   talent.stonebark                      = ST( "Stonebark" );
+  talent.thriving_vegetation            = ST( "Thriving Vegetation" );  // TODO: NYI
   talent.tranquil_mind                  = ST( "Tranquil Mind" );
   talent.tranquility                    = ST( "Tranquility" );
   talent.undergrowth                    = ST( "Undergrowth" );  // TODO: NYI
@@ -12507,7 +12511,9 @@ double druid_t::composite_attribute_multiplier( attribute_e attr ) const
   {
     case ATTR_STAMINA:
     {
-      auto bear_form_mul = spec.bear_form_passive->effectN( 2 ).percent() + spec.bear_form_2->effectN( 1 ).percent();
+      auto bear_form_mul = spec.bear_form_passive->effectN( 2 ).percent() +
+                           spec.bear_form_2->effectN( 1 ).percent() +
+                           talent.ursocs_spirit->effectN( 1 ).percent();
 
       if ( buff.bear_form->check() )
         m *= 1.0 + bear_form_mul;
@@ -13881,6 +13887,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.astral_insight );
   action.apply_affecting_aura( talent.bestial_strength );  // TODO: does fb bonus apply to guardian
   action.apply_affecting_aura( talent.early_spring );
+  action.apply_affecting_aura( talent.elunes_grace );
   action.apply_affecting_aura( talent.groves_inspiration );
   action.apply_affecting_aura( talent.hunt_beneath_the_open_skies );
   action.apply_affecting_aura( talent.lunar_calling );
