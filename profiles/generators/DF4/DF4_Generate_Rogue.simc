@@ -25,32 +25,32 @@
 
 # save=DF4_Rogue_Assassination.simc
 
-# rogue="DF4_Rogue_Outlaw"
-# spec=outlaw
-# level=70
-# race=tauren
-# role=attack
-# position=back
-# talents=BQQAAAAAAAAAAAAAAAAAAAAAAAAEkkEJCSSIJCSkkmkEtkIlkAAAAAAAaJJkERhcgSaBAAAQSCA
+rogue="DF4_Rogue_Outlaw"
+spec=outlaw
+level=70
+race=tauren
+role=attack
+position=back
+talents=BQQAAAAAAAAAAAAAAAAAAAAAAAAEkkEJCSSIJCSkkmkEtkIlkAAAAAAAaJJkERhcgSaBAAAQSCA
 
-# head=lucid_shadewalkers_deathmask,id=207236,bonus_id=1808/7187/1520,enchant=incandescent_essence,gem_id=192991
-# neck=ouroboreal_necklet,id=210214,bonus_id=8782/7187/1520,gem_id=192932/192932/192932
-# shoulder=lucid_shadewalkers_bladed_spaulders,id=207234,bonus_id=7187/1520
-# back=inflammable_drapeleaf,id=207160,bonus_id=7187/1520
-# chest=lucid_shadewalkers_cuirass,id=207239,bonus_id=7187/1520,enchant=waking_stats_3
-# wrist=lifebound_bindings,id=193419,bonus_id=8780/8797/8960/9500/9405,gem_id=192932,crafted_stats=32/40
-# hands=flamewakers_grips,id=207130,bonus_id=7187/1520
-# waist=belt_of_gleaming_determination,id=158306,bonus_id=1808,gem_id=192932,ilevel=489
-# legs=lucid_shadewalkers_chausses,id=207235,bonus_id=7187/1520,enchant=fierce_armor_kit_3
-# feet=toxic_thorn_footwraps,id=193452,bonus_id=9500/9405
-# finger1=thornwoven_band,id=162548,bonus_id=1808,enchant=devotion_of_versatility_3,gem_id=192932,ilevel=489
-# finger2=signet_of_the_last_elder,id=207162,bonus_id=1808/7187/1520,enchant=devotion_of_critical_strike_3,gem_id=192932
-# trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-# trinket2=mydas_talisman,id=158319,ilevel=489
-# main_hand=thorncaller_claw,id=207784,bonus_id=7187/1520,enchant=sophic_devotion_3
-# off_hand=nick_of_time,id=207996,bonus_id=9526,enchant=wafting_devotion_3,ilevel=489
+head=lurking_specters_visage,id=217208,bonus_id=1808/10359/1488,gem_id=192982,enchant=incandescent_essence
+neck=ouroboreal_necklet,id=210214,bonus_id=8782/10359/1488,gem_id=192932/192932/192932
+shoulders=lurking_specters_shoulderblades,id=217210,bonus_id=10359/1488
+back=voice_of_the_silent_star,id=204465,bonus_id=10359/1495
+chest=lurking_specters_brigandine,id=217206,bonus_id=10359/1488,enchant=waking_stats_3
+wrists=lifebound_bindings,id=193419,bonus_id=8780/8797/8960/10249/10359/9405,gem_id=192932,crafted_stats=32/40
+hands=lurking_specters_handgrips,id=217207,bonus_id=10359/1488
+waist=troggskin_waistband,id=193668,bonus_id=1808,ilevel=528,gem_id=192932
+legs=annoras_punctured_leggings,id=193811,ilevel=528,enchant=fierce_armor_kit_3
+feet=toxic_thorn_footwraps,id=193452,bonus_id=8960/8840/8836/8902/10249/10359/9405,crafted_stats=32/40
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=1808/10359/1488,gem_id=192932,enchant=devotion_of_versatility_3
+finger2=tormentors_siphoning_signet,id=204466,bonus_id=1808/10359/1488,gem_id=192932,enchant=devotion_of_versatility_3
+trinket1=cataclysmic_signet_brand,id=207166,bonus_id=10359/1488
+trinket2=manic_grieftorch,id=194308,bonus_id=10359/1488
+main_hand=forgestorm,id=193785,bonus_id=10359/1488,enchant=wafting_devotion_3
+off_hand=thorncaller_claw,id=207784,bonus_id=10359/1488,enchant=wafting_devotion_3
 
-# save=DF4_Rogue_Outlaw.simc
+save=DF4_Rogue_Outlaw.simc
 
 # rogue=DF4_Rogue_Subtlety
 # level=70
