@@ -40,8 +40,8 @@ back=voice_of_the_silent_star,id=204465,bonus_id=10359/1495
 chest=lurking_specters_brigandine,id=217206,bonus_id=10359/1488,enchant=waking_stats_3
 wrists=lifebound_bindings,id=193419,bonus_id=8780/8797/8960/10249/10359/9405,gem_id=192932,crafted_stats=32/40
 hands=lurking_specters_handgrips,id=217207,bonus_id=10359/1488
-waist=troggskin_waistband,id=193668,bonus_id=1808,ilevel=528,gem_id=192932,enchant_id=6904
-legs=annoras_punctured_leggings,id=193811,ilevel=528,enchant_id=6830
+waist=troggskin_waistband,id=193668,bonus_id=1808,ilevel=528,gem_id=192932
+legs=annoras_punctured_leggings,id=193811,ilevel=528,enchant=fierce_armor_kit_3
 feet=toxic_thorn_footwraps,id=193452,bonus_id=8960/8840/8836/8902/10249/10359/9405,crafted_stats=32/40
 finger1=seal_of_diurnas_chosen,id=195480,bonus_id=1808/10359/1488,gem_id=192932,enchant=devotion_of_versatility_3
 finger2=tormentors_siphoning_signet,id=204466,bonus_id=1808/10359/1488,gem_id=192932,enchant=devotion_of_versatility_3
