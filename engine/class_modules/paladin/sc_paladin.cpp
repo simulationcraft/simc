@@ -2407,7 +2407,7 @@ std::string paladin_t::default_potion() const
 
 std::string paladin_t::default_food() const
 {
-  std::string retribution_food = ( true_level > 50 ) ? "fated_fortune_cookie" : "disabled";
+  std::string retribution_food = ( true_level > 50 ) ? "aromatic_seafood_platter" : "disabled";
 
   std::string protection_food = ( true_level > 50 ) ? "fated_fortune_cookie" : "disabled";
 
