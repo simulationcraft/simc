@@ -785,6 +785,7 @@ public:
     player_talent_t natural_recovery;
     player_talent_t natures_vigil;
     player_talent_t nurturing_instinct;
+    player_talent_t oakskin;
     player_talent_t primal_fury;
     player_talent_t rake;
     player_talent_t rejuvenation;
@@ -9786,6 +9787,7 @@ void druid_t::init_spells()
   talent.natural_recovery               = CT( "Natural Recovery" );
   talent.natures_vigil                  = CT( "Nature's Vigil" );
   talent.nurturing_instinct             = CT( "Nurturing Instinct" );
+  talent.oakskin                        = CT( "Oakskin" );
   talent.primal_fury                    = CT( "Primal Fury" );
   talent.rake                           = CT( "Rake" );
   talent.rejuvenation                   = CT( "Rejuvenation" );
@@ -10276,6 +10278,7 @@ void druid_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
     ->set_tick_behavior( buff_tick_behavior::NONE )
     ->apply_affecting_aura( talent.improved_barkskin )
+    ->apply_affecting_aura( talent.oakskin )
     ->apply_affecting_aura( talent.reinforced_fur )
     ->apply_affecting_aura( talent.ursocs_endurance );
   if ( talent.brambles.ok() )
@@ -10412,7 +10415,8 @@ void druid_t::create_buffs()
   buff.survival_instincts =
       make_buff_fallback( talent.survival_instincts.ok(), this, "survival_instincts", talent.survival_instincts )
           ->set_cooldown( 0_ms )
-          ->set_default_value( find_effect( find_spell( 50322 ), A_MOD_DAMAGE_PERCENT_TAKEN ).percent() );
+          ->set_default_value( find_effect( find_spell( 50322 ), A_MOD_DAMAGE_PERCENT_TAKEN ).percent() +
+                               find_effect( talent.oakskin, find_spell( 50322 ), A_ADD_FLAT_MODIFIER ).percent() );
 
   // Balance buffs
   buff.balance_of_all_things_arcane =
