@@ -552,11 +552,11 @@ public:
   struct gains_t
   {
     propagate_const<gain_t *> black_ox_brew_energy;
-    propagate_const<gain_t *> bonedust_brew;
     propagate_const<gain_t *> chi_refund;
     propagate_const<gain_t *> bok_proc;
     propagate_const<gain_t *> chi_burst;
     propagate_const<gain_t *> crackling_jade_lightning;
+    propagate_const<gain_t *> energy_burst;
     propagate_const<gain_t *> energy_refund;
     propagate_const<gain_t *> energizing_elixir_chi;
     propagate_const<gain_t *> energizing_elixir_energy;
