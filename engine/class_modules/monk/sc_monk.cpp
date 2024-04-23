@@ -2323,12 +2323,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     if ( chi_x && p()->buff.chi_energy->up() )
       chi_x->execute();
 
-    // Bonedust Brew
-    // Chi refund is triggering once on the trigger spell and not from tick spells.
-    if ( get_td( execute_state->target )->debuff.bonedust_brew->up() )
-      p()->resource_gain( RESOURCE_CHI, p()->passives.bonedust_brew_chi->effectN( 1 ).base_value(),
-                          p()->gain.bonedust_brew );
-
     if ( p()->buff.celestial_flames->up() )
     {
       p()->active_actions.breath_of_fire->target = execute_state->target;
