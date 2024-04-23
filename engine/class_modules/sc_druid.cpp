@@ -127,6 +127,7 @@ struct druid_td_t : public actor_target_data_t
     buff_t* bloodseeker_vines;
     buff_t* pulverize;
     buff_t* sabertooth;
+    buff_t* stellar_amplification;
     buff_t* tooth_and_claw;
     buff_t* waning_twilight;
   } debuff;
@@ -852,6 +853,7 @@ public:
     player_talent_t starfall;
     player_talent_t starlord;
     player_talent_t starweaver;
+    player_talent_t stellar_amplification;
     player_talent_t stellar_flare;
     player_talent_t sundered_firmament;
     player_talent_t twin_moons;
@@ -1113,6 +1115,7 @@ public:
     const spell_data_t* incarnation_moonkin;
     const spell_data_t* moonkin_form;
     const spell_data_t* shooting_stars_dmg;
+    const spell_data_t* stellar_amplification;
     const spell_data_t* waning_twilight;
     const spell_data_t* starfall;
 
@@ -1930,6 +1933,8 @@ public:
                           p()->spec.moonfire_dmg, p()->mastery.astral_invocation );
     parse_target_effects( d_fn( &druid_td_t::dots_t::sunfire ),
                           p()->spec.sunfire_dmg, p()->mastery.astral_invocation );
+    parse_target_effects( d_fn( &druid_td_t::debuffs_t::stellar_amplification ),
+                          p()->spec.stellar_amplification );
     parse_target_effects( d_fn( &druid_td_t::debuffs_t::waning_twilight ),
                           p()->spec.waning_twilight, p()->talent.waning_twilight );
 
@@ -8537,6 +8542,14 @@ struct starsurge_t : public ap_spender_t
       p()->eclipse_handler.cast_starsurge();
     }
   }
+
+  void impact( action_state_t* s ) override
+  {
+    base_t::impact( s );
+
+    if ( p()->talent.stellar_amplification.ok() )
+      td( s->target )->debuff.stellar_amplification->trigger();
+  }
 };
 
 // Stellar Flare ============================================================
@@ -9912,6 +9925,7 @@ void druid_t::init_spells()
   talent.starfall                       = ST( "Starfall" );
   talent.starlord                       = ST( "Starlord" );
   talent.starweaver                     = ST( "Starweaver" );
+  talent.stellar_amplification          = ST( "Stellar Amplification" );
   talent.stellar_flare                  = ST( "Stellar Flare" );
   talent.sundered_firmament             = ST( "Sundered Firmament" );
   talent.twin_moons                     = ST( "Twin Moons" );
@@ -10175,6 +10189,7 @@ void druid_t::init_spells()
   spec.incarnation_moonkin      = check( talent.incarnation_moonkin, 102560 );
   spec.moonkin_form             = find_specialization_spell( "Moonkin Form" );
   spec.shooting_stars_dmg       = check( talent.shooting_stars, 202497 );  // shooting stars damage
+  spec.stellar_amplification    = check( talent.stellar_amplification, 450214 );
   spec.waning_twilight          = check( talent.waning_twilight, 393957 );
   spec.starfall                 = check( talent.starfall, 191034 );
 
@@ -13284,6 +13299,25 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_
     buff.cenarion_ward->expire();
 }
 
+namespace buffs
+{
+// Stellar Amplification Debuff =============================================
+struct stellar_amplification_buff_t : public druid_buff_t
+{
+  timespan_t max_dur;
+
+  stellar_amplification_buff_t( druid_td_t& td )
+    : base_t( td, "stellar_amplification_debuff", p()->spec.stellar_amplification ),
+      max_dur( p()->talent.stellar_amplification->effectN( 2 ).time_value() )
+  {}
+
+  timespan_t refresh_duration( timespan_t d ) const override
+  {
+    return std::min( max_dur, remains() + d );
+  }
+};
+}  // namespace buffs
+
 // Target Data ==============================================================
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
   : actor_target_data_t( &target, &source ), dots(), hots(), debuff(), buff()
@@ -13320,6 +13354,8 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     hots.spring_blossoms       = target.get_dot( "spring_blossoms", &source );
     hots.wild_growth           = target.get_dot( "wild_growth", &source );
   }
+
+  using namespace buffs;
 
   debuff.atmospheric_exposure = make_buff_fallback( source.talent.atmospheric_exposure.ok() && target.is_enemy(),
       *this, "atmospheric_exposure", source.spec.atmospheric_exposure );
@@ -13359,6 +13395,9 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   debuff.sabertooth = make_buff_fallback( source.talent.sabertooth.ok() && target.is_enemy(),
       *this, "sabertooth_debuff", source.spec.sabertooth )
           ->set_max_stack( as<int>( source.resources.base[ RESOURCE_COMBO_POINT ] ) );
+
+  debuff.stellar_amplification = make_buff_fallback<stellar_amplification_buff_t>(
+      source.talent.stellar_amplification.ok() && target.is_enemy(), *this, "stellar_amplification_debuff" );
 
   debuff.tooth_and_claw = make_buff_fallback( source.talent.tooth_and_claw.ok() && target.is_enemy(),
       *this, "tooth_and_claw_debuff", find_trigger( find_trigger( source.talent.tooth_and_claw ).trigger() ).trigger() )
