@@ -2577,18 +2577,22 @@ void buff_t::override_buff( int stacks, double value )
   overridden = true;
 }
 
-void buff_t::consume( action_t* action, timespan_t delay )
+bool buff_t::can_consume( action_t* action )
 {
-  if ( is_fallback || !action->data().ok() || !data().ok() )
-    return;
+  if ( is_fallback || !check() || !action->data().ok() || !data().ok() )
+    return false;
 
   if ( action->proc && !data().attribute( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
-    return;
+    return false;
 
   if ( data().attribute( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) && !action->allow_class_ability_procs )
-    return;
+    return false;
+}
 
-  expire( delay );
+void buff_t::consume( action_t* action, timespan_t delay )
+{
+  if ( can_consume( action ) )
+    expire( delay );
 }
 
 void buff_t::expire( timespan_t delay )
