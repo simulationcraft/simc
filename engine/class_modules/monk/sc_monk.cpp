@@ -2673,6 +2673,8 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
 
     am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
+    am *= 1 + p()->talent.windwalker.communion_with_wind->effectN( 2 ).percent();
+
     return am;
   }
 };
@@ -2708,6 +2710,8 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
 
     am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
+    am *= 1 + p()->talent.windwalker.communion_with_wind->effectN( 2 ).percent();
+
     return am;
   }
 
@@ -2737,6 +2741,8 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       mh_attack( nullptr ),
       oh_attack( nullptr )
   {
+    apply_affecting_effect( p->talent.windwalker.communion_with_wind->effectN( 1 ) );
+
     may_combo_strike = true;
     cast_during_sck  = false;
     cooldown->hasted = false;
