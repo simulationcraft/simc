@@ -1738,8 +1738,19 @@ static std::string trait_data_to_str( const dbc_t& dbc, const spell_data_t* spel
       }
     }
 
-    strings.emplace_back( fmt::format( "{} [{}]", !spec_strs.empty() ? util::string_join( spec_strs, ", " ) : "Generic",
-                                       util::string_join( nibbles, ", " ) ) );
+    if ( tree == talent_tree::HERO )
+    {
+      strings.emplace_back( fmt::format( "{} ({}) [{}]",
+                                         trait_data_t::get_hero_tree_name( trait->id_sub_tree, dbc.ptr ),
+                                         !spec_strs.empty() ? util::string_join( spec_strs, ", " ) : "Generic",
+                                         util::string_join( nibbles, ", " ) ) );
+    }
+    else
+    {
+      strings.emplace_back( fmt::format( "{} [{}]",
+                                         !spec_strs.empty() ? util::string_join( spec_strs, ", " ) : "Generic",
+                                         util::string_join( nibbles, ", " ) ) );
+    }
 
     const auto trait_effects = trait_definition_effect_entry_t::find( trait->id_trait_definition, dbc.ptr );
 
