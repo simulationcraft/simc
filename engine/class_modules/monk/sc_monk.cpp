@@ -7649,7 +7649,7 @@ void monk_t::init_spells()
   passives.bonedust_brew_chi         = find_spell( 328296 );
   passives.bonedust_brew_attenuation = find_spell( 394514 );
   passives.chi_burst_energize        = find_spell( 261682 );
-  passives.chi_burst_heal            = find_spell( 130654 );
+  passives.chi_burst_heal            = find_spell( 130654 ); 
   passives.chi_wave_damage           = find_spell( 132467 );
   passives.chi_wave_heal             = find_spell( 132463 );
   passives.claw_of_the_white_tiger   = find_spell( 389541 );
