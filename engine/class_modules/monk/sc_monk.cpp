@@ -1868,41 +1868,51 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    p()->buff.blackout_combo->trigger();
-
     trigger_shuffle( p()->talent.brewmaster.shuffle->effectN( 1 ).base_value() );
 
-    p()->buff.hit_scheme->trigger();
-
-    if ( p()->spec.blackout_kick_3->ok() )
+    if ( result_is_hit( execute_state->result ) )
     {
-      // Reduce the cooldown of Rising Sun Kick and Fists of Fury
-      timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
-      if ( p()->buff.weapons_of_order->up() )
+      if ( p()->buff.bok_proc->up() )
       {
-        cd_reduction += ( -1 * p()->talent.brewmaster.weapons_of_order->effectN( 8 ).time_value() );
-        p()->proc.blackout_kick_cdr_with_woo->occur();
-      }
-      else
-      {
-        p()->proc.blackout_kick_cdr->occur();
+        if ( p()->rng().roll( p()->talent.windwalker.energy_burst->effectN( 1 ).percent() ) )
+          p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.energy_burst->effectN( 2 ).base_value(),
+                              p()->gain.energy_burst );
+
+        p()->buff.bok_proc->expire();
       }
 
-      p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
-      p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
+      p()->buff.blackout_combo->trigger();
+
+      p()->buff.hit_scheme->trigger();
+
+      if ( p()->spec.blackout_kick_3->ok() )
+      {
+        // Reduce the cooldown of Rising Sun Kick and Fists of Fury
+        timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
+        if ( p()->buff.weapons_of_order->up() )
+        {
+          cd_reduction += ( -1 * p()->talent.brewmaster.weapons_of_order->effectN( 8 ).time_value() );
+          p()->proc.blackout_kick_cdr_with_woo->occur();
+        }
+        else
+        {
+          p()->proc.blackout_kick_cdr->occur();
+        }
+
+        p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
+        p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
+      }
+
+      p()->buff.transfer_the_power->trigger();
+
+      if ( p()->talent.brewmaster.spirit_of_the_ox->ok() && p()->rppm.spirit_of_the_ox->trigger() )
+        p()->buff.gift_of_the_ox->trigger();
+
+      p()->buff.teachings_of_the_monastery->expire();
+
+      if ( p()->buff.blackout_reinforcement->up() )
+        p()->buff.blackout_reinforcement->decrement();
     }
-
-    p()->buff.transfer_the_power->trigger();
-
-    if ( p()->talent.brewmaster.spirit_of_the_ox->ok() && p()->rppm.spirit_of_the_ox->trigger() )
-      p()->buff.gift_of_the_ox->trigger();
-
-    p()->buff.teachings_of_the_monastery->expire();
-
-    if ( p()->buff.blackout_reinforcement->up() )
-      p()->buff.blackout_reinforcement->decrement();
-
-    p()->buff.bok_proc->expire();
   }
 
   void impact( action_state_t *s ) override
@@ -8257,10 +8267,10 @@ void monk_t::init_gains()
 
   gain.black_ox_brew_energy     = get_gain( "black_ox_brew_energy" );
   gain.bok_proc                 = get_gain( "blackout_kick_proc" );
-  gain.bonedust_brew            = get_gain( "bonedust_brew" );
   gain.chi_refund               = get_gain( "chi_refund" );
   gain.chi_burst                = get_gain( "chi_burst" );
   gain.crackling_jade_lightning = get_gain( "crackling_jade_lightning" );
+  gain.energy_refund            = get_gain( "energy_burst" );
   gain.energizing_elixir_energy = get_gain( "energizing_elixir_energy" );
   gain.energizing_elixir_chi    = get_gain( "energizing_elixir_chi" );
   gain.energy_refund            = get_gain( "energy_refund" );
