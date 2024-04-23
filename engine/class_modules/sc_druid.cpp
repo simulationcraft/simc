@@ -13888,6 +13888,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.resilient_flourishing );
   action.apply_affecting_aura( talent.stellar_command );
   action.apply_affecting_aura( talent.strike_for_the_heart );
+  action.apply_affecting_aura( talent.tear_down_the_mighty );
   action.apply_affecting_aura( talent.the_eternal_moon );
   action.apply_affecting_aura( talent.wildstalkers_persistence );
   action.apply_affecting_aura( talent.wildstalkers_power );
