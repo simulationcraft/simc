@@ -1265,7 +1265,6 @@ public:
     spawner::pet_spawner_t<pets::whitemane_pet_t, death_knight_t> whitemane;
     spawner::pet_spawner_t<pets::trollbane_pet_t, death_knight_t> trollbane;
     spawner::pet_spawner_t<pets::nazgrim_pet_t, death_knight_t> nazgrim;
-    std::vector<pets::horseman_pet_t*> riders;
 
     pets_t(death_knight_t* p) :
         dancing_rune_weapon_pet( "dancing_rune_weapon", p ),
@@ -9463,23 +9462,31 @@ void death_knight_t::extend_rider( double amount )
   double max_time        = talent.rider.fury_of_the_horsemen->effectN( 2 ).base_value();
   timespan_t duration = timespan_t::from_seconds( talent.rider.fury_of_the_horsemen->effectN( 3 ).base_value() );
   double limit = threshold * max_time;
+  std::vector<pets::horseman_pet_t*> active_riders;
 
-  for ( auto& rider : pets.riders )
+  if ( pets.whitemane.active_pet() != nullptr )
+    active_riders.push_back( pets.whitemane.active_pet() );
+  if ( pets.mograine.active_pet() != nullptr )
+    active_riders.push_back( pets.mograine.active_pet() );
+  if ( pets.nazgrim.active_pet() != nullptr )
+    active_riders.push_back( pets.nazgrim.active_pet() );
+  if ( pets.trollbane.active_pet() != nullptr )
+    active_riders.push_back( pets.trollbane.active_pet() );
+
+  for ( auto& rider : active_riders )
   {
-    if ( rider != nullptr )
+    if ( rider->rp_spent < limit )
     {
-      if ( rider->rp_spent < limit )
+      rider->rp_spent += amount;
+      rider->current_pool += amount;
+      if ( rider->current_pool >= threshold )
       {
-        rider->rp_spent += amount;
-        rider->current_pool += amount;
-        if ( rider->current_pool >= threshold )
-        {
-          rider->current_pool -= threshold;
-          rider->adjust_duration( duration );
-        }
+        rider->current_pool -= threshold;
+        rider->adjust_duration( duration );
       }
     }
   }
+  active_riders.clear();
 }
 
 void death_knight_t::trigger_whitemanes_famine( player_t* main_target, std::vector<player_t*>& target_list )
@@ -9958,13 +9965,9 @@ void death_knight_t::create_pets()
   if ( talent.rider.riders_champion.ok() )
   {
     pets.whitemane.set_creation_callback( []( death_knight_t* p ) { return new pets::whitemane_pet_t( p ); } );
-    pets.riders.push_back( pets.whitemane.active_pet() );
     pets.mograine.set_creation_callback( []( death_knight_t* p ) { return new pets::mograine_pet_t( p ); } );
-    pets.riders.push_back( pets.mograine.active_pet() );
     pets.trollbane.set_creation_callback( []( death_knight_t* p ) { return new pets::trollbane_pet_t( p ); } );
-    pets.riders.push_back( pets.trollbane.active_pet() );
     pets.nazgrim.set_creation_callback( []( death_knight_t* p ) { return new pets::nazgrim_pet_t( p ); } );
-    pets.riders.push_back( pets.nazgrim.active_pet() );
   }
 
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
