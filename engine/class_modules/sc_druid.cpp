@@ -611,6 +611,7 @@ public:
     buff_t* predator;
     buff_t* predator_revealed;  // 4t30
     buff_t* predatory_swiftness;
+    buff_t* savage_fury;
     buff_t* shadows_of_the_predator;  // 2t30
     buff_t* sharpened_claws;  // 4t29
     buff_t* smoldering_frenzy;  // 2t31
@@ -890,6 +891,7 @@ public:
     player_talent_t rip_and_tear;
     player_talent_t saber_jaws;
     player_talent_t sabertooth;
+    player_talent_t savage_fury;
     player_talent_t soul_of_the_forest_cat;
     player_talent_t sudden_ambush;
     player_talent_t taste_for_blood;
@@ -5086,6 +5088,7 @@ struct tigers_fury_t : public cat_attack_t
     p()->buff.tigers_fury->trigger();
     p()->buff.tigers_tenacity->trigger();
     p()->buff.strategic_infusion->trigger();
+    p()->buff.savage_fury->trigger();
 
     if ( p()->buff.killing_strikes_combat->check() )
     {
@@ -9937,6 +9940,7 @@ void druid_t::init_spells()
   talent.rip_and_tear                   = ST( "Rip and Tear" );
   talent.saber_jaws                     = ST( "Saber Jaws" );
   talent.sabertooth                     = ST( "Sabertooth" );
+  talent.savage_fury                    = ST( "Savage Fury" );
   talent.soul_of_the_forest_cat         = STS( "Soul of the Forest", DRUID_FERAL );
   talent.sudden_ambush                  = ST( "Sudden Ambush" );
   talent.taste_for_blood                = ST( "Taste for Blood" );
@@ -10711,6 +10715,10 @@ void druid_t::create_buffs()
 
   buff.predatory_swiftness =
       make_buff_fallback( talent.predatory_swiftness.ok(), this, "predatory_swiftness", find_spell( 69369 ) );
+
+  buff.savage_fury = make_buff_fallback( talent.savage_fury.ok(), this, "savage_fury", find_spell( 449646 ) )
+    ->set_default_value_from_effect_type( A_HASTE_ALL )
+    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buff.shadows_of_the_predator = make_buff_fallback<shadows_of_the_predator_buff_t>(
       sets->has_set_bonus( DRUID_FERAL, T30, B2 ), this, "shadows_of_the_predator", sets->set( DRUID_FERAL, T30, B2 ) );
@@ -12236,6 +12244,11 @@ double druid_t::resource_regen_per_second( resource_e r ) const
   {
     if ( specialization() == DRUID_BALANCE && buff.moonkin_form->check() )
       reg *= ( 1.0 + buff.moonkin_form->data().effectN( 5 ).percent() ) / cache.spell_haste();
+  }
+  else if ( r == RESOURCE_ENERGY )
+  {
+    if ( buff.savage_fury->check() )
+      reg *= 1.0 + buff.savage_fury->data().effectN( 2 ).percent();
   }
 
   return reg;
