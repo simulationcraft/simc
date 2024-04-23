@@ -668,6 +668,7 @@ public:
     buff_t* ravage_fb;
     buff_t* ravage_maul;
     buff_t* root_network;
+    buff_t* ruthless_aggression;
     buff_t* strategic_infusion;
     buff_t* treants_of_the_moon;  // treant moonfire background heartbeat
     buff_t* feline_potential;          // wildpower surge
@@ -1210,6 +1211,7 @@ public:
   void analyze( sim_t& ) override;
   timespan_t available() const override;
   double composite_player_target_multiplier( player_t*, school_e ) const;
+  double composite_melee_speed() const override;
   double composite_attack_power_multiplier() const override;
   double composite_armor() const override;
   double composite_armor_multiplier() const override;
@@ -2214,6 +2216,13 @@ public:
   double attack_direct_power_coefficient( const action_state_t* s ) const override
   {
     return s->chain_target == 0 ? BASE::attack_direct_power_coefficient( s ) : aoe_coeff;
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    p_->buff.ruthless_aggression->trigger();
   }
 };
 
@@ -10854,8 +10863,12 @@ void druid_t::create_buffs()
   buff.ravage_maul = make_buff_fallback( talent.ravage.ok() && specialization() == DRUID_GUARDIAN,
       this, "ravage", find_spell( 441602 ) );
 
-  buff.root_network = make_buff_fallback( talent.root_network.ok() && talent.thriving_growth.ok(),
-      this, "root_network", find_spell( 439887 ) );
+  buff.root_network = make_buff_fallback( talent.root_network.ok(), this, "root_network", find_spell( 439887 ) );
+
+  buff.ruthless_aggression = make_buff_fallback( talent.ruthless_aggression.ok(),
+      this, "ruthless_aggression", find_trigger( talent.ruthless_aggression ).trigger() )
+          ->set_default_value_from_effect_type( A_MOD_MELEE_SPEED_PCT )
+          ->add_invalidate( CACHE_ATTACK_SPEED );
 
   buff.strategic_infusion = make_buff_fallback( talent.strategic_infusion.ok() && talent.tigers_fury.ok(),
       this, "strategic_infusion", find_spell( 439891 ) );
@@ -12314,6 +12327,7 @@ void druid_t::invalidate_cache( cache_e c )
 }
 
 // Composite combat stat override functions =================================
+
 double druid_t::composite_player_target_multiplier( player_t* t, school_e s ) const
 {
   double tm = player_t::composite_player_target_multiplier( t, s );
@@ -12322,6 +12336,16 @@ double druid_t::composite_player_target_multiplier( player_t* t, school_e s ) co
     tm *= 1.0 + get_target_data( t )->debuff.bloodseeker_vines->check_stack_value();
 
   return tm;
+}
+
+double druid_t::composite_melee_speed() const
+{
+  double ms = player_t::composite_melee_speed();
+
+  if ( buff.ruthless_aggression->check() )
+    ms *= 1.0 / ( 1.0 + buff.ruthless_aggression->check_value() );
+
+  return ms;
 }
 
 // Attack Power =============================================================
