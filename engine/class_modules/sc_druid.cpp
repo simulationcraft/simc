@@ -90,6 +90,7 @@ struct druid_td_t : public actor_target_data_t
     dot_t* adaptive_swarm_damage;
     dot_t* astral_smolder;
     dot_t* bloodseeker_vines;
+    dot_t* dreadful_wound;
     dot_t* feral_frenzy;
     dot_t* frenzied_assault;
     dot_t* fungal_growth;
@@ -2153,6 +2154,66 @@ public:
     BASE::last_tick( d );
 
     update_waning_twilight( d->target );
+  }
+};
+
+template <typename BASE, typename AB>
+struct ravage_base_t : public BASE
+{
+private:
+  druid_t* p_;
+
+public:
+  using base_t = ravage_base_t<BASE, AB>;
+
+  struct dreadful_wound_t : public AB
+  {
+    dreadful_wound_t( druid_t* p, std::string_view n, flag_e f )
+      : AB( n, p, p->find_spell( p->specialization() == DRUID_GUARDIAN ? 451177 : 441812 ), f )
+    {
+      AB::name_str_reporting = "dreadful_wound";
+    }
+
+    // TODO: use custom action state if non-TF persistent multipliers are applied
+    void snapshot_state( action_state_t* s, unsigned fl, result_amount_type rt ) override
+    {
+      auto prev_mul = 1.0;
+      auto prev_dot = AB::get_dot( s->target );
+
+      if ( prev_dot->is_ticking() )
+        prev_mul = prev_dot->state->persistent_multiplier;
+
+      AB::snapshot_state( s, fl, rt );
+
+      if ( s->persistent_multiplier < prev_mul )
+        s->persistent_multiplier = prev_mul;
+    }
+  };
+
+  double aoe_coeff;
+
+  ravage_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f ), p_( p )
+  {
+    BASE::name_str_reporting = "ravage";
+
+    // the aoe effect is parsed last and overwrites the st effect, so we need to cache the aoe coeff and re-parse the
+    // st effect
+    aoe_coeff = BASE::attack_power_mod.direct;
+    BASE::parse_effect_direct_mods( BASE::data().effectN( 1 ), false );
+    BASE::aoe = -1;
+
+    if ( p->talent.dreadful_wound.ok() )
+    {
+      auto suf = get_suffix( BASE::name_str, "ravage" );
+      BASE::impact_action = p->get_secondary_action<dreadful_wound_t>( "dreadful_wound_" + suf, f );
+      BASE::add_child( BASE::impact_action );
+    }
+  }
+
+  double attack_direct_power_coefficient( const action_state_t* s ) const override
+  {
+    return s->chain_target == 0 ? BASE::attack_direct_power_coefficient( s ) : aoe_coeff;
   }
 };
 
@@ -4395,30 +4456,13 @@ struct ferocious_bite_base_t : public cat_finisher_t
 
 struct ferocious_bite_t : public ferocious_bite_base_t
 {
-  struct ravage_ferocious_bite_t : public ferocious_bite_base_t
+  struct ravage_ferocious_bite_t : public ravage_base_t<ferocious_bite_base_t, cat_attack_t>
   {
-    double aoe_coeff;
-
-    ravage_ferocious_bite_t( druid_t* p, std::string_view n, flag_e f )
-      : ferocious_bite_base_t( n, p, p->find_spell( 441591 ), f )
-    {
-      name_str_reporting = "ravage";
-
-      // the aoe effect is parsed last and overwrites the st effect, so we need to cache the aoe coeff and re-parse the
-      // st effect
-      aoe_coeff = attack_power_mod.direct;
-      parse_effect_direct_mods( data().effectN( 1 ), false );
-      aoe = -1;
-    }
-
-    double attack_direct_power_coefficient( const action_state_t* s ) const override
-    {
-      return s->chain_target == 0 ? ferocious_bite_base_t::attack_direct_power_coefficient( s ) : aoe_coeff;
-    }
+    ravage_ferocious_bite_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441591 ), f ) {}
 
     double energy_multiplier( const action_state_t* s ) const override
     {
-      return s->chain_target == 0 ? ferocious_bite_base_t::energy_multiplier( s ) : 1.0;
+      return s->chain_target == 0 ? base_t::energy_multiplier( s ) : 1.0;
     }
   };
 
@@ -5565,25 +5609,9 @@ struct maul_base_t : public trigger_indomitable_guardian_t<trigger_ursocs_fury_t
 
 struct maul_t : public maul_base_t
 {
-  struct ravage_maul_t : public maul_base_t
+  struct ravage_maul_t : public ravage_base_t<maul_base_t, bear_attack_t>
   {
-    double aoe_coeff;
-
-    ravage_maul_t( druid_t* p, std::string_view n, flag_e f ) : maul_base_t( n, p, p->find_spell( 441605 ), f )
-    {
-      name_str_reporting = "ravage";
-
-      // the aoe effect is parsed last and overwrites the st effect, so we need to cache the aoe coeff and re-parse the
-      // st effect
-      aoe_coeff = attack_power_mod.direct;
-      parse_effect_direct_mods( data().effectN( 1 ), false );
-      aoe = -1;
-    }
-
-    double attack_direct_power_coefficient( const action_state_t* s ) const override
-    {
-      return s->chain_target == 0 ? maul_base_t::attack_direct_power_coefficient( s ) : aoe_coeff;
-    }
+    ravage_maul_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441605 ), f ) {}
   };
 
   action_t* ravage = nullptr;
@@ -12980,20 +13008,25 @@ void druid_t::target_mitigation( school_e school, result_amount_type type, actio
 
   if ( s->action->player != this )
   {
+    auto td = get_target_data( s->action->player );
+
     if ( talent.pulverize.ok() )
-      s->result_amount *= 1.0 + get_target_data( s->action->player )->debuff.pulverize->check_value();
+      s->result_amount *= 1.0 + td->debuff.pulverize->check_value();
 
     if ( talent.rend_and_tear.ok() )
     {
       s->result_amount *= 1.0 + talent.rend_and_tear->effectN( 3 ).percent() *
-                                    get_target_data( s->action->player )->dots.thrash_bear->current_stack();
+                                    td->dots.thrash_bear->current_stack();
     }
 
-    if ( talent.scintillating_moonlight.ok() && get_target_data( s->action->player )->dots.moonfire->is_ticking() )
+    if ( talent.scintillating_moonlight.ok() && td->dots.moonfire->is_ticking() )
       s->result_amount *= 1.0 + talent.scintillating_moonlight->effectN( 1 ).percent();
 
     if ( talent.tooth_and_claw.ok() )
-      s->result_amount *= 1.0 + get_target_data( s->action->player )->debuff.tooth_and_claw->check_value();
+      s->result_amount *= 1.0 + td->debuff.tooth_and_claw->check_value();
+
+    if ( talent.dreadful_wound.ok() && td->dots.dreadful_wound->is_ticking())
+      s->result_amount *= 1.0 + talent.dreadful_wound->effectN( 2 ).percent();
   }
 
   player_t::target_mitigation( school, type, s );
@@ -13025,6 +13058,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     dots.adaptive_swarm_damage = target.get_dot( "adaptive_swarm_damage", &source );
     dots.astral_smolder        = target.get_dot( "astral_smolder", &source );
     dots.bloodseeker_vines     = target.get_dot( "bloodseeker_vines", &source );
+    dots.dreadful_wound        = target.get_dot( "dreadful_wound", &source );
     dots.feral_frenzy          = target.get_dot( "feral_frenzy_tick", &source );  // damage dot is triggered by feral_frenzy_tick_t
     dots.frenzied_assault      = target.get_dot( "frenzied_assault", &source );
     dots.fungal_growth         = target.get_dot( "fungal_growth", &source );
