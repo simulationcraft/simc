@@ -1,11 +1,11 @@
-paladin="T29_Paladin_Retribution"
+paladin="DF4_Paladin_Retribution"
 source=default
 spec=retribution
 level=70
-race=dark_iron_dwarf
+race=human
 role=attack
 position=back
-talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAiWp0KJtSjkWkkWSAAAAAAAEBJlEBSQEAAAAAAAA
+talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAiWp0KJtSjoFJplEAAAAAAQEkkQgEEpEhkQKpkQkICJiShGAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -87,30 +87,30 @@ actions.generators+=/arcane_torrent
 actions.generators+=/consecration
 actions.generators+=/divine_hammer
 
-head=virtuous_silver_heaume,id=200417,bonus_id=4800/4786/1498/6935,gem_id=192985
-neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498/6935/6935/6935,gem_id=192948/192948/192948
-shoulders=virtuous_silver_pauldrons,id=200419,bonus_id=4800/4786/1498
-back=goldscar_pelt,id=133639,bonus_id=1795/6808/4786/3300
-chest=virtuous_silver_breastplate,id=200414,bonus_id=4800/4786/1498,enchant_id=6625
-wrists=allied_wristguard_of_companionship,id=190526,bonus_id=8836/8802/8960/1498,gem_id=192948
-hands=virtuous_silver_gauntlets,id=200416,bonus_id=4800/4786/1498
-waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8802/8960/1498,gem_id=192948
-legs=greaves_of_the_godking,id=133630,bonus_id=1795/6808/4786/3300,enchant_id=6490
-feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3311
-finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/6935,gem_id=192948,enchant_id=6556
-finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192948,enchant_id=6556
-trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
-trinket2=blazebinders_hoof,id=193762,bonus_id=6808/4786/1643
-main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant_id=6649
+head=heartfire_sentinels_forgehelm,id=217198,bonus_id=10359/1488/6935,gem_id=192985,enchant=incandescent_essence
+neck=ouroboreal_necklet,id=210214,bonus_id=10359/1488/6935/6935/6935,gem_id=192925/192925/192925
+shoulders=heartfire_sentinels_steelwings,id=217200,bonus_id=10359/1488
+back=voice_of_the_silent_star,id=204465,bonus_id=10359/1495
+chest=datheas_cyclonic_cage,id=195494,bonus_id=10359/1488,enchant=waking_stats_3
+wrists=primal_molten_vambraces,id=190502,bonus_id=10249/1508/8932/6935,gem_id=192925,crafted_stats=40/32
+hands=heartfire_sentinels_protectors,id=217197,bonus_id=10359/1488
+waist=primal_molten_greatbelt,id=190501,bonus_id=10249/1508/8932/6935,gem_id=192925,enchant=shadowed_belt_clasp_3,crafted_stats=40/32
+legs=heartfire_sentinels_faulds,id=217199,bonus_id=10359/1488,enchant=lambent_armor_kit_3
+feet=lavaforged_sollerets,id=207148,bonus_id=10359/1488
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=10359/1488/6935,gem_id=192925,enchant=devotion_of_haste_3
+finger2=seal_of_filial_duty,id=195526,bonus_id=10359/1495/6935,gem_id=192925,enchant=devotion_of_haste_3
+trinket1=cataclysmic_signet_brand,id=207166,bonus_id=10359/1488
+trinket2=elementium_pocket_anvil,id=202617,bonus_id=10359/1488
+main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1507,enchant=wafting_devotion_3
 
 # Gear Summary
-# gear_ilvl=421.60
-# gear_strength=4970
-# gear_stamina=17349
-# gear_crit_rating=3549
-# gear_haste_rating=4737
-# gear_mastery_rating=1575
-# gear_versatility_rating=1905
-# gear_armor=7154
-# set_bonus=tier29_2pc=1
-# set_bonus=tier29_4pc=1
+# gear_ilvl=529.00
+# gear_strength=14005
+# gear_stamina=58970
+# gear_crit_rating=4304
+# gear_haste_rating=4924
+# gear_mastery_rating=2020
+# gear_versatility_rating=6131
+# gear_armor=15410
+# set_bonus=dragonflight_season_4_2pc=1
+# set_bonus=dragonflight_season_4_4pc=1
