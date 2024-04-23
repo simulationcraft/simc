@@ -1,0 +1,134 @@
+hunter="DF4_Hunter_Marksmanship"
+source=default
+spec=marksmanship
+level=70
+race=tauren
+role=attack
+position=ranged_back
+talents=B4PAAAAAAAAAAAAAAAAAAAAAAIHAaBApgAAAAAARiEJJhICJJtEpRIRRoJkkESIoBAAAAA
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=iced_phial_of_corrupting_rage_3
+food=great_cerulean_sea
+augmentation=draconic
+temporary_enchant=main_hand:completely_safe_rockets_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+actions.precombat+=/summon_pet,if=!talent.lone_wolf
+actions.precombat+=/snapshot_stats
+# Determine the stronger trinket to sync with cooldowns. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times. Special case to consider Mirror of Fractured Tomorrows weaker than other buff effects since its power is split between the dmg effect and the buff effect.
+actions.precombat+=/variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))
+actions.precombat+=/variable,name=trinket_2_stronger,value=!variable.trinket_1_stronger
+actions.precombat+=/salvo,precast_time=10
+actions.precombat+=/use_item,name=algethar_puzzle_box
+# Precast Aimed Shot on one or two targets unless we could cleave it with Volley on two targets.
+actions.precombat+=/aimed_shot,if=active_enemies<3&(!talent.volley|active_enemies<2)
+actions.precombat+=/wailing_arrow,if=active_enemies>2|!talent.steady_focus
+# Precast Steady Shot on two targets if we are saving Aimed Shot to cleave with Volley, otherwise on three or more targets.
+actions.precombat+=/steady_shot,if=active_enemies>2|talent.volley&active_enemies=2
+
+# Executed every time the actor is available.
+# Determine if it is a good time to use Trueshot. Raid event optimization takes priority so usage is saved for multiple targets as long as it won't delay over half its duration. Otherwise allow for small delays to line up buff effect trinkets, and when using Bullseye, delay the last usage of the fight for max stacks.
+actions=variable,name=trueshot_ready,value=cooldown.trueshot.ready&(!raid_event.adds.exists&(!talent.bullseye|fight_remains>cooldown.trueshot.duration_guess+buff.trueshot.duration%2|buff.bullseye.stack=buff.bullseye.max_stack)&(!trinket.1.has_use_buff|trinket.1.cooldown.remains>30|trinket.1.cooldown.ready)&(!trinket.2.has_use_buff|trinket.2.cooldown.remains>30|trinket.2.cooldown.ready)|raid_event.adds.exists&(!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<25|raid_event.adds.in>60)|raid_event.adds.up&raid_event.adds.remains>10)|fight_remains<25)
+actions+=/auto_shot
+actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=trinkets
+actions+=/call_action_list,name=st,if=active_enemies<3|!talent.trick_shots
+actions+=/call_action_list,name=trickshots,if=active_enemies>2
+
+# Call for Power Infusion when Trueshot is up.
+actions.cds=invoke_external_buff,name=power_infusion,if=buff.trueshot.remains>12
+actions.cds+=/berserking,if=buff.trueshot.up|fight_remains<13
+actions.cds+=/blood_fury,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16
+actions.cds+=/ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16
+actions.cds+=/fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9
+actions.cds+=/lights_judgment,if=buff.trueshot.down
+actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<26
+actions.cds+=/salvo,if=active_enemies>2|cooldown.volley.remains<10
+
+actions.st=steady_shot,if=talent.steady_focus&steady_focus_count&(buff.steady_focus.remains<8|buff.steady_focus.down&!buff.trueshot.up)
+actions.st+=/rapid_fire,if=buff.trick_shots.remains<execute_time
+actions.st+=/kill_shot,if=focus+cast_regen<focus.max
+actions.st+=/volley,if=buff.salvo.up|variable.trueshot_ready|cooldown.trueshot.remains>45|fight_remains<12
+actions.st+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&!talent.serpentstalkers_trickery&buff.trueshot.down
+actions.st+=/explosive_shot
+actions.st+=/stampede
+actions.st+=/death_chakram
+actions.st+=/wailing_arrow,if=active_enemies>1
+actions.st+=/rapid_fire,if=(talent.surging_shots|action.aimed_shot.full_recharge_time>action.aimed_shot.cast_time+cast_time)&(focus+cast_regen<focus.max)
+actions.st+=/trueshot,if=variable.trueshot_ready
+# Trigger Salvo if Volley isn't being used to trigger it.
+actions.st+=/multishot,if=buff.salvo.up&!talent.volley
+# With Serpentstalker's Trickery target the lowest remaining Serpent Sting. Without Chimaera Shot don't overwrite Precise Shots unless either Trueshot is active or Aimed Shot would cap before its next cast. On two targets with Chimaera Shot don't overwrite Precise Shots unless the target is within Careful Aim range in addition to either Trueshot being active or Aimed Shot capping before its next cast. Overwrite freely if it can cleave.
+actions.st+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=talent.serpentstalkers_trickery&(buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2|ca_active)|buff.trick_shots.remains>execute_time&active_enemies>1)
+# Without Serpentstalker's Trickery, target the highest Latent Poison stack. Same rules as the previous line.
+actions.st+=/aimed_shot,target_if=max:debuff.latent_poison.stack,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2|ca_active)|buff.trick_shots.remains>execute_time&active_enemies>1
+actions.st+=/wailing_arrow,if=buff.trueshot.down
+actions.st+=/kill_command,if=buff.trueshot.down
+actions.st+=/steel_trap
+actions.st+=/chimaera_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost
+actions.st+=/arcane_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost
+actions.st+=/bag_of_tricks,if=buff.trueshot.down
+actions.st+=/steady_shot
+
+actions.trickshots=steady_shot,if=talent.steady_focus&steady_focus_count&buff.steady_focus.remains<8
+actions.trickshots+=/kill_shot,if=buff.razor_fragments.up
+actions.trickshots+=/explosive_shot
+actions.trickshots+=/death_chakram
+actions.trickshots+=/stampede
+actions.trickshots+=/wailing_arrow
+actions.trickshots+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.hydras_bite&!talent.serpentstalkers_trickery
+actions.trickshots+=/barrage,if=active_enemies>7
+actions.trickshots+=/volley
+actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>=execute_time&talent.surging_shots
+actions.trickshots+=/trueshot,if=variable.trueshot_ready
+# For Serpentstalker's Trickery, target the lowest remaining Serpent Sting. Generally only cast if it would cleave with Trick Shots. Don't overwrite Precise Shots unless Trueshot is up or Aimed Shot would cap otherwise.
+actions.trickshots+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=talent.serpentstalkers_trickery&(buff.trick_shots.remains>=execute_time&(buff.precise_shots.down|buff.trueshot.up|full_recharge_time<cast_time+gcd))
+# For no Serpentstalker's Trickery, target the highest Latent Poison stack. Same general rules as the previous line.
+actions.trickshots+=/aimed_shot,target_if=max:debuff.latent_poison.stack,if=(buff.trick_shots.remains>=execute_time&(buff.precise_shots.down|buff.trueshot.up|full_recharge_time<cast_time+gcd))
+actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>=execute_time
+actions.trickshots+=/chimaera_shot,if=buff.trick_shots.up&buff.precise_shots.up&focus>cost+action.aimed_shot.cost&active_enemies<4
+actions.trickshots+=/multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.bulletstorm.stack=10)&focus>cost+action.aimed_shot.cost
+# Only use baseline Serpent Sting as a filler in cleave if it's the only source of applying Latent Poison.
+actions.trickshots+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.poison_injection&!talent.serpentstalkers_trickery
+actions.trickshots+=/steel_trap,if=buff.trueshot.down
+actions.trickshots+=/kill_shot,if=focus>cost+action.aimed_shot.cost
+actions.trickshots+=/multishot,if=focus>cost+action.aimed_shot.cost
+actions.trickshots+=/bag_of_tricks,if=buff.trueshot.down
+actions.trickshots+=/steady_shot
+
+# True if effects that are desirable to sync a trinket buff with are ready.
+actions.trinkets=variable,name=sync_ready,value=variable.trueshot_ready
+# True if effecs that are desirable to sync a trinket buff with are active.
+actions.trinkets+=/variable,name=sync_active,value=buff.trueshot.up
+# Time until the effects that are desirable to sync a trinket buff with will be ready.
+actions.trinkets+=/variable,name=sync_remains,value=cooldown.trueshot.remains_guess
+# Uses buff effect trinkets with cooldowns and is willing to delay usage up to half the trinket cooldown if it won't lose a usage in the fight. Fills in downtime with weaker buff effects if they won't also be saved for later cooldowns (happens if it won't delay over half the trinket cooldown and a stronger trinket won't be up in time) or damage effects if they won't inferfere with any buff effect usage. Intended to be slot-agnostic so that any order of the same trinket pair should result in the same usage.
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=trinket.1.has_use_buff&(variable.sync_ready&(variable.trinket_1_stronger|trinket.2.cooldown.remains)|!variable.sync_ready&(variable.trinket_1_stronger&(variable.sync_remains>trinket.1.cooldown.duration%3&fight_remains>trinket.1.cooldown.duration+20|trinket.2.has_use_buff&trinket.2.cooldown.remains>variable.sync_remains-15&trinket.2.cooldown.remains-5<variable.sync_remains&variable.sync_remains+45>fight_remains)|variable.trinket_2_stronger&(trinket.2.cooldown.remains&(trinket.2.cooldown.remains-5<variable.sync_remains&variable.sync_remains>=20|trinket.2.cooldown.remains-5>=variable.sync_remains&(variable.sync_remains>trinket.1.cooldown.duration%3|trinket.1.cooldown.duration<fight_remains&(variable.sync_remains+trinket.1.cooldown.duration>fight_remains)))|trinket.2.cooldown.ready&variable.sync_remains>20&variable.sync_remains<trinket.2.cooldown.duration%3)))|!trinket.1.has_use_buff&(trinket.1.cast_time=0|!variable.sync_active)&(!trinket.2.has_use_buff&(variable.trinket_1_stronger|trinket.2.cooldown.remains)|trinket.2.has_use_buff&(variable.sync_remains>20|trinket.2.cooldown.remains>20))|fight_remains<25&(variable.trinket_1_stronger|trinket.2.cooldown.remains)
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=trinket.2.has_use_buff&(variable.sync_ready&(variable.trinket_2_stronger|trinket.1.cooldown.remains)|!variable.sync_ready&(variable.trinket_2_stronger&(variable.sync_remains>trinket.2.cooldown.duration%3&fight_remains>trinket.2.cooldown.duration+20|trinket.1.has_use_buff&trinket.1.cooldown.remains>variable.sync_remains-15&trinket.1.cooldown.remains-5<variable.sync_remains&variable.sync_remains+45>fight_remains)|variable.trinket_1_stronger&(trinket.1.cooldown.remains&(trinket.1.cooldown.remains-5<variable.sync_remains&variable.sync_remains>=20|trinket.1.cooldown.remains-5>=variable.sync_remains&(variable.sync_remains>trinket.2.cooldown.duration%3|trinket.2.cooldown.duration<fight_remains&(variable.sync_remains+trinket.2.cooldown.duration>fight_remains)))|trinket.1.cooldown.ready&variable.sync_remains>20&variable.sync_remains<trinket.1.cooldown.duration%3)))|!trinket.2.has_use_buff&(trinket.2.cast_time=0|!variable.sync_active)&(!trinket.1.has_use_buff&(variable.trinket_2_stronger|trinket.1.cooldown.remains)|trinket.1.has_use_buff&(variable.sync_remains>20|trinket.1.cooldown.remains>20))|fight_remains<25&(variable.trinket_2_stronger|trinket.1.cooldown.remains)
+
+head=,id=217183,bonus_id=1808,enchant_id=7052,gem_id=192991,ilevel=528
+neck=,id=201759,bonus_id=7359/6646/8782/8932/8960,gem_id=192925/192925/192925,ilevel=525,crafted_stats=32/40
+shoulder=,id=217185,ilevel=528
+back=,id=204465,ilevel=535
+chest=,id=217181,enchant_id=6625,ilevel=528
+wrist=,id=204704,bonus_id=1808,enchant_id=6574,gem_id=192925,ilevel=525
+hands=,id=217182,ilevel=528
+waist=,id=193794,bonus_id=1808,enchant_id=6904,gem_id=192925,ilevel=528
+legs=,id=217184,enchant_id=6830,ilevel=528
+feet=,id=193685,ilevel=528
+finger1=,id=195480,bonus_id=1808,enchant_id=6568,gem_id=192925,ilevel=528
+finger2=,id=195526,bonus_id=1808,enchant_id=6568,gem_id=192925,ilevel=535
+trinket1=,id=193701,ilevel=528
+trinket2=,id=204202,ilevel=535
+main_hand=,id=195527,enchant_id=6528,ilevel=535
