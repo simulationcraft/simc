@@ -1,26 +1,31 @@
-# evoker="DF4_Evoker_Devastation"
-# spec=devastation
-# level=70
-# race=dracthyr
-# role=spell
-# position=back
-# talents=BsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJSCSaSIBEISiIJh0iSkkEyBSaJgEJIJJJBCE
+evoker="DF4_Evoker_Devastation"
+spec=devastation
+level=70
+race=dracthyr
+role=spell
+position=back
+talents=BsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJSCSaSQABikISSItoEJJhcgkWCIRSLSikEIQA
 
-# head=weyrnkeepers_timeless_dracoif,id=207227,bonus_id=8780,ilevel=489,gem_id=192985,enchant_id=7052
-# neck=amulet_of_eonars_chosen,id=208445,ilevel=489,gem_id=192952/192952/192952
-# shoulders=weyrnkeepers_timeless_sandbrace,id=207225,ilevel=489
-# back=weyrnkeepers_timeless_ornamented_cloak,id=207222,ilevel=489
-# chest=weyrnkeepers_timeless_raiment,id=207230,ilevel=489,enchant_id=6625
-# wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=8780/8960,ilevel=486,gem_id=192935,enchant=devotion_of_leech_3
-# hands=weyrnkeepers_timeless_clawguards,id=207228,ilevel=489
-# waist=jeweled_sash_of_the_viper,id=207146,bonus_id=8780,ilevel=489,gem_id=192935
-# legs=weyrnkeepers_timeless_breeches,id=207226,ilevel=489,enchant_id=6830
-# feet=acidic_hailstone_treads,id=193466,ilevel=486
-# finger1=band_of_callous_dominance,id=134528,ilevel=489,gem_id=192925,enchant=devotion_of_critical_strike_3,enchant_id=6568
-# finger2=lord_waycrests_signet,id=158362,ilevel=489,gem_id=192925,enchant=devotion_of_critical_strike_3,enchant_id=6568
-# trinket1=belorrelos_the_suncaller,id=207172,ilevel=489
-# trinket2=nymues_unraveling_spindle,id=208615,ilevel=489
-# main_hand=vakash_the_shadowed_inferno,id=207788,ilevel=489,enchant=wafting_devotion_3,enchant_id=6655
-# off_hand=tricksters_captivating_chime,id=207796,ilevel=489
+head=eranogs_adorned_sallet,id=195476,bonus_id=9516,ilevel=528,gem_id=192985,enchant_id=7052
+neck=torc_of_passed_time,id=201759,bonus_id=8840/8836/8902/1615/8932/8960/8782/8790,ilevel=525,gem_id=192932/192932/192932,crafted_stats=40/36
+shoulders=talons_of_the_awakened,id=217180,bonus_id=1520/9505,ilevel=528
+back=voice_of_the_silent_star,id=204465,ilevel=535
+chest=hauberk_of_the_awakened,id=217176,bonus_id=1520/9505,ilevel=528,enchant_id=6625
+wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=8836/8840/8902/8960/9405/9500/9498/9516,ilevel=525,gem_id=192932,enchant_id=6574
+hands=gauntlets_of_the_awakened,id=217177,bonus_id=1520/9505,ilevel=528
+waist=forlorn_leaf_clasp,id=207144,bonus_id=6652/9509/7981/9576/1520/8767/9516,ilevel=528,gem_id=192932,enchant_id=6904
+legs=legguards_of_the_awakened,id=217179,bonus_id=1520/9505,ilevel=528,enchant_id=6830
+feet=cleats_of_the_savage_claw,id=207139,ilevel=528
+finger1=seal_of_filial_duty,id=195526,bonus_id=3524/1808,ilevel=535,gem_id=192932,enchant_id=6556
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=3524/1808,ilevel=528,gem_id=192932,enchant_id=6550
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=3524,ilevel=528
+trinket2=nymues_unraveling_spindle,id=208615,bonus_id=6652/7980/9581/1514/8767,ilevel=528
+main_hand=naszuro_the_unbound_legacy,id=204177,bonus_id=9408/1429,ilevel=535,enchant_id=6655
+off_hand=thadrions_erratic_arcanotrode,id=204318,bonus_id=3524,ilevel=528
 
-# save=DF4_Evoker_Devastation.simc
+food=feisty_fish_sticks
+temporary_enchant=main_hand:howling_rune_3
+dragonflight.ominous_chromatic_essence_dragonflight=emerald
+dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
+
+save=DF4_Evoker_Devastation.simc
