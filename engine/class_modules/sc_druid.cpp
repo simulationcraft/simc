@@ -773,8 +773,10 @@ public:
     player_talent_t improved_sunfire;
     player_talent_t incapacitating_roar;
     player_talent_t innervate;
+    player_talent_t instincts_of_the_claw;
     player_talent_t ironfur;
     player_talent_t killer_instinct;
+    player_talent_t lore_of_the_grove;
     player_talent_t lycaras_teachings;
     player_talent_t maim;
     player_talent_t matted_fur;
@@ -8645,6 +8647,14 @@ struct wild_charge_t : public druid_spell_t
 
     return druid_spell_t::ready();
   }
+
+  void update_ready( timespan_t cd ) override
+  {
+    if ( p()->talent.elunes_grace.ok() && ( p()->get_form() == BEAR_FORM || p()->get_form() == MOONKIN_FORM ) )
+      cd = cooldown_duration() - 3_s;
+
+    druid_spell_t::update_ready( cd );
+  }
 };
 
 // Wild Mushroom ============================================================
@@ -9764,8 +9774,10 @@ void druid_t::init_spells()
   talent.improved_sunfire               = CT( "Improved Sunfire" );
   talent.incapacitating_roar            = CT( "Incapacitating Roar" );
   talent.innervate                      = CT( "Innervate" );
+  talent.instincts_of_the_claw          = CT( "Instincts of the Claw" );
   talent.ironfur                        = CT( "Ironfur" );
   talent.killer_instinct                = CT( "Killer Instinct" );
+  talent.lore_of_the_grove              = CT( "Lore of the Grove" );
   talent.lycaras_teachings              = CT( "Lycara's Teachings" );
   talent.maim                           = CT( "Maim" );
   talent.mass_entanglement              = CT( "Mass Entanglement" );
@@ -13796,7 +13808,9 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.astral_influence );
   action.apply_affecting_aura( talent.improved_rejuvenation );
   action.apply_affecting_aura( talent.improved_stampeding_roar );
+  action.apply_affecting_aura( talent.instincts_of_the_claw );
   action.apply_affecting_aura( talent.killer_instinct );
+  action.apply_affecting_aura( talent.lore_of_the_grove );
   action.apply_affecting_aura( talent.nurturing_instinct );
   action.apply_affecting_aura( talent.packs_endurance );
   action.apply_affecting_aura( talent.primal_fury );
@@ -13887,7 +13901,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.astral_insight );
   action.apply_affecting_aura( talent.bestial_strength );  // TODO: does fb bonus apply to guardian
   action.apply_affecting_aura( talent.early_spring );
-  action.apply_affecting_aura( talent.elunes_grace );
   action.apply_affecting_aura( talent.groves_inspiration );
   action.apply_affecting_aura( talent.hunt_beneath_the_open_skies );
   action.apply_affecting_aura( talent.lunar_calling );
