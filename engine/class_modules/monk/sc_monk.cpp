@@ -2022,7 +2022,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       auto ap = s->composite_attack_power();
       double cleared =
           p()->stagger->purify_flat( ap * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() );
-      p()->stagger->add_sample( name_str, cleared );
+      p()->stagger->add_sample( "staggering_strikes", cleared );
     }
 
     // Martial Mixture triggers from each BoK impact
@@ -3343,7 +3343,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     if ( p()->spec.stagger->ok() )
     {
       double cleared = p()->stagger->purify_flat( amount * p()->spec.touch_of_death_3_brm->effectN( 1 ).percent() );
-      p()->stagger->add_sample( name_str, cleared );
+      p()->stagger->add_sample( "touch_of_death", cleared );
     }
   }
 };
@@ -4240,7 +4240,7 @@ struct purifying_brew_t : public monk_spell_t
         p()->buff.brewmasters_rhythm->stack() * p()->sets->set( MONK_BREWMASTER, T29, B4 )->effectN( 1 ).percent();
 
     double cleared = p()->stagger->purify_percent( purifying_percent );
-    p()->stagger->add_sample( name_str, cleared );
+    p()->stagger->add_sample( "purifying_brew", cleared );
     p()->buff.recent_purifies->trigger( 1, cleared );
 
     if ( p()->talent.brewmaster.gai_plins_imperial_brew->ok() )
@@ -5304,7 +5304,7 @@ struct gift_of_the_ox_t : public monk_heal_t
       // Reduce stagger damage
       double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
       double cleared = p()->stagger->purify_percent( percent );
-      p()->stagger->add_sample( name_str, cleared );
+      p()->stagger->add_sample( "tranquil_spirit_gift_of_the_ox", cleared );
       p()->proc.tranquil_spirit_goto->occur();
     }
   }
@@ -5443,7 +5443,7 @@ struct expel_harm_t : public monk_heal_t
       // Reduce stagger damage
       double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
       double cleared = p()->stagger->purify_percent( percent );
-      p()->stagger->add_sample( name_str, cleared );
+      p()->stagger->add_sample( "tranquil_spirit_expel_harm", cleared );
       p()->proc.tranquil_spirit_expel_harm->occur();
     }
   }
@@ -9692,67 +9692,26 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
   auto splits = util::string_split<util::string_view>( name_str, "." );
   if ( splits.size() == 2 && splits[ 0 ] == "stagger" )
   {
-    // auto create_stagger_threshold_expression = []( util::string_view name_str, monk_t *p, double stagger_health_pct )
-    // {
-    //   return make_fn_expr(
-    //       name_str, [ p, stagger_health_pct ] { return p->current_stagger_tick_dmg_percent() > stagger_health_pct; }
-    //       );
-    // };
-
-    // if ( splits[ 1 ] == "light" )
-    // {
-    //   // return create_stagger_threshold_expression( name_str, this, light_stagger_threshold );
-    // }
-    // else if ( splits[ 1 ] == "moderate" )
-    // {
-    //   // return create_stagger_threshold_expression( name_str, this, moderate_stagger_threshold );
-    // }
-    // else if ( splits[ 1 ] == "heavy" )
-    // {
-    //   // return create_stagger_threshold_expression( name_str, this, heavy_stagger_threshold );
-    // }
-    // else if ( splits[ 1 ] == "amount" )
-    // {
-    //   // WoW API has this as the 16th node from UnitDebuff
-    //   return make_fn_expr( name_str, [ this ] { return current_stagger_tick_dmg(); } );
-    // }
-    // else if ( splits[ 1 ] == "pct" )
-    // {
-    //   return make_fn_expr( name_str, [ this ] { return current_stagger_tick_dmg_percent() * 100; } );
-    // }
-    // else if ( splits[ 1 ] == "amounttototalpct" )
-    // {
-    //   // This is the current stagger amount remaining compared to the total amount of the stagger dot
-    //   return make_fn_expr( name_str, [ this ] { return current_stagger_amount_remains_to_total_percent() * 100; } );
-    // }
-    // else if ( splits[ 1 ] == "remains" )
-    // {
-    //   return make_fn_expr( name_str, [ this ]() { return current_stagger_dot_remains(); } );
-    // }
-    // else if ( splits[ 1 ] == "amount_remains" )
-    // {
-    //   return make_fn_expr( name_str, [ this ]() { return current_stagger_amount_remains(); } );
-    // }
-    // else if ( splits[ 1 ] == "ticking" )
-    // {
-    //   return make_fn_expr( name_str, [ this ]() { return has_stagger(); } );
-    // }
-
-    // if ( util::str_in_str_ci( splits[ 1 ], "last_tick_damage_" ) )
-    // {
-    //   auto parts = util::string_split<util::string_view>( splits[ 1 ], "_" );
-    //   int n      = util::to_int( parts.back() );
-
-    //   // skip construction if the duration is nonsensical
-    //   if ( n > 0 )
-    //   {
-    //     return make_fn_expr( name_str, [ this, n ] { return calculate_last_stagger_tick_damage( n ); } );
-    //   }
-    //   else
-    //   {
-    //     throw std::invalid_argument( fmt::format( "Non-positive number of last stagger ticks '{}'.", n ) );
-    //   }
-    // }
+    if ( splits[ 1 ] == "none" )
+      return make_fn_expr( name_str, [ this ] { return stagger->current_threshold() == stagger_t::NONE_STAGGER; } );
+    if ( splits[ 1 ] == "light" )
+      return make_fn_expr( name_str, [ this ] { return stagger->current_threshold() == stagger_t::LIGHT_STAGGER; } );
+    else if ( splits[ 1 ] == "moderate" )
+      return make_fn_expr( name_str, [ this ] { return stagger->current_threshold() == stagger_t::MODERATE_STAGGER; } );
+    else if ( splits[ 1 ] == "heavy" )
+      return make_fn_expr( name_str, [ this ] { return stagger->current_threshold() == stagger_t::HEAVY_STAGGER; } );
+    else if ( splits[ 1 ] == "amount" )
+      return make_fn_expr( name_str, [ this ] { return stagger->tick_size(); } );
+    else if ( splits[ 1 ] == "pct" )
+      return make_fn_expr( name_str, [ this ] { return stagger->tick_size_percent(); } );
+    else if ( splits[ 1 ] == "amounttotalpct" )
+      return make_fn_expr( name_str, [ this ] { return stagger->pool_size_percent() * 100.0; } );
+    else if ( splits[ 1 ] == "remains" )
+      return make_fn_expr( name_str, [ this ] { return stagger->remains(); } );
+    else if ( splits[ 1 ] == "amount_remains" )
+      return make_fn_expr( name_str, [ this ] { return stagger->pool_size(); } );
+    else if ( splits[ 1 ] == "ticking" )
+      return make_fn_expr( name_str, [ this ] { return stagger->is_ticking(); } );
   }
 
   else if ( splits.size() == 2 && splits[ 0 ] == "spinning_crane_kick" )
@@ -10158,6 +10117,16 @@ monk_t::stagger_t::sample_data_t::sample_data_t( monk_t *player )
   absorbed  = player->get_sample_data( "Total damage absorbed by Stagger." );
   taken     = player->get_sample_data( "Total damage taken from Stagger." );
   mitigated = player->get_sample_data( "Total damage mitigated by Stagger." );
+
+  mitigated_by_ability[ "quick_sip" ] = player->get_sample_data( "Total Stagger purified by Quick Sip." );
+  mitigated_by_ability[ "staggering_strikes" ] =
+      player->get_sample_data( "Total Stagger purified by Staggering Strikes." );
+  mitigated_by_ability[ "touch_of_death" ] = player->get_sample_data( "Total Stagger purified by Touch of Death." );
+  mitigated_by_ability[ "purifying_brew" ] = player->get_sample_data( "Total Stagger purified by Purifying Brew." );
+  mitigated_by_ability[ "tranquil_spirit_gift_of_the_ox" ] =
+      player->get_sample_data( "Total Stagger purified by Tranquil Spirit (Gift of the Ox)." );
+  mitigated_by_ability[ "tranquil_spirit_expel_harm" ] =
+      player->get_sample_data( "Total Stagger purified by Tranquil Spirit (Expel Harm)." );
 }
 
 monk_t::stagger_t::self_damage_t::self_damage_t( monk_t *player )
@@ -10376,6 +10345,8 @@ void monk_t::stagger_t::set_pool( double amount )
   double ticks_left = dot->ticks_left();
 
   state->tick_amount = amount / ticks_left;
+
+  damage_changed();
 }
 
 double monk_t::stagger_t::purify_flat( double amount, bool report_amount )
@@ -10384,15 +10355,15 @@ double monk_t::stagger_t::purify_flat( double amount, bool report_amount )
     return 0.0;
 
   double pool    = pool_size();
-  double cleared = std::min( pool, amount );
+  double cleared = std::clamp( amount, 0.0, pool );
   double remains = cleared - pool;
 
   set_pool( remains );
   if ( report_amount )
-    player->sim->print_debug( "{} reduced pool by {} (out of {}) {} remains", player->name(), cleared, amount,
-                              remains );
+    player->sim->print_debug( "{} reduced pool from {} to {} ({})", player->name(), pool, remains, cleared );
 
   sample_data->mitigated->add( cleared );
+  player->sim->print_debug( "ZXCVA {}", cleared );
   current->mitigated->add( cleared );
 
   return cleared;
@@ -10404,8 +10375,8 @@ double monk_t::stagger_t::purify_percent( double amount )
   double cleared = purify_flat( amount * pool, false );
 
   if ( cleared )
-    player->sim->print_debug( "{} reduced pool by {}% (reduced by {}) {}% remains", player->name(), amount, cleared,
-                              1.0 - amount );
+    player->sim->print_debug( "{} reduced pool by {}% from {} to {} ({})", player->name(), amount * 100.0, pool,
+                              ( 1.0 - amount ) * pool, cleared );
 
   return cleared;
 }
