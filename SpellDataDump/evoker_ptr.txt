@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.7.54253 PTR
+SimulationCraft 1026-01 for World of Warcraft 10.2.6.53989 PTR
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -5866,7 +5866,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=1012794)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 1211 | Radius: 100 yards | Target: Raid Members (56)
-                   Affected Spells (Category): Heroic Leap (6544)
+                   Affected Spells (Category): Heroic Leap (6544), Heroic Leap (427033)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Heroic Leap reduced by $s1%.
 
@@ -7506,7 +7506,7 @@ Name             : Energizing Flame (id=400006) [Spell Family (224), Passive]
 Class            : Evoker
 School           : Fire
 Spell Type       : None
-Spell Level      : 1
+Spell Level      : 58
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
                  : 2444: Devastation Evoker (356809 effect#9), Initial Evoker (356816 effect#11), Augmentation Evoker (396186 effect#9)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

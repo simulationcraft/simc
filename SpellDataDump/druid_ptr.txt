@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.7.54253 PTR
+SimulationCraft 1026-01 for World of Warcraft 10.2.6.53989 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -219,7 +219,7 @@ Description      : Shapeshift into a travel form appropriate to your current loc
 The act of shapeshifting frees you from movement impairing effects.$?a159456[
 
 Land speed increased when used out of combat. This effect is disabled in battlegrounds and arenas.][]
-Tooltip          : Immune to Polymorph effects. Movement speed increased.
+Tooltip          : Immune to Polymorph effects.  Movement speed increased.
 
 Name             : Rip (id=1079) [Spell Family (7)] 
 Talent Entry     : Generic [free=(Feral), tree=class, row=3, col=1, max_rank=1, req_points=0]
@@ -5090,13 +5090,15 @@ Effects          :
                    Affected Spells: Rake (1822), Rake (155722)
                    Family Flags: 12
 #31 (id=1122758)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Nourish (422090), Swiftmend (422094), Wild Growth (422382), Nourish (423618)
                    Family Flags: 118
+Hotfixed         : Base Value (8 -> 3)
 #32 (id=1122759)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Nourish (422090), Swiftmend (422094), Wild Growth (422382), Nourish (423618)
                    Family Flags: 118
+Hotfixed         : Base Value (8 -> 3)
 Description      : Restoration Druid core passive
 
 Name             : Balance Druid (id=137013) [Spell Family (7), Passive, Hidden] 
@@ -5766,7 +5768,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=223349)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : You gain an additional $s1% movement speed while in the land version of Travel Form. This movement speed bonus will not be granted if Travel Form is activated while in combat.
+Description      : You gain an additional $s1% movement speed while in the land version of Travel Form.  This movement speed bonus will not be granted if Travel Form is activated while in combat.
 
 This effect is disabled in battlegrounds and arenas.
 
