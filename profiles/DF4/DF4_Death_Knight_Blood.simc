@@ -1,0 +1,133 @@
+deathknight="DF4_Death_Knight_Blood"
+source=default
+spec=blood
+level=70
+race=human
+role=tank
+position=front
+talents=BoPAAAAAAAAAAAAAAAAAAAAAAACJIIJRiIREJiECJJJRAAAAAAJSSOARSTiIBAAISSSCAAAA
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=iced_phial_of_corrupting_rage_3
+food=great_cerulean_sea
+augmentation=draconic
+temporary_enchant=main_hand:howling_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/snapshot_stats
+actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit)|trinket.1.is.mirror_of_fractured_tomorrows
+actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit)|trinket.2.is.mirror_of_fractured_tomorrows
+actions.precombat+=/variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon
+actions.precombat+=/variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon
+actions.precombat+=/variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl|variable.trinket_1_buffs
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/variable,name=death_strike_dump_amount,value=65
+actions+=/variable,name=bone_shield_refresh_value,value=4,op=setif,condition=!talent.deaths_caress.enabled|talent.consumption.enabled|talent.blooddrinker.enabled,value_else=5
+actions+=/mind_freeze,if=target.debuff.casting.react
+# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=49028/dancing-rune-weapon'>Dancing Rune Weapon</a> is up, or on cooldown if <a href='https://www.wowhead.com/spell=49028/dancing-rune-weapon'>Dancing Rune Weapon</a> is not talented
+actions+=/invoke_external_buff,name=power_infusion,if=buff.dancing_rune_weapon.up|!talent.dancing_rune_weapon
+actions+=/potion,if=buff.dancing_rune_weapon.up
+actions+=/call_action_list,name=trinkets
+actions+=/raise_dead
+actions+=/icebound_fortitude,if=!(buff.dancing_rune_weapon.up|buff.vampiric_blood.up)&(target.cooldown.pause_action.remains>=8|target.cooldown.pause_action.duration>0)
+actions+=/vampiric_blood,if=!buff.vampiric_blood.up&!buff.vampiric_strength.up
+actions+=/vampiric_blood,if=!(buff.dancing_rune_weapon.up|buff.icebound_fortitude.up|buff.vampiric_blood.up|buff.vampiric_strength.up)&(target.cooldown.pause_action.remains>=13|target.cooldown.pause_action.duration>0)
+actions+=/deaths_caress,if=!buff.bone_shield.up
+actions+=/death_and_decay,if=!death_and_decay.ticking&(talent.unholy_ground|talent.sanguine_ground|spell_targets.death_and_decay>3|buff.crimson_scourge.up)
+actions+=/death_strike,if=buff.coagulopathy.remains<=gcd|buff.icy_talons.remains<=gcd|runic_power>=variable.death_strike_dump_amount|runic_power.deficit<=variable.heart_strike_rp|target.time_to_die<10
+actions+=/blooddrinker,if=!buff.dancing_rune_weapon.up
+actions+=/call_action_list,name=racials
+actions+=/sacrificial_pact,if=!buff.dancing_rune_weapon.up&(pet.ghoul.remains<2|target.time_to_die<gcd)
+actions+=/blood_tap,if=(rune<=2&rune.time_to_4>gcd&charges_fractional>=1.8)|rune.time_to_3>gcd
+actions+=/gorefiends_grasp,if=talent.tightening_grasp.enabled
+actions+=/empower_rune_weapon,if=rune<6&runic_power.deficit>5
+actions+=/abomination_limb
+actions+=/dancing_rune_weapon,if=!buff.dancing_rune_weapon.up
+actions+=/run_action_list,name=drw_up,if=buff.dancing_rune_weapon.up
+actions+=/call_action_list,name=standard
+
+actions.drw_up=blood_boil,if=!dot.blood_plague.ticking
+actions.drw_up+=/tombstone,if=buff.bone_shield.stack>5&rune>=2&runic_power.deficit>=30&!talent.shattering_bone|(talent.shattering_bone.enabled&death_and_decay.ticking)
+actions.drw_up+=/death_strike,if=buff.coagulopathy.remains<=gcd|buff.icy_talons.remains<=gcd
+actions.drw_up+=/marrowrend,if=(buff.bone_shield.remains<=4|buff.bone_shield.stack<variable.bone_shield_refresh_value)&runic_power.deficit>20
+actions.drw_up+=/soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>(dot.soul_reaper.remains+5)
+actions.drw_up+=/soul_reaper,target_if=min:dot.soul_reaper.remains,if=target.time_to_pct_35<5&active_enemies>=2&target.time_to_die>(dot.soul_reaper.remains+5)
+actions.drw_up+=/death_and_decay,if=!death_and_decay.ticking&(talent.sanguine_ground|talent.unholy_ground)
+actions.drw_up+=/blood_boil,if=spell_targets.blood_boil>2&charges_fractional>=1.1
+actions.drw_up+=/variable,name=heart_strike_rp_drw,value=(25+spell_targets.heart_strike*talent.heartbreaker.enabled*2)
+actions.drw_up+=/death_strike,if=runic_power.deficit<=variable.heart_strike_rp_drw|runic_power>=variable.death_strike_dump_amount
+actions.drw_up+=/consumption
+actions.drw_up+=/blood_boil,if=charges_fractional>=1.1&buff.hemostasis.stack<5
+actions.drw_up+=/heart_strike,if=rune.time_to_2<gcd|runic_power.deficit>=variable.heart_strike_rp_drw
+
+actions.racials=blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)
+actions.racials+=/berserking
+actions.racials+=/arcane_pulse,if=active_enemies>=2|rune<1&runic_power.deficit>60
+actions.racials+=/lights_judgment,if=buff.unholy_strength.up
+actions.racials+=/ancestral_call
+actions.racials+=/fireblood
+actions.racials+=/bag_of_tricks
+actions.racials+=/arcane_torrent,if=runic_power.deficit>20
+
+actions.standard=tombstone,if=buff.bone_shield.stack>5&rune>=2&runic_power.deficit>=30&!talent.shattering_bone|(talent.shattering_bone.enabled&death_and_decay.ticking)&cooldown.dancing_rune_weapon.remains>=25
+actions.standard+=/variable,name=heart_strike_rp,value=(10+spell_targets.heart_strike*talent.heartbreaker.enabled*2)
+actions.standard+=/death_strike,if=buff.coagulopathy.remains<=gcd|buff.icy_talons.remains<=gcd|runic_power>=variable.death_strike_dump_amount|runic_power.deficit<=variable.heart_strike_rp|target.time_to_die<10
+actions.standard+=/deaths_caress,if=(buff.bone_shield.remains<=4|(buff.bone_shield.stack<variable.bone_shield_refresh_value+1))&runic_power.deficit>10&!(talent.insatiable_blade&cooldown.dancing_rune_weapon.remains<buff.bone_shield.remains)&!talent.consumption.enabled&!talent.blooddrinker.enabled&rune.time_to_3>gcd
+actions.standard+=/marrowrend,if=(buff.bone_shield.remains<=4|buff.bone_shield.stack<variable.bone_shield_refresh_value)&runic_power.deficit>20&!(talent.insatiable_blade&cooldown.dancing_rune_weapon.remains<buff.bone_shield.remains)
+actions.standard+=/consumption
+actions.standard+=/soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>(dot.soul_reaper.remains+5)
+actions.standard+=/soul_reaper,target_if=min:dot.soul_reaper.remains,if=target.time_to_pct_35<5&active_enemies>=2&target.time_to_die>(dot.soul_reaper.remains+5)
+actions.standard+=/bonestorm,if=runic_power>=100
+actions.standard+=/blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)
+actions.standard+=/heart_strike,if=rune.time_to_4<gcd
+actions.standard+=/blood_boil,if=charges_fractional>=1.1
+actions.standard+=/heart_strike,if=(rune>1&(rune.time_to_3<gcd|buff.bone_shield.stack>7))
+
+# Trinkets
+actions.trinkets=use_item,name=fyralath_the_dreamrender,if=dot.mark_of_fyralath.ticking
+# Prioritize damage dealing on use trinkets over trinkets that give buffs
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|!trinket.2.has_cooldown)
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|!trinket.1.has_cooldown)
+actions.trinkets+=/use_item,use_off_gcd=1,slot=main_hand,if=!equipped.fyralath_the_dreamrender&(variable.trinket_1_buffs|trinket.1.cooldown.remains)&(variable.trinket_2_buffs|trinket.2.cooldown.remains)
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&(buff.dancing_rune_weapon.up|!talent.dancing_rune_weapon|cooldown.dancing_rune_weapon.remains>20)&(variable.trinket_2_exclude|trinket.2.cooldown.remains|!trinket.2.has_cooldown|variable.trinket_2_buffs)
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs&(buff.dancing_rune_weapon.up|!talent.dancing_rune_weapon|cooldown.dancing_rune_weapon.remains>20)&(variable.trinket_1_exclude|trinket.1.cooldown.remains|!trinket.1.has_cooldown|variable.trinket_1_buffs)
+
+head=piercing_gaze_of_the_risen_nightmare,id=217223,bonus_id=10359/1488/6935,gem_id=192985,enchant=incandescent_essence
+neck=ouroboreal_necklet,id=210214,bonus_id=7187/1520/8782,ilevel=528,gem_id=192952/192952/192952
+shoulders=skewers_of_the_risen_nightmare,id=207198,bonus_id=7187/1520
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=9500/9405/9379/8960,ilevel=525,crafted_stats=36/40
+chest=casket_of_the_risen_nightmare,id=217221,ilevel=528,enchant=waking_stats_3
+wrists=primal_molten_vambraces,id=190502,bonus_id=10249/1508/8932/6935/8960,gem_id=192952,crafted_stats=32/36
+hands=thorns_of_the_risen_nightmare,id=207201,bonus_id=7187/1520
+waist=trapmasters_utility_belt,id=193669,bonus_id=1514/6935,ilevel=528,gem_id=192945,enchant=shadowed_belt_clasp_3
+legs=obsidian_guards_chausses,id=202597,bonus_id=7187/1520,ilevel=528,enchant=fierce_armor_kit_3
+feet=marbled_oathstone_greatboots,id=207950,bonus_id=1582,ilevel=528
+finger1=seal_of_filial_duty,id=195526,bonus_id=10359/1495/6935,gem_id=192952,enchant=devotion_of_critical_strike_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=10359/1488/6935,gem_id=192952,enchant=devotion_of_critical_strike_3
+trinket1=augury_of_the_primal_flame,id=208614,bonus_id=7187/1527,ilevel=535
+trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520,ilevel=528
+main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1507,enchant=rune_of_the_fallen_crusader
+
+# Gear Summary
+# gear_ilvl=523.80
+# gear_strength=12084
+# gear_stamina=59184
+# gear_crit_rating=4314
+# gear_haste_rating=5286
+# gear_mastery_rating=3109
+# gear_versatility_rating=5257
+# gear_armor=14530
+# set_bonus=tier31_2pc=1
+# set_bonus=dragonflight_season_4_2pc=1
