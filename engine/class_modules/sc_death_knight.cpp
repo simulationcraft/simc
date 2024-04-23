@@ -1469,12 +1469,13 @@ public:
   unsigned  replenish_rune( unsigned n, gain_t* gain = nullptr );
   // Shared
   bool      in_death_and_decay() const;
-  void      summon_rider( timespan_t duration, bool random );
-  void      extend_rider( double amount );
-  void      trigger_whitemanes_famine( player_t* target, std::vector<player_t*>& target_list );
-  void      start_a_feast_of_souls();
   void      trigger_dnd_buffs();
   void      expire_dnd_buffs();
+  // Rider of the Apocalypse
+  void      summon_rider( timespan_t duration, bool random );
+  void      extend_rider( double amount, pets::horseman_pet_t* rider );
+  void      trigger_whitemanes_famine( player_t* target, std::vector<player_t*>& target_list );
+  void      start_a_feast_of_souls();
   // Blood
   void      bone_shield_handler( const action_state_t* ) const;
   // Frost
@@ -8902,7 +8903,14 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
     if ( talent.rider.fury_of_the_horsemen.ok() )
     {
-      extend_rider( amount );
+      if ( pets.whitemane.active_pet() != nullptr )
+        extend_rider( amount, pets.whitemane.active_pet() );
+      if ( pets.mograine.active_pet() != nullptr )
+        extend_rider( amount, pets.mograine.active_pet() );
+      if ( pets.nazgrim.active_pet() != nullptr )
+        extend_rider( amount, pets.nazgrim.active_pet() );
+      if ( pets.trollbane.active_pet() != nullptr )
+        extend_rider( amount, pets.trollbane.active_pet() );
     }
 
     if ( talent.rider.a_feast_of_souls.ok() && buffs.a_feast_of_souls->check() && rng().roll( talent.rider.a_feast_of_souls->effectN( 2 ).percent() ) )
@@ -9456,37 +9464,23 @@ void death_knight_t::summon_rider( timespan_t duration, bool random )
   }
 }
 
-void death_knight_t::extend_rider( double amount )
+void death_knight_t::extend_rider( double amount, pets::horseman_pet_t* rider )
 {
-  double threshold       = talent.rider.fury_of_the_horsemen->effectN( 1 ).base_value();
-  double max_time        = talent.rider.fury_of_the_horsemen->effectN( 2 ).base_value();
+  double threshold    = talent.rider.fury_of_the_horsemen->effectN( 1 ).base_value();
+  double max_time     = talent.rider.fury_of_the_horsemen->effectN( 2 ).base_value();
   timespan_t duration = timespan_t::from_seconds( talent.rider.fury_of_the_horsemen->effectN( 3 ).base_value() );
-  double limit = threshold * max_time;
-  std::vector<pets::horseman_pet_t*> active_riders;
+  double limit        = threshold * max_time;
 
-  if ( pets.whitemane.active_pet() != nullptr )
-    active_riders.push_back( pets.whitemane.active_pet() );
-  if ( pets.mograine.active_pet() != nullptr )
-    active_riders.push_back( pets.mograine.active_pet() );
-  if ( pets.nazgrim.active_pet() != nullptr )
-    active_riders.push_back( pets.nazgrim.active_pet() );
-  if ( pets.trollbane.active_pet() != nullptr )
-    active_riders.push_back( pets.trollbane.active_pet() );
-
-  for ( auto& rider : active_riders )
+  if ( rider->rp_spent < limit )
   {
-    if ( rider->rp_spent < limit )
+    rider->rp_spent += amount;
+    rider->current_pool += amount;
+    if ( rider->current_pool >= threshold )
     {
-      rider->rp_spent += amount;
-      rider->current_pool += amount;
-      if ( rider->current_pool >= threshold )
-      {
-        rider->current_pool -= threshold;
-        rider->adjust_duration( duration );
-      }
+      rider->current_pool -= threshold;
+      rider->adjust_duration( duration );
     }
   }
-  active_riders.clear();
 }
 
 void death_knight_t::trigger_whitemanes_famine( player_t* main_target, std::vector<player_t*>& target_list )
