@@ -1,28 +1,28 @@
-# deathknight="DF4_Death_Knight_Blood"
-# level=70
-# race=human
-# spec=blood
-# role=tank
-# position=front
-# talents=BoPAAAAAAAAAAAAAAAAAAAAAAACJIIJRiIREJiECJJJRAAAAAAJSSOARSTiIBAAISSSCAAAA
+deathknight="DF4_Death_Knight_Blood"
+level=70
+race=human
+spec=blood
+role=tank
+position=front
+talents=BoPAAAAAAAAAAAAAAAAAAAAAAACJIIJRiIREJiECJJJRAAAAAAJSSOARSTiIBAAISSSCAAAA
 
-# head=piercing_gaze_of_the_risen_nightmare,id=207200,bonus_id=7187/1520/6935,gem_id=192985,enchant=incandescent_essence
-# neck=ouroboreal_necklet,id=210214,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/8782/1520/9576,gem_id=192935/192935/192935
-# shoulders=skewers_of_the_risen_nightmare,id=207198,bonus_id=7187/1520
-# back=vibrant_wildercloth_shawl,id=193511,bonus_id=9500/9405/9379/8960,crafted_stats=32/36
-# chest=carapace_of_the_unbending_flame,id=207154,bonus_id=7187/1520,enchant=waking_stats_3
-# wrist=primal_molten_vambraces,id=190502,bonus_id=9500/9405/9379/6935/8960,gem_id=192935,crafted_stats=40/36
-# hands=thorns_of_the_risen_nightmare,id=207201,bonus_id=7187/1520
-# waist=smoldering_chevaliers_greatbelt,id=207157,gem_id=192935,bonus_id=7187/1520,enchant=shadowed_belt_clasp_3
-# legs=greaves_of_the_risen_nightmare,id=207199,bonus_id=7187/1520,enchant=fierce_armor_kit_3
-# feet=lavaforged_sollerets,id=207148,bonus_id=7187/1520,enchant=plainsrunners_breeze_3
-# finger1=signet_of_the_last_elder,id=207162,bonus_id=7187/1520,gem_id=192935,enchant=devotion_of_haste_3
-# finger2=band_of_burning_thorns,id=207159,bonus_id=7187/1520,gem_id=192935,enchant=devotion_of_haste_3
-# trinket1=rezans_gleaming_eye,id=158712,bonus_id=3317/1514
-# trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-# main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1468,enchant=rune_of_the_fallen_crusader
+head=piercing_gaze_of_the_risen_nightmare,id=217223,bonus_id=10359/1488/6935,gem_id=192985,enchant=incandescent_essence
+neck=ouroboreal_necklet,id=210214,bonus_id=7187/1520/8782,gem_id=192952/192952/192952,ilevel=528
+shoulders=skewers_of_the_risen_nightmare,id=207198,bonus_id=7187/1520
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=9500/9405/9379/8960,ilevel=525,crafted_stats=36/40
+chest=casket_of_the_risen_nightmare,id=217221,ilevel=528,enchant=waking_stats_3
+wrists=primal_molten_vambraces,id=190502,bonus_id=10249/1508/8932/6935/8960,gem_id=192952,crafted_stats=32/36
+hands=thorns_of_the_risen_nightmare,id=207201,bonus_id=7187/1520
+waist=trapmasters_utility_belt,id=193669,bonus_id=1514/6935,gem_id=192945,ilevel=528,enchant=shadowed_belt_clasp_3
+legs=obsidian_guards_chausses,id=202597,bonus_id=7187/1520,ilevel=528,enchant=fierce_armor_kit_3
+feet=marbled_oathstone_greatboots,id=207950,bonus_id=1582,ilevel=528
+finger1=seal_of_filial_duty,id=195526,bonus_id=10359/1495/6935,gem_id=192952,enchant=devotion_of_critical_strike_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=10359/1488/6935,gem_id=192952,enchant=devotion_of_critical_strike_3
+trinket1=augury_of_the_primal_flame,id=208614,bonus_id=7187/1527,ilevel=535
+trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520,ilevel=528
+main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1507,enchant=rune_of_the_fallen_crusader
 
-# save=DF4_Death_Knight_Blood.simc
+save=DF4_Death_Knight_Blood.simc
 
 deathknight="DF4_Death_Knight_Frost"
 spec=frost
@@ -83,7 +83,7 @@ finger1=seal_of_filial_duty,id=195526,bonus_id=10359/1495/6935,gem_id=192919,enc
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=10359/1488/6935,gem_id=192919,enchant=devotion_of_haste_3
 trinket1=ominous_chromatic_essence,id=203729,bonus_id=10359/1488
 trinket2=whispering_incarnate_icon,id=194301,bonus_id=10359/1488
-main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1507,enchant=rune_of_the_fallen_crusader,enchant=rune_of_the_fallen_crusader
+main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1507,enchant=rune_of_the_fallen_crusader
 
 save="DF4_Death_Knight_Frost_2h.simc"
 
