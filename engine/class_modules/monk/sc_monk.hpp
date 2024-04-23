@@ -274,6 +274,9 @@ public:
   // Active
   action_t *windwalking_aura;
 
+  // Special Auto-Attacks
+  action_t *dual_threat_kick;
+
   // For Debug reporting, used by create_proc_callback in init_special_effects
   std::map<std::string, std::vector<action_t *> > proc_tracking;
 
@@ -512,6 +515,7 @@ public:
     propagate_const<buff_t *> dance_of_chiji;
     propagate_const<buff_t *> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
     propagate_const<buff_t *> dizzying_kicks;
+    propagate_const<buff_t *> dual_threat;
     propagate_const<buff_t *> jadefire_brand;
     propagate_const<buff_t *> flying_serpent_kick_movement;
     propagate_const<buff_t *> fury_of_xuen_stacks;
@@ -548,11 +552,11 @@ public:
   struct gains_t
   {
     propagate_const<gain_t *> black_ox_brew_energy;
-    propagate_const<gain_t *> bonedust_brew;
     propagate_const<gain_t *> chi_refund;
     propagate_const<gain_t *> bok_proc;
     propagate_const<gain_t *> chi_burst;
     propagate_const<gain_t *> crackling_jade_lightning;
+    propagate_const<gain_t *> energy_burst;
     propagate_const<gain_t *> energy_refund;
     propagate_const<gain_t *> energizing_elixir_chi;
     propagate_const<gain_t *> energizing_elixir_energy;
@@ -1148,6 +1152,7 @@ public:
     const spell_data_t *cyclone_strikes;
     const spell_data_t *dance_of_chiji;
     const spell_data_t *dance_of_chiji_bug;
+    const spell_data_t *dual_threat_kick;
     const spell_data_t *dizzying_kicks;
     const spell_data_t *empowered_tiger_lightning;
     const spell_data_t *jadefire_brand_dmg;
