@@ -2265,6 +2265,7 @@ class SpellDataGenerator(DataGenerator):
           ( 429625, 0 ), ( 429676, 0 ), # cenarius' might
           ( 451177, 0 ), # dreadful wound
           ( 433832, 0 ), ( 434112, 0 ), # dream surge
+          ( 441827, 0 ), # killing strikes
           ( 432846, 0 ), # lunar amplification
           ( 441585, 0 ), ( 441602, 0 ), # ravage
           ( 439887, 0 ), ( 439888, 0 ), # root network

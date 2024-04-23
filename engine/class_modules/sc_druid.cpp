@@ -662,6 +662,8 @@ public:
     buff_t* cenarius_might_starfall;
     buff_t* dream_burst;
     buff_t* harmony_of_the_grove;
+    buff_t* killing_strikes;
+    buff_t* killing_strikes_combat;
     buff_t* lunar_amplification;
     buff_t* lunar_amplification_starfall;
     buff_t* protective_growth;
@@ -2222,6 +2224,7 @@ public:
   {
     BASE::execute();
 
+    p_->buff.killing_strikes->trigger();
     p_->buff.ruthless_aggression->trigger();
   }
 };
@@ -4997,6 +5000,12 @@ struct tigers_fury_t : public cat_attack_t
     p()->buff.tigers_fury->trigger();
     p()->buff.tigers_tenacity->trigger();
     p()->buff.strategic_infusion->trigger();
+
+    if ( p()->buff.killing_strikes_combat->check() )
+    {
+      p()->buff.killing_strikes_combat->expire();
+      p()->buff.ravage_fb->trigger();
+    }
   }
 };
 
@@ -5577,6 +5586,12 @@ struct mangle_t : public consume_ursine_potential_t<bear_attack_t>
 
     p()->buff.vicious_cycle_mangle->expire();
     p()->buff.vicious_cycle_maul->trigger( num_targets_hit );
+
+    if ( p()->buff.killing_strikes_combat->check() )
+    {
+      p()->buff.killing_strikes_combat->expire();
+      p()->buff.ravage_maul->trigger();
+    }
   }
 };
 
@@ -10846,6 +10861,16 @@ void druid_t::create_buffs()
                           find_spell( specialization() == DRUID_RESTORATION ? 428737 : 428735 ) )
           ->set_cooldown( 0_ms );
 
+  buff.killing_strikes = make_buff_fallback( talent.killing_strikes.ok(),
+      this, "killing_strikes", find_trigger( talent.killing_strikes ).trigger() )
+          ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
+          ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+          ->add_invalidate( CACHE_ARMOR );
+
+  buff.killing_strikes_combat = make_buff_fallback( talent.killing_strikes.ok(),
+      this, "killing_strikes_combat", find_spell( 441827 ) )
+          ->set_quiet( true );
+
   buff.lunar_amplification =
       make_buff_fallback( talent.lunar_amplification.ok(), this, "lunar_amplification", find_spell( 431250 ) );
 
@@ -12150,6 +12175,9 @@ void druid_t::precombat_init()
   if ( talent.brambles.ok() )
     buff.brambles->trigger();
 
+  if ( talent.killing_strikes.ok() )
+    buff.killing_strikes_combat->trigger();
+
   if ( talent.orbit_breaker.ok() )
   {
     auto stacks = options.initial_orbit_breaker_stacks >= 0
@@ -12365,7 +12393,15 @@ double druid_t::composite_armor() const
   double a = player_t::composite_armor();
 
   if ( buff.ironfur->up() )
-    a += ( buff.ironfur->check_stack_value() * cache.agility() );
+  {
+    auto if_val = buff.ironfur->check_stack_value();
+
+    // TODO: confirm this is dynamic
+    if ( buff.killing_strikes->check() )
+      if_val *= 1.0 + buff.killing_strikes->data().effectN( 2 ).percent();
+
+    a += if_val * cache.agility();
+  }
 
   return a;
 }

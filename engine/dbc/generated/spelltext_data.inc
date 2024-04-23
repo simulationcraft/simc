@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54311
-static const std::array<spelltext_data_t, 22357> __spelltext_data { {
+static const std::array<spelltext_data_t, 22358> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21489,6 +21489,7 @@ static const std::array<spelltext_data_t, 22357> __spelltext_data { {
   { 441817, "$@spelldesc441814", "Auto-attack rate increased by $w1%.", 0 },
   { 441824, "Massive Attack increases your Agility by $441825s1% and the armor granted by Ironfur by $441825s2% for $441825d.\r\n\r\nYour first $?a137011[Tiger's Fury][Mangle] after entering combat makes your next $?a137011[Ferocious Bite][Maul] become a Massive Attack.", 0, 0 },
   { 441825, "$@spelldesc441824", "Agility increased by $w1% and armor granted by Ironfur increased by $w2%.", 0 },
+  { 441827, "$@spelldesc441824", "Your next $?a137011[Tiger's Fury][Mangle] makes your next $?a137011[Ferocious Bite][Maul] become a Massive Attack.", 0 },
   { 441829, "Every $?a137010[Maul, Raze, Mangle, ]$?a137011[Finishing Move, Shred, ]Thrash, or $?s202028[Brutal Slash][Swipe] you cast extends the duration of your Dreadful Wounds by $?a137010[${$s1/1000}.1][${$s2/1000}.1] sec, up to $s3 additional sec.", 0, 0 },
   { 441835, "During Berserk, $?a137010[Mangle][Shred], $?s202028[Brutal Slash][Swipe], and Thrash have a $h% chance to make your next $?a137010[Maul][Ferocious Bite] become a Massive Attack.", 0, 0 },
   { 441841, "$?a137011[Ferocious Bite damage increased by $s1% and Primal Wrath's direct damage increased by $s2%.][Maul and Raze damage increased by $s3%.]", 0, 0 },
