@@ -1308,7 +1308,10 @@ struct tiger_palm_t : public monk_melee_attack_t
       brew_cooldown_reduction( p()->talent.brewmaster.face_palm->effectN( 3 ).base_value() / 1000.0 );
 
     if ( combat_wisdom )
+    {
       p()->passive_actions.combat_wisdom_eh->execute();
+      p()->buff.combat_wisdom->expire();
+    }
 
     face_palm      = false;
     blackout_combo = false;
@@ -1370,9 +1373,8 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    p()->resource_gain(
-        RESOURCE_CHI,
-        p()->passives.glory_of_the_dawn_damage->effectN( 3 ).base_value() );  // , p()->gain.glory_of_the_dawn );
+    p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.glory_of_the_dawn->effectN( 3 ).base_value(),
+                        p()->gain.glory_of_the_dawn );
   }
 };
 
@@ -1532,7 +1534,11 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     trigger_attack->set_target( target );
     trigger_attack->execute();
 
-    if ( rng().roll( p()->talent.windwalker.glory_of_the_dawn->effectN( 3 ).percent() ) )
+    // TODO: Is this the correct way to get character sheet haste %?
+    auto gotd_chance = p()->talent.windwalker.glory_of_the_dawn->effectN( 2 ).percent() *
+                       ( ( 1.0 / p()->composite_spell_haste() ) - 1.0 );
+
+    if ( rng().roll( gotd_chance ) )
     {
       gotd->target = p()->target;
       gotd->execute();
