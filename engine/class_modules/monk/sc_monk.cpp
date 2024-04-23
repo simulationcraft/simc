@@ -1207,7 +1207,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     may_combo_strike = true;
     trigger_chiji    = true;
     sef_ability      = actions::sef_ability_e::SEF_TIGER_PALM;
-    cast_during_sck  = true;
+    cast_during_sck  = player->specialization() != MONK_WINDWALKER;
 
     if ( p->specialization() == MONK_WINDWALKER )
       energize_amount = p->spec.windwalker_monk->effectN( 4 ).base_value();
@@ -1504,7 +1504,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     may_combo_strike = true;
     sef_ability      = actions::sef_ability_e::SEF_RISING_SUN_KICK;
     ap_type          = attack_power_type::NONE;
-    cast_during_sck  = true;
+    cast_during_sck  = player->specialization() != MONK_WINDWALKER;
 
     attack_power_mod.direct = 0;
 
@@ -1771,7 +1771,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     sef_ability      = actions::sef_ability_e::SEF_BLACKOUT_KICK;
     may_combo_strike = true;
     trigger_chiji    = true;
-    cast_during_sck  = true;
+    cast_during_sck  = player->specialization() != MONK_WINDWALKER;
 
     aoe = 1 + (int)p->shared.shadowboxing_treads->effectN( 1 ).base_value();
     cooldown->duration += p->talent.brewmaster.fluidity_of_motion->effectN( 1 ).time_value();
@@ -2582,7 +2582,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     interrupt_auto_attack = false;
     channeled             = false;
     may_combo_strike      = true;
-    cast_during_sck       = true;
+    cast_during_sck       = false;
 
     spell_power_mod.direct = 0.0;
 
@@ -2733,7 +2733,7 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       oh_attack( nullptr )
   {
     may_combo_strike = true;
-    cast_during_sck  = true;
+    cast_during_sck  = false;
     cooldown->hasted = false;
     trigger_gcd      = data().gcd();
 
@@ -3343,7 +3343,7 @@ struct spear_hand_strike_t : public monk_melee_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     is_interrupt          = true;
-    cast_during_sck       = true;
+    cast_during_sck       = player->specialization() != MONK_WINDWALKER;
     may_miss = may_block = may_dodge = may_parry = false;
   }
 
@@ -3367,7 +3367,7 @@ struct leg_sweep_t : public monk_melee_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = false;
-    cast_during_sck                              = true;
+    cast_during_sck                              = player->specialization() != MONK_WINDWALKER;
 
     radius += p->talent.general.tiger_tail_sweep->effectN( 1 ).base_value();
     cooldown->duration += p->talent.general.tiger_tail_sweep->effectN( 2 ).time_value();  // Saved as -10000
@@ -3592,7 +3592,7 @@ struct roll_t : public monk_spell_t
     : monk_spell_t( "roll", player,
                     ( player->talent.general.chi_torpedo->ok() ? spell_data_t::not_found() : player->spec.roll ) )
   {
-    cast_during_sck = true;
+    cast_during_sck = player->specialization() != MONK_WINDWALKER;
 
     parse_options( options_str );
 
@@ -3621,7 +3621,7 @@ struct chi_torpedo_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    cast_during_sck = true;
+    cast_during_sck = player->specialization() != MONK_WINDWALKER;
   }
 
   void execute() override
@@ -3895,7 +3895,7 @@ struct fortifying_brew_t : public monk_spell_t
   fortifying_brew_t( monk_t &p, util::string_view options_str )
     : monk_spell_t( "fortifying_brew", &p, p.find_spell( 115203 ) ), delivery( new special_delivery_t( p ) )
   {
-    cast_during_sck = true;
+    cast_during_sck = player->specialization() != MONK_WINDWALKER;
 
     parse_options( options_str );
 
@@ -4408,7 +4408,7 @@ struct diffuse_magic_t : public monk_spell_t
     : monk_spell_t( "diffuse_magic", &p, p.talent.general.diffuse_magic )
   {
     parse_options( options_str );
-    cast_during_sck = true;
+    cast_during_sck = player->specialization() != MONK_WINDWALKER;
     harmful         = false;
     base_dd_min     = 0;
     base_dd_max     = 0;
@@ -4432,7 +4432,7 @@ struct xuen_spell_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    cast_during_sck = true;
+    cast_during_sck = false;
     // Specifically set for 10.1 class trinket
     harmful  = true;
     gcd_type = gcd_haste_type::NONE;
@@ -4976,7 +4976,7 @@ struct jadefire_stomp_t : public monk_spell_t
   {
     parse_options( options_str );
     may_combo_strike = true;
-    cast_during_sck  = true;
+    cast_during_sck  = player->specialization() != MONK_WINDWALKER;
     gcd_type         = gcd_haste_type::NONE;  // Need to define this manually for some reason
 
     aoe = (int)data().effectN( 3 ).base_value();
@@ -5413,7 +5413,7 @@ struct expel_harm_t : public monk_heal_t
 
     target           = player;
     may_combo_strike = true;
-    cast_during_sck  = true;
+    cast_during_sck  = player->specialization() != MONK_WINDWALKER;
 
     if ( p.talent.windwalker.combat_wisdom.ok() )
       background = true;
@@ -5660,9 +5660,6 @@ struct chi_wave_t : public monk_spell_t
 
     dot_duration   = timespan_t::from_seconds( data().effectN( 1 ).base_value() );
     base_tick_time = dot_duration / 8;
-
-    radius   = player->find_spell( 132466 )->effectN( 2 ).base_value();
-    gcd_type = gcd_haste_type::SPELL_HASTE;
 
     add_child( heal );
     add_child( damage );
