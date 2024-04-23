@@ -833,6 +833,7 @@ public:
     player_talent_t elunes_guidance;
     player_talent_t force_of_nature;
     player_talent_t fury_of_elune;
+    player_talent_t greater_alignment;
     player_talent_t incarnation_moonkin;
     player_talent_t light_of_the_sun;
     player_talent_t lunar_shrapnel;
@@ -3265,10 +3266,14 @@ struct brambles_buff_t : public druid_absorb_buff_t
 // Celestial Alignment / Incarn Buff ========================================
 struct celestial_alignment_buff_t : public druid_buff_t
 {
+  double ga_mod;
+
   celestial_alignment_buff_t( druid_t* p, std::string_view n, const spell_data_t* s )
-    : base_t( p, n, p->apply_override( s, p->talent.orbital_strike ) )
+    : base_t( p, n, p->apply_override( s, p->talent.orbital_strike ) ),
+      ga_mod( p->talent.greater_alignment->effectN( 2 ).percent() )
   {
     set_cooldown( 0_ms );
+    apply_affecting_aura( p->talent.greater_alignment );
 
     if ( p->talent.celestial_alignment.ok() )
     {
@@ -3285,6 +3290,9 @@ struct celestial_alignment_buff_t : public druid_buff_t
     {
       p()->eclipse_handler.trigger_both( remains() );
       p()->uptime.combined_ca_inc->update( true, sim->current_time() );
+
+      p()->buff.eclipse_lunar->current_value += ga_mod;
+      p()->buff.eclipse_solar->current_value += ga_mod;
     }
 
     return ret;
@@ -9885,6 +9893,7 @@ void druid_t::init_spells()
   talent.elunes_guidance                = ST( "Elune's Guidance" );
   talent.force_of_nature                = ST( "Force of Nature" );
   talent.fury_of_elune                  = ST( "Fury of Elune" );
+  talent.greater_alignment              = ST( "Greater Alignment" );
   talent.incarnation_moonkin            = ST( "Incarnation: Chosen of Elune" );
   talent.light_of_the_sun               = ST( "Light of the Sun" );
   talent.lunar_shrapnel                 = ST( "Lunar Shrapnel" );
