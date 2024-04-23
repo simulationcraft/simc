@@ -55,6 +55,7 @@ actions+=/berserking,if=buff.recklessness.up
 actions+=/blood_fury
 actions+=/fireblood
 actions+=/ancestral_call
+actions+=/invoke_external_buff,name=power_infusion,if=buff.avatar.remains>15&fight_remains>=135|(target.health.pct<35&talent.massacre|target.health.pct<20)&buff.avatar.up|fight_remains<=25
 actions+=/avatar,if=talent.titans_torment&buff.enrage.up&raid_event.adds.in>15&!buff.avatar.up&cooldown.odyns_fury.remains|talent.berserkers_torment&buff.enrage.up&!buff.avatar.up&raid_event.adds.in>15|!talent.titans_torment&!talent.berserkers_torment&(buff.recklessness.up|target.time_to_die<20)
 actions+=/recklessness,if=!raid_event.adds.exists&(talent.annihilator&cooldown.champions_spear.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<12)
 actions+=/recklessness,if=!raid_event.adds.exists&!talent.annihilator|target.time_to_die<12
@@ -66,18 +67,20 @@ actions.multi_target=recklessness,if=raid_event.adds.in>15|active_enemies>1|targ
 actions.multi_target+=/odyns_fury,if=active_enemies>1&talent.titanic_rage&(!buff.meat_cleaver.up|buff.avatar.up|buff.recklessness.up)
 actions.multi_target+=/whirlwind,if=spell_targets.whirlwind>1&talent.improved_whirlwind&!buff.meat_cleaver.up|raid_event.adds.in<2&talent.improved_whirlwind&!buff.meat_cleaver.up
 actions.multi_target+=/execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd
+actions.multi_target+=/rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)
 actions.multi_target+=/thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)
 actions.multi_target+=/odyns_fury,if=active_enemies>1&buff.enrage.up&raid_event.adds.in>15
+actions.multi_target+=/whirlwind,if=buff.meat_cleaver.stack=1&buff.hurricane.up&rage<80&rage>60
 actions.multi_target+=/bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95|set_bonus.tier31_4pc
 actions.multi_target+=/bloodthirst,if=(set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95)|(!talent.reckless_abandon&buff.furious_bloodthirst.up&buff.enrage.up)
 actions.multi_target+=/crushing_blow,if=talent.wrath_and_fury&buff.enrage.up
-actions.multi_target+=/execute,if=buff.enrage.up
 actions.multi_target+=/odyns_fury,if=buff.enrage.up&raid_event.adds.in>15
 actions.multi_target+=/rampage,if=buff.recklessness.up|buff.enrage.remains<gcd|(rage>110&talent.overwhelming_rage)|(rage>80&!talent.overwhelming_rage)
-actions.multi_target+=/execute
 actions.multi_target+=/bloodbath,if=buff.enrage.up&talent.reckless_abandon&!talent.wrath_and_fury
+actions.multi_target+=/execute,if=buff.enrage.up&talent.ashen_juggernaut
 actions.multi_target+=/bloodthirst,if=buff.enrage.down|(talent.annihilator&!buff.recklessness.up)
 actions.multi_target+=/onslaught,if=!talent.annihilator&buff.enrage.up|talent.tenderize
+actions.multi_target+=/execute,if=buff.enrage.up
 actions.multi_target+=/raging_blow,if=charges>1&talent.wrath_and_fury
 actions.multi_target+=/crushing_blow,if=charges>1&talent.wrath_and_fury
 actions.multi_target+=/bloodbath,if=buff.enrage.down|!talent.wrath_and_fury
@@ -89,6 +92,7 @@ actions.multi_target+=/slam,if=talent.annihilator
 actions.multi_target+=/bloodbath
 actions.multi_target+=/raging_blow
 actions.multi_target+=/crushing_blow
+actions.multi_target+=/bloodthirst
 actions.multi_target+=/whirlwind
 
 actions.single_target=whirlwind,if=spell_targets.whirlwind>1&talent.improved_whirlwind&!buff.meat_cleaver.up|raid_event.adds.in<2&talent.improved_whirlwind&!buff.meat_cleaver.up
@@ -126,7 +130,7 @@ actions.single_target+=/wrecking_throw
 actions.single_target+=/storm_bolt
 
 # Trinkets
-actions.trinkets=use_item,name=fyralath_the_dreamrender,if=dot.mark_of_fyralath.ticking
+actions.trinkets=use_item,name=fyralath_the_dreamrender,if=dot.mark_of_fyralath.ticking&!buff.avatar.up
 actions.trinkets+=/use_item,use_off_gcd=1,name=algethar_puzzle_box,if=cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)
 # Trinkets The trinket with the highest estimated value, will be used first and paired with Avatar.
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&!variable.trinket_1_manual&(!buff.avatar.up&trinket.1.cast_time>0|!trinket.1.cast_time>0)&(buff.avatar.up)&(variable.trinket_2_exclude|!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains
