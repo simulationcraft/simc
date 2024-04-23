@@ -53,28 +53,29 @@ main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=4795,enchant_id=6
 
 save=DF4_Druid_Feral.simc
 
-# druid="DF4_Druid_Guardian"
-# spec=guardian
-# level=70
-# race=highmountain_tauren
-# role=tank
-# position=front
-# talents=BgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQikkkUS0iIIKSIRBAkIIIBSSSSSiUgWiDAAAAAAEBEkAA
+druid="DF4_Druid_Guardian"
+spec=guardian
+level=70
+race=highmountain_tauren
+role=tank
+position=front
+talents=BgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQikkkUS0iIIKSIRBAkIIIBSSSSSiUgWiDAAAAAAEBEkAA
 
-# head=benevolent_embersages_casque,id=207254,bonus_id=4800/4786/1520/9576/1808,gem_id=192985,enchant_id=7052
-# neck=amulet_of_eonars_chosen,id=208445,bonus_id=4800/4786/1520/9576/8782,gem_id=192945/192945/192945
-# shoulder=benevolent_embersages_wisdom,id=207252,bonus_id=4800/4786/1520/9576
-# back=shadowfeather_shawl,id=136977,bonus_id=4795,ilevel=489
-# chest=benevolent_embersages_robe,id=207257,bonus_id=4800/4786/1520/9576,enchant_id=6625
-# wrist=lifebound_bindings,id=193419,bonus_id=1576/8797/8960/1808,gem_id=192945,crafted_stats=32/36,ilevel=486
-# hands=fading_chronogrips,id=207903,bonus_id=4795,ilevel=489
-# waist=bloody_dragonhide_belt,id=207131,bonus_id=4800/4786/1520/9576/1808,gem_id=192945,enchant_id=6904
-# legs=benevolent_embersages_leggings,id=207253,bonus_id=4800/4786/1520/9576,enchant_id=6490
-# feet=toxic_thorn_footwraps,id=193452,bonus_id=1576,enchant_id=6606,ilevel=486
-# finger1=seal_of_the_regal_loa,id=159458,bonus_id=4795/1808,ilevel=489,gem_id=192945,enchant_id=6556
-# finger2=band_of_burning_thorns,id=207159,bonus_id=4795/1808,ilevel=489,gem_id=192945,enchant_id=6556
-# trinket1=cataclysmic_signet_brand,id=207166,bonus_id=4800/4786/1520/9576
-# trinket2=oakhearts_gnarled_root,id=137306,bonus_id=6536/1566/6646,ilevel=489
-# main_hand=rashon_the_immortal_blaze,id=207793,bonus_id=4800/4786/1520/9576,enchant_id=6643
+head=bough_of_the_autumn_blaze,id=217193,bonus_id=10884/4786/1520/10338,gem_id=192985,enchant_id=7052
+neck=bromachs_disentombed_locket,id=193809,bonus_id=4786/3207/10338,gem_id=192945/192945/192945
+shoulders=mantle_of_the_autumn_blaze,id=217195,bonus_id=10884/4786/1520/10338
+back=voice_of_the_silent_star,id=204465,bonus_id=10884/4786/1576
+chest=chestroots_of_the_autumn_blaze,id=217191,bonus_id=10884/4786/1520/10338,enchant_id=6625
+wrists=lifebound_bindings,id=193419,bonus_id=1576/8797/8960/1808,ilevel=525,gem_id=192945,crafted_stats=32/36
+hands=blightweavers_clutches,id=193661,bonus_id=4786/3207/10338
+waist=garland_of_the_autumn_blaze,id=202512,bonus_id=10884/4786/1579/10336,ilevel=528,gem_id=192945,enchant_id=6904
+legs=pants_of_the_autumn_blaze,id=217194,bonus_id=10884/4786/1520/10338,enchant_id=6490
+feet=toxic_thorn_footwraps,id=193452,bonus_id=1576,ilevel=525,enchant_id=6606
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=10884/4786/1605/10338,enchant_id=6556
+finger2=band_of_burning_thorns,id=207159,bonus_id=10884/4786/1520/10338,ilevel=528,gem_id=192945,enchant_id=6556
+trinket1=cataclysmic_signet_brand,id=207166,bonus_id=10884/4786/1559/10338
+trinket2=elementium_pocket_anvil,id=202617,bonus_id=10884/4786/1576/10335,ilevel=528
+main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=10884/4786/1576/10338,enchant_id=6643
 
-# save=DF4_Druid_Guardian.simc
+
+save=DF4_Druid_Guardian.simc
