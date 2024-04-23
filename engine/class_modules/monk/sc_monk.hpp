@@ -1273,12 +1273,15 @@ public:
       sc_timeline_t pool_size;         // raw stagger in pool
       sc_timeline_t pool_size_percent; // pool as a fraction of current maximum hp
       sc_timeline_t effectiveness;     // stagger effectiveness
+      double buffed_base_value;
+      double buffed_percent_player_level;
+      double buffed_percent_target_level;
       // assert(absorbed == taken + mitigated)
       // assert(sum(cleared) == mitigated)
       sample_data_helper_t *absorbed;
       sample_data_helper_t *taken;
       sample_data_helper_t *mitigated;
-      std::unordered_map<std::string_view, sample_data_helper_t *> mitigated_by_ability;
+      std::unordered_map<std::string, sample_data_helper_t *> mitigated_by_ability;
 
       sample_data_t( monk_t *player );
     };
@@ -1312,6 +1315,8 @@ public:
     static double min_threshold( stagger_level_e level );
     stagger_level_e current_threshold();
     static std::string level_name( stagger_level_e level );
+
+    void add_sample( std::string name, double amount );
 
     double pool_size();
     double pool_size_percent();
