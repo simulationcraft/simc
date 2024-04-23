@@ -990,9 +990,9 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       : sef_tick_action_t( "whirling_dragon_punch_aoe_tick", p, p->o()->passives.whirling_dragon_punch_aoe_tick ),
         delay( delay )
     {
-      aoe = -1;
+      aoe                 = -1;
       reduced_aoe_targets = p->o()->talent.windwalker.whirling_dragon_punch->effectN( 1 ).base_value();
-      name_str_reporting = "sef_wdp_aoe";
+      name_str_reporting  = "sef_wdp_aoe";
     }
   };
 
@@ -1020,7 +1020,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       sef_whirling_dragon_punch_tick_event_t( sef_whirling_dragon_punch_aoe_tick_t *tick, timespan_t delay )
         : event_t( *tick->player, delay ), tick( tick )
       {
-
       }
 
       void execute() override
@@ -1040,7 +1039,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       for ( size_t i = 0; i < aoe_ticks.size(); ++i )
       {
-        auto delay = base_tick_time * i;
+        auto delay     = base_tick_time * i;
         aoe_ticks[ i ] = new sef_whirling_dragon_punch_aoe_tick_t( player, delay );
 
         add_child( aoe_ticks[ i ] );
