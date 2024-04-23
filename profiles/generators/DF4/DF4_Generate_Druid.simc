@@ -25,33 +25,33 @@
 
 # save=DF4_Druid_Balance.simc
 
-# druid="DF4_Druid_Feral"
-# source=default
-# spec=feral
-# level=70
-# race=night_elf
-# timeofday=night
-# role=attack
-# position=back
-# talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAACSLigkkkUSjolkEJJAAAAAAAQiggkQSSSIJSJoEOAAAAAAASAAA
+druid="DF4_Druid_Feral"
+source=default
+spec=feral
+level=70
+race=night_elf
+timeofday=night
+role=attack
+position=back
+talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAACSLioIJJJl0IaJJxBSCAAAAAgGAJCCAJJJhkIlcAaJOAAAAAAASAAA
 
-# head=benevolent_embersages_casque,id=207254,bonus_id=1808,enchant_id=7052,gem_id=192982,ilevel=489
-# neck=chain_of_the_green_flight,id=137311,bonus_id=4786/8782/9843/9569,gem_id=192922/192922/192922,ilevel=489
-# shoulder=benevolent_embersages_wisdom,id=207252,bonus_id=4795,ilevel=489
-# back=vibrant_wildercloth_shawl,id=193511,bonus_id=8836/8840/8902/9405/9500/8791/9498/8932/8960,crafted_stats=49/32
-# chest=spymasters_wrap,id=211404,bonus_id=4786/3168/9576,enchant_id=6625
-# wrist=lifebound_bindings,id=193419,bonus_id=8840/8836/8902/1537/8932/8960,gem_id=192922,ilevel=486,crafted_stats=32/49
-# hands=benevolent_embersages_talons,id=207255,bonus_id=4795,ilevel=489
-# waist=vengeful_bladebeak_girdle,id=208432,bonus_id=4800/4786/1520/9576/523,enchant_id=6904,gem_id=192922
-# legs=benevolent_embersages_leggings,id=207253,bonus_id=4795,enchant_id=6830,ilevel=489
-# feet=grove_darkeners_treads,id=134429,bonus_id=4795,ilevel=489
-# finger1=archdruids_tainted_seal,id=134487,bonus_id=4795/1808,enchant_id=6550,gem_id=192922,ilevel=489
-# finger2=lord_waycrests_signet,id=158362,bonus_id=4795/1808,enchant_id=6550,gem_id=192922,ilevel=489
-# trinket1=ashes_of_the_embersoul,id=207167,ilevel=489
-# trinket2=cataclysmic_signet_brand,id=207166,bonus_id=4795,ilevel=489
-# main_hand=rashon_the_immortal_blaze,id=207793,bonus_id=4795,enchant_id=6655,ilevel=489
+head=bough_of_the_autumn_blaze,id=217193,bonus_id=6652/10532/10338/10867/10884/1520/8767/1808,enchant_id=7052,gem_id=192948
+neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/9477/8782/9405/8791/9500/8932/8960/9498,gem_id=192988/192938/192938,ilevel=525,crafted_stats=49/32
+shoulder=mantle_of_the_autumn_blaze,id=217195,bonus_id=6652/10338/10869/10884/1520/8767
+back=voice_of_the_silent_star,id=204465,bonus_id=4795,ilevel=535
+chest=warlords_volcanic_vest,id=202586,bonus_id=4795,enchant_id=6625,ilevel=528
+wrist=lifebound_bindings,id=193419,bonus_id=8836/8840/8902/9405/9376/8932/8960/8791/9366/9413,enchant_id=6574,gem_id=192938,ilevel=525,crafted_stats=36/32
+hands=handguards_of_the_autumn_blaze,id=217192,bonus_id=6652/10338/10866/10884/1520/8767
+waist=eternal_sentinels_cord,id=207135,bonus_id=4795/1808,enchant_id=6904,gem_id=192938,ilevel=528
+legs=pants_of_the_autumn_blaze,id=217194,bonus_id=6652/10338/10868/10884/1520/8767,enchant_id=6830
+feet=twisted_blossom_stompers,id=207126,bonus_id=4795,ilevel=528
+finger1=seal_of_filial_duty,id=195526,bonus_id=4795/1808,enchant_id=6568,gem_id=192938,ilevel=535
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4795/1808,enchant_id=6550,gem_id=192938,ilevel=528
+trinket1=ashes_of_the_embersoul,id=207167,bonus_id=6652/7981/9576/1520/8767,ilevel=528
+trinket2=manic_grieftorch,id=194308,bonus_id=4795,ilevel=528
+main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=4795,enchant_id=6655,ilevel=528
 
-# save=DF4_Druid_Feral.simc
+save=DF4_Druid_Feral.simc
 
 # druid="DF4_Druid_Guardian"
 # spec=guardian
