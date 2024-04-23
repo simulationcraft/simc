@@ -266,6 +266,8 @@ public:
   // NOTE: If you need to override behavior on buff expire, use expire_override. Override "expire"
   // method only if you _REALLY_ know what you are doing.
   virtual void expire( timespan_t delay = timespan_t::zero() );
+  // check if the action match the buff's proc flags before expiring
+  void consume( action_t* action, timespan_t delay = timespan_t::zero() );
   // Completely remove the buff, including any delayed applications and expirations.
   void cancel();
 

@@ -2577,6 +2577,20 @@ void buff_t::override_buff( int stacks, double value )
   overridden = true;
 }
 
+void buff_t::consume( action_t* action, timespan_t delay )
+{
+  if ( is_fallback || !action->data().ok() || !data().ok() )
+    return;
+
+  if ( action->proc && !data().attribute( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
+    return;
+
+  if ( data().attribute( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) && !action->allow_class_ability_procs )
+    return;
+
+  expire( delay );
+}
+
 void buff_t::expire( timespan_t delay )
 {
   if ( current_stack <= 0 )
