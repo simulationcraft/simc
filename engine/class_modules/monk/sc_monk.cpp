@@ -1501,6 +1501,8 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
+    apply_affecting_effect( p->talent.windwalker.brawlers_intensity->effectN( 1 ) );
+
     may_combo_strike = true;
     sef_ability      = actions::sef_ability_e::SEF_RISING_SUN_KICK;
     ap_type          = attack_power_type::NONE;
@@ -1718,6 +1720,8 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
 
     am *= 1 + p()->shared.shadowboxing_treads->effectN( 2 ).percent();
 
+    am *= 1 + p()->talent.windwalker.brawlers_intensity->effectN( 2 ).percent();
+
     return am;
   }
 
@@ -1854,6 +1858,8 @@ struct blackout_kick_t : public monk_melee_attack_t
     am *= 1 + p()->sets->set( MONK_BREWMASTER, T30, B2 )->effectN( 1 ).percent();
 
     am *= 1 + p()->buff.blackout_reinforcement->check_value();
+
+    am *= 1 + p()->talent.windwalker.brawlers_intensity->effectN( 2 ).percent();
 
     return am;
   }
@@ -2598,7 +2604,6 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
 
     st_tick = new whirling_dragon_punch_st_tick_t( "whirling_dragon_punch_st_tick", p,
                                                    p->passives.whirling_dragon_punch_st_tick );
-
     add_child( st_tick );
   }
 
@@ -3370,7 +3375,6 @@ struct leg_sweep_t : public monk_melee_attack_t
     cast_during_sck                              = player->specialization() != MONK_WINDWALKER;
 
     radius += p->talent.general.tiger_tail_sweep->effectN( 1 ).base_value();
-    cooldown->duration += p->talent.general.tiger_tail_sweep->effectN( 2 ).time_value();  // Saved as -10000
   }
 
   void execute() override
