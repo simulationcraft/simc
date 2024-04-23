@@ -2450,7 +2450,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     if ( canceled )
       dot_duration = trigger_gcd;
 
-    ability_lag = canceled ? timespan_t::zero() : p->world_lag;
+    ability_lag        = canceled ? timespan_t::zero() : p->world_lag;
     ability_lag_stddev = canceled ? timespan_t::zero() : p->world_lag_stddev;
 
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
