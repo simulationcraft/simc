@@ -859,7 +859,8 @@ double monk_heal_t::composite_persistent_multiplier( const action_state_t *state
        p()->buff.jadefire_brand->check() )
     pm *= 1 + p()->passives.jadefire_brand_heal->effectN( 1 ).percent();
 
-  if ( p()->talent.general.chi_proficiency.ok() && base_t::data().affected_by(p()->talent.general.chi_proficiency->effectN(2)) )
+  if ( p()->talent.general.chi_proficiency.ok() &&
+       base_t::data().affected_by( p()->talent.general.chi_proficiency->effectN( 2 ) ) )
     pm *= 1.0 + p()->talent.general.chi_proficiency->effectN( 2 ).percent();
 
   return pm;
@@ -1486,7 +1487,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
     if ( p()->talent.windwalker.acclamation.ok() )
       get_td( s->target )->debuff.acclamation->trigger();
-
   }
 };
 
@@ -5651,18 +5651,17 @@ struct chi_wave_t : public monk_spell_t
       damage( new chi_wave_dmg_tick_t( player, "chi_wave_damage" ) ),
       dmg( true )
   {
+    sef_ability = actions::sef_ability_e::SEF_CHI_WAVE;
 
-    sef_ability      = actions::sef_ability_e::SEF_CHI_WAVE;
-
-    background = true;
+    background   = true;
     hasted_ticks = harmful = false;
     cooldown->hasted       = false;
-    tick_zero = true;
+    tick_zero              = true;
 
-    dot_duration = timespan_t::from_seconds( data().effectN( 1 ).base_value() );
+    dot_duration   = timespan_t::from_seconds( data().effectN( 1 ).base_value() );
     base_tick_time = dot_duration / 8;
 
-    radius = player->find_spell( 132466 )->effectN( 2 ).base_value();
+    radius   = player->find_spell( 132466 )->effectN( 2 ).base_value();
     gcd_type = gcd_haste_type::SPELL_HASTE;
 
     add_child( heal );
@@ -6622,9 +6621,9 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
 {
   // Windwalker
   debuff.acclamation = make_buff( *this, "acclamation", p->find_spell( 451433 ) )
-    ->set_trigger_spell( p->talent.windwalker.acclamation )
-    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-    ->set_default_value_from_effect( 1 );
+                           ->set_trigger_spell( p->talent.windwalker.acclamation )
+                           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                           ->set_default_value_from_effect( 1 );
 
   debuff.empowered_tiger_lightning = make_buff( *this, "empowered_tiger_lightning", spell_data_t::nil() )
                                          ->set_trigger_spell( p->spec.empowered_tiger_lightning )
@@ -7571,7 +7570,7 @@ void monk_t::init_spells()
   passives.bonedust_brew_chi         = find_spell( 328296 );
   passives.bonedust_brew_attenuation = find_spell( 394514 );
   passives.chi_burst_energize        = find_spell( 261682 );
-  passives.chi_burst_heal            = find_spell( 130654 ); 
+  passives.chi_burst_heal            = find_spell( 130654 );
   passives.chi_wave_damage           = find_spell( 132467 );
   passives.chi_wave_heal             = find_spell( 132463 );
   passives.claw_of_the_white_tiger   = find_spell( 389541 );
@@ -9048,7 +9047,8 @@ double monk_t::composite_player_multiplier( school_e school ) const
 {
   double multiplier = player_t::composite_player_multiplier( school );
 
-  if ( talent.general.chi_proficiency.ok() && ( talent.general.chi_proficiency->effectN(1).affected_schools() & school ) == school )
+  if ( talent.general.chi_proficiency.ok() &&
+       ( talent.general.chi_proficiency->effectN( 1 ).affected_schools() & school ) == school )
     multiplier *= 1.0 + talent.general.chi_proficiency->effectN( 1 ).percent();
 
   return multiplier;
@@ -9294,7 +9294,7 @@ void monk_t::combat_begin()
     buff.chi_wave->trigger();
     // ... and then regains the buff in time intervals while in combat
     make_repeating_event( sim, talent.general.chi_wave->effectN( 1 ).period(),
-                            [ this ]() { buff.chi_wave->trigger(); } );
+                          [ this ]() { buff.chi_wave->trigger(); } );
   }
 
   if ( specialization() == MONK_WINDWALKER )
