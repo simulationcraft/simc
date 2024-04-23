@@ -1821,10 +1821,7 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     // Register how much chi is saved without actually refunding the chi
     if ( p()->buff.bok_proc->up() )
-    {
-      p()->buff.bok_proc->expire();
       p()->gain.bok_proc->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
-    }
   }
 
   double composite_crit_chance() const override
@@ -1860,6 +1857,9 @@ struct blackout_kick_t : public monk_melee_attack_t
     am *= 1 + p()->buff.blackout_reinforcement->check_value();
 
     am *= 1 + p()->talent.windwalker.brawlers_intensity->effectN( 2 ).percent();
+
+    if ( p()->talent.windwalker.courageous_impulse.ok() && p()->buff.bok_proc->check() )
+      am *= 1 + p()->talent.windwalker.courageous_impulse->effectN( 1 ).percent();
 
     return am;
   }
@@ -1901,6 +1901,8 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     if ( p()->buff.blackout_reinforcement->up() )
       p()->buff.blackout_reinforcement->decrement();
+
+    p()->buff.bok_proc->expire();
   }
 
   void impact( action_state_t *s ) override
