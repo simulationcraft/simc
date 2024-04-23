@@ -888,6 +888,7 @@ public:
     player_talent_t predatory_swiftness;
     player_talent_t primal_wrath;
     player_talent_t raging_fury;
+    player_talent_t resourceful_hunter;
     player_talent_t rip_and_tear;
     player_talent_t saber_jaws;
     player_talent_t sabertooth;
@@ -1231,6 +1232,9 @@ public:
   double composite_armor_multiplier() const override;
   double composite_melee_crit_chance() const override;
   double composite_spell_crit_chance() const override;
+  double composite_damage_versatility() const override;
+  double composite_heal_versatility() const override;
+  double composite_mitigation_versatility() const override;
   double composite_block() const override { return 0; }
   double composite_crit_avoidance() const override;
   double composite_dodge_rating() const override;
@@ -9937,6 +9941,7 @@ void druid_t::init_spells()
   talent.primal_wrath                   = ST( "Primal Wrath" );
   talent.predator                       = ST( "Predator" );
   talent.raging_fury                    = ST( "Raging Fury" );
+  talent.resourceful_hunter             = ST( "Resourceful Hunter" );
   talent.rip_and_tear                   = ST( "Rip and Tear" );
   talent.saber_jaws                     = ST( "Saber Jaws" );
   talent.sabertooth                     = ST( "Sabertooth" );
@@ -12558,6 +12563,37 @@ double druid_t::composite_spell_crit_chance() const
   return player_t::composite_spell_crit_chance() + spec.critical_strikes->effectN( 1 ).percent();
 }
 
+// Versatility ==============================================================
+double druid_t::composite_damage_versatility() const
+{
+  double v = player_t::composite_damage_versatility();
+
+  if ( talent.resourceful_hunter.ok() )
+    v += talent.resourceful_hunter->effectN( 2 ).percent();
+
+  return v;
+}
+
+double druid_t::composite_heal_versatility() const
+{
+  double v = player_t::composite_heal_versatility();
+
+  if ( talent.resourceful_hunter.ok() )
+    v += talent.resourceful_hunter->effectN( 2 ).percent();
+
+  return v;
+}
+
+double druid_t::composite_mitigation_versatility() const
+{
+  double v = player_t::composite_mitigation_versatility();
+
+  if ( talent.resourceful_hunter.ok() )
+    v += talent.resourceful_hunter->effectN( 2 ).percent() / 2;
+
+  return v;
+}
+
 // Defense ==================================================================
 double druid_t::composite_crit_avoidance() const
 {
@@ -12584,7 +12620,10 @@ double druid_t::composite_leech() const
   double l = player_t::composite_leech();
 
   if ( buff.rage_of_the_sleeper->check() )
-    l *= 1.0 + talent.rage_of_the_sleeper->effectN( 3 ).percent();
+    l += talent.rage_of_the_sleeper->effectN( 3 ).percent();
+
+  if ( talent.resourceful_hunter.ok() )
+    l += talent.resourceful_hunter->effectN( 1 ).percent();
 
   return l;
 }
