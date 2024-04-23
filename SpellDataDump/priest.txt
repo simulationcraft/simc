@@ -2278,11 +2278,13 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.15000 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.35000 | Target: Self (1)
+Hotfixed         : Base Value (40 -> 35), PvP Coefficient (1.15 -> 1.35)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
 #3 (id=1104540)  : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000
+Hotfixed         : Base Value (50 -> 70)
 Description      : $?s214205[Power Word: Shield applies Atonement to your target for $214206d.
 
 Your spell damage heals all targets affected by Atonement for $s1% of the damage done.][Power Word: Shield, Flash Heal, Renew, Power Word: Radiance, and Power Word: Life apply Atonement to your target for $194384s3 sec.
