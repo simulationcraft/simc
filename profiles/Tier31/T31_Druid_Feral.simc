@@ -37,7 +37,7 @@ actions.precombat+=/prowl,if=!buff.prowl.up
 # Executed every time the actor is available.
 actions=prowl,if=(buff.bs_inc.down|!in_combat)&!buff.prowl.up
 actions+=/cat_form,if=!buff.cat_form.up
-# Sending <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> on cooldown is optimal as it often lines up with berserk especially since Feral Druids will often treat Berserk as a 2 minute cooldown now.
+# Sending <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> on cooldown is optimal to line up with berserk as Feral Druids treat Berserk as a 2 minute cooldown.
 actions+=/invoke_external_buff,name=power_infusion,if=!variable.align_cds|variable.align_cds&buff.bs_inc.up|fight_remains<25
 actions+=/call_action_list,name=variables
 actions+=/tigers_fury,target_if=min:target.time_to_die,if=!set_bonus.tier31_4pc&talent.convoke_the_spirits.enabled|!buff.tigers_fury.up|energy.deficit>65|set_bonus.tier31_2pc&action.feral_frenzy.ready|target.time_to_die<15&talent.predator.enabled
@@ -77,17 +77,20 @@ actions.aoe_builder+=/shred,target_if=max:target.time_to_die,if=!variable.easy_s
 actions.aoe_builder+=/moonfire_cat,target_if=max:dot.moonfire.ticks_gained_on_refresh,if=variable.need_bt&buff.bt_moonfire.down
 actions.aoe_builder+=/rake,target_if=max:((dot.rake.pmultiplier<=persistent_multiplier)*25)+druid.rake.ticks_gained_on_refresh,if=variable.need_bt&buff.bt_rake.down
 
+# with zerk_biteweave variable enabled, send bites if rip has sufficiently high duration
 actions.berserk=ferocious_bite,target_if=max:target.time_to_die,if=combo_points=5&dot.rip.remains>8&variable.zerk_biteweave&spell_targets.swipe_cat>1
-# proc bt if 0/1 stack if 5/6 combo points with t30 only
+# proc bt if 0/1 overcapped cps if 5/6 combo points with t30 only
 actions.berserk+=/call_action_list,name=finisher,if=combo_points=5&!(buff.overflowing_power.stack<=1&active_bt_triggers=2&buff.bloodtalons.stack<=1&set_bonus.tier30_4pc)
 actions.berserk+=/run_action_list,name=aoe_builder,if=spell_targets.swipe_cat>1
 actions.berserk+=/prowl,if=!(buff.bt_rake.up&active_bt_triggers=2)&action.rake.ready&gcd.remains=0&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.shadowmeld.up
 actions.berserk+=/shadowmeld,if=!(buff.bt_rake.up&active_bt_triggers=2)&action.rake.ready&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.prowl.up
+# rake if bt doesnt need proc and rake can be upgraded. Fish for sudden ambush procs unless rake will fall off otherwise.
 actions.berserk+=/rake,if=!(buff.bt_rake.up&active_bt_triggers=2)&(dot.rake.remains<3|buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier)
 # in single target, you just proc bt when an opportunity arises
 actions.berserk+=/shred,if=active_bt_triggers=2&buff.bt_shred.down
 actions.berserk+=/brutal_slash,if=active_bt_triggers=2&buff.bt_brutal_slash.down
 actions.berserk+=/moonfire_cat,if=active_bt_triggers=2&buff.bt_moonfire.down
+# you still dont want to refresh thrash early though if you can help it.
 actions.berserk+=/thrash_cat,if=active_bt_triggers=2&buff.bt_thrash.down&!talent.thrashing_claws&variable.need_bt
 actions.berserk+=/moonfire_cat,if=refreshable
 actions.berserk+=/brutal_slash,if=cooldown.brutal_slash.charges>1&(!talent.dire_fixation.enabled|debuff.dire_fixation.up)
@@ -112,10 +115,14 @@ actions.builder+=/swipe_cat,if=variable.need_bt&buff.bt_swipe.down
 actions.builder+=/rake,if=variable.need_bt&buff.bt_rake.down&persistent_multiplier>=dot.rake.pmultiplier
 actions.builder+=/thrash_cat,if=variable.need_bt&buff.bt_thrash.down
 
+# use pbox on cd in aoe, or if the fight is about to end
 actions.cooldown=use_item,name=algethar_puzzle_box,if=fight_remains<35|(!variable.align_3minutes)
-actions.cooldown+=/use_item,name=algethar_puzzle_box,if=variable.align_3minutes&(cooldown.bs_inc.remains<3&(!variable.lastZerk|!variable.lastConvoke|(variable.lastConvoke&cooldown.convoke_the_spirits.remains<13)))
+# if convoke not talented, use puzzlebox if berserk will be up soon, dont use during smoldering frenzy
+actions.cooldown+=/use_item,name=algethar_puzzle_box,if=variable.align_3minutes&!variable.align_cds&cooldown.bs_inc.remains<5&!buff.smoldering_frenzy.up
+# if convoke talented, treat puzzlebox as a 4 minute cooldown
+actions.cooldown+=/use_item,name=algethar_puzzle_box,if=variable.align_3minutes&variable.align_cds&cooldown.convoke_the_spirits.remains<20&!buff.smoldering_frenzy.up
 actions.cooldown+=/incarnation,target_if=max:target.time_to_die,if=target.time_to_die>25|target.time_to_die=fight_remains
-# With Convoke on certain fight timers it can be correct to hold berserk for convoke
+# With Convoke on certain fight timers or trinkets, it can be correct to hold berserk for convoke
 actions.cooldown+=/berserk,if=fight_remains<25|talent.convoke_the_spirits.enabled&(fight_remains<cooldown.convoke_the_spirits.remains|(variable.align_cds&(action.feral_frenzy.ready&(combo_points<3|(time<10&combo_points<4))|time<10&combo_points<4)&cooldown.convoke_the_spirits.remains<10))
 # Hold your last berserk cast to line it up with convoke
 actions.cooldown+=/berserk,target_if=max:target.time_to_die,if=!variable.align_cds&!(!talent.frantic_momentum.enabled&equipped.witherbarks_branch&spell_targets.swipe_cat=1)&((!variable.lastZerk)|(variable.lastZerk&!variable.lastConvoke)|(variable.lastConvoke&(cooldown.convoke_the_spirits.remains<10&(!set_bonus.tier31_2pc|set_bonus.tier31_2pc&buff.smoldering_frenzy.up))))&((target.time_to_die<fight_remains&target.time_to_die>18)|target.time_to_die=fight_remains)
@@ -125,12 +132,14 @@ actions.cooldown+=/berserking,if=!variable.align_3minutes|buff.bs_inc.up
 actions.cooldown+=/potion,if=buff.bs_inc.up|fight_remains<32|(!variable.lastZerk&variable.lastConvoke&cooldown.convoke_the_spirits.remains<10)
 actions.cooldown+=/use_item,name=ashes_of_the_embersoul,if=((buff.smoldering_frenzy.up&(!talent.convoke_the_spirits.enabled|cooldown.convoke_the_spirits.remains<10))|!set_bonus.tier31_4pc&(cooldown.convoke_the_spirits.remains=0|!talent.convoke_the_spirits.enabled&buff.bs_inc.up))
 actions.cooldown+=/use_item,name=witherbarks_branch,if=(!talent.convoke_the_spirits.enabled|action.feral_frenzy.ready|!set_bonus.tier31_4pc)&!(trinket.1.is.ashes_of_the_embersoul&trinket.1.cooldown.remains<20|trinket.2.is.ashes_of_the_embersoul&trinket.2.cooldown.remains<20)
-actions.cooldown+=/use_item,name=mirror_of_fractured_tomorrows,if=(!variable.align_3minutes|buff.bs_inc.up&buff.bs_inc.remains>15|variable.lastConvoke&!variable.lastZerk&cooldown.convoke_the_spirits.remains<1)&(target.time_to_die>16|target.time_to_die=fight_remains)
+actions.cooldown+=/use_item,name=mirror_of_fractured_tomorrows,if=fight_remains<22|(!variable.align_3minutes|buff.bs_inc.up&buff.bs_inc.remains>15|variable.lastConvoke&!variable.lastZerk&cooldown.convoke_the_spirits.remains<1)&(target.time_to_die>16|target.time_to_die=fight_remains)
+actions.cooldown+=/use_item,name=irideus_fragment,if=buff.smoldering_frenzy.up&(fight_remains<35|!variable.align_3minutes|buff.bs_inc.up|variable.lastConvoke&!variable.lastZerk&cooldown.convoke_the_spirits.remains<5)
 actions.cooldown+=/use_item,name=verdant_gladiators_badge_of_ferocity,use_off_gcd=1,if=buff.smoldering_frenzy.up
 actions.cooldown+=/convoke_the_spirits,target_if=max:target.time_to_die,if=fight_remains<5|(buff.smoldering_frenzy.up|!set_bonus.tier31_4pc)&(dot.rip.remains>4-talent.ashamanes_guidance&buff.tigers_fury.up&(combo_points<=2)|buff.bs_inc.up&combo_points<=3)&(debuff.dire_fixation.up|!talent.dire_fixation.enabled|spell_targets.swipe_cat>1)&(target.time_to_die>5-talent.ashamanes_guidance.enabled|target.time_to_die=fight_remains)
 # convoke early if you can't fit another gcd and have the entirety of convoke in smoldering window
 actions.cooldown+=/convoke_the_spirits,if=buff.smoldering_frenzy.up&buff.smoldering_frenzy.remains<5.1-talent.ashamanes_guidance
-actions.cooldown+=/use_item,name=manic_grieftorch,target_if=max:target.time_to_die,if=energy.deficit>40
+# use grieftorch on cooldown as long as it wont disrupt a stat-on use.
+actions.cooldown+=/use_item,name=manic_grieftorch,target_if=max:target.time_to_die,if=!equipped.ashes_of_the_embersoul&!equipped.mirror_of_fractured_tomorrows&!equipped.algethar_puzzle_box|trinket.1.is.manic_grieftorch&trinket.2.cooldown.remains>20|trinket.2.is.manic_grieftorch&trinket.1.cooldown.remains>20
 actions.cooldown+=/use_item,name=mydas_talisman,if=!equipped.ashes_of_the_embersoul&!equipped.witherbarks_branch|((trinket.2.is.witherbarks_branch|trinket.2.is.ashes_of_the_embersoul)&trinket.2.cooldown.remains>20)|((trinket.1.is.witherbarks_branch|trinket.1.is.ashes_of_the_embersoul)&trinket.1.cooldown.remains>20)
 actions.cooldown+=/use_item,name=bandolier_of_twisted_blades,if=!equipped.ashes_of_the_embersoul&!equipped.witherbarks_branch|((trinket.2.is.witherbarks_branch|trinket.2.is.ashes_of_the_embersoul)&trinket.2.cooldown.remains>20)|((trinket.1.is.witherbarks_branch|trinket.1.is.ashes_of_the_embersoul)&trinket.1.cooldown.remains>20)
 actions.cooldown+=/use_item,name=fyrakks_tainted_rageheart,if=!equipped.ashes_of_the_embersoul&!equipped.witherbarks_branch|((trinket.2.is.witherbarks_branch|trinket.2.is.ashes_of_the_embersoul)&trinket.2.cooldown.remains>20)|((trinket.1.is.witherbarks_branch|trinket.1.is.ashes_of_the_embersoul)&trinket.1.cooldown.remains>20)
@@ -160,7 +169,7 @@ actions.variables+=/variable,name=easy_swipe,op=reset
 # this variable make the sim always align berserk with convoke
 actions.variables+=/variable,name=force_align_2min,op=reset
 # this variable checks the fight timer and trinkets to decide if itll be more dps to align berserk with 2 minute convoke
-actions.variables+=/variable,name=align_cds,value=(variable.force_align_2min|equipped.witherbarks_branch|equipped.ashes_of_the_embersoul|(time+fight_remains>150&time+fight_remains<200|time+fight_remains>270&time+fight_remains<295|time+fight_remains>395&time+fight_remains<400|time+fight_remains>490&time+fight_remains<495))&talent.convoke_the_spirits.enabled&fight_style.patchwerk&spell_targets.swipe_cat=1&set_bonus.tier31_4pc
+actions.variables+=/variable,name=align_cds,value=(variable.force_align_2min|equipped.witherbarks_branch|equipped.ashes_of_the_embersoul|equipped.mirror_of_fractured_tomorrows|equipped.algethar_puzzle_box|equipped.irideus_fragment|(time+fight_remains>150&time+fight_remains<200|time+fight_remains>270&time+fight_remains<295|time+fight_remains>395&time+fight_remains<400|time+fight_remains>490&time+fight_remains<495))&talent.convoke_the_spirits.enabled&fight_style.patchwerk&spell_targets.swipe_cat=1&set_bonus.tier31_4pc
 
 head=benevolent_embersages_casque,id=207254,bonus_id=1808,ilevel=489,gem_id=192982,enchant_id=7052
 neck=chain_of_the_green_flight,id=137311,bonus_id=4786/8782/9843/9569,ilevel=489,gem_id=192922/192922/192922
