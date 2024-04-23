@@ -13792,6 +13792,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.improved_stampeding_roar );
   action.apply_affecting_aura( talent.killer_instinct );
   action.apply_affecting_aura( talent.nurturing_instinct );
+  action.apply_affecting_aura( talent.packs_endurance );
   action.apply_affecting_aura( talent.primal_fury );
 
   // Multi-spec
@@ -13886,6 +13887,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.lunar_insight );
   action.apply_affecting_aura( talent.resilient_flourishing );
   action.apply_affecting_aura( talent.stellar_command );
+  action.apply_affecting_aura( talent.strike_for_the_heart );
   action.apply_affecting_aura( talent.the_eternal_moon );
   action.apply_affecting_aura( talent.wildstalkers_persistence );
   action.apply_affecting_aura( talent.wildstalkers_power );
