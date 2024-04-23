@@ -603,6 +603,7 @@ public:
     buff_t* bt_brutal_slash;  // dummy buff
     buff_t* bt_feral_frenzy;  // dummy buff
     buff_t* clearcasting_cat;
+    buff_t* coiled_to_spring;
     buff_t* frantic_momentum;
     buff_t* incarnation_cat;
     buff_t* incarnation_cat_prowl;
@@ -869,6 +870,7 @@ public:
     player_talent_t bloodtalons;
     player_talent_t brutal_slash;
     player_talent_t carnivorous_instinct;
+    player_talent_t coiled_to_spring;
     player_talent_t doubleclawed_rake;
     player_talent_t dreadful_bleeding;
     player_talent_t feral_frenzy;
@@ -1557,6 +1559,13 @@ private:
 public:
   using base_t = druid_action_t<Base>;
 
+  struct consume_t
+  {
+    bool coiled_to_spring;
+    bool feline_potential;
+    bool ursine_potential;
+  } consume;
+
   std::vector<action_effect_t> persistent_multiplier_effects;
 
   // Name to be used by get_dot() instead of action name
@@ -1571,7 +1580,7 @@ public:
   unsigned form_mask;
 
   druid_action_t( std::string_view n, druid_t* player, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : ab( n, player, s ), dot_name( n ), form_mask( ab::data().stance_mask() )
+    : ab( n, player, s ), consume(), dot_name( n ), form_mask( ab::data().stance_mask() )
   {
     action_flags = f;
 
@@ -1597,6 +1606,8 @@ public:
       {
         form_mask |= form_e::BEAR_FORM;
       }
+
+      parse_consumes();
     }
   }
 
@@ -1733,6 +1744,27 @@ public:
         cd->adjust( ( *eff++ ).time_value() );
     }
 
+    if ( consume.coiled_to_spring )   p()->buff.coiled_to_spring->expire();
+
+    if ( !has_flag( flag_e::CONVOKE ) )
+    {
+      if ( consume.ursine_potential ) p()->buff.ursine_potential->expire();
+      if ( consume.feline_potential ) p()->buff.feline_potential->expire();
+    }
+
+  }
+
+  void parse_consume( bool consume_t::* check, buff_t* buff, size_t idx = 1 )
+  {
+    if ( !buff->is_fallback && ab::data().affected_by_all( buff->data().effectN( idx ) ) )
+      std::invoke( check, consume ) = true;
+  }
+
+  void parse_consumes()
+  {
+    parse_consume( &consume_t::coiled_to_spring, p()->buff.coiled_to_spring );
+    parse_consume( &consume_t::feline_potential, p()->buff.feline_potential );
+    parse_consume( &consume_t::ursine_potential, p()->buff.ursine_potential );
   }
 
   void apply_buff_effects()
@@ -1794,6 +1826,7 @@ public:
     // Feral
     parse_effects( p()->buff.apex_predators_craving );
     parse_effects( p()->buff.berserk_cat );
+    parse_effects( p()->buff.coiled_to_spring );
     parse_effects( p()->buff.incarnation_cat );
     parse_effects( p()->buff.predator, USE_CURRENT );
     parse_effects( p()->buff.predatory_swiftness );
@@ -2223,27 +2256,6 @@ public:
     BASE::execute();
 
     p_->buff.ursine_potential_counter->trigger();
-  }
-};
-
-template <typename BASE>
-struct consume_ursine_potential_t : public BASE
-{
-private:
-  druid_t* p_;
-
-public:
-  using base_t = consume_ursine_potential_t<BASE>;
-
-  consume_ursine_potential_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), p_( p )
-  {}
-
-  void execute() override
-  {
-    BASE::execute();
-
-    p_->buff.ursine_potential->expire();
   }
 };
 
@@ -3877,7 +3889,6 @@ public:
 
     p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.overflowing_power->check(), p()->gain.overflowing_power );
     p()->buff.overflowing_power->expire();
-    p()->buff.feline_potential->expire();
   }
 };
 
@@ -4341,8 +4352,7 @@ struct bloodseeker_vines_t : public cat_attack_t
 };
 
 // Brutal Slash =============================================================
-struct brutal_slash_t
-  : public trigger_claw_rampage_t<DRUID_FERAL, consume_ursine_potential_t<trigger_thrashing_claws_t<cat_attack_t>>>
+struct brutal_slash_t : public trigger_claw_rampage_t<DRUID_FERAL, trigger_thrashing_claws_t<cat_attack_t>>
 {
   DRUID_ABILITY( brutal_slash_t, base_t, "brutal_slash", p->talent.brutal_slash )
   {
@@ -4801,6 +4811,8 @@ struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
 
     if ( !p->buff.feline_potential->is_fallback )
     {
+      consume.feline_potential = true;
+
       const auto& eff = p->buff.feline_potential->data().effectN( 1 );
       add_parse_entry( persistent_multiplier_effects )
         .set_buff( p->buff.feline_potential )
@@ -5534,10 +5546,7 @@ struct lunar_beam_t : public bear_attack_t
 };
 
 // Mangle ===================================================================
-struct mangle_t
-  : public use_fluid_form_t<DRUID_GUARDIAN,
-        trigger_claw_rampage_t<DRUID_GUARDIAN,
-            consume_ursine_potential_t<bear_attack_t>>>
+struct mangle_t : public use_fluid_form_t<DRUID_GUARDIAN, trigger_claw_rampage_t<DRUID_GUARDIAN, bear_attack_t>>
 {
   struct swiping_mangle_t : public druid_residual_action_t<bear_attack_t>
   {
@@ -5654,7 +5663,6 @@ struct mangle_t
         healing->execute();
 
       p()->buff.feline_potential_counter->trigger();
-      p()->buff.ursine_potential->expire();
     }
 
     p()->buff.gory_fur->trigger();
@@ -5851,8 +5859,7 @@ struct raze_t : public trigger_indomitable_guardian_t<trigger_ursocs_fury_t<trig
 };
 
 // Swipe (Bear) =============================================================
-struct swipe_bear_t
-  : public trigger_claw_rampage_t<DRUID_GUARDIAN, consume_ursine_potential_t<trigger_gore_t<bear_attack_t>>>
+struct swipe_bear_t : public trigger_claw_rampage_t<DRUID_GUARDIAN, trigger_gore_t<bear_attack_t>>
 {
   DRUID_ABILITY( swipe_bear_t, base_t, "swipe_bear",
                  p->apply_override( p->spec.swipe, p->spec.bear_form_override ) )
@@ -9910,6 +9917,7 @@ void druid_t::init_spells()
   talent.bloodtalons                    = ST( "Bloodtalons" );
   talent.brutal_slash                   = ST( "Brutal Slash" );
   talent.carnivorous_instinct           = ST( "Carnivorous Instinct" );
+  talent.coiled_to_spring               = ST( "Coiled to Spring" );
   talent.doubleclawed_rake              = ST( "Double-Clawed Rake" );
   talent.dreadful_bleeding              = ST( "Dreadful Bleeding" );
   talent.feral_frenzy                   = ST( "Feral Frenzy" );
@@ -10665,11 +10673,8 @@ void druid_t::create_buffs()
           ->apply_affecting_aura( talent.moment_of_clarity )
           ->set_name_reporting( "clearcasting" );
 
-  buff.tigers_tenacity = make_buff_fallback( talent.tigers_tenacity.ok(),
-      this, "tigers_tenacity", find_trigger( talent.tigers_tenacity ).trigger() )
-          ->set_reverse( true );
-  buff.tigers_tenacity->set_default_value(
-      find_effect( find_trigger( buff.tigers_tenacity ).trigger(), E_ENERGIZE ).resource( RESOURCE_COMBO_POINT ) );
+  buff.coiled_to_spring =
+      make_buff_fallback( talent.coiled_to_spring.ok(), this, "coiled_to_spring", find_spell( 449538 ) );
 
   buff.frantic_momentum = make_buff_fallback( talent.frantic_momentum.ok(),
       this, "frantic_momentum", find_trigger( talent.frantic_momentum ).trigger() )
@@ -10726,6 +10731,12 @@ void druid_t::create_buffs()
     // TODO: hack for bug where frenzied assault ignores benefit from tigers fury
     ->set_default_value_from_effect( 1 )
     ->apply_affecting_aura( talent.carnivorous_instinct );
+
+  buff.tigers_tenacity = make_buff_fallback( talent.tigers_tenacity.ok(),
+      this, "tigers_tenacity", find_trigger( talent.tigers_tenacity ).trigger() )
+          ->set_reverse( true );
+  buff.tigers_tenacity->set_default_value(
+      find_effect( find_trigger( buff.tigers_tenacity ).trigger(), E_ENERGIZE ).resource( RESOURCE_COMBO_POINT ) );
 
   // Guardian buffs
   buff.after_the_wildfire = make_buff_fallback( talent.after_the_wildfire.ok(),
@@ -12235,13 +12246,20 @@ double druid_t::resource_gain( resource_e r, double amount, gain_t* g, action_t*
   auto actual = player_t::resource_gain( r, amount, g, a );
   auto over = amount - actual;
 
-  if ( r == RESOURCE_COMBO_POINT && g != gain.overflowing_power && over > 0 && buff.b_inc_cat->check() )
+  if ( r == RESOURCE_COMBO_POINT )
   {
-    auto avail = std::min( over, as<double>( buff.overflowing_power->max_stack() - buff.overflowing_power->check() ) );
-    if ( avail > 0 )
-      g->overflow[ r ] -= avail;
+    if ( g != gain.overflowing_power && over > 0 && buff.b_inc_cat->check() )
+    {
+      auto avail =
+          std::min( over, as<double>( buff.overflowing_power->max_stack() - buff.overflowing_power->check() ) );
+      if ( avail > 0 )
+        g->overflow[ r ] -= avail;
 
-    buff.overflowing_power->trigger( as<int>( over ) );
+      buff.overflowing_power->trigger( as<int>( over ) );
+    }
+
+    if ( talent.coiled_to_spring.ok() && over > 0 )
+      buff.coiled_to_spring->trigger();
   }
 
   return actual;
