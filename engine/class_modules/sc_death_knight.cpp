@@ -1386,7 +1386,6 @@ public:
     cooldown.death_and_decay_dynamic  = get_cooldown( "death_and_decay" ); // Default value, changed during action construction
     cooldown.icecap_icd               = get_cooldown( "icecap" );
     cooldown.inexorable_assault_icd   = get_cooldown( "inexorable_assault_icd" );
-    cooldown.koltiras_favor_icd       = get_cooldown( "koltiras_favor_icd" );
     cooldown.frigid_executioner_icd   = get_cooldown( "frigid_executioner_icd" );
     cooldown.pillar_of_frost          = get_cooldown( "pillar_of_frost" );
     cooldown.vampiric_blood           = get_cooldown( "vampiric_blood" );
@@ -1474,6 +1473,7 @@ public:
   void      summon_rider( timespan_t duration, bool random );
   void      extend_rider( double amount );
   void      trigger_whitemanes_famine( player_t* target, std::vector<player_t*>& target_list );
+  void      start_a_feast_of_souls();
   void      trigger_dnd_buffs();
   void      expire_dnd_buffs();
   // Blood
@@ -3430,28 +3430,12 @@ struct mograine_pet_t final : public horseman_pet_t
 
   struct heart_strike_mograine_t final : public horseman_melee_t
   {
-    bool used;
     heart_strike_mograine_t( util::string_view name, horseman_pet_t* p, util::string_view options_str )
-      : horseman_melee_t( p, name, p->dk()->pet_spell.mograine_heart_strike ), used( false )
+      : horseman_melee_t( p, name, p->dk()->pet_spell.mograine_heart_strike )
     {
       parse_options( options_str );
       base_dd_min = base_dd_max =
           p->dbc->expected_stat( p->dk()->true_level ).creature_auto_attack_dps * data().effectN( 1 ).percent();
-    }
-
-    void execute() override
-    {
-      horseman_melee_t::execute();
-      if ( dk()->bugs )
-        used = true;
-    }
-
-    bool ready() override
-    {
-      if ( dk()->bugs )
-        return !used;
-
-      return horseman_melee_t::ready();
     }
   };
 
@@ -3506,13 +3490,6 @@ struct mograine_pet_t final : public horseman_pet_t
   {
     horseman_pet_t::demise();
     dnd_aura->expire();
-    debug_cast<heart_strike_mograine_t*>( heart_strike )->used = false;
-  }
-
-  void reset() override
-  {
-    horseman_pet_t::reset();
-    debug_cast<heart_strike_mograine_t*>( heart_strike )->used = false;
   }
 
   void init_action_list() override
@@ -6442,7 +6419,6 @@ struct epidemic_damage_main_t final : public epidemic_damage_base_t
     // this spell has both coefficients in it, and it seems like it is reading #2, the aoe portion, instead of #1
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
   }
-
 };
 
 struct epidemic_damage_aoe_t final : public epidemic_damage_base_t
@@ -9522,7 +9498,7 @@ void death_knight_t::trigger_whitemanes_famine( player_t* main_target, std::vect
     } );
 
     // Set the new target to the 2nd element in the sorted vector
-    auto& new_target = current_targets[ 2 ];
+    auto& new_target = current_targets[ 1 ];
     auto undeath_td  = get_target_data( new_target );
 
     if ( undeath_td->dot.undeath->is_ticking() )
@@ -9535,6 +9511,30 @@ void death_knight_t::trigger_whitemanes_famine( player_t* main_target, std::vect
       undeath_td->dot.undeath->adjust_duration( duration );
     }
   }
+}
+
+void death_knight_t::start_a_feast_of_souls()
+{
+  double threshold  = talent.rider.a_feast_of_souls->effectN( 1 ).base_value();
+  timespan_t period = talent.rider.a_feast_of_souls->effectN( 1 ).period();
+  timespan_t first  = timespan_t::from_millis( rng().range( 0, as<int>( period.total_millis() ) ) );
+
+  make_event( *sim, first, [ this, threshold, period ]() {
+    if ( active_riders >= threshold && !buffs.a_feast_of_souls->check() )
+    {
+      buffs.a_feast_of_souls->trigger();
+    }
+    make_repeating_event( *sim, period, [ this, threshold ]() {
+      if ( active_riders >= threshold && !buffs.a_feast_of_souls->check() )
+      {
+        buffs.a_feast_of_souls->trigger();
+      }
+      if ( active_riders < threshold && buffs.a_feast_of_souls->check() )
+      {
+        buffs.a_feast_of_souls->expire();
+      }
+    } );
+  } );
 }
 
 void death_knight_t::trigger_dnd_buffs()
@@ -11737,16 +11737,7 @@ void death_knight_t::arise()
   
   if ( talent.rider.a_feast_of_souls.ok() )
   {
-    make_repeating_event( *sim, talent.rider.a_feast_of_souls->effectN( 1 ).period(), [ this ]() {
-      if ( active_riders >= talent.rider.a_feast_of_souls->effectN( 1 ).base_value() && !buffs.a_feast_of_souls -> check() )
-      {
-        buffs.a_feast_of_souls->trigger();
-      }
-      if ( active_riders < talent.rider.a_feast_of_souls->effectN( 1 ).base_value() && buffs.a_feast_of_souls -> check() )
-      {
-        buffs.a_feast_of_souls->expire();
-      }
-    } );
+    start_a_feast_of_souls();
   }
 }
 
