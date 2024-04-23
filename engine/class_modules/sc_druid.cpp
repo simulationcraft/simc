@@ -2012,6 +2012,35 @@ public:
   }
 };
 
+template <specialization_e S, typename BASE>
+struct trigger_claw_rampage_t : public BASE
+{
+private:
+  druid_t* p_;
+  double proc_pct;
+
+public:
+  using base_t = trigger_claw_rampage_t<S, BASE>;
+
+  trigger_claw_rampage_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f ), p_( p ), proc_pct( p->talent.claw_rampage->proc_chance() )
+  {}
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( p_->specialization() == S && !BASE::has_flag( flag_e::CONVOKE ) && p_->buff.b_inc_cat->check() &&
+         BASE::rng().roll( proc_pct ) )
+    {
+      if constexpr ( S == DRUID_FERAL )
+        p_->buff.ravage_fb->trigger();
+      else if constexpr( S == DRUID_GUARDIAN )
+        p_->buff.ravage_maul->trigger();
+    }
+  }
+};
+
 template <typename BASE>
 struct trigger_control_of_the_dream_t : public BASE
 {
@@ -2176,6 +2205,7 @@ public:
       : AB( n, p, p->find_spell( p->specialization() == DRUID_GUARDIAN ? 451177 : 441812 ), f )
     {
       AB::name_str_reporting = "dreadful_wound";
+      AB::dot_name = "dreadful_wound";
     }
 
     // TODO: use custom action state if non-TF persistent multipliers are applied
@@ -4272,7 +4302,8 @@ struct bloodseeker_vines_t : public cat_attack_t
 };
 
 // Brutal Slash =============================================================
-struct brutal_slash_t : public consume_ursine_potential_t<trigger_thrashing_claws_t<cat_attack_t>>
+struct brutal_slash_t
+  : public trigger_claw_rampage_t<DRUID_FERAL, consume_ursine_potential_t<trigger_thrashing_claws_t<cat_attack_t>>>
 {
   DRUID_ABILITY( brutal_slash_t, base_t, "brutal_slash", p->talent.brutal_slash )
   {
@@ -4900,7 +4931,8 @@ struct primal_wrath_t : public cat_finisher_t
 };
 
 // Shred ====================================================================
-struct shred_t : public trigger_ursine_potential_t<trigger_thrashing_claws_t<cat_attack_t>>
+struct shred_t
+  : public trigger_claw_rampage_t<DRUID_FERAL, trigger_ursine_potential_t<trigger_thrashing_claws_t<cat_attack_t>>>
 {
   double stealth_mul = 0.0;
 
@@ -4953,7 +4985,8 @@ struct shred_t : public trigger_ursine_potential_t<trigger_thrashing_claws_t<cat
 };
 
 // Swipe (Cat) ====================================================================
-struct swipe_cat_t : public trigger_ursine_potential_t<trigger_thrashing_claws_t<cat_attack_t>>
+struct swipe_cat_t
+  : public trigger_claw_rampage_t<DRUID_FERAL, trigger_ursine_potential_t<trigger_thrashing_claws_t<cat_attack_t>>>
 {
   DRUID_ABILITY( swipe_cat_t, base_t, "swipe_cat", p->apply_override( p->spec.swipe, p->spec.cat_form_override ) )
   {
@@ -5010,7 +5043,7 @@ struct tigers_fury_t : public cat_attack_t
 };
 
 // Thrash (Cat) =============================================================
-struct thrash_cat_t : public cat_attack_t
+struct thrash_cat_t : public trigger_claw_rampage_t<DRUID_FERAL,cat_attack_t>
 {
   struct thrash_cat_bleed_t : public trigger_waning_twilight_t<cat_attack_t>
   {
@@ -5034,8 +5067,7 @@ struct thrash_cat_t : public cat_attack_t
     }
   };
 
-  DRUID_ABILITY( thrash_cat_t, cat_attack_t, "thrash_cat",
-                 p->apply_override( p->talent.thrash, p->spec.cat_form_override ) )
+  DRUID_ABILITY( thrash_cat_t, base_t, "thrash_cat", p->apply_override( p->talent.thrash, p->spec.cat_form_override ) )
   {
     aoe = -1;
 
@@ -5461,7 +5493,7 @@ struct lunar_beam_t : public bear_attack_t
 };
 
 // Mangle ===================================================================
-struct mangle_t : public consume_ursine_potential_t<bear_attack_t>
+struct mangle_t : public trigger_claw_rampage_t<DRUID_GUARDIAN, consume_ursine_potential_t<bear_attack_t>>
 {
   struct swiping_mangle_t : public druid_residual_action_t<bear_attack_t>
   {
@@ -5775,7 +5807,8 @@ struct raze_t : public trigger_indomitable_guardian_t<trigger_ursocs_fury_t<trig
 };
 
 // Swipe (Bear) =============================================================
-struct swipe_bear_t : public consume_ursine_potential_t<trigger_gore_t<bear_attack_t>>
+struct swipe_bear_t
+  : public trigger_claw_rampage_t<DRUID_GUARDIAN, consume_ursine_potential_t<trigger_gore_t<bear_attack_t>>>
 {
   DRUID_ABILITY( swipe_bear_t, base_t, "swipe_bear",
                  p->apply_override( p->spec.swipe, p->spec.bear_form_override ) )
@@ -5790,7 +5823,8 @@ struct swipe_bear_t : public consume_ursine_potential_t<trigger_gore_t<bear_atta
 };
 
 // Thrash (Bear) ============================================================
-struct thrash_bear_t : public trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t>>
+struct thrash_bear_t
+  : public trigger_claw_rampage_t<DRUID_GUARDIAN, trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t>>>
 {
   struct thrash_bear_bleed_t : public trigger_ursocs_fury_t<use_dot_list_t<trigger_waning_twilight_t<bear_attack_t>>>
   {
@@ -9953,7 +9987,7 @@ void druid_t::init_spells()
 
   sim->print_debug( "Initializing hero talents..." );
   // Druid of the Claw
-  talent.aggravate_wounds               = HT( "Aggravate Wounds" );
+  talent.aggravate_wounds               = HT( "Aggravate Wounds" );  // TODO: NYI
   talent.bestial_strength               = HT( "Bestial Strength" );
   talent.claw_rampage                   = HT( "Claw Rampage" );
   talent.dreadful_wound                 = HT( "Dreadful Wound" );
