@@ -1256,8 +1256,10 @@ public:
 
     struct stagger_level_t
     {
-      const double max_percent;
+      const double min_percent;
       const stagger_level_e level;
+      std::string_view name;
+      const spell_data_t* spell_data;
       propagate_const<stagger_buff_t *> debuff;
       sample_data_helper_t *absorbed;
       sample_data_helper_t *taken;
@@ -1268,9 +1270,9 @@ public:
 
     struct sample_data_t
     {
-      sc_timeline_t *pool_size;         // raw stagger in pool
-      sc_timeline_t *pool_size_percent; // pool as a fraction of current maximum hp
-      sc_timeline_t *effectiveness;     // stagger effectiveness
+      sc_timeline_t pool_size;         // raw stagger in pool
+      sc_timeline_t pool_size_percent; // pool as a fraction of current maximum hp
+      sc_timeline_t effectiveness;     // stagger effectiveness
       // assert(absorbed == taken + mitigated)
       // assert(sum(cleared) == mitigated)
       sample_data_helper_t *absorbed;
@@ -1307,7 +1309,7 @@ public:
 
     double base_value();
     double percent( unsigned target_level );
-    static double max_threshold( stagger_level_e level );
+    static double min_threshold( stagger_level_e level );
     stagger_level_e current_threshold();
     static std::string level_name( stagger_level_e level );
 

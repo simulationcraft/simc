@@ -7438,7 +7438,7 @@ void monk_t::init_spells()
   talent.brewmaster.zen_meditation   = _ST( "Zen Meditation" );
   talent.brewmaster.clash            = _ST( "Clash" );
   // Row 6
-  talent.brewmaster.breath_of_fire          = _ST( "Breath of Fire" );
+  talent.brewmaster.breath_of_fire          = _STID( 12278 );
   talent.brewmaster.improved_celestial_brew = _ST( "Improved Celestial Brew" );
   talent.brewmaster.improved_purifying_brew = _ST( "Improved Purifying Brew" );
   talent.brewmaster.tranquil_spirit         = _ST( "Tranquil Spirit" );
@@ -9491,9 +9491,9 @@ stat_e monk_t::convert_hybrid_stat( stat_e s ) const
 
 void monk_t::pre_analyze_hook()
 {
-  stagger->sample_data->pool_size->adjust( *sim );
-  stagger->sample_data->pool_size_percent->adjust( *sim );
-  stagger->sample_data->effectiveness->adjust( *sim );
+  stagger->sample_data->pool_size.adjust( *sim );
+  stagger->sample_data->pool_size_percent.adjust( *sim );
+  stagger->sample_data->effectiveness.adjust( *sim );
 
   base_t::pre_analyze_hook();
 }
@@ -10300,9 +10300,9 @@ void monk_t::merge( player_t &other )
 
   auto &other_monk = static_cast<const monk_t &>( other );
 
-  stagger->sample_data->pool_size->merge( *other_monk.stagger->sample_data->pool_size );
-  stagger->sample_data->pool_size_percent->merge( *other_monk.stagger->sample_data->pool_size_percent );
-  stagger->sample_data->effectiveness->merge( *other_monk.stagger->sample_data->effectiveness );
+  stagger->sample_data->pool_size.merge( other_monk.stagger->sample_data->pool_size );
+  stagger->sample_data->pool_size_percent.merge( other_monk.stagger->sample_data->pool_size_percent );
+  stagger->sample_data->effectiveness.merge( other_monk.stagger->sample_data->effectiveness );
 }
 
 // monk_t::monk_report =================================================
@@ -10605,30 +10605,36 @@ monk_t::stagger_t::stagger_buff_t::stagger_buff_t( monk_t &player, std::string_v
 }
 
 monk_t::stagger_t::stagger_level_t::stagger_level_t( stagger_level_e level, monk_t *player )
-  : max_percent( monk_t::stagger_t::max_threshold( level ) ), level( level )
+  : min_percent( monk_t::stagger_t::min_threshold( level ) ), level( level ), spell_data( spell_data_t::nil() )
 {
-  absorbed  = player->get_sample_data( "Stagger added to pool while at " + level_name( level ) );
-  taken     = player->get_sample_data( "Stagger damage taken from " + level_name( level ) );
-  mitigated = player->get_sample_data( "Stagger damage mitigated while at " + level_name( level ) );
   switch ( level )
   {
     // TODO: Is this in spell data?
+    case NONE_STAGGER:
+      name       = "none_stagger";
+      spell_data = spell_data_t::nil();
+      break;
     case LIGHT_STAGGER:
-      debuff = make_buff<monk_t::stagger_t::stagger_buff_t>( *player, "light_stagger",
-                                                             player->passives.brewmaster.light_stagger );
+      name       = "light_stagger";
+      spell_data = player->passives.brewmaster.light_stagger;
       break;
     case MODERATE_STAGGER:
-      debuff = make_buff<monk_t::stagger_t::stagger_buff_t>( *player, "moderate_stagger",
-                                                             player->passives.brewmaster.moderate_stagger );
+      name       = "moderate_stagger";
+      spell_data = player->passives.brewmaster.moderate_stagger;
       break;
     case HEAVY_STAGGER:
-      debuff = make_buff<monk_t::stagger_t::stagger_buff_t>( *player, "heavy_stagger",
-                                                             player->passives.brewmaster.heavy_stagger );
+      name       = "heavy_stagger";
+      spell_data = player->passives.brewmaster.heavy_stagger;
       break;
-    case NONE_STAGGER:
     case MAX_STAGGER:
+      name       = "max_stagger";
+      spell_data = spell_data_t::nil();
       break;
   }
+  absorbed  = player->get_sample_data( "Stagger added to pool while at " + level_name( level ) );
+  taken     = player->get_sample_data( "Stagger damage taken from " + level_name( level ) );
+  mitigated = player->get_sample_data( "Stagger damage mitigated while at " + level_name( level ) );
+  debuff    = make_buff<monk_t::stagger_t::stagger_buff_t>( *player, name, spell_data );
 }
 
 monk_t::stagger_t::sample_data_t::sample_data_t( monk_t *player )
@@ -10662,8 +10668,8 @@ void monk_t::stagger_t::self_damage_t::impact( action_state_t *state )
 
   p()->stagger->sample_data->absorbed->add( state->result_amount );
   p()->stagger->current->absorbed->add( state->result_amount );
-  p()->stagger->sample_data->pool_size->add( sim->current_time(), p()->stagger->pool_size() );
-  p()->stagger->sample_data->pool_size_percent->add( sim->current_time(), p()->stagger->pool_size_percent() );
+  p()->stagger->sample_data->pool_size.add( sim->current_time(), p()->stagger->pool_size() );
+  p()->stagger->sample_data->pool_size_percent.add( sim->current_time(), p()->stagger->pool_size_percent() );
   p()->buff.shuffle->up();
   p()->stagger->damage_changed();
 }
@@ -10727,18 +10733,19 @@ double monk_t::stagger_t::percent( unsigned target_level )
   return std::min( stagger, 0.99 );
 }
 
-double monk_t::stagger_t::max_threshold( stagger_level_e level )
+double monk_t::stagger_t::min_threshold( stagger_level_e level )
 {
   switch ( level )
   {
     // TODO: Is this in spell data?
     case NONE_STAGGER:
-      return 0.0;
+      return -1.0;
     case LIGHT_STAGGER:
-      return 0.2;
+      return 0.0;
     case MODERATE_STAGGER:
-      return 0.6;
+      return 0.2;
     case HEAVY_STAGGER:
+      return 0.6;
     case MAX_STAGGER:
       return 10.0;
   }
@@ -10749,7 +10756,7 @@ auto monk_t::stagger_t::current_threshold() -> stagger_level_e
   double current_percent = pool_size_percent();
   for ( const stagger_level_t *level : stagger_levels )
   {
-    if ( current_percent > level->max_percent )
+    if ( current_percent > level->min_percent )
       return level->level;
   }
   return NONE_STAGGER;
@@ -10778,7 +10785,7 @@ double monk_t::stagger_t::pool_size()
   if ( !dot || !dot->state )
     return 0.0;
 
-  return self_damage->base_ta( dot->state );
+  return self_damage->base_ta( dot->state ) * dot->ticks_left();
 }
 
 double monk_t::stagger_t::pool_size_percent()
@@ -10820,7 +10827,7 @@ timespan_t monk_t::stagger_t::remains()
 
 void monk_t::stagger_t::damage_changed( bool last_tick )
 {
-  player->sim->print_debug( "HIHI ITS WORKING" );
+  // TODO: Guarantee a debuff is applied by providing debuffs for all stagger_level_t's
   if ( last_tick )
   {
     current->debuff->expire();
@@ -10828,6 +10835,8 @@ void monk_t::stagger_t::damage_changed( bool last_tick )
   }
 
   stagger_level_e level = current_threshold();
+  player->sim->print_debug( "level changing? current={}, new={}, pool_size={}", current->name,
+                            stagger_levels[ level ]->name, pool_size_percent() );
   if ( level == current->level )
     return;
 
