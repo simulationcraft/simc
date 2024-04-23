@@ -2814,8 +2814,9 @@ struct melee_t : public monk_melee_attack_t
 {
   int sync_weapons;
   bool first;
-  melee_t( util::string_view name, monk_t *player, int sw )
-    : monk_melee_attack_t( name, player, spell_data_t::nil() ), sync_weapons( sw ), first( true )
+  bool oh;
+  melee_t( util::string_view name, monk_t *player, int sw, bool is_oh = false )
+    : monk_melee_attack_t( name, player, spell_data_t::nil() ), sync_weapons( sw ), first( true ), oh( is_oh )
   {
     background = repeating = may_glance = true;
     may_crit                            = true;
@@ -2825,6 +2826,9 @@ struct melee_t : public monk_melee_attack_t
     weapon_multiplier                   = 1.0;
     allow_class_ability_procs           = true;
     not_a_proc                          = true;
+
+    weapon            = oh ? &( player->off_hand_weapon ) : &( player->main_hand_weapon );
+    base_execute_time = oh ? player->off_hand_weapon.swing_time : player->main_hand_weapon.swing_time;
 
     if ( player->main_hand_weapon.group() == WEAPON_1H )
     {
@@ -2865,10 +2869,23 @@ struct melee_t : public monk_melee_attack_t
 
   void execute() override
   {
+    if ( p()->current.distance_to_move > 5 )
+    {
+      if ( weapon->slot == SLOT_MAIN_HAND )
+        player->main_hand_attack->cancel();
+      else
+        player->off_hand_attack->cancel();
+
+      return;
+    }
+
     if ( first )
       first = false;
 
-    monk_melee_attack_t::execute();
+    if ( p()->rng().roll( p()->talent.windwalker.dual_threat->effectN( 1 ).percent() ) )
+      p()->dual_threat_kick->execute();
+    else
+      monk_melee_attack_t::execute();
   }
 
   void impact( action_state_t *s ) override
@@ -2903,32 +2920,71 @@ struct melee_t : public monk_melee_attack_t
 // Auto Attack
 // ==========================================================================
 
+// Dual Threat WW Talent
+
+struct dual_threat_t : public monk_melee_attack_t
+{
+  dual_threat_t( monk_t *p ) : monk_melee_attack_t( "dual_threat_kick", p, p->passives.dual_threat_kick )
+  {
+    background = true;
+    may_glance = true;
+    may_crit   = true;  // I assume so? This ability doesn't appear in the combat log yet on alpha
+
+    allow_class_ability_procs = false;  // Is not proccing Thunderfist or other class ability procs
+
+    school            = SCHOOL_PHYSICAL;
+    weapon_multiplier = 1.0;
+    weapon            = &( player->main_hand_weapon );
+
+    cooldown->duration = base_execute_time = trigger_gcd = timespan_t::zero();
+
+    apply_dual_wield_two_handed_scaling();
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    p()->buff.dual_threat->trigger();
+  }
+};
+
 struct auto_attack_t : public monk_melee_attack_t
 {
   int sync_weapons;
+
+  dual_threat_t *dual_threat_kick;
+
   auto_attack_t( monk_t *player, util::string_view options_str )
     : monk_melee_attack_t( "auto_attack", player, spell_data_t::nil() ), sync_weapons( 0 )
   {
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
     parse_options( options_str );
-    ignore_false_positive = true;
 
-    p()->main_hand_attack                    = new melee_t( "melee_main_hand", player, sync_weapons );
-    p()->main_hand_attack->weapon            = &( player->main_hand_weapon );
-    p()->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
+    ignore_false_positive = true;
+    trigger_gcd           = timespan_t::zero();
+
+    p()->main_hand_attack = new melee_t( "melee_main_hand", player, sync_weapons );
+
+    add_child( p()->main_hand_attack );
 
     if ( player->off_hand_weapon.type != WEAPON_NONE )
     {
       if ( !player->dual_wield() )
         return;
 
-      p()->off_hand_attack                    = new melee_t( "melee_off_hand", player, sync_weapons );
-      p()->off_hand_attack->weapon            = &( player->off_hand_weapon );
-      p()->off_hand_attack->base_execute_time = player->off_hand_weapon.swing_time;
-      p()->off_hand_attack->id                = 1;
+      p()->off_hand_attack     = new melee_t( "melee_off_hand", player, sync_weapons, true );
+      p()->off_hand_attack->id = 1;
+
+      add_child( p()->off_hand_attack );
     }
 
-    trigger_gcd = timespan_t::zero();
+    if ( p()->talent.windwalker.dual_threat.ok() )
+    {
+      p()->dual_threat_kick = new dual_threat_t( player );
+
+      add_child( p()->dual_threat_kick );
+    }
   }
 
   bool ready() override
@@ -2936,7 +2992,8 @@ struct auto_attack_t : public monk_melee_attack_t
     if ( p()->current.distance_to_move > 5 )
       return false;
 
-    return ( p()->main_hand_attack->execute_event == nullptr );  // not swinging
+    return ( p()->main_hand_attack->execute_event == nullptr ||
+             p()->off_hand_attack && p()->off_hand_attack->execute_event == nullptr );  // not swinging
   }
 
   void execute() override
@@ -7624,6 +7681,7 @@ void monk_t::init_spells()
   passives.cyclone_strikes                  = find_spell( 220358 );
   passives.dance_of_chiji                   = find_spell( 325202 );
   passives.dance_of_chiji_bug               = find_spell( 286585 );
+  passives.dual_threat_kick                 = find_spell( 451839 );
   passives.dizzying_kicks                   = find_spell( 196723 );
   passives.empowered_tiger_lightning        = find_spell( 335913 );
   passives.jadefire_brand_dmg               = find_spell( 395414 );
@@ -7910,6 +7968,10 @@ void monk_t::create_buffs()
   buff.chi_wave = make_buff( this, "chi_wave", find_spell( 450380 ) )
                       ->set_trigger_spell( talent.general.chi_wave )
                       ->set_default_value_from_effect( 1 );
+
+  buff.dual_threat = make_buff( this, "dual_threat", find_spell( 451833 ) )
+                         ->set_trigger_spell( talent.windwalker.dual_threat )
+                         ->set_default_value_from_effect( 1 );
 
   buff.combat_wisdom = make_buff( this, "combat_wisdom", find_spell( 129914 ) )
                            ->set_trigger_spell( talent.windwalker.combat_wisdom )
