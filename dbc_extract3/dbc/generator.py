@@ -1541,6 +1541,12 @@ class SpellDataGenerator(DataGenerator):
             ( 425262, 0 ),          # Cleansing Flame (Healing - Prot T31 4pc)
             ( 423590, 0 ),          # Echoes of Wrath (Ret T31 4pc buff)
             ( 423593, 0 ),          # Tempest of the Lightbringer triggered by T31 4pc
+            # The War Within
+            ( 433807 , 0),          # Divine Guidance healing
+            ( 433808 , 0),          # Divine Guidance damage
+            ( 434132 , 0),          # Blessing of the Forge summon event
+            ( 434255 , 0),          # Blessing of the Forge related buff
+            ( 447258 , 0),          # Blessing of the Forge Forge's Reckoning ( Sotr Event ?)
         ),
 
         # Hunter:
