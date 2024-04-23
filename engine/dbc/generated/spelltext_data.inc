@@ -6449,7 +6449,7 @@ static const std::array<spelltext_data_t, 21049> __spelltext_data { {
   { 198909, "$@spelldesc198898", "Disoriented.", 0 },
   { 198928, "$@spelldesc198929", 0, 0 },
   { 198929, "Throws a spread of 6 cinders that travel in an arc, each dealing $198928s1 Fire damage to enemies it hits. Damage increased by $s1% if the target is affected by your Ignite.", 0, 0 },
-  { 198952, "Cloak of Shadows now also removes harmful physical effects and increases dodge chance by ${-$31224m1/2}%.", 0, 0 },
+  { 198952, "Cloak of Shadows now also removes harmful physical effects.", 0, 0 },
   { 199019, "$@spelldesc198735", "Doomhammer is causing large rocks to lift out of the ground and smash into your target every $t sec for $d.", 0 },
   { 199022, "$@spelldesc198735", 0, 0 },
   { 199023, "Reduces the cooldown of Demoralizing Shout by ${($m2/1000)*-1} sec, and Demoralizing Shout now reduces the damage enemies deal to all targets, not just you.", 0, "PvP Talent" },
@@ -21052,7 +21052,8 @@ static const std::array<spelltext_data_t, 21049> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.2.6.54358
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  198952,  0, "Cloak of Shadows now also removes harmful physical effects and increases dodge chance by ${-$31224m1/2}%.", "Cloak of Shadows now also removes harmful physical effects." },
 } };
 
 // Spell description variables, wow build 10.2.6.54358
@@ -21441,8 +21442,8 @@ static const std::array<spelldesc_vars_data_t, 450> __spelldesc_vars_data { {
   {  387624, "$reduc=${$AP*$387625s2/100}" },
   {  387625, "$reduc=${$AP*$387625s2/100}" },
   {  388011, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
-  {  388023, "$pvp=$?a134735[${2.75}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
-  {  388026, "$pvp=$?a134735[${2.75}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
+  {  388023, "$pvp=$?a134735[${2.5}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
+  {  388026, "$pvp=$?a134735[${2.5}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
   {  388917, "$health=$?s322960[${$115203s1}][${$115203s1}]\r\n$damage=$?c1[${$115203s2*-1}][${$115203s2*-1}]" },
   {  389359, "$health=${5}\r\n$cdr=${10}" },
   {  389880, "$duration= ${$s1/1000}.1" },
@@ -21510,6 +21511,8 @@ static const std::array<spelldesc_vars_data_t, 450> __spelldesc_vars_data { {
 } };
 
 // spelldesc_vars hotfix entries, wow build 10.2.6.54358
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelldesc_vars_hotfix_data { {
+  {  388023,  0, "$pvp=$?a134735[${2.75}][${1}]}\r\n$healing=[${$s1*$<pvp>}]", "$pvp=$?a134735[${2.5}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
+  {  388026,  0, "$pvp=$?a134735[${2.75}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]", "$pvp=$?a134735[${2.5}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
 } };
 
