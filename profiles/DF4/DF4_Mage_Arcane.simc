@@ -1,0 +1,178 @@
+mage="DF4_Mage_Arcane"
+source=default
+spec=arcane
+level=70
+race=human
+role=spell
+position=back
+talents=B4DAAAAAAAAAAAAAAAAAAAAAAQEUSDJRSKCikQEJhEJQSQSLJAAAAAAAAAAAgIJJJRSSSgA
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_corrupting_rage_3
+food=sizzling_seafood_medley
+augmentation=draconic
+temporary_enchant=main_hand:buzzing_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/arcane_intellect
+actions.precombat+=/arcane_familiar
+actions.precombat+=/conjure_mana_gem
+actions.precombat+=/variable,name=aoe_target_count,op=reset,default=3
+actions.precombat+=/variable,name=aoe_target_count,op=set,value=9,if=!talent.arcing_cleave
+actions.precombat+=/variable,name=aoe_target_count,op=set,value=5,if=talent.arcing_cleave&(!talent.orb_barrage|!talent.arcane_bombardment)
+actions.precombat+=/variable,name=opener,op=set,value=1
+# Variable indicates use of a trinket that boosts stats during burst
+actions.precombat+=/variable,name=steroid_trinket_equipped,op=set,value=equipped.gladiators_badge|equipped.irideus_fragment|equipped.spoils_of_neltharus|equipped.timebreaching_talon|equipped.ashes_of_the_embersoul|equipped.nymues_unraveling_spindle
+# Variable indicates double on use trinket setups
+actions.precombat+=/variable,name=talon_double_on_use,op=set,value=((equipped.ashes_of_the_embersoul&equipped.timebreaching_talon)|(equipped.irideus_fragment&equipped.timebreaching_talon))
+actions.precombat+=/variable,name=nymues_double_on_use,op=set,value=((equipped.ashes_of_the_embersoul&equipped.nymues_unraveling_spindle)|(equipped.irideus_fragment&equipped.nymues_unraveling_spindle)|(equipped.balefire_branch&equipped.nymues_unraveling_spindle)|(equipped.mirror_of_fractured_tomorrows&equipped.nymues_unraveling_spindle))
+actions.precombat+=/variable,name=ashes_double_on_use,op=set,value=(equipped.irideus_fragment&equipped.ashes_of_the_embersoul)
+actions.precombat+=/variable,name=belor_extended_opener,default=0,op=set,if=variable.belor_extended_opener=1,value=equipped.belorrelos_the_suncaller
+actions.precombat+=/snapshot_stats
+actions.precombat+=/mirror_image
+actions.precombat+=/time_warp,if=!talent.siphon_storm|(variable.belor_extended_opener&time_to_bloodlust>10)
+actions.precombat+=/arcane_blast,if=!talent.siphon_storm|(variable.belor_extended_opener&time_to_bloodlust>10)
+actions.precombat+=/evocation,if=talent.siphon_storm&!(variable.belor_extended_opener&time_to_bloodlust>10)
+
+# Executed every time the actor is available.
+actions=counterspell
+actions+=/potion,if=buff.siphon_storm.up|(!talent.siphon_storm&cooldown.arcane_surge.ready)
+actions+=/time_warp,if=talent.temporal_warp&buff.exhaustion.up&(cooldown.arcane_surge.ready|fight_remains<=40|(buff.arcane_surge.up&fight_remains<=(cooldown.arcane_surge.remains+14)))
+actions+=/lights_judgment,if=buff.arcane_surge.down&debuff.touch_of_the_magi.down&active_enemies>=2
+# Zerking gets used after surge outside of double lust, but after touch with double lust
+actions+=/berserking,if=(prev_gcd.1.arcane_surge&!(buff.temporal_warp.up&buff.bloodlust.up))|(buff.arcane_surge.up&debuff.touch_of_the_magi.up)
+actions+=/blood_fury,if=prev_gcd.1.arcane_surge
+actions+=/fireblood,if=prev_gcd.1.arcane_surge
+actions+=/ancestral_call,if=prev_gcd.1.arcane_surge
+# PI/Summer after Radiant Spark when cooldowns are coming up, Autumn after Touch of the Magi cd starts
+actions+=/invoke_external_buff,name=power_infusion,if=((!talent.radiant_spark&prev_gcd.1.arcane_surge)|(talent.radiant_spark&prev_gcd.1.radiant_spark&cooldown.arcane_surge.remains<=(gcd.max*3)))
+actions+=/invoke_external_buff,name=blessing_of_summer,if=(!talent.radiant_spark&prev_gcd.1.arcane_surge)|(talent.radiant_spark&prev_gcd.1.radiant_spark&cooldown.arcane_surge.remains<=(gcd.max*3))
+actions+=/invoke_external_buff,name=blessing_of_autumn,if=cooldown.touch_of_the_magi.remains>5
+# Use trinkets in single target after surge without t30, after touch with t30, and before Surge in AOE, except 20-second trinkets which are used with spark without t30. Non-steroid trinkets are used whenever you don't have cooldowns active and double steroid trinkets are used in order of power level in sims with max ilevel.
+actions+=/use_item,name=irideus_fragment,if=cooldown.arcane_surge.ready&prev_gcd.1.nether_tempest|fight_remains<=20
+actions+=/use_item,name=ashes_of_the_embersoul,if=(prev_gcd.1.arcane_surge&!equipped.belorrelos_the_suncaller&(!variable.ashes_double_on_use|!variable.opener))|fight_remains<=20|((active_enemies>=variable.aoe_target_count)&cooldown.arcane_surge.ready&prev_gcd.1.nether_tempest)|(equipped.belorrelos_the_suncaller&(buff.arcane_surge.remains>12|(prev_gcd.1.arcane_surge&variable.opener))&cooldown.evocation.remains>60)
+actions+=/use_item,name=nymues_unraveling_spindle,if=((!variable.opener&cooldown.arcane_surge.remains<=(gcd.max*4)&cooldown.radiant_spark.ready)|(variable.opener&(mana.pct<=10|buff.siphon_storm.remains<19))&(!variable.nymues_double_on_use|!variable.opener))|fight_remains<=24|((active_enemies>=variable.aoe_target_count)&cooldown.arcane_surge.ready&prev_gcd.1.nether_tempest)|((equipped.belorrelos_the_suncaller)&cooldown.touch_of_the_magi.remains<(gcd.max*6))
+actions+=/use_item,name=timebreaching_talon,if=((cooldown.arcane_surge.remains<=(gcd.max*4)&cooldown.radiant_spark.remains)&(!variable.talon_double_on_use|!variable.opener))|fight_remains<=20|((active_enemies>=variable.aoe_target_count)&cooldown.arcane_surge.ready&prev_gcd.1.nether_tempest)
+actions+=/use_items,if=prev_gcd.1.arcane_surge|((active_enemies>=variable.aoe_target_count)&cooldown.arcane_surge.ready&prev_gcd.1.nether_tempest)|fight_remains<=15
+actions+=/use_item,name=tinker_breath_of_neltharion,if=cooldown.arcane_surge.remains&buff.arcane_surge.down&debuff.touch_of_the_magi.down
+actions+=/use_item,name=belorrelos_the_suncaller,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down|equipped.nymues_unraveling_spindle
+actions+=/use_item,name=beacon_to_the_beyond,if=!variable.steroid_trinket_equipped|(buff.siphon_storm.down&buff.arcane_surge.remains<10)
+actions+=/use_item,name=iceblood_deathsnare,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down
+actions+=/use_item,name=desperate_invokers_codex,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down
+actions+=/use_item,name=conjured_chillglobe,if=mana.pct>65&(!variable.steroid_trinket_equipped|buff.siphon_storm.down)
+actions+=/use_item,name=darkmoon_deck_rime,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down
+actions+=/use_item,name=darkmoon_deck_dance,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down
+actions+=/use_item,name=darkmoon_deck_inferno,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down
+actions+=/use_item,name=dreambinder_loom_of_the_great_cycle
+actions+=/use_item,name=iridal_the_earths_master,use_off_gcd=1,if=gcd.remains
+actions+=/variable,name=aoe_cooldown_phase,op=set,value=1,if=active_enemies>=variable.aoe_target_count&(action.arcane_orb.charges>0|buff.arcane_charge.stack>=3)&(cooldown.radiant_spark.ready|!talent.radiant_spark)&(cooldown.touch_of_the_magi.remains<=(gcd.max*2)|!talent.touch_of_the_magi)
+actions+=/variable,name=aoe_cooldown_phase,op=set,value=0,if=variable.aoe_cooldown_phase&((debuff.radiant_spark_vulnerability.down&dot.radiant_spark.remains<7&cooldown.radiant_spark.remains)|!talent.radiant_spark&debuff.touch_of_the_magi.up)
+actions+=/variable,name=opener,op=set,if=debuff.touch_of_the_magi.up&variable.opener,value=0
+actions+=/variable,name=blast_below_gcd,op=set,value=action.arcane_blast.cast_time<gcd.max
+# Cancel Evo if we have enough mana and don't have Siphon Storm talented or if the fight duration is running out
+actions+=/cancel_action,if=action.evocation.channeling&mana.pct>=95&!talent.siphon_storm
+actions+=/cancel_action,if=action.evocation.channeling&(mana.pct>fight_remains*4)&!(fight_remains>10&cooldown.arcane_surge.remains<1)
+actions+=/arcane_barrage,if=fight_remains<2
+actions+=/evocation,if=buff.arcane_surge.down&debuff.touch_of_the_magi.down&((mana.pct<10&cooldown.touch_of_the_magi.remains<20)|cooldown.touch_of_the_magi.remains<15)&((buff.bloodlust.remains<31&buff.bloodlust.up)|!variable.belor_extended_opener|!variable.opener)
+# Make a new gem if the encounter is long enough and use it after surge to recoup mana quickly
+actions+=/conjure_mana_gem,if=debuff.touch_of_the_magi.down&buff.arcane_surge.down&cooldown.arcane_surge.remains<30&cooldown.arcane_surge.remains<fight_remains&!mana_gem_charges
+actions+=/use_mana_gem,if=talent.cascading_power&buff.clearcasting.stack<2&buff.arcane_surge.up
+actions+=/use_mana_gem,if=!talent.cascading_power&prev_gcd.1.arcane_surge
+# Enter cooldown phase when cds are available or coming off cooldown otherwise default to rotation priority
+actions+=/call_action_list,name=cooldown_phase,if=(cooldown.arcane_surge.remains<=(gcd.max*(1+(talent.nether_tempest&talent.arcane_echo)))|(buff.arcane_surge.remains>(3*(set_bonus.tier30_2pc&!set_bonus.tier30_4pc)))|buff.arcane_overload.up)&cooldown.evocation.remains>45&((cooldown.touch_of_the_magi.remains<gcd.max*4)|cooldown.touch_of_the_magi.remains>20)&active_enemies<variable.aoe_target_count
+actions+=/call_action_list,name=cooldown_phase,if=cooldown.arcane_surge.remains>30&(cooldown.radiant_spark.ready|dot.radiant_spark.remains|debuff.radiant_spark_vulnerability.up)&(cooldown.touch_of_the_magi.remains<=(gcd.max*3)|debuff.touch_of_the_magi.up)&active_enemies<variable.aoe_target_count
+actions+=/call_action_list,name=aoe_cooldown_phase,if=variable.aoe_cooldown_phase&(cooldown.arcane_surge.remains<(gcd.max*4)|cooldown.arcane_surge.remains>40)
+actions+=/call_action_list,name=aoe_rotation,if=active_enemies>=variable.aoe_target_count
+actions+=/call_action_list,name=rotation
+
+actions.aoe_cooldown_phase=cancel_buff,name=presence_of_mind,if=prev_gcd.1.arcane_blast&cooldown.arcane_surge.remains>75
+actions.aoe_cooldown_phase+=/touch_of_the_magi,use_off_gcd=1,if=prev_gcd.1.arcane_barrage
+actions.aoe_cooldown_phase+=/radiant_spark
+actions.aoe_cooldown_phase+=/arcane_orb,if=buff.arcane_charge.stack<3,line_cd=1
+actions.aoe_cooldown_phase+=/nether_tempest,if=talent.arcane_echo,line_cd=30
+actions.aoe_cooldown_phase+=/arcane_surge
+# Waits are used to simulate players allowing radiant spark to increment in stacks
+actions.aoe_cooldown_phase+=/wait,sec=0.05,if=cooldown.arcane_surge.remains>75&prev_gcd.1.arcane_blast&!talent.presence_of_mind,line_cd=15
+actions.aoe_cooldown_phase+=/wait,sec=0.05,if=prev_gcd.1.arcane_surge,line_cd=15
+actions.aoe_cooldown_phase+=/wait,sec=0.05,if=cooldown.arcane_surge.remains<75&debuff.radiant_spark_vulnerability.stack=3&!talent.presence_of_mind,line_cd=15
+actions.aoe_cooldown_phase+=/arcane_barrage,if=cooldown.arcane_surge.remains<75&debuff.radiant_spark_vulnerability.stack=4&!talent.orb_barrage
+actions.aoe_cooldown_phase+=/arcane_barrage,if=(debuff.radiant_spark_vulnerability.stack=2&cooldown.arcane_surge.remains>75)|(debuff.radiant_spark_vulnerability.stack=1&cooldown.arcane_surge.remains<75)&!talent.orb_barrage
+# Optimize orb barrage procs during spark at the cost of vulnerabilities, except at 5 or fewer targets where you arcane blast on the 3rd spark stack if its up and you have charges
+actions.aoe_cooldown_phase+=/arcane_barrage,if=(debuff.radiant_spark_vulnerability.stack=1|debuff.radiant_spark_vulnerability.stack=2|(debuff.radiant_spark_vulnerability.stack=3&active_enemies>5)|debuff.radiant_spark_vulnerability.stack=4)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&talent.orb_barrage
+actions.aoe_cooldown_phase+=/presence_of_mind
+actions.aoe_cooldown_phase+=/arcane_blast,if=((debuff.radiant_spark_vulnerability.stack=2|debuff.radiant_spark_vulnerability.stack=3)&!talent.orb_barrage)|(debuff.radiant_spark_vulnerability.remains&talent.orb_barrage)
+actions.aoe_cooldown_phase+=/arcane_barrage,if=(debuff.radiant_spark_vulnerability.stack=4&buff.arcane_surge.up)|(debuff.radiant_spark_vulnerability.stack=3&buff.arcane_surge.down)&!talent.orb_barrage
+
+actions.aoe_rotation=shifting_power,if=(!talent.evocation|cooldown.evocation.remains>12)&(!talent.arcane_surge|cooldown.arcane_surge.remains>12)&(!talent.touch_of_the_magi|cooldown.touch_of_the_magi.remains>12)&buff.arcane_surge.down&((!talent.charged_orb&cooldown.arcane_orb.remains>12)|(action.arcane_orb.charges=0|cooldown.arcane_orb.remains>12))&!debuff.touch_of_the_magi.up
+actions.aoe_rotation+=/nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.arcane_surge.down&(active_enemies>6|!talent.orb_barrage)&!debuff.touch_of_the_magi.up
+actions.aoe_rotation+=/arcane_missiles,if=buff.arcane_artillery.up&(cooldown.touch_of_the_magi.remains+5)>buff.arcane_artillery.remains
+actions.aoe_rotation+=/arcane_barrage,if=(active_enemies<=4&buff.arcane_charge.stack=3)|buff.arcane_charge.stack=buff.arcane_charge.max_stack|mana.pct<9
+actions.aoe_rotation+=/arcane_orb,if=buff.arcane_charge.stack<2&cooldown.touch_of_the_magi.remains>18
+actions.aoe_rotation+=/arcane_explosion
+
+actions.cooldown_phase=touch_of_the_magi,use_off_gcd=1,if=prev_gcd.1.arcane_barrage
+actions.cooldown_phase+=/shifting_power,if=buff.arcane_surge.down&!talent.radiant_spark
+actions.cooldown_phase+=/arcane_orb,if=(cooldown.radiant_spark.ready|(active_enemies>=2&debuff.radiant_spark_vulnerability.down))&buff.arcane_charge.stack<buff.arcane_charge.max_stack
+actions.cooldown_phase+=/arcane_missiles,if=variable.opener&buff.clearcasting.react&buff.clearcasting.stack>0&cooldown.radiant_spark.remains<5&buff.nether_precision.down&(!buff.arcane_artillery.up|buff.arcane_artillery.remains<=(gcd.max*6)),interrupt_if=!gcd.remains&mana.pct>30&buff.nether_precision.up&!buff.arcane_artillery.up,interrupt_immediate=1,interrupt_global=1,chain=1
+actions.cooldown_phase+=/arcane_blast,if=variable.opener&cooldown.arcane_surge.ready&mana.pct>10&buff.siphon_storm.remains>17&!set_bonus.tier30_4pc
+actions.cooldown_phase+=/arcane_missiles,if=cooldown.radiant_spark.ready&buff.clearcasting.react&(talent.nether_precision&(buff.nether_precision.down|buff.nether_precision.remains<gcd.max*3))&(!buff.arcane_artillery.up|buff.arcane_artillery.remains<=(gcd.max*6)),interrupt_if=!gcd.remains&mana.pct>30&buff.nether_precision.up&!buff.arcane_artillery.up,interrupt_immediate=1,interrupt_global=1,chain=1
+actions.cooldown_phase+=/radiant_spark
+actions.cooldown_phase+=/nether_tempest,if=talent.arcane_echo,line_cd=30
+actions.cooldown_phase+=/arcane_surge
+actions.cooldown_phase+=/wait,sec=0.05,if=prev_gcd.1.arcane_surge,line_cd=15
+actions.cooldown_phase+=/arcane_barrage,if=prev_gcd.1.arcane_surge|prev_gcd.1.nether_tempest|prev_gcd.1.radiant_spark|(active_enemies>=(4-(2*talent.orb_barrage))&debuff.radiant_spark_vulnerability.stack=4&talent.arcing_cleave)
+actions.cooldown_phase+=/arcane_blast,if=debuff.radiant_spark_vulnerability.stack>0&(debuff.radiant_spark_vulnerability.stack<4|(variable.blast_below_gcd&debuff.radiant_spark_vulnerability.stack=4))
+actions.cooldown_phase+=/presence_of_mind,if=debuff.touch_of_the_magi.remains<=gcd.max
+actions.cooldown_phase+=/arcane_blast,if=buff.presence_of_mind.up
+actions.cooldown_phase+=/arcane_missiles,if=((buff.nether_precision.down&buff.clearcasting.react)|(buff.clearcasting.stack>2&debuff.touch_of_the_magi.up))&(debuff.radiant_spark_vulnerability.down|(debuff.radiant_spark_vulnerability.stack=4&prev_gcd.1.arcane_blast)),interrupt_if=!gcd.remains&mana.pct>30&buff.nether_precision.up&!buff.arcane_artillery.up,interrupt_immediate=1,interrupt_global=1,chain=1
+actions.cooldown_phase+=/arcane_blast
+
+actions.rotation=arcane_orb,if=buff.arcane_charge.stack<3&(buff.bloodlust.down|mana.pct>70)
+actions.rotation+=/shifting_power,if=buff.arcane_surge.down&cooldown.arcane_surge.remains>45&fight_remains>15
+actions.rotation+=/nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&(((buff.temporal_warp.up|mana.pct<10|!talent.shifting_power)&buff.arcane_surge.down)|equipped.neltharions_call_to_chaos)&!variable.opener&fight_remains>=12
+actions.rotation+=/arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&mana.pct<70&(((cooldown.arcane_surge.remains>30&cooldown.touch_of_the_magi.remains>10)&buff.bloodlust.up&cooldown.touch_of_the_magi.remains>5&fight_remains>30)|(!talent.evocation&fight_remains>20))
+actions.rotation+=/presence_of_mind,if=buff.arcane_charge.stack<3&target.health.pct<35&talent.arcane_bombardment
+actions.rotation+=/arcane_blast,if=(buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.nether_precision.up)|(talent.time_anomaly&buff.arcane_surge.up&buff.arcane_surge.remains<=6)
+actions.rotation+=/arcane_missiles,if=buff.clearcasting.react&buff.nether_precision.down&(!variable.opener|(equipped.belorrelos_the_suncaller&variable.steroid_trinket_equipped)),interrupt_if=!gcd.remains&buff.nether_precision.up&mana.pct>30&!buff.arcane_artillery.up,interrupt_immediate=1,interrupt_global=1,chain=1
+actions.rotation+=/arcane_blast
+actions.rotation+=/arcane_barrage
+
+head=wayward_chronomancers_chronocap,id=207290,bonus_id=8780,ilevel=528,gem_id=192988,enchant_id=7052
+neck=ouroboreal_necklet,id=210214,bonus_id=8782,ilevel=528,gem_id=192961/192961/192961
+shoulders=wayward_chronomancers_metronomes,id=207288,ilevel=528
+back=voice_of_the_silent_star,id=204465,ilevel=535,enchant_id=6592
+chest=wayward_chronomancers_patchwork,id=207293,ilevel=528,enchant_id=6625
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8780/8932/8960,ilevel=525,gem_id=192961,enchant_id=6586,crafted_stats=32/36
+hands=wayward_chronomancers_gloves,id=207291,ilevel=528
+waist=vibrant_wildercloth_girdle,id=193516,bonus_id=8780/8932/8960,ilevel=525,gem_id=192961,crafted_stats=40/49
+legs=wayward_chronomancers_pantaloons,id=207289,ilevel=528,enchant_id=6544
+feet=wayward_chronomancers_strapped_boots,id=207292,ilevel=528,enchant_id=6613
+finger1=seal_of_filial_duty,id=195526,bonus_id=8780,ilevel=535,gem_id=192961,enchant_id=6562
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=8780,ilevel=528,gem_id=192961,enchant_id=6562
+trinket1=irideus_fragment,id=193743,ilevel=528
+trinket2=umbrelskuls_fractured_heart,id=212684,ilevel=528
+main_hand=dreambinder_loom_of_the_great_cycle,id=208616,ilevel=528,enchant_id=6655
+
+# Gear Summary
+# gear_ilvl=528.53
+# gear_stamina=58444
+# gear_intellect=17304
+# gear_crit_rating=3747
+# gear_haste_rating=3517
+# gear_mastery_rating=6114
+# gear_versatility_rating=4778
+# gear_speed_rating=200
+# gear_avoidance_rating=125
+# gear_armor=4425
+# set_bonus=tier31_2pc=1
+# set_bonus=tier31_4pc=1

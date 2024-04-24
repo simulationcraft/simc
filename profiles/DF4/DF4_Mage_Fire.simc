@@ -1,0 +1,253 @@
+mage="DF4_Mage_Fire"
+source=default
+spec=fire
+level=70
+race=dwarf
+role=spell
+position=back
+talents=B8DAAAAAAAAAAAAAAAAAAAAAAQCSRDJEpJIHIJERSIJAAAAAAAAAICJiDUSOQJJJJJJJpBAAASD
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_corrupting_rage_3
+food=fated_fortune_cookie
+augmentation=draconic
+temporary_enchant=main_hand:howling_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/arcane_intellect
+# defining a group of trinkets as Steroids
+actions.precombat+=/variable,name=steroid_trinket_equipped,op=set,value=equipped.gladiators_badge|equipped.irideus_fragment|equipped.erupting_spear_fragment|equipped.spoils_of_neltharus|equipped.timebreaching_talon|equipped.horn_of_valor|equipped.mirror_of_fractured_tomorrows|equipped.ashes_of_the_embersoul|equipped.balefire_branch|equipped.time_theifs_gambit|equipped.nymues_unraveling_spindle
+# APL Variable Option: If set to a non-zero value, the Combustion action and cooldowns that are constrained to only be used when Combustion is up will not be used during the simulation.
+actions.precombat+=/variable,name=disable_combustion,op=reset
+# APL Variable Option: This variable specifies whether Combustion should be used during Firestarter.
+actions.precombat+=/variable,name=firestarter_combustion,default=-1,value=talent.sun_kings_blessing,if=variable.firestarter_combustion<0
+# APL Variable Option: This variable specifies the number of targets at which Hot Streak Flamestrikes outside of Combustion should be used.
+actions.precombat+=/variable,name=hot_streak_flamestrike,if=variable.hot_streak_flamestrike=0,value=4*talent.flame_patch+999*!talent.flame_patch
+# APL Variable Option: This variable specifies the number of targets at which Hard Cast Flamestrikes outside of Combustion should be used as filler.
+actions.precombat+=/variable,name=hard_cast_flamestrike,if=variable.hard_cast_flamestrike=0,value=999
+# APL Variable Option: This variable specifies the number of targets at which Hot Streak Flamestrikes are used during Combustion.
+actions.precombat+=/variable,name=combustion_flamestrike,if=variable.combustion_flamestrike=0,value=4*talent.flame_patch+999*!talent.flame_patch
+# APL Variable Option: This variable specifies the number of targets at which Flamestrikes should be used to consume Fury of the Sun King.  Restricting this variable to be true only if Fuel the Fire is talented.
+actions.precombat+=/variable,name=skb_flamestrike,if=variable.skb_flamestrike=0,value=3*talent.fuel_the_fire+999*!talent.fuel_the_fire
+# APL Variable Option: This variable specifies the number of targets at which Arcane Explosion outside of Combustion should be used.
+actions.precombat+=/variable,name=arcane_explosion,if=variable.arcane_explosion=0,value=999
+# APL Variable Option: This variable specifies the percentage of mana below which Arcane Explosion will not be used.
+actions.precombat+=/variable,name=arcane_explosion_mana,default=40,op=reset
+# APL Variable Option: The number of targets at which Shifting Power can used during Combustion.
+actions.precombat+=/variable,name=combustion_shifting_power,if=variable.combustion_shifting_power=0,value=999
+# APL Variable Option: The time remaining on a cast when Combustion can be used in seconds.
+actions.precombat+=/variable,name=combustion_cast_remains,default=0.3,op=reset
+# APL Variable Option: This variable specifies the number of seconds of Fire Blast that should be pooled past the default amount.
+actions.precombat+=/variable,name=overpool_fire_blasts,default=0,op=reset
+# If Combustion is disabled, schedule the first Combustion far after the fight ends.
+actions.precombat+=/variable,name=time_to_combustion,value=fight_remains+100,if=variable.disable_combustion
+# The duration of a Sun King's Blessing Combustion.
+actions.precombat+=/variable,name=skb_duration,value=dbc.effect.1016075.base_value
+# Whether a usable item used to buff Combustion is equipped.
+actions.precombat+=/variable,name=combustion_on_use,value=equipped.gladiators_badge|equipped.moonlit_prism|equipped.irideus_fragment|equipped.spoils_of_neltharus|equipped.timebreaching_talon|equipped.horn_of_valor
+# How long before Combustion should trinkets that trigger a shared category cooldown on other trinkets not be used?
+actions.precombat+=/variable,name=on_use_cutoff,value=20,if=variable.combustion_on_use
+actions.precombat+=/snapshot_stats
+actions.precombat+=/mirror_image
+actions.precombat+=/flamestrike,if=active_enemies>=variable.hot_streak_flamestrike
+actions.precombat+=/pyroblast
+
+# Executed every time the actor is available.
+actions=counterspell
+# The combustion_timing action list schedules the approximate time when Combustion should be used and stores the number of seconds until then in variable.time_to_combustion.
+actions+=/call_action_list,name=combustion_timing,if=!variable.disable_combustion
+# The second Time Warp is usually best used immediately on pull with Temporal Warp so that it comes off cooldown earlier; this can sometimes be slightly worse if doing so will not result in additional Time Warp(s) throughout the encounter. Additionally, it should always be used at the end of the fight regardless of Combustion being ready if it is available.
+actions+=/time_warp,if=buff.exhaustion.up&talent.temporal_warp&(firestarter.active|interpolated_fight_remains<buff.bloodlust.duration)
+actions+=/potion,if=buff.potion.duration>variable.time_to_combustion+buff.combustion.duration
+# Variable that estimates whether Shifting Power will be used before the next Combustion.
+actions+=/variable,name=shifting_power_before_combustion,value=variable.time_to_combustion>cooldown.shifting_power.remains
+actions+=/variable,name=item_cutoff_active,value=(variable.time_to_combustion<variable.on_use_cutoff|buff.combustion.remains>variable.skb_duration&!cooldown.item_cd_1141.remains)&((trinket.1.has_cooldown&trinket.1.cooldown.remains<variable.on_use_cutoff)+(trinket.2.has_cooldown&trinket.2.cooldown.remains<variable.on_use_cutoff)>1)
+actions+=/use_item,effect_name=gladiators_badge,if=variable.time_to_combustion>cooldown-5
+# New trinket and weapon lines  need special line for Nymue trinket which would delay combustion under certain conditions?
+actions+=/use_item,name=mirror_of_fractured_tomorrows,if=buff.combustion.up&buff.combustion.remains>11
+actions+=/use_item,name=timethiefs_gambit,if=buff.combustion.up
+actions+=/use_item,name=balefire_branch,if=(variable.time_to_combustion<=3&buff.fury_of_the_sun_king.up)|(buff.combustion.up&buff.combustion.remains>11)
+actions+=/use_item,name=ashes_of_the_embersoul,if=(variable.time_to_combustion<=3&buff.fury_of_the_sun_king.up)|(buff.combustion.up&buff.combustion.remains>11)
+actions+=/use_item,name=nymues_unraveling_spindle,if=variable.time_to_combustion<=9
+actions+=/use_item,name=dreambinder_loom_of_the_great_cycle
+# Iridal can and should be used while on the GCD
+actions+=/use_item,name=iridal_the_earths_master,use_off_gcd=1,slot=main_hand,if=gcd.remains>=0.6*gcd.max
+actions+=/use_item,name=belorrelos_the_suncaller,if=(!variable.steroid_trinket_equipped&buff.combustion.down)|(variable.steroid_trinket_equipped&trinket.1.has_cooldown&trinket.1.cooldown.remains>20&buff.combustion.down)|(variable.steroid_trinket_equipped&trinket.2.has_cooldown&trinket.2.cooldown.remains>20&buff.combustion.down)
+actions+=/use_items,if=!variable.item_cutoff_active
+# Pool as many Fire Blasts as possible for Combustion.
+actions+=/variable,use_off_gcd=1,use_while_casting=1,name=fire_blast_pooling,value=buff.combustion.down&action.fire_blast.charges_fractional+(variable.time_to_combustion+action.shifting_power.full_reduction*variable.shifting_power_before_combustion)%cooldown.fire_blast.duration-1<cooldown.fire_blast.max_charges+variable.overpool_fire_blasts%cooldown.fire_blast.duration-(buff.combustion.duration%cooldown.fire_blast.duration)%%1&variable.time_to_combustion<fight_remains
+actions+=/call_action_list,name=combustion_phase,if=variable.time_to_combustion<=0|buff.combustion.up|variable.time_to_combustion<variable.combustion_precast_time&cooldown.combustion.remains<variable.combustion_precast_time
+# Adjust the variable that controls Fire Blast usage to save Fire Blasts while Searing Touch is active with Sun King's Blessing.
+actions+=/variable,use_off_gcd=1,use_while_casting=1,name=fire_blast_pooling,value=searing_touch.active&action.fire_blast.full_recharge_time>3*gcd.max,if=!variable.fire_blast_pooling&talent.sun_kings_blessing
+actions+=/shifting_power,if=buff.combustion.down&(action.fire_blast.charges=0|variable.fire_blast_pooling)&(!improved_scorch.active|debuff.improved_scorch.remains>cast_time+action.scorch.cast_time&!buff.fury_of_the_sun_king.up)&!buff.hot_streak.react&variable.shifting_power_before_combustion
+# Variable that controls Phoenix Flames usage to ensure its charges are pooled for Combustion when needed. Only use Phoenix Flames outside of Combustion when full charges can be obtained during the next Combustion.
+actions+=/variable,name=phoenix_pooling,if=active_enemies<variable.combustion_flamestrike,value=(variable.time_to_combustion+buff.combustion.duration-5<action.phoenix_flames.full_recharge_time+cooldown.phoenix_flames.duration-action.shifting_power.full_reduction*variable.shifting_power_before_combustion&variable.time_to_combustion<fight_remains|talent.sun_kings_blessing)&!talent.alexstraszas_fury
+# When using Flamestrike in Combustion, save as many charges as possible for Combustion without capping.
+actions+=/variable,name=phoenix_pooling,if=active_enemies>=variable.combustion_flamestrike,value=(variable.time_to_combustion<action.phoenix_flames.full_recharge_time-action.shifting_power.full_reduction*variable.shifting_power_before_combustion&variable.time_to_combustion<fight_remains|talent.sun_kings_blessing)&!talent.alexstraszas_fury
+# When Hardcasting Flamestrike, Fire Blasts should be used to generate Hot Streaks and to extend Feel the Burn.
+actions+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=!variable.fire_blast_pooling&variable.time_to_combustion>0&active_enemies>=variable.hard_cast_flamestrike&!firestarter.active&!buff.hot_streak.react&(buff.heating_up.react&action.flamestrike.execute_remains<0.5|charges_fractional>=2)
+actions+=/call_action_list,name=firestarter_fire_blasts,if=buff.combustion.down&firestarter.active&variable.time_to_combustion>0
+# Avoid capping Fire Blast charges while channeling Shifting Power
+actions+=/fire_blast,use_while_casting=1,if=action.shifting_power.executing&full_recharge_time<action.shifting_power.tick_reduction
+actions+=/call_action_list,name=standard_rotation,if=variable.time_to_combustion>0&buff.combustion.down
+# Ice Nova can be used during movement when Searing Touch is not active.
+actions+=/ice_nova,if=!searing_touch.active
+actions+=/scorch
+
+actions.active_talents=living_bomb,if=active_enemies>1&buff.combustion.down&(variable.time_to_combustion>cooldown.living_bomb.duration|variable.time_to_combustion<=0)
+actions.active_talents+=/meteor,if=variable.time_to_combustion<=0|buff.combustion.remains>travel_time|!talent.sun_kings_blessing&(cooldown.meteor.duration<variable.time_to_combustion|fight_remains<variable.time_to_combustion)
+# With Alexstrasza's Fury when Combustion is not active, Dragon's Breath should be used to convert Heating Up to a Hot Streak.
+actions.active_talents+=/dragons_breath,if=talent.alexstraszas_fury&(buff.combustion.down&!buff.hot_streak.react)&(buff.feel_the_burn.up|time>15)&(!improved_scorch.active)&!firestarter.remains&!talent.tempered_flames
+actions.active_talents+=/dragons_breath,if=talent.alexstraszas_fury&(buff.combustion.down&!buff.hot_streak.react)&(buff.feel_the_burn.up|time>15)&(!improved_scorch.active)&talent.tempered_flames
+
+actions.combustion_cooldowns=potion
+actions.combustion_cooldowns+=/blood_fury
+actions.combustion_cooldowns+=/berserking,if=buff.combustion.up
+actions.combustion_cooldowns+=/fireblood
+actions.combustion_cooldowns+=/ancestral_call
+actions.combustion_cooldowns+=/invoke_external_buff,name=power_infusion,if=buff.power_infusion.down
+actions.combustion_cooldowns+=/invoke_external_buff,name=blessing_of_summer,if=buff.blessing_of_summer.down
+actions.combustion_cooldowns+=/time_warp,if=talent.temporal_warp&buff.exhaustion.up
+actions.combustion_cooldowns+=/use_item,effect_name=gladiators_badge
+actions.combustion_cooldowns+=/use_item,name=irideus_fragment
+actions.combustion_cooldowns+=/use_item,name=spoils_of_neltharus
+actions.combustion_cooldowns+=/use_item,name=tome_of_unstable_power
+actions.combustion_cooldowns+=/use_item,name=timebreaching_talon
+actions.combustion_cooldowns+=/use_item,name=voidmenders_shadowgem
+actions.combustion_cooldowns+=/use_item,name=horn_of_valor
+actions.combustion_cooldowns+=/use_item,name=timethiefs_gambit
+actions.combustion_cooldowns+=/use_item,name=balefire_branch
+actions.combustion_cooldowns+=/use_item,name=ashes_of_the_embersoul
+actions.combustion_cooldowns+=/use_item,name=mirror_of_fractured_tomorrows
+
+actions.combustion_phase=lights_judgment,if=buff.combustion.down
+actions.combustion_phase+=/bag_of_tricks,if=buff.combustion.down
+actions.combustion_phase+=/living_bomb,if=active_enemies>1&buff.combustion.down
+# Other cooldowns that should be used with Combustion should only be used with an actual Combustion cast and not with a Sun King's Blessing proc.
+actions.combustion_phase+=/call_action_list,name=combustion_cooldowns,if=buff.combustion.remains>variable.skb_duration|fight_remains<20
+actions.combustion_phase+=/use_item,name=hyperthread_wristwraps,if=hyperthread_wristwraps.fire_blast>=2&action.fire_blast.charges=0
+actions.combustion_phase+=/use_item,name=neural_synapse_enhancer,if=variable.time_to_combustion>60
+# In Charring embers is not up before Combustion, make sure to apply it.
+actions.combustion_phase+=/phoenix_flames,if=buff.combustion.down&set_bonus.tier30_2pc&!action.phoenix_flames.in_flight&debuff.charring_embers.remains<4*gcd.max&!buff.hot_streak.react
+actions.combustion_phase+=/call_action_list,name=active_talents
+# If Combustion is down, precast something before activating it.
+actions.combustion_phase+=/flamestrike,if=buff.combustion.down&buff.fury_of_the_sun_king.up&buff.fury_of_the_sun_king.remains>cast_time&buff.fury_of_the_sun_king.expiration_delay_remains=0&cooldown.combustion.remains<cast_time&active_enemies>=variable.skb_flamestrike
+actions.combustion_phase+=/pyroblast,if=buff.combustion.down&buff.fury_of_the_sun_king.up&buff.fury_of_the_sun_king.remains>cast_time&buff.fury_of_the_sun_king.expiration_delay_remains=0
+actions.combustion_phase+=/fireball,if=buff.combustion.down&cooldown.combustion.remains<cast_time&active_enemies<2&!improved_scorch.active
+actions.combustion_phase+=/scorch,if=buff.combustion.down&cooldown.combustion.remains<cast_time
+# Combustion should be used when the precast is almost finished or when Meteor is about to land.
+actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=hot_streak_spells_in_flight=0&buff.combustion.down&variable.time_to_combustion<=0&(action.scorch.executing&action.scorch.execute_remains<variable.combustion_cast_remains|action.fireball.executing&action.fireball.execute_remains<variable.combustion_cast_remains|action.pyroblast.executing&action.pyroblast.execute_remains<variable.combustion_cast_remains|action.flamestrike.executing&action.flamestrike.execute_remains<variable.combustion_cast_remains|action.meteor.in_flight&action.meteor.in_flight_remains<variable.combustion_cast_remains)
+# Without Feel the Burn, just use Fire Blasts when they won't munch crits and when Hyperthermia is down.
+actions.combustion_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=!variable.fire_blast_pooling&(!improved_scorch.active|action.scorch.executing|debuff.improved_scorch.remains>4*gcd.max)&(buff.fury_of_the_sun_king.down|action.pyroblast.executing)&buff.combustion.up&!buff.hyperthermia.react&!buff.hot_streak.react&hot_streak_spells_in_flight+buff.heating_up.react*(gcd.remains>0)<2
+# Spend Hot Streaks during Combustion at high priority.
+actions.combustion_phase+=/flamestrike,if=(buff.hot_streak.react&active_enemies>=variable.combustion_flamestrike)|(buff.hyperthermia.react&active_enemies>=variable.combustion_flamestrike-talent.hyperthermia)
+actions.combustion_phase+=/pyroblast,if=buff.hyperthermia.react
+actions.combustion_phase+=/pyroblast,if=buff.hot_streak.react&buff.combustion.up
+actions.combustion_phase+=/pyroblast,if=prev_gcd.1.scorch&buff.heating_up.react&active_enemies<variable.combustion_flamestrike&buff.combustion.up
+# Using Shifting Power during Combustion to restore Fire Blast and Phoenix Flame charges can be beneficial, but usually only on AoE.
+actions.combustion_phase+=/shifting_power,if=buff.combustion.up&!action.fire_blast.charges&(action.phoenix_flames.charges<action.phoenix_flames.max_charges|talent.alexstraszas_fury)&variable.combustion_shifting_power<=active_enemies
+# Spend Fury of the Sun King procs.
+actions.combustion_phase+=/flamestrike,if=buff.fury_of_the_sun_king.up&buff.fury_of_the_sun_king.remains>cast_time&active_enemies>=variable.skb_flamestrike&buff.fury_of_the_sun_king.expiration_delay_remains=0
+actions.combustion_phase+=/pyroblast,if=buff.fury_of_the_sun_king.up&buff.fury_of_the_sun_king.remains>cast_time&buff.fury_of_the_sun_king.expiration_delay_remains=0
+# Maintain Improved Scorch when not casting Flamestrikes in Combustion.
+actions.combustion_phase+=/scorch,if=improved_scorch.active&(debuff.improved_scorch.remains<4*gcd.max)&active_enemies<variable.combustion_flamestrike
+# With the T30 set, Phoenix Flames should be used to maintain Charring Embers during Combustion and Flame's Fury procs should be spent.
+actions.combustion_phase+=/phoenix_flames,if=set_bonus.tier30_2pc&travel_time<buff.combustion.remains&buff.heating_up.react+hot_streak_spells_in_flight<2&(debuff.charring_embers.remains<4*gcd.max|buff.flames_fury.stack>1|buff.flames_fury.up)
+actions.combustion_phase+=/fireball,if=buff.combustion.remains>cast_time&buff.flame_accelerant.react
+# Use Phoenix Flames and Scorch in Combustion to help generate Hot Streaks when Fire Blasts are not available or need to be conserved.
+actions.combustion_phase+=/phoenix_flames,if=(!talent.alexstraszas_fury&travel_time<buff.combustion.remains|talent.alexstraszas_fury)&buff.heating_up.react+hot_streak_spells_in_flight<2
+actions.combustion_phase+=/scorch,if=buff.combustion.remains>cast_time&cast_time>=gcd.max
+actions.combustion_phase+=/fireball,if=buff.combustion.remains>cast_time
+# If there isn't enough time left in Combustion for a Phoenix Flames or Scorch to hit inside of Combustion, use something else.
+actions.combustion_phase+=/living_bomb,if=buff.combustion.remains<gcd.max&active_enemies>1
+
+# Helper variable that contains the actual estimated time that the next Combustion will be ready.
+actions.combustion_timing=variable,use_off_gcd=1,use_while_casting=1,name=combustion_ready_time,value=cooldown.combustion.remains*expected_kindling_reduction
+# The cast time of the spell that will be precast into Combustion.
+actions.combustion_timing+=/variable,use_off_gcd=1,use_while_casting=1,name=combustion_precast_time,value=action.fireball.cast_time*(active_enemies<variable.combustion_flamestrike)+action.flamestrike.cast_time*(active_enemies>=variable.combustion_flamestrike)-variable.combustion_cast_remains
+actions.combustion_timing+=/variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,value=variable.combustion_ready_time
+# Delay Combustion for after Firestarter unless variable.firestarter_combustion is set.
+actions.combustion_timing+=/variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,op=max,value=firestarter.remains,if=talent.firestarter&!variable.firestarter_combustion
+# Delay Combustion until SKB is ready during Firestarter
+actions.combustion_timing+=/variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,op=max,value=(buff.sun_kings_blessing.max_stack-buff.sun_kings_blessing.stack)*(3*gcd.max),if=talent.sun_kings_blessing&firestarter.active&buff.fury_of_the_sun_king.down
+# Delay Combustion for Gladiators Badge, unless it would be delayed longer than 20 seconds.
+actions.combustion_timing+=/variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,op=max,value=cooldown.gladiators_badge_345228.remains,if=equipped.gladiators_badge&cooldown.gladiators_badge_345228.remains-20<variable.time_to_combustion
+# Delay Combustion until Combustion expires if it's up.
+actions.combustion_timing+=/variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,op=max,value=buff.combustion.remains
+# Raid Events: Delay Combustion for add spawns of 3 or more adds that will last longer than 15 seconds. These values aren't necessarily optimal in all cases.
+actions.combustion_timing+=/variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,op=max,value=raid_event.adds.in,if=raid_event.adds.exists&raid_event.adds.count>=3&raid_event.adds.duration>15
+# Raid Events: Always use Combustion with vulnerability raid events, override any delays listed above to make sure it gets used here.
+actions.combustion_timing+=/variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,value=raid_event.vulnerable.in*!raid_event.vulnerable.up,if=raid_event.vulnerable.exists&variable.combustion_ready_time<raid_event.vulnerable.in
+# Use the next Combustion on cooldown if it would not be expected to delay the scheduled one or the scheduled one would happen less than 20 seconds before the fight ends.
+actions.combustion_timing+=/variable,use_off_gcd=1,use_while_casting=1,name=time_to_combustion,value=variable.combustion_ready_time,if=variable.combustion_ready_time+cooldown.combustion.duration*(1-(0.4+0.2*talent.firestarter)*talent.kindling)<=variable.time_to_combustion|variable.time_to_combustion>fight_remains-20
+
+# While casting Fireball or Pyroblast, convert Heating Up to a Hot Streak!
+actions.firestarter_fire_blasts=fire_blast,use_while_casting=1,if=!variable.fire_blast_pooling&!buff.hot_streak.react&(action.fireball.execute_remains>gcd.remains|action.pyroblast.executing)&buff.heating_up.react+hot_streak_spells_in_flight=1&(cooldown.shifting_power.ready|charges>1|buff.feel_the_burn.remains<2*gcd.max)
+# If not casting anything, use Fire Blast to trigger Hot Streak! only if Feel the Burn is talented and would expire before the GCD ends or if Shifting Power is available.
+actions.firestarter_fire_blasts+=/fire_blast,use_off_gcd=1,if=!variable.fire_blast_pooling&buff.heating_up.react+hot_streak_spells_in_flight=1&(talent.feel_the_burn&buff.feel_the_burn.remains<gcd.remains|cooldown.shifting_power.ready&(!set_bonus.tier30_2pc|debuff.charring_embers.remains>2*gcd.max))
+
+actions.standard_rotation=flamestrike,if=active_enemies>=variable.hot_streak_flamestrike&(buff.hot_streak.react|buff.hyperthermia.react)
+actions.standard_rotation+=/pyroblast,if=buff.hyperthermia.react
+actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&(buff.hot_streak.remains<action.fireball.execute_time)
+actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&(hot_streak_spells_in_flight|firestarter.active|talent.alexstraszas_fury&action.phoenix_flames.charges)
+actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&searing_touch.active
+actions.standard_rotation+=/flamestrike,if=active_enemies>=variable.skb_flamestrike&buff.fury_of_the_sun_king.up&buff.fury_of_the_sun_king.expiration_delay_remains=0
+actions.standard_rotation+=/scorch,if=improved_scorch.active&debuff.improved_scorch.remains<action.pyroblast.cast_time+5*gcd.max&buff.fury_of_the_sun_king.up&!action.scorch.in_flight
+actions.standard_rotation+=/pyroblast,if=buff.fury_of_the_sun_king.up&buff.fury_of_the_sun_king.expiration_delay_remains=0
+# During the standard rotation, only use Fire Blasts when they are not being pooled for RoP or Combustion. Use Fire Blast either during a Fireball/Pyroblast cast when Heating Up is active or during execute with Searing Touch.
+actions.standard_rotation+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=!firestarter.active&!variable.fire_blast_pooling&buff.fury_of_the_sun_king.down&(((action.fireball.executing&(action.fireball.execute_remains<0.5|!talent.hyperthermia)|action.pyroblast.executing&(action.pyroblast.execute_remains<0.5|!talent.hyperthermia))&buff.heating_up.react)|(searing_touch.active&(!improved_scorch.active|debuff.improved_scorch.stack=debuff.improved_scorch.max_stack|full_recharge_time<3)&(buff.heating_up.react&!action.scorch.executing|!buff.hot_streak.react&!buff.heating_up.react&action.scorch.executing&!hot_streak_spells_in_flight)))
+actions.standard_rotation+=/pyroblast,if=prev_gcd.1.scorch&buff.heating_up.react&searing_touch.active&active_enemies<variable.hot_streak_flamestrike
+actions.standard_rotation+=/scorch,if=improved_scorch.active&debuff.improved_scorch.remains<4*gcd.max
+actions.standard_rotation+=/phoenix_flames,if=talent.alexstraszas_fury&(!talent.feel_the_burn|buff.feel_the_burn.remains<2*gcd.max)
+actions.standard_rotation+=/phoenix_flames,if=set_bonus.tier30_2pc&debuff.charring_embers.remains<2*gcd.max&!buff.hot_streak.react
+actions.standard_rotation+=/scorch,if=improved_scorch.active&debuff.improved_scorch.stack<debuff.improved_scorch.max_stack
+actions.standard_rotation+=/phoenix_flames,if=!talent.alexstraszas_fury&!buff.hot_streak.react&!variable.phoenix_pooling&buff.flames_fury.up
+actions.standard_rotation+=/phoenix_flames,if=talent.alexstraszas_fury&!buff.hot_streak.react&hot_streak_spells_in_flight=0&(!variable.phoenix_pooling&buff.flames_fury.up|charges_fractional>2.5|charges_fractional>1.5&(!talent.feel_the_burn|buff.feel_the_burn.remains<3*gcd.max))
+actions.standard_rotation+=/call_action_list,name=active_talents
+# Dragon's Breath is no longer a gain to be cast unless Alexstrazas is talented (need to check cutoff, was true on 10t)
+actions.standard_rotation+=/dragons_breath,if=active_enemies>1&talent.alexstraszas_fury
+actions.standard_rotation+=/scorch,if=searing_touch.active
+actions.standard_rotation+=/arcane_explosion,if=active_enemies>=variable.arcane_explosion&mana.pct>=variable.arcane_explosion_mana
+# With enough targets, it is a gain to cast Flamestrike as filler instead of Fireball.
+actions.standard_rotation+=/flamestrike,if=active_enemies>=variable.hard_cast_flamestrike
+actions.standard_rotation+=/pyroblast,if=talent.tempered_flames&!buff.flame_accelerant.react
+actions.standard_rotation+=/fireball
+
+head=lost_scholars_timely_hat,id=207116,bonus_id=10884/4786/1559/10338,gem_id=192952,enchant_id=7052
+neck=terross_captive_core,id=195502,bonus_id=10884/4786/1611/10338/8782,gem_id=192985/192952/192952
+shoulders=wayward_chronomancers_metronomes,id=217234,bonus_id=6652/10338/10869/10884/1520/8767
+back=voice_of_the_silent_star,id=204465,bonus_id=6652/10340/10884/1576/8767
+chest=wayward_chronomancers_patchwork,id=217235,bonus_id=6652/10338/10865/10884/1520/8767,enchant_id=6625
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9498/9369/9369/9368/9402/8790/9379/8960,ilevel=525,gem_id=192952,enchant_id=6574
+hands=wayward_chronomancers_gloves,id=217231,bonus_id=6652/10338/10866/10884/1520/8767
+waist=vibrant_wildercloth_girdle,id=193516,bonus_id=523/9379/8960,ilevel=525,gem_id=192952,crafted_stats=32/36
+legs=wayward_chronomancers_pantaloons,id=217233,bonus_id=6652/10338/10868/10884/1520/8767,enchant_id=6541
+feet=treads_of_fractured_realities,id=204392,bonus_id=10884/4786/1576/10338,enchant_id=6613
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=6652/10532/10338/10884/1605/8767,gem_id=192952,enchant_id=6556
+finger2=circle_of_ascended_frost,id=193731,bonus_id=4786/3207/10338/523,gem_id=192952,enchant_id=6556
+trinket1=belorrelos_the_suncaller,id=207172,bonus_id=6652/10338/10884/1559/8767
+trinket2=umbrelskuls_fractured_heart,id=212684,bonus_id=10338/9639/6652/3207/8767
+main_hand=dreambinder_loom_of_the_great_cycle,id=208616,ilevel=528,enchant_id=6655
+
+# Gear Summary
+# gear_ilvl=528.07
+# gear_stamina=58265
+# gear_intellect=18587
+# gear_crit_rating=3194
+# gear_haste_rating=6904
+# gear_mastery_rating=1380
+# gear_versatility_rating=5774
+# gear_avoidance_rating=200
+# gear_armor=4425
+# set_bonus=dragonflight_season_4_2pc=1
+# set_bonus=dragonflight_season_4_4pc=1

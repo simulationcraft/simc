@@ -1,0 +1,140 @@
+mage="DF4_Mage_Frost"
+source=default
+spec=frost
+level=70
+race=dwarf
+role=spell
+position=ranged_back
+talents=BAEAAAAAAAAAAAAAAAAAAAAAAIJhQDJJJpBISERSkkAAAIlEJhEJJhkkkkkEAAAAAAAAAICA
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_corrupting_rage_3
+food=fated_fortune_cookie
+augmentation=draconic
+temporary_enchant=main_hand:howling_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/arcane_intellect
+actions.precombat+=/snapshot_stats
+actions.precombat+=/blizzard,if=active_enemies>=2&talent.ice_caller|active_enemies>=3
+actions.precombat+=/frostbolt,if=active_enemies<=2
+
+# Executed every time the actor is available.
+actions=counterspell
+actions+=/call_action_list,name=cds
+actions+=/run_action_list,name=aoe,if=active_enemies>=7&!set_bonus.tier30_2pc|active_enemies>=3&talent.ice_caller
+actions+=/run_action_list,name=cleave,if=active_enemies=2
+actions+=/run_action_list,name=st
+
+actions.aoe=cone_of_cold,if=talent.coldest_snap&(prev_gcd.1.comet_storm|prev_gcd.1.frozen_orb&!talent.comet_storm)
+actions.aoe+=/frozen_orb,if=!prev_gcd.1.glacial_spike|!freezable
+actions.aoe+=/blizzard,if=!prev_gcd.1.glacial_spike|!freezable
+actions.aoe+=/comet_storm,if=!prev_gcd.1.glacial_spike&(!talent.coldest_snap|cooldown.cone_of_cold.ready&cooldown.frozen_orb.remains>25|cooldown.cone_of_cold.remains>20)
+actions.aoe+=/freeze,if=freezable&debuff.frozen.down&(!talent.glacial_spike&!talent.snowstorm|prev_gcd.1.glacial_spike|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack)
+actions.aoe+=/ice_nova,if=freezable&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack&gcd.max<1)
+actions.aoe+=/frost_nova,if=freezable&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike&!remaining_winters_chill|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack&gcd.max<1)
+actions.aoe+=/cone_of_cold,if=buff.snowstorm.stack=buff.snowstorm.max_stack
+actions.aoe+=/shifting_power
+actions.aoe+=/glacial_spike,if=buff.icicles.react=5&cooldown.blizzard.remains>gcd.max
+actions.aoe+=/flurry,if=!freezable&cooldown_react&!debuff.winters_chill.remains&(prev_gcd.1.glacial_spike|charges_fractional>1.8)
+actions.aoe+=/flurry,if=cooldown_react&!debuff.winters_chill.remains&(buff.brain_freeze.react|!buff.fingers_of_frost.react)
+actions.aoe+=/ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time|remaining_winters_chill
+actions.aoe+=/ice_nova,if=active_enemies>=4&(!talent.snowstorm&!talent.glacial_spike|!freezable)
+actions.aoe+=/dragons_breath,if=active_enemies>=7
+actions.aoe+=/arcane_explosion,if=mana.pct>30&active_enemies>=7
+actions.aoe+=/frostbolt
+actions.aoe+=/call_action_list,name=movement
+
+actions.cds=time_warp,if=buff.exhaustion.up&talent.temporal_warp&buff.bloodlust.down&(prev_off_gcd.icy_veins|(buff.icy_veins.up&fight_remains<=110|buff.icy_veins.up&fight_remains>=280)|fight_remains<40)
+actions.cds+=/use_item,name=spoils_of_neltharus,if=buff.spoils_of_neltharus_mastery.up|buff.spoils_of_neltharus_haste.up&buff.bloodlust.down&buff.temporal_warp.down&time>0|buff.spoils_of_neltharus_vers.up&(buff.bloodlust.up|buff.temporal_warp.up)
+actions.cds+=/potion,if=prev_off_gcd.icy_veins|fight_remains<60
+actions.cds+=/use_item,name=dreambinder_loom_of_the_great_cycle,if=(equipped.nymues_unraveling_spindle&prev_gcd.1.nymues_unraveling_spindle)|fight_remains>2
+actions.cds+=/use_item,name=belorrelos_the_suncaller,if=time>5&!prev_gcd.1.flurry
+actions.cds+=/use_item,name=balefire_branch,if=(!talent.ray_of_frost&active_enemies<=2&buff.icy_veins.up&prev_gcd.1.glacial_spike|remaining_winters_chill=1&cooldown.ray_of_frost.up&time>1&active_enemies<=2|cooldown.cone_of_cold.up&prev_gcd.1.comet_storm&active_enemies>=3)|fight_remains<20
+actions.cds+=/flurry,if=time=0&active_enemies<=2
+actions.cds+=/icy_veins
+actions.cds+=/use_items,if=!equipped.balefire_branch|time>5
+actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.power_infusion.down
+actions.cds+=/invoke_external_buff,name=blessing_of_summer,if=buff.blessing_of_summer.down
+actions.cds+=/blood_fury
+actions.cds+=/berserking
+actions.cds+=/lights_judgment
+actions.cds+=/fireblood
+actions.cds+=/ancestral_call
+
+actions.cleave=comet_storm,if=prev_gcd.1.flurry|prev_gcd.1.cone_of_cold
+actions.cleave+=/flurry,target_if=min:debuff.winters_chill.stack,if=cooldown_react&((prev_gcd.1.frostbolt&buff.icicles.react>=3)|prev_gcd.1.glacial_spike|(buff.icicles.react>=3&buff.icicles.react<5&charges_fractional=2))
+actions.cleave+=/ice_lance,target_if=max:debuff.winters_chill.stack,if=talent.glacial_spike&debuff.winters_chill.down&buff.icicles.react=4&buff.fingers_of_frost.react
+actions.cleave+=/ray_of_frost,target_if=max:debuff.winters_chill.stack,if=remaining_winters_chill=1
+actions.cleave+=/glacial_spike,if=buff.icicles.react=5&(action.flurry.cooldown_react|remaining_winters_chill)
+actions.cleave+=/frozen_orb,if=buff.fingers_of_frost.react<2&(!talent.ray_of_frost|cooldown.ray_of_frost.remains)
+actions.cleave+=/cone_of_cold,if=talent.coldest_snap&cooldown.comet_storm.remains>10&cooldown.frozen_orb.remains>10&remaining_winters_chill=0&active_enemies>=3
+actions.cleave+=/blizzard,if=active_enemies>=2&talent.ice_caller&talent.freezing_rain&(!talent.splintering_cold&!talent.ray_of_frost|buff.freezing_rain.up|active_enemies>=3)
+actions.cleave+=/shifting_power,if=cooldown.frozen_orb.remains>10&(!talent.comet_storm|cooldown.comet_storm.remains>10)&(!talent.ray_of_frost|cooldown.ray_of_frost.remains>10)|cooldown.icy_veins.remains<20
+actions.cleave+=/glacial_spike,if=buff.icicles.react=5
+actions.cleave+=/ice_lance,target_if=max:debuff.winters_chill.stack,if=buff.fingers_of_frost.react&!prev_gcd.1.glacial_spike|remaining_winters_chill
+actions.cleave+=/ice_nova,if=active_enemies>=4
+actions.cleave+=/frostbolt
+actions.cleave+=/call_action_list,name=movement
+
+actions.movement=any_blink,if=movement.distance>10
+actions.movement+=/ice_floes,if=buff.ice_floes.down
+actions.movement+=/ice_nova
+actions.movement+=/arcane_explosion,if=mana.pct>30&active_enemies>=2
+actions.movement+=/fire_blast
+actions.movement+=/ice_lance
+
+actions.st=comet_storm,if=prev_gcd.1.flurry|prev_gcd.1.cone_of_cold
+actions.st+=/flurry,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&((prev_gcd.1.frostbolt&buff.icicles.react>=3|prev_gcd.1.frostbolt&buff.brain_freeze.react)|prev_gcd.1.glacial_spike|talent.glacial_spike&buff.icicles.react=4&!buff.fingers_of_frost.react)
+actions.st+=/ice_lance,if=talent.glacial_spike&debuff.winters_chill.down&buff.icicles.react=4&buff.fingers_of_frost.react
+actions.st+=/ray_of_frost,if=remaining_winters_chill=1
+actions.st+=/glacial_spike,if=buff.icicles.react=5&(action.flurry.cooldown_react|remaining_winters_chill)
+actions.st+=/frozen_orb,if=buff.fingers_of_frost.react<2&(!talent.ray_of_frost|cooldown.ray_of_frost.remains)
+actions.st+=/cone_of_cold,if=talent.coldest_snap&cooldown.comet_storm.remains>10&cooldown.frozen_orb.remains>10&remaining_winters_chill=0&active_enemies>=3
+actions.st+=/blizzard,if=active_enemies>=2&talent.ice_caller&talent.freezing_rain&(!talent.splintering_cold&!talent.ray_of_frost|buff.freezing_rain.up|active_enemies>=3)
+actions.st+=/shifting_power,if=cooldown.frozen_orb.remains>10&(!talent.comet_storm|cooldown.comet_storm.remains>10)&(!talent.ray_of_frost|cooldown.ray_of_frost.remains>10)|cooldown.icy_veins.remains<20
+actions.st+=/glacial_spike,if=buff.icicles.react=5
+actions.st+=/ice_lance,if=buff.fingers_of_frost.react&!prev_gcd.1.glacial_spike|remaining_winters_chill
+actions.st+=/ice_nova,if=active_enemies>=4
+actions.st+=/frostbolt
+actions.st+=/call_action_list,name=movement
+
+head=wayward_chronomancers_chronocap,id=207290,bonus_id=8780,ilevel=528,gem_id=192991,enchant_id=7052
+neck=eye_of_the_rising_flame,id=207163,ilevel=528,gem_id=192958/192958/192958
+shoulders=wayward_chronomancers_metronomes,id=207288,ilevel=528
+back=voice_of_the_silent_star,id=204465,ilevel=535,enchant_id=6592
+chest=compressed_cultists_frock,id=195500,ilevel=528,enchant_id=6625
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8932/8960/8780/8790,ilevel=525,gem_id=192935,enchant_id=6586,crafted_stats=32/36
+hands=wayward_chronomancers_gloves,id=207291,ilevel=528
+waist=vibrant_wildercloth_girdle,id=193516,bonus_id=8780/8792/8932/8960,ilevel=525,gem_id=192935,enchant_id=6904
+legs=wayward_chronomancers_pantaloons,id=207289,ilevel=528,enchant_id=6830
+feet=wayward_chronomancers_strapped_boots,id=207292,ilevel=528,enchant_id=6613
+finger1=seal_of_filial_duty,id=195526,bonus_id=8780,ilevel=535,gem_id=192935,enchant_id=6568
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=8780,ilevel=528,gem_id=192935,enchant_id=6568
+trinket1=whispering_incarnate_icon,id=194301,ilevel=528
+trinket2=umbrelskuls_fractured_heart,id=212684,ilevel=528
+main_hand=dreambinder_loom_of_the_great_cycle,id=208616,ilevel=528,enchant_id=6655
+
+# Gear Summary
+# gear_ilvl=528.53
+# gear_stamina=58550
+# gear_intellect=18565
+# gear_crit_rating=2680
+# gear_haste_rating=4471
+# gear_mastery_rating=5769
+# gear_versatility_rating=4433
+# gear_speed_rating=200
+# gear_avoidance_rating=125
+# gear_armor=4425
+# set_bonus=tier31_2pc=1
+# set_bonus=tier31_4pc=1
