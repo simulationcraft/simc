@@ -629,6 +629,11 @@ public:
     propagate_const<buff_t*> nazgrims_conquest;
     propagate_const<buff_t*> mograines_might;
 
+    // San'layn
+    propagate_const<buff_t*> essence_of_the_blood_queen;
+    propagate_const<buff_t*> gift_of_the_sanlayn;
+    propagate_const<buff_t*> vampiric_strike;
+
   } buffs;
 
   struct runeforge_t {
@@ -698,8 +703,12 @@ public:
     propagate_const<action_t*> trollbanes_icy_fury;
     propagate_const<action_t*> mograines_death_and_decay;
 
+    // Sanlayn
+    propagate_const<action_t*> vampiric_strike;
+
     // Blood
     propagate_const<action_t*> mark_of_blood_heal;
+    propagate_const<action_t*> heart_strike;
     action_t* shattering_bone;
 
     // Frost
@@ -717,6 +726,7 @@ public:
     propagate_const<action_t*> festering_wound_application;
     propagate_const<action_t*> virulent_eruption;
     propagate_const<action_t*> ruptured_viscera;
+    propagate_const<action_t*> scourge_strike;
     action_t* unholy_pact_damage;
 
   } active_spells;
@@ -1066,7 +1076,7 @@ public:
     // San'layn
     struct
     {
-      player_talent_t vampiric_strike; // NYI
+      player_talent_t vampiric_strike;
       player_talent_t newly_turned; // NYI
       player_talent_t vampiric_speed; // NYI
       player_talent_t bloodsoaked_ground;
@@ -1079,7 +1089,7 @@ public:
       player_talent_t incite_terror; // NYI
       player_talent_t pact_of_the_sanlayn; // NYI
       player_talent_t sanguine_scent; // NYI
-      player_talent_t gift_of_the_sanlayn; // NYI
+      player_talent_t gift_of_the_sanlayn;
     } sanlayn;
   } talent;
 
@@ -1192,6 +1202,12 @@ public:
     const spell_data_t* summon_nazgrim;
     const spell_data_t* apocalypse_now_data;
     const spell_data_t* death_charge_action;
+
+    // San'layn non-talent spells
+    const spell_data_t* vampiric_strike;
+    const spell_data_t* essence_of_the_blood_queen_buff;
+    const spell_data_t* gift_of_the_sanlayn_buff;
+    const spell_data_t* vampiric_strike_buff;
 
   } spell;
 
@@ -3923,6 +3939,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     // Deathbringer
 
     // San'layn
+    parse_effects( p()->buffs.gift_of_the_sanlayn );
   }
 
   void apply_debuff_effects()
@@ -4712,6 +4729,48 @@ struct summon_mograine_t final : public summon_rider_t
       p()->pets.mograine.active_pet()->dnd_aura->trigger();
     }
   }
+};
+
+// ==========================================================================
+// San'layn Abilities
+// ==========================================================================
+
+// Vampiric Strike ==========================================================
+struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
+{
+  vampiric_strike_action_base_t( util::string_view n, death_knight_t* p, util::string_view options_str, const spell_data_t* s )
+    : death_knight_melee_attack_t( n, p, s ), vampiric_strike( p->active_spells.vampiric_strike )
+  {
+    switch ( p->specialization() )
+    {
+      case DEATH_KNIGHT_BLOOD:
+        base_action = p->active_spells.heart_strike;
+        break;
+      case DEATH_KNIGHT_UNHOLY:
+        base_action = p->active_spells.scourge_strike;
+        break;
+    }
+    attack_power_mod.direct = 0; // Handled by the damage action
+    parse_options( options_str );
+    add_child( base_action );
+    add_child( vampiric_strike );
+  }
+
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+    if ( p()->buffs.vampiric_strike->check() || p()->buffs.gift_of_the_sanlayn->check() )
+    {
+      vampiric_strike->execute();
+    }
+    else
+    {
+      base_action->execute();
+    }
+  }
+private:
+  action_t* vampiric_strike;
+  action_t* base_action;
 };
 
 // ==========================================================================
@@ -5658,33 +5717,43 @@ struct dark_transformation_damage_t final : public death_knight_spell_t
 // Even though the buff is tied to the pet ingame, it's simpler to add it to the player
 struct dark_transformation_buff_t final : public buff_t
 {
-  dark_transformation_buff_t( death_knight_t* p ) :
-    buff_t( p, "dark_transformation", p -> talent.unholy.dark_transformation )
+  dark_transformation_buff_t( death_knight_t* p )
+    : buff_t( p, "dark_transformation", p->talent.unholy.dark_transformation )
   {
     set_default_value_from_effect( 1 );
-    cooldown -> duration = 0_ms; // Handled by the player ability
-    if( p -> talent.unholy.ghoulish_frenzy.ok() )
-    {
-      set_stack_change_callback( [ p ] ( buff_t*, int, int new_ ) 
+    cooldown->duration = 0_ms;  // Handled by the player ability
+    set_stack_change_callback( [ p ]( buff_t*, int, int new_ ) {
+      if ( new_ )
       {
-        if ( new_ )
+        if ( p->talent.unholy.ghoulish_frenzy.ok() )
         {
-          p -> buffs.ghoulish_frenzy -> trigger();
-          for (auto& ghoul : p->pets.ghoul_pet)
+          p->buffs.ghoulish_frenzy->trigger();
+          for ( auto& ghoul : p->pets.ghoul_pet )
           {
             ghoul->ghoulish_frenzy->trigger();
           }
         }
-        else
+        if ( p->talent.sanlayn.gift_of_the_sanlayn.ok() )
         {
-          p -> buffs.ghoulish_frenzy -> expire();
-          for (auto& ghoul : p->pets.ghoul_pet)
+          p->buffs.gift_of_the_sanlayn->trigger();
+        }
+      }
+      else
+      {
+        if ( p->talent.unholy.ghoulish_frenzy.ok() )
+        {
+          p->buffs.ghoulish_frenzy->expire();
+          for ( auto& ghoul : p->pets.ghoul_pet )
           {
             ghoul->ghoulish_frenzy->expire();
           }
         }
-      } );
-    }
+        if ( p->talent.sanlayn.gift_of_the_sanlayn.ok() )
+        {
+          p->buffs.gift_of_the_sanlayn->expire();
+        }
+      }
+    } );
   }
 };
 
@@ -6079,7 +6148,11 @@ struct death_coil_t final : public death_knight_spell_t
         timespan_t::from_seconds( p() -> talent.unholy.eternal_agony -> effectN( 1 ).base_value() ) );
     }
 
-    p() -> buffs.sudden_doom -> decrement();
+    p()->buffs.sudden_doom->decrement();
+    if ( p()->talent.sanlayn.vampiric_strike.ok() && !p()->buffs.gift_of_the_sanlayn->check() )
+    {
+      p()->buffs.vampiric_strike->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -6356,6 +6429,10 @@ struct death_strike_t final : public death_knight_melee_attack_t
 
     p() -> buffs.hemostasis -> expire();
     p() -> buffs.heartrend -> expire();
+    if ( p()->talent.sanlayn.vampiric_strike.ok() )
+    {
+      p()->buffs.vampiric_strike->trigger();
+    }
   }
 
 private:
@@ -6956,16 +7033,19 @@ struct leeching_strike_t final : public death_knight_heal_t
   }
 };
 
-struct heart_strike_t final : public death_knight_melee_attack_t
+struct heart_strike_damage_base_t : public death_knight_melee_attack_t
 {
-  heart_strike_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_melee_attack_t( "heart_strike", p, p -> talent.blood.heart_strike ),
+  heart_strike_damage_base_t( util::string_view n, death_knight_t* p, const spell_data_t* s ) :
+    death_knight_melee_attack_t( n, p, s ),
     heartbreaker_rp_gen( p -> talent.blood.heartbreaker -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
   {
-    parse_options( options_str );
     aoe = 2;
     weapon = &( p -> main_hand_weapon );
     leeching_strike = get_action<leeching_strike_t>("leeching_strike", p);
+    background = true;
+    energize_amount = 0; // Handled by the action
+    base_costs[ RESOURCE_RUNE ] = 0; // Handled by the action
+    trigger_gcd = 0_s; // Handled by the action
   }
 
   int n_targets() const override
@@ -7011,6 +7091,40 @@ struct heart_strike_t final : public death_knight_melee_attack_t
 private:
   propagate_const<action_t*> leeching_strike;
   double heartbreaker_rp_gen;
+};
+
+struct heart_strike_damage_t : public heart_strike_damage_base_t
+{
+  heart_strike_damage_t( util::string_view n, death_knight_t* p ) :
+    heart_strike_damage_base_t( n, p, p->talent.blood.heart_strike )
+  {}
+};
+
+struct vampiric_strike_blood_t : public heart_strike_damage_base_t
+{
+  vampiric_strike_blood_t( util::string_view n, death_knight_t* p ) :
+    heart_strike_damage_base_t( n, p, p->spell.vampiric_strike )
+  {
+    attack_power_mod.direct = data().effectN( 5 ).ap_coeff();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    heart_strike_damage_base_t::impact( s );
+    p()->buffs.essence_of_the_blood_queen->trigger();
+    if ( !p()->buffs.gift_of_the_sanlayn->check() )
+    {
+      p()->buffs.vampiric_strike->expire();
+    }
+  }
+};
+
+
+struct heart_strike_action_t final : public vampiric_strike_action_base_t
+{
+  heart_strike_action_t( util::string_view n, death_knight_t* p, util::string_view options_str )
+    : vampiric_strike_action_base_t( n, p, options_str, p->talent.blood.heart_strike )
+  {}
 };
 
 // Horn of Winter ===========================================================
@@ -7773,13 +7887,17 @@ private:
 
 // Scourge Strike and Clawing Shadows =======================================
 
-struct scourge_strike_base_t : public death_knight_melee_attack_t
+struct wound_spender_damage_base_t : public death_knight_melee_attack_t
 {
-  scourge_strike_base_t( util::string_view name, death_knight_t* p, const spell_data_t* spell ) :
+  wound_spender_damage_base_t( util::string_view name, death_knight_t* p, const spell_data_t* spell ) :
     death_knight_melee_attack_t( name, p, spell ),
     dnd_cleave_targets( as<int>(p -> talent.unholy.scourge_strike -> effectN( 4 ).base_value()) )
   {
     weapon = &( player -> main_hand_weapon );
+    background = true;
+    energize_amount = 0; // Handled by the action
+    base_costs[ RESOURCE_RUNE ] = 0; // Handled by the action
+    trigger_gcd = 0_s; // Handled by the action
   }
 
   // The death and decay target cap is displayed both in scourge strike's effects
@@ -7849,52 +7967,72 @@ private:
   int dnd_cleave_targets; // For when in dnd how many targets we can cleave
 };
 
-struct clawing_shadows_t final : public scourge_strike_base_t
+struct clawing_shadows_t final : public wound_spender_damage_base_t
 {
-  clawing_shadows_t( death_knight_t* p, util::string_view options_str ) :
-    scourge_strike_base_t( "clawing_shadows", p, p -> talent.unholy.clawing_shadows )
-  {
-    parse_options( options_str );
-  }
+  clawing_shadows_t( util::string_view n, death_knight_t* p ) :
+    wound_spender_damage_base_t( n, p, p -> talent.unholy.clawing_shadows )
+  {}
 };
 
 struct scourge_strike_shadow_t final : public death_knight_melee_attack_t
 {
-  scourge_strike_shadow_t( util::string_view name, death_knight_t* p ) :
-    death_knight_melee_attack_t( name, p, p -> talent.unholy.scourge_strike -> effectN( 3 ).trigger() )
+  scourge_strike_shadow_t( util::string_view name, death_knight_t* p )
+    : death_knight_melee_attack_t( name, p, p->talent.unholy.scourge_strike->effectN( 3 ).trigger() )
   {
     may_miss = may_parry = may_dodge = false;
     background = proc = dual = true;
-    weapon = &( player -> main_hand_weapon );
+    weapon                   = &( player->main_hand_weapon );
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = death_knight_melee_attack_t::composite_da_multiplier( state );
 
-    if ( p() -> talent.unholy.reaping.ok() && target -> health_percentage() < p() -> talent.unholy.reaping -> effectN( 2 ).base_value() )
+    if ( p()->talent.unholy.reaping.ok() &&
+         target->health_percentage() < p()->talent.unholy.reaping->effectN( 2 ).base_value() )
     {
-      m *= 1.0 + p() -> talent.unholy.reaping -> effectN( 1 ).percent();
+      m *= 1.0 + p()->talent.unholy.reaping->effectN( 1 ).percent();
     }
-    
+
     return m;
   }
 };
 
-struct scourge_strike_t final : public scourge_strike_base_t
+struct scourge_strike_t final : public wound_spender_damage_base_t
 {
-  scourge_strike_t( death_knight_t* p, util::string_view options_str ) :
-    scourge_strike_base_t( "scourge_strike", p, p -> talent.unholy.scourge_strike )
+  scourge_strike_t( util::string_view n, death_knight_t* p ) :
+    wound_spender_damage_base_t( n, p, p -> talent.unholy.scourge_strike )
   {
-    parse_options( options_str );
-
     impact_action = get_action<scourge_strike_shadow_t>( "scourge_strike_shadow", p );
     add_child( impact_action );
-
-    // Disable when Clawing Shadows is talented
-    if ( p -> talent.unholy.clawing_shadows.ok() )
-      background = true;
   }
+};
+
+struct vampiric_strike_unholy_t : public wound_spender_damage_base_t
+{
+  vampiric_strike_unholy_t( util::string_view n, death_knight_t* p )
+    : wound_spender_damage_base_t( n, p, p->spell.vampiric_strike )
+  {
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    wound_spender_damage_base_t::impact( s );
+    p()->buffs.essence_of_the_blood_queen->trigger();
+    if ( !p()->buffs.gift_of_the_sanlayn->check() )
+    {
+      p()->buffs.vampiric_strike->expire();
+    }
+  }
+};
+
+struct wound_spender_action_t final : public vampiric_strike_action_base_t
+{
+  wound_spender_action_t( util::string_view n, death_knight_t* p, util::string_view options_str )
+    : vampiric_strike_action_base_t( n, p, options_str,
+          p->talent.unholy.clawing_shadows.ok() ? p->talent.unholy.clawing_shadows : p->talent.unholy.scourge_strike )
+  {}
 };
 
 // Shattering Bone ==========================================================
@@ -9604,6 +9742,12 @@ void death_knight_t::create_actions()
     active_spells.rider_summon_spells.push_back( active_spells.summon_nazgrim );
   }
 
+  // San'layn
+  if( talent.sanlayn.vampiric_strike.ok() )
+  {
+    active_spells.vampiric_strike = specialization() == DEATH_KNIGHT_UNHOLY ? get_action<vampiric_strike_unholy_t>( "vampiric_strike", this ) : get_action<vampiric_strike_blood_t>( "vampiric_strike", this );
+  }
+
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
@@ -9615,6 +9759,7 @@ void death_knight_t::create_actions()
     {
       active_spells.shattering_bone = get_action<shattering_bone_t>( "shattering_bone", this );
     }
+    active_spells.heart_strike = get_action<heart_strike_damage_t>( "heart_strike", this );
   }
 
   // Unholy
@@ -9640,6 +9785,7 @@ void death_knight_t::create_actions()
     {
       active_spells.virulent_eruption = get_action<virulent_eruption_t>( "virulent_eruption", this );
     }
+    active_spells.scourge_strike = talent.unholy.clawing_shadows.ok() ? get_action<clawing_shadows_t>("clawing_shadows", this) : get_action<scourge_strike_t>("scourge_strike", this);
   }
 
   else if ( specialization() == DEATH_KNIGHT_FROST )
@@ -9707,7 +9853,7 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
   if ( name == "dark_command"             ) return new dark_command_t             ( this, options_str );
   if ( name == "deaths_caress"            ) return new deaths_caress_t            ( this, options_str );
   if ( name == "gorefiends_grasp"         ) return new gorefiends_grasp_t         ( this, options_str );
-  if ( name == "heart_strike"             ) return new heart_strike_t             ( this, options_str );
+  if ( name == "heart_strike"             ) return new heart_strike_action_t      ( "heart_strike_base", this, options_str);
   if ( name == "mark_of_blood"            ) return new mark_of_blood_t            ( this, options_str );
   if ( name == "marrowrend"               ) return new marrowrend_t               ( this, options_str );
   if ( name == "rune_tap"                 ) return new rune_tap_t                 ( this, options_str );
@@ -9731,7 +9877,7 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
   // Unholy Actions
   if ( name == "army_of_the_dead"         ) return new army_of_the_dead_t         ( this, options_str );
   if ( name == "apocalypse"               ) return new apocalypse_t               ( this, options_str );
-  if ( name == "clawing_shadows"          ) return new clawing_shadows_t          ( this, options_str );
+  if ( name == "clawing_shadows"          ) return new wound_spender_action_t     ( "clawing_shadows_base", this, options_str);
   if ( name == "dark_transformation"      ) return new dark_transformation_t      ( this, options_str );
   if ( name == "death_and_decay"          ) return new death_and_decay_t          ( this, options_str );
   if ( name == "death_coil"               ) return new death_coil_t               ( this, options_str );
@@ -9739,7 +9885,7 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
   if ( name == "epidemic"                 ) return new epidemic_t                 ( this, options_str );
   if ( name == "festering_strike"         ) return new festering_strike_t         ( this, options_str );
   if ( name == "outbreak"                 ) return new outbreak_t                 ( this, options_str );
-  if ( name == "scourge_strike"           ) return new scourge_strike_t           ( this, options_str );
+  if ( name == "scourge_strike"           ) return new wound_spender_action_t     ( "scourge_strike_base", this, options_str);
   if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
   if ( name == "summon_gargoyle"          ) return new summon_gargoyle_t          ( this, options_str );
   if ( name == "unholy_assault"           ) return new unholy_assault_t           ( this, options_str );
@@ -10506,6 +10652,12 @@ void death_knight_t::init_spells()
   spell.apocalypse_now_data    = find_spell( 444244 );
   spell.death_charge_action    = find_spell( 444347 );
 
+  // San'layn Spells
+  spell.vampiric_strike                 = find_spell( 433895 );
+  spell.essence_of_the_blood_queen_buff = find_spell( 433925 );
+  spell.gift_of_the_sanlayn_buff        = find_spell( 434153 );
+  spell.vampiric_strike_buff            = find_spell( 433901 );
+
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
   pet_spell.ghoul_claw              = find_spell( 91776 );
@@ -10726,6 +10878,16 @@ void death_knight_t::create_buffs()
   // Deathbringer
 
   // San'layn
+  buffs.essence_of_the_blood_queen = make_buff( this, "essence_of_the_blood_queen", spell.essence_of_the_blood_queen_buff )
+    -> set_default_value_from_effect( 1 )
+    -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+
+  buffs.gift_of_the_sanlayn = make_buff( this, "gift_of_the_sanlayn", spell.gift_of_the_sanlayn_buff )
+    -> set_duration( 0_ms );
+
+  buffs.vampiric_strike = make_buff( this, "vampiric_strike", spell.vampiric_strike_buff )
+    -> set_chance( spell.vampiric_strike_buff->effectN( 1 ).percent() );
+
 
   // Blood
   if ( this -> specialization() == DEATH_KNIGHT_BLOOD)
@@ -10823,6 +10985,7 @@ void death_knight_t::create_buffs()
                                   name(), health_change * 100.0,
                                   old_health, resources.current[ RESOURCE_HEALTH ],
                                   old_max_health, resources.max[ RESOURCE_HEALTH ] );
+              buffs.gift_of_the_sanlayn->trigger();
             }
             else
             {
@@ -10834,6 +10997,7 @@ void death_knight_t::create_buffs()
                         name(), health_change * 100.0,
                         old_health, resources.current[ RESOURCE_HEALTH ],
                         old_max_health, resources.max[ RESOURCE_HEALTH ] );
+              buffs.gift_of_the_sanlayn->expire();
             }
           } );
 
