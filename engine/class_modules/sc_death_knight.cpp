@@ -4739,7 +4739,7 @@ struct summon_mograine_t final : public summon_rider_t
 struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
 {
   vampiric_strike_action_base_t( util::string_view n, death_knight_t* p, util::string_view options_str, const spell_data_t* s )
-    : death_knight_melee_attack_t( n, p, s ), vampiric_strike( p->active_spells.vampiric_strike )
+    : death_knight_melee_attack_t( n, p, s )
   {
     switch ( p->specialization() )
     {
@@ -4753,7 +4753,15 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
     attack_power_mod.direct = 0; // Handled by the damage action
     parse_options( options_str );
     add_child( base_action );
-    add_child( vampiric_strike );
+    if( p->talent.sanlayn.vampiric_strike.ok() )
+    {
+      vampiric_strike = p->active_spells.vampiric_strike;
+      add_child( vampiric_strike );
+    }
+    else
+    {
+      name_str = base_action->name_str;
+    }
   }
 
   void execute() override
@@ -6429,7 +6437,7 @@ struct death_strike_t final : public death_knight_melee_attack_t
 
     p() -> buffs.hemostasis -> expire();
     p() -> buffs.heartrend -> expire();
-    if ( p()->talent.sanlayn.vampiric_strike.ok() )
+    if ( p()->talent.sanlayn.vampiric_strike.ok() && !p()->buffs.gift_of_the_sanlayn->check() )
     {
       p()->buffs.vampiric_strike->trigger();
     }
