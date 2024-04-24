@@ -1943,14 +1943,6 @@ int buff_t::_resolve_stacks( int stacks )
   return ret;
 }
 
-bool buff_t::trigger( action_t* a, int stacks, double value, timespan_t duration )
-{
-  double chance = default_chance;
-  if ( chance < 0 )
-    chance = a->ppm_proc_chance( -chance );
-  return trigger( stacks, value, chance, duration );
-}
-
 bool buff_t::trigger( timespan_t duration )
 {
   return trigger( -1, duration );
@@ -2575,6 +2567,20 @@ void buff_t::override_buff( int stacks, double value )
   set_duration( timespan_t::zero() );
   start( stacks, value );
   overridden = true;
+}
+
+bool buff_t::trigger( action_t* action, int stacks, double value, double chance, timespan_t duration )
+{
+  if ( is_fallback || !action->data().ok() || !trigger_data->ok() )
+    return false;
+
+  if ( action->proc && !trigger_data->attribute( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
+    return false;
+
+  if ( trigger_data->attribute( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) && !action->allow_class_ability_procs )
+    return false;
+
+  return trigger( stacks, value, chance, duration );
 }
 
 bool buff_t::can_consume( action_t* action )

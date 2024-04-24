@@ -7493,7 +7493,11 @@ void account_blessing_of_sacrifice( player_t& p, action_state_t* s )
     double redirected_damage = s->result_amount * ( p.buffs.blessing_of_sacrifice->data().effectN( 1 ).percent() );
 
     // apply that damage to the source paladin
-    p.buffs.blessing_of_sacrifice->trigger( s->action, 0, redirected_damage, timespan_t::zero() );
+    double chance = p.buffs.blessing_of_sacrifice->default_chance;
+    if ( chance < 0 )
+      chance = s->action->ppm_proc_chance( -chance );
+
+    p.buffs.blessing_of_sacrifice->trigger( 0, redirected_damage, chance, 0_ms );
 
     // mitigate that amount from the target.
     // Slight inaccuracy: We do not get a feedback of paladin health buffer expiration here.

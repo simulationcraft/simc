@@ -245,7 +245,6 @@ public:
   // For trigger()/execute(), default value of stacks is -1, since we want to allow for explicit calls of stacks=1 to
   // override using buff_t::_initial_stack
   int _resolve_stacks( int stacks );
-  bool trigger( action_t*, int stacks = -1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   bool trigger( timespan_t duration );
   bool trigger( int stacks, timespan_t duration );
   virtual bool trigger( int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0, timespan_t duration = timespan_t::min() );
@@ -266,6 +265,9 @@ public:
   // NOTE: If you need to override behavior on buff expire, use expire_override. Override "expire"
   // method only if you _REALLY_ know what you are doing.
   virtual void expire( timespan_t delay = timespan_t::zero() );
+  // trigger the buff only if the action matches the trigger_spell's proc flags
+  bool trigger( action_t* action, int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0,
+                timespan_t duration = timespan_t::min() );
   // check if the action mathes the buff's proc flags
   virtual bool can_consume( action_t* action );
   // expire if the action match the buff's proc flags
