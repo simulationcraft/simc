@@ -40,7 +40,7 @@ DF4_Generate_Evoker.simc
 # DF4_Generate_Hunter.simc
 
 # Mage
-# DF4_Generate_Mage.simc
+DF4_Generate_Mage.simc
 
 # Monk
 DF4_Generate_Monk.simc
