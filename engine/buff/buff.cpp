@@ -2572,7 +2572,7 @@ void buff_t::override_buff( int stacks, double value )
   overridden = true;
 }
 
-bool buff_t::trigger( action_t* action, int stacks, double value, double chance, timespan_t duration )
+bool buff_t::can_trigger( action_t* action )
 {
   if ( is_fallback || !action->data().ok() || !trigger_data->ok() )
     return false;
@@ -2583,7 +2583,15 @@ bool buff_t::trigger( action_t* action, int stacks, double value, double chance,
   if ( trigger_data->attribute( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) && !action->allow_class_ability_procs )
     return false;
 
-  return trigger( stacks, value, chance, duration );
+  return true;
+}
+
+bool buff_t::trigger( action_t* action, int stacks, double value, double chance, timespan_t duration )
+{
+  if ( can_trigger( action ) )
+    return trigger( stacks, value, chance, duration );
+
+  return false;
 }
 
 bool buff_t::can_consume( action_t* action )

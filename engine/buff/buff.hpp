@@ -265,11 +265,14 @@ public:
   // NOTE: If you need to override behavior on buff expire, use expire_override. Override "expire"
   // method only if you _REALLY_ know what you are doing.
   virtual void expire( timespan_t delay = timespan_t::zero() );
+  // TODO: are these the same checks and can be combined?
+  // check if the action matches the trigger spell's proc flags
+  virtual bool can_trigger( action_t* action );
+  // check if the action matches the buff's proc flags
+  virtual bool can_consume( action_t* action );
   // trigger the buff only if the action matches the trigger_spell's proc flags
   bool trigger( action_t* action, int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0,
                 timespan_t duration = timespan_t::min() );
-  // check if the action mathes the buff's proc flags
-  virtual bool can_consume( action_t* action );
   // expire if the action match the buff's proc flags
   void consume( action_t* action, timespan_t delay = timespan_t::zero() );
   // Completely remove the buff, including any delayed applications and expirations.
