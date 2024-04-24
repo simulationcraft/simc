@@ -6210,3 +6210,4 @@ bonus_id={ 11187 }, socket={ 3 }
 bonus_id={ 11188 }, socket={ 3 }
 bonus_id={ 11189 }, socket={ 3 }
 bonus_id={ 11190 }, ilevel={ 15 @plvl 10 - 541 @plvl 80 }
+bonus_id={ 11191 }, ilevel={ 431 @plvl 55 - 548 @plvl 90 }

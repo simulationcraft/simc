@@ -611,7 +611,7 @@ Spell Level      : 48
 Velocity         : 4 yards/sec
 Duration         : 20 seconds
 Charges          : 0 (120 seconds cooldown)
-Category         : 1614: Seal of Necrofantasia (212216 effect#1), Seal of Necrofantasia (212216 effect#2), Strive for Perfection (296320 effect#5), Strive for Perfection (299367 effect#5), Strive for Perfection (299369 effect#5), Benevolent Faerie (327710 effect#5), Accelerated Cold (337822 effect#2), Haunted Mask (356968 effect#5), Empower Rune Weapon (392962 effect#1), Empower Rune Weapon (392963 effect#1)
+Category         : 1614: Seal of Necrofantasia (212216 effect#1), Seal of Necrofantasia (212216 effect#2), Strive for Perfection (296320 effect#5), Strive for Perfection (299367 effect#5), Strive for Perfection (299369 effect#5), Benevolent Faerie (327710 effect#5), Accelerated Cold (337822 effect#2), Empower Rune Weapon (392962 effect#1), Empower Rune Weapon (392963 effect#1)
 Stance Mask      : 0x01000000
 Affecting spells : Death Knight (137005 effect#2), Accelerated Cold (337822 effect#1)
 Family Flags     : 14, 127
@@ -918,7 +918,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Motes of Possibility (409276 effect#1)
 Proc Chance      : 100%
 Stance Mask      : 0x01000000
 Proc Flags       : ....x... x...x.x. x.x..... ........   ........ ........ ........ ........   
@@ -1394,7 +1394,7 @@ Spell Type       : Magic
 Spell Level      : 29
 Duration         : 12 seconds
 Cooldown         : 60 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Motes of Possibility (409276 effect#1)
 Proc Chance      : 101%
 Stance Mask      : 0x01000000
 Proc Flags       : ....x... ..x.x.x. x.x..x.. ........   ........ ........ ........ ........   
@@ -1766,7 +1766,7 @@ Spell Type       : None
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Category         : 1641
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Motes of Possibility (409276 effect#1)
                  : 1284: Symbol of Hope (265144 effect#2)
 Stance Mask      : 0x01000000
 Affecting spells : Improved Vampiric Blood (317133 effects: #1, #2, #3), Vampiric Aura (334547 effects: #2, #3)
@@ -8349,7 +8349,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Motes of Possibility (409276 effect#1)
 Stance Mask      : 0x01000000
 Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #7, #8), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), Army of the Damned (276837 effect#3), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Mograine's Might (444505 effects: #1, #2), Chains of Ice (444828 effect#1)
 Family Flags     : 43, 56, 78, 127
@@ -12552,7 +12552,7 @@ Effects          :
 #1 (id=831102)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#2 (id=831103)   : Apply Aura (6) | Modify Melee Attack Speed% (319)
+#2 (id=831103)   : Apply Aura (6) | Modify Melee Speed% (319)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
 Tooltip          : Damage increased by $m2%, and attack speed increased by $m3%.
 
@@ -13729,7 +13729,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=904005)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
-#2 (id=904006)   : Apply Aura (6) | Modify Melee Attack Speed% (319)
+#2 (id=904006)   : Apply Aura (6) | Modify Melee Speed% (319)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Active Pet (5)
 Description      : Every 5th Scourge Strike casts Soul Reaper on your target. Soul Reaper's secondary effect grants your Ghoul $s1% attack speed and summons an Army of the Dead ghoul.
 
@@ -15448,7 +15448,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow Low Level Buff (67), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Client Targeting (133), Allow Cast While Casting (135), Ignore Default Arena Restrictions (145), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow Spell Reflection (224), Allow While Charmed (261), Ignore Default Rated Battleground Restrictions (302)
 Effects          :
-#1 (id=1005512)  : Apply Aura (6) | Modify Melee Attack Speed% (319)
+#1 (id=1005512)  : Apply Aura (6) | Modify Melee Speed% (319)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1005513)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
@@ -15472,7 +15472,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow Low Level Buff (67), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Client Targeting (133), Allow Cast While Casting (135), Ignore Default Arena Restrictions (145), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow Spell Reflection (224), Allow While Charmed (261), Ignore Default Rated Battleground Restrictions (302)
 Effects          :
-#1 (id=1005514)  : Apply Aura (6) | Modify Melee Attack Speed% (319)
+#1 (id=1005514)  : Apply Aura (6) | Modify Melee Speed% (319)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1005515)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
@@ -16805,7 +16805,7 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : ........ ........ ........ ........   
                  : No Reflection (39), Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1029156)  : Apply Aura (6) | Modify Melee Attack Speed% (319)
+#1 (id=1029156)  : Apply Aura (6) | Modify Melee Speed% (319)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc391566
 Tooltip          : Time between auto-attacks increased by $w1%.
@@ -17168,7 +17168,7 @@ Effects          :
 #1 (id=1034895)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Active Pet (5)
                    Affected School(s): All
-#2 (id=1034896)  : Apply Aura (6) | Modify Melee Attack Speed% (319)
+#2 (id=1034896)  : Apply Aura (6) | Modify Melee Speed% (319)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Active Pet (5)
 Description      : $@spelldesc393626
 Tooltip          : Damage increased by $s1% and Haste increased by $s2%.
@@ -17890,7 +17890,7 @@ Description      : A vampiric strike that deals $?a137007[$s1][$s5] Shadow damag
 Additionally grants you Essence of the Blood Queen for $433925d.
 
 Name             : Vampiric Strike (id=433901) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Unholy [tree=hero, row=1, col=1, max_rank=1, req_points=1]
+Talent Entry     : San'layn (Blood, Unholy) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -17943,7 +17943,7 @@ Description      : Essence of the Blood Queen empowers you, $?a434075[increasing
 Tooltip          : Haste increased by ${$s1/10}.1%. $?a434075[Damage of Death Strike and Death Coil increased by $w2%.][]
 
 Name             : Newly Turned (id=433934) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Unholy [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : San'layn (Blood, Unholy) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -17968,7 +17968,7 @@ Effects          :
 Description      : Raise Ally revives players at full health and grants you and your ally an absorb shield equal to $s2% of your maximum health.
 
 Name             : Vampiric Speed (id=434028) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Unholy [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : San'layn (Blood, Unholy) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -18021,7 +18021,7 @@ Description      : $@spelldesc434028
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Blood-Soaked Ground (id=434033) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Unholy [tree=hero, row=2, col=2, max_rank=1, req_points=1]
+Talent Entry     : San'layn (Blood, Unholy) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -18064,7 +18064,7 @@ Tooltip          : Physical damage taken reduced by $s1%.
 Chance to gain Vampiric Strike increased by $434033s2%.
 
 Name             : Frenzied Bloodthirst (id=434075) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Unholy [tree=hero, row=3, col=2, max_rank=1, req_points=1]
+Talent Entry     : San'layn (Blood, Unholy) [tree=hero, row=3, col=2, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -18090,7 +18090,7 @@ Effects          :
 Description      : Essence of the Blood Queen stacks $s1 additional times and increases the damage of your Death Coil and Death Strike by $s2% per stack.
 
 Name             : Vampiric Aura (id=434100) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Unholy [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : San'layn (Blood, Unholy) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -18137,7 +18137,7 @@ Description      : $@spelldesc434100
 Tooltip          : Vampiric Aura's Leech amount increased by $s1% and is affecting $s2 nearby allies.
 
 Name             : Bloody Fortitude (id=434136) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Unholy [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : San'layn (Blood, Unholy) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -18163,7 +18163,7 @@ Description      : Icebound Fortitude reduces all damage you take by up to an ad
 Killing enemies that grant honor or experience reduce the cooldown of Icebound Fortitude by $s2 sec.
 
 Name             : Infliction of Sorrow (id=434143) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Unholy [tree=hero, row=3, col=1, max_rank=1, req_points=1]
+Talent Entry     : San'layn (Blood, Unholy) [tree=hero, row=3, col=1, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -18191,7 +18191,7 @@ Description      : When Vampiric Strike damages an enemy affected by Virulent Pl
 While Gift of the San'layn is active, Vampiric Strike no longer consumes your disease and instead extends the duration of your disease by $s3 sec and deals $s2% of the remaining damage to the enemy.
 
 Name             : Incite Terror (id=434151) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Unholy [tree=hero, row=4, col=2, max_rank=1, req_points=1]
+Talent Entry     : San'layn (Blood, Unholy) [tree=hero, row=4, col=2, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -18216,7 +18216,7 @@ Effects          :
 Description      : Heart Strike and Scourge Strike extend the duration of Essence of the Blood Queen by ${$s1/1000}.1 sec. Vampiric Strike increases the extension by $s2%. 
 
 Name             : Gift of the San'layn (id=434152) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Unholy [tree=hero, row=5, col=1, max_rank=1, req_points=1]
+Talent Entry     : San'layn (Blood, Unholy) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -18276,7 +18276,7 @@ Tooltip          : The effectiveness of Essence of the Blood Queen is increased 
 $?a137007[Scourge Strike][Heart Strike] has been replaced with Vampiric Strike.
 
 Name             : Visceral Regeneration (id=434157) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Unholy [tree=hero, row=4, col=1, max_rank=1, req_points=1]
+Talent Entry     : San'layn (Blood, Unholy) [tree=hero, row=4, col=1, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -18322,7 +18322,7 @@ Effects          :
 Description      : Raises a Blood Beast to fight by your side.  You can have a maximum of one Blood Beast at a time. Lasts $d.
 
 Name             : The Blood is Life (id=434260) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Unholy [tree=hero, row=3, col=3, max_rank=1, req_points=1]
+Talent Entry     : San'layn (Blood, Unholy) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -18350,7 +18350,7 @@ Description      : Vampiric strike has a chance to summon a Blood Beast to attac
 Each time the Blood Beast attacks, it stores a portion of the damage dealt. When the Blood Beast dies, it explodes, dealing $?a137007[$s2][$s1]% of the damage accumulated to nearby enemies and healing the Death Knight for the same amount.
 
 Name             : Pact of the San'layn (id=434261) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Unholy [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : San'layn (Blood, Unholy) [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -18372,7 +18372,7 @@ Effects          :
 Description      : You store $s1% of all Shadow damage dealt into your Blood Beast to explode for additional damage when it expires.
 
 Name             : Sanguine Scent (id=434263) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Unholy [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : San'layn (Blood, Unholy) [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -18466,7 +18466,7 @@ Description      : $@spelldesc439843
 Tooltip          : You are a prey for the Deathbringer... This effect will explode for $436304s1 Shadowfrost damage for each stack.
 
 Name             : Grim Reaper (id=434905) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Frost [tree=hero, row=3, col=2, max_rank=1, req_points=1]
+Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=3, col=2, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
@@ -18530,7 +18530,7 @@ Effects          :
 Description      : $@spelldesc439843
 
 Name             : Dark Talons (id=436687) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Frost [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
@@ -18559,7 +18559,7 @@ Description      : $?a137008[Marrowrend and Heart Strike][Consuming Killing Mach
 While Icy Talons is active, your Runic Power spending abilities also count as Shadowfrost damage.
 
 Name             : Death's Messenger (id=437122) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Frost [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
@@ -18580,7 +18580,7 @@ Effects          :
 Description      : Reduces the cooldowns of Lichborne and Raise Dead by ${$s1/-1000} sec.
 
 Name             : Soul Rupture (id=437161) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Frost [tree=hero, row=3, col=1, max_rank=1, req_points=1]
+Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=3, col=1, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
@@ -18638,7 +18638,7 @@ Each time you deal Shadow or Frost damage, add a stack of Reaper's Mark. After $
 Reaper's Mark travels to an unmarked enemy nearby if the target dies, or explodes below 35% health when there are no enemies to travel to. This explosion cannot occur again on a target for $443761d.
 
 Name             : Wave of Souls (id=439851) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Frost [tree=hero, row=2, col=1, max_rank=1, req_points=1]
+Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=2, col=1, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
@@ -18659,7 +18659,7 @@ Description      : Reaper's Mark unleashes a dark wave forwards and back, dealin
 Wave of Souls critical strikes cause enemies to take $441477s1% increased Shadowfrost damage for $441477d, stacking up to 2 times, and the wave back is always a critical strike.
 
 Name             : Expelling Shield (id=439948) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Frost [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
@@ -18682,7 +18682,7 @@ Effects          :
 Description      : When an enemy deals direct damage to your Anti-Magic Shell, their cast speed is reduced by $440739s1% for $440739d.
 
 Name             : Blood Fever (id=440002) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Frost [tree=hero, row=2, col=2, max_rank=1, req_points=1]
+Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
@@ -18708,7 +18708,7 @@ Effects          :
 Description      : Your $?a137008[Blood Plague][Frost Fever] has a chance to deal $s1% increased damage as Shadowfrost.
 
 Name             : Bind in Darkness (id=440031) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Frost [tree=hero, row=2, col=3, max_rank=1, req_points=1]
+Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : None
@@ -18736,7 +18736,7 @@ Description      : Shadowfrost damage applies 2 stacks to Reaper's Mark and 4 st
 Additionally, $?a137008[Blood Boil][Rime empowered Howling Blast] deals Shadowfrost damage.
 
 Name             : Rune Carved Plates (id=440282) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Frost [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -18808,7 +18808,7 @@ Description      : $@spelldesc440282
 Tooltip          : Magical damage taken reduced by $w1%.
 
 Name             : Death's Bargain (id=440476) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Frost [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -18889,7 +18889,7 @@ Description      : $@spelldesc444072
 Tooltip          : Your Runic Power spending abilities deal $w1% increased damage.
 
 Name             : Exterminate (id=441378) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Frost [tree=hero, row=5, col=1, max_rank=1, req_points=1]
+Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
@@ -18935,7 +18935,7 @@ Effects          :
 Description      : $@spelldesc441378
 
 Name             : Wither Away (id=441894) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Frost [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
@@ -18987,7 +18987,7 @@ Description      : $@spelldesc440031
 Tooltip          : Next Howling Blast deals Shadowfrost damage.
 
 Name             : Swift End (id=443560) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Frost [tree=hero, row=4, col=1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=4, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
@@ -19010,7 +19010,7 @@ Effects          :
 Description      : Reaper's Mark's cost is reduced by $s2 Rune and its cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Painful Death (id=443564) [Spell Family (15), Passive] 
-Talent Entry     : Blood, Frost [tree=hero, row=4, col=1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=4, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
@@ -19052,7 +19052,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 
 Name             : Rider's Champion (id=444005) [Spell Family (15), Passive] 
-Talent Entry     : Frost, Unholy [tree=hero, row=1, col=1, max_rank=1, req_points=1]
+Talent Entry     : Rider of the Apocalypse (Frost, Unholy) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -19087,7 +19087,7 @@ While Nazgrim is active you gain Apocalyptic Conquest, increasing your Strength 
 
 
 Name             : On a Paler Horse (id=444008) [Spell Family (15), Passive] 
-Talent Entry     : Frost, Unholy [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Rider of the Apocalypse (Frost, Unholy) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -19106,7 +19106,7 @@ Effects          :
 Description      : While outdoors you are able to mount your Acherus Deathcharger in combat.
 
 Name             : Death Charge (id=444010) [Spell Family (15), Passive] 
-Talent Entry     : Frost, Unholy [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=200, replace="Death's Advance" (id=124285)]
+Talent Entry     : Rider of the Apocalypse (Frost, Unholy) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=200, replace="Death's Advance" (id=124285)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -19127,7 +19127,7 @@ Description      : Call upon your Death Charger to break free of movement impair
 For $444347d, while upon your Death Charger your movement speed is increased by 100%, you cannot be slowed, and you are immune to forced movement effects and knockbacks.
 
 Name             : Whitemane's Famine (id=444033) [Spell Family (15), Passive] 
-Talent Entry     : Frost, Unholy [tree=hero, row=3, col=1, max_rank=1, req_points=1]
+Talent Entry     : Rider of the Apocalypse (Frost, Unholy) [tree=hero, row=3, col=1, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -19146,7 +19146,7 @@ Effects          :
 Description      : When $?a137006[Obliterate]?s207311[Clawing Shadows][Scourge Strike] damages an enemy affected by Undeath it gains a stack and infects another nearby enemy.
 
 Name             : Hungering Thirst (id=444037) [Spell Family (15), Passive] 
-Talent Entry     : Frost, Unholy [tree=hero, row=4, col=1, max_rank=1, req_points=1]
+Talent Entry     : Rider of the Apocalypse (Frost, Unholy) [tree=hero, row=4, col=1, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -19171,7 +19171,7 @@ Effects          :
 Description      : The damage of your diseases, Frost Strike, Death Coil are increased by $s1%.
 
 Name             : Apocalypse Now (id=444040) [Spell Family (15), Passive] 
-Talent Entry     : Frost, Unholy [tree=hero, row=5, col=1, max_rank=1, req_points=1]
+Talent Entry     : Rider of the Apocalypse (Frost, Unholy) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -19194,7 +19194,7 @@ Effects          :
 Description      : Army of the Dead and Frostwyrm's Fury call upon all 4 Horsemen to aid you for 20 sec.
 
 Name             : Mograine's Might (id=444047) [Spell Family (15), Passive] 
-Talent Entry     : Frost, Unholy [tree=hero, row=2, col=2, max_rank=1, req_points=1]
+Talent Entry     : Rider of the Apocalypse (Frost, Unholy) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -19213,7 +19213,7 @@ Effects          :
 Description      : Your damage is increased by 5% and you gain the benefits of your Death and Decay while inside Mograine's Death and Decay.
 
 Name             : Nazgrim's Conquest (id=444052) [Spell Family (15), Passive] 
-Talent Entry     : Frost, Unholy [tree=hero, row=3, col=2, max_rank=1, req_points=1]
+Talent Entry     : Rider of the Apocalypse (Frost, Unholy) [tree=hero, row=3, col=2, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -19236,7 +19236,7 @@ Description      : If an enemy dies while Nazgrim is active, the strength of Apo
 Additionally, each Rune you spend increase its value by $s2%.
 
 Name             : Fury of the Horsemen (id=444069) [Spell Family (15), Passive] 
-Talent Entry     : Frost, Unholy [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Rider of the Apocalypse (Frost, Unholy) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -19259,7 +19259,7 @@ Effects          :
 Description      : Every $s1 Runic Power you spend extends the duration of the Horsemen's aid in combat by $s3 sec, up to $s2 sec.
 
 Name             : A Feast of Souls (id=444072) [Spell Family (15), Passive] 
-Talent Entry     : Frost, Unholy [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Rider of the Apocalypse (Frost, Unholy) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -19280,7 +19280,7 @@ Effects          :
 Description      : While you have $s1 or more Horsemen aiding you, your Runic Power spending abilities deal $440861s1% increased damage and have a $440861s2% chance to refund a Rune.
 
 Name             : Horsemen's Aid (id=444074) [Spell Family (15), Passive] 
-Talent Entry     : Frost, Unholy [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Rider of the Apocalypse (Frost, Unholy) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -19301,7 +19301,7 @@ Description      : While at your aid, the Horsemen will occasionally cast Anti-M
 You may only benefit from this effect every $451777d.
 
 Name             : Pact of the Apocalypse (id=444083) [Spell Family (15), Passive] 
-Talent Entry     : Frost, Unholy [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Rider of the Apocalypse (Frost, Unholy) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -19320,7 +19320,7 @@ Effects          :
 Description      : When you take damage $s1% of the damage is redirected to each active horsemen.
 
 Name             : Trollbane's Icy Fury (id=444097) [Spell Family (15), Passive] 
-Talent Entry     : Frost, Unholy [tree=hero, row=3, col=3, max_rank=1, req_points=1]
+Talent Entry     : Rider of the Apocalypse (Frost, Unholy) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -19339,7 +19339,7 @@ Effects          :
 Description      : When you Obliterate or Scourge Strike a target affected by Trollbane's Chains of Ice, it shatters dealing $444834s2 Shadowfrost damage to nearby enemies and slows them by $444834s1% for $444834d.
 
 Name             : Mawsworn Menace (id=444099) [Spell Family (15), Passive] 
-Talent Entry     : Frost, Unholy [tree=hero, row=4, col=3, max_rank=1, req_points=1]
+Talent Entry     : Rider of the Apocalypse (Frost, Unholy) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -19935,7 +19935,7 @@ Tooltip          : Afflicted by Soul Reaper, if the target is below $s3% health 
 Variables        : $dmg=${$o1}
 
 Name             : Reaper's Mark (id=448473) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Blood, Frost [tree=hero, row=1, col=1, max_rank=1, req_points=1]
+Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic

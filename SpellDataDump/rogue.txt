@@ -1141,7 +1141,7 @@ Spell Type       : Melee
 Spell Level      : 42
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Motes of Possibility (409276 effect#1)
 Affecting spells : Celerity (340087 effect#1)
 Family Flags     : 39
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
@@ -2995,7 +2995,7 @@ Spell Type       : None
 Spell Level      : 42
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Motes of Possibility (409276 effect#1)
 Proc Chance      : 100%
 Proc Flags       : ..x.x... x...x... x.x..... ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -11602,7 +11602,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 16 seconds
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Motes of Possibility (409276 effect#1)
 Mechanic         : Bleed
 Affecting spells : Nightstalker (130493 effect#1), Acrobatic Strikes (196924 effect#1), Shiv (319504 effect#3), Septic Wounds (394845 effect#1), Sudden Demise (423136 effect#1), Natureblight (426568 effects: #2, #3)
 Family Flags     : 59
@@ -17357,7 +17357,7 @@ Effects          :
 Description      : $@spelldesc441146
 
 Name             : Unseen Blade (id=441146) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw, Subtlety [tree=hero, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=1, col=1, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -17418,7 +17418,7 @@ Description      : $@spelldesc441146
 Tooltip          : Taking $w1% more damage from $@auracaster.
 
 Name             : Smoke (id=441247) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw, Subtlety [tree=hero, row=2, col=2, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=2, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -17439,7 +17439,7 @@ Effects          :
 Description      : You take $s1% reduced damage from Fazed targets.
 
 Name             : Mirrors (id=441250) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw, Subtlety [tree=hero, row=2, col=2, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=2, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -17461,7 +17461,7 @@ Effects          :
 Description      : Feint reduces area damage taken by an additional $s1%
 
 Name             : Devious Distractions (id=441263) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw, Subtlety [tree=hero, row=3, col=2, max_rank=1, req_points=1]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=3, col=2, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -17484,7 +17484,7 @@ Effects          :
 Description      : $?a137036[Killing Spree][Secret Technique] applies Fazed to any targets struck.
 
 Name             : Surprising Strikes (id=441273) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw, Subtlety [tree=hero, row=2, col=1, max_rank=1, req_points=1]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=2, col=1, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -17505,7 +17505,7 @@ Effects          :
 Description      : Attacks that generate combo points deal $s1% increased critical strike damage to Distracted targets.
 
 Name             : Nimble Flurry (id=441274) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw, Subtlety [tree=hero, row=4, col=1, max_rank=1, req_points=1]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=4, col=1, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -17531,7 +17531,7 @@ Effects          :
 Description      : $?a137036[Killing Spree][Secret Technique] deals $s1% more damage and has $s2% reduced cooldown.
 
 Name             : Flawless Form (id=441321) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw, Subtlety [tree=hero, row=2, col=3, max_rank=1, req_points=1]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -17575,7 +17575,7 @@ Description      : $@spelldesc441321
 Tooltip          : Mastery increased by ${$s1*$mas}.1%.
 
 Name             : Thousand Cuts (id=441346) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw, Subtlety [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -17601,7 +17601,7 @@ Effects          :
 Description      : Slice and Dice grants $s1% additional attack speed and gives your auto attacks a chance to trigger Unseen Blade.
 
 Name             : Flickerstrike (id=441359) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw, Subtlety [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -17627,7 +17627,7 @@ Description      : Taking area damage while Feint is active or dodging while Eva
 This effect may only occur once every $proccooldown sec.
 
 Name             : Elaborate Twirl (id=441367) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw, Subtlety [tree=hero, row=4, col=3, max_rank=1, req_points=1]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -17648,7 +17648,7 @@ Effects          :
 Description      : Increases the duration of Flawless Form by ${$s1/1000} sec.
 
 Name             : No Scruples (id=441398) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw, Subtlety [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -17668,7 +17668,7 @@ Effects          :
 Description      : Finishing moves have $s1% increased chance to critically strike Distracted targets.
 
 Name             : So Tricky (id=441403) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw, Subtlety [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -17691,7 +17691,7 @@ Effects          :
 Description      : Tricks of the Trade's threat redirect duration is increased to $m1 $Lhour:min;.
 
 Name             : Don't Be Suspicious (id=441415) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw, Subtlety [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -17719,7 +17719,7 @@ Description      : Blind and Shroud of Concealment have $s1% reduced cooldown.
 Pick Pocket and Sap have $s2 yd increased range.
 
 Name             : Coup de Grace (id=441423) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw, Subtlety [tree=hero, row=5, col=1, max_rank=1, req_points=1]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -17743,7 +17743,7 @@ Description      : After $441786s1 strikes with Unseen Blade, your next $?a13703
 If the primary target is Distracted, gain $s2 stacks of Flawless Form.
 
 Name             : Cloud Cover (id=441429) [Spell Family (8), Passive] 
-Talent Entry     : Outlaw, Subtlety [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None

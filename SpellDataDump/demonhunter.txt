@@ -629,7 +629,7 @@ Spell Level      : 20
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 1251
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Motes of Possibility (409276 effect#1)
                  : 2309: First of the Illidari (235893 effect#2)
 Category Cooldown: 20 seconds
 Affecting spells : Soul Rending (204909 effect#2), Soul Rending (217996 effect#2), First of the Illidari (235893 effect#1), Rush of Chaos (320421 effect#1), Metamorphosis (321068 effect#1)
@@ -827,7 +827,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
 Category         : 1577
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Motes of Possibility (409276 effect#1)
 Category Cooldown: 180 seconds
 Affecting spells : Soul Rending (204909 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), First of the Illidari (235893 effect#1), Rush of Chaos (320421 effect#1), Deadly Dance (363736 effect#3)
 Family Flags     : 15, 32
@@ -14101,7 +14101,7 @@ Effects          :
 Description      : Throw Glaive has ${$s2+1} charges and $s1 yard increased range.
 
 Name             : Art of the Glaive (id=442290) [Spell Family (107), Passive] 
-Talent Entry     : Havoc, Vengeance [tree=hero, row=1, col=1, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14212,7 +14212,7 @@ Description      : $@spelldesc442290
 Tooltip          : $?a212612[$@spellicon162794 Chaos Strike]?s263642[$@spellicon263642 Fracture]?a212613[$@spellicon203782 Shear][Chaos Strike, Fracture, or Shear] applies Reaver's Mark which causes the target to take 15% increased damage for 5 sec
 
 Name             : Incisive Blade (id=442492) [Spell Family (107), Passive] 
-Talent Entry     : Havoc, Vengeance [tree=hero, row=2, col=3, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14232,7 +14232,7 @@ Effects          :
 Description      : When enhanced, Chaos Strike and Soul Cleave deal $s1% increased damage.
 
 Name             : Keen Engagement (id=442497) [Spell Family (107), Passive] 
-Talent Entry     : Havoc, Vengeance [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14252,7 +14252,7 @@ Effects          :
 Description      : Reaver's Glaive generates $s1 Fury.
 
 Name             : Warblade's Hunger (id=442502) [Spell Family (107), Passive] 
-Talent Entry     : Havoc, Vengeance [tree=hero, row=4, col=3, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14321,7 +14321,7 @@ Description      : $@spelldesc442502
 Tooltip          : Taking $s1% increased damage from $@auracaster.
 
 Name             : Intent Pursuit (id=442679) [Spell Family (107), Passive] 
-Talent Entry     : Havoc, Vengeance [tree=hero, row=4, col=1, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=4, col=1, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14340,7 +14340,7 @@ Effects          :
 Description      : Casting an enhanced ability reduces the reamining cooldown of The Hunt by ${$s1/1000} sec
 
 Name             : Aldrachi Tactics (id=442683) [Spell Family (107), Passive] 
-Talent Entry     : Havoc, Vengeance [tree=hero, row=3, col=1, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=3, col=1, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14359,8 +14359,8 @@ Effects          :
 Description      : The second enhanced ability in a pattern shatters an additional Soul Fragment.
 
 Name             : Thrill of the Fight (id=442686) [Spell Family (107), Passive] 
-Talent Entry     : Havoc, Vengeance [tree=hero, row=2, col=3, max_rank=1, req_points=1]
-                 : Havoc, Vengeance [tree=hero, row=5, col=1, max_rank=1, req_points=1]
+Talent Entry     : Fel-Scarred (Havoc, Vengeance) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
+                 : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14422,7 +14422,7 @@ Description      : @spelldesc442686
 Tooltip          : Attack Speed increased by $w1%
 
 Name             : Army Unto Oneself (id=442714) [Spell Family (107), Passive] 
-Talent Entry     : Havoc, Vengeance [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14461,7 +14461,7 @@ Description      : @spelldesc442714
 Tooltip          : Physical damage taken reduced by $s1%.
 
 Name             : Escalation (id=442718) [Spell Family (107), Passive] 
-Talent Entry     : Havoc, Vengeance [tree=hero, row=4, col=2, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=4, col=2, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14482,7 +14482,7 @@ Effects          :
 Description      : Each successive enhanced ability deals $s1% increased damage. The effect of the second enhancement is increased by $s2%.
 
 Name             : Incorruptible Spirit (id=442736) [Spell Family (107), Passive] 
-Talent Entry     : Havoc, Vengeance [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14504,7 +14504,7 @@ Effects          :
 Description      : Consuming a Soul Fragment also heals you for an additional $s1% over time.
 
 Name             : Wounded Quarry (id=442806) [Spell Family (107), Passive] 
-Talent Entry     : Havoc, Vengeance [tree=hero, row=3, col=3, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14591,7 +14591,7 @@ Effects          :
 Description      : $@spelldesc442502
 
 Name             : Evasive Action (id=444926) [Spell Family (107), Passive] 
-Talent Entry     : Havoc, Vengeance [tree=hero, row=2, col=2, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=2, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14639,7 +14639,7 @@ Description      : $@spelldesc444926
 Tooltip          : Vengeful Retreat may be cast again.
 
 Name             : Unhindered Assault (id=444931) [Spell Family (107), Passive] 
-Talent Entry     : Havoc, Vengeance [tree=hero, row=2, col=2, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=2, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14680,7 +14680,7 @@ Effects          :
 Description      : $@spelldesc444997
 
 Name             : Preemptive Strike (id=444997) [Spell Family (107), Passive] 
-Talent Entry     : Havoc, Vengeance [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None

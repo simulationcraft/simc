@@ -1367,7 +1367,7 @@ GCD              : 1.5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 1933: Benevolent Faerie (327710 effect#6), Motes of Possibility (409276 effect#5)
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Motes of Possibility (409276 effect#1)
                  : 2706: Spatial Paradox (406732 effect#10)
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Wisdom of the Wall (451242 effect#1)
 Family Flags     : 48, 60
@@ -3811,7 +3811,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 25 seconds
 Cooldown         : 180 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Motes of Possibility (409276 effect#1)
 Affecting spells : Gift of the Celestials (388212 effects: #1, #2), Wisdom of the Wall (451242 effect#1)
 Family Flags     : 3
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
@@ -3937,11 +3937,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179707)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 #2 (id=191108)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 #3 (id=191109)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4136,11 +4136,11 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #27 (id=1093851)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Target: Self (1)
-                   Affected Spells: Courage of the White Tiger (443088), Flight of the Red Crane (443263)
+                   Affected Spells: Courage of the White Tiger (443088), Flight of the Red Crane (443263), Flight of the Red Crane (443611)
                    Family Flags: 36
 #28 (id=1093854)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Courage of the White Tiger (443088), Flight of the Red Crane (443263)
+                   Affected Spells: Courage of the White Tiger (443088), Flight of the Red Crane (443263), Flight of the Red Crane (443611)
                    Family Flags: 36
 #29 (id=1102395)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Misc Value: 3 | Misc Value 2: 2917 (Label) | Target: Self (1)
@@ -4174,11 +4174,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179709)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.57143 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.57143 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 #3 (id=191101)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.57143 | Target: Self (1)
@@ -4316,8 +4316,8 @@ Spell Level      : 27
 Duration         : 15 seconds
 Cooldown         : 16 seconds
 Charges          : 2 (90 seconds cooldown)
-Category         : 1592: Strive for Perfection (296320 effect#4), Strive for Perfection (299367 effect#4), Strive for Perfection (299369 effect#4), Benevolent Faerie (327710 effect#3), Haunted Mask (356968 effect#3), Motes of Possibility (409276 effect#3)
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Category         : 1592: Strive for Perfection (296320 effect#4), Strive for Perfection (299367 effect#4), Strive for Perfection (299369 effect#4), Benevolent Faerie (327710 effect#3), Motes of Possibility (409276 effect#3)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Motes of Possibility (409276 effect#1)
 Stacks           : 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x.x.x.x. x.x..x.. .x......   ........ ........ ........ ........   
@@ -4430,7 +4430,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 12 seconds
 Cooldown         : 90 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Motes of Possibility (409276 effect#1)
 Affecting spells : Wisdom of the Wall (451242 effect#1)
 Family Flags     : 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4449,7 +4449,7 @@ Effects          :
                    Family Flags: 4, 5, 16, 39, 55, 63, 72, 118
 #2 (id=303755)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.67000 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 #3 (id=303756)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.67000 | Misc Value: 127 | Target: Self (1)
@@ -4460,7 +4460,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 359 | Target: Self (1)
 #6 (id=479822)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.67000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 #7 (id=739494)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.67000 | Target: Self (1)
@@ -5268,11 +5268,11 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=288843)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 #2 (id=479821)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 #3 (id=479888)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -11820,7 +11820,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=868060)   : Apply Aura (6) | Modify Crit Chance% from Caster's Spells (308)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Enemy (6)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Bonedust Brew (325216), Bonedust Brew (325217), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Bonedust Brew (386276), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Bonedust Brew (325216), Bonedust Brew (325217), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Bonedust Brew (386276), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 82, 103
 #2 (id=884941)   : Apply Aura (6) | Modify Crit Chance% from Caster's Pets (339)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Enemy (6)
@@ -11959,11 +11959,11 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=872417)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 #2 (id=872418)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 
 Name             : Faeline Stomp (desc=Night Fae) (id=347480) [Spell Family (53)] 
@@ -12208,11 +12208,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=903611)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 22 | Scaled Value: 22 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 #2 (id=914808)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 22 | Scaled Value: 22 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 Description      : $@spelldesc363734
 Tooltip          : Increases offensive ability damage by $w1%.
@@ -13048,7 +13048,7 @@ Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=1021801)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 #2 (id=1021802)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
@@ -14162,7 +14162,7 @@ GCD              : 1.5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 1933: Benevolent Faerie (327710 effect#6), Motes of Possibility (409276 effect#5)
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Motes of Possibility (409276 effect#1)
                  : 2706: Spatial Paradox (406732 effect#10)
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Wisdom of the Wall (451242 effect#1)
 Family Flags     : 48, 60
@@ -15579,7 +15579,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1031714)  : Apply Aura (6) | Modify Crit Chance% from Caster's Spells (308)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Enemy (6)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Bonedust Brew (325216), Bonedust Brew (325217), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Bonedust Brew (386276), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Bonedust Brew (325216), Bonedust Brew (325217), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Bonedust Brew (386276), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 82, 103
 #2 (id=1031715)  : Apply Aura (6) | Modify Crit Chance% from Caster's Pets (339)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Enemy (6)
@@ -15604,7 +15604,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1031716)  : Apply Aura (6) | Modify Crit Chance% from Caster's Spells (308)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Enemy (6)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 Description      : $@spelldesc337334
 Tooltip          : Chance to be critically hit by the Monk increased by $w1%.
@@ -16093,14 +16093,14 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=1034770)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 #2 (id=1034771)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #3 (id=1034776)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 Description      : $@spelldesc393659
 Tooltip          : Damage dealt increased by $w1% and damage taken reduced by $w1%.
@@ -16184,7 +16184,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 180 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Motes of Possibility (409276 effect#1)
 Affecting spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Wisdom of the Wall (451242 effect#1)
 Family Flags     : 3
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
@@ -16250,7 +16250,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1035870)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 #2 (id=1035871)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -17261,7 +17261,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1090593)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 103
 #2 (id=1090596)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -17814,7 +17814,7 @@ Description      : $s1% of your overhealing done onto targets with Soothing Mist
 Soothing Mist now follows the target of your Enveloping Mist or Vivify and its channel time is increased by ${$s3/1000} sec.
 
 Name             : Xuen's Guidance (id=442687) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker, Mistweaver [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17839,7 +17839,7 @@ Description      : Teachings of the Monastery has a $s1% chance to refund a char
 The damage of Tiger Palm is increased by $s2%.
 
 Name             : Restore Balance (id=442719) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker, Mistweaver [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17861,7 +17861,7 @@ Effects          :
 Description      : $?c2[Gain Refreshing Jade Wind while Chi-Ji, the Red Crane or Yu'lon, the Jade Serpent is active.]?c3[Gain Rushing Jade Wind while Xuen, the White Tiger is active.][]
 
 Name             : Temple Training (id=442743) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker, Mistweaver [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17886,7 +17886,7 @@ Effects          :
 Description      : $?c2[The healing of Enveloping Mist and Vivify is increased by $s1%.]?c3[Fists of Fury and Spinning Crane Kick deal $s2% more damage.][]
 
 Name             : Niuzao's Protection (id=442747) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker, Mistweaver [tree=hero, row=4, col=1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=4, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17931,7 +17931,7 @@ Description      : $@spelldesc442747
 Tooltip          : Absorbing $w1 damage.
 
 Name             : August Dynasty (id=442818) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker, Mistweaver [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17986,7 +17986,7 @@ Description      : $@spelldesc442818
 Tooltip          : The $?c2[damage of your next Rising Sun Kick is increased by $s1% or the healing of your next Vivify is increased by by $s2%]?c3[damage of your next Rising Sun Kick is increased by $s1%][].
 
 Name             : Celestial Conduit (id=443028) [Spell Family (53)] 
-Talent Entry     : Windwalker, Mistweaver [tree=hero, row=1, col=1, max_rank=1, req_points=1]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18077,7 +18077,7 @@ Effects          :
 Description      : $@spelldesc443028
 
 Name             : Jade Sanctuary (id=443059) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker, Mistweaver [tree=hero, row=4, col=1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=4, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18102,7 +18102,7 @@ Description      : You heal for $s2% of your maximum health instantly when you a
 This effect lingers for an additional $448508d after Celestial Conduit ends.
 
 Name             : Courage of the White Tiger (id=443087) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker, Mistweaver [tree=hero, row=2, col=2, max_rank=1, req_points=1]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18151,7 +18151,7 @@ Effects          :
 Description      : $@spelldesc443087
 
 Name             : Strength of the Black Ox (id=443110) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker, Mistweaver [tree=hero, row=3, col=2, max_rank=1, req_points=1]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=3, col=2, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18245,7 +18245,7 @@ Effects          :
 Description      : $@spelldesc443110
 
 Name             : Flight of the Red Crane (id=443255) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker, Mistweaver [tree=hero, row=3, col=3, max_rank=1, req_points=1]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18312,7 +18312,7 @@ Effects          :
 Description      : $@spelldesc443260
 
 Name             : Heart of the Jade Serpent (id=443294) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker, Mistweaver [tree=hero, row=3, col=1, max_rank=1, req_points=1]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=3, col=1, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18415,7 +18415,7 @@ Description      : $@spelldesc443294
 Tooltip          : Gathering Yu'lon's energy.
 
 Name             : Chi-Ji's Swiftness (id=443566) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker, Mistweaver [tree=hero, row=4, col=2, max_rank=1, req_points=1]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=4, col=2, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18459,7 +18459,7 @@ Description      : $@spelldesc443566
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Inner Compass (id=443571) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker, Mistweaver [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18573,7 +18573,7 @@ Description      : $@spelldesc443571
 Tooltip          : Mastery increased by $w1%.
 
 Name             : Unity Within (id=443589) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker, Mistweaver [tree=hero, row=5, col=1, max_rank=1, req_points=1]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18592,6 +18592,65 @@ Effects          :
 Description      : Celestial Conduit can be recast once during its duration to call upon all of the August Celestials to assist you at $s1% effectiveness.
 
 Unity Within is automatically cast when Celestial Conduit ends if not used before expiration.
+
+Name             : Unity Within (id=443591) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Range            : 40 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1139622)  : Dummy (3)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Description      : Celestial Conduit can be recast once during its duration to call upon all of the August Celestials at once to assist you at $s1% effectiveness.
+
+Name             : Unity Within (id=443592) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Duration         : 4 seconds
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : No Aura Cancel (31), No Aura Icon (60), Haste Affects Duration (273), Spellcast Override In Spellbook (310)
+Effects          :
+#1 (id=1139623)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 443591 | Scaled Value: 443591 | PvP Coefficient: 1.00000 | Misc Value: 443028 | Target: Self (1)
+Description      : Celestial Conduit can be recast once during its duration to call upon all of the August Celestials at once to assist you at $s1% effectiveness.
+
+Name             : Flight of the Red Crane (id=443611) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : Melee
+Range            : 100 yards
+Velocity         : 30 yards/sec
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #27, #28), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Weapons of Order (387179 effect#1), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Press the Advantage (418361 effect#1), Fatal Touch (450832 effects: #1, #2), Wisdom of the Wall (451242 effect#1)
+Family Flags     : 36, 103
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ x....... 
+                 : ........ ........ ........ ........   
+                 : Bouncy Chain Missiles (146), Allow Class Ability Procs (416), Chain by Most Hit (440)
+Effects          :
+#1 (id=1139667)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Enemy (6)
+Description      : $@spelldesc443260
 
 Name             : Heart of the Jade Serpent (id=443616) [Spell Family (53)] 
 Class            : Monk
@@ -18626,7 +18685,7 @@ Description      : $@spelldesc443294
 Tooltip          : Yu'lon is decreasing the cooldown time of $?c2[Renewing Mist, Rising Sun Kick, Life Cocoon, and Thunder Focus Tea]?c3[Rising Sun Kick, Fists of Fury, Strike of the Windlord, and Whirling Dragon Punch][] by $w2%.
 
 Name             : Yu'lon's Knowledge (id=443625) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker, Mistweaver [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19156,7 +19215,7 @@ Effects          :
 Description      : The duration of snare effects on you is reduced by $s1%.
 
 Name             : Aspect of Harmony (id=450508) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Mistweaver [tree=hero, row=1, col=1, max_rank=1, req_points=1]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19242,7 +19301,7 @@ Effects          :
 Description      : Roll and Chi Torpedo travel a small distance further.
 
 Name             : Resonance (NYI) (id=450529) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Mistweaver [tree=hero, row=5, col=1, max_rank=1, req_points=1]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19553,7 +19612,7 @@ Description      : $@spelldesc450595
 Tooltip          : Movement slowed by $w1%.
 
 Name             : Flurry Strikes (id=450615) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Windwalker [tree=hero, row=1, col=1, max_rank=1, req_points=1]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -19832,17 +19891,17 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1151001)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 36, 103
 #2 (id=1151002)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Whirling Dragon Punch (451767), Dual Threat (451839)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839)
                    Family Flags: 36, 103
 Description      : $@spelldesc394123
 Tooltip          : Your spells and abilities deal $s1% more damage.
 
 Name             : Purified Spirit (id=450867) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Mistweaver [tree=hero, row=2, col=2, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=2, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19861,7 +19920,7 @@ Effects          :
 Description      : When Aspect of Harmony ends, any remaining vitality is released as $?a137023[damage over $450820d][healing over $450805d], split among nearby targets.
 
 Name             : Harmonic Gambit (id=450870) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Mistweaver [tree=hero, row=2, col=2, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=2, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19880,7 +19939,7 @@ Effects          :
 Description      : During Aspect of Harmony, $?a137023[Expel Harm and Vivify withdraw vitality to heal][Rising Sun Kick, Blackout Kick, and Tiger Palm also withdraw vitality to damage enemies].
 
 Name             : Manifestation (id=450875) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Mistweaver [tree=hero, row=2, col=1, max_rank=1, req_points=1]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=2, col=1, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19901,7 +19960,7 @@ Effects          :
 Description      : Chi Burst and Chi Wave deal $s1% increased damage and healing.
 
 Name             : Balanced Stratagem (NYI) (id=450889) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Mistweaver [tree=hero, row=2, col=3, max_rank=1, req_points=1]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19920,7 +19979,7 @@ Effects          :
 Description      : Casting a Physical spell or ability increases the damage and healing of your next Fire or Nature spell or ability by 5%, and vice versa. Stacks up to 5.
 
 Name             : Endless Draught (NYI) (id=450892) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Mistweaver [tree=hero, row=3, col=2, max_rank=1, req_points=1]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=3, col=2, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19939,7 +19998,7 @@ Effects          :
 Description      : $?a137023[Celestial Brew][Thunder Focus Tea] has one additional charge.
 
 Name             : Path of Resurgence (id=450912) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Mistweaver [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19958,7 +20017,7 @@ Effects          :
 Description      : $?a450391[Chi Wave][Chi Burst] increases vitality stored by $s1% for $?a450391[$451084d][$451084d].
 
 Name             : Way of a Thousand Strikes (id=450965) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Mistweaver [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19977,7 +20036,7 @@ Effects          :
 Description      : Rising Sun Kick, Blackout Kick, and Tiger Palm contribute $s1% additional vitality.
 
 Name             : Pride of Pandaria (id=450979) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Windwalker [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19997,7 +20056,7 @@ Effects          :
 Description      : Flurry Strikes have $s1% additional chance to critically strike.
 
 Name             : High Impact (id=450982) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Windwalker [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20016,7 +20075,7 @@ Effects          :
 Description      : Enemies who die within $451037d of being damaged by a Flurry Strike explode, dealing $451039s1 physical damage to uncontrolled enemies within $451039a1 yds.
 
 Name             : Protect and Serve (id=450984) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Windwalker [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20035,7 +20094,7 @@ Effects          :
 Description      : Your Vivify always heals you for an additional $s1% of its total value.
 
 Name             : Lead from the Front (id=450985) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Windwalker [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20057,7 +20116,7 @@ Effects          :
 Description      : Chi Burst, Chi Wave, and Expel Harm now heal you for $s1% of damage dealt.
 
 Name             : Against All Odds (id=450986) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Windwalker [tree=hero, row=4, col=1, max_rank=1, req_points=1]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=4, col=1, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20079,7 +20138,7 @@ Effects          :
 Description      : Flurry Strikes increase your Agility by 1% for 6 sec, stacking up to 20 times.
 
 Name             : Veteran's Eye (id=450987) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Windwalker [tree=hero, row=2, col=2, max_rank=1, req_points=1]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20102,7 +20161,7 @@ Description      : Striking the same target $451071u times within $451071d grant
 Multiple instances of this effect may overlap, stacking up to $451085u times.
 
 Name             : One Versus Many (id=450988) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Windwalker [tree=hero, row=3, col=2, max_rank=1, req_points=1]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=3, col=2, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20132,7 +20191,7 @@ Fists of Fury damage increased by $s2%.
 Keg Smash damage increased by $s3%.
 
 Name             : Efficient Training (id=450989) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Windwalker [tree=hero, row=4, col=2, max_rank=1, req_points=1]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=4, col=2, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20169,7 +20228,7 @@ Description      : Energy spenders deal an additional $s1% damage.
 Every $s3 Energy spent reduces the cooldown of Storm, Earth, and Fire, Serenity, and Weapons of Order by ${$s4/1000} sec.
 
 Name             : Martial Precision (id=450990) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Windwalker [tree=hero, row=2, col=3, max_rank=1, req_points=1]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20188,7 +20247,7 @@ Effects          :
 Description      : Your attacks penetrate $s1% armor.
 
 Name             : Whirling Steel (id=450991) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Windwalker [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20211,7 +20270,7 @@ Description      : When your health drops below $s1%, summon Whirling Steel, inc
 This effect can not occur more than once every $451215d sec.
 
 Name             : Predictive Training (id=450992) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Windwalker [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20233,7 +20292,7 @@ Effects          :
 Description      : When you dodge or parry an attack, reduce all damage taken by $451230s1% for the next $451230d.
 
 Name             : Vigilant Watch (id=450993) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Windwalker [tree=hero, row=4, col=3, max_rank=1, req_points=1]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20254,7 +20313,7 @@ Effects          :
 Description      : Blackout Kick deals an additional $s1% critical damage and increases the damage of your next set of Flurry Strikes by $451233s1%.
 
 Name             : Wisdom of the Wall (id=450994) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Windwalker [tree=hero, row=5, col=1, max_rank=1, req_points=1]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20280,7 +20339,7 @@ $@spelldesc451242
 
 
 Name             : Clarity of Purpose (id=451017) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Mistweaver [tree=hero, row=4, col=3, max_rank=1, req_points=1]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20325,7 +20384,7 @@ Description      : $@spelldesc450615
 Tooltip          : $w1 Flurry Strikes charged.
 
 Name             : Overwhelming Force (NYI) (id=451024) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Mistweaver [tree=hero, row=4, col=1, max_rank=1, req_points=1]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=4, col=1, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20344,7 +20403,7 @@ Effects          :
 Description      : Rising Sun Kick, Blackout Kick, and Tiger Palm damage enemies in a line through their primary target.
 
 Name             : Mantra of Tenacity (id=451029) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Mistweaver [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20363,7 +20422,7 @@ Effects          :
 Description      : $?a137023[Fortifying Brew applies a Chi Cocoon][Fortifying Brew grants $s1% Stagger].
 
 Name             : Mantra of Purity (id=451036) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Mistweaver [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20429,7 +20488,7 @@ Effects          :
 Description      : $@spelldesc450982
 
 Name             : Tiger's Vigor (id=451041) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Mistweaver [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20448,7 +20507,7 @@ Effects          :
 Description      : Casting Tiger's Lust reduces the remaining cooldown on Roll by ${$s1/1000} sec.
 
 Name             : Roar from the Heavens (NYI) (id=451043) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster, Mistweaver [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -20660,7 +20719,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1151709)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Flying Serpent Kick (101545), Spinning Crane Kick (101546), Transcendence (101643), Stance of the Fierce Tiger (103985), Spinning Crane Kick (107270), Rising Sun Kick (107428), Roll (109132), Fists of Fury (113656), Chi Torpedo (115008), Stagger (115069), Paralysis (115078), Chi Wave (115098), Expel Harm (115129), Renewing Mist (115151), Soothing Mist (115175), Zen Meditation (115176), Breath of Fire (115181), Fortifying Brew (115203), Energizing Elixir (115288), Mana Tea (115294), Ironskin Brew (115308), Revival (115310), Black Ox Brew (115399), Detox (115450), Provoke (115546), Mastery: Combo Strikes (115636), Disable (116095), Provoke (116189), Vivify (116670), Thunder Focus Tea (116680), Spear Hand Strike (116705), Blackout Kick! (116768), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Life Cocoon (116849), Fists of Fury (117418), Crackling Jade Lightning (117952), Leg Sweep (119381), Purifying Brew (119582), Renewing Mist (119607), Renewing Mist (119611), Fists of Fury (120086), Fortifying Brew (120954), Keg Smash (121253), Power Strikes (121283), Dampen Harm (122278), Healing Elixir (122281), Touch of Karma (122470), Diffuse Magic (122783), Flying Serpent Kick (123586), Breath of Fire (123725), Invoke Xuen, the White Tiger (123904), Chi Burst (123986), Crackling Tiger Lightning (123996), Zen Pulse (124081), Stagger (124255), Heavy Stagger (124273), Moderate Stagger (124274), Light Stagger (124275), Touch of Karma (124280), Gift of the Ox (124503), Gift of the Ox (124506), Gift of the Ox (124507), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Invoke Niuzao, the Black Ox (132578), Storm, Earth, and Fire (137639), Chi Burst (148135), Rushing Jade Wind (148187), Serenity (152173), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Refreshing Jade Wind (162530), Chi Sphere (163272), Gift of the Ox (178173), Rising Sun Kick (185099), Gust of Mists (191894), Elusive Brawler (195630), Eye of the Tiger (196608), Refreshing Jade Wind (196725), Special Delivery (196733), Mana Tea (197908), Zen Pulse (198487), Soothing Mist (198533), Blackout Kick (205523), Soothing Mist (209525), Reawaken (212051), Shuffle (215479), Detox (218164), Storm, Earth, and Fire: Fixate (221771), Stomp (227291), Surging Mist (227344), Blackout Kick (228649), Chi Burst (261682), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Sunrise Technique (275673), Sweep the Leg (280184), Revival (297850), Weapons of Order (310454), Weapons of Order (311123), Expel Harm (322101), Touch of Death (322109), Invoke Yu'lon, the Jade Serpent (322118), Shuffle (322120), Celestial Brew (322507), Spinning Crane Kick (322729), Clash (324312), Exploding Keg (325153), Invoke Chi-Ji, the Red Crane (325197), Enveloping Breath (325209), Bonedust Brew (325216), Bonedust Brew (325217), Fallen Order (326860), Faeline Stomp (327104), Faeline Stomp (327264), Gust of Mists (328748), Yu'lon's Whisper (337268), Chi Explosion (337342), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Bonedust Brew (386276), Weapons of Order (387184), Dragonfire Brew (387621), Ancient Teachings (388024), Yu'lon's Whisper (388044), Jadefire Stomp (388193), Jadefire Stomp (388201), Jadefire Stomp (388207), Uplifted Spirits (388555), Zen Pulse (388609), Restoral (388615), Zen Pulse (388668), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Strike of the Windlord (392983), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Invoke Niuzao, the Black Ox (395267), Strike of the Windlord (395519), Strike of the Windlord (395521), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Press the Advantage (418360), Invigorating Mists (425804), Healing Elixir (428439), Transcendence: Linked Spirits (434774), Celestial Conduit (443038), Celestial Conduit (443039), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443272), Crashing Momentum (450342), Whirling Dragon Punch (451767), Dual Threat (451839), Expel Harm (451968)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Flying Serpent Kick (101545), Spinning Crane Kick (101546), Transcendence (101643), Stance of the Fierce Tiger (103985), Spinning Crane Kick (107270), Rising Sun Kick (107428), Roll (109132), Fists of Fury (113656), Chi Torpedo (115008), Stagger (115069), Paralysis (115078), Chi Wave (115098), Expel Harm (115129), Renewing Mist (115151), Soothing Mist (115175), Zen Meditation (115176), Breath of Fire (115181), Fortifying Brew (115203), Energizing Elixir (115288), Mana Tea (115294), Ironskin Brew (115308), Revival (115310), Black Ox Brew (115399), Detox (115450), Provoke (115546), Mastery: Combo Strikes (115636), Disable (116095), Provoke (116189), Vivify (116670), Thunder Focus Tea (116680), Spear Hand Strike (116705), Blackout Kick! (116768), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Life Cocoon (116849), Fists of Fury (117418), Crackling Jade Lightning (117952), Leg Sweep (119381), Purifying Brew (119582), Renewing Mist (119607), Renewing Mist (119611), Fists of Fury (120086), Fortifying Brew (120954), Keg Smash (121253), Power Strikes (121283), Dampen Harm (122278), Healing Elixir (122281), Touch of Karma (122470), Diffuse Magic (122783), Flying Serpent Kick (123586), Breath of Fire (123725), Invoke Xuen, the White Tiger (123904), Chi Burst (123986), Crackling Tiger Lightning (123996), Zen Pulse (124081), Stagger (124255), Heavy Stagger (124273), Moderate Stagger (124274), Light Stagger (124275), Touch of Karma (124280), Gift of the Ox (124503), Gift of the Ox (124506), Gift of the Ox (124507), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Invoke Niuzao, the Black Ox (132578), Storm, Earth, and Fire (137639), Chi Burst (148135), Rushing Jade Wind (148187), Serenity (152173), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Refreshing Jade Wind (162530), Chi Sphere (163272), Gift of the Ox (178173), Rising Sun Kick (185099), Gust of Mists (191894), Elusive Brawler (195630), Eye of the Tiger (196608), Refreshing Jade Wind (196725), Special Delivery (196733), Mana Tea (197908), Zen Pulse (198487), Soothing Mist (198533), Blackout Kick (205523), Soothing Mist (209525), Reawaken (212051), Shuffle (215479), Detox (218164), Storm, Earth, and Fire: Fixate (221771), Stomp (227291), Surging Mist (227344), Blackout Kick (228649), Chi Burst (261682), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Sunrise Technique (275673), Sweep the Leg (280184), Revival (297850), Weapons of Order (310454), Weapons of Order (311123), Expel Harm (322101), Touch of Death (322109), Invoke Yu'lon, the Jade Serpent (322118), Shuffle (322120), Celestial Brew (322507), Spinning Crane Kick (322729), Clash (324312), Exploding Keg (325153), Invoke Chi-Ji, the Red Crane (325197), Enveloping Breath (325209), Bonedust Brew (325216), Bonedust Brew (325217), Fallen Order (326860), Faeline Stomp (327104), Faeline Stomp (327264), Gust of Mists (328748), Yu'lon's Whisper (337268), Chi Explosion (337342), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Bonedust Brew (386276), Weapons of Order (387184), Dragonfire Brew (387621), Ancient Teachings (388024), Yu'lon's Whisper (388044), Jadefire Stomp (388193), Jadefire Stomp (388201), Jadefire Stomp (388207), Uplifted Spirits (388555), Zen Pulse (388609), Restoral (388615), Zen Pulse (388668), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Strike of the Windlord (392983), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Invoke Niuzao, the Black Ox (395267), Strike of the Windlord (395519), Strike of the Windlord (395521), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Press the Advantage (418360), Invigorating Mists (425804), Healing Elixir (428439), Transcendence: Linked Spirits (434774), Celestial Conduit (443038), Celestial Conduit (443039), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443272), Flight of the Red Crane (443611), Crashing Momentum (450342), Whirling Dragon Punch (451767), Dual Threat (451839), Expel Harm (451968)
                    Family Flags: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127
 #2 (id=1151714)  : Apply Aura (6) | Modify Combat Rating Multiplier (405)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Self (1)
