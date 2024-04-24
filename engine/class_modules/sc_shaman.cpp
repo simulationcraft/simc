@@ -988,6 +988,7 @@ public:
   void init_procs() override;
   void init_uptimes() override;
   void init_assessors() override;
+  void init_items() override;
   std::string create_profile( save_e ) override;
   void create_special_effects() override;
   void action_init_finished( action_t& action ) override;
@@ -10915,6 +10916,23 @@ void shaman_t::init_assessors()
         }
         return assessor::CONTINUE;
       } );
+  }
+}
+
+// shaman_t::init_items ====================================================
+
+void shaman_t::init_items()
+{
+  player_t::init_items();
+
+  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+  {
+    sets->enable_set_bonus( specialization(), T31 , B2 );
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+  {
+    sets->enable_set_bonus( specialization(), T31 , B4 );
   }
 }
 
