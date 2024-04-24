@@ -5799,34 +5799,12 @@ struct chi_burst_heal_t : public monk_heal_t
 
 struct chi_burst_damage_t : public monk_spell_t
 {
-  int num_hit;
   chi_burst_damage_t( monk_t &player )
-    : monk_spell_t( "chi_burst_damage", &player, player.passives.chi_burst_damage ), num_hit( 0 )
+    : monk_spell_t( "chi_burst_damage", &player, player.passives.chi_burst_damage )
   {
     background = true;
     ww_mastery = true;
     aoe        = -1;
-  }
-
-  void execute() override
-  {
-    num_hit = 0;
-
-    monk_spell_t::execute();
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    monk_spell_t::impact( s );
-
-    num_hit++;
-
-    if ( p()->specialization() == MONK_WINDWALKER )
-    {
-      if ( num_hit <= p()->talent.general.chi_burst->effectN( 3 ).base_value() )
-        p()->resource_gain( RESOURCE_CHI, p()->passives.chi_burst_energize->effectN( 1 ).base_value(),
-                            p()->gain.chi_burst );
-    }
   }
 };
 
