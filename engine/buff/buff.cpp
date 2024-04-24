@@ -1364,6 +1364,9 @@ buff_t* buff_t::set_trigger_spell( const spell_data_t* s )
   {
     trigger_data = s;
   }
+
+  // TODO: update cooldown with internal cooldown of the trigger spell
+  // TODO: if trigger spell has an A_PROC_TRIGGER effect, set the percent chance to the effect value
   update_trigger_calculations();
   return this;
 }
