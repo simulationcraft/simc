@@ -11279,7 +11279,7 @@ void death_knight_t::create_buffs()
   // San'layn
   buffs.essence_of_the_blood_queen =
       make_buff( this, "essence_of_the_blood_queen", spell.essence_of_the_blood_queen_buff )
-          ->set_default_value_from_effect( 1 )
+          ->set_default_value( spell.essence_of_the_blood_queen_buff -> effectN( 1 ).percent() / 10 )
           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buffs.gift_of_the_sanlayn =
