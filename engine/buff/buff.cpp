@@ -2572,7 +2572,7 @@ void buff_t::override_buff( int stacks, double value )
   overridden = true;
 }
 
-bool buff_t::can_trigger( action_t* action )
+bool buff_t::can_trigger( action_t* action ) const
 {
   if ( is_fallback || !action->data().ok() || !trigger_data->ok() )
     return false;
@@ -2594,7 +2594,7 @@ bool buff_t::trigger( action_t* action, int stacks, double value, double chance,
   return false;
 }
 
-bool buff_t::can_consume( action_t* action )
+bool buff_t::can_expire( action_t* action ) const
 {
   if ( is_fallback || !check() || !action->data().ok() || !data().ok() )
     return false;
@@ -2609,9 +2609,9 @@ bool buff_t::can_consume( action_t* action )
   return true;
 }
 
-void buff_t::consume( action_t* action, timespan_t delay )
+void buff_t::expire( action_t* action, timespan_t delay )
 {
-  if ( can_consume( action ) )
+  if ( can_expire( action ) )
     expire( delay );
 }
 
