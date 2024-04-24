@@ -1177,7 +1177,7 @@ public:
       player_talent_t vampiric_aura;          // NYI
       player_talent_t bloody_fortitude;       // NYI
       player_talent_t infliction_of_sorrow;   // NYI
-      player_talent_t frenzied_bloodthirst;   // NYI
+      player_talent_t frenzied_bloodthirst;
       player_talent_t the_blood_is_life;      // NYI
       player_talent_t visceral_regeneration;  // NYI
       player_talent_t incite_terror;          // NYI
@@ -4102,10 +4102,12 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     // Rider of the Apocalypse
     parse_effects( p()->buffs.mograines_might );
     parse_effects( p()->buffs.a_feast_of_souls );
+
     // Deathbringer
 
     // San'layn
     parse_effects( p()->buffs.gift_of_the_sanlayn );
+    parse_effects( p()->buffs.essence_of_the_blood_queen, p()->talent.sanlayn.frenzied_bloodthirst );
   }
 
   void apply_debuff_effects()
@@ -10926,6 +10928,7 @@ void death_knight_t::init_spells()
   talent.sanlayn.vampiric_aura         = find_talent_spell( talent_tree::HERO, "Vampiric Aura" );
   talent.sanlayn.bloody_fortitude      = find_talent_spell( talent_tree::HERO, "Bloody Fortitude" );
   talent.sanlayn.infliction_of_sorrow  = find_talent_spell( talent_tree::HERO, "Infliction of Sorrow" );
+  talent.sanlayn.frenzied_bloodthirst  = find_talent_spell( talent_tree::HERO, "Frenzied Bloodthirst" );
   talent.sanlayn.the_blood_is_life     = find_talent_spell( talent_tree::HERO, "The Blood is Life" );
   talent.sanlayn.visceral_regeneration = find_talent_spell( talent_tree::HERO, "Visceral Regeneration" );
   talent.sanlayn.incite_terror         = find_talent_spell( talent_tree::HERO, "Incite Terror" );
@@ -11280,7 +11283,8 @@ void death_knight_t::create_buffs()
   buffs.essence_of_the_blood_queen =
       make_buff( this, "essence_of_the_blood_queen", spell.essence_of_the_blood_queen_buff )
           ->set_default_value( spell.essence_of_the_blood_queen_buff -> effectN( 1 ).percent() / 10 )
-          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+          ->apply_affecting_aura( talent.sanlayn.frenzied_bloodthirst );
 
   buffs.gift_of_the_sanlayn =
       make_buff( this, "gift_of_the_sanlayn", spell.gift_of_the_sanlayn_buff )->set_duration( 0_ms );
