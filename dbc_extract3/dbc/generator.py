@@ -1587,6 +1587,8 @@ class SpellDataGenerator(DataGenerator):
           ( 426703, 5), # Dire Beast Kill Command
           # Hero Talents
           ( 444354, 0), # Shadow Lash
+          ( 444269, 0), # Shadow Surge
+          ( 442419, 0), # Shadow Hounds
         ),
 
         # Rogue:
