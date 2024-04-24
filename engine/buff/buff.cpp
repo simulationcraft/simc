@@ -2577,10 +2577,10 @@ bool buff_t::can_trigger( action_t* action )
   if ( is_fallback || !action->data().ok() || !trigger_data->ok() )
     return false;
 
-  if ( action->proc && !trigger_data->attribute( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
+  if ( action->proc && !trigger_data->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
     return false;
 
-  if ( trigger_data->attribute( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) && !action->allow_class_ability_procs )
+  if ( trigger_data->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) && !action->allow_class_ability_procs )
     return false;
 
   return true;
@@ -2600,10 +2600,10 @@ bool buff_t::can_consume( action_t* action )
     return false;
 
   // TODO: check if trigger spell having CAN_PROC_FROM_PROCS is sufficient to allow the buff to consume
-  if ( action->proc && !data().attribute( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
+  if ( action->proc && !data().flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
     return false;
 
-  if ( data().attribute( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) && !action->allow_class_ability_procs )
+  if ( data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) && !action->allow_class_ability_procs )
     return false;
 
   return true;
