@@ -52,7 +52,7 @@ DF4_Generate_Paladin.simc
 DF4_Generate_Priest.simc
 
 # Rogue
-# DF4_Generate_Rogue.simc
+DF4_Generate_Rogue.simc
 
 # Shaman
 DF4_Generate_Shaman.simc
