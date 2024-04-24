@@ -1304,6 +1304,7 @@ public:
     const spell_data_t* essence_of_the_blood_queen_buff;
     const spell_data_t* gift_of_the_sanlayn_buff;
     const spell_data_t* vampiric_strike_buff;
+    const spell_data_t* vampiric_strike_heal;
 
   } spell;
 
@@ -4914,6 +4915,31 @@ struct summon_mograine_t final : public summon_rider_t
 // ==========================================================================
 
 // Vampiric Strike ==========================================================
+struct vampiric_strike_heal_t : public death_knight_heal_t
+{
+  vampiric_strike_heal_t( util::string_view name, death_knight_t* p )
+    : death_knight_heal_t( name, p, p->spell.vampiric_strike_heal ),
+      mod( p->specialization() == DEATH_KNIGHT_BLOOD ? data().effectN( 2 ).percent() : data().effectN( 3 ).percent() )
+  {
+    background = true;
+    may_miss = may_dodge = may_parry = false;
+    target                           = p;
+  }
+
+  double base_da_min( const action_state_t* ) const override
+  {
+    return player->resources.max[ RESOURCE_HEALTH ] * mod;
+  }
+
+  double base_da_max( const action_state_t* ) const override
+  {
+    return player->resources.max[ RESOURCE_HEALTH ] * mod;
+  }
+
+private:
+  double mod;
+};
+
 struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
 {
   vampiric_strike_action_base_t( util::string_view n, death_knight_t* p, util::string_view options_str,
@@ -7344,7 +7370,8 @@ struct heart_strike_damage_t : public heart_strike_damage_base_t
 struct vampiric_strike_blood_t : public heart_strike_damage_base_t
 {
   vampiric_strike_blood_t( util::string_view n, death_knight_t* p )
-    : heart_strike_damage_base_t( n, p, p->spell.vampiric_strike )
+    : heart_strike_damage_base_t( n, p, p->spell.vampiric_strike ),
+      heal( get_action<vampiric_strike_heal_t>( "vampiric_strike_heal", p ) )
   {
     attack_power_mod.direct = data().effectN( 5 ).ap_coeff();
   }
@@ -7353,11 +7380,15 @@ struct vampiric_strike_blood_t : public heart_strike_damage_base_t
   {
     heart_strike_damage_base_t::impact( s );
     p()->buffs.essence_of_the_blood_queen->trigger();
+    heal->execute();
     if ( !p()->buffs.gift_of_the_sanlayn->check() )
     {
       p()->buffs.vampiric_strike->expire();
     }
   }
+
+private:
+  action_t* heal;
 };
 
 struct heart_strike_action_t final : public vampiric_strike_action_base_t
@@ -8280,7 +8311,8 @@ struct scourge_strike_t final : public wound_spender_damage_base_t
 struct vampiric_strike_unholy_t : public wound_spender_damage_base_t
 {
   vampiric_strike_unholy_t( util::string_view n, death_knight_t* p )
-    : wound_spender_damage_base_t( n, p, p->spell.vampiric_strike )
+    : wound_spender_damage_base_t( n, p, p->spell.vampiric_strike ),
+      heal( get_action<vampiric_strike_heal_t>( "vampiric_strike_heal", p ) )
   {
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
   }
@@ -8289,11 +8321,15 @@ struct vampiric_strike_unholy_t : public wound_spender_damage_base_t
   {
     wound_spender_damage_base_t::impact( s );
     p()->buffs.essence_of_the_blood_queen->trigger();
+    heal->execute();
     if ( !p()->buffs.gift_of_the_sanlayn->check() )
     {
       p()->buffs.vampiric_strike->expire();
     }
   }
+
+private:
+  action_t* heal;
 };
 
 struct wound_spender_action_t final : public vampiric_strike_action_base_t
@@ -11021,6 +11057,7 @@ void death_knight_t::init_spells()
   spell.essence_of_the_blood_queen_buff = find_spell( 433925 );
   spell.gift_of_the_sanlayn_buff        = find_spell( 434153 );
   spell.vampiric_strike_buff            = find_spell( 433901 );
+  spell.vampiric_strike_heal            = find_spell( 434422 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
