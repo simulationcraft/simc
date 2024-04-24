@@ -2246,7 +2246,7 @@ class SpellDataGenerator(DataGenerator):
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage
           ( 393617, 2 ), # Primal Claws energize
-          ( 405191, 2 ), # Overflowing Power
+          ( 405069, 2 ), ( 405191, 2 ), # Overflowing Power
           # Guardian
           ( 370602, 3 ), # Elune's Favored heal
           ( 372505, 3 ), # Ursoc's Fury absorb
@@ -2259,6 +2259,7 @@ class SpellDataGenerator(DataGenerator):
           # The War Within
           # Class
           # Balance
+          ( 394451, 1 ), ( 450360, 1 ), ( 450361, 1 ), # touch the cosmos
           # Feral
           # Guardian
           # Restoration
