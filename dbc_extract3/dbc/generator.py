@@ -2145,6 +2145,8 @@ class SpellDataGenerator(DataGenerator):
           ( 443574, 0 ), # Ox Stance
           ( 443576, 0 ), # Serpent Stance
           ( 443575, 0 ), # Tiger Stance
+          ( 443592, 0 ), # Unity Within
+          ( 443611, 0 ), # Flight of the Red Crane
 
           # Master of Harmony
           ( 451299, 0 ), # Mantra of Tenacity Chi Cocoon
