@@ -817,6 +817,7 @@ public:
     player_talent_t soothe;
     player_talent_t stampeding_roar;
     player_talent_t starfire;
+    player_talent_t starlight_conduit;
     player_talent_t starsurge;
     player_talent_t sunfire;
     player_talent_t thick_hide;
@@ -9817,6 +9818,7 @@ void druid_t::init_spells()
   talent.soothe                         = CT( "Soothe" );
   talent.stampeding_roar                = CT( "Stampeding Roar" );
   talent.starfire                       = CT( "Starfire" );
+  talent.starlight_conduit              = CT( "Starlight Conduit" );
   talent.starsurge                      = CT( "Starsurge" );
   talent.sunfire                        = CT( "Sunfire" );
   talent.thick_hide                     = CT( "Thick Hide" );
@@ -13937,6 +13939,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.nurturing_instinct );
   action.apply_affecting_aura( talent.packs_endurance );
   action.apply_affecting_aura( talent.primal_fury );
+  action.apply_affecting_aura( talent.starlight_conduit );
 
   // Multi-spec
   action.apply_affecting_aura( talent.circle_of_life_and_death );
