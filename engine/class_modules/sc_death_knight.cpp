@@ -1619,7 +1619,7 @@ public:
   void trigger_whitemanes_famine( player_t* target, std::vector<player_t*>& target_list );
   void start_a_feast_of_souls();
   // San'layn
-  void trigger_infliction_in_sorrow( player_t* target );
+  void trigger_infliction_of_sorrow( player_t* target );
   // Blood
   void bone_shield_handler( const action_state_t* ) const;
   // Frost
@@ -7421,7 +7421,7 @@ struct vampiric_strike_blood_t : public heart_strike_damage_base_t
     }
     if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
     {
-      p()->trigger_infliction_in_sorrow( s->target );
+      p()->trigger_infliction_of_sorrow( s->target );
     }
   }
 
@@ -8366,7 +8366,7 @@ struct vampiric_strike_unholy_t : public wound_spender_damage_base_t
     }
     if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
     {
-      p()->trigger_infliction_in_sorrow( s->target );
+      p()->trigger_infliction_of_sorrow( s->target );
     }
   }
 
@@ -10055,20 +10055,18 @@ void death_knight_t::start_a_feast_of_souls()
   } );
 }
 
-void death_knight_t::trigger_infliction_in_sorrow( player_t* target )
+void death_knight_t::trigger_infliction_of_sorrow( player_t* target )
 {
   auto base_td = get_target_data( target );
   auto vp_td   = base_td->dot.virulent_plague;
   auto bp_td   = base_td->dot.blood_plague;
-  std::unique_ptr<action_state_t> vp_state;
-  std::unique_ptr<action_state_t> bp_state;
   double remaining_damage = 0;
   double mod              = 0;
 
   if ( vp_td->is_ticking() )
   {
+    std::unique_ptr<action_state_t> vp_state;
     double vp_tick_damage;
-    double vp_total_damage;
     if ( !vp_state )
     {
       vp_state.reset( vp_td->current_action->get_state() );
@@ -10076,14 +10074,13 @@ void death_knight_t::trigger_infliction_in_sorrow( player_t* target )
     vp_state->copy_state( vp_td->state );
     vp_state->result = RESULT_HIT;
     vp_tick_damage   = vp_state->action->calculate_tick_amount( vp_state.get(), vp_td->current_stack() );
-    vp_total_damage  = vp_tick_damage * vp_td->ticks_left();
-    remaining_damage += vp_total_damage;
+    remaining_damage += vp_tick_damage * vp_td->ticks_left();
   }
 
   if ( bp_td->is_ticking() )
   {
+    std::unique_ptr<action_state_t> bp_state;
     double bp_tick_damage;
-    double bp_total_damage;
     if ( !bp_state )
     {
       bp_state.reset( bp_td->current_action->get_state() );
@@ -10091,8 +10088,7 @@ void death_knight_t::trigger_infliction_in_sorrow( player_t* target )
     bp_state->copy_state( bp_td->state );
     bp_state->result = RESULT_HIT;
     bp_tick_damage   = bp_state->action->calculate_tick_amount( bp_state.get(), bp_td->current_stack() );
-    bp_total_damage  = bp_tick_damage * bp_td->ticks_left();
-    remaining_damage += bp_total_damage;
+    remaining_damage += bp_tick_damage * bp_td->ticks_left();
   }
 
   if ( remaining_damage == 0 )
