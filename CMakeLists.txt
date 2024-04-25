@@ -2,7 +2,7 @@
 cmake_minimum_required (VERSION 3.10...3.22)
 
 # Set OSX minimum version parity with Qt project
-set(CMAKE_OSX_DEPLOYMENT_TARGET 10.14)
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15)
 
 project(simc LANGUAGES CXX)
 
