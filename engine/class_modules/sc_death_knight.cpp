@@ -825,13 +825,11 @@ public:
     // Shared
     propagate_const<gain_t*> antimagic_shell;           // RP from magic damage absorbed
     propagate_const<gain_t*> antimagic_zone;            // RP from magic damage absorbed
-    propagate_const<gain_t*> antimagic_shell_horsemen;  // RP from magic damage absorbed
     gain_t* rune;                                       // Rune regeneration
     propagate_const<gain_t*> rune_of_hysteria;
     propagate_const<gain_t*> spirit_drain;
     propagate_const<gain_t*> coldthirst;
     propagate_const<gain_t*> start_of_combat_overflow;
-    propagate_const<gain_t*> feast_of_souls;
 
     // Blood
     propagate_const<gain_t*> blood_tap;
@@ -858,6 +856,13 @@ public:
     propagate_const<gain_t*> festering_wound;
     propagate_const<gain_t*> replenishing_wounds;
     propagate_const<gain_t*> feasting_strikes;
+
+    // Rider of the Apocalypse
+    propagate_const<gain_t*> feast_of_souls;
+    propagate_const<gain_t*> antimagic_shell_horsemen;  // RP from magic damage absorbed
+    
+    // San'layn
+    propagate_const<gain_t*> visceral_regeneration;
   } gains;
 
   // Specialization
@@ -4106,7 +4111,6 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     // Deathbringer
 
     // San'layn
-    parse_effects( p()->buffs.gift_of_the_sanlayn );
     parse_effects( p()->buffs.essence_of_the_blood_queen, p()->talent.sanlayn.frenzied_bloodthirst );
   }
 
@@ -4974,13 +4978,27 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
   void execute() override
   {
     death_knight_melee_attack_t::execute();
+    double chance = 0;
+    if( p()-> talent.sanlayn.visceral_regeneration.ok() )
+    {
+      chance = p()->talent.sanlayn.visceral_regeneration->effectN( 1 ).percent() * p()->buffs.essence_of_the_blood_queen->check();
+    }
     if ( p()->buffs.vampiric_strike->check() || p()->buffs.gift_of_the_sanlayn->check() )
     {
       vampiric_strike->execute();
+      chance *= 2;
+      if( rng().roll( chance ) )
+      {
+        p()->replenish_rune( 1, p()->gains.visceral_regeneration );
+      }
     }
     else
     {
       base_action->execute();
+      if ( rng().roll( chance ) )
+      {
+        p()->replenish_rune( 1, p()->gains.visceral_regeneration );
+      }
     }
   }
 
@@ -10577,6 +10595,8 @@ double death_knight_t::composite_melee_haste() const
     haste *= 1.0 / ( 1.0 + talent.blood.improved_bone_shield->effectN( 1 ).percent() );
   }
 
+  haste *= 1.0 / ( 1.0 + buffs.essence_of_the_blood_queen->check_stack_value() * ( 1.0 + buffs.gift_of_the_sanlayn->check_value() ) );
+
   return haste;
 }
 
@@ -10590,6 +10610,8 @@ double death_knight_t::composite_spell_haste() const
   {
     haste *= 1.0 / ( 1.0 + talent.blood.improved_bone_shield->effectN( 1 ).percent() );
   }
+
+  haste *= 1.0 / ( 1.0 + buffs.essence_of_the_blood_queen->check_stack_value() * ( 1.0 + buffs.gift_of_the_sanlayn->check_value() ) );
 
   return haste;
 }
@@ -11283,11 +11305,13 @@ void death_knight_t::create_buffs()
   buffs.essence_of_the_blood_queen =
       make_buff( this, "essence_of_the_blood_queen", spell.essence_of_the_blood_queen_buff )
           ->set_default_value( spell.essence_of_the_blood_queen_buff -> effectN( 1 ).percent() / 10 )
-          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+          ->add_invalidate( CACHE_HASTE )
           ->apply_affecting_aura( talent.sanlayn.frenzied_bloodthirst );
 
   buffs.gift_of_the_sanlayn =
-      make_buff( this, "gift_of_the_sanlayn", spell.gift_of_the_sanlayn_buff )->set_duration( 0_ms );
+      make_buff( this, "gift_of_the_sanlayn", spell.gift_of_the_sanlayn_buff )->set_duration( 0_ms )
+          ->set_default_value_from_effect( specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 )
+          ->add_invalidate( CACHE_HASTE );
 
   buffs.vampiric_strike = make_buff( this, "vampiric_strike", spell.vampiric_strike_buff )
                               ->set_chance( spell.vampiric_strike_buff->effectN( 1 ).percent() );
@@ -11556,14 +11580,12 @@ void death_knight_t::init_gains()
 
   // Shared
   gains.antimagic_shell          = get_gain( "Antimagic Shell" );
-  gains.antimagic_shell_horsemen = get_gain( "Antimagic Shell Horsemen" );
   gains.antimagic_zone           = get_gain( "Antimagic Zone" );
   gains.rune                     = get_gain( "Rune Regeneration" );
   gains.rune_of_hysteria         = get_gain( "Rune of Hysteria" );
   gains.spirit_drain             = get_gain( "Spirit Drain" );
   gains.start_of_combat_overflow = get_gain( "Start of Combat Overflow" );
   gains.coldthirst               = get_gain( "Coldthirst" );
-  gains.feast_of_souls           = get_gain( "A Feast of Souls" );
 
   // Blood
   gains.blood_tap        = get_gain( "Blood Tap" );
@@ -11590,6 +11612,13 @@ void death_knight_t::init_gains()
   gains.festering_wound     = get_gain( "Festering Wound" );
   gains.replenishing_wounds = get_gain( "Replenishing Wounds" );
   gains.feasting_strikes    = get_gain( "Feasting Strikes" );
+
+  // Rider of the Apocalypse
+  gains.feast_of_souls           = get_gain( "A Feast of Souls" );
+  gains.antimagic_shell_horsemen = get_gain( "Antimagic Shell Horsemen" );
+
+  // San'layn
+  gains.visceral_regeneration = get_gain( "Visceral Regeneration" );
 }
 
 // death_knight_t::init_procs ===============================================
