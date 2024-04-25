@@ -793,6 +793,7 @@ public:
 
     // Sanlayn
     propagate_const<action_t*> vampiric_strike;
+    action_t* infliction_of_sorrow;
 
     // Blood
     propagate_const<action_t*> mark_of_blood_heal;
@@ -1310,6 +1311,7 @@ public:
     const spell_data_t* gift_of_the_sanlayn_buff;
     const spell_data_t* vampiric_strike_buff;
     const spell_data_t* vampiric_strike_heal;
+    const spell_data_t* infliction_of_sorrow_damage;
 
   } spell;
 
@@ -1616,6 +1618,8 @@ public:
   void extend_rider( double amount, pets::horseman_pet_t* rider );
   void trigger_whitemanes_famine( player_t* target, std::vector<player_t*>& target_list );
   void start_a_feast_of_souls();
+  // San'layn
+  void trigger_infliction_in_sorrow( player_t* target );
   // Blood
   void bone_shield_handler( const action_state_t* ) const;
   // Frost
@@ -5007,6 +5011,16 @@ private:
   action_t* base_action;
 };
 
+struct infliction_in_sorrow_t : public death_knight_spell_t
+{
+  infliction_in_sorrow_t( util::string_view n, death_knight_t* p )
+    : death_knight_spell_t( n, p, p->spell.infliction_of_sorrow_damage )
+  {
+    background = true;
+    may_miss = may_dodge = may_parry = false;
+  }
+};
+
 // ==========================================================================
 // Death Knight Abilities
 // ==========================================================================
@@ -7405,6 +7419,10 @@ struct vampiric_strike_blood_t : public heart_strike_damage_base_t
     {
       p()->buffs.vampiric_strike->expire();
     }
+    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
+    {
+      p()->trigger_infliction_in_sorrow( s->target );
+    }
   }
 
 private:
@@ -8345,6 +8363,10 @@ struct vampiric_strike_unholy_t : public wound_spender_damage_base_t
     if ( !p()->buffs.gift_of_the_sanlayn->check() )
     {
       p()->buffs.vampiric_strike->expire();
+    }
+    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
+    {
+      p()->trigger_infliction_in_sorrow( s->target );
     }
   }
 
@@ -10033,6 +10055,79 @@ void death_knight_t::start_a_feast_of_souls()
   } );
 }
 
+void death_knight_t::trigger_infliction_in_sorrow( player_t* target )
+{
+  auto base_td = get_target_data( target );
+  auto vp_td   = base_td->dot.virulent_plague;
+  auto bp_td   = base_td->dot.blood_plague;
+  std::unique_ptr<action_state_t> vp_state;
+  std::unique_ptr<action_state_t> bp_state;
+  double remaining_damage = 0;
+  double mod              = 0;
+
+  if ( vp_td->is_ticking() )
+  {
+    double vp_tick_damage;
+    double vp_total_damage;
+    if ( !vp_state )
+    {
+      vp_state.reset( vp_td->current_action->get_state() );
+    }
+    vp_state->copy_state( vp_td->state );
+    vp_state->result = RESULT_HIT;
+    vp_tick_damage   = vp_state->action->calculate_tick_amount( vp_state.get(), vp_td->current_stack() );
+    vp_total_damage  = vp_tick_damage * vp_td->ticks_left();
+    remaining_damage += vp_total_damage;
+  }
+
+  if ( bp_td->is_ticking() )
+  {
+    double bp_tick_damage;
+    double bp_total_damage;
+    if ( !bp_state )
+    {
+      bp_state.reset( bp_td->current_action->get_state() );
+    }
+    bp_state->copy_state( bp_td->state );
+    bp_state->result = RESULT_HIT;
+    bp_tick_damage   = bp_state->action->calculate_tick_amount( bp_state.get(), bp_td->current_stack() );
+    bp_total_damage  = bp_tick_damage * bp_td->ticks_left();
+    remaining_damage += bp_total_damage;
+  }
+
+  if ( remaining_damage == 0 )
+    return;
+
+  if ( buffs.gift_of_the_sanlayn->check() )
+  {
+    timespan_t extension = timespan_t::from_seconds( talent.sanlayn.infliction_of_sorrow->effectN( 3 ).base_value() );
+    mod                  = talent.sanlayn.infliction_of_sorrow->effectN( 2 ).percent();
+    if ( vp_td->is_ticking() )
+    {
+      vp_td->adjust_duration( extension );
+    }
+    if ( bp_td->is_ticking() )
+    {
+      bp_td->adjust_duration( extension );
+    }
+  }
+  else
+  {
+    mod = talent.sanlayn.infliction_of_sorrow->effectN( 1 ).percent();
+    if ( vp_td->is_ticking() )
+    {
+      vp_td->cancel();
+    }
+    if ( bp_td->is_ticking() )
+    {
+      bp_td->cancel();
+    }
+  }
+
+  active_spells.infliction_of_sorrow->base_dd_min = active_spells.infliction_of_sorrow->base_dd_max = remaining_damage * mod;
+  active_spells.infliction_of_sorrow->execute_on_target( target );
+}
+
 void death_knight_t::trigger_dnd_buffs()
 {
   if ( !talent.unholy_ground.ok() && !talent.blood.sanguine_ground.ok() )
@@ -10105,6 +10200,11 @@ void death_knight_t::create_actions()
     active_spells.vampiric_strike = specialization() == DEATH_KNIGHT_UNHOLY
                                         ? get_action<vampiric_strike_unholy_t>( "vampiric_strike", this )
                                         : get_action<vampiric_strike_blood_t>( "vampiric_strike", this );
+  }
+
+  if( talent.sanlayn.infliction_of_sorrow.ok() )
+  {
+    active_spells.infliction_of_sorrow = get_action<infliction_in_sorrow_t>( "infliction_of_sorrow", this );
   }
 
   // Blood
@@ -11083,6 +11183,7 @@ void death_knight_t::init_spells()
   spell.gift_of_the_sanlayn_buff        = find_spell( 434153 );
   spell.vampiric_strike_buff            = find_spell( 433901 );
   spell.vampiric_strike_heal            = find_spell( 434422 );
+  spell.infliction_of_sorrow_damage     = find_spell( 434144 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2

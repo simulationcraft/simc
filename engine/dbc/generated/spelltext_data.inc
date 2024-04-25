@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54311
-static const std::array<spelltext_data_t, 22367> __spelltext_data { {
+static const std::array<spelltext_data_t, 22370> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21118,6 +21118,7 @@ static const std::array<spelltext_data_t, 22367> __spelltext_data { {
   { 434136, "Icebound Fortitude reduces all damage you take by up to an additional $s1% based on your missing health.\r\n\r\nKilling enemies that grant honor or experience reduce the cooldown of Icebound Fortitude by $s2 sec.", 0, 0 },
   { 434141, "Blooms near your heal target, restoring $s1 health to $s2 injured allies within $A1 yds.", 0, 0 },
   { 434143, "When Vampiric Strike damages an enemy affected by Virulent Plague or Blood Plague it consumes the disease to deal $s1% of their remaining damage to the target.\r\n\r\nWhile Gift of the San'layn is active, Vampiric Strike no longer consumes your disease and instead extends the duration of your disease by $s3 sec and deals $s2% of the remaining damage to the enemy.", 0, 0 },
+  { 434144, "$@spelldesc434143", 0, 0 },
   { 434151, "Heart Strike and Scourge Strike extend the duration of Essence of the Blood Queen by ${$s1/1000}.1 sec. Vampiric Strike increases the extension by $s2%. ", 0, 0 },
   { 434152, "While Vampiric Blood or Dark Transformation is active you gain Gift of the San'layn.\r\n\r\nGift of the San'layn increases the effectiveness of your Essence of the Blood Queen by $?a137007[$434153s1][$434153s4]%, and Vampiric Strike replaces your Heart Strike and Scourge Strike for the duration.\r\n", 0, 0 },
   { 434153, "$@spelldesc434152", "The effectiveness of Essence of the Blood Queen is increased by $?a137007[$w1][$w4]%.\r\n\r\n$?a137007[Scourge Strike][Heart Strike] has been replaced with Vampiric Strike.", 0 },
@@ -21126,6 +21127,7 @@ static const std::array<spelltext_data_t, 22367> __spelltext_data { {
   { 434218, "$@spelldesc432692", "Absorb $w4 damage.", 0 },
   { 434220, "$?a137013[Force of Nature grants an additional stack of Dream Burst.][Healing spells cast with Dream Surge generate an additional Dream Petal.]\r\n\r\nCenarius' Might increases spell potency by an additional $s3%.", 0, 0 },
   { 434237, "Raises a Blood Beast to fight by your side.  You can have a maximum of one Blood Beast at a time. Lasts $d.", 0, 0 },
+  { 434246, "Blood Beast explodes for $s1 damage upon death.", 0, 0 },
   { 434249, "Time elapsed while your major abilities are available to be used is subtracted from that ability's cooldown after the next time you use it, up to $s1 seconds.\r\n\r\nAffects $?a137012[Nature's Swiftness, Incarnation: Tree of Life,][Force of Nature,] $?a137012[]?a394013[Incarnation: Chosen of Elune, ][Celestial Alignment, ]and Convoke the Spirits.", 0, 0 },
   { 434251, "$@spelldesc421990", "Counterattacking all incoming damage from enemies within $421996r yards. Regenerating $w1 every $t sec.", 0 },
   { 434260, "Vampiric strike has a chance to summon a Blood Beast to attack your enemy for $434237d.\r\n\r\nEach time the Blood Beast attacks, it stores a portion of the damage dealt. When the Blood Beast dies, it explodes, dealing $?a137007[$s2][$s1]% of the damage accumulated to nearby enemies and healing the Death Knight for the same amount.", 0, 0 },
@@ -21140,6 +21142,7 @@ static const std::array<spelltext_data_t, 22367> __spelltext_data { {
   { 434506, "Hurl a bolt enveloped in the infernal flames of the abyss, dealing $s1 Fire damage to your enemy target and generating ${$s2/10} Soul Shards.", 0, 0 },
   { 434559, "$@spelldesc429115", "Healing for ${$s1*($d/$t1)}% of your maximum health over $d.", 0 },
   { 434561, "$@spelldesc429130", "Soul Leech can absorb an additional $s1% of your maximum health.", 0 },
+  { 434574, "Blood Beast cleaves enemies around it for $s1 Shadow damage.", 0, 0 },
   { 434598, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
   { 434635, "Call down a demon-infested meteor from the depths of the Twisting Nether, dealing $434636s1 Chaos damage on impact to all enemies within $434636a1 yds of the target$?s137046[ and summoning $433885s3 Diabolic Imp.\r\n\r\nDamage is further increased by your critical strike chance.][ and summoning $433885s2 Wild Imps.]", 0, 0 },
   { 434636, "$@spelldesc434635", 0, 0 },
