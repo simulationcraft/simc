@@ -459,6 +459,28 @@ public:
 
       player_talent_t thrill_of_the_fight;  // NYI
     } aldrachi_reaver;
+
+    struct felscarred_talents_t
+    {
+      player_talent_t demonsurge; // NYI
+
+      player_talent_t wave_of_debilitation; // NYI
+      player_talent_t pursuit_of_angryness; // NYI
+      player_talent_t focused_hatred; // NYI
+      player_talent_t set_fire_to_the_pain; // NYI
+      player_talent_t improved_soul_rending; // NYI
+
+      player_talent_t burning_blades; // NYI
+      player_talent_t violent_transformation; // NYI
+      player_talent_t enduring_torment; // NYI
+
+      player_talent_t untethered_fury; // NYI
+      player_talent_t student_of_suffering; // NYI
+      player_talent_t flamebound; // NYI
+      player_talent_t monster_rising; // NYI
+
+      player_talent_t demonic_intensity; // NYI
+    } felscarred;
   } talent;
 
   // Spell Data
@@ -7877,6 +7899,27 @@ void demon_hunter_t::init_spells()
   talent.aldrachi_reaver.warblades_hunger = find_talent_spell( talent_tree::HERO, "Warblade's Hunger" );
 
   talent.aldrachi_reaver.thrill_of_the_fight = find_talent_spell( talent_tree::HERO, "Thrill of the Fight" );
+
+  // Fel-Scarred talents
+  talent.felscarred.demonsurge = find_talent_spell( talent_tree::HERO, "Demonsurge" );
+
+  talent.felscarred.wave_of_debilitation = find_talent_spell( talent_tree::HERO, "Wave of Debilitation" );
+  talent.felscarred.pursuit_of_angryness = find_talent_spell( talent_tree::HERO, "Pursuit of Angryness" );
+  talent.felscarred.focused_hatred = find_talent_spell( talent_tree::HERO, "Focused Hatred" );
+  talent.felscarred.set_fire_to_the_pain = find_talent_spell( talent_tree::HERO, "Set Fire to the Pain" );
+  talent.felscarred.improved_soul_rending = find_talent_spell( talent_tree::HERO, "Improved Soul Rending" );
+
+  talent.felscarred.burning_blades = find_talent_spell( talent_tree::HERO, "Burning Blades" );
+  talent.felscarred.violent_transformation = find_talent_spell( talent_tree::HERO, "Violent Transformation" );
+  talent.felscarred.enduring_torment = find_talent_spell( talent_tree::HERO, "Enduring Torment" );
+
+  talent.felscarred.untethered_fury = find_talent_spell( talent_tree::HERO, "Untethered Fury" );
+  talent.felscarred.student_of_suffering = find_talent_spell( talent_tree::HERO, "Student of Suffering" );
+  talent.felscarred.flamebound = find_talent_spell( talent_tree::HERO, "Flamebound" );
+  talent.felscarred.monster_rising = find_talent_spell( talent_tree::HERO, "Monster Rising" );
+
+  talent.felscarred.demonic_intensity = find_talent_spell( talent_tree::HERO, "Demonic Intensity" );
+
 
   // Class Background Spells
   spell.felblade_damage      = talent.demon_hunter.felblade->ok() ? find_spell( 213243 ) : spell_data_t::not_found();
