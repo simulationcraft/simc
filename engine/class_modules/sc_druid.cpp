@@ -602,6 +602,7 @@ public:
     buff_t* touch_the_cosmos_starfall;
     buff_t* touch_the_cosmos_starsurge;
     buff_t* umbral_embrace;
+    buff_t* umbral_inspiration;
     buff_t* warrior_of_elune;
     buff_t* balance_t31_4pc_buff_solar; // buff to track t31 4pc value
     buff_t* balance_t31_4pc_buff_lunar;  // buff to track t31 4pc value
@@ -872,6 +873,7 @@ public:
     player_talent_t touch_the_cosmos;
     player_talent_t twin_moons;
     player_talent_t umbral_embrace;
+    player_talent_t umbral_inspiration;
     player_talent_t umbral_intensity;
     player_talent_t waning_twilight;
     player_talent_t warrior_of_elune;
@@ -1919,6 +1921,7 @@ public:
     parse_effects( p()->buff.starweaver_starsurge );
     parse_effects( p()->buff.touch_the_cosmos_starfall );
     parse_effects( p()->buff.touch_the_cosmos_starsurge );
+    parse_effects( p()->buff.umbral_inspiration );
     parse_effects( p()->buff.warrior_of_elune, IGNORE_STACKS );
 
     // Feral
@@ -6929,6 +6932,7 @@ public:
     {
       clear_school_override();
       p()->buff.umbral_embrace->expire();
+      p()->buff.umbral_inspiration->trigger();
     }
 
     p()->buff.umbral_embrace->trigger( this );
@@ -9870,6 +9874,7 @@ void druid_t::init_spells()
   talent.touch_the_cosmos               = ST( "Touch the Cosmos" );
   talent.twin_moons                     = ST( "Twin Moons" );
   talent.umbral_embrace                 = ST( "Umbral Embrace" );
+  talent.umbral_inspiration             = ST( "Umbral Inspiration" );
   talent.umbral_intensity               = ST( "Umbral Intensity" );
   talent.waning_twilight                = ST( "Waning Twilight" );
   talent.warrior_of_elune               = ST( "Warrior of Elune" );
@@ -10596,6 +10601,9 @@ void druid_t::create_buffs()
           ->set_trigger_spell( talent.umbral_embrace )
           ->set_chance( 0.2 )  // TODO: harcoded value
           ->set_default_value( talent.umbral_embrace->effectN( 1 ).percent() );
+
+  buff.umbral_inspiration =
+      make_fallback( talent.umbral_inspiration.ok(), this, "umbral_inspiration", find_spell( 450419 ) );
 
   buff.warrior_of_elune =
       make_fallback( talent.warrior_of_elune.ok(), this, "warrior_of_elune", talent.warrior_of_elune )
