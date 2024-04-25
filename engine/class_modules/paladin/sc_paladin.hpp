@@ -555,6 +555,11 @@ public:
     const spell_data_t* divine_auxiliary;
     const spell_data_t* seething_flames;
     const spell_data_t* searing_light;
+
+    // Hero Talents
+    const spell_data_t* blessed_assurance;
+    const spell_data_t* holy_bulwark;
+    const spell_data_t* sacred_weapon;
   } talents;
 
   struct tier_sets_t

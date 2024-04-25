@@ -70,6 +70,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.wake_of_ashes    = get_cooldown( "wake_of_ashes" );
 
   cooldowns.blessing_of_the_seasons = get_cooldown( "blessing_of_the_seasons" );
+  cooldowns.holy_armament           = get_cooldown( "holy_armament" );
 
   cooldowns.ret_aura_icd = get_cooldown( "ret_aura_icd" );
   cooldowns.ret_aura_icd->duration = timespan_t::from_seconds( 30 );
@@ -1065,8 +1066,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     double m = paladin_melee_attack_t::action_multiplier();
     if (p()->buffs.blessed_assurance->up())
     {
-        //TODO add spell data
-      m *= 1.0 + 1.0;
+      m *= 1.0 + (p()->talents.blessed_assurance->effectN(1)).percent();
     }
     return m;
   }
@@ -1689,11 +1689,10 @@ struct blessing_of_the_seasons_t : public paladin_spell_t
 //Sacred Weapon Driver 
 struct sacred_weapon_proc_t : public spell_t
 {
-  sacred_weapon_proc_t( player_t* p ) : spell_t( "sacred_weapon_proc", p )
+  sacred_weapon_proc_t( player_t* p ) : spell_t( "sacred_weapon_proc", p, p->find_spell( 432502 ) )
   {
     may_dodge = may_parry = may_block = callbacks = may_crit = false;
     background                                               = true;
-    base_dd_min = base_dd_max = 10000;
   }
 };
     // Sacred Weapon Buff
@@ -1702,7 +1701,7 @@ struct sacred_weapon_t : public paladin_spell_t
     //TODO Add Spelldat
     timespan_t buff_duration = 12_s;
 
-    sacred_weapon_t(paladin_t* p) : paladin_spell_t("sacred_weapon", p)
+    sacred_weapon_t( paladin_t* p ) : paladin_spell_t( "sacred_weapon", p, p->find_spell( 432502 ) )
    {}
    void execute() override
    {
@@ -2462,8 +2461,8 @@ void paladin_t::create_buffs()
               this->active.divine_resonance->schedule_execute();
           } );
   buffs.sacred_weapon     = make_buff( this, "sacred_weapon", find_spell( 432502 ) );
-  buffs.holy_bulwark  = make_buff( this,  "holy_bulwark" );
-  buffs.blessed_assurance = make_buff( this,  "blessed_assurance" );
+  buffs.holy_bulwark      = make_buff( this, "holy_bulwark", find_spell( 432496 ) );
+  buffs.blessed_assurance = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
 }
 
 // paladin_t::default_potion ================================================
@@ -3401,6 +3400,7 @@ void paladin_t::combat_begin()
 
   // evidently it resets to summer on combat start
   next_season = SUMMER;
+  next_armament = HOLY_BULWARK;
 
   if ( talents.inquisitors_ire->ok() )
   {
