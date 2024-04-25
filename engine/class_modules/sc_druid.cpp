@@ -1800,18 +1800,20 @@ public:
         break;
     }
 
-    if ( !p()->buff.lunar_amplification->is_fallback && ab::harmful && has_flag( flag_e::FOREGROUND ) )
+    if ( ab::harmful )
     {
-      if ( dbc::is_school( ab::school, SCHOOL_ARCANE ) )
-        make_event( *ab::sim, [ this ] { p()->buff.lunar_amplification->expire( this ); } );
+      if ( dbc::is_school( ab::school, SCHOOL_ARCANE ) && p()->buff.lunar_amplification->can_expire( this ))
+      {
+        if ( !ab::background )
+          make_event( *ab::sim, [ this ] { p()->buff.lunar_amplification->expire(); } );
+      }
       else
-        p()->buff.lunar_amplification->trigger();
+      {
+        p()->buff.lunar_amplification->trigger( this );
+      }
     }
 
-    // TODO: while this has a driver, it doesn't seem to actually be using that data, and appears to be scripted to
-    // behave like a CAST_SUCCESS proc. For now assuming it only procs off foreground abilities. Whitelist by ID if
-    // necessary.
-    if ( p()->talent.lunation.ok() && has_flag( flag_e::FOREGROUND ) && dbc::is_school( ab::school, SCHOOL_ARCANE ) )
+    if ( p()->talent.lunation.ok() && !ab::proc && !ab::background && dbc::is_school( ab::school, SCHOOL_ARCANE ) )
     {
       assert( p()->talent.lunation->effects().size() == 3 );
       auto eff = p()->talent.lunation->effects().begin();
@@ -4384,7 +4386,7 @@ struct feral_frenzy_t : public cat_attack_t
 
     p()->buff.bt_feral_frenzy->trigger();
 
-    if ( p()->talent.implant.ok() && !proc && p()->active.bloodseeker_vines )
+    if ( p()->talent.implant.ok() && p()->active.bloodseeker_vines )
       p()->active.bloodseeker_vines->execute_on_target( target );
   }
 };
@@ -5362,19 +5364,6 @@ struct lunar_beam_t : public bear_attack_t
       aoe = -1;
 
       execute_action = p->get_secondary_action<lunar_beam_heal_t>( "lunar_beam_heal", f );
-
-      if ( !p->buff.lunar_amplification->is_fallback && !is_free_proc() )
-      {
-        range::erase_remove( da_multiplier_effects, [ & ]( const auto& e ) {
-          return e.buff == p->buff.lunar_amplification;
-        } );
-
-        const auto& eff = p->buff.lunar_amplification->data().effectN( 1 );
-        add_parse_entry( persistent_multiplier_effects )
-          .set_buff( p->buff.lunar_amplification )
-          .set_value( eff.percent() )
-          .set_eff( &eff );
-      }
     }
   };
 
@@ -6548,14 +6537,17 @@ void druid_action_t<Base>::init()
   if ( !ab::harmful && !dynamic_cast<druid_heal_t*>( this ) )
     ab::target = ab::player;
 
-  if ( has_flag( flag_e::FOREGROUND ) && !p()->buff.lunar_amplification->is_fallback &&
-       dbc::is_school( ab::school, SCHOOL_ARCANE ) )
+  if ( dbc::is_school( ab::school, SCHOOL_ARCANE ) && p()->buff.lunar_amplification->can_expire( this ) )
   {
-    const auto& eff = p()->buff.lunar_amplification->data().effectN( 1 );
-    ab::add_parse_entry( ab::da_multiplier_effects )
+    // allow ground_aoe for snapshots
+    if ( !ab::background || ab::ground_aoe )
+    {
+      const auto& eff = p()->buff.lunar_amplification->data().effectN( 1 );
+      ab::add_parse_entry( persistent_multiplier_effects )
         .set_buff( p()->buff.lunar_amplification )
         .set_value( eff.percent() )
         .set_eff( &eff );
+    }
   }
 }
 
@@ -6941,19 +6933,6 @@ struct fury_of_elune_t : public druid_spell_t
       aoe = -1;
       reduced_aoe_targets = 1.0;
       full_amount_targets = 1;
-
-      if ( !p->buff.lunar_amplification->is_fallback && !is_free_proc() )
-      {
-        range::erase_remove( da_multiplier_effects, [ & ]( const auto& e ) {
-          return e.buff == p->buff.lunar_amplification;
-        } );
-
-        const auto& eff = p->buff.lunar_amplification->data().effectN( 1 );
-        add_parse_entry( persistent_multiplier_effects )
-          .set_buff( p->buff.lunar_amplification )
-          .set_value( eff.percent() )
-          .set_eff( &eff );
-      }
     }
 
     void impact( action_state_t* s ) override
@@ -7475,7 +7454,7 @@ struct moonfire_t : public druid_spell_t
     if ( ( p->talent.twin_moonfire.ok() || p->talent.twin_moons.ok() ) && !has_flag( flag_e::TWIN ) )
     {
       twin = p->get_secondary_action<moonfire_t>( name_str + "_twin", flag_e::TWIN );
-      twin->background = twin->dual = true;
+      twin->background = twin->dual = twin->proc = true;
       replace_stats( twin->damage, false );
       twin->stats = stats;
 
@@ -7503,8 +7482,7 @@ struct moonfire_t : public druid_spell_t
         twin->execute_on_target( twin_target );
     }
 
-    if ( !has_flag( flag_e::TWIN ) )
-      p()->buff.galactic_guardian->expire( this );
+    p()->buff.galactic_guardian->expire( this );
   }
 };
 
@@ -7796,7 +7774,7 @@ struct shooting_stars_t : public druid_spell_t
 {
   shooting_stars_t( druid_t* p, std::string_view n, const spell_data_t* s ) : druid_spell_t( n, p, s )
   {
-    background = true;
+    background = proc = true;
   }
 
   void execute() override
@@ -7873,7 +7851,7 @@ struct starfall_t : public ap_spender_t
 
       if ( !p->buff.lunar_amplification->is_fallback )
       {
-        range::erase_remove( da_multiplier_effects, [ & ]( const auto& e ) {
+        range::erase_remove( persistent_multiplier_effects, [ & ]( const auto& e ) {
           return e.buff == p->buff.lunar_amplification;
         } );
 
@@ -10639,7 +10617,8 @@ void druid_t::create_buffs()
           ->set_quiet( true );
 
   buff.lunar_amplification =
-      make_fallback( talent.lunar_amplification.ok(), this, "lunar_amplification", find_spell( 431250 ) );
+      make_fallback( talent.lunar_amplification.ok(), this, "lunar_amplification", find_spell( 431250 ) )
+          ->set_trigger_spell( talent.lunar_amplification );
 
   buff.lunar_amplification_starfall = make_fallback( talent.lunar_amplification.ok() && talent.starfall.ok(),
       this, "lunar_amplification_starfall", find_spell( 432846 ) )
@@ -10786,6 +10765,7 @@ void druid_t::create_actions()
       fm->base_multiplier = talent.orbit_breaker->effectN( 2 ).percent();
       fm->energize_amount *= talent.orbit_breaker->effectN( 2 ).percent();
       fm->background = true;
+      fm->proc = true;
       active.shooting_stars->add_child(fm );
       active.orbit_breaker = fm;
     }
@@ -10801,6 +10781,7 @@ void druid_t::create_actions()
     firmament->damage->base_multiplier = talent.sundered_firmament->effectN( 1 ).percent();
     firmament->s_data_reporting = talent.sundered_firmament;
     firmament->background = true;
+    firmament->proc = true;
     active.sundered_firmament = firmament;
   }
 
@@ -10887,6 +10868,7 @@ void druid_t::create_actions()
         "the_light_of_elune", find_spell( 202770 ), flag_e::LIGHTOFELUNE, find_spell( 211545 ), buff.fury_of_elune );
     foe->s_data_reporting = talent.the_light_of_elune;
     foe->background = true;
+    foe->proc = true;
     foe->duration_override = talent.the_light_of_elune->effectN( 2 ).time_value();
     active.the_light_of_elune = foe;
   }
