@@ -3980,13 +3980,9 @@ struct breath_of_fire_t : public monk_spell_t
     if ( p()->talent.brewmaster.dragonfire_brew->ok() )
     {
       // Currently value is saved as 100% and each of the values is a divisable of 33%
-      auto bof_stagger_bonus = p()->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent();
-      if ( p()->buff.light_stagger->check() )
-        am *= 1 + ( ( 1.0 / 3.0 ) * bof_stagger_bonus );
-      if ( p()->buff.moderate_stagger->check() )
-        am *= 1 + ( ( 2.0 / 3.0 ) * bof_stagger_bonus );
-      if ( p()->buff.heavy_stagger->check() )
-        am *= 1 + bof_stagger_bonus;
+      // TODO: Use parse_effect
+      double bof_stagger_bonus = p()->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent();
+      am *= 1.0 + ( p()->stagger->current_index() / 3.0 ) * bof_stagger_bonus;
     }
 
     return am;
@@ -4193,10 +4189,7 @@ struct purifying_brew_t : public monk_spell_t
   bool ready() override
   {
     // Irrealistic of in-game, but let's make sure stagger is actually present
-    if ( !p()->stagger->is_ticking() )
-      return false;
-
-    return monk_spell_t::ready();
+    return p()->stagger->is_ticking();
   }
 
   void execute() override
@@ -4223,15 +4216,9 @@ struct purifying_brew_t : public monk_spell_t
 
     if ( p()->talent.brewmaster.improved_celestial_brew->ok() )
     {
-      int count = 1;
-      for ( auto &&buff : { p()->buff.light_stagger, p()->buff.moderate_stagger, p()->buff.heavy_stagger } )
-      {
-        if ( buff && buff->check() )
-        {
-          p()->buff.purified_chi->trigger( count );
-        }
-        count++;
-      }
+      unsigned stacks = p()->stagger->current_index();
+      if ( stacks > 0 )
+        p()->buff.purified_chi->trigger( stacks );
     }
 
     // Reduce stagger damage
@@ -6657,7 +6644,8 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     passives(),
     rppm(),
     pets( this ),
-    user_options( options_t() )
+    user_options( options_t() ),
+    stagger( nullptr )
 {
   // actives
   windwalking_aura = nullptr;
@@ -8760,18 +8748,11 @@ void monk_t::retarget_storm_earth_and_fire( pet_t *pet, std::vector<player_t *> 
  */
 double shared_composite_haste_modifiers( const monk_t &p, double h )
 {
-  if ( p.talent.brewmaster.high_tolerance->ok() )
+  if ( p.talent.brewmaster.high_tolerance->ok() && p.stagger )
   {
-    int effect_index = 2;  // Effect index of HT affecting each stagger buff
-    for ( auto *buff :
-          std::initializer_list<const buff_t *>{ p.buff.light_stagger, p.buff.moderate_stagger, p.buff.heavy_stagger } )
-    {
-      if ( buff && buff->check() )
-      {
-        h *= 1.0 / ( 1.0 + p.talent.brewmaster.high_tolerance->effectN( effect_index ).percent() );
-      }
-      ++effect_index;
-    }
+    unsigned index = p.stagger->current_index();
+    if ( index > 0 )
+      h *= 1.0 / ( 1.0 + p.talent.brewmaster.high_tolerance->effectN( index ).percent() );
   }
 
   return h;
@@ -9419,64 +9400,7 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_t
   base_t::assess_damage_imminent_pre_absorb( school, dtype, s );
 
   if ( specialization() == MONK_BREWMASTER )
-  {
-    // Stagger damage can't be staggered!
-    if ( s->action->id == passives.stagger_self_damage->id() )
-      return;
-
-    // Stagger Calculation
-    double stagger_dmg = 0;
-
-    if ( s->result_amount > 0 )
-    {
-      if ( school == SCHOOL_PHYSICAL )
-        stagger_dmg += s->result_amount * stagger->percent( s->target->level() );
-
-      else if ( spec.stagger->ok() && school != SCHOOL_PHYSICAL )
-      {
-        double stagger_magic = stagger->percent( s->target->level() ) * spec.stagger->effectN( 5 ).percent();
-
-        stagger_dmg += s->result_amount * stagger_magic;
-      }
-
-      s->result_amount -= stagger_dmg;
-      s->result_mitigated -= stagger_dmg;
-    }
-    // Hook up Stagger Mechanism
-    if ( stagger_dmg > 0 )
-    {
-      double t31_fake_absorb = buff.brewmaster_t31_4p_fake_absorb->check_value();
-      if ( t31_fake_absorb > stagger_dmg )
-      {
-        sim->print_debug(
-            "removing up to {} of {} candidate staggered damage with 4p fake absorb, adding {} to stagger pool",
-            t31_fake_absorb, stagger_dmg, 0 );
-        buff.brewmaster_t31_4p_fake_absorb->trigger( 1, t31_fake_absorb - stagger_dmg );
-        stagger_dmg = 0;
-        return;
-      }
-      else if ( t31_fake_absorb > 0 )
-      {
-        sim->print_debug(
-            "removing up to {} of {} candidate staggered damage with 4p fake absorb, adding {} to stagger pool",
-            t31_fake_absorb, stagger_dmg, stagger_dmg - t31_fake_absorb );
-        stagger_dmg -= t31_fake_absorb;
-        buff.brewmaster_t31_4p_fake_absorb->expire();
-      }
-      // Blizzard is putting a cap on how much damage can go into stagger
-      double amount_remains = stagger->pool_size();
-      double cap            = resources.max[ RESOURCE_HEALTH ] * spec.stagger->effectN( 4 ).percent();
-      if ( amount_remains + stagger_dmg >= cap )
-      {
-        double diff = ( amount_remains + stagger_dmg ) - cap;
-        s->result_amount += std::fmax( stagger_dmg - diff, 0 );
-        s->result_mitigated += std::fmax( stagger_dmg - diff, 0 );
-        stagger_dmg = std::fmax( stagger_dmg - diff, 0 );
-      }
-      // // sample_datas.stagger_total_damage->add( stagger_dmg );
-      residual_action::trigger( stagger->self_damage, this, stagger_dmg );
-    }
-  }
+    stagger->trigger( school, dtype, s );
 }
 
 // monk_t::assess_heal ===================================================
@@ -10077,6 +10001,13 @@ struct monk_module_t : public module_t
 monk_t::stagger_t::stagger_buff_t::stagger_buff_t( monk_t &player, std::string_view name, const spell_data_t *spell )
   : actions::monk_buff_t( player, name, spell )
 {
+  // duration is controlled by stagger_t::self_damage_t
+  // logic is more convenient if we prevent this from ever naturally expiring
+  base_buff_duration = 0_s;
+  add_invalidate( CACHE_HASTE );
+  add_invalidate( CACHE_ATTACK_HASTE );
+  add_invalidate( CACHE_MELEE_HASTE );
+  add_invalidate( CACHE_SPELL_HASTE );
 }
 
 monk_t::stagger_t::stagger_level_t::stagger_level_t( stagger_level_e level, monk_t *player )
@@ -10184,6 +10115,7 @@ monk_t::stagger_t::stagger_t( monk_t *player )
   init_level( MODERATE_STAGGER );
   init_level( HEAVY_STAGGER );
   current = stagger_levels[ NONE_STAGGER ];
+  current->debuff->trigger();
 }
 
 double monk_t::stagger_t::base_value()
@@ -10234,7 +10166,7 @@ double monk_t::stagger_t::min_threshold( stagger_level_e level )
   }
 }
 
-auto monk_t::stagger_t::current_threshold() -> stagger_level_e
+auto monk_t::stagger_t::find_current_threshold() -> stagger_level_e
 {
   double current_percent = pool_size_percent();
   for ( const stagger_level_t *level : stagger_levels )
@@ -10243,6 +10175,16 @@ auto monk_t::stagger_t::current_threshold() -> stagger_level_e
       return level->level;
   }
   return NONE_STAGGER;
+}
+
+auto monk_t::stagger_t::current_threshold() -> stagger_level_e
+{
+  return current->level;
+}
+
+double monk_t::stagger_t::current_index()
+{
+  return NONE_STAGGER - current->level;
 }
 
 std::string monk_t::stagger_t::level_name( stagger_level_e level )
@@ -10324,7 +10266,7 @@ void monk_t::stagger_t::damage_changed( bool last_tick )
     return;
   }
 
-  stagger_level_e level = current_threshold();
+  stagger_level_e level = find_current_threshold();
   player->sim->print_debug( "level changing? current={}, new={}, pool_size={}", current->name,
                             stagger_levels[ level ]->name, pool_size_percent() );
   if ( level == current->level )
@@ -10345,8 +10287,46 @@ void monk_t::stagger_t::set_pool( double amount )
   double ticks_left = dot->ticks_left();
 
   state->tick_amount = amount / ticks_left;
+  player->sim->print_debug( "set_pool amount={} ticks_left={}, set_pool={}", amount, ticks_left, amount / ticks_left );
 
   damage_changed();
+}
+
+double monk_t::stagger_t::trigger( school_e school, result_amount_type /* damage_type */, action_state_t *state )
+{
+  if ( state->result_amount <= 0.0 )
+    return 0.0;
+
+  if ( state->action->id == player->passives.stagger_self_damage->id() )
+    return 0.0;
+
+  double percent = player->stagger->percent( state->target->level() );
+  if ( school != SCHOOL_PHYSICAL )
+    percent *= player->spec.stagger->effectN( 5 ).percent();
+
+  double amount   = state->result_amount * percent;
+  double absorb   = player->buff.brewmaster_t31_4p_fake_absorb->check_value();
+  double absorbed = std::min( amount, absorb );
+  amount -= absorbed;
+
+  if ( absorbed > 0.0 )
+    player->sim->print_debug( "{} absorbed {} out of {} damage about to be added to stagger pool", player->name(),
+                              absorbed, state->result_amount * percent );
+  if ( absorbed < absorb )
+    player->buff.brewmaster_t31_4p_fake_absorb->trigger( 1, absorbed );
+  else if ( absorb > 0.0 && absorbed == absorb )
+    player->buff.brewmaster_t31_4p_fake_absorb->expire();
+
+  double cap = player->resources.max[ RESOURCE_HEALTH ] * player->spec.stagger->effectN( 4 ).percent();
+  amount -= std::max( amount + pool_size() - cap, 0.0 );
+
+  player->sim->print_debug( "{} added {} to stagger pool", player->name(), amount );
+
+  state->result_amount -= amount;
+  state->result_mitigated -= amount;
+  residual_action::trigger( self_damage, player, amount );
+
+  return amount;
 }
 
 double monk_t::stagger_t::purify_flat( double amount, bool report_amount )
@@ -10356,14 +10336,13 @@ double monk_t::stagger_t::purify_flat( double amount, bool report_amount )
 
   double pool    = pool_size();
   double cleared = std::clamp( amount, 0.0, pool );
-  double remains = cleared - pool;
+  double remains = pool - cleared;
 
   set_pool( remains );
   if ( report_amount )
     player->sim->print_debug( "{} reduced pool from {} to {} ({})", player->name(), pool, remains, cleared );
 
   sample_data->mitigated->add( cleared );
-  player->sim->print_debug( "ZXCVA {}", cleared );
   current->mitigated->add( cleared );
 
   return cleared;

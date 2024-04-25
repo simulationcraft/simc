@@ -1304,6 +1304,9 @@ public:
 
     void damage_changed( bool last_tick = false );
     void set_pool( double amount );
+    static double min_threshold( stagger_level_e level );
+    stagger_level_e find_current_threshold();
+    static std::string level_name( stagger_level_e level );
 
   public:
     self_damage_t *self_damage;
@@ -1312,9 +1315,10 @@ public:
 
     double base_value();
     double percent( unsigned target_level );
-    static double min_threshold( stagger_level_e level );
     stagger_level_e current_threshold();
-    static std::string level_name( stagger_level_e level );
+    // even though this is an index, it is often used in floating point arithmetic,
+    // which makes returning a double preferable to help avoid int arithmetic nonsense
+    double current_index();
 
     void add_sample( std::string name, double amount );
 
@@ -1325,13 +1329,17 @@ public:
     bool is_ticking();
     timespan_t remains();
 
+    // TODO: implement a more automated procedure for guard-style absorb handling
+    double trigger( school_e schoo, result_amount_type damage_type, action_state_t *state );
     double purify_flat( double amount, bool report_amount = true );
     double purify_percent( double amount );
     double purify_all();
     void delay_tick( timespan_t delay );
     /*
      * TODO:
-     * why is the pool going negative sometimes?!
+     * why is attack haste cache being invalidated?!
+     * html report
+     * json report
      */
   };
 
