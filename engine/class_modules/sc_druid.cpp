@@ -50,14 +50,10 @@ enum moon_stage_e
   MAX_MOON,
 };
 
-enum eclipse_state_e
+enum eclipse_e : uint8_t
 {
-  DISABLED,
-  ANY_NEXT,
-  IN_SOLAR,
-  IN_LUNAR,
-  IN_BOTH,
-  MAX_STATE
+  SOLAR        = 0x01,
+  LUNAR        = 0x02,
 };
 
 enum flag_e : uint32_t
@@ -223,8 +219,8 @@ struct druid_action_data_t  // variables that need to be accessed from action_t*
 struct eclipse_handler_t
 {
   // final entry in data_array holds # of iterations
-  using data_array = std::array<double, eclipse_state_e::MAX_STATE + 1>;
-  using iter_array = std::array<unsigned, eclipse_state_e::MAX_STATE>;
+  using data_array = std::array<double, 5>;
+  using iter_array = std::array<unsigned, 4>;
 
   struct
   {
@@ -257,15 +253,16 @@ struct eclipse_handler_t
   unsigned wrath_counter_base = 2;
   unsigned starfire_counter = 2;
   unsigned starfire_counter_base = 2;
-  eclipse_state_e state = eclipse_state_e::DISABLED;
+  uint8_t state = 0;
 
   gain_t* ac_gain = nullptr;
   double ac_ap = 0.0;
+  double ga_mod = 0.0;
 
   eclipse_handler_t( druid_t* player ) : data(), iter(), p( player ) {}
 
-  bool enabled() const { return state != eclipse_state_e::DISABLED; }
   void init();
+  bool enabled() const { return p != nullptr; }
 
   void cast_wrath( druid_action_data_t* );
   void cast_starfire( druid_action_data_t* );
@@ -274,11 +271,21 @@ struct eclipse_handler_t
   void tick_starfall();
   void tick_fury_of_elune();
 
-  void advance_eclipse();
-  bool in_eclipse() const;
+  buff_t* get_boat( eclipse_e eclipse ) const;
+  buff_t* get_harmony( eclipse_e eclipse ) const;
+  buff_t* get_eclipse( eclipse_e eclipse ) const;
+  void advance_eclipse( eclipse_e eclipse, bool active );
+  void update_eclipse( eclipse_e eclipse );
 
-  void trigger_both( timespan_t );
-  void expire_both();
+  uptime_t* get_uptime( eclipse_e eclipse ) const;
+
+  bool in_none( uint8_t state ) const { return state == 0; }
+  bool in_none() const { return state == 0; }
+  bool in_eclipse( uint8_t state ) const { return state & ( eclipse_e::LUNAR | eclipse_e::SOLAR ); }
+  bool in_eclipse() const { return state & ( eclipse_e::LUNAR | eclipse_e::SOLAR ); }
+  bool in_lunar() const { return state & eclipse_e::LUNAR; }
+  bool in_solar() const { return state & eclipse_e::SOLAR; }
+  bool in_both() const { return in_lunar() && in_solar(); }
 
   void reset_stacks();
   void reset_state();
@@ -3343,11 +3350,15 @@ struct celestial_alignment_buff_t : public druid_buff_t
 
     if ( ret )
     {
-      p()->eclipse_handler.trigger_both( remains() );
+      p()->buff.eclipse_lunar->trigger( d );
+      p()->eclipse_handler.update_eclipse( eclipse_e::LUNAR );
+
+      p()->buff.eclipse_solar->trigger( d );
+      p()->eclipse_handler.update_eclipse( eclipse_e::SOLAR );
+
       p()->uptime.combined_ca_inc->update( true, sim->current_time() );
 
-      p()->buff.eclipse_lunar->current_value += ga_mod;
-      p()->buff.eclipse_solar->current_value += ga_mod;
+      p()->active.orbital_strike->execute_on_target( p()->target );
     }
 
     return ret;
@@ -3357,7 +3368,6 @@ struct celestial_alignment_buff_t : public druid_buff_t
   {
     base_t::expire_override( s, d );
 
-    p()->eclipse_handler.expire_both();
     p()->uptime.combined_ca_inc->update( false, sim->current_time() );
   }
 };
@@ -10183,21 +10193,13 @@ void druid_t::create_buffs()
   buff.eclipse_lunar = make_fallback( talent.eclipse.ok(), this, "eclipse_lunar", spec.eclipse_lunar )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      if ( !new_ )
-      {
-        buff.harmony_of_the_heavens_lunar->expire();
-        eclipse_handler.advance_eclipse();
-      }
+      eclipse_handler.advance_eclipse( eclipse_e::LUNAR, new_ );
     } );
 
   buff.eclipse_solar = make_fallback( talent.eclipse.ok(), this, "eclipse_solar", spec.eclipse_solar )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      if ( !new_ )
-      {
-        buff.harmony_of_the_heavens_solar->expire();
-        eclipse_handler.advance_eclipse();
-      }
+      eclipse_handler.advance_eclipse( eclipse_e::SOLAR, new_ );
     } );
 
   buff.fury_of_elune =
@@ -10221,8 +10223,8 @@ void druid_t::create_buffs()
           ->set_default_value_from_effect( 1 )
           ->set_max_stack( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() ) )
           ->set_name_reporting( "Lunar" )
-          ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
-            buff.eclipse_lunar->current_value = buff.eclipse_lunar->default_value + b->check_stack_value();
+          ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
+            eclipse_handler.update_eclipse( eclipse_e::LUNAR );
           } );
 
   buff.harmony_of_the_heavens_solar = make_fallback( talent.harmony_of_the_heavens.ok(),
@@ -10230,8 +10232,8 @@ void druid_t::create_buffs()
           ->set_default_value_from_effect( 1 )
           ->set_max_stack( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() ) )
           ->set_name_reporting( "Solar" )
-          ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
-            buff.eclipse_solar->current_value = buff.eclipse_solar->default_value + b->check_stack_value();
+          ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
+            eclipse_handler.update_eclipse( eclipse_e::SOLAR );
           } );
 
   buff.natures_balance =
@@ -11920,28 +11922,23 @@ void druid_t::combat_begin()
       case MOONKIN_FORM: buff.lycaras_teachings_mast->trigger();  break;
       default: break;
     }
-
   }
 
   if ( specialization() == DRUID_BALANCE )
   {
     eclipse_handler.reset_stacks();
 
-    switch ( eclipse_handler.state )
+    if ( eclipse_handler.in_none() )
     {
-      case eclipse_state_e::IN_BOTH:
+      uptime.eclipse_none->update( true, sim->current_time() );
+    }
+    else
+    {
+      if ( eclipse_handler.in_lunar() )
         uptime.eclipse_lunar->update( true, sim->current_time() );
+
+      if ( eclipse_handler.in_solar() )
         uptime.eclipse_solar->update( true, sim->current_time() );
-        break;
-      case eclipse_state_e::IN_LUNAR:
-        uptime.eclipse_lunar->update( true, sim->current_time() );
-        break;
-      case eclipse_state_e::IN_SOLAR:
-        uptime.eclipse_solar->update( true, sim->current_time() );
-        break;
-      default:
-        uptime.eclipse_none->update( true, sim->current_time() );
-        break;
     }
 
     if ( !options.raid_combat )
@@ -12416,35 +12413,17 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
     if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "eclipse" ) )
     {
       if ( util::str_compare_ci( splits[ 1 ], "state" ) )
-      {
-        return make_fn_expr( name_str, [ this ]() {
-          eclipse_state_e state = eclipse_handler.state;
-          if ( state == ANY_NEXT )
-            return 0;
-          if ( eclipse_handler.state == IN_SOLAR )
-            return 1;
-          if ( eclipse_handler.state == IN_LUNAR )
-            return 2;
-          if ( eclipse_handler.state == IN_BOTH )
-            return 3;
-          return 4;
-        } );
-      }
-      else if ( util::str_compare_ci( splits[ 1 ], "any_next" ) )
-        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.state == ANY_NEXT; } );
-      else if ( util::str_compare_ci( splits[ 1 ], "in_any" ) )
-      {
-        return make_fn_expr( name_str, [ this ]() {
-          return eclipse_handler.state == IN_SOLAR || eclipse_handler.state == IN_LUNAR ||
-                 eclipse_handler.state == IN_BOTH;
-        } );
-      }
+        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.state; } );
+      else if ( util::str_compare_ci( splits[ 1 ], "in_none" ) )
+        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.in_none(); } );
+      else if ( util::str_compare_ci( splits[ 1 ], "in_eclipse" ) )
+        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.in_eclipse(); } );
       else if ( util::str_compare_ci( splits[ 1 ], "in_solar" ) )
-        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.state == IN_SOLAR; } );
+        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.in_solar(); } );
       else if ( util::str_compare_ci( splits[ 1 ], "in_lunar" ) )
-        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.state == IN_LUNAR; } );
+        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.in_lunar(); } );
       else if ( util::str_compare_ci( splits[ 1 ], "in_both" ) )
-        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.state == IN_BOTH; } );
+        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.in_both(); } );
       else if ( util::str_compare_ci( splits[ 1 ], "starfire_counter" ) )
         return make_fn_expr( name_str, [ this ]() { return eclipse_handler.starfire_counter; } );
       else if ( util::str_compare_ci( splits[ 1 ], "wrath_counter" ) )
@@ -13160,23 +13139,26 @@ player_t* druid_t::get_smart_target( const std::vector<player_t*>& _tl, dot_t* d
 void eclipse_handler_t::init()
 {
   if ( !p->talent.eclipse.ok() )
+  {
+    p = nullptr;
     return;
-
-  state = ANY_NEXT;
+  }
 
   wrath_counter_base = starfire_counter_base = as<unsigned>( p->talent.eclipse->effectN( 1 ).base_value() );
 
-  size_t res = 4;
+  size_t res = 3;
+  bool sf = p->talent.starfall.ok();
   bool foe = p->talent.fury_of_elune.ok();
   bool nm = p->talent.new_moon.ok();
   bool hm = nm;
-  bool fm = nm || p->talent.convoke_the_spirits.ok();
+  bool fm = nm;
 
-  data.arrays.reserve( res + foe + nm + hm + fm );
+  data.arrays.reserve( res + sf + foe + nm + hm + fm );
   data.wrath = &data.arrays.emplace_back();
   data.starfire = &data.arrays.emplace_back();
   data.starsurge = &data.arrays.emplace_back();
-  data.starfall = &data.arrays.emplace_back();
+  if ( sf )
+    data.starfall = &data.arrays.emplace_back();
   if ( foe )
     data.fury_of_elune = &data.arrays.emplace_back();
   if ( nm )
@@ -13186,11 +13168,12 @@ void eclipse_handler_t::init()
   if ( fm )
     data.full_moon = &data.arrays.emplace_back();
 
-  iter.arrays.reserve( res + foe + nm + hm + fm );
+  iter.arrays.reserve( res + sf + foe + nm + hm + fm );
   iter.wrath = &iter.arrays.emplace_back();
   iter.starfire = &iter.arrays.emplace_back();
   iter.starsurge = &iter.arrays.emplace_back();
-  iter.starfall = &iter.arrays.emplace_back();
+  if ( sf )
+    iter.starfall = &iter.arrays.emplace_back();
   if ( foe )
     iter.fury_of_elune = &iter.arrays.emplace_back();
   if ( nm )
@@ -13205,6 +13188,9 @@ void eclipse_handler_t::init()
     ac_gain = p->get_gain( "Astral Communion" );
     ac_ap = p->find_spell( 450599 )->effectN( 1 ).resource();
   }
+
+  if ( p->talent.greater_alignment.ok() )
+    ga_mod = p->talent.greater_alignment->effectN( 2 ).percent();
 }
 
 void eclipse_handler_t::cast_wrath( druid_action_data_t* a )
@@ -13214,10 +13200,11 @@ void eclipse_handler_t::cast_wrath( druid_action_data_t* a )
   if ( iter.wrath && p->in_combat )
     ( *iter.wrath )[ state ]++;
 
-  if ( state == ANY_NEXT )
+  if ( in_none( state ) )
   {
     wrath_counter--;
-    advance_eclipse();
+    if ( wrath_counter <= 0 )
+      p->buff.eclipse_lunar->trigger();
   }
 }
 
@@ -13228,10 +13215,11 @@ void eclipse_handler_t::cast_starfire( druid_action_data_t* a )
   if ( iter.starfire && p->in_combat )
     ( *iter.starfire )[ state ]++;
 
-  if ( state == ANY_NEXT && !p->talent.lunar_calling.ok() )
+  if ( in_none( state ) && !p->talent.lunar_calling.ok() )
   {
     starfire_counter--;
-    advance_eclipse();
+    if ( starfire_counter <= 0 )
+      p->buff.eclipse_solar->trigger();
   }
 }
 
@@ -13271,105 +13259,109 @@ void eclipse_handler_t::tick_fury_of_elune()
     ( *iter.fury_of_elune )[ state ]++;
 }
 
-void eclipse_handler_t::advance_eclipse()
+buff_t* eclipse_handler_t::get_boat( eclipse_e eclipse ) const
 {
-  switch ( state )
+  if ( eclipse == eclipse_e::LUNAR )
+    return p->buff.balance_of_all_things_arcane;
+  else if ( eclipse == eclipse_e::SOLAR )
+    return p->buff.balance_of_all_things_nature;
+  else
+    assert( false );
+
+  return nullptr;
+}
+
+buff_t* eclipse_handler_t::get_harmony( eclipse_e eclipse ) const
+{
+  if ( eclipse == eclipse_e::LUNAR )
+    return p->buff.harmony_of_the_heavens_lunar;
+  else if ( eclipse == eclipse_e::SOLAR )
+    return p->buff.harmony_of_the_heavens_solar;
+  else
+    assert( false );
+
+  return nullptr;
+}
+
+buff_t* eclipse_handler_t::get_eclipse( eclipse_e eclipse ) const
+{
+  if ( eclipse == eclipse_e::LUNAR )
+    return p->buff.eclipse_lunar;
+  else if ( eclipse == eclipse_e::SOLAR )
+    return p->buff.eclipse_solar;
+  else
+    assert( false );
+
+  return nullptr;
+}
+
+uptime_t* eclipse_handler_t::get_uptime( eclipse_e eclipse ) const
+{
+  if ( eclipse == eclipse_e::LUNAR )
+    return p->uptime.eclipse_lunar;
+  else if ( eclipse == eclipse_e::SOLAR )
+    return p->uptime.eclipse_solar;
+  else
+    assert( false );
+
+  return nullptr;
+}
+
+void eclipse_handler_t::advance_eclipse( eclipse_e eclipse, bool active )
+{
+  auto old_state = state;
+
+  reset_stacks();
+
+  if ( active )
   {
-    case ANY_NEXT:
-      if ( !starfire_counter )
-      {
-        p->buff.eclipse_solar->trigger();
-        p->buff.balance_of_all_things_nature->trigger();
-        p->buff.parting_skies->trigger();
-        p->buff.solstice->trigger();
+    state |= eclipse;
 
-        state = IN_SOLAR;
+    if ( old_state ^ state )
+    {
+      get_uptime( eclipse )->update( true, p->sim->current_time() );
+      if ( in_none( old_state ) )
         p->uptime.eclipse_none->update( false, p->sim->current_time() );
-        p->uptime.eclipse_solar->update( true, p->sim->current_time() );
-        reset_stacks();
+    }
 
-        p->resource_gain( RESOURCE_ASTRAL_POWER, ac_ap, ac_gain );
-      }
-      else if ( !wrath_counter )
-      {
-        p->buff.eclipse_lunar->trigger();
-        p->buff.balance_of_all_things_arcane->trigger();
-        p->buff.parting_skies->trigger();
-        p->buff.solstice->trigger();
+    get_boat( eclipse )->trigger();
+    p->buff.parting_skies->trigger();
+    p->buff.solstice->trigger();
 
-        state = IN_LUNAR;
-        p->uptime.eclipse_none->update( false, p->sim->current_time() );
-        p->uptime.eclipse_lunar->update( true, p->sim->current_time() );
-        reset_stacks();
+    // only when entering from non-eclipse
+    if ( !in_eclipse( old_state ) )
+      p->resource_gain( RESOURCE_ASTRAL_POWER, ac_ap, ac_gain );
+  }
+  else
+  {
+    state &= ~eclipse;
 
-        p->resource_gain( RESOURCE_ASTRAL_POWER, ac_ap, ac_gain );
-      }
-      break;
+    if ( old_state ^ state )
+    {
+      get_uptime( eclipse )->update( false, p->sim->current_time() );
+      if ( in_none( state ) )
+        p->uptime.eclipse_none->update( true, p->sim->current_time() );
+    }
 
-    case IN_SOLAR:
+    get_harmony( eclipse )->expire();
+
+    // only when completely leaving eclipse
+    if ( !in_eclipse() )
       p->buff.dreamstate->trigger();
-
-      state = ANY_NEXT;
-      p->uptime.eclipse_solar->update( false, p->sim->current_time() );
-      p->uptime.eclipse_none->update( true, p->sim->current_time() );
-      break;
-
-    case IN_LUNAR:
-      p->buff.dreamstate->trigger();
-
-      state = ANY_NEXT;
-      p->uptime.eclipse_lunar->update( false, p->sim->current_time() );
-      p->uptime.eclipse_none->update( true, p->sim->current_time() );
-      break;
-
-    case IN_BOTH:
-      p->buff.dreamstate->trigger();
-
-      state = ANY_NEXT;
-      p->uptime.eclipse_solar->update( false, p->sim->current_time() );
-      p->uptime.eclipse_lunar->update( false, p->sim->current_time() );
-      p->uptime.eclipse_none->update( true, p->sim->current_time() );
-      break;
-
-    default:
-      assert( true && "eclipse_handler_t::advance_eclipse() at unknown state" );
-      break;
   }
 }
 
-bool eclipse_handler_t::in_eclipse() const
+void eclipse_handler_t::update_eclipse( eclipse_e eclipse )
 {
-  return state == IN_SOLAR || state == IN_LUNAR || state == IN_BOTH;
-}
+  auto buff = get_eclipse( eclipse );
+  auto val = buff->default_value;
 
-void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
-{
-  if ( !enabled() ) return;
+  val += get_harmony( eclipse )->check_stack_value();
 
-  p->buff.eclipse_lunar->trigger( d );
-  p->buff.eclipse_solar->trigger( d );
-  p->buff.balance_of_all_things_arcane->trigger();
-  p->buff.balance_of_all_things_nature->trigger();
-  p->buff.parting_skies->trigger();
-  p->buff.parting_skies->trigger();
-  p->buff.solstice->trigger();
+  if ( p->buff.ca_inc->check() )
+    val += ga_mod;
 
-  state = IN_BOTH;
-  p->uptime.eclipse_none->update( false, p->sim->current_time() );
-  p->uptime.eclipse_lunar->update( false, p->sim->current_time() );
-  p->uptime.eclipse_solar->update( false, p->sim->current_time() );
-  reset_stacks();
-
-  p->resource_gain( RESOURCE_ASTRAL_POWER, ac_ap, ac_gain );
-
-  if ( p->active.orbital_strike )
-    p->active.orbital_strike->execute_on_target( p->target );
-}
-
-void eclipse_handler_t::expire_both()
-{
-  p->buff.eclipse_solar->expire();
-  p->buff.eclipse_lunar->expire();
+  buff->current_value = val;
 }
 
 void eclipse_handler_t::reset_stacks()
@@ -13380,9 +13372,7 @@ void eclipse_handler_t::reset_stacks()
 
 void eclipse_handler_t::reset_state()
 {
-  if ( !enabled() ) return;
-
-  state = ANY_NEXT;
+  state = 0;
 }
 
 void eclipse_handler_t::datacollection_begin()
@@ -13634,11 +13624,11 @@ public:
   void balance_print_data( report::sc_html_stream& os, const spell_data_t* spell,
                            const eclipse_handler_t::data_array& data )
   {
-    double iter  = data[ eclipse_state_e::MAX_STATE ];
-    double none  = data[ eclipse_state_e::ANY_NEXT ];
-    double solar = data[ eclipse_state_e::IN_SOLAR ];
-    double lunar = data[ eclipse_state_e::IN_LUNAR ];
-    double both  = data[ eclipse_state_e::IN_BOTH ];
+    double iter  = data[ 4 ];  // MAX
+    double none  = data[ 0 ];  // NONE
+    double lunar = data[ 1 ];  // LUNAR
+    double solar = data[ 2 ];  // SOLAR
+    double both  = data[ 3 ];  // LUNAR & SOLAR
     double total = none + solar + lunar + both;
 
     if ( !total )
