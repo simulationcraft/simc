@@ -585,6 +585,8 @@ public:
     buff_t* eclipse_solar;
     buff_t* fury_of_elune;  // AP ticks
     buff_t* gathering_starstuff;  // 2t29
+    buff_t* harmony_of_the_heavens_lunar;  // proxy tracker buff
+    buff_t* harmony_of_the_heavens_solar;  // proxy tracker buff
     buff_t* incarnation_moonkin;
     buff_t* natures_balance;
     buff_t* orbit_breaker;
@@ -604,8 +606,6 @@ public:
     buff_t* umbral_embrace;
     buff_t* umbral_inspiration;
     buff_t* warrior_of_elune;
-    buff_t* balance_t31_4pc_buff_solar; // buff to track t31 4pc value
-    buff_t* balance_t31_4pc_buff_lunar;  // buff to track t31 4pc value
 
     // Feral
     buff_t* apex_predators_craving;
@@ -849,6 +849,7 @@ public:
     player_talent_t force_of_nature;
     player_talent_t fury_of_elune;
     player_talent_t greater_alignment;
+    player_talent_t harmony_of_the_heavens;
     player_talent_t incarnation_moonkin;
     player_talent_t light_of_the_sun;
     player_talent_t lunar_shrapnel;
@@ -1887,10 +1888,12 @@ public:
     parse_effects( p()->mastery.astral_invocation );
     parse_effects( p()->buff.balance_of_all_things_arcane, p()->talent.balance_of_all_things );
     parse_effects( p()->buff.balance_of_all_things_nature, p()->talent.balance_of_all_things );
-    // due to 4t31, we parse the damage effects (#1/#7) separately and use the current buff value instead of data value
+    // due to harmony of the heavens, we parse the damage effects (#1/#7) separately and use the current buff value
+    // instead of data value
     parse_effects( p()->buff.eclipse_lunar, 0b01000001U, p()->talent.umbral_intensity );
     parse_effects( p()->buff.eclipse_lunar, 0b10111110U, USE_CURRENT );
-    // due to 4t31, we parse the damage effects (#1/#8) separately and use the current buff value instead of data value
+    // due to harmony of the heavens, we parse the damage effects (#1/#8) separately and use the current buff value
+    // instead of data value
     parse_effects( p()->buff.eclipse_solar, 0b10000001U, p()->talent.umbral_intensity );
     parse_effects( p()->buff.eclipse_solar, 0b01111110U, USE_CURRENT );
     parse_effects( p()->buff.gathering_starstuff );
@@ -6845,14 +6848,11 @@ public:
   {
     p()->buff.gathering_starstuff->trigger();
 
-    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T31, B4 ) )
-    {
-      if ( p()->buff.eclipse_lunar->check() )
-        p()->buff.balance_t31_4pc_buff_lunar->trigger();
+    if ( p()->buff.eclipse_lunar->check() )
+      p()->buff.harmony_of_the_heavens_lunar->trigger( this );
 
-      if ( p()->buff.eclipse_solar->check() )
-        p()->buff.balance_t31_4pc_buff_solar->trigger();
-    }
+    if ( p()->buff.eclipse_solar->check() )
+      p()->buff.harmony_of_the_heavens_solar->trigger( this );
   }
 };
 
@@ -7056,8 +7056,8 @@ struct celestial_alignment_base_t : public trigger_control_of_the_dream_t<druid_
 
     buff->trigger();
 
-    p()->buff.balance_t31_4pc_buff_lunar->expire();
-    p()->buff.balance_t31_4pc_buff_solar->expire();
+    p()->buff.harmony_of_the_heavens_lunar->expire();
+    p()->buff.harmony_of_the_heavens_solar->expire();
 
     if ( p()->eclipse_handler.in_eclipse() )
       p()->buff.dreamstate->trigger();
@@ -9850,6 +9850,7 @@ void druid_t::init_spells()
   talent.force_of_nature                = ST( "Force of Nature" );
   talent.fury_of_elune                  = ST( "Fury of Elune" );
   talent.greater_alignment              = ST( "Greater Alignment" );
+  talent.harmony_of_the_heavens         = ST( "Harmony of the Heavens" );
   talent.incarnation_moonkin            = ST( "Incarnation: Chosen of Elune" );
   talent.light_of_the_sun               = ST( "Light of the Sun" );
   talent.lunar_shrapnel                 = ST( "Lunar Shrapnel" );
@@ -10482,20 +10483,20 @@ void druid_t::create_buffs()
 
   buff.eclipse_lunar = make_fallback( talent.eclipse.ok(), this, "eclipse_lunar", spec.eclipse_lunar )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
-    ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
-      if ( old_ && !new_ )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( !new_ )
       {
-        buff.balance_t31_4pc_buff_lunar->expire();
+        buff.harmony_of_the_heavens_lunar->expire();
         eclipse_handler.advance_eclipse();
       }
     } );
 
   buff.eclipse_solar = make_fallback( talent.eclipse.ok(), this, "eclipse_solar", spec.eclipse_solar )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
-    ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
-      if ( old_ && !new_ )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( !new_ )
       {
-        buff.balance_t31_4pc_buff_solar->expire();
+        buff.harmony_of_the_heavens_solar->expire();
         eclipse_handler.advance_eclipse();
       }
     } );
@@ -10519,6 +10520,24 @@ void druid_t::create_buffs()
   buff.gathering_starstuff =
       make_fallback( sets->has_set_bonus( DRUID_BALANCE, T29, B2 ), this, "gathering_starstuff",
                           find_trigger( sets->set( DRUID_BALANCE, T29, B2 ) ).trigger() );
+
+  buff.harmony_of_the_heavens_lunar = make_fallback( talent.harmony_of_the_heavens.ok(),
+      this, "harmony_of_the_heavens_lunar", talent.harmony_of_the_heavens )
+          ->set_default_value_from_effect( 1 )
+          ->set_max_stack( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() ) )
+          ->set_name_reporting( "Lunar" )
+          ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
+            buff.eclipse_lunar->current_value = buff.eclipse_lunar->default_value + b->check_stack_value();
+          } );
+
+  buff.harmony_of_the_heavens_solar = make_fallback( talent.harmony_of_the_heavens.ok(),
+      this, "harmony_of_the_heavens_solar", talent.harmony_of_the_heavens )
+          ->set_default_value_from_effect( 1 )
+          ->set_max_stack( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() ) )
+          ->set_name_reporting( "Solar" )
+          ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
+            buff.eclipse_solar->current_value = buff.eclipse_solar->default_value + b->check_stack_value();
+          } );
 
   buff.natures_balance =
       make_fallback( talent.natures_balance.ok(), this, "natures_balance", talent.natures_balance )
@@ -10608,32 +10627,6 @@ void druid_t::create_buffs()
   buff.warrior_of_elune =
       make_fallback( talent.warrior_of_elune.ok(), this, "warrior_of_elune", talent.warrior_of_elune )
           ->set_reverse( true );
-
-  buff.balance_t31_4pc_buff_solar =
-      make_fallback( sets->has_set_bonus( DRUID_BALANCE, T31, B4 ), this, "balance_t31_4pc_buff_solar",
-                          sets->set( DRUID_BALANCE, T31, B4 ) )
-          ->set_default_value_from_effect( 1 )
-          ->set_name_reporting( "Solar" )
-          ->set_max_stack( sets->has_set_bonus( DRUID_BALANCE, T31, B4 )
-                               ? as<int>( sets->set( DRUID_BALANCE, T31, B4 )->effectN( 2 ).base_value() /
-                                          sets->set( DRUID_BALANCE, T31, B4 )->effectN( 1 ).base_value() )
-                               : 1 )
-          ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
-            buff.eclipse_solar->current_value = buff.eclipse_solar->default_value + b->check_stack_value();
-          } );
-
-  buff.balance_t31_4pc_buff_lunar =
-      make_fallback( sets->has_set_bonus( DRUID_BALANCE, T31, B4 ), this, "balance_t31_4pc_buff_lunar",
-                          sets->set( DRUID_BALANCE, T31, B4 ) )
-          ->set_default_value_from_effect( 1 )
-          ->set_name_reporting( "Lunar" )
-          ->set_max_stack( sets->has_set_bonus( DRUID_BALANCE, T31, B4 )
-                               ? as<int>( sets->set( DRUID_BALANCE, T31, B4 )->effectN( 2 ).base_value() /
-                                          sets->set( DRUID_BALANCE, T31, B4 )->effectN( 1 ).base_value() )
-                               : 1 )
-          ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
-            buff.eclipse_lunar->current_value = buff.eclipse_lunar->default_value + b->check_stack_value();
-          } );
 
   // Feral buffs
   buff.ashamanes_guidance = make_fallback( talent.ashamanes_guidance.ok() && talent.incarnation_cat.ok(),
