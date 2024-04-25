@@ -4660,25 +4660,6 @@ struct blade_dance_base_t : public demon_hunter_attack_t
           p()->buff.restless_hunter->expire();
         }
       }
-
-      if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.glaive_flurry->up() &&
-           p()->active.art_of_the_glaive )
-      {
-        int number_of_slashes = p()->buff.glaive_flurry->up() && p()->buff.rending_strike->up() ? 1 : 2;
-        for ( int slash = 0; slash < number_of_slashes; slash++ )
-        {
-          for ( const spelleffect_data_t& effect : p()->hero_spec.art_of_the_glaive_damage->effects() )
-          {
-            if ( effect.type() != E_TRIGGER_SPELL )
-              continue;
-
-            make_event<delayed_execute_event_t>( *sim, p(), p()->active.art_of_the_glaive, target,
-                                                 timespan_t::from_millis( effect.misc_value1() ) );
-          }
-        }
-
-        p()->buff.glaive_flurry->expire();
-      }
     }
   };
 
@@ -4804,6 +4785,25 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     if ( dodge_buff )
     {
       dodge_buff->trigger();
+    }
+
+    if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.glaive_flurry->up() &&
+         p()->active.art_of_the_glaive )
+    {
+      int number_of_slashes = p()->buff.glaive_flurry->up() && p()->buff.rending_strike->up() ? 1 : 2;
+      for ( int slash = 0; slash < number_of_slashes; slash++ )
+      {
+        for ( const spelleffect_data_t& effect : p()->hero_spec.art_of_the_glaive_damage->effects() )
+        {
+          if ( effect.type() != E_TRIGGER_SPELL )
+            continue;
+
+          make_event<delayed_execute_event_t>( *sim, p(), p()->active.art_of_the_glaive, target,
+                                               timespan_t::from_millis( effect.misc_value1() ) );
+        }
+      }
+
+      p()->buff.glaive_flurry->expire();
     }
   }
 
