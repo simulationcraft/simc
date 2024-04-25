@@ -1812,6 +1812,7 @@ class SpellDataGenerator(DataGenerator):
           ( 326982, 0 ), # Unending Thirst
           ( 425721, 0 ), # T31 Blood 2pc buff
           # The War Within
+          # Rider of the Apocalypse
           ( 444505, 0 ), # Mograines Might Buff
           ( 444826, 0 ), # Trollbanes Chains of Ice Main
           ( 444828, 0 ), # Trollbanes Chains of Ice Debuff
@@ -1829,6 +1830,10 @@ class SpellDataGenerator(DataGenerator):
           ( 445507, 0 ), # Trollbane Obliterate
           ( 445508, 0 ), # Nazgrim Scourge Strike Phys
           ( 445509, 0 ), # Nazgrim Scourge Strike Shadow
+          # San'layn
+          ( 434144, 0 ), # Infliction in Sorrow Damage
+          ( 434246, 0 ), # Blood Eruption
+          ( 434574, 0 ), # Blood Cleave
         ),
 
         # Shaman:
