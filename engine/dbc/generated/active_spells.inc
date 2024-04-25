@@ -1,5 +1,5 @@
-// Active class spells, wow build 11.0.0.54311
-static const std::array<active_class_spell_t, 294> __active_spells_data { {
+// Active class spells, wow build 11.0.0.54361
+static const std::array<active_class_spell_t, 295> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -214,6 +214,7 @@ static const std::array<active_class_spell_t, 294> __active_spells_data { {
   {  9,    0, 342601,      0, "Ritual of Doom"                     },
   {  9,    0, 366222,      0, "Summon Sayaad"                      },
   {  9,  265,    980,      0, "Agony"                              },
+  {  9,  265, 324536,      0, "Malefic Rapture"                    },
   {  9,  266,  30146,      0, "Summon Felguard"                    },
   {  9,  266, 105174,      0, "Hand of Gul'dan"                    },
   { 10,    0, 100780,      0, "Tiger Palm"                         },
@@ -296,7 +297,7 @@ static const std::array<active_class_spell_t, 294> __active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 11.0.0.54311
+// Pet active spells, wow build 11.0.0.54361
 static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

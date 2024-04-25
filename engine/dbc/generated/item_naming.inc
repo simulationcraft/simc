@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 11.0.0.54311
-static const std::array<item_name_description_t, 892> __item_name_description_data { {
+// Item name descriptions, wow build 11.0.0.54361
+static const std::array<item_name_description_t, 893> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -891,6 +891,7 @@ static const std::array<item_name_description_t, 892> __item_name_description_da
   { 14158, "Meta Gem"                                    },
   { 14159, "Tinker Gem"                                  },
   { 14160, "Prismatic Gem"                               },
-  { 14161, "Pandaria Remix"                              },
+  { 14161, "Remix: Pandaria"                             },
+  { 14162, "Copper"                                      },
 } };
 

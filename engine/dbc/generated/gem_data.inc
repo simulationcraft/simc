@@ -1,5 +1,5 @@
-// Gem properties, wow build 11.0.0.54311
-static const std::array<gem_property_data_t, 2259> __gem_property_data { {
+// Gem properties, wow build 11.0.0.54361
+static const std::array<gem_property_data_t, 2263> __gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -2210,7 +2210,7 @@ static const std::array<gem_property_data_t, 2259> __gem_property_data { {
   { 4185,  7243, 0x00000001 }, // Oblivion Sphere
   { 4186,  7244, 0x00000001 }, // Thundering Orb
   { 4187,  7245, 0x00000001 }, // Lifestorm
-  { 4188,  7246, 0x00000001 }, // Chi-ji, the Red Crane
+  { 4188,  7246, 0x00000001 }, // Chi-Ji, the Red Crane
   { 4189,  7250, 0x00000001 }, // Morphing Elements
   { 4190,  7251, 0x0000000e }, // +$k1 Primary Stat and +$438874s1% perceived fame and fortune per unique Algarian gem color socketed
   { 4191,  7252, 0x0000000e }, // +$k1 Primary Stat and +$438874s1% perceived fame and fortune per unique Algarian gem color socketed
@@ -2259,5 +2259,9 @@ static const std::array<gem_property_data_t, 2259> __gem_property_data { {
   { 4236,  7319, 0x0000000e }, // +++Versatility
   { 4237,  7465, 0x00000001 }, // Funeral Pyre
   { 4238,  7466, 0x00000001 }, // Bulwark of the Black Ox
+  { 4239,  7503, 0x01000000 }, // Lightning Tether
+  { 4240,  7504, 0x01000000 }, // Overclocked S.E.L.F.I.E. Camera
+  { 4241,  7505, 0x01000000 }, // Earthen Delivery Drill
+  { 4242,  7506, 0x01000000 }, // Heartseeking Health Injector
 } };
 

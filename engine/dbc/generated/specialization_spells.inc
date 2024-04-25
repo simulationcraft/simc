@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 11.0.0.54311
-static const std::array<specialization_spell_entry_t, 396> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 11.0.0.54361
+static const std::array<specialization_spell_entry_t, 398> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -144,7 +144,7 @@ static const std::array<specialization_spell_entry_t, 396> __specialization_spel
   {  5,  257,   2060,      0, "Heal"                              , 0 },
   {  5,  257,  14914,   8092, "Holy Fire"                         , 0 },
   {  5,  257,  20711,      0, "Spirit of Redemption"              , 0 },
-  {  5,  257,  63733,      0, "Holy Words"                        , "Rank 2" },
+  {  5,  257,  63733,      0, "Serendipity"                       , 0 },
   {  5,  257,  77485,      0, "Mastery: Echo of Light"            , 0 },
   {  5,  257, 137031,      0, "Holy Priest"                       , 0 },
   {  5,  257, 162701,      0, "Stat Negation Aura - Intellect Healer", 0 },
@@ -223,6 +223,7 @@ static const std::array<specialization_spell_entry_t, 396> __specialization_spel
   {  8,   63, 137019,      0, "Fire Mage"                         , 0 },
   {  8,   63, 162699,      0, "Stat Negation Aura - Intellect DPS", 0 },
   {  8,   63, 195283,      0, "Hot Streak"                        , 0 },
+  {  8,   63, 416094,      0, "Fuel the Fire"                     , 0 },
   {  8,   64,  76613,      0, "Mastery: Icicles"                  , 0 },
   {  8,   64, 137020,      0, "Frost Mage"                        , 0 },
   {  8,   64, 162699,      0, "Stat Negation Aura - Intellect DPS", 0 },
@@ -237,6 +238,7 @@ static const std::array<specialization_spell_entry_t, 396> __specialization_spel
   {  9,  265, 231792,      0, "Agony"                             , "Rank 2" },
   {  9,  265, 231811,      0, "Soulstone"                         , "Rank 2" },
   {  9,  265, 317031,      0, "Xavian Teachings"                  , 0 },
+  {  9,  265, 324536,      0, "Malefic Rapture"                   , 0 },
   {  9,  265, 334315,      0, "Unstable Affliction"               , "Rank 3" },
   {  9,  266,  30146,      0, "Summon Felguard"                   , 0 },
   {  9,  266,  77219,      0, "Mastery: Master Demonologist"      , 0 },

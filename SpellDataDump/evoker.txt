@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54311 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54361 thewarwithin-BETA
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -52,7 +52,7 @@ Spell Level      : 1
 Duration         : 1.1 seconds
 Charges          : 2 (20 seconds cooldown)
 Category         : 1365: Celerity (115173 effect#1), Celerity (115173 effect#2), Roll Buff (222625 effect#1), Blessing of the Bronze (381751 effect#1)
-Affecting spells : Bounding Agility (450520 effect#1), Wisdom of the Wall (451242 effect#1)
+Affecting spells : Bounding Agility (450520 effect#1), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 7, 33
 Attributes       : ....x... ........ x......x .......x   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ..x..... .....x.. ........ ........ 
@@ -458,6 +458,9 @@ Class            : Evoker
 School           : Physical
 Spell Type       : None
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
+Proc Chance      : 101%
+Proc Flags       : ........ ....x... x....... ........   ........ ........ ........ ........   
+                 : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1096,6 +1099,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2360 | Target: Self (1)
 #5 (id=1012457)  : Apply Aura (6) | Unknown(488)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#6 (id=1153732)  : Apply Aura (6) | Resist Forced Movement% (485)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Take in a deep breath and fly to the targeted location, spewing molten cinders dealing $353759o1 Volcanic damage to enemies in your path.
 
 Removes all root effects. You are immune to movement impairing and loss of control effects while flying.$?s395153[
@@ -1455,6 +1460,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=1104271)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+#7 (id=1153734)  : Apply Aura (6) | Resist Forced Movement% (485)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Take in a deep breath and fly to the targeted location, healing all allies in your path for $363502s2 immediately, and $363502o1 over $363502d.
 
 Removes all root effects. You are immune to movement impairing and loss of control effects while flying.
@@ -7740,6 +7747,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2360 | Target: Self (1)
 #5 (id=1050698)  : Apply Aura (6) | Unknown(488)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#6 (id=1153733)  : Apply Aura (6) | Resist Forced Movement% (485)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Fly to the targeted location, exposing Temporal Wounds on enemies in your path for $409560d.
 
 Temporal Wounds accumulate $409560s1% of damage dealt by your allies affected by Ebon Might, then critically strike for that amount as Arcane damage.$?s395153[
@@ -10780,6 +10789,8 @@ Effects          :
                    Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
 #10 (id=1149058)  : Apply Aura (6) | Unknown(406)
                    Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Misc Value: 38 | Target: Self (1)
+#11 (id=1153735)  : Apply Aura (6) | Resist Forced Movement% (485)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Take in a deep breath and fly forward, spewing molten cinders dealing $353759o1 Volcanic damage to enemies in your path.
 
 Removes all root effects. You are immune to movement impairing and loss of control effects while flying.$?s395153[
@@ -11366,6 +11377,8 @@ Effects          :
                    Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
 #10 (id=1149063)  : Apply Aura (6) | Unknown(406)
                    Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Misc Value: 38 | Target: Self (1)
+#11 (id=1153736)  : Apply Aura (6) | Resist Forced Movement% (485)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Take in a deep breath and fly to the targeted location, spewing molten cinders dealing $353759o1 Volcanic damage to enemies in your path.
 
 Removes all root effects. You are immune to movement impairing and loss of control effects while flying.$?s395153[

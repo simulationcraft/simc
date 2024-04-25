@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54311 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54361 thewarwithin-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -5473,7 +5473,7 @@ bonus_id={ 10222 }, base_ilevel={ 584 }, desc={ Omen Crafted }
 bonus_id={ 10236 }, effects={ Opportunist (id=427054, index=0, type=equip) }
 bonus_id={ 10242 }, effects={ Sunstrider's Flourish (id=429214, index=0, type=equip) }
 bonus_id={ 10249 }, base_ilevel={ 489 }, desc={ Awakened Crafted }
-bonus_id={ 10250 }, base_ilevel={ 399 }
+bonus_id={ 10250 }, base_ilevel={ 438 }
 bonus_id={ 10254 }, quality={ rare }
 bonus_id={ 10255 }, quality={ epic }
 bonus_id={ 10256 }, quality={ epic }
@@ -5983,10 +5983,10 @@ bonus_id={ 10817 }, stats={ 100% unknown [2.8668] }
 bonus_id={ 10818 }, stats={ 100% Leech [1.9112] }
 bonus_id={ 10819 }, stats={ 100% Mastery [1.9112] }
 bonus_id={ 10820 }, stats={ 100% RunSpeed [0.4778] }
-bonus_id={ 10821 }, stats={ 100% Sta [0.3871] }
+bonus_id={ 10821 }, stats={ 100% Sta [0.7889] }
 bonus_id={ 10822 }, effects={ Hailstorm (id=436565, index=0, type=equip) }
 bonus_id={ 10823 }, effects={ Cold Front (id=436573, index=0, type=equip) }
-bonus_id={ 10824 }, effects={ Brittle (id=436578, index=0, type=equip), Brittle (id=436579, index=0, type=equip) }
+bonus_id={ 10824 }, effects={ Brittle (id=436578, index=0, type=equip) }
 bonus_id={ 10825 }, effects={ Memory of Vengeance (id=436583, index=0, type=equip) }
 bonus_id={ 10826 }, effects={ Searing Light (id=436586, index=0, type=equip) }
 bonus_id={ 10827 }, base_ilevel={ 530 }
@@ -6002,18 +6002,18 @@ bonus_id={ 10842 }, base_ilevel={ 577 }, quality={ epic }
 bonus_id={ 10843 }, effects={ Thundering Orb (id=436789, index=0, type=equip) }
 bonus_id={ 10845 }, desc={ Timewarped }, ilevel={ 21 @plvl 1 - 450 @plvl 70 }
 bonus_id={ 10846 }, effects={ Lifestorm (id=437014, index=0, type=equip) }
-bonus_id={ 10847 }, effects={ Chi-ji, the Red Crane (id=437072, index=0, type=equip) }
+bonus_id={ 10847 }, effects={ Chi-Ji, the Red Crane (id=437072, index=0, type=equip) }
 bonus_id={ 10848 }, effects={ Morphing Elements (id=437495, index=0, type=use) }
-bonus_id={ 10849 }, quality={ rare }, stats={ 100% StrInt [0.0330] }
-bonus_id={ 10850 }, quality={ epic }, stats={ 100% StrInt [0.0659] }
-bonus_id={ 10851 }, quality={ rare }, stats={ 100% Sta [0.3871] }
-bonus_id={ 10852 }, quality={ epic }, stats={ 100% Sta [0.7741] }
-bonus_id={ 10853 }, quality={ rare }, stats={ 100% AgiInt [0.0330] }
-bonus_id={ 10854 }, quality={ epic }, stats={ 100% AgiInt [0.0659] }
-bonus_id={ 10855 }, quality={ rare }, stats={ 100% AgiInt [0.0330] }
-bonus_id={ 10856 }, quality={ epic }, stats={ 100% AgiInt [0.0659] }
-bonus_id={ 10857 }, quality={ rare }, stats={ 100% Int [0.0330] }
-bonus_id={ 10858 }, quality={ epic }, stats={ 100% Int [0.0659] }
+bonus_id={ 10849 }, quality={ rare }, stats={ 100% StrInt [0.2045] }
+bonus_id={ 10850 }, quality={ epic }, stats={ 100% StrInt [0.2045] }
+bonus_id={ 10851 }, quality={ rare }, stats={ 100% Sta [0.7889] }
+bonus_id={ 10852 }, quality={ epic }, stats={ 100% Sta [0.7889] }
+bonus_id={ 10853 }, quality={ rare }, stats={ 100% AgiInt [0.2045] }
+bonus_id={ 10854 }, quality={ epic }, stats={ 100% AgiInt [0.2045] }
+bonus_id={ 10855 }, quality={ rare }, stats={ 100% AgiInt [0.2045] }
+bonus_id={ 10856 }, quality={ epic }, stats={ 100% AgiInt [0.2045] }
+bonus_id={ 10857 }, quality={ rare }, stats={ 100% Int [0.2045] }
+bonus_id={ 10858 }, quality={ epic }, stats={ 100% Int [0.2045] }
 bonus_id={ 10859 }, effects={ Timerunner's Grip (id=438570, index=0, type=equip) }
 bonus_id={ 10861 }, quality={ rare }, ilevel={ 21 @plvl 1 - 467 @plvl 70 }
 bonus_id={ 10862 }, quality={ rare }, ilevel={ 21 @plvl 1 - 467 @plvl 70 }
@@ -6153,7 +6153,7 @@ bonus_id={ 11120 }, stats={ 100% BonusArmor [1.2000] }
 bonus_id={ 11121 }, stats={ 100% BonusArmor [1.6000] }
 bonus_id={ 11123 }, stats={ 100% Vers [0.4779] }
 bonus_id={ 11124 }, stats={ 100% Vers [0.7168] }
-bonus_id={ 11125 }, stats={ 100% Vers [0.4778] }
+bonus_id={ 11125 }, stats={ 100% Vers [0.9556] }
 bonus_id={ 11128 }, ilevel={ 202 @plvl 65 - 535 @plvl 80 }
 bonus_id={ 11134 }, effects={ Funeral Pyre (id=447565, index=0, type=equip) }
 bonus_id={ 11135 }, effects={ Bulwark of the Black Ox (id=447592, index=0, type=equip) }
@@ -6211,3 +6211,15 @@ bonus_id={ 11188 }, socket={ 3 }
 bonus_id={ 11189 }, socket={ 3 }
 bonus_id={ 11190 }, ilevel={ 15 @plvl 10 - 541 @plvl 80 }
 bonus_id={ 11191 }, ilevel={ 431 @plvl 55 - 548 @plvl 90 }
+bonus_id={ 11192 }, effects={ Heartseeking Health Injector (id=452767, index=0, type=use) }
+bonus_id={ 11193 }, effects={ Lightning Tether (id=452883, index=0, type=use) }
+bonus_id={ 11194 }, effects={ Breath of Neltharion (id=385520, index=0, type=use) }
+bonus_id={ 11195 }, effects={ Earthen Delivery Drill (id=452929, index=0, type=use) }
+bonus_id={ 11200 }, stats={ 100% Avoidance [0.1925] }
+bonus_id={ 11201 }, stats={ 100% Crit [0.1925] }
+bonus_id={ 11202 }, stats={ 100% Haste [0.1925] }
+bonus_id={ 11203 }, stats={ 100% unknown [0.7700] }
+bonus_id={ 11204 }, stats={ 100% Leech [0.3850] }
+bonus_id={ 11205 }, stats={ 100% Mastery [0.3850] }
+bonus_id={ 11206 }, stats={ 100% RunSpeed [0.1925] }
+bonus_id={ 11207 }, stats={ 100% Vers [0.1925] }

@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 11.0.0.54311
-static const std::array<item_enchantment_data_t, 4992> __spell_item_ench_data { {
+// Item enchantment data, wow build 11.0.0.54361
+static const std::array<item_enchantment_data_t, 4996> __spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },      0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 320,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720f,  0.0000f,  0.0000f },   2831, "Reinforced (+$k1 Armor)"           },
@@ -4778,8 +4778,8 @@ static const std::array<item_enchantment_data_t, 4992> __spell_item_ench_data { 
   { 7243, 216663, -1,   0,   0, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  10839,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Oblivion Sphere"                   },
   { 7244, 216671, -1,   0,   0, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  10843,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Thundering Orb"                    },
   { 7245, 216695, -1,   0,   0, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  10846,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Lifestorm"                         },
-  { 7246, 216711, -1,   0,   0, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  10847,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Chi-ji, the Red Crane"             },
-  { 7250, 216974, -1,   0,   0, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  10848,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Morphing Elements"                 },
+  { 7246, 216711, -1,   0,   0, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  10847,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Chi-Ji, the Red Crane"             },
+  { 7250,      0, -1,   0,   0, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  10848,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Morphing Elements"                 },
   { 7251, 217113, -7,   0,  80, 200, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 438874,      0 }, {  0.3000f,  0.0000f,  0.0000f },      0, "+$k1 Primary Stat and +$438874s1% perceived fame and fortune per unique Algarian gem color socketed" },
   { 7252, 217114, -7,   0,  80, 200, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 438874,      0 }, {  0.3500f,  0.0000f,  0.0000f },      0, "+$k1 Primary Stat and +$438874s1% perceived fame and fortune per unique Algarian gem color socketed" },
   { 7253, 217115, -7,   0,  80, 200, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 438874,      0 }, {  0.4000f,  0.0000f,  0.0000f },      0, "+$k1 Primary Stat and +$438874s1% perceived fame and fortune per unique Algarian gem color socketed" },
@@ -4992,5 +4992,9 @@ static const std::array<item_enchantment_data_t, 4992> __spell_item_ench_data { 
   { 7500,      0,  0,   0,  70, 26, 0,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 451928,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oil of Beladar's Grace |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
   { 7501,      0,  0,   0,  70, 26, 0,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 451933,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oil of Beladar's Grace |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
   { 7502,      0,  0,   0,  70, 26, 0,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 451932,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oil of Beladar's Grace |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
+  { 7503,      0,  0,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11193,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Lightning Tether"                  },
+  { 7504,      0,  0,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11194,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Overclocked S.E.L.F.I.E. Camera"   },
+  { 7505,      0,  0,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11195,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Earthen Delivery Drill"            },
+  { 7506,      0,  0,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11192,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Heartseeking Health Injector"      },
 } };
 
