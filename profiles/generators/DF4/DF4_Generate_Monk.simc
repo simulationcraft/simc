@@ -1,29 +1,29 @@
-# monk="DF4_Monk_Brewmaster"
-# source=default
-# spec=brewmaster
-# level=70
-# race=void_elf
-# role=tank
-# position=front
-# talents=BwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAQShWJJJQSSrdABAAAItIlkIRClikkWOQSJBo1g0SpEC
+monk="DF4_Monk_Brewmaster"
+source=default
+spec=brewmaster
+level=70
+race=tauren
+role=tank
+position=front
+talents=BwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAQShWJJJQSSrRAAAASLUkIRCtikkWSSJJgWjIt0KhAA
 
-# head=mystic_herons_hatsuburi,id=207245,bonus_id=7187/6935/1520,gem_id=192982,enchant=incandescent_essence
-# neck=amulet_of_eonars_chosen,id=208445,bonus_id=7187/8782/1520,gem_id=192925/192925/192925
-# shoulder=strigine_epaulets,id=207127,bonus_id=7187/1520
-# back=inflammable_drapeleaf,id=207160,bonus_id=7187/1520
-# chest=mystic_herons_burdens,id=207248,bonus_id=7187/1520,enchant=waking_stats_3
-# wrist=venerated_raptorhide_bindings,id=160214,bonus_id=3316/1515/1808,gem_id=192925
-# hands=mystic_herons_glovebills,id=207246,bonus_id=7187/1520
-# waist=lifebound_belt,id=193407,bonus_id=9500/9405/8960/8797/1808,gem_id=192925,crafted_stats=36/32
-# legs=mystic_herons_waders,id=207244,bonus_id=7187/1520,enchant=frosted_armor_kit_3
-# feet=slimy_expulsion_boots,id=193451,bonus_id=9500/9405/8960,enchant=plainsrunners_breeze_3
-# finger1=ring_of_contempt,id=134490,bonus_id=3320/1520/1808,enchant=devotion_of_critical_strike_3,gem_id=192925
-# finger2=signet_of_the_last_elder,id=207162,bonus_id=7187/1520/1808,enchant=devotion_of_critical_strike_3,gem_id=192925
-# trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-# trinket2=fyrakks_tainted_rageheart,id=207174,bonus_id=7187/1527
-# main_hand=rashon_the_immortal_blaze,id=207793,bonus_id=7187/1520,enchant=shadowflame_wreathe_3
+head=crown_of_roaring_storms,id=193751,bonus_id=657/10358/5871/7981,gem_id=192991,enchant=incandescent_essence
+neck=tuskarr_bone_necklace,id=193666,bonus_id=657/10358/5871/7981,gem_id=192932/192932/192932
+shoulders=mantle_of_the_waking_fist,id=217190,bonus_id=7981/10358/5871
+back=voice_of_the_silent_star,id=204465,bonus_id=7981/10358/5878,enchant=regenerative_leech_3
+chest=chestwrap_of_the_waking_fist,id=217186,bonus_id=7981/10358/5871,enchant=waking_stats_3
+wrists=cuffs_of_the_savage_serpent,id=204394,bonus_id=7981/10358/5871/1808,gem_id=192932,enchant=devotion_of_leech_3
+hands=palms_of_the_waking_fist,id=217187,bonus_id=7981/10358/5871
+waist=lifebound_belt,id=193407,bonus_id=10359/10249/9405/8797/1808,gem_id=192932,crafted_stats=36/32,enchant=shadowed_belt_clasp_3
+legs=legguards_of_the_waking_fist,id=217189,bonus_id=7981/10358/5871,enchant=fierce_armor_kit_3
+feet=slimy_expulsion_boots,id=193451,bonus_id=10249/9405/10359,enchant=watchers_loam_3
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=7981/10358/5871/1808,gem_id=192932,enchant=devotion_of_versatility_3
+finger2=tormentors_siphoning_signet,id=204466,bonus_id=7981/10358/5871/1808,gem_id=192932,enchant=devotion_of_versatility_3
+trinket1=manic_grieftorch,id=194308,bonus_id=7981/10358/5871
+trinket2=spiteful_storm,id=194309,bonus_id=7981/10358/5871
+main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=7981/10358/5871,enchant=shadowflame_wreathe_3
 
-# save=DF4_Monk_Brewmaster.simc
+save=DF4_Monk_Brewmaster.simc
 
 # monk="DF4_Monk_Brewmaster_Niuzao"
 # source=default
