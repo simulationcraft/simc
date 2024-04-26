@@ -337,6 +337,7 @@ public:
 
     // Windwalker
     propagate_const<action_t *> empowered_tiger_lightning;
+    propagate_const<action_t *> flurry_of_xuen;
     propagate_const<action_t *> fury_of_xuen_summon;
     propagate_const<action_t *> fury_of_xuen_empowered_tiger_lightning;
 
@@ -1159,6 +1160,8 @@ public:
     const spell_data_t *jadefire_brand_dmg;
     const spell_data_t *jadefire_brand_heal;
     const spell_data_t *fists_of_fury_tick;
+    const spell_data_t *flurry_of_xuen_damage;
+    const spell_data_t *flurry_of_xuen_driver;
     const spell_data_t *flying_serpent_kick_damage;
     const spell_data_t *focus_of_xuen;
     const spell_data_t *fury_of_xuen_stacking_buff;
