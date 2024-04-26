@@ -1,0 +1,191 @@
+warlock="DF4_Warlock_Destruction"
+source=default
+spec=destruction
+level=70
+race=dwarf
+role=spell
+position=ranged_back
+talents=BsQAAAAAAAAAAAAAAAAAAAAAAggkEJJQaKEpdgkESLaBHQJJRCo1KSCAAAAAAAAAAAgkgSSkA
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=iced_phial_of_corrupting_rage_3
+food=thousandbone_tongueslicer
+augmentation=draconic_augment_rune
+temporary_enchant=main_hand:howling_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/summon_pet
+actions.precombat+=/variable,name=cleave_apl,default=0,op=reset
+actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff
+actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff
+actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.summon_infernal.duration=0|cooldown.summon_infernal.duration%%trinket.1.cooldown.duration=0)
+actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.summon_infernal.duration=0|cooldown.summon_infernal.duration%%trinket.2.cooldown.duration=0)
+actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.belorrelos_the_suncaller|trinket.1.is.nymues_unraveling_spindle|trinket.1.is.timethiefs_gambit
+actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.belorrelos_the_suncaller|trinket.2.is.nymues_unraveling_spindle|trinket.2.is.timethiefs_gambit
+actions.precombat+=/variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon
+actions.precombat+=/variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon
+actions.precombat+=/variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.mirror_of_fractured_tomorrows*20)+(trinket.1.is.nymues_unraveling_spindle*2)
+actions.precombat+=/variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration+(trinket.2.is.mirror_of_fractured_tomorrows*20)+(trinket.2.is.nymues_unraveling_spindle*2)
+actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_buff_duration)*(1+0.5*trinket.2.has_buff.intellect)*(variable.trinket_2_sync)*(1-0.5*trinket.2.is.mirror_of_fractured_tomorrows))>((trinket.1.cooldown.duration%variable.trinket_1_buff_duration)*(1+0.5*trinket.1.has_buff.intellect)*(variable.trinket_1_sync)*(1-0.5*trinket.1.is.mirror_of_fractured_tomorrows))
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/snapshot_stats
+actions.precombat+=/soul_fire
+actions.precombat+=/cataclysm,if=raid_event.adds.in>15
+actions.precombat+=/incinerate
+
+# Executed every time the actor is available.
+actions=call_action_list,name=variables
+actions+=/call_action_list,name=aoe,if=(active_enemies>=3-(talent.inferno&!talent.chaosbringer))&!(!talent.inferno&talent.chaosbringer&talent.chaos_incarnate&active_enemies<4)&!variable.cleave_apl
+actions+=/call_action_list,name=cleave,if=active_enemies!=1|variable.cleave_apl
+actions+=/call_action_list,name=ogcd
+actions+=/call_action_list,name=items
+actions+=/conflagrate,if=(talent.roaring_blaze&debuff.conflagrate.remains<1.5)&soul_shard>1.5|charges=max_charges
+actions+=/dimensional_rift,if=soul_shard<4.7&(charges>2|fight_remains<cooldown.dimensional_rift.duration)
+actions+=/cataclysm,if=raid_event.adds.in>15
+actions+=/channel_demonfire,if=talent.raging_demonfire&(dot.immolate.remains-5*(action.chaos_bolt.in_flight&talent.internal_combustion))>cast_time&(debuff.conflagrate.remains>execute_time|!talent.roaring_blaze)
+actions+=/soul_fire,if=soul_shard<=3.5&(debuff.conflagrate.remains>cast_time+travel_time|!talent.roaring_blaze&buff.backdraft.up)
+actions+=/immolate,if=(((dot.immolate.remains-5*(action.chaos_bolt.in_flight&talent.internal_combustion))<dot.immolate.duration*0.3)|dot.immolate.remains<3|(dot.immolate.remains-action.chaos_bolt.execute_time)<5&talent.internal_combustion&action.chaos_bolt.usable)&(!talent.cataclysm|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>(dot.immolate.remains-5*talent.internal_combustion))&target.time_to_die>8
+actions+=/channel_demonfire,if=dot.immolate.remains>cast_time&set_bonus.tier30_4pc
+actions+=/chaos_bolt,if=cooldown.summon_infernal.remains=0&soul_shard>4&talent.crashing_chaos
+actions+=/summon_infernal
+actions+=/chaos_bolt,if=pet.infernal.active|pet.blasphemy.active|soul_shard>=4
+actions+=/channel_demonfire,if=talent.ruin.rank>1&!(talent.diabolic_embers&talent.avatar_of_destruction&(talent.burn_to_ashes|talent.chaos_incarnate))&dot.immolate.remains>cast_time
+actions+=/chaos_bolt,if=buff.rain_of_chaos.remains>cast_time
+actions+=/chaos_bolt,if=buff.backdraft.up
+actions+=/channel_demonfire,if=!(talent.diabolic_embers&talent.avatar_of_destruction&(talent.burn_to_ashes|talent.chaos_incarnate))&dot.immolate.remains>cast_time
+actions+=/dimensional_rift
+actions+=/chaos_bolt,if=fight_remains<5&fight_remains>cast_time+travel_time
+actions+=/conflagrate,if=charges>(max_charges-1)|fight_remains<gcd.max*charges
+actions+=/incinerate
+
+actions.aoe=call_action_list,name=ogcd
+actions.aoe+=/call_action_list,name=items
+actions.aoe+=/call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd.max&active_enemies<5+(talent.cry_havoc&!talent.inferno)&(!cooldown.summon_infernal.up|!talent.summon_infernal)
+actions.aoe+=/dimensional_rift,if=soul_shard<4.7&(charges>2|fight_remains<cooldown.dimensional_rift.duration)
+actions.aoe+=/rain_of_fire,if=pet.infernal.active|pet.blasphemy.active
+actions.aoe+=/rain_of_fire,if=fight_remains<12
+actions.aoe+=/rain_of_fire,if=soul_shard>=(4.5-0.1*active_dot.immolate)&time>5
+actions.aoe+=/chaos_bolt,if=soul_shard>3.5-(0.1*active_enemies)&!talent.rain_of_fire
+actions.aoe+=/cataclysm,if=raid_event.adds.in>15
+actions.aoe+=/havoc,target_if=min:((-target.time_to_die)<?-15)+dot.immolate.remains+99*(self.target=target),if=(!cooldown.summon_infernal.up|!talent.summon_infernal|(talent.inferno&active_enemies>4))&target.time_to_die>8
+actions.aoe+=/immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=dot.immolate.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains|time<5)&active_dot.immolate<=4&target.time_to_die>18
+actions.aoe+=/channel_demonfire,if=dot.immolate.remains>cast_time&talent.raging_demonfire
+actions.aoe+=/summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&fight_remains<10
+actions.aoe+=/call_action_list,name=ogcd
+actions.aoe+=/summon_infernal,if=cooldown.invoke_power_infusion_0.up|cooldown.invoke_power_infusion_0.duration=0|fight_remains>=190&!talent.grand_warlocks_design
+actions.aoe+=/rain_of_fire,if=debuff.pyrogenics.down&active_enemies<=4
+actions.aoe+=/channel_demonfire,if=dot.immolate.remains>cast_time
+actions.aoe+=/immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=((dot.immolate.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains))|active_enemies>active_dot.immolate)&target.time_to_die>10&!havoc_active
+actions.aoe+=/immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=((dot.immolate.refreshable&variable.havoc_immo_time<5.4)|(dot.immolate.remains<2&dot.immolate.remains<havoc_remains)|!dot.immolate.ticking|(variable.havoc_immo_time<2)*havoc_active)&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&target.time_to_die>11
+actions.aoe+=/dimensional_rift
+actions.aoe+=/soul_fire,if=buff.backdraft.up
+actions.aoe+=/incinerate,if=talent.fire_and_brimstone.enabled&buff.backdraft.up
+actions.aoe+=/conflagrate,if=buff.backdraft.stack<2|!talent.backdraft
+actions.aoe+=/incinerate
+
+actions.cleave=call_action_list,name=items
+actions.cleave+=/call_action_list,name=ogcd
+actions.cleave+=/call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd.max
+actions.cleave+=/variable,name=pool_soul_shards,value=cooldown.havoc.remains<=10|talent.mayhem
+actions.cleave+=/conflagrate,if=(talent.roaring_blaze.enabled&debuff.conflagrate.remains<1.5)|charges=max_charges&!variable.pool_soul_shards
+actions.cleave+=/dimensional_rift,if=soul_shard<4.7&(charges>2|fight_remains<cooldown.dimensional_rift.duration)
+actions.cleave+=/cataclysm,if=raid_event.adds.in>15
+actions.cleave+=/channel_demonfire,if=talent.raging_demonfire&active_dot.immolate=2
+actions.cleave+=/soul_fire,if=soul_shard<=3.5&(debuff.conflagrate.remains>cast_time+travel_time|!talent.roaring_blaze&buff.backdraft.up)&!variable.pool_soul_shards
+actions.cleave+=/immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=(dot.immolate.refreshable&(dot.immolate.remains<cooldown.havoc.remains|!dot.immolate.ticking))&(!talent.cataclysm|cooldown.cataclysm.remains>remains)&(!talent.soul_fire|cooldown.soul_fire.remains+(!talent.mayhem*action.soul_fire.cast_time)>dot.immolate.remains)&target.time_to_die>15
+actions.cleave+=/havoc,target_if=min:((-target.time_to_die)<?-15)+dot.immolate.remains+99*(self.target=target),if=(!cooldown.summon_infernal.up|!talent.summon_infernal)&target.time_to_die>8
+actions.cleave+=/dimensional_rift,if=soul_shard<4.5&variable.pool_soul_shards
+actions.cleave+=/chaos_bolt,if=pet.infernal.active|pet.blasphemy.active|soul_shard>=4
+actions.cleave+=/summon_infernal
+actions.cleave+=/channel_demonfire,if=talent.ruin.rank>1&!(talent.diabolic_embers&talent.avatar_of_destruction&(talent.burn_to_ashes|talent.chaos_incarnate))
+actions.cleave+=/chaos_bolt,if=soul_shard>3.5
+actions.cleave+=/chaos_bolt,if=buff.rain_of_chaos.remains>cast_time
+actions.cleave+=/chaos_bolt,if=buff.backdraft.up
+actions.cleave+=/soul_fire,if=soul_shard<=4&talent.mayhem
+actions.cleave+=/chaos_bolt,if=talent.eradication&debuff.eradication.remains<cast_time+action.chaos_bolt.travel_time+1&!action.chaos_bolt.in_flight
+actions.cleave+=/channel_demonfire,if=!(talent.diabolic_embers&talent.avatar_of_destruction&(talent.burn_to_ashes|talent.chaos_incarnate))
+actions.cleave+=/dimensional_rift
+actions.cleave+=/chaos_bolt,if=soul_shard>3.5&!variable.pool_soul_shards
+actions.cleave+=/chaos_bolt,if=fight_remains<5&fight_remains>cast_time+travel_time
+actions.cleave+=/summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&fight_remains<10
+actions.cleave+=/conflagrate,if=charges>(max_charges-1)|fight_remains<gcd.max*charges
+actions.cleave+=/incinerate
+
+actions.havoc=conflagrate,if=talent.backdraft&buff.backdraft.down&soul_shard>=1&soul_shard<=4
+actions.havoc+=/soul_fire,if=cast_time<havoc_remains&soul_shard<2.5
+actions.havoc+=/channel_demonfire,if=soul_shard<4.5&talent.raging_demonfire.rank=2
+actions.havoc+=/immolate,target_if=min:dot.immolate.remains+100*debuff.havoc.remains,if=(((dot.immolate.refreshable&variable.havoc_immo_time<5.4)&target.time_to_die>5)|((dot.immolate.remains<2&dot.immolate.remains<havoc_remains)|!dot.immolate.ticking|variable.havoc_immo_time<2)&target.time_to_die>11)&soul_shard<4.5
+actions.havoc+=/chaos_bolt,if=((talent.cry_havoc&!talent.inferno)|!talent.rain_of_fire)&cast_time<havoc_remains
+actions.havoc+=/chaos_bolt,if=cast_time<havoc_remains&(active_enemies<=3-talent.inferno+(talent.chaosbringer&!talent.inferno))
+actions.havoc+=/rain_of_fire,if=active_enemies>=3&talent.inferno
+actions.havoc+=/rain_of_fire,if=(active_enemies>=4-talent.inferno+talent.chaosbringer)
+actions.havoc+=/rain_of_fire,if=active_enemies>2&(talent.avatar_of_destruction|(talent.rain_of_chaos&buff.rain_of_chaos.up))&talent.inferno.enabled
+actions.havoc+=/channel_demonfire,if=soul_shard<4.5
+actions.havoc+=/conflagrate,if=!talent.backdraft
+actions.havoc+=/dimensional_rift,if=soul_shard<4.7&(charges>2|fight_remains<cooldown.dimensional_rift.duration)
+actions.havoc+=/incinerate,if=cast_time<havoc_remains
+
+actions.items=use_item,use_off_gcd=1,name=belorrelos_the_suncaller,if=((time>20&cooldown.summon_infernal.remains>20)|(trinket.1.is.belorrelos_the_suncaller&(trinket.2.cooldown.remains|!variable.trinket_2_buffs|trinket.1.is.time_thiefs_gambit))|(trinket.2.is.belorrelos_the_suncaller&(trinket.1.cooldown.remains|!variable.trinket_1_buffs|trinket.2.is.time_thiefs_gambit)))&(!raid_event.adds.exists|raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5)|fight_remains<20
+actions.items+=/use_item,name=nymues_unraveling_spindle,if=(variable.infernal_active|!talent.summon_infernal|(variable.trinket_1_will_lose_cast&trinket.1.is.nymues_unraveling_spindle)|(variable.trinket_2_will_lose_cast&trinket.2.is.nymues_unraveling_spindle))|fight_remains<20
+# We want to use trinkets with Infernal unless we will miss a trinket use. The trinket with highest estimated value, will be used first.
+actions.items+=/use_item,slot=trinket1,if=(variable.infernal_active|!talent.summon_infernal|variable.trinket_1_will_lose_cast)&(variable.trinket_priority=1|variable.trinket_2_exclude|!trinket.2.has_cooldown|(trinket.2.cooldown.remains|variable.trinket_priority=2&cooldown.summon_infernal.remains>20&!variable.infernal_active&trinket.2.cooldown.remains<cooldown.summon_infernal.remains))&variable.trinket_1_buffs&!variable.trinket_1_manual|(variable.trinket_1_buff_duration+1>=fight_remains)
+actions.items+=/use_item,slot=trinket2,if=(variable.infernal_active|!talent.summon_infernal|variable.trinket_2_will_lose_cast)&(variable.trinket_priority=2|variable.trinket_1_exclude|!trinket.1.has_cooldown|(trinket.1.cooldown.remains|variable.trinket_priority=1&cooldown.summon_infernal.remains>20&!variable.infernal_active&trinket.1.cooldown.remains<cooldown.summon_infernal.remains))&variable.trinket_2_buffs&!variable.trinket_2_manual|(variable.trinket_2_buff_duration+1>=fight_remains)
+actions.items+=/use_item,name=time_thiefs_gambit,if=variable.infernal_active|!talent.summon_infernal|fight_remains<15|((trinket.1.cooldown.duration<cooldown.summon_infernal.remains_expected+5)&active_enemies=1)|(active_enemies>1&havoc_active)
+# If only one on use trinket provied a buff, use the other on cooldown, Or if neither trinket provied a buff, use both on cooldown.
+actions.items+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)|talent.summon_infernal&cooldown.summon_infernal.remains_expected>20&!prev_gcd.1.summon_infernal|!talent.summon_infernal)
+actions.items+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|talent.summon_infernal&cooldown.summon_infernal.remains_expected>20&!prev_gcd.1.summon_infernal|!talent.summon_infernal)
+actions.items+=/use_item,use_off_gcd=1,slot=main_hand
+
+actions.ogcd=potion,if=variable.infernal_active|!talent.summon_infernal
+actions.ogcd+=/invoke_external_buff,name=power_infusion,if=variable.infernal_active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains_expected+10+cooldown.invoke_power_infusion_0.duration&fight_remains>cooldown.invoke_power_infusion_0.duration)|fight_remains<cooldown.summon_infernal.remains_expected+15
+actions.ogcd+=/berserking,if=variable.infernal_active|!talent.summon_infernal|(fight_remains<(cooldown.summon_infernal.remains_expected+cooldown.berserking.duration)&(fight_remains>cooldown.berserking.duration))|fight_remains<cooldown.summon_infernal.remains_expected
+actions.ogcd+=/blood_fury,if=variable.infernal_active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains_expected+10+cooldown.blood_fury.duration&fight_remains>cooldown.blood_fury.duration)|fight_remains<cooldown.summon_infernal.remains
+actions.ogcd+=/fireblood,if=variable.infernal_active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains_expected+10+cooldown.fireblood.duration&fight_remains>cooldown.fireblood.duration)|fight_remains<cooldown.summon_infernal.remains_expected
+actions.ogcd+=/ancestral_call,if=variable.infernal_active|!talent.summon_infernal|(fight_remains<(cooldown.summon_infernal.remains_expected+cooldown.berserking.duration)&(fight_remains>cooldown.berserking.duration))|fight_remains<cooldown.summon_infernal.remains_expected
+
+actions.variables=variable,name=havoc_immo_time,op=reset
+actions.variables+=/cycling_variable,name=havoc_immo_time,op=add,value=dot.immolate.remains*debuff.havoc.up
+actions.variables+=/variable,name=infernal_active,op=set,value=pet.infernal.active|(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains)<20
+# If we can have more use of trinket than use of infernal, we want to it, but we want to sync if we don't lose a cast, and if we sync we don't lose it too late
+actions.variables+=/variable,name=trinket_1_will_lose_cast,value=((floor((fight_remains%trinket.1.cooldown.duration)+1)!=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(floor((fight_remains%trinket.1.cooldown.duration)+1))!=(floor(((fight_remains-cooldown.summon_infernal.remains)%trinket.1.cooldown.duration)+1))|((floor((fight_remains%trinket.1.cooldown.duration)+1)=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(((fight_remains-cooldown.summon_infernal.remains%%trinket.1.cooldown.duration)-cooldown.summon_infernal.remains-variable.trinket_1_buff_duration)>0)))&cooldown.summon_infernal.remains>20
+actions.variables+=/variable,name=trinket_2_will_lose_cast,value=((floor((fight_remains%trinket.2.cooldown.duration)+1)!=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(floor((fight_remains%trinket.2.cooldown.duration)+1))!=(floor(((fight_remains-cooldown.summon_infernal.remains)%trinket.2.cooldown.duration)+1))|((floor((fight_remains%trinket.2.cooldown.duration)+1)=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(((fight_remains-cooldown.summon_infernal.remains%%trinket.2.cooldown.duration)-cooldown.summon_infernal.remains-variable.trinket_2_buff_duration)>0)))&cooldown.summon_infernal.remains>20
+
+head=lost_scholars_timely_hat,id=207116,bonus_id=4800/4786/1517/9575/523,ilevel=528,gem_id=192982,enchant_id=7052
+neck=terross_captive_core,id=195502,bonus_id=4800/4786/1498/8782,ilevel=528,gem_id=192925/192925/192925
+shoulders=amice_of_the_sinister_savant,id=217214,ilevel=528
+back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498,ilevel=535
+chest=cursed_robes_of_the_sinister_savant,id=217215,ilevel=528,enchant_id=6625
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8932/8960/523,ilevel=525,gem_id=192925,enchant_id=6574,crafted_stats=36/49
+hands=grips_of_the_sinister_savant,id=217211,ilevel=528
+waist=sash_of_abandoned_hope,id=202589,bonus_id=4800/4786/1498/523,ilevel=528,gem_id=192925,enchant_id=6904
+legs=leggings_of_the_sinister_savant,id=217213,ilevel=528,enchant_id=6830
+feet=vibrant_wildercloth_slippers,id=193519,bonus_id=8932/8960/8793,ilevel=525,crafted_stats=32/40
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498/523,ilevel=535,gem_id=192925,enchant_id=6550
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=523,ilevel=528,gem_id=192925,enchant_id=6550
+trinket1=belorrelos_the_suncaller,id=207172,bonus_id=4800/4786/1520/9576,ilevel=528
+trinket2=nymues_unraveling_spindle,id=208615,bonus_id=4800/4786/1520/9576,ilevel=528
+main_hand=dreambinder_loom_of_the_great_cycle,id=208616,ilevel=528,enchant_id=6655
+
+# Gear Summary
+# gear_ilvl=528.53
+# gear_stamina=58419
+# gear_intellect=18565
+# gear_crit_rating=4099
+# gear_haste_rating=5382
+# gear_mastery_rating=3871
+# gear_versatility_rating=4002
+# gear_avoidance_rating=200
+# gear_armor=4424
+# set_bonus=dragonflight_season_4_2pc=1
+# set_bonus=dragonflight_season_4_4pc=1
+default_pet=imp

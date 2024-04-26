@@ -1,0 +1,187 @@
+warlock="DF4_Warlock_Affliction"
+source=default
+spec=affliction
+level=70
+race=human
+role=spell
+position=ranged_back
+talents=BkQAAAAAAAAAAAAAAAAAAAAAAASSSkkAppoEpdgkESJAAAAQDAAAAAAgERLEJJSikWSEAQC
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=iced_phial_of_corrupting_rage_3
+food=thousandbone_tongueslicer
+augmentation=draconic_augment_rune
+temporary_enchant=main_hand:howling_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/summon_pet
+actions.precombat+=/variable,name=cleave_apl,default=0,op=reset
+actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff
+actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff
+actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.soul_rot.duration=0|cooldown.soul_rot.duration%%trinket.1.cooldown.duration=0)
+actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.soul_rot.duration=0|cooldown.soul_rot.duration%%trinket.2.cooldown.duration=0)
+actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.belorrelos_the_suncaller|trinket.1.is.timethiefs_gambit
+actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.belorrelos_the_suncaller|trinket.2.is.timethiefs_gambit
+actions.precombat+=/variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon
+actions.precombat+=/variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon
+actions.precombat+=/variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.mirror_of_fractured_tomorrows*20)+(trinket.1.is.nymues_unraveling_spindle*2)
+actions.precombat+=/variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration+(trinket.2.is.mirror_of_fractured_tomorrows*20)+(trinket.2.is.nymues_unraveling_spindle*2)
+actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_buff_duration)*(1+0.5*trinket.2.has_buff.intellect)*(variable.trinket_2_sync)*(1-0.5*(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.is.ashes_of_the_embersoul)))>((trinket.1.cooldown.duration%variable.trinket_1_buff_duration)*(1+0.5*trinket.1.has_buff.intellect)*(variable.trinket_1_sync)*(1-0.5*(trinket.1.is.mirror_of_fractured_tomorrows|trinket.1.is.ashes_of_the_embersoul)))
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/snapshot_stats
+actions.precombat+=/seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>2|talent.sow_the_seeds&spell_targets.seed_of_corruption_aoe>1
+actions.precombat+=/haunt
+actions.precombat+=/unstable_affliction,if=!talent.soul_swap
+actions.precombat+=/shadow_bolt
+
+# Executed every time the actor is available.
+actions=call_action_list,name=variables
+actions+=/call_action_list,name=cleave,if=active_enemies!=1&active_enemies<3|variable.cleave_apl
+actions+=/call_action_list,name=aoe,if=active_enemies>2
+actions+=/call_action_list,name=ogcd
+actions+=/call_action_list,name=items
+actions+=/malefic_rapture,if=talent.dread_touch&debuff.dread_touch.remains<2&(dot.agony.remains>gcd.max&dot.corruption.ticking&(!talent.siphon_life|dot.siphon_life.ticking)&dot.unstable_affliction.ticking)&(!talent.phantom_singularity|!cooldown.phantom_singularity.ready)&(!talent.vile_taint|!cooldown.vile_taint.ready)&(!talent.soul_rot|!cooldown.soul_rot.ready)
+actions+=/malefic_rapture,if=fight_remains<4
+actions+=/vile_taint,if=!talent.soul_rot|(variable.min_agony<1.5|cooldown.soul_rot.remains<=execute_time+gcd.max)|talent.souleaters_gluttony.rank<1&cooldown.soul_rot.remains>=12
+actions+=/phantom_singularity,if=(cooldown.soul_rot.remains<=execute_time|talent.souleaters_gluttony.rank<1&(!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|cooldown.soul_rot.remains>=25))&dot.agony.ticking
+actions+=/soul_rot,if=(variable.vt_up&(variable.ps_up|talent.souleaters_gluttony.rank!=1))&dot.agony.ticking
+actions+=/agony,if=(remains<cooldown.vile_taint.remains+action.vile_taint.cast_time|!talent.vile_taint)&remains<5&fight_remains>5
+actions+=/unstable_affliction,if=remains<5&fight_remains>3
+actions+=/haunt,if=debuff.haunt.remains<5
+actions+=/corruption,if=refreshable&fight_remains>5
+actions+=/siphon_life,if=refreshable&fight_remains>5
+actions+=/summon_darkglare,if=(!talent.shadow_embrace|debuff.shadow_embrace.stack=3)&variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot
+actions+=/drain_soul,interrupt=1,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)
+actions+=/shadow_bolt,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)
+actions+=/malefic_rapture,if=soul_shard>4|(talent.tormented_crescendo&buff.tormented_crescendo.stack=1&soul_shard>3)
+actions+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react&!debuff.dread_touch.react
+actions+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=2
+actions+=/malefic_rapture,if=variable.cd_dots_up|variable.vt_ps_up&soul_shard>1
+actions+=/malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react
+actions+=/drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&fight_remains<4
+actions+=/drain_soul,if=buff.nightfall.react
+actions+=/shadow_bolt,if=buff.nightfall.react
+actions+=/drain_soul,interrupt=1
+actions+=/shadow_bolt
+
+actions.aoe=call_action_list,name=ogcd
+actions.aoe+=/call_action_list,name=items
+actions.aoe+=/cycling_variable,name=min_agony,op=min,value=dot.agony.remains+(99*!dot.agony.ticking)
+actions.aoe+=/cycling_variable,name=min_vt,op=min,default=10,value=dot.vile_taint.remains+(99*!dot.vile_taint.ticking)
+actions.aoe+=/cycling_variable,name=min_ps,op=min,default=16,value=dot.phantom_singularity.remains+(99*!dot.phantom_singularity.ticking)
+actions.aoe+=/variable,name=min_ps1,op=set,value=(variable.min_vt*talent.vile_taint<?variable.min_ps*talent.phantom_singularity)
+actions.aoe+=/haunt,if=debuff.haunt.remains<3
+actions.aoe+=/vile_taint,if=(talent.souleaters_gluttony.rank=2&(variable.min_agony<1.5|cooldown.soul_rot.remains<=execute_time))|((talent.souleaters_gluttony.rank=1&cooldown.soul_rot.remains<=execute_time))|(talent.souleaters_gluttony.rank=0&(cooldown.soul_rot.remains<=execute_time|cooldown.vile_taint.remains>25))
+actions.aoe+=/phantom_singularity,if=(cooldown.soul_rot.remains<=execute_time|talent.souleaters_gluttony.rank<1&(!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|cooldown.soul_rot.remains>=25))&dot.agony.ticking
+actions.aoe+=/unstable_affliction,if=remains<5
+actions.aoe+=/agony,target_if=min:remains,if=active_dot.agony<8&(remains<cooldown.vile_taint.remains+action.vile_taint.cast_time|!talent.vile_taint)&gcd.max+action.soul_rot.cast_time+gcd.max<(variable.min_vt*talent.vile_taint<?variable.min_ps*talent.phantom_singularity)&remains<5
+actions.aoe+=/siphon_life,target_if=remains<5,if=active_dot.siphon_life<6&cooldown.summon_darkglare.up&time<20&gcd.max+action.soul_rot.cast_time+gcd.max<(variable.min_vt*talent.vile_taint<?variable.min_ps*talent.phantom_singularity)&dot.agony.ticking
+actions.aoe+=/soul_rot,if=variable.vt_up&(variable.ps_up|talent.souleaters_gluttony.rank!=1)&dot.agony.ticking
+actions.aoe+=/seed_of_corruption,if=dot.corruption.remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)
+actions.aoe+=/corruption,target_if=min:remains,if=remains<5&!talent.seed_of_corruption
+actions.aoe+=/summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot
+actions.aoe+=/drain_life,target_if=min:dot.soul_rot.remains,if=buff.inevitable_demise.stack>30&buff.soul_rot.up&buff.soul_rot.remains<=gcd.max&active_enemies>3
+actions.aoe+=/malefic_rapture,if=buff.umbrafire_kindling.up&(((active_enemies<6|time<30)&pet.darkglare.active)|!talent.doom_blossom)
+actions.aoe+=/seed_of_corruption,if=talent.sow_the_seeds
+actions.aoe+=/malefic_rapture,if=((cooldown.summon_darkglare.remains>15|soul_shard>3)&!talent.sow_the_seeds)|buff.tormented_crescendo.up
+actions.aoe+=/drain_life,target_if=min:dot.soul_rot.remains,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>30
+actions.aoe+=/drain_soul,cycle_targets=1,if=buff.nightfall.react&talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)
+actions.aoe+=/summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&fight_remains<10
+actions.aoe+=/siphon_life,target_if=remains<5,if=active_dot.siphon_life<5&(active_enemies<8|!talent.doom_blossom)
+actions.aoe+=/drain_soul,cycle_targets=1,interrupt_global=1,if=(talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3))|!talent.shadow_embrace
+actions.aoe+=/shadow_bolt
+
+actions.cleave=call_action_list,name=ogcd
+actions.cleave+=/call_action_list,name=items
+actions.cleave+=/malefic_rapture,if=talent.dread_touch&debuff.dread_touch.remains<2&(dot.agony.remains>gcd.max&dot.corruption.ticking&(!talent.siphon_life|dot.siphon_life.ticking)&dot.unstable_affliction.ticking)&(!talent.phantom_singularity|!cooldown.phantom_singularity.ready)&(!talent.vile_taint|!cooldown.vile_taint.ready)&(!talent.soul_rot|!cooldown.soul_rot.ready)|soul_shard>4
+actions.cleave+=/vile_taint,if=!talent.soul_rot|(variable.min_agony<1.5|cooldown.soul_rot.remains<=execute_time+gcd.max)|talent.souleaters_gluttony.rank<1&cooldown.soul_rot.remains>=12
+actions.cleave+=/phantom_singularity,if=(cooldown.soul_rot.remains<=execute_time|talent.souleaters_gluttony.rank<1&(!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|cooldown.soul_rot.remains>=25))&active_dot.agony=2
+actions.cleave+=/soul_rot,if=(variable.vt_up&(variable.ps_up|talent.souleaters_gluttony.rank!=1))&active_dot.agony=2
+actions.cleave+=/agony,target_if=min:remains,if=(remains<cooldown.vile_taint.remains+action.vile_taint.cast_time|!talent.vile_taint)&remains<5&fight_remains>5
+actions.cleave+=/unstable_affliction,if=remains<5&fight_remains>3
+actions.cleave+=/seed_of_corruption,if=!talent.absolute_corruption&dot.corruption.remains<5&talent.sow_the_seeds&can_seed
+actions.cleave+=/haunt,if=debuff.haunt.remains<3
+actions.cleave+=/corruption,target_if=min:remains,if=remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)&fight_remains>5
+actions.cleave+=/siphon_life,target_if=min:remains,if=refreshable&fight_remains>5
+actions.cleave+=/summon_darkglare,if=(!talent.shadow_embrace|debuff.shadow_embrace.stack=3)&variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot
+actions.cleave+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=1&soul_shard>3
+actions.cleave+=/drain_soul,interrupt=1,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)
+actions.cleave+=/drain_soul,target_if=min:debuff.shadow_embrace.remains,if=buff.nightfall.react&(talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)|!talent.shadow_embrace)
+actions.cleave+=/shadow_bolt,target_if=min:debuff.shadow_embrace.remains,if=buff.nightfall.react&(talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)|!talent.shadow_embrace)
+actions.cleave+=/malefic_rapture,if=!talent.dread_touch&buff.tormented_crescendo.up
+actions.cleave+=/malefic_rapture,if=variable.cd_dots_up|variable.vt_ps_up
+actions.cleave+=/malefic_rapture,if=soul_shard>3
+actions.cleave+=/drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&fight_remains<4
+actions.cleave+=/drain_life,if=buff.soul_rot.up&buff.inevitable_demise.stack>30
+actions.cleave+=/agony,target_if=refreshable
+actions.cleave+=/corruption,target_if=refreshable
+actions.cleave+=/malefic_rapture,if=soul_shard>1
+actions.cleave+=/drain_soul,interrupt_global=1
+actions.cleave+=/shadow_bolt
+
+actions.items=use_item,use_off_gcd=1,name=belorrelos_the_suncaller,if=((time>20&cooldown.summon_darkglare.remains>20)|(trinket.1.is.belorrelos_the_suncaller&(trinket.2.cooldown.remains|!variable.trinket_2_buffs|trinket.1.is.time_thiefs_gambit))|(trinket.2.is.belorrelos_the_suncaller&(trinket.1.cooldown.remains|!variable.trinket_1_buffs|trinket.2.is.time_thiefs_gambit)))&(!raid_event.adds.exists|raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5)|fight_remains<20
+# We want to use trinkets with Darkglare. The trinket with highest estimated value, will be used first.
+actions.items+=/use_item,slot=trinket1,if=(variable.cds_active)&(variable.trinket_priority=1|variable.trinket_2_exclude|!trinket.2.has_cooldown|(trinket.2.cooldown.remains|variable.trinket_priority=2&cooldown.summon_darkglare.remains>20&!pet.darkglare.active&trinket.2.cooldown.remains<cooldown.summon_darkglare.remains))&variable.trinket_1_buffs&!variable.trinket_1_manual|(variable.trinket_1_buff_duration+1>=fight_remains)
+actions.items+=/use_item,slot=trinket2,if=(variable.cds_active)&(variable.trinket_priority=2|variable.trinket_1_exclude|!trinket.1.has_cooldown|(trinket.1.cooldown.remains|variable.trinket_priority=1&cooldown.summon_darkglare.remains>20&!pet.darkglare.active&trinket.1.cooldown.remains<cooldown.summon_darkglare.remains))&variable.trinket_2_buffs&!variable.trinket_2_manual|(variable.trinket_2_buff_duration+1>=fight_remains)
+actions.items+=/use_item,name=time_thiefs_gambit,if=variable.cds_active|fight_remains<15|((trinket.1.cooldown.duration<cooldown.summon_darkglare.remains_expected+5)&active_enemies=1)|(active_enemies>1&havoc_active)
+# If only one on use trinket provied a buff, use the other on cooldown, Or if neither trinket provied a buff, use both on cooldown.
+actions.items+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)|talent.summon_darkglare&cooldown.summon_darkglare.remains_expected>20|!talent.summon_darkglare)
+actions.items+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|talent.summon_darkglare&cooldown.summon_darkglare.remains_expected>20|!talent.summon_darkglare)
+actions.items+=/use_item,use_off_gcd=1,slot=main_hand
+
+actions.ogcd=potion,if=variable.cds_active
+actions.ogcd+=/berserking,if=variable.cds_active
+actions.ogcd+=/blood_fury,if=variable.cds_active
+# Uses Power Infusion together with Cooldown windows like Summon Darkglare, Soul Rot, Phantom Singularity or Vile Taint
+actions.ogcd+=/invoke_external_buff,name=power_infusion,if=variable.cds_active&(trinket.1.is.nymues_unraveling_spindle&trinket.1.cooldown.remains|trinket.2.is.nymues_unraveling_spindle&trinket.2.cooldown.remains|!equipped.nymues_unraveling_spindle)
+actions.ogcd+=/fireblood,if=variable.cds_active
+actions.ogcd+=/ancestral_call,if=variable.cds_active
+
+actions.variables=variable,name=ps_up,op=set,value=dot.phantom_singularity.ticking|!talent.phantom_singularity
+actions.variables+=/variable,name=vt_up,op=set,value=dot.vile_taint_dot.ticking|!talent.vile_taint
+actions.variables+=/variable,name=vt_ps_up,op=set,value=dot.vile_taint_dot.ticking|dot.phantom_singularity.ticking|(!talent.vile_taint&!talent.phantom_singularity)
+actions.variables+=/variable,name=sr_up,op=set,value=dot.soul_rot.ticking|!talent.soul_rot
+actions.variables+=/variable,name=cd_dots_up,op=set,value=variable.ps_up&variable.vt_up&variable.sr_up
+actions.variables+=/variable,name=has_cds,op=set,value=talent.phantom_singularity|talent.vile_taint|talent.soul_rot|talent.summon_darkglare
+actions.variables+=/variable,name=cds_active,op=set,value=!variable.has_cds|(variable.cd_dots_up&(cooldown.summon_darkglare.remains>20|!talent.summon_darkglare))
+actions.variables+=/variable,name=min_vt,op=reset,if=variable.min_vt
+actions.variables+=/variable,name=min_ps,op=reset,if=variable.min_ps
+
+head=grimhorns_of_the_sinister_savant,id=217212,bonus_id=523,ilevel=528,gem_id=192982,enchant_id=7052
+neck=tuskarr_bone_necklace,id=193666,bonus_id=4786/1659/9539/8782,ilevel=528,gem_id=192925/192925/192925
+shoulders=boastful_stalkers_epaulets,id=193667,bonus_id=4786/1659/9539,ilevel=528
+back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498,ilevel=535
+chest=cursed_robes_of_the_sinister_savant,id=217215,ilevel=528,enchant_id=6625
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9500/9405/9379/8960/523/8793,ilevel=525,gem_id=192925,crafted_stats=40/49
+hands=grips_of_the_sinister_savant,id=217211,ilevel=528
+waist=whispering_fanged_cord,id=208430,bonus_id=4800/4786/1511/9573/523,ilevel=528,gem_id=192925,enchant_id=6904
+legs=leggings_of_the_sinister_savant,id=217213,ilevel=528,enchant_id=6830
+feet=vibrant_wildercloth_slippers,id=193519,bonus_id=8932/8960/8793,ilevel=525
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498/523,ilevel=535,gem_id=192925,enchant_id=6550
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=1808,ilevel=528,gem_id=192925,enchant_id=6550
+trinket1=nymues_unraveling_spindle,id=208615,bonus_id=4800/4786/1520/9576,ilevel=528
+trinket2=belorrelos_the_suncaller,id=207172,bonus_id=4800/4786/1520/9576,ilevel=528
+main_hand=dreambinder_loom_of_the_great_cycle,id=208616,ilevel=528,enchant_id=6655
+
+# Gear Summary
+# gear_ilvl=528.53
+# gear_stamina=58419
+# gear_intellect=18565
+# gear_crit_rating=4046
+# gear_haste_rating=5205
+# gear_mastery_rating=4494
+# gear_versatility_rating=3608
+# gear_armor=4424
+# set_bonus=dragonflight_season_4_2pc=1
+# set_bonus=dragonflight_season_4_4pc=1
+default_pet=imp
