@@ -476,7 +476,7 @@ public:
 
       player_talent_t untethered_fury; // NYI
       player_talent_t student_of_suffering; // NYI
-      player_talent_t flamebound; // NYI
+      player_talent_t flamebound;
       player_talent_t monster_rising; // NYI
 
       player_talent_t demonic_intensity; // NYI
@@ -1558,6 +1558,8 @@ public:
     ab::apply_affecting_aura( p->talent.vengeance.stoke_the_flames );
     ab::apply_affecting_aura( p->talent.vengeance.down_in_flames );
     ab::apply_affecting_aura( p->talent.vengeance.illuminated_sigils );
+
+    ab::apply_affecting_aura( p->talent.felscarred.flamebound );
 
     // Rank Passives
     if ( p->specialization() == DEMON_HUNTER_HAVOC )
