@@ -1181,15 +1181,15 @@ public:
       player_talent_t newly_turned;    // NYI
       player_talent_t vampiric_speed;  // NYI
       player_talent_t bloodsoaked_ground;
-      player_talent_t vampiric_aura;          // NYI
-      player_talent_t bloody_fortitude;       // NYI
+      player_talent_t vampiric_aura;     // NYI
+      player_talent_t bloody_fortitude;  // NYI
       player_talent_t infliction_of_sorrow;
       player_talent_t frenzied_bloodthirst;
       player_talent_t the_blood_is_life;
       player_talent_t visceral_regeneration;
-      player_talent_t incite_terror;
+      player_talent_t incite_terror;  // NYI
       player_talent_t pact_of_the_sanlayn;
-      player_talent_t sanguine_scent;         // NYI
+      player_talent_t sanguine_scent;
       player_talent_t gift_of_the_sanlayn;
     } sanlayn;
   } talent;
@@ -1631,6 +1631,7 @@ public:
   void start_a_feast_of_souls();
   // San'layn
   void trigger_infliction_of_sorrow( player_t* target );
+  void trigger_vampiric_strike_proc( player_t* target );
   // Blood
   void bone_shield_handler( const action_state_t* ) const;
   // Frost
@@ -5128,10 +5129,20 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
     double chance = 0;
+
     if( p()-> talent.sanlayn.visceral_regeneration.ok() )
     {
       chance = p()->talent.sanlayn.visceral_regeneration->effectN( 1 ).percent() * p()->buffs.essence_of_the_blood_queen->check();
     }
+
+    if ( p()->talent.sanlayn.incite_terror.ok() && p()->buffs.essence_of_the_blood_queen->check() )
+    {
+      timespan_t duration =
+          p()->talent.sanlayn.incite_terror->effectN( 1 ).time_value() *
+          ( p()->talent.sanlayn.incite_terror->effectN( 2 ).percent() + p()->buffs.vampiric_strike->check() );
+      p()->buffs.essence_of_the_blood_queen->extend_duration( p(), duration );
+    }
+
     if ( p()->buffs.vampiric_strike->check() || p()->buffs.gift_of_the_sanlayn->check() )
     {
       vampiric_strike->execute();
@@ -6579,7 +6590,7 @@ struct death_coil_t final : public death_knight_spell_t
     p()->buffs.sudden_doom->decrement();
     if ( p()->talent.sanlayn.vampiric_strike.ok() && !p()->buffs.gift_of_the_sanlayn->check() )
     {
-      p()->buffs.vampiric_strike->trigger();
+      p()->trigger_vampiric_strike_proc( target );
     }
   }
 
@@ -6860,7 +6871,7 @@ struct death_strike_t final : public death_knight_melee_attack_t
     p()->buffs.heartrend->expire();
     if ( p()->talent.sanlayn.vampiric_strike.ok() && !p()->buffs.gift_of_the_sanlayn->check() )
     {
-      p()->buffs.vampiric_strike->trigger();
+      p()->trigger_vampiric_strike_proc( target );
     }
   }
 
@@ -6996,6 +7007,10 @@ struct epidemic_t final : public death_knight_spell_t
     }
 
     p()->buffs.sudden_doom->decrement();
+    if ( p()->talent.sanlayn.vampiric_strike.ok() && !p()->buffs.gift_of_the_sanlayn->check() )
+    {
+      p()->trigger_vampiric_strike_proc( target );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -10320,6 +10335,26 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target )
   active_spells.infliction_of_sorrow->execute_on_target( target );
 }
 
+void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
+{
+  double chance    = spell.vampiric_strike_buff->effectN( 1 ).percent();
+  double target_hp = target->health_percentage();
+
+  if ( talent.sanlayn.sanguine_scent.ok() && target_hp <= talent.sanlayn.sanguine_scent->effectN( 1 ).base_value() )
+  {
+    chance += talent.sanlayn.sanguine_scent->effectN( 2 ).percent();
+  }
+  if ( talent.sanlayn.bloodsoaked_ground.ok() && in_death_and_decay() )
+  {
+    chance += talent.sanlayn.bloodsoaked_ground->effectN( 2 ).percent();
+  }
+
+  if ( rng().roll( chance ) )
+  {
+    buffs.vampiric_strike->trigger();
+  }
+}
+
 void death_knight_t::trigger_dnd_buffs()
 {
   if ( !talent.unholy_ground.ok() && !talent.blood.sanguine_ground.ok() )
@@ -11616,8 +11651,7 @@ void death_knight_t::create_buffs()
           ->set_default_value_from_effect( specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 )
           ->add_invalidate( CACHE_HASTE );
 
-  buffs.vampiric_strike = make_buff( this, "vampiric_strike", spell.vampiric_strike_buff )
-                              ->set_chance( spell.vampiric_strike_buff->effectN( 1 ).percent() );
+  buffs.vampiric_strike = make_buff( this, "vampiric_strike", spell.vampiric_strike_buff );
 
   // Blood
   if ( this->specialization() == DEATH_KNIGHT_BLOOD )
