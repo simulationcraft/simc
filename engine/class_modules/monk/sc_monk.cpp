@@ -7717,6 +7717,7 @@ void monk_t::init_spells()
   passives.jadefire_stomp_ww_damage         = find_spell( 388201 );
   passives.fists_of_fury_tick               = find_spell( 117418 );
   passives.flurry_of_xuen_damage            = find_spell( 452130 );
+  passives.flurry_of_xuen_driver            = find_spell( 452117 );
   passives.focus_of_xuen                    = find_spell( 252768 );
   passives.fury_of_xuen_stacking_buff       = find_spell( 396167 );
   passives.fury_of_xuen_haste_buff          = find_spell( 396168 );
