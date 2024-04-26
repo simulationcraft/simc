@@ -262,9 +262,14 @@ void heal_t::assess_damage( result_amount_type heal_type, action_state_t* s )
 
     // Record external healing too
     if ( player != s->target )
-      s->target->gains.health->add( RESOURCE_HEALTH, s->result_amount, s->result_total - s->result_amount );
+    {
+      if ( s->target->gains.health )
+        s->target->gains.health->add( RESOURCE_HEALTH, s->result_amount, s->result_total - s->result_amount );
+    }
     else
+    {
       heal_gain->add( RESOURCE_HEALTH, s->result_amount, s->result_total - s->result_amount );
+    }
   }
 }
 

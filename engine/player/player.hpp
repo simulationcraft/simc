@@ -604,16 +604,9 @@ struct player_t : public actor_t
 
   struct gains_t
   {
-    gain_t* arcane_torrent;
     std::array<gain_t*, RESOURCE_MAX> resource_regen;
     gain_t* health;
-    gain_t* mana_potion;
-    gain_t* restore_mana;
-    gain_t* touch_of_the_grave;
     gain_t* vampiric_embrace;
-    gain_t* embrace_of_bwonsamdi;
-
-    gain_t* leech;
   } gains;
 
   struct spells_t

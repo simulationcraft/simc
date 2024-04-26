@@ -233,8 +233,8 @@ struct mana_potion_t : public action_t
   void execute() override
   {
     sim->print_log( "{} uses Mana potion", player->name() );
-    double gain = rng().range( min, max );
-    player->resource_gain( RESOURCE_MANA, gain, player->gains.mana_potion );
+    double gain_mana = rng().range( min, max );
+    player->resource_gain( RESOURCE_MANA, gain_mana, gain );
     player->potion_used = true;
   }
 

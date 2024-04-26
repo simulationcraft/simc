@@ -3079,20 +3079,17 @@ void player_t::init_gains()
 {
   sim->print_debug( "Initializing gains for {}.", *this );
 
-  gains.arcane_torrent      = get_gain( "arcane_torrent" );
   for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
     std::string name = util::resource_type_string( r );
     name += "_regen";
     gains.resource_regen[ r ] = get_gain( util::inverse_tokenize( name ) );
   }
-  gains.health             = get_gain( "external_healing" );
-  gains.mana_potion        = get_gain( "mana_potion" );
-  gains.restore_mana       = get_gain( "restore_mana" );
-  gains.touch_of_the_grave = get_gain( "touch_of_the_grave" );
-  gains.vampiric_embrace   = get_gain( "vampiric_embrace" );
-  gains.leech              = get_gain( "leech" );
-  gains.embrace_of_bwonsamdi = get_gain( "embrace_of_bwonsamdi" );
+
+  if ( !is_pet() )
+    gains.health = get_gain( "external_healing" );
+
+  gains.vampiric_embrace = get_gain( "vampiric_embrace" );
 }
 
 void player_t::init_procs()
@@ -8518,12 +8515,12 @@ struct arcane_torrent_t : public racial_spell_t
 
     if ( gain_pct > 0 )
     {
-      double gain = player->resources.max[ RESOURCE_MANA ] * gain_pct;
-      player->resource_gain( RESOURCE_MANA, gain, player->gains.arcane_torrent );
+      double gain_mana = player->resources.max[ RESOURCE_MANA ] * gain_pct;
+      player->resource_gain( RESOURCE_MANA, gain_mana, gain );
     }
 
     if ( gain_energy > 0 )
-      player->resource_gain( RESOURCE_ENERGY, gain_energy, player->gains.arcane_torrent );
+      player->resource_gain( RESOURCE_ENERGY, gain_energy, gain );
   }
 };
 
@@ -8983,7 +8980,7 @@ struct restore_mana_t : public action_t
 
     if ( mana_gain > 0 )
     {
-      player->resource_gain( RESOURCE_MANA, mana_gain, player->gains.restore_mana );
+      player->resource_gain( RESOURCE_MANA, mana_gain, gain );
     }
   }
 };
