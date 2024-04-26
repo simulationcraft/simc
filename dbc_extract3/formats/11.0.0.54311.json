@@ -322,7 +322,8 @@
       { "data_type": "i", "field": "unk_4" },
       { "data_type": "i", "field": "unk_5", "elements": 2 },
       { "data_type": "i", "field": "unk_6" },
-      { "data_type": "i", "field": "unk_7" }
+      { "data_type": "i", "field": "unk_7" },
+      { "data_type": "f", "field": "warband_transfer_pct" }
     ]
   },
   "Curve": {
@@ -767,7 +768,8 @@
       { "data_type": "i", "field": "f3"},
       { "data_type": "i", "field": "id_appearance", "ref": "ItemAppearance" },
       { "data_type": "i", "field": "f5"},
-      { "data_type": "b", "field": "f6"}
+      { "data_type": "b", "field": "f6"},
+      { "data_type": "i", "field": "f7"}
     ]
   },
   "ItemNameDescription": {
