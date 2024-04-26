@@ -43,9 +43,9 @@ DF4_Shaman_Elemental.simc
 # DF4_Shaman_Enhancement.simc
 # DF4_Shaman_Enhancement_Storm.simc
 
-# DF4_Warlock_Affliction.simc
-# DF4_Warlock_Demonology.simc
-# DF4_Warlock_Destruction.simc
+DF4_Warlock_Affliction.simc
+DF4_Warlock_Demonology.simc
+DF4_Warlock_Destruction.simc
 
 DF4_Warrior_Arms.simc
 DF4_Warrior_Fury.simc
