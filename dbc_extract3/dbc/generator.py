@@ -2116,6 +2116,7 @@ class SpellDataGenerator(DataGenerator):
           ( 395413, 3 ), # Fae Exposure Healing Buff
           ( 395414, 3 ), # Fae Exposure Damage Debuff
           ( 451968, 3 ), # Combat Wisdom Expel Harm
+          ( 452117, 3 ), # Flurry of Xuen Driver
 
           # Covenant
           ( 325217, 0 ), # Necrolord Bonedust Brew damage
