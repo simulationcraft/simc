@@ -286,6 +286,7 @@ struct call_of_the_wild_pet_t;
 struct hunter_main_pet_t;
 struct animal_companion_t;
 struct dire_critter_t;
+struct shadow_hound_t;
 }
 
 namespace events
@@ -331,8 +332,12 @@ public:
     pets::animal_companion_t* animal_companion = nullptr;
     spawner::pet_spawner_t<pets::dire_critter_t, hunter_t> dire_beast;
     spawner::pet_spawner_t<pets::call_of_the_wild_pet_t, hunter_t> cotw_stable_pet;
+    spawner::pet_spawner_t<pets::shadow_hound_t, hunter_t> dark_hound;
 
-    pets_t( hunter_t* p ) : dire_beast( "dire_beast", p ), cotw_stable_pet( "call_of_the_wild_pet", p ) { }
+    pets_t( hunter_t* p )
+      : dire_beast( "dire_beast", p ), cotw_stable_pet( "call_of_the_wild_pet", p ), dark_hound( "dark_hound", p )
+    {
+    }
   } pets;
 
   struct tier_sets_t {
@@ -452,6 +457,7 @@ public:
     cooldown_t* ruthless_marauder;
 
     cooldown_t* black_arrow;
+    cooldown_t* shadow_surge;
   } cooldowns;
 
   // Gains
@@ -680,21 +686,21 @@ public:
     spell_data_ptr_t black_arrow;
 
     spell_data_ptr_t overshadow;
-    spell_data_ptr_t shadow_hounds; // TODO
+    spell_data_ptr_t shadow_hounds; // TODO still nyi completely in game
     spell_data_ptr_t death_shade;
 
     spell_data_ptr_t dark_empowerment;
     spell_data_ptr_t grave_reaper;
-    spell_data_ptr_t embrace_the_shadows;  // TODO
-    spell_data_ptr_t smoke_screen;         // TODO
-    spell_data_ptr_t dark_chains;          // TODO
+    spell_data_ptr_t embrace_the_shadows;  // TODO defensive
+    spell_data_ptr_t smoke_screen;         // TODO defensive
+    spell_data_ptr_t dark_chains;          // TODO defensive
 
-    spell_data_ptr_t shadow_lash;   // TODO partial
-    spell_data_ptr_t shadow_surge;  // TODO
-    spell_data_ptr_t darkness_calls;  // TODO
-    spell_data_ptr_t shadow_erasure;  // TODO
+    spell_data_ptr_t shadow_lash;
+    spell_data_ptr_t shadow_surge;
+    spell_data_ptr_t darkness_calls;
+    spell_data_ptr_t shadow_erasure;
 
-    spell_data_ptr_t withering_fire;  // TODO
+    spell_data_ptr_t withering_fire;  // TODO nyi in game
 
     // TODO: Pack Leader
     spell_data_ptr_t vicious_hunt;
@@ -773,6 +779,7 @@ public:
     action_t* windrunners_guidance_background = nullptr;
     action_t* volley_t31 = nullptr;
     action_t* wildfire_bomb_t31 = nullptr;
+    action_t* shadow_surge = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -829,6 +836,7 @@ public:
     cooldowns.ruthless_marauder     = get_cooldown( "ruthless_marauder" );
 
     cooldowns.black_arrow = get_cooldown( "black_arrow" );
+    cooldowns.shadow_surge = get_cooldown( "shadow_surge" );
 
     base_gcd = 1.5_s;
 
@@ -1432,6 +1440,16 @@ struct hunter_pet_t: public pet_t
     pet_t::schedule_ready( delta_time, waiting );
   }
 
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = pet_t::composite_player_multiplier( school );
+
+    if ( o()->talents.darkness_calls->effectN( 1 ).has_common_school( school ) )
+      m *= 1 + o()->talents.darkness_calls->effectN( 1 ).percent();
+
+    return m;
+  }
+
   double composite_player_target_crit_chance( player_t* target ) const override
   {
     double crit = pet_t::composite_player_target_crit_chance( target );
@@ -2015,6 +2033,27 @@ std::pair<timespan_t, int> dire_beast_duration( hunter_t* p )
 
   return { base_attacks_per_summon * swing_time, base_attacks_per_summon };
 }
+
+// ==========================================================================
+// Shadow Hounds
+// ==========================================================================
+
+struct shadow_hound_t final : public hunter_pet_t
+{
+  shadow_hound_t( hunter_t* owner, util::string_view n = "shadow_hound" )
+    : hunter_pet_t( owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
+  {
+    resource_regeneration = regen_type::DISABLED;
+  }
+
+  void summon( timespan_t duration = 0_ms ) override
+  {
+    hunter_pet_t::summon( duration );
+
+    if ( main_hand_attack )
+      main_hand_attack->execute();
+  }
+};
 
 namespace actions
 {
@@ -3082,6 +3121,8 @@ struct kill_shot_t : hunter_ranged_attack_t
   razor_fragments_t* razor_fragments = nullptr;
   bleeding_gash_t* bleeding_gash = nullptr;
 
+  cooldown_t* se_recharge_cooldown = nullptr;
+
   kill_shot_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "kill_shot", p, p -> talents.kill_shot ),
     health_threshold_pct( p -> talents.kill_shot -> effectN( 2 ).base_value() )
@@ -3099,6 +3140,12 @@ struct kill_shot_t : hunter_ranged_attack_t
       bleeding_gash = p -> get_background_action<bleeding_gash_t>( "bleeding_gash" );
       add_child( bleeding_gash );
     }
+
+    if ( p->specialization() == HUNTER_MARKSMANSHIP )
+      se_recharge_cooldown = p->cooldowns.aimed_shot;
+
+    if ( p->specialization() == HUNTER_BEAST_MASTERY )
+      se_recharge_cooldown = p->cooldowns.barbed_shot;
   }
 
   void execute() override
@@ -3118,6 +3165,10 @@ struct kill_shot_t : hunter_ranged_attack_t
 
     if ( p() -> talents.bombardment.ok() )
       p() -> buffs.trick_shots -> trigger();
+
+    if ( p()->talents.shadow_erasure.ok() && td( target )->dots.black_arrow->is_ticking() &&
+         rng().roll( p()->talents.shadow_erasure->proc_chance() ) )
+      se_recharge_cooldown->reset( true );
   }
 
   void impact( action_state_t* s ) override
@@ -3444,6 +3495,7 @@ struct explosive_shot_t : public hunter_ranged_attack_t
   {
     damage_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p -> find_spell( 212680 ) )
     {
+      aoe = -1;
       background = dual = true;
     }
   };
@@ -3459,8 +3511,6 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     may_miss = may_crit = false;
 
     tick_action = p -> get_background_action<damage_t>( "explosive_shot_aoe" );
-
-    tick_action -> aoe = -1;
     tick_action -> reduced_aoe_targets = data().effectN( 2 ).base_value();
   }
 
@@ -3828,35 +3878,51 @@ struct death_chakram_t : death_chakram::base_t
 
 struct black_arrow_t : public hunter_ranged_attack_t
 {
-  double recharge_chance;
-  cooldown_t* recharge_cooldown = nullptr;
-  buff_t* impact_buff = nullptr;
-  double focus_gain;
-  buff_t* cooldown_buff = nullptr;
+  double ba_recharge_chance = 0.0;
+  cooldown_t* ba_recharge_cooldown = nullptr;
+
+  double sh_chance = 0.0;
+  timespan_t sh_duration = 0_s;
+
+  buff_t* ds_impact_buff = nullptr;
+
+  double de_focus_gain = 0.0;
+
+  buff_t* sl_cooldown_buff = nullptr;
+  double sl_tick_adjust = 0.0;
 
   black_arrow_t( hunter_t* p, util::string_view options_str )
     : hunter_ranged_attack_t( "black_arrow", p, p->talents.black_arrow )
   {
     parse_options( options_str );
 
-    recharge_chance = data().effectN( 2 ).percent();
+    ba_recharge_chance = data().effectN( 2 ).percent();
 
     if ( p->specialization() == HUNTER_MARKSMANSHIP )
     {
-      recharge_cooldown = p->cooldowns.aimed_shot;
-      impact_buff       = p->buffs.deathblow;
-      cooldown_buff     = p->buffs.trueshot;
+      ba_recharge_cooldown = p->cooldowns.aimed_shot;
+      ds_impact_buff       = p->buffs.deathblow;
+      sl_cooldown_buff     = p->buffs.trueshot;
     }
 
     if ( p->specialization() == HUNTER_BEAST_MASTERY )
     {
-      recharge_cooldown = p->cooldowns.barbed_shot;
-      impact_buff       = p->buffs.hunters_prey;
-      cooldown_buff     = p->buffs.call_of_the_wild;
+      ba_recharge_cooldown = p->cooldowns.barbed_shot;
+      ds_impact_buff       = p->buffs.hunters_prey;
+      sl_cooldown_buff     = p->buffs.call_of_the_wild;
+    }
+
+    if ( p->talents.shadow_hounds.ok() )
+    {
+      sh_chance   = p->talents.shadow_hounds->effectN( 1 ).percent();
+      sh_duration = p->find_spell( 442419 )->duration();
     }
 
     if ( p->talents.dark_empowerment.ok() )
-      focus_gain = p->find_spell( 442511 )->effectN(1).base_value();
+      de_focus_gain = p->find_spell( 442511 )->effectN( 1 ).base_value();
+
+    if ( p->talents.shadow_lash.ok() )
+      sl_tick_adjust = p->find_spell( 444354 )->effectN( 1 ).percent();
 
     tick_zero = true;
   }
@@ -3865,11 +3931,8 @@ struct black_arrow_t : public hunter_ranged_attack_t
   {
     timespan_t t = hunter_ranged_attack_t::tick_time( state );
 
-    if ( p()->talents.shadow_lash.ok() && cooldown_buff->up() )
-    {
-      // TODO: use 444354
-      t /= 1.5;
-    }
+    if ( sl_tick_adjust && sl_cooldown_buff->up() )
+      t *= 1.0 + sl_tick_adjust;
 
     return t;
   }
@@ -3879,20 +3942,32 @@ struct black_arrow_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( s );
 
     if ( p()->talents.death_shade.ok() )
-      impact_buff->trigger();
+      ds_impact_buff->trigger();
   }
 
   void tick( dot_t* d ) override
   {
     hunter_ranged_attack_t::tick( d );
 
-    if ( rng().roll( recharge_chance ) )
+    if ( rng().roll( ba_recharge_chance ) )
     {
-      recharge_cooldown->reset( true );
+      ba_recharge_cooldown->reset( true );
 
-      if ( p()->talents.dark_empowerment )
-        p()->resource_gain( RESOURCE_FOCUS, focus_gain, p()->gains.dark_empowerment, this );
+      if ( de_focus_gain )
+        p()->resource_gain( RESOURCE_FOCUS, de_focus_gain, p()->gains.dark_empowerment, this );
     }
+
+    if ( rng().roll( sh_chance ) )
+      p()->pets.dark_hound.spawn( sh_duration );
+  }
+};
+
+struct shadow_surge_t final : hunter_ranged_attack_t
+{
+  shadow_surge_t( hunter_t* p ) : hunter_ranged_attack_t( "shadow_surge", p, p->find_spell( 444269 ) )
+  {
+    aoe = -1;
+    background = dual = true;
   }
 };
 
@@ -3934,7 +4009,17 @@ struct multishot_bm_t: public hunter_ranged_attack_t
     {
       p() -> cooldowns.bestial_wrath -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_bm_4pc -> effectN( 1 ).base_value() ) );
     }
+  }
 
+  void impact(action_state_t* s) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( p()->actions.shadow_surge && td( s->target )->dots.black_arrow->is_ticking() && p()->cooldowns.shadow_surge->up() )
+    {
+      p()->actions.shadow_surge->execute_on_target( s->target );
+      p()->cooldowns.shadow_surge->start();
+    }
   }
 };
 
@@ -4635,6 +4720,13 @@ struct multishot_mm_t: public hunter_ranged_attack_t
 
     if ( state -> result == RESULT_CRIT )
       p() -> buffs.find_the_mark -> trigger();
+
+    if ( p()->actions.shadow_surge && td( state->target )->dots.black_arrow->is_ticking() &&
+         p()->cooldowns.shadow_surge->up() )
+    {
+      p()->actions.shadow_surge->execute_on_target( state->target );
+      p()->cooldowns.shadow_surge->start();
+    }
   }
 };
 
@@ -7161,6 +7253,7 @@ void hunter_t::init_spells()
 
   // Cooldowns
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
+  cooldowns.shadow_surge->duration = talents.shadow_surge->internal_cooldown();
 }
 
 // hunter_t::init_items =====================================================
@@ -7250,6 +7343,9 @@ void hunter_t::create_actions()
 
   if ( tier_set.t31_sv_4pc.ok() )
     actions.wildfire_bomb_t31 = new spells::wildfire_bomb_background_t( this );
+
+  if ( talents.shadow_surge.ok() )
+    actions.shadow_surge = new attacks::shadow_surge_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -7971,6 +8067,9 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
 double hunter_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
+
+  if ( talents.darkness_calls->effectN( 1 ).has_common_school( school ) )
+    m *= 1.0 + talents.darkness_calls->effectN( 1 ).percent();
 
   return m;
 }
