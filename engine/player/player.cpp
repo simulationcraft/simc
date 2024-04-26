@@ -2888,8 +2888,18 @@ static void enable_all_talents( player_t* player )
 
         player->player_traits.emplace_back( _tree, trait->id_trait_node_entry, trait->max_ranks );
 
-        player->sim->print_debug( "{} adding {} talent {}", *player, util::talent_tree_string( _tree ), trait->name );
-     }
+        if ( _tree == talent_tree::SELECTION )
+        {
+          player->player_sub_trees.insert( trait->id_sub_tree );
+          player->sim->print_debug( "{} activating sub tree {} ({})", *player,
+                                    trait_data_t::get_hero_tree_name( trait->id_sub_tree, player->is_ptr() ),
+                                    trait->id_sub_tree );
+        }
+        else
+        {
+          player->sim->print_debug( "{} adding {} talent {}", *player, util::talent_tree_string( _tree ), trait->name );
+        }
+      }
     }
   }
 }
@@ -10738,9 +10748,9 @@ static player_talent_t create_talent_obj( const player_t* player, specialization
   auto rank = it == player->player_traits.end() ? 0U : std::get<2>( *it );
 
   // all allocated hero talents are present but disabled if the control talent is not active unless it has been manually
-  // added to the profile
+  // added to the profile or sim_t::enable_all_talents is set
   if ( _tree == talent_tree::HERO && !range::contains( player->player_sub_trees, trait->id_sub_tree ) &&
-       !range::contains( player->player_sub_traits, trait->id_trait_node_entry ) )
+       !range::contains( player->player_sub_traits, trait->id_trait_node_entry ) && !player->sim->enable_all_talents )
   {
     is_starter = false;
     rank = 0U;
