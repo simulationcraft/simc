@@ -13,8 +13,8 @@ DF4_Death_Knight_Unholy.simc
 DF4_Demon_Hunter_Vengeance.simc
 
 # DF4_Druid_Balance.simc
-# DF4_Druid_Feral.simc
-# DF4_Druid_Guardian.simc
+DF4_Druid_Feral.simc
+DF4_Druid_Guardian.simc
 
 DF4_Evoker_Devastation.simc
 
@@ -22,9 +22,9 @@ DF4_Hunter_Beast_Mastery.simc
 DF4_Hunter_Marksmanship.simc
 DF4_Hunter_Survival.simc
 
-# DF4_Mage_Fire.simc
-# DF4_Mage_Frost.simc
-# DF4_Mage_Arcane.simc
+DF4_Mage_Fire.simc
+DF4_Mage_Frost.simc
+DF4_Mage_Arcane.simc
 
 DF4_Monk_Brewmaster.simc
 DF4_Monk_Windwalker.simc
@@ -36,7 +36,7 @@ DF4_Paladin_Retribution.simc
 DF4_Priest_Shadow.simc
 
 # DF4_Rogue_Assassination.simc
-# DF4_Rogue_Outlaw.simc
+DF4_Rogue_Outlaw.simc
 # DF4_Rogue_Subtlety.simc
 
 DF4_Shaman_Elemental.simc

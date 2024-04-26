@@ -31,13 +31,13 @@ DF4_Generate_Death_Knight.simc
 DF4_Generate_Demon_Hunter.simc
 
 # Druid
-# DF4_Generate_Druid.simc
+DF4_Generate_Druid.simc
 
 # Evoker
 DF4_Generate_Evoker.simc
 
 # Hunter
-# DF4_Generate_Hunter.simc
+DF4_Generate_Hunter.simc
 
 # Mage
 DF4_Generate_Mage.simc

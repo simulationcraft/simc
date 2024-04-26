@@ -1,0 +1,121 @@
+druid="DF4_Druid_Guardian"
+source=default
+spec=guardian
+level=70
+race=highmountain_tauren
+role=tank
+position=front
+talents=BgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQikkkUS0iIIKSIRBAkIIIBSSSSSiUgWiDAAAAAAEBEkAA
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_elemental_chaos_3
+food=fated_fortune_cookie
+augmentation=draconic
+temporary_enchant=main_hand:primal_weightstone_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Guardian APL can be found at https://www.dreamgrove.gg/sims/bear/guardian.txt
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat+=/variable,name=If_build,value=1,value_else=0,if=talent.thorns_of_iron.enabled&talent.reinforced_fur.enabled
+actions.precombat+=/variable,name=catweave_bear,op=reset
+actions.precombat+=/variable,name=owlweave_bear,op=reset
+actions.precombat+=/cat_form,if=(variable.catweave_bear&(cooldown.pause_action.remains|time>30))
+actions.precombat+=/moonkin_form,if=(!variable.catweave_bear)&(cooldown.pause_action.remains|time>30)
+actions.precombat+=/heart_of_the_Wild,if=talent.heart_of_the_wild.enabled
+actions.precombat+=/prowl,if=variable.catweave_bear&(cooldown.pause_action.remains|time>30)
+actions.precombat+=/bear_form,if=(!buff.prowl.up)
+
+# Executed every time the actor is available.
+# Executed every time the actor is available.
+actions=auto_attack,if=!buff.prowl.up
+actions+=/use_item,slot=trinket1
+actions+=/use_item,slot=trinket2
+actions+=/use_item,name=djaruun_pillar_of_the_elder_flame,if=dot.moonfire.ticking
+actions+=/potion,if=((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)|((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!variable.catweave_bear&!variable.owlweave_bear)))
+actions+=/run_action_list,name=catweave,if=(target.cooldown.pause_action.remains|time>=30)&variable.catweave_bear&buff.tooth_and_claw.remains>1.5&(buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down)&(cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&dot.moonfire.remains>=2)|(buff.cat_form.up&energy>25&variable.catweave_bear&buff.tooth_and_claw.remains>1.5)|(buff.heart_of_the_wild.up&energy>90&variable.catweave_bear&buff.tooth_and_claw.remains>1.5)
+actions+=/run_action_list,name=bear
+
+actions.bear=bear_form,if=!buff.bear_form.up
+actions.bear+=/heart_of_the_Wild,if=talent.heart_of_the_wild.enabled
+actions.bear+=/moonfire,cycle_targets=1,if=(((!ticking&target.time_to_die>12)|(refreshable&target.time_to_die>12))&active_enemies<7&talent.fury_of_nature.enabled)|(((!ticking&target.time_to_die>12)|(refreshable&target.time_to_die>12))&active_enemies<4&!talent.fury_of_nature.enabled)
+actions.bear+=/thrash_bear,target_if=refreshable|(dot.thrash_bear.stack<5&talent.flashing_claws.rank=2|dot.thrash_bear.stack<4&talent.flashing_claws.rank=1|dot.thrash_bear.stack<3&!talent.flashing_claws.enabled)
+actions.bear+=/bristling_fur,if=!cooldown.pause_action.remains&&cooldown.rage_of_the_sleeper.remains>8
+actions.bear+=/barkskin,if=buff.bear_form.up
+actions.bear+=/convoke_the_spirits
+actions.bear+=/berserk_bear
+actions.bear+=/incarnation
+actions.bear+=/lunar_beam
+actions.bear+=/rage_of_the_sleeper,if=((buff.incarnation_guardian_of_ursoc.down&cooldown.incarnation_guardian_of_ursoc.remains>60)|buff.berserk_bear.down)&rage>75&(!talent.convoke_the_spirits.enabled)|(buff.incarnation_guardian_of_ursoc.up|buff.berserk_bear.up)&rage>75&(!talent.convoke_the_spirits.enabled)|(talent.convoke_the_spirits.enabled)&rage>75
+actions.bear+=/berserking,if=(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)
+actions.bear+=/maul,if=(buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&active_enemies<=6&!talent.raze.enabled&variable.If_build=0)|(buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&active_enemies=1&talent.raze.enabled&variable.If_build=0)
+actions.bear+=/raze,if=buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&variable.If_build=0&active_enemies>1
+actions.bear+=/maul,if=(((buff.incarnation.up|buff.berserk_bear.up)&active_enemies<=5&!talent.raze.enabled&(buff.tooth_and_claw.stack>=1))&variable.If_build=0)&cooldown.rage_of_the_sleeper.remains>3|(((buff.incarnation.up|buff.berserk_bear.up)&active_enemies=1&talent.raze.enabled&(buff.tooth_and_claw.stack>=1))&variable.If_build=0)&cooldown.rage_of_the_sleeper.remains>3|(((buff.incarnation.up|buff.berserk_bear.up)&active_enemies<=5&!talent.raze.enabled&(buff.tooth_and_claw.stack>=1))&variable.If_build=0)&buff.rage_of_the_sleeper.up|(((buff.incarnation.up|buff.berserk_bear.up)&active_enemies=1&talent.raze.enabled&(buff.tooth_and_claw.stack>=1))&variable.If_build=0)&buff.rage_of_the_sleeper.up
+actions.bear+=/raze,if=(buff.incarnation.up|buff.berserk_bear.up)&(variable.If_build=0)&active_enemies>1&cooldown.rage_of_the_sleeper.remains>3|(buff.incarnation.up|buff.berserk_bear.up)&(variable.If_build=0)&active_enemies>1&buff.rage_of_the_sleeper.up
+actions.bear+=/ironfur,target_if=!debuff.tooth_and_claw_debuff.up,if=!buff.ironfur.up&rage>50&!cooldown.pause_action.remains&variable.If_build=0&!buff.rage_of_the_sleeper.up&cooldown.rage_of_the_sleeper.remains>3&!buff.blazing_thorns.up|rage>90&variable.If_build=0&!buff.rage_of_the_sleeper.up&cooldown.rage_of_the_sleeper.remains>3&!buff.blazing_thorns.up|!debuff.tooth_and_claw_debuff.up,if=!buff.ironfur.up&rage>50&!cooldown.pause_action.remains&variable.If_build=0&buff.rage_of_the_sleeper.up&!buff.blazing_thorns.up|rage>90&variable.If_build=0&buff.rage_of_the_sleeper.up&!buff.blazing_thorns.up
+actions.bear+=/ironfur,if=rage>90&variable.If_build=1&cooldown.rage_of_the_sleeper.remains>3|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1&cooldown.rage_of_the_sleeper.remains>3|rage>90&variable.If_build=1&buff.rage_of_the_sleeper.up|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1&buff.rage_of_the_sleeper.up
+actions.bear+=/raze,if=(buff.tooth_and_claw.up)&active_enemies>1&cooldown.rage_of_the_sleeper.remains>3|(buff.tooth_and_claw.up)&active_enemies>1&buff.rage_of_the_sleeper.up
+actions.bear+=/raze,if=(variable.If_build=0)&active_enemies>1&cooldown.rage_of_the_sleeper.remains>3|(variable.If_build=0)&active_enemies>1&buff.rage_of_the_sleeper.up
+actions.bear+=/mangle,if=buff.gore.up&active_enemies<11|buff.vicious_cycle_mangle.stack=3
+actions.bear+=/maul,if=(buff.tooth_and_claw.up&active_enemies<=5&!talent.raze.enabled)&cooldown.rage_of_the_sleeper.remains>3|(buff.tooth_and_claw.up&active_enemies=1&talent.raze.enabled)&cooldown.rage_of_the_sleeper.remains>3|(buff.tooth_and_claw.up&active_enemies<=5&!talent.raze.enabled)&buff.rage_of_the_sleeper.up|(buff.tooth_and_claw.up&active_enemies=1&talent.raze.enabled)&buff.rage_of_the_sleeper.up
+actions.bear+=/maul,if=(active_enemies<=5&!talent.raze.enabled&variable.If_build=0)&cooldown.rage_of_the_sleeper.remains>3|(active_enemies=1&talent.raze.enabled&variable.If_build=0)&cooldown.rage_of_the_sleeper.remains>3|(active_enemies<=5&!talent.raze.enabled&variable.If_build=0)&buff.rage_of_the_sleeper.up|(active_enemies=1&talent.raze.enabled&variable.If_build=0)&buff.rage_of_the_sleeper.up
+actions.bear+=/thrash_bear,target_if=active_enemies>=5
+actions.bear+=/swipe,if=buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&active_enemies>=11
+actions.bear+=/mangle,if=(buff.incarnation.up&active_enemies<=4)|(buff.incarnation.up&talent.soul_of_the_forest.enabled&active_enemies<=5)|((rage<90)&active_enemies<11)|((rage<85)&active_enemies<11&talent.soul_of_the_forest.enabled)
+actions.bear+=/thrash_bear,if=active_enemies>1
+actions.bear+=/pulverize,target_if=dot.thrash_bear.stack>2
+actions.bear+=/thrash_bear
+actions.bear+=/moonfire,if=buff.galactic_guardian.up
+actions.bear+=/swipe_bear
+
+actions.catweave=heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up&!buff.cat_form.up
+actions.catweave+=/cat_form,if=!buff.cat_form.up
+actions.catweave+=/rake,if=buff.prowl.up
+actions.catweave+=/heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up
+actions.catweave+=/rake,if=dot.rake.refreshable|energy<45
+actions.catweave+=/rip,if=dot.rip.refreshable&combo_points>=1
+actions.catweave+=/convoke_the_spirits
+actions.catweave+=/ferocious_bite,if=combo_points>=4&energy>50
+actions.catweave+=/shred,if=combo_points<=5
+
+head=bough_of_the_autumn_blaze,id=217193,bonus_id=10884/4786/1520/10338,gem_id=192985,enchant_id=7052
+neck=bromachs_disentombed_locket,id=193809,bonus_id=4786/3207/10338,gem_id=192945/192945/192945
+shoulders=mantle_of_the_autumn_blaze,id=217195,bonus_id=10884/4786/1520/10338
+back=voice_of_the_silent_star,id=204465,bonus_id=10884/4786/1576
+chest=chestroots_of_the_autumn_blaze,id=217191,bonus_id=10884/4786/1520/10338,enchant_id=6625
+wrists=lifebound_bindings,id=193419,bonus_id=1576/8797/8960/1808,ilevel=525,gem_id=192945,crafted_stats=32/36
+hands=blightweavers_clutches,id=193661,bonus_id=4786/3207/10338
+waist=garland_of_the_autumn_blaze,id=202512,bonus_id=10884/4786/1579/10336,ilevel=528,gem_id=192945,enchant_id=6904
+legs=pants_of_the_autumn_blaze,id=217194,bonus_id=10884/4786/1520/10338,enchant_id=6490
+feet=toxic_thorn_footwraps,id=193452,bonus_id=1576,ilevel=525,enchant_id=6606
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=10884/4786/1605/10338,enchant_id=6556
+finger2=band_of_burning_thorns,id=207159,bonus_id=10884/4786/1520/10338,ilevel=528,gem_id=192945,enchant_id=6556
+trinket1=cataclysmic_signet_brand,id=207166,bonus_id=10884/4786/1559/10338
+trinket2=elementium_pocket_anvil,id=202617,bonus_id=10884/4786/1576/10335,ilevel=528
+main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=10884/4786/1576/10338,enchant_id=6643
+
+# Gear Summary
+# gear_ilvl=528.07
+# gear_agility=13936
+# gear_stamina=58240
+# gear_attack_power=135
+# gear_crit_rating=3956
+# gear_haste_rating=6881
+# gear_mastery_rating=2368
+# gear_versatility_rating=3568
+# gear_speed_rating=225
+# gear_armor=7228
+# set_bonus=dragonflight_season_4_2pc=1
+# set_bonus=dragonflight_season_4_4pc=1
