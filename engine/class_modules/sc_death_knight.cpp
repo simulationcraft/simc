@@ -151,6 +151,7 @@ struct whitemane_pet_t;
 struct trollbane_pet_t;
 struct nazgrim_pet_t;
 struct horseman_pet_t;
+struct blood_beast_pet_t;
 }  // namespace pets
 
 namespace runeforge
@@ -1182,12 +1183,12 @@ public:
       player_talent_t bloodsoaked_ground;
       player_talent_t vampiric_aura;          // NYI
       player_talent_t bloody_fortitude;       // NYI
-      player_talent_t infliction_of_sorrow;   // NYI
+      player_talent_t infliction_of_sorrow;
       player_talent_t frenzied_bloodthirst;
-      player_talent_t the_blood_is_life;      // NYI
-      player_talent_t visceral_regeneration;  // NYI
-      player_talent_t incite_terror;          // NYI
-      player_talent_t pact_of_the_sanlayn;    // NYI
+      player_talent_t the_blood_is_life;
+      player_talent_t visceral_regeneration;
+      player_talent_t incite_terror;
+      player_talent_t pact_of_the_sanlayn;
       player_talent_t sanguine_scent;         // NYI
       player_talent_t gift_of_the_sanlayn;
     } sanlayn;
@@ -1312,6 +1313,7 @@ public:
     const spell_data_t* vampiric_strike_buff;
     const spell_data_t* vampiric_strike_heal;
     const spell_data_t* infliction_of_sorrow_damage;
+    const spell_data_t* blood_beast_summon;
 
   } spell;
 
@@ -1360,6 +1362,9 @@ public:
     const spell_data_t* trollbane_obliterate;
     const spell_data_t* nazgrim_scourge_strike_phys;
     const spell_data_t* nazgrim_scourge_strike_shadow;
+    // San'layn Blood Beast Spells
+    const spell_data_t* blood_cleave;
+    const spell_data_t* blood_eruption;
   } pet_spell;
 
   // RPPM
@@ -1367,6 +1372,7 @@ public:
   {
     real_ppm_t* bloodworms;
     real_ppm_t* runic_attenuation;
+    real_ppm_t* blood_beast;
   } rppm;
 
   // Pets and Guardians
@@ -1386,6 +1392,7 @@ public:
     spawner::pet_spawner_t<pets::whitemane_pet_t, death_knight_t> whitemane;
     spawner::pet_spawner_t<pets::trollbane_pet_t, death_knight_t> trollbane;
     spawner::pet_spawner_t<pets::nazgrim_pet_t, death_knight_t> nazgrim;
+    spawner::pet_spawner_t<pets::blood_beast_pet_t, death_knight_t> blood_beast;
 
     pets_t( death_knight_t* p )
       : dancing_rune_weapon_pet( "dancing_rune_weapon", p ),
@@ -1401,7 +1408,8 @@ public:
         mograine( "mograine", p ),
         whitemane( "whitemane", p ),
         trollbane( "trollbane", p ),
-        nazgrim( "nazgrim", p )
+        nazgrim( "nazgrim", p ),
+        blood_beast( "blood_beast", p )
     {
     }
   } pets;
@@ -1451,6 +1459,9 @@ public:
 
     // Chill Streak related procs
     propagate_const<proc_t*> enduring_chill;  // Extra bounces given by Enduring Chill
+
+    // San'layn procs
+    propagate_const<proc_t*> blood_beast;
   } procs;
 
   // Death Knight Options
@@ -3488,6 +3499,116 @@ struct magus_pet_t : public death_knight_pet_t
 };
 
 // ==========================================================================
+// Blood Beast
+// ==========================================================================
+struct blood_beast_pet_t : public death_knight_pet_t
+{
+  struct blood_cleave_t : public pet_melee_attack_t<blood_beast_pet_t>
+  {
+    blood_cleave_t( blood_beast_pet_t* p, util::string_view options_str )
+      : pet_melee_attack_t( p, "blood_cleave", p->dk()->pet_spell.blood_cleave )
+    {
+      parse_options( options_str );
+      aoe = -1;
+    }
+  };
+
+  struct blood_eruption_t : public pet_spell_t<blood_beast_pet_t>
+  {
+    blood_eruption_t( util::string_view n, blood_beast_pet_t* p )
+      : pet_spell_t( p, n, p->dk()->pet_spell.blood_eruption )
+    {
+      background = true;
+      aoe        = -1;
+    }
+  };
+
+  blood_beast_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "blood_beast", true, true ), accumulator( 0 )
+  {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.swing_time = 1_s;
+    npc_id                      = owner->find_spell( 434237 )->effectN( 1 ).misc_value1();
+    owner_coeff.ap_from_ap      = 0.5565;
+    resource_regeneration       = regen_type::DISABLED;
+  }
+
+  void dismiss( bool expired = false ) override
+  {
+    if ( !sim->event_mgr.canceled )
+    {
+      blood_eruption->base_dd_min = blood_eruption->base_dd_max = accumulator;
+      blood_eruption->execute();
+      accumulator = 0;
+    }
+
+    pet_t::dismiss( expired );
+  }
+  
+  void arise() override
+  {
+    death_knight_pet_t::arise();
+    accumulator = 0;
+  }
+
+  void demise() override
+  {
+    death_knight_pet_t::demise();
+    accumulator = 0;
+  }
+
+  void reset() override
+  {
+    death_knight_pet_t::reset();
+    accumulator = 0;
+  }
+
+  void init_spells() override
+  {
+    death_knight_pet_t::init_spells();
+    blood_eruption = get_action<blood_eruption_t>( "blood_eruption", this );
+  }
+
+  // This no work. why, i do not know.
+  void assess_damage( school_e s, result_amount_type r, action_state_t* state ) override
+  {
+    death_knight_pet_t::assess_damage( s, r, state );
+    if ( state->result_amount > 0 )
+    {
+      accumulator += state->result_amount * dk()->specialization() == DEATH_KNIGHT_BLOOD
+                         ? dk()->talent.sanlayn.the_blood_is_life->effectN( 1 ).percent()
+                         : dk()->talent.sanlayn.the_blood_is_life->effectN( 2 ).percent();
+    }
+  }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    // Default "auto-pilot" pet APL (if everything is left on auto-cast
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "blood_cleave" );
+  }
+
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
+  {
+    if ( name == "blood_cleave" )
+      return new blood_cleave_t( this, options_str );
+
+    return death_knight_pet_t::create_action( name, options_str );
+  }
+
+  attack_t* create_auto_attack() override
+  {
+    return new auto_attack_melee_t<blood_beast_pet_t>( this );
+  }
+
+public: 
+  double accumulator;
+private:
+  action_t* blood_eruption;
+};
+
+// ==========================================================================
 // Horsemen Parent Class
 // ==========================================================================
 struct horseman_pet_t : public death_knight_pet_t
@@ -4247,6 +4368,17 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     if ( p()->talent.blood_draw.ok() && p()->specialization() != DEATH_KNIGHT_BLOOD &&
          p()->active_spells.blood_draw->ready() && p()->in_combat )
       p()->active_spells.blood_draw->execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    action_base_t::impact( s );
+    if ( p()->talent.sanlayn.pact_of_the_sanlayn.ok() && p()->pets.blood_beast.active_pet() != nullptr &&
+         dbc::is_school( this->get_school(), SCHOOL_SHADOW ) )
+    {
+      p()->pets.blood_beast.active_pet()->accumulator +=
+          s->result_amount * p()->talent.sanlayn.pact_of_the_sanlayn->effectN( 1 ).percent();
+    }
   }
 
   void update_ready( timespan_t cd ) override
@@ -7400,6 +7532,15 @@ struct vampiric_strike_blood_t : public heart_strike_damage_base_t
     attack_power_mod.direct = data().effectN( 5 ).ap_coeff();
   }
 
+  void execute() override
+  {
+    heart_strike_damage_base_t::execute();
+    if ( p()->talent.sanlayn.the_blood_is_life.ok() )
+    {
+      trigger_blood_beast();
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     heart_strike_damage_base_t::impact( s );
@@ -7414,6 +7555,23 @@ struct vampiric_strike_blood_t : public heart_strike_damage_base_t
       p()->trigger_infliction_of_sorrow( s->target );
     }
   }
+
+  void trigger_blood_beast()
+  {
+    if ( !p()->rppm.blood_beast->trigger() )
+    {
+      return;
+    }
+
+    p()->procs.blood_beast->occur();
+    // Currently kills off any other active blood beasts before spawning a new one
+    if ( p()->pets.blood_beast.active_pet() != nullptr )
+    {
+      p()->pets.blood_beast.active_pet()->dismiss();
+    }
+    p()->pets.blood_beast.spawn( p()->spell.blood_beast_summon->duration(), 1 );
+  }
+
 
 private:
   action_t* heal;
@@ -8345,6 +8503,15 @@ struct vampiric_strike_unholy_t : public wound_spender_damage_base_t
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
   }
 
+  void execute() override
+  {
+    wound_spender_damage_base_t::execute();
+    if ( p()->talent.sanlayn.the_blood_is_life.ok() )
+    {
+      trigger_blood_beast();
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     wound_spender_damage_base_t::impact( s );
@@ -8358,6 +8525,22 @@ struct vampiric_strike_unholy_t : public wound_spender_damage_base_t
     {
       p()->trigger_infliction_of_sorrow( s->target );
     }
+  }
+
+  void trigger_blood_beast()
+  {
+    if ( !p()->rppm.blood_beast->trigger() )
+    {
+      return;
+    }
+
+    p()->procs.blood_beast->occur();
+    // Currently kills off any other active blood beasts before spawning a new one
+    if( p()->pets.blood_beast.active_pet() != nullptr )
+    {
+      p()->pets.blood_beast.active_pet()->dismiss();
+    }
+    p()->pets.blood_beast.spawn( p()->spell.blood_beast_summon->duration(), 1 );
   }
 
 private:
@@ -10615,6 +10798,11 @@ void death_knight_t::create_pets()
     pets.nazgrim.set_creation_callback( []( death_knight_t* p ) { return new pets::nazgrim_pet_t( p ); } );
   }
 
+  if ( talent.sanlayn.the_blood_is_life.ok() )
+  {
+    pets.blood_beast.set_creation_callback( []( death_knight_t* p ) { return new pets::blood_beast_pet_t( p ); } );
+  }
+
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
     // Initialized even if the talent isn't picked for APL purpose
@@ -10710,6 +10898,7 @@ void death_knight_t::init_rng()
 
   rppm.bloodworms        = get_rppm( "bloodworms", talent.blood.bloodworms );
   rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation );
+  rppm.blood_beast       = get_rppm( "blood_beast", talent.sanlayn.the_blood_is_life );
 }
 
 // death_knight_t::init_base ================================================
@@ -11170,6 +11359,7 @@ void death_knight_t::init_spells()
   spell.vampiric_strike_buff            = find_spell( 433901 );
   spell.vampiric_strike_heal            = find_spell( 434422 );
   spell.infliction_of_sorrow_damage     = find_spell( 434144 );
+  spell.blood_beast_summon              = find_spell( 434237 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -11214,6 +11404,9 @@ void death_knight_t::init_spells()
   pet_spell.trollbane_obliterate             = find_spell( 445507 );
   pet_spell.nazgrim_scourge_strike_phys      = find_spell( 445508 );
   pet_spell.nazgrim_scourge_strike_shadow    = find_spell( 445509 );
+  // San'layn Pet Spells
+  pet_spell.blood_cleave   = find_spell( 434574 );
+  pet_spell.blood_eruption = find_spell( 434246 );
 
   // Custom/Internal cooldowns default durations
   cooldown.bone_shield_icd->duration = spell.bone_shield->internal_cooldown();
@@ -11228,13 +11421,13 @@ void death_knight_t::init_spells()
     cooldown.inexorable_assault_icd->duration =
         spell.inexorable_assault_buff->internal_cooldown();  // Inexorable Assault buff spell id
 
-  if ( talent.abomination_limb )
+  if ( talent.abomination_limb.ok() )
   {
     cooldown.abomination_limb->duration =
         timespan_t::from_seconds( talent.abomination_limb->effectN( 4 ).base_value() );
   }
 
-  if ( talent.frost.frigid_executioner )
+  if ( talent.frost.frigid_executioner.ok() )
     cooldown.frigid_executioner_icd->duration = talent.frost.frigid_executioner->internal_cooldown();
 }
 
@@ -11749,6 +11942,8 @@ void death_knight_t::init_procs()
   procs.fw_ruptured_viscera = get_proc( "Festering Wound from Ruptured Viscera" );
 
   procs.enduring_chill = get_proc( "Enduring Chill extra bounces" );
+
+  procs.blood_beast = get_proc( "Blood Beast" );
 }
 
 // death_knight_t::init_finished ============================================
