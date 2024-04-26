@@ -447,6 +447,7 @@ public:
     std::vector<dot_t*> moonfire;
     std::vector<dot_t*> sunfire;
     std::vector<dot_t*> thrash_bear;
+    std::vector<dot_t*> dreadful_wound;
   } dot_list;
   // !!!==========================================================================!!!
 
@@ -1796,7 +1797,7 @@ public:
       case 191034:  // starfall
         break;
       default:
-        p()->buff.cenarius_might->expire();  // TODO: can free spells trigger this?
+        p()->buff.cenarius_might->expire( this );  // TODO: can free spells trigger this?
         break;
     }
 
@@ -2137,6 +2138,114 @@ public:
 };
 
 template <typename BASE>
+struct use_dot_list_t : public BASE
+{
+private:
+  druid_t* p_;
+
+public:
+  using base_t = use_dot_list_t<BASE>;
+
+  std::vector<dot_t*>* dot_list = nullptr;
+
+  use_dot_list_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f ), p_( p )
+  {}
+
+  void init() override
+  {
+    assert( dot_list );
+
+    BASE::init();
+  }
+
+  void trigger_dot( action_state_t* s ) override
+  {
+    dot_t* d = BASE::get_dot( s->target );
+    if ( !d->is_ticking() )
+    {
+      assert( !range::contains( *dot_list, d ) );
+      dot_list->push_back( d );
+    }
+
+    BASE::trigger_dot( s );
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    assert( range::contains( *dot_list, d ) );
+    range::erase_remove( *dot_list, d );
+
+    BASE::last_tick( d );
+  }
+};
+
+template <specialization_e S, typename BASE>
+struct use_fluid_form_t : public BASE
+{
+private:
+  druid_t* p_;
+
+public:
+  using base_t = use_fluid_form_t<S, BASE>;
+
+  use_fluid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f ), p_( p )
+  {
+    if ( p_->talent.fluid_form.ok() )
+    {
+      if constexpr ( S == DRUID_BALANCE )
+      {
+        if ( p_->specialization() == DRUID_BALANCE )
+          BASE::autoshift = p_->active.shift_to_moonkin;
+      }
+      else if constexpr ( S == DRUID_FERAL )
+      {
+        BASE::autoshift = p_->active.shift_to_cat;
+      }
+      else if constexpr ( S == DRUID_GUARDIAN )
+      {
+        BASE::autoshift = p_->active.shift_to_bear;
+      }
+    }
+  }
+};
+
+template <specialization_e S, typename BASE>
+struct trigger_aggravate_wounds_t : public BASE
+{
+private:
+  druid_t* p_;
+  timespan_t dot_ext = 0_ms;
+  timespan_t max_ext;
+
+public:
+  using base_t = trigger_aggravate_wounds_t<S, BASE>;
+
+  trigger_aggravate_wounds_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f ),
+      p_( p ),
+      max_ext( timespan_t::from_seconds( p->talent.aggravate_wounds->effectN( 3 ).base_value() ) )
+  {
+    if ( p_->specialization() == S )
+    {
+      if constexpr ( S == DRUID_FERAL )
+        dot_ext = p_->talent.aggravate_wounds->effectN( 2 ).time_value();
+      else if constexpr ( S == DRUID_GUARDIAN )
+        dot_ext = p_->talent.aggravate_wounds->effectN( 1 ).time_value();
+    }
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( dot_ext > 0_ms )
+      range::for_each( p_->dot_list.dreadful_wound, [ this ]( dot_t* d ) { d->adjust_duration( dot_ext, max_ext ); } );
+  }
+};
+
+template <typename BASE>
 struct trigger_atmospheric_exposure_t : public BASE
 {
 private:
@@ -2214,37 +2323,6 @@ public:
   }
 };
 
-template <specialization_e S, typename BASE>
-struct use_fluid_form_t : public BASE
-{
-private:
-  druid_t* p_;
-
-public:
-  using base_t = use_fluid_form_t<S, BASE>;
-
-  use_fluid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), p_( p )
-  {
-    if ( p_->talent.fluid_form.ok() )
-    {
-      if constexpr ( S == DRUID_BALANCE )
-      {
-        if ( p_->specialization() == DRUID_BALANCE )
-          BASE::autoshift = p_->active.shift_to_moonkin;
-      }
-      else if constexpr ( S == DRUID_FERAL )
-      {
-        BASE::autoshift = p_->active.shift_to_cat;
-      }
-      else if constexpr ( S == DRUID_GUARDIAN )
-      {
-        BASE::autoshift = p_->active.shift_to_bear;
-      }
-    }
-  }
-};
-
 template <typename BASE>
 struct trigger_gore_t : public BASE
 {
@@ -2270,39 +2348,41 @@ public:
   }
 };
 
-template <typename BASE, typename AB>
+template <typename BASE, typename DOT_BASE>
 struct ravage_base_t : public BASE
 {
-private:
-  druid_t* p_;
-
-public:
-  using base_t = ravage_base_t<BASE, AB>;
-
-  struct dreadful_wound_t : public AB
+  struct dreadful_wound_t : public DOT_BASE
   {
     dreadful_wound_t( druid_t* p, std::string_view n, flag_e f )
-      : AB( n, p, p->find_spell( p->specialization() == DRUID_GUARDIAN ? 451177 : 441812 ), f )
+      : DOT_BASE( n, p, p->find_spell( p->specialization() == DRUID_GUARDIAN ? 451177 : 441812 ), f )
     {
-      AB::name_str_reporting = "dreadful_wound";
-      AB::dot_name = "dreadful_wound";
+      DOT_BASE::name_str_reporting = "dreadful_wound";
+      DOT_BASE::dot_name = "dreadful_wound";
+
+      DOT_BASE::dot_list = &p->dot_list.dreadful_wound;
     }
 
     // TODO: use custom action state if non-TF persistent multipliers are applied
     void snapshot_state( action_state_t* s, unsigned fl, result_amount_type rt ) override
     {
       auto prev_mul = 1.0;
-      auto prev_dot = AB::get_dot( s->target );
+      auto prev_dot = DOT_BASE::get_dot( s->target );
 
       if ( prev_dot->is_ticking() )
         prev_mul = prev_dot->state->persistent_multiplier;
 
-      AB::snapshot_state( s, fl, rt );
+      DOT_BASE::snapshot_state( s, fl, rt );
 
       if ( s->persistent_multiplier < prev_mul )
         s->persistent_multiplier = prev_mul;
     }
   };
+
+private:
+  druid_t* p_;
+
+public:
+  using base_t = ravage_base_t<BASE, DOT_BASE>;
 
   double aoe_coeff;
 
@@ -2388,47 +2468,6 @@ public:
     BASE::last_tick( d );
 
     update_waning_twilight( d->target );
-  }
-};
-
-template <typename BASE>
-struct use_dot_list_t : public BASE
-{
-private:
-  druid_t* p_;
-
-public:
-  using base_t = use_dot_list_t<BASE>;
-
-  std::vector<dot_t*>* dot_list = nullptr;
-
-  use_dot_list_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE ) : BASE( n, p, s, f ), p_( p ) {}
-
-  void init() override
-  {
-    assert( dot_list );
-
-    BASE::init();
-  }
-
-  void trigger_dot( action_state_t* s ) override
-  {
-    dot_t* d = BASE::get_dot( s->target );
-    if( !d->is_ticking() )
-    {
-      assert( !range::contains( *dot_list, d ) );
-      dot_list->push_back( d );
-    }
-
-    BASE::trigger_dot( s );
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    assert( range::contains( *dot_list, d ) );
-    range::erase_remove( *dot_list, d );
-
-    BASE::last_tick( d );
   }
 };
 
@@ -3840,7 +3879,7 @@ public:
   }
 };
 
-using cat_finisher_t = cp_spender_t<>;
+using cat_finisher_t = trigger_aggravate_wounds_t<DRUID_FERAL, cp_spender_t<>>;
 
 template <typename BASE>
 struct trigger_thrashing_claws_t : public BASE
@@ -4300,7 +4339,8 @@ struct bloodseeker_vines_t : public cat_attack_t
 };
 
 // Brutal Slash =============================================================
-struct brutal_slash_t : public trigger_claw_rampage_t<DRUID_FERAL, trigger_thrashing_claws_t<cat_attack_t>>
+struct brutal_slash_t : public trigger_claw_rampage_t<DRUID_FERAL,
+                                 trigger_thrashing_claws_t<cat_attack_t>>
 {
   DRUID_ABILITY( brutal_slash_t, base_t, "brutal_slash", p->talent.brutal_slash )
   {
@@ -4494,7 +4534,7 @@ struct ferocious_bite_base_t : public cat_finisher_t
 
 struct ferocious_bite_t : public ferocious_bite_base_t
 {
-  struct ravage_ferocious_bite_t : public ravage_base_t<ferocious_bite_base_t, cat_attack_t>
+  struct ravage_ferocious_bite_t : public ravage_base_t<ferocious_bite_base_t, use_dot_list_t<cat_attack_t>>
   {
     ravage_ferocious_bite_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441591 ), f )
     {
@@ -4922,8 +4962,10 @@ struct primal_wrath_t : public cat_finisher_t
 };
 
 // Shred ====================================================================
-struct shred_t
-  : public use_fluid_form_t<DRUID_FERAL, trigger_claw_rampage_t<DRUID_FERAL, trigger_thrashing_claws_t<cat_attack_t>>>
+struct shred_t : public use_fluid_form_t<DRUID_FERAL,
+                          trigger_claw_rampage_t<DRUID_FERAL,
+                            trigger_aggravate_wounds_t<DRUID_FERAL,
+                              trigger_thrashing_claws_t<cat_attack_t>>>>
 {
   double stealth_mul = 0.0;
 
@@ -4974,7 +5016,9 @@ struct shred_t
 };
 
 // Swipe (Cat) ====================================================================
-struct swipe_cat_t : public trigger_claw_rampage_t<DRUID_FERAL, trigger_thrashing_claws_t<cat_attack_t>>
+struct swipe_cat_t : public trigger_claw_rampage_t<DRUID_FERAL,
+                              trigger_aggravate_wounds_t<DRUID_FERAL,
+                                trigger_thrashing_claws_t<cat_attack_t>>>
 {
   DRUID_ABILITY( swipe_cat_t, base_t, "swipe_cat", p->apply_override( p->spec.swipe, p->spec.cat_form_override ) )
   {
@@ -5033,7 +5077,8 @@ struct tigers_fury_t : public cat_attack_t
 };
 
 // Thrash (Cat) =============================================================
-struct thrash_cat_t : public trigger_claw_rampage_t<DRUID_FERAL,cat_attack_t>
+struct thrash_cat_t : public trigger_claw_rampage_t<DRUID_FERAL,
+                               trigger_aggravate_wounds_t<DRUID_FERAL, cat_attack_t>>
 {
   struct thrash_cat_bleed_t : public trigger_waning_twilight_t<cat_attack_t>
   {
@@ -5405,7 +5450,9 @@ struct lunar_beam_t : public bear_attack_t
 };
 
 // Mangle ===================================================================
-struct mangle_t : public use_fluid_form_t<DRUID_GUARDIAN, trigger_claw_rampage_t<DRUID_GUARDIAN, bear_attack_t>>
+struct mangle_t : public use_fluid_form_t<DRUID_GUARDIAN,
+                           trigger_claw_rampage_t<DRUID_GUARDIAN,
+                             trigger_aggravate_wounds_t<DRUID_GUARDIAN, bear_attack_t>>>
 {
   int inc_targets = 0;
 
@@ -5458,7 +5505,8 @@ struct mangle_t : public use_fluid_form_t<DRUID_GUARDIAN, trigger_claw_rampage_t
 };
 
 // Maul =====================================================================
-struct maul_base_t : public trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t<>>>
+struct maul_base_t
+  : public trigger_aggravate_wounds_t<DRUID_GUARDIAN, trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t<>>>>
 {
   maul_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : base_t( n, p, s, f ) {}
 
@@ -5483,7 +5531,7 @@ struct maul_base_t : public trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t<
 
 struct maul_t : public maul_base_t
 {
-  struct ravage_maul_t : public ravage_base_t<maul_base_t, bear_attack_t>
+  struct ravage_maul_t : public ravage_base_t<maul_base_t, use_dot_list_t<bear_attack_t>>
   {
     ravage_maul_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441605 ), f )
     {
@@ -5587,7 +5635,8 @@ struct rage_of_the_sleeper_t : public bear_attack_t
 };
 
 // Raze =====================================================================
-struct raze_t : public trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t<>>>
+struct raze_t
+  : public trigger_aggravate_wounds_t<DRUID_GUARDIAN, trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t<>>>>
 {
   DRUID_ABILITY( raze_t, base_t, "raze", p->talent.raze )
   {
@@ -5623,7 +5672,9 @@ struct raze_t : public trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t<>>>
 };
 
 // Swipe (Bear) =============================================================
-struct swipe_bear_t : public trigger_claw_rampage_t<DRUID_GUARDIAN, trigger_gore_t<bear_attack_t>>
+struct swipe_bear_t : public trigger_claw_rampage_t<DRUID_GUARDIAN,
+                               trigger_aggravate_wounds_t<DRUID_GUARDIAN,
+                                 trigger_gore_t<bear_attack_t>>>
 {
   DRUID_ABILITY( swipe_bear_t, base_t, "swipe_bear",
                  p->apply_override( p->spec.swipe, p->spec.bear_form_override ) )
@@ -5638,8 +5689,9 @@ struct swipe_bear_t : public trigger_claw_rampage_t<DRUID_GUARDIAN, trigger_gore
 };
 
 // Thrash (Bear) ============================================================
-struct thrash_bear_t
-  : public trigger_claw_rampage_t<DRUID_GUARDIAN, trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t>>>
+struct thrash_bear_t : public trigger_claw_rampage_t<DRUID_GUARDIAN,
+                                trigger_aggravate_wounds_t<DRUID_GUARDIAN,
+                                  trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t>>>>
 {
   struct thrash_bear_bleed_t : public trigger_ursocs_fury_t<use_dot_list_t<trigger_waning_twilight_t<bear_attack_t>>>
   {
@@ -7949,7 +8001,7 @@ struct starfall_t : public ap_spender_t
 };
 
 // Starfire =============================================================
-struct starfire_t : public use_fluid_form_t<DRUID_BALANCE,ap_generator_t>
+struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
 {
   size_t aoe_idx;
   double smolder_mul;
