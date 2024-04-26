@@ -7472,7 +7472,7 @@ struct moonfire_t : public druid_spell_t
 
       base_t::tick( d );
 
-      if ( p()->rppm.the_light_of_elune->trigger() )
+      if ( p()->rppm.the_light_of_elune && p()->rppm.the_light_of_elune->trigger() )
         p()->active.the_light_of_elune->execute_on_target( d->target );
     }
 
@@ -7480,7 +7480,7 @@ struct moonfire_t : public druid_spell_t
     {
       base_t::impact( s );
 
-      if ( p()->rppm.the_light_of_elune->trigger() )
+      if ( p()->rppm.the_light_of_elune && p()->rppm.the_light_of_elune->trigger() )
         p()->active.the_light_of_elune->execute_on_target( s->target );
     }
   };
