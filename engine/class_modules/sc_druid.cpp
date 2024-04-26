@@ -1653,7 +1653,7 @@ public:
   using base_t = druid_action_t<Base>;
 
   std::vector<action_effect_t> persistent_multiplier_effects;
-  std::vector<std::pair<buff_t*,uint32_t>> consume_buffs;
+  std::vector<buff_t*> consume_buffs;
 
   // Name to be used by get_dot() instead of action name
   std::string dot_name;
@@ -1822,15 +1822,22 @@ public:
         cd->adjust( ( *eff++ ).time_value() );
     }
 
-    for ( auto [ consume_buff, skip_flags ] : consume_buffs )
-      if ( !has_flag( skip_flags ) )
-        consume_buff->expire( this );
+    for ( auto b : consume_buffs )
+      b->expire();
   }
 
   void parse_consume( buff_t* buff, uint32_t skip_flags = 0, size_t idx = 1, bool force = false )
   {
-    if ( !buff->is_fallback && ( ab::data().affected_by_all( buff->data().effectN( idx ) ) || force ) )
-      consume_buffs.emplace_back( buff, skip_flags );
+    if ( buff->is_fallback )
+      return;
+
+    if ( !force && !( ab::data().affected_by_all( buff->data().effectN( idx ) ) ) )
+      return;
+
+    if ( has_flag( skip_flags ) || !buff->can_expire( this ) )
+      return;
+
+    consume_buffs.emplace_back( buff );
   }
 
   void force_consume( buff_t* buff, uint32_t skip_flags = 0, size_t idx = 1 )
