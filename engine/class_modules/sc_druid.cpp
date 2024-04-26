@@ -77,8 +77,7 @@ enum flag_e : uint32_t
   APEX         = 0x01000001,  // apex predators's craving
   TOOTHANDCLAW = 0x02000001,  // tooth and claw talent
 
-  FREE_PROCS = CONVOKE | FIRMAMENT | FLASHING | GALACTIC | ORBIT | TWIN | TREANT | LIGHTOFELUNE,
-  FREE_CASTS = APEX | TOOTHANDCLAW
+  FREE_PROCS = CONVOKE | FIRMAMENT | FLASHING | GALACTIC | ORBIT | TWIN | TREANT | LIGHTOFELUNE
 };
 
 struct druid_td_t : public actor_target_data_t
@@ -210,11 +209,8 @@ struct druid_action_data_t  // variables that need to be accessed from action_t*
 
   bool has_flag( uint32_t f ) const { return action_flags & f; }
   bool is_flag( flag_e f ) const { return ( action_flags & f ) == f; }
-  bool is_free() const { return action_flags & ( flag_e::FREE_PROCS | flag_e::FREE_CASTS ); }
-  bool is_free_proc() const { return action_flags & flag_e::FREE_PROCS; }
-  bool is_free_cast() const { return action_flags & flag_e::FREE_CASTS; }
+  bool is_free() const { return action_flags & flag_e::FREE_PROCS; }
 };
-
 
 struct eclipse_handler_t
 {
@@ -2621,7 +2617,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
       if ( p()->buff.barkskin->check() || td( t )->hots.frenzied_regeneration->is_ticking() )
         ctm *= 1.0 + imp_fr_mul;
 
-      ctm *= 1.0 + p()->talent.natural_recovery->effectN( 3 ).percent();
+      ctm *= 1.0 + p()->talent.natural_recovery->effectN( 1 ).percent();
 
       ctm *= 1.0 + p()->talent.bond_with_nature->effectN( 1 ).percent();
     }
@@ -6743,7 +6739,7 @@ public:
   {
     druid_spell_t::impact( s );
 
-    if ( p()->active.astral_smolder && s->result_amount && !is_free_proc() && rng().roll( smolder_pct ) )
+    if ( p()->active.astral_smolder && s->result_amount && !proc && rng().roll( smolder_pct ) )
     {
       assert( other_ecl );
       auto amount = s->result_amount * smolder_mul;
@@ -7202,7 +7198,7 @@ struct moon_base_t : public druid_spell_t
 
   void init() override
   {
-    if ( !is_free_proc() )
+    if ( !has_flag( flag_e::FOREGROUND ) )
     {
       cooldown = p()->cooldown.moon_cd;
       track_cd_waste = true;
@@ -7254,7 +7250,7 @@ struct moon_base_t : public druid_spell_t
 
     p()->eclipse_handler.cast_moon( this, stage );
 
-    if ( is_free_proc() )
+    if ( proc )
     {
       if ( p()->moon_stage == moon_stage_e::MAX_MOON && p()->orbital_bug && p()->bugs )
         p()->orbital_bug = false;
