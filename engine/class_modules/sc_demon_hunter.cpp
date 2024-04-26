@@ -6556,6 +6556,11 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       add_invalidate( CACHE_LEECH );
     }
+
+    if ( p->talent.felscarred.monster_rising->ok() )
+    {
+      add_invalidate( CACHE_AGILITY );
+    }
   }
 
   void trigger_demonic()
@@ -8474,6 +8479,12 @@ double demon_hunter_t::composite_attribute_multiplier( attribute_e a ) const
   {
     case ATTR_STAMINA:
       am *= 1.0 + spec.thick_skin->effectN( 1 ).percent();
+      break;
+    case ATTR_AGILITY:
+      if ( talent.felscarred.monster_rising->ok() && !buff.metamorphosis->up() )
+      {
+        am *= 1.0 + talent.felscarred.monster_rising->effectN( 1 ).percent();
+      }
       break;
     default:
       break;
