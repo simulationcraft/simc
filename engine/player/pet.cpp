@@ -329,12 +329,6 @@ void pet_t::create_buffs()
 
     buffs.movement = new movement_buff_t( this );
 
-    if( DEATH_KNIGHT )
-    {
-      buffs.stunned -> set_quiet( true );
-      buffs.movement -> set_quiet( true );
-    }
-
     // Blood of the Enemy Essence Major R3 increase crit damage buff
     buffs.seething_rage_essence = make_buff( this, "seething_rage_essence", find_spell( 297126 ) )
       ->set_default_value( find_spell( 297126 )->effectN( 1 ).percent() );

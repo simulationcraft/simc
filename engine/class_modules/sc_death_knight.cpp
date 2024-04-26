@@ -2183,6 +2183,13 @@ struct death_knight_pet_t : public pet_t
     army_ghoul_ap_mod = 0.4664;
   }
 
+  void init_finished() override
+  {
+    pet_t::init_finished();
+    buffs.stunned->set_quiet( true );
+    buffs.movement->set_quiet( true );
+  }
+
   double composite_melee_speed() const override
   {
     return current_pet_stats.composite_melee_haste;
@@ -3503,6 +3510,21 @@ struct magus_pet_t : public death_knight_pet_t
 // ==========================================================================
 struct blood_beast_pet_t : public death_knight_pet_t
 {
+  struct blood_beast_melee_t : public auto_attack_melee_t<blood_beast_pet_t>
+  {
+    blood_beast_melee_t( blood_beast_pet_t* p ) : auto_attack_melee_t( p )
+    {
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      auto_attack_melee_t::impact( state );
+      if ( state->result_amount > 0 )
+      {
+        pet()->accumulator += state->result_amount * pet()->blood_beast_mod;
+      }
+    }
+  };
   struct blood_cleave_t : public pet_melee_attack_t<blood_beast_pet_t>
   {
     blood_cleave_t( blood_beast_pet_t* p, util::string_view options_str )
@@ -3510,6 +3532,15 @@ struct blood_beast_pet_t : public death_knight_pet_t
     {
       parse_options( options_str );
       aoe = -1;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      pet_melee_attack_t::impact( state );
+      if ( state->result_amount > 0 )
+      {
+        pet()->accumulator += state->result_amount * pet()->blood_beast_mod;
+      }
     }
   };
 
@@ -3530,6 +3561,9 @@ struct blood_beast_pet_t : public death_knight_pet_t
     npc_id                      = owner->find_spell( 434237 )->effectN( 1 ).misc_value1();
     owner_coeff.ap_from_ap      = 0.5565;
     resource_regeneration       = regen_type::DISABLED;
+    blood_beast_mod             = dk()->specialization() == DEATH_KNIGHT_BLOOD
+                                      ? dk()->talent.sanlayn.the_blood_is_life->effectN( 1 ).percent()
+                                      : dk()->talent.sanlayn.the_blood_is_life->effectN( 2 ).percent();
   }
 
   void dismiss( bool expired = false ) override
@@ -3568,18 +3602,6 @@ struct blood_beast_pet_t : public death_knight_pet_t
     blood_eruption = get_action<blood_eruption_t>( "blood_eruption", this );
   }
 
-  // This no work. why, i do not know.
-  void assess_damage( school_e s, result_amount_type r, action_state_t* state ) override
-  {
-    death_knight_pet_t::assess_damage( s, r, state );
-    if ( state->result_amount > 0 )
-    {
-      accumulator += state->result_amount * dk()->specialization() == DEATH_KNIGHT_BLOOD
-                         ? dk()->talent.sanlayn.the_blood_is_life->effectN( 1 ).percent()
-                         : dk()->talent.sanlayn.the_blood_is_life->effectN( 2 ).percent();
-    }
-  }
-
   void init_action_list() override
   {
     death_knight_pet_t::init_action_list();
@@ -3599,13 +3621,14 @@ struct blood_beast_pet_t : public death_knight_pet_t
 
   attack_t* create_auto_attack() override
   {
-    return new auto_attack_melee_t<blood_beast_pet_t>( this );
+    return new blood_beast_melee_t( this );
   }
 
 public: 
   double accumulator;
 private:
   action_t* blood_eruption;
+  double blood_beast_mod;
 };
 
 // ==========================================================================
