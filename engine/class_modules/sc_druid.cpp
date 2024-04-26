@@ -4056,6 +4056,15 @@ struct primal_wrath_t : public cat_finisher_t
       wounds = p->get_secondary_action<tear_open_wounds_t>( "tear_open_wounds" );
       add_child( wounds );
     }
+
+    if ( p->talent.adaptive_swarm.ok() )
+    {
+      const auto& eff = p->spec.adaptive_swarm_damage->effectN( 2 );
+      add_parse_entry( target_multiplier_effects )
+        .set_func( []( druid_td_t* td ) { return td->dots.adaptive_swarm_damage->is_ticking(); } )
+        .set_value( eff.percent() )
+        .set_eff( &eff );
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
