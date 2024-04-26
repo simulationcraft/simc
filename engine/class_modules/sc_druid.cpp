@@ -2027,25 +2027,31 @@ public:
     // Balance
     parse_target_effects( d_fn( &druid_td_t::dots_t::moonfire ),
                           p()->spec.moonfire_dmg, p()->mastery.astral_invocation );
+
     parse_target_effects( d_fn( &druid_td_t::dots_t::sunfire ),
                           p()->spec.sunfire_dmg, p()->mastery.astral_invocation );
+
     parse_target_effects( d_fn( &druid_td_t::debuffs_t::stellar_amplification ),
                           p()->spec.stellar_amplification );
+
     parse_target_effects( d_fn( &druid_td_t::debuffs_t::waning_twilight ),
                           p()->spec.waning_twilight, p()->talent.waning_twilight );
 
     // Feral
-    parse_target_effects( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage, false ),
-                          p()->spec.adaptive_swarm_damage, p()->spec_spell );
     if ( p()->talent.incarnation_cat.ok() && p()->talent.ashamanes_guidance.ok() )
     {
       parse_target_effects( [ p = p() ]( druid_td_t* td )
           { return p->buff.ashamanes_guidance->check() && td->dots.rip->is_ticking(); },
           p()->talent.rip, p()->spec.ashamanes_guidance_buff );
+
       parse_target_effects( [ p = p() ]( druid_td_t* td )
           { return p->buff.ashamanes_guidance->check() && td->dots.rake->is_ticking(); },
           find_trigger( p()->talent.rake ).trigger(), p()->spec.ashamanes_guidance_buff );
     }
+
+    parse_target_effects( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage, false ),
+                          p()->spec.adaptive_swarm_damage, p()->spec_spell );
+
     parse_target_effects( d_fn( &druid_td_t::debuffs_t::sabertooth ),
                           p()->spec.sabertooth, p()->talent.sabertooth->effectN( 2 ).base_value() );
 
@@ -9103,7 +9109,7 @@ struct druid_melee_t : public Base
       ooc_chance *= 1.0 + p->talent.moment_of_clarity->effectN( 2 ).percent();
 
     if ( p->talent.ravage.ok() )
-      ravage_chance = 7.00;  // TODO: placeholder. test if rppm or proc, different for spec/form
+      ravage_chance = 5.00;  // TODO: placeholder. test if rppm or proc, different for spec/form
   }
 
   timespan_t execute_time() const override
