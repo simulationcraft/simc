@@ -4556,6 +4556,9 @@ struct xuen_spell_t : public monk_spell_t
     p()->buff.invoke_xuen->trigger();
 
     p()->buff.invokers_delight->trigger();
+
+    if ( p()->talent.windwalker.flurry_of_xuen->ok() )
+      p()->active_actions.flurry_of_xuen->execute();
   }
 };
 
@@ -4590,6 +4593,9 @@ struct fury_of_xuen_summon_t final : monk_spell_t
     }
 
     p()->pets.fury_of_xuen_tiger.spawn( p()->passives.fury_of_xuen_haste_buff->duration(), 1 );
+
+    if ( p()->talent.windwalker.flurry_of_xuen->ok() )
+      p()->active_actions.flurry_of_xuen->execute();
   }
 };
 
@@ -4620,6 +4626,23 @@ struct fury_of_xuen_empowered_tiger_lightning_t : public monk_spell_t
   bool ready() override
   {
     return p()->spec.empowered_tiger_lightning->ok();
+  }
+};
+
+struct flurry_of_xuen_t : public monk_spell_t
+{
+  flurry_of_xuen_t( monk_t &p ) : monk_spell_t( "flurry_of_xuen", &p, p.passives.flurry_of_xuen_damage )
+  {
+    background = true;
+    may_crit   = true;
+
+    dot_duration   = timespan_t::from_seconds( 2.7 );  // from logs currently
+    base_tick_time = dot_duration / p.talent.windwalker.flurry_of_xuen->effectN( 1 ).base_value();
+  }
+
+  bool ready() override
+  {
+    return p()->talent.windwalker.flurry_of_xuen->ok();
   }
 };
 
@@ -7693,6 +7716,7 @@ void monk_t::init_spells()
   passives.jadefire_brand_heal              = find_spell( 395413 );
   passives.jadefire_stomp_ww_damage         = find_spell( 388201 );
   passives.fists_of_fury_tick               = find_spell( 117418 );
+  passives.flurry_of_xuen_damage            = find_spell( 452130 );
   passives.focus_of_xuen                    = find_spell( 252768 );
   passives.fury_of_xuen_stacking_buff       = find_spell( 396167 );
   passives.fury_of_xuen_haste_buff          = find_spell( 396168 );
@@ -7804,6 +7828,7 @@ void monk_t::init_spells()
   if ( spec_tree == MONK_WINDWALKER )
   {
     active_actions.empowered_tiger_lightning = new actions::empowered_tiger_lightning_t( *this );
+    active_actions.flurry_of_xuen            = new actions::flurry_of_xuen_t( *this );
     active_actions.fury_of_xuen_summon       = new actions::fury_of_xuen_summon_t( this );
     active_actions.fury_of_xuen_empowered_tiger_lightning =
         new actions::fury_of_xuen_empowered_tiger_lightning_t( *this );
@@ -8579,6 +8604,19 @@ void monk_t::init_special_effects()
   {
     create_proc_callback( sets->set( MONK_WINDWALKER, T31, B2 ),
                           []( monk_t * /*p*/, action_state_t * /*state*/ ) { return true; } );
+  }
+
+  // ======================================
+  // Flurry of Xuen ( Windwalker Talent )
+  // ======================================
+
+  if ( talent.windwalker.flurry_of_xuen.ok() )
+  {
+    create_proc_callback( talent.windwalker.flurry_of_xuen.spell(), []( monk_t *p, action_state_t *state ) {
+      p->active_actions.flurry_of_xuen->set_target( state->target );
+
+      return true;
+    } );
   }
 
   // ======================================
