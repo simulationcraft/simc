@@ -1087,8 +1087,9 @@ struct storm_earth_and_fire_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    cast_during_sck = true;
-    trigger_gcd     = timespan_t::zero();
+    cast_during_sck  = false;
+    trigger_gcd      = timespan_t::zero();
+    may_combo_strike = true;
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
   }
 
@@ -1821,6 +1822,18 @@ struct blackout_kick_t : public monk_melee_attack_t
     }
   }
 
+  double composite_target_multiplier( player_t *target ) const override
+  {
+    double m = monk_melee_attack_t::composite_target_multiplier( target );
+
+    // Blizzard claimed in a future Alpha build Blackout Kick will deal reduced damage to chained targets
+    // I don't see this in spelldata yet, just leaving this here to save time in the future.
+    if ( target != p()->target )
+      m *= 1.0f;
+
+    return m;
+  }
+
   void consume_resource() override
   {
     monk_melee_attack_t::consume_resource();
@@ -1884,7 +1897,7 @@ struct blackout_kick_t : public monk_melee_attack_t
           p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.energy_burst->effectN( 2 ).base_value(),
                               p()->gain.energy_burst );
 
-        p()->buff.bok_proc->expire();
+        p()->buff.bok_proc->decrement();
       }
 
       p()->buff.blackout_combo->trigger();
@@ -2311,7 +2324,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     {
       if ( p()->buff.dance_of_chiji->up() )
       {
-        p()->buff.dance_of_chiji->expire();
+        p()->buff.dance_of_chiji->decrement();
         p()->buff.dance_of_chiji_hidden->trigger();
       }
     }
@@ -5494,7 +5507,7 @@ struct expel_harm_t : public monk_heal_t
     parse_options( options_str );
 
     target           = player;
-    may_combo_strike = true;
+    may_combo_strike = false;
     cast_during_sck  = player->specialization() != MONK_WINDWALKER;
 
     if ( p.talent.windwalker.combat_wisdom.ok() )
@@ -5739,6 +5752,7 @@ struct chi_wave_t : public monk_spell_t
     hasted_ticks = harmful = false;
     cooldown->hasted       = false;
     tick_zero              = true;
+    may_combo_strike       = false;
 
     dot_duration   = timespan_t::from_seconds( data().effectN( 1 ).base_value() );
     base_tick_time = dot_duration / 8;
@@ -5799,8 +5813,7 @@ struct chi_burst_heal_t : public monk_heal_t
 
 struct chi_burst_damage_t : public monk_spell_t
 {
-  chi_burst_damage_t( monk_t &player )
-    : monk_spell_t( "chi_burst_damage", &player, player.passives.chi_burst_damage )
+  chi_burst_damage_t( monk_t &player ) : monk_spell_t( "chi_burst_damage", &player, player.passives.chi_burst_damage )
   {
     background = true;
     ww_mastery = true;
@@ -6828,7 +6841,7 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     regen_caches[ CACHE_HASTE ]        = true;
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
   }
-  user_options.initial_chi               = 1;
+  user_options.initial_chi               = talent.windwalker.combat_wisdom.ok() ? 2 : 0;
   user_options.chi_burst_healing_targets = 8;
   user_options.motc_override             = 0;
   user_options.squirm_frequency          = 15;
@@ -7453,6 +7466,7 @@ void monk_t::init_spells()
   talent.windwalker.jade_ignition              = _STID( 392979 );  // _ST( "Jade Ignition" );
   talent.windwalker.teachings_of_the_monastery = _ST( "Teachings of the Monastery" );
   talent.windwalker.storm_earth_and_fire       = _ST( "Storm, Earth, and Fire" );
+  talent.windwalker.flurry_of_xuen             = _ST( "Flurry of Xuen" );
   talent.windwalker.hit_combo                  = _ST( "Hit Combo" );
   talent.windwalker.brawlers_intensity         = _ST( "Brawler's Intensity" );
   talent.windwalker.meridian_strikes           = _ST( "Meridian Strikes" );
@@ -7627,7 +7641,7 @@ void monk_t::init_spells()
   passives.bonedust_brew_chi         = find_spell( 328296 );
   passives.bonedust_brew_attenuation = find_spell( 394514 );
   passives.chi_burst_energize        = find_spell( 261682 );
-  passives.chi_burst_heal            = find_spell( 130654 ); 
+  passives.chi_burst_heal            = find_spell( 130654 );
   passives.chi_wave_damage           = find_spell( 132467 );
   passives.chi_wave_heal             = find_spell( 132463 );
   passives.claw_of_the_white_tiger   = find_spell( 389541 );

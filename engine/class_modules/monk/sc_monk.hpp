@@ -861,6 +861,7 @@ public:
       player_talent_t jade_ignition;
       player_talent_t teachings_of_the_monastery;
       player_talent_t storm_earth_and_fire;
+      player_talent_t flurry_of_xuen;
       player_talent_t hit_combo;
       player_talent_t brawlers_intensity;
       player_talent_t meridian_strikes;
