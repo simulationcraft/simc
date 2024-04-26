@@ -7515,6 +7515,7 @@ void demon_hunter_t::init_base_stats()
 
   resources.base[ RESOURCE_FURY ] = 100;
   resources.base[ RESOURCE_FURY ] += talent.demon_hunter.unrestrained_fury->effectN( 1 ).base_value();
+  resources.base[ RESOURCE_FURY ] += talent.felscarred.untethered_fury->effectN( 1 ).base_value();
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
