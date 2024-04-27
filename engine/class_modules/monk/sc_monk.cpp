@@ -4636,8 +4636,13 @@ struct flurry_of_xuen_t : public monk_spell_t
     background = true;
     may_crit   = true;
 
-    dot_duration   = timespan_t::from_seconds( 2.7 );  // from logs currently
+    // p.passives.flurry_of_xuen_driver->duration()
+    // Shows 3 second duration but is 2.7s consistently in logs
+    dot_duration   = timespan_t::from_seconds( 2.7 );
     base_tick_time = dot_duration / p.talent.windwalker.flurry_of_xuen->effectN( 1 ).base_value();
+
+    attack_power_mod.direct = 0;
+    attack_power_mod.tick   = data().effectN( 1 ).ap_coeff();
   }
 
   bool ready() override
@@ -8613,11 +8618,14 @@ void monk_t::init_special_effects()
 
   if ( talent.windwalker.flurry_of_xuen.ok() )
   {
-    create_proc_callback( talent.windwalker.flurry_of_xuen.spell(), []( monk_t *p, action_state_t *state ) {
-      p->active_actions.flurry_of_xuen->set_target( state->target );
+    create_proc_callback(
+        talent.windwalker.flurry_of_xuen.spell(),
+        []( monk_t *p, action_state_t *state ) {
+          p->active_actions.flurry_of_xuen->set_target( state->target );
 
-      return true;
-    } );
+          return true;
+        },
+        active_actions.flurry_of_xuen );
   }
 
   // ======================================
