@@ -2039,6 +2039,8 @@ struct rjw_tick_action_t : public monk_melee_attack_t
   {
     ww_mastery = true;
 
+    sef_ability = actions::sef_ability_e::SEF_RUSHING_JADE_WIND;
+
     dual = background   = true;
     aoe                 = -1;
     reduced_aoe_targets = p->passives.rushing_jade_wind->effectN( 1 ).base_value();
@@ -2062,7 +2064,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     : monk_melee_attack_t( "rushing_jade_wind", p, p->shared.rushing_jade_wind )
   {
     parse_options( options_str );
-    sef_ability      = actions::sef_ability_e::SEF_RUSHING_JADE_WIND;
+
     may_combo_strike = true;
     gcd_type         = gcd_haste_type::NONE;
 
