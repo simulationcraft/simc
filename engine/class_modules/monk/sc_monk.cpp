@@ -2348,6 +2348,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       {
         p()->buff.dance_of_chiji->decrement();
         p()->buff.dance_of_chiji_hidden->trigger();
+
+        if ( p()->rng().roll( p()->talent.windwalker.sequenced_strikes->effectN( 1 ).percent() ) )
+          p()->buff.bok_proc->trigger();
       }
     }
 
