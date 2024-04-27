@@ -455,12 +455,6 @@ public:
     bool raid_combat = true;
 
     // Multi-Spec
-    double adaptive_swarm_jump_distance_melee = 5.0;
-    double adaptive_swarm_jump_distance_ranged = 25.0;
-    double adaptive_swarm_jump_distance_stddev = 1.0;
-    unsigned adaptive_swarm_melee_targets = 7;
-    unsigned adaptive_swarm_ranged_targets = 12;
-    std::string adaptive_swarm_prepull_setup = "";
     int convoke_the_spirits_deck = 5;
     double cenarius_guidance_exceptional_chance = 0.85;
 
@@ -470,7 +464,12 @@ public:
     int initial_orbit_breaker_stacks = -1;
 
     // Feral
-    double predator_rppm_rate = 0.0;
+    double adaptive_swarm_jump_distance_melee = 5.0;
+    double adaptive_swarm_jump_distance_ranged = 25.0;
+    double adaptive_swarm_jump_distance_stddev = 1.0;
+    unsigned adaptive_swarm_melee_targets = 7;
+    unsigned adaptive_swarm_ranged_targets = 12;
+    std::string adaptive_swarm_prepull_setup = "";
 
     // Guardian
 
@@ -1159,11 +1158,9 @@ public:
   struct uptimes_t
   {
     uptime_t* astral_smolder;
-    uptime_t* combined_ca_inc;
     uptime_t* eclipse_solar;
     uptime_t* eclipse_lunar;
     uptime_t* eclipse_none;
-    uptime_t* incarnation_cat;
     uptime_t* tooth_and_claw_debuff;
   } uptime;
 
@@ -3240,11 +3237,7 @@ struct berserk_cat_buff_t : public druid_buff_t
     base_t::start( s, v, d );
 
     if ( inc )
-    {
-      p()->uptime.incarnation_cat->update( true, sim->current_time() );
-
       p()->buff.ashamanes_guidance->trigger();
-    }
   }
 
   void expire_override( int s, timespan_t d ) override
@@ -3253,9 +3246,6 @@ struct berserk_cat_buff_t : public druid_buff_t
 
     p()->gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ]+= p()->buff.overflowing_power->check();
     p()->buff.overflowing_power->expire();
-
-    if ( inc )
-      p()->uptime.incarnation_cat->update( false, sim->current_time() );
 
     if ( inc && p()->talent.ashamanes_guidance.ok() )
     {
@@ -3406,19 +3396,10 @@ struct celestial_alignment_buff_t : public druid_buff_t
       p()->buff.eclipse_solar->trigger( d );
       p()->eclipse_handler.update_eclipse( eclipse_e::SOLAR );
 
-      p()->uptime.combined_ca_inc->update( true, sim->current_time() );
-
       p()->active.orbital_strike->execute_on_target( p()->target );
     }
 
     return ret;
-  }
-
-  void expire_override( int s, timespan_t d ) override
-  {
-    base_t::expire_override( s, d );
-
-    p()->uptime.combined_ca_inc->update( false, sim->current_time() );
   }
 };
 
@@ -9105,7 +9086,7 @@ struct druid_melee_t : public Base
       ooc_chance *= 1.0 + p->talent.moment_of_clarity->effectN( 2 ).percent();
 
     if ( p->talent.ravage.ok() )
-      ravage_chance = 5.00;  // TODO: placeholder. test if rppm or proc, different for spec/form
+      ravage_chance = 2.00;  // TODO: placeholder. test if rppm or proc, different for spec/form
   }
 
   timespan_t execute_time() const override
@@ -9356,123 +9337,119 @@ action_t* druid_t::create_action( std::string_view name, std::string_view opt )
   action_t* a = nullptr;
 
   // Baseline Abilities
-  if      ( name == "auto_attack"              ) a =                  new auto_attack_t( this );
-  else if ( name == "bear_form"                ) a =                    new bear_form_t( this );
-  else if ( name == "cat_form"                 ) a =                     new cat_form_t( this );
-  else if ( name == "cancelform"               ) a =                  new cancel_form_t( this );
-  else if ( name == "entangling_roots"         ) a =             new entangling_roots_t( this );
-  else if ( name == "ferocious_bite"           ) a =               new ferocious_bite_t( this );
-  else if ( name == "growl"                    ) a =                        new growl_t( this );
-  else if ( name == "mangle"                   ) a =                       new mangle_t( this );
-  else if ( name == "mark_of_the_wild"         ) a =             new mark_of_the_wild_t( this );
-  else if ( name == "moonfire"                 ) a =                     new moonfire_t( this );
-  else if ( name == "prowl"                    ) a =                        new prowl_t( this );
-  else if ( name == "regrowth"                 ) a =                     new regrowth_t( this );
-  else if ( name == "shred"                    ) a =                        new shred_t( this );
-  else if ( name == "wrath"                    ) a =                        new wrath_t( this );
+  if      ( name == "auto_attack"                   ) a =                  new auto_attack_t( this );
+  else if ( name == "bear_form"                     ) a =                    new bear_form_t( this );
+  else if ( name == "cat_form"                      ) a =                     new cat_form_t( this );
+  else if ( name == "cancelform"                    ) a =                  new cancel_form_t( this );
+  else if ( name == "entangling_roots"              ) a =             new entangling_roots_t( this );
+  else if ( name == "ferocious_bite"                ) a =               new ferocious_bite_t( this );
+  else if ( name == "growl"                         ) a =                        new growl_t( this );
+  else if ( name == "mangle"                        ) a =                       new mangle_t( this );
+  else if ( name == "mark_of_the_wild"              ) a =             new mark_of_the_wild_t( this );
+  else if ( name == "moonfire"                      ) a =                     new moonfire_t( this );
+  else if ( name == "prowl"                         ) a =                        new prowl_t( this );
+  else if ( name == "regrowth"                      ) a =                     new regrowth_t( this );
+  else if ( name == "shred"                         ) a =                        new shred_t( this );
+  else if ( name == "wrath"                         ) a =                        new wrath_t( this );
 
   // Class Talents
-  else if ( name == "barkskin"                 ) a =                     new barkskin_t( this );
+  else if ( name == "barkskin"                      ) a =                     new barkskin_t( this );
   else if ( name == "dash" ||
-            name == "tiger_dash"               ) a =                         new dash_t( this );
-  else if ( name == "frenzied_regeneration"    ) a =        new frenzied_regeneration_t( this );
-  else if ( name == "heart_of_the_wild"        ) a =            new heart_of_the_wild_t( this );
-  else if ( name == "incapacitating_roar"      ) a =          new incapacitating_roar_t( this );
-  else if ( name == "innervate"                ) a =                    new innervate_t( this );
-  else if ( name == "ironfur"                  ) a =                      new ironfur_t( this );
-  else if ( name == "maim"                     ) a =                         new maim_t( this );
-  else if ( name == "moonkin_form"             ) a =                 new moonkin_form_t( this );
-  else if ( name == "natures_vigil"            )
+            name == "tiger_dash"                    ) a =                         new dash_t( this );
+  else if ( name == "frenzied_regeneration"         ) a =        new frenzied_regeneration_t( this );
+  else if ( name == "heart_of_the_wild"             ) a =            new heart_of_the_wild_t( this );
+  else if ( name == "incapacitating_roar"           ) a =          new incapacitating_roar_t( this );
+  else if ( name == "innervate"                     ) a =                    new innervate_t( this );
+  else if ( name == "ironfur"                       ) a =                      new ironfur_t( this );
+  else if ( name == "maim"                          ) a =                         new maim_t( this );
+  else if ( name == "moonkin_form"                  ) a =                 new moonkin_form_t( this );
+  else if ( name == "natures_vigil" )
   {
-    if ( specialization() == DRUID_RESTORATION ) a = new natures_vigil_t<druid_spell_t>( this );
-    else                                         a =  new natures_vigil_t<druid_heal_t>( this );
+    if      ( specialization() == DRUID_RESTORATION ) a = new natures_vigil_t<druid_spell_t>( this );
+    else                                              a =  new natures_vigil_t<druid_heal_t>( this );
   }
-  else if ( name == "rake"                     ) a =                         new rake_t( this );
-  else if ( name == "rejuvenation"             ) a =                 new rejuvenation_t( this );
-  else if ( name == "remove_corruption"        ) a =            new remove_corruption_t( this );
-  else if ( name == "renewal"                  ) a =                      new renewal_t( this );
-  else if ( name == "rip"                      ) a =                          new rip_t( this );
-  else if ( name == "skull_bash"               ) a =                   new skull_bash_t( this );
-  else if ( name == "stampeding_roar"          ) a =              new stampeding_roar_t( this );
-  else if ( name == "starfire"                 ) a =                     new starfire_t( this );
-  else if ( name == "starsurge"                )
+  else if ( name == "rake"                          ) a =                         new rake_t( this );
+  else if ( name == "rejuvenation"                  ) a =                 new rejuvenation_t( this );
+  else if ( name == "remove_corruption"             ) a =            new remove_corruption_t( this );
+  else if ( name == "renewal"                       ) a =                      new renewal_t( this );
+  else if ( name == "rip"                           ) a =                          new rip_t( this );
+  else if ( name == "skull_bash"                    ) a =                   new skull_bash_t( this );
+  else if ( name == "stampeding_roar"               ) a =              new stampeding_roar_t( this );
+  else if ( name == "starfire"                      ) a =                     new starfire_t( this );
+  else if ( name == "starsurge" )
   {
-    if ( specialization() == DRUID_BALANCE )     a =                    new starsurge_t( this );
-    else                                         a =            new starsurge_offspec_t( this );
+    if      ( specialization() == DRUID_BALANCE     ) a =                    new starsurge_t( this );
+    else                                              a =            new starsurge_offspec_t( this );
   }
-  else if ( name == "sunfire"                  ) a =                      new sunfire_t( this );
-  else if ( name == "swipe"                    ) a =                  new swipe_proxy_t( this );
-  else if ( name == "swipe_bear"               ) a =                   new swipe_bear_t( this );
-  else if ( name == "swipe_cat"                ) a =                    new swipe_cat_t( this );
-  else if ( name == "thrash"                   ) a =                 new thrash_proxy_t( this );
-  else if ( name == "thrash_bear"              ) a =                  new thrash_bear_t( this );
-  else if ( name == "thrash_cat"               ) a =                   new thrash_cat_t( this );
-  else if ( name == "wild_charge"              ) a =                  new wild_charge_t( this );
-  else if ( name == "wild_growth"              ) a =                  new wild_growth_t( this );
+  else if ( name == "sunfire"                       ) a =                      new sunfire_t( this );
+  else if ( name == "swipe"                         ) a =                  new swipe_proxy_t( this );
+  else if ( name == "swipe_bear"                    ) a =                   new swipe_bear_t( this );
+  else if ( name == "swipe_cat"                     ) a =                    new swipe_cat_t( this );
+  else if ( name == "thrash"                        ) a =                 new thrash_proxy_t( this );
+  else if ( name == "thrash_bear"                   ) a =                  new thrash_bear_t( this );
+  else if ( name == "thrash_cat"                    ) a =                   new thrash_cat_t( this );
+  else if ( name == "wild_charge"                   ) a =                  new wild_charge_t( this );
+  else if ( name == "wild_growth"                   ) a =                  new wild_growth_t( this );
 
   // Multispec Talents
-  else if ( name == "berserk"                  )
+  else if ( name == "berserk" )
   {
-    if ( specialization() == DRUID_GUARDIAN )    a =                 new berserk_bear_t( this );
-    else if ( specialization() == DRUID_FERAL )  a =                  new berserk_cat_t( this );
+    if      ( specialization() == DRUID_GUARDIAN    ) a =                 new berserk_bear_t( this );
+    else if ( specialization() == DRUID_FERAL       ) a =                  new berserk_cat_t( this );
   }
-  else if ( name == "convoke_the_spirits"      ) a =          new convoke_the_spirits_t( this );
-  else if ( name == "incarnation"              )
+  else if ( name == "convoke_the_spirits"           ) a =          new convoke_the_spirits_t( this );
+  else if ( name == "incarnation" )
   {
-    switch ( specialization() )
-    {
-      case DRUID_BALANCE:                        a =          new incarnation_moonkin_t( this );
-      case DRUID_FERAL:                          a =              new incarnation_cat_t( this );
-      case DRUID_GUARDIAN:                       a =             new incarnation_bear_t( this );
-      case DRUID_RESTORATION:                    a =             new incarnation_tree_t( this );
-      default: break;
-    }
+    if      ( specialization() == DRUID_BALANCE     ) a =          new incarnation_moonkin_t( this );
+    else if ( specialization() == DRUID_FERAL       ) a =              new incarnation_cat_t( this );
+    else if ( specialization() == DRUID_GUARDIAN    ) a =             new incarnation_bear_t( this );
+    else if ( specialization() == DRUID_RESTORATION ) a =             new incarnation_tree_t( this );
   }
-  else if ( name == "survival_instincts"       ) a =           new survival_instincts_t( this );
+  else if ( name == "survival_instincts"            ) a =           new survival_instincts_t( this );
 
   // Balance
-  else if ( name == "celestial_alignment"      ) a =          new celestial_alignment_t( this );
-  else if ( name == "force_of_nature"          ) a =              new force_of_nature_t( this );
-  else if ( name == "fury_of_elune"            ) a =                new fury_of_elune_t( this );
-  else if ( name == "new_moon"                 ) a =                     new new_moon_t( this );
-  else if ( name == "half_moon"                ) a =                    new half_moon_t( this );
-  else if ( name == "full_moon"                ) a =                    new full_moon_t( this );
-  else if ( name == "moons"                    ) a =                   new moon_proxy_t( this );
-  else if ( name == "solar_beam"               ) a =                   new solar_beam_t( this );
-  else if ( name == "starfall"                 ) a =                     new starfall_t( this );
-  else if ( name == "stellar_flare"            ) a =                new stellar_flare_t( this );
-  else if ( name == "warrior_of_elune"         ) a =             new warrior_of_elune_t( this );
-  else if ( name == "wild_mushroom"            ) a =                new wild_mushroom_t( this );
+  else if ( name == "celestial_alignment"           ) a =          new celestial_alignment_t( this );
+  else if ( name == "force_of_nature"               ) a =              new force_of_nature_t( this );
+  else if ( name == "fury_of_elune"                 ) a =                new fury_of_elune_t( this );
+  else if ( name == "new_moon"                      ) a =                     new new_moon_t( this );
+  else if ( name == "half_moon"                     ) a =                    new half_moon_t( this );
+  else if ( name == "full_moon"                     ) a =                    new full_moon_t( this );
+  else if ( name == "moons"                         ) a =                   new moon_proxy_t( this );
+  else if ( name == "solar_beam"                    ) a =                   new solar_beam_t( this );
+  else if ( name == "starfall"                      ) a =                     new starfall_t( this );
+  else if ( name == "stellar_flare"                 ) a =                new stellar_flare_t( this );
+  else if ( name == "warrior_of_elune"              ) a =             new warrior_of_elune_t( this );
+  else if ( name == "wild_mushroom"                 ) a =                new wild_mushroom_t( this );
 
   // Feral
-  else if ( name == "adaptive_swarm"           ) a =               new adaptive_swarm_t( this );
-  else if ( name == "berserk_cat"              ) a =                  new berserk_cat_t( this );
-  else if ( name == "brutal_slash"             ) a =                 new brutal_slash_t( this );
-  else if ( name == "feral_frenzy"             ) a =                 new feral_frenzy_t( this );
+  else if ( name == "adaptive_swarm"                ) a =               new adaptive_swarm_t( this );
+  else if ( name == "berserk_cat"                   ) a =                  new berserk_cat_t( this );
+  else if ( name == "brutal_slash"                  ) a =                 new brutal_slash_t( this );
+  else if ( name == "feral_frenzy"                  ) a =                 new feral_frenzy_t( this );
   else if ( name == "moonfire_cat" ||
-            name == "lunar_inspiration"        ) a =            new lunar_inspiration_t( this );
-  else if ( name == "primal_wrath"             ) a =                 new primal_wrath_t( this );
-  else if ( name == "tigers_fury"              ) a =                  new tigers_fury_t( this );
+            name == "lunar_inspiration"             ) a =            new lunar_inspiration_t( this );
+  else if ( name == "primal_wrath"                  ) a =                 new primal_wrath_t( this );
+  else if ( name == "tigers_fury"                   ) a =                  new tigers_fury_t( this );
 
   // Guardian
-  else if ( name == "berserk_bear"             ) a =                 new berserk_bear_t( this );
-  else if ( name == "bristling_fur"            ) a =                new bristling_fur_t( this );
-  else if ( name == "lunar_beam"               ) a =                   new lunar_beam_t( this );
-  else if ( name == "maul"                     ) a =                         new maul_t( this );
-  else if ( name == "pulverize"                ) a =                    new pulverize_t( this );
-  else if ( name == "raze"                     ) a =                         new raze_t( this );
-  else if ( name == "rage_of_the_sleeper"      ) a =          new rage_of_the_sleeper_t( this );
+  else if ( name == "berserk_bear"                  ) a =                 new berserk_bear_t( this );
+  else if ( name == "bristling_fur"                 ) a =                new bristling_fur_t( this );
+  else if ( name == "lunar_beam"                    ) a =                   new lunar_beam_t( this );
+  else if ( name == "maul"                          ) a =                         new maul_t( this );
+  else if ( name == "pulverize"                     ) a =                    new pulverize_t( this );
+  else if ( name == "raze"                          ) a =                         new raze_t( this );
+  else if ( name == "rage_of_the_sleeper"           ) a =          new rage_of_the_sleeper_t( this );
 
   // Restoration
-  else if ( name == "cenarion_ward"            ) a =                new cenarion_ward_t( this );
-  else if ( name == "efflorescence"            ) a =                new efflorescence_t( this );
-  else if ( name == "flourish"                 ) a =                     new flourish_t( this );
-  else if ( name == "lifebloom"                ) a =                    new lifebloom_t( this );
-  else if ( name == "natures_cure"             ) a =                 new natures_cure_t( this );
-  else if ( name == "nourish"                  ) a =                      new nourish_t( this );
-  else if ( name == "overgrowth"               ) a =                   new overgrowth_t( this );
-  else if ( name == "swiftmend"                ) a =                    new swiftmend_t( this );
-  else if ( name == "tranquility"              ) a =                  new tranquility_t( this );
+  else if ( name == "cenarion_ward"                 ) a =                new cenarion_ward_t( this );
+  else if ( name == "efflorescence"                 ) a =                new efflorescence_t( this );
+  else if ( name == "flourish"                      ) a =                     new flourish_t( this );
+  else if ( name == "lifebloom"                     ) a =                    new lifebloom_t( this );
+  else if ( name == "natures_cure"                  ) a =                 new natures_cure_t( this );
+  else if ( name == "nourish"                       ) a =                      new nourish_t( this );
+  else if ( name == "overgrowth"                    ) a =                   new overgrowth_t( this );
+  else if ( name == "swiftmend"                     ) a =                    new swiftmend_t( this );
+  else if ( name == "tranquility"                   ) a =                  new tranquility_t( this );
 
   if ( a )
   {
@@ -10978,6 +10955,7 @@ void druid_t::create_actions()
   find_parent( active.galactic_guardian, "moonfire" );
   find_parent( active.maul_tooth_and_claw, "maul" );
   find_parent( active.raze_tooth_and_claw, "raze" );
+  find_parent( active.the_light_of_elune, "moonfire" );
   find_parent( active.thrash_bear_flashing, "thrash_bear" );
 }
 
@@ -11299,11 +11277,9 @@ void druid_t::init_uptimes()
   std::string ca_inc_str = talent.incarnation_moonkin.ok() ? "Incarnation" : "Celestial Alignment";
 
   uptime.astral_smolder            = get_uptime( "Astral Smolder" )->collect_uptime( *sim );
-  uptime.combined_ca_inc           = get_uptime( ca_inc_str + " (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
   uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" )->collect_uptime( *sim );
   uptime.eclipse_solar             = get_uptime( "Solar Eclipse Only" )->collect_uptime( *sim );
   uptime.eclipse_none              = get_uptime( "No Eclipse" )->collect_uptime( *sim );
-  uptime.incarnation_cat           = get_uptime( "Incarnation: Avatar of Ashamane" )->collect_uptime( *sim );
   uptime.tooth_and_claw_debuff     = get_uptime( "Tooth and Claw Debuff" )->collect_uptime( *sim );
 }
 
@@ -11806,6 +11782,7 @@ void druid_t::reset()
   dot_list.moonfire.clear();
   dot_list.sunfire.clear();
   dot_list.thrash_bear.clear();
+  dot_list.dreadful_wound.clear();
 }
 
 // druid_t::merge ===========================================================
@@ -12660,20 +12637,18 @@ void druid_t::create_options()
   add_option( opt_bool( "druid.no_cds", options.no_cds ) );
   add_option( opt_bool( "druid.raid_combat", options.raid_combat ) );
 
-  add_option( opt_float( "druid.adaptive_swarm_jump_distance_melee", options.adaptive_swarm_jump_distance_melee ) );
-  add_option( opt_float( "druid.adaptive_swarm_jump_distance_ranged", options.adaptive_swarm_jump_distance_ranged ) );
-  add_option( opt_float( "druid.adaptive_swarm_jump_distance_stddev", options.adaptive_swarm_jump_distance_stddev ) );
-  add_option( opt_uint( "druid.adaptive_swarm_melee_targets", options.adaptive_swarm_melee_targets, 1U, 29U ) );
-  add_option( opt_uint( "druid.adaptive_swarm_ranged_targets", options.adaptive_swarm_ranged_targets, 1U, 29U ) );
-  add_option( opt_func( "druid.adaptive_swarm_prepull_setup", parse_swarm_setup ) );
-
   // Balance
   add_option( opt_float( "druid.initial_astral_power", options.initial_astral_power ) );
   add_option( opt_int( "druid.initial_moon_stage", options.initial_moon_stage ) );
   add_option( opt_int( "druid.initial_orbit_breaker_stacks", options.initial_orbit_breaker_stacks ) );
 
   // Feral
-  add_option( opt_float( "druid.predator_rppm", options.predator_rppm_rate ) );
+  add_option( opt_float( "druid.adaptive_swarm_jump_distance_melee", options.adaptive_swarm_jump_distance_melee ) );
+  add_option( opt_float( "druid.adaptive_swarm_jump_distance_ranged", options.adaptive_swarm_jump_distance_ranged ) );
+  add_option( opt_float( "druid.adaptive_swarm_jump_distance_stddev", options.adaptive_swarm_jump_distance_stddev ) );
+  add_option( opt_uint( "druid.adaptive_swarm_melee_targets", options.adaptive_swarm_melee_targets, 1U, 29U ) );
+  add_option( opt_uint( "druid.adaptive_swarm_ranged_targets", options.adaptive_swarm_ranged_targets, 1U, 29U ) );
+  add_option( opt_func( "druid.adaptive_swarm_prepull_setup", parse_swarm_setup ) );
 
   // Guardian
 

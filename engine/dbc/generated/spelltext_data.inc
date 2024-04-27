@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54361
-static const std::array<spelltext_data_t, 22414> __spelltext_data { {
+static const std::array<spelltext_data_t, 22415> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -22332,6 +22332,7 @@ static const std::array<spelltext_data_t, 22414> __spelltext_data { {
   { 451968, "Expel negative chi from your body, healing for $s1 and dealing $s2% of the amount healed as Nature damage to an enemy within $115129A1 yards.$?s322102[\r\n\r\nDraws in the positive chi of all your Healing Spheres to increase the healing of Expel Harm.][]$?s342928[\r\n\r\n|cFFFFFFFFGenerates ${$s3+$342928s2} Chi.][]", 0, 0 },
   { 452030, "$@spelldesc445593", 0, 0 },
   { 452114, "Release a memory of yourself.", "A memory of yourself.", 0 },
+  { 452117, "$@spelldesc123904", 0, 0 },
   { 452130, "$@spelldesc123904", 0, 0 },
   { 452137, "Your spells and abilities have a chance to activate Flurry of Xuen, unleashing a barrage of deadly swipes to deal ${$452130s1*$s1} Physical damage in a $452130A1 yd cone.\r\n\r\nInvoking Xuen, the White Tiger activates Flurry of Xuen.", 0, 0 },
   { 452143, "Honor the dead like the nerubians do.", 0, 0 },
