@@ -525,6 +525,8 @@ public:
     propagate_const<buff_t *> hit_combo;
     propagate_const<buff_t *> invoke_xuen;
     propagate_const<buff_t *> martial_mixture;
+    propagate_const<buff_t *> momentum_boost_damage;
+    propagate_const<buff_t *> momentum_boost_speed;
     propagate_const<buff_t *> pressure_point;
     propagate_const<buff_t *> storm_earth_and_fire;
     propagate_const<buff_t *> the_emperors_capacitor;
@@ -1258,6 +1260,7 @@ public:
   double composite_melee_expertise( const weapon_t *weapon ) const override;
   double composite_spell_haste() const override;
   double composite_melee_haste() const override;
+  double composite_melee_speed() const override;
   double composite_attack_power_multiplier() const override;
   double composite_dodge() const override;
   double composite_mastery() const override;

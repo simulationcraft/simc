@@ -2433,6 +2433,8 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
     am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
+    am *= 1 + p()->buff.momentum_boost_damage->check_stack_value();
+
     return am;
   }
 
@@ -2441,6 +2443,8 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     p()->buff.chi_energy->trigger();
+
+    p()->buff.momentum_boost_damage->trigger();
 
     get_td( s->target )->debuff.shadowflame_vulnerability->trigger();
   }
@@ -2520,6 +2524,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
     p()->buff.pressure_point->trigger();
 
     p()->buff.transfer_the_power->expire();
+
+    if ( p()->talent.windwalker.momentum_boost->ok() )
+      p()->buff.momentum_boost_speed->trigger();
 
     // If Fists of Fury went the full duration
     if ( dot->current_tick == dot->num_ticks() )
@@ -2668,7 +2675,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     if ( p()->talent.windwalker.knowledge_of_the_broken_temple->ok() &&
          p()->talent.windwalker.teachings_of_the_monastery->ok() )
     {
-      int stacks = p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 1 ).base_value();
+      int stacks = as<int>( p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 1 ).base_value() );
       p()->buff.teachings_of_the_monastery->trigger( stacks );
     }
   }
@@ -8059,6 +8066,15 @@ void monk_t::create_buffs()
                              ->set_trigger_spell( talent.windwalker.martial_mixture )
                              ->set_default_value_from_effect( 1 );
 
+  buff.momentum_boost_damage = make_buff( this, "momentum_boost_damage", find_spell( 451297 ) )
+                                   ->set_trigger_spell( talent.windwalker.momentum_boost )
+                                   ->set_default_value_from_effect( 1 );
+
+  buff.momentum_boost_speed = make_buff( this, "momentum_boost_speed", find_spell( 451298 ) )
+                                  ->set_trigger_spell( talent.windwalker.momentum_boost )
+                                  ->set_default_value_from_effect( 1 )
+                                  ->add_invalidate( CACHE_ATTACK_SPEED );
+
   buff.spinning_crane_kick = make_buff( this, "spinning_crane_kick", spec.spinning_crane_kick )
                                  ->set_default_value_from_effect( 2 )
                                  ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
@@ -8067,7 +8083,7 @@ void monk_t::create_buffs()
       make_buff( this, "teachings_of_the_monastery", find_spell( 202090 ) )
           ->set_trigger_spell( shared.teachings_of_the_monastery )
           ->set_default_value_from_effect( 1 )
-          ->modify_max_stack( talent.windwalker.knowledge_of_the_broken_temple->effectN( 3 ).base_value() );
+          ->modify_max_stack( as<int>( talent.windwalker.knowledge_of_the_broken_temple->effectN( 3 ).base_value() ) );
 
   buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 365080 ) );
 
@@ -9022,6 +9038,17 @@ void monk_t::brew_cooldown_reduction( double time_reduction )
   cooldown.black_ox_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
 
   cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+}
+
+// monk_t::composite_melee_speed ===========================================
+
+double monk_t::composite_melee_speed() const
+{
+  double h = player_t::composite_melee_speed();
+
+  h *= 1.0 / ( 1.0 + buff.momentum_boost_speed->check_value() );
+
+  return h;
 }
 
 // monk_t::composite_spell_haste =========================================
