@@ -15286,7 +15286,7 @@ Tooltip          : Shadow Word: Death damage increased by $s2% and your next Sha
 
 Name             : Divine Image (id=392988) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Holy [tree=spec, row=10, col=2, max_rank=1, req_points=20]
-Class            : Priest
+Class            : Paladin, Priest
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
@@ -15309,7 +15309,7 @@ Description      : When you use a Holy Word spell, you summon an image of a Naar
 If an image has already been summoned, that image is empowered instead.
 
 Name             : Divine Image (id=392990) [Spell Family (6)] 
-Class            : Priest
+Class            : Paladin, Priest
 School           : Holy
 Spell Type       : None
 Range            : 100 yards
@@ -15820,7 +15820,7 @@ Effects          :
 Description      : $@spelldesc372307
 
 Name             : Divine Image (id=405216) [Spell Family (6), Hidden] 
-Class            : Priest
+Class            : Paladin, Priest
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
