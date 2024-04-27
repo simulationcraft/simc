@@ -139,6 +139,7 @@ public:
   void tick( dot_t *dot ) override;
   void last_tick( dot_t *dot ) override;
   double composite_persistent_multiplier( const action_state_t *state ) const override;
+  double cost() const override;
   double cost_pct_multiplier() const override;
   double cost_reduction() const;
   double composite_ta_multiplier( const action_state_t *state ) const override;
@@ -527,6 +528,7 @@ public:
     propagate_const<buff_t *> martial_mixture;
     propagate_const<buff_t *> momentum_boost_damage;
     propagate_const<buff_t *> momentum_boost_speed;
+    propagate_const<buff_t *> ordered_elements;
     propagate_const<buff_t *> pressure_point;
     propagate_const<buff_t *> storm_earth_and_fire;
     propagate_const<buff_t *> the_emperors_capacitor;

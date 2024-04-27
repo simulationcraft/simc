@@ -682,6 +682,20 @@ double monk_action_t<Base>::composite_persistent_multiplier( const action_state_
 }
 
 template <class Base>
+double monk_action_t<Base>::cost() const
+{
+  double c = ab::cost();
+
+  if ( p()->specialization() == MONK_WINDWALKER )
+  {
+    if ( ab::data().affected_by( p()->buff.ordered_elements->data().effectN( 1 ) ) )
+      c += p()->buff.ordered_elements->check_value();
+  }
+
+  return c;
+}
+
+template <class Base>
 double monk_action_t<Base>::cost_pct_multiplier() const
 {
   double c = ab::cost_pct_multiplier();
@@ -1569,6 +1583,9 @@ struct rising_sun_kick_t : public monk_melee_attack_t
       p()->active_actions.chi_wave->schedule_execute();
       p()->buff.chi_wave->expire();
     }
+
+    if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
+      p()->buff.ordered_elements->trigger();
   }
 };
 
@@ -1914,16 +1931,11 @@ struct blackout_kick_t : public monk_melee_attack_t
       {
         // Reduce the cooldown of Rising Sun Kick and Fists of Fury
         timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
-        if ( p()->buff.weapons_of_order->up() )
-        {
-          cd_reduction += ( -1 * p()->talent.brewmaster.weapons_of_order->effectN( 8 ).time_value() );
-          p()->proc.blackout_kick_cdr_with_woo->occur();
-        }
-        else
-        {
-          p()->proc.blackout_kick_cdr->occur();
-        }
 
+        if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
+          cd_reduction += ( -1 * p()->talent.windwalker.ordered_elements->effectN( 1 ).time_value() );
+
+        p()->proc.blackout_kick_cdr->occur();
         p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
         p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
       }
@@ -8074,6 +8086,10 @@ void monk_t::create_buffs()
                                   ->set_trigger_spell( talent.windwalker.momentum_boost )
                                   ->set_default_value_from_effect( 1 )
                                   ->add_invalidate( CACHE_ATTACK_SPEED );
+
+  buff.ordered_elements = make_buff( this, "ordered_elements", find_spell( 451462 ) )
+                              ->set_trigger_spell( talent.windwalker.ordered_elements )
+                              ->set_default_value_from_effect( 1 );
 
   buff.spinning_crane_kick = make_buff( this, "spinning_crane_kick", spec.spinning_crane_kick )
                                  ->set_default_value_from_effect( 2 )
