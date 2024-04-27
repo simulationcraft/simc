@@ -195,6 +195,14 @@
       { "data_type": "I", "field": "id_mastery", "elements": 2, "formats": { "cpp": "%6u" }, "ref": "SpellName" }
     ]
   },
+  "ConditionalContentTuning": {
+    "parent": "ContentTuning",
+    "fields": [
+      { "data_type": "i", "field": "index" },
+      { "data_type": "i", "field": "id_content_tuning", "ref": "ContentTuning" },
+      { "data_type": "i", "field": "flag" }
+    ]
+  },
   "ContentTuning": {
     "fields": [
       { "data_type": "i", "field": "flags" },
@@ -207,7 +215,8 @@
       { "data_type": "i", "field": "target_level_delta_max" },
       { "data_type": "i", "field": "target_level_min" },
       { "data_type": "i", "field": "target_level_max" },
-      { "data_type": "i", "field": "item_level_min" }
+      { "data_type": "i", "field": "item_level_min" },
+      { "data_type": "f", "field": "quest_xp_mult" }
     ]
   },
   "ContentTuningXExpected": {
@@ -1025,7 +1034,7 @@
       { "data_type": "i", "field": "item_context" },
       { "data_type": "i", "field": "item_context_picker_id" },
       { "data_type": "i", "field": "flags" },
-      { "data_type": "i", "field": "id_content_tuning" }
+      { "data_type": "i", "field": "id_content_tuning", "ref": "ContentTuning" }
     ]
   },
   "MCRSlotXMCRCategory": {
