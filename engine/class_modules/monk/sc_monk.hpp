@@ -590,7 +590,7 @@ public:
     propagate_const<proc_t *> blackout_combo_celestial_brew;
     propagate_const<proc_t *> blackout_combo_purifying_brew;
     propagate_const<proc_t *> blackout_combo_rising_sun_kick;
-    propagate_const<proc_t *> blackout_kick_cdr_with_woo;
+    propagate_const<proc_t *> blackout_kick_cdr_oe;
     propagate_const<proc_t *> blackout_kick_cdr;
     propagate_const<proc_t *> blackout_reinforcement_melee;
     propagate_const<proc_t *> blackout_reinforcement_sck;

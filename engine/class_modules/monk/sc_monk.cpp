@@ -1933,9 +1933,13 @@ struct blackout_kick_t : public monk_melee_attack_t
         timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
 
         if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
+        {
           cd_reduction += ( -1 * p()->talent.windwalker.ordered_elements->effectN( 1 ).time_value() );
+          p()->proc.blackout_kick_cdr_oe->occur();
+        }
+        else
+          p()->proc.blackout_kick_cdr->occur();
 
-        p()->proc.blackout_kick_cdr->occur();
         p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
         p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
       }
@@ -8430,7 +8434,7 @@ void monk_t::init_procs()
   proc.blackout_combo_celestial_brew  = get_proc( "Blackout Combo - Celestial Brew" );
   proc.blackout_combo_purifying_brew  = get_proc( "Blackout Combo - Purifying Brew" );
   proc.blackout_combo_rising_sun_kick = get_proc( "Blackout Combo - Rising Sun Kick (Press the Advantage)" );
-  proc.blackout_kick_cdr_with_woo     = get_proc( "Blackout Kick CDR with WoO" );
+  proc.blackout_kick_cdr_oe           = get_proc( "Blackout Kick CDR During SEF" );
   proc.blackout_kick_cdr              = get_proc( "Blackout Kick CDR" );
   proc.blackout_reinforcement_melee   = get_proc( "Blackout Reinforcement" );
   proc.blackout_reinforcement_sck     = get_proc( "Blackout Reinforcement (Free SCKs)" );
