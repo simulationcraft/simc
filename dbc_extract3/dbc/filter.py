@@ -821,7 +821,9 @@ class ExpectedStatModSet(DataSet):
         for c in self.db('MapDifficulty').values():
             if c.id_parent == map_id:
                 content_ids.append([c.id_content_tuning, c.difficulty])
-            elif len(dungeon_id) == 0 and c.item_context == 16: # m+ item context
+            # NOTE: so far M+ content tuning ID has always been 1279, but we calculate it out just in case
+            # item context 16 is for M+ dungeons
+            elif len(dungeon_id) == 0 and c.item_context == 16 and c.parent_record().id_expansion == xpac:
                 dungeon_id = [c.id_content_tuning, c.difficulty]
 
         # find all mod_ids that match the content tuning ids
