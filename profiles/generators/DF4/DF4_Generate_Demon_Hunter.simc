@@ -1,58 +1,58 @@
-# demonhunter="DF4_Demon_Hunter_Havoc"
-# spec=havoc
-# level=70
-# race=night_elf
-# timeofday=day
-# role=attack
-# position=back
-# talents=BEkAAAAAAAAAAAAAAAAAAAAAAIJRkkgkkIJhkkAAAAAAASLEJEJtkkWaREIho0ikEB
+demonhunter="DF4_Demon_Hunter_Havoc"
+spec=havoc
+level=70
+race=night_elf
+timeofday=night
+role=attack
+position=back
+talents=BEkAAAAAAAAAAAAAAAAAAAAAAIJRkkgkkIJBSCAAAAAAItQkERSLJplWEBSIKtIJRA
 
-# head=screaming_torchfiends_burning_scowl,id=207263,bonus_id=7187/1520/8780,gem_id=192982,enchant_id=7052
-# neck=chain_of_the_green_flight,id=137311,bonus_id=3326/1514/6536/6646/8782,gem_id=192922/192922/192922
-# shoulders=screaming_torchfiends_horned_memento,id=207261,bonus_id=7187/1520
-# back=raals_bib,id=159294,bonus_id=3316/1515/6646
-# chest=screaming_torchfiends_binding,id=207266,bonus_id=7187/1520,enchant_id=6625
-# wrists=lifebound_bindings,id=193419,bonus_id=9500/9498/9405/8960/8797/8780,ilevel=486,gem_id=192922,enchant_id=6574,crafted_stats=49/36
-# hands=screaming_torchfiends_grasp,id=207264,bonus_id=7187/1520
-# waist=bloody_dragonhide_belt,id=207131,bonus_id=7187/1520/8780,gem_id=192922,enchant_id=6904
-# legs=screaming_torchfiends_blazewraps,id=207262,bonus_id=7187/1520,enchant_id=6490
-# feet=toxic_thorn_footwraps,id=193452,bonus_id=9500/9498/9405/8960
-# finger1=band_of_twisted_bark,id=134531,bonus_id=3326/1514/6536/6646/8780,ilevel=489,gem_id=192922,enchant_id=6550
-# finger2=daydreamers_glimmering_ring,id=208442,bonus_id=7187/1520/8780,ilevel=489,gem_id=192922,enchant_id=6550
-# trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-# trinket2=witherbarks_branch,id=109999,bonus_id=9888
-# main_hand=double_time,id=207991,bonus_id=6536/1611/6646,enchant_id=6655
-# off_hand=thorncaller_claw,id=207784,bonus_id=7187/1520,enchant_id=6655
+head=screaming_torchfiends_burning_scowl,id=207263,bonus_id=1808,ilevel=528,gem_id=192982,enchant_id=7052
+neck=amulet_of_eonars_chosen,id=208445,bonus_id=8782,ilevel=528,gem_id=192922/192922/192922
+shoulders=strigine_epaulets,id=207127,ilevel=528
+back=voice_of_the_silent_star,id=204465,ilevel=535
+chest=screaming_torchfiends_binding,id=207266,ilevel=528,enchant_id=6625
+wrists=lifebound_bindings,id=193419,bonus_id=8836/8840/8902/9405/9500/8932/8960/8791/9498/9516,ilevel=525,gem_id=192922,enchant_id=6574,crafted_stats=40/49
+hands=screaming_torchfiends_grasp,id=207264,ilevel=528
+waist=oblivions_immortal_coil,id=204399,bonus_id=1808,ilevel=528,gem_id=192922,enchant_id=6904
+legs=screaming_torchfiends_blazewraps,id=207262,ilevel=528,enchant_id=6490
+feet=iceclimbers_cleats,id=195509,ilevel=528
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=1808,ilevel=528,gem_id=192922,enchant_id=6550
+finger2=signet_of_titanic_insight,id=192999,bonus_id=8836/8840/8902/8780/9405/8791/9500/8932/8960/9498,ilevel=525,gem_id=192922,enchant_id=6550,crafted_stats=32/49
+trinket1=cataclysmic_signet_brand,id=207166,ilevel=528
+trinket2=elementium_pocket_anvil,id=202617,ilevel=528
+main_hand=thorncaller_claw,id=207784,ilevel=528,enchant_id=6655
+off_hand=stormslash,id=193688,ilevel=528,enchant_id=6655
 
-# save=DF4_Demon_Hunter_Havoc.simc
+save=DF4_Demon_Hunter_Havoc.simc
 
-# demonhunter="DF4_Demon_Hunter_Havoc_SD"
-# spec=havoc
-# level=70
-# race=night_elf
-# timeofday=day
-# role=attack
-# position=back
-# talents=BEkAAAAAAAAAAAAAAAAAAAAAAIBRSCSSikESSCAAAAAAItQkQk0SSapkSOQIJho0QSEA
+demonhunter="DF4_Demon_Hunter_Havoc_SD"
+spec=havoc
+level=70
+race=night_elf
+timeofday=night
+role=attack
+position=back
+talents=BEkAAAAAAAAAAAAAAAAAAAAAAIBRSCSSikEIJAAAAAAg0CRSEJtkkGpkDkIRIKNSSEA
 
-# head=screaming_torchfiends_burning_scowl,id=207263,bonus_id=7187/1520/8780,gem_id=192982,enchant_id=7052
-# neck=chain_of_the_green_flight,id=137311,bonus_id=3326/1514/6536/6646/8782,gem_id=192922/192922/192922
-# shoulders=screaming_torchfiends_horned_memento,id=207261,bonus_id=7187/1520
-# back=raals_bib,id=159294,bonus_id=3316/1515/6646
-# chest=screaming_torchfiends_binding,id=207266,bonus_id=7187/1520,enchant_id=6625
-# wrists=lifebound_bindings,id=193419,bonus_id=9500/9498/9405/8960/8797/8780,ilevel=486,gem_id=192922,enchant_id=6574,crafted_stats=49/36
-# hands=screaming_torchfiends_grasp,id=207264,bonus_id=7187/1520
-# waist=bloody_dragonhide_belt,id=207131,bonus_id=7187/1520/8780,gem_id=192922,enchant_id=6904
-# legs=screaming_torchfiends_blazewraps,id=207262,bonus_id=7187/1520,enchant_id=6490
-# feet=toxic_thorn_footwraps,id=193452,bonus_id=9500/9498/9405/8960
-# finger1=band_of_twisted_bark,id=134531,bonus_id=3326/1514/6536/6646/8780,ilevel=489,gem_id=192922,enchant_id=6550
-# finger2=daydreamers_glimmering_ring,id=208442,bonus_id=7187/1520/8780,ilevel=489,gem_id=192922,enchant_id=6550
-# trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-# trinket2=witherbarks_branch,id=109999,bonus_id=9888
-# main_hand=double_time,id=207991,bonus_id=6536/1611/6646,enchant_id=6655
-# off_hand=thorncaller_claw,id=207784,bonus_id=7187/1520,enchant_id=6655
+head=screaming_torchfiends_burning_scowl,id=207263,bonus_id=1808,ilevel=528,gem_id=192982,enchant_id=7052
+neck=amulet_of_eonars_chosen,id=208445,bonus_id=8782,ilevel=528,gem_id=192919/192919/192919
+shoulders=strigine_epaulets,id=207127,ilevel=528
+back=voice_of_the_silent_star,id=204465,ilevel=535
+chest=screaming_torchfiends_binding,id=207266,ilevel=528,enchant_id=6625
+wrists=lifebound_bindings,id=193419,bonus_id=8836/8840/8902/9405/9500/8932/8960/9498/9516/8790,ilevel=525,gem_id=192922,enchant_id=6574,crafted_stats=40/49
+hands=screaming_torchfiends_grasp,id=207264,ilevel=528
+waist=lifebound_belt,id=193407,bonus_id=8836/8840/8902/9405/9500/8932/8960/9498/9516/8790,ilevel=525,gem_id=192922,enchant_id=6904,crafted_stats=40/36
+legs=screaming_torchfiends_blazewraps,id=207262,ilevel=528,enchant_id=6830
+feet=ancient_rotwalkers,id=193654,ilevel=528
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=1808,ilevel=528,gem_id=192919,enchant_id=6550
+finger2=seal_of_filial_duty,id=195526,bonus_id=1808,ilevel=535,gem_id=192919,enchant_id=6550
+trinket1=cataclysmic_signet_brand,id=207166,ilevel=528
+trinket2=elementium_pocket_anvil,id=202617,ilevel=528
+main_hand=thorncaller_claw,id=207784,ilevel=528,enchant_id=6655
+off_hand=stormslash,id=193688,ilevel=528,enchant_id=6655
 
-# save=DF4_Demon_Hunter_Havoc_SD.simc
+save=DF4_Demon_Hunter_Havoc_SD.simc
 
 demonhunter="DF4_Demon_Hunter_Vengeance"
 spec=vengeance
