@@ -837,7 +837,16 @@ class ExpectedStatModSet(DataSet):
 
         for c in self.db('MapDifficulty').values():
             if c.id_parent == map_id:
-                content_ids.append([c.id_content_tuning, c.difficulty])
+                id_ct = c.id_content_tuning
+
+                # check ConditionalContentTuning.db2 for fated redirects
+                for cct in self.db('ConditionalContentTuning').values():
+                    if cct.flag == 8 and cct.id_parent == id_ct:
+                        id_ct = cct.id_content_tuning
+                        break
+
+                content_ids.append([id_ct, c.difficulty])
+
             # NOTE: so far M+ content tuning ID has always been 1279, but we calculate it out just in case
             # item context 16 is for M+ dungeons
             elif len(dungeon_id) == 0 and c.item_context == 16 and c.parent_record().id_expansion == xpac:
