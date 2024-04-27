@@ -455,12 +455,6 @@ public:
     bool raid_combat = true;
 
     // Multi-Spec
-    double adaptive_swarm_jump_distance_melee = 5.0;
-    double adaptive_swarm_jump_distance_ranged = 25.0;
-    double adaptive_swarm_jump_distance_stddev = 1.0;
-    unsigned adaptive_swarm_melee_targets = 7;
-    unsigned adaptive_swarm_ranged_targets = 12;
-    std::string adaptive_swarm_prepull_setup = "";
     int convoke_the_spirits_deck = 5;
     double cenarius_guidance_exceptional_chance = 0.85;
 
@@ -470,7 +464,12 @@ public:
     int initial_orbit_breaker_stacks = -1;
 
     // Feral
-    double predator_rppm_rate = 0.0;
+    double adaptive_swarm_jump_distance_melee = 5.0;
+    double adaptive_swarm_jump_distance_ranged = 25.0;
+    double adaptive_swarm_jump_distance_stddev = 1.0;
+    unsigned adaptive_swarm_melee_targets = 7;
+    unsigned adaptive_swarm_ranged_targets = 12;
+    std::string adaptive_swarm_prepull_setup = "";
 
     // Guardian
 
@@ -1159,11 +1158,9 @@ public:
   struct uptimes_t
   {
     uptime_t* astral_smolder;
-    uptime_t* combined_ca_inc;
     uptime_t* eclipse_solar;
     uptime_t* eclipse_lunar;
     uptime_t* eclipse_none;
-    uptime_t* incarnation_cat;
     uptime_t* tooth_and_claw_debuff;
   } uptime;
 
@@ -3240,11 +3237,7 @@ struct berserk_cat_buff_t : public druid_buff_t
     base_t::start( s, v, d );
 
     if ( inc )
-    {
-      p()->uptime.incarnation_cat->update( true, sim->current_time() );
-
       p()->buff.ashamanes_guidance->trigger();
-    }
   }
 
   void expire_override( int s, timespan_t d ) override
@@ -3253,9 +3246,6 @@ struct berserk_cat_buff_t : public druid_buff_t
 
     p()->gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ]+= p()->buff.overflowing_power->check();
     p()->buff.overflowing_power->expire();
-
-    if ( inc )
-      p()->uptime.incarnation_cat->update( false, sim->current_time() );
 
     if ( inc && p()->talent.ashamanes_guidance.ok() )
     {
@@ -3406,19 +3396,10 @@ struct celestial_alignment_buff_t : public druid_buff_t
       p()->buff.eclipse_solar->trigger( d );
       p()->eclipse_handler.update_eclipse( eclipse_e::SOLAR );
 
-      p()->uptime.combined_ca_inc->update( true, sim->current_time() );
-
       p()->active.orbital_strike->execute_on_target( p()->target );
     }
 
     return ret;
-  }
-
-  void expire_override( int s, timespan_t d ) override
-  {
-    base_t::expire_override( s, d );
-
-    p()->uptime.combined_ca_inc->update( false, sim->current_time() );
   }
 };
 
@@ -11296,11 +11277,9 @@ void druid_t::init_uptimes()
   std::string ca_inc_str = talent.incarnation_moonkin.ok() ? "Incarnation" : "Celestial Alignment";
 
   uptime.astral_smolder            = get_uptime( "Astral Smolder" )->collect_uptime( *sim );
-  uptime.combined_ca_inc           = get_uptime( ca_inc_str + " (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
   uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" )->collect_uptime( *sim );
   uptime.eclipse_solar             = get_uptime( "Solar Eclipse Only" )->collect_uptime( *sim );
   uptime.eclipse_none              = get_uptime( "No Eclipse" )->collect_uptime( *sim );
-  uptime.incarnation_cat           = get_uptime( "Incarnation: Avatar of Ashamane" )->collect_uptime( *sim );
   uptime.tooth_and_claw_debuff     = get_uptime( "Tooth and Claw Debuff" )->collect_uptime( *sim );
 }
 
@@ -12658,20 +12637,18 @@ void druid_t::create_options()
   add_option( opt_bool( "druid.no_cds", options.no_cds ) );
   add_option( opt_bool( "druid.raid_combat", options.raid_combat ) );
 
-  add_option( opt_float( "druid.adaptive_swarm_jump_distance_melee", options.adaptive_swarm_jump_distance_melee ) );
-  add_option( opt_float( "druid.adaptive_swarm_jump_distance_ranged", options.adaptive_swarm_jump_distance_ranged ) );
-  add_option( opt_float( "druid.adaptive_swarm_jump_distance_stddev", options.adaptive_swarm_jump_distance_stddev ) );
-  add_option( opt_uint( "druid.adaptive_swarm_melee_targets", options.adaptive_swarm_melee_targets, 1U, 29U ) );
-  add_option( opt_uint( "druid.adaptive_swarm_ranged_targets", options.adaptive_swarm_ranged_targets, 1U, 29U ) );
-  add_option( opt_func( "druid.adaptive_swarm_prepull_setup", parse_swarm_setup ) );
-
   // Balance
   add_option( opt_float( "druid.initial_astral_power", options.initial_astral_power ) );
   add_option( opt_int( "druid.initial_moon_stage", options.initial_moon_stage ) );
   add_option( opt_int( "druid.initial_orbit_breaker_stacks", options.initial_orbit_breaker_stacks ) );
 
   // Feral
-  add_option( opt_float( "druid.predator_rppm", options.predator_rppm_rate ) );
+  add_option( opt_float( "druid.adaptive_swarm_jump_distance_melee", options.adaptive_swarm_jump_distance_melee ) );
+  add_option( opt_float( "druid.adaptive_swarm_jump_distance_ranged", options.adaptive_swarm_jump_distance_ranged ) );
+  add_option( opt_float( "druid.adaptive_swarm_jump_distance_stddev", options.adaptive_swarm_jump_distance_stddev ) );
+  add_option( opt_uint( "druid.adaptive_swarm_melee_targets", options.adaptive_swarm_melee_targets, 1U, 29U ) );
+  add_option( opt_uint( "druid.adaptive_swarm_ranged_targets", options.adaptive_swarm_ranged_targets, 1U, 29U ) );
+  add_option( opt_func( "druid.adaptive_swarm_prepull_setup", parse_swarm_setup ) );
 
   // Guardian
 
