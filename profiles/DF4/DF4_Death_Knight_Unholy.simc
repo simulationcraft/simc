@@ -177,13 +177,13 @@ legs=greaves_of_the_risen_nightmare,id=217224,bonus_id=10359/1488/10884,enchant=
 feet=fused_obsidian_sabatons,id=207156,bonus_id=10359/1488/10884
 finger1=seal_of_diurnas_chosen,id=195480,bonus_id=10359/1488/10884/6935,gem_id=192964,enchant=devotion_of_versatility_3
 finger2=seal_of_filial_duty,id=195526,bonus_id=10359/1495/10884/6935,gem_id=192964,enchant=devotion_of_haste_3
-trinket1=mirror_of_fractured_tomorrows,id=207581,bonus_id=10359/1482
+trinket1=mirror_of_fractured_tomorrows,id=207581,bonus_id=10359/1488
 trinket2=neltharions_call_to_suffering,id=204211,bonus_id=10359/1495/10884
 main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1507/10884,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=529.07
-# gear_strength=12680
+# gear_ilvl=529.47
+# gear_strength=12750
 # gear_stamina=59011
 # gear_crit_rating=2836
 # gear_haste_rating=6534
