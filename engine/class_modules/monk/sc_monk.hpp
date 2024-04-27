@@ -58,7 +58,6 @@ enum class sef_ability_e
   SEF_GLORY_OF_THE_DAWN,
   SEF_FISTS_OF_FURY,
   SEF_SPINNING_CRANE_KICK,
-  SEF_RUSHING_JADE_WIND,
   SEF_WHIRLING_DRAGON_PUNCH,
   SEF_STRIKE_OF_THE_WINDLORD,
   SEF_STRIKE_OF_THE_WINDLORD_OH,
@@ -139,6 +138,7 @@ public:
   void tick( dot_t *dot ) override;
   void last_tick( dot_t *dot ) override;
   double composite_persistent_multiplier( const action_state_t *state ) const override;
+  double cost() const override;
   double cost_pct_multiplier() const override;
   double cost_reduction() const;
   double composite_ta_multiplier( const action_state_t *state ) const override;
@@ -524,6 +524,10 @@ public:
     propagate_const<buff_t *> hidden_masters_forbidden_touch;
     propagate_const<buff_t *> hit_combo;
     propagate_const<buff_t *> invoke_xuen;
+    propagate_const<buff_t *> martial_mixture;
+    propagate_const<buff_t *> momentum_boost_damage;
+    propagate_const<buff_t *> momentum_boost_speed;
+    propagate_const<buff_t *> ordered_elements;
     propagate_const<buff_t *> pressure_point;
     propagate_const<buff_t *> storm_earth_and_fire;
     propagate_const<buff_t *> the_emperors_capacitor;
@@ -586,7 +590,7 @@ public:
     propagate_const<proc_t *> blackout_combo_celestial_brew;
     propagate_const<proc_t *> blackout_combo_purifying_brew;
     propagate_const<proc_t *> blackout_combo_rising_sun_kick;
-    propagate_const<proc_t *> blackout_kick_cdr_with_woo;
+    propagate_const<proc_t *> blackout_kick_cdr_oe;
     propagate_const<proc_t *> blackout_kick_cdr;
     propagate_const<proc_t *> blackout_reinforcement_melee;
     propagate_const<proc_t *> blackout_reinforcement_sck;
@@ -1117,6 +1121,8 @@ public:
     const spell_data_t *fortifying_brew;
     const spell_data_t *healing_elixir;
     const spell_data_t *mystic_touch;
+    const spell_data_t *rushing_jade_wind;
+    const spell_data_t *rushing_jade_wind_tick;
 
     // Brewmaster
     const spell_data_t *breath_of_fire_dot;
@@ -1160,7 +1166,6 @@ public:
     const spell_data_t *jadefire_brand_dmg;
     const spell_data_t *jadefire_brand_heal;
     const spell_data_t *fists_of_fury_tick;
-    const spell_data_t *flurry_of_xuen_damage;
     const spell_data_t *flurry_of_xuen_driver;
     const spell_data_t *flying_serpent_kick_damage;
     const spell_data_t *focus_of_xuen;
@@ -1257,6 +1262,7 @@ public:
   double composite_melee_expertise( const weapon_t *weapon ) const override;
   double composite_spell_haste() const override;
   double composite_melee_haste() const override;
+  double composite_melee_speed() const override;
   double composite_attack_power_multiplier() const override;
   double composite_dodge() const override;
   double composite_mastery() const override;

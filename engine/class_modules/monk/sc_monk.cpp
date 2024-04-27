@@ -682,6 +682,20 @@ double monk_action_t<Base>::composite_persistent_multiplier( const action_state_
 }
 
 template <class Base>
+double monk_action_t<Base>::cost() const
+{
+  double c = ab::cost();
+
+  if ( p()->specialization() == MONK_WINDWALKER )
+  {
+    if ( ab::data().affected_by( p()->buff.ordered_elements->data().effectN( 1 ) ) )
+      c += p()->buff.ordered_elements->check_value();
+  }
+
+  return c;
+}
+
+template <class Base>
 double monk_action_t<Base>::cost_pct_multiplier() const
 {
   double c = ab::cost_pct_multiplier();
@@ -1240,6 +1254,8 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     am *= 1 + p()->talent.windwalker.inner_peace->effectN( 2 ).percent();
 
+    am *= 1 + p()->buff.martial_mixture->check_stack_value();
+
     return am;
   }
 
@@ -1567,6 +1583,9 @@ struct rising_sun_kick_t : public monk_melee_attack_t
       p()->active_actions.chi_wave->schedule_execute();
       p()->buff.chi_wave->expire();
     }
+
+    if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
+      p()->buff.ordered_elements->trigger();
   }
 };
 
@@ -1751,6 +1770,10 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
     // Mark of the Crane is only triggered on the initial target
     if ( s->chain_target == 0 )
       p()->trigger_mark_of_the_crane( s );
+
+    // Martial Mixture triggers from each ToTM impact
+    if ( p()->talent.windwalker.martial_mixture->ok() )
+      p()->buff.martial_mixture->trigger();
   }
 };
 
@@ -1908,15 +1931,14 @@ struct blackout_kick_t : public monk_melee_attack_t
       {
         // Reduce the cooldown of Rising Sun Kick and Fists of Fury
         timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
-        if ( p()->buff.weapons_of_order->up() )
+
+        if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
         {
-          cd_reduction += ( -1 * p()->talent.brewmaster.weapons_of_order->effectN( 8 ).time_value() );
-          p()->proc.blackout_kick_cdr_with_woo->occur();
+          cd_reduction += ( -1 * p()->talent.windwalker.ordered_elements->effectN( 1 ).time_value() );
+          p()->proc.blackout_kick_cdr_oe->occur();
         }
         else
-        {
           p()->proc.blackout_kick_cdr->occur();
-        }
 
         p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
         p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
@@ -2002,6 +2024,10 @@ struct blackout_kick_t : public monk_melee_attack_t
           p()->partial_clear_stagger_amount( ap * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() );
       p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
     }
+
+    // Martial Mixture triggers from each BoK impact
+    if ( p()->talent.windwalker.martial_mixture->ok() )
+      p()->buff.martial_mixture->trigger();
   }
 };
 
@@ -2012,19 +2038,25 @@ struct blackout_kick_t : public monk_melee_attack_t
 struct rjw_tick_action_t : public monk_melee_attack_t
 {
   double test_softcap;
-  rjw_tick_action_t( util::string_view name, monk_t *p, const spell_data_t *data )
-    : monk_melee_attack_t( name, p, data )
+  rjw_tick_action_t( monk_t *p )
+    : monk_melee_attack_t( "rushing_jade_wind_tick", p, p->passives.rushing_jade_wind_tick )
   {
     ww_mastery = true;
 
     dual = background   = true;
     aoe                 = -1;
-    reduced_aoe_targets = p->shared.rushing_jade_wind->effectN( 1 ).base_value();
-    radius              = data->effectN( 1 ).radius();
+    reduced_aoe_targets = p->passives.rushing_jade_wind->effectN( 1 ).base_value();
+    radius              = data().effectN( 1 ).radius();
 
     // Reset some variables to ensure proper execution
     dot_duration       = timespan_t::zero();
     cooldown->duration = timespan_t::zero();
+
+    // Merge action statistics if RJW exists as an active ability
+    auto rjw_action = p->find_action( "rushing_jade_wind" );
+
+    if ( rjw_action )
+      stats = rjw_action->stats;
   }
 };
 
@@ -2034,20 +2066,13 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     : monk_melee_attack_t( "rushing_jade_wind", p, p->shared.rushing_jade_wind )
   {
     parse_options( options_str );
-    sef_ability      = actions::sef_ability_e::SEF_RUSHING_JADE_WIND;
+
     may_combo_strike = true;
     gcd_type         = gcd_haste_type::NONE;
 
     // Set dot data to 0, since we handle everything through the buff.
     base_tick_time = timespan_t::zero();
     dot_duration   = timespan_t::zero();
-
-    if ( !p->active_actions.rushing_jade_wind )
-    {
-      p->active_actions.rushing_jade_wind =
-          new rjw_tick_action_t( "rushing_jade_wind_tick", p, data().effectN( 1 ).trigger() );
-      p->active_actions.rushing_jade_wind->stats = stats;
-    }
   }
 
   void init() override
@@ -2326,6 +2351,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       {
         p()->buff.dance_of_chiji->decrement();
         p()->buff.dance_of_chiji_hidden->trigger();
+
+        if ( p()->rng().roll( p()->talent.windwalker.sequenced_strikes->effectN( 1 ).percent() ) )
+          p()->buff.bok_proc->trigger();
       }
     }
 
@@ -2423,6 +2451,8 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
     am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
+    am *= 1 + p()->buff.momentum_boost_damage->check_stack_value();
+
     return am;
   }
 
@@ -2431,6 +2461,8 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     p()->buff.chi_energy->trigger();
+
+    p()->buff.momentum_boost_damage->trigger();
 
     get_td( s->target )->debuff.shadowflame_vulnerability->trigger();
   }
@@ -2511,6 +2543,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     p()->buff.transfer_the_power->expire();
 
+    if ( p()->talent.windwalker.momentum_boost->ok() )
+      p()->buff.momentum_boost_speed->trigger();
+
     // If Fists of Fury went the full duration
     if ( dot->current_tick == dot->num_ticks() )
     {
@@ -2545,6 +2580,8 @@ struct whirling_dragon_punch_aoe_tick_t : public monk_melee_attack_t
 
     am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
+    am *= 1 + p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 2 ).percent();
+
     return am;
   }
 };
@@ -2568,6 +2605,8 @@ struct whirling_dragon_punch_st_tick_t : public monk_melee_attack_t
     double am = monk_melee_attack_t::action_multiplier();
 
     am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
+
+    am *= 1 + p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 2 ).percent();
 
     return am;
   }
@@ -2650,6 +2689,18 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
       make_event<whirling_dragon_punch_tick_event_t>( *sim, tick, tick->delay );
 
     st_tick->execute();
+
+    if ( p()->talent.windwalker.knowledge_of_the_broken_temple->ok() &&
+         p()->talent.windwalker.teachings_of_the_monastery->ok() )
+    {
+      int stacks = as<int>( p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 1 ).base_value() );
+      p()->buff.teachings_of_the_monastery->trigger( stacks );
+    }
+
+    // TODO: Check if this can proc without being talented into DoCJ
+    if ( p()->talent.windwalker.dance_of_chiji->ok() &&
+         p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
+      p()->buff.dance_of_chiji->trigger();
   }
 
   bool ready() override
@@ -2756,6 +2807,9 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
 
       p()->buff.thunderfist->trigger( thunderfist_stacks );
     }
+
+    if ( p()->talent.windwalker.rushing_jade_wind.ok() )
+      p()->trigger_mark_of_the_crane( s );
   }
 };
 
@@ -2796,6 +2850,9 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
 
     if ( result_is_hit( oh_attack->execute_state->result ) )
       mh_attack->execute();
+
+    if ( p()->talent.windwalker.rushing_jade_wind.ok() )
+      p()->buff.rushing_jade_wind->trigger();
   }
 };
 
@@ -4631,13 +4688,19 @@ struct fury_of_xuen_empowered_tiger_lightning_t : public monk_spell_t
 
 struct flurry_of_xuen_t : public monk_spell_t
 {
-  flurry_of_xuen_t( monk_t &p ) : monk_spell_t( "flurry_of_xuen", &p, p.passives.flurry_of_xuen_damage )
+  flurry_of_xuen_t( monk_t &p )
+    : monk_spell_t( "flurry_of_xuen", &p, p.passives.flurry_of_xuen_driver->effectN( 1 )._trigger_spell )
   {
     background = true;
     may_crit   = true;
 
-    dot_duration   = timespan_t::from_seconds( 2.7 );  // from logs currently
+    // p.passives.flurry_of_xuen_driver->duration()
+    // Shows 3 second duration but is 2.7s consistently in logs
+    dot_duration   = timespan_t::from_seconds( 2.7 );
     base_tick_time = dot_duration / p.talent.windwalker.flurry_of_xuen->effectN( 1 ).base_value();
+
+    attack_power_mod.direct = 0;
+    attack_power_mod.tick   = data().effectN( 1 ).ap_coeff();
   }
 
   bool ready() override
@@ -5052,6 +5115,15 @@ struct jadefire_stomp_damage_t : public monk_spell_t
     spell_power_mod.direct  = 0;
   }
 
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->talent.windwalker.singularly_focused_jade->effectN( 2 ).percent();
+
+    return am;
+  }
+
   double composite_aoe_multiplier( const action_state_t *state ) const override
   {
     double cam = monk_spell_t::composite_aoe_multiplier( state );
@@ -5076,6 +5148,15 @@ struct jadefire_stomp_heal_t : public monk_heal_t
     spell_power_mod.direct  = p.passives.jadefire_stomp_damage->effectN( 2 ).sp_coeff();
   }
 
+  double action_multiplier() const override
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    am *= 1.0 + p()->talent.windwalker.singularly_focused_jade->effectN( 2 ).percent();
+
+    return am;
+  }
+
   void impact( action_state_t *s ) override
   {
     monk_heal_t::impact( s );
@@ -5097,14 +5178,20 @@ struct jadefire_stomp_t : public monk_spell_t
     cast_during_sck  = player->specialization() != MONK_WINDWALKER;
     gcd_type         = gcd_haste_type::NONE;  // Need to define this manually for some reason
 
-    aoe = (int)data().effectN( 3 ).base_value();
-
-    damage    = new jadefire_stomp_damage_t( p );
-    heal      = new jadefire_stomp_heal_t( p );
-    ww_damage = new jadefire_stomp_ww_damage_t( p );
+    damage = new jadefire_stomp_damage_t( p );
+    heal   = new jadefire_stomp_heal_t( p );
 
     if ( p.specialization() == MONK_WINDWALKER )
+    {
+      apply_affecting_effect( p.talent.windwalker.singularly_focused_jade->effectN( 1 ) );
+      apply_affecting_effect( p.talent.windwalker.singularly_focused_jade->effectN( 3 ) );
+
+      ww_damage = new jadefire_stomp_ww_damage_t( p );
+
       add_child( ww_damage );
+    }
+
+    aoe = (int)data().effectN( 3 ).base_value();
 
     add_child( damage );
     add_child( heal );
@@ -6211,7 +6298,6 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
     set_can_cancel( true );
     set_tick_zero( true );
     set_cooldown( timespan_t::zero() );
-    set_trigger_spell( p.shared.rushing_jade_wind );
 
     set_period( s->effectN( 1 ).period() );
     set_tick_time_behavior( buff_tick_time_behavior::CUSTOM );
@@ -7673,6 +7759,8 @@ void monk_t::init_spells()
   passives.fortifying_brew           = find_spell( 120954 );
   passives.healing_elixir            = find_spell( 122281 );
   passives.mystic_touch              = find_spell( 8647 );
+  passives.rushing_jade_wind         = find_spell( 116847 );
+  passives.rushing_jade_wind_tick    = find_spell( 148187 );
 
   // Brewmaster
   passives.breath_of_fire_dot           = find_spell( 123725 );
@@ -7716,7 +7804,6 @@ void monk_t::init_spells()
   passives.jadefire_brand_heal              = find_spell( 395413 );
   passives.jadefire_stomp_ww_damage         = find_spell( 388201 );
   passives.fists_of_fury_tick               = find_spell( 117418 );
-  passives.flurry_of_xuen_damage            = find_spell( 452130 );
   passives.flurry_of_xuen_driver            = find_spell( 452117 );
   passives.focus_of_xuen                    = find_spell( 252768 );
   passives.fury_of_xuen_stacking_buff       = find_spell( 396167 );
@@ -7799,6 +7886,7 @@ void monk_t::init_spells()
   active_actions.bountiful_brew     = new actions::spells::bountiful_brew_t( *this );
   active_actions.chi_wave           = new actions::chi_wave_t( this );
   active_actions.resonant_fists     = new actions::spells::resonant_fists_t( *this );
+  active_actions.rushing_jade_wind  = new actions::rjw_tick_action_t( this );
   windwalking_aura                  = new actions::windwalking_aura_t( this );
 
   // Brewmaster
@@ -8014,7 +8102,8 @@ void monk_t::create_buffs()
 
   buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", passives.fortifying_brew );
 
-  buff.rushing_jade_wind = new buffs::rushing_jade_wind_buff_t( *this, "rushing_jade_wind", shared.rushing_jade_wind );
+  buff.rushing_jade_wind =
+      new buffs::rushing_jade_wind_buff_t( *this, "rushing_jade_wind", passives.rushing_jade_wind );
 
   buff.dampen_harm = make_buff( this, "dampen_harm", talent.general.dampen_harm );
 
@@ -8029,13 +8118,32 @@ void monk_t::create_buffs()
                               ->add_invalidate( CACHE_HASTE )
                               ->add_invalidate( CACHE_SPELL_HASTE );
 
+  buff.martial_mixture = make_buff( this, "martial_mixure", find_spell( 451457 ) )
+                             ->set_trigger_spell( talent.windwalker.martial_mixture )
+                             ->set_default_value_from_effect( 1 );
+
+  buff.momentum_boost_damage = make_buff( this, "momentum_boost_damage", find_spell( 451297 ) )
+                                   ->set_trigger_spell( talent.windwalker.momentum_boost )
+                                   ->set_default_value_from_effect( 1 );
+
+  buff.momentum_boost_speed = make_buff( this, "momentum_boost_speed", find_spell( 451298 ) )
+                                  ->set_trigger_spell( talent.windwalker.momentum_boost )
+                                  ->set_default_value_from_effect( 1 )
+                                  ->add_invalidate( CACHE_ATTACK_SPEED );
+
+  buff.ordered_elements = make_buff( this, "ordered_elements", find_spell( 451462 ) )
+                              ->set_trigger_spell( talent.windwalker.ordered_elements )
+                              ->set_default_value_from_effect( 1 );
+
   buff.spinning_crane_kick = make_buff( this, "spinning_crane_kick", spec.spinning_crane_kick )
                                  ->set_default_value_from_effect( 2 )
                                  ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
-  buff.teachings_of_the_monastery = make_buff( this, "teachings_of_the_monastery", find_spell( 202090 ) )
-                                        ->set_trigger_spell( shared.teachings_of_the_monastery )
-                                        ->set_default_value_from_effect( 1 );
+  buff.teachings_of_the_monastery =
+      make_buff( this, "teachings_of_the_monastery", find_spell( 202090 ) )
+          ->set_trigger_spell( shared.teachings_of_the_monastery )
+          ->set_default_value_from_effect( 1 )
+          ->modify_max_stack( as<int>( talent.windwalker.knowledge_of_the_broken_temple->effectN( 3 ).base_value() ) );
 
   buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 365080 ) );
 
@@ -8326,7 +8434,7 @@ void monk_t::init_procs()
   proc.blackout_combo_celestial_brew  = get_proc( "Blackout Combo - Celestial Brew" );
   proc.blackout_combo_purifying_brew  = get_proc( "Blackout Combo - Purifying Brew" );
   proc.blackout_combo_rising_sun_kick = get_proc( "Blackout Combo - Rising Sun Kick (Press the Advantage)" );
-  proc.blackout_kick_cdr_with_woo     = get_proc( "Blackout Kick CDR with WoO" );
+  proc.blackout_kick_cdr_oe           = get_proc( "Blackout Kick CDR During SEF" );
   proc.blackout_kick_cdr              = get_proc( "Blackout Kick CDR" );
   proc.blackout_reinforcement_melee   = get_proc( "Blackout Reinforcement" );
   proc.blackout_reinforcement_sck     = get_proc( "Blackout Reinforcement (Free SCKs)" );
@@ -8613,11 +8721,14 @@ void monk_t::init_special_effects()
 
   if ( talent.windwalker.flurry_of_xuen.ok() )
   {
-    create_proc_callback( talent.windwalker.flurry_of_xuen.spell(), []( monk_t *p, action_state_t *state ) {
-      p->active_actions.flurry_of_xuen->set_target( state->target );
+    create_proc_callback(
+        talent.windwalker.flurry_of_xuen.spell(),
+        []( monk_t *p, action_state_t *state ) {
+          p->active_actions.flurry_of_xuen->set_target( state->target );
 
-      return true;
-    } );
+          return true;
+        },
+        active_actions.flurry_of_xuen );
   }
 
   // ======================================
@@ -8987,6 +9098,17 @@ void monk_t::brew_cooldown_reduction( double time_reduction )
   cooldown.black_ox_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
 
   cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+}
+
+// monk_t::composite_melee_speed ===========================================
+
+double monk_t::composite_melee_speed() const
+{
+  double h = player_t::composite_melee_speed();
+
+  h *= 1.0 / ( 1.0 + buff.momentum_boost_speed->check_value() );
+
+  return h;
 }
 
 // monk_t::composite_spell_haste =========================================

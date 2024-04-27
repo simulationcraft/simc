@@ -948,37 +948,10 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_rushing_jade_wind_tick_t : public sef_tick_action_t
   {
     sef_rushing_jade_wind_tick_t( storm_earth_and_fire_pet_t *p )
-      : sef_tick_action_t( "rushing_jade_wind_tick", p,
-                           p->o()->talent.windwalker.rushing_jade_wind->effectN( 1 ).trigger() )
+      : sef_tick_action_t( "rushing_jade_wind_tick", p, p->o()->passives.rushing_jade_wind_tick )
     {
       aoe                 = -1;
-      reduced_aoe_targets = p->o()->talent.windwalker.rushing_jade_wind->effectN( 1 ).base_value();
-    }
-  };
-
-  struct sef_rushing_jade_wind_t : public sef_melee_attack_t
-  {
-    sef_rushing_jade_wind_t( storm_earth_and_fire_pet_t *player )
-      : sef_melee_attack_t( "rushing_jade_wind", player, player->o()->talent.windwalker.rushing_jade_wind )
-    {
-      dual = true;
-
-      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
-
-      weapon_power_mod = 0;
-
-      if ( !player->active_actions.rushing_jade_wind_sef )
-      {
-        player->active_actions.rushing_jade_wind_sef        = new sef_rushing_jade_wind_tick_t( player );
-        player->active_actions.rushing_jade_wind_sef->stats = stats;
-      }
-    }
-
-    void execute() override
-    {
-      sef_melee_attack_t::execute();
-
-      p()->buff.rushing_jade_wind_sef->trigger();
+      reduced_aoe_targets = p->o()->passives.rushing_jade_wind->effectN( 1 ).base_value();
     }
   };
 
@@ -1261,7 +1234,6 @@ public:
     attacks.at( (int)actions::sef_ability_e::SEF_GLORY_OF_THE_DAWN )      = new sef_glory_of_the_dawn_t( this );
     attacks.at( (int)actions::sef_ability_e::SEF_FISTS_OF_FURY )          = new sef_fists_of_fury_t( this );
     attacks.at( (int)actions::sef_ability_e::SEF_SPINNING_CRANE_KICK )    = new sef_spinning_crane_kick_t( this );
-    attacks.at( (int)actions::sef_ability_e::SEF_RUSHING_JADE_WIND )      = new sef_rushing_jade_wind_t( this );
     attacks.at( (int)actions::sef_ability_e::SEF_WHIRLING_DRAGON_PUNCH )  = new sef_whirling_dragon_punch_t( this );
     attacks.at( (int)actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD ) = new sef_strike_of_the_windlord_t( this );
     attacks.at( (int)actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH ) =
@@ -1270,6 +1242,8 @@ public:
     spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CHI_WAVE ) ) = new sef_chi_wave_t( this );
     spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING ) ) =
         new sef_crackling_jade_lightning_t( this );
+
+    active_actions.rushing_jade_wind_sef = new sef_rushing_jade_wind_tick_t( this );
   }
 
   void init_action_list() override
@@ -1318,11 +1292,11 @@ public:
             ->set_trigger_spell( o()->spec.combo_breaker )
             ->set_quiet( true );  // In-game does not show this buff but I would like to use it for background stuff;
 
-    buff.rushing_jade_wind_sef = make_buff( this, "rushing_jade_wind_sef", o()->talent.windwalker.rushing_jade_wind )
+    buff.rushing_jade_wind_sef = make_buff( this, "rushing_jade_wind_sef", o()->passives.rushing_jade_wind )
                                      ->set_can_cancel( true )
                                      ->set_tick_zero( true )
                                      ->set_cooldown( timespan_t::zero() )
-                                     ->set_period( o()->talent.windwalker.rushing_jade_wind->effectN( 1 ).period() )
+                                     ->set_period( o()->passives.rushing_jade_wind->effectN( 1 ).period() )
                                      ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                                      ->set_duration( sim->expected_iteration_time * 2 )
                                      ->set_tick_behavior( buff_tick_behavior::CLIP )
