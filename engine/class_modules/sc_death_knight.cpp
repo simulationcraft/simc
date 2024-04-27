@@ -1158,10 +1158,10 @@ public:
     // Deathbringer
     struct
     {
-      player_talent_t reapers_mark;   // NYI
-      player_talent_t wave_of_souls;  // NYI
-      player_talent_t blood_fever;    // NYI
-      player_talent_t bind_in_darkness;
+      player_talent_t reapers_mark;      // NYI
+      player_talent_t wave_of_souls;     // NYI
+      player_talent_t blood_fever;       // NYI
+      player_talent_t bind_in_darkness;  // NYI
       player_talent_t soul_rupture;      // NYI
       player_talent_t grim_reaper;       // NYI
       player_talent_t deaths_bargain;    // NYI
@@ -1187,7 +1187,7 @@ public:
       player_talent_t frenzied_bloodthirst;
       player_talent_t the_blood_is_life;
       player_talent_t visceral_regeneration;
-      player_talent_t incite_terror;  // NYI
+      player_talent_t incite_terror;
       player_talent_t pact_of_the_sanlayn;
       player_talent_t sanguine_scent;
       player_talent_t gift_of_the_sanlayn;
@@ -5122,6 +5122,10 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
     else
     {
       name_str = base_action->name_str;
+    }
+    if( p->talent.sanlayn.infliction_of_sorrow.ok() )
+    {
+      add_child( p->active_spells.infliction_of_sorrow );
     }
   }
 
