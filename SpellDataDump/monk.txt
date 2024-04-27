@@ -21431,12 +21431,34 @@ Draws in the positive chi of all your Healing Spheres to increase the healing of
 
 |cFFFFFFFFGenerates ${$s3+$342928s2} Chi.][]
 
+Name             : Flurry of Xuen (id=452117) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Duration         : 3 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : No Aura Icon (60), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1153042)  : Apply Aura (6) | Periodic Trigger Spell (23): Flurry of Xuen every 0.3 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 452130 | Target: Self (1)
+#2 (id=1153043)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc123904
+
 Name             : Flurry of Xuen (id=452130) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Max Targets      : 5
 Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Weapons of Order (387179 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Press the Advantage (418361 effect#1), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Wisdom of the Wall (452684 effect#1)
+Triggered by     : Flurry of Xuen (452117)
 Family Flags     : 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
