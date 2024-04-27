@@ -56,6 +56,7 @@ SRC += \
     class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock_pets.cpp \
     dbc$(PATHSEP)active_spells.cpp \
     dbc$(PATHSEP)azerite.cpp \
+    dbc$(PATHSEP)character_loadout.cpp \
     dbc$(PATHSEP)client_data.cpp \
     dbc$(PATHSEP)client_hotfix_entry.cpp \
     dbc$(PATHSEP)covenant_data.cpp \

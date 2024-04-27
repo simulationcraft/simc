@@ -5008,6 +5008,11 @@ class CharacterLoadoutGenerator(DataGenerator):
         return CharacterLoadoutSet(self._options).get()
 
     def generate(self, data = None):
+        # assume target mythic ilevel is highest heroic dungeon find minium ilevel + 6 * 13
+        _ilevels = [e.heroic_lfg_dungeon_min_gear for e in self.db('MythicPlusSeason').values()]
+        _ilevels.sort(reverse=True)
+        self._out.write('static constexpr int MYTHIC_TARGET_ITEM_LEVEL = {};\n\n'.format(_ilevels[0] + 6 * 13))
+
         self.output_header(
             header = 'Character Loadout data',
             type = 'character_loadout_data_t',

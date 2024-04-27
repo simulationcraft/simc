@@ -1094,6 +1094,7 @@
     "fields": [
       { "data_type": "i", "field": "id" },
       { "data_type": "i", "field": "milestone_season" },
+      { "data_type": "i", "field": "unk_1" },
       { "data_type": "i", "field": "id_expansion" },
       { "data_type": "i", "field": "heroic_lfg_dungeon_min_gear" }
     ]

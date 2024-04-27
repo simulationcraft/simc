@@ -35,6 +35,7 @@ class_modules/warlock/sc_warlock_pets.hpp
 config.hpp
 dbc/active_spells.hpp
 dbc/azerite.hpp
+dbc/character_loadout.hpp
 dbc/client_data.hpp
 dbc/client_hotfix_entry.hpp
 dbc/covenant_data.hpp
@@ -246,6 +247,7 @@ class_modules/warlock/sc_warlock_destruction.cpp
 class_modules/warlock/sc_warlock_pets.cpp
 dbc/active_spells.cpp
 dbc/azerite.cpp
+dbc/character_loadout.cpp
 dbc/client_data.cpp
 dbc/client_hotfix_entry.cpp
 dbc/covenant_data.cpp

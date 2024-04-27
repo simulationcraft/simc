@@ -1,3 +1,5 @@
+static constexpr int MYTHIC_TARGET_ITEM_LEVEL = 578;
+
 // Character Loadout data, wow build 11.0.0.54361
 static const std::array<character_loadout_data_t, 599> __character_loadout_data { {
   { 1809, 1, 0, 154025 },

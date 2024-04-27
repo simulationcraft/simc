@@ -5,14 +5,14 @@
 
 #include "player.hpp"
 
+#include "action/action.hpp"
 #include "action/action_callback.hpp"
+#include "action/action_state.hpp"
 #include "action/attack.hpp"
 #include "action/dbc_proc_callback.hpp"
 #include "action/dot.hpp"
 #include "action/heal.hpp"
 #include "action/residual_action.hpp"
-#include "action/action.hpp"
-#include "action/action_state.hpp"
 #include "action/sequence.hpp"
 #include "action/snapshot_stats.hpp"
 #include "action/spell.hpp"
@@ -20,6 +20,8 @@
 #include "buff/buff.hpp"
 #include "dbc/active_spells.hpp"
 #include "dbc/azerite.hpp"
+#include "dbc/character_loadout.hpp"
+#include "dbc/covenant_data.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/item_database.hpp"
 #include "dbc/item_set_bonus.hpp"
@@ -27,7 +29,6 @@
 #include "dbc/specialization_spell.hpp"
 #include "dbc/temporary_enchant.hpp"
 #include "dbc/trait_data.hpp"
-#include "dbc/covenant_data.hpp"
 #include "item/item.hpp"
 #include "item/special_effect.hpp"
 #include "player/action_priority_list.hpp"
@@ -42,25 +43,25 @@
 #include "player/player_demise_event.hpp"
 #include "player/player_event.hpp"
 #include "player/player_scaling.hpp"
+#include "player/player_talent_points.hpp"
+#include "player/runeforge_data.hpp"
 #include "player/sample_data_helper.hpp"
 #include "player/scaling_metric_data.hpp"
 #include "player/set_bonus.hpp"
 #include "player/soulbinds.hpp"
 #include "player/spawner_base.hpp"
 #include "player/stats.hpp"
-#include "player/player_talent_points.hpp"
 #include "player/unique_gear.hpp"
-#include "player/runeforge_data.hpp"
 #include "sim/benefit.hpp"
+#include "sim/cooldown.hpp"
+#include "sim/cooldown_waste_data.hpp"
 #include "sim/event.hpp"
+#include "sim/expressions.hpp"
 #include "sim/proc.hpp"
 #include "sim/real_ppm.hpp"
-#include "sim/cooldown.hpp"
-#include "sim/expressions.hpp"
-#include "sim/sim.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/shuffled_rng.hpp"
-#include "sim/cooldown_waste_data.hpp"
+#include "sim/sim.hpp"
 #include "util/io.hpp"
 #include "util/plot_data.hpp"
 #include "util/rng.hpp"
@@ -1199,6 +1200,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     matching_gear( false ),
     item_cooldown( new cooldown_t("item_cd", *this) ),
     default_item_group_cooldown( 20_s ),
+    load_default_gear( false ),
     auto_attack_modifier( 0.0 ),
     auto_attack_base_modifier( 0.0 ),
     auto_attack_multiplier( 1.0 ),
@@ -1812,16 +1814,6 @@ void player_t::init_items()
 {
   sim->print_debug( "Initializing items for {}.", *this );
 
-  // Create items
-  for ( const auto& split : util::string_split<util::string_view>( items_str, "/" ) )
-  {
-    if ( find_item_by_name( split ) )
-    {
-      sim->error( "{} has multiple {} equipped.\n", *this, split );
-    }
-    items.emplace_back( this, std::string(split) );
-  }
-
   std::array<bool, SLOT_MAX> matching_gear_slots;  // true if the given item is equal to the highest armor type the player can wear
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     matching_gear_slots[ i ] = !util::is_match_slot( i );
@@ -1839,6 +1831,28 @@ void player_t::init_items()
       {
         sim->error( "{} overriding unknown item slot '{}={}'; ignoring.", *this, override_slot, override_str );
       }
+    }
+  }
+
+  if ( load_default_gear )
+  {
+    uint32_t class_, spec_;
+    if ( !dbc->spec_idx( specialization(), class_, spec_ ) )
+    {
+      sim->error( "{} cannot load default gear, invalid class and/or specialization.", *this );
+      return;
+    }
+
+    for ( const auto& gear : character_loadout_data_t::data( class_, spec_, is_ptr() ) )
+    {
+      const auto& item = dbc->item( gear.id_item );
+      auto slot = util::translate_invtype( static_cast<inventory_type>( item.inventory_type ) );
+
+      if ( !items[ slot ].options_str.empty() )
+        continue;
+
+      items[ slot ].options_str =
+          fmt::format( ",id={},ilevel={}", gear.id_item, character_loadout_data_t::default_item_level() );
     }
   }
 
@@ -12397,10 +12411,6 @@ std::string player_t::create_profile( save_e stype )
           profile_str += "# " + item.encoded_comment() + term;
       }
     }
-    if ( !items_str.empty() )
-    {
-      profile_str += "items=" + items_str + term;
-    }
 
     profile_str += "\n# Gear Summary" + term;
     double avg_ilvl = util::round( avg_item_level(), 2 );
@@ -12632,6 +12642,7 @@ void player_t::create_options()
   add_option( opt_func( "stat_timelines", parse_stat_timelines ) );
   add_option( opt_bool( "disable_hotfixes", disable_hotfixes ) );
   add_option( opt_func( "min_gcd", parse_min_gcd ) );
+  add_option( opt_bool( "load_default_gear", load_default_gear ) );
 
   // Talents
   add_option( opt_string( "class_talents", class_talents_str ) );
@@ -12655,8 +12666,8 @@ void player_t::create_options()
 
   // Items
   add_option( opt_string( "meta_gem", meta_gem_str ) );
-  add_option( opt_string( "items", items_str ) );
-  add_option( opt_append( "items+", items_str ) );
+  add_option( opt_deprecated( "items", "use individual slot options" ) );
+  add_option( opt_deprecated( "items+", "use individual slot options" ) );
   add_option( opt_string( "head", items[ SLOT_HEAD ].options_str ) );
   add_option( opt_string( "neck", items[ SLOT_NECK ].options_str ) );
   add_option( opt_string( "shoulders", items[ SLOT_SHOULDERS ].options_str ) );

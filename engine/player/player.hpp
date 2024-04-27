@@ -6,20 +6,22 @@
 #pragma once
 
 #include "config.hpp"
+
 #include "actor.hpp"
-#include "sc_enums.hpp"
-#include "player_resources.hpp"
-#include "gear_stats.hpp"
-#include "rating.hpp"
-#include "weapon.hpp"
+#include "assessor.hpp"
+#include "dbc/specialization.hpp"
 #include "effect_callbacks.hpp"
+#include "gear_stats.hpp"
 #include "player_collected_data.hpp"
 #include "player_processed_report_information.hpp"
+#include "player_resources.hpp"
 #include "player_stat_cache.hpp"
-#include "util/cache.hpp"
-#include "dbc/specialization.hpp"
-#include "assessor.hpp"
+#include "rating.hpp"
+#include "sc_enums.hpp"
 #include "talent.hpp"
+#include "util/cache.hpp"
+#include "weapon.hpp"
+
 #include <map>
 #include <set>
 #include <unordered_map>
@@ -388,7 +390,7 @@ struct player_t : public actor_t
   void sequence_add_wait( timespan_t amount, timespan_t ts );
 
   // Gear
-  std::string items_str, meta_gem_str, potion_str, flask_str, food_str, rune_str;
+  std::string meta_gem_str, potion_str, flask_str, food_str, rune_str;
   std::string temporary_enchant_str;
   std::vector<item_t> items;
   gear_stats_t gear, enchant; // Option based stats
@@ -398,6 +400,7 @@ struct player_t : public actor_t
   bool matching_gear;
   std::unique_ptr<cooldown_t> item_cooldown;
   timespan_t default_item_group_cooldown;
+  bool load_default_gear;
 
   // Misc Multipliers
   // auto attack modifier and multiplier (for Jeweled Signet of Melandrus and similar effects)
