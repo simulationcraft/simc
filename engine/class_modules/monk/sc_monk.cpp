@@ -2690,6 +2690,11 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
       int stacks = as<int>( p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 1 ).base_value() );
       p()->buff.teachings_of_the_monastery->trigger( stacks );
     }
+
+    // TODO: Check if this can proc without being talented into DoCJ
+    if ( p()->talent.windwalker.dance_of_chiji->ok() &&
+         p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
+      p()->buff.dance_of_chiji->trigger();
   }
 
   bool ready() override
