@@ -2039,8 +2039,6 @@ struct rjw_tick_action_t : public monk_melee_attack_t
   {
     ww_mastery = true;
 
-    sef_ability = actions::sef_ability_e::SEF_RUSHING_JADE_WIND;
-
     dual = background   = true;
     aoe                 = -1;
     reduced_aoe_targets = p->passives.rushing_jade_wind->effectN( 1 ).base_value();
