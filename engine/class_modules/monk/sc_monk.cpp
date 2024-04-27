@@ -4676,7 +4676,8 @@ struct fury_of_xuen_empowered_tiger_lightning_t : public monk_spell_t
 
 struct flurry_of_xuen_t : public monk_spell_t
 {
-  flurry_of_xuen_t( monk_t &p ) : monk_spell_t( "flurry_of_xuen", &p, p.passives.flurry_of_xuen_damage )
+  flurry_of_xuen_t( monk_t &p )
+    : monk_spell_t( "flurry_of_xuen", &p, p.passives.flurry_of_xuen_driver->effectN( 1 )._trigger_spell )
   {
     background = true;
     may_crit   = true;
@@ -7766,7 +7767,6 @@ void monk_t::init_spells()
   passives.jadefire_brand_heal              = find_spell( 395413 );
   passives.jadefire_stomp_ww_damage         = find_spell( 388201 );
   passives.fists_of_fury_tick               = find_spell( 117418 );
-  passives.flurry_of_xuen_damage            = find_spell( 452130 );
   passives.flurry_of_xuen_driver            = find_spell( 452117 );
   passives.focus_of_xuen                    = find_spell( 252768 );
   passives.fury_of_xuen_stacking_buff       = find_spell( 396167 );
