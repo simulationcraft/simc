@@ -1541,6 +1541,21 @@ class SpellDataGenerator(DataGenerator):
             ( 425262, 0 ),          # Cleansing Flame (Healing - Prot T31 4pc)
             ( 423590, 0 ),          # Echoes of Wrath (Ret T31 4pc buff)
             ( 423593, 0 ),          # Tempest of the Lightbringer triggered by T31 4pc
+            # The War Within
+            ( 433807 , 0),          # Divine Guidance healing
+            ( 433808 , 0),          # Divine Guidance damage
+            ( 434132 , 0),          # Blessing of the Forge summon event
+            ( 434255 , 0),          # Blessing of the Forge related buff
+            ( 447258 , 0),          # Blessing of the Forge Forge's Reckoning - SotR trigger
+            ( 447246 , 0),          # Blessing of the Forge's Sacred Word - WoG trigger
+            ( 441590 , 0),          # Sacred Weapon healing
+            ( 432607 , 0),          # Holy Bulwark shield
+            ( 431910 , 0),          # Sun's Avatar buff, healing buff
+            ( 431907 , 0),          # Sun's Avatar buff, damage buff
+            ( 431939 , 0),          # Sun's Avatar healing
+            ( 431911 , 0),          # Sun's Avatar damage
+            ( 431382 , 0),          # Dawnlight aoe healing
+            ( 431399 , 0),          # Dawnlight aoe damage
         ),
 
         # Hunter:
