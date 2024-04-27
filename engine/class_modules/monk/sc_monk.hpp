@@ -1254,38 +1254,6 @@ public:
       stagger_buff_t( monk_t &player, std::string_view name, const spell_data_t* spell );
     };
 
-    struct stagger_level_t
-    {
-      const double min_percent;
-      const stagger_level_e level;
-      std::string_view name;
-      const spell_data_t* spell_data;
-      propagate_const<stagger_buff_t *> debuff;
-      sample_data_helper_t *absorbed;
-      sample_data_helper_t *taken;
-      sample_data_helper_t *mitigated;
-
-      stagger_level_t( stagger_level_e level, monk_t* player );
-    };
-
-    struct sample_data_t
-    {
-      sc_timeline_t pool_size;         // raw stagger in pool
-      sc_timeline_t pool_size_percent; // pool as a fraction of current maximum hp
-      sc_timeline_t effectiveness;     // stagger effectiveness
-      double buffed_base_value;
-      double buffed_percent_player_level;
-      double buffed_percent_target_level;
-      // assert(absorbed == taken + mitigated)
-      // assert(sum(cleared) == mitigated)
-      sample_data_helper_t *absorbed;
-      sample_data_helper_t *taken;
-      sample_data_helper_t *mitigated;
-      std::unordered_map<std::string, sample_data_helper_t *> mitigated_by_ability;
-
-      sample_data_t( monk_t *player );
-    };
-
     struct self_damage_t : residual_action::residual_periodic_action_t<actions::monk_spell_t>
     {
       using base_t = residual_action::residual_periodic_action_t<actions::monk_spell_t>;
@@ -1297,28 +1265,61 @@ public:
       void last_tick( dot_t *d ) override;                                            // callback on last tick
     };
 
-  private:
+    struct stagger_level_t
+    {
+      const stagger_level_e level;
+      const double min_percent;
+      std::string name;
+      std::string name_pretty;
+      const spell_data_t* spell_data;
+      propagate_const<stagger_buff_t *> debuff;
+      sample_data_helper_t *absorbed;
+      sample_data_helper_t *taken;
+      sample_data_helper_t *mitigated;
+
+      stagger_level_t( stagger_level_e level, monk_t* player );
+      static double min_threshold( stagger_level_e level );
+      static std::string level_name_pretty( stagger_level_e level );
+      static std::string level_name( stagger_level_e level );
+      static const spell_data_t *level_spell_data( stagger_level_e level, monk_t *player );
+    };
+
+    struct sample_data_t
+    {
+      sc_timeline_t pool_size;         // raw stagger in pool
+      sc_timeline_t pool_size_percent; // pool as a fraction of current maximum hp
+      sc_timeline_t effectiveness;     // stagger effectiveness
+      double buffed_base_value;
+      double buffed_percent_player_level;
+      double buffed_percent_target_level;
+      // assert(absorbed == taken + mitigated)
+      // assert(sum(mitigated_by_ability) == mitigated)
+      sample_data_helper_t *absorbed;
+      sample_data_helper_t *taken;
+      sample_data_helper_t *mitigated;
+      std::unordered_map<std::string, sample_data_helper_t *> mitigated_by_ability;
+
+      sample_data_t( monk_t *player );
+    };
+
     monk_t *player;
     std::vector<stagger_level_t *> stagger_levels;
     stagger_level_t *current;
 
-    void damage_changed( bool last_tick = false );
+    stagger_level_e find_current_level();
     void set_pool( double amount );
-    static double min_threshold( stagger_level_e level );
-    stagger_level_e find_current_threshold();
-    static std::string level_name( stagger_level_e level );
+    void damage_changed( bool last_tick = false );
 
-  public:
     self_damage_t *self_damage;
     sample_data_t *sample_data;
     stagger_t( monk_t* player );
 
     double base_value();
     double percent( unsigned target_level );
-    stagger_level_e current_threshold();
+    stagger_level_e current_level();
+    double level_index();
     // even though this is an index, it is often used in floating point arithmetic,
     // which makes returning a double preferable to help avoid int arithmetic nonsense
-    double current_index();
 
     void add_sample( std::string name, double amount );
 
@@ -1330,17 +1331,11 @@ public:
     timespan_t remains();
 
     // TODO: implement a more automated procedure for guard-style absorb handling
-    double trigger( school_e schoo, result_amount_type damage_type, action_state_t *state );
+    double trigger( school_e school, result_amount_type damage_type, action_state_t *state );
     double purify_flat( double amount, bool report_amount = true );
     double purify_percent( double amount );
     double purify_all();
     void delay_tick( timespan_t delay );
-    /*
-     * TODO:
-     * why is attack haste cache being invalidated?!
-     * html report
-     * json report
-     */
   };
 
   stagger_t *stagger;
