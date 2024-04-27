@@ -2034,19 +2034,25 @@ struct blackout_kick_t : public monk_melee_attack_t
 struct rjw_tick_action_t : public monk_melee_attack_t
 {
   double test_softcap;
-  rjw_tick_action_t( util::string_view name, monk_t *p, const spell_data_t *data )
-    : monk_melee_attack_t( name, p, data )
+  rjw_tick_action_t( monk_t *p )
+    : monk_melee_attack_t( "rushing_jade_wind_tick", p, p->passives.rushing_jade_wind_tick )
   {
     ww_mastery = true;
 
     dual = background   = true;
     aoe                 = -1;
-    reduced_aoe_targets = p->shared.rushing_jade_wind->effectN( 1 ).base_value();
-    radius              = data->effectN( 1 ).radius();
+    reduced_aoe_targets = p->passives.rushing_jade_wind->effectN( 1 ).base_value();
+    radius              = data().effectN( 1 ).radius();
 
     // Reset some variables to ensure proper execution
     dot_duration       = timespan_t::zero();
     cooldown->duration = timespan_t::zero();
+
+    // Merge action statistics if RJW exists as an active ability
+    auto rjw_action = p->find_action( "rushing_jade_wind" );
+
+    if ( rjw_action )
+      stats = rjw_action->stats;
   }
 };
 
@@ -2063,13 +2069,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     // Set dot data to 0, since we handle everything through the buff.
     base_tick_time = timespan_t::zero();
     dot_duration   = timespan_t::zero();
-
-    if ( !p->active_actions.rushing_jade_wind )
-    {
-      p->active_actions.rushing_jade_wind =
-          new rjw_tick_action_t( "rushing_jade_wind_tick", p, data().effectN( 1 ).trigger() );
-      p->active_actions.rushing_jade_wind->stats = stats;
-    }
   }
 
   void init() override
@@ -2804,6 +2803,9 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
 
       p()->buff.thunderfist->trigger( thunderfist_stacks );
     }
+
+    if ( p()->talent.windwalker.rushing_jade_wind.ok() )
+      p()->trigger_mark_of_the_crane( s );
   }
 };
 
@@ -2844,6 +2846,9 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
 
     if ( result_is_hit( oh_attack->execute_state->result ) )
       mh_attack->execute();
+
+    if ( p()->talent.windwalker.rushing_jade_wind.ok() )
+      p()->buff.rushing_jade_wind->trigger();
   }
 };
 
@@ -6289,7 +6294,6 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
     set_can_cancel( true );
     set_tick_zero( true );
     set_cooldown( timespan_t::zero() );
-    set_trigger_spell( p.shared.rushing_jade_wind );
 
     set_period( s->effectN( 1 ).period() );
     set_tick_time_behavior( buff_tick_time_behavior::CUSTOM );
@@ -7751,6 +7755,8 @@ void monk_t::init_spells()
   passives.fortifying_brew           = find_spell( 120954 );
   passives.healing_elixir            = find_spell( 122281 );
   passives.mystic_touch              = find_spell( 8647 );
+  passives.rushing_jade_wind         = find_spell( 116847 );
+  passives.rushing_jade_wind_tick    = find_spell( 148187 );
 
   // Brewmaster
   passives.breath_of_fire_dot           = find_spell( 123725 );
@@ -7876,6 +7882,7 @@ void monk_t::init_spells()
   active_actions.bountiful_brew     = new actions::spells::bountiful_brew_t( *this );
   active_actions.chi_wave           = new actions::chi_wave_t( this );
   active_actions.resonant_fists     = new actions::spells::resonant_fists_t( *this );
+  active_actions.rushing_jade_wind  = new actions::rjw_tick_action_t( this );
   windwalking_aura                  = new actions::windwalking_aura_t( this );
 
   // Brewmaster
@@ -8091,7 +8098,8 @@ void monk_t::create_buffs()
 
   buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", passives.fortifying_brew );
 
-  buff.rushing_jade_wind = new buffs::rushing_jade_wind_buff_t( *this, "rushing_jade_wind", shared.rushing_jade_wind );
+  buff.rushing_jade_wind =
+      new buffs::rushing_jade_wind_buff_t( *this, "rushing_jade_wind", passives.rushing_jade_wind );
 
   buff.dampen_harm = make_buff( this, "dampen_harm", talent.general.dampen_harm );
 

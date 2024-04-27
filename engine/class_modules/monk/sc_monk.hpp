@@ -1122,6 +1122,8 @@ public:
     const spell_data_t *fortifying_brew;
     const spell_data_t *healing_elixir;
     const spell_data_t *mystic_touch;
+    const spell_data_t *rushing_jade_wind;
+    const spell_data_t *rushing_jade_wind_tick;
 
     // Brewmaster
     const spell_data_t *breath_of_fire_dot;
