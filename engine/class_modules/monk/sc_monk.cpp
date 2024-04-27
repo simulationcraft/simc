@@ -1240,6 +1240,8 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     am *= 1 + p()->talent.windwalker.inner_peace->effectN( 2 ).percent();
 
+    am *= 1 + p()->buff.martial_mixture->check_stack_value();
+
     return am;
   }
 
@@ -1751,6 +1753,10 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
     // Mark of the Crane is only triggered on the initial target
     if ( s->chain_target == 0 )
       p()->trigger_mark_of_the_crane( s );
+
+    // Martial Mixture triggers from each ToTM impact
+    if ( p()->talent.windwalker.martial_mixture->ok() )
+      p()->buff.martial_mixture->trigger();
   }
 };
 
@@ -2002,6 +2008,10 @@ struct blackout_kick_t : public monk_melee_attack_t
           p()->partial_clear_stagger_amount( ap * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() );
       p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
     }
+
+    // Martial Mixture triggers from each BoK impact
+    if ( p()->talent.windwalker.martial_mixture->ok() )
+      p()->buff.martial_mixture->trigger();
   }
 };
 
@@ -8044,6 +8054,10 @@ void monk_t::create_buffs()
                               ->add_invalidate( CACHE_ATTACK_HASTE )
                               ->add_invalidate( CACHE_HASTE )
                               ->add_invalidate( CACHE_SPELL_HASTE );
+
+  buff.martial_mixture = make_buff( this, "martial_mixure", find_spell( 451457 ) )
+                             ->set_trigger_spell( talent.windwalker.martial_mixture )
+                             ->set_default_value_from_effect( 1 );
 
   buff.spinning_crane_kick = make_buff( this, "spinning_crane_kick", spec.spinning_crane_kick )
                                  ->set_default_value_from_effect( 2 )

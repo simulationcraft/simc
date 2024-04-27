@@ -524,6 +524,7 @@ public:
     propagate_const<buff_t *> hidden_masters_forbidden_touch;
     propagate_const<buff_t *> hit_combo;
     propagate_const<buff_t *> invoke_xuen;
+    propagate_const<buff_t *> martial_mixture;
     propagate_const<buff_t *> pressure_point;
     propagate_const<buff_t *> storm_earth_and_fire;
     propagate_const<buff_t *> the_emperors_capacitor;
