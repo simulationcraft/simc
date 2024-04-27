@@ -5106,6 +5106,15 @@ struct jadefire_stomp_damage_t : public monk_spell_t
     spell_power_mod.direct  = 0;
   }
 
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->talent.windwalker.singularly_focused_jade->effectN( 2 ).percent();
+
+    return am;
+  }
+
   double composite_aoe_multiplier( const action_state_t *state ) const override
   {
     double cam = monk_spell_t::composite_aoe_multiplier( state );
@@ -5130,6 +5139,15 @@ struct jadefire_stomp_heal_t : public monk_heal_t
     spell_power_mod.direct  = p.passives.jadefire_stomp_damage->effectN( 2 ).sp_coeff();
   }
 
+  double action_multiplier() const override
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    am *= 1.0 + p()->talent.windwalker.singularly_focused_jade->effectN( 2 ).percent();
+
+    return am;
+  }
+
   void impact( action_state_t *s ) override
   {
     monk_heal_t::impact( s );
@@ -5151,14 +5169,20 @@ struct jadefire_stomp_t : public monk_spell_t
     cast_during_sck  = player->specialization() != MONK_WINDWALKER;
     gcd_type         = gcd_haste_type::NONE;  // Need to define this manually for some reason
 
-    aoe = (int)data().effectN( 3 ).base_value();
-
-    damage    = new jadefire_stomp_damage_t( p );
-    heal      = new jadefire_stomp_heal_t( p );
-    ww_damage = new jadefire_stomp_ww_damage_t( p );
+    damage = new jadefire_stomp_damage_t( p );
+    heal   = new jadefire_stomp_heal_t( p );
 
     if ( p.specialization() == MONK_WINDWALKER )
+    {
+      apply_affecting_effect( p.talent.windwalker.singularly_focused_jade->effectN( 1 ) );
+      apply_affecting_effect( p.talent.windwalker.singularly_focused_jade->effectN( 3 ) );
+
+      ww_damage = new jadefire_stomp_ww_damage_t( p );
+
       add_child( ww_damage );
+    }
+
+    aoe = (int)data().effectN( 3 ).base_value();
 
     add_child( damage );
     add_child( heal );
