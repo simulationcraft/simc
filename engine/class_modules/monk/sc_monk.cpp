@@ -2545,6 +2545,8 @@ struct whirling_dragon_punch_aoe_tick_t : public monk_melee_attack_t
 
     am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
+    am *= 1 + p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 2 ).percent();
+
     return am;
   }
 };
@@ -2568,6 +2570,8 @@ struct whirling_dragon_punch_st_tick_t : public monk_melee_attack_t
     double am = monk_melee_attack_t::action_multiplier();
 
     am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
+
+    am *= 1 + p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 2 ).percent();
 
     return am;
   }
@@ -2650,6 +2654,13 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
       make_event<whirling_dragon_punch_tick_event_t>( *sim, tick, tick->delay );
 
     st_tick->execute();
+
+    if ( p()->talent.windwalker.knowledge_of_the_broken_temple->ok() &&
+         p()->talent.windwalker.teachings_of_the_monastery->ok() )
+    {
+      int stacks = p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 1 ).base_value();
+      p()->buff.teachings_of_the_monastery->trigger( stacks );
+    }
   }
 
   bool ready() override
@@ -8038,9 +8049,11 @@ void monk_t::create_buffs()
                                  ->set_default_value_from_effect( 2 )
                                  ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
-  buff.teachings_of_the_monastery = make_buff( this, "teachings_of_the_monastery", find_spell( 202090 ) )
-                                        ->set_trigger_spell( shared.teachings_of_the_monastery )
-                                        ->set_default_value_from_effect( 1 );
+  buff.teachings_of_the_monastery =
+      make_buff( this, "teachings_of_the_monastery", find_spell( 202090 ) )
+          ->set_trigger_spell( shared.teachings_of_the_monastery )
+          ->set_default_value_from_effect( 1 )
+          ->modify_max_stack( talent.windwalker.knowledge_of_the_broken_temple->effectN( 3 ).base_value() );
 
   buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 365080 ) );
 
