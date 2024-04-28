@@ -47,7 +47,6 @@ BREWMASTER:
 #include "sc_enums.hpp"
 
 #include <deque>
-#include <iostream>
 
 #include "simulationcraft.hpp"
 
