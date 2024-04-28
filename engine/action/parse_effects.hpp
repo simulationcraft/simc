@@ -269,6 +269,102 @@ struct parse_effects_t
   {
     ( parse_spell_effect_mod( tmp, mods ), ... );
   }
+
+  virtual void parse_effect( void* tmp, const spell_data_t* s_data, size_t i, bool force ) = 0;
+
+  template <typename U, typename T, typename... Ts>
+  void _parse_effects( T data, Ts... mods )
+  {
+    pack_t<U> pack;
+    const spell_data_t* spell = resolve_parse_data( data, pack );
+
+    if ( !spell || !spell->ok() )
+      return;
+
+    // parse mods and populate pack
+    parse_spell_effect_mods( pack, mods... );
+
+    for ( size_t i = 1; i <= spell->effect_count(); i++ )
+    {
+      if ( pack.mask & 1 << ( i - 1 ) )
+        continue;
+
+      // local copy of pack per effect
+      pack_t<U> tmp = pack;
+
+      parse_effect( &tmp, spell, i, false );
+    }
+  }
+
+  template <typename U, typename T, typename... Ts>
+  void _force_effect( T data, unsigned idx, Ts... mods )
+  {
+    pack_t<U> pack;
+    const spell_data_t* spell = resolve_parse_data( data, pack );
+
+    if ( !spell || !spell->ok() )
+      return;
+
+    if ( spell->affected_by_all( spell->effectN( idx ) ) )
+    {
+      assert( false && "Effect already affects player, no need to force" );
+      return;
+    }
+
+    // parse mods and populate pack
+    parse_spell_effect_mods( pack, mods... );
+
+    parse_effect( &pack, spell, idx, true );
+  }
+
+  virtual void parse_target_effect( void* tmp, const spell_data_t* s_data, size_t i, bool force ) = 0;
+
+  template <typename U, typename TD, typename... Ts>
+  void _parse_target_effects( const std::function<int( TD* )>& fn, const spell_data_t* spell, Ts... mods )
+  {
+    pack_t<U> pack;
+
+    if ( !spell || !spell->ok() )
+      return;
+
+    pack.data.func = std::move( fn );
+
+    // parse mods and populate pack
+    parse_spell_effect_mods( pack, mods... );
+
+    for ( size_t i = 1; i <= spell->effect_count(); i++ )
+    {
+      if ( pack.mask & 1 << ( i - 1 ) )
+        continue;
+
+      // local copy of pack per effect
+      pack_t<U> tmp = pack;
+
+      parse_target_effect( &tmp, spell, i, false );
+    }
+  }
+
+  template <typename U, typename TD, typename... Ts>
+  void _force_target_effect( const std::function<int( TD* )>& fn, const spell_data_t* spell, unsigned idx, Ts... mods )
+  {
+    pack_t<U> pack;
+
+    if ( !spell || !spell->ok() )
+      return;
+
+    if ( spell->affected_by_all( spell->effectN( idx ) ) )
+    {
+      assert( false && "Effect already affects player, no need to force" );
+      return;
+    }
+
+    pack.data.func = std::move( fn );
+
+    // parse mods and populate pack
+    parse_spell_effect_mods( pack, mods... );
+
+    parse_target_effect( &pack, spell, idx, true );
+  }
 };
 
 template <typename BASE, typename PLAYER, typename TD, typename OWNER = PLAYER>
@@ -425,52 +521,21 @@ public:
   // Example 4: Parse buff3, only apply if my_player_t::check2() and my_player_t::check3() returns true:
   //   parse_effects( buff3, [ this ] { return p()->check2() && p()->check3(); } );
   template <typename T, typename... Ts>
-  void parse_effects( T data, Ts... mods )
+  void parse_effects( T data, Ts&&... mods )
   {
-    pack_t<action_effect_t> pack;
-    const spell_data_t* spell = resolve_parse_data( data, pack );
-
-    if ( !spell || !spell->ok() )
-      return;
-
-    // parse mods and populate pack
-    parse_spell_effect_mods( pack, mods... );
-
-    for ( size_t i = 1; i <= spell->effect_count(); i++ )
-    {
-      if ( pack.mask & 1 << ( i - 1 ) )
-        continue;
-
-      // local copy of pack per effect
-      pack_t<action_effect_t> tmp = pack;
-
-      parse_action_effect( tmp, spell, i, false );
-    }
+    _parse_effects<action_effect_t>( data, std::forward<Ts>( mods )... );
   }
 
   template <typename T, typename... Ts>
-  void force_effect( T data, unsigned idx, Ts... mods )
+  void force_effect( T data, unsigned idx, Ts&&... mods )
   {
-    pack_t<action_effect_t> pack;
-    const spell_data_t* spell = resolve_parse_data( data, pack );
-
-    if ( !spell || !spell->ok() )
-      return;
-
-    if ( BASE::data().affected_by_all( spell->effectN( idx ) ) )
-    {
-      assert( false && "Effect already affects action, no need to force" );
-      return;
-    }
-
-    // parse mods and populate pack
-    parse_spell_effect_mods( pack, mods... );
-
-    parse_action_effect( pack, spell, idx, true );
+    _force_effect<action_effect_t>( data, idx, std::forward<Ts>( mods )... );
   }
 
-  void parse_action_effect( pack_t<action_effect_t>& tmp, const spell_data_t* s_data, size_t i, bool force )
+  void parse_effect( void* tmp_ptr, const spell_data_t* s_data, size_t i, bool force ) override
   {
+    auto& tmp = *static_cast<pack_t<action_effect_t>*>( tmp_ptr );
+
     const auto& eff = s_data->effectN( i );
     bool mastery = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
     double val = 0.0;
@@ -679,56 +744,22 @@ public:
   // The following optional arguments can be used in any order:
   //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the debuff
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
-  template <typename... Ts>
-  void parse_target_effects( const std::function<int( TD* )>& fn, const spell_data_t* spell, Ts... mods )
+  template <typename T, typename... Ts>
+  void parse_target_effects( const std::function<int( TD* )>& fn, T debuff, Ts&&... mods )
   {
-    pack_t<target_effect_t<TD>> pack;
-
-    if ( !spell || !spell->ok() )
-      return;
-
-    pack.data.func = std::move( fn );
-
-    // parse mods and populate pack
-    parse_spell_effect_mods( pack, mods... );
-
-    for ( size_t i = 1; i <= spell->effect_count(); i++ )
-    {
-      if ( pack.mask & 1 << ( i - 1 ) )
-        continue;
-
-      // local copy of pack per effect
-      pack_t<target_effect_t<TD>> tmp = pack;
-
-      parse_target_effect( tmp, spell, i, false );
-    }
+    _parse_target_effects<target_effect_t<TD>>( fn, debuff, std::forward<Ts>( mods )... );
   }
 
-  template <typename... Ts>
-  void force_target_effect( const std::function<int( TD* )>& fn, const spell_data_t* spell, unsigned idx, Ts... mods )
+  template <typename T, typename... Ts>
+  void force_target_effect( const std::function<int( TD* )>& fn, T debuff, unsigned idx, Ts&&... mods )
   {
-    pack_t<target_effect_t<TD>> pack;
-
-    if ( !spell || !spell->ok() )
-      return;
-
-    if ( BASE::data().affected_by_all( spell->effectN( idx ) ) )
-    {
-      assert( false && "Effect already affects action, no need to force" );
-      return;
-    }
-
-    pack.data.func = std::move( fn );
-
-    // parse mods and populate pack
-    parse_spell_effect_mods( pack, mods... );
-
-    parse_target_effect( pack, spell, idx, true );
+    _force_target_effect<target_effect_t<TD>>( fn, debuff, idx, std::forward<Ts>( mods )... );
   }
 
-  template <typename... Ts>
-  void parse_target_effect( pack_t<target_effect_t<TD>>& tmp, const spell_data_t* s_data, size_t i, bool force )
+  void parse_target_effect( void* tmp_ptr, const spell_data_t* s_data, size_t i, bool force ) override
   {
+    auto& tmp = *static_cast<pack_t<target_effect_t<TD>>*>( tmp_ptr );
+
     const auto& eff = s_data->effectN( i );
     bool mastery = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
     double val = 0.0;
