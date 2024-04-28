@@ -9888,7 +9888,7 @@ public:
          // << "\t\t\t\t\t\t\t\t\t<th>Ticks</th>\n"
          << "\t\t\t\t\t\t\t\t</tr>\n";
 
-      auto stagger_print = [ absorbed_mean, &os ]( const monk_t::stagger_t::stagger_level_t *level ) {
+      auto stagger_print = [ absorbed_mean, &os ]( const stagger_t::stagger_level_t *level ) {
         os << "\t\t\t\t\t\t\t\t<tr>\n"
            << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">" << level->name_pretty << "</td>\n"
            << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->absorbed->mean() << "</td>\n"
@@ -9902,7 +9902,7 @@ public:
            << "\t\t\t\t\t\t\t\t</tr>\n";
       };
 
-      for ( const monk_t::stagger_t::stagger_level_t *level : p.stagger->stagger_levels )
+      for ( const stagger_t::stagger_level_t *level : p.stagger->stagger_levels )
       {
         stagger_print( level );
       }
@@ -9992,7 +9992,7 @@ struct monk_module_t : public module_t
 // monk_t::stagger_t implementation
 
 // monk_t::stagger_t::stagger_buff_t
-monk_t::stagger_t::stagger_buff_t::stagger_buff_t( monk_t &player, std::string_view name, const spell_data_t *spell )
+stagger_t::stagger_buff_t::stagger_buff_t( monk_t &player, std::string_view name, const spell_data_t *spell )
   : actions::monk_buff_t( player, name, spell )
 {
   // duration is controlled by stagger_t::self_damage_t
@@ -10004,7 +10004,7 @@ monk_t::stagger_t::stagger_buff_t::stagger_buff_t( monk_t &player, std::string_v
 }
 
 // monk_t::stagger_t::self_damage_t
-monk_t::stagger_t::self_damage_t::self_damage_t( monk_t *player )
+stagger_t::self_damage_t::self_damage_t( monk_t *player )
   : base_t( "stagger_self_damage", player, player->passives.stagger_self_damage )
 {
   dot_duration = player->passives.brewmaster.heavy_stagger->duration();
@@ -10015,12 +10015,12 @@ monk_t::stagger_t::self_damage_t::self_damage_t( monk_t *player )
   stats->type                  = stats_e::STATS_NEUTRAL;
 }
 
-proc_types monk_t::stagger_t::self_damage_t::proc_type() const
+proc_types stagger_t::self_damage_t::proc_type() const
 {
   return PROC1_ANY_DAMAGE_TAKEN;
 }
 
-void monk_t::stagger_t::self_damage_t::impact( action_state_t *state )
+void stagger_t::self_damage_t::impact( action_state_t *state )
 {
   base_t::impact( state );
 
@@ -10036,14 +10036,14 @@ void monk_t::stagger_t::self_damage_t::impact( action_state_t *state )
   p()->buff.shuffle->up();
 }
 
-void monk_t::stagger_t::self_damage_t::last_tick( dot_t *dot )
+void stagger_t::self_damage_t::last_tick( dot_t *dot )
 {
   base_t::last_tick( dot );
 
   p()->stagger->damage_changed( true );
 }
 
-void monk_t::stagger_t::self_damage_t::assess_damage( result_amount_type type, action_state_t *state )
+void stagger_t::self_damage_t::assess_damage( result_amount_type type, action_state_t *state )
 {
   base_t::assess_damage( type, state );
 
@@ -10059,7 +10059,7 @@ void monk_t::stagger_t::self_damage_t::assess_damage( result_amount_type type, a
 }
 
 // monk_t::stagger_t::stagger_level_t
-monk_t::stagger_t::stagger_level_t::stagger_level_t( stagger_level_e level, monk_t *player )
+stagger_t::stagger_level_t::stagger_level_t( stagger_level_e level, monk_t *player )
   : level( level ),
     min_percent( min_threshold( level ) ),
     name( level_name( level ) ),
@@ -10069,10 +10069,10 @@ monk_t::stagger_t::stagger_level_t::stagger_level_t( stagger_level_e level, monk
   absorbed  = player->get_sample_data( "Stagger added to pool while at " + name_pretty );
   taken     = player->get_sample_data( "Stagger damage taken from " + name_pretty );
   mitigated = player->get_sample_data( "Stagger damage mitigated while at " + name_pretty );
-  debuff    = make_buff<monk_t::stagger_t::stagger_buff_t>( *player, name, spell_data );
+  debuff    = make_buff<stagger_t::stagger_buff_t>( *player, name, spell_data );
 }
 
-double monk_t::stagger_t::stagger_level_t::min_threshold( stagger_level_e level )
+double stagger_t::stagger_level_t::min_threshold( stagger_level_e level )
 {
   switch ( level )
   {
@@ -10089,7 +10089,7 @@ double monk_t::stagger_t::stagger_level_t::min_threshold( stagger_level_e level 
   }
 }
 
-std::string monk_t::stagger_t::stagger_level_t::level_name( stagger_level_e level )
+std::string stagger_t::stagger_level_t::level_name( stagger_level_e level )
 {
   switch ( level )
   {
@@ -10106,7 +10106,7 @@ std::string monk_t::stagger_t::stagger_level_t::level_name( stagger_level_e leve
   }
 }
 
-std::string monk_t::stagger_t::stagger_level_t::level_name_pretty( stagger_level_e level )
+std::string stagger_t::stagger_level_t::level_name_pretty( stagger_level_e level )
 {
   switch ( level )
   {
@@ -10123,7 +10123,7 @@ std::string monk_t::stagger_t::stagger_level_t::level_name_pretty( stagger_level
   }
 }
 
-const spell_data_t *monk_t::stagger_t::stagger_level_t::level_spell_data( stagger_level_e level, monk_t *player )
+const spell_data_t *stagger_t::stagger_level_t::level_spell_data( stagger_level_e level, monk_t *player )
 {
   switch ( level )
   {
@@ -10141,7 +10141,7 @@ const spell_data_t *monk_t::stagger_t::stagger_level_t::level_spell_data( stagge
 }
 
 // monk_t::stagger_t::sample_data_t
-monk_t::stagger_t::sample_data_t::sample_data_t( monk_t *player )
+stagger_t::sample_data_t::sample_data_t( monk_t *player )
 {
   absorbed  = player->get_sample_data( "Total damage absorbed by Stagger." );
   taken     = player->get_sample_data( "Total damage taken from Stagger." );
@@ -10159,11 +10159,11 @@ monk_t::stagger_t::sample_data_t::sample_data_t( monk_t *player )
 }
 
 // monk_t::stagger_t
-monk_t::stagger_t::stagger_t( monk_t *player )
+stagger_t::stagger_t( monk_t *player )
   : player( player ), self_damage( new self_damage_t( player ) ), sample_data( new sample_data_t( player ) )
 {
   auto init_level = [ this, player ]( stagger_level_e level ) {
-    stagger_levels.insert( stagger_levels.begin(), new monk_t::stagger_t::stagger_level_t( level, player ) );
+    stagger_levels.insert( stagger_levels.begin(), new stagger_t::stagger_level_t( level, player ) );
   };
   init_level( NONE_STAGGER );
   init_level( LIGHT_STAGGER );
@@ -10172,7 +10172,7 @@ monk_t::stagger_t::stagger_t( monk_t *player )
   current = stagger_levels[ NONE_STAGGER ];
 }
 
-auto monk_t::stagger_t::find_current_level() -> stagger_level_e
+auto stagger_t::find_current_level() -> stagger_level_e
 {
   double current_percent = pool_size_percent();
   for ( const stagger_level_t *level : stagger_levels )
@@ -10183,7 +10183,7 @@ auto monk_t::stagger_t::find_current_level() -> stagger_level_e
   return NONE_STAGGER;
 }
 
-void monk_t::stagger_t::set_pool( double amount )
+void stagger_t::set_pool( double amount )
 {
   if ( !is_ticking() )
     return;
@@ -10199,7 +10199,7 @@ void monk_t::stagger_t::set_pool( double amount )
   damage_changed();
 }
 
-void monk_t::stagger_t::damage_changed( bool last_tick )
+void stagger_t::damage_changed( bool last_tick )
 {
   // TODO: Guarantee a debuff is applied by providing debuffs for all stagger_level_t's
   if ( last_tick )
@@ -10220,7 +10220,7 @@ void monk_t::stagger_t::damage_changed( bool last_tick )
   current->debuff->trigger();
 }
 
-double monk_t::stagger_t::base_value()
+double stagger_t::base_value()
 {
   if ( player->specialization() != MONK_BREWMASTER )
     return 0.0;
@@ -10239,7 +10239,7 @@ double monk_t::stagger_t::base_value()
   return stagger_base;
 }
 
-double monk_t::stagger_t::percent( unsigned target_level )
+double stagger_t::percent( unsigned target_level )
 {
   double stagger_base = base_value();
   double k            = player->dbc->armor_mitigation_constant( target_level );
@@ -10250,23 +10250,23 @@ double monk_t::stagger_t::percent( unsigned target_level )
   return std::min( stagger, 0.99 );
 }
 
-auto monk_t::stagger_t::current_level() -> stagger_level_e
+auto stagger_t::current_level() -> stagger_level_e
 {
   return current->level;
 }
 
-double monk_t::stagger_t::level_index()
+double stagger_t::level_index()
 {
   return NONE_STAGGER - current->level;
 }
 
-void monk_t::stagger_t::add_sample( std::string name, double amount )
+void stagger_t::add_sample( std::string name, double amount )
 {
   assert( sample_data->mitigated_by_ability.count( name ) > 0 );
   sample_data->mitigated_by_ability[ name ]->add( amount );
 }
 
-double monk_t::stagger_t::pool_size()
+double stagger_t::pool_size()
 {
   dot_t *dot = self_damage->get_dot();
   if ( !dot || !dot->state )
@@ -10275,12 +10275,12 @@ double monk_t::stagger_t::pool_size()
   return self_damage->base_ta( dot->state ) * dot->ticks_left();
 }
 
-double monk_t::stagger_t::pool_size_percent()
+double stagger_t::pool_size_percent()
 {
   return pool_size() / player->resources.max[ RESOURCE_HEALTH ];
 }
 
-double monk_t::stagger_t::tick_size()
+double stagger_t::tick_size()
 {
   dot_t *dot = self_damage->get_dot();
   if ( !dot || !dot->state )
@@ -10289,12 +10289,12 @@ double monk_t::stagger_t::tick_size()
   return self_damage->base_ta( dot->state );
 }
 
-double monk_t::stagger_t::tick_size_percent()
+double stagger_t::tick_size_percent()
 {
   return tick_size() / player->resources.max[ RESOURCE_HEALTH ];
 }
 
-bool monk_t::stagger_t::is_ticking()
+bool stagger_t::is_ticking()
 {
   dot_t *dot = self_damage->get_dot();
   if ( !dot )
@@ -10303,7 +10303,7 @@ bool monk_t::stagger_t::is_ticking()
   return dot->is_ticking();
 }
 
-timespan_t monk_t::stagger_t::remains()
+timespan_t stagger_t::remains()
 {
   dot_t *dot = self_damage->get_dot();
   if ( !dot || !dot->is_ticking() )
@@ -10312,7 +10312,7 @@ timespan_t monk_t::stagger_t::remains()
   return dot->remains();
 }
 
-double monk_t::stagger_t::trigger( school_e school, result_amount_type /* damage_type */, action_state_t *state )
+double stagger_t::trigger( school_e school, result_amount_type /* damage_type */, action_state_t *state )
 {
   if ( state->result_amount <= 0.0 )
     return 0.0;
@@ -10353,7 +10353,7 @@ double monk_t::stagger_t::trigger( school_e school, result_amount_type /* damage
   return amount;
 }
 
-double monk_t::stagger_t::purify_flat( double amount, bool report_amount )
+double stagger_t::purify_flat( double amount, bool report_amount )
 {
   if ( !is_ticking() )
     return 0.0;
@@ -10372,7 +10372,7 @@ double monk_t::stagger_t::purify_flat( double amount, bool report_amount )
   return cleared;
 }
 
-double monk_t::stagger_t::purify_percent( double amount )
+double stagger_t::purify_percent( double amount )
 {
   double pool    = pool_size();
   double cleared = purify_flat( amount * pool, false );
@@ -10384,12 +10384,12 @@ double monk_t::stagger_t::purify_percent( double amount )
   return cleared;
 }
 
-double monk_t::stagger_t::purify_all()
+double stagger_t::purify_all()
 {
   return purify_flat( pool_size(), true );
 }
 
-void monk_t::stagger_t::delay_tick( timespan_t delay )
+void stagger_t::delay_tick( timespan_t delay )
 {
   dot_t *dot = self_damage->get_dot();
   if ( !dot || !dot->is_ticking() || !dot->tick_event )
