@@ -467,10 +467,6 @@ public:
     // niuzao r2 recent purifies fake buff
     propagate_const<buff_t *> recent_purifies;
 
-    propagate_const<buff_t *> light_stagger;
-    propagate_const<buff_t *> moderate_stagger;
-    propagate_const<buff_t *> heavy_stagger;
-
     // Mistweaver
     propagate_const<absorb_buff_t *> life_cocoon;
     propagate_const<buff_t *> channeling_soothing_mist;
@@ -1429,16 +1425,6 @@ public:
   void moving() override;
 
   // Custom Monk Functions
-  void stagger_damage_changed( bool last_tick = false );
-  double current_stagger_tick_dmg();
-  double current_stagger_tick_dmg_percent();
-  double current_stagger_amount_remains_percent();
-  double current_stagger_amount_remains();
-  double current_stagger_amount_remains_to_total_percent();
-  timespan_t current_stagger_dot_remains();
-  double stagger_base_value();
-  double stagger_pct( int target_level );
-  double stagger_total();
   void trigger_celestial_fortune( action_state_t * );
   void trigger_bonedust_brew( const action_state_t * );
   void trigger_keefers_skyreach( action_state_t * );
@@ -1449,10 +1435,6 @@ public:
   int mark_of_the_crane_counter();
   bool mark_of_the_crane_max();
   double sck_modifier();
-  double clear_stagger();
-  double partial_clear_stagger_pct( double );
-  double partial_clear_stagger_amount( double );
-  bool has_stagger();
   double calculate_last_stagger_tick_damage( int n ) const;
   void brew_cooldown_reduction( double );
   bool affected_by_sef( spell_data_t data ) const;  // Custom handler for SEF bugs
