@@ -2946,11 +2946,11 @@ void player_t::init_talents()
         override_talent( split );
       }
     }
-
-    parse_traits( talent_tree::CLASS, class_talents_str, this );
-    parse_traits( talent_tree::SPECIALIZATION, spec_talents_str, this );
-    parse_traits( talent_tree::HERO, hero_talents_str, this );
   }
+
+  parse_traits( talent_tree::CLASS, class_talents_str, this );
+  parse_traits( talent_tree::SPECIALIZATION, spec_talents_str, this );
+  parse_traits( talent_tree::HERO, hero_talents_str, this );
 
   // Generate talent effect overrides based on parsed trait information
   for ( const auto& player_trait : player_traits )
