@@ -2596,7 +2596,7 @@ bool buff_t::trigger( action_t* action, int stacks, double value, double chance,
 
 bool buff_t::can_expire( action_t* action ) const
 {
-  if ( is_fallback || !check() || !action->data().ok() || !data().ok() )
+  if ( is_fallback || !action->data().ok() || !data().ok() )
     return false;
 
   // TODO: check if trigger spell having CAN_PROC_FROM_PROCS is sufficient to allow the buff to consume
