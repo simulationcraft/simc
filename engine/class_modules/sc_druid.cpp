@@ -7284,7 +7284,7 @@ struct full_moon_t : public trigger_atmospheric_exposure_t<moon_base_t>
     auto suf = get_suffix( name_str, "full_moon" );
     if ( !suf.empty() )
     {
-      crescent = p->get_secondary_action<crescent_moon_t>( "crescent_moon" + suf, f );
+      crescent = p->get_secondary_action<crescent_moon_t>( "crescent_moon_" + name_str, f );
       add_child( crescent );
     }
   }
@@ -10807,8 +10807,9 @@ void druid_t::create_actions()
 
     if ( talent.orbit_breaker.ok() )
     {
-      auto fm = get_secondary_action<full_moon_t>( "orbit_breaker", find_spell( 274283 ), flag_e::ORBIT );
+      auto fm = get_secondary_action<full_moon_t>( "full_moon_orbit", find_spell( 274283 ), flag_e::ORBIT );
       fm->s_data_reporting = talent.orbit_breaker;
+      fm->name_str_reporting = "orbit_breaker";
       fm->base_multiplier = talent.orbit_breaker->effectN( 2 ).percent();
       fm->energize_amount *= talent.orbit_breaker->effectN( 2 ).percent();
       fm->background = true;
