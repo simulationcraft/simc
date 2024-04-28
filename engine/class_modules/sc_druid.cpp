@@ -1603,7 +1603,7 @@ public:
 
   bool can_expire( action_t* a ) const override
   {
-    if ( Base::is_fallback || !Base::check() || !a->data().ok() || !Base::data().ok() )
+    if ( Base::is_fallback || !a->data().ok() || !Base::data().ok() )
       return false;
 
     if ( Base::data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) && !a->allow_class_ability_procs )
