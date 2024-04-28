@@ -10,6 +10,7 @@ race=void_elf
 role=dps
 position=back
 talents=B0QAyDc16vWbNHtgLBW3PSstWAAAAAAAAAAAAKpJpFiIJpVkISiSSAAAAAAAAAEgECkIJBJSaRQIJRCJSSSCA
+load_default_gear=1
 
 actions.ogcd+=/fortifying_brew
 actions.ogcd+=/diffuse_magic
@@ -50,23 +51,11 @@ actions.rota+=/spinning_crane_kick
 actions.rota+=/blackout_kick
 # actions.rota+=/rushing_jade_wind
 
+actions.precombat=snapshot_stats
+
 actions=auto_attack
 actions+=/potion
 actions+=/call_action_list,name=ogcd
 actions+=/call_action_list,name=igcd,if=time<240
 actions+=/call_action_list,name=rota,if=time<240
 actions+=/call_action_list,name=dumb,if=time>240
-
-head=gaze_of_the_waking_fist,id=200363,bonus_id=7580,ilevel=528,gem_id=192982,enchant_id=7052
-neck=torc_of_passed_time,id=201759,bonus_id=3524/8932/8960/8782,ilevel=525,gem_id=192964/192964/192964,crafted_stats=32/40
-shoulders=mantle_of_the_waking_fist,id=200365,ilevel=528
-back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498,ilevel=535,enchant_id=6592
-chest=invaders_firestorm_chestguard,id=193764,bonus_id=4786/1659/9539,ilevel=528,enchant_id=6625
-wrists=bloodstench_skinguards,id=202594,bonus_id=4800/4786/1498/1808,ilevel=528,gem_id=192964,enchant_id=6574
-hands=palms_of_the_waking_fist,id=200362,ilevel=528
-waist=bloody_dragonhide_belt,id=207131,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/8780/1520/9576,ilevel=528,gem_id=192964,enchant_id=6904
-legs=legguards_of_the_waking_fist,id=200364,ilevel=528,enchant_id=6490
-feet=flamebound_huntsmans_footpads,id=202574,bonus_id=4800/4786/1498,ilevel=528,enchant_id=6613
-finger1=signet_of_titanic_insight,id=192999,bonus_id=3524/8932/8960/8780,ilevel=525,gem_id=192964,enchant_id=6568,crafted_stats=40/49
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=1808,ilevel=528,gem_id=192964,enchant_id=6568
-main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=1570,ilevel=528,enchant_id=6655
