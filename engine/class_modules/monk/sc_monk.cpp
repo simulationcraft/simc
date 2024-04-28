@@ -7024,6 +7024,12 @@ void monk_t::collect_resource_timeline_information()
 {
   base_t::collect_resource_timeline_information();
 
+  sim->print_debug(
+      "{} current pool statistics pool_size={} pool_size_percent={} tick_size={} tick_size_percent={} cap={}", name(),
+      stagger->pool_size(), stagger->pool_size_percent(), stagger->tick_size(), stagger->tick_size_percent(),
+      resources.max[ RESOURCE_HEALTH ] );
+  stagger->sample_data->pool_size.add( sim->current_time(), stagger->pool_size() );
+  stagger->sample_data->pool_size_percent.add( sim->current_time(), stagger->pool_size_percent() );
   stagger->sample_data->effectiveness.add( sim->current_time(), stagger->percent( target->level() ) );
 }
 
@@ -9794,6 +9800,9 @@ public:
          << "\t\t\t\t\t<h3 class=\"toggle open\">Stagger Analysis</h3>\n"
          << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
+      os << "\t\t\t\t\t<p>Note that these charts are extremely sensitive to bucket sizes. It is not uncommon to exceed "
+            "stagger cap, etc. If you wish to see exact values, use debug output.</p>\n";
+
       highchart::time_series_t chart_stagger_damage( highchart::build_id( p, "stagger_damage" ), *p.sim );
       chart::generate_actor_timeline( chart_stagger_damage, p, "Stagger Pool", color::resource_color( RESOURCE_HEALTH ),
                                       p.stagger->sample_data->pool_size );
@@ -9841,18 +9850,19 @@ public:
          << "\t\t\t\t\t\t\t\t\t<th class=\"left\">Purification Stats</th>\n"
          << "\t\t\t\t\t\t\t\t\t<th>Purified</th>\n"
          << "\t\t\t\t\t\t\t\t\t<th>Purified %</th>\n"
-         << "\t\t\t\t\t\t\t\t\t<th>Purification Count</th>\n"
+         // << "\t\t\t\t\t\t\t\t\t<th>Purification Count</th>\n"
          << "\t\t\t\t\t\t\t\t</tr>\n";
 
       auto purify_print = [ absorbed_mean, &os, this ]( std::string name, std::string key ) {
-        double mean    = p.stagger->sample_data->mitigated_by_ability[ key ]->mean();
-        int count      = p.stagger->sample_data->mitigated_by_ability[ key ]->count();
+        double mean = p.stagger->sample_data->mitigated_by_ability[ key ]->mean();
+        // int count      = p.stagger->sample_data->mitigated_by_ability[ key ]->count();
         double percent = mean / absorbed_mean * 100.0;
         os << "\t\t\t\t\t\t\t\t<tr>\n"
            << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">" << name << "</td>\n"
            << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << mean << "</td>\n"
-           << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << percent << "%</td>\n"
-           << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << count << "</td>\n"
+           << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << percent
+           << "%</td>\n"
+           // << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << count << "</td>\n"
            << "\t\t\t\t\t\t\t\t</tr>\n";
       };
 
@@ -9875,19 +9885,20 @@ public:
          << "\t\t\t\t\t\t\t\t\t<th>Taken</th>\n"
          << "\t\t\t\t\t\t\t\t\t<th>Mitigated</th>\n"
          << "\t\t\t\t\t\t\t\t\t<th>Mitigated %</th>\n"
-         << "\t\t\t\t\t\t\t\t\t<th>Ticks</th>\n"
+         // << "\t\t\t\t\t\t\t\t\t<th>Ticks</th>\n"
          << "\t\t\t\t\t\t\t\t</tr>\n";
 
-      auto stagger_print = [ &os ]( const monk_t::stagger_t::stagger_level_t *level ) {
+      auto stagger_print = [ absorbed_mean, &os ]( const monk_t::stagger_t::stagger_level_t *level ) {
         os << "\t\t\t\t\t\t\t\t<tr>\n"
            << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">" << level->name_pretty << "</td>\n"
            << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->absorbed->mean() << "</td>\n"
            << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->taken->mean() << "</td>\n"
            << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->mitigated->mean() << "</td>\n"
            << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-           << ( level->absorbed->mean() != 0.0 ? level->mitigated->mean() / level->absorbed->mean() * 100.0 : 0 )
+           << ( absorbed_mean != 0.0 ? level->mitigated->mean() / absorbed_mean * 100.0 : 0 )
+           // << ( level->absorbed->mean() != 0.0 ? level->mitigated->mean() / level->absorbed->mean() * 100.0 : 0 )
            << "%</td>\n"
-           << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->absorbed->count() << "</td>\n"
+           // << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->absorbed->count() << "</td>\n"
            << "\t\t\t\t\t\t\t\t</tr>\n";
       };
 
@@ -9898,7 +9909,7 @@ public:
 
       double taken_mean     = p.stagger->sample_data->taken->mean();
       double mitigated_mean = p.stagger->sample_data->mitigated->mean();
-      int absorbed_count    = p.stagger->sample_data->absorbed->count();
+      // int absorbed_count    = p.stagger->sample_data->absorbed->count();
 
       os << "\t\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">"
@@ -9908,8 +9919,9 @@ public:
          << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << taken_mean << "</td>\n"
          << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << mitigated_mean << "</td>\n"
          << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-         << ( absorbed_mean != 0.0 ? mitigated_mean / absorbed_mean * 100.0 : 0 ) << "%</td>\n"
-         << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << absorbed_count << "</td>\n"
+         << ( absorbed_mean != 0.0 ? mitigated_mean / absorbed_mean * 100.0 : 0 )
+         << "%</td>\n"
+         // << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << absorbed_count << "</td>\n"
          << "\t\t\t\t\t\t\t\t</tr>\n";
 
       os << "\t\t\t\t\t\t\t</tbody>\n"
@@ -10012,12 +10024,16 @@ void monk_t::stagger_t::self_damage_t::impact( action_state_t *state )
 {
   base_t::impact( state );
 
+  p()->sim->print_debug(
+      "{} current pool statistics pool_size={} pool_size_percent={} tick_size={} tick_size_percent={} cap={}",
+      p()->name(), p()->stagger->pool_size(), p()->stagger->pool_size_percent(), p()->stagger->tick_size(),
+      p()->stagger->tick_size_percent(), p()->resources.max[ RESOURCE_HEALTH ] );
+  p()->stagger->damage_changed();
   p()->stagger->sample_data->absorbed->add( state->result_amount );
   p()->stagger->current->absorbed->add( state->result_amount );
   p()->stagger->sample_data->pool_size.add( sim->current_time(), p()->stagger->pool_size() );
   p()->stagger->sample_data->pool_size_percent.add( sim->current_time(), p()->stagger->pool_size_percent() );
   p()->buff.shuffle->up();
-  p()->stagger->damage_changed();
 }
 
 void monk_t::stagger_t::self_damage_t::last_tick( dot_t *dot )
@@ -10031,8 +10047,15 @@ void monk_t::stagger_t::self_damage_t::assess_damage( result_amount_type type, a
 {
   base_t::assess_damage( type, state );
 
+  p()->sim->print_debug(
+      "{} current pool statistics pool_size={} pool_size_percent={} tick_size={} tick_size_percent={} cap={}",
+      p()->name(), p()->stagger->pool_size(), p()->stagger->pool_size_percent(), p()->stagger->tick_size(),
+      p()->stagger->tick_size_percent(), p()->resources.max[ RESOURCE_HEALTH ] );
+  p()->stagger->damage_changed();
   p()->stagger->sample_data->taken->add( state->result_amount );
   p()->stagger->current->taken->add( state->result_amount );
+  p()->stagger->sample_data->pool_size.add( sim->current_time(), p()->stagger->pool_size() );
+  p()->stagger->sample_data->pool_size_percent.add( sim->current_time(), p()->stagger->pool_size_percent() );
 }
 
 // monk_t::stagger_t::stagger_level_t
@@ -10170,7 +10193,7 @@ void monk_t::stagger_t::set_pool( double amount )
   double ticks_left = dot->ticks_left();
 
   state->tick_amount = amount / ticks_left;
-  player->sim->print_debug( "{} set pool amount={} ticks_left={}, set_pool={}", player->name(), amount, ticks_left,
+  player->sim->print_debug( "{} set pool amount={} ticks_left={}, tick_size={}", player->name(), amount, ticks_left,
                             amount / ticks_left );
 
   damage_changed();
@@ -10205,10 +10228,10 @@ double monk_t::stagger_t::base_value()
   double stagger_base = player->agility() * player->spec.stagger->effectN( 1 ).percent();
 
   if ( player->talent.brewmaster.high_tolerance->ok() )
-    stagger_base *= 1 + player->talent.brewmaster.high_tolerance->effectN( 5 ).percent();
+    stagger_base *= 1.0 + player->talent.brewmaster.high_tolerance->effectN( 5 ).percent();
 
   if ( player->talent.brewmaster.fortifying_brew_determination->ok() && player->buff.fortifying_brew->up() )
-    stagger_base *= 1 + player->passives.fortifying_brew->effectN( 6 ).percent();
+    stagger_base *= 1.0 + player->passives.fortifying_brew->effectN( 6 ).percent();
 
   if ( player->buff.shuffle->check() )
     stagger_base *= 1.0 + player->passives.shuffle->effectN( 1 ).percent();
@@ -10239,8 +10262,7 @@ double monk_t::stagger_t::level_index()
 
 void monk_t::stagger_t::add_sample( std::string name, double amount )
 {
-  if ( sample_data->mitigated_by_ability.count( name ) == 0 )
-    sample_data->mitigated_by_ability[ name ] = player->get_sample_data( "Total Stagger purified by " + name );
+  assert( sample_data->mitigated_by_ability.count( name ) > 0 );
   sample_data->mitigated_by_ability[ name ]->add( amount );
 }
 
@@ -10318,7 +10340,11 @@ double monk_t::stagger_t::trigger( school_e school, result_amount_type /* damage
   double cap = player->resources.max[ RESOURCE_HEALTH ] * player->spec.stagger->effectN( 4 ).percent();
   amount -= std::max( amount + pool_size() - cap, 0.0 );
 
-  player->sim->print_debug( "{} added {} to stagger pool", player->name(), amount );
+  player->sim->print_debug( "{} added {} to stagger pool base_hit={} absorbed={} overcapped={}", player->name(), amount,
+                            state->result_amount, absorbed, std::max( amount + pool_size() - cap, 0.0 ) );
+  player->sim->print_debug(
+      "{} current pool statistics pool_size={} pool_size_percent={} tick_size={} tick_size_percent={} cap={}",
+      player->name(), pool_size(), pool_size_percent(), tick_size(), tick_size_percent(), cap );
 
   state->result_amount -= amount;
   state->result_mitigated -= amount;
@@ -10336,12 +10362,12 @@ double monk_t::stagger_t::purify_flat( double amount, bool report_amount )
   double cleared = std::clamp( amount, 0.0, pool );
   double remains = pool - cleared;
 
+  sample_data->mitigated->add( cleared );
+  current->mitigated->add( cleared );
+
   set_pool( remains );
   if ( report_amount )
     player->sim->print_debug( "{} reduced pool from {} to {} ({})", player->name(), pool, remains, cleared );
-
-  sample_data->mitigated->add( cleared );
-  current->mitigated->add( cleared );
 
   return cleared;
 }
