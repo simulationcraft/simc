@@ -333,7 +333,7 @@ public:
     std::string type_str;
     bool flat = false;
 
-    auto vec = get_effect_vector( eff, tmp.data.opt_enum, val_mul, type_str, flat, force );
+    auto vec = get_effect_vector( eff, tmp.data, val_mul, type_str, flat, force );
 
     if ( !vec )
       return;
@@ -366,7 +366,7 @@ public:
 
   virtual bool is_valid_aura( const spelleffect_data_t& eff ) const { return false; }
 
-  virtual std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, uint32_t& opt_enum,
+  virtual std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data,
                                                            double& val_mul, std::string& str, bool& flat,
                                                            bool force ) = 0;
 
@@ -846,84 +846,104 @@ public:
     return true;
   }
 
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, uint32_t& opt_enum, double& val_mul,
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data, double& val_mul,
                                                    std::string& str, bool& flat, bool force ) override
   {
+    auto invalidate = [ &data ]( cache_e c ) {
+      if ( data.buff )
+        data.buff->add_invalidate( c );
+    };
+
     switch ( eff.subtype() )
     {
       case A_MOD_MELEE_SPEED_PCT:
       case A_MOD_RANGED_AND_MELEE_ATTACK_SPEED:
         str = "auto attack speed";
+        invalidate( CACHE_ATTACK_SPEED );
         return &melee_speed_effects;
 
       case A_MOD_TOTAL_STAT_PERCENTAGE:
-        opt_enum = eff.misc_value2();
+        data.opt_enum = eff.misc_value2();
         {
           std::vector<std::string> str_list;
           for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
-            if ( opt_enum & ( 1 << ( stat - 1 ) ) )
+          {
+            if ( data.opt_enum & ( 1 << ( stat - 1 ) ) )
+            {
               str_list.push_back( util::stat_type_string( stat ) );
-
+              invalidate( cache_from_stat( stat ) );
+            }
+          }
           str = util::string_join( str_list );
         }
         return &attribute_multiplier_effects;
 
       case A_MOD_VERSATILITY_PCT:
         str = "versatility";
+        invalidate( CACHE_VERSATILITY );
         return &versatility_effects;
-
-      case A_MOD_DAMAGE_PERCENT_DONE:
-        opt_enum = eff.misc_value1();
-        str = opt_enum == 0x7f ? "all" : util::school_type_string( dbc::get_school_type( opt_enum ) );
-        str += " damage";
-        return &player_multiplier_effects;
-
-      case A_MOD_PET_DAMAGE_DONE:
-        opt_enum = 0;
-        str = "pet damage";
-        return &pet_multiplier_effects;
-
-      case A_MOD_GUARDIAN_DAMAGE_DONE:
-        opt_enum = 1;
-        str = "guardian damage";
-        return &pet_multiplier_effects;
-
-      case A_MOD_ATTACK_POWER_PCT:
-        str = "attack power";
-        return &attack_power_multiplier_effects;
-
-      case A_MOD_ALL_CRIT_CHANCE:
-        str = "all crit chance";
-        return &crit_chance_effects;
-
-      case A_MOD_LEECH_PERCENT:
-        str = "leech";
-        return &leech_effects;
-
-      case A_MOD_EXPERTISE:
-        str = "expertise";
-        return &expertise_effects;
-
-      case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:
-        str = "crit avoidance";
-        return &crit_avoidance_effects;
-
-      case A_MOD_PARRY_PERCENT:
-        str = "parry";
-        return &parry_effects;
-
-      case A_MOD_BASE_RESISTANCE_PCT:
-        str = "armor multiplier";
-        return &armor_multiplier_effects;
 
       case A_HASTE_ALL:
         str = "haste";
+        invalidate( CACHE_HASTE );
         return &haste_effects;
 
       case A_MOD_MASTERY_PCT:
         str = "mastery";
         val_mul = 1.0;
+        invalidate( CACHE_MASTERY );
         return &mastery_effects;
+
+      case A_MOD_ALL_CRIT_CHANCE:
+        str = "all crit chance";
+        invalidate( CACHE_CRIT_CHANCE );
+        return &crit_chance_effects;
+
+      case A_MOD_DAMAGE_PERCENT_DONE:
+        data.opt_enum = eff.misc_value1();
+        str = data.opt_enum == 0x7f ? "all" : util::school_type_string( dbc::get_school_type( data.opt_enum ) );
+        str += " damage";
+        invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        return &player_multiplier_effects;
+
+      case A_MOD_PET_DAMAGE_DONE:
+        data.opt_enum = 0;
+        str = "pet damage";
+        return &pet_multiplier_effects;
+
+      case A_MOD_GUARDIAN_DAMAGE_DONE:
+        data.opt_enum = 1;
+        str = "guardian damage";
+        return &pet_multiplier_effects;
+
+      case A_MOD_ATTACK_POWER_PCT:
+        str = "attack power";
+        invalidate( CACHE_ATTACK_POWER );
+        return &attack_power_multiplier_effects;
+
+      case A_MOD_LEECH_PERCENT:
+        str = "leech";
+        invalidate( CACHE_LEECH );
+        return &leech_effects;
+
+      case A_MOD_EXPERTISE:
+        str = "expertise";
+        invalidate( CACHE_EXP );
+        return &expertise_effects;
+
+      case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:
+        str = "crit avoidance";
+        invalidate( CACHE_CRIT_AVOIDANCE );
+        return &crit_avoidance_effects;
+
+      case A_MOD_PARRY_PERCENT:
+        str = "parry";
+        invalidate( CACHE_PARRY );
+        return &parry_effects;
+
+      case A_MOD_BASE_RESISTANCE_PCT:
+        str = "armor multiplier";
+        return &armor_multiplier_effects;
 
       default:
         return nullptr;
@@ -1250,8 +1270,8 @@ public:
     return true;
   }
 
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, uint32_t& opt_enum, double& val_mul,
-                                                   std::string& str, bool& flat, bool force ) override
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data,
+                                                   double& val_mul, std::string& str, bool& flat, bool force ) override
   {
     if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
     {

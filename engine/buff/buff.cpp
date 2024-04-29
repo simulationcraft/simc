@@ -1100,7 +1100,7 @@ buff_t* buff_t::modify_period( timespan_t duration )
 
 buff_t* buff_t::add_invalidate( cache_e c )
 {
-  if ( c == CACHE_NONE )
+  if ( c == CACHE_NONE || is_fallback )
   {
     return this;
   }
