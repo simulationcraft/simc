@@ -1912,7 +1912,12 @@ struct empowered_charge_t : public empowered_base_t<BASE>
 
   timespan_t base_composite_dot_duration( const action_state_t* s ) const
   {
-    return ab::dot_duration * s->haste * ab::get_effects_value( ab::dot_duration_effects );
+    auto dur = ab::dot_duration;
+
+    for ( const auto& i : ab::dot_duration_effects )
+      dur *= 1.0 + ab::get_effect_value( i );
+
+    return dur * s->haste;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3679,9 +3684,12 @@ struct pyre_t : public essence_spell_t
       aoe  = -1;
 
       if ( p->talent.raging_inferno->ok() )
-        target_multiplier_effects.emplace_back(
-            []( evoker_td_t* t ) { return t->debuffs.in_firestorm->check() > 0; },
-            p->talent.raging_inferno->effectN( 2 ).percent(), false, &p->talent.raging_inferno->effectN( 2 ) );
+      {
+        add_parse_entry( target_multiplier_effects )
+          .set_func( []( evoker_td_t* t ) { return t->debuffs.in_firestorm->check() > 0; } )
+          .set_value( p->talent.raging_inferno->effectN( 2 ).percent() )
+          .set_eff( &p->talent.raging_inferno->effectN( 2 ) );
+      }
     }
 
     action_state_t* new_state() override

@@ -1646,7 +1646,7 @@ private:
 public:
   using base_t = druid_action_t<Base>;
 
-  std::vector<action_effect_t> persistent_multiplier_effects;
+  std::vector<player_effect_t> persistent_multiplier_effects;
   std::vector<buff_t*> consume_buffs;
 
   // Name to be used by get_dot() instead of action name
@@ -2122,7 +2122,12 @@ public:
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    return ab::composite_persistent_multiplier( s ) * ab::get_effects_value( persistent_multiplier_effects );
+    auto pers = ab::composite_persistent_multiplier( s );
+
+    for ( const auto& i : persistent_multiplier_effects )
+      pers *= 1.0 + ab::get_effect_value( i );
+
+    return pers;
   }
 
   size_t total_effects_count() override
