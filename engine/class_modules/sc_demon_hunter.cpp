@@ -249,6 +249,7 @@ public:
     damage_buff_t* rending_strike;
 
     // Fel-scarred
+    buff_t* monster_rising;
     buff_t* student_of_suffering;
 
     // Set Bonuses
@@ -629,6 +630,7 @@ public:
     // Fel-scarred
     const spell_data_t* burning_blades_debuff;
     const spell_data_t* student_of_suffering_buff;
+    const spell_data_t* monster_rising_buff;
   } hero_spec;
 
   // Set Bonus effects
@@ -6640,6 +6642,11 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       p()->metamorphosis_health = p()->max_health() * value;
       p()->stat_gain( STAT_MAX_HEALTH, p()->metamorphosis_health, (gain_t*)nullptr, (action_t*)nullptr, true );
     }
+
+    if ( p()->talent.felscarred.monster_rising->ok() )
+    {
+      p()->buff.monster_rising->expire();
+    }
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -6656,6 +6663,11 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       p()->cooldown.fel_rush->reset( false, 1 );
       p()->buff.restless_hunter->trigger();
+    }
+
+    if ( p()->talent.felscarred.monster_rising->ok() )
+    {
+      p()->buff.monster_rising->trigger();
     }
   }
 };
@@ -7211,6 +7223,10 @@ void demon_hunter_t::create_buffs()
 
   // Fel-scarred ============================================================
 
+  buff.monster_rising = make_buff( this, "monster_rising", hero_spec.monster_rising_buff )
+      ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
+      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+      ->set_allow_precombat( true );
   buff.student_of_suffering =
       make_buff( this, "student_of_suffering", hero_spec.student_of_suffering_buff )
           ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
@@ -8104,6 +8120,7 @@ void demon_hunter_t::init_spells()
       talent.felscarred.burning_blades->ok() ? find_spell( 453177 ) : spell_data_t::not_found();
   hero_spec.student_of_suffering_buff =
       talent.felscarred.student_of_suffering->ok() ? find_spell( 453239 ) : spell_data_t::not_found();
+  hero_spec.monster_rising_buff = talent.felscarred.monster_rising->ok() ? find_spell( 452550 ) : spell_data_t::not_found();
 
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };
@@ -8581,12 +8598,6 @@ double demon_hunter_t::composite_attribute_multiplier( attribute_e a ) const
     case ATTR_STAMINA:
       am *= 1.0 + spec.thick_skin->effectN( 1 ).percent();
       break;
-    case ATTR_AGILITY:
-      if ( talent.felscarred.monster_rising->ok() && !buff.metamorphosis->up() )
-      {
-        am *= 1.0 + talent.felscarred.monster_rising->effectN( 1 ).percent();
-      }
-      break;
     default:
       break;
   }
@@ -8952,6 +8963,11 @@ void demon_hunter_t::combat_begin()
   {
     resources.current[ RESOURCE_FURY ] = fury_cap;
     sim->print_debug( "Fury for {} capped at combat start to {} (was {})", *this, fury_cap, current_fury );
+  }
+
+  if ( talent.felscarred.monster_rising->ok() )
+  {
+    buff.monster_rising->trigger();
   }
 }
 
