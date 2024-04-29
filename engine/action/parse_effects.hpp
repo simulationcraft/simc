@@ -419,7 +419,7 @@ public:
   }
 
   template <typename U>
-  double get_effect_value( const U& i, bool benefit = true ) const
+  double get_effect_value( const U& i, bool benefit = false ) const
   {
     if ( i.func && !i.func() )
       return 0.0;
@@ -669,7 +669,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
 
     for ( const auto& i : player_multiplier_effects )
       if ( i.opt_enum & dbc::get_school_mask( school ) )
-        m *= 1.0 + get_effect_value( i );
+        m *= 1.0 + get_effect_value( i, true );
 
     return m;
   }
@@ -680,7 +680,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
 
     for ( const auto& i : pet_multiplier_effects )
       if ( static_cast<bool>( i.opt_enum ) == guardian )
-        dm *= 1.0 + get_effect_value( i );
+        dm *= 1.0 + get_effect_value( i, true );
 
     return dm;
   }
@@ -1055,7 +1055,7 @@ public:
     auto c = BASE::cost_flat_modifier();
 
     for ( const auto& i : flat_cost_effects )
-      c += get_effect_value( i, false );
+      c += get_effect_value( i );
 
     return c;
   }
@@ -1065,7 +1065,7 @@ public:
     auto c = BASE::cost_pct_multiplier();
 
     for ( const auto& i : cost_effects )
-      c *= 1.0 + get_effect_value( i, false );
+      c *= 1.0 + get_effect_value( i );
 
     return c;
   }
@@ -1075,7 +1075,7 @@ public:
     auto ta = BASE::composite_ta_multiplier( s );
 
     for ( const auto& i : ta_multiplier_effects )
-      ta *= 1.0 + get_effect_value( i );
+      ta *= 1.0 + get_effect_value( i, true );
 
     return ta;
   }
@@ -1085,7 +1085,7 @@ public:
     auto da = BASE::composite_da_multiplier( s );
 
     for ( const auto& i : da_multiplier_effects )
-      da *= 1.0 + get_effect_value( i );
+      da *= 1.0 + get_effect_value( i, true );
 
     return da;
   }
@@ -1115,7 +1115,7 @@ public:
     auto et = BASE::execute_time();
 
     for ( const auto& i : execute_time_effects )
-      et *= 1.0 + get_effect_value( i );
+      et *= 1.0 + get_effect_value( i, true );
 
     return std::max( 0_ms, et );
   }
