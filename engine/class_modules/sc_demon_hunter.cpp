@@ -247,6 +247,9 @@ public:
     damage_buff_t* glaive_flurry;
     damage_buff_t* rending_strike;
 
+    // Fel-scarred
+    buff_t* student_of_suffering;
+
     // Set Bonuses
     damage_buff_t* t29_havoc_4pc;
     buff_t* t30_havoc_2pc;
@@ -624,6 +627,7 @@ public:
 
     // Fel-scarred
     const spell_data_t* burning_blades_debuff;
+    const spell_data_t* student_of_suffering_buff;
   } hero_spec;
 
   // Set Bonus effects
@@ -727,6 +731,9 @@ public:
 
     // Set Bonuses
     gain_t* seething_fury;
+
+    // Fel-scarred
+    gain_t* student_of_suffering;
   } gain;
 
   // Benefits
@@ -3149,6 +3156,15 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
       energize_type     = action_energize::ON_HIT;
       energize_resource = RESOURCE_FURY;
       energize_amount   = p->talent.demon_hunter.flames_of_fury->effectN( 1 ).resource();
+    }
+  }
+
+  void execute() override
+  {
+    demon_hunter_sigil_t::execute();
+    if ( p()->talent.felscarred.student_of_suffering->ok() )
+    {
+      p()->buff.student_of_suffering->trigger();
     }
   }
 
@@ -7178,6 +7194,19 @@ void demon_hunter_t::create_buffs()
   buff.rending_strike->set_default_value_from_effect( 1 )->apply_affecting_aura(
       talent.aldrachi_reaver.incisive_blade );
 
+  // Fel-scarred ============================================================
+
+  buff.student_of_suffering =
+      make_buff( this, "student_of_suffering", hero_spec.student_of_suffering_buff )
+          ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
+          ->set_tick_behavior( buff_tick_behavior::REFRESH )
+          ->set_tick_on_application( false )
+          ->set_period( 2_s )
+          ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+            resource_gain( RESOURCE_FURY, b->data().effectN( 2 ).trigger()->effectN( 1 ).base_value(),
+                           gain.student_of_suffering );
+          } );
+
   // Set Bonus Items ========================================================
 
   buff.t29_havoc_4pc = make_buff<damage_buff_t>(
@@ -8057,6 +8086,8 @@ void demon_hunter_t::init_spells()
       talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444810 ) : spell_data_t::not_found();
   hero_spec.burning_blades_debuff =
       talent.felscarred.burning_blades->ok() ? find_spell( 453177 ) : spell_data_t::not_found();
+  hero_spec.student_of_suffering_buff =
+      talent.felscarred.student_of_suffering->ok() ? find_spell( 453239 ) : spell_data_t::not_found();
 
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };
@@ -8450,6 +8481,9 @@ void demon_hunter_t::create_gains()
 
   // Set Bonuses
   gain.seething_fury = get_gain( "seething_fury" );
+
+  // Fel-scarred
+  gain.student_of_suffering = get_gain( "student_of_suffering" );
 }
 
 // demon_hunter_t::create_benefits ==========================================
