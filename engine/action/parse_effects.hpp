@@ -670,6 +670,8 @@ public:
     for ( const auto& i : target_pet_multiplier_effects )
       if ( static_cast<bool>( i.opt_enum ) == guardian )
         tm *= 1.0 + get_target_effect_value( i, td );
+
+    return tm;
   }
 
   bool is_valid_aura( const spelleffect_data_t& eff ) const override
