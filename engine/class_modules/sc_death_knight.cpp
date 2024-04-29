@@ -5205,13 +5205,13 @@ struct essence_of_the_blood_queen_buff_t final : public buff_t
   // Override the value of the buff to properly capture Essence of the Blood Queens's buff behavior
   double value() override
   {
-    return player->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 *
+    return ( player->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
            ( 1.0 + player->buffs.gift_of_the_sanlayn->check_value() );
   }
 
   double check_value() const override
   {
-    return player->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 *
+    return ( player->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
            ( 1.0 + player->buffs.gift_of_the_sanlayn->check_value() );
   }
 
