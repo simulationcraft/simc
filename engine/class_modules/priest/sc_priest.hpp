@@ -715,6 +715,7 @@ public:
   struct state_t
   {
     ground_aoe_event_t* active_entropic_rift;
+    player_t* last_entropic_rift_target;
   } state;
 
   // Pets
