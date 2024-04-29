@@ -10195,7 +10195,7 @@ void death_knight_t::start_unholy_aura()
     return;
   }
 
-  timespan_t first = timespan_t::from_millis( rng().range( 0, 1 ) );
+  timespan_t first = timespan_t::from_millis( rng().range( 0, 1000 ) );
 
   make_event( *sim, first, [ this ]() {
     for ( auto& enemy : sim->target_non_sleeping_list )
