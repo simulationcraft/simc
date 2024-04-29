@@ -12272,14 +12272,6 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
     m *= 1.0 + buffs.apocalyptic_conquest->check_value() + buffs.nazgrims_conquest->check_stack_value();
   }
 
-  else if ( attr == ATTR_STAMINA )
-  {
-    m *= 1.0 + talent.veteran_of_the_third_war->effectN( 1 ).percent() +
-         spec.blood_death_knight->effectN( 13 ).percent();
-
-    m *= 1.0 + spec.blood_fortification->effectN( 1 ).percent();
-  }
-
   return m;
 }
 
@@ -12487,6 +12479,7 @@ void death_knight_t::parse_player_effects()
   // Shared
   parse_effects( spec.death_knight );
   parse_effects( buffs.icy_talons, talent.icy_talons );
+  parse_effects( talent.veteran_of_the_third_war, spec.blood_death_knight );
   parse_effects( talent.merciless_strikes );
   parse_effects( talent.might_of_thassarian );
   parse_effects( talent.blood_scent );
@@ -12494,6 +12487,7 @@ void death_knight_t::parse_player_effects()
 
   // Blood
   parse_effects( spec.blood_death_knight );
+  parse_effects( spec.blood_fortification );
   parse_effects( mastery.blood_shield );
   parse_effects( buffs.blood_shield, talent.blood.bloodshot );
   parse_effects( buffs.voracious, talent.blood.voracious );
