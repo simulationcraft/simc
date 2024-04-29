@@ -593,6 +593,12 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> attribute_multiplier_effects;
   std::vector<player_effect_t> player_multiplier_effects;
   std::vector<player_effect_t> pet_multiplier_effects;
+  std::vector<player_effect_t> player_attack_power_multiplier_effects;
+  std::vector<player_effect_t> all_crit_multiplier_effects;
+  std::vector<player_effect_t> leech_multiplier_effects;
+  std::vector<player_effect_t> expertise_multiplier_effects;
+  std::vector<player_effect_t> crit_avoidance_effects;
+  std::vector<player_effect_t> parry_multiplier_effects;
   std::vector<target_effect_t<TD>> target_multiplier_effects;
   std::vector<target_effect_t<TD>> target_pet_multiplier_effects;
 
@@ -641,6 +647,76 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
         dm *= 1.0 + get_effect_value( i );
 
     return dm;
+  }
+
+  double composite_attack_power_multiplier() const override
+  {
+    auto apm = player_t::composite_attack_power_multiplier();
+
+    for ( const auto& i : player_attack_power_multiplier_effects )
+      apm *= 1.0 + get_effect_value( i );
+
+    return apm;
+  }
+
+  double composite_melee_crit_chance() const override
+  {
+    auto mcc = player_t::composite_melee_crit_chance();
+
+    for ( const auto& i : all_crit_multiplier_effects )
+      mcc += get_effect_value( i );
+
+    return mcc;
+  }
+
+  double composite_spell_crit_chance() const override
+  {
+    auto scc = player_t::composite_spell_crit_chance();
+
+    for ( const auto& i : all_crit_multiplier_effects )
+      scc += get_effect_value( i );
+
+    return scc;
+  }
+
+  double composite_leech() const override
+  {
+    auto leech = player_t::composite_leech();
+
+    for ( const auto& i : leech_multiplier_effects )
+      leech += get_effect_value( i );
+
+    return leech;
+  }
+
+  double composite_melee_expertise( const weapon_t* ) const override
+  {
+    auto me = player_t::composite_melee_expertise( nullptr );
+
+    for ( const auto& i : expertise_multiplier_effects )
+      me += get_effect_value( i );
+
+    return me;
+  }
+
+  double composite_crit_avoidance() const override
+  {
+    auto ca = player_t::composite_crit_avoidance();
+
+    for ( const auto& i : crit_avoidance_effects )
+      ca += get_effect_value( i );
+
+    return ca;
+  }
+
+  double composite_parry() const override
+  {
+    auto parry = player_t::composite_parry();
+
+    for ( const auto& i : parry_multiplier_effects )
+      parry += get_effect_value( i );
+
+    return parry;
   }
 
 private:
@@ -730,6 +806,30 @@ public:
         opt_enum = 1;
         str = "guardian damage";
         return &pet_multiplier_effects;
+
+      case A_MOD_ATTACK_POWER_PCT:
+        str = "attack power";
+        return &player_attack_power_multiplier_effects;
+
+      case A_MOD_ALL_CRIT_CHANCE:
+        str = "all crit chance";
+        return &all_crit_multiplier_effects;
+
+      case A_MOD_LEECH_PERCENT:
+        str = "leech";
+        return &leech_multiplier_effects;
+
+      case A_MOD_EXPERTISE:
+        str = "expertise";
+        return &expertise_multiplier_effects;
+
+      case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:
+        str = "crit avoidance";
+        return &crit_avoidance_effects;
+
+      case A_MOD_PARRY_PERCENT:
+        str = "parry";
+        return &parry_multiplier_effects;
 
       default:
         return nullptr;

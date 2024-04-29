@@ -1245,7 +1245,7 @@ enum effect_subtype_t : unsigned {
     A_430 = 430,
     A_440 = 440,
     A_441 = 441,
-    A_443 = 443,
+    A_MOD_LEECH_PERCENT = 443,
     A_446 = 446,
     A_447 = 447,
     A_448 = 448,
