@@ -106,6 +106,7 @@ public:
   }
 
   void target_demise();
+  void trigger_burning_blades( action_state_t* state );
 };
 
 constexpr unsigned MAX_SOUL_FRAGMENTS      = 5;
@@ -2190,18 +2191,6 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
     : base_t( n, p, s, o )
   {
     special = true;
-  }
-
-  void trigger_burning_blades( action_state_t* s )
-  {
-    if ( !p()->talent.felscarred.burning_blades->ok() )
-      return;
-
-    if ( !result_is_hit( s->result ) )
-      return;
-
-    const double dot_damage = s->result_amount * p()->talent.felscarred.burning_blades->effectN( 1 ).percent();
-    residual_action::trigger( p()->active.burning_blades, s->target, dot_damage );
   }
 };
 
@@ -4544,7 +4533,7 @@ struct auto_attack_damage_t : public demon_hunter_attack_t
     demon_hunter_attack_t::impact( s );
 
     trigger_demon_blades( s );
-    demon_hunter_attack_t::trigger_burning_blades( s );
+    td( s->target )->trigger_burning_blades( s );
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -5099,12 +5088,12 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
       if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
       {
-        td( target )->debuffs.reavers_mark->trigger();
+        td( s->target )->debuffs.reavers_mark->trigger();
         p()->buff.rending_strike->expire();
       }
 
       // TOCHECK -- Does this proc from Relentless Onslaught?
-      demon_hunter_attack_t::trigger_burning_blades( s );
+      td( s->target )->trigger_burning_blades( s );
     }
   };
 
@@ -5876,7 +5865,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
         td( s->target )->debuffs.t29_vengeance_4pc->trigger();
       }
 
-      demon_hunter_attack_t::trigger_burning_blades( s );
+      td( s->target )->trigger_burning_blades( s );
     }
 
     void execute() override
@@ -6048,7 +6037,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
         }
       }
 
-      demon_hunter_attack_t::trigger_burning_blades( state );
+      td( state->target )->trigger_burning_blades( state );
     }
   };
 
@@ -6888,6 +6877,20 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   debuffs.serrated_glaive = make_buff( *this, "serrated_glaive", p.spec.serrated_glaive_debuff )
                                 ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                                 ->set_default_value( p.talent.havoc.serrated_glaive->effectN( 1 ).percent() );
+}
+
+void demon_hunter_td_t::trigger_burning_blades(action_state_t* state)
+{
+  demon_hunter_t* p = static_cast<demon_hunter_t*>( source );
+
+  if (!p->talent.felscarred.burning_blades->ok())
+    return;
+
+  if (!action_t::result_is_hit( state->result ))
+    return;
+
+  const double dot_damage = state->result_amount * p->talent.felscarred.burning_blades->effectN( 1 ).percent();
+  residual_action::trigger( p->active.burning_blades, state->target, dot_damage );
 }
 
 // ==========================================================================
