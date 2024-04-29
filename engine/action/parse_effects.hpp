@@ -593,6 +593,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
 {
   std::vector<player_effect_t> melee_speed_effects;
   std::vector<player_effect_t> attribute_multiplier_effects;
+  std::vector<player_effect_t> versatility_effects;
   std::vector<player_effect_t> player_multiplier_effects;
   std::vector<player_effect_t> pet_multiplier_effects;
   std::vector<player_effect_t> attack_power_multiplier_effects;
@@ -628,6 +629,36 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
         am *= 1.0 + get_effect_value( i );
 
     return am;
+  }
+
+  double composite_damage_versatility() const override
+  {
+    auto v = player_t::composite_damage_versatility();
+
+    for ( const auto& i : versatility_effects )
+      v *= 1.0 + get_effect_value( i );
+
+    return v;
+  }
+
+  double composite_heal_versatility() const override
+  {
+    auto v = player_t::composite_heal_versatility();
+
+    for ( const auto& i : versatility_effects )
+      v *= 1.0 + get_effect_value( i );
+
+    return v;
+  }
+
+  double composite_mitigation_versatility() const override
+  {
+    auto v = player_t::composite_mitigation_versatility();
+
+    for ( const auto& i : versatility_effects )
+      v *= 1.0 + get_effect_value( i ) * 0.5;
+
+    return v;
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -804,6 +835,10 @@ public:
           str = util::string_join( str_list );
         }
         return &attribute_multiplier_effects;
+
+      case A_MOD_VERSATILITY_PCT:
+        str = "versatility";
+        return &versatility_effects;
 
       case A_MOD_DAMAGE_PERCENT_DONE:
         opt_enum = eff.misc_value1();

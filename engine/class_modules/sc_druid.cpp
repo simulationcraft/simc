@@ -1263,9 +1263,6 @@ public:
   timespan_t available() const override;
   double composite_attack_power_multiplier() const override;
   double composite_armor() const override;
-  double composite_damage_versatility() const override;
-  double composite_heal_versatility() const override;
-  double composite_mitigation_versatility() const override;
   double composite_block() const override { return 0; }
   double composite_dodge_rating() const override;
   double composite_parry() const override { return 0; }
@@ -12123,37 +12120,6 @@ double druid_t::composite_armor() const
   }
 
   return a;
-}
-
-// Versatility ==============================================================
-double druid_t::composite_damage_versatility() const
-{
-  double v = player_t::composite_damage_versatility();
-
-  if ( talent.resourceful_hunter.ok() )
-    v += talent.resourceful_hunter->effectN( 2 ).percent();
-
-  return v;
-}
-
-double druid_t::composite_heal_versatility() const
-{
-  double v = player_t::composite_heal_versatility();
-
-  if ( talent.resourceful_hunter.ok() )
-    v += talent.resourceful_hunter->effectN( 2 ).percent();
-
-  return v;
-}
-
-double druid_t::composite_mitigation_versatility() const
-{
-  double v = player_t::composite_mitigation_versatility();
-
-  if ( talent.resourceful_hunter.ok() )
-    v += talent.resourceful_hunter->effectN( 2 ).percent() / 2;
-
-  return v;
 }
 
 // Defense ==================================================================
