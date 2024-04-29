@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54361
-static const std::array<spelltext_data_t, 22429> __spelltext_data { {
+static const std::array<spelltext_data_t, 22430> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -22422,6 +22422,7 @@ static const std::array<spelltext_data_t, 22429> __spelltext_data { {
   { 453282, "Every $s2 seconds, your next Fireball, Flamestrike, or Pyroblast has a $s3% reduced cast time.", 0, 0 },
   { 453286, "$@spelldesc452406", "Taking $w1 Fire damage every $t1 sec.", 0 },
   { 453304, "Break the sapphire.", 0, 0 },
+  { 453314, "$@spelldesc452414", "$?a212612[Chaos Strike and Blade Dance damage increased by $w2%.\r\nHaste increased by $w1%][Maximum health increased by $w3% and Armor by $w4%].", 0 },
   { 453329, "$@spelldesc451440", "Flamestrike damage increased and cast time reduced.", 0 },
   { 453338, "Phoenix Flames applies Charring Embers to all enemies it damages, increasing their damage taken from you by $408665s1% for $408665d.", 0, 0 },
   { 453433, "$@spelldesc406545", "Your next $?s383328[Final Verdict]?s215661[Justicar's Vengeance][Templar's Verdict] hits ${$w1-1} additional targets.", 0 },

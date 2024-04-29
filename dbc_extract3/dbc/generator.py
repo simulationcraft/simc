@@ -2356,6 +2356,9 @@ class SpellDataGenerator(DataGenerator):
           ( 442442, 0 ), # Rending Strike
           ( 444806, 0 ), # Art of the Glaive damage
           ( 444810, 0 ), # Art of the Glaive container
+
+          # Fel-scarred
+          ( 453314, 0 ), # Enduring Torment
        ),
 
        # Evoker:
