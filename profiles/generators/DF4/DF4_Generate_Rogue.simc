@@ -1,29 +1,29 @@
-# rogue=DF4_Rogue_Assassination
-# level=70
-# race=human
-# role=attack
-# position=back
-# spec=assassination
-# talents=BMQAAAAAAAAAAAAAAAAAAAAAAEJJhkEEAAAAAASJJSJJAAAAAAgWSCSgkkSaJREEJJJRSTLSAA
+rogue=DF4_Rogue_Assassination
+level=70
+race=human
+role=attack
+position=back
+spec=assassination
+talents=BMQAAAAAAAAAAAAAAAAAAAAAAEJJhkEEAAAAAASJJSLJAAAAAAgWSCSgkkSaJREEJJJRSTLSAA
 
-# head=lucid_shadewalkers_deathmask,id=207236,bonus_id=1808/8780/7187/1520,gem_id=192982,enchant=incandescent_essence
-# neck=eye_of_the_rising_flame,id=207163,bonus_id=8782/7187/1520,gem_id=192952/192952/192952
-# shoulder=lucid_shadewalkers_bladed_spaulders,id=207234,bonus_id=7187/1520
-# back=lucid_shadewalkers_cape,id=207231,bonus_id=7187/1520
-# chest=lucid_shadewalkers_cuirass,id=207239,bonus_id=7187/1520,enchant=waking_stats_3
-# wrist=lifebound_bindings,id=193419,bonus_id=8780/8797/8960/9500/9405,gem_id=192952,crafted_stats=36/49
-# hands=lucid_shadewalkers_clawgrips,id=207237,bonus_id=7187/1520
-# waist=bloody_dragonhide_belt,id=207131,bonus_id=1808/8780/7187/1520,gem_id=192952,enchant=shadowed_belt_clasp_3
-# legs=shambling_berserkers_leggings,id=155869,ilevel=489,enchant=fierce_armor_kit_3
-# feet=toxic_thorn_footwraps,id=193452,bonus_id=9500/9405
-# finger1=band_of_burning_thorns,id=207159,bonus_id=1808/8780/7187/1520,gem_id=192952,enchant=devotion_of_haste_3
-# finger2=signet_of_the_last_elder,id=207162,bonus_id=1808/8780/7187/1520,gem_id=192952,enchant=devotion_of_haste_3
-# trinket1=witherbarks_branch,id=109999,ilevel=489
-# trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-# main_hand=nick_of_time,id=207996,bonus_id=9526,ilevel=489,enchant=wafting_devotion_3
-# off_hand=nick_of_time,id=207996,bonus_id=9526,ilevel=489,enchant=wafting_devotion_3
+head=lurking_specters_visage,id=217208,bonus_id=1808/10359/1488,gem_id=192988,enchant=incandescent_essence
+neck=eye_of_the_rising_flame,id=207163,bonus_id=8782/10359/1488,gem_id=192964/192964/192964
+shoulder=lurking_specters_shoulderblades,id=217210,bonus_id=10359/1488
+back=voice_of_the_silent_star,id=204465,bonus_id=10359/1495
+chest=warlords_volcanic_vest,id=202586,bonus_id=10359/1488,enchant=waking_stats_3
+wrist=lifebound_bindings,id=193419,bonus_id=10249/10359/9405/8780/8932/8960,gem_id=192964,crafted_stats=32/40
+hands=lurking_specters_handgrips,id=217207,bonus_id=10359/1488
+waist=vengeful_bladebeak_girdle,id=208432,bonus_id=1808/10359/1488,enchant_id=6904,gem_id=192964
+legs=lurking_specters_tights,id=217209,bonus_id=10359/1488,enchant=lambent_armor_kit_3
+feet=lucid_shadewalkers_sollerets,id=207238,bonus_id=10359/1488
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=1808/10359/1488,enchant=devotion_of_haste_3,gem_id=192964
+finger2=signet_of_titanic_insight,id=192999,bonus_id=10249/10359/9405/8780/8932/8960,gem_id=192964,ilevel=525,crafted_stats=40/36,enchant=devotion_of_haste_3
+trinket1=cataclysmic_signet_brand,id=207166,bonus_id=10359/1488
+trinket2=ashes_of_the_embersoul,id=207167,bonus_id=10359/1488
+main_hand=fang_of_the_sundered_flame,id=202564,bonus_id=10359/1488,enchant=wafting_devotion_3
+off_hand=nick_of_time,id=207996,bonus_id=9526,enchant=wafting_devotion_3,ilevel=522
 
-# save=DF4_Rogue_Assassination.simc
+save=DF4_Rogue_Assassination.simc
 
 rogue="DF4_Rogue_Outlaw"
 spec=outlaw
@@ -52,29 +52,29 @@ off_hand=thorncaller_claw,id=207784,bonus_id=10359/1488,enchant=wafting_devotion
 
 save=DF4_Rogue_Outlaw.simc
 
-# rogue=DF4_Rogue_Subtlety
-# level=70
-# race=void_elf
-# role=attack
-# position=back
-# spec=subtlety
-# talents=BUQAAAAAAAAAAAAAAAAAAAAAAAAEEAAAAAASJJJlERSKFRICxBSSSISLSSiWSikkAokWAAAAIBB
+rogue=DF4_Rogue_Subtlety
+level=70
+race=void_elf
+role=attack
+position=back
+spec=subtlety
+talents=BUQAAAAAAAAAAAAAAAAAAAAAAAAEEAAAAAASJJJlERSKFRICxBSSSISLSSiWSikkAokWAAAAIBB
 
-# head=lifebound_cap,id=193400,bonus_id=523/8932/8960,ilevel=486,gem_id=192988,enchant=incandescent_essence,crafted_stats=40/49
-# neck=raven_filigree_pendant,id=134499,bonus_id=8782,gem_id=192964/192964/192964,ilevel=489
-# shoulders=lucid_shadewalkers_bladed_spaulders,id=207234,bonus_id=7187/1520
-# back=mantle_of_blazing_sacrifice,id=207161,bonus_id=7187/1520
-# chest=lucid_shadewalkers_cuirass,id=207239,bonus_id=7187/1520,enchant=waking_stats_3
-# wrists=primordial_serpents_bindings,id=207128,bonus_id=523/7187/1520,gem_id=192964
-# hands=lucid_shadewalkers_clawgrips,id=207237,bonus_id=7187/1520,ilevel=489
-# waist=houndjowl_waistband,id=159341,bonus_id=1808,ilevel=489,gem_id=192964,enchant_id=6904
-# legs=lucid_shadewalkers_chausses,id=207235,bonus_id=7187/1520,enchant=fierce_armor_kit_3
-# feet=grove_darkeners_treads,id=134429,ilevel=489
-# finger1=signet_of_titanic_insight,id=192999,bonus_id=523/8932/8960,ilevel=486,gem_id=192964,enchant=devotion_of_mastery_3,crafted_stats=40/49
-# finger2=ringbound_hourglass,id=193000,bonus_id=523,ilevel=486,gem_id=192964,enchant=devotion_of_versatility_3,crafted_stats=49/40
-# trinket1=cataclysmic_signet_brand,id=207166,ilevel=489
-# trinket2=ashes_of_the_embersoul,id=207167,bonus_id=7187/1520
-# main_hand=nick_of_time,id=207996,ilevel=489,enchant=sophic_devotion_3
-# off_hand=nick_of_time,id=207996,ilevel=489,enchant=sophic_devotion_3
+head=violent_gravemask,id=202602,bonus_id=10359/1488/1808,enchant=incandescent_essence,gem_id=192988
+neck=magmoraxs_fourth_collar,id=204397,bonus_id=10359/1488/8782,gem_id=192938/192938/192938
+shoulder=lurking_specters_shoulderblades,id=217210,bonus_id=10359/1488
+back=voice_of_the_silent_star,id=204465,bonus_id=10359/1495
+chest=lurking_specters_brigandine,id=217206,bonus_id=10359/1488,enchant=waking_stats_3
+wrist=lifebound_bindings,id=193419,bonus_id=10249/10359/9405/8780/9379/8960,gem_id=192938,crafted_stats=40/49
+hands=lurking_specters_handgrips,id=217207,bonus_id=10359/1488
+waist=vengeful_bladebeak_girdle,id=208432,bonus_id=1808/10359/1488,enchant_id=6904,gem_id=192938
+legs=lurking_specters_tights,id=217209,bonus_id=10359/1488,enchant=fierce_armor_kit_3
+feet=galvanic_gaiters,id=202008,bonus_id=10359/1488
+finger1=seal_of_diurnas_chosen,id=195480,,bonus_id=10359/1488/8780,gem_id=192938,enchant=devotion_of_mastery_3
+finger2=signet_of_titanic_insight,id=192999,bonus_id=10249/10359/9405/8780/8932/8960,gem_id=192938,ilevel=525,crafted_stats=40/49,enchant=devotion_of_mastery_3
+trinket1=ashes_of_the_embersoul,id=207167,bonus_id=10359/1488
+trinket2=spiteful_storm,id=194309,bonus_id=10359/1488
+main_hand=cruel_dreamcarver,id=207783,bonus_id=10359/1488,enchant=wafting_devotion_3
+off_hand=nick_of_time,id=207996,bonus_id=9526,enchant=frozen_writ_3,ilevel=522
 
-# save=DF4_Rogue_Subtlety.simc
+save=DF4_Rogue_Subtlety.simc
