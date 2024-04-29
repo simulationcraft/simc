@@ -1261,7 +1261,6 @@ public:
   void datacollection_end() override;
   void analyze( sim_t& ) override;
   timespan_t available() const override;
-  double composite_attack_power_multiplier() const override;
   double composite_armor() const override;
   double composite_block() const override { return 0; }
   double composite_dodge_rating() const override;
@@ -10729,6 +10728,7 @@ void druid_t::create_buffs()
   buff.ca_inc     = talent.incarnation_moonkin.ok() ? buff.incarnation_moonkin : buff.celestial_alignment;
 
   parse_effects( find_specialization_spell( "Critical Strikes" ) );
+  parse_effects( mastery.natures_guardian_AP );
 
   auto bear_stam = spec.bear_form_passive->effectN( 2 ).percent() +
                    spec.bear_form_2->effectN( 1 ).percent() +
@@ -12092,17 +12092,6 @@ void druid_t::invalidate_cache( cache_e c )
 }
 
 // Composite combat stat override functions =================================
-// Attack Power =============================================================
-double druid_t::composite_attack_power_multiplier() const
-{
-  double ap = player_t::composite_attack_power_multiplier();
-
-  if ( mastery.natures_guardian->ok() )
-    ap *= 1.0 + cache.mastery() * mastery.natures_guardian_AP->effectN( 1 ).mastery_value();
-
-  return ap;
-}
-
 // Armor ====================================================================
 double druid_t::composite_armor() const
 {
@@ -12147,16 +12136,6 @@ double druid_t::matching_gear_multiplier( attribute_e attr ) const
   }
 
   return spec.leather_specialization->effectN( idx ).percent();
-}
-
-double druid_t::composite_melee_expertise( const weapon_t* ) const
-{
-  double exp = player_t::composite_melee_expertise();
-
-  if ( buff.bear_form->check() )
-    exp += buff.bear_form->data().effectN( 6 ).base_value();
-
-  return exp;
 }
 
 // Movement =================================================================
