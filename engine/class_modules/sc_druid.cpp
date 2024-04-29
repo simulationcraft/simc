@@ -1117,7 +1117,6 @@ public:
   {
     // Passive Auras
     const spell_data_t* druid;
-    const spell_data_t* critical_strikes;  // Feral & Guardian
     const spell_data_t* leather_specialization;
 
     // Baseline
@@ -1264,16 +1263,11 @@ public:
   timespan_t available() const override;
   double composite_attack_power_multiplier() const override;
   double composite_armor() const override;
-  double composite_armor_multiplier() const override;
-  double composite_melee_crit_chance() const override;
-  double composite_spell_crit_chance() const override;
   double composite_damage_versatility() const override;
   double composite_heal_versatility() const override;
   double composite_mitigation_versatility() const override;
   double composite_block() const override { return 0; }
-  double composite_crit_avoidance() const override;
   double composite_dodge_rating() const override;
-  double composite_leech() const override;
   double composite_parry() const override { return 0; }
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_melee_expertise( const weapon_t* ) const override;
@@ -9856,7 +9850,6 @@ void druid_t::init_spells()
 
   // Passive Auras
   spec.druid                    = find_spell( 137009 );
-  spec.critical_strikes         = find_specialization_spell( "Critical Strikes" );
   spec.leather_specialization   = find_specialization_spell( "Leather Specialization" );
 
   // Baseline
@@ -10738,24 +10731,29 @@ void druid_t::create_buffs()
   buff.b_inc_bear = talent.incarnation_bear.ok()    ? buff.incarnation_bear    : buff.berserk_bear;
   buff.ca_inc     = talent.incarnation_moonkin.ok() ? buff.incarnation_moonkin : buff.celestial_alignment;
 
-  parse_effects( buff.ruthless_aggression );
+  parse_effects( find_specialization_spell( "Critical Strikes" ) );
 
-  parse_target_effects( d_fn( &druid_td_t::debuffs_t::bloodseeker_vines ), spec.bloodseeker_vines,
-                        talent.vigorous_creepers );
-
-  auto bear_form_stam = spec.bear_form_passive->effectN( 2 ).percent() +
-                        spec.bear_form_2->effectN( 1 ).percent() +
-                        talent.ursocs_spirit->effectN( 1 ).percent();
+  auto bear_stam = spec.bear_form_passive->effectN( 2 ).percent() +
+                   spec.bear_form_2->effectN( 1 ).percent() +
+                   talent.ursocs_spirit->effectN( 1 ).percent();
 
   add_parse_entry( attribute_multiplier_effects )
     .set_buff( buff.bear_form )
-    .set_value( bear_form_stam )
+    .set_value( bear_stam )
     .set_eff( &find_effect( spec.bear_form_passive, A_MOD_TOTAL_STAT_PERCENTAGE ) );
 
-  add_parse_entry( attribute_multiplier_effects )
-    .set_buff( buff.wildshape_mastery )
-    .set_value( bear_form_stam * buff.wildshape_mastery->data().effectN( 1 ).percent() )
-    .set_eff( &find_effect( spec.bear_form_2, A_MOD_TOTAL_STAT_PERCENTAGE ) );
+  parse_effects( buff.bear_form );
+  parse_effects( buff.rage_of_the_sleeper );
+  parse_effects( talent.resourceful_hunter );
+  parse_effects( buff.ruthless_aggression );
+  parse_effects( buff.ursine_vigor, USE_DEFAULT );
+  parse_effects( buff.wildshape_mastery, 0b011, bear_stam * buff.wildshape_mastery->data().effectN( 1 ).percent() );
+  parse_effects( buff.wildshape_mastery, 0b101,
+                 find_effect( buff.bear_form, A_MOD_BASE_RESISTANCE_PCT ).percent() *
+                 buff.wildshape_mastery->data().effectN( 1 ).percent() );
+
+  parse_target_effects( d_fn( &druid_td_t::debuffs_t::bloodseeker_vines ), spec.bloodseeker_vines,
+                        talent.vigorous_creepers );
 }
 
 // Create active actions ====================================================
@@ -12127,33 +12125,6 @@ double druid_t::composite_armor() const
   return a;
 }
 
-double druid_t::composite_armor_multiplier() const
-{
-  double a = player_t::composite_armor_multiplier();
-
-  auto bear_form_mul = buff.bear_form->data().effectN( 4 ).percent();
-
-  if ( buff.bear_form->check() )
-    a *= 1.0 + bear_form_mul;
-  else if ( buff.wildshape_mastery->check() )
-    a *= 1.0 + bear_form_mul * buff.wildshape_mastery->default_value;
-
-  a *= 1.0 + buff.ursine_vigor->check_value();
-
-  return a;
-}
-
-// Critical Strike ==========================================================
-double druid_t::composite_melee_crit_chance() const
-{
-  return player_t::composite_melee_crit_chance() + spec.critical_strikes->effectN( 1 ).percent();
-}
-
-double druid_t::composite_spell_crit_chance() const
-{
-  return player_t::composite_spell_crit_chance() + spec.critical_strikes->effectN( 1 ).percent();
-}
-
 // Versatility ==============================================================
 double druid_t::composite_damage_versatility() const
 {
@@ -12186,16 +12157,6 @@ double druid_t::composite_mitigation_versatility() const
 }
 
 // Defense ==================================================================
-double druid_t::composite_crit_avoidance() const
-{
-  double c = player_t::composite_crit_avoidance();
-
-  if ( buff.bear_form->check() )
-    c += buff.bear_form->data().effectN( 3 ).percent();
-
-  return c;
-}
-
 double druid_t::composite_dodge_rating() const
 {
   double dr = player_t::composite_dodge_rating();
@@ -12204,19 +12165,6 @@ double druid_t::composite_dodge_rating() const
     dr += composite_rating( RATING_MELEE_CRIT ) * spec.lightning_reflexes->effectN( 1 ).percent();
 
   return dr;
-}
-
-double druid_t::composite_leech() const
-{
-  double l = player_t::composite_leech();
-
-  if ( buff.rage_of_the_sleeper->check() )
-    l += talent.rage_of_the_sleeper->effectN( 3 ).percent();
-
-  if ( talent.resourceful_hunter.ok() )
-    l += talent.resourceful_hunter->effectN( 1 ).percent();
-
-  return l;
 }
 
 // Miscellaneous ============================================================

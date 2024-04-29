@@ -599,6 +599,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> expertise_effects;
   std::vector<player_effect_t> crit_avoidance_effects;
   std::vector<player_effect_t> parry_effects;
+  std::vector<player_effect_t> armor_multiplier_effects;
   std::vector<target_effect_t<TD>> target_multiplier_effects;
   std::vector<target_effect_t<TD>> target_pet_multiplier_effects;
 
@@ -717,6 +718,16 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
       parry += get_effect_value( i );
 
     return parry;
+  }
+
+  double composite_armor_multiplier() const override
+  {
+    auto am = player_t::composite_armor_multiplier();
+
+    for ( const auto& i : armor_multiplier_effects )
+      am *= 1.0 + get_effect_value( i );
+
+    return am;
   }
 
 private:
