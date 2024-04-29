@@ -8556,12 +8556,25 @@ double demon_hunter_t::composite_leech() const
       l += spec.metamorphosis_buff->effectN( 3 ).percent();
     }
 
-    l += talent.demon_hunter.soul_rending->effectN( 2 ).percent();
+    if ( talent.demon_hunter.soul_rending->ok() )
+    {
+      l += talent.demon_hunter.soul_rending->effectN( 2 ).percent();
+
+      if ( talent.felscarred.improved_soul_rending->ok() )
+      {
+        l += talent.felscarred.improved_soul_rending->effectN( 2 ).percent();
+      }
+    }
   }
 
   if ( talent.demon_hunter.soul_rending->ok() )
   {
     l += talent.demon_hunter.soul_rending->effectN( 1 ).percent();
+
+    if ( talent.felscarred.improved_soul_rending->ok() )
+    {
+      l += talent.felscarred.improved_soul_rending->effectN( 1 ).percent();
+    }
   }
 
   return l;
