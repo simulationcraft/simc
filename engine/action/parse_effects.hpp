@@ -597,7 +597,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<target_effect_t<TD>> target_pet_multiplier_effects;
 
   parse_player_effects_t( sim_t* sim, player_e type, std::string_view name, race_e race )
-    : player_t( sim, type, name, race )
+    : player_t( sim, type, name, race ), parse_effects_t( this )
   {}
 
   double composite_melee_speed() const override
@@ -610,9 +610,9 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
     return ms;
   }
 
-  double composite_attribute_multipiler( attribute_e attr ) const override
+  double composite_attribute_multiplier( attribute_e attr ) const override
   {
-    auto am = player_t::composite_attribute_multipiler( attr );
+    auto am = player_t::composite_attribute_multiplier( attr );
 
     for ( const auto& i : attribute_multiplier_effects )
       if ( i.opt_enum & ( 1 << ( attr - 1 ) ) )
@@ -632,12 +632,12 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
     return m;
   }
 
-  double composite_player_pet_damage_multplier( const action_state_t* s, bool guardian ) const override
+  double composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const override
   {
-    auto dm = player_t::composite_player_pet_damage_multplier( s, guardian );
+    auto dm = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
     for ( const auto& i : pet_multiplier_effects )
-      if ( i.opt_enum == guardian )
+      if ( static_cast<bool>( i.opt_enum ) == guardian )
         dm *= 1.0 + get_effect_value( i );
 
     return dm;
@@ -662,13 +662,13 @@ public:
     return tm;
   }
 
-  double composite_player_target_pet_multiplier( player_t* target, bool guardian ) const override
+  double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override
   {
-    auto tm = player_t::composite_player_target_pet_multiplier( target, guardian );
+    auto tm = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
     auto td = _get_td( target );
 
     for ( const auto& i : target_pet_multiplier_effects )
-      if ( i.opt_enum == guardian )
+      if ( static_cast<bool>( i.opt_enum ) == guardian )
         tm *= 1.0 + get_target_effect_value( i, td );
   }
 
@@ -741,22 +741,22 @@ public:
   {
     if ( data.buff )
     {
-      sim->print_debug( "player-effects: {} {} modified by {} {} buff {} ({}#{})", name(), type_str, val_str,
+      sim->print_debug( "player-effects: Player {} modified by {} {} buff {} ({}#{})", type_str, val_str,
                         data.use_stacks ? "per stack of" : "with", data.buff->name(), data.buff->data().id(), i );
     }
     else if ( mastery && !data.func )
     {
-      sim->print_debug( "player-effects: {} {} modified by {} from {} ({}#{})", name(), type_str, val_str,
+      sim->print_debug( "player-effects: Player {} modified by {} from {} ({}#{})", type_str, val_str,
                         s_data->name_cstr(), s_data->id(), i );
     }
     else if ( data.func )
     {
-      sim->print_debug( "player-effects: {} {} modified by {} with condition from {} ({}#{})", name(), type_str,
-                        val_str, s_data->name_cstr(), s_data->id(), i );
+      sim->print_debug( "player-effects: Player {} modified by {} with condition from {} ({}#{})", type_str, val_str,
+                        s_data->name_cstr(), s_data->id(), i );
     }
     else
     {
-      sim->print_debug( "player-effects: {} {} modified by {} from {} ({}#{})", name(), type_str, val_str,
+      sim->print_debug( "player-effects: Player {} modified by {} from {} ({}#{})", type_str, val_str,
                         s_data->name_cstr(), s_data->id(), i );
     }
   }
