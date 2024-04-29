@@ -1266,7 +1266,6 @@ public:
   double composite_dodge_rating() const override;
   double composite_parry() const override { return 0; }
   double matching_gear_multiplier( attribute_e attr ) const override;
-  double composite_melee_expertise( const weapon_t* ) const override;
   double temporary_movement_modifier() const override;
   double passive_movement_modifier() const override;
   std::unique_ptr<expr_t> create_action_expression(action_t& a, std::string_view name_str) override;
