@@ -475,7 +475,7 @@ public:
       player_talent_t improved_soul_rending;
 
       player_talent_t burning_blades;
-      player_talent_t violent_transformation;  // NYI
+      player_talent_t violent_transformation;
       player_talent_t enduring_torment;        // NYI
 
       player_talent_t untethered_fury;
@@ -3722,6 +3722,12 @@ struct metamorphosis_t : public demon_hunter_spell_t
         p()->cooldown.blade_dance->reset( false );
       }
 
+      if ( p()->talent.felscarred.violent_transformation->ok())
+      {
+        p()->cooldown.immolation_aura->reset( false );
+        p()->cooldown.sigil_of_flame->reset( false );
+      }
+
       // Cancel all previous movement events, as Metamorphosis is ground-targeted
       // If we are landing outside of point-blank range, trigger the movement buff
       p()->set_out_of_range( timespan_t::zero() );
@@ -3734,6 +3740,12 @@ struct metamorphosis_t : public demon_hunter_spell_t
     else  // DEMON_HUNTER_VENGEANCE
     {
       p()->buff.metamorphosis->trigger();
+
+      if ( p()->talent.felscarred.violent_transformation->ok())
+      {
+        p()->cooldown.fel_devastation->reset( false );
+        p()->cooldown.sigil_of_flame->reset( false );
+      }
     }
   }
 
