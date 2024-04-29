@@ -602,6 +602,7 @@ struct death_knight_td_t : public actor_target_data_t
     propagate_const<buff_t*> festering_wound;
     propagate_const<buff_t*> rotten_touch;
     propagate_const<buff_t*> death_rot;
+    propagate_const<buff_t*> unholy_aura;
 
     // Rider of the Apocalypse
     propagate_const<buff_t*> chains_of_ice_trollbane_slow;
@@ -1319,6 +1320,7 @@ public:
     const spell_data_t* bursting_sores_damage;
     const spell_data_t* festering_wound_damage;
     const spell_data_t* outbreak_aoe;
+    const spell_data_t* unholy_aura_debuff;
 
     // Rider of the Apocalypse non-talent spells
     const spell_data_t* a_feast_of_souls_buff;
@@ -1570,8 +1572,6 @@ public:
   double composite_spell_haste() const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_parry_rating() const override;
-  double composite_player_pet_damage_multiplier( const action_state_t* /* state */,
-                                                 bool /* guardian */ ) const override;
   void combat_begin() override;
   void activate() override;
   void reset() override;
@@ -1657,6 +1657,7 @@ public:
   void burst_festering_wound( player_t* target, unsigned n = 1 );
   void trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance = -1.0,
                                  bool death_trigger = false );
+  void start_unholy_aura();
   // Start the repeated stacking of buffs, called at combat start
   void start_cold_heart();
   void start_inexorable_assault();
@@ -1762,6 +1763,8 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
       make_buff( *this, "rotten_touch", p->spell.rotten_touch_debuff )->set_default_value_from_effect( 1 );
 
   debuff.death_rot = make_buff( *this, "death_rot", p->spell.death_rot_debuff )->set_default_value_from_effect( 1 );
+
+  debuff.unholy_aura = make_buff( *this, "unholy_aura", p->spell.unholy_aura_debuff )->apply_affecting_aura( p->talent.unholy.unholy_aura );
 
   // Apocalypse Death Knight Runeforge Debuffs
   debuff.apocalypse_death = make_buff( *this, "death", p->spell.apocalypse_death_debuff )  // Effect not implemented
@@ -10185,6 +10188,31 @@ void death_knight_t::start_inexorable_assault()
   } );
 }
 
+void death_knight_t::start_unholy_aura()
+{
+  if ( !talent.unholy.unholy_aura.ok() )
+  {
+    return;
+  }
+
+  timespan_t first = timespan_t::from_millis( rng().range( 0, 1 ) );
+
+  make_event( *sim, first, [ this ]() {
+    for ( auto& enemy : sim->target_non_sleeping_list )
+    {
+      auto enemy_td = get_target_data( target );
+      enemy_td->debuff.unholy_aura->trigger();
+    }
+    make_repeating_event( *sim, 1_s, [ this ]() {
+      for ( auto& enemy : sim->target_non_sleeping_list )
+      {
+        auto enemy_td = get_target_data( target );
+        enemy_td->debuff.unholy_aura->trigger();
+      }
+    } );
+  } );
+}
+
 // Launches the repeting event for the cold heart talent
 void death_knight_t::start_cold_heart()
 {
@@ -11474,6 +11502,7 @@ void death_knight_t::init_spells()
   spell.bursting_sores_damage      = find_spell( 207267 );
   spell.festering_wound_damage     = find_spell( 194311 );
   spell.outbreak_aoe               = find_spell( 196780 );
+  spell.unholy_aura_debuff         = find_spell( 377445 );
 
   // Rider of the Apocalypse Spells
   spell.a_feast_of_souls_buff = find_spell( 440861 );
@@ -12363,22 +12392,6 @@ double death_knight_t::composite_parry_rating() const
   return p;
 }
 
-double death_knight_t::composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const
-{
-  double m = player_t::composite_player_pet_damage_multiplier( state, guardian );
-
-
-  if ( talent.unholy.unholy_aura.ok() )
-  {
-    if ( guardian )
-      m *= 1.0 + talent.unholy.unholy_aura->effectN( 4 ).percent();
-    else  // Pets
-      m *= 1.0 + talent.unholy.unholy_aura->effectN( 3 ).percent();
-  }
-
-  return m;
-}
-
 // death_knight_t::combat_begin =============================================
 
 void death_knight_t::combat_begin()
@@ -12518,6 +12531,11 @@ void death_knight_t::arise()
   {
     start_a_feast_of_souls();
   }
+
+  if ( talent.unholy.unholy_aura.ok() )
+  {
+    start_unholy_aura();
+  }
 }
 
 void death_knight_t::adjust_dynamic_cooldowns()
@@ -12556,6 +12574,7 @@ void death_knight_t::parse_player_effects()
   parse_effects( mastery.dreadblade );
   parse_effects( buffs.unholy_assault, talent.unholy.unholy_assault );
   parse_effects( buffs.ghoulish_frenzy, talent.unholy.ghoulish_frenzy );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::unholy_aura ), spell.unholy_aura_debuff, talent.unholy.unholy_aura );
   parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), spell.virulent_plague, talent.unholy.morbidity );
   parse_target_effects( d_fn( &death_knight_td_t::dots_t::frost_fever ), spell.frost_fever, talent.unholy.morbidity );
   parse_target_effects( d_fn( &death_knight_td_t::dots_t::blood_plague ), spell.blood_plague, talent.unholy.morbidity );

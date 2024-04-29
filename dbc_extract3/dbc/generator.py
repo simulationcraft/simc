@@ -1826,6 +1826,7 @@ class SpellDataGenerator(DataGenerator):
           ( 326864, 0 ), # Spellwarding
           ( 326982, 0 ), # Unending Thirst
           ( 425721, 0 ), # T31 Blood 2pc buff
+          ( 377445, 0 ), # Unholy Aura debuff
           # The War Within
           # Rider of the Apocalypse
           ( 444505, 0 ), # Mograines Might Buff

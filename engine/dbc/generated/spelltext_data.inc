@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54361
-static const std::array<spelltext_data_t, 22428> __spelltext_data { {
+static const std::array<spelltext_data_t, 22429> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16544,6 +16544,7 @@ static const std::array<spelltext_data_t, 22428> __spelltext_data { {
   { 377422, "$?s137032[Shadow Word: Pain and Purge the Wicked deal][Shadow Word: Pain deals] an additional $s1% damage. When an enemy dies while afflicted by your $?s137032[Shadow Word: Pain or Purge the Wicked][Shadow Word: Pain], you gain $?a137033[${$s3/100} Insanity.][${$s5/10}.1% Mana.]", 0, 0 },
   { 377438, "For $390933d after casting Power Word: Shield, you deal $390933s1% additional damage and healing with Smite and Holy Nova.", 0, 0 },
   { 377440, "All enemies within $a2 yards take $s3% increased damage from your minions.", 0, 0 },
+  { 377445, "$@spelldesc377440", "Damage taken from $@auracaster's minions increased by $w1%.", 0 },
   { 377449, "Stomp the ground, commanding flames to radiate outward from your position, dealing $394393s1 Fire damage split between all enemies struck and granting you a $394393s2 shield for $382058d. After a delay, the flames return, dealing the same damage and refreshing the shield.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $s3 enemies.", 0, 0 },
   { 377451, "$@spelldesc396391", 0, 0 },
   { 377452, "Succumb to the Icon's whispers and become Infused with $?a137048|a137028|a137023|a137010|a137008|a212613[Earth]?a137039|a137031|a137032|a137029|a137024|a356810|a137012[Fire][Frost], increasing your $?a137048|a137028|a137023|a137010|a137008|a212613[Versatility]?a137039|a137031|a137032|a137029|a137024|a356810|a137012[Haste][Critical Strike] by $s1. \r\n\r\nFighting alongside allies who are Infused with $?a137048|a137028|a137023|a137010|a137008|a212613[Fire or Frost]?a137039|a137031|a137032|a137029|a137024|a356810|a137012[Earth or Frost][Earth or Fire] has a chance to grant you $s2 of their Infusion's stat for $382081d.\r\n\r\nInfusion based on your current specialization.", 0, 0 },
