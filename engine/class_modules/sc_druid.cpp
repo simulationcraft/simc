@@ -420,7 +420,32 @@ static std::string get_suffix( std::string_view name, std::string_view base )
   return std::string( name.substr( std::min( name.size(), name.find( base ) + base.size() ) ) );
 }
 
-struct druid_t : public player_t
+// utility to create target_effect_t compatible functions from druid_td_t member references
+template <typename T>
+static std::function<int( druid_td_t* )> d_fn( T d, bool stack = true )
+{
+  if constexpr ( std::is_invocable_v<T, druid_td_t::debuffs_t> )
+  {
+    if ( stack )
+      return [ d ]( druid_td_t* t ) { return std::invoke( d, t->debuff )->check(); };
+    else
+      return [ d ]( druid_td_t* t ) { return std::invoke( d, t->debuff )->check() > 0; };
+  }
+  else if constexpr ( std::is_invocable_v<T, druid_td_t::dots_t> )
+  {
+    if ( stack )
+      return [ d ]( druid_td_t* t ) { return std::invoke( d, t->dots )->current_stack(); };
+    else
+      return [ d ]( druid_td_t* t ) { return std::invoke( d, t->dots )->is_ticking(); };
+  }
+  else
+  {
+    static_assert( static_false<T>, "Not a valid member of druid_td_t" );
+    return nullptr;
+  }
+}
+
+struct druid_t : public parse_player_effects_t<druid_td_t>
 {
 private:
   form_e form = form_e::NO_FORM;  // Active druid form
@@ -1165,7 +1190,7 @@ public:
   } uptime;
 
   druid_t( sim_t* sim, std::string_view name, race_e r = RACE_NIGHT_ELF )
-    : player_t( sim, DRUID, name, r ),
+    : parse_player_effects_t( sim, DRUID, name, r ),
       eclipse_handler( this ),
       options(),
       active(),
@@ -1237,8 +1262,6 @@ public:
   void datacollection_end() override;
   void analyze( sim_t& ) override;
   timespan_t available() const override;
-  double composite_player_target_multiplier( player_t*, school_e ) const override;
-  double composite_melee_speed() const override;
   double composite_attack_power_multiplier() const override;
   double composite_armor() const override;
   double composite_armor_multiplier() const override;
@@ -1252,7 +1275,6 @@ public:
   double composite_dodge_rating() const override;
   double composite_leech() const override;
   double composite_parry() const override { return 0; }
-  double composite_attribute_multiplier( attribute_e attr ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_melee_expertise( const weapon_t* ) const override;
   double temporary_movement_modifier() const override;
@@ -1991,30 +2013,6 @@ public:
     parse_effects( p()->buff.ursine_potential );
   }
 
-  template <typename T>
-  std::function<int( druid_td_t* )> d_fn( T d, bool stack = true )
-  {
-    if constexpr ( std::is_invocable_v<T, druid_td_t::debuffs_t> )
-    {
-      if ( stack )
-        return [ d ]( druid_td_t* t ) { return std::invoke( d, t->debuff )->check(); };
-      else
-        return [ d ]( druid_td_t* t ) { return std::invoke( d, t->debuff )->check() > 0; };
-    }
-    else if constexpr ( std::is_invocable_v<T, druid_td_t::dots_t> )
-    {
-      if ( stack )
-        return [ d ]( druid_td_t* t ) { return std::invoke( d, t->dots )->current_stack(); };
-      else
-        return [ d ]( druid_td_t* t ) { return std::invoke( d, t->dots )->is_ticking(); };
-    }
-    else
-    {
-      static_assert( static_false<T>, "Not a valid member of druid_td_t" );
-      return nullptr;
-    }
-  }
-
   void apply_debuffs_effects()
   {
     // Balance
@@ -2360,6 +2358,8 @@ struct ravage_base_t : public BASE
     dreadful_wound_t( druid_t* p, std::string_view n, flag_e f )
       : DOT_BASE( n, p, p->find_spell( p->specialization() == DRUID_GUARDIAN ? 451177 : 441812 ), f )
     {
+      DOT_BASE::background = true;
+
       DOT_BASE::name_str_reporting = "dreadful_wound";
       DOT_BASE::dot_name = "dreadful_wound";
 
@@ -2404,7 +2404,7 @@ public:
     if ( p->talent.dreadful_wound.ok() )
     {
       auto suf = get_suffix( BASE::name_str, "ravage" );
-      BASE::impact_action = p->get_secondary_action<dreadful_wound_t>( "dreadful_wound_" + suf, f );
+      BASE::impact_action = p->get_secondary_action<dreadful_wound_t>( "dreadful_wound" + suf, f );
       BASE::add_child( BASE::impact_action );
     }
   }
@@ -4556,7 +4556,7 @@ struct ferocious_bite_t : public ferocious_bite_base_t
 
   void execute() override
   {
-    if ( p()->buff.apex_predators_craving->can_expire( this ) )
+    if ( !has_flag( flag_e::APEX ) && p()->buff.apex_predators_craving->can_expire( this ) )
     {
       p()->active.ferocious_bite_apex->execute_on_target( target );
       p()->buff.apex_predators_craving->expire();
@@ -5549,7 +5549,7 @@ struct maul_t : public maul_base_t
 
   void execute() override
   {
-    if ( p()->buff.tooth_and_claw->can_expire( this ) )
+    if ( !has_flag( flag_e::TOOTHANDCLAW ) && p()->buff.tooth_and_claw->can_expire( this ) )
     {
       p()->active.maul_tooth_and_claw->execute_on_target( target );
       p()->buff.tooth_and_claw->decrement();  // TODO: adjust if cases arise where it doesn't consume
@@ -5654,7 +5654,7 @@ struct raze_t
 
   void execute() override
   {
-    if ( p()->buff.tooth_and_claw->can_expire( this ) )
+    if ( !has_flag( flag_e::TOOTHANDCLAW ) && p()->buff.tooth_and_claw->can_expire( this ) )
     {
       p()->active.raze_tooth_and_claw->execute_on_target( target );
       p()->buff.tooth_and_claw->decrement();  // TODO: adjust if cases arise where it doesn't consume
@@ -10690,7 +10690,6 @@ void druid_t::create_buffs()
 
   buff.ruthless_aggression = make_fallback( talent.ruthless_aggression.ok(),
       this, "ruthless_aggression", find_trigger( talent.ruthless_aggression ).trigger() )
-          ->set_default_value_from_effect_type( A_MOD_MELEE_SPEED_PCT )
           ->add_invalidate( CACHE_ATTACK_SPEED );
 
   buff.strategic_infusion = make_fallback( talent.strategic_infusion.ok() && talent.tigers_fury.ok(),
@@ -10733,12 +10732,30 @@ void druid_t::create_buffs()
           ->set_cooldown( talent.wildpower_surge->internal_cooldown() );
 
   buff.wildshape_mastery =
-      make_fallback( talent.wildshape_mastery.ok(), this, "wildshape_mastery", find_spell( 441685 ) )
-          ->set_default_value_from_effect( 1, 0.01 );
+      make_fallback( talent.wildshape_mastery.ok(), this, "wildshape_mastery", find_spell( 441685 ) );
 
   buff.b_inc_cat  = talent.incarnation_cat.ok()     ? buff.incarnation_cat     : buff.berserk_cat;
   buff.b_inc_bear = talent.incarnation_bear.ok()    ? buff.incarnation_bear    : buff.berserk_bear;
   buff.ca_inc     = talent.incarnation_moonkin.ok() ? buff.incarnation_moonkin : buff.celestial_alignment;
+
+  parse_effects( buff.ruthless_aggression );
+
+  parse_target_effects( d_fn( &druid_td_t::debuffs_t::bloodseeker_vines ), spec.bloodseeker_vines,
+                        talent.vigorous_creepers );
+
+  auto bear_form_stam = spec.bear_form_passive->effectN( 2 ).percent() +
+                        spec.bear_form_2->effectN( 1 ).percent() +
+                        talent.ursocs_spirit->effectN( 1 ).percent();
+
+  add_parse_entry( attribute_multiplier_effects )
+    .set_buff( buff.bear_form )
+    .set_value( bear_form_stam )
+    .set_eff( &find_effect( spec.bear_form_passive, A_MOD_TOTAL_STAT_PERCENTAGE ) );
+
+  add_parse_entry( attribute_multiplier_effects )
+    .set_buff( buff.wildshape_mastery )
+    .set_value( bear_form_stam * buff.wildshape_mastery->data().effectN( 1 ).percent() )
+    .set_eff( &find_effect( spec.bear_form_2, A_MOD_TOTAL_STAT_PERCENTAGE ) );
 }
 
 // Create active actions ====================================================
@@ -12080,27 +12097,6 @@ void druid_t::invalidate_cache( cache_e c )
 }
 
 // Composite combat stat override functions =================================
-
-double druid_t::composite_player_target_multiplier( player_t* t, school_e s ) const
-{
-  double tm = player_t::composite_player_target_multiplier( t, s );
-
-  if ( talent.vigorous_creepers.ok() )
-    tm *= 1.0 + get_target_data( t )->debuff.bloodseeker_vines->check_stack_value();
-
-  return tm;
-}
-
-double druid_t::composite_melee_speed() const
-{
-  double ms = player_t::composite_melee_speed();
-
-  if ( buff.ruthless_aggression->check() )
-    ms *= 1.0 / ( 1.0 + buff.ruthless_aggression->check_value() );
-
-  return ms;
-}
-
 // Attack Power =============================================================
 double druid_t::composite_attack_power_multiplier() const
 {
@@ -12224,31 +12220,6 @@ double druid_t::composite_leech() const
 }
 
 // Miscellaneous ============================================================
-double druid_t::composite_attribute_multiplier( attribute_e attr ) const
-{
-  double m = player_t::composite_attribute_multiplier( attr );
-
-  switch ( attr )
-  {
-    case ATTR_STAMINA:
-    {
-      auto bear_form_mul = spec.bear_form_passive->effectN( 2 ).percent() +
-                           spec.bear_form_2->effectN( 1 ).percent() +
-                           talent.ursocs_spirit->effectN( 1 ).percent();
-
-      if ( buff.bear_form->check() )
-        m *= 1.0 + bear_form_mul;
-      else if ( buff.wildshape_mastery->check() )
-        m *= 1.0 + bear_form_mul * buff.wildshape_mastery->default_value;
-      break;
-    }
-    default:
-      break;
-  }
-
-  return m;
-}
-
 double druid_t::matching_gear_multiplier( attribute_e attr ) const
 {
   unsigned idx;
@@ -12911,9 +12882,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   debuff.bloodseeker_vines = make_buff_fallback( source.talent.thriving_growth.ok() && target.is_enemy(),
       *this, "bloodseeker_vines_debuff", source.spec.bloodseeker_vines )
           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-          ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
           ->apply_affecting_aura( source.talent.resilient_flourishing )
-          ->apply_affecting_aura( source.talent.vigorous_creepers )
           ->set_quiet( true );
   if ( !debuff.bloodseeker_vines->is_fallback &&
        ( source.talent.bursting_growth.ok() || source.talent.root_network.ok() ) )
