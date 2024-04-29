@@ -272,8 +272,7 @@ void frost( player_t* p )
   cooldowns->add_action( "abomination_limb,if=talent.obliteration&!buff.pillar_of_frost.up&cooldown.pillar_of_frost.remains<3&(variable.adds_remain|variable.st_planning)|fight_remains<15" );
   cooldowns->add_action( "abomination_limb,if=talent.breath_of_sindragosa&(variable.adds_remain|variable.st_planning)" );
   cooldowns->add_action( "abomination_limb,if=!talent.breath_of_sindragosa&!talent.obliteration&(variable.adds_remain|variable.st_planning)" );
-  cooldowns->add_action( "chill_streak,if=set_bonus.tier31_2pc&buff.chilling_rage.remains<3" );
-  cooldowns->add_action( "chill_streak,if=!set_bonus.tier31_2pc&active_enemies>=2&(!death_and_decay.ticking&talent.cleaving_strikes|!talent.cleaving_strikes|active_enemies<=5)" );
+  cooldowns->add_action( "chill_streak,if=!talent.cleaving_strikes|active_enemies<=5" );
   cooldowns->add_action( "pillar_of_frost,if=talent.obliteration&(variable.adds_remain|variable.st_planning)&(buff.empower_rune_weapon.up|cooldown.empower_rune_weapon.remains)|fight_remains<12" );
   cooldowns->add_action( "pillar_of_frost,if=talent.breath_of_sindragosa&(variable.adds_remain|variable.st_planning)&(!talent.icecap&(runic_power>70|cooldown.breath_of_sindragosa.remains>40)|talent.icecap&(cooldown.breath_of_sindragosa.remains>5))|buff.breath_of_sindragosa.up" );
   cooldowns->add_action( "pillar_of_frost,if=talent.icecap&!talent.obliteration&!talent.breath_of_sindragosa&(variable.adds_remain|variable.st_planning)" );
@@ -304,7 +303,7 @@ void frost( player_t* p )
   obliteration->add_action( "glacial_advance,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking" );
   obliteration->add_action( "frostscythe,if=buff.killing_machine.react&(variable.frostscythe_priority|active_enemies>3&!death_and_decay.ticking&equipped.fyralath_the_dreamrender&(cooldown.rage_of_fyralath_417131.remains<3|!dot.mark_of_fyralath.ticking))" );
   obliteration->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority" );
-  obliteration->add_action( "howling_blast,if=!buff.killing_machine.react&(!dot.frost_fever.ticking|buff.rime.react&set_bonus.tier30_2pc&!variable.rp_buffs)" );
+  obliteration->add_action( "howling_blast,if=!buff.killing_machine.react&(!dot.frost_fever.ticking)" );
   obliteration->add_action( "glacial_advance,if=!buff.killing_machine.react&(!death_knight.runeforge.razorice&(!talent.avalanche|debuff.razorice.stack<5|debuff.razorice.remains<gcd*3)|((variable.rp_buffs|rune<2)&active_enemies>1))" );
   obliteration->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!buff.killing_machine.react&(rune<2|variable.rp_buffs|debuff.razorice.stack=5&talent.shattering_blade)&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)" );
   obliteration->add_action( "howling_blast,if=buff.rime.react&!buff.killing_machine.react" );
@@ -326,7 +325,6 @@ void frost( player_t* p )
   racials->add_action( "bag_of_tricks,if=!talent.obliteration&buff.pillar_of_frost.up&(buff.unholy_strength.up&buff.unholy_strength.remains<gcd*3|buff.pillar_of_frost.remains<gcd*3)" );
 
   single_target->add_action( "frost_strike,if=buff.killing_machine.react<2&runic_power.deficit<20+(4*buff.rune_of_hysteria.up)&!variable.2h_check", "Single Target Rotation" );
-  single_target->add_action( "howling_blast,if=buff.rime.react&set_bonus.tier30_2pc&buff.killing_machine.stack<2" );
   single_target->add_action( "frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority" );
   single_target->add_action( "obliterate,if=buff.killing_machine.react" );
   single_target->add_action( "howling_blast,if=buff.rime.react&talent.icebreaker.rank=2" );
@@ -422,7 +420,7 @@ void unholy( player_t* p )
   aoe_cooldowns->add_action( "summon_gargoyle" );
   aoe_cooldowns->add_action( "abomination_limb,if=rune<2|buff.festermight.stack>10|!talent.festermight|buff.festermight.up&buff.festermight.remains<12" );
   aoe_cooldowns->add_action( "apocalypse,target_if=min:debuff.festering_wound.stack,if=talent.bursting_sores&debuff.festering_wound.up&(!death_and_decay.ticking&cooldown.death_and_decay.remains&rune<3|death_and_decay.ticking&rune=0)" );
-  aoe_cooldowns->add_action( "apocalypse,target_if=max:debuff.festering_wound.stack,if=!talent.bursting_sores&debuff.festering_wound.stack>=4|set_bonus.tier31_2pc&debuff.festering_wound.stack>=1" );
+  aoe_cooldowns->add_action( "apocalypse,target_if=max:debuff.festering_wound.stack,if=!talent.bursting_sores&debuff.festering_wound.stack>=4" );
   aoe_cooldowns->add_action( "unholy_assault,target_if=min:debuff.festering_wound.stack,if=debuff.festering_wound.stack<=2|buff.dark_transformation.up" );
   aoe_cooldowns->add_action( "raise_dead,if=!pet.ghoul.active" );
   aoe_cooldowns->add_action( "dark_transformation,if=(cooldown.any_dnd.remains<10&talent.infected_claws&((cooldown.vile_contagion.remains|raid_event.adds.exists&raid_event.adds.in>10)&death_knight.fwounded_targets<active_enemies|!talent.vile_contagion)&(raid_event.adds.remains>5|!raid_event.adds.exists)|!talent.infected_claws)" );

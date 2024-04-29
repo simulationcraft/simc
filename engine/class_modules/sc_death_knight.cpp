@@ -706,8 +706,7 @@ public:
     propagate_const<buff_t*> gathering_storm;
     propagate_const<buff_t*> inexorable_assault;
     propagate_const<buff_t*> killing_machine;
-    propagate_const<buff_t*> pillar_of_frost;
-    propagate_const<buff_t*> pillar_of_frost_bonus;  // Additional strength from runes spent
+    buff_t* pillar_of_frost;
     propagate_const<buff_t*> remorseless_winter;
     propagate_const<buff_t*> rime;
     propagate_const<buff_t*> unleashed_frenzy;
@@ -731,8 +730,7 @@ public:
 
     // Rider of the Apocalypse
     propagate_const<buff_t*> a_feast_of_souls;
-    propagate_const<buff_t*> apocalyptic_conquest;
-    propagate_const<buff_t*> nazgrims_conquest;
+    buff_t* apocalyptic_conquest;
     propagate_const<buff_t*> mograines_might;
 
     // San'layn
@@ -1570,7 +1568,6 @@ public:
   double composite_bonus_armor() const override;
   double composite_melee_haste() const override;
   double composite_spell_haste() const override;
-  double composite_attribute_multiplier( attribute_e attr ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_parry_rating() const override;
   double composite_player_pet_damage_multiplier( const action_state_t* /* state */,
@@ -4118,7 +4115,6 @@ struct nazgrim_pet_t final : public horseman_pet_t
   {
     horseman_pet_t::demise();
     dk()->buffs.apocalyptic_conquest->expire();
-    dk()->buffs.nazgrims_conquest->expire();
     debug_cast<scourge_strike_nazgrim_t*>( scourge_strike )->used = false;
   }
 
@@ -5031,6 +5027,53 @@ struct summon_mograine_t final : public summon_rider_t
       p()->pets.mograine.active_pet()->dnd_aura->trigger();
     }
   }
+};
+
+struct apocalyptic_conquest_buff_t final : public buff_t
+{
+  apocalyptic_conquest_buff_t( death_knight_t* p )
+    : buff_t( p, "apocalyptic_conquest", p->pet_spell.apocalyptic_conquest ), player( p ), nazgrims_conquest( 0 )
+  {
+    set_default_value( p->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() );
+    set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+  }
+
+  // Override the value of the buff to properly capture Pillar of Frost's strength buff behavior
+  double value() override
+  {
+    return player->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() +
+           ( nazgrims_conquest * player->talent.rider.nazgrims_conquest->effectN( 2 ).percent() );
+  }
+
+  double check_value() const override
+  {
+    return player->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() +
+           ( nazgrims_conquest * player->talent.rider.nazgrims_conquest->effectN( 2 ).percent() );
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::start( stacks, value, duration );
+    nazgrims_conquest = 0;
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    nazgrims_conquest = 0;
+  }
+
+  void refresh( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::refresh( stacks, value, duration );
+    nazgrims_conquest = 0;
+  }
+
+public:
+  int nazgrims_conquest;
+
+private:
+  death_knight_t* player;
 };
 
 // ==========================================================================
@@ -7711,14 +7754,6 @@ struct howling_blast_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    // If Pillar of Frost is up, Rime procs still increases its value
-    if ( p()->buffs.pillar_of_frost->up() && p()->buffs.rime->up() )
-    {
-      p()->buffs.pillar_of_frost_bonus->trigger(
-          1 /*as<int>(base_costs[RESOURCE_RUNE])*/ );  // Weird Error on this like after dumping new data on 4/18/2024,
-                                                       // investigate
-    }
-
     if ( p()->buffs.pillar_of_frost->up() && p()->talent.frost.obliteration.ok() )
     {
       p()->trigger_killing_machine( 1.0, p()->procs.km_from_obliteration_hb,
@@ -8085,6 +8120,70 @@ struct runeforge_apocalypse_pestilence_t final : public death_knight_spell_t
 };
 
 // Pillar of Frost ==========================================================
+struct pillar_of_frost_buff_t final : public buff_t
+{
+  pillar_of_frost_buff_t( death_knight_t* p )
+    : buff_t( p, "pillar_of_frost", p->talent.frost.pillar_of_frost ), player( p ), runes_spent( 0 )
+  {
+    cooldown->duration = 0_ms;  // Controlled by the action
+    set_default_value( p->talent.frost.pillar_of_frost->effectN( 1 ).percent() );
+    set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+  }
+
+  // Override the value of the buff to properly capture Pillar of Frost's strength buff behavior
+  double value() override
+  {
+    return player->talent.frost.pillar_of_frost->effectN( 1 ).percent() +
+           ( runes_spent * player->talent.frost.pillar_of_frost->effectN( 2 ).percent() );
+  }
+
+  double check_value() const override
+  {
+    return player->talent.frost.pillar_of_frost->effectN( 1 ).percent() +
+           ( runes_spent * player->talent.frost.pillar_of_frost->effectN( 2 ).percent() );
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::start( stacks, value, duration );
+    runes_spent = 0;
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    runes_spent = 0;
+    if ( player->talent.frost.enduring_strength.ok() )
+    {
+      trigger_enduring_strength();
+    }
+  }
+
+  void refresh( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::refresh( stacks, value, duration );
+    runes_spent = 0;
+    if ( player->talent.frost.enduring_strength.ok() )
+    {
+      trigger_enduring_strength();
+    }
+  }
+
+  void trigger_enduring_strength()
+  {
+    player->buffs.enduring_strength->trigger();
+    player->buffs.enduring_strength->extend_duration(
+        player, player->talent.frost.enduring_strength->effectN( 2 ).time_value() *
+                    player->buffs.enduring_strength_builder->stack() );
+    player->buffs.enduring_strength_builder->expire();
+  }
+
+public:
+  int runes_spent;
+
+private:
+  death_knight_t* player;
+};
 
 struct frostwhelps_aid_t final : public death_knight_spell_t
 {
@@ -9541,18 +9640,22 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       summon_rider( spell.summon_whitemane->duration(), true );
     }
 
-    if ( talent.rider.nazgrims_conquest.ok() && buffs.apocalyptic_conquest->check() && actual_amount > 0 )
+    if ( talent.rider.nazgrims_conquest.ok() && buffs.apocalyptic_conquest->check() )
     {
-      buffs.nazgrims_conquest->trigger( as<int>( amount ) );
+      debug_cast<apocalyptic_conquest_buff_t*>( buffs.apocalyptic_conquest )->nazgrims_conquest += as<int>( amount );
+      invalidate_cache( CACHE_STRENGTH );
+    }
+
+    if ( specialization() == DEATH_KNIGHT_FROST && buffs.pillar_of_frost->up() )
+    {
+      debug_cast<pillar_of_frost_buff_t*>( buffs.pillar_of_frost )->runes_spent += as<int>( amount );
+      // Manually invalidate cache when incrementing runes_spent to ensure it updates
+      invalidate_cache( CACHE_STRENGTH );
     }
 
     // Effects that require the player to actually spend runes
     if ( actual_amount > 0 )
     {
-      if ( specialization() == DEATH_KNIGHT_FROST && buffs.pillar_of_frost->up() )
-      {
-        buffs.pillar_of_frost_bonus->trigger( as<int>( actual_amount ) );
-      }
     }
   }
 
@@ -11592,14 +11695,7 @@ void death_knight_t::create_buffs()
   buffs.antimagic_shell_horsemen_icd =
       make_buff( this, "antimagic_shell_horsemen_icd", pet_spell.rider_ams_icd )->set_quiet( true );
 
-  buffs.apocalyptic_conquest = make_buff( this, "apocalyptic_conquest", pet_spell.apocalyptic_conquest )
-                                   ->add_invalidate( CACHE_STRENGTH )
-                                   ->set_default_value_from_effect( 1 );
-
-  buffs.nazgrims_conquest = make_buff( this, "nazgrims_conquest", talent.rider.nazgrims_conquest )
-                                ->add_invalidate( CACHE_STRENGTH )
-                                ->set_default_value_from_effect( 2 )
-                                ->set_max_stack( 999 );
+  buffs.apocalyptic_conquest = new apocalyptic_conquest_buff_t( this );
 
   buffs.mograines_might =
       make_buff( this, "mograines_might", pet_spell.mograines_might_buff )->set_default_value_from_effect( 1 );
@@ -11772,34 +11868,7 @@ void death_knight_t::create_buffs()
                                   }
                                 } );
 
-    buffs.pillar_of_frost = make_buff( this, "pillar_of_frost", talent.frost.pillar_of_frost )
-                                ->set_cooldown( 0_ms )
-                                ->set_default_value( talent.frost.pillar_of_frost->effectN( 1 ).percent() )
-                                ->add_invalidate( CACHE_STRENGTH )
-                                ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-                                  // Right now it is impossible to refresh Pillar of Frost. If it is refreshed though,
-                                  // Enduring Strength builder, as well as Pillar's Bonus strength expire If enduring
-                                  // strength builder expires in a refresh, trigger the strength buff with the duration
-                                  // of the builder added as it was when pillar was refreshed.
-                                  if ( !new_ || buffs.pillar_of_frost->up() )
-                                  {
-                                    buffs.pillar_of_frost_bonus->expire();
-                                  }
-                                  if ( !new_ && talent.frost.enduring_strength.ok() )
-                                  {
-                                    buffs.enduring_strength->trigger();
-                                    buffs.enduring_strength->extend_duration(
-                                        this, talent.frost.enduring_strength->effectN( 2 ).time_value() *
-                                                  buffs.enduring_strength_builder->stack() );
-                                    buffs.enduring_strength_builder->expire();
-                                  }
-                                } );
-
-    buffs.pillar_of_frost_bonus = make_buff( this, "pillar_of_frost_bonus" )
-                                      ->set_max_stack( 99 )
-                                      ->set_duration( talent.frost.pillar_of_frost->duration() )
-                                      ->set_default_value( talent.frost.pillar_of_frost->effectN( 2 ).percent() )
-                                      ->add_invalidate( CACHE_STRENGTH );
+    buffs.pillar_of_frost = new pillar_of_frost_buff_t( this );
 
     buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
@@ -12072,7 +12141,7 @@ void death_knight_t::activate()
       target->register_on_demise_callback( this, [ this ]( player_t* t ) {
         if ( pets.nazgrim.active_pet() != nullptr )
         {
-          buffs.nazgrims_conquest->trigger( as<int>( talent.rider.nazgrims_conquest->effectN( 3 ).base_value() ) );
+           debug_cast<apocalyptic_conquest_buff_t*>( buffs.apocalyptic_conquest )->nazgrims_conquest += as<int>( talent.rider.nazgrims_conquest->effectN( 3 ).base_value() );
         }
       } );
     }
@@ -12256,23 +12325,6 @@ double death_knight_t::composite_bonus_armor() const
   }
 
   return ba;
-}
-
-// death_knight_t::composite_attribute_multiplier ===========================
-
-double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
-{
-  double m = player_t::composite_attribute_multiplier( attr );
-
-  if ( attr == ATTR_STRENGTH )
-  {
-    if ( specialization() == DEATH_KNIGHT_FROST )
-      m *= 1.0 + buffs.pillar_of_frost->check_value() + buffs.pillar_of_frost_bonus->check_stack_value();
-
-    m *= 1.0 + buffs.apocalyptic_conquest->check_value() + buffs.nazgrims_conquest->check_stack_value();
-  }
-
-  return m;
 }
 
 // death_knight_t::matching_gear_multiplier =================================
