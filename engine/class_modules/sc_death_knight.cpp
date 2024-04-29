@@ -12485,6 +12485,7 @@ void death_knight_t::adjust_dynamic_cooldowns()
 void death_knight_t::parse_player_effects()
 {
   // Shared
+  parse_effects( spec.death_knight );
   parse_effects( buffs.icy_talons, talent.icy_talons );
   parse_effects( talent.merciless_strikes );
   parse_effects( talent.might_of_thassarian );

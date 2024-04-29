@@ -594,11 +594,11 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> player_multiplier_effects;
   std::vector<player_effect_t> pet_multiplier_effects;
   std::vector<player_effect_t> attack_power_multiplier_effects;
-  std::vector<player_effect_t> all_crit_multiplier_effects;
-  std::vector<player_effect_t> leech_multiplier_effects;
-  std::vector<player_effect_t> expertise_multiplier_effects;
+  std::vector<player_effect_t> crit_chance_effects;
+  std::vector<player_effect_t> leech_effects;
+  std::vector<player_effect_t> expertise_effects;
   std::vector<player_effect_t> crit_avoidance_effects;
-  std::vector<player_effect_t> parry_multiplier_effects;
+  std::vector<player_effect_t> parry_effects;
   std::vector<target_effect_t<TD>> target_multiplier_effects;
   std::vector<target_effect_t<TD>> target_pet_multiplier_effects;
 
@@ -663,7 +663,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   {
     auto mcc = player_t::composite_melee_crit_chance();
 
-    for ( const auto& i : all_crit_multiplier_effects )
+    for ( const auto& i : crit_chance_effects )
       mcc += get_effect_value( i );
 
     return mcc;
@@ -673,7 +673,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   {
     auto scc = player_t::composite_spell_crit_chance();
 
-    for ( const auto& i : all_crit_multiplier_effects )
+    for ( const auto& i : crit_chance_effects )
       scc += get_effect_value( i );
 
     return scc;
@@ -683,7 +683,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   {
     auto leech = player_t::composite_leech();
 
-    for ( const auto& i : leech_multiplier_effects )
+    for ( const auto& i : leech_effects )
       leech += get_effect_value( i );
 
     return leech;
@@ -693,7 +693,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   {
     auto me = player_t::composite_melee_expertise( nullptr );
 
-    for ( const auto& i : expertise_multiplier_effects )
+    for ( const auto& i : expertise_effects )
       me += get_effect_value( i );
 
     return me;
@@ -713,7 +713,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   {
     auto parry = player_t::composite_parry();
 
-    for ( const auto& i : parry_multiplier_effects )
+    for ( const auto& i : parry_effects )
       parry += get_effect_value( i );
 
     return parry;
@@ -813,15 +813,15 @@ public:
 
       case A_MOD_ALL_CRIT_CHANCE:
         str = "all crit chance";
-        return &all_crit_multiplier_effects;
+        return &crit_chance_effects;
 
       case A_MOD_LEECH_PERCENT:
         str = "leech";
-        return &leech_multiplier_effects;
+        return &leech_effects;
 
       case A_MOD_EXPERTISE:
         str = "expertise";
-        return &expertise_multiplier_effects;
+        return &expertise_effects;
 
       case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:
         str = "crit avoidance";
@@ -829,7 +829,7 @@ public:
 
       case A_MOD_PARRY_PERCENT:
         str = "parry";
-        return &parry_multiplier_effects;
+        return &parry_effects;
 
       default:
         return nullptr;
@@ -944,6 +944,7 @@ public:
   std::vector<player_effect_t> cost_effects;
   std::vector<player_effect_t> flat_cost_effects;
   std::vector<player_effect_t> crit_chance_effects;
+  std::vector<player_effect_t> crit_damage_effects;
   std::vector<target_effect_t<TD>> target_multiplier_effects;
   std::vector<target_effect_t<TD>> target_crit_damage_effects;
   std::vector<target_effect_t<TD>> target_crit_chance_effects;
@@ -1003,6 +1004,16 @@ public:
       cc += get_effect_value( i );
 
     return cc;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    auto cd = BASE::composite_crit_damage_bonus_multiplier();
+
+    for ( const auto& i : crit_damage_effects )
+      cd *= get_effect_value( i );
+
+    return cd;
   }
 
   timespan_t execute_time() const override
@@ -1192,6 +1203,10 @@ public:
         case P_RESOURCE_COST:
           str = "cost percent";
           return &cost_effects;
+
+        case P_CRIT_DAMAGE:
+          str = "crit damage";
+          return &crit_damage_effects;
 
         default:
           return nullptr;
@@ -1537,6 +1552,7 @@ public:
       print_parsed_type( os, da_multiplier_effects, "Direct Damage" );
       print_parsed_type( os, ta_multiplier_effects, "Periodic Damage" );
       print_parsed_type( os, crit_chance_effects, "Critical Strike Chance" );
+      print_parsed_type( os, crit_damage_effects, "Critical Strike Damage" );
       print_parsed_type( os, execute_time_effects, "Execute Time" );
       print_parsed_type( os, gcd_effects, "GCD" );
       print_parsed_type( os, dot_duration_effects, "Dot Duration" );
