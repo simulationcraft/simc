@@ -614,12 +614,16 @@ public:
 
   struct hero_spec_t
   {
+    // Aldrachi Reaver
     const spell_data_t* reavers_glaive;
     const spell_data_t* reavers_mark;
     const spell_data_t* glaive_flurry;
     const spell_data_t* rending_strike;
     const spell_data_t* art_of_the_glaive_buff;
     const spell_data_t* art_of_the_glaive_damage;
+
+    // Fel-scarred
+    const spell_data_t* burning_blades_debuff;
   } hero_spec;
 
   // Set Bonus effects
@@ -815,6 +819,9 @@ public:
     // Aldrachi Reaver
     spell_t* art_of_the_glaive = nullptr;
     spell_t* preemptive_strike = nullptr;
+
+    // Fel-scarred
+    action_t* burning_blades = nullptr;
   } active;
 
   // Pets
@@ -2174,6 +2181,19 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
     : base_t( n, p, s, o )
   {
     special = true;
+  }
+
+
+  void trigger_burning_blades( action_state_t* s )
+  {
+    if (!p()->talent.felscarred.burning_blades->ok())
+      return;
+
+    if (!result_is_hit( s->result ))
+      return;
+
+    const double dot_damage = s->result_amount * p()->talent.felscarred.burning_blades->effectN( 1 ).percent();
+    residual_action::trigger( p()->active.burning_blades, s->target, dot_damage );
   }
 };
 
@@ -4507,6 +4527,7 @@ struct auto_attack_damage_t : public demon_hunter_attack_t
     demon_hunter_attack_t::impact( s );
 
     trigger_demon_blades( s );
+    demon_hunter_attack_t::trigger_burning_blades( s );
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -5064,6 +5085,9 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
         td( target )->debuffs.reavers_mark->trigger();
         p()->buff.rending_strike->expire();
       }
+
+      // TOCHECK -- Does this proc from Relentless Onslaught?
+      demon_hunter_attack_t::trigger_burning_blades( s );
     }
   };
 
@@ -5834,6 +5858,8 @@ struct soul_cleave_t : public demon_hunter_attack_t
       {
         td( s->target )->debuffs.t29_vengeance_4pc->trigger();
       }
+
+      demon_hunter_attack_t::trigger_burning_blades( s );
     }
 
     void execute() override
@@ -6004,6 +6030,8 @@ struct throw_glaive_t : public demon_hunter_attack_t
           td( state->target )->debuffs.serrated_glaive->trigger();
         }
       }
+
+      demon_hunter_attack_t::trigger_burning_blades( state );
     }
   };
 
@@ -6175,6 +6203,21 @@ struct reavers_glaive_t : public demon_hunter_attack_t
     }
 
     return demon_hunter_attack_t::ready();
+  }
+};
+
+// Burning Blades ===========================================================
+struct burning_blades_t : public residual_action::residual_periodic_action_t<demon_hunter_attack_t>
+{
+  burning_blades_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->hero_spec.burning_blades_debuff )
+  {
+    dual = true;
+  }
+
+  void init() override
+  {
+    base_t::init();
+    update_flags = 0;  // Snapshots on refresh, does not update dynamically
   }
 };
 
@@ -8011,6 +8054,8 @@ void demon_hunter_t::init_spells()
       talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444661 ) : spell_data_t::not_found();
   hero_spec.art_of_the_glaive_damage =
       talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444810 ) : spell_data_t::not_found();
+  hero_spec.burning_blades_debuff =
+      talent.felscarred.burning_blades->ok() ? find_spell( 453177 ) : spell_data_t::not_found();
 
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };
@@ -8173,6 +8218,11 @@ void demon_hunter_t::init_spells()
   if ( talent.aldrachi_reaver.preemptive_strike->ok() )
   {
     active.preemptive_strike = get_background_action<preemptive_strike_t>( "preemptive_strike" );
+  }
+
+  if ( talent.felscarred.burning_blades->ok() )
+  {
+    active.burning_blades = get_background_action<burning_blades_t>( "burning_blades" );
   }
 }
 
