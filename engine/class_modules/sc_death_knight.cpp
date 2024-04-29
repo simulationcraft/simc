@@ -12142,6 +12142,7 @@ void death_knight_t::activate()
         if ( pets.nazgrim.active_pet() != nullptr )
         {
            debug_cast<apocalyptic_conquest_buff_t*>( buffs.apocalyptic_conquest )->nazgrims_conquest += as<int>( talent.rider.nazgrims_conquest->effectN( 3 ).base_value() );
+           invalidate_cache( CACHE_STRENGTH );
         }
       } );
     }
