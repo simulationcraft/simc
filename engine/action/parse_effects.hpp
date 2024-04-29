@@ -316,6 +316,7 @@ public:
     if ( tmp.data.value != 0.0 )
     {
       val = tmp.data.value;
+      val_mul = 1.0;
       mastery = false;
     }
     else
@@ -471,6 +472,7 @@ public:
     if ( tmp.data.value != 0.0 )
     {
       val = tmp.data.value;
+      val_mul = 1.0;
       mastery = false;
     }
     else
@@ -841,6 +843,10 @@ public:
       case A_MOD_PARRY_PERCENT:
         str = "parry";
         return &parry_effects;
+
+      case A_MOD_BASE_RESISTANCE_PCT:
+        str = "armor multiplier";
+        return &armor_multiplier_effects;
 
       default:
         return nullptr;
@@ -1421,6 +1427,7 @@ public:
     if ( tmp.data.value != 0.0 )
     {
       val = tmp.data.value;
+      val_mul = 1.0;
     }
     else
     {

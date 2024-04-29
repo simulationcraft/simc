@@ -2038,7 +2038,7 @@ public:
                           p()->spec.adaptive_swarm_damage, p()->spec_spell );
 
     parse_target_effects( d_fn( &druid_td_t::debuffs_t::sabertooth ),
-                          p()->spec.sabertooth, p()->talent.sabertooth->effectN( 2 ).base_value() );
+                          p()->spec.sabertooth, p()->talent.sabertooth->effectN( 2 ).percent() );
 
     // Guardian
     parse_target_effects( d_fn( &druid_td_t::dots_t::thrash_bear ),
