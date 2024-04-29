@@ -301,7 +301,7 @@ public:
     const auto& eff = s_data->effectN( i );
     bool mastery = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
     double val = 0.0;
-    double val_mul = eff.subtype() == A_MOD_MASTERY_PCT ? 1 : 0.01;
+    double val_mul = 0.01;
 
     if ( tmp.data.buff && tmp.data.type == USE_DEFAULT )
       val = tmp.data.buff->default_value * 100;
@@ -339,11 +339,10 @@ public:
       return;
 
     val *= val_mul;
-    double val_str_mult = eff.subtype() == A_MOD_MASTERY_PCT ? 1 : 100;
 
     std::string val_str = mastery ? fmt::format( "{}*mastery", val * 100 )
                           : flat  ? fmt::format( "{}", val )
-                                  : fmt::format( "{}%", val * val_str_mult );
+                                  : fmt::format( "{}%", val * ( 1 / val_mul ) );
 
     if ( tmp.data.value != 0.0 )
     {
@@ -923,6 +922,7 @@ public:
 
       case A_MOD_MASTERY_PCT:
         str = "mastery";
+        val_mul = 1.0;
         return &mastery_effects;
 
       default:
