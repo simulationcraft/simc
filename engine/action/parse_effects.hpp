@@ -301,7 +301,7 @@ public:
     const auto& eff = s_data->effectN( i );
     bool mastery = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
     double val = 0.0;
-    double val_mul = 0.01;
+    double val_mul = eff.subtype() == A_MOD_MASTERY_PCT ? 1 : 0.01;
 
     if ( tmp.data.buff && tmp.data.type == USE_DEFAULT )
       val = tmp.data.buff->default_value * 100;
@@ -339,10 +339,11 @@ public:
       return;
 
     val *= val_mul;
+    double val_str_mult = eff.subtype() == A_MOD_MASTERY_PCT ? 1 : 100;
 
     std::string val_str = mastery ? fmt::format( "{}*mastery", val * 100 )
                           : flat  ? fmt::format( "{}", val )
-                                  : fmt::format( "{}%", val * 100 );
+                                  : fmt::format( "{}%", val * val_str_mult );
 
     if ( tmp.data.value != 0.0 )
     {
@@ -604,6 +605,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> parry_effects;
   std::vector<player_effect_t> armor_multiplier_effects;
   std::vector<player_effect_t> haste_effects;
+  std::vector<player_effect_t> mastery_effects;
   std::vector<target_effect_t<TD>> target_multiplier_effects;
   std::vector<target_effect_t<TD>> target_pet_multiplier_effects;
 
@@ -784,6 +786,16 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
     return sh;
   }
 
+  double composite_mastery() const override
+  {
+    auto m = player_t::composite_mastery();
+
+    for ( const auto& i : mastery_effects )
+      m *= 1.0 + get_effect_value( i );
+
+    return m;
+  }
+
 private:
   TD* _get_td( player_t* t ) const
   {
@@ -908,6 +920,10 @@ public:
       case A_HASTE_ALL:
         str = "haste";
         return &haste_effects;
+
+      case A_MOD_MASTERY_PCT:
+        str = "mastery";
+        return &mastery_effects;
 
       default:
         return nullptr;

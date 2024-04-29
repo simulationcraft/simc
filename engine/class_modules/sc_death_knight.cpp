@@ -5036,7 +5036,7 @@ struct apocalyptic_conquest_buff_t final : public buff_t
     : buff_t( p, "apocalyptic_conquest", p->pet_spell.apocalyptic_conquest ), player( p ), nazgrims_conquest( 0 )
   {
     set_default_value( p->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() );
-    set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+    add_invalidate( CACHE_STRENGTH );
   }
 
   // Override the value of the buff to properly capture Apocalyptic Conquest's strength buff behavior
@@ -8155,7 +8155,7 @@ struct pillar_of_frost_buff_t final : public buff_t
   {
     cooldown->duration = 0_ms;  // Controlled by the action
     set_default_value( p->talent.frost.pillar_of_frost->effectN( 1 ).percent() );
-    set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+    add_invalidate( CACHE_STRENGTH );
   }
 
   // Override the value of the buff to properly capture Pillar of Frost's strength buff behavior
@@ -9454,11 +9454,11 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
 
   p->buffs.stoneskin_gargoyle = make_buff( p, "stoneskin_gargoyle", effect.driver() )
                                     ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-                                    ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-                                    ->set_pct_buff_type( STAT_PCT_BUFF_STAMINA )
+                                    ->add_invalidate( CACHE_STRENGTH )
+                                    ->add_invalidate( CACHE_STAMINA )
                                     // Stoneskin Gargoyle increases all primary stats, even the irrelevant ones
-                                    ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-                                    ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                                    ->add_invalidate( CACHE_AGILITY )
+                                    ->add_invalidate( CACHE_INTELLECT )
                                     ->apply_affecting_aura( p->talent.unholy_bond );
 
   // Change the player's base armor multiplier
@@ -11696,7 +11696,7 @@ void death_knight_t::create_buffs()
           ->set_cooldown( 0_ms )
           ->set_period( spell.empower_rune_weapon_main->effectN( 1 ).period() )
           ->set_default_value_from_effect( 3 )
-          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+          ->add_invalidate( CACHE_HASTE )
           ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
           ->set_tick_behavior( buff_tick_behavior::REFRESH )
           ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
@@ -11913,7 +11913,7 @@ void death_knight_t::create_buffs()
                                   ->set_default_value( talent.frost.enduring_strength->effectN( 3 ).percent() );
 
     buffs.frostwhelps_aid = make_buff( this, "frostwhelps_aid", spell.frostwhelps_aid_buff )
-                                ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+                                ->add_invalidate( CACHE_MASTERY )
                                 ->set_default_value( talent.frost.frostwhelps_aid->effectN( 3 ).base_value() );
 
     buffs.unleashed_frenzy =
@@ -11962,7 +11962,7 @@ void death_knight_t::create_buffs()
     buffs.commander_of_the_dead = make_buff( this, "commander_of_the_dead", spell.commander_of_the_dead );
 
     buffs.defile_buff = make_buff( this, "defile", spell.defile_buff )
-                            ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+                            ->add_invalidate( CACHE_MASTERY )
                             ->set_default_value( spell.defile_buff->effectN( 1 ).base_value() / 1.8 );
   }
 }
@@ -12542,6 +12542,8 @@ void death_knight_t::parse_player_effects()
   parse_effects( buffs.rune_mastery, talent.rune_mastery );
   parse_effects( buffs.unholy_strength, talent.unholy_bond );
   parse_effects( buffs.unholy_ground, talent.unholy_ground );
+  parse_effects( buffs.empower_rune_weapon, talent.empower_rune_weapon, talent.frost.empower_rune_weapon );
+  parse_effects( buffs.stoneskin_gargoyle, talent.unholy_bond );
   parse_effects( talent.veteran_of_the_third_war, spec.blood_death_knight );
   parse_effects( talent.merciless_strikes );
   parse_effects( talent.might_of_thassarian );
@@ -12561,6 +12563,8 @@ void death_knight_t::parse_player_effects()
 
   // Frost
   parse_effects( spec.frost_death_knight );
+  parse_effects( buffs.pillar_of_frost, USE_CURRENT, talent.frost.pillar_of_frost );
+  parse_effects( buffs.frostwhelps_aid, talent.frost.frostwhelps_aid );
   parse_effects( buffs.bonegrinder_frost, talent.frost.bonegrinder );
   parse_effects( buffs.bonegrinder_crit, talent.frost.bonegrinder );
   parse_effects( buffs.enduring_strength, talent.frost.enduring_strength );
@@ -12572,11 +12576,15 @@ void death_knight_t::parse_player_effects()
   parse_effects( buffs.unholy_assault, talent.unholy.unholy_assault );
   parse_effects( buffs.ghoulish_frenzy, talent.unholy.ghoulish_frenzy );
   parse_effects( buffs.festermight, talent.unholy.festermight );
+  parse_effects( buffs.defile_buff, USE_CURRENT, talent.unholy.defile );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::unholy_aura ), spell.unholy_aura_debuff, talent.unholy.unholy_aura );
   parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), spell.virulent_plague, talent.unholy.morbidity );
   parse_target_effects( d_fn( &death_knight_td_t::dots_t::frost_fever ), spell.frost_fever, talent.unholy.morbidity );
   parse_target_effects( d_fn( &death_knight_td_t::dots_t::blood_plague ), spell.blood_plague, talent.unholy.morbidity );
   parse_target_effects( d_fn( &death_knight_td_t::dots_t::unholy_blight, false ), spell.unholy_blight_dot, talent.unholy.morbidity );
+
+  // Rider of the Apocalypse
+  parse_effects( buffs.apocalyptic_conquest, USE_CURRENT );
 
   // San'layn
   parse_effects( buffs.essence_of_the_blood_queen, USE_CURRENT, talent.sanlayn.frenzied_bloodthirst );
