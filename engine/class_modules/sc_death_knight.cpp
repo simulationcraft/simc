@@ -12552,7 +12552,7 @@ void death_knight_t::parse_player_effects()
   parse_effects( buffs.blood_shield, talent.blood.bloodshot );
   parse_effects( buffs.voracious, talent.blood.voracious );
   parse_effects( buffs.dancing_rune_weapon );
-  parse_effects( buffs.bone_shield, talent.blood.improved_bone_shield );
+  parse_effects( buffs.bone_shield, IGNORE_STACKS, talent.blood.improved_bone_shield );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::tightening_grasp ), spell.tightening_grasp_debuff );
 
   // Frost
