@@ -864,6 +864,7 @@ public:
       case A_MOD_DAMAGE_PERCENT_DONE:
         opt_enum = eff.misc_value1();
         str = opt_enum == 0x7f ? "all" : util::school_type_string( dbc::get_school_type( opt_enum ) );
+        str += " damage";
         return &player_multiplier_effects;
 
       case A_MOD_PET_DAMAGE_DONE:

@@ -11672,17 +11672,17 @@ void death_knight_t::create_buffs()
   buffs.rune_mastery = make_buff( this, "rune_mastery", spell.rune_mastery_buff )
                            ->set_chance( 0.15 )  // This was found through testing 2022 July 21.  Not in spelldata.
                            ->set_default_value( talent.rune_mastery->effectN( 1 ).percent() )
-                           ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+                           ->add_invalidate( CACHE_STRENGTH );
 
   buffs.unholy_strength = make_buff( this, "unholy_strength", spell.unholy_strength_buff )
                               ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-                              ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+                              ->add_invalidate( CACHE_STRENGTH )
                               ->apply_affecting_aura( talent.unholy_bond );
 
   buffs.unholy_ground = make_buff( this, "unholy_ground", spell.unholy_ground_buff )
                             ->set_default_value_from_effect( 1 )
                             ->set_duration( 0_ms )  // Handled by trigger_dnd_buffs() & expire_dnd_buffs()
-                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+                            ->add_invalidate( CACHE_HASTE );
 
   buffs.rune_of_hysteria = make_buff( this, "rune_of_hysteria", spell.rune_of_hysteria_buff )
                                ->set_default_value_from_effect( 1 )
@@ -11802,7 +11802,7 @@ void death_knight_t::create_buffs()
     buffs.perseverance_of_the_ebon_blade =
         make_buff( this, "perseverance_of_the_ebon_blade", spell.preserverence_of_the_ebon_blade_buff )
             ->set_default_value( talent.blood.perseverance_of_the_ebon_blade->effectN( 1 ).percent() )
-            ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+            ->add_invalidate( CACHE_VERSATILITY );
 
     buffs.rune_tap =
         make_buff( this, "rune_tap", talent.blood.rune_tap )->set_cooldown( 0_ms );  // Handled by the action
@@ -11897,7 +11897,7 @@ void death_knight_t::create_buffs()
 
     buffs.bonegrinder_crit = make_buff( this, "bonegrinder_crit", spell.bonegrinder_crit_buff )
                                  ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-                                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                                 ->add_invalidate( CACHE_CRIT_CHANCE )
                                  ->set_cooldown( talent.frost.bonegrinder->internal_cooldown() );
 
     buffs.bonegrinder_frost = make_buff( this, "bonegrinder_frost", spell.bonegrinder_frost_buff )
@@ -11909,7 +11909,7 @@ void death_knight_t::create_buffs()
         make_buff( this, "enduring_strength_builder", talent.frost.enduring_strength->effectN( 1 ).trigger() );
 
     buffs.enduring_strength = make_buff( this, "enduring_strength", spell.enduring_strength_buff )
-                                  ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+                                  ->add_invalidate( CACHE_STRENGTH )
                                   ->set_default_value( talent.frost.enduring_strength->effectN( 3 ).percent() );
 
     buffs.frostwhelps_aid = make_buff( this, "frostwhelps_aid", spell.frostwhelps_aid_buff )
@@ -11918,7 +11918,7 @@ void death_knight_t::create_buffs()
 
     buffs.unleashed_frenzy =
         make_buff( this, "unleashed_frenzy", talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
-            ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+            ->add_invalidate( CACHE_STRENGTH )
             ->set_cooldown( talent.frost.unleashed_frenzy->internal_cooldown() )
             ->set_default_value( talent.frost.unleashed_frenzy->effectN( 1 ).percent() );
   }
@@ -11955,7 +11955,7 @@ void death_knight_t::create_buffs()
                               ->set_max_stack( 1 );
 
     buffs.festermight = make_buff( this, "festermight", spell.festermight_buff )
-                            ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+                            ->add_invalidate( CACHE_STRENGTH )
                             ->set_default_value( talent.unholy.festermight->effectN( 1 ).percent() )
                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
@@ -12539,6 +12539,9 @@ void death_knight_t::parse_player_effects()
   // Shared
   parse_effects( spec.death_knight );
   parse_effects( buffs.icy_talons, talent.icy_talons );
+  parse_effects( buffs.rune_mastery, talent.rune_mastery );
+  parse_effects( buffs.unholy_strength, talent.unholy_bond );
+  parse_effects( buffs.unholy_ground, talent.unholy_ground );
   parse_effects( talent.veteran_of_the_third_war, spec.blood_death_knight );
   parse_effects( talent.merciless_strikes );
   parse_effects( talent.might_of_thassarian );
@@ -12553,17 +12556,22 @@ void death_knight_t::parse_player_effects()
   parse_effects( buffs.voracious, talent.blood.voracious );
   parse_effects( buffs.dancing_rune_weapon );
   parse_effects( buffs.bone_shield, IGNORE_STACKS, talent.blood.improved_bone_shield );
+  parse_effects( buffs.perseverance_of_the_ebon_blade, talent.blood.perseverance_of_the_ebon_blade );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::tightening_grasp ), spell.tightening_grasp_debuff );
 
   // Frost
   parse_effects( spec.frost_death_knight );
   parse_effects( buffs.bonegrinder_frost, talent.frost.bonegrinder );
+  parse_effects( buffs.bonegrinder_crit, talent.frost.bonegrinder );
+  parse_effects( buffs.enduring_strength, talent.frost.enduring_strength );
+  parse_effects( buffs.unleashed_frenzy, talent.frost.unleashed_frenzy );
 
   // Unholy
   parse_effects( spec.unholy_death_knight );
   parse_effects( mastery.dreadblade );
   parse_effects( buffs.unholy_assault, talent.unholy.unholy_assault );
   parse_effects( buffs.ghoulish_frenzy, talent.unholy.ghoulish_frenzy );
+  parse_effects( buffs.festermight, talent.unholy.festermight );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::unholy_aura ), spell.unholy_aura_debuff, talent.unholy.unholy_aura );
   parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), spell.virulent_plague, talent.unholy.morbidity );
   parse_target_effects( d_fn( &death_knight_td_t::dots_t::frost_fever ), spell.frost_fever, talent.unholy.morbidity );
