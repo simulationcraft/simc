@@ -469,17 +469,17 @@ public:
       player_talent_t demonsurge;  // NYI
 
       player_talent_t wave_of_debilitation;   // NYI
-      player_talent_t pursuit_of_angryness;   // NYI
+      player_talent_t pursuit_of_angryness;
       player_talent_t focused_hatred;         // NYI
       player_talent_t set_fire_to_the_pain;   // NYI
-      player_talent_t improved_soul_rending;  // NYI
+      player_talent_t improved_soul_rending;
 
-      player_talent_t burning_blades;          // NYI
+      player_talent_t burning_blades;
       player_talent_t violent_transformation;  // NYI
       player_talent_t enduring_torment;        // NYI
 
       player_talent_t untethered_fury;
-      player_talent_t student_of_suffering;  // NYI
+      player_talent_t student_of_suffering;
       player_talent_t flamebound;
       player_talent_t monster_rising;
 
