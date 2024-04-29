@@ -603,6 +603,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> crit_avoidance_effects;
   std::vector<player_effect_t> parry_effects;
   std::vector<player_effect_t> armor_multiplier_effects;
+  std::vector<player_effect_t> haste_effects;
   std::vector<target_effect_t<TD>> target_multiplier_effects;
   std::vector<target_effect_t<TD>> target_pet_multiplier_effects;
 
@@ -763,6 +764,26 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
     return am;
   }
 
+  double composite_melee_haste() const override
+  {
+    auto mh = player_t::composite_melee_haste();
+
+    for ( const auto& i : haste_effects )
+      mh *= 1.0 / ( 1.0 + get_effect_value( i ) );
+
+    return mh;
+  }
+
+  double composite_spell_haste() const override
+  {
+    auto sh = player_t::composite_spell_haste();
+
+    for ( const auto& i : haste_effects )
+      sh *= 1.0 / ( 1.0 + get_effect_value( i ) );
+
+    return sh;
+  }
+
 private:
   TD* _get_td( player_t* t ) const
   {
@@ -882,6 +903,10 @@ public:
       case A_MOD_BASE_RESISTANCE_PCT:
         str = "armor multiplier";
         return &armor_multiplier_effects;
+
+      case A_HASTE_ALL:
+        str = "haste";
+        return &haste_effects;
 
       default:
         return nullptr;

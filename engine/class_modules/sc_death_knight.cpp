@@ -1568,8 +1568,6 @@ public:
   void init_finished() override;
   bool validate_fight_style( fight_style_e style ) const override;
   double composite_bonus_armor() const override;
-  double composite_melee_haste() const override;
-  double composite_spell_haste() const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_parry_rating() const override;
   void combat_begin() override;
@@ -5041,7 +5039,7 @@ struct apocalyptic_conquest_buff_t final : public buff_t
     set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
   }
 
-  // Override the value of the buff to properly capture Pillar of Frost's strength buff behavior
+  // Override the value of the buff to properly capture Apocalyptic Conquest's strength buff behavior
   double value() override
   {
     return player->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() +
@@ -5192,6 +5190,33 @@ struct infliction_in_sorrow_t : public death_knight_spell_t
     background = true;
     may_miss = may_dodge = may_parry = false;
   }
+};
+
+struct essence_of_the_blood_queen_buff_t final : public buff_t
+{
+  essence_of_the_blood_queen_buff_t( death_knight_t* p )
+    : buff_t( p, "essence_of_the_blood_queen", p->spell.essence_of_the_blood_queen_buff ), player( p )
+  {
+    set_default_value( p->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 );
+    add_invalidate( CACHE_HASTE );
+    apply_affecting_aura( p->talent.sanlayn.frenzied_bloodthirst );
+  }
+
+  // Override the value of the buff to properly capture Essence of the Blood Queens's buff behavior
+  double value() override
+  {
+    return player->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 *
+           ( 1.0 + player->buffs.gift_of_the_sanlayn->check_value() );
+  }
+
+  double check_value() const override
+  {
+    return player->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 *
+           ( 1.0 + player->buffs.gift_of_the_sanlayn->check_value() );
+  }
+
+private:
+  death_knight_t* player;
 };
 
 // ==========================================================================
@@ -11018,38 +11043,6 @@ void death_knight_t::create_pets()
   }
 }
 
-// death_knight_t::composite_attack_haste() =================================
-
-double death_knight_t::composite_melee_haste() const
-{
-  double haste = player_t::composite_melee_haste();
-
-  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.bone_shield->up() && talent.blood.improved_bone_shield->ok() )
-  {
-    haste *= 1.0 / ( 1.0 + talent.blood.improved_bone_shield->effectN( 1 ).percent() );
-  }
-
-  haste *= 1.0 / ( 1.0 + buffs.essence_of_the_blood_queen->check_stack_value() * ( 1.0 + buffs.gift_of_the_sanlayn->check_value() ) );
-
-  return haste;
-}
-
-// death_knight_t::composite_spell_haste() ==================================
-
-double death_knight_t::composite_spell_haste() const
-{
-  double haste = player_t::composite_spell_haste();
-
-  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.bone_shield->up() && talent.blood.improved_bone_shield->ok() )
-  {
-    haste *= 1.0 / ( 1.0 + talent.blood.improved_bone_shield->effectN( 1 ).percent() );
-  }
-
-  haste *= 1.0 / ( 1.0 + buffs.essence_of_the_blood_queen->check_stack_value() * ( 1.0 + buffs.gift_of_the_sanlayn->check_value() ) );
-
-  return haste;
-}
-
 // death_knight_t::init_rng =================================================
 
 void death_knight_t::init_rng()
@@ -11736,11 +11729,7 @@ void death_knight_t::create_buffs()
   // Deathbringer
 
   // San'layn
-  buffs.essence_of_the_blood_queen =
-      make_buff( this, "essence_of_the_blood_queen", spell.essence_of_the_blood_queen_buff )
-          ->set_default_value( spell.essence_of_the_blood_queen_buff -> effectN( 1 ).percent() / 10 )
-          ->add_invalidate( CACHE_HASTE )
-          ->apply_affecting_aura( talent.sanlayn.frenzied_bloodthirst );
+  buffs.essence_of_the_blood_queen = new essence_of_the_blood_queen_buff_t( this );
 
   buffs.gift_of_the_sanlayn =
       make_buff( this, "gift_of_the_sanlayn", spell.gift_of_the_sanlayn_buff )->set_duration( 0_ms )
@@ -12563,6 +12552,7 @@ void death_knight_t::parse_player_effects()
   parse_effects( buffs.blood_shield, talent.blood.bloodshot );
   parse_effects( buffs.voracious, talent.blood.voracious );
   parse_effects( buffs.dancing_rune_weapon );
+  parse_effects( buffs.bone_shield, talent.blood.improved_bone_shield );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::tightening_grasp ), spell.tightening_grasp_debuff );
 
   // Frost
@@ -12579,6 +12569,9 @@ void death_knight_t::parse_player_effects()
   parse_target_effects( d_fn( &death_knight_td_t::dots_t::frost_fever ), spell.frost_fever, talent.unholy.morbidity );
   parse_target_effects( d_fn( &death_knight_td_t::dots_t::blood_plague ), spell.blood_plague, talent.unholy.morbidity );
   parse_target_effects( d_fn( &death_knight_td_t::dots_t::unholy_blight, false ), spell.unholy_blight_dot, talent.unholy.morbidity );
+
+  // San'layn
+  parse_effects( buffs.essence_of_the_blood_queen, USE_CURRENT, talent.sanlayn.frenzied_bloodthirst );
 }
 
 void death_knight_t::apply_affecting_auras( action_t& action )
