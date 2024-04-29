@@ -7214,6 +7214,7 @@ void demon_hunter_t::create_buffs()
   buff.student_of_suffering =
       make_buff( this, "student_of_suffering", hero_spec.student_of_suffering_buff )
           ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
+          ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
           ->set_tick_behavior( buff_tick_behavior::REFRESH )
           ->set_tick_on_application( false )
           ->set_period( 2_s )
