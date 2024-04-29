@@ -871,6 +871,7 @@ public:
   void invalidate_cache( cache_e ) override;
   resource_e primary_resource() const override;
   role_e primary_role() const override;
+  //  double resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action ) override;
 
   // custom demon_hunter_t init functions
 private:
@@ -921,6 +922,7 @@ public:
   void regen( timespan_t periodicity ) override;
   double resource_gain( resource_e, double, gain_t* source = nullptr, action_t* action = nullptr ) override;
   double resource_gain( resource_e, double, double, gain_t* source = nullptr, action_t* action = nullptr );
+  double resource_loss( resource_e, double, gain_t* source = nullptr, action_t* action = nullptr ) override;
   void recalculate_resource_max( resource_e, gain_t* source = nullptr ) override;
   void reset() override;
   void merge( player_t& other ) override;
@@ -2183,13 +2185,12 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
     special = true;
   }
 
-
   void trigger_burning_blades( action_state_t* s )
   {
-    if (!p()->talent.felscarred.burning_blades->ok())
+    if ( !p()->talent.felscarred.burning_blades->ok() )
       return;
 
-    if (!result_is_hit( s->result ))
+    if ( !result_is_hit( s->result ) )
       return;
 
     const double dot_damage = s->result_amount * p()->talent.felscarred.burning_blades->effectN( 1 ).percent();
@@ -8786,6 +8787,13 @@ double demon_hunter_t::passive_movement_modifier() const
   {
     ms += cache.mastery() * talent.demon_hunter.pursuit->effectN( 1 ).mastery_value();
   }
+  if ( talent.felscarred.pursuit_of_angryness->ok() )
+  {
+    double current_fury = resources.current[ RESOURCE_FURY ];
+    // TOCHECK - Does this need to floor if it's not a whole number
+    double increments = current_fury / talent.felscarred.pursuit_of_angryness->effectN( 2 ).base_value();
+    ms += talent.felscarred.pursuit_of_angryness->effectN( 1 ).percent() * increments;
+  }
 
   return ms;
 }
@@ -8916,7 +8924,12 @@ void demon_hunter_t::regen( timespan_t periodicity )
 
 double demon_hunter_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
 {
-  return player_t::resource_gain( resource_type, amount, source, action );
+  double amt = player_t::resource_gain( resource_type, amount, source, action );
+  if ( resource_type == RESOURCE_FURY && talent.felscarred.pursuit_of_angryness->ok() )
+  {
+    invalidate_cache( CACHE_RUN_SPEED );
+  }
+  return amt;
 }
 
 double demon_hunter_t::resource_gain( resource_e resource_type, double amount, double delta_coeff, gain_t* source,
@@ -8925,6 +8938,18 @@ double demon_hunter_t::resource_gain( resource_e resource_type, double amount, d
   double modified_amount =
       static_cast<int>( amount + rng().range( 0, 1 + ( amount * delta_coeff ) ) - ( ( amount * delta_coeff ) / 2.0 ) );
   return resource_gain( resource_type, modified_amount, source, action );
+}
+
+// demon_hunter_t::resource_loss ============================================
+
+double demon_hunter_t::resource_loss( resource_e resource_type, double amount, gain_t* source, action_t* action )
+{
+  double amt = player_t::resource_loss( resource_type, amount, source, action );
+  if ( resource_type == RESOURCE_FURY && talent.felscarred.pursuit_of_angryness->ok() )
+  {
+    invalidate_cache( CACHE_RUN_SPEED );
+  }
+  return amt;
 }
 
 // demon_hunter_t::recalculate_resource_max =================================
