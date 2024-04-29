@@ -593,7 +593,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> attribute_multiplier_effects;
   std::vector<player_effect_t> player_multiplier_effects;
   std::vector<player_effect_t> pet_multiplier_effects;
-  std::vector<player_effect_t> player_attack_power_multiplier_effects;
+  std::vector<player_effect_t> attack_power_multiplier_effects;
   std::vector<player_effect_t> all_crit_multiplier_effects;
   std::vector<player_effect_t> leech_multiplier_effects;
   std::vector<player_effect_t> expertise_multiplier_effects;
@@ -653,7 +653,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   {
     auto apm = player_t::composite_attack_power_multiplier();
 
-    for ( const auto& i : player_attack_power_multiplier_effects )
+    for ( const auto& i : attack_power_multiplier_effects )
       apm *= 1.0 + get_effect_value( i );
 
     return apm;
@@ -809,7 +809,7 @@ public:
 
       case A_MOD_ATTACK_POWER_PCT:
         str = "attack power";
-        return &player_attack_power_multiplier_effects;
+        return &attack_power_multiplier_effects;
 
       case A_MOD_ALL_CRIT_CHANCE:
         str = "all crit chance";
