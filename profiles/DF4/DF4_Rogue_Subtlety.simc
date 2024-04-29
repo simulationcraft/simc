@@ -1,11 +1,11 @@
-rogue="T29_Rogue_Subtlety"
+rogue="DF4_Rogue_Subtlety"
 source=default
 spec=subtlety
 level=70
-race=tauren
+race=void_elf
 role=attack
 position=back
-talents=BUQAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAECUSiIEgESCSJJRpQSkkAAAAAAAA
+talents=BUQAAAAAAAAAAAAAAAAAAAAAAAAEEAAAAAASJJJlERSKFRICxBSSSISLSSiWSikkAokWAAAAIBB
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -164,31 +164,31 @@ actions.stealthed+=/shadowstrike,if=!used_for_danse&buff.shadow_blades.up
 actions.stealthed+=/shuriken_storm,if=!buff.premeditation.up&spell_targets>=4
 actions.stealthed+=/shadowstrike
 
-head=flaring_cowl,id=193494,bonus_id=8960/8840/8836/8902/7936/7937/1508,gem_id=192982
-neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8782/1508,gem_id=192958/192958/192958,crafted_stats=32/40
-shoulders=vault_delvers_epaulets,id=200374,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
-back=windsoaked_drape,id=144111,bonus_id=6652/8811/8812/6808/4786/3311
-chest=vault_delvers_brigandine,id=200369,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498,enchant=waking_stats_3
-wrists=loyal_flametenders_bracers,id=195525,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192925
-hands=vault_delvers_lockbreakers,id=200371,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
-waist=bjorns_hunting_strap,id=136776,bonus_id=6652/8811/8812/6808/4786/8780/3300,gem_id=192958
-legs=vault_delvers_pantaloons,id=200373,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1507,enchant=fierce_armor_kit_3
-feet=boots_of_burning_focus,id=109787,bonus_id=6652/8811/8812/6808/4786/3306
-finger1=valkyr_ascension_signet,id=133679,bonus_id=6652/8811/8812/6808/4786/8780/3300,gem_id=192958,enchant=devotion_of_critical_strike_3
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498/1808,gem_id=192958,enchant=devotion_of_critical_strike_3
-trinket1=controlled_current_technique,id=194305,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
-trinket2=manic_grieftorch,id=194308,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
-main_hand=ornamental_drakonid_claw,id=195521,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,enchant=sophic_devotion_3
-off_hand=fenryrs_bloodstained_fang,id=201998,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,enchant=sophic_devotion_3
+head=violent_gravemask,id=202602,bonus_id=10359/1488/1808,gem_id=192988,enchant=incandescent_essence
+neck=magmoraxs_fourth_collar,id=204397,bonus_id=10359/1488/8782,gem_id=192938/192938/192938
+shoulders=lurking_specters_shoulderblades,id=217210,bonus_id=10359/1488
+back=voice_of_the_silent_star,id=204465,bonus_id=10359/1495
+chest=lurking_specters_brigandine,id=217206,bonus_id=10359/1488,enchant=waking_stats_3
+wrists=lifebound_bindings,id=193419,bonus_id=10249/10359/9405/8780/9379/8960,gem_id=192938,crafted_stats=40/49
+hands=lurking_specters_handgrips,id=217207,bonus_id=10359/1488
+waist=vengeful_bladebeak_girdle,id=208432,bonus_id=1808/10359/1488,gem_id=192938,enchant_id=6904
+legs=lurking_specters_tights,id=217209,bonus_id=10359/1488,enchant=fierce_armor_kit_3
+feet=galvanic_gaiters,id=202008,bonus_id=10359/1488
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=10359/1488/8780,gem_id=192938,enchant=devotion_of_mastery_3
+finger2=signet_of_titanic_insight,id=192999,bonus_id=10249/10359/9405/8780/8932/8960,ilevel=525,gem_id=192938,enchant=devotion_of_mastery_3,crafted_stats=40/49
+trinket1=ashes_of_the_embersoul,id=207167,bonus_id=10359/1488
+trinket2=spiteful_storm,id=194309,bonus_id=10359/1488
+main_hand=cruel_dreamcarver,id=207783,bonus_id=10359/1488,enchant=wafting_devotion_3
+off_hand=nick_of_time,id=207996,bonus_id=9526,ilevel=522,enchant=frozen_writ_3
 
 # Gear Summary
-# gear_ilvl=421.56
-# gear_agility=5435
-# gear_stamina=17274
-# gear_crit_rating=5330
-# gear_haste_rating=1165
-# gear_mastery_rating=2918
-# gear_versatility_rating=2066
-# gear_armor=3347
-# set_bonus=tier29_2pc=1
-# set_bonus=tier29_4pc=1
+# gear_ilvl=527.69
+# gear_agility=12644
+# gear_stamina=58068
+# gear_crit_rating=3490
+# gear_haste_rating=1676
+# gear_mastery_rating=6493
+# gear_versatility_rating=6716
+# gear_armor=7246
+# set_bonus=dragonflight_season_4_2pc=1
+# set_bonus=dragonflight_season_4_4pc=1

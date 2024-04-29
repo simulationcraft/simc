@@ -1,0 +1,210 @@
+rogue="DF4_Rogue_Assassination"
+source=default
+spec=assassination
+level=70
+race=human
+role=attack
+position=back
+talents=BMQAAAAAAAAAAAAAAAAAAAAAAEJJhkEEAAAAAASJJSLJAAAAAAgWSCSgkkSaJREEJJJRSTLSAA
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=iced_phial_of_corrupting_rage_3
+food=fated_fortune_cookie
+augmentation=draconic
+temporary_enchant=main_hand:buzzing_rune_3/off_hand:buzzing_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=apply_poison
+actions.precombat+=/flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+actions.precombat+=/snapshot_stats
+# Check which trinket slots have Stat Values
+actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)&!trinket.2.is.witherbarks_branch|trinket.1.is.witherbarks_branch
+actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)&!trinket.1.is.witherbarks_branch|trinket.2.is.witherbarks_branch
+actions.precombat+=/stealth
+# Pre-cast Slice and Dice if possible
+actions.precombat+=/slice_and_dice,precombat_seconds=1
+
+# Executed every time the actor is available.
+# Restealth if possible (no vulnerable enemies in combat)
+actions=stealth
+# Interrupt on cooldown to allow simming interactions with that
+actions+=/kick
+# Conditional to check if there is only one enemy
+actions+=/variable,name=single_target,value=spell_targets.fan_of_knives<2
+# Combined Energy Regen needed to saturate
+actions+=/variable,name=regen_saturated,value=energy.regen_combined>35
+# Check if we should be using our energy
+actions+=/variable,name=not_pooling,value=(dot.deathmark.ticking|dot.kingsbane.ticking|buff.shadow_dance.up|debuff.shiv.up|cooldown.thistle_tea.full_recharge_time<20)|(buff.envenom.up&buff.envenom.remains<=2)|energy.pct>=80|fight_remains<=90,if=set_bonus.tier31_4pc
+actions+=/variable,name=not_pooling,value=(dot.deathmark.ticking|dot.kingsbane.ticking|buff.shadow_dance.up|debuff.shiv.up|cooldown.thistle_tea.full_recharge_time<20)|energy.pct>=80,if=!set_bonus.tier31_4pc
+# Next Sepsis cooldown time based on Deathmark syncing logic and remaining fight duration
+actions+=/variable,name=sepsis_sync_remains,op=setif,condition=cooldown.deathmark.remains>cooldown.sepsis.remains&cooldown.deathmark.remains<fight_remains,value=cooldown.deathmark.remains,value_else=cooldown.sepsis.remains
+actions+=/call_action_list,name=stealthed,if=stealthed.rogue|stealthed.improved_garrote|master_assassin_remains>0
+actions+=/call_action_list,name=cds
+# Put SnD up initially for Cut to the Chase, refresh with Envenom if at low duration
+actions+=/slice_and_dice,if=!buff.slice_and_dice.up&dot.rupture.ticking&combo_points>=2|!talent.cut_to_the_chase&refreshable&combo_points>=4
+actions+=/envenom,if=talent.cut_to_the_chase&buff.slice_and_dice.up&buff.slice_and_dice.remains<5&combo_points>=4
+actions+=/call_action_list,name=dot
+actions+=/call_action_list,name=direct
+actions+=/arcane_torrent,if=energy.deficit>=15+energy.regen_combined
+actions+=/arcane_pulse
+actions+=/lights_judgment
+actions+=/bag_of_tricks
+
+# Cooldowns Wait on Deathmark for Garrote with MA and check for Kingsbane
+actions.cds=variable,name=deathmark_ma_condition,value=!talent.master_assassin.enabled|dot.garrote.ticking
+actions.cds+=/variable,name=deathmark_kingsbane_condition,value=!talent.kingsbane|cooldown.kingsbane.remains<=2
+# Deathmark to be used if not stealthed, Rupture is up, and all other talent conditions are satisfied
+actions.cds+=/variable,name=deathmark_condition,value=!stealthed.rogue&dot.rupture.ticking&buff.envenom.up&!debuff.deathmark.up&variable.deathmark_ma_condition&variable.deathmark_kingsbane_condition
+actions.cds+=/sepsis,if=dot.rupture.remains>20&(!talent.improved_garrote&dot.garrote.ticking|talent.improved_garrote&cooldown.garrote.up&dot.garrote.pmultiplier<=1)&(target.time_to_die>10|fight_remains<10)
+# Usages for various special-case Trinkets and other Cantrips if applicable
+actions.cds+=/call_action_list,name=items
+# Invoke Externals to Deathmark
+actions.cds+=/invoke_external_buff,name=power_infusion,if=dot.deathmark.ticking
+actions.cds+=/deathmark,if=variable.deathmark_condition|fight_remains<=20
+# Check for Applicable Shiv usage
+actions.cds+=/call_action_list,name=shiv
+# Special Handling to Sync Shadow Dance to Kingsbane
+actions.cds+=/shadow_dance,if=talent.kingsbane&buff.envenom.up&(cooldown.deathmark.remains>=50|variable.deathmark_condition)
+actions.cds+=/kingsbane,if=(debuff.shiv.up|cooldown.shiv.remains<6)&buff.envenom.up&(cooldown.deathmark.remains>=50|dot.deathmark.ticking)|fight_remains<=15
+# Avoid overcapped energy, use on final 6 seconds of kingsbane, or use a charge during cooldowns when capped on charges
+actions.cds+=/thistle_tea,if=!buff.thistle_tea.up&(energy.deficit>=100+energy.regen_combined&(!talent.kingsbane|charges>=2)|(dot.kingsbane.ticking&dot.kingsbane.remains<6|!talent.kingsbane&dot.deathmark.ticking)|fight_remains<charges*6)
+# Potion/Racials/Other misc cooldowns
+actions.cds+=/call_action_list,name=misc_cds
+actions.cds+=/call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0
+actions.cds+=/cold_blood,if=combo_points>=4
+
+# Direct Damage Abilities   Envenom at 4+ CP if not pooling, capped on amplifying poison stacks, on an animacharged CP, or in aoe
+actions.direct=envenom,if=effective_combo_points>=4+cooldown.deathmark.ready&(variable.not_pooling|debuff.amplifying_poison.stack>=20|effective_combo_points>cp_max_spend|!variable.single_target)
+# Check if we should be using a filler
+actions.direct+=/variable,name=use_filler,value=combo_points.deficit>1|variable.not_pooling|!variable.single_target
+# Maintain Caustic Spatter
+actions.direct+=/mutilate,if=talent.caustic_spatter&dot.rupture.ticking&(!debuff.caustic_spatter.up|debuff.caustic_spatter.remains<=2)&variable.use_filler&!variable.single_target
+actions.direct+=/ambush,if=talent.caustic_spatter&dot.rupture.ticking&(!debuff.caustic_spatter.up|debuff.caustic_spatter.remains<=2)&variable.use_filler&!variable.single_target
+# Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target
+actions.direct+=/serrated_bone_spike,if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking
+actions.direct+=/serrated_bone_spike,target_if=min:target.time_to_die+(dot.serrated_bone_spike_dot.ticking*600),if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking
+# Keep from capping charges or burn at the end of fights
+actions.direct+=/serrated_bone_spike,if=variable.use_filler&master_assassin_remains<0.8&(fight_remains<=5|cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25)
+# When MA is not at high duration, sync with Shiv
+actions.direct+=/serrated_bone_spike,if=variable.use_filler&master_assassin_remains<0.8&!variable.single_target&debuff.shiv.up
+actions.direct+=/echoing_reprimand,if=variable.use_filler|fight_remains<20
+# Fan of Knives at 2+ targets or 3+ with DTB
+actions.direct+=/fan_of_knives,if=variable.use_filler&(!priority_rotation&spell_targets.fan_of_knives>=2+stealthed.rogue+talent.dragontempered_blades)
+# Fan of Knives to apply poisons if inactive on any target (or any bleeding targets with priority rotation) at 3T
+actions.direct+=/fan_of_knives,target_if=!dot.deadly_poison_dot.ticking&(!priority_rotation|dot.garrote.ticking|dot.rupture.ticking),if=variable.use_filler&spell_targets.fan_of_knives>=3
+# Ambush on Blindside/Shadow Dance, or a last resort usage of Sepsis. Do not use Ambush during Kingsbane & Deathmark.
+actions.direct+=/ambush,if=variable.use_filler&(buff.blindside.up|buff.sepsis_buff.remains<=1|stealthed.rogue)&(!dot.kingsbane.ticking|debuff.deathmark.down|buff.blindside.up)
+# Tab-Mutilate to apply Deadly Poison at 2 targets
+actions.direct+=/mutilate,target_if=!dot.deadly_poison_dot.ticking&!debuff.amplifying_poison.up,if=variable.use_filler&spell_targets.fan_of_knives=2
+# Fallback Mutilate
+actions.direct+=/mutilate,if=variable.use_filler
+
+# Damage over time abilities   Check what the maximum Scent of Blood stacks is currently
+actions.dot=variable,name=scent_effective_max_stacks,value=(spell_targets.fan_of_knives*talent.scent_of_blood.rank*2)>?20
+# We are Scent Saturated when our stack count is hitting the maximum
+actions.dot+=/variable,name=scent_saturation,value=buff.scent_of_blood.stack>=variable.scent_effective_max_stacks
+# Crimson Tempest on 4+ Targets if we have enough energy regen and it is not snapshot from stealth already
+actions.dot+=/crimson_tempest,target_if=min:remains,if=spell_targets>=3+set_bonus.tier31_4pc&refreshable&pmultiplier<=1&effective_combo_points>=4&energy.regen_combined>25&!cooldown.deathmark.ready&target.time_to_die-remains>6
+# Garrote upkeep, also uses it in AoE to reach energy saturation
+actions.dot+=/garrote,if=combo_points.deficit>=1&(pmultiplier<=1)&refreshable&target.time_to_die-remains>12
+actions.dot+=/garrote,cycle_targets=1,if=combo_points.deficit>=1&(pmultiplier<=1)&refreshable&!variable.regen_saturated&spell_targets.fan_of_knives>=2&target.time_to_die-remains>12
+# Rupture upkeep, also uses it in AoE to reach energy saturation
+actions.dot+=/rupture,if=effective_combo_points>=4&(pmultiplier<=1)&refreshable&target.time_to_die-remains>(4+(talent.dashing_scoundrel*5)+(variable.regen_saturated*6))
+actions.dot+=/rupture,cycle_targets=1,if=effective_combo_points>=4&(pmultiplier<=1)&refreshable&(!variable.regen_saturated|!variable.scent_saturation)&target.time_to_die-remains>(4+(talent.dashing_scoundrel*5)+(variable.regen_saturated*6))
+# Garrote as a special generator for the last CP before a finisher for edge case handling
+actions.dot+=/garrote,if=refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>4&master_assassin_remains=0
+
+# Special Case Trinkets
+actions.items=use_item,name=ashes_of_the_embersoul,use_off_gcd=1,if=(dot.kingsbane.ticking&dot.kingsbane.remains<=11)|fight_remains<=22
+actions.items+=/use_item,name=algethar_puzzle_box,use_off_gcd=1,if=dot.rupture.ticking&cooldown.deathmark.remains<2|fight_remains<=22
+# Fallback case for using stat trinkets
+actions.items+=/use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(debuff.deathmark.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|!debuff.deathmark.up&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot)
+actions.items+=/use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(debuff.deathmark.up|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|!debuff.deathmark.up&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot)
+
+# Miscellaneous Cooldowns Potion
+actions.misc_cds=potion,if=buff.bloodlust.react|fight_remains<30|debuff.deathmark.up
+# Various special racials to be synced with cooldowns
+actions.misc_cds+=/blood_fury,if=debuff.deathmark.up
+actions.misc_cds+=/berserking,if=debuff.deathmark.up
+actions.misc_cds+=/fireblood,if=debuff.deathmark.up
+actions.misc_cds+=/ancestral_call,if=(!talent.kingsbane&debuff.deathmark.up&debuff.shiv.up)|(talent.kingsbane&debuff.deathmark.up&dot.kingsbane.ticking&dot.kingsbane.remains<8)
+
+# Shiv   Shiv if talented into Kingsbane; Always sync, or prioritize the last 8 seconds
+actions.shiv=shiv,if=talent.kingsbane&!talent.lightweight_shiv.enabled&buff.envenom.up&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(dot.kingsbane.ticking&dot.kingsbane.remains<8|cooldown.kingsbane.remains>=24)&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)|fight_remains<=charges*8
+actions.shiv+=/shiv,if=talent.kingsbane&talent.lightweight_shiv.enabled&buff.envenom.up&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(dot.kingsbane.ticking|cooldown.kingsbane.remains<=1)|fight_remains<=charges*8
+# Shiv cases for Sepsis/Arterial in special circumstances
+actions.shiv+=/shiv,if=talent.arterial_precision&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&debuff.deathmark.up|fight_remains<=charges*8
+actions.shiv+=/shiv,if=talent.sepsis&!talent.kingsbane&!talent.arterial_precision&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&((cooldown.shiv.charges_fractional>0.9+talent.lightweight_shiv.enabled&variable.sepsis_sync_remains>5)|dot.sepsis.ticking|dot.deathmark.ticking|fight_remains<=charges*8)
+# Fallback if no special cases apply
+actions.shiv+=/shiv,if=!talent.kingsbane&!talent.arterial_precision&!talent.sepsis&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)|fight_remains<=charges*8
+
+# Stealthed Actions
+actions.stealthed=pool_resource,for_next=1
+# Make sure to have Shiv up during Kingsbane as a final check
+actions.stealthed+=/shiv,if=talent.kingsbane&(dot.kingsbane.ticking|cooldown.kingsbane.up)&(!debuff.shiv.up&debuff.shiv.remains<1)&buff.envenom.up
+# Kingsbane in Shadow Dance for snapshotting Nightstalker
+actions.stealthed+=/kingsbane,if=buff.shadow_dance.remains>=2&buff.envenom.up
+# Envenom to maintain the buff during Shadow Dance
+actions.stealthed+=/envenom,if=effective_combo_points>=4&dot.kingsbane.ticking&buff.envenom.remains<=3
+# Envenom during Master Assassin in single target
+actions.stealthed+=/envenom,if=effective_combo_points>=4&buff.master_assassin_aura.up&!buff.shadow_dance.up&variable.single_target
+# Crimson Tempest on 4+ targets to snapshot Nightstalker
+actions.stealthed+=/crimson_tempest,target_if=min:remains,if=spell_targets>=3+set_bonus.tier31_4pc&refreshable&effective_combo_points>=4&!cooldown.deathmark.ready&target.time_to_die-remains>6
+# Improved Garrote: Apply or Refresh with buffed Garrotes, accounting for Sepsis buff time and Indiscriminate Carnage
+actions.stealthed+=/garrote,target_if=min:remains,if=stealthed.improved_garrote&(remains<(12-buff.sepsis_buff.remains)|pmultiplier<=1|(buff.indiscriminate_carnage.up&active_dot.garrote<spell_targets.fan_of_knives))&!variable.single_target&target.time_to_die-remains>2
+actions.stealthed+=/garrote,if=stealthed.improved_garrote&(pmultiplier<=1|remains<14|!variable.single_target&buff.master_assassin_aura.remains<3)&combo_points.deficit>=1+2*talent.shrouded_suffocation
+# Rupture in Shadow Dance to snapshot Nightstalker as a final resort
+actions.stealthed+=/rupture,if=effective_combo_points>=4&(pmultiplier<=1)&(buff.shadow_dance.up|debuff.deathmark.up)
+
+# Stealth Cooldowns   Vanish Sync for Improved Garrote with Deathmark
+actions.vanish=pool_resource,for_next=1,extra_amount=45
+# Shadow Dance for non-Kingsbane setups
+actions.vanish+=/shadow_dance,if=!talent.kingsbane&talent.improved_garrote&cooldown.garrote.up&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&(debuff.deathmark.up|cooldown.deathmark.remains<12|cooldown.deathmark.remains>60)&combo_points.deficit>=(spell_targets.fan_of_knives>?4)
+actions.vanish+=/shadow_dance,if=!talent.kingsbane&!talent.improved_garrote&talent.master_assassin&!dot.rupture.refreshable&dot.garrote.remains>3&(debuff.deathmark.up|cooldown.deathmark.remains>60)&(debuff.shiv.up|debuff.deathmark.remains<4|dot.sepsis.ticking)&dot.sepsis.remains<3
+# Vanish to spread Garrote during Deathmark without Indiscriminate Carnage
+actions.vanish+=/vanish,if=!talent.master_assassin&!talent.indiscriminate_carnage&talent.improved_garrote&cooldown.garrote.up&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&(debuff.deathmark.up|cooldown.deathmark.remains<4)&combo_points.deficit>=(spell_targets.fan_of_knives>?4)
+actions.vanish+=/pool_resource,for_next=1,extra_amount=45
+# Vanish for cleaving Garrotes with Indiscriminate Carnage
+actions.vanish+=/vanish,if=!talent.master_assassin&talent.indiscriminate_carnage&talent.improved_garrote&cooldown.garrote.up&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&spell_targets.fan_of_knives>2
+# Vanish for Master Assassin during Kingsbane
+actions.vanish+=/vanish,if=talent.master_assassin&talent.kingsbane&dot.kingsbane.remains<=3&dot.kingsbane.ticking&debuff.deathmark.remains<=3&dot.deathmark.ticking
+# Vanish fallback for Master Assassin
+actions.vanish+=/vanish,if=!talent.improved_garrote&talent.master_assassin&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.deathmark.up&(debuff.shiv.up|debuff.deathmark.remains<4|dot.sepsis.ticking)&dot.sepsis.remains<3
+
+head=lurking_specters_visage,id=217208,bonus_id=1808/10359/1488,gem_id=192988,enchant=incandescent_essence
+neck=eye_of_the_rising_flame,id=207163,bonus_id=8782/10359/1488,gem_id=192964/192964/192964
+shoulders=lurking_specters_shoulderblades,id=217210,bonus_id=10359/1488
+back=voice_of_the_silent_star,id=204465,bonus_id=10359/1495
+chest=warlords_volcanic_vest,id=202586,bonus_id=10359/1488,enchant=waking_stats_3
+wrists=lifebound_bindings,id=193419,bonus_id=10249/10359/9405/8780/8932/8960,gem_id=192964,crafted_stats=32/40
+hands=lurking_specters_handgrips,id=217207,bonus_id=10359/1488
+waist=vengeful_bladebeak_girdle,id=208432,bonus_id=1808/10359/1488,gem_id=192964,enchant_id=6904
+legs=lurking_specters_tights,id=217209,bonus_id=10359/1488,enchant=lambent_armor_kit_3
+feet=lucid_shadewalkers_sollerets,id=207238,bonus_id=10359/1488
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=1808/10359/1488,gem_id=192964,enchant=devotion_of_haste_3
+finger2=signet_of_titanic_insight,id=192999,bonus_id=10249/10359/9405/8780/8932/8960,ilevel=525,gem_id=192964,enchant=devotion_of_haste_3,crafted_stats=40/36
+trinket1=cataclysmic_signet_brand,id=207166,bonus_id=10359/1488
+trinket2=ashes_of_the_embersoul,id=207167,bonus_id=10359/1488
+main_hand=fang_of_the_sundered_flame,id=202564,bonus_id=10359/1488,enchant=wafting_devotion_3
+off_hand=nick_of_time,id=207996,bonus_id=9526,ilevel=522,enchant=wafting_devotion_3
+
+# Gear Summary
+# gear_ilvl=527.69
+# gear_agility=12622
+# gear_stamina=57937
+# gear_crit_rating=4776
+# gear_haste_rating=4595
+# gear_mastery_rating=4866
+# gear_versatility_rating=4179
+# gear_armor=7246
+# set_bonus=dragonflight_season_4_2pc=1
+# set_bonus=dragonflight_season_4_4pc=1
