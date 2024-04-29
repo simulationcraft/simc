@@ -12490,7 +12490,7 @@ void death_knight_t::parse_player_effects()
   parse_effects( talent.merciless_strikes );
   parse_effects( talent.might_of_thassarian );
   parse_effects( talent.blood_scent );
-  parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.brittle->check(); }, spell.brittle_debuff );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), spell.brittle_debuff );
 
   // Blood
   parse_effects( spec.blood_death_knight );
@@ -12498,7 +12498,7 @@ void death_knight_t::parse_player_effects()
   parse_effects( buffs.blood_shield, talent.blood.bloodshot );
   parse_effects( buffs.voracious, talent.blood.voracious );
   parse_effects( buffs.dancing_rune_weapon );
-  parse_target_effects( []( death_knight_td_t* td ) { return td->debuff.tightening_grasp->check(); }, spell.tightening_grasp_debuff );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::tightening_grasp ), spell.tightening_grasp_debuff );
 
   // Frost
   parse_effects( spec.frost_death_knight );
