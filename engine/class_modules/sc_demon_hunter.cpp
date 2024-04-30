@@ -3143,6 +3143,8 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
     : demon_hunter_sigil_t( name, p, p->spell.sigil_of_flame_damage, delay )
   {
     tick_on_application = false;
+    dot_max_stack = 1;
+    dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
 
     if ( p->talent.demon_hunter.flames_of_fury->ok() )
     {
@@ -3184,6 +3186,16 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
     if ( !t )
       return nullptr;
     return td( t )->dots.sigil_of_flame;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = demon_hunter_sigil_t::composite_ta_multiplier( s );
+
+    double current_stack = td( s->target )->debuffs.sigil_of_flame->stack();
+    m *= current_stack;
+
+    return m;
   }
 
   timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
@@ -6894,19 +6906,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
           ->set_stack_behavior( p.talent.vengeance.ascending_flame->ok() ? buff_stack_behavior::ASYNCHRONOUS
                                                                          : buff_stack_behavior::DEFAULT )
           ->apply_affecting_aura( p.talent.vengeance.ascending_flame )
-          ->apply_affecting_aura( p.talent.vengeance.chains_of_anger )
-          ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-            auto current_stacks = this->dots.sigil_of_flame->current_stack();
-            auto difference     = new_ - current_stacks;
-            if ( difference > 0 )
-            {
-              this->dots.sigil_of_flame->increment( difference );
-            }
-            else if ( difference < 0 )
-            {
-              this->dots.sigil_of_flame->decrement( abs( difference ) );
-            }
-          } );
+          ->apply_affecting_aura( p.talent.vengeance.chains_of_anger );
 
   debuffs.serrated_glaive = make_buff( *this, "serrated_glaive", p.spec.serrated_glaive_debuff )
                                 ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
