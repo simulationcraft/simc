@@ -2269,7 +2269,7 @@ struct death_knight_pet_t : public pet_t
   // Standard Death Knight pet actions
   struct auto_attack_t final : public melee_attack_t
   {
-    auto_attack_t( death_knight_pet_t* p ) : melee_attack_t( "auto_attack", p )
+    auto_attack_t( death_knight_pet_t* p ) : melee_attack_t( "main_hand", p )
     {
       assert( p->main_hand_weapon.type != WEAPON_NONE );
       p->main_hand_attack = p->create_auto_attack();
