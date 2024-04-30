@@ -634,6 +634,7 @@ struct player_t : public actor_t
   struct racials_t
   {
     const spell_data_t* quickness;
+    const spell_data_t* elusiveness;
     const spell_data_t* command;
     const spell_data_t* arcane_acuity;
     const spell_data_t* heroic_presence;
@@ -1106,8 +1107,8 @@ public:
   virtual double composite_player_critical_healing_multiplier() const;
   virtual double composite_player_target_armor( player_t* target ) const;
   virtual double composite_mitigation_multiplier( school_e ) const;
-  virtual double temporary_movement_modifier() const;
-  virtual double passive_movement_modifier() const;
+  virtual double non_stacking_movement_modifier() const;
+  virtual double stacking_movement_modifier() const;
   virtual double composite_movement_speed() const;
   virtual double composite_attribute( attribute_e attr ) const;
   virtual double composite_attribute_multiplier( attribute_e attr ) const;

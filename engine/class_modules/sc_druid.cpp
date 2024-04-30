@@ -1266,8 +1266,8 @@ public:
   double composite_dodge_rating() const override;
   double composite_parry() const override { return 0; }
   double matching_gear_multiplier( attribute_e attr ) const override;
-  double temporary_movement_modifier() const override;
-  double passive_movement_modifier() const override;
+  double non_stacking_movement_modifier() const override;
+  double stacking_movement_modifier() const override;
   std::unique_ptr<expr_t> create_action_expression(action_t& a, std::string_view name_str) override;
   std::unique_ptr<expr_t> create_expression( std::string_view name ) override;
   action_t* create_action( std::string_view name, std::string_view options ) override;
@@ -12138,38 +12138,37 @@ double druid_t::matching_gear_multiplier( attribute_e attr ) const
 }
 
 // Movement =================================================================
-double druid_t::temporary_movement_modifier() const
+double druid_t::non_stacking_movement_modifier() const
 {
-  double active = player_t::temporary_movement_modifier();
+  double ms = player_t::non_stacking_movement_modifier();
 
   if ( buff.dash->up() && buff.cat_form->check() )
-    active = std::max( active, buff.dash->check_value() );
+    ms = std::max( ms, buff.dash->check_value() );
+  else if ( buff.tiger_dash->up() && buff.cat_form->check() )
+    ms = std::max( ms, buff.tiger_dash->check_value() );
 
   if ( buff.wild_charge_movement->check() )
-    active = std::max( active, buff.wild_charge_movement->check_value() );
-
-  if ( buff.tiger_dash->up() && buff.cat_form->check() )
-    active = std::max( active, buff.tiger_dash->check_value() );
-
-  active += buff.forestwalk->check_value();
+    ms = std::max( ms, buff.wild_charge_movement->check_value() );
 
   if ( talent.flower_walk.ok() && buff.barkskin->check() )
-    active += talent.flower_walk->effectN( 1 ).percent();
+    ms = std::max( ms, talent.flower_walk->effectN( 1 ).percent() );
 
-  return active;
+  return ms;
 }
 
-double druid_t::passive_movement_modifier() const
+double druid_t::stacking_movement_modifier() const
 {
-  double ms = player_t::passive_movement_modifier();
+  double ms = player_t::stacking_movement_modifier();
+
+  ms += buff.forestwalk->check_value();
 
   if ( buff.cat_form->check() )
     ms += spec.cat_form_speed->effectN( 1 ).percent();
 
   ms += talent.feline_swiftness->effectN( 1 ).percent();
 
-  if ( race == RACE_NIGHT_ELF && buff.prowl->check() )
-    ms += 0.05;  // elusive racial, TODO: use spell data
+  if ( racials.elusiveness->ok() && buff.prowl->check() )
+    ms += racials.elusiveness->effectN( 1 ).percent();
 
   return ms;
 }

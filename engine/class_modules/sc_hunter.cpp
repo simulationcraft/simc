@@ -879,7 +879,7 @@ public:
   double    composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
   double    composite_leech() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
-  double    passive_movement_modifier() const override;
+  double    stacking_movement_modifier() const override;
   void      invalidate_cache( cache_e ) override;
   void      regen( timespan_t periodicity ) override;
   double    resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
@@ -8242,9 +8242,9 @@ double hunter_t::matching_gear_multiplier( attribute_e attr ) const
   return 0;
 }
 
-double hunter_t::passive_movement_modifier() const
+double hunter_t::stacking_movement_modifier() const
 {
-  double ms = player_t::passive_movement_modifier();
+  double ms = player_t::stacking_movement_modifier();
 
   ms += buffs.pathfinding -> check_value();
 

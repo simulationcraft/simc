@@ -1000,10 +1000,10 @@ struct evoker_t : public player_t
   double composite_spell_haste() const override;
   double composite_melee_haste() const override;
   stat_e convert_hybrid_stat( stat_e ) const override;
-  double passive_movement_modifier() const override;
+  double non_stacking_movement_modifier() const override;
+  double stacking_movement_modifier() const override;
   double resource_regen_per_second( resource_e ) const override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
-  double temporary_movement_modifier() const override;
 
   void bounce_naszuro( player_t*, timespan_t );
 
@@ -6366,15 +6366,25 @@ void evoker_t::extend_ebon( timespan_t extend )
   }
 }
 
-double evoker_t::passive_movement_modifier() const
+double evoker_t::non_stacking_movement_modifier() const
 {
-  double pmm = player_t::passive_movement_modifier();
+  double ms = player_t::non_stacking_movement_modifier();
+
+  if ( buff.hover->check() )
+    ms = std::max( ms, buff.hover->check_value() + buff.tailwind->check_value() );
+
+  return ms;
+}
+
+double evoker_t::stacking_movement_modifier() const
+{
+  auto ms = player_t::stacking_movement_modifier();
 
   // hardcode 75% from spell desc; not found in spell data
   if ( talent.exuberance.ok() && health_percentage() > 75 )
-    pmm += talent.exuberance->effectN( 1 ).percent();
+    ms += talent.exuberance->effectN( 1 ).percent();
 
-  return pmm;
+  return ms;
 }
 
 double evoker_t::resource_regen_per_second( resource_e resource ) const
@@ -6404,17 +6414,6 @@ void evoker_t::target_mitigation( school_e school, result_amount_type rt, action
   }
 
   player_t::target_mitigation( school, rt, s );
-}
-
-double evoker_t::temporary_movement_modifier() const
-{
-  auto tmm = player_t::temporary_movement_modifier();
-
-  // TODO: confirm hover is a non-stacking temporary movement mod
-  if ( buff.hover->check() )
-    tmm = std::max( tmm, buff.hover->check_value() + buff.tailwind->check_value() );
-
-  return tmm;
 }
 
 // Utility functions ========================================================

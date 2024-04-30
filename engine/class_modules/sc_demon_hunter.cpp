@@ -922,8 +922,7 @@ public:
   double composite_heal_versatility() const override;
   double composite_mitigation_versatility() const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
-  double passive_movement_modifier() const override;
-  double temporary_movement_modifier() const override;
+  double stacking_movement_modifier() const override;
 
   // overridden player_t combat functions
   void assess_damage( school_e, result_amount_type, action_state_t* s ) override;
@@ -8859,16 +8858,17 @@ double demon_hunter_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
-// demon_hunter_t::passive_movement_modifier ================================
+// demon_hunter_t::stacking_movement_modifier ===============================
 
-double demon_hunter_t::passive_movement_modifier() const
+double demon_hunter_t::stacking_movement_modifier() const
 {
-  double ms = player_t::passive_movement_modifier();
+  double ms = player_t::stacking_movement_modifier();
 
   if ( talent.demon_hunter.pursuit->ok() )
   {
     ms += cache.mastery() * talent.demon_hunter.pursuit->effectN( 1 ).mastery_value();
   }
+
   if ( talent.felscarred.pursuit_of_angryness->ok() )
   {
     double current_fury = resources.current[ RESOURCE_FURY ];
@@ -8877,18 +8877,9 @@ double demon_hunter_t::passive_movement_modifier() const
     ms += talent.felscarred.pursuit_of_angryness->effectN( 1 ).percent() * increments;
   }
 
-  return ms;
-}
-
-// demon_hunter_t::temporary_movement_modifier ==============================
-
-double demon_hunter_t::temporary_movement_modifier() const
-{
-  double ms = player_t::temporary_movement_modifier();
-
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
-    ms = std::max( ms, buff.immolation_aura->value() );
+    ms += buff.immolation_aura->value();
   }
 
   return ms;

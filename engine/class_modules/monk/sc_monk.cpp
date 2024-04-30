@@ -3598,7 +3598,7 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
       p()->buff.flying_serpent_kick_movement->trigger(
           1, movement_speed_increase, 1,
           timespan_t::from_seconds( std::min(
-              1.5, p()->current.distance_to_move / ( p()->base_movement_speed * ( 1 + p()->passive_movement_modifier() +
+              1.5, p()->current.distance_to_move / ( p()->base_movement_speed * ( 1 + p()->stacking_movement_modifier() +
                                                                                   movement_speed_increase ) ) ) ) );
       p()->current.moving_away = 0;
     }
@@ -8907,15 +8907,15 @@ double monk_t::composite_base_armor_multiplier() const
 
 // monk_t::temporary_movement_modifier =====================================
 
-double monk_t::temporary_movement_modifier() const
+double monk_t::non_stacking_movement_modifier() const
 {
-  double active = player_t::temporary_movement_modifier();
+  double ms = player_t::non_stacking_movement_modifier();
 
-  active = std::max( buff.chi_torpedo->check_stack_value(), active );
+  ms = std::max( buff.chi_torpedo->check_stack_value(), ms );
 
-  active = std::max( buff.flying_serpent_kick_movement->check_value(), active );
+  ms = std::max( buff.flying_serpent_kick_movement->check_value(), ms );
 
-  return active;
+  return ms;
 }
 
 // monk_t::composite_player_multiplier ==================================
@@ -9934,8 +9934,9 @@ struct monk_module_t : public module_t
 
   void init( player_t *p ) const override
   {
-    p->buffs.windwalking_movement_aura =
-        make_buff( p, "windwalking_movement_aura", p->find_spell( 365080 ) )->add_invalidate( CACHE_RUN_SPEED );
+    p->buffs.windwalking_movement_aura = make_buff( p, "windwalking_movement_aura", p->find_spell( 365080 ) )
+                                             ->add_invalidate( CACHE_RUN_SPEED )
+                                             ->set_default_value_from_effect( A_MOD_SPEED_ALWAYS );
   }
   void combat_begin( sim_t * ) const override
   {

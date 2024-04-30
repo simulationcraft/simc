@@ -3051,24 +3051,20 @@ double paladin_t::composite_parry() const
   return p;
 }
 
-// paladin_t::temporary_movement_modifier =====================================
+// paladin_t::non_stacking_movement_modifier ================================
 
-double paladin_t::temporary_movement_modifier() const
+double paladin_t::non_stacking_movement_modifier() const
 {
-  double temporary = player_t::temporary_movement_modifier();
+  double ms = player_t::non_stacking_movement_modifier();
 
-  // shamelessly stolen from warrior_t - see that module for how to add more buffs
-
-  // These are ordered in the highest speed movement increase to the lowest, there's no reason to check the rest as they
-  // will just be overridden. Also gives correct benefit numbers.
   if ( buffs.divine_steed->up() )
   {
     // TODO: replace with commented version once we have spell data
-    temporary = std::max( buffs.divine_steed->value(), temporary );
-    // temporary = std::max( buffs.divine_steed -> data().effectN( 1 ).percent(), temporary );
+    ms = std::max( buffs.divine_steed->value(), ms );
+    // ms = std::max( buffs.divine_steed -> data().effectN( 1 ).percent(), ms );
   }
 
-  return temporary;
+  return ms;
 }
 
 // paladin_t::invalidate_cache ==============================================

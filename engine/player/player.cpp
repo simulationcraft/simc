@@ -3061,6 +3061,7 @@ void player_t::init_spells()
 
   // Racials
   racials.quickness             = find_racial_spell( "Quickness" );
+  racials.elusiveness           = find_racial_spell( "Elusiveness" );
   racials.command               = find_racial_spell( "Command" );
   racials.arcane_acuity         = find_racial_spell( "Arcane Acuity" );
   racials.heroic_presence       = find_racial_spell( "Heroic Presence" );
@@ -5037,88 +5038,70 @@ double player_t::composite_player_critical_healing_multiplier() const
 }
 
 /**
- * Return the highest-only temporary movement modifier.
- *
- * There are 2 categories of movement speed buffs: Passive and Temporary,
- * both which stack additively. Passive buffs include movement speed enchant, unholy presence, cat form and generally
- * anything that has the ability to be kept active all fight. These permanent buffs do stack with each other.
- * Temporary includes all other speed bonuses, however, only the highest temporary bonus will be added on top.
+ * Return the non-stacking movement modifier Increase Speed% (31).
+ * These speed buffs do not stack with each other and only the highest one will be applied.
  */
-double player_t::temporary_movement_modifier() const
+double player_t::non_stacking_movement_modifier() const
 {
-  double temporary = 0;
+  double speed = 0.0;
 
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
     if ( buffs.stampeding_roar && buffs.stampeding_roar->check() )
-      temporary = std::max( buffs.stampeding_roar->check_value(), temporary );
+      speed = std::max( buffs.stampeding_roar->check_value(), speed );
   }
 
   if ( !is_enemy() && !is_pet() && type != HEALING_ENEMY )
   {
     if ( buffs.darkflight->check() )
-      temporary = std::max( buffs.darkflight->data().effectN( 1 ).percent(), temporary );
+      speed = std::max( buffs.darkflight->data().effectN( 1 ).percent(), speed );
 
     if ( buffs.nitro_boosts && buffs.nitro_boosts->check() )
-      temporary = std::max( buffs.nitro_boosts->data().effectN( 1 ).percent(), temporary );
+      speed = std::max( buffs.nitro_boosts->data().effectN( 1 ).percent(), speed );
 
     if ( buffs.body_and_soul && buffs.body_and_soul->check() )
-      temporary = std::max( buffs.body_and_soul->data().effectN( 1 ).percent(), temporary );
+      speed = std::max( buffs.body_and_soul->data().effectN( 1 ).percent(), speed );
 
     if ( buffs.angelic_feather && buffs.angelic_feather->check() )
-      temporary = std::max( buffs.angelic_feather->data().effectN( 1 ).percent(), temporary );
-
-    if ( buffs.windwalking_movement_aura && buffs.windwalking_movement_aura->check() )
-      temporary = std::max( buffs.windwalking_movement_aura->data().effectN( 1 ).percent(), temporary );
+      speed = std::max( buffs.angelic_feather->data().effectN( 1 ).percent(), speed );
 
     if ( buffs.normalization_increase && buffs.normalization_increase->check() )
-    {
-      temporary = std::max( buffs.normalization_increase->data().effectN( 3 ).percent(), temporary );
-    }
+      speed = std::max( buffs.normalization_increase->data().effectN( 3 ).percent(), speed );
   }
 
-  return temporary;
+  return speed;
 }
 
 /**
- * Return the sum of all passive movement modifier.
- *
- * There are 2 categories of movement speed buffs: Passive and Temporary,
- * both which stack additively. Passive buffs include movement speed enchant, unholy presence, cat form and generally
- * anything that has the ability to be kept active all fight. These permanent buffs do stack with each other.
- * Temporary includes all other speed bonuses, however, only the highest temporary bonus will be added on top.
+ * Return the sum of all stacking movement modifier Increase Movement Speed% (Stacking) (129)
  */
-double player_t::passive_movement_modifier() const
+double player_t::stacking_movement_modifier() const
 {
-  double passive = passive_modifier;
+  double speed = passive_modifier;
 
-  if ( race == RACE_ZANDALARI_TROLL && zandalari_loa == GONK )
-    passive += find_spell( 292362 )->effectN( 1 ).percent();
+  // speed tertiary rating
+  speed += composite_run_speed();
 
-  passive += racials.quickness->effectN( 2 ).percent();
-  passive += composite_run_speed();
+  speed += racials.quickness->effectN( 2 ).percent();
+
+  if ( buffs.windwalking_movement_aura )
+    speed += buffs.windwalking_movement_aura->check_value();
 
   if ( buffs.elemental_chaos_air )
-    passive += buffs.elemental_chaos_air->check_value();
+    speed += buffs.elemental_chaos_air->check_value();
 
-  return passive;
+  return speed;
 }
 
-/**
- * Return the combined (passive+temporary) movement speed.
- *
- * Multiplicative movement modifiers like snares can be applied here. They work similar to temporary speed boosts
- * in that only the highest one counts.
- */
 double player_t::composite_movement_speed() const
 {
   double speed = base_movement_speed;
 
-  double passive = passive_movement_modifier();
+  double non_stacking = non_stacking_movement_modifier();
 
-  double temporary = temporary_movement_modifier();
+  double stacking = stacking_movement_modifier();
 
-  speed *= ( 1 + passive + temporary );
+  speed *= ( 1 + non_stacking + stacking );
 
   return speed;
 }

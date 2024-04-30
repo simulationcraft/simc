@@ -840,7 +840,7 @@ public:
   void create_options() override;
   std::string create_profile( save_e type ) override;
   void invalidate_cache( cache_e ) override;
-  double temporary_movement_modifier() const override;
+  double non_stacking_movement_modifier() const override;
 
   void trigger_tide_of_blood( dot_t* dot );
 
@@ -2850,7 +2850,7 @@ struct charge_t : public warrior_attack_t
   timespan_t calc_charge_time( double distance )
   {
     return timespan_t::from_seconds( distance /
-      ( p()->base_movement_speed * ( 1 + p()->passive_movement_modifier() + movement_speed_increase ) ) );
+      ( p()->base_movement_speed * ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) );
   }
 
   void execute() override
@@ -3802,7 +3802,7 @@ struct heroic_leap_t : public warrior_attack_t
     if ( p()->current.distance_to_move > 0 && !p()->buff.heroic_leap_movement->check() )
     {
       double speed = std::min( p()->current.distance_to_move, base_teleport_distance ) /
-                     ( p()->base_movement_speed * ( 1 + p()->passive_movement_modifier() ) ) /
+                     ( p()->base_movement_speed * ( 1 + p()->stacking_movement_modifier() ) ) /
                      travel_time().total_seconds();
       p()->buff.heroic_leap_movement->trigger( 1, speed, 1, travel_time() );
     }
@@ -3914,7 +3914,7 @@ struct intervene_t : public warrior_attack_t
           1, movement_speed_increase, 1,
           timespan_t::from_seconds(
               p()->current.distance_to_move /
-              ( p()->base_movement_speed * ( 1 + p()->passive_movement_modifier() + movement_speed_increase ) ) ) );
+              ( p()->base_movement_speed * ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) ) );
       p()->current.moving_away = 0;
     }
   }
@@ -5111,7 +5111,7 @@ struct shield_charge_t : public warrior_attack_t
   timespan_t calc_charge_time( double distance )
   {
     return timespan_t::from_seconds( distance /
-      ( p()->base_movement_speed * ( 1 + p()->passive_movement_modifier() + movement_speed_increase ) ) );
+      ( p()->base_movement_speed * ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) );
   }
 
   void execute() override
@@ -8801,39 +8801,39 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
   return player_t::resource_gain( r, a, g, action );
 }
 
-// warrior_t::temporary_movement_modifier ==================================
+// warrior_t::non_stacking_movement_modifier ================================
 
-double warrior_t::temporary_movement_modifier() const
+double warrior_t::non_stacking_movement_modifier() const
 {
-  double temporary = player_t::temporary_movement_modifier();
+  double ms = player_t::non_stacking_movement_modifier();
 
   // These are ordered in the highest speed movement increase to the lowest, there's no reason to check the rest as they
   // will just be overridden. Also gives correct benefit numbers.
   if ( buff.heroic_leap_movement->up() )
   {
-    temporary = std::max( buff.heroic_leap_movement->value(), temporary );
+    ms = std::max( buff.heroic_leap_movement->value(), ms );
   }
   else if ( buff.charge_movement->up() )
   {
-    temporary = std::max( buff.charge_movement->value(), temporary );
+    ms = std::max( buff.charge_movement->value(), ms );
   }
   else if ( buff.intervene_movement->up() )
   {
-    temporary = std::max( buff.intervene_movement->value(), temporary );
+    ms = std::max( buff.intervene_movement->value(), ms );
   }
   else if ( buff.intercept_movement->up() )
   {
-    temporary = std::max( buff.intercept_movement->value(), temporary );
+    ms = std::max( buff.intercept_movement->value(), ms );
   }
   else if ( buff.shield_charge_movement->up() )
   {
-    temporary = std::max( buff.shield_charge_movement->value(), temporary );
+    ms = std::max( buff.shield_charge_movement->value(), ms );
   }
   else if ( buff.bounding_stride->up() )
   {
-    temporary = std::max( buff.bounding_stride->value(), temporary );
+    ms = std::max( buff.bounding_stride->value(), ms );
   }
-  return temporary;
+  return ms;
 }
 
 // warrior_t::invalidate_cache ==============================================

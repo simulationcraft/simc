@@ -1159,8 +1159,8 @@ public:
   double    composite_player_target_crit_chance( player_t* target ) const override;
   double    composite_player_target_armor( player_t* target ) const override;
   double    resource_regen_per_second( resource_e ) const override;
-  double    passive_movement_modifier() const override;
-  double    temporary_movement_modifier() const override;
+  double    non_stacking_movement_modifier() const override;
+  double    stacking_movement_modifier() const override;
   void      apply_affecting_auras( action_t& action ) override;
   void      invalidate_cache( cache_e ) override;
 
@@ -11405,26 +11405,26 @@ double rogue_t::resource_regen_per_second( resource_e r ) const
   return reg;
 }
 
-// rogue_t::temporary_movement_modifier ==================================
+// rogue_t::non_stacking_movement_modifier ==================================
 
-double rogue_t::temporary_movement_modifier() const
+double rogue_t::non_stacking_movement_modifier() const
 {
-  double temporary = player_t::temporary_movement_modifier();
+  double ms = player_t::non_stacking_movement_modifier();
 
   if ( buffs.sprint->up() )
-    temporary = std::max( buffs.sprint->check_value(), temporary );
+    ms = std::max( buffs.sprint->check_value(), ms );
 
   if ( buffs.shadowstep->up() )
-    temporary = std::max( buffs.shadowstep->check_value(), temporary );
+    ms = std::max( buffs.shadowstep->check_value(), ms );
 
-  return temporary;
+  return ms;
 }
 
-// rogue_t::passive_movement_modifier===================================
+// rogue_t::stacking_movement_modifier===================================
 
-double rogue_t::passive_movement_modifier() const
+double rogue_t::stacking_movement_modifier() const
 {
-  double ms = player_t::passive_movement_modifier();
+  double ms = player_t::stacking_movement_modifier();
 
   ms += talent.rogue.fleet_footed->effectN( 1 ).percent();
   ms += spell.fleet_footed->effectN( 1 ).percent(); // DFALPHA: Duplicate passive?

@@ -1010,7 +1010,8 @@ public:
 
   void moving() override;
   void invalidate_cache( cache_e c ) override;
-  double temporary_movement_modifier() const override;
+  double non_stacking_movement_modifier() const override;
+  double stacking_movement_modifier() const override;
   double composite_melee_crit_chance() const override;
   double composite_melee_speed() const override;
   double composite_melee_haste() const override;
@@ -11690,14 +11691,23 @@ double shaman_t::composite_spell_crit_chance() const
   return m;
 }
 
-// shaman_t::temporary_movement_modifier =======================================
+// shaman_t::non_stacking_movement_modifier ========================================
 
-double shaman_t::temporary_movement_modifier() const
+double shaman_t::non_stacking_movement_modifier() const
 {
-  double ms = player_t::temporary_movement_modifier();
+  double ms = player_t::non_stacking_movement_modifier();
 
   if ( buff.spirit_walk->up() )
     ms = std::max( buff.spirit_walk->data().effectN( 1 ).percent(), ms );
+
+  return ms;
+}
+
+// shaman_t::stacking_movement_modifier ============================================
+
+double shaman_t::stacking_movement_modifier() const
+{
+  double ms = player_t::stacking_movement_modifier();
 
   if ( buff.ghost_wolf->up() )
   {

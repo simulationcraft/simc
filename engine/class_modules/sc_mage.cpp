@@ -787,7 +787,7 @@ public:
   double composite_spell_haste() const override;
   double composite_rating_multiplier( rating_e ) const override;
   double matching_gear_multiplier( attribute_e ) const override;
-  double passive_movement_modifier() const override;
+  double stacking_movement_modifier() const override;
   void arise() override;
   void combat_begin() override;
   void copy_from( player_t* ) override;
@@ -7222,13 +7222,13 @@ void mage_t::reset()
   expression_support = expression_support_t();
 }
 
-double mage_t::passive_movement_modifier() const
+double mage_t::stacking_movement_modifier() const
 {
-  double pmm = player_t::passive_movement_modifier();
+  double ms = player_t::stacking_movement_modifier();
 
-  pmm += buffs.chrono_shift->check_value();
+  ms += buffs.chrono_shift->check_value();
 
-  return pmm;
+  return ms;
 }
 
 void mage_t::arise()

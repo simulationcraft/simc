@@ -3585,65 +3585,63 @@ void racial::zandalari_loa( special_effect_t& effect )
   if ( create_fallback_buffs( effect, { "embrace_of_paku" } ) )
     return;
 
-  //only handle the proc loas here.
-  //Gonk is handled in player_t::passive_movement_modifier() when chosen (TODO: Should we add a constant buff for report feedback when Gonk is chosen?)
   if ( effect.player->zandalari_loa == player_t::AKUNDA )
   {
-    //Akunda - Healing Proc (not implemented)
+    // Akunda - Healing Proc (not implemented)
+  }
+  else if ( effect.player->zandalari_loa == player_t::GONK )
+  {
+    effect.player->passive_modifier += effect.player->find_spell( 292362 )->effectN( 1 ).percent();
   }
   else if ( effect.player->zandalari_loa == player_t::BWONSAMDI )
   {
-    //Bwonsamdi - 100% of damage done is returned as healing (healing not implemented)
-    special_effect_t* driver = new special_effect_t(effect.player);
+    // Bwonsamdi - 100% of damage done is returned as healing (healing not implemented)
+    special_effect_t* driver = new special_effect_t( effect.player );
     driver->source = SPECIAL_EFFECT_SOURCE_RACE;
-    unique_gear::initialize_special_effect(*driver, 292360);
-    driver->execute_action = new embrace_of_bwonsamdi_t(effect.player, effect.player->find_spell(292380));
+    unique_gear::initialize_special_effect( *driver, 292360 );
+    driver->execute_action = new embrace_of_bwonsamdi_t( effect.player, effect.player->find_spell( 292380 ) );
 
-    effect.player->special_effects.push_back(driver);
+    effect.player->special_effects.push_back( driver );
 
-    new dbc_proc_callback_t(effect.player, *driver);
+    new dbc_proc_callback_t( effect.player, *driver );
   }
   else if ( effect.player->zandalari_loa == player_t::KIMBUL )
   {
-    //Kimbul - Chance to apply bleed dot, max stack of 3
-    special_effect_t* driver = new special_effect_t(effect.player);
+    // Kimbul - Chance to apply bleed dot, max stack of 3
+    special_effect_t* driver = new special_effect_t( effect.player );
     driver->source = SPECIAL_EFFECT_SOURCE_RACE;
-    unique_gear::initialize_special_effect(*driver, 292363);
-    driver->execute_action = new embrace_of_kimbul_t(effect.player, effect.player->find_spell(292473));
+    unique_gear::initialize_special_effect( *driver, 292363 );
+    driver->execute_action = new embrace_of_kimbul_t( effect.player, effect.player->find_spell( 292473 ) );
 
-    effect.player->special_effects.push_back(driver);
+    effect.player->special_effects.push_back( driver );
 
-    new dbc_proc_callback_t(effect.player, *driver);
+    new dbc_proc_callback_t( effect.player, *driver );
   }
   else if ( effect.player->zandalari_loa == player_t::KRAGWA )
   {
-    //Kragwa - Grants health and armor (not implemented)
+    // Kragwa - Grants health and armor (not implemented)
   }
   else if ( effect.player->zandalari_loa == player_t::PAKU )
   {
-    special_effect_t* driver = new special_effect_t(effect.player);
+    special_effect_t* driver = new special_effect_t( effect.player );
     driver->source = SPECIAL_EFFECT_SOURCE_RACE;
-    unique_gear::initialize_special_effect(*driver, 292361); //Permanent buff spell id, contains proc data
+    unique_gear::initialize_special_effect( *driver, 292361 );  // Permanent buff spell id, contains proc data
 
-    //Paku - Grants crit chance
-    buff_t* paku = buff_t::find(effect.player, "embrace_of_paku");
-    if (paku == nullptr)
+    // Paku - Grants crit chance
+    buff_t* paku = buff_t::find( effect.player, "embrace_of_paku" );
+    if ( paku == nullptr )
     {
-      //Buff spell data contains duration and amount
-      paku = make_buff( effect.player, "embrace_of_paku", effect.player->find_spell(292463) )
-        ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+      // Buff spell data contains duration and amount
+      paku = make_buff( effect.player, "embrace_of_paku", effect.player->find_spell( 292463 ) )
+                 ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
     }
 
     driver->custom_buff = paku;
 
-    effect.player->special_effects.push_back(driver);
+    effect.player->special_effects.push_back( driver );
 
-    new dbc_proc_callback_t(driver->player, *driver);
-  }
-  else
-  {
-    //Gonk so do nothing. Maybe want to add constant buff later?
+    new dbc_proc_callback_t( driver->player, *driver );
   }
 }
 
