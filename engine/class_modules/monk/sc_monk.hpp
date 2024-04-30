@@ -173,7 +173,7 @@ struct monk_heal_t : public monk_action_t<heal_t>
 
 struct monk_absorb_t : public monk_action_t<absorb_t>
 {
-  monk_absorb_t( std::string_view name, monk_t &player, const spell_data_t *s = spell_data_t::nil() );
+  monk_absorb_t( std::string_view name, monk_t &player, const spell_data_t *spell = spell_data_t::nil() );
   // TODO: FIX TO USE * INSTEAD OF & FOR CONSISTENCY
 };
 
@@ -277,9 +277,9 @@ struct stagger_t
     MAX_STAGGER      = -1
   };
 
-  struct stagger_buff_t : public actions::monk_buff_t
+  struct debuff_t : public actions::monk_buff_t
   {
-    stagger_buff_t( monk_t &player, std::string_view name, const spell_data_t* spell );
+    debuff_t( monk_t &player, std::string_view name, const spell_data_t* spell );
   };
 
   struct training_of_niuzao_t : public actions::monk_buff_t
@@ -306,7 +306,7 @@ struct stagger_t
     std::string name;
     std::string name_pretty;
     const spell_data_t* spell_data;
-    propagate_const<stagger_buff_t *> debuff;
+    propagate_const<stagger_t::debuff_t *> debuff;
     sample_data_helper_t *absorbed;
     sample_data_helper_t *taken;
     sample_data_helper_t *mitigated;
@@ -373,10 +373,10 @@ struct stagger_t
   void delay_tick( timespan_t delay );
 };
 
-struct monk_t : public player_t
+struct monk_t : public parse_player_effects_t<monk_td_t>
 {
 public:
-  using base_t = player_t;
+  using base_t = parse_player_effects_t<monk_td_t>;
 
   // Active
   action_t *windwalking_aura;

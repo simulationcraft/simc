@@ -3075,7 +3075,7 @@ struct auto_attack_t : public monk_melee_attack_t
       return false;
 
     return ( p()->main_hand_attack->execute_event == nullptr ||
-             p()->off_hand_attack && p()->off_hand_attack->execute_event == nullptr );  // not swinging
+             ( p()->off_hand_attack && p()->off_hand_attack->execute_event == nullptr ) );  // not swinging
   }
 
   void execute() override
@@ -3597,9 +3597,10 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
     {
       p()->buff.flying_serpent_kick_movement->trigger(
           1, movement_speed_increase, 1,
-          timespan_t::from_seconds( std::min(
-              1.5, p()->current.distance_to_move / ( p()->base_movement_speed * ( 1 + p()->stacking_movement_modifier() +
-                                                                                  movement_speed_increase ) ) ) ) );
+          timespan_t::from_seconds(
+              std::min( 1.5, p()->current.distance_to_move /
+                                 ( p()->base_movement_speed *
+                                   ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) ) ) );
       p()->current.moving_away = 0;
     }
 
@@ -6626,7 +6627,7 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
 }
 
 monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
-  : player_t( sim, MONK, name, r ),
+  : base_t( sim, MONK, name, r ),
     active_actions(),
     passive_actions(),
     squirm_timer( 0 ),
@@ -9947,8 +9948,8 @@ struct monk_module_t : public module_t
 };
 
 // stagger_t implementation
-// stagger_t::stagger_buff_t
-stagger_t::stagger_buff_t::stagger_buff_t( monk_t &player, std::string_view name, const spell_data_t *spell )
+// stagger_t::debuff_t
+stagger_t::debuff_t::debuff_t( monk_t &player, std::string_view name, const spell_data_t *spell )
   : actions::monk_buff_t( player, name, spell )
 {
   // duration is controlled by stagger_t::self_damage_t
@@ -10047,7 +10048,7 @@ stagger_t::stagger_level_t::stagger_level_t( stagger_level_e level, monk_t *play
   absorbed  = player->get_sample_data( "Stagger added to pool while at " + name_pretty );
   taken     = player->get_sample_data( "Stagger damage taken from " + name_pretty );
   mitigated = player->get_sample_data( "Stagger damage mitigated while at " + name_pretty );
-  debuff    = make_buff<stagger_t::stagger_buff_t>( *player, name, spell_data );
+  debuff    = make_buff<stagger_t::debuff_t>( *player, name, spell_data );
 }
 
 double stagger_t::stagger_level_t::min_threshold( stagger_level_e level )
