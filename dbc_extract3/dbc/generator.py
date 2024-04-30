@@ -2348,6 +2348,7 @@ class SpellDataGenerator(DataGenerator):
           ( 336640, 2 ), # Charred Flesh
           ( 203981, 2 ), # Soul Fragments
           ( 409877, 2 ), # T30 4pc Recrimination buff
+          ( 428595, 2 ), # Illuminated Sigils
 
           # Aldrachi Reaver
           ( 442294, 0 ), # Reaver's Glaive

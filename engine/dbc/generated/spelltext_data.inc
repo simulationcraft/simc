@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54361
-static const std::array<spelltext_data_t, 22430> __spelltext_data { {
+static const std::array<spelltext_data_t, 22431> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20671,6 +20671,7 @@ static const std::array<spelltext_data_t, 22430> __spelltext_data { {
   { 428544, "Your treants cast Moonfire on nearby targets about once every $s1 sec.", 0, 0 },
   { 428545, "$@spelldesc428544", 0, 0 },
   { 428557, "Sigil skills have $s2 additional $lcharge:charges;.\r\n\r\nYou have $s6% increased chance to parry attacks from enemies afflicted by your Sigil of Flame.", 0, 0 },
+  { 428595, "$@spelldesc428557", 0, 0 },
   { 428603, "Sigil of Flame's initial damage is increased by $s2%.\r\n\r\nMultiple applications of Sigil of Flame may overlap.", 0, 0 },
   { 428607, "When you parry an attack or have one of your attacks parried, restore $428608s2% of max health and $428608s1 Fury. \r\n\r\nThis effect may only occur once every $s1 sec.", 0, 0 },
   { 428608, "$@spelldesc428607", 0, 0 },
