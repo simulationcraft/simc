@@ -144,8 +144,14 @@ public:
   U& add_parse_entry( std::vector<U>& vec )
   { return vec.emplace_back(); }
 
+  // detectors for is_detected<>
   template <typename T> using detect_buff = decltype( T::buff );
+  template <typename T> using detect_func = decltype( T::func );
+  template <typename T> using detect_use_stacks = decltype( T::use_stacks );
+  template <typename T> using detect_type = decltype( T::type );
+  template <typename T> using detect_value = decltype( T::value );
 
+  // handle first argument to parse_effects(), set buff if necessary and return spell_data_t*
   template <typename T, typename U>
   const spell_data_t* resolve_parse_data( T data, pack_t<U>& tmp )
   {
@@ -170,8 +176,13 @@ public:
     }
   }
 
+  // returns the value of the effect. overload if different value access method is needed for other spell_data_t*
+  // castable types, such as conduits
   double mod_spell_effects_value( const spell_data_t*, const spelleffect_data_t& e ) { return e.base_value(); }
 
+  // adjust value based on effect modifying effects from mod list.
+  // currently supports P_EFFECT_1-5 and A_PROC_TRIGGER_SPELL_WITH_VALUE
+  // TODO: add support for P_EFFECTS to modify all effects
   template <typename T>
   void apply_affecting_mod( double& val, bool& mastery, const spell_data_t* base, size_t idx, T mod )
   {
@@ -219,11 +230,13 @@ public:
       apply_affecting_mod( val, mastery, base, idx, tmp.list[ j ] );
   }
 
-  template <typename T> using detect_func = decltype( T::func );
-  template <typename T> using detect_use_stacks = decltype( T::use_stacks );
-  template <typename T> using detect_type = decltype( T::type );
-  template <typename T> using detect_value = decltype( T::value );
-
+  // populate pack with optional arguments to parse_effects().
+  // parsing order of precedence is:
+  // 1) spell_data_t* added to list of spells to check for effect modifying effects
+  // 2) bool F() functor to set condition for effect to apply.
+  // 3) parse flags such as IGNORE_STACKS, USE_DEFAULT, USE_CURRENT
+  // 4) floating point value to directly set the effect value and override all parsing
+  // 5) integral bitmask to ignore effect# n corresponding to the n'th bit
   template <typename U, typename T>
   void parse_spell_effect_mod( pack_t<U>& tmp, T mod )
   {
@@ -269,6 +282,115 @@ public:
     ( parse_spell_effect_mod( tmp, mods ), ... );
   }
 
+  // main effect parsing function with constexpr checks to handle player_effect_t vs target_effect_t
+  template <typename U>
+  void parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, size_t i, bool force )
+  {
+    const auto& eff = s_data->effectN( i );
+    bool mastery = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
+    double val = 0.0;
+    double val_mul = 0.01;
+
+    if ( mastery )
+      val = eff.mastery_value();
+    else
+      val = eff.base_value();
+
+    if constexpr ( is_detected<detect_buff, U>::value && is_detected<detect_type, U>::value )
+    {
+      if ( tmp.data.buff && tmp.data.type == USE_DEFAULT )
+        val = tmp.data.buff->default_value * 100;
+
+      if ( !is_valid_aura( eff ) )
+        return;
+    }
+    else
+    {
+      if ( !is_valid_target_aura( eff ) )
+        return;
+    }
+
+    if ( tmp.data.value != 0.0 )
+    {
+      val = tmp.data.value;
+      val_mul = 1.0;
+      mastery = false;
+    }
+    else
+    {
+      apply_affecting_mods( tmp, val, mastery, s_data, i );
+
+      if ( mastery )
+        val_mul = 1.0;
+    }
+
+    if constexpr ( is_detected<detect_type, U>::value )
+    {
+      if ( !val && tmp.data.type == parse_flag_e::USE_DATA )
+        return;
+    }
+    else
+    {
+      if ( !val )
+        return;
+    }
+
+    std::string type_str;
+    bool flat = false;
+    std::vector<U>* vec;
+
+    // NOTE: get_target_effect_vector is virtual and not templated, which means:
+    // 1) only opt_enum reference is passed instead of the full data reference
+    // 2) void* is returned and needs to be re-cast to the correct vector<U>*
+    if constexpr ( is_detected<detect_buff, U>::value )
+    {
+      vec = get_effect_vector( eff, tmp.data, val_mul, type_str, flat, force );
+    }
+    else
+    {
+      vec = static_cast<std::vector<U>*>(
+          get_target_effect_vector( eff, tmp.data.opt_enum, val_mul, type_str, flat, force ) );
+    }
+
+    if ( !vec )
+      return;
+
+    val *= val_mul;
+
+    std::string val_str = mastery ? fmt::format( "{}*mastery", val * 100 )
+                          : flat  ? fmt::format( "{}", val )
+                                  : fmt::format( "{}%", val * ( 1 / val_mul ) );
+
+    if ( tmp.data.value != 0.0 )
+    {
+      val_str = val_str + " (overridden)";
+    }
+    else
+    {
+      if constexpr ( is_detected<detect_buff, U>::value )
+      {
+        if ( tmp.data.buff )
+        {
+          if ( tmp.data.type == parse_flag_e::USE_CURRENT )
+            val_str = flat ? "current value" : "current value percent";
+          else if ( tmp.data.type == parse_flag_e::USE_DEFAULT )
+            val_str = val_str + " (default value)";
+        }
+
+        debug_message( tmp.data, type_str, val_str, mastery, s_data, i );
+      }
+      else
+      {
+        target_debug_message( type_str, val_str, s_data, i );
+      }
+    }
+
+    tmp.data.value = val;
+    tmp.data.mastery = mastery;
+    tmp.data.eff = &eff;
+    vec->push_back( tmp.data );
+  }
+
   // Syntax: parse_effects( data[, spells|condition|ignore_mask|value|flags][,...] )
   //   (buff_t*) or
   //   (const spell_data_t*)   data: Buff or spell to be checked for to see if effect applies. If buff is used, effect
@@ -296,74 +418,6 @@ public:
   //
   // Example 4: Parse buff3, only apply if my_player_t::check2() and my_player_t::check3() returns true:
   //   parse_effects( buff3, [ this ] { return p()->check2() && p()->check3(); } );
-  void parse_effect( pack_t<player_effect_t>& tmp, const spell_data_t* s_data, size_t i, bool force )
-  {
-    const auto& eff = s_data->effectN( i );
-    bool mastery = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
-    double val = 0.0;
-    double val_mul = 0.01;
-
-    if ( tmp.data.buff && tmp.data.type == USE_DEFAULT )
-      val = tmp.data.buff->default_value * 100;
-    else if ( mastery )
-      val = eff.mastery_value();
-    else
-      val = eff.base_value();
-
-    if ( !is_valid_aura( eff ) )
-      return;
-
-    if ( tmp.data.value != 0.0 )
-    {
-      val = tmp.data.value;
-      val_mul = 1.0;
-      mastery = false;
-    }
-    else
-    {
-      apply_affecting_mods( tmp, val, mastery, s_data, i );
-
-      if ( mastery )
-        val_mul = 1.0;
-    }
-
-    if ( !val && tmp.data.type == parse_flag_e::USE_DATA )
-      return;
-
-    std::string type_str;
-    bool flat = false;
-
-    auto vec = get_effect_vector( eff, tmp.data, val_mul, type_str, flat, force );
-
-    if ( !vec )
-      return;
-
-    val *= val_mul;
-
-    std::string val_str = mastery ? fmt::format( "{}*mastery", val * 100 )
-                          : flat  ? fmt::format( "{}", val )
-                                  : fmt::format( "{}%", val * ( 1 / val_mul ) );
-
-    if ( tmp.data.value != 0.0 )
-    {
-      val_str = val_str + " (overridden)";
-    }
-    else if ( tmp.data.buff )
-    {
-      if ( tmp.data.type == parse_flag_e::USE_CURRENT )
-        val_str = flat ? "current value" : "current value percent";
-      else if ( tmp.data.type == parse_flag_e::USE_DEFAULT )
-        val_str = val_str + " (default value)";
-    }
-
-    debug_message( tmp.data, type_str, val_str, mastery, s_data, i );
-
-    tmp.data.value = val;
-    tmp.data.mastery = mastery;
-    tmp.data.eff = &eff;
-    vec->push_back( tmp.data );
-  }
-
   virtual bool is_valid_aura( const spelleffect_data_t& eff ) const { return false; }
 
   virtual std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data,
@@ -418,8 +472,7 @@ public:
     parse_effect( pack, spell, idx, true );
   }
 
-  template <typename U>
-  double get_effect_value( const U& i, bool benefit = false ) const
+  double get_effect_value( const player_effect_t& i, bool benefit = false ) const
   {
     if ( i.func && !i.func() )
       return 0.0;
@@ -453,66 +506,6 @@ public:
   // The following optional arguments can be used in any order:
   //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the debuff
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
-  template <typename TD>
-  void parse_target_effect( pack_t<target_effect_t<TD>>& tmp, const spell_data_t* s_data, size_t i, bool force )
-  {
-    const auto& eff = s_data->effectN( i );
-    bool mastery = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
-    double val = 0.0;
-    double val_mul = 0.01;
-
-    if ( mastery )
-      val = eff.mastery_value();
-    else
-      val = eff.base_value();
-
-    if ( !is_valid_target_aura( eff ) )
-      return;
-
-    if ( tmp.data.value != 0.0 )
-    {
-      val = tmp.data.value;
-      val_mul = 1.0;
-      mastery = false;
-    }
-    else
-    {
-      apply_affecting_mods( tmp, val, mastery, s_data, i );
-
-      if ( mastery )
-        val_mul = 1.0;
-    }
-
-    if ( !val )
-      return;
-
-    std::string type_str;
-    bool flat = false;
-
-    // Cast with TD parameter passed from wrappers to _parse_target_effects & _force_target_effect
-    auto vec = static_cast<std::vector<target_effect_t<TD>>*>(
-        get_target_effect_vector( eff, tmp.data.opt_enum, val_mul, type_str, flat, force ) );
-
-    if ( !vec )
-      return;
-
-    val *= val_mul;
-
-    std::string val_str = mastery ? fmt::format( "{}*mastery", val * 100 )
-                          : flat  ? fmt::format( "{}", val )
-                                  : fmt::format( "{}%", val * 100 );
-
-    if ( tmp.data.value != 0.0 )
-      val_str = val_str + " (overridden)";
-
-    target_debug_message( type_str, val_str, s_data, i );
-
-    tmp.data.value = val;
-    tmp.data.mastery = mastery;
-    tmp.data.eff = &eff;
-    vec->push_back( tmp.data );
-  }
-
   virtual bool is_valid_target_aura( const spelleffect_data_t& eff ) const { return false; }
 
   // Return void* as parse_effect_t is not templated and we don't know what TD is
@@ -544,7 +537,7 @@ public:
       // local copy of pack per effect
       pack_t<target_effect_t<TD>> tmp = pack;
 
-      parse_target_effect( tmp, spell, i, false );
+      parse_effect( tmp, spell, i, false );
     }
   }
 
@@ -568,7 +561,7 @@ public:
     // parse mods and populate pack
     parse_spell_effect_mods( pack, mods... );
 
-    parse_target_effect( pack, spell, idx, true );
+    parse_effect( pack, spell, idx, true );
   }
 
   template <typename U, typename TD>
@@ -840,7 +833,7 @@ public:
     return tm;
   }
 
-  void invalidate_cache( cache_e c )
+  void invalidate_cache( cache_e c ) override
   {
     player_t::invalidate_cache( c );
 
@@ -1415,7 +1408,7 @@ public:
   }
 
   virtual void* get_target_effect_vector( const spelleffect_data_t& eff, uint32_t& opt_enum, double& val_mul,
-                                          std::string& str, bool& flat, bool force )
+                                          std::string& str, bool& flat, bool force ) override
   {
     if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER )
     {
