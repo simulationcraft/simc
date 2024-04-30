@@ -5036,7 +5036,6 @@ struct apocalyptic_conquest_buff_t final : public buff_t
     : buff_t( p, "apocalyptic_conquest", p->pet_spell.apocalyptic_conquest ), player( p ), nazgrims_conquest( 0 )
   {
     set_default_value( p->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() );
-    add_invalidate( CACHE_STRENGTH );
   }
 
   // Override the value of the buff to properly capture Apocalyptic Conquest's strength buff behavior
@@ -5198,7 +5197,6 @@ struct essence_of_the_blood_queen_buff_t final : public buff_t
     : buff_t( p, "essence_of_the_blood_queen", p->spell.essence_of_the_blood_queen_buff ), player( p )
   {
     set_default_value( p->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 );
-    add_invalidate( CACHE_HASTE );
     apply_affecting_aura( p->talent.sanlayn.frenzied_bloodthirst );
   }
 
@@ -6666,7 +6664,6 @@ struct blood_shield_buff_t final : public absorb_buff_t
     set_absorb_school( SCHOOL_PHYSICAL );
     set_absorb_source( player->get_stats( "blood_shield" ) );
     modify_duration( player->talent.blood.iron_heart->effectN( 1 ).time_value() );
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
 
@@ -8155,7 +8152,6 @@ struct pillar_of_frost_buff_t final : public buff_t
   {
     cooldown->duration = 0_ms;  // Controlled by the action
     set_default_value( p->talent.frost.pillar_of_frost->effectN( 1 ).percent() );
-    add_invalidate( CACHE_STRENGTH );
   }
 
   // Override the value of the buff to properly capture Pillar of Frost's strength buff behavior
@@ -9454,11 +9450,6 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
 
   p->buffs.stoneskin_gargoyle = make_buff( p, "stoneskin_gargoyle", effect.driver() )
                                     ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-                                    ->add_invalidate( CACHE_STRENGTH )
-                                    ->add_invalidate( CACHE_STAMINA )
-                                    // Stoneskin Gargoyle increases all primary stats, even the irrelevant ones
-                                    ->add_invalidate( CACHE_AGILITY )
-                                    ->add_invalidate( CACHE_INTELLECT )
                                     ->apply_affecting_aura( p->talent.unholy_bond );
 
   // Change the player's base armor multiplier
@@ -11671,18 +11662,15 @@ void death_knight_t::create_buffs()
 
   buffs.rune_mastery = make_buff( this, "rune_mastery", spell.rune_mastery_buff )
                            ->set_chance( 0.15 )  // This was found through testing 2022 July 21.  Not in spelldata.
-                           ->set_default_value( talent.rune_mastery->effectN( 1 ).percent() )
-                           ->add_invalidate( CACHE_STRENGTH );
+                           ->set_default_value( talent.rune_mastery->effectN( 1 ).percent() );
 
   buffs.unholy_strength = make_buff( this, "unholy_strength", spell.unholy_strength_buff )
                               ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-                              ->add_invalidate( CACHE_STRENGTH )
                               ->apply_affecting_aura( talent.unholy_bond );
 
   buffs.unholy_ground = make_buff( this, "unholy_ground", spell.unholy_ground_buff )
                             ->set_default_value_from_effect( 1 )
-                            ->set_duration( 0_ms )  // Handled by trigger_dnd_buffs() & expire_dnd_buffs()
-                            ->add_invalidate( CACHE_HASTE );
+                            ->set_duration( 0_ms );  // Handled by trigger_dnd_buffs() & expire_dnd_buffs()
 
   buffs.rune_of_hysteria = make_buff( this, "rune_of_hysteria", spell.rune_of_hysteria_buff )
                                ->set_default_value_from_effect( 1 )
@@ -11696,7 +11684,6 @@ void death_knight_t::create_buffs()
           ->set_cooldown( 0_ms )
           ->set_period( spell.empower_rune_weapon_main->effectN( 1 ).period() )
           ->set_default_value_from_effect( 3 )
-          ->add_invalidate( CACHE_HASTE )
           ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
           ->set_tick_behavior( buff_tick_behavior::REFRESH )
           ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
@@ -11706,7 +11693,6 @@ void death_knight_t::create_buffs()
           } );
 
   buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons->effectN( 1 ).trigger() )
-                         ->add_invalidate( CACHE_ATTACK_SPEED )
                          ->set_default_value( talent.icy_talons->effectN( 1 ).percent() )
                          ->set_cooldown( talent.icy_talons->internal_cooldown() )
                          ->set_trigger_spell( talent.icy_talons );
@@ -11733,8 +11719,7 @@ void death_knight_t::create_buffs()
 
   buffs.gift_of_the_sanlayn =
       make_buff( this, "gift_of_the_sanlayn", spell.gift_of_the_sanlayn_buff )->set_duration( 0_ms )
-          ->set_default_value_from_effect( specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 )
-          ->add_invalidate( CACHE_HASTE );
+          ->set_default_value_from_effect( specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 );
 
   buffs.vampiric_strike = make_buff( this, "vampiric_strike", spell.vampiric_strike_buff );
 
@@ -11745,7 +11730,6 @@ void death_knight_t::create_buffs()
 
     buffs.bone_shield =
         make_buff( this, "bone_shield", spell.bone_shield )
-            ->add_invalidate( CACHE_HASTE )
             ->set_stack_change_callback( [ this ]( buff_t*, int old_stacks, int new_stacks ) {
               if ( talent.blood.foul_bulwark.ok() )  // Change player's max health if FB is talented
               {
@@ -11787,8 +11771,7 @@ void death_knight_t::create_buffs()
     buffs.dancing_rune_weapon = make_buff( this, "dancing_rune_weapon", spell.dancing_rune_weapon_buff )
                                     ->set_cooldown( 0_ms )
                                     ->set_duration( 0_ms )
-                                    ->set_default_value_from_effect_type( A_MOD_PARRY_PERCENT )
-                                    ->add_invalidate( CACHE_PARRY );
+                                    ->set_default_value_from_effect_type( A_MOD_PARRY_PERCENT );
 
     buffs.heartrend = make_buff( this, "heartrend", spell.heartrend_buff )
                           ->set_default_value( talent.blood.heartrend->effectN( 1 ).percent() )
@@ -11801,8 +11784,7 @@ void death_knight_t::create_buffs()
 
     buffs.perseverance_of_the_ebon_blade =
         make_buff( this, "perseverance_of_the_ebon_blade", spell.preserverence_of_the_ebon_blade_buff )
-            ->set_default_value( talent.blood.perseverance_of_the_ebon_blade->effectN( 1 ).percent() )
-            ->add_invalidate( CACHE_VERSATILITY );
+            ->set_default_value( talent.blood.perseverance_of_the_ebon_blade->effectN( 1 ).percent() );
 
     buffs.rune_tap =
         make_buff( this, "rune_tap", talent.blood.rune_tap )->set_cooldown( 0_ms );  // Handled by the action
@@ -11855,8 +11837,7 @@ void death_knight_t::create_buffs()
             } );
 
     buffs.voracious = make_buff( this, "voracious", spell.voracious_buff )
-                          ->set_trigger_spell( talent.blood.voracious )
-                          ->add_invalidate( CACHE_LEECH );
+                          ->set_trigger_spell( talent.blood.voracious );
   }
 
   // Frost
@@ -11897,28 +11878,23 @@ void death_knight_t::create_buffs()
 
     buffs.bonegrinder_crit = make_buff( this, "bonegrinder_crit", spell.bonegrinder_crit_buff )
                                  ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-                                 ->add_invalidate( CACHE_CRIT_CHANCE )
                                  ->set_cooldown( talent.frost.bonegrinder->internal_cooldown() );
 
     buffs.bonegrinder_frost = make_buff( this, "bonegrinder_frost", spell.bonegrinder_frost_buff )
                                   ->set_default_value( talent.frost.bonegrinder->effectN( 1 ).percent() )
-                                  ->set_schools_from_effect( 1 )
-                                  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                                  ->set_schools_from_effect( 1 );
 
     buffs.enduring_strength_builder =
         make_buff( this, "enduring_strength_builder", talent.frost.enduring_strength->effectN( 1 ).trigger() );
 
     buffs.enduring_strength = make_buff( this, "enduring_strength", spell.enduring_strength_buff )
-                                  ->add_invalidate( CACHE_STRENGTH )
                                   ->set_default_value( talent.frost.enduring_strength->effectN( 3 ).percent() );
 
     buffs.frostwhelps_aid = make_buff( this, "frostwhelps_aid", spell.frostwhelps_aid_buff )
-                                ->add_invalidate( CACHE_MASTERY )
                                 ->set_default_value( talent.frost.frostwhelps_aid->effectN( 3 ).base_value() );
 
     buffs.unleashed_frenzy =
         make_buff( this, "unleashed_frenzy", talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
-            ->add_invalidate( CACHE_STRENGTH )
             ->set_cooldown( talent.frost.unleashed_frenzy->internal_cooldown() )
             ->set_default_value( talent.frost.unleashed_frenzy->effectN( 1 ).percent() );
   }
@@ -11945,8 +11921,6 @@ void death_knight_t::create_buffs()
 
     buffs.ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", spell.ghoulish_frenzy_player )
                                 ->set_default_value( spell.ghoulish_frenzy_player->effectN( 1 ).percent() )
-                                ->add_invalidate( CACHE_ATTACK_SPEED )
-                                ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                 ->apply_affecting_aura( talent.unholy.ghoulish_frenzy );
 
     buffs.plaguebringer = make_buff( this, "plaguebringer", spell.plaguebringer_buff )
@@ -11955,14 +11929,13 @@ void death_knight_t::create_buffs()
                               ->set_max_stack( 1 );
 
     buffs.festermight = make_buff( this, "festermight", spell.festermight_buff )
-                            ->add_invalidate( CACHE_STRENGTH )
                             ->set_default_value( talent.unholy.festermight->effectN( 1 ).percent() )
                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
     buffs.commander_of_the_dead = make_buff( this, "commander_of_the_dead", spell.commander_of_the_dead );
 
     buffs.defile_buff = make_buff( this, "defile", spell.defile_buff )
-                            ->add_invalidate( CACHE_MASTERY )
+                            ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
                             ->set_default_value( spell.defile_buff->effectN( 1 ).base_value() / 1.8 );
   }
 }
@@ -12576,7 +12549,6 @@ void death_knight_t::parse_player_effects()
   parse_effects( buffs.unholy_assault, talent.unholy.unholy_assault );
   parse_effects( buffs.ghoulish_frenzy, talent.unholy.ghoulish_frenzy );
   parse_effects( buffs.festermight, talent.unholy.festermight );
-  parse_effects( buffs.defile_buff, USE_CURRENT, talent.unholy.defile );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::unholy_aura ), spell.unholy_aura_debuff, talent.unholy.unholy_aura );
   parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), spell.virulent_plague, talent.unholy.morbidity );
   parse_target_effects( d_fn( &death_knight_td_t::dots_t::frost_fever ), spell.frost_fever, talent.unholy.morbidity );
