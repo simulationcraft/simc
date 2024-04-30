@@ -251,6 +251,7 @@ public:
     // Fel-scarred
     buff_t* monster_rising;
     buff_t* student_of_suffering;
+    damage_buff_t* enduring_torment;
 
     // Set Bonuses
     damage_buff_t* t29_havoc_4pc;
@@ -469,15 +470,15 @@ public:
     {
       player_talent_t demonsurge;  // NYI
 
-      player_talent_t wave_of_debilitation;   // NYI
+      player_talent_t wave_of_debilitation;  // NYI
       player_talent_t pursuit_of_angryness;
-      player_talent_t focused_hatred;         // NYI
-      player_talent_t set_fire_to_the_pain;   // NYI
+      player_talent_t focused_hatred;        // NYI
+      player_talent_t set_fire_to_the_pain;  // NYI
       player_talent_t improved_soul_rending;
 
       player_talent_t burning_blades;
       player_talent_t violent_transformation;
-      player_talent_t enduring_torment;        // NYI
+      player_talent_t enduring_torment;  // NYI for Vengeance
 
       player_talent_t untethered_fury;
       player_talent_t student_of_suffering;
@@ -629,8 +630,9 @@ public:
 
     // Fel-scarred
     const spell_data_t* burning_blades_debuff;
-    const spell_data_t* student_of_suffering_buff;
+    const spell_data_t* enduring_torment_buff;
     const spell_data_t* monster_rising_buff;
+    const spell_data_t* student_of_suffering_buff;
   } hero_spec;
 
   // Set Bonus effects
@@ -1694,6 +1696,7 @@ public:
     register_damage_buff( p()->buff.t31_vengeance_2pc );
     register_damage_buff( p()->buff.glaive_flurry );
     register_damage_buff( p()->buff.rending_strike );
+    register_damage_buff( p()->buff.enduring_torment );
 
     if ( track_cd_waste )
     {
@@ -3724,7 +3727,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
         p()->cooldown.blade_dance->reset( false );
       }
 
-      if ( p()->talent.felscarred.violent_transformation->ok())
+      if ( p()->talent.felscarred.violent_transformation->ok() )
       {
         p()->cooldown.immolation_aura->reset( false );
         p()->cooldown.sigil_of_flame->reset( false );
@@ -3743,7 +3746,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
     {
       p()->buff.metamorphosis->trigger();
 
-      if ( p()->talent.felscarred.violent_transformation->ok())
+      if ( p()->talent.felscarred.violent_transformation->ok() )
       {
         p()->cooldown.fel_devastation->reset( false );
         p()->cooldown.sigil_of_flame->reset( false );
@@ -6647,6 +6650,10 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       p()->buff.monster_rising->expire();
     }
+    if ( p()->talent.felscarred.enduring_torment->ok() )
+    {
+      p()->buff.enduring_torment->expire();
+    }
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -6668,6 +6675,10 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     if ( p()->talent.felscarred.monster_rising->ok() )
     {
       p()->buff.monster_rising->trigger();
+    }
+    if ( p()->talent.felscarred.enduring_torment->ok() )
+    {
+      p()->buff.enduring_torment->trigger();
     }
   }
 };
@@ -6903,14 +6914,14 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
                                 ->set_default_value( p.talent.havoc.serrated_glaive->effectN( 1 ).percent() );
 }
 
-void demon_hunter_td_t::trigger_burning_blades(action_state_t* state)
+void demon_hunter_td_t::trigger_burning_blades( action_state_t* state )
 {
   demon_hunter_t* p = static_cast<demon_hunter_t*>( source );
 
-  if (!p->talent.felscarred.burning_blades->ok())
+  if ( !p->talent.felscarred.burning_blades->ok() )
     return;
 
-  if (!action_t::result_is_hit( state->result ))
+  if ( !action_t::result_is_hit( state->result ) )
     return;
 
   const double dot_damage = state->result_amount * p->talent.felscarred.burning_blades->effectN( 1 ).percent();
@@ -7223,11 +7234,17 @@ void demon_hunter_t::create_buffs()
 
   // Fel-scarred ============================================================
 
+  buff.enduring_torment = make_buff<damage_buff_t>( this, "enduring_torment", hero_spec.enduring_torment_buff );
+  buff.enduring_torment->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )->set_allow_precombat( true );
+  if ( specialization() == DEMON_HUNTER_HAVOC )
+  {
+    buff.enduring_torment->set_default_value_from_effect_type( A_HASTE_ALL )->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  }
   buff.monster_rising = make_buff( this, "monster_rising", hero_spec.monster_rising_buff )
-      ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
-      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-      ->set_allow_precombat( true )
-      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+                            ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
+                            ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+                            ->set_allow_precombat( true )
+                            ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buff.student_of_suffering =
       make_buff( this, "student_of_suffering", hero_spec.student_of_suffering_buff )
           ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
@@ -8121,7 +8138,10 @@ void demon_hunter_t::init_spells()
       talent.felscarred.burning_blades->ok() ? find_spell( 453177 ) : spell_data_t::not_found();
   hero_spec.student_of_suffering_buff =
       talent.felscarred.student_of_suffering->ok() ? find_spell( 453239 ) : spell_data_t::not_found();
-  hero_spec.monster_rising_buff = talent.felscarred.monster_rising->ok() ? find_spell( 452550 ) : spell_data_t::not_found();
+  hero_spec.monster_rising_buff =
+      talent.felscarred.monster_rising->ok() ? find_spell( 452550 ) : spell_data_t::not_found();
+  hero_spec.enduring_torment_buff =
+      talent.felscarred.enduring_torment->ok() ? find_spell( 453314 ) : spell_data_t::not_found();
 
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };
@@ -8969,6 +8989,10 @@ void demon_hunter_t::combat_begin()
   if ( talent.felscarred.monster_rising->ok() )
   {
     buff.monster_rising->trigger();
+  }
+  if ( talent.felscarred.enduring_torment->ok() )
+  {
+    buff.enduring_torment->trigger();
   }
 }
 
