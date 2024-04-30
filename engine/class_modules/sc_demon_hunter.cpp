@@ -7226,7 +7226,8 @@ void demon_hunter_t::create_buffs()
   buff.monster_rising = make_buff( this, "monster_rising", hero_spec.monster_rising_buff )
       ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
       ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-      ->set_allow_precombat( true );
+      ->set_allow_precombat( true )
+      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buff.student_of_suffering =
       make_buff( this, "student_of_suffering", hero_spec.student_of_suffering_buff )
           ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
