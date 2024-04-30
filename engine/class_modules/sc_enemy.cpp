@@ -1186,17 +1186,20 @@ struct tank_dummy_enemy_t : public enemy_t
   {
     enemy_t::init_base_stats();
 
-    // override level
-    switch ( tank_dummy_enum )
+    if ( sim->target_level < 0 && sim->rel_target_level < 0 )
     {
-      case tank_dummy_e::DUNGEON:
-        true_level = sim->max_player_level + 2;
-        break;
-      case tank_dummy_e::WEAK:
-        true_level = sim->max_player_level;
-        break;
-      default:
-        true_level = sim->max_player_level + 3;
+      // override level
+      switch ( tank_dummy_enum )
+      {
+        case tank_dummy_e::DUNGEON:
+          true_level = sim->max_player_level + 2;
+          break;
+        case tank_dummy_e::WEAK:
+          true_level = sim->max_player_level;
+          break;
+        default:
+          true_level = sim->max_player_level + 3;
+      }
     }
 
     // override race
