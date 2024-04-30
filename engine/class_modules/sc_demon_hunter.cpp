@@ -5,6 +5,8 @@
 
 #include "class_modules/apl/apl_demon_hunter.hpp"
 
+#include "action/parse_effects.hpp"
+
 #include "simulationcraft.hpp"
 
 namespace
@@ -173,10 +175,10 @@ using simple_data_t = std::pair<std::string, simple_sample_data_t>;
  * Derived from player_t. Contains everything that defines the Demon Hunter
  * class.
  */
-class demon_hunter_t : public player_t
+class demon_hunter_t : public parse_player_effects_t<demon_hunter_td_t>
 {
 public:
-  using base_t = player_t;
+  using base_t = parse_player_effects_t<demon_hunter_td_t>;
 
   // Data collection for cooldown waste
   auto_dispose<std::vector<data_t*>> cd_waste_exec, cd_waste_cumulative;
@@ -1467,7 +1469,7 @@ namespace actions
  * don't skip it and call spell_t/heal_t or absorb_t directly.
  */
 template <typename Base>
-class demon_hunter_action_t : public Base
+class demon_hunter_action_t : public parse_action_effects_t<Base, demon_hunter_t, demon_hunter_td_t>
 {
 public:
   double energize_delta;
@@ -2100,7 +2102,7 @@ protected:
 
 private:
   /// typedef for the templated action type, eg. spell_t, attack_t, heal_t
-  using ab = Base;
+  using ab = parse_action_effects_t<Base, demon_hunter_t, demon_hunter_td_t>;
 };
 
 // ==========================================================================
@@ -6932,7 +6934,7 @@ void demon_hunter_td_t::trigger_burning_blades( action_state_t* state )
 // ==========================================================================
 
 demon_hunter_t::demon_hunter_t( sim_t* sim, util::string_view name, race_e r )
-  : player_t( sim, DEMON_HUNTER, name, r ),
+  : parse_player_effects_t( sim, DEMON_HUNTER, name, r ),
     melee_main_hand( nullptr ),
     melee_off_hand( nullptr ),
     next_fragment_spawn( 0 ),
