@@ -2374,7 +2374,7 @@ template <typename T_PET>
 struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
 {
   pet_melee_attack_t( T_PET* p, util::string_view name, const spell_data_t* spell = spell_data_t::nil() )
-    : pet_action_t<T_PET, melee_attack_t>( p, name, spell ), triggers_runeforge_apocalypse( false )
+    : pet_action_t<T_PET, melee_attack_t>( p, name, spell )
   {
     if ( this->school == SCHOOL_NONE )
     {
@@ -2393,38 +2393,6 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
       this->trigger_gcd = 1_s;
     }
   }
-
-  // Apocalypse debuffs only trigger on the main target
-  void execute() override
-  {
-    pet_action_t<T_PET, melee_attack_t>::execute();
-
-    if ( triggers_runeforge_apocalypse && this->dk()->runeforge.rune_of_apocalypse && this->hit_any_target )
-    {
-      int n = static_cast<int>( this->pet()->rng().range( 0, runeforge_apocalypse::MAX ) );
-
-      death_knight_td_t* td = this->dk()->get_target_data( this->target );
-
-      switch ( n )
-      {
-        case runeforge_apocalypse::DEATH:
-          td->debuff.apocalypse_death->trigger();
-          break;
-        case runeforge_apocalypse::FAMINE:
-          td->debuff.apocalypse_famine->trigger();
-          break;
-        case runeforge_apocalypse::PESTILENCE:
-          this->dk()->active_spells.runeforge_pestilence->execute_on_target( this->target );
-          break;
-        case runeforge_apocalypse::WAR:
-          td->debuff.apocalypse_war->trigger();
-          break;
-      }
-    }
-  }
-
-public:
-  bool triggers_runeforge_apocalypse;
 };
 
 // ==========================================================================
@@ -2545,8 +2513,35 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
   {
     dt_melee_ability_t( ghoul_pet_t* p, util::string_view name, const spell_data_t* spell = spell_data_t::nil(),
                         bool usable_in_dt = true )
-      : pet_melee_attack_t( p, name, spell ), usable_in_dt( usable_in_dt ), triggers_infected_claws( false )
+      : pet_melee_attack_t( p, name, spell ), usable_in_dt( usable_in_dt ), triggers_infected_claws( false ), triggers_apocalypse( false )
     {
+    }
+
+    void execute() override
+    {
+      pet_melee_attack_t<ghoul_pet_t>::execute();
+      if ( triggers_apocalypse && dk()->runeforge.rune_of_apocalypse && hit_any_target )
+      {
+        int n = static_cast<int>( pet()->rng().range( 0, runeforge_apocalypse::MAX ) );
+
+        death_knight_td_t* td = dk()->get_target_data( target );
+
+        switch ( n )
+        {
+          case runeforge_apocalypse::DEATH:
+            td->debuff.apocalypse_death->trigger();
+            break;
+          case runeforge_apocalypse::FAMINE:
+            td->debuff.apocalypse_famine->trigger();
+            break;
+          case runeforge_apocalypse::PESTILENCE:
+            dk()->active_spells.runeforge_pestilence->execute_on_target( target );
+            break;
+          case runeforge_apocalypse::WAR:
+            td->debuff.apocalypse_war->trigger();
+            break;
+        }
+      }
     }
 
     void impact( action_state_t* state ) override
@@ -2576,6 +2571,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
 
   public:
     bool triggers_infected_claws;
+    bool triggers_apocalypse;
   };
 
   struct claw_t final : public dt_melee_ability_t
@@ -2584,7 +2580,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
       : dt_melee_ability_t( p, "claw", p->dk()->pet_spell.ghoul_claw, false )
     {
       parse_options( options_str );
-      triggers_infected_claws = triggers_runeforge_apocalypse = true;
+      triggers_infected_claws = triggers_apocalypse = true;
     }
   };
 
@@ -2595,7 +2591,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     {
       parse_options( options_str );
       aoe                     = -1;
-      triggers_infected_claws = triggers_runeforge_apocalypse = true;
+      triggers_infected_claws = triggers_apocalypse = true;
     }
   };
 
@@ -2619,14 +2615,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     }
   };
 
-  struct ghoul_melee_t final : public auto_attack_melee_t<ghoul_pet_t>
-  {
-    ghoul_melee_t( ghoul_pet_t* p, util::string_view name = "auto_attack" )
-      : auto_attack_melee_t<ghoul_pet_t>( p, name )
-    {
-    }
-  };
-
   ghoul_pet_t( death_knight_t* owner, bool guardian = true ) : base_ghoul_pet_t( owner, "ghoul", guardian )
   {
     gnaw_cd           = get_cooldown( "gnaw" );
@@ -2639,11 +2627,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
         dynamic = false;
       }
     }
-  }
-
-  attack_t* create_auto_attack() override
-  {
-    return new ghoul_melee_t( this );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -2680,8 +2663,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
   double composite_melee_speed() const override
   {
     double haste = base_ghoul_pet_t::composite_melee_speed();
-
-    // The default value stores the %damage increase
 
     if ( ghoulish_frenzy->check() )
       haste *= 1.0 / ( 1.0 + ghoulish_frenzy->data().effectN( 2 ).percent() );
@@ -12504,6 +12485,7 @@ void death_knight_t::parse_player_effects()
   parse_effects( talent.might_of_thassarian );
   parse_effects( talent.blood_scent );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), spell.brittle_debuff );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), spell.apocalypse_war_debuff, talent.unholy_bond );
 
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
