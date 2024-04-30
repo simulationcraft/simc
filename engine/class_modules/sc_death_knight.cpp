@@ -1569,7 +1569,6 @@ public:
   bool validate_fight_style( fight_style_e style ) const override;
   double composite_bonus_armor() const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
-  double composite_parry_rating() const override;
   void combat_begin() override;
   void activate() override;
   void reset() override;
@@ -12341,19 +12340,6 @@ double death_knight_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
-// warrior_t::composite_parry_rating() ========================================
-
-double death_knight_t::composite_parry_rating() const
-{
-  double p = player_t::composite_parry_rating();
-
-  // add Riposte
-  if ( spec.riposte->ok() )
-    p += composite_melee_crit_rating();
-
-  return p;
-}
-
 // death_knight_t::combat_begin =============================================
 
 void death_knight_t::combat_begin()
@@ -12383,10 +12369,6 @@ void death_knight_t::invalidate_cache( cache_e c )
 
   switch ( c )
   {
-    case CACHE_CRIT_CHANCE:
-      if ( spec.riposte->ok() )
-        player_t::invalidate_cache( CACHE_PARRY );
-      break;
     case CACHE_MASTERY:
       if ( specialization() == DEATH_KNIGHT_BLOOD )
         player_t::invalidate_cache( CACHE_ATTACK_POWER );
@@ -12528,6 +12510,7 @@ void death_knight_t::parse_player_effects()
   {
     parse_effects( spec.blood_death_knight );
     parse_effects( spec.blood_fortification );
+    parse_effects( spec.riposte );
     parse_effects( mastery.blood_shield );
     parse_effects( buffs.blood_shield, talent.blood.bloodshot );
     parse_effects( buffs.voracious, talent.blood.voracious );
@@ -12538,7 +12521,7 @@ void death_knight_t::parse_player_effects()
   }
 
   // Frost
-  if (specialization() == DEATH_KNIGHT_FROST)
+  if ( specialization() == DEATH_KNIGHT_FROST )
   {
     parse_effects( spec.frost_death_knight );
     parse_effects( buffs.pillar_of_frost, USE_CURRENT, talent.frost.pillar_of_frost );

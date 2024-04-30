@@ -605,8 +605,12 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> armor_multiplier_effects;
   std::vector<player_effect_t> haste_effects;
   std::vector<player_effect_t> mastery_effects;
+  std::vector<player_effect_t> parry_rating_from_crit_effects;
   std::vector<target_effect_t<TD>> target_multiplier_effects;
   std::vector<target_effect_t<TD>> target_pet_multiplier_effects;
+
+  // Cache Pairing, invalidate first of the pair when the second is invalidated
+  std::vector<std::pair<cache_e, cache_e>> invalidate_with_parent;
 
   parse_player_effects_t( sim_t* sim, player_e type, std::string_view name, race_e race )
     : player_t( sim, type, name, race ), parse_effects_t( this )
@@ -794,6 +798,16 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
 
     return m;
   }
+  
+  double composite_parry_rating() const override
+  {
+    auto pr = player_t::composite_parry_rating();
+
+    for ( const auto& i : parry_rating_from_crit_effects )
+      pr += player_t::composite_melee_crit_rating() * get_effect_value( i );
+
+    return pr;
+  }
 
 private:
   TD* _get_td( player_t* t ) const
@@ -824,6 +838,17 @@ public:
         tm *= 1.0 + get_target_effect_value( i, td );
 
     return tm;
+  }
+
+  void invalidate_cache( cache_e c )
+  {
+    player_t::invalidate_cache( c );
+
+    for ( const auto& i : invalidate_with_parent )
+    {
+      if ( c == i.second )
+        player_t::invalidate_cache( i.first );
+    }
   }
 
   bool is_valid_aura( const spelleffect_data_t& eff ) const override
@@ -944,6 +969,12 @@ public:
       case A_MOD_BASE_RESISTANCE_PCT:
         str = "armor multiplier";
         return &armor_multiplier_effects;
+
+      case A_MOD_PARRY_FROM_CRIT_RATING:
+        str = "parry rating";
+        // TODO: better debug message for this, and similar effects
+        invalidate_with_parent.push_back( { CACHE_PARRY, CACHE_CRIT_CHANCE } );
+        return &parry_rating_from_crit_effects;
 
       default:
         return nullptr;

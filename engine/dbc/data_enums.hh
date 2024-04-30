@@ -1255,7 +1255,7 @@ enum effect_subtype_t : unsigned {
     A_455 = 455,
     A_HASTED_CATEGORY = 457,
     A_458 = 458,
-    A_463 = 463,
+    A_MOD_PARRY_FROM_CRIT_RATING = 463,
     A_464 = 464,
     A_465 = 465,
     A_466 = 466,
