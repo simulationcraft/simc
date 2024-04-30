@@ -12524,36 +12524,45 @@ void death_knight_t::parse_player_effects()
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), spell.brittle_debuff );
 
   // Blood
-  parse_effects( spec.blood_death_knight );
-  parse_effects( spec.blood_fortification );
-  parse_effects( mastery.blood_shield );
-  parse_effects( buffs.blood_shield, talent.blood.bloodshot );
-  parse_effects( buffs.voracious, talent.blood.voracious );
-  parse_effects( buffs.dancing_rune_weapon );
-  parse_effects( buffs.bone_shield, IGNORE_STACKS, talent.blood.improved_bone_shield );
-  parse_effects( buffs.perseverance_of_the_ebon_blade, talent.blood.perseverance_of_the_ebon_blade );
-  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::tightening_grasp ), spell.tightening_grasp_debuff );
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+  {
+    parse_effects( spec.blood_death_knight );
+    parse_effects( spec.blood_fortification );
+    parse_effects( mastery.blood_shield );
+    parse_effects( buffs.blood_shield, talent.blood.bloodshot );
+    parse_effects( buffs.voracious, talent.blood.voracious );
+    parse_effects( buffs.dancing_rune_weapon );
+    parse_effects( buffs.bone_shield, IGNORE_STACKS, talent.blood.improved_bone_shield );
+    parse_effects( buffs.perseverance_of_the_ebon_blade, talent.blood.perseverance_of_the_ebon_blade );
+    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::tightening_grasp ), spell.tightening_grasp_debuff );
+  }
 
   // Frost
-  parse_effects( spec.frost_death_knight );
-  parse_effects( buffs.pillar_of_frost, USE_CURRENT, talent.frost.pillar_of_frost );
-  parse_effects( buffs.frostwhelps_aid, talent.frost.frostwhelps_aid );
-  parse_effects( buffs.bonegrinder_frost, talent.frost.bonegrinder );
-  parse_effects( buffs.bonegrinder_crit, talent.frost.bonegrinder );
-  parse_effects( buffs.enduring_strength, talent.frost.enduring_strength );
-  parse_effects( buffs.unleashed_frenzy, talent.frost.unleashed_frenzy );
+  if (specialization() == DEATH_KNIGHT_FROST)
+  {
+    parse_effects( spec.frost_death_knight );
+    parse_effects( buffs.pillar_of_frost, USE_CURRENT, talent.frost.pillar_of_frost );
+    parse_effects( buffs.frostwhelps_aid, talent.frost.frostwhelps_aid );
+    parse_effects( buffs.bonegrinder_frost, talent.frost.bonegrinder );
+    parse_effects( buffs.bonegrinder_crit, talent.frost.bonegrinder );
+    parse_effects( buffs.enduring_strength, talent.frost.enduring_strength );
+    parse_effects( buffs.unleashed_frenzy, talent.frost.unleashed_frenzy );
+  }
 
   // Unholy
-  parse_effects( spec.unholy_death_knight );
-  parse_effects( mastery.dreadblade );
-  parse_effects( buffs.unholy_assault, talent.unholy.unholy_assault );
-  parse_effects( buffs.ghoulish_frenzy, talent.unholy.ghoulish_frenzy );
-  parse_effects( buffs.festermight, talent.unholy.festermight );
-  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::unholy_aura ), spell.unholy_aura_debuff, talent.unholy.unholy_aura );
-  parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), spell.virulent_plague, talent.unholy.morbidity );
-  parse_target_effects( d_fn( &death_knight_td_t::dots_t::frost_fever ), spell.frost_fever, talent.unholy.morbidity );
-  parse_target_effects( d_fn( &death_knight_td_t::dots_t::blood_plague ), spell.blood_plague, talent.unholy.morbidity );
-  parse_target_effects( d_fn( &death_knight_td_t::dots_t::unholy_blight, false ), spell.unholy_blight_dot, talent.unholy.morbidity );
+  if ( specialization() == DEATH_KNIGHT_UNHOLY )
+  {
+    parse_effects( spec.unholy_death_knight );
+    parse_effects( mastery.dreadblade );
+    parse_effects( buffs.unholy_assault, talent.unholy.unholy_assault );
+    parse_effects( buffs.ghoulish_frenzy, talent.unholy.ghoulish_frenzy );
+    parse_effects( buffs.festermight, talent.unholy.festermight );
+    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::unholy_aura ), spell.unholy_aura_debuff, talent.unholy.unholy_aura );
+    parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), spell.virulent_plague, talent.unholy.morbidity );
+    parse_target_effects( d_fn( &death_knight_td_t::dots_t::frost_fever ), spell.frost_fever, talent.unholy.morbidity );
+    parse_target_effects( d_fn( &death_knight_td_t::dots_t::blood_plague ), spell.blood_plague, talent.unholy.morbidity );
+    parse_target_effects( d_fn( &death_knight_td_t::dots_t::unholy_blight, false ), spell.unholy_blight_dot, talent.unholy.morbidity );
+  }
 
   // Rider of the Apocalypse
   parse_effects( buffs.apocalyptic_conquest, USE_CURRENT );
