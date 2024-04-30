@@ -2292,7 +2292,7 @@ struct death_knight_pet_t : public pet_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    if ( name == "auto_attack" )
+    if ( name == "main_hand" )
       return new auto_attack_t( this );
 
     return pet_t::create_action( name, options_str );
@@ -2302,7 +2302,7 @@ struct death_knight_pet_t : public pet_t
   {
     action_priority_list_t* def = get_action_priority_list( "default" );
     if ( use_auto_attack )
-      def->add_action( "auto_attack" );
+      def->add_action( "main_hand" );
 
     pet_t::init_action_list();
   }
@@ -12185,7 +12185,7 @@ void death_knight_t::assess_damage_imminent( school_e school, result_amount_type
 
   if ( school != SCHOOL_PHYSICAL )
   {
-    if ( buffs.antimagic_shell->up() )
+    if ( buffs.antimagic_shell->up() && !options.ams_absorb_percent > 0 )
     {
       double damage_absorbed =
           debug_cast<antimagic_shell_buff_t*>( buffs.antimagic_shell )->absorb_damage( s->result_amount );
@@ -12205,7 +12205,7 @@ void death_knight_t::assess_damage_imminent( school_e school, result_amount_type
       resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), gains.antimagic_shell, s->action );
     }
 
-    if ( buffs.antimagic_zone->up() )
+    if ( buffs.antimagic_zone->up() && !options.amz_absorb_percent > 0 )
     {
       // AMZ only absorbs 20% of incoming magic damage
       double damage_absorbed =
