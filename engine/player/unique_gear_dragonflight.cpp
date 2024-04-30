@@ -7704,7 +7704,7 @@ void frozen_wellspring( special_effect_t& effect )
   proxy->add_child( shatter );
   proxy->add_child( proc );
 
-  buff->set_stack_change_callback( [ cb, proxy, shatter ]( buff_t* b, int old_, int new_ ) {
+  buff->set_stack_change_callback( [ cb, shatter ]( buff_t* b, int old_, int new_ ) {
     if ( !old_ )
     {
       cb->activate();

@@ -277,7 +277,7 @@ struct simplified_player_t : public player_t
     damage_buffs.push_back( b );
 
     register_combat_begin( [ this, b, delay_from_start ]( player_t* ) {
-      make_event( sim, delay_from_start, [ this, b ]() { b->trigger(); } );
+      make_event( sim, delay_from_start, [ b ]() { b->trigger(); } );
     } );
 
     return b;
@@ -399,7 +399,7 @@ struct simplified_player_t : public player_t
       player->started_waiting = sim->current_time();
     }
 
-    void impact( action_state_t* s )
+    void impact( action_state_t* s ) override
     {
       spell_t::impact( s );
 
@@ -572,7 +572,7 @@ struct simplified_player_t : public player_t
     ability->schedule_execute();
   }
 
-  void create_options()
+  void create_options() override
   {
     player_t::create_options();
 
@@ -1143,7 +1143,7 @@ public:
 
   int num_targets() const override
   {
-    return as<int>( range::count_if( sim->player_no_pet_list, [ this ]( player_t* t ) {
+    return as<int>( range::count_if( sim->player_no_pet_list, []( player_t* t ) {
       if ( t->is_sleeping() )
         return false;
       return true;
@@ -5704,11 +5704,10 @@ void evoker_t::create_buffs()
   using namespace buffs;
   using e_buff_t = evoker_buff_t<buff_t>;
 
-  auto MB = [ this ]( auto&&... args ) {
+  auto MB = []( auto&&... args ) {
     return make_buff<e_buff_t>( std::forward<decltype( args )>( args )... );
   };
-
-  auto MBF = [ this ]( auto&&... args ) {
+  auto MBF = []( auto&&... args ) {
     return make_buff_fallback<e_buff_t>( std::forward<decltype( args )>( args )... );
   };
 
