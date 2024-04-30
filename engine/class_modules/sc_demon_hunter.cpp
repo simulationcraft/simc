@@ -881,6 +881,7 @@ public:
   void init_scaling() override;
   void init_spells() override;
   void init_items() override;
+  void init_finished() override;
   bool validate_fight_style( fight_style_e style ) const override;
   void invalidate_cache( cache_e ) override;
   resource_e primary_resource() const override;
@@ -911,7 +912,6 @@ public:
   double composite_dodge() const override;
   double composite_melee_haste() const override;
   double composite_spell_haste() const override;
-  double composite_leech() const override;
   double composite_melee_crit_chance() const override;
   double composite_melee_expertise( const weapon_t* ) const override;
   double composite_parry() const override;
@@ -968,6 +968,7 @@ public:
   {
     return options.target_reach >= 0 ? options.target_reach : sim->target->combat_reach;
   }
+  void parse_player_effects();
 
   // Secondary Action Tracking
 private:
@@ -8339,6 +8340,15 @@ void demon_hunter_t::init_items()
     sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
 }
 
+// demon_hunter_t::init_finished ============================================
+
+void demon_hunter_t::init_finished()
+{
+  player_t::init_finished();
+
+  parse_player_effects();
+}
+
 // demon_hunter_t::validate_fight_style =====================================
 
 bool demon_hunter_t::validate_fight_style( fight_style_e style ) const
@@ -8675,43 +8685,6 @@ double demon_hunter_t::composite_spell_haste() const
   }
 
   return sh;
-}
-
-// demon_hunter_t::composite_leech ==========================================
-
-double demon_hunter_t::composite_leech() const
-{
-  double l = player_t::composite_leech();
-
-  if ( buff.metamorphosis->check() )
-  {
-    if ( specialization() == DEMON_HUNTER_HAVOC )
-    {
-      l += spec.metamorphosis_buff->effectN( 3 ).percent();
-    }
-
-    if ( talent.demon_hunter.soul_rending->ok() )
-    {
-      l += talent.demon_hunter.soul_rending->effectN( 2 ).percent();
-
-      if ( talent.felscarred.improved_soul_rending->ok() )
-      {
-        l += talent.felscarred.improved_soul_rending->effectN( 2 ).percent();
-      }
-    }
-  }
-
-  if ( talent.demon_hunter.soul_rending->ok() )
-  {
-    l += talent.demon_hunter.soul_rending->effectN( 1 ).percent();
-
-    if ( talent.felscarred.improved_soul_rending->ok() )
-    {
-      l += talent.felscarred.improved_soul_rending->effectN( 1 ).percent();
-    }
-  }
-
-  return l;
 }
 
 // demon_hunter_t::composite_melee_crit_chance ==============================
@@ -9463,6 +9436,22 @@ void demon_hunter_t::trigger_demonic()
     return;
 
   debug_cast<buffs::metamorphosis_buff_t*>( buff.metamorphosis )->trigger_demonic();
+}
+
+// demon_hunter_t::parse_player_effects() =========================================
+
+void demon_hunter_t::parse_player_effects()
+{
+  // Shared
+  parse_effects( talent.demon_hunter.soul_rending, talent.felscarred.improved_soul_rending );
+
+  // Havoc
+
+  // Vengeance
+
+  // Aldrachi Reaver
+
+  // Fel-scarred
 }
 
 // demon_hunter_sigil_t::create_sigil_expression ==================================
