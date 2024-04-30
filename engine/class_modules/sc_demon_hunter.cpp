@@ -8383,10 +8383,6 @@ void demon_hunter_t::invalidate_cache( cache_e c )
         invalidate_cache( CACHE_ATTACK_POWER );
       }
       break;
-    case CACHE_CRIT_CHANCE:
-      if ( spec.riposte->ok() )
-        invalidate_cache( CACHE_PARRY );
-      break;
     case CACHE_RUN_SPEED:
       adjust_movement();
       break;
