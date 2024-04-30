@@ -469,7 +469,7 @@ public:
     std::vector<dot_t*> sunfire;
     std::vector<dot_t*> thrash_bear;
     std::vector<dot_t*> dreadful_wound;
-  } dot_list;
+  } dot_lists;
   // !!!==========================================================================!!!
 
   // Options
@@ -2066,13 +2066,13 @@ public:
 
   double composite_energize_amount( const action_state_t* s ) const override
   {
-    if ( energize_idx)
+    if ( energize_idx )
       return ab::modified_effectN_resource( energize_idx, ab::energize_resource );
     else
       return ab::composite_energize_amount( s );
   }
 
-    // Override this function for temporary effects that change the normal form restrictions of the spell. eg: Predatory
+  // Override this function for temporary effects that change the normal form restrictions of the spell. eg: Predatory
   // Swiftness
   virtual bool check_form_restriction()
   {
@@ -2232,7 +2232,7 @@ public:
     BASE::execute();
 
     if ( dot_ext > 0_ms )
-      range::for_each( p_->dot_list.dreadful_wound, [ this ]( dot_t* d ) { d->adjust_duration( dot_ext, max_ext ); } );
+      range::for_each( p_->dot_lists.dreadful_wound, [ this ]( dot_t* d ) { d->adjust_duration( dot_ext, max_ext ); } );
   }
 };
 
@@ -2352,7 +2352,7 @@ struct ravage_base_t : public BASE
       DOT_BASE::name_str_reporting = "dreadful_wound";
       DOT_BASE::dot_name = "dreadful_wound";
 
-      DOT_BASE::dot_list = &p->dot_list.dreadful_wound;
+      DOT_BASE::dot_list = &p->dot_lists.dreadful_wound;
     }
 
     // TODO: use custom action state if non-TF persistent multipliers are applied
@@ -3275,7 +3275,7 @@ struct blood_frenzy_buff_t : public druid_buff_t
 
   void trigger_blood_frenzy()
   {
-    auto n = p()->dot_list.thrash_bear.size();
+    auto n = p()->dot_lists.thrash_bear.size();
     if ( !n )
       return;
 
@@ -5686,7 +5686,7 @@ struct thrash_bear_t : public trigger_claw_rampage_t<DRUID_GUARDIAN,
       dual = background = true;
 
       dot_name = "thrash_bear";
-      dot_list = &p->dot_list.thrash_bear;
+      dot_list = &p->dot_lists.thrash_bear;
     }
 
     void trigger_dot( action_state_t* s ) override
@@ -7409,7 +7409,7 @@ struct moonfire_t : public druid_spell_t
       dual = background = true;
 
       dot_name = "moonfire";
-      dot_list = &p->dot_list.moonfire;
+      dot_list = &p->dot_lists.moonfire;
 
       if ( p->talent.galactic_guardian.ok() && !has_flag( flag_e::GALACTIC ) )
       {
@@ -7970,8 +7970,8 @@ struct starfall_t : public ap_spender_t
   {
     if ( p()->talent.aetherial_kindling.ok() )
     {
-      range::for_each( p()->dot_list.moonfire, [ this ]( dot_t* d ) { d->adjust_duration( dot_ext, max_ext ); } );
-      range::for_each( p()->dot_list.sunfire, [ this ]( dot_t* d ) { d->adjust_duration( dot_ext, max_ext ); } );
+      range::for_each( p()->dot_lists.moonfire, [ this ]( dot_t* d ) { d->adjust_duration( dot_ext, max_ext ); } );
+      range::for_each( p()->dot_lists.sunfire, [ this ]( dot_t* d ) { d->adjust_duration( dot_ext, max_ext ); } );
     }
 
     base_t::execute();
@@ -8262,7 +8262,7 @@ struct sunfire_t : public druid_spell_t
       base_aoe_multiplier = 0;
 
       dot_name = "sunfire";
-      dot_list = &p->dot_list.sunfire;
+      dot_list = &p->dot_lists.sunfire;
     }
   };
 
@@ -10284,11 +10284,11 @@ void druid_t::create_buffs()
 
   buff.shooting_stars_moonfire =
       make_fallback<shooting_stars_buff_t>( talent.shooting_stars.ok(),
-          this, "shooting_stars_moonfire", dot_list.moonfire, active.shooting_stars_moonfire );
+          this, "shooting_stars_moonfire", dot_lists.moonfire, active.shooting_stars_moonfire );
 
   buff.shooting_stars_sunfire =
       make_fallback<shooting_stars_buff_t>( talent.shooting_stars.ok() && talent.sunfire.ok(),
-          this, "shooting_stars_sunfire", dot_list.sunfire, active.shooting_stars_sunfire );
+          this, "shooting_stars_sunfire", dot_lists.sunfire, active.shooting_stars_sunfire );
 
   buff.solstice =
       make_fallback( talent.solstice.ok(), this, "solstice", find_trigger( talent.solstice ).trigger() )
@@ -11796,10 +11796,10 @@ void druid_t::reset()
   orbital_bug = true;
   persistent_event_delay.clear();
   astral_power_decay = nullptr;
-  dot_list.moonfire.clear();
-  dot_list.sunfire.clear();
-  dot_list.thrash_bear.clear();
-  dot_list.dreadful_wound.clear();
+  dot_lists.moonfire.clear();
+  dot_lists.sunfire.clear();
+  dot_lists.thrash_bear.clear();
+  dot_lists.dreadful_wound.clear();
 }
 
 // druid_t::merge ===========================================================
