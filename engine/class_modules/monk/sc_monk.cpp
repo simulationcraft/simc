@@ -9936,7 +9936,7 @@ struct monk_module_t : public module_t
   {
     p->buffs.windwalking_movement_aura = make_buff( p, "windwalking_movement_aura", p->find_spell( 365080 ) )
                                              ->add_invalidate( CACHE_RUN_SPEED )
-                                             ->set_default_value_from_effect( A_MOD_SPEED_ALWAYS );
+                                             ->set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS );
   }
   void combat_begin( sim_t * ) const override
   {
