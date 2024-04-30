@@ -3,9 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "class_modules/apl/apl_demon_hunter.hpp"
-
 #include "action/parse_effects.hpp"
+#include "class_modules/apl/apl_demon_hunter.hpp"
 
 #include "simulationcraft.hpp"
 
@@ -914,8 +913,6 @@ public:
   double composite_spell_haste() const override;
   double composite_melee_crit_chance() const override;
   double composite_melee_expertise( const weapon_t* ) const override;
-  double composite_parry() const override;
-  double composite_parry_rating() const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_spell_crit_chance() const override;
@@ -8709,36 +8706,6 @@ double demon_hunter_t::composite_melee_expertise( const weapon_t* w ) const
   return me;
 }
 
-// demon_hunter_t::composite_parry ==========================================
-
-double demon_hunter_t::composite_parry() const
-{
-  double cp = player_t::composite_parry();
-
-  cp += talent.demon_hunter.aldrachi_design->effectN( 1 ).percent();
-
-  if ( talent.vengeance.deflecting_spikes->ok() && buff.demon_spikes->check() )
-  {
-    cp += buff.demon_spikes->data().effectN( 1 ).percent();
-  }
-
-  return cp;
-}
-
-// demon_hunter_t::composite_parry_rating() =================================
-
-double demon_hunter_t::composite_parry_rating() const
-{
-  double pr = player_t::composite_parry_rating();
-
-  if ( spec.riposte->ok() )
-  {
-    pr += composite_melee_crit_rating();
-  }
-
-  return pr;
-}
-
 // demon_hunter_t::composite_player_multiplier ==============================
 
 double demon_hunter_t::composite_player_multiplier( school_e school ) const
@@ -9444,6 +9411,9 @@ void demon_hunter_t::parse_player_effects()
 {
   // Shared
   parse_effects( talent.demon_hunter.soul_rending, talent.felscarred.improved_soul_rending );
+  parse_effects( talent.demon_hunter.aldrachi_design );
+  parse_effects( buff.demon_spikes, talent.vengeance.deflecting_spikes->ok() ? 0b0 : 0b1 );
+  parse_effects( spec.riposte );
 
   // Havoc
 
