@@ -357,9 +357,9 @@ public:
 
     val *= val_mul;
 
-    std::string val_str = mastery ? fmt::format( "{}*mastery", val * 100 )
+    std::string val_str = mastery ? fmt::format( "{:.5f}*mastery", val * 100 )
                           : flat  ? fmt::format( "{}", val )
-                                  : fmt::format( "{}%", val * ( 1 / val_mul ) );
+                                  : fmt::format( "{:.1f}%", val * ( 1 / val_mul ) );
 
     if ( tmp.data.value != 0.0 )
     {
@@ -1697,8 +1697,16 @@ public:
       print_parsed_type( os, dot_duration_effects, "Dot Duration" );
       print_parsed_type( os, tick_time_effects, "Tick Time" );
       print_parsed_type( os, recharge_multiplier_effects, "Recharge Multiplier" );
-      print_parsed_type( os, flat_cost_effects, "Flat Cost" );
-      print_parsed_type( os, cost_effects, "Percent Cost" );
+
+      // assume the first non-background action in the stat's action_list is the main action and get cost effects from it
+      auto main = this;
+      auto it = range::find_if( BASE::stats->action_list, []( action_t* a ) { return !a->background; } );
+      if ( it != BASE::stats->action_list.end() )
+        main = static_cast<parse_action_effects_t<BASE, PLAYER, TD>*>( *it );
+
+      print_parsed_type( os, main->flat_cost_effects, "Flat Cost", false );
+      print_parsed_type( os, main->cost_effects, "Percent Cost" );
+
       print_parsed_type( os, target_multiplier_effects, "Damage on Debuff" );
       print_parsed_type( os, target_crit_chance_effects, "Crit Chance on Debuff" );
       print_parsed_type( os, target_crit_damage_effects, "Crit Damage on Debuff" );
@@ -1727,7 +1735,7 @@ public:
   virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
 
   template <typename V>
-  void print_parsed_type( report::sc_html_stream& os, const V& entries, std::string_view n )
+  void print_parsed_type( report::sc_html_stream& os, const V& entries, std::string_view n, bool pct = true )
   {
     auto c = entries.size();
     if ( !c )
@@ -1740,7 +1748,7 @@ public:
       if ( i > 0 )
         os << "<tr>";
 
-      print_parsed_line( os, entries[ i ] );
+      print_parsed_line( os, entries[ i ], pct );
     }
   }
 
@@ -1754,7 +1762,7 @@ public:
     }
   }
 
-  void print_parsed_line( report::sc_html_stream& os, const player_effect_t& entry )
+  void print_parsed_line( report::sc_html_stream& os, const player_effect_t& entry, bool pct )
   {
     std::vector<std::string> notes;
 
@@ -1767,22 +1775,30 @@ public:
     if ( entry.func )
       notes.push_back( "Conditional" );
 
-    os.format( "<td>{}</td><td>{}</td><td>{}</td><td>{:.3f}</td><td>{}</td><td>{}</td></tr>\n",
+    std::string val_str = entry.mastery ? fmt::format( "{:.5f}", entry.value * 100 )
+                        : pct           ? fmt::format( "{:.1f}%", entry.value * 100 )
+                                        : fmt::format( "{}", entry.value );
+
+    os.format( "<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>\n",
                entry.eff->spell()->name_cstr(),
                entry.eff->spell()->id(),
                entry.eff->index() + 1,
-               entry.value * ( entry.mastery ? 100 : 1 ),
+               val_str,
                value_type_name( entry.type ),
                util::string_join( notes ) );
   }
 
-  void print_parsed_line( report::sc_html_stream& os, const target_effect_t<TD>& entry )
+  void print_parsed_line( report::sc_html_stream& os, const target_effect_t<TD>& entry, bool pct )
   {
-    os.format( "<td>{}</td><td>{}</td><td>{}</td><td>{:.3f}</td><td>{}</td><td>{}</td></tr>\n",
+    std::string val_str = entry.mastery ? fmt::format( "{:.5f}", entry.value * 100 )
+                        : pct           ? fmt::format( "{:.1f}%", entry.value * 100 )
+                                        : fmt::format( "{}", entry.value );
+
+    os.format( "<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>\n",
                entry.eff->spell()->name_cstr(),
                entry.eff->spell()->id(),
                entry.eff->index() + 1,
-               entry.value * ( entry.mastery ? 100 : 1 ),
+               val_str,
                "",
                entry.mastery ? "Mastery" : "" );
   }
