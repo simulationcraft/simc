@@ -564,8 +564,8 @@ public:
     parse_effect( pack, spell, idx, true );
   }
 
-  template <typename U, typename TD>
-  double get_target_effect_value( const U& i, TD* td ) const
+  template <typename TD>
+  double get_target_effect_value( const target_effect_t<TD>& i, TD* td ) const
   {
     if ( auto check = i.func( td ) )
     {
