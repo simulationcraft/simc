@@ -277,10 +277,15 @@ struct stagger_t
     MAX_STAGGER      = -1
   };
 
-  // TODO: use this buff to carry the effects of HT and ToN
   struct stagger_buff_t : public actions::monk_buff_t
   {
     stagger_buff_t( monk_t &player, std::string_view name, const spell_data_t* spell );
+  };
+
+  struct training_of_niuzao_t : public actions::monk_buff_t
+  {
+    training_of_niuzao_t( monk_t &player );
+    bool trigger_();
   };
 
   struct self_damage_t : residual_action::residual_periodic_action_t<actions::monk_spell_t>
@@ -334,6 +339,7 @@ struct stagger_t
   monk_t *player;
   std::vector<stagger_level_t *> stagger_levels;
   stagger_level_t *current;
+  training_of_niuzao_t *training_of_niuzao;
 
   stagger_level_e find_current_level();
   void set_pool( double amount );
@@ -1357,8 +1363,6 @@ public:
   double resource_regen_per_second( resource_e ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
   double composite_melee_expertise( const weapon_t *weapon ) const override;
-  double composite_spell_haste() const override;
-  double composite_melee_haste() const override;
   double composite_melee_speed() const override;
   double composite_attack_power_multiplier() const override;
   double composite_dodge() const override;

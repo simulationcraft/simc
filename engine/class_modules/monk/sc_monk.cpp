@@ -7943,11 +7943,6 @@ void monk_t::create_buffs()
                      ->set_duration_multiplier( 3 )
                      ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
-  buff.training_of_niuzao = make_buff( this, "training_of_niuzao", find_spell( 383733 ) )
-                                ->set_trigger_spell( talent.brewmaster.training_of_niuzao )
-                                ->set_default_value( talent.brewmaster.training_of_niuzao->effectN( 1 ).base_value() )
-                                ->add_invalidate( CACHE_MASTERY );
-
   buff.weapons_of_order = make_buff( this, "weapons_of_order", find_spell( 310454 ) )
                               ->set_trigger_spell( talent.brewmaster.weapons_of_order )
                               ->set_default_value( find_spell( 310454 )->effectN( 1 ).base_value() )
@@ -8748,21 +8743,6 @@ void monk_t::retarget_storm_earth_and_fire( pet_t *pet, std::vector<player_t *> 
                    [ pet ]( action_t *a ) { a->acquire_target( retarget_source::SELF_ARISE, nullptr, pet->target ); } );
 }
 
-/**
- * Haste modifiers affecting both melee_haste and spell_haste.
- */
-double shared_composite_haste_modifiers( const monk_t &p, double h )
-{
-  if ( p.talent.brewmaster.high_tolerance->ok() && p.stagger )
-  {
-    unsigned index = p.stagger->level_index();
-    if ( index > 0 )
-      h *= 1.0 / ( 1.0 + p.talent.brewmaster.high_tolerance->effectN( index ).percent() );
-  }
-
-  return h;
-}
-
 // Reduces Brewmaster Brew cooldowns by the time given
 void monk_t::brew_cooldown_reduction( double time_reduction )
 {
@@ -8790,28 +8770,6 @@ double monk_t::composite_melee_speed() const
   double h = player_t::composite_melee_speed();
 
   h *= 1.0 / ( 1.0 + buff.momentum_boost_speed->check_value() );
-
-  return h;
-}
-
-// monk_t::composite_spell_haste =========================================
-
-double monk_t::composite_spell_haste() const
-{
-  double h = player_t::composite_spell_haste();
-
-  h = shared_composite_haste_modifiers( *this, h );
-
-  return h;
-}
-
-// monk_t::composite_melee_haste =========================================
-
-double monk_t::composite_melee_haste() const
-{
-  double h = player_t::composite_melee_haste();
-
-  h = shared_composite_haste_modifiers( *this, h );
 
   return h;
 }
@@ -8911,8 +8869,6 @@ double monk_t::composite_mastery() const
   double m = player_t::composite_mastery();
 
   m += buff.weapons_of_order->check_value();
-
-  m += buff.training_of_niuzao->check_value();
 
   return m;
 }
@@ -9232,6 +9188,7 @@ void monk_t::combat_begin()
       // Player starts combat with buff
       buff.combat_wisdom->trigger();
       // ... and then regains the buff in time intervals while in combat
+      bool trigger( double index );
       make_repeating_event( sim, talent.windwalker.combat_wisdom->effectN( 2 ).period(),
                             [ this ]() { buff.combat_wisdom->trigger(); } );
     }
@@ -9988,21 +9945,42 @@ struct monk_module_t : public module_t
   }
 };
 
-// monk_t::stagger_t implementation
-
-// monk_t::stagger_t::stagger_buff_t
+// stagger_t implementation
+// stagger_t::stagger_buff_t
 stagger_t::stagger_buff_t::stagger_buff_t( monk_t &player, std::string_view name, const spell_data_t *spell )
   : actions::monk_buff_t( player, name, spell )
 {
   // duration is controlled by stagger_t::self_damage_t
   // logic is more convenient if we prevent this from ever naturally expiring
   base_buff_duration = 0_s;
+  set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   add_invalidate( CACHE_HASTE );
-
-  // TODO: Provide HT, ToN, etc effects via this aura
+  set_default_value_from_effect_type( A_HASTE_ALL );
+  set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  apply_affecting_aura( player.talent.brewmaster.high_tolerance );
+  set_stack_change_callback( [ &stagger = player.stagger ]( buff_t *, int old_, int new_ ) {
+    if ( old_ )
+      stagger->training_of_niuzao->expire();
+    if ( new_ )
+      stagger->training_of_niuzao->trigger_();
+  } );
 }
 
-// monk_t::stagger_t::self_damage_t
+stagger_t::training_of_niuzao_t::training_of_niuzao_t( monk_t &player )
+  : actions::monk_buff_t( player, "training_of_niuzao", player.talent.brewmaster.training_of_niuzao )
+{
+  add_invalidate( CACHE_MASTERY );
+  set_default_value( 0.0 );
+  set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+}
+
+bool stagger_t::training_of_niuzao_t::trigger_()
+{
+  double value = p().stagger->level_index() * data().effectN( 1 ).base_value();
+  return trigger( 1, value );
+}
+
+// stagger_t::self_damage_t
 stagger_t::self_damage_t::self_damage_t( monk_t *player )
   : base_t( "stagger_self_damage", player, player->passives.stagger_self_damage )
 {
@@ -10057,7 +10035,7 @@ void stagger_t::self_damage_t::assess_damage( result_amount_type type, action_st
   p()->stagger->sample_data->pool_size_percent.add( sim->current_time(), p()->stagger->pool_size_percent() );
 }
 
-// monk_t::stagger_t::stagger_level_t
+// stagger_t::stagger_level_t
 stagger_t::stagger_level_t::stagger_level_t( stagger_level_e level, monk_t *player )
   : level( level ),
     min_percent( min_threshold( level ) ),
@@ -10139,7 +10117,7 @@ const spell_data_t *stagger_t::stagger_level_t::level_spell_data( stagger_level_
   }
 }
 
-// monk_t::stagger_t::sample_data_t
+// stagger_t::sample_data_t
 stagger_t::sample_data_t::sample_data_t( monk_t *player )
 {
   absorbed  = player->get_sample_data( "Total damage absorbed by Stagger." );
@@ -10157,13 +10135,14 @@ stagger_t::sample_data_t::sample_data_t( monk_t *player )
       player->get_sample_data( "Total Stagger purified by Tranquil Spirit (Expel Harm)." );
 }
 
-// monk_t::stagger_t
+// stagger_t
 stagger_t::stagger_t( monk_t *player )
   : player( player ), self_damage( new self_damage_t( player ) ), sample_data( new sample_data_t( player ) )
 {
   auto init_level = [ this, player ]( stagger_level_e level ) {
     stagger_levels.insert( stagger_levels.begin(), new stagger_t::stagger_level_t( level, player ) );
   };
+  training_of_niuzao = make_buff<stagger_t::training_of_niuzao_t>( *player );
   init_level( NONE_STAGGER );
   init_level( LIGHT_STAGGER );
   init_level( MODERATE_STAGGER );
