@@ -5054,7 +5054,7 @@ void action_t::html_customsection( report::sc_html_stream& os )
     {
       std::string op_str;
       std::string type_str;
-      std::string val_str = fmt::format( "{:.3f}", val );
+      std::string val_str;
 
       switch ( eff->subtype() )
       {
@@ -5062,11 +5062,13 @@ void action_t::html_customsection( report::sc_html_stream& os )
         case A_ADD_FLAT_MODIFIER:
           op_str = "ADD";
           type_str = spell_info::effect_property_str( eff );
+          val_str = fmt::format( "{:.3f}", val );
           break;
         case A_ADD_PCT_LABEL_MODIFIER:
         case A_ADD_PCT_MODIFIER:
           op_str = "PCT";
           type_str = spell_info::effect_property_str( eff );
+          val_str = fmt::format( "{:.1f}%", val * 100 );
           break;
         case A_MODIFY_SCHOOL:
           op_str = "SET";
@@ -5076,10 +5078,12 @@ void action_t::html_customsection( report::sc_html_stream& os )
         default:
           op_str = "SET";
           type_str = spell_info::effect_subtype_str( eff );
+          val_str = fmt::format( "{:.3f}", val );
           break;
       }
 
-      os.format( "<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>",
+      os.format(
+        "<tr><td>{}</td><td>{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td>{}</td><td class=\"right\">{}</td></tr>",
         type_str,
         eff->spell()->name_cstr(),
         eff->spell()->id(),

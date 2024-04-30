@@ -1779,13 +1779,14 @@ public:
                         : pct           ? fmt::format( "{:.1f}%", entry.value * 100 )
                                         : fmt::format( "{}", entry.value );
 
-    os.format( "<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>\n",
-               entry.eff->spell()->name_cstr(),
-               entry.eff->spell()->id(),
-               entry.eff->index() + 1,
-               val_str,
-               value_type_name( entry.type ),
-               util::string_join( notes ) );
+    os.format(
+      "<td>{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td>{}</td><td>{}</td></tr>\n",
+      entry.eff->spell()->name_cstr(),
+      entry.eff->spell()->id(),
+      entry.eff->index() + 1,
+      val_str,
+      value_type_name( entry.type ),
+      util::string_join( notes ) );
   }
 
   void print_parsed_line( report::sc_html_stream& os, const target_effect_t<TD>& entry, bool pct )
@@ -1794,13 +1795,14 @@ public:
                         : pct           ? fmt::format( "{:.1f}%", entry.value * 100 )
                                         : fmt::format( "{}", entry.value );
 
-    os.format( "<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>\n",
-               entry.eff->spell()->name_cstr(),
-               entry.eff->spell()->id(),
-               entry.eff->index() + 1,
-               val_str,
-               "",
-               entry.mastery ? "Mastery" : "" );
+    os.format(
+      "<td>{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td>{}</td><td>{}</td></tr>\n",
+      entry.eff->spell()->name_cstr(),
+      entry.eff->spell()->id(),
+      entry.eff->index() + 1,
+      val_str,
+      "",
+      entry.mastery ? "Mastery" : "" );
   }
 
   void print_parsed_effect( report::sc_html_stream& os, const effect_pack_t& effN, std::string_view n )
@@ -1848,12 +1850,14 @@ public:
   void print_parsed_effect_line( report::sc_html_stream& os, const spelleffect_data_t& eff )
   {
     std::string op_str;
+    std::string val_str = fmt::format( "{}", eff.base_value() );
 
     switch ( eff.subtype() )
     {
       case A_ADD_PCT_MODIFIER:
       case A_ADD_PCT_LABEL_MODIFIER:
         op_str = "PCT";
+        val_str += '%';
         break;
       case A_ADD_FLAT_MODIFIER:
       case A_ADD_FLAT_LABEL_MODIFIER:
@@ -1864,11 +1868,12 @@ public:
         break;
     }
 
-    os.format( "<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>\n",
-                eff.spell()->name_cstr(),
-                eff.spell()->id(),
-                eff.index() + 1,
-                op_str,
-                eff.base_value() );
+    os.format(
+      "<td>{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td>{}</td><td class=\"right\">{}</td></tr>\n",
+      eff.spell()->name_cstr(),
+      eff.spell()->id(),
+      eff.index() + 1,
+      op_str,
+      val_str );
   }
 };
