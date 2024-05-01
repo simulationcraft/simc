@@ -1766,9 +1766,11 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   // Apocalypse Death Knight Runeforge Debuffs
   debuff.apocalypse_death = make_buff( *this, "death", p->spell.apocalypse_death_debuff )  // Effect not implemented
                                 ->apply_affecting_aura( p->talent.unholy_bond );
+
   debuff.apocalypse_famine = make_buff( *this, "famine", p->spell.apocalypse_famine_debuff )
                                  ->set_default_value_from_effect( 1 )
                                  ->apply_affecting_aura( p->talent.unholy_bond );
+
   debuff.apocalypse_war = make_buff( *this, "war", p->spell.apocalypse_war_debuff )
                               ->set_default_value_from_effect( 1 )
                               ->apply_affecting_aura( p->talent.unholy_bond );
@@ -2204,6 +2206,24 @@ struct death_knight_pet_t : public pet_t
     buffs.movement->set_quiet( true );
   }
 
+  // DK pets dont care about armor, return 0 for speed
+  double composite_bonus_armor() const override
+  {
+    return 0;
+  }
+
+  // No DK Pets (currently) heal, return 0 for speed
+  double composite_heal_versatility() const override
+  {
+    return 0;
+  }
+
+  // DK pets dont care about incoming damage, return 0 for speed
+  double composite_mitigation_versatility() const override
+  {
+    return 0;
+  }
+
   double composite_melee_speed() const override
   {
     return current_pet_stats.composite_melee_haste;
@@ -2435,6 +2455,34 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
     else
       pet_melee_attack_t<T>::execute();
   }
+
+  T* pet() const
+  {
+    return debug_cast< T* >( this->player );
+  }
+
+  death_knight_t* dk() const
+  {
+    return debug_cast< death_knight_t* >( debug_cast< pet_t* >( this->player )->owner );
+  }
+
+  // Override a bunch of stuff that attack_t overrides to prevent multiple cache hits
+  double composite_hit() const override
+  {
+    return action_t::composite_hit() + dk()->cache.attack_hit();
+  };
+  double composite_crit_chance() const override
+  {
+    return action_t::composite_crit_chance() + dk()->cache.attack_crit_chance();
+  };
+  double composite_haste() const override
+  {
+    return action_t::composite_haste() + dk()->cache.attack_haste();
+  };
+  double composite_versatility( const action_state_t* state ) const override
+  {
+    return action_t::composite_versatility( state ) + dk()->cache.damage_versatility();
+  };
 };
 
 // ==========================================================================
@@ -12185,7 +12233,7 @@ void death_knight_t::assess_damage_imminent( school_e school, result_amount_type
 
   if ( school != SCHOOL_PHYSICAL )
   {
-    if ( buffs.antimagic_shell->up() && !options.ams_absorb_percent > 0 )
+    if ( buffs.antimagic_shell->up() && options.ams_absorb_percent == 0 )
     {
       double damage_absorbed =
           debug_cast<antimagic_shell_buff_t*>( buffs.antimagic_shell )->absorb_damage( s->result_amount );
@@ -12205,7 +12253,7 @@ void death_knight_t::assess_damage_imminent( school_e school, result_amount_type
       resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), gains.antimagic_shell, s->action );
     }
 
-    if ( buffs.antimagic_zone->up() && !options.amz_absorb_percent > 0 )
+    if ( buffs.antimagic_zone->up() && options.amz_absorb_percent == 0 )
     {
       // AMZ only absorbs 20% of incoming magic damage
       double damage_absorbed =
@@ -12346,7 +12394,7 @@ void death_knight_t::combat_begin()
 
 void death_knight_t::invalidate_cache( cache_e c )
 {
-  player_t::invalidate_cache( c );
+  parse_player_effects_t<death_knight_td_t>::invalidate_cache( c );
 
   switch ( c )
   {
