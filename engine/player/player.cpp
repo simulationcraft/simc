@@ -1201,6 +1201,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     item_cooldown( new cooldown_t("item_cd", *this) ),
     default_item_group_cooldown( 20_s ),
     load_default_gear( false ),
+    load_default_talents( false ),
     auto_attack_modifier( 0.0 ),
     auto_attack_base_modifier( 0.0 ),
     auto_attack_multiplier( 1.0 ),
@@ -2918,6 +2919,26 @@ static void enable_all_talents( player_t* player )
   }
 }
 
+static void enable_default_talents( player_t* player )
+{
+  player->sim->print_debug( "Loading default talents for {}.", *player );
+
+  auto traits = trait_loadout_data_t::data( player->specialization(), player->is_ptr() );
+
+  for ( size_t i = 0; i < traits.size(); i++ )
+  {
+    if ( ( i + 1 ) < traits.size() && traits[ i ].id_trait_node_entry == traits[ i + 1 ].id_trait_node_entry )
+      i++;
+
+    auto trait = trait_data_t::find( traits[ i ].id_trait_node_entry, player->is_ptr() );
+    auto tree = static_cast<talent_tree>( trait->tree_index );
+
+    player->player_traits.emplace_back( tree, traits[ i ].id_trait_node_entry, traits[ i ].rank );
+    player->sim->print_debug( "{} adding {} talent {} ({})", *player, util::talent_tree_string( tree ), trait->name,
+                              traits[ i ].rank );
+  }
+}
+
 void player_t::init_talents()
 {
   sim->print_debug( "Initializing talents for {}.", *this );
@@ -2931,6 +2952,10 @@ void player_t::init_talents()
   if ( sim->enable_all_talents )
   {
     enable_all_talents( this );
+  }
+  else if ( load_default_talents )
+  {
+    enable_default_talents( this );
   }
   else
   {
@@ -12634,6 +12659,7 @@ void player_t::create_options()
   add_option( opt_append( "spec_talents+", spec_talents_str ) );
   add_option( opt_string( "hero_talents", hero_talents_str ) );
   add_option( opt_append( "hero_talents+", hero_talents_str ) );
+  add_option( opt_bool( "load_default_talents", load_default_talents ) );
 
   // Consumables
   add_option( opt_string( "potion", potion_str ) );

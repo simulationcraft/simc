@@ -39,3 +39,16 @@ int character_loadout_data_t::default_item_level()
 {
   return MYTHIC_TARGET_ITEM_LEVEL;
 }
+
+util::span<const trait_loadout_data_t> trait_loadout_data_t::data( bool ptr )
+{
+  return SC_DBC_GET_DATA( __trait_loadout_data, __ptr_trait_loadout_data, ptr );
+}
+
+util::span<const trait_loadout_data_t> trait_loadout_data_t::data( specialization_e spec, bool ptr )
+{
+  auto data = trait_loadout_data_t::data( ptr );
+  auto _spec_range = range::equal_range( data, static_cast<unsigned>( spec ), {}, &trait_loadout_data_t::id_spec );
+
+  return { _spec_range.first, _spec_range.second };
+}

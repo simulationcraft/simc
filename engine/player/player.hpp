@@ -401,6 +401,7 @@ struct player_t : public actor_t
   std::unique_ptr<cooldown_t> item_cooldown;
   timespan_t default_item_group_cooldown;
   bool load_default_gear;
+  bool load_default_talents;
 
   // Misc Multipliers
   // auto attack modifier and multiplier (for Jeweled Signet of Melandrus and similar effects)
