@@ -858,7 +858,7 @@
     "parent": "ItemLogicalCostGroup",
     "fields": [
       { "data_type": "i", "field": "mask_inv_type" },
-      { "data_type": "B", "field": "flags" },
+      { "data_type": "i", "field": "flags" },
       { "data_type": "i", "field": "id_item_extended_cost", "ref": "ItemExtendedCost" }
     ]
   },
