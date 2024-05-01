@@ -9336,15 +9336,15 @@ void demon_hunter_t::parse_player_effects()
   // Shared
   parse_effects( talent.demon_hunter.soul_rending, talent.felscarred.improved_soul_rending );
   parse_effects( talent.demon_hunter.aldrachi_design );
-  parse_effects( buff.demon_spikes, talent.vengeance.deflecting_spikes->ok() ? 0b0 : 0b1 );
-  parse_effects( spec.riposte );
   parse_effects( talent.demon_hunter.internal_struggle, talent.demon_hunter.internal_struggle->effectN( 1 ).base_value() );
-  parse_effects( talent.havoc.scars_of_suffering );
   parse_effects( spell.critical_strikes );
 
   // Havoc
+  parse_effects( talent.havoc.scars_of_suffering );
 
   // Vengeance
+  parse_effects( buff.demon_spikes, talent.vengeance.deflecting_spikes->ok() ? 0b0 : 0b1 );
+  parse_effects( spec.riposte );
 
   // Aldrachi Reaver
 
