@@ -124,7 +124,6 @@ KEY_FIELD_HOTFIX_RECORD = {
     'TraitTree'                   : 'unk_3',
     'TraitEdge'                   : 'id',
     'ModifiedCraftingSpellSlot'   : 'id_spell',
-    'ItemLogicalCost'             : 'id_item_extended_cost',
     'CharacterLoadoutItem'        : 'id_loadout',
 }
 
