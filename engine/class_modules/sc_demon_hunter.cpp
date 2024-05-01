@@ -906,12 +906,9 @@ public:
   double composite_base_armor_multiplier() const override;
   double composite_armor_multiplier() const override;
   double composite_attack_power_multiplier() const override;
-  double composite_attribute_multiplier( attribute_e attr ) const override;
-  double composite_crit_avoidance() const override;
   double composite_dodge() const override;
   double composite_melee_haste() const override;
   double composite_spell_haste() const override;
-  double composite_melee_expertise( const weapon_t* ) const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
@@ -8566,12 +8563,10 @@ double demon_hunter_t::composite_armor() const
 
 double demon_hunter_t::composite_base_armor_multiplier() const
 {
-  double am = player_t::composite_base_armor_multiplier();
+  double am = base_t::composite_base_armor_multiplier();
 
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
-    am *= 1.0 + spec.thick_skin->effectN( 2 ).percent();
-
     if ( buff.metamorphosis->check() )
     {
       am *= 1.0 + spec.metamorphosis_buff->effectN( 8 ).percent();
@@ -8585,7 +8580,7 @@ double demon_hunter_t::composite_base_armor_multiplier() const
 
 double demon_hunter_t::composite_armor_multiplier() const
 {
-  double am = player_t::composite_armor_multiplier();
+  double am = base_t::composite_armor_multiplier();
 
   if ( buff.immolation_aura->check() )
   {
@@ -8604,35 +8599,6 @@ double demon_hunter_t::composite_attack_power_multiplier() const
   ap *= 1.0 + cache.mastery() * mastery.fel_blood_rank_2->effectN( 1 ).mastery_value();
 
   return ap;
-}
-
-// demon_hunter_t::composite_attribute_multiplier ===========================
-
-double demon_hunter_t::composite_attribute_multiplier( attribute_e a ) const
-{
-  double am = player_t::composite_attribute_multiplier( a );
-
-  switch ( a )
-  {
-    case ATTR_STAMINA:
-      am *= 1.0 + spec.thick_skin->effectN( 1 ).percent();
-      break;
-    default:
-      break;
-  }
-
-  return am;
-}
-
-// demon_hunter_t::composite_crit_avoidance =================================
-
-double demon_hunter_t::composite_crit_avoidance() const
-{
-  double ca = player_t::composite_crit_avoidance();
-
-  ca += spec.thick_skin->effectN( 4 ).percent();
-
-  return ca;
 }
 
 // demon_hunter_t::composite_dodge ==========================================
@@ -8672,17 +8638,6 @@ double demon_hunter_t::composite_spell_haste() const
   }
 
   return sh;
-}
-
-// demon_hunter_t::composite_melee_expertise ================================
-
-double demon_hunter_t::composite_melee_expertise( const weapon_t* w ) const
-{
-  double me = player_t::composite_melee_expertise( w );
-
-  me += spec.thick_skin->effectN( 3 ).percent();
-
-  return me;
 }
 
 // demon_hunter_t::composite_player_multiplier ==============================
@@ -9345,6 +9300,7 @@ void demon_hunter_t::parse_player_effects()
   // Vengeance
   parse_effects( buff.demon_spikes, talent.vengeance.deflecting_spikes->ok() ? 0b0 : 0b1 );
   parse_effects( spec.riposte );
+  parse_effects( spec.thick_skin );
 
   // Aldrachi Reaver
 
