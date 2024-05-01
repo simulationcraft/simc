@@ -10692,6 +10692,9 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
     {
     case FIGHT_STYLE_DUNGEON_ROUTE:
     case FIGHT_STYLE_DUNGEON_SLICE:
+      sim->error(
+          "Dungeon Slice and Dungeon Route fight styles do not account for reflected damage, such as Rage of the "
+          "Sleeper, Brambles, Dragonflight Season 3 set bonus, and some trinkets." );
       return false;
     default:
       return true;
