@@ -362,27 +362,23 @@ public:
                                   : fmt::format( "{:.1f}%", val * ( 1 / val_mul ) );
 
     if ( tmp.data.value != 0.0 )
-    {
       val_str = val_str + " (overridden)";
+
+    if constexpr ( is_detected<detect_buff, U>::value )
+    {
+      if ( tmp.data.buff )
+      {
+        if ( tmp.data.type == parse_flag_e::USE_CURRENT )
+          val_str = flat ? "current value" : "current value percent";
+        else if ( tmp.data.type == parse_flag_e::USE_DEFAULT )
+          val_str = val_str + " (default value)";
+      }
+
+      debug_message( tmp.data, type_str, val_str, mastery, s_data, i );
     }
     else
     {
-      if constexpr ( is_detected<detect_buff, U>::value )
-      {
-        if ( tmp.data.buff )
-        {
-          if ( tmp.data.type == parse_flag_e::USE_CURRENT )
-            val_str = flat ? "current value" : "current value percent";
-          else if ( tmp.data.type == parse_flag_e::USE_DEFAULT )
-            val_str = val_str + " (default value)";
-        }
-
-        debug_message( tmp.data, type_str, val_str, mastery, s_data, i );
-      }
-      else
-      {
-        target_debug_message( type_str, val_str, s_data, i );
-      }
+      target_debug_message( type_str, val_str, s_data, i );
     }
 
     tmp.data.value = val;
