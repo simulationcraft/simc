@@ -595,6 +595,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> haste_effects;
   std::vector<player_effect_t> mastery_effects;
   std::vector<player_effect_t> parry_rating_from_crit_effects;
+  std::vector<player_effect_t> dodge_effects;
   std::vector<target_effect_t<TD>> target_multiplier_effects;
   std::vector<target_effect_t<TD>> target_pet_multiplier_effects;
 
@@ -798,6 +799,16 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
     return pr;
   }
 
+  double composite_dodge() const override
+  {
+    auto dodge = player_t::composite_dodge();
+
+    for ( const auto& i : dodge_effects )
+      dodge += get_effect_value( i );
+
+    return dodge;
+  }
+
 private:
   TD* _get_td( player_t* t ) const
   {
@@ -955,8 +966,10 @@ public:
         invalidate( CACHE_PARRY );
         return &parry_effects;
 
+      case A_MOD_RESISTANCE_PCT:
       case A_MOD_BASE_RESISTANCE_PCT:
         str = "armor multiplier";
+        invalidate( CACHE_ARMOR );
         return &armor_multiplier_effects;
 
       case A_MOD_PARRY_FROM_CRIT_RATING:
@@ -964,6 +977,11 @@ public:
         // TODO: better debug message for this, and similar effects
         invalidate_with_parent.push_back( { CACHE_PARRY, CACHE_CRIT_CHANCE } );
         return &parry_rating_from_crit_effects;
+
+      case A_MOD_DODGE_PERCENT:
+        str = "dodge";
+        invalidate( CACHE_DODGE );
+        return &dodge_effects;
 
       default:
         return nullptr;
