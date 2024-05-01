@@ -1223,6 +1223,26 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
       }
     }
 
+    if ( p()->specialization() == PALADIN_PROTECTION /*&& p()->talents.valiance->ok()  && p()->buffs.shining_light_free->up()*/ )
+    {
+      if ( p()->buffs.holy_bulwark->up() )
+      {
+        timespan_t increase = timespan_t::from_seconds( p()->talents.valiance->effectN( 1 ).base_value());
+        p()->buffs.holy_bulwark->extend_duration( p(), increase );
+      }
+      if ( player->buffs.sacred_weapon->up() )
+      {
+        timespan_t increase =
+            timespan_t::from_seconds( /* p()->talents.valiance->effectN( 1 ).base_value() */ 3000 );
+        p()->buffs.sacred_weapon->extend_duration( p(), increase );
+      }
+      if ( !p()->buffs.holy_bulwark->up() && !player->buffs.sacred_weapon->up() )
+      {
+        timespan_t reduction = timespan_t::from_seconds( p()->talents.valiance->effectN( 1 ).base_value() );
+        p()->cooldowns.holy_armament->adjust( reduction );
+      }
+    }
+
     if ( p()->specialization() == PALADIN_HOLY && p()->talents.awakening->ok() )
     {
       if ( rng().roll( p()->talents.awakening->effectN( 1 ).percent() ) )
@@ -1687,12 +1707,14 @@ struct blessing_of_the_seasons_t : public paladin_spell_t
 // Holy Armaments
 // TODO: Add spelldata once fetched
 //Sacred Weapon Driver 
-struct sacred_weapon_proc_t : public spell_t
+template <typename Base, typename Player>
+struct sacred_weapon_proc_t : public Base
 {
-  sacred_weapon_proc_t( player_t* p ) : spell_t( "sacred_weapon_proc", p, p->find_spell( 432502 ) )
+  sacred_weapon_proc_t( Player* p ) : Base( "sacred_weapon_proc", p, p->find_spell( 432616 ) )
   {
-    may_dodge = may_parry = may_block = callbacks = may_crit = false;
-    background                                               = true;
+    Base::background                                               = true;
+    Base::callbacks                                                = false;
+
   }
 };
     // Sacred Weapon Buff
@@ -1701,12 +1723,13 @@ struct sacred_weapon_t : public paladin_spell_t
     //TODO Add Spelldat
     timespan_t buff_duration = 12_s;
 
-    sacred_weapon_t( paladin_t* p ) : paladin_spell_t( "sacred_weapon", p, p->find_spell( 432502 ) )
-   {}
+    sacred_weapon_t( paladin_t* p ) : paladin_spell_t( "sacred_weapon", p )
+   {
+    }
    void execute() override
    {
     paladin_spell_t::execute();
-    p()->buffs.sacred_weapon->trigger( buff_duration );
+    player->buffs.sacred_weapon->trigger();
    }
 };
 
@@ -1716,11 +1739,11 @@ struct holy_bulwark_t : public paladin_spell_t
 
    holy_bulwark_t( paladin_t* p ) : paladin_spell_t( "holy_bulwark", p )
    {
-   }
+    }
    void execute() override
    {
     paladin_spell_t::execute();
-    p()->buffs.holy_bulwark->trigger( buff_duration );
+    p()->buffs.holy_bulwark->trigger();
    }
 };
 
@@ -1745,7 +1768,7 @@ struct holy_armament_t : public paladin_spell_t
    {
     paladin_spell_t::execute();
     p()->active.armament[ p()->next_armament ]->execute();
-    p()->next_armament = armament( ( p()->next_armament + 1 ) & NUM_ARMAMENT );
+    p()->next_armament = armament( ( p()->next_armament + 1 ) % NUM_ARMAMENT );
    }
 };
 
@@ -2460,8 +2483,8 @@ void paladin_t::create_buffs()
               this->active.divine_resonance->set_target( this->target );
               this->active.divine_resonance->schedule_execute();
           } );
-  buffs.sacred_weapon     = make_buff( this, "sacred_weapon", find_spell( 432502 ) );
   buffs.holy_bulwark      = make_buff( this, "holy_bulwark", find_spell( 432496 ) );
+  buffs.sacred_weapon     = make_buff( this, "sacred_weapon", find_spell( 432502 ) );
   buffs.blessed_assurance = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
 }
 
@@ -3729,6 +3752,7 @@ struct paladin_module_t : public module_t
     p->buffs.blessing_of_spring = make_buff( p, "blessing_of_spring", p->find_spell( 328282 ) )
                                       ->set_cooldown( 0_ms )
                                       ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+    p->buffs.sacred_weapon = make_buff( p, "sacred_weapon", p->find_spell( 432502 ) );
   }
 
   void create_actions( player_t* p ) const override
@@ -3769,7 +3793,8 @@ struct paladin_module_t : public module_t
           } );
     }
 
-    if ( !p->external_buffs.blessing_of_winter.empty() )
+    //if ( !p->external_buffs.blessing_of_winter.empty() )
+    if (true)
     {
       action_t* winter_proc;
       if ( p->type == PALADIN )
@@ -3795,6 +3820,35 @@ struct paladin_module_t : public module_t
           winter_cb->activate();
         else
           winter_cb->deactivate();
+      } );
+    }
+    //if ( !p->external_buffs.sacred_weapon.empty() )
+      if (true)
+    {
+      action_t* sacred_weapon_proc;
+      if ( p->type == PALADIN )
+        // Some Paladin auras affect this spell and are handled in paladin_spell_t.
+        sacred_weapon_proc = new sacred_weapon_proc_t<paladin_spell_t, paladin_t>( debug_cast<paladin_t*>( p ) );
+      else
+        sacred_weapon_proc = new sacred_weapon_proc_t<spell_t, player_t>( p );
+
+      auto sacred_weapon_effect            = new special_effect_t( p );
+      sacred_weapon_effect->name_str       = "sacred_weapon_cb";
+      sacred_weapon_effect->type           = SPECIAL_EFFECT_EQUIP;
+      sacred_weapon_effect->spell_id       = 432502;
+      sacred_weapon_effect->cooldown_      = p->find_spell( 328281 )->internal_cooldown();
+      sacred_weapon_effect->execute_action = sacred_weapon_proc;
+      p->special_effects.push_back( sacred_weapon_effect );
+
+      auto sacred_weapon_cb = new dbc_proc_callback_t( p, *sacred_weapon_effect );
+      sacred_weapon_cb->deactivate();
+      sacred_weapon_cb->initialize();
+
+       p->buffs.sacred_weapon->set_stack_change_callback( [ sacred_weapon_cb ]( buff_t*, int, int new_ ) {
+        if ( new_ )
+          sacred_weapon_cb->activate();
+      else
+          sacred_weapon_cb->deactivate();
       } );
     }
   }

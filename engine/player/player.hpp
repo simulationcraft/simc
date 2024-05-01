@@ -512,6 +512,7 @@ struct player_t : public actor_t
     buff_t* blessing_of_winter; // Night Fae Paladin spell
     buff_t* blessing_of_spring; // Night Fae Paladin spell
     buff_t* conquerors_banner; // Necrolord Warrior spell
+    buff_t* sacred_weapon;     
 
     // 9.0 Soulbinds
     buff_t* wild_hunt_tactics;  // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
@@ -595,6 +596,7 @@ struct player_t : public actor_t
     std::vector<timespan_t> blessing_of_autumn;
     std::vector<timespan_t> blessing_of_winter;
     std::vector<timespan_t> blessing_of_spring;
+    std::vector<timespan_t> sacred_weapon;
     std::vector<timespan_t> conquerors_banner;
     std::vector<timespan_t> rallying_cry;
     std::vector<timespan_t> pact_of_the_soulstalkers;

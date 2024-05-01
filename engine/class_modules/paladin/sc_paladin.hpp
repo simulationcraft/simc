@@ -202,8 +202,8 @@ public:
     buff_t* blessed_assurance;
     buff_t* rite_of_sanctification;
     buff_t* rite_of_adjuration;
-    buff_t* sacred_weapon;
     buff_t* holy_bulwark;
+    buff_t* sacred_weapon;
 
   } buffs;
 
@@ -557,9 +557,22 @@ public:
     const spell_data_t* searing_light;
 
     // Hero Talents
-    const spell_data_t* blessed_assurance;
     const spell_data_t* holy_bulwark;
     const spell_data_t* sacred_weapon;
+    const spell_data_t* rite_of_sanctification;
+    const spell_data_t* rite_of_adjuratuion;
+    const spell_data_t* laying_down_arms;
+    const spell_data_t* shared_resolve;
+    const spell_data_t* solidraity;
+    const spell_data_t* divine_inspiration;
+    const spell_data_t* forewarning;
+    const spell_data_t* valiance;
+    const spell_data_t* divine_guidance;
+    const spell_data_t* blessed_assurance;
+    const spell_data_t* fear_no_evil;
+    const spell_data_t* excoriation;
+    const spell_data_t* hammer_and_anvil;
+    const spell_data_t* blessing_of_the_forge;
   } talents;
 
   struct tier_sets_t
