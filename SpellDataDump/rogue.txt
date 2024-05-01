@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.6.54358 Live
+SimulationCraft 1026-01 for World of Warcraft 10.2.6.54499 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -4751,7 +4751,6 @@ Critical strikes with Shuriken Storm apply Find Weakness for $319949s1 sec.][]
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Veil of Midnight (id=198952) [Passive, Hidden] 
-Hotfixed         : Description
 Class            : Rogue
 School           : Physical
 Spell Type       : None

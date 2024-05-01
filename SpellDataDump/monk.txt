@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.6.54358 Live
+SimulationCraft 1026-01 for World of Warcraft 10.2.6.54499 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -14410,7 +14410,6 @@ Effects          :
 Description      : Gust of Mists has a $s2% chance to do $s1% more healing.
 
 Name             : Ancient Teachings (id=388023) [Spell Family (53), Passive] 
-Hotfixed         : Variables
 Talent Entry     : Mistweaver [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
 School           : Physical
@@ -14458,11 +14457,9 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=1023473)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 2.50000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
-Hotfixed         : PvP Coefficient (2.75 -> 2.5)
 Description      : $@spelldesc388023
 
 Name             : Ancient Teachings (id=388026) [Spell Family (53)] 
-Hotfixed         : Variables
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -18937,12 +18934,10 @@ Effects          :
                    Base Value: -13 | Scaled Value: -13 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Celestial Breath (325212), Soothing Mist (328283), Gust of Mists (328748), Yu'lon's Whisper (337268), Soothing Breath (343737), Gust of Mists (343819), Enveloping Mist (344008), Faeline Stomp (345727), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804)
                    Family Flags: 48
-Hotfixed         : NEW EFFECT
 #20 (id=1141413)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -13 | Scaled Value: -13 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Celestial Breath (325212), Soothing Mist (328283), Gust of Mists (328748), Yu'lon's Whisper (337268), Soothing Breath (343737), Gust of Mists (343819), Enveloping Mist (344008), Faeline Stomp (345727), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804)
                    Family Flags: 48
-Hotfixed         : NEW EFFECT
 Description      : Mistweaver Monk core passive
 
 Name             : Healing Elixir (id=428439) [Spell Family (53)] 

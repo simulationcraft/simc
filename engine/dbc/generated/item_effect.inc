@@ -1,4 +1,4 @@
-// Item effects, wow build 10.2.6.54358
+// Item effects, wow build 10.2.6.54499
 static const std::array<item_effect_t, 9045> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
