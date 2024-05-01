@@ -1422,7 +1422,7 @@ void player_t::init()
   // Validate current fight style is supported by the actor's module.
   if ( !validate_fight_style( sim->fight_style ) )
   {
-    sim->error( "Player {} does not support fight style {}, results may be unreliable.", *this,
+    sim->error( "{} does not support fight style {}, results may be unreliable.", *this,
                 util::fight_style_string( sim->fight_style ) );
   }
 
