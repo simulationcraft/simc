@@ -3390,7 +3390,8 @@ struct celestial_alignment_buff_t : public druid_buff_t
       p()->buff.eclipse_solar->trigger( d );
       p()->eclipse_handler.update_eclipse( eclipse_e::SOLAR );
 
-      p()->active.orbital_strike->execute_on_target( p()->target );
+      if ( p()->active.orbital_strike )
+        p()->active.orbital_strike->execute_on_target( p()->target );
     }
 
     return ret;
