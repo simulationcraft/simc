@@ -911,11 +911,9 @@ public:
   double composite_dodge() const override;
   double composite_melee_haste() const override;
   double composite_spell_haste() const override;
-  double composite_melee_crit_chance() const override;
   double composite_melee_expertise( const weapon_t* ) const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
-  double composite_spell_crit_chance() const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double stacking_movement_modifier() const override;
 
@@ -8676,17 +8674,6 @@ double demon_hunter_t::composite_spell_haste() const
   return sh;
 }
 
-// demon_hunter_t::composite_melee_crit_chance ==============================
-
-double demon_hunter_t::composite_melee_crit_chance() const
-{
-  double mc = player_t::composite_melee_crit_chance();
-
-  mc += spell.critical_strikes->effectN( 1 ).percent();
-
-  return mc;
-}
-
 // demon_hunter_t::composite_melee_expertise ================================
 
 double demon_hunter_t::composite_melee_expertise( const weapon_t* w ) const
@@ -8722,17 +8709,6 @@ double demon_hunter_t::composite_player_critical_damage_multiplier( const action
   }
 
   return m;
-}
-
-// demon_hunter_t::composite_spell_crit_chance ==============================
-
-double demon_hunter_t::composite_spell_crit_chance() const
-{
-  double sc = player_t::composite_spell_crit_chance();
-
-  sc += spell.critical_strikes->effectN( 1 ).percent();
-
-  return sc;
 }
 
 // demon_hunter_t::matching_gear_multiplier =================================
@@ -9364,6 +9340,7 @@ void demon_hunter_t::parse_player_effects()
   parse_effects( spec.riposte );
   parse_effects( talent.demon_hunter.internal_struggle, talent.demon_hunter.internal_struggle->effectN( 1 ).base_value() );
   parse_effects( talent.havoc.scars_of_suffering );
+  parse_effects( spell.critical_strikes );
 
   // Havoc
 
