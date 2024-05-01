@@ -916,10 +916,6 @@ public:
   double composite_player_multiplier( school_e ) const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_spell_crit_chance() const override;
-  double composite_mastery() const override;
-  double composite_damage_versatility() const override;
-  double composite_heal_versatility() const override;
-  double composite_mitigation_versatility() const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double stacking_movement_modifier() const override;
 
@@ -8739,50 +8735,6 @@ double demon_hunter_t::composite_spell_crit_chance() const
   return sc;
 }
 
-// demon_hunter_t::composite_mastery ========================================
-
-double demon_hunter_t::composite_mastery() const
-{
-  double cm = player_t::composite_mastery();
-
-  cm += talent.demon_hunter.internal_struggle->effectN( 1 ).base_value();
-
-  return cm;
-}
-
-// demon_hunter_t::composite_damage_versatility ============================
-
-double demon_hunter_t::composite_damage_versatility() const
-{
-  double cdv = player_t::composite_damage_versatility();
-
-  cdv += talent.havoc.scars_of_suffering->effectN( 1 ).percent();
-
-  return cdv;
-}
-
-// demon_hunter_t::composite_heal_versatility ==============================
-
-double demon_hunter_t::composite_heal_versatility() const
-{
-  double chv = player_t::composite_heal_versatility();
-
-  chv += talent.havoc.scars_of_suffering->effectN( 1 ).percent();
-
-  return chv;
-}
-
-// demon_hunter_t::composite_mitigation_versatility ========================
-
-double demon_hunter_t::composite_mitigation_versatility() const
-{
-  double cmv = player_t::composite_mitigation_versatility();
-
-  cmv += talent.havoc.scars_of_suffering->effectN( 1 ).percent();
-
-  return cmv;
-}
-
 // demon_hunter_t::matching_gear_multiplier =================================
 
 double demon_hunter_t::matching_gear_multiplier( attribute_e attr ) const
@@ -9410,6 +9362,8 @@ void demon_hunter_t::parse_player_effects()
   parse_effects( talent.demon_hunter.aldrachi_design );
   parse_effects( buff.demon_spikes, talent.vengeance.deflecting_spikes->ok() ? 0b0 : 0b1 );
   parse_effects( spec.riposte );
+  parse_effects( talent.demon_hunter.internal_struggle, talent.demon_hunter.internal_struggle->effectN( 1 ).base_value() );
+  parse_effects( talent.havoc.scars_of_suffering );
 
   // Havoc
 
