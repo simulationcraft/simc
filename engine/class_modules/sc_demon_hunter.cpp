@@ -906,7 +906,6 @@ public:
   double composite_base_armor_multiplier() const override;
   double composite_armor_multiplier() const override;
   double composite_attack_power_multiplier() const override;
-  double composite_dodge() const override;
   double composite_melee_haste() const override;
   double composite_spell_haste() const override;
   double composite_player_multiplier( school_e ) const override;
@@ -8601,17 +8600,6 @@ double demon_hunter_t::composite_attack_power_multiplier() const
   return ap;
 }
 
-// demon_hunter_t::composite_dodge ==========================================
-
-double demon_hunter_t::composite_dodge() const
-{
-  double d = player_t::composite_dodge();
-
-  d += buff.blur->check() * buff.blur->data().effectN( 2 ).percent();
-
-  return d;
-}
-
 // demon_hunter_t::composite_melee_haste  ===================================
 
 double demon_hunter_t::composite_melee_haste() const
@@ -9296,6 +9284,7 @@ void demon_hunter_t::parse_player_effects()
 
   // Havoc
   parse_effects( talent.havoc.scars_of_suffering );
+  parse_effects( buff.blur );
 
   // Vengeance
   parse_effects( buff.demon_spikes, talent.vengeance.deflecting_spikes->ok() ? 0b0 : 0b1 );
