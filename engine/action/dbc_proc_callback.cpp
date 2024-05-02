@@ -331,7 +331,7 @@ player_t* dbc_proc_callback_t::target( const action_state_t* state ) const
     case ACTION_ABSORB:
     case ACTION_HEAL:
       return listener;
-      // The rest are targeted to the source of the callback event
+      // The rest are targeted to the target of the source of the callback event
     default:
       return state->action->player->target;
   }
