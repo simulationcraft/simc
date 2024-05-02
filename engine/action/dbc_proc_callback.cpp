@@ -119,7 +119,7 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
     if ( proc_action && proc_action->harmful )
     {
       // Don't allow players to harm other players, and enemies harm other enemies
-      if ( state->action && state->action->player->is_enemy() == target( state )->is_enemy() )
+      if ( state->action && state->action->player->is_enemy() == state->target->is_enemy() )
       {
         return;
       }
@@ -333,7 +333,7 @@ player_t* dbc_proc_callback_t::target( const action_state_t* state ) const
       return listener;
       // The rest are targeted to the target of the source of the callback event
     default:
-      return state->action->player->target;
+      return state->action->player;
   }
 }
 
