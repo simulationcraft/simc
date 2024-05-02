@@ -689,22 +689,24 @@ public:
     cooldown_t* immolation_aura;
     cooldown_t* the_hunt;
     cooldown_t* spectral_sight;
+    cooldown_t* sigil_of_flame;
+    cooldown_t* sigil_of_misery;
+    cooldown_t* metamorphosis;
+    cooldown_t* throw_glaive;
+    cooldown_t* vengeful_retreat;
+    cooldown_t* chaos_nova;
 
     // Havoc
     cooldown_t* blade_dance;
     cooldown_t* blur;
-    cooldown_t* chaos_nova;
     cooldown_t* chaos_strike_refund_icd;
     cooldown_t* essence_break;
     cooldown_t* demonic_appetite;
     cooldown_t* eye_beam;
     cooldown_t* fel_barrage;
     cooldown_t* fel_rush;
-    cooldown_t* metamorphosis;
     cooldown_t* netherwalk;
     cooldown_t* relentless_onslaught_icd;
-    cooldown_t* throw_glaive;
-    cooldown_t* vengeful_retreat;
     cooldown_t* movement_shared;
 
     // Vengeance
@@ -712,8 +714,6 @@ public:
     cooldown_t* fiery_brand;
     cooldown_t* fel_devastation;
     cooldown_t* sigil_of_chains;
-    cooldown_t* sigil_of_flame;
-    cooldown_t* sigil_of_misery;
     cooldown_t* sigil_of_silence;
     cooldown_t* volatile_flameblood_icd;
   } cooldown;
@@ -3133,8 +3133,8 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
     : demon_hunter_sigil_t( name, p, p->spell.sigil_of_flame_damage, delay )
   {
     tick_on_application = false;
-    dot_max_stack = 1;
-    dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
+    dot_max_stack       = 1;
+    dot_behavior        = dot_behavior_e::DOT_REFRESH_DURATION;
 
     if ( p->talent.demon_hunter.flames_of_fury->ok() )
     {
@@ -8483,29 +8483,29 @@ void demon_hunter_t::create_cooldowns()
   cooldown.immolation_aura = get_cooldown( "immolation_aura" );
   cooldown.the_hunt        = get_cooldown( "the_hunt" );
   cooldown.spectral_sight  = get_cooldown( "spectral_sight" );
+  cooldown.sigil_of_flame  = get_cooldown( "sigil_of_flame" );
+  cooldown.sigil_of_misery = get_cooldown( "sigil_of_misery" );
+  cooldown.throw_glaive             = get_cooldown( "throw_glaive" );
+  cooldown.vengeful_retreat         = get_cooldown( "vengeful_retreat" );
+  cooldown.chaos_nova               = get_cooldown( "chaos_nova" );
+  cooldown.metamorphosis            = get_cooldown( "metamorphosis" );
 
   // Havoc
   cooldown.blade_dance              = get_cooldown( "blade_dance" );
   cooldown.blur                     = get_cooldown( "blur" );
-  cooldown.chaos_nova               = get_cooldown( "chaos_nova" );
   cooldown.chaos_strike_refund_icd  = get_cooldown( "chaos_strike_refund_icd" );
   cooldown.essence_break            = get_cooldown( "essence_break" );
   cooldown.eye_beam                 = get_cooldown( "eye_beam" );
   cooldown.fel_barrage              = get_cooldown( "fel_barrage" );
   cooldown.fel_rush                 = get_cooldown( "fel_rush" );
-  cooldown.metamorphosis            = get_cooldown( "metamorphosis" );
   cooldown.netherwalk               = get_cooldown( "netherwalk" );
   cooldown.relentless_onslaught_icd = get_cooldown( "relentless_onslaught_icd" );
-  cooldown.throw_glaive             = get_cooldown( "throw_glaive" );
-  cooldown.vengeful_retreat         = get_cooldown( "vengeful_retreat" );
   cooldown.movement_shared          = get_cooldown( "movement_shared" );
 
   // Vengeance
   cooldown.demon_spikes            = get_cooldown( "demon_spikes" );
   cooldown.fiery_brand             = get_cooldown( "fiery_brand" );
   cooldown.sigil_of_chains         = get_cooldown( "sigil_of_chains" );
-  cooldown.sigil_of_flame          = get_cooldown( "sigil_of_flame" );
-  cooldown.sigil_of_misery         = get_cooldown( "sigil_of_misery" );
   cooldown.sigil_of_silence        = get_cooldown( "sigil_of_silence" );
   cooldown.fel_devastation         = get_cooldown( "fel_devastation" );
   cooldown.volatile_flameblood_icd = get_cooldown( "volatile_flameblood_icd" );
@@ -9279,7 +9279,8 @@ void demon_hunter_t::parse_player_effects()
   // Shared
   parse_effects( talent.demon_hunter.soul_rending, talent.felscarred.improved_soul_rending );
   parse_effects( talent.demon_hunter.aldrachi_design );
-  parse_effects( talent.demon_hunter.internal_struggle, talent.demon_hunter.internal_struggle->effectN( 1 ).base_value() );
+  parse_effects( talent.demon_hunter.internal_struggle,
+                 talent.demon_hunter.internal_struggle->effectN( 1 ).base_value() );
   parse_effects( spell.critical_strikes );
 
   // Havoc
