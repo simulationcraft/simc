@@ -11085,6 +11085,9 @@ void death_knight_t::init_base_stats()
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility  = 0.0;
   base.spell_power_per_intellect = 1.0;
+  base.attack_crit_chance += talent.merciless_strikes->effectN( 1 ).percent();
+  base.spell_crit_chance += talent.merciless_strikes->effectN( 1 ).percent();
+  base.leech += talent.blood_scent->effectN( 1 ).percent();
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
   resources.base[ RESOURCE_RUNIC_POWER ] += spec.blood_death_knight->effectN( 12 ).resource( RESOURCE_RUNIC_POWER );
@@ -12529,9 +12532,7 @@ void death_knight_t::parse_player_effects()
   parse_effects( buffs.empower_rune_weapon, talent.empower_rune_weapon, talent.frost.empower_rune_weapon );
   parse_effects( buffs.stoneskin_gargoyle, talent.unholy_bond );
   parse_effects( talent.veteran_of_the_third_war, spec.blood_death_knight );
-  parse_effects( talent.merciless_strikes );
   parse_effects( talent.might_of_thassarian );
-  parse_effects( talent.blood_scent );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), spell.brittle_debuff );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), spell.apocalypse_war_debuff, talent.unholy_bond );
 
