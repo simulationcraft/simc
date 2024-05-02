@@ -4818,7 +4818,7 @@ double player_t::composite_heal_versatility() const
 
 double player_t::composite_mitigation_versatility() const
 {
-  double cmv = current.versatility;
+  double cmv = current.versatility / 2;
 
   cmv += apply_combat_rating_dr( RATING_MITIGATION_VERSATILITY,
            composite_mitigation_versatility_rating() / current.rating.mitigation_versatility );
