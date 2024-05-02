@@ -12,6 +12,7 @@
 #include "sim/expressions.hpp"
 #include "unique_gear_dragonflight.hpp"
 #include "unique_gear_shadowlands.hpp"
+#include "unique_gear_thewarwithin.hpp"
 #include "util/util.hpp"
 
 #include <cctype>
@@ -4900,6 +4901,8 @@ void unique_gear::register_special_effects()
 
   dragonflight::register_special_effects();
 
+  thewarwithin::register_special_effects();
+
   /* Legacy Effects, pre-5.0 */
   register_special_effect( 45481,  "ProcOn/hit_45479Trigger"            ); /* Shattered Sun Pendant of Acumen */
   register_special_effect( 45482,  "ProcOn/hit_45480Trigger"            ); /* Shattered Sun Pendant of Might */
@@ -5104,6 +5107,7 @@ void unique_gear::register_hotfixes()
   register_hotfixes_bfa();
   shadowlands::register_hotfixes();
   dragonflight::register_hotfixes();
+  thewarwithin::register_hotfixes();
 }
 
 void unique_gear::register_target_data_initializers( sim_t* sim )
@@ -5121,6 +5125,8 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   covenant::soulbinds::register_target_data_initializers( sim );
 
   dragonflight::register_target_data_initializers( *sim );
+
+  thewarwithin::register_target_data_initializers( *sim );
 }
 
 special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned spell_id, special_effect_e type )
