@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54361 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54521 thewarwithin-BETA
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -614,7 +614,7 @@ School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Venomous Totem (23726 effect#2), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1)
+Affecting spells : Venomous Totem (23726 effect#2), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Destiny Defined (454435 effect#1)
 Triggered by     : Deadly Poison (2823)
 Family Flags     : 16, 51, 54
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
@@ -645,7 +645,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapo
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Venomous Totem (23726 effect#2), Envenom (32645 effects: #2, #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Stealth (115191 effect#4), Nightstalker (130493 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Toxic Blade (245389 effect#1), Shiv (319504 effect#1), Lethal Poisons (341539 effect#1), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effect#1), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3)
+Affecting spells : Venomous Totem (23726 effect#2), Envenom (32645 effects: #2, #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Stealth (115191 effect#4), Nightstalker (130493 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Toxic Blade (245389 effect#1), Shiv (319504 effect#1), Lethal Poisons (341539 effect#1), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effect#1), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Destiny Defined (454435 effect#1)
 Family Flags     : 16, 64
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
@@ -727,7 +727,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapo
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Envenom (32645 effect#2), Mastery: Potent Assassin (76803 effects: #1, #2), Stealth (115191 effect#4), Master Poisoner (196864 effect#3), Grudge Match (364668 effect#1), Master Poisoner (378436 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Poisoned Edges (409587 effects: #1, #3), Superior Mixture (423701 effect#1), Natureblight (426568 effects: #2, #3)
+Affecting spells : Envenom (32645 effect#2), Mastery: Potent Assassin (76803 effects: #1, #2), Stealth (115191 effect#4), Master Poisoner (196864 effect#3), Grudge Match (364668 effect#1), Master Poisoner (378436 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Poisoned Edges (409587 effects: #1, #3), Superior Mixture (423701 effect#1), Natureblight (426568 effects: #2, #3), Destiny Defined (454435 effect#1)
 Family Flags     : 14, 64
 Attributes       : ....x... ........ x....... ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
@@ -752,7 +752,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 12 seconds
 Mechanic         : Snare
-Affecting spells : Mastery: Potent Assassin (76803 effects: #1, #2), Master Poisoner (196864 effect#3), Grudge Match (364668 effect#1), Master Poisoner (378436 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Dark Brew (382504 effects: #1, #2, #3), Poisoned Edges (409587 effects: #1, #3), Superior Mixture (423701 effect#1), Natureblight (426568 effects: #2, #3)
+Affecting spells : Mastery: Potent Assassin (76803 effects: #1, #2), Master Poisoner (196864 effect#3), Grudge Match (364668 effect#1), Master Poisoner (378436 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Dark Brew (382504 effects: #1, #2, #3), Poisoned Edges (409587 effects: #1, #3), Superior Mixture (423701 effect#1), Natureblight (426568 effects: #2, #3), Destiny Defined (454435 effect#1)
 Triggered by     : Crippling Poison (3408)
 Family Flags     : 14, 51
 Attributes       : ........ ........ ........ ........   ...x...x ........ .x...... ........ 
@@ -876,7 +876,7 @@ Spell Type       : Melee
 Range            : 100 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
-Affecting spells : Master Poisoner (196864 effects: #1, #3, #4), Master Poisoner (378436 effects: #1, #2), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3)
+Affecting spells : Master Poisoner (196864 effects: #1, #3, #4), Master Poisoner (378436 effects: #1, #2), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Destiny Defined (454435 effect#1)
 Triggered by     : Numbing Poison (5761)
 Family Flags     : 51, 83
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -908,7 +908,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapo
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Envenom (32645 effect#2), Stealth (115191 effect#4), Master Poisoner (196864 effects: #1, #3, #4), Master Poisoner (378436 effects: #1, #2), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3)
+Affecting spells : Envenom (32645 effect#2), Stealth (115191 effect#4), Master Poisoner (196864 effects: #1, #3, #4), Master Poisoner (378436 effects: #1, #2), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Destiny Defined (454435 effect#1)
 Family Flags     : 64, 83
 Attributes       : ....x... ........ x....... ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
@@ -1044,7 +1044,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapo
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Envenom (32645 effects: #2, #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Stealth (115191 effect#4), Nightstalker (130493 effect#1), Master Poisoner (196864 effects: #1, #4), Toxic Blade (245389 effect#1), Shiv (319504 effect#1), Lethal Poisons (341539 effect#1), Master Poisoner (378436 effect#2), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effect#1), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3)
+Affecting spells : Envenom (32645 effects: #2, #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Stealth (115191 effect#4), Nightstalker (130493 effect#1), Master Poisoner (196864 effects: #1, #4), Toxic Blade (245389 effect#1), Shiv (319504 effect#1), Lethal Poisons (341539 effect#1), Master Poisoner (378436 effect#2), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effect#1), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Destiny Defined (454435 effect#1)
 Family Flags     : 28, 64
 Attributes       : ....x... ........ x....... ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
@@ -1070,7 +1070,7 @@ Range            : 100 yards
 Duration         : 12 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Poison Knives (192376 effect#2), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #4), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Improved Wound Poison (319066 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Master Poisoner (378436 effect#2), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Poison Knives (192376 effect#2), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #4), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Improved Wound Poison (319066 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Master Poisoner (378436 effect#2), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Destiny Defined (454435 effect#1)
 Triggered by     : Wound Poison (8679)
 Family Flags     : 28, 51, 54, 120
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
@@ -2691,7 +2691,7 @@ School           : Nature
 Spell Type       : Melee
 Spell Level      : 10
 Range            : 100 yards
-Affecting spells : Venomous Totem (23726 effect#2), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effect#1), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1)
+Affecting spells : Venomous Totem (23726 effect#2), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effect#1), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Destiny Defined (454435 effect#1)
 Family Flags     : 16, 54
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -2844,7 +2844,7 @@ Spell Type       : Melee
 Range            : 100 yards
 Duration         : 5 seconds
 Mechanic         : Snare
-Affecting spells : Master Poisoner (196864 effects: #1, #3, #4), Master Poisoner (378436 effects: #1, #2), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3)
+Affecting spells : Master Poisoner (196864 effects: #1, #3, #4), Master Poisoner (378436 effects: #1, #2), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Destiny Defined (454435 effect#1)
 Family Flags     : 51, 83
 Attributes       : ........ ........ ........ ........   ...x...x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   ........ ........ ........ ......x. 
@@ -8928,7 +8928,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapo
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Venomous Totem (23726 effect#2), Envenom (32645 effects: #2, #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Stealth (115191 effect#4), Nightstalker (130493 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Toxic Blade (245389 effect#1), Shiv (319504 effect#1), Lethal Poisons (341539 effect#1), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effect#1), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3)
+Affecting spells : Venomous Totem (23726 effect#2), Envenom (32645 effects: #2, #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Stealth (115191 effect#4), Nightstalker (130493 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Toxic Blade (245389 effect#1), Shiv (319504 effect#1), Lethal Poisons (341539 effect#1), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effect#1), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Destiny Defined (454435 effect#1)
 Family Flags     : 16, 64
 Attributes       : ....x... ........ x....... ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
@@ -8950,7 +8950,7 @@ Class            : Rogue
 School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
-Affecting spells : Venomous Totem (23726 effect#2), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1)
+Affecting spells : Venomous Totem (23726 effect#2), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Destiny Defined (454435 effect#1)
 Triggered by     : Instant Poison (315584)
 Family Flags     : 16, 51, 54
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
@@ -9419,7 +9419,7 @@ School           : Shadow
 Spell Type       : Melee
 Spell Level      : 10
 Range            : 100 yards
-Affecting spells : Venomous Totem (23726 effect#2), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effect#1), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1)
+Affecting spells : Venomous Totem (23726 effect#2), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effect#1), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Destiny Defined (454435 effect#1)
 Family Flags     : 16, 54
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -11577,7 +11577,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 5 seconds
 Mechanic         : Snare
-Affecting spells : Mastery: Potent Assassin (76803 effects: #1, #2), Master Poisoner (196864 effect#3), Grudge Match (364668 effect#1), Master Poisoner (378436 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Dark Brew (382504 effects: #1, #2, #3), Poisoned Edges (409587 effects: #1, #3), Superior Mixture (423701 effect#1), Natureblight (426568 effects: #2, #3)
+Affecting spells : Mastery: Potent Assassin (76803 effects: #1, #2), Master Poisoner (196864 effect#3), Grudge Match (364668 effect#1), Master Poisoner (378436 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Dark Brew (382504 effects: #1, #2, #3), Poisoned Edges (409587 effects: #1, #3), Superior Mixture (423701 effect#1), Natureblight (426568 effects: #2, #3), Destiny Defined (454435 effect#1)
 Family Flags     : 14, 51
 Attributes       : ........ ........ ........ ........   ...x...x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   ........ ........ ........ ......x. 
@@ -12653,7 +12653,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapo
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Envenom (32645 effect#2), Stealth (115191 effect#4), Master Poisoner (378436 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3)
+Affecting spells : Envenom (32645 effect#2), Stealth (115191 effect#4), Master Poisoner (378436 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Destiny Defined (454435 effect#1)
 Family Flags     : 45, 64
 Attributes       : ....x... ........ x....... ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
@@ -12721,7 +12721,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapo
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Envenom (32645 effects: #2, #3, #7), Mastery: Potent Assassin (76803 effect#1), Stealth (115191 effect#4), Nightstalker (130493 effect#1), Shiv (319504 effect#1), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3)
+Affecting spells : Envenom (32645 effects: #2, #3, #7), Mastery: Potent Assassin (76803 effect#1), Stealth (115191 effect#4), Nightstalker (130493 effect#1), Shiv (319504 effect#1), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Destiny Defined (454435 effect#1)
 Triggered by     : Master Poisoner (378436)
 Family Flags     : 64, 68
 Attributes       : ....x... ........ x....... ........   .....x.. ........ .x...... ........ 
@@ -13875,7 +13875,7 @@ Range            : 100 yards
 Duration         : 12 seconds
 Stacks           : 20 maximum
 Proc Chance      : 101%
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Destiny Defined (454435 effect#1)
 Triggered by     : Amplifying Poison (381664)
 Family Flags     : 51, 54, 68
 Attributes       : ........ ........ .....x.. ..x.....   ...x.x.x ........ .x...... ........ 
@@ -14695,7 +14695,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 10 seconds
-Affecting spells : Master Poisoner (378436 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Dark Brew (382504 effects: #1, #2, #3), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3)
+Affecting spells : Master Poisoner (378436 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Dark Brew (382504 effects: #1, #2, #3), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Destiny Defined (454435 effect#1)
 Triggered by     : Atrophic Poison (381637)
 Family Flags     : 45, 51
 Attributes       : ........ ........ ........ ........   ...x...x ........ .x...... ........ 
@@ -15347,7 +15347,7 @@ Spell Type       : Melee
 Range            : 100 yards
 Duration         : 12 seconds
 Labels           : 2352: Deathmark (394331 effect#1), Deathmark (394331 effect#2), Deathmark (394331 effect#3), Deathmark (394331 effect#4)
-Affecting spells : Venomous Totem (23726 effect#2), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1)
+Affecting spells : Venomous Totem (23726 effect#2), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Destiny Defined (454435 effect#1)
 Family Flags     : 16, 51, 54
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ ........   .......x ........ ........ ......x. 
@@ -15370,7 +15370,7 @@ School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
 Labels           : 2352: Deathmark (394331 effect#1), Deathmark (394331 effect#2), Deathmark (394331 effect#3), Deathmark (394331 effect#4)
-Affecting spells : Venomous Totem (23726 effect#2), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effect#1), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1)
+Affecting spells : Venomous Totem (23726 effect#2), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effect#1), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Destiny Defined (454435 effect#1)
 Family Flags     : 16, 54
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -15392,7 +15392,7 @@ School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
 Labels           : 2352: Deathmark (394331 effect#1), Deathmark (394331 effect#2), Deathmark (394331 effect#3), Deathmark (394331 effect#4)
-Affecting spells : Venomous Totem (23726 effect#2), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1)
+Affecting spells : Venomous Totem (23726 effect#2), Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Destiny Defined (454435 effect#1)
 Family Flags     : 16, 51, 54
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ ........   .......x ........ ........ ......x. 
@@ -15418,7 +15418,7 @@ Duration         : 12 seconds
 Labels           : 2352: Deathmark (394331 effect#1), Deathmark (394331 effect#2), Deathmark (394331 effect#3), Deathmark (394331 effect#4)
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Poison Knives (192376 effect#2), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #4), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Improved Wound Poison (319066 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Master Poisoner (378436 effect#2), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Poison Knives (192376 effect#2), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Master Poisoner (196864 effects: #1, #4), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Improved Wound Poison (319066 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Lethal Poisons (341539 effect#1), Deathly Shadows (350964 effects: #1, #2), Master Poisoner (378436 effect#2), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Destiny Defined (454435 effect#1)
 Family Flags     : 28, 51, 54, 120
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -15448,7 +15448,7 @@ Duration         : 12 seconds
 Labels           : 2352: Deathmark (394331 effect#1), Deathmark (394331 effect#2), Deathmark (394331 effect#3), Deathmark (394331 effect#4)
 Stacks           : 20 maximum
 Proc Chance      : 101%
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #3, #7), Mastery: Potent Assassin (76803 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Dark Brew (382504 effects: #1, #2, #3), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Destiny Defined (454435 effect#1)
 Family Flags     : 51, 54, 68
 Attributes       : ........ ........ .....x.. ..x.....   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ ........   .......x ........ ........ ......x. 
@@ -17356,8 +17356,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), Active Threat (94), No Durability Loss (101), Not a Proc (105), Do Not Display Range (126), Not In Spellbook (143), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1135418)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-Hotfixed         : AP Coefficient (0.7 -> 0.8)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc441146
 
 Name             : Unseen Blade (id=441146) [Spell Family (8), Passive] 
@@ -17823,5 +17822,301 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc441423
 Tooltip          : Building to a Coup de Grace.
+
+Name             : Hand of Fate (id=452536) [Spell Family (8), Passive] 
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Proc Chance      : 100%
+Proc Flags       : ....x... x...x... ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee, Yellow Ranged, Generic Hostile Spell
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1153776)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1153777)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1153778)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Flip a Fatebound Coin each time a damaging finishing move consumes $s1 or more combo points. Heads increases the damage of your attacks by $s2%, lasting until you flip Tails. Tails deals Cosmic damage to targets struck.
+
+Each effect is increased by $s3% each time your Fatebound Coin flip matches the same outcome as the last flip. 
+
+Name             : Mean Streak (id=453428) [Spell Family (8), Passive] 
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1155283)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Fatebound Coins flipped by $?a137036[Dispatch][Envenom] multiple times in a row are $s1% more likely to match the same outcome as the last flip.
+
+Name             : Edge Case (id=453457) [Spell Family (8), Passive] 
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=3, col=2, max_rank=1, req_points=1]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1155343)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Activating $?a137036[Adrenaline Rush][Deathmark] causes your next Fatebound Coin flip to land on its edge, counting as both Heads and Tails.
+
+Name             : Tempted Fate (id=454286) [Spell Family (8), Passive] 
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=200]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1156685)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1156686)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1156687)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=1156688)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=1156702)  : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Description      : You have a chance equal to your critical strike chance to absorb $s1% of any damage taken, up to a maximum chance of $s2%.
+
+Name             : Chosen's Revelry (id=454300) [Spell Family (8), Passive] 
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=100]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1156705)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Leech increased by ${$s1/100}.1% for each time your Fatebound Coin has flipped the same face in a row.
+
+Name             : Deal Fate (id=454419) [Spell Family (8), Passive] 
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=3, col=1, max_rank=1, req_points=1]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1156934)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $?a137037[Mutilate and Fan of Knives][Sinister Strike] generate$?a137037[][s] an additional combo point $?a137037[when they trigger Seal Fate][when it strikes an additional time]. 
+
+Name             : Delivered Doom (id=454426) [Spell Family (8), Passive] 
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=4, col=1, max_rank=1, req_points=1]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1156954)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Damage dealt when your Fatebound Coin flips tails is increased by $s1% $?a137037[when flipped by Envenom or Rupture][while Blade Flurry is not active].
+
+Name             : Fateful Ending (id=454428) [Spell Family (8), Passive] 
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1156956)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1156957)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : When your Fatebound Coin flips the same face for the seventh time in a row, the lucky coin grants 1% increase to all primary, secondary, and tertiary stats until you leave combat for $s2 seconds. 
+
+Name             : Threads of Fate [NYI] (id=454429) [Spell Family (8), Passive] 
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1156958)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1156959)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $?a137037[Envenom][Dispatch] critical strikes duplicate $s1% of their damage to $s2 additional nearby enemies. If there are no additional nearby targets, duplicate $s1% to the primary target instead.
+
+Name             : Double Jeopardy (id=454430) [Spell Family (8), Passive] 
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1156964)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your first Fatebound Coin flip after breaking Stealth flips two coins that are guaranteed to match the same face.
+
+Name             : Inexorable March [NYI] (id=454432) [Spell Family (8), Passive] 
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1156966)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1156967)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : You cannot be slowed below $s1% of normal movement speed while your Fatebound Coin flips have an active streak of at least $s2 flips matching the same face.
+
+Name             : Death's Arrival [NYI] (id=454433) [Spell Family (8), Passive] 
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=200]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1156968)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $?a137037[Shadowstep][Grappling Hook] may be used a second time within 3 sec, with no cooldown. 
+
+Name             : Inevitability [NYI] (id=454434) [Spell Family (8), Passive] 
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1156969)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Cold Blood now benefits the next 2 abilities but only applies to $?a137037[Envenom][Dispatch]. Fatebound Coins flipped by these abilities are guaranteed to match the same face as the last flip.
+
+Name             : Destiny Defined (id=454435) [Spell Family (8), Passive] 
+Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1156970)  : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 18 | Target: Self (1)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Numbing Poison (5760), Numbing Poison (5761), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crippling Poison (115196), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Numbing Poison (359078), Atrophic Poison (381637), Amplifying Poison (381664), Amplifying Poison (383414), Atrophic Poison (392388), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328)
+                   Family Flags: 14, 16, 28, 45, 68, 83
+#2 (id=1156971)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1156972)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $?a137037[Weapon poisons have $s1% increased application chance][Sinister Strike has $s2% increased chance to strike an additional time] and your Fatebound Coins flipped have an additional $s3% chance to match the same face as the last flip. 
 
 

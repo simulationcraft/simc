@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54361 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54521 thewarwithin-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -5055,7 +5055,7 @@ bonus_id={ 9614 }, effects={ Verdant Tether (id=426552, index=0, type=equip) }
 bonus_id={ 9618 }, stats={ 100% Crit [0.4779] }
 bonus_id={ 9619 }, stats={ 100% Mastery [0.9558] }
 bonus_id={ 9620 }, stats={ 100% Leech [0.9558] }
-bonus_id={ 9621 }, stats={ 100% unknown [1.4337] }
+bonus_id={ 9621 }, stats={ 100% unknown [14.3370] }
 bonus_id={ 9622 }, stats={ 100% RunSpeed [0.2390] }
 bonus_id={ 9624 }, ilevel_adjust={ 3 }
 bonus_id={ 9625 }, ilevel_adjust={ 6 }
@@ -5520,9 +5520,9 @@ bonus_id={ 10296 }, quality={ rare }
 bonus_id={ 10297 }, quality={ rare }
 bonus_id={ 10298 }, quality={ epic }
 bonus_id={ 10299 }, quality={ epic }
-bonus_id={ 10300 }, desc={ Progress Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 450 @plvl 80 }
+bonus_id={ 10300 }, desc={ Beginner Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 450 @plvl 80 }
 bonus_id={ 10301 }, ilevel={ 0 @plvl 0 - 453 @plvl 80 }
-bonus_id={ 10302 }, desc={ Progress Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 456 @plvl 80 }
+bonus_id={ 10302 }, desc={ Beginner Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 456 @plvl 80 }
 bonus_id={ 10303 }, ilevel={ 0 @plvl 0 - 459 @plvl 80 }
 bonus_id={ 10304 }, ilevel={ 0 @plvl 0 - 463 @plvl 80 }
 bonus_id={ 10305 }, quality={ rare }
@@ -5569,6 +5569,7 @@ bonus_id={ 10345 }, quality={ epic }
 bonus_id={ 10346 }, quality={ epic }
 bonus_id={ 10347 }, quality={ epic }
 bonus_id={ 10348 }, quality={ epic }
+bonus_id={ 10349 }, base_ilevel={ 564 }, desc={ Beginner Crafted }
 bonus_id={ 10350 }, ilevel={ 388 @plvl 55 - 483 @plvl 90 }
 bonus_id={ 10357 }, base_ilevel={ 473 }, quality={ epic }
 bonus_id={ 10358 }, base_ilevel={ 502 }
@@ -5973,13 +5974,13 @@ bonus_id={ 10807 }, effects={ Roll (id=439082, index=0, type=equip) }
 bonus_id={ 10808 }, effects={ Sprint (id=439083, index=0, type=equip) }
 bonus_id={ 10809 }, stats={ 100% Crit [0.7168] }
 bonus_id={ 10810 }, stats={ 100% Haste [0.7168] }
-bonus_id={ 10811 }, stats={ 100% unknown [2.1504] }
+bonus_id={ 10811 }, stats={ 100% unknown [21.5040] }
 bonus_id={ 10812 }, stats={ 100% Leech [1.4336] }
 bonus_id={ 10813 }, stats={ 100% Mastery [1.4336] }
 bonus_id={ 10814 }, stats={ 100% RunSpeed [0.3584] }
 bonus_id={ 10815 }, stats={ 100% Crit [0.9556] }
 bonus_id={ 10816 }, stats={ 100% Haste [0.9556] }
-bonus_id={ 10817 }, stats={ 100% unknown [2.8668] }
+bonus_id={ 10817 }, stats={ 100% unknown [28.6680] }
 bonus_id={ 10818 }, stats={ 100% Leech [1.9112] }
 bonus_id={ 10819 }, stats={ 100% Mastery [1.9112] }
 bonus_id={ 10820 }, stats={ 100% RunSpeed [0.4778] }
@@ -6084,7 +6085,7 @@ bonus_id={ 10948 }, socket={ 3 }
 bonus_id={ 10965 }, stats={ 100% Avoidance [1.1946] }
 bonus_id={ 10966 }, stats={ 100% Crit [1.1946] }
 bonus_id={ 10967 }, stats={ 100% Haste [1.1946] }
-bonus_id={ 10968 }, stats={ 100% unknown [3.5838] }
+bonus_id={ 10968 }, stats={ 100% unknown [35.8380] }
 bonus_id={ 10969 }, stats={ 100% Leech [2.3892] }
 bonus_id={ 10970 }, stats={ 100% Mastery [2.3892] }
 bonus_id={ 10971 }, stats={ 100% RunSpeed [0.5973] }
@@ -6218,8 +6219,11 @@ bonus_id={ 11195 }, effects={ Earthen Delivery Drill (id=452929, index=0, type=u
 bonus_id={ 11200 }, stats={ 100% Avoidance [0.1925] }
 bonus_id={ 11201 }, stats={ 100% Crit [0.1925] }
 bonus_id={ 11202 }, stats={ 100% Haste [0.1925] }
-bonus_id={ 11203 }, stats={ 100% unknown [0.7700] }
+bonus_id={ 11203 }, stats={ 100% unknown [7.7000] }
 bonus_id={ 11204 }, stats={ 100% Leech [0.3850] }
 bonus_id={ 11205 }, stats={ 100% Mastery [0.3850] }
 bonus_id={ 11206 }, stats={ 100% RunSpeed [0.1925] }
 bonus_id={ 11207 }, stats={ 100% Vers [0.1925] }
+bonus_id={ 11208 }, effects={ Recalibrated Safety Fuses (id=453488, index=0, type=equip) }
+bonus_id={ 11209 }, effects={ Pouch of Pocket Grenades (id=453503, index=0, type=equip) }
+bonus_id={ 11210 }, effects={ Concealed Chaos Component (id=453813, index=0, type=equip) }

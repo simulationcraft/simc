@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54361 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54521 thewarwithin-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -18510,7 +18510,7 @@ Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
 Range            : 40 yards
-Duration         : 4 seconds
+Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18744,7 +18744,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1133388)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Reaper's Mark unleashes a dark wave forwards and back, dealing $435802s1 Shadowfrost damage both ways to all enemies caught in its path.
+Description      : Reaper's Mark calls forth three burst of Shadowfrost energy and back, dealing $435802s1 Shadowfrost damage both ways to all enemies caught in its path.
 
 Wave of Souls critical strikes cause enemies to take $441477s1% increased Shadowfrost damage for $441477d, stacking up to 2 times, and the wave back is always a critical strike.
 
@@ -19478,7 +19478,7 @@ Name             : Summon Mograine (id=444248) [Spell Family (15)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Duration         : 10 seconds
+Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -19499,7 +19499,7 @@ Name             : Summon Whitemane (id=444251) [Spell Family (15)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Duration         : 10 seconds
+Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -19512,15 +19512,13 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=1140578)  : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 221633 | Misc Value 2: 0x1743 | Target: Water Totem (42)
-#2 (id=1140579)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc444005
 
 Name             : Summon Nazgrim (id=444252) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Duration         : 10 seconds
+Duration         : Aura (infinite)
 Proc Chance      : 101%
 Proc Flags       : .x..x... x...x... x....... ........   ........ ........ ........ ........   
                  : Killing Blow, Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
@@ -19536,17 +19534,17 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=1140581)  : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 221634 | Misc Value 2: 0x1743 | Target: Unknown(43)
-#2 (id=1140582)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=1141361)  : Trigger Spell (64): Apocalyptic Conquest
+#2 (id=1140582)  : Trigger Spell (64): Apocalyptic Conquest
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 444763 | Target: Self (1)
+#3 (id=1156923)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc444005
 
 Name             : Summon Trollbane (id=444254) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Duration         : 10 seconds
+Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -19559,7 +19557,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=1140584)  : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 221635 | Misc Value 2: 0x1743 | Target: Unknown(49)
-#2 (id=1141577)  : Apply Aura (6) | Dummy (4)
+#2 (id=1156924)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc444005
 

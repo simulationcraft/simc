@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54361 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54521 thewarwithin-BETA
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -170,8 +170,8 @@ Resource         : 20 Rage (1) (id=99)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Cooldown         : 6 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Overpower (7384 effect#2), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), Collateral Damage (334783 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Merciless Bonegrinder (383316 effect#1), Sharpened Blades (383341 effect#1), Impale (383430 effect#1), Warrior Arms Set 2pc (393705 effects: #1, #2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2)
+Cooldown         : 3 seconds
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Overpower (7384 effect#2), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), Collateral Damage (334783 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Merciless Bonegrinder (383316 effect#1), Sharpened Blades (383341 effect#1), Impale (383430 effect#1), Warrior Arms Set 2pc (393705 effects: #1, #2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Storm of Swords (439601 effect#1)
 Family Flags     : 8, 9, 18, 22
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -296,7 +296,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3, #5), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effect#1), Crushing Assault (278826 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), Crushing Force (382764 effects: #1, #2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Barbaric Training (383082 effects: #1, #2), Impale (383430 effect#1), Storm of Swords (388903 effects: #2, #4, #5, #6), Barbaric Training (390674 effects: #1, #2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3, #5), Fury Warrior (137050 effects: #1, #2, #12), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effect#1), Crushing Assault (278826 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), Crushing Force (382764 effects: #1, #2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Barbaric Training (383082 effects: #1, #2), Impale (383430 effect#1), Storm of Swords (388903 effects: #2, #4, #5, #6), Barbaric Training (390674 effects: #1, #2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2)
 Family Flags     : 8, 9, 18, 21, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -309,7 +309,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=462)      : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.18000 | PvP Coefficient: 1.85000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.80500 | PvP Coefficient: 1.85000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=1024888)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 Description      : Slams an opponent, causing $s1 Physical damage.$?s388903[
@@ -796,7 +796,7 @@ Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Martial Prowess (316440 effect#2), Crash the Ramparts (335242 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Improved Overpower (385571 effect#1), Battlelord (386630 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Improved Overpower (400801 effect#1), Strength of Arms (400803 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Colossal Might (440989 effect#3), Slayer's Focus (444779 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Martial Prowess (316440 effect#2), Crash the Ramparts (335242 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Improved Overpower (385571 effect#1), Battlelord (386630 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Improved Overpower (400801 effect#1), Strength of Arms (400803 effects: #1, #2, #3), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Colossal Might (440989 effect#3), Slayer's Focus (444779 effect#1)
 Family Flags     : 2, 8, 9, 52
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ..x..... 
@@ -809,7 +809,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Requires Main-Hand Weapon (106), Can Proc From Procs (122), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=2780)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.16820 | PvP Coefficient: 1.30000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.16820 | PvP Coefficient: 1.10000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=126946)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33000 | Target: Self (1)
                    Affected Spells: Cleave (845), Mortal Strike (12294)
@@ -1053,8 +1053,8 @@ Cooldown         : 4.5 seconds
 Category         : 1837
 Category Cooldown: 4.5 seconds
 Stacks           : 1 maximum
-Proc Chance      : 100%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Seethe (335091 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#3), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Improved Bloodthirst (383852 effect#1), Bloodcraze (385735 effect#2), Bloodcraze (393951 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Merciless Assault (409983 effects: #1, #2, #3), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Strength of the Mountain (437068 effect#2), Constant Pressure (444774 effect#2), Slayer's Focus (444779 effect#1)
+Proc Chance      : 101%
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Seethe (335091 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#3), Crushing Force (382764 effects: #4, #5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Swift Strikes (383459 effect#2), Improved Bloodthirst (383852 effect#1), Bloodcraze (393951 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Merciless Assault (409983 effects: #1, #2, #3), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Strength of the Mountain (437068 effect#2), Constant Pressure (444774 effect#2), Slayer's Focus (444779 effect#1)
 Family Flags     : 8, 9, 18, 42
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -1067,12 +1067,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=14120)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.80300 | PvP Coefficient: 1.06000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.15000 | PvP Coefficient: 1.06000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=134421)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
-Description      : Assault the target in a bloodthirsty craze, dealing $s1 Physical damage and restoring $117313s1% of your health.$?s385735[
-
-Increases the critical chance of your next Bloodthirst by $s3%. Stacking up to $u times.][]
+Description      : Assault the target in a bloodthirsty craze, dealing $s1 Physical damage and restoring $117313s1% of your health.
 
 |cFFFFFFFFGenerates ${$s2/10} Rage.|r
 Variables        : $mult=${($max(0,$min($pl-10,10))*8+137)/217}
@@ -1451,6 +1449,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Max Targets      : Unlimited(-1)
+Labels           : 3637: Storm of Steel (382953 effect#6)
 Proc Chance      : 100%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #8), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3, #4), Fury Warrior (137050 effects: #1, #2, #6, #11), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Storm of Steel (382953 effects: #1, #3), Impale (383430 effect#1), Unnerving Focus (384043 effect#5), Dance of Death (390714 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2)
 Triggered by     : Bladestorm (46924), Bladestorm (227847), Bladestorm (389774), Bladestorm (446035)
@@ -1466,11 +1465,11 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Treat as Area Effect (175), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=42845)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.63000 | PvP Coefficient: 1.70000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.07100 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=42846)    : Trigger Spell (64): Bladestorm Off-Hand
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 95738 | Target: At Caster (22)
 #3 (id=1134341)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your main hand weapon for $s1 Physical damage.
 
 Name             : Heroic Leap (id=52174) [Spell Family (4)] 
@@ -1974,7 +1973,7 @@ Spell Type       : Melee
 Spell Level      : 14
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effects: #1, #3), Cruelty (335070 effect#1), Will of the Berserker (335597 effect#1), Frenzied Destruction (364554 effect#2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Critical Thinking (383297 effect#2), Impale (383430 effect#1), Swift Strikes (383459 effect#2), Wrath and Fury (386045 effect#1), Cruelty (392931 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Thorim's Might (436152 effect#2)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effects: #1, #3), Cruelty (335070 effect#1), Will of the Berserker (335597 effect#1), Frenzied Destruction (364554 effect#2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Critical Thinking (383297 effect#2), Impale (383430 effect#1), Wrath and Fury (386045 effect#1), Cruelty (392931 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Thorim's Might (436152 effect#2)
 Triggered by     : Raging Blow (85288)
 Family Flags     : 9, 45
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
@@ -2168,7 +2167,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Requires Off-Hand Weapon (120), Allow Cast While Casting (135), Not In Spellbook (143), Treat as Area Effect (175), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=101423)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.53550 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your off-hand weapon for $s1 Physical damage.
 
 Name             : Raging Blow (id=96103) [Spell Family (4)] 
@@ -2178,7 +2177,7 @@ Spell Type       : Melee
 Spell Level      : 14
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Main Hand
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effects: #1, #3), Cruelty (335070 effect#1), Will of the Berserker (335597 effect#1), Frenzied Destruction (364554 effect#2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Critical Thinking (383297 effect#2), Impale (383430 effect#1), Swift Strikes (383459 effect#2), Wrath and Fury (386045 effect#1), Cruelty (392931 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Thorim's Might (436152 effect#2)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effects: #1, #3), Cruelty (335070 effect#1), Will of the Berserker (335597 effect#1), Frenzied Destruction (364554 effect#2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Critical Thinking (383297 effect#2), Impale (383430 effect#1), Wrath and Fury (386045 effect#1), Cruelty (392931 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Thorim's Might (436152 effect#2)
 Triggered by     : Raging Blow (85288)
 Family Flags     : 9, 45
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
@@ -3144,7 +3143,7 @@ Effects          :
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Bladestorm (389774), Bladestorm (446035)
                    Family Flags: 46
 #5 (id=191016)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Slam (1464)
                    Family Flags: 21
 #6 (id=261047)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
@@ -3219,6 +3218,10 @@ Effects          :
                    Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Bladestorm (389774), Bladestorm (446035)
                    Family Flags: 46
+#12 (id=1155555)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Slam (1464)
+                   Family Flags: 21
 
 Name             : Glyph of the Weaponmaster (id=146974) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -3409,7 +3412,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=217505)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.91584 | PvP Coefficient: 1.30000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.82426 | PvP Coefficient: 1.30000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=818180)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Unknown(87)
 Description      : $@spelldesc152277
@@ -3564,7 +3567,7 @@ Spell Level      : 10
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
-Affecting spells : Fresh Meat (215568 effect#1), Deft Experience (383295 effect#2), Powerful Enrage (440277 effect#1)
+Affecting spells : Fresh Meat (215568 effect#1), Powerful Enrage (440277 effect#1)
 Family Flags     : 36
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3703,13 +3706,13 @@ Triggered by     : Rampage (184367)
 Family Flags     : 9, 108
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ .x...... ........ x....... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Not a Proc (105), Requires Off-Hand Weapon (120), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Not a Proc (105), Requires Off-Hand Weapon (120), No Cast Log (128), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=267757)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.68244 | PvP Coefficient: 1.40000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
@@ -4189,13 +4192,13 @@ Triggered by     : Rampage (184367)
 Family Flags     : 9, 108
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ .x...... ........ x....... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Not a Proc (105), Requires Off-Hand Weapon (120), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Not a Proc (105), Requires Off-Hand Weapon (120), No Cast Log (128), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=296644)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.90992 | PvP Coefficient: 1.40000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
@@ -4417,7 +4420,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298254)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : If Whirlwind hits $s1 or more targets it also Slams your primary target.
+Description      : If Cleave or Whirlwind hit $s1 or more targets you also Slam your primary target.
 
 Name             : Best Served Cold (id=202560) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Protection [tree=spec, row=4, col=2, max_rank=1, req_points=0]
@@ -5280,7 +5283,9 @@ Effects          :
                    Family Flags: 11
 Description      : Become an unstoppable storm of destructive force, striking all nearby enemies for $<dmg> Physical damage over $d. Deals reduced damage beyond $s1 targets.
 
-You are immune to movement impairing and loss of control effects, but can use defensive abilities and can avoid attacks.
+You are immune to movement impairing and loss of control effects, but can use defensive abilities and can avoid attacks.
+$?c2[
+|cFFFFFFFFGenerates ${$50622s3/10} Rage each time you deal damage.|r][]
 Tooltip          : Dealing damage to all nearby enemies every $t1 sec.
 Immune to crowd control.
 Variables        : $dmg=$?c2[${(1+$d)*($50622sw1+$95738sw1)}][${(1+$d)*$50622s1}]
@@ -9085,7 +9090,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Crash the Ramparts (335242 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Improved Overpower (385571 effect#1), Battlelord (386630 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Strength of Arms (400803 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Crash the Ramparts (335242 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Improved Overpower (385571 effect#1), Battlelord (386630 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2)
 Family Flags     : 9, 85
 Attributes       : ........ ........ .....x.. ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9098,7 +9103,7 @@ Attributes       : ........ ........ .....x.. ........   ........ ........ .x...
                  : No Active Defense (21), No AutoCast (AI) (49), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=800084)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.47554 | PvP Coefficient: 0.77000 | Radius: 0 - 10 yards | Target: Unknown(87) -> Unknown(134)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20000 | PvP Coefficient: 0.77000 | Radius: 0 - 10 yards | Target: Unknown(87) -> Unknown(134)
 #2 (id=818173)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Unknown(87)
 Description      : $@spelldesc262150
@@ -10201,7 +10206,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Cooldown         : 4.5 seconds
 Category         : 1837
 Category Cooldown: 4.5 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Seethe (335091 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#3), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Improved Bloodthirst (383852 effect#1), Bloodcraze (385735 effect#2), Bloodcraze (393951 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Merciless Assault (409983 effects: #1, #2, #3), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Strength of the Mountain (437068 effect#2), Constant Pressure (444774 effect#2), Slayer's Focus (444779 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Seethe (335091 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#3), Crushing Force (382764 effects: #4, #5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Swift Strikes (383459 effect#2), Improved Bloodthirst (383852 effect#1), Bloodcraze (393951 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Merciless Assault (409983 effects: #1, #2, #3), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Strength of the Mountain (437068 effect#2), Constant Pressure (444774 effect#2), Slayer's Focus (444779 effect#1)
 Family Flags     : 8, 9, 18, 42
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -10264,7 +10269,7 @@ Spell Type       : Melee
 Spell Level      : 14
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effects: #1, #3), Cruelty (335070 effect#1), Will of the Berserker (335597 effect#1), Frenzied Destruction (364554 effect#2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Critical Thinking (383297 effect#2), Impale (383430 effect#1), Swift Strikes (383459 effect#2), Wrath and Fury (386045 effect#1), Cruelty (392931 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Thorim's Might (436152 effect#2)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effects: #1, #3), Cruelty (335070 effect#1), Will of the Berserker (335597 effect#1), Frenzied Destruction (364554 effect#2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Critical Thinking (383297 effect#2), Impale (383430 effect#1), Wrath and Fury (386045 effect#1), Cruelty (392931 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Thorim's Might (436152 effect#2)
 Triggered by     : Crushing Blow (335097)
 Family Flags     : 9, 45
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
@@ -10288,7 +10293,7 @@ Spell Type       : Melee
 Spell Level      : 14
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effects: #1, #3), Cruelty (335070 effect#1), Will of the Berserker (335597 effect#1), Frenzied Destruction (364554 effect#2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Critical Thinking (383297 effect#2), Impale (383430 effect#1), Swift Strikes (383459 effect#2), Wrath and Fury (386045 effect#1), Cruelty (392931 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Thorim's Might (436152 effect#2)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effects: #1, #3), Cruelty (335070 effect#1), Will of the Berserker (335597 effect#1), Frenzied Destruction (364554 effect#2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Critical Thinking (383297 effect#2), Impale (383430 effect#1), Wrath and Fury (386045 effect#1), Cruelty (392931 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Thorim's Might (436152 effect#2)
 Triggered by     : Crushing Blow (335097)
 Family Flags     : 9, 45
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
@@ -12119,6 +12124,8 @@ Talent Entry     : Arms [tree=class, row=6, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#3 [op=mul, values=(1, 2)]
+                 : Effect#4 [op=mul, values=(1, 2)]
+                 : Effect#5 [op=mul, values=(1, 2)]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -12142,7 +12149,15 @@ Effects          :
                    Family Flags: 21
 #3 (id=1027173)  : Dummy (3)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000
-Description      : Slam deals an additional $s1% damage and has a ${$s3/10}.2% increased critical strike chance.
+#4 (id=1155586)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Bloodthirst (23881), Bloodbath (335096)
+                   Family Flags: 42
+#5 (id=1155587)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Affected Spells: Bloodthirst (23881), Bloodbath (335096)
+                   Family Flags: 42
+Description      : $?c1[Slam deals an additional $s1% damage and has a ${$s3/10}.2% increased critical strike chance.][Bloodthirst deals an additional $s4% damage and has a ${$s5}.1% critical strike chance.]
 
 Name             : Overwhelming Rage (id=382767) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=2, req_points=8]
@@ -12386,8 +12401,9 @@ Effects          :
 #5 (id=1032535)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2316 (Label) | Target: Self (1)
                    Affected Spells (Label): Ravager (334934)
-#6 (id=1032536)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+#6 (id=1032536)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 3637 (Label) | Target: Self (1)
+                   Affected Spells (Label): Bladestorm (50622)
 #7 (id=1134339)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 2270 | Target: Self (1)
                    Affected Spells (Category): Bladestorm (227847), Bladestorm (389774), Bladestorm (446035)
@@ -12727,6 +12743,9 @@ Talent Entry     : Fury [tree=spec, row=8, col=1, max_rank=2, req_points=20]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12739,11 +12758,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1015117)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1025075)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Enrage (184361)
-                   Family Flags: 36
-Description      : Mastery increased by $s1% and Bloodthirst has a $s2% increased chance to trigger Enrage.
+#2 (id=1025075)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Mastery increased by $s1% and if you are Enraged, Bloodthirst extends your Enrage by ${$s2/1000}.1 sec.
 
 Name             : Critical Thinking (id=383297) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Fury [tree=spec, row=8, col=3, max_rank=2, req_points=20]
@@ -12768,7 +12785,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Raging Blow (85384), Raging Blow (96103), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 45
-Description      : Critical Strike chance increased by ${$s1}.1% and Raging Blow's damaging critical strikes deal ${$s2}.1% increased damage.
+Description      : Critical Strike chance increased by ${$s1}% and Raging Blow's critical strikes deal ${$s2}% increased damage.
 
 Name             : Merciless Bonegrinder (id=383316) [Spell Family (4)] 
 Class            : Warrior
@@ -12931,9 +12948,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1024418)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Raging Blow (85288), Raging Blow (85384), Raging Blow (96103), Crushing Blow (335097), Crushing Blow (335098), Crushing Blow (335100)
-                   Family Flags: 45, 106
-Description      : Increases haste by $s1%, Raging Blow generates an additional ${$s2/10} Rage.
+                   Affected Spells: Bloodthirst (23881), Raging Blow (85288), Bloodbath (335096), Crushing Blow (335097)
+                   Family Flags: 42, 106
+Description      : Haste increased by $s1% and Raging Blow and Bloodthirst generate an additional ${$s2/10} Rage.
 
 Name             : Invigorating Fury (id=383468) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Fury [tree=spec, row=4, col=4, max_rank=1, req_points=0]
@@ -14067,7 +14084,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1018812)  : Apply Aura (6) | Proc Trigger Spell (42): Storm of Swords
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 439601 | Target: Self (1)
-Description      : Whirlwind has a $H% chance to make your next Whirlwind cost $439601s1% less Rage.
+Description      : Cleave and Whirlwind have a $H% chance to make your next Cleave or Whirlwind cost $439601s1% less Rage.
 
 Name             : Improved Overpower (id=385571) [Spell Family (4), Passive] 
 Talent Entry     : Arms [tree=spec, row=4, col=1, max_rank=1, req_points=0]
@@ -14136,28 +14153,6 @@ Effects          :
                    Family Flags: 120
 Description      : Deep Wounds, Rend and Thunderous Roar's Bleed effects deal $s1% increased damage.
 
-
-Name             : Bloodcraze (id=385735) [Spell Family (4), Passive] 
-Class            : Warrior
-School           : Physical
-Spell Type       : None
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
-Effects          :
-#1 (id=1019204)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1019205)  : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
-                   Affected Spells: Bloodthirst (23881), Bloodbath (335096)
-                   Family Flags: 42
-Description      : Bloodthirst increases the critical strike chance of your next Bloodthirst by $23881s3%. Stacking up to ${$s2+1} times.
 
 Name             : Thunderlord (id=385840) [Spell Family (4), Passive] 
 Talent Entry     : Protection [tree=spec, row=6, col=3, max_rank=1, req_points=8]
@@ -14924,7 +14919,7 @@ Effects          :
                    Family Flags: 2, 85
 #2 (id=1020848)  : Apply Aura (6) | Proc Trigger Spell (42): Battlelord
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 386632 | Target: Self (1)
-Description      : Overpower deals $s1% increased damage and has a $h% chance to reset the cooldown of Mortal Strike and Cleave.
+Description      : Overpower deals $s1% increased damage and has a $h% chance to reset the cooldown of Mortal Strike.
 
 Name             : Battlelord (id=386632) [Spell Family (4)] 
 Class            : Warrior
@@ -16226,7 +16221,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 393951 | Target: Self (1)
 #2 (id=1033215)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Description      : Bloodthirst increases the critical strike chance of your next Bloodthirst by $393950s1%. Stacking up to $s2 times.
+Description      : Raging Blow increases the critical strike chance of your next Bloodthirst by $393950s1% until it critically strikes. Stacking up to $s2 times.
 
 Name             : Bloodcraze (id=393951) [Spell Family (4)] 
 Class            : Warrior
@@ -16990,13 +16985,17 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1046179)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Overpower (7384), Dreadnaught (315961)
-                   Family Flags: 2, 85
+                   Affected Spells: Overpower (7384)
+                   Family Flags: 2
 #2 (id=1046178)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Overpower (7384), Dreadnaught (315961)
-                   Family Flags: 2, 85
-Description      : Overpower has $s1% increased critical strike chance and deals $s2% increased critical strike damage.
+                   Affected Spells: Overpower (7384)
+                   Family Flags: 2
+#3 (id=1156878)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Overpower (7384)
+                   Family Flags: 2
+Description      : Overpower deals $s3% additional damage, has $s1% increased critical strike chance, and deals $s2% increased critical strike damage.
 
 
 Name             : Strength of Arms (id=400806) [Spell Family (4)] 
@@ -18681,8 +18680,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1132979)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Whirlwind (1680), Whirlwind (190411)
-                   Family Flags: 54
+                   Affected Spells: Cleave (845), Whirlwind (1680), Whirlwind (190411)
+                   Family Flags: 22, 54
 Description      : $spelldesc385512
 Tooltip          : Rage cost of Whirlwind reduced by $s1%
 
@@ -18972,7 +18971,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Sudden Death's chance to reset the cooldown of Execute and make it usable on any target, regardless of health is increased.
 
-Using Sudden Death accelerates your next Bladestorm, striking 1 additional time (max $445606u). Bladestorm's total duration is unchanged.
+Using Sudden Death accelerates your next full Bladestorm, striking 1 additional time (max $445606u). Bladestorm's total duration is unchanged.
 
 Name             : Death Drive (id=444770) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=3, col=1, max_rank=1, req_points=1]
@@ -19051,7 +19050,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1141371)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Slayer's Strikes have a $H% chance to reset the cooldown of Bloodthirst and Overpower.
+Description      : Slayer's Strikes have a $H% chance to reset the cooldown of $?c1[Overpower][Bloodthirst].
 
 Name             : Constant Pressure (id=444774) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=200]
@@ -19075,7 +19074,7 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881), Bloodbath (335096)
                    Family Flags: 42
-Description      : Cooldown of Bloodthirst and Overpower reduced by $s1%.
+Description      : Cooldown of $?c1[Overpower][Bloodthirst] reduced by $s1%.
 
 Name             : Frenetic Flurry (id=444775) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=4, col=2, max_rank=1, req_points=1]
@@ -19100,7 +19099,7 @@ Effects          :
                    Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1143210)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 446035 | Scaled Value: 446035 | PvP Coefficient: 1.00000 | Misc Value: 227847 | Target: Self (1)
-Description      : Bloodthirst and Overpower have a chance to cause you to unleash a brief empowered Bladestorm, striking all enemies around you once for $s1% additional damage.
+Description      : $?c1[Overpower][Bloodthirst] has a chance to cause you to unleash an empowered partial Bladestorm, striking all enemies around you once for $s1% additional damage.
 
 You can now use Pummel and Storm Bolt while Bladestorming.
 
@@ -19185,7 +19184,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Overpower (7384), Bloodthirst (23881), Bloodbath (335096)
                    Family Flags: 2, 42
-Description      : Bloodthirst and Overpower damage increased by $s1%.
+Description      : $?c1[Overpower][Bloodthirst] damage increased by $s1%.
 
 Name             : Unrelenting Onslaught (id=444780) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=5, col=1, max_rank=1, req_points=1]

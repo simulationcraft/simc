@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 11.0.0.54361
-static const std::array<item_name_description_t, 893> __item_name_description_data { {
+// Item name descriptions, wow build 11.0.0.54521
+static const std::array<item_name_description_t, 894> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -834,7 +834,7 @@ static const std::array<item_name_description_t, 893> __item_name_description_da
   { 14099, "Heroic|n"                                    },
   { 14100, "Mythic|n"                                    },
   { 14101, "Raid Finder|n"                               },
-  { 14102, "Progress Crafted"                            },
+  { 14102, "Beginner Crafted"                            },
   { 14103, "Awakened Crafted"                            },
   { 14104, "Kalimdor and Eastern Kingdoms Cups"          },
   { 14105, "Outland Cup"                                 },
@@ -893,5 +893,6 @@ static const std::array<item_name_description_t, 893> __item_name_description_da
   { 14160, "Prismatic Gem"                               },
   { 14161, "Remix: Pandaria"                             },
   { 14162, "Copper"                                      },
+  { 14163, "Airship Schematic"                           },
 } };
 

@@ -1,10 +1,10 @@
-// Temporary item enchants, wow build 11.0.0.54361
+// Temporary item enchants, wow build 11.0.0.54521
 static const std::array<temporary_enchant_entry_t, 83> __temporary_enchant_data { {
   {  2713,  0,  29453, "adamantite_sharpening_stone"  },
   {  2955,  0,  34340, "adamantite_weightstone"       },
-  {  7493,  1, 451869, "algarian_mana_oil"            },
-  {  7494,  2, 451873, "algarian_mana_oil"            },
-  {  7495,  3, 451874, "algarian_mana_oil"            },
+  {  7493,  1, 451869, "algari_mana_oil"              },
+  {  7494,  2, 451873, "algari_mana_oil"              },
+  {  7495,  3, 451874, "algari_mana_oil"              },
   {  3265,  0,  45395, "blessed_weapon_coating"       },
   {  3592,  0,  28898, "blessed_wizard_oil"           },
   {  3102,  0,  38615, "bloodboil_poison"             },

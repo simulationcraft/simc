@@ -1,5 +1,5 @@
-// Rank class spells, wow build 11.0.0.54361
-static const std::array<rank_class_spell_t, 49> __rank_spells_data { {
+// Rank class spells, wow build 11.0.0.54521
+static const std::array<rank_class_spell_t, 48> __rank_spells_data { {
   {  2,   66, 358934,      0, "Aegis of Light"                    , "Rank 2" },
   { 10,  269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9,  265, 231792,      0, "Agony"                             , "Rank 2" },
@@ -22,7 +22,6 @@ static const std::array<rank_class_spell_t, 49> __rank_spells_data { {
   { 12,  581, 320639,      0, "Fel Devastation"                   , "Rank 2" },
   {  9,  266, 334591,      0, "Fel Firebolt"                      , "Rank 2" },
   { 12,  581, 320962,      0, "Fiery Brand"                       , "Rank 2" },
-  { 10,  269, 344487,      0, "Flying Serpent Kick"               , "Rank 2" },
   { 12,    0, 320364,      0, "Immolation Aura"                   , "Rank 2" },
   { 12,  577, 320377,      0, "Immolation Aura"                   , "Rank 3" },
   {  2,    0, 327977,      0, "Judgment"                          , "Rank 2" },

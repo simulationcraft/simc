@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 11.0.0.54361
-static const std::array<specialization_spell_entry_t, 398> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 11.0.0.54521
+static const std::array<specialization_spell_entry_t, 399> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -215,6 +215,7 @@ static const std::array<specialization_spell_entry_t, 398> __specialization_spel
   {  8,   62, 162699,      0, "Stat Negation Aura - Intellect DPS", 0 },
   {  8,   62, 190427,      0, "Arcane Charge"                     , 0 },
   {  8,   62, 190740,      0, "Mastery: Savant"                   , 0 },
+  {  8,   62, 321745,      0, "Improved Prismatic Barrier"        , 0 },
   {  8,   63,    133,      0, "Fireball"                          , 0 },
   {  8,   63,   2120,      0, "Flamestrike"                       , 0 },
   {  8,   63,  12846,      0, "Mastery: Ignite"                   , 0 },
@@ -275,6 +276,7 @@ static const std::array<specialization_spell_entry_t, 398> __specialization_spel
   { 10,  270, 212051,      0, "Reawaken"                          , 0 },
   { 10,  270, 322104,      0, "Expel Harm"                        , "Rank 2" },
   { 10,  270, 428200,      0, "Mistweaver Monk"                   , 0 },
+  { 10,  269, 101545,      0, "Flying Serpent Kick"               , 0 },
   { 10,  269, 115636,      0, "Mastery: Combo Strikes"            , 0 },
   { 10,  269, 116092,      0, "Afterlife"                         , 0 },
   { 10,  269, 120227,      0, "Leather Specialization"            , 0 },
@@ -292,7 +294,6 @@ static const std::array<specialization_spell_entry_t, 398> __specialization_spel
   { 10,  269, 325215,      0, "Touch of Death"                    , "Rank 3" },
   { 10,  269, 343730,      0, "Spinning Crane Kick"               , "Rank 2" },
   { 10,  269, 343731,      0, "Disable"                           , "Rank 2" },
-  { 10,  269, 344487,      0, "Flying Serpent Kick"               , "Rank 2" },
   { 10,  269, 346104,      0, "Windwalker Monk Two-Hand Adjustment", 0 },
   { 10, 1450, 362170,      0, "Initial Monk"                      , 0 },
   { 11,  102,  24858,      0, "Moonkin Form"                      , 0 },
