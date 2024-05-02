@@ -1545,6 +1545,9 @@ void player_t::init_base_stats()
     base.spell_crit_per_intellect = dbc->spell_crit_scaling( type, level() );
     base.attack_crit_per_agility  = dbc->melee_crit_scaling( type, level() );
     base.mastery                  = 8.0;
+    base.versatility              = 0.0;
+    base.leech                    = 0.0;
+    base.avoidance                = 0.0;
 
     resources.base[ RESOURCE_HEALTH ] = dbc->health_base( type, level() );
     resources.base[ RESOURCE_MANA ]   = dbc->resource_base( type, level() );
