@@ -65,12 +65,6 @@ void iced_phial_of_corrupting_rage( special_effect_t& effect )
         target = e.player;
       }
 
-      // logs show this can trigger helpful periodic proc flags
-      result_amount_type amount_type( const action_state_t*, bool ) const override
-      {
-        return result_amount_type::HEAL_OVER_TIME;
-      }
-
       double base_ta( const action_state_t* s ) const override
       {
         return s->target->max_health() * hp_pct;
@@ -4414,12 +4408,6 @@ void neltharions_call_to_suffering( special_effect_t& effect )
       stats->type = stats_e::STATS_NEUTRAL;
       target = e.player;
     }
-
-    // logs show this can trigger helpful periodic proc flags
-    result_amount_type amount_type( const action_state_t*, bool ) const override
-    {
-      return result_amount_type::HEAL_OVER_TIME;
-    }
   };
 
   // Buff scaling is on the main trinket driver.
@@ -5123,11 +5111,6 @@ void vessel_of_searing_shadow( special_effect_t& e )
       target = e.player;
     }
 
-    // logs show this can trigger helpful periodic proc flags
-    result_amount_type amount_type( const action_state_t*, bool ) const override
-    {
-      return result_amount_type::HEAL_OVER_TIME;
-    }
   };
 
   auto damage = create_proc_action<vessel_of_searing_shadow_direct_t>( "shadow_spike", e );
@@ -6718,11 +6701,6 @@ void belorrelos_the_sunstone( special_effect_t& effect )
       stats->type = stats_e::STATS_NEUTRAL;
       target = e.player;
     }
-
-    result_amount_type amount_type( const action_state_t*, bool ) const override
-    {
-      return result_amount_type::HEAL_OVER_TIME;
-    }
   };
 
   // Create self-damage DoT
@@ -7147,12 +7125,6 @@ void infernal_signet_brand( special_effect_t& e )
       stats->type       = stats_e::STATS_NEUTRAL;
     }
 
-    // TODO: assumption based on previous self-dot trinkets, confirm if true/false
-    result_amount_type amount_type( const action_state_t*, bool ) const override
-    {
-      return result_amount_type::HEAL_OVER_TIME;
-    }
-
     double composite_ta_multiplier( const action_state_t* state ) const override
     {
       double m        = generic_proc_t::composite_ta_multiplier( state );
@@ -7470,12 +7442,6 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
       missile->impact_action =
           create_proc_action<generic_aoe_proc_t>( "shadowflame_lash", e, "shadowflame_lash", damage_spell, true );
       missile->impact_action->base_dd_min = missile->impact_action->base_dd_max = values->effectN( 4 ).average( e.item );
-    }
-
-    // TODO: confirm this does trigger healing procs like all other cases of self-dot
-    result_amount_type amount_type( const action_state_t*, bool ) const override
-    {
-      return result_amount_type::HEAL_OVER_TIME;
     }
 
     void tick( dot_t* d ) override
@@ -7913,8 +7879,8 @@ void spore_keepers_baton( special_effect_t& effect )
                   ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
-        if ( s->result_type == result_amount_type::HEAL_DIRECT || s->result_type == result_amount_type::HEAL_OVER_TIME )
+      effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* s ) {
+        if ( s->result_type == result_amount_type::HEAL_DIRECT || s->result_type == result_amount_type::HEAL_OVER_TIME || s->target->is_enemy() == cb->listener->is_enemy() )
         {
           buff->trigger();
         }
@@ -8933,7 +8899,8 @@ void thriving_thorns( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* s ) override
     {
-      if ( s->result_type == result_amount_type::HEAL_DIRECT || s->result_type == result_amount_type::HEAL_OVER_TIME )
+      if ( s->result_type == result_amount_type::HEAL_DIRECT || s->result_type == result_amount_type::HEAL_OVER_TIME ||
+           s->target->is_enemy() == listener->is_enemy() )
         heal->execute_on_target( listener );
       else
         damage->execute_on_target( s->target );

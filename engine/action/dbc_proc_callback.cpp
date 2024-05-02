@@ -119,7 +119,7 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
     if ( proc_action && proc_action->harmful )
     {
       // Don't allow players to harm other players, and enemies harm other enemies
-      if ( state->action && state->action->player->is_enemy() == state->target->is_enemy() )
+      if ( state->action && state->action->player->is_enemy() == target( state )->is_enemy() )
       {
         return;
       }
@@ -319,6 +319,9 @@ player_t* dbc_proc_callback_t::target( const action_state_t* state ) const
     return state->target;
   }
 
+  // TODO: Verify this behaviour with damage to friendly Allies.
+  bool self_hit = state->action->player == listener;
+
   // Incoming callbacks target either the callback actor, or the source of the incoming state.
   // Which is selected depends on the type of the callback proc action.
   //
@@ -331,9 +334,9 @@ player_t* dbc_proc_callback_t::target( const action_state_t* state ) const
     case ACTION_ABSORB:
     case ACTION_HEAL:
       return listener;
-      // The rest are targeted to the source of the callback event
+      // Self Damage targets are redirected to the players main target. Else they target the player.
     default:
-      return state->action->player;
+      return self_hit ? state->action->player->target : state->action->player;
   }
 }
 
