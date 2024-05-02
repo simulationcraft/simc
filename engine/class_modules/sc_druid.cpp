@@ -9938,7 +9938,15 @@ void druid_t::init_base_stats()
 
   base.attack_power_per_agility  = specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ? 1.0 : 0.0;
   base.spell_power_per_intellect = specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION ? 1.0 : 0.0;
-  base.armor_multiplier *= 1.0 + find_effect( talent.killer_instinct, A_MOD_BASE_RESISTANCE_PCT ).percent();
+
+  // Passive Talents & Effects
+  auto crit = find_specialization_spell( "Critical Strike" )->effectN( 1 ).percent();
+  base.spell_crit_chance  += crit;
+  base.attack_crit_chance += crit;
+  base.versatility        += find_effect( talent.resourceful_hunter, A_MOD_VERSATILITY_PCT ).percent();
+  base.leech              += find_effect( talent.resourceful_hunter, A_MOD_LEECH_PERCENT ).percent();
+  base.armor_multiplier   *= 1.0 + find_effect( talent.killer_instinct, A_MOD_BASE_RESISTANCE_PCT ).percent();
+
 
   // Resources
   resources.base[ RESOURCE_RAGE ]         = 100 +
@@ -10727,7 +10735,6 @@ void druid_t::create_buffs()
   buff.b_inc_bear = talent.incarnation_bear.ok()    ? buff.incarnation_bear    : buff.berserk_bear;
   buff.ca_inc     = talent.incarnation_moonkin.ok() ? buff.incarnation_moonkin : buff.celestial_alignment;
 
-  parse_effects( find_specialization_spell( "Critical Strikes" ) );
   parse_effects( mastery.natures_guardian_AP );
 
   auto bear_stam = spec.bear_form_passive->effectN( 2 ).percent() +
@@ -10741,7 +10748,6 @@ void druid_t::create_buffs()
 
   parse_effects( buff.bear_form );
   parse_effects( buff.rage_of_the_sleeper );
-  parse_effects( talent.resourceful_hunter );
   parse_effects( buff.ruthless_aggression );
   parse_effects( buff.ursine_vigor, USE_DEFAULT );
   parse_effects( buff.wildshape_mastery, 0b011, bear_stam * buff.wildshape_mastery->data().effectN( 1 ).percent() );
@@ -11354,30 +11360,6 @@ void druid_t::init_special_effects()
   };
 
   // General
-  if ( unique_gear::find_special_effect( this, 388069 ) )  // Bronzed Grip Wrappings override
-  {
-    callbacks.register_callback_execute_function( 388069,
-      []( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
-        if ( a->special )
-        {
-          switch ( a->data().id() )
-          {
-            case 190984:  // wrath
-            case 394111:  // sundered firmament
-            case 191034:  // starfall
-            case 78674:   // starsurge
-            case 274281:  // new moon
-            case 274282:  // half moon
-            case 274283:  // full moon
-              break;
-            default:
-              return;
-          }
-        }
-        cb->proc_action->execute_on_target( cb->target( s ) );
-      } );
-  }
-
   // bear form rage from being attacked
   if ( uses_bear_form() )
   {
