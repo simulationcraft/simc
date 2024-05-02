@@ -11658,7 +11658,7 @@ void druid_t::init_special_effects()
 
       void execute( action_t*, action_state_t* s ) override
       {
-        p()->active.galactic_guardian->execute_on_target( target( s ) );
+        p()->active.galactic_guardian->execute_on_target( target( s, p()->active.galactic_guardian ) );
         p()->proc.galactic_guardian->occur();
         p()->buff.galactic_guardian->trigger();
       }
