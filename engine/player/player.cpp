@@ -1525,27 +1525,35 @@ void player_t::init_base_stats()
 
   if ( !is_enemy() )
   {
-    base.stats.attribute[ STAT_STRENGTH ] =
-        dbc->race_base( race ).strength + dbc->attribute_base( type, level() ).strength;
-    base.stats.attribute[ STAT_AGILITY ] = dbc->race_base( race ).agility + dbc->attribute_base( type, level() ).agility;
-    base.stats.attribute[ STAT_STAMINA ] = dbc->race_base( race ).stamina + dbc->attribute_base( type, level() ).stamina;
-    base.stats.attribute[ STAT_INTELLECT ] =
-        dbc->race_base( race ).intellect + dbc->attribute_base( type, level() ).intellect;
-    base.stats.attribute[ STAT_SPIRIT ] = dbc->race_base( race ).spirit + dbc->attribute_base( type, level() ).spirit;
+    base.stats.attribute[ STAT_STRENGTH ]  = dbc->race_base( race ).strength + dbc->attribute_base( type, level() ).strength;
+    base.stats.attribute[ STAT_AGILITY ]   = dbc->race_base( race ).agility + dbc->attribute_base( type, level() ).agility;
+    base.stats.attribute[ STAT_STAMINA ]   = dbc->race_base( race ).stamina + dbc->attribute_base( type, level() ).stamina;
+    base.stats.attribute[ STAT_INTELLECT ] = dbc->race_base( race ).intellect + dbc->attribute_base( type, level() ).intellect;
+    base.stats.attribute[ STAT_SPIRIT ]    = dbc->race_base( race ).spirit + dbc->attribute_base( type, level() ).spirit;
 
     // heroic presence is treated like base stats, floored before adding in; tested 2014-07-20
-    base.stats.attribute[ STAT_STRENGTH ] += util::floor( racials.heroic_presence->effectN( 1 ).average( this ) );
-    base.stats.attribute[ STAT_AGILITY ] += util::floor( racials.heroic_presence->effectN( 2 ).average( this ) );
+    base.stats.attribute[ STAT_STRENGTH ]  += util::floor( racials.heroic_presence->effectN( 1 ).average( this ) );
+    base.stats.attribute[ STAT_AGILITY ]   += util::floor( racials.heroic_presence->effectN( 2 ).average( this ) );
     base.stats.attribute[ STAT_INTELLECT ] += util::floor( racials.heroic_presence->effectN( 3 ).average( this ) );
     // Endurance seems to be using ceiling
-    base.stats.attribute[ STAT_STAMINA ] += util::ceil( racials.endurance->effectN( 1 ).average( this ) );
+    base.stats.attribute[ STAT_STAMINA ]   += util::ceil( racials.endurance->effectN( 1 ).average( this ) );
 
-    base.spell_crit_chance        = dbc->spell_crit_base( type, level() );
-    base.attack_crit_chance       = dbc->melee_crit_base( type, level() );
+    base.spell_crit_chance        = dbc->spell_crit_base( type, level() ) +
+                                    racials.viciousness->effectN( 1 ).percent() +
+                                    racials.arcane_acuity->effectN( 1 ).percent();
+    base.attack_crit_chance       = dbc->melee_crit_base( type, level() ) +
+                                    racials.viciousness->effectN( 1 ).percent() +
+                                    racials.arcane_acuity->effectN( 1 ).percent();
+    if ( timeofday == DAY_TIME )
+    {
+      base.spell_crit_chance      += racials.touch_of_elune->effectN( 1 ).percent();
+      base.attack_crit_chance     += racials.touch_of_elune->effectN( 1 ).percent();
+    }
     base.spell_crit_per_intellect = dbc->spell_crit_scaling( type, level() );
     base.attack_crit_per_agility  = dbc->melee_crit_scaling( type, level() );
-    base.mastery                  = 8.0;
-    base.versatility              = 0.0;
+    base.mastery                  = 8.0 + racials.awakened->effectN( 1 ).base_value();
+    base.versatility              = racials.mountaineer->effectN( 1 ).percent() +
+                                    racials.brush_it_off->effectN( 1 ).percent();
     base.leech                    = 0.0;
     base.avoidance                = 0.0;
 
@@ -4428,12 +4436,6 @@ double player_t::composite_melee_crit_chance() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     ac += b->check_stack_value();
 
-  ac += racials.viciousness->effectN( 1 ).percent();
-  ac += racials.arcane_acuity->effectN( 1 ).percent();
-
-  if ( timeofday == DAY_TIME )
-    ac += racials.touch_of_elune->effectN( 1 ).percent();
-
   return ac;
 }
 
@@ -4738,14 +4740,6 @@ double player_t::composite_spell_crit_chance() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     sc += b->check_stack_value();
 
-  sc += racials.viciousness->effectN( 1 ).percent();
-  sc += racials.arcane_acuity->effectN( 1 ).percent();
-
-  if ( timeofday == DAY_TIME )
-  {
-    sc += racials.touch_of_elune->effectN( 1 ).percent();
-  }
-
   if ( buffs.focus_magic )
     sc += buffs.focus_magic->check_value();
 
@@ -4768,8 +4762,6 @@ double player_t::composite_mastery() const
   double cm = current.mastery;
 
   cm += apply_combat_rating_dr( RATING_MASTERY, composite_mastery_rating() / current.rating.mastery );
-
-  cm += racials.awakened->effectN( 1 ).base_value();
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_MASTERY ] )
     cm += b->check_stack_value();
@@ -4800,9 +4792,6 @@ double player_t::composite_damage_versatility() const
   if ( buffs.dmf_well_fed )
     cdv += buffs.dmf_well_fed->check_value();
 
-  cdv += racials.mountaineer->effectN( 1 ).percent();
-  cdv += racials.brush_it_off->effectN( 1 ).percent();
-
   return cdv;
 }
 
@@ -4824,9 +4813,6 @@ double player_t::composite_heal_versatility() const
   if ( buffs.dmf_well_fed )
     chv += buffs.dmf_well_fed->check_value();
 
-  chv += racials.mountaineer->effectN( 1 ).percent();
-  chv += racials.brush_it_off->effectN( 1 ).percent();
-
   return chv;
 }
 
@@ -4847,9 +4833,6 @@ double player_t::composite_mitigation_versatility() const
 
   if ( buffs.dmf_well_fed )
     cmv += buffs.dmf_well_fed->check_value() / 2;
-
-  cmv += racials.mountaineer->effectN( 1 ).percent() / 2;
-  cmv += racials.brush_it_off->effectN( 1 ).percent() / 2;
 
   return cmv;
 }
@@ -5202,7 +5185,6 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
   return m;
 }
 
-// TODO: Move racial passives to init_base_stats
 double player_t::composite_rating_multiplier( rating_e rating ) const
 {
   double v = passive_rating_multiplier.get( rating );
