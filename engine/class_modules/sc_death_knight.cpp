@@ -4965,20 +4965,22 @@ struct summon_whitemane_t final : public summon_rider_t
       death_knight_spell_t::execute();
       p()->pets.whitemane.spawn( duration );
     }
-    else if ( !random && !p()->bugs )
+    else if ( !random )
     {
       death_knight_spell_t::execute();
-      auto td           = p()->get_target_data( target );
-      auto new_duration = p()->pets.whitemane.active_pet()->expiration->remains() - duration;
       p()->pets.whitemane.active_pet()->adjust_duration( duration );
-      if ( td && td->dot.undeath->is_ticking() )
+      if ( !p()->bugs )
       {
-        td->dot.undeath->increment( 1 );
-        td->dot.undeath->adjust_duration( p()->pet_spell.undeath_dot->duration() - td->dot.undeath->remains() );
-      }
-      else
-      {
-        p()->active_spells.undeath_dot->execute_on_target( target );
+        auto td = p()->get_target_data( target );
+        if ( td && td->dot.undeath->is_ticking() )
+        {
+          td->dot.undeath->increment( 1 );
+          td->dot.undeath->adjust_duration( p()->pet_spell.undeath_dot->duration() - td->dot.undeath->remains() );
+        }
+        else
+        {
+          p()->active_spells.undeath_dot->execute_on_target( target );
+        }
       }
     }
   }
@@ -5000,10 +5002,9 @@ struct summon_trollbane_t final : public summon_rider_t
       death_knight_spell_t::execute();
       p()->pets.trollbane.spawn( duration );
     }
-    else if ( !random && !p()->bugs )
+    else if ( !random )
     {
       death_knight_spell_t::execute();
-      auto new_duration = p()->pets.trollbane.active_pet()->expiration->remains() - duration;
       p()->pets.trollbane.active_pet()->adjust_duration( duration );
     }
   }
@@ -5024,10 +5025,9 @@ struct summon_nazgrim_t final : public summon_rider_t
       death_knight_spell_t::execute();
       p()->pets.nazgrim.spawn( duration );
     }
-    else if ( !random && !p()->bugs )
+    else if ( !random )
     {
       death_knight_spell_t::execute();
-      auto new_duration = p()->pets.nazgrim.active_pet()->expiration->remains() - duration;
       p()->pets.nazgrim.active_pet()->adjust_duration( duration );
     }
   }
@@ -5048,12 +5048,14 @@ struct summon_mograine_t final : public summon_rider_t
       death_knight_spell_t::execute();
       p()->pets.mograine.spawn( duration );
     }
-    else if ( !random && !p()->bugs )
+    else if ( !random )
     {
       death_knight_spell_t::execute();
-      auto new_duration = p()->pets.mograine.active_pet()->expiration->remains() - duration;
       p()->pets.mograine.active_pet()->adjust_duration( duration );
-      p()->pets.mograine.active_pet()->dnd_aura->trigger();
+      if ( !p()->bugs )
+      {
+        p()->pets.mograine.active_pet()->dnd_aura->trigger();
+      }
     }
   }
 };
@@ -9684,7 +9686,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Proc Chance does not appear to be in data, using testing data that is current as of 4/19/2024
     if ( talent.rider.riders_champion.ok() && rng().roll( 0.2 ) )
     {
-      summon_rider( spell.summon_whitemane->duration(), true );
+      summon_rider( 10_s, true ); // No Longer in spell data. Using 10s for now
     }
 
     if ( talent.rider.nazgrims_conquest.ok() && buffs.apocalyptic_conquest->check() )
