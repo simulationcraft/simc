@@ -905,7 +905,6 @@ public:
   double composite_armor() const override;
   double composite_base_armor_multiplier() const override;
   double composite_armor_multiplier() const override;
-  double composite_attack_power_multiplier() const override;
   double composite_melee_haste() const override;
   double composite_spell_haste() const override;
   double composite_player_multiplier( school_e ) const override;
@@ -8475,20 +8474,20 @@ std::string demon_hunter_t::default_temporary_enchant() const
 void demon_hunter_t::create_cooldowns()
 {
   // General
-  cooldown.consume_magic   = get_cooldown( "consume_magic" );
-  cooldown.disrupt         = get_cooldown( "disrupt" );
-  cooldown.elysian_decree  = get_cooldown( "elysian_decree" );
-  cooldown.felblade        = get_cooldown( "felblade" );
-  cooldown.fel_eruption    = get_cooldown( "fel_eruption" );
-  cooldown.immolation_aura = get_cooldown( "immolation_aura" );
-  cooldown.the_hunt        = get_cooldown( "the_hunt" );
-  cooldown.spectral_sight  = get_cooldown( "spectral_sight" );
-  cooldown.sigil_of_flame  = get_cooldown( "sigil_of_flame" );
-  cooldown.sigil_of_misery = get_cooldown( "sigil_of_misery" );
-  cooldown.throw_glaive             = get_cooldown( "throw_glaive" );
-  cooldown.vengeful_retreat         = get_cooldown( "vengeful_retreat" );
-  cooldown.chaos_nova               = get_cooldown( "chaos_nova" );
-  cooldown.metamorphosis            = get_cooldown( "metamorphosis" );
+  cooldown.consume_magic    = get_cooldown( "consume_magic" );
+  cooldown.disrupt          = get_cooldown( "disrupt" );
+  cooldown.elysian_decree   = get_cooldown( "elysian_decree" );
+  cooldown.felblade         = get_cooldown( "felblade" );
+  cooldown.fel_eruption     = get_cooldown( "fel_eruption" );
+  cooldown.immolation_aura  = get_cooldown( "immolation_aura" );
+  cooldown.the_hunt         = get_cooldown( "the_hunt" );
+  cooldown.spectral_sight   = get_cooldown( "spectral_sight" );
+  cooldown.sigil_of_flame   = get_cooldown( "sigil_of_flame" );
+  cooldown.sigil_of_misery  = get_cooldown( "sigil_of_misery" );
+  cooldown.throw_glaive     = get_cooldown( "throw_glaive" );
+  cooldown.vengeful_retreat = get_cooldown( "vengeful_retreat" );
+  cooldown.chaos_nova       = get_cooldown( "chaos_nova" );
+  cooldown.metamorphosis    = get_cooldown( "metamorphosis" );
 
   // Havoc
   cooldown.blade_dance              = get_cooldown( "blade_dance" );
@@ -8587,17 +8586,6 @@ double demon_hunter_t::composite_armor_multiplier() const
   }
 
   return am;
-}
-
-// demon_hunter_t::composite_attack_power_multiplier ========================
-
-double demon_hunter_t::composite_attack_power_multiplier() const
-{
-  double ap = base_t::composite_attack_power_multiplier();
-
-  ap *= 1.0 + cache.mastery() * mastery.fel_blood_rank_2->effectN( 1 ).mastery_value();
-
-  return ap;
 }
 
 // demon_hunter_t::composite_melee_haste  ===================================
@@ -9284,13 +9272,20 @@ void demon_hunter_t::parse_player_effects()
   parse_effects( spell.critical_strikes );
 
   // Havoc
-  parse_effects( talent.havoc.scars_of_suffering );
-  parse_effects( buff.blur );
+  if ( specialization() == DEMON_HUNTER_HAVOC )
+  {
+    parse_effects( talent.havoc.scars_of_suffering );
+    parse_effects( buff.blur );
+  }
 
   // Vengeance
-  parse_effects( buff.demon_spikes, talent.vengeance.deflecting_spikes->ok() ? 0b0 : 0b1 );
-  parse_effects( spec.riposte );
-  parse_effects( spec.thick_skin );
+  if ( specialization() == DEMON_HUNTER_VENGEANCE )
+  {
+    parse_effects( buff.demon_spikes, talent.vengeance.deflecting_spikes->ok() ? 0b0 : 0b1 );
+    parse_effects( spec.riposte );
+    parse_effects( spec.thick_skin );
+    parse_effects( mastery.fel_blood_rank_2 );
+  }
 
   // Aldrachi Reaver
 
