@@ -9932,21 +9932,20 @@ void druid_t::init_base_stats()
 {
   // Set base distance based on spec
   if ( base.distance < 1 )
-    base.distance = specialization() == DRUID_BALANCE ? 30 : 5;
+    base.distance = specialization() == DRUID_BALANCE ? 40 : 5;
 
   player_t::init_base_stats();
 
   base.attack_power_per_agility  = specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ? 1.0 : 0.0;
   base.spell_power_per_intellect = specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION ? 1.0 : 0.0;
 
-  // Passive Talents & Effects
-  auto crit = find_specialization_spell( "Critical Strike" )->effectN( 1 ).percent();
+  // Passive Talents & Spells
+  auto crit = find_effect( find_specialization_spell( "Critical Strike" ), A_MOD_ALL_CRIT_CHANCE ).percent();
   base.spell_crit_chance  += crit;
   base.attack_crit_chance += crit;
   base.versatility        += find_effect( talent.resourceful_hunter, A_MOD_VERSATILITY_PCT ).percent();
   base.leech              += find_effect( talent.resourceful_hunter, A_MOD_LEECH_PERCENT ).percent();
   base.armor_multiplier   *= 1.0 + find_effect( talent.killer_instinct, A_MOD_BASE_RESISTANCE_PCT ).percent();
-
 
   // Resources
   resources.base[ RESOURCE_RAGE ]         = 100 +
