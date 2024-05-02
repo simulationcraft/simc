@@ -8548,7 +8548,7 @@ void demon_hunter_t::create_benefits()
 
 double demon_hunter_t::composite_armor() const
 {
-  double a = player_t::composite_armor();
+  double a = base_t::composite_armor();
 
   // Mastery: Fel Blood increases Armor by Mastery * AGI and is doubled while Demon Spikes is active.
   const double mastery_value   = cache.mastery() * mastery.fel_blood->effectN( 1 ).mastery_value();
@@ -8593,7 +8593,7 @@ double demon_hunter_t::composite_armor_multiplier() const
 
 double demon_hunter_t::composite_attack_power_multiplier() const
 {
-  double ap = player_t::composite_attack_power_multiplier();
+  double ap = base_t::composite_attack_power_multiplier();
 
   ap *= 1.0 + cache.mastery() * mastery.fel_blood_rank_2->effectN( 1 ).mastery_value();
 
@@ -8604,7 +8604,7 @@ double demon_hunter_t::composite_attack_power_multiplier() const
 
 double demon_hunter_t::composite_melee_haste() const
 {
-  double mh = player_t::composite_melee_haste();
+  double mh = base_t::composite_melee_haste();
 
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
@@ -8618,7 +8618,7 @@ double demon_hunter_t::composite_melee_haste() const
 
 double demon_hunter_t::composite_spell_haste() const
 {
-  double sh = player_t::composite_spell_haste();
+  double sh = base_t::composite_spell_haste();
 
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
@@ -8632,7 +8632,7 @@ double demon_hunter_t::composite_spell_haste() const
 
 double demon_hunter_t::composite_player_multiplier( school_e school ) const
 {
-  double m = player_t::composite_player_multiplier( school );
+  double m = base_t::composite_player_multiplier( school );
 
   return m;
 }
@@ -8641,7 +8641,7 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
 
 double demon_hunter_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
 {
-  double m = player_t::composite_player_critical_damage_multiplier( s );
+  double m = base_t::composite_player_critical_damage_multiplier( s );
 
   if ( talent.havoc.know_your_enemy->ok() )
   {
@@ -8671,7 +8671,7 @@ double demon_hunter_t::matching_gear_multiplier( attribute_e attr ) const
 
 double demon_hunter_t::stacking_movement_modifier() const
 {
-  double ms = player_t::stacking_movement_modifier();
+  double ms = base_t::stacking_movement_modifier();
 
   if ( talent.demon_hunter.pursuit->ok() )
   {
