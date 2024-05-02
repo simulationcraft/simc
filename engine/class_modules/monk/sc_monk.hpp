@@ -1355,6 +1355,7 @@ public:
   std::string default_temporary_enchant() const override;
 
   // player_t overrides
+  void apply_affecting_auras( action_t &action ) override;
   action_t *create_action( util::string_view name, util::string_view options ) override;
   double composite_base_armor_multiplier() const override;
   double composite_melee_crit_chance() const override;
@@ -1423,7 +1424,6 @@ public:
                                               const spell_data_t *affected = spell_data_t::nil(),
                                               effect_type_t type           = E_APPLY_AURA );
   const spell_data_t *find_spell_override( const spell_data_t *base, const spell_data_t *passive );
-  void apply_affecting_auras( action_t & ) override;
   void merge( player_t &other ) override;
   void moving() override;
 

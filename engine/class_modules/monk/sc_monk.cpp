@@ -6627,9 +6627,62 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   user_options.squirm_frequency          = 15;
 }
 
+void monk_t::apply_affecting_auras( action_t &action )
+{
+  player_t::apply_affecting_auras( action );
+
+  action.apply_affecting_aura( passives.aura_monk );
+  action.apply_affecting_aura( spec.brewmaster_monk );
+  action.apply_affecting_aura( spec.windwalker_monk );
+  action.apply_affecting_aura( spec.mistweaver_monk );
+  action.apply_affecting_aura( spec.mistweaver_monk_2 );
+}
+
+// void monk_t::apply_affecting_auras( action_t &action )
+// {
+//   base_t::apply_affecting_auras( action );
+
+//   action.apply_affecting_aura( passives.aura_monk );
+
+//   switch ( specialization() )
+//   {
+//     case MONK_BREWMASTER:
+//       action.apply_affecting_aura( spec.brewmaster_monk );
+//       break;
+//     case MONK_WINDWALKER:
+//       action.apply_affecting_aura( spec.windwalker_monk );
+//       break;
+//     case MONK_MISTWEAVER:
+//     {
+//       action.apply_affecting_aura( spec.mistweaver_monk );
+//       action.apply_affecting_aura( spec.mistweaver_monk_2 );
+//       break;
+//     }
+//     default:
+//       assert( 0 );
+//       break;
+//   }
+
+//   if ( main_hand_weapon.group() == weapon_e::WEAPON_1H )
+//   {
+//     switch ( specialization() )
+//     {
+//       case MONK_BREWMASTER:
+//         action.apply_affecting_aura( spec.two_hand_adjustment_brm );
+//         break;
+//       case MONK_WINDWALKER:
+//         action.apply_affecting_aura( spec.two_hand_adjustment_ww );
+//         break;
+//       default:
+//         assert( 0 );
+//         break;
+//     }
+//   }
+// }
+
 void monk_t::moving()
 {
-  player_t::moving();
+  base_t::moving();
 }
 
 // monk_t::create_action ====================================================
@@ -6927,7 +6980,7 @@ double monk_t::sck_modifier()
 
 void monk_t::activate()
 {
-  player_t::activate();
+  base_t::activate();
 
   if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
   {
@@ -8012,6 +8065,8 @@ void monk_t::create_buffs()
   buff.blackout_reinforcement =
       new buffs::blackout_reinforcement_t( *this, "blackout_reinforcement", find_spell( 424454 ) );
 
+  stagger = new stagger_t( this );
+
   // ------------------------------
   // Movement
   // ------------------------------
@@ -8030,8 +8085,6 @@ void monk_t::create_buffs()
 
   movement.whirling_dragon_punch = new monk_movement_t( this, "wdp_movement", talent.windwalker.whirling_dragon_punch );
   movement.whirling_dragon_punch->set_distance( 1 );
-
-  stagger = new stagger_t( this );
 }
 
 // monk_t::init_gains =======================================================
@@ -8113,7 +8166,7 @@ void monk_t::init_assessors()
 
 void monk_t::init_rng()
 {
-  player_t::init_rng();
+  base_t::init_rng();
 
   if ( talent.brewmaster.spirit_of_the_ox->ok() )
     rppm.spirit_of_the_ox = get_rppm( "spirit_of_the_ox", find_spell( 400629 ) );
@@ -8355,7 +8408,7 @@ void monk_t::init_special_effects()
 
   // ======================================
 
-  player_t::init_special_effects();
+  base_t::init_special_effects();
 }
 
 // monk_t::init_special_effect ============================================
@@ -8661,7 +8714,7 @@ void monk_t::brew_cooldown_reduction( double time_reduction )
 
 double monk_t::composite_melee_speed() const
 {
-  double h = player_t::composite_melee_speed();
+  double h = base_t::composite_melee_speed();
 
   h *= 1.0 / ( 1.0 + buff.momentum_boost_speed->check_value() );
 
@@ -8672,7 +8725,7 @@ double monk_t::composite_melee_speed() const
 
 double monk_t::composite_melee_crit_chance() const
 {
-  double crit = player_t::composite_melee_crit_chance();
+  double crit = base_t::composite_melee_crit_chance();
 
   crit += spec.critical_strikes->effectN( 1 ).percent();
 
@@ -8683,7 +8736,7 @@ double monk_t::composite_melee_crit_chance() const
 
 double monk_t::composite_spell_crit_chance() const
 {
-  double crit = player_t::composite_spell_crit_chance();
+  double crit = base_t::composite_spell_crit_chance();
 
   crit += spec.critical_strikes->effectN( 1 ).percent();
 
@@ -8694,7 +8747,7 @@ double monk_t::composite_spell_crit_chance() const
 
 double monk_t::composite_attribute_multiplier( attribute_e attr ) const
 {
-  double cam = player_t::composite_attribute_multiplier( attr );
+  double cam = base_t::composite_attribute_multiplier( attr );
 
   if ( attr == ATTR_STAMINA )
     cam *= 1.0 + spec.brewmasters_balance->effectN( 3 ).percent();
@@ -8706,7 +8759,7 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
 
 double monk_t::composite_melee_expertise( const weapon_t *weapon ) const
 {
-  double e = player_t::composite_melee_expertise( weapon );
+  double e = base_t::composite_melee_expertise( weapon );
 
   e += spec.brewmaster_monk->effectN( 15 ).percent();
 
@@ -8717,7 +8770,7 @@ double monk_t::composite_melee_expertise( const weapon_t *weapon ) const
 
 double monk_t::composite_attack_power_multiplier() const
 {
-  double ap = player_t::composite_attack_power_multiplier();
+  double ap = base_t::composite_attack_power_multiplier();
 
   ap *= 1.0 + cache.mastery() * mastery.elusive_brawler->effectN( 2 ).mastery_value();
 
@@ -8728,7 +8781,7 @@ double monk_t::composite_attack_power_multiplier() const
 
 double monk_t::composite_dodge() const
 {
-  double d = player_t::composite_dodge();
+  double d = base_t::composite_dodge();
 
   d += talent.general.dance_of_the_wind->effectN( 1 ).percent();
 
@@ -8749,7 +8802,7 @@ double monk_t::composite_dodge() const
 
 double monk_t::composite_crit_avoidance() const
 {
-  double c = player_t::composite_crit_avoidance();
+  double c = base_t::composite_crit_avoidance();
 
   c += spec.brewmaster_monk->effectN( 13 ).percent();
 
@@ -8760,7 +8813,7 @@ double monk_t::composite_crit_avoidance() const
 
 double monk_t::composite_mastery() const
 {
-  double m = player_t::composite_mastery();
+  double m = base_t::composite_mastery();
 
   m += buff.weapons_of_order->check_value();
 
@@ -8771,7 +8824,7 @@ double monk_t::composite_mastery() const
 
 double monk_t::composite_mastery_rating() const
 {
-  double m = player_t::composite_mastery_rating();
+  double m = base_t::composite_mastery_rating();
 
   return m;
 }
@@ -8780,7 +8833,7 @@ double monk_t::composite_mastery_rating() const
 
 double monk_t::composite_damage_versatility() const
 {
-  double m = player_t::composite_damage_versatility();
+  double m = base_t::composite_damage_versatility();
 
   return m;
 }
@@ -8789,7 +8842,7 @@ double monk_t::composite_damage_versatility() const
 
 double monk_t::composite_base_armor_multiplier() const
 {
-  double a = player_t::composite_base_armor_multiplier();
+  double a = base_t::composite_base_armor_multiplier();
 
   a *= 1 + spec.brewmasters_balance->effectN( 1 ).percent();
 
@@ -8803,7 +8856,7 @@ double monk_t::composite_base_armor_multiplier() const
 
 double monk_t::non_stacking_movement_modifier() const
 {
-  double ms = player_t::non_stacking_movement_modifier();
+  double ms = base_t::non_stacking_movement_modifier();
 
   ms = std::max( buff.chi_torpedo->check_stack_value(), ms );
 
@@ -8815,7 +8868,7 @@ double monk_t::non_stacking_movement_modifier() const
 // monk_t::composite_player_multiplier ==================================
 double monk_t::composite_player_multiplier( school_e school ) const
 {
-  double multiplier = player_t::composite_player_multiplier( school );
+  double multiplier = base_t::composite_player_multiplier( school );
 
   if ( talent.general.chi_proficiency.ok() &&
        ( talent.general.chi_proficiency->effectN( 1 ).affected_schools() & school ) == school )
@@ -8833,7 +8886,7 @@ double monk_t::composite_player_multiplier( school_e school ) const
 // monk_t::composite_player_target_multiplier ============================
 double monk_t::composite_player_target_multiplier( player_t *target, school_e school ) const
 {
-  double multiplier = player_t::composite_player_target_multiplier( target, school );
+  double multiplier = base_t::composite_player_target_multiplier( target, school );
 
   return multiplier;
 }
@@ -8841,7 +8894,7 @@ double monk_t::composite_player_target_multiplier( player_t *target, school_e sc
 // monk_t::composite_player_pet_damage_multiplier ========================
 double monk_t::composite_player_pet_damage_multiplier( const action_state_t *state, bool guardian ) const
 {
-  double multiplier = player_t::composite_player_pet_damage_multiplier( state, guardian );
+  double multiplier = base_t::composite_player_pet_damage_multiplier( state, guardian );
 
   if ( guardian )
     multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 2 ).percent();
@@ -8858,7 +8911,7 @@ double monk_t::composite_player_pet_damage_multiplier( const action_state_t *sta
 // monk_t::composite_player_target_pet_damage_multiplier ========================
 double monk_t::composite_player_target_pet_damage_multiplier( player_t *target, bool guardian ) const
 {
-  double multiplier = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
+  double multiplier = base_t::composite_player_target_pet_damage_multiplier( target, guardian );
 
   auto td = find_target_data( target );
   if ( td && td->debuff.weapons_of_order->check() )
@@ -8893,23 +8946,23 @@ void monk_t::invalidate_cache( cache_e c )
     case CACHE_ATTACK_POWER:
     case CACHE_AGILITY:
       if ( specialization() == MONK_BREWMASTER || specialization() == MONK_WINDWALKER )
-        player_t::invalidate_cache( CACHE_SPELL_POWER );
+        base_t::invalidate_cache( CACHE_SPELL_POWER );
       break;
     case CACHE_SPELL_POWER:
     case CACHE_INTELLECT:
       if ( specialization() == MONK_MISTWEAVER )
-        player_t::invalidate_cache( CACHE_ATTACK_POWER );
+        base_t::invalidate_cache( CACHE_ATTACK_POWER );
       break;
     case CACHE_BONUS_ARMOR:
       break;
     case CACHE_MASTERY:
       if ( specialization() == MONK_WINDWALKER )
-        player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        base_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       else if ( specialization() == MONK_BREWMASTER )
       {
-        player_t::invalidate_cache( CACHE_ATTACK_POWER );
-        player_t::invalidate_cache( CACHE_SPELL_POWER );
-        player_t::invalidate_cache( CACHE_DODGE );
+        base_t::invalidate_cache( CACHE_ATTACK_POWER );
+        base_t::invalidate_cache( CACHE_SPELL_POWER );
+        base_t::invalidate_cache( CACHE_DODGE );
       }
       break;
     default:
@@ -8955,12 +9008,12 @@ resource_e monk_t::primary_resource() const
 role_e monk_t::primary_role() const
 {
   // First, check for the user-specified role
-  switch ( player_t::primary_role() )
+  switch ( base_t::primary_role() )
   {
     case ROLE_TANK:
     case ROLE_ATTACK:
     case ROLE_HEAL:
-      return player_t::primary_role();
+      return base_t::primary_role();
       break;
     default:
       break;
@@ -9260,7 +9313,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
     }
   }
 
-  player_t::target_mitigation( school, dt, s );
+  base_t::target_mitigation( school, dt, s );
 }
 
 // monk_t::assess_damage_imminent_pre_absorb ==============================
@@ -9277,7 +9330,7 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_t
 
 void monk_t::assess_heal( school_e school, result_amount_type dmg_type, action_state_t *s )
 {
-  player_t::assess_heal( school, dmg_type, s );
+  base_t::assess_heal( school, dmg_type, s );
 
   if ( specialization() == MONK_BREWMASTER )
     trigger_celestial_fortune( s );
@@ -9347,7 +9400,7 @@ void monk_t::init_action_list()
   }
   if ( !action_list_str.empty() )
   {
-    player_t::init_action_list();
+    base_t::init_action_list();
     return;
   }
   clear_action_priority_lists();
@@ -9519,48 +9572,6 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
   }
 
   return base_t::create_expression( name_str );
-}
-
-void monk_t::apply_affecting_auras( action_t &action )
-{
-  player_t::apply_affecting_auras( action );
-
-  action.apply_affecting_aura( passives.aura_monk );
-
-  switch ( specialization() )
-  {
-    case MONK_BREWMASTER:
-      action.apply_affecting_aura( spec.brewmaster_monk );
-      break;
-    case MONK_WINDWALKER:
-      action.apply_affecting_aura( spec.windwalker_monk );
-      break;
-    case MONK_MISTWEAVER:
-    {
-      action.apply_affecting_aura( spec.mistweaver_monk );
-      action.apply_affecting_aura( spec.mistweaver_monk_2 );
-      break;
-    }
-    default:
-      assert( 0 );
-      break;
-  }
-
-  if ( main_hand_weapon.group() == weapon_e::WEAPON_1H )
-  {
-    switch ( specialization() )
-    {
-      case MONK_BREWMASTER:
-        action.apply_affecting_aura( spec.two_hand_adjustment_brm );
-        break;
-      case MONK_WINDWALKER:
-        action.apply_affecting_aura( spec.two_hand_adjustment_ww );
-        break;
-      default:
-        assert( 0 );
-        break;
-    }
-  }
 }
 
 void monk_t::merge( player_t &other )
