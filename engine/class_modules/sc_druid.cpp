@@ -2276,7 +2276,7 @@ public:
   {
     BASE::execute();
 
-    if ( p_->specialization() == S && !BASE::proc && p_->buff.b_inc_cat->check() && BASE::rng().roll( proc_pct ) )
+    if ( p_->specialization() == S && p_->buff.b_inc_cat->check() && BASE::rng().roll( proc_pct ) )
     {
       if constexpr ( S == DRUID_FERAL )
         p_->buff.ravage_fb->trigger();
