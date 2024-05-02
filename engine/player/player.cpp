@@ -1851,10 +1851,20 @@ void player_t::init_items()
     for ( const auto& gear : character_loadout_data_t::data( class_, spec_, is_ptr() ) )
     {
       const auto& item = dbc->item( gear.id_item );
-      auto slot = util::translate_invtype( static_cast<inventory_type>( item.inventory_type ) );
+      auto inv_type = static_cast<inventory_type>( item.inventory_type );
+      auto slot = util::translate_invtype( inv_type );
 
       if ( !items[ slot ].options_str.empty() )
-        continue;
+      {
+        if ( inv_type == INVTYPE_WEAPON && slot == SLOT_MAIN_HAND )
+          slot = SLOT_OFF_HAND;
+        else if ( inv_type == INVTYPE_FINGER && slot == SLOT_FINGER_1 )
+          slot = SLOT_FINGER_2;
+        else if ( inv_type == INVTYPE_TRINKET && slot == SLOT_TRINKET_1 )
+          slot = SLOT_TRINKET_2;
+        else
+          continue;
+      }
 
       items[ slot ].options_str =
           fmt::format( ",id={},ilevel={}", gear.id_item, character_loadout_data_t::default_item_level() );
