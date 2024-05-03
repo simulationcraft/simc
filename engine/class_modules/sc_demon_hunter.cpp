@@ -1503,7 +1503,6 @@ public:
     affect_flags any_means_necessary;
     affect_flags demonic_presence;
     bool chaos_theory    = false;
-    bool essence_break   = false;
     bool burning_wound   = false;
     bool serrated_glaive = false;
 
@@ -1598,11 +1597,6 @@ public:
       parse_affect_flags( p->mastery.demonic_presence, affected_by.demonic_presence );
       parse_affect_flags( p->mastery.any_means_necessary, affected_by.any_means_necessary );
 
-      if ( p->talent.havoc.essence_break->ok() )
-      {
-        affected_by.essence_break = ab::data().affected_by( p->spec.essence_break_debuff );
-      }
-
       if ( p->spec.burning_wound_debuff->ok() )
       {
         affected_by.burning_wound = ab::data().affected_by( p->spec.burning_wound_debuff->effectN( 2 ) );
@@ -1695,6 +1689,7 @@ public:
     // Shared
 
     // Havoc
+    ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::essence_break ), p()->spec.essence_break_debuff );
 
     // Vengeance
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::frailty ), p()->spec.frailty_debuff,
@@ -1739,11 +1734,6 @@ public:
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = ab::composite_target_multiplier( target );
-
-    if ( affected_by.essence_break )
-    {
-      m *= 1.0 + td( target )->debuffs.essence_break->check_value();
-    }
 
     if ( affected_by.serrated_glaive )
     {
