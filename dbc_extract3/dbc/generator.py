@@ -1768,6 +1768,9 @@ class SpellDataGenerator(DataGenerator):
             ( 450140, 0 ), ( 450150, 0 ), # Void Empowerment
             ( 451963, 0 ), ( 451964, 0 ), # Void Leech
             ( 451571, 0 ),                # Embrace the Shadow
+            # Archon Hero Talents
+            ( 453983, 0 ),                # Perfected Form
+            ( 453936, 0 ), ( 453943, 0 ), # Incessant Screams
         ),
 
         # Death Knight:
