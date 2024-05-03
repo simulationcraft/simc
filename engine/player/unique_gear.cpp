@@ -3786,7 +3786,12 @@ void generic::enable_all_item_effects( special_effect_t& effect )
       callbacks = false;
       cooldown->duration = 20_s;
     }
-    
+
+    result_e calculate_result( action_state_t* ) const override
+    {
+      return result_e::RESULT_NONE;
+    }
+
     void execute() override
     {
       action_t::execute();

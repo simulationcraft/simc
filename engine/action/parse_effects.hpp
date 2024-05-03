@@ -1458,7 +1458,6 @@ public:
 
   void target_debug_message( std::string_view type_str, std::string_view val_str, const spell_data_t* s_data,
                              size_t i ) override
-
   {
     BASE::sim->print_debug( "target-effects: {} ({}) {} modified by {} on targets with debuff {} ({}#{})", BASE::name(),
                             BASE::id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );

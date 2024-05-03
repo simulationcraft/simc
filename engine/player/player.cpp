@@ -1405,6 +1405,7 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " block_reduction={}", s.block_reduction );
   fmt::format_to( out, " mastery={}", s.mastery );
   fmt::format_to( out, " versatility={}", s.versatility );
+  fmt::format_to( out, " leech={}", s.leech );
   fmt::format_to( out, " skill={}", s.skill );
   fmt::format_to( out, " distance={}", s.distance );
   fmt::format_to( out, " armor_coeff={}", s.armor_coeff );
