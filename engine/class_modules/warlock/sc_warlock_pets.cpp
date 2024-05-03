@@ -1472,7 +1472,7 @@ double wild_imp_pet_t::composite_player_multiplier( school_e school ) const
 
 dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "dreadstalker", PET_DREADSTALKER, true )
 {
-  action_list_str = "leap/dreadbite";
+  action_list_str = "leap/travel/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
 
   // 2023-09-20: Coefficient updated
@@ -1570,11 +1570,16 @@ struct dreadstalker_leap_t : warlock_pet_t::travel_t
 
   void schedule_execute( action_state_t* s ) override
   {
-    if (!debug_cast<warlock_pet_t*>( player )->melee_on_summon) {
-      debug_cast<warlock_pet_t*>( player )->melee_attack->cancel();
-    }
+    debug_cast<warlock_pet_t*>( player )->melee_attack->cancel();
 
     warlock_pet_t::travel_t::schedule_execute( s );
+  }
+
+  bool ready() override
+  {
+    // Dreadstalkers will not do a leap if are summoned too close to the target. In addition, the leap can only occur once.
+    // We assume the pet does not ever need to be anywhere except the main raid target
+    return ( (!debug_cast<dreadstalker_t*>( player )->melee_on_summon) && (debug_cast<dreadstalker_t*>( player )->leap_executes > 0) && (player->current.distance > melee_pos) );
   }
 
   void execute() override
@@ -1582,12 +1587,12 @@ struct dreadstalker_leap_t : warlock_pet_t::travel_t
     warlock_pet_t::travel_t::execute();
 
     // There is an observed delay of up to 1 second before a melee attack begins again for pets after a movement action like the leap (possibly server tick?)
-    if (!debug_cast<warlock_pet_t*>( player )->melee_on_summon) {
-      make_event( sim, debug_cast<dreadstalker_t*>( player )->server_action_delay, [ this ]{
-        debug_cast<warlock_pet_t*>( player )->melee_attack->reset();
-        debug_cast<warlock_pet_t*>( player )->melee_attack->schedule_execute();
-      } );
-    }
+    make_event( sim, debug_cast<dreadstalker_t*>( player )->server_action_delay, [ this ]{
+      debug_cast<warlock_pet_t*>( player )->melee_attack->reset();
+      debug_cast<warlock_pet_t*>( player )->melee_attack->schedule_execute();
+    } );
+
+    debug_cast<dreadstalker_t*>( player )->leap_executes--;
   }
 };
 
@@ -1616,6 +1621,8 @@ void dreadstalker_t::arise()
   }
 
   dreadbite_executes = 1;
+
+  leap_executes = 1;
 
 }
 
