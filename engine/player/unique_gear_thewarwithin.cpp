@@ -37,7 +37,8 @@ void register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool
   __tww_special_effect_ids.push_back( spell_id );
 }
 
-void register_special_effect( std::initializer_list<unsigned> spell_ids, custom_cb_t init_callback, bool fallback )
+void register_special_effect( std::initializer_list<unsigned> spell_ids, custom_cb_t init_callback,
+                              bool fallback = false )
 {
   for ( auto id : spell_ids )
     register_special_effect( id, init_callback, fallback );
