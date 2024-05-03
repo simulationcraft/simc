@@ -1503,9 +1503,6 @@ public:
     affect_flags any_means_necessary;
     affect_flags demonic_presence;
     bool chaos_theory = false;
-
-    // Vengeance
-    bool t31_vengeance_2pc = true;
   } affected_by;
 
   void parse_affect_flags( const spell_data_t* spell, affect_flags& flags )
@@ -1997,9 +1994,6 @@ public:
   void trigger_t31_vengeance_2pc( action_state_t* s )
   {
     if ( !p()->set_bonuses.t31_vengeance_2pc->ok() )
-      return;
-
-    if ( !affected_by.t31_vengeance_2pc )
       return;
 
     const demon_hunter_td_t* target_data = td( s->target );
@@ -3395,8 +3389,6 @@ struct immolation_aura_t : public demon_hunter_spell_t
       aoe                 = -1;
       reduced_aoe_targets = p->spell.immolation_aura->effectN( 2 ).base_value();
 
-      affected_by.t31_vengeance_2pc = false;
-
       // Rename gain for periodic energizes. Initial hit action doesn't energize.
       // Gains are encoded in the 258922 spell data differently for Havoc vs. Vengeance
       gain = p->get_gain( "immolation_aura_tick" );
@@ -3519,8 +3511,6 @@ struct immolation_aura_t : public demon_hunter_spell_t
     may_miss     = false;
     dot_duration = timespan_t::zero();
     set_target( p );  // Does not require a hostile target
-
-    affected_by.t31_vengeance_2pc = false;
 
     apply_affecting_aura( p->spec.immolation_aura_cdr );
     apply_affecting_aura( p->talent.havoc.a_fire_inside );
@@ -4420,8 +4410,6 @@ struct auto_attack_damage_t : public demon_hunter_attack_t
     weapon                                 = w;
     weapon_multiplier                      = 1.0;
     base_execute_time                      = weapon->swing_time;
-
-    affected_by.t31_vengeance_2pc = false;
 
     status.main_hand = status.off_hand = aa_contact::LOST_RANGE;
 
