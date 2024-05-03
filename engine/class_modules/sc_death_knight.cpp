@@ -646,6 +646,7 @@ struct death_knight_t : public parse_player_effects_t<death_knight_td_t>
 public:
   // Stores the currently active death and decay ground event
   ground_aoe_event_t* active_dnd;
+  event_t* runic_power_decay;
 
   // Expression warnings
   // for old dot.death_and_decay.x expressions
@@ -1515,6 +1516,7 @@ public:
   death_knight_t( sim_t* sim, util::string_view name, race_e r )
     : parse_player_effects_t( sim, DEATH_KNIGHT, name, r ),
       active_dnd( nullptr ),
+      runic_power_decay( nullptr ),
       deprecated_dnd_expression( false ),
       runeforge_expression_warning( false ),
       km_proc_attempts( 0 ),
@@ -1765,7 +1767,9 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 
   debuff.death_rot = make_buff( *this, "death_rot", p->spell.death_rot_debuff )->set_default_value_from_effect( 1 );
 
-  debuff.unholy_aura = make_buff( *this, "unholy_aura", p->spell.unholy_aura_debuff )->apply_affecting_aura( p->talent.unholy.unholy_aura );
+  debuff.unholy_aura = make_buff( *this, "unholy_aura", p->spell.unholy_aura_debuff )
+    ->set_duration( 0_ms ) // Handled by a combat state callback trigger
+    ->apply_affecting_aura( p->talent.unholy.unholy_aura );
 
   // Apocalypse Death Knight Runeforge Debuffs
   debuff.apocalypse_death = make_buff( *this, "death", p->spell.apocalypse_death_debuff )  // Effect not implemented
@@ -4442,6 +4446,38 @@ struct delayed_execute_event_t : public event_t
     {
       action->set_target( target );
       action->execute();
+    }
+  }
+};
+
+// Runic Power Decay Event ==================================================
+struct runic_power_decay_event_t : public event_t
+{
+private:
+  death_knight_t* player;
+
+public:
+  runic_power_decay_event_t( death_knight_t* p )
+    : event_t( *p, 500_ms ),
+    player( p )
+  {}
+
+  const char* name() const override { return "runic_power_decay"; }
+
+  void execute() override
+  {
+    if (!player->in_combat)
+    {
+      auto cur = player->resources.current[ RESOURCE_RUNIC_POWER ];
+      if ( cur > RUNIC_POWER_DECAY_RATE * 0.5 )
+      {
+        player->resource_loss( RESOURCE_RUNIC_POWER, RUNIC_POWER_DECAY_RATE * 0.5, nullptr, nullptr );
+        make_event<runic_power_decay_event_t>( sim(), player );
+      }
+      else
+      {
+        player->resource_loss( RESOURCE_RUNIC_POWER, cur, nullptr, nullptr );
+      }
     }
   }
 };
@@ -10257,21 +10293,17 @@ void death_knight_t::start_unholy_aura()
     return;
   }
 
-  timespan_t first = timespan_t::from_millis( rng().range( 0, 1000 ) );
-
-  make_event( *sim, first, [ this ]() {
-    for ( auto& enemy : sim->target_non_sleeping_list )
+  register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
+    if ( c )
     {
-      auto enemy_td = get_target_data( target );
-      enemy_td->debuff.unholy_aura->trigger();
+      make_event( *sim, timespan_t::from_millis( rng().range( 0, 2000 ) ), [ this ]() {
+        for ( auto& enemy : sim->target_non_sleeping_list )
+        {
+          auto enemy_td = get_target_data( target );
+          enemy_td->debuff.unholy_aura->trigger();
+        }
+      } );
     }
-    make_repeating_event( *sim, 1_s, [ this ]() {
-      for ( auto& enemy : sim->target_non_sleeping_list )
-      {
-        auto enemy_td = get_target_data( target );
-        enemy_td->debuff.unholy_aura->trigger();
-      }
-    } );
   } );
 }
 
@@ -12162,6 +12194,20 @@ void death_knight_t::activate()
 {
   player_t::activate();
 
+  register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
+    if ( !c )
+    {
+      runic_power_decay = make_event( *sim, 20_s, [ this ]() {
+        runic_power_decay = nullptr;
+        make_event<runic_power_decay_event_t>( *sim, this );
+      } );
+    }
+    else
+    {
+      event_t::cancel( runic_power_decay );
+    }
+  } );
+
   range::for_each( sim->target_non_sleeping_list, [ this ]( player_t* target ) {
     if ( !target->is_enemy() )
     {
@@ -12206,6 +12252,7 @@ void death_knight_t::reset()
 
   _runes.reset();
   active_dnd                   = nullptr;
+  runic_power_decay            = nullptr;
   km_proc_attempts             = 0;
   bone_shield_charges_consumed = 0;
   active_riders                = 0;
