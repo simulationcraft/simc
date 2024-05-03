@@ -208,8 +208,8 @@ public:
   struct buffs_t
   {
     // General
-    damage_buff_t* demon_soul;
-    damage_buff_t* empowered_demon_soul;
+    buff_t* demon_soul;
+    buff_t* empowered_demon_soul;
     buff_t* immolation_aura;
     buff_t* metamorphosis;
     buff_t* fodder_to_the_flame;
@@ -217,16 +217,16 @@ public:
     // Havoc
     buff_t* blind_fury;
     buff_t* blur;
-    damage_buff_t* chaos_theory;
+    buff_t* chaos_theory;
     buff_t* death_sweep;
     buff_t* fel_barrage;
     buff_t* furious_gaze;
-    damage_buff_t* inertia;
+    buff_t* inertia;
     buff_t* initiative;
     buff_t* inner_demon;
-    damage_buff_t* momentum;
+    buff_t* momentum;
     buff_t* out_of_range;
-    damage_buff_t* restless_hunter;
+    buff_t* restless_hunter;
     buff_t* tactical_retreat;
     buff_t* unbound_chaos;
 
@@ -245,21 +245,21 @@ public:
 
     // Aldrachi Reaver
     buff_t* art_of_the_glaive;
-    damage_buff_t* glaive_flurry;
-    damage_buff_t* rending_strike;
+    buff_t* glaive_flurry;
+    buff_t* rending_strike;
 
     // Fel-scarred
     buff_t* monster_rising;
     buff_t* student_of_suffering;
-    damage_buff_t* enduring_torment;
+    buff_t* enduring_torment;
 
     // Set Bonuses
-    damage_buff_t* t29_havoc_4pc;
+    buff_t* t29_havoc_4pc;
     buff_t* t30_havoc_2pc;
     buff_t* t30_havoc_4pc;
     buff_t* t30_vengeance_2pc;
     buff_t* t30_vengeance_4pc;
-    damage_buff_t* t31_vengeance_2pc;
+    buff_t* t31_vengeance_2pc;
   } buff;
 
   // Talents
@@ -1492,11 +1492,6 @@ public:
     bool reavers_mark = false;
   } affected_by;
 
-  std::vector<damage_buff_t*> direct_damage_buffs;
-  std::vector<damage_buff_t*> periodic_damage_buffs;
-  std::vector<damage_buff_t*> auto_attack_damage_buffs;
-  std::vector<damage_buff_t*> crit_chance_buffs;
-
   void parse_affect_flags( const spell_data_t* spell, affect_flags& flags )
   {
     for ( const spelleffect_data_t& effect : spell->effects() )
@@ -1655,35 +1650,8 @@ public:
   {
     ab::init();
 
-    auto register_damage_buff = [ this ]( damage_buff_t* buff ) {
-      if ( buff->is_affecting_direct( ab::s_data ) )
-        direct_damage_buffs.push_back( buff );
-
-      if ( buff->is_affecting_periodic( ab::s_data ) )
-        periodic_damage_buffs.push_back( buff );
-
-      if ( ab::repeating && !ab::special && !ab::s_data->ok() && buff->auto_attack_mod.multiplier != 1.0 )
-        auto_attack_damage_buffs.push_back( buff );
-
-      if ( buff->is_affecting_crit_chance( ab::s_data ) )
-        crit_chance_buffs.push_back( buff );
-    };
-
-    direct_damage_buffs.clear();
-    periodic_damage_buffs.clear();
-    auto_attack_damage_buffs.clear();
-    crit_chance_buffs.clear();
-
-    register_damage_buff( p()->buff.demon_soul );
-    register_damage_buff( p()->buff.empowered_demon_soul );
-    register_damage_buff( p()->buff.momentum );
-    register_damage_buff( p()->buff.inertia );
-    register_damage_buff( p()->buff.restless_hunter );
-    register_damage_buff( p()->buff.t29_havoc_4pc );
-    register_damage_buff( p()->buff.t31_vengeance_2pc );
-    register_damage_buff( p()->buff.glaive_flurry );
-    register_damage_buff( p()->buff.rending_strike );
-    register_damage_buff( p()->buff.enduring_torment );
+    apply_buff_effects();
+    apply_debuff_effects();
 
     if ( track_cd_waste )
     {
@@ -1694,6 +1662,26 @@ public:
       cd_wasted_iter =
           p()->template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p()->cd_waste_iter );
     }
+  }
+
+  // Intended for parsing effects from buffs that have an allowlist of abilities
+  // that they affect.
+  void apply_buff_effects()
+  {
+    ab::parse_effects( p()->buff.demon_soul );
+    ab::parse_effects( p()->buff.empowered_demon_soul );
+    ab::parse_effects( p()->buff.momentum );
+    ab::parse_effects( p()->buff.inertia );
+    ab::parse_effects( p()->buff.restless_hunter );
+    ab::parse_effects( p()->buff.t29_havoc_4pc );
+    ab::parse_effects( p()->buff.t31_vengeance_2pc );
+    ab::parse_effects( p()->buff.glaive_flurry, p()->talent.aldrachi_reaver.incisive_blade );
+    ab::parse_effects( p()->buff.rending_strike, p()->talent.aldrachi_reaver.incisive_blade );
+    ab::parse_effects( p()->buff.enduring_torment );
+  }
+
+  void apply_debuff_effects()
+  {
   }
 
   void init_finished() override
@@ -1763,10 +1751,6 @@ public:
   {
     double m = ab::composite_da_multiplier( s );
 
-    // Registered Damage Buffs
-    for ( auto damage_buff : direct_damage_buffs )
-      m *= damage_buff->stack_value_direct();
-
     if ( affected_by.demonic_presence.direct )
     {
       m *= 1.0 + p()->cache.mastery_value();
@@ -1789,10 +1773,6 @@ public:
   {
     double m = ab::composite_ta_multiplier( s );
 
-    // Registered Damage Buffs
-    for ( auto damage_buff : periodic_damage_buffs )
-      m *= damage_buff->stack_value_periodic();
-
     if ( affected_by.demonic_presence.periodic )
     {
       m *= 1.0 + p()->cache.mastery_value();
@@ -1810,10 +1790,6 @@ public:
   {
     double c = ab::composite_crit_chance();
 
-    // Registered Damage Buffs
-    for ( auto crit_chance_buff : crit_chance_buffs )
-      c += crit_chance_buff->stack_value_crit_chance();
-
     if ( affected_by.chaos_theory && p()->buff.chaos_theory->up() )
     {
       const double bonus = p()->rng().range( p()->talent.havoc.chaos_theory->effectN( 1 ).percent(),
@@ -1822,12 +1798,6 @@ public:
     }
 
     return c;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double cm = ab::composite_crit_damage_bonus_multiplier();
-    return cm;
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -4496,10 +4466,6 @@ struct auto_attack_damage_t : public demon_hunter_attack_t
   {
     double m = demon_hunter_attack_t::action_multiplier();
 
-    // Registered Damage Buffs
-    for ( auto damage_buff : auto_attack_damage_buffs )
-      m *= damage_buff->stack_value_auto_attack();
-
     // Class Passives
     m *= 1.0 + p()->spec.havoc_demon_hunter->effectN( 8 ).percent();
     m *= 1.0 + p()->spec.vengeance_demon_hunter->effectN( 12 ).percent();
@@ -7096,8 +7062,8 @@ void demon_hunter_t::create_buffs()
 
   // General ================================================================
 
-  buff.demon_soul           = make_buff<damage_buff_t>( this, "demon_soul", spell.demon_soul );
-  buff.empowered_demon_soul = make_buff<damage_buff_t>( this, "empowered_demon_soul", spell.demon_soul_empowered );
+  buff.demon_soul           = make_buff( this, "demon_soul", spell.demon_soul );
+  buff.empowered_demon_soul = make_buff( this, "empowered_demon_soul", spell.demon_soul_empowered );
   buff.fodder_to_the_flame = make_buff( this, "fodder_to_the_flame", spell.fodder_to_the_flame->effectN( 1 ).trigger() )
                                  ->set_cooldown( 0_s )
                                  ->set_chance( 1.0 )
@@ -7159,19 +7125,19 @@ void demon_hunter_t::create_buffs()
                         ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
                         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
-  buff.momentum = make_buff<damage_buff_t>( this, "momentum", spec.momentum_buff );
+  buff.momentum = make_buff( this, "momentum", spec.momentum_buff );
   buff.momentum->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
     return std::min( b->remains() + d, 30_s );  // Capped to 30 seconds
   } );
 
-  buff.inertia = make_buff<damage_buff_t>( this, "inertia", spec.inertia_buff );
+  buff.inertia = make_buff( this, "inertia", spec.inertia_buff );
   buff.inertia->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
     return std::min( b->remains() + d, 10_s );  // Capped to 10 seconds
   } );
 
   buff.inner_demon = make_buff( this, "inner_demon", spec.inner_demon_buff );
 
-  buff.restless_hunter = make_buff<damage_buff_t>( this, "restless_hunter", spec.restless_hunter_buff );
+  buff.restless_hunter = make_buff( this, "restless_hunter", spec.restless_hunter_buff );
 
   buff.tactical_retreat = make_buff( this, "tactical_retreat", spec.tactical_retreat_buff )
                               ->set_default_value_from_effect_type( A_PERIODIC_ENERGIZE )
@@ -7182,7 +7148,7 @@ void demon_hunter_t::create_buffs()
   buff.unbound_chaos = make_buff( this, "unbound_chaos", spec.unbound_chaos_buff )
                            ->set_default_value( talent.havoc.unbound_chaos->effectN( 2 ).percent() );
 
-  buff.chaos_theory = make_buff<damage_buff_t>( this, "chaos_theory", spec.chaos_theory_buff );
+  buff.chaos_theory = make_buff( this, "chaos_theory", spec.chaos_theory_buff );
 
   buff.fel_barrage = new buffs::fel_barrage_buff_t( this );
 
@@ -7213,16 +7179,14 @@ void demon_hunter_t::create_buffs()
   // Aldrachi Reaver ========================================================
 
   buff.art_of_the_glaive = make_buff( this, "art_of_the_glaive", hero_spec.art_of_the_glaive_buff );
-  buff.glaive_flurry     = make_buff<damage_buff_t>( this, "glaive_flurry", hero_spec.glaive_flurry );
-  buff.glaive_flurry->set_default_value_from_effect( 1 )->apply_affecting_aura( talent.aldrachi_reaver.incisive_blade );
-  buff.rending_strike = make_buff<damage_buff_t>( this, "rending_strike", hero_spec.rending_strike );
-  buff.rending_strike->set_default_value_from_effect( 1 )->apply_affecting_aura(
-      talent.aldrachi_reaver.incisive_blade );
+  buff.glaive_flurry     = make_buff( this, "glaive_flurry", hero_spec.glaive_flurry );
+  buff.rending_strike = make_buff( this, "rending_strike", hero_spec.rending_strike );
 
   // Fel-scarred ============================================================
 
-  buff.enduring_torment = make_buff<damage_buff_t>( this, "enduring_torment", hero_spec.enduring_torment_buff );
-  buff.enduring_torment->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )->set_allow_precombat( true );
+  buff.enduring_torment = make_buff( this, "enduring_torment", hero_spec.enduring_torment_buff )
+                              ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                              ->set_allow_precombat( true );
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
     buff.enduring_torment->set_default_value_from_effect_type( A_HASTE_ALL )->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
@@ -7246,34 +7210,34 @@ void demon_hunter_t::create_buffs()
 
   // Set Bonus Items ========================================================
 
-  buff.t29_havoc_4pc = make_buff<damage_buff_t>(
-      this, "seething_chaos", set_bonuses.t29_havoc_4pc->ok() ? find_spell( 394934 ) : spell_data_t::not_found() );
-  buff.t29_havoc_4pc->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buff.t29_havoc_4pc = make_buff( this, "seething_chaos",
+                                  set_bonuses.t29_havoc_4pc->ok() ? find_spell( 394934 ) : spell_data_t::not_found() )
+                           ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buff.t30_havoc_2pc =
-      make_buff<buff_t>( this, "seething_fury",
-                         set_bonuses.t30_havoc_2pc->ok() ? set_bonuses.t30_havoc_2pc_buff : spell_data_t::not_found() )
+      make_buff( this, "seething_fury",
+                 set_bonuses.t30_havoc_2pc->ok() ? set_bonuses.t30_havoc_2pc_buff : spell_data_t::not_found() )
           ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
           ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
 
   buff.t30_havoc_4pc =
-      make_buff<buff_t>( this, "seething_potential",
-                         set_bonuses.t30_havoc_4pc->ok() ? set_bonuses.t30_havoc_4pc_buff : spell_data_t::not_found() )
+      make_buff( this, "seething_potential",
+                 set_bonuses.t30_havoc_4pc->ok() ? set_bonuses.t30_havoc_4pc_buff : spell_data_t::not_found() )
           ->set_default_value_from_effect( 1 );
 
-  buff.t30_vengeance_2pc = make_buff<buff_t>( this, "fires_of_fel",
-                                              set_bonuses.t30_vengeance_2pc->ok() ? set_bonuses.t30_vengeance_2pc_buff
-                                                                                  : spell_data_t::not_found() )
-                               ->set_default_value_from_effect( 1 )
-                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-  buff.t30_vengeance_4pc = make_buff<buff_t>(
-      this, "recrimination",
-      set_bonuses.t30_vengeance_4pc->ok() ? set_bonuses.t30_vengeance_4pc_buff : spell_data_t::not_found() );
+  buff.t30_vengeance_2pc =
+      make_buff( this, "fires_of_fel",
+                 set_bonuses.t30_vengeance_2pc->ok() ? set_bonuses.t30_vengeance_2pc_buff : spell_data_t::not_found() )
+          ->set_default_value_from_effect( 1 )
+          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  buff.t30_vengeance_4pc =
+      make_buff( this, "recrimination",
+                 set_bonuses.t30_vengeance_4pc->ok() ? set_bonuses.t30_vengeance_4pc_buff : spell_data_t::not_found() );
 
-  buff.t31_vengeance_2pc = make_buff<damage_buff_t>(
-      this, "fiery_resolve",
-      set_bonuses.t31_vengeance_2pc->ok() ? set_bonuses.t31_vengeance_2pc_buff : spell_data_t::not_found() );
-  buff.t31_vengeance_2pc->add_invalidate( CACHE_STAMINA );
+  buff.t31_vengeance_2pc =
+      make_buff( this, "fiery_resolve",
+                 set_bonuses.t31_vengeance_2pc->ok() ? set_bonuses.t31_vengeance_2pc_buff : spell_data_t::not_found() )
+          ->add_invalidate( CACHE_STAMINA );
 }
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
