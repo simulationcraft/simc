@@ -1848,10 +1848,9 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     double m = monk_melee_attack_t::composite_target_multiplier( target );
 
-    // Blizzard claimed in a future Alpha build Blackout Kick will deal reduced damage to chained targets
-    // I don't see this in spelldata yet, just leaving this here to save time in the future.
-    if ( target != p()->target )
-      m *= 1.0f;
+    if ( p()->talent.windwalker.shadowboxing_treads.ok() )
+      if ( target != p()->target )
+        m *= p()->talent.windwalker.shadowboxing_treads->effectN( 3 ).percent();
 
     return m;
   }
