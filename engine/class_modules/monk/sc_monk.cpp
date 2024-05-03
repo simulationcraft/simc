@@ -3560,9 +3560,9 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
   bool first_charge;
   double movement_speed_increase;
   flying_serpent_kick_t( monk_t *p, util::string_view options_str )
-    : monk_melee_attack_t( "flying_serpent_kick", p, p->talent.windwalker.flying_serpent_kick ),
+    : monk_melee_attack_t( "flying_serpent_kick", p, p->spec.flying_serpent_kick ),
       first_charge( true ),
-      movement_speed_increase( p->talent.windwalker.flying_serpent_kick->effectN( 1 ).percent() )
+      movement_speed_increase( p->spec.flying_serpent_kick->effectN( 1 ).percent() )
   {
     parse_options( options_str );
     may_crit                        = true;
@@ -3572,9 +3572,6 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
     movement_directionality         = movement_direction_type::OMNI;
     aoe                             = -1;
     p->cooldown.flying_serpent_kick = cooldown;
-
-    p->cooldown.flying_serpent_kick->duration +=
-        p->spec.flying_serpent_kick_2->effectN( 1 ).time_value();  // Saved as -5000
   }
 
   void reset() override
@@ -7117,6 +7114,7 @@ void monk_t::init_spells()
   talent.general.chi_torpedo     = _CT( "Chi Torpedo" );
   // Row 6
   talent.general.quick_footed            = _CT( "Quick Footed" );
+  talent.general.hasty_provocation       = _CT( "Hasty Provocation" );
   talent.general.resonant_fists          = _CT( "Resonant Fists" );
   talent.general.ring_of_peace           = _CT( "Ring of Peace" );
   talent.general.ironshell_brew          = _CT( "Ironshell Brew" );
@@ -7311,29 +7309,28 @@ void monk_t::init_spells()
   talent.windwalker.ascension          = _ST( "Ascension" );
   talent.windwalker.dual_threat        = _ST( "Dual Threat" );
   // Row 4
-  talent.windwalker.mark_of_the_crane   = _ST( "Mark of the Crane" );
-  talent.windwalker.flying_serpent_kick = _ST( "Flying Serpent Kick" );
-  talent.windwalker.glory_of_the_dawn   = _ST( "Glory of the Dawn" );
+  talent.windwalker.mark_of_the_crane          = _ST( "Mark of the Crane" );
+  talent.windwalker.teachings_of_the_monastery = _ST( "Teachings of the Monastery" );
+  talent.windwalker.glory_of_the_dawn          = _ST( "Glory of the Dawn" );
   // 8 Required
   // Row 5
-  talent.windwalker.shadowboxing_treads        = _STID( 392982 );
-  talent.windwalker.jade_ignition              = _STID( 392979 );  // _ST( "Jade Ignition" );
-  talent.windwalker.teachings_of_the_monastery = _ST( "Teachings of the Monastery" );
-  talent.windwalker.storm_earth_and_fire       = _ST( "Storm, Earth, and Fire" );
-  talent.windwalker.flurry_of_xuen             = _ST( "Flurry of Xuen" );
-  talent.windwalker.hit_combo                  = _ST( "Hit Combo" );
-  talent.windwalker.brawlers_intensity         = _ST( "Brawler's Intensity" );
-  talent.windwalker.meridian_strikes           = _ST( "Meridian Strikes" );
+  talent.windwalker.jade_ignition        = _STID( 392979 );  // _ST( "Jade Ignition" );
+  talent.windwalker.courageous_impulse   = _ST( "Courageous Impulse" );
+  talent.windwalker.storm_earth_and_fire = _ST( "Storm, Earth, and Fire" );
+  talent.windwalker.flurry_of_xuen       = _ST( "Flurry of Xuen" );
+  talent.windwalker.hit_combo            = _ST( "Hit Combo" );
+  talent.windwalker.brawlers_intensity   = _ST( "Brawler's Intensity" );
+  talent.windwalker.meridian_strikes     = _ST( "Meridian Strikes" );
   // Row 6
-  talent.windwalker.martial_mixture        = _ST( "Martial Mixture" );
-  talent.windwalker.courageous_impulse     = _ST( "Courageous Impulse" );
+  talent.windwalker.dance_of_chiji         = _ST( "Dance of Chi-Ji" );
   talent.windwalker.drinking_horn_cover    = _ST( "Drinking Horn Cover" );
   talent.windwalker.spiritual_focus        = _ST( "Spiritual Focus" );
   talent.windwalker.ordered_elements       = _ST( "Ordered Elements" );
   talent.windwalker.strike_of_the_windlord = _ST( "Strike of the Windlord" );
   // Row 7
-  talent.windwalker.dance_of_chiji              = _ST( "Dance of Chi-Ji" );
+  talent.windwalker.martial_mixture             = _ST( "Martial Mixture" );
   talent.windwalker.energy_burst                = _ST( "Energy Burst" );
+  talent.windwalker.shadowboxing_treads         = _STID( 392982 );
   talent.windwalker.invoke_xuen_the_white_tiger = _ST( "Invoke Xuen, the White Tiger" );
   talent.windwalker.inner_peace                 = _ST( "Inner Peace" );
   talent.windwalker.rushing_jade_wind           = _ST( "Rushing Jade Wind" );
@@ -7479,7 +7476,7 @@ void monk_t::init_spells()
   spec.disable_2                 = find_rank_spell( "Disable", "Rank 2" );
   spec.empowered_tiger_lightning = find_specialization_spell( "Empowered Tiger Lightning" );
   spec.expel_harm_2_ww           = find_rank_spell( "Expel Harm", "Rank 2", MONK_WINDWALKER );
-  spec.flying_serpent_kick_2     = find_rank_spell( "Flying Serpent Kick", "Rank 2" );
+  spec.flying_serpent_kick       = find_specialization_spell( "Flying Serpent Kick" );
   spec.leather_specialization_ww = find_spell( 120227 );
   spec.spinning_crane_kick_2_ww  = find_rank_spell( "Spinning Crane Kick", "Rank 2", MONK_WINDWALKER );
   spec.touch_of_death_3_ww       = find_spell( 344361 );
@@ -8030,7 +8027,7 @@ void monk_t::create_buffs()
                             ->set_default_value_from_effect( 1 );
 
   buff.flying_serpent_kick_movement = make_buff( this, "flying_serpent_kick_movement_buff" )  // find_spell( 115057 )
-                                          ->set_trigger_spell( talent.windwalker.flying_serpent_kick );
+                                          ->set_trigger_spell( spec.flying_serpent_kick );
 
   buff.fury_of_xuen_stacks =
       new buffs::fury_of_xuen_stacking_buff_t( *this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff );
@@ -8107,7 +8104,7 @@ void monk_t::create_buffs()
   movement.chi_torpedo = new monk_movement_t( this, "chi_torpedo_movement", talent.general.chi_torpedo );
   movement.chi_torpedo->set_distance( 10 );
 
-  movement.flying_serpent_kick = new monk_movement_t( this, "fsk_movement", talent.windwalker.flying_serpent_kick );
+  movement.flying_serpent_kick = new monk_movement_t( this, "fsk_movement", spec.flying_serpent_kick );
   movement.flying_serpent_kick->set_distance( 1 );
 
   movement.melee_squirm = new monk_movement_t( this, "melee_squirm" );

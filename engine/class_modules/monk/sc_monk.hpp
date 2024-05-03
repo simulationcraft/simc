@@ -737,6 +737,7 @@ public:
       player_talent_t chi_torpedo;
       // Row 6
       player_talent_t quick_footed;
+      player_talent_t hasty_provocation;
       player_talent_t resonant_fists;
       player_talent_t ring_of_peace;
       player_talent_t song_of_chi_ji;
@@ -936,28 +937,27 @@ public:
       player_talent_t dual_threat;
       // Row 4
       player_talent_t mark_of_the_crane;
-      player_talent_t flying_serpent_kick;
+      player_talent_t teachings_of_the_monastery;
       player_talent_t glory_of_the_dawn;
       // 8 Required
       // Row 5
-      player_talent_t shadowboxing_treads;
       player_talent_t jade_ignition;
-      player_talent_t teachings_of_the_monastery;
+      player_talent_t courageous_impulse;
       player_talent_t storm_earth_and_fire;
       player_talent_t flurry_of_xuen;
       player_talent_t hit_combo;
       player_talent_t brawlers_intensity;
       player_talent_t meridian_strikes;
       // Row 6
-      player_talent_t martial_mixture;
-      player_talent_t courageous_impulse;
+      player_talent_t dance_of_chiji;
       player_talent_t drinking_horn_cover;
       player_talent_t spiritual_focus;
       player_talent_t ordered_elements;
       player_talent_t strike_of_the_windlord;
       // Row 7
-      player_talent_t dance_of_chiji;
+      player_talent_t martial_mixture;
       player_talent_t energy_burst;
+      player_talent_t shadowboxing_treads;
       player_talent_t invoke_xuen_the_white_tiger;
       player_talent_t inner_peace;
       player_talent_t rushing_jade_wind;
@@ -1135,7 +1135,7 @@ public:
     const spell_data_t *disable_2;
     const spell_data_t *empowered_tiger_lightning;
     const spell_data_t *expel_harm_2_ww;
-    const spell_data_t *flying_serpent_kick_2;
+    const spell_data_t *flying_serpent_kick;
     const spell_data_t *leather_specialization_ww;
     const spell_data_t *spinning_crane_kick_2_ww;
     const spell_data_t *touch_of_death_3_ww;
