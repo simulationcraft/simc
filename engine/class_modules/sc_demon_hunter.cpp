@@ -1509,7 +1509,6 @@ public:
 
     // Vengeance
     bool frailty           = false;
-    bool fires_of_fel      = false;
     bool t31_vengeance_2pc = true;
   } affected_by;
 
@@ -1633,11 +1632,6 @@ public:
       {
         affected_by.frailty = ab::data().affected_by( p->spec.frailty_debuff->effectN( 4 ) );
       }
-      if ( p->set_bonuses.t30_vengeance_2pc->ok() )
-      {
-        affected_by.fires_of_fel = ab::data().affected_by( p->set_bonuses.t30_vengeance_2pc_buff->effectN( 1 ) ) ||
-                                   ab::data().affected_by( p->set_bonuses.t30_vengeance_2pc_buff->effectN( 2 ) );
-      }
     }
   }
 
@@ -1689,6 +1683,7 @@ public:
     ab::parse_effects( p()->buff.t29_havoc_4pc );
 
     // Vengeance
+    ab::parse_effects( p()->buff.t30_vengeance_2pc );
     ab::parse_effects( p()->buff.t31_vengeance_2pc );
 
     // Aldrachi Reaver
@@ -1791,11 +1786,6 @@ public:
     if ( affected_by.any_means_necessary.direct )
     {
       m *= 1.0 + p()->cache.mastery_value() * ( 1.0 + p()->mastery.any_means_necessary_tuning->effectN( 1 ).percent() );
-    }
-
-    if ( affected_by.fires_of_fel )
-    {
-      m *= 1.0 + p()->buff.t30_vengeance_2pc->check_stack_value();
     }
 
     return m;
