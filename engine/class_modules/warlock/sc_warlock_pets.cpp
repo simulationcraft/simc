@@ -1577,9 +1577,8 @@ struct dreadstalker_leap_t : warlock_pet_t::travel_t
 
   bool ready() override
   {
-    // Dreadstalkers will not do a leap if are summoned too close to the target. In addition, the leap can only occur once.
-    // We assume the pet does not ever need to be anywhere except the main raid target
-    return ( (!debug_cast<dreadstalker_t*>( player )->melee_on_summon) && (debug_cast<dreadstalker_t*>( player )->leap_executes > 0) && (player->current.distance > melee_pos) );
+    // Dreadstalkers will not do a leap if are summoned too close to the target. In addition, the leap can only occur once. 
+    return ( (!debug_cast<dreadstalker_t*>( player )->melee_on_summon) && (debug_cast<dreadstalker_t*>( player )->leap_executes > 0) && (warlock_pet_t::travel_t::ready()) );
   }
 
   void execute() override
