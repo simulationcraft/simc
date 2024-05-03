@@ -1502,11 +1502,9 @@ public:
     // Havoc
     affect_flags any_means_necessary;
     affect_flags demonic_presence;
-    bool chaos_theory    = false;
-    bool serrated_glaive = false;
+    bool chaos_theory = false;
 
     // Vengeance
-    bool frailty           = false;
     bool t31_vengeance_2pc = true;
   } affected_by;
 
@@ -1600,11 +1598,6 @@ public:
       {
         affected_by.chaos_theory = ab::data().affected_by( p->spec.chaos_theory_buff->effectN( 1 ) );
       }
-
-      if ( p->talent.havoc.serrated_glaive->ok() )
-      {
-        affected_by.serrated_glaive = ab::data().affected_by( p->spec.serrated_glaive_debuff );
-      }
     }
     else  // DEMON_HUNTER_VENGEANCE
     {
@@ -1683,8 +1676,10 @@ public:
     // Shared
 
     // Havoc
-    ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::essence_break ), p()->spec.essence_break_debuff );
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::burning_wound ), p()->spec.burning_wound_debuff );
+    ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::essence_break ), p()->spec.essence_break_debuff );
+    ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::serrated_glaive ),
+                              p()->spec.serrated_glaive_debuff );
 
     // Vengeance
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::frailty ), p()->spec.frailty_debuff,
@@ -1724,18 +1719,6 @@ public:
       ab::stats->school = SCHOOL_CHAOS;
 
     ab::init_finished();
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = ab::composite_target_multiplier( target );
-
-    if ( affected_by.serrated_glaive )
-    {
-      m *= 1.0 + td( target )->debuffs.serrated_glaive->check_value();
-    }
-
-    return m;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
