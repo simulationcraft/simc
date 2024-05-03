@@ -3799,6 +3799,41 @@ struct mograine_pet_t final : public horseman_pet_t
     }
   };
 
+  struct dnd_aura_t final : public buff_t
+  {
+    dnd_aura_t( horseman_pet_t* p )
+      : buff_t( p, "death_and_decay", p->dk()->pet_spell.mograines_death_and_decay ), dk( p->dk() )
+    {
+      set_tick_zero( true );
+      set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
+        dk->active_spells.mograines_death_and_decay->execute();
+      } );
+    }
+    
+    void start( int stacks, double value, timespan_t duration ) override
+    {
+      buff_t::start( stacks, value, duration );
+      if ( dk->talent.rider.mograines_might.ok() )
+      {
+        dk->buffs.mograines_might->trigger();
+        dk->trigger_dnd_buffs();
+      }
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
+      if ( dk->talent.rider.mograines_might.ok() )
+      {
+        dk->buffs.mograines_might->expire();
+        dk->expire_dnd_buffs();
+      }
+    }
+
+  private:
+    death_knight_t* dk;
+  };
+
   struct heart_strike_mograine_t final : public horseman_melee_t
   {
     heart_strike_mograine_t( util::string_view name, horseman_pet_t* p, util::string_view options_str )
@@ -3811,31 +3846,7 @@ struct mograine_pet_t final : public horseman_pet_t
   void create_buffs() override
   {
     death_knight_pet_t::create_buffs();
-
-    dnd_aura =
-        make_buff( this, "death_and_decay", dk()->pet_spell.mograines_death_and_decay )
-            ->set_tick_zero( true )
-            ->set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
-              dk()->active_spells.mograines_death_and_decay->execute();
-            } )
-            ->set_stack_change_callback( [ this ]( buff_t* buff, int /*old_*/, int new_ ) {
-              if ( new_ )
-              {
-                if ( dk()->talent.rider.mograines_might.ok() )
-                {
-                  dk()->buffs.mograines_might->trigger();
-                }
-                dk()->trigger_dnd_buffs();
-              }
-              else
-              {
-                if ( dk()->talent.rider.mograines_might.ok() )
-                {
-                  dk()->buffs.mograines_might->expire();
-                }
-                dk()->expire_dnd_buffs();
-              }
-            } );
+    dnd_aura = new dnd_aura_t( this );
   }
 
   mograine_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "mograine" )
@@ -6332,12 +6343,9 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
   void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
-    if ( p()->talent.unholy.pestilence.ok() )
+    if ( p()->talent.unholy.pestilence.ok() && rng().roll( p()->talent.unholy.pestilence->effectN( 1 ).percent() ) )
     {
-      if ( rng().roll( p()->talent.unholy.pestilence->effectN( 1 ).percent() ) )
-      {
-        p()->trigger_festering_wound( s, 1, p()->procs.fw_pestilence );
-      }
+      p()->trigger_festering_wound( s, 1, p()->procs.fw_pestilence );
     }
   }
 };
@@ -6482,11 +6490,11 @@ struct death_and_decay_base_t : public death_knight_spell_t
             .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
               switch ( type )
               {
-                case ground_aoe_params_t::EVENT_CREATED:
+                case ground_aoe_params_t::EVENT_STARTED:
                   p()->active_dnd = event;
                   p()->trigger_dnd_buffs();
                   break;
-                case ground_aoe_params_t::EVENT_DESTRUCTED:
+                case ground_aoe_params_t::EVENT_STOPPED:
                   p()->active_dnd = nullptr;
                   p()->expire_dnd_buffs();
                   break;
@@ -10519,10 +10527,10 @@ void death_knight_t::trigger_dnd_buffs()
   if ( !in_death_and_decay() )
     return;
 
-  if ( talent.unholy_ground.ok() )
+  if ( talent.unholy_ground.ok() && !buffs.unholy_ground->check() )
     buffs.unholy_ground->trigger();
 
-  if ( talent.blood.sanguine_ground.ok() )
+  if ( talent.blood.sanguine_ground.ok() && !buffs.sanguine_ground->check() )
     buffs.sanguine_ground->trigger();
 }
 
@@ -10534,10 +10542,10 @@ void death_knight_t::expire_dnd_buffs()
   if ( in_death_and_decay() )
     return;
 
-  if ( talent.unholy_ground.ok() )
+  if ( talent.unholy_ground.ok() && buffs.unholy_ground->check() )
     buffs.unholy_ground->expire();
 
-  if ( talent.blood.sanguine_ground.ok() )
+  if ( talent.blood.sanguine_ground.ok() && buffs.sanguine_ground->check() )
     buffs.sanguine_ground->expire();
 }
 // ==========================================================================
