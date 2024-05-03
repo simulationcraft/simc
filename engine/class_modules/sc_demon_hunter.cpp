@@ -168,6 +168,31 @@ struct movement_buff_t : public buff_t
 using data_t        = std::pair<std::string, simple_sample_data_with_min_max_t>;
 using simple_data_t = std::pair<std::string, simple_sample_data_t>;
 
+// utility to create target_effect_t compatible functions from demon_hunter_td_t member references
+template <typename T>
+static std::function<int( demon_hunter_td_t* )> d_fn( T d, bool stack = true )
+{
+  if constexpr ( std::is_invocable_v<T, demon_hunter_td_t::debuffs_t> )
+  {
+    if ( stack )
+      return [ d ]( demon_hunter_td_t* t ) { return std::invoke( d, t->debuffs )->check(); };
+    else
+      return [ d ]( demon_hunter_td_t* t ) { return std::invoke( d, t->debuffs )->check() > 0; };
+  }
+  else if constexpr ( std::is_invocable_v<T, demon_hunter_td_t::dots_t> )
+  {
+    if ( stack )
+      return [ d ]( demon_hunter_td_t* t ) { return std::invoke( d, t->dots )->current_stack(); };
+    else
+      return [ d ]( demon_hunter_td_t* t ) { return std::invoke( d, t->dots )->is_ticking(); };
+  }
+  else
+  {
+    static_assert( static_false<T>, "Not a valid member of demon_hunter_td_t" );
+    return nullptr;
+  }
+}
+
 /* Demon Hunter class definition
  *
  * Derived from player_t. Contains everything that defines the Demon Hunter
@@ -1612,12 +1637,6 @@ public:
       {
         affected_by.frailty = ab::data().affected_by( p->spec.frailty_debuff->effectN( 4 ) );
       }
-      if ( p->talent.vengeance.fiery_demise->ok() )
-      {
-        affected_by.fiery_demise = ab::data().affected_by( p->spec.fiery_brand_debuff->effectN( 2 ) ) ||
-                                   ( p->set_bonuses.t30_vengeance_4pc->ok() &&
-                                     ab::data().affected_by_label( p->spec.fiery_brand_debuff->effectN( 4 ) ) );
-      }
       if ( p->set_bonuses.t30_vengeance_2pc->ok() )
       {
         affected_by.fires_of_fel = ab::data().affected_by( p->set_bonuses.t30_vengeance_2pc_buff->effectN( 1 ) ) ||
@@ -1682,6 +1701,19 @@ public:
 
   void apply_debuff_effects()
   {
+    //    ab::parse_target_effects( []( demon_hunter_td_t* td ) { return td->debuffs.frailty->check(); },
+    //    p()->spec.frailty_debuff );
+
+    // Vengeance Demon Hunter's DF S2 tier set spell data is baked into Fiery Brand's spell data at effect #4.
+    // In order to only conditionally load this, we parse all the effects _but_ #4 first and then, if the target
+    // is wearing the DF S2 tier set, we parse effect #4.
+    ab::parse_target_effects( d_fn( &demon_hunter_td_t::dots_t::fiery_brand ), p()->spec.fiery_brand_debuff, 0b01000,
+                              p()->talent.vengeance.fiery_demise );
+    if ( p()->set_bonuses.t30_vengeance_4pc->ok() )
+    {
+      ab::parse_target_effects( d_fn( &demon_hunter_td_t::dots_t::fiery_brand ), p()->spec.fiery_brand_debuff, 0b10111,
+                                p()->talent.vengeance.fiery_demise );
+    }
   }
 
   void init_finished() override
@@ -1732,11 +1764,6 @@ public:
       {
         m *= 1.0 + p()->talent.vengeance.vulnerability->effectN( 1 ).percent() * td( target )->debuffs.frailty->check();
       }
-    }
-
-    if ( affected_by.fiery_demise && td( target )->dots.fiery_brand->is_ticking() )
-    {
-      m *= 1.0 + p()->talent.vengeance.fiery_demise->effectN( 1 ).percent();
     }
 
     if ( affected_by.reavers_mark && td( target )->debuffs.reavers_mark->check() )
@@ -7180,7 +7207,7 @@ void demon_hunter_t::create_buffs()
 
   buff.art_of_the_glaive = make_buff( this, "art_of_the_glaive", hero_spec.art_of_the_glaive_buff );
   buff.glaive_flurry     = make_buff( this, "glaive_flurry", hero_spec.glaive_flurry );
-  buff.rending_strike = make_buff( this, "rending_strike", hero_spec.rending_strike );
+  buff.rending_strike    = make_buff( this, "rending_strike", hero_spec.rending_strike );
 
   // Fel-scarred ============================================================
 
