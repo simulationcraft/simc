@@ -4453,25 +4453,23 @@ struct delayed_execute_event_t : public event_t
 // Runic Power Decay Event ==================================================
 struct runic_power_decay_event_t : public event_t
 {
-private:
-  death_knight_t* player;
+  runic_power_decay_event_t( death_knight_t* p ) : event_t( *p, 1000_ms ), player( p )
+  {
+  }
 
-public:
-  runic_power_decay_event_t( death_knight_t* p )
-    : event_t( *p, 500_ms ),
-    player( p )
-  {}
-
-  const char* name() const override { return "runic_power_decay"; }
+  const char* name() const override
+  {
+    return "runic_power_decay";
+  }
 
   void execute() override
   {
-    if (!player->in_combat)
+    if ( !player->in_combat )
     {
       auto cur = player->resources.current[ RESOURCE_RUNIC_POWER ];
-      if ( cur > RUNIC_POWER_DECAY_RATE * 0.5 )
+      if ( cur > RUNIC_POWER_DECAY_RATE )
       {
-        player->resource_loss( RESOURCE_RUNIC_POWER, RUNIC_POWER_DECAY_RATE * 0.5, nullptr, nullptr );
+        player->resource_loss( RESOURCE_RUNIC_POWER, RUNIC_POWER_DECAY_RATE, nullptr, nullptr );
         make_event<runic_power_decay_event_t>( sim(), player );
       }
       else
@@ -4480,6 +4478,9 @@ public:
       }
     }
   }
+
+private:
+  death_knight_t* player;
 };
 
 // ==========================================================================
