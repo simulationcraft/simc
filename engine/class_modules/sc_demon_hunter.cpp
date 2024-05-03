@@ -1687,20 +1687,34 @@ public:
   // that they affect.
   void apply_buff_effects()
   {
+    // Shared
     ab::parse_effects( p()->buff.demon_soul );
     ab::parse_effects( p()->buff.empowered_demon_soul );
+
+    // Havoc
     ab::parse_effects( p()->buff.momentum );
     ab::parse_effects( p()->buff.inertia );
     ab::parse_effects( p()->buff.restless_hunter );
     ab::parse_effects( p()->buff.t29_havoc_4pc );
+
+    // Vengeance
     ab::parse_effects( p()->buff.t31_vengeance_2pc );
+
+    // Aldrachi Reaver
     ab::parse_effects( p()->buff.glaive_flurry, p()->talent.aldrachi_reaver.incisive_blade );
     ab::parse_effects( p()->buff.rending_strike, p()->talent.aldrachi_reaver.incisive_blade );
+
+    // Fel-scarred
     ab::parse_effects( p()->buff.enduring_torment );
   }
 
   void apply_debuff_effects()
   {
+    // Shared
+
+    // Havoc
+
+    // Vengeance
     //    ab::parse_target_effects( []( demon_hunter_td_t* td ) { return td->debuffs.frailty->check(); },
     //    p()->spec.frailty_debuff );
 
@@ -1714,6 +1728,10 @@ public:
       ab::parse_target_effects( d_fn( &demon_hunter_td_t::dots_t::fiery_brand ), p()->spec.fiery_brand_debuff, 0b10111,
                                 p()->talent.vengeance.fiery_demise );
     }
+
+    // Aldrachi Reaver
+
+    // Fel-scarred
   }
 
   void init_finished() override
