@@ -1030,9 +1030,9 @@
       { "data_type": "S", "field": "message" },
       { "data_type": "i", "field": "difficulty" },
       { "data_type": "i", "field": "id_lock" },
-      { "data_type": "b", "field": "reset_interval" },
+      { "data_type": "B", "field": "reset_interval" },
       { "data_type": "i", "field": "max_players" },
-      { "data_type": "i", "field": "item_context" },
+      { "data_type": "B", "field": "item_context" },
       { "data_type": "i", "field": "item_context_picker_id" },
       { "data_type": "i", "field": "flags" },
       { "data_type": "i", "field": "id_content_tuning", "ref": "ContentTuning" }
