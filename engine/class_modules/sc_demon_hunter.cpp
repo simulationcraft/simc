@@ -1628,10 +1628,6 @@ public:
       // Affect Flags
 
       // Talents
-      if ( p->talent.vengeance.vulnerability->ok() )
-      {
-        affected_by.frailty = ab::data().affected_by( p->spec.frailty_debuff->effectN( 4 ) );
-      }
     }
   }
 
@@ -1701,8 +1697,8 @@ public:
     // Havoc
 
     // Vengeance
-    //    ab::parse_target_effects( []( demon_hunter_td_t* td ) { return td->debuffs.frailty->check(); },
-    //    p()->spec.frailty_debuff );
+    ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::frailty ), p()->spec.frailty_debuff,
+                              p()->talent.vengeance.vulnerability );
 
     // Vengeance Demon Hunter's DF S2 tier set spell data is baked into Fiery Brand's spell data at effect #4.
     // In order to only conditionally load this, we parse all the effects _but_ #4 first and then, if the target
@@ -1716,7 +1712,7 @@ public:
     }
 
     // Aldrachi Reaver
-    ab::parse_target_effects( d_fn(&demon_hunter_td_t::debuffs_t::reavers_mark ), p()->hero_spec.reavers_mark );
+    ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::reavers_mark ), p()->hero_spec.reavers_mark );
 
     // Fel-scarred
   }
@@ -1757,18 +1753,6 @@ public:
     if ( affected_by.burning_wound )
     {
       m *= 1.0 + td( target )->debuffs.burning_wound->check_value();
-    }
-
-    if ( p()->specialization() == DEMON_HUNTER_VENGEANCE && td( target )->debuffs.frailty->check() )
-    {
-      if ( affected_by.frailty )
-      {
-        m *= 1.0 + p()->talent.vengeance.vulnerability->effectN( 1 ).percent() * td( target )->debuffs.frailty->check();
-      }
-      else if ( !ab::special )  // AA modifier
-      {
-        m *= 1.0 + p()->talent.vengeance.vulnerability->effectN( 1 ).percent() * td( target )->debuffs.frailty->check();
-      }
     }
 
     return m;
