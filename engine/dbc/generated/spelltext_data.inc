@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54521
-static const std::array<spelltext_data_t, 22595> __spelltext_data { {
+static const std::array<spelltext_data_t, 22599> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -22579,6 +22579,10 @@ static const std::array<spelltext_data_t, 22595> __spelltext_data { {
   { 454351, "Call upon the Light to become an avatar of retribution, $?s53376&c2[causing Judgment to generate $53376s3 additional Holy Power, ]?s53376&c3[each Holy Power spent causing you to explode with Holy light for $326731s1 damage to nearby enemies, ]?s53376&c1[reducing Holy Shock's cooldown by $53376s2%, ][]$?s326730[allowing Hammer of Wrath to be used on any target, ][]$?s384442&s384376[increasing your damage, healing and critical strike chance by $s2% for $d.]?!s384442&s384376[increasing your damage and healing by $s1% for $d.]?!s384376&s384442[increasing your critical strike chance by $s3% for $d.][and activating all the effects learned for Avenging Wrath for $d.]", "$?$w2>0&$w3>0[Damage, healing and critical strike chance increased by $w2%.]?$w3==0&$w2>0[Damage and healing increased by $w2%.]?$w2==0&$w3>0[Critical strike chance increased by $w3%.][]$?a53376[ ][]$?a53376&a137029[Holy Shock's cooldown reduced by $w6%.]?a53376&a137028[Judgment generates $53376s3 additional Holy Power.]?a53376[Each Holy Power spent deals $326731s1 Holy damage to nearby enemies.][]", 0 },
   { 454373, "Call upon the Light and begin a crusade, increasing your haste $?s384376[and damage ][]by ${$s5/10}% for $d.\r\n\r\nEach Holy Power spent during Crusade increases haste $?s384376[and damage ][]by an additional ${$s5/10}%.\r\n\r\nMaximum $u stacks.$?s53376[\r\n\r\nWhile active, each Holy Power spent causes you to explode with Holy light for $326731s1 damage to nearby enemies.][]$?s384376[\r\n\r\nHammer of Wrath may be cast on any target.][]\r\n\r\nCombines with Avenging Wrath.\r\n\r\n", "$?$w1>0&$w3>0[Damage done and haste increased by $<damage>%.]?$w1>0[Damage done increased by ${$w1}%.][Haste increased by $<damage>%.]$?$w4>0[ Hammer of Wrath may be cast on any target.][]$?s53376[ Exploding with Holy light for $326731s1 damage to nearby enemies.][]", 0 },
   { 454378, "Increases Malefic Rapture damage by $s1% and reduces its cast time by $s2%.", 0, 0 },
+  { 454389, "$@spelldesc444005", 0, 0 },
+  { 454390, "$@spelldesc444005", 0, 0 },
+  { 454392, "$@spelldesc444005", 0, 0 },
+  { 454393, "$@spelldesc444005", 0, 0 },
   { 454408, "Create a Chestpiece for your class.", 0, 0 },
   { 454409, "Create Gloves for your class.", 0, 0 },
   { 454410, "Create a Headpiece for your class.", 0, 0 },

@@ -1328,6 +1328,10 @@ public:
     const spell_data_t* summon_whitemane;
     const spell_data_t* summon_trollbane;
     const spell_data_t* summon_nazgrim;
+    const spell_data_t* summon_mograine_2;
+    const spell_data_t* summon_whitemane_2;
+    const spell_data_t* summon_trollbane_2;
+    const spell_data_t* summon_nazgrim_2;
     const spell_data_t* apocalypse_now_data;
     const spell_data_t* death_charge_action;
 
@@ -4969,6 +4973,7 @@ struct summon_whitemane_t final : public summon_rider_t
     {
       death_knight_spell_t::execute();
       p()->pets.whitemane.active_pet()->adjust_duration( duration );
+      p()->pets.whitemane.active_pet()->rp_spent = 0;
       if ( !p()->bugs )
       {
         auto td = p()->get_target_data( target );
@@ -5006,6 +5011,7 @@ struct summon_trollbane_t final : public summon_rider_t
     {
       death_knight_spell_t::execute();
       p()->pets.trollbane.active_pet()->adjust_duration( duration );
+      p()->pets.trollbane.active_pet()->rp_spent = 0;
     }
   }
 };
@@ -5029,6 +5035,7 @@ struct summon_nazgrim_t final : public summon_rider_t
     {
       death_knight_spell_t::execute();
       p()->pets.nazgrim.active_pet()->adjust_duration( duration );
+      p()->pets.nazgrim.active_pet()->rp_spent = 0;
     }
   }
 };
@@ -5052,6 +5059,7 @@ struct summon_mograine_t final : public summon_rider_t
     {
       death_knight_spell_t::execute();
       p()->pets.mograine.active_pet()->adjust_duration( duration );
+      p()->pets.mograine.active_pet()->rp_spent = 0;
       if ( !p()->bugs )
       {
         p()->pets.mograine.active_pet()->dnd_aura->trigger();
@@ -9686,7 +9694,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Proc Chance does not appear to be in data, using testing data that is current as of 4/19/2024
     if ( talent.rider.riders_champion.ok() && rng().roll( 0.2 ) )
     {
-      summon_rider( 10_s, true ); // No Longer in spell data. Using 10s for now
+      summon_rider( spell.summon_whitemane_2->duration(), true);
     }
 
     if ( talent.rider.nazgrims_conquest.ok() && buffs.apocalyptic_conquest->check() )
@@ -11527,6 +11535,10 @@ void death_knight_t::init_spells()
   spell.summon_whitemane      = find_spell( 444251 );
   spell.summon_trollbane      = find_spell( 444254 );
   spell.summon_nazgrim        = find_spell( 444252 );
+  spell.summon_mograine_2     = find_spell( 454393 );
+  spell.summon_whitemane_2    = find_spell( 454389 );
+  spell.summon_trollbane_2    = find_spell( 454390 );
+  spell.summon_nazgrim_2      = find_spell( 454392 );
   spell.apocalypse_now_data   = find_spell( 444244 );
   spell.death_charge_action   = find_spell( 444347 );
 
