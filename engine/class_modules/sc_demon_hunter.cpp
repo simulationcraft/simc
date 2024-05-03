@@ -106,7 +106,6 @@ public:
     return *debug_cast<demon_hunter_t*>( source );
   }
 
-  void target_demise();
   void trigger_burning_blades( action_state_t* state );
 };
 
