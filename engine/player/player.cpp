@@ -52,6 +52,7 @@
 #include "player/spawner_base.hpp"
 #include "player/stats.hpp"
 #include "player/unique_gear.hpp"
+#include "player/unique_gear_thewarwithin.hpp"
 #include "sim/benefit.hpp"
 #include "sim/cooldown.hpp"
 #include "sim/cooldown_waste_data.hpp"
@@ -1845,40 +1846,46 @@ void player_t::init_items()
         sim->error( "{} overriding unknown item slot '{}={}'; ignoring.", *this, override_slot, override_str );
       }
     }
-  }
 
-  if ( load_default_gear )
-  {
-    uint32_t class_, spec_;
-    if ( !dbc->spec_idx( specialization(), class_, spec_ ) )
+    if ( load_default_gear )
     {
-      sim->error( "{} cannot load default gear, invalid class and/or specialization.", *this );
-      return;
-    }
-
-    for ( const auto& gear : character_loadout_data_t::data( class_, spec_, is_ptr() ) )
-    {
-      const auto& item = dbc->item( gear.id_item );
-      auto inv_type = static_cast<inventory_type>( item.inventory_type );
-      auto slot = util::translate_invtype( inv_type );
-
-      if ( !items[ slot ].options_str.empty() )
+      uint32_t class_, spec_;
+      if ( !dbc->spec_idx( specialization(), class_, spec_ ) )
       {
-        if ( inv_type == INVTYPE_WEAPON && slot == SLOT_MAIN_HAND )
-          slot = SLOT_OFF_HAND;
-        else if ( inv_type == INVTYPE_FINGER && slot == SLOT_FINGER_1 )
-          slot = SLOT_FINGER_2;
-        else if ( inv_type == INVTYPE_TRINKET && slot == SLOT_TRINKET_1 )
-          slot = SLOT_TRINKET_2;
-        else
-          continue;
+        sim->error( "{} cannot load default gear, invalid class and/or specialization.", *this );
+        return;
       }
 
-      items[ slot ].options_str =
-          fmt::format( ",id={},ilevel={}", gear.id_item, character_loadout_data_t::default_item_level() );
+      for ( const auto& gear : character_loadout_data_t::data( class_, spec_, is_ptr() ) )
+      {
+        const auto& item = dbc->item( gear.id_item );
+        auto inv_type = static_cast<inventory_type>( item.inventory_type );
+        auto slot = util::translate_invtype( inv_type );
+
+        if ( !items[ slot ].options_str.empty() )
+        {
+          if ( inv_type == INVTYPE_WEAPON && slot == SLOT_MAIN_HAND )
+            slot = SLOT_OFF_HAND;
+          else if ( inv_type == INVTYPE_FINGER && slot == SLOT_FINGER_1 )
+            slot = SLOT_FINGER_2;
+          else if ( inv_type == INVTYPE_TRINKET && slot == SLOT_TRINKET_1 )
+            slot = SLOT_TRINKET_2;
+          else
+            continue;
+        }
+
+        items[ slot ].options_str =
+            fmt::format( ",id={},ilevel={}", gear.id_item, character_loadout_data_t::default_item_level() );
+      }
+    }
+
+    // Legendary Shadoweave Shirt used as base item for enable_all_item_effects
+    if ( sim->enable_all_item_effects )
+    {
+      items[ SLOT_SHIRT ].options_str =
+          fmt::format( ",id=45037,ilevel={}", character_loadout_data_t::default_item_level() );
     }
   }
-
   // We need to simple-parse the items first, this will set up some base information, and parse out
   // simple options
   for ( auto& item : items )
@@ -2142,6 +2149,21 @@ void player_t::create_special_effects()
 
     special_effects.push_back( new special_effect_t( effect ) );
   }
+
+  if ( sim->enable_all_item_effects )
+  {
+    for ( auto id : unique_gear::thewarwithin::__tww_special_effect_ids )
+    {
+      if ( unique_gear::find_special_effect( this, id ) )
+        continue;
+
+      special_effect_t effect( &items[ SLOT_SHIRT ] );
+      unique_gear::initialize_special_effect( effect, id );
+
+      special_effects.push_back( new special_effect_t( effect ) );
+    }
+  }
+
 
   unique_gear::initialize_racial_effects( this );
 

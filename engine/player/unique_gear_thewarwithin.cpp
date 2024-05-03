@@ -6,6 +6,7 @@
 #include "unique_gear_thewarwithin.hpp"
 
 #include "action/absorb.hpp"
+#include "action/action.hpp"
 #include "action/dot.hpp"
 #include "actor_target_data.hpp"
 #include "buff/buff.hpp"
@@ -26,6 +27,22 @@
 
 namespace unique_gear::thewarwithin
 {
+std::vector<unsigned> __tww_special_effect_ids;
+std::vector<special_effect_t*> __tww_on_use_effects;
+
+// can be called via unqualified lookup
+void register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback = false )
+{
+  unique_gear::register_special_effect( spell_id, init_callback, fallback );
+  __tww_special_effect_ids.push_back( spell_id );
+}
+
+void register_special_effect( std::initializer_list<unsigned> spell_ids, custom_cb_t init_callback, bool fallback )
+{
+  for ( auto id : spell_ids )
+    register_special_effect( id, init_callback, fallback );
+}
+
 namespace consumables
 {
 }  // namespace consumables
@@ -66,6 +83,8 @@ void register_special_effects()
   // Armor
 
   // Sets
+
+  // Disabled (use unique_gear::register_special_effect as we don't need to register these as TWW)
 }
 
 void register_target_data_initializers( sim_t& sim )

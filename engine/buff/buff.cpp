@@ -3290,6 +3290,21 @@ stat_buff_t* stat_buff_t::set_stat_from_effect( size_t i, double a, const stat_c
   return add_stat_from_effect( i, a, c );
 }
 
+stat_buff_t* stat_buff_t::add_stat_from_effect_type( effect_subtype_t type, double a, const stat_check_fn& c )
+{
+  auto eff = spell_data_t::find_spelleffect( data(), E_APPLY_AURA, type );
+  assert( eff.ok() && "Effect type not found in stat buff" );
+
+  return add_stat_from_effect( eff.index() + 1, a, c );
+}
+
+stat_buff_t* stat_buff_t::set_stat_from_effect_type( effect_subtype_t type, double a, const stat_check_fn& c )
+{
+  manual_stats_added = false;
+
+  return add_stat_from_effect_type( type, a, c );
+}
+
 void stat_buff_t::bump( int stacks, double /* value */ )
 {
   buff_t::bump( stacks );

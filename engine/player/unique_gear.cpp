@@ -148,6 +148,7 @@ namespace racial
 namespace generic
 {
   void windfury_totem( special_effect_t& );
+  void enable_all_item_effects( special_effect_t& );
 }
 
 /**
@@ -3766,6 +3767,44 @@ void generic::windfury_totem( special_effect_t& effect )
   proc->deactivate();
 }
 
+void generic::enable_all_item_effects( special_effect_t& effect )
+{
+  if ( !effect.player->sim->enable_all_item_effects )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
+  struct enable_all_item_effects_t : public action_t
+  {
+    cooldown_t* trinket_cd;
+
+    enable_all_item_effects_t( const special_effect_t& e )
+      : action_t( action_e::ACTION_USE, "enable_all_item_effects", e.player ),
+        trinket_cd( e.player->get_cooldown( "item_cd_1141" ) )
+    {
+      callbacks = false;
+      cooldown->duration = 20_s;
+    }
+    
+    void execute() override
+    {
+      action_t::execute();
+
+      for ( auto eff : thewarwithin::__tww_on_use_effects )
+      {
+        if ( eff->execute_action->action_ready() )
+        {
+          eff->execute_action->execute();
+          trinket_cd->reset( false );
+        }
+      }
+    }
+  };
+
+  effect.execute_action = new enable_all_item_effects_t( effect );
+}
+
 bool stat_fits_criteria( stat_e stat, stat_e criteria )
 {
   if ( !stat )
@@ -4089,30 +4128,43 @@ void unique_gear::initialize_racial_effects( player_t* player )
 
 void unique_gear::init( player_t* p )
 {
-  if ( p -> is_pet() || p -> is_enemy() ) return;
+  if ( p->is_pet() || p->is_enemy() )
+    return;
 
-  for ( size_t i = 0; i < p -> items.size(); i++ )
+  for ( size_t i = 0; i < p->items.size(); i++ )
   {
-    item_t& item = p -> items[ i ];
+    item_t& item = p->items[ i ];
 
     for ( size_t j = 0; j < item.parsed.special_effects.size(); j++ )
     {
       special_effect_t* effect = item.parsed.special_effects[ j ];
 
-      p -> sim -> print_debug( "Initializing item-based special effect {}", *effect );
+      p->sim->print_debug( "Initializing item-based special effect {}", *effect );
 
       initialize_special_effect_2( effect );
     }
   }
 
   // Generic special effects, bound to no specific item
-  for ( size_t i = 0; i < p -> special_effects.size(); i++ )
+  for ( size_t i = 0; i < p->special_effects.size(); i++ )
   {
-    special_effect_t* effect = p -> special_effects[ i ];
+    special_effect_t* effect = p->special_effects[ i ];
 
-    p -> sim -> print_debug( "Initializing generic special effect {}", *effect );
+    p->sim->print_debug( "Initializing generic special effect {}", *effect );
+
+    // cache id as initialization callback can change it
+    auto driver_id = effect->spell_id;
 
     initialize_special_effect_2( effect );
+
+    if ( p->sim->enable_all_item_effects )
+    {
+      if ( effect->execute_action && range::contains( thewarwithin::__tww_special_effect_ids, driver_id ) &&
+           !range::contains( thewarwithin::__tww_on_use_effects, effect ) )
+      {
+        thewarwithin::__tww_on_use_effects.push_back( effect );
+      }
+    }
   }
 }
 
@@ -5085,6 +5137,7 @@ void unique_gear::register_special_effects()
 
   /* Generic "global scope" special effects */
   register_special_effect( 327942, generic::windfury_totem );
+  register_special_effect( 63604, generic::enable_all_item_effects );
 }
 
 void unique_gear::unregister_special_effects()

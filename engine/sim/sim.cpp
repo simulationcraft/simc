@@ -1512,6 +1512,7 @@ sim_t::sim_t()
     allow_experimental_specializations( false ),
     enable_all_talents( false ),
     enable_all_sets( false ),
+    enable_all_item_effects( false ),
     progressbar_type( 0 ),
     armory_retries( 3 ),
     enemy_death_pct( 0 ),
@@ -3700,6 +3701,7 @@ void sim_t::create_options()
   add_option( opt_bool( "allow_experimental_specializations", allow_experimental_specializations ) );
   add_option( opt_bool( "enable_all_talents", enable_all_talents ) );
   add_option( opt_bool( "enable_all_sets", enable_all_sets ) );
+  add_option( opt_bool( "enable_all_item_effects", enable_all_item_effects ) );
 
   // Raid buff overrides
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
