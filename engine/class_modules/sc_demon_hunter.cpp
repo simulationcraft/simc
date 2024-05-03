@@ -1503,7 +1503,6 @@ public:
     affect_flags any_means_necessary;
     affect_flags demonic_presence;
     bool chaos_theory    = false;
-    bool burning_wound   = false;
     bool serrated_glaive = false;
 
     // Vengeance
@@ -1597,11 +1596,6 @@ public:
       parse_affect_flags( p->mastery.demonic_presence, affected_by.demonic_presence );
       parse_affect_flags( p->mastery.any_means_necessary, affected_by.any_means_necessary );
 
-      if ( p->spec.burning_wound_debuff->ok() )
-      {
-        affected_by.burning_wound = ab::data().affected_by( p->spec.burning_wound_debuff->effectN( 2 ) );
-      }
-
       if ( p->talent.havoc.chaos_theory->ok() )
       {
         affected_by.chaos_theory = ab::data().affected_by( p->spec.chaos_theory_buff->effectN( 1 ) );
@@ -1690,6 +1684,7 @@ public:
 
     // Havoc
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::essence_break ), p()->spec.essence_break_debuff );
+    ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::burning_wound ), p()->spec.burning_wound_debuff );
 
     // Vengeance
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::frailty ), p()->spec.frailty_debuff,
@@ -1738,11 +1733,6 @@ public:
     if ( affected_by.serrated_glaive )
     {
       m *= 1.0 + td( target )->debuffs.serrated_glaive->check_value();
-    }
-
-    if ( affected_by.burning_wound )
-    {
-      m *= 1.0 + td( target )->debuffs.burning_wound->check_value();
     }
 
     return m;
