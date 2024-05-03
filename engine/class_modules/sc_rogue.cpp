@@ -10883,7 +10883,7 @@ void rogue_t::create_buffs()
 
   buffs.t31_assassination_2pc = make_buff<damage_buff_t>( this, "natureblight", spec.t31_assassination_2pc_buff )
     ->set_is_stacking_mod( true );
-  buffs.t31_assassination_2pc->set_default_value_from_effect_type( A_MOD_ATTACKSPEED )
+  buffs.t31_assassination_2pc->set_default_value_from_effect_type( A_MOD_ATTACKSPEED_NORMALIZED )
     ->add_invalidate( CACHE_ATTACK_SPEED )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 }

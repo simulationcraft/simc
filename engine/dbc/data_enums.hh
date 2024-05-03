@@ -841,7 +841,7 @@ enum effect_subtype_t : unsigned {
     A_MOD_CHARM = 6,
     A_MOD_FEAR = 7,
     A_PERIODIC_HEAL = 8,
-    A_MOD_ATTACKSPEED = 9,
+    A_MOD_ATTACKSPEED_NORMALIZED = 9,
     A_MOD_THREAT = 10,
     A_MOD_TAUNT = 11,
     A_MOD_STUN = 12,
