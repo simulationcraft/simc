@@ -5632,16 +5632,16 @@ struct blood_boil_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    for ( auto& drw : p()->pets.dancing_rune_weapon_pet )
+    if( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
     {
-      drw->ability.blood_boil->execute_on_target( target );
+      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.blood_boil->execute_on_target( target );
     }
 
     if ( p()->talent.blood.everlasting_bond.ok() )
     {
-      for ( auto& eb : p()->pets.everlasting_bond_pet )
+      if( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
       {
-        eb->ability.blood_boil->execute_on_target( target );
+        p()->pets.everlasting_bond_pet.active_pet()->ability.blood_boil->execute_on_target( target );
       }
     }
   }
@@ -6134,16 +6134,16 @@ struct consumption_t final : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    for ( auto& drw : p()->pets.dancing_rune_weapon_pet )
+    if( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
     {
-      drw->ability.consumption->execute_on_target( target );
+      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.consumption->execute_on_target( target );
     }
 
     if ( p()->talent.blood.everlasting_bond.ok() )
     {
-      for ( auto& eb : p()->pets.everlasting_bond_pet )
+      if( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
       {
-        eb->ability.consumption->execute_on_target( target );
+        p()->pets.everlasting_bond_pet.active_pet()->ability.consumption->execute_on_target( target );
       }
     }
   }
@@ -6607,16 +6607,16 @@ struct deaths_caress_t final : public death_knight_spell_t
 
     p()->buffs.bone_shield->trigger( as<int>( p()->talent.blood.deaths_caress->effectN( 3 ).base_value() ) );
 
-    for ( auto& drw : p()->pets.dancing_rune_weapon_pet )
+    if( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
     {
-      drw->ability.deaths_caress->execute_on_target( target );
+      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.deaths_caress->execute_on_target( target );
     }
 
     if ( p()->talent.blood.everlasting_bond.ok() )
     {
-      for ( auto& eb : p()->pets.everlasting_bond_pet )
+      if( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
       {
-        eb->ability.deaths_caress->execute_on_target( target );
+        p()->pets.everlasting_bond_pet.active_pet()->ability.deaths_caress->execute_on_target( target );
       }
     }
   }
@@ -6971,16 +6971,16 @@ struct death_strike_t final : public death_knight_melee_attack_t
     if ( oh_attack )
       oh_attack->execute();
 
-    for ( auto& drw : p()->pets.dancing_rune_weapon_pet )
+    if( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
     {
-      drw->ability.death_strike->execute_on_target( target );
+      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.death_strike->execute_on_target( target );
     }
 
     if ( p()->talent.blood.everlasting_bond.ok() )
     {
-      for ( auto& eb : p()->pets.everlasting_bond_pet )
+      if( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
       {
-        eb->ability.death_strike->execute_on_target( target );
+        p()->pets.everlasting_bond_pet.active_pet()->ability.death_strike->execute_on_target( target );
       }
     }
 
@@ -7641,16 +7641,16 @@ struct heart_strike_damage_base_t : public death_knight_melee_attack_t
       p()->buffs.heartrend->trigger();
     }
 
-    for ( auto& drw : p()->pets.dancing_rune_weapon_pet )
+    if( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
     {
-      drw->ability.heart_strike->execute_on_target( target );
+      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.heart_strike->execute_on_target( target );
     }
 
     if ( p()->talent.blood.everlasting_bond.ok() )
     {
-      for ( auto& eb : p()->pets.everlasting_bond_pet )
+      if( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
       {
-        eb->ability.heart_strike->execute_on_target( target );
+        p()->pets.everlasting_bond_pet.active_pet()->ability.heart_strike->execute_on_target( target );
       }
     }
   }
@@ -7907,16 +7907,16 @@ struct marrowrend_t final : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    for ( auto& drw : p()->pets.dancing_rune_weapon_pet )
+    if( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
     {
-      drw->ability.marrowrend->execute_on_target( target );
+      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.marrowrend->execute_on_target( target );
     }
 
     if ( p()->talent.blood.everlasting_bond.ok() )
     {
-      for ( auto& eb : p()->pets.everlasting_bond_pet )
+      if( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
       {
-        eb->ability.marrowrend->execute_on_target( target );
+        p()->pets.everlasting_bond_pet.active_pet()->ability.marrowrend->execute_on_target( target );
       }
     }
   }
@@ -8872,16 +8872,16 @@ struct soul_reaper_t final : public death_knight_melee_attack_t
     death_knight_melee_attack_t::execute();
     if ( p()->specialization() == DEATH_KNIGHT_BLOOD )
     {
-      for ( auto& drw : p()->pets.dancing_rune_weapon_pet )
+      if( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
       {
-        drw->ability.soul_reaper->execute_on_target( target );
+        p()->pets.dancing_rune_weapon_pet.active_pet()->ability.soul_reaper->execute_on_target( target );
       }
 
       if ( p()->talent.blood.everlasting_bond.ok() )
       {
-        for ( auto& eb : p()->pets.everlasting_bond_pet )
+        if( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
         {
-          eb->ability.soul_reaper->execute_on_target( target );
+          p()->pets.everlasting_bond_pet.active_pet()->ability.soul_reaper->execute_on_target( target );
         }
       }
     }
