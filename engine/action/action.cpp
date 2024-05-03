@@ -474,6 +474,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     sync_action(),
     signature_str(),
     target_specific_dot( false ),
+    target_specific_debuff( false ),
     action_list(),
     starved_proc(),
     queue_failed_proc(),
@@ -4455,6 +4456,24 @@ dot_t* action_t::get_dot( player_t* t )
   return dot;
 }
 
+buff_t* action_t::get_debuff( player_t* t )
+{
+  if ( !t )
+    t = target;
+  if ( !t )
+    return nullptr;
+
+  buff_t*& debuff = target_specific_debuff[ t ];
+  if ( !debuff )
+    debuff = create_debuff( t );
+  return debuff;
+}
+
+buff_t* action_t::create_debuff( player_t* t )
+{
+  return make_buff( actor_pair_t{ t, player }, name_str );
+}
+
 // return s_data_reporting if available, otherwise fallback to s_data
 const spell_data_t& action_t::data_reporting() const
 {
@@ -4478,6 +4497,14 @@ dot_t* action_t::find_dot( player_t* t ) const
   if ( !t )
     return nullptr;
   return target_specific_dot[ t ];
+}
+
+buff_t* action_t::find_debuff( player_t* t ) const
+{
+  if ( !t )
+    return nullptr;
+
+  return target_specific_debuff[ t ];
 }
 
 void action_t::add_child( action_t* child )
