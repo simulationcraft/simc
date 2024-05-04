@@ -784,7 +784,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
     auto m = player_t::composite_mastery();
 
     for ( const auto& i : mastery_effects )
-      m *= 1.0 + get_effect_value( i );
+      m += 1.0 + get_effect_value( i );
 
     return m;
   }
