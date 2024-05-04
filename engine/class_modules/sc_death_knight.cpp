@@ -2266,30 +2266,6 @@ struct death_knight_pet_t : public pet_t
     {
       m *= 1.0 + dk()->pet_spell.commander_of_the_dead->effectN( 1 ).percent();
     }
-    /*
-    if (dk()->mastery.dreadblade->ok())
-    {
-      m *= 1.0 + dk()->cache.mastery_value();
-    }
-
-    if (dk()->talent.unholy.unholy_aura.ok())
-    {
-      if (guardian)
-        m *= 1.0 + dk()->talent.unholy.unholy_aura->effectN( 4 ).percent();
-      else  // Pets
-        m *= 1.0 + dk()->talent.unholy.unholy_aura->effectN( 3 ).percent();
-    }
-
-    if (dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.amplify_damage->check())
-    {
-      m *= 1.0 + dk()->buffs.amplify_damage->check_value();
-    }
-
-    if (dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.unholy_assault->check())
-    {
-      m *= 1.0 + dk()->buffs.unholy_assault->check_value();
-    }
-    */
 
     return m;
   }
@@ -2675,13 +2651,9 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
   {
     gnaw_cd           = get_cooldown( "gnaw" );
     gnaw_cd->duration = owner->pet_spell.gnaw->cooldown();
-    if ( owner->talent.unholy.raise_dead.ok() )
+    if ( owner->talent.unholy.raise_dead.ok() && !owner->talent.sacrificial_pact.ok() )
     {
-      precombat_spawn = true;
-      if ( !owner->talent.sacrificial_pact.ok() )
-      {
-        dynamic = false;
-      }
+      dynamic = false;
     }
   }
 
@@ -2788,6 +2760,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
 
 private:
   cooldown_t* gnaw_cd;  // shared cd between gnaw/monstrous_blow
+
 public:
   gain_t* dark_transformation_gain;
   buff_t* ghoulish_frenzy;
@@ -4666,12 +4639,9 @@ struct melee_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
 
-    if ( p()->talent.runic_attenuation.ok() && p()->rppm.runic_attenuation->trigger() )
+    if ( p()->talent.runic_attenuation.ok() )
     {
-      p()->resource_gain(
-          RESOURCE_RUNIC_POWER,
-          p()->talent.runic_attenuation->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
-          p()->gains.runic_attenuation, this );
+      trigger_runic_attenuation( s );
     }
 
     if ( result_is_hit( s->result ) )
@@ -4700,6 +4670,19 @@ struct melee_t : public death_knight_melee_attack_t
         trigger_bloodworm();
       }
     }
+  }
+
+  void trigger_runic_attenuation( action_state_t* s )
+  {
+    if ( !p()->rppm.runic_attenuation->trigger() )
+    {
+      return;
+    }
+
+    p()->resource_gain(
+        RESOURCE_RUNIC_POWER,
+        p()->talent.runic_attenuation->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+        p()->gains.runic_attenuation, s->action );
   }
 
   void trigger_bloodworm()
@@ -6272,43 +6255,45 @@ struct dark_transformation_damage_t final : public death_knight_spell_t
 struct dark_transformation_buff_t final : public buff_t
 {
   dark_transformation_buff_t( death_knight_t* p )
-    : buff_t( p, "dark_transformation", p->talent.unholy.dark_transformation )
+    : buff_t( p, "dark_transformation", p->talent.unholy.dark_transformation ), player( p )
   {
     set_default_value_from_effect( 1 );
     cooldown->duration = 0_ms;  // Handled by the player ability
-    set_stack_change_callback( [ p ]( buff_t*, int, int new_ ) {
-      if ( new_ )
-      {
-        if ( p->talent.unholy.ghoulish_frenzy.ok() )
-        {
-          p->buffs.ghoulish_frenzy->trigger();
-          for ( auto& ghoul : p->pets.ghoul_pet )
-          {
-            ghoul->ghoulish_frenzy->trigger();
-          }
-        }
-        if ( p->talent.sanlayn.gift_of_the_sanlayn.ok() )
-        {
-          p->buffs.gift_of_the_sanlayn->trigger();
-        }
-      }
-      else
-      {
-        if ( p->talent.unholy.ghoulish_frenzy.ok() )
-        {
-          p->buffs.ghoulish_frenzy->expire();
-          for ( auto& ghoul : p->pets.ghoul_pet )
-          {
-            ghoul->ghoulish_frenzy->expire();
-          }
-        }
-        if ( p->talent.sanlayn.gift_of_the_sanlayn.ok() )
-        {
-          p->buffs.gift_of_the_sanlayn->expire();
-        }
-      }
-    } );
   }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::start( stacks, value, duration );
+    if ( player->talent.unholy.ghoulish_frenzy.ok() )
+    {
+      player->buffs.ghoulish_frenzy->trigger();
+      player->pets.ghoul_pet.active_pet()->ghoulish_frenzy->trigger();
+    }
+    if ( player->talent.sanlayn.gift_of_the_sanlayn.ok() )
+    {
+      player->buffs.gift_of_the_sanlayn->trigger();
+    }
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    if ( player->talent.unholy.ghoulish_frenzy.ok() )
+    {
+      player->buffs.ghoulish_frenzy->expire();
+      if ( player->pets.ghoul_pet.active_pet() != nullptr )
+      {
+        player->pets.ghoul_pet.active_pet()->ghoulish_frenzy->expire();
+      }
+    }
+    if ( player->talent.sanlayn.gift_of_the_sanlayn.ok() )
+    {
+      player->buffs.gift_of_the_sanlayn->expire();
+    }
+  }
+
+private:
+  death_knight_t* player;
 };
 
 struct dark_transformation_t final : public death_knight_spell_t
@@ -6335,11 +6320,9 @@ struct dark_transformation_t final : public death_knight_spell_t
     // Rank 2 still exists for unholy as a baseline
     if ( p()->spec.dark_transformation_2->ok() )
     {
-      for ( auto& ghoul : p()->pets.ghoul_pet )
-      {
-        ghoul->resource_gain( RESOURCE_ENERGY, p()->spec.dark_transformation_2->effectN( 1 ).base_value(),
-                              ghoul->dark_transformation_gain, this );
-      }
+      p()->pets.ghoul_pet.active_pet()->resource_gain(
+          RESOURCE_ENERGY, p()->spec.dark_transformation_2->effectN( 1 ).base_value(),
+          p()->pets.ghoul_pet.active_pet()->dark_transformation_gain, this );
     }
 
     if ( p()->talent.unholy.unholy_pact.ok() )
@@ -8390,6 +8373,7 @@ struct raise_dead_t final : public death_knight_spell_t
     harmful = false;
     target  = p;
     p->pets.ghoul_pet.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    p->pets.ghoul_pet.set_event_callback( spawner::pet_event_type::PRE_SPAWN, [ this ]( spawner::pet_event_type t, pets::ghoul_pet_t* p ) { p->precombat_spawn = is_precombat; } );
     if ( p->talent.unholy.all_will_serve.ok() )
     {
       p->pets.risen_skulker.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
@@ -8405,22 +8389,15 @@ struct raise_dead_t final : public death_knight_spell_t
     if ( is_precombat && p()->talent.unholy.raise_dead.ok() )
     {
       cooldown->reset( false );
-      for ( auto& ghoul : p()->pets.ghoul_pet )
-      {
-        ghoul->precombat_spawn = true;
-      }
     }
 
     // Summon for the duration specified in spelldata if there's one (no data = permanent pet)
-    p()->pets.ghoul_pet.spawn( data().duration(), 1 );
+    p()->pets.ghoul_pet.spawn( data().duration() );
 
     // Sacrificial Pact doesn't despawn risen skulker, so make sure it's not already up before spawning it
-    if ( p()->talent.unholy.all_will_serve.ok() )
+    if ( p()->talent.unholy.all_will_serve.ok() && p()->pets.risen_skulker.active_pet() == nullptr )
     {
-      if ( p()->pets.risen_skulker.active_pet() == nullptr )
-      {
-        p()->pets.risen_skulker.spawn();
-      }
+      p()->pets.risen_skulker.spawn();
     }
   }
 
@@ -9016,7 +8993,7 @@ struct ams_parent_buff_t : public buff_t
     if ( horsemen )
       horsemen_reduction = 0.8;  // Doesnt Appear to be in spell data, using tooltip value for now
 
-    if ( p->options.ams_absorb_percent > 0 || p->options.horsemen_ams_absorb_percent > 0 )
+    if ( p->options.ams_absorb_percent > 0 || ( p->options.horsemen_ams_absorb_percent > 0 && horsemen ) )
     {
       set_period( 1_s );
       set_tick_time_behavior( buff_tick_time_behavior::HASTED );
@@ -11044,18 +11021,24 @@ void death_knight_t::create_pets()
   // Only the permanent version with raise dead 2 is a pet, others are guardians
   pets.ghoul_pet.set_creation_callback(
       []( death_knight_t* p ) { return new pets::ghoul_pet_t( p, !p->talent.unholy.raise_dead.ok() ); } );
+  pets.ghoul_pet.set_max_pets( 1 );
 
   if ( talent.rider.riders_champion.ok() )
   {
     pets.whitemane.set_creation_callback( []( death_knight_t* p ) { return new pets::whitemane_pet_t( p ); } );
+    pets.whitemane.set_max_pets( 1 );
     pets.mograine.set_creation_callback( []( death_knight_t* p ) { return new pets::mograine_pet_t( p ); } );
+    pets.mograine.set_max_pets( 1 );
     pets.trollbane.set_creation_callback( []( death_knight_t* p ) { return new pets::trollbane_pet_t( p ); } );
+    pets.trollbane.set_max_pets( 1 );
     pets.nazgrim.set_creation_callback( []( death_knight_t* p ) { return new pets::nazgrim_pet_t( p ); } );
+    pets.nazgrim.set_max_pets( 1 );
   }
 
   if ( talent.sanlayn.the_blood_is_life.ok() )
   {
     pets.blood_beast.set_creation_callback( []( death_knight_t* p ) { return new pets::blood_beast_pet_t( p ); } );
+    pets.blood_beast.set_max_pets( 1 );
   }
 
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
@@ -11067,6 +11050,7 @@ void death_knight_t::create_pets()
     {
       pets.risen_skulker.set_creation_callback(
           []( death_knight_t* p ) { return new pets::risen_skulker_pet_t( p ); } );
+      pets.risen_skulker.set_max_pets( 1 );
     }
 
     if ( talent.unholy.army_of_the_dead.ok() )
