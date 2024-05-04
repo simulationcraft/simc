@@ -100,7 +100,8 @@ buff_t* dbc_proc_callback_t::get_debuff( player_t* t )
 
 buff_t* dbc_proc_callback_t::create_debuff( player_t* t )
 {
-  return make_buff( actor_pair_t( t, listener ), effect.name() );
+  std::string name_ = target_debuff->ok() ? target_debuff->name_cstr() : effect.name();
+  return make_buff( actor_pair_t( t, listener ), name_, target_debuff );
 }
 
 void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
@@ -192,6 +193,7 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, const special_effect_
     cooldown( nullptr ),
     target_specific_cooldown( nullptr ),
     target_specific_debuff( false ),
+    target_debuff( spell_data_t::nil() ),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),
@@ -215,6 +217,7 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t* i, const special_effect_
     cooldown( nullptr ),
     target_specific_cooldown( nullptr ),
     target_specific_debuff( false ),
+    target_debuff( spell_data_t::nil() ),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),
@@ -238,6 +241,7 @@ dbc_proc_callback_t::dbc_proc_callback_t( player_t* p, const special_effect_t& e
     cooldown( nullptr ),
     target_specific_cooldown( nullptr ),
     target_specific_debuff( false ),
+    target_debuff( spell_data_t::nil() ),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),

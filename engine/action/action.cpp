@@ -475,6 +475,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     signature_str(),
     target_specific_dot( false ),
     target_specific_debuff( false ),
+    target_debuff( spell_data_t::nil() ),
     action_list(),
     starved_proc(),
     queue_failed_proc(),
@@ -4471,7 +4472,8 @@ buff_t* action_t::get_debuff( player_t* t )
 
 buff_t* action_t::create_debuff( player_t* t )
 {
-  return make_buff( actor_pair_t( t, player ), name_str );
+  std::string name_ = target_debuff->ok() ? target_debuff->name_cstr() : name_str;
+  return make_buff( actor_pair_t( t, player ), name_, target_debuff );
 }
 
 // return s_data_reporting if available, otherwise fallback to s_data

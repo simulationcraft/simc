@@ -579,6 +579,7 @@ public:
   std::string signature_str;
   target_specific_t<dot_t> target_specific_dot;
   target_specific_t<buff_t> target_specific_debuff;
+  const spell_data_t* target_debuff;
   action_priority_list_t* action_list;
 
   /**

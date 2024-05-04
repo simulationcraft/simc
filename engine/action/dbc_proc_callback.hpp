@@ -16,6 +16,7 @@ struct action_state_t;
 struct buff_t;
 struct cooldown_t;
 struct target_specific_cooldown_t;
+struct spell_data_t;
 struct item_t;
 struct real_ppm_t;
 namespace rng
@@ -72,6 +73,7 @@ struct dbc_proc_callback_t : public action_callback_t
   cooldown_t* cooldown;
   target_specific_cooldown_t* target_specific_cooldown;
   target_specific_t<buff_t> target_specific_debuff;
+  const spell_data_t* target_debuff;
 
   // Proc trigger types, cached/initialized here from special_effect_t to avoid
   // needless spell data lookups in vast majority of cases
