@@ -1144,6 +1144,7 @@ public:
   std::string default_temporary_enchant() const override;
 
   double    composite_attribute_multiplier( attribute_e attr ) const override;
+  double    composite_weapon_attack_power_by_type( attack_power_type type ) const;
   double    composite_melee_speed() const override;
   double    composite_melee_haste() const override;
   double    composite_melee_crit_chance() const override;
@@ -8794,6 +8795,22 @@ double rogue_t::composite_attribute_multiplier( attribute_e a ) const
   return am;
 }
 
+// rogue_t::composite_weapon_attack_power_by_type ===========================
+
+double rogue_t::composite_weapon_attack_power_by_type( attack_power_type type ) const
+{
+  double ap = player_t::composite_weapon_attack_power_by_type( type );
+
+  // Due to a bug in the aura type used, the effect on the 2pc bonus lowers AP contribution from WDPS
+  // Can be removed if the aura is changed from A_MOD_ATTACKSPEED_NORMALIZED to A_MOD_RANGED_AND_MELEE_ATTACK_SPEED
+  if ( bugs && set_bonuses.t31_assassination_2pc->ok() && buffs.t31_assassination_2pc->check() )
+  {
+    ap /= ( 1.0 + buffs.t31_assassination_2pc->check_stack_value() );
+  }
+
+  return ap;
+}
+
 // rogue_t::composite_melee_speed ===========================================
 
 double rogue_t::composite_melee_speed() const
@@ -10886,6 +10903,11 @@ void rogue_t::create_buffs()
   buffs.t31_assassination_2pc->set_default_value_from_effect_type( A_MOD_ATTACKSPEED_NORMALIZED )
     ->add_invalidate( CACHE_ATTACK_SPEED )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  if ( bugs )
+  {
+    // Due to 2pc bug commented in composite_weapon_attack_power_by_type()
+    buffs.t31_assassination_2pc->add_invalidate( CACHE_WEAPON_DPS );
+  }
 }
 
 // rogue_t::invalidate_cache =========================================
