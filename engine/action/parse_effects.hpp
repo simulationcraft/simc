@@ -632,7 +632,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
     auto v = player_t::composite_damage_versatility();
 
     for ( const auto& i : versatility_effects )
-      v *= 1.0 + get_effect_value( i );
+      v += get_effect_value( i );
 
     return v;
   }
@@ -642,7 +642,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
     auto v = player_t::composite_heal_versatility();
 
     for ( const auto& i : versatility_effects )
-      v *= 1.0 + get_effect_value( i );
+      v += get_effect_value( i );
 
     return v;
   }
@@ -652,7 +652,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
     auto v = player_t::composite_mitigation_versatility();
 
     for ( const auto& i : versatility_effects )
-      v *= 1.0 + get_effect_value( i ) * 0.5;
+      v += get_effect_value( i ) * 0.5;
 
     return v;
   }
