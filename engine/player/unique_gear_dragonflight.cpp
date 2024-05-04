@@ -1424,7 +1424,12 @@ void globe_of_jagged_ice( special_effect_t& effect )
 
     double composite_target_multiplier( player_t* t ) const override
     {
-      return generic_aoe_proc_t::composite_target_multiplier( t ) * find_debuff( t )->stack();
+      auto m = generic_aoe_proc_t::composite_target_multiplier( t );
+
+      if ( auto debuff = find_debuff( t ) )
+        m *= debuff->stack();
+
+      return m;
     }
 
     void impact( action_state_t* s ) override
