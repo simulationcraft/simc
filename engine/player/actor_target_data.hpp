@@ -16,6 +16,11 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
 {
   struct atd_debuff_t
   {
+    // NOTE: add debuffs that have player-scope implications (such as damage taken modifiers)
+    // or debuffs that will be exposed to the APL to adjust actions based on their presence.
+    // These will require a targetdata_initializer in order to be created for all targets.
+    // Debuffs that are entirely self-contained within the proc/use action should be handled
+    // within the generic_proc/dbc_proc_callback via target_specific_debuff.
     buff_t* mark_of_doom;
     buff_t* poisoned_dreams;
     buff_t* fel_burn;
@@ -62,21 +67,6 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* remnants_despair;            // Soulwarped Seal of Menethil DK ring
     buff_t* scent_of_souls;              // Bells of the Endless Feast debuff
     buff_t* chains_of_domination;        // Chains of Domination debuff
-    // Dragonflight
-    buff_t* dragonfire_bomb; // Dragonfire Bomb Dispenser
-    buff_t* awakening_rime;  // darkmoon deck: rime
-    buff_t* grudge;          // spiteful storm
-    buff_t* skewering_cold;  // globe of jagged ice
-    buff_t* heavens_nemesis; // Neltharax, Enemy of the Sky
-    buff_t* crystalline_web; // Iceblood Deathsnare
-    buff_t* ever_decaying_spores; // Ever Decaying Spores Embellishment
-    buff_t* timestrike;
-    buff_t* lightning_conduit; // Paracausal Fragment of Tidefin
-    buff_t* lava_bolt;  // Coiled Serpent Idol
-    buff_t* embed_blade; // Bandolier of Twisted Blades
-    buff_t* web_of_dreams; // Dreambinder, Loom of the Great Cycle ST Root
-    buff_t* dream_shackles; // Dreambinder, Loom of the Great Cycle AoE Slow
-    buff_t* wellsprings_frost; // reworked Globe of Jagged Ice
   } debuff;
 
   struct atd_dot_t

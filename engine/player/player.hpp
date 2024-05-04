@@ -449,6 +449,7 @@ struct player_t : public actor_t
     buff_t* windwalking_movement_aura;
     buff_t* stoneform;
     buff_t* stunned;
+    buff_t* rooted;
     std::array<buff_t*, 4> ancestral_call;
     buff_t* fireblood;
     buff_t* symbol_of_hope; // Priest spell

@@ -4473,7 +4473,8 @@ buff_t* action_t::get_debuff( player_t* t )
 buff_t* action_t::create_debuff( player_t* t )
 {
   std::string name_ = target_debuff->ok() ? target_debuff->name_cstr() : name_str;
-  return make_buff( actor_pair_t( t, player ), name_, target_debuff );
+  util::tokenize( name_ );
+  return make_buff( actor_pair_t( t, player ),  name_, target_debuff );
 }
 
 // return s_data_reporting if available, otherwise fallback to s_data

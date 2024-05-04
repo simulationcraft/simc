@@ -901,46 +901,55 @@ void dragonfire_bomb_dispenser( special_effect_t& effect )
     new dbc_proc_callback_t( effect.player, *restock_driver );
   }
 
-  auto coeff_data = effect.player->find_spell( 408667 );
-
-  // AoE Explosion
-  auto explode = create_proc_action<generic_aoe_proc_t>( "dragonfire_bomb_aoe", effect, "dragonfire_bomb_aoe", 408694 );
-  explode->name_str_reporting = "AOE";
-  explode->base_dd_min = explode->base_dd_max = coeff_data->effectN( 2 ).average( effect.item );
-  effect.player->register_on_kill_callback( [ p = effect.player, explode ]( player_t* t ) {
-    if ( p->sim->event_mgr.canceled )
-      return;
-
-    auto td = p->find_target_data( t );
-    if ( td && td->debuff.dragonfire_bomb->check() )
-      explode->execute_on_target( t );
-  } );
-
-  // ST Damage
-  auto st = create_proc_action<generic_proc_t>( "dragonfire_bomb_st", effect, "dragonfire_bomb_st", 408682 );
-  st->name_str_reporting = "ST";
-  st->base_dd_min = st->base_dd_max = coeff_data->effectN( 1 ).average( effect.item );
-
   // DoT Driver
   struct dragonfire_bomb_missile_t : public proc_spell_t
   {
+    action_t* explode;
+    action_t* st;
+
     dragonfire_bomb_missile_t( const special_effect_t& e )
       : proc_spell_t( "dragonfire_bomb_dispenser", e.player, e.player->find_spell( e.spell_id ), e.item )
-    {}
+    {
+      target_debuff = e.trigger();
+
+      auto coeff_data = e.player->find_spell( 408667 );
+
+      // AoE Explosion
+      explode = create_proc_action<generic_aoe_proc_t>( "dragonfire_bomb_aoe", e, "dragonfire_bomb_aoe", 408694 );
+      explode->name_str_reporting = "AOE";
+      explode->base_dd_min = explode->base_dd_max = coeff_data->effectN( 2 ).average( e.item );
+
+      // ST Damage
+      st = create_proc_action<generic_proc_t>( "dragonfire_bomb_st", e, "dragonfire_bomb_st", 408682 );
+      st->name_str_reporting = "ST";
+      st->base_dd_min = st->base_dd_max = coeff_data->effectN( 1 ).average( e.item );
+
+      e.player->register_on_kill_callback( [ this ]( player_t* t ) {
+        if ( t->sim->event_mgr.canceled )
+          return;
+
+        if ( get_debuff( t )->check() )
+          explode->execute_on_target( t );
+      } );
+    }
+
+    buff_t* create_debuff( player_t* target ) override
+    {
+      return proc_spell_t::create_debuff( target )->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+        if ( !new_ )
+          st->execute_on_target( b->player );
+      } );
+    }
 
     void impact( action_state_t* s ) override
     {
       proc_spell_t::impact( s );
 
-      auto td = player->get_target_data( s->target );
+      auto debuff = get_debuff( s->target );
+      if ( debuff->check() )
+        debuff->expire();
 
-      if ( td )
-      {
-        if ( td->debuff.dragonfire_bomb->check() )
-          td->debuff.dragonfire_bomb->expire();
-
-        td->debuff.dragonfire_bomb->trigger();
-      }
+      debuff->trigger();
     }
   };
 
@@ -949,42 +958,6 @@ void dragonfire_bomb_dispenser( special_effect_t& effect )
   effect.cooldown_category_ = 1141;
   effect.execute_action = create_proc_action<dragonfire_bomb_missile_t>( "dragonfire_bomb_dispenser", effect );
 }
-
-struct dragonfire_bomb_dispenser_initializer_t : public item_targetdata_initializer_t
-{
-  target_specific_t<action_t> bomb_actions;
-
-  dragonfire_bomb_dispenser_initializer_t() : item_targetdata_initializer_t( 408671 ), bomb_actions( false ) {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    struct dragonfire_bomb_debuff_t : buff_t
-    {
-      action_t* bomb;
-
-      dragonfire_bomb_debuff_t( actor_target_data_t& td, const spell_data_t* s, action_t* a )
-        : buff_t( td, "dragonfire_bomb", s ), bomb( a )
-      {}
-
-      void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-      {
-        buff_t::expire_override( expiration_stacks, remaining_duration );
-
-        if ( bomb )
-          bomb->execute_on_target( player );
-      }
-    };
-
-    auto active = init( td->source );
-    action_t*& bomb = bomb_actions[ td->source ];
-    if ( active && !bomb )
-        bomb = td->source->find_action( "dragonfire_bomb_st" );
-
-    td->debuff.dragonfire_bomb = make_buff_fallback<dragonfire_bomb_debuff_t>(
-        active, *td, "dragonfire_bomb", debuffs[ td->source ], bomb );  // IT GONNA BLOW!
-    td->debuff.dragonfire_bomb->reset();
-  }
-};
 
 /* Burgeoning Seed
   * id=193634
@@ -1241,19 +1214,6 @@ void darkmoon_deck_inferno( special_effect_t& effect )
   effect.execute_action = create_proc_action<darkmoon_deck_inferno_t>( "darkmoon_deck_inferno", effect );
 }
 
-struct awakening_rime_initializer_t : public item_targetdata_initializer_t
-{
-  awakening_rime_initializer_t() : item_targetdata_initializer_t( 386624 ) {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.awakening_rime = make_buff_fallback( active, *td, "awakening_rime", debuffs[ td->source ] );
-    td->debuff.awakening_rime->reset();
-  }
-};
-
 void darkmoon_deck_rime( special_effect_t& effect )
 {
   struct darkmoon_deck_rime_t : public DF_darkmoon_proc_t<>
@@ -1263,16 +1223,17 @@ void darkmoon_deck_rime( special_effect_t& effect )
       : DF_darkmoon_proc_t( e, "awakening_rime", 382958,
                             { 382845, 382846, 382847, 382848, 382849, 382850, 382851, 382844 } )
     {
+      target_debuff = e.trigger();
+
       // TODO: determine if damage increased per target hit
       auto explode =
           create_proc_action<generic_aoe_proc_t>( "awakened_rime", e, "awakened_rime", e.player->find_spell( 370880 ) );
 
-      e.player->register_on_kill_callback( [ e, explode ]( player_t* t ) {
+      e.player->register_on_kill_callback( [ this, &e, explode ]( player_t* t ) {
         if ( e.player->sim->event_mgr.canceled )
           return;
 
-        auto td = e.player->find_target_data( t );
-        if ( td && td->debuff.awakening_rime->check() )
+        if ( get_debuff( t )->check() )
           explode->execute_on_target( t );
       } );
     }
@@ -1286,8 +1247,7 @@ void darkmoon_deck_rime( special_effect_t& effect )
     {
       DF_darkmoon_proc_t::impact( s );
 
-      auto td = player->get_target_data( s->target );
-      td->debuff.awakening_rime->trigger( get_duration( deck->top_index ) );
+      get_debuff( s->target )->trigger( get_duration( deck->top_index ) );
     }
   };
 
@@ -1442,28 +1402,10 @@ void conjured_chillglobe( special_effect_t& effect )
   effect.execute_action = create_proc_action<conjured_chillglobe_proxy_t>( "conjured_chillglobe", effect );
 }
 
-struct skewering_cold_initializer_t : public item_targetdata_initializer_t
-{
-  skewering_cold_initializer_t() : item_targetdata_initializer_t( 383931 ) {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.skewering_cold = make_buff_fallback( active, *td, "skewering_cold", debuffs[ td->source ] );
-    td->debuff.skewering_cold->reset();
-  }
-};
-
 void globe_of_jagged_ice( special_effect_t& effect )
 {
   auto impale = find_special_effect( effect.player, 383931 );
   new dbc_proc_callback_t( effect.player, *impale );
-
-  effect.player->callbacks.register_callback_execute_function(
-      impale->spell_id, []( const dbc_proc_callback_t* cb, action_t*, action_state_t* s ) {
-        cb->listener->get_target_data( s->target )->debuff.skewering_cold->trigger();
-      } );
 
   struct breaking_the_ice_t : public generic_aoe_proc_t
   {
@@ -1471,27 +1413,34 @@ void globe_of_jagged_ice( special_effect_t& effect )
     {
       // Tooltip and damage value is based on max stacks
       base_dd_min = base_dd_max = data().effectN( 1 ).average( e.item ) / data().max_stacks();
+
+      target_debuff = e.trigger();
     }
 
     bool target_ready( player_t* t ) override
     {
-      return generic_aoe_proc_t::target_ready( t ) && player->get_target_data( t )->debuff.skewering_cold->check();
+      return generic_aoe_proc_t::target_ready( t ) && get_debuff( t )->check();
     }
 
     double composite_target_multiplier( player_t* t ) const override
     {
-      return generic_aoe_proc_t::composite_target_multiplier( t ) *
-             player->get_target_data( t )->debuff.skewering_cold->stack();
+      return generic_aoe_proc_t::composite_target_multiplier( t ) * find_debuff( t )->stack();
     }
 
     void impact( action_state_t* s ) override
     {
       generic_aoe_proc_t::impact( s );
-      player->get_target_data( s->target )->debuff.skewering_cold->expire();
+      get_debuff( s->target )->expire();
     }
   };
 
-  effect.execute_action = create_proc_action<breaking_the_ice_t>( "breaking_the_ice", *impale );
+  auto breaking = create_proc_action<breaking_the_ice_t>( "breaking_the_ice", *impale );
+  effect.execute_action = breaking;
+
+  effect.player->callbacks.register_callback_execute_function(
+      impale->spell_id, [ breaking ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+        breaking->get_debuff( s->target )->trigger();
+      } );
 }
 
 void irideus_fragment( special_effect_t& effect )
@@ -2101,19 +2050,6 @@ void shikaari_huntress_arrowhead( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-struct spiteful_storm_initializer_t : public item_targetdata_initializer_t
-{
-  spiteful_storm_initializer_t() : item_targetdata_initializer_t( 377466, 382428 ) {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.grudge = make_buff_fallback( active, *td, "grudge", debuffs[ td->source ] );
-    td->debuff.grudge->reset();
-  }
-};
-
 void spiteful_storm( special_effect_t& effect )
 {
   struct spiteful_stormbolt_t : public generic_proc_t
@@ -2129,6 +2065,8 @@ void spiteful_storm( special_effect_t& effect )
         grudge( nullptr )
     {
       base_td = e.driver()->effectN( 1 ).average( e.item );
+
+      target_debuff = e.player->find_spell( 382428 );
     }
 
     void reset() override
@@ -2158,7 +2096,7 @@ void spiteful_storm( special_effect_t& effect )
       {
         grudge = s->target;
         assert( grudge );
-        player->get_target_data( grudge )->debuff.grudge->trigger();
+        get_debuff( grudge )->trigger();
       }
     }
 
@@ -4068,138 +4006,108 @@ void desperate_invokers_codex( special_effect_t& effect )
   } );
 }
 
-
 // Iceblood Deathsnare
 // 377455 is the instant damage on the main target
 // 382130 is the debuff applied to the main target
 // 394618 is applied to secondary targets
 // 382131 is the damage proc that goes on all targets with either 382130 or 394618
 // 382132 has the damage
-
 void iceblood_deathsnare( special_effect_t& effect )
 {
-  struct iceblood_deathsnare_damage_proc_t : public generic_proc_t
-  {
-    iceblood_deathsnare_damage_proc_t( const special_effect_t& e )
-      : generic_proc_t( e, "iceblood_deathsnare_proc", 382131 )
-    {
-      base_dd_min = base_dd_max = e.player->find_spell( 382132 )->effectN( 2 ).average( e.item );
-      aoe                       = -1;
-      reduced_aoe_targets       = 5;
-    }
-
-    double composite_aoe_multiplier( const action_state_t* state ) const override
-    {
-      double am = generic_proc_t::composite_aoe_multiplier( state );
-
-      // Uses a unique damage scaling formula (data here:
-      // https://docs.google.com/spreadsheets/d/1FzIE9ZYrGaCQ2vvf_QJon4aa5Z2PAzMTBMs8czMbY6o/edit#gid=0)
-      // This is equivalent to (10/9)^(1-n)*n and an additional standard sqrt dr after 5 targets.
-      am *= std::pow( 10.0 / 9.0 , 1.0 - state->n_targets ) * state->n_targets;
-
-      return am;
-    }
-
-    std::vector<player_t*>& target_list() const override
-    {
-      target_cache.is_valid = false;
-
-      auto& tl = proc_spell_t::target_list();
-
-      range::erase_remove( tl, [ this ]( player_t* t ) {
-        return !player->get_target_data( t )->debuff.crystalline_web->up();
-      } );
-
-      return tl;
-    }
-  };
-
   struct iceblood_deathsnare_t : public generic_proc_t
   {
+    struct iceblood_deathsnare_damage_proc_t : public generic_proc_t
+    {
+      action_t* on_use;
+
+      iceblood_deathsnare_damage_proc_t( const special_effect_t& e, action_t* a )
+        : generic_proc_t( e, "iceblood_deathsnare_proc", 382131 ), on_use( a )
+      {
+        base_dd_min = base_dd_max = e.player->find_spell( 382132 )->effectN( 2 ).average( e.item );
+        aoe = -1;
+        reduced_aoe_targets = 5;
+      }
+
+      double composite_aoe_multiplier( const action_state_t* state ) const override
+      {
+        double am = generic_proc_t::composite_aoe_multiplier( state );
+
+        // Uses a unique damage scaling formula (data here:
+        // https://docs.google.com/spreadsheets/d/1FzIE9ZYrGaCQ2vvf_QJon4aa5Z2PAzMTBMs8czMbY6o/edit#gid=0)
+        // This is equivalent to (10/9)^(1-n)*n and an additional standard sqrt dr after 5 targets.
+        am *= std::pow( 10.0 / 9.0, 1.0 - state->n_targets ) * state->n_targets;
+
+        return am;
+      }
+
+      std::vector<player_t*>& target_list() const override
+      {
+        target_cache.is_valid = false;
+
+        auto& tl = proc_spell_t::target_list();
+
+        range::erase_remove( tl, [ this ]( player_t* t ) {
+          return !on_use->get_debuff( t )->check();
+        } );
+
+        return tl;
+      }
+    };
+
+    action_t* damage;
+
     iceblood_deathsnare_t( const special_effect_t& e ) : generic_proc_t( e, "iceblood_deathsnare", e.driver() )
     {
       base_dd_min = base_dd_max = e.player->find_spell( 382132 )->effectN( 1 ).average( e.item );
-      aoe                       = -1;
-      base_aoe_multiplier       = 0;
+      aoe = -1;
+      base_aoe_multiplier = 0;
+
+      damage = create_proc_action<iceblood_deathsnare_damage_proc_t>( "iceblood_deathsnare_proc", e, this );
+
+      target_debuff = e.driver()->effectN( 3 ).trigger();
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      auto crystalline = generic_proc_t::create_debuff( t )->set_cooldown( 0_ms );
+
+      auto web = new special_effect_t( t );
+      web->name_str = "iceblood_deathsnare_proc_trigger";
+      web->spell_id = target_debuff->id();
+      web->proc_chance_ = 1.0;
+      web->cooldown_ = 1.5_s;
+      t->special_effects.push_back( web );
+
+      auto web_cb = new dbc_proc_callback_t( t, *web );
+
+      t->callbacks.register_callback_execute_function(
+          web->spell_id, [ this ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+            damage->execute_on_target( cb->listener );
+          } );
+
+      web_cb->initialize();
+      web_cb->deactivate();
+
+      crystalline->set_stack_change_callback( [ web_cb ]( buff_t*, int, int new_ ) {
+        if ( new_ )
+          web_cb->activate();
+        else
+          web_cb->deactivate();
+      } );
+
+      return crystalline;
     }
 
     void impact( action_state_t* s ) override
     {
       generic_proc_t::impact( s );
-      player->get_target_data( s->target )->debuff.crystalline_web->trigger();
+
+      get_debuff( s->target )->trigger();
     }
   };
 
-  // Create proc action for the debuff
-  create_proc_action<iceblood_deathsnare_damage_proc_t>( "iceblood_deathsnare_proc", effect );
-
   effect.execute_action = create_proc_action<iceblood_deathsnare_t>( "iceblood_deathsnare", effect );
 }
-
-struct iceblood_deathsnare_cb_t : public dbc_proc_callback_t
-{
-  action_t* damage;
-
-  iceblood_deathsnare_cb_t( const special_effect_t& e, action_t* damage )
-    : dbc_proc_callback_t( e.player, e ), damage( damage )
-  {
-  }
-
-  void execute( action_t*, action_state_t* s ) override
-  {
-    const auto td = effect.player->find_target_data( s->target );
-    if ( td && td->debuff.crystalline_web->up() )
-      damage->execute_on_target( s->target );
-  }
-};
-
-struct iceblood_deathsnare_initializer_t : public item_targetdata_initializer_t
-{
-  target_specific_t<action_t> damage_actions;
-
-  iceblood_deathsnare_initializer_t() : item_targetdata_initializer_t( 377455 ), damage_actions( false )
-  {
-    debuff_fn = []( player_t*, const special_effect_t* e ) { return e->driver()->effectN( 3 ).trigger(); };
-  }
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.crystalline_web = make_buff_fallback( active, *td, "crystalline_web", debuffs[ td->source ] );
-    td->debuff.crystalline_web->reset();
-
-    if ( !active )
-      return;
-
-    auto web          = new special_effect_t( td->source );
-    web->name_str     = "iceblood_deathsnare_proc_trigger";
-    web->type         = SPECIAL_EFFECT_EQUIP;
-    web->source       = SPECIAL_EFFECT_SOURCE_ITEM;
-    web->proc_chance_ = 1.0;
-    web->proc_flags_  = PF_ALL_DAMAGE;
-    web->proc_flags2_ = PF2_ALL_HIT;
-    web->cooldown_    = 1.5_s;
-    td->source->special_effects.push_back( web );
-
-    action_t*& damage = damage_actions[ td->source ];
-    if ( !damage )
-      damage = td->source->find_action( "iceblood_deathsnare_proc" );
-
-    // callback to proc damage
-    auto damage_cb = new iceblood_deathsnare_cb_t( *web, damage );
-    damage_cb->initialize();
-    damage_cb->deactivate();
-
-    td->debuff.crystalline_web->set_cooldown( 0_ms )
-      ->set_stack_change_callback( [ damage_cb ]( buff_t*, int, int new_ ) {
-        if ( new_ == 1 )
-          damage_cb->activate();
-        else
-          damage_cb->deactivate();
-      } );
-  }
-};
 
 // Fractured Crystalspine Quill
 // 408625 Driver / Absorb Buff
@@ -5855,21 +5763,6 @@ void paracausal_fragment_of_sulfuras( special_effect_t& e )
 // 415403 Lightning Conduit Debuff
 // 415412 Lightning Conduit Damage
 // 415410 Lightning Conduit Proc Flags & RPPM
-struct tideseekers_cataclysm_initializer_t : public item_targetdata_initializer_t
-{
-  tideseekers_cataclysm_initializer_t() : item_targetdata_initializer_t( 415284, 415403 )
-  {
-  }
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.lightning_conduit = make_buff_fallback( active, *td, "lightning_conduit", debuffs[ td->source ] );
-    td->debuff.lightning_conduit->reset();
-  }
-};
-
 void paracausal_fragment_of_thunderfin( special_effect_t& effect )
 {
   struct cataclysm_ground_t : public generic_proc_t
@@ -5877,6 +5770,7 @@ void paracausal_fragment_of_thunderfin( special_effect_t& effect )
     timespan_t tick_time;
     action_t* damage;
     action_t* conduit;
+
     cataclysm_ground_t( util::string_view n, const special_effect_t& e, const spell_data_t* s, action_t* a )
       : generic_proc_t( e.player, n, s ),
         tick_time( timespan_t::from_seconds( e.driver()->effectN( 4 ).base_value() ) ),
@@ -5887,6 +5781,8 @@ void paracausal_fragment_of_thunderfin( special_effect_t& effect )
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
       add_child( damage );
       add_child( conduit );
+
+      target_debuff = e.player->find_spell( 415403 );
     }
 
     void impact( action_state_t* s ) override
@@ -5904,25 +5800,19 @@ void paracausal_fragment_of_thunderfin( special_effect_t& effect )
                 if ( s == ground_aoe_params_t::state_type::EVENT_STARTED )
                 {
                   for ( player_t* t : e->params->action()->target_list() )
-                  {
-                    auto td = player->get_target_data( t );
-                    td->debuff.lightning_conduit->trigger();
-                  }
+                    get_debuff( t )->trigger();
                 }
-                else if( s == ground_aoe_params_t::state_type::EVENT_STOPPED )
+                else if ( s == ground_aoe_params_t::state_type::EVENT_STOPPED )
                 {
                   for ( player_t* t : e->params->action()->target_list() )
-                  {
-                    auto td = player->get_target_data( t );
-                    td->debuff.lightning_conduit->expire();
-                  }
+                    get_debuff( t )->expire();
                 }
               } ) );
     }
   };
 
   auto conduit_damage = create_proc_action<generic_proc_t>( "tideseekers_thunder", effect, "tideseekers_thunder",
-                                                                effect.player->find_spell( 415412 ) );
+                                                            effect.player->find_spell( 415412 ) );
   conduit_damage->base_dd_min = conduit_damage->base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
   conduit_damage->split_aoe_damage = true;
 
@@ -5936,14 +5826,14 @@ void paracausal_fragment_of_thunderfin( special_effect_t& effect )
   lightning_conduit_proc->initialize();
   lightning_conduit_proc->activate();
 
+  auto ground_effect =
+      new cataclysm_ground_t( "tideseekers_cataclysm", effect, effect.player->find_spell( 415339 ), conduit_damage );
+
   effect.player->callbacks.register_callback_trigger_function(
       415410, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
-        auto td = effect.player->get_target_data( s->target )->debuff.lightning_conduit;
-        return td->check();
+      [ ground_effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+        return ground_effect->get_debuff( s->target )->check();
       } );
-
-  auto ground_effect = new cataclysm_ground_t( "tideseekers_cataclysm", effect, effect.player->find_spell( 415339 ), conduit_damage );
 
   effect.execute_action = ground_effect;
   new dbc_proc_callback_t( effect.player, effect );
@@ -6281,21 +6171,6 @@ void ashes_of_the_embersoul( special_effect_t& e )
 // 427059 Hidden Periodic Debuff Buff 2
 // 427047 AoE damage
 // 427057 AoE Range Check
-struct lava_bolt_initializer_t : public item_targetdata_initializer_t
-{
-  lava_bolt_initializer_t() : item_targetdata_initializer_t( 426827, 427056 ) {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.lava_bolt = make_buff_fallback( active, *td, "coiled_serpent_idol", debuffs[ td->source ] );
-    td->debuff.lava_bolt->reset();
-    td->debuff.lava_bolt->set_duration( td->source->find_spell( 426834 )->duration() );
-    td->debuff.lava_bolt->set_initial_stack( td->debuff.lava_bolt->max_stack() );
-  }
-};
-
 void coiled_serpent_idol( special_effect_t& e )
 {
   struct molten_rain_t : public generic_proc_t
@@ -6325,29 +6200,40 @@ void coiled_serpent_idol( special_effect_t& e )
   {
     action_t* damage;
     action_t* molten_rain;
+    timespan_t debuff_duration;
 
     serpent_t( const special_effect_t& e, action_t* d ) 
       : generic_proc_t( e, "lava_bolt_dot", e.player->find_spell( 427059 ) ),
         damage( create_proc_action<lava_bolt_t>( "lava_bolt", e, "lava_bolt" ) ), 
-        molten_rain( d )
+        molten_rain( d ),
+        debuff_duration( e.player->find_spell( 426834 )->duration() )
     {
       hasted_ticks = tick_zero = false;
       damage->add_child( molten_rain );
       dot_max_stack = e.driver()->max_stacks();
+
+      target_debuff = e.player->find_spell( 427056 );
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      auto debuff = generic_proc_t::create_debuff( t )->set_duration( debuff_duration );
+      debuff->set_initial_stack( debuff->max_stack() );
+
+      return debuff;
     }
 
     void tick( dot_t* d ) override
     {
       generic_proc_t::tick( d );
-      auto debuff = player->get_target_data( d->target )->debuff.lava_bolt;
-      if( debuff -> check() )
+
+      auto snakes = get_debuff( d->target );
+      if ( snakes->check() )
       {
-        for (int stacks = 0; debuff->check() > stacks; ++stacks )
-        {
+        for ( int stacks = 0; snakes->check() > stacks; ++stacks )
           damage->execute_on_target( d->target );
-        }
       }
-      else if( !debuff -> check() )
+      else
       {
         damage->execute_on_target( d->target );
       }
@@ -6361,21 +6247,17 @@ void coiled_serpent_idol( special_effect_t& e )
     const special_effect_t& effect;
 
     serpent_cb_t( const special_effect_t& e, action_t* d )
-      : dbc_proc_callback_t( e.player, e ),
-        counter( 0 ),
-        serpent( d ),
-        effect( e )
+      : dbc_proc_callback_t( e.player, e ), counter( 0 ), serpent( d ), effect( e )
     {}
 
     void execute( action_t* /*a*/, action_state_t* s ) override
     {
       counter++;
       serpent->execute_on_target( s->target );
-      auto debuff = effect.player->get_target_data( s->target )->debuff.lava_bolt;
+
       if ( counter == 3 )
       {
-        debuff->trigger();
-
+        serpent->get_debuff( s->target )->trigger();
         counter = 0;
       }
     }
@@ -6391,24 +6273,20 @@ void coiled_serpent_idol( special_effect_t& e )
   auto dot = create_proc_action<serpent_t>( "lava_bolt_dot", e, molten_rain );
 
   range::for_each( e.player->sim->actor_list, [ e, molten_rain, dot ]( player_t* target ) {
-    if (target->is_enemy())
+    if ( target->is_enemy() )
     {
       target->register_on_demise_callback( e.player, [ e, molten_rain, dot ]( player_t* t ) {
         // Dont execute at end of sim
         if ( e.player->sim->event_mgr.canceled )
-        {
           return;
-        }
 
-        auto debuff = e.player->get_target_data( t )->debuff.lava_bolt;
-        if ( debuff->check() )
+        auto snakes = dot->get_debuff( t );
+        if ( snakes->check() )
         {
-          for ( int stacks = 0; debuff->check() > stacks; ++stacks )
-          {
+          for ( int stacks = 0; snakes->check() > stacks; ++stacks )
             molten_rain->execute_on_target( t );
-          }
         }
-        else if ( !debuff->check() && dot->get_dot( t )->is_ticking() )
+        else if ( dot->get_dot( t )->is_ticking() )
         {
           molten_rain->execute_on_target( t );
         }
@@ -6428,70 +6306,47 @@ void coiled_serpent_idol( special_effect_t& e )
 // 422303 Driver (Embed Blade)
 // 422297 Damage
 // 426114 Return Slash Driver
-struct embed_blade_initializer_t : public item_targetdata_initializer_t
-{
-  embed_blade_initializer_t()  : item_targetdata_initializer_t( 422303 ) {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    struct embed_blade_debuff_t : buff_t
-    {
-      action_t* debuff;
-
-      embed_blade_debuff_t( actor_target_data_t& td, const spell_data_t* s, action_t* a )
-        : buff_t( td, "embed_blade", s ), debuff( a )
-      {
-        base_buff_duration = player->find_spell( 422303 )->duration();
-      }
-
-      void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-      {
-        buff_t::expire_override( expiration_stacks, remaining_duration );
-
-        if ( debuff )
-          debuff -> execute_on_target( player );
-      }
-    };
-
-    bool active = init( td->source );
-
-    td -> debuff.embed_blade = make_buff_fallback<embed_blade_debuff_t>( active, *td, "embed_blade", debuffs[ td -> source ], td -> source -> find_action( "return_slash" ) );
-    td -> debuff.embed_blade -> reset();
-  }
-};
-
-
 void bandolier_of_twisted_blades( special_effect_t& effect )
 {
   struct return_slash_t : public generic_aoe_proc_t
   {
-    return_slash_t( const special_effect_t& effect ) : generic_aoe_proc_t( effect, "return_slash", effect.player -> find_spell( 426114 ), true )
+    return_slash_t( const special_effect_t& effect )
+      : generic_aoe_proc_t( effect, "return_slash", effect.player->find_spell( 426114 ), true )
     {
       background = true;
-      base_dd_min = base_dd_max = effect.player -> find_spell( 422297 ) -> effectN( 2 ).average( effect.item );
+      base_dd_min = base_dd_max = effect.player->find_spell( 422297 )->effectN( 2 ).average( effect.item );
     }
   };
 
   struct bandolier_of_twisted_blades_t : public generic_proc_t
   {
     action_t* return_slash;
-    bandolier_of_twisted_blades_t( const special_effect_t& effect ) : generic_proc_t( effect, "embed_blade", effect.driver() ),
-      return_slash( create_proc_action<return_slash_t>( "return_slash", effect ) )
+
+    bandolier_of_twisted_blades_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "embed_blade", effect.driver() ),
+        return_slash( create_proc_action<return_slash_t>( "return_slash", effect ) )
     {
-      base_dd_min = base_dd_max = effect.player -> find_spell( 422297 ) -> effectN( 1 ).average( effect.item );
+      base_dd_min = base_dd_max = effect.player->find_spell( 422297 )->effectN( 1 ).average( effect.item );
       add_child( return_slash );
+
+      target_debuff = &data();
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      return generic_proc_t::create_debuff( t )
+        ->set_cooldown( 0_ms )
+        ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+          if ( !new_ )
+            return_slash->execute_on_target( b->player );
+        } );
     }
 
     void impact( action_state_t* state ) override
     {
       generic_proc_t::impact( state );
 
-      actor_target_data_t* td = player -> get_target_data( state -> target );
-
-      if ( td )
-      {
-        td -> debuff.embed_blade -> trigger();
-      }
+      get_debuff( state->target )->trigger();
     }
   };
 
@@ -6755,9 +6610,7 @@ void nymues_unraveling_spindle( special_effect_t& effect )
 
       // Affected By: Roots or Stuns
       // Not Affected By: Slows
-      bool immobilized = td ? td->debuff.dream_shackles->check() : false;
-
-      if ( t->buffs.stunned->check() || immobilized || player->dragonflight_opts.nymue_forced_immobilized )
+      if ( player->dragonflight_opts.nymue_forced_immobilized || t->buffs.rooted->check() || t->buffs.stunned->check() )
       {
         tm *= 1.0 + immobilized_mod;
       }
@@ -7587,26 +7440,15 @@ void tome_of_unstable_power_new( special_effect_t& effect )
 // 433826 debuff
 // 433829 damage
 // 433830 aoe damage
-struct wellsprings_frost_initializer_t : public item_targetdata_initializer_t
-{
-  wellsprings_frost_initializer_t() : item_targetdata_initializer_t( 432775, 433826 ) {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.wellsprings_frost = make_buff_fallback( active, *td, "wellsprings_frost", debuffs[ td->source ] );
-    td->debuff.wellsprings_frost->reset();
-  }
-};
-
 void frozen_wellspring( special_effect_t& effect )
 {
   auto damage_value = effect.player->find_spell( 433824 );
 
+  // create aoe damage when buff charges are all used up
   auto shatter = create_proc_action<generic_aoe_proc_t>( "shatter", effect, "shatter", 433830, true );
   shatter->base_dd_min = shatter->base_dd_max = damage_value->effectN( 2 ).average( effect.item );
 
+  // craete damage per buff charge
   auto proc = create_proc_action<generic_proc_t>( "wellsprings_frost", effect, "wellsprings_frost", 433829 );
   proc->base_dd_min = proc->base_dd_max = damage_value->effectN( 1 ).average( effect.item );
 
@@ -7615,6 +7457,7 @@ void frozen_wellspring( special_effect_t& effect )
     ->set_duration( effect.driver()->duration() - 1_ms )  // ensure buff expires before next use
     ->set_reverse( true );
 
+  // create proc when buff charges are up
   auto proc_driver = new special_effect_t( effect.player );
   proc_driver->name_str = "wellsprings_frost_proc";
   proc_driver->cooldown_ = 0_ms;
@@ -7627,21 +7470,6 @@ void frozen_wellspring( special_effect_t& effect )
   cb->initialize();
   cb->deactivate();
 
-  effect.player->callbacks.register_callback_execute_function(
-      proc_driver->spell_id,
-      [ p = effect.player, proc, buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
-        if ( !buff->check() )
-          return;
-
-        proc->execute_on_target( s->target );
-
-        auto td = p->get_target_data( s->target );
-        assert( td );
-
-        td->debuff.wellsprings_frost->trigger();
-        buff->trigger();
-      } );
-
   // proxy action for reporting
   struct frozen_wellspring_proxy_t : public action_t
   {
@@ -7651,6 +7479,8 @@ void frozen_wellspring( special_effect_t& effect )
       : action_t( action_e::ACTION_OTHER, "frozen_wellspring", e.player, e.driver() ), buff( b )
     {
       callbacks = false;
+
+      target_debuff = e.player->find_spell( 433826 );
     }
 
     result_e calculate_result( action_state_t* ) const override
@@ -7670,7 +7500,19 @@ void frozen_wellspring( special_effect_t& effect )
   proxy->add_child( shatter );
   proxy->add_child( proc );
 
-  buff->set_stack_change_callback( [ cb, shatter ]( buff_t* b, int old_, int new_ ) {
+  // make proc trigger damage & debuff on target
+  effect.player->callbacks.register_callback_execute_function( proc_driver->spell_id,
+      [ p = effect.player, proc, buff, proxy ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+        if ( buff->check() )
+        {
+          proc->execute_on_target( s->target );
+          proxy->get_debuff( s->target )->trigger();
+          buff->trigger();
+        }
+      } );
+
+  // trigger shatter on debuffed targets
+  buff->set_stack_change_callback( [ cb, shatter, proxy ]( buff_t* b, int old_, int new_ ) {
     if ( !old_ )
     {
       cb->activate();
@@ -7679,11 +7521,8 @@ void frozen_wellspring( special_effect_t& effect )
     {
       cb->deactivate();
 
-      range::for_each( b->sim->target_non_sleeping_list, [ p = b->player, shatter ]( player_t* t ) {
-        auto td = p->get_target_data( t );
-        assert( td );
-
-        if ( auto stack = td->debuff.wellsprings_frost->stack() )
+      range::for_each( b->sim->target_non_sleeping_list, [ shatter, proxy ]( player_t* t ) {
+        if ( auto stack = proxy->get_debuff( t )->stack() )
         {
           shatter->base_multiplier = stack;
           shatter->execute_on_target( t );
@@ -7946,9 +7785,8 @@ void forgestorm( special_effect_t& effect )
 // 397478 unique target debuff
 void neltharax( special_effect_t& effect )
 {
-  auto buff =
-    create_buff<buff_t>( effect.player, "heavens_nemesis", effect.player->find_spell( 397118 ) )
-      ->set_default_value_from_effect( 1 );
+  auto buff = create_buff<buff_t>( effect.player, "heavens_nemesis", effect.player->find_spell( 397118 ) )
+    ->set_default_value_from_effect( 1 );
 
   if ( buff->data().effectN( 1 ).subtype() == A_MOD_RANGED_AND_MELEE_ATTACK_SPEED )
     buff->add_invalidate( CACHE_ATTACK_SPEED );
@@ -7960,37 +7798,36 @@ void neltharax( special_effect_t& effect )
     buff_t* attack_speed;
 
     auto_cb_t( const special_effect_t& e, buff_t* buff ) : dbc_proc_callback_t( e.player, e ), attack_speed( buff )
-    {}
+    {
+      target_debuff = e.player->find_spell( 397478 );
+    }
 
     void execute( action_t*, action_state_t* s ) override
     {
-      auto debuff = effect.player -> find_target_data( s -> target ) -> debuff.heavens_nemesis;
-      if ( debuff -> check() )
+      auto mark = get_debuff( s->target );
+      if ( mark->check() )
       {
         // Increment the attack speed if target is our current mark.
-        attack_speed -> trigger();
+        attack_speed->trigger();
       }
       else
       {
-        attack_speed -> expire();
+        attack_speed->expire();
         // Find a current mark if there is one and remove the mark on it.
-        auto i = range::find_if( effect.player -> sim -> target_non_sleeping_list, [ this ]( const player_t* t ) {
-          auto td = effect.player -> find_target_data( t );
-          if ( td ) {
-            auto debuff = td -> debuff.heavens_nemesis;
-            if ( debuff -> check() )
-            {
-              debuff -> expire();
-              return true;
-            }
+        auto i = range::find_if( effect.player->sim->target_non_sleeping_list, [ this ]( player_t* t ) {
+          auto m = get_debuff( t );
+          if ( m->check() )
+          {
+            m->expire();
+            return true;
           }
           return false;
-        });
+        } );
         // Only set a new mark and start stacking the buff if there was no mark cleared on this impact.
-        if ( i == effect.player -> sim -> target_non_sleeping_list.end() )
+        if ( i == effect.player->sim->target_non_sleeping_list.end() )
         {
-          debuff -> trigger();
-          attack_speed -> trigger();
+          mark->trigger();
+          attack_speed->trigger();
         }
       }
     }
@@ -7998,19 +7835,6 @@ void neltharax( special_effect_t& effect )
 
   new auto_cb_t( effect, buff );
 }
-
-struct heavens_nemesis_initializer_t : public item_targetdata_initializer_t
-{
-  heavens_nemesis_initializer_t() : item_targetdata_initializer_t( 394928, 397478 ) {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.heavens_nemesis = make_buff_fallback( active, *td, "heavens_nemesis_mark", debuffs[ td->source ] );
-    td->debuff.heavens_nemesis->reset();
-  }
-};
 
 // Ashkandur
 // 408790 Driver/Damage Value
@@ -8308,47 +8132,33 @@ void hungering_shadowflame( special_effect_t& e )
 // Driver: 427113
 // Damage: 427209
 // Debuffs: 427215 (Root - Main Target) & 427212 (Slow - AoE)
-struct web_of_dreams_initializer_t : public item_targetdata_initializer_t
-{
-  web_of_dreams_initializer_t() : item_targetdata_initializer_t( 427113, 427212 )
-  {
-  }
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.web_of_dreams = make_buff_fallback( active, *td, "web_of_dreams", debuffs[ td->source ] );
-    td->debuff.web_of_dreams->reset();
-  }
-};
-
-struct dream_shackles_initializer_t : public item_targetdata_initializer_t
-{
-  dream_shackles_initializer_t() : item_targetdata_initializer_t( 427113, 427215 )
-  {
-  }
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.dream_shackles = make_buff_fallback( active, *td, "dream_shackles", debuffs[ td->source ] );
-    td->debuff.dream_shackles->reset();
-  }
-};
-
 void dreambinder_loom_of_the_great_cycle( special_effect_t& effect )
 {
   struct dreambinder_loom_of_the_great_cycle_t : public generic_aoe_proc_t
   {
+    target_specific_t<buff_t> target_specific_slow;
+    const spell_data_t* slow_debuff;
+
     dreambinder_loom_of_the_great_cycle_t( const special_effect_t& effect )
-      : generic_aoe_proc_t( effect, "web_of_dreams", effect.player->find_spell( 427209 ), true )
+      : generic_aoe_proc_t( effect, "web_of_dreams", effect.player->find_spell( 427209 ), true ),
+        target_specific_slow( false ),
+        slow_debuff( effect.player->find_spell( 427212 ) )
     {
       base_dd_min = base_dd_max = data().effectN( 2 ).trigger()->effectN( 1 ).average( effect.item );
 
       // Mimics the spawn of the ground delay before the damage comes in
       travel_delay = effect.driver()->duration().total_seconds();
+
+      target_debuff = effect.player->find_spell( 427215 );
+    }
+
+    buff_t* get_slow( player_t* t )
+    {
+      buff_t*& slow = target_specific_slow[ t ];
+      if ( !slow )
+        slow = make_buff( actor_pair_t( t, player ), "web_of_dreams", slow_debuff );
+
+      return slow;
     }
 
     void impact( action_state_t* state ) override
@@ -8357,18 +8167,10 @@ void dreambinder_loom_of_the_great_cycle( special_effect_t& effect )
 
       if ( !state->target->is_boss() )
       {
-        actor_target_data_t* td = player->get_target_data( state->target );
+        get_slow( state->target )->trigger();
 
-        if ( td )
-        {
-          td->debuff.web_of_dreams->trigger();
-
-          // Apply the root if the target is the main target
-          if ( state->chain_target == 0 )
-          {
-            td->debuff.dream_shackles->trigger();
-          }
-        }
+        if ( state->chain_target == 0 )
+          get_debuff( state->target )->trigger();
       }
     }
   };
@@ -9349,36 +9151,29 @@ void ever_decaying_spores( special_effect_t& effect )
       : dbc_proc_callback_t( effect.player, effect ),
         damage( create_proc_action<ever_decaying_spores_damage_t>( "ever_decaying_spores", effect ) )
     {
+      target_debuff = effect.player->find_spell( 407087 );
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      return dbc_proc_callback_t::create_debuff( t )
+          ->set_expire_at_max_stack( true )
+          ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+            if ( !new_ )
+              damage->execute_on_target( b->player );
+          } );
     }
 
     void execute( action_t* a, action_state_t* s ) override
     {
       dbc_proc_callback_t::execute( a, s );
 
-      actor_target_data_t* td = a->player->get_target_data( s->target );
-
-      if ( !td->debuff.ever_decaying_spores->stack_change_callback )
-      {
-        td->debuff.ever_decaying_spores->set_stack_change_callback( [ this ]( buff_t* b, int /* old_ */, int new_ ) {
-          if ( new_ == 0 )
-          {
-            damage->set_target( b->player );
-            damage->execute();
-          }
-        } );
-      }
-
-      // Every time this procs it has a chance to damage the player instead of applying a debuff stack and it will also eat the proc
-      // if the debuff is ticking on the target.
-      // Testing shows this chance is currently 20% but since it's not found in spell data will have to rechecked in case this changes.
+      // Every time this procs it has a chance to damage the player instead of applying a debuff stack and it will also
+      // eat the proc if the debuff is ticking on the target. Testing shows this chance is currently 20% but since it's
+      // not found in spell data will have to rechecked in case this changes.
       if ( rng().roll( 0.8 ) )
-      {
-        td->debuff.ever_decaying_spores->trigger();
-        if ( td->debuff.ever_decaying_spores->at_max_stacks() )
-          td->debuff.ever_decaying_spores->expire();
-      }
+        get_debuff( s->target )->trigger();
     }
-
 
     void trigger( action_t* a, action_state_t* s ) override
     {
@@ -9389,32 +9184,6 @@ void ever_decaying_spores( special_effect_t& effect )
 
   new ever_decaying_spores_cb_t( effect );
 }
-
-struct ever_decaying_spores_initializer_t : public item_targetdata_initializer_t
-{
-  ever_decaying_spores_initializer_t() : item_targetdata_initializer_t( 406244, 407087 ) {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.ever_decaying_spores = make_buff_fallback( active, *td, "ever_decaying_spores", debuffs[ td->source ] );
-    td->debuff.ever_decaying_spores->reset();
-  }
-};
-
-struct timestrike_initializer_t : public item_targetdata_initializer_t
-{
-  timestrike_initializer_t() : item_targetdata_initializer_t( 419290, 420144 ) {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.timestrike = make_buff_fallback( active, *td, "timestrike", debuffs[ td->source ] );
-    td->debuff.timestrike->reset();
-  }
-};
 
 void timestrike( special_effect_t& effect )
 {
@@ -9433,6 +9202,8 @@ void timestrike( special_effect_t& effect )
 
       // 1 point to allow proper snapshot/update flag parsing
       damage->base_dd_min = damage->base_dd_max = 1.0;
+
+      target_debuff = e.player->find_spell( 420144 );
     }
 
     void execute( action_t*, action_state_t* s ) override
@@ -9447,7 +9218,7 @@ void timestrike( special_effect_t& effect )
       } );
 
       // debuff is purely cosmetic
-      listener->get_target_data( s->target )->debuff.timestrike->trigger();
+      get_debuff( s->target )->trigger();
     }
   };
 
@@ -11041,20 +10812,6 @@ void register_special_effects()
 
 void register_target_data_initializers( sim_t& sim )
 {
-  sim.register_target_data_initializer( items::dragonfire_bomb_dispenser_initializer_t() );
-  sim.register_target_data_initializer( items::awakening_rime_initializer_t() );
-  sim.register_target_data_initializer( items::skewering_cold_initializer_t() );
-  sim.register_target_data_initializer( items::spiteful_storm_initializer_t() );
-  sim.register_target_data_initializer( items::heavens_nemesis_initializer_t() );
-  sim.register_target_data_initializer( items::iceblood_deathsnare_initializer_t() );
-  sim.register_target_data_initializer( items::ever_decaying_spores_initializer_t() );
-  sim.register_target_data_initializer( items::timestrike_initializer_t() );
-  sim.register_target_data_initializer( items::tideseekers_cataclysm_initializer_t() );
-  sim.register_target_data_initializer( items::lava_bolt_initializer_t() );
-  sim.register_target_data_initializer( items::embed_blade_initializer_t() );
-  sim.register_target_data_initializer( items::web_of_dreams_initializer_t() );
-  sim.register_target_data_initializer( items::dream_shackles_initializer_t() );
-  sim.register_target_data_initializer( items::wellsprings_frost_initializer_t() );
 }
 
 void register_hotfixes()

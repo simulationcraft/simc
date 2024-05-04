@@ -160,6 +160,7 @@ void pet_t::init_base_stats()
   base.spell_crit_chance  = 0.05;
   base.attack_crit_chance = 0.05;
 
+  base.versatility = 0.0;
   base.leech = 0.0;
 
   base.armor_coeff = dbc->armor_mitigation_constant( level() );

@@ -101,6 +101,7 @@ buff_t* dbc_proc_callback_t::get_debuff( player_t* t )
 buff_t* dbc_proc_callback_t::create_debuff( player_t* t )
 {
   std::string name_ = target_debuff->ok() ? target_debuff->name_cstr() : effect.name();
+  util::tokenize( name_ );
   return make_buff( actor_pair_t( t, listener ), name_, target_debuff );
 }
 
