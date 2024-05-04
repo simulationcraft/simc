@@ -4,7 +4,7 @@ race=human
 spec=blood
 role=tank
 position=front
-talents=BoPAAAAAAAAAAAAAAAAAAAAAAACJIIJRiIREJiECJJJRAAAAAAJSSOARSTiIBAAISSSCAAAA
+talents=BoPAAAAAAAAAAAAAAAAAAAAAAACJIIJRiIREJiECJJJRAAAAAgkIJBRSTiIAAAikkkAAAAA
 
 head=piercing_gaze_of_the_risen_nightmare,id=217223,bonus_id=10359/1488/6935,gem_id=192985,enchant=incandescent_essence
 neck=ouroboreal_necklet,id=210214,bonus_id=7187/1520/8782,gem_id=192952/192952/192952,ilevel=528

@@ -43,7 +43,7 @@ std::string food( const player_t* p )
   {
     frost_food  = "sizzling_seafood_medley";
     unholy_food = "sizzling_seafood_medley";
-    blood_food  = "great_cerulean_sea";
+    blood_food  = "aromatic_seafood_platter";
   }
   else
   {
