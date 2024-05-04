@@ -8983,27 +8983,19 @@ struct ams_parent_buff_t : public buff_t
     : buff_t( p, name, spell ), remaining_absorb( 0 ), damage( 0 ), horsemen( horsemen )
   {
     cooldown->duration        = 0_ms;
-    double horsemen_reduction = 1.0;
-    if ( horsemen )
-      horsemen_reduction = 0.8;  // Doesnt Appear to be in spell data, using tooltip value for now
 
     if ( p->options.ams_absorb_percent > 0 || ( p->options.horsemen_ams_absorb_percent > 0 && horsemen ) )
     {
+      double opt = horsemen ? p->options.horsemen_ams_absorb_percent : p->options.ams_absorb_percent;
+      double ticks = buff_duration() / tick_time();
+      double pct = opt / ticks;
+      damage = calc_absorb() * pct;
       set_period( 1_s );
       set_tick_time_behavior( buff_tick_time_behavior::HASTED );
-      set_tick_callback( [ this, p, horsemen_reduction, horsemen ]( buff_t*, int, timespan_t ) {
+      set_tick_callback( [ this, p, horsemen ]( buff_t*, int, timespan_t ) {
         if ( p->specialization() == DEATH_KNIGHT_UNHOLY || p->specialization() == DEATH_KNIGHT_FROST )
         {
-          double opt   = horsemen ? p->options.horsemen_ams_absorb_percent : p->options.ams_absorb_percent;
-          double ticks = buff_duration() / tick_time();
-          double pct   = opt / ticks;
-
-          damage = ( p->resources.max[ RESOURCE_HEALTH ] * ( p->talent.antimagic_shell->effectN( 2 ).percent() ) *
-                     ( 1.0 + p->cache.heal_versatility() ) * ( 1.0 + p->talent.gloom_ward->effectN( 1 ).percent() ) *
-                     ( 1.0 + p->talent.antimagic_barrier->effectN( 3 ).percent() ) ) *
-                   pct * horsemen_reduction;
-          double absorbed =
-              std::min( damage, debug_cast<ams_parent_buff_t*>( p->buffs.antimagic_shell )->calc_absorb() );
+          double absorbed = std::min( damage, debug_cast<ams_parent_buff_t*>( p->buffs.antimagic_shell )->calc_absorb() );
 
           // AMS generates 0.833~ runic power per percentage max health absorbed.
           double rp_generated = absorbed / p->resources.max[ RESOURCE_HEALTH ] * 83.333;
@@ -9159,19 +9151,17 @@ struct antimagic_zone_buff_t final : public buff_t
 
     if ( p->options.amz_absorb_percent > 0 )
     {
+      double opt = p->options.amz_absorb_percent;
+      double ticks = buff_duration() / tick_time();
+      double pct = opt / ticks;
+      double pct_of_max_hp = 1.5;
+      damage = calc_absorb() * pct;
       set_period( 1_s );
       set_tick_time_behavior( buff_tick_time_behavior::HASTED );
       set_tick_callback( [ this, p ]( buff_t*, int, timespan_t ) {
         if ( p->talent.assimilation->ok() &&
              ( p->specialization() == DEATH_KNIGHT_UNHOLY || p->specialization() == DEATH_KNIGHT_FROST ) )
         {
-          double opt           = p->options.amz_absorb_percent;
-          double ticks         = buff_duration() / tick_time();
-          double pct           = opt / ticks;
-          double pct_of_max_hp = 1.5;
-          damage               = p->resources.max[ RESOURCE_HEALTH ] * pct_of_max_hp *
-                   ( 1.0 + p->talent.assimilation->effectN( 1 ).percent() ) *
-                   ( 1.0 + p->talent.gloom_ward->effectN( 1 ).percent() ) * ( 1.0 + p->cache.heal_versatility() ) * pct;
           double absorbed =
               std::min( damage, debug_cast<antimagic_zone_buff_t*>( p->buffs.antimagic_zone )->calc_absorb() );
 
@@ -9206,8 +9196,7 @@ struct antimagic_zone_buff_t final : public buff_t
   double calc_absorb()
   {
     death_knight_t* dk = debug_cast<death_knight_t*>( player );
-    // HP Value doesnt appear in spell data, instead stored in a variable in spell ID 51052, had coding the % hp value
-    // for now
+    // HP Value doesnt appear in spell data, instead stored in a variable in spell ID 51052
     double max_absorb = dk->resources.max[ RESOURCE_HEALTH ] * 1.5;
 
     max_absorb *= 1.0 + dk->talent.assimilation->effectN( 1 ).percent();
@@ -12010,7 +11999,6 @@ void death_knight_t::create_buffs()
     buffs.commander_of_the_dead = make_buff( this, "commander_of_the_dead", spell.commander_of_the_dead );
 
     buffs.defile_buff = make_buff( this, "defile", spell.defile_buff )
-                            ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
                             ->set_default_value( spell.defile_buff->effectN( 1 ).base_value() / 1.8 );
   }
 }
@@ -12630,6 +12618,7 @@ void death_knight_t::parse_player_effects()
     parse_effects( buffs.unholy_assault, talent.unholy.unholy_assault );
     parse_effects( buffs.ghoulish_frenzy, talent.unholy.ghoulish_frenzy );
     parse_effects( buffs.festermight, talent.unholy.festermight );
+    parse_effects( buffs.defile_buff, spell.defile_buff->effectN( 1 ).base_value() / 1.8 );
     parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::unholy_aura ), spell.unholy_aura_debuff, talent.unholy.unholy_aura );
     parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), spell.virulent_plague, talent.unholy.morbidity );
     parse_target_effects( d_fn( &death_knight_td_t::dots_t::frost_fever ), spell.frost_fever, talent.unholy.morbidity );
