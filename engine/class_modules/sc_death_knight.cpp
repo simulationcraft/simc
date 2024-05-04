@@ -8389,8 +8389,7 @@ struct raise_dead_t final : public death_knight_spell_t
     // Summon for the duration specified in spelldata if there's one (no data = permanent pet)
     p()->pets.ghoul_pet.spawn( data().duration() );
 
-    // Sacrificial Pact doesn't despawn risen skulker, so make sure it's not already up before spawning it
-    if ( p()->talent.unholy.all_will_serve.ok() && p()->pets.risen_skulker.active_pet() == nullptr )
+    if ( p()->talent.unholy.all_will_serve.ok() )
     {
       p()->pets.risen_skulker.spawn();
     }
@@ -11047,6 +11046,7 @@ void death_knight_t::create_pets()
       pets.risen_skulker.set_creation_callback(
           []( death_knight_t* p ) { return new pets::risen_skulker_pet_t( p ); } );
       pets.risen_skulker.set_max_pets( 1 );
+      pets.risen_skulker.set_replacement_strategy( spawner::pet_replacement_strategy::NO_REPLACE );
     }
 
     if ( talent.unholy.army_of_the_dead.ok() )
