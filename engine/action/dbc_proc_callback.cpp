@@ -5,20 +5,20 @@
 
 #include "dbc_proc_callback.hpp"
 
-#include <cassert>
-
+#include "action.hpp"
+#include "action_callback.hpp"
+#include "action_state.hpp"
 #include "buff/buff.hpp"
 #include "item/item.hpp"
 #include "item/special_effect.hpp"
 #include "player/player.hpp"
-#include "action.hpp"
-#include "action_state.hpp"
-#include "action_callback.hpp"
+#include "sim/cooldown.hpp"
 #include "sim/event.hpp"
 #include "sim/real_ppm.hpp"
-#include "sim/cooldown.hpp"
 #include "sim/sim.hpp"
 #include "util/rng.hpp"
+
+#include <cassert>
 
 struct proc_event_t : public event_t
 {
@@ -83,6 +83,24 @@ cooldown_t* dbc_proc_callback_t::get_cooldown( player_t* target )
     return cooldown;
 
   return target_specific_cooldown->get_cooldown( target );
+}
+
+buff_t* dbc_proc_callback_t::get_debuff( player_t* t )
+{
+  if ( !t )
+    t = listener->target;
+  if ( !t )
+    return nullptr;
+
+  buff_t*& debuff = target_specific_debuff[ t ];
+  if ( !debuff )
+    debuff = create_debuff( t );
+  return debuff;
+}
+
+buff_t* dbc_proc_callback_t::create_debuff( player_t* t )
+{
+  return make_buff( actor_pair_t( t, listener ), effect.name() );
 }
 
 void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
@@ -173,6 +191,7 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, const special_effect_
     effect( e ),
     cooldown( nullptr ),
     target_specific_cooldown( nullptr ),
+    target_specific_debuff( false ),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),
@@ -195,6 +214,7 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t* i, const special_effect_
     effect( e ),
     cooldown( nullptr ),
     target_specific_cooldown( nullptr ),
+    target_specific_debuff( false ),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),
@@ -217,6 +237,7 @@ dbc_proc_callback_t::dbc_proc_callback_t( player_t* p, const special_effect_t& e
     effect( e ),
     cooldown( nullptr ),
     target_specific_cooldown( nullptr ),
+    target_specific_debuff( false ),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),

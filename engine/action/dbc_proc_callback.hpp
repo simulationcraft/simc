@@ -8,6 +8,7 @@
 #include "config.hpp"
 
 #include "action_callback.hpp"
+#include "player/target_specific.hpp"
 
 #include <functional>
 
@@ -70,6 +71,7 @@ struct dbc_proc_callback_t : public action_callback_t
   const special_effect_t& effect;
   cooldown_t* cooldown;
   target_specific_cooldown_t* target_specific_cooldown;
+  target_specific_t<buff_t> target_specific_debuff;
 
   // Proc trigger types, cached/initialized here from special_effect_t to avoid
   // needless spell data lookups in vast majority of cases
@@ -103,6 +105,10 @@ struct dbc_proc_callback_t : public action_callback_t
   void initialize() override;
 
   cooldown_t* get_cooldown( player_t* target );
+
+  buff_t* get_debuff( player_t* target );
+
+  virtual buff_t* create_debuff( player_t* target );
 
   void trigger( action_t* a, action_state_t* state ) override;
 

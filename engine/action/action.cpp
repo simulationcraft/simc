@@ -4471,7 +4471,7 @@ buff_t* action_t::get_debuff( player_t* t )
 
 buff_t* action_t::create_debuff( player_t* t )
 {
-  return make_buff( actor_pair_t{ t, player }, name_str );
+  return make_buff( actor_pair_t( t, player ), name_str );
 }
 
 // return s_data_reporting if available, otherwise fallback to s_data
