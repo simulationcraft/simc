@@ -3937,12 +3937,16 @@ struct whitemane_pet_t final : public horseman_pet_t
   whitemane_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "whitemane" )
   {
     npc_id = owner->spell.summon_whitemane->effectN( 1 ).misc_value1();
-  }
-
-  void arise() override
-  {
-    horseman_pet_t::arise();
-    dk()->active_spells.undeath_dot->execute_on_target( dk()->target );
+    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
+      if ( !c )
+      {
+        debug_cast<death_coil_whitemane_t*>( coil )->used = false;
+      }
+      if ( c )
+      {
+        dk()->active_spells.undeath_dot->execute_on_target( dk()->target );
+      }
+    } );
   }
 
   void demise() override
@@ -4035,6 +4039,12 @@ struct trollbane_pet_t final : public horseman_pet_t
   trollbane_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "trollbane" )
   {
     npc_id = owner->spell.summon_trollbane->effectN( 1 ).misc_value1();
+    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
+      if ( !c )
+      {
+        debug_cast<obliterate_trollbane_t*>( oblit )->used = false;
+      }
+    } );
   }
 
   void demise() override
@@ -4082,6 +4092,12 @@ struct nazgrim_pet_t final : public horseman_pet_t
   nazgrim_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "nazgrim" )
   {
     npc_id = owner->spell.summon_nazgrim->effectN( 1 ).misc_value1();
+    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
+      if ( !c )
+      {
+        debug_cast<scourge_strike_nazgrim_t*>( scourge_strike )->used = false;
+      }
+    } );
   }
 
   struct scourge_strike_shadow_nazgrim_t final : public horseman_melee_t
