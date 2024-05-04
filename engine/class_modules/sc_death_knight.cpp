@@ -11053,11 +11053,13 @@ void death_knight_t::create_pets()
     {
       pets.army_ghouls.set_creation_callback(
           []( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "army_ghoul" ); } );
+      pets.army_ghouls.set_max_pets( 8 );
 
       if ( talent.unholy.magus_of_the_dead.ok() )
       {
         pets.army_magus.set_creation_callback(
             []( death_knight_t* p ) { return new pets::magus_pet_t( p, "army_magus" ); } );
+        pets.army_magus.set_max_pets( 1 );
       }
     }
 
@@ -11065,11 +11067,13 @@ void death_knight_t::create_pets()
     {
       pets.apoc_ghouls.set_creation_callback(
           []( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "apoc_ghoul" ); } );
+      pets.apoc_ghouls.set_max_pets( 4 );
 
       if ( talent.unholy.magus_of_the_dead.ok() )
       {
         pets.apoc_magus.set_creation_callback(
             []( death_knight_t* p ) { return new pets::magus_pet_t( p, "apoc_magus" ); } );
+        pets.apoc_magus.set_max_pets( 1 );
       }
     }
   }
@@ -11080,15 +11084,20 @@ void death_knight_t::create_pets()
     {
       pets.dancing_rune_weapon_pet.set_creation_callback(
           []( death_knight_t* p ) { return new pets::dancing_rune_weapon_pet_t( p, "dancing_rune_weapon" ); } );
+      pets.dancing_rune_weapon_pet.set_max_pets( 1 );
 
       if ( talent.blood.everlasting_bond.ok() )
+      {
         pets.everlasting_bond_pet.set_creation_callback(
             []( death_knight_t* p ) { return new pets::dancing_rune_weapon_pet_t( p, "everlasting_bond" ); } );
+        pets.everlasting_bond_pet.set_max_pets( 1 );
+      }
     }
 
     if ( talent.blood.bloodworms.ok() )
     {
       pets.bloodworms.set_creation_callback( []( death_knight_t* p ) { return new pets::bloodworm_pet_t( p ); } );
+      pets.bloodworms.set_max_pets( 5 );
     }
   }
 }
