@@ -9135,6 +9135,10 @@ double monk_t::composite_player_multiplier( school_e school ) const
        ( talent.general.chi_proficiency->effectN( 1 ).affected_schools() & school ) == school )
     multiplier *= 1.0 + talent.general.chi_proficiency->effectN( 1 ).percent();
 
+  if ( talent.general.martial_instincts.ok() &&
+       ( talent.general.martial_instincts->effectN( 1 ).affected_schools() & school ) == school )
+    multiplier *= 1.0 + talent.general.martial_instincts->effectN( 1 ).percent();
+
   return multiplier;
 }
 
