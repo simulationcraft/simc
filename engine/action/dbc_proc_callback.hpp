@@ -108,6 +108,8 @@ struct dbc_proc_callback_t : public action_callback_t
 
   cooldown_t* get_cooldown( player_t* target );
 
+  buff_t* find_debuff( player_t* target ) const;
+
   buff_t* get_debuff( player_t* target );
 
   virtual buff_t* create_debuff( player_t* target );

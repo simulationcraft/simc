@@ -85,6 +85,14 @@ cooldown_t* dbc_proc_callback_t::get_cooldown( player_t* target )
   return target_specific_cooldown->get_cooldown( target );
 }
 
+buff_t* dbc_proc_callback_t::find_debuff( player_t* t ) const
+{
+  if ( !t )
+    return nullptr;
+
+  return target_specific_debuff[ t ];
+}
+
 buff_t* dbc_proc_callback_t::get_debuff( player_t* t )
 {
   if ( !t )
