@@ -7707,11 +7707,6 @@ struct vampiric_strike_blood_t : public heart_strike_damage_base_t
     }
 
     p()->procs.blood_beast->occur();
-    // Currently kills off any other active blood beasts before spawning a new one
-    if ( p()->pets.blood_beast.active_pet() != nullptr )
-    {
-      p()->pets.blood_beast.active_pet()->dismiss();
-    }
     p()->pets.blood_beast.spawn( p()->spell.blood_beast_summon->duration(), 1 );
   }
 
@@ -11039,6 +11034,7 @@ void death_knight_t::create_pets()
   {
     pets.blood_beast.set_creation_callback( []( death_knight_t* p ) { return new pets::blood_beast_pet_t( p ); } );
     pets.blood_beast.set_max_pets( 1 );
+    pets.blood_beast.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
   }
 
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
