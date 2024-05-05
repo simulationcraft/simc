@@ -9001,6 +9001,7 @@ struct ams_parent_buff_t : public absorb_buff_t
       dk( p )
   {
     cooldown->duration = 0_ms;
+    set_absorb_school( SCHOOL_MAGIC );
     if ( option > 0 )
     {
       set_period( 1_s );
@@ -9014,7 +9015,7 @@ struct ams_parent_buff_t : public absorb_buff_t
     }
   }
 
-  void start( int stacks, double value, timespan_t duration ) override
+  void start( int stacks, double, timespan_t duration ) override
   {
     absorb_buff_t::start( stacks, calc_absorb(), duration );
 
@@ -9153,6 +9154,7 @@ struct antimagic_zone_buff_t final : public absorb_buff_t
       dk( p ),
       manual_damage( false )
   {
+    set_absorb_school( SCHOOL_MAGIC );
     if ( option > 0 )
     {
       set_period( 1_s );
@@ -9182,7 +9184,7 @@ struct antimagic_zone_buff_t final : public absorb_buff_t
     return absorb_buff_t::consume( actual_consumed, s );
   }
 
-  void start( int stacks, double value, timespan_t duration ) override
+  void start( int stacks, double, timespan_t duration ) override
   {
     buff_t::start( stacks, calc_absorb(), duration );
     if ( option > 0 )
