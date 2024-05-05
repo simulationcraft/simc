@@ -1886,14 +1886,18 @@ public:
     parse_effects( p()->buff.moonkin_form );
     parse_effects( p()->buff.rising_light_falling_night_day );
 
+    auto hotw_mask = effect_mask_t( true );
+
     switch( p()->specialization() )
     {
-      case DRUID_BALANCE:     parse_effects( p()->buff.heart_of_the_wild, 0b101000000000111U ); break;
-      case DRUID_FERAL:       parse_effects( p()->buff.heart_of_the_wild, 0b010000000111000U ); break;
-      case DRUID_GUARDIAN:    parse_effects( p()->buff.heart_of_the_wild, 0b000000111000000U ); break;
-      case DRUID_RESTORATION: parse_effects( p()->buff.heart_of_the_wild, 0b000111000000000U ); break;
+      case DRUID_BALANCE:     hotw_mask.disable(  1,  2,  3,  13,  15 ); break;
+      case DRUID_FERAL:       hotw_mask.disable(  4,  5,  6,  14 );      break;
+      case DRUID_GUARDIAN:    hotw_mask.disable(  7,  8,  9 );           break;
+      case DRUID_RESTORATION: hotw_mask.disable( 10, 11, 12 );           break;
       default: break;
     }
+
+    parse_effects( p()->buff.heart_of_the_wild, hotw_mask );
 
     // Balance
     parse_effects( p()->mastery.astral_invocation );
@@ -1901,32 +1905,20 @@ public:
     parse_effects( p()->buff.balance_of_all_things_nature, p()->talent.balance_of_all_things );
     // due to harmony of the heavens, we parse the damage effects (#1/#7) separately and use the current buff value
     // instead of data value
-    parse_effects( p()->buff.eclipse_lunar, 0b01000001U, p()->talent.umbral_intensity );
-    parse_effects( p()->buff.eclipse_lunar, 0b10111110U, USE_CURRENT );
+    parse_effects( p()->buff.eclipse_lunar, effect_mask_t( true ).disable( 1, 7 ), p()->talent.umbral_intensity );
+    parse_effects( p()->buff.eclipse_lunar, effect_mask_t( false ).enable( 1, 7 ), USE_CURRENT );
     // due to harmony of the heavens, we parse the damage effects (#1/#8) separately and use the current buff value
     // instead of data value
-    parse_effects( p()->buff.eclipse_solar, 0b10000001U, p()->talent.umbral_intensity );
-    parse_effects( p()->buff.eclipse_solar, 0b01111110U, USE_CURRENT );
+    parse_effects( p()->buff.eclipse_solar, effect_mask_t( true ).disable( 1, 8 ), p()->talent.umbral_intensity );
+    parse_effects( p()->buff.eclipse_solar, effect_mask_t( false ).enable( 1, 8 ), USE_CURRENT );
 
-    // for readability, we build the mask for effects to enable, rather than mask to disable.
-    unsigned owl_mask = 0b1111;
+    auto owl_mask = effect_mask_t( false ).enable( 1, 2, 3, 4 );
 
     if ( p()->talent.astral_insight.ok() )
-    {
-      // enable effects #6 & #7
-      owl_mask |= 1 << 5;
-      owl_mask |= 1 << 6;
+      owl_mask.enable( 6, 7 );
 
-      if ( p()->talent.lunar_calling.ok() )
-      {
-        // enable effects #8 & #9
-        owl_mask |= 1 << 7;
-        owl_mask |= 1 << 8;
-      }
-    }
-
-    // bitwise NOT to convert to ignore mask.
-    owl_mask = ~owl_mask;
+    if ( p()->talent.lunar_calling.ok() )
+      owl_mask.enable( 8, 9 );
 
     parse_effects( p()->buff.incarnation_moonkin, owl_mask, p()->talent.elunes_guidance );
     parse_effects( p()->buff.owlkin_frenzy );
@@ -1951,37 +1943,27 @@ public:
     // Guardian
     parse_effects( p()->buff.bear_form );
 
-    // for readability, we build the mask for effects to enable, rather than mask to disable.
-    unsigned bear_mask = 0b11001U;
+    auto bear_mask = effect_mask_t( false ).enable( 1, 4, 5 );
 
     if ( p()->talent.berserk_persistence.ok() )
-      bear_mask |= 0b110U;
+      bear_mask.enable( 2, 3 );
 
     if ( p()->talent.incarnation_bear.ok() && p()->talent.astral_insight.ok() )
     {
-      // enable effects #14 & #15
-      bear_mask |= 1 << 13;
-      bear_mask |= 1 << 14;
+      bear_mask.enable( 14, 15 );
 
       if ( p()->talent.lunar_calling.ok() )
-      {
-        // enable effects #16 & #17
-        bear_mask |= 1 << 15;
-        bear_mask |= 1 << 16;
-      }
+        bear_mask.enable( 16, 17 );
     }
-
-    // bitwise NOT to convert to ignore mask.
-    bear_mask = ~bear_mask;
 
     parse_effects( p()->buff.berserk_bear, bear_mask, p()->talent.berserk_ravage,
                    p()->talent.berserk_unchecked_aggression );
     parse_effects( p()->buff.incarnation_bear, bear_mask, p()->talent.berserk_ravage,
                    p()->talent.berserk_unchecked_aggression );
-    parse_effects( p()->buff.dream_of_cenarius, 0b10000 );
+    parse_effects( p()->buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ) );
     parse_effects( p()->buff.gory_fur );
     parse_effects( p()->buff.rage_of_the_sleeper );
-    parse_effects( p()->talent.reinvigoration, p()->talent.innate_resolve.ok() ? 0b01U : 0b10U );
+    parse_effects( p()->talent.reinvigoration, effect_mask_t( true ).disable( p()->talent.innate_resolve.ok() ? 1 : 2 ) );
     parse_effects( p()->buff.tooth_and_claw, IGNORE_STACKS );
     parse_effects( p()->buff.vicious_cycle_mangle, USE_DEFAULT );
     parse_effects( p()->buff.vicious_cycle_maul, USE_DEFAULT );
@@ -10757,8 +10739,9 @@ void druid_t::create_buffs()
   parse_effects( buff.rage_of_the_sleeper );
   parse_effects( buff.ruthless_aggression );
   parse_effects( buff.ursine_vigor, USE_DEFAULT );
-  parse_effects( buff.wildshape_mastery, 0b011, bear_stam * buff.wildshape_mastery->data().effectN( 1 ).percent() );
-  parse_effects( buff.wildshape_mastery, 0b101,
+  parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 3 ),
+                 bear_stam * buff.wildshape_mastery->data().effectN( 1 ).percent() );
+  parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 2 ),
                  find_effect( buff.bear_form, A_MOD_BASE_RESISTANCE_PCT ).percent() *
                  buff.wildshape_mastery->data().effectN( 1 ).percent() );
 

@@ -132,8 +132,16 @@ struct effect_mask_t
   effect_mask_t& disable( uint32_t i )
   { mask |= 1 << ( i - 1 ); return *this; }
 
+  template <typename... Ts>
+  effect_mask_t& disable( uint32_t i, Ts... idxs )
+  { disable( i ); return disable( idxs... ); }
+
   effect_mask_t& enable( uint32_t i )
   { mask &= ~( 1 << ( i - 1 ) ); return *this; }
+
+  template <typename... Ts>
+  effect_mask_t& enable( uint32_t i, Ts... idxs )
+  { enable( i ); return enable( idxs... ); }
 
   operator uint32_t() const
   { return mask; }
