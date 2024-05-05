@@ -9016,7 +9016,7 @@ struct ams_parent_buff_t : public absorb_buff_t
 
     if ( option > 0 )
     {
-      double ticks = data().duration() / tick_time();
+      double ticks = buff_duration() / tick_time();
       double pct   = option / ticks;
       damage       = calc_absorb() * pct;
     }
@@ -9175,7 +9175,7 @@ struct antimagic_zone_buff_t final : public absorb_buff_t
     buff_t::start( stacks, calc_absorb(), duration );
     if ( option > 0 )
     {
-      double ticks = data().duration() / tick_time();
+      double ticks = buff_duration() / tick_time();
       double pct   = option / ticks;
       damage       = calc_absorb() * pct;
     }
@@ -12252,7 +12252,7 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
   cooldown.dancing_rune_weapon->adjust( talent.blood.insatiable_blade->effectN( 1 ).time_value() );
 }
 
-void death_knight_t::assess_damage_imminent( school_e school, result_amount_type, action_state_t* s )
+void death_knight_t::assess_damage_imminent( school_e, result_amount_type, action_state_t* s )
 {
   bone_shield_handler( s );
 }
