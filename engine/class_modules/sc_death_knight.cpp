@@ -9148,7 +9148,6 @@ struct antimagic_zone_buff_t final : public absorb_buff_t
 {
   antimagic_zone_buff_t( death_knight_t* p )
     : absorb_buff_t( p, "antimagic_zone", p->spell.anti_magic_zone_buff ),
-      remaining_absorb( 0.0 ),
       damage( 0 ),
       option( p->options.amz_absorb_percent ),
       dk( p ),
@@ -9217,7 +9216,6 @@ struct antimagic_zone_buff_t final : public absorb_buff_t
   }
 
 private:
-  double remaining_absorb;
   double damage;
   double option;
   bool manual_damage;
