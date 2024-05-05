@@ -9960,13 +9960,20 @@ void druid_t::init_base_stats()
 
   resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + find_effect( talent.expansiveness, A_MOD_MANA_POOL_PCT ).percent();
 
-  // only intially activate required resources. others will be dynamcally activated depending on apl
-  resources.active_resource[ RESOURCE_HEALTH ]       = specialization() == DRUID_GUARDIAN;
-  resources.active_resource[ RESOURCE_RAGE ]         = specialization() == DRUID_GUARDIAN;
-  resources.active_resource[ RESOURCE_MANA ]         = specialization() == DRUID_RESTORATION;
-  resources.active_resource[ RESOURCE_COMBO_POINT ]  = specialization() == DRUID_FERAL;
-  resources.active_resource[ RESOURCE_ENERGY ]       = specialization() == DRUID_FERAL;
-  resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
+  // only intially activate required resources. others will be dynamically activated depending on apl
+  for ( auto r = RESOURCE_HEALTH; r < RESOURCE_MAX; r++ )
+  {
+    switch ( r )
+    {
+      case RESOURCE_ASTRAL_POWER: resources.active_resource[ r ] = specialization() == DRUID_BALANCE;     break;
+      case RESOURCE_COMBO_POINT:
+      case RESOURCE_ENERGY:       resources.active_resource[ r ] = specialization() == DRUID_FERAL;       break;
+      case RESOURCE_HEALTH:
+      case RESOURCE_RAGE:         resources.active_resource[ r ] = specialization() == DRUID_GUARDIAN;    break;
+      case RESOURCE_MANA:         resources.active_resource[ r ] = specialization() == DRUID_RESTORATION; break;
+      default:                    resources.active_resource[ r ] = false;                                 break;
+    }
+  }
 
   // Energy Regen
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
@@ -9991,6 +9998,7 @@ void druid_t::init_stats()
   // enable rage for bear form
   if ( uses_bear_form() )
   {
+    resources.active_resource[ RESOURCE_HEALTH ] = true;
     resources.active_resource[ RESOURCE_RAGE ] = true;
   }
 }
