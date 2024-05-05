@@ -1245,6 +1245,7 @@ public:
     const spell_data_t* sanguination_cooldown;
     const spell_data_t* spellwarding_absorb;
     const spell_data_t* rune_of_hysteria_buff;
+    const spell_data_t* anti_magic_zone_buff;
 
     // Diseases (because they're not stored in spec data, unlike frost fever's rp gen...)
     const spell_data_t* blood_plague;
@@ -4391,7 +4392,9 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     // For non tank DK's, we proc the ability on CD, attached to thier own executes, to simulate it
     if ( p()->talent.blood_draw.ok() && p()->specialization() != DEATH_KNIGHT_BLOOD &&
          p()->active_spells.blood_draw->ready() && p()->in_combat )
+    {
       p()->active_spells.blood_draw->execute();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -8988,64 +8991,54 @@ struct unholy_assault_t final : public death_knight_melee_attack_t
 
 // Anti-magic Shell =========================================================
 
-struct ams_parent_buff_t : public buff_t
+struct ams_parent_buff_t : public absorb_buff_t
 {
   ams_parent_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell, bool horsemen )
-    : buff_t( p, name, spell ),
-      remaining_absorb( 0 ),
+    : absorb_buff_t( p, name, spell ),
       damage( 0 ),
       horsemen( horsemen ),
-      option( horsemen ? p->options.horsemen_ams_absorb_percent : p->options.ams_absorb_percent )
+      option( horsemen ? p->options.horsemen_ams_absorb_percent : p->options.ams_absorb_percent ),
+      dk( p )
   {
     cooldown->duration = 0_ms;
-
     if ( option > 0 )
     {
       set_period( 1_s );
       set_tick_time_behavior( buff_tick_time_behavior::HASTED );
-      set_tick_callback( [ this, p, horsemen ]( buff_t*, int, timespan_t ) {
+      set_tick_callback( [ this, p ]( buff_t*, int, timespan_t ) {
         if ( p->specialization() == DEATH_KNIGHT_UNHOLY || p->specialization() == DEATH_KNIGHT_FROST )
         {
-          double absorbed =
-              std::min( damage, debug_cast<ams_parent_buff_t*>( p->buffs.antimagic_shell )->calc_absorb() );
-
-          // AMS generates 0.833~ runic power per percentage max health absorbed.
-          double rp_generated = absorbed / p->resources.max[ RESOURCE_HEALTH ] * 83.333;
-
-          absorb_damage( absorbed );
-
-          p->resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ),
-                            horsemen ? p->gains.antimagic_shell_horsemen : p->gains.antimagic_shell );
+          consume( damage );
         }
       } );
     }
   }
 
-  void execute( int stacks, double value, timespan_t duration ) override
+  void start( int stacks, double value, timespan_t duration ) override
   {
-    remaining_absorb = calc_absorb();
+    absorb_buff_t::start( stacks, calc_absorb(), duration );
 
     if ( option > 0 )
     {
-      double ticks = buff_duration() / tick_time();
+      double ticks = data().duration() / tick_time();
       double pct   = option / ticks;
       damage       = calc_absorb() * pct;
     }
+  };
 
-    buff_t::execute( stacks, value, duration );
-  }
-
-  void expire_override( int stacks, timespan_t duration ) override
+  void absorb_used( double absorbed, player_t* source ) override
   {
-    buff_t::expire_override( stacks, duration );
+    absorb_buff_t::absorb_used( absorbed, source );
+    // AMS generates 0.833~ runic power per percentage max health absorbed.
+    double rp_generated = absorbed / dk->resources.max[ RESOURCE_HEALTH ] * 83.333;
 
-    remaining_absorb = 0;
+    player->resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ),
+                           horsemen ? dk->gains.antimagic_shell_horsemen : dk->gains.antimagic_shell );
   }
 
   double calc_absorb()
   {
-    death_knight_t* dk = debug_cast<death_knight_t*>( player );
-    double max_absorb  = dk->resources.max[ RESOURCE_HEALTH ] * dk->talent.antimagic_shell->effectN( 2 ).percent();
+    double max_absorb = dk->resources.max[ RESOURCE_HEALTH ] * dk->talent.antimagic_shell->effectN( 2 ).percent();
 
     max_absorb *= 1.0 + dk->talent.antimagic_barrier->effectN( 2 ).percent();
 
@@ -9059,25 +9052,11 @@ struct ams_parent_buff_t : public buff_t
     return max_absorb;
   }
 
-  virtual double absorb_damage( double incoming_damage )
-  {
-    if ( incoming_damage >= remaining_absorb )
-    {
-      this->expire();
-
-      return remaining_absorb;
-    }
-
-    remaining_absorb -= incoming_damage;
-
-    return incoming_damage;
-  }
-
 private:
-  double remaining_absorb;
   double damage;
   bool horsemen;
   double option;
+  death_knight_t* dk;
 };
 
 struct antimagic_shell_buff_t : public ams_parent_buff_t
@@ -9164,13 +9143,16 @@ private:
 
 // Anti-magic Zone =========================================================
 
-struct antimagic_zone_buff_t final : public buff_t
+struct antimagic_zone_buff_t final : public absorb_buff_t
 {
   antimagic_zone_buff_t( death_knight_t* p )
-    : buff_t( p, "antimagic_zone", p->talent.antimagic_zone ), remaining_absorb( 0.0 ), damage( 0 ), option( p->options.amz_absorb_percent )
+    : absorb_buff_t( p, "antimagic_zone", p->spell.anti_magic_zone_buff ),
+      remaining_absorb( 0.0 ),
+      damage( 0 ),
+      option( p->options.amz_absorb_percent ),
+      dk( p ),
+      manual_damage( false )
   {
-    cooldown->duration = 0_ms;
-
     if ( option > 0 )
     {
       set_period( 1_s );
@@ -9179,48 +9161,47 @@ struct antimagic_zone_buff_t final : public buff_t
         if ( p->talent.assimilation->ok() &&
              ( p->specialization() == DEATH_KNIGHT_UNHOLY || p->specialization() == DEATH_KNIGHT_FROST ) )
         {
-          double absorbed =
-              std::min( damage, debug_cast<antimagic_zone_buff_t*>( p->buffs.antimagic_zone )->calc_absorb() );
-
-          // AMZ Generates 1% RP per 1% of the shield absorbed if Assimilation is talented.
-          double absorb_pct = p->resources.max[ RESOURCE_HEALTH ] * 1.5 *
-                              ( 1 + p->talent.assimilation->effectN( 1 ).percent() ) *
-                              ( 1 + p->cache.heal_versatility() );
-          // Assimilation can generate no more than 100 runic power
-          double rp_generated =
-              std::min( p->talent.assimilation->effectN( 2 ).base_value() * 100, absorbed / absorb_pct * 100 );
-
-          absorb_damage( absorbed );
-
-          p->resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), p->gains.antimagic_zone );
+          manual_damage = true;
+          consume( damage, nullptr );
+          manual_damage = false;
         }
       } );
     }
   }
 
-  void execute( int stacks, double value, timespan_t duration ) override
+  double consume( double consumed, action_state_t* s ) override
   {
-    remaining_absorb = calc_absorb();
-    if ( option > 0 )
+    double actual_consumed = consumed;
+    if ( !manual_damage )
     {
-      double ticks = buff_duration() / tick_time();
-      double pct = option / ticks;
-      damage = calc_absorb() * pct;
+      actual_consumed *= 0.2;  // AMZ only absorbs 20% of incoming damage
+      s->result_absorbed *= 0.2;
+      s->self_absorb_amount -= consumed - actual_consumed;
+      s->result_amount += consumed - actual_consumed;
     }
-
-    buff_t::execute( stacks, value, duration );
+    return absorb_buff_t::consume( actual_consumed, s );
   }
 
-  void expire_override( int stacks, timespan_t duration ) override
+  void start( int stacks, double value, timespan_t duration ) override
   {
-    buff_t::expire_override( stacks, duration );
+    buff_t::start( stacks, calc_absorb(), duration );
+    if ( option > 0 )
+    {
+      double ticks = data().duration() / tick_time();
+      double pct   = option / ticks;
+      damage       = calc_absorb() * pct;
+    }
+  }
+  void absorb_used( double absorbed, player_t* source ) override
+  {
+    absorb_buff_t::absorb_used( absorbed, source );
+    double rp_generated = absorbed / calc_absorb() * 100;
 
-    remaining_absorb = 0;
+    dk->resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), dk->gains.antimagic_zone );
   }
 
   double calc_absorb()
   {
-    death_knight_t* dk = debug_cast<death_knight_t*>( player );
     // HP Value doesnt appear in spell data, instead stored in a variable in spell ID 51052
     double max_absorb = dk->resources.max[ RESOURCE_HEALTH ] * 1.5;
 
@@ -9233,24 +9214,12 @@ struct antimagic_zone_buff_t final : public buff_t
     return max_absorb;
   }
 
-  double absorb_damage( double incoming_damage )
-  {
-    if ( incoming_damage >= remaining_absorb )
-    {
-      this->expire();
-
-      return remaining_absorb;
-    }
-
-    remaining_absorb -= incoming_damage;
-
-    return incoming_damage;
-  }
-
 private:
   double remaining_absorb;
   double damage;
   double option;
+  bool manual_damage;
+  death_knight_t* dk;
 };
 
 struct antimagic_zone_t final : public death_knight_spell_t
@@ -11494,6 +11463,7 @@ void death_knight_t::init_spells()
   spell.soul_reaper_execute          = find_spell( 343295 );
   spell.sanguination_cooldown        = find_spell( 326809 );
   spell.spellwarding_absorb          = find_spell( 326855 );
+  spell.anti_magic_zone_buff         = find_spell( 396883 );
 
   // Diseases
   spell.blood_plague       = find_spell( 55078 );
@@ -12306,57 +12276,6 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
 void death_knight_t::assess_damage_imminent( school_e school, result_amount_type, action_state_t* s )
 {
   bone_shield_handler( s );
-
-  if ( school != SCHOOL_PHYSICAL )
-  {
-    if ( buffs.antimagic_shell->up() )
-    {
-      double damage_absorbed =
-          debug_cast<antimagic_shell_buff_t*>( buffs.antimagic_shell )->absorb_damage( s->result_amount );
-
-      s->result_amount -= damage_absorbed;
-      s->result_absorbed -= damage_absorbed;
-      s->self_absorb_amount += damage_absorbed;
-      iteration_absorb_taken += damage_absorbed;
-
-      if ( antimagic_shell )
-        antimagic_shell->add_result( damage_absorbed, damage_absorbed, result_amount_type::ABSORB, RESULT_HIT,
-                                     BLOCK_RESULT_UNBLOCKED, this );
-
-      // Generates 1 RP for every 1% max hp absorbed
-      double rp_generated = damage_absorbed / resources.max[ RESOURCE_HEALTH ] * 100;
-
-      resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), gains.antimagic_shell, s->action );
-    }
-
-    if ( buffs.antimagic_zone->up() )
-    {
-      // AMZ only absorbs 20% of incoming magic damage
-      double damage_absorbed =
-          debug_cast<antimagic_zone_buff_t*>( buffs.antimagic_zone )->absorb_damage( s->result_amount * 0.2 );
-
-      s->result_amount -= damage_absorbed;
-      s->result_absorbed -= damage_absorbed;
-      s->self_absorb_amount += damage_absorbed;
-      iteration_absorb_taken += damage_absorbed;
-
-      if ( antimagic_zone )
-        antimagic_zone->add_result( damage_absorbed, damage_absorbed, result_amount_type::ABSORB, RESULT_HIT,
-                                    BLOCK_RESULT_UNBLOCKED, this );
-
-      // Generates 1 RP for every 1% of the shield
-      if ( talent.assimilation )
-      {
-        double absorb_pct = resources.max[ RESOURCE_HEALTH ] * 1.5 *
-                            ( 1 + talent.assimilation->effectN( 1 ).percent() ) * ( 1 + cache.heal_versatility() );
-        // Assimilation can generate no more than 100 runic power
-        double rp_generated =
-            std::min( talent.assimilation->effectN( 2 ).base_value() * 100, damage_absorbed / absorb_pct * 100 );
-
-        resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), gains.antimagic_zone, s->action );
-      }
-    }
-  }
 }
 
 // death_knight_t::do_damage ================================================
