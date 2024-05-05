@@ -122,13 +122,30 @@ struct modify_effect_t
   { eff = e; return *this; }
 };
 
+// handy wrapper to create ignore masks with verbose effect index enable/disable methods
+struct effect_mask_t
+{
+  uint32_t mask;
+
+  effect_mask_t( bool b ) : mask( b ? 0 : 0xFFFFFFFF ) {}
+
+  effect_mask_t& disable( uint32_t i )
+  { mask |= 1 << ( i - 1 ); return *this; }
+
+  effect_mask_t& enable( uint32_t i )
+  { mask &= ~( 1 << ( i - 1 ) ); return *this; }
+
+  operator uint32_t() const
+  { return mask; }
+};
+
 // used to store values from parameter pack recursion of parse_effect/parse_target_effects
 template <typename U, typename = std::enable_if_t<std::is_default_constructible_v<U>>>
 struct pack_t
 {
   U data;
   std::vector<const spell_data_t*> list;
-  unsigned mask = 0U;
+  uint32_t mask = 0U;
 };
 
 struct parse_effects_t
@@ -266,7 +283,7 @@ public:
     {
       tmp.data.value = mod;
     }
-    else if constexpr ( std::is_integral_v<T> && !std::is_same_v<T, bool> )
+    else if constexpr ( std::is_same_v<T, effect_mask_t> || ( std::is_integral_v<T> && !std::is_same_v<T, bool> ) )
     {
       tmp.mask = mod;
     }
