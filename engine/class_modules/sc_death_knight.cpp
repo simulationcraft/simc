@@ -661,9 +661,6 @@ public:
       bone_shield_charges_consumed;  // Counts how many bone shield charges have been consumed for T29 4pc blood
   unsigned int active_riders;        // Number of active Riders of the Apocalypse pets
 
-  stats_t* antimagic_shell;
-  stats_t* antimagic_zone;
-
   // Buffs
   struct buffs_t
   {
@@ -1524,8 +1521,6 @@ public:
       festering_wounds_target_count( 0 ),
       bone_shield_charges_consumed( 0 ),
       active_riders( 0 ),
-      antimagic_shell( nullptr ),
-      antimagic_zone( nullptr ),
       buffs(),
       runeforge(),
       active_spells(),
@@ -9110,14 +9105,6 @@ struct antimagic_shell_t final : public death_knight_spell_t
     // >= 1 seconds is used as a standard deviation normally
     else
       interval_stddev = interval_stddev_opt;
-
-    // Setup an Absorb stats tracker for AMS if it's used "for reals"
-    if ( damage == 0 )
-    {
-      stats->type = STATS_ABSORB;
-      if ( !p->antimagic_shell )
-        p->antimagic_shell = stats;
-    }
   }
 
   void execute() override
@@ -9256,14 +9243,6 @@ struct antimagic_zone_t final : public death_knight_spell_t
     // >= 1 seconds is used as a standard deviation normally
     else
       interval_stddev = interval_stddev_opt;
-
-    // Setup an Absorb stats tracker for AMZ if it's used "for reals"
-    if ( damage == 0 )
-    {
-      stats->type = STATS_ABSORB;
-      if ( !p->antimagic_zone )
-        p->antimagic_zone = stats;
-    }
   }
 
   void execute() override
