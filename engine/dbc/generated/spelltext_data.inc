@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54521
-static const std::array<spelltext_data_t, 22621> __spelltext_data { {
+static const std::array<spelltext_data_t, 22625> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19725,6 +19725,7 @@ static const std::array<spelltext_data_t, 22621> __spelltext_data { {
   { 406485, "$@spelldesc406459", "$?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] increased by $?e2[$w3]?e3[$w4]?e4[$w5]?e5[$w6][Highest secondary stat].", 0 },
   { 406488, "$@spelldesc406459", "Stunned.", 0 },
   { 406545, "Enemies hit by $?s383328[Final Verdict]?s215661[Justicar's Vengeance][Templar's Verdict] take $s1% increased damage from your next Divine Storm.", 0, 0 },
+  { 406550, "$@spelldesc400962", 0, 0 },
   { 406610, "Whenever you attack a new enemy for the first time, you demoralize it, reducing its damage done by $s2% up to $s1 for $406635d.", 0, 0 },
   { 406635, "$@spelldesc406610", "This unit deals $w1% less damage to $@auracaster.", 0 },
   { 406646, "Crusader Strike becomes a 2 part combo.\r\n\r\nTemplar Strike slashes an enemy for $407480s1 $?s403664 [Holystrike][Radiant] damage and gets replaced by Templar Slash for $406648d.\r\n\r\nTemplar Slash strikes an enemy for $406647s1 $?s403664[Holystrike][Radiant] damage, and burns the enemy for 50% of the damage dealt over 4 sec.", 0, 0 },
@@ -22486,8 +22487,11 @@ static const std::array<spelltext_data_t, 22621> __spelltext_data { {
   { 453917, "$?a137031[Your healing done is increased by $s3% while Apotheosis is active and for 20 sec after you cast Holy Word: Salvation.][Your damage dealt is increased by $s5% while Dark Ascension is active and by $s1% while Voidform is active.]", 0, 0 },
   { 453918, "Psychic Scream creates an image of you at your location. After $s1 sec, the image will let out a Psychic Scream.", 0, 0 },
   { 453925, "$@spelldesc450004", 0, 0 },
+  { 453936, "$@spelldesc453918", 0, 0 },
   { 453942, "Deploy a small earthen golem to allow you and fellow adventurers to repair your equipment.\r\n\r\nLasts for $d.", 0, 0 },
+  { 453943, "$@spelldesc453918", 0, 0 },
   { 453949, "Deploy a device that can be activated by you or a party or raid member when a crisis is imminent. When activated, it will attempt to resurrect all nearby allies  at the end of combat.\r\n\r\nLasts for $d or until activation. Must be deployed prior to combat.", 0, 0 },
+  { 453983, "$@spelldesc391109", "All healing done increased by $w1%.", 0 },
   { 454001, "Creating a Halo extends the duration of $?a137031[Apotheosis by ${$s1/1000} sec. \r\n\r\nIf Apotheosis is not active][Dark Ascension or Voidform by ${$s1/1000} sec.\r\n\r\nIf Dark Ascension and Voidform are not active], up to $454002U seconds is stored and applied the next time you gain $?a137031[Apotheosis][Dark Ascension or Voidform].", 0, 0 },
   { 454004, "When Magi's Spark or an Improved Spark of the Magi detonates, it increases the damage all affected targets take by 6% for 10 sec.", "Receiving $s1% increased damage from $@auracaster", 0 },
   { 454016, "Your Touch of the Magi now also conjures a spark, increasing the damage dealt by your next Arcane Barrage, Arcane Blast, and Arcane Missiles by $453912s1%.\r\n\r\nUpon receiving damage from all three spells, the spark explodes, dealing $453925s1 Arcane damage to all nearby enemies.", 0, 0 },

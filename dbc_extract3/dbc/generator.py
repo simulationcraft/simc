@@ -1425,6 +1425,7 @@ class SpellDataGenerator(DataGenerator):
          402813, 402894, 402896, 402897, 402898, 402903, 407961, 407982, # Igneous Tidestone
          401428, 401422, # Vessel of Searing Shadow
          407914, 407913, 407939,  # Might of the Drogbar set
+         406550, # Enduring Dreadplate
          # 10.1.5
          418076, 418527, 418547, 418773, 418774, 418775, 418776, 419591, 418588, 418999, 418605, 419052,  # Mirror of Fractured Tomorrows
          417356, 417290, 417139, 417069, 417050, 417049, # Prophetic Stonescales
