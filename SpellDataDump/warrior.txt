@@ -19380,7 +19380,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Points On Client (268)
 Effects          :
-#1 (id=1143273)  : Apply Aura (6) | Attack Speed (9)
+#1 (id=1143273)  : Apply Aura (6) | Attack Speed (Normalized wDPS) (9)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc444778
 Tooltip          : Auto attack speed increased by $w1%.
@@ -19419,7 +19419,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Points On Client (268)
 Effects          :
-#1 (id=1144608)  : Apply Aura (6) | Attack Speed (9)
+#1 (id=1144608)  : Apply Aura (6) | Attack Speed (Normalized wDPS) (9)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc446085
 Tooltip          : Auto attack speed increased by $w1%.

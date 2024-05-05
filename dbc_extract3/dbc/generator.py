@@ -2371,6 +2371,7 @@ class SpellDataGenerator(DataGenerator):
 
           # Fel-scarred
           ( 453314, 0 ), # Enduring Torment
+          ( 452489, 0 ), ( 452435, 0 ), # Demonsurge
        ),
 
        # Evoker:

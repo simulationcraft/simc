@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54521
-static const std::array<spelltext_data_t, 22625> __spelltext_data { {
+static const std::array<spelltext_data_t, 22631> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -22376,7 +22376,13 @@ static const std::array<spelltext_data_t, 22625> __spelltext_data { {
   { 452415, "Activating Metamorphosis greatly empowers $?a212612[Eye Beam][Fel Devastation], Immolation Aura and Sigil of Flame.\r\n\r\nDemonsurge damage is increased by $?a452416[${$452416s2/$452416u}][$452416s2]%", 0, 0 },
   { 452416, "$@spelldesc452402", "Damage of your next Demonsurge is increased by $w2%.", 0 },
   { 452422, "Study your notes to choose a new engineering schematic to learn.\r\n\r\nThe selection of possible schematics increases as you specialize in Engineering.", 0, 0 },
+  { 452436, "Viciously strike up to $228478s2 enemies in front of you for $228478s1 Physical damage and heal yourself for $s4.\r\n\r\nConsumes up to $s3 available Soul Fragments$?s321021[ and heals you for an additional $s5 for each Soul Fragment consumed][].", 0, 0 },
+  { 452437, "Consume up to $s2 available Soul Fragments then explode, damaging nearby enemies for $247455s1 Fire damage per fragment consumed, and afflicting them with Frailty for $247456d, causing you to heal for $247456s1% of damage you deal to them. Deals reduced damage beyond $s3 targets.", 0, 0 },
+  { 452486, "Unleash the fel within you, damaging enemies directly in front of you for ${$212105s1*(2/$t1)} Fire damage over $d.$?s320639[ Causing damage also heals you for up to ${$212106s1*(2/$t1)} health.][]", 0, 0 },
+  { 452487, "Engulf yourself in flames, $?a320364 [instantly causing $258921s1 $@spelldesc395020 damage to enemies within $258921A1 yards and ][]radiating ${$258922s1*$d} $@spelldesc395020 damage over $d.$?s320374[\r\n\r\n|cFFFFFFFFGenerates $<havocTalentFury> Fury over $d.|r][]$?(s212612 & !s320374)[\r\n\r\n|cFFFFFFFFGenerates $<havocFury> Fury.|r][]$?s212613[\r\n\r\n|cFFFFFFFFGenerates $<vengeFury> Fury over $d.|r][]", "Burning nearby enemies for $258922s1 $@spelldesc395020 damage every $t1 sec.$?a207548[\r\n\r\nMovement speed increased by $w4%.][]$?a320331[\r\n\r\nArmor increased by $w5%. Attackers suffer $@spelldesc395020 damage.][]", 0 },
+  { 452490, "Place a Sigil of Flame at the target location that activates after $d.\r\n\r\nDeals $204598s1 $@spelldesc395020 damage, and an additional $204598o3 $@spelldesc395020 damage over $204598d, to all enemies affected by the sigil.\r\n\r\n|CFFffffffGenerates $389787s1 Fury.|R", "Sigil of Flame is active.", 0 },
   { 452494, "Defensive Stance additionally reduces magic damage you take by $s1%.", 0, 0 },
+  { 452497, "Blasts all enemies in front of you, $?s320415[dealing guaranteed critical strikes][] for up to $<dmg> Chaos damage over $d. Deals reduced damage beyond $s5 targets.$?s343311[\r\n\r\nWhen Eye Beam finishes fully channeling, your Haste is increased by an additional $343312s1% for $343312d.][]", 0, 0 },
   { 452536, "Flip a Fatebound Coin each time a damaging finishing move consumes $s1 or more combo points. Heads increases the damage of your attacks by $s2%, lasting until you flip Tails. Tails deals Cosmic damage to targets struck.\r\n\r\nEach effect is increased by $s3% each time your Fatebound Coin flip matches the same outcome as the last flip. ", 0, 0 },
   { 452550, "$@spelldesc452414", "Agility increased by $w1%.", 0 },
   { 452565, "$@spelldesc444276", "$pri increased by $w1.", 0 },
@@ -22632,7 +22638,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix
 } };
 
 // Spell description variables, wow build 11.0.0.54521
-static const std::array<spelldesc_vars_data_t, 469> __spelldesc_vars_data { {
+static const std::array<spelldesc_vars_data_t, 472> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -23100,6 +23106,9 @@ static const std::array<spelldesc_vars_data_t, 469> __spelldesc_vars_data { {
   {  451017, "$value=$?a137023[${($AP*$451017s1/100)*(1+$@versadmg)}][${($SP*$451017s1/100)*(1+$@versadmg)}]" },
   {  451036, "$value=${($AP*$s3/100)*(1+$@versadmg)*(1+$216519s1/100)}" },
   {  451299, "$shield=${($SP*11)*(1+$@versadmg)}\r\n$newshield=${$MHP*$s2/100*(1+$@versadmg)}" },
+  {  452436, "$cleaveDamage=${2.0*$228478sw1}\r\n$cleaveHeal=${2.0*$AP*5.8*$s4/1000}" },
+  {  452487, "$havocFury=${$s2}\r\n$vengeFury=${$s3+($258922s3*$d)}\r\n$havocTalentFury=${$s2+($258922s2*$d)}" },
+  {  452497, "$dmg={?a320415[{$?a203550[${$198030s1*15*2}][${$198030s1*10*2}]}][{$?a203550[${$198030s1*15}][${$198030s1*10}]}]" },
   {  454351, "$pvp=$?a134735[${0.75}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=$?a137027[${$s2*$<retribution>}][$s2]\r\n$crit=$?a137027[${$s4*$<retribution>}][$s4]" },
   {  454373, "$haste=${$s3/10}\r\n$pvp=$?a134735[${0.75}][${1}]\r\n$damage=${$s1/10*$<pvp>}" },
 } };
