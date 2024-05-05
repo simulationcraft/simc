@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.6.54499
-static const std::array<spelltext_data_t, 21049> __spelltext_data { {
+static const std::array<spelltext_data_t, 21051> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19873,6 +19873,7 @@ static const std::array<spelltext_data_t, 21049> __spelltext_data { {
   { 406485, "$@spelldesc406459", "$?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] increased by $?e2[$w3]?e3[$w4]?e4[$w5]?e5[$w6][Highest secondary stat].", 0 },
   { 406488, "$@spelldesc406459", "Stunned.", 0 },
   { 406545, "Your damaging Holy Power abilities cost $s1 additional Holy Power and deal $s2% increased damage.", 0, 0 },
+  { 406550, "$@spelldesc400962", 0, 0 },
   { 406610, "Whenever you attack a new enemy for the first time, you demoralize it, reducing its damage done by $s2% up to $s1 for $406635d.", 0, 0 },
   { 406635, "$@spelldesc406610", "This unit deals $w1% less damage to $@auracaster.", 0 },
   { 406646, "Crusader Strike becomes a 2 part combo.\r\n\r\nTemplar Strike slashes an enemy for $407480s1 $?s403664 [Holystrike][Radiant] damage. \r\n\r\nYou have $406648d to continue the combo.\r\n\r\nTemplar Slash strikes an enemy for $406647s1 $?s403664[Holystrike][Radiant] damage and is always a critical strike.\r\n\r\nInherits Crusader Strike benefits.", 0, 0 },
@@ -20356,6 +20357,7 @@ static const std::array<spelltext_data_t, 21049> __spelltext_data { {
   { 417713, "$@spelldesc417710", "Damage taken from $@auracaster's attacks increased by $s1%.", 0 },
   { 417714, "Increases your damage and healing by $s1% during the day.", "Damage and healing increased by $s1%.", 0 },
   { 417715, "Increases your Versatility by $s1% during the night.", "Versatility increased by $s1%.", 0 },
+  { 417775, "Add a Downy Liner and Crystal Ocular Lenses to the Thought Calculating Apparatus.", 0, 0 },
   { 417792, "$@spelldesc417534", 0, 0 },
   { 417855, "Holy Shock, Holy Light, and Flash of Light critical healing increased by $s1%.", 0, 0 },
   { 417939, "Activate the Tyrstone, recording $s1% of your healing done over the next $d, up to $417959s2 healing done.", "Recording $w1% of all healing done.", 0 },
