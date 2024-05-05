@@ -8737,11 +8737,6 @@ struct vampiric_strike_unholy_t : public wound_spender_damage_base_t
     }
 
     p()->procs.blood_beast->occur();
-    // Currently kills off any other active blood beasts before spawning a new one
-    if( p()->pets.blood_beast.active_pet() != nullptr )
-    {
-      p()->pets.blood_beast.active_pet()->dismiss();
-    }
     p()->pets.blood_beast.spawn( p()->spell.blood_beast_summon->duration(), 1 );
   }
 
