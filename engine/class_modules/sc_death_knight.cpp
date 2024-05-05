@@ -8991,22 +8991,23 @@ struct unholy_assault_t final : public death_knight_melee_attack_t
 struct ams_parent_buff_t : public buff_t
 {
   ams_parent_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell, bool horsemen )
-    : buff_t( p, name, spell ), remaining_absorb( 0 ), damage( 0 ), horsemen( horsemen )
+    : buff_t( p, name, spell ),
+      remaining_absorb( 0 ),
+      damage( 0 ),
+      horsemen( horsemen ),
+      option( horsemen ? p->options.horsemen_ams_absorb_percent : p->options.ams_absorb_percent )
   {
-    cooldown->duration        = 0_ms;
+    cooldown->duration = 0_ms;
 
-    if ( p->options.ams_absorb_percent > 0 || ( p->options.horsemen_ams_absorb_percent > 0 && horsemen ) )
+    if ( option > 0 )
     {
-      double opt = horsemen ? p->options.horsemen_ams_absorb_percent : p->options.ams_absorb_percent;
-      double ticks = buff_duration() / tick_time();
-      double pct = opt / ticks;
-      damage = calc_absorb() * pct;
       set_period( 1_s );
       set_tick_time_behavior( buff_tick_time_behavior::HASTED );
       set_tick_callback( [ this, p, horsemen ]( buff_t*, int, timespan_t ) {
         if ( p->specialization() == DEATH_KNIGHT_UNHOLY || p->specialization() == DEATH_KNIGHT_FROST )
         {
-          double absorbed = std::min( damage, debug_cast<ams_parent_buff_t*>( p->buffs.antimagic_shell )->calc_absorb() );
+          double absorbed =
+              std::min( damage, debug_cast<ams_parent_buff_t*>( p->buffs.antimagic_shell )->calc_absorb() );
 
           // AMS generates 0.833~ runic power per percentage max health absorbed.
           double rp_generated = absorbed / p->resources.max[ RESOURCE_HEALTH ] * 83.333;
@@ -9021,6 +9022,13 @@ struct ams_parent_buff_t : public buff_t
   void execute( int stacks, double value, timespan_t duration ) override
   {
     remaining_absorb = calc_absorb();
+
+    if ( option > 0 )
+    {
+      double ticks = buff_duration() / tick_time();
+      double pct   = option / ticks;
+      damage       = calc_absorb() * pct;
+    }
 
     buff_t::execute( stacks, value, duration );
   }
@@ -9067,6 +9075,7 @@ private:
   double remaining_absorb;
   double damage;
   bool horsemen;
+  double option;
 };
 
 struct antimagic_shell_buff_t : public ams_parent_buff_t
@@ -9156,17 +9165,12 @@ private:
 struct antimagic_zone_buff_t final : public buff_t
 {
   antimagic_zone_buff_t( death_knight_t* p )
-    : buff_t( p, "antimagic_zone", p->talent.antimagic_zone ), remaining_absorb( 0.0 ), damage( 0 )
+    : buff_t( p, "antimagic_zone", p->talent.antimagic_zone ), remaining_absorb( 0.0 ), damage( 0 ), option( p->options.amz_absorb_percent )
   {
     cooldown->duration = 0_ms;
 
-    if ( p->options.amz_absorb_percent > 0 )
+    if ( option > 0 )
     {
-      double opt = p->options.amz_absorb_percent;
-      double ticks = buff_duration() / tick_time();
-      double pct = opt / ticks;
-      double pct_of_max_hp = 1.5;
-      damage = calc_absorb() * pct;
       set_period( 1_s );
       set_tick_time_behavior( buff_tick_time_behavior::HASTED );
       set_tick_callback( [ this, p ]( buff_t*, int, timespan_t ) {
@@ -9193,6 +9197,12 @@ struct antimagic_zone_buff_t final : public buff_t
   void execute( int stacks, double value, timespan_t duration ) override
   {
     remaining_absorb = calc_absorb();
+    if ( option > 0 )
+    {
+      double ticks = buff_duration() / tick_time();
+      double pct = option / ticks;
+      damage = calc_absorb() * pct;
+    }
 
     buff_t::execute( stacks, value, duration );
   }
@@ -9236,6 +9246,7 @@ struct antimagic_zone_buff_t final : public buff_t
 private:
   double remaining_absorb;
   double damage;
+  double option;
 };
 
 struct antimagic_zone_t final : public death_knight_spell_t
