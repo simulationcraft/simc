@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.6.53989 PTR
+SimulationCraft 1026-01 for World of Warcraft 10.2.7.54449 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -15092,7 +15092,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.66670 | Target: Self (1)
 #2 (id=1005396)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your Soul Reaper, Scourge Strike, Festering Strike, and Death Coil deal $s1% addtional damage to enemies below $s2% health.
+Description      : Your Soul Reaper, Scourge Strike, Festering Strike, and Death Coil deal $s1% additional damage to enemies below $s2% health.
 
 Name             : Death Rot (id=377537) [Spell Family (15), Passive] 
 Talent Entry     : Unholy [tree=spec, row=8, col=1, max_rank=1, req_points=20]

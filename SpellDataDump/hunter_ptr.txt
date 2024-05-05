@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.6.53989 PTR
+SimulationCraft 1026-01 for World of Warcraft 10.2.7.54449 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -3893,14 +3893,14 @@ Range            : 100 yards
 Proc Chance      : 101%
 Triggered by     : Harpoon (190925)
 Attributes       : ....x... ........ x.x..x.. .....x..   ........ ........ ..x..... ..xx.... 
-                 : x.x..... ........ ....x... ........   ........ ........ ........ ........ 
+                 : x....... ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x......x ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ....x... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), No Immunities (29), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Allow Dead Target (64), Ignore Line of Sight (66), Initiate Combat Post-Cast (Enables Auto-Attack) (84), No Jump Pathing (208), Taps immediately (215), Aura Points On Client (268), Face unit target upon completion of jump charge (300), Allow Class Ability Procs (416)
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), No Immunities (29), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Allow Dead Target (64), Initiate Combat Post-Cast (Enables Auto-Attack) (84), No Jump Pathing (208), Taps immediately (215), Aura Points On Client (268), Face unit target upon completion of jump charge (300), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=271178)   : Unknown(254)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 18 | Radius: 0 - 3 yards | Target: Enemy (6) -> Unknown(148)
@@ -8130,7 +8130,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 273277 | Target: Self (1)
 #2 (id=740947)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your Call Pet additionally summons the first pet from your stable. This pet will obey your Kill Command, but cannot use pet family abilities and both of your pets deal $s2% reduced damage.
+Description      : Your Call Pet additionally summons the pet from the bonus slot in your stable. This pet will obey your Kill Command, but cannot use pet family abilities and both of your pets deal $s2% reduced damage.
 
 Name             : Chakrams (id=267605) [Spell Family (9)] 
 Class            : Hunter

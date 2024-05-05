@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.6.53989 PTR
+SimulationCraft 1026-01 for World of Warcraft 10.2.7.54449 PTR
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -1547,8 +1547,6 @@ Effects          :
                    Base Value: -200 | Scaled Value: -200 | PvP Coefficient: 1.00000 | Misc Value: 126 | Target: Self (1)
 #2 (id=20792)    : Trigger Spell (64): Cloak of Shadows
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 35729 | Target: Self (1)
-#3 (id=1078289)  : Apply Aura (6) | Modify Dodge% (49)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Provides a moment of magic immunity, instantly removing all harmful spell effects. The cloak lingers, causing you to resist harmful spells for $d.
 Tooltip          : Resisting all harmful spells.$?a198952[ Dodge chance increased by ${$w3/2}%.][]
 
@@ -4768,7 +4766,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=292796)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Cloak of Shadows now also removes harmful physical effects and increases dodge chance by ${-$31224m1/2}%.
+Description      : Cloak of Shadows now also removes harmful physical effects.
 
 Name             : Buried Treasure (id=199600) [Spell Family (8)] 
 Class            : Rogue
@@ -13152,7 +13150,6 @@ Talent Entry     : Outlaw [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Spell Level      : 60
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -16886,7 +16883,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=1105151)  : Apply Aura (6) | Attack Speed (9)
+#1 (id=1105151)  : Apply Aura (6) | Attack Speed (Normalized wDPS) (9)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1105152)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Target: Self (1)

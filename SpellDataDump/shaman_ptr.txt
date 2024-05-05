@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.6.53989 PTR
+SimulationCraft 1026-01 for World of Warcraft 10.2.7.54449 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -3370,12 +3370,10 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.62500 | Target: Self (1)
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024)
                    Family Flags: 41
-Hotfixed         : Base Value (13 -> 8), PvP Coefficient (1 -> 1.625)
 #2 (id=191046)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.62500 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024)
                    Family Flags: 41
-Hotfixed         : Base Value (13 -> 8), PvP Coefficient (1 -> 1.625)
 #3 (id=191047)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 54 | Scaled Value: 54 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349), Tempest Strikes (428078)
@@ -4512,14 +4510,14 @@ Duration         : 30 seconds
 Affecting spells : Call of Flame (338303 effect#1)
 Family Flags     : 55
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
-                 : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
+                 : ........ x....... ...x.... ........   ........ ........ .x...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=275512)   : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 95061 | Misc Value 2: 0xc8d | Radius: 5 yards | Target: Unknown(50)
@@ -15954,7 +15952,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Points On Client (268)
 Effects          :
-#1 (id=1014462)  : Apply Aura (6) | Attack Speed (9)
+#1 (id=1014462)  : Apply Aura (6) | Attack Speed (Normalized wDPS) (9)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc382888
 Tooltip          : Attack speed increased by $w1%.
