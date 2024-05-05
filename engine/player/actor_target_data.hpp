@@ -24,17 +24,6 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     // Debuffs that are entirely self-contained within the proc or use action should be handled within the
     // generic_proc_t or dbc_proc_callback_t via target_specific_debuff.
 
-    buff_t* mark_of_doom;
-    buff_t* poisoned_dreams;
-    buff_t* fel_burn;
-    buff_t* flame_wreath;
-    buff_t* thunder_ritual;
-    buff_t* brutal_haymaker;
-    buff_t* taint_of_the_sea;
-    buff_t* solar_collapse;
-    buff_t* volatile_magic;
-    buff_t* maddening_whispers;
-    buff_t* shadow_blades;
     // BFA
     buff_t* blood_of_the_enemy;
     buff_t* condensed_lifeforce;

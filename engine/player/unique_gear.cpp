@@ -2536,19 +2536,6 @@ void item::matrix_restabilizer( special_effect_t& effect )
   new matrix_restabilizer_cb_t( effect, buffs );
 }
 
-struct fel_burn_t : public buff_t
-{
-  fel_burn_t( const actor_pair_t& p, const special_effect_t* e, const spell_data_t* s )
-    : buff_t( p, "fel_burn", s, e ? e->item : nullptr )
-  {
-
-    set_refresh_behavior( buff_refresh_behavior::DISABLED );
-    // Add a millisecond of duration to the debuff so we ensure that the last tick (at 15 seconds)
-    // will always have the correct number of stacks.
-    set_duration( timespan_t::from_seconds( 15.001 ) );
-  }
-};
-
 struct empty_drinking_horn_damage_t : public melee_attack_t
 {
   empty_drinking_horn_damage_t( const special_effect_t& effect ) :
@@ -2559,17 +2546,7 @@ struct empty_drinking_horn_damage_t : public melee_attack_t
     base_td = data().effectN( 1 ).average( effect.item );
     weapon_multiplier = 0;
     item = effect.item;
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = melee_attack_t::composite_target_multiplier( target );
-
-    const actor_target_data_t* td = player -> get_target_data( target );
-
-    m *= td -> debuff.fel_burn -> current_stack;
-
-    return m;
+    dot_behavior = dot_behavior_e::DOT_NONE;
   }
 };
 
@@ -2593,36 +2570,7 @@ struct empty_drinking_horn_cb_t : public dbc_proc_callback_t
 
   void execute( action_t* /* a */, action_state_t* trigger_state ) override
   {
-    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
-    assert( td );
-    if ( ! td -> debuff.fel_burn -> up() )
-    {
-      td -> debuff.fel_burn -> trigger( 1 );
-      burn -> target = trigger_state -> target;
-      burn -> execute();
-    }
-    else
-    {
-      td -> debuff.fel_burn -> trigger( 1 );
-    }
-  }
-};
-
-struct empty_drinking_horn_constructor_t : public item_targetdata_initializer_t
-{
-  empty_drinking_horn_constructor_t( unsigned iid, util::span<const slot_e> s ) :
-    item_targetdata_initializer_t( iid, s )
-  {
-    debuff_fn = []( player_t* p, const special_effect_t* ) { return p->find_spell( 184256 ); };
-  }
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.fel_burn =
-        make_buff_fallback<fel_burn_t>( active, *td, "fel_burn", effect( td ), debuffs[ td->source ] );
-    td->debuff.fel_burn->reset();
+    burn->execute_on_target( trigger_state->target );
   }
 };
 
@@ -2872,54 +2820,23 @@ struct mark_of_doom_t : public buff_t
 // Prophecy of Fear base driver, handles the proccing (triggering) of Mark of Doom on targets
 struct prophecy_of_fear_driver_t : public dbc_proc_callback_t
 {
+  action_t* damage;
+  const special_effect_t* eff;
+
   prophecy_of_fear_driver_t( const special_effect_t& effect ) :
-    dbc_proc_callback_t( effect.player, effect )
-  { }
-
-  void initialize() override
+    dbc_proc_callback_t( effect.player, effect ), eff( &effect )
   {
-    dbc_proc_callback_t::initialize();
+    damage = new doom_nova_t( effect );
+  }
 
-    action_t* damage_spell = listener -> find_action( "doom_nova" );
-
-    if ( ! damage_spell )
-    {
-      damage_spell = listener -> create_proc_action( "doom_nova", effect );
-    }
-
-    if ( ! damage_spell )
-    {
-      damage_spell = new doom_nova_t( effect );
-    }
+  buff_t* create_debuff( player_t* t ) override
+  {
+    return new mark_of_doom_t( { t, listener }, eff, eff->trigger(), damage );
   }
 
   void execute( action_t* /* a */, action_state_t* trigger_state ) override
   {
-    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
-    assert( td );
-    td -> debuff.mark_of_doom -> trigger();
-  }
-};
-
-struct prophecy_of_fear_constructor_t : public item_targetdata_initializer_t
-{
-  target_specific_t<action_t> damage_actions;
-
-  prophecy_of_fear_constructor_t( unsigned iid, util::span<const slot_e> s )
-    : item_targetdata_initializer_t( iid, s ), damage_actions( false )
-  {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    action_t*& damage = damage_actions[ td->source ];
-    if ( active && !damage )
-      damage = td->source->find_action( "doom_nova" );
-
-    td->debuff.mark_of_doom =
-        make_buff_fallback<mark_of_doom_t>( active, *td, "mark_of_doom", effect( td ), debuffs[ td->source ], damage );
-    td->debuff.mark_of_doom->reset();
+    get_debuff( trigger_state->target )->trigger();
   }
 };
 
@@ -5171,9 +5088,6 @@ void unique_gear::register_hotfixes()
 void unique_gear::register_target_data_initializers( sim_t* sim )
 {
   static constexpr std::array<slot_e, 2> trinkets {{ SLOT_TRINKET_1, SLOT_TRINKET_2 }};
-
-  sim -> register_target_data_initializer( empty_drinking_horn_constructor_t( 124238, trinkets ) );
-  sim -> register_target_data_initializer( prophecy_of_fear_constructor_t( 124230, trinkets ) );
 
   register_target_data_initializers_legion( sim );
   register_target_data_initializers_bfa( sim );
