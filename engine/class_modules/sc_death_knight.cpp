@@ -9012,6 +9012,8 @@ struct ams_parent_buff_t : public buff_t
           // AMS generates 0.833~ runic power per percentage max health absorbed.
           double rp_generated = absorbed / p->resources.max[ RESOURCE_HEALTH ] * 83.333;
 
+          absorb_damage( absorbed );
+
           p->resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ),
                             horsemen ? p->gains.antimagic_shell_horsemen : p->gains.antimagic_shell );
         }
@@ -9187,6 +9189,8 @@ struct antimagic_zone_buff_t final : public buff_t
           // Assimilation can generate no more than 100 runic power
           double rp_generated =
               std::min( p->talent.assimilation->effectN( 2 ).base_value() * 100, absorbed / absorb_pct * 100 );
+
+          absorb_damage( absorbed );
 
           p->resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), p->gains.antimagic_zone );
         }
@@ -12305,7 +12309,7 @@ void death_knight_t::assess_damage_imminent( school_e school, result_amount_type
 
   if ( school != SCHOOL_PHYSICAL )
   {
-    if ( buffs.antimagic_shell->up() && options.ams_absorb_percent == 0 )
+    if ( buffs.antimagic_shell->up() )
     {
       double damage_absorbed =
           debug_cast<antimagic_shell_buff_t*>( buffs.antimagic_shell )->absorb_damage( s->result_amount );
@@ -12325,7 +12329,7 @@ void death_knight_t::assess_damage_imminent( school_e school, result_amount_type
       resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), gains.antimagic_shell, s->action );
     }
 
-    if ( buffs.antimagic_zone->up() && options.amz_absorb_percent == 0 )
+    if ( buffs.antimagic_zone->up() )
     {
       // AMZ only absorbs 20% of incoming magic damage
       double damage_absorbed =
