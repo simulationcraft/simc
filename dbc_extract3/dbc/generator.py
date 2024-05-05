@@ -1460,6 +1460,7 @@ class SpellDataGenerator(DataGenerator):
          433768, 433786, # reworked umbrelskul's fractured heart
          # 10.2.7
          431760, 440393, # Cloak of Infinite Potential / Timerunner's Advantage
+         432334, # Explosive Barrage Damage
         ),
 
         # Warrior:

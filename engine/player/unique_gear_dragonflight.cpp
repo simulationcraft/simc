@@ -10824,6 +10824,46 @@ void cloak_of_infinite_potential( special_effect_t& effect )
 
   effect.player->register_precombat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
 }
+
+void explosive_barrage( special_effect_t& effect )
+{
+  struct explosive_barrage_t : public proc_spell_t
+  {
+    action_t* barrage;
+
+    explosive_barrage_t( const special_effect_t& e )
+      : proc_spell_t( "explosive_barrage", e.player, e.player->find_spell( 432419 ) ), barrage()
+    {
+      barrage = create_proc_action<generic_proc_t>( "explosive_barrage_damage", e, "explosive_barrage_damage", 432334 );
+      barrage->base_dd_min = barrage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      // damage->name_str_reporting = "Missile";
+      add_child( barrage );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // Logs show 6 missiles fired in 3 batches of 2.
+      for ( size_t i = 0; i < 3; i++ )
+      {
+        make_event( sim, 150_ms * i, [ this ] {
+          auto tl = target_list();
+
+          if ( tl.empty() )
+            return;
+
+          barrage->execute_on_target( tl[ rng().range( tl.size() ) ] );
+          barrage->execute_on_target( tl[ rng().range( tl.size() ) ] );
+        } );
+      }
+    }
+  };
+
+  effect.execute_action = new explosive_barrage_t( effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }
 
 void register_special_effects()
@@ -11043,6 +11083,7 @@ void register_special_effects()
 
   // Timerunning 10.2.7
   register_special_effect( 431760, timerunning::cloak_of_infinite_potential );
+  register_special_effect( 432333, timerunning::explosive_barrage );
 
   // Disabled
   register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)

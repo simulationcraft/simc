@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.7.54449
-static const std::array<spelltext_data_t, 21144> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 21145> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20864,6 +20864,7 @@ static const std::array<spelltext_data_t, 21144> __ptr_spelltext_data { {
   { 432180, "$@spelldesc432181", "Your dodge chance is increased by $w1% until you dodge an attack.", 0 },
   { 432181, "Your dodge chance is increased by $s2% and an additional $432180s1% every $t1 sec until you dodge an attack, stacking up to $432180u times. ", 0, 0 },
   { 432333, "Your abilities have a chance to launch a barrage of fire at enemies. Each missile inflicts $s1 Fire damage.", 0, 0 },
+  { 432334, "$@spelldesc432333", 0, 0 },
   { 432402, "Your abilities have a chance to conjure a hail of meteors, inflicting $s1 Fire damage to nearby enemies and stunning them for $432424d.", 0, 0 },
   { 432424, "$@spelldesc432402", "Stunned.", 0 },
   { 432437, "$@spelldesc432438", "Stunned.", 0 },
