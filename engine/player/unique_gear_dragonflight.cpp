@@ -5050,6 +5050,35 @@ void ward_of_the_faceless_ire( special_effect_t& e )
   }
 }
 
+// 400962 driver
+// 400986 buff and trigger
+// 406550 damage effect
+// this is a very simple implementation that assumes the buff always expires
+void hellsteel_plating( special_effect_t& e )
+{
+  auto driver = e.player->find_spell( 400962 );
+
+  auto damage =
+      create_proc_action<generic_proc_t>( "ray_of_anguish", e, "ray_of_anguish", e.player->find_spell( 406550 ) );
+  damage->base_dd_min = damage->base_dd_max = driver->effectN( 4 ).average( e.item );
+  // 2024-05-05 -- Each beam disappears after hitting 5 targets and does not split damage.
+  damage->split_aoe_damage = false;
+  damage->aoe              = 5;
+  auto buff                = create_buff<buff_t>( e.player, e.driver() )
+                  ->set_stack_change_callback( [ damage ]( buff_t* b, int old, int new_ ) {
+                    // buff decrements so subtract
+                    auto diff = old - new_;
+                    for ( int i = 0; i < diff; i++ )
+                    {
+                      damage->execute_on_target( b->player->target );
+                    }
+                  } );
+  buff->set_initial_stack( buff->max_stack() );
+  buff->set_reverse( true );
+
+  e.custom_buff = buff;
+}
+
 // Treemouth's Festering Splinter
 void treemouths_festering_splinter( special_effect_t& e )
 {
@@ -6326,9 +6355,9 @@ void coiled_serpent_idol( special_effect_t& e )
     action_t* damage;
     action_t* molten_rain;
 
-    serpent_t( const special_effect_t& e, action_t* d ) 
+    serpent_t( const special_effect_t& e, action_t* d )
       : generic_proc_t( e, "lava_bolt_dot", e.player->find_spell( 427059 ) ),
-        damage( create_proc_action<lava_bolt_t>( "lava_bolt", e, "lava_bolt" ) ), 
+        damage( create_proc_action<lava_bolt_t>( "lava_bolt", e, "lava_bolt" ) ),
         molten_rain( d )
     {
       hasted_ticks = tick_zero = false;
@@ -10901,6 +10930,7 @@ void register_special_effects()
   register_special_effect( 401306, items::elementium_pocket_anvil );
   register_special_effect( 401513, items::ominous_chromatic_essence );
   register_special_effect( 401238, items::ward_of_the_faceless_ire );
+  register_special_effect( 400986, items::hellsteel_plating );
   register_special_effect( 395175, items::treemouths_festering_splinter );
   register_special_effect( 401395, items::vessel_of_searing_shadow );
   register_special_effect( 413419, items::heart_of_thunder );
@@ -10955,7 +10985,7 @@ void register_special_effects()
   register_special_effect( 427113, items::dreambinder_loom_of_the_great_cycle ); // Dreambinder, Loom of the Great Cycle
   register_special_effect( 424406, items::thorncaller_claw );                   // Thorncaller Claw
   register_special_effect( 424073, items::fystias_fiery_kris );                 // Fystia's Fiery Kris
-  register_special_effect( 417131, items::fyralath_the_dream_render );          // Fyr'alath the Dream Render 
+  register_special_effect( 417131, items::fyralath_the_dream_render );          // Fyr'alath the Dream Render
 
   // Armor
   register_special_effect( 397038, items::assembly_guardians_ring );
