@@ -13,7 +13,6 @@ struct special_effect_t;
 namespace unique_gear::thewarwithin
 {
 extern std::vector<unsigned> __tww_special_effect_ids;
-extern std::vector<special_effect_t*> __tww_on_use_effects;
 
 void register_special_effects();
 void register_target_data_initializers( sim_t& sim );

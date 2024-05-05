@@ -3694,14 +3694,31 @@ void generic::enable_all_item_effects( special_effect_t& effect )
 
   struct enable_all_item_effects_t : public action_t
   {
-    cooldown_t* trinket_cd;
+    std::vector<special_effect_t*> action_effects;
+    std::vector<special_effect_t*> buff_effects;
 
     enable_all_item_effects_t( const special_effect_t& e )
-      : action_t( action_e::ACTION_USE, "enable_all_item_effects", e.player ),
-        trinket_cd( e.player->get_cooldown( "item_cd_1141" ) )
+      : action_t( action_e::ACTION_USE, "enable_all_item_effects", e.player )
     {
       callbacks = false;
       cooldown->duration = 20_s;
+    }
+
+    void init() override
+    {
+      action_t::init();
+
+      for ( auto id : thewarwithin::__tww_special_effect_ids )
+      {
+        if ( auto eff = find_special_effect( player, id ) )
+        {
+          if ( eff->custom_buff )
+            buff_effects.push_back( eff );
+
+          if ( eff->execute_action )
+            action_effects.push_back( eff );
+        }
+      }
     }
 
     result_e calculate_result( action_state_t* ) const override
@@ -3713,14 +3730,12 @@ void generic::enable_all_item_effects( special_effect_t& effect )
     {
       action_t::execute();
 
-      for ( auto eff : thewarwithin::__tww_on_use_effects )
-      {
+      for ( auto eff : buff_effects )
+        eff->custom_buff->trigger();
+
+      for ( auto eff : action_effects )
         if ( eff->execute_action->action_ready() )
-        {
           eff->execute_action->execute();
-          trinket_cd->reset( false );
-        }
-      }
     }
   };
 
@@ -4078,15 +4093,6 @@ void unique_gear::init( player_t* p )
     auto driver_id = effect->spell_id;
 
     initialize_special_effect_2( effect );
-
-    if ( p->sim->enable_all_item_effects )
-    {
-      if ( effect->execute_action && range::contains( thewarwithin::__tww_special_effect_ids, driver_id ) &&
-           !range::contains( thewarwithin::__tww_on_use_effects, effect ) )
-      {
-        thewarwithin::__tww_on_use_effects.push_back( effect );
-      }
-    }
   }
 }
 

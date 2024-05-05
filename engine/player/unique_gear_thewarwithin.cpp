@@ -28,7 +28,6 @@
 namespace unique_gear::thewarwithin
 {
 std::vector<unsigned> __tww_special_effect_ids;
-std::vector<special_effect_t*> __tww_on_use_effects;
 
 // can be called via unqualified lookup
 void register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback = false )
