@@ -6631,11 +6631,11 @@ void monk_t::apply_affecting_auras( action_t &action )
 {
   player_t::apply_affecting_auras( action );
 
-  action.apply_affecting_aura( passives.aura_monk );
+  action.apply_affecting_aura( baseline.monk.aura );
   action.apply_affecting_aura( spec.brewmaster_monk );
-  action.apply_affecting_aura( spec.windwalker_monk );
-  action.apply_affecting_aura( spec.mistweaver_monk );
-  action.apply_affecting_aura( spec.mistweaver_monk_2 );
+  // action.apply_affecting_aura( spec.windwalker_monk );
+  // action.apply_affecting_aura( spec.mistweaver_monk );
+  // action.apply_affecting_aura( spec.mistweaver_monk_2 );
 }
 
 // void monk_t::apply_affecting_auras( action_t &action )
@@ -7049,6 +7049,22 @@ void monk_t::init_spells()
   auto _HT = [ this ]( util::string_view name ) { return find_talent_spell( talent_tree::HERO, name ); };
 
   auto _STID = [ this ]( int id ) { return find_talent_spell( talent_tree::SPECIALIZATION, id ); };
+
+  // monk_t::baseline::monk
+  baseline.monk.aura = find_spell( 137022 );
+
+  // monk_t::baseline::brewmaster
+  baseline.brewmaster.aura = find_specialization_spell( "Brewmaster Monk" );
+  // monk_t::baseline::mistweaver
+  // monk_t::baseline::windwalker
+
+  // monk_t::talent::monk
+  // monk_t::talent::brewmaster
+  // monk_t::talent::mistweaver
+  // monk_t::talent::windwalker
+  // monk_t::talent::conduit_of_the_celestials
+  // monk_t::talent::master_of_harmony
+  // monk_t::talent::shado-pan
 
   // ========
   // General
@@ -8877,8 +8893,6 @@ double monk_t::composite_player_multiplier( school_e school ) const
   if ( talent.general.martial_instincts.ok() &&
        ( talent.general.martial_instincts->effectN( 1 ).affected_schools() & school ) == school )
     multiplier *= 1.0 + talent.general.martial_instincts->effectN( 1 ).percent();
-
-  multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 1 ).percent();
 
   return multiplier;
 }

@@ -1144,6 +1144,57 @@ public:
     } windwalker;
   } spec;
 
+  struct
+  {
+    struct
+    {
+    } monk;
+
+    struct
+    {
+    } brewmaster;
+
+    struct
+    {
+    } mistweaver;
+
+    struct
+    {
+    } windwalker;
+
+    struct
+    {
+    } conduit_of_the_celestials;
+
+    struct
+    {
+    } master_of_harmony;
+
+    struct
+    {
+    } shado_pan;
+  } talent;
+
+  struct
+  {
+    struct
+    {
+      const spell_data_t *aura;
+    } monk;
+
+    struct
+    {
+    } brewmaster;
+
+    struct
+    {
+    } mistweaver;
+
+    struct
+    {
+    } windwalker;
+  } baseline;
+
   struct mastery_spells_t
   {
     const spell_data_t *combo_strikes;    // Windwalker
