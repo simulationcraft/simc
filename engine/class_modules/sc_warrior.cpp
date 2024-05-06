@@ -630,7 +630,6 @@ public:
       player_talent_t recklessness;
       player_talent_t massacre;
       player_talent_t meat_cleaver;
-      player_talent_t raging_armaments;
 
       player_talent_t deft_experience;
       player_talent_t swift_strikes;
@@ -642,7 +641,6 @@ public:
       player_talent_t onslaught;
       player_talent_t ravager;
 
-      player_talent_t annihilator;
       player_talent_t dancing_blades;
       player_talent_t titanic_rage;
       player_talent_t unbridled_ferocity;
@@ -1469,41 +1467,6 @@ struct devastate_t : public warrior_attack_t
 
 // Melee Attack =============================================================
 
-struct annihilator_t : warrior_attack_t
-{
-  annihilator_t( warrior_t* p ) : warrior_attack_t( "annihilator", p, p->find_spell( 383915 ) )
-  {
-    background  = true;
-    if ( p->talents.fury.swift_strikes->ok() )
-    {
-      energize_amount += p->talents.fury.swift_strikes->effectN( 2 ).resource( RESOURCE_RAGE );
-    }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p()->talents.fury.cruelty->ok() && p()->buff.enrage->check() )
-    {
-      am *= 1.0 + p()->talents.fury.cruelty->effectN( 2 ).percent();
-    }
-
-    return am;
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    if ( p()->talents.fury.slaughtering_strikes->ok() )
-    {
-      p()->buff.slaughtering_strikes_an->trigger();
-    }
-  }
-};
-
-
 struct sidearm_t : warrior_attack_t
 {
   sidearm_t( warrior_t* p ) : warrior_attack_t( "sidearm", p, p->find_spell( 384391 ) )
@@ -1548,7 +1511,6 @@ struct devastator_t : warrior_attack_t
 
 struct melee_t : public warrior_attack_t
 {
-  warrior_attack_t* annihilator;
   warrior_attack_t* sidearm;
   bool mh_lost_melee_contact, oh_lost_melee_contact;
   double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier, seasoned_soldier_crit_mult;
@@ -1556,7 +1518,6 @@ struct melee_t : public warrior_attack_t
   devastator_t* devastator;
   melee_t( util::string_view name, warrior_t* p )
     : warrior_attack_t( name, p, spell_data_t::nil() ),
-      annihilator( nullptr ),
       sidearm( nullptr),
       mh_lost_melee_contact( true ),
       oh_lost_melee_contact( true ),
@@ -1583,10 +1544,6 @@ struct melee_t : public warrior_attack_t
     {
       devastator = new devastator_t( p );
       add_child( devastator );
-    }
-    if ( p->talents.fury.annihilator->ok() )
-    {
-      annihilator = new annihilator_t( p );
     }
     if ( p->talents.warrior.sidearm->ok() )
     {
@@ -1684,12 +1641,6 @@ struct melee_t : public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-
-    if ( annihilator && result_is_hit( s->result ) )
-    {
-      annihilator->set_target( s->target );
-      annihilator->execute();
-    }
 
     if ( sidearm && result_is_hit( s->result ) && rng().roll( sidearm_chance ) )
     {
@@ -4136,10 +4087,6 @@ struct raging_blow_t : public warrior_attack_t
     {
       return false;
     }
-    if ( p()->talents.fury.annihilator->ok() )
-    {
-      return false;
-    }
     return warrior_attack_t::ready();
   }
 };
@@ -4262,10 +4209,6 @@ struct crushing_blow_t : public warrior_attack_t
       return false;
     }
     if ( !p()->buff.reckless_abandon->check() )
-    {
-      return false;
-    }
-    if ( p()->talents.fury.annihilator->ok() )
     {
       return false;
     }
@@ -6969,7 +6912,6 @@ void warrior_t::init_spells()
   talents.fury.recklessness         = find_talent_spell( talent_tree::SPECIALIZATION, "Recklessness" );
   talents.fury.massacre             = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_FURY );
   talents.fury.meat_cleaver         = find_talent_spell( talent_tree::SPECIALIZATION, "Meat Cleaver" );
-  talents.fury.raging_armaments     = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Armaments" );
 
   talents.fury.deft_experience      = find_talent_spell( talent_tree::SPECIALIZATION, "Deft Experience", WARRIOR_FURY );
   talents.fury.swift_strikes        = find_talent_spell( talent_tree::SPECIALIZATION, "Swift Strikes" );
@@ -6981,7 +6923,6 @@ void warrior_t::init_spells()
   talents.fury.onslaught            = find_talent_spell( talent_tree::SPECIALIZATION, "Onslaught" );
   talents.fury.ravager              = find_talent_spell( talent_tree::SPECIALIZATION, "Ravager", WARRIOR_FURY );
 
-  talents.fury.annihilator          = find_talent_spell( talent_tree::SPECIALIZATION, "Annihilator" );
   talents.fury.dancing_blades       = find_talent_spell( talent_tree::SPECIALIZATION, "Dancing Blades" );
   talents.fury.titanic_rage         = find_talent_spell( talent_tree::SPECIALIZATION, "Titanic Rage" );
   talents.fury.unbridled_ferocity   = find_talent_spell( talent_tree::SPECIALIZATION, "Unbridled Ferocity" );
@@ -9007,7 +8948,6 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.fury.improved_bloodthirst );
   action.apply_affecting_aura( talents.fury.improved_raging_blow );
   action.apply_affecting_aura( talents.fury.meat_cleaver );
-  action.apply_affecting_aura( talents.fury.raging_armaments );
   action.apply_affecting_aura( talents.fury.storm_of_steel );
   action.apply_affecting_aura( talents.fury.storm_of_swords ); // rage generation in spell
 
