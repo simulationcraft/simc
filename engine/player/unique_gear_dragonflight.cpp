@@ -10781,6 +10781,45 @@ void obscure_pastel_stone( special_effect_t& effect )
 
 namespace timerunning
 {
+struct brilliance_regen_buff_t : buff_t
+{
+  std::vector<std::pair<resource_e, double>> resources;
+  gain_t* gain;
+
+  brilliance_regen_buff_t( special_effect_t& e, player_t* p ) : buff_t( { p, p }, "brilliance", e.driver() )
+  {
+    set_duration( 0_s );
+
+    // 5 Party Members
+    set_max_stack( 5 );
+
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+    set_period( e.driver()->effectN( 2 ).period() );
+    set_freeze_stacks( true );
+    set_tick_behavior( buff_tick_behavior::REFRESH );
+    set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+    auto trigger_spell = e.driver()->effectN( 2 ).trigger();
+
+    for ( const spelleffect_data_t& effect : trigger_spell->effects() )
+    {
+      if ( effect.type() == E_ENERGIZE_PCT )
+      {
+        resources.push_back( { effect.resource_gain_type(), effect.percent() } );
+      }
+    }
+
+    gain = player->get_gain( "brilliance" );
+
+    set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+      for ( auto [ resource, percent ] : resources )
+      {
+        player->resource_gain( resource, player->resources.max[ resource ] * percent * b->current_stack, gain );
+      }
+    } );
+  }
+};
+
 /**Cloak of Infinite Potential
  * 431760 item effect spell
  * 440393 permanent stat aura
@@ -10821,6 +10860,23 @@ void cloak_of_infinite_potential( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 440393 ) );
   for ( const auto [ stat_type, amount ] : stat_amounts )
     debug_cast<stat_buff_t*>( buff )->add_stat( stat_type, amount );
+
+  if ( effect.player->dragonflight_opts.brilliance_party > 0 )
+  {
+    auto regen_buff = buff_t::find( effect.player, "brilliance" );
+
+    if ( !regen_buff )
+    {
+      auto* fake_special_effect     = new special_effect_t( effect.player );
+      fake_special_effect->spell_id = 429007;
+      regen_buff                    = make_buff<brilliance_regen_buff_t>( *fake_special_effect, effect.player );
+    }
+
+    effect.player->register_precombat_begin(
+        [ regen_buff, party_with = effect.player->dragonflight_opts.brilliance_party ]( player_t* ) {
+          regen_buff->increment( party_with );
+        } );
+  }
 
   effect.player->register_precombat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
 }
@@ -11040,43 +11096,6 @@ void brilliance( special_effect_t& effect )
     return;
   }
 
-  struct brilliance_regen_buff_t : buff_t
-  {
-    std::vector<std::pair<resource_e, double>> resources;
-    gain_t* gain;
-
-    brilliance_regen_buff_t( special_effect_t& e, player_t* p ) : buff_t( { p, p }, "brilliance", e.driver() )
-    {
-      set_duration( 0_s );
-      
-      // 5 Party Members
-      set_max_stack( 5 );
-      
-      set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-      set_period( e.driver()->effectN( 2 ).period() );
-      set_freeze_stacks( true );
-
-      auto trigger_spell = e.driver()->effectN( 2 ).trigger();
-
-      for ( const spelleffect_data_t& effect : trigger_spell->effects() )
-      {
-        if ( effect.type() == E_ENERGIZE_PCT )
-        {
-          resources.push_back( { effect.resource_gain_type(), effect.percent() } );
-        }
-      }
-
-      gain = player->get_gain( "brilliance" );
-
-      set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-        for ( auto [ resource, percent ] : resources )
-        {
-          player->resource_gain( resource, player->resources.max[ resource ] * percent * b->check_stack_value(), gain );
-        }
-      } );
-    }
-  };
-
   struct brilliance_buff_t : stat_buff_t
   {
     buff_t* regen_buff;
@@ -11089,6 +11108,7 @@ void brilliance( special_effect_t& effect )
       set_default_value_from_effect( 1 );
       set_duration( 0_s );
       set_constant_behavior( buff_constant_behavior::ALWAYS_CONSTANT );
+      set_period( 0_s );
 
       regen_buff = buff_t::find( player, "brilliance" );
 
@@ -11118,7 +11138,7 @@ void brilliance( special_effect_t& effect )
   }
 
   
-  effect.player->register_combat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
+  effect.player->register_precombat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
 }
 //
 //void lightning_rod( special_effect_t& effect )
