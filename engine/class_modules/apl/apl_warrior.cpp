@@ -191,7 +191,6 @@ void arms( player_t* p )
   execute->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2&buff.martial_prowess.stack=2|!talent.executioners_precision&buff.martial_prowess.stack=2" );
   execute->add_action( "skullsplitter,if=rage<40" );
   execute->add_action( "execute" );
-  execute->add_action( "shockwave,if=talent.sonic_boom" );
   execute->add_action( "overpower" );
   execute->add_action( "bladestorm" );
   execute->add_action( "wrecking_throw" );
@@ -240,7 +239,6 @@ void arms( player_t* p )
   single_target->add_action( "champions_spear,if=buff.test_of_might.up|debuff.colossus_smash.up" );
   single_target->add_action( "skullsplitter" );
   single_target->add_action( "execute,if=buff.sudden_death.react" );
-  single_target->add_action( "shockwave,if=talent.sonic_boom.enabled" );
   single_target->add_action( "whirlwind,if=talent.storm_of_swords&talent.test_of_might&cooldown.colossus_smash.remains>gcd*7" );
   single_target->add_action( "overpower,if=charges=2&!talent.battlelord|talent.battlelord" );
   single_target->add_action( "whirlwind,if=talent.storm_of_swords" );
@@ -299,7 +297,7 @@ void protection( player_t* p )
   default_->add_action( "champions_spear" );
   default_->add_action( "thunderous_roar" );
   default_->add_action( "shield_slam,if=buff.fervid.up" );
-  default_->add_action( "shockwave,if=talent.sonic_boom.enabled&buff.avatar.up&talent.unstoppable_force.enabled&!talent.rumbling_earth.enabled|talent.sonic_boom.enabled&talent.rumbling_earth.enabled&spell_targets.shockwave>=3" );
+  default_->add_action( "shockwave,if=talent.rumbling_earth.enabled&spell_targets.shockwave>=3" );
   default_->add_action( "shield_charge" );
   default_->add_action( "shield_block,if=buff.shield_block.duration<=10" );
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
