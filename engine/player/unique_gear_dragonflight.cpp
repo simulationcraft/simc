@@ -10836,7 +10836,6 @@ void explosive_barrage( special_effect_t& effect )
     {
       barrage = create_proc_action<generic_proc_t>( "explosive_barrage_damage", e, "explosive_barrage_damage", 432334 );
       barrage->base_dd_min = barrage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
-      // damage->name_str_reporting = "Missile";
       add_child( barrage );
     }
 
@@ -10930,7 +10929,93 @@ void wildfire( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void enkindle( special_effect_t& effect )
+{
+  struct enkindle_absorb_buff_t : public absorb_buff_t
+  {
+    stat_buff_t* stat;
+    action_t* reflect_damage;
+    dbc_proc_callback_t* reflect_callback;
+
+    struct enkindle_absorb_cb_t : public dbc_proc_callback_t
+    {
+
+      enkindle_absorb_cb_t( player_t* p, const special_effect_t& e )
+        : dbc_proc_callback_t( p, e )
+      {
+        deactivate();
+        initialize();
+      }
+
+      void execute( action_t*, action_state_t* s ) override
+      {
+        if ( s->action->player->is_sleeping() || !s->action->player->is_enemy() )
+          return;
+
+        proc_action->execute_on_target( s->action->player );
+      }
+    };
+
+    enkindle_absorb_buff_t( const special_effect_t& e )
+      : absorb_buff_t( e.player, "enkindle_absorb", e.player->find_spell( 432440 ), e.item )
+    {
+      set_name_reporting( "Absorb" );
+
+      set_default_value( e.driver()->effectN( 2 ).average( e.item ) );
+
+      stat = create_buff<stat_buff_t>( player, "enkindle_stats", player->find_spell( 432440 ), item );
+      stat->set_name_reporting( "Stat" );
+      stat->add_stat_from_effect( 3, e.driver()->effectN( 3 ).average( e.item ) );
+
+      reflect_damage = create_proc_action<generic_proc_t>( "enkindle_damage", e, "enkindle_damage", 432450 );
+      reflect_damage->base_dd_min = reflect_damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+
+      auto reflect_driver            = new special_effect_t( player );
+      reflect_driver->name_str       = "enkindle_reflect";
+      reflect_driver->spell_id       = data().id();
+      reflect_driver->cooldown_      = data().internal_cooldown();
+      reflect_driver->type           = SPECIAL_EFFECT_EQUIP;
+      reflect_driver->source         = SPECIAL_EFFECT_SOURCE_ITEM;
+      reflect_driver->proc_flags2_   = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+      reflect_driver->execute_action = reflect_damage;
+      player->special_effects.push_back( reflect_driver );
+
+      reflect_callback = new enkindle_absorb_cb_t( player, *reflect_driver );
+    }
+
+    void execute( int stacks, double value, timespan_t duration ) override
+    {
+      absorb_buff_t::execute( stacks, value, duration );
+
+      stat->trigger();
+      reflect_callback->activate();
+    };
+
+    void expire_override( int s, timespan_t d ) override
+    {
+      absorb_buff_t::expire_override( s, d );
+
+      stat->expire();
+      reflect_callback->deactivate();
+    }
+  };
+
+  if ( create_fallback_buffs( effect, { "enkindle_absorb", "enkindle_stats" } ) )
+  {
+    return;
+  }
+
+  auto buff = buff_t::find( effect.player, "enkindle_absorb" );
+  if ( !buff )
+  {
+    buff = make_buff<enkindle_absorb_buff_t>( effect );
+  }
+
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
 }
+}  // namespace timerunning
 
 void register_special_effects()
 {
@@ -11151,6 +11236,7 @@ void register_special_effects()
   register_special_effect( 431760, timerunning::cloak_of_infinite_potential );
   register_special_effect( 432333, timerunning::explosive_barrage );
   register_special_effect( 432445, timerunning::wildfire );
+  register_special_effect( 432442, timerunning::enkindle );
 
   // Disabled
   register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)
