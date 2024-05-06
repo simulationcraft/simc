@@ -11218,6 +11218,52 @@ void brilliance( special_effect_t& effect )
   
   effect.player->register_precombat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
 }
+
+ void fervor( special_effect_t& effect )
+{
+  struct fervor_t : public generic_proc_t
+  {
+    double health_percent;
+    gain_t* fervor_loss;
+
+    fervor_t( const special_effect_t& e )
+      : generic_proc_t( e, "fervor", e.player->find_spell( 429409 ) ),
+        health_percent( e.driver()->effectN( 2 ).percent() ),
+        fervor_loss( e.player->find_gain( "fervor" ) )
+    {
+    }
+
+    void execute()
+    {
+      base_dd_min = base_dd_max = player->max_health() * health_percent;
+
+      generic_proc_t::execute();
+      player->resource_loss( RESOURCE_HEALTH, base_dd_min, fervor_loss );
+    }
+  };
+
+  struct fervor_cbt_t : public dbc_proc_callback_t
+  {
+    double health_threshold;
+
+    fervor_cbt_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), health_threshold( e.driver()->effectN( 1 ).percent() * 100 )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( listener->health_percentage() < health_threshold )
+        return;
+
+      dbc_proc_callback_t::execute( a, s );
+    }
+  };
+
+  effect.execute_action = new fervor_t( effect );
+  new fervor_cbt_t( effect );
+ }
+
 //
 //void lightning_rod( special_effect_t& effect )
 //{
@@ -11577,6 +11623,7 @@ void register_special_effects()
   register_special_effect( 429007, timerunning::brilliance );
   register_special_effect( 443770, timerunning::windweaver );
   register_special_effect( 429378, timerunning::slay );
+  register_special_effect( 429389, timerunning::fervor );
 
   // Disabled
   register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)
