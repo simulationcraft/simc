@@ -11256,10 +11256,60 @@ void windweaver( special_effect_t& effect )
 //  new dbc_proc_callback_t( effect.player, effect );
 //}
 //
-//void slay( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
+void slay( special_effect_t& effect )
+{
+  struct slay_t : public generic_proc_t
+  {
+    double health_percent;
+    slay_t( const special_effect_t& e )
+      : generic_proc_t( e, "slay", e.player->find_spell( 429377 ) ),
+        health_percent( e.driver()->effectN( 3 ).percent() )
+    {
+    }
+
+    void execute()
+    {
+      base_dd_min = base_dd_max = player->max_health() * health_percent;
+
+      generic_proc_t::execute();
+    }
+  };
+
+  struct slay_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<int> target_list;
+    double health_threshold;
+
+    slay_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), health_threshold( e.driver()->effectN( 2 ).percent() * 100 )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( !a->harmful )
+        return;
+
+      if ( s->target->health_percentage() > health_threshold )
+        return;
+
+      if ( range::contains( target_list, s->target->actor_spawn_index ) )
+        return;
+
+      dbc_proc_callback_t::execute( a, s );
+      target_list.push_back( s->target->actor_spawn_index );
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      target_list.clear();
+    }
+  };
+  
+  effect.execute_action = new slay_t( effect );
+  new slay_cb_t( effect );
+}
 //
 //void quick_strike( special_effect_t& effect )
 //{
@@ -11526,6 +11576,7 @@ void register_special_effects()
   register_special_effect( 433214, timerunning::frost_armor );
   register_special_effect( 429007, timerunning::brilliance );
   register_special_effect( 443770, timerunning::windweaver );
+  register_special_effect( 429378, timerunning::slay );
 
   // Disabled
   register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)
