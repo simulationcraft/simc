@@ -11051,7 +11051,6 @@ void wildfire( special_effect_t& effect )
         {
           auto tl = target_list();
           target  = tl[ rng().range( tl.size() ) ];
-
         }
       }
 
@@ -11392,10 +11391,41 @@ void slay( special_effect_t& effect )
 //{
 //  new dbc_proc_callback_t( effect.player, effect );
 //}
-//void sunstriders_flourish( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
+void sunstriders_flourish( special_effect_t& effect )
+{
+  struct sunstriders_flourish_t : public proc_spell_t
+  {
+    sunstriders_flourish_t( const special_effect_t& e )
+      : proc_spell_t( "Sundstriders Flourish", e.player, e.driver()->effectN( 1 ).trigger() )
+    {
+      aoe = -1;     
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
+
+    void execute() override
+    {
+      // Can trigger on allied periodic effects. Choose a random enemy.
+      if ( !target->is_enemy() )
+      {
+        if ( player->target->is_enemy() )
+        {
+          target = player->target;
+        }
+        else
+        {
+          auto tl = target_list();
+          target  = tl[ rng().range( tl.size() ) ];
+        }
+      }
+
+      proc_spell_t::execute();
+    }
+  };
+
+  effect.proc_flags2_ = PF2_CRIT;
+  effect.execute_action = new sunstriders_flourish_t( effect );
+  new dbc_proc_callback_t( effect.player, effect );
+}
 
 }  // namespace timerunning
 
@@ -11624,6 +11654,7 @@ void register_special_effects()
   register_special_effect( 443770, timerunning::windweaver );
   register_special_effect( 429378, timerunning::slay );
   register_special_effect( 429389, timerunning::fervor );
+  register_special_effect( 429214, timerunning::sunstriders_flourish );
 
   // Disabled
   register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)
