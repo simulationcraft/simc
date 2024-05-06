@@ -569,7 +569,6 @@ public:
       player_talent_t warbreaker;
       player_talent_t storm_of_swords;
       player_talent_t collateral_damage;
-      player_talent_t reaping_swings;
 
       player_talent_t deft_experience;
       player_talent_t valor_in_victory;
@@ -6933,7 +6932,6 @@ void warrior_t::init_spells()
   talents.arms.warbreaker                          = find_talent_spell( talent_tree::SPECIALIZATION, "Warbreaker" );
   talents.arms.storm_of_swords                     = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Swords", WARRIOR_ARMS );
   talents.arms.collateral_damage                   = find_talent_spell( talent_tree::SPECIALIZATION, "Collateral Damage" );
-  talents.arms.reaping_swings                      = find_talent_spell( talent_tree::SPECIALIZATION, "Reaping Swings" );
 
   talents.arms.deft_experience                     = find_talent_spell( talent_tree::SPECIALIZATION, "Deft Experience", WARRIOR_ARMS );
   talents.arms.valor_in_victory                    = find_talent_spell( talent_tree::SPECIALIZATION, "Valor in Victory" );
@@ -9021,7 +9019,6 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.arms.improved_overpower );
   action.apply_affecting_aura( talents.arms.improved_execute );
   action.apply_affecting_aura( talents.arms.improved_slam );
-  action.apply_affecting_aura( talents.arms.reaping_swings );
   action.apply_affecting_aura( talents.arms.sharpened_blades );
   action.apply_affecting_aura( talents.arms.storm_of_swords );
   action.apply_affecting_aura( talents.arms.strength_of_arms ); // rage generation in spell
