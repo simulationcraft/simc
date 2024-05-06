@@ -10828,8 +10828,6 @@ struct windweaver_buff_t : stat_buff_t
                    e.driver()->effectN( 1 ).trigger() )
   {
     add_stat_from_effect( 1, e.driver()->effectN( 1 ).average( e.item ) );
-
-    sim->print_debug( "windweavertest buff {} weapon ilvl {}", number, e.item->item_level() );
   }
 };
 
