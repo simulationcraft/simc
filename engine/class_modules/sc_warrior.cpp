@@ -503,7 +503,6 @@ public:
       player_talent_t honed_reflexes;
       player_talent_t bitter_immunity;
       player_talent_t double_time;
-      player_talent_t titanic_throw;
       player_talent_t seismic_reverberation;
 
       player_talent_t armored_to_the_teeth;
@@ -5474,31 +5473,6 @@ struct storm_bolt_t : public warrior_attack_t
   }
 };
 
-// Titanic Throw ============================================================
-
-struct titanic_throw_t : public warrior_attack_t
-{
-  titanic_throw_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "titanic_throw", p, p->talents.warrior.titanic_throw )
-    {
-      parse_options( options_str );
-      may_dodge = may_parry = may_block = false;
-      aoe                               = as<int>( p->talents.warrior.titanic_throw->effectN( 2 ).base_value() );
-    }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p()->talents.protection.improved_heroic_throw->ok() )
-    {
-      am *= 1.0 + p()->talents.protection.improved_heroic_throw->effectN( 2 ).percent();
-    }
-
-    return am;
-  }
-};
-
 // Tough as Nails ===========================================================
 
 struct tough_as_nails_t : public warrior_attack_t
@@ -6767,8 +6741,6 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new taunt_t( this, options_str );
   if ( name == "thunder_clap" )
     return new thunder_clap_t( this, options_str );
-  if ( name == "titanic_throw" )
-    return new titanic_throw_t( this, options_str );
   if ( name == "victory_rush" )
     return new victory_rush_t( this, options_str );
   if ( name == "warbreaker" )
@@ -6899,7 +6871,6 @@ void warrior_t::init_spells()
   talents.warrior.honed_reflexes                   = find_talent_spell( talent_tree::CLASS, "Honed Reflexes" );
   talents.warrior.bitter_immunity                  = find_talent_spell( talent_tree::CLASS, "Bitter Immunity" );
   talents.warrior.double_time                      = find_talent_spell( talent_tree::CLASS, "Double Time" );
-  talents.warrior.titanic_throw                    = find_talent_spell( talent_tree::CLASS, "Titanic Throw" );
   talents.warrior.seismic_reverberation            = find_talent_spell( talent_tree::CLASS, "Seismic Reverberation" );
 
   talents.warrior.armored_to_the_teeth             = find_talent_spell( talent_tree::CLASS, "Armored to the Teeth" );
