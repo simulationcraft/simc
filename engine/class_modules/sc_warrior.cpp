@@ -366,6 +366,7 @@ public:
   {
     // Core Class Spells
     const spell_data_t* battle_shout;
+    const spell_data_t* berserker_rage;
     const spell_data_t* charge;
     const spell_data_t* execute;
     const spell_data_t* execute_rage_refund;
@@ -463,7 +464,6 @@ public:
       player_talent_t berserker_stance;
       player_talent_t defensive_stance;
 
-      player_talent_t berserker_rage;
       player_talent_t impending_victory;
       player_talent_t war_machine;
       player_talent_t intervene;
@@ -6084,7 +6084,7 @@ struct battle_shout_t : public warrior_spell_t
 struct berserker_rage_t : public warrior_spell_t
 {
   berserker_rage_t( warrior_t* p, util::string_view options_str )
-    : warrior_spell_t( "berserker_rage", p, p->talents.warrior.berserker_rage )
+    : warrior_spell_t( "berserker_rage", p, p->spell.berserker_rage )
   {
     parse_options( options_str );
     callbacks   = false;
@@ -6800,6 +6800,7 @@ void warrior_t::init_spells()
 
   // Core Class Spells
   spell.battle_shout            = find_class_spell( "Battle Shout" );
+  spell.berserker_rage          = find_class_spell( "Berserker Rage" );
   spell.charge                  = find_class_spell( "Charge" );
   spell.execute                 = find_class_spell( "Execute" );
   spell.execute_rage_refund     = find_spell( 163201 );
@@ -6860,7 +6861,6 @@ void warrior_t::init_spells()
   talents.warrior.berserker_stance                 = find_talent_spell( talent_tree::CLASS, "Berserker Stance" );
   talents.warrior.defensive_stance                 = find_talent_spell( talent_tree::CLASS, "Defensive Stance" );
 
-  talents.warrior.berserker_rage                   = find_talent_spell( talent_tree::CLASS, "Berserker Rage" );
   talents.warrior.impending_victory                = find_talent_spell( talent_tree::CLASS, "Impending Victory" );
   talents.warrior.war_machine                      = find_talent_spell( talent_tree::CLASS, "War Machine", specialization() );
   talents.warrior.intervene                        = find_talent_spell( talent_tree::CLASS, "Intervene" );
@@ -7635,7 +7635,7 @@ void warrior_t::create_buffs()
       ->set_default_value( find_spell( 394313 )->effectN( 1 ).percent() )
       ->add_invalidate( CACHE_ATTACK_SPEED );
 
-  buff.berserker_rage = make_buff( this, "berserker_rage", talents.warrior.berserker_rage )
+  buff.berserker_rage = make_buff( this, "berserker_rage", spell.berserker_rage )
       ->set_cooldown( timespan_t::zero() );
 
   buff.bounding_stride = make_buff( this, "bounding_stride", find_spell( 202164 ) )
