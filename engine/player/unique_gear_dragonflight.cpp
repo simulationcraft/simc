@@ -11542,7 +11542,8 @@ void sunstriders_flourish( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// void static_charge( special_effect_t& effect )
+//
+// void quick_strike( special_effect_t& effect )
 //{
 //  new dbc_proc_callback_t( effect.player, effect );
 //}
@@ -11552,31 +11553,37 @@ void sunstriders_flourish( special_effect_t& effect )
 //  new dbc_proc_callback_t( effect.player, effect );
 //}
 //
+// void opportunist( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+// 
+// void storm_overload( special_effect_t& effect )
+//{
+//   new dbc_proc_callback_t( effect.player, effect );
+// }
+// 
+// void brittle( special_effect_t& effect )
+//{
+//   new dbc_proc_callback_t( effect.player, effect );
+// }
+// 
+// void hailstorm( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+// 
+// void static_charge( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
 // void victory_fire( special_effect_t& effect )
 //{
 //  new dbc_proc_callback_t( effect.player, effect );
 //}
 //
-// void quick_strike( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
-//
-// void mark_of_arrogance( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
-//
-// void opportunist( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
-//
 // void memory_of_vengeance( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
-// void hailstorm( special_effect_t& effect )
 //{
 //  new dbc_proc_callback_t( effect.player, effect );
 //}
@@ -11586,10 +11593,16 @@ void sunstriders_flourish( special_effect_t& effect )
 //{
 //  new dbc_proc_callback_t( effect.player, effect );
 //}
-// void storm_overload( special_effect_t& effect )
+// 
+// void searing_light( special_effect_t& effect )
 //{
 //   new dbc_proc_callback_t( effect.player, effect );
-// }
+//}
+// void mark_of_arrogance( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
 
 }  // namespace timerunning
 
