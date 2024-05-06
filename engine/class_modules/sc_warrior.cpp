@@ -529,7 +529,6 @@ public:
       player_talent_t piercing_challenge;
       player_talent_t champions_might;
       player_talent_t rumbling_earth;
-      player_talent_t sonic_boom;
 
     } warrior;
 
@@ -6897,7 +6896,6 @@ void warrior_t::init_spells()
   talents.warrior.piercing_challenge                = find_talent_spell( talent_tree::CLASS, "Piercing Challenge" );
   talents.warrior.champions_might                  = find_talent_spell( talent_tree::CLASS, "Champion's Might" );
   talents.warrior.rumbling_earth                   = find_talent_spell( talent_tree::CLASS, "Rumbling Earth" );
-  talents.warrior.sonic_boom                       = find_talent_spell( talent_tree::CLASS, "Sonic Boom" );
 
   // Arms Talents
   talents.arms.mortal_strike                       = find_talent_spell( talent_tree::SPECIALIZATION, "Mortal Strike" );
@@ -9053,7 +9051,6 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.warrior.crushing_force ); // crit portion not active
   action.apply_affecting_aura( talents.warrior.piercing_challenge );
   action.apply_affecting_aura( talents.warrior.honed_reflexes );
-  action.apply_affecting_aura( talents.warrior.sonic_boom );
   action.apply_affecting_aura( talents.warrior.thunderous_words );
   action.apply_affecting_aura( talents.warrior.uproar );
 
