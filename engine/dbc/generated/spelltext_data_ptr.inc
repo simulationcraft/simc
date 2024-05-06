@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.7.54449
-static const std::array<spelltext_data_t, 21145> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 21150> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20829,10 +20829,14 @@ static const std::array<spelltext_data_t, 21145> __ptr_spelltext_data { {
   { 429270, "Your attacks consume $s1% of your active absorb shield to inflict Arcane damage equal to the amount consumed. ($proccooldown Sec Cooldown)", 0, 0 },
   { 429271, "Envelop an ally in ancient protection, absorbing up to $s1 damage. If the protection is fully consumed, the ally gains an ancient resurgence, increasing Versatility by $429272s1 for $429272d.", "Absorbs $w1 damage.", 0 },
   { 429272, "$@spelldesc429271", "Versatility increased by $s1.", 0 },
+  { 429273, "$@spelldesc429270", 0, 0 },
   { 429364, "Plant a banner representing your successes against the Dreaming.", 0, 0 },
   { 429373, "Your melee abilities have a $h% chance to trigger $s1 to $s2 additional autoattacks. ($proccooldown Sec Cooldown)", 0, 0 },
+  { 429377, "$@spelldesc429378", 0, 0 },
   { 429378, "When you attack an enemy beneath $s2% health you will attempt to Slay them, inflicting Shadow damage equal to $s3% of your maximum health.\r\n\r\nYou will only attempt to Slay an enemy once.", 0, 0 },
+  { 429379, 0, "You have attempted to $@spellname429379 this enemy.", 0 },
   { 429389, "While you are above $s1% health, your attacks consume $s2% of your maximum health to inflict Holy damage equal to the amount consumed. ($proccooldown Sec Cooldown)", 0, 0 },
+  { 429409, "$@spelldesc429389", 0, 0 },
   { 429410, "Slaying an enemy causes you to erupt, inflicting $s1 Fire damage to enemies and restoring $s2 health to allies within $429412A1 yards.", 0, 0 },
   { 429412, "$@spelldesc429410", 0, 0 },
   { 429604, "$@spelldesc436975", 0, 0 },
@@ -21021,6 +21025,7 @@ static const std::array<spelltext_data_t, 21145> __ptr_spelltext_data { {
   { 437011, "Summon a storm. Call down $437084q bolts of lightning every $438829t1 sec. Each bolt inflicts Nature damage to an enemy within $437084A1 yards.\r\n\r\nDuring the storm, $437016s1 flowers grow around the caster. After $437125d, the flowers bloom, restoring health and granting Haste to allies for $438313d.", 0, 0 },
   { 437014, "Summon a storm. Call down $437084q bolts of lightning every $438829t1 sec. Each bolt inflicts $437014s1 Nature damage to an enemy within $437084A1 yards.\r\n\r\nDuring the storm, $437016s1 flowers grow around the caster. After $437125d, the flowers bloom, restoring $437014s2 health and granting $437014s3 Haste to allies for $438313d.", 0, 0 },
   { 437016, "Learn the following spell.\r\n\r\n$@spellicon437011 $@spellname437011\r\n$@spelldesc437011", 0, 0 },
+  { 437064, "$@spelldesc437011", 0, 0 },
   { 437072, "Increases movement speed by $426268s2%, grants immunity to movement impairing effects, and grants the following spells for $426268d.\r\n\r\n$@spellicon436852 $@spellname436852\r\n$@spelldesc436852\r\n\r\n$@spellicon436897 $@spellname436897\r\nA fiery blast hurls you backwards, inflicting $437072s1 Fire damage to enemies and restoring $437072s2 health to allies within $436899A1 yards.\r\n\r\n$@spellicon437092 $@spellname437092\r\n$@spelldesc437092\r\n\r\n$@spellicon429633 $@spellname429633\r\nEvery $426268t3 sec, inflicts $437072s3 Fire damage or restores $437072s4 health to $429633s1 enemies or allies within $436975A1 yards.", 0, 0 },
   { 437092, "Every $426268t3 sec, Chi-Ji sheds a feather. Touching the feather launches a volley of Hope's Flame to injure enemies and heal allies.", 0, 0 },
   { 437495, "Summons portals that launch devastating elemental attacks for $437495d. This culminates in an explosion that deals $438484w3 Elemental damage to enemies within $438120a1 yards.", 0, 0 },
