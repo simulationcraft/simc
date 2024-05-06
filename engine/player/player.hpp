@@ -797,7 +797,7 @@ struct player_t : public actor_t
     // A list of stat amounts provided by the Timerunner's Advantage buff.
     player_option_t<std::string> timerunners_advantage;
     // Number of party members using the Brilliance Tinker.
-    int brilliance_party = 4;
+    int brilliance_party = 1;
   } dragonflight_opts;
 
 private:
