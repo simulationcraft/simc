@@ -5167,26 +5167,13 @@ private:
 struct vampiric_strike_heal_t : public death_knight_heal_t
 {
   vampiric_strike_heal_t( util::string_view name, death_knight_t* p )
-    : death_knight_heal_t( name, p, p->spell.vampiric_strike_heal ),
-      mod( p->specialization() == DEATH_KNIGHT_BLOOD ? data().effectN( 2 ).percent() : data().effectN( 3 ).percent() )
+    : death_knight_heal_t( name, p, p->spell.vampiric_strike_heal )
   {
     background = true;
     may_miss = may_dodge = may_parry = false;
     target                           = p;
+    base_pct_heal = p->specialization() == DEATH_KNIGHT_BLOOD ? data().effectN( 2 ).percent() : data().effectN( 3 ).percent();
   }
-
-  double base_da_min( const action_state_t* ) const override
-  {
-    return player->resources.max[ RESOURCE_HEALTH ] * mod;
-  }
-
-  double base_da_max( const action_state_t* ) const override
-  {
-    return player->resources.max[ RESOURCE_HEALTH ] * mod;
-  }
-
-private:
-  double mod;
 };
 
 struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
