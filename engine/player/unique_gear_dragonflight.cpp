@@ -11542,12 +11542,47 @@ void sunstriders_flourish( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-//
-// void quick_strike( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
-//
+// TODO: CHECK IF OFFHAND SWINGS
+void quick_strike( special_effect_t& effect )
+{
+  struct quick_strike_cb_t : public dbc_proc_callback_t
+  {
+    int min_hits;
+    int max_hits;
+
+    quick_strike_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        min_hits( e.driver()->effectN( 1 ).base_value() ),
+        max_hits( e.driver()->effectN( 2 ).base_value() )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      auto atk        = listener->main_hand_attack;
+      
+      auto old_miss   = atk->may_miss;
+      auto old_target = atk->target;
+
+      atk->repeating = false;
+      atk->may_miss  = false;
+      atk->set_target( s->target );
+
+      int hits = rng().range( min_hits, max_hits + 1 );
+      for ( int i = 0; i < hits; i++ )
+      {
+        atk->execute();
+      }
+
+      atk->repeating = true;
+      atk->may_miss  = old_miss;
+      atk->set_target( old_target );
+    }
+  };
+
+  new quick_strike_cb_t( effect );
+}
+
 // void cold_front( special_effect_t& effect )
 //{
 //  new dbc_proc_callback_t( effect.player, effect );
@@ -11835,6 +11870,7 @@ void register_special_effects()
   register_special_effect( 429270, timerunning::arcanists_edge );
   register_special_effect( 432438, timerunning::incendiary_terror );
   register_special_effect( 443471, timerunning::lightning_rod );
+  register_special_effect( 429373, timerunning::quick_strike );
 
   // Disabled
   register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)
