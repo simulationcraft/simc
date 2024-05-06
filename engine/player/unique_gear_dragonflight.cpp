@@ -11375,22 +11375,7 @@ void windweaver( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
-//
-//void static_charge( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
-//
-//void cold_front( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
-//
-//void victory_fire( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
-//
+
 void slay( special_effect_t& effect )
 {
   struct slay_t : public generic_proc_t
@@ -11445,42 +11430,44 @@ void slay( special_effect_t& effect )
   effect.execute_action = new slay_t( effect );
   new slay_cb_t( effect );
 }
-//
-//void quick_strike( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
-//
-//void mark_of_arrogance( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
-//
-//void opportunist( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
-//
-//void memory_of_vengeance( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
-//void hailstorm( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
-//void meteor_storm( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
-//void incendiary_terror( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
-//void storm_overload( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
+void incendiary_terror( special_effect_t& effect )
+{
+  struct incendiary_terror_missile_t : public proc_spell_t
+  {
+    struct incendiary_terror_damage_t : public proc_spell_t
+    {
+      timespan_t cc_duration;
+      incendiary_terror_damage_t( const special_effect_t& e )
+        : proc_spell_t( "Incendiary Terror", e.player, e.driver()->effectN( 1 ).trigger() ),
+          cc_duration( data().duration() )
+      {
+        base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        proc_spell_t::impact( s );
+
+        if ( s->target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
+        {
+          s->target->buffs.stunned->trigger( cc_duration );
+          s->target->stun();
+        }
+      }
+    };
+
+    incendiary_terror_missile_t( const special_effect_t& e )
+      : proc_spell_t( "Incendiary Terror Missile", e.player, e.driver()->effectN( 1 ).trigger() )
+    {
+      impact_action = new incendiary_terror_damage_t( e );
+      add_child( impact_action );
+    }
+  };
+
+  effect.execute_action = new incendiary_terror_missile_t( effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 void sunstriders_flourish( special_effect_t& effect )
 {
   struct sunstriders_flourish_t : public proc_spell_t
@@ -11516,6 +11503,54 @@ void sunstriders_flourish( special_effect_t& effect )
   effect.execute_action = new sunstriders_flourish_t( effect );
   new dbc_proc_callback_t( effect.player, effect );
 }
+//
+// void static_charge( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
+// void cold_front( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
+// void victory_fire( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
+//
+// void quick_strike( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
+// void mark_of_arrogance( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
+// void opportunist( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
+// void memory_of_vengeance( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+// void hailstorm( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+// void meteor_storm( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+// void storm_overload( special_effect_t& effect )
+//{
+//   new dbc_proc_callback_t( effect.player, effect );
+// }
 
 }  // namespace timerunning
 
@@ -11746,6 +11781,7 @@ void register_special_effects()
   register_special_effect( 429389, timerunning::fervor );
   register_special_effect( 429214, timerunning::sunstriders_flourish );
   register_special_effect( 429270, timerunning::arcanists_edge );
+  register_special_effect( 432438, timerunning::incendiary_terror );
 
   // Disabled
   register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)
