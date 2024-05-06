@@ -1181,7 +1181,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     iteration_resource_overflowed(),
     rps_gain( 0 ),
     rps_loss( 0 ),
-    tmi_window( 6.0 ),
     collected_data( this ),
     // Damage
     iteration_dmg( 0 ),
@@ -1495,9 +1494,6 @@ void player_t::init_character_properties()
   replace_spells();
   init_position();
   init_professions();
-
-  if ( sim->tmi_window_global > 0 )
-    tmi_window = sim->tmi_window_global;
 }
 
 /**
@@ -2095,12 +2091,7 @@ void player_t::init_defense()
   }
 
   if ( !is_pet() && primary_role() == ROLE_TANK )
-  {
     collected_data.health_changes.collect = true;
-    collected_data.health_changes.set_bin_size( sim->tmi_bin_size );
-    collected_data.health_changes_tmi.collect = true;
-    collected_data.health_changes_tmi.set_bin_size( sim->tmi_bin_size );
-  }
 
 }
 
@@ -5584,10 +5575,8 @@ void player_t::combat_begin()
   // necessary because food/flask are counted as resource gains, and thus provide phantom
   // gains on the timeline if not corrected
   collected_data.health_changes.previous_gain_level     = 0.0;
-  collected_data.health_changes_tmi.previous_gain_level = 0.0;
   // forcing a resource timeline data collection in combat_end() seems to have rendered this next line unnecessary
   collected_data.health_changes.previous_loss_level     = 0.0;
-  collected_data.health_changes_tmi.previous_gain_level = 0.0;
 
   for ( size_t i = 0, end = collected_data.combat_start_resource.size(); i < end; ++i )
   {
@@ -5713,12 +5702,6 @@ void player_t::datacollection_begin()
     collected_data.health_changes.timeline_normalized.clear();
   }
 
-  if ( collected_data.health_changes_tmi.collect )
-  {
-    collected_data.health_changes_tmi.timeline.clear();  // Drop Data
-    collected_data.health_changes_tmi.timeline_normalized.clear();
-  }
-
   range::for_each( buff_list, std::mem_fn( &buff_t::datacollection_begin ) );
   range::for_each( stats_list, std::mem_fn( &stats_t::datacollection_begin ) );
   range::for_each( uptime_list, std::mem_fn( &uptime_t::datacollection_begin ) );
@@ -5776,8 +5759,6 @@ void player_t::datacollection_end()
     collected_data.timeline_dmg_taken.add( sim->current_time(), 0.0 );
     collected_data.health_changes.timeline.add( sim->current_time(), 0.0 );
     collected_data.health_changes.timeline_normalized.add( sim->current_time(), 0.0 );
-    collected_data.health_changes_tmi.timeline.add( sim->current_time(), 0.0 );
-    collected_data.health_changes_tmi.timeline_normalized.add( sim->current_time(), 0.0 );
   }
   collected_data.collect_data( *this );
 
@@ -7090,7 +7071,7 @@ stat_e player_t::normalize_by() const
   role_e role = primary_role();
   if ( role == ROLE_SPELL || role == ROLE_HEAL )
     return STAT_INTELLECT;
-  else if ( role == ROLE_TANK && ( sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_DEATHS ) &&
+  else if ( role == ROLE_TANK && sm == SCALE_METRIC_DEATHS &&
             scaling->scaling[ sm ].get_stat( STAT_STAMINA ) != 0.0 )
     return STAT_STAMINA;
   else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE || type == MONK || type == DEMON_HUNTER )
@@ -7725,7 +7706,7 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
 /**
  * Statistical data collection for damage taken.
  */
-void collect_dmg_taken_data( player_t& p, const action_state_t* s, double result_ignoring_external_absorbs )
+void collect_dmg_taken_data( player_t& p, const action_state_t* s, double /* result_ignoring_external_absorbs */ )
 {
   p.iteration_dmg_taken += s->result_amount;
 
@@ -7742,13 +7723,6 @@ void collect_dmg_taken_data( player_t& p, const action_state_t* s, double result
 
     // store value in incoming damage array for conditionals
     p.incoming_damage.push_back( {p.sim->current_time(), s->result_amount, s->action->get_school()} );
-  }
-  if ( p.collected_data.health_changes_tmi.collect )
-  {
-    // health_changes_tmi ignores external effects (e.g. external absorbs), used for raw TMI
-    p.collected_data.health_changes_tmi.timeline.add( p.sim->current_time(), result_ignoring_external_absorbs );
-    p.collected_data.health_changes_tmi.timeline_normalized.add(
-        p.sim->current_time(), result_ignoring_external_absorbs / p.resources.max[ RESOURCE_HEALTH ] );
   }
 }
 
@@ -7971,14 +7945,6 @@ void player_t::assess_heal( school_e, result_amount_type, action_state_t* s )
     double normalized =
         resources.max[ RESOURCE_HEALTH ] ? -( s->result_amount ) / resources.max[ RESOURCE_HEALTH ] : 0.0;
     collected_data.health_changes.timeline_normalized.add( sim->current_time(), normalized );
-
-    // health_changes_tmi ignores external healing - use result_total to count player overhealing as effective healing
-    if ( s->action->player == this || is_my_pet( s->action->player ) )
-    {
-      collected_data.health_changes_tmi.timeline.add( sim->current_time(), -( s->result_total ) );
-      collected_data.health_changes_tmi.timeline_normalized.add(
-          sim->current_time(), -( s->result_total ) / resources.max[ RESOURCE_HEALTH ] );
-    }
   }
 
   // store iteration heal taken
@@ -12669,8 +12635,6 @@ void player_t::create_options()
   add_option( opt_func( "brain_lag_stddev", parse_brain_lag_stddev ) );
   add_option( opt_timespan( "cooldown_tolerance", cooldown_tolerance_ ) );
   add_option( opt_bool( "scale_player", scale_player ) );
-  add_option( opt_string( "tmi_output", tmi_debug_file_str ) );
-  add_option( opt_float( "tmi_window", tmi_window, 0, std::numeric_limits<double>::max() ) );
   add_option( opt_func( "spec", parse_specialization ) );
   add_option( opt_func( "specialization", parse_specialization ) );
   add_option( opt_func( "stat_timelines", parse_stat_timelines ) );
@@ -13051,7 +13015,6 @@ void player_t::analyze( sim_t& s )
     s.players_by_hps.push_back( this );
     s.players_by_hps_plus_aps.push_back( this );
     s.players_by_dtps.push_back( this );
-    s.players_by_tmi.push_back( this );
     s.players_by_name.push_back( this );
     s.players_by_apm.push_back( this );
     s.players_by_variance.push_back( this );
@@ -13174,10 +13137,6 @@ scaling_metric_data_t player_t::scaling_for_metric( scale_metric_e metric ) cons
       return { metric, q->collected_data.dmg_taken };
     case SCALE_METRIC_HTPS:
       return { metric, q->collected_data.htps };
-    case SCALE_METRIC_TMI:
-      return { metric, q->collected_data.theck_meloree_index };
-    case SCALE_METRIC_ETMI:
-      return { metric, q->collected_data.effective_theck_meloree_index };
     case SCALE_METRIC_DEATHS:
       return { metric, q->collected_data.deaths };
     case SCALE_METRIC_TIME:
@@ -13500,9 +13459,6 @@ player_collected_data_t::player_collected_data_t( const player_t* player ) :
   atps( player->name_str + " Absorb Taken Per Second", tank_container_type( player, 2 ) ),
   absorb_taken( player->name_str + " Absorb Taken", tank_container_type( player, 2 ) ),
   deaths( player->name_str + " Deaths", tank_container_type( player, 2 ) ),
-  theck_meloree_index( player->name_str + " Theck-Meloree Index", tank_container_type( player, 1 ) ),
-  effective_theck_meloree_index( player->name_str + "Theck-Meloree Index (Effective)",
-                                 tank_container_type( player, 2 ) ),
   max_spike_amount( player->name_str + " Max Spike Value", tank_container_type( player, 2 ) ),
   target_metric( player->name_str + " Target Metric", generic_container_type( player, 1 ) ),
   resource_timelines(),
@@ -13513,7 +13469,6 @@ player_collected_data_t::player_collected_data_t( const player_t* player ) :
     ( !player->is_enemy() && ( !player->is_pet() || player->sim->report_pets_separately ) ) ? RESOURCE_MAX : 0 ),
   stat_timelines(),
   health_changes(),
-  health_changes_tmi(),
   total_iterations( 0 ),
   buffed_stats_snapshot()
 {
@@ -13554,12 +13509,8 @@ void player_collected_data_t::reserve_memory( const player_t& p )
   deaths.reserve( size );
 
   if ( !p.is_pet() && p.primary_role() == ROLE_TANK && p.type != PLAYER_SIMPLIFIED )
-  {
-    theck_meloree_index.reserve( size );
-    effective_theck_meloree_index.reserve( size );
     p.sim->num_tanks++;
   }
-}
 
 void player_collected_data_t::merge( const player_t& other_player )
 {
@@ -13596,8 +13547,6 @@ void player_collected_data_t::merge( const player_t& other_player )
   deaths.merge( other.deaths );
   timeline_dmg_taken.merge( other.timeline_dmg_taken );
   timeline_healing_taken.merge( other.timeline_healing_taken );
-  theck_meloree_index.merge( other.theck_meloree_index );
-  effective_theck_meloree_index.merge( other.effective_theck_meloree_index );
 
   for ( size_t i = 0, end = resource_lost.size(); i < end; ++i )
   {
@@ -13632,7 +13581,6 @@ void player_collected_data_t::merge( const player_t& other_player )
   }
 
   health_changes.merged_timeline.merge( other.health_changes.merged_timeline );
-  health_changes_tmi.merged_timeline.merge( other.health_changes_tmi.merged_timeline );
 }
 
 void player_collected_data_t::analyze( const player_t& p )
@@ -13661,8 +13609,6 @@ void player_collected_data_t::analyze( const player_t& p )
   atps.analyze();
   // Tank
   deaths.analyze();
-  theck_meloree_index.analyze();
-  effective_theck_meloree_index.analyze();
   max_spike_amount.analyze();
 
   if ( !p.sim->single_actor_batch )
@@ -13676,7 +13622,6 @@ void player_collected_data_t::analyze( const player_t& p )
 
     // health changes need their own divisor
     health_changes.merged_timeline.adjust( *p.sim );
-    health_changes_tmi.merged_timeline.adjust( *p.sim );
   }
   // Single actor batch mode has to analyze the timelines in relation to their own fight lengths,
   // instead of the simulation-wide fight length.
@@ -13691,30 +13636,6 @@ void player_collected_data_t::analyze( const player_t& p )
 
     // health changes need their own divisor
     health_changes.merged_timeline.adjust( fight_length );
-    health_changes_tmi.merged_timeline.adjust( fight_length );
-  }
-}
-
-// This is pretty much only useful for dev debugging at this point, would need to modify to make it useful to users
-void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* nma, const std::vector<double>& weighted_value,
-                                                   const player_t& p )
-{
-  if ( !p.tmi_debug_file_str.empty() )
-  {
-    io::ofstream f;
-    f.open( p.tmi_debug_file_str );
-    // write elements to CSV
-    f << p.name_str << " TMI data:\n";
-
-    f << "damage,healing,health chg,norm health chg,norm mov avg, weighted val\n";
-
-    for ( size_t i = 0; i < health_changes.timeline.data().size(); i++ )
-    {
-      f.printf( "%f,%f,%f,%f,%f,%f\n", timeline_dmg_taken.data()[ i ], timeline_healing_taken.data()[ i ],
-                health_changes.timeline.data()[ i ], health_changes.timeline_normalized.data()[ i ], nma->data()[ i ],
-                weighted_value[ i ] );
-    }
-    f << "\n";
   }
 }
 
@@ -13736,62 +13657,6 @@ double player_collected_data_t::calculate_max_spike_damage( const health_changes
   max_spike *= window;
 
   return max_spike;
-}
-
-double player_collected_data_t::calculate_tmi( const health_changes_timeline_t& tl, int window, double f_length,
-                                               const player_t& p )
-{
-  // The Theck-Meloree Index is a metric that attempts to quantize the smoothness of damage intake.
-  // It performs an exponentially-weighted sum of the moving average of damage intake, with larger
-  // damage spikes being weighted more heavily. A formal definition of the metric can be found here:
-  // http://www.sacredduty.net/theck-meloree-index-standard-reference-document/
-
-  // accumulator
-  double tmi = 0;
-
-  // declare sliding average timeline
-  sc_timeline_t sliding_average_tl;
-
-  // create sliding average timelines from data
-  tl.timeline_normalized.build_sliding_average_timeline( sliding_average_tl, window );
-
-  // pull the data out of the normalized sliding average timeline
-  std::vector<double> weighted_value = sliding_average_tl.data();
-
-  // define constants
-  double D  = 10;          // filtering strength
-  double c2 = 450;         // N_0, default fight length for normalization
-  double c1 = 100000 / D;  // health scale factor, determines slope of plot
-
-  for ( auto& elem : weighted_value )
-  {
-    // weighted_value is the moving average (i.e. 1-second), so multiply by window size to get damage in "window"
-    // seconds
-    elem *= window;
-
-    // calculate exponentially-weighted contribution of this data point using filter strength D
-    elem = std::exp( D * elem );
-
-    // add to the TMI total; strictly speaking this should be moved outside the for loop and turned into a sort()
-    // followed by a sum for numerical accuracy
-    tmi += elem;
-  }
-
-  // multiply by vertical offset factor c2
-  tmi *= c2;
-  // normalize for fight length - should be equivalent to dividing by tl.timeline_normalized.data().size()
-  tmi /= f_length;
-  tmi *= tl.get_bin_size();
-  // take log of result
-  tmi = std::log( tmi );
-  // multiply by health decade scale factor
-  tmi *= c1;
-
-  // if an output file has been defined, write to it
-  if ( !p.tmi_debug_file_str.empty() )
-    print_tmi_debug_csv( &sliding_average_tl, weighted_value, p );
-
-  return tmi;
 }
 
 void player_collected_data_t::collect_data( const player_t& p )
@@ -13866,41 +13731,8 @@ void player_collected_data_t::collect_data( const player_t& p )
     combat_end_resource[ i ].add( p.resources.current[ i ] );
   }
 
-  // Health Change Calculations - only needed for tanks
-  double tank_metric = 0;
   if ( !p.is_pet() && p.primary_role() == ROLE_TANK && p.type != PLAYER_SIMPLIFIED )
-  {
-    double tmi       = 0;  // TMI result
-    double etmi      = 0;  // ETMI result
-    double max_spike = 0;  // Maximum spike size
     health_changes.merged_timeline.merge( health_changes.timeline );
-    health_changes_tmi.merged_timeline.merge( health_changes_tmi.timeline );
-
-    // Calculate Theck-Meloree Index (TMI), ETMI, and maximum spike damage
-    if ( !p.is_enemy() && p.type != HEALING_ENEMY )  // Boss TMI is irrelevant, causes problems in iteration #1
-    {
-      if ( f_length )
-      {
-        // define constants and variables
-        int window = (int)std::floor( p.tmi_window / health_changes_tmi.get_bin_size() +
-                                      0.5 );  // window size, bin time replaces 1 eventually
-
-        // Standard TMI uses health_changes_tmi, ignoring externals - use health_changes_tmi
-        tmi = calculate_tmi( health_changes_tmi, window, f_length, p );
-
-        // ETMI includes external healing - use health_changes
-        etmi = calculate_tmi( health_changes, window, f_length, p );
-
-        // Max spike uses health_changes_tmi as well, ignores external heals - use health_changes_tmi
-        max_spike = calculate_max_spike_damage( health_changes_tmi, window );
-
-        tank_metric = tmi;
-      }
-    }
-    theck_meloree_index.add( tmi );
-    effective_theck_meloree_index.add( etmi );
-    max_spike_amount.add( max_spike * 100.0 );
-  }
 
   if ( p.sim->target_error > 0 && !p.is_pet() && !p.is_enemy() )
   {
@@ -13932,7 +13764,7 @@ void player_collected_data_t::collect_data( const player_t& p )
         break;
 
       case ROLE_TANK:
-        metric = tank_metric;
+        metric = dps_metric;
         break;
 
       case ROLE_HEAL:

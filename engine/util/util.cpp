@@ -1822,8 +1822,6 @@ const char* util::scale_metric_type_string( scale_metric_e sm )
     case SCALE_METRIC_DTPS:      return "Damage Taken per Second";
     case SCALE_METRIC_DMG_TAKEN: return "Damage Taken";
     case SCALE_METRIC_HTPS:      return "Healing Taken per Second";
-    case SCALE_METRIC_TMI:       return "Theck-Meloree-Index";
-    case SCALE_METRIC_ETMI:      return "Effective Theck-Meloree-Index";
     case SCALE_METRIC_DEATHS:    return "Deaths";
     case SCALE_METRIC_TIME:      return "Fight Length";
     case SCALE_METRIC_RAID_DPS:  return "Raid Damage per Second";
@@ -1847,8 +1845,6 @@ const char* util::scale_metric_type_abbrev( scale_metric_e sm )
     case SCALE_METRIC_DTPS:      return "dtps";
     case SCALE_METRIC_DMG_TAKEN: return "dmg_taken";
     case SCALE_METRIC_HTPS:      return "htps";
-    case SCALE_METRIC_TMI:       return "tmi";
-    case SCALE_METRIC_ETMI:      return "etmi";
     case SCALE_METRIC_DEATHS:    return "deaths";
     case SCALE_METRIC_TIME:      return "time";
     case SCALE_METRIC_RAID_DPS:  return "raid_dps";
@@ -1862,9 +1858,6 @@ scale_metric_e util::parse_scale_metric( util::string_view name )
 {
   scale_metric_e sm = parse_enum<scale_metric_e, SCALE_METRIC_NONE, SCALE_METRIC_MAX, scale_metric_type_abbrev>( name );
   if ( sm != SCALE_METRIC_NONE ) return sm;
-
-  if ( name == "theck_meloree_index" ) return SCALE_METRIC_TMI;
-  if ( name == "effective_theck_meloree_index" ) return SCALE_METRIC_ETMI;
 
   return SCALE_METRIC_NONE;
 }
@@ -3569,4 +3562,3 @@ double approx_sqrt( double arg )
 }
 
 } // namespace util
-
