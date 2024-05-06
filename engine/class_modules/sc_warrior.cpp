@@ -4020,7 +4020,7 @@ struct raging_blow_t : public warrior_attack_t
       mh_attack( nullptr ),
       oh_attack( nullptr ),
       cd_reset_chance( p->talents.fury.raging_blow->effectN( 1 ).percent() ),
-      wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->proc_chance() )
+      wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->effectN( 1 ).percent() )
   {
     parse_options( options_str );
 
@@ -4056,7 +4056,7 @@ struct raging_blow_t : public warrior_attack_t
     if ( p()->talents.fury.improved_raging_blow->ok() && p()->talents.fury.wrath_and_fury->ok() &&
          p()->buff.enrage->check() )
     {
-      if ( rng().roll( wrath_and_fury_reset_chance ) )
+      if ( rng().roll( cd_reset_chance + wrath_and_fury_reset_chance ) )
         {
           cooldown->reset( true );
         }
@@ -4143,7 +4143,7 @@ struct crushing_blow_t : public warrior_attack_t
       mh_attack( nullptr ),
       oh_attack( nullptr ),
       cd_reset_chance( p->spec.crushing_blow->effectN( 1 ).percent() ),
-      wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->proc_chance() )
+      wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->effectN( 1 ).percent() )
   {
     parse_options( options_str );
 
@@ -4181,7 +4181,7 @@ struct crushing_blow_t : public warrior_attack_t
     if ( p()->talents.fury.improved_raging_blow->ok() && p()->talents.fury.wrath_and_fury->ok() &&
          p()->buff.enrage->check() )
     {
-      if ( rng().roll( wrath_and_fury_reset_chance ) )
+      if ( rng().roll( cd_reset_chance + wrath_and_fury_reset_chance ) )
       {
         cooldown->reset( true );
       }

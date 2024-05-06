@@ -47,8 +47,8 @@ void fury( player_t* p )
   default_->add_action( "fireblood" );
   default_->add_action( "ancestral_call" );
   default_->add_action( "avatar,if=talent.titans_torment&buff.enrage.up&raid_event.adds.in>15&!buff.avatar.up&cooldown.odyns_fury.remains|talent.berserkers_torment&buff.enrage.up&!buff.avatar.up&raid_event.adds.in>15|!talent.titans_torment&!talent.berserkers_torment&(buff.recklessness.up|target.time_to_die<20)" );
-  default_->add_action( "recklessness,if=!raid_event.adds.exists&(talent.annihilator&cooldown.champions_spear.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<12)" );
-  default_->add_action( "recklessness,if=!raid_event.adds.exists&!talent.annihilator|target.time_to_die<12" );
+  default_->add_action( "recklessness,if=!raid_event.adds.exists&(cooldown.champions_spear.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<12)" );
+  default_->add_action( "recklessness,if=!raid_event.adds.exists&target.time_to_die<12" );
   default_->add_action( "champions_spear,if=buff.enrage.up&((buff.furious_bloodthirst.up&talent.titans_torment)|!talent.titans_torment|target.time_to_die<20|active_enemies>1|!set_bonus.tier31_2pc)&raid_event.adds.in>15" );
   default_->add_action( "run_action_list,name=multi_target,if=active_enemies>=2" );
   default_->add_action( "run_action_list,name=single_target,if=active_enemies=1" );
@@ -67,8 +67,8 @@ void fury( player_t* p )
   multi_target->add_action( "rampage,if=buff.recklessness.up|buff.enrage.remains<gcd|(rage>110&talent.overwhelming_rage)|(rage>80&!talent.overwhelming_rage)" );
   multi_target->add_action( "execute" );
   multi_target->add_action( "bloodbath,if=buff.enrage.up&talent.reckless_abandon&!talent.wrath_and_fury" );
-  multi_target->add_action( "bloodthirst,if=buff.enrage.down|(talent.annihilator&!buff.recklessness.up)" );
-  multi_target->add_action( "onslaught,if=!talent.annihilator&buff.enrage.up|talent.tenderize" );
+  multi_target->add_action( "bloodthirst,if=buff.enrage.down" );
+  multi_target->add_action( "onslaught,if=talent.tenderize" );
   multi_target->add_action( "raging_blow,if=charges>1&talent.wrath_and_fury" );
   multi_target->add_action( "crushing_blow,if=charges>1&talent.wrath_and_fury" );
   multi_target->add_action( "bloodbath,if=buff.enrage.down|!talent.wrath_and_fury" );
@@ -76,7 +76,7 @@ void fury( player_t* p )
   multi_target->add_action( "bloodthirst,if=!talent.wrath_and_fury" );
   multi_target->add_action( "raging_blow,if=charges>=1" );
   multi_target->add_action( "rampage" );
-  multi_target->add_action( "slam,if=talent.annihilator" );
+  multi_target->add_action( "slam" );
   multi_target->add_action( "bloodbath" );
   multi_target->add_action( "raging_blow" );
   multi_target->add_action( "crushing_blow" );
@@ -99,7 +99,7 @@ void fury( player_t* p )
   single_target->add_action( "execute" );
   single_target->add_action( "bloodbath,if=buff.enrage.up&talent.reckless_abandon&!talent.wrath_and_fury" );
   single_target->add_action( "rampage,if=target.health.pct<35&talent.massacre.enabled" );
-  single_target->add_action( "bloodthirst,if=(buff.enrage.down|(talent.annihilator&!buff.recklessness.up))&!buff.furious_bloodthirst.up" );
+  single_target->add_action( "bloodthirst,if=buff.enrage.down&!buff.furious_bloodthirst.up" );
   single_target->add_action( "raging_blow,if=charges>1&talent.wrath_and_fury" );
   single_target->add_action( "crushing_blow,if=charges>1&talent.wrath_and_fury&!buff.furious_bloodthirst.up" );
   single_target->add_action( "bloodbath,if=buff.enrage.down|!talent.wrath_and_fury" );
@@ -107,7 +107,7 @@ void fury( player_t* p )
   single_target->add_action( "bloodthirst,if=!talent.wrath_and_fury&!buff.furious_bloodthirst.up" );
   single_target->add_action( "raging_blow,if=charges>1" );
   single_target->add_action( "rampage" );
-  single_target->add_action( "slam,if=talent.annihilator" );
+  single_target->add_action( "slam" );
   single_target->add_action( "bloodbath" );
   single_target->add_action( "raging_blow" );
   single_target->add_action( "crushing_blow,if=!buff.furious_bloodthirst.up" );
