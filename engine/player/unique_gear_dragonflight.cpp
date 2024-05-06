@@ -10864,6 +10864,72 @@ void explosive_barrage( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void wildfire( special_effect_t& effect )
+{
+  struct wildfire_t : public proc_spell_t
+  {
+    action_t* dot;
+
+    struct wildfire_dot_t : public proc_spell_t
+    {
+      wildfire_dot_t( const special_effect_t& e )
+        : proc_spell_t( "wildfire_dot", e.player, e.player->find_spell( 432495 ) )
+      {
+        base_td = e.driver()->effectN( 2 ).average( e.item );
+      }
+
+      void tick( dot_t* d ) override
+      {
+        proc_spell_t::tick( d );
+        d->increment( 1 );
+      }
+    };
+
+    wildfire_t( const special_effect_t& e )
+      : proc_spell_t( "wildfire", e.player, e.player->find_spell( 432443 ) ), dot()
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      
+      dot = new wildfire_dot_t( e );
+      add_child( dot );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      proc_spell_t::impact( s );
+
+      if ( result_is_hit( s->result ) && s->result_amount > 0 )
+      {
+        dot->execute_on_target( s->target );
+      }
+    }
+
+    void execute() override
+    {
+      // Can trigger on allied periodic effects. Choose a random enemy.
+      if ( !target->is_enemy() )
+      {
+        if ( player->target->is_enemy() )
+        {
+          target = player->target;
+        }
+        else
+        {
+          auto tl = target_list();
+          target  = tl[ rng().range( tl.size() ) ];
+
+        }
+      }
+
+      proc_spell_t::execute();
+    }
+  };
+
+  effect.execute_action = new wildfire_t( effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }
 
 void register_special_effects()
@@ -11084,6 +11150,7 @@ void register_special_effects()
   // Timerunning 10.2.7
   register_special_effect( 431760, timerunning::cloak_of_infinite_potential );
   register_special_effect( 432333, timerunning::explosive_barrage );
+  register_special_effect( 432445, timerunning::wildfire );
 
   // Disabled
   register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)
