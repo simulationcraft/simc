@@ -7572,6 +7572,7 @@ void frozen_wellspring( special_effect_t& effect )
 // 433522 debuff
 // 433768 maximum jump tracker
 // 433786 unknown
+// TODO: approximate execute by checking on tick. if more accuracy is required, implement in assessor.
 // TODO: determine maximum jump distance, if any
 // TODO: determine if it can jump to a dotted enemy
 // TODO: determine what happens to the counter if you proc while dot is still active
@@ -7627,6 +7628,15 @@ void umbrelskuls_fractured_heart_new( special_effect_t& effect )
       generic_proc_t::tick( d );
 
       d->increment( 1 );
+
+      // TODO: approximate execute by checking on tick. if more accuracy is required, implement in assessor.
+      if ( auto t = get_jump_target( d ) )
+      {
+        d->cancel();
+
+        execute_damage->execute_on_target( d->target, d->target->current_health() );
+        execute_on_target( t );
+      }
     }
 
     void last_tick( dot_t* d ) override
@@ -7668,28 +7678,7 @@ void umbrelskuls_fractured_heart_new( special_effect_t& effect )
     }
   };
 
-  auto dot = static_cast<crystal_sickness_t*>( create_proc_action<crystal_sickness_t>( "crystal_sickness", effect ) );
-  effect.execute_action = dot;
-
-  effect.player->assessor_out_damage.add(
-      assessor::LEECH + 1, [ dot ]( result_amount_type, action_state_t* s ) {
-        auto d = dot->find_dot( s->target );
-        if ( !d || !d->is_ticking() )
-          return assessor::CONTINUE;
-
-        auto t = dot->get_jump_target( d );
-        if ( !t )
-          return assessor::CONTINUE;
-
-        make_event( *dot->sim, [ dot, d, t ] {
-          d->cancel();
-
-          dot->execute_damage->execute_on_target( d->target, d->target->current_health() );
-          dot->execute_on_target( t );
-        } );
-
-        return assessor::CONTINUE;
-      } );
+  effect.execute_action = create_proc_action<crystal_sickness_t>( "crystal_sickness", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
