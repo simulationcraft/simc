@@ -11015,6 +11015,99 @@ void enkindle( special_effect_t& effect )
   effect.custom_buff = buff;
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void frost_armor( special_effect_t& effect )
+{
+  if ( create_fallback_buffs( effect, { "frost_armor" } ) )
+  {
+    return;
+  }
+
+  auto buff = buff_t::find( effect.player, "frost_armor" );
+  if ( !buff )
+  {
+    buff = make_buff<absorb_buff_t>( effect.player, "frost_armor", effect.player->find_spell( 433213 ) );
+    buff->set_default_value( effect.driver()->effectN( 2 ).average( effect.item ) );
+  }
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+//void brilliance( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
+//void lightning_rod( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
+//void windweaver( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
+//void static_charge( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
+//void cold_front( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
+//void victory_fire( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
+//void slay( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
+//void quick_strike( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
+//void mark_of_arrogance( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
+//void opportunist( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//
+//void memory_of_vengeance( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//void hailstorm( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//void meteor_storm( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//void incendiary_terror( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//void storm_overload( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+//void sunstriders_flourish( special_effect_t& effect )
+//{
+//  new dbc_proc_callback_t( effect.player, effect );
+//}
+
 }  // namespace timerunning
 
 void register_special_effects()
@@ -11237,6 +11330,7 @@ void register_special_effects()
   register_special_effect( 432333, timerunning::explosive_barrage );
   register_special_effect( 432445, timerunning::wildfire );
   register_special_effect( 432442, timerunning::enkindle );
+  register_special_effect( 433214, timerunning::frost_armor );
 
   // Disabled
   register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)
