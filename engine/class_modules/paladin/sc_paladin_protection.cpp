@@ -1338,23 +1338,6 @@ void paladin_t::init_spells_protection()
   mastery.divine_bulwark = find_mastery_spell( PALADIN_PROTECTION );
   mastery.divine_bulwark_2 = find_specialization_spell( "Mastery: Divine Bulwark", "Rank 2" );
 
-  // Hero Talents
-  talents.holy_bulwark = find_talent_spell( talent_tree::HERO, "Holy Bulwark" );
-  talents.rite_of_sanctification = find_talent_spell( talent_tree::HERO, "Rite of Sanctificatiopn" );
-  talents.rite_of_adjuratuion    = find_talent_spell( talent_tree::HERO, "Rite of Adjuration" );
-  talents.laying_down_arms       = find_talent_spell( talent_tree::HERO, " Laying Down Arms" );
-  talents.shared_resolve         = find_talent_spell( talent_tree::HERO, "Shared Resolve" );
-  talents.solidraity             = find_talent_spell( talent_tree::HERO, "Solidarity" );
-  talents.divine_inspiration     = find_talent_spell( talent_tree::HERO, "Divine Inspiration" );
-  talents.forewarning            = find_talent_spell( talent_tree::HERO, "Forewarning" );
-  talents.valiance               = find_talent_spell( talent_tree::HERO, "Valiance" );
-  talents.divine_guidance        = find_talent_spell( talent_tree::HERO, "Divine Guidance" );
-  talents.blessed_assurance      = find_talent_spell( talent_tree::HERO, "Blessed Assurance" );
-  talents.fear_no_evil           = find_talent_spell( talent_tree::HERO, "Fear No Evil" );
-  talents.excoriation            = find_talent_spell( talent_tree::HERO, "Excorciation" );
-  talents.hammer_and_anvil       = find_talent_spell( talent_tree::HERO, "Hammer and Anvil" );
-  talents.blessing_of_the_forge  = find_talent_spell( talent_tree::HERO, "Blessing of the Forge" );
-
 
   if ( specialization() == PALADIN_PROTECTION )
   {

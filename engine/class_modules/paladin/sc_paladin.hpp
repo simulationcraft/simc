@@ -84,6 +84,7 @@ public:
     heal_t* beacon_of_light;
     action_t* holy_shield_damage;
     action_t* tyrs_enforcer_damage;
+    action_t* hammer_and_anvil;
     action_t* heartfire;
     action_t* judgment_of_light;
     action_t* shield_of_vengeance_damage;
@@ -663,6 +664,7 @@ public:
   void    trigger_grand_crusader( grand_crusader_source source = GC_NORMAL );
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_tyrs_enforcer( action_state_t* s );
+  void    trigger_hammer_and_anvil( action_state_t* s);
   void    heartfire( action_state_t* s );
   void    t29_4p_prot();
   void    t31_4p_prot(action_state_t* s);

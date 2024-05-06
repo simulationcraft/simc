@@ -1395,6 +1395,10 @@ void judgment_t::impact( action_state_t* s )
     if ( p()->talents.judgment_of_light->ok() )
       td( s->target )->debuff.judgment_of_light->trigger( amount );
   }
+  if ( p()->talents.hammer_and_anvil->ok() && s->result == RESULT_CRIT )
+  {
+    p()->trigger_hammer_and_anvil( s );
+  }
 }
 
 void judgment_t::execute()
@@ -1772,6 +1776,28 @@ struct holy_armament_t : public paladin_spell_t
    }
 };
 
+void paladin_t::trigger_hammer_and_anvil( action_state_t* s )
+{
+   
+   // escape if we don't have Hammer and Anvil
+   if ( !talents.hammer_and_anvil->ok() )
+    return;
+   
+   active.hammer_and_anvil->set_target( s->target );
+   active.hammer_and_anvil->execute();
+   
+}
+
+struct hammer_and_anvil_t : public paladin_spell_t
+{ 
+   hammer_and_anvil_t( paladin_t* p )
+     :  paladin_spell_t( "hammer_and_anvil", p, p->talents.hammer_and_anvil->effectN( 1 ).trigger() )
+   {
+    background = proc = may_crit = true;
+    may_miss                     = false;
+   }
+   
+};
 
 // Hammer of Wrath
 
@@ -2143,6 +2169,11 @@ void paladin_t::create_actions()
   else if ( specialization() == PALADIN_RETRIBUTION )
   {
     paladin_t::create_ret_actions();
+  }
+  // Hero Talents
+  if ( talents.hammer_and_anvil->ok() )
+  {
+    active.hammer_and_anvil = new hammer_and_anvil_t( this );
   }
 
   if ( talents.judgment_of_light->ok() )
@@ -2745,6 +2776,24 @@ void paladin_t::init_spells()
   talents.lightforged_blessing = find_talent_spell( talent_tree::CLASS, "Lightforged Blessing" );
   talents.crusaders_reprieve = find_talent_spell( talent_tree::CLASS, "Crusader's Reprieve" );
   talents.fading_light = find_talent_spell( talent_tree::CLASS, "Fading Light" );
+
+  // Hero Talents
+  talents.holy_bulwark           = find_talent_spell( talent_tree::HERO, "Holy Bulwark" );
+  talents.rite_of_sanctification = find_talent_spell( talent_tree::HERO, "Rite of Sanctificatiopn" );
+  talents.rite_of_adjuratuion    = find_talent_spell( talent_tree::HERO, "Rite of Adjuration" );
+  talents.laying_down_arms       = find_talent_spell( talent_tree::HERO, " Laying Down Arms" );
+  talents.shared_resolve         = find_talent_spell( talent_tree::HERO, "Shared Resolve" );
+  talents.solidraity             = find_talent_spell( talent_tree::HERO, "Solidarity" );
+  talents.divine_inspiration     = find_talent_spell( talent_tree::HERO, "Divine Inspiration" );
+  talents.forewarning            = find_talent_spell( talent_tree::HERO, "Forewarning" );
+  talents.valiance               = find_talent_spell( talent_tree::HERO, "Valiance" );
+  talents.divine_guidance        = find_talent_spell( talent_tree::HERO, "Divine Guidance" );
+  talents.blessed_assurance      = find_talent_spell( talent_tree::HERO, "Blessed Assurance" );
+  talents.fear_no_evil           = find_talent_spell( talent_tree::HERO, "Fear No Evil" );
+  talents.excoriation            = find_talent_spell( talent_tree::HERO, "Excorciation" );
+  // Not working unless it's spell ID'd
+  talents.hammer_and_anvil       = find_spell( 433718 );
+  talents.blessing_of_the_forge  = find_talent_spell( talent_tree::HERO, "Blessing of the Forge" );
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
