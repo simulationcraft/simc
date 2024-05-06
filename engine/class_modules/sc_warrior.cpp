@@ -560,7 +560,6 @@ public:
       player_talent_t massacre;
       player_talent_t cleave;
 
-      player_talent_t tide_of_blood;
       player_talent_t bloodborne;
       player_talent_t dreadnaught;
       player_talent_t in_for_the_kill;
@@ -838,8 +837,6 @@ public:
   std::string create_profile( save_e type ) override;
   void invalidate_cache( cache_e ) override;
   double non_stacking_movement_modifier() const override;
-
-  void trigger_tide_of_blood( dot_t* dot );
 
   void apl_default();
   void init_action_list() override;
@@ -1845,7 +1842,7 @@ struct rend_dot_t : public warrior_attack_t
     auto base_tick_time = warrior_attack_t::tick_time( s );
 
       auto td = p() -> get_target_data( s -> target );
-      if ( p() -> talents.arms.tide_of_blood -> ok() && td -> debuffs_skullsplitter -> up() )
+      if ( td -> debuffs_skullsplitter -> up() )
         base_tick_time *= 1 / ( 1.0 + td -> debuffs_skullsplitter -> value() );
 
     return base_tick_time;
@@ -1856,7 +1853,7 @@ struct rend_dot_t : public warrior_attack_t
     auto dot_duration = warrior_attack_t::composite_dot_duration( s );
 
       auto td = p() -> get_target_data( s -> target );
-      if ( p() -> talents.arms.tide_of_blood -> ok() && td -> debuffs_skullsplitter -> up() )
+      if ( td -> debuffs_skullsplitter -> up() )
         dot_duration *= 1 / ( 1.0 + td -> debuffs_skullsplitter -> value() );
 
     return dot_duration;
@@ -4299,24 +4296,6 @@ struct skullsplitter_t : public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
-  }
-
-  void trigger_tide_of_blood( dot_t* dot )
-  {
-    if ( !dot->is_ticking() )
-      return;
-
-    const int full_ticks = as<int>( std::floor( dot->ticks_left_fractional() ) );
-    if ( full_ticks < 1 )
-      return;
-
-    p()->sim->print_log( "{} has {} ticks of {} remaining for Tide of Blood", *p(), full_ticks, *dot );
-    for ( int i = 0; i < full_ticks; i++ )
-    {
-      dot->tick();
-    }
-
-    dot->cancel();
   }
 
   void impact( action_state_t* s ) override
@@ -6923,7 +6902,6 @@ void warrior_t::init_spells()
   talents.arms.massacre                            = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_ARMS );
   talents.arms.cleave                              = find_talent_spell( talent_tree::SPECIALIZATION, "Cleave" );
 
-  talents.arms.tide_of_blood                       = find_talent_spell( talent_tree::SPECIALIZATION, "Tide of Blood" );
   talents.arms.bloodborne                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne", WARRIOR_ARMS );
   talents.arms.dreadnaught                         = find_talent_spell( talent_tree::SPECIALIZATION, "Dreadnaught" );
   talents.arms.in_for_the_kill                     = find_talent_spell( talent_tree::SPECIALIZATION, "In for the Kill" );
@@ -7524,15 +7502,13 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
                               {
                                 auto coeff = 1.0 / ( 1.0 + buff_ -> default_value );
                                 dots_deep_wounds -> adjust( coeff );
-                                if ( p.talents.arms.tide_of_blood -> ok() )
-                                  dots_rend -> adjust( coeff );
+                                dots_rend -> adjust( coeff );
                               }
                               else if ( new_ == 0 )
                               {
                                 auto coeff = 1.0 + buff_ -> default_value;
                                 dots_deep_wounds -> adjust( coeff );
-                                if ( p.talents.arms.tide_of_blood -> ok() )
-                                  dots_rend -> adjust( coeff );
+                                dots_rend -> adjust( coeff );
                               }
                             } );
 
