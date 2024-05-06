@@ -798,6 +798,10 @@ struct player_t : public actor_t
     player_option_t<std::string> timerunners_advantage;
     // Number of party members using the Brilliance Tinker.
     int brilliance_party = 1;
+    // Number of party members using the Windweaver Tinker.
+    int windweaver_party = 4;
+    // Tinker Ilvls of party members using the Windweaver Tinker. If not specified they will be your Main Hands ilvl.
+    player_option_t<std::string> windweaver_party_ilvls = "";
   } dragonflight_opts;
 
 private:

@@ -10781,6 +10781,7 @@ void obscure_pastel_stone( special_effect_t& effect )
 
 namespace timerunning
 {
+
 struct brilliance_regen_buff_t : buff_t
 {
   std::vector<std::pair<resource_e, double>> resources;
@@ -10817,6 +10818,18 @@ struct brilliance_regen_buff_t : buff_t
         player->resource_gain( resource, player->resources.max[ resource ] * percent * b->current_stack, gain );
       }
     } );
+  }
+};
+
+struct windweaver_buff_t : stat_buff_t
+{
+  windweaver_buff_t( special_effect_t& e, int number = 0 )
+    : stat_buff_t( e.player, number ? fmt::format( "windweaver_party{}", number ) : "windweaver",
+                   e.driver()->effectN( 1 ).trigger() )
+  {
+    add_stat_from_effect( 1, e.driver()->effectN( 1 ).average( e.item ) );
+
+    sim->print_debug( "windweavertest buff {} weapon ilvl {}", number, e.item->item_level() );
   }
 };
 
@@ -10876,6 +10889,71 @@ void cloak_of_infinite_potential( special_effect_t& effect )
         [ regen_buff, party_with = effect.player->dragonflight_opts.brilliance_party ]( player_t* ) {
           regen_buff->increment( party_with );
         } );
+  }
+
+  if ( effect.player->dragonflight_opts.windweaver_party > 0 )
+  {
+    // Default
+    int default_ilvl = effect.player->items[ SLOT_MAIN_HAND ].item_level();
+
+    // They don't have a weapon equipped. Why? Why have they done this. This is horrible and I do not care.
+    if ( default_ilvl <= 10 )
+    {
+      if ( effect.player->level() >= 70 )
+      {
+        default_ilvl = 346;
+      }
+      else if ( effect.player->level() >= 61 )
+      {
+        // Approximate fit
+        default_ilvl = 14 * effect.player->level() - 634;
+      }
+      else
+      {
+        // Approximate fit
+        auto plvl    = effect.player->level();
+        default_ilvl = 0.156 * plvl * plvl + 2.09 * plvl - 7.96;
+      }
+    }
+
+    std::array<int, 4> ilvls = { default_ilvl, default_ilvl, default_ilvl, default_ilvl };
+
+    auto splits = util::string_split<std::string_view>( effect.player->dragonflight_opts.windweaver_party_ilvls, "/" );
+    
+    int i       = 0;
+    for ( auto s : splits )
+    {
+      auto ilvl = util::to_int( s );
+      if ( ilvl > 0 )
+      {
+        ilvls[ i ] = ilvl;
+        i++;
+
+        if ( i >= 3 )
+          break;
+      }
+    }
+
+    for ( int i = 0; i < effect.player->dragonflight_opts.windweaver_party; i++ )
+    {
+      auto* fake_special_effect     = new special_effect_t( effect.player );
+      fake_special_effect->spell_id = 443770;
+      item_t fake_item              = item_t( effect.player, "" );
+      fake_special_effect->type     = SPECIAL_EFFECT_EQUIP;
+      fake_special_effect->source   = SPECIAL_EFFECT_SOURCE_ITEM;
+      fake_special_effect->name_str = fmt::format( "windweaver_party{}", i + 1 );
+      fake_item.parsed.data.level   = ilvls[ i ];
+      // Wristwraps of the Dynast - Dummy to make it behave.
+      fake_item.parsed.data.id             = 214355;
+      fake_item.parsed.data.inventory_type = inventory_type::INVTYPE_WRISTS;
+      fake_special_effect->item            = &fake_item;
+      fake_special_effect->custom_buff     = make_buff<windweaver_buff_t>( *fake_special_effect, i + 1 );
+      effect.player->special_effects.push_back( fake_special_effect );
+
+      new dbc_proc_callback_t( effect.player, *fake_special_effect );
+
+      fake_special_effect->item = nullptr;
+    }
   }
 
   effect.player->register_precombat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
@@ -11146,10 +11224,22 @@ void brilliance( special_effect_t& effect )
 //  new dbc_proc_callback_t( effect.player, effect );
 //}
 //
-//void windweaver( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
+void windweaver( special_effect_t& effect )
+{
+  if ( create_fallback_buffs( effect, { "windweaver" } ) )
+  {
+    return;
+  }
+
+  auto buff = buff_t::find( effect.player, "windweaver" );
+  if ( !buff )
+  {
+    buff = make_buff<windweaver_buff_t>( effect, 0 );
+  }
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 //
 //void static_charge( special_effect_t& effect )
 //{
@@ -11435,6 +11525,7 @@ void register_special_effects()
   register_special_effect( 432442, timerunning::enkindle );
   register_special_effect( 433214, timerunning::frost_armor );
   register_special_effect( 429007, timerunning::brilliance );
+  register_special_effect( 443770, timerunning::windweaver );
 
   // Disabled
   register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)
