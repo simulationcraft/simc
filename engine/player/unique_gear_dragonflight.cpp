@@ -11095,6 +11095,12 @@ void enkindle( special_effect_t& effect )
     {
       set_name_reporting( "Absorb" );
 
+      auto stats = player->get_stats( "enkindle" );
+      stats->school = data().get_school_type();
+
+      set_absorb_source( stats );
+      set_absorb_gain( player->get_gain( "enkindle" ) );
+
       set_default_value( e.driver()->effectN( 2 ).average( e.item ) );
 
       stat = create_buff<stat_buff_t>( player, "enkindle_stats", player->find_spell( 432440 ), item );
@@ -11159,7 +11165,11 @@ void frost_armor( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "frost_armor" );
   if ( !buff )
   {
-    buff = make_buff<absorb_buff_t>( effect.player, "frost_armor", effect.player->find_spell( 433213 ) );
+    auto stats    = effect.player->get_stats( "frost_armor" );
+    buff = make_buff<absorb_buff_t>( effect.player, "frost_armor", effect.player->find_spell( 433213 ) )
+               ->set_absorb_source( stats )
+               ->set_absorb_gain( effect.player->get_gain( "frost_armor" ) );
+    stats->school = buff->data().get_school_type();
     buff->set_default_value( effect.driver()->effectN( 2 ).average( effect.item ) );
   }
   effect.custom_buff = buff;
@@ -11262,6 +11272,88 @@ void brilliance( special_effect_t& effect )
   effect.execute_action = new fervor_t( effect );
   new fervor_cbt_t( effect );
  }
+
+ void arcanists_edge( special_effect_t& effect )
+ {
+  struct arcanists_edge_t : public proc_spell_t
+  {
+    arcanists_edge_t( const special_effect_t& e )
+      : proc_spell_t( "Arcanists Edge", e.player, e.player->find_spell( 429273 ) )
+    {
+    }
+
+    void execute() override
+    {
+      // Can trigger on allied periodic effects. Choose a random enemy.
+      if ( !target->is_enemy() )
+      {
+        if ( player->target->is_enemy() )
+        {
+          target = player->target;
+        }
+        else
+        {
+          auto tl = target_list();
+          target  = tl[ rng().range( tl.size() ) ];
+        }
+      }
+
+      proc_spell_t::execute();
+    }
+  };
+
+  struct arcanists_edge_cb_t : public dbc_proc_callback_t
+  {
+    double absorb_percent;
+    action_t* damage;
+
+    arcanists_edge_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), absorb_percent( e.driver()->effectN( 1 ).percent() )
+    {
+      damage = new arcanists_edge_t( effect );
+    }
+
+    double get_current_absorb()
+    {
+      if ( listener->absorb_buff_list.empty() )
+        return 0.0;
+
+      double total_absorb = 0.0;
+
+      for ( auto absorb : listener->absorb_buff_list )
+      {
+        if ( absorb->check() )
+          total_absorb += absorb->current_value;
+      }
+
+      return total_absorb;
+    }
+
+    void consume_absorb()
+    {
+      if ( listener->absorb_buff_list.empty() )
+        return;
+
+      for ( auto absorb : listener->absorb_buff_list )
+      {
+        if ( absorb->check() )
+          absorb->consume( absorb_percent * absorb->current_value );
+      }
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( listener->absorb_buff_list.empty() )
+        return;
+
+      damage->execute_on_target( s->target, get_current_absorb() * absorb_percent );
+      consume_absorb();
+    }
+  };
+
+  new arcanists_edge_cb_t( effect );
+ }
+     
 
 //
 //void lightning_rod( special_effect_t& effect )
@@ -11396,7 +11488,7 @@ void sunstriders_flourish( special_effect_t& effect )
   struct sunstriders_flourish_t : public proc_spell_t
   {
     sunstriders_flourish_t( const special_effect_t& e )
-      : proc_spell_t( "Sundstriders Flourish", e.player, e.driver()->effectN( 1 ).trigger() )
+      : proc_spell_t( "Sunstriders Flourish", e.player, e.driver()->effectN( 1 ).trigger() )
     {
       aoe = -1;     
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
@@ -11655,6 +11747,7 @@ void register_special_effects()
   register_special_effect( 429378, timerunning::slay );
   register_special_effect( 429389, timerunning::fervor );
   register_special_effect( 429214, timerunning::sunstriders_flourish );
+  register_special_effect( 429270, timerunning::arcanists_edge );
 
   // Disabled
   register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)
