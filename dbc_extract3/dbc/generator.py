@@ -1461,6 +1461,10 @@ class SpellDataGenerator(DataGenerator):
          # 10.2.7
          431760, 440393, # Cloak of Infinite Potential / Timerunner's Advantage
          432334, # Explosive Barrage Damage
+         429409, # Fervor Damage
+         437064, # Lifestorm Damage
+         429273, # Arcanist's Edge Damage
+         429377, # Slay Damage
         ),
 
         # Warrior:
