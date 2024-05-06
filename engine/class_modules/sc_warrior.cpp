@@ -2859,6 +2859,11 @@ struct cleave_t : public warrior_attack_t
 
     am *= 1.0 + p()->buff.martial_prowess->check_stack_value();
 
+    if ( !p()->buff.sweeping_strikes->up() && p()->buff.collateral_damage->up() )
+    {
+      am *= 1.0 + p()->buff.collateral_damage->stack_value();
+    }
+
     return am;
   }
 
@@ -2890,6 +2895,11 @@ struct cleave_t : public warrior_attack_t
       p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
     }
     p()->buff.martial_prowess->expire();
+
+    if ( p()->talents.arms.collateral_damage.ok() && !p()->buff.sweeping_strikes->up() && p()->buff.collateral_damage->up()  )
+    {
+      p() -> buff.collateral_damage -> expire();
+    }
   }
 };
 
