@@ -1128,7 +1128,6 @@ void print_player( std::ostream& os, player_t& p )
   print_collected_amount(os, p, "DPS", cd.dps );
   print_collected_amount(os, p, "HPS", cd.hps );
   print_collected_amount(os, p, "DTPS", cd.dtps );
-  print_collected_amount(os, p, "TMI", cd.theck_meloree_index );
 
   if ( p.rps_loss > 0.0 )
   {

@@ -587,8 +587,6 @@ void collected_data_to_json( JsonOutput root, const ::report::json::report_confi
       root[ "dtps" ] = cd.dmg_taken;
       root[ "timeline_dmg_taken" ] = cd.timeline_dmg_taken;
       root[ "deaths" ] = cd.deaths;
-      root[ "theck_meloree_index" ] = cd.theck_meloree_index;
-      root[ "effective_theck_meloree_index" ] = cd.effective_theck_meloree_index;
       root[ "max_spike_amount" ] = cd.max_spike_amount;
     }
 
@@ -667,11 +665,6 @@ void collected_data_to_json( JsonOutput root, const ::report::json::report_confi
     if ( cd.health_changes.collect )
     {
       root[ "health_changes" ] = cd.health_changes.merged_timeline;
-    }
-
-    if ( cd.health_changes_tmi.collect )
-    {
-      root[ "health_changes_tmi" ] = cd.health_changes_tmi.merged_timeline;
     }
 
     if ( !cd.action_sequence_precombat.empty() )
@@ -1221,9 +1214,6 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   options_root[ "debug_each" ] = sim.debug_each;
   options_root[ "stat_cache" ] = sim.stat_cache;
   options_root[ "max_aoe_enemies" ] = sim.max_aoe_enemies;
-  options_root[ "show_etmi" ] = sim.show_etmi;
-  options_root[ "tmi_window_global" ] = sim.tmi_window_global;
-  options_root[ "tmi_bin_size" ] = sim.tmi_bin_size;
   options_root[ "enemy_death_pct" ] = sim.enemy_death_pct;
   options_root[ "challenge_mode" ] = sim.challenge_mode;
   options_root[ "timewalk" ] = sim.timewalk;

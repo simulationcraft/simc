@@ -100,7 +100,6 @@ enum metric_e
   METRIC_PDPS,
   METRIC_HPS,
   METRIC_DTPS,
-  METRIC_TMI,
   METRIC_APM,
   METRIC_STDDEV,
   METRIC_MAX
@@ -119,7 +118,6 @@ constexpr std::array<unsigned, METRIC_MAX> enabled_values =
     ( 1 << VALUE_MEAN ),
     ( 1 << VALUE_MEAN ),
     ( 1 << VALUE_MEAN ) | ( 1 << VALUE_BURST_MAX ),
-    ( 1 << VALUE_MEAN ),
     ( 1 << VALUE_MEAN ),
     ( 1 << VALUE_MEAN ) } };
 
@@ -190,12 +188,6 @@ metric_e populate_player_list( std::string_view type, const sim_t& sim,
     source_list = &sim.players_by_dtps;
     m           = METRIC_DTPS;
   }
-  else if ( util::str_compare_ci( type, "tmi" ) )
-  {
-    name        = "Theck-Meloree Index";
-    source_list = &sim.players_by_tmi;
-    m           = METRIC_TMI;
-  }
   else if ( util::str_compare_ci( type, "apm" ) )
   {
     name        = "Actions Per Minute";
@@ -223,8 +215,6 @@ metric_e populate_player_list( std::string_view type, const sim_t& sim,
       else if ( type == "hps" && p->collected_data.hps.mean() <= 0 )
         return true;
       else if ( type == "dtps" && p->collected_data.dtps.mean() <= 0 )
-        return true;
-      else if ( type == "tmi" && p->collected_data.theck_meloree_index.mean() <= 0 )
         return true;
 
       return false;
@@ -255,9 +245,6 @@ std::vector<double> get_data_summary( const player_collected_data_t& container,
       break;
     case METRIC_DTPS:
       c = &container.dtps;
-      break;
-    case METRIC_TMI:
-      c = &container.theck_meloree_index;
       break;
     // APM is gonna have a mean only
     case METRIC_APM:
@@ -293,9 +280,6 @@ double get_data_value( const player_collected_data_t& container,
       break;
     case METRIC_DTPS:
       c = &container.dtps;
-      break;
-    case METRIC_TMI:
-      c = &container.theck_meloree_index;
       break;
     // APM is gonna have a mean only
     case METRIC_APM:
@@ -390,10 +374,6 @@ struct player_list_comparator_t
       case METRIC_DTPS:
         d_p1 = &p1->collected_data.dtps;
         d_p2 = &p2->collected_data.dtps;
-        break;
-      case METRIC_TMI:
-        d_p1 = &p1->collected_data.theck_meloree_index;
-        d_p2 = &p2->collected_data.theck_meloree_index;
         break;
       // APM has no full data collection, so sort always based on mean
       case METRIC_APM:

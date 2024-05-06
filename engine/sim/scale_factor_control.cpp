@@ -457,10 +457,6 @@ void scale_factor_control_t::normalize()
 
       if ( divisor == 0 ) continue;
 
-      // hack to deal with weirdness in TMI calculations - always normalize using negative divisor
-      if ( sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_ETMI )
-        divisor = -std::abs( divisor );
-
       for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
       {
         if ( !p -> scaling -> scales_with[ j ] ) continue;
@@ -499,8 +495,7 @@ void scale_factor_control_t::analyze()
           if ( s ) p -> scaling -> scaling_stats[ sm ].push_back( j );
         }
       }
-      // more hack to deal with TMI weirdness, this just determines sorting order, not what gets displayed on the chart
-      bool use_normalized = p -> scaling -> scaling_normalized[ sm ].get_stat( p -> normalize_by() ) > 0 || sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_ETMI;
+      bool use_normalized = p -> scaling -> scaling_normalized[ sm ].get_stat( p -> normalize_by() ) > 0;
       range::sort( p -> scaling -> scaling_stats[ sm ], compare_scale_factors( *p, sm, use_normalized ) );
     }
   }
@@ -553,4 +548,3 @@ bool scale_factor_control_t::has_scale_factors()
 
   return false;
 }
-

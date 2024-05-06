@@ -50,8 +50,6 @@ struct player_collected_data_t
   extended_sample_data_t absorb_taken;
   // Tank
   extended_sample_data_t deaths;
-  extended_sample_data_t theck_meloree_index;
-  extended_sample_data_t effective_theck_meloree_index;
   extended_sample_data_t max_spike_amount;
 
   // Metric used to end simulations early
