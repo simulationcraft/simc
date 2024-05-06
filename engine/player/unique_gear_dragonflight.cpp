@@ -10831,6 +10831,16 @@ struct windweaver_buff_t : stat_buff_t
   }
 };
 
+struct lightning_rod_buff_t : stat_buff_t
+{
+  lightning_rod_buff_t( special_effect_t& e, int number = 0 )
+    : stat_buff_t( e.player, number ? fmt::format( "lightning_rod_party{}", number ) : "lightning_rod",
+                   e.player->find_spell( number ? 443472 : 443503 ) )
+  {
+    add_stat_from_effect( 1, e.driver()->effectN( 1 ).average( e.item ) );
+  }
+};
+
 /**Cloak of Infinite Potential
  * 431760 item effect spell
  * 440393 permanent stat aura
@@ -11351,14 +11361,42 @@ void brilliance( special_effect_t& effect )
 
   new arcanists_edge_cb_t( effect );
  }
-     
 
-//
-//void lightning_rod( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
-//
+ // Ability was extremely buggy during timerunning. TODO: Revist.
+void lightning_rod( special_effect_t& effect )
+{
+  if ( create_fallback_buffs( effect, { "lightning_rod" } ) )
+  {
+    return;
+  }
+
+  auto buff = buff_t::find( effect.player, "lightning_rod" );
+  if ( !buff )
+  {
+    buff = make_buff<lightning_rod_buff_t>( effect, 0 );
+  }
+
+  struct lightning_rod_t : public proc_spell_t
+  {
+    buff_t* crit_buff;
+    lightning_rod_t( const special_effect_t& e, buff_t* buff)
+      : proc_spell_t( "lightning_rod", e.player, e.player->find_spell( 443473 ) ), crit_buff(buff)
+    {
+      base_td = e.driver()->effectN( 2 ).average( e.item );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      proc_spell_t::last_tick( d );
+      
+      crit_buff->trigger();
+    }
+  };
+
+  effect.execute_action = new lightning_rod_t( effect, buff );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void windweaver( special_effect_t& effect )
 {
   if ( create_fallback_buffs( effect, { "windweaver" } ) )
@@ -11503,7 +11541,7 @@ void sunstriders_flourish( special_effect_t& effect )
   effect.execute_action = new sunstriders_flourish_t( effect );
   new dbc_proc_callback_t( effect.player, effect );
 }
-//
+
 // void static_charge( special_effect_t& effect )
 //{
 //  new dbc_proc_callback_t( effect.player, effect );
@@ -11518,7 +11556,6 @@ void sunstriders_flourish( special_effect_t& effect )
 //{
 //  new dbc_proc_callback_t( effect.player, effect );
 //}
-//
 //
 // void quick_strike( special_effect_t& effect )
 //{
@@ -11543,6 +11580,8 @@ void sunstriders_flourish( special_effect_t& effect )
 //{
 //  new dbc_proc_callback_t( effect.player, effect );
 //}
+// 
+// During Testing this ability could not execute on stun immune targets at all.
 // void meteor_storm( special_effect_t& effect )
 //{
 //  new dbc_proc_callback_t( effect.player, effect );
@@ -11775,13 +11814,14 @@ void register_special_effects()
   register_special_effect( 432445, timerunning::wildfire );
   register_special_effect( 432442, timerunning::enkindle );
   register_special_effect( 433214, timerunning::frost_armor );
-  register_special_effect( 429007, timerunning::brilliance );
+  register_special_effect( 429007, timerunning::brilliance, true );
   register_special_effect( 443770, timerunning::windweaver );
   register_special_effect( 429378, timerunning::slay );
   register_special_effect( 429389, timerunning::fervor );
   register_special_effect( 429214, timerunning::sunstriders_flourish );
   register_special_effect( 429270, timerunning::arcanists_edge );
   register_special_effect( 432438, timerunning::incendiary_terror );
+  register_special_effect( 443471, timerunning::lightning_rod );
 
   // Disabled
   register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)
