@@ -11033,10 +11033,93 @@ void frost_armor( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-//void brilliance( special_effect_t& effect )
-//{
-//  new dbc_proc_callback_t( effect.player, effect );
-//}
+void brilliance( special_effect_t& effect )
+{
+  if ( create_fallback_buffs( effect, { "brilliance", "brilliance_vers" } ) )
+  {
+    return;
+  }
+
+  struct brilliance_regen_buff_t : buff_t
+  {
+    std::vector<std::pair<resource_e, double>> resources;
+    gain_t* gain;
+
+    brilliance_regen_buff_t( special_effect_t& e, player_t* p ) : buff_t( { p, p }, "brilliance", e.driver() )
+    {
+      set_duration( 0_s );
+      
+      // 5 Party Members
+      set_max_stack( 5 );
+      
+      set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+      set_period( e.driver()->effectN( 2 ).period() );
+      set_freeze_stacks( true );
+
+      auto trigger_spell = e.driver()->effectN( 2 ).trigger();
+
+      for ( const spelleffect_data_t& effect : trigger_spell->effects() )
+      {
+        if ( effect.type() == E_ENERGIZE_PCT )
+        {
+          resources.push_back( { effect.resource_gain_type(), effect.percent() } );
+        }
+      }
+
+      gain = player->get_gain( "brilliance" );
+
+      set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+        for ( auto [ resource, percent ] : resources )
+        {
+          player->resource_gain( resource, player->resources.max[ resource ] * percent * b->check_stack_value(), gain );
+        }
+      } );
+    }
+  };
+
+  struct brilliance_buff_t : stat_buff_t
+  {
+    buff_t* regen_buff;
+
+    brilliance_buff_t( special_effect_t& e ) : stat_buff_t( e.player, "brilliance_vers", e.driver() )
+    {
+      set_name_reporting("Versatility");
+
+      set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+      set_default_value_from_effect( 1 );
+      set_duration( 0_s );
+      set_constant_behavior( buff_constant_behavior::ALWAYS_CONSTANT );
+
+      regen_buff = buff_t::find( player, "brilliance" );
+
+      if ( !regen_buff )
+      {
+        regen_buff = make_buff<brilliance_regen_buff_t>( e, player );
+      }
+
+      // TODO: Handle Multiple Players
+      set_stack_change_callback( [ this ]( buff_t*, int o, int n ) {
+        if ( n > o )
+        {
+          regen_buff->increment();
+        }
+        else if ( n < o )
+        {
+          regen_buff->decrement();
+        }
+      } );
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "brilliance_vers" );
+  if ( !buff )
+  {
+    buff = make_buff<brilliance_buff_t>( effect );
+  }
+
+  
+  effect.player->register_combat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
+}
 //
 //void lightning_rod( special_effect_t& effect )
 //{
@@ -11331,6 +11414,7 @@ void register_special_effects()
   register_special_effect( 432445, timerunning::wildfire );
   register_special_effect( 432442, timerunning::enkindle );
   register_special_effect( 433214, timerunning::frost_armor );
+  register_special_effect( 429007, timerunning::brilliance );
 
   // Disabled
   register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)
