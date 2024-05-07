@@ -1472,7 +1472,7 @@ double wild_imp_pet_t::composite_player_multiplier( school_e school ) const
 
 dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "dreadstalker", PET_DREADSTALKER, true )
 {
-  action_list_str = "leap/dreadbite";
+  action_list_str = "leap/travel/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
 
   // 2023-09-20: Coefficient updated
@@ -1575,6 +1575,12 @@ struct dreadstalker_leap_t : warlock_pet_t::travel_t
     warlock_pet_t::travel_t::schedule_execute( s );
   }
 
+  bool ready() override
+  {
+    // Dreadstalkers will not do a leap if are summoned too close to the target. In addition, the leap can only occur once. 
+    return ( (!debug_cast<dreadstalker_t*>( player )->melee_on_summon) && (debug_cast<dreadstalker_t*>( player )->leap_executes > 0) && (warlock_pet_t::travel_t::ready()) );
+  }
+
   void execute() override
   {
     warlock_pet_t::travel_t::execute();
@@ -1584,6 +1590,8 @@ struct dreadstalker_leap_t : warlock_pet_t::travel_t
       debug_cast<warlock_pet_t*>( player )->melee_attack->reset();
       debug_cast<warlock_pet_t*>( player )->melee_attack->schedule_execute();
     } );
+
+    debug_cast<dreadstalker_t*>( player )->leap_executes--;
   }
 };
 
@@ -1597,6 +1605,11 @@ void dreadstalker_t::init_base_stats()
 
 void dreadstalker_t::arise()
 {
+  if ( o()->get_player_distance( *target ) <= 5.0 )
+  {
+    melee_on_summon = true; // Within this range, Dreadstalkers will not do a leap, so they immediately start using auto attacks
+  }
+  
   warlock_pet_t::arise();
 
   o()->buffs.dreadstalkers->trigger();
@@ -1608,10 +1621,8 @@ void dreadstalker_t::arise()
 
   dreadbite_executes = 1;
 
-  if ( position() <= 1.0 )
-  {
-    melee_on_summon = true; // Within this range, Dreadstalkers will not do a leap, so they immediately start using auto attacks
-  }
+  leap_executes = 1;
+
 }
 
 void dreadstalker_t::demise()

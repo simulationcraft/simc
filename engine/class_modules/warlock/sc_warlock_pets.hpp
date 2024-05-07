@@ -442,6 +442,7 @@ private:
 struct dreadstalker_t : public warlock_pet_t
 {
   int dreadbite_executes;
+  int leap_executes;
   timespan_t server_action_delay;
 
   dreadstalker_t( warlock_t* );
