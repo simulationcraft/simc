@@ -455,11 +455,7 @@ struct consecration_t : public paladin_spell_t
       p()->buffs.sanctification->expire();
       p()->buffs.sanctification_empower->execute();
     }
-    
-    if ( p()->buffs.divine_guidance->up() )
-    {
-      p()->divine_guidance_t();
-    }
+
 
     paladin_spell_t::execute();
 
