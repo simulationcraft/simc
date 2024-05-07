@@ -49,7 +49,7 @@ void fury( player_t* p )
   default_->add_action( "avatar,if=talent.titans_torment&buff.enrage.up&raid_event.adds.in>15&!buff.avatar.up&cooldown.odyns_fury.remains|talent.berserkers_torment&buff.enrage.up&!buff.avatar.up&raid_event.adds.in>15|!talent.titans_torment&!talent.berserkers_torment&(buff.recklessness.up|target.time_to_die<20)" );
   default_->add_action( "recklessness,if=!raid_event.adds.exists&(cooldown.champions_spear.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<12)" );
   default_->add_action( "recklessness,if=!raid_event.adds.exists&target.time_to_die<12" );
-  default_->add_action( "champions_spear,if=buff.enrage.up&((buff.furious_bloodthirst.up&talent.titans_torment)|!talent.titans_torment|target.time_to_die<20|active_enemies>1|!set_bonus.tier31_2pc)&raid_event.adds.in>15" );
+  default_->add_action( "champions_spear,if=buff.enrage.up&(talent.titans_torment|!talent.titans_torment|target.time_to_die<20|active_enemies>1|!set_bonus.tier31_2pc)&raid_event.adds.in>15" );
   default_->add_action( "run_action_list,name=multi_target,if=active_enemies>=2" );
   default_->add_action( "run_action_list,name=single_target,if=active_enemies=1" );
 
@@ -60,7 +60,7 @@ void fury( player_t* p )
   multi_target->add_action( "thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
   multi_target->add_action( "odyns_fury,if=active_enemies>1&buff.enrage.up&raid_event.adds.in>15" );
   multi_target->add_action( "bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95|set_bonus.tier31_4pc" );
-  multi_target->add_action( "bloodthirst,if=(set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95)|(!talent.reckless_abandon&buff.furious_bloodthirst.up&buff.enrage.up)" );
+  multi_target->add_action( "bloodthirst,if=(set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95)|(!talent.reckless_abandon&buff.enrage.up)" );
   multi_target->add_action( "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up" );
   multi_target->add_action( "execute,if=buff.enrage.up" );
   multi_target->add_action( "odyns_fury,if=buff.enrage.up&raid_event.adds.in>15" );
@@ -87,30 +87,30 @@ void fury( player_t* p )
   single_target->add_action( "odyns_fury,if=(buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades))" );
   single_target->add_action( "rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)" );
   single_target->add_action( "bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95" );
-  single_target->add_action( "bloodthirst,if=(set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95)|(!talent.reckless_abandon&buff.furious_bloodthirst.up&buff.enrage.up&(!dot.gushing_wound.remains|buff.champions_might.up))" );
+  single_target->add_action( "bloodthirst,if=(set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95)|(!talent.reckless_abandon&buff.enrage.up&(!dot.gushing_wound.remains|buff.champions_might.up))" );
   single_target->add_action( "bloodbath,if=set_bonus.tier31_2pc" );
   single_target->add_action( "thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
   single_target->add_action( "onslaught,if=buff.enrage.up|talent.tenderize" );
-  single_target->add_action( "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up&!buff.furious_bloodthirst.up" );
-  single_target->add_action( "execute,if=buff.enrage.up&!buff.furious_bloodthirst.up&buff.ashen_juggernaut.up|buff.sudden_death.remains<=gcd&(target.health.pct>35&talent.massacre|target.health.pct>20)" );
+  single_target->add_action( "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up" );
+  single_target->add_action( "execute,if=buff.enrage.up&buff.ashen_juggernaut.up|buff.sudden_death.remains<=gcd&(target.health.pct>35&talent.massacre|target.health.pct>20)" );
   single_target->add_action( "rampage,if=talent.reckless_abandon&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)" );
   single_target->add_action( "execute,if=buff.enrage.up" );
   single_target->add_action( "rampage,if=talent.anger_management" );
   single_target->add_action( "execute" );
   single_target->add_action( "bloodbath,if=buff.enrage.up&talent.reckless_abandon&!talent.wrath_and_fury" );
   single_target->add_action( "rampage,if=target.health.pct<35&talent.massacre.enabled" );
-  single_target->add_action( "bloodthirst,if=buff.enrage.down&!buff.furious_bloodthirst.up" );
+  single_target->add_action( "bloodthirst,if=buff.enrage.down" );
   single_target->add_action( "raging_blow,if=charges>1&talent.wrath_and_fury" );
-  single_target->add_action( "crushing_blow,if=charges>1&talent.wrath_and_fury&!buff.furious_bloodthirst.up" );
+  single_target->add_action( "crushing_blow,if=charges>1&talent.wrath_and_fury" );
   single_target->add_action( "bloodbath,if=buff.enrage.down|!talent.wrath_and_fury" );
-  single_target->add_action( "crushing_blow,if=buff.enrage.up&talent.reckless_abandon&!buff.furious_bloodthirst.up" );
-  single_target->add_action( "bloodthirst,if=!talent.wrath_and_fury&!buff.furious_bloodthirst.up" );
+  single_target->add_action( "crushing_blow,if=buff.enrage.up&talent.reckless_abandon" );
+  single_target->add_action( "bloodthirst,if=!talent.wrath_and_fury" );
   single_target->add_action( "raging_blow,if=charges>1" );
   single_target->add_action( "rampage" );
   single_target->add_action( "slam" );
   single_target->add_action( "bloodbath" );
   single_target->add_action( "raging_blow" );
-  single_target->add_action( "crushing_blow,if=!buff.furious_bloodthirst.up" );
+  single_target->add_action( "crushing_blow" );
   single_target->add_action( "bloodthirst" );
   single_target->add_action( "whirlwind" );
   single_target->add_action( "wrecking_throw" );
@@ -296,7 +296,6 @@ void protection( player_t* p )
   default_->add_action( "demoralizing_shout,if=talent.booming_voice.enabled" );
   default_->add_action( "champions_spear" );
   default_->add_action( "thunderous_roar" );
-  default_->add_action( "shield_slam,if=buff.fervid.up" );
   default_->add_action( "shockwave,if=talent.rumbling_earth.enabled&spell_targets.shockwave>=3" );
   default_->add_action( "shield_charge" );
   default_->add_action( "shield_block,if=buff.shield_block.duration<=10" );
@@ -304,7 +303,6 @@ void protection( player_t* p )
   default_->add_action( "call_action_list,name=generic" );
 
   aoe->add_action( "thunder_clap,if=dot.rend.remains<=1" );
-  aoe->add_action( "shield_slam,if=(set_bonus.tier30_2pc|set_bonus.tier30_4pc)&spell_targets.thunder_clap<=7|buff.earthen_tenacity.up" );
   aoe->add_action( "thunder_clap,if=buff.violent_outburst.up&spell_targets.thunderclap>6&buff.avatar.up&talent.unstoppable_force.enabled" );
   aoe->add_action( "revenge,if=rage>=70&talent.seismic_reverberation.enabled&spell_targets.revenge>=3" );
   aoe->add_action( "shield_slam,if=rage<=60|buff.violent_outburst.up&spell_targets.thunderclap<=7" );
