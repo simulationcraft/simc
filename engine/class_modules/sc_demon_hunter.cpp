@@ -474,7 +474,7 @@ public:
       player_talent_t art_of_the_glaive;
 
       player_talent_t keen_engagement;
-      player_talent_t preemptive_strike;  // NYI
+      player_talent_t preemptive_strike;
       player_talent_t evasive_action;     // NYI
       player_talent_t unhindered_assault;
       player_talent_t incisive_blade;
