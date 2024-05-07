@@ -13267,35 +13267,7 @@ struct druid_module_t : public module_t
 
   void static_init() const override {}
 
-  void register_hotfixes() const override
-  {
-    hotfix::register_effect(
-        "Balance", "10.2.7",
-        "Season 4 (2) Set Bonus now increases the damage of your next Wrath or Starfire by 50% (was 30%).",
-        1034016 )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 50 )
-        .verification_value( 30 );
-
-    hotfix::register_effect(
-        "Balance", "10.2.7",
-        "Season 4 (2) Set Bonus now reduces the Astral Power cost of your next Starsurge or Starfall by 30 (was 15)",
-        1034019 )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( -300 )
-        .verification_value( -150 );
-
-    hotfix::register_effect(
-        "Balance", "10.2.7",
-        "Season 4 (2) Set Bonus now increases the damage it does by 60% (was 40%)",
-        1034020 )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 60 )
-        .verification_value( 40 );
-  }
+  void register_hotfixes() const override {}
 
   void combat_begin( sim_t* ) const override {}
   void combat_end( sim_t* ) const override {}
