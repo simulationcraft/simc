@@ -168,7 +168,7 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
     if ( proc_action && proc_action->harmful )
     {
       // Don't allow players to harm other players, and enemies harm other enemies
-      if ( state->action && state->action->player->is_enemy() == target( state )->is_enemy() )
+      if ( state->action && listener->is_enemy() == target( state )->is_enemy() )
       {
         return;
       }
