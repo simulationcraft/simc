@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.6.54499 Live
+SimulationCraft 1026-01 for World of Warcraft 10.2.7.54577 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -1795,7 +1795,6 @@ Talent Entry     : Preservation [tree=spec, row=3, col=1, max_rank=1, req_points
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Spell Level      : 59
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. .....x.. ........   ........ ........ ........ ........   
@@ -3313,6 +3312,9 @@ Class            : Evoker
 School           : Spellfrost
 Spell Type       : None
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
+Proc Chance      : 101%
+Proc Flags       : ........ ........ x.x..... ........   ........ ........ ........ ........   
+                 : Magic Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3323,8 +3325,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=982470)   : Apply Aura (6) | Dummy (4)
+#1 (id=982470)   : Apply Aura (6) | Proc Trigger Spell (42): Permeating Chill
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 370898 | Target: Self (1)
+Hotfixed         : Sub Type (4 -> 42)
 #2 (id=1012820)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Permeating Chill (370898)
@@ -5866,7 +5869,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=1012794)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 1211 | Radius: 100 yards | Target: Raid Members (56)
-                   Affected Spells (Category): Heroic Leap (6544), Heroic Leap (427033)
+                   Affected Spells (Category): Heroic Leap (6544)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Heroic Leap reduced by $s1%.
 
@@ -7506,7 +7509,7 @@ Name             : Energizing Flame (id=400006) [Spell Family (224), Passive]
 Class            : Evoker
 School           : Fire
 Spell Type       : None
-Spell Level      : 58
+Spell Level      : 1
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
                  : 2444: Devastation Evoker (356809 effect#9), Initial Evoker (356816 effect#11), Augmentation Evoker (396186 effect#9)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

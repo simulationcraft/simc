@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.6.54499 Live
+SimulationCraft 1026-01 for World of Warcraft 10.2.7.54577 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -219,7 +219,7 @@ Description      : Shapeshift into a travel form appropriate to your current loc
 The act of shapeshifting frees you from movement impairing effects.$?a159456[
 
 Land speed increased when used out of combat. This effect is disabled in battlegrounds and arenas.][]
-Tooltip          : Immune to Polymorph effects.  Movement speed increased.
+Tooltip          : Immune to Polymorph effects. Movement speed increased.
 
 Name             : Rip (id=1079) [Spell Family (7)] 
 Talent Entry     : Generic [free=(Feral), tree=class, row=3, col=1, max_rank=1, req_points=0]
@@ -5766,7 +5766,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=223349)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : You gain an additional $s1% movement speed while in the land version of Travel Form.  This movement speed bonus will not be granted if Travel Form is activated while in combat.
+Description      : You gain an additional $s1% movement speed while in the land version of Travel Form. This movement speed bonus will not be granted if Travel Form is activated while in combat.
 
 This effect is disabled in battlegrounds and arenas.
 
@@ -19585,9 +19585,10 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1034016)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984), Starfire (194153), Starfire (197628)
                    Family Flags: 0, 2
+Hotfixed         : Base Value (30 -> 50)
 Description      : $@spellaura393632
 Tooltip          : Wrath and Starfire damage increased by $w1%.
 
@@ -19612,13 +19613,15 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1034019)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
-                   Base Value: -150 | Scaled Value: -150 | PvP Coefficient: 0.50000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -300 | Scaled Value: -300 | PvP Coefficient: 0.50000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Starfall (50286), Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626)
                    Family Flags: 55, 89
+Hotfixed         : Base Value (-150 -> -300)
 #2 (id=1034020)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Starsurge (197626)
                    Family Flags: 89
+Hotfixed         : Base Value (40 -> 60)
 Description      : $@spelldesc393633
 Tooltip          : Starsurge and Starfall cost ${-$s1/10} less Astral Power and deal $s2% increased damage.
 
@@ -21428,21 +21431,20 @@ Description      : $@spelldesc422747
 Tooltip          : Damage dealt increased by $s1%.
 
 Name             : Burning Frenzy (id=422779) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 10 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ x....... ........ .....x..   ........ ........ ........ ........ 
+                 : ........ x....... ........ .....x..   ........ ........ x....... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Sheath (18), Include In Advanced Combat Log (72), Can't Crit (93), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Rolling Periodic (334)
+                 : Do Not Sheath (18), Include In Advanced Combat Log (72), Can't Crit (93), Suppress Caster Procs (112), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Rolling Periodic (334)
 Effects          :
 #1 (id=1098320)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Target: Enemy (6)
