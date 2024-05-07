@@ -4186,7 +4186,6 @@ struct overpower_t : public warrior_attack_t
 
     if ( p->talents.arms.dreadnaught->ok() )
     {
-      cooldown->charges += as<int>( p->talents.arms.dreadnaught->effectN( 1 ).base_value() );
       dreadnaught = new dreadnaught_t( p );
       add_child( dreadnaught );
     }
