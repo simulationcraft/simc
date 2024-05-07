@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.7.54449 PTR
+SimulationCraft 1026-01 for World of Warcraft 10.2.6.53989 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -4252,7 +4252,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=297945)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 0.70000 | Misc Value: 1211 | Target: Self (1)
-                   Affected Spells (Category): Heroic Leap (6544)
+                   Affected Spells (Category): Heroic Leap (6544), Heroic Leap (427033)
 Description      : Reduces the cooldown of Heroic Leap by ${$m1/-1000} sec, and Heroic Leap now also increases your movement speed by $202164s1% for $202164d.
 
 Name             : Bounding Stride (id=202164) 
@@ -10427,7 +10427,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=831685)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 1211 | Target: Self (1)
-                   Affected Spells (Category): Heroic Leap (6544)
+                   Affected Spells (Category): Heroic Leap (6544), Heroic Leap (427033)
 Description      : Heroic Leap gains $s1 additional $Lcharge:charges;.
 
 Name             : Thunderlord (id=335229) [Spell Family (4), Passive] 
@@ -15750,7 +15750,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1039985)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 389774 | Scaled Value: 389774 | PvP Coefficient: 1.00000 | Misc Value: 227847 | Target: Self (1)
-Description      : While Bladestorming or Ravager is active, you gain $s2% movement speed and $s1% Strength every $?c2[$390719t1][$390577t1] sec, stacking up to $s3 times. Lasts $390581d. 
+Description      : While $?s137050[Ravager is active][Bladestorming], every $?c2[$390719t1][$390577t1] sec you gain $s2% movement speed and $s1% Strength, stacking up to $s3 times. Lasts $390581d. 
 
 Bladestorm cannot be canceled while using Hurricane.
 
