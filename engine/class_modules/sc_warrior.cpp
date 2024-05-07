@@ -2908,7 +2908,7 @@ struct thunder_clap_t : public warrior_attack_t
 
     if ( p->talents.warrior.blood_and_thunder.ok() )
     {
-      blood_and_thunder_target_cap = p->talents.warrior.blood_and_thunder->effectN( 3 ).base_value();
+      blood_and_thunder_target_cap = p->talents.warrior.blood_and_thunder->effectN( 1 ).base_value();
       if ( p->talents.arms.rend->ok() )
         blood_and_thunder = new rend_dot_t( p );
       if ( p->talents.protection.rend->ok() )
@@ -2934,11 +2934,6 @@ struct thunder_clap_t : public warrior_attack_t
     if ( p()->buff.violent_outburst->check() )
     {
       am *= 1.0 + p()->buff.violent_outburst->data().effectN( 1 ).percent();
-    }
-
-    if ( p()->talents.warrior.blood_and_thunder.ok() )
-    {
-      am *= 1.0 + p()->talents.warrior.blood_and_thunder->effectN( 1 ).percent();
     }
 
     return am;
