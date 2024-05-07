@@ -1769,7 +1769,7 @@
       { "data_type": "i", "field": "id" },
       { "data_type": "i", "field": "type" },
       { "data_type": "i", "field": "id_trait_tree", "ref": "TraitTree" },
-      { "data_type": "i", "field": "unk_4" },
+      { "data_type": "i", "field": "granted_ranks" },
       { "data_type": "i", "field": "unk_5" },
       { "data_type": "i", "field": "unk_6" },
       { "data_type": "i", "field": "id_spec_set" },
