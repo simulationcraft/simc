@@ -778,6 +778,8 @@ public:
   // double composite_melee_attack_power() const override;
   double composite_mastery() const override;
   double composite_damage_versatility() const override;
+  double composite_heal_versatility() const override;
+  double composite_mitigation_versatility() const override;
   double composite_crit_block() const override;
   double composite_crit_avoidance() const override;
   // double composite_melee_speed() const override;
@@ -7816,6 +7818,28 @@ double warrior_t::composite_damage_versatility() const
   cdv += talents.arms.valor_in_victory->effectN( 1 ).percent();
 
   return cdv;
+}
+
+// warrior_t::composite_heal_versatility ==============================
+
+double warrior_t::composite_heal_versatility() const
+{
+  double chv = player_t::composite_heal_versatility();
+
+  chv += talents.arms.valor_in_victory->effectN( 1 ).percent();
+
+  return chv;
+}
+
+// warrior_t::composite_mitigation_versatility ========================
+
+double warrior_t::composite_mitigation_versatility() const
+{
+  double cmv = player_t::composite_mitigation_versatility();
+
+  cmv += talents.arms.valor_in_victory->effectN( 1 ).percent();
+
+  return cmv;
 }
 
 // warrior_t::composite_attribute ================================
