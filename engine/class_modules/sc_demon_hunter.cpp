@@ -475,7 +475,7 @@ public:
 
       player_talent_t keen_engagement;
       player_talent_t preemptive_strike;
-      player_talent_t evasive_action;     // NYI
+      player_talent_t evasive_action;  // NYI
       player_talent_t unhindered_assault;
       player_talent_t incisive_blade;
 
@@ -7042,8 +7042,8 @@ void demon_hunter_t::create_buffs()
                                    if ( rng().roll( options.fodder_to_the_flame_initiative_chance * ( t - 3 ) ) )
                                      fodder_initiative = false;
                                  } );
-  buff.immolation_aura = new buffs::immolation_aura_buff_t( this );
-  buff.metamorphosis   = new buffs::metamorphosis_buff_t( this );
+  buff.immolation_aura = make_buff<buffs::immolation_aura_buff_t>( this );
+  buff.metamorphosis = make_buff<buffs::metamorphosis_buff_t>( this );
 
   // Havoc ==================================================================
 
