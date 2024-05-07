@@ -232,8 +232,7 @@ public:
     buff_t* shield_charge_movement;
     buff_t* shield_wall;
     buff_t* show_of_force;
-    buff_t* slaughtering_strikes_rb;
-    buff_t* slaughtering_strikes_an;
+    buff_t* slaughtering_strikes;
     buff_t* spell_reflection;
     buff_t* sudden_death;
     buff_t* sweeping_strikes;
@@ -947,8 +946,7 @@ public:
     parse_effects( p()->buff.bloodcraze, p()->talents.fury.bloodcraze );
     parse_effects( p()->buff.dancing_blades );
     parse_effects( p()->buff.recklessness );
-    parse_effects( p()->buff.slaughtering_strikes_an );
-    parse_effects( p()->buff.slaughtering_strikes_rb );
+    parse_effects( p()->buff.slaughtering_strikes );
 
     // Protection
     parse_effects( p()->buff.juggernaut_prot );
@@ -2509,7 +2507,8 @@ struct onslaught_t : public warrior_attack_t
     if ( p()->talents.fury.tenderize->ok() )
     {
       p()->enrage();
-      p()->buff.slaughtering_strikes_rb->trigger( as<int>( p()->talents.fury.tenderize->effectN( 2 ).base_value() ) );
+      if ( p()->talents.fury.slaughtering_strikes->ok() )
+        p()->buff.slaughtering_strikes->trigger( as<int>( p()->talents.fury.tenderize->effectN( 1 ).base_value() ) );
     }
 
     if ( p()->talents.fury.unbridled_ferocity.ok() && rng().roll( unbridled_chance ) )
@@ -3779,7 +3778,7 @@ struct raging_blow_t : public warrior_attack_t
 
     if ( p()->talents.fury.slaughtering_strikes->ok() )
     {
-      p()->buff.slaughtering_strikes_rb->trigger();
+      p()->buff.slaughtering_strikes->trigger();
     }
   }
 
@@ -3904,7 +3903,7 @@ struct crushing_blow_t : public warrior_attack_t
 
     if ( p()->talents.fury.slaughtering_strikes->ok() )
     {
-      p()->buff.slaughtering_strikes_rb->trigger();
+      p()->buff.slaughtering_strikes->trigger();
     }
   }
 
@@ -4314,8 +4313,7 @@ struct rampage_attack_t : public warrior_attack_t
     if ( p()->talents.fury.rampage->effectN( 5 ).trigger()->id() == data().id() )
     {
       p()->buff.meat_cleaver->decrement();
-      p()->buff.slaughtering_strikes_rb->expire();
-      p()->buff.slaughtering_strikes_an->expire();
+      p()->buff.slaughtering_strikes->expire();
     }
   }
 
@@ -7087,7 +7085,7 @@ void warrior_t::create_buffs()
      ->add_invalidate( CACHE_ATTACK_HASTE )
      ->add_invalidate( CACHE_RUN_SPEED )
      ->set_default_value( find_spell( 184362 )->effectN( 1 ).percent() )
-     ->set_duration( find_spell( 184362 )->duration() + talents.fury.tenderize->effectN( 1 ).time_value() );
+     ->set_duration( find_spell( 184362 )->duration() );
 
   buff.frenzy = make_buff( this, "frenzy", find_spell(335082) )
                            ->set_default_value( find_spell( 335082 )->effectN( 1 ).percent() )
@@ -7154,10 +7152,7 @@ void warrior_t::create_buffs()
     ->set_default_value( spell.shield_wall->effectN( 1 ).percent() )
     ->set_cooldown( timespan_t::zero() );
 
-  buff.slaughtering_strikes_an = make_buff( this, "slaughtering_strikes_an", find_spell( 393943 ) )
-                                  ->set_default_value_from_effect( 1 );
-
-  buff.slaughtering_strikes_rb = make_buff( this, "slaughtering_strikes_rb", find_spell( 393931 ) )
+  buff.slaughtering_strikes = make_buff( this, "slaughtering_strikes", find_spell( 393931 ) )
                                   ->set_default_value_from_effect( 1 );
 
   const spell_data_t* test_of_might_tracker = talents.arms.test_of_might.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger();
