@@ -220,7 +220,7 @@ void vengeance( player_t* p )
   default_->add_action( "variable,name=single_target,value=spell_targets.spirit_bomb=1", "When to use Spirit Bomb with Focused Cleave" );
   default_->add_action( "variable,name=small_aoe,value=spell_targets.spirit_bomb>=2&spell_targets.spirit_bomb<=5" );
   default_->add_action( "variable,name=big_aoe,value=spell_targets.spirit_bomb>=6" );
-  default_->add_action( "variable,name=can_spb,op=setif,condition=variable.fd_ready,value=(variable.single_target&soul_fragments>=5)|(variable.small_aoe&soul_fragments>=4)|(variable.big_aoe&soul_fragments>=3),value_else=(variable.small_aoe&soul_fragments>=5)|(variable.big_aoe&soul_fragments>=4)" );
+  default_->add_action( "variable,name=can_spb,op=setif,condition=variable.fd_ready,value=(variable.single_target&soul_fragments>=5)|(variable.small_aoe&soul_fragments>=4)|(variable.big_aoe&soul_fragments>=3),value_else=(variable.small_aoe&soul_fragments>=4)|(variable.big_aoe&soul_fragments>=3)" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "augmentation" );
@@ -244,7 +244,7 @@ void vengeance( player_t* p )
   default_->add_action( "run_action_list,name=big_aoe,if=variable.big_aoe" );
 
   maintenance->add_action( "fiery_brand,if=talent.fiery_brand&((active_dot.fiery_brand=0&(cooldown.sigil_of_flame.remains<=(execute_time+gcd.remains)|cooldown.soul_carver.remains<=(execute_time+gcd.remains)|cooldown.fel_devastation.remains<=(execute_time+gcd.remains)))|(talent.down_in_flames&full_recharge_time<=(execute_time+gcd.remains)))", "Maintenance & upkeep" );
-  maintenance->add_action( "sigil_of_flame,if=talent.ascending_flame|active_dot.sigil_of_flame=0" );
+  maintenance->add_action( "sigil_of_flame,if=talent.ascending_flame|(active_dot.sigil_of_flame=0&!in_flight)" );
   maintenance->add_action( "immolation_aura" );
   maintenance->add_action( "bulk_extraction,if=((5-soul_fragments)<=spell_targets)&soul_fragments<=2" );
   maintenance->add_action( "spirit_bomb,if=variable.can_spb" );
@@ -260,13 +260,13 @@ void vengeance( player_t* p )
   fiery_demise->add_action( "fel_devastation" );
   fiery_demise->add_action( "soul_carver,if=soul_fragments.total<3" );
   fiery_demise->add_action( "the_hunt" );
-  fiery_demise->add_action( "elysian_decree,line_cd=1.85,if=fury>=40" );
+  fiery_demise->add_action( "elysian_decree,if=fury>=40&!prev_gcd.1.elysian_decree" );
   fiery_demise->add_action( "spirit_bomb,if=variable.can_spb" );
 
   single_target->add_action( "the_hunt", "Single Target" );
   single_target->add_action( "soul_carver" );
   single_target->add_action( "fel_devastation,if=talent.collective_anguish|(talent.stoke_the_flames&talent.burning_blood)" );
-  single_target->add_action( "elysian_decree" );
+  single_target->add_action( "elysian_decree,if=!prev_gcd.1.elysian_decree" );
   single_target->add_action( "fel_devastation" );
   single_target->add_action( "soul_cleave,if=!variable.dont_cleave" );
   single_target->add_action( "fracture" );
@@ -274,7 +274,7 @@ void vengeance( player_t* p )
 
   small_aoe->add_action( "the_hunt", "2-5 targets" );
   small_aoe->add_action( "fel_devastation,if=talent.collective_anguish.enabled|(talent.stoke_the_flames.enabled&talent.burning_blood.enabled)" );
-  small_aoe->add_action( "elysian_decree,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)" );
+  small_aoe->add_action( "elysian_decree,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)&!prev_gcd.1.elysian_decree" );
   small_aoe->add_action( "fel_devastation" );
   small_aoe->add_action( "soul_carver,if=soul_fragments.total<3" );
   small_aoe->add_action( "soul_cleave,if=(soul_fragments<=1|!talent.spirit_bomb)&!variable.dont_cleave" );
@@ -283,7 +283,7 @@ void vengeance( player_t* p )
 
   big_aoe->add_action( "fel_devastation,if=talent.collective_anguish|talent.stoke_the_flames", "6+ targets" );
   big_aoe->add_action( "the_hunt" );
-  big_aoe->add_action( "elysian_decree,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)" );
+  big_aoe->add_action( "elysian_decree,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)&!prev_gcd.1.elysian_decree" );
   big_aoe->add_action( "fel_devastation" );
   big_aoe->add_action( "soul_carver,if=soul_fragments.total<3" );
   big_aoe->add_action( "spirit_bomb,if=soul_fragments>=4" );
