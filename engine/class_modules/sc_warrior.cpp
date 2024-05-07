@@ -2262,6 +2262,11 @@ struct bloodthirst_t : public warrior_attack_t
     }
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
 
+    if ( p->talents.fury.deft_experience->ok() )
+    {
+      enrage_chance += p->talents.fury.deft_experience->effectN( 2 ).percent();
+    }
+
     if ( p->talents.fury.fresh_meat->ok() )
     {
       enrage_chance += p->talents.fury.fresh_meat->effectN( 1 ).percent();
@@ -2384,6 +2389,11 @@ struct bloodbath_t : public warrior_attack_t
       bloodthirst_heal = new bloodthirst_heal_t( p );
     }
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+
+    if ( p->talents.fury.deft_experience->ok() )
+    {
+      enrage_chance += p->talents.fury.deft_experience->effectN( 2 ).percent();
+    }
 
     if ( p->talents.fury.fresh_meat->ok() )
     {
