@@ -1460,6 +1460,11 @@ class SpellDataGenerator(DataGenerator):
          433768, 433786, # reworked umbrelskul's fractured heart
          # 10.2.7
          431760, 440393, # Cloak of Infinite Potential / Timerunner's Advantage
+         432334, # Explosive Barrage Damage
+         429409, # Fervor Damage
+         437064, # Lifestorm Damage
+         429273, # Arcanist's Edge Damage
+         429377, # Slay Damage
          # 11.0 The War Within ================================================
          443515, 443519, # fateweaved needle
          452037, 452057, 452059, 452060, 452061, 452062, 452063, 452064, 452065, 452066, 452067, 452068, 452069, 452070, 452071, 452072, 452073, 452350, 451845, 451866, # aberrant spellforge
