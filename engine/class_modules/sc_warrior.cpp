@@ -1451,7 +1451,7 @@ struct melee_t : public warrior_attack_t
 {
   warrior_attack_t* sidearm;
   bool mh_lost_melee_contact, oh_lost_melee_contact;
-  double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier, seasoned_soldier_crit_mult;
+  double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier, prot_rage_multiplier, seasoned_soldier_crit_mult;
   double sidearm_chance, enrage_chance;
   devastator_t* devastator;
   melee_t( util::string_view name, warrior_t* p )
@@ -1459,10 +1459,10 @@ struct melee_t : public warrior_attack_t
       sidearm( nullptr),
       mh_lost_melee_contact( true ),
       oh_lost_melee_contact( true ),
-      // arms and fury multipliers are both 1, adjusted by the spec scaling auras (x4 for Arms and x1 for Fury)
       base_rage_generation( 1.75 ),
-      arms_rage_multiplier( 4.00 ),
-      fury_rage_multiplier( 1.00 ),
+      arms_rage_multiplier( 1.0 + p->spec.arms_warrior->effectN( 1 ).percent() ),
+      fury_rage_multiplier( 1.0 + p->spec.fury_warrior->effectN( 3 ).percent() ),
+      prot_rage_multiplier( 1.0 + p->spec.protection_warrior->effectN( 5 ).percent() ),
       seasoned_soldier_crit_mult( p->spec.seasoned_soldier->effectN( 1 ).percent() ),
       sidearm_chance( p->talents.warrior.sidearm->proc_chance() ),
       enrage_chance( p->talents.fury.frenzied_flurry->proc_chance() ),
@@ -1614,8 +1614,7 @@ struct melee_t : public warrior_attack_t
     }
     else
     {
-      // Protection generates a static 2 rage per successful auto attack landed
-      rage_gain = 2.0;
+      rage_gain *= prot_rage_multiplier;
     }
     rage_gain *= 1.0 + p()->talents.warrior.war_machine->effectN( 2 ).percent();
 
