@@ -1302,9 +1302,6 @@ public:
   player_t* get_smart_target( const std::vector<player_t*>& tl, dot_t* druid_td_t::dots_t::*dot,
                               player_t* exclude = nullptr, double range = 0.0, bool really_smart = false );
 
-  template <typename T>
-  void create_buff_callback( const special_effect_t*, buff_t* );
-
   // secondary actions
   std::vector<action_t*> secondary_action_list;
 
@@ -11319,25 +11316,6 @@ void druid_t::init_resources( bool force )
   expected_max_health = calculate_expected_max_health();
 }
 
-template <typename T>
-void druid_t::create_buff_callback( const special_effect_t* e, buff_t* b )
-{
-  static_assert( std::is_base_of_v<dbc_proc_callback_t, T> );
-
-  if ( b->is_fallback )
-    return;
-
-  auto cb = new T( this, *e );
-  cb->initialize();
-  cb->deactivate();
-
-  b->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
-    if ( new_ )
-      cb->activate();
-    else
-      cb->deactivate();
-  } );
-}
 
 // druid_t::init_special_effects ============================================
 void druid_t::init_special_effects()
@@ -11375,7 +11353,8 @@ void druid_t::init_special_effects()
     driver->spell_id = spec.bear_form_passive->id();
     special_effects.push_back( driver );
 
-    create_buff_callback<rage_from_being_attacked_cb_t>( driver, buff.bear_form );
+    auto cb = new rage_from_being_attacked_cb_t( this, *driver );
+    cb->activate_with_buff( buff.bear_form );
   }
 
   if ( talent.natures_vigil.ok() )
@@ -11421,7 +11400,8 @@ void druid_t::init_special_effects()
 
     special_effects.push_back( driver );
 
-    create_buff_callback<natures_vigil_cb_t>( driver, buff.natures_vigil );
+    auto cb = new natures_vigil_cb_t( this, *driver );
+    cb->activate_with_buff( buff.natures_vigil );
   }
 
   // Balance
@@ -11474,7 +11454,8 @@ void druid_t::init_special_effects()
     driver->custom_buff = buff.owlkin_frenzy;
     special_effects.push_back( driver );
 
-    create_buff_callback<owlkin_frenzy_cb_t>( driver, buff.moonkin_form );
+    auto cb = new owlkin_frenzy_cb_t( this, *driver );
+    cb->activate_with_buff( buff.moonkin_form );
   }
 
   // Feral
@@ -11553,7 +11534,8 @@ void druid_t::init_special_effects()
     driver->cooldown_ = 0_ms;
     special_effects.push_back( driver );
 
-    create_buff_callback<bristling_fur_cb_t>( driver, buff.bristling_fur );
+    auto cb = new bristling_fur_cb_t( this, *driver );
+    cb->activate_with_buff( buff.bristling_fur );
   }
 
   if ( talent.dream_of_cenarius_bear.ok() )
@@ -11718,7 +11700,7 @@ void druid_t::init_special_effects()
     new boundless_moonlight_heal_cb_t( this, *driver );
   }
 
-  // blanket proc callback initialization happens here. anything further needs to be individually initialized
+  // NOTE: this must come after all dbc_proc_callback creation in order to properly initialize them all
   player_t::init_special_effects();
 }
 
