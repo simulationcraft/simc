@@ -201,6 +201,7 @@ public:
 
     // TWW Hero Talents
     buff_t* blessed_assurance;
+    buff_t* divine_guidance;
     buff_t* rite_of_sanctification;
     buff_t* rite_of_adjuration;
     buff_t* holy_bulwark;
@@ -277,7 +278,7 @@ public:
     cooldown_t* wake_of_ashes;
 
     cooldown_t* blessing_of_the_seasons;
-    cooldown_t* holy_armament;
+    cooldown_t* holy_armaments;
     cooldown_t* ashen_hallow; // Radiant Embers Legendary
 
     cooldown_t* ret_aura_icd;
@@ -560,6 +561,7 @@ public:
     // Hero Talents
     const spell_data_t* holy_bulwark;
     const spell_data_t* sacred_weapon;
+    const spell_data_t* holy_armaments;
     const spell_data_t* rite_of_sanctification;
     const spell_data_t* rite_of_adjuratuion;
     const spell_data_t* laying_down_arms;

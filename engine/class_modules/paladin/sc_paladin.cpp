@@ -8,6 +8,7 @@
 #include "sc_paladin.hpp"
 
 #include "simulationcraft.hpp"
+#include "action/parse_effects.hpp"
 
 // ==========================================================================
 // Paladin
@@ -70,7 +71,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.wake_of_ashes    = get_cooldown( "wake_of_ashes" );
 
   cooldowns.blessing_of_the_seasons = get_cooldown( "blessing_of_the_seasons" );
-  cooldowns.holy_armament           = get_cooldown( "holy_armament" );
+  cooldowns.holy_armaments           = get_cooldown( "holy_armaments" );
 
   cooldowns.ret_aura_icd = get_cooldown( "ret_aura_icd" );
   cooldowns.ret_aura_icd->duration = timespan_t::from_seconds( 30 );
@@ -453,6 +454,11 @@ struct consecration_t : public paladin_spell_t
     {
       p()->buffs.sanctification->expire();
       p()->buffs.sanctification_empower->execute();
+    }
+    
+    if ( p()->buffs.divine_guidance->up() )
+    {
+      p()->divine_guidance_t();
     }
 
     paladin_spell_t::execute();
@@ -1239,7 +1245,7 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
       if ( !p()->buffs.holy_bulwark->up() && !player->buffs.sacred_weapon->up() )
       {
         timespan_t reduction = timespan_t::from_seconds( p()->talents.valiance->effectN( 1 ).base_value() );
-        p()->cooldowns.holy_armament->adjust( reduction );
+        p()->cooldowns.holy_armaments->adjust( reduction );
       }
     }
 
@@ -1709,7 +1715,6 @@ struct blessing_of_the_seasons_t : public paladin_spell_t
 };
 
 // Holy Armaments
-// TODO: Add spelldata once fetched
 //Sacred Weapon Driver 
 template <typename Base, typename Player>
 struct sacred_weapon_proc_t : public Base
@@ -1724,9 +1729,6 @@ struct sacred_weapon_proc_t : public Base
     // Sacred Weapon Buff
 struct sacred_weapon_t : public paladin_spell_t
 {
-    //TODO Add Spelldat
-    timespan_t buff_duration = 12_s;
-
     sacred_weapon_t( paladin_t* p ) : paladin_spell_t( "sacred_weapon", p )
    {
     }
@@ -1739,8 +1741,6 @@ struct sacred_weapon_t : public paladin_spell_t
 
 struct holy_bulwark_t : public paladin_spell_t
 {
-   timespan_t buff_duration = 12_s;
-
    holy_bulwark_t( paladin_t* p ) : paladin_spell_t( "holy_bulwark", p )
    {
     }
@@ -1753,15 +1753,17 @@ struct holy_bulwark_t : public paladin_spell_t
 
 // Holy Armaments
 
-struct holy_armament_t : public paladin_spell_t
+struct holy_armaments_t : public paladin_spell_t
 {
-   holy_armament_t( paladin_t* p, util::string_view options_str ) : paladin_spell_t( "holy_armament", p, spell_data_t::nil()) 
+   holy_armaments_t( paladin_t* p, util::string_view options_str ) :
+      //paladin_spell_t( "holy_armaments", p, spell_data_t::nil()) 
+      paladin_spell_t( "holy_armaments", p, p->find_spell( 432459 ) )
    {
     parse_options( options_str );
     harmful = false;
     hasted_gcd = true;
-    cooldown->duration = 20_s;
-    cooldown->charges  = 2;
+    name_str_reporting = "Holy Armaments";
+    apply_affecting_aura( p->find_spell(432804) );
    }
 
    timespan_t execute_time() const override
@@ -2264,8 +2266,8 @@ action_t* paladin_t::create_action( util::string_view name, util::string_view op
     return new blessing_of_the_seasons_t( this, options_str );
   if ( name == "word_of_glory" )
     return new word_of_glory_t( this, options_str );
-  if ( name == "holy_armament" )
-    return new holy_armament_t( this, options_str );
+  if ( name == "holy_armaments" )
+    return new holy_armaments_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2517,6 +2519,7 @@ void paladin_t::create_buffs()
   buffs.holy_bulwark      = make_buff( this, "holy_bulwark", find_spell( 432496 ) );
   buffs.sacred_weapon     = make_buff( this, "sacred_weapon", find_spell( 432502 ) );
   buffs.blessed_assurance = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
+  buffs.divine_guidance   = make_buff( this, "divine_guidance", find_spell( 433106 ) );
 }
 
 // paladin_t::default_potion ================================================
@@ -2778,7 +2781,7 @@ void paladin_t::init_spells()
   talents.fading_light = find_talent_spell( talent_tree::CLASS, "Fading Light" );
 
   // Hero Talents
-  talents.holy_bulwark           = find_talent_spell( talent_tree::HERO, "Holy Bulwark" );
+  talents.holy_armaments           = find_talent_spell( talent_tree::HERO, "Holy Armaments" );
   talents.rite_of_sanctification = find_talent_spell( talent_tree::HERO, "Rite of Sanctificatiopn" );
   talents.rite_of_adjuratuion    = find_talent_spell( talent_tree::HERO, "Rite of Adjuration" );
   talents.laying_down_arms       = find_talent_spell( talent_tree::HERO, " Laying Down Arms" );
