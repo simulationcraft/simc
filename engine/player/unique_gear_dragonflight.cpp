@@ -7407,19 +7407,18 @@ void fang_of_the_frenzied_nightclaw( special_effect_t& effect )
 // 432777 driver
 // 433889 big damage
 // 433930 damage cast
-// 433954 summon image 1
-// 433957 summon image 2
-// 433958 summon image 3
+// 433915 summon image 1
+// 433954 summon image 2
+// 433956 summon image 3
+// 433957 summon image 4
+// 433958 summon image 5
 // 434021 small damage
 // 434070	channel 1
 // 434071	channel 2
 // 434072	channel 3
-// TODO: determine if 1.1 multiplier from tooltip desc has conditions
+// TODO: determine proc rate of 5 proc (2x damage)
 // TODO: determine how annihilation gets used, currently using barrage only
-// TODO: confirm damage happens at end of channel trigger (3.05s) instead of end of cast (3s)
 // TODO: confirm # of summons is uniformly random
-// TODO: determine if overlapping areas have a spread
-// TODO: determine if procs can happen while previous proc is still casting
 void tome_of_unstable_power_new( special_effect_t& effect )
 {
   struct tome_of_unstable_power_cb_t : public dbc_proc_callback_t
@@ -7440,7 +7439,9 @@ void tome_of_unstable_power_new( special_effect_t& effect )
       {
         generic_proc_t::snapshot_state( s, rt );
 
-        auto count = rng().range( 3U );
+        // TODO: determine proc rate on this
+        bool five_proc = false;
+        auto count = five_proc ? 11 : rng().range( 3U );
         s->persistent_multiplier *= ( 0.9 + 0.1 * count );
       }
     };
@@ -7454,7 +7455,6 @@ void tome_of_unstable_power_new( special_effect_t& effect )
 
       barrage = create_proc_action<arcane_barrage_t>( "arcane_barrage_tome", e, dam );
 
-      // TODO: confirm damage happens at end of channel trigger (3.05s) instead of end of cast (3s)
       cast_time = e.player->find_spell( 434070 )->duration();
     }
 
