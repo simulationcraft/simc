@@ -4305,7 +4305,7 @@ void output_player_heal_summary( report::sc_html_stream& os, const player_t& act
     os << "<tr>\n";
 
   os << "<th class=\"left name\">" << util::encode_html( actor.name() ) << "</th>\n"
-     << "<th class=\"right\">" << util::to_string( actor.collected_data.hps.mean(), 0 ) << "</th>\n"
+     << "<th class=\"right\">" << util::to_string( actor.collected_data.hps.mean() + actor.collected_data.aps.mean(), 0 ) << "</th>\n"
      << "<td colspan=\"" << ( static_columns + n_optional_columns ) << "\" class=\"filler\"></td>\n"
      << "</tr>\n"
      << "</thead>\n";
