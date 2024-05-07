@@ -2725,12 +2725,6 @@ struct colossus_smash_t : public warrior_attack_t
       if ( p()->talents.arms.in_for_the_kill->ok() )
         p()->buff.in_for_the_kill->trigger();
     }
-
-    if ( p()->talents.warrior.warlords_torment->ok() )
-    {
-      const timespan_t trigger_duration = p()->talents.warrior.warlords_torment->effectN( 2 ).time_value();
-      p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
-    }
   }
 };
 
@@ -4264,12 +4258,6 @@ struct warbreaker_t : public warrior_attack_t
 
       if ( p()->talents.arms.in_for_the_kill->ok() )
         p()->buff.in_for_the_kill->trigger();
-    }
-
-    if ( p()->talents.warrior.warlords_torment->ok() )
-    {
-      const timespan_t trigger_duration = p()->talents.warrior.warlords_torment->effectN( 2 ).time_value();
-      p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
     }
   }
 
