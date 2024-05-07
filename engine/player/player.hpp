@@ -801,6 +801,12 @@ struct player_t : public actor_t
     double rashoks_fake_overheal        = 0.4;
     // A list of stat amounts provided by the Timerunner's Advantage buff.
     player_option_t<std::string> timerunners_advantage;
+    // Number of party members using the Brilliance Tinker.
+    int brilliance_party = 1;
+    // Number of party members using the Windweaver Tinker.
+    int windweaver_party = 4;
+    // Tinker Ilvls of party members using the Windweaver Tinker. If not specified they will be your Main Hands ilvl.
+    player_option_t<std::string> windweaver_party_ilvls = "";
   } dragonflight_opts;
 
   struct thewarwithin_opt_t
