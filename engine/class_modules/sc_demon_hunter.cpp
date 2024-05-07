@@ -193,6 +193,49 @@ static std::function<int( demon_hunter_td_t* )> d_fn( T d, bool stack = true )
   }
 }
 
+enum class demonsurge_ability
+{
+  SOUL_SUNDER,
+  SPIRIT_BURST,
+  SIGIL_OF_DOOM,
+  CONSUMING_FLAME,
+  FEL_DESOLATION,
+  ABYSSAL_GAZE,
+  ANNIHILATION,
+  DEATH_SWEEP
+};
+
+const std::vector<demonsurge_ability> demonsurge_havoc_abilities{
+    demonsurge_ability::SIGIL_OF_DOOM, demonsurge_ability::CONSUMING_FLAME, demonsurge_ability::ABYSSAL_GAZE,
+    demonsurge_ability::ANNIHILATION, demonsurge_ability::DEATH_SWEEP };
+
+const std::vector<demonsurge_ability> demonsurge_vengeance_abilities{
+    demonsurge_ability::SOUL_SUNDER, demonsurge_ability::SPIRIT_BURST, demonsurge_ability::SIGIL_OF_DOOM,
+    demonsurge_ability::CONSUMING_FLAME, demonsurge_ability::FEL_DESOLATION };
+
+std::string demonsurge_ability_name( demonsurge_ability ability )
+{
+  switch ( ability )
+  {
+    case demonsurge_ability::SOUL_SUNDER:
+      return "demonsurge_soul_sunder";
+    case demonsurge_ability::SPIRIT_BURST:
+      return "demonsurge_spirit_burst";
+    case demonsurge_ability::SIGIL_OF_DOOM:
+      return "demonsurge_sigil_of_doom";
+    case demonsurge_ability::CONSUMING_FLAME:
+      return "demonsurge_consuming_flame";
+    case demonsurge_ability::FEL_DESOLATION:
+      return "demonsurge_fel_desolation";
+    case demonsurge_ability::ABYSSAL_GAZE:
+      return "demonsurge_ABYSSAL_GAZE";
+    case demonsurge_ability::ANNIHILATION:
+      return "demonsurge_annihilation";
+    case demonsurge_ability::DEATH_SWEEP:
+      return "demonsurge_death_sweep";
+  }
+}
+
 /* Demon Hunter class definition
  *
  * Derived from player_t. Contains everything that defines the Demon Hunter
@@ -277,6 +320,7 @@ public:
     buff_t* monster_rising;
     buff_t* student_of_suffering;
     buff_t* enduring_torment;
+    std::unordered_map<demonsurge_ability, buff_t*> demonsurge;
 
     // Set Bonuses
     buff_t* t29_havoc_4pc;
@@ -3645,6 +3689,10 @@ struct metamorphosis_t : public demon_hunter_spell_t
         p()->buff.restless_hunter->trigger();
       }
 
+      for ( demonsurge_ability ability : demonsurge_havoc_abilities )
+      {
+        p()->buff.demonsurge[ ability ]->trigger();
+      }
       // Buff is gained at the start of the leap.
       p()->buff.metamorphosis->extend_duration_or_trigger();
       p()->buff.inner_demon->trigger();
@@ -3672,6 +3720,11 @@ struct metamorphosis_t : public demon_hunter_spell_t
     }
     else  // DEMON_HUNTER_VENGEANCE
     {
+
+      for ( demonsurge_ability ability : demonsurge_vengeance_abilities )
+      {
+        p()->buff.demonsurge[ ability ]->trigger();
+      }
       p()->buff.metamorphosis->trigger();
 
       if ( p()->talent.felscarred.violent_transformation->ok() )
@@ -6553,6 +6606,20 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
   void trigger_demonic()
   {
+    if ( !p()->buff.metamorphosis->up() )
+    {
+      if ( p()->specialization() == DEMON_HUNTER_HAVOC )
+      {
+        p()->buff.demonsurge[ demonsurge_ability::ANNIHILATION ]->trigger();
+        p()->buff.demonsurge[ demonsurge_ability::DEATH_SWEEP ]->trigger();
+      }
+      else
+      {
+        p()->buff.demonsurge[ demonsurge_ability::SOUL_SUNDER ]->trigger();
+        p()->buff.demonsurge[ demonsurge_ability::SPIRIT_BURST ]->trigger();
+      }
+    }
+
     const timespan_t extend_duration = p()->talent.demon_hunter.demonic->effectN( 1 ).time_value();
     p()->buff.metamorphosis->extend_duration_or_trigger( extend_duration );
     p()->buff.inner_demon->trigger();
@@ -6601,6 +6668,13 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     if ( p()->talent.felscarred.enduring_torment->ok() )
     {
       p()->buff.enduring_torment->trigger();
+    }
+
+    auto demonsurge_spec_abilities =
+        p()->specialization() == DEMON_HUNTER_HAVOC ? demonsurge_havoc_abilities : demonsurge_vengeance_abilities;
+    for ( demonsurge_ability ability : demonsurge_spec_abilities )
+    {
+      p()->buff.demonsurge[ ability ]->expire();
     }
   }
 };
@@ -7043,7 +7117,7 @@ void demon_hunter_t::create_buffs()
                                      fodder_initiative = false;
                                  } );
   buff.immolation_aura = make_buff<buffs::immolation_aura_buff_t>( this );
-  buff.metamorphosis = make_buff<buffs::metamorphosis_buff_t>( this );
+  buff.metamorphosis   = make_buff<buffs::metamorphosis_buff_t>( this );
 
   // Havoc ==================================================================
 
@@ -7164,6 +7238,13 @@ void demon_hunter_t::create_buffs()
             resource_gain( RESOURCE_FURY, b->data().effectN( 2 ).trigger()->effectN( 1 ).base_value(),
                            gain.student_of_suffering );
           } );
+
+  auto demonsurge_spec_abilities =
+      specialization() == DEMON_HUNTER_HAVOC ? demonsurge_havoc_abilities : demonsurge_vengeance_abilities;
+  for ( demonsurge_ability ability : demonsurge_spec_abilities )
+  {
+    buff.demonsurge[ ability ] = make_buff( this, demonsurge_ability_name( ability ), spell_data_t::nil() );
+  }
 
   // Set Bonus Items ========================================================
 
