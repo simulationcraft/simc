@@ -5945,7 +5945,7 @@ struct ignore_pain_t : public warrior_spell_t
     may_crit     = false;
     range        = -1;
     target       = player;
-    base_costs[ RESOURCE_RAGE ] = ( p->specialization() == WARRIOR_FURY ? 60 : p->specialization() == WARRIOR_ARMS ? 40 : 35);
+    base_costs[ RESOURCE_RAGE ] = ( p->specialization() == WARRIOR_FURY ? 60 : p->specialization() == WARRIOR_ARMS ? 20 : 35);
 
     base_dd_max = base_dd_min = 0;
     resource_current = RESOURCE_RAGE;
