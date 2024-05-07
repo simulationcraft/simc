@@ -4859,10 +4859,6 @@ struct slam_t : public warrior_attack_t
     parse_options( options_str );
     weapon                       = &( p->main_hand_weapon );
     radius = 5;
-    if ( p->talents.fury.storm_of_swords->ok() )
-    {
-      energize_amount += p->talents.fury.storm_of_swords->effectN( 6 ).resource( RESOURCE_RAGE );
-    }
     if ( player->specialization() == WARRIOR_FURY )
     {
       base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
@@ -4876,10 +4872,6 @@ struct slam_t : public warrior_attack_t
     background = true;
     weapon                       = &( p->main_hand_weapon );
     radius = 5;
-    if ( p->talents.fury.storm_of_swords->ok() )
-    {
-      energize_amount += p->talents.fury.storm_of_swords->effectN( 6 ).resource( RESOURCE_RAGE );
-    }
     if ( player->specialization() == WARRIOR_FURY )
     {
       base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
@@ -6477,7 +6469,6 @@ void warrior_t::init_spells()
   talents.fury.deft_experience      = find_talent_spell( talent_tree::SPECIALIZATION, "Deft Experience", WARRIOR_FURY );
   talents.fury.swift_strikes        = find_talent_spell( talent_tree::SPECIALIZATION, "Swift Strikes" );
   talents.fury.critical_thinking    = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Thinking", WARRIOR_FURY );
-  talents.fury.storm_of_swords      = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Swords", WARRIOR_FURY );
   talents.fury.odyns_fury           = find_talent_spell( talent_tree::SPECIALIZATION, "Odyn's Fury" );
   talents.fury.anger_management     = find_talent_spell( talent_tree::SPECIALIZATION, "Anger Management" );
   talents.fury.reckless_abandon     = find_talent_spell( talent_tree::SPECIALIZATION, "Reckless Abandon" );
@@ -8424,7 +8415,6 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.fury.improved_raging_blow );
   action.apply_affecting_aura( talents.fury.meat_cleaver );
   action.apply_affecting_aura( talents.fury.storm_of_steel );
-  action.apply_affecting_aura( talents.fury.storm_of_swords ); // rage generation in spell
 
   // Protection Auras
   action.apply_affecting_aura( talents.protection.storm_of_steel );
