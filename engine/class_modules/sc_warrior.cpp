@@ -1239,6 +1239,7 @@ public:
       {
         cd_time_reduction /= p()->talents.fury.anger_management->effectN( 3 ).base_value();
         p()->cooldown.recklessness->adjust( timespan_t::from_seconds( cd_time_reduction ) );
+        p()->cooldown.bladestorm->adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p()->cooldown.ravager->adjust( timespan_t::from_seconds( cd_time_reduction ) );
       }
 
@@ -1252,13 +1253,14 @@ public:
         p()->cooldown.colossus_smash->adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p()->cooldown.warbreaker->adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p()->cooldown.bladestorm->adjust( timespan_t::from_seconds( cd_time_reduction ) );
+        p()->cooldown.ravager->adjust( timespan_t::from_seconds( cd_time_reduction ) );
       }
 
       else if ( p()->specialization() == WARRIOR_PROTECTION )
       {
         cd_time_reduction /= p()->talents.protection.anger_management->effectN( 2 ).base_value();
-        p()->cooldown.shield_wall->adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p()->cooldown.avatar->adjust( timespan_t::from_seconds( cd_time_reduction ) );
+        p()->cooldown.shield_wall->adjust( timespan_t::from_seconds( cd_time_reduction ) );
       }
     }
   }
@@ -8456,7 +8458,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
   if ( specialization() == WARRIOR_FURY && main_hand_weapon.group() == WEAPON_1H &&
              off_hand_weapon.group() == WEAPON_1H && talents.fury.single_minded_fury->ok() )
   {
-  action.apply_affecting_aura( talents.fury.single_minded_fury );
+    action.apply_affecting_aura( talents.fury.single_minded_fury );
   }
   if ( specialization() == WARRIOR_FURY && talents.warrior.dual_wield_specialization->ok() )
   {
