@@ -38,7 +38,7 @@ actions+=/variable,name=dont_cleave,value=(cooldown.fel_devastation.remains<=(ac
 actions+=/variable,name=single_target,value=spell_targets.spirit_bomb=1
 actions+=/variable,name=small_aoe,value=spell_targets.spirit_bomb>=2&spell_targets.spirit_bomb<=5
 actions+=/variable,name=big_aoe,value=spell_targets.spirit_bomb>=6
-actions+=/variable,name=can_spb,op=setif,condition=variable.fd_ready,value=(variable.single_target&soul_fragments>=5)|(variable.small_aoe&soul_fragments>=4)|(variable.big_aoe&soul_fragments>=3),value_else=(variable.small_aoe&soul_fragments>=5)|(variable.big_aoe&soul_fragments>=4)
+actions+=/variable,name=can_spb,op=setif,condition=variable.fd_ready,value=(variable.single_target&soul_fragments>=5)|(variable.small_aoe&soul_fragments>=4)|(variable.big_aoe&soul_fragments>=3),value_else=(variable.small_aoe&soul_fragments>=4)|(variable.big_aoe&soul_fragments>=3)
 actions+=/auto_attack
 actions+=/disrupt,if=target.debuff.casting.react
 actions+=/infernal_strike,use_off_gcd=1
@@ -56,7 +56,7 @@ actions+=/run_action_list,name=big_aoe,if=variable.big_aoe
 # 6+ targets
 actions.big_aoe=fel_devastation,if=talent.collective_anguish|talent.stoke_the_flames
 actions.big_aoe+=/the_hunt
-actions.big_aoe+=/elysian_decree,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)
+actions.big_aoe+=/elysian_decree,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)&!prev_gcd.1.elysian_decree
 actions.big_aoe+=/fel_devastation
 actions.big_aoe+=/soul_carver,if=soul_fragments.total<3
 actions.big_aoe+=/spirit_bomb,if=soul_fragments>=4
@@ -76,7 +76,7 @@ actions.fiery_demise+=/felblade,if=(!talent.spirit_bomb|(cooldown.fel_devastatio
 actions.fiery_demise+=/fel_devastation
 actions.fiery_demise+=/soul_carver,if=soul_fragments.total<3
 actions.fiery_demise+=/the_hunt
-actions.fiery_demise+=/elysian_decree,line_cd=1.85,if=fury>=40
+actions.fiery_demise+=/elysian_decree,if=fury>=40&!prev_gcd.1.elysian_decree
 actions.fiery_demise+=/spirit_bomb,if=variable.can_spb
 
 # Filler
@@ -89,7 +89,7 @@ actions.filler+=/throw_glaive
 
 # Maintenance & upkeep
 actions.maintenance=fiery_brand,if=talent.fiery_brand&((active_dot.fiery_brand=0&(cooldown.sigil_of_flame.remains<=(execute_time+gcd.remains)|cooldown.soul_carver.remains<=(execute_time+gcd.remains)|cooldown.fel_devastation.remains<=(execute_time+gcd.remains)))|(talent.down_in_flames&full_recharge_time<=(execute_time+gcd.remains)))
-actions.maintenance+=/sigil_of_flame,if=talent.ascending_flame|active_dot.sigil_of_flame=0
+actions.maintenance+=/sigil_of_flame,if=talent.ascending_flame|(active_dot.sigil_of_flame=0&!in_flight)
 actions.maintenance+=/immolation_aura
 actions.maintenance+=/bulk_extraction,if=((5-soul_fragments)<=spell_targets)&soul_fragments<=2
 actions.maintenance+=/spirit_bomb,if=variable.can_spb
@@ -104,7 +104,7 @@ actions.maintenance+=/soul_cleave,if=fury.deficit<=40
 actions.single_target=the_hunt
 actions.single_target+=/soul_carver
 actions.single_target+=/fel_devastation,if=talent.collective_anguish|(talent.stoke_the_flames&talent.burning_blood)
-actions.single_target+=/elysian_decree
+actions.single_target+=/elysian_decree,if=!prev_gcd.1.elysian_decree
 actions.single_target+=/fel_devastation
 actions.single_target+=/soul_cleave,if=!variable.dont_cleave
 actions.single_target+=/fracture
@@ -113,7 +113,7 @@ actions.single_target+=/call_action_list,name=filler
 # 2-5 targets
 actions.small_aoe=the_hunt
 actions.small_aoe+=/fel_devastation,if=talent.collective_anguish.enabled|(talent.stoke_the_flames.enabled&talent.burning_blood.enabled)
-actions.small_aoe+=/elysian_decree,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)
+actions.small_aoe+=/elysian_decree,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)&!prev_gcd.1.elysian_decree
 actions.small_aoe+=/fel_devastation
 actions.small_aoe+=/soul_carver,if=soul_fragments.total<3
 actions.small_aoe+=/soul_cleave,if=(soul_fragments<=1|!talent.spirit_bomb)&!variable.dont_cleave
