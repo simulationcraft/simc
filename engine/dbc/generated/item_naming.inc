@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.2.6.54499
-static const std::array<item_name_description_t, 846> __item_name_description_data { {
+// Item name descriptions, wow build 10.2.7.54577
+static const std::array<item_name_description_t, 871> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -823,6 +823,7 @@ static const std::array<item_name_description_t, 846> __item_name_description_da
   { 14093, "|nUpgrade Level: Myth 3/4"                   },
   { 14094, "|nUpgrade Level: Myth 4/4"                   },
   { 14095, "Mythic+"                                     },
+  { 14097, "Orange"                                      },
   { 14098, "Shadowflame Suffused"                        },
   { 14099, "Heroic|n"                                    },
   { 14100, "Mythic|n"                                    },
@@ -833,6 +834,20 @@ static const std::array<item_name_description_t, 846> __item_name_description_da
   { 14106, "Northrend Cup"                               },
   { 14107, "In-Game Shop"                                },
   { 14108, "In-Game Shop Variant"                        },
+  { 14117, "Scenario"                                    },
+  { 14119, "Timerunning"                                 },
+  { 14120, "White"                                       },
+  { 14121, "Original"                                    },
+  { 14122, "Yellow"                                      },
+  { 14123, "Dark"                                        },
+  { 14124, "Indigo"                                      },
+  { 14125, "Brown"                                       },
+  { 14126, "Light"                                       },
+  { 14127, "Warm"                                        },
+  { 14128, "Cool"                                        },
+  { 14129, "Jade"                                        },
+  { 14130, "Gold"                                        },
+  { 14131, "Silver"                                      },
   { 14132, "Moon"                                        },
   { 14133, "Sun"                                         },
   { 14134, "Cycle"                                       },
@@ -846,5 +861,15 @@ static const std::array<item_name_description_t, 846> __item_name_description_da
   { 14142, "Trading Post - Orange"                       },
   { 14143, "Trading Post - Love Witch"                   },
   { 14144, "Trading Post - Sky Witch"                    },
+  { 14148, "Frenzied"                                    },
+  { 14149, "Sparking"                                    },
+  { 14150, "Shocking"                                    },
+  { 14151, "Pink"                                        },
+  { 14157, "Cogwheel Gem"                                },
+  { 14158, "Meta Gem"                                    },
+  { 14159, "Tinker Gem"                                  },
+  { 14160, "Prismatic Gem"                               },
+  { 14161, "Remix: Pandaria"                             },
+  { 14162, "Copper"                                      },
 } };
 

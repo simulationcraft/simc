@@ -1,1 +1,1 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.6.54499 Live (hotfix 2024-05-01/54499, git build data-update-live-54499 1d10c76)
+SimulationCraft 1026-01 for World of Warcraft 10.2.7.54577 Live (hotfix 2024-05-07/54577, git build data-update-live-54577 db37ef7)

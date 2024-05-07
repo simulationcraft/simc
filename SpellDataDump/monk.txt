@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.6.54499 Live
+SimulationCraft 1026-01 for World of Warcraft 10.2.7.54577 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -2158,6 +2158,7 @@ Description      : Renewing Mist, Enveloping Mist,$?s322104[ Expel Harm,][]$?s11
 Gust of Mists has a $388020s2% chance to do $388020s1% more healing.][]
 
 Name             : Crackling Jade Lightning (id=117952) [Spell Family (53)] 
+Hotfixed         : Proc Flags 1 (0 -> 40)
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -2168,6 +2169,8 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Proc Chance      : 100%
+Proc Flags       : ...x.x.. ........ ........ ........   ........ ........ ........ ........   
+                 : White Melee Taken, Yellow Melee Taken
 Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #14), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effects: #1, #2, #12), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Emperor's Capacitor (235054 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), The Emperor's Capacitor (337291 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Weapons of Order (387179 effect#1), The Emperor's Capacitor (393039 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Press the Advantage (418361 effect#1)
 Family Flags     : 32, 70, 103
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ...x.x.. 
@@ -2183,7 +2186,8 @@ Effects          :
 #1 (id=134063)   : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=225417)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Target 1 (6 -> 1)
 Description      : Channel Jade lightning, causing $o1 Nature damage over $117952d to the target$?a154436[, generating 1 Chi each time it deals damage,][] and sometimes knocking back melee attackers.
 Tooltip          : Taking $w1 damage every $t1 sec.
 Variables        : $dmgMult=$?s113656[${12}][${1.0}]
@@ -2586,7 +2590,8 @@ Effects          :
 #1 (id=150037)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=229522)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.90000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.81000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : AP Coefficient (0.9 -> 0.81)
 #3 (id=283420)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #4 (id=335940)   : Dummy (3)
@@ -3278,7 +3283,8 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Don't close loot window (379), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=157621)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.00000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.30000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Hotfixed         : AP Coefficient (3 -> 3.3)
 Description      : $@spelldesc124502
 
 Name             : Enveloping Mist (id=124682) [Spell Family (53)] 
@@ -3974,9 +3980,10 @@ Effects          :
                    Base Value: -45 | Scaled Value: -45 | PvP Coefficient: 1.00000 | Misc Value 2: 2384 (Label) | Target: Self (1)
                    Affected Spells (Label): Resonant Fists (389578), Resonant Fists (391400)
 #24 (id=1047427)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (101546), Spinning Crane Kick (107270), Spinning Crane Kick (322729)
                    Family Flags: 8, 63
+Hotfixed         : Base Value (-5 -> -15)
 #25 (id=1080995)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 92 | Scaled Value: 92 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Vivify (116670)
@@ -4001,6 +4008,10 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
+#31 (id=1151385)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3682 (Label) | Target: Self (1)
+                   Affected Spells (Label): Claw of the White Tiger (389541)
+Hotfixed         : NEW EFFECT
 
 Name             : Mistweaver Monk (id=137024) [Spell Family (53), Passive, Hidden] 
 Class            : Mistweaver Monk
@@ -4731,7 +4742,8 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Don't close loot window (379), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=255483)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.30000 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE friendly (31)
+Hotfixed         : AP Coefficient (3 -> 3.3)
 Description      : $@spelldesc124502
 
 Name             : Rising Sun Kick (id=185099) [Spell Family (53)] 
@@ -4780,7 +4792,9 @@ Attributes       : ........ ........ x....... ........   ..x...x. ..x..... .....
 Effects          :
 #1 (id=281435)   : Apply Aura (6) | Periodic Trigger Spell (23): Essence Font every 0.2 seconds
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 191840 | Target: Self (1)
-Description      : Unleashes a rapid twirl of healing bolts at up to $s1 allies within $191840A1 yds, every ${6*$t1}.1 sec for $d. Each bolt heals a target for $191840s1, plus an additional $191840o2 over $191840d.
+#2 (id=1139972)  : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Unleashes a rapid twirl of healing bolts at up to $s1 allies within $191840A1 yds, every ${$s2*$t1}.1 sec for $d. Each bolt heals a target for $191840s1, plus an additional $191840o2 over $191840d.
 
 Gust of Mists will heal affected targets twice. Castable while moving.$?a337209[
 
@@ -7789,7 +7803,9 @@ Effects          :
                    Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Essence Font (191840)
                    Family Flags: 108
-Description      : For every $s1 sec Essence Font spends off cooldown, your next Essence Font may be channeled for 1 additional second.
+#3 (id=1139973)  : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : For every $s1 sec Essence Font spends off cooldown, your next Essence Font may be channeled for $s3 additional second.
 
 The duration of Essence Font's heal over time is increased by ${$s2/1000} sec.
 
@@ -14339,7 +14355,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1022770)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Life Cocoon increases healing over time received by an additional $s1%, and this effect lingers on you for an additional $387766d after the cocoon is removed.
+Description      : Life Cocoon increases healing over time received by an additional $s1%, and increases all periodic healing you deal by $s1% for an additional $387766d after the cocoon is removed.
 
 Name             : Nourishing Chi (id=387766) [Spell Family (53)] 
 Class            : Monk
@@ -14609,20 +14625,24 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Doesn't Reset Swing Timer if Instant (217), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023511)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.33330 | Target: Self (1)
                    Affected Spells: Vivify (116670), Enveloping Mist (124682), Enveloping Breath (325209)
                    Family Flags: 26, 79
+Hotfixed         : PvP Coefficient (1 -> 1.3333)
 #2 (id=1023512)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.33330 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Vivify (116670), Enveloping Mist (124682), Enveloping Breath (325209)
                    Family Flags: 26, 79
+Hotfixed         : PvP Coefficient (1 -> 1.3333)
 #3 (id=1023513)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.33330 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209)
                    Family Flags: 79
+Hotfixed         : PvP Coefficient (1 -> 1.3333)
 #4 (id=1103900)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value 2: 2930 (Label) | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.33330 | Misc Value 2: 2930 (Label) | Target: Self (1)
                    Affected Spells (Label): Invigorating Mists (425804)
+Hotfixed         : PvP Coefficient (1 -> 1.3333)
 Description      : $@spelldesc388047
 Tooltip          : Healing done by your Enveloping Mists and Vivify increased by $w1%, and mana cost reduced by $w2%.
 
@@ -15920,6 +15940,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Cooldown         : 2 seconds
+Labels           : 3682: Brewmaster Monk (137023 effect#31)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
