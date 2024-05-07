@@ -810,6 +810,8 @@ struct spell_aoe_t : public enemy_action_t<spell_t>
     aoe               = -1;
     may_crit          = false;
 
+    add_option( opt_float( "damage", base_dd_min ) );
+
     parse_options( options_str );
   }
 
@@ -833,8 +835,7 @@ struct spell_aoe_t : public enemy_action_t<spell_t>
     if ( sim->single_actor_batch )
     {
       player_t* actor = sim->player_no_pet_list[ sim->current_index ];
-      if ( !actor->is_sleeping() && !actor->is_enemy() && actor->primary_role() == ROLE_TANK && actor != this->target &&
-           actor != this->sim->heal_target )
+      if ( !actor->is_sleeping() && !actor->is_enemy() && actor != this->target )
         tl.push_back( actor );
     }
     else
