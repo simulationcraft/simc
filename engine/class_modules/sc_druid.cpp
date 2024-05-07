@@ -251,6 +251,10 @@ struct eclipse_handler_t
   unsigned starfire_counter_base = 2;
   uint8_t state = 0;
 
+  uptime_t* uptime_lunar = nullptr;
+  uptime_t* uptime_solar = nullptr;
+  uptime_t* uptime_none = nullptr;
+
   gain_t* ac_gain = nullptr;
   double ac_ap = 0.0;
   double ga_mod = 0.0;
@@ -773,18 +777,9 @@ public:
   // Procs
   struct procs_t
   {
-    // Balance
-    proc_t* denizen_of_the_dream;
-
-    // Feral
     proc_t* clearcasting;
     proc_t* clearcasting_wasted;
     proc_t* primal_fury;
-
-    // Guardian
-    proc_t* galactic_guardian;
-    proc_t* gore;
-    proc_t* tooth_and_claw;
   } proc;
 
   // RPPM
@@ -1181,10 +1176,6 @@ public:
 
   struct uptimes_t
   {
-    uptime_t* astral_smolder;
-    uptime_t* eclipse_solar;
-    uptime_t* eclipse_lunar;
-    uptime_t* eclipse_none;
     uptime_t* tooth_and_claw_debuff;
   } uptime;
 
@@ -2302,8 +2293,10 @@ private:
 public:
   using base_t = trigger_gore_t<BASE>;
 
+  proc_t* gore_proc;
+
   trigger_gore_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), p_( p )
+    : BASE( n, p, s, f ), p_( p ), gore_proc( p->get_proc( "Gore" )->collect_interval() )
   {}
 
   void impact( action_state_t* s ) override
@@ -2312,8 +2305,8 @@ public:
 
     if ( action_t::result_is_hit ( s->result ) && p_->buff.gore->trigger( this ) )
     {
-      p_->proc.gore->occur();
       p_->cooldown.mangle->reset( true );
+      gore_proc->occur();
     }
   }
 };
@@ -2795,10 +2788,10 @@ public:
 
     if ( data().ok() || has_flag( flag_e::AUTOATTACK ) )
     {
-      if ( snapshots.bloodtalons )
+      if ( snapshots.bloodtalons && p()->talent.bloodtalons.ok() )
         bt_counter = get_counter( p()->buff.bloodtalons );
 
-      if ( snapshots.tigers_fury )
+      if ( snapshots.tigers_fury && p()->talent.tigers_fury.ok() )
         tf_counter = get_counter( p()->buff.tigers_fury );
     }
   }
@@ -2854,18 +2847,13 @@ public:
       tf_counter->count_execute();
 
     if ( !hit_any_target )
-      trigger_energy_refund();
+      player->resource_gain( RESOURCE_ENERGY, last_resource_cost * 0.80, p()->gain.energy_refund );
 
     if ( harmful )
     {
       if ( special && base_costs[ RESOURCE_ENERGY ] > 0 )
         p()->buff.incarnation_cat->up();
     }
-  }
-
-  void trigger_energy_refund()
-  {
-    player->resource_gain( RESOURCE_ENERGY, last_resource_cost * 0.80, p()->gain.energy_refund );
   }
 
   virtual void trigger_primal_fury()
@@ -5471,8 +5459,8 @@ struct mangle_t : public use_fluid_form_t<DRUID_GUARDIAN,
 };
 
 // Maul =====================================================================
-struct maul_base_t
-  : public trigger_aggravate_wounds_t<DRUID_GUARDIAN, trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t<>>>>
+struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
+                              trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t<>>>>
 {
   maul_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : base_t( n, p, s, f ) {}
 
@@ -5601,8 +5589,8 @@ struct rage_of_the_sleeper_t : public bear_attack_t
 };
 
 // Raze =====================================================================
-struct raze_t
-  : public trigger_aggravate_wounds_t<DRUID_GUARDIAN, trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t<>>>>
+struct raze_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
+                         trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t<>>>>
 {
   DRUID_ABILITY( raze_t, base_t, "raze", p->talent.raze )
   {
@@ -6721,7 +6709,11 @@ public:
 struct astral_smolder_t
   : public residual_action::residual_periodic_action_t<trigger_waning_twilight_t<druid_spell_t>>
 {
-  astral_smolder_t( druid_t* p ) : residual_action_t( "astral_smolder", p, p->find_spell( 394061 ) )
+  uptime_t* uptime;
+
+  astral_smolder_t( druid_t* p )
+    : residual_action_t( "astral_smolder", p, p->find_spell( 394061 ) ),
+      uptime( p->get_uptime( "Astral Smolder" )->collect_uptime( *p->sim ) )
   {
     proc = true;
   }
@@ -6730,14 +6722,14 @@ struct astral_smolder_t
   {
     residual_action_t::trigger_dot( s );
 
-    p()->uptime.astral_smolder->update( true, sim->current_time() );
+    uptime->update( true, sim->current_time() );
   }
 
   void last_tick( dot_t* d ) override
   {
     residual_action_t::last_tick( d );
 
-    p()->uptime.astral_smolder->update( false, sim->current_time() );
+    uptime->update( false, sim->current_time() );
   }
 };
 
@@ -9111,6 +9103,8 @@ struct caster_melee_t : public druid_melee_t<druid_attack_t<melee_attack_t>>
 // Bear Melee Attack ========================================================
 struct bear_melee_t : public druid_melee_t<bear_attack_t>
 {
+  proc_t* tnc_proc = nullptr;
+
   bear_melee_t( druid_t* p ) : base_t( "bear_melee", p )
   {
     form_mask = form_e::BEAR_FORM;
@@ -9118,15 +9112,18 @@ struct bear_melee_t : public druid_melee_t<bear_attack_t>
     energize_type = action_energize::ON_HIT;
     energize_resource = resource_e::RESOURCE_RAGE;
     energize_amount = 4.0;
+
+    if ( p->talent.gore.ok() )
+      tnc_proc = p->get_proc( "Tooth and Claw" )->collect_interval();
+
   }
 
   void execute() override
   {
     base_t::execute();
 
-    if ( hit_any_target )
-      if ( p()->buff.tooth_and_claw->trigger() )
-        p()->proc.tooth_and_claw->occur();
+    if ( hit_any_target && p()->buff.tooth_and_claw->trigger() && tnc_proc )
+        tnc_proc->occur();
   }
 };
 
@@ -10636,9 +10633,8 @@ void druid_t::create_buffs()
 
   buff.dream_burst = make_fallback( talent.dream_surge.ok(), this, "dream_burst", find_spell( 433832 ) );
 
-  buff.harmony_of_the_grove =
-      make_fallback( talent.harmony_of_the_grove.ok(), this, "harmony_of_the_grove",
-                          find_spell( specialization() == DRUID_RESTORATION ? 428737 : 428735 ) )
+  buff.harmony_of_the_grove = make_fallback( talent.harmony_of_the_grove.ok(),
+      this, "harmony_of_the_grove", find_spell( specialization() == DRUID_RESTORATION ? 428737 : 428735 ) )
           ->set_cooldown( 0_ms );
 
   buff.killing_strikes = make_fallback( talent.killing_strikes.ok(),
@@ -11238,21 +11234,23 @@ void druid_t::init_gains()
 {
   player_t::init_gains();
 
-  if ( specialization() == DRUID_FERAL )
-  {
-    gain.energy_refund       = get_gain( "Energy Refund" );
-    gain.overflowing_power   = get_gain( "Overflowing Power" );
-    gain.primal_fury         = get_gain( "Primal Fury" );
-    gain.soul_of_the_forest  = get_gain( "Soul of the Forest" );
-  }
-  else if ( specialization() == DRUID_GUARDIAN )
-  {
-    gain.bear_form           = get_gain( "Bear Form" );
-  }
+  if ( uses_bear_form() )
+    gain.bear_form = get_gain( "Bear Form" );
 
-  // Multi-spec
-  if ( specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION )
-    gain.clearcasting = get_gain( "Clearcasting" );  // Feral & Restoration
+  if ( uses_cat_form() )
+    gain.energy_refund = get_gain( "Energy Refund" );
+
+  if ( talent.primal_fury.ok() )
+    gain.primal_fury = get_gain( "Primal Fury" );
+
+  if ( talent.berserk.ok() )
+    gain.overflowing_power = get_gain( "Overflowing Power" );
+
+  if ( talent.soul_of_the_forest_cat.ok() )
+    gain.soul_of_the_forest = get_gain( "Soul of the Forest" );
+
+  if ( talent.omen_of_clarity_cat.ok() || talent.omen_of_clarity_tree.ok() )
+    gain.clearcasting = get_gain( "Clearcasting" );
 }
 
 // druid_t::init_procs ======================================================
@@ -11260,18 +11258,14 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
-  // Balance
-  proc.denizen_of_the_dream = get_proc( "Denizen of the Dream" )->collect_count();
+  if ( talent.primal_fury.ok() )
+    proc.primal_fury = get_proc( "Primal Fury" );
 
-  // Feral
-  proc.primal_fury          = get_proc( "Primal Fury" );
-  proc.clearcasting         = get_proc( "Clearcasting" );
-  proc.clearcasting_wasted  = get_proc( "Clearcasting (Wasted)" );
-
-  // Guardian
-  proc.galactic_guardian    = get_proc( "Galactic Guardian" )->collect_count();
-  proc.gore                 = get_proc( "Gore" )->collect_interval();
-  proc.tooth_and_claw       = get_proc( "Tooth and Claw" )->collect_interval();
+  if ( talent.omen_of_clarity_cat.ok() || talent.omen_of_clarity_tree.ok() )
+  {
+    proc.clearcasting = get_proc( "Clearcasting" );
+    proc.clearcasting_wasted = get_proc( "Clearcasting (Wasted)" );
+  }
 }
 
 // druid_t::init_rng ========================================================
@@ -11288,13 +11282,8 @@ void druid_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  std::string ca_inc_str = talent.incarnation_moonkin.ok() ? "Incarnation" : "Celestial Alignment";
-
-  uptime.astral_smolder            = get_uptime( "Astral Smolder" )->collect_uptime( *sim );
-  uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" )->collect_uptime( *sim );
-  uptime.eclipse_solar             = get_uptime( "Solar Eclipse Only" )->collect_uptime( *sim );
-  uptime.eclipse_none              = get_uptime( "No Eclipse" )->collect_uptime( *sim );
-  uptime.tooth_and_claw_debuff     = get_uptime( "Tooth and Claw Debuff" )->collect_uptime( *sim );
+  if ( talent.tooth_and_claw.ok() )
+    uptime.tooth_and_claw_debuff = get_uptime( "Tooth and Claw Debuff" )->collect_uptime( *sim );
 }
 
 // druid_t::init_resources ==================================================
@@ -11304,6 +11293,7 @@ void druid_t::init_resources( bool force )
 
   resources.current[ RESOURCE_RAGE ]         = 0;
   resources.current[ RESOURCE_COMBO_POINT ]  = 0;
+
   if ( options.initial_astral_power == 0.0 && talent.natures_balance.ok() )
   {
     resources.current[ RESOURCE_ASTRAL_POWER ] =
@@ -11313,6 +11303,7 @@ void druid_t::init_resources( bool force )
   {
     resources.current[ RESOURCE_ASTRAL_POWER ] = options.initial_astral_power;
   }
+
   expected_max_health = calculate_expected_max_health();
 }
 
@@ -11409,7 +11400,11 @@ void druid_t::init_special_effects()
   {
     struct denizen_of_the_dream_cb_t : public druid_cb_t
     {
-      denizen_of_the_dream_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
+      proc_t* catto_proc;
+
+      denizen_of_the_dream_cb_t( druid_t* p, const special_effect_t& e )
+        : druid_cb_t( p, e ), catto_proc( p->get_proc( "Denizen of the Dream" )->collect_count() )
+      {}
 
       void trigger( action_t* a, action_state_t* s ) override
       {
@@ -11421,7 +11416,7 @@ void druid_t::init_special_effects()
       {
         p()->active.denizen_of_the_dream->execute();
         p()->buff.denizen_of_the_dream->trigger();
-        p()->proc.denizen_of_the_dream->occur();
+        catto_proc->occur();
       }
     };
 
@@ -11602,7 +11597,11 @@ void druid_t::init_special_effects()
   {
     struct galactic_guardian_cb_t : public druid_cb_t
     {
-      galactic_guardian_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
+      proc_t* gg_proc;
+
+      galactic_guardian_cb_t( druid_t* p, const special_effect_t& e )
+        : druid_cb_t( p, e ), gg_proc( p->get_proc( "Galactic Guardian" )->collect_count() )
+      {}
 
       void trigger( action_t* a, action_state_t* s ) override
       {
@@ -11613,8 +11612,8 @@ void druid_t::init_special_effects()
       void execute( action_t*, action_state_t* s ) override
       {
         p()->active.galactic_guardian->execute_on_target( target( s, p()->active.galactic_guardian ) );
-        p()->proc.galactic_guardian->occur();
         p()->buff.galactic_guardian->trigger();
+        gg_proc->occur();
       }
     };
 
@@ -11934,15 +11933,15 @@ void druid_t::combat_begin()
 
     if ( eclipse_handler.in_none() )
     {
-      uptime.eclipse_none->update( true, sim->current_time() );
+      eclipse_handler.uptime_none->update( true, sim->current_time() );
     }
     else
     {
       if ( eclipse_handler.in_lunar() )
-        uptime.eclipse_lunar->update( true, sim->current_time() );
+        eclipse_handler.uptime_lunar->update( true, sim->current_time() );
 
       if ( eclipse_handler.in_solar() )
-        uptime.eclipse_solar->update( true, sim->current_time() );
+        eclipse_handler.uptime_solar->update( true, sim->current_time() );
     }
 
     if ( !options.raid_combat )
@@ -12022,13 +12021,15 @@ void druid_t::invalidate_cache( cache_e c )
   switch ( c )
   {
     case CACHE_ATTACK_POWER:
-      if ( specialization() == DRUID_GUARDIAN || specialization() == DRUID_FERAL )
+      if ( current.spell_power_per_attack_power > 0 )
         invalidate_cache( CACHE_SPELL_POWER );
       break;
+
     case CACHE_SPELL_POWER:
-      if ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
+      if ( current.attack_power_per_spell_power > 0 )
         invalidate_cache( CACHE_ATTACK_POWER );
       break;
+
     case CACHE_MASTERY:
       if ( mastery.natures_guardian->ok() )
       {
@@ -12036,14 +12037,17 @@ void druid_t::invalidate_cache( cache_e c )
         recalculate_resource_max( RESOURCE_HEALTH );
       }
       break;
+
     case CACHE_CRIT_CHANCE:
-      if ( specialization() == DRUID_GUARDIAN )
+      if ( spec.lightning_reflexes->ok() )
         invalidate_cache( CACHE_DODGE );
       break;
+
     case CACHE_AGILITY:
       if ( buff.ironfur->check() )
         invalidate_cache( CACHE_ARMOR );
       break;
+
     default: break;
   }
 }
@@ -12995,6 +12999,10 @@ void eclipse_handler_t::init()
     return;
   }
 
+  uptime_lunar = p->get_uptime( "Lunar Eclipse Only" )->collect_uptime( *p->sim );
+  uptime_solar = p->get_uptime( "Solar Eclipse Only" )->collect_uptime( *p->sim );
+  uptime_none  = p->get_uptime( "No Eclipse" )->collect_uptime( *p->sim );
+
   wrath_counter_base = starfire_counter_base = as<unsigned>( p->talent.eclipse->effectN( 1 ).base_value() );
 
   size_t res = 3;
@@ -13149,9 +13157,9 @@ buff_t* eclipse_handler_t::get_eclipse( eclipse_e eclipse ) const
 uptime_t* eclipse_handler_t::get_uptime( eclipse_e eclipse ) const
 {
   if ( eclipse == eclipse_e::LUNAR )
-    return p->uptime.eclipse_lunar;
+    return uptime_lunar;
   else if ( eclipse == eclipse_e::SOLAR )
-    return p->uptime.eclipse_solar;
+    return uptime_solar;
   else
     assert( false );
 
@@ -13172,7 +13180,7 @@ void eclipse_handler_t::advance_eclipse( eclipse_e eclipse, bool active )
     {
       get_uptime( eclipse )->update( true, p->sim->current_time() );
       if ( in_none( old_state ) )
-        p->uptime.eclipse_none->update( false, p->sim->current_time() );
+        uptime_none->update( false, p->sim->current_time() );
     }
 
     get_boat( eclipse )->trigger();
@@ -13191,7 +13199,7 @@ void eclipse_handler_t::advance_eclipse( eclipse_e eclipse, bool active )
     {
       get_uptime( eclipse )->update( false, p->sim->current_time() );
       if ( in_none( state ) )
-        p->uptime.eclipse_none->update( true, p->sim->current_time() );
+        uptime_none->update( true, p->sim->current_time() );
     }
 
     get_harmony( eclipse )->expire();
