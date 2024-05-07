@@ -113,6 +113,27 @@ buff_t* dbc_proc_callback_t::create_debuff( player_t* t )
   return make_buff( actor_pair_t( t, listener ), name_, target_debuff );
 }
 
+// Set up the callback to be activated when the buff triggers, and deactivated when the buff expires.
+// NOTE: If the callback is created after player_t::init_special_effects(), such as from within create_debuffs() on a
+// new target_specific_debuff, init MUST be set to true.
+void dbc_proc_callback_t::activate_with_buff( buff_t* buff, bool init )
+{
+  if ( buff->is_fallback )
+    return;
+
+  if ( init )
+    initialize();
+
+  deactivate();
+
+  buff->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+    if ( !old_ )
+      activate();
+    else if ( !new_ )
+      deactivate();
+  } );
+}
+
 void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
 {
   cooldown_t* cd = get_cooldown( state->target );
