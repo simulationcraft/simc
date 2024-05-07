@@ -1069,7 +1069,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : Not Shapeshifted (16), No AutoCast (AI) (49), Show Mechanic as Combat Text (213), Missile Speed is Delay (in sec) (292), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=9553)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.28562 | PvP Coefficient: 0.85000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.34990 | PvP Coefficient: 0.85000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (1.28562 -> 1.3499)
 Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
 
 Reduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]
@@ -1451,7 +1452,8 @@ Effects          :
 #1 (id=19297)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=288276)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.57990 | PvP Coefficient: 0.90000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.65890 | PvP Coefficient: 0.90000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : SP Coefficient (1.5799 -> 1.6589)
 #3 (id=371982)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
@@ -3385,7 +3387,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Discount Power On Miss (59), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=132079)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.84603 | PvP Coefficient: 1.70000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.90141 | PvP Coefficient: 1.70000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (1.84603 -> 1.90141)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=283496)   : Energize Power% (137)
@@ -4830,7 +4833,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=293697)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.48000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+Hotfixed         : SP Coefficient (0.4 -> 0.48)
 Description      : Deals $s1 Shadowflame damage to enemies within $A1 yards.
 
 Name             : Bane of Havoc (desc=PvP Talent) (id=200546) [Spell Family (5)] 
@@ -13434,7 +13438,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Include In Advanced Combat Log (72), Can Proc From Procs (122), Extra Initial Period (169), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1021380)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.18750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.23438 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.1875 -> 0.234375)
 Description      : $@spelldesc278350
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -13539,7 +13544,8 @@ Effects          :
 #1 (id=1021492)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1021493)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.26250 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : SP Coefficient (0.25 -> 0.2625)
 #3 (id=1021494)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=1021495)  : Dummy (3)
@@ -17199,7 +17205,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1087728)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.68034 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.74837 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : SP Coefficient (0.68034 -> 0.748374)
 Description      : $@spelldesc416621
 
 Name             : Crashing Chaos (id=417234) [Spell Family (5), Passive] 
