@@ -1,4 +1,4 @@
-// Active class spells, wow build 10.2.7.54449
+// Active class spells, wow build 10.2.6.53989
 static const std::array<active_class_spell_t, 292> __ptr_active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
@@ -294,7 +294,7 @@ static const std::array<active_class_spell_t, 292> __ptr_active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.2.7.54449
+// Pet active spells, wow build 10.2.6.53989
 static const std::array<active_pet_spell_t, 134> __ptr_active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },
