@@ -439,7 +439,7 @@ public:
   //
   // Example 4: Parse buff3, only apply if my_player_t::check2() and my_player_t::check3() returns true:
   //   parse_effects( buff3, [ this ] { return p()->check2() && p()->check3(); } );
-  virtual bool is_valid_aura( const spelleffect_data_t& eff ) const { return false; }
+  virtual bool is_valid_aura( const spelleffect_data_t& /* eff */ ) const { return false; }
 
   virtual std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data,
                                                            double& val_mul, std::string& str, bool& flat,
@@ -527,7 +527,7 @@ public:
   // The following optional arguments can be used in any order:
   //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the debuff
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
-  virtual bool is_valid_target_aura( const spelleffect_data_t& eff ) const { return false; }
+  virtual bool is_valid_target_aura( const spelleffect_data_t& /* eff */ ) const { return false; }
 
   // Return void* as parse_effect_t is not templated and we don't know what TD is
   virtual void* get_target_effect_vector( const spelleffect_data_t& eff, uint32_t& opt_enum, double& val_mul,
@@ -813,7 +813,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
 
     return m;
   }
-  
+
   double composite_parry_rating() const override
   {
     auto pr = player_t::composite_parry_rating();
@@ -897,7 +897,7 @@ public:
   }
 
   std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data, double& val_mul,
-                                                   std::string& str, bool& flat, bool force ) override
+                                                   std::string& str, bool& /* flat */, bool /* force */ ) override
   {
     auto invalidate = [ &data ]( cache_e c ) {
       if ( data.buff )
@@ -1048,8 +1048,8 @@ public:
     return false;
   }
 
-  void* get_target_effect_vector( const spelleffect_data_t& eff, uint32_t& opt_enum, double& val_mul, std::string& str,
-                                  bool& flat, bool force ) override
+  void* get_target_effect_vector( const spelleffect_data_t& eff, uint32_t& opt_enum, double& /* val_mul */, std::string& str,
+                                  bool& /* flat */, bool /* force */ ) override
   {
     switch ( eff.subtype() )
     {
@@ -1333,7 +1333,7 @@ public:
     return true;
   }
 
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data,
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& /* data */,
                                                    double& val_mul, std::string& str, bool& flat, bool force ) override
   {
     if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
@@ -1446,7 +1446,7 @@ public:
     return false;
   }
 
-  virtual void* get_target_effect_vector( const spelleffect_data_t& eff, uint32_t& opt_enum, double& val_mul,
+  virtual void* get_target_effect_vector( const spelleffect_data_t& eff, uint32_t& /* opt_enum */, double& /* val_mul */,
                                           std::string& str, bool& flat, bool force ) override
   {
     if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER )
