@@ -124,8 +124,85 @@ void spymasters_web( special_effect_t& effect )
   effect.execute_action = create_proc_action<spymasters_web_t>( "spymasters_web", effect, stacking_buff, use_buff );
 }
 
-// Weapons
+// 444067 driver
+// 448643 unknown (0.2s duration, 6yd radius, outgoing aoe hit?)
+// 448621 unknown (0.125s duration, echo delay?)
+// 448669 damage
+void void_reapers_chime( special_effect_t& effect )
+{
+  struct void_reapers_chime_cb_t : public dbc_proc_callback_t
+  {
+    action_t* major;
+    action_t* minor;
+    action_t* queensbane = nullptr;
+    double hp_pct;
 
+    void_reapers_chime_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), hp_pct( e.driver()->effectN( 2 ).base_value() )
+    {
+      auto damage_spell = effect.player->find_spell( 448669 );
+      auto damage_name = std::string( damage_spell->name_cstr() );
+      auto damage_amount = effect.driver()->effectN( 1 ).average( effect.item );
+
+      major = create_proc_action<generic_aoe_proc_t>( damage_name, effect, damage_spell );
+      major->base_dd_min = major->base_dd_max = damage_amount;
+      major->base_aoe_multiplier = effect.driver()->effectN( 5 ).percent();
+
+      minor = create_proc_action<generic_aoe_proc_t>( damage_name + "_echo", effect, damage_spell );
+      minor->base_dd_min = minor->base_dd_max = damage_amount * effect.driver()->effectN( 3 ).percent();
+      minor->name_str_reporting = "Echo";
+      major->add_child( minor );
+    }
+
+    void initialize() override
+    {
+      dbc_proc_callback_t::initialize();
+
+      if ( listener->sets->has_set_bonus( listener->specialization(), TWW_KCI, B2 ) )
+        if ( auto claw = find_special_effect( listener, 444135 ) )
+          queensbane = claw->execute_action;
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      major->execute_on_target( s->target );
+
+      bool echo = false;
+
+      if ( queensbane )
+      {
+        auto dot = queensbane->find_dot( s->target );
+        if ( dot && dot->is_ticking() )
+          echo = true;
+      }
+
+      if ( !echo && s->target->health_percentage() < hp_pct )
+        echo = true;
+
+      if ( echo )
+      {
+          // TODO: are these immediate, delayes, or staggered?
+          minor->execute_on_target( s->target );
+          minor->execute_on_target( s->target );
+      }
+    }
+  };
+
+  new void_reapers_chime_cb_t( effect );
+}
+
+// Weapons
+// 444135 driver
+// 448862 dot (trigger)
+void void_reapers_claw( special_effect_t& effect )
+{
+  effect.duration_ = effect.trigger()->duration();
+  effect.tick = effect.trigger()->effectN( 1 ).period();
+  // TODO: confirm effect value is for the entire dot and not per tick
+  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item ) * effect.tick / effect.duration_;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 // Armor
 }  // namespace items
 
@@ -145,7 +222,9 @@ void register_special_effects()
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
+  register_special_effect( 444067, items::void_reapers_chime );
   // Weapons
+  register_special_effect( 444135, items::void_reapers_claw );
   // Armor
 
   // Sets

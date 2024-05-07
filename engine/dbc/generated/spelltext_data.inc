@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54521
-static const std::array<spelltext_data_t, 22631> __spelltext_data { {
+static const std::array<spelltext_data_t, 22633> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21679,6 +21679,7 @@ static const std::array<spelltext_data_t, 22631> __spelltext_data { {
   { 444135, "Your attacks  have a high chance to apply Queensbane to your target, dealing $s1 Shadow damage over $448862d.", 0, 0 },
   { 444136, "$@spelldesc444128", 0, 0 },
   { 444140, "Engulf causes $?c1[Fire Breath][Fire Breath or Dream Breath] to spread to a nearby target. If no valid targets are present, its duration is refreshed.", 0, "Red" },
+  { 444166, "Void Reaper's Chime always summons additional phantoms against enemies afflicted by Queensbane.", 0, 0 },
   { 444244, "$@spelldesc444040", 0, 0 },
   { 444248, "$@spelldesc444005", 0, 0 },
   { 444249, "$@spelldesc357208", "Burning for $w2 Fire damage every $t2 sec.$?$W3=1[ Silenced.][]", "Red" },
@@ -21941,6 +21942,7 @@ static const std::array<spelltext_data_t, 22631> __spelltext_data { {
   { 448623, "$@spelldesc445339", 0, 0 },
   { 448658, "When you cast $?c1[Arcane Surge][Combustion], summon an Arcane Phoenix to aid you in battle.\r\n\r\n$@spellicon448659  $@spellname448659\r\nYour Arcane Phoenix aids you for the duration of your $?c1[Arcane Surge][Combustion], casting random Arcane and Fire spells.\r\n\r\nOver its duration, your Arcane Phoenix will consume each of your Spellfire Spheres to cast an exceptional spell.", 0, 0 },
   { 448659, "$@spelldesc448658", "Your Phoenix is aiding you in battle!", 0 },
+  { 448669, "$@spelldesc444067", 0, 0 },
   { 448710, "$@spelldesc445339", 0, 0 },
   { 448714, "$@spelldesc445339", 0, 0 },
   { 448716, "$@spelldesc445339", 0, 0 },

@@ -1468,6 +1468,7 @@ class SpellDataGenerator(DataGenerator):
          # 11.0 The War Within ================================================
          443515, 443519, # fateweaved needle
          452037, 452057, 452059, 452060, 452061, 452062, 452063, 452064, 452065, 452066, 452067, 452068, 452069, 452070, 452071, 452072, 452073, 452350, 451845, 451866, # aberrant spellforge
+         448621, 448643, 448669, # void reaper's chime
         ),
 
         # Warrior:
@@ -3913,6 +3914,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'dragonflight_season_4',
             'bonuses': [ 1594, 1595, 1596, 1597, 1598, 1599, 1600, 1601, 1602, 1603, 1604, 1605, 1606 ],
             'tier'   : 'DF4'
+        },
+        {
+            'name'   : 'kyevezzas_cruel_implements',
+            'bonuses': [ 1613 ],
+            'tier'   : 'TWW_KCI'
         },
     ]
 
