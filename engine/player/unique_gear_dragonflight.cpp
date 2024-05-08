@@ -7575,6 +7575,7 @@ void tome_of_unstable_power_new( special_effect_t& effect )
 
         aoe         = -1;
         base_dd_min = base_dd_max = dam;
+        reduced_aoe_targets = 8;
       }
 
       void snapshot_state( action_state_t* s, result_amount_type rt ) override
