@@ -7582,8 +7582,8 @@ void tome_of_unstable_power_new( special_effect_t& effect )
       {
         generic_proc_t::snapshot_state( s, rt );
 
-        // TODO: determine proc rate on this
-        bool five_proc = false;
+        // TODO: determine proc rate on this, estimated at 1% for now
+        bool five_proc = rng().roll( 0.01 );
         auto count = five_proc ? 11 : rng().range( 3U );
         s->persistent_multiplier *= ( 0.9 + 0.1 * count );
       }
