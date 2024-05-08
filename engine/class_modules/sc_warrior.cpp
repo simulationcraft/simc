@@ -312,7 +312,6 @@ public:
     gain_t* avatar;
     gain_t* avatar_torment;
     gain_t* avoided_attacks;
-    gain_t* battlelord;
     gain_t* bloodsurge;
     gain_t* charge;
     gain_t* critical_block;
@@ -4166,14 +4165,13 @@ struct dreadnaught_t : warrior_attack_t
 struct overpower_t : public warrior_attack_t
 {
   double battlelord_chance;
-  double rage_from_strength_of_arms, rage_from_battlelord;
+  double rage_from_strength_of_arms;
   warrior_attack_t* dreadnaught;
 
   overpower_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "overpower", p, p->talents.arms.overpower ),
       battlelord_chance( p->talents.arms.battlelord->proc_chance() ),
       rage_from_strength_of_arms( p->find_spell( 400806 )->effectN( 1 ).base_value() / 10.0 ),
-      rage_from_battlelord( p->find_spell( 386631 )->effectN( 1 ).base_value() / 10.0 ),
       dreadnaught( nullptr )
   {
     parse_options( options_str );
@@ -4209,8 +4207,6 @@ struct overpower_t : public warrior_attack_t
     {
       p()->cooldown.mortal_strike->reset( true );
       p()->cooldown.cleave->reset( true );
-
-      p()->resource_gain( RESOURCE_RAGE, rage_from_battlelord, p()->gain.battlelord );
     }
 
     if ( p()->talents.arms.martial_prowess->ok() )
@@ -7290,7 +7286,6 @@ void warrior_t::init_gains()
   gain.avatar                           = get_gain( "avatar" );
   gain.avatar_torment                   = get_gain( "avatar_torment" );
   gain.avoided_attacks                  = get_gain( "avoided_attacks" );
-  gain.battlelord                       = get_gain( "battlelord" );
   gain.bloodsurge                       = get_gain( "bloodsurge" );
   gain.charge                           = get_gain( "charge" );
   gain.conquerors_banner                = get_gain( "conquerors_banner" );
@@ -8164,7 +8159,7 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
     bool do_not_double_rage = false;
 
     do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage || 
-                                  g == gain.frothing_berserker || g == gain.battlelord );
+                                  g == gain.frothing_berserker );
 
     if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches, keep Simmering Rage
       a *= 1.0 + spell.recklessness_buff->effectN( 4 ).percent();
