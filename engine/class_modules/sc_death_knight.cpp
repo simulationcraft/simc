@@ -5180,7 +5180,7 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
 {
   vampiric_strike_action_base_t( util::string_view n, death_knight_t* p, util::string_view options_str,
                                  const spell_data_t* s )
-    : death_knight_melee_attack_t( n, p, s ), heal( get_action<vampiric_strike_heal_t>( "vampiric_strike_heal", p ) )
+    : death_knight_melee_attack_t( n, p, s ), heal( nullptr )
   {
     switch ( p->specialization() )
     {
@@ -5196,6 +5196,7 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
     add_child( base_action );
     if ( p->talent.sanlayn.vampiric_strike.ok() )
     {
+      heal            = get_action<vampiric_strike_heal_t>( "vampiric_strike_heal", p );
       vampiric_strike = p->active_spells.vampiric_strike;
       add_child( vampiric_strike );
     }
@@ -5203,7 +5204,7 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
     {
       name_str = base_action->name_str;
     }
-    if( p->talent.sanlayn.infliction_of_sorrow.ok() )
+    if ( p->talent.sanlayn.infliction_of_sorrow.ok() )
     {
       add_child( p->active_spells.infliction_of_sorrow );
     }
@@ -11937,6 +11938,7 @@ void death_knight_t::create_buffs()
     buffs.unholy_pact = new unholy_pact_buff_t( this );
 
     buffs.ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", spell.ghoulish_frenzy_player )
+                                ->set_duration( 0_ms ) // Handled by DT
                                 ->set_default_value( spell.ghoulish_frenzy_player->effectN( 1 ).percent() )
                                 ->apply_affecting_aura( talent.unholy.ghoulish_frenzy );
 
