@@ -198,7 +198,7 @@ enum demonsurge_ability
   SOUL_SUNDER,
   SPIRIT_BURST,
   SIGIL_OF_DOOM,
-  CONSUMING_FLAME,
+  CONSUMING_FIRE,
   FEL_DESOLATION,
   ABYSSAL_GAZE,
   ANNIHILATION,
@@ -206,12 +206,12 @@ enum demonsurge_ability
 };
 
 const std::vector<demonsurge_ability> demonsurge_havoc_abilities{
-    demonsurge_ability::SIGIL_OF_DOOM, demonsurge_ability::CONSUMING_FLAME, demonsurge_ability::ABYSSAL_GAZE,
+    demonsurge_ability::SIGIL_OF_DOOM, demonsurge_ability::CONSUMING_FIRE, demonsurge_ability::ABYSSAL_GAZE,
     demonsurge_ability::ANNIHILATION, demonsurge_ability::DEATH_SWEEP };
 
 const std::vector<demonsurge_ability> demonsurge_vengeance_abilities{
     demonsurge_ability::SOUL_SUNDER, demonsurge_ability::SPIRIT_BURST, demonsurge_ability::SIGIL_OF_DOOM,
-    demonsurge_ability::CONSUMING_FLAME, demonsurge_ability::FEL_DESOLATION };
+    demonsurge_ability::CONSUMING_FIRE, demonsurge_ability::FEL_DESOLATION };
 
 std::string demonsurge_ability_name( demonsurge_ability ability )
 {
@@ -223,8 +223,8 @@ std::string demonsurge_ability_name( demonsurge_ability ability )
       return "demonsurge_spirit_burst";
     case demonsurge_ability::SIGIL_OF_DOOM:
       return "demonsurge_sigil_of_doom";
-    case demonsurge_ability::CONSUMING_FLAME:
-      return "demonsurge_consuming_flame";
+    case demonsurge_ability::CONSUMING_FIRE:
+      return "demonsurge_consuming_fire";
     case demonsurge_ability::FEL_DESOLATION:
       return "demonsurge_fel_desolation";
     case demonsurge_ability::ABYSSAL_GAZE:
@@ -3630,7 +3630,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
     if ( p()->talent.havoc.a_fire_inside->ok() && rng().roll( afi_chance ) )
       cooldown->reset( true, 1 );
 
-    p()->trigger_demonsurge( demonsurge_ability::CONSUMING_FLAME );
+    p()->trigger_demonsurge( demonsurge_ability::CONSUMING_FIRE );
   }
 };
 
