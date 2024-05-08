@@ -503,13 +503,27 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
     unsigned count = as<unsigned>( p()->talents.call_dreadstalkers->effectN( 1 ).base_value() );
 
-    // Set a randomized offset on first melee attacks after travel time. Make sure it's the same value for each dog so they're synced
-    timespan_t delay = rng().range( 0_s, 1_s );
+    timespan_t delay;
+    timespan_t dur_adjust;
 
-    timespan_t dur_adjust = duration_adjustment( delay );
+    const double dist = p()->get_player_distance( *target );
+    // The summon is considered at melee range if the distance is less than or equal to 5 yards
+    if (dist > 5.0)
+    {
+      // Set a randomized offset on first melee attacks after travel time. Make sure it's the same value for each dog so they're synced
+      delay = rng().range( 0_s, 1_s );
+      // Adjust the extra duration, that appear to be offset from the melee attack check in a correlated manner
+      dur_adjust = duration_adjustment( delay, std::min(dist, 40.0) );
+    }
+    else
+    {
+      // There is no delay on the first melee attack when summoned from melee
+      delay = 0_ms;
+      // In this case the extra duration of the dreadstalkers can be assumed random between the minumum (0ms) and the maximum (820ms) (last tested 2024-05-08)
+      dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
+    }
 
     auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration() + dur_adjust, count );
-
 
     for ( auto d : dogs )
     {
@@ -566,12 +580,14 @@ struct call_dreadstalkers_t : public demonology_spell_t
     }
   }
 
-  timespan_t duration_adjustment( timespan_t delay )
+  timespan_t duration_adjustment( timespan_t delay, double dist )
   {
     // Despawn events appear to be offset from the melee attack check in a correlated manner
-    // Starting with this function which mimics despawns on the "off-beats" compared to the 1s heartbeat for the melee attack
-    // This may require updating if better understanding is found for the behavior, such as a fudge from Blizzard related to player distance
-    return ( delay + 500_ms ) % 1_s;
+    // Starting with this function which mimics despawns on the "off-beats" compared to the 1s heartbeat for the melee attack, and taking into account the distance
+    // Last tested 2024-05-08
+    // The maximum despawn extra duration is 820ms. The initial offset point is 260ms, increasing 24ms with each yard
+    // There is some variance in the delay-duration_adj relation that can be modeled fairly closely using a normal distribution
+    return ( delay + timespan_t::from_millis( rng().gauss( 260.0, 25.0) + 24.0*dist ) ) % 820_ms;
   }
 };
 
