@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.7.54577 Live
+SimulationCraft 1026-01 for World of Warcraft 10.2.7.54601 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -16892,8 +16892,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=1105151)  : Apply Aura (6) | Attack Speed (Normalized wDPS) (9)
+#1 (id=1105151)  : Apply Aura (6) | Modify Melee Attack Speed% (319)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : Sub Type (9 -> 319)
 #2 (id=1105152)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Numbing Poison (5760), Numbing Poison (5761), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Leeching Poison (108211), Deadly Poison (113780), Crippling Poison (115196), Toxic Blade (245388), Double Dose (273009), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Dreadblades (343142), Numbing Poison (359078), Deathmark (360194), Atrophic Poison (381637), Amplifying Poison (381664), Amplifying Poison (383414), Kingsbane (385627), Atrophic Poison (392388), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Deathmark (394331), Envenomous Explosion (426581)
