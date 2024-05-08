@@ -10211,9 +10211,9 @@ void death_knight_t::start_unholy_aura()
     if ( c )
     {
       make_event( *sim, timespan_t::from_millis( rng().range( 0, 2000 ) ), [ this ]() {
-        for ( auto& enemy : sim->target_non_sleeping_list )
+        for ( auto& enemy : sim->target_non_sleeping_list)
         {
-          auto enemy_td = get_target_data( target );
+          auto enemy_td = get_target_data( enemy );
           enemy_td->debuff.unholy_aura->trigger();
         }
       } );
