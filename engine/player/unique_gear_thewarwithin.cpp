@@ -351,6 +351,61 @@ void void_reapers_claw( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 443384 driver
+// 443585 damage
+// 443515 unknown buff
+// 443519 debuff
+// 443590 stat buff
+// TODO: damage spell data is shadowfrost and not cosmic
+// TODO: confirm buff/debuff is based on target type and not triggering spell type
+void fateweaved_needle( special_effect_t& effect )
+{
+  struct fateweaved_needle_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    const spell_data_t* buff_spell;
+    const spell_data_t* debuff_spell;
+    double stat_amt;
+
+    fateweaved_needle_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+      buff_spell( e.player->find_spell( 443590 ) ),
+      debuff_spell( e.player->find_spell( 443519 ) ),
+      stat_amt( e.driver()->effectN( 2 ).average( e.item ) )
+    {
+      // TODO: damage spell data is shadowfrost and not cosmic
+      damage = create_proc_action<generic_proc_t>( "fated_pain", e, e.player->find_spell( 443585 ) );
+      damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      // TODO: confirm buff/debuff is based on target type and not triggering spell type
+      if ( t->is_enemy() )
+      {
+        return make_buff( actor_pair_t( t, listener ), "thread_of_fate_debuff", debuff_spell )
+          ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+            if ( !new_ )
+              damage->execute_on_target( b->player );
+          } );
+      }
+      else
+      {
+        return make_buff<stat_buff_t>( actor_pair_t( t, listener ), "thread_of_fate_buff", buff_spell )
+          ->set_stat_from_effect_type( A_MOD_STAT, stat_amt )
+          ->set_name_reporting( "thread_of_fate" );
+      }
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      get_debuff( s->target )->trigger();
+    }
+  };
+
+  new fateweaved_needle_cb_t( effect );
+}
 // Armor
 }  // namespace items
 
@@ -376,6 +431,7 @@ void register_special_effects()
   register_special_effect( 445593, DISABLED_EFFECT );  // aberrant spellforge
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
+  register_special_effect( 443384, items::fateweaved_needle );
   // Armor
 
   // Sets

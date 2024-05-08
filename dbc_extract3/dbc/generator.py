@@ -1466,7 +1466,7 @@ class SpellDataGenerator(DataGenerator):
          429273, # Arcanist's Edge Damage
          429377, # Slay Damage
          # 11.0 The War Within ================================================
-         443515, 443519, # fateweaved needle
+         443515, 443519, 443585, # fateweaved needle
          452037, 452057, 452059, 452060, 452061, 452062, 452063, 452064, 452065, 452066, 452067, 452068, 452069, 452070, 452071, 452072, 452073, # aberrant spellforge per-spec driver
          452350, 451845, 451866, 452279, # aberrant spellforge silence, buff, damage, unknown
          448621, 448643, 448669, # void reaper's chime
