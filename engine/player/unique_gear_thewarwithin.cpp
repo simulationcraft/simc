@@ -25,6 +25,8 @@
 #include "unique_gear_helper.hpp"
 #include "util/string_view.hpp"
 
+#include <regex>
+
 namespace unique_gear::thewarwithin
 {
 std::vector<unsigned> __tww_special_effect_ids;
@@ -41,6 +43,25 @@ void register_special_effect( std::initializer_list<unsigned> spell_ids, custom_
 {
   for ( auto id : spell_ids )
     register_special_effect( id, init_callback, fallback );
+}
+
+const spell_data_t* spell_from_spell_text( const special_effect_t& e, unsigned match_id )
+{
+  if ( auto desc = e.player->dbc->spell_text( e.spell_id ).desc() )
+  {
+    std::cmatch m;
+    std::regex r( "\\$\\?a" + std::to_string( match_id ) + "\\[\\$@spellname([0-9]+)\\]\\[\\]" );
+    if ( std::regex_search( desc, m, r ) )
+    {
+      auto id = as<unsigned>( std::stoi( m.str( 1 ) ) );
+      auto spell = e.player->find_spell( id );
+
+      e.player->sim->print_debug( "parsed spell for special effect '{}': {} ({})", e.name(), spell->name_cstr(), id );
+      return spell;
+    }
+  }
+
+  return spell_data_t::nil();
 }
 
 namespace consumables
@@ -191,6 +212,133 @@ void void_reapers_chime( special_effect_t& effect )
   new void_reapers_chime_cb_t( effect );
 }
 
+// 445593 equip
+//  e1: damage value
+//  e2: haste value
+//  e3: mult per use stack
+//  e4: unknown, damage cap? self damage?
+//  e5: post-combat duration
+//  e6: unknown, chance to be silenced?
+// 451895 is empowered buff
+// 445619 on-use
+// 452350 silence
+// 451845 haste buff
+// 451866 damage
+// 452279 unknown, possibly unrelated?
+// per-spec drivers?
+//   452030, 452037, 452057, 452059, 452060, 452061,
+//   452062, 452063, 452064, 452065, 452066, 452067,
+//   452068, 452069, 452070, 452071, 452072, 452073
+// TODO: confirm cycle doesn't rest on combat start
+// TODO: replace with spec-specific driver id if possible
+// TODO: confirm damage procs off procs
+// TODO: confirm empowerment is not consumed by procs
+// TODO: determine when silence applies
+void aberrant_spellforge( special_effect_t& effect )
+{
+  if ( create_fallback_buffs( effect, { "aberrant_empowerment", "aberrant_spellforge" } ) )
+    return;
+
+  // sanity check equip effect exists
+  unsigned equip_id = 445593;
+  auto equip = find_special_effect( effect.player, equip_id );
+  assert( equip && "Aberrant Spellforge missing equip effect" );
+
+  auto empowered = spell_from_spell_text( effect, effect.player->spec_spell->id() );
+  if ( !empowered->ok() )
+    return;
+
+  // cache data
+  auto data = equip->driver();
+  auto period = effect.player->find_spell( 452030 )->effectN( 2 ).period();
+  auto silence_dur = effect.player->find_spell( 452350 )->duration();
+
+  // create buffs
+  auto empowerment = create_buff<buff_t>( effect.player, effect.player->find_spell( 451895 ) );
+
+  auto stack = create_buff<buff_t>( effect.player, effect.driver() )->set_cooldown( 0_ms )
+    ->set_default_value( data->effectN( 3 ).percent() );
+
+  auto haste = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 451845 ) )
+    ->set_stat_from_effect_type( A_MOD_RATING, data->effectN( 2 ).average( effect.item ) );
+
+  // proc damage action
+  struct aberrant_shadows_t : public generic_proc_t
+  {
+    buff_t* stack;
+
+    aberrant_shadows_t( const special_effect_t& e, const spell_data_t* data, buff_t* b )
+      : generic_proc_t( e, "aberrant_shadows", 451866 ), stack( b )
+    {
+      base_dd_min = base_dd_max = data->effectN( 1 ).average( e.item );
+    }
+
+    double action_multiplier() const override
+    {
+      return generic_proc_t::action_multiplier() * ( 1.0 + stack->check_stack_value() );
+    }
+  };
+
+  auto damage = create_proc_action<aberrant_shadows_t>( "aberrant_shadows", effect, data, stack );
+
+  // setup equip effect
+  // TODO: confirm cycle doesn't rest on combat start
+  effect.player->register_precombat_begin( [ empowerment, period ]( player_t* p ) {
+    empowerment->trigger();
+    make_event( *p->sim, p->rng().range( 1_ms, period ), [ p, empowerment, period ] {
+      empowerment->trigger();
+      make_repeating_event( *p->sim, period, [ empowerment ] { empowerment->trigger(); } );
+    } );
+  } );
+
+  // replace equip effect with per-spec driver
+  // TODO: replace with spec-specific driver id if possible
+  equip->spell_id = 452030;
+
+  // TODO: confirm damage procs off procs
+  effect.player->callbacks.register_callback_trigger_function( equip->spell_id,
+      dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ empowered, empowerment ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
+        return a->data().id() == empowered->id() && empowerment->check();
+      } );
+
+  // TODO: confirm empowerment is not consumed by procs
+  effect.player->callbacks.register_callback_execute_function( equip->spell_id,
+      [ damage, empowerment ]( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) {
+        damage->execute_on_target( s->target );
+        empowerment->expire( damage );
+      } );
+
+  new dbc_proc_callback_t( effect.player, *equip );
+
+  // setup on-use effect
+  /* TODO: determine when silence applies
+  auto silence = [ dur = effect.player->find_spell( 452350 )->duration() ]( player_t* p ) {
+    p->buffs.stunned->increment();
+    p->stun();
+
+    make_event( *p->sim, dur, [ p ] { p->buffs.stunned->decrement(); } );
+  };
+  */
+  stack->set_stack_change_callback( [ haste ]( buff_t* b, int, int ) {
+    if ( b->at_max_stacks() )
+      haste->trigger();
+  } );
+
+  effect.custom_buff = stack;
+
+  effect.player->register_on_combat_state_callback(
+      [ stack, dur = timespan_t::from_seconds( data->effectN( 5 ).base_value() ) ]( player_t* p, bool c ) {
+        if ( !c )
+        {
+          make_event( *p->sim, dur, [ p, stack ] {
+            if ( !p->in_combat )
+              stack->expire();
+          } );
+        }
+      } );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -222,15 +370,15 @@ void register_special_effects()
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
+  register_special_effect( 444958, DISABLED_EFFECT );  // spymaster's web
   register_special_effect( 444067, items::void_reapers_chime );
+  register_special_effect( 445619, items::aberrant_spellforge );
+  register_special_effect( 445593, DISABLED_EFFECT );  // aberrant spellforge
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   // Armor
 
   // Sets
-
-  // Disabled
-  register_special_effect( 444958, DISABLED_EFFECT );  // spymaster's web
 }
 
 void register_target_data_initializers( sim_t& sim )
