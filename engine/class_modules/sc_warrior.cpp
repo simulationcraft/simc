@@ -1923,7 +1923,7 @@ struct mortal_strike_t : public warrior_attack_t
     : warrior_attack_t( "mortal_strike", p, p->talents.arms.mortal_strike ),
       exhilarating_blows_chance( p->talents.arms.exhilarating_blows->proc_chance() ),
       frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
-      rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).base_value() / 100.0 ),
+      rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() ),
       rend_dot( nullptr )
   {
     parse_options( options_str );
@@ -2640,7 +2640,7 @@ struct cleave_t : public warrior_attack_t
   cleave_t( warrior_t* p, util::string_view options_str ) 
     : warrior_attack_t( "cleave", p, p->talents.arms.cleave ),
     frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
-    rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).base_value() / 100.0 )
+    rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() )
   {
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
@@ -4344,7 +4344,7 @@ struct rampage_parent_t : public warrior_attack_t
     : warrior_attack_t( "rampage", p, p->talents.fury.rampage ),
     unbridled_chance( p->talents.fury.unbridled_ferocity->effectN( 1 ).base_value() / 100.0 ),
     frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
-    rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).base_value() / 100.0 )
+    rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent())
   {
     parse_options( options_str );
     for ( auto* rampage_attack : p->rampage_attacks )
@@ -4352,7 +4352,6 @@ struct rampage_parent_t : public warrior_attack_t
       add_child( rampage_attack );
     }
     track_cd_waste = false;
-    //base_costs[ RESOURCE_RAGE ] += p->talents.frothing_berserker->effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
   void execute() override
@@ -4494,7 +4493,7 @@ struct revenge_t : public warrior_attack_t
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
       seismic_action( nullptr ),
       frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
-      rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).base_value() / 100.0 )
+      rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() )
     {
       parse_options( options_str );
       aoe           = -1;
