@@ -298,15 +298,15 @@ void aberrant_spellforge( special_effect_t& effect )
   // TODO: confirm damage procs off procs
   effect.player->callbacks.register_callback_trigger_function( equip->spell_id,
       dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ empowered, empowerment ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
-        return a->data().id() == empowered->id() && empowerment->check();
+      [ id = empowered->id(), empowerment ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
+        return a->data().id() == id && empowerment->check();
       } );
 
   // TODO: confirm empowerment is not consumed by procs
   effect.player->callbacks.register_callback_execute_function( equip->spell_id,
-      [ damage, empowerment ]( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) {
+      [ damage, empowerment ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) {
         damage->execute_on_target( s->target );
-        empowerment->expire( damage );
+        empowerment->expire( a );
       } );
 
   new dbc_proc_callback_t( effect.player, *equip );
