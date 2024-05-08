@@ -608,6 +608,8 @@ struct death_knight_td_t : public actor_target_data_t
     propagate_const<buff_t*> chains_of_ice_trollbane_slow;
     propagate_const<buff_t*> chains_of_ice_trollbane_damage;
 
+    // Deathbringer
+    propagate_const<buff_t*> reapers_mark;
   } debuff;
 
   death_knight_td_t( player_t* target, death_knight_t* p );
@@ -736,6 +738,9 @@ public:
     propagate_const<buff_t*> essence_of_the_blood_queen;
     propagate_const<buff_t*> gift_of_the_sanlayn;
     propagate_const<buff_t*> vampiric_strike;
+
+    // Deathbringer
+    propagate_const<buff_t*> grim_reaper;
 
   } buffs;
 
@@ -1343,6 +1348,12 @@ public:
     const spell_data_t* infliction_of_sorrow_damage;
     const spell_data_t* blood_beast_summon;
 
+    // Deathbringer spells
+    const spell_data_t* reapers_mark;
+    const spell_data_t* reapers_mark_debuff;
+    const spell_data_t* reapers_mark_explosion;
+    const spell_data_t* grim_reaper;
+
   } spell;
 
   // Pet Abilities
@@ -1644,6 +1655,8 @@ public:
   // San'layn
   void trigger_infliction_of_sorrow( player_t* target );
   void trigger_vampiric_strike_proc( player_t* target );
+  // Deathbringer
+  void trigger_reapers_mark_death( player_t* target );
   // Blood
   void bone_shield_handler( const action_state_t* ) const;
   // Frost
@@ -1786,6 +1799,9 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.chains_of_ice_trollbane_damage =
       make_buff( *this, "chains_of_ice_trollbane_debuff", p->pet_spell.trollbanes_chains_of_ice_debuff )
           ->set_default_value_from_effect( 1 );
+
+  // Deathbringer  
+  debuff.reapers_mark = p->find_action( "reapers_mark" )->create_debuff( target );
 }
 
 // ==========================================================================
@@ -4401,6 +4417,16 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
       p()->pets.blood_beast.active_pet()->accumulator +=
           s->result_amount * p()->talent.sanlayn.pact_of_the_sanlayn->effectN( 1 ).percent();
     }
+
+    death_knight_td_t* td = p()->get_target_data( s->target );
+    if ( td->debuff.reapers_mark->check() && dbc::is_school( this->get_school(), SCHOOL_FROST ) )
+    {
+      td->debuff.reapers_mark->increment( 1 );
+    }
+    if ( td->debuff.reapers_mark->check() && dbc::is_school( this->get_school(), SCHOOL_SHADOW ) )
+    {
+      td->debuff.reapers_mark->increment( 1 );
+    }
   }
 
   void update_ready( timespan_t cd ) override
@@ -5288,6 +5314,103 @@ struct essence_of_the_blood_queen_buff_t final : public buff_t
 
 private:
   death_knight_t* player;
+};
+
+// ==========================================================================
+// Deathbringer Abilities
+// ==========================================================================
+// 439843 driver
+// 434765 debuff
+// 436304 explosion coeffs, #1 for blood #2 for frost
+// 443761 grim reaper (execute effect)
+// Reaper's Mark =========================================================
+struct reapers_mark_explosion_t : public death_knight_spell_t
+{
+  reapers_mark_explosion_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.reapers_mark_explosion )
+  {
+    background              = true;
+    const int effect_idx    = p->specialization() == DEATH_KNIGHT_FROST ? 2 : 1;
+    attack_power_mod.direct = data().effectN( effect_idx ).ap_coeff();
+    stacks                  = 0;
+  }
+
+  void execute_wrapper( int stacks )
+  {
+    this->stacks = stacks;
+    execute();
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_spell_t::composite_da_multiplier( state );
+    return m * this->stacks;
+  }
+
+private:
+  int stacks;
+};
+
+struct reapers_mark_debuff_t final : public buff_t
+{
+  reapers_mark_debuff_t( util::string_view name, player_t* t, death_knight_t* p )
+    : buff_t( actor_pair_t( t, p ), name, p->spell.reapers_mark_debuff )
+  {
+    refresh_behavior = buff_refresh_behavior::DISABLED;
+    freeze_stacks    = true;
+
+    set_stack_change_callback( [ p ]( buff_t* spell, int old_stack, int new_stack ) {
+      if ( new_stack >= spell->data().effectN( 1 ).base_value() )
+        spell->expire();
+    } );
+
+    set_expire_callback( [ p ]( buff_t* buff, int stacks, timespan_t duration ) {
+      if ( !buff->player->is_sleeping() )
+        debug_cast<reapers_mark_explosion_t*>( get_action<reapers_mark_explosion_t>( "reapers_mark_explosion", p ) )
+            ->execute_wrapper( stacks );
+    } );
+
+    set_tick_callback( [ p ]( buff_t* buff, int current_tick, timespan_t tick_tim ) {
+      // 5/7/24 the 35% appears to be in a server script
+      // the explosion is triggering anytime the target is below 35%, instantly popping fresh marks
+      // trigger is on a one second dummy periodic, giving a slight window to acquire stacks
+      size_t targets = p->sim->target_non_sleeping_list.size();
+      buff->player->sim->print_debug( "cooldown: {} heatlh: {}", !p->buffs.grim_reaper->check(),
+                                      buff->player->health_percentage() );
+      if ( !p->buffs.grim_reaper->check() && targets == 1 && buff->player->health_percentage() < 35 )
+      {
+        p->sim->print_debug( "reapers_mark go boom" );
+        p->buffs.grim_reaper->trigger();
+        buff->expire();
+      }
+    } );
+  }
+};
+
+struct reapers_mark_t final : public death_knight_spell_t
+{
+  reapers_mark_t( death_knight_t* p, util::string_view options_str )
+    : death_knight_spell_t( "reapers_mark", p, p->spell.reapers_mark ),
+      reapers_mark_explosion( get_action<reapers_mark_explosion_t>( "reapers_mark_explosion", p ) )
+  {
+    parse_options( options_str );
+    add_child( reapers_mark_explosion );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+    // TODO-TWW implement 10ms delay
+    get_td( state->target )->debuff.reapers_mark->trigger();
+  }
+
+  buff_t* create_debuff( player_t* t ) override
+  {
+    return new reapers_mark_debuff_t( "reapers_mark_debuff", t, p() );
+  }
+
+private:
+  propagate_const<action_t*> reapers_mark_explosion;
 };
 
 // ==========================================================================
@@ -10465,6 +10588,40 @@ void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
   }
 }
 
+void death_knight_t::trigger_reapers_mark_death( player_t* target )
+{
+  // Don't pollute results at the end-of-iteration deaths of everyone
+  if ( sim->event_mgr.canceled )
+  {
+    return;
+  }
+
+  if ( !talent.deathbringer.reapers_mark.ok() )
+  {
+    return;
+  }
+
+  auto reapers_mark = get_target_data( target )->debuff.reapers_mark;
+
+  if ( reapers_mark->check() )
+  {
+    for ( auto& new_target : target->sim->target_non_sleeping_list )
+    {
+      if ( new_target != target )
+      {
+        sim->print_debug(
+            "Target {} died while affected by reapers_mark with {} stacks with {} duration left, jumping to target {}.",
+            target->name(), reapers_mark->check(), reapers_mark->remains(), new_target->name() );
+        get_target_data( new_target )->debuff.reapers_mark->trigger( reapers_mark->check(), reapers_mark->remains() );
+        reapers_mark->cancel();
+        break;
+      }
+    }
+
+    return;
+  }
+}
+
 void death_knight_t::trigger_dnd_buffs()
 {
   if ( !talent.unholy_ground.ok() && !talent.blood.sanguine_ground.ok() )
@@ -10637,6 +10794,9 @@ void death_knight_t::create_actions()
 
 action_t* death_knight_t::create_action( util::string_view name, util::string_view options_str )
 {
+  // Deathbringer Actions
+  if ( name == "reapers_mark" )
+    return new reapers_mark_t( this, options_str );
   // General Actions
   if ( name == "abomination_limb" )
     return new abomination_limb_t( this, options_str );
@@ -11524,6 +11684,12 @@ void death_knight_t::init_spells()
   spell.infliction_of_sorrow_damage     = find_spell( 434144 );
   spell.blood_beast_summon              = find_spell( 434237 );
 
+  // Deathbringer Spells
+  spell.reapers_mark           = find_spell( 439843 );
+  spell.reapers_mark_debuff    = find_spell( 434765 );
+  spell.reapers_mark_explosion = find_spell( 436304 );
+  spell.grim_reaper            = find_spell( 443761 );
+
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
   pet_spell.ghoul_claw     = find_spell( 91776 );
@@ -11731,6 +11897,7 @@ void death_knight_t::create_buffs()
                                ->set_default_value_from_effect( 1 );
 
   // Deathbringer
+  buffs.grim_reaper = make_buff( this, "grim_reaper", spell.grim_reaper )->set_quiet( true );
 
   // San'layn
   buffs.essence_of_the_blood_queen = new essence_of_the_blood_queen_buff_t( this );
@@ -12141,40 +12308,29 @@ void death_knight_t::activate()
     }
   } );
 
-  range::for_each( sim->target_non_sleeping_list, [ this ]( player_t* target ) {
-    if ( !target->is_enemy() )
-    {
-      return;
-    }
+  if ( talent.soul_reaper.ok() )
+    register_on_kill_callback( [ this ]( player_t* t ) { trigger_soul_reaper_death( t ); } );
 
-    // On target death triggers
-    if ( talent.soul_reaper.ok() )
-      target->register_on_demise_callback( this, [ this ]( player_t* t ) { trigger_soul_reaper_death( t ); } );
+  if ( talent.deathbringer.reapers_mark.ok() )
+    register_on_kill_callback( [ this ]( player_t* t ) { trigger_reapers_mark_death( t ); } );
 
-    if ( specialization() == DEATH_KNIGHT_UNHOLY )
-    {
-      if ( spec.festering_wound->ok() )
+  if ( specialization() == DEATH_KNIGHT_UNHOLY && spec.festering_wound->ok() )
+    register_on_kill_callback( [ this ]( player_t* t ) { trigger_festering_wound_death( t ); } );
+
+  if ( talent.rider.nazgrims_conquest.ok() )
+  {
+    register_on_kill_callback( [ this ]( player_t* t ) {
+      if ( pets.nazgrim.active_pet() != nullptr )
       {
-        target->register_on_demise_callback( this, [ this ]( player_t* t ) { trigger_festering_wound_death( t ); } );
+        debug_cast<apocalyptic_conquest_buff_t*>( buffs.apocalyptic_conquest )->nazgrims_conquest +=
+            as<int>( talent.rider.nazgrims_conquest->effectN( 1 ).base_value() );
+        invalidate_cache( CACHE_STRENGTH );
       }
-    }
+    } );
+  }
 
-    if ( talent.rider.nazgrims_conquest.ok() )
-    {
-      target->register_on_demise_callback( this, [ this ]( player_t* t ) {
-        if ( pets.nazgrim.active_pet() != nullptr )
-        {
-           debug_cast<apocalyptic_conquest_buff_t*>( buffs.apocalyptic_conquest )->nazgrims_conquest += as<int>( talent.rider.nazgrims_conquest->effectN( 3 ).base_value() );
-           invalidate_cache( CACHE_STRENGTH );
-        }
-      } );
-    }
-
-    if ( talent.unholy.outbreak.ok() || talent.unholy.unholy_blight.ok() )
-    {
-      target->register_on_demise_callback( this, [ this ]( player_t* t ) { trigger_virulent_plague_death( t ); } );
-    }
-  } );
+  if ( talent.unholy.outbreak.ok() || talent.unholy.unholy_blight.ok() )
+    register_on_kill_callback( [ this ]( player_t* t ) { trigger_virulent_plague_death( t ); } );
 }
 
 // death_knight_t::reset ====================================================
