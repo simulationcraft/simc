@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54521 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54605 thewarwithin-BETA
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -4094,7 +4094,6 @@ Talent Entry     : Holy [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
-Spell Level      : 30
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5308,6 +5307,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14584 | Target: Self (1)
 #7 (id=766091)   : Apply Aura (6) | Unknown(191)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#8 (id=1158214)  : Apply Aura (6) | Unknown(312)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1154 | Target: Self (1)
 Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
 

@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54521 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54605 thewarwithin-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -5498,22 +5498,22 @@ bonus_id={ 10274 }, quality={ epic }
 bonus_id={ 10275 }, quality={ epic }
 bonus_id={ 10276 }, quality={ epic }
 bonus_id={ 10277 }, quality={ epic }
-bonus_id={ 10278 }, quality={ epic }
-bonus_id={ 10279 }, quality={ epic }
-bonus_id={ 10280 }, quality={ epic }
-bonus_id={ 10281 }, quality={ epic }
+bonus_id={ 10278 }, quality={ rare }
+bonus_id={ 10279 }, quality={ rare }
+bonus_id={ 10280 }, quality={ rare }
+bonus_id={ 10281 }, quality={ rare }
 bonus_id={ 10282 }, quality={ rare }
 bonus_id={ 10283 }, quality={ rare }
 bonus_id={ 10284 }, quality={ rare }
 bonus_id={ 10285 }, quality={ rare }
-bonus_id={ 10286 }, quality={ rare }
-bonus_id={ 10287 }, quality={ rare }
+bonus_id={ 10286 }, quality={ uncommon }
+bonus_id={ 10287 }, quality={ uncommon }
 bonus_id={ 10288 }, quality={ uncommon }
 bonus_id={ 10289 }, quality={ uncommon }
-bonus_id={ 10290 }, quality={ epic }
-bonus_id={ 10291 }, quality={ epic }
-bonus_id={ 10292 }, quality={ epic }
-bonus_id={ 10293 }, quality={ epic }
+bonus_id={ 10290 }, quality={ rare }
+bonus_id={ 10291 }, quality={ rare }
+bonus_id={ 10292 }, quality={ rare }
+bonus_id={ 10293 }, quality={ rare }
 bonus_id={ 10294 }, quality={ rare }
 bonus_id={ 10295 }, quality={ rare }
 bonus_id={ 10296 }, quality={ rare }
@@ -6227,3 +6227,13 @@ bonus_id={ 11207 }, stats={ 100% Vers [0.1925] }
 bonus_id={ 11208 }, effects={ Recalibrated Safety Fuses (id=453488, index=0, type=equip) }
 bonus_id={ 11209 }, effects={ Pouch of Pocket Grenades (id=453503, index=0, type=equip) }
 bonus_id={ 11210 }, effects={ Concealed Chaos Component (id=453813, index=0, type=equip) }
+bonus_id={ 11216 }, effects={ Blame Redirection Device (id=454450, index=0, type=equip) }
+bonus_id={ 11217 }, effects={ Complicated Fuse Box (id=454455, index=0, type=equip) }
+bonus_id={ 11219 }, effects={ Unknown Effect (id=186557) }
+bonus_id={ 11220 }, effects={ Alarm-O-Turret (id=384098, index=0, type=use) }
+bonus_id={ 11221 }, effects={ Plane Displacer (id=384081, index=0, type=use) }
+bonus_id={ 11222 }, effects={ Supercollide-O-Tron (id=384044, index=0, type=use) }
+bonus_id={ 11223 }, effects={ Shadowflame Rockets (id=407949, index=0, type=use) }
+bonus_id={ 11224 }, quality={ legendary }
+bonus_id={ 11225 }, ilevel={ 70 @plvl 70 - 90 @plvl 90 }
+bonus_id={ 11226 }, effects={ Energy Redistribution Beacon (id=455147, index=0, type=equip) }

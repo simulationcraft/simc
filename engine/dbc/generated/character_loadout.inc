@@ -1,6 +1,6 @@
 static constexpr int MYTHIC_TARGET_ITEM_LEVEL = 578;
 
-// Character Loadout data, wow build 11.0.0.54521
+// Character Loadout data, wow build 11.0.0.54605
 static const std::array<character_loadout_data_t, 599> __character_loadout_data { {
   { 1809, 1, 0, 154025 },
   { 1809, 1, 0, 154026 },
@@ -603,8 +603,8 @@ static const std::array<character_loadout_data_t, 599> __character_loadout_data 
   { 1787, 13, 2, 194536 },
 } };
 
-// Trait Loadout data, wow build 11.0.0.54521
-static const std::array<trait_loadout_data_t, 2290> __trait_loadout_data { {
+// Trait Loadout data, wow build 11.0.0.54605
+static const std::array<trait_loadout_data_t, 2277> __trait_loadout_data { {
   { 0, 122462, 1, 6 },
   { 0, 122463, 1, 7 },
   { 62, 80179, 1, 31 },
@@ -1345,10 +1345,8 @@ static const std::array<trait_loadout_data_t, 2290> __trait_loadout_data { {
   { 105, 103132, 1, 61 },
   { 250, 96201, 1, 1 },
   { 250, 96210, 1, 2 },
-  { 250, 96211, 1, 3 },
   { 250, 96173, 1, 4 },
   { 250, 96213, 1, 5 },
-  { 250, 96199, 1, 6 },
   { 250, 96196, 1, 7 },
   { 250, 96202, 1, 8 },
   { 250, 96189, 1, 9 },
@@ -1356,7 +1354,6 @@ static const std::array<trait_loadout_data_t, 2290> __trait_loadout_data { {
   { 250, 96205, 1, 11 },
   { 250, 96192, 1, 12 },
   { 250, 96187, 1, 13 },
-  { 250, 96175, 1, 14 },
   { 250, 96214, 1, 15 },
   { 250, 96193, 1, 16 },
   { 250, 96180, 1, 17 },
@@ -1404,9 +1401,7 @@ static const std::array<trait_loadout_data_t, 2290> __trait_loadout_data { {
   { 250, 96168, 1, 59 },
   { 250, 96307, 1, 60 },
   { 250, 96278, 1, 61 },
-  { 251, 96211, 1, 1 },
   { 251, 96200, 1, 2 },
-  { 251, 96199, 1, 3 },
   { 251, 96201, 1, 4 },
   { 251, 96202, 1, 5 },
   { 251, 96203, 1, 6 },
@@ -1423,7 +1418,6 @@ static const std::array<trait_loadout_data_t, 2290> __trait_loadout_data { {
   { 251, 96197, 1, 17 },
   { 251, 96197, 2, 18 },
   { 251, 96174, 1, 19 },
-  { 251, 96175, 1, 20 },
   { 251, 96182, 1, 21 },
   { 251, 96182, 2, 22 },
   { 251, 96209, 1, 23 },
@@ -1467,15 +1461,12 @@ static const std::array<trait_loadout_data_t, 2290> __trait_loadout_data { {
   { 251, 96236, 2, 61 },
   { 252, 96202, 1, 1 },
   { 252, 96210, 1, 2 },
-  { 252, 96211, 1, 3 },
   { 252, 96200, 1, 4 },
-  { 252, 96199, 1, 5 },
   { 252, 96189, 1, 6 },
   { 252, 96190, 1, 7 },
   { 252, 96196, 1, 8 },
   { 252, 96173, 1, 9 },
   { 252, 96213, 1, 10 },
-  { 252, 96175, 1, 11 },
   { 252, 96214, 1, 12 },
   { 252, 96205, 1, 13 },
   { 252, 96192, 1, 14 },
@@ -2035,9 +2026,6 @@ static const std::array<trait_loadout_data_t, 2290> __trait_loadout_data { {
   { 261, 117152, 1, 19 },
   { 261, 112638, 1, 20 },
   { 261, 112579, 1, 21 },
-  { 261, 112581, 1, 22 },
-  { 261, 112581, 2, 23 },
-  { 261, 112577, 1, 24 },
   { 261, 112643, 1, 25 },
   { 261, 112643, 2, 26 },
   { 261, 112642, 1, 27 },
@@ -2051,7 +2039,6 @@ static const std::array<trait_loadout_data_t, 2290> __trait_loadout_data { {
   { 261, 112598, 1, 35 },
   { 261, 112586, 1, 36 },
   { 261, 112599, 1, 37 },
-  { 261, 112590, 1, 38 },
   { 261, 112621, 1, 39 },
   { 261, 112597, 1, 40 },
   { 261, 112625, 1, 41 },

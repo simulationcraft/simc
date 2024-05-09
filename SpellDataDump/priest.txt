@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54521 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54605 thewarwithin-BETA
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -240,7 +240,7 @@ GCD              : 1.5 seconds
 Duration         : 16 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #7, #8), Discipline Priest (137032 effects: #7, #8, #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #4, #5, #11, #12, #30, #31), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2), Death's Torment (423726 effect#1), Inner Quietus (448278 effect#1), Resonant Energy (453850 effect#1)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #7, #8), Discipline Priest (137032 effects: #7, #8, #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #4, #5, #11, #12, #30, #31), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2), Death's Torment (423726 effect#1), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1)
 Family Flags     : 15, 72
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1287,7 +1287,7 @@ GCD              : 1.5 seconds
 Duration         : 21 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #4, #5, #17, #18, #30, #31), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Thought Harvester (288340 effect#2), Unfurling Darkness (341282 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Maddening Touch (391228 effect#1), Screams of the Void (393919 effect#1), Initial Priest (417191 effects: #1, #2), Inner Quietus (448278 effect#1), Resonant Energy (453850 effect#1)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #4, #5, #17, #18, #30, #31), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Thought Harvester (288340 effect#2), Unfurling Darkness (341282 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Maddening Touch (391228 effect#1), Screams of the Void (393919 effect#1), Initial Priest (417191 effects: #1, #2), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1)
 Family Flags     : 42, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   ........ ........ ........ ..x..... 
@@ -2979,7 +2979,7 @@ Effects          :
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 Description      : Creates a ring of Shadow energy around you that quickly expands to a $s2 yd radius, healing allies for $120692s1 and dealing $<shadowhalodamage> Shadow damage to enemies. Healing reduced beyond $s1 targets.$?s137033[
 
-|cFFFFFFFFGenerates ${$m2/100} Insanity.|r][]
+|cFFFFFFFFGenerates ${$m4/100} Insanity.|r][]
 Variables        : $twilightholytoshadow=$?a390707[${(1+$390707s1/100)}][${1}]
 $shadowcov=$?a322105[${(1+$322105s1/100)}][${1}]
 $darkascension=$?a391109[${(1+$391109s1/100)}][${1}]
@@ -6291,10 +6291,12 @@ Attributes       : ........ ........ x....... ..x.....   ..x..... ......x. .....
 Effects          :
 #1 (id=651860)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.61287 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=651861)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=651861)   : Apply Aura (6) | Unknown(470)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 3678 | Target: Self (1)
 #3 (id=754067)   : Trigger Spell (64): Void Torrent
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 289577 | Target: Self (1)
+#4 (id=1158790)  : Apply Aura (6) | Unknown(470)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 3678 | Target: Self (1)
 Description      : Channel a torrent of void energy into the target, dealing $o Shadow damage over $d.
 
 |cFFFFFFFFGenerates ${$289577s1*$289577s2/100} Insanity over the duration.|r
@@ -7414,7 +7416,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 275725 | Target: Self (1)
 #2 (id=751888)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 27789.72 (coefficient=11.41104) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Mind Blast (8092), Void Blast (450983)
+                   Affected Spells: Mind Blast (8092), Collapsing Void (448405), Void Blast (450983)
                    Family Flags: 13, 30
 Description      : $?s205351[Shadow Word: Void][Mind Blast] deals $s2 additional damage and generates ${$275726s1/100} additional Insanity on critical strikes.
 
@@ -8909,7 +8911,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=798203)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?s123040[Mindbender][Shadowfiend] enters you into a shadowy pact, transforming Halo, Divine Star, and Penance into Shadow spells and increasing the damage and healing of your Shadow spells by $?s123040[$<mindbender>][$<shadowfiend>]% while active.
+Description      : Casting $?s123040[Mindbender][Shadowfiend] enters you into a shadowy pact, transforming Halo, Divine Star, and Penance into Shadow spells and increasing the damage and healing of your Shadow spells by $?s123040[$<mindbender>][$<shadowfiend>]% while active.
 Variables        : $mindbender=$?s373065[${20}][${10}]
 $shadowfiend=$?s373065[${35}][${25}]
 
@@ -9068,8 +9070,8 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
 Effects          :
 #1 (id=810243)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Schism (214621), Mindgames (323673), Painbreaker Psalm (336167), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Void Blast (450983)
-                   Family Flags: 13, 15, 23, 33, 56, 84
+                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Schism (214621), Mindgames (323673), Painbreaker Psalm (336167), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Entropic Rift (447445), Entropic Rift (447448), Collapsing Void (448405), Entropic Rift (450193), Void Blast (450215), Void Blast (450983)
+                   Family Flags: 13, 15, 23, 30, 33, 44, 56, 57, 84
 #2 (id=810244)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Unholy Transfusion (325203), Mind Sear (344754), Mind Sear (394976)
@@ -10498,7 +10500,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=836852)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Mind Blast (8092), Void Blast (450983)
+                   Affected Spells: Mind Blast (8092), Collapsing Void (448405), Void Blast (450983)
                    Family Flags: 13, 30
 #2 (id=836853)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -14102,7 +14104,7 @@ Tooltip          : The damage of your next Smite is increased by $w1%, or the ab
 
 Name             : Expiation (id=390832) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=9, col=5, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#1 [op=set, values=(15, 30)]
                  : Effect#2 [op=set, values=(3, 6)]
 Class            : Priest
 School           : Physical
@@ -14758,8 +14760,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=1028403)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Shadowfiend (34433), Mind Spike (73510), Mindbender (123040), Mindbender (200174), Shadow Crash (205385), Shadow Crash (205386), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360), Mindgames (323673), Devouring Plague (335467), Painbreaker Psalm (336167), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mind Spike: Insanity (407466), Shadowy Apparition (413231), Void Blast (450983)
-                   Family Flags: 13, 15, 19, 23, 31, 33, 36, 40, 67, 80, 84, 87, 90, 106, 121
+                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Shadowfiend (34433), Mind Spike (73510), Mindbender (123040), Mindbender (200174), Shadow Crash (205385), Shadow Crash (205386), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360), Mindgames (323673), Devouring Plague (335467), Painbreaker Psalm (336167), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mind Spike: Insanity (407466), Shadowy Apparition (413231), Collapsing Void (448405), Void Blast (450983)
+                   Family Flags: 13, 15, 19, 23, 30, 31, 33, 36, 40, 67, 80, 84, 87, 90, 106, 121
 #2 (id=1030642)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Spike (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Echoing Void (373304), Echoing Void (373305), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394976), Mind Sear (394979), Mind Spike: Insanity (407466), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Collapsing Void (448405), Void Blast (450215), Void Blast (450983)
@@ -18016,6 +18018,8 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
+Affecting spells : Shadow Covenant (322105 effect#1)
+Family Flags     : 44
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18035,8 +18039,8 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #30, #31), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1)
-Family Flags     : 72
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #30, #31), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1)
+Family Flags     : 44, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18048,7 +18052,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Log on Learn (355)
 Effects          :
 #1 (id=1145412)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc447444
 
 Name             : Inner Quietus (id=448278) [Spell Family (6), Passive] 
@@ -18077,6 +18081,10 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
+#3 (id=1158795)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914)
+                   Family Flags: 15, 42
 Description      : $?c3[Vampiric Touch and Shadow Word: Pain deal $s1% additional damage.][Power Word: Shield absorbs $s2% additional damage.]
 
 Name             : Collapsing Void (id=448403) [Spell Family (6), Passive] 
@@ -18103,17 +18111,19 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1153887)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Each time $?c3[you cast Devouring Plague][Penance damages or heals], Entropic Rift is empowered, increasing its damage and size by $s3%.
+#4 (id=1157290)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Each time $?c3[you cast Devouring Plague][Penance damages or heals], Entropic Rift is empowered, increasing its damage and size by $?c1[$s4][$s3]%.
 
-After Entropic Rift ends, it collapses, dealing $448405s1 Shadow damage split between all nearby enemies.
+After Entropic Rift ends, it collapses and pulls enemies within $448405a1 yds, dealing $448405s1 Shadow damage split amongst them.
 
 Name             : Collapsing Void (id=448405) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #30, #31), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1)
-Family Flags     : 72
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #30, #31), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Mind Devourer (338332 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1)
+Family Flags     : 30, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18124,28 +18134,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1146867)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc448403
-
-Name             : Entropic Rift (id=449485) [Spell Family (6)] 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Duration         : 2 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Log on Learn (355)
-Effects          :
-#1 (id=1148665)  : Create Area Trigger (179)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 33372 | Target: Unknown(87)
-Description      : $@spelldesc447444
 
 Name             : Divine Halo (id=449806) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=5, col=1, max_rank=1, req_points=0]
@@ -18336,6 +18326,8 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
 Labels           : 3556: Dark Energy (451018 effect#2)
+Affecting spells : Shadow Covenant (322105 effect#1)
+Family Flags     : 44
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18361,7 +18353,7 @@ Spell Level      : 23
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #18), Discipline Priest (137032 effects: #5, #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #30, #31), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Schism (214621 effect#1), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Boon of the Ascended (325013 effect#4), Divine Conversation (363727 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Weal and Woe (390787 effect#1), Words of the Pious (390933 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Void Infusion (450612 effect#1), Resonant Energy (453850 effect#1)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #18), Discipline Priest (137032 effects: #5, #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #30, #31), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Schism (214621 effect#1), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Shadow Covenant (322105 effect#1), Boon of the Ascended (325013 effect#4), Divine Conversation (363727 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Weal and Woe (390787 effect#1), Words of the Pious (390933 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Void Infusion (450612 effect#1), Resonant Energy (453850 effect#1)
 Family Flags     : 7, 57, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18429,8 +18421,9 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : Entropic Rift upgrades $?c3[Mind Blast][Smite] into Void Blast while it is active.
 
-$@spellname450215:
-$@spelldesc450215
+$?c1[$@spellname450215:
+$@spelldesc450215][$@spellname450983:
+$@spelldesc450983]
 Variables        : $ext=${$231688s1/1000} sec
 
 Name             : Void Infusion (id=450612) [Spell Family (6), Passive] 
@@ -18478,7 +18471,7 @@ Name             : Void Blast (id=450983) [Spell Family (6)]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
-Resource         : -8 Insanity (13) (id=306806)
+Resource         : -6 Insanity (13) (id=306806)
 Spell Level      : 23
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -18615,6 +18608,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1151696)  : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 224466 | Misc Value 2: 0x1403 | Radius: 3 yards | Target: Unknown(32)
+#2 (id=1158794)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Summon a Voidwraith for $d that casts Void Flay, dealing up to $451435s2% additional damage, dealing more damage to higher health enemies.$?s137033[
 
 |cFFFFFFFFGenerates ${$262485s1/100} Insanity each time the Voidwraith attacks.|r][
@@ -18626,7 +18621,7 @@ Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=3, col=3, max
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Internal Cooldown: 1 seconds
+Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell
@@ -18687,7 +18682,7 @@ Effects          :
 #1 (id=1152036)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.35000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1152037)  : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : Flays the enemy, causing $s1 Shadow damage. Deals $s2% additional damage to targets above 50% health.
 
 Name             : Embrace the Shadow (id=451569) [Spell Family (6), Passive] 

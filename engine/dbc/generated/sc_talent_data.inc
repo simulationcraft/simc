@@ -1,5 +1,5 @@
-// 571 talents, wow build 11.0.0.54521
-static std::array<talent_data_t, 571> __talent_data { {
+// 570 talents, wow build 11.0.0.54605
+static std::array<talent_data_t, 570> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
   { "War Machine"                       , 15760, 0x00, 0x0001,   73,   0,   0,  316733,       0,  0 },
@@ -568,7 +568,6 @@ static std::array<talent_data_t, 571> __talent_data { {
   { "Execution Sentence"                , 23467, 0x00, 0x0002,   70,   2,   0,  343527,       0,  0 },
   { "Moment of Glory"                   , 23468, 0x00, 0x0002,   66,   2,   1,  327193,       0,  0 },
   { "Blessed Hammer"                    , 23469, 0x00, 0x0002,   66,   2,   0,  204019,   35395,  0 },
-  { "Acrobatic Strikes"                 , 23470, 0x00, 0x0008,  260,   0,   1,  196924,       0,  0 },
   { "Avenging Crusader"                 , 23680, 0x00, 0x0002,   65,   1,   5,  216331,   31884,  0 },
   { "Beacon of Virtue"                  , 23681, 0x00, 0x0002,   65,   2,   6,  200025,       0,  0 },
 } };

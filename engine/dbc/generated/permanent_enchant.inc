@@ -1,5 +1,5 @@
-// Permanent item enchants, wow build 11.0.0.54521
-static const std::array<permanent_enchant_entry_t, 945> __permanent_enchant_data { {
+// Permanent item enchants, wow build 11.0.0.54605
+static const std::array<permanent_enchant_entry_t, 944> __permanent_enchant_data { {
   { 6614,  1,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6615,  2,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6616,  3,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
@@ -699,13 +699,12 @@ static const std::array<permanent_enchant_entry_t, 945> __permanent_enchant_data
   {  930,  0,  4, 0x00000400, 0x0000001f, "riding_skill"                      },
   { 4446,  0,  2, 0x00000000, 0x0008a7f3, "rivers_song"                       },
   { 1843,  0,  4, 0x001005a0, 0x0000001e, "rugged_armor_kit"                  },
-  { 6243,  0,  2, 0x00000000, 0x0002e5f3, "rune_of_hysteria"                  },
   { 3370,  0,  2, 0x00000000, 0x0002e5f3, "rune_of_razorice"                  },
   { 6241,  0,  2, 0x00000000, 0x0002e5f3, "rune_of_sanguination"              },
   { 6242,  0,  2, 0x00000000, 0x0002e5f3, "rune_of_spellwarding"              },
   { 6245,  0,  2, 0x00000000, 0x0002e5f3, "rune_of_the_apocalypse"            },
   { 3368,  0,  2, 0x00000000, 0x0002e5f3, "rune_of_the_fallen_crusader"       },
-  { 3847,  0,  2, 0x00000000, 0x00000562, "rune_of_the_stoneskin_gargoyle"    },
+  { 3847,  0,  2, 0x00000000, 0x0002e5f3, "rune_of_the_stoneskin_gargoyle"    },
   { 6244,  0,  2, 0x00000000, 0x0002e5f3, "rune_of_unending_thirst"           },
   { 2748,  0,  4, 0x00000080, 0x0000001f, "runic_spellthread"                 },
   { 6216,  0,  4, 0x00100020, 0x0000001f, "sacred_stats"                      },

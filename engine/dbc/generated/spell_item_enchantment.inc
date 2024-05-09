@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 11.0.0.54521
-static const std::array<item_enchantment_data_t, 4997> __spell_item_ench_data { {
+// Item enchantment data, wow build 11.0.0.54605
+static const std::array<item_enchantment_data_t, 5001> __spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },      0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 320,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720f,  0.0000f,  0.0000f },   2831, "Reinforced (+$k1 Armor)"           },
@@ -4997,5 +4997,9 @@ static const std::array<item_enchantment_data_t, 4997> __spell_item_ench_data { 
   { 7505,      0,  0,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11195,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Earthen Delivery Drill"            },
   { 7506,      0,  0,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11192,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Heartseeking Health Injector"      },
   { 7521,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Holy Fire"                         },
+  { 7522, 225241,  0,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11220,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Refurbished Alarm-O-Turret"        },
+  { 7523, 225242,  0,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11221,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Refurbished Plane Displacer"       },
+  { 7524, 225243,  0,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11222,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Refurbished Supercollide-O-Tron"   },
+  { 7525, 225244,  0,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11223,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Refurbished Shadowflame Rockets"   },
 } };
 

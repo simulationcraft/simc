@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54521 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54605 thewarwithin-BETA
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -641,7 +641,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 9 seconds
-Affecting spells : Norgannon's Foresight (236380 effect#1)
+Affecting spells : Norgannon's Foresight (236380 effect#1), Controlled Destruction (453268 effect#1)
 Family Flags     : 27, 67
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ..x..... ....x.x. 
@@ -1279,7 +1279,7 @@ Effects          :
 #1 (id=36375)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=324006)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.30000 | PvP Coefficient: 4.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.60000 | PvP Coefficient: 2.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc44457
 
 Name             : Fingers of Frost (id=44544) [Spell Family (3)] 
@@ -1456,6 +1456,7 @@ GCD              : 1.5 seconds
 Duration         : 40 seconds
 Cooldown         : 120 seconds
 Labels           : 1284: Symbol of Hope (265144 effect#2)
+                 : 3672: Phantasmal Image (444784 effect#2)
 Internal Cooldown: 2 seconds
 Stacks           : 3 initial, 3 maximum
 Proc Chance      : 101%
@@ -3310,7 +3311,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=215509)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your Fireball, Pyroblast, Fire Blast, Scorch and Phoenix Flames critical strikes reduce the remaining cooldown on Combustion by $<cdr> sec.
+#2 (id=1158746)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your Fireball, Pyroblast, Fire Blast, Scorch and Phoenix Flames critical strikes reduce the remaining cooldown on Combustion by $<cdr> sec.
+
+Flamestrike critical strikes reduce the remaining cooldown of Combustion by ${$s1/1000/$s2}.1 sec for each critical strike, up to ${$s1/1000} sec.
 Variables        : $cdr=${$s1/1000}.1
 
 Name             : Thermal Void (id=155149) [Spell Family (3), Passive] 
@@ -5798,7 +5803,7 @@ The duration of harmful Magic effects against you is reduced by $s4%.
 Tooltip          : Absorbs $w1 damage.
 Magic damage taken reduced by $s3%.
 Duration of all harmful Magic effects reduced by $w4%.$?a449330[
-Avoidance increased by $449336s1%.][]
+Avoidance increased by $449330s1%.][]
 Variables        : $shield=${$s6/100*$MHP*(1+$@versadmg)}
 
 Name             : Chrono Shift (id=235711) [Spell Family (3), Passive] 
@@ -9956,7 +9961,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=819670)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Frostbolt (116)
+                   Affected Spells: Frostbolt (116), Frostfire Bolt (431044)
                    Family Flags: 57
 #6 (id=843414)   : Apply Aura (6) | Unknown(395)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 19912 | Target: Self (1)
@@ -12628,11 +12633,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1013394)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Frostbolt (116)
+                   Affected Spells: Frostbolt (116), Frostfire Bolt (431044)
                    Family Flags: 57
 #2 (id=1013395)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21)
                    Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Frostbolt (116)
+                   Affected Spells: Frostbolt (116), Frostfire Bolt (431044)
                    Family Flags: 57
 #3 (id=1013397)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -13181,7 +13186,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1015291)  : Apply Aura (6) | Unknown(285)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 383394 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Trigger Spell: 383394 | Target: Self (1)
 Description      : Fire Blast and Phoenix Flames increase your mastery by ${$s1*$mas}% for $383395d. This effect stacks up to $383395u times.
 
 Name             : Feel the Burn (id=383394) [Spell Family (3), Hidden] 
@@ -13212,7 +13217,7 @@ Name             : Feel the Burn (id=383395) [Spell Family (3)]
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Duration         : 6 seconds
+Duration         : 5 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Triggered by     : Feel the Burn (383394)
@@ -13353,7 +13358,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1016393)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Casting Scorch on targets below $s2% health increase the target's damage taken from you by $s3% for $383608d. This effect stacks up to $383608u times.
+Description      : Casting Scorch on targets below $s1% health increase the target's damage taken from you by $383608s1% for $383608d. This effect stacks up to $383608u times.
 
 Name             : Improved Scorch (id=383608) [Spell Family (3)] 
 Class            : Mage
@@ -13466,7 +13471,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1015729)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Damaging a target with Pyroblast increases the damage it receives from Ignite by $s1%.
+Description      : Damaging a target with Pyroblast increases the damage it receives from Ignite by $453268s1%. Stacks up to $453268u times.
 
 Name             : Impetus (id=383676) [Spell Family (3), Passive] 
 Talent Entry     : Arcane [tree=spec, row=6, col=3, max_rank=1, req_points=8]
@@ -15419,7 +15424,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72)
 Effects          :
 #1 (id=1087322)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.34000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.34000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Combustion (190319)
                    Family Flags: 58
 #2 (id=1087415)  : Apply Aura (6) | Dummy (4)
@@ -15427,7 +15432,7 @@ Effects          :
 #3 (id=1154661)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1155129)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.00000 | Misc Value: 33 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Combustion (190319)
                    Family Flags: 58
 Description      : While Combustion is active your Fireball, Pyroblast, Fire Blast, Scorch, and Phoenix Flames deal $s1% increased damage and reduce the cooldown of Combustion by ${$s2/1000}.2 sec.
@@ -16089,8 +16094,8 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 8 seconds
-Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Pyrotechnics (157644 effect#1), Combustion (190319 effects: #1, #4), Ice Form (198144 effect#1), Flame Accelerant (203275 effects: #1, #2), Flame Accelerant (203278 effects: #1, #2), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#9), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Duplicative Incineration (278538 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #3, #7), Slick Ice (327509 effect#3), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wintertide (378406 effect#1), Piercing Cold (378919 effect#1), Slick Ice (382148 effect#3), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Mage Fire Class Set 4pc (393656 effects: #1, #2, #3), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Thermal Conditioning (431117 effect#1), Severe Temperatures (431190 effect#1), Force of Will (444719 effect#2), Spellfire Sphere (448604 effect#1), Fire's Ire (450831 effect#2), Arcane Battery (453599 effects: #1, #2), Nether Munitions (454004 effect#1)
-Family Flags     : 0, 3, 5, 108
+Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Pyrotechnics (157644 effect#1), Combustion (190319 effects: #1, #4), Ice Form (198144 effect#1), Flame Accelerant (203275 effects: #1, #2), Flame Accelerant (203278 effects: #1, #2), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#9), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Duplicative Incineration (278538 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #3, #5, #7), Slick Ice (327509 effects: #1, #2, #3), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wintertide (378406 effect#1), Piercing Cold (378919 effect#1), Slick Ice (382148 effects: #1, #2, #3), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Mage Fire Class Set 4pc (393656 effects: #1, #2, #3), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Thermal Conditioning (431117 effect#1), Severe Temperatures (431190 effect#1), Force of Will (444719 effect#2), Spellfire Sphere (448604 effect#1), Fire's Ire (450831 effect#2), Arcane Battery (453599 effects: #1, #2), Nether Munitions (454004 effect#1)
+Family Flags     : 0, 3, 5, 57, 108
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16449,6 +16454,7 @@ School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 45 yards/sec
+Travel Delay     : 1 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ..x...x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -16552,6 +16558,7 @@ School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 45 yards/sec
+Travel Delay     : 1 seconds
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ..x...x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -16773,8 +16780,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1141382)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1141403)  : Dummy (3)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000
+#2 (id=1141403)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 3672 (Label) | Target: Self (1)
+                   Affected Spells (Label): Mirror Image (55342)
 Description      : Your Mirror Image summons one extra clone.
 Mirror Image now reduces all damage taken by an additional $s2%.
 
@@ -16857,7 +16865,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1141771)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Description      : Whenever an Embedded $?c1[Arcane][Frost] Splinter is removed or recalled, it explodes, dealing $?c1[$444966s1 Arcane][$444967s1 Frost] damage to nearby enemies. Deals reduced damage beyond $s2 targets.
+Description      : Whenever an Embedded $?c1[Arcane][Frost] Splinter is removed, it explodes, dealing $?c1[$444966s1 Arcane][$444967s1 Frost] damage to nearby enemies. Deals reduced damage beyond $s2 targets.
 
 Name             : Unerring Proficiency (id=444974) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Spellslinger (Arcane, Frost) [tree=hero, row=3, col=3, max_rank=1, req_points=1, select_idx=200]
@@ -17162,11 +17170,11 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
+                 : ........ ........ ...x.... ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1148372)  : Apply Aura (6) | Modify AoE Damage Taken% (229)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+#1 (id=1148372)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1048576 | Target: Self (1)
 Description      : $@spelldesc449330
 Tooltip          : Avoidance increased by $s1%.
 
@@ -17238,7 +17246,7 @@ Effects          :
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000
 #3 (id=1151651)  : Dummy (3)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000
-Description      : Consuming Burden of Power causes your next cast of $?c1[Arcane Orb][Phoenix Flames] to call down a storm of $s1 Meteorites on $?c1[the first target it damages][its target].
+Description      : Consuming Burden of Power causes your next cast of $?c1[Arcane Orb][Fire Blast] to call down a storm of $s1 Meteorites on $?c1[the first target it damages][its target].
 
 Each Meteorite's impact reduces the cooldown of $?c1[Arcane Orb by ${$s3/1000}.1 sec and generates an Arcane Charge][Fire Blast  by ${$s2/1000}.1 sec].
 Tooltip          : Your next $?c1[Arcane Orb][Phoenix Flames] calls down a storm of $s1 Meteorites on $?c1[the first target it damages][its target].
@@ -17482,7 +17490,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1150171)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While Icy Veins is active, gain $s1% increased damage for each enemy hit by Frostbolt.
+Description      : While Icy Veins is active, damaging an enemy with Frostbolt increases spell damage by $454371s1%.
 
 Name             : Focused Fury (id=450707) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=6, col=7, max_rank=1, req_points=8]
@@ -17532,7 +17540,7 @@ Effects          :
 Description      : Consuming Hot Streak has a $s4% chance to grant you Lit Fuse.
 
 $@spellicon450716 $@spellname450716:
-Your next Phoenix Flames turn up to three struck targets into a Living Bomb that explodes after $217694d, dealing $44461s2 Fire damage to the target and reduced damage to all other enemies within $44461A2 yds.
+Your next Fire Blast turns up to three nearby targets into a Living Bomb that explodes after $217694d, dealing $44461s2 Fire damage to the target and reduced damage to all other enemies within $44461A2 yds.
 
 Up to five enemies hit by this explosion also become a Living Bomb, but this effect cannot spread further.
 
@@ -17679,7 +17687,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14
                    Affected Spells: Arcane Barrage (44425)
                    Family Flags: 47
-Description      : Arcane Barrage costs no mana, grants Clearcasting, and generates 4 Arcane Charges.
+Description      : Arcane Barrage grants Clearcasting, and generates 4 Arcane Charges.
 Tooltip          : Arcane Barrage costs no mana, grants Clearcasting, and generates 4 Arcane Charges.
 
 Name             : Burden of Power (id=451049) [Spell Family (3)] 
@@ -17807,7 +17815,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Casting Combustion grants Lit Fuse.
 
-While under the effects of Combustion, consuming Hot Streak has a $s1%  increased chance of granting you Lit Fuse.
+While under the effects of Combustion, your chance of gaining Lit Fuse while under the effects of Combustion is increased to $s1%.
 
 Name             : Explosive Ingenuity (id=451760) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=5, col=4, max_rank=1, req_points=8]
@@ -17870,8 +17878,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6)
 Effects          :
-#1 (id=1153142)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+#1 (id=1153142)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Arcane Blast (30451)
                    Family Flags: 29
 Description      : The cast time of Arcane Blast is reduced by 10%.
@@ -18024,6 +18032,31 @@ Effects          :
 #1 (id=1154728)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When your direct damage spells hit an enemy affected by Charring Embers $408673u times the damage of your next $409964u Phoenix Flames is increased by $409964s1% and they refund a charge on use.
+
+Name             : Controlled Destruction (id=453268) [Spell Family (3)] 
+Class            : Mage
+School           : Fire
+Spell Type       : None
+Range            : 100 yards
+Duration         : 180 seconds
+Stacks           : 25 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Is Debuff (26), DoT Stacking Rule (103), Do Not Display Range (126), Do Not Display Duration (170)
+Effects          :
+#1 (id=1154968)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Affected Spells: Ignite (12654)
+                   Family Flags: 27
+Description      : $@spelldesc383669
+Tooltip          : Taking $s1% increased damage from Ignite.
 
 Name             : Flame Accelerant (id=453282) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=6, col=5, max_rank=1, req_points=8]
@@ -18328,5 +18361,28 @@ Effects          :
 #1 (id=1156262)  : Energize Power% (137)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc452997
+
+Name             : Death's Chill (id=454371) [Spell Family (3)] 
+Class            : Mage
+School           : Frost
+Spell Type       : None
+Duration         : Aura (infinite)
+Stacks           : 99 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1156857)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1156858)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+Description      : $@spelldesc450331
+Tooltip          : Your spell damage is increased by $s1%.
 
 

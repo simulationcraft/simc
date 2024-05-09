@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54521 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54605 thewarwithin-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -674,6 +674,8 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Fracture (263642)
                    Family Flags: 73
+#11 (id=1157781)  : Apply Aura (6) | Change Model (56)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 104712 | Misc Value 2: 0x6 | Target: Self (1)
 Description      : Transform to demon form for $d, increasing current and maximum health by $s2% and Armor by $s8%$?s235893[. Versatility increased by $s5%][]$?s321067[. While transformed, Shear and Fracture generate one additional Lesser Soul Fragment][]$?s321068[ and $s4 additional Fury][].
 Tooltip          : Maximum health increased by $w2%.
 Armor increased by $w8%.
@@ -2093,6 +2095,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 263648 | Target: Self (1)
 #3 (id=464671)   : Apply Aura (6) | Unknown(408)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 247454 | Target: Self (1)
+#4 (id=1157656)  : Apply Aura (6) | Unknown(408)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 452436 | Target: Self (1)
+#5 (id=1157657)  : Apply Aura (6) | Unknown(408)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 452437 | Target: Self (1)
 Description      : Consuming a nearby Soul Fragment heals you.
 Tooltip          : Soul Fragments are nearby.
 
@@ -2908,7 +2914,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=707093)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Fel Devastation (346503), Inner Demon (390137), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Sigil of Flame (425672), Demonsurge (451266)
+                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Fel Devastation (346503), Inner Demon (390137), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Sigil of Flame (425672), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177)
                    Family Flags: 43, 72
 #3 (id=1075599)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
@@ -2966,7 +2972,7 @@ Effects          :
                    Affected School(s): All
 #2 (id=370871)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Fel Devastation (346503), Inner Demon (390137), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Sigil of Flame (425672), Demonsurge (451266)
+                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Fel Devastation (346503), Inner Demon (390137), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Sigil of Flame (425672), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177)
                    Family Flags: 43, 72
 #3 (id=707094)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -3561,6 +3567,8 @@ Effects          :
                    Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Immolation Aura (258921), Immolation Aura (258922)
                    Family Flags: 49, 61
+#11 (id=1157660)  : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2298 | Target: Self (1)
 
 Name             : Vengeance Demon Hunter (id=212613) [Spell Family (107), Passive, Hidden] 
 Class            : Vengeance Demon Hunter
@@ -3628,6 +3636,8 @@ Effects          :
 #16 (id=1113504)  : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1676 | Target: Self (1)
                    Affected Spells (Category): Immolation Aura (258920), Consuming Fire (452487)
+#17 (id=1157659)  : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2298 | Target: Self (1)
 
 Name             : Blur (id=212800) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -3681,7 +3691,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=315667)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Disrupt (183752), Infernal Strike (189112), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Fel Devastation (346503), Ragefire (390197), Fel Devastation (393834), Sigil of Flame (425672), Demonsurge (451266)
+                   Affected Spells: Disrupt (183752), Infernal Strike (189112), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Fel Devastation (346503), Ragefire (390197), Fel Devastation (393834), Sigil of Flame (425672), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177)
                    Family Flags: 72
 #2 (id=1083498)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -4269,7 +4279,7 @@ Spell Type       : Melee
 Range            : 5 yards
 Max Targets      : 5
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Immolation Aura (258920 effect#6), Mark of the Ogre (326486 effect#3), Demon Soul (347765 effects: #1, #2), Soul Furnace (391172 effect#1), Fiery Resolve (425653 effects: #1, #2), Glaive Flurry (442435 effect#1), Rending Strike (442442 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1), Demonsurge (452435 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Immolation Aura (258920 effect#6), Mark of the Ogre (326486 effect#3), Demon Soul (347765 effects: #1, #2), Soul Furnace (391172 effect#1), Fiery Resolve (425653 effects: #1, #2), Glaive Flurry (442435 effect#1), Rending Strike (442442 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1), Demonsurge (452435 effects: #1, #3)
 Triggered by     : Soul Cleave (228477), Soul Sunder (452436)
 Family Flags     : 31, 34, 70
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -4486,7 +4496,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Soul Furnace (391172 effect#1), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Soul Furnace (391172 effect#1), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1), Demonsurge (452435 effect#3)
 Family Flags     : 68, 70, 72
 Attributes       : ........ ........ ........ x..x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
@@ -4911,7 +4921,6 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken
 Affecting spells : Agonizing Flames (207548 effects: #1, #2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Any Means Necessary (388114 effect#1), Demon Hide (428241 effects: #1, #3), Demonsurge (452489 effect#2)
-Triggered by     : Consuming Fire (452487)
 Family Flags     : 11, 32, 85, 94
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -7743,6 +7752,8 @@ Effects          :
 #1 (id=807417)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 1676 | Target: Self (1)
                    Affected Spells (Category): Immolation Aura (258920), Consuming Fire (452487)
+#2 (id=1157658)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 2298 | Target: Self (1)
 Description      : Reduces the cooldown of Immolation Aura by ${$abs($s0/1000)} sec.
 
 Name             : Spectral Sight (desc=Rank 2) (id=320379) [Spell Family (107), Passive] 
@@ -10954,7 +10965,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1023606)  : Apply Aura (6) | Modify Spell School (220)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
-                   Affected Spells: Disrupt (183752), Infernal Strike (189112), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Soul Fragment (203795), Demon Blades (203796), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Spirit Bomb (247455), Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (306830), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), The Hunt (345396), The Hunt (345422), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Elysian Decree (389815), Elysian Decree (389858), Elysian Decree (389860), Elysian Decree (390163), Ragefire (390197), Fodder to the Flame (391430), Fel Devastation (393834), Elysian Decree (394985), Sigil of Flame (425672), Demonsurge (451266), Sigil of Doom (452490)
+                   Affected Spells: Disrupt (183752), Infernal Strike (189112), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Soul Fragment (203795), Demon Blades (203796), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Spirit Bomb (247455), Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (306830), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), The Hunt (345396), The Hunt (345422), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Elysian Decree (389815), Elysian Decree (389858), Elysian Decree (389860), Elysian Decree (390163), Ragefire (390197), Fodder to the Flame (391430), Fel Devastation (393834), Elysian Decree (394985), Sigil of Flame (425672), Demonsurge (451266), Demonsurge (452416), Sigil of Doom (452490), Burning Blades (453177)
                    Family Flags: 11, 24, 33, 44, 49, 61, 72, 81, 82, 83, 86, 87, 92
 #2 (id=1031483)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -12274,11 +12285,11 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=1026865)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Fel Devastation (346503), Inner Demon (390137), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Sigil of Flame (425672), Demonsurge (451266)
+                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Fel Devastation (346503), Inner Demon (390137), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Sigil of Flame (425672), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177)
                    Family Flags: 43, 72
 #2 (id=1040352)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Fel Devastation (346503), Inner Demon (390137), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Sigil of Flame (425672), Demonsurge (451266)
+                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Fel Devastation (346503), Inner Demon (390137), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Sigil of Flame (425672), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177)
                    Family Flags: 43, 72
 Description      : Fire damage increased by $s1%.
 
@@ -13501,7 +13512,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1074654)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Disrupt (183752), Infernal Strike (189112), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Fel Devastation (346503), Ragefire (390197), Fel Devastation (393834), Sigil of Flame (425672), Demonsurge (451266)
+                   Affected Spells: Disrupt (183752), Infernal Strike (189112), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Fel Devastation (346503), Ragefire (390197), Fel Devastation (393834), Sigil of Flame (425672), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177)
                    Family Flags: 72
 #2 (id=1083485)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -13578,7 +13589,7 @@ Name             : Demon Hunter Havoc 10.2 Class Set 4pc (id=422859) [Spell Fami
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
@@ -13586,7 +13597,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Unique (43), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098457)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.50000 | Target: Self (1)
@@ -13625,7 +13636,7 @@ Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ....x... ..x.x.x. x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
@@ -13633,7 +13644,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Unique (43), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098459)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -13770,6 +13781,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1107803)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=1157661)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 2298 | Target: Self (1)
 Description      : Immolation Aura has $m1 additional $Lcharge:charges; and $s3% chance to refund a charge when used.
 
 You can have multiple Immolation Auras active at a time.
@@ -13921,14 +13934,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1108406)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Soul Fragment (203795), Demon Blades (203796), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (306830), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), The Hunt (345396), The Hunt (345422), Burning Wound (346278), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Elysian Decree (389815), Elysian Decree (389858), Elysian Decree (389860), Inner Demon (390137), Elysian Decree (390163), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Fodder to the Flame (391430), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Elysian Decree (394985), Sigil of Flame (425672), Demonsurge (451266), Sigil of Doom (452490)
+                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Soul Fragment (203795), Demon Blades (203796), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (306830), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), The Hunt (345396), The Hunt (345422), Burning Wound (346278), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Elysian Decree (389815), Elysian Decree (389858), Elysian Decree (389860), Inner Demon (390137), Elysian Decree (390163), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Fodder to the Flame (391430), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Elysian Decree (394985), Sigil of Flame (425672), Demonsurge (451266), Demonsurge (452416), Sigil of Doom (452490), Burning Blades (453177)
                    Family Flags: 11, 24, 33, 43, 44, 49, 61, 72, 81, 82, 83, 86, 87, 90, 92
 #2 (id=1108535)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0.60000 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
 #3 (id=1117851)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Soul Fragment (203795), Demon Blades (203796), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (306830), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), The Hunt (345396), The Hunt (345422), Burning Wound (346278), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Elysian Decree (389815), Elysian Decree (389858), Elysian Decree (389860), Inner Demon (390137), Elysian Decree (390163), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Fodder to the Flame (391430), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Elysian Decree (394985), Sigil of Flame (425672), Demonsurge (451266), Sigil of Doom (452490)
+                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Soul Fragment (203795), Demon Blades (203796), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (306830), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), The Hunt (345396), The Hunt (345422), Burning Wound (346278), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Elysian Decree (389815), Elysian Decree (389858), Elysian Decree (389860), Inner Demon (390137), Elysian Decree (390163), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Fodder to the Flame (391430), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Elysian Decree (394985), Sigil of Flame (425672), Demonsurge (451266), Demonsurge (452416), Sigil of Doom (452490), Burning Blades (453177)
                    Family Flags: 11, 24, 33, 43, 44, 49, 61, 72, 81, 82, 83, 86, 87, 90, 92
 Description      : Magical damage increased by $s1%, and Physical damage taken reduced by $s2%.
 
@@ -14368,7 +14381,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1138061)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Casting an enhanced ability reduces the reamining cooldown of The Hunt by ${$s1/1000} sec
+Description      : Casting an enhanced ability reduces the remaining cooldown of The Hunt by ${$s1/1000} sec.
 
 Name             : Aldrachi Tactics (id=442683) [Spell Family (107), Passive] 
 Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=3, col=1, max_rank=1, req_points=1]
@@ -14834,7 +14847,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Chaos Nova slows enemies by 60% and reduces attack and cast speed 15% for 5 sec after its stun fades. 
 
-Name             : Pursuit of Angryness (id=452404) [Spell Family (107), Passive] 
+Name             : Pursuit of Angriness (id=452404) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Vengeance) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Demon Hunter
 School           : Physical
@@ -14972,7 +14985,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1153553)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When you activate Metamorphosis, $?a212612[the cooldown of your Sigil of Flame is][the cooldowns of your Sigil of Flame and Fel Devastation are] immediately reset.
+Description      : When you activate Metamorphosis, the cooldowns of your Sigil of Flame and $?a212612[Immolation Aura][Fel Devastation] are immediately reset.
 
 Name             : Enduring Torment (id=452410) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Vengeance) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
@@ -15029,7 +15042,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1153556)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Sigil of Flame can apply Student of Suffering to you, increasing Mastery by ${$453239s1*$mas}.1% and granting $453236s1 Fury every $453239t2 sec, for $453239d.
+Description      : Sigil of Flame applies Student of Suffering to you, increasing Mastery by ${$453239s1*$mas}.1% and granting $453236s1 Fury every $453239t2 sec, for $453239d.
 
 Name             : Flamebound (id=452413) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Vengeance) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
@@ -15092,9 +15105,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1153559)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Activating Metamorphosis greatly empowers $?a212612[Eye Beam][Fel Devastation], Immolation Aura and Sigil of Flame.
+Description      : Activating Metamorphosis greatly empowers $?a212612[Eye Beam][Fel Devastation], Immolation Aura, and Sigil of Flame.
 
-Demonsurge damage is increased by $?a452416[${$452416s2/$452416u}][$452416s2]%
+Demonsurge damage is increased by $?a452416[${$452416s2/$452416u}][$452416s2]% for each time it previously triggered while your demon form is active.
 
 Name             : Demonsurge (id=452416) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -15104,7 +15117,9 @@ Duration         : 12 seconds
 Labels           : 3594: Demonsurge (452416 effect#2)
 Stacks           : 5 maximum
 Proc Chance      : 101%
+Affecting spells : Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Fiery Demise (212818 effect#1), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Demon Hide (428241 effects: #1, #3)
 Triggered by     : Demonsurge (453323)
+Family Flags     : 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -15144,6 +15159,10 @@ Effects          :
                    Family Flags: 34
 #2 (id=1153594)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 452437 | Scaled Value: 452437 | PvP Coefficient: 1.00000 | Misc Value: 247454 | Target: Self (1)
+#3 (id=1158336)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Soul Cleave (228478), Spirit Bomb (247455)
+                   Family Flags: 31, 68
 
 Name             : Soul Sunder (id=452436) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -15155,6 +15174,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, War Glaive, Fist Weapon
 Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Immolation Aura (258920 effect#6), Mark of the Ogre (326486 effect#3), Glaive Flurry (442435 effect#1), Rending Strike (442442 effect#1), Demonsurge (452435 effect#1)
+Triggered by     : Soul Fragments (203981)
 Family Flags     : 32, 34
 Attributes       : ....x... ........ x.x..... ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -15190,6 +15210,7 @@ Resource         : 40 Fury (17) (id=306860)
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
 Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
+Triggered by     : Soul Fragments (203981)
 Family Flags     : 32
 Attributes       : ....x... ........ x.x..... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -15351,7 +15372,7 @@ Category         : 1676: Havoc Demon Hunter (212612 effect#9), Vengeance Demon H
 Category Cooldown: 1.5 seconds
 Affecting spells : Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4)
 Family Flags     : 32, 85
-Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ........ 
+Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15359,25 +15380,20 @@ Attributes       : ....x... ........ x.x..... .......x   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ....x... ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1153673)  : Trigger Spell (64): Immolation Aura
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 258920 | Target: Self (1)
-Description      : Engulf yourself in flames, $?a320364 [instantly causing $258921s1 $@spelldesc395020 damage to enemies within $258921A1 yards and ][]radiating ${$258922s1*$d} $@spelldesc395020 damage over $d.$?s320374[
+#1 (id=1153673)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Engulf yourself in flames, $?a320364 [instantly causing $258921s1 $@spelldesc395020 damage to enemies within $258921A1 yards and ][]radiating ${$258922s1*$258920d} $@spelldesc395020 damage over $258920d.$?s320374[
 
-|cFFFFFFFFGenerates $<havocTalentFury> Fury over $d.|r][]$?(s212612 & !s320374)[
+|cFFFFFFFFGenerates $<havocTalentFury> Fury over $258920d.|r][]$?(s212612 & !s320374)[
 
 |cFFFFFFFFGenerates $<havocFury> Fury.|r][]$?s212613[
 
-|cFFFFFFFFGenerates $<vengeFury> Fury over $d.|r][]
-Tooltip          : Burning nearby enemies for $258922s1 $@spelldesc395020 damage every $t1 sec.$?a207548[
-
-Movement speed increased by $w4%.][]$?a320331[
-
-Armor increased by $w5%. Attackers suffer $@spelldesc395020 damage.][]
-Variables        : $havocFury=${$s2}
-$vengeFury=${$s3+($258922s3*$d)}
-$havocTalentFury=${$s2+($258922s2*$d)}
+|cFFFFFFFFGenerates $<vengeFury> Fury over $258920d.|r][]
+Variables        : $havocFury=${$258920s2}
+$vengeFury=${$258920s3+($258922s3*$258920d)}
+$havocTalentFury=${$258920s2+($258922s2*$258920d)}
 
 Name             : Demonsurge (id=452489) [Spell Family (107), Hidden] 
 Class            : Demon Hunter
@@ -15587,8 +15603,8 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1)
-Family Flags     : 16, 70
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1)
+Family Flags     : 16, 70, 72
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ x....... ....x... ........   ........ ........ ........ ........ 
@@ -15643,7 +15659,7 @@ Effects          :
 #2 (id=1154927)  : Apply Aura (6) | Periodic Trigger Spell (23): Student of Suffering every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 453236 | Target: Self (1)
 Description      : $@spelldesc452412
-Tooltip          : Mastery increased by $w1%. 
+Tooltip          : Mastery increased by ${$w1*$mas}.1%. 
 Generating $453236s1 Fury every $t2 sec.
 
 Name             : Set Fire to the Pain (id=453286) [Spell Family (107)] 
