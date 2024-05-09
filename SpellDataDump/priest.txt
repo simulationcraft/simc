@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.7.54601 Live
+SimulationCraft 1027-01 for World of Warcraft 10.2.7.54630 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -2279,7 +2279,6 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.50000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1.35 -> 1.5)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
 #3 (id=1104540)  : Dummy (3)
@@ -4257,7 +4256,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=298593)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 4.09500 | PvP Coefficient: 1.10000 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE friendly (31)
-Hotfixed         : PvP Coefficient (1 -> 1.1)
 #3 (id=298594)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #4 (id=298595)   : Dummy (3)
