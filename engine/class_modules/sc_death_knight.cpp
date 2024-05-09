@@ -1661,6 +1661,7 @@ public:
   void trigger_vampiric_strike_proc( player_t* target );
   // Deathbringer
   void trigger_reapers_mark_death( player_t* target );
+  void reapers_mark_explosion_wrapper( player_t* target, int stacks );
   // Blood
   void bone_shield_handler( const action_state_t* ) const;
   // Frost
@@ -1686,11 +1687,6 @@ public:
   std::unique_ptr<expr_t> create_runeforge_expression( util::string_view runeforge_name, bool warning );
 
   target_specific_t<death_knight_td_t> target_data;
-
-  const death_knight_td_t* find_target_data( const player_t* target ) const override
-  {
-    return target_data[ target ];
-  }
 
   death_knight_td_t* get_target_data( player_t* target ) const override
   {
@@ -1805,7 +1801,31 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
           ->set_default_value_from_effect( 1 );
 
   // Deathbringer  
-  debuff.reapers_mark = p->find_action( "reapers_mark" )->create_debuff( target );
+  // TODO-TWW confirm refresh behavior with swift end?
+  debuff.reapers_mark =
+      make_buff( *this, "reapers_mark_debuff", p->spell.reapers_mark_debuff )
+          ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+          ->set_freeze_stacks( true )
+          ->set_stack_change_callback( [ p ]( buff_t* spell, int old_stack, int new_stack ) {
+            if ( new_stack >= spell->data().effectN( 1 ).base_value() )
+              spell->expire();
+          } )
+          ->set_expire_callback( [ p ]( buff_t* buff, int stacks, timespan_t duration ) {
+            if ( !buff->player->is_sleeping() )
+              p->reapers_mark_explosion_wrapper( buff->player, stacks );
+          } )
+          ->set_tick_callback( [ p ]( buff_t* buff, int current_tick, timespan_t tick_tim ) {
+            // 5/7/24 the 35% appears to be in a server script
+            // the explosion is triggering anytime the target is below 35%, instantly popping fresh marks
+            // trigger is on a one second dummy periodic, giving a slight window to acquire stacks
+            size_t targets = p->sim->target_non_sleeping_list.size();
+            if ( !p->buffs.grim_reaper->check() && targets == 1 && buff->player->health_percentage() < 35 )
+            {
+              p->sim->print_debug( "reapers_mark go boom" );
+              p->buffs.grim_reaper->trigger();
+              buff->expire();
+            }
+          } );
 }
 
 // ==========================================================================
@@ -2692,14 +2712,11 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
   {
     double m = base_ghoul_pet_t::composite_player_target_multiplier( target, s );
 
-    auto td = dk()->find_target_data( target );
+    auto td = dk()->get_target_data( target );
 
     // 2020-12-11: Seems to be increasing the player's damage as well as the main ghoul, but not other pets'
     // Does not use a whitelist, affects all damage sources
-    if ( td )
-    {
-      m *= 1.0 + td->debuff.apocalypse_war->check_value();
-    }
+      m *= 1.0 + td->debuff.apocalypse_war->check_value(); 
 
     return m;
   }
@@ -3133,9 +3150,9 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       double m = pet_action_t<dancing_rune_weapon_pet_t, T_ACTION>::composite_target_multiplier( target );
 
-      const death_knight_td_t* td = this->dk()->find_target_data( target );
+      const death_knight_td_t* td = this->dk()->get_target_data( target );
 
-      if ( td && this->affected_by.blood_plague && td->dot.blood_plague->is_ticking() )
+      if ( this->affected_by.blood_plague && td->dot.blood_plague->is_ticking() )
       {
         m *= 1.0 + this->dk()->talent.blood.coagulopathy->effectN( 1 ).percent();
       }
@@ -3447,11 +3464,6 @@ struct magus_pet_t : public death_knight_pet_t
   };
 
   target_specific_t<magus_td_t> target_data;
-
-  const magus_td_t* find_target_data( const player_t* target ) const override
-  {
-    return target_data[ target ];
-  }
 
   magus_td_t* get_target_data( player_t* target ) const override
   {
@@ -4255,11 +4267,6 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     return debug_cast<death_knight_t*>( this->player );
   }
 
-  const death_knight_td_t* find_td( player_t* t ) const
-  {
-    return p()->find_target_data( t );
-  }
-
   death_knight_td_t* get_td( player_t* t ) const
   {
     return p()->get_target_data( t );
@@ -4404,15 +4411,19 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
           s->result_amount * p()->talent.sanlayn.pact_of_the_sanlayn->effectN( 1 ).percent();
     }
 
-    death_knight_td_t* td = p()->get_target_data( s->target );
-    if ( td->debuff.reapers_mark->check() && dbc::is_school( this->get_school(), SCHOOL_FROST ) )
+    if ( p()->talent.deathbringer.reapers_mark.ok() )
     {
-      td->debuff.reapers_mark->increment( 1 );
+      death_knight_td_t* td = p()->get_target_data( s->target );
+      if ( dbc::is_school( this->get_school(), SCHOOL_FROST ) && td->debuff.reapers_mark->check() )
+      {
+        td->debuff.reapers_mark->increment( 1 );
+      }
+      if ( dbc::is_school( this->get_school(), SCHOOL_SHADOW ) && td->debuff.reapers_mark->check() )
+      {
+        td->debuff.reapers_mark->increment( 1 );
+      }
     }
-    if ( td->debuff.reapers_mark->check() && dbc::is_school( this->get_school(), SCHOOL_SHADOW ) )
-    {
-      td->debuff.reapers_mark->increment( 1 );
-    }
+
   }
 
   void update_ready( timespan_t cd ) override
@@ -5347,42 +5358,6 @@ private:
   int stacks;
 };
 
-struct reapers_mark_debuff_t final : public buff_t
-{
-  reapers_mark_debuff_t( util::string_view name, player_t* t, death_knight_t* p )
-    : buff_t( actor_pair_t( t, p ), name, p->spell.reapers_mark_debuff )
-  {
-    refresh_behavior = buff_refresh_behavior::DISABLED;
-    freeze_stacks    = true;
-
-    set_stack_change_callback( [ p ]( buff_t* spell, int old_stack, int new_stack ) {
-      if ( new_stack >= spell->data().effectN( 1 ).base_value() )
-        spell->expire();
-    } );
-
-    set_expire_callback( [ p ]( buff_t* buff, int stacks, timespan_t duration ) {
-      if ( !buff->player->is_sleeping() )
-        debug_cast<reapers_mark_explosion_t*>( get_action<reapers_mark_explosion_t>( "reapers_mark_explosion", p ) )
-            ->execute_wrapper( stacks );
-    } );
-
-    set_tick_callback( [ p ]( buff_t* buff, int current_tick, timespan_t tick_tim ) {
-      // 5/7/24 the 35% appears to be in a server script
-      // the explosion is triggering anytime the target is below 35%, instantly popping fresh marks
-      // trigger is on a one second dummy periodic, giving a slight window to acquire stacks
-      size_t targets = p->sim->target_non_sleeping_list.size();
-      buff->player->sim->print_debug( "cooldown: {} heatlh: {}", !p->buffs.grim_reaper->check(),
-                                      buff->player->health_percentage() );
-      if ( !p->buffs.grim_reaper->check() && targets == 1 && buff->player->health_percentage() < 35 )
-      {
-        p->sim->print_debug( "reapers_mark go boom" );
-        p->buffs.grim_reaper->trigger();
-        buff->expire();
-      }
-    } );
-  }
-};
-
 struct reapers_mark_t final : public death_knight_spell_t
 {
   reapers_mark_t( death_knight_t* p, util::string_view options_str )
@@ -5398,11 +5373,6 @@ struct reapers_mark_t final : public death_knight_spell_t
     death_knight_spell_t::impact( state );
     // TODO-TWW implement 10ms delay
     get_td( state->target )->debuff.reapers_mark->trigger();
-  }
-
-  buff_t* create_debuff( player_t* t ) override
-  {
-    return new reapers_mark_debuff_t( "reapers_mark_debuff", t, p() );
   }
 
 private:
@@ -10678,6 +10648,13 @@ void death_knight_t::trigger_reapers_mark_death( player_t* target )
 
     return;
   }
+}
+
+void death_knight_t::reapers_mark_explosion_wrapper( player_t* target, int stacks )
+{
+  if ( !target->is_sleeping() )
+    debug_cast<reapers_mark_explosion_t*>( get_action<reapers_mark_explosion_t>( "reapers_mark_explosion", this ) )
+        ->execute_wrapper( stacks );
 }
 
 void death_knight_t::trigger_dnd_buffs()
