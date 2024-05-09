@@ -1496,6 +1496,11 @@ public:
     propagate_const<proc_t*> fw_vile_contagion;
     propagate_const<proc_t*> fw_ruptured_viscera;
 
+    // Festering Wound consumed by
+    propagate_const<proc_t*> fw_apocalypse;
+    propagate_const<proc_t*> fw_wound_spender;
+    propagate_const<proc_t*> fw_death;
+
     // Chill Streak related procs
     propagate_const<proc_t*> enduring_chill;  // Extra bounces given by Enduring Chill
 
@@ -1667,7 +1672,7 @@ public:
   void chill_streak_bounce( player_t* target );
   // Unholy
   void trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
-  void burst_festering_wound( player_t* target, unsigned n = 1 );
+  void burst_festering_wound( player_t* target, unsigned n = 1, proc_t* action = nullptr );
   void trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance = -1.0,
                                  bool death_trigger = false );
   void start_unholy_aura();
@@ -2683,6 +2688,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
   {
     gnaw_cd           = get_cooldown( "gnaw" );
     gnaw_cd->duration = owner->pet_spell.gnaw->cooldown();
+    owner_coeff.ap_from_ap = 0.705672;
     if ( owner->talent.unholy.raise_dead.ok() && !owner->talent.sacrificial_pact.ok() )
     {
       dynamic = false;
@@ -2704,19 +2710,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     return m;
   }
 
-  double composite_player_target_multiplier( player_t* target, school_e s ) const override
-  {
-    double m = base_ghoul_pet_t::composite_player_target_multiplier( target, s );
-
-    auto td = dk()->get_target_data( target );
-
-    // 2020-12-11: Seems to be increasing the player's damage as well as the main ghoul, but not other pets'
-    // Does not use a whitelist, affects all damage sources
-      m *= 1.0 + td->debuff.apocalypse_war->check_value(); 
-
-    return m;
-  }
-
   double composite_melee_speed() const override
   {
     double haste = base_ghoul_pet_t::composite_melee_speed();
@@ -2725,13 +2718,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
       haste *= 1.0 / ( 1.0 + ghoulish_frenzy->data().effectN( 2 ).percent() );
 
     return haste;
-  }
-
-  void init_base_stats() override
-  {
-    base_ghoul_pet_t::init_base_stats();
-
-    owner_coeff.ap_from_ap = 0.705672;
   }
 
   void init_gains() override
@@ -5500,7 +5486,7 @@ struct apocalypse_t final : public death_knight_melee_attack_t
                                                                      // condition of target_ready()
     auto n_wounds = std::min( as<int>( data().effectN( 2 ).base_value() ), td->debuff.festering_wound->check() );
 
-    p()->burst_festering_wound( state->target, n_wounds );
+    p()->burst_festering_wound( state->target, n_wounds, p()->procs.fw_apocalypse );
     p()->pets.apoc_ghouls.spawn( summon_duration, n_wounds );
 
     if ( p()->talent.unholy.magus_of_the_dead.ok() )
@@ -8702,7 +8688,7 @@ struct wound_spender_damage_base_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::impact( state );
     auto td = get_td( state->target );
 
-    p()->burst_festering_wound( state->target, 1 );
+    p()->burst_festering_wound( state->target, 1, p()->procs.fw_wound_spender );
 
     if ( p()->talent.unholy.plaguebringer.ok() )
     {
@@ -9998,11 +9984,14 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
                  talent.unholy.replenishing_wounds->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) * n_wounds,
                  gains.replenishing_wounds );
 
-  // Triggers a bursting sores explosion for each wound on the target
-  if ( talent.unholy.bursting_sores.ok() && !active_spells.bursting_sores->target_list().empty() )
+  for ( int i = 0; i < n_wounds; i++ )
   {
-    for ( int i = 0; i < n_wounds; i++ )
+    procs.fw_death->occur();
+    // Triggers a bursting sores explosion for each wound on the target
+    if ( talent.unholy.bursting_sores.ok() && !active_spells.bursting_sores->target_list().empty() )
+    {
       active_spells.bursting_sores->execute_on_target( target );
+    }
   }
 
   if ( talent.unholy.festermight.ok() )
@@ -10214,16 +10203,17 @@ void death_knight_t::trigger_festering_wound( const action_state_t* state, unsig
   }
 }
 
-void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
+void death_knight_t::burst_festering_wound( player_t* target, unsigned n, proc_t* proc )
 {
   struct fs_burst_t : public event_t
   {
     unsigned n;
     player_t* target;
     death_knight_t* dk;
+    proc_t* proc;
 
-    fs_burst_t( death_knight_t* dk, player_t* target, unsigned n )
-      : event_t( *dk, 0_ms ), n( n ), target( target ), dk( dk )
+    fs_burst_t( death_knight_t* dk, player_t* target, unsigned n, proc_t* proc )
+      : event_t( *dk, 0_ms ), n( n ), target( target ), dk( dk ), proc( proc )
     {
     }
 
@@ -10240,6 +10230,7 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
       for ( unsigned i = 0; i < n_executes; ++i )
       {
         dk->active_spells.festering_wound->execute_on_target( target );
+        proc->occur();
 
         // Don't unnecessarily call bursting sores in single target scenarios
         if ( dk->talent.unholy.bursting_sores.ok() && !dk->active_spells.bursting_sores->target_list().empty() )
@@ -10268,7 +10259,7 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
     return;
   }
 
-  make_event<fs_burst_t>( *sim, this, target, n );
+  make_event<fs_burst_t>( *sim, this, target, n, proc );
 }
 
 // Launches the repeating event for the Inexorable Assault talent
@@ -10304,7 +10295,7 @@ void death_knight_t::start_unholy_aura()
     if ( c )
     {
       make_event( *sim, timespan_t::from_millis( rng().range( 0, 2000 ) ), [ this ]() {
-        for ( auto& enemy : sim->target_non_sleeping_list)
+        for ( auto& enemy : sim->target_non_sleeping_list )
         {
           auto enemy_td = get_target_data( enemy );
           enemy_td->debuff.unholy_aura->trigger();
@@ -11880,8 +11871,10 @@ void death_knight_t::create_buffs()
   buffs.essence_of_the_blood_queen = new essence_of_the_blood_queen_buff_t( this );
 
   buffs.gift_of_the_sanlayn =
-      make_buff( this, "gift_of_the_sanlayn", spell.gift_of_the_sanlayn_buff )->set_duration( 0_ms )
-          ->set_default_value_from_effect( specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 );
+      make_buff( this, "gift_of_the_sanlayn", spell.gift_of_the_sanlayn_buff )
+          ->set_duration( 0_ms )
+          ->set_default_value_from_effect( specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 )
+          ->add_invalidate( CACHE_HASTE );
 
   buffs.vampiric_strike = make_buff( this, "vampiric_strike", spell.vampiric_strike_buff );
 
@@ -12190,6 +12183,10 @@ void death_knight_t::init_procs()
   procs.fw_necroblast       = get_proc( "Festering Wound from Necroblast" );
   procs.fw_vile_contagion   = get_proc( "Festering Wound from Vile Contagion" );
   procs.fw_ruptured_viscera = get_proc( "Festering Wound from Ruptured Viscera" );
+
+  procs.fw_apocalypse       = get_proc( "Festering Wound Burst by Apocalypse" );
+  procs.fw_death            = get_proc( "Festering Wound Burst by Target Death" );
+  procs.fw_wound_spender    = get_proc( "Festering Wound Burst by Wound Spender" );
 
   procs.enduring_chill = get_proc( "Enduring Chill extra bounces" );
 
