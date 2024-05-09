@@ -5110,6 +5110,9 @@ double player_t::non_stacking_movement_modifier() const
 
     if ( buffs.normalization_increase && buffs.normalization_increase->check() )
       speed = std::max( buffs.normalization_increase->data().effectN( 3 ).percent(), speed );
+
+    if ( buffs.surekian_grace && buffs.surekian_grace->check() )
+      speed = std::max( buffs.surekian_grace->check_value(), speed );
   }
 
   return speed;
@@ -12922,6 +12925,7 @@ void player_t::create_options()
   add_option( opt_string( "dragonflight.windweaver_party_ilvls", dragonflight_opts.windweaver_party_ilvls ) );
 
   // The War Within options
+  add_option( opt_string( "thewarwithin.sikran_shadow_arsenal_stance", thewarwithin_opts.sikrans_shadow_arsenal_stance ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

@@ -1471,6 +1471,7 @@ class SpellDataGenerator(DataGenerator):
          452350, 451845, 451866, 452279, # aberrant spellforge silence, buff, damage, unknown
          448621, 448643, 448669, # void reaper's chime
          442267, 442280, # befouler's syringe
+         448519, 448436, # sik'ran's shadow arsenal
         ),
 
         # Warrior:

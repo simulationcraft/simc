@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54605
-static const std::array<spelltext_data_t, 22725> __spelltext_data { {
+static const std::array<spelltext_data_t, 22727> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21920,8 +21920,10 @@ static const std::array<spelltext_data_t, 22725> __spelltext_data { {
   { 448403, "Each time $?c3[you cast Devouring Plague][Penance damages or heals], Entropic Rift is empowered, increasing its damage and size by $?c1[$s4][$s3]%.\r\n\r\nAfter Entropic Rift ends, it collapses and pulls enemies within $448405a1 yds, dealing $448405s1 Shadow damage split amongst them.", 0, 0 },
   { 448405, "$@spelldesc448403", 0, 0 },
   { 448433, "$@spelldesc445434", "Gain ${$445203s7/$u}% movement speed upon moving.", 0 },
+  { 448436, 0, "Movement speed increased by $w1%.", 0 },
   { 448473, "$@spelltooltip439843", 0, 0 },
   { 448508, "$@spelldesc443059", "Damage taken reduced by $w1%.", 0 },
+  { 448519, "$@spelldesc448090", 0, 0 },
   { 448554, "Renewing Mist applies Chi Harmony to its initial target, increasing their healing taken from you by $448555s1% for $448555d.", 0, 0 },
   { 448555, "$@spelldesc448554", "Healing taken from $@auracaster increased by $s1%.", 0 },
   { 448601, "Every $?c1[$s2][$s3] times you consume $?c1[Clearcasting][Hot Streak], conjure a Spellfire Sphere.\r\n\r\nWhile you're out of combat, you will slowly conjure Spellfire Spheres over time.\r\n\r\n$@spellicon448604 $@spellname448604\r\n$@spelldesc448604", 0, 0 },

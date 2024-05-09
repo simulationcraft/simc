@@ -558,7 +558,9 @@ struct player_t : public actor_t
     buff_t* stormeaters_boon;
     buff_t* heavens_nemesis; // Neltharax, Enemy of the Sky
 
-    // 10.1 buffs
+    // 11.0 The War Within
+    buff_t* surekian_grace;  // sik'ran's shadow arsenal barrage movement speed buff
+    buff_t* surekian_grace_stack;
   } buffs;
 
   struct debuffs_t
@@ -721,7 +723,7 @@ struct player_t : public actor_t
     template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, std::string>>>
     operator std::string_view() const { return current_value; }
 
-    bool is_default() { return current_value == default_value; }
+    bool is_default() const { return current_value == default_value; }
 
     friend void sc_format_to( const player_option_t<T>& opt, fmt::format_context::iterator out )
     { fmt::format_to( out, "{}", opt.current_value ); }
@@ -811,6 +813,8 @@ struct player_t : public actor_t
 
   struct thewarwithin_opt_t
   {
+    // Starting stance for Sik'rans Shadow Arsenal
+    player_option_t<std::string> sikrans_shadow_arsenal_stance = "";
   } thewarwithin_opts;
 
 private:

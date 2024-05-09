@@ -3645,6 +3645,11 @@ bool movement_buff_t::trigger( int stacks, double value, double chance, timespan
     player->buffs.static_empowerment->expire();
   }
 
+  if ( player->buffs.surekian_grace_stack )
+  {
+    player->buffs.surekian_grace_stack->expire();
+  }
+
   return buff_t::trigger( stacks, value, chance, duration );
 }
 

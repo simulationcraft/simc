@@ -84,6 +84,8 @@ namespace items
 //  e2: on-use value
 // 444959 on-use driver & buff
 // 451199 proc projectile & buff
+// TODO: confirm there is an animation delay for the spiders to return before buff is applied
+// TODO: confirm you cannot use without stacking buff present
 void spymasters_web( special_effect_t& effect )
 {
   if ( create_fallback_buffs( effect, { "spymasters_web", "spymasters_report" } ) )
@@ -149,6 +151,7 @@ void spymasters_web( special_effect_t& effect )
 // 448643 unknown (0.2s duration, 6yd radius, outgoing aoe hit?)
 // 448621 unknown (0.125s duration, echo delay?)
 // 448669 damage
+// TODO: confirm if additional echoes are immediate, delayed, or staggered
 void void_reapers_chime( special_effect_t& effect )
 {
   struct void_reapers_chime_cb_t : public dbc_proc_callback_t
@@ -202,7 +205,7 @@ void void_reapers_chime( special_effect_t& effect )
 
       if ( echo )
       {
-          // TODO: are these immediate, delayes, or staggered?
+          // TODO: are these immediate, delayed, or staggered?
           minor->execute_on_target( s->target );
           minor->execute_on_target( s->target );
       }
@@ -339,9 +342,165 @@ void aberrant_spellforge( special_effect_t& effect )
       } );
 }
 
+// 445203 data
+//  e1: flourish damage
+//  e2: flourish parry
+//  e3: flourish avoidance
+//  e4: decimation damage
+//  e5: decimation damage to shields on crit
+//  e6: barrage damage
+//  e7: barrage speed
+// 447970 on-use
+// 445434 flourish damage
+// 447962 flourish stance
+// 448519 decimation damage
+// 448090 decimation damage to shield on crit
+// 447978 decimation stance
+// 445475 barrage damage
+// 448036 barrage stance
+// 448433 barrage stacking buff
+// 448436 barrage speed buff
+// TODO: confirm order is flourish->decimation->barrage
+// TODO: confirm stance can be changed pre-combat and does not reset on encounter start
+// TODO: confirm flourish damage value is for entire dot and not per tick
+// TODO: confirm decimation damage does not have standard +15% per target up to five
+// TODO: confirm decimation damage on crit to shield only counts the absorbed amount, instead of the full damage
+// TODO: confirm barrage damage isn't split and has no diminishing returns
+void sikrans_shadow_arsenal( special_effect_t& effect )
+{
+  unsigned equip_id = 445203;
+  auto equip = find_special_effect( effect.player, equip_id );
+  assert( equip && "Sikran's Shadow Arsenal missing equip effect" );
+
+  auto data = equip->driver();
+
+  struct sikrans_shadow_arsenal_t : public generic_proc_t
+  {
+    const spell_data_t* data;
+    std::vector<std::pair<action_t*, buff_t*>> stance;
+
+    sikrans_shadow_arsenal_t( const special_effect_t& e, const spell_data_t* s )
+      : generic_proc_t( e, "sikrans_shadow_arsenal", e.driver() ), data( s )
+    {
+      // stances are populated in order: flourish->decimation->barrage
+      // TODO: confirm order is flourish->decimation->barrage
+
+      // setup flourish
+      auto f_dam = create_proc_action<generic_proc_t>( "surekian_flourish", e, e.player->find_spell( 445434 ) );
+      // TODO: confirm damage value is for entire dot and not per tick
+      f_dam->base_td = data->effectN( 1 ).base_value() / ( f_dam->dot_duration / f_dam->base_tick_time );
+      add_child( f_dam );
+
+      auto f_stance = create_buff<stat_buff_t>( e.player, e.player->find_spell( 447962 ) )
+        ->add_stat_from_effect( 1, data->effectN( 2 ).base_value() )
+        ->add_stat_from_effect( 2, data->effectN( 3 ).base_value() );
+
+      stance.emplace_back( f_dam, f_stance );
+
+      // setup decimation
+      auto d_dam = create_proc_action<generic_aoe_proc_t>( "surekian_brutality", e, e.player->find_spell( 448519 ) );
+      // TODO: confirm there is no standard +15% per target up to five
+      d_dam->base_dd_min = d_dam->base_dd_max = data->effectN( 4 ).average( e.item );
+      add_child( d_dam );
+
+      auto d_shield = create_proc_action<generic_proc_t>( "surekian_decimation", e, e.player->find_spell( 448090 ) );
+      d_shield->base_dd_min = d_shield->base_dd_max = 1.0;  // for snapshot flag parsing
+      add_child( d_shield );
+
+      auto d_stance = create_buff<buff_t>( e.player, e.player->find_spell( 447978 ) );
+
+      auto d_driver = new special_effect_t( e.player );
+      d_driver->name_str = d_stance->name();
+      d_driver->spell_id = d_stance->data().id();
+      d_driver->proc_flags2_ = PF2_CRIT;
+      e.player->special_effects.push_back( d_driver );
+
+      // assume that absorbed amount equals result_mitigated - result_absorbed. this assumes everything in
+      // player_t::assess_damage_imminent_pre_absorb are absorbs, but as for enemies this is currently unused and highly
+      // unlikely to be used in the future, we should be fine with this assumption.
+      // TODO: confirm only the absorbed amount counts, instead of the full damage
+      e.player->callbacks.register_callback_execute_function( d_driver->spell_id,
+          [ d_shield, mul = data->effectN( 5 ).percent() ]
+          ( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) {
+            auto absorbed = s->result_mitigated - s->result_absorbed;
+            if ( absorbed > 0 )
+            {
+              d_shield->base_dd_min = d_shield->base_dd_max = mul * absorbed;
+              d_shield->execute_on_target( s->target );
+            }
+          } );
+
+      auto d_cb = new dbc_proc_callback_t( e.player, *d_driver );
+      d_cb->activate_with_buff( d_stance );
+
+      stance.emplace_back( d_dam, d_stance );
+
+      // setup barrage
+      auto b_dam = create_proc_action<generic_aoe_proc_t>( "surekian_barrage", e, e.player->find_spell( 445475 ) );
+      // TODO: confirm damage isn't split and has no diminishing returns
+      b_dam->split_aoe_damage = false;
+      b_dam->base_dd_min = b_dam->base_dd_max = data->effectN( 6 ).average( e.item );
+      add_child( b_dam );
+
+      auto b_speed = create_buff<buff_t>( e.player, e.player->find_spell( 448436 ) );
+      e.player->buffs.surekian_grace = b_speed;
+
+      auto b_stack = create_buff<buff_t>( e.player, e.player->find_spell( 448433 ) );
+      b_stack->set_default_value( data->effectN( 7 ).percent() / b_stack->max_stack() )
+        ->set_expire_callback( [ b_speed ]( buff_t* b, int s, timespan_t ) {
+          b_speed->trigger( 1, b->default_value * s );
+        } );
+
+      e.player->buffs.surekian_grace_stack = b_stack;
+
+      auto b_stance = create_buff<buff_t>( e.player, e.player->find_spell( 448036 ) )
+        ->set_tick_callback( [ b_stack ]( buff_t*, int, timespan_t ) {
+          b_stack->trigger();
+        } );
+
+      stance.emplace_back( b_dam, b_stance );
+
+      // adjust for thewarwithin.sikrans.shadow_arsenal_stance= option
+      const auto& option = e.player->thewarwithin_opts.sikrans_shadow_arsenal_stance;
+      if ( !option.is_default() )
+      {
+        if ( util::str_compare_ci( option, "decimation" ) )
+          std::rotate( stance.begin(), stance.begin() + 1, stance.end() );
+        else if ( util::str_compare_ci( option, "barrage" ) )
+          std::rotate( stance.begin(), stance.begin() + 2, stance.end() );
+        else if ( !util::str_compare_ci( option, "flourish" ) )
+          throw std::invalid_argument( "Valid thewarwithin.sikrans.shadow_arsenal_stance: flourish, decimation, barrage" );
+      }
+
+      e.player->register_precombat_begin( [ this ]( player_t* p ) {
+        cycle_stance( false );
+      } );
+    }
+
+    void cycle_stance( bool action = true )
+    {
+      if ( action && target )
+        stance.front().first->execute_on_target( target );
+
+      stance.front().second->trigger();
+
+      std::rotate( stance.begin(), stance.begin() + 1, stance.end() );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      cycle_stance();
+    }
+  };
+
+  effect.execute_action = create_proc_action<sikrans_shadow_arsenal_t>( "sikrans_shadow_arsenal", effect, data );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
+// TODO: confirm effect value is for the entire dot and not per tick
 void void_reapers_claw( special_effect_t& effect )
 {
   effect.duration_ = effect.trigger()->duration();
@@ -410,6 +569,10 @@ void fateweaved_needle( special_effect_t& effect )
 // 442268 dot
 // 442267 on-next buff
 // 442280 on-next damage
+// TODO: confirm it uses psuedo-async behavior found in other similarly worded dots
+// TODO: confirm on-next buff/damage stacks per dot expired
+// TODO: determine if on-next buff ICD affects how often it can be triggered
+// TODO: determine if on-next buff ICD affects how often it can be consumed
 void befoulers_syringe( special_effect_t& effect )
 {
   struct befouled_blood_t : public generic_proc_t
@@ -516,6 +679,8 @@ void register_special_effects()
   register_special_effect( 444067, items::void_reapers_chime );
   register_special_effect( 445619, items::aberrant_spellforge );
   register_special_effect( 445593, DISABLED_EFFECT );  // aberrant spellforge
+  register_special_effect( 447970, items::sikrans_shadow_arsenal );
+  register_special_effect( 445203, DISABLED_EFFECT );  // sikran's shadow arsenal
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
