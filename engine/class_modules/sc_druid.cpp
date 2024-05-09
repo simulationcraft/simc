@@ -5768,9 +5768,8 @@ struct cenarion_ward_t : public druid_heal_t
     {
       auto hot = p->get_secondary_action<cenarion_ward_hot_t>( "cenarion_ward_hot" );
 
-      p->buff.cenarion_ward->set_stack_change_callback( [ hot ]( buff_t* b, int, int new_ ) {
-        if ( !new_ )
-          hot->execute_on_target( b->player );
+      p->buff.cenarion_ward->set_expire_callback( [ hot ]( buff_t* b, int, timespan_t ) {
+        hot->execute_on_target( b->player );
       } );
     }
   }
@@ -10223,9 +10222,8 @@ void druid_t::create_buffs()
 
   buff.parting_skies = make_fallback( talent.sundered_firmament.ok(), this, "parting_skies", find_spell( 395110 ) )
     ->set_reverse( true )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ){
-      if ( !new_ )
-        active.sundered_firmament->execute_on_target( target );
+    ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
+      active.sundered_firmament->execute_on_target( target );
     } );
 
   buff.harmony_of_the_heavens_lunar = make_fallback( talent.harmony_of_the_heavens.ok(),
@@ -10380,9 +10378,8 @@ void druid_t::create_buffs()
           ->set_name_reporting( "Prowl" );
 
   buff.overflowing_power = make_fallback( talent.berserk.ok(), this, "overflowing_power", find_spell( 405189 ) )
-    ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
-      if ( !new_ )
-        resource_gain( RESOURCE_COMBO_POINT, old_, gain.overflowing_power );
+    ->set_expire_callback( [ this ]( buff_t*, int s, timespan_t ) {
+      resource_gain( RESOURCE_COMBO_POINT, s, get_gain( "Overflowing Power" ) );
     } );
 
   // TODO: confirm this is how the value is calculated
@@ -10541,9 +10538,8 @@ void druid_t::create_buffs()
   buff.natures_swiftness =
       make_fallback( talent.natures_swiftness.ok(), this, "natures_swiftness", talent.natures_swiftness )
           ->set_cooldown( 0_ms )
-          ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-            if ( !new_ )
-              cooldown.natures_swiftness->start();
+          ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
+            cooldown.natures_swiftness->start();
           } );
 
   buff.soul_of_the_forest_tree =
@@ -10569,9 +10565,8 @@ void druid_t::create_buffs()
           ->set_max_stack( as<int>( talent.blooming_infusion->effectN( 1 ).base_value() ) )
           ->set_expire_at_max_stack( true )
           ->set_trigger_spell( talent.blooming_infusion )
-          ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-            if ( !new_ )
-              buff.blooming_infusion_damage->trigger();
+          ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
+            buff.blooming_infusion_damage->trigger();
           } );
 
   buff.blooming_infusion_heal =
@@ -10584,9 +10579,8 @@ void druid_t::create_buffs()
           ->set_max_stack( as<int>( talent.blooming_infusion->effectN( 1 ).base_value() ) )
           ->set_expire_at_max_stack( true )
           ->set_trigger_spell( talent.blooming_infusion )
-          ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-            if ( !new_ )
-              buff.blooming_infusion_heal->trigger();
+          ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
+            buff.blooming_infusion_heal->trigger();
           } );
 
   buff.boundless_moonlight_heal = make_fallback( talent.boundless_moonlight.ok() && talent.lunar_beam.ok(),
