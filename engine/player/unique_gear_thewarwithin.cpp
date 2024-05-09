@@ -385,9 +385,8 @@ void fateweaved_needle( special_effect_t& effect )
       if ( t->is_enemy() )
       {
         return make_buff( actor_pair_t( t, listener ), "thread_of_fate_debuff", debuff_spell )
-          ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
-            if ( !new_ )
-              damage->execute_on_target( b->player );
+          ->set_expire_callback( [ this ]( buff_t* b, int, timespan_t ) {
+            damage->execute_on_target( b->player );
           } );
       }
       else
@@ -405,6 +404,94 @@ void fateweaved_needle( special_effect_t& effect )
   };
 
   new fateweaved_needle_cb_t( effect );
+}
+
+// 442205 driver
+// 442268 dot
+// 442267 on-next buff
+// 442280 on-next damage
+void befoulers_syringe( special_effect_t& effect )
+{
+  struct befouled_blood_t : public generic_proc_t
+  {
+    buff_t* bloodlust;  // on-next buff
+
+    befouled_blood_t( const special_effect_t& e, buff_t* b )
+      : generic_proc_t( e, "befouled_blood", e.trigger() ), bloodlust( b )
+    {
+      base_td = e.driver()->effectN( 1 ).average( e.item );
+      // TODO: confirm it uses psuedo-async behavior found in other similarly worded dots
+      dot_max_stack = 1;
+      dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
+      target_debuff = e.trigger();
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      return generic_proc_t::create_debuff( t )
+        ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+        // trigger on-next buff here as buffs are cleared before dots in demise()
+        // TODO: confirm on-next buff/damage stacks per dot expired
+        // TODO: determine if on-next buff ICD affects how often it can be triggered
+        ->set_expire_callback( [ this ]( buff_t*, int stack, timespan_t remains ) {
+          if ( remains > 0_ms && stack )
+            bloodlust->trigger( stack );
+        } );
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      auto ta = generic_proc_t::composite_target_multiplier( t );
+
+      if ( auto debuff = find_debuff( t ) )
+        ta *= debuff->check();
+
+      return ta;
+    }
+
+    void trigger_dot( action_state_t* s ) override
+    {
+      generic_proc_t::trigger_dot( s );
+
+      // execute() instead of trigger() to avoid proc delay
+      get_debuff( s->target )->execute( 1, buff_t::DEFAULT_VALUE(), dot_duration );
+    }
+  };
+
+  struct befouling_strike_t : public generic_proc_t
+  {
+    befouling_strike_t( const special_effect_t& e )
+      : generic_proc_t( e, "befouling_strike", e.player->find_spell( 442280 ) )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+    }
+  };
+
+  // create on-next melee damage
+  auto strike = create_proc_action<generic_proc_t>( "befouling_strike", effect, effect.player->find_spell( 442280 ) );
+  strike->base_dd_min = strike->base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
+
+  // create on-next melee buff
+  auto bloodlust = create_buff<buff_t>( effect.player, effect.player->find_spell( 442267 ) );
+
+  auto on_next = new special_effect_t( effect.player );
+  on_next->name_str = bloodlust->name();
+  on_next->spell_id = bloodlust->data().id();
+  effect.player->special_effects.push_back( on_next );
+
+  // TODO: determine if on-next buff ICD affects how often it can be consumed
+  effect.player->callbacks.register_callback_execute_function( on_next->spell_id,
+      [ bloodlust, strike ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) {
+        strike->execute_on_target( s->target );
+        bloodlust->expire( a );
+      } );
+
+  auto cb = new dbc_proc_callback_t( effect.player, *on_next );
+  cb->activate_with_buff( bloodlust );
+
+  effect.execute_action = create_proc_action<befouled_blood_t>( "befouled_blood", effect, bloodlust );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 // Armor
 }  // namespace items
@@ -432,6 +519,7 @@ void register_special_effects()
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
+  register_special_effect( 442205, items::befoulers_syringe );
   // Armor
 
   // Sets
