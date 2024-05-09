@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54521
-static const std::array<spelltext_data_t, 22654> __spelltext_data { {
+static const std::array<spelltext_data_t, 22655> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21277,6 +21277,7 @@ static const std::array<spelltext_data_t, 22654> __spelltext_data { {
   { 439528, "Rip and Rake damage has a chance to cause Bloodseeker Vines to grow on the victim, dealing $439531o1 bleed damage over $439531d.\r\n\r\nWild Growth, Regrowth, and Efflorescence healing has a chance to cause Symbiotic Blooms to grow on the target, healing for $439530o1 over $439530d.\r\n\r\nMultiple instances of these can overlap.", 0, 0 },
   { 439530, "$@spelldesc439528", "Heals $w1 damage every $t1 seconds.", 0 },
   { 439531, "$@spelldesc439528", "Bleeding for $w1 damage every $t1 seconds.", 0 },
+  { 439594, "$@spelldesc437161", 0, 0 },
   { 439601, "$spelldesc385512", "Rage cost of Whirlwind reduced by $s1%", 0 },
   { 439606, "$@spelldesc410253", "Movement speed reduced by $w1%.\r\nAttack speed reduced by $w2%.", "Bronze" },
   { 439632, "$spelldesc433896", "Slowed by $s1%.", 0 },

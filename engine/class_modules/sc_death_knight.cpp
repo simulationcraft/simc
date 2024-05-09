@@ -609,7 +609,7 @@ struct death_knight_td_t : public actor_target_data_t
     propagate_const<buff_t*> chains_of_ice_trollbane_damage;
 
     // Deathbringer
-    propagate_const<buff_t*> reapers_mark;
+    buff_t* reapers_mark;
   } debuff;
 
   death_knight_td_t( player_t* target, death_knight_t* p );
@@ -827,6 +827,9 @@ public:
     propagate_const<action_t*> mark_of_blood_heal;
     propagate_const<action_t*> heart_strike;
     action_t* shattering_bone;
+
+    // Deathbringer
+    action_t* reapers_mark_explosion;
 
     // Frost
     action_t* breath_of_sindragosa_tick;
@@ -1806,16 +1809,13 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.reapers_mark =
       make_buff( *this, "reapers_mark_debuff", p->spell.reapers_mark_debuff )
           ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+          ->set_expire_at_max_stack( true )
+          ->set_can_cancel( true )
           ->set_freeze_stacks( true )
-          ->set_stack_change_callback( [ p ]( buff_t* spell, int old_stack, int new_stack ) {
-            if ( new_stack >= spell->data().effectN( 1 ).base_value() )
-              spell->expire();
-          } )
-          ->set_expire_callback( [ p ]( buff_t* buff, int stacks, timespan_t duration ) {
-            if ( !buff->player->is_sleeping() )
+          ->set_expire_callback( [ p ]( buff_t* buff, int stacks, timespan_t ) {
               p->reapers_mark_explosion_wrapper( buff->player, stacks );
           } )
-          ->set_tick_callback( [ p ]( buff_t* buff, int current_tick, timespan_t tick_tim ) {
+          ->set_tick_callback( [ p ]( buff_t* buff, int, timespan_t ) {
             // 5/7/24 the 35% appears to be in a server script
             // the explosion is triggering anytime the target is below 35%, instantly popping fresh marks
             // trigger is on a one second dummy periodic, giving a slight window to acquire stacks
@@ -1824,7 +1824,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
             {
               p->sim->print_debug( "reapers_mark go boom" );
               p->buffs.grim_reaper->trigger();
-              buff->expire();
+              // buff->expire(); TODO: Fix This
             }
           } );
 }
@@ -2943,7 +2943,8 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::create_buffs();
 
-    dark_empowerment = make_buff( this, "dark_empowerment", dk()->pet_spell.dark_empowerment );
+    dark_empowerment = make_buff( this, "dark_empowerment", dk()->pet_spell.dark_empowerment )
+      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   void create_actions() override
@@ -3697,7 +3698,7 @@ struct horseman_pet_t : public death_knight_pet_t
     void execute() override
     {
       horseman_spell_t::execute();
-      if ( !pet()->dk()->buffs.antimagic_shell_horsemen_icd->check() )
+      if ( !pet()->dk()->buffs.antimagic_shell_horsemen_icd->check() && dk()->talent.rider.horsemens_aid.ok() )
       {
         set_target( pet()->dk() );
         pet()->dk()->buffs.antimagic_shell_horsemen->trigger();
@@ -3748,10 +3749,7 @@ struct horseman_pet_t : public death_knight_pet_t
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
     // Limit them casting AMS to only if this is talented and may impact player dps
-    if ( dk()->talent.rider.horsemens_aid.ok() )
-    {
-      def->add_action( "antimagic_shell_horsemen" );
-    }
+    def->add_action( "antimagic_shell_horsemen" );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -3853,12 +3851,6 @@ struct mograine_pet_t final : public horseman_pet_t
     dnd_aura->trigger();
   }
 
-  void demise() override
-  {
-    horseman_pet_t::demise();
-    dnd_aura->expire();
-  }
-
   void init_action_list() override
   {
     horseman_pet_t::init_action_list();
@@ -3870,15 +3862,11 @@ struct mograine_pet_t final : public horseman_pet_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    heart_strike = new heart_strike_mograine_t( "heart_strike", this, options_str );
     if ( name == "heart_strike" )
-      return heart_strike;
+      return new heart_strike_mograine_t( "heart_strike", this, options_str );
 
     return horseman_pet_t::create_action( name, options_str );
   }
-
-private:
-  heart_strike_mograine_t* heart_strike;
 
 public:
   buff_t* dnd_aura;
@@ -4411,19 +4399,17 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
           s->result_amount * p()->talent.sanlayn.pact_of_the_sanlayn->effectN( 1 ).percent();
     }
 
-    if ( p()->talent.deathbringer.reapers_mark.ok() )
+    if ( p()->talent.deathbringer.reapers_mark.ok() && this->data().id() != p()->spell.reapers_mark_explosion->id() )
     {
-      death_knight_td_t* td = p()->get_target_data( s->target );
-      if ( dbc::is_school( this->get_school(), SCHOOL_FROST ) && td->debuff.reapers_mark->check() )
+      death_knight_td_t* td = get_td( s->target );
+      if ( td && td->debuff.reapers_mark->check() )
       {
-        td->debuff.reapers_mark->increment( 1 );
-      }
-      if ( dbc::is_school( this->get_school(), SCHOOL_SHADOW ) && td->debuff.reapers_mark->check() )
-      {
-        td->debuff.reapers_mark->increment( 1 );
+        if ( ( dbc::is_school( this->get_school(), SCHOOL_SHADOW ) || dbc::is_school( this->get_school(), SCHOOL_FROST ) ) )
+        {
+          td->debuff.reapers_mark->increment( 1 );
+        }
       }
     }
-
   }
 
   void update_ready( timespan_t cd ) override
@@ -5203,7 +5189,7 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
 {
   vampiric_strike_action_base_t( util::string_view n, death_knight_t* p, util::string_view options_str,
                                  const spell_data_t* s )
-    : death_knight_melee_attack_t( n, p, s ), heal( nullptr )
+    : death_knight_melee_attack_t( n, p, s )
   {
     switch ( p->specialization() )
     {
@@ -5327,46 +5313,37 @@ struct reapers_mark_explosion_t : public death_knight_spell_t
     : death_knight_spell_t( name, p, p->spell.reapers_mark_explosion )
   {
     background              = true;
+    cooldown->duration      = 0_ms;
     const int effect_idx    = p->specialization() == DEATH_KNIGHT_FROST ? 2 : 1;
     attack_power_mod.direct = data().effectN( effect_idx ).ap_coeff();
     stacks                  = 0;
   }
 
-  void execute_wrapper( int stacks )
-  {
-    this->stacks = stacks;
-    execute();
-  }
-
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = death_knight_spell_t::composite_da_multiplier( state );
-    return m * this->stacks;
+    return m * stacks;
   }
 
-private:
+public:
   int stacks;
 };
 
-struct reapers_mark_t final : public death_knight_spell_t
+struct reapers_mark_t final : public death_knight_melee_attack_t
 {
   reapers_mark_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_spell_t( "reapers_mark", p, p->spell.reapers_mark ),
-      reapers_mark_explosion( get_action<reapers_mark_explosion_t>( "reapers_mark_explosion", p ) )
+    : death_knight_melee_attack_t( "reapers_mark", p, p->spell.reapers_mark )
   {
     parse_options( options_str );
-    add_child( reapers_mark_explosion );
+    add_child( p->active_spells.reapers_mark_explosion );
   }
 
   void impact( action_state_t* state ) override
   {
-    death_knight_spell_t::impact( state );
+    death_knight_melee_attack_t::impact( state );
     // TODO-TWW implement 10ms delay
     get_td( state->target )->debuff.reapers_mark->trigger();
   }
-
-private:
-  propagate_const<action_t*> reapers_mark_explosion;
 };
 
 // ==========================================================================
@@ -10575,19 +10552,19 @@ void death_knight_t::trigger_reapers_mark_death( player_t* target )
             target->name(), reapers_mark->check(), reapers_mark->remains(), new_target->name() );
         get_target_data( new_target )->debuff.reapers_mark->trigger( reapers_mark->check(), reapers_mark->remains() );
         reapers_mark->cancel();
-        break;
+        return;
       }
     }
-
-    return;
   }
 }
 
 void death_knight_t::reapers_mark_explosion_wrapper( player_t* target, int stacks )
 {
-  if ( !target->is_sleeping() )
-    debug_cast<reapers_mark_explosion_t*>( get_action<reapers_mark_explosion_t>( "reapers_mark_explosion", this ) )
-        ->execute_wrapper( stacks );
+  if ( target != nullptr && !target->is_sleeping() && stacks > 0 )
+  {
+    debug_cast<reapers_mark_explosion_t*>( active_spells.reapers_mark_explosion )->stacks = stacks;
+    active_spells.reapers_mark_explosion->execute_on_target( target );
+  }
 }
 
 void death_knight_t::trigger_dnd_buffs()
@@ -10667,6 +10644,12 @@ void death_knight_t::create_actions()
   if( talent.sanlayn.infliction_of_sorrow.ok() )
   {
     active_spells.infliction_of_sorrow = get_action<infliction_in_sorrow_t>( "infliction_of_sorrow", this );
+  }
+
+  // Deathbringer
+  if( talent.deathbringer.reapers_mark.ok() )
+  {
+    active_spells.reapers_mark_explosion = get_action<reapers_mark_explosion_t>( "reapers_mark_explosion", this );
   }
 
   // Blood
@@ -12293,11 +12276,11 @@ void death_knight_t::activate()
 
   if ( talent.rider.nazgrims_conquest.ok() )
   {
-    register_on_kill_callback( [ this ]( player_t* t ) {
-      if ( pets.nazgrim.active_pet() != nullptr )
+    int stacks = as<int>( talent.rider.nazgrims_conquest->effectN( 1 ).base_value() );
+    register_on_kill_callback( [ this, stacks ]( player_t* ) {
+      if ( !sim->event_mgr.canceled && buffs.apocalyptic_conquest->check() )
       {
-        debug_cast<apocalyptic_conquest_buff_t*>( buffs.apocalyptic_conquest )->nazgrims_conquest +=
-            as<int>( talent.rider.nazgrims_conquest->effectN( 1 ).base_value() );
+        debug_cast<apocalyptic_conquest_buff_t*>( buffs.apocalyptic_conquest )->nazgrims_conquest += stacks;
         invalidate_cache( CACHE_STRENGTH );
       }
     } );

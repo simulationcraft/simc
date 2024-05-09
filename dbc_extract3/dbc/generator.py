@@ -1868,6 +1868,8 @@ class SpellDataGenerator(DataGenerator):
           ( 434144, 0 ), # Infliction in Sorrow Damage
           ( 434246, 0 ), # Blood Eruption
           ( 434574, 0 ), # Blood Cleave
+          # Deathbringer
+          ( 439594, 0 ), # Reapers Mark
         ),
 
         # Shaman:
