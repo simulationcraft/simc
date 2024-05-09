@@ -4402,7 +4402,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     if ( p()->talent.deathbringer.reapers_mark.ok() && this->data().id() != p()->spell.reapers_mark_explosion->id() )
     {
       death_knight_td_t* td = get_td( s->target );
-      if ( td && td->debuff.reapers_mark->check() )
+      if ( td->debuff.reapers_mark->check() )
       {
         if ( ( dbc::is_school( this->get_school(), SCHOOL_SHADOW ) || dbc::is_school( this->get_school(), SCHOOL_FROST ) ) )
         {
@@ -5325,14 +5325,20 @@ struct reapers_mark_explosion_t : public death_knight_spell_t
     return m * stacks;
   }
 
-public:
+  void execute_wrapper( player_t* target, int stacks )
+  {
+    this->stacks = stacks;
+    execute_on_target(target);
+  }
+
+private:
   int stacks;
 };
 
-struct reapers_mark_t final : public death_knight_melee_attack_t
+struct reapers_mark_t final : public death_knight_spell_t
 {
   reapers_mark_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_melee_attack_t( "reapers_mark", p, p->spell.reapers_mark )
+    : death_knight_spell_t( "reapers_mark", p, p->spell.reapers_mark )
   {
     parse_options( options_str );
     add_child( p->active_spells.reapers_mark_explosion );
@@ -5340,7 +5346,7 @@ struct reapers_mark_t final : public death_knight_melee_attack_t
 
   void impact( action_state_t* state ) override
   {
-    death_knight_melee_attack_t::impact( state );
+    death_knight_spell_t::impact( state );
     // TODO-TWW implement 10ms delay
     get_td( state->target )->debuff.reapers_mark->trigger();
   }
@@ -10539,7 +10545,7 @@ void death_knight_t::trigger_reapers_mark_death( player_t* target )
     return;
   }
 
-  auto reapers_mark = get_target_data( target )->debuff.reapers_mark;
+  buff_t* reapers_mark = get_target_data( target )->debuff.reapers_mark;
 
   if ( reapers_mark->check() )
   {
@@ -10562,8 +10568,7 @@ void death_knight_t::reapers_mark_explosion_wrapper( player_t* target, int stack
 {
   if ( target != nullptr && !target->is_sleeping() && stacks > 0 )
   {
-    debug_cast<reapers_mark_explosion_t*>( active_spells.reapers_mark_explosion )->stacks = stacks;
-    active_spells.reapers_mark_explosion->execute_on_target( target );
+    debug_cast<reapers_mark_explosion_t*>( active_spells.reapers_mark_explosion )->execute_wrapper(target, stacks);
   }
 }
 
