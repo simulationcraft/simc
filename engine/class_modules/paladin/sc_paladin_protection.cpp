@@ -848,7 +848,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
 
     p()->buffs.bulwark_of_righteous_fury->expire();
 
-    //if (p()->talents.blessing_of_the_forge->ok() && ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
+    if (p()->talents.blessing_of_the_forge->ok() && ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
     {
       p()->active.forges_reckoning->execute_on_target(target);
     }
