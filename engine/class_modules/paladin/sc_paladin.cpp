@@ -2793,6 +2793,8 @@ void paladin_t::init_spells()
   // Not working unless it's spell ID'd
   talents.hammer_and_anvil       = find_spell( 433718 );
   talents.blessing_of_the_forge  = find_talent_spell( talent_tree::HERO, "Blessing of the Forge" );
+  // Child spell of blessing of the forge, triggered by casting shield of the righteous
+  talents.forges_reckoning       = find_spell( 447258 );
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );

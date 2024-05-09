@@ -84,6 +84,7 @@ public:
     heal_t* beacon_of_light;
     action_t* holy_shield_damage;
     action_t* tyrs_enforcer_damage;
+    action_t* forges_reckoning;
     action_t* hammer_and_anvil;
     action_t* heartfire;
     action_t* judgment_of_light;
@@ -576,6 +577,7 @@ public:
     const spell_data_t* excoriation;
     const spell_data_t* hammer_and_anvil;
     const spell_data_t* blessing_of_the_forge;
+    const spell_data_t* forges_reckoning;
   } talents;
 
   struct tier_sets_t

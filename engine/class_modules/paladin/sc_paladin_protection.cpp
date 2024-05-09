@@ -330,6 +330,16 @@ struct tyrs_enforcer_damage_t : public paladin_spell_t
   }
 };
 
+struct forges_reckoning_t : public paladin_spell_t
+{
+  forges_reckoning_t( paladin_t* p ) : paladin_spell_t( "forges_reckoning", p, p->find_spell( 447258 ) )
+  {
+    background = proc = may_crit = true;
+    may_miss                     = false;
+  }
+};
+
+
 // Blessed Hammer (Protection) ================================================
 struct blessed_hammer_tick_t : public paladin_spell_t
 {
@@ -837,6 +847,11 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     }
 
     p()->buffs.bulwark_of_righteous_fury->expire();
+
+    //if (p()->talents.blessing_of_the_forge->ok() && ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
+    {
+      p()->active.forges_reckoning->execute_on_target(target);
+    }
   }
 
   double action_multiplier() const override
@@ -1171,6 +1186,7 @@ void paladin_t::create_prot_actions()
   if ( specialization() == PALADIN_PROTECTION )
   {
     active.tyrs_enforcer_damage = new tyrs_enforcer_damage_t( this );
+    active.forges_reckoning     = new forges_reckoning_t( this );
   }
   if ( sets->has_set_bonus( PALADIN_PROTECTION, T31, B4 ) )
   {
