@@ -699,14 +699,14 @@ bool dot_t::channel_interrupt()
       if ( expr )
       {
         interrupt = expr->success();
-        sim.print_debug( "Dot interrupt expression check=%d", interrupt );
+        sim.print_debug( "Dot interrupt expression check={}", interrupt );
       }
     }
     if ( interrupt )
     {
       bool gcd_ready = current_action->player->gcd_ready <= sim.current_time();
       bool action_available = is_higher_priority_action_available();
-      sim.print_debug( "Dot interrupt check: gcd_ready=%d action_available=%d.", gcd_ready, action_available );
+      sim.print_debug( "Dot interrupt check: gcd_ready={} action_available={}.", gcd_ready, action_available );
       if ( ( gcd_ready || current_action->option.interrupt_immediate ) && action_available )
       {
         if ( current_action->option.interrupt_immediate )
