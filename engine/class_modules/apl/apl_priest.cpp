@@ -110,7 +110,7 @@ void shadow( player_t* p )
   filler->add_action( "call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up&(talent.rhapsody|talent.divine_star|talent.halo)" );
   filler->add_action( "power_word_shield,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up&talent.crystalline_reflection", "Use PWS with CR talented to trigger TOF if there are no better alternatives available to do this as we still get insanity for a PWS cast." );
   filler->add_action( "call_action_list,name=empowered_filler,if=dot.devouring_plague.remains>action.mind_spike.cast_time|!talent.mind_spike" );
-  filler->add_action( "shadow_word_death,target_if=target.health.pct<20|(buff.deathspeaker.up|set_bonus.tier31_2pc)&dot.devouring_plague.ticking" );
+  filler->add_action( "shadow_word_death,target_if=(target.health.pct<20|buff.deathspeaker.up|set_bonus.tier31_2pc)&dot.devouring_plague.ticking", "Cast Shadow Word: Death if the target is in execute, you have a Deathspeaker proc or you have the Season 3 2-piece bonus" );
   filler->add_action( "shadow_word_death,target_if=min:target.time_to_die,if=talent.inescapable_torment&pet.fiend.active" );
   filler->add_action( "mindgames,target_if=max:dot.devouring_plague.remains" );
   filler->add_action( "devouring_plague,if=buff.voidform.up|cooldown.dark_ascension.up|buff.mind_devourer.up" );
