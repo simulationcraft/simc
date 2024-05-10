@@ -2513,7 +2513,15 @@ void paladin_t::create_buffs()
               this->active.divine_resonance->schedule_execute();
           } );
   buffs.holy_bulwark      = make_buff( this, "holy_bulwark", find_spell( 432496 ) );
-  buffs.sacred_weapon     = make_buff( this, "sacred_weapon", find_spell( 432502 ) );
+  buffs.sacred_weapon = make_buff( this, "sacred_weapon", find_spell( 432502 ) )
+                            ->set_cooldown( 0_s )
+                            ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+                              if ( !new_ )
+                              {
+                                buffs.shining_light_stacks->expire();
+                                buffs.shining_light_free->trigger();
+                              }
+                            } );
   buffs.blessed_assurance = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
   buffs.divine_guidance   = make_buff( this, "divine_guidance", find_spell( 433106 ) );
 }
