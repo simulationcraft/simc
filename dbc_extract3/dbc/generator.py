@@ -1844,6 +1844,7 @@ class SpellDataGenerator(DataGenerator):
           ( 425721, 0 ), # T31 Blood 2pc buff
           ( 377445, 0 ), # Unholy Aura debuff
           # The War Within
+          ( 290577, 0 ), # Abomiantion Disease Cloud
           # Rider of the Apocalypse
           ( 444505, 0 ), # Mograines Might Buff
           ( 444826, 0 ), # Trollbanes Chains of Ice Main

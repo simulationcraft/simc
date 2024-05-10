@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54605
-static const std::array<spelltext_data_t, 22727> __spelltext_data { {
+static const std::array<spelltext_data_t, 22728> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -11410,6 +11410,7 @@ static const std::array<spelltext_data_t, 22727> __spelltext_data { {
   { 290468, "Intellect increased by $s1.  Lasts $d.", "Intellect increased by $w1.", 0 },
   { 290469, "Strength increased by $s1.  Lasts $d.", "Strength increased by $w1.", 0 },
   { 290483, "Lay out a bewitching tea party for your friends.", 0, 0 },
+  { 290577, "$@spelldesc288853", "Inflicting nearby enemies with Virulent Plague.", 0 },
   { 290618, "Play a round of Kojo's expanded shell game.", "Concentrating on the shell game.", 0 },
   { 290627, "Launch unstable Azerite skyward in a dazzling display.", 0, 0 },
   { 290636, "Plant a war banner and rally nearby troops!", 0, 0 },
