@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54605
-static const std::array<spelltext_data_t, 22729> __spelltext_data { {
+static const std::array<spelltext_data_t, 22732> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21876,8 +21876,11 @@ static const std::array<spelltext_data_t, 22729> __spelltext_data { {
   { 446743, 0, "The Darkness builds within you.", 0 },
   { 446764, "Your melee attacks have a chance to crank the launcher's gears, decreasing its cooldown by $s1 sec and heating up your weapon which causes your next attack to inflict $s2 additional Fire damage.", 0, 0 },
   { 446787, "Your attacks have a chance to stir the larynx, allowing its dark whispers to influence you. Each whisper flows through your mind for $446822d, granting $s1 Strength.\r\n\r\n", 0, 0 },
+  { 446805, "$@spelldesc444264", 0, 0 },
   { 446811, "$@spelldesc443411", 0, 0 },
   { 446836, 0, "Darkness slows you by $w1%.", 0 },
+  { 446886, "$@spelldesc444264", "Maximum health increased by $w1.", 0 },
+  { 446887, "$@spelldesc444264", "Absorbing $w1 damage.", 0 },
   { 446918, "$@spelldesc446085", "Auto attack speed increased by $w1%.", 0 },
   { 447005, 0, "Your Blessed Weapon increases your highest secondary rating by +$w6.", 0 },
   { 447131, "Rejuvenation instantly heals your target for $s1% of its total periodic effect and Regrowth's duration is increased by ${$s2/1000} sec.", 0, 0 },

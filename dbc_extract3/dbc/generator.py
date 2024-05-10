@@ -1473,6 +1473,7 @@ class SpellDataGenerator(DataGenerator):
          442267, 442280, # befouler's syringe
          448519, 448436, # sik'ran's shadow arsenal
          447097, 447134, # swarmlord's authority
+         446805, 446886, 446887, 
         ),
 
         # Warrior:

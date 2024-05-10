@@ -387,7 +387,7 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
       // setup flourish
       auto f_dam = create_proc_action<generic_proc_t>( "surekian_flourish", e, e.player->find_spell( 445434 ) );
       // TODO: confirm damage value is for entire dot and not per tick
-      f_dam->base_td = data->effectN( 1 ).base_value() / ( f_dam->dot_duration / f_dam->base_tick_time );
+      f_dam->base_td = data->effectN( 1 ).base_value() * ( f_dam->dot_duration / f_dam->base_tick_time );
       add_child( f_dam );
 
       auto f_stance = create_buff<stat_buff_t>( e.player, e.player->find_spell( 447962 ) )
@@ -572,6 +572,88 @@ void swarmlords_authority( special_effect_t& effect )
   // setup on-use
   effect.custom_buff = create_buff<buff_t>( effect.player, effect.driver() )
     ->set_tick_callback( [ scarab ]( buff_t*, int, timespan_t ) { scarab->execute(); } );
+}
+
+// 444264 on-use
+// 444258 data + heal driver
+// 446805 heal
+// 446886 hp buff
+// 446887 shield, unknown use
+// TODO: confirm effect value is for the entire dot and not per tick
+// TODO: determine out of combat decay
+void foul_behemoths_chelicera( special_effect_t& effect )
+{
+  struct digestive_venom_t : public generic_proc_t
+  {
+    struct tasty_juices_t : public proc_heal_t
+    {
+      buff_t* buff;
+
+      tasty_juices_t( const special_effect_t& e, const spell_data_t* data )
+        : proc_heal_t( "tasty_juices", e.player, e.player->find_spell( 446805 ) )
+      {
+        base_dd_min = base_dd_max = data->effectN( 2 ).average( e.item );
+
+        // TODO: determine out of combat decay
+        buff = create_buff<buff_t>( e.player, e.player->find_spell( 446886 ) )
+          ->set_expire_callback( [ this ]( buff_t* b, int, timespan_t ) {
+            player->resources.temporary[ RESOURCE_HEALTH ] -= b->current_value;
+            player->recalculate_resource_max( RESOURCE_HEALTH );
+          } );
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        proc_heal_t::impact( s );
+
+        if ( !buff->check() )
+          buff->trigger();
+
+        // overheal is result_total - result_amount
+        auto overheal = s->result_total - s->result_amount;
+        if ( overheal > 0 )
+        {
+          buff->current_value += overheal;
+          player->resources.temporary[ RESOURCE_HEALTH ] += overheal;
+          player->recalculate_resource_max( RESOURCE_HEALTH );
+        }
+      }
+    };
+
+    dbc_proc_callback_t* cb;
+
+    digestive_venom_t( const special_effect_t& e ) : generic_proc_t( e, "digestive_venom", e.driver() )
+    {
+      auto data = e.player->find_spell( 444258 );
+      // TODO: confirm effect value is for the entire dot and not per tick
+      base_td = data->effectN( 1 ).average( e.item ) * ( base_tick_time / dot_duration );
+
+      auto driver = new special_effect_t( e.player );
+      driver->name_str = data->name_cstr();
+      driver->spell_id = data->id();
+      driver->execute_action = create_proc_action<tasty_juices_t>( "tasty_juices", e, data );
+      e.player->special_effects.push_back( driver );
+
+      cb = new dbc_proc_callback_t( e.player, *driver );
+      cb->deactivate();
+    }
+
+    void trigger_dot( action_state_t* s ) override
+    {
+      generic_proc_t::trigger_dot( s );
+
+      cb->activate();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      generic_proc_t::last_tick( d );
+
+      cb->deactivate();
+    }
+  };
+
+  effect.execute_action = create_proc_action<digestive_venom_t>( "digestive_venom", effect );
 }
 
 // Weapons
@@ -760,6 +842,7 @@ void register_special_effects()
   register_special_effect( 445203, DISABLED_EFFECT );  // sikran's shadow arsenal
   register_special_effect( 444301, items::swarmlords_authority );
   register_special_effect( 444292, DISABLED_EFFECT );  // swarmlord's authority
+  register_special_effect( 444264, items::foul_behemoths_chelicera );
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
