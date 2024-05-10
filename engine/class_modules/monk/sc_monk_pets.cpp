@@ -1695,8 +1695,8 @@ private:
       parse_options( options_str );
       s_data_reporting = p->o()->passives.crackling_tiger_lightning;
 
-      dot_duration       = p->o()->passives.fury_of_xuen_haste_buff->duration();
-      cooldown->duration = p->o()->passives.fury_of_xuen_haste_buff->duration();
+      dot_duration       = p->o()->passives.fury_of_xuen->duration();
+      cooldown->duration = p->o()->passives.fury_of_xuen->duration();
 
       tick_action = new crackling_tiger_lightning_tick_t( p );
     }
@@ -1721,7 +1721,7 @@ private:
 public:
   fury_of_xuen_pet_t( monk_t *owner ) : monk_pet_t( owner, "fury_of_xuen_tiger", PET_XUEN, false, true )
   {
-    // npc_id                      = o()->passives.fury_of_xuen_haste_buff->effectN( 2 ).misc_value1();
+    // npc_id                      = o()->passives.fury_of_xuen->effectN( 2 ).misc_value1();
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );

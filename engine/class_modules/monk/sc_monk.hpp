@@ -597,7 +597,7 @@ public:
     propagate_const<buff_t *> jadefire_brand;
     propagate_const<buff_t *> flying_serpent_kick_movement;
     propagate_const<buff_t *> fury_of_xuen_stacks;
-    propagate_const<buff_t *> fury_of_xuen_haste;
+    propagate_const<buff_t *> fury_of_xuen;
     propagate_const<buff_t *> hidden_masters_forbidden_touch;
     propagate_const<buff_t *> hit_combo;
     propagate_const<buff_t *> invoke_xuen;
@@ -1271,7 +1271,7 @@ public:
     const spell_data_t *flying_serpent_kick_damage;
     const spell_data_t *focus_of_xuen;
     const spell_data_t *fury_of_xuen_stacking_buff;
-    const spell_data_t *fury_of_xuen_haste_buff;
+    const spell_data_t *fury_of_xuen;
     const spell_data_t *glory_of_the_dawn_damage;
     const spell_data_t *hidden_masters_forbidden_touch;
     const spell_data_t *hit_combo;
