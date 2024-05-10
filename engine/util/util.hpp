@@ -71,6 +71,7 @@ const char* scale_metric_type_abbrev  ( scale_metric_e );
 const char* scale_metric_type_string  ( scale_metric_e );
 const char* slot_type_string          ( slot_e slot );
 const char* stat_type_string          ( stat_e stat );
+const char* stat_pct_buff_type_string ( stat_pct_buff_type stat );
 const char* stat_type_abbrev          ( stat_e stat );
 const char* stat_type_wowhead         ( stat_e stat );
 const char* stat_type_gem             ( stat_e stat );
@@ -292,6 +293,7 @@ SC_ENUM_FORMATTER( special_effect_source_e, util::special_effect_source_string )
 SC_ENUM_FORMATTER( scale_metric_e,          util::scale_metric_type_string );
 SC_ENUM_FORMATTER( slot_e,                  util::slot_type_string );
 SC_ENUM_FORMATTER( stat_e,                  util::stat_type_string );
+SC_ENUM_FORMATTER( stat_pct_buff_type,      util::stat_pct_buff_type_string );
 SC_ENUM_FORMATTER( weapon_e,                util::weapon_type_string );
 SC_ENUM_FORMATTER( specialization_e,        util::specialization_string );
 SC_ENUM_FORMATTER( movement_direction_type, util::movement_direction_string );

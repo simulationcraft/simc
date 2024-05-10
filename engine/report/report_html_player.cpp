@@ -2783,6 +2783,7 @@ std::string find_matching_decorator( const player_t& p, std::string_view n )
 
   auto spell                = static_cast<const spell_data_t*>( p.find_talent_spell( talent_tree::CLASS, n_token, p.specialization(), true ) );
   if ( !spell->ok() ) spell = static_cast<const spell_data_t*>( p.find_talent_spell( talent_tree::SPECIALIZATION, n_token, p.specialization(), true ) );
+  if ( !spell->ok() ) spell = static_cast<const spell_data_t*>( p.find_talent_spell( talent_tree::HERO, n ) );
   if ( !spell->ok() ) spell = p.find_specialization_spell( n );
   if ( !spell->ok() ) spell = p.find_specialization_spell( n_token );
   if ( !spell->ok() ) spell = p.find_class_spell( n );
@@ -3486,24 +3487,55 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                     util::stat_type_string( stat.stat ),
                     stat.amount );
       }
+
+      for ( int stat_pct_buff_value = STAT_PCT_BUFF_CRIT; stat_pct_buff_value != STAT_PCT_BUFF_MAX; stat_pct_buff_value++ ) {
+        stat_pct_buff_type stat_pct_buff = static_cast<stat_pct_buff_type>(stat_pct_buff_value);
+        auto player_buffs = p.buffs.stat_pct_buffs[ stat_pct_buff ];
+        if ( range::find( player_buffs, stat_buff ) != player_buffs.end() ) {
+          os.printf( "<li><span class=\"label\">stat:</span>%s</li>\n"
+                      "<li><span class=\"label\">default:</span>%.2f%%</li>\n",
+                      util::stat_pct_buff_type_string( stat_pct_buff ),
+                      stat_buff->default_value * 100.0 );
+        }
+      }
       os << "</ul>\n";
     }
 
     if ( damage_buff )
     {
-      os.printf( "<h4>Damage Modifiers</h4>\n"
-                 "<ul>\n"
-                 "<li><span class=\"label\">direct:</span>%.2f</li>\n"
-                 "<li><span class=\"label\">periodic:</span>%.2f</li>\n"
-                 "<li><span class=\"label\">auto_attack:</span>%.2f</li>\n"
-                 "<li><span class=\"label\">crit_chance:</span>%.2f</li>\n"
-                 "<li><span class=\"label\">is_stacking:</span>%s</li>\n"
-                 "</ul>\n",
-                 damage_buff->direct_mod.multiplier,
-                 damage_buff->periodic_mod.multiplier,
-                 damage_buff->auto_attack_mod.multiplier,
-                 damage_buff->crit_chance_mod.multiplier,
-                 damage_buff->is_stacking ? "true" : "false" );
+      if ( damage_buff->is_stacking )
+      {
+        os.printf( "<h4>Damage Modifiers</h4>\n"
+                  "<ul>\n"
+                  "<li><span class=\"label\">direct:</span>%.2f + %.2f/stack</li>\n"
+                  "<li><span class=\"label\">periodic:</span>%.2f + %.2f/stack</li>\n"
+                  "<li><span class=\"label\">auto_attack:</span>%.2f + %.2f/stack</li>\n"
+                  "<li><span class=\"label\">crit_chance:</span>%.2f</li>\n"
+                  "<li><span class=\"label\">is_stacking:</span>true</li>\n"
+                  "</ul>\n",
+                  1.0,
+                  damage_buff->direct_mod.multiplier - 1.0,
+                  1.0,
+                  damage_buff->periodic_mod.multiplier - 1.0,
+                  1.0,
+                  damage_buff->auto_attack_mod.multiplier - 1.0,
+                  damage_buff->crit_chance_mod.multiplier );
+      }
+      else
+      {
+        os.printf( "<h4>Damage Modifiers</h4>\n"
+                  "<ul>\n"
+                  "<li><span class=\"label\">direct:</span>%.2f</li>\n"
+                  "<li><span class=\"label\">periodic:</span>%.2f</li>\n"
+                  "<li><span class=\"label\">auto_attack:</span>%.2f</li>\n"
+                  "<li><span class=\"label\">crit_chance:</span>%.2f</li>\n"
+                  "<li><span class=\"label\">is_stacking:</span>false</li>\n"
+                  "</ul>\n",
+                  damage_buff->direct_mod.multiplier,
+                  damage_buff->periodic_mod.multiplier,
+                  damage_buff->auto_attack_mod.multiplier,
+                  damage_buff->crit_chance_mod.multiplier );
+      }
     }
 
     if ( !constant_buffs )
