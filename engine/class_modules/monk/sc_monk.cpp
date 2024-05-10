@@ -157,8 +157,6 @@ void monk_action_t<Base>::apply_debuff_effects()
 {
   //    parse_target_effects( []( monk_td_t* t ) { return t->debuffs.weapons_of_order->check(); },
   //                          p()->shared.weapons_of_order ); // True, true
-  //    parse_target_effects( []( monk_td_t* t ) { return t->debuffs.keefers_skyreach_debuff->check(); },
-  //                          p()->shared.skyreach );
 }
 
 // Utility function to search spell data for matching effect.
@@ -298,9 +296,6 @@ template <class Base>
 void monk_action_t<Base>::init_finished()
 {
   ab::init_finished();
-
-  if ( ab::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
-    skytouch = p()->get_proc( "Skytouch: " + full_name() );
 }
 
 template <class Base>
@@ -547,13 +542,6 @@ void monk_action_t<Base>::execute()
   {
     if ( may_combo_strike )
       combo_strikes_trigger();
-
-    if ( auto *td = this->get_td( p()->target ) )
-    {
-      if ( td->debuff.keefers_skyreach->check() &&
-           ab::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
-        skytouch->occur();
-    }
   }
 
   ab::execute();
@@ -801,12 +789,6 @@ double monk_spell_t::composite_target_crit_chance( player_t *target ) const
 {
   double c = base_t::composite_target_crit_chance( target );
 
-  if ( auto *td = this->find_td( target ) )
-  {
-    if ( base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
-      c += td->debuff.keefers_skyreach->check_value();
-  }
-
   return c;
 }
 
@@ -855,12 +837,6 @@ double monk_heal_t::composite_target_multiplier( player_t *target ) const
 double monk_heal_t::composite_target_crit_chance( player_t *target ) const
 {
   double c = base_t::composite_target_crit_chance( target );
-
-  if ( auto *td = this->find_td( target ) )
-  {
-    if ( base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
-      c += td->debuff.keefers_skyreach->check_value();
-  }
 
   return c;
 }
@@ -947,12 +923,6 @@ monk_melee_attack_t::monk_melee_attack_t( std::string_view name, monk_t *player,
 double monk_melee_attack_t::composite_target_crit_chance( player_t *target ) const
 {
   double c = base_t::composite_target_crit_chance( target );
-
-  if ( auto *td = this->find_td( target ) )
-  {
-    if ( base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
-      c += td->debuff.keefers_skyreach->check_value();
-  }
 
   return c;
 }
@@ -1229,8 +1199,6 @@ struct tiger_palm_t : public monk_melee_attack_t
       energize_type = action_energize::NONE;
 
     spell_power_mod.direct = 0.0;
-
-    range += p->talent.windwalker.skytouch->effectN( 1 ).base_value();
   }
 
   double action_multiplier() const override
@@ -1347,8 +1315,6 @@ struct tiger_palm_t : public monk_melee_attack_t
       brew_cooldown_reduction( p()->talent.brewmaster.bonedust_brew->effectN( 3 ).base_value() );
 
     p()->buff.brewmasters_rhythm->trigger();
-
-    p()->trigger_keefers_skyreach( s );
   }
 };
 
@@ -2449,7 +2415,13 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
     am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
-    am *= 1 + p()->buff.momentum_boost_damage->check_stack_value();
+    if ( p()->talent.windwalker.momentum_boost.ok() )
+    {
+      am *= 1 + ( ( ( 1.0 / p()->composite_spell_haste() ) - 1.0 ) *
+                  p()->talent.windwalker.momentum_boost->effectN( 1 ).percent() );
+
+      am *= 1 + p()->buff.momentum_boost_damage->check_stack_value();
+    }
 
     return am;
   }
@@ -2468,9 +2440,8 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
 struct fists_of_fury_t : public monk_melee_attack_t
 {
-  fists_of_fury_t( monk_t *p, util::string_view options_str, bool canceled = false )
-    : monk_melee_attack_t( ( canceled ? "fists_of_fury_cancel" : "fists_of_fury" ), p,
-                           p->talent.windwalker.fists_of_fury )
+  fists_of_fury_t( monk_t *p, util::string_view options_str )
+    : monk_melee_attack_t( "fists_of_fury", p, p->talent.windwalker.fists_of_fury )
   {
     parse_options( options_str );
 
@@ -2489,12 +2460,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
     // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
     base_tick_time = dot_duration / 4;
 
-    // Using fists_of_fury_cancel in APL will cancel immediately after the GCD regardless of priority
-    if ( canceled )
-      dot_duration = trigger_gcd;
-
-    ability_lag        = canceled ? timespan_t::zero() : p->world_lag;
-    ability_lag_stddev = canceled ? timespan_t::zero() : p->world_lag_stddev;
+    ability_lag        = p->world_lag;
+    ability_lag_stddev = p->world_lag_stddev;
 
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
   }
@@ -3642,30 +3609,6 @@ namespace spells
 {
 
 // ==========================================================================
-// Resonant Fists
-// ==========================================================================
-
-struct resonant_fists_t : public monk_spell_t
-{
-  resonant_fists_t( monk_t &p )
-    : monk_spell_t( "resonant_fists", &p, p.talent.general.resonant_fists->effectN( 2 ).trigger() )
-  {
-    background          = true;
-    aoe                 = -1;
-    reduced_aoe_targets = 5;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    am *= 1 + p()->talent.general.resonant_fists->effectN( 1 ).percent();
-
-    return am;
-  }
-};
-
-// ==========================================================================
 // Special Delivery
 // ==========================================================================
 
@@ -4410,7 +4353,7 @@ struct fury_of_xuen_summon_t final : monk_spell_t
       }
     }
 
-    p()->pets.fury_of_xuen_tiger.spawn( p()->passives.fury_of_xuen_haste_buff->duration(), 1 );
+    p()->pets.fury_of_xuen_tiger.spawn( p()->passives.fury_of_xuen->duration(), 1 );
 
     if ( p()->talent.windwalker.flurry_of_xuen->ok() )
       p()->active_actions.flurry_of_xuen->execute();
@@ -6190,7 +6133,7 @@ struct fury_of_xuen_stacking_buff_t : public monk_buff_t
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    p().buff.fury_of_xuen_haste->trigger();
+    p().buff.fury_of_xuen->trigger();
     p().active_actions.fury_of_xuen_summon->execute();
     buff_t::expire_override( expiration_stacks, remaining_duration );
   }
@@ -6199,7 +6142,7 @@ struct fury_of_xuen_stacking_buff_t : public monk_buff_t
 // ===============================================================================
 // Fury of Xuen Haste Buff
 // ===============================================================================
-struct fury_of_xuen_haste_buff_t : public monk_buff_t
+struct fury_of_xuen_t : public monk_buff_t
 {
   static void fury_of_xuen_callback( buff_t *b, int, timespan_t )
   {
@@ -6231,16 +6174,15 @@ struct fury_of_xuen_haste_buff_t : public monk_buff_t
       }
     }
   }
-  fury_of_xuen_haste_buff_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
+  fury_of_xuen_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
     set_cooldown( timespan_t::zero() );
     set_default_value_from_effect( 1 );
-    set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    set_pct_buff_type( STAT_PCT_BUFF_CRIT );
     set_trigger_spell( p.talent.windwalker.fury_of_xuen );
-    add_invalidate( CACHE_ATTACK_HASTE );
-    add_invalidate( CACHE_RPPM_HASTE );
-    add_invalidate( CACHE_HASTE );
-    add_invalidate( CACHE_SPELL_HASTE );
+    add_invalidate( CACHE_CRIT_CHANCE );
+    add_invalidate( CACHE_ATTACK_CRIT_CHANCE );
+    add_invalidate( CACHE_SPELL_CRIT_CHANCE );
 
     set_period( s->effectN( 3 ).period() );
 
@@ -6598,14 +6540,6 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
                               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                               ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
-  debuff.keefers_skyreach = make_buff( *this, "keefers_skyreach", p->passives.keefers_skyreach_debuff )
-                                ->set_default_value_from_effect( 1 )
-                                ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
-                                ->set_refresh_behavior( buff_refresh_behavior::NONE );
-
-  debuff.skyreach_exhaustion = make_buff( *this, "skyreach_exhaustion", p->find_spell( 393050 ) )
-                                   ->set_refresh_behavior( buff_refresh_behavior::NONE );
-
   debuff.storm_earth_and_fire = make_buff( *this, "storm_earth_and_fire_target", spell_data_t::nil() )
                                     ->set_trigger_spell( p->talent.windwalker.storm_earth_and_fire )
                                     ->set_cooldown( timespan_t::zero() );
@@ -6666,7 +6600,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   cooldown.invoke_yulon           = get_cooldown( "invoke_yulon_the_jade_serpent" );
   cooldown.keg_smash              = get_cooldown( "keg_smash" );
   cooldown.purifying_brew         = get_cooldown( "purifying_brew" );
-  cooldown.resonant_fists         = get_cooldown( "resonant_fists" );
   cooldown.rising_sun_kick        = get_cooldown( "rising_sun_kick" );
   cooldown.refreshing_jade_wind   = get_cooldown( "refreshing_jade_wind" );
   cooldown.roll                   = get_cooldown( "roll" );
@@ -6783,8 +6716,6 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
   // Windwalker
   if ( name == "fists_of_fury" )
     return new fists_of_fury_t( this, options_str );
-  if ( name == "fists_of_fury_cancel" )
-    return new fists_of_fury_t( this, options_str, true );
   if ( name == "flying_serpent_kick" )
     return new flying_serpent_kick_t( this, options_str );
   if ( name == "touch_of_karma" )
@@ -6874,18 +6805,6 @@ void monk_t::trigger_mark_of_the_crane( action_state_t *s )
   if ( get_target_data( s->target )->debuff.mark_of_the_crane->up() ||
        mark_of_the_crane_counter() < as<int>( passives.cyclone_strikes->max_stacks() ) )
     get_target_data( s->target )->debuff.mark_of_the_crane->trigger();
-}
-
-void monk_t::trigger_keefers_skyreach( action_state_t *s )
-{
-  if ( talent.windwalker.skytouch->ok() )
-  {
-    if ( !get_target_data( s->target )->debuff.skyreach_exhaustion->up() )
-    {
-      get_target_data( s->target )->debuff.keefers_skyreach->trigger();
-      get_target_data( s->target )->debuff.skyreach_exhaustion->trigger();
-    }
-  }
 }
 
 player_t *monk_t::next_mark_of_the_crane_target( action_state_t *state )
@@ -7114,7 +7033,7 @@ void monk_t::init_spells()
   // Row 6
   talent.general.quick_footed            = _CT( "Quick Footed" );
   talent.general.hasty_provocation       = _CT( "Hasty Provocation" );
-  talent.general.resonant_fists          = _CT( "Resonant Fists" );
+  talent.general.ferocity_of_xuen        = _CT( "Ferocity of Xuen" );
   talent.general.ring_of_peace           = _CT( "Ring of Peace" );
   talent.general.ironshell_brew          = _CT( "Ironshell Brew" );
   talent.general.song_of_chi_ji          = _CT( "Song of Chi-Ji" );
@@ -7352,7 +7271,7 @@ void monk_t::init_spells()
   // Row 10
   talent.windwalker.revolving_whirl                = _ST( "Revolving Whirl" );
   talent.windwalker.knowledge_of_the_broken_temple = _ST( "Knowledge of the Broken Temple" );
-  talent.windwalker.skytouch                       = _ST( "Skytouch" );
+  talent.windwalker.memory_of_the_monastery        = _ST( "Memory of the Monastery" );
   talent.windwalker.fury_of_xuen                   = _ST( "Fury of Xuen" );
   talent.windwalker.path_of_jade                   = _ST( "Path of Jade" );
   talent.windwalker.singularly_focused_jade        = _ST( "Singularly Focusted Jade" );
@@ -7552,12 +7471,11 @@ void monk_t::init_spells()
   passives.flurry_of_xuen_driver            = find_spell( 452117 );
   passives.focus_of_xuen                    = find_spell( 252768 );
   passives.fury_of_xuen_stacking_buff       = find_spell( 396167 );
-  passives.fury_of_xuen_haste_buff          = find_spell( 396168 );
+  passives.fury_of_xuen                     = find_spell( 396168 );
   passives.glory_of_the_dawn_damage         = find_spell( 392959 );
   passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
   passives.hit_combo                        = find_spell( 196741 );
   passives.improved_touch_of_death          = find_spell( 322113 );
-  passives.keefers_skyreach_debuff          = find_spell( 393047 );
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.thunderfist                      = find_spell( 393565 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
@@ -7619,7 +7537,6 @@ void monk_t::init_spells()
   active_actions.bonedust_brew_heal = new actions::spells::bonedust_brew_heal_t( *this );
   active_actions.bountiful_brew     = new actions::spells::bountiful_brew_t( *this );
   active_actions.chi_wave           = new actions::chi_wave_t( this );
-  active_actions.resonant_fists     = new actions::spells::resonant_fists_t( *this );
   active_actions.rushing_jade_wind  = new actions::rjw_tick_action_t( this );
   windwalking_aura                  = new actions::windwalking_aura_t( this );
 
@@ -8031,8 +7948,7 @@ void monk_t::create_buffs()
   buff.fury_of_xuen_stacks =
       new buffs::fury_of_xuen_stacking_buff_t( *this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff );
 
-  buff.fury_of_xuen_haste =
-      new buffs::fury_of_xuen_haste_buff_t( *this, "fury_of_xuen_haste", passives.fury_of_xuen_haste_buff );
+  buff.fury_of_xuen = new buffs::fury_of_xuen_t( *this, "fury_of_xuen", passives.fury_of_xuen );
 
   buff.hit_combo = make_buff( this, "hit_combo", passives.hit_combo )
                        ->set_trigger_spell( talent.windwalker.hit_combo )
@@ -8175,13 +8091,11 @@ void monk_t::init_procs()
   proc.glory_of_the_dawn              = get_proc( "Glory of the Dawn" );
   proc.keg_smash_scalding_brew        = get_proc( "Keg Smash - Scalding Brew" );
   proc.quick_sip                      = get_proc( "Quick Sip" );
-  proc.resonant_fists                 = get_proc( "Resonant Fists" );
   proc.rsk_reset_totm                 = get_proc( "Rising Sun Kick TotM Reset" );
   proc.salsalabim_bof_reset           = get_proc( "Sal'salabim Breath of Fire Reset" );
   proc.tranquil_spirit_expel_harm     = get_proc( "Tranquil Spirit - Expel Harm" );
   proc.tranquil_spirit_goto           = get_proc( "Tranquil Spirit - Gift of the Ox" );
   proc.xuens_battlegear_reduction     = get_proc( "Xuen's Battlegear CD Reduction" );
-  proc.skytouch                       = get_proc( "Skytouch" );
 
   // Tier 30
   proc.spirit_of_forged_vermillion_spawn = get_proc( "Shadow Flame Monk Summon" );
@@ -8374,22 +8288,6 @@ void monk_t::create_proc_callback( const spell_data_t *effect_driver,
 
 void monk_t::init_special_effects()
 {
-  // ======================================
-  // Resonant Fists Talent
-  // ======================================
-
-  if ( talent.general.resonant_fists.ok() )
-  {
-    create_proc_callback(
-        talent.general.resonant_fists.spell(),
-        []( monk_t *p, action_state_t *state ) {
-          p->active_actions.resonant_fists->set_target( state->target );
-
-          return true;
-        },
-        PF2_ALL_HIT );
-  }
-
   // ======================================
   // Exploding Keg Talent
   // ======================================
@@ -8622,7 +8520,6 @@ void monk_t::bonedust_brew_assessor( action_state_t *s )
     case 148135:  // chi_burst_damage
     case 117952:  // crackling_jade_lightnin
     case 196608:  // eye_of_the_tiger_damage
-    case 391400:  // resonant_fists
     case 389541:  // claw_of_the_white_tiger
     // Windwalker
     case 123996:  // crackling_tiger_lightning_tick
@@ -8923,11 +8820,13 @@ double monk_t::composite_player_multiplier( school_e school ) const
   if ( talent.general.chi_proficiency.ok() &&
        ( talent.general.chi_proficiency->effectN( 1 ).affected_schools() & school ) == school )
     multiplier *= 1.0 + talent.general.chi_proficiency->effectN( 1 ).percent();
-    
+
   if ( talent.general.martial_instincts.ok() &&
        ( talent.general.martial_instincts->effectN( 1 ).affected_schools() & school ) == school )
     multiplier *= 1.0 + talent.general.martial_instincts->effectN( 1 ).percent();
-    
+
+  multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 1 ).percent();
+
   return multiplier;
 }
 
@@ -8943,6 +8842,11 @@ double monk_t::composite_player_target_multiplier( player_t *target, school_e sc
 double monk_t::composite_player_pet_damage_multiplier( const action_state_t *state, bool guardian ) const
 {
   double multiplier = player_t::composite_player_pet_damage_multiplier( state, guardian );
+
+  if ( guardian )
+    multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 2 ).percent();
+  else
+    multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 3 ).percent();
 
   multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 4 ).percent();
 
@@ -9524,7 +9428,7 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
       return;
 
   // 1 = Xuen, 2 = FoX, 3 = Both
-  auto mode = ( 2 * buff.fury_of_xuen_haste->check() ) + buff.invoke_xuen->check();
+  auto mode = ( 2 * buff.fury_of_xuen->check() ) + buff.invoke_xuen->check();
 
   if ( mode == 0 )
     return;
@@ -9546,7 +9450,7 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
       if ( s->action->player->name_str.find( "_spirit" ) != std::string::npos )
         return;
 
-      auto blacklist = ( mode == 2 && buff.fury_of_xuen_haste->remains() > buff.fury_of_xuen_haste->tick_time() )
+      auto blacklist = ( mode == 2 && buff.fury_of_xuen->remains() > buff.fury_of_xuen->tick_time() )
                            ? etl_blacklist_fox
                            : etl_blacklist_fox_2;
 
@@ -9566,7 +9470,7 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
   if ( amount > 0 )
   {
     auto cache = mode == 2 ? td->debuff.fury_of_xuen_empowered_tiger_lightning : td->debuff.empowered_tiger_lightning;
-    auto duration = std::max( buff.invoke_xuen->remains(), buff.fury_of_xuen_haste->remains() );
+    auto duration = std::max( buff.invoke_xuen->remains(), buff.fury_of_xuen->remains() );
 
     if ( cache->check() )
       cache->current_value += amount;
