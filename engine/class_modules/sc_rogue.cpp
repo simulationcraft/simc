@@ -2179,7 +2179,7 @@ public:
     // Registered Damage Buffs
     for ( auto damage_buff : direct_damage_buffs )
       m *= damage_buff->is_stacking ? damage_buff->stack_value_direct() : damage_buff->value_direct();
-    
+
     // Mastery
     if ( affected_by.mastery_executioner.direct || affected_by.mastery_potent_assassin.direct )
     {
