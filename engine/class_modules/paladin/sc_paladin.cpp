@@ -1731,7 +1731,7 @@ struct sacred_weapon_t : public paladin_spell_t
    void execute() override
    {
     paladin_spell_t::execute();
-    player->buffs.sacred_weapon->trigger();
+    p()->buffs.sacred_weapon->trigger();
    }
 };
 
@@ -2512,7 +2512,15 @@ void paladin_t::create_buffs()
               this->active.divine_resonance->set_target( this->target );
               this->active.divine_resonance->schedule_execute();
           } );
-  buffs.holy_bulwark      = make_buff( this, "holy_bulwark", find_spell( 432496 ) );
+  buffs.holy_bulwark = make_buff( this, "holy_bulwark", find_spell( 432496 ) )
+                            ->set_cooldown( 0_s )
+                            ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+                              if ( !new_ )
+                              {
+                                buffs.shining_light_stacks->expire();
+                                buffs.shining_light_free->trigger();
+                              }
+                            } );
   buffs.sacred_weapon = make_buff( this, "sacred_weapon", find_spell( 432502 ) )
                             ->set_cooldown( 0_s )
                             ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
