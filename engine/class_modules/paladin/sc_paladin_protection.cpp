@@ -955,7 +955,15 @@ void paladin_t::target_mitigation( school_e school,
   }
 
   if ( buffs.devotion_aura->up() )
-    s->result_amount *= 1.0 + buffs.devotion_aura->value();
+  {//todo: Verify it's working
+    double devoRed = buffs.devotion_aura->value();
+    if ( talents.shared_resolve->ok() && ( buffs.sacred_weapon->up() || buffs.holy_bulwark->up() ))
+    {
+      devoRed *= 1 + talents.shared_resolve->effectN( 1 ).percent();
+    }
+    s->result_amount *= 1.0 + devoRed;
+  }
+
 
   if ( buffs.sanctification->up() )
   {
