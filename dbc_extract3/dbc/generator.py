@@ -1472,6 +1472,7 @@ class SpellDataGenerator(DataGenerator):
          448621, 448643, 448669, # void reaper's chime
          442267, 442280, # befouler's syringe
          448519, 448436, # sik'ran's shadow arsenal
+         447097, 447134, # swarmlord's authority
         ),
 
         # Warrior:

@@ -376,11 +376,10 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
 
   struct sikrans_shadow_arsenal_t : public generic_proc_t
   {
-    const spell_data_t* data;
     std::vector<std::pair<action_t*, buff_t*>> stance;
 
-    sikrans_shadow_arsenal_t( const special_effect_t& e, const spell_data_t* s )
-      : generic_proc_t( e, "sikrans_shadow_arsenal", e.driver() ), data( s )
+    sikrans_shadow_arsenal_t( const special_effect_t& e, const spell_data_t* data )
+      : generic_proc_t( e, "sikrans_shadow_arsenal", e.driver() )
     {
       // stances are populated in order: flourish->decimation->barrage
       // TODO: confirm order is flourish->decimation->barrage
@@ -495,6 +494,84 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<sikrans_shadow_arsenal_t>( "sikrans_shadow_arsenal", effect, data );
+}
+
+// 444292 equip
+//  e1: damage
+//  e2: shield cap
+//  e3: repeating period
+// 444301 on-use
+// 447093 scarab damage
+// 447097 'retrieval'?
+// 447134 shield
+// TODO: determine absorb priority
+// TODO: determine how shield behaves during on-use
+// TODO: confirm equip cycle restarts on combat
+// TODO: determine how scarabs select target
+// TODO: create proxy action if separate equip/on-use reporting is needed
+void swarmlords_authority( special_effect_t& effect )
+{
+  unsigned equip_id = 444292;
+  auto equip = find_special_effect( effect.player, equip_id );
+  assert( equip && "Swarmlord's Authority missing equip effect" );
+
+  auto data = equip->driver();
+
+  struct ravenous_scarab_t : public generic_proc_t
+  {
+    struct ravenous_scarab_buff_t : public absorb_buff_t
+    {
+      double absorb_pct;
+
+      ravenous_scarab_buff_t( const special_effect_t& e, const spell_data_t* s, const spell_data_t* data )
+        : absorb_buff_t( e.player, "ravenous_scarab", s ), absorb_pct( s->effectN( 2 ).percent() )
+      {
+        // TODO: set high priority & add to player absorb priority if necessary
+        set_default_value( data->effectN( 2 ).average( e.item ) );
+      }
+
+      double consume( double a, action_state_t* s ) override
+      {
+        return absorb_buff_t::consume( a * absorb_pct, s );
+      }
+    };
+
+    buff_t* shield;
+    double return_speed;
+
+    ravenous_scarab_t( const special_effect_t& e, const spell_data_t* data )
+      : generic_proc_t( e, "ravenous_scarab", e.trigger() )
+    {
+      base_dd_min = base_dd_max = data->effectN( 1 ).average( e.item );
+
+      auto return_spell = e.player->find_spell( 447097 );
+      shield = make_buff<ravenous_scarab_buff_t>( e, return_spell->effectN( 2 ).trigger(), data );
+      return_speed = return_spell->missile_speed();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+
+      // TODO: determine how shield behaves during on-use
+      make_event( *sim, timespan_t::from_seconds( player->get_player_distance( *s->target ) / return_speed ), [ this ] {
+        shield->trigger();
+      } );
+    }
+  };
+
+  auto scarab = create_proc_action<ravenous_scarab_t>( "ravenous_scarab", effect, data );
+
+  // setup equip
+  // TODO: confirm equip cycle restarts on combat
+  // TODO: determine how scarabs select target
+  effect.player->register_combat_begin( [ scarab, period = data->effectN( 3 ).period() ]( player_t* p ) {
+    make_repeating_event( *p->sim, period, [ scarab ] { scarab->execute(); } );
+  } );
+
+  // setup on-use
+  effect.custom_buff = create_buff<buff_t>( effect.player, effect.driver() )
+    ->set_tick_callback( [ scarab ]( buff_t*, int, timespan_t ) { scarab->execute(); } );
 }
 
 // Weapons
@@ -681,6 +758,8 @@ void register_special_effects()
   register_special_effect( 445593, DISABLED_EFFECT );  // aberrant spellforge
   register_special_effect( 447970, items::sikrans_shadow_arsenal );
   register_special_effect( 445203, DISABLED_EFFECT );  // sikran's shadow arsenal
+  register_special_effect( 444301, items::swarmlords_authority );
+  register_special_effect( 444292, DISABLED_EFFECT );  // swarmlord's authority
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );

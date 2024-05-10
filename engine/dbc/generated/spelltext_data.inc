@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54605
-static const std::array<spelltext_data_t, 22728> __spelltext_data { {
+static const std::array<spelltext_data_t, 22729> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21881,6 +21881,7 @@ static const std::array<spelltext_data_t, 22728> __spelltext_data { {
   { 446918, "$@spelldesc446085", "Auto attack speed increased by $w1%.", 0 },
   { 447005, 0, "Your Blessed Weapon increases your highest secondary rating by +$w6.", 0 },
   { 447131, "Rejuvenation instantly heals your target for $s1% of its total periodic effect and Regrowth's duration is increased by ${$s2/1000} sec.", 0, 0 },
+  { 447134, "$@spelldesc444301", "Absorbing $s2% of damage taken, up to $w1 total damage.", 0 },
   { 447246, "Heals the target for $s1.", 0, 0 },
   { 447258, "Deals $s1 damage to enemy targets. Reduced above 5 targets.", 0, 0 },
   { 447444, "$?c3[Void Torrent][Mind Blast] tears open an Entropic Rift that follows the enemy for $450193d. Enemies caught in its path suffer $447448s1 Shadow damage every $s2 sec while within its reach.", 0, 0 },
