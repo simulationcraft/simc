@@ -157,8 +157,6 @@ void monk_action_t<Base>::apply_debuff_effects()
 {
   //    parse_target_effects( []( monk_td_t* t ) { return t->debuffs.weapons_of_order->check(); },
   //                          p()->shared.weapons_of_order ); // True, true
-  //    parse_target_effects( []( monk_td_t* t ) { return t->debuffs.keefers_skyreach_debuff->check(); },
-  //                          p()->shared.skyreach );
 }
 
 // Utility function to search spell data for matching effect.
@@ -298,9 +296,6 @@ template <class Base>
 void monk_action_t<Base>::init_finished()
 {
   ab::init_finished();
-
-  if ( ab::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
-    skytouch = p()->get_proc( "Skytouch: " + full_name() );
 }
 
 template <class Base>
@@ -547,13 +542,6 @@ void monk_action_t<Base>::execute()
   {
     if ( may_combo_strike )
       combo_strikes_trigger();
-
-    if ( auto *td = this->get_td( p()->target ) )
-    {
-      if ( td->debuff.keefers_skyreach->check() &&
-           ab::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
-        skytouch->occur();
-    }
   }
 
   ab::execute();
@@ -801,12 +789,6 @@ double monk_spell_t::composite_target_crit_chance( player_t *target ) const
 {
   double c = base_t::composite_target_crit_chance( target );
 
-  if ( auto *td = this->find_td( target ) )
-  {
-    if ( base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
-      c += td->debuff.keefers_skyreach->check_value();
-  }
-
   return c;
 }
 
@@ -855,12 +837,6 @@ double monk_heal_t::composite_target_multiplier( player_t *target ) const
 double monk_heal_t::composite_target_crit_chance( player_t *target ) const
 {
   double c = base_t::composite_target_crit_chance( target );
-
-  if ( auto *td = this->find_td( target ) )
-  {
-    if ( base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
-      c += td->debuff.keefers_skyreach->check_value();
-  }
 
   return c;
 }
@@ -947,12 +923,6 @@ monk_melee_attack_t::monk_melee_attack_t( std::string_view name, monk_t *player,
 double monk_melee_attack_t::composite_target_crit_chance( player_t *target ) const
 {
   double c = base_t::composite_target_crit_chance( target );
-
-  if ( auto *td = this->find_td( target ) )
-  {
-    if ( base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
-      c += td->debuff.keefers_skyreach->check_value();
-  }
 
   return c;
 }
@@ -1229,8 +1199,6 @@ struct tiger_palm_t : public monk_melee_attack_t
       energize_type = action_energize::NONE;
 
     spell_power_mod.direct = 0.0;
-
-    range += p->talent.windwalker.skytouch->effectN( 1 ).base_value();
   }
 
   double action_multiplier() const override
@@ -1347,8 +1315,6 @@ struct tiger_palm_t : public monk_melee_attack_t
       brew_cooldown_reduction( p()->talent.brewmaster.bonedust_brew->effectN( 3 ).base_value() );
 
     p()->buff.brewmasters_rhythm->trigger();
-
-    p()->trigger_keefers_skyreach( s );
   }
 };
 
@@ -6573,14 +6539,6 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
                               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                               ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
-  debuff.keefers_skyreach = make_buff( *this, "keefers_skyreach", p->passives.keefers_skyreach_debuff )
-                                ->set_default_value_from_effect( 1 )
-                                ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
-                                ->set_refresh_behavior( buff_refresh_behavior::NONE );
-
-  debuff.skyreach_exhaustion = make_buff( *this, "skyreach_exhaustion", p->find_spell( 393050 ) )
-                                   ->set_refresh_behavior( buff_refresh_behavior::NONE );
-
   debuff.storm_earth_and_fire = make_buff( *this, "storm_earth_and_fire_target", spell_data_t::nil() )
                                     ->set_trigger_spell( p->talent.windwalker.storm_earth_and_fire )
                                     ->set_cooldown( timespan_t::zero() );
@@ -6848,18 +6806,6 @@ void monk_t::trigger_mark_of_the_crane( action_state_t *s )
   if ( get_target_data( s->target )->debuff.mark_of_the_crane->up() ||
        mark_of_the_crane_counter() < as<int>( passives.cyclone_strikes->max_stacks() ) )
     get_target_data( s->target )->debuff.mark_of_the_crane->trigger();
-}
-
-void monk_t::trigger_keefers_skyreach( action_state_t *s )
-{
-  if ( talent.windwalker.skytouch->ok() )
-  {
-    if ( !get_target_data( s->target )->debuff.skyreach_exhaustion->up() )
-    {
-      get_target_data( s->target )->debuff.keefers_skyreach->trigger();
-      get_target_data( s->target )->debuff.skyreach_exhaustion->trigger();
-    }
-  }
 }
 
 player_t *monk_t::next_mark_of_the_crane_target( action_state_t *state )
@@ -7326,7 +7272,7 @@ void monk_t::init_spells()
   // Row 10
   talent.windwalker.revolving_whirl                = _ST( "Revolving Whirl" );
   talent.windwalker.knowledge_of_the_broken_temple = _ST( "Knowledge of the Broken Temple" );
-  talent.windwalker.skytouch                       = _ST( "Skytouch" );
+  talent.windwalker.memory_of_the_monastery        = _ST( "Memory of the Monastery" );
   talent.windwalker.fury_of_xuen                   = _ST( "Fury of Xuen" );
   talent.windwalker.path_of_jade                   = _ST( "Path of Jade" );
   talent.windwalker.singularly_focused_jade        = _ST( "Singularly Focusted Jade" );
@@ -7531,7 +7477,6 @@ void monk_t::init_spells()
   passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
   passives.hit_combo                        = find_spell( 196741 );
   passives.improved_touch_of_death          = find_spell( 322113 );
-  passives.keefers_skyreach_debuff          = find_spell( 393047 );
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.thunderfist                      = find_spell( 393565 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
@@ -8152,7 +8097,6 @@ void monk_t::init_procs()
   proc.tranquil_spirit_expel_harm     = get_proc( "Tranquil Spirit - Expel Harm" );
   proc.tranquil_spirit_goto           = get_proc( "Tranquil Spirit - Gift of the Ox" );
   proc.xuens_battlegear_reduction     = get_proc( "Xuen's Battlegear CD Reduction" );
-  proc.skytouch                       = get_proc( "Skytouch" );
 
   // Tier 30
   proc.spirit_of_forged_vermillion_spawn = get_proc( "Shadow Flame Monk Summon" );
