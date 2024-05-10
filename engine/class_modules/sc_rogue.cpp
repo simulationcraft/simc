@@ -1542,6 +1542,7 @@ public:
     bool zoldyck_insignia = false;
 
     bool t29_assassination_2pc = false;
+    bool t31_assassination_2pc_double_dip = false; // Double dip bug
     bool t30_subtlety_4pc = false;
     bool t31_subtlety_4pc = false;      // CP Generation Proc
 
@@ -1714,6 +1715,12 @@ public:
     if ( p->set_bonuses.t29_assassination_2pc->ok() )
     {
       affected_by.t29_assassination_2pc = ab::data().affected_by( p->spec.envenom->effectN( 7 ) );
+    }
+
+    if ( p->set_bonuses.t31_assassination_2pc->ok() )
+    {
+      affected_by.t31_assassination_2pc_double_dip = ( ab::data().affected_by( p->spec.t31_assassination_2pc_buff->effectN( 2 ) ) &&
+                                                       ab::data().affected_by_label( p->spec.t31_assassination_2pc_buff->effectN( 4 ) ) );
     }
 
     if ( p->set_bonuses.t30_subtlety_4pc->ok() )
@@ -2221,6 +2228,12 @@ public:
     if ( affected_by.t30_assassination_4pc.direct && p()->buffs.t30_assassination_4pc->up() )
     {
       m *= 1.0 + affected_by.t30_assassination_4pc.direct_percent;
+    }
+
+    // Envenomous Explosion benefits from both the label and whitelist effect
+    if ( p()->bugs && affected_by.t31_assassination_2pc_double_dip )
+    {
+      m *= p()->buffs.t31_assassination_2pc->stack_value_direct();
     }
 
     return m;
