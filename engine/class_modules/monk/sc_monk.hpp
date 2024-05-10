@@ -7,21 +7,21 @@
 
 #include "action/action_callback.hpp"
 #include "action/parse_effects.hpp"
+#include "action/residual_action.hpp"
+#include "buff/buff.hpp"
 #include "dbc/data_enums.hh"
 #include "dbc/spell_data.hpp"
 #include "player/pet_spawner.hpp"
 #include "player/player.hpp"
 #include "sc_enums.hpp"
 #include "sim/proc.hpp"
-#include "buff/buff.hpp"
 #include "util/timeline.hpp"
-#include "action/residual_action.hpp"
 
-#include <vector>
-#include <unordered_map>
 #include <array>
 #include <memory>
 #include <string_view>
+#include <unordered_map>
+#include <vector>
 
 #include "simulationcraft.hpp"
 
@@ -90,8 +90,6 @@ struct monk_action_t : public parse_action_effects_t<Base, monk_t, monk_td_t>
   bool trigger_chiji;
   bool cast_during_sck;
   bool track_cd_waste;
-
-  proc_t *skytouch;
 
 private:
   std::array<resource_e, MONK_MISTWEAVER + 1> _resource_by_stance;
@@ -255,8 +253,6 @@ public:
 
     // Shadowland Legendaries
     propagate_const<buff_t *> jadefire_brand;
-    propagate_const<buff_t *> keefers_skyreach;
-    propagate_const<buff_t *> skyreach_exhaustion;
 
     // Tier 30
     propagate_const<buff_t *> shadowflame_vulnerability;
@@ -279,7 +275,7 @@ struct stagger_t
 
   struct debuff_t : public actions::monk_buff_t
   {
-    debuff_t( monk_t &player, std::string_view name, const spell_data_t* spell );
+    debuff_t( monk_t &player, std::string_view name, const spell_data_t *spell );
   };
 
   struct training_of_niuzao_t : public actions::monk_buff_t
@@ -305,13 +301,13 @@ struct stagger_t
     const double min_percent;
     std::string name;
     std::string name_pretty;
-    const spell_data_t* spell_data;
+    const spell_data_t *spell_data;
     propagate_const<stagger_t::debuff_t *> debuff;
     sample_data_helper_t *absorbed;
     sample_data_helper_t *taken;
     sample_data_helper_t *mitigated;
 
-    stagger_level_t( stagger_level_e level, monk_t* player );
+    stagger_level_t( stagger_level_e level, monk_t *player );
     static double min_threshold( stagger_level_e level );
     static std::string level_name_pretty( stagger_level_e level );
     static std::string level_name( stagger_level_e level );
@@ -320,9 +316,9 @@ struct stagger_t
 
   struct sample_data_t
   {
-    sc_timeline_t pool_size;         // raw stagger in pool
-    sc_timeline_t pool_size_percent; // pool as a fraction of current maximum hp
-    sc_timeline_t effectiveness;     // stagger effectiveness
+    sc_timeline_t pool_size;          // raw stagger in pool
+    sc_timeline_t pool_size_percent;  // pool as a fraction of current maximum hp
+    sc_timeline_t effectiveness;      // stagger effectiveness
     double buffed_base_value;
     double buffed_percent_player_level;
     double buffed_percent_target_level;
@@ -347,7 +343,7 @@ struct stagger_t
 
   self_damage_t *self_damage;
   sample_data_t *sample_data;
-  stagger_t( monk_t* player );
+  stagger_t( monk_t *player );
 
   double base_value();
   double percent( unsigned target_level );
@@ -689,7 +685,6 @@ public:
     propagate_const<proc_t *> tranquil_spirit_expel_harm;
     propagate_const<proc_t *> tranquil_spirit_goto;
     propagate_const<proc_t *> xuens_battlegear_reduction;
-    propagate_const<proc_t *> skytouch;
 
     // Tier 30
     propagate_const<proc_t *> spirit_of_forged_vermillion_spawn;
@@ -978,7 +973,7 @@ public:
       // Row 10
       player_talent_t revolving_whirl;
       player_talent_t knowledge_of_the_broken_temple;
-      player_talent_t skytouch;
+      player_talent_t memory_of_the_monastery;
       player_talent_t fury_of_xuen;
       player_talent_t path_of_jade;
       player_talent_t singularly_focused_jade;
@@ -1092,7 +1087,8 @@ public:
     const spell_data_t *touch_of_fatality;
     const spell_data_t *vivify;
 
-    struct {
+    struct
+    {
     } general;
 
     // Brewmaster
@@ -1108,7 +1104,8 @@ public:
     const spell_data_t *touch_of_death_3_brm;
     const spell_data_t *two_hand_adjustment_brm;
 
-    struct {
+    struct
+    {
     } brewmaster;
 
     // Mistweaver
@@ -1120,7 +1117,8 @@ public:
     const spell_data_t *mistweaver_monk_2;
     const spell_data_t *reawaken;
 
-    struct {
+    struct
+    {
     } mistweaver;
 
     // Windwalker
@@ -1141,7 +1139,8 @@ public:
     const spell_data_t *two_hand_adjustment_ww;
     const spell_data_t *windwalker_monk;
 
-    struct {
+    struct
+    {
     } windwalker;
   } spec;
 
@@ -1213,7 +1212,8 @@ public:
     const spell_data_t *rushing_jade_wind;
     const spell_data_t *rushing_jade_wind_tick;
 
-    struct {
+    struct
+    {
     } general;
 
     // Brewmaster
@@ -1234,7 +1234,8 @@ public:
     const spell_data_t *heavy_stagger;
     const spell_data_t *stomp;
 
-    struct {
+    struct
+    {
       const spell_data_t *light_stagger;
       const spell_data_t *moderate_stagger;
       const spell_data_t *heavy_stagger;
@@ -1249,7 +1250,8 @@ public:
     const spell_data_t *zen_pulse_echo_damage;
     const spell_data_t *zen_pulse_echo_heal;
 
-    struct {
+    struct
+    {
     } mistweaver;
 
     // Windwalker
@@ -1276,7 +1278,6 @@ public:
     const spell_data_t *hidden_masters_forbidden_touch;
     const spell_data_t *hit_combo;
     const spell_data_t *improved_touch_of_death;
-    const spell_data_t *keefers_skyreach_debuff;
     const spell_data_t *mark_of_the_crane;
     const spell_data_t *power_strikes_chi;
     const spell_data_t *thunderfist;
@@ -1284,7 +1285,8 @@ public:
     const spell_data_t *whirling_dragon_punch_aoe_tick;
     const spell_data_t *whirling_dragon_punch_st_tick;
 
-    struct {
+    struct
+    {
     } windwalker;
 
     // Tier 29
@@ -1428,7 +1430,6 @@ public:
   // Custom Monk Functions
   void trigger_celestial_fortune( action_state_t * );
   void trigger_bonedust_brew( const action_state_t * );
-  void trigger_keefers_skyreach( action_state_t * );
   void trigger_mark_of_the_crane( action_state_t * );
   void trigger_empowered_tiger_lightning( action_state_t * );
   void trigger_bonedust_brew( action_state_t * );

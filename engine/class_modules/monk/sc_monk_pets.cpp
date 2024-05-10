@@ -715,8 +715,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       sef_melee_attack_t::impact( state );
 
       o()->trigger_mark_of_the_crane( state );
-
-      o()->trigger_keefers_skyreach( state );
     }
   };
 
