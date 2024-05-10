@@ -911,7 +911,7 @@ public:
 
     // Fel-scarred
     action_t* burning_blades = nullptr;
-    action_t* demonsurge = nullptr;
+    action_t* demonsurge     = nullptr;
   } active;
 
   // Pets
@@ -3746,7 +3746,6 @@ struct metamorphosis_t : public demon_hunter_spell_t
     }
     else  // DEMON_HUNTER_VENGEANCE
     {
-
       for ( demonsurge_ability ability : demonsurge_vengeance_abilities )
       {
         p()->buff.demonsurge_abilities[ ability ]->trigger();
@@ -4458,7 +4457,8 @@ struct preemptive_strike_t : public demon_hunter_spell_t
 
 struct demonsurge_t : public demon_hunter_spell_t
 {
-  demonsurge_t( util::string_view name, demon_hunter_t* p ) : demon_hunter_spell_t( name, p, p->hero_spec.demonsurge_damage )
+  demonsurge_t( util::string_view name, demon_hunter_t* p )
+    : demon_hunter_spell_t( name, p, p->hero_spec.demonsurge_damage )
   {
     background = dual = true;
   }
@@ -7304,9 +7304,9 @@ void demon_hunter_t::create_buffs()
     buff.demonsurge_abilities[ ability ] = make_buff( this, demonsurge_ability_name( ability ), spell_data_t::nil() );
   }
 
-  buff.demonsurge_demonic = make_buff( this, "demonsurge_demonic", hero_spec.demonsurge_demonic_buff );
+  buff.demonsurge_demonic  = make_buff( this, "demonsurge_demonic", hero_spec.demonsurge_demonic_buff );
   buff.demonsurge_hardcast = make_buff( this, "demonsurge_hardcast", hero_spec.demonsurge_hardcast_buff );
-  buff.demonsurge = make_buff( this, "demonsurge", hero_spec.demonsurge_stacking_buff );
+  buff.demonsurge          = make_buff( this, "demonsurge", hero_spec.demonsurge_stacking_buff );
 
   // Set Bonus Items ========================================================
 
@@ -8086,7 +8086,7 @@ void demon_hunter_t::init_spells()
   talent.felscarred.demonsurge = find_talent_spell( talent_tree::HERO, "Demonsurge" );
 
   talent.felscarred.wave_of_debilitation  = find_talent_spell( talent_tree::HERO, "Wave of Debilitation" );
-  talent.felscarred.pursuit_of_angryness  = find_talent_spell( talent_tree::HERO, "Pursuit of Angryness" );
+  talent.felscarred.pursuit_of_angryness  = find_talent_spell( talent_tree::HERO, "Pursuit of Angriness" );
   talent.felscarred.focused_hatred        = find_talent_spell( talent_tree::HERO, "Focused Hatred" );
   talent.felscarred.set_fire_to_the_pain  = find_talent_spell( talent_tree::HERO, "Set Fire to the Pain" );
   talent.felscarred.improved_soul_rending = find_talent_spell( talent_tree::HERO, "Improved Soul Rending" );
@@ -8193,10 +8193,13 @@ void demon_hunter_t::init_spells()
       talent.felscarred.monster_rising->ok() ? find_spell( 452550 ) : spell_data_t::not_found();
   hero_spec.enduring_torment_buff =
       talent.felscarred.enduring_torment->ok() ? find_spell( 453314 ) : spell_data_t::not_found();
-  hero_spec.demonsurge_demonic_buff = talent.felscarred.demonsurge->ok() ? find_spell( 452435 ) : spell_data_t::not_found();
-  hero_spec.demonsurge_hardcast_buff = talent.felscarred.demonic_intensity->ok() ? find_spell( 452489 ) : spell_data_t::not_found();
+  hero_spec.demonsurge_demonic_buff =
+      talent.felscarred.demonsurge->ok() ? find_spell( 452435 ) : spell_data_t::not_found();
+  hero_spec.demonsurge_hardcast_buff =
+      talent.felscarred.demonic_intensity->ok() ? find_spell( 452489 ) : spell_data_t::not_found();
   hero_spec.demonsurge_damage = talent.felscarred.demonsurge->ok() ? find_spell( 452416 ) : spell_data_t::not_found();
-  hero_spec.demonsurge_stacking_buff = talent.felscarred.demonic_intensity->ok() ? find_spell( 452416 ) : spell_data_t::not_found();
+  hero_spec.demonsurge_stacking_buff =
+      talent.felscarred.demonic_intensity->ok() ? find_spell( 452416 ) : spell_data_t::not_found();
   hero_spec.demonsurge_trigger = talent.felscarred.demonsurge->ok() ? find_spell( 453323 ) : spell_data_t::not_found();
 
   // Sigil overrides for Precise/Concentrated Sigils
@@ -8444,6 +8447,9 @@ void demon_hunter_t::invalidate_cache( cache_e c )
         invalidate_cache( CACHE_ATTACK_POWER );
       }
       break;
+    case CACHE_CRIT_CHANCE:
+      if ( spec.riposte->ok() )
+        invalidate_cache( CACHE_PARRY );
     case CACHE_RUN_SPEED:
       adjust_movement();
       break;
@@ -9334,11 +9340,15 @@ void demon_hunter_t::trigger_demonic()
 
 // demon_hunter_t::trigger_demonsurge =============================================
 
-void demon_hunter_t::trigger_demonsurge( demonsurge_ability ability ) {
-  if ( buff.demonsurge_abilities[ ability ]->up() ) {
+void demon_hunter_t::trigger_demonsurge( demonsurge_ability ability )
+{
+  if ( buff.demonsurge_abilities[ ability ]->up() )
+  {
     active.demonsurge->execute_on_target( target );
     buff.demonsurge_abilities[ ability ]->expire();
-    make_event<delayed_execute_event_t>( *sim, this, active.demonsurge, target, timespan_t::from_millis(hero_spec.demonsurge_trigger->effectN( 1 ).misc_value1()) );
+    make_event<delayed_execute_event_t>(
+        *sim, this, active.demonsurge, target,
+        timespan_t::from_millis( hero_spec.demonsurge_trigger->effectN( 1 ).misc_value1() ) );
   }
 }
 
@@ -9363,7 +9373,7 @@ void demon_hunter_t::parse_player_effects()
   // Vengeance
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
-    parse_effects( buff.demon_spikes, talent.vengeance.deflecting_spikes->ok() ? 0b0 : 0b1 );
+    parse_effects( buff.demon_spikes, talent.vengeance.deflecting_spikes->ok() ? 0b00 : 0b10 );
     parse_effects( spec.riposte );
     parse_effects( spec.thick_skin );
     parse_effects( mastery.fel_blood_rank_2 );
