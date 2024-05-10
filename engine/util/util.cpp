@@ -1558,6 +1558,26 @@ const char* util::stat_type_string( stat_e stat )
   }
 }
 
+// stat_pct_buff_type_string =========================================================
+
+const char* util::stat_pct_buff_type_string( stat_pct_buff_type stat )
+{
+  switch ( stat )
+  {
+    case STAT_PCT_BUFF_CRIT: return "crit";
+    case STAT_PCT_BUFF_HASTE: return "haste";
+    case STAT_PCT_BUFF_VERSATILITY: return "versatility";
+    case STAT_PCT_BUFF_MASTERY: return "mastery";
+    case STAT_PCT_BUFF_STRENGTH: return "strength";
+    case STAT_PCT_BUFF_AGILITY: return "agility";
+    case STAT_PCT_BUFF_STAMINA: return "stamina";
+    case STAT_PCT_BUFF_INTELLECT: return "intellect";
+    case STAT_PCT_BUFF_SPIRIT: return "spirit";
+
+    default: return "unknown";
+  }
+}
+
 // stat_type_abbrev =========================================================
 
 const char* util::stat_type_abbrev( stat_e stat )
