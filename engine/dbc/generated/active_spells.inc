@@ -1,5 +1,5 @@
 // Active class spells, wow build 11.0.0.54605
-static const std::array<active_class_spell_t, 302> __active_spells_data { {
+static const std::array<active_class_spell_t, 303> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -223,6 +223,7 @@ static const std::array<active_class_spell_t, 302> __active_spells_data { {
   {  9,  265, 324536,      0, "Malefic Rapture"                    },
   {  9,  266,  30146,      0, "Summon Felguard"                    },
   {  9,  266, 105174,      0, "Hand of Gul'dan"                    },
+  {  9,  267, 116858,      0, "Chaos Bolt"                         },
   { 10,    0, 100780,      0, "Tiger Palm"                         },
   { 10,    0, 100784,      0, "Blackout Kick"                      },
   { 10,    0, 101546,      0, "Spinning Crane Kick"                },

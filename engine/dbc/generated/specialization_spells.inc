@@ -1,5 +1,5 @@
 // Talent tree specialization abilities, wow build 11.0.0.54605
-static const std::array<specialization_spell_entry_t, 404> __specialization_spell_data { {
+static const std::array<specialization_spell_entry_t, 405> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -254,6 +254,7 @@ static const std::array<specialization_spell_entry_t, 404> __specialization_spel
   {  9,  266, 231811,      0, "Soulstone"                         , "Rank 2" },
   {  9,  266, 334591,      0, "Fel Firebolt"                      , "Rank 2" },
   {  9,  267,  77220,      0, "Mastery: Chaotic Energies"         , 0 },
+  {  9,  267, 116858,      0, "Chaos Bolt"                        , 0 },
   {  9,  267, 137046,      0, "Destruction Warlock"               , 0 },
   {  9,  267, 157903,      0, "Warlock"                           , 0 },
   {  9,  267, 162699,      0, "Stat Negation Aura - Intellect DPS", 0 },
