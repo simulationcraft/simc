@@ -2415,7 +2415,13 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
     am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
-    am *= 1 + p()->buff.momentum_boost_damage->check_stack_value();
+    if ( p()->talent.windwalker.momentum_boost.ok() )
+    {
+      am *= 1 + ( ( ( 1.0 / p()->composite_spell_haste() ) - 1.0 ) *
+                  p()->talent.windwalker.momentum_boost->effectN( 1 ).percent() );
+
+      am *= 1 + p()->buff.momentum_boost_damage->check_stack_value();
+    }
 
     return am;
   }
