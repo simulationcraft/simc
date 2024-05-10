@@ -4270,7 +4270,7 @@ struct abomination_pet_t : public death_knight_pet_t
   {
     npc_id                      = owner->talent.unholy.raise_abomination->effectN( 2 ).misc_value1();
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.swing_time = 3.5_s;
+    main_hand_weapon.swing_time = 3.6_s;
     affected_by_commander_of_the_dead = true;
     owner_coeff.ap_from_ap = 2.4;
     resource_regeneration  = regen_type::DISABLED;
@@ -5793,6 +5793,10 @@ struct raise_abomination_t final : public death_knight_spell_t
     {
       p()->pets.army_magus.spawn( duration, 1 );
     }
+    if ( p()->talent.rider.apocalypse_now.ok() )
+    {
+      p()->summon_rider( p()->spell.apocalypse_now_data->duration(), false );
+    }
   }
 
 private:
@@ -6898,7 +6902,7 @@ struct death_coil_t final : public death_knight_spell_t
     if ( p()->talent.unholy.doomed_bidding.ok() && p()->buffs.sudden_doom->check() )
     {
       timespan_t duration = timespan_t::from_millis( p()->talent.unholy.doomed_bidding->effectN( 1 ).base_value() );
-      p()->pets.doomed_bidding_magus.spawn( timespan_t::from_seconds( duration.total_seconds() ), 1);
+      p()->pets.doomed_bidding_magus.spawn( timespan_t::from_seconds( duration.total_seconds() ), 1 );
     }
 
     p()->buffs.sudden_doom->decrement();
