@@ -829,6 +829,7 @@ public:
   double composite_melee_crit_chance() const override;
   double composite_melee_crit_rating() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
+  double composite_spell_crit_chance() const override;
   double composite_leech() const override;
   double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   void teleport( double yards, timespan_t duration ) override;
@@ -8760,12 +8761,28 @@ double warrior_t::composite_player_critical_damage_multiplier( const action_stat
 }
 
 // warrior_t::composite_spell_crit_chance =========================================
-/*
 double warrior_t::composite_spell_crit_chance() const
 {
-  return composite_melee_crit_chance();
+  double c = player_t::composite_spell_crit_chance();
+
+  c += talents.warrior.cruel_strikes->effectN( 1 ).percent();
+  c += buff.battle_stance->check_value();
+  c += buff.strike_vulnerabilities->check_value();
+
+  if ( specialization() == WARRIOR_ARMS )
+  {
+    c += talents.arms.critical_thinking->effectN( 1 ).percent();
+  }
+  else if ( specialization() == WARRIOR_FURY )
+  {
+    c += talents.fury.critical_thinking->effectN( 1 ).percent();
+  }
+
+  c += talents.protection.focused_vigor->effectN( 2 ).percent();
+
+  return c;
 }
-*/
+
 
 // warrior_t::composite_leech ==============================================
 
