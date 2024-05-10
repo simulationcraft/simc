@@ -914,7 +914,7 @@ struct rain_of_fire_t : public destruction_spell_t
 
       if ( p()->talents.inferno->ok() && result_is_hit( s->result ) )
       {
-        auto target_scaling = p()->bugs ? 1.0 : ( 5.0 / std::max( 5u, s->n_targets ) );
+        auto target_scaling = 1.0; // 2024-05-08 Blizzard reverted the fix for target scaling, was previously: ( 5.0 / std::max( 5u, s->n_targets ) )
 
         if ( rng().roll( p()->talents.inferno->effectN( 1 ).percent() * target_scaling ) )
         {
