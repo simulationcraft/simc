@@ -3291,7 +3291,7 @@ Description      : Faded into the nether and unable to use another Demonic Gatew
 Tooltip          : Faded into the nether and unable to use another Demonic Gateway.
 
 Name             : Chaos Bolt (id=116858) [Spell Family (5)] 
-Class            : Warlock
+Class            : Destruction Warlock
 School           : Chromatic
 Spell Type       : Magic
 Resource         : 2 Soul Shard (7) (id=6087)
