@@ -8884,6 +8884,8 @@ double monk_t::composite_player_multiplier( school_e school ) const
        ( talent.general.martial_instincts->effectN( 1 ).affected_schools() & school ) == school )
     multiplier *= 1.0 + talent.general.martial_instincts->effectN( 1 ).percent();
 
+  multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 1 ).percent();
+
   return multiplier;
 }
 
@@ -8899,6 +8901,11 @@ double monk_t::composite_player_target_multiplier( player_t *target, school_e sc
 double monk_t::composite_player_pet_damage_multiplier( const action_state_t *state, bool guardian ) const
 {
   double multiplier = player_t::composite_player_pet_damage_multiplier( state, guardian );
+
+  if ( guardian )
+    multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 2 ).percent();
+  else
+    multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 3 ).percent();
 
   multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 4 ).percent();
 
