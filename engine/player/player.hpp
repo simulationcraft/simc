@@ -308,6 +308,7 @@ struct player_t : public actor_t
   std::vector<std::pair<player_t*, std::function<void( void )>>> callbacks_on_arise;
   std::vector<std::function<void( player_t* )>> callbacks_on_kill;
   std::vector<std::function<void( player_t*, bool )>> callbacks_on_combat_state;
+  std::vector<std::function<void( bool )>> callbacks_on_movement;  // called in movement_buff_t
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -528,7 +529,6 @@ struct player_t : public actor_t
     buff_t* wild_hunt_strategem_tracking; //night_fae/korayn - tracking buff to allow procs of wild_hunt_strategem on enemy targets
 
     // 9.0 Runecarves
-    buff_t* norgannons_sagacity_stacks;  // stacks on every cast
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
     buff_t* echo_of_eonar;               // passive self buff
 
@@ -552,7 +552,6 @@ struct player_t : public actor_t
     buff_t* elemental_chaos_air;
     buff_t* elemental_chaos_earth;
     buff_t* elemental_chaos_frost;
-    buff_t* static_empowerment; // phial of static empowerment
     buff_t* tome_of_unstable_power;
     buff_t* way_of_controlled_currents;
     buff_t* stormeaters_boon;
@@ -560,7 +559,6 @@ struct player_t : public actor_t
 
     // 11.0 The War Within
     buff_t* surekian_grace;  // sik'ran's shadow arsenal barrage movement speed buff
-    buff_t* surekian_grace_stack;
   } buffs;
 
   struct debuffs_t
@@ -1390,6 +1388,7 @@ public:
   void register_on_arise_callback( player_t* source, std::function<void( void )> fn );
   void register_on_kill_callback( std::function<void( player_t* )> fn );
   void register_on_combat_state_callback( std::function<void( player_t*, bool )> fn );
+  void register_movement_callback( std::function<void( bool )> fn );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();

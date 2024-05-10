@@ -1188,9 +1188,10 @@ bool movement_buff_t::trigger( int s, double v, double c, timespan_t d )
   }
 
   // TODO -- Make this actually inherit from the base movement_buff_t class
-  if ( dh->buffs.static_empowerment )
+  for ( const auto& cb : player->callbacks_on_movement )
   {
-    dh->buffs.static_empowerment->expire();
+    if ( !check() )
+      cb( true );
   }
 
   return buff_t::trigger( s, v, c, d );

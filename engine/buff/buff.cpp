@@ -3628,26 +3628,11 @@ absorb_buff_t* absorb_buff_t::set_cumulative( bool c )
 
 bool movement_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
 {
-  if ( player->buffs.norgannons_sagacity_stacks && player->buffs.norgannons_sagacity )
-  {
-    auto sagacity = player->buffs.norgannons_sagacity_stacks->check();
 
-    if ( sagacity )
-    {
-      player->buffs.norgannons_sagacity_stacks->expire();
-      player->buffs.norgannons_sagacity->buff_duration_multiplier = sagacity;
-      player->buffs.norgannons_sagacity->trigger();
-    }
-  }
-
-  if ( player->buffs.static_empowerment )
+  for ( const auto& cb : player->callbacks_on_movement )
   {
-    player->buffs.static_empowerment->expire();
-  }
-
-  if ( player->buffs.surekian_grace_stack )
-  {
-    player->buffs.surekian_grace_stack->expire();
+    if ( !check() )
+      cb( true );
   }
 
   return buff_t::trigger( stacks, value, chance, duration );
@@ -3657,6 +3642,11 @@ void movement_buff_t::expire_override( int expiration_stacks, timespan_t remaini
 {
   buff_t::expire_override( expiration_stacks, remaining_duration );
   source->finish_moving();
+
+  for ( const auto& cb : player->callbacks_on_movement )
+  {
+    cb( false );
+  }
 }
 
 // ==========================================================================

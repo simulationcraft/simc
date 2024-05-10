@@ -450,7 +450,10 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
           b_speed->trigger( 1, b->default_value * s );
         } );
 
-      e.player->buffs.surekian_grace_stack = b_stack;
+      e.player->register_movement_callback( [ b_stack ]( bool start ) {
+        if ( start )
+          b_stack->expire();
+      } );
 
       auto b_stance = create_buff<buff_t>( e.player, e.player->find_spell( 448036 ) )
         ->set_tick_callback( [ b_stack ]( buff_t*, int, timespan_t ) {
