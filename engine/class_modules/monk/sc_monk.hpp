@@ -407,7 +407,6 @@ public:
     propagate_const<action_t *> bonedust_brew_heal;
     propagate_const<action_t *> bountiful_brew;
     propagate_const<action_t *> chi_wave;
-    propagate_const<action_t *> resonant_fists;
     propagate_const<action_t *> rushing_jade_wind;
 
     // Brewmaster
@@ -685,7 +684,6 @@ public:
     propagate_const<proc_t *> glory_of_the_dawn;
     propagate_const<proc_t *> keg_smash_scalding_brew;
     propagate_const<proc_t *> quick_sip;
-    propagate_const<proc_t *> resonant_fists;
     propagate_const<proc_t *> rsk_reset_totm;
     propagate_const<proc_t *> salsalabim_bof_reset;
     propagate_const<proc_t *> tranquil_spirit_expel_harm;
@@ -738,7 +736,7 @@ public:
       // Row 6
       player_talent_t quick_footed;
       player_talent_t hasty_provocation;
-      player_talent_t resonant_fists;
+      player_talent_t ferocity_of_xuen;
       player_talent_t ring_of_peace;
       player_talent_t song_of_chi_ji;
       player_talent_t spirits_essence;
@@ -1177,7 +1175,6 @@ public:
     propagate_const<cooldown_t *> invoke_yulon;
     propagate_const<cooldown_t *> keg_smash;
     propagate_const<cooldown_t *> purifying_brew;
-    propagate_const<cooldown_t *> resonant_fists;
     propagate_const<cooldown_t *> rising_sun_kick;
     propagate_const<cooldown_t *> refreshing_jade_wind;
     propagate_const<cooldown_t *> roll;

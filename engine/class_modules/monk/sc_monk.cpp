@@ -3642,30 +3642,6 @@ namespace spells
 {
 
 // ==========================================================================
-// Resonant Fists
-// ==========================================================================
-
-struct resonant_fists_t : public monk_spell_t
-{
-  resonant_fists_t( monk_t &p )
-    : monk_spell_t( "resonant_fists", &p, p.talent.general.resonant_fists->effectN( 2 ).trigger() )
-  {
-    background          = true;
-    aoe                 = -1;
-    reduced_aoe_targets = 5;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    am *= 1 + p()->talent.general.resonant_fists->effectN( 1 ).percent();
-
-    return am;
-  }
-};
-
-// ==========================================================================
 // Special Delivery
 // ==========================================================================
 
@@ -6666,7 +6642,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   cooldown.invoke_yulon           = get_cooldown( "invoke_yulon_the_jade_serpent" );
   cooldown.keg_smash              = get_cooldown( "keg_smash" );
   cooldown.purifying_brew         = get_cooldown( "purifying_brew" );
-  cooldown.resonant_fists         = get_cooldown( "resonant_fists" );
   cooldown.rising_sun_kick        = get_cooldown( "rising_sun_kick" );
   cooldown.refreshing_jade_wind   = get_cooldown( "refreshing_jade_wind" );
   cooldown.roll                   = get_cooldown( "roll" );
@@ -7114,7 +7089,7 @@ void monk_t::init_spells()
   // Row 6
   talent.general.quick_footed            = _CT( "Quick Footed" );
   talent.general.hasty_provocation       = _CT( "Hasty Provocation" );
-  talent.general.resonant_fists          = _CT( "Resonant Fists" );
+  talent.general.ferocity_of_xuen        = _CT( "Ferocity of Xuen" );
   talent.general.ring_of_peace           = _CT( "Ring of Peace" );
   talent.general.ironshell_brew          = _CT( "Ironshell Brew" );
   talent.general.song_of_chi_ji          = _CT( "Song of Chi-Ji" );
@@ -7619,7 +7594,6 @@ void monk_t::init_spells()
   active_actions.bonedust_brew_heal = new actions::spells::bonedust_brew_heal_t( *this );
   active_actions.bountiful_brew     = new actions::spells::bountiful_brew_t( *this );
   active_actions.chi_wave           = new actions::chi_wave_t( this );
-  active_actions.resonant_fists     = new actions::spells::resonant_fists_t( *this );
   active_actions.rushing_jade_wind  = new actions::rjw_tick_action_t( this );
   windwalking_aura                  = new actions::windwalking_aura_t( this );
 
@@ -8175,7 +8149,6 @@ void monk_t::init_procs()
   proc.glory_of_the_dawn              = get_proc( "Glory of the Dawn" );
   proc.keg_smash_scalding_brew        = get_proc( "Keg Smash - Scalding Brew" );
   proc.quick_sip                      = get_proc( "Quick Sip" );
-  proc.resonant_fists                 = get_proc( "Resonant Fists" );
   proc.rsk_reset_totm                 = get_proc( "Rising Sun Kick TotM Reset" );
   proc.salsalabim_bof_reset           = get_proc( "Sal'salabim Breath of Fire Reset" );
   proc.tranquil_spirit_expel_harm     = get_proc( "Tranquil Spirit - Expel Harm" );
@@ -8374,22 +8347,6 @@ void monk_t::create_proc_callback( const spell_data_t *effect_driver,
 
 void monk_t::init_special_effects()
 {
-  // ======================================
-  // Resonant Fists Talent
-  // ======================================
-
-  if ( talent.general.resonant_fists.ok() )
-  {
-    create_proc_callback(
-        talent.general.resonant_fists.spell(),
-        []( monk_t *p, action_state_t *state ) {
-          p->active_actions.resonant_fists->set_target( state->target );
-
-          return true;
-        },
-        PF2_ALL_HIT );
-  }
-
   // ======================================
   // Exploding Keg Talent
   // ======================================
@@ -8622,7 +8579,6 @@ void monk_t::bonedust_brew_assessor( action_state_t *s )
     case 148135:  // chi_burst_damage
     case 117952:  // crackling_jade_lightnin
     case 196608:  // eye_of_the_tiger_damage
-    case 391400:  // resonant_fists
     case 389541:  // claw_of_the_white_tiger
     // Windwalker
     case 123996:  // crackling_tiger_lightning_tick
@@ -8923,11 +8879,11 @@ double monk_t::composite_player_multiplier( school_e school ) const
   if ( talent.general.chi_proficiency.ok() &&
        ( talent.general.chi_proficiency->effectN( 1 ).affected_schools() & school ) == school )
     multiplier *= 1.0 + talent.general.chi_proficiency->effectN( 1 ).percent();
-    
+
   if ( talent.general.martial_instincts.ok() &&
        ( talent.general.martial_instincts->effectN( 1 ).affected_schools() & school ) == school )
     multiplier *= 1.0 + talent.general.martial_instincts->effectN( 1 ).percent();
-    
+
   return multiplier;
 }
 
