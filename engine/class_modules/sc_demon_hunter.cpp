@@ -4466,8 +4466,8 @@ struct demonsurge_t : public demon_hunter_spell_t
 
   void execute() override
   {
-    demon_hunter_spell_t::execute();
     p()->buff.demonsurge->trigger();
+    demon_hunter_spell_t::execute();
   }
 };
 
