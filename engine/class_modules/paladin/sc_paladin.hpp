@@ -669,6 +669,7 @@ public:
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_tyrs_enforcer( action_state_t* s );
   void    trigger_hammer_and_anvil( action_state_t* s);
+  void    trigger_laying_down_arms();
   void    heartfire( action_state_t* s );
   void    t29_4p_prot();
   void    t31_4p_prot(action_state_t* s);

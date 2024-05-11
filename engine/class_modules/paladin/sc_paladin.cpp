@@ -1224,19 +1224,16 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
         p()->buffs.faith_in_the_light->trigger();
       }
     }
-
-    if ( p()->specialization() == PALADIN_PROTECTION /*&& p()->talents.valiance->ok()  && p()->buffs.shining_light_free->up()*/ )
+    
+    if ( p()->specialization() == PALADIN_PROTECTION && p()->talents.valiance->ok()  && p()->buffs.shining_light_free->up() )
     {
+      timespan_t increase = timespan_t::from_seconds( p()->talents.valiance->effectN( 1 ).base_value() );
       if ( p()->buffs.holy_bulwark->up() )
       {
-        timespan_t increase = timespan_t::from_seconds( p()->talents.valiance->effectN( 1 ).base_value());
         p()->buffs.holy_bulwark->extend_duration( p(), increase );
       }
       if ( player->buffs.sacred_weapon->up() )
       {
-        timespan_t increase =
-        p()->buffs.sacred_weapon->extend_duration( p(), increase );
-            timespan_t::from_seconds( /* p()->talents.valiance->effectN( 1 ).base_value() */ 3 );
         player->buffs.sacred_weapon->extend_duration( p(), increase );
       }
       if ( !p()->buffs.holy_bulwark->up() && !player->buffs.sacred_weapon->up() )
@@ -1796,6 +1793,19 @@ struct hammer_and_anvil_t : public paladin_spell_t
     may_miss                     = false;
    }
    
+};
+
+void paladin_t::trigger_laying_down_arms()
+{ 
+   if ( specialization() == PALADIN_PROTECTION )
+   {
+    buffs.shining_light_stacks->expire();
+    buffs.shining_light_free->trigger(); 
+   }
+   if (specialization() == PALADIN_HOLY) 
+   {
+    buffs.infusion_of_light->trigger();
+   }
 };
 
 // Hammer of Wrath
@@ -2522,15 +2532,8 @@ void paladin_t::create_buffs()
                                 buffs.shining_light_free->trigger();
                               }
                             } );
-  buffs.sacred_weapon = make_buff( this, "sacred_weapon", find_spell( 432502 ) )
-                            ->set_cooldown( 0_s )
-                            ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-                              if ( !new_ )
-                              {
-                                buffs.shining_light_stacks->expire();
-                                buffs.shining_light_free->trigger();
-                              }
-                            } );
+//  buffs.sacred_weapon = make_buff( this, "sacred_weapon", find_spell( 432502 ) );
+
   buffs.blessed_assurance = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
   buffs.divine_guidance   = make_buff( this, "divine_guidance", find_spell( 433106 ) );
 }
@@ -3819,7 +3822,14 @@ struct paladin_module_t : public module_t
     p->buffs.blessing_of_spring = make_buff( p, "blessing_of_spring", p->find_spell( 328282 ) )
                                       ->set_cooldown( 0_ms )
                                       ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-    p->buffs.sacred_weapon = make_buff( p, "sacred_weapon", p->find_spell( 432502 ) );
+    p->buffs.sacred_weapon = make_buff( p, "sacred_weapon", p->find_spell( 432502 ) )
+                                 ->set_stack_change_callback( []( buff_t* buff, int old, int ) {
+                                   if ( old && buff->source )
+                                   {
+                                     paladin_t* source = debug_cast<paladin_t*>( buff->source );
+                                     source->trigger_laying_down_arms();
+                                   }
+                                 } );
   }
 
   void create_actions( player_t* p ) const override
@@ -3889,8 +3899,8 @@ struct paladin_module_t : public module_t
           winter_cb->deactivate();
       } );
     }
-    //if ( !p->external_buffs.sacred_weapon.empty() )
-      if (true)
+    if ( !p->external_buffs.sacred_weapon.empty() || p->specialization() == PALADIN_HOLY ||
+         p->specialization() == PALADIN_PROTECTION )
     {
       action_t* sacred_weapon_proc;
       if ( p->type == PALADIN )
