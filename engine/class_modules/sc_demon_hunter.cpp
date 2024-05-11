@@ -711,6 +711,7 @@ public:
     const spell_data_t* demonsurge_stacking_buff;
     const spell_data_t* demonsurge_trigger;
     const spell_data_t* soul_sunder;
+    const spell_data_t* spirit_burst;
   } hero_spec;
 
   // Set Bonus effects
@@ -3999,7 +4000,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
 // Spirit Bomb ==============================================================
 
-struct spirit_bomb_t : public demon_hunter_spell_t
+struct spirit_bomb_base_t : public demon_hunter_spell_t
 {
   struct spirit_bomb_state_t : public action_state_t
   {
@@ -4031,12 +4032,13 @@ struct spirit_bomb_t : public demon_hunter_spell_t
 
   struct spirit_bomb_damage_t : public demon_hunter_spell_t
   {
-    spirit_bomb_damage_t( util::string_view name, demon_hunter_t* p )
+    spirit_bomb_damage_t( util::string_view name, demon_hunter_t* p, std::basic_string<char> reporting_name )
       : demon_hunter_spell_t( name, p, p->spec.spirit_bomb_damage )
     {
       background = dual   = true;
       aoe                 = -1;
       reduced_aoe_targets = p->talent.vengeance.spirit_bomb->effectN( 3 ).base_value();
+      name_str_reporting  = reporting_name;
     }
 
     action_state_t* new_state() override
@@ -4097,13 +4099,13 @@ struct spirit_bomb_t : public demon_hunter_spell_t
   spirit_bomb_damage_t* damage;
   unsigned max_fragments_consumed;
 
-  spirit_bomb_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "spirit_bomb", p, p->talent.vengeance.spirit_bomb, options_str ),
+  spirit_bomb_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view options_str )
+    : demon_hunter_spell_t( n, p, s, options_str ),
       max_fragments_consumed( static_cast<unsigned>( data().effectN( 2 ).base_value() ) )
   {
     may_miss = proc = callbacks = false;
 
-    damage        = p->get_background_action<spirit_bomb_damage_t>( "spirit_bomb_damage" );
+    damage        = p->get_background_action<spirit_bomb_damage_t>( name_str + "damage", name_str );
     damage->stats = stats;
 
     if ( !p->active.frailty_heal )
@@ -4128,8 +4130,6 @@ struct spirit_bomb_t : public demon_hunter_spell_t
       damage->schedule_execute( damage_state );
       damage->execute_event->reschedule( timespan_t::from_seconds( 1.0 ) );
     }
-
-    p()->trigger_demonsurge( demonsurge_ability::SPIRIT_BURST );
   }
 
   bool ready() override
@@ -4138,6 +4138,47 @@ struct spirit_bomb_t : public demon_hunter_spell_t
       return false;
 
     return demon_hunter_spell_t::ready();
+  }
+};
+
+struct spirit_burst_t : public spirit_bomb_base_t
+{
+  spirit_burst_t( demon_hunter_t* p, util::string_view options_str )
+    : spirit_bomb_base_t( "spirit_burst", p, p->hero_spec.spirit_burst, options_str )
+  {
+  }
+
+  bool ready() override
+  {
+    if ( !p()->buff.demonsurge_demonic->check() )
+    {
+      return false;
+    }
+    return spirit_bomb_base_t::ready();
+  }
+
+  void execute() override
+  {
+    spirit_bomb_base_t::execute();
+
+    p()->trigger_demonsurge( demonsurge_ability::SPIRIT_BURST );
+  }
+};
+
+struct spirit_bomb_t : public spirit_bomb_base_t
+{
+  spirit_bomb_t( demon_hunter_t* p, util::string_view options_str )
+    : spirit_bomb_base_t( "spirit_bomb", p, p->talent.vengeance.spirit_bomb, options_str )
+  {
+  }
+
+  bool ready() override
+  {
+    if ( p()->buff.demonsurge_demonic->check() )
+    {
+      return false;
+    }
+    return spirit_bomb_base_t::ready();
   }
 };
 
@@ -7140,6 +7181,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new sigil_of_flame_t( this, options_str );
   if ( name == "spirit_bomb" )
     return new spirit_bomb_t( this, options_str );
+  if ( name == "spirit_burst" )
+    return new spirit_burst_t( this, options_str );
   if ( name == "elysian_decree" )
     return new elysian_decree_t( this, options_str );
   if ( name == "the_hunt" )
@@ -8254,6 +8297,7 @@ void demon_hunter_t::init_spells()
       talent.felscarred.demonic_intensity->ok() ? find_spell( 452416 ) : spell_data_t::not_found();
   hero_spec.demonsurge_trigger = talent.felscarred.demonsurge->ok() ? find_spell( 453323 ) : spell_data_t::not_found();
   hero_spec.soul_sunder        = talent.felscarred.demonsurge->ok() ? find_spell( 452436 ) : spell_data_t::not_found();
+  hero_spec.spirit_burst       = talent.felscarred.demonsurge->ok() ? find_spell( 452437 ) : spell_data_t::not_found();
 
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };
