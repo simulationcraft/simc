@@ -659,6 +659,94 @@ void foul_behemoths_chelicera( special_effect_t& effect )
   effect.execute_action = create_proc_action<digestive_venom_t>( "digestive_venom", effect );
 }
 
+// 445066 equip + data
+//  e1: primary
+//  e2: secondary
+//  e3: max stack
+//  e4: reduction
+//  e5: unreduced cap
+//  e6: period
+// 445560 on-use
+// 449578 primary buff
+// 449581 haste buff
+// 449593 crit buff
+// 449594 mastery buff
+// 449595 vers buff
+// TODO: confirm secondary precedence in case of tie is vers > mastery > haste > crit
+// TODO: confirm equip cycle continues ticking while on-use is active
+// TODO: confirm that stats swap at one stack per tick
+// TODO: determine what happens when your highest secondary changes
+// TODO: add options to control balancing stacks
+// TODO: add option to set starting stacks
+void ovinaxs_mercurial_egg( special_effect_t& effect )
+{
+  unsigned equip_id = 445066;
+  auto equip = find_special_effect( effect.player, equip_id );
+  assert( equip && "Ovinax's Mercurial Egg missing equip effect" );
+
+  auto data = equip->driver();
+
+  // setup stat buffs
+  auto primary = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 449578 ) )
+    ->set_stat_from_effect_type( A_MOD_STAT, data->effectN( 1 ).average( effect.item ) );
+
+  // TODO: confirm secondary precedence in case of tie is vers > mastery > haste > crit
+  static constexpr std::array<stat_e, 4> ratings =
+      { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
+  static constexpr std::array<unsigned, 4> buff_ids =
+      { 449595, 449594, 449581, 449593 };
+
+  std::unordered_map<stat_e, buff_t*> secondaries;
+
+  for ( size_t i = 0; i < ratings.size(); i++ )
+  {
+    auto stat_str = util::stat_type_abbrev( ratings[ i ] );
+    auto spell = effect.player->find_spell( buff_ids[ i ] );
+    auto name = fmt::format( "{}_{}", spell->name_cstr(), stat_str );
+
+    auto buff = create_buff<stat_buff_t>( effect.player, name, spell )
+      ->set_stat_from_effect_type( A_MOD_RATING, data->effectN( 2 ).average( effect.item ) )
+      ->set_name_reporting( stat_str );
+
+    secondaries[ ratings[ i ] ] = buff;
+  }
+
+  // proxy buff for on-use
+  // TODO: confirm equip cycle continues ticking while on-use is active
+  auto halt = create_buff<buff_t>( effect.player, effect.driver() )->set_cooldown( 0_ms );
+
+  // proxy buff for equip ticks
+  // TODO: confirm that stats swap at one stack per tick
+  // TODO: determine what happens when your highest secondary changes
+  // TODO: add options to control balancing stacks
+  auto ticks = create_buff<buff_t>( effect.player, equip->driver() )
+    ->set_quiet( true )
+    ->set_tick_zero( true )
+    ->set_tick_callback( [ primary, secondaries, halt, p = effect.player ]( buff_t*, int, timespan_t ) {
+      if ( halt->check() )
+        return;
+
+      if ( p->is_moving() )
+      {
+        primary->decrement();
+        secondaries.at( util::highest_stat( p, ratings ) )->trigger();
+      }
+      else
+      {
+        range::for_each( secondaries, []( const auto& b ) { b.second->decrement(); } );
+        primary->trigger();
+      }
+    } );
+
+  // TODO: add option to set starting stacks
+  effect.player->register_precombat_begin( [ ticks, primary /*, secondaries*/ ]( player_t* p ) {
+    primary->trigger( primary->max_stack() );
+    make_event( *p->sim, p->rng().range( 1_ms, ticks->buff_period ), [ ticks ] { ticks->trigger(); } );
+  } );
+
+  effect.custom_buff = halt;
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -846,6 +934,8 @@ void register_special_effects()
   register_special_effect( 444301, items::swarmlords_authority );
   register_special_effect( 444292, DISABLED_EFFECT );  // swarmlord's authority
   register_special_effect( 444264, items::foul_behemoths_chelicera );
+  register_special_effect( 445560, items::ovinaxs_mercurial_egg );
+  register_special_effect( 445066, DISABLED_EFFECT );  // ovinax's mercurial egg
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );

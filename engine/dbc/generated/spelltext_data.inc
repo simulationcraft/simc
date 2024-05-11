@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54605
-static const std::array<spelltext_data_t, 22732> __spelltext_data { {
+static const std::array<spelltext_data_t, 22739> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -22021,6 +22021,9 @@ static const std::array<spelltext_data_t, 22732> __spelltext_data { {
   { 449581, "$@spelldesc445066", "Haste increased by $w1, further increasing every while moving.", 0 },
   { 449582, "Roll causes you to become lighter than air, allowing you to double jump to dash forward a short distance once within $449609d.", 0, 0 },
   { 449587, "$@spelldesc440059", "Time between attacks increased $w1% and casting speed increased by $w2%.", 0 },
+  { 449593, "$@spelldesc445066", "Critical Strike increased by $w1, further increasing every while moving.", 0 },
+  { 449594, "$@spelldesc445066", "Mastery increased by $w1, further increasing every while moving.", 0 },
+  { 449595, "$@spelldesc445066", "Versatility increased by $w1, further increasing every while moving.", 0 },
   { 449596, "Spellfire Spheres can now stack up to $s2 times.", 0, 0 },
   { 449609, "$@spelldesc449582", "You may jump twice to dash forward a short distance.", 0 },
   { 449614, "A demonic entity now inhabits your soul, allowing you to detect if a Soul Shard has a Succulent Soul when it's generated. \r\n\r\nA Succulent Soul empowers your next $?s137043[Malefic Rapture, reducing its Soul Shard cost by ${$449793s1/-10},  increasing its damage by $449793s2%, and unleashing your demonic soul to deal an additional $449801s1 Shadow damage.][Hand of Gul'dan, reducing its Soul Shard cost by ${$449793s3/-10}, summoning $449793s4 additional Wild Imp, and unleashing your demonic soul to deal an additional $449801s1 Shadow damage.]", 0, 0 },
@@ -22390,7 +22393,9 @@ static const std::array<spelltext_data_t, 22732> __spelltext_data { {
   { 452497, "Blasts all enemies in front of you, $?s320415[dealing guaranteed critical strikes][] for up to $<dmg> Chaos damage over $d. Deals reduced damage beyond $s5 targets.$?s343311[\r\n\r\nWhen Eye Beam finishes fully channeling, your Haste is increased by an additional $343312s1% for $343312d.][]", 0, 0 },
   { 452499, "$@spelldesc452402", 0, 0 },
   { 452536, "Flip a Fatebound Coin each time a damaging finishing move consumes $s1 or more combo points. Heads increases the damage of your attacks by $s2%, lasting until you flip Tails. Tails deals Cosmic damage to targets struck.\r\n\r\nEach effect is increased by $s3% each time your Fatebound Coin flip matches the same outcome as the last flip. ", 0, 0 },
+  { 452538, "$@spelldesc452536", 0, 0 },
   { 452550, "$@spelldesc452414", "Agility increased by $w1%.", 0 },
+  { 452562, "$@spelldesc452536", "Primary, secondary, and tertiary stats increased by $w1%.", 0 },
   { 452565, "$@spelldesc444276", "$pri increased by $w1.", 0 },
   { 452647, "Summon a Possibility Projector configured to satisfy the needs of crafting tables. Only one workbench can be displayed at a time and can only be changed by the Engineer.", 0, 0 },
   { 452684, "Critical strike damage increased by $s1%.", "Critical strikes deal an additional $w1% damage.", 0 },
@@ -22408,6 +22413,8 @@ static const std::array<spelltext_data_t, 22732> __spelltext_data { {
   { 452883, "Unleash a surge of electricity upon an enemy $s2-$R yds away for up to $d. If the distance between you and your target exceeds $s3 yds, they will be pulled toward you and break the tether.", "Tethered to $@auracaster. You will be pulled toward them if the distance between exceeds $s3 yds.", 0 },
   { 452894, "Increases melee and spell critical strike chance for you and your summoned demon by $s1%.", 0, 0 },
   { 452902, "Reduces the cast time of Soulstone and Create Healthstone by $s1%.", 0, 0 },
+  { 452917, "$@spelldesc452536", "Fatebound Coin damage increased by $w1%.$?a454300[ Leech increased by ${$W2}.1%.][]", 0 },
+  { 452923, "$@spelldesc452536", "Damage increased by $W1%.$?a454300[ Leech increased by ${$W5}.1%.][]", 0 },
   { 452924, "When you gain a stack of Arcane Battery, you have a small chance to gain another stack of Arcane Battery.\r\n\r\nThis effect can trigger off of itself.", 0, 0 },
   { 452929, "Summon an Earthen Delivery Drill to dig for an assortment of battleground buffs.\r\n\r\nThe drill lasts for $452944d and can only be summoned while in combat. Can only be used in unrated battlegrounds and in War Mode on Khaz Algar.", 0, 0 },
   { 452930, "Instantly restores $s1% health$?s262031[, plus an additional ${$262080d/$262080t1*$262080s1}% over $262080d.][.]", 0, 0 },
