@@ -1235,8 +1235,9 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
       if ( player->buffs.sacred_weapon->up() )
       {
         timespan_t increase =
-            timespan_t::from_seconds( /* p()->talents.valiance->effectN( 1 ).base_value() */ 3000 );
         p()->buffs.sacred_weapon->extend_duration( p(), increase );
+            timespan_t::from_seconds( /* p()->talents.valiance->effectN( 1 ).base_value() */ 3 );
+        player->buffs.sacred_weapon->extend_duration( p(), increase );
       }
       if ( !p()->buffs.holy_bulwark->up() && !player->buffs.sacred_weapon->up() )
       {
@@ -1731,7 +1732,7 @@ struct sacred_weapon_t : public paladin_spell_t
    void execute() override
    {
     paladin_spell_t::execute();
-    p()->buffs.sacred_weapon->trigger();
+    player->buffs.sacred_weapon->trigger();
    }
 };
 
