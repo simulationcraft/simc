@@ -710,6 +710,7 @@ public:
     const spell_data_t* demonsurge_damage;
     const spell_data_t* demonsurge_stacking_buff;
     const spell_data_t* demonsurge_trigger;
+    const spell_data_t* soul_sunder;
   } hero_spec;
 
   // Set Bonus effects
@@ -792,6 +793,9 @@ public:
     cooldown_t* sigil_of_chains;
     cooldown_t* sigil_of_silence;
     cooldown_t* volatile_flameblood_icd;
+
+    // Fel-scarred
+    cooldown_t* soul_cleave;
   } cooldown;
 
   // Gains
@@ -1006,6 +1010,7 @@ public:
   void datacollection_end() override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void apply_affecting_auras( action_t& action ) override;
+  void analyze( sim_t& sim ) override;
 
   // custom demon_hunter_t functions
   const spelleffect_data_t* find_spelleffect( const spell_data_t* spell, effect_subtype_t subtype = A_MAX,
@@ -2317,9 +2322,11 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
     }
   };
 
-  soul_cleave_heal_t( util::string_view name, demon_hunter_t* p ) : demon_hunter_heal_t( name, p, p->spec.soul_cleave )
+  soul_cleave_heal_t( util::string_view name, demon_hunter_t* p, std::basic_string<char> reporting_name )
+    : demon_hunter_heal_t( name, p, p->spec.soul_cleave )
   {
-    background = dual = true;
+    background = dual  = true;
+    name_str_reporting = reporting_name;
 
     // Clear out the costs since this is just a copy of the damage spell
     base_costs.fill( 0 );
@@ -5840,7 +5847,7 @@ struct shear_t : public demon_hunter_attack_t
 
 // Soul Cleave ==============================================================
 
-struct soul_cleave_t : public demon_hunter_attack_t
+struct soul_cleave_base_t : public demon_hunter_attack_t
 {
   struct soul_cleave_state_t : public action_state_t
   {
@@ -5872,10 +5879,12 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
   struct soul_cleave_damage_t : public demon_hunter_attack_t
   {
-    soul_cleave_damage_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
+    soul_cleave_damage_t( util::string_view name, demon_hunter_t* p, std::basic_string<char> reporting_name,
+                          const spell_data_t* s )
       : demon_hunter_attack_t( name, p, s )
     {
-      dual = true;
+      dual               = true;
+      name_str_reporting = reporting_name;
     }
 
     action_state_t* new_state() override
@@ -5944,19 +5953,21 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
   heals::soul_cleave_heal_t* heal;
 
-  soul_cleave_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_attack_t( "soul_cleave", p, p->spec.soul_cleave, options_str ), heal( nullptr )
+  soul_cleave_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s,
+                      util::string_view options_str = {} )
+    : demon_hunter_attack_t( n, p, s, options_str ), heal( nullptr )
   {
     may_miss = may_dodge = may_parry = may_block = false;
     attack_power_mod.direct = 0;  // This parent action deals no damage, parsed data is for the heal
+    cooldown                = p->cooldown.soul_cleave;
 
     execute_action =
-        p->get_background_action<soul_cleave_damage_t>( "soul_cleave_damage", data().effectN( 2 ).trigger() );
+        p->get_background_action<soul_cleave_damage_t>( name_str + "_damage", name_str, data().effectN( 2 ).trigger() );
     execute_action->stats = stats;
 
     if ( p->spec.soul_cleave_2->ok() )
     {
-      heal = p->get_background_action<heals::soul_cleave_heal_t>( "soul_cleave_heal" );
+      heal = p->get_background_action<heals::soul_cleave_heal_t>( name_str + "_heal", name_str );
     }
 
     if ( p->talent.vengeance.void_reaver->ok() && !p->active.frailty_heal )
@@ -5990,6 +6001,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
     if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.glaive_flurry->up() &&
          p()->active.art_of_the_glaive )
     {
+      // we deal double the slashes if Soul Cleave is the second ability in the Art of the Glaive combo
       int number_of_slashes = p()->buff.glaive_flurry->up() && p()->buff.rending_strike->up() ? 1 : 2;
       for ( int slash = 0; slash < number_of_slashes; slash++ )
       {
@@ -6005,8 +6017,47 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
       p()->buff.glaive_flurry->expire();
     }
+  }
+};
+
+struct soul_sunder_t : public soul_cleave_base_t
+{
+  soul_sunder_t( demon_hunter_t* p, util::string_view options_str )
+    : soul_cleave_base_t( "soul_sunder", p, p->hero_spec.soul_sunder, options_str )
+  {
+  }
+
+  bool ready() override
+  {
+    if ( !p()->buff.demonsurge_demonic->check() )
+    {
+      return false;
+    }
+    return soul_cleave_base_t::ready();
+  }
+
+  void execute() override
+  {
+    soul_cleave_base_t::execute();
 
     p()->trigger_demonsurge( demonsurge_ability::SOUL_SUNDER );
+  }
+};
+
+struct soul_cleave_t : public soul_cleave_base_t
+{
+  soul_cleave_t( demon_hunter_t* p, util::string_view options_str )
+    : soul_cleave_base_t( "soul_cleave", p, p->spec.soul_cleave, options_str )
+  {
+  }
+
+  bool ready() override
+  {
+    if ( p()->buff.demonsurge_demonic->check() )
+    {
+      return false;
+    }
+    return soul_cleave_base_t::ready();
   }
 };
 
@@ -7128,6 +7179,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new shear_t( this, options_str );
   if ( name == "soul_cleave" )
     return new soul_cleave_t( this, options_str );
+  if ( name == "soul_sunder" )
+    return new soul_sunder_t( this, options_str );
   if ( name == "throw_glaive" )
     return new throw_glaive_t( "throw_glaive", this, options_str );
   if ( name == "vengeful_retreat" )
@@ -8200,6 +8253,7 @@ void demon_hunter_t::init_spells()
   hero_spec.demonsurge_stacking_buff =
       talent.felscarred.demonic_intensity->ok() ? find_spell( 452416 ) : spell_data_t::not_found();
   hero_spec.demonsurge_trigger = talent.felscarred.demonsurge->ok() ? find_spell( 453323 ) : spell_data_t::not_found();
+  hero_spec.soul_sunder        = talent.felscarred.demonsurge->ok() ? find_spell( 452436 ) : spell_data_t::not_found();
 
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };
@@ -8585,6 +8639,9 @@ void demon_hunter_t::create_cooldowns()
   cooldown.sigil_of_silence        = get_cooldown( "sigil_of_silence" );
   cooldown.fel_devastation         = get_cooldown( "fel_devastation" );
   cooldown.volatile_flameblood_icd = get_cooldown( "volatile_flameblood_icd" );
+
+  // Fel-scarred
+  cooldown.soul_cleave = get_cooldown( "soul_cleave" );
 }
 
 // demon_hunter_t::create_gains =============================================
@@ -9428,6 +9485,14 @@ void demon_hunter_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spell.all_demon_hunter );
   action.apply_affecting_aura( spec.havoc_demon_hunter );
   action.apply_affecting_aura( spec.vengeance_demon_hunter );
+}
+
+// Reporting functions ======================================================
+
+void demon_hunter_t::analyze( sim_t& sim )
+{
+  player_t::analyze( sim );
+  // TODO: Fix reporting for container spells
 }
 
 // Utility functions ========================================================
