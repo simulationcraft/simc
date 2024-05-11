@@ -1723,8 +1723,6 @@ public:
     ab::parse_effects( p()->buff.enduring_torment );
     ab::parse_effects( p()->buff.demonsurge_demonic );
     ab::parse_effects( p()->buff.demonsurge_hardcast );
-    ab::parse_effects( p()->buff.demonsurge_demonic );
-    ab::parse_effects( p()->buff.demonsurge_hardcast );
     ab::parse_effects( p()->buff.demonsurge );
   }
 
