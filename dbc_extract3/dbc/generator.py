@@ -1475,6 +1475,7 @@ class SpellDataGenerator(DataGenerator):
          447097, 447134, # swarmlord's authority
          446805, 446886, 446887, # foul behemoth's chelicera
          449593, 449594, 449595, # ovinax's mercurial egg
+         449947, 449948, 449952, 449966, 450025, # malfunctioning ethereum module
         ),
 
         # Warrior:

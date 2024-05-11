@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54605
-static const std::array<spelltext_data_t, 22739> __spelltext_data { {
+static const std::array<spelltext_data_t, 22743> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -22074,8 +22074,12 @@ static const std::array<spelltext_data_t, 22739> __spelltext_data { {
   { 449895, "$@spelldesc449563", "Haste increased by $w1.", 0 },
   { 449912, "Void Blast increases the duration of Entropic Rift by $?c1[${$s1/2}.1][$s3] sec, up to a maximum of $s2 sec.", 0, 0 },
   { 449946, "$@spelldesc446209", "Stay tuned for further instructions! You have a feeling you'll know what to do after collecting $u of them.", 0 },
+  { 449947, "$@spelldesc446209", "The voices seem to want you to jump! $u times should do it.", 0 },
+  { 449948, "$@spelldesc446209", 0, 0 },
+  { 449952, "$@spelldesc446209", 0, 0 },
   { 449954, "$@spelldesc446209", "$pri increased by $w1.", 0 },
   { 450004, "$@spelldesc454016", "Afflicted by a Magi's Spark. Explodes upon taking damage from Arcane Missiles, Arcane Barrage, and Arcane Blast.", 0 },
+  { 450025, "$@spelldesc446209", "Drawing power from an unknown source. Keep going! $u charges seems like it might be enough. \r\n\r\nDamage taken from area-of-effect attacks reduced by $w2%.", 0 },
   { 450138, "Summoning an Entropic Rift $?c1[empowers your next Power Word: Shield to be $s1% more effective][grants you $s3 $Lcharge:charges; of Mind Devourer].", 0, 0 },
   { 450140, "$@spelldesc450138", "Next Power Word: Shield is $s1% stronger.", 0 },
   { 450150, "$@spelldesc450138", "Next Devouring Plague is $s1% stronger.", 0 },

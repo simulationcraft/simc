@@ -747,6 +747,36 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
   effect.custom_buff = halt;
 }
 
+// 446209 driver
+// 449946 counter
+// 449947 jump task
+// 449948 unknown, counter related?
+// 449952 unknown, task?
+// 449954 buff
+// 449966 unknown, counter related?
+// 450025 unknown, task?
+// TODO: retest/redo everything
+// TODO: add options to control task completion, placeholder 4-8s delay
+void malfunctioning_ethereum_module( special_effect_t& effect )
+{
+  if ( create_fallback_buffs( effect, { "cryptic_instructions" } ) )
+    return;
+
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 449954 ) )
+    ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  auto counter = create_buff<buff_t>( effect.player, effect.trigger() )
+    ->set_expire_at_max_stack( true )
+    // TODO: add options to control task completion, placeholder 4-8s delay
+    ->set_expire_callback( [ buff ]( buff_t*, int, timespan_t ) {
+      make_event( *buff->sim, buff->rng().range( 4_s, 8_s ), [ buff ] { buff->trigger(); } );
+    } );
+
+  effect.custom_buff = counter;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -927,7 +957,7 @@ void register_special_effects()
   register_special_effect( 444959, items::spymasters_web, true );
   register_special_effect( 444958, DISABLED_EFFECT );  // spymaster's web
   register_special_effect( 444067, items::void_reapers_chime );
-  register_special_effect( 445619, items::aberrant_spellforge );
+  register_special_effect( 445619, items::aberrant_spellforge, true );
   register_special_effect( 445593, DISABLED_EFFECT );  // aberrant spellforge
   register_special_effect( 447970, items::sikrans_shadow_arsenal );
   register_special_effect( 445203, DISABLED_EFFECT );  // sikran's shadow arsenal
@@ -936,6 +966,7 @@ void register_special_effects()
   register_special_effect( 444264, items::foul_behemoths_chelicera );
   register_special_effect( 445560, items::ovinaxs_mercurial_egg );
   register_special_effect( 445066, DISABLED_EFFECT );  // ovinax's mercurial egg
+  register_special_effect( 446209, items::malfunctioning_ethereum_module, true );
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
