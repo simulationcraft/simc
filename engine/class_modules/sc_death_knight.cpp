@@ -3485,6 +3485,25 @@ struct magus_pet_t : public death_knight_pet_t
       background = true;
     }
 
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      pet_spell_t::available_targets( tl );
+
+      for ( auto& t : tl )
+      {
+        // Give magus an incredibly low chance to hit any target with Ruptured Viscera
+        if ( rng().roll( 0.95 ) )
+        {
+          auto it = range::find( tl, target );
+          if ( it != tl.end() )
+          {
+            tl.erase( it );
+          }
+        }
+      }
+      return tl.size();
+    }
+
     void impact( action_state_t* s ) override
     {
       pet_spell_t::impact( s );
@@ -4733,9 +4752,11 @@ struct melee_t : public death_knight_melee_attack_t
 {
   int sync_weapons;
   bool first;
+  int autos_since_last_proc;
+  double sd_chance;
 
   melee_t( const char* name, death_knight_t* p, int sw )
-    : death_knight_melee_attack_t( name, p ), sync_weapons( sw ), first( true )
+    : death_knight_melee_attack_t( name, p ), sync_weapons( sw ), first( true ), autos_since_last_proc( 0 ), sd_chance( 0 )
   {
     school                    = SCHOOL_PHYSICAL;
     may_glance                = true;
@@ -4746,6 +4767,14 @@ struct melee_t : public death_knight_melee_attack_t
     trigger_gcd               = 0_ms;
     special                   = false;
     weapon_multiplier         = 1.0;
+    if ( p->talent.unholy.sudden_doom.ok() )
+    {
+      sd_chance = 0.0847;
+      if ( p->talent.unholy.harbinger_of_doom.ok() )
+      {
+        sd_chance *= 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent();
+      }
+    }
 
     // Dual wielders have a -19% chance to hit on melee attacks
     if ( p->dual_wield() )
@@ -4801,9 +4830,17 @@ struct melee_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( s->result ) )
     {
-      if ( p()->specialization() == DEATH_KNIGHT_UNHOLY )
+      if ( p()->specialization() == DEATH_KNIGHT_UNHOLY && p()->talent.unholy.sudden_doom.ok() )
       {
-        p()->buffs.sudden_doom->trigger();
+        if( rng().roll( sd_chance * ( autos_since_last_proc + 1 ) ) )
+        {
+          p()->buffs.sudden_doom->trigger();
+          autos_since_last_proc = 0;
+        }
+        else
+        {
+          autos_since_last_proc++;
+        }
       }
 
       if ( p()->talent.frost.killing_machine.ok() && s->result == RESULT_CRIT )
@@ -12034,7 +12071,6 @@ void death_knight_t::create_buffs()
     buffs.runic_corruption = new runic_corruption_buff_t( this );
 
     buffs.sudden_doom = make_buff( this, "sudden_doom", talent.unholy.sudden_doom->effectN( 1 ).trigger() )
-                            ->set_chance( talent.unholy.sudden_doom->effectN( 2 ).percent() )
                             ->set_trigger_spell( talent.unholy.sudden_doom )
                             ->apply_affecting_aura( talent.unholy.harbinger_of_doom );
 
