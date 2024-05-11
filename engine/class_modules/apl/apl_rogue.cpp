@@ -221,8 +221,8 @@ void outlaw( player_t* p )
   cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)|stealthed.all&talent.crackshot&talent.improved_adrenaline_rush&combo_points<=2", "Cooldowns  Use Adrenaline Rush if it is not active and the finisher condition is not met, but Crackshot builds can refresh it with 2cp or lower inside stealth" );
   cds->add_action( "blade_flurry,if=spell_targets>=2-(talent.underhanded_upper_hand&!stealthed.all&buff.adrenaline_rush.up)&buff.blade_flurry.remains<gcd", "Maintain Blade Flurry on 2+ targets, and on single target with Underhanded during Adrenaline Rush" );
   cds->add_action( "blade_flurry,if=talent.deft_maneuvers&!variable.finish_condition&(spell_targets>=3&combo_points.deficit=spell_targets+buff.broadside.up|spell_targets>=5)", "With Deft Maneuvers, use Blade Flurry on cooldown at 5+ targets, or at 3-4 targets if missing combo points equal to the amount given" );
-  cds->add_action( "roll_the_bones,if=variable.rtb_reroll|rtb_buffs=0|rtb_buffs.max_remains<=2&set_bonus.tier31_4pc|rtb_buffs.max_remains<=7&(cooldown.shadow_dance.ready|cooldown.vanish.ready)", "Use Roll the Bones if reroll conditions are met, or with no buffs, or 2s before buffs expire with T31, or 7s before buffs expire with Vanish/Dance ready" );
-  cds->add_action( "keep_it_rolling,if=!variable.rtb_reroll&rtb_buffs>=3+set_bonus.tier31_4pc&(buff.shadow_dance.down|rtb_buffs>=6)", "Use Keep it Rolling with at least 3 buffs (4 with T31)" );
+  cds->add_action( "roll_the_bones,if=variable.rtb_reroll|rtb_buffs=0|rtb_buffs.max_remains<=2&set_bonus.tier31_4pc|rtb_buffs.max_remains<=7&(cooldown.vanish.ready)", "Use Roll the Bones if reroll conditions are met, or with no buffs, or 2s before buffs expire with T31, or 7s before buffs expire with Vanish/Dance ready" );
+  cds->add_action( "keep_it_rolling,if=!variable.rtb_reroll&rtb_buffs>=3+set_bonus.tier31_4pc&(rtb_buffs>=6)", "Use Keep it Rolling with at least 3 buffs (4 with T31)" );
   cds->add_action( "ghostly_strike,if=effective_combo_points<cp_max_spend" );
   cds->add_action( "sepsis,if=talent.crackshot&cooldown.between_the_eyes.ready&variable.finish_condition&!stealthed.all|!talent.crackshot&target.time_to_die>11&buff.between_the_eyes.up|fight_remains<11", "Use Sepsis to trigger Crackshot or if the target will survive its DoT" );
   cds->add_action( "call_action_list,name=stealth_cds,if=!stealthed.all&(!talent.crackshot|cooldown.between_the_eyes.ready)", "Crackshot builds use stealth cooldowns if Between the Eyes is ready" );
@@ -242,7 +242,7 @@ void outlaw( player_t* p )
   cds->add_action( "use_items,slots=trinket2,if=buff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20" );
 
   finish->add_action( "between_the_eyes,if=!talent.crackshot&(buff.between_the_eyes.remains<4|talent.improved_between_the_eyes|talent.greenskins_wickers|set_bonus.tier30_4pc)&!buff.greenskins_wickers.up", "Finishers  Use Between the Eyes to keep the crit buff up, but on cooldown if Improved/Greenskins/T30, and avoid overriding Greenskins" );
-  finish->add_action( "between_the_eyes,if=talent.crackshot&cooldown.vanish.remains>45&cooldown.shadow_dance.remains>12", "Crackshot builds use Between the Eyes outside of Stealth if Vanish or Dance will not come off cooldown within the next cast" );
+  finish->add_action( "between_the_eyes,if=talent.crackshot&cooldown.vanish.remains>45", "Crackshot builds use Between the Eyes outside of Stealth if Vanish or Dance will not come off cooldown within the next cast" );
   finish->add_action( "slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&refreshable" );
   finish->add_action( "killing_spree,if=debuff.ghostly_strike.up|!talent.ghostly_strike" );
   finish->add_action( "cold_blood" );
@@ -256,14 +256,10 @@ void outlaw( player_t* p )
   stealth->add_action( "pistol_shot,if=talent.crackshot&talent.fan_the_hammer.rank>=2&buff.opportunity.stack>=6&(buff.broadside.up&combo_points<=1|buff.greenskins_wickers.up)", "2 Fan the Hammer Crackshot builds can consume Opportunity in stealth with max stacks, Broadside, and low CPs, or with Greenskins active" );
   stealth->add_action( "ambush,if=talent.hidden_opportunity" );
 
-  stealth_cds->add_action( "variable,name=vanish_opportunity_condition,value=!talent.shadow_dance&talent.fan_the_hammer.rank+talent.quick_draw+talent.audacity<talent.count_the_odds+talent.keep_it_rolling", "Stealth Cooldowns" );
+  stealth_cds->add_action( "variable,name=vanish_opportunity_condition,value=talent.fan_the_hammer.rank+talent.quick_draw+talent.audacity<talent.count_the_odds+talent.keep_it_rolling", "Stealth Cooldowns" );
   stealth_cds->add_action( "vanish,if=talent.hidden_opportunity&!talent.crackshot&!buff.audacity.up&(variable.vanish_opportunity_condition|buff.opportunity.stack<buff.opportunity.max_stack)&variable.ambush_condition", "Hidden Opportunity builds without Crackshot use Vanish if Audacity is not active and when under max Opportunity stacks" );
   stealth_cds->add_action( "vanish,if=(!talent.hidden_opportunity|talent.crackshot)&variable.finish_condition", "Crackshot builds or builds without Hidden Opportunity use Vanish at finish condition" );
-  stealth_cds->add_action( "shadow_dance,if=talent.crackshot&variable.finish_condition", "Crackshot builds use Dance at finish condition" );
-  stealth_cds->add_action( "variable,name=shadow_dance_condition,value=buff.between_the_eyes.up&(!talent.hidden_opportunity|!buff.audacity.up&(talent.fan_the_hammer.rank<2|!buff.opportunity.up))&!talent.crackshot", "Hidden Opportunity builds without Crackshot use Dance if Audacity and Opportunity are not active" );
-  stealth_cds->add_action( "shadow_dance,if=!talent.keep_it_rolling&variable.shadow_dance_condition&buff.slice_and_dice.up&(variable.finish_condition|talent.hidden_opportunity)&(!talent.hidden_opportunity|!cooldown.vanish.ready)" );
-  stealth_cds->add_action( "shadow_dance,if=talent.keep_it_rolling&variable.shadow_dance_condition&(cooldown.keep_it_rolling.remains<=30|cooldown.keep_it_rolling.remains>120&(variable.finish_condition|talent.hidden_opportunity))", "Keep it Rolling builds without Crackshot use Dance at finish condition but hold it for an upcoming Keep it Rolling" );
-  stealth_cds->add_action( "shadowmeld,if=variable.finish_condition&!cooldown.vanish.ready&!cooldown.shadow_dance.ready" );
+  stealth_cds->add_action( "shadowmeld,if=variable.finish_condition&!cooldown.vanish.ready", "Crackshot builds use Dance at finish condition" );
 }
 //outlaw_apl_end
 
