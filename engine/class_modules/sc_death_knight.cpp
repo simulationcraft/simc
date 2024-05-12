@@ -4770,13 +4770,7 @@ struct melee_t : public death_knight_melee_attack_t
     if ( p->talent.unholy.sudden_doom.ok() )
     {
       // Proc chance increase for every auto attack obtained from testng data 5/10/2024
-      sd_chance = 0.0847;
-      if ( p->talent.unholy.harbinger_of_doom.ok() )
-      {
-        // Proc chance increase for every auto attack obtained from testng data 5/12/2024
-        // Does not seem to be an easy way to math this out using the data given
-        sd_chance = 0.13788;
-      }
+      sd_chance = pseudo_random_c_from_p( p->talent.unholy.sudden_doom->effectN( 2 ).percent() * ( 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) );
     }
 
     // Dual wielders have a -19% chance to hit on melee attacks
@@ -4865,6 +4859,54 @@ struct melee_t : public death_knight_melee_attack_t
         trigger_bloodworm();
       }
     }
+  }
+
+  double psuedo_random_p_from_c( double c )
+  {
+    double p_proc_on_n     = 0;
+    double p_proc_by_n     = 0;
+    double sum_n_p_proc_on_n = 0;
+
+    int maxFails = (int)std::ceil( 1 / c );
+    for ( int N = 1; N <= maxFails; ++N )
+    {
+      p_proc_on_n = std::min( 1.0, N * c ) * ( 1 - p_proc_by_n );
+      p_proc_by_n += p_proc_on_n;
+      sum_n_p_proc_on_n += N * p_proc_on_n;
+    }
+
+    return ( 1 / sum_n_p_proc_on_n );
+  }
+
+  double pseudo_random_c_from_p( double p )
+  {
+    double c_upper = p;
+    double c_lower = 0;
+    double c_mid;
+    double p1;
+    double p2 = 1;
+    int runs  = 1;
+    while ( true )
+    {
+      c_mid = ( c_upper + c_lower ) / 2;
+      p1   = psuedo_random_p_from_c( c_mid );
+      if ( std::abs( p1 - p2 ) <= 0 )
+        break;
+
+      if ( p1 > p )
+      {
+        c_upper = c_mid;
+      }
+      else
+      {
+        c_lower = c_mid;
+      }
+
+      p2 = p1;
+      ++runs;
+    }
+
+    return c_mid;
   }
 
   void trigger_runic_attenuation( action_state_t* s )
