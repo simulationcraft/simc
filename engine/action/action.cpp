@@ -5065,7 +5065,15 @@ timespan_t action_t::distance_targeting_travel_time( action_state_t* /*s*/ ) con
 
 void action_t::html_customsection( report::sc_html_stream& os )
 {
-  if ( affecting_list.size() )
+  auto entries = affecting_list;
+
+  for ( auto a : stats->action_list )
+    if ( a != this )
+      for ( const auto& entry : a->affecting_list )
+        if ( !range::contains( entries, entry ) )
+          entries.push_back( entry );
+
+  if ( entries.size() )
   {
     os << "<div>\n"
         << "<h4>Affected By (Passive)</h4>\n"
@@ -5080,7 +5088,7 @@ void action_t::html_customsection( report::sc_html_stream& os )
         << "<th class=\"small\">Value</th>\n"
         << "</tr>\n";
 
-    for ( auto [ eff, val ] : affecting_list )
+    for ( auto [ eff, val ] : entries )
     {
       std::string op_str;
       std::string type_str;

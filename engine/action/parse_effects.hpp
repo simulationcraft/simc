@@ -65,6 +65,12 @@ struct player_effect_t
 
   player_effect_t& set_opt_enum( uint32_t e )
   { opt_enum = e; return *this; }
+
+  bool operator==( const player_effect_t&  other )
+  {
+    return buff == other.buff && value == other.value && type == other.type && use_stacks == other.use_stacks &&
+           mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
+  }
 };
 
 // effects dependent on target state
@@ -92,6 +98,11 @@ struct target_effect_t
 
   target_effect_t& set_opt_enum( uint32_t e )
   { opt_enum = e; return *this; }
+
+  bool operator==( const target_effect_t<TD>&  other )
+  {
+    return value == other.value && mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
+  }
 };
 
 struct modify_effect_t
@@ -1108,7 +1119,7 @@ private:
   };
 
   std::array<effect_pack_t, 5> effect_modifiers;
-
+  using base_t = parse_action_effects_t<BASE, PLAYER, TD>;
 public:
   // auto parsed dynamic effects
   std::vector<player_effect_t> ta_multiplier_effects;
@@ -1726,28 +1737,20 @@ public:
          << "<th class=\"small\">Notes</th>\n"
          << "</tr>\n";
 
-      print_parsed_type( os, da_multiplier_effects, "Direct Damage" );
-      print_parsed_type( os, ta_multiplier_effects, "Periodic Damage" );
-      print_parsed_type( os, crit_chance_effects, "Critical Strike Chance" );
-      print_parsed_type( os, crit_damage_effects, "Critical Strike Damage" );
-      print_parsed_type( os, execute_time_effects, "Execute Time" );
-      print_parsed_type( os, gcd_effects, "GCD" );
-      print_parsed_type( os, dot_duration_effects, "Dot Duration" );
-      print_parsed_type( os, tick_time_effects, "Tick Time" );
-      print_parsed_type( os, recharge_multiplier_effects, "Recharge Multiplier" );
-
-      // assume the first non-background action in the stat's action_list is the main action and get cost effects from it
-      auto main = this;
-      auto it = range::find_if( BASE::stats->action_list, []( action_t* a ) { return !a->background; } );
-      if ( it != BASE::stats->action_list.end() )
-        main = static_cast<parse_action_effects_t<BASE, PLAYER, TD>*>( *it );
-
-      print_parsed_type( os, main->flat_cost_effects, "Flat Cost", false );
-      print_parsed_type( os, main->cost_effects, "Percent Cost" );
-
-      print_parsed_type( os, target_multiplier_effects, "Damage on Debuff" );
-      print_parsed_type( os, target_crit_chance_effects, "Crit Chance on Debuff" );
-      print_parsed_type( os, target_crit_damage_effects, "Crit Damage on Debuff" );
+      print_parsed_type( os, &base_t::da_multiplier_effects, "Direct Damage" );
+      print_parsed_type( os, &base_t::ta_multiplier_effects, "Periodic Damage" );
+      print_parsed_type( os, &base_t::crit_chance_effects, "Critical Strike Chance" );
+      print_parsed_type( os, &base_t::crit_damage_effects, "Critical Strike Damage" );
+      print_parsed_type( os, &base_t::execute_time_effects, "Execute Time" );
+      print_parsed_type( os, &base_t::gcd_effects, "GCD" );
+      print_parsed_type( os, &base_t::dot_duration_effects, "Dot Duration" );
+      print_parsed_type( os, &base_t::tick_time_effects, "Tick Time" );
+      print_parsed_type( os, &base_t::recharge_multiplier_effects, "Recharge Multiplier" );
+      print_parsed_type( os, &base_t::flat_cost_effects, "Flat Cost", false );
+      print_parsed_type( os, &base_t::cost_effects, "Percent Cost" );
+      print_parsed_type( os, &base_t::target_multiplier_effects, "Damage on Debuff" );
+      print_parsed_type( os, &base_t::target_crit_chance_effects, "Crit Chance on Debuff" );
+      print_parsed_type( os, &base_t::target_crit_damage_effects, "Crit Damage on Debuff" );
       print_parsed_custom_type( os );
 
       os << "</table>\n"
@@ -1772,9 +1775,17 @@ public:
 
   virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
 
-  template <typename V>
-  void print_parsed_type( report::sc_html_stream& os, const V& entries, std::string_view n, bool pct = true )
+  template <typename W = base_t, typename V>
+  void print_parsed_type( report::sc_html_stream& os, V vector_ptr, std::string_view n, bool pct = true )
   {
+    auto entries = std::invoke( vector_ptr, static_cast<W*>( this ) );
+
+    for ( auto a : BASE::stats->action_list )
+      if ( a != this )
+        for ( const auto& entry : std::invoke( vector_ptr, static_cast<W*>( a ) ) )
+          if ( !range::contains( entries, entry ) )
+            entries.push_back( entry );
+
     auto c = entries.size();
     if ( !c )
       return;
