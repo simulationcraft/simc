@@ -4772,7 +4772,7 @@ struct melee_t : public death_knight_melee_attack_t
       sd_chance = 0.0847;
       if ( p->talent.unholy.harbinger_of_doom.ok() )
       {
-        sd_chance *= 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent();
+        sd_chance *= 1 + ( p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() * 2 );
       }
     }
 
