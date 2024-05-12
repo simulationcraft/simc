@@ -447,6 +447,7 @@ public:
 
   double gift_of_the_ox_proc_chance;
 
+  int efficient_training_energy;
   int flurry_strikes_energy;
   double flurry_strikes_damage;
 
