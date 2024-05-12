@@ -2826,6 +2826,7 @@ struct press_the_advantage_t : public monk_spell_t
 struct melee_t : public monk_melee_attack_t
 {
   int sync_weapons;
+  bool dual_threat_enabled = true;  // Dual Threat requires one succesful melee inbetween casts
   bool first;
   bool oh;
   melee_t( util::string_view name, monk_t *player, int sw, bool is_oh = false )
@@ -2895,8 +2896,11 @@ struct melee_t : public monk_melee_attack_t
     if ( first )
       first = false;
 
-    if ( p()->rng().roll( p()->talent.windwalker.dual_threat->effectN( 1 ).percent() ) )
+    if ( dual_threat_enabled && p()->rng().roll( p()->talent.windwalker.dual_threat->effectN( 1 ).percent() ) )
+    {
       p()->dual_threat_kick->execute();
+      dual_threat_enabled = false;
+    }
     else
       monk_melee_attack_t::execute();
   }
@@ -2925,6 +2929,8 @@ struct melee_t : public monk_melee_attack_t
         p()->passive_actions.thunderfist->target = s->target;
         p()->passive_actions.thunderfist->schedule_execute();
       }
+
+      dual_threat_enabled = true;
     }
   }
 };
