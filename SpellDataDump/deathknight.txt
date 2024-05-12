@@ -13306,6 +13306,7 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword
 Cooldown         : 6 seconds
+Labels           : 3236
 Stance Mask      : 0x01000000
 Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #5, #7, #8), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2)
 Family Flags     : 43, 78, 90, 120, 127
@@ -13336,6 +13337,7 @@ Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
 Range            : 100 yards
+Labels           : 3236
 Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #5, #7, #8), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2)
 Family Flags     : 43, 78, 92, 120
 Attributes       : ........ ........ .....x.. x..x....   ...x.x.x ........ ........ ........ 
@@ -18417,6 +18419,7 @@ Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
 Range            : 100 yards
+Labels           : 3236
 Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #7, #8), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2)
 Family Flags     : 43
 Attributes       : ........ ........ ........ x..x....   .....x.x ........ ........ ........ 
@@ -18439,7 +18442,8 @@ Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 3305: Painful Death (443564 effect#4)
+Labels           : 3236
+                 : 3305: Painful Death (443564 effect#4)
 Attributes       : ........ ........ ........ x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -18536,6 +18540,7 @@ Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
 Range            : 100 yards
+Labels           : 3236
 Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #7, #8), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2)
 Family Flags     : 43
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -18561,6 +18566,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Labels           : 3243: Swift End (443560 effect#1), Swift End (443560 effect#2), Painful Death (443564 effect#1)
+3236
 Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #7, #8), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18908,6 +18914,52 @@ Effects          :
                    Affected Spells: Blood Plague (55078), Frost Fever (55095)
                    Family Flags: 57, 58
 Description      : $?a137008[Blood Plague][Frost Fever] deals its damage in half the duration and the second scythe of Exterminate applies $?a137008[Blood Plague][Frost Fever].
+
+Name             : Wave of Souls (id=442664) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadowfrost
+Spell Type       : Magic
+Range            : 40 yards
+Duration         : 3 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1138025)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(87)
+#2 (id=1138026)  : Create Area Trigger (179)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 32776 | Target: Unknown(87)
+Description      : $@spelldesc439851
+
+Name             : Wave of Souls (id=443404) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadowfrost
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 15 seconds
+Stacks           : 2 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ x..x....   .....x.x ........ ........ ........ 
+                 : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
+                 : ........ ........ ........ ........   ...x.... ........ .xx..... ..x..... 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ....x... ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   xx...... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+Effects          :
+#1 (id=1139275)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 3236 (Label) | Target: Enemy (6)
+                   Affected Spells (Label): Soul Reaper (343294), Soul Reaper (343295), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Soul Reaper (448229)
+Description      : $@spelldesc434711
+Tooltip          : Taking $w1% increased Shadowfrost damage from $@auracaster.
 
 Name             : Bind in Darkness (id=443532) [Spell Family (15)] 
 Class            : Death Knight
@@ -19876,6 +19928,7 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword
 Cooldown         : 6 seconds
+Labels           : 3236
 Stance Mask      : 0x01000000
 Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #5, #7, #8), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2)
 Family Flags     : 43, 78, 90, 120, 127

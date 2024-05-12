@@ -1881,6 +1881,8 @@ class SpellDataGenerator(DataGenerator):
           ( 434574, 0 ), # Blood Cleave
           # Deathbringer
           ( 439594, 0 ), # Reapers Mark
+          ( 443404, 0 ), # Wave of Souls debuff
+          ( 442664, 0 ), # Wave of Souls area dummy
         ),
 
         # Shaman:

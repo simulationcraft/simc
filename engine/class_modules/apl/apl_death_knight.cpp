@@ -246,8 +246,8 @@ std::string temporary_enchant( const player_t* p )
     aoe->add_action( "horn_of_winter,if=rune<2&runic_power.deficit>25" );
     aoe->add_action( "arcane_torrent,if=runic_power.deficit>25" );
 
-    breath->add_action( "howling_blast,if=variable.rime_buffs&runic_power>(45-((talent.rage_of_the_frozen_champion*8)+(5*buff.rune_of_hysteria.up)))", "Breath Active Rotation" );
-    breath->add_action( "horn_of_winter,if=rune<2&runic_power.deficit>25+(5*buff.rune_of_hysteria.up)" );
+    breath->add_action( "howling_blast,if=variable.rime_buffs&runic_power>(45-(talent.rage_of_the_frozen_champion*8))", "Breath Active Rotation" );
+    breath->add_action( "horn_of_winter,if=rune<2&runic_power.deficit>25" );
     breath->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority" );
     breath->add_action( "frostscythe,if=variable.frostscythe_priority&(buff.killing_machine.react|runic_power>45)" );
     breath->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>40|buff.pillar_of_frost.up" );
@@ -329,12 +329,12 @@ std::string temporary_enchant( const player_t* p )
     racials->add_action( "bag_of_tricks,if=talent.obliteration&!buff.pillar_of_frost.up&buff.unholy_strength.up" );
     racials->add_action( "bag_of_tricks,if=!talent.obliteration&buff.pillar_of_frost.up&(buff.unholy_strength.up&buff.unholy_strength.remains<gcd*3|buff.pillar_of_frost.remains<gcd*3)" );
 
-    single_target->add_action( "frost_strike,if=buff.killing_machine.react<2&runic_power.deficit<20+(4*buff.rune_of_hysteria.up)&!variable.2h_check", "Single Target Rotation" );
+    single_target->add_action( "frost_strike,if=buff.killing_machine.react<2&runic_power.deficit<20&!variable.2h_check", "Single Target Rotation" );
     single_target->add_action( "frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority" );
     single_target->add_action( "obliterate,if=buff.killing_machine.react" );
     single_target->add_action( "howling_blast,if=buff.rime.react&talent.icebreaker.rank=2" );
-    single_target->add_action( "horn_of_winter,if=rune<4&runic_power.deficit>25+(5*buff.rune_of_hysteria.up)&talent.obliteration&talent.breath_of_sindragosa" );
-    single_target->add_action( "frost_strike,if=!variable.pooling_runic_power&(variable.rp_buffs|runic_power.deficit<25+(5*buff.rune_of_hysteria.up)|debuff.razorice.stack=5&talent.shattering_blade)" );
+    single_target->add_action( "horn_of_winter,if=rune<4&runic_power.deficit>25&talent.obliteration&talent.breath_of_sindragosa" );
+    single_target->add_action( "frost_strike,if=!variable.pooling_runic_power&(variable.rp_buffs|runic_power.deficit<25|debuff.razorice.stack=5&talent.shattering_blade)" );
     single_target->add_action( "howling_blast,if=variable.rime_buffs" );
     single_target->add_action( "glacial_advance,if=!variable.pooling_runic_power&!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<gcd*3)" );
     single_target->add_action( "obliterate,if=!variable.pooling_runes" );

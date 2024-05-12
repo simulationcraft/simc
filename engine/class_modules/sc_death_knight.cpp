@@ -610,6 +610,7 @@ struct death_knight_td_t : public actor_target_data_t
 
     // Deathbringer
     buff_t* reapers_mark;
+    buff_t* wave_of_souls;
   } debuff;
 
   death_knight_td_t( player_t* target, death_knight_t* p );
@@ -827,6 +828,7 @@ public:
 
     // Deathbringer
     action_t* reapers_mark_explosion;
+    action_t* wave_of_souls;
 
     // Frost
     action_t* breath_of_sindragosa_tick;
@@ -1186,8 +1188,8 @@ public:
     // Deathbringer
     struct
     {
-      player_talent_t reapers_mark;      // NYI
-      player_talent_t wave_of_souls;     // NYI
+      player_talent_t reapers_mark;      
+      player_talent_t wave_of_souls;     
       player_talent_t blood_fever;       // NYI
       player_talent_t bind_in_darkness;  // NYI
       player_talent_t soul_rupture;      // NYI
@@ -1353,6 +1355,8 @@ public:
     const spell_data_t* reapers_mark_debuff;
     const spell_data_t* reapers_mark_explosion;
     const spell_data_t* grim_reaper;
+    const spell_data_t* wave_of_souls_damage;
+    const spell_data_t* wave_of_souls_debuff;
 
   } spell;
 
@@ -1827,6 +1831,9 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
               // buff->expire(); TODO: Fix This
             }
           } );
+
+  debuff.wave_of_souls =
+      make_buff( *this, "wave_of_souls_debuff", p->spell.wave_of_souls_debuff )->set_default_value_from_effect( 1 );
 }
 
 // ==========================================================================
@@ -4544,6 +4551,20 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     }
   }
 
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = action_base_t::composite_da_multiplier( state );
+    if ( p()->talent.deathbringer.wave_of_souls->ok() && this->data().id() != p()->spell.wave_of_souls_damage->id() )
+    {
+      death_knight_td_t* td = get_td( state->target );
+      if ( dbc::is_school( this->get_school(), SCHOOL_SHADOWFROST ) && td->debuff.wave_of_souls->check() )
+      {
+        m *= 1 + td->debuff.wave_of_souls->check_stack_value();
+      }
+    }
+    return m;
+  }
+
   void update_ready( timespan_t cd ) override
   {
     action_base_t::update_ready( cd );
@@ -5478,6 +5499,26 @@ private:
   int stacks;
 };
 
+struct wave_of_souls_t : public death_knight_spell_t
+{
+  wave_of_souls_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.wave_of_souls_damage )
+  {
+    background         = true;
+    cooldown->duration = 0_ms;
+    aoe                = -1;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+    if ( state->result == RESULT_CRIT )
+    {
+      get_td( state->target )->debuff.wave_of_souls->trigger();
+    }
+  }
+};
+
 struct reapers_mark_t final : public death_knight_spell_t
 {
   reapers_mark_t( death_knight_t* p, util::string_view options_str )
@@ -5485,6 +5526,7 @@ struct reapers_mark_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     add_child( p->active_spells.reapers_mark_explosion );
+    add_child( p->active_spells.wave_of_souls );
   }
 
   void impact( action_state_t* state ) override
@@ -5492,6 +5534,21 @@ struct reapers_mark_t final : public death_knight_spell_t
     death_knight_spell_t::impact( state );
     // TODO-TWW implement 10ms delay
     get_td( state->target )->debuff.reapers_mark->trigger();
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    // 5/12/24 The initial hit can have some slight delay depending on how far away the player is
+    // the return hit does not have a consistent travel time, starting with roughly a second for now
+    timespan_t first = timespan_t::from_millis( rng().range( 0, 100 ) );
+    make_event( *sim, first, [ this ]() {
+      p()->active_spells.wave_of_souls->execute();
+      timespan_t second = timespan_t::from_millis( rng().gauss( 1000, 200 ) );
+      make_repeating_event(
+          *sim, second, [ this ]() { p()->active_spells.wave_of_souls->execute(); }, 1 );
+    } );
   }
 };
 
@@ -10641,6 +10698,10 @@ void death_knight_t::create_actions()
   {
     active_spells.reapers_mark_explosion = get_action<reapers_mark_explosion_t>( "reapers_mark_explosion", this );
   }
+  if (talent.deathbringer.wave_of_souls.ok())
+  {
+    active_spells.wave_of_souls = get_action<wave_of_souls_t>( "wave_of_souls", this );
+  }
 
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
@@ -11639,6 +11700,8 @@ void death_knight_t::init_spells()
   spell.reapers_mark_debuff    = find_spell( 434765 );
   spell.reapers_mark_explosion = find_spell( 436304 );
   spell.grim_reaper            = find_spell( 443761 );
+  spell.wave_of_souls_damage   = find_spell( 435802 );
+  spell.wave_of_souls_debuff   = find_spell( 443404 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
