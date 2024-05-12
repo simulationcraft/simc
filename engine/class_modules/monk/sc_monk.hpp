@@ -598,6 +598,7 @@ public:
     propagate_const<buff_t *> hit_combo;
     propagate_const<buff_t *> invoke_xuen;
     propagate_const<buff_t *> martial_mixture;
+    propagate_const<buff_t *> memory_of_the_monastery;
     propagate_const<buff_t *> momentum_boost_damage;
     propagate_const<buff_t *> momentum_boost_speed;
     propagate_const<buff_t *> ordered_elements;
