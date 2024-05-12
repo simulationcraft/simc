@@ -882,7 +882,6 @@ public:
     // Unholy
     propagate_const<gain_t*> apocalypse;
     propagate_const<gain_t*> festering_wound;
-    propagate_const<gain_t*> feasting_strikes;
 
     // Rider of the Apocalypse
     propagate_const<gain_t*> feast_of_souls;
@@ -1307,7 +1306,6 @@ public:
     const spell_data_t* rotten_touch_debuff;
     const spell_data_t* death_rot_debuff;
     const spell_data_t* coil_of_devastation_debuff;
-    const spell_data_t* feasting_strikes_gain;
     const spell_data_t* ghoulish_frenzy_player;
     const spell_data_t* plaguebringer_buff;
     const spell_data_t* festermight_buff;
@@ -4769,7 +4767,6 @@ struct melee_t : public death_knight_melee_attack_t
     weapon_multiplier         = 1.0;
     if ( p->talent.unholy.sudden_doom.ok() )
     {
-      // Proc chance increase for every auto attack obtained from testng data 5/10/2024
       sd_chance = pseudo_random_c_from_p( p->talent.unholy.sudden_doom->effectN( 2 ).percent() * ( 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) );
     }
 
@@ -4867,12 +4864,12 @@ struct melee_t : public death_knight_melee_attack_t
     double p_proc_by_n     = 0;
     double sum_n_p_proc_on_n = 0;
 
-    int maxFails = (int)std::ceil( 1 / c );
-    for ( int N = 1; N <= maxFails; ++N )
+    int max_fails = as<int>( std::ceil( 1 / c ) );
+    for ( int n = 1; n <= max_fails; ++n )
     {
-      p_proc_on_n = std::min( 1.0, N * c ) * ( 1 - p_proc_by_n );
+      p_proc_on_n = std::min( 1.0, n * c ) * ( 1 - p_proc_by_n );
       p_proc_by_n += p_proc_on_n;
-      sum_n_p_proc_on_n += N * p_proc_on_n;
+      sum_n_p_proc_on_n += n * p_proc_on_n;
     }
 
     return ( 1 / sum_n_p_proc_on_n );
@@ -11675,7 +11672,6 @@ void death_knight_t::init_spells()
   spell.rotten_touch_debuff        = find_spell( 390276 );
   spell.death_rot_debuff           = find_spell( 377540 );
   spell.coil_of_devastation_debuff = find_spell( 390271 );
-  spell.feasting_strikes_gain      = find_spell( 390162 );
   spell.ghoulish_frenzy_player     = find_spell( 377588 );
   spell.plaguebringer_buff         = find_spell( 390178 );
   spell.festermight_buff           = find_spell( 377591 );
@@ -12182,7 +12178,6 @@ void death_knight_t::init_gains()
   // Unholy
   gains.apocalypse          = get_gain( "Apocalypse" );
   gains.festering_wound     = get_gain( "Festering Wound" );
-  gains.feasting_strikes    = get_gain( "Feasting Strikes" );
 
   // Rider of the Apocalypse
   gains.feast_of_souls           = get_gain( "A Feast of Souls" );
