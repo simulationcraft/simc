@@ -486,6 +486,18 @@ void monk_action_t<Base>::consume_resource()
           p()->active_actions.flurry_strikes->execute();
         }
       }
+
+      if ( p()->talent.shado_pan.efficient_training.ok() )
+      {
+        p()->efficient_training_energy += as<int>( ab::cost() );
+        if ( p()->efficient_training_energy >= p()->talent.shado_pan.efficient_training->effectN( 3 ).base_value() )
+        {
+          timespan_t cdr = timespan_t::from_millis( -1 * p()->talent.shado_pan.efficient_training->effectN( 4 ).base_value() );
+          p()->efficient_training_energy -= as<int>( p()->talent.shado_pan.efficient_training->effectN( 3 ).base_value() );
+          p()->cooldown.storm_earth_and_fire->adjust( cdr );
+          p()->cooldown.weapons_of_order->adjust( cdr );
+        }
+      }
     }
   }
 
@@ -6652,6 +6664,7 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     pets( this ),
     user_options( options_t() ),
     stagger( nullptr ),
+    efficient_training_energy( 0 ),
     flurry_strikes_energy( 0 ),
     flurry_strikes_damage( 0 )
 {
@@ -9676,6 +9689,8 @@ void monk_t::apply_affecting_auras( action_t &action )
         break;
     }
   }
+
+  action.apply_affecting_aura( talent.shado_pan.efficient_training );
 }
 
 void monk_t::merge( player_t &other )
