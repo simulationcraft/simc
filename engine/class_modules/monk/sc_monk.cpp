@@ -1217,6 +1217,8 @@ struct flurry_strike_t : public monk_melee_attack_t
   flurry_strike_t( monk_t *p ) : monk_melee_attack_t( "flurry_strike", p, p->passives.shado_pan.flurry_strike )
   {
     background = dual = true;
+
+    apply_affecting_aura( p->talent.shado_pan.pride_of_pandaria );
   }
 
   void impact( action_state_t *s ) override
@@ -9690,6 +9692,7 @@ void monk_t::apply_affecting_auras( action_t &action )
     }
   }
 
+  // Shado-Pan
   action.apply_affecting_aura( talent.shado_pan.efficient_training );
 }
 
