@@ -405,6 +405,9 @@ public:
     propagate_const<action_t *> chi_wave;
     propagate_const<action_t *> rushing_jade_wind;
 
+    // Shado-Pan
+    propagate_const<action_t *> flurry_strikes;
+
     // Brewmaster
     propagate_const<action_t *> breath_of_fire;
     propagate_const<action_t *> charred_passions;
@@ -443,6 +446,9 @@ public:
   double shuffle_count_secs;
 
   double gift_of_the_ox_proc_chance;
+
+  int flurry_strikes_energy;
+  double flurry_strikes_damage;
 
   //==============================================
   // Monk Movement
@@ -542,6 +548,10 @@ public:
     propagate_const<buff_t *> spinning_crane_kick;
     propagate_const<buff_t *> windwalking_driver;
     propagate_const<absorb_buff_t *> yulons_grace;
+
+    // Shadow Panda
+    propagate_const<buff_t *> against_all_odds;
+    propagate_const<buff_t *> flurry_charge;
 
     // Brewmaster
     propagate_const<buff_t *> bladed_armor;
@@ -1216,6 +1226,12 @@ public:
     struct
     {
     } general;
+
+    // Shado-Pan
+    struct
+    {
+      const spell_data_t *flurry_strike;
+    } shado_pan;
 
     // Brewmaster
     const spell_data_t *breath_of_fire_dot;
