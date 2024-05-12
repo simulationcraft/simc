@@ -4769,10 +4769,13 @@ struct melee_t : public death_knight_melee_attack_t
     weapon_multiplier         = 1.0;
     if ( p->talent.unholy.sudden_doom.ok() )
     {
+      // Proc chance increase for every auto attack obtained from testng data 5/10/2024
       sd_chance = 0.0847;
       if ( p->talent.unholy.harbinger_of_doom.ok() )
       {
-        sd_chance *= 1 + ( p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() * 2 );
+        // Proc chance increase for every auto attack obtained from testng data 5/12/2024
+        // Does not seem to be an easy way to math this out using the data given
+        sd_chance = 0.13788;
       }
     }
 
