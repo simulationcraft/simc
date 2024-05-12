@@ -1173,25 +1173,41 @@ public:
     struct
     {
     } shado_pan;
-  } talent;
+  } talents;
 
   struct
   {
     struct
     {
       const spell_data_t *aura;
+      const spell_data_t *critical_strikes;
+      const spell_data_t *two_hand_adjustment;
     } monk;
 
     struct
     {
+      const spell_data_t *aura;
+      const spell_data_t *brewmasters_balance;
+      const spell_data_t *celestial_fortune;
+      const spell_data_t *celestial_fortune_heal;
+      const spell_data_t *leather_specialization;
+
+      const spell_data_t *light_stagger;
+      const spell_data_t *moderate_stagger;
+      const spell_data_t *heavy_stagger;
     } brewmaster;
 
     struct
     {
+      const spell_data_t *aura;
+      const spell_data_t *aura_2;
+      const spell_data_t *leather_specialization;
     } mistweaver;
 
     struct
     {
+      const spell_data_t *aura;
+      const spell_data_t *leather_specialization;
     } windwalker;
   } baseline;
 
@@ -1263,10 +1279,6 @@ public:
     const spell_data_t *rushing_jade_wind;
     const spell_data_t *rushing_jade_wind_tick;
 
-    struct
-    {
-    } general;
-
     // Brewmaster
     const spell_data_t *breath_of_fire_dot;
     const spell_data_t *call_to_arms_invoke_niuzao;
@@ -1284,13 +1296,6 @@ public:
     const spell_data_t *stagger_self_damage;
     const spell_data_t *heavy_stagger;
     const spell_data_t *stomp;
-
-    struct
-    {
-      const spell_data_t *light_stagger;
-      const spell_data_t *moderate_stagger;
-      const spell_data_t *heavy_stagger;
-    } brewmaster;
 
     // Mistweaver
     const spell_data_t *renewing_mist_heal;
@@ -1405,12 +1410,11 @@ public:
   std::string default_rune() const override;
   std::string default_temporary_enchant() const override;
 
+  void parse_player_effects();
   // player_t overrides
   void apply_affecting_auras( action_t &action ) override;
   action_t *create_action( util::string_view name, util::string_view options ) override;
   double composite_base_armor_multiplier() const override;
-  double composite_melee_crit_chance() const override;
-  double composite_spell_crit_chance() const override;
   double resource_regen_per_second( resource_e ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
   double composite_melee_expertise( const weapon_t *weapon ) const override;
@@ -1438,6 +1442,7 @@ public:
   void init_rng() override;
   void init_special_effects() override;
   void init_special_effect( special_effect_t &effect ) override;
+  void init_finished() override;
   void reset() override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   void create_options() override;
