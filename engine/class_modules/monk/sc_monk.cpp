@@ -1193,10 +1193,10 @@ struct tiger_palm_t : public monk_melee_attack_t
     sef_ability      = actions::sef_ability_e::SEF_TIGER_PALM;
     cast_during_sck  = player->specialization() != MONK_WINDWALKER;
 
-    if ( p->specialization() == MONK_WINDWALKER )
-      energize_amount = p->spec.windwalker_monk->effectN( 4 ).base_value();
-    else
-      energize_type = action_energize::NONE;
+    // if ( p->specialization() == MONK_WINDWALKER )
+    //   energize_amount = p->spec.windwalker_monk->effectN( 4 ).base_value();
+    // else
+    energize_type = action_energize::NONE;
 
     spell_power_mod.direct = 0.0;
   }
@@ -6009,8 +6009,8 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
     set_partial_tick( true );
 
-    if ( p.specialization() == MONK_BREWMASTER )
-      set_duration_multiplier( 1 + p.spec.brewmaster_monk->effectN( 9 ).percent() );
+    // if ( p.specialization() == MONK_BREWMASTER )
+    //   set_duration_multiplier( 1 + p.spec.brewmaster_monk->effectN( 9 ).percent() );
 
     set_tick_callback( rjw_callback );
     set_tick_behavior( buff_tick_behavior::REFRESH );
@@ -6659,6 +6659,7 @@ void monk_t::parse_player_effects()
 
   // windwalker player auras
   parse_effects( baseline.windwalker.aura );
+  parse_effects( baseline.windwalker.leather_specialization );
 }
 
 // void monk_t::apply_affecting_auras( action_t &action )
@@ -7692,9 +7693,9 @@ void monk_t::init_base_stats()
   {
     case MONK_BREWMASTER:
     {
-      base_gcd += spec.brewmaster_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
-      base.attack_power_per_agility                      = 1.0;
-      base.spell_power_per_attack_power                  = spec.brewmaster_monk->effectN( 18 ).percent();
+      // base_gcd += spec.brewmaster_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
+      base.attack_power_per_agility = 1.0;
+      // base.spell_power_per_attack_power                  = spec.brewmaster_monk->effectN( 18 ).percent();
       resources.base[ RESOURCE_ENERGY ]                  = 100;
       resources.base[ RESOURCE_MANA ]                    = 0;
       resources.base[ RESOURCE_CHI ]                     = 0;
@@ -7704,8 +7705,8 @@ void monk_t::init_base_stats()
     }
     case MONK_MISTWEAVER:
     {
-      base.spell_power_per_intellect                     = 1.0;
-      base.attack_power_per_spell_power                  = spec.mistweaver_monk->effectN( 4 ).percent();
+      base.spell_power_per_intellect = 1.0;
+      // base.attack_power_per_spell_power                  = spec.mistweaver_monk->effectN( 4 ).percent();
       resources.base[ RESOURCE_ENERGY ]                  = 0;
       resources.base[ RESOURCE_CHI ]                     = 0;
       resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
@@ -7716,14 +7717,14 @@ void monk_t::init_base_stats()
       if ( base.distance < 1 )
         base.distance = 5;
       // base_gcd += spec.windwalker_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
-      base.attack_power_per_agility     = 1.0;
-      base.spell_power_per_attack_power = spec.windwalker_monk->effectN( 13 ).percent();
+      base.attack_power_per_agility = 1.0;
+      // base.spell_power_per_attack_power = spec.windwalker_monk->effectN( 13 ).percent();
       resources.base[ RESOURCE_ENERGY ] = 100;
       resources.base[ RESOURCE_ENERGY ] += talent.windwalker.ascension->effectN( 3 ).base_value();
       resources.base[ RESOURCE_ENERGY ] += talent.windwalker.inner_peace->effectN( 1 ).base_value();
       resources.base[ RESOURCE_MANA ] = 0;
       resources.base[ RESOURCE_CHI ]  = 4;
-      resources.base[ RESOURCE_CHI ] += spec.windwalker_monk->effectN( 10 ).base_value();
+      // resources.base[ RESOURCE_CHI ] += spec.windwalker_monk->effectN( 10 ).base_value();
       resources.base[ RESOURCE_CHI ] += talent.windwalker.ascension->effectN( 1 ).base_value();
       resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10.0;
       resources.base_regen_per_second[ RESOURCE_MANA ]   = 0;
@@ -8520,23 +8521,23 @@ void monk_t::reset()
 
 double monk_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  switch ( specialization() )
-  {
-    case MONK_MISTWEAVER:
-      if ( attr == ATTR_INTELLECT )
-        return spec.leather_specialization_mw->effectN( 1 ).percent();
-      break;
-    case MONK_WINDWALKER:
-      if ( attr == ATTR_AGILITY )
-        return spec.leather_specialization_ww->effectN( 1 ).percent();
-      break;
-    case MONK_BREWMASTER:
-      if ( attr == ATTR_STAMINA )
-        return spec.leather_specialization_brm->effectN( 1 ).percent();
-      break;
-    default:
-      break;
-  }
+  // switch ( specialization() )
+  // {
+  //   case MONK_MISTWEAVER:
+  //     if ( attr == ATTR_INTELLECT )
+  //       return spec.leather_specialization_mw->effectN( 1 ).percent();
+  //     break;
+  //   case MONK_WINDWALKER:
+  //     if ( attr == ATTR_AGILITY )
+  //       return spec.leather_specialization_ww->effectN( 1 ).percent();
+  //     break;
+  //   case MONK_BREWMASTER:
+  //     if ( attr == ATTR_STAMINA )
+  //       return spec.leather_specialization_brm->effectN( 1 ).percent();
+  //     break;
+  //   default:
+  //     break;
+  // }
 
   return 0.0;
 }
@@ -8774,8 +8775,8 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double cam = base_t::composite_attribute_multiplier( attr );
 
-  if ( attr == ATTR_STAMINA )
-    cam *= 1.0 + spec.brewmasters_balance->effectN( 3 ).percent();
+  // if ( attr == ATTR_STAMINA )
+  //   cam *= 1.0 + spec.brewmasters_balance->effectN( 3 ).percent();
 
   return cam;
 }
@@ -8786,7 +8787,7 @@ double monk_t::composite_melee_expertise( const weapon_t *weapon ) const
 {
   double e = base_t::composite_melee_expertise( weapon );
 
-  e += spec.brewmaster_monk->effectN( 15 ).percent();
+  // e += spec.brewmaster_monk->effectN( 15 ).percent();
 
   return e;
 }
@@ -8829,7 +8830,7 @@ double monk_t::composite_crit_avoidance() const
 {
   double c = base_t::composite_crit_avoidance();
 
-  c += spec.brewmaster_monk->effectN( 13 ).percent();
+  // c += spec.brewmaster_monk->effectN( 13 ).percent();
 
   return c;
 }
@@ -8869,7 +8870,7 @@ double monk_t::composite_base_armor_multiplier() const
 {
   double a = base_t::composite_base_armor_multiplier();
 
-  a *= 1 + spec.brewmasters_balance->effectN( 1 ).percent();
+  // a *= 1 + spec.brewmasters_balance->effectN( 1 ).percent();
 
   if ( buff.fortifying_brew->check() )
     a *= 1 + talent.general.ironshell_brew->effectN( 2 ).percent();
@@ -8926,7 +8927,7 @@ double monk_t::composite_player_pet_damage_multiplier( const action_state_t *sta
 
   multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 4 ).percent();
 
-  multiplier *= 1 + spec.brewmaster_monk->effectN( 3 ).percent();
+  // multiplier *= 1 + spec.brewmaster_monk->effectN( 3 ).percent();
 
   return multiplier;
 }
@@ -9120,7 +9121,7 @@ double monk_t::resource_regen_per_second( resource_e r ) const
   }
   else if ( r == RESOURCE_MANA )
   {
-    reg *= 1.0 + spec.mistweaver_monk->effectN( 8 ).percent();
+    // reg *= 1.0 + spec.mistweaver_monk->effectN( 8 ).percent();
   }
 
   return reg;
@@ -9291,7 +9292,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
   }
 
   // Brewmaster's Balance
-  s->result_amount *= 1.0 + spec.brewmasters_balance->effectN( 2 ).percent();
+  // s->result_amount *= 1.0 + spec.brewmasters_balance->effectN( 2 ).percent();
 
   // Calming Presence talent
   s->result_amount *= 1.0 + talent.general.calming_presence->effectN( 1 ).percent();
