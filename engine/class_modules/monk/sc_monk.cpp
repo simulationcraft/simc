@@ -492,8 +492,10 @@ void monk_action_t<Base>::consume_resource()
         p()->efficient_training_energy += as<int>( ab::cost() );
         if ( p()->efficient_training_energy >= p()->talent.shado_pan.efficient_training->effectN( 3 ).base_value() )
         {
-          timespan_t cdr = timespan_t::from_millis( -1 * p()->talent.shado_pan.efficient_training->effectN( 4 ).base_value() );
-          p()->efficient_training_energy -= as<int>( p()->talent.shado_pan.efficient_training->effectN( 3 ).base_value() );
+          timespan_t cdr =
+              timespan_t::from_millis( -1 * p()->talent.shado_pan.efficient_training->effectN( 4 ).base_value() );
+          p()->efficient_training_energy -=
+              as<int>( p()->talent.shado_pan.efficient_training->effectN( 3 ).base_value() );
           p()->cooldown.storm_earth_and_fire->adjust( cdr );
           p()->cooldown.weapons_of_order->adjust( cdr );
         }
@@ -598,6 +600,11 @@ void monk_action_t<Base>::impact( action_state_t *s )
     {
       if ( p()->talent.shado_pan.flurry_strikes->ok() )
       {
+        double damage_contribution = s->result_amount;
+
+        if ( p()->talent.shado_pan.one_versus_many->ok() && ( ab::data().id() == 117418 || ab::data().id() == 121253 ) )
+          damage_contribution *= 2.0f;
+
         p()->flurry_strikes_damage += s->result_amount;
 
         double health_threshold = p()->talent.shado_pan.flurry_strikes->effectN( 1 ).percent() * p()->max_health();
@@ -9404,7 +9411,6 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
   player_t::target_mitigation( school, dt, s );
 }
 
-
 // monk_t::assess_damage_imminent_pre_absorb ==============================
 
 void monk_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_type dtype, action_state_t *s )
@@ -9706,6 +9712,7 @@ void monk_t::apply_affecting_auras( action_t &action )
 
   // Shado-Pan
   action.apply_affecting_aura( talent.shado_pan.efficient_training );
+  action.apply_affecting_aura( talent.shado_pan.one_versus_many );
 }
 
 void monk_t::merge( player_t &other )
