@@ -671,12 +671,10 @@ public:
     buff_t* antimagic_shell_horsemen;
     buff_t* antimagic_shell_horsemen_icd;
     buff_t* antimagic_zone;
-    buff_t* amz_timing;
     propagate_const<buff_t*> icebound_fortitude;
     propagate_const<buff_t*> rune_mastery;
     propagate_const<buff_t*> unholy_ground;
     propagate_const<buff_t*> icy_talons;
-    propagate_const<buff_t*> empower_rune_weapon;
     propagate_const<buff_t*> abomination_limb;
     propagate_const<buff_t*> lichborne;  // NYI
 
@@ -705,6 +703,7 @@ public:
     propagate_const<buff_t*> cold_heart;
     propagate_const<buff_t*> gathering_storm;
     propagate_const<buff_t*> inexorable_assault;
+    propagate_const<buff_t*> empower_rune_weapon;
     propagate_const<buff_t*> killing_machine;
     buff_t* pillar_of_frost;
     propagate_const<buff_t*> remorseless_winter;
@@ -855,13 +854,11 @@ public:
     // Shared
     propagate_const<gain_t*> antimagic_shell;  // RP from magic damage absorbed
     gain_t* rune;                              // Rune regeneration
-    propagate_const<gain_t*> spirit_drain;
     propagate_const<gain_t*> coldthirst;
     propagate_const<gain_t*> start_of_combat_overflow;
 
     // Blood
     propagate_const<gain_t*> blood_tap;
-    propagate_const<gain_t*> bryndaors_might;
     propagate_const<gain_t*> drw_heart_strike;  // Blood Strike, Blizzard's hack to replicate HS rank 2 with DRW
     propagate_const<gain_t*> heartbreaker;
     propagate_const<gain_t*> tombstone;
@@ -871,7 +868,6 @@ public:
     propagate_const<gain_t*> empower_rune_weapon;
     propagate_const<gain_t*> frost_fever;  // RP generation per tick
     propagate_const<gain_t*> horn_of_winter;
-    propagate_const<gain_t*> koltiras_favor;
     propagate_const<gain_t*> frigid_executioner;  // Rune refund chance
     propagate_const<gain_t*> murderous_efficiency;
     propagate_const<gain_t*> obliteration;
@@ -1369,9 +1365,9 @@ public:
     // Gargoyle
     const spell_data_t* gargoyle_strike;
     const spell_data_t* dark_empowerment;
-    // All Will Serve skulker
+    // All Will Serve
     const spell_data_t* skulker_shot;
-    // Army of the damned magus
+    // Magus of the Dead
     const spell_data_t* frostbolt;
     const spell_data_t* shadow_bolt;
     // Commander of the Dead Talent
@@ -1488,7 +1484,6 @@ public:
     // Runic corruption triggered by
     propagate_const<proc_t*> rp_runic_corruption;  // from RP spent
     propagate_const<proc_t*> sr_runic_corruption;  // from soul reaper
-    propagate_const<proc_t*> fs_runic_corruption;  // from feasting strikes
 
     // Festering Wound applied by
     propagate_const<proc_t*> fw_festering_strike;
@@ -3539,10 +3534,7 @@ struct magus_pet_t : public death_knight_pet_t
     shadow_bolt_magus_t( magus_pet_t* p, util::string_view options_str )
       : magus_spell_t( p, "shadow_bolt", p->dk()->pet_spell.shadow_bolt, options_str )
     {
-      if ( dk()->talent.unholy.menacing_magus.ok() )
-      {
-        aoe = as<int>( dk()->talent.unholy.menacing_magus->effectN( 2 ).base_value() );
-      }
+      apply_affecting_aura( dk()->talent.unholy.menacing_magus );
     }
   };
 
@@ -11872,9 +11864,6 @@ void death_knight_t::create_buffs()
 
   buffs.antimagic_zone = new antimagic_zone_buff_t( this );
 
-  // Fake buff to trigger AMZ at a specified time
-  buffs.amz_timing = make_buff( this, "amz_timing" )->set_quiet( true )->set_duration( 5_s );
-
   buffs.icebound_fortitude = make_buff( this, "icebound_fortitude", talent.icebound_fortitude )
                                  ->set_duration( talent.icebound_fortitude->duration() )
                                  ->set_cooldown( 0_ms );  // Handled by the action
@@ -12162,7 +12151,6 @@ void death_knight_t::init_gains()
   // Shared
   gains.antimagic_shell          = get_gain( "Antimagic Shell" );
   gains.rune                     = get_gain( "Rune Regeneration" );
-  gains.spirit_drain             = get_gain( "Spirit Drain" );
   gains.start_of_combat_overflow = get_gain( "Start of Combat Overflow" );
   gains.coldthirst               = get_gain( "Coldthirst" );
 
@@ -12171,7 +12159,6 @@ void death_knight_t::init_gains()
   gains.drw_heart_strike = get_gain( "Rune Weapon Heart Strike" );
   gains.heartbreaker     = get_gain( "Heartbreaker" );
   gains.tombstone        = get_gain( "Tombstone" );
-  gains.bryndaors_might  = get_gain( "Bryndaor's Might" );
 
   // Frost
   gains.breath_of_sindragosa        = get_gain( "Breath of Sindragosa" );
@@ -12183,7 +12170,6 @@ void death_knight_t::init_gains()
   gains.rage_of_the_frozen_champion = get_gain( "Rage of the Frozen Champion" );
   gains.runic_attenuation           = get_gain( "Runic Attenuation" );
   gains.runic_empowerment           = get_gain( "Runic Empowerment" );
-  gains.koltiras_favor              = get_gain( "Koltira's Favor" );
   gains.frigid_executioner          = get_gain( "Frigid Executioner" );
 
   // Unholy
@@ -12225,7 +12211,6 @@ void death_knight_t::init_procs()
 
   procs.rp_runic_corruption = get_proc( "Runic Corruption from Runic Power Spent" );
   procs.sr_runic_corruption = get_proc( "Runic Corruption from Soul Reaper" );
-  procs.fs_runic_corruption = get_proc( "Runic Corruption from Feasting Strikes" );
 
   procs.bloodworms = get_proc( "Bloodworms" );
 
@@ -12517,15 +12502,6 @@ void death_knight_t::combat_begin()
   {
     resource_loss( RESOURCE_RUNIC_POWER, rp_overflow, gains.start_of_combat_overflow );
   }
-
-  auto add_timed_buff_triggers = [ this ]( const std::vector<timespan_t>& times, buff_t* buff,
-                                           timespan_t duration = timespan_t::min() ) {
-    if ( buff )
-      for ( auto t : times )
-        make_event( *sim, t, [ buff, duration ] { buff->trigger( duration ); } );
-  };
-
-  add_timed_buff_triggers( options.amz_use_time, buffs.amz_timing );
 }
 
 // death_knight_t::invalidate_cache =========================================
