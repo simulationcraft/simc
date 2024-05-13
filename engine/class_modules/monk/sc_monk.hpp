@@ -554,10 +554,6 @@ public:
     propagate_const<buff_t *> windwalking_driver;
     propagate_const<absorb_buff_t *> yulons_grace;
 
-    // Shadow Panda
-    propagate_const<buff_t *> against_all_odds;
-    propagate_const<buff_t *> flurry_charge;
-
     // Brewmaster
     propagate_const<buff_t *> bladed_armor;
     propagate_const<buff_t *> blackout_combo;
@@ -625,6 +621,11 @@ public:
     propagate_const<buff_t *> touch_of_karma;
     propagate_const<buff_t *> transfer_the_power;
     propagate_const<buff_t *> whirling_dragon_punch;
+
+    // Shadow Panda
+    propagate_const<buff_t *> against_all_odds;
+    propagate_const<buff_t *> flurry_charge;
+    propagate_const<buff_t *> veterans_eye;
 
     // T29 Set Bonus
     propagate_const<buff_t *> kicks_of_flowing_momentum;

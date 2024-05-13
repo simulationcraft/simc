@@ -616,6 +616,19 @@ void monk_action_t<Base>::impact( action_state_t *s )
         }
       }
 
+      if ( p()->talent.shado_pan.veterans_eye->ok() )
+      {
+        auto td = p()->get_target_data( s->target );
+        if ( td )
+        {
+          td->debuff.veterans_eye->trigger();
+          if ( td->debuff.veterans_eye->at_max_stacks() )
+          {
+            p()->buff.veterans_eye->trigger();
+            td->debuff.veterans_eye->reset();
+          }
+        }
+      }
       if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
       {
         if ( s->action->school == SCHOOL_SHADOWFLAME )
@@ -7969,18 +7982,6 @@ void monk_t::create_buffs()
 
   buff.yulons_grace = make_buff<absorb_buff_t>( this, "yulons_grace", find_spell( 414143 ) );
 
-  // Shado-Pan
-
-  buff.against_all_odds = make_buff( this, "against_all_odds", find_spell( 451061 ) )
-                              ->set_trigger_spell( talent.shado_pan.against_all_odds )
-                              ->set_default_value_from_effect( 1 )
-                              ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-                              ->add_invalidate( CACHE_AGILITY );
-
-  buff.flurry_charge = make_buff( this, "flurry_charge", find_spell( 451021 ) )
-                           ->set_trigger_spell( talent.shado_pan.flurry_strikes )
-                           ->set_default_value_from_effect( 1 );
-
   // Brewmaster
   buff.blackout_combo = make_buff( this, "blackout_combo", talent.brewmaster.blackout_combo->effectN( 5 ).trigger() );
 
@@ -8171,6 +8172,26 @@ void monk_t::create_buffs()
   buff.whirling_dragon_punch = make_buff( this, "whirling_dragon_punch", find_spell( 196742 ) )
                                    ->set_trigger_spell( talent.windwalker.whirling_dragon_punch )
                                    ->set_refresh_behavior( buff_refresh_behavior::NONE );
+
+  // Shado-Pan
+
+  buff.against_all_odds = make_buff( this, "against_all_odds", find_spell( 451061 ) )
+                              ->set_trigger_spell( talent.shado_pan.against_all_odds )
+                              ->set_default_value_from_effect( 1 )
+                              ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+                              ->add_invalidate( CACHE_AGILITY );
+
+  buff.flurry_charge = make_buff( this, "flurry_charge", find_spell( 451021 ) )
+                           ->set_trigger_spell( talent.shado_pan.flurry_strikes )
+                           ->set_default_value_from_effect( 1 );
+
+  buff.veterans_eye = make_buff( this, "veterans_eye", find_spell( 451085 ) )
+                          ->set_trigger_spell( talent.shado_pan.veterans_eye )
+                          ->set_default_value_from_effect( 1 )
+                          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                          ->add_invalidate( CACHE_ATTACK_HASTE )
+                          ->add_invalidate( CACHE_HASTE )
+                          ->add_invalidate( CACHE_SPELL_HASTE );
 
   // Tier 29 Set Bonus
   buff.kicks_of_flowing_momentum =
