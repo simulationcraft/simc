@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54605
-static const std::array<spelltext_data_t, 22738> __spelltext_data { {
+static const std::array<spelltext_data_t, 22739> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21287,6 +21287,7 @@ static const std::array<spelltext_data_t, 22738> __spelltext_data { {
   { 439929, "Healing you receive is increased by $s1%.", 0, 0 },
   { 439948, "When an enemy deals direct damage to your Anti-Magic Shell, their cast speed is reduced by $440739s1% for $440739d.", 0, 0 },
   { 440002, "Your $?a137008[Blood Plague][Frost Fever] has a chance to deal $s1% increased damage as Shadowfrost.", 0, 0 },
+  { 440005, "$@spelldesc440002", 0, 0 },
   { 440006, "$@spelldesc213634", 0, 0 },
   { 440008, "$s1% of your overhealing done onto targets with Soothing Mist is spread to $s2 nearby injured allies.\r\n\r\nSoothing Mist now follows the target of your Enveloping Mist or Vivify and its channel time is increased by ${$s3/1000} sec.", 0, 0 },
   { 440012, "$@spelldesc51886", 0, 0 },

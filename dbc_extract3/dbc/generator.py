@@ -1883,6 +1883,7 @@ class SpellDataGenerator(DataGenerator):
           ( 439594, 0 ), # Reapers Mark
           ( 443404, 0 ), # Wave of Souls debuff
           ( 442664, 0 ), # Wave of Souls area dummy
+          ( 440005, 0 ), # Blood Fever damage
         ),
 
         # Shaman:

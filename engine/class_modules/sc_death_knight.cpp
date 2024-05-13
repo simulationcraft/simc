@@ -1357,6 +1357,7 @@ public:
     const spell_data_t* grim_reaper;
     const spell_data_t* wave_of_souls_damage;
     const spell_data_t* wave_of_souls_debuff;
+    const spell_data_t* blood_fever_damage;
 
   } spell;
 
@@ -4929,6 +4930,17 @@ struct auto_attack_t final : public death_knight_melee_attack_t
 // ==========================================================================
 // Death Knight Diseases
 // ==========================================================================
+// Deathbringer
+struct blood_fever_t final : public death_knight_spell_t
+{
+  blood_fever_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.blood_fever_damage )
+  {
+    background         = true;
+    cooldown->duration = 0_ms;
+    may_crit           = false;  // TODO-TWW check if we can remove the override for may_crit in death_knight_action_t
+  }
+};
 // Common diseases code
 
 struct death_knight_disease_t : public death_knight_spell_t
@@ -4990,6 +5002,11 @@ struct blood_plague_t final : public death_knight_disease_t
       if ( p->bugs )
         base_multiplier *= 0.75;
     }
+    if ( p->talent.deathbringer.blood_fever->ok() )
+    {
+      blood_fever = get_action<blood_fever_t>( "blood_fever", p );
+      add_child( blood_fever );
+    }
   }
 
   void tick( dot_t* d ) override
@@ -5003,10 +5020,18 @@ struct blood_plague_t final : public death_knight_disease_t
           d->state->result_amount * ( 1.0 + p()->talent.blood.rapid_decomposition->effectN( 3 ).percent() );
       heal->execute();
     }
+
+    if ( blood_fever && p()->rng().roll( p()->talent.deathbringer.blood_fever->proc_chance() ) )
+    {
+      blood_fever->execute_on_target(
+          d->target,
+          d->state->result_amount * ( p()->talent.deathbringer.blood_fever->effectN( 1 ).default_value() / 100 ) );
+    }
   }
 
 private:
   propagate_const<action_t*> heal;
+  propagate_const<action_t*> blood_fever;
 };
 
 // Frost Fever =======================================================
@@ -5024,6 +5049,12 @@ struct frost_fever_t final : public death_knight_disease_t
       ap_type = attack_power_type::WEAPON_MAINHAND;
       // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
       base_multiplier *= 0.98;
+    }
+    
+    if ( p->talent.deathbringer.blood_fever->ok() )
+    {
+      blood_fever = get_action<blood_fever_t>( "blood_fever", p );
+      add_child( blood_fever );
     }
   }
 
@@ -5047,10 +5078,18 @@ struct frost_fever_t final : public death_knight_disease_t
     {
       p()->resource_gain( RESOURCE_RUNIC_POWER, rp_generation, p()->gains.frost_fever, this );
     }
+
+    if ( blood_fever && p()->rng().roll( p()->talent.deathbringer.blood_fever->proc_chance() ) )
+    {
+      blood_fever->execute_on_target(
+          d->target,
+          d->state->result_amount * ( p()->talent.deathbringer.blood_fever->effectN( 1 ).default_value() / 100 ) );
+    }
   }
 
 private:
   int rp_generation;
+  propagate_const<action_t*> blood_fever;
 };
 
 // Virulent Plague ====================================================
@@ -5471,7 +5510,7 @@ private:
 // 436304 explosion coeffs, #1 for blood #2 for frost
 // 443761 grim reaper (execute effect)
 // Reaper's Mark =========================================================
-struct reapers_mark_explosion_t : public death_knight_spell_t
+struct reapers_mark_explosion_t final : public death_knight_spell_t
 {
   reapers_mark_explosion_t( util::string_view name, death_knight_t* p )
     : death_knight_spell_t( name, p, p->spell.reapers_mark_explosion )
@@ -5499,7 +5538,7 @@ private:
   int stacks;
 };
 
-struct wave_of_souls_t : public death_knight_spell_t
+struct wave_of_souls_t final : public death_knight_spell_t
 {
   wave_of_souls_t( util::string_view name, death_knight_t* p )
     : death_knight_spell_t( name, p, p->spell.wave_of_souls_damage )
@@ -11702,6 +11741,7 @@ void death_knight_t::init_spells()
   spell.grim_reaper            = find_spell( 443761 );
   spell.wave_of_souls_damage   = find_spell( 435802 );
   spell.wave_of_souls_debuff   = find_spell( 443404 );
+  spell.blood_fever_damage     = find_spell( 440005 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
