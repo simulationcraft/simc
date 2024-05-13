@@ -643,6 +643,7 @@ public:
       player_talent_t devastator;
       player_talent_t last_stand;
 
+      player_talent_t fight_through_the_flames;
       player_talent_t improved_heroic_throw;
       player_talent_t best_served_cold;
       player_talent_t strategist;
@@ -6488,6 +6489,7 @@ void warrior_t::init_spells()
   talents.protection.devastator             = find_talent_spell( talent_tree::SPECIALIZATION, "Devastator" );
   talents.protection.last_stand             = find_talent_spell( talent_tree::SPECIALIZATION, "Last Stand" );
 
+  talents.protection.fight_through_the_flames = find_talent_spell( talent_tree::SPECIALIZATION, "Fight Through the Flames" );
   talents.protection.improved_heroic_throw  = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Heroic Throw" );
   talents.protection.best_served_cold       = find_talent_spell( talent_tree::SPECIALIZATION, "Best Served Cold" );
   talents.protection.strategist             = find_talent_spell( talent_tree::SPECIALIZATION, "Strategist" );
@@ -7715,7 +7717,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 
   if ( buff.defensive_stance->check() )
   {
-    m *= 1.0 + talents.warrior.defensive_stance->effectN( 2 ).percent();
+    m *= 1.0 + talents.warrior.defensive_stance->effectN( 2 ).percent() + spec.protection_warrior->effectN( 21 ).percent();
   }
 
   return m;
@@ -8338,7 +8340,12 @@ void warrior_t::target_mitigation( school_e school, result_amount_type dtype, ac
   {
     if ( buff.defensive_stance->up() )
     {
-      s->result_amount *= 1.0 + buff.defensive_stance->data().effectN( 1 ).percent();
+      s->result_amount *= 1.0 + buff.defensive_stance->data().effectN( 1 ).percent() + spec.protection_warrior->effectN( 20 ).percent();
+    }
+
+    if ( buff.defensive_stance->up() && talents.protection.fight_through_the_flames->ok() && talents.warrior.defensive_stance->effectN( 3 ).affected_schools() & school )
+    {
+      s->result_amount *= 1.0 + talents.protection.fight_through_the_flames->effectN( 1 ).percent();
     }
 
     warrior_td_t* td = get_target_data( s->action->player );
