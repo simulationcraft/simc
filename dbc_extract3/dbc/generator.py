@@ -2638,6 +2638,7 @@ class SpellDataGenerator(DataGenerator):
         221477, # Underlight (from Underlight Angler - Legion artifact fishing pole)
         345482, # Manifest Aethershunt (Shadowlands Conduit upgrade Maw item)
         345487, # Spatial Realignment Apparatus (Shadowlands Maw additional socket item)
+        282965, # Shadow Priest Testing Spell (DNT)
     ]
 
     _spell_families = {
