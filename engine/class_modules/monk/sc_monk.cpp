@@ -1222,7 +1222,8 @@ struct windwalking_aura_t : public monk_spell_t
 
 struct high_impact_t : public monk_spell_t
 {
-  high_impact_t( monk_t *p ) : monk_spell_t( "high_impact", p, p->find_spell( 451039 ) )
+  high_impact_t( monk_t *p )
+    : monk_spell_t( "high_impact", p, p->passives.shado_pan.high_impact->effectN( 1 ).trigger() )  // 451039
   {
     aoe        = -1;
     background = dual = true;
@@ -6634,10 +6635,6 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
           ->set_max_stack( 1 )
           ->set_default_value( 0 );
 
-  debuff.high_impact = make_buff( *this, "high_impact", p->find_spell( 451037 ) )
-                           ->set_trigger_spell( p->talent.shado_pan.high_impact )
-                           ->set_quiet( true );
-
   debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p->passives.mark_of_the_crane )
                                  ->set_trigger_spell( p->talent.windwalker.mark_of_the_crane )
                                  ->set_default_value( p->passives.cyclone_strikes->effectN( 1 ).percent() )
@@ -6654,6 +6651,16 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
   debuff.exploding_keg = make_buff( *this, "exploding_keg_debuff", p->talent.brewmaster.exploding_keg )
                              ->set_trigger_spell( p->talent.brewmaster.exploding_keg )
                              ->set_cooldown( timespan_t::zero() );
+
+  // Shado-Pan
+
+  debuff.high_impact = make_buff( *this, "high_impact", p->passives.shado_pan.high_impact )
+                           ->set_trigger_spell( p->talent.shado_pan.high_impact )
+                           ->set_quiet( true );
+
+  debuff.veterans_eye = make_buff( *this, "veterans_eye", p->find_spell( 451071 ) )
+                            ->set_trigger_spell( p->talent.shado_pan.veterans_eye )
+                            ->set_quiet( true );
 
   // Covenant Abilities
   debuff.bonedust_brew = make_buff( *this, "bonedust_brew_debuff", p->find_spell( 325216 ) )
@@ -7632,6 +7639,7 @@ void monk_t::init_spells()
 
   // Shado-Pan
   passives.shado_pan.flurry_strike = find_spell( 450617 );
+  passives.shado_pan.high_impact   = find_spell( 451037 );
 
   // Tier 29
   passives.kicks_of_flowing_momentum = find_spell( 394944 );

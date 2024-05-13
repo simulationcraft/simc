@@ -248,6 +248,7 @@ public:
 
     // Shado-Pan
     propagate_const<buff_t *> high_impact;
+    propagate_const<buff_t *> veterans_eye;
 
     // Covenant Abilities
     propagate_const<buff_t *> bonedust_brew;
@@ -1235,6 +1236,7 @@ public:
     struct
     {
       const spell_data_t *flurry_strike;
+      const spell_data_t *high_impact;
     } shado_pan;
 
     // Brewmaster
