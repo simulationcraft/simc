@@ -1274,6 +1274,24 @@ struct flurry_strike_t : public monk_melee_attack_t
 
   flurry_strike_wisdom_t *wisdom_flurry;
 
+  enum wisdom_buff_e
+  {
+    WISDOM_OF_THE_WALL_CRIT,
+    WISDOM_OF_THE_WALL_DODGE,
+    WISDOM_OF_THE_WALL_FLURRY,
+    WISDOM_OF_THE_WALL_MASTERY
+  };
+
+  std::vector<wisdom_buff_e> deck;
+
+  void reset_deck()
+  {
+    deck.push_back( WISDOM_OF_THE_WALL_CRIT );
+    deck.push_back( WISDOM_OF_THE_WALL_DODGE );
+    deck.push_back( WISDOM_OF_THE_WALL_FLURRY );
+    deck.push_back( WISDOM_OF_THE_WALL_MASTERY );
+  }
+
   flurry_strike_t( monk_t *p )
     : monk_melee_attack_t( "flurry_strike", p, p->passives.shado_pan.flurry_strike ), flurry_strikes_counter( 0 )
   {
@@ -1284,6 +1302,8 @@ struct flurry_strike_t : public monk_melee_attack_t
     wisdom_flurry = new flurry_strike_wisdom_t( p );
 
     add_child( wisdom_flurry );
+
+    reset_deck();
   }
 
   double action_multiplier() const override
@@ -1309,11 +1329,29 @@ struct flurry_strike_t : public monk_melee_attack_t
       {
         flurry_strikes_counter -= wisdom_requirement;
 
-        // TODO: Deck system, triggering all buffs for testing
-        p()->buff.wisdom_of_the_wall_crit->trigger();
-        p()->buff.wisdom_of_the_wall_dodge->trigger();
-        p()->buff.wisdom_of_the_wall_flurry->trigger();
-        p()->buff.wisdom_of_the_wall_mastery->trigger();
+        if ( deck.empty() )
+          reset_deck();
+
+        auto card = deck[ rng().range( deck.size() ) ];
+        switch ( card )
+        {
+          case WISDOM_OF_THE_WALL_CRIT:
+            p()->buff.wisdom_of_the_wall_crit->trigger();
+            break;
+          case WISDOM_OF_THE_WALL_DODGE:
+            p()->buff.wisdom_of_the_wall_dodge->trigger();
+            break;
+          case WISDOM_OF_THE_WALL_FLURRY:
+            p()->buff.wisdom_of_the_wall_flurry->trigger();
+            break;
+          case WISDOM_OF_THE_WALL_MASTERY:
+            p()->buff.wisdom_of_the_wall_mastery->trigger();
+            break;
+          default:
+            break;
+        }
+
+        deck.erase( std::remove( deck.begin(), deck.end(), card ), deck.end() );
       }
     }
 
