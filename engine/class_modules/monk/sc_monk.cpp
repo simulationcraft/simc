@@ -1220,6 +1220,16 @@ struct windwalking_aura_t : public monk_spell_t
 // Flurry Strikes
 // ==========================================================================
 
+struct high_impact_t : public monk_spell_t
+{
+  high_impact_t( monk_t *p ) : monk_spell_t( "high_impact", p, p->find_spell( 451039 ) )
+  {
+    aoe        = -1;
+    background = dual = true;
+    split_aoe_damage  = true;
+  }
+};
+
 struct flurry_strike_t : public monk_melee_attack_t
 {
   flurry_strike_t( monk_t *p ) : monk_melee_attack_t( "flurry_strike", p, p->passives.shado_pan.flurry_strike )
@@ -1247,12 +1257,24 @@ struct flurry_strike_t : public monk_melee_attack_t
 struct flurry_strikes_t : public monk_melee_attack_t
 {
   flurry_strike_t *strike;
+  high_impact_t *high_impact;
 
   flurry_strikes_t( monk_t *p ) : monk_melee_attack_t( "flurry_strikes", p, p->talent.shado_pan.flurry_strikes )
   {
-    strike = new flurry_strike_t( p );
+    strike      = new flurry_strike_t( p );
+    high_impact = new high_impact_t( p );
 
     add_child( strike );
+    add_child( high_impact );
+
+    p->register_on_kill_callback( [ this, p ]( player_t *t ) {
+      if ( p->sim->event_mgr.canceled )
+        return;
+
+      auto td = p->get_target_data( t );
+      if ( td && td->debuff.high_impact->remains() >= 0_ms )
+        high_impact->execute();
+    } );
   }
 
   void execute() override
