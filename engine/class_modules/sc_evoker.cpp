@@ -698,6 +698,18 @@ struct evoker_t : public player_t
     // Augmentation
     propagate_const<buff_t*> reactive_hide;
     propagate_const<buff_t*> time_skip;
+    // Chronowarden
+    propagate_const<buff_t*> primacy;
+    propagate_const<buff_t*> temporal_burst;
+    propagate_const<buff_t*> time_convergence_intellect;
+    propagate_const<buff_t*> time_convergence_stamina;
+    // Flameshaper
+    propagate_const<buff_t*> burning_adrenaline;
+    // Scalecommander
+    propagate_const<buff_t*> mass_disintegrate_stacks;
+    propagate_const<buff_t*> mass_disintegrate_ticks;
+    propagate_const<buff_t*> mass_eruption_stacks;
+    propagate_const<buff_t*> unrelenting_siege;
   } buff;
 
   // Specialization Spell Data
@@ -1193,6 +1205,30 @@ struct time_skip_t : public buff_t
     }
   }
 };
+
+struct temporal_burst_t : public buff_t
+{
+  std::vector<cooldown_t*> affected_cooldowns;
+
+  temporal_burst_t( evoker_t* p )
+    : buff_t( p, "temporal_burst", p->talent.chronowarden.temporal_burst_buff ), affected_cooldowns()
+  {
+    set_cooldown( 0_ms );
+    
+    set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    set_default_value_from_effect( 2 );
+
+    set_stack_change_callback( [ this ]( buff_t* /* b */, int /* old */, int /* new_ */ ) { update_cooldowns(); } );
+  }
+
+  void update_cooldowns()
+  {
+    for ( auto c : affected_cooldowns )
+    {
+      c->adjust_recharge_multiplier();
+    }
+  }
+};
 }  // namespace buffs
 
 // Base Classes =============================================================
@@ -1579,6 +1615,12 @@ public:
           p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ) );
     }
 
+    if ( p()->talent.chronowarden.temporal_burst.ok() )
+    {
+      auto& vec = static_cast<buffs::temporal_burst_t*>( p()->buff.temporal_burst.get() )->affected_cooldowns;
+      parse_cd_effects( vec, p()->buff.temporal_burst );
+    }
+
   }
 
   // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
@@ -1598,6 +1640,20 @@ public:
   void parse_effects( Ts&&... args ) { ab::parse_effects( std::forward<Ts>( args )... ); }
   template <typename... Ts>
   void parse_target_effects( Ts&&... args ) { ab::parse_target_effects( std::forward<Ts>( args )... ); }
+
+  template <typename... Ts>
+  void parse_cd_effects( std::vector<cooldown_t*>& v, buff_t* buff, Ts&&... mods )
+  {
+    size_t old = ab::recharge_multiplier_effects.size();
+
+    parse_effects( buff, std::forward<Ts>( mods )... );
+
+    if ( ab::recharge_multiplier_effects.size() > old )
+    {
+      v.push_back( ab::cooldown );
+      v.push_back( ab::internal_cooldown );
+    }
+  }
 
   double cost_flat_modifier() const override
   {
@@ -3736,6 +3792,11 @@ struct tip_the_scales_t : public evoker_spell_t
     evoker_spell_t::execute();
 
     p()->buff.tip_the_scales->trigger();
+
+    if ( p()->talent.chronowarden.temporal_burst.ok() )
+    {
+      p()->buff.temporal_burst->trigger();
+    }
   }
 };
 
@@ -5443,6 +5504,15 @@ void evoker_t::init_finished()
       } );
     } );
   }
+
+  if ( talent.chronowarden.temporal_burst.ok() )
+  {
+    auto temporal_burst = static_cast<buffs::temporal_burst_t*>( buff.temporal_burst.get() );
+    auto& vec            = temporal_burst->affected_cooldowns;
+
+    std::sort( vec.begin(), vec.end() );
+    vec.erase( std::unique( vec.begin(), vec.end() ), vec.end() );
+  }
 }
 
 role_e evoker_t::primary_role() const
@@ -6056,6 +6126,37 @@ void evoker_t::create_buffs()
   buff.momentum_shift = MBF( talent.momentum_shift.ok(), this, "momentum_shift", find_spell( 408005 ) )
                             ->set_default_value_from_effect( 1 )
                             ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
+
+  // Chronowarden
+  buff.primacy = MBF( talent.chronowarden.primacy.ok(), this, "primacy", talent.chronowarden.primacy_buff )
+                     ->set_default_value_from_effect( 1 )
+                     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+
+  buff.temporal_burst = make_buff_fallback<temporal_burst_t>( talent.chronowarden.temporal_burst.ok(), this, "temporal_burst" );
+
+  buff.time_convergence_intellect = MBF( talent.chronowarden.time_convergence.ok(), this, "time_convergence_intellect",
+                                         talent.chronowarden.time_convergence_intellect_buff );
+  buff.time_convergence_stamina   = MBF( talent.chronowarden.time_convergence.ok(), this, "time_convergence_stamina",
+                                         talent.chronowarden.time_convergence_stamina_buff );
+  // Flameshaper
+  buff.burning_adrenaline = MBF( talent.flameshaper.burning_adrenaline.ok(), this, "burning_adrenaline",
+                                 talent.flameshaper.burning_adrenaline_buff );
+  // Scalecommander
+  buff.mass_disintegrate_stacks = MBF( talent.scalecommander.mass_disintegrate.ok(), this, "mass_disintegrate_stacks",
+                                       talent.scalecommander.mass_disintegrate_buff );
+  buff.mass_disintegrate_ticks  = MBF( talent.scalecommander.mass_disintegrate.ok(), this, "mass_disintegrate_ticks",
+                                       talent.scalecommander.mass_disintegrate_buff )
+                                     ->set_max_stack( 4 );
+  buff.mass_eruption_stacks = MBF( talent.scalecommander.mass_eruption.ok(), this, "mass_eruption_stacks",
+                                   talent.scalecommander.mass_eruption_buff );
+  buff.unrelenting_siege    = MBF( talent.scalecommander.unrelenting_siege.ok(), this, "unrelenting_siege",
+                                   talent.scalecommander.unrelenting_siege_buff );
+  
+  if ( talent.scalecommander.unrelenting_siege.ok() )
+  {
+    buff.unrelenting_siege->set_max_stack( talent.scalecommander.unrelenting_siege->effectN( 2 ).base_value() /
+                                           talent.scalecommander.unrelenting_siege->effectN( 1 ).base_value() );
+  }
 }
 
 void evoker_t::create_options()
