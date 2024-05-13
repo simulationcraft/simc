@@ -405,6 +405,9 @@ public:
     propagate_const<action_t *> chi_wave;
     propagate_const<action_t *> rushing_jade_wind;
 
+    // Shado-Pan
+    propagate_const<action_t *> flurry_strikes;
+
     // Brewmaster
     propagate_const<action_t *> breath_of_fire;
     propagate_const<action_t *> charred_passions;
@@ -443,6 +446,10 @@ public:
   double shuffle_count_secs;
 
   double gift_of_the_ox_proc_chance;
+
+  int efficient_training_energy;
+  int flurry_strikes_energy;
+  double flurry_strikes_damage;
 
   //==============================================
   // Monk Movement
@@ -543,6 +550,10 @@ public:
     propagate_const<buff_t *> windwalking_driver;
     propagate_const<absorb_buff_t *> yulons_grace;
 
+    // Shadow Panda
+    propagate_const<buff_t *> against_all_odds;
+    propagate_const<buff_t *> flurry_charge;
+
     // Brewmaster
     propagate_const<buff_t *> bladed_armor;
     propagate_const<buff_t *> blackout_combo;
@@ -598,6 +609,7 @@ public:
     propagate_const<buff_t *> hit_combo;
     propagate_const<buff_t *> invoke_xuen;
     propagate_const<buff_t *> martial_mixture;
+    propagate_const<buff_t *> memory_of_the_monastery;
     propagate_const<buff_t *> momentum_boost_damage;
     propagate_const<buff_t *> momentum_boost_speed;
     propagate_const<buff_t *> ordered_elements;
@@ -1216,6 +1228,12 @@ public:
     {
     } general;
 
+    // Shado-Pan
+    struct
+    {
+      const spell_data_t *flurry_strike;
+    } shado_pan;
+
     // Brewmaster
     const spell_data_t *breath_of_fire_dot;
     const spell_data_t *call_to_arms_invoke_niuzao;
@@ -1370,6 +1388,7 @@ public:
   double composite_damage_versatility() const override;
   double composite_crit_avoidance() const override;
   double non_stacking_movement_modifier() const override;
+  double composite_player_target_armor( player_t *target ) const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_target_multiplier( player_t *target, school_e school ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t *, bool guardian ) const override;
