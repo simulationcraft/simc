@@ -1466,16 +1466,13 @@ class SpellDataGenerator(DataGenerator):
          429273, # Arcanist's Edge Damage
          429377, # Slay Damage
          # 11.0 The War Within ================================================
-         443515, 443519, 443585, # fateweaved needle
-         452037, 452057, 452059, 452060, 452061, 452062, 452063, 452064, 452065, 452066, 452067, 452068, 452069, 452070, 452071, 452072, 452073, # aberrant spellforge per-spec driver
-         452350, 451845, 451866, 452279, # aberrant spellforge silence, buff, damage, unknown
-         448621, 448643, 448669, # void reaper's chime
+         443585, # fateweaved needle
+         452279, # aberrant spellforge
+         448621, 448643, # void reaper's chime
          442267, 442280, # befouler's syringe
-         448519, 448436, # sik'ran's shadow arsenal
-         447097, 447134, # swarmlord's authority
-         446805, 446886, 446887, # foul behemoth's chelicera
-         449593, 449594, 449595, # ovinax's mercurial egg
-         449947, 449948, 449952, 449966, 450025, # malfunctioning ethereum module
+         448436, # sik'ran's shadow arsenal
+         447097, # swarmlord's authority
+         449966, # malfunctioning ethereum module
         ),
 
         # Warrior:
@@ -3230,7 +3227,6 @@ class SpellDataGenerator(DataGenerator):
                 if pattern.match(spell_data.name):
                     self.process_spell(spell_id, ids, 0, 0)
 
-
         # After normal spells have been fetched, go through all spell ids,
         # and get all the relevant aura_ids for selected spells
         more_ids = { }
@@ -3250,6 +3246,13 @@ class SpellDataGenerator(DataGenerator):
                 ids[id]['mask_class'] |= data['mask_class']
                 ids[id]['mask_race'] |= data['mask_race']
 
+        # Spells with description that is entirely in the format $@spelldesc###### are assumed to be associated
+        # with spell ###### and should be included.
+        for spell_id, spell_data in self.db('Spell').items():
+            if spell_data.desc:
+                r = re.match("\$@spelldesc([0-9]{1,6})", spell_data.desc)
+                if r and int(r.group(1)) in ids:
+                    self.process_spell(spell_id, ids, 0, 0)
 
         #print('filter done', datetime.datetime.now() - _start)
         return ids
