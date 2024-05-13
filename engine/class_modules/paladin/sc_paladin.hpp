@@ -1090,7 +1090,23 @@ public:
         else
           p()->t31_4p_prot_heal( s );
       }
-      
+      if (p()->talents.divine_inspiration->ok())
+ {
+          // No Spelldata is found, neither chance nor ppm, this is our best estimation
+          if (ab::rng().roll(0.01))
+          {
+              // Currently 100% chance to trigger sacred weapon on alpha - 05/13
+              if (ab::rng().roll(1)) {
+                  //Sacred Weapon
+                p()->active.armament[ 1 ]->execute();
+                //player()->buffs.sacred_weapon->trigger();
+              }
+              else {
+                // Holy Bulwark
+                p()->active.armament[ 0 ]->execute();
+              }
+        }
+      }
     }
   }
 

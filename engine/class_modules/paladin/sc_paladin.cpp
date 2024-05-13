@@ -3823,13 +3823,21 @@ struct paladin_module_t : public module_t
                                       ->set_cooldown( 0_ms )
                                       ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
     p->buffs.sacred_weapon = make_buff( p, "sacred_weapon", p->find_spell( 432502 ) )
-                                 ->set_stack_change_callback( []( buff_t* buff, int old, int ) {
+                                 ->set_stack_change_callback( []( buff_t* buff, int old, int )
+                                   {
                                    if ( old && buff->source )
                                    {
-                                     paladin_t* source = debug_cast<paladin_t*>( buff->source );
-                                     source->trigger_laying_down_arms();
+                                     //paladin_t* source = debug_cast<paladin_t*>( buff->source );
+                                    // source->trigger_laying_down_arms();
+                                     auto paladin = debug_cast<paladin_t*>( buff->source );
+                                     if ( paladin  )
+                                     {
+                                       paladin_t* source = debug_cast<paladin_t*>( buff->source );
+                                       source->trigger_laying_down_arms();
+                                     }
                                    }
-                                 } );
+                                   }
+    );
   }
 
   void create_actions( player_t* p ) const override
@@ -3899,7 +3907,7 @@ struct paladin_module_t : public module_t
           winter_cb->deactivate();
       } );
     }
-    if ( !p->external_buffs.sacred_weapon.empty() || p->specialization() == PALADIN_HOLY ||
+    if ( p->external_buffs.sacred_weapon.empty() || p->specialization() == PALADIN_HOLY ||
          p->specialization() == PALADIN_PROTECTION )
     {
       action_t* sacred_weapon_proc;
