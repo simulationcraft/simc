@@ -7110,7 +7110,6 @@ void monk_t::init_spells()
   // Row 6
   talent.general.quick_footed            = _CT( "Quick Footed" );
   talent.general.hasty_provocation       = _CT( "Hasty Provocation" );
-  talent.general.resonant_fists          = _CT( "Resonant Fists" );
   talent.general.ring_of_peace           = _CT( "Ring of Peace" );
   talent.general.song_of_chi_ji          = _CT( "Song of Chi-Ji" );
   talent.general.spirits_essence         = _CT( "Spirit's Essence" );
@@ -7343,7 +7342,6 @@ void monk_t::init_spells()
   // Row 10
   talent.windwalker.revolving_whirl                = _ST( "Revolving Whirl" );
   talent.windwalker.knowledge_of_the_broken_temple = _ST( "Knowledge of the Broken Temple" );
-  talent.windwalker.skytouch                       = _ST( "Skytouch" );
   talent.windwalker.fury_of_xuen                   = _ST( "Fury of Xuen" );
   talent.windwalker.path_of_jade                   = _ST( "Path of Jade" );
   talent.windwalker.singularly_focused_jade        = _ST( "Singularly Focusted Jade" );
