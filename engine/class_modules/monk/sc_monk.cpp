@@ -3011,6 +3011,7 @@ struct auto_attack_t : public monk_melee_attack_t
 
     ignore_false_positive = true;
     trigger_gcd           = timespan_t::zero();
+    background            = true;
 
     p()->main_hand_attack = new melee_t( "melee_main_hand", player, sync_weapons );
 
