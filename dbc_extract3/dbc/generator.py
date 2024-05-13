@@ -3126,9 +3126,10 @@ class SpellDataGenerator(DataGenerator):
                 continue
 
             self.process_spell(spell.id, ids, 0, 0, False)
-            if spell.id in ids:
-                mask_class = self._class_masks[data.class_id] or 0
-                ids[spell.id]['mask_class'] |= mask_class
+            # for spelldatadump readability, we no longer assign a class to azerite
+            # if spell.id in ids:
+            #    mask_class = self._class_masks[data.class_id] or 0
+            #    ids[spell.id]['mask_class'] |= mask_class
 
         # Azerite esssence spells
         for data in self.db('AzeriteItemMilestonePower').values():
