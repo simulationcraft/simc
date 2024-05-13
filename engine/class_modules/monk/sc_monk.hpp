@@ -742,7 +742,6 @@ public:
       player_talent_t yulons_grace;
       player_talent_t diffuse_magic;
       player_talent_t peace_and_prosperity;
-      player_talent_t fortifying_brew;
       player_talent_t dance_of_the_wind;
       player_talent_t dampen_harm;
       // 20 Required
@@ -1148,6 +1147,12 @@ public:
   {
     struct
     {
+      player_talent_t fortifying_brew;
+      const spell_data_t *fortifying_brew_buff;
+      player_talent_t ironshell_brew;
+      player_talent_t expeditious_fortification;
+      player_talent_t chi_proficiency;
+      player_talent_t martial_instincts;
     } monk;
 
     struct
@@ -1182,6 +1187,7 @@ public:
       const spell_data_t *aura;
       const spell_data_t *critical_strikes;
       const spell_data_t *two_hand_adjustment;
+      const spell_data_t *leather_specialization;
     } monk;
 
     struct
@@ -1190,7 +1196,6 @@ public:
       const spell_data_t *brewmasters_balance;
       const spell_data_t *celestial_fortune;
       const spell_data_t *celestial_fortune_heal;
-      const spell_data_t *leather_specialization;
 
       const spell_data_t *light_stagger;
       const spell_data_t *moderate_stagger;
@@ -1201,13 +1206,11 @@ public:
     {
       const spell_data_t *aura;
       const spell_data_t *aura_2;
-      const spell_data_t *leather_specialization;
     } mistweaver;
 
     struct
     {
       const spell_data_t *aura;
-      const spell_data_t *leather_specialization;
     } windwalker;
   } baseline;
 
@@ -1273,7 +1276,6 @@ public:
     const spell_data_t *claw_of_the_white_tiger;
     const spell_data_t *jadefire_stomp_damage;
     const spell_data_t *jadefire_stomp_ww_damage;
-    const spell_data_t *fortifying_brew;
     const spell_data_t *healing_elixir;
     const spell_data_t *mystic_touch;
     const spell_data_t *rushing_jade_wind;
@@ -1414,20 +1416,11 @@ public:
   // player_t overrides
   void apply_affecting_auras( action_t &action ) override;
   action_t *create_action( util::string_view name, util::string_view options ) override;
-  double composite_base_armor_multiplier() const override;
-  double resource_regen_per_second( resource_e ) const override;
-  double composite_attribute_multiplier( attribute_e attr ) const override;
-  double composite_melee_expertise( const weapon_t *weapon ) const override;
   double composite_melee_speed() const override;
   double composite_attack_power_multiplier() const override;
   double composite_dodge() const override;
   double composite_mastery() const override;
-  double composite_mastery_rating() const override;
-  double composite_damage_versatility() const override;
-  double composite_crit_avoidance() const override;
   double non_stacking_movement_modifier() const override;
-  double composite_player_multiplier( school_e ) const override;
-  double composite_player_target_multiplier( player_t *target, school_e school ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t *, bool guardian ) const override;
   double composite_player_target_pet_damage_multiplier( player_t *target, bool guardian ) const override;
   void create_pets() override;
