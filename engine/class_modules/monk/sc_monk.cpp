@@ -1279,10 +1279,13 @@ struct flurry_strikes_t : public monk_melee_attack_t
 
   void execute() override
   {
-    for ( int charge = 1; charge <= p()->buff.flurry_charge->stack(); charge++ )
+    if ( p()->buff.flurry_charge->up() )
     {
-      strike->set_target( p()->target );
-      strike->schedule_execute();
+      for ( int charge = 1; charge <= p()->buff.flurry_charge->stack(); charge++ )
+      {
+        strike->set_target( p()->target );
+        strike->schedule_execute();
+      }
     }
   }
 };
