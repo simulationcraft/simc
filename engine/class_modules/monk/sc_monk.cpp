@@ -605,7 +605,7 @@ void monk_action_t<Base>::impact( action_state_t *s )
         if ( p()->talent.shado_pan.one_versus_many->ok() && ( ab::data().id() == 117418 || ab::data().id() == 121253 ) )
           damage_contribution *= 2.0f;
 
-        p()->flurry_strikes_damage += s->result_amount;
+        p()->flurry_strikes_damage += damage_contribution;
 
         double health_threshold = p()->talent.shado_pan.flurry_strikes->effectN( 1 ).percent() * p()->max_health();
 
