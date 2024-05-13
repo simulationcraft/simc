@@ -5008,15 +5008,6 @@ struct death_knight_disease_t : public death_knight_spell_t
       td->debuff.brittle->trigger();
     }
   }
-
-  double composite_crit_chance() const override
-  {
-    auto cc = death_knight_spell_t::composite_crit_chance();
-
-    cc += p()->talent.unholy.foul_infections->effectN( 3 ).percent();
-
-    return cc;
-  }
 };
 
 // Blood Plague ============================================
