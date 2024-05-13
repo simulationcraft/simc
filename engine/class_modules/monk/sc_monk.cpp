@@ -1270,9 +1270,12 @@ struct flurry_strike_wisdom_t : public monk_spell_t
 
 struct flurry_strike_t : public monk_melee_attack_t
 {
+  int flurry_strikes_counter;
+
   flurry_strike_wisdom_t *wisdom_flurry;
 
-  flurry_strike_t( monk_t *p ) : monk_melee_attack_t( "flurry_strike", p, p->passives.shado_pan.flurry_strike )
+  flurry_strike_t( monk_t *p )
+    : monk_melee_attack_t( "flurry_strike", p, p->passives.shado_pan.flurry_strike ), flurry_strikes_counter( 0 )
   {
     background = dual = true;
 
@@ -1295,6 +1298,24 @@ struct flurry_strike_t : public monk_melee_attack_t
   void impact( action_state_t *s ) override
   {
     monk_melee_attack_t::impact( s );
+
+    if ( p()->talent.shado_pan.wisdom_of_the_wall.ok() )
+    {
+      flurry_strikes_counter++;
+
+      int wisdom_requirement = as<int>( p()->talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value() );
+
+      if ( flurry_strikes_counter >= wisdom_requirement )
+      {
+        flurry_strikes_counter -= wisdom_requirement;
+
+        // TODO: Deck system, triggering all buffs for testing
+        p()->buff.wisdom_of_the_wall_crit->trigger();
+        p()->buff.wisdom_of_the_wall_dodge->trigger();
+        p()->buff.wisdom_of_the_wall_flurry->trigger();
+        p()->buff.wisdom_of_the_wall_mastery->trigger();
+      }
+    }
 
     p()->buff.against_all_odds->trigger();
 
