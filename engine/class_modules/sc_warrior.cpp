@@ -1703,8 +1703,7 @@ struct rend_dot_t : public warrior_attack_t
   rend_dot_t( warrior_t* p )
     : warrior_attack_t( "rend", p, p->find_spell( 388539 ) ),
       bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
-      rage_from_bloodsurge(
-          p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
+      rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
@@ -1800,8 +1799,7 @@ struct rend_dot_prot_t : public warrior_attack_t
   rend_dot_prot_t( warrior_t* p )
     : warrior_attack_t( "rend", p, p->find_spell( 394063 ) ),
       bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
-      rage_from_bloodsurge(
-          p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
+      rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
@@ -2845,7 +2843,7 @@ struct thunderous_roar_dot_t : public warrior_attack_t
   thunderous_roar_dot_t( warrior_t* p )
     : warrior_attack_t( "thunderous_roar_dot", p, p->find_spell( 397364 ) ),
       bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
-      rage_from_bloodsurge( p->find_spell( 384362 )->effectN( 1 ).base_value() / 10.0 )
+      rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
   {
     background = tick_may_crit = true;
     //hasted_ticks               = false; //currently hasted in game - likely unintended
