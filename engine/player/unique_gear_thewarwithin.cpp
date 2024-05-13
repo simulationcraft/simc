@@ -254,7 +254,7 @@ void aberrant_spellforge( special_effect_t& effect )
   // cache data
   auto data = equip->driver();
   auto period = effect.player->find_spell( 452030 )->effectN( 2 ).period();
-  auto silence_dur = effect.player->find_spell( 452350 )->duration();
+  [[maybe_unused]] auto silence_dur = effect.player->find_spell( 452350 )->duration();
 
   // create buffs
   auto empowerment = create_buff<buff_t>( effect.player, effect.player->find_spell( 451895 ) );

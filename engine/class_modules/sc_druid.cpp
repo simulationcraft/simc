@@ -2094,7 +2094,7 @@ public:
 
   void print_parsed_custom_type( report::sc_html_stream& os ) override
   {
-    ab::print_parsed_type<base_t>( os, &base_t::persistent_multiplier_effects, "Snapshots" );
+    ab::template print_parsed_type<base_t>( os, &base_t::persistent_multiplier_effects, "Snapshots" );
   }
 };
 
