@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54605
-static const std::array<spelltext_data_t, 25377> __spelltext_data { {
+static const std::array<spelltext_data_t, 25376> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -11830,7 +11830,6 @@ static const std::array<spelltext_data_t, 25377> __spelltext_data { {
   { 282825, "$@spelldesc280163", 0, 0 },
   { 282894, "Grants the Azerite Grenade ability.", "Grants the Azerite Grenade ability.", 0 },
   { 282908, "$@spelldesc260241", 0, 0 },
-  { 282965, "$@spelldesc228264", "$?s205351[Shadow Word: Void][Mind Blast] cooldown reduced by ${$w6/1000}.1 sec.\r\nSpell damage dealt increased by $w1%.\r\nHaste increased by ${$W4}.1%.\r\nLosing ${$w3/500} Insanity every sec.", 0 },
   { 283152, "$@spelldesc81749", 0, 0 },
   { 283311, "$@spelldesc267683", "Healing for $w1 every $t1 sec. Removed when you reach full health.", 0 },
   { 283499, "A disease that deals $o1 Frost damage over $d and has a chance to grant the Death Knight ${$195617m1/10} Runic Power each time it deals damage.", "Suffering $w1 Frost damage every $t1 sec.", 0 },
