@@ -1333,6 +1333,13 @@ struct flurry_strike_t : public monk_melee_attack_t
         if ( deck.empty() )
           reset_deck();
 
+        // When a new card is drawn, expire any existing buff
+        p()->buff.wisdom_of_the_wall_crit->expire();
+        p()->buff.wisdom_of_the_wall_dodge->expire();
+        p()->buff.wisdom_of_the_wall_flurry->expire();
+        p()->buff.wisdom_of_the_wall_mastery->expire();
+
+        // Draw new card
         auto card = deck[ rng().range( deck.size() ) ];
         switch ( card )
         {
