@@ -163,7 +163,6 @@ Duration         : 8 seconds
 Cooldown         : 300 seconds
 Mechanic         : Invulneraility
 Affecting spells : Unbreakable Spirit (114154 effect#1), Uther's Counsel (378425 effect#1)
-Triggered by     : Divine Shield (317131)
 Family Flags     : 22
 Attributes       : ........ ........ x.x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ .....x.. .....x..   ........ ........ ........ ........ 
@@ -8075,8 +8074,6 @@ Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=794975)   : Learn Spell (36)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=794976)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : $@spelldesc304971
@@ -8186,8 +8183,6 @@ Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=802109)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=802110)   : Learn Spell (36)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 642 | Target: Self (1)
 Description      : $@spelldesc642
 
 Name             : Ashen Hallow (id=317221) [Spell Family (10)] 
@@ -8968,7 +8963,6 @@ Proc Chance      : 40%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Affecting spells : Equinox (355567 effects: #1, #2)
-Triggered by     : Blessing of Summer (337438)
 Family Flags     : 114
 Attributes       : ........ ...x.... x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
@@ -9116,8 +9110,6 @@ Attributes       : ........ ........ .......x x..x.x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=832878)   : Learn Spell (36)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=832879)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : $@spelldesc328204
@@ -9164,8 +9156,6 @@ Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=834809)   : Learn Spell (36)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=834810)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : $@spelldesc316958
@@ -9305,24 +9295,6 @@ Effects          :
 #1 (id=835245)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Spending Holy Power grants you $s1% haste per finisher for $337315d, stacking up to $337315u times.
-
-Name             : Blessing of Summer (desc=Night Fae) (id=337438) [Hidden] 
-Class            : Paladin
-School           : Physical
-Spell Type       : None
-Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
-                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
-Effects          :
-#1 (id=835462)   : Learn Spell (36)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 328620 | Target: Self (1)
-Description      : $@spelldesc328620
 
 Name             : The Mad Paragon (id=337594) [Spell Family (10), Passive] 
 School           : Physical

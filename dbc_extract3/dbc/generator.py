@@ -2529,10 +2529,10 @@ class SpellDataGenerator(DataGenerator):
     # http://github.com/mangos/mangos/blob/400/src/game/SharedDefines.h
     _effect_type_blacklist = [
         5,      # SPELL_EFFECT_TELEPORT_UNITS
-        #10,     # SPELL_EFFECT_HEAL
         16,     # SPELL_EFFECT_QUEST_COMPLETE
         18,     # SPELL_EFFECT_RESURRECT
         25,     # SPELL_EFFECT_WEAPONS
+        36,     # Learn spell
         39,     # SPELL_EFFECT_LANGUAGE
         47,     # SPELL_EFFECT_TRADESKILL
         50,     # SPELL_EFFECT_TRANS_DOOR
