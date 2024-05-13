@@ -580,7 +580,7 @@ public:
 
       player_talent_t raging_blow;
 
-      player_talent_t improved_enrage;
+      player_talent_t frenzied_enrage;
       player_talent_t enraged_regeneration;
       player_talent_t improved_execute;
 
@@ -6428,7 +6428,7 @@ void warrior_t::init_spells()
 
   talents.fury.raging_blow          = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Blow" );
 
-  talents.fury.improved_enrage      = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Enrage" );
+  talents.fury.frenzied_enrage      = find_talent_spell( talent_tree::SPECIALIZATION, "Frenzied Enrage" );
   talents.fury.enraged_regeneration = find_talent_spell( talent_tree::SPECIALIZATION, "Enraged Regeneration" );
   talents.fury.improved_execute     = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Execute", WARRIOR_FURY );
 
@@ -7763,9 +7763,9 @@ double warrior_t::composite_melee_haste() const
 {
   double a = player_t::composite_melee_haste();
 
-  if ( talents.fury.improved_enrage->ok() )
+  if ( talents.fury.frenzied_enrage->ok() )
   {
-  a *= 1.0 / ( 1.0 + buff.enrage->check_value() );
+    a *= 1.0 / ( 1.0 + buff.enrage->check_value() );
   }
   a *= 1.0 / ( 1.0 + buff.frenzy->check_stack_value() );
 
