@@ -569,6 +569,21 @@ struct halo_t final : public priest_spell_t
       _heal_spell_holy->execute();
       _dmg_spell_holy->execute();
     }
+
+    if ( priest().talents.archon.manifested_power.enabled() )
+    {
+      // TODO: check what happens if not talented into these
+      switch ( priest().specialization() )
+      {
+        case PRIEST_HOLY:
+          // surge_of_light NYI
+          break;
+        case PRIEST_SHADOW:
+          priest().buffs.surge_of_insanity->trigger();
+        default:
+          break;
+      }
+    }
   }
 
 private:
@@ -1569,6 +1584,19 @@ struct psychic_scream_t final : public priest_spell_t
 
     // CD reduction
     apply_affecting_aura( p.talents.psychic_voice );
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    // NOTE: This is basically a totem/pet that can currently be healed/take actions
+    // If useful consider refactoring
+    if ( priest().talents.archon.incessant_screams.enabled() )
+    {
+      make_event( sim, timespan_t::from_seconds( priest().talents.archon.incessant_screams->effectN( 1 ).base_value() ),
+                  [ this ] { priest_spell_t::execute(); } );
+    }
   }
 };
 
@@ -2594,6 +2622,8 @@ void priest_t::create_procs()
   procs.shadowy_apparition_swp         = get_proc( "Shadowy Apparition from Shadow Word: Pain" );
   procs.shadowy_apparition_dp          = get_proc( "Shadowy Apparition from Devouring Plague" );
   procs.shadowy_apparition_mb          = get_proc( "Shadowy Apparition from Mind Blast" );
+  procs.shadowy_apparition_mfi         = get_proc( "Shadowy Apparition from Mind Flay: Insanity" );
+  procs.shadowy_apparition_msi         = get_proc( "Shadowy Apparition from Mind Spike: Insanity" );
   procs.mind_devourer                  = get_proc( "Mind Devourer free Devouring Plague proc" );
   procs.void_tendril                   = get_proc( "Void Tendril proc from Idol of C'Thun" );
   procs.void_lasher                    = get_proc( "Void Lasher proc from Idol of C'Thun" );
@@ -3191,7 +3221,20 @@ void priest_t::init_spells()
   talents.shadow.echoing_void_debuff = find_spell( 373281 );
 
   // Archon Hero Talents (Holy/Shadow)
-  // TBD
+  talents.archon.power_surge           = HT( "Power Surge" );      // NYI
+  talents.archon.perfected_form        = HT( "Perfected Form" );   // NYI
+  talents.archon.resonant_energy       = HT( "Resonant Energy" );  // NYI
+  talents.archon.manifested_power      = HT( "Manifested Power" );
+  talents.archon.shock_pulse           = HT( "Shock Pulse" );  // NYI
+  talents.archon.incessant_screams     = HT( "Incessant Screams" );
+  talents.archon.word_of_supremacy     = HT( "Word of Supremacy" );      // NYI
+  talents.archon.heightened_alteration = HT( "Heightened Alteration" );  // NYI
+  talents.archon.empowered_surges      = HT( "Empowered Surges" );       // NYI
+  talents.archon.energy_compression    = HT( "Energy Compression" );     // NYI
+  talents.archon.sustained_potency     = HT( "Sustained Potency" );      // NYI
+  talents.archon.concentrated_infusion = HT( "Concentrated Infusion" );  // NYI
+  talents.archon.energy_cycle          = HT( "Energy Cycle" );           // NYI
+  talents.archon.divine_halo           = HT( "Divine Halo" );            // NYI
 
   // Oracle Hero Talents (Holy/Discipline)
   talents.oracle.premonition           = HT( "Premonition" );            // NYI
@@ -3222,7 +3265,7 @@ void priest_t::init_spells()
   talents.voidweaver.void_empowerment       = HT( "Void Empowerment" );
   talents.voidweaver.void_empowerment_buff  = find_spell( 450140 );
   talents.voidweaver.darkening_horizon      = HT( "Darkening Horizon" );
-  talents.voidweaver.depth_of_shadows       = HT( "Depth of Shadows" );  // NYI
+  talents.voidweaver.depth_of_shadows       = HT( "Depth of Shadows" );
   talents.voidweaver.voidwraith             = HT( "Voidwraith" );
   talents.voidweaver.voidwraith_spell       = find_spell( 451235 );
   talents.voidweaver.voidheart              = HT( "Voidheart" );
@@ -3230,7 +3273,7 @@ void priest_t::init_spells()
   talents.voidweaver.void_infusion          = HT( "Void Infusion" );
   talents.voidweaver.void_leech             = HT( "Void Leech" );          // NYI
   talents.voidweaver.embrace_the_shadow     = HT( "Embrace the Shadow" );  // NYI
-  talents.voidweaver.collapsing_void        = HT( "Collapsing Void" );     // TODO: Fix Devouring Plague expansion
+  talents.voidweaver.collapsing_void        = HT( "Collapsing Void" );
   talents.voidweaver.collapsing_void_damage = find_spell( 448405 );
 }
 
@@ -3392,6 +3435,9 @@ void priest_t::apply_affecting_auras_late( action_t& action )
 
   // Voidweaver Talents
   action.apply_affecting_aura( talents.voidweaver.inner_quietus );
+
+  // Archon Talents
+  action.apply_affecting_aura( talents.archon.perfected_form );
 }
 
 void priest_t::invalidate_cache( cache_e cache )
