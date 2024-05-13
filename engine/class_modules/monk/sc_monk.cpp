@@ -1286,6 +1286,7 @@ struct flurry_strike_t : public monk_melee_attack_t
 
   void reset_deck()
   {
+    deck.clear();
     deck.push_back( WISDOM_OF_THE_WALL_CRIT );
     deck.push_back( WISDOM_OF_THE_WALL_DODGE );
     deck.push_back( WISDOM_OF_THE_WALL_FLURRY );
