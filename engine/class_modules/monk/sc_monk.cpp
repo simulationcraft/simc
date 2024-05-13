@@ -6665,48 +6665,6 @@ void monk_t::parse_player_effects()
   // windwalker talent auras
 }
 
-// void monk_t::apply_affecting_auras( action_t &action )
-// {
-//   base_t::apply_affecting_auras( action );
-
-//   action.apply_affecting_aura( passives.aura_monk );
-
-//   switch ( specialization() )
-//   {
-//     case MONK_BREWMASTER:
-//       action.apply_affecting_aura( spec.brewmaster_monk );
-//       break;
-//     case MONK_WINDWALKER:
-//       action.apply_affecting_aura( spec.windwalker_monk );
-//       break;
-//     case MONK_MISTWEAVER:
-//     {
-//       action.apply_affecting_aura( spec.mistweaver_monk );
-//       action.apply_affecting_aura( spec.mistweaver_monk_2 );
-//       break;
-//     }
-//     default:
-//       assert( 0 );
-//       break;
-//   }
-
-//   if ( main_hand_weapon.group() == weapon_e::WEAPON_1H )
-//   {
-//     switch ( specialization() )
-//     {
-//       case MONK_BREWMASTER:
-//         action.apply_affecting_aura( spec.two_hand_adjustment_brm );
-//         break;
-//       case MONK_WINDWALKER:
-//         action.apply_affecting_aura( spec.two_hand_adjustment_ww );
-//         break;
-//       default:
-//         assert( 0 );
-//         break;
-//     }
-//   }
-// }
-
 void monk_t::moving()
 {
   base_t::moving();
@@ -7115,352 +7073,350 @@ void monk_t::init_spells()
   // monk_t::talent::master_of_harmony
   // monk_t::talent::shado-pan
 
-  {
-    // ========
-    // General
-    // ========
-    // Row 1
-    talent.general.soothing_mist   = _CT( "Soothing Mist" );
-    talent.general.paralysis       = _CT( "Paralysis" );
-    talent.general.rising_sun_kick = _CT( "Rising Sun Kick" );
-    // Row 2
-    talent.general.elusive_mists     = _CT( "Elusive Mists" );
-    talent.general.tigers_lust       = _CT( "Tiger's Lust" );
-    talent.general.crashing_momentum = _CT( "Crashing Momentum" );
-    talent.general.disable           = _CT( "Disable" );
-    talent.general.fast_feet         = _CT( "Fast Feet" );
-    // Row 3
-    talent.general.grace_of_the_crane = _CT( "Grace of the Crane" );
-    talent.general.bounding_agility   = _CT( "Bounding Agility" );
-    talent.general.calming_presence   = _CT( "Calming Presence" );
-    talent.general.winds_reach        = _CT( "Wind's Reach" );
-    talent.general.detox              = _CT( "Detox" );           // Brewmaster and Windwalker
-    talent.general.improved_detox     = _CT( "Improved Detox" );  // Mistweaver only
-    // Row 4
-    talent.general.vivacious_vivification = _CT( "Vivacious Vivification" );
-    talent.general.jade_walk              = _CT( "Jade Walk" );
-    talent.general.pressure_points        = _CT( "Pressure Points" );
-    talent.general.spear_hand_strike      = _CT( "Spear Hand Strike" );
-    talent.general.ancient_arts           = _CT( "Ancient Arts" );
-    // Row 5
-    talent.general.chi_wave        = _CT( "Chi Wave" );
-    talent.general.chi_burst       = _CT( "Chi Burst" );
-    talent.general.transcendence   = _CT( "Transcendence" );
-    talent.general.energy_transfer = _CT( "Energy Transfer" );
-    talent.general.celerity        = _CT( "Celerity" );
-    talent.general.chi_torpedo     = _CT( "Chi Torpedo" );
-    // Row 6
-    talent.general.quick_footed            = _CT( "Quick Footed" );
-    talent.general.hasty_provocation       = _CT( "Hasty Provocation" );
-    talent.general.resonant_fists          = _CT( "Resonant Fists" );
-    talent.general.ring_of_peace           = _CT( "Ring of Peace" );
-    talent.general.song_of_chi_ji          = _CT( "Song of Chi-Ji" );
-    talent.general.spirits_essence         = _CT( "Spirit's Essence" );
-    talent.general.tiger_tail_sweep        = _CT( "Tiger Tail Sweep" );
-    talent.general.improved_touch_of_death = _CT( "Improved Touch of Death" );
-    // Row 7
-    talent.general.vigorous_expulsion   = _CT( "Vigorous Expulsion" );
-    talent.general.yulons_grace         = _CT( "Yu'lon's Grace" );
-    talent.general.diffuse_magic        = _CT( "Diffuse Magic" );
-    talent.general.peace_and_prosperity = _CT( "Peace and Prosperity" );
-    talent.general.dance_of_the_wind    = _CT( "Dance of the Wind" );
-    talent.general.dampen_harm          = _CT( "Dampen Harm" );  // Brewmaster only
-    // Row 8
-    talent.general.save_them_all              = _CT( "Save Them All" );
-    talent.general.swift_art                  = _CT( "Swift Art" );
-    talent.general.strength_of_spirit         = _CT( "Strength of Spirit" );
-    talent.general.profound_rebuttal          = _CT( "Profound Rebuttal" );
-    talent.general.summon_black_ox_statue     = _CT( "Summon Black Ox Statue" );      // Brewmaster only
-    talent.general.summon_jade_serpent_statue = _CT( "Summon Jade Serpent Statue" );  // Mistweaver only
-    talent.general.summon_white_tiger_statue  = _CT( "Summon White Tiger Statue" );   // Windwalker only
-    talent.general.ironshell_brew             = _CT( "Ironshell Brew" );
-    talent.general.celestial_determination    = _CT( "Celestial Determination" );
-    // Row 9
-    talent.general.healing_winds = _CT( "Healing Winds" );
-    talent.general.windwalking   = _CT( "Windwalking" );
-    talent.general.bounce_back   = _CT( "Bounce Back" );
-    // Row 10
-    talent.general.lighter_than_air    = _CT( "Lighter Than Air" );
-    talent.general.flow_of_chi         = _CT( "Flow of Chi" );
-    talent.general.escape_from_reality = _CT( "Escape from Reality" );
-    talent.general.transcendence       = _CT( "Transcendence: Linked Spirits" );
-    talent.general.fatal_touch         = _CT( "Fatal Touch" );
-    talent.general.rushing_reflexes    = _CT( "Rushing Reflexes" );
-    talent.general.clash               = _CT( "Clash" );
+  // ========
+  // General
+  // ========
+  // Row 1
+  talent.general.soothing_mist   = _CT( "Soothing Mist" );
+  talent.general.paralysis       = _CT( "Paralysis" );
+  talent.general.rising_sun_kick = _CT( "Rising Sun Kick" );
+  // Row 2
+  talent.general.elusive_mists     = _CT( "Elusive Mists" );
+  talent.general.tigers_lust       = _CT( "Tiger's Lust" );
+  talent.general.crashing_momentum = _CT( "Crashing Momentum" );
+  talent.general.disable           = _CT( "Disable" );
+  talent.general.fast_feet         = _CT( "Fast Feet" );
+  // Row 3
+  talent.general.grace_of_the_crane = _CT( "Grace of the Crane" );
+  talent.general.bounding_agility   = _CT( "Bounding Agility" );
+  talent.general.calming_presence   = _CT( "Calming Presence" );
+  talent.general.winds_reach        = _CT( "Wind's Reach" );
+  talent.general.detox              = _CT( "Detox" );           // Brewmaster and Windwalker
+  talent.general.improved_detox     = _CT( "Improved Detox" );  // Mistweaver only
+  // Row 4
+  talent.general.vivacious_vivification = _CT( "Vivacious Vivification" );
+  talent.general.jade_walk              = _CT( "Jade Walk" );
+  talent.general.pressure_points        = _CT( "Pressure Points" );
+  talent.general.spear_hand_strike      = _CT( "Spear Hand Strike" );
+  talent.general.ancient_arts           = _CT( "Ancient Arts" );
+  // Row 5
+  talent.general.chi_wave        = _CT( "Chi Wave" );
+  talent.general.chi_burst       = _CT( "Chi Burst" );
+  talent.general.transcendence   = _CT( "Transcendence" );
+  talent.general.energy_transfer = _CT( "Energy Transfer" );
+  talent.general.celerity        = _CT( "Celerity" );
+  talent.general.chi_torpedo     = _CT( "Chi Torpedo" );
+  // Row 6
+  talent.general.quick_footed            = _CT( "Quick Footed" );
+  talent.general.hasty_provocation       = _CT( "Hasty Provocation" );
+  talent.general.resonant_fists          = _CT( "Resonant Fists" );
+  talent.general.ring_of_peace           = _CT( "Ring of Peace" );
+  talent.general.song_of_chi_ji          = _CT( "Song of Chi-Ji" );
+  talent.general.spirits_essence         = _CT( "Spirit's Essence" );
+  talent.general.tiger_tail_sweep        = _CT( "Tiger Tail Sweep" );
+  talent.general.improved_touch_of_death = _CT( "Improved Touch of Death" );
+  // Row 7
+  talent.general.vigorous_expulsion   = _CT( "Vigorous Expulsion" );
+  talent.general.yulons_grace         = _CT( "Yu'lon's Grace" );
+  talent.general.diffuse_magic        = _CT( "Diffuse Magic" );
+  talent.general.peace_and_prosperity = _CT( "Peace and Prosperity" );
+  talent.general.dance_of_the_wind    = _CT( "Dance of the Wind" );
+  talent.general.dampen_harm          = _CT( "Dampen Harm" );  // Brewmaster only
+  // Row 8
+  talent.general.save_them_all              = _CT( "Save Them All" );
+  talent.general.swift_art                  = _CT( "Swift Art" );
+  talent.general.strength_of_spirit         = _CT( "Strength of Spirit" );
+  talent.general.profound_rebuttal          = _CT( "Profound Rebuttal" );
+  talent.general.summon_black_ox_statue     = _CT( "Summon Black Ox Statue" );      // Brewmaster only
+  talent.general.summon_jade_serpent_statue = _CT( "Summon Jade Serpent Statue" );  // Mistweaver only
+  talent.general.summon_white_tiger_statue  = _CT( "Summon White Tiger Statue" );   // Windwalker only
+  talent.general.ironshell_brew             = _CT( "Ironshell Brew" );
+  talent.general.celestial_determination    = _CT( "Celestial Determination" );
+  // Row 9
+  talent.general.healing_winds = _CT( "Healing Winds" );
+  talent.general.windwalking   = _CT( "Windwalking" );
+  talent.general.bounce_back   = _CT( "Bounce Back" );
+  // Row 10
+  talent.general.lighter_than_air    = _CT( "Lighter Than Air" );
+  talent.general.flow_of_chi         = _CT( "Flow of Chi" );
+  talent.general.escape_from_reality = _CT( "Escape from Reality" );
+  talent.general.transcendence       = _CT( "Transcendence: Linked Spirits" );
+  talent.general.fatal_touch         = _CT( "Fatal Touch" );
+  talent.general.rushing_reflexes    = _CT( "Rushing Reflexes" );
+  talent.general.clash               = _CT( "Clash" );
 
-    // ========
-    // Brewmaster
-    // ========
+  // ========
+  // Brewmaster
+  // ========
 
-    // Row 1
-    talent.brewmaster.keg_smash = _ST( "Keg Smash" );
-    // Row 2
-    talent.brewmaster.purifying_brew = _ST( "Purifying Brew" );
-    talent.brewmaster.shuffle        = _ST( "Shuffle" );
-    // Row 3
-    talent.brewmaster.staggering_strikes = _ST( "Staggering Strikes" );
-    talent.brewmaster.gift_of_the_ox     = _ST( "Gift of the Ox" );
-    talent.brewmaster.spirit_of_the_ox   = _ST( "Spirit of the Ox " );
-    talent.brewmaster.quick_sip          = _ST( "Quick Sip" );
-    // Row 4
-    talent.brewmaster.hit_scheme        = _ST( "Hit Scheme" );
-    talent.brewmaster.healing_elixir    = _ST( "Healing Elixir" );
-    talent.brewmaster.rushing_jade_wind = _ST( "Rushing Jade Wind" );
-    talent.brewmaster.special_delivery  = _ST( "Special Delivery" );
-    // Row 5
-    talent.brewmaster.celestial_flames = _ST( "Celestial Flames" );
-    talent.brewmaster.celestial_brew   = _ST( "Celestial Brew" );
-    talent.brewmaster.graceful_exit    = _ST( "Graceful Exit" );
-    talent.brewmaster.zen_meditation   = _ST( "Zen Meditation" );
-    talent.brewmaster.clash            = _ST( "Clash" );
-    // Row 6
-    talent.brewmaster.breath_of_fire          = _STID( 12278 );
-    talent.brewmaster.improved_celestial_brew = _ST( "Improved Celestial Brew" );
-    talent.brewmaster.improved_purifying_brew = _ST( "Improved Purifying Brew" );
-    talent.brewmaster.tranquil_spirit         = _ST( "Tranquil Spirit" );
-    talent.brewmaster.gai_plins_imperial_brew = _ST( "Gai Plin's Imperial Brew" );
-    talent.brewmaster.fundamental_observation = _ST( "Fundamental Observation" );
-    talent.brewmaster.shadowboxing_treads     = _STID( 387638 );
-    talent.brewmaster.fluidity_of_motion      = _ST( "Fluidity of Motion" );
-    // Row 7
-    talent.brewmaster.scalding_brew                 = _ST( "Scalding Brew" );
-    talent.brewmaster.salsalabims_strength          = _ST( "Sal'salabim's Strength" );
-    talent.brewmaster.fortifying_brew_determination = _ST( "Fortifying Brew: Determination" );
-    talent.brewmaster.black_ox_brew                 = _ST( "Black Ox Brew" );
-    talent.brewmaster.bob_and_weave                 = _ST( "Bob and Weave" );
-    talent.brewmaster.invoke_niuzao_the_black_ox    = _ST( "Invoke Niuzao, the Black Ox" );
-    talent.brewmaster.light_brewing                 = _ST( "Light Brewing" );
-    talent.brewmaster.training_of_niuzao            = _ST( "Training of Niuzao" );
-    talent.brewmaster.pretense_of_instability       = _STID( 393516 );
-    talent.brewmaster.face_palm                     = _ST( "Face Palm" );
-    // Row 8
-    talent.brewmaster.dragonfire_brew  = _ST( "Dragonfire Brew" );
-    talent.brewmaster.charred_passions = _ST( "Charred Passions" );
-    talent.brewmaster.high_tolerance   = _ST( "High Tolerance" );
-    talent.brewmaster.walk_with_the_ox = _STID( 387219 );
-    talent.brewmaster.elusive_footwork = _ST( "Elusive Footwork" );
-    talent.brewmaster.anvil_and_stave  = _ST( "Anvil & Stave" );
-    talent.brewmaster.counterstrike    = _ST( "Counterstrike" );
-    // Row 9
-    talent.brewmaster.bonedust_brew                       = _ST( "Bonedust Brew" );
-    talent.brewmaster.improved_invoke_niuzao_the_black_ox = _ST( "Improved Invoke Niuzao, the Black Ox" );
-    talent.brewmaster.exploding_keg                       = _ST( "Exploding Keg" );
-    talent.brewmaster.blackout_combo                      = _ST( "Blackout Combo" );
-    talent.brewmaster.press_the_advantage                 = _ST( "Press the Advantage" );
-    talent.brewmaster.weapons_of_order                    = _ST( "Weapons of Order" );
-    // Row 10
-    talent.brewmaster.bountiful_brew       = _ST( "Bountiful Brew" );
-    talent.brewmaster.attenuation          = _ST( "Attenuation" );
-    talent.brewmaster.stormstouts_last_keg = _ST( "Stormstout's Last Keg" );
-    talent.brewmaster.call_to_arms         = _ST( "Call to Arms" );
-    talent.brewmaster.chi_surge            = _ST( "Chi Surge" );
+  // Row 1
+  talent.brewmaster.keg_smash = _ST( "Keg Smash" );
+  // Row 2
+  talent.brewmaster.purifying_brew = _ST( "Purifying Brew" );
+  talent.brewmaster.shuffle        = _ST( "Shuffle" );
+  // Row 3
+  talent.brewmaster.staggering_strikes = _ST( "Staggering Strikes" );
+  talent.brewmaster.gift_of_the_ox     = _ST( "Gift of the Ox" );
+  talent.brewmaster.spirit_of_the_ox   = _ST( "Spirit of the Ox " );
+  talent.brewmaster.quick_sip          = _ST( "Quick Sip" );
+  // Row 4
+  talent.brewmaster.hit_scheme        = _ST( "Hit Scheme" );
+  talent.brewmaster.healing_elixir    = _ST( "Healing Elixir" );
+  talent.brewmaster.rushing_jade_wind = _ST( "Rushing Jade Wind" );
+  talent.brewmaster.special_delivery  = _ST( "Special Delivery" );
+  // Row 5
+  talent.brewmaster.celestial_flames = _ST( "Celestial Flames" );
+  talent.brewmaster.celestial_brew   = _ST( "Celestial Brew" );
+  talent.brewmaster.graceful_exit    = _ST( "Graceful Exit" );
+  talent.brewmaster.zen_meditation   = _ST( "Zen Meditation" );
+  talent.brewmaster.clash            = _ST( "Clash" );
+  // Row 6
+  talent.brewmaster.breath_of_fire          = _STID( 12278 );
+  talent.brewmaster.improved_celestial_brew = _ST( "Improved Celestial Brew" );
+  talent.brewmaster.improved_purifying_brew = _ST( "Improved Purifying Brew" );
+  talent.brewmaster.tranquil_spirit         = _ST( "Tranquil Spirit" );
+  talent.brewmaster.gai_plins_imperial_brew = _ST( "Gai Plin's Imperial Brew" );
+  talent.brewmaster.fundamental_observation = _ST( "Fundamental Observation" );
+  talent.brewmaster.shadowboxing_treads     = _STID( 387638 );
+  talent.brewmaster.fluidity_of_motion      = _ST( "Fluidity of Motion" );
+  // Row 7
+  talent.brewmaster.scalding_brew                 = _ST( "Scalding Brew" );
+  talent.brewmaster.salsalabims_strength          = _ST( "Sal'salabim's Strength" );
+  talent.brewmaster.fortifying_brew_determination = _ST( "Fortifying Brew: Determination" );
+  talent.brewmaster.black_ox_brew                 = _ST( "Black Ox Brew" );
+  talent.brewmaster.bob_and_weave                 = _ST( "Bob and Weave" );
+  talent.brewmaster.invoke_niuzao_the_black_ox    = _ST( "Invoke Niuzao, the Black Ox" );
+  talent.brewmaster.light_brewing                 = _ST( "Light Brewing" );
+  talent.brewmaster.training_of_niuzao            = _ST( "Training of Niuzao" );
+  talent.brewmaster.pretense_of_instability       = _STID( 393516 );
+  talent.brewmaster.face_palm                     = _ST( "Face Palm" );
+  // Row 8
+  talent.brewmaster.dragonfire_brew  = _ST( "Dragonfire Brew" );
+  talent.brewmaster.charred_passions = _ST( "Charred Passions" );
+  talent.brewmaster.high_tolerance   = _ST( "High Tolerance" );
+  talent.brewmaster.walk_with_the_ox = _STID( 387219 );
+  talent.brewmaster.elusive_footwork = _ST( "Elusive Footwork" );
+  talent.brewmaster.anvil_and_stave  = _ST( "Anvil & Stave" );
+  talent.brewmaster.counterstrike    = _ST( "Counterstrike" );
+  // Row 9
+  talent.brewmaster.bonedust_brew                       = _ST( "Bonedust Brew" );
+  talent.brewmaster.improved_invoke_niuzao_the_black_ox = _ST( "Improved Invoke Niuzao, the Black Ox" );
+  talent.brewmaster.exploding_keg                       = _ST( "Exploding Keg" );
+  talent.brewmaster.blackout_combo                      = _ST( "Blackout Combo" );
+  talent.brewmaster.press_the_advantage                 = _ST( "Press the Advantage" );
+  talent.brewmaster.weapons_of_order                    = _ST( "Weapons of Order" );
+  // Row 10
+  talent.brewmaster.bountiful_brew       = _ST( "Bountiful Brew" );
+  talent.brewmaster.attenuation          = _ST( "Attenuation" );
+  talent.brewmaster.stormstouts_last_keg = _ST( "Stormstout's Last Keg" );
+  talent.brewmaster.call_to_arms         = _ST( "Call to Arms" );
+  talent.brewmaster.chi_surge            = _ST( "Chi Surge" );
 
-    // ========
-    // Mistweaver
-    // ========
+  // ========
+  // Mistweaver
+  // ========
 
-    // Row 1
-    talent.mistweaver.enveloping_mist = _ST( "Enveloping Mist" );
-    // Row 2
-    talent.mistweaver.thunder_focus_tea = _ST( "Thunder Focus Tea" );
-    talent.mistweaver.renewing_mist     = _ST( "Renewing Mist" );
-    // Row 3
-    talent.mistweaver.life_cocoon    = _ST( "Life Cocoon" );
-    talent.mistweaver.mana_tea       = _ST( "Mana Tea" );
-    talent.mistweaver.healing_elixir = _ST( "Healing Elixir" );
-    // Row 4
-    talent.mistweaver.teachings_of_the_monastery = _ST( "Teachings of the Monastery" );
-    talent.mistweaver.crane_style                = _ST( "Crane Style" );
-    talent.mistweaver.revival                    = _ST( "Revival" );
-    talent.mistweaver.restoral                   = _ST( "Restoral" );
-    talent.mistweaver.invigorating_mists         = _ST( "Invigorating Mists" );
-    // Row 5
-    talent.mistweaver.nourishing_chi      = _ST( "Nourishing Chi" );
-    talent.mistweaver.calming_coalescence = _ST( "Calming Coalescence" );
-    talent.mistweaver.uplifting_spirits   = _ST( "Uplifting Spirits" );
-    talent.mistweaver.energizing_brew     = _ST( "Energizing Brew" );
-    talent.mistweaver.lifecycles          = _ST( "Lifecycles" );
-    talent.mistweaver.zen_pulse           = _ST( "Zen Pulse" );
-    // Row 6
-    talent.mistweaver.mists_of_life                 = _ST( "Mists of Life" );
-    talent.mistweaver.overflowing_mists             = _ST( "Overflowing Mists" );
-    talent.mistweaver.invoke_yulon_the_jade_serpent = _ST( "Invoke Yu'lon, the Jade Serpent" );
-    talent.mistweaver.invoke_chi_ji_the_red_crane   = _ST( "Invoke Chi-Ji, the Red Crane" );
-    talent.mistweaver.deep_clarity                  = _ST( "Deep Clarity" );
-    talent.mistweaver.rapid_diffusion               = _ST( "Rapid Diffusion" );
-    // Row 7
-    talent.mistweaver.chrysalis            = _ST( "Chrysalis" );
-    talent.mistweaver.burst_of_life        = _ST( "Burst of Life" );
-    talent.mistweaver.yulons_whisper       = _ST( "Yu'lon's Whisper" );
-    talent.mistweaver.mist_wrap            = _ST( "Mist Wrap" );
-    talent.mistweaver.refreshing_jade_wind = _ST( "Refreshing Jade Wind" );
-    talent.mistweaver.celestial_harmony    = _ST( "Celestial Harmony" );
-    talent.mistweaver.dancing_mists        = _ST( "Dancing Mists" );
-    talent.mistweaver.chi_harmony          = _ST( "Chi Harmony" );
-    // Row 8
-    talent.mistweaver.jadefire_stomp         = _ST( "Jadefire Stomp" );
-    talent.mistweaver.peer_into_peace        = _ST( "Peer Into Peace" );
-    talent.mistweaver.jade_bond              = _ST( "Jade Bond" );
-    talent.mistweaver.gift_of_the_celestials = _ST( "Gift of the Celestials" );
-    talent.mistweaver.focused_thunder        = _ST( "Focused Thunder" );
-    talent.mistweaver.sheiluns_gift          = _ST( "Sheilun's Gift" );
-    // Row 9
-    talent.mistweaver.ancient_concordance = _ST( "Ancient Concordance" );
-    talent.mistweaver.ancient_teachings   = _ST( "Ancient Teachings" );
-    talent.mistweaver.resplendent_mist    = _ST( "Resplendent Mist" );
-    talent.mistweaver.secret_infusion     = _ST( "Secret Infusion" );
-    talent.mistweaver.misty_peaks         = _ST( "Misty Peaks" );
-    talent.mistweaver.peaceful_mending    = _ST( "Peaceful Mending" );
-    talent.mistweaver.veil_of_pride       = _ST( "Veil of Pride" );
-    talent.mistweaver.shaohaos_lessons    = _ST( "Shaohao's Lessons" );
-    // Row 10
-    talent.mistweaver.awakened_jadefire     = _ST( "Awakened Jadefire" );
-    talent.mistweaver.dance_of_chiji        = _ST( "Dance of Chi-Ji" );
-    talent.mistweaver.tea_of_serenity       = _ST( "Tea of Serenity" );
-    talent.mistweaver.tea_of_plenty         = _ST( "Tea of Plenty" );
-    talent.mistweaver.unison                = _ST( "Unison" );
-    talent.mistweaver.mending_proliferation = _ST( "Mending Proliferation" );
-    talent.mistweaver.invokers_delight      = _ST( "Invoker's Delight" );
-    talent.mistweaver.tear_of_morning       = _ST( "Tear of Morning" );
-    talent.mistweaver.rising_mist           = _ST( "Rising Mist" );
-    talent.mistweaver.legacy_of_wisdom      = _ST( "Legacy of Wisdom" );
+  // Row 1
+  talent.mistweaver.enveloping_mist = _ST( "Enveloping Mist" );
+  // Row 2
+  talent.mistweaver.thunder_focus_tea = _ST( "Thunder Focus Tea" );
+  talent.mistweaver.renewing_mist     = _ST( "Renewing Mist" );
+  // Row 3
+  talent.mistweaver.life_cocoon    = _ST( "Life Cocoon" );
+  talent.mistweaver.mana_tea       = _ST( "Mana Tea" );
+  talent.mistweaver.healing_elixir = _ST( "Healing Elixir" );
+  // Row 4
+  talent.mistweaver.teachings_of_the_monastery = _ST( "Teachings of the Monastery" );
+  talent.mistweaver.crane_style                = _ST( "Crane Style" );
+  talent.mistweaver.revival                    = _ST( "Revival" );
+  talent.mistweaver.restoral                   = _ST( "Restoral" );
+  talent.mistweaver.invigorating_mists         = _ST( "Invigorating Mists" );
+  // Row 5
+  talent.mistweaver.nourishing_chi      = _ST( "Nourishing Chi" );
+  talent.mistweaver.calming_coalescence = _ST( "Calming Coalescence" );
+  talent.mistweaver.uplifting_spirits   = _ST( "Uplifting Spirits" );
+  talent.mistweaver.energizing_brew     = _ST( "Energizing Brew" );
+  talent.mistweaver.lifecycles          = _ST( "Lifecycles" );
+  talent.mistweaver.zen_pulse           = _ST( "Zen Pulse" );
+  // Row 6
+  talent.mistweaver.mists_of_life                 = _ST( "Mists of Life" );
+  talent.mistweaver.overflowing_mists             = _ST( "Overflowing Mists" );
+  talent.mistweaver.invoke_yulon_the_jade_serpent = _ST( "Invoke Yu'lon, the Jade Serpent" );
+  talent.mistweaver.invoke_chi_ji_the_red_crane   = _ST( "Invoke Chi-Ji, the Red Crane" );
+  talent.mistweaver.deep_clarity                  = _ST( "Deep Clarity" );
+  talent.mistweaver.rapid_diffusion               = _ST( "Rapid Diffusion" );
+  // Row 7
+  talent.mistweaver.chrysalis            = _ST( "Chrysalis" );
+  talent.mistweaver.burst_of_life        = _ST( "Burst of Life" );
+  talent.mistweaver.yulons_whisper       = _ST( "Yu'lon's Whisper" );
+  talent.mistweaver.mist_wrap            = _ST( "Mist Wrap" );
+  talent.mistweaver.refreshing_jade_wind = _ST( "Refreshing Jade Wind" );
+  talent.mistweaver.celestial_harmony    = _ST( "Celestial Harmony" );
+  talent.mistweaver.dancing_mists        = _ST( "Dancing Mists" );
+  talent.mistweaver.chi_harmony          = _ST( "Chi Harmony" );
+  // Row 8
+  talent.mistweaver.jadefire_stomp         = _ST( "Jadefire Stomp" );
+  talent.mistweaver.peer_into_peace        = _ST( "Peer Into Peace" );
+  talent.mistweaver.jade_bond              = _ST( "Jade Bond" );
+  talent.mistweaver.gift_of_the_celestials = _ST( "Gift of the Celestials" );
+  talent.mistweaver.focused_thunder        = _ST( "Focused Thunder" );
+  talent.mistweaver.sheiluns_gift          = _ST( "Sheilun's Gift" );
+  // Row 9
+  talent.mistweaver.ancient_concordance = _ST( "Ancient Concordance" );
+  talent.mistweaver.ancient_teachings   = _ST( "Ancient Teachings" );
+  talent.mistweaver.resplendent_mist    = _ST( "Resplendent Mist" );
+  talent.mistweaver.secret_infusion     = _ST( "Secret Infusion" );
+  talent.mistweaver.misty_peaks         = _ST( "Misty Peaks" );
+  talent.mistweaver.peaceful_mending    = _ST( "Peaceful Mending" );
+  talent.mistweaver.veil_of_pride       = _ST( "Veil of Pride" );
+  talent.mistweaver.shaohaos_lessons    = _ST( "Shaohao's Lessons" );
+  // Row 10
+  talent.mistweaver.awakened_jadefire     = _ST( "Awakened Jadefire" );
+  talent.mistweaver.dance_of_chiji        = _ST( "Dance of Chi-Ji" );
+  talent.mistweaver.tea_of_serenity       = _ST( "Tea of Serenity" );
+  talent.mistweaver.tea_of_plenty         = _ST( "Tea of Plenty" );
+  talent.mistweaver.unison                = _ST( "Unison" );
+  talent.mistweaver.mending_proliferation = _ST( "Mending Proliferation" );
+  talent.mistweaver.invokers_delight      = _ST( "Invoker's Delight" );
+  talent.mistweaver.tear_of_morning       = _ST( "Tear of Morning" );
+  talent.mistweaver.rising_mist           = _ST( "Rising Mist" );
+  talent.mistweaver.legacy_of_wisdom      = _ST( "Legacy of Wisdom" );
 
-    // ========
-    // Windwalker
-    // ========
+  // ========
+  // Windwalker
+  // ========
 
-    // Row 1
-    talent.windwalker.fists_of_fury = _ST( "Fists of Fury" );
-    // Row 2
-    talent.windwalker.momentum_boost = _ST( "Momentum Boost" );
-    talent.windwalker.combat_wisdom  = _ST( "Combat Wisdom" );
-    talent.windwalker.acclamation    = _ST( "Acclamation" );
-    // Row 3
-    talent.windwalker.touch_of_the_tiger = _ST( "Touch of the Tiger" );
-    talent.windwalker.hardened_soles     = _ST( "Hardened Soles" );
-    talent.windwalker.ascension          = _ST( "Ascension" );  // TODO: NYI: EFFECT 2 ENERGY REGEN
-    talent.windwalker.dual_threat        = _ST( "Dual Threat" );
-    // Row 4
-    talent.windwalker.mark_of_the_crane          = _ST( "Mark of the Crane" );
-    talent.windwalker.teachings_of_the_monastery = _ST( "Teachings of the Monastery" );
-    talent.windwalker.glory_of_the_dawn          = _ST( "Glory of the Dawn" );
-    // 8 Required
-    // Row 5
-    talent.windwalker.jade_ignition        = _STID( 392979 );  // _ST( "Jade Ignition" );
-    talent.windwalker.courageous_impulse   = _ST( "Courageous Impulse" );
-    talent.windwalker.storm_earth_and_fire = _ST( "Storm, Earth, and Fire" );
-    talent.windwalker.flurry_of_xuen       = _ST( "Flurry of Xuen" );
-    talent.windwalker.hit_combo            = _ST( "Hit Combo" );
-    talent.windwalker.brawlers_intensity   = _ST( "Brawler's Intensity" );
-    talent.windwalker.meridian_strikes     = _ST( "Meridian Strikes" );
-    // Row 6
-    talent.windwalker.dance_of_chiji         = _ST( "Dance of Chi-Ji" );
-    talent.windwalker.drinking_horn_cover    = _ST( "Drinking Horn Cover" );
-    talent.windwalker.spiritual_focus        = _ST( "Spiritual Focus" );
-    talent.windwalker.ordered_elements       = _ST( "Ordered Elements" );
-    talent.windwalker.strike_of_the_windlord = _ST( "Strike of the Windlord" );
-    // Row 7
-    talent.windwalker.martial_mixture             = _ST( "Martial Mixture" );
-    talent.windwalker.energy_burst                = _ST( "Energy Burst" );
-    talent.windwalker.shadowboxing_treads         = _STID( 392982 );
-    talent.windwalker.invoke_xuen_the_white_tiger = _ST( "Invoke Xuen, the White Tiger" );
-    talent.windwalker.inner_peace                 = _ST( "Inner Peace" );
-    talent.windwalker.rushing_jade_wind           = _ST( "Rushing Jade Wind" );
-    talent.windwalker.thunderfist                 = _ST( "Thunderfist" );
-    // 20 Required
-    // Row 8
-    talent.windwalker.sequenced_strikes = _ST( "Sequenced Strikes" );
-    talent.windwalker.rising_star       = _ST( "Rising Star" );
-    talent.windwalker.invokers_delight  = _ST( "Invoker's Delight" );
-    talent.windwalker.crane_vortex      = _ST( "Crane Vortex" );
-    talent.windwalker.gale_force        = _ST( "Gale Force" );
-    // Row 9
-    talent.windwalker.last_emperors_capacitor = _ST( "Last Emperor's Capacitor" );
-    talent.windwalker.whirling_dragon_punch   = _ST( "Whirling Dragon Punch" );
-    talent.windwalker.xuens_bond              = _ST( "Xuen's Bond" );
-    talent.windwalker.xuens_battlegear        = _ST( "Xuen's Battlegear" );
-    talent.windwalker.transfer_the_power      = _ST( "Transfer the Power" );
-    talent.windwalker.jadefire_stomp          = _ST( "Jadefire Stomp" );
-    talent.windwalker.communion_with_wind     = _ST( "Communion With Wind" );
-    // Row 10
-    talent.windwalker.revolving_whirl                = _ST( "Revolving Whirl" );
-    talent.windwalker.knowledge_of_the_broken_temple = _ST( "Knowledge of the Broken Temple" );
-    talent.windwalker.skytouch                       = _ST( "Skytouch" );
-    talent.windwalker.fury_of_xuen                   = _ST( "Fury of Xuen" );
-    talent.windwalker.path_of_jade                   = _ST( "Path of Jade" );
-    talent.windwalker.singularly_focused_jade        = _ST( "Singularly Focusted Jade" );
-    talent.windwalker.jadefire_harmony               = _ST( "Jadefire Harmony" );
+  // Row 1
+  talent.windwalker.fists_of_fury = _ST( "Fists of Fury" );
+  // Row 2
+  talent.windwalker.momentum_boost = _ST( "Momentum Boost" );
+  talent.windwalker.combat_wisdom  = _ST( "Combat Wisdom" );
+  talent.windwalker.acclamation    = _ST( "Acclamation" );
+  // Row 3
+  talent.windwalker.touch_of_the_tiger = _ST( "Touch of the Tiger" );
+  talent.windwalker.hardened_soles     = _ST( "Hardened Soles" );
+  talent.windwalker.ascension          = _ST( "Ascension" );  // TODO: NYI: EFFECT 2 ENERGY REGEN
+  talent.windwalker.dual_threat        = _ST( "Dual Threat" );
+  // Row 4
+  talent.windwalker.mark_of_the_crane          = _ST( "Mark of the Crane" );
+  talent.windwalker.teachings_of_the_monastery = _ST( "Teachings of the Monastery" );
+  talent.windwalker.glory_of_the_dawn          = _ST( "Glory of the Dawn" );
+  // 8 Required
+  // Row 5
+  talent.windwalker.jade_ignition        = _STID( 392979 );  // _ST( "Jade Ignition" );
+  talent.windwalker.courageous_impulse   = _ST( "Courageous Impulse" );
+  talent.windwalker.storm_earth_and_fire = _ST( "Storm, Earth, and Fire" );
+  talent.windwalker.flurry_of_xuen       = _ST( "Flurry of Xuen" );
+  talent.windwalker.hit_combo            = _ST( "Hit Combo" );
+  talent.windwalker.brawlers_intensity   = _ST( "Brawler's Intensity" );
+  talent.windwalker.meridian_strikes     = _ST( "Meridian Strikes" );
+  // Row 6
+  talent.windwalker.dance_of_chiji         = _ST( "Dance of Chi-Ji" );
+  talent.windwalker.drinking_horn_cover    = _ST( "Drinking Horn Cover" );
+  talent.windwalker.spiritual_focus        = _ST( "Spiritual Focus" );
+  talent.windwalker.ordered_elements       = _ST( "Ordered Elements" );
+  talent.windwalker.strike_of_the_windlord = _ST( "Strike of the Windlord" );
+  // Row 7
+  talent.windwalker.martial_mixture             = _ST( "Martial Mixture" );
+  talent.windwalker.energy_burst                = _ST( "Energy Burst" );
+  talent.windwalker.shadowboxing_treads         = _STID( 392982 );
+  talent.windwalker.invoke_xuen_the_white_tiger = _ST( "Invoke Xuen, the White Tiger" );
+  talent.windwalker.inner_peace                 = _ST( "Inner Peace" );
+  talent.windwalker.rushing_jade_wind           = _ST( "Rushing Jade Wind" );
+  talent.windwalker.thunderfist                 = _ST( "Thunderfist" );
+  // 20 Required
+  // Row 8
+  talent.windwalker.sequenced_strikes = _ST( "Sequenced Strikes" );
+  talent.windwalker.rising_star       = _ST( "Rising Star" );
+  talent.windwalker.invokers_delight  = _ST( "Invoker's Delight" );
+  talent.windwalker.crane_vortex      = _ST( "Crane Vortex" );
+  talent.windwalker.gale_force        = _ST( "Gale Force" );
+  // Row 9
+  talent.windwalker.last_emperors_capacitor = _ST( "Last Emperor's Capacitor" );
+  talent.windwalker.whirling_dragon_punch   = _ST( "Whirling Dragon Punch" );
+  talent.windwalker.xuens_bond              = _ST( "Xuen's Bond" );
+  talent.windwalker.xuens_battlegear        = _ST( "Xuen's Battlegear" );
+  talent.windwalker.transfer_the_power      = _ST( "Transfer the Power" );
+  talent.windwalker.jadefire_stomp          = _ST( "Jadefire Stomp" );
+  talent.windwalker.communion_with_wind     = _ST( "Communion With Wind" );
+  // Row 10
+  talent.windwalker.revolving_whirl                = _ST( "Revolving Whirl" );
+  talent.windwalker.knowledge_of_the_broken_temple = _ST( "Knowledge of the Broken Temple" );
+  talent.windwalker.skytouch                       = _ST( "Skytouch" );
+  talent.windwalker.fury_of_xuen                   = _ST( "Fury of Xuen" );
+  talent.windwalker.path_of_jade                   = _ST( "Path of Jade" );
+  talent.windwalker.singularly_focused_jade        = _ST( "Singularly Focusted Jade" );
+  talent.windwalker.jadefire_harmony               = _ST( "Jadefire Harmony" );
 
-    // ========
-    // Master of Harmony
-    // ========
-    // Row 1
-    talent.master_of_harmony.aspect_of_harmony = _HT( "Aspect of Harmony" );
-    // Row 2
-    talent.master_of_harmony.manifestation      = _HT( "Manifestation" );
-    talent.master_of_harmony.purified_spirit    = _HT( "Purified Spirit" );
-    talent.master_of_harmony.harmonic_gambit    = _HT( "Harmonic Gambit" );
-    talent.master_of_harmony.balanced_strategem = _HT( "Balanced Strategem" );
-    // Row 3
-    talent.master_of_harmony.tigers_vigor          = _HT( "Tiger's Vigor" );
-    talent.master_of_harmony.roar_from_the_heavens = _HT( "Roar from the Heavens" );
-    talent.master_of_harmony.endless_draught       = _HT( "Endless Draught" );
-    talent.master_of_harmony.mantra_of_purity      = _HT( "Mantra of Purity" );
-    talent.master_of_harmony.mantra_of_tenacity    = _HT( "Mantra of Tenacity" );
-    // Row 4
-    talent.master_of_harmony.overwhelming_force        = _HT( "Overwhelming Force" );
-    talent.master_of_harmony.path_of_resurgence        = _HT( "Path of Resurgence" );
-    talent.master_of_harmony.way_of_a_thousand_strikes = _HT( "Way of a Thousand Strikes" );
-    talent.master_of_harmony.clarity_of_purpose        = _HT( "Clarity of Purpose" );
-    // Row 5
-    talent.master_of_harmony.resonance = _HT( "Resonance" );
+  // ========
+  // Master of Harmony
+  // ========
+  // Row 1
+  talent.master_of_harmony.aspect_of_harmony = _HT( "Aspect of Harmony" );
+  // Row 2
+  talent.master_of_harmony.manifestation      = _HT( "Manifestation" );
+  talent.master_of_harmony.purified_spirit    = _HT( "Purified Spirit" );
+  talent.master_of_harmony.harmonic_gambit    = _HT( "Harmonic Gambit" );
+  talent.master_of_harmony.balanced_strategem = _HT( "Balanced Strategem" );
+  // Row 3
+  talent.master_of_harmony.tigers_vigor          = _HT( "Tiger's Vigor" );
+  talent.master_of_harmony.roar_from_the_heavens = _HT( "Roar from the Heavens" );
+  talent.master_of_harmony.endless_draught       = _HT( "Endless Draught" );
+  talent.master_of_harmony.mantra_of_purity      = _HT( "Mantra of Purity" );
+  talent.master_of_harmony.mantra_of_tenacity    = _HT( "Mantra of Tenacity" );
+  // Row 4
+  talent.master_of_harmony.overwhelming_force        = _HT( "Overwhelming Force" );
+  talent.master_of_harmony.path_of_resurgence        = _HT( "Path of Resurgence" );
+  talent.master_of_harmony.way_of_a_thousand_strikes = _HT( "Way of a Thousand Strikes" );
+  talent.master_of_harmony.clarity_of_purpose        = _HT( "Clarity of Purpose" );
+  // Row 5
+  talent.master_of_harmony.resonance = _HT( "Resonance" );
 
-    // ========
-    // Shado-Pan
-    // ========
-    // Row 1
-    talent.shado_pan.flurry_strikes = _HT( "Flurry Strikes" );
-    // Row 2
-    talent.shado_pan.pride_of_pandaria = _HT( "Pride of Pandaria" );
-    talent.shado_pan.high_impact       = _HT( "High Impact" );
-    talent.shado_pan.veterans_eye      = _HT( "Veteran's Eye" );
-    talent.shado_pan.martial_precision = _HT( "Martial Precision" );
-    // Row 3
-    talent.shado_pan.protect_and_serve   = _HT( "Protect and Serve" );
-    talent.shado_pan.lead_from_the_front = _HT( "Lead from the Front" );
-    talent.shado_pan.one_versus_many     = _HT( "One Versus Many" );
-    talent.shado_pan.whirling_steel      = _HT( "Whirling Steel" );
-    talent.shado_pan.predictive_training = _HT( "Predictive Training" );
-    // Row 4
-    talent.shado_pan.against_all_odds   = _HT( "Against All Odds" );
-    talent.shado_pan.efficient_training = _HT( "Efficient Training" );
-    talent.shado_pan.vigilant_watch     = _HT( "Vigilant Watch" );
-    // Row 5
-    talent.shado_pan.wisdom_of_the_wall = _HT( "Wisdom of the Wall" );
+  // ========
+  // Shado-Pan
+  // ========
+  // Row 1
+  talent.shado_pan.flurry_strikes = _HT( "Flurry Strikes" );
+  // Row 2
+  talent.shado_pan.pride_of_pandaria = _HT( "Pride of Pandaria" );
+  talent.shado_pan.high_impact       = _HT( "High Impact" );
+  talent.shado_pan.veterans_eye      = _HT( "Veteran's Eye" );
+  talent.shado_pan.martial_precision = _HT( "Martial Precision" );
+  // Row 3
+  talent.shado_pan.protect_and_serve   = _HT( "Protect and Serve" );
+  talent.shado_pan.lead_from_the_front = _HT( "Lead from the Front" );
+  talent.shado_pan.one_versus_many     = _HT( "One Versus Many" );
+  talent.shado_pan.whirling_steel      = _HT( "Whirling Steel" );
+  talent.shado_pan.predictive_training = _HT( "Predictive Training" );
+  // Row 4
+  talent.shado_pan.against_all_odds   = _HT( "Against All Odds" );
+  talent.shado_pan.efficient_training = _HT( "Efficient Training" );
+  talent.shado_pan.vigilant_watch     = _HT( "Vigilant Watch" );
+  // Row 5
+  talent.shado_pan.wisdom_of_the_wall = _HT( "Wisdom of the Wall" );
 
-    // ========
-    // Conduit of the Celestials
-    // ========
-    // Row 1
-    talent.conduit_of_the_celestials.celestial_conduit = _HT( "Celestial Conduit" );
-    // Row 2
-    talent.conduit_of_the_celestials.temple_training            = _HT( "Temple Training" );
-    talent.conduit_of_the_celestials.xuens_guidance             = _HT( "Xuen's Guidance" );
-    talent.conduit_of_the_celestials.courage_of_the_white_tiger = _HT( "Courage of the White Tiger" );
-    talent.conduit_of_the_celestials.restore_balance            = _HT( "Restore Balance" );
-    // Row 3
-    talent.conduit_of_the_celestials.heart_of_the_jade_serpent = _HT( "Heart of the_Jade Serpent" );
-    talent.conduit_of_the_celestials.strength_of_the_black_ox  = _HT( "Strength of the Black Ox" );
-    talent.conduit_of_the_celestials.flight_of_the_red_crane   = _HT( "Flight of the Red Crane" );
-    // Row 4
-    talent.conduit_of_the_celestials.niuzaos_protection = _HT( "Niuzao's Protection" );
-    talent.conduit_of_the_celestials.jade_sanctuary     = _HT( "Jade Sanctuary" );
-    talent.conduit_of_the_celestials.chi_jis_swiftness  = _HT( "Chi-Ji's Swiftness" );
-    talent.conduit_of_the_celestials.inner_compass      = _HT( "Inner Compass" );
-    talent.conduit_of_the_celestials.august_dynasty     = _HT( "August Dynasty" );
-    // Row 5
-    talent.conduit_of_the_celestials.unity_within = _HT( "Unity Within" );
-  }
+  // ========
+  // Conduit of the Celestials
+  // ========
+  // Row 1
+  talent.conduit_of_the_celestials.celestial_conduit = _HT( "Celestial Conduit" );
+  // Row 2
+  talent.conduit_of_the_celestials.temple_training            = _HT( "Temple Training" );
+  talent.conduit_of_the_celestials.xuens_guidance             = _HT( "Xuen's Guidance" );
+  talent.conduit_of_the_celestials.courage_of_the_white_tiger = _HT( "Courage of the White Tiger" );
+  talent.conduit_of_the_celestials.restore_balance            = _HT( "Restore Balance" );
+  // Row 3
+  talent.conduit_of_the_celestials.heart_of_the_jade_serpent = _HT( "Heart of the_Jade Serpent" );
+  talent.conduit_of_the_celestials.strength_of_the_black_ox  = _HT( "Strength of the Black Ox" );
+  talent.conduit_of_the_celestials.flight_of_the_red_crane   = _HT( "Flight of the Red Crane" );
+  // Row 4
+  talent.conduit_of_the_celestials.niuzaos_protection = _HT( "Niuzao's Protection" );
+  talent.conduit_of_the_celestials.jade_sanctuary     = _HT( "Jade Sanctuary" );
+  talent.conduit_of_the_celestials.chi_jis_swiftness  = _HT( "Chi-Ji's Swiftness" );
+  talent.conduit_of_the_celestials.inner_compass      = _HT( "Inner Compass" );
+  talent.conduit_of_the_celestials.august_dynasty     = _HT( "August Dynasty" );
+  // Row 5
+  talent.conduit_of_the_celestials.unity_within = _HT( "Unity Within" );
 
   // Specialization spells ====================================
   // Multi-Specialization & Class Spells
