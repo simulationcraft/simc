@@ -95,6 +95,12 @@ struct mind_flay_t final : public priest_spell_t
     {
       _insanity_spell->execute();
       priest().buffs.mind_flay_insanity->expire();
+
+      // TODO: Determine how the crit mod is passed here, might be like tormented spirits in execute()
+      if ( priest().talents.archon.energy_cycle.enabled() )
+      {
+        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_mfi, false );
+      }
     }
     else
     {
@@ -207,6 +213,17 @@ struct mind_spike_insanity_t final : public mind_spike_base_t
   {
     mind_spike_base_t::execute();
     priest().buffs.mind_spike_insanity->decrement();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    // TODO: Determine how the crit mod is passed here, might be like tormented spirits in execute()
+    if ( priest().talents.archon.energy_cycle.enabled() )
+    {
+      priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_msi, s->result == RESULT_CRIT );
+    }
   }
 
   bool ready() override

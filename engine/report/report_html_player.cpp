@@ -1196,7 +1196,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     {
       os << "<div class=\"flexwrap\">\n";
 
-      s.action_list.back()->html_customsection( os );
+      s.action_list.front()->html_customsection( os );
 
       os << "</div>";
     }

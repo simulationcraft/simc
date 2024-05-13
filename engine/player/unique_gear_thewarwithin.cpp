@@ -254,7 +254,7 @@ void aberrant_spellforge( special_effect_t& effect )
   // cache data
   auto data = equip->driver();
   auto period = effect.player->find_spell( 452030 )->effectN( 2 ).period();
-  auto silence_dur = effect.player->find_spell( 452350 )->duration();
+  [[maybe_unused]] auto silence_dur = effect.player->find_spell( 452350 )->duration();
 
   // create buffs
   auto empowerment = create_buff<buff_t>( effect.player, effect.player->find_spell( 451895 ) );
@@ -678,6 +678,7 @@ void foul_behemoths_chelicera( special_effect_t& effect )
 // TODO: determine what happens when your highest secondary changes
 // TODO: add options to control balancing stacks
 // TODO: add option to set starting stacks
+// TODO: confirm stat value truncation happens on final amount, and not per stack amount
 void ovinaxs_mercurial_egg( special_effect_t& effect )
 {
   unsigned equip_id = 445066;
@@ -686,8 +687,48 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
 
   auto data = equip->driver();
 
+  struct ovinax_stat_buff_t : public stat_buff_t
+  {
+    double cap_mul;
+    int cap;
+
+    ovinax_stat_buff_t( player_t* p, std::string_view n, const spell_data_t* s, const spell_data_t* data )
+      : stat_buff_t( p, n, s ),
+        cap_mul( data->effectN( 4 ).percent() ),
+        cap( as<int>( data->effectN( 5 ).base_value() ) )
+    {}
+
+    double buff_stat_stack_amount( const buff_stat_t& stat ) const
+    {
+      double val = std::max( 1.0, std::fabs( stat.amount ) );
+      double stack = current_stack <= cap ? current_stack : cap + ( current_stack - cap ) * cap_mul;
+      // TODO: confirm truncation happens on final amount, and not per stack amount
+      return std::copysign( std::trunc( stack * val + 1e-3 ), stat.amount );
+    }
+
+    // bypass stat_buff_t::bump entirely and call buff_t::bump directly
+    void bump( int stacks, double ) override
+    {
+      buff_t::bump( stacks );
+
+      for ( auto& buff_stat : stats )
+      {
+        if ( buff_stat.check_func && !buff_stat.check_func( *this ) )
+          continue;
+
+        double delta = buff_stat_stack_amount( buff_stat ) - buff_stat.current_value;
+        if ( delta > 0 )
+          player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > 0_ms );
+        else if ( delta < 0 )
+          player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > 0_ms );
+
+        buff_stat.current_value += delta;
+      }
+    }
+  };
+
   // setup stat buffs
-  auto primary = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 449578 ) )
+  auto primary = create_buff<ovinax_stat_buff_t>( effect.player, effect.player->find_spell( 449578 ), data )
     ->set_stat_from_effect_type( A_MOD_STAT, data->effectN( 1 ).average( effect.item ) );
 
   // TODO: confirm secondary precedence in case of tie is vers > mastery > haste > crit
@@ -704,7 +745,7 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
     auto spell = effect.player->find_spell( buff_ids[ i ] );
     auto name = fmt::format( "{}_{}", spell->name_cstr(), stat_str );
 
-    auto buff = create_buff<stat_buff_t>( effect.player, name, spell )
+    auto buff = create_buff<ovinax_stat_buff_t>( effect.player, name, spell, data )
       ->set_stat_from_effect_type( A_MOD_RATING, data->effectN( 2 ).average( effect.item ) )
       ->set_name_reporting( stat_str );
 
