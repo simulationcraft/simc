@@ -427,7 +427,6 @@ public:
     const spell_data_t* protection_warrior;
     const spell_data_t* devastate;
     const spell_data_t* riposte;
-    const spell_data_t* thunder_clap_prot_hidden;
     const spell_data_t* vanguard;
 
     const spell_data_t* deep_wounds_PROT;
@@ -2911,8 +2910,8 @@ struct thunder_clap_t : public warrior_attack_t
     radius *= 1.0 + p->talents.warrior.crackling_thunder->effectN( 1 ).percent();
     energize_type = action_energize::NONE;
 
-    if ( p->spec.thunder_clap_prot_hidden )
-      rage_gain += p->spec.thunder_clap_prot_hidden->effectN( 1 ).resource( RESOURCE_RAGE );
+    if ( p->spec.protection_warrior->ok() )
+      rage_gain += p->spec.protection_warrior->effectN( 23 ).resource( RESOURCE_RAGE );
 
     if ( p->talents.warrior.blood_and_thunder.ok() )
     {
@@ -6290,7 +6289,6 @@ void warrior_t::init_spells()
   spec.protection_warrior       = find_specialization_spell( "Protection Warrior" );
   spec.devastate                = find_specialization_spell( "Devastate" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
-  spec.thunder_clap_prot_hidden = find_specialization_spell( "Thunder Clap Prot Hidden" );
   spec.vanguard                 = find_specialization_spell( "Vanguard" );
   spec.deep_wounds_PROT         = find_specialization_spell("Deep Wounds", WARRIOR_PROTECTION);
   spec.revenge_trigger          = find_specialization_spell("Revenge Trigger");
