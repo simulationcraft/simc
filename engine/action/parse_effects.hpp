@@ -1427,6 +1427,11 @@ public:
           return nullptr;
       }
     }
+    else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY )
+    {
+      str = "cooldown";
+      return &recharge_multiplier_effects;
+    }
 
     return nullptr;
   }
