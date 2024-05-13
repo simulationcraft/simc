@@ -165,6 +165,7 @@ struct pack_t
   U data;
   std::vector<const spell_data_t*> list;
   uint32_t mask = 0U;
+  std::vector<U>* copy = nullptr;
 };
 
 struct parse_effects_t
@@ -306,6 +307,10 @@ public:
     {
       tmp.mask = mod;
     }
+    else if constexpr ( std::is_convertible_v<decltype( *std::declval<T>() ), const std::vector<U>> )
+    {
+      tmp.copy = &( *mod );
+    }
     else
     {
       static_assert( static_false<T>, "Invalid mod type for parse_spell_effect_mods" );
@@ -421,6 +426,9 @@ public:
     tmp.data.mastery = mastery;
     tmp.data.eff = &eff;
     vec->push_back( tmp.data );
+
+    if ( tmp.copy )
+      tmp.copy->push_back( tmp.data );
   }
 
   // Syntax: parse_effects( data[, spells|condition|ignore_mask|value|flags][,...] )
