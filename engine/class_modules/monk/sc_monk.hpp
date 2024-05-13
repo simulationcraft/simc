@@ -144,6 +144,7 @@ public:
   double cost() const override;
   double cost_pct_multiplier() const override;
   double cost_reduction() const;
+  double composite_crit_damage_bonus_multiplier() const override;
   double composite_ta_multiplier( const action_state_t *state ) const override;
   double composite_da_multiplier( const action_state_t *state ) const override;
   double composite_target_multiplier( player_t *target ) const override;
@@ -627,6 +628,10 @@ public:
     propagate_const<buff_t *> flurry_charge;
     propagate_const<buff_t *> veterans_eye;
     propagate_const<buff_t *> vigilant_watch;
+    propagate_const<buff_t *> wisdom_of_the_wall_crit;
+    propagate_const<buff_t *> wisdom_of_the_wall_dodge;
+    propagate_const<buff_t *> wisdom_of_the_wall_flurry;
+    propagate_const<buff_t *> wisdom_of_the_wall_mastery;
 
     // T29 Set Bonus
     propagate_const<buff_t *> kicks_of_flowing_momentum;
@@ -1239,6 +1244,7 @@ public:
     {
       const spell_data_t *flurry_strike;
       const spell_data_t *high_impact;
+      const spell_data_t *wisdom_of_the_wall_flurry;
     } shado_pan;
 
     // Brewmaster

@@ -763,6 +763,17 @@ double monk_action_t<Base>::cost_reduction() const
 }
 
 template <class Base>
+double monk_action_t<Base>::composite_crit_damage_bonus_multiplier() const
+{
+  double m = ab::composite_crit_damage_bonus_multiplier();
+
+  if ( ab::data().affected_by( p()->buff.wisdom_of_the_wall_crit->data().effectN( 1 ) ) )
+    m *= 1 + p()->buff.wisdom_of_the_wall_crit->check_value();
+
+  return m;
+}
+
+template <class Base>
 double monk_action_t<Base>::composite_ta_multiplier( const action_state_t *s ) const
 {
   double ta = ab::composite_ta_multiplier( s );
@@ -1244,13 +1255,32 @@ struct high_impact_t : public monk_spell_t
   }
 };
 
+struct flurry_strike_wisdom_t : public monk_spell_t
+{
+  flurry_strike_wisdom_t( monk_t *p )
+    : monk_spell_t( "flurry_strike_wisdom", p, p->passives.shado_pan.wisdom_of_the_wall_flurry )
+  {
+    aoe        = -1;
+    background = dual = true;
+    split_aoe_damage  = true;
+
+    name_str_reporting = "flurry_strike_wisdom_of_the_wall";
+  }
+};
+
 struct flurry_strike_t : public monk_melee_attack_t
 {
+  flurry_strike_wisdom_t *wisdom_flurry;
+
   flurry_strike_t( monk_t *p ) : monk_melee_attack_t( "flurry_strike", p, p->passives.shado_pan.flurry_strike )
   {
     background = dual = true;
 
     apply_affecting_aura( p->talent.shado_pan.pride_of_pandaria );
+
+    wisdom_flurry = new flurry_strike_wisdom_t( p );
+
+    add_child( wisdom_flurry );
   }
 
   double action_multiplier() const override
@@ -1274,6 +1304,12 @@ struct flurry_strike_t : public monk_melee_attack_t
       if ( td )
         td->debuff.high_impact->trigger();
     }
+
+    if ( p()->buff.wisdom_of_the_wall_flurry->up() )
+    {
+      wisdom_flurry->set_target( s->target );
+      wisdom_flurry->execute();
+    }
   }
 };
 
@@ -1296,7 +1332,8 @@ struct flurry_strikes_t : public monk_melee_attack_t
 
       auto td = p->get_target_data( t );
       if ( td && td->debuff.high_impact->remains() >= 0_ms )
-        high_impact->execute();
+        high_impact->set_target( t );
+      high_impact->execute();
     } );
   }
 
@@ -6685,7 +6722,7 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
                            ->set_trigger_spell( p->talent.shado_pan.high_impact )
                            ->set_quiet( true );
 
-  debuff.veterans_eye = make_buff( *this, "veterans_eye", p->find_spell( 451071 ) )
+  debuff.veterans_eye = make_buff( *this, "veterans_eye_debuff", p->find_spell( 451071 ) )
                             ->set_trigger_spell( p->talent.shado_pan.veterans_eye )
                             ->set_quiet( true );
 
@@ -7665,8 +7702,9 @@ void monk_t::init_spells()
   passives.whirling_dragon_punch_st_tick    = find_spell( 451767 );
 
   // Shado-Pan
-  passives.shado_pan.flurry_strike = find_spell( 450617 );
-  passives.shado_pan.high_impact   = find_spell( 451037 );
+  passives.shado_pan.flurry_strike             = find_spell( 450617 );
+  passives.shado_pan.high_impact               = find_spell( 451037 );
+  passives.shado_pan.wisdom_of_the_wall_flurry = find_spell( 451250 );
 
   // Tier 29
   passives.kicks_of_flowing_momentum = find_spell( 394944 );
@@ -8210,6 +8248,27 @@ void monk_t::create_buffs()
   buff.vigilant_watch = make_buff( this, "vigilant_watch", find_spell( 451233 ) )
                             ->set_trigger_spell( talent.shado_pan.vigilant_watch )
                             ->set_default_value_from_effect( 1 );
+
+  buff.wisdom_of_the_wall_crit = make_buff( this, "wisdom_of_the_wall_crit", find_spell( 452684 ) )
+                                     ->set_trigger_spell( talent.shado_pan.wisdom_of_the_wall )
+                                     ->set_default_value_from_effect( 1 );
+
+  buff.wisdom_of_the_wall_dodge = make_buff( this, "wisdom_of_the_wall_dodge", find_spell( 451242 ) )
+                                      ->set_trigger_spell( talent.shado_pan.wisdom_of_the_wall )
+                                      ->add_invalidate( CACHE_CRIT_CHANCE )
+                                      ->add_invalidate( CACHE_SPELL_CRIT_CHANCE )
+                                      ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
+                                      ->add_invalidate( CACHE_DODGE );
+
+  buff.wisdom_of_the_wall_flurry = make_buff( this, "wisdom_of_the_wall_flurry", find_spell( 452688 ) )
+                                       ->set_trigger_spell( talent.shado_pan.wisdom_of_the_wall )
+                                       ->set_default_value_from_effect( 1 );
+
+  buff.wisdom_of_the_wall_mastery = make_buff( this, "wisdom_of_the_wall_mastery", find_spell( 452685 ) )
+                                        ->set_trigger_spell( talent.shado_pan.wisdom_of_the_wall )
+                                        ->set_default_value_from_effect( 1 )
+                                        ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+                                        ->add_invalidate( CACHE_MASTERY );
 
   // Tier 29 Set Bonus
   buff.kicks_of_flowing_momentum =
@@ -8898,6 +8957,9 @@ double monk_t::composite_melee_crit_chance() const
 
   crit += spec.critical_strikes->effectN( 1 ).percent();
 
+  if ( buff.wisdom_of_the_wall_dodge->check() )
+    crit += buff.wisdom_of_the_wall_dodge->data().effectN( 3 ).percent() * composite_damage_versatility();
+
   return crit;
 }
 
@@ -8908,6 +8970,9 @@ double monk_t::composite_spell_crit_chance() const
   double crit = player_t::composite_spell_crit_chance();
 
   crit += spec.critical_strikes->effectN( 1 ).percent();
+
+  if ( buff.wisdom_of_the_wall_dodge->check() )
+    crit += buff.wisdom_of_the_wall_dodge->data().effectN( 3 ).percent() * composite_damage_versatility();
 
   return crit;
 }
@@ -8963,6 +9028,9 @@ double monk_t::composite_dodge() const
 
   if ( buff.fortifying_brew->check() )
     d += talent.general.ironshell_brew->effectN( 1 ).percent();
+
+  if ( buff.wisdom_of_the_wall_dodge->check() )
+    d += buff.wisdom_of_the_wall_dodge->data().effectN( 3 ).percent() * composite_damage_versatility();
 
   return d;
 }
