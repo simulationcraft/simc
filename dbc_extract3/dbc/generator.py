@@ -3252,8 +3252,8 @@ class SpellDataGenerator(DataGenerator):
         for spell_id, spell_data in self.db('Spell').items():
             if spell_data.desc:
                 r = re.match("\$@spelldesc([0-9]{1,6})", spell_data.desc)
-                if r and int(r.group(1)) in ids:
-                    self.process_spell(spell_id, ids, 0, 0)
+                if r and (id := int(r.group(1))) in ids:
+                    self.process_spell(spell_id, ids, ids[id]['mask_class'], ids[id]['mask_race'])
 
         #print('filter done', datetime.datetime.now() - _start)
         return ids
