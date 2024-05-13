@@ -246,6 +246,9 @@ public:
     propagate_const<buff_t *> storm_earth_and_fire;
     propagate_const<buff_t *> touch_of_karma;
 
+    // Shado-Pan
+    propagate_const<buff_t *> high_impact;
+
     // Covenant Abilities
     propagate_const<buff_t *> bonedust_brew;
     propagate_const<buff_t *> jadefire_stomp;

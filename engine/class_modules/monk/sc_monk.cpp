@@ -603,7 +603,7 @@ void monk_action_t<Base>::impact( action_state_t *s )
         double damage_contribution = s->result_amount;
 
         if ( p()->talent.shado_pan.one_versus_many->ok() && ( ab::data().id() == 117418 || ab::data().id() == 121253 ) )
-          damage_contribution *= 2.0f;
+          damage_contribution *= ( 1.0f + p()->talent.shado_pan.one_versus_many->effectN( 1 ).percent() );
 
         p()->flurry_strikes_damage += damage_contribution;
 
@@ -1219,6 +1219,7 @@ struct windwalking_aura_t : public monk_spell_t
 // ==========================================================================
 // Flurry Strikes
 // ==========================================================================
+
 struct flurry_strike_t : public monk_melee_attack_t
 {
   flurry_strike_t( monk_t *p ) : monk_melee_attack_t( "flurry_strike", p, p->passives.shado_pan.flurry_strike )
@@ -1233,12 +1234,20 @@ struct flurry_strike_t : public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     p()->buff.against_all_odds->trigger();
+
+    if ( p()->talent.shado_pan.high_impact.ok() )
+    {
+      auto td = p()->get_target_data( s->target );
+      if ( td )
+        td->debuff.high_impact->trigger();
+    }
   }
 };
 
 struct flurry_strikes_t : public monk_melee_attack_t
 {
   flurry_strike_t *strike;
+
   flurry_strikes_t( monk_t *p ) : monk_melee_attack_t( "flurry_strikes", p, p->talent.shado_pan.flurry_strikes )
   {
     strike = new flurry_strike_t( p );
@@ -6599,6 +6608,10 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
           ->set_refresh_behavior( buff_refresh_behavior::NONE )
           ->set_max_stack( 1 )
           ->set_default_value( 0 );
+
+  debuff.high_impact = make_buff( *this, "high_impact", p->find_spell( 451037 ) )
+                           ->set_trigger_spell( p->talent.shado_pan.high_impact )
+                           ->set_quiet( true );
 
   debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p->passives.mark_of_the_crane )
                                  ->set_trigger_spell( p->talent.windwalker.mark_of_the_crane )
