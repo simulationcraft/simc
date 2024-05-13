@@ -326,7 +326,7 @@ public:
     gain_t* shield_charge;
     gain_t* shield_slam;
     gain_t* champions_spear;
-    gain_t* strength_of_arms;
+    gain_t* finishing_blows;
     gain_t* whirlwind;
     gain_t* booming_voice;
     gain_t* thunder_clap;
@@ -536,6 +536,7 @@ public:
 
       player_talent_t skullsplitter;
       player_talent_t rend;
+      player_talent_t finishing_blows;
       player_talent_t exhilarating_blows;
       player_talent_t anger_management;
       player_talent_t massacre;
@@ -4164,13 +4165,13 @@ struct dreadnaught_t : warrior_attack_t
 struct overpower_t : public warrior_attack_t
 {
   double battlelord_chance;
-  double rage_from_strength_of_arms;
+  double rage_from_finishing_blows;
   warrior_attack_t* dreadnaught;
 
   overpower_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "overpower", p, p->talents.arms.overpower ),
       battlelord_chance( p->talents.arms.battlelord->proc_chance() ),
-      rage_from_strength_of_arms( p->find_spell( 400806 )->effectN( 1 ).base_value() / 10.0 ),
+      rage_from_finishing_blows( p->find_spell( 400806 )->effectN( 1 ).base_value() / 10.0 ),
       dreadnaught( nullptr )
   {
     parse_options( options_str );
@@ -4213,9 +4214,9 @@ struct overpower_t : public warrior_attack_t
     p()->buff.martial_prowess->trigger();
     }
 
-    if ( p()->talents.arms.strength_of_arms->ok() && target->health_percentage() < 35 )
+    if ( p()->talents.arms.finishing_blows->ok() && target->health_percentage() < 35 )
     {
-      p()->resource_gain( RESOURCE_RAGE, rage_from_strength_of_arms, p()->gain.strength_of_arms );
+      p()->resource_gain( RESOURCE_RAGE, rage_from_finishing_blows, p()->gain.finishing_blows );
     }
 
   }
@@ -6387,6 +6388,7 @@ void warrior_t::init_spells()
 
   talents.arms.skullsplitter                       = find_talent_spell( talent_tree::SPECIALIZATION, "Skullsplitter" );
   talents.arms.rend                                = find_talent_spell( talent_tree::SPECIALIZATION, "Rend", WARRIOR_ARMS );
+  talents.arms.finishing_blows                     = find_talent_spell( talent_tree::SPECIALIZATION, "Finishing Blows" );
   talents.arms.exhilarating_blows                  = find_talent_spell( talent_tree::SPECIALIZATION, "Exhilarating Blows" );
   talents.arms.anger_management                    = find_talent_spell( talent_tree::SPECIALIZATION, "Anger Management" );
   talents.arms.massacre                            = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_ARMS );
@@ -7297,7 +7299,7 @@ void warrior_t::init_gains()
   gain.shield_charge                    = get_gain( "shield_charge" );
   gain.shield_slam                      = get_gain( "shield_slam" );
   gain.champions_spear                  = get_gain( "champions_spear" );
-  gain.strength_of_arms                 = get_gain( "strength_of_arms" );
+  gain.finishing_blows                  = get_gain( "finishing_blows" );
   gain.booming_voice                    = get_gain( "booming_voice" );
   gain.thunder_clap                     = get_gain( "thunder_clap" );
   gain.whirlwind                        = get_gain( "whirlwind" );
