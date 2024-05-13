@@ -778,6 +778,7 @@ struct evoker_t : public player_t
     player_talent_t fire_within;
     player_talent_t terror_of_the_skies;  // row 10
     player_talent_t time_spiral;
+    player_talent_t spatial_paradox;
     player_talent_t zephyr;
 
     // Devastation Traits
@@ -854,7 +855,7 @@ struct evoker_t : public player_t
     player_talent_t blistering_scales;
     const spell_data_t* blistering_scales_damage;
     // Draconic Attunements - Non DPS
-    // Spatial Paradox Non DPS - Movement DPS Gain?
+    player_talent_t arcane_reach;
     player_talent_t unyielding_domain;
     player_talent_t tectonic_locus;
     player_talent_t regenerative_chitin;
@@ -885,6 +886,85 @@ struct evoker_t : public player_t
     player_talent_t overlord;
     player_talent_t fate_mirror;
     const spell_data_t* fate_mirror_damage;
+
+    struct chronowarden_t
+    {
+      player_talent_t chrono_flame;
+      const spell_data_t* chrono_flames_spell; // 431443
+      const spell_data_t* chrono_flame_damage; // 431583
+      player_talent_t warp;
+      player_talent_t temporal_burst;
+      const spell_data_t* temporal_burst_buff; // 431698
+      player_talent_t reverberations;
+      const spell_data_t* reverberations_upheaval;  // 431620
+      player_talent_t temporality;
+      const spell_data_t* temporality_buff;  // 431872
+      player_talent_t motes_of_acceleration;
+      player_talent_t threads_of_fate;
+      const spell_data_t* thread_of_fate_buff;  // 431716
+      const spell_data_t* thread_of_fate_damage; // 432895
+      player_talent_t primacy;
+      const spell_data_t* primacy_buff;  // 431654
+      player_talent_t double_time;
+      player_talent_t time_convergence;
+      const spell_data_t* time_convergence_intellect_buff;  // 431991
+      const spell_data_t* time_convergence_stamina_buff;  // 431993
+      player_talent_t master_of_destiny;
+      player_talent_t golden_opportunity;
+      player_talent_t instability_matrix;
+      player_talent_t afterimage;
+    } chronowarden;
+
+    struct flameshaper_t
+    {
+      player_talent_t engulf;
+      player_talent_t trailblazer;
+      player_talent_t shape_of_flame;
+      player_talent_t travelling_flame;
+      const spell_data_t* travelling_flame_fire_breath;  // 444249
+      player_talent_t enkindle;
+      const spell_data_t* enkindle_damage;  // 444017
+      player_talent_t conduit_of_flame;
+      player_talent_t burning_adrenaline;
+      const spell_data_t* burning_adrenaline_buff;  // 444019
+      player_talent_t fan_the_flames;
+      player_talent_t expanded_lungs;
+      player_talent_t titanic_precision;
+      player_talent_t red_hot;
+      player_talent_t lifecinders;
+      player_talent_t draconic_instincts;
+      player_talent_t consume_flame;
+      const spell_data_t* consume_flame_damage;  // 444089      
+    } flameshaper;
+
+    struct scalecommander_t
+    {
+      player_talent_t mass_disintegrate;
+      const spell_data_t* mass_disintegrate_buff;  // 436336
+      player_talent_t mass_eruption;
+      const spell_data_t* mass_eruption_damage;  // 438653
+      const spell_data_t* mass_eruption_buff;    // 438588
+      player_talent_t might_of_the_black_dragonflight;
+      player_talent_t bombardments;
+      const spell_data_t* bombardments_debuff;  // 434473
+      const spell_data_t* bombardments_damage;  // 434481
+      player_talent_t onslaught;
+      player_talent_t melt_armor;
+      const spell_data_t* melt_armor_debuff;  // 441172
+      player_talent_t wingleader;
+      player_talent_t unrelenting_siege;
+      const spell_data_t* unrelenting_siege_buff;  // 441248
+      player_talent_t hardened_scales;
+      player_talent_t menacing_presence;
+      player_talent_t extended_battle;
+      player_talent_t diverted_power;
+      player_talent_t nimble_flyer;
+      player_talent_t slipstream;
+      player_talent_t maneuverability;                     // Melt Armor debuff is the damage done
+      const spell_data_t* maneuverability_breath_of_eons;  // 442204
+      const spell_data_t* maneuverability_deep_breath;     // 433874
+    } scalecommander;
+
   } talent;
 
   // Benefits
@@ -5314,7 +5394,7 @@ void evoker_t::init_finished()
 
   /*PRECOMBAT SHENANIGANS
   we do this here so all precombat actions have gone throught init() and init_finished() so if-expr are properly
-  parsed and we can adjust wrath travel times accordingly based on subsequent precombat actions that will sucessfully
+  parsed and we can adjust travel times accordingly based on subsequent precombat actions that will sucessfully
   cast*/
 
   for ( auto pre = precombat_action_list.begin(); pre != precombat_action_list.end(); pre++ )
@@ -5481,6 +5561,7 @@ void evoker_t::init_spells()
   // Evoker Talents
   auto CT = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::CLASS, n ); };
   auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
+  auto HT = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::HERO, n ); };
 
   // Class Traits
   talent.landslide            = CT( "Landslide" );  // Row 1
@@ -5585,6 +5666,7 @@ void evoker_t::init_spells()
   talent.blistering_scales_damage = find_spell( 360828 );
   // Draconic Attunements - Non DPS
   // Spatial Paradox Non DPS - Movement DPS Gain?
+  talent.arcane_reach        = ST( "Arcane Reach" );
   talent.unyielding_domain   = ST( "Unyielding Domain" );
   talent.tectonic_locus      = ST( "Tectonic Locus" );
   talent.regenerative_chitin = ST( "Regenerative Chitin" );
@@ -5643,6 +5725,79 @@ void evoker_t::init_spells()
       }
     }
   }
+
+  // chronowarden
+  talent.chronowarden.chrono_flame                    = HT( "Chrono Flame" );
+  talent.chronowarden.chrono_flames_spell             = find_spell( 431443 );
+  talent.chronowarden.chrono_flame_damage             = find_spell( 431583 );
+  talent.chronowarden.warp                            = HT( "Warp" );
+  talent.chronowarden.temporal_burst                  = HT( "Temporal Burst" );
+  talent.chronowarden.temporal_burst_buff             = find_spell( 431698 );
+  talent.chronowarden.reverberations                  = HT( "Reverberations" );
+  talent.chronowarden.reverberations_upheaval         = find_spell( 431620 );
+  talent.chronowarden.temporality                     = HT( "Temporality" );
+  talent.chronowarden.temporality_buff                = find_spell( 431872 );
+  talent.chronowarden.motes_of_acceleration           = HT( "Motes of Acceleration" );
+  talent.chronowarden.threads_of_fate                 = HT( "Threads of Fate" );
+  talent.chronowarden.thread_of_fate_buff             = find_spell( 431716 );
+  talent.chronowarden.thread_of_fate_damage           = find_spell( 432895 );
+  talent.chronowarden.primacy                         = HT( "Primacy" );
+  talent.chronowarden.primacy_buff                    = find_spell( 431654 );
+  talent.chronowarden.double_time                     = HT( "Double-time" );
+  talent.chronowarden.time_convergence                = HT( "Time Convergence" );
+  talent.chronowarden.time_convergence_intellect_buff = find_spell( 431991 );
+  talent.chronowarden.time_convergence_stamina_buff   = find_spell( 431993 );
+  talent.chronowarden.master_of_destiny               = HT( "Master of Destiny" );
+  talent.chronowarden.golden_opportunity              = HT( "Golden Opportunity" );
+  talent.chronowarden.instability_matrix              = HT( "Instability Matrix" );
+  talent.chronowarden.afterimage                      = HT( "Afterimage" );
+
+  // flameshaper
+  talent.flameshaper.engulf                       = HT( "Engulf" );
+  talent.flameshaper.trailblazer                  = HT( "Trailblazer" );
+  talent.flameshaper.shape_of_flame               = HT( "Shape_of_flame" );
+  talent.flameshaper.travelling_flame             = HT( "Travelling_flame" );
+  talent.flameshaper.travelling_flame_fire_breath = find_spell( 444249 );
+  talent.flameshaper.enkindle                     = HT( "Enkindle" );
+  talent.flameshaper.enkindle_damage              = find_spell( 444017 );
+  talent.flameshaper.conduit_of_flame             = HT( "Conduit of Flame" );
+  talent.flameshaper.burning_adrenaline           = HT( "Burning Adrenaline" );
+  talent.flameshaper.burning_adrenaline_buff      = find_spell( 444019 );
+  talent.flameshaper.fan_the_flames               = HT( "Fan the Flames" );
+  talent.flameshaper.expanded_lungs               = HT( "Expanded Lungs" );
+  talent.flameshaper.titanic_precision            = HT( "Titanic Precision" );
+  talent.flameshaper.red_hot                      = HT( "Red Hot" );
+  talent.flameshaper.lifecinders                  = HT( "Lifecinders" );
+  talent.flameshaper.draconic_instincts           = HT( "Draconic Instincts" );
+  talent.flameshaper.consume_flame                = HT( "Consume Flame" );
+  talent.flameshaper.consume_flame_damage         = find_spell( 444089 );
+
+  // Scalecommander
+  talent.scalecommander.mass_disintegrate               = HT( "Mass Disintegrate" );
+  talent.scalecommander.mass_disintegrate_buff          = find_spell( 436336 );
+  talent.scalecommander.mass_eruption                   = HT( "Mass Eruption" );
+  talent.scalecommander.mass_eruption_damage            = find_spell( 438653 );
+  talent.scalecommander.mass_eruption_buff              = find_spell( 438588 );
+  talent.scalecommander.mass_disintegrate_buff          = find_spell( 436336 );
+  talent.scalecommander.might_of_the_black_dragonflight = HT( "Might of the Black Dragonflight" );
+  talent.scalecommander.bombardments                    = HT( "Bombardments" );
+  talent.scalecommander.bombardments_debuff             = find_spell( 434473 );
+  talent.scalecommander.bombardments_damage             = find_spell( 434481 );
+  talent.scalecommander.onslaught                       = HT( "Onslaught" );
+  talent.scalecommander.melt_armor                      = HT( "Melt Armor" );
+  talent.scalecommander.melt_armor_debuff               = find_spell( 441172 );
+  talent.scalecommander.wingleader                      = HT( "Wingleader" );
+  talent.scalecommander.unrelenting_siege               = HT( "Unrelenting Siege" );
+  talent.scalecommander.unrelenting_siege_buff          = find_spell( 441248 );
+  talent.scalecommander.hardened_scales                 = HT( "Hardened Scales" );
+  talent.scalecommander.menacing_presence               = HT( "Menacing Presence" );
+  talent.scalecommander.extended_battle                 = HT( "Extended Battle" );
+  talent.scalecommander.diverted_power                  = HT( "Diverted Power" );
+  talent.scalecommander.nimble_flyer                    = HT( "Nimble Flyer" );
+  talent.scalecommander.slipstream                      = HT( "Slipstream" );
+  talent.scalecommander.maneuverability                 = HT( "Maneuverability" );
+  talent.scalecommander.maneuverability_breath_of_eons  = find_spell( 442204 );
+  talent.scalecommander.maneuverability_deep_breath     = find_spell( 433874 );
 
   // Evoker Specialization Spells
   spec.evoker                  = find_spell( 353167 );  // TODO: confirm this is the class aura
@@ -6078,6 +6233,7 @@ void evoker_t::apply_affecting_auras_late( action_t& action )
   action.apply_affecting_aura( talent.unyielding_domain );
   action.apply_affecting_aura( talent.volcanism );
   action.apply_affecting_aura( talent.interwoven_threads );
+  action.apply_affecting_aura( talent.arcane_reach );
 
   // Devastaion
   action.apply_affecting_aura( talent.arcane_intensity );
