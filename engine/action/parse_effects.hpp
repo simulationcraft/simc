@@ -1207,7 +1207,7 @@ public:
     auto cd = BASE::composite_crit_damage_bonus_multiplier();
 
     for ( const auto& i : crit_damage_effects )
-      cd *= get_effect_value( i );
+      cd *= 1.0 + get_effect_value( i, true );
 
     return cd;
   }
