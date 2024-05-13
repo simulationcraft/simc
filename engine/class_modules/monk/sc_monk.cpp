@@ -1253,6 +1253,15 @@ struct flurry_strike_t : public monk_melee_attack_t
     apply_affecting_aura( p->talent.shado_pan.pride_of_pandaria );
   }
 
+  double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    am *= 1 + p()->buff.vigilant_watch->check_value();
+
+    return am;
+  }
+
   void impact( action_state_t *s ) override
   {
     monk_melee_attack_t::impact( s );
@@ -1301,6 +1310,8 @@ struct flurry_strikes_t : public monk_melee_attack_t
         strike->schedule_execute();
       }
     }
+
+    p()->buff.vigilant_watch->expire();
   }
 };
 
@@ -2053,6 +2064,9 @@ struct blackout_kick_t : public monk_melee_attack_t
 
       if ( p()->buff.blackout_reinforcement->up() )
         p()->buff.blackout_reinforcement->decrement();
+
+      if ( p()->talent.shado_pan.vigilant_watch->ok() )
+        p()->buff.vigilant_watch->trigger();
     }
   }
 
@@ -8193,6 +8207,10 @@ void monk_t::create_buffs()
                           ->add_invalidate( CACHE_HASTE )
                           ->add_invalidate( CACHE_SPELL_HASTE );
 
+  buff.vigilant_watch = make_buff( this, "vigilant_watch", find_spell( 451233 ) )
+                            ->set_trigger_spell( talent.shado_pan.vigilant_watch )
+                            ->set_default_value_from_effect( 1 );
+
   // Tier 29 Set Bonus
   buff.kicks_of_flowing_momentum =
       new buffs::kicks_of_flowing_momentum_t( *this, "kicks_of_flowing_momentum", passives.kicks_of_flowing_momentum );
@@ -9780,6 +9798,7 @@ void monk_t::apply_affecting_auras( action_t &action )
   // Shado-Pan
   action.apply_affecting_aura( talent.shado_pan.efficient_training );
   action.apply_affecting_aura( talent.shado_pan.one_versus_many );
+  action.apply_affecting_aura( talent.shado_pan.vigilant_watch );
 }
 
 void monk_t::merge( player_t &other )

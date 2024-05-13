@@ -626,6 +626,7 @@ public:
     propagate_const<buff_t *> against_all_odds;
     propagate_const<buff_t *> flurry_charge;
     propagate_const<buff_t *> veterans_eye;
+    propagate_const<buff_t *> vigilant_watch;
 
     // T29 Set Bonus
     propagate_const<buff_t *> kicks_of_flowing_momentum;
