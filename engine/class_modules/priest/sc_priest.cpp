@@ -3233,8 +3233,8 @@ void priest_t::init_spells()
   talents.archon.energy_compression    = HT( "Energy Compression" );     // NYI
   talents.archon.sustained_potency     = HT( "Sustained Potency" );      // NYI
   talents.archon.concentrated_infusion = HT( "Concentrated Infusion" );  // NYI
-  talents.archon.energy_cycle          = HT( "Energy Cycle" );           // NYI
-  talents.archon.divine_halo           = HT( "Divine Halo" );            // NYI
+  talents.archon.energy_cycle          = HT( "Energy Cycle" );
+  talents.archon.divine_halo           = HT( "Divine Halo" );  // NYI
 
   // Oracle Hero Talents (Holy/Discipline)
   talents.oracle.premonition           = HT( "Premonition" );            // NYI

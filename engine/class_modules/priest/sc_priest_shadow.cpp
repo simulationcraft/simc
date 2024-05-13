@@ -215,7 +215,7 @@ struct mind_spike_insanity_t final : public mind_spike_base_t
     priest().buffs.mind_spike_insanity->decrement();
   }
 
-    void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
 
