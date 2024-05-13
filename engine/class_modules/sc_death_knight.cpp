@@ -5852,12 +5852,11 @@ private:
 struct raise_abomination_t final : public death_knight_spell_t
 {
   raise_abomination_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_spell_t( "raise_abomination", p, p->talent.unholy.raise_abomination ),
-      precombat_time( 0_ms )
+    : death_knight_spell_t( "raise_abomination", p, p->talent.unholy.raise_abomination ), precombat_time( 0_ms )
   {
     harmful = false;
     target  = p;
-    add_option( opt_timespan( "precombat_time", precombat_time ) );
+    add_option( opt_timespan( "precombat_time", precombat_time, trigger_gcd, 10_s ) );
     parse_options( options_str );
     p->pets.abomination.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     if ( p->talent.unholy.magus_of_the_dead.ok() && p->talent.unholy.raise_abomination.ok() )
