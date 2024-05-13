@@ -4598,7 +4598,8 @@ struct delayed_execute_event_t : public event_t
 // Runic Power Decay Event ==================================================
 struct runic_power_decay_event_t : public event_t
 {
-  runic_power_decay_event_t( death_knight_t* p ) : event_t( *p, 1000_ms ), player( p )
+  runic_power_decay_event_t( death_knight_t* p )
+    : event_t( *p, 1000_ms ), player( p )
   {
   }
 
@@ -5851,21 +5852,39 @@ private:
 struct raise_abomination_t final : public death_knight_spell_t
 {
   raise_abomination_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_spell_t( "raise_abomination", p, p->talent.unholy.raise_abomination )
+    : death_knight_spell_t( "raise_abomination", p, p->talent.unholy.raise_abomination ),
+      precombat_time( 0_ms )
   {
-    parse_options( options_str );
     harmful = false;
     target  = p;
+    add_option( opt_timespan( "precombat_time", precombat_time ) );
+    parse_options( options_str );
     p->pets.abomination.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     if ( p->talent.unholy.magus_of_the_dead.ok() && p->talent.unholy.raise_abomination.ok() )
     {
       p->pets.army_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     }
-    duration = data().duration();
+  }
+
+  void precombat_check()
+  {
+    duration       = data().duration();
+    rider_duration = p()->spell.apocalypse_now_data->duration();
+
+    if ( precombat_time > 0_ms && !p()->in_combat )
+    {
+      duration -= precombat_time;
+      rider_duration -= precombat_time;
+      cooldown->adjust( -precombat_time, false );
+      p()->resource_loss( RESOURCE_RUNIC_POWER, RUNIC_POWER_DECAY_RATE * timespan_t::to_native( precombat_time ),
+                          nullptr, nullptr );
+      p()->_runes.regenerate_immediate( precombat_time );
+    }
   }
 
   void execute() override
   {
+    precombat_check();
     death_knight_spell_t::execute();
     p()->pets.abomination.spawn( duration, 1 );
     if ( p()->talent.unholy.magus_of_the_dead.ok() )
@@ -5874,12 +5893,14 @@ struct raise_abomination_t final : public death_knight_spell_t
     }
     if ( p()->talent.rider.apocalypse_now.ok() )
     {
-      p()->summon_rider( p()->spell.apocalypse_now_data->duration(), false );
+      p()->summon_rider( rider_duration, false );
     }
   }
 
 private:
   timespan_t duration;
+  timespan_t rider_duration;
+  timespan_t precombat_time;
 };
 
 // Blood Boil ===============================================================
