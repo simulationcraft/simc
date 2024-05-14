@@ -2907,7 +2907,6 @@ struct thunder_clap_t : public warrior_attack_t
     aoe       = -1;
     may_dodge = may_parry = may_block = false;
 
-    radius *= 1.0 + p->talents.warrior.crackling_thunder->effectN( 1 ).percent();
     energize_type = action_energize::NONE;
 
     if ( p->spec.protection_warrior->ok() )
@@ -8458,6 +8457,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
   // Shared Auras
   action.apply_affecting_aura( talents.warrior.barbaric_training );
   action.apply_affecting_aura( talents.warrior.concussive_blows );
+  action.apply_affecting_aura( talents.warrior.crackling_thunder );
   action.apply_affecting_aura( talents.warrior.cruel_strikes );
   action.apply_affecting_aura( talents.warrior.crushing_force ); // crit portion not active
   action.apply_affecting_aura( talents.warrior.piercing_challenge );
