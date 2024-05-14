@@ -131,9 +131,9 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talents.monk.chi_proficiency );
 
   // Shado-Pan
-  action.apply_affecting_aura( talent.shado_pan.efficient_training );
-  action.apply_affecting_aura( talent.shado_pan.one_versus_many );
-  action.apply_affecting_aura( talent.shado_pan.vigilant_watch );
+  apply_affecting_aura( p()->talent.shado_pan.efficient_training );
+  apply_affecting_aura( p()->talent.shado_pan.one_versus_many );
+  apply_affecting_aura( p()->talent.shado_pan.vigilant_watch );
 
   /*
    * Temporary action-specific effects go here.
@@ -472,11 +472,11 @@ void monk_action_t<Base>::consume_resource()
 
   if ( current_resource() == RESOURCE_ENERGY )
   {
-    if ( ab::cost() > 0 )
+    if ( base_t::cost() > 0 )
     {
       if ( p()->talent.shado_pan.flurry_strikes.ok() )
       {
-        p()->flurry_strikes_energy += as<int>( ab::cost() );
+        p()->flurry_strikes_energy += as<int>( base_t::cost() );
         if ( p()->flurry_strikes_energy >= p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() )
         {
           p()->flurry_strikes_energy -= as<int>( p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() );
@@ -486,7 +486,7 @@ void monk_action_t<Base>::consume_resource()
 
       if ( p()->talent.shado_pan.efficient_training.ok() )
       {
-        p()->efficient_training_energy += as<int>( ab::cost() );
+        p()->efficient_training_energy += as<int>( base_t::cost() );
         if ( p()->efficient_training_energy >= p()->talent.shado_pan.efficient_training->effectN( 3 ).base_value() )
         {
           timespan_t cdr =
@@ -599,7 +599,7 @@ void monk_action_t<Base>::impact( action_state_t *s )
       {
         double damage_contribution = s->result_amount;
 
-        if ( p()->talent.shado_pan.one_versus_many->ok() && ( ab::data().id() == 117418 || ab::data().id() == 121253 ) )
+        if ( p()->talent.shado_pan.one_versus_many->ok() && ( base_t::data().id() == 117418 || base_t::data().id() == 121253 ) )
           damage_contribution *= ( 1.0f + p()->talent.shado_pan.one_versus_many->effectN( 1 ).percent() );
 
         p()->flurry_strikes_damage += damage_contribution;
@@ -762,9 +762,9 @@ double monk_action_t<Base>::cost_reduction() const
 template <class Base>
 double monk_action_t<Base>::composite_crit_damage_bonus_multiplier() const
 {
-  double m = ab::composite_crit_damage_bonus_multiplier();
+  double m = base_t::composite_crit_damage_bonus_multiplier();
 
-  if ( ab::data().affected_by( p()->buff.wisdom_of_the_wall_crit->data().effectN( 1 ) ) )
+  if ( base_t::data().affected_by( p()->buff.wisdom_of_the_wall_crit->data().effectN( 1 ) ) )
     m *= 1 + p()->buff.wisdom_of_the_wall_crit->check_value();
 
   return m;
@@ -10273,6 +10273,8 @@ const spell_data_t *stagger_t::stagger_level_t::level_spell_data( stagger_level_
     case HEAVY_STAGGER:
       return player->baseline.brewmaster.heavy_stagger;
     case MAX_STAGGER:
+      return spell_data_t::nil();
+    default:
       return spell_data_t::nil();
   }
 }
