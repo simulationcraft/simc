@@ -331,7 +331,6 @@ public:
     bool mastery = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
     double val = 0.0;
     double val_mul = 0.01;
-    bool matching_armor = s_data->equipped_class() == ITEM_CLASS_ARMOR;
 
     if ( mastery )
       val = eff.mastery_value();
@@ -386,7 +385,7 @@ public:
     // 2) void* is returned and needs to be re-cast to the correct vector<U>*
     if constexpr ( is_detected<detect_buff, U>::value )
     {
-      vec = get_effect_vector( eff, tmp.data, val_mul, type_str, flat, force, matching_armor );
+      vec = get_effect_vector( eff, tmp.data, val_mul, type_str, flat, force );
     }
     else
     {
@@ -416,7 +415,7 @@ public:
           val_str = val_str + " (default value)";
       }
 
-      debug_message( tmp.data, type_str, val_str, mastery, s_data, i, matching_armor );
+      debug_message( tmp.data, type_str, val_str, mastery, s_data, i );
     }
     else
     {
@@ -463,10 +462,10 @@ public:
 
   virtual std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data,
                                                            double& val_mul, std::string& str, bool& flat,
-                                                           bool force, bool matching_armor ) = 0;
+                                                           bool force ) = 0;
 
   virtual void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str,
-                              bool mastery, const spell_data_t* s_data, size_t i, bool matching_armor ) = 0;
+                              bool mastery, const spell_data_t* s_data, size_t i ) = 0;
 
   template <typename T, typename... Ts>
   void parse_effects( T data, Ts... mods )
@@ -929,7 +928,7 @@ public:
   }
 
   std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data, double& val_mul,
-                                                   std::string& str, bool& /* flat */, bool /* force */, bool matching_armor ) override
+                                                   std::string& str, bool& /* flat */, bool /* force */ ) override
   {
     auto invalidate = [ &data ]( cache_e c ) {
       if ( data.buff )
@@ -958,7 +957,8 @@ public:
           }
           str = util::string_join( str_list );
         }
-        if( matching_armor )
+
+        if ( eff.spell()->equipped_class() == ITEM_CLASS_ARMOR )
           return &matching_armor_attribute_multiplier_effects;
         else
           return &attribute_multiplier_effects;
@@ -1051,7 +1051,7 @@ public:
   }
 
   void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str, bool mastery,
-                      const spell_data_t* s_data, size_t i, bool matching_armor ) override
+                      const spell_data_t* s_data, size_t i ) override
   {
     if ( data.buff )
     {
@@ -1068,7 +1068,7 @@ public:
       sim->print_debug( "player-effects: Player {} {} modified by {} with condition from {} ({}#{})", name_str, type_str, val_str,
                         s_data->name_cstr(), s_data->id(), i );
     }
-    else if ( matching_armor )
+    else if ( s_data->equipped_class() == ITEM_CLASS_ARMOR )
     {
       sim->print_debug( "player-effects: Player {} {} modified by {} with matching armor from {} ({}#{})", name_str, type_str, val_str,
                         s_data->name_cstr(), s_data->id(), i );
@@ -1161,6 +1161,7 @@ public:
   std::vector<player_effect_t> cost_effects;
   std::vector<player_effect_t> flat_cost_effects;
   std::vector<player_effect_t> crit_chance_effects;
+  std::vector<player_effect_t> crit_chance_multiplier_effects;
   std::vector<player_effect_t> crit_damage_effects;
   std::vector<target_effect_t<TD>> target_multiplier_effects;
   std::vector<target_effect_t<TD>> target_crit_damage_effects;
@@ -1221,6 +1222,16 @@ public:
       cc += get_effect_value( i );
 
     return cc;
+  }
+
+  double composite_crit_chance_multiplier() const override
+  {
+    auto ccm = BASE::composite_crit_chance_multiplier();
+
+    for ( const auto& i : crit_chance_multiplier_effects )
+      ccm *= 1.0 + get_effect_value( i );
+
+    return ccm;
   }
 
   double composite_crit_damage_bonus_multiplier() const override
@@ -1374,7 +1385,7 @@ public:
   }
 
   std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& /* data */,
-                                                   double& val_mul, std::string& str, bool& flat, bool force, bool /*matching_armor*/) override
+                                                   double& val_mul, std::string& str, bool& flat, bool force ) override
   {
     if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
     {
@@ -1421,6 +1432,10 @@ public:
           str = "cost percent";
           return &cost_effects;
 
+        case P_CRIT:
+          str = "crit chance multiplier";
+          return &crit_chance_multiplier_effects;
+
         case P_CRIT_DAMAGE:
           str = "crit damage";
           return &crit_damage_effects;
@@ -1458,7 +1473,7 @@ public:
   }
 
   void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str, bool mastery,
-                      const spell_data_t* s_data, size_t i, bool /*matching_armor*/) override
+                      const spell_data_t* s_data, size_t i ) override
   {
     if ( data.buff )
     {
