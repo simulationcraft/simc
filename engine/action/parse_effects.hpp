@@ -1070,7 +1070,7 @@ public:
     }
     else if ( matching_armor )
     {
-      sim->print_debug( "player-effects: Player {} modified by {} with matching armor from {} ({}#{})", type_str, val_str,
+      sim->print_debug( "player-effects: Player {} {} modified by {} with matching armor from {} ({}#{})", name_str, type_str, val_str,
                         s_data->name_cstr(), s_data->id(), i );
     }
     else
