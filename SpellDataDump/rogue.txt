@@ -7225,8 +7225,6 @@ Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=794980)   : Learn Spell (36)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=794981)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : $@spelldesc323547
@@ -7343,7 +7341,6 @@ Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, Yellow Ranged
 Affecting spells : Venomous Totem (23726 effect#2), Envenom (32645 effects: #2, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Toxic Blade (245389 effect#1), Shiv (319504 effect#1), Lethal Poisons (341539 effect#1), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effect#1), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Destiny Defined (454435 effect#1)
-Triggered by     : Poison (317099)
 Family Flags     : 16, 64
 Attributes       : ....x... ........ x....... ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
@@ -7418,8 +7415,6 @@ Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=802043)   : Learn Spell (36)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 315584 | Target: Self (1)
 #2 (id=802044)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc315584
@@ -7989,7 +7984,6 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Cooldown         : 90 seconds
 Labels           : 976
 Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Heavy Hitter (381885 effects: #1, #2), Veiltouched (382017 effects: #1, #2), Lethality (382238 effect#2), Dark Brew (382504 effects: #1, #2, #3), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2)
-Triggered by     : Sepsis (337440)
 Family Flags     : 54, 118
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -8178,8 +8172,6 @@ Attributes       : ........ ........ .......x x..x.x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=832880)   : Learn Spell (36)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=832881)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : $@spelldesc328547
@@ -8198,29 +8190,9 @@ Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=834813)   : Learn Spell (36)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=834814)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : $@spelldesc323654
-
-Name             : Sepsis (desc=Night Fae) (id=337440) [Hidden] 
-Class            : Rogue
-School           : Physical
-Spell Type       : None
-Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
-                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
-Effects          :
-#1 (id=835466)   : Learn Spell (36)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 328305 | Target: Self (1)
-Description      : $@spelldesc328305
 
 Name             : Mark of the Master Assassin (id=340076) [Spell Family (8), Passive] 
 School           : Physical

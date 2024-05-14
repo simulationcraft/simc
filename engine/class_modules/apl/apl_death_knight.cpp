@@ -386,6 +386,7 @@ std::string temporary_enchant( const player_t* p )
     precombat->add_action( "snapshot_stats" );
     precombat->add_action( "raise_dead" );
     precombat->add_action( "army_of_the_dead,precombat_time=2,if=!equipped.fyralath_the_dreamrender|raid_event.adds.exists" );
+    precombat->add_action( "raise_abomination,precombat_time=2" );
     precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon" );
     precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon" );
     precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit)&!variable.trinket_1_exclude" );

@@ -2311,23 +2311,13 @@ class SpellDataGenerator(DataGenerator):
           # The War Within
           # Class
           # Balance
-          ( 394451, 1 ), ( 450360, 1 ), ( 450361, 1 ), # touch the cosmos
           # Feral
           # Guardian
           # Restoration
-          ( 145153, 4 ), # Dream of Cenarius heal
           # Hero talents
-          ( 429438, 0 ), # blooming infusion
-          ( 425206, 0 ), ( 425217, 0 ), ( 425219, 0 ), # boundless moonlight
-          ( 429625, 0 ), ( 429676, 0 ), # cenarius' might
-          ( 451177, 0 ), # dreadful wound
-          ( 433832, 0 ), ( 434112, 0 ), # dream surge
-          ( 441827, 0 ), # killing strikes
-          ( 432846, 0 ), # lunar amplification
+          ( 425217, 0 ), ( 425219, 0 ), # boundless moonlight
           ( 441585, 0 ), ( 441602, 0 ), # ravage
-          ( 439887, 0 ), ( 439888, 0 ), # root network
           ( 439891, 0 ), ( 439893, 0 ), # strategic infusion
-          ( 428545, 0 ), # treants of the moon
         ),
         # Demon Hunter:
         (
@@ -2529,10 +2519,10 @@ class SpellDataGenerator(DataGenerator):
     # http://github.com/mangos/mangos/blob/400/src/game/SharedDefines.h
     _effect_type_blacklist = [
         5,      # SPELL_EFFECT_TELEPORT_UNITS
-        #10,     # SPELL_EFFECT_HEAL
         16,     # SPELL_EFFECT_QUEST_COMPLETE
         18,     # SPELL_EFFECT_RESURRECT
         25,     # SPELL_EFFECT_WEAPONS
+        36,     # Learn spell
         39,     # SPELL_EFFECT_LANGUAGE
         47,     # SPELL_EFFECT_TRADESKILL
         50,     # SPELL_EFFECT_TRANS_DOOR
@@ -3252,7 +3242,7 @@ class SpellDataGenerator(DataGenerator):
         # with spell ###### and should be included.
         for spell_id, spell_data in self.db('Spell').items():
             if spell_data.desc:
-                r = re.match("\$@spelldesc([0-9]{1,6})", spell_data.desc)
+                r = re.match("\$@spell(?:aura|desc)([0-9]{1,6})", spell_data.desc)
                 if r and (id := int(r.group(1))) in ids:
                     self.process_spell(spell_id, ids, ids[id]['mask_class'], ids[id]['mask_race'])
 

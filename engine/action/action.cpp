@@ -5430,6 +5430,12 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         value_ = effect.percent();
         break;
 
+      case P_CRIT:
+        crit_multiplier *= 1.0 + effect.percent();
+        sim->print_debug( "{} critical strike chance modified by {}%", *this, effect.base_value() );
+        value_ = effect.percent();
+        break;
+
       case P_GCD:
         trigger_gcd *= 1.0 + effect.percent();
         if ( trigger_gcd < timespan_t::zero() )

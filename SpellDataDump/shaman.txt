@@ -186,7 +186,7 @@ Spell Level      : 10
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Affecting spells : Spiritwalker's Grace (79206 effect#1)
-Triggered by     : Retrieving the Doomhammer (193749), Retrieving the Weapons of Storm (199859), Ghost Wolf (317706)
+Triggered by     : Retrieving the Doomhammer (193749), Retrieving the Weapons of Storm (199859)
 Family Flags     : 11
 Attributes       : ........ ........ x......x ........   ........ ..x..... .x...... ........ 
                  : .x...... x....... ........ ........   ........ ........ ........ ........ 
@@ -9484,8 +9484,6 @@ Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=794982)   : Learn Spell (36)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=794983)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : $@spelldesc324386
@@ -9506,8 +9504,6 @@ Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=803022)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=803023)   : Learn Spell (36)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 2645 | Target: Self (1)
 Description      : $@spelldesc2645
 
 
@@ -10282,7 +10278,6 @@ Duration         : 3 seconds
 Cooldown         : 120 seconds
 Labels           : 976
 Affecting spells : Essential Extraction (339183 effect#1)
-Triggered by     : Fae Transfusion (337441)
 Family Flags     : 125
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11060,8 +11055,6 @@ Attributes       : ........ ........ .......x x..x.x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=832882)   : Learn Spell (36)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=832883)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : $@spelldesc326059
@@ -11454,29 +11447,9 @@ Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=834819)   : Learn Spell (36)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=834820)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : $@spelldesc320674
-
-Name             : Fae Transfusion (desc=Night Fae) (id=337441) [Hidden] 
-Class            : Shaman
-School           : Physical
-Spell Type       : None
-Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
-                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
-Effects          :
-#1 (id=835468)   : Learn Spell (36)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 328923 | Target: Self (1)
-Description      : $@spelldesc328923
 
 Name             : Astral Protection (id=337964) [Spell Family (11), Passive, Hidden] 
 School           : Physical

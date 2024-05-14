@@ -2847,8 +2847,11 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
       auto trait = node.front().first;
       size_t rank = trait->max_ranks;
+      auto _tree = static_cast<talent_tree>( trait->tree_index );
 
-      if ( !std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) &&
+      // hero talents don't seem to require a matching specialization
+      if ( _tree != talent_tree::HERO &&
+           !std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) &&
            !range::contains( trait->id_spec, player->specialization() ) )
       {
         do_error( fmt::format( "selected node {} is not available to player's spec.", id ) );
@@ -2895,8 +2898,6 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
         trait = node[ index ].first;
       }
-
-      auto _tree = static_cast<talent_tree>( trait->tree_index );
 
       player->player_traits.emplace_back( _tree, trait->id_trait_node_entry, as<unsigned>( rank ) );
 

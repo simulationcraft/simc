@@ -93,10 +93,9 @@ struct monk_action_t : public parse_action_effects_t<Base, monk_t, monk_td_t>
 
 private:
   std::array<resource_e, MONK_MISTWEAVER + 1> _resource_by_stance;
-  using ab = parse_action_effects_t<Base, monk_t, monk_td_t>;
 
 public:
-  using base_t = monk_action_t<Base>;
+  using base_t = parse_action_effects_t<Base, monk_t, monk_td_t>;
 
   monk_action_t( std::string_view name, monk_t *player, const spell_data_t *s = spell_data_t::nil() );
   std::string full_name() const;
@@ -110,12 +109,17 @@ public:
   template <typename... Ts>
   void parse_effects( Ts &&...args )
   {
-    ab::parse_effects( std::forward<Ts>( args )... );
+    base_t::parse_effects( std::forward<Ts>( args )... );
   }
   template <typename... Ts>
   void parse_target_effects( Ts &&...args )
   {
-    ab::parse_target_effects( std::forward<Ts>( args )... );
+    base_t::parse_target_effects( std::forward<Ts>( args )... );
+  }
+  template <typename... Ts>
+  void apply_affecting_aura( Ts &&...args )
+  {
+    base_t::apply_affecting_aura( std::forward<Ts>( args )... );
   }
 
   const spelleffect_data_t *find_spelleffect( const spell_data_t *spell, effect_subtype_t subtype, int misc_value,
@@ -765,7 +769,6 @@ public:
       player_talent_t yulons_grace;
       player_talent_t diffuse_magic;
       player_talent_t peace_and_prosperity;
-      player_talent_t fortifying_brew;
       player_talent_t dance_of_the_wind;
       player_talent_t dampen_harm;
       // 20 Required
@@ -1167,6 +1170,77 @@ public:
     } windwalker;
   } spec;
 
+  struct
+  {
+    struct
+    {
+      player_talent_t fortifying_brew;
+      const spell_data_t *fortifying_brew_buff;
+      player_talent_t ironshell_brew;
+      player_talent_t expeditious_fortification;
+      player_talent_t chi_proficiency;
+      player_talent_t martial_instincts;
+    } monk;
+
+    struct
+    {
+    } brewmaster;
+
+    struct
+    {
+    } mistweaver;
+
+    struct
+    {
+    } windwalker;
+
+    struct
+    {
+    } conduit_of_the_celestials;
+
+    struct
+    {
+    } master_of_harmony;
+
+    struct
+    {
+    } shado_pan;
+  } talents;
+
+  struct
+  {
+    struct
+    {
+      const spell_data_t *aura;
+      const spell_data_t *critical_strikes;
+      const spell_data_t *two_hand_adjustment;
+      const spell_data_t *leather_specialization;
+    } monk;
+
+    struct
+    {
+      const spell_data_t *aura;
+      const spell_data_t *brewmasters_balance;
+      const spell_data_t *celestial_fortune;
+      const spell_data_t *celestial_fortune_heal;
+
+      const spell_data_t *light_stagger;
+      const spell_data_t *moderate_stagger;
+      const spell_data_t *heavy_stagger;
+    } brewmaster;
+
+    struct
+    {
+      const spell_data_t *aura;
+      const spell_data_t *aura_2;
+    } mistweaver;
+
+    struct
+    {
+      const spell_data_t *aura;
+    } windwalker;
+  } baseline;
+
   struct mastery_spells_t
   {
     const spell_data_t *combo_strikes;    // Windwalker
@@ -1229,23 +1303,10 @@ public:
     const spell_data_t *claw_of_the_white_tiger;
     const spell_data_t *jadefire_stomp_damage;
     const spell_data_t *jadefire_stomp_ww_damage;
-    const spell_data_t *fortifying_brew;
     const spell_data_t *healing_elixir;
     const spell_data_t *mystic_touch;
     const spell_data_t *rushing_jade_wind;
     const spell_data_t *rushing_jade_wind_tick;
-
-    struct
-    {
-    } general;
-
-    // Shado-Pan
-    struct
-    {
-      const spell_data_t *flurry_strike;
-      const spell_data_t *high_impact;
-      const spell_data_t *wisdom_of_the_wall_flurry;
-    } shado_pan;
 
     // Brewmaster
     const spell_data_t *breath_of_fire_dot;
@@ -1264,13 +1325,6 @@ public:
     const spell_data_t *stagger_self_damage;
     const spell_data_t *heavy_stagger;
     const spell_data_t *stomp;
-
-    struct
-    {
-      const spell_data_t *light_stagger;
-      const spell_data_t *moderate_stagger;
-      const spell_data_t *heavy_stagger;
-    } brewmaster;
 
     // Mistweaver
     const spell_data_t *renewing_mist_heal;
@@ -1319,6 +1373,14 @@ public:
     struct
     {
     } windwalker;
+
+    // Shado-Pan
+    struct
+    {
+      const spell_data_t *flurry_strike;
+      const spell_data_t *high_impact;
+      const spell_data_t *wisdom_of_the_wall_flurry;
+    } shado_pan;
 
     // Tier 29
     const spell_data_t *kicks_of_flowing_momentum;
@@ -1385,25 +1447,15 @@ public:
   std::string default_rune() const override;
   std::string default_temporary_enchant() const override;
 
+  void parse_player_effects();
   // player_t overrides
   action_t *create_action( util::string_view name, util::string_view options ) override;
-  double composite_base_armor_multiplier() const override;
-  double composite_melee_crit_chance() const override;
-  double composite_spell_crit_chance() const override;
-  double resource_regen_per_second( resource_e ) const override;
-  double composite_attribute_multiplier( attribute_e attr ) const override;
-  double composite_melee_expertise( const weapon_t *weapon ) const override;
   double composite_melee_speed() const override;
   double composite_attack_power_multiplier() const override;
   double composite_dodge() const override;
   double composite_mastery() const override;
-  double composite_mastery_rating() const override;
-  double composite_damage_versatility() const override;
-  double composite_crit_avoidance() const override;
   double non_stacking_movement_modifier() const override;
   double composite_player_target_armor( player_t *target ) const override;
-  double composite_player_multiplier( school_e ) const override;
-  double composite_player_target_multiplier( player_t *target, school_e school ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t *, bool guardian ) const override;
   double composite_player_target_pet_damage_multiplier( player_t *target, bool guardian ) const override;
   void create_pets() override;
@@ -1418,8 +1470,8 @@ public:
   void init_rng() override;
   void init_special_effects() override;
   void init_special_effect( special_effect_t &effect ) override;
+  void init_finished() override;
   void reset() override;
-  double matching_gear_multiplier( attribute_e attr ) const override;
   void create_options() override;
   void copy_from( player_t * ) override;
   resource_e primary_resource() const override;
@@ -1455,9 +1507,7 @@ public:
                                               const spell_data_t *affected = spell_data_t::nil(),
                                               effect_type_t type           = E_APPLY_AURA );
   const spell_data_t *find_spell_override( const spell_data_t *base, const spell_data_t *passive );
-  void apply_affecting_auras( action_t & ) override;
   void merge( player_t &other ) override;
-  void moving() override;
 
   // Custom Monk Functions
   void trigger_celestial_fortune( action_state_t * );

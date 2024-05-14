@@ -165,6 +165,7 @@ struct pack_t
   U data;
   std::vector<const spell_data_t*> list;
   uint32_t mask = 0U;
+  std::vector<U>* copy = nullptr;
 };
 
 struct parse_effects_t
@@ -306,6 +307,10 @@ public:
     {
       tmp.mask = mod;
     }
+    else if constexpr ( std::is_convertible_v<decltype( *std::declval<T>() ), const std::vector<U>> )
+    {
+      tmp.copy = &( *mod );
+    }
     else
     {
       static_assert( static_false<T>, "Invalid mod type for parse_spell_effect_mods" );
@@ -326,6 +331,7 @@ public:
     bool mastery = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
     double val = 0.0;
     double val_mul = 0.01;
+    bool matching_armor = s_data->equipped_class() == ITEM_CLASS_ARMOR;
 
     if ( mastery )
       val = eff.mastery_value();
@@ -380,7 +386,7 @@ public:
     // 2) void* is returned and needs to be re-cast to the correct vector<U>*
     if constexpr ( is_detected<detect_buff, U>::value )
     {
-      vec = get_effect_vector( eff, tmp.data, val_mul, type_str, flat, force );
+      vec = get_effect_vector( eff, tmp.data, val_mul, type_str, flat, force, matching_armor );
     }
     else
     {
@@ -410,7 +416,7 @@ public:
           val_str = val_str + " (default value)";
       }
 
-      debug_message( tmp.data, type_str, val_str, mastery, s_data, i );
+      debug_message( tmp.data, type_str, val_str, mastery, s_data, i, matching_armor );
     }
     else
     {
@@ -421,6 +427,9 @@ public:
     tmp.data.mastery = mastery;
     tmp.data.eff = &eff;
     vec->push_back( tmp.data );
+
+    if ( tmp.copy )
+      tmp.copy->push_back( tmp.data );
   }
 
   // Syntax: parse_effects( data[, spells|condition|ignore_mask|value|flags][,...] )
@@ -454,10 +463,10 @@ public:
 
   virtual std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data,
                                                            double& val_mul, std::string& str, bool& flat,
-                                                           bool force ) = 0;
+                                                           bool force, bool matching_armor ) = 0;
 
   virtual void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str,
-                              bool mastery, const spell_data_t* s_data, size_t i ) = 0;
+                              bool mastery, const spell_data_t* s_data, size_t i, bool matching_armor ) = 0;
 
   template <typename T, typename... Ts>
   void parse_effects( T data, Ts... mods )
@@ -618,6 +627,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
 {
   std::vector<player_effect_t> melee_speed_effects;
   std::vector<player_effect_t> attribute_multiplier_effects;
+  std::vector<player_effect_t> matching_armor_attribute_multiplier_effects;
   std::vector<player_effect_t> versatility_effects;
   std::vector<player_effect_t> player_multiplier_effects;
   std::vector<player_effect_t> pet_multiplier_effects;
@@ -845,6 +855,17 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
     return dodge;
   }
 
+  double matching_gear_multiplier( attribute_e attr ) const override
+  {
+    double mg = player_t::matching_gear_multiplier( attr );
+
+    for ( const auto& i : matching_armor_attribute_multiplier_effects )
+      if ( i.opt_enum & ( 1 << ( attr - 1 ) ) )
+        mg += get_effect_value( i );
+
+    return mg;
+  }
+
 private:
   TD* _get_td( player_t* t ) const
   {
@@ -908,7 +929,7 @@ public:
   }
 
   std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data, double& val_mul,
-                                                   std::string& str, bool& /* flat */, bool /* force */ ) override
+                                                   std::string& str, bool& /* flat */, bool /* force */, bool matching_armor ) override
   {
     auto invalidate = [ &data ]( cache_e c ) {
       if ( data.buff )
@@ -937,7 +958,10 @@ public:
           }
           str = util::string_join( str_list );
         }
-        return &attribute_multiplier_effects;
+        if( matching_armor )
+          return &matching_armor_attribute_multiplier_effects;
+        else
+          return &attribute_multiplier_effects;
 
       case A_MOD_VERSATILITY_PCT:
         str = "versatility";
@@ -1027,26 +1051,31 @@ public:
   }
 
   void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str, bool mastery,
-                      const spell_data_t* s_data, size_t i ) override
+                      const spell_data_t* s_data, size_t i, bool matching_armor ) override
   {
     if ( data.buff )
     {
-      sim->print_debug( "player-effects: Player {} modified by {} {} buff {} ({}#{})", type_str, val_str,
+      sim->print_debug( "player-effects: Player {} {} modified by {} {} buff {} ({}#{})", name_str, type_str, val_str,
                         data.use_stacks ? "per stack of" : "with", data.buff->name(), data.buff->data().id(), i );
     }
     else if ( mastery && !data.func )
     {
-      sim->print_debug( "player-effects: Player {} modified by {} from {} ({}#{})", type_str, val_str,
+      sim->print_debug( "player-effects: Player {} {} modified by {} from {} ({}#{})", name_str, type_str, val_str,
                         s_data->name_cstr(), s_data->id(), i );
     }
     else if ( data.func )
     {
-      sim->print_debug( "player-effects: Player {} modified by {} with condition from {} ({}#{})", type_str, val_str,
+      sim->print_debug( "player-effects: Player {} {} modified by {} with condition from {} ({}#{})", name_str, type_str, val_str,
+                        s_data->name_cstr(), s_data->id(), i );
+    }
+    else if ( matching_armor )
+    {
+      sim->print_debug( "player-effects: Player {} {} modified by {} with matching armor from {} ({}#{})", name_str, type_str, val_str,
                         s_data->name_cstr(), s_data->id(), i );
     }
     else
     {
-      sim->print_debug( "player-effects: Player {} modified by {} from {} ({}#{})", type_str, val_str,
+      sim->print_debug( "player-effects: Player {} {} modified by {} from {} ({}#{})", name_str, type_str, val_str,
                         s_data->name_cstr(), s_data->id(), i );
     }
   }
@@ -1199,7 +1228,7 @@ public:
     auto cd = BASE::composite_crit_damage_bonus_multiplier();
 
     for ( const auto& i : crit_damage_effects )
-      cd *= get_effect_value( i );
+      cd *= 1.0 + get_effect_value( i, true );
 
     return cd;
   }
@@ -1345,7 +1374,7 @@ public:
   }
 
   std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& /* data */,
-                                                   double& val_mul, std::string& str, bool& flat, bool force ) override
+                                                   double& val_mul, std::string& str, bool& flat, bool force, bool /*matching_armor*/) override
   {
     if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
     {
@@ -1419,12 +1448,17 @@ public:
           return nullptr;
       }
     }
+    else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY )
+    {
+      str = "cooldown";
+      return &recharge_multiplier_effects;
+    }
 
     return nullptr;
   }
 
   void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str, bool mastery,
-                      const spell_data_t* s_data, size_t i ) override
+                      const spell_data_t* s_data, size_t i, bool /*matching_armor*/) override
   {
     if ( data.buff )
     {

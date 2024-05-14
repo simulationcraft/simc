@@ -12,7 +12,7 @@ position=back
 talents=B0QAyDc16vWbNHtgLBW3PSstWAAAAAAAAAAAAKpJpFiIJpVkISiSSAAAAAAAAAEgECkIJBJSaRQIJRCJSSSCA
 load_default_gear=1
 
-actions.ogcd+=/fortifying_brew
+# actions.ogcd+=/fortifying_brew
 actions.ogcd+=/diffuse_magic
 actions.ogcd+=/provoke
 actions.ogcd+=/spear_hand_strike

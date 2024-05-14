@@ -671,12 +671,10 @@ public:
     buff_t* antimagic_shell_horsemen;
     buff_t* antimagic_shell_horsemen_icd;
     buff_t* antimagic_zone;
-    buff_t* amz_timing;
     propagate_const<buff_t*> icebound_fortitude;
     propagate_const<buff_t*> rune_mastery;
     propagate_const<buff_t*> unholy_ground;
     propagate_const<buff_t*> icy_talons;
-    propagate_const<buff_t*> empower_rune_weapon;
     propagate_const<buff_t*> abomination_limb;
     propagate_const<buff_t*> lichborne;  // NYI
 
@@ -705,6 +703,7 @@ public:
     propagate_const<buff_t*> cold_heart;
     propagate_const<buff_t*> gathering_storm;
     propagate_const<buff_t*> inexorable_assault;
+    propagate_const<buff_t*> empower_rune_weapon;
     propagate_const<buff_t*> killing_machine;
     buff_t* pillar_of_frost;
     propagate_const<buff_t*> remorseless_winter;
@@ -855,13 +854,11 @@ public:
     // Shared
     propagate_const<gain_t*> antimagic_shell;  // RP from magic damage absorbed
     gain_t* rune;                              // Rune regeneration
-    propagate_const<gain_t*> spirit_drain;
     propagate_const<gain_t*> coldthirst;
     propagate_const<gain_t*> start_of_combat_overflow;
 
     // Blood
     propagate_const<gain_t*> blood_tap;
-    propagate_const<gain_t*> bryndaors_might;
     propagate_const<gain_t*> drw_heart_strike;  // Blood Strike, Blizzard's hack to replicate HS rank 2 with DRW
     propagate_const<gain_t*> heartbreaker;
     propagate_const<gain_t*> tombstone;
@@ -871,7 +868,6 @@ public:
     propagate_const<gain_t*> empower_rune_weapon;
     propagate_const<gain_t*> frost_fever;  // RP generation per tick
     propagate_const<gain_t*> horn_of_winter;
-    propagate_const<gain_t*> koltiras_favor;
     propagate_const<gain_t*> frigid_executioner;  // Rune refund chance
     propagate_const<gain_t*> murderous_efficiency;
     propagate_const<gain_t*> obliteration;
@@ -1369,9 +1365,9 @@ public:
     // Gargoyle
     const spell_data_t* gargoyle_strike;
     const spell_data_t* dark_empowerment;
-    // All Will Serve skulker
+    // All Will Serve
     const spell_data_t* skulker_shot;
-    // Army of the damned magus
+    // Magus of the Dead
     const spell_data_t* frostbolt;
     const spell_data_t* shadow_bolt;
     // Commander of the Dead Talent
@@ -1488,7 +1484,6 @@ public:
     // Runic corruption triggered by
     propagate_const<proc_t*> rp_runic_corruption;  // from RP spent
     propagate_const<proc_t*> sr_runic_corruption;  // from soul reaper
-    propagate_const<proc_t*> fs_runic_corruption;  // from feasting strikes
 
     // Festering Wound applied by
     propagate_const<proc_t*> fw_festering_strike;
@@ -1588,7 +1583,6 @@ public:
   void init_finished() override;
   bool validate_fight_style( fight_style_e style ) const override;
   double composite_bonus_armor() const override;
-  double matching_gear_multiplier( attribute_e attr ) const override;
   void combat_begin() override;
   void activate() override;
   void reset() override;
@@ -3539,10 +3533,7 @@ struct magus_pet_t : public death_knight_pet_t
     shadow_bolt_magus_t( magus_pet_t* p, util::string_view options_str )
       : magus_spell_t( p, "shadow_bolt", p->dk()->pet_spell.shadow_bolt, options_str )
     {
-      if ( dk()->talent.unholy.menacing_magus.ok() )
-      {
-        aoe = as<int>( dk()->talent.unholy.menacing_magus->effectN( 2 ).base_value() );
-      }
+      apply_affecting_aura( dk()->talent.unholy.menacing_magus );
     }
   };
 
@@ -4598,7 +4589,8 @@ struct delayed_execute_event_t : public event_t
 // Runic Power Decay Event ==================================================
 struct runic_power_decay_event_t : public event_t
 {
-  runic_power_decay_event_t( death_knight_t* p ) : event_t( *p, 1000_ms ), player( p )
+  runic_power_decay_event_t( death_knight_t* p )
+    : event_t( *p, 1000_ms ), player( p )
   {
   }
 
@@ -5006,15 +4998,6 @@ struct death_knight_disease_t : public death_knight_spell_t
     {
       td->debuff.brittle->trigger();
     }
-  }
-
-  double composite_crit_chance() const override
-  {
-    auto cc = death_knight_spell_t::composite_crit_chance();
-
-    cc += p()->talent.unholy.foul_infections->effectN( 3 ).percent();
-
-    return cc;
   }
 };
 
@@ -5851,21 +5834,38 @@ private:
 struct raise_abomination_t final : public death_knight_spell_t
 {
   raise_abomination_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_spell_t( "raise_abomination", p, p->talent.unholy.raise_abomination )
+    : death_knight_spell_t( "raise_abomination", p, p->talent.unholy.raise_abomination ), precombat_time( 0_ms )
   {
-    parse_options( options_str );
     harmful = false;
     target  = p;
+    add_option( opt_timespan( "precombat_time", precombat_time, trigger_gcd, 10_s ) );
+    parse_options( options_str );
     p->pets.abomination.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     if ( p->talent.unholy.magus_of_the_dead.ok() && p->talent.unholy.raise_abomination.ok() )
     {
       p->pets.army_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     }
-    duration = data().duration();
+  }
+
+  void precombat_check()
+  {
+    duration       = data().duration();
+    rider_duration = p()->spell.apocalypse_now_data->duration();
+
+    if ( precombat_time > 0_ms && !p()->in_combat )
+    {
+      duration -= precombat_time;
+      rider_duration -= precombat_time;
+      cooldown->adjust( -precombat_time, false );
+      p()->resource_loss( RESOURCE_RUNIC_POWER, RUNIC_POWER_DECAY_RATE * timespan_t::to_native( precombat_time ),
+                          nullptr, nullptr );
+      p()->_runes.regenerate_immediate( precombat_time );
+    }
   }
 
   void execute() override
   {
+    precombat_check();
     death_knight_spell_t::execute();
     p()->pets.abomination.spawn( duration, 1 );
     if ( p()->talent.unholy.magus_of_the_dead.ok() )
@@ -5874,12 +5874,14 @@ struct raise_abomination_t final : public death_knight_spell_t
     }
     if ( p()->talent.rider.apocalypse_now.ok() )
     {
-      p()->summon_rider( p()->spell.apocalypse_now_data->duration(), false );
+      p()->summon_rider( rider_duration, false );
     }
   }
 
 private:
   timespan_t duration;
+  timespan_t rider_duration;
+  timespan_t precombat_time;
 };
 
 // Blood Boil ===============================================================
@@ -11506,7 +11508,7 @@ void death_knight_t::init_spells()
   talent.unholy.magus_of_the_dead   = find_talent_spell( talent_tree::SPECIALIZATION, "Magus of the Dead" );
   talent.unholy.improved_death_coil = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Death Coil" );
   talent.unholy.harbinger_of_doom   = find_talent_spell( talent_tree::SPECIALIZATION, "Harbinger of Doom" );
-  talent.unholy.eternal_agony       = find_talent_spell( talent_tree::SPECIALIZATION, "Eternal Agondy" );
+  talent.unholy.eternal_agony       = find_talent_spell( talent_tree::SPECIALIZATION, "Eternal Agony" );
   // Row 7
   talent.unholy.vile_contagion = find_talent_spell( talent_tree::SPECIALIZATION, "Vile Contagion" );
   talent.unholy.ebon_fever     = find_talent_spell( talent_tree::SPECIALIZATION, "Ebon Fever" );
@@ -11861,9 +11863,6 @@ void death_knight_t::create_buffs()
 
   buffs.antimagic_zone = new antimagic_zone_buff_t( this );
 
-  // Fake buff to trigger AMZ at a specified time
-  buffs.amz_timing = make_buff( this, "amz_timing" )->set_quiet( true )->set_duration( 5_s );
-
   buffs.icebound_fortitude = make_buff( this, "icebound_fortitude", talent.icebound_fortitude )
                                  ->set_duration( talent.icebound_fortitude->duration() )
                                  ->set_cooldown( 0_ms );  // Handled by the action
@@ -11881,20 +11880,6 @@ void death_knight_t::create_buffs()
                             ->set_duration( 0_ms );  // Handled by trigger_dnd_buffs() & expire_dnd_buffs()
 
   buffs.abomination_limb = new abomination_limb_buff_t( this );
-
-  buffs.empower_rune_weapon =
-      make_buff( this, "empower_rune_weapon", spell.empower_rune_weapon_main )
-          ->set_tick_zero( true )
-          ->set_cooldown( 0_ms )
-          ->set_period( spell.empower_rune_weapon_main->effectN( 1 ).period() )
-          ->set_default_value_from_effect( 3 )
-          ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-          ->set_tick_behavior( buff_tick_behavior::REFRESH )
-          ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-            replenish_rune( as<unsigned int>( b->data().effectN( 1 ).base_value() ), gains.empower_rune_weapon );
-            resource_gain( RESOURCE_RUNIC_POWER, b->data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
-                           gains.empower_rune_weapon );
-          } );
 
   buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons->effectN( 1 ).trigger() )
                          ->set_default_value( talent.icy_talons->effectN( 1 ).percent() )
@@ -12072,6 +12057,21 @@ void death_knight_t::create_buffs()
                                   }
                                 } );
 
+
+    buffs.empower_rune_weapon =
+        make_buff( this, "empower_rune_weapon", spell.empower_rune_weapon_main )
+            ->set_tick_zero( true )
+            ->set_cooldown( 0_ms )
+            ->set_period( spell.empower_rune_weapon_main->effectN( 1 ).period() )
+            ->set_default_value_from_effect( 3 )
+            ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+            ->set_tick_behavior( buff_tick_behavior::REFRESH )
+            ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+              replenish_rune( as<unsigned int>( b->data().effectN( 1 ).base_value() ), gains.empower_rune_weapon );
+              resource_gain( RESOURCE_RUNIC_POWER, b->data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
+                             gains.empower_rune_weapon );
+            } );
+
     buffs.pillar_of_frost = new pillar_of_frost_buff_t( this );
 
     buffs.remorseless_winter = new remorseless_winter_buff_t( this );
@@ -12151,7 +12151,6 @@ void death_knight_t::init_gains()
   // Shared
   gains.antimagic_shell          = get_gain( "Antimagic Shell" );
   gains.rune                     = get_gain( "Rune Regeneration" );
-  gains.spirit_drain             = get_gain( "Spirit Drain" );
   gains.start_of_combat_overflow = get_gain( "Start of Combat Overflow" );
   gains.coldthirst               = get_gain( "Coldthirst" );
 
@@ -12160,7 +12159,6 @@ void death_knight_t::init_gains()
   gains.drw_heart_strike = get_gain( "Rune Weapon Heart Strike" );
   gains.heartbreaker     = get_gain( "Heartbreaker" );
   gains.tombstone        = get_gain( "Tombstone" );
-  gains.bryndaors_might  = get_gain( "Bryndaor's Might" );
 
   // Frost
   gains.breath_of_sindragosa        = get_gain( "Breath of Sindragosa" );
@@ -12172,7 +12170,6 @@ void death_knight_t::init_gains()
   gains.rage_of_the_frozen_champion = get_gain( "Rage of the Frozen Champion" );
   gains.runic_attenuation           = get_gain( "Runic Attenuation" );
   gains.runic_empowerment           = get_gain( "Runic Empowerment" );
-  gains.koltiras_favor              = get_gain( "Koltira's Favor" );
   gains.frigid_executioner          = get_gain( "Frigid Executioner" );
 
   // Unholy
@@ -12214,7 +12211,6 @@ void death_knight_t::init_procs()
 
   procs.rp_runic_corruption = get_proc( "Runic Corruption from Runic Power Spent" );
   procs.sr_runic_corruption = get_proc( "Runic Corruption from Soul Reaper" );
-  procs.fs_runic_corruption = get_proc( "Runic Corruption from Feasting Strikes" );
 
   procs.bloodworms = get_proc( "Bloodworms" );
 
@@ -12474,28 +12470,6 @@ double death_knight_t::composite_bonus_armor() const
   return ba;
 }
 
-// death_knight_t::matching_gear_multiplier =================================
-
-double death_knight_t::matching_gear_multiplier( attribute_e attr ) const
-{
-  switch ( specialization() )
-  {
-    case DEATH_KNIGHT_FROST:
-    case DEATH_KNIGHT_UNHOLY:
-      if ( attr == ATTR_STRENGTH )
-        return spec.plate_specialization->effectN( 1 ).percent();
-      break;
-    case DEATH_KNIGHT_BLOOD:
-      if ( attr == ATTR_STAMINA )
-        return spec.plate_specialization->effectN( 1 ).percent();
-      break;
-    default:
-      break;
-  }
-
-  return 0.0;
-}
-
 // death_knight_t::combat_begin =============================================
 
 void death_knight_t::combat_begin()
@@ -12506,15 +12480,6 @@ void death_knight_t::combat_begin()
   {
     resource_loss( RESOURCE_RUNIC_POWER, rp_overflow, gains.start_of_combat_overflow );
   }
-
-  auto add_timed_buff_triggers = [ this ]( const std::vector<timespan_t>& times, buff_t* buff,
-                                           timespan_t duration = timespan_t::min() ) {
-    if ( buff )
-      for ( auto t : times )
-        make_event( *sim, t, [ buff, duration ] { buff->trigger( duration ); } );
-  };
-
-  add_timed_buff_triggers( options.amz_use_time, buffs.amz_timing );
 }
 
 // death_knight_t::invalidate_cache =========================================
@@ -12649,6 +12614,7 @@ void death_knight_t::parse_player_effects()
 {
   // Shared
   parse_effects( spec.death_knight );
+  parse_effects( spec.plate_specialization );
   parse_effects( buffs.icy_talons, talent.icy_talons );
   parse_effects( buffs.rune_mastery, talent.rune_mastery );
   parse_effects( buffs.unholy_strength, talent.unholy_bond );

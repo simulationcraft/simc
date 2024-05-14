@@ -2491,6 +2491,7 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_
   {
     s << "Overriden by : " << talent->id_override_spell << std::endl;
   }
+  s << "Subtree      : " << talent->id_sub_tree << std::endl;
   // s << "Spec         : " << util::specialization_string( talent -> specialization() ) << std::endl;
   s << std::endl;
 

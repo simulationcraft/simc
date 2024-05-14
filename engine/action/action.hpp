@@ -901,7 +901,7 @@ public:
   { return base_crit; }
 
   virtual double composite_crit_chance_multiplier() const
-  { return 1.0; }
+  { return crit_multiplier; }
 
   virtual double composite_crit_damage_bonus_multiplier() const
   { return crit_bonus_multiplier; }
