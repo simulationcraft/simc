@@ -959,9 +959,14 @@ public:
         }
 
         if ( eff.spell()->equipped_class() == ITEM_CLASS_ARMOR )
+        {
+          str += "|with matching armor";
           return &matching_armor_attribute_multiplier_effects;
+        }
         else
+        {
           return &attribute_multiplier_effects;
+        }
 
       case A_MOD_VERSATILITY_PCT:
         str = "versatility";
@@ -1033,8 +1038,7 @@ public:
         return &armor_multiplier_effects;
 
       case A_MOD_PARRY_FROM_CRIT_RATING:
-        str = "parry rating";
-        // TODO: better debug message for this, and similar effects
+        str = "parry rating|of crit rating";
         invalidate_with_parent.push_back( { CACHE_PARRY, CACHE_CRIT_CHANCE } );
         return &parry_rating_from_crit_effects;
 
@@ -1053,30 +1057,29 @@ public:
   void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str, bool mastery,
                       const spell_data_t* s_data, size_t i ) override
   {
+    auto splits = util::string_split<std::string_view>( type_str, "|" );
+    auto tok1 = splits[ 0 ];
+    auto tok2 = splits.size() > 1 ? fmt::format( "{} {}", val_str, splits[ 1 ] ) : val_str;
+
     if ( data.buff )
     {
-      sim->print_debug( "player-effects: Player {} {} modified by {} {} buff {} ({}#{})", name_str, type_str, val_str,
+      sim->print_debug( "player-effects: {} {} modified by {} {} buff {} ({}#{})", *this, tok1, tok2,
                         data.use_stacks ? "per stack of" : "with", data.buff->name(), data.buff->data().id(), i );
     }
     else if ( mastery && !data.func )
     {
-      sim->print_debug( "player-effects: Player {} {} modified by {} from {} ({}#{})", name_str, type_str, val_str,
-                        s_data->name_cstr(), s_data->id(), i );
+      sim->print_debug( "player-effects: {} {} modified by {} from {} ({}#{})", *this, tok1, tok2, s_data->name_cstr(),
+                        s_data->id(), i );
     }
     else if ( data.func )
     {
-      sim->print_debug( "player-effects: Player {} {} modified by {} with condition from {} ({}#{})", name_str, type_str, val_str,
-                        s_data->name_cstr(), s_data->id(), i );
-    }
-    else if ( s_data->equipped_class() == ITEM_CLASS_ARMOR )
-    {
-      sim->print_debug( "player-effects: Player {} {} modified by {} with matching armor from {} ({}#{})", name_str, type_str, val_str,
+      sim->print_debug( "player-effects: {} {} modified by {} with condition from {} ({}#{})", *this, tok1, tok2,
                         s_data->name_cstr(), s_data->id(), i );
     }
     else
     {
-      sim->print_debug( "player-effects: Player {} {} modified by {} from {} ({}#{})", name_str, type_str, val_str,
-                        s_data->name_cstr(), s_data->id(), i );
+      sim->print_debug( "player-effects: {} {} modified by {} from {} ({}#{})", *this, tok1, tok2, s_data->name_cstr(),
+                        s_data->id(), i );
     }
   }
 

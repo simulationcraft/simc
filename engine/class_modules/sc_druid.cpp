@@ -1112,7 +1112,6 @@ public:
   {
     // Passive Auras
     const spell_data_t* druid;
-    const spell_data_t* leather_specialization;
 
     // Baseline
     const spell_data_t* bear_form_override;  // swipe/thrash
@@ -1257,7 +1256,6 @@ public:
   double composite_block() const override { return 0; }
   double composite_dodge_rating() const override;
   double composite_parry() const override { return 0; }
-  double matching_gear_multiplier( attribute_e attr ) const override;
   double non_stacking_movement_modifier() const override;
   double stacking_movement_modifier() const override;
   std::unique_ptr<expr_t> create_action_expression(action_t& a, std::string_view name_str) override;
@@ -9840,7 +9838,6 @@ void druid_t::init_spells()
 
   // Passive Auras
   spec.druid                    = find_spell( 137009 );
-  spec.leather_specialization   = find_specialization_spell( "Leather Specialization" );
 
   // Baseline
   spec.bear_form_override       = find_spell( 106829 );
@@ -10730,6 +10727,8 @@ void druid_t::create_buffs()
   buff.b_inc_cat  = talent.incarnation_cat.ok()     ? buff.incarnation_cat     : buff.berserk_cat;
   buff.b_inc_bear = talent.incarnation_bear.ok()    ? buff.incarnation_bear    : buff.berserk_bear;
   buff.ca_inc     = talent.incarnation_moonkin.ok() ? buff.incarnation_moonkin : buff.celestial_alignment;
+
+  parse_effects( find_specialization_spell( "Leather Specialization" ) );
 
   parse_effects( mastery.natures_guardian_AP );
 
@@ -12095,22 +12094,6 @@ double druid_t::composite_dodge_rating() const
     dr += composite_rating( RATING_MELEE_CRIT ) * spec.lightning_reflexes->effectN( 1 ).percent();
 
   return dr;
-}
-
-// Miscellaneous ============================================================
-double druid_t::matching_gear_multiplier( attribute_e attr ) const
-{
-  unsigned idx;
-
-  switch ( attr )
-  {
-    case ATTR_AGILITY: idx = 1; break;
-    case ATTR_INTELLECT: idx = 2; break;
-    case ATTR_STAMINA: idx = 3; break;
-    default: return 0;
-  }
-
-  return spec.leather_specialization->effectN( idx ).percent();
 }
 
 // Movement =================================================================
