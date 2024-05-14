@@ -177,42 +177,42 @@ struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
   pet_melee_attack_t( util::string_view n, monk_pet_t *p, const spell_data_t *data = spell_data_t::nil() )
     : base_t( n, p, data ), trigger_mystic_touch( false )
   {
-    base_t::apply_affecting_aura( p->o()->passives.aura_monk );
+    //   base_t::apply_affecting_aura( p->o()->passives.aura_monk );
 
-    switch ( p->o()->specialization() )
-    {
-      case MONK_WINDWALKER:
-        base_t::apply_affecting_aura( p->o()->spec.windwalker_monk );
-        break;
+    //   switch ( p->o()->specialization() )
+    //   {
+    //     case MONK_WINDWALKER:
+    //       base_t::apply_affecting_aura( p->o()->spec.windwalker_monk );
+    //       break;
 
-      case MONK_BREWMASTER:
-        base_t::apply_affecting_aura( p->o()->spec.brewmaster_monk );
-        break;
+    //     case MONK_BREWMASTER:
+    //       base_t::apply_affecting_aura( p->o()->spec.brewmaster_monk );
+    //       break;
 
-      case MONK_MISTWEAVER:
-        base_t::apply_affecting_aura( p->o()->spec.mistweaver_monk );
-        break;
+    //     case MONK_MISTWEAVER:
+    //       base_t::apply_affecting_aura( p->o()->spec.mistweaver_monk );
+    //       break;
 
-      default:
-        assert( 0 );
-        break;
-    }
+    //     default:
+    //       assert( 0 );
+    //       break;
+    //   }
 
-    if ( p->o()->main_hand_weapon.group() == weapon_e::WEAPON_1H )
-    {
-      switch ( p->o()->specialization() )
-      {
-        case MONK_BREWMASTER:
-          base_t::apply_affecting_aura( p->o()->spec.two_hand_adjustment_brm );
-          break;
-        case MONK_WINDWALKER:
-          base_t::apply_affecting_aura( p->o()->spec.two_hand_adjustment_ww );
-          break;
-        default:
-          assert( 0 );
-          break;
-      }
-    }
+    //   if ( p->o()->main_hand_weapon.group() == weapon_e::WEAPON_1H )
+    //   {
+    //     switch ( p->o()->specialization() )
+    //     {
+    //       case MONK_BREWMASTER:
+    //         base_t::apply_affecting_aura( p->o()->spec.two_hand_adjustment_brm );
+    //         break;
+    //       case MONK_WINDWALKER:
+    //         base_t::apply_affecting_aura( p->o()->spec.two_hand_adjustment_ww );
+    //         break;
+    //       default:
+    //         assert( 0 );
+    //         break;
+    //     }
+    //   }
   }
 
   // Physical tick_action abilities need amount_type() override, so the

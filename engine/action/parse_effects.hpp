@@ -1039,22 +1039,22 @@ public:
   {
     if ( data.buff )
     {
-      sim->print_debug( "player-effects: Player {} modified by {} {} buff {} ({}#{})", type_str, val_str,
+      sim->print_debug( "player-effects: Player {} {} modified by {} {} buff {} ({}#{})", name_str, type_str, val_str,
                         data.use_stacks ? "per stack of" : "with", data.buff->name(), data.buff->data().id(), i );
     }
     else if ( mastery && !data.func )
     {
-      sim->print_debug( "player-effects: Player {} modified by {} from {} ({}#{})", type_str, val_str,
+      sim->print_debug( "player-effects: Player {} {} modified by {} from {} ({}#{})", name_str, type_str, val_str,
                         s_data->name_cstr(), s_data->id(), i );
     }
     else if ( data.func )
     {
-      sim->print_debug( "player-effects: Player {} modified by {} with condition from {} ({}#{})", type_str, val_str,
+      sim->print_debug( "player-effects: Player {} {} modified by {} with condition from {} ({}#{})", name_str, type_str, val_str,
                         s_data->name_cstr(), s_data->id(), i );
     }
     else
     {
-      sim->print_debug( "player-effects: Player {} modified by {} from {} ({}#{})", type_str, val_str,
+      sim->print_debug( "player-effects: Player {} {} modified by {} from {} ({}#{})", name_str, type_str, val_str,
                         s_data->name_cstr(), s_data->id(), i );
     }
   }
