@@ -82,8 +82,8 @@ monk_action_t<Base>::monk_action_t( std::string_view name, monk_t *player, const
 template <class Base>
 std::string monk_action_t<Base>::full_name() const
 {
-  std::string n = ab::data().name_cstr();
-  return n.empty() ? ab::name_str : n;
+  std::string n = base_t::data().name_cstr();
+  return n.empty() ? base_t::name_str : n;
 }
 
 template <class Base>
@@ -110,41 +110,32 @@ const monk_td_t *monk_action_t<Base>::find_td( player_t *target ) const
   return p()->find_target_data( target );
 }
 
-// Action-related parsing of buffs. Does not work on spells
-// These are action multipliers and what-not that only increase the damage
-// of abilities. This does not work with tracking buffs or stat-buffs.
-// Things like SEF and Serenity or buffs that increase the crit chance
-// of abilities.
 template <class Base>
 void monk_action_t<Base>::apply_buff_effects()
 {
-  // Brewmaster
-  //    TODO: only effect 1
-  //    parse_effects( p()->buff.brewmasters_rhythm );
-  //    parse_effects( p()->buff.counterstrike );
-  //    parse_effects( p()->buff.hit_scheme );
-  //    parse_effects( p()->buff.mighty_pour );
-  //    parse_effects( p()->buff.purified_chi );
-  // parse_effects( p()->buff.press_the_advantage );
-  // Mistweaver
-  // parse_effects( p()->buff.invoke_chiji_evm, USE_DEFAULT );
-  // parse_effects( p()->buff.lifecycles_enveloping_mist );
-  // parse_effects( p()->buff.lifecycles_vivify );
-  // parse_effects( p()->buff.mana_tea );
-  // Windwalker
-  // parse_effects( p()->buff.bok_proc );
-  //    parse_effects( p()->buff.chi_energy, true, true );
-  //    parse_effects( p()->buff.dance_of_chiji_hidden );
-  //    parse_effects( p()->buff.fists_of_flowing_momentum, true, true );
-  //    parse_effects( p()->buff.fists_of_flowing_momentum_fof );
-  //    TODO: Look into using stack value for both Effect 1 and Effect 2
-  //    parse_effects( p()->buff.hit_combo, true, true );
-  //    parse_effects( p()->buff.kicks_of_flowing_momentum );
-  //    parse_effects( p()->buff.storm_earth_and_fire );
-  //    parse_effects( p()->buff.serenity );
-  //    TODO: Look into using stack value for both Effect 1 and Effect 2
-  //    parse_effects( p()->buff.the_emperors_capacitor );
-  //    parse_effects( p()->buff.transfer_the_power, true, true );
+  /*
+   * Permanent action-specific effects go here.
+   * Make sure to use a specific `find_spell` method (i.e. `find_specialization_spell`)
+   * for all of these spells or they will be applied to actors of the incorrect spec.
+   */
+
+  // class and spec auras
+  base_t::apply_affecting_aura( p()->baseline.monk.aura );
+  base_t::apply_affecting_aura( p()->baseline.brewmaster.aura );
+  base_t::apply_affecting_aura( p()->baseline.mistweaver.aura );
+  base_t::apply_affecting_aura( p()->baseline.mistweaver.aura_2 );
+  base_t::apply_affecting_aura( p()->baseline.windwalker.aura );
+
+  base_t::apply_affecting_aura( p()->talents.monk.expeditious_fortification );
+  base_t::apply_affecting_aura( p()->talents.monk.chi_proficiency );
+
+  /*
+   * Temporary action-specific effects go here.
+   * Does it apply a buff to a specific action?
+   * If so, the aura gets parsed here with `parse_effects`.
+   */
+  parse_effects( p()->buff.press_the_advantage );
+  parse_effects( p()->buff.bok_proc );
 }
 
 // Action-related parsing of debuffs. Does not work on spells
@@ -6622,27 +6613,22 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   user_options.squirm_frequency          = 15;
 }
 
-void monk_t::apply_affecting_auras( action_t &action )
-{
-  player_t::apply_affecting_auras( action );
-
-  // class and spec auras
-  action.apply_affecting_aura( baseline.monk.aura );
-  action.apply_affecting_aura( baseline.brewmaster.aura );
-  action.apply_affecting_aura( baseline.mistweaver.aura );
-  action.apply_affecting_aura( baseline.mistweaver.aura_2 );
-  action.apply_affecting_aura( baseline.windwalker.aura );
-
-  action.apply_affecting_aura( talents.monk.expeditious_fortification );
-  action.apply_affecting_aura( talents.monk.chi_proficiency );
-}
-
 void monk_t::parse_player_effects()
 {
+  /*
+   * Permanent actor-specific effects go here.
+   * Make sure to use a specific `find_spell` method (i.e. `find_specialization_spell`)
+   * for all of these spells or they will be applied to actors of the incorrect spec.
+   */
+
   // class and spec shared auras
   parse_effects( baseline.monk.aura );
   parse_effects( baseline.monk.critical_strikes );
-  parse_effects( baseline.monk.two_hand_adjustment );  // TODO: CHECK IF THIS DOES ANYTHING
+  parse_effects( baseline.monk.two_hand_adjustment );
+  /*
+   * 2024-5-14: 2-Hand adjustment was demonstrated to not work for BrM.
+   * Requires confirmation from WW to verify this is correct for both specs.
+   */
   parse_effects( baseline.monk.leather_specialization );
 
   // brewmaster player auras
@@ -6664,11 +6650,6 @@ void monk_t::parse_player_effects()
   // brewmaster talent auras
   // mistweaver talent auras
   // windwalker talent auras
-}
-
-void monk_t::moving()
-{
-  base_t::moving();
 }
 
 // monk_t::create_action ====================================================
@@ -7036,6 +7017,24 @@ void monk_t::init_spells()
   auto _HT = [ this ]( util::string_view name ) { return find_talent_spell( talent_tree::HERO, name ); };
 
   auto _STID = [ this ]( int id ) { return find_talent_spell( talent_tree::SPECIALIZATION, id ); };
+
+  /*
+   * Always use the most specific possible `find_spell` method that you can use.
+   * If you don't, you will have auras getting applied to incorrect specs, actions
+   * usable for incorrect specs, etc.
+   *
+   * Place all relevant spells near the parent spell or talent
+   * i.e. spells and talents relevant to Fortifying Brew go near the Fortifying Brew
+   * talent.
+   *
+   * Default spells for the class and specs get placed in `baseline`.
+   * If they are not owned by a specific spec, they get placed in `monk.`
+   * If they are owned by a specific spec, they get placed in `spec_name`.
+   *
+   * Talent spells for the class and specs get placed in `talents`. (TODO: RENAME talents->talent)
+   * If they are class talents, they get placed in `monk`.
+   * If they are spec or hero talents, they get placed in `spec/ht_name`.
+   */
 
   // monk_t::baseline::monk
   baseline.monk.aura                   = find_spell( 137022 );  // TODO: Blacklist 130610, use name instead

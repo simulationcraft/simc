@@ -10,7 +10,7 @@ level=80
 race=tauren
 load_default_gear=1
 
-spec_talents=press_the_advantage:0
+# spec_talents=press_the_advantage:0
 
 actions.ogcd+=/fortifying_brew
 actions.ogcd+=/dampen_harm

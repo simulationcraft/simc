@@ -1414,7 +1414,6 @@ public:
 
   void parse_player_effects();
   // player_t overrides
-  void apply_affecting_auras( action_t &action ) override;
   action_t *create_action( util::string_view name, util::string_view options ) override;
   double composite_melee_speed() const override;
   double composite_attack_power_multiplier() const override;
@@ -1474,7 +1473,6 @@ public:
                                               effect_type_t type           = E_APPLY_AURA );
   const spell_data_t *find_spell_override( const spell_data_t *base, const spell_data_t *passive );
   void merge( player_t &other ) override;
-  void moving() override;
 
   // Custom Monk Functions
   void trigger_celestial_fortune( action_state_t * );
