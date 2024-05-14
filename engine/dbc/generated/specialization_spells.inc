@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 11.0.0.54605
-static const std::array<specialization_spell_entry_t, 405> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 11.0.0.54709
+static const std::array<specialization_spell_entry_t, 406> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -170,6 +170,7 @@ static const std::array<specialization_spell_entry_t, 405> __specialization_spel
   {  6,  250, 195621,      0, "Frost Fever"                       , 0 },
   {  6,  250, 374721,      0, "Blood Fortification"               , 0 },
   {  6,  251,    674,      0, "Dual Wield"                        , 0 },
+  {  6,  251,  59057,      0, "Rime"                              , 0 },
   {  6,  251,  77514,      0, "Mastery: Frozen Heart"             , 0 },
   {  6,  251,  81229,      0, "Runic Empowerment"                 , 0 },
   {  6,  251,  81333,      0, "Might of the Frozen Wastes"        , 0 },

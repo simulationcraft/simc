@@ -1,5 +1,5 @@
-// Embellishment data, wow build 11.0.0.54605
-static const std::array<embellishment_data_t, 24> __embellishment_data { {
+// Embellishment data, wow build 11.0.0.54709
+static const std::array<embellishment_data_t, 25> __embellishment_data { {
   { "Arathor Armor Patch", 8188, 147859 },
   { "Potion Absorption Inhibitor", 8175, 147812 },
   { "Alchemical Flavor Pocket", 8174, 147811 },
@@ -20,6 +20,7 @@ static const std::array<embellishment_data_t, 24> __embellishment_data { {
   { "Elemental Focusing Lens", 10520, 182921 },
   { "Prismatic Null Stone", 10518, 182911 },
   { "Captured Starlight", 10521, 182939 },
+  { "Blessed Weapon Grip", 11103, 183926 },
   { "Writhing Armor Banding", 11109, 183927 },
   { "Pouch of Pocket Grenades", 11209, 186418 },
   { "Concealed Chaos Module", 11210, 186441 },

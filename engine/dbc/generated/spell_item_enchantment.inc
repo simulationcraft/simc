@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 11.0.0.54605
-static const std::array<item_enchantment_data_t, 5001> __spell_item_ench_data { {
+// Item enchantment data, wow build 11.0.0.54709
+static const std::array<item_enchantment_data_t, 5002> __spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },      0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 320,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720f,  0.0000f,  0.0000f },   2831, "Reinforced (+$k1 Armor)"           },
@@ -5001,5 +5001,6 @@ static const std::array<item_enchantment_data_t, 5001> __spell_item_ench_data { 
   { 7523, 225242,  0,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11221,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Refurbished Plane Displacer"       },
   { 7524, 225243,  0,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11222,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Refurbished Supercollide-O-Tron"   },
   { 7525, 225244,  0,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11223,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Refurbished Shadowflame Rockets"   },
+  { 7526,      0,  0,   0,  50, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 455832,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 455829, "Algari Weaverline"                 },
 } };
 

@@ -1,5 +1,5 @@
-// Permanent item enchants, wow build 11.0.0.54605
-static const std::array<permanent_enchant_entry_t, 944> __permanent_enchant_data { {
+// Permanent item enchants, wow build 11.0.0.54709
+static const std::array<permanent_enchant_entry_t, 945> __permanent_enchant_data { {
   { 6614,  1,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6615,  2,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6616,  3,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
@@ -24,7 +24,7 @@ static const std::array<permanent_enchant_entry_t, 944> __permanent_enchant_data
   { 7366,  2, 19, 0x20000000, 0x00000628, "algari_deftness"                   },
   { 7367,  3, 19, 0x20000000, 0x00000628, "algari_deftness"                   },
   { 7368,  1, 19, 0x20000000, 0x00000628, "algari_finesse"                    },
-  { 7369,  1, 19, 0x20000000, 0x00000628, "algari_finesse"                    },
+  { 7369,  2, 19, 0x20000000, 0x00000628, "algari_finesse"                    },
   { 7370,  3, 19, 0x20000000, 0x00000628, "algari_finesse"                    },
   { 7371,  1, 19, 0x20000000, 0x000019d7, "algari_ingenuity"                  },
   { 7372,  2, 19, 0x20000000, 0x000019d7, "algari_ingenuity"                  },
@@ -177,6 +177,7 @@ static const std::array<permanent_enchant_entry_t, 944> __permanent_enchant_data
   { 6495,  2,  4, 0x00000080, 0x0000001e, "defenders_armor_kit"               },
   { 6496,  3,  4, 0x00000080, 0x0000001e, "defenders_armor_kit"               },
   { 7422,  1,  4, 0x00000100, 0x0000001f, "defenders_march"                   },
+  { 7423,  2,  4, 0x00000100, 0x0000001f, "defenders_march"                   },
   { 7424,  3,  4, 0x00000100, 0x0000001f, "defenders_march"                   },
   {  848,  0,  4, 0x00010000, 0x0000001e, "defense"                           },
   {  912,  0,  2, 0x00000000, 0x000ae7f3, "demonslaying"                      },
@@ -456,8 +457,8 @@ static const std::array<permanent_enchant_entry_t, 944> __permanent_enchant_data
   { 7431,  1,  4, 0x00000008, 0x0000001f, "illusory_adornment_runes"          },
   { 7432,  2,  4, 0x00000008, 0x0000001f, "illusory_adornment_runes"          },
   { 7433,  3,  4, 0x00000008, 0x0000001f, "illusory_adornment_runes"          },
+  { 7434,  1,  4, 0x00000008, 0x0000001f, "illusory_adornment_shadow"         },
   { 7435,  2,  4, 0x00000008, 0x0000001f, "illusory_adornment_shadow"         },
-  { 7434,  3,  4, 0x00000008, 0x0000001f, "illusory_adornment_shadow"         },
   { 7436,  3,  4, 0x00000008, 0x0000001f, "illusory_adornment_shadow"         },
   { 6819,  1,  4, 0x00000008, 0x0000001f, "illusory_adornment_spores"         },
   { 6820,  2,  4, 0x00000008, 0x0000001f, "illusory_adornment_spores"         },
@@ -675,7 +676,7 @@ static const std::array<permanent_enchant_entry_t, 944> __permanent_enchant_data
   { 7333,  2,  4, 0x00000800, 0x0000001f, "radiant_critical_strike"           },
   { 7334,  3,  4, 0x00000800, 0x0000001f, "radiant_critical_strike"           },
   { 7338,  1,  4, 0x00000800, 0x0000001f, "radiant_haste"                     },
-  { 7339,  1,  4, 0x00000800, 0x0000001f, "radiant_haste"                     },
+  { 7339,  2,  4, 0x00000800, 0x0000001f, "radiant_haste"                     },
   { 7340,  3,  4, 0x00000800, 0x0000001f, "radiant_haste"                     },
   { 7344,  1,  4, 0x00000800, 0x0000001f, "radiant_mastery"                   },
   { 7345,  2,  4, 0x00000800, 0x0000001f, "radiant_mastery"                   },
