@@ -913,6 +913,7 @@ public:
     const spell_data_t* remorseless_winter;
     const spell_data_t* might_of_the_frozen_wastes;
     const spell_data_t* frostreaper;
+    const spell_data_t* rime;
 
     // Unholy
     const spell_data_t* dark_transformation_2;
@@ -934,7 +935,7 @@ public:
   struct talents_t
   {
     // Shared Class Tree
-    player_talent_t chains_of_ice;
+    player_talent_t mindfreeze;
     player_talent_t death_strike;
     player_talent_t raise_dead;
     // Row 2
@@ -1056,48 +1057,51 @@ public:
       player_talent_t howling_blast;
       // Row 3
       player_talent_t killing_machine;
-      player_talent_t rime;
+      player_talent_t everfrost;
       // Row 4
       player_talent_t unleashed_frenzy;
       player_talent_t runic_command;
       player_talent_t improved_frost_strike;
+      player_talent_t improved_rime;
       // Row 5
       player_talent_t improved_obliterate;
       player_talent_t glacial_advance;
       player_talent_t pillar_of_frost;
-      player_talent_t improved_rime;
       player_talent_t frostscythe;
+      player_talent_t biting_cold;
       // Row 6
       player_talent_t rage_of_the_frozen_champion;
       player_talent_t frigid_executioner;
-      player_talent_t horn_of_winter;
-      player_talent_t fatal_fixation;
-      player_talent_t enduring_strength;
-      player_talent_t frostwhelps_aid;
       player_talent_t cold_heart;
-      player_talent_t biting_cold;
+      player_talent_t horn_of_winter;
+      player_talent_t enduring_strength;
+      player_talent_t icecap;
+      player_talent_t frostwhelps_aid;
+      player_talent_t empower_rune_weapon;
       player_talent_t chill_streak;
       // Row 7
       player_talent_t murderous_efficiency;
       player_talent_t inexorable_assault;
-      player_talent_t icecap;
-      player_talent_t empower_rune_weapon;
+      player_talent_t frostwyrms_fury;
       player_talent_t gathering_storm;
+      player_talent_t cryogenic_chamber;
       player_talent_t enduring_chill;
       player_talent_t piercing_chill;
       // Row 8
       player_talent_t bonegrinder;
-      player_talent_t shattering_blade;
+      player_talent_t smothering_offensive;
+      player_talent_t absolute_zero;
       player_talent_t avalanche;
       player_talent_t icebreaker;
-      player_talent_t everfrost;
       // Row 9
-      player_talent_t cold_blooded_rage;
-      player_talent_t frostwyrms_fury;
-      player_talent_t invigorating_freeze;
-      // Row 10
       player_talent_t obliteration;
-      player_talent_t absolute_zero;
+      player_talent_t icy_death_torrent;
+      player_talent_t shattering_blade;
+      player_talent_t unknown;
+      // Row 10
+      player_talent_t arctic_assault;
+      player_talent_t the_long_winter;
+      player_talent_t shattered_frost;
       player_talent_t breath_of_sindragosa;
     } frost;
 
@@ -1467,7 +1471,6 @@ public:
 
     // Killing machine triggered by
     propagate_const<proc_t*> km_from_crit_aa;
-    propagate_const<proc_t*> km_from_cold_blooded_rage;  // Frost strike with talent
     propagate_const<proc_t*> km_from_obliteration_fs;    // Frost Strike during Obliteration
     propagate_const<proc_t*> km_from_obliteration_hb;    // Howling Blast during Obliteration
     propagate_const<proc_t*> km_from_obliteration_ga;    // Glacial Advance during Obliteration
@@ -1475,7 +1478,6 @@ public:
 
     // Killing machine refreshed by
     propagate_const<proc_t*> km_from_crit_aa_wasted;
-    propagate_const<proc_t*> km_from_cold_blooded_rage_wasted;  // Frost strike with talent
     propagate_const<proc_t*> km_from_obliteration_fs_wasted;    // Frost Strike during Obliteration
     propagate_const<proc_t*> km_from_obliteration_hb_wasted;    // Howling Blast during Obliteration
     propagate_const<proc_t*> km_from_obliteration_ga_wasted;    // Glacial Advance during Obliteration
@@ -3153,8 +3155,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     blood_plague_t( util::string_view n, dancing_rune_weapon_pet_t* p )
       : drw_action_t<spell_t>( p, n, p->dk()->spell.blood_plague )
     {
-      // DRW usually behaves the same regardless of talents, but BP ticks are affected by rapid decomposition
-      this->base_tick_time *= 1.0 + dk()->talent.blood.rapid_decomposition->effectN( 1 ).percent();
       snapshot_coagulopathy = 0.0;
     }
 
@@ -4049,6 +4049,7 @@ struct trollbane_pet_t final : public horseman_pet_t
       : horseman_spell_t( p, n, p->dk()->pet_spell.trollbanes_chains_of_ice_ability )
     {
       parse_options( options_str );
+      aoe = data().effectN( 1 ).chain_target() + as<int>( p->dk()->talent.proliferating_chill->effectN( 1 ).base_value() );
     }
 
     void impact( action_state_t* a ) override
@@ -5021,7 +5022,6 @@ struct blood_plague_t final : public death_knight_disease_t
   blood_plague_t( util::string_view name, death_knight_t* p, bool superstrain = false )
     : death_knight_disease_t( name, p, p->spell.blood_plague )
   {
-    base_tick_time *= 1.0 + p->talent.blood.rapid_decomposition->effectN( 1 ).percent();
     heal = get_action<blood_plague_heal_t>( "blood_plague_heal", p );
 
     if ( superstrain )
@@ -5079,8 +5079,6 @@ struct frost_fever_t final : public death_knight_disease_t
     // 2020-05-05: It would seem that the proc chance is 0.30 * sqrt(FeverCount) / FeverCount
     unsigned ff_count = p()->get_active_dots( d );
     double chance     = 0.30;
-    if ( ( d->state->result == RESULT_CRIT ) && p()->talent.frost.invigorating_freeze.ok() )
-      chance += p()->talent.frost.invigorating_freeze->effectN( 1 ).percent();
 
     chance *= std::sqrt( ff_count ) / ff_count;
 
@@ -6275,22 +6273,10 @@ struct cold_heart_damage_t final : public death_knight_spell_t
 struct chains_of_ice_t final : public death_knight_spell_t
 {
   chains_of_ice_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_spell_t( "chains_of_ice", p, p->talent.chains_of_ice )
+    : death_knight_spell_t( "chains_of_ice", p, p->spec.chains_of_ice )
   {
     parse_options( options_str );
     cold_heart = get_action<cold_heart_damage_t>( "cold_heart", p );
-    if ( p->talent.proliferating_chill.ok() )
-    {
-      aoe = p->talent.chains_of_ice->effectN( 1 ).chain_target() +
-            as<int>( p->talent.proliferating_chill->effectN( 1 ).base_value() );
-    }
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    death_knight_spell_t::impact( state );
-    if ( p()->buffs.cold_heart->check() > 0 )
-      cold_heart->execute_on_target( target );
   }
 
   void execute() override
@@ -6298,7 +6284,10 @@ struct chains_of_ice_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     if ( p()->buffs.cold_heart->check() > 0 )
+    {
       p()->buffs.cold_heart->expire();
+      cold_heart->execute_on_target( target );
+    }
   }
 
 private:
@@ -7660,21 +7649,6 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
     }
 
     return m;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    death_knight_melee_attack_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-      if ( p()->talent.frost.cold_blooded_rage.ok() && s->result == RESULT_CRIT )
-      {
-        p()->trigger_killing_machine( p()->talent.frost.cold_blooded_rage->effectN( 2 ).percent(),
-                                      p()->procs.km_from_cold_blooded_rage,
-                                      p()->procs.km_from_cold_blooded_rage_wasted );
-      }
-    }
   }
 
 public:
@@ -11304,6 +11278,7 @@ void death_knight_t::init_spells()
   spec.remorseless_winter         = find_specialization_spell( "Remorseless Winter" );
   spec.might_of_the_frozen_wastes = find_specialization_spell( "Might of the Frozen Wastes" );
   spec.frostreaper                = find_specialization_spell( "Frostreaper" );
+  spec.rime                       = find_specialization_spell( "Rime" );
 
   // Unholy Baselines
   spec.unholy_death_knight   = find_specialization_spell( "Unholy Death Knight" );
@@ -11314,9 +11289,9 @@ void death_knight_t::init_spells()
 
   //////// Class Talent Tree
   // Row 1
-  talent.chains_of_ice = find_talent_spell( talent_tree::CLASS, "Chains of Ice" );
-  talent.death_strike  = find_talent_spell( talent_tree::CLASS, "Death Strike" );
-  talent.raise_dead    = find_talent_spell( talent_tree::CLASS, "Raise Dead" );
+  talent.mindfreeze   = find_talent_spell( talent_tree::CLASS, "Mind Freeze" );
+  talent.death_strike = find_talent_spell( talent_tree::CLASS, "Death Strike" );
+  talent.raise_dead   = find_talent_spell( talent_tree::CLASS, "Raise Dead" );
   // Row 2
   talent.coldthirst            = find_talent_spell( talent_tree::CLASS, "Coldthirst" );
   talent.improved_death_strike = find_talent_spell( talent_tree::CLASS, "Improved Death Strike" );
@@ -11432,49 +11407,52 @@ void death_knight_t::init_spells()
   talent.frost.howling_blast = find_talent_spell( talent_tree::SPECIALIZATION, "Howling Blast" );
   // Row 3
   talent.frost.killing_machine = find_talent_spell( talent_tree::SPECIALIZATION, "Killing Machine" );
-  talent.frost.rime            = find_talent_spell( talent_tree::SPECIALIZATION, "Rime" );
+  talent.frost.everfrost       = find_talent_spell( talent_tree::SPECIALIZATION, "Everfrost" );
   // Row 4
   talent.frost.unleashed_frenzy      = find_talent_spell( talent_tree::SPECIALIZATION, "Unleashed Frenzy" );
   talent.frost.runic_command         = find_talent_spell( talent_tree::SPECIALIZATION, "Runic Command" );
   talent.frost.improved_frost_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Frost Strike" );
-  talent.frost.biting_cold           = find_talent_spell( talent_tree::SPECIALIZATION, "Biting Cold" );
+  talent.frost.improved_rime         = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Rime" );
   // Row 5
   talent.frost.improved_obliterate = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Obliterate" );
   talent.frost.glacial_advance     = find_talent_spell( talent_tree::SPECIALIZATION, "Glacial Advance" );
   talent.frost.pillar_of_frost     = find_talent_spell( talent_tree::SPECIALIZATION, "Pillar of Frost" );
-  talent.frost.improved_rime       = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Rime" );
   talent.frost.frostscythe         = find_talent_spell( talent_tree::SPECIALIZATION, "Frostscythe" );
+  talent.frost.biting_cold         = find_talent_spell( talent_tree::SPECIALIZATION, "Biting Cold" );
   // Row 6
   talent.frost.rage_of_the_frozen_champion =
       find_talent_spell( talent_tree::SPECIALIZATION, "Rage of the Frozen Champion" );
-  talent.frost.frigid_executioner = find_talent_spell( talent_tree::SPECIALIZATION, "Frigid Executioner" );
-  talent.frost.horn_of_winter     = find_talent_spell( talent_tree::SPECIALIZATION, "Horn of Winter" );
-  talent.frost.fatal_fixation     = find_talent_spell( talent_tree::SPECIALIZATION, "Fatal Fixation" );
-  talent.frost.enduring_strength  = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Strength" );
-  talent.frost.frostwhelps_aid    = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwhelp's Aid" );
-  talent.frost.cold_heart         = find_talent_spell( talent_tree::SPECIALIZATION, "Cold Heart" );
-  talent.frost.everfrost          = find_talent_spell( talent_tree::SPECIALIZATION, "Everfrost" );
-  talent.frost.chill_streak       = find_talent_spell( talent_tree::SPECIALIZATION, "Chill Streak" );
+  talent.frost.frigid_executioner  = find_talent_spell( talent_tree::SPECIALIZATION, "Frigid Executioner" );
+  talent.frost.cold_heart          = find_talent_spell( talent_tree::SPECIALIZATION, "Cold Heart" );
+  talent.frost.horn_of_winter      = find_talent_spell( talent_tree::SPECIALIZATION, "Horn of Winter" );
+  talent.frost.enduring_strength   = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Strength" );
+  talent.frost.icecap              = find_talent_spell( talent_tree::SPECIALIZATION, "Icecap" );
+  talent.frost.frostwhelps_aid     = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwhelp's Aid" );
+  talent.frost.empower_rune_weapon = find_talent_spell( talent_tree::SPECIALIZATION, "Empower Rune Weapon" );
+  talent.frost.chill_streak        = find_talent_spell( talent_tree::SPECIALIZATION, "Chill Streak" );
   // Row 7
   talent.frost.murderous_efficiency = find_talent_spell( talent_tree::SPECIALIZATION, "Murderous Efficiency" );
   talent.frost.inexorable_assault   = find_talent_spell( talent_tree::SPECIALIZATION, "Inexorable Assault" );
-  talent.frost.icecap               = find_talent_spell( talent_tree::SPECIALIZATION, "Icecap" );
-  talent.frost.empower_rune_weapon  = find_talent_spell( talent_tree::SPECIALIZATION, "Empower Rune Weapon" );
+  talent.frost.frostwyrms_fury      = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwyrm's Fury" );
   talent.frost.gathering_storm      = find_talent_spell( talent_tree::SPECIALIZATION, "Gathering Storm" );
+  talent.frost.cryogenic_chamber    = find_talent_spell( talent_tree::SPECIALIZATION, "Cryogenic Chamber" );
   talent.frost.enduring_chill       = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Chill" );
   talent.frost.piercing_chill       = find_talent_spell( talent_tree::SPECIALIZATION, "Piercing Chill" );
   // Row 8
-  talent.frost.bonegrinder      = find_talent_spell( talent_tree::SPECIALIZATION, "Bonegrinder" );
-  talent.frost.shattering_blade = find_talent_spell( talent_tree::SPECIALIZATION, "Shattering Blade" );
-  talent.frost.avalanche        = find_talent_spell( talent_tree::SPECIALIZATION, "Avalanche" );
-  talent.frost.icebreaker       = find_talent_spell( talent_tree::SPECIALIZATION, "Icebreaker" );
-  // Row 9
-  talent.frost.cold_blooded_rage   = find_talent_spell( talent_tree::SPECIALIZATION, "Cold-Blooded Rage" );
-  talent.frost.frostwyrms_fury     = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwyrm's Fury" );
-  talent.frost.invigorating_freeze = find_talent_spell( talent_tree::SPECIALIZATION, "Invigorating Freeze" );
-  // Row 10
-  talent.frost.obliteration         = find_talent_spell( talent_tree::SPECIALIZATION, "Obliteration" );
+  talent.frost.bonegrinder          = find_talent_spell( talent_tree::SPECIALIZATION, "Bonegrinder" );
+  talent.frost.smothering_offensive = find_talent_spell( talent_tree::SPECIALIZATION, "Smothering Offensive" );
   talent.frost.absolute_zero        = find_talent_spell( talent_tree::SPECIALIZATION, "Absolute Zero" );
+  talent.frost.avalanche            = find_talent_spell( talent_tree::SPECIALIZATION, "Avalanche" );
+  talent.frost.icebreaker           = find_talent_spell( talent_tree::SPECIALIZATION, "Icebreaker" );
+  // Row 9
+  talent.frost.obliteration      = find_talent_spell( talent_tree::SPECIALIZATION, "Obliteration" );
+  talent.frost.icy_death_torrent = find_talent_spell( talent_tree::SPECIALIZATION, "Icy Death Torrent" );
+  talent.frost.shattering_blade  = find_talent_spell( talent_tree::SPECIALIZATION, "Shattering Blade" );
+  // UNKNOWN TALENT GOES HERE
+  // Row 10
+  talent.frost.arctic_assault       = find_talent_spell( talent_tree::SPECIALIZATION, "Arctic Assault" );
+  talent.frost.the_long_winter      = find_talent_spell( talent_tree::SPECIALIZATION, "The Long Winter" );
+  talent.frost.shattered_frost      = find_talent_spell( talent_tree::SPECIALIZATION, "Shattered Frost" );
   talent.frost.breath_of_sindragosa = find_talent_spell( talent_tree::SPECIALIZATION, "Breath of Sindragosa" );
 
   //////// Unholy
@@ -12046,7 +12024,6 @@ void death_knight_t::create_buffs()
     buffs.killing_machine = make_buff( this, "killing_machine", talent.frost.killing_machine->effectN( 1 ).trigger() )
                                 ->set_chance( 1.0 )
                                 ->set_default_value_from_effect( 1 )
-                                ->apply_affecting_aura( talent.frost.fatal_fixation )
                                 ->set_stack_change_callback( [ this ]( buff_t* buff_, int old_, int new_ ) {
                                   // in 10.0.7 killing machine has a behavior where dropping from 2 -> 1 stacks will
                                   // also refresh your buff in 10.1.0 this behavior changed, KM now no longer refreshes,
@@ -12076,9 +12053,9 @@ void death_knight_t::create_buffs()
 
     buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
-    buffs.rime = make_buff( this, "rime", talent.frost.rime->effectN( 1 ).trigger() )
-                     ->set_trigger_spell( talent.frost.rime )
-                     ->set_chance( talent.frost.rime->effectN( 2 ).percent() +
+    buffs.rime = make_buff( this, "rime", spec.rime->effectN( 1 ).trigger() )
+                     ->set_trigger_spell( spec.rime )
+                     ->set_chance( spec.rime->effectN( 2 ).percent() +
                                    talent.frost.rage_of_the_frozen_champion->effectN( 1 ).percent() );
 
     buffs.bonegrinder_crit = make_buff( this, "bonegrinder_crit", spell.bonegrinder_crit_buff )
@@ -12194,14 +12171,12 @@ void death_knight_t::init_procs()
   procs.killing_machine_fsc   = get_proc( "Killing Machine spent on Frostscythe" );
 
   procs.km_from_crit_aa           = get_proc( "Killing Machine: Critical auto attacks" );
-  procs.km_from_cold_blooded_rage = get_proc( "Killing Machine: Cold-Blooded Rage" );
   procs.km_from_obliteration_fs   = get_proc( "Killing Machine: Frost Strike" );
   procs.km_from_obliteration_hb   = get_proc( "Killing Machine: Howling Blast" );
   procs.km_from_obliteration_ga   = get_proc( "Killing Machine: Glacial Advance" );
   procs.km_from_obliteration_sr   = get_proc( "Killing Machine: Soul Reaper" );
 
   procs.km_from_crit_aa_wasted           = get_proc( "Killing Machine wasted: Critical auto attacks" );
-  procs.km_from_cold_blooded_rage_wasted = get_proc( "Killing Machine wasted: Cold-Blooded Rage" );
   procs.km_from_obliteration_fs_wasted   = get_proc( "Killing Machine wasted: Frost Strike" );
   procs.km_from_obliteration_hb_wasted   = get_proc( "Killing Machine wasted: Howling Blast" );
   procs.km_from_obliteration_ga_wasted   = get_proc( "Killing Machine wasted: Glacial Advance" );
@@ -12695,11 +12670,13 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.unholy_bond );
   action.apply_affecting_aura( talent.deaths_echo );
   action.apply_affecting_aura( talent.gloom_ward );
+  action.apply_affecting_aura( talent.proliferating_chill );
 
   // Blood
   action.apply_affecting_aura( talent.blood.improved_heart_strike );
   action.apply_affecting_aura( talent.blood.tightening_grasp );
   action.apply_affecting_aura( talent.blood.voracious );
+  action.apply_affecting_aura( talent.blood.rapid_decomposition );
 
   // Frost
   action.apply_affecting_aura( talent.frost.improved_frost_strike );
