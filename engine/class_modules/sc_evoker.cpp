@@ -58,6 +58,7 @@ struct evoker_td_t : public actor_target_data_t
     dot_t* disintegrate;
     dot_t* living_flame;
     dot_t* enkindle;
+    dot_t* fire_breath_traveling_flame;
   } dots;
 
   struct debuffs_t
@@ -1657,11 +1658,11 @@ public:
 
     if ( p()->talent.flameshaper.burning_adrenaline.ok() )
     {
-      parse_effects( p()->buff.burning_adrenaline );
+      parse_effects( p()->buff.burning_adrenaline, IGNORE_STACKS );
       
       if ( ab::channeled )
       {
-        parse_effects( p()->buff.burning_adrenaline_channel );
+        parse_effects( p()->buff.burning_adrenaline_channel, IGNORE_STACKS );
       }
     }
 
@@ -2492,7 +2493,10 @@ public:
         auto ext = timespan_t::from_seconds( as<int>( p()->talent.everburning_flame->effectN( 1 ).base_value() ) );
 
         for ( auto t : sim->target_non_sleeping_list )
+        {
           td( t )->dots.fire_breath->adjust_duration( ext );
+          td( t )->dots.fire_breath_traveling_flame->adjust_duration( ext );
+        }
       }
     }
   }
@@ -2969,6 +2973,83 @@ public:
   }
 };
 
+
+struct fire_breath_traveling_flame_t : public empowered_release_spell_t
+{
+  using base_t = empowered_release_spell_t;
+  timespan_t dot_dur_per_emp;
+
+  fire_breath_traveling_flame_t( evoker_t* p )
+    : base_t( "fire_breath_traveling_flame", p, p->talent.flameshaper.traveling_flame_fire_breath ),
+      dot_dur_per_emp( 6_s )
+  {
+    aoe = 0;
+
+    dot_duration = 20_s;  // base * 10? or hardcoded to 20s?
+    dot_duration += timespan_t::from_seconds( p->talent.blast_furnace->effectN( 1 ).base_value() );
+  }
+
+  timespan_t reduction_from_empower( const action_state_t* s ) const
+  {
+    return std::max( 0, empower_value( s ) - 1 ) * dot_dur_per_emp;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return base_t::composite_dot_duration( s ) - reduction_from_empower( s );
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    auto da          = base_t::bonus_da( s );
+    auto ticks       = reduction_from_empower( s ) / tick_time( s );
+    auto tick_damage = s->composite_spell_power() * spell_tick_power_coefficient( s );
+
+    return da + ticks * tick_damage;
+  }
+
+  void trigger_everburning_flame( action_state_t* ) override
+  {
+    return;  // flame breath can't extend itself. TODO: confirm if this ever becomes a possiblity.
+  }
+
+  
+  void trigger_dot( action_state_t* state )
+  {
+    base_t::trigger_dot( state );
+
+    const evoker_td_t* td = base_t::p()->find_target_data( state->target );
+
+    if ( td )
+    {
+      dot_t* d = td->dots.fire_breath;
+      d->cancel();
+    }
+  }
+
+  timespan_t tick_time( const action_state_t* state ) const override
+  {
+    timespan_t t = base_t::tick_time( state );
+
+    if ( p()->talent.catalyze.ok() && p()->get_target_data( state->target )->dots.disintegrate->is_ticking() )
+    {
+      t /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
+    }
+
+    return t;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    empowered_release_spell_t::tick( d );
+
+    // TODO: confirm this doesn't have a target # based DR, or exhibit previously bugged behavior where icd is
+    // triggered on check, not success
+    p()->buff.burnout->trigger();
+  }
+};
+
+
 struct fire_breath_t : public empowered_charge_spell_t
 {
   struct fire_breath_damage_t : public empowered_release_spell_t
@@ -3050,6 +3131,12 @@ struct fire_breath_t : public empowered_charge_spell_t
       return t;
     }
 
+    void trigger_dot( action_state_t* state )
+    {
+      base_t::trigger_dot( state );
+      p()->get_target_data( state->target )->dots.fire_breath_traveling_flame->cancel();
+    }
+
     double calculate_tick_amount( action_state_t* s, double m ) const override
     {
       auto n = std::clamp( as<double>( s->n_targets ), reduced_aoe_targets, 20.0 );
@@ -3073,6 +3160,11 @@ struct fire_breath_t : public empowered_charge_spell_t
     : base_t( "fire_breath", p, p->find_class_spell( "Fire Breath" ), options_str )
   {
     create_release_spell<fire_breath_damage_t>( "fire_breath_damage" );
+
+    if ( p->talent.flameshaper.traveling_flame.ok() )
+    {
+      add_child( p->get_secondary_action<fire_breath_traveling_flame_t>( "fire_breath_traveling_flame" ) );
+    }
   }
 
   player_t* get_release_target( dot_t* d ) override
@@ -3343,6 +3435,23 @@ struct disintegrate_t : public essence_spell_t
     ta *= 1.0 + p()->buff.iridescence_blue_disintegrate->check_value();
 
     return ta;
+  }
+
+  void trigger_dot( action_state_t* s ) override
+  {
+    dot_t* d                = get_dot( s->target );
+    timespan_t tick_remains = d->time_to_next_full_tick();
+    timespan_t tt           = tick_time( s );
+    int ticks               = 0;
+
+    essence_spell_t::trigger_dot( s );
+
+    // Disint channel duration is a bit fuzzy, it will go above or below the
+    // standard duration to make sure it has the correct number of ticks.
+    ticks += as<int>( std::round( ( d->remains() - tick_remains ) / tt ) );
+    timespan_t new_remains = ticks * tt + tick_remains;
+
+    d->adjust_duration( new_remains - d->remains() );
   }
 
   void tick( dot_t* d ) override
@@ -4565,6 +4674,7 @@ struct engulf_t : public evoker_spell_t
     double consume_flame_mult;
     timespan_t fan_the_flames_duration;
     action_t* consume_flame;
+    empowered_release_spell_t* replicated_empower_action;
 
     engulf_base_t( std::string_view n, evoker_t* p, const spell_data_t* s )
       : Base( n, p, s ),
@@ -4572,6 +4682,7 @@ struct engulf_t : public evoker_spell_t
         fan_the_flames_duration( p->talent.flameshaper.enkindle_damage->duration() *
                                  p->talent.flameshaper.fan_the_flames->effectN( 1 ).percent() ),
         consume_flame(),
+        replicated_empower_action(),
         consume_flame_time(
             timespan_t::from_seconds( p->talent.flameshaper.consume_flame->effectN( 1 ).base_value() ) ),
         consume_flame_mult( p->talent.flameshaper.consume_flame->effectN( 3 ).percent() )
@@ -4620,6 +4731,28 @@ struct engulf_t : public evoker_spell_t
       return total_damage;
     }
 
+    empower_e get_empower_level( dot_t* source_dot )
+    {
+      if ( !replicated_empower_action || !source_dot->is_ticking() || !source_dot->state )
+        return EMPOWER_1;
+
+      return replicated_empower_action->cast_state( source_dot->state )->empower;
+    }
+
+    void apply_dot( empower_e level, player_t* target_ )
+    {
+      if ( !replicated_empower_action )
+        return;
+
+      auto emp_state                    = replicated_empower_action->get_state();
+      emp_state->target                 = target_;
+      replicated_empower_action->target = target_;
+      replicated_empower_action->snapshot_state( emp_state, replicated_empower_action->amount_type( emp_state ) );
+      replicated_empower_action->cast_state( emp_state )->empower = level;
+
+      replicated_empower_action->schedule_execute( emp_state );
+    }
+
     void impact( action_state_t* s ) override
     {
       Base::impact( s );
@@ -4628,12 +4761,15 @@ struct engulf_t : public evoker_spell_t
 
       if ( td )
       {
+        bool delay_refresh      = true;
+        dot_t* source_effect    = consumed_dot( td );
+        empower_e empower_level = get_empower_level( source_effect );
+        player_t* apply_to      = s->target;
+
         if ( base_t::p()->talent.flameshaper.traveling_flame.ok() )
         {
-          dot_t* source_effect = consumed_dot( td );
           if ( source_effect && source_effect->is_ticking() )
           {
-            bool do_refresh = true;
             if ( base_t::p()->sim->active_enemies > 1 )
             {
               // TODO: Change to spread to lowest if it fails to spread on anyone? confirm behaviour.
@@ -4645,27 +4781,18 @@ struct engulf_t : public evoker_spell_t
 
                 if ( !target_effect->is_ticking() )
                 {
-                  // TODO: Use the funny dot variants
-                  source_effect->copy( t, DOT_COPY_START );
+                  apply_to = t;
 
-                  do_refresh = false;
+                  delay_refresh = false;
                   break;
                 }
               }
-            }
-
-            if ( do_refresh )
-            {
-              base_t::sim->print_debug( "{} refreshes dot {} with {}", base_t::player->name_str,
-                                        source_effect->name_str, base_t::name_str );
-              source_effect->refresh_duration();
             }
           }
         }
 
         if ( base_t::p()->talent.flameshaper.consume_flame.ok() && consume_flame )
         {
-          dot_t* source_effect = consumed_dot( td );
           if ( source_effect && source_effect->is_ticking() )
           {
             auto dot_damage = tick_damage_over_time( consume_flame_time, source_effect ) * consume_flame_mult;
@@ -4676,6 +4803,21 @@ struct engulf_t : public evoker_spell_t
               consume_flame->execute_on_target( s->target, dot_damage );
               source_effect->adjust_duration( -consume_flame_time );
             }
+          }
+        }
+
+        if ( base_t::p()->talent.flameshaper.traveling_flame.ok() )
+        {
+          if ( !delay_refresh )
+          {
+            apply_dot( empower_level, apply_to );
+          }
+          else
+          {
+            make_event( base_t::sim, 600_ms, [ this, empower_level, source_effect, apply_to ] {
+              if ( source_effect->is_ticking() )
+                apply_dot( empower_level, apply_to );
+            } );
           }
         }
 
@@ -4704,16 +4846,24 @@ struct engulf_t : public evoker_spell_t
       {
         consume_flame = p->get_secondary_action<consume_flame_t>( "consume_flame_damage" );
       }
+
+      if ( p->talent.flameshaper.traveling_flame.ok() )
+      {
+        replicated_empower_action = p->get_secondary_action<fire_breath_traveling_flame_t>( "fire_breath_traveling_flame" );
+      }
     }
 
     dot_t* consumed_dot( const evoker_td_t* td ) const override
     {
+      if ( td->dots.fire_breath_traveling_flame->is_ticking() )
+        return td->dots.fire_breath_traveling_flame;
+
       return td->dots.fire_breath;
     }
 
     dot_t* replicated_dot( const evoker_td_t* td ) const override
     {
-      return td->dots.fire_breath;
+      return td->dots.fire_breath_traveling_flame;
     }
 
     int count_dots( player_t* target ) const override
@@ -4723,7 +4873,8 @@ struct engulf_t : public evoker_spell_t
       if ( !td )
         return 0;
 
-      return td->dots.fire_breath->is_ticking() + td->dots.enkindle->is_ticking() + td->dots.living_flame->is_ticking();
+      return td->dots.fire_breath->is_ticking() + td->dots.fire_breath_traveling_flame->is_ticking() + td->dots.enkindle->is_ticking() +
+             td->dots.living_flame->is_ticking();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -5197,6 +5348,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   dots.disintegrate = target->get_dot( "disintegrate", evoker );
   dots.enkindle     = target->get_dot( "enkindle", evoker );
   dots.living_flame = target->get_dot( "living_flame_damage", evoker );
+  dots.fire_breath_traveling_flame  = target->get_dot( "fire_breath_traveling_flame", evoker );
 
   debuffs.shattering_star = make_buff_fallback( evoker->talent.shattering_star.ok(), *this, "shattering_star_debuff",
                                                 evoker->talent.shattering_star )
