@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54605 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54709 thewarwithin-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -565,14 +565,17 @@ $damage=${(0.80*1.1*$AP)*$<mastery>*$<blood>}
 $healing=${(0.80*1.1*$AP)*5}
 
 Name             : Empower Rune Weapon (id=47568) [Spell Family (15)] 
+Talent Entry     : Frost [tree=spec, row=6, col=7, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
 Spell Level      : 48
 Velocity         : 4 yards/sec
 Duration         : 20 seconds
+Cooldown         : 120 seconds
 Charges          : 0 (120 seconds cooldown)
-Category         : 1614: Seal of Necrofantasia (212216 effect#1), Seal of Necrofantasia (212216 effect#2), Strive for Perfection (296320 effect#5), Strive for Perfection (299367 effect#5), Strive for Perfection (299369 effect#5), Benevolent Faerie (327710 effect#5), Accelerated Cold (337822 effect#2), Benevolent Faerie Fermata (345453 effect#5), Haunted Mask (356968 effect#5), Empower Rune Weapon (392963 effect#1)
+Category         : 1614: Seal of Necrofantasia (212216 effect#1), Seal of Necrofantasia (212216 effect#2), Strive for Perfection (296320 effect#5), Strive for Perfection (299367 effect#5), Strive for Perfection (299369 effect#5), Benevolent Faerie (327710 effect#5), Accelerated Cold (337822 effect#2), Benevolent Faerie Fermata (345453 effect#5), Haunted Mask (356968 effect#5)
+Category Cooldown: 120 seconds
 Stance Mask      : 0x01000000
 Affecting spells : Death Knight (137005 effect#2), Accelerated Cold (337822 effect#1)
 Family Flags     : 14, 127
@@ -592,9 +595,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
 #3 (id=738867)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.33400 | Target: Self (1)
-Description      : Empower your rune weapon, gaining $s3% Haste and generating $s1 $LRune:Runes; and ${$m2/10} Runic Power instantly and every $t1 sec for $d.
-$?s137006[
-If you already know $@spellname47568, instead gain $392714s1 additional $Lcharge:charges; of $@spellname47568.][]
+Description      : Empower your rune weapon, gaining $s3% Haste and generating $s1 $LRune:Runes; and ${$m2/10} Runic Power instantly and every $t1 sec for $d.
 Tooltip          : Haste increased by $s3%.
 Generating $s1 $LRune:Runes; and ${$m2/10} Runic Power every $t1 sec.
 
@@ -619,7 +620,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Active Threat (94), Not a Proc (105), Always Hit (114), Not In Spellbook (143), Do Not Consume Resources (197), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=39872)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.70110 | PvP Coefficient: 1.60000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.70110 | PvP Coefficient: 1.75000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Death Coil (id=47633) [Spell Family (15)] 
@@ -1367,10 +1368,9 @@ School           : Frost
 Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
-Stacks           : 1 maximum
+Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Fatal Fixation (405166 effect#1)
-Triggered by     : Killing Machine (51128), Killer Frost (278603), Cold-Blooded Rage (377083)
+Triggered by     : Killing Machine (51128), Killer Frost (278603)
 Family Flags     : 100
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1518,13 +1518,13 @@ Attributes       : ........ .....x.. ..x..... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ....x... ........ 
+                 : ........ ........ ........ ........   x......x ........ ....x... ........ 
                  : ........ ........ ........ ........   
-                 : Allow Item Spell In PvP (13), Do Not Sheath (18), No Redirection (35), No Reflection (39), DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Do Not Display Range (126), Suppress Weapon Procs (151), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+                 : Allow Item Spell In PvP (13), Do Not Sheath (18), No Redirection (35), No Reflection (39), DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Do Not Display Range (126), Suppress Weapon Procs (151), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=44095)    : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Howling Blast (49184), Razorice (50401), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (155166), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Chill Streak (204167), Avalanche (207150), Frostscythe (207230), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074), Echoing Howl (275918), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Frostwhelp's Indignation (287320), Frost Strike (325464), Soul Reaper (343294), Soul Reaper (343295), Cold Heart (358109), Frostwhelp's Aid (377245), Glacial Advance (394500), Frostwyrm's Fury (410790), Soul Reaper (448229)
+                   Affected Spells: Howling Blast (49184), Razorice (50401), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (155166), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Chill Streak (204167), Avalanche (207150), Frostscythe (207230), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074), Echoing Howl (275918), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Frostwhelp's Indignation (287320), Frost Strike (325464), Soul Reaper (343294), Soul Reaper (343295), Cold Heart (358109), Frostwhelp's Aid (377245), Glacial Advance (394500), Frostwyrm's Fury (410790), Soul Reaper (448229), Cryogenic Chamber (456371)
                    Family Flags: 120
 #2 (id=205722)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 16 | Target: Enemy (6)
@@ -1775,7 +1775,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=48025)    : Apply Aura (6) | Periodic Damage (3): frost every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21400 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21400 | PvP Coefficient: 1.25000 | Misc Value: 127 | Target: Unknown(25)
 #2 (id=1026999)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313), Glacial Advance (394500), Frostwyrm's Fury (410790), Wave of Souls (435802), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Trollbane's Icy Fury (444834), Soul Reaper (448229)
@@ -1856,7 +1856,7 @@ Description      : Command the target to attack you.
 Tooltip          : Taunted.
 
 Name             : Horn of Winter (id=57330) [Spell Family (15)] 
-Talent Entry     : Frost [tree=spec, row=6, col=6, max_rank=1, req_points=8]
+Talent Entry     : Frost [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -2003,10 +2003,10 @@ Description      : Your next Howling Blast will consume no Runes, generate no Ru
 Tooltip          : Your next Howling Blast will consume no Runes, generate no Runic Power, and deals $s2% additional damage.
 
 Name             : Rime (id=59057) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=3, col=2, max_rank=1, req_points=0]
-Class            : Death Knight
+Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
+Spell Level      : 21
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
@@ -2425,7 +2425,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Always Hit (114), Requires Off-Hand Weapon (120), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=60368)    : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.53613 | PvP Coefficient: 1.75000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.53613 | PvP Coefficient: 1.95000 | Target: Enemy (6)
 Description      : $@spelldesc49143
 
 Name             : Obliterate Off-Hand (id=66198) [Spell Family (15)] 
@@ -2608,11 +2608,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68126)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Howling Blast (49184), Razorice (50401), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (155166), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Chill Streak (204167), Avalanche (207150), Frostscythe (207230), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074), Echoing Howl (275918), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Frostwhelp's Indignation (287320), Frost Strike (325464), Soul Reaper (343294), Soul Reaper (343295), Cold Heart (358109), Frostwhelp's Aid (377245), Glacial Advance (394500), Frostwyrm's Fury (410790), Soul Reaper (448229)
+                   Affected Spells: Howling Blast (49184), Razorice (50401), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (155166), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Chill Streak (204167), Avalanche (207150), Frostscythe (207230), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074), Echoing Howl (275918), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Frostwhelp's Indignation (287320), Frost Strike (325464), Soul Reaper (343294), Soul Reaper (343295), Cold Heart (358109), Frostwhelp's Aid (377245), Glacial Advance (394500), Frostwyrm's Fury (410790), Soul Reaper (448229), Cryogenic Chamber (456371)
                    Family Flags: 120
 #2 (id=90622)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Howling Blast (49184), Razorice (50401), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (155166), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Chill Streak (204167), Avalanche (207150), Frostscythe (207230), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074), Echoing Howl (275918), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Frostwhelp's Indignation (287320), Frost Strike (325464), Soul Reaper (343294), Soul Reaper (343295), Cold Heart (358109), Frostwhelp's Aid (377245), Glacial Advance (394500), Frostwyrm's Fury (410790), Soul Reaper (448229)
+                   Affected Spells: Howling Blast (49184), Razorice (50401), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (155166), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Chill Streak (204167), Avalanche (207150), Frostscythe (207230), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074), Echoing Howl (275918), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Frostwhelp's Indignation (287320), Frost Strike (325464), Soul Reaper (343294), Soul Reaper (343295), Cold Heart (358109), Frostwhelp's Aid (377245), Glacial Advance (394500), Frostwyrm's Fury (410790), Soul Reaper (448229), Cryogenic Chamber (456371)
                    Family Flags: 120
 Description      : Increases the damage of your Frost abilities by ${$s1}.1%.
 
@@ -3684,11 +3684,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179688)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Glacial Advance (194913), Glacial Advance (195975), Frostscythe (207230), Glacial Advance (232752), Death Knight Frost Class Set 2pc (393623), Glacial Advance (394500)
+                   Affected Spells: Glacial Advance (195975), Frostscythe (207230), Glacial Advance (232752), Death Knight Frost Class Set 2pc (393623), Glacial Advance (394500)
                    Family Flags: 15, 50
 #2 (id=188986)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Path of Frost (3714), Empower Rune Weapon (47568), Obliterate (49020), Frost Strike (49143), Death Strike (49998), Pillar of Frost (51271), Scourge Strike (55090), Horn of Winter (57330), Raise Ally (61999), Festering Strike (85948), Marrowrend (195182), Heart Strike (206930), Frostscythe (207230), Obliteration (207256), Unholy Assault (207289), Clawing Shadows (207311), Wraith Walk (212552), Necrotic Strike (223829), Heart Strike (228645), Consumption (274156), Apocalypse (275699), Raise Abomination (288853), Swarming Mist (311648), Shackle the Unworthy (312202), Abomination Limb (315443), Rune Strike (316239), Soul Reaper (343294), Abomination Limb (383269), Vampiric Strike (433895), Soul Reaper (448229), Raise Abomination (455395)
+                   Affected Spells: Path of Frost (3714), Empower Rune Weapon (47568), Obliterate (49020), Frost Strike (49143), Death Strike (49998), Pillar of Frost (51271), Scourge Strike (55090), Horn of Winter (57330), Raise Ally (61999), Festering Strike (85948), Marrowrend (195182), Heart Strike (206930), Obliteration (207256), Unholy Assault (207289), Clawing Shadows (207311), Wraith Walk (212552), Necrotic Strike (223829), Heart Strike (228645), Consumption (274156), Apocalypse (275699), Raise Abomination (288853), Swarming Mist (311648), Shackle the Unworthy (312202), Abomination Limb (315443), Rune Strike (316239), Soul Reaper (343294), Abomination Limb (383269), Vampiric Strike (433895), Soul Reaper (448229), Raise Abomination (455395)
                    Family Flags: 127
 #3 (id=191178)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 1611 | Target: Self (1)
@@ -3861,122 +3861,6 @@ Effects          :
                    Affected Spells: Vampiric Strike (433895)
                    Family Flags: 0
 
-Name             : Elemental Shaman (id=137040) [Spell Family (11), Passive, Hidden] 
-Class            : Elemental Death Knight, Shaman
-School           : Physical
-Spell Type       : None
-Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=179724)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Elemental Blast (344645), Acid Rain (378597), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349), Tempest Strikes (428078), Tempest (452201)
-                   Family Flags: 39
-#2 (id=191042)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Elemental Blast (344645), Acid Rain (378597), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349), Tempest Strikes (428078), Tempest (452201)
-                   Family Flags: 39
-#3 (id=191043)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=191044)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 19 | Scaled Value: 19 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Healing Surge (8004)
-                   Family Flags: 7
-#5 (id=191045)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 47 | Scaled Value: 47 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Earth Shield (379)
-                   Family Flags: 70
-#6 (id=733898)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 43 | Scaled Value: 43 | PvP Coefficient: 0.00000 | Target: Self (1)
-                   Affected Spells: Earth Shield (379)
-                   Family Flags: 70
-#7 (id=880172)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1636 (Label) | Target: Self (1)
-                   Affected Spells (Label): Refreshing Waters (378211), Refreshing Waters (393905), Elemental Blast (394150), Elemental Blast (394152)
-#8 (id=1006536)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2077 | Target: Self (1)
-                   Affected Spells (Category): Elemental Blast (117014)
-#9 (id=1007176)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.00000 | Target: Self (1)
-                   Affected Spells: Elemental Blast (117014), Elemental Blast Overload (120588), Elemental Blast (344645)
-                   Family Flags: 98, 108
-#10 (id=1012733)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443)
-                   Family Flags: 1, 34, 63, 101
-#11 (id=1012734)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 67 | Scaled Value: 67 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443)
-                   Family Flags: 1, 34, 63, 101
-#12 (id=1012737)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 0.00000 | Target: Self (1)
-                   Affected Spells: Lightning Bolt Overload (45284), Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
-                   Family Flags: 0, 96
-#13 (id=1026048)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.00000 | Target: Self (1)
-                   Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
-                   Family Flags: 44, 86
-#14 (id=1026052)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
-#15 (id=1026055)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2389 (Label) | Target: Self (1)
-                   Affected Spells (Label): Elemental Blast: Critical Strike (118522), Elemental Blast: Haste (173183), Elemental Blast: Mastery (173184)
-#16 (id=1026125)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 51 | Scaled Value: 51 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Flame Shock (188389)
-                   Family Flags: 28
-#17 (id=1032430)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 51 | Scaled Value: 51 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Flame Shock (188389)
-                   Family Flags: 28
-#18 (id=1040490)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 27 | Scaled Value: 27 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Frost Shock (196840)
-                   Family Flags: 31
-#19 (id=1040491)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2551 (Label) | Target: Self (1)
-                   Affected Spells (Label): Swirling Currents (378094)
-#20 (id=1040492)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 164 | Scaled Value: 164 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Elemental Blast (117014), Elemental Blast Overload (120588), Elemental Blast (344645)
-                   Family Flags: 98, 108
-#21 (id=1070361)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 29 | Scaled Value: 29 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
-                   Family Flags: 44, 86
-#22 (id=1070607)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 57 | Scaled Value: 57 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Lightning Bolt Overload (45284), Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
-                   Family Flags: 0, 96
-#23 (id=1070608)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Chain Heal (1064)
-                   Family Flags: 8
-#24 (id=1074562)  : Apply Aura (6) | Modify Mana Regen% (379)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
-#25 (id=1122010)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -13 | Scaled Value: -13 | PvP Coefficient: 0.00000 | Target: Self (1)
-                   Affected Spells: Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443)
-                   Family Flags: 1, 34, 63, 101
-#26 (id=1142940)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.00000 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Elemental Blast (344645), Acid Rain (378597), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349), Tempest Strikes (428078), Tempest (452201)
-                   Family Flags: 39
-#27 (id=1142941)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Elemental Blast (344645), Acid Rain (378597), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349), Tempest Strikes (428078), Tempest (452201)
-                   Family Flags: 39
-#28 (id=1142942)  : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.00000 | Target: Self (1)
-Description      : Elemental Shaman baseline passive
-
 Name             : Anti-Magic Zone (desc=PvP Talent) (id=145629) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
@@ -4052,7 +3936,7 @@ Effects          :
 Description      : $@spelldesc146652
 
 Name             : Breath of Sindragosa (id=152279) [Spell Family (15)] 
-Talent Entry     : Frost [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Frost
 Spell Type       : None
@@ -4168,7 +4052,7 @@ Effects          :
 #1 (id=215544)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
 #2 (id=215545)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.75920 | PvP Coefficient: 0.66667 | Radius: 12 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.94900 | PvP Coefficient: 0.66667 | Radius: 12 yards | Target: Cone Front (104)
 Description      : $@spelldesc152279
 
 Name             : Breath of Sindragosa (id=155168) [Spell Family (15)] 
@@ -4665,44 +4549,6 @@ Description      : A disease that deals $o Shadow damage over $d. It erupts when
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 Erupts for $191685s1 damage split among all nearby enemies when the infected dies.
 
-Name             : Stormkeeper (id=191634) [Spell Family (11)] 
-Class            : Death Knight, Shaman
-School           : Nature
-Spell Type       : Magic
-Cast Time        : 1.5 seconds
-GCD              : 1.5 seconds
-Duration         : 15 seconds
-Charges          : 0 (60 seconds cooldown)
-Category         : 2074: Stormkeeper (392714 effect#1), Stormkeeper (392763 effect#1)
-Stacks           : 2 initial, 2 maximum
-Proc Chance      : 100%
-Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
-                 : Magic Hostile Spell
-Affecting spells : Spiritwalker's Grace (79206 effect#1)
-Family Flags     : 111
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Can Proc From Procs (122), Nameplate Personal Buffs/Debuffs (423)
-Effects          :
-#1 (id=281103)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
-                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Lava Beam (114074), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
-                   Family Flags: 0, 1, 34
-#2 (id=747303)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.20000 | Target: Self (1)
-                   Affected Spells: Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
-                   Family Flags: 0
-Description      : Charge yourself with lightning, causing your next $n Lightning Bolts to deal $s2% more damage, and also causes your next $n Lightning Bolts or Chain Lightnings to be instant cast and trigger an Elemental Overload on every target.$?s137040[
-
-If you already know $@spellname191634, instead gain $392714s1 additional $Lcharge:charges; of $@spellname191634.][]
-Tooltip          : Your next Lightning Bolt will deal $s2% increased damage, and your next Lightning Bolt or Chain Lightning will be instant cast and cause an Elemental Overload to trigger on every target hit.
-
 Name             : Virulent Eruption (id=191685) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
@@ -4793,7 +4639,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Allow Dead Target (64), Ignore Line of Sight (66), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Suppress Weapon Procs (151), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=285232)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.28053 | PvP Coefficient: 2.80000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.28053 | PvP Coefficient: 2.90000 | Target: Unknown(25)
 #2 (id=338558)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc194310
@@ -4919,7 +4765,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 3254: Dark Talons (443595 effect#1)
+Labels           : 3254: Smothering Offense (435005 effect#1), Dark Talons (443595 effect#1)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Triggered by     : Icy Talons (194878)
@@ -4935,6 +4781,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=286062)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1160266)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc194878
 Tooltip          : Attack speed increased by $w1%$?a436687[, and Runic Power spending abilities deal Shadowfrost damage.][.]
 
@@ -4962,7 +4810,7 @@ Effects          :
 Description      : While you have fewer than $m2 full $LRune:Runes;, your auto attacks radiate intense cold, inflicting $195750s1 Frost damage on all nearby enemies.
 
 Name             : Gathering Storm (id=194912) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Frost [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Frost
 Spell Type       : None
@@ -4987,14 +4835,13 @@ Name             : Glacial Advance (id=194913) [Spell Family (15)]
 Talent Entry     : Frost [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Frost
-Spell Type       : Magic
+Spell Type       : Ranged
 Resource         : 30 Runic Power (6) (id=10535)
 Range            : 100 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Fist Weapon
 Stance Mask      : 0x01000000
-Affecting spells : Death Knight (137005 effect#1), A Feast of Souls (440861 effect#1), Runic Control (441895 effect#1), Runic Control (442900 effect#1), Dark Talons (443586 effect#1)
-Family Flags     : 50
+Family Flags     : 1
 Attributes       : ........ ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5297,7 +5144,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Active Threat (94), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), No Cooldown On Tooltip (192), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=287633)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.53928 | PvP Coefficient: 1.50000 | Radius: 0 - 2.5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.53928 | PvP Coefficient: 1.50000 | Radius: 0 - 2.5 yards | Target: Unknown(138) -> AOE enemy (instant) (16)
 Description      : $@spelldesc194913
 
 Name             : Bloodworm (id=196361) [Spell Family (15)] 
@@ -6077,7 +5924,7 @@ Description      : Each charge of Bone Shield increases your maximum health by $
 Variables        : $increase=${$s1}
 
 Name             : Shattering Blade (id=207057) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Frost
 Spell Type       : None
@@ -6161,7 +6008,7 @@ Effects          :
 Description      : Auto attacks have a chance to generate ${$221322s1/10} Runic Power.
 
 Name             : Icecap (id=207126) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Frost [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -6186,7 +6033,7 @@ Description      : Your Frost Strike$?s207230[, Frostscythe,][] and Obliterate c
 Variables        : $cd=${$m1/10}
 
 Name             : Avalanche (id=207142) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -6337,14 +6184,15 @@ Talent Entry     : Frost [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Frost
 Spell Type       : Melee
-Resource         : 1 Rune (5) (id=11012)
+Resource         : 2 Rune (5) (id=11012)
 Spell Level      : 1
 Range            : 8 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Fist Weapon
+Cooldown         : 30 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Killing Machine (51124 effect#1), Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effects: #1, #2, #5), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #7, #8), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2)
-Family Flags     : 15, 43, 120, 127
+Affecting spells : Killing Machine (51124 effect#1), Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effects: #1, #5), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #7, #8), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2)
+Family Flags     : 15, 43, 120
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6356,16 +6204,18 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=306491)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 #2 (id=306492)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.23256 | PvP Coefficient: 1.50000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.81400 | PvP Coefficient: 1.50000 | Radius: 8 yards | Target: Cone Front (104)
 #3 (id=330163)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 #4 (id=345076)   : Energize Power (30)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
 #5 (id=818619)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Description      : A sweeping attack that strikes all enemies in front of you for $s2 Frost damage. This attack benefits from Killing Machine. Critical strikes with Frostscythe deal $s3 times normal damage. Deals reduced damage beyond $s5 targets.
+Description      : A sweeping attack that strikes all enemies in front of you for $s2 Frost damage. This attack always critically strikes and critical strikes with Frostscythe deal $s3 times normal damage. Deals reduced damage beyond $s5 targets. 
+
+Consuming Killing Machine reduces the cooldown of Frostscythe by ${$s1/1000}.1 sec.
 
 Name             : Obliteration (id=207256) [Spell Family (15), Hidden] 
 Class            : Death Knight
@@ -6374,8 +6224,8 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
-Proc Flags       : ....x... ........ x....... ........   ........ ........ ........ ........   
-                 : Yellow Melee, Magic Hostile Spell
+Proc Flags       : ....x... ........ x....... ........   ..x..... ........ ........ ........   
+                 : Yellow Melee, Magic Hostile Spell, Cast Successful
 Affecting spells : Death Knight (137005 effect#2)
 Triggered by     : Obliteration (281238)
 Family Flags     : 127
@@ -7395,7 +7245,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=331347)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.53613 | PvP Coefficient: 1.75000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.53613 | PvP Coefficient: 1.95000 | Target: Enemy (6)
 Description      : $@spelldesc49143
 
 Name             : Wraith Walk (id=223804) [Spell Family (15), Hidden] 
@@ -8559,7 +8409,7 @@ Effects          :
 Description      : Your Summon Gargoyle spell summons a Val'kyr instead of a Gargoyle.
 
 Name             : Frostwyrm's Fury (id=279302) [Spell Family (15)] 
-Talent Entry     : Frost [tree=spec, row=9, col=2, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Frost
 Spell Type       : None
@@ -8743,7 +8593,7 @@ Effects          :
 Description      : $@spelldesc51271
 
 Name             : Obliteration (id=281238) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=9, col=1, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -9887,7 +9737,7 @@ Effects          :
 Description      : Increases Frost Strike damage by $s1%.
 
 Name             : Improved Rime (id=316838) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Frost [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -10702,7 +10552,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=815761)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.79337 | PvP Coefficient: 1.75000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.79337 | PvP Coefficient: 1.95000 | Target: Enemy (6)
 Description      : $@spelldesc49143
 
 Name             : Dark Transformation (desc=Rank 2) (id=325554) [Spell Family (15), Passive] 
@@ -14011,7 +13861,7 @@ Description      : $@spelldesc376905
 Tooltip          : Strength increased by $w1%.
 
 Name             : Everfrost (id=376938) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=6, col=7, max_rank=1, req_points=8]
+Talent Entry     : Frost [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -14059,7 +13909,7 @@ Description      : $@spelldesc376938
 Tooltip          : Damage taken from Remorseless Winter increased by $w1%.
 
 Name             : Absolute Zero (id=377047) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=8, col=3, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Frost
 Spell Type       : None
@@ -14102,7 +13952,7 @@ Description      : Freezes enemies for $d.
 Tooltip          : Frozen.
 
 Name             : Biting Cold (id=377056) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Frost [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -14216,53 +14066,6 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
 Description      : $@spelldesc377076
 
-Name             : Cold-Blooded Rage (id=377083) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=9, col=1, max_rank=2, req_points=20]
-                 : Effect#2 [op=set, values=(10, 20)]
-Class            : Death Knight
-School           : Physical
-Spell Type       : None
-Labels           : 1644: Cold-Blooded Rage (377083 effect#2)
-Proc Chance      : 10%
-Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
-                 : Yellow Melee
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .......x   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1004729)  : Apply Aura (6) | Proc Trigger Spell (42): Killing Machine
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 51124 | Target: Self (1)
-#2 (id=1013019)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Proc Chance (18)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 18 | Misc Value 2: 1644 (Label) | Target: Self (1)
-                   Affected Spells (Label): Cold-Blooded Rage (377083)
-Description      : Frost Strike has a $s2% chance on critical strikes to grant Killing Machine.
-
-Name             : Invigorating Freeze (id=377092) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=9, col=3, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(5, 10)]
-Class            : Death Knight
-School           : Physical
-Spell Type       : None
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
-Effects          :
-#1 (id=1004740)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Frost Fever critical strikes increase the chance to grant Runic Power by an additional $s1%.
-
 Name             : Bonegrinder (id=377098) [Spell Family (15), Passive] 
 Talent Entry     : Frost [tree=spec, row=8, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(10, 20)]
@@ -14335,8 +14138,7 @@ Description      : $@spelldesc377098
 Tooltip          : Frost damage increased by $s1%.
 
 Name             : Enduring Strength (id=377190) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=6, col=4, max_rank=2, req_points=8]
-                 : Effect#3 [op=set, values=(10, 20)]
+Talent Entry     : Frost [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -14358,9 +14160,9 @@ Effects          :
 #2 (id=1004890)  : Dummy (3)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000
 #3 (id=1005652)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.80000 | Misc Value: 3 | Misc Value 2: 1623 (Label) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.80000 | Misc Value: 3 | Misc Value 2: 1623 (Label) | Target: Self (1)
                    Affected Spells (Label): Enduring Strength (377195)
-Description      : When Pillar of Frost expires, your Strength is increased by $s3% for $377195d. This effect lasts ${$s2/1000} sec longer for each Obliterate and Frostscythe critical strike during Pillar of Frost.
+Description      : When Pillar of Frost expires, your Strength is increased by $377195s1% for $377195d. This effect lasts ${$s2/1000} sec longer for each Obliterate and Frostscythe critical strike during Pillar of Frost.
 
 Name             : Enduring Strength (id=377192) [Spell Family (15)] 
 Class            : Death Knight
@@ -14388,7 +14190,7 @@ Effects          :
 #2 (id=1004889)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc377190
-Tooltip          : When Pillar of Frost expires, you will gain $s1% Strength for $<duration> sec.
+Tooltip          : When Pillar of Frost expires, you will gain $377195s1% Strength for $<duration> sec.
 Variables        : $duration=${$377195d+(($w2-1)*$377190s~2/1000)}
 
 Name             : Enduring Strength (id=377195) [Spell Family (15)] 
@@ -14408,13 +14210,12 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Disable Aura While Dead (226), Aura Points On Client (268), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1004894)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
 Description      : $@spelldesc377190
 Tooltip          : Strength increased by $w1%.
 
 Name             : Frostwhelp's Aid (id=377226) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=6, col=5, max_rank=2, req_points=8]
-                 : Effect#3 [op=set, values=(2, 4)]
+Talent Entry     : Frost [tree=spec, row=6, col=6, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -14436,9 +14237,9 @@ Effects          :
 #2 (id=1004950)  : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000
 #3 (id=1005663)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Misc Value: 3 | Misc Value 2: 1624 (Label) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Misc Value: 3 | Misc Value 2: 1624 (Label) | Target: Self (1)
                    Affected Spells (Label): Frostwhelp's Aid (377253)
-Description      : Pillar of Frost summons a Frostwhelp who breathes on all enemies within $s2 yards in front of you for $377245s1 Frost damage. Each unique enemy hit by Frostwhelp's Aid grants you ${$s3*2}% Mastery for $287338d, up to ${$s3*2*$377253u}%.
+Description      : Pillar of Frost summons a Frostwhelp who breathes on all enemies within $s2 yards in front of you for $377245s1 Frost damage. Each unique enemy hit by Frostwhelp's Aid grants you ${$377253s1*2}% Mastery for $287338d, up to ${$s3*2*$377253u}%.
 
 
 Name             : Frostwhelp's Aid (id=377243) [Spell Family (15)] 
@@ -14509,7 +14310,7 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Suppress Caster Procs (112), Do Not Display Range (126), Allow While Stunned (163), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1004988)  : Apply Aura (6) | Modify Mastery% (318)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1004989)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 287283
 Description      : $@spelldesc377226
@@ -16242,28 +16043,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your ghoul's attacks have a chance to apply Enfeeble, reducing the enemies movement speed by $392490s1% and the damage they deal to you by $392490s2% for $392490d.
 
-Name             : Stormkeeper (id=392714) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=6, col=1, max_rank=1, req_points=8, override="Stormkeeper" (id=191634)]
-Class            : Death Knight, Shaman
-School           : Nature
-Spell Type       : None
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Effects          :
-#1 (id=1031134)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 2074 | Target: Self (1)
-                   Affected Spells (Category): Stormkeeper (191634)
-Description      : $@spelltooltip191634
-
 Name             : Icebreaker (id=392950) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=8, col=4, max_rank=2, req_points=20]
+Talent Entry     : Frost [tree=spec, row=8, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(30, 60)]
 Class            : Death Knight
 School           : Physical
@@ -16281,26 +16062,6 @@ Effects          :
 #1 (id=1031542)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When empowered by Rime, Howling Blast deals $s1% increased damage to your primary target.
-
-Name             : Empower Rune Weapon (id=392963) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=7, col=4, max_rank=1, req_points=8, override="Empower Rune Weapon" (id=47568)]
-Class            : Death Knight
-School           : Frost
-Spell Type       : None
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
-Effects          :
-#1 (id=1031570)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1614 | Target: Self (1)
-                   Affected Spells (Category): Empower Rune Weapon (47568), Hungering Rune Weapon (207127)
-Description      : $@spelltooltip47568
 
 Name             : Death Knight Blood Class Set 2pc (id=393621) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -16619,27 +16380,6 @@ Effects          :
 #1 (id=1111567)  : Unknown(213)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 63 | PvP Coefficient: 1.00000 | Misc Value 2: 0x96 | Radius: 3 yards | Target: Unknown(64)
 Description      : $@spelldesc315443
-
-Name             : Fatal Fixation (id=405166) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=6, col=3, max_rank=1, req_points=8]
-Class            : Death Knight
-School           : Physical
-Spell Type       : None
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Only In Spellbook Until Learned (240)
-Effects          :
-#1 (id=1053203)  : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
-                   Affected Spells: Killing Machine (51124)
-                   Family Flags: 100
-Description      : Killing Machine can stack up to $s1 additional time.
 
 Name             : Death Knight Blood 10.1 Class Set 2pc (id=405499) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -18086,7 +17826,7 @@ Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
 Range            : 40 yards
-Duration         : 10 seconds
+Duration         : 1.5 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18151,6 +17891,55 @@ Effects          :
 #2 (id=1128545)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Reaper's Mark explosion deals up to $s1% increased damage based on your target's missing health, and applies Soul Reaper to targets below $s2% health.
+
+Name             : Smothering Offense (id=435005) [Spell Family (15), Passive] 
+Talent Entry     : Frost [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Class            : Death Knight
+School           : Frost
+Spell Type       : Magic
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1125366)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 37 | Misc Value 2: 3254 (Label) | Target: Self (1)
+                   Affected Spells (Label): Icy Talons (194879)
+#2 (id=1160263)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your auto attack damage is increased by $s2%. 
+
+This amount is increased for each stack of Icy Talons you have and it can stack up to $s1 additional times.
+
+
+
+Name             : Icy Death Torrent (id=435010) [Spell Family (15), Passive] 
+Talent Entry     : Frost [tree=spec, row=9, col=2, max_rank=1, req_points=20]
+Class            : Death Knight
+School           : Frost
+Spell Type       : Magic
+Internal Cooldown: 0.1 seconds
+Proc Chance      : 100%
+Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
+                 : White Melee
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1125373)  : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your auto attack critical strikes have a chance to send out a sleet of ice dealing frost damage to enemies in front of you.
 
 Name             : Wave of Souls (id=435802) [Spell Family (15)] 
 Class            : Death Knight
@@ -18269,7 +18058,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1132112)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Reaper's Mark explosion causes a piece of the target's soul to tear out and spiral outwards, dealing $s1% of the explosion's damage to enemies it passes through.
+Description      : When Reaper's Mark explodes, it deals $s1% of the damage dealt damage to nearby enemies.
 
 Enemies hit by this effect deal $s3% reduced physical damage to you for 10 sec.
 
@@ -18291,6 +18080,26 @@ Effects          :
 #1 (id=1132176)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc437161
+
+Name             : Icy Death Torrent (id=439539) [Spell Family (15)] 
+Class            : Death Knight
+School           : Frost
+Spell Type       : Magic
+Range            : 5 yards
+Labels           : 3236
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not a Proc (105), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1132889)  : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(78) -> Cone Front (104)
+Description      : $@spelldesc435010
 
 Name             : Reaper's Mark (id=439594) [Spell Family (15)] 
 Class            : Death Knight
@@ -18315,6 +18124,7 @@ Effects          :
 Description      : $@spelldesc437161
 
 Name             : Reaper's Mark (id=439843) [Spell Family (15)] 
+Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
@@ -18365,7 +18175,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1133388)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Reaper's Mark calls forth three burst of Shadowfrost energy and back, dealing $435802s1 Shadowfrost damage both ways to all enemies caught in its path.
+Description      : Reaper's Mark calls forth bursts of Shadowfrost energy and back, dealing $435802s1 Shadowfrost damage both ways to all enemies caught in its path.
 
 Wave of Souls critical strikes cause enemies to take $441477s1% increased Shadowfrost damage for $441477d, stacking up to 2 times, and the wave back is always a critical strike.
 
@@ -18773,7 +18583,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1135013)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Death Coil (47632), Frost Strike (49143), Death Strike (49998), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Breath of Sindragosa (152279), Breath of Sindragosa (155166), Breath of Sindragosa (155168), Glacial Advance (194913), Glacial Advance (195975), Epidemic (207317), Epidemic (212739), Epidemic (215969), Frost Strike (222026), Glacial Advance (232752), Frost Strike (325464), Glacial Advance (394500)
+                   Affected Spells: Death Coil (47632), Frost Strike (49143), Death Strike (49998), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Breath of Sindragosa (152279), Breath of Sindragosa (155166), Breath of Sindragosa (155168), Glacial Advance (195975), Epidemic (207317), Epidemic (212739), Epidemic (215969), Frost Strike (222026), Glacial Advance (232752), Frost Strike (325464), Glacial Advance (394500)
                    Family Flags: 4, 34, 50, 64, 110, 113, 121
 #2 (id=1141480)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -18989,7 +18799,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1136671)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Frost Strike (49143), Frost Strike Off-Hand (66196), Glacial Advance (194913), Glacial Advance (195975), Frost Strike (222026), Glacial Advance (232752), Frost Strike (325464), Glacial Advance (394500)
+                   Affected Spells: Frost Strike (49143), Frost Strike Off-Hand (66196), Glacial Advance (195975), Frost Strike (222026), Glacial Advance (232752), Frost Strike (325464), Glacial Advance (394500)
                    Family Flags: 34, 50, 110
 Description      : $@spelldesc440031
 Tooltip          : Your next Frost Strike and Glacial Advance Runic Power cost is reduced by $w1% .
@@ -19025,7 +18835,7 @@ Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
 Range            : 40 yards
-Duration         : 3 seconds
+Duration         : 1.5 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -19064,7 +18874,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1138446)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Frost Strike (49143), Death Strike (49998), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Breath of Sindragosa (152279), Breath of Sindragosa (155166), Breath of Sindragosa (155168), Glacial Advance (194913), Glacial Advance (195975), Frost Strike (222026), Glacial Advance (232752), Frost Strike (325464), Glacial Advance (394500)
+                   Affected Spells: Frost Strike (49143), Death Strike (49998), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Breath of Sindragosa (152279), Breath of Sindragosa (155166), Breath of Sindragosa (155168), Glacial Advance (195975), Frost Strike (222026), Glacial Advance (232752), Frost Strike (325464), Glacial Advance (394500)
                    Family Flags: 4, 34, 50, 110, 113
 Description      : $@spelldesc440031
 Tooltip          : Your next Runic Power spender deals $w1% increased damage.
@@ -19089,7 +18899,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.x ........ .....
 Effects          :
 #1 (id=1139275)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 3236 (Label) | Target: Enemy (6)
-                   Affected Spells (Label): Soul Reaper (343294), Soul Reaper (343295), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Runic Overflow (440097), Blood Fever (440769), Exterminate (441426), Bind in Darkness (441777), Soul Reaper (448229)
+                   Affected Spells (Label): Soul Reaper (343294), Soul Reaper (343295), Wave of Souls (435802), Reaper's Mark (436304), Icy Death Torrent (439539), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Runic Overflow (440097), Blood Fever (440769), Exterminate (441426), Bind in Darkness (441777), Soul Reaper (448229)
 Description      : $@spelldesc434711
 Tooltip          : Taking $w1% increased Shadowfrost damage from $@auracaster.
 
@@ -19191,7 +19001,7 @@ Attributes       : .......x ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=1139604)  : Apply Aura (6) | Modify Spell School (220)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 48 | Target: Self (1)
-                   Affected Spells: Frost Strike (49143), Frost Strike Off-Hand (66196), Breath of Sindragosa (152279), Breath of Sindragosa (155166), Breath of Sindragosa (155168), Bonestorm (194844), Glacial Advance (194913), Glacial Advance (195975), Bonestorm (196528), Frost Strike (222026), Glacial Advance (232752), Frost Strike (325464), Sacrificial Pact (327574), Sacrificial Pact (327611), Glacial Advance (394500)
+                   Affected Spells: Frost Strike (49143), Frost Strike Off-Hand (66196), Breath of Sindragosa (152279), Breath of Sindragosa (155166), Breath of Sindragosa (155168), Bonestorm (194844), Glacial Advance (195975), Bonestorm (196528), Frost Strike (222026), Glacial Advance (232752), Frost Strike (325464), Sacrificial Pact (327574), Sacrificial Pact (327611), Glacial Advance (394500)
                    Family Flags: 34, 50, 109, 110, 113, 124
 Description      : $@spelldesc436687
 
@@ -19757,7 +19567,8 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1140991)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=1140992)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1158125)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
@@ -20258,25 +20069,6 @@ Effects          :
 Description      : After $d, if the target is below $s3% health this effect will explode dealing an additional $343295s1 Shadowfrost damage to the target. If the enemy that yields experience or honor dies while afflicted by Soul Reaper, gain Runic Corruption.
 Tooltip          : Afflicted by Soul Reaper, if the target is below $s3% health this effect will explode dealing an additional $343295s1 Shadowfrost damage.
 Variables        : $dmg=${$o1}
-
-Name             : Reaper's Mark (id=448473) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
-Class            : Death Knight
-School           : Shadowfrost
-Spell Type       : Magic
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ...x.... ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1146968)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelltooltip439843
 
 Name             : Anti-Magic Shell (id=451777) [Spell Family (15), Hidden] 
 Class            : Death Knight
@@ -20948,5 +20740,254 @@ Effects          :
 #1 (id=1158797)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : This talent is not yet implemented and is waiting to be raised from the dead.
+
+Name             : Wave of Souls (id=455804) [Spell Family (15), Hidden] 
+Class            : Death Knight
+School           : Shadowfrost
+Spell Type       : None
+Range            : 40 yards
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1159507)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(87)
+Description      : $@spelldesc439851
+
+Name             : Wave of Souls (id=455857) [Spell Family (15), Hidden] 
+Class            : Death Knight
+School           : Shadowfrost
+Spell Type       : Magic
+Range            : 40 yards
+Duration         : 10 seconds
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1159623)  : Create Area Trigger (179)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 33889 | Radius: 2 yards | Target: Unknown(48)
+Description      : $@spelldesc439851
+
+Name             : Rescue (id=455967) [Spell Family (15), Hidden] 
+Class            : Death Knight
+School           : Shadowfrost
+Spell Type       : None
+Range            : 40 yards
+Duration         : 10 seconds
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1159837)  : Create Area Trigger (179)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 33894 | Target: Unknown(87)
+Description      : $@spelldesc439851
+
+Name             : Shattered Frost (id=455993) [Spell Family (15), Passive] 
+Talent Entry     : Frost [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Class            : Death Knight
+School           : Frost
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1159883)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+Description      : When Frost Strike consumes $51714u Razorice stacks, it deals $s1% of the damage dealt to nearby enemies. Deals reduced damage beyond $455996s2 targets.
+
+Name             : Shattered Frost (id=455996) [Spell Family (15)] 
+Class            : Death Knight
+School           : Frost
+Spell Type       : Melee
+Range            : 30 yards
+Proc Chance      : 101%
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x .....x..   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not Shapeshifted (16), Can't Crit (93), Taps immediately (215), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1159888)  : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+#2 (id=1159890)  : Dummy (3)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc455993
+
+Name             : Frozen Orb (id=456038) [Spell Family (15), Hidden] 
+Class            : Death Knight
+School           : Shadowfrost
+Spell Type       : None
+Range            : 40 yards
+Duration         : 30 seconds
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1159964)  : Create Area Trigger (179)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 33905 | Target: Custom (18)
+Description      : $@spelldesc439851
+
+Name             : Arctic Assault (id=456230) [Spell Family (15), Passive, Hidden] 
+Talent Entry     : Frost [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
+                 : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=1160277)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Consuming Killing Machine fires a Glacial Advance through your target.
+
+Name             : Cryogenic Chamber (id=456237) [Spell Family (15), Passive, Hidden] 
+Talent Entry     : Frost [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ........ ..x..... ........   ........ ........ ........ ........   
+                 : Periodic
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1160289)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1160526)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Each time Frost Fever deals damage, $s1% of the damage dealt is gathered into the next cast of Remorseless Winter, up to $s2 times.
+
+Name             : [NYI] Under Construction (id=456238) [Passive, Hidden] 
+Talent Entry     : Frost [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1160291)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : This talent is not yet implemented and is waiting to be raised from the dead.
+
+Name             : The Long Winter (id=456240) [Passive, Hidden] 
+Talent Entry     : Frost [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
+                 : White Melee
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1160293)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1160295)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : While Pillar of Frost is active your auto-attack critical strikes increase its duration by $s1 sec, up to a maximum of $s2 sec.
+
+Name             : Cryogenic Chamber (id=456370) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1160530)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc456237
+Tooltip          : Remorseless Winter has accumulated $w1 damage.
+
+Name             : Cryogenic Chamber (id=456371) [Spell Family (15)] 
+Class            : Death Knight
+School           : Frost
+Spell Type       : Magic
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2)
+Family Flags     : 120
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : No Aura Cancel (31), Can't Crit (93), Always AOE Line of Sight (186), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1160531)  : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+Description      : $@spelldesc456237
 
 

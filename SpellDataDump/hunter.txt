@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54605 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54709 thewarwithin-BETA
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -653,7 +653,7 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
                  : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Bouncy Chain Missiles (146), Force Display Castbar (155), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=10651)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.80500 | PvP Coefficient: 1.40000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.80500 | PvP Coefficient: 1.55000 | Target: Enemy (6)
 #2 (id=101526)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : A powerful aimed shot that deals $s1 Physical damage$?s260240[ and causes your next 1-$260242u ][]$?s342049&s260240[Chimaera Shots]?s260240[Arcane Shots][]$?s260240[ or Multi-Shots to deal $260242s1% more damage][].$?s260228[
@@ -6604,7 +6604,7 @@ Attributes       : .x...... ........ ........ ........   ........ ........ .....
                  : Uses Ranged Slot (1), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), No Durability Loss (101), Not a Proc (105), Bouncy Chain Missiles (146), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=479998)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.51000 | PvP Coefficient: 1.30000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.51000 | PvP Coefficient: 1.45000 | Target: Enemy (6)
 Description      : $@spelldesc257044
 
 Name             : Hunter's Mark (id=257284) [Spell Family (9)] 
@@ -18915,11 +18915,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1151099)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=1151102)  : Trigger Spell (64): Lunar Pulse
+#2 (id=1151102)  : Trigger Spell (64): Lunar Storm
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 450884 | Target: Enemy (6)
 Description      : $@spelldesc450385
 
-Name             : Lunar Pulse (id=450884) [Spell Family (9)] 
+Name             : Lunar Storm (id=450884) [Spell Family (9)] 
 Class            : Hunter
 School           : Arcane
 Spell Type       : Ranged
@@ -18960,7 +18960,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : No Aura Icon (60), Not In Spellbook (143)
 Effects          :
 #1 (id=1151258)  : Create Area Trigger (179)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 33500 | Target: At Enemy (53)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 33500 | Target: Unknown(87)
 #2 (id=1151291)  : Apply Aura (6) | Periodic Dummy (226): every 0.4 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc450385

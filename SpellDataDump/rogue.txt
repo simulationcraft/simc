@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54605 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54709 thewarwithin-BETA
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -585,7 +585,7 @@ Spell Level      : 22
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Eviscerating Blade (184917 effect#2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Summarily Dispatched (386868 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4), Brutal Opportunist (394888 effect#1), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Eviscerating Blade (184917 effect#2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Summarily Dispatched (386868 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4), Brutal Opportunist (394888 effect#1), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Cold Blood (456330 effect#1)
 Family Flags     : 54, 112
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -1601,7 +1601,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapo
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... x.x..... ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effect#1), Mastery: Executioner (76808 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Toxic Mutilator (184916 effect#1), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Twist the Knife (273488 effect#1), Shiv (319504 effect#1), Dashing Scoundrel (340081 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Twist the Knife (381669 effect#1), Dashing Scoundrel (381797 effect#1), Cold Blood (382245 effect#1), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Rapid Injection (455072 effect#1)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effect#1), Mastery: Executioner (76808 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Toxic Mutilator (184916 effect#1), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Twist the Knife (273488 effect#1), Shiv (319504 effect#1), Dashing Scoundrel (340081 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Twist the Knife (381669 effect#1), Dashing Scoundrel (381797 effect#1), Cold Blood (382245 effect#1), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Rapid Injection (455072 effect#1), Cold Blood (456330 effect#1)
 Family Flags     : 35, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   .x...... .xx..... ........ ..x..... 
@@ -3481,17 +3481,17 @@ Effects          :
 #19 (id=356365)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #20 (id=1083091)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Rupture (360826), Garrote (360830), Sepsis (375936), Sepsis (375938), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Sepsis (385408), wSerrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385897), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Envenomous Explosion (426581), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Coup de Grace (441776), Coup de Grace (450743), Fatebound Coin (Tails) (452538), Fatebound Coin (452559)
                    Family Flags: 54
 #21 (id=1083092)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Rupture (360826), Garrote (360830), Sepsis (375936), Sepsis (375938), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Sepsis (385408), wSerrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385897), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Envenomous Explosion (426581), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Coup de Grace (441776), Coup de Grace (450743), Fatebound Coin (Tails) (452538), Fatebound Coin (452559)
                    Family Flags: 54
 #22 (id=1114363)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
 #23 (id=1114364)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.00000 | Target: Self (1)
 #24 (id=1114386)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Leeching Poison (108211)
@@ -7252,7 +7252,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Aura Is Buff (140), Ignore Combat Timer (156), Show Mechanic as Combat Text (213), Do Not Auto Select Target with Initiates Combat (220), No Attack Dodge (247), No Attack Parry (248), No Attack Block (256), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=799020)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.26000 | PvP Coefficient: 1.12000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.26000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=805314)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Finishing move that deals damage with your pistol, increasing your critical strike chance by $s2%.$?a235484[ Critical strikes with this ability deal four times normal damage.][]
@@ -11193,7 +11193,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1012599)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.40000 | Target: Self (1)
 Description      : Garrote deals $s1% increased damage and has no cooldown when used from Stealth and for $392401d after breaking Stealth.
 
 Name             : Vicious Venoms (id=381634) [Spell Family (8), Passive] 
@@ -11567,7 +11567,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1012914)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.80000 | Target: Self (1)
 Description      : Between the Eyes has a $s1% chance per combo point spent to grant $394120s2 combo points.
 
 Name             : Sleight of Hand (id=381839) [Spell Family (8), Passive] 
@@ -11946,6 +11946,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell
+Affecting spells : Inevitability (454434 effect#1)
 Family Flags     : 38
 Attributes       : ....x... ........ x....... .x.x....   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -12682,11 +12683,11 @@ Effects          :
 #1 (id=1019022)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1019023)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.19000 | PvP Coefficient: 0.80000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.19000 | PvP Coefficient: 0.68000 | Target: Enemy (6)
 #3 (id=1019024)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=1019025)  : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 0.80000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 0.92000 | Target: Enemy (6)
 #5 (id=1019026)  : Apply Aura (6) | Proc Trigger Spell (42): Kingsbane
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 394095 | Target: Self (1)
 #6 (id=1019027)  : Energize Power (30)
@@ -13792,7 +13793,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Floating Combat Text On Cast (198), Aura Points On Client (268)
 Effects          :
 #1 (id=1033524)  : Energize Power (30)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.80000 | Misc Value: combo_points | Target: Self (1)
 Description      : $@spelldesc381828
 
 Name             : Greenskin's Wickers (id=394131) [Spell Family (8)] 
@@ -15794,7 +15795,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=1105151)  : Apply Aura (6) | Attack Speed (Normalized wDPS) (9)
+#1 (id=1105151)  : Apply Aura (6) | Modify Melee Speed% (319)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1105152)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Target: Self (1)
@@ -16899,8 +16900,8 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ....x... x...x... ........ ........   ........ ........ ........ ........   
-                 : Yellow Melee, Yellow Ranged, Generic Hostile Spell
+Proc Flags       : ....x... ..x.x... ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee, Generic Heal, Generic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -16917,7 +16918,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1153778)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Flip a Fatebound Coin each time a damaging finishing move consumes $s1 or more combo points. Heads increases the damage of your attacks by $s2%, lasting until you flip Tails. Tails deals Cosmic damage to targets struck.
+Description      : Flip a Fatebound Coin each time a finishing move consumes $s1 or more combo points. Heads increases the damage of your attacks by $s2%, lasting until you flip Tails. Tails deals Cosmic damage to your target.
 
 Each effect is increased by $s3% each time your Fatebound Coin flip matches the same outcome as the last flip. 
 
@@ -16925,18 +16926,18 @@ Name             : Fatebound Coin (Tails) (id=452538) [Spell Family (8)]
 Class            : Rogue
 School           : Cosmic
 Spell Type       : Melee
-Range            : 100 yards
+Range            : 30 yards
 Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Veiltouched (382017 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Dark Brew (382504 effects: #1, #2, #3), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Fatebound Coin (Tails) (452917 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2)
 Family Flags     : 25, 54, 97
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not a Proc (105), Allow Class Ability Procs (416)
+                 : Is Ability (4), Not a Proc (105), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1153780)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.58000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -17186,6 +17187,8 @@ Effects          :
                    Family Flags: 25
 #2 (id=1156762)  : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1160700)  : Apply Aura (6) | Modify Min Speed% (305)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc452536
 Tooltip          : Fatebound Coin damage increased by $w1%.$?a454300[ Leech increased by ${$W2}.1%.][]
 
@@ -17194,9 +17197,10 @@ Class            : Rogue
 School           : Cosmic
 Spell Type       : None
 Duration         : 3600 seconds
-Labels           : 3641: Fatebound Coin (Heads) (452923 effect#3), Fatebound Coin (Heads) (452923 effect#4)
 Stacks           : 99 maximum
 Proc Chance      : 101%
+Affecting spells : Fatebound Coin (Heads) (456479 effects: #1, #2)
+Family Flags     : 56
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -17215,16 +17219,12 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Rupture (360826), Garrote (360830), Sepsis (375936), Sepsis (375938), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Sepsis (385408), wSerrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385897), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Envenomous Explosion (426581), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Coup de Grace (441776), Coup de Grace (450743), Fatebound Coin (Tails) (452538), Fatebound Coin (452559)
                    Family Flags: 54
-#3 (id=1156709)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3641 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fatebound Coin (Heads) (452923)
-#4 (id=1156710)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3641 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fatebound Coin (Heads) (452923)
-#5 (id=1156881)  : Apply Aura (6) | Modify Leech% (443)
+#3 (id=1156709)  : Apply Aura (6) | Modify Leech% (443)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=1156710)  : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc452536
-Tooltip          : Damage increased by $W1%.$?a454300[ Leech increased by ${$W5}.1%.][]
+Tooltip          : Damage increased by $W1%.$?a454300[ Leech increased by ${$W3}.1%.][]
 
 Name             : Fatebound Coin (id=453010) [Spell Family (8)] 
 Class            : Rogue
@@ -17327,7 +17327,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1155283)  : Apply Aura (6) | Dummy (4)
                    Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Fatebound Coins flipped by $?a137036[Dispatch][Envenom] multiple times in a row are $s1% more likely to match the same outcome as the last flip.
+Description      : Fatebound Coins flipped by $?a137036[Dispatch][Envenom] multiple times in a row are $s1% more likely to match the same face as the last flip.
 
 Name             : Edge Case (id=453457) [Spell Family (8), Passive] 
 Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=3, col=2, max_rank=1, req_points=1]
@@ -17449,8 +17449,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1156954)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Damage dealt when your Fatebound Coin flips tails is increased by $s1% $?a137037[when flipped by Envenom or Rupture][while Blade Flurry is not active].
+                   Base Value: 21 | Scaled Value: 21 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Damage dealt when your Fatebound Coin flips tails is increased by $s1% if there are no other enemies near the target.
 
 Name             : Fateful Ending (id=454428) [Spell Family (8), Passive] 
 Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
@@ -17473,11 +17473,14 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When your Fatebound Coin flips the same face for the seventh time in a row, the lucky coin grants 1% increase to all primary, secondary, and tertiary stats until you leave combat for $s2 seconds. 
 
-Name             : Threads of Fate [NYI] (id=454429) [Spell Family (8), Passive] 
+Name             : Fate Intertwined (id=454429) [Spell Family (8), Passive] 
 Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
+Proc Chance      : 100%
+Proc Flags       : ....x... ....x... ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee, Generic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -17489,10 +17492,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1156958)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1156959)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?a137037[Envenom][Dispatch] critical strikes duplicate $s1% of their damage to $s2 additional nearby enemies. If there are no additional nearby targets, duplicate $s1% to the primary target instead.
+Description      : Fate Intertwined duplicates $s1% of $?a137037[Envenom][Dispatch] critical strike damage as Cosmic to $s2 additional nearby enemies. If there are no additional nearby targets, duplicate $s1% to the primary target instead.
 
 Name             : Double Jeopardy (id=454430) [Spell Family (8), Passive] 
 Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
@@ -17513,7 +17516,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your first Fatebound Coin flip after breaking Stealth flips two coins that are guaranteed to match the same face.
 
-Name             : Inexorable March [NYI] (id=454432) [Spell Family (8), Passive] 
+Name             : Inexorable March (id=454432) [Spell Family (8), Passive] 
 Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Rogue
 School           : Physical
@@ -17550,10 +17553,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1156968)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?a137037[Shadowstep][Grappling Hook] may be used a second time within 3 sec, with no cooldown. 
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $?a137037[Shadowstep][Grappling Hook] may be used a second time within $s1 sec, with no cooldown. 
 
-Name             : Inevitability [NYI] (id=454434) [Spell Family (8), Passive] 
+Name             : Inevitability (id=454434) [Spell Family (8), Passive] 
 Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Rogue
 School           : Physical
@@ -17562,15 +17565,17 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+                 : Passive (6), Not In Spellbook (143), Spellcast Override In Spellbook (310), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1156969)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Cold Blood now benefits the next 2 abilities but only applies to $?a137037[Envenom][Dispatch]. Fatebound Coins flipped by these abilities are guaranteed to match the same face as the last flip.
+#1 (id=1156969)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 456330 | Scaled Value: 456330 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Cold Blood (382245), Cold Blood (456330)
+                   Family Flags: 38
+Description      : Cold Blood now benefits the next two abilities but only applies to $?a137037[Envenom][Dispatch]. Fatebound Coins flipped by these abilities are guaranteed to match the same face as the last flip.
 
 Name             : Destiny Defined (id=454435) [Spell Family (8), Passive] 
 Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
@@ -17741,5 +17746,82 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc455352
 Tooltip          : Prepared a Serrated Bone Spike.
+
+Name             : Fate Intertwined (id=456306) [Spell Family (8)] 
+Class            : Rogue
+School           : Cosmic
+Spell Type       : Magic
+Range            : 100 yards
+Max Targets      : 3
+Attributes       : ....x... ........ ..x..x.. ........   .....x.. ........ ........ ........ 
+                 : x......x ....x... ......x. .....x..   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ .x...... 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Allow While Stealthed (37), Allow Dead Target (64), Do Not Report Spell Failure (71), Chain From Caster (76), No Initial Threat (86), Can't Crit (93), Do Not Display Range (126), Ignore Caster Damage Modifiers (221), No Attack Miss (249), Not In Spellbook Until Learned (269), Ignore Positive Damage Taken Modifiers (321), Ignore PvP Power (365), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1160421)  : School Damage (2): cosmic
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Description      : $@spelldesc454429
+
+Name             : Cold Blood (id=456330) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Cooldown         : 45 seconds
+Stacks           : 1 initial, 2 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ....x... ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee, Generic Hostile Spell
+Affecting spells : Inevitability (454434 effect#1)
+Family Flags     : 38
+Attributes       : ....x... ........ x....... .x.x....   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), Cooldown On Event (25), Allow While Sitting (27), Allow While Stealthed (37), Can Proc From Procs (122), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1160461)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Affected Spells: Dispatch (2098), Envenom (32645)
+                   Family Flags: 35, 112
+Description      : Increases the critical strike chance of your next two $?a137037[Envenoms][Dispatches] by $s1%.
+Tooltip          : Critical strike chance of $?a137037[Envenom][Dispatch] increased by $s1%.
+
+Name             : Fatebound Coin (Heads) (id=456479) [Spell Family (8), Hidden] 
+Class            : Rogue
+School           : Cosmic
+Spell Type       : None
+Duration         : 3600 seconds
+Stacks           : 99 maximum
+Proc Chance      : 101%
+Attributes       : .......x x....... ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268)
+Effects          :
+#1 (id=1160701)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Fatebound Coin (Heads) (452923)
+                   Family Flags: 56
+#2 (id=1160702)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Fatebound Coin (Heads) (452923)
+                   Family Flags: 56
+Description      : $@spelldesc452536
+Tooltip          : Fatebound Coin (Heads) bonus.
 
 

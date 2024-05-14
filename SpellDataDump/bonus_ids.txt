@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54605 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54709 thewarwithin-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4278,7 +4278,7 @@ bonus_id={ 7956 }, effects={ Treasurefinder (id=364478, index=0, type=equip) }
 bonus_id={ 7957 }, effects={ Pocopoc Resonance (id=364477, index=0, type=equip) }
 bonus_id={ 7960 }, effects={ Ephemera Harmonizing Stone (id=365457, index=0, type=equip) }
 bonus_id={ 7962 }, ilevel_adjust={ 3 }
-bonus_id={ 7963 }, ilevel={ 5 @plvl 1 - 366 @plvl 70 }
+bonus_id={ 7963 }, ilevel={ 206 @plvl 45 - 327 @plvl 80 }
 bonus_id={ 7964 }, quality={ rare }, ilevel={ 10 @plvl 1 - 371 @plvl 70 }
 bonus_id={ 7965 }, quality={ epic }, ilevel={ 15 @plvl 1 - 376 @plvl 70 }
 bonus_id={ 7966 }, ilevel={ 1 @plvl 1 - 322 @plvl 70 }
@@ -4773,7 +4773,7 @@ bonus_id={ 9152 }, quality={ uncommon }, effects={ Fists of Earthen Fury (id=398
 bonus_id={ 9153 }, quality={ rare }, effects={ Fists of Earthen Fury (id=398383, index=0, type=equip) }
 bonus_id={ 9154 }, quality={ epic }, effects={ Fists of Earthen Fury (id=398389, index=0, type=equip) }
 bonus_id={ 9155 }, quality={ common }, effects={ Shadow Barrage (id=395758, index=0, type=equip) }
-bonus_id={ 9156 }
+bonus_id={ 9156 }, ilevel={ 206 @plvl 45 - 327 @plvl 80 }
 bonus_id={ 9157 }, quality={ common }, effects={ Death Grip (id=361126, index=0, type=equip) }
 bonus_id={ 9159 }, quality={ uncommon }, effects={ Snowdrift (id=398735, index=0, type=equip) }
 bonus_id={ 9160 }, quality={ rare }, effects={ Snowdrift (id=398737, index=0, type=equip) }
@@ -5984,7 +5984,7 @@ bonus_id={ 10817 }, stats={ 100% unknown [28.6680] }
 bonus_id={ 10818 }, stats={ 100% Leech [1.9112] }
 bonus_id={ 10819 }, stats={ 100% Mastery [1.9112] }
 bonus_id={ 10820 }, stats={ 100% RunSpeed [0.4778] }
-bonus_id={ 10821 }, stats={ 100% Sta [0.7889] }
+bonus_id={ 10821 }, stats={ 100% Sta [1.5000] }
 bonus_id={ 10822 }, effects={ Hailstorm (id=436565, index=0, type=equip) }
 bonus_id={ 10823 }, effects={ Cold Front (id=436573, index=0, type=equip) }
 bonus_id={ 10824 }, effects={ Brittle (id=436578, index=0, type=equip) }
@@ -6007,8 +6007,8 @@ bonus_id={ 10847 }, effects={ Chi-Ji, the Red Crane (id=437072, index=0, type=eq
 bonus_id={ 10848 }, effects={ Morphing Elements (id=437495, index=0, type=use) }
 bonus_id={ 10849 }, quality={ rare }, stats={ 100% StrInt [0.2045] }
 bonus_id={ 10850 }, quality={ epic }, stats={ 100% StrInt [0.2045] }
-bonus_id={ 10851 }, quality={ rare }, stats={ 100% Sta [0.7889] }
-bonus_id={ 10852 }, quality={ epic }, stats={ 100% Sta [0.7889] }
+bonus_id={ 10851 }, quality={ rare }, stats={ 100% Sta [1.5000] }
+bonus_id={ 10852 }, quality={ epic }, stats={ 100% Sta [1.5000] }
 bonus_id={ 10853 }, quality={ rare }, stats={ 100% AgiInt [0.2045] }
 bonus_id={ 10854 }, quality={ epic }, stats={ 100% AgiInt [0.2045] }
 bonus_id={ 10855 }, quality={ rare }, stats={ 100% AgiInt [0.2045] }
@@ -6237,3 +6237,71 @@ bonus_id={ 11223 }, effects={ Shadowflame Rockets (id=407949, index=0, type=use)
 bonus_id={ 11224 }, quality={ legendary }
 bonus_id={ 11225 }, ilevel={ 70 @plvl 70 - 90 @plvl 90 }
 bonus_id={ 11226 }, effects={ Energy Redistribution Beacon (id=455147, index=0, type=equip) }
+bonus_id={ 11227 }, ilevel={ 5 @plvl 1 - 366 @plvl 70 }
+bonus_id={ 11228 }, effects={ Excavation (id=455799, index=0, type=equip) }
+bonus_id={ 11229 }, ilevel={ 1 @plvl 1 - 400 @plvl 80 }
+bonus_id={ 11230 }, desc={ Rank 1/5 }, quality={ uncommon }, effects={ Porcelain Arrowhead Idol (id=456535, index=0, type=use) }
+bonus_id={ 11231 }, desc={ Rank 2/5 }, quality={ rare }, effects={ Porcelain Arrowhead Idol (id=456535, index=0, type=use) }
+bonus_id={ 11232 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Porcelain Arrowhead Idol (id=456535, index=0, type=use) }
+bonus_id={ 11233 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Porcelain Arrowhead Idol (id=456535, index=0, type=use) }
+bonus_id={ 11234 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Porcelain Arrowhead Idol (id=456535, index=0, type=use) }
+bonus_id={ 11235 }, desc={ Rank 1/5 }, quality={ uncommon }, effects={ Brute Force Idol (id=456550, index=0, type=use) }
+bonus_id={ 11236 }, desc={ Rank 2/5 }, quality={ rare }, effects={ Brute Force Idol (id=456550, index=0, type=use) }
+bonus_id={ 11237 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Brute Force Idol (id=456550, index=0, type=use) }
+bonus_id={ 11238 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Brute Force Idol (id=456550, index=0, type=use) }
+bonus_id={ 11239 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Brute Force Idol (id=456550, index=0, type=use) }
+bonus_id={ 11240 }, desc={ Rank 1/5 }, quality={ uncommon }, effects={ Idol of the Earthmother (id=456551, index=0, type=use) }
+bonus_id={ 11241 }, desc={ Rank 2/5 }, quality={ rare }, effects={ Idol of the Earthmother (id=456551, index=0, type=use) }
+bonus_id={ 11242 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Idol of the Earthmother (id=456551, index=0, type=use) }
+bonus_id={ 11243 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Idol of the Earthmother (id=456551, index=0, type=use) }
+bonus_id={ 11244 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Idol of the Earthmother (id=456551, index=0, type=use) }
+bonus_id={ 11245 }, desc={ Rank 1/5 }, quality={ uncommon }, effects={ Unbreakable Iron Idol (id=456552, index=0, type=use) }
+bonus_id={ 11246 }, desc={ Rank 2/5 }, quality={ rare }, effects={ Unbreakable Iron Idol (id=456552, index=0, type=use) }
+bonus_id={ 11247 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Unbreakable Iron Idol (id=456552, index=0, type=use) }
+bonus_id={ 11248 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Unbreakable Iron Idol (id=456552, index=0, type=use) }
+bonus_id={ 11249 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Unbreakable Iron Idol (id=456552, index=0, type=use) }
+bonus_id={ 11250 }, desc={ Rank 1/5 }, quality={ uncommon }, effects={ Light-Touched Idol (id=456553, index=0, type=use) }
+bonus_id={ 11251 }, desc={ Rank 2/5 }, quality={ rare }, effects={ Light-Touched Idol (id=456553, index=0, type=use) }
+bonus_id={ 11252 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Light-Touched Idol (id=456553, index=0, type=use) }
+bonus_id={ 11253 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Light-Touched Idol (id=456553, index=0, type=use) }
+bonus_id={ 11254 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Light-Touched Idol (id=456553, index=0, type=use) }
+bonus_id={ 11255 }, desc={ Rank 1/5 }, quality={ uncommon }, effects={ Power Idol (id=456554, index=0, type=use) }
+bonus_id={ 11256 }, desc={ Rank 2/5 }, quality={ rare }, effects={ Power Idol (id=456554, index=0, type=use) }
+bonus_id={ 11257 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Power Idol (id=456554, index=0, type=use) }
+bonus_id={ 11258 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Power Idol (id=456554, index=0, type=use) }
+bonus_id={ 11259 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Power Idol (id=456554, index=0, type=use) }
+bonus_id={ 11260 }, desc={ Rank 1/5 }, quality={ uncommon }, effects={ Idol of Final Will (id=456555, index=0, type=use) }
+bonus_id={ 11261 }, desc={ Rank 2/5 }, quality={ rare }, effects={ Idol of Final Will (id=456555, index=0, type=use) }
+bonus_id={ 11262 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Idol of Final Will (id=456555, index=0, type=use) }
+bonus_id={ 11263 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Idol of Final Will (id=456555, index=0, type=use) }
+bonus_id={ 11264 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Idol of Final Will (id=456555, index=0, type=use) }
+bonus_id={ 11265 }, desc={ Rank 1/5 }, quality={ uncommon }, effects={ Relic Page (id=456556, index=0, type=use) }
+bonus_id={ 11266 }, desc={ Rank 2/5 }, quality={ rare }, effects={ Relic Page (id=456556, index=0, type=use) }
+bonus_id={ 11267 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Relic Page (id=456556, index=0, type=use) }
+bonus_id={ 11268 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Relic Page (id=456556, index=0, type=use) }
+bonus_id={ 11269 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Relic Page (id=456556, index=0, type=use) }
+bonus_id={ 11270 }, desc={ Rank 1/5 }, quality={ uncommon }, effects={ Time Lost Relic (id=456557, index=0, type=use) }
+bonus_id={ 11271 }, desc={ Rank 2/5 }, quality={ rare }, effects={ Time Lost Relic (id=456557, index=0, type=use) }
+bonus_id={ 11272 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Time Lost Relic (id=456557, index=0, type=use) }
+bonus_id={ 11273 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Time Lost Relic (id=456557, index=0, type=use) }
+bonus_id={ 11274 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Time Lost Relic (id=456557, index=0, type=use) }
+bonus_id={ 11275 }, desc={ Rank 1/5 }, quality={ uncommon }, effects={ Olden Seeker Relic (id=456558, index=0, type=use) }
+bonus_id={ 11276 }, desc={ Rank 2/5 }, quality={ rare }, effects={ Olden Seeker Relic (id=456558, index=0, type=use) }
+bonus_id={ 11277 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Olden Seeker Relic (id=456558, index=0, type=use) }
+bonus_id={ 11278 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Olden Seeker Relic (id=456558, index=0, type=use) }
+bonus_id={ 11279 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Olden Seeker Relic (id=456558, index=0, type=use) }
+bonus_id={ 11280 }, desc={ Rank 1/5 }, quality={ uncommon }, effects={ Grasping Necrotic Relic (id=456559, index=0, type=use) }
+bonus_id={ 11281 }, desc={ Rank 2/5 }, quality={ rare }, effects={ Grasping Necrotic Relic (id=456559, index=0, type=use) }
+bonus_id={ 11282 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Grasping Necrotic Relic (id=456559, index=0, type=use) }
+bonus_id={ 11283 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Grasping Necrotic Relic (id=456559, index=0, type=use) }
+bonus_id={ 11284 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Grasping Necrotic Relic (id=456559, index=0, type=use) }
+bonus_id={ 11285 }, desc={ Rank 1/5 }, quality={ uncommon }, effects={ Relic of Sentience (id=456560, index=0, type=use) }
+bonus_id={ 11286 }, desc={ Rank 2/5 }, quality={ rare }, effects={ Relic of Sentience (id=456560, index=0, type=use) }
+bonus_id={ 11287 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Relic of Sentience (id=456560, index=0, type=use) }
+bonus_id={ 11288 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Relic of Sentience (id=456560, index=0, type=use) }
+bonus_id={ 11289 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Relic of Sentience (id=456560, index=0, type=use) }
+bonus_id={ 11290 }, desc={ Rank 1/5 }, quality={ uncommon }, effects={ Relicblood of Zekvir (id=456561, index=0, type=use) }
+bonus_id={ 11291 }, desc={ Rank 2/5 }, quality={ rare }, effects={ Relicblood of Zekvir (id=456561, index=0, type=use) }
+bonus_id={ 11292 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Relicblood of Zekvir (id=456561, index=0, type=use) }
+bonus_id={ 11293 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Relicblood of Zekvir (id=456561, index=0, type=use) }
+bonus_id={ 11294 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Relicblood of Zekvir (id=456561, index=0, type=use) }
