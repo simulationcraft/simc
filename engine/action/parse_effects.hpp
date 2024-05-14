@@ -958,7 +958,7 @@ public:
           str = util::string_join( str_list );
         }
 
-        if ( eff.spell()->equipped_class() == ITEM_CLASS_ARMOR )
+        if ( eff.spell()->equipped_class() == ITEM_CLASS_ARMOR && eff.spell()->flags( SX_REQUIRES_EQUIPPED_ARMOR_TYPE ) )
         {
           auto type_bit = 1U << static_cast<unsigned>( util::matching_armor_type( type ) );
           if ( eff.spell()->equipped_subclass_mask() == type_bit )
