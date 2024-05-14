@@ -960,13 +960,15 @@ public:
 
         if ( eff.spell()->equipped_class() == ITEM_CLASS_ARMOR )
         {
-          str += "|with matching armor";
-          return &matching_armor_attribute_multiplier_effects;
+          auto type_bit = 1U << static_cast<unsigned>( util::matching_armor_type( type ) );
+          if ( eff.spell()->equipped_subclass_mask() == type_bit )
+          {
+            str += "|with matching armor";
+            return &matching_armor_attribute_multiplier_effects;
+          }
         }
-        else
-        {
-          return &attribute_multiplier_effects;
-        }
+
+        return &attribute_multiplier_effects;
 
       case A_MOD_VERSATILITY_PCT:
         str = "versatility";

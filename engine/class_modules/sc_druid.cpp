@@ -9837,7 +9837,7 @@ void druid_t::init_spells()
   talent.the_light_of_elune             = HT( "The Light of Elune" );
 
   // Passive Auras
-  spec.druid                    = find_spell( 137009 );
+  spec.druid                    = dbc::get_class_passive( *this, SPEC_NONE );
 
   // Baseline
   spec.bear_form_override       = find_spell( 106829 );
