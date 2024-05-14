@@ -400,7 +400,6 @@ public:
   double base_hit;
   double base_crit;
   double crit_chance_multiplier;
-  double crit_damage_multiplier;  // player scoped Modify Crit Damage Done% (163)
   double crit_bonus_multiplier;   // action scoped Add Percent Modifier (108): Spell Critical Damage (15)
   double crit_bonus;
   double base_dd_adder;

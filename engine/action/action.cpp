@@ -426,7 +426,6 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     base_hit(),
     base_crit(),
     crit_chance_multiplier( 1.0 ),
-    crit_damage_multiplier( 1.0 ),
     crit_bonus_multiplier( 1.0 ),
     crit_bonus(),
     base_dd_adder(),
@@ -1262,7 +1261,7 @@ timespan_t action_t::travel_time() const
 
 double action_t::total_crit_bonus( const action_state_t* state ) const
 {
-  double crit_multiplier_buffed = crit_damage_multiplier * composite_player_critical_multiplier( state );
+  double crit_multiplier_buffed = composite_player_critical_multiplier( state );
 
   double base_crit_bonus = crit_bonus;
   if ( sim->pvp_mode )

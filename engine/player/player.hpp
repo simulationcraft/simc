@@ -235,6 +235,7 @@ struct player_t : public actor_t
 
     std::array<double, ATTRIBUTE_MAX> attribute_multiplier;
     double spell_power_multiplier, attack_power_multiplier, base_armor_multiplier, armor_multiplier;
+    double crit_damage_multiplier, crit_healing_multiplier;
     position_e position;
 
     friend void sc_format_to( const base_initial_current_t&, fmt::format_context::iterator );

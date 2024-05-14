@@ -2018,7 +2018,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( p()->bugs && s->result == RESULT_CRIT )
     {
       double spell_bonus  = composite_crit_damage_bonus_multiplier() * composite_target_crit_damage_bonus_multiplier( s->target );
-      double global_bonus = crit_damage_multiplier * composite_player_critical_multiplier( s );
+      double global_bonus = composite_player_critical_multiplier( s );
       trigger_dmg /= 1.0 + s->result_crit_bonus;
       trigger_dmg *= ( 1.0 + spell_bonus ) * global_bonus;
       // TODO: This calculation is incomplete because it doesn't take into
