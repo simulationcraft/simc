@@ -93,10 +93,9 @@ struct monk_action_t : public parse_action_effects_t<Base, monk_t, monk_td_t>
 
 private:
   std::array<resource_e, MONK_MISTWEAVER + 1> _resource_by_stance;
-  using ab = parse_action_effects_t<Base, monk_t, monk_td_t>;
 
 public:
-  using base_t = monk_action_t<Base>;
+  using base_t = parse_action_effects_t<Base, monk_t, monk_td_t>;
 
   monk_action_t( std::string_view name, monk_t *player, const spell_data_t *s = spell_data_t::nil() );
   std::string full_name() const;
@@ -110,12 +109,17 @@ public:
   template <typename... Ts>
   void parse_effects( Ts &&...args )
   {
-    ab::parse_effects( std::forward<Ts>( args )... );
+    base_t::parse_effects( std::forward<Ts>( args )... );
   }
   template <typename... Ts>
   void parse_target_effects( Ts &&...args )
   {
-    ab::parse_target_effects( std::forward<Ts>( args )... );
+    base_t::parse_target_effects( std::forward<Ts>( args )... );
+  }
+  template <typename... Ts>
+  void apply_affecting_aura( Ts &&...args )
+  {
+    base_t::apply_affecting_aura( std::forward<Ts>( args )... );
   }
 
   const spelleffect_data_t *find_spelleffect( const spell_data_t *spell, effect_subtype_t subtype, int misc_value,
@@ -1436,7 +1440,6 @@ public:
   void init_special_effect( special_effect_t &effect ) override;
   void init_finished() override;
   void reset() override;
-  double matching_gear_multiplier( attribute_e attr ) const override;
   void create_options() override;
   void copy_from( player_t * ) override;
   resource_e primary_resource() const override;

@@ -65,7 +65,7 @@ namespace actions
 
 template <class Base>
 monk_action_t<Base>::monk_action_t( std::string_view name, monk_t *player, const spell_data_t *spell )
-  : ab( name, player, spell ),
+  : base_t( name, player, spell ),
     sef_ability( actions::sef_ability_e::SEF_NONE ),
     ww_mastery( false ),
     may_combo_strike( false ),
@@ -75,8 +75,8 @@ monk_action_t<Base>::monk_action_t( std::string_view name, monk_t *player, const
 {
   range::fill( _resource_by_stance, RESOURCE_MAX );
 
-  base_t::apply_buff_effects();
-  base_t::apply_debuff_effects();
+  apply_buff_effects();
+  apply_debuff_effects();
 }
 
 template <class Base>
@@ -89,13 +89,13 @@ std::string monk_action_t<Base>::full_name() const
 template <class Base>
 monk_t *monk_action_t<Base>::p()
 {
-  return debug_cast<monk_t *>( ab::player );
+  return debug_cast<monk_t *>( base_t::player );
 }
 
 template <class Base>
 const monk_t *monk_action_t<Base>::p() const
 {
-  return debug_cast<monk_t *>( ab::player );
+  return debug_cast<monk_t *>( base_t::player );
 }
 
 template <class Base>
@@ -120,14 +120,15 @@ void monk_action_t<Base>::apply_buff_effects()
    */
 
   // class and spec auras
-  base_t::apply_affecting_aura( p()->baseline.monk.aura );
-  base_t::apply_affecting_aura( p()->baseline.brewmaster.aura );
-  base_t::apply_affecting_aura( p()->baseline.mistweaver.aura );
-  base_t::apply_affecting_aura( p()->baseline.mistweaver.aura_2 );
-  base_t::apply_affecting_aura( p()->baseline.windwalker.aura );
+  apply_affecting_aura( p()->baseline.monk.aura );
+  apply_affecting_aura( p()->baseline.brewmaster.aura );
+  apply_affecting_aura( p()->baseline.mistweaver.aura );
+  apply_affecting_aura( p()->baseline.mistweaver.aura_2 );
+  apply_affecting_aura( p()->baseline.windwalker.aura );
 
-  base_t::apply_affecting_aura( p()->talents.monk.expeditious_fortification );
-  base_t::apply_affecting_aura( p()->talents.monk.chi_proficiency );
+  // TODO: Move to Fort Brew
+  apply_affecting_aura( p()->talents.monk.expeditious_fortification );
+  apply_affecting_aura( p()->talents.monk.chi_proficiency );
 
   /*
    * Temporary action-specific effects go here.
@@ -200,13 +201,13 @@ std::unique_ptr<expr_t> monk_action_t<Base>::create_expression( util::string_vie
     return make_mem_fn_expr( name_str, *this, &monk_action_t::is_combo_strike );
   else if ( name_str == "combo_break" )
     return make_mem_fn_expr( name_str, *this, &monk_action_t::is_combo_break );
-  return ab::create_expression( name_str );
+  return base_t::create_expression( name_str );
 }
 
 template <class Base>
 bool monk_action_t<Base>::usable_moving() const
 {
-  if ( ab::usable_moving() )
+  if ( base_t::usable_moving() )
     return true;
 
   if ( this->execute_time() > timespan_t::zero() )
@@ -233,17 +234,17 @@ bool monk_action_t<Base>::ready()
     this->usable_while_casting = p()->channeling && p()->spec.spinning_crane_kick &&
                                  ( p()->channeling->id == p()->spec.spinning_crane_kick->id() );
 
-  return ab::ready();
+  return base_t::ready();
 }
 
 template <class Base>
 void monk_action_t<Base>::init()
 {
-  ab::init();
+  base_t::init();
 
   /* Iterate through power entries, and find if there are resources linked to one of our stances
    */
-  for ( const spellpower_data_t &pd : ab::data().powers() )
+  for ( const spellpower_data_t &pd : base_t::data().powers() )
   {
     switch ( pd.aura_id() )
     {
@@ -286,7 +287,7 @@ void monk_action_t<Base>::init()
 template <class Base>
 void monk_action_t<Base>::init_finished()
 {
-  ab::init_finished();
+  base_t::init_finished();
 }
 
 template <class Base>
@@ -309,13 +310,13 @@ resource_e monk_action_t<Base>::current_resource() const
 {
   if ( p()->specialization() == SPEC_NONE )
   {
-    return ab::current_resource();
+    return base_t::current_resource();
   }
 
   resource_e resource_by_stance = _resource_by_stance[ dbc::spec_idx( p()->specialization() ) ];
 
   if ( resource_by_stance == RESOURCE_MAX )
-    return ab::current_resource();
+    return base_t::current_resource();
 
   return resource_by_stance;
 }
@@ -459,9 +460,9 @@ void monk_action_t<Base>::trigger_shuffle( double time_extension )
 template <class Base>
 void monk_action_t<Base>::consume_resource()
 {
-  ab::consume_resource();
+  base_t::consume_resource();
 
-  if ( !ab::execute_state )  // Fixes rare crashes at combat_end.
+  if ( !base_t::execute_state )  // Fixes rare crashes at combat_end.
     return;
 
   if ( current_resource() == RESOURCE_CHI )
@@ -469,11 +470,11 @@ void monk_action_t<Base>::consume_resource()
     // Dance of Chi-Ji talent triggers from spending chi
     p()->buff.dance_of_chiji->trigger();
 
-    if ( ab::cost() > 0 )
+    if ( base_t::cost() > 0 )
     {
       if ( p()->talent.windwalker.spiritual_focus->ok() )
       {
-        p()->spiritual_focus_count += ab::cost();
+        p()->spiritual_focus_count += base_t::cost();
 
         if ( p()->spiritual_focus_count >= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value() )
         {
@@ -491,7 +492,7 @@ void monk_action_t<Base>::consume_resource()
       if ( p()->buff.storm_earth_and_fire->up() )
       {
         auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).base_value() / 10;
-        time_extend *= ab::cost();
+        time_extend *= base_t::cost();
 
         p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend ) );
 
@@ -505,17 +506,17 @@ void monk_action_t<Base>::consume_resource()
   }
 
   // Chi Savings on Dodge & Parry & Miss
-  if ( ab::last_resource_cost > 0 )
+  if ( base_t::last_resource_cost > 0 )
   {
-    double chi_restored = ab::last_resource_cost;
-    if ( !ab::aoe && ab::result_is_miss( ab::execute_state->result ) )
+    double chi_restored = base_t::last_resource_cost;
+    if ( !base_t::aoe && base_t::result_is_miss( base_t::execute_state->result ) )
       p()->resource_gain( RESOURCE_CHI, chi_restored, p()->gain.chi_refund );
   }
 
   // Energy refund, estimated at 80%
-  if ( current_resource() == RESOURCE_ENERGY && ab::last_resource_cost > 0 && !ab::hit_any_target )
+  if ( current_resource() == RESOURCE_ENERGY && base_t::last_resource_cost > 0 && !base_t::hit_any_target )
   {
-    double energy_restored = ab::last_resource_cost * 0.8;
+    double energy_restored = base_t::last_resource_cost * 0.8;
 
     p()->resource_gain( RESOURCE_ENERGY, energy_restored, p()->gain.energy_refund );
   }
@@ -535,7 +536,7 @@ void monk_action_t<Base>::execute()
       combo_strikes_trigger();
   }
 
-  ab::execute();
+  base_t::execute();
 
   trigger_storm_earth_and_fire( this );
 }
@@ -546,7 +547,7 @@ void monk_action_t<Base>::impact( action_state_t *s )
   if ( s->action->school == SCHOOL_PHYSICAL )
     trigger_mystic_touch( s );
 
-  ab::impact( s );
+  base_t::impact( s );
 
   if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
   {
@@ -557,7 +558,7 @@ void monk_action_t<Base>::impact( action_state_t *s )
 
     p()->trigger_spirit_of_forged_vermillion( s );
 
-    if ( !ab::result_is_miss( s->result ) && s->result_amount > 0 )
+    if ( !base_t::result_is_miss( s->result ) && s->result_amount > 0 )
     {
       if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
       {
@@ -609,16 +610,16 @@ void monk_action_t<Base>::impact( action_state_t *s )
 template <class Base>
 void monk_action_t<Base>::tick( dot_t *dot )
 {
-  ab::tick( dot );
+  base_t::tick( dot );
 
-  if ( !ab::result_is_miss( dot->state->result ) && dot->state->result_type == result_amount_type::DMG_OVER_TIME )
+  if ( !base_t::result_is_miss( dot->state->result ) && dot->state->result_type == result_amount_type::DMG_OVER_TIME )
   {
     p()->trigger_empowered_tiger_lightning( dot->state );
 
     if ( get_td( dot->state->target )->debuff.bonedust_brew->up() )
       p()->bonedust_brew_assessor( dot->state );
 
-    if ( !ab::result_is_miss( dot->state->result ) && dot->state->result_amount > 0 )
+    if ( !base_t::result_is_miss( dot->state->result ) && dot->state->result_amount > 0 )
     {
       if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
       {
@@ -649,13 +650,13 @@ void monk_action_t<Base>::tick( dot_t *dot )
 template <class Base>
 void monk_action_t<Base>::last_tick( dot_t *dot )
 {
-  ab::last_tick( dot );
+  base_t::last_tick( dot );
 }
 
 template <class Base>
 double monk_action_t<Base>::composite_persistent_multiplier( const action_state_t *action_state ) const
 {
-  double pm = ab::composite_persistent_multiplier( action_state );
+  double pm = base_t::composite_persistent_multiplier( action_state );
 
   return pm;
 }
@@ -663,11 +664,11 @@ double monk_action_t<Base>::composite_persistent_multiplier( const action_state_
 template <class Base>
 double monk_action_t<Base>::cost() const
 {
-  double c = ab::cost();
+  double c = base_t::cost();
 
   if ( p()->specialization() == MONK_WINDWALKER )
   {
-    if ( ab::data().affected_by( p()->buff.ordered_elements->data().effectN( 1 ) ) )
+    if ( base_t::data().affected_by( p()->buff.ordered_elements->data().effectN( 1 ) ) )
       c += p()->buff.ordered_elements->check_value();
   }
 
@@ -677,7 +678,7 @@ double monk_action_t<Base>::cost() const
 template <class Base>
 double monk_action_t<Base>::cost_pct_multiplier() const
 {
-  double c = ab::cost_pct_multiplier();
+  double c = base_t::cost_pct_multiplier();
 
   c *= 1.0 + cost_reduction();
 
@@ -695,9 +696,9 @@ double monk_action_t<Base>::cost_reduction() const
 template <class Base>
 double monk_action_t<Base>::composite_ta_multiplier( const action_state_t *s ) const
 {
-  double ta = ab::composite_ta_multiplier( s );
+  double ta = base_t::composite_ta_multiplier( s );
 
-  if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 2 ) ) )
+  if ( base_t::data().affected_by( p()->passives.hit_combo->effectN( 2 ) ) )
     ta *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 2 ).percent();
 
   return ta;
@@ -706,9 +707,9 @@ double monk_action_t<Base>::composite_ta_multiplier( const action_state_t *s ) c
 template <class Base>
 double monk_action_t<Base>::composite_da_multiplier( const action_state_t *s ) const
 {
-  double da = ab::composite_da_multiplier( s );
+  double da = base_t::composite_da_multiplier( s );
 
-  if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
+  if ( base_t::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
     da *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 1 ).percent();
 
   return da;
@@ -718,17 +719,17 @@ double monk_action_t<Base>::composite_da_multiplier( const action_state_t *s ) c
 template <class Base>
 double monk_action_t<Base>::composite_target_multiplier( player_t *t ) const
 {
-  double tm = ab::composite_target_multiplier( t );
+  double tm = base_t::composite_target_multiplier( t );
 
   auto td = find_td( t );
 
   if ( td )
   {
-    if ( ab::data().affected_by( td->debuff.weapons_of_order->data().effectN( 1 ) ) &&
+    if ( base_t::data().affected_by( td->debuff.weapons_of_order->data().effectN( 1 ) ) &&
          td->debuff.weapons_of_order->check() )
       tm *= 1 + td->debuff.weapons_of_order->check_stack_value();
 
-    if ( ab::data().affected_by( p()->passives.jadefire_brand_dmg->effectN( 1 ) ) &&
+    if ( base_t::data().affected_by( p()->passives.jadefire_brand_dmg->effectN( 1 ) ) &&
          td->debuff.jadefire_brand->check() )
       tm *= 1 + p()->passives.jadefire_brand_dmg->effectN( 1 ).percent();
 
@@ -747,12 +748,12 @@ void monk_action_t<Base>::trigger_storm_earth_and_fire( const action_t *a )
 template <class Base>
 void monk_action_t<Base>::trigger_mystic_touch( action_state_t *s )
 {
-  if ( ab::sim->overrides.mystic_touch )
+  if ( base_t::sim->overrides.mystic_touch )
   {
     return;
   }
 
-  if ( ab::result_is_miss( s->result ) )
+  if ( base_t::result_is_miss( s->result ) )
   {
     return;
   }
@@ -769,7 +770,7 @@ void monk_action_t<Base>::trigger_mystic_touch( action_state_t *s )
 }
 
 monk_spell_t::monk_spell_t( std::string_view name, monk_t *player, const spell_data_t *spell )
-  : base_t( name, player, spell )
+  : monk_action_t<spell_t>( name, player, spell )
 {
   ap_type = attack_power_type::WEAPON_MAINHAND;
 
@@ -810,7 +811,7 @@ double monk_spell_t::action_multiplier() const
 }
 
 monk_heal_t::monk_heal_t( std::string_view name, monk_t &player, const spell_data_t *spell )
-  : base_t( name, &player, spell )
+  : monk_action_t<heal_t>( name, &player, spell )
 {
   harmful = false;
   ap_type = attack_power_type::WEAPON_MAINHAND;
@@ -897,13 +898,13 @@ double monk_heal_t::action_multiplier() const
 }
 
 monk_absorb_t::monk_absorb_t( std::string_view name, monk_t &player, const spell_data_t *spell )
-  : base_t( name, &player, spell )
+  : monk_action_t<absorb_t>( name, &player, spell )
 {
   track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
 }
 
 monk_melee_attack_t::monk_melee_attack_t( std::string_view name, monk_t *player, const spell_data_t *spell )
-  : base_t( name, player, spell )
+  : monk_action_t<melee_attack_t>( name, player, spell )
 {
   special    = true;
   may_glance = false;
@@ -6629,7 +6630,8 @@ void monk_t::parse_player_effects()
    * 2024-5-14: 2-Hand adjustment was demonstrated to not work for BrM.
    * Requires confirmation from WW to verify this is correct for both specs.
    */
-  parse_effects( baseline.monk.leather_specialization );
+  if ( matching_gear )
+    parse_effects( baseline.monk.leather_specialization );
 
   // brewmaster player auras
   parse_effects( baseline.brewmaster.aura );
@@ -8470,31 +8472,6 @@ void monk_t::reset()
       }
     }
   }
-}
-
-// monk_t::matching_gear_multiplier =========================================
-
-double monk_t::matching_gear_multiplier( attribute_e attr ) const
-{
-  // switch ( specialization() )
-  // {
-  //   case MONK_MISTWEAVER:
-  //     if ( attr == ATTR_INTELLECT )
-  //       return spec.leather_specialization_mw->effectN( 1 ).percent();
-  //     break;
-  //   case MONK_WINDWALKER:
-  //     if ( attr == ATTR_AGILITY )
-  //       return spec.leather_specialization_ww->effectN( 1 ).percent();
-  //     break;
-  //   case MONK_BREWMASTER:
-  //     if ( attr == ATTR_STAMINA )
-  //       return spec.leather_specialization_brm->effectN( 1 ).percent();
-  //     break;
-  //   default:
-  //     break;
-  // }
-
-  return 0.0;
 }
 
 // monk_t::create_storm_earth_and_fire_target_list ====================================
