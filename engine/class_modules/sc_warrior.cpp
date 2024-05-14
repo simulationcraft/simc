@@ -961,8 +961,8 @@ public:
 
     // Arms
     // Arms deep wounds spell data contains T30 2pc bonus, which is disabled/enabled via script.
-    // To account for this, we parse the data twice, first ignoring effects #4 & #5 via mask, then if the T30 2pc is
-    // active parse again ignoring effects #1, #2, & #3.
+    // To account for this, we parse the data twice, first ignoring effects #3, #4 & #5 via mask, then if the T30 2pc is
+    // active parse again ignoring effects #1, #2.
     parse_target_effects( []( warrior_td_t* td ) { return td->dots_deep_wounds->is_ticking(); },
                           p()->spell.deep_wounds_arms, 0b11000,
                           p()->mastery.deep_wounds_ARMS );
@@ -971,6 +971,13 @@ public:
       parse_target_effects( []( warrior_td_t* td ) { return td->dots_deep_wounds->is_ticking(); },
                             p()->spell.deep_wounds_arms, 0b00111 );
     }
+
+    if ( p()->talents.warrior.thunderous_words->ok() )
+    {
+      parse_target_effects( []( warrior_td_t* td ) { return td->dots_thunderous_roar->is_ticking(); },
+                            p()->talents.warrior.thunderous_roar->effectN( 2 ).trigger(), 0b001 );
+    }
+
     parse_target_effects( []( warrior_td_t* td ) { return td->debuffs_colossus_smash->check(); },
                           p()->spell.colossus_smash_debuff,
                           p()->talents.arms.blunt_instruments, p()->talents.arms.spiteful_serenity );
