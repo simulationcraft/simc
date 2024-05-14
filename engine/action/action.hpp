@@ -399,8 +399,9 @@ public:
 
   double base_hit;
   double base_crit;
-  double crit_multiplier;
-  double crit_bonus_multiplier;
+  double crit_chance_multiplier;
+  double crit_damage_multiplier;  // player scoped Modify Crit Damage Done% (163)
+  double crit_bonus_multiplier;   // action scoped Add Percent Modifier (108): Spell Critical Damage (15)
   double crit_bonus;
   double base_dd_adder;
   double base_ta_adder;
@@ -901,7 +902,7 @@ public:
   { return base_crit; }
 
   virtual double composite_crit_chance_multiplier() const
-  { return crit_multiplier; }
+  { return crit_chance_multiplier; }
 
   virtual double composite_crit_damage_bonus_multiplier() const
   { return crit_bonus_multiplier; }

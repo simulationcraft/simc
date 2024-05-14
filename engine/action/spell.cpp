@@ -38,7 +38,7 @@ spell_base_t::spell_base_t( action_e at,
   special = true;
 
   crit_bonus = 1.0;
-  crit_multiplier *= util::crit_multiplier( player -> meta_gem );
+  crit_damage_multiplier *= util::crit_multiplier( player -> meta_gem );
 }
 
 double spell_base_t::cost() const

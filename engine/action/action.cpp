@@ -425,7 +425,8 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     base_multiplier( 1.0 ),
     base_hit(),
     base_crit(),
-    crit_multiplier( 1.0 ),
+    crit_chance_multiplier( 1.0 ),
+    crit_damage_multiplier( 1.0 ),
     crit_bonus_multiplier( 1.0 ),
     crit_bonus(),
     base_dd_adder(),
@@ -1261,7 +1262,7 @@ timespan_t action_t::travel_time() const
 
 double action_t::total_crit_bonus( const action_state_t* state ) const
 {
-  double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier( state );
+  double crit_multiplier_buffed = crit_damage_multiplier * composite_player_critical_multiplier( state );
 
   double base_crit_bonus = crit_bonus;
   if ( sim->pvp_mode )
@@ -5431,8 +5432,8 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case P_CRIT:
-        crit_multiplier *= 1.0 + effect.percent();
-        sim->print_debug( "{} critical strike chance modified by {}%", *this, effect.base_value() );
+        crit_chance_multiplier *= 1.0 + effect.percent();
+        sim->print_debug( "{} critical strike chance multiplier modified by {}%", *this, effect.base_value() );
         value_ = effect.percent();
         break;
 

@@ -8152,7 +8152,7 @@ struct totem_pulse_action_t : public T
     T::init();
 
     // Hacky, but constructor wont work.
-    this->crit_multiplier *= util::crit_multiplier( totem->o()->meta_gem );
+    this->crit_damage_multiplier *= util::crit_multiplier( totem->o()->meta_gem );
   }
 
   void execute() override
