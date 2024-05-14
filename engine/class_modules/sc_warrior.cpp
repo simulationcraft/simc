@@ -8176,7 +8176,7 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
                                   g == gain.frothing_berserker );
 
     if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches, keep Simmering Rage
-      a *= 1.0 + spell.recklessness_buff->effectN( 4 ).percent();
+      a *= 1.0 + spell.recklessness_buff->effectN( 1 ).percent();
   }
 
   if ( buff.unnerving_focus->up() )
