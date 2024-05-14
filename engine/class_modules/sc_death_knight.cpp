@@ -1583,7 +1583,6 @@ public:
   void init_finished() override;
   bool validate_fight_style( fight_style_e style ) const override;
   double composite_bonus_armor() const override;
-  double matching_gear_multiplier( attribute_e attr ) const override;
   void combat_begin() override;
   void activate() override;
   void reset() override;
@@ -11882,20 +11881,6 @@ void death_knight_t::create_buffs()
 
   buffs.abomination_limb = new abomination_limb_buff_t( this );
 
-  buffs.empower_rune_weapon =
-      make_buff( this, "empower_rune_weapon", spell.empower_rune_weapon_main )
-          ->set_tick_zero( true )
-          ->set_cooldown( 0_ms )
-          ->set_period( spell.empower_rune_weapon_main->effectN( 1 ).period() )
-          ->set_default_value_from_effect( 3 )
-          ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-          ->set_tick_behavior( buff_tick_behavior::REFRESH )
-          ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-            replenish_rune( as<unsigned int>( b->data().effectN( 1 ).base_value() ), gains.empower_rune_weapon );
-            resource_gain( RESOURCE_RUNIC_POWER, b->data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
-                           gains.empower_rune_weapon );
-          } );
-
   buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons->effectN( 1 ).trigger() )
                          ->set_default_value( talent.icy_talons->effectN( 1 ).percent() )
                          ->set_cooldown( talent.icy_talons->internal_cooldown() )
@@ -12071,6 +12056,21 @@ void death_knight_t::create_buffs()
                                     buff_->refresh();
                                   }
                                 } );
+
+
+    buffs.empower_rune_weapon =
+        make_buff( this, "empower_rune_weapon", spell.empower_rune_weapon_main )
+            ->set_tick_zero( true )
+            ->set_cooldown( 0_ms )
+            ->set_period( spell.empower_rune_weapon_main->effectN( 1 ).period() )
+            ->set_default_value_from_effect( 3 )
+            ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+            ->set_tick_behavior( buff_tick_behavior::REFRESH )
+            ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+              replenish_rune( as<unsigned int>( b->data().effectN( 1 ).base_value() ), gains.empower_rune_weapon );
+              resource_gain( RESOURCE_RUNIC_POWER, b->data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
+                             gains.empower_rune_weapon );
+            } );
 
     buffs.pillar_of_frost = new pillar_of_frost_buff_t( this );
 
@@ -12470,28 +12470,6 @@ double death_knight_t::composite_bonus_armor() const
   return ba;
 }
 
-// death_knight_t::matching_gear_multiplier =================================
-
-double death_knight_t::matching_gear_multiplier( attribute_e attr ) const
-{
-  switch ( specialization() )
-  {
-    case DEATH_KNIGHT_FROST:
-    case DEATH_KNIGHT_UNHOLY:
-      if ( attr == ATTR_STRENGTH )
-        return spec.plate_specialization->effectN( 1 ).percent();
-      break;
-    case DEATH_KNIGHT_BLOOD:
-      if ( attr == ATTR_STAMINA )
-        return spec.plate_specialization->effectN( 1 ).percent();
-      break;
-    default:
-      break;
-  }
-
-  return 0.0;
-}
-
 // death_knight_t::combat_begin =============================================
 
 void death_knight_t::combat_begin()
@@ -12636,6 +12614,7 @@ void death_knight_t::parse_player_effects()
 {
   // Shared
   parse_effects( spec.death_knight );
+  parse_effects( spec.plate_specialization );
   parse_effects( buffs.icy_talons, talent.icy_talons );
   parse_effects( buffs.rune_mastery, talent.rune_mastery );
   parse_effects( buffs.unholy_strength, talent.unholy_bond );
