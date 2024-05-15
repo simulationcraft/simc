@@ -65,6 +65,12 @@ struct player_effect_t
 
   player_effect_t& set_opt_enum( uint32_t e )
   { opt_enum = e; return *this; }
+
+  bool operator==( const player_effect_t&  other )
+  {
+    return buff == other.buff && value == other.value && type == other.type && use_stacks == other.use_stacks &&
+           mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
+  }
 };
 
 // effects dependent on target state
@@ -92,6 +98,11 @@ struct target_effect_t
 
   target_effect_t& set_opt_enum( uint32_t e )
   { opt_enum = e; return *this; }
+
+  bool operator==( const target_effect_t<TD>&  other )
+  {
+    return value == other.value && mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
+  }
 };
 
 struct modify_effect_t
@@ -154,6 +165,7 @@ struct pack_t
   U data;
   std::vector<const spell_data_t*> list;
   uint32_t mask = 0U;
+  std::vector<U>* copy = nullptr;
 };
 
 struct parse_effects_t
@@ -295,6 +307,10 @@ public:
     {
       tmp.mask = mod;
     }
+    else if constexpr ( std::is_convertible_v<decltype( *std::declval<T>() ), const std::vector<U>> )
+    {
+      tmp.copy = &( *mod );
+    }
     else
     {
       static_assert( static_false<T>, "Invalid mod type for parse_spell_effect_mods" );
@@ -410,6 +426,9 @@ public:
     tmp.data.mastery = mastery;
     tmp.data.eff = &eff;
     vec->push_back( tmp.data );
+
+    if ( tmp.copy )
+      tmp.copy->push_back( tmp.data );
   }
 
   // Syntax: parse_effects( data[, spells|condition|ignore_mask|value|flags][,...] )
@@ -607,6 +626,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
 {
   std::vector<player_effect_t> melee_speed_effects;
   std::vector<player_effect_t> attribute_multiplier_effects;
+  std::vector<player_effect_t> matching_armor_attribute_multiplier_effects;
   std::vector<player_effect_t> versatility_effects;
   std::vector<player_effect_t> player_multiplier_effects;
   std::vector<player_effect_t> pet_multiplier_effects;
@@ -834,6 +854,17 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
     return dodge;
   }
 
+  double matching_gear_multiplier( attribute_e attr ) const override
+  {
+    double mg = player_t::matching_gear_multiplier( attr );
+
+    for ( const auto& i : matching_armor_attribute_multiplier_effects )
+      if ( i.opt_enum & ( 1 << ( attr - 1 ) ) )
+        mg += get_effect_value( i );
+
+    return mg;
+  }
+
 private:
   TD* _get_td( player_t* t ) const
   {
@@ -926,6 +957,17 @@ public:
           }
           str = util::string_join( str_list );
         }
+
+        if ( eff.spell()->equipped_class() == ITEM_CLASS_ARMOR && eff.spell()->flags( SX_REQUIRES_EQUIPPED_ARMOR_TYPE ) )
+        {
+          auto type_bit = 1U << static_cast<unsigned>( util::matching_armor_type( type ) );
+          if ( eff.spell()->equipped_subclass_mask() == type_bit )
+          {
+            str += "|with matching armor";
+            return &matching_armor_attribute_multiplier_effects;
+          }
+        }
+
         return &attribute_multiplier_effects;
 
       case A_MOD_VERSATILITY_PCT:
@@ -998,8 +1040,7 @@ public:
         return &armor_multiplier_effects;
 
       case A_MOD_PARRY_FROM_CRIT_RATING:
-        str = "parry rating";
-        // TODO: better debug message for this, and similar effects
+        str = "parry rating|of crit rating";
         invalidate_with_parent.push_back( { CACHE_PARRY, CACHE_CRIT_CHANCE } );
         return &parry_rating_from_crit_effects;
 
@@ -1018,25 +1059,29 @@ public:
   void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str, bool mastery,
                       const spell_data_t* s_data, size_t i ) override
   {
+    auto splits = util::string_split<std::string_view>( type_str, "|" );
+    auto tok1 = splits[ 0 ];
+    auto tok2 = splits.size() > 1 ? fmt::format( "{} {}", val_str, splits[ 1 ] ) : val_str;
+
     if ( data.buff )
     {
-      sim->print_debug( "player-effects: Player {} modified by {} {} buff {} ({}#{})", type_str, val_str,
+      sim->print_debug( "player-effects: {} {} modified by {} {} buff {} ({}#{})", *this, tok1, tok2,
                         data.use_stacks ? "per stack of" : "with", data.buff->name(), data.buff->data().id(), i );
     }
     else if ( mastery && !data.func )
     {
-      sim->print_debug( "player-effects: Player {} modified by {} from {} ({}#{})", type_str, val_str,
-                        s_data->name_cstr(), s_data->id(), i );
+      sim->print_debug( "player-effects: {} {} modified by {} from {} ({}#{})", *this, tok1, tok2, s_data->name_cstr(),
+                        s_data->id(), i );
     }
     else if ( data.func )
     {
-      sim->print_debug( "player-effects: Player {} modified by {} with condition from {} ({}#{})", type_str, val_str,
+      sim->print_debug( "player-effects: {} {} modified by {} with condition from {} ({}#{})", *this, tok1, tok2,
                         s_data->name_cstr(), s_data->id(), i );
     }
     else
     {
-      sim->print_debug( "player-effects: Player {} modified by {} from {} ({}#{})", type_str, val_str,
-                        s_data->name_cstr(), s_data->id(), i );
+      sim->print_debug( "player-effects: {} {} modified by {} from {} ({}#{})", *this, tok1, tok2, s_data->name_cstr(),
+                        s_data->id(), i );
     }
   }
 
@@ -1108,7 +1153,7 @@ private:
   };
 
   std::array<effect_pack_t, 5> effect_modifiers;
-
+  using base_t = parse_action_effects_t<BASE, PLAYER, TD>;
 public:
   // auto parsed dynamic effects
   std::vector<player_effect_t> ta_multiplier_effects;
@@ -1121,6 +1166,7 @@ public:
   std::vector<player_effect_t> cost_effects;
   std::vector<player_effect_t> flat_cost_effects;
   std::vector<player_effect_t> crit_chance_effects;
+  std::vector<player_effect_t> crit_chance_multiplier_effects;
   std::vector<player_effect_t> crit_damage_effects;
   std::vector<target_effect_t<TD>> target_multiplier_effects;
   std::vector<target_effect_t<TD>> target_crit_damage_effects;
@@ -1183,12 +1229,22 @@ public:
     return cc;
   }
 
+  double composite_crit_chance_multiplier() const override
+  {
+    auto ccm = BASE::composite_crit_chance_multiplier();
+
+    for ( const auto& i : crit_chance_multiplier_effects )
+      ccm *= 1.0 + get_effect_value( i );
+
+    return ccm;
+  }
+
   double composite_crit_damage_bonus_multiplier() const override
   {
     auto cd = BASE::composite_crit_damage_bonus_multiplier();
 
     for ( const auto& i : crit_damage_effects )
-      cd *= get_effect_value( i );
+      cd *= 1.0 + get_effect_value( i, true );
 
     return cd;
   }
@@ -1381,6 +1437,10 @@ public:
           str = "cost percent";
           return &cost_effects;
 
+        case P_CRIT:
+          str = "crit chance multiplier";
+          return &crit_chance_multiplier_effects;
+
         case P_CRIT_DAMAGE:
           str = "crit damage";
           return &crit_damage_effects;
@@ -1407,6 +1467,11 @@ public:
         default:
           return nullptr;
       }
+    }
+    else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY )
+    {
+      str = "cooldown";
+      return &recharge_multiplier_effects;
     }
 
     return nullptr;
@@ -1726,28 +1791,20 @@ public:
          << "<th class=\"small\">Notes</th>\n"
          << "</tr>\n";
 
-      print_parsed_type( os, da_multiplier_effects, "Direct Damage" );
-      print_parsed_type( os, ta_multiplier_effects, "Periodic Damage" );
-      print_parsed_type( os, crit_chance_effects, "Critical Strike Chance" );
-      print_parsed_type( os, crit_damage_effects, "Critical Strike Damage" );
-      print_parsed_type( os, execute_time_effects, "Execute Time" );
-      print_parsed_type( os, gcd_effects, "GCD" );
-      print_parsed_type( os, dot_duration_effects, "Dot Duration" );
-      print_parsed_type( os, tick_time_effects, "Tick Time" );
-      print_parsed_type( os, recharge_multiplier_effects, "Recharge Multiplier" );
-
-      // assume the first non-background action in the stat's action_list is the main action and get cost effects from it
-      auto main = this;
-      auto it = range::find_if( BASE::stats->action_list, []( action_t* a ) { return !a->background; } );
-      if ( it != BASE::stats->action_list.end() )
-        main = static_cast<parse_action_effects_t<BASE, PLAYER, TD>*>( *it );
-
-      print_parsed_type( os, main->flat_cost_effects, "Flat Cost", false );
-      print_parsed_type( os, main->cost_effects, "Percent Cost" );
-
-      print_parsed_type( os, target_multiplier_effects, "Damage on Debuff" );
-      print_parsed_type( os, target_crit_chance_effects, "Crit Chance on Debuff" );
-      print_parsed_type( os, target_crit_damage_effects, "Crit Damage on Debuff" );
+      print_parsed_type( os, &base_t::da_multiplier_effects, "Direct Damage" );
+      print_parsed_type( os, &base_t::ta_multiplier_effects, "Periodic Damage" );
+      print_parsed_type( os, &base_t::crit_chance_effects, "Critical Strike Chance" );
+      print_parsed_type( os, &base_t::crit_damage_effects, "Critical Strike Damage" );
+      print_parsed_type( os, &base_t::execute_time_effects, "Execute Time" );
+      print_parsed_type( os, &base_t::gcd_effects, "GCD" );
+      print_parsed_type( os, &base_t::dot_duration_effects, "Dot Duration" );
+      print_parsed_type( os, &base_t::tick_time_effects, "Tick Time" );
+      print_parsed_type( os, &base_t::recharge_multiplier_effects, "Recharge Multiplier" );
+      print_parsed_type( os, &base_t::flat_cost_effects, "Flat Cost", false );
+      print_parsed_type( os, &base_t::cost_effects, "Percent Cost" );
+      print_parsed_type( os, &base_t::target_multiplier_effects, "Damage on Debuff" );
+      print_parsed_type( os, &base_t::target_crit_chance_effects, "Crit Chance on Debuff" );
+      print_parsed_type( os, &base_t::target_crit_damage_effects, "Crit Damage on Debuff" );
       print_parsed_custom_type( os );
 
       os << "</table>\n"
@@ -1772,9 +1829,17 @@ public:
 
   virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
 
-  template <typename V>
-  void print_parsed_type( report::sc_html_stream& os, const V& entries, std::string_view n, bool pct = true )
+  template <typename W = base_t, typename V>
+  void print_parsed_type( report::sc_html_stream& os, V vector_ptr, std::string_view n, bool pct = true )
   {
+    auto entries = std::invoke( vector_ptr, static_cast<W*>( this ) );
+
+    for ( auto a : BASE::stats->action_list )
+      if ( a != this )
+        for ( const auto& entry : std::invoke( vector_ptr, static_cast<W*>( a ) ) )
+          if ( !range::contains( entries, entry ) )
+            entries.push_back( entry );
+
     auto c = entries.size();
     if ( !c )
       return;

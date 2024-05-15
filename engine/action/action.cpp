@@ -425,7 +425,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     base_multiplier( 1.0 ),
     base_hit(),
     base_crit(),
-    crit_multiplier( 1.0 ),
+    crit_chance_multiplier( 1.0 ),
     crit_bonus_multiplier( 1.0 ),
     crit_bonus(),
     base_dd_adder(),
@@ -1261,7 +1261,7 @@ timespan_t action_t::travel_time() const
 
 double action_t::total_crit_bonus( const action_state_t* state ) const
 {
-  double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier( state );
+  double crit_multiplier_buffed = composite_player_critical_multiplier( state );
 
   double base_crit_bonus = crit_bonus;
   if ( sim->pvp_mode )
@@ -5065,7 +5065,15 @@ timespan_t action_t::distance_targeting_travel_time( action_state_t* /*s*/ ) con
 
 void action_t::html_customsection( report::sc_html_stream& os )
 {
-  if ( affecting_list.size() )
+  auto entries = affecting_list;
+
+  for ( auto a : stats->action_list )
+    if ( a != this )
+      for ( const auto& entry : a->affecting_list )
+        if ( !range::contains( entries, entry ) )
+          entries.push_back( entry );
+
+  if ( entries.size() )
   {
     os << "<div>\n"
         << "<h4>Affected By (Passive)</h4>\n"
@@ -5080,7 +5088,7 @@ void action_t::html_customsection( report::sc_html_stream& os )
         << "<th class=\"small\">Value</th>\n"
         << "</tr>\n";
 
-    for ( auto [ eff, val ] : affecting_list )
+    for ( auto [ eff, val ] : entries )
     {
       std::string op_str;
       std::string type_str;
@@ -5419,6 +5427,12 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case P_CRIT_DAMAGE:
         crit_bonus_multiplier *= 1.0 + effect.percent();
         sim->print_debug( "{} critical damage bonus multiplier modified by {}%", *this, effect.base_value() );
+        value_ = effect.percent();
+        break;
+
+      case P_CRIT:
+        crit_chance_multiplier *= 1.0 + effect.percent();
+        sim->print_debug( "{} critical strike chance multiplier modified by {}%", *this, effect.base_value() );
         value_ = effect.percent();
         break;
 

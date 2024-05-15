@@ -1320,6 +1320,7 @@ enum spell_attribute : unsigned
   SX_NO_BLOCK                       = 256u,
   SX_TICK_MAY_CRIT                  = 265u,
   SX_DURATION_HASTED                = 273u,
+  SX_REQUIRES_EQUIPPED_ARMOR_TYPE   = 276u,
   SX_DOT_HASTED_MELEE               = 278u,
   SX_MASTERY_AFFECTS_POINTS         = 285u,
   SX_FIXED_TRAVEL_TIME              = 292u,

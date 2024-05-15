@@ -254,7 +254,7 @@ void aberrant_spellforge( special_effect_t& effect )
   // cache data
   auto data = equip->driver();
   auto period = effect.player->find_spell( 452030 )->effectN( 2 ).period();
-  auto silence_dur = effect.player->find_spell( 452350 )->duration();
+  [[maybe_unused]] auto silence_dur = effect.player->find_spell( 452350 )->duration();
 
   // create buffs
   auto empowerment = create_buff<buff_t>( effect.player, effect.player->find_spell( 451895 ) );
@@ -450,7 +450,10 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
           b_speed->trigger( 1, b->default_value * s );
         } );
 
-      e.player->buffs.surekian_grace_stack = b_stack;
+      e.player->register_movement_callback( [ b_stack ]( bool start ) {
+        if ( start )
+          b_stack->expire();
+      } );
 
       auto b_stance = create_buff<buff_t>( e.player, e.player->find_spell( 448036 ) )
         ->set_tick_callback( [ b_stack ]( buff_t*, int, timespan_t ) {
@@ -656,6 +659,165 @@ void foul_behemoths_chelicera( special_effect_t& effect )
   effect.execute_action = create_proc_action<digestive_venom_t>( "digestive_venom", effect );
 }
 
+// 445066 equip + data
+//  e1: primary
+//  e2: secondary
+//  e3: max stack
+//  e4: reduction
+//  e5: unreduced cap
+//  e6: period
+// 445560 on-use
+// 449578 primary buff
+// 449581 haste buff
+// 449593 crit buff
+// 449594 mastery buff
+// 449595 vers buff
+// TODO: confirm secondary precedence in case of tie is vers > mastery > haste > crit
+// TODO: confirm equip cycle continues ticking while on-use is active
+// TODO: confirm that stats swap at one stack per tick
+// TODO: determine what happens when your highest secondary changes
+// TODO: add options to control balancing stacks
+// TODO: add option to set starting stacks
+// TODO: confirm stat value truncation happens on final amount, and not per stack amount
+void ovinaxs_mercurial_egg( special_effect_t& effect )
+{
+  unsigned equip_id = 445066;
+  auto equip = find_special_effect( effect.player, equip_id );
+  assert( equip && "Ovinax's Mercurial Egg missing equip effect" );
+
+  auto data = equip->driver();
+
+  struct ovinax_stat_buff_t : public stat_buff_t
+  {
+    double cap_mul;
+    int cap;
+
+    ovinax_stat_buff_t( player_t* p, std::string_view n, const spell_data_t* s, const spell_data_t* data )
+      : stat_buff_t( p, n, s ),
+        cap_mul( data->effectN( 4 ).percent() ),
+        cap( as<int>( data->effectN( 5 ).base_value() ) )
+    {}
+
+    double buff_stat_stack_amount( const buff_stat_t& stat ) const
+    {
+      double val = std::max( 1.0, std::fabs( stat.amount ) );
+      double stack = current_stack <= cap ? current_stack : cap + ( current_stack - cap ) * cap_mul;
+      // TODO: confirm truncation happens on final amount, and not per stack amount
+      return std::copysign( std::trunc( stack * val + 1e-3 ), stat.amount );
+    }
+
+    // bypass stat_buff_t::bump entirely and call buff_t::bump directly
+    void bump( int stacks, double ) override
+    {
+      buff_t::bump( stacks );
+
+      for ( auto& buff_stat : stats )
+      {
+        if ( buff_stat.check_func && !buff_stat.check_func( *this ) )
+          continue;
+
+        double delta = buff_stat_stack_amount( buff_stat ) - buff_stat.current_value;
+        if ( delta > 0 )
+          player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > 0_ms );
+        else if ( delta < 0 )
+          player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > 0_ms );
+
+        buff_stat.current_value += delta;
+      }
+    }
+  };
+
+  // setup stat buffs
+  auto primary = create_buff<ovinax_stat_buff_t>( effect.player, effect.player->find_spell( 449578 ), data )
+    ->set_stat_from_effect_type( A_MOD_STAT, data->effectN( 1 ).average( effect.item ) );
+
+  // TODO: confirm secondary precedence in case of tie is vers > mastery > haste > crit
+  static constexpr std::array<stat_e, 4> ratings =
+      { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
+  static constexpr std::array<unsigned, 4> buff_ids =
+      { 449595, 449594, 449581, 449593 };
+
+  std::unordered_map<stat_e, buff_t*> secondaries;
+
+  for ( size_t i = 0; i < ratings.size(); i++ )
+  {
+    auto stat_str = util::stat_type_abbrev( ratings[ i ] );
+    auto spell = effect.player->find_spell( buff_ids[ i ] );
+    auto name = fmt::format( "{}_{}", spell->name_cstr(), stat_str );
+
+    auto buff = create_buff<ovinax_stat_buff_t>( effect.player, name, spell, data )
+      ->set_stat_from_effect_type( A_MOD_RATING, data->effectN( 2 ).average( effect.item ) )
+      ->set_name_reporting( stat_str );
+
+    secondaries[ ratings[ i ] ] = buff;
+  }
+
+  // proxy buff for on-use
+  // TODO: confirm equip cycle continues ticking while on-use is active
+  auto halt = create_buff<buff_t>( effect.player, effect.driver() )->set_cooldown( 0_ms );
+
+  // proxy buff for equip ticks
+  // TODO: confirm that stats swap at one stack per tick
+  // TODO: determine what happens when your highest secondary changes
+  // TODO: add options to control balancing stacks
+  auto ticks = create_buff<buff_t>( effect.player, equip->driver() )
+    ->set_quiet( true )
+    ->set_tick_zero( true )
+    ->set_tick_callback( [ primary, secondaries, halt, p = effect.player ]( buff_t*, int, timespan_t ) {
+      if ( halt->check() )
+        return;
+
+      if ( p->is_moving() )
+      {
+        primary->decrement();
+        secondaries.at( util::highest_stat( p, ratings ) )->trigger();
+      }
+      else
+      {
+        range::for_each( secondaries, []( const auto& b ) { b.second->decrement(); } );
+        primary->trigger();
+      }
+    } );
+
+  // TODO: add option to set starting stacks
+  effect.player->register_precombat_begin( [ ticks, primary /*, secondaries*/ ]( player_t* p ) {
+    primary->trigger( primary->max_stack() );
+    make_event( *p->sim, p->rng().range( 1_ms, ticks->buff_period ), [ ticks ] { ticks->trigger(); } );
+  } );
+
+  effect.custom_buff = halt;
+}
+
+// 446209 driver
+// 449946 counter
+// 449947 jump task
+// 449948 unknown, counter related?
+// 449952 unknown, task?
+// 449954 buff
+// 449966 unknown, counter related?
+// 450025 unknown, task?
+// TODO: retest/redo everything
+// TODO: add options to control task completion, placeholder 4-8s delay
+void malfunctioning_ethereum_module( special_effect_t& effect )
+{
+  if ( create_fallback_buffs( effect, { "cryptic_instructions" } ) )
+    return;
+
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 449954 ) )
+    ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  auto counter = create_buff<buff_t>( effect.player, effect.trigger() )
+    ->set_expire_at_max_stack( true )
+    // TODO: add options to control task completion, placeholder 4-8s delay
+    ->set_expire_callback( [ buff ]( buff_t*, int, timespan_t ) {
+      make_event( *buff->sim, buff->rng().range( 4_s, 8_s ), [ buff ] { buff->trigger(); } );
+    } );
+
+  effect.custom_buff = counter;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -836,13 +998,16 @@ void register_special_effects()
   register_special_effect( 444959, items::spymasters_web, true );
   register_special_effect( 444958, DISABLED_EFFECT );  // spymaster's web
   register_special_effect( 444067, items::void_reapers_chime );
-  register_special_effect( 445619, items::aberrant_spellforge );
+  register_special_effect( 445619, items::aberrant_spellforge, true );
   register_special_effect( 445593, DISABLED_EFFECT );  // aberrant spellforge
   register_special_effect( 447970, items::sikrans_shadow_arsenal );
   register_special_effect( 445203, DISABLED_EFFECT );  // sikran's shadow arsenal
   register_special_effect( 444301, items::swarmlords_authority );
   register_special_effect( 444292, DISABLED_EFFECT );  // swarmlord's authority
   register_special_effect( 444264, items::foul_behemoths_chelicera );
+  register_special_effect( 445560, items::ovinaxs_mercurial_egg );
+  register_special_effect( 445066, DISABLED_EFFECT );  // ovinax's mercurial egg
+  register_special_effect( 446209, items::malfunctioning_ethereum_module, true );
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );

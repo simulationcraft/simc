@@ -314,7 +314,10 @@ void phial_of_static_empowerment( special_effect_t& effect )
         speed->trigger();
     } );
 
-    effect.player->buffs.static_empowerment = primary;
+    effect.player->register_movement_callback( [ primary ]( bool start ) {
+      if ( start )
+        primary->expire();
+    } );
   }
 
   effect.custom_buff = buff;

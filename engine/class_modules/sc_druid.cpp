@@ -245,10 +245,10 @@ struct eclipse_handler_t
   } iter;
 
   druid_t* p;
-  unsigned wrath_counter = 2;
-  unsigned wrath_counter_base = 2;
-  unsigned starfire_counter = 2;
-  unsigned starfire_counter_base = 2;
+  unsigned wrath_counter;
+  unsigned wrath_counter_base;
+  unsigned starfire_counter;
+  unsigned starfire_counter_base;
   uint8_t state = 0;
 
   uptime_t* uptime_lunar = nullptr;
@@ -1112,7 +1112,6 @@ public:
   {
     // Passive Auras
     const spell_data_t* druid;
-    const spell_data_t* leather_specialization;
 
     // Baseline
     const spell_data_t* bear_form_override;  // swipe/thrash
@@ -1162,6 +1161,7 @@ public:
     const spell_data_t* bear_form_2;
     const spell_data_t* berserk_bear;  // berserk cast/buff spell
     const spell_data_t* elunes_favored;
+    const spell_data_t* fury_of_nature;
     const spell_data_t* incarnation_bear;
     const spell_data_t* lightning_reflexes;
     const spell_data_t* ursine_adept;
@@ -1256,7 +1256,6 @@ public:
   double composite_block() const override { return 0; }
   double composite_dodge_rating() const override;
   double composite_parry() const override { return 0; }
-  double matching_gear_multiplier( attribute_e attr ) const override;
   double non_stacking_movement_modifier() const override;
   double stacking_movement_modifier() const override;
   std::unique_ptr<expr_t> create_action_expression(action_t& a, std::string_view name_str) override;
@@ -1949,6 +1948,24 @@ public:
     parse_effects( p()->buff.incarnation_bear, bear_mask, p()->talent.berserk_ravage,
                    p()->talent.berserk_unchecked_aggression );
     parse_effects( p()->buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ) );
+
+    // wrapper to bypass ab:: resoultion for compile time checks
+    struct v_ptr
+    {
+      std::vector<player_effect_t>& v;
+      v_ptr( std::vector<player_effect_t>& v ) : v( v ) {}
+      std::vector<player_effect_t>& operator*() { return v; }
+    };
+
+    // dot damage is buffed via script so copy da_mult entries to ta_mult
+    parse_effects( p()->spec.elunes_favored, v_ptr( ab::ta_multiplier_effects ), effect_mask_t( false ).enable( 1 ) );
+    parse_effects( p()->spec.fury_of_nature, v_ptr( ab::ta_multiplier_effects ), effect_mask_t( false ).enable( 1 ) );
+    if ( p()->talent.lunar_calling.ok() )
+    {
+      parse_effects( p()->spec.elunes_favored, effect_mask_t( false ).enable( 3, 4 ) );
+      parse_effects( p()->spec.fury_of_nature, effect_mask_t( false ).enable( 2, 3 ) );
+    }
+
     parse_effects( p()->buff.gory_fur );
     parse_effects( p()->buff.rage_of_the_sleeper );
     parse_effects( p()->talent.reinvigoration, effect_mask_t( true ).disable( p()->talent.innate_resolve.ok() ? 1 : 2 ) );
@@ -2094,7 +2111,7 @@ public:
 
   void print_parsed_custom_type( report::sc_html_stream& os ) override
   {
-    ab::print_parsed_type( os, persistent_multiplier_effects, "Snapshots" );
+    ab::template print_parsed_type<base_t>( os, &base_t::persistent_multiplier_effects, "Snapshots" );
   }
 };
 
@@ -9820,8 +9837,7 @@ void druid_t::init_spells()
   talent.the_light_of_elune             = HT( "The Light of Elune" );
 
   // Passive Auras
-  spec.druid                    = find_spell( 137009 );
-  spec.leather_specialization   = find_specialization_spell( "Leather Specialization" );
+  spec.druid                    = dbc::get_class_passive( *this, SPEC_NONE );
 
   // Baseline
   spec.bear_form_override       = find_spell( 106829 );
@@ -9874,7 +9890,8 @@ void druid_t::init_spells()
   spec.berserk_bear             = check( talent.berserk_ravage ||
                                          talent.berserk_unchecked_aggression ||
                                          talent.berserk_persistence, 50334 );
-  spec.elunes_favored           = find_spell( 370588 );
+  spec.elunes_favored           = check( talent.elunes_favored, 370588 );
+  spec.fury_of_nature           = check( talent.fury_of_nature, 370701 );
   spec.incarnation_bear         = check( talent.incarnation_bear, 102558 );
   spec.lightning_reflexes       = find_specialization_spell( "Lightning Reflexes" );
   spec.ursine_adept             = find_specialization_spell( "Ursine Adept" );
@@ -10195,7 +10212,7 @@ void druid_t::create_buffs()
           ->set_max_stack( 10 )
           ->set_rppm( rppm_scale_e::RPPM_DISABLE );
 
-  buff.dreamstate = make_fallback( talent.natures_grace.ok(), this, "dreamstate", find_spell( 424248 ) )
+  buff.dreamstate = make_fallback( talent.natures_grace.ok(), this, "dreamstate", find_spell( 450346 ) )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buff.dreamstate->set_initial_stack( buff.dreamstate->max_stack() );
 
@@ -10710,6 +10727,8 @@ void druid_t::create_buffs()
   buff.b_inc_cat  = talent.incarnation_cat.ok()     ? buff.incarnation_cat     : buff.berserk_cat;
   buff.b_inc_bear = talent.incarnation_bear.ok()    ? buff.incarnation_bear    : buff.berserk_bear;
   buff.ca_inc     = talent.incarnation_moonkin.ok() ? buff.incarnation_moonkin : buff.celestial_alignment;
+
+  parse_effects( find_specialization_spell( "Leather Specialization" ) );
 
   parse_effects( mastery.natures_guardian_AP );
 
@@ -12077,22 +12096,6 @@ double druid_t::composite_dodge_rating() const
   return dr;
 }
 
-// Miscellaneous ============================================================
-double druid_t::matching_gear_multiplier( attribute_e attr ) const
-{
-  unsigned idx;
-
-  switch ( attr )
-  {
-    case ATTR_AGILITY: idx = 1; break;
-    case ATTR_INTELLECT: idx = 2; break;
-    case ATTR_STAMINA: idx = 3; break;
-    default: return 0;
-  }
-
-  return spec.leather_specialization->effectN( idx ).percent();
-}
-
 // Movement =================================================================
 double druid_t::non_stacking_movement_modifier() const
 {
@@ -12993,6 +12996,9 @@ void eclipse_handler_t::init()
     return;
   }
 
+  wrath_counter_base = wrath_counter = p->find_spell( 326055 )->max_stacks();
+  starfire_counter_base = starfire_counter = p->find_spell( 326056 )->max_stacks();
+
   uptime_lunar = p->get_uptime( "Lunar Eclipse Only" )->collect_uptime( *p->sim );
   uptime_solar = p->get_uptime( "Solar Eclipse Only" )->collect_uptime( *p->sim );
   uptime_none  = p->get_uptime( "No Eclipse" )->collect_uptime( *p->sim );
@@ -13376,34 +13382,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.untamed_savagery );
   action.apply_affecting_aura( talent.ursocs_guidance );
   action.apply_affecting_aura( talent.vulnerable_flesh );
-
-  // elune's favored applies to periodic effects via script, and fury of nature only applies to those spells that are
-  // affected by elune's favored
-  auto apply_ef = [ &action ]( const spell_data_t* s, double v ) {
-    action.base_dd_multiplier *= 1.0 + v;
-    action.sim->print_debug( "{} base_dd_multiplier modified by {} from {}", action.name(), v, s->name_cstr() );
-
-    action.base_td_multiplier *= 1.0 + v;
-    action.sim->print_debug( "{} base_td_multiplier modified by {} from {}", action.name(), v, s->name_cstr() );
-  };
-
-  if ( action.data().affected_by_all( spec.elunes_favored->effectN( 1 ) ) )
-  {
-    if ( talent.elunes_favored.ok() )
-      apply_ef( spec.elunes_favored, spec.elunes_favored->effectN( 1 ).percent() );
-
-    if ( talent.fury_of_nature.ok() )
-      apply_ef( talent.fury_of_nature, talent.fury_of_nature->effectN( 1 ).percent() );
-  }
-  else if ( talent.lunar_calling.ok() && action.data().affected_by_all( spec.elunes_favored->effectN( 3 ) ) )
-  {
-    if ( talent.elunes_favored.ok() )
-      apply_ef( spec.elunes_favored, spec.elunes_favored->effectN( 3 ).percent() );
-
-    if ( talent.fury_of_nature.ok() )
-      apply_ef( talent.fury_of_nature, talent.fury_of_nature->effectN( 1 ).percent() );
-  }
-
 
   // Restoration
   action.apply_affecting_aura( spec.cenarius_guidance );

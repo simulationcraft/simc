@@ -5041,16 +5041,23 @@ void norgannons_sagacity( special_effect_t& effect )
 {
   effect.proc_flags2_ |= PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
 
-  auto p = effect.player;
-  if ( !p->buffs.norgannons_sagacity_stacks )
-  {
-    p->buffs.norgannons_sagacity_stacks = make_buff( p, "norgannons_sagacity_stacks", p->find_spell( 339443 ) );
-    p->buffs.norgannons_sagacity = make_buff( p, "norgannons_sagacity", p->find_spell( 339445 ) );
-  }
+  auto movement = make_buff( effect.player, "norgannons_sagacity", effect.player->find_spell( 339445 ) );
+  effect.player->buffs.norgannons_sagacity = movement;
 
-  effect.custom_buff = p->buffs.norgannons_sagacity_stacks;
+  auto stacks = make_buff( effect.player, "norgannons_sagacity_stacks", effect.player->find_spell( 339443 ) )
+    ->set_expire_callback( [ movement ]( buff_t*, int s, timespan_t ) {
+      movement->buff_duration_multiplier = s;
+      movement->trigger();
+    } );
 
-  new dbc_proc_callback_t( p, effect );
+  effect.player->register_movement_callback( [ stacks ]( bool start ) {
+    if ( start )
+      stacks->expire();
+  } );
+
+  effect.custom_buff = stacks;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void sephuzs_proclamation( special_effect_t& effect )

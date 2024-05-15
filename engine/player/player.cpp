@@ -1376,6 +1376,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   attack_power_multiplier( 1.0 ),
   base_armor_multiplier( 1.0 ),
   armor_multiplier( 1.0 ),
+  crit_damage_multiplier( 1.0 ),
+  crit_healing_multiplier( 1.0 ),
   position( POSITION_BACK )
 {
   range::fill( attribute_multiplier, 1.0 );
@@ -1414,6 +1416,8 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " attack_power_multiplier={}", s.attack_power_multiplier );
   fmt::format_to( out, " base_armor_multiplier={}", s.base_armor_multiplier );
   fmt::format_to( out, " armor_multiplier={}", s.armor_multiplier );
+  fmt::format_to( out, " crit_damage_multiplier={}", s.crit_damage_multiplier );
+  fmt::format_to( out, " crit_healing_multiplier={}", s.crit_healing_multiplier );
   fmt::format_to( out, " position={}", s.position );
 }
 
@@ -1554,6 +1558,11 @@ void player_t::init_base_stats()
                                     racials.brush_it_off->effectN( 1 ).percent();
     base.leech                    = 0.0;
     base.avoidance                = 0.0;
+
+    base.crit_damage_multiplier   *= ( 1.0 + racials.brawn->effectN( 1 ).percent() ) *
+                                     ( 1.0 + racials.might_of_the_mountain->effectN( 1 ).percent() );
+    base.crit_healing_multiplier  *= ( 1.0 + racials.brawn->effectN( 3 ).percent() ) *
+                                     ( 1.0 + racials.might_of_the_mountain->effectN( 3 ).percent() );
 
     resources.base[ RESOURCE_HEALTH ] = dbc->health_base( type, level() );
     resources.base[ RESOURCE_MANA ]   = dbc->resource_base( type, level() );
@@ -1731,6 +1740,9 @@ void player_t::init_initial_stats()
 
     initial.stats += enchant;
     initial.stats += sim->enchant;
+
+    // crit damage multiplier meta gems
+    initial.crit_damage_multiplier *= util::crit_multiplier( meta_gem );
   }
 
   initial.stats += total_gear;
@@ -2847,8 +2859,11 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
       auto trait = node.front().first;
       size_t rank = trait->max_ranks;
+      auto _tree = static_cast<talent_tree>( trait->tree_index );
 
-      if ( !std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) &&
+      // hero talents don't seem to require a matching specialization
+      if ( _tree != talent_tree::HERO &&
+           !std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) &&
            !range::contains( trait->id_spec, player->specialization() ) )
       {
         do_error( fmt::format( "selected node {} is not available to player's spec.", id ) );
@@ -2895,8 +2910,6 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
         trait = node[ index ].first;
       }
-
-      auto _tree = static_cast<talent_tree>( trait->tree_index );
 
       player->player_traits.emplace_back( _tree, trait->id_trait_node_entry, as<unsigned>( rank ) );
 
@@ -5041,12 +5054,7 @@ double player_t::composite_player_target_crit_chance( player_t* target ) const
 
 double player_t::composite_player_critical_damage_multiplier( const action_state_t* /* s */ ) const
 {
-  double m = 1.0;
-
-  m *= 1.0 + racials.brawn->effectN( 1 ).percent();
-  m *= 1.0 + racials.might_of_the_mountain->effectN( 1 ).percent();
-  m *= 1.0 + passive_values.amplification_1;
-  m *= 1.0 + passive_values.amplification_2;
+  double m = current.crit_damage_multiplier;
 
   if ( buffs.elemental_chaos_fire )
     m *= 1.0 + buffs.elemental_chaos_fire->check_value();
@@ -5067,15 +5075,10 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
 
 double player_t::composite_player_critical_healing_multiplier() const
 {
-  double m = 1.0;
-
-  m += racials.brawn->effectN( 1 ).percent();
-  m += racials.might_of_the_mountain->effectN( 1 ).percent();
-  m += 0.5 * passive_values.amplification_1;
-  m += 0.5 * passive_values.amplification_2;
+  double m = current.crit_healing_multiplier;
 
   if ( buffs.elemental_chaos_frost )
-    m += buffs.elemental_chaos_frost->check_value();
+    m *= 1.0 + buffs.elemental_chaos_frost->check_value();
 
   return m;
 }
@@ -14494,6 +14497,11 @@ void player_t::register_on_kill_callback( std::function<void( player_t* )> fn )
 void player_t::register_on_combat_state_callback( std::function<void( player_t*, bool )> fn )
 {
   callbacks_on_combat_state.emplace_back( std::move( fn ) );
+}
+
+void player_t::register_movement_callback( std::function<void( bool )> fn )
+{
+  callbacks_on_movement.emplace_back( std::move( fn ) );
 }
 
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const

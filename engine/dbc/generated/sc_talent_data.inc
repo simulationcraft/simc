@@ -1,5 +1,5 @@
-// 570 talents, wow build 11.0.0.54605
-static std::array<talent_data_t, 570> __talent_data { {
+// 568 talents, wow build 11.0.0.54709
+static std::array<talent_data_t, 568> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
   { "War Machine"                       , 15760, 0x00, 0x0001,   73,   0,   0,  316733,       0,  0 },
@@ -343,7 +343,6 @@ static std::array<talent_data_t, 570> __talent_data { {
   { "Deadly Calm"                       , 22399, 0x00, 0x0001,   71,   2,   5,  262228,       0,  0 },
   { "Bladestorm"                        , 22400, 0x00, 0x0001,   72,   2,   5,   46924,       0,  0 },
   { "Ravager"                           , 22401, 0x00, 0x0001,   73,   2,   5,  228920,       0,  0 },
-  { "Reckless Abandon"                  , 22402, 0x00, 0x0001,   72,   1,   6,  202751,       0,  0 },
   { "Photosynthesis"                    , 22403, 0x00, 0x0400,  105,   0,   6,  274902,       0,  0 },
   { "Flourish"                          , 22404, 0x00, 0x0400,  105,   2,   6,  197721,       0,  0 },
   { "Anger Management"                  , 22405, 0x00, 0x0001,   72,   0,   6,  152278,       0,  0 },
@@ -464,7 +463,6 @@ static std::array<talent_data_t, 570> __talent_data { {
   { "Impending Victory"                 , 22625, 0x00, 0x0001,   72,   1,   1,  202168,   34428,  0 },
   { "Booming Voice"                     , 22626, 0x00, 0x0001,   73,   1,   2,  202743,       0,  0 },
   { "Bounding Stride"                   , 22627, 0x00, 0x0001,    0,   1,   3,  202163,       0,  0 },
-  { "Defensive Stance"                  , 22628, 0x00, 0x0001,   71,   2,   3,  197690,       0,  0 },
   { "Rumbling Earth"                    , 22629, 0x00, 0x0001,   73,   1,   1,  275339,       0,  0 },
   { "Indomitable"                       , 22631, 0x00, 0x0001,   73,   1,   4,  202095,       0,  0 },
   { "War Machine"                       , 22632, 0x00, 0x0001,   72,   0,   0,  346002,       0,  0 },

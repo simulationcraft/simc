@@ -33,8 +33,6 @@ attack_t::attack_t( util::string_view n, player_t* p, const spell_data_t* s )
 
   weapon_power_mod = 1.0 / WEAPON_POWER_COEFFICIENT;
   min_gcd          = p->min_gcd;
-
-  crit_multiplier *= util::crit_multiplier( p->meta_gem );
 }
 
 void attack_t::execute()

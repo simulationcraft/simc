@@ -1196,7 +1196,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     {
       os << "<div class=\"flexwrap\">\n";
 
-      s.action_list.back()->html_customsection( os );
+      s.action_list.front()->html_customsection( os );
 
       os << "</div>";
     }
@@ -3513,11 +3513,11 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                   "<li><span class=\"label\">crit_chance:</span>%.2f</li>\n"
                   "<li><span class=\"label\">is_stacking:</span>true</li>\n"
                   "</ul>\n",
-                  1.0,
+                  damage_buff->direct_mod.initial_multiplier,
                   damage_buff->direct_mod.multiplier - 1.0,
-                  1.0,
+                  damage_buff->periodic_mod.initial_multiplier,
                   damage_buff->periodic_mod.multiplier - 1.0,
-                  1.0,
+                  damage_buff->auto_attack_mod.initial_multiplier,
                   damage_buff->auto_attack_mod.multiplier - 1.0,
                   damage_buff->crit_chance_mod.multiplier );
       }
