@@ -6334,8 +6334,8 @@ struct chains_of_ice_t final : public death_knight_spell_t
 
     if ( p()->buffs.cold_heart->check() > 0 )
     {
-      p()->buffs.cold_heart->expire();
       cold_heart->execute_on_target( target );
+      p()->buffs.cold_heart->expire();
     }
   }
 
@@ -7603,7 +7603,7 @@ struct frostscythe_t final : public death_knight_melee_attack_t
     aoe                 = -1;
     reduced_aoe_targets = data().effectN( 5 ).base_value();
     triggers_icecap     = true;
-    base_crit = 1.0;
+    base_crit           = 1.0;
   }
 
   void impact( action_state_t* s ) override
@@ -10508,6 +10508,10 @@ void death_knight_t::chill_streak_bounce( player_t* t )
     void execute() override
     {
       vector_with_callback<player_t*> target_list = dk->sim->target_non_sleeping_list;
+      if( target_list.size() == 1 )
+      {
+        target_list.push_back( dk );
+      }
 
       for ( const auto target : target_list )
       {
