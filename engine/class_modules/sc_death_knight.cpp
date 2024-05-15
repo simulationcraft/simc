@@ -4360,7 +4360,8 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
       this->track_cd_waste = true;
     }
 
-    this->school_change.dark_talons_shadowfrost = this->data().affected_by( p->spell.dark_talons_shadowfrost_buff->effectN( 1 ) );
+    this->school_change.dark_talons_shadowfrost =
+        this->data().affected_by( p->spell.dark_talons_shadowfrost_buff->effectN( 1 ) );
 
     // Death Knights have unique snowflake mechanism for RP energize. Base actions indicate the
     // amount as a negative value resource cost in spell data, so abuse that.
@@ -4502,7 +4503,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
   {
     double amount = action_base_t::composite_energize_amount( s );
 
-    if (this->energize_resource_() == RESOURCE_RUNIC_POWER)
+    if ( this->energize_resource_() == RESOURCE_RUNIC_POWER )
     {
       amount *= this->runic_power_generation_multiplier( s );
     }
@@ -4519,7 +4520,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
   {
     action_base_t::init_finished();
 
-    if (this->base_costs[ RESOURCE_RUNE ] || this->base_costs[ RESOURCE_RUNIC_POWER ])
+    if ( this->base_costs[ RESOURCE_RUNE ] || this->base_costs[ RESOURCE_RUNIC_POWER ] )
     {
       gain = this->player->get_gain( util::inverse_tokenize( this->name_str ) );
     }
@@ -4528,17 +4529,17 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
   timespan_t gcd() const override
   {
     timespan_t base_gcd = action_base_t::gcd();
-    if (base_gcd == 0_ms)
+    if ( base_gcd == 0_ms )
     {
       return 0_ms;
     }
 
-    if (hasted_gcd)
+    if ( hasted_gcd )
     {
       base_gcd *= this->composite_haste();
     }
 
-    if (base_gcd < this->min_gcd)
+    if ( base_gcd < this->min_gcd )
     {
       base_gcd = this->min_gcd;
     }
@@ -13153,6 +13154,12 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   // Rider of the Apocalypse
   action.apply_affecting_aura( talent.rider.mawsworn_menace );
   action.apply_affecting_aura( talent.rider.hungering_thirst );
+
+  // Deathbringer
+  action.apply_affecting_aura( talent.deathbringer.wither_away );
+  action.apply_affecting_aura( talent.deathbringer.deaths_messenger );
+  action.apply_affecting_aura( talent.deathbringer.swift_end );
+  action.apply_affecting_aura( talent.deathbringer.painful_death );
 }
 
 /* Report Extension Class
