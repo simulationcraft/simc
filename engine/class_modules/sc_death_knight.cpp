@@ -1091,7 +1091,7 @@ public:
       player_talent_t piercing_chill;
       // Row 8
       player_talent_t bonegrinder;
-      player_talent_t smothering_offensive;
+      player_talent_t smothering_offense;
       player_talent_t absolute_zero;
       player_talent_t avalanche;
       player_talent_t icebreaker;
@@ -4818,9 +4818,9 @@ struct melee_t : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::composite_da_multiplier( s );
 
-    if ( p()->talent.frost.smothering_offensive.ok() )
+    if ( p()->talent.frost.smothering_offense.ok() )
     {
-      m *= 1.0 + ( p()->buffs.icy_talons->check() * p()->talent.frost.smothering_offensive->effectN( 2 ).percent() );
+      m *= 1.0 + ( p()->buffs.icy_talons->check() * p()->talent.frost.smothering_offense->effectN( 2 ).percent() );
     }
 
     return m;
@@ -11573,7 +11573,7 @@ void death_knight_t::init_spells()
   talent.frost.piercing_chill       = find_talent_spell( talent_tree::SPECIALIZATION, "Piercing Chill" );
   // Row 8
   talent.frost.bonegrinder          = find_talent_spell( talent_tree::SPECIALIZATION, "Bonegrinder" );
-  talent.frost.smothering_offensive = find_talent_spell( talent_tree::SPECIALIZATION, "Smothering Offensive" );
+  talent.frost.smothering_offense = find_talent_spell( talent_tree::SPECIALIZATION, "Smothering Offense" );
   talent.frost.absolute_zero        = find_talent_spell( talent_tree::SPECIALIZATION, "Absolute Zero" );
   talent.frost.avalanche            = find_talent_spell( talent_tree::SPECIALIZATION, "Avalanche" );
   talent.frost.icebreaker           = find_talent_spell( talent_tree::SPECIALIZATION, "Icebreaker" );
@@ -11998,7 +11998,7 @@ void death_knight_t::create_buffs()
                          ->set_default_value( talent.icy_talons->effectN( 1 ).percent() )
                          ->set_cooldown( talent.icy_talons->internal_cooldown() )
                          ->set_trigger_spell( talent.icy_talons )
-                         ->apply_affecting_aura( talent.frost.smothering_offensive );
+                         ->apply_affecting_aura( talent.frost.smothering_offense );
 
   // Rider of the Apocalypse
   buffs.antimagic_shell_horsemen = new antimagic_shell_buff_horseman_t( this );
