@@ -662,6 +662,7 @@ public:
   unsigned int
       bone_shield_charges_consumed;  // Counts how many bone shield charges have been consumed for T29 4pc blood
   unsigned int active_riders;        // Number of active Riders of the Apocalypse pets
+  unsigned int pillar_extension;    // Number of times Pillar of Frost has been extended
 
   // Buffs
   struct buffs_t
@@ -835,6 +836,7 @@ public:
     action_t* frost_strike_sb_main;
     action_t* frost_strike_sb_offhand;
     action_t* chill_streak_damage;
+    propagate_const<action_t*> icy_death_torrent_damage;
 
     // Unholy
     propagate_const<action_t*> bursting_sores;
@@ -1298,6 +1300,8 @@ public:
     const spell_data_t* frost_strike_mh;
     const spell_data_t* frost_strike_oh;
     const spell_data_t* obliteration_gains;
+    const spell_data_t* shattered_frost;
+    const spell_data_t* icy_death_torrent_damage;
 
     // Unholy
     const spell_data_t* runic_corruption;  // buff
@@ -1537,6 +1541,7 @@ public:
       festering_wounds_target_count( 0 ),
       bone_shield_charges_consumed( 0 ),
       active_riders( 0 ),
+      pillar_extension( 0 ),
       buffs(),
       runeforge(),
       active_spells(),
@@ -4733,6 +4738,17 @@ struct inexorable_assault_damage_t final : public death_knight_spell_t
   }
 };
 
+// Icy Death Torrent
+struct icy_death_torrent_t final : public death_knight_spell_t
+{
+  icy_death_torrent_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.icy_death_torrent_damage )
+  {
+    background = true;
+    aoe = -1;
+  }
+};
+
 // ==========================================================================
 // Death Knight Attacks
 // ==========================================================================
@@ -4798,6 +4814,18 @@ struct melee_t : public death_knight_melee_attack_t
     return m;
   }
 
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_da_multiplier( s );
+
+    if ( p()->talent.frost.smothering_offensive.ok() )
+    {
+      m *= 1.0 + ( p()->buffs.icy_talons->check() * p()->talent.frost.smothering_offensive->effectN( 2 ).percent() );
+    }
+
+    return m;
+  }
+
   void execute() override
   {
     if ( first )
@@ -4830,9 +4858,28 @@ struct melee_t : public death_knight_melee_attack_t
         }
       }
 
-      if ( p()->talent.frost.killing_machine.ok() && s->result == RESULT_CRIT )
+      if ( s->result == RESULT_CRIT )
       {
-        p()->trigger_killing_machine( 0, p()->procs.km_from_crit_aa, p()->procs.km_from_crit_aa_wasted );
+        if ( p()->talent.frost.killing_machine.ok() )
+        {
+          p()->trigger_killing_machine( 0, p()->procs.km_from_crit_aa, p()->procs.km_from_crit_aa_wasted );
+        }
+
+        // TODO: check if the proc chance in the talent effect 1 is correct
+        if ( p()->talent.frost.icy_death_torrent.ok() &&
+             rng().roll( p()->talent.frost.icy_death_torrent->effectN( 1 ).percent() ) )
+        {
+          p()->active_spells.icy_death_torrent_damage->execute();
+        }
+        
+        // TODO: potentially find a cleaner way to implement the pillar extension cap
+        if ( p()->talent.frost.the_long_winter.ok() && p()->buffs.pillar_of_frost->check() &&
+             p()->pillar_extension < as<unsigned>( p()->talent.frost.the_long_winter->effectN( 2 ).base_value() ) )
+        {
+          p()->pillar_extension++;
+          p()->buffs.pillar_of_frost->extend_duration(
+              p(), timespan_t::from_seconds( p()->talent.frost.the_long_winter->effectN( 1 ).base_value() ) );
+        }
       }
 
       // Crimson scourge doesn't proc if death and decay is ticking
@@ -7628,15 +7675,43 @@ struct frostwyrms_fury_t final : public death_knight_spell_t
 
 // Frost Strike =============================================================
 
+struct shattered_frost_t final : public death_knight_spell_t
+{
+  shattered_frost_t( util::string_view n, death_knight_t* p )
+    : death_knight_spell_t( n, p, p->spell.shattered_frost )
+  {
+    background = true;
+    aoe= -1;
+    reduced_aoe_targets = as<int>( data().effectN( 2 ).base_value() );
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    death_knight_spell_t::available_targets( tl );
+
+    auto it = range::find( tl, target );
+    if (it != tl.end())
+    {
+      tl.erase( it );
+    }
+
+    return tl.size();
+  }
+};
+
 struct frost_strike_strike_t final : public death_knight_melee_attack_t
 {
   frost_strike_strike_t( util::string_view n, death_knight_t* p, weapon_t* w, const spell_data_t* s,
                          bool shattering_blade )
-    : death_knight_melee_attack_t( n, p, s ), sb( shattering_blade )
+    : death_knight_melee_attack_t( n, p, s ), sb( shattering_blade ), shattered_frost( nullptr ), weapon_hand( w ), damage( 0 )
   {
     background = special = true;
     weapon               = w;
     triggers_icecap      = true;
+    if ( p->talent.frost.shattered_frost.ok() )
+    {
+      shattered_frost = get_action<shattered_frost_t>( "shattered_frost", p );
+    }
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -7651,8 +7726,44 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
     return m;
   }
 
+  void trigger_shattered_frost()
+  {
+    shattered_frost->base_dd_min = shattered_frost->base_dd_max = damage;
+    shattered_frost->execute();
+    damage = 0;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_melee_attack_t::impact( s );
+    if ( p()->talent.frost.shattered_frost.ok() && s->result_amount > 0 && sb )
+    {
+      if ( weapon_hand->group() == WEAPON_2H )
+      {
+        damage += s->result_amount * p()->talent.frost.shattered_frost->effectN( 1 ).percent();
+        trigger_shattered_frost();
+      }
+      if ( weapon_hand->group() == WEAPON_1H )
+      {
+        if ( weapon_hand->slot == SLOT_MAIN_HAND )
+        {
+          damage += s->result_amount * p()->talent.frost.shattered_frost->effectN( 1 ).percent();
+        }
+        if ( weapon_hand->slot == SLOT_OFF_HAND )
+        {
+          damage += s->result_amount * p()->talent.frost.shattered_frost->effectN( 1 ).percent();
+          trigger_shattered_frost();
+        }
+      }
+    }
+  }
+
 public:
   bool sb;
+private:
+  weapon_t* weapon_hand;
+  double damage;
+  action_t* shattered_frost;
 };
 
 struct frost_strike_t final : public death_knight_melee_attack_t
@@ -7695,6 +7806,11 @@ struct frost_strike_t final : public death_knight_melee_attack_t
       {
         add_child( oh_sb );
       }
+    }
+    
+    if ( p->talent.frost.shattered_frost.ok() )
+    {
+      add_child( get_action<shattered_frost_t>( "shattered_frost", p ) );
     }
   }
 
@@ -8355,6 +8471,11 @@ struct obliterate_t final : public death_knight_melee_attack_t
         add_child( km_oh );
       }
     }
+    
+    if( p->talent.frost.arctic_assault.ok() )
+    {
+      add_child( get_action<glacial_advance_damage_t>( "glacial_advance_km", p ) );
+    }
   }
 
   void execute() override
@@ -8476,13 +8597,15 @@ struct pillar_of_frost_buff_t final : public buff_t
   void start( int stacks, double value, timespan_t duration ) override
   {
     buff_t::start( stacks, value, duration );
-    runes_spent = 0;
+    runes_spent   = 0;
+    player->pillar_extension = 0;
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
-    runes_spent = 0;
+    runes_spent   = 0;
+    player->pillar_extension = 0;
     if ( player->talent.frost.enduring_strength.ok() )
     {
       trigger_enduring_strength();
@@ -8492,7 +8615,8 @@ struct pillar_of_frost_buff_t final : public buff_t
   void refresh( int stacks, double value, timespan_t duration ) override
   {
     buff_t::refresh( stacks, value, duration );
-    runes_spent = 0;
+    runes_spent   = 0;
+    player->pillar_extension = 0;
     if ( player->talent.frost.enduring_strength.ok() )
     {
       trigger_enduring_strength();
@@ -10172,6 +10296,11 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
         buffs.bonegrinder_crit->expire();
       }
     }
+
+    if ( talent.frost.arctic_assault.ok() )
+    {
+      get_action<glacial_advance_damage_t>( "glacial_advance_km", this )->execute();
+    }
   } );
 }
 
@@ -10778,6 +10907,10 @@ void death_knight_t::create_actions()
       {
         active_spells.frost_strike_sb_main =
             get_action<frost_strike_strike_t>( "frost_strike_sb", this, &( main_hand_weapon ), mh_data, true );
+      }
+      if ( talent.frost.icy_death_torrent.ok() )
+      {
+        active_spells.icy_death_torrent_damage = get_action<icy_death_torrent_t>( "icy_death_torrent", this );
       }
     }
 
@@ -11644,6 +11777,8 @@ void death_knight_t::init_spells()
   spell.frost_strike_2h               = find_spell( 325464 );
   spell.frost_strike_mh               = find_spell( 222026 );
   spell.frost_strike_oh               = find_spell( 66196 );
+  spell.shattered_frost               = find_spell( 455996 );
+  spell.icy_death_torrent_damage      = find_spell( 439539 );
 
   // Unholy
   spell.runic_corruption           = find_spell( 51460 );
@@ -11862,7 +11997,8 @@ void death_knight_t::create_buffs()
   buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons->effectN( 1 ).trigger() )
                          ->set_default_value( talent.icy_talons->effectN( 1 ).percent() )
                          ->set_cooldown( talent.icy_talons->internal_cooldown() )
-                         ->set_trigger_spell( talent.icy_talons );
+                         ->set_trigger_spell( talent.icy_talons )
+                         ->apply_affecting_aura( talent.frost.smothering_offensive );
 
   // Rider of the Apocalypse
   buffs.antimagic_shell_horsemen = new antimagic_shell_buff_horseman_t( this );
