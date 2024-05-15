@@ -1,5 +1,5 @@
-// Spell text, wow build 10.2.7.54601
-static const std::array<spelltext_data_t, 21152> __spelltext_data { {
+// Spell text, wow build 10.2.7.54673
+static const std::array<spelltext_data_t, 21154> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20357,6 +20357,7 @@ static const std::array<spelltext_data_t, 21152> __spelltext_data { {
   { 417713, "$@spelldesc417710", "Damage taken from $@auracaster's attacks increased by $s1%.", 0 },
   { 417714, "Increases your damage and healing by $s1% during the day.", "Damage and healing increased by $s1%.", 0 },
   { 417715, "Increases your Versatility by $s1% during the night.", "Versatility increased by $s1%.", 0 },
+  { 417775, "Add a Downy Liner and Crystal Ocular Lenses to the Thought Calculating Apparatus.", 0, 0 },
   { 417792, "$@spelldesc417534", 0, 0 },
   { 417855, "Holy Shock, Holy Light, and Flash of Light critical healing increased by $s1%.", 0, 0 },
   { 417939, "Activate the Tyrstone, recording $s1% of your healing done over the next $d, up to $417959s2 healing done.", "Recording $w1% of all healing done.", 0 },
@@ -20952,6 +20953,7 @@ static const std::array<spelltext_data_t, 21152> __spelltext_data { {
   { 433958, "$@spelldesc432777", 0, 0 },
   { 434021, "$@spelldesc432777", 0, 0 },
   { 434064, "Reduce damage taken by $s3% for $d or until $433000s1 damage has been absorbed. Your Armor is increased by $433000s2 while the shield holds, further increasing by $433000s4 when struck, stacking up to $434270u times. The shield explodes when broken, dealing $433000s3 Physical damage split between all nearby enemies.\r\n\r\nDamage increased per enemy struck, up to 5.", "Damage reduced by $w3%, absorbing up to $w1 damage. Armor increased by $w2. Gain an additional $433000w4 armor when hit.", 0 },
+  { 434069, "$@spelldesc434064", 0, 0 },
   { 434070, "$@spelldesc432777", 0, 0 },
   { 434071, "$@spelldesc432777", 0, 0 },
   { 434072, "$@spelldesc432777", 0, 0 },
@@ -21154,11 +21156,11 @@ static const std::array<spelltext_data_t, 21152> __spelltext_data { {
   { 453445, "$@spelldesc429007", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.7.54601
+// spelltext hotfix entries, wow build 10.2.7.54673
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.2.7.54601
+// Spell description variables, wow build 10.2.7.54673
 static const std::array<spelldesc_vars_data_t, 450> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -21612,7 +21614,7 @@ static const std::array<spelldesc_vars_data_t, 450> __spelldesc_vars_data { {
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.7.54601
+// spelldesc_vars hotfix entries, wow build 10.2.7.54673
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
