@@ -741,6 +741,7 @@ public:
 
     // Deathbringer
     propagate_const<buff_t*> grim_reaper;
+    propagate_const<buff_t*> bind_in_darkness;
 
   } buffs;
 
@@ -1190,8 +1191,8 @@ public:
     {
       player_talent_t reapers_mark;      
       player_talent_t wave_of_souls;     
-      player_talent_t blood_fever;       // NYI
-      player_talent_t bind_in_darkness;  // NYI
+      player_talent_t blood_fever;       
+      player_talent_t bind_in_darkness;  
       player_talent_t soul_rupture;      // NYI
       player_talent_t grim_reaper;       // NYI
       player_talent_t deaths_bargain;    // NYI
@@ -1358,6 +1359,7 @@ public:
     const spell_data_t* wave_of_souls_damage;
     const spell_data_t* wave_of_souls_debuff;
     const spell_data_t* blood_fever_damage;
+    const spell_data_t* bind_in_darkness_buff;
 
   } spell;
 
@@ -4543,10 +4545,20 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
       death_knight_td_t* td = get_td( s->target );
       if ( td->debuff.reapers_mark->check() )
       {
-        if ( ( dbc::is_school( this->get_school(), SCHOOL_SHADOW ) ||
-               dbc::is_school( this->get_school(), SCHOOL_FROST ) ) )
+        if (  this->get_school() == SCHOOL_SHADOW || this->get_school() == SCHOOL_FROST )
         {
           td->debuff.reapers_mark->increment( 1 );
+        }
+        else if (this->get_school() == SCHOOL_SHADOWFROST)
+        {
+          if (p()->talent.deathbringer.bind_in_darkness->ok())
+          {
+            td->debuff.reapers_mark->increment( s->result == RESULT_CRIT ? 4 : 2 );
+          }
+          else
+          {
+            td->debuff.reapers_mark->increment( 1 );
+          }
         }
       }
     }
@@ -5911,6 +5923,11 @@ struct blood_boil_t final : public death_knight_spell_t
     aoe              = -1;
     cooldown->hasted = true;
     impact_action    = get_action<blood_plague_t>( "blood_plague", p );
+
+    if ( p->talent.deathbringer.bind_in_darkness->ok() )
+    {
+      school = SCHOOL_SHADOWFROST;
+    }
   }
 
   void execute() override
@@ -8125,7 +8142,19 @@ struct howling_blast_t final : public death_knight_spell_t
 
   void execute() override
   {
+    if ( p()->talent.deathbringer.bind_in_darkness->ok() && p()->buffs.bind_in_darkness->check() )
+    {
+      school = SCHOOL_SHADOWFROST;
+    }
+
     death_knight_spell_t::execute();
+
+    if ( p()->talent.deathbringer.bind_in_darkness->ok() && p()->buffs.bind_in_darkness->check() )
+    {
+      school = SCHOOL_FROST;
+      p()->buffs.bind_in_darkness->expire();
+    }
+
 
     if ( p()->buffs.pillar_of_frost->up() && p()->talent.frost.obliteration.ok() )
     {
@@ -11742,6 +11771,7 @@ void death_knight_t::init_spells()
   spell.wave_of_souls_damage   = find_spell( 435802 );
   spell.wave_of_souls_debuff   = find_spell( 443404 );
   spell.blood_fever_damage     = find_spell( 440005 );
+  spell.bind_in_darkness_buff  = find_spell( 443532 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -11943,6 +11973,8 @@ void death_knight_t::create_buffs()
 
   // Deathbringer
   buffs.grim_reaper = make_buff( this, "grim_reaper", spell.grim_reaper )->set_quiet( true );
+  buffs.bind_in_darkness = make_buff( this, "bind_in_darkness", spell.bind_in_darkness_buff )
+                               ->set_trigger_spell( talent.deathbringer.bind_in_darkness );
 
   // San'layn
   buffs.essence_of_the_blood_queen = new essence_of_the_blood_queen_buff_t( this );
@@ -12104,7 +12136,11 @@ void death_knight_t::create_buffs()
     buffs.rime = make_buff( this, "rime", talent.frost.rime->effectN( 1 ).trigger() )
                      ->set_trigger_spell( talent.frost.rime )
                      ->set_chance( talent.frost.rime->effectN( 2 ).percent() +
-                                   talent.frost.rage_of_the_frozen_champion->effectN( 1 ).percent() );
+                                   talent.frost.rage_of_the_frozen_champion->effectN( 1 ).percent() )
+                     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+                       if ( new_ )
+                         buffs.bind_in_darkness->trigger();
+        });
 
     buffs.bonegrinder_crit = make_buff( this, "bonegrinder_crit", spell.bonegrinder_crit_buff )
                                  ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
