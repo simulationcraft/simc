@@ -483,6 +483,14 @@ struct consecration_t : public paladin_spell_t
     else
       make_event<ground_aoe_event_t>( *sim, p(), cons_params, true /* Immediate pulse */ );
   }
+
+  void impact( action_state_t* s ) override
+  {
+    if( p()->talents.divine_guidance->ok() )
+    {
+      p()->trigger_divine_guidance( s );
+    }
+  }
 };
 
 // Divine Shield ==============================================================
@@ -1795,6 +1803,38 @@ struct hammer_and_anvil_t : public paladin_spell_t
    
 };
 
+void paladin_t::trigger_divine_guidance( action_state_t* s )
+{
+   active.divine_guidance_damage->set_target( s->target );
+   active.divine_guidance_damage->execute();
+}
+
+struct divine_guidance_damage_t : public paladin_spell_t
+{
+   divine_guidance_damage_t( paladin_t* p ) : paladin_spell_t( "divine_guidance", p, p->find_spell( 433808 ) )
+   {
+    proc = may_crit = true;
+    may_miss                     = false;
+    attack_power_mod.direct = 1;
+    aoe                          = 1;
+   }
+
+   double action_multiplier() const override
+   {
+    double m = paladin_spell_t::action_multiplier();
+       if (p()->buffs.divine_guidance->up())
+       {
+      m *= 1.0 + ( 1.0 * (p()->buffs.divine_guidance->stack()-1) );
+    }
+       return m;
+   }
+    void execute() override
+   {
+       paladin_spell_t::execute();
+       p()->buffs.divine_guidance->expire();
+   }
+};
+
 void paladin_t::trigger_laying_down_arms()
 { 
    if ( specialization() == PALADIN_PROTECTION )
@@ -2183,6 +2223,7 @@ void paladin_t::create_actions()
   if ( talents.hammer_and_anvil->ok() )
   {
     active.hammer_and_anvil = new hammer_and_anvil_t( this );
+    active.divine_guidance_damage  = new divine_guidance_damage_t( this );
   }
 
   if ( talents.judgment_of_light->ok() )
@@ -2535,7 +2576,8 @@ void paladin_t::create_buffs()
 //  buffs.sacred_weapon = make_buff( this, "sacred_weapon", find_spell( 432502 ) );
 
   buffs.blessed_assurance = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
-  buffs.divine_guidance   = make_buff( this, "divine_guidance", find_spell( 433106 ) );
+  buffs.divine_guidance   = make_buff( this, "divine_guidance", find_spell( 433106 ) )
+                         -> set_max_stack( 5 );
 }
 
 // paladin_t::default_potion ================================================

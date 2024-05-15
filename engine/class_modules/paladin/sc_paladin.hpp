@@ -84,8 +84,10 @@ public:
     heal_t* beacon_of_light;
     action_t* holy_shield_damage;
     action_t* tyrs_enforcer_damage;
+    action_t* divine_guidance_damage;
     action_t* forges_reckoning;
     action_t* hammer_and_anvil;
+    action_t* divine_guidance;
     action_t* heartfire;
     action_t* judgment_of_light;
     action_t* shield_of_vengeance_damage;
@@ -669,6 +671,7 @@ public:
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_tyrs_enforcer( action_state_t* s );
   void    trigger_hammer_and_anvil( action_state_t* s);
+  void    trigger_divine_guidance( action_state_t* s );
   void    trigger_laying_down_arms();
   void    heartfire( action_state_t* s );
   void    t29_4p_prot();
@@ -1563,7 +1566,10 @@ struct holy_power_consumer_t : public Base
       p->buffs.blessing_of_dawn->expire();
       p->buffs.blessing_of_dusk->trigger();
     }
-    //todo: add blessed assurance here
+    if (p->talents.divine_guidance->ok())
+    {
+      p->buffs.divine_guidance->trigger();
+    }
   }
 };
 
