@@ -4399,6 +4399,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     {
       str           = "school change";
       data.opt_enum = eff.misc_value1();
+      data.type = parse_flag_e::ALLOW_ZERO;
       return &school_change_effects;
     }
   }
@@ -4451,7 +4452,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     parse_effects( p()->buffs.a_feast_of_souls );
 
     // Deathbringer
-    parse_effects( p()->buffs.dark_talons_shadowfrost, USE_CURRENT, p()->talent.deathbringer.dark_talons );
+    parse_effects( p()->buffs.dark_talons_shadowfrost, p()->talent.deathbringer.dark_talons );
 
     // San'layn
     parse_effects( p()->buffs.essence_of_the_blood_queen, p()->talent.sanlayn.frenzied_bloodthirst );
@@ -4571,8 +4572,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     }
 
     action_base_t::execute();
-
-    for ( const auto& i : school_change_effects )
+    if ( this->original_school != SCHOOL_NONE )
     {
       this->clear_school_override();
     }
