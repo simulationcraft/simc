@@ -832,6 +832,7 @@ public:
     // Deathbringer
     action_t* reapers_mark_explosion;
     action_t* wave_of_souls;
+    action_t* soul_rupture;
 
     // Frost
     action_t* breath_of_sindragosa_tick;
@@ -1196,7 +1197,7 @@ public:
       player_talent_t wave_of_souls;     
       player_talent_t blood_fever;       
       player_talent_t bind_in_darkness;  
-      player_talent_t soul_rupture;      // NYI
+      player_talent_t soul_rupture;      
       player_talent_t grim_reaper;       // NYI
       player_talent_t deaths_bargain;    // NYI
       player_talent_t swift_end;         // NYI
@@ -1362,6 +1363,7 @@ public:
     const spell_data_t* wave_of_souls_debuff;
     const spell_data_t* blood_fever_damage;
     const spell_data_t* bind_in_darkness_buff;
+    const spell_data_t* soul_rupture_damage;
 
   } spell;
 
@@ -5150,7 +5152,7 @@ struct blood_plague_t final : public death_knight_disease_t
     {
       blood_fever->execute_on_target(
           d->target,
-          d->state->result_amount * ( p()->talent.deathbringer.blood_fever->effectN( 1 ).default_value() / 100 ) );
+          d->state->result_amount * p()->talent.deathbringer.blood_fever->effectN( 1 ).percent() );
     }
   }
 
@@ -5657,6 +5659,13 @@ struct reapers_mark_explosion_t final : public death_knight_spell_t
     execute_on_target( target );
   }
 
+  void impact(action_state_t* state) override
+  {
+    death_knight_spell_t::impact( state );
+    if ( p()->talent.deathbringer.soul_rupture.ok() )
+      p()->active_spells.soul_rupture->execute_on_target( state->target, state->result_amount * p()->talent.deathbringer.soul_rupture->effectN (1).percent() );
+  }
+
 private:
   int stacks;
 };
@@ -5681,6 +5690,17 @@ struct wave_of_souls_t final : public death_knight_spell_t
   }
 };
 
+struct soul_rupture_t final : public death_knight_spell_t
+{
+  soul_rupture_t(util::string_view name, death_knight_t* p) : death_knight_spell_t(name, p, p->spell.soul_rupture_damage)
+  {
+    background = true;
+    cooldown->duration = 0_ms;
+    aoe                = -1;
+    may_crit           = false;
+  }
+};
+
 struct reapers_mark_t final : public death_knight_spell_t
 {
   reapers_mark_t( death_knight_t* p, util::string_view options_str )
@@ -5689,6 +5709,7 @@ struct reapers_mark_t final : public death_knight_spell_t
     parse_options( options_str );
     add_child( p->active_spells.reapers_mark_explosion );
     add_child( p->active_spells.wave_of_souls );
+    add_child( p->active_spells.soul_rupture );
   }
 
   void impact( action_state_t* state ) override
@@ -10967,9 +10988,13 @@ void death_knight_t::create_actions()
   {
     active_spells.reapers_mark_explosion = get_action<reapers_mark_explosion_t>( "reapers_mark_explosion", this );
   }
-  if (talent.deathbringer.wave_of_souls.ok())
+  if ( talent.deathbringer.wave_of_souls.ok() )
   {
     active_spells.wave_of_souls = get_action<wave_of_souls_t>( "wave_of_souls", this );
+  }
+  if ( talent.deathbringer.soul_rupture.ok() )
+  {
+    active_spells.soul_rupture = get_action<soul_rupture_t>( "reapers_mark_soul_rupture", this );
   }
 
   // Blood
@@ -11981,6 +12006,7 @@ void death_knight_t::init_spells()
   spell.wave_of_souls_debuff   = find_spell( 443404 );
   spell.blood_fever_damage     = find_spell( 440005 );
   spell.bind_in_darkness_buff  = find_spell( 443532 );
+  spell.soul_rupture_damage    = find_spell( 439594 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
