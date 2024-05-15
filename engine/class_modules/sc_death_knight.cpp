@@ -4438,7 +4438,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     // Frost
     parse_effects( p()->buffs.rime, p()->talent.frost.improved_rime );
     parse_effects( p()->buffs.gathering_storm );
-    parse_effects( p()->buffs.killing_machine );
+    parse_effects( p()->buffs.killing_machine, effect_mask_t( true ).disable( 2 ) );
     parse_effects( p()->mastery.frozen_heart );
 
     // Unholy
@@ -4572,6 +4572,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     }
 
     action_base_t::execute();
+
     if ( this->original_school != SCHOOL_NONE )
     {
       this->clear_school_override();
