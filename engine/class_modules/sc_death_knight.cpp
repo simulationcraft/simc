@@ -4409,6 +4409,10 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
           this->recheck_school_change = true;
           if ( new_ == 0 )
           {
+            this->parsed_school_expire = true;
+          }
+          if (new_ > 0)
+          {
             this->parsed_school_expire = false;
           }
         } );
