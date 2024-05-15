@@ -4433,6 +4433,10 @@ namespace monk
           base_tick_time = timespan_t::from_millis( 500 );
           hasted_ticks = tick_may_crit = false;
           target = p;
+
+          // bypass default DOT_ROLLING behavior
+          rolling_periodic = false;
+          dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
         }
 
         void impact( action_state_t *s ) override

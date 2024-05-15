@@ -61,10 +61,12 @@ public:
     ab::tick_may_crit = false;
     ab::hasted_ticks = false;
     ab::may_crit = false;
-    ab::rolling_periodic = false; // TODO: Should this be autoparsed to true, overriding dot_behavior below?
     ab::attack_power_mod.tick = 0;
     ab::spell_power_mod.tick = 0;
-    ab::dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
+    // Current assumption is that residual based rolling periodics behave the same way as coeff based rolling periodics.
+    // If this is disproven in the future, rolling_periodic & dot_behavior overrides below may need to be reactivated,
+    // ab::rolling_periodic = false;
+    // ab::dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
 
     // As residual actions have no base damage in the spell data, they do not get caster damage multiplier state flags
     // properly set. By default rolling periodics scale with multipliers unless they also have the Ignore X multiplier
@@ -130,6 +132,13 @@ public:
       return rd_state->tick_amount;
     }
     return 0.0;
+  }
+
+  // Rolling over the damage is handled by separately via the state, so we set this to 1.0 for now.
+  // TODO: Consolidate this with coeff based rolling periodics for uniform handling of all rolling periodics
+  double composite_rolling_ta_multiplier( const action_state_t* s ) const override
+  {
+    return 1.0;
   }
 
   // Ensure that not travel time exists for the ignite ability. Delay is
