@@ -610,6 +610,7 @@ struct death_knight_td_t : public actor_target_data_t
 
     // Deathbringer
     buff_t* reapers_mark;
+    buff_t* wave_of_souls;
   } debuff;
 
   death_knight_td_t( player_t* target, death_knight_t* p );
@@ -740,6 +741,7 @@ public:
 
     // Deathbringer
     propagate_const<buff_t*> grim_reaper;
+    propagate_const<buff_t*> bind_in_darkness;
 
   } buffs;
 
@@ -829,6 +831,7 @@ public:
 
     // Deathbringer
     action_t* reapers_mark_explosion;
+    action_t* wave_of_souls;
 
     // Frost
     action_t* breath_of_sindragosa_tick;
@@ -1189,10 +1192,10 @@ public:
     // Deathbringer
     struct
     {
-      player_talent_t reapers_mark;      // NYI
-      player_talent_t wave_of_souls;     // NYI
-      player_talent_t blood_fever;       // NYI
-      player_talent_t bind_in_darkness;  // NYI
+      player_talent_t reapers_mark;      
+      player_talent_t wave_of_souls;     
+      player_talent_t blood_fever;       
+      player_talent_t bind_in_darkness;  
       player_talent_t soul_rupture;      // NYI
       player_talent_t grim_reaper;       // NYI
       player_talent_t deaths_bargain;    // NYI
@@ -1357,6 +1360,10 @@ public:
     const spell_data_t* reapers_mark_debuff;
     const spell_data_t* reapers_mark_explosion;
     const spell_data_t* grim_reaper;
+    const spell_data_t* wave_of_souls_damage;
+    const spell_data_t* wave_of_souls_debuff;
+    const spell_data_t* blood_fever_damage;
+    const spell_data_t* bind_in_darkness_buff;
 
   } spell;
 
@@ -1830,6 +1837,9 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
               // buff->expire(); TODO: Fix This
             }
           } );
+
+  debuff.wave_of_souls =
+      make_buff( *this, "wave_of_souls_debuff", p->spell.wave_of_souls_debuff )->set_default_value_from_effect( 1 );
 }
 
 // ==========================================================================
@@ -4553,13 +4563,37 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
       death_knight_td_t* td = get_td( s->target );
       if ( td->debuff.reapers_mark->check() )
       {
-        if ( ( dbc::is_school( this->get_school(), SCHOOL_SHADOW ) ||
-               dbc::is_school( this->get_school(), SCHOOL_FROST ) ) )
+        if (  this->get_school() == SCHOOL_SHADOW || this->get_school() == SCHOOL_FROST )
         {
           td->debuff.reapers_mark->increment( 1 );
         }
+        else if (this->get_school() == SCHOOL_SHADOWFROST)
+        {
+          if (p()->talent.deathbringer.bind_in_darkness->ok())
+          {
+            td->debuff.reapers_mark->increment( s->result == RESULT_CRIT ? 4 : 2 );
+          }
+          else
+          {
+            td->debuff.reapers_mark->increment( 1 );
+          }
+        }
       }
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = action_base_t::composite_da_multiplier( state );
+    if ( p()->talent.deathbringer.wave_of_souls->ok() && this->data().id() != p()->spell.wave_of_souls_damage->id() )
+    {
+      death_knight_td_t* td = get_td( state->target );
+      if ( dbc::is_school( this->get_school(), SCHOOL_SHADOWFROST ) && td->debuff.wave_of_souls->check() )
+      {
+        m *= 1 + td->debuff.wave_of_souls->check_stack_value();
+      }
+    }
+    return m;
   }
 
   void update_ready( timespan_t cd ) override
@@ -5033,6 +5067,17 @@ struct auto_attack_t final : public death_knight_melee_attack_t
 // ==========================================================================
 // Death Knight Diseases
 // ==========================================================================
+// Deathbringer
+struct blood_fever_t final : public death_knight_spell_t
+{
+  blood_fever_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.blood_fever_damage )
+  {
+    background         = true;
+    cooldown->duration = 0_ms;
+    may_crit           = false;  // TODO-TWW check if we can remove the override for may_crit in death_knight_action_t
+  }
+};
 // Common diseases code
 
 struct death_knight_disease_t : public death_knight_spell_t
@@ -5084,6 +5129,11 @@ struct blood_plague_t final : public death_knight_disease_t
       if ( p->bugs )
         base_multiplier *= 0.75;
     }
+    if ( p->talent.deathbringer.blood_fever->ok() )
+    {
+      blood_fever = get_action<blood_fever_t>( "blood_fever", p );
+      add_child( blood_fever );
+    }
   }
 
   void tick( dot_t* d ) override
@@ -5097,10 +5147,18 @@ struct blood_plague_t final : public death_knight_disease_t
           d->state->result_amount * ( 1.0 + p()->talent.blood.rapid_decomposition->effectN( 3 ).percent() );
       heal->execute();
     }
+
+    if ( blood_fever && p()->rng().roll( p()->talent.deathbringer.blood_fever->proc_chance() ) )
+    {
+      blood_fever->execute_on_target(
+          d->target,
+          d->state->result_amount * ( p()->talent.deathbringer.blood_fever->effectN( 1 ).default_value() / 100 ) );
+    }
   }
 
 private:
   propagate_const<action_t*> heal;
+  propagate_const<action_t*> blood_fever;
 };
 
 // Frost Fever =======================================================
@@ -5118,6 +5176,12 @@ struct frost_fever_t final : public death_knight_disease_t
       ap_type = attack_power_type::WEAPON_MAINHAND;
       // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
       base_multiplier *= 0.98;
+    }
+    
+    if ( p->talent.deathbringer.blood_fever->ok() )
+    {
+      blood_fever = get_action<blood_fever_t>( "blood_fever", p );
+      add_child( blood_fever );
     }
   }
 
@@ -5139,10 +5203,18 @@ struct frost_fever_t final : public death_knight_disease_t
     {
       p()->resource_gain( RESOURCE_RUNIC_POWER, rp_generation, p()->gains.frost_fever, this );
     }
+
+    if ( blood_fever && p()->rng().roll( p()->talent.deathbringer.blood_fever->proc_chance() ) )
+    {
+      blood_fever->execute_on_target(
+          d->target,
+          d->state->result_amount * ( p()->talent.deathbringer.blood_fever->effectN( 1 ).default_value() / 100 ) );
+    }
   }
 
 private:
   int rp_generation;
+  propagate_const<action_t*> blood_fever;
 };
 
 // Virulent Plague ====================================================
@@ -5563,7 +5635,7 @@ private:
 // 436304 explosion coeffs, #1 for blood #2 for frost
 // 443761 grim reaper (execute effect)
 // Reaper's Mark =========================================================
-struct reapers_mark_explosion_t : public death_knight_spell_t
+struct reapers_mark_explosion_t final : public death_knight_spell_t
 {
   reapers_mark_explosion_t( util::string_view name, death_knight_t* p )
     : death_knight_spell_t( name, p, p->spell.reapers_mark_explosion )
@@ -5591,6 +5663,26 @@ private:
   int stacks;
 };
 
+struct wave_of_souls_t final : public death_knight_spell_t
+{
+  wave_of_souls_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.wave_of_souls_damage )
+  {
+    background         = true;
+    cooldown->duration = 0_ms;
+    aoe                = -1;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+    if ( state->result == RESULT_CRIT )
+    {
+      get_td( state->target )->debuff.wave_of_souls->trigger();
+    }
+  }
+};
+
 struct reapers_mark_t final : public death_knight_spell_t
 {
   reapers_mark_t( death_knight_t* p, util::string_view options_str )
@@ -5598,6 +5690,7 @@ struct reapers_mark_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     add_child( p->active_spells.reapers_mark_explosion );
+    add_child( p->active_spells.wave_of_souls );
   }
 
   void impact( action_state_t* state ) override
@@ -5605,6 +5698,21 @@ struct reapers_mark_t final : public death_knight_spell_t
     death_knight_spell_t::impact( state );
     // TODO-TWW implement 10ms delay
     get_td( state->target )->debuff.reapers_mark->trigger();
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    // 5/12/24 The initial hit can have some slight delay depending on how far away the player is
+    // the return hit does not have a consistent travel time, starting with roughly a second for now
+    timespan_t first = timespan_t::from_millis( rng().range( 0, 100 ) );
+    make_event( *sim, first, [ this ]() {
+      p()->active_spells.wave_of_souls->execute();
+      timespan_t second = timespan_t::from_millis( rng().gauss( 1000, 200 ) );
+      make_repeating_event(
+          *sim, second, [ this ]() { p()->active_spells.wave_of_souls->execute(); }, 1 );
+    } );
   }
 };
 
@@ -5947,6 +6055,11 @@ struct blood_boil_t final : public death_knight_spell_t
     aoe              = -1;
     cooldown->hasted = true;
     impact_action    = get_action<blood_plague_t>( "blood_plague", p );
+
+    if ( p->talent.deathbringer.bind_in_darkness->ok() )
+    {
+      school = SCHOOL_SHADOWFROST;
+    }
   }
 
   void execute() override
@@ -8210,7 +8323,19 @@ struct howling_blast_t final : public death_knight_spell_t
 
   void execute() override
   {
+    if ( p()->talent.deathbringer.bind_in_darkness->ok() && p()->buffs.bind_in_darkness->check() )
+    {
+      school = SCHOOL_SHADOWFROST;
+    }
+
     death_knight_spell_t::execute();
+
+    if ( p()->talent.deathbringer.bind_in_darkness->ok() && p()->buffs.bind_in_darkness->check() )
+    {
+      school = SCHOOL_FROST;
+      p()->buffs.bind_in_darkness->expire();
+    }
+
 
     if ( p()->buffs.pillar_of_frost->up() && p()->talent.frost.obliteration.ok() )
     {
@@ -10844,6 +10969,10 @@ void death_knight_t::create_actions()
   {
     active_spells.reapers_mark_explosion = get_action<reapers_mark_explosion_t>( "reapers_mark_explosion", this );
   }
+  if (talent.deathbringer.wave_of_souls.ok())
+  {
+    active_spells.wave_of_souls = get_action<wave_of_souls_t>( "wave_of_souls", this );
+  }
 
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
@@ -11851,6 +11980,10 @@ void death_knight_t::init_spells()
   spell.reapers_mark_debuff    = find_spell( 434765 );
   spell.reapers_mark_explosion = find_spell( 436304 );
   spell.grim_reaper            = find_spell( 443761 );
+  spell.wave_of_souls_damage   = find_spell( 435802 );
+  spell.wave_of_souls_debuff   = find_spell( 443404 );
+  spell.blood_fever_damage     = find_spell( 440005 );
+  spell.bind_in_darkness_buff  = find_spell( 443532 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -12036,6 +12169,8 @@ void death_knight_t::create_buffs()
 
   // Deathbringer
   buffs.grim_reaper = make_buff( this, "grim_reaper", spell.grim_reaper )->set_quiet( true );
+  buffs.bind_in_darkness = make_buff( this, "bind_in_darkness", spell.bind_in_darkness_buff )
+                               ->set_trigger_spell( talent.deathbringer.bind_in_darkness );
 
   // San'layn
   buffs.essence_of_the_blood_queen = new essence_of_the_blood_queen_buff_t( this );
@@ -12208,10 +12343,14 @@ void death_knight_t::create_buffs()
 
     buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
-    buffs.rime = make_buff( this, "rime", spec.rime->effectN( 1 ).trigger() )
-                     ->set_trigger_spell( spec.rime )
-                     ->set_chance( spec.rime->effectN( 2 ).percent() +
-                                   talent.frost.rage_of_the_frozen_champion->effectN( 1 ).percent() );
+    buffs.rime = make_buff(this, "rime", spec.rime->effectN(1).trigger())
+                      ->set_trigger_spell(spec.rime)
+                      ->set_chance(spec.rime->effectN(2).percent() +
+                        talent.frost.rage_of_the_frozen_champion->effectN(1).percent())
+                      ->set_stack_change_callback([this](buff_t*, int, int new_) {
+                      if (new_)
+                        buffs.bind_in_darkness->trigger();
+                        });
 
     buffs.bonegrinder_crit = make_buff( this, "bonegrinder_crit", spell.bonegrinder_crit_buff )
                                  ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
