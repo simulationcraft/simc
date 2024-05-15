@@ -27,7 +27,8 @@ enum parse_flag_e
   USE_DATA,
   USE_DEFAULT,
   USE_CURRENT,
-  IGNORE_STACKS
+  IGNORE_STACKS,
+  ALLOW_ZERO
 };
 
 // effects dependent on player state
@@ -365,17 +366,6 @@ public:
         val_mul = 1.0;
     }
 
-    if constexpr ( is_detected<detect_type, U>::value )
-    {
-      if ( !val && tmp.data.type == parse_flag_e::USE_DATA )
-        return;
-    }
-    else
-    {
-      if ( !val )
-        return;
-    }
-
     std::string type_str;
     bool flat = false;
     std::vector<U>* vec;
@@ -395,6 +385,17 @@ public:
 
     if ( !vec )
       return;
+
+    if constexpr ( is_detected<detect_type, U>::value )
+    {
+      if ( !val && tmp.data.type == parse_flag_e::USE_DATA )
+        return;
+    }
+    else
+    {
+      if ( !val )
+        return;
+    }
 
     val *= val_mul;
 
