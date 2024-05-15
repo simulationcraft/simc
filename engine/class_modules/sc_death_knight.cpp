@@ -716,6 +716,7 @@ public:
     propagate_const<buff_t*> enduring_strength_builder;
     propagate_const<buff_t*> enduring_strength;
     propagate_const<buff_t*> frostwhelps_aid;
+    buff_t* cryogenic_chamber;
 
     // Unholy
     propagate_const<buff_t*> dark_transformation;
@@ -1305,6 +1306,8 @@ public:
     const spell_data_t* obliteration_gains;
     const spell_data_t* shattered_frost;
     const spell_data_t* icy_death_torrent_damage;
+    const spell_data_t* cryogenic_chamber_damage;
+    const spell_data_t* cryogenic_chamber_buff;
 
     // Unholy
     const spell_data_t* runic_corruption;  // buff
@@ -4785,6 +4788,47 @@ struct icy_death_torrent_t final : public death_knight_spell_t
   }
 };
 
+// Cryogennic Chamber =======================================================
+struct cryogenic_chamber_t final : public death_knight_spell_t
+{
+  cryogenic_chamber_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.cryogenic_chamber_damage )
+  {
+    background = true;
+    aoe = -1;
+  }
+};
+
+struct cryogenic_chamber_buff_t final : public buff_t
+{
+  cryogenic_chamber_buff_t( death_knight_t* p )
+    : buff_t( p, "cryogenic_chamber", p->spell.cryogenic_chamber_buff ), damage( 0 )
+  {
+    set_max_stack( p->talent.frost.cryogenic_chamber->effectN( 2 ).base_value() );
+    cryogenic_chamber_damage = get_action<cryogenic_chamber_t>( "cryogenic_chamber", p );
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::start( stacks, value, duration );
+    damage = 0;
+  }
+
+  void expire_override( int stacks, timespan_t remains ) override
+  {
+    buff_t::expire_override( stacks, remains );
+    cryogenic_chamber_damage->base_dd_min = cryogenic_chamber_damage->base_dd_max = damage;
+    cryogenic_chamber_damage->execute();
+    damage = 0;
+  }
+
+public:
+  double damage;
+
+private:
+  action_t* cryogenic_chamber_damage;
+};
+
 // ==========================================================================
 // Death Knight Attacks
 // ==========================================================================
@@ -5176,7 +5220,7 @@ struct frost_fever_t final : public death_knight_disease_t
       base_multiplier *= 0.98;
     }
     
-    if ( p->talent.deathbringer.blood_fever->ok() )
+    if ( p->talent.deathbringer.blood_fever.ok() )
     {
       blood_fever = get_action<blood_fever_t>( "blood_fever", p );
       add_child( blood_fever );
@@ -5207,6 +5251,12 @@ struct frost_fever_t final : public death_knight_disease_t
       blood_fever->execute_on_target(
           d->target,
           d->state->result_amount * ( p()->talent.deathbringer.blood_fever->effectN( 1 ).default_value() / 100 ) );
+    }
+
+    if ( p()->talent.frost.cryogenic_chamber.ok() && !p()->buffs.cryogenic_chamber->at_max_stacks() )
+    {
+      debug_cast<cryogenic_chamber_buff_t*>( p()->buffs.cryogenic_chamber )->damage += d->state->result_amount * p()->talent.frost.cryogenic_chamber->effectN( 1 ).percent();
+      p()->buffs.cryogenic_chamber->trigger();
     }
   }
 
@@ -9005,6 +9055,10 @@ struct remorseless_winter_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
     debug_cast<remorseless_winter_damage_t*>( damage )->triggered_biting_cold = false;
     p()->buffs.remorseless_winter->trigger();
+    if( p()->talent.frost.cryogenic_chamber.ok() && p()->buffs.cryogenic_chamber->check() )
+    {
+       p()->buffs.cryogenic_chamber->expire();
+    }
   }
 
 private:
@@ -11924,6 +11978,8 @@ void death_knight_t::init_spells()
   spell.frost_strike_oh               = find_spell( 66196 );
   spell.shattered_frost               = find_spell( 455996 );
   spell.icy_death_torrent_damage      = find_spell( 439539 );
+  spell.cryogenic_chamber_damage      = find_spell( 456371 );
+  spell.cryogenic_chamber_buff        = find_spell( 456370 );
 
   // Unholy
   spell.runic_corruption           = find_spell( 51460 );
@@ -12370,6 +12426,8 @@ void death_knight_t::create_buffs()
         make_buff( this, "unleashed_frenzy", talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
             ->set_cooldown( talent.frost.unleashed_frenzy->internal_cooldown() )
             ->set_default_value( talent.frost.unleashed_frenzy->effectN( 1 ).percent() );
+
+    buffs.cryogenic_chamber = new cryogenic_chamber_buff_t( this );
   }
 
   // Unholy
