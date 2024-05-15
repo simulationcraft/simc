@@ -7784,7 +7784,7 @@ struct frostscythe_t final : public death_knight_melee_attack_t
     }
 
     if ( p()->talent.frost.enduring_strength.ok() && p()->buffs.pillar_of_frost->up() &&
-         p()->cooldown.enduring_strength_icd->is_ready() && s->result == RESULT_CRIT )
+         p()->cooldown.enduring_strength_icd->is_ready() )
     {
       p()->buffs.enduring_strength_builder->trigger();
       p()->cooldown.enduring_strength_icd->start();
@@ -8043,8 +8043,8 @@ private:
 
 struct glacial_advance_damage_t final : public death_knight_spell_t
 {
-  glacial_advance_damage_t( util::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.glacial_advance_damage )
+  glacial_advance_damage_t( util::string_view name, death_knight_t* p, bool km = false )
+    : death_knight_spell_t( name, p, p->spell.glacial_advance_damage ), km( km )
   {
     aoe        = -1;  // TODO: Fancier targeting .. make it aoe for now
     background = true;
@@ -8057,12 +8057,32 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
     }
   }
 
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    // Killing Machine glacial advcances trigger Unleashed Frenzy without spending Runic Power
+    // Currently does not trigger Icy Talons, nor Obliteration rune generation
+    // Can Trigger Runic Empowerment
+    if ( km )
+    {
+      p()->trigger_runic_empowerment( p()->talent.frost.glacial_advance->cost( POWER_RUNIC_POWER ) );
+      if ( p()->talent.frost.unleashed_frenzy.ok() )
+      {
+        p()->buffs.unleashed_frenzy->trigger();
+      }
+    }
+  }
+
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
 
     get_td( state->target )->debuff.razorice->trigger();
   }
+
+private:
+  bool km;
 };
 
 struct glacial_advance_t final : public death_knight_spell_t
@@ -8657,7 +8677,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
     
     if( p->talent.frost.arctic_assault.ok() )
     {
-      add_child( get_action<glacial_advance_damage_t>( "glacial_advance_km", p ) );
+      add_child( get_action<glacial_advance_damage_t>( "glacial_advance_km", p, true ) );
     }
   }
 
@@ -10490,7 +10510,7 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
 
     if ( talent.frost.arctic_assault.ok() )
     {
-      get_action<glacial_advance_damage_t>( "glacial_advance_km", this )->execute();
+      get_action<glacial_advance_damage_t>( "glacial_advance_km", this, true )->execute();
     }
 
     if ( talent.frost.frostscythe.ok() )
@@ -12400,14 +12420,14 @@ void death_knight_t::create_buffs()
 
     buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
-    buffs.rime = make_buff(this, "rime", spec.rime->effectN(1).trigger())
-                      ->set_trigger_spell(spec.rime)
-                      ->set_chance(spec.rime->effectN(2).percent() +
-                        talent.frost.rage_of_the_frozen_champion->effectN(1).percent())
-                      ->set_stack_change_callback([this](buff_t*, int, int new_) {
-                      if (new_)
-                        buffs.bind_in_darkness->trigger();
-                        });
+    buffs.rime = make_buff( this, "rime", spec.rime->effectN( 1 ).trigger() )
+                     ->set_trigger_spell( spec.rime )
+                     ->set_chance( spec.rime->effectN( 2 ).percent() +
+                                   talent.frost.rage_of_the_frozen_champion->effectN( 1 ).percent() )
+                     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+                       if ( new_ )
+                         buffs.bind_in_darkness->trigger();
+                     } );
 
     buffs.bonegrinder_crit = make_buff( this, "bonegrinder_crit", spell.bonegrinder_crit_buff )
                                  ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
