@@ -4804,7 +4804,7 @@ struct cryogenic_chamber_buff_t final : public buff_t
   cryogenic_chamber_buff_t( death_knight_t* p )
     : buff_t( p, "cryogenic_chamber", p->spell.cryogenic_chamber_buff ), damage( 0 )
   {
-    set_max_stack( p->talent.frost.cryogenic_chamber ? as<int>( p->talent.frost.cryogenic_chamber->effectN( 2 ).base_value() ) : 1 );
+    set_max_stack( p->talent.frost.cryogenic_chamber.ok() ? as<int>(p->talent.frost.cryogenic_chamber->effectN(2).base_value()) : 1);
     cryogenic_chamber_damage = get_action<cryogenic_chamber_t>( "cryogenic_chamber", p );
   }
 
@@ -5734,11 +5734,17 @@ struct wave_of_souls_t final : public death_knight_spell_t
 struct reapers_mark_t final : public death_knight_spell_t
 {
   reapers_mark_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_spell_t( "reapers_mark", p, p->spell.reapers_mark )
+    : death_knight_spell_t( "reapers_mark", p, p->talent.deathbringer.reapers_mark )
   {
     parse_options( options_str );
-    add_child( p->active_spells.reapers_mark_explosion );
-    add_child( p->active_spells.wave_of_souls );
+    if ( p->talent.deathbringer.reapers_mark.ok() )
+    {
+      add_child( p->active_spells.reapers_mark_explosion );
+    }
+    if ( p->talent.deathbringer.wave_of_souls.ok() )
+    {
+      add_child( p->active_spells.wave_of_souls );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -12053,7 +12059,6 @@ void death_knight_t::init_spells()
   spell.blood_beast_summon              = find_spell( 434237 );
 
   // Deathbringer Spells
-  spell.reapers_mark           = find_spell( 439843 );
   spell.reapers_mark_debuff    = find_spell( 434765 );
   spell.reapers_mark_explosion = find_spell( 436304 );
   spell.grim_reaper            = find_spell( 443761 );
