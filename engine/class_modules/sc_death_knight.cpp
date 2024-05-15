@@ -784,6 +784,7 @@ public:
     propagate_const<cooldown_t*> frostwyrms_fury;
     propagate_const<cooldown_t*> chill_streak;
     propagate_const<cooldown_t*> empower_rune_weapon;
+    propagate_const<cooldown_t*> frostscythe;
 
     // Unholy
     propagate_const<cooldown_t*> apocalypse;
@@ -1574,6 +1575,7 @@ public:
     cooldown.frostwyrms_fury        = get_cooldown( "frostwyrms_fury_driver" );
     cooldown.chill_streak           = get_cooldown( "chill_streak" );
     cooldown.empower_rune_weapon    = get_cooldown( "empower_rune_weapon" );
+    cooldown.frostscythe            = get_cooldown( "frostscythe" );
 
     resource_regeneration = regen_type::DYNAMIC;
   }
@@ -7601,6 +7603,7 @@ struct frostscythe_t final : public death_knight_melee_attack_t
     aoe                 = -1;
     reduced_aoe_targets = data().effectN( 5 ).base_value();
     triggers_icecap     = true;
+    base_crit = 1.0;
   }
 
   void impact( action_state_t* s ) override
@@ -7629,11 +7632,6 @@ struct frostscythe_t final : public death_knight_melee_attack_t
 
     // Frostscythe procs rime at half the chance of Obliterate
     p()->buffs.rime->trigger( 1, buff_t::DEFAULT_VALUE(), p()->buffs.rime->manual_chance / 2.0 );
-
-    if ( p()->buffs.killing_machine->up() )
-    {
-      p()->consume_killing_machine( p()->procs.killing_machine_fsc, 0_ms );
-    }
   }
 
 private:
@@ -7703,7 +7701,11 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
 {
   frost_strike_strike_t( util::string_view n, death_knight_t* p, weapon_t* w, const spell_data_t* s,
                          bool shattering_blade )
-    : death_knight_melee_attack_t( n, p, s ), sb( shattering_blade ), shattered_frost( nullptr ), weapon_hand( w ), damage( 0 )
+    : death_knight_melee_attack_t( n, p, s ),
+      sb( shattering_blade ),
+      shattered_frost( nullptr ),
+      weapon_hand( w ),
+      damage( 0 )
   {
     background = special = true;
     weapon               = w;
@@ -7726,11 +7728,16 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
     return m;
   }
 
-  void trigger_shattered_frost()
+  void trigger_shattered_frost( double hit_damage, bool final_hit )
   {
-    shattered_frost->base_dd_min = shattered_frost->base_dd_max = damage;
-    shattered_frost->execute();
-    damage = 0;
+    damage += hit_damage;
+    if ( final_hit )
+    {
+      damage *= p()->talent.frost.shattered_frost->effectN( 1 ).percent();
+      shattered_frost->base_dd_min = shattered_frost->base_dd_max = damage;
+      shattered_frost->execute();
+      damage = 0;
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -7740,19 +7747,17 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
     {
       if ( weapon_hand->group() == WEAPON_2H )
       {
-        damage += s->result_amount * p()->talent.frost.shattered_frost->effectN( 1 ).percent();
-        trigger_shattered_frost();
+        trigger_shattered_frost( s->result_amount, true );
       }
       if ( weapon_hand->group() == WEAPON_1H )
       {
         if ( weapon_hand->slot == SLOT_MAIN_HAND )
         {
-          damage += s->result_amount * p()->talent.frost.shattered_frost->effectN( 1 ).percent();
+          trigger_shattered_frost( s->result_amount, p()->off_hand_weapon.type == WEAPON_NONE );
         }
         if ( weapon_hand->slot == SLOT_OFF_HAND )
         {
-          damage += s->result_amount * p()->talent.frost.shattered_frost->effectN( 1 ).percent();
-          trigger_shattered_frost();
+          trigger_shattered_frost( s->result_amount, true );
         }
       }
     }
@@ -7760,6 +7765,7 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
 
 public:
   bool sb;
+
 private:
   weapon_t* weapon_hand;
   double damage;
@@ -10300,6 +10306,11 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
     if ( talent.frost.arctic_assault.ok() )
     {
       get_action<glacial_advance_damage_t>( "glacial_advance_km", this )->execute();
+    }
+
+    if ( talent.frost.frostscythe.ok() )
+    {
+      cooldown.frostscythe->adjust( timespan_t::from_millis( talent.frost.frostscythe->effectN( 1 ).base_value() ) );
     }
   } );
 }
