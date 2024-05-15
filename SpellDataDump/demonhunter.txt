@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.7.54601 Live
+SimulationCraft 1027-01 for World of Warcraft 10.2.7.54673 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1488,7 +1488,6 @@ Effects          :
 Description      : $@spelldesc201467
 
 Name             : Sigil of Silence (id=202137) [Spell Family (107)] 
-Hotfixed         : Charge Cooldown (60000 -> 90000)
 Talent Entry     : Vengeance [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
 Class            : Demon Hunter
 School           : Physical
@@ -2737,7 +2736,6 @@ Effects          :
 Description      : All Sigils are now placed at your location. 
 
 Name             : Sigil of Silence (id=207682) [Spell Family (107)] 
-Hotfixed         : Charge Cooldown (60000 -> 90000)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -4278,7 +4276,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=344032)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.48120 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
-Hotfixed         : AP Coefficient (1.61 -> 1.4812)
 #2 (id=819792)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : $@spelldesc228477
@@ -11265,7 +11262,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026143)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (3 -> 2)
 Description      : Afflicting an enemy with a Sigil reduces the cooldown of your Sigils by $s1 sec. 
 
 Name             : Calcified Spikes (id=389720) [Spell Family (107), Passive] 
@@ -11518,7 +11514,6 @@ Description      : Place a Sigil of Chains at the target location that activates
 All enemies affected by the sigil are pulled to its center and are snared, reducing movement speed by $204843s1% for $204843d.
 
 Name             : Sigil of Silence (id=389809) [Spell Family (107)] 
-Hotfixed         : Charge Cooldown (60000 -> 90000)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None

@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.7.54601 Live
+SimulationCraft 1027-01 for World of Warcraft 10.2.7.54673 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -2158,7 +2158,6 @@ Description      : Renewing Mist, Enveloping Mist,$?s322104[ Expel Harm,][]$?s11
 Gust of Mists has a $388020s2% chance to do $388020s1% more healing.][]
 
 Name             : Crackling Jade Lightning (id=117952) [Spell Family (53)] 
-Hotfixed         : Proc Flags 1 (0 -> 40)
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -2187,7 +2186,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=225417)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Target 1 (6 -> 1)
 Description      : Channel Jade lightning, causing $o1 Nature damage over $117952d to the target$?a154436[, generating 1 Chi each time it deals damage,][] and sometimes knocking back melee attackers.
 Tooltip          : Taking $w1 damage every $t1 sec.
 Variables        : $dmgMult=$?s113656[${12}][${1.0}]
@@ -2591,7 +2589,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=229522)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.81000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.9 -> 0.81)
 #3 (id=283420)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #4 (id=335940)   : Dummy (3)
@@ -3284,7 +3281,6 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... .....
 Effects          :
 #1 (id=157621)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.30000 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Hotfixed         : AP Coefficient (3 -> 3.3)
 Description      : $@spelldesc124502
 
 Name             : Enveloping Mist (id=124682) [Spell Family (53)] 
@@ -3983,7 +3979,6 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (101546), Spinning Crane Kick (107270), Spinning Crane Kick (322729)
                    Family Flags: 8, 63
-Hotfixed         : Base Value (-5 -> -15)
 #25 (id=1080995)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 92 | Scaled Value: 92 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Vivify (116670)
@@ -4011,7 +4006,6 @@ Hotfixed         : Base Value (-5 -> -15)
 #31 (id=1151385)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3682 (Label) | Target: Self (1)
                    Affected Spells (Label): Claw of the White Tiger (389541)
-Hotfixed         : NEW EFFECT
 
 Name             : Mistweaver Monk (id=137024) [Spell Family (53), Passive, Hidden] 
 Class            : Mistweaver Monk
@@ -4743,7 +4737,6 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... .....
 Effects          :
 #1 (id=255483)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.30000 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE friendly (31)
-Hotfixed         : AP Coefficient (3 -> 3.3)
 Description      : $@spelldesc124502
 
 Name             : Rising Sun Kick (id=185099) [Spell Family (53)] 
@@ -14628,21 +14621,17 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.33330 | Target: Self (1)
                    Affected Spells: Vivify (116670), Enveloping Mist (124682), Enveloping Breath (325209)
                    Family Flags: 26, 79
-Hotfixed         : PvP Coefficient (1 -> 1.3333)
 #2 (id=1023512)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.33330 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Vivify (116670), Enveloping Mist (124682), Enveloping Breath (325209)
                    Family Flags: 26, 79
-Hotfixed         : PvP Coefficient (1 -> 1.3333)
 #3 (id=1023513)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.33330 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209)
                    Family Flags: 79
-Hotfixed         : PvP Coefficient (1 -> 1.3333)
 #4 (id=1103900)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.33330 | Misc Value 2: 2930 (Label) | Target: Self (1)
                    Affected Spells (Label): Invigorating Mists (425804)
-Hotfixed         : PvP Coefficient (1 -> 1.3333)
 Description      : $@spelldesc388047
 Tooltip          : Healing done by your Enveloping Mists and Vivify increased by $w1%, and mana cost reduced by $w2%.
 

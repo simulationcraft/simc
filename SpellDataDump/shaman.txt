@@ -1,4 +1,4 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.7.54601 Live
+SimulationCraft 1027-01 for World of Warcraft 10.2.7.54673 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1747,10 +1747,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=55127)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.21000 | PvP Coefficient: 1.10000 | Target: Friend (21)
-Hotfixed         : PvP Coefficient (1 -> 1.1)
 #2 (id=55128)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.22000 | PvP Coefficient: 1.21000 | Target: Friend (21)
-Hotfixed         : PvP Coefficient (1.1 -> 1.21)
 Description      : Restorative waters wash over a friendly target, healing them for $s1 and an additional $o2 over $d.
 Tooltip          : Heals $w2 every $t2 seconds.
 
@@ -3660,7 +3658,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
-Hotfixed         : Base Value (25 -> 40)
 #19 (id=1081071)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
