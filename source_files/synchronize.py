@@ -82,7 +82,7 @@ def create_vs_str(entries, gui=False):
         # Gui Resources
         prepare += "\n\n\t<!--Resources -->"
         prepare += "\n\t<ItemGroup>"
-        prepare += "\n\t\t<ResourceCompile Include=\"..\simcqt.rc\" />"
+        prepare += "\n\t\t<ResourceCompile Include=\"..\\simcqt.rc\" />"
         prepare += "\n\t</ItemGroup>"
         prepare += "\n\n"
 
@@ -107,8 +107,8 @@ def create_vs_str(entries, gui=False):
             if entry[0] == "HEADERS":
                 prepare += """
 \t\t<CustomBuild Include=\"""" + entry[1] + """\">
-\t\t\t<AdditionalInputs>$(QTDIR)\\bin\moc.exe</AdditionalInputs>
-\t\t\t<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\\bin\moc.exe )</Message>
+\t\t\t<AdditionalInputs>$(QTDIR)\\bin\\moc.exe</AdditionalInputs>
+\t\t\t<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\\bin\\moc.exe )</Message>
 \t\t\t<Command>"$(QTDIR)\\bin\\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\\include" -I"(SolutionDir)engine" -I"$(QTDIR)\\mkspecs\\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 \t\t\t<AdditionalInputs>Rem;""" + entry[1] + """;%(AdditionalInputs)</AdditionalInputs>
 \t\t\t<Outputs>$(IntDir)\\moc_%(Filename).cpp</Outputs>
@@ -148,7 +148,7 @@ def qmake_type_str(file_type, path, filters, prefix, exclude_match):
     header_files.sort(key=lambda p: str(p).lower())
     lines = ["{} += {}".format(prefix, entry) for entry in header_files]
     return "\n".join(lines)
-  
+
 def create_qmake_str(file_type, path, excludes):
     output = header("qmake")
     output += qmake_type_str(file_type, path, ["*.hpp", "*.hh"], "HEADERS", excludes)
@@ -160,7 +160,7 @@ def create_qmake_str(file_type, path, excludes):
 
 def glob_files(file_type, path, excludes):
   write_to_file("QT_" + file_type + ".pri", create_qmake_str(file_type, path, excludes))
-  
+
 def create_file(file_type, build_systems):
     try:
         result = parse_qt("QT_" + file_type + ".pri")
@@ -182,7 +182,7 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
     glob_files("engine", "../engine", ".*sc_main.cpp")
     glob_files("gui", "../qt", None)
-    
+
     create_file("engine", ["make", "VS", "cmake"])
     create_file("engine_main", ["make", "VS", "cmake"])
     create_file("gui", ["VS_GUI", "cmake"])  # TODO: finish mocing part of VS_GUI
