@@ -4,6 +4,15 @@
  * Provide tracking buff spell data
  * Provide tick damage spell data
  * Provide a way to describe guard absorbs
+ * Make purification more ergonomic
+ * Snapshot_stats helper
+ * Collect_resource_timeline helper
+ * Pre_analyze_hook helper
+ * Combat_begin helper
+ * assess_damage_imminent_pre_absorb helper (or turn it into a fractional absorb buff)
+ * create_exprn helper
+ * merge helper
+ * html_customsection helper
  *
  * Override min threshold map
  * Override spell data map (use spell name for level name, autotokenize this)
