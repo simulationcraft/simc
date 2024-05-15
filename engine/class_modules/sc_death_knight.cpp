@@ -4344,14 +4344,10 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
 
   gain_t* gain;
   bool hasted_gcd;
-
-  struct school_change_t
-  {
-    bool dark_talons_shadowfrost;
-  } school_change;
+  std::vector<player_effect_t> school_change_effects;
 
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false ), school_change()
+    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false )
   {
     this->may_crit   = true;
     this->may_glance = false;
@@ -4359,9 +4355,6 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     {
       this->track_cd_waste = true;
     }
-
-    this->school_change.dark_talons_shadowfrost =
-        this->data().affected_by( p->spell.dark_talons_shadowfrost_buff->effectN( 1 ) );
 
     // Death Knights have unique snowflake mechanism for RP energize. Base actions indicate the
     // amount as a negative value resource cost in spell data, so abuse that.
@@ -4395,6 +4388,18 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
       {
         this->not_a_proc = true;
       }
+    }
+  }
+
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data,
+                                                   double& val_mul, std::string& str, bool& flat, bool force ) override
+  {
+    action_base_t::get_effect_vector( eff, data, val_mul, str, flat, force );
+    if ( eff.subtype() == A_MODIFY_SCHOOL && ( action_base_t::data().affected_by_all( eff ) || force ) )
+    {
+      str           = "school change";
+      data.opt_enum = eff.misc_value1();
+      return &school_change_effects;
     }
   }
 
@@ -4446,6 +4451,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     parse_effects( p()->buffs.a_feast_of_souls );
 
     // Deathbringer
+    parse_effects( p()->buffs.dark_talons_shadowfrost, USE_CURRENT, p()->talent.deathbringer.dark_talons );
 
     // San'layn
     parse_effects( p()->buffs.essence_of_the_blood_queen, p()->talent.sanlayn.frenzied_bloodthirst );
@@ -4499,6 +4505,16 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     action_base_t::parse_target_effects( std::forward<Ts>( args )... );
   }
 
+  size_t total_effects_count() override
+  {
+    return action_base_t::total_effects_count() + school_change_effects.size();
+  }
+
+  void print_parsed_custom_type( report::sc_html_stream& os ) override
+  {
+    action_base_t::template print_parsed_type<base_t>( os, &base_t::school_change_effects, "School Change" );
+  }
+
   double composite_energize_amount( const action_state_t* s ) const override
   {
     double amount = action_base_t::composite_energize_amount( s );
@@ -4549,19 +4565,17 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
 
   void execute() override
   {
-    if ( school_change.dark_talons_shadowfrost )
+    for ( const auto& i : school_change_effects )
     {
-      if ( p()->buffs.dark_talons_shadowfrost->check() )
-      {
-        this->set_school_override(
-            dbc::get_school_type( p()->spell.dark_talons_shadowfrost_buff->effectN( 1 ).misc_value1() ) );
-      }
-      else
-      {
-        this->clear_school_override();
-      }
+      this->set_school_override( dbc::get_school_type( i.opt_enum ) );
     }
+
     action_base_t::execute();
+
+    for ( const auto& i : school_change_effects )
+    {
+      this->clear_school_override();
+    }
 
     // For non tank DK's, we proc the ability on CD, attached to thier own executes, to simulate it
     if ( p()->talent.blood_draw.ok() && p()->specialization() != DEATH_KNIGHT_BLOOD &&

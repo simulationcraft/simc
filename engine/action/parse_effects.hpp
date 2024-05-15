@@ -1389,7 +1389,7 @@ public:
     return true;
   }
 
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& /* data */,
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data,
                                                    double& val_mul, std::string& str, bool& flat, bool force ) override
   {
     if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
