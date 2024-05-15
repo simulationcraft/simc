@@ -1310,6 +1310,7 @@ public:
     const spell_data_t* icy_death_torrent_damage;
     const spell_data_t* cryogenic_chamber_damage;
     const spell_data_t* cryogenic_chamber_buff;
+    const spell_data_t* rime_buff;
 
     // Unholy
     const spell_data_t* runic_corruption;  // buff
@@ -4344,10 +4345,12 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
 
   gain_t* gain;
   bool hasted_gcd;
+  bool parsed_school_expire;
+  bool recheck_school_change;
   std::vector<player_effect_t> school_change_effects;
 
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false )
+    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false ), parsed_school_expire( false ), recheck_school_change( false )
   {
     this->may_crit   = true;
     this->may_glance = false;
@@ -4399,7 +4402,17 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     {
       str           = "school change";
       data.opt_enum = eff.misc_value1();
-      data.type = parse_flag_e::ALLOW_ZERO;
+      data.type     = parse_flag_e::ALLOW_ZERO;
+      if ( data.buff != nullptr )
+      {
+        data.buff->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+          this->recheck_school_change = true;
+          if ( new_ == 0 )
+          {
+            this->parsed_school_expire = false;
+          }
+        } );
+      }
       return &school_change_effects;
     }
   }
@@ -4566,17 +4579,19 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
 
   void execute() override
   {
-    for ( const auto& i : school_change_effects )
+    if ( this->recheck_school_change )
     {
-      this->set_school_override( dbc::get_school_type( i.opt_enum ) );
+      for ( const auto& i : school_change_effects )
+      {
+        this->set_school_override( dbc::get_school_type( i.opt_enum ) );
+      }
+      if ( this->original_school != SCHOOL_NONE && this->parsed_school_expire )
+      {
+        this->clear_school_override();
+      }
     }
 
     action_base_t::execute();
-
-    if ( this->original_school != SCHOOL_NONE )
-    {
-      this->clear_school_override();
-    }
 
     // For non tank DK's, we proc the ability on CD, attached to thier own executes, to simulate it
     if ( p()->talent.blood_draw.ok() && p()->specialization() != DEATH_KNIGHT_BLOOD &&
@@ -4839,10 +4854,14 @@ struct cryogenic_chamber_t final : public death_knight_spell_t
 struct cryogenic_chamber_buff_t final : public buff_t
 {
   cryogenic_chamber_buff_t( death_knight_t* p )
-    : buff_t( p, "cryogenic_chamber", p->spell.cryogenic_chamber_buff ), damage( 0 )
+    : buff_t( p, "cryogenic_chamber", p->spell.cryogenic_chamber_buff ),
+      damage( 0 ),
+      cryogenic_chamber_damage( get_action<cryogenic_chamber_t>( "cryogenic_chamber", p ) )
   {
-    set_max_stack( p->talent.frost.cryogenic_chamber.ok() ? as<int>(p->talent.frost.cryogenic_chamber->effectN(2).base_value()) : 1);
-    cryogenic_chamber_damage = get_action<cryogenic_chamber_t>( "cryogenic_chamber", p );
+    if( p->talent.frost.cryogenic_chamber.ok() )
+    {
+      set_max_stack( as<int>( p->talent.frost.cryogenic_chamber->effectN( 2 ).base_value() ) );
+    }
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -12074,6 +12093,7 @@ void death_knight_t::init_spells()
   spell.icy_death_torrent_damage      = find_spell( 439539 );
   spell.cryogenic_chamber_damage      = find_spell( 456371 );
   spell.cryogenic_chamber_buff        = find_spell( 456370 );
+  spell.rime_buff                     = find_spell( 59052 );
 
   // Unholy
   spell.runic_corruption           = find_spell( 51460 );
@@ -12262,7 +12282,7 @@ void death_knight_t::init_scaling()
   scaling->disable( STAT_AGILITY );
 }
 
-// death_knight_t::init_buffs ===============================================
+// death_knight_t::create_buffs ===============================================
 void death_knight_t::create_buffs()
 {
   player_t::create_buffs();
@@ -12516,12 +12536,12 @@ void death_knight_t::create_buffs()
 
     buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
-    buffs.rime = make_buff( this, "rime", spec.rime->effectN( 1 ).trigger() )
+    buffs.rime = make_buff( this, "rime", spell.rime_buff )
                      ->set_trigger_spell( spec.rime )
                      ->set_chance( spec.rime->effectN( 2 ).percent() +
                                    talent.frost.rage_of_the_frozen_champion->effectN( 1 ).percent() )
                      ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-                       if ( new_ )
+                       if ( new_ && talent.deathbringer.bind_in_darkness.ok() )
                          buffs.bind_in_darkness->trigger();
                      } );
 
