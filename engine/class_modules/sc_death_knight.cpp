@@ -1236,8 +1236,6 @@ public:
     const spell_data_t* dnd_buff;  // obliterate aoe increase while in death's due (nf covenant ability)
     const spell_data_t* razorice_debuff;
     const spell_data_t* rune_mastery_buff;
-    const spell_data_t* empower_rune_weapon_main;  // Empower Rune Weapon has a unique ID for the spell itself, with
-    // each talent just modifying number of charges.
     const spell_data_t* coldthirst_gain;  // Coldthirst has a unique ID for the gain and cooldown reduction
     const spell_data_t* unholy_strength_buff;
     const spell_data_t* unholy_ground_buff;
@@ -7438,7 +7436,7 @@ private:
 struct empower_rune_weapon_t final : public death_knight_spell_t
 {
   empower_rune_weapon_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_spell_t( "empower_rune_weapon", p, p->spell.empower_rune_weapon_main )
+    : death_knight_spell_t( "empower_rune_weapon", p, p->talent.frost.empower_rune_weapon )
   {
     parse_options( options_str );
 
@@ -7447,8 +7445,8 @@ struct empower_rune_weapon_t final : public death_knight_spell_t
 
     // Buff handles the ticking, this one just triggers the buff
     dot_duration = base_tick_time = 0_ms;
-
-    cooldown->duration = p->spell.empower_rune_weapon_main->charge_cooldown();
+    cooldown->charges = 1; // Data appears to be messed up since they removed the class tree version, lists as 0 charges
+    cooldown->duration = p->talent.frost.empower_rune_weapon->charge_cooldown();
   }
 
   void execute() override
@@ -11855,7 +11853,6 @@ void death_knight_t::init_spells()
   spell.razorice_debuff              = find_spell( 51714 );
   spell.runic_empowerment_gain       = find_spell( 193486 );
   spell.rune_mastery_buff            = find_spell( 374585 );
-  spell.empower_rune_weapon_main     = find_spell( 47568 );
   spell.coldthirst_gain              = find_spell( 378849 );
   spell.unholy_strength_buff         = find_spell( 53365 );
   spell.unholy_ground_buff           = find_spell( 374271 );
@@ -12326,10 +12323,10 @@ void death_knight_t::create_buffs()
 
 
     buffs.empower_rune_weapon =
-        make_buff( this, "empower_rune_weapon", spell.empower_rune_weapon_main )
+        make_buff( this, "empower_rune_weapon", talent.frost.empower_rune_weapon )
             ->set_tick_zero( true )
             ->set_cooldown( 0_ms )
-            ->set_period( spell.empower_rune_weapon_main->effectN( 1 ).period() )
+            ->set_period( talent.frost.empower_rune_weapon->effectN( 1 ).period() )
             ->set_default_value_from_effect( 3 )
             ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
             ->set_tick_behavior( buff_tick_behavior::REFRESH )
@@ -12978,7 +12975,6 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.frost.frigid_executioner );
   action.apply_affecting_aura( talent.frost.biting_cold );
   action.apply_affecting_aura( talent.frost.absolute_zero );
-  action.apply_affecting_aura( talent.frost.empower_rune_weapon );
   if ( spec.might_of_the_frozen_wastes->ok() && main_hand_weapon.group() == WEAPON_2H )
   {
     action.apply_affecting_aura( spec.might_of_the_frozen_wastes );
