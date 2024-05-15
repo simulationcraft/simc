@@ -785,6 +785,7 @@ public:
     propagate_const<cooldown_t*> chill_streak;
     propagate_const<cooldown_t*> empower_rune_weapon;
     propagate_const<cooldown_t*> frostscythe;
+    propagate_const<cooldown_t*> icy_death_torrent_icd;
 
     // Unholy
     propagate_const<cooldown_t*> apocalypse;
@@ -1576,6 +1577,7 @@ public:
     cooldown.chill_streak           = get_cooldown( "chill_streak" );
     cooldown.empower_rune_weapon    = get_cooldown( "empower_rune_weapon" );
     cooldown.frostscythe            = get_cooldown( "frostscythe" );
+    cooldown.icy_death_torrent_icd  = get_cooldown( "icy_death_torrent_icd" );
 
     resource_regeneration = regen_type::DYNAMIC;
   }
@@ -4869,9 +4871,11 @@ struct melee_t : public death_knight_melee_attack_t
 
         // TODO: check if the proc chance in the talent effect 1 is correct
         if ( p()->talent.frost.icy_death_torrent.ok() &&
-             rng().roll( p()->talent.frost.icy_death_torrent->effectN( 1 ).percent() ) )
+             rng().roll( p()->talent.frost.icy_death_torrent->effectN( 1 ).percent() ) &&
+             p()->cooldown.icy_death_torrent_icd->is_ready() )
         {
           p()->active_spells.icy_death_torrent_damage->execute();
+          p()->cooldown.icy_death_torrent_icd->start();
         }
         
         // TODO: potentially find a cleaner way to implement the pillar extension cap
@@ -10310,7 +10314,7 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
 
     if ( talent.frost.frostscythe.ok() )
     {
-      cooldown.frostscythe->adjust( timespan_t::from_millis( talent.frost.frostscythe->effectN( 1 ).base_value() ) );
+      cooldown.frostscythe->adjust( timespan_t::from_millis( -talent.frost.frostscythe->effectN( 1 ).base_value() ) );
     }
   } );
 }
