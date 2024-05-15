@@ -234,6 +234,7 @@ public:
     buff_t* show_of_force;
     buff_t* slaughtering_strikes;
     buff_t* spell_reflection;
+    buff_t* storm_of_swords;
     buff_t* sudden_death;
     buff_t* sweeping_strikes;
     buff_t* test_of_might_tracker;  // Used to track rage gain from test of might.
@@ -940,6 +941,7 @@ public:
     // Arms
     parse_effects( p()->buff.juggernaut );
     parse_effects( p()->buff.merciless_bonegrinder );
+    parse_effects( p()->buff.storm_of_swords );
 
     // Fury
     parse_effects( p()->mastery.unshackled_fury, [ this ] { return p()->buff.enrage->check(); } );
@@ -5289,6 +5291,13 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
+    if ( p()->buff.storm_of_swords->up() )
+    {
+      p()->buff.storm_of_swords->expire();
+    }
+
+    p()->buff.storm_of_swords->trigger();
+
     first_attack->execute_on_target( target );
 
     if ( p() -> talents.arms.fervor_of_battle.ok() && first_attack->num_targets_hit >= p() -> talents.arms.fervor_of_battle -> effectN( 1 ).base_value() )
@@ -7133,6 +7142,9 @@ void warrior_t::create_buffs()
   buff.spell_reflection = make_buff( this, "spell_reflection", talents.warrior.spell_reflection )
     -> set_cooldown( 0_ms ); // handled by the ability
 
+  buff.storm_of_swords = make_buff( this, "storm_of_swords", talents.arms.storm_of_swords->effectN( 1 ).trigger() )
+                                  ->set_chance( talents.arms.storm_of_swords->proc_chance() );
+
   buff.sweeping_strikes = make_buff(this, "sweeping_strikes", spec.sweeping_strikes)
     ->set_duration(spec.sweeping_strikes->duration() + talents.arms.improved_sweeping_strikes->effectN( 1 ).time_value() )
     ->set_cooldown(timespan_t::zero());
@@ -8442,7 +8454,6 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.arms.improved_execute );
   action.apply_affecting_aura( talents.arms.improved_slam );
   action.apply_affecting_aura( talents.arms.sharpened_blades );
-  action.apply_affecting_aura( talents.arms.storm_of_swords );
   action.apply_affecting_aura( talents.arms.strength_of_arms ); // rage generation in spell
   action.apply_affecting_aura( talents.arms.valor_in_victory );
 
