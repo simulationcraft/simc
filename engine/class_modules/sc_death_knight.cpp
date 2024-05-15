@@ -743,6 +743,8 @@ public:
     // Deathbringer
     propagate_const<buff_t*> grim_reaper;
     propagate_const<buff_t*> bind_in_darkness;
+    propagate_const<buff_t*> dark_talons_shadowfrost;
+    propagate_const<buff_t*> dark_talons_icy_talons;
 
   } buffs;
 
@@ -1202,7 +1204,7 @@ public:
       player_talent_t deaths_bargain;    // NYI
       player_talent_t swift_end;         // NYI
       player_talent_t painful_death;     // NYI
-      player_talent_t dark_talons;       // NYI
+      player_talent_t dark_talons;
       player_talent_t wither_away;       // NYI
       player_talent_t deaths_messenger;  // NYI
       player_talent_t expelling_shield;  // NYI
@@ -1357,7 +1359,6 @@ public:
     const spell_data_t* blood_beast_summon;
 
     // Deathbringer spells
-    const spell_data_t* reapers_mark;
     const spell_data_t* reapers_mark_debuff;
     const spell_data_t* reapers_mark_explosion;
     const spell_data_t* grim_reaper;
@@ -1365,6 +1366,8 @@ public:
     const spell_data_t* wave_of_souls_debuff;
     const spell_data_t* blood_fever_damage;
     const spell_data_t* bind_in_darkness_buff;
+    const spell_data_t* dark_talons_shadowfrost_buff;
+    const spell_data_t* dark_talons_icy_talons_buff;
 
   } spell;
 
@@ -4340,11 +4343,15 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
   using base_t        = death_knight_action_t<Base>;
 
   gain_t* gain;
-
   bool hasted_gcd;
 
+  struct school_change_t
+  {
+    bool dark_talons_shadowfrost;
+  } school_change;
+
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false )
+    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false ), school_change()
   {
     this->may_crit   = true;
     this->may_glance = false;
@@ -4352,6 +4359,8 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     {
       this->track_cd_waste = true;
     }
+
+    this->school_change.dark_talons_shadowfrost = this->data().affected_by( p->spell.dark_talons_shadowfrost_buff->effectN( 1 ) );
 
     // Death Knights have unique snowflake mechanism for RP energize. Base actions indicate the
     // amount as a negative value resource cost in spell data, so abuse that.
@@ -4539,6 +4548,11 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
 
   void execute() override
   {
+    if ( school_change.dark_talons_shadowfrost && p()->buffs.dark_talons_shadowfrost->check() )
+    {
+      this->set_school_override(
+          dbc::get_school_type( p()->spell.dark_talons_shadowfrost_buff->effectN( 1 ).misc_value1() ) );
+    }
     action_base_t::execute();
 
     // For non tank DK's, we proc the ability on CD, attached to thier own executes, to simulate it
@@ -4564,13 +4578,13 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
       death_knight_td_t* td = get_td( s->target );
       if ( td->debuff.reapers_mark->check() )
       {
-        if (  this->get_school() == SCHOOL_SHADOW || this->get_school() == SCHOOL_FROST )
+        if ( this->get_school() == SCHOOL_SHADOW || this->get_school() == SCHOOL_FROST )
         {
           td->debuff.reapers_mark->increment( 1 );
         }
-        else if (this->get_school() == SCHOOL_SHADOWFROST)
+        else if ( this->get_school() == SCHOOL_SHADOWFROST )
         {
-          if (p()->talent.deathbringer.bind_in_darkness->ok())
+          if ( p()->talent.deathbringer.bind_in_darkness->ok() )
           {
             td->debuff.reapers_mark->increment( s->result == RESULT_CRIT ? 4 : 2 );
           }
@@ -8201,6 +8215,13 @@ struct heart_strike_damage_base_t : public death_knight_melee_attack_t
         p()->pets.everlasting_bond_pet.active_pet()->ability.heart_strike->execute_on_target( target );
       }
     }
+
+    if ( p()->talent.deathbringer.dark_talons.ok() && p()->buffs.icy_talons->check() &&
+         rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
+    {
+      p()->buffs.dark_talons_shadowfrost->trigger();
+      p()->buffs.dark_talons_icy_talons->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -8434,6 +8455,13 @@ struct howling_blast_t final : public death_knight_spell_t
                           p()->gains.rage_of_the_frozen_champion );
     }
 
+    if ( p()->talent.deathbringer.dark_talons.ok() && p()->buffs.rime->check() && p()->buffs.icy_talons->check() &&
+         rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
+    {
+      p()->buffs.dark_talons_shadowfrost->trigger();
+      p()->buffs.dark_talons_icy_talons->trigger();
+    }
+
     p()->buffs.rime->decrement();
   }
 
@@ -8467,6 +8495,13 @@ struct marrowrend_t final : public death_knight_melee_attack_t
       {
         p()->pets.everlasting_bond_pet.active_pet()->ability.marrowrend->execute_on_target( target );
       }
+    }
+
+    if ( p()->talent.deathbringer.dark_talons.ok() && p()->buffs.icy_talons->check() &&
+         rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
+    {
+      p()->buffs.dark_talons_shadowfrost->trigger();
+      p()->buffs.dark_talons_icy_talons->trigger();
     }
   }
 
@@ -10523,6 +10558,12 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
     {
       cooldown.frostscythe->adjust( timespan_t::from_millis( -talent.frost.frostscythe->effectN( 1 ).base_value() ) );
     }
+
+    if( talent.deathbringer.dark_talons.ok() && buffs.icy_talons->check() && rng().roll( talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
+    {
+      buffs.dark_talons_shadowfrost->trigger();
+      buffs.dark_talons_icy_talons->trigger();
+    }
   } );
 }
 
@@ -12059,13 +12100,15 @@ void death_knight_t::init_spells()
   spell.blood_beast_summon              = find_spell( 434237 );
 
   // Deathbringer Spells
-  spell.reapers_mark_debuff    = find_spell( 434765 );
-  spell.reapers_mark_explosion = find_spell( 436304 );
-  spell.grim_reaper            = find_spell( 443761 );
-  spell.wave_of_souls_damage   = find_spell( 435802 );
-  spell.wave_of_souls_debuff   = find_spell( 443404 );
-  spell.blood_fever_damage     = find_spell( 440005 );
-  spell.bind_in_darkness_buff  = find_spell( 443532 );
+  spell.reapers_mark_debuff          = find_spell( 434765 );
+  spell.reapers_mark_explosion       = find_spell( 436304 );
+  spell.grim_reaper                  = find_spell( 443761 );
+  spell.wave_of_souls_damage         = find_spell( 435802 );
+  spell.wave_of_souls_debuff         = find_spell( 443404 );
+  spell.blood_fever_damage           = find_spell( 440005 );
+  spell.bind_in_darkness_buff        = find_spell( 443532 );
+  spell.dark_talons_shadowfrost_buff = find_spell( 443586 );
+  spell.dark_talons_icy_talons_buff  = find_spell( 443595 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -12232,7 +12275,14 @@ void death_knight_t::create_buffs()
                          ->set_default_value( talent.icy_talons->effectN( 1 ).percent() )
                          ->set_cooldown( talent.icy_talons->internal_cooldown() )
                          ->set_trigger_spell( talent.icy_talons )
-                         ->apply_affecting_aura( talent.frost.smothering_offense );
+                         ->apply_affecting_aura( talent.frost.smothering_offense )
+                         ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
+                           if( talent.deathbringer.dark_talons.ok() )
+                           {
+                             buffs.dark_talons_icy_talons->expire();
+                             buffs.dark_talons_shadowfrost->expire();
+                           }
+                         } );
 
   // Rider of the Apocalypse
   buffs.antimagic_shell_horsemen = new antimagic_shell_buff_horseman_t( this );
@@ -12251,8 +12301,26 @@ void death_knight_t::create_buffs()
 
   // Deathbringer
   buffs.grim_reaper = make_buff( this, "grim_reaper", spell.grim_reaper )->set_quiet( true );
+
   buffs.bind_in_darkness = make_buff( this, "bind_in_darkness", spell.bind_in_darkness_buff )
                                ->set_trigger_spell( talent.deathbringer.bind_in_darkness );
+
+  buffs.dark_talons_shadowfrost = make_buff( this, "dark_talons_shadowfrost", spell.dark_talons_shadowfrost_buff );
+
+  buffs.dark_talons_icy_talons =
+      make_buff( this, "dark_talons_icy_talons", spell.dark_talons_icy_talons_buff )
+          ->set_stack_change_callback( [ this ]( buff_t* buff_, int old_, int new_ ) {
+            int it_stack_modifier = as<int>( talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
+            if ( new_ > old_ )
+            {
+              buffs.icy_talons->set_max_stack( buffs.icy_talons->max_stack() + it_stack_modifier );
+            }
+            else if ( new_ < old_ )
+            {
+              buffs.icy_talons->set_max_stack( buffs.icy_talons->max_stack() -
+                                               ( ( old_ - new_ ) * it_stack_modifier ) );
+            }
+          } );
 
   // San'layn
   buffs.essence_of_the_blood_queen = new essence_of_the_blood_queen_buff_t( this );
