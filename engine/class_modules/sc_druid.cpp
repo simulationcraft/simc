@@ -5991,7 +5991,7 @@ struct trigger_astral_smolder_t : public BASE
 {
 private:
   druid_t* p_;
-  buff_t* other_ecl = nullptr;
+  buff_t* eclipse = nullptr;
   dot_t* druid_td_t::dots_t::* other_dot = nullptr;
   double mul;
   double mastery_passive;
@@ -6010,7 +6010,7 @@ public:
 
   void init_astral_smolder( buff_t* b, dot_t* druid_td_t::dots_t::*d )
   {
-    other_ecl = b;
+    eclipse = b;
     other_dot = d;
   }
 
@@ -6021,9 +6021,9 @@ public:
     if ( !p_->active.astral_smolder || !s->result_amount || s->result != RESULT_CRIT || BASE::is_free_proc() )
       return;
 
-    assert( other_ecl && other_dot );
-    auto amount = s->result_amount * mul;
-    amount *= 1.0 + other_ecl->check_value();
+    assert( eclipse && other_dot );
+    // astral smolder handles eclipse via scripting, so we remove it here
+    auto amount = s->result_amount * mul / ( 1.0 + eclipse->check_value() );
 
     if ( !p_->bugs )
     {
@@ -6415,6 +6415,9 @@ struct astral_smolder_t
   astral_smolder_t( druid_t* p ) : residual_action_t( "astral_smolder", p, p->find_spell( 394061 ) )
   {
     proc = true;
+
+    force_effect( p->buff.eclipse_lunar, 7, USE_CURRENT );
+    force_effect( p->buff.eclipse_solar, 8, USE_CURRENT );
   }
 
   void trigger_dot( action_state_t* s ) override
@@ -7703,7 +7706,7 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<con
     reduced_aoe_targets = data().effectN( p->specialization() == DRUID_BALANCE ? 5 : 3 ).base_value();
 
     init_umbral_embrace( p->spec.eclipse_solar, &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg );
-    init_astral_smolder( p->buff.eclipse_solar, &druid_td_t::dots_t::sunfire );
+    init_astral_smolder( p->buff.eclipse_lunar, &druid_td_t::dots_t::sunfire );
 
     parse_effect_modifiers( p->talent.wild_surges );
     parse_effect_modifiers( p->buff.eclipse_lunar, p->talent.umbral_intensity );
@@ -8196,7 +8199,7 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<consum
     form_mask = NO_FORM | MOONKIN_FORM;
 
     init_umbral_embrace( p->spec.eclipse_lunar, &druid_td_t::dots_t::moonfire, p->spec.moonfire_dmg );
-    init_astral_smolder( p->buff.eclipse_lunar, &druid_td_t::dots_t::moonfire );
+    init_astral_smolder( p->buff.eclipse_solar, &druid_td_t::dots_t::moonfire );
 
     parse_effect_modifiers( p->spec.astral_power );
     parse_effect_modifiers( p->talent.wild_surges );
