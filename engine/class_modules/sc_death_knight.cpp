@@ -12338,7 +12338,7 @@ void death_knight_t::create_buffs()
     buffs.rime = make_buff(this, "rime", spec.rime->effectN(1).trigger())
                       ->set_trigger_spell(spec.rime)
                       ->set_chance(spec.rime->effectN(2).percent() +
-                        spec.rage_of_the_frozen_champion->effectN(1).percent())
+                        talent.frost.rage_of_the_frozen_champion->effectN(1).percent())
                       ->set_stack_change_callback([this](buff_t*, int, int new_) {
                       if (new_)
                         buffs.bind_in_darkness->trigger();
