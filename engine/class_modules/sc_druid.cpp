@@ -929,7 +929,6 @@ public:
     player_talent_t soul_of_the_forest_cat;
     player_talent_t sudden_ambush;
     player_talent_t taste_for_blood;
-    player_talent_t tear_open_wounds;
     player_talent_t thrashing_claws;
     player_talent_t tigers_fury;
     player_talent_t tigers_tenacity;
@@ -4845,73 +4844,7 @@ struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
 // NOTE: must be defined AFTER rip_T
 struct primal_wrath_t : public cat_finisher_t
 {
-  struct tear_open_wounds_t : public cat_attack_t
-  {
-    timespan_t rip_dur;
-    timespan_t rip_dur_zerk;
-    double rip_mul;
-
-    tear_open_wounds_t( druid_t* p, flag_e f )
-      : cat_attack_t( "tear_open_wounds", p, p->find_spell( 391786 ), f ),
-        rip_dur( timespan_t::from_seconds( p->talent.tear_open_wounds->effectN( 1 ).base_value() ) ),
-        rip_dur_zerk( timespan_t::from_seconds( p->talent.tear_open_wounds->effectN( 4 ).base_value() ) ),
-        rip_mul( p->talent.tear_open_wounds->effectN( 2 ).percent() )
-    {
-      background = true;
-      round_base_dmg = false;
-      aoe = -1;
-      reduced_aoe_targets = p->talent.tear_open_wounds->effectN( 3 ).base_value();
-
-      // 1 point to allow proper snapshot/update flag parsing
-      base_dd_min = base_dd_max = 1.0;
-    }
-
-    timespan_t _rip_dur() const
-    {
-      return p()->buff.b_inc_cat->check() ? rip_dur_zerk : rip_dur;
-    }
-
-    double _get_amount( const action_state_t* s ) const
-    {
-      auto rip = td( s->target )->dots.rip;
-      auto dur = std::min( _rip_dur(), rip->remains() );
-      auto tic = dur / rip->current_action->tick_time( rip->state );
-      auto amt = rip->state->result_total;
-
-      return tic * amt * rip_mul;
-    }
-
-    double base_da_min( const action_state_t* s ) const override
-    {
-      return _get_amount( s );
-    }
-
-    double base_da_max( const action_state_t* s ) const override
-    {
-      return _get_amount( s );
-    }
-
-    std::vector<player_t*>& target_list() const override
-    {
-      target_cache.is_valid = false;
-
-      auto& tl = cat_attack_t::target_list();
-
-      range::erase_remove( tl, [ this ]( player_t* t ) { return !td( t )->dots.rip->is_ticking(); } );
-
-      return tl;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      cat_attack_t::impact( s );
-
-      td( s->target )->dots.rip->adjust_duration( -( _rip_dur() ) );
-    }
-  };
-
   rip_t* rip;
-  action_t* wounds = nullptr;
 
   DRUID_ABILITY( primal_wrath_t, cat_finisher_t, "primal_wrath", p->talent.primal_wrath )
   {
@@ -4932,12 +4865,6 @@ struct primal_wrath_t : public cat_finisher_t
     // mods are parsed on construction so set to false so the rip execute doesn't decrement
     rip->snapshots.bloodtalons = false;
 
-    if ( p->talent.tear_open_wounds.ok() )
-    {
-      wounds = p->get_secondary_action<tear_open_wounds_t>( "tear_open_wounds", f );
-      add_child( wounds );
-    }
-
     if ( p->talent.adaptive_swarm.ok() )
     {
       const auto& eff = p->spec.adaptive_swarm_damage->effectN( 2 );
@@ -4955,9 +4882,6 @@ struct primal_wrath_t : public cat_finisher_t
 
   void impact( action_state_t* s ) override
   {
-    if ( wounds && s->chain_target == 0 )
-      wounds->execute_on_target( s->target );
-
     rip->snapshot_and_execute( s, true );
 
     cat_finisher_t::impact( s );
@@ -9725,7 +9649,6 @@ void druid_t::init_spells()
   talent.soul_of_the_forest_cat         = STS( "Soul of the Forest", DRUID_FERAL );
   talent.sudden_ambush                  = ST( "Sudden Ambush" );
   talent.taste_for_blood                = ST( "Taste for Blood" );
-  talent.tear_open_wounds               = ST( "Tear Open Wounds" );
   talent.thrashing_claws                = ST( "Thrashing Claws" );
   talent.tigers_fury                    = ST( "Tiger's Fury" );
   talent.tigers_tenacity                = ST( "Tiger's Tenacity" );
