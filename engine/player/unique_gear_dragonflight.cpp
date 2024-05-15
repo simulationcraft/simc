@@ -7840,6 +7840,28 @@ void umbrelskuls_fractured_heart_new( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Trigger and buff - 434064
+// Damage proc - 434069
+// Driver - 433000
+// this is a very simple implementation that assumes the buff always expires, no absorb buff
+void granyths_enduring_scale_new( special_effect_t& e )
+{
+  auto driver = e.player->find_spell( 433000 );
+  auto damage = create_proc_action<generic_proc_t>( "scale_burst", e, "scale_burst", e.player->find_spell( 434069 ) );
+  damage->base_dd_min = damage->base_dd_max = driver->effectN( 3 ).average( e.item );
+  damage->split_aoe_damage                  = true;
+
+  auto buff =
+      create_buff<buff_t>( e.player, e.driver() )->set_stack_change_callback( [ damage ]( buff_t* b, int, int new_ ) {
+        if ( !new_ )
+        {
+          damage->execute_on_target( b->player->target );
+        }
+      } );
+
+  e.custom_buff = buff;
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -11786,6 +11808,7 @@ void register_special_effects()
   register_special_effect( 432777, items::tome_of_unstable_power_new );
   register_special_effect( 432775, items::frozen_wellspring );
   register_special_effect( 432699, items::umbrelskuls_fractured_heart_new );
+  register_special_effect( 434064, items::granyths_enduring_scale_new );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
