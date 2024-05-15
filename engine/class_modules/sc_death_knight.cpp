@@ -4804,7 +4804,7 @@ struct cryogenic_chamber_buff_t final : public buff_t
   cryogenic_chamber_buff_t( death_knight_t* p )
     : buff_t( p, "cryogenic_chamber", p->spell.cryogenic_chamber_buff ), damage( 0 )
   {
-    set_max_stack( as<int>( p->talent.frost.cryogenic_chamber->effectN( 2 ).base_value() ) );
+    set_max_stack( p->talent.frost.cryogenic_chamber ? as<int>( p->talent.frost.cryogenic_chamber->effectN( 2 ).base_value() ) : 1 );
     cryogenic_chamber_damage = get_action<cryogenic_chamber_t>( "cryogenic_chamber", p );
   }
 
