@@ -6688,13 +6688,14 @@ public:
   }
 };
 
+template <eclipse_e E>
 struct ap_generator_t : public druid_spell_t
 {
 protected:
-  using base_t = ap_generator_t;
+  using base_t = ap_generator_t<E>;
 
 public:
-  buff_t* other_ecl = nullptr;
+  buff_t* eclipse;
   double smolder_mul;
   double mastery_passive;
   double mastery_dot;
@@ -6709,30 +6710,41 @@ public:
       smolder_pct( p->talent.astral_smolder->proc_chance() )
   {
     parse_effects( &p->buff.dreamstate->data(), [ this ] { return dreamstate; }, IGNORE_STACKS );
-  }
 
-  void init_astral_smolder( buff_t* b )
-  {
-    other_ecl = b;
-  }
+    const spell_data_t* other_ecl;
+    dot_t* druid_td_t::dots_t::* other_dot;
+    const spell_data_t* other_dmg;;
 
-  void init_umbral_embrace( const spell_data_t* ecl, dot_t* druid_td_t::dots_t::*dot, const spell_data_t* dmg )
-  {
+    if constexpr ( E == eclipse_e::LUNAR )
+    {
+      eclipse = p->buff.eclipse_lunar;
+      other_ecl = p->spec.eclipse_solar;
+      other_dot = &druid_td_t::dots_t::sunfire;
+      other_dmg = p->spec.sunfire_dmg;
+    }
+    else if constexpr ( E == eclipse_e::SOLAR )
+    {
+      eclipse = p->buff.eclipse_solar;
+      other_ecl = p->spec.eclipse_lunar;
+      other_dot = &druid_td_t::dots_t::moonfire;
+      other_dmg = p->spec.moonfire_dmg;
+    }
+
     // Umbral embrace is heavily scripted so we do all the auto parsing within the action itself
-    if ( p()->talent.umbral_embrace.ok() )
+    if ( p->talent.umbral_embrace.ok() )
     {
       add_parse_entry( da_multiplier_effects )
-          .set_value( p()->buff.umbral_embrace->default_value )
+          .set_value( p->buff.umbral_embrace->default_value )
           .set_type( USE_DEFAULT )
           .set_use_stacks( false )
           .set_func( [ this ] { return umbral_embrace_check(); } )
-          .set_eff( &p()->buff.umbral_embrace->data().effectN( 1 ) );
+          .set_eff( &p->buff.umbral_embrace->data().effectN( 1 ) );
 
-      force_effect( ecl, 1, [ this ] { return umbral_embrace_check(); } );
+      force_effect( other_ecl, 1, [ this ] { return umbral_embrace_check(); } );
 
-      force_target_effect( [ this, dot ]( druid_td_t* t ) {
-            return umbral_embrace_check() && std::invoke( dot, t->dots )->is_ticking();
-          }, dmg, as<unsigned>( dmg->effect_count() ), p()->mastery.astral_invocation );
+      force_target_effect( [ this, other_dot ]( druid_td_t* t ) {
+        return umbral_embrace_check() && std::invoke( other_dot, t->dots )->is_ticking();
+      }, other_dmg, as<unsigned>( other_dmg->effect_count() ), p->mastery.astral_invocation );
     }
   }
 
@@ -6776,9 +6788,8 @@ public:
 
     if ( p()->active.astral_smolder && s->result_amount && !proc && rng().roll( smolder_pct ) )
     {
-      assert( other_ecl );
-      auto amount = s->result_amount * smolder_mul;
-      amount *= 1.0 + other_ecl->check_value();
+      // astral smolder handles eclipse via scripting, so we remove it here
+      auto amount = s->result_amount * smolder_mul / ( 1.0 + eclipse->check_value() );
 
       residual_action::trigger( p()->active.astral_smolder, s->target, amount );
     }
@@ -6808,6 +6819,10 @@ struct astral_smolder_t
       uptime( p->get_uptime( "Astral Smolder" )->collect_uptime( *p->sim ) )
   {
     proc = true;
+
+    // eclipse applied via scripting
+    force_effect( p->buff.eclipse_lunar, 7, USE_CURRENT );
+    force_effect( p->buff.eclipse_solar, 8, USE_CURRENT );
   }
 
   void trigger_dot( action_state_t* s ) override
@@ -8042,7 +8057,7 @@ struct starfall_t : public ap_spender_t
 };
 
 // Starfire =============================================================
-struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
+struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclipse_e::LUNAR>>
 {
   size_t aoe_idx;
   double smolder_mul;
@@ -8057,9 +8072,6 @@ struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( p->specialization() == DRUID_BALANCE ? 5 : 3 ).base_value();
-
-    init_umbral_embrace( p->spec.eclipse_solar, &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg );
-    init_astral_smolder( p->buff.eclipse_solar );
 
     parse_effect_modifiers( p->talent.wild_surges );
     parse_effect_modifiers( p->buff.eclipse_lunar, p->talent.umbral_intensity );
@@ -8532,7 +8544,7 @@ struct wild_mushroom_t : public druid_spell_t
 };
 
 // Wrath ====================================================================
-struct wrath_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
+struct wrath_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclipse_e::SOLAR>>
 {
   double gcd_mul;
   double smolder_mul;
@@ -8543,9 +8555,6 @@ struct wrath_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
     smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() )
   {
     form_mask = NO_FORM | MOONKIN_FORM;
-
-    init_umbral_embrace( p->spec.eclipse_lunar, &druid_td_t::dots_t::moonfire, p->spec.moonfire_dmg );
-    init_astral_smolder( p->buff.eclipse_lunar );
 
     parse_effect_modifiers( p->spec.astral_power );
     parse_effect_modifiers( p->talent.wild_surges );
