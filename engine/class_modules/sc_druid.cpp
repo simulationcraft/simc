@@ -6022,8 +6022,7 @@ public:
       return;
 
     assert( eclipse && other_dot );
-    // astral smolder handles eclipse via scripting, so we remove it here
-    auto amount = s->result_amount * mul / ( 1.0 + eclipse->check_value() );
+    auto amount = s->result_amount * mul;
 
     if ( !p_->bugs )
     {
@@ -6415,9 +6414,16 @@ struct astral_smolder_t
   astral_smolder_t( druid_t* p ) : residual_action_t( "astral_smolder", p, p->find_spell( 394061 ) )
   {
     proc = true;
+  }
 
-    force_effect( p->buff.eclipse_lunar, 7, USE_CURRENT );
-    force_effect( p->buff.eclipse_solar, 8, USE_CURRENT );
+  double composite_rolling_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = residual_action_t::composite_rolling_ta_multiplier( s );
+
+    m *= 1.0 + p()->buff.eclipse_lunar->check_value();
+    m *= 1.0 + p()->buff.eclipse_solar->check_value();
+
+    return m;
   }
 
   void trigger_dot( action_state_t* s ) override
