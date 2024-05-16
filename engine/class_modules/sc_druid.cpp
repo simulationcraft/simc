@@ -6695,18 +6695,13 @@ protected:
   using base_t = ap_generator_t<E>;
 
 public:
-  buff_t* eclipse;
   double smolder_mul;
-  double mastery_passive;
-  double mastery_dot;
   double smolder_pct;
   bool dreamstate = false;
 
   ap_generator_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
     : druid_spell_t( n, p, s, f ),
       smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() ),
-      mastery_passive( p->mastery.astral_invocation->effectN( 1 ).mastery_value() ),
-      mastery_dot( p->mastery.astral_invocation->effectN( 5 ).mastery_value() ),
       smolder_pct( p->talent.astral_smolder->proc_chance() )
   {
     parse_effects( &p->buff.dreamstate->data(), [ this ] { return dreamstate; }, IGNORE_STACKS );
@@ -6717,14 +6712,12 @@ public:
 
     if constexpr ( E == eclipse_e::LUNAR )
     {
-      eclipse = p->buff.eclipse_lunar;
       other_ecl = p->spec.eclipse_solar;
       other_dot = &druid_td_t::dots_t::sunfire;
       other_dmg = p->spec.sunfire_dmg;
     }
     else if constexpr ( E == eclipse_e::SOLAR )
     {
-      eclipse = p->buff.eclipse_solar;
       other_ecl = p->spec.eclipse_lunar;
       other_dot = &druid_td_t::dots_t::moonfire;
       other_dmg = p->spec.moonfire_dmg;
@@ -6788,10 +6781,7 @@ public:
 
     if ( p()->active.astral_smolder && s->result_amount && !proc && rng().roll( smolder_pct ) )
     {
-      // astral smolder handles eclipse via scripting, so we remove it here
-      auto amount = s->result_amount * smolder_mul / ( 1.0 + eclipse->check_value() );
-
-      residual_action::trigger( p()->active.astral_smolder, s->target, amount );
+      residual_action::trigger( p()->active.astral_smolder, s->target, s->result_amount * smolder_mul );
     }
 
     if ( p()->active.dream_burst && p()->buff.dream_burst->can_expire( this ) && s->chain_target == 0 )
@@ -6819,10 +6809,16 @@ struct astral_smolder_t
       uptime( p->get_uptime( "Astral Smolder" )->collect_uptime( *p->sim ) )
   {
     proc = true;
+  }
 
-    // eclipse applied via scripting
-    force_effect( p->buff.eclipse_lunar, 7, USE_CURRENT );
-    force_effect( p->buff.eclipse_solar, 8, USE_CURRENT );
+  double composite_rolling_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = residual_action_t::composite_rolling_ta_multiplier( s );
+
+    m *= 1.0 + p()->buff.eclipse_lunar->check_value();
+    m *= 1.0 + p()->buff.eclipse_solar->check_value();
+
+    return m;
   }
 
   void trigger_dot( action_state_t* s ) override
