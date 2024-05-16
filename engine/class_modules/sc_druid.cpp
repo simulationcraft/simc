@@ -8130,10 +8130,24 @@ struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclips
 
     base_t::execute();
 
+    if ( p()->buff.owlkin_frenzy->up() )
+      p()->buff.owlkin_frenzy->expire();
+    else if ( p()->buff.warrior_of_elune->up() )
+      p()->buff.warrior_of_elune->decrement();
+
+    // TODO: can starfire that enters eclipse proc touch the cosmos
+    if ( p()->eclipse_handler.in_eclipse() )
+      p()->buff.touch_the_cosmos_starfall->trigger( this );
+  }
+
+  void schedule_travel( action_state_t* s ) override
+  {
     // for precombat we hack it to advance eclipse and manually energize 100ms later to get around the eclipse stack
     // reset & AP capping on combat start
     if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER )
     {
+      base_t::schedule_travel( s );
+
       make_event( *sim, 100_ms, [ this ]() {
         p()->eclipse_handler.cast_starfire( this );
         p()->resource_gain( RESOURCE_ASTRAL_POWER, composite_energize_amount( execute_state ),
@@ -8143,16 +8157,10 @@ struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclips
       return;
     }
 
-    if ( p()->buff.owlkin_frenzy->up() )
-      p()->buff.owlkin_frenzy->expire();
-    else if ( p()->buff.warrior_of_elune->up() )
-      p()->buff.warrior_of_elune->decrement();
-
-    // TODO: can starfire that enters eclipse proc touch the cosmos
-    if ( p()->eclipse_handler.in_eclipse() )
-      p()->buff.touch_the_cosmos_starfall->trigger( this );
-
+    // eclipse is handled after cast but before impact
     p()->eclipse_handler.cast_starfire( this );
+
+    base_t::schedule_travel( s );
   }
 
   // TODO: we do this all in composite_aoe_multiplier() as base_aoe_multiplier is not a virtual function. If necessary
@@ -8593,10 +8601,19 @@ struct wrath_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclipse_e
   {
     base_t::execute();
 
+    // TODO: can wrath that triggers eclipse proc touch the cosmos
+    if ( p()->eclipse_handler.in_eclipse() )
+      p()->buff.touch_the_cosmos_starsurge->trigger( this );
+  }
+
+  void schedule_travel( action_state_t* s ) override
+  {
     // in druid_t::init_finished(), we set the final wrath of the precombat to have energize type of NONE, so that
     // we can handle the delayed enerigze & eclipse stack triggering here.
     if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER && energize_type == action_energize::NONE )
     {
+      base_t::schedule_travel( s );
+
       make_event( *sim, 100_ms, [ this ]() {
         p()->eclipse_handler.cast_wrath( this );
         p()->resource_gain( RESOURCE_ASTRAL_POWER, composite_energize_amount( execute_state ),
@@ -8606,12 +8623,12 @@ struct wrath_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclipse_e
       return;
     }
 
-    // TODO: can wrath that triggers eclipse proc touch the cosmos
-    if ( p()->eclipse_handler.in_eclipse() )
-      p()->buff.touch_the_cosmos_starsurge->trigger( this );
-
+    // eclipse is handled after cast but before travel
     p()->eclipse_handler.cast_wrath( this );
+
+    base_t::schedule_travel( s );
   }
+
 };
 
 // Convoke the Spirits ======================================================
