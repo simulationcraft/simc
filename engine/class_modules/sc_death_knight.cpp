@@ -5836,7 +5836,7 @@ struct reapers_mark_t final : public death_knight_spell_t
     {
       add_child( p->active_spells.soul_rupture );
     }
-    if ( p->talent.deathbringer.grim_reaper.ok() 
+    if ( p->talent.deathbringer.grim_reaper.ok() )
     {
       add_child( p->active_spells.grim_reaper_soul_reaper );
     }
