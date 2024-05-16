@@ -8245,7 +8245,6 @@ struct heart_strike_damage_base_t : public death_knight_melee_attack_t
     if ( p()->talent.deathbringer.dark_talons.ok() && p()->buffs.icy_talons->check() &&
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
-      p()->buffs.dark_talons_shadowfrost->trigger();
       p()->buffs.dark_talons_icy_talons->trigger();
     }
   }
@@ -8471,7 +8470,6 @@ struct howling_blast_t final : public death_knight_spell_t
     if ( p()->talent.deathbringer.dark_talons.ok() && p()->buffs.rime->check() && p()->buffs.icy_talons->check() &&
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
-      p()->buffs.dark_talons_shadowfrost->trigger();
       p()->buffs.dark_talons_icy_talons->trigger();
     }
 
@@ -8513,7 +8511,6 @@ struct marrowrend_t final : public death_knight_melee_attack_t
     if ( p()->talent.deathbringer.dark_talons.ok() && p()->buffs.icy_talons->check() &&
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
-      p()->buffs.dark_talons_shadowfrost->trigger();
       p()->buffs.dark_talons_icy_talons->trigger();
     }
   }
@@ -10574,7 +10571,6 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
 
     if( talent.deathbringer.dark_talons.ok() && buffs.icy_talons->check() && rng().roll( talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
-      buffs.dark_talons_shadowfrost->trigger();
       buffs.dark_talons_icy_talons->trigger();
     }
   } );
@@ -12290,13 +12286,21 @@ void death_knight_t::create_buffs()
                          ->set_cooldown( talent.icy_talons->internal_cooldown() )
                          ->set_trigger_spell( talent.icy_talons )
                          ->apply_affecting_aura( talent.frost.smothering_offense )
-                         ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
-                           if( talent.deathbringer.dark_talons.ok() )
+                         ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+                           if ( talent.deathbringer.dark_talons.ok() )
                            {
-                             buffs.dark_talons_icy_talons->expire();
-                             buffs.dark_talons_shadowfrost->expire();
+                             if ( new_ == 1 )
+                             {
+                               buffs.dark_talons_shadowfrost->trigger();
+                             }
+                             else if ( new_ == 0 )
+                             {
+                               buffs.dark_talons_shadowfrost->expire();
+                               buffs.dark_talons_icy_talons->expire();
+                             }
                            }
                          } );
+
 
   // Rider of the Apocalypse
   buffs.antimagic_shell_horsemen = new antimagic_shell_buff_horseman_t( this );
@@ -12319,10 +12323,11 @@ void death_knight_t::create_buffs()
   buffs.bind_in_darkness = make_buff( this, "bind_in_darkness", spell.bind_in_darkness_buff )
                                ->set_trigger_spell( talent.deathbringer.bind_in_darkness );
 
-  buffs.dark_talons_shadowfrost = make_buff( this, "dark_talons_shadowfrost", spell.dark_talons_shadowfrost_buff );
+  buffs.dark_talons_shadowfrost =
+      make_buff( this, "dark_talons_shadowfrost", spell.dark_talons_shadowfrost_buff )->set_quiet( true );
 
   buffs.dark_talons_icy_talons =
-      make_buff( this, "dark_talons_icy_talons", spell.dark_talons_icy_talons_buff )
+      make_buff( this, "dark_talons", spell.dark_talons_icy_talons_buff )
           ->set_stack_change_callback( [ this ]( buff_t* buff_, int old_, int new_ ) {
             int it_stack_modifier = as<int>( talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
             if ( new_ > old_ )
