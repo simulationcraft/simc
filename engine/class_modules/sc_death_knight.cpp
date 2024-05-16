@@ -4470,6 +4470,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
 
     // Deathbringer
     parse_effects( p()->buffs.dark_talons_shadowfrost, p()->talent.deathbringer.dark_talons );
+    parse_effects( p()->buffs.bind_in_darkness, p()->talent.deathbringer.bind_in_darkness );
 
     // San'layn
     parse_effects( p()->buffs.essence_of_the_blood_queen, p()->talent.sanlayn.frenzied_bloodthirst );
@@ -6153,11 +6154,6 @@ struct blood_boil_t final : public death_knight_spell_t
     aoe              = -1;
     cooldown->hasted = true;
     impact_action    = get_action<blood_plague_t>( "blood_plague", p );
-
-    if ( p->talent.deathbringer.bind_in_darkness->ok() )
-    {
-      school = SCHOOL_SHADOWFROST;
-    }
   }
 
   void execute() override
@@ -8448,20 +8444,7 @@ struct howling_blast_t final : public death_knight_spell_t
 
   void execute() override
   {
-    if ( p()->talent.deathbringer.bind_in_darkness->ok() && p()->buffs.bind_in_darkness->check() )
-    {
-      school = SCHOOL_SHADOWFROST;
-    }
-
     death_knight_spell_t::execute();
-
-    if ( p()->talent.deathbringer.bind_in_darkness->ok() && p()->buffs.bind_in_darkness->check() )
-    {
-      school = SCHOOL_FROST;
-      p()->buffs.bind_in_darkness->expire();
-    }
-
-
     if ( p()->buffs.pillar_of_frost->up() && p()->talent.frost.obliteration.ok() )
     {
       p()->trigger_killing_machine( 1.0, p()->procs.km_from_obliteration_hb,
@@ -12529,8 +12512,13 @@ void death_knight_t::create_buffs()
                      ->set_chance( spec.rime->effectN( 2 ).percent() +
                                    talent.frost.rage_of_the_frozen_champion->effectN( 1 ).percent() )
                      ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-                       if ( new_ && talent.deathbringer.bind_in_darkness.ok() )
-                         buffs.bind_in_darkness->trigger();
+                       if ( talent.deathbringer.bind_in_darkness.ok() )
+                       {
+                         if ( new_ )
+                           buffs.bind_in_darkness->trigger();
+                         else
+                           buffs.bind_in_darkness->expire();
+                       }
                      } );
 
     buffs.bonegrinder_crit = make_buff( this, "bonegrinder_crit", spell.bonegrinder_crit_buff )
@@ -13179,6 +13167,7 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.rider.hungering_thirst );
 
   // Deathbringer
+  action.apply_affecting_aura( talent.deathbringer.bind_in_darkness );
   action.apply_affecting_aura( talent.deathbringer.wither_away );
   action.apply_affecting_aura( talent.deathbringer.deaths_messenger );
   action.apply_affecting_aura( talent.deathbringer.swift_end );
