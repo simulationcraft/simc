@@ -4336,6 +4336,37 @@ private:
 namespace
 {  // UNNAMED NAMESPACE
 
+// Custom School Change Buff struct
+struct school_change_buff_t : public buff_t
+{
+  school_change_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
+    : buff_t( p, name, spell )
+  {
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::start( stacks, value, duration );
+    for ( auto action : actions )
+    {
+      action->set_school_override( dbc::get_school_type( school ) );
+    }
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    for ( auto action : actions )
+    {
+      action->clear_school_override();
+    }
+  }
+
+public:
+  std::vector<action_t*> actions;
+  uint32_t school;
+};
+
 // Template for common death knight action code. See priest_action_t.
 template <class Base>
 struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_t, death_knight_td_t>
@@ -4398,8 +4429,9 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     if ( eff.subtype() == A_MODIFY_SCHOOL && ( action_base_t::data().affected_by_all( eff ) || force ) )
     {
       str           = "school change";
-      data.opt_enum = eff.misc_value1();
       data.type     = parse_flag_e::ALLOW_ZERO;
+      debug_cast<school_change_buff_t*>( data.buff )->school = eff.misc_value1();
+      debug_cast<school_change_buff_t*>( data.buff )->actions.push_back( this );
       return &school_change_effects;
     }
     return action_base_t::get_effect_vector( eff, data, val_mul, str, flat, force );
@@ -4568,17 +4600,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
 
   void execute() override
   {
-    for ( const auto& i : school_change_effects )
-    {
-      this->set_school_override( dbc::get_school_type( i.opt_enum ) );
-    }
-
     action_base_t::execute();
-
-    if ( this->original_school != SCHOOL_NONE )
-    {
-      this->clear_school_override();
-    }
 
     // For non tank DK's, we proc the ability on CD, attached to thier own executes, to simulate it
     if ( p()->talent.blood_draw.ok() && p()->specialization() != DEATH_KNIGHT_BLOOD &&
@@ -12290,7 +12312,7 @@ void death_knight_t::create_buffs()
   buffs.antimagic_shell_horsemen_icd =
       make_buff( this, "antimagic_shell_horsemen_icd", pet_spell.rider_ams_icd )->set_quiet( true );
 
-  buffs.apocalyptic_conquest = new apocalyptic_conquest_buff_t( this );
+  buffs.apocalyptic_conquest = make_buff<apocalyptic_conquest_buff_t>( this );
 
   buffs.mograines_might =
       make_buff( this, "mograines_might", pet_spell.mograines_might_buff )->set_default_value_from_effect( 1 );
@@ -12302,11 +12324,11 @@ void death_knight_t::create_buffs()
   // Deathbringer
   buffs.grim_reaper = make_buff( this, "grim_reaper", spell.grim_reaper )->set_quiet( true );
 
-  buffs.bind_in_darkness = make_buff( this, "bind_in_darkness", spell.bind_in_darkness_buff )
+  buffs.bind_in_darkness = make_buff<school_change_buff_t>( this, "bind_in_darkness", spell.bind_in_darkness_buff )
                                ->set_trigger_spell( talent.deathbringer.bind_in_darkness );
 
   buffs.dark_talons_shadowfrost =
-      make_buff( this, "dark_talons_shadowfrost", spell.dark_talons_shadowfrost_buff )->set_quiet( true );
+      make_buff<school_change_buff_t>( this, "dark_talons_shadowfrost", spell.dark_talons_shadowfrost_buff )->set_quiet( true );
 
   buffs.dark_talons_icy_talons =
       make_buff( this, "dark_talons", spell.dark_talons_icy_talons_buff )
