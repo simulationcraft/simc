@@ -12263,9 +12263,9 @@ void death_knight_t::create_buffs()
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
   // Shared
-  buffs.antimagic_shell = new antimagic_shell_buff_t( this );
+  buffs.antimagic_shell = make_buff<antimagic_shell_buff_t>( this );
 
-  buffs.antimagic_zone = new antimagic_zone_buff_t( this );
+  buffs.antimagic_zone = make_buff<antimagic_zone_buff_t>( this );
 
   buffs.icebound_fortitude = make_buff( this, "icebound_fortitude", talent.icebound_fortitude )
                                  ->set_duration( talent.icebound_fortitude->duration() )
@@ -12283,7 +12283,7 @@ void death_knight_t::create_buffs()
                             ->set_default_value_from_effect( 1 )
                             ->set_duration( 0_ms );  // Handled by trigger_dnd_buffs() & expire_dnd_buffs()
 
-  buffs.abomination_limb = new abomination_limb_buff_t( this );
+  buffs.abomination_limb = make_buff<abomination_limb_buff_t>( this );
 
   buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons->effectN( 1 ).trigger() )
                          ->set_default_value( talent.icy_talons->effectN( 1 ).percent() )
@@ -12307,7 +12307,7 @@ void death_knight_t::create_buffs()
 
 
   // Rider of the Apocalypse
-  buffs.antimagic_shell_horsemen = new antimagic_shell_buff_horseman_t( this );
+  buffs.antimagic_shell_horsemen = make_buff<antimagic_shell_buff_horseman_t>( this );
 
   buffs.antimagic_shell_horsemen_icd =
       make_buff( this, "antimagic_shell_horsemen_icd", pet_spell.rider_ams_icd )->set_quiet( true );
@@ -12358,7 +12358,7 @@ void death_knight_t::create_buffs()
   // Blood
   if ( this->specialization() == DEATH_KNIGHT_BLOOD )
   {
-    buffs.blood_shield = new blood_shield_buff_t( this );
+    buffs.blood_shield = make_buff<blood_shield_buff_t>( this );
 
     buffs.bone_shield =
         make_buff( this, "bone_shield", spell.bone_shield )
@@ -12474,7 +12474,7 @@ void death_knight_t::create_buffs()
   // Frost
   if ( this->specialization() == DEATH_KNIGHT_FROST )
   {
-    buffs.breath_of_sindragosa = new breath_of_sindragosa_buff_t( this );
+    buffs.breath_of_sindragosa = make_buff<breath_of_sindragosa_buff_t>( this );
 
     buffs.cold_heart = make_buff( this, "cold_heart", talent.frost.cold_heart->effectN( 1 ).trigger() );
 
@@ -12512,9 +12512,9 @@ void death_knight_t::create_buffs()
                              gains.empower_rune_weapon );
             } );
 
-    buffs.pillar_of_frost = new pillar_of_frost_buff_t( this );
+    buffs.pillar_of_frost = make_buff<pillar_of_frost_buff_t>( this );
 
-    buffs.remorseless_winter = new remorseless_winter_buff_t( this );
+    buffs.remorseless_winter = make_buff<remorseless_winter_buff_t>( this );
 
     buffs.rime = make_buff( this, "rime", spell.rime_buff )
                      ->set_trigger_spell( spec.rime )
@@ -12552,15 +12552,15 @@ void death_knight_t::create_buffs()
             ->set_cooldown( talent.frost.unleashed_frenzy->internal_cooldown() )
             ->set_default_value( talent.frost.unleashed_frenzy->effectN( 1 ).percent() );
 
-    buffs.cryogenic_chamber = new cryogenic_chamber_buff_t( this );
+    buffs.cryogenic_chamber = make_buff<cryogenic_chamber_buff_t>( this );
   }
 
   // Unholy
   if ( this->specialization() == DEATH_KNIGHT_UNHOLY )
   {
-    buffs.dark_transformation = new dark_transformation_buff_t( this );
+    buffs.dark_transformation = make_buff<dark_transformation_buff_t>( this );
 
-    buffs.runic_corruption = new runic_corruption_buff_t( this );
+    buffs.runic_corruption = make_buff<runic_corruption_buff_t>( this );
 
     buffs.sudden_doom = make_buff( this, "sudden_doom", talent.unholy.sudden_doom->effectN( 1 ).trigger() )
                             ->set_trigger_spell( talent.unholy.sudden_doom )
