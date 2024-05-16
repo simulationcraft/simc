@@ -833,6 +833,7 @@ public:
     action_t* reapers_mark_explosion;
     action_t* wave_of_souls;
     action_t* soul_rupture;
+    action_t* grim_reaper_soul_reaper;
 
     // Frost
     action_t* breath_of_sindragosa_tick;
@@ -1198,7 +1199,7 @@ public:
       player_talent_t blood_fever;       
       player_talent_t bind_in_darkness;  
       player_talent_t soul_rupture;      
-      player_talent_t grim_reaper;       // NYI
+      player_talent_t grim_reaper;       
       player_talent_t deaths_bargain;    // NYI
       player_talent_t swift_end;         // NYI
       player_talent_t painful_death;     // NYI
@@ -1364,6 +1365,7 @@ public:
     const spell_data_t* blood_fever_damage;
     const spell_data_t* bind_in_darkness_buff;
     const spell_data_t* soul_rupture_damage;
+    const spell_data_t* grim_reaper_soul_reaper;
 
   } spell;
 
@@ -5653,10 +5655,28 @@ struct reapers_mark_explosion_t final : public death_knight_spell_t
     return m * stacks;
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = death_knight_spell_t::composite_target_multiplier( target );
+    // TODO-TWW: Grim reaper is not working on alpha. This implementation is copied from rune of sanguination
+    /* if ( p()->talent.deathbringer.grim_reaper->ok() )
+    {
+      auto increase    = 1 + ( 0.25 );
+      auto buff_amount = ( 1.0 - target->health_percentage() / 100 ) * increase;
+      buff_amount      = std::max( buff_amount, p()->talent.deathbringer.grim_reaper->effectN( 1 ).percent() );
+      m *= 1.0 + buff_amount;
+    }*/
+
+    return m;
+  }
+
   void execute_wrapper( player_t* target, int stacks )
   {
     this->stacks = stacks;
     execute_on_target( target );
+    if ( p()->talent.deathbringer.grim_reaper->ok() &&
+         target->health_percentage() < p()->talent.deathbringer.grim_reaper->effectN( 2 ).base_value() )
+      p()->active_spells.grim_reaper_soul_reaper->execute_on_target( target );
   }
 
   void impact(action_state_t* state) override
@@ -5694,7 +5714,7 @@ struct soul_rupture_t final : public death_knight_spell_t
 {
   soul_rupture_t(util::string_view name, death_knight_t* p) : death_knight_spell_t(name, p, p->spell.soul_rupture_damage)
   {
-    background = true;
+    background         = true;
     cooldown->duration = 0_ms;
     aoe                = -1;
     may_crit           = false;
@@ -5710,6 +5730,7 @@ struct reapers_mark_t final : public death_knight_spell_t
     add_child( p->active_spells.reapers_mark_explosion );
     add_child( p->active_spells.wave_of_souls );
     add_child( p->active_spells.soul_rupture );
+    add_child( p->active_spells.grim_reaper_soul_reaper );
   }
 
   void impact( action_state_t* state ) override
@@ -9321,11 +9342,11 @@ struct soul_reaper_execute_t : public death_knight_spell_t
   }
 };
 
-struct soul_reaper_t final : public death_knight_melee_attack_t
+struct soul_reaper_t : public death_knight_melee_attack_t
 {
-  soul_reaper_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_melee_attack_t( "soul_reaper", p, p->talent.soul_reaper ),
-      soul_reaper_execute( get_action<soul_reaper_execute_t>( "soul_reaper_execute", p ) )
+  soul_reaper_t( util::string_view name, death_knight_t* p, util::string_view options_str, const spell_data_t* data )
+    : death_knight_melee_attack_t( name, p, data ),
+      soul_reaper_execute( get_action<soul_reaper_execute_t>( name_str + "_execute", p ) )
   {
     parse_options( options_str );
     add_child( soul_reaper_execute );
@@ -9394,6 +9415,28 @@ struct soul_reaper_t final : public death_knight_melee_attack_t
 
 private:
   propagate_const<action_t*> soul_reaper_execute;
+};
+
+struct soul_reaper_action_t final : public soul_reaper_t
+{
+  soul_reaper_action_t( util::string_view n, death_knight_t* p, util::string_view options_str )
+    : soul_reaper_t( n, p, options_str, p->talent.soul_reaper )
+  {
+  }
+};
+
+struct grim_reaper_soul_reaper_t : soul_reaper_t
+{
+  grim_reaper_soul_reaper_t( util::string_view name, death_knight_t* p )
+    : soul_reaper_t( name, p, "", p->spell.grim_reaper_soul_reaper )
+  {
+    background                         = true;
+    base_costs[ RESOURCE_RUNIC_POWER ] = 0;
+    base_costs[ RESOURCE_RUNE ]        = 0;
+    trigger_gcd                        = 0_ms;
+    cooldown->duration                 = 0_ms;
+    energize_amount                    = 0;
+  }
 };
 
 // Summon Gargoyle ==========================================================
@@ -10996,6 +11039,10 @@ void death_knight_t::create_actions()
   {
     active_spells.soul_rupture = get_action<soul_rupture_t>( "reapers_mark_soul_rupture", this );
   }
+  if ( talent.deathbringer.grim_reaper.ok() )
+  {
+    active_spells.grim_reaper_soul_reaper = get_action<grim_reaper_soul_reaper_t>( "soul_reaper_grim_reaper", this);
+  }
 
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
@@ -11207,7 +11254,7 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
   if ( name == "scourge_strike" )
     return new wound_spender_action_t( "scourge_strike_base", this, options_str );
   if ( name == "soul_reaper" )
-    return new soul_reaper_t( this, options_str );
+    return new soul_reaper_action_t( "soul_reaper", this, options_str );
   if ( name == "summon_gargoyle" )
     return new summon_gargoyle_t( this, options_str );
   if ( name == "unholy_assault" )
@@ -12007,6 +12054,7 @@ void death_knight_t::init_spells()
   spell.blood_fever_damage     = find_spell( 440005 );
   spell.bind_in_darkness_buff  = find_spell( 443532 );
   spell.soul_rupture_damage    = find_spell( 439594 );
+  spell.grim_reaper_soul_reaper = find_spell( 448229 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
