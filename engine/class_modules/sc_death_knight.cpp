@@ -12346,7 +12346,7 @@ void death_knight_t::create_buffs()
           } );
 
   // San'layn
-  buffs.essence_of_the_blood_queen = new essence_of_the_blood_queen_buff_t( this );
+  buffs.essence_of_the_blood_queen = make_buff<essence_of_the_blood_queen_buff_t>( this );
 
   buffs.gift_of_the_sanlayn = make_buff( this, "gift_of_the_sanlayn", spell.gift_of_the_sanlayn_buff )
                                   ->set_duration( 0_ms )
@@ -12570,7 +12570,7 @@ void death_knight_t::create_buffs()
                                ->set_cooldown( 0_ms )  // Handled by the action
                                ->set_default_value_from_effect( 4 );
 
-    buffs.unholy_pact = new unholy_pact_buff_t( this );
+    buffs.unholy_pact = make_buff<unholy_pact_buff_t>( this );
 
     buffs.ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", spell.ghoulish_frenzy_player )
                                 ->set_duration( 0_ms )  // Handled by DT
