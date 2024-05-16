@@ -4586,9 +4586,11 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
   {
     if ( this->recheck_school_change )
     {
-      for ( const auto& i : school_change_effects )
+      size_t size = school_change_effects.size();
+      if ( size > 0 )
       {
-        this->set_school_override( dbc::get_school_type( i.opt_enum ) );
+        uint32_t school = *&school_change_effects.end()->opt_enum;
+        this->set_school_override( dbc::get_school_type( school ) );
       }
       if ( this->original_school != SCHOOL_NONE && this->parsed_school_expire )
       {
@@ -12681,6 +12683,7 @@ void death_knight_t::init_procs()
 
 void death_knight_t::init_finished()
 {
+  parse_player_effects();
   player_t::init_finished();
 
   if ( deprecated_dnd_expression )
@@ -12700,7 +12703,6 @@ void death_knight_t::init_finished()
         "Use death_knight.runeforge.name instead.",
         name() );
   }
-  parse_player_effects();
 }
 
 // death_knight_t::validate_fight_style =====================================
