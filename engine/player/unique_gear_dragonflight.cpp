@@ -6643,8 +6643,6 @@ void nymues_unraveling_spindle( special_effect_t& effect )
     {
       auto tm = proc_spell_t::composite_target_multiplier( t );
 
-      actor_target_data_t* td = player->get_target_data( t );
-
       // Affected By: Roots or Stuns
       // Not Affected By: Slows
       if ( player->dragonflight_opts.nymue_forced_immobilized || t->buffs.rooted->check() || t->buffs.stunned->check() )
@@ -7540,7 +7538,7 @@ void frozen_wellspring( special_effect_t& effect )
 
   // make proc trigger damage & debuff on target
   effect.player->callbacks.register_callback_execute_function( proc_driver->spell_id,
-      [ p = effect.player, proc, buff, proxy ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+      [ proc, buff, proxy ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
         if ( buff->check() )
         {
           proc->execute_on_target( s->target );

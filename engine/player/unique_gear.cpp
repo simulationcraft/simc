@@ -4097,9 +4097,6 @@ void unique_gear::init( player_t* p )
 
     p->sim->print_debug( "Initializing generic special effect {}", *effect );
 
-    // cache id as initialization callback can change it
-    auto driver_id = effect->spell_id;
-
     initialize_special_effect_2( effect );
   }
 }
@@ -5101,8 +5098,6 @@ void unique_gear::register_hotfixes()
 
 void unique_gear::register_target_data_initializers( sim_t* sim )
 {
-  static constexpr std::array<slot_e, 2> trinkets {{ SLOT_TRINKET_1, SLOT_TRINKET_2 }};
-
   register_target_data_initializers_legion( sim );
   register_target_data_initializers_bfa( sim );
   azerite::register_azerite_target_data_initializers( sim );
