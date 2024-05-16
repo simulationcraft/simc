@@ -1310,11 +1310,12 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
   // Base amount rounded to some decimal, but the exact precision is currently unknown. For now assume 3 digits as that
   // is what AP/SP multipliers seem to be rounded to.
   amount = std::round( amount * 1000 ) * 0.001;
+  // Assuming both flat value tick amount and coeff tick amount are rolled into rolling periodics. Adjust if disproven.
   amount += bonus_ta( state );
-  double rolling_ta_multiplier = state->composite_rolling_ta_multiplier();
-  amount += state->composite_spell_power() * spell_tick_power_coefficient( state ) * rolling_ta_multiplier;
-  amount += state->composite_attack_power() * attack_tick_power_coefficient( state ) * rolling_ta_multiplier;
+  amount += state->composite_spell_power() * spell_tick_power_coefficient( state );
+  amount += state->composite_attack_power() * attack_tick_power_coefficient( state );
   amount *= state->composite_ta_multiplier();
+  amount *= state->composite_rolling_ta_multiplier();
 
   double init_tick_amount = amount;
 

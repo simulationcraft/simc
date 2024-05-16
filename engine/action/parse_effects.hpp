@@ -27,7 +27,8 @@ enum parse_flag_e
   USE_DATA,
   USE_DEFAULT,
   USE_CURRENT,
-  IGNORE_STACKS
+  IGNORE_STACKS,
+  ALLOW_ZERO
 };
 
 // effects dependent on player state
@@ -365,17 +366,6 @@ public:
         val_mul = 1.0;
     }
 
-    if constexpr ( is_detected<detect_type, U>::value )
-    {
-      if ( !val && tmp.data.type == parse_flag_e::USE_DATA )
-        return;
-    }
-    else
-    {
-      if ( !val )
-        return;
-    }
-
     std::string type_str;
     bool flat = false;
     std::vector<U>* vec;
@@ -395,6 +385,17 @@ public:
 
     if ( !vec )
       return;
+
+    if constexpr ( is_detected<detect_type, U>::value )
+    {
+      if ( !val && tmp.data.type == parse_flag_e::USE_DATA )
+        return;
+    }
+    else
+    {
+      if ( !val )
+        return;
+    }
 
     val *= val_mul;
 
@@ -1389,7 +1390,7 @@ public:
     return true;
   }
 
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& /* data */,
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& /*data*/,
                                                    double& val_mul, std::string& str, bool& flat, bool force ) override
   {
     if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )

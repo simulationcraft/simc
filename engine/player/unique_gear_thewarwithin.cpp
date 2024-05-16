@@ -839,6 +839,7 @@ void void_reapers_claw( special_effect_t& effect )
 // 443590 stat buff
 // TODO: damage spell data is shadowfrost and not cosmic
 // TODO: confirm buff/debuff is based on target type and not triggering spell type
+// TODO: confirm cannot proc on pets
 void fateweaved_needle( special_effect_t& effect )
 {
   struct fateweaved_needle_cb_t : public dbc_proc_callback_t
@@ -875,6 +876,13 @@ void fateweaved_needle( special_effect_t& effect )
           ->set_stat_from_effect_type( A_MOD_STAT, stat_amt )
           ->set_name_reporting( "thread_of_fate" );
       }
+    }
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      // TODO: confirm cannot proc on pets
+      if ( s->target->is_enemy() || ( s->target != listener && s->target->is_player() ) )
+        return dbc_proc_callback_t::trigger( a, s );
     }
 
     void execute( action_t*, action_state_t* s ) override
