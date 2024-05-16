@@ -4345,12 +4345,10 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
 
   gain_t* gain;
   bool hasted_gcd;
-  bool parsed_school_expire;
-  bool recheck_school_change;
   std::vector<player_effect_t> school_change_effects;
 
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false ), parsed_school_expire( false ), recheck_school_change( false )
+    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false )
   {
     this->may_crit   = true;
     this->may_glance = false;
@@ -4577,7 +4575,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
 
     action_base_t::execute();
 
-    if ( this->original_school != SCHOOL_NONE && this->parsed_school_expire )
+    if ( this->original_school != SCHOOL_NONE )
     {
       this->clear_school_override();
     }
