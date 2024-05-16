@@ -13325,6 +13325,9 @@ void eclipse_handler_t::advance_eclipse( eclipse_e eclipse, bool active )
 void eclipse_handler_t::update_eclipse( eclipse_e eclipse )
 {
   auto buff = get_eclipse( eclipse );
+  if ( !buff->check() )
+    return;
+
   auto val = buff->default_value;
 
   val += get_harmony( eclipse )->check_stack_value();
