@@ -4397,7 +4397,6 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
   std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data,
                                                    double& val_mul, std::string& str, bool& flat, bool force ) override
   {
-    action_base_t::get_effect_vector( eff, data, val_mul, str, flat, force );
     if ( eff.subtype() == A_MODIFY_SCHOOL && ( action_base_t::data().affected_by_all( eff ) || force ) )
     {
       str           = "school change";
@@ -4411,7 +4410,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
           {
             this->parsed_school_expire = true;
           }
-          if (new_ > 0)
+          if ( new_ > 0 )
           {
             this->parsed_school_expire = false;
           }
@@ -4419,6 +4418,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
       }
       return &school_change_effects;
     }
+    return action_base_t::get_effect_vector( eff, data, val_mul, str, flat, force );
   }
 
   std::string full_name() const
@@ -4730,15 +4730,35 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   bool triggers_icecap;
 
   death_knight_melee_attack_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( n, p, s ), triggers_icecap( false )
+    : death_knight_action_t( n, p, s ), triggers_icecap( false )
   {
     special    = true;
     may_crit   = true;
     may_glance = false;
   }
 
-  void execute() override;
-  void impact( action_state_t* state ) override;
+  void impact( action_state_t* state ) override
+  {
+    death_knight_action_t::impact( state );
+
+    if ( state->result_amount > 0 && callbacks && weapon &&
+         ( ( p()->runeforge.rune_of_razorice_mh && weapon->slot == SLOT_MAIN_HAND ) ||
+           ( p()->runeforge.rune_of_razorice_oh && weapon->slot == SLOT_OFF_HAND ) ) )
+    {
+      // Razorice is executed after the attack that triggers it
+      p()->active_spells.runeforge_razorice->set_target( state->target );
+      p()->active_spells.runeforge_razorice->schedule_execute();
+    }
+
+    if ( triggers_icecap && p()->talent.frost.icecap.ok() && p()->cooldown.icecap_icd->is_ready() &&
+         state->result == RESULT_CRIT )
+    {
+      p()->cooldown.pillar_of_frost->adjust(
+          timespan_t::from_seconds( -p()->talent.frost.icecap->effectN( 1 ).base_value() / 10.0 ) );
+
+      p()->cooldown.icecap_icd->start();
+    }
+  }
 };
 
 // ==========================================================================
@@ -4748,7 +4768,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
 struct death_knight_spell_t : public death_knight_action_t<spell_t>
 {
   death_knight_spell_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( n, p, s )
+    : death_knight_action_t( n, p, s )
   {
   }
 };
@@ -4756,46 +4776,10 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
 struct death_knight_heal_t : public death_knight_action_t<heal_t>
 {
   death_knight_heal_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( n, p, s )
+    : death_knight_action_t( n, p, s )
   {
   }
 };
-
-// ==========================================================================
-// Death Knight Attack Methods
-// ==========================================================================
-
-// death_knight_melee_attack_t:execute() ====================================
-
-void death_knight_melee_attack_t::execute()
-{
-  base_t::execute();
-}
-
-// death_knight_melee_attack_t::impact() ====================================
-
-void death_knight_melee_attack_t::impact( action_state_t* state )
-{
-  base_t::impact( state );
-
-  if ( state->result_amount > 0 && callbacks && weapon &&
-       ( ( p()->runeforge.rune_of_razorice_mh && weapon->slot == SLOT_MAIN_HAND ) ||
-         ( p()->runeforge.rune_of_razorice_oh && weapon->slot == SLOT_OFF_HAND ) ) )
-  {
-    // Razorice is executed after the attack that triggers it
-    p()->active_spells.runeforge_razorice->set_target( state->target );
-    p()->active_spells.runeforge_razorice->schedule_execute();
-  }
-
-  if ( triggers_icecap && p()->talent.frost.icecap.ok() && p()->cooldown.icecap_icd->is_ready() &&
-       state->result == RESULT_CRIT )
-  {
-    p()->cooldown.pillar_of_frost->adjust(
-        timespan_t::from_seconds( -p()->talent.frost.icecap->effectN( 1 ).base_value() / 10.0 ) );
-
-    p()->cooldown.icecap_icd->start();
-  }
-}
 
 // ==========================================================================
 // Death Knight Secondary Abilities
