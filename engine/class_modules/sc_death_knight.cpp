@@ -4402,20 +4402,6 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
       str           = "school change";
       data.opt_enum = eff.misc_value1();
       data.type     = parse_flag_e::ALLOW_ZERO;
-      if ( data.buff != nullptr )
-      {
-        data.buff->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-          this->recheck_school_change = true;
-          if ( new_ == 0 )
-          {
-            this->parsed_school_expire = true;
-          }
-          if ( new_ > 0 )
-          {
-            this->parsed_school_expire = false;
-          }
-        } );
-      }
       return &school_change_effects;
     }
     return action_base_t::get_effect_vector( eff, data, val_mul, str, flat, force );
@@ -4584,21 +4570,17 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
 
   void execute() override
   {
-    if ( this->recheck_school_change )
+    for ( const auto& i : school_change_effects )
     {
-      size_t size = school_change_effects.size();
-      if ( size > 0 )
-      {
-        uint32_t school = *&school_change_effects.end()->opt_enum;
-        this->set_school_override( dbc::get_school_type( school ) );
-      }
-      if ( this->original_school != SCHOOL_NONE && this->parsed_school_expire )
-      {
-        this->clear_school_override();
-      }
+      this->set_school_override( dbc::get_school_type( i.opt_enum ) );
     }
 
     action_base_t::execute();
+
+    if ( this->original_school != SCHOOL_NONE && this->parsed_school_expire )
+    {
+      this->clear_school_override();
+    }
 
     // For non tank DK's, we proc the ability on CD, attached to thier own executes, to simulate it
     if ( p()->talent.blood_draw.ok() && p()->specialization() != DEATH_KNIGHT_BLOOD &&
@@ -7151,7 +7133,7 @@ struct coil_of_devastation_t final : public residual_action::residual_periodic_a
     : residual_action::residual_periodic_action_t<death_knight_spell_t>( name, p, p->spell.coil_of_devastation_debuff )
   {
     background = dual = true;
-    may_miss = may_crit = false;
+    may_miss = may_crit = hasted_ticks = false;
   }
 };
 
