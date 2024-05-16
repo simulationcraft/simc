@@ -7775,10 +7775,22 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<con
 
     base_t::execute();
 
+    if ( p()->buff.owlkin_frenzy->up() )
+      p()->buff.owlkin_frenzy->expire();
+    else if ( p()->buff.warrior_of_elune->up() )
+      p()->buff.warrior_of_elune->decrement();
+
+    p()->buff.gathering_starstuff->expire();
+  }
+
+  void schedule_travel( action_state_t* s ) override
+  {
     // for precombat we hack it to advance eclipse and manually energize 100ms later to get around the eclipse stack
     // reset & AP capping on combat start
     if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER )
     {
+      base_t::schedule_travel( s );
+
       make_event( *sim, 100_ms, [ this ]() {
         p()->eclipse_handler.cast_starfire();
         p()->resource_gain( RESOURCE_ASTRAL_POWER, composite_energize_amount( execute_state ),
@@ -7788,17 +7800,11 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<con
       return;
     }
 
-    if ( p()->buff.owlkin_frenzy->up() )
-      p()->buff.owlkin_frenzy->expire();
-    else if ( p()->buff.warrior_of_elune->up() )
-      p()->buff.warrior_of_elune->decrement();
+    // eclipse is handled after cast but before travel
+    if ( !is_free_proc() )
+      p()->eclipse_handler.cast_starfire();
 
-    p()->buff.gathering_starstuff->expire();
-
-    if ( is_free_proc() )
-      return;
-
-    p()->eclipse_handler.cast_starfire();
+    base_t::schedule_travel( s );
   }
 
   // TODO: we do this all in composite_aoe_multiplier() as base_aoe_multiplier is not a virtual function. If necessary
@@ -8260,24 +8266,30 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<consum
     base_t::execute();
 
     p()->buff.gathering_starstuff->expire();
+  }
 
-    if ( is_free_proc() )
-      return;
-
+  void schedule_travel( action_state_t* s ) override
+  {
     // in druid_t::init_finished(), we set the final wrath of the precombat to have energize type of NONE, so that
     // we can handle the delayed enerigze & eclipse stack triggering here.
     if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER && energize_type == action_energize::NONE )
     {
+      base_t::schedule_travel( s );
+
       make_event( *sim, 100_ms, [ this ]() {
         p()->eclipse_handler.cast_wrath();
         p()->resource_gain( RESOURCE_ASTRAL_POWER, composite_energize_amount( execute_state ),
                             energize_gain( execute_state ) );
       } );
+
+      return;
     }
-    else
-    {
+
+    // eclipse is handled after cast but before travel
+    if ( !is_free_proc() )
       p()->eclipse_handler.cast_wrath();
-    }
+
+    base_t::schedule_travel( s );
   }
 };
 
