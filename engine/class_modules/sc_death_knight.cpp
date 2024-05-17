@@ -3636,7 +3636,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
       auto_attack_melee_t::impact( state );
       if ( state->result_amount > 0 )
       {
-        pet()->accumulator += state->result_amount * pet()->blood_beast_mod;
+        pet()->accumulator += state->result_amount;
       }
     }
   };
@@ -3685,7 +3685,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
   {
     if ( !sim->event_mgr.canceled )
     {
-      blood_eruption->base_dd_min = blood_eruption->base_dd_max = accumulator;
+      blood_eruption->base_dd_min = blood_eruption->base_dd_max = accumulator * blood_beast_mod;
       blood_eruption->execute();
       accumulator = 0;
     }
@@ -3958,36 +3958,6 @@ public:
 // ==========================================================================
 struct whitemane_pet_t final : public horseman_pet_t
 {
-  /*struct whitemane_td_t : public actor_target_data_t
-  {
-    struct dots_t
-    {
-      propagate_const<dot_t*> undeath_dot;
-    } whitemane_dot;
-
-    whitemane_td_t( player_t* target, whitemane_pet_t* p ) : actor_target_data_t( target, p )
-    {
-      whitemane_dot.undeath_dot = target -> get_dot( "undeath", p );
-    }
-  };
-
-  target_specific_t<whitemane_td_t> target_data;
-
-  const whitemane_td_t* find_target_data( const player_t* target ) const override
-  {
-    return target_data[ target ];
-  }
-
-  whitemane_td_t* get_target_data( player_t* target ) const override
-  {
-    whitemane_td_t*& td = target_data[ target ];
-    if ( !td )
-    {
-      td = new whitemane_td_t( target, const_cast<whitemane_pet_t*>( this ) );
-    }
-    return td;
-  } */
-
   struct death_coil_whitemane_t final : public horseman_spell_t
   {
     bool used;
@@ -3995,21 +3965,7 @@ struct whitemane_pet_t final : public horseman_pet_t
       : horseman_spell_t( p, name, p->dk()->pet_spell.whitemane_death_coil ), used( false )
     {
       parse_options( options_str );
-    }
-
-    void execute() override
-    {
-      horseman_spell_t::execute();
-      if ( dk()->bugs )
-        used = true;
-    }
-
-    bool ready() override
-    {
-      if ( dk()->bugs )
-        return !used;
-
-      return horseman_spell_t::ready();
+      cooldown->duration = 12_s; // Overriding the data cooldown to more closely represent actual in game behavior
     }
   };
 
@@ -4017,27 +3973,11 @@ struct whitemane_pet_t final : public horseman_pet_t
   {
     npc_id = owner->spell.summon_whitemane->effectN( 1 ).misc_value1();
     register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
-      if ( !c )
-      {
-        debug_cast<death_coil_whitemane_t*>( coil )->used = false;
-      }
       if ( c )
       {
         dk()->active_spells.undeath_dot->execute_on_target( dk()->target );
       }
     } );
-  }
-
-  void demise() override
-  {
-    horseman_pet_t::demise();
-    debug_cast<death_coil_whitemane_t*>( coil )->used = false;
-  }
-
-  void reset() override
-  {
-    horseman_pet_t::reset();
-    debug_cast<death_coil_whitemane_t*>( coil )->used = false;
   }
 
   void init_action_list() override
@@ -4051,15 +3991,11 @@ struct whitemane_pet_t final : public horseman_pet_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    coil = new death_coil_whitemane_t( "death_coil", this, options_str );
     if ( name == "death_coil" )
-      return coil;
+      return new death_coil_whitemane_t( "death_coil", this, options_str );
 
     return horseman_pet_t::create_action( name, options_str );
   }
-
-private:
-  death_coil_whitemane_t* coil;
 };
 
 // ==========================================================================
@@ -4098,45 +4034,13 @@ struct trollbane_pet_t final : public horseman_pet_t
       : horseman_melee_t( p, name, p->dk()->pet_spell.trollbane_obliterate ), used( false )
     {
       parse_options( options_str );
-    }
-
-    void execute() override
-    {
-      horseman_melee_t::execute();
-      if ( dk()->bugs )
-        used = true;
-    }
-
-    bool ready() override
-    {
-      if ( dk()->bugs )
-        return !used;
-
-      return horseman_melee_t::ready();
+      cooldown->duration = 15_s; // Overriding the data cooldown to more closely represent actual in game behavior
     }
   };
 
   trollbane_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "trollbane" )
   {
     npc_id = owner->spell.summon_trollbane->effectN( 1 ).misc_value1();
-    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
-      if ( !c )
-      {
-        debug_cast<obliterate_trollbane_t*>( oblit )->used = false;
-      }
-    } );
-  }
-
-  void demise() override
-  {
-    horseman_pet_t::demise();
-    debug_cast<obliterate_trollbane_t*>( oblit )->used = false;
-  }
-
-  void reset() override
-  {
-    horseman_pet_t::reset();
-    debug_cast<obliterate_trollbane_t*>( oblit )->used = false;
   }
 
   void init_action_list() override
@@ -4151,17 +4055,13 @@ struct trollbane_pet_t final : public horseman_pet_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    oblit = new obliterate_trollbane_t( "obliterate", this, options_str );
     if ( name == "obliterate" )
-      return oblit;
+      return new obliterate_trollbane_t( "obliterate", this, options_str );
     if ( name == "chains_of_ice" )
       return new trollbane_chains_of_ice_t( name, this, options_str );
 
     return horseman_pet_t::create_action( name, options_str );
   }
-
-private:
-  obliterate_trollbane_t* oblit;
 };
 
 // ==========================================================================
@@ -4172,12 +4072,6 @@ struct nazgrim_pet_t final : public horseman_pet_t
   nazgrim_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "nazgrim" )
   {
     npc_id = owner->spell.summon_nazgrim->effectN( 1 ).misc_value1();
-    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
-      if ( !c )
-      {
-        debug_cast<scourge_strike_nazgrim_t*>( scourge_strike )->used = false;
-      }
-    } );
   }
 
   struct scourge_strike_shadow_nazgrim_t final : public horseman_melee_t
@@ -4201,21 +4095,7 @@ struct nazgrim_pet_t final : public horseman_pet_t
       parse_options( options_str );
       impact_action        = scourge_strike_shadow;
       impact_action->stats = stats;
-    }
-
-    void execute() override
-    {
-      horseman_melee_t::execute();
-      if ( dk()->bugs )
-        used = true;
-    }
-
-    bool ready() override
-    {
-      if ( dk()->bugs )
-        return !used;
-
-      return horseman_melee_t::ready();
+      cooldown->duration   = 15_s; // Overriding the data cooldown to more closely represent actual in game behavior
     }
 
   private:
@@ -4226,19 +4106,6 @@ struct nazgrim_pet_t final : public horseman_pet_t
   {
     horseman_pet_t::arise();
     dk()->buffs.apocalyptic_conquest->trigger();
-  }
-
-  void demise() override
-  {
-    horseman_pet_t::demise();
-    dk()->buffs.apocalyptic_conquest->expire();
-    debug_cast<scourge_strike_nazgrim_t*>( scourge_strike )->used = false;
-  }
-
-  void reset() override
-  {
-    horseman_pet_t::reset();
-    debug_cast<scourge_strike_nazgrim_t*>( scourge_strike )->used = false;
   }
 
   void init_action_list() override
@@ -4252,15 +4119,11 @@ struct nazgrim_pet_t final : public horseman_pet_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    scourge_strike = new scourge_strike_nazgrim_t( "scourge_strike", this, options_str );
     if ( name == "scourge_strike" )
-      return scourge_strike;
+      return new scourge_strike_nazgrim_t( "scourge_strike", this, options_str );
 
     return horseman_pet_t::create_action( name, options_str );
   }
-
-private:
-  scourge_strike_nazgrim_t* scourge_strike;
 };
 
 // ==========================================================================
@@ -4347,7 +4210,7 @@ struct school_change_buff_t : public buff_t
   void start( int stacks, double value, timespan_t duration ) override
   {
     buff_t::start( stacks, value, duration );
-    for ( auto action : actions )
+    for ( auto& action : actions )
     {
       action->set_school_override( dbc::get_school_type( school ) );
     }
@@ -4356,7 +4219,7 @@ struct school_change_buff_t : public buff_t
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
-    for ( auto action : actions )
+    for ( auto& action : actions )
     {
       action->clear_school_override();
     }
