@@ -7253,7 +7253,10 @@ struct remorseless_winter_t final : public death_knight_spell_t
 
     // Periodic behavior handled by the buff
     dot_duration = base_tick_time = 0_ms;
-    add_child( damage );
+    if ( p->spec.remorseless_winter->ok() )
+    {
+      add_child( damage );
+    }
   }
 
   void execute() override
