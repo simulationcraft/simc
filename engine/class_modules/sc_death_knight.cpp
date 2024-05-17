@@ -1526,6 +1526,7 @@ public:
     // San'layn procs
     propagate_const<proc_t*> blood_beast;
     propagate_const<proc_t*> vampiric_strike;
+    propagate_const<proc_t*> vampiric_strike_waste;
   } procs;
 
   // Death Knight Options
@@ -10844,6 +10845,10 @@ void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
 
   if ( rng().roll( chance ) )
   {
+    if ( buffs.vampiric_strike->check() )
+    {
+      procs.vampiric_strike_waste->occur();
+    }
     buffs.vampiric_strike->trigger();
     procs.vampiric_strike->occur();
   }
@@ -12223,6 +12228,10 @@ void death_knight_t::create_buffs()
                                   ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
                                     if ( new_ )
                                     {
+                                      if ( buffs.vampiric_strike->check() )
+                                      {
+                                        procs.vampiric_strike_waste->occur();
+                                      }
                                       buffs.vampiric_strike->trigger();
                                     }
                                     else
@@ -12556,8 +12565,9 @@ void death_knight_t::init_procs()
 
   procs.enduring_chill = get_proc( "Enduring Chill extra bounces" );
 
-  procs.blood_beast     = get_proc( "Blood Beast" );
-  procs.vampiric_strike = get_proc( "Vampiric Strike Proc" );
+  procs.blood_beast           = get_proc( "Blood Beast" );
+  procs.vampiric_strike       = get_proc( "Vampiric Strike Proc" );
+  procs.vampiric_strike_waste = get_proc( "Vampiric Strike Proc Wasted" );
 }
 
 // death_knight_t::init_finished ============================================
