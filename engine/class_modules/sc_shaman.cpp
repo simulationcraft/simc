@@ -5490,7 +5490,7 @@ struct fire_nova_t : public shaman_spell_t
  */
 struct lava_burst_t : public shaman_spell_t
 {
-  unsigned impact_flags;
+  state_flags_t impact_flags;
   bool wlr_buffed_impact;
   bool ps_buffed_impact;
 

@@ -2549,6 +2549,10 @@ void action_t::init()
   if ( quiet )
     stats->quiet = true;
 
+  // lock existing constructor state flags before parsing
+  snapshot_flags.toggle_lock( true );
+  update_flags.toggle_lock( true );
+
   if ( rolling_periodic )
   {
     // Rolling Periodic refresh behavior overrides other behaviors.
@@ -2621,6 +2625,10 @@ void action_t::init()
   {
     update_flags &= ~STATE_HASTE;
   }
+
+  // release state flag locks
+  snapshot_flags.toggle_lock( false );
+  update_flags.toggle_lock( false );
 
   // Figure out BfA attack power mode based on information assigned to the action object. Note that
   // this only defines the ap type, the ability may not necessarily use attack power at all, however

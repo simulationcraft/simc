@@ -612,9 +612,63 @@ public:
   /// Optional - if defined before execute(), will be copied into execute_state
   action_state_t* pre_execute_state;
 
-  unsigned snapshot_flags;
+  struct state_flags_t
+  {
+    unsigned flags;         // data holder
+    unsigned locked_flags;  // bit = 1 if flag is set or unset while unlocked
+    bool locked;            // toggle mode, if true and locked_flags bit = 1, flags bit cannot be changed
 
-  unsigned update_flags;
+    state_flags_t( unsigned f = 0 ) : flags( f ), locked_flags( 0 ), locked( false ) {}
+
+    void toggle_lock( bool b )
+    { locked = b; }
+
+    operator unsigned() const
+    { return flags; }
+
+    state_flags_t& operator=( unsigned f )
+    {
+      assert( !locked && "cannot direct assign to locked state_flags_t" );
+
+      flags = f;
+      if ( f == 0 )
+        locked_flags = UINT_MAX;
+      else
+        locked_flags = f;
+
+      return *this;
+    }
+
+    state_flags_t& operator|=( unsigned f )
+    {
+      if ( locked )
+      {
+        flags |= ( f & ~locked_flags );
+      }
+      else
+      {
+        flags |= f;
+        locked_flags |= f;
+      }
+      return *this;
+    }
+
+    state_flags_t& operator&=( unsigned f )
+    {
+      if ( locked )
+      {
+        flags &= ~( ~f & ~locked_flags );
+      }
+      else
+      {
+        flags &= f;
+        locked_flags |= ~f;
+      }
+      return *this;
+    }
+  };
+
+  state_flags_t snapshot_flags, update_flags;
 
   /**
    * Target Cache System

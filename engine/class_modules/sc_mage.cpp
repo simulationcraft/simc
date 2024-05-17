@@ -2323,7 +2323,7 @@ struct frost_mage_spell_t : public mage_spell_t
   bool track_shatter;
   shatter_source_t* shatter_source;
 
-  unsigned impact_flags;
+  state_flags_t impact_flags;
 
   frost_mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     mage_spell_t( n, p, s ),
