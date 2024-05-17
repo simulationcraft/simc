@@ -1525,6 +1525,7 @@ public:
 
     // San'layn procs
     propagate_const<proc_t*> blood_beast;
+    propagate_const<proc_t*> vampiric_strike;
   } procs;
 
   // Death Knight Options
@@ -5525,7 +5526,7 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
       p()->buffs.essence_of_the_blood_queen->extend_duration( p(), duration );
     }
 
-    if ( p()->buffs.vampiric_strike->check() || p()->buffs.gift_of_the_sanlayn->check() )
+    if ( p()->buffs.vampiric_strike->check() )
     {
       heal->execute();
       vampiric_strike->execute();
@@ -10844,6 +10845,7 @@ void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
   if ( rng().roll( chance ) )
   {
     buffs.vampiric_strike->trigger();
+    procs.vampiric_strike->occur();
   }
 }
 
@@ -12217,7 +12219,17 @@ void death_knight_t::create_buffs()
   buffs.gift_of_the_sanlayn = make_buff( this, "gift_of_the_sanlayn", spell.gift_of_the_sanlayn_buff )
                                   ->set_duration( 0_ms )
                                   ->set_default_value_from_effect( specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 )
-                                  ->add_invalidate( CACHE_HASTE );
+                                  ->add_invalidate( CACHE_HASTE )
+                                  ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+                                    if ( new_ )
+                                    {
+                                      buffs.vampiric_strike->trigger();
+                                    }
+                                    else
+                                    {
+                                      buffs.vampiric_strike->expire();
+                                    }
+                                  } );
 
   buffs.vampiric_strike = make_buff( this, "vampiric_strike", spell.vampiric_strike_buff );
 
@@ -12544,7 +12556,8 @@ void death_knight_t::init_procs()
 
   procs.enduring_chill = get_proc( "Enduring Chill extra bounces" );
 
-  procs.blood_beast = get_proc( "Blood Beast" );
+  procs.blood_beast     = get_proc( "Blood Beast" );
+  procs.vampiric_strike = get_proc( "Vampiric Strike Proc" );
 }
 
 // death_knight_t::init_finished ============================================
