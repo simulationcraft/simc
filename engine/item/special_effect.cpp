@@ -953,8 +953,8 @@ void sc_format_to( const special_effect_t& se, fmt::format_context::iterator out
       fmt::format_to( out, " (Haste)" );
     if ( se.rppm_scale() & RPPM_CRIT )
       fmt::format_to( out, " (Crit)" );
-    if ( se.rppm_scale() & RPPM_ATTACK_SPEED )
-      fmt::format_to( out, " (ASpeed)" );
+    if ( se.rppm_scale() & RPPM_AUTO_ATTACK_SPEED )
+      fmt::format_to( out, " (AASpeed)" );
   }
 
   if ( se.cooldown() > timespan_t::zero() )

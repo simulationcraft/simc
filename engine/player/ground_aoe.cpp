@@ -138,14 +138,14 @@ timespan_t ground_aoe_event_t::_pulse_time(const ground_aoe_params_t* params, co
 
   switch (params->hasted())
   {
-  case ground_aoe_params_t::SPELL_SPEED:
-    tick *= p->cache.spell_speed();
+  case ground_aoe_params_t::SPELL_CAST_SPEED:
+    tick *= p->cache.spell_cast_speed();
     break;
   case ground_aoe_params_t::SPELL_HASTE:
     tick *= p->cache.spell_haste();
     break;
-  case ground_aoe_params_t::ATTACK_SPEED:
-    tick *= p->cache.attack_speed();
+  case ground_aoe_params_t::AUTO_ATTACK_SPEED:
+    tick *= p->cache.auto_attack_speed();
     break;
   case ground_aoe_params_t::ATTACK_HASTE:
     tick *= p->cache.attack_haste();

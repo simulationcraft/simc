@@ -162,7 +162,7 @@ struct player_collected_data_t
     double spell_power, spell_hit, spell_crit_chance, manareg_per_second;
     double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit_chance;
     double armor, miss, crit, dodge, parry, block, bonus_armor;
-    double spell_haste, spell_speed, attack_haste, attack_speed;
+    double spell_haste, spell_cast_speed, attack_haste, auto_attack_speed;
     double mastery_value;
     double damage_versatility, heal_versatility, mitigation_versatility;
     double leech, run_speed, avoidance;

@@ -486,7 +486,7 @@ struct leech_t : public heal_t
 
     player->register_combat_begin( []( player_t* p ) {
       make_repeating_event( *p->sim,
-          [ p ] { return p->base_gcd * p->cache.spell_speed(); },
+          [ p ] { return p->base_gcd * p->cache.spell_cast_speed(); },
           [ p ] {
             if ( p->leech_pool > 0 )
               p->spells.leech->schedule_execute();
@@ -1132,7 +1132,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     // Attacks
     main_hand_attack( nullptr ),
     off_hand_attack( nullptr ),
-    current_attack_speed( 1.0 ),
+    current_auto_attack_speed( 1.0 ),
     // Resources
     resources(),
     // Consumables
@@ -4328,7 +4328,7 @@ double player_t::composite_melee_haste() const
   return h;
 }
 
-double player_t::composite_melee_speed() const
+double player_t::composite_melee_auto_attack_speed() const
 {
   double h = composite_melee_haste();
 
@@ -4340,9 +4340,6 @@ double player_t::composite_melee_speed() const
 
   if ( buffs.way_of_controlled_currents && buffs.way_of_controlled_currents->check() )
     h *= 1.0 / ( 1.0 + buffs.way_of_controlled_currents->check_stack_value() );
-
-  if ( buffs.heavens_nemesis && buffs.heavens_nemesis->data().effectN( 1 ).subtype() == A_MOD_RANGED_AND_MELEE_ATTACK_SPEED && buffs.heavens_nemesis->check() )
-    h *= 1.0 / ( 1.0 + buffs.heavens_nemesis->check_stack_value() );
 
   return h;
 }
@@ -4692,7 +4689,7 @@ double player_t::composite_spell_haste() const
 /**
  * This is the old spell_haste and incorporates everything that buffs cast speed
  */
-double player_t::composite_spell_speed() const
+double player_t::composite_spell_cast_speed() const
 {
   auto speed = cache.spell_haste();
 
@@ -5397,12 +5394,12 @@ void player_t::invalidate_cache( cache_e c )
       break;
 
     case CACHE_ATTACK_HASTE:
-      invalidate_cache( CACHE_ATTACK_SPEED );
+      invalidate_cache( CACHE_AUTO_ATTACK_SPEED );
       invalidate_cache( CACHE_RPPM_HASTE );
       break;
 
     case CACHE_SPELL_HASTE:
-      invalidate_cache( CACHE_SPELL_SPEED );
+      invalidate_cache( CACHE_SPELL_CAST_SPEED );
       invalidate_cache( CACHE_RPPM_HASTE );
       break;
 
@@ -6091,9 +6088,9 @@ void player_t::reset()
 
   current_execute_type = execute_type::FOREGROUND;
 
-  current_attack_speed    = 1.0;
-  gcd_current_haste_value = 1.0;
-  gcd_type          = gcd_haste_type::NONE;
+  current_auto_attack_speed = 1.0;
+  gcd_current_haste_value   = 1.0;
+  gcd_type = gcd_haste_type::NONE;
 
   cast_delay_reaction = timespan_t::zero();
   cast_delay_occurred = timespan_t::zero();
@@ -6536,7 +6533,7 @@ void player_t::arise()
     }
   }
 
-  current_attack_speed = cache.attack_speed();
+  current_auto_attack_speed = cache.auto_attack_speed();
 
   // Requires index-based lookup since on-arise callbacks may
   // insert new on-arise callbacks to the vector.
@@ -11314,14 +11311,14 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   if ( expression_str == "attack_haste" )
     return make_fn_expr( expression_str, [this] { return cache.attack_haste(); } );
 
-  if ( expression_str == "attack_speed" )
-    return make_fn_expr( expression_str, [this] { return cache.attack_speed(); } );
+  if ( expression_str == "auto_attack_speed" )
+    return make_fn_expr( expression_str, [this] { return cache.auto_attack_speed(); } );
 
   if ( expression_str == "spell_haste" )
     return make_fn_expr( expression_str, [this] { return cache.spell_haste(); } );
 
-  if ( expression_str == "spell_speed" )
-    return make_fn_expr( expression_str, [this] { return cache.spell_speed(); } );
+  if ( expression_str == "spell_cast_speed" )
+    return make_fn_expr( expression_str, [this] { return cache.spell_cast_speed(); } );
 
   if ( expression_str == "mastery_value" )
     return make_mem_fn_expr( expression_str, this->cache, &player_stat_cache_t::mastery_value );
@@ -14044,11 +14041,11 @@ void player_t::adjust_global_cooldown( gcd_haste_type gcd_type )
     case gcd_haste_type::ATTACK_HASTE:
       new_haste = cache.attack_haste();
       break;
-    case gcd_haste_type::SPELL_SPEED:
-      new_haste = cache.spell_speed();
+    case gcd_haste_type::SPELL_CAST_SPEED:
+      new_haste = cache.spell_cast_speed();
       break;
-    case gcd_haste_type::ATTACK_SPEED:
-      new_haste = cache.attack_speed();
+    case gcd_haste_type::AUTO_ATTACK_SPEED:
+      new_haste = cache.auto_attack_speed();
       break;
     // SPEED_ANY and HASTE_ANY are nonsensical, actions have to have a correct GCD haste type so
     // they can be adjusted on state changes.
@@ -14104,17 +14101,17 @@ void player_t::adjust_global_cooldown( gcd_haste_type gcd_type )
 void player_t::adjust_auto_attack( gcd_haste_type type )
 {
   // Don't adjust autoattacks on spell-derived haste
-  if ( type == gcd_haste_type::SPELL_SPEED || type == gcd_haste_type::SPELL_HASTE )
+  if ( type == gcd_haste_type::SPELL_CAST_SPEED || type == gcd_haste_type::SPELL_HASTE )
   {
     return;
   }
 
   if ( main_hand_attack )
-    main_hand_attack->reschedule_auto_attack( current_attack_speed );
+    main_hand_attack->reschedule_auto_attack( current_auto_attack_speed );
   if ( off_hand_attack )
-    off_hand_attack->reschedule_auto_attack( current_attack_speed );
+    off_hand_attack->reschedule_auto_attack( current_auto_attack_speed );
 
-  current_attack_speed = cache.attack_speed();
+  current_auto_attack_speed = cache.auto_attack_speed();
 }
 
 timespan_t find_minimum_cd( const std::vector<std::pair<const cooldown_t*, const cooldown_t*>>& list )

@@ -1450,7 +1450,7 @@ public:
   void parse_player_effects();
   // player_t overrides
   action_t *create_action( util::string_view name, util::string_view options ) override;
-  double composite_melee_speed() const override;
+  double composite_melee_auto_attack_speed() const override;
   double composite_melee_crit_chance() const override;
   double composite_spell_crit_chance() const override;
   double composite_attack_power_multiplier() const override;

@@ -2542,7 +2542,7 @@ public:
          ab::p()->main_hand_attack && ab::p()->main_hand_attack->execute_event )
     {
       ab::p()->main_hand_attack->execute_event->reschedule( ab::p()->main_hand_weapon.swing_time *
-                                                            ab::p()->cache.attack_speed() );
+                                                            ab::p()->cache.auto_attack_speed() );
     }
 
     ab::execute();
@@ -10751,7 +10751,7 @@ void druid_t::create_buffs()
 
   buff.ruthless_aggression = make_fallback( talent.ruthless_aggression.ok(),
       this, "ruthless_aggression", find_trigger( talent.ruthless_aggression ).trigger() )
-          ->add_invalidate( CACHE_ATTACK_SPEED );
+          ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
   buff.strategic_infusion = make_fallback( talent.strategic_infusion.ok() && talent.tigers_fury.ok(),
       this, "strategic_infusion", find_spell( 439891 ) );

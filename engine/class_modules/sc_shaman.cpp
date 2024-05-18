@@ -1013,7 +1013,7 @@ public:
   double non_stacking_movement_modifier() const override;
   double stacking_movement_modifier() const override;
   double composite_melee_crit_chance() const override;
-  double composite_melee_speed() const override;
+  double composite_melee_auto_attack_speed() const override;
   double composite_melee_haste() const override;
   double composite_spell_crit_chance() const override;
   double composite_spell_haste() const override;
@@ -2407,7 +2407,7 @@ struct shaman_pet_t : public pet_t
   }
 
   // Apparently shaman pets by default do not inherit attack speed buffs from owner
-  double composite_melee_speed() const override
+  double composite_melee_auto_attack_speed() const override
   {
     return o()->cache.attack_haste();
   }
@@ -8179,7 +8179,7 @@ struct totem_pulse_event_t : public event_t
     : event_t( t ), totem( &t ), real_amplitude( amplitude )
   {
     if ( totem->pulse_action->hasted_pulse )
-      real_amplitude *= totem->cache.spell_speed();
+      real_amplitude *= totem->cache.spell_cast_speed();
 
     schedule( real_amplitude );
   }
@@ -10570,7 +10570,7 @@ void shaman_t::create_buffs()
   buff.ghost_wolf = make_buff( this, "ghost_wolf", find_class_spell( "Ghost Wolf" ) );
   buff.flurry = make_buff( this, "flurry", talent.flurry->effectN( 1 ).trigger() )
     ->set_default_value( talent.flurry->effectN( 1 ).trigger()->effectN( 1 ).percent() )
-    ->add_invalidate( CACHE_ATTACK_SPEED );
+    ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
   buff.natures_swiftness = make_buff( this, "natures_swiftness", talent.natures_swiftness );
 
   buff.elemental_blast_crit = make_buff<buff_t>( this, "elemental_blast_critical_strike", find_spell( 118522 ) )
@@ -11722,9 +11722,9 @@ double shaman_t::composite_melee_crit_chance() const
 
 // shaman_t::composite_attack_speed =========================================
 
-double shaman_t::composite_melee_speed() const
+double shaman_t::composite_melee_auto_attack_speed() const
 {
-  double speed = player_t::composite_melee_speed();
+  double speed = player_t::composite_melee_auto_attack_speed();
 
   speed *= 1.0 / ( 1.0 + buff.flurry->value() );
 

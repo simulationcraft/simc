@@ -595,7 +595,7 @@ public:
   virtual double    composite_mitigation_versatility() const override;
   virtual double    composite_mastery() const override;
   virtual double    composite_melee_haste() const override;
-  virtual double    composite_melee_speed() const override;
+  virtual double    composite_melee_auto_attack_speed() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_crit_avoidance() const override;
   virtual double    composite_parry() const override;

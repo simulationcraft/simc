@@ -1165,11 +1165,11 @@ timespan_t action_t::gcd() const
     case gcd_haste_type::ATTACK_HASTE:
       gcd_ *= composite_haste();
       break;
-    case gcd_haste_type::SPELL_SPEED:
-      gcd_ *= player->cache.spell_speed();
+    case gcd_haste_type::SPELL_CAST_SPEED:
+      gcd_ *= player->cache.spell_cast_speed();
       break;
-    case gcd_haste_type::ATTACK_SPEED:
-      gcd_ *= player->cache.attack_speed();
+    case gcd_haste_type::AUTO_ATTACK_SPEED:
+      gcd_ *= player->cache.auto_attack_speed();
       break;
     case gcd_haste_type::NONE:
     default:
@@ -2087,11 +2087,11 @@ void action_t::start_gcd()
     case gcd_haste_type::ATTACK_HASTE:
       player->gcd_current_haste_value = player->cache.attack_haste();
       break;
-    case gcd_haste_type::SPELL_SPEED:
-      player->gcd_current_haste_value = player->cache.spell_speed();
+    case gcd_haste_type::SPELL_CAST_SPEED:
+      player->gcd_current_haste_value = player->cache.spell_cast_speed();
       break;
-    case gcd_haste_type::ATTACK_SPEED:
-      player->gcd_current_haste_value = player->cache.attack_speed();
+    case gcd_haste_type::AUTO_ATTACK_SPEED:
+      player->gcd_current_haste_value = player->cache.auto_attack_speed();
       break;
     default:
       break;

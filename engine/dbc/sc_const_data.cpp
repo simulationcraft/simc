@@ -739,7 +739,8 @@ double dbc::fmt_value( double v, effect_type_t type, effect_subtype_t sub_type )
         case A_MOD_MANA_REGEN_INTERRUPT:  // Meditation
         case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS: // Increase critical chance of something, Stormstrike, Mind Spike, Holy Word: Serenity
         case A_317: // Totemic Wrath, Flametongue Totem, Demonic Pact, etc ...
-        case A_MOD_MELEE_SPEED_PCT: // Windfury Totem
+        case A_MOD_MELEE_AUTO_ATTACK_SPEED:
+        case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:
           v /= 100.0;
           break;
         default:

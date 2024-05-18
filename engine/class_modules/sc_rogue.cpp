@@ -1181,7 +1181,7 @@ public:
   std::string default_temporary_enchant() const override;
 
   double    composite_attribute_multiplier( attribute_e attr ) const override;
-  double    composite_melee_speed() const override;
+  double    composite_melee_auto_attack_speed() const override;
   double    composite_melee_haste() const override;
   double    composite_melee_crit_chance() const override;
   double    composite_spell_crit_chance() const override;
@@ -7107,9 +7107,9 @@ struct adrenaline_rush_t : public rogue_buff_t
     rogue_buff_t( p, "adrenaline_rush", p->talent.outlaw.adrenaline_rush )
   {
     set_cooldown( timespan_t::zero() );
-    set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_ATTACK_SPEED );
+    set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED );
     set_affects_regen( true );
-    add_invalidate( CACHE_ATTACK_SPEED );
+    add_invalidate( CACHE_AUTO_ATTACK_SPEED );
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -7462,9 +7462,9 @@ struct slice_and_dice_t : public rogue_buff_t
     rogue( p ),
     recuperator( nullptr )
   {
-    set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_ATTACK_SPEED );
+    set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED );
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
-    add_invalidate( CACHE_ATTACK_SPEED );
+    add_invalidate( CACHE_AUTO_ATTACK_SPEED );
     set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
     if ( p->talent.rogue.recuperator->ok() )
@@ -8957,11 +8957,11 @@ double rogue_t::composite_attribute_multiplier( attribute_e a ) const
   return am;
 }
 
-// rogue_t::composite_melee_speed ===========================================
+// rogue_t::composite_melee_auto_attack_speed ===============================
 
-double rogue_t::composite_melee_speed() const
+double rogue_t::composite_melee_auto_attack_speed() const
 {
-  double h = player_t::composite_melee_speed();
+  double h = player_t::composite_melee_auto_attack_speed();
 
   if ( buffs.slice_and_dice->up() )
   {
@@ -11154,7 +11154,7 @@ void rogue_t::create_buffs()
   buffs.t31_assassination_2pc = make_buff<damage_buff_t>( this, "natureblight", spec.t31_assassination_2pc_buff )
     ->set_is_stacking_mod( true );
   buffs.t31_assassination_2pc->set_default_value_from_effect_type( A_MOD_ATTACKSPEED_NORMALIZED )
-    ->add_invalidate( CACHE_ATTACK_SPEED )
+    ->add_invalidate( CACHE_AUTO_ATTACK_SPEED )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 }
 
@@ -11169,7 +11169,7 @@ void rogue_t::invalidate_cache( cache_e c )
     case CACHE_HASTE:
       if ( talent.outlaw.swift_slasher->ok() && buffs.slice_and_dice->check() )
       {
-        invalidate_cache( CACHE_ATTACK_SPEED );
+        invalidate_cache( CACHE_AUTO_ATTACK_SPEED );
       }
       break;
     default:

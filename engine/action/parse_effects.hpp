@@ -41,7 +41,7 @@ struct player_effect_t
   bool mastery = false;
   std::function<bool()> func = nullptr;
   const spelleffect_data_t* eff = &spelleffect_data_t::nil();
-  uint32_t opt_enum = 0xFFFFFFFF;
+  uint32_t opt_enum = UINT32_MAX;
 
   player_effect_t& set_buff( buff_t* b )
   { buff = b; return *this; }
@@ -83,7 +83,7 @@ struct target_effect_t
   double value = 0.0;
   bool mastery = false;
   const spelleffect_data_t* eff = &spelleffect_data_t::nil();
-  uint32_t opt_enum = 0xFFFFFFFF;
+  uint32_t opt_enum = UINT32_MAX;
 
   target_effect_t& set_func( std::function<int( TD* )> f )
   { func = std::move( f ); return *this; }
@@ -139,7 +139,7 @@ struct effect_mask_t
 {
   uint32_t mask;
 
-  effect_mask_t( bool b ) : mask( b ? 0 : 0xFFFFFFFF ) {}
+  effect_mask_t( bool b ) : mask( b ? 0 : UINT32_MAX ) {}
 
   effect_mask_t& disable( uint32_t i )
   { mask |= 1 << ( i - 1 ); return *this; }
@@ -625,7 +625,7 @@ public:
 template <typename TD>
 struct parse_player_effects_t : public player_t, public parse_effects_t
 {
-  std::vector<player_effect_t> melee_speed_effects;
+  std::vector<player_effect_t> auto_attack_speed_effects;
   std::vector<player_effect_t> attribute_multiplier_effects;
   std::vector<player_effect_t> matching_armor_attribute_multiplier_effects;
   std::vector<player_effect_t> versatility_effects;
@@ -652,11 +652,11 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
     : player_t( sim, type, name, race ), parse_effects_t( this )
   {}
 
-  double composite_melee_speed() const override
+  double composite_melee_auto_attack_speed() const override
   {
-    auto ms = player_t::composite_melee_speed();
+    auto ms = player_t::composite_melee_auto_attack_speed();
 
-    for ( const auto& i : melee_speed_effects )
+    for ( const auto& i : auto_attack_speed_effects )
       ms *= 1.0 / ( 1.0 + get_effect_value( i ) );
 
     return ms;
@@ -938,11 +938,11 @@ public:
 
     switch ( eff.subtype() )
     {
-      case A_MOD_MELEE_SPEED_PCT:
-      case A_MOD_RANGED_AND_MELEE_ATTACK_SPEED:
+      case A_MOD_MELEE_AUTO_ATTACK_SPEED:
+      case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:
         str = "auto attack speed";
-        invalidate( CACHE_ATTACK_SPEED );
-        return &melee_speed_effects;
+        invalidate( CACHE_AUTO_ATTACK_SPEED );
+        return &auto_attack_speed_effects;
 
       case A_MOD_TOTAL_STAT_PERCENTAGE:
         data.opt_enum = eff.misc_value2();

@@ -6273,10 +6273,10 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    duration = ( duration >= timespan_t::zero() ? duration : this->buff_duration() ) * p().cache.spell_speed();
+    duration = ( duration >= timespan_t::zero() ? duration : this->buff_duration() ) * p().cache.spell_cast_speed();
     // RJW snapshots the tick period on cast. this + the tick_time
     // callback represent that behavior
-    _period = this->buff_period * p().cache.spell_speed();
+    _period = this->buff_period * p().cache.spell_cast_speed();
     return buff_t::trigger( stacks, value, chance, duration );
   }
 
@@ -8140,7 +8140,7 @@ void monk_t::create_buffs()
   buff.momentum_boost_speed = make_buff( this, "momentum_boost_speed", find_spell( 451298 ) )
                                   ->set_trigger_spell( talent.windwalker.momentum_boost )
                                   ->set_default_value_from_effect( 1 )
-                                  ->add_invalidate( CACHE_ATTACK_SPEED );
+                                  ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
   buff.ordered_elements = make_buff( this, "ordered_elements", find_spell( 451462 ) )
                               ->set_trigger_spell( talent.windwalker.ordered_elements )
@@ -9045,11 +9045,11 @@ void monk_t::brew_cooldown_reduction( double time_reduction )
   cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
 }
 
-// monk_t::composite_melee_speed ===========================================
+// monk_t::composite_melee_auto_attack_speed =====================================
 
-double monk_t::composite_melee_speed() const
+double monk_t::composite_melee_auto_attack_speed() const
 {
-  double h = base_t::composite_melee_speed();
+  double h = base_t::composite_melee_auto_attack_speed();
 
   h *= 1.0 / ( 1.0 + buff.momentum_boost_speed->check_value() );
 

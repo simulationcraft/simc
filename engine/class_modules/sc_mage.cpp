@@ -1969,7 +1969,7 @@ struct fire_mage_spell_t : public mage_spell_t
         else
         {
           p->procs.heating_up_generated->occur();
-          p->buffs.heating_up->trigger( p->buffs.heating_up->buff_duration() * p->cache.spell_speed() );
+          p->buffs.heating_up->trigger( p->buffs.heating_up->buff_duration() * p->cache.spell_cast_speed() );
           if ( guaranteed )
             p->buffs.heating_up->predict();
         }
@@ -3364,14 +3364,14 @@ struct blizzard_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    timespan_t ground_aoe_duration = data().duration() * player->cache.spell_speed();
+    timespan_t ground_aoe_duration = data().duration() * player->cache.spell_cast_speed();
     p()->ground_aoe_expiration[ AOE_BLIZZARD ] = sim->current_time() + ground_aoe_duration;
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .target( target )
       .duration( ground_aoe_duration )
       .action( blizzard_shard )
-      .hasted( ground_aoe_params_t::SPELL_SPEED ), true );
+      .hasted( ground_aoe_params_t::SPELL_CAST_SPEED ), true );
   }
 };
 
@@ -3705,7 +3705,7 @@ struct evocation_t final : public arcane_mage_spell_t
       arcane_mage_spell_t::trigger_dot( s );
 
       double mana_regen_multiplier = 1.0 + p()->buffs.evocation->default_value;
-      mana_regen_multiplier /= p()->cache.spell_speed();
+      mana_regen_multiplier /= p()->cache.spell_cast_speed();
       // TODO (10.1.5 PTR): the mana regen multiplier is currently wrong on PTR, so we can't
       // simply modify the default value of the Evo buff, double check when/if they fix it
       mana_regen_multiplier += p()->talents.siphon_storm->effectN( 2 ).percent();
@@ -3911,7 +3911,7 @@ struct flamestrike_t final : public hot_streak_spell_t
         .target( target )
         .duration( ground_aoe_duration )
         .action( flame_patch )
-        .hasted( ground_aoe_params_t::SPELL_SPEED ) );
+        .hasted( ground_aoe_params_t::SPELL_CAST_SPEED ) );
     }
   }
 };
@@ -4988,7 +4988,7 @@ struct meteor_t final : public fire_mage_spell_t
   timespan_t travel_time() const override
   {
     // Travel time cannot go lower than 1 second to give time for Meteor to visually fall.
-    return std::max( meteor_delay * p()->cache.spell_speed(), 1.0_s );
+    return std::max( meteor_delay * p()->cache.spell_cast_speed(), 1.0_s );
   }
 };
 
@@ -5812,7 +5812,7 @@ struct icicle_event_t final : public mage_event_t
   player_t* target;
 
   icicle_event_t( mage_t& m, player_t* t, bool first = false ) :
-    mage_event_t( m, first ? 0.25_s : 0.4_s * m.cache.spell_speed() ),
+    mage_event_t( m, first ? 0.25_s : 0.4_s * m.cache.spell_cast_speed() ),
     target( t )
   { }
 

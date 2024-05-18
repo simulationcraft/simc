@@ -423,8 +423,8 @@ void to_json( JsonOutput root, const player_t& p, const player_collected_data_t:
   add_non_zero( root[ "stats" ], "attack_crit", bs.attack_crit_chance );
   add_non_zero( root[ "stats" ], "spell_haste", bs.spell_haste );
   add_non_zero( root[ "stats" ], "attack_haste", bs.attack_haste );
-  add_non_zero( root[ "stats" ], "spell_speed", bs.spell_speed );
-  add_non_zero( root[ "stats" ], "attack_speed", bs.attack_speed );
+  add_non_zero( root[ "stats" ], "spell_cast_speed", bs.spell_cast_speed );
+  add_non_zero( root[ "stats" ], "auto_attack_speed", bs.auto_attack_speed );
 
   add_non_zero( root[ "stats" ], "mastery_value", bs.mastery_value );
   add_non_zero( root[ "stats" ], "damage_versatility", bs.damage_versatility );

@@ -838,7 +838,7 @@ void gem::sinister_primal( special_effect_t& effect )
   {
     p->buffs.tempus_repit = make_buff( p, "tempus_repit", p->find_spell( 137590 ) )
       ->set_default_value_from_effect( 1 )
-      ->add_invalidate( CACHE_SPELL_SPEED )
+      ->add_invalidate( CACHE_SPELL_CAST_SPEED )
       ->set_activated( false );
   }
 

@@ -2287,7 +2287,7 @@ struct death_knight_pet_t : public pet_t
     return 0;
   }
 
-  double composite_melee_speed() const override
+  double composite_melee_auto_attack_speed() const override
   {
     return current_pet_stats.composite_melee_haste;
   }
@@ -2731,9 +2731,9 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     return m;
   }
 
-  double composite_melee_speed() const override
+  double composite_melee_auto_attack_speed() const override
   {
-    double haste = base_ghoul_pet_t::composite_melee_speed();
+    double haste = base_ghoul_pet_t::composite_melee_auto_attack_speed();
 
     if ( ghoulish_frenzy->check() )
       haste *= 1.0 / ( 1.0 + ghoulish_frenzy->data().effectN( 2 ).percent() );
@@ -2791,7 +2791,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
                           ->apply_affecting_aura( dk()->talent.unholy.ghoulish_frenzy )
                           ->set_duration( 0_s )
                           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                          ->add_invalidate( CACHE_ATTACK_SPEED );
+                          ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
   }
 
 private:

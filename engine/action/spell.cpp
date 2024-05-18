@@ -34,7 +34,7 @@ spell_base_t::spell_base_t( action_e at,
   action_t( at, token, p, s )
 {
   min_gcd = p -> min_gcd;
-  gcd_type = gcd_haste_type::SPELL_SPEED; // Hasten spell GCDs by default
+  gcd_type = gcd_haste_type::SPELL_CAST_SPEED; // Hasten spell GCDs by default
   special = true;
 
   crit_bonus = 1.0;
@@ -121,7 +121,7 @@ double spell_base_t::composite_crit_chance() const
 
 double spell_base_t::composite_haste() const
 {
-  return action_t::composite_haste() * player->cache.spell_speed();
+  return action_t::composite_haste() * player->cache.spell_cast_speed();
 }
 
 double spell_base_t::composite_crit_chance_multiplier() const
