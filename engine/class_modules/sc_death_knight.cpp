@@ -5496,17 +5496,11 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
 {
   vampiric_strike_action_base_t( util::string_view n, death_knight_t* p, util::string_view options_str,
                                  const spell_data_t* s )
-    : death_knight_melee_attack_t( n, p, s ), base_action( nullptr ), heal( nullptr )
+    : death_knight_melee_attack_t( n, p, s ),
+      base_action( p->specialization() == DEATH_KNIGHT_BLOOD ? p->active_spells.heart_strike : p->active_spells.scourge_strike ),
+      heal( get_action<vampiric_strike_heal_t>( "vampiric_strike_heal", p ) ),
+      vampiric_strike( p->active_spells.vampiric_strike )
   {
-    switch ( p->specialization() )
-    {
-      case DEATH_KNIGHT_BLOOD:
-        base_action = p->active_spells.heart_strike;
-        break;
-      case DEATH_KNIGHT_UNHOLY:
-        base_action = p->active_spells.scourge_strike;
-        break;
-    }
     attack_power_mod.direct = 0;  // Handled by the damage action
     parse_options( options_str );
     if ( base_action != nullptr )
@@ -5515,8 +5509,6 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
     }
     if ( p->talent.sanlayn.vampiric_strike.ok() )
     {
-      heal            = get_action<vampiric_strike_heal_t>( "vampiric_strike_heal", p );
-      vampiric_strike = p->active_spells.vampiric_strike;
       add_child( vampiric_strike );
     }
     else
