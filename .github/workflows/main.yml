@@ -145,6 +145,58 @@ jobs:
             .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
+  tww-test:
+    name: tww-test-${{ matrix.spec }}-${{ matrix.fightstyle }}-${{ matrix.talents }}-${{ matrix.effects }}-${{ matrix.sets }}
+    runs-on: ${{ matrix.os }}
+    needs: [ ubuntu-clang-build ]
+    if: github.ref == 'refs/heads/thewarwithin'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        cppVersion: [17]
+        compiler: [clang++-15]
+        spec: [
+            death_knight_blood, death_knight_unholy, death_knight_frost
+          ]
+        fightstyle: [ singletarget, multitarget, dungeonslice ]
+        talents: [ notalents, startertalents, alltalents ]
+        effects: [ noeffects, alleffects ]
+        sets: [ nosets, allsets ]
+        include:
+          -compiler: clang++-15
+            os: ubuntu-22.04
+          - spec: death_knight_blood
+            player_flags: deathknight=deathknightblood level=80 spec=blood
+          - fightstyle: multitarget
+            sim_flags: desired_targets=10
+          - fightstyle: dungeonslice
+            sim_flags: fight_style=DungeonSlice
+          - talents: startertalents
+            player_flags: load_default_talents=1
+          - talents: alltalents
+            sim_flags: enable_all_talents=1
+          - effects: alleffects
+            sim_flags: enable_all_item_effects=1
+          - sets: allsets
+            sim_flags: enable_all_sets=1
+
+    steps:
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ${{ runner.workspace }}/b/ninja/simc
+            .git
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+
+      - name: Temporary Workaround for clang-15 Builds
+        run: sudo sysctl vm.mmap_rnd_bits=28
+
+      - name: Run
+        env:
+          UBSAN_OPTIONS: print_stacktrace=1
+        run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null threads=2 iterations=10 ${{ join(matrix.sim_flags, ' ') }} ${{ join(matrix.player_flags, ' ') }}
+
   ubuntu-run:
     name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ${{ matrix.os }}
