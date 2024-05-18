@@ -10348,7 +10348,7 @@ void death_knight_t::create_options()
   add_option( opt_float( "deathknight.ams_absorb_percent", options.ams_absorb_percent, 0.0, 1.0 ) );
   add_option( opt_bool( "deathknight.individual_pet_reporting", options.individual_pet_reporting ) );
   add_option( opt_float( "deathknight.average_cs_travel_time", options.average_cs_travel_time, 0.0, 5.0 ) );
-  add_option( opt_timespan( "deathknight.first_ams_cast", options.first_ams_cast ) );
+  add_option( opt_timespan( "deathknight.first_ams_cast", options.first_ams_cast, timespan_t::zero(), timespan_t::max() ) );
   add_option( opt_float( "deathknight.horsemen_ams_absorb_percent", options.horsemen_ams_absorb_percent, 0.0, 1.0 ) );
 }
 
@@ -13048,7 +13048,7 @@ void death_knight_t::combat_begin()
 
 // death_knight_t::invalidate_cache =========================================
 
-void death_knight_t::invalidate_cache( cache_e c )
+void death_knight_t::invalidate_cache( cache_e c ) override
 {
   parse_player_effects_t<death_knight_td_t>::invalidate_cache( c );
 
