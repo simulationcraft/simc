@@ -168,12 +168,12 @@ jobs:
           - fightstyle: dungeonslice
             style_arg: fight_style=DungeonSlice
 
-    steps:
-      - env:
-        USBSAN_OPTIONS: print_stacktrace=1
-        SIMC_ARGS: output=/dev/null threads=2 iterations=2
-        PLAYER_ARGS: level=80
+    env:
+      USBSAN_OPTIONS: print_stacktrace=1
+      SIMC_ARGS: output=/dev/null threads=2 iterations=2
+      PLAYER_ARGS: level=80
 
+    steps:
       - uses: actions/cache@v4
         with:
           path: |
