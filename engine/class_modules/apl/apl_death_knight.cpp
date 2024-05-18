@@ -124,6 +124,7 @@ std::string temporary_enchant( const player_t* p )
     default_->add_action( "potion,if=buff.dancing_rune_weapon.up" );
     default_->add_action( "call_action_list,name=trinkets" );
     default_->add_action( "raise_dead" );
+    default_->add_action( "reapers_mark" );
 
     default_->add_action( "icebound_fortitude,if=!(buff.dancing_rune_weapon.up|buff.vampiric_blood.up)&(target.cooldown.pause_action.remains>=8|target.cooldown.pause_action.duration>0)" );
     default_->add_action( "vampiric_blood,if=!(buff.dancing_rune_weapon.up|buff.icebound_fortitude.up|buff.vampiric_blood.up)&(target.cooldown.pause_action.remains>=13|target.cooldown.pause_action.duration>0)" );
