@@ -13048,7 +13048,7 @@ void death_knight_t::combat_begin()
 
 // death_knight_t::invalidate_cache =========================================
 
-void death_knight_t::invalidate_cache( cache_e c ) override
+void death_knight_t::invalidate_cache( cache_e c )
 {
   parse_player_effects_t<death_knight_td_t>::invalidate_cache( c );
 
