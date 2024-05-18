@@ -164,7 +164,7 @@ jobs:
         effects: [ noeffects, alleffects ]
         sets: [ nosets, allsets ]
         include:
-          -compiler: clang++-15
+          - compiler: clang++-15
             os: ubuntu-22.04
           - spec: death_knight_blood
             player_flags: deathknight=deathknightblood level=80 spec=blood
