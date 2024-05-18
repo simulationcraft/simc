@@ -272,7 +272,7 @@ struct player_t : public actor_t
   attack_t*  off_hand_attack;
 
   // Current attack speed (needed for dynamic attack speed adjustments)
-  double current_attack_speed;
+  double current_auto_attack_speed;
 
   player_resources_t resources;
 
@@ -1060,7 +1060,7 @@ public:
   double apply_combat_rating_dr( rating_e rating, double value ) const;
 
   virtual double composite_melee_haste() const;
-  virtual double composite_melee_speed() const;
+  virtual double composite_melee_auto_attack_speed() const;
   virtual double composite_melee_attack_power() const;
   virtual double composite_weapon_attack_power_by_type( attack_power_type type ) const;
   virtual double composite_total_attack_power_by_type( attack_power_type type ) const;
@@ -1070,7 +1070,7 @@ public:
   { return 1.0; }
   virtual double composite_melee_expertise( const weapon_t* w = nullptr ) const;
   virtual double composite_spell_haste() const;
-  virtual double composite_spell_speed() const;
+  virtual double composite_spell_cast_speed() const;
   virtual double composite_spell_power( school_e school ) const;
   virtual double composite_total_spell_power( school_e school ) const;
   virtual double composite_spell_crit_chance() const;

@@ -260,9 +260,9 @@ double warlock_pet_t::composite_spell_haste() const
   return m;
 }
 
-double warlock_pet_t::composite_spell_speed() const
+double warlock_pet_t::composite_spell_cast_speed() const
 {
-  double m = pet_t::composite_spell_speed();
+  double m = pet_t::composite_spell_cast_speed();
 
   if ( is_main_pet &&  o()->talents.demonic_inspiration->ok() )
       m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
@@ -270,9 +270,9 @@ double warlock_pet_t::composite_spell_speed() const
   return m;
 }
 
-double warlock_pet_t::composite_melee_speed() const
+double warlock_pet_t::composite_melee_auto_attack_speed() const
 {
-  double m = pet_t::composite_melee_speed();
+  double m = pet_t::composite_melee_auto_attack_speed();
 
   if ( is_main_pet && o()->talents.demonic_inspiration->ok() )
     m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
@@ -1111,9 +1111,9 @@ double felguard_pet_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double felguard_pet_t::composite_melee_speed() const
+double felguard_pet_t::composite_melee_auto_attack_speed() const
 {
-  double m = warlock_pet_t::composite_melee_speed();
+  double m = warlock_pet_t::composite_melee_auto_attack_speed();
 
   m /= 1.0 + buffs.fiendish_wrath->check_value();
 
@@ -1916,9 +1916,9 @@ double pit_lord_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double pit_lord_t::composite_melee_speed() const
+double pit_lord_t::composite_melee_auto_attack_speed() const
 {
-  double m = warlock_pet_t::composite_melee_speed();
+  double m = warlock_pet_t::composite_melee_auto_attack_speed();
 
   m /= 1.0 + buffs.soul_glutton->check_stack_value();
 

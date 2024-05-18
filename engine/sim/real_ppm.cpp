@@ -39,8 +39,8 @@ double real_ppm_t::proc_chance( player_t* player, double PPM, timespan_t last_tr
   if ( scales_with & RPPM_CRIT )
     coeff *= player->cache.rppm_crit_coeff();
 
-  if ( scales_with & RPPM_ATTACK_SPEED )
-    coeff *= 1.0 / player->cache.attack_speed();
+  if ( scales_with & RPPM_AUTO_ATTACK_SPEED )
+    coeff *= 1.0 / player->cache.auto_attack_speed();
 
   double real_ppm        = PPM * coeff;
   double old_rppm_chance = real_ppm * ( seconds / 60.0 );

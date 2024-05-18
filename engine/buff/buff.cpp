@@ -1817,7 +1817,7 @@ timespan_t buff_t::tick_time() const
   {
     case buff_tick_time_behavior::HASTED:
       assert( player );
-      return buff_period * player->cache.spell_speed();
+      return buff_period * player->cache.spell_cast_speed();
     case buff_tick_time_behavior::CUSTOM:
       assert( tick_time_callback );
       return tick_time_callback( this, current_tick );
@@ -3059,13 +3059,13 @@ void buff_t::init_haste_type()
     {
       gcd_type = gcd_haste_type::ATTACK_HASTE;
     }
-    else if ( range::find( invalidate_list, CACHE_SPELL_SPEED ) != invalidate_list.end() )
+    else if ( range::find( invalidate_list, CACHE_SPELL_CAST_SPEED ) != invalidate_list.end() )
     {
-      gcd_type = gcd_haste_type::SPELL_SPEED;
+      gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
     }
-    else if ( range::find( invalidate_list, CACHE_ATTACK_SPEED ) != invalidate_list.end() )
+    else if ( range::find( invalidate_list, CACHE_AUTO_ATTACK_SPEED ) != invalidate_list.end() )
     {
-      gcd_type = gcd_haste_type::ATTACK_SPEED;
+      gcd_type = gcd_haste_type::AUTO_ATTACK_SPEED;
     }
   }
 }

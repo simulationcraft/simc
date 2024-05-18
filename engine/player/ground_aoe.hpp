@@ -21,9 +21,9 @@ struct ground_aoe_params_t
   {
     NOTHING = 0,
     SPELL_HASTE,
-    SPELL_SPEED,
+    SPELL_CAST_SPEED,
     ATTACK_HASTE,
-    ATTACK_SPEED
+    AUTO_ATTACK_SPEED
   };
 
   enum expiration_pulse_type

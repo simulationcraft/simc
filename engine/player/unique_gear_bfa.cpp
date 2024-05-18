@@ -520,7 +520,7 @@ void enchants::galeforce_striking( special_effect_t& effect )
   {
     auto spell = effect.trigger();
     buff       = make_buff( effect.player, util::tokenized_name( spell ), spell )
-               ->add_invalidate( CACHE_ATTACK_SPEED )
+               ->add_invalidate( CACHE_AUTO_ATTACK_SPEED )
                ->set_default_value( spell->effectN( 1 ).percent() )
                ->set_activated( false );
     effect.player->buffs.galeforce_striking = buff;
@@ -2113,7 +2113,7 @@ void items::tidestorm_codex( special_effect_t& effect )
       if ( player->bugs )
         // Assume we're queueing another spell as soon as possible, i.e.
         // after the GCD has elapsed.
-        return std::max( player->cache.spell_speed() * trigger_gcd, player->min_gcd );
+        return std::max( player->cache.spell_cast_speed() * trigger_gcd, player->min_gcd );
       else
         return dot_duration;
     }
@@ -4294,7 +4294,7 @@ void items::dreams_end( special_effect_t& effect )
   {
     effect.player->buffs.delirious_frenzy = make_buff( effect.player, "delirious_frenzy", effect.trigger() )
                                                 ->set_default_value( effect.trigger()->effectN( 1 ).percent() )
-                                                ->add_invalidate( CACHE_ATTACK_SPEED );
+                                                ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
   }
 
   new delirious_frenzy_cb_t( effect );

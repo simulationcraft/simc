@@ -140,9 +140,9 @@ struct priest_pet_t : public pet_t
     return h;
   }
 
-  double composite_melee_speed() const override
+  double composite_melee_auto_attack_speed() const override
   {
-    double h = pet_t::composite_melee_speed();
+    double h = pet_t::composite_melee_auto_attack_speed();
 
     if ( buffs.power_infusion )
       h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
@@ -150,9 +150,9 @@ struct priest_pet_t : public pet_t
     return h;
   }
 
-  double composite_spell_speed() const override
+  double composite_spell_cast_speed() const override
   {
-    double h = pet_t::composite_spell_speed();
+    double h = pet_t::composite_spell_cast_speed();
 
     if ( buffs.power_infusion )
       h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
@@ -716,7 +716,7 @@ struct fiend_melee_t : public priest_pet_melee_t
       return timespan_t::zero();
 
     // Mindbender inherits haste from the player
-    timespan_t hasted_time = base_execute_time * player->cache.spell_speed();
+    timespan_t hasted_time = base_execute_time * player->cache.spell_cast_speed();
 
     return hasted_time;
   }

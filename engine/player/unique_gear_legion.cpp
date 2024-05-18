@@ -1053,7 +1053,7 @@ void item::tarnished_sentinel_medallion( special_effect_t& effect )
         .pulse_time( data().effectN( 2 ).period() )
         .duration( data().duration() )
         .action( bolt )
-        .hasted( ground_aoe_params_t::SPELL_SPEED )
+        .hasted( ground_aoe_params_t::SPELL_CAST_SPEED )
         .expiration_pulse( ground_aoe_params_t::FULL_EXPIRATION_PULSE )
         .expiration_callback( [ this ]() { callback -> deactivate(); } ) );
     }
@@ -2910,11 +2910,11 @@ void item::whispers_in_the_dark( special_effect_t& effect )
   auto bad_amount = bad_buff_data -> effectN( 1 ).average( effect.item ) / 100.0;
 
   buff_t* bad_buff = make_buff( effect.player, "devils_due", bad_buff_data, effect.item );
-  bad_buff->add_invalidate( CACHE_SPELL_SPEED )
+  bad_buff->add_invalidate( CACHE_SPELL_CAST_SPEED )
     ->set_default_value( bad_amount );
 
   buff_t* good_buff = make_buff( effect.player, "nefarious_pact", good_buff_data, effect.item );
-  good_buff->add_invalidate( CACHE_SPELL_SPEED )
+  good_buff->add_invalidate( CACHE_SPELL_CAST_SPEED )
     ->set_default_value( good_amount )
     ->set_stack_change_callback( [ bad_buff ]( buff_t*, int old_, int ) {
       if ( old_ == 1 )

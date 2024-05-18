@@ -2065,7 +2065,7 @@ struct power_word_shield_t final : public priest_absorb_t
   {
     parse_options( options_str );
 
-    gcd_type = gcd_haste_type::SPELL_SPEED;
+    gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
 
     switch ( p.specialization() )
     {

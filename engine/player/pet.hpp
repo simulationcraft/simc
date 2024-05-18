@@ -46,9 +46,9 @@ struct pet_t : public player_t
     double spell_power_from_ap = 0.0;
     double spell_power_from_sp = 0.0;
     double composite_melee_haste = 1.0;
-    double composite_melee_speed = 1.0;
+    double composite_melee_auto_attack_speed = 1.0;
     double composite_spell_haste = 1.0;
-    double composite_spell_speed = 1.0;
+    double composite_spell_cast_speed = 1.0;
     double composite_melee_crit = 0.0;
     double composite_spell_crit = 0.0;
   } current_pet_stats;
@@ -108,7 +108,7 @@ public:
   double composite_spell_crit_chance() const override
   { return pet_crit(); }
 
-  double composite_melee_speed() const override;
+  double composite_melee_auto_attack_speed() const override;
 
   double composite_melee_haste() const override;
 
@@ -116,7 +116,7 @@ public:
 
   double composite_spell_haste() const override;
 
-  double composite_spell_speed() const override;
+  double composite_spell_cast_speed() const override;
 
   double composite_bonus_armor() const override
   { return owner -> cache.bonus_armor(); }

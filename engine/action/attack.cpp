@@ -45,7 +45,7 @@ timespan_t attack_t::execute_time() const
   if ( base_execute_time == timespan_t::zero() )
     return timespan_t::zero();
 
-  return base_execute_time * player->cache.attack_speed();
+  return base_execute_time * player->cache.auto_attack_speed();
 }
 
 result_amount_type attack_t::amount_type( const action_state_t*, bool periodic ) const
@@ -372,7 +372,7 @@ double attack_t::recharge_multiplier( const cooldown_t& cd ) const
 
 void attack_t::reschedule_auto_attack( double old_swing_haste )
 {
-  if ( player->cache.attack_speed() == old_swing_haste )
+  if ( player->cache.auto_attack_speed() == old_swing_haste )
   {
     return;
   }
@@ -384,7 +384,7 @@ void attack_t::reschedule_auto_attack( double old_swing_haste )
   {
     timespan_t time_to_hit = execute_event->occurs() - sim->current_time();
     timespan_t new_time_to_hit =
-        time_to_hit * player->cache.attack_speed() / old_swing_haste;
+        time_to_hit * player->cache.auto_attack_speed() / old_swing_haste;
 
     if ( time_to_hit == new_time_to_hit )
     {
@@ -394,7 +394,7 @@ void attack_t::reschedule_auto_attack( double old_swing_haste )
     if ( sim->debug )
     {
       sim->print_debug( "Haste change, reschedule {} from {} to {} (speed {} -> {}, remains {})", *this,
-                        execute_event->remains(), new_time_to_hit, old_swing_haste, player->cache.attack_speed(),
+                        execute_event->remains(), new_time_to_hit, old_swing_haste, player->cache.auto_attack_speed(),
                         time_to_hit );
     }
 

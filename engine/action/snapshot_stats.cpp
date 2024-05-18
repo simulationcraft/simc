@@ -80,9 +80,9 @@ void snapshot_stats_t::execute()
   buffed_stats.resource = p->resources.max;
 
   buffed_stats.spell_haste = p->cache.spell_haste();
-  buffed_stats.spell_speed = p->cache.spell_speed();
+  buffed_stats.spell_cast_speed = p->cache.spell_cast_speed();
   buffed_stats.attack_haste = p->cache.attack_haste();
-  buffed_stats.attack_speed = p->cache.attack_speed();
+  buffed_stats.auto_attack_speed = p->cache.auto_attack_speed();
   buffed_stats.mastery_value = p->cache.mastery_value();
   buffed_stats.bonus_armor = p->composite_bonus_armor();
   buffed_stats.damage_versatility = p->cache.damage_versatility();

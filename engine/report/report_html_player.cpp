@@ -1668,22 +1668,22 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           100 * ( 1 / p.composite_spell_haste() - 1 ),
           p.composite_spell_haste_rating() );
     }
-    if ( p.composite_spell_speed() != p.composite_spell_haste() )
+    if ( p.composite_spell_cast_speed() != p.composite_spell_haste() )
     {
       os.printf(
           "<tr>\n"
-          "<th class=\"left\">Spell Speed</th>\n"
+          "<th class=\"left\">Spell Cast Speed</th>\n"
           "<td class=\"right\"></td>\n"
           "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "</tr>\n",
-          100 * ( 1 / buffed_stats.spell_speed - 1 ),
-          100 * ( 1 / p.composite_spell_speed() - 1 ),
+          100 * ( 1 / buffed_stats.spell_cast_speed - 1 ),
+          100 * ( 1 / p.composite_spell_cast_speed() - 1 ),
           p.composite_spell_haste_rating() );
     }
-    if ( p.composite_melee_speed() != p.composite_melee_haste() )
+    if ( p.composite_melee_auto_attack_speed() != p.composite_melee_haste() )
     {
       os.printf(
           "<tr>\n"
@@ -1694,8 +1694,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "</tr>\n",
-          100 * ( 1 / buffed_stats.attack_speed - 1 ),
-          100 * ( 1 / p.composite_melee_speed() - 1 ),
+          100 * ( 1 / buffed_stats.auto_attack_speed - 1 ),
+          100 * ( 1 / p.composite_melee_auto_attack_speed() - 1 ),
           p.composite_melee_haste_rating() );
     }
     os.printf(

@@ -1361,7 +1361,7 @@ public:
 
   double composite_haste( const action_state_t* s ) const
   {
-    return action_t::composite_haste() * p( s )->cache.spell_speed();
+    return action_t::composite_haste() * p( s )->cache.spell_cast_speed();
   }
 
   double composite_crit_chance_multiplier( const action_state_t* s ) const

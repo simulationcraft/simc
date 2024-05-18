@@ -419,13 +419,13 @@ const char* util::gcd_haste_type_string(gcd_haste_type gcd_type)
 {
   switch (gcd_type)
   {
-  case gcd_haste_type::NONE:    return "none";
-  case gcd_haste_type::HASTE:     return "haste(all)";
-  case gcd_haste_type::SPELL_HASTE:    return "spell_haste";
-  case gcd_haste_type::ATTACK_HASTE:       return "attack_haste";
-  case gcd_haste_type::SPELL_SPEED:      return "spell_speed";
-  case gcd_haste_type::ATTACK_SPEED:      return "attack_speed";
-  default:             return "unknown";
+  case gcd_haste_type::NONE:              return "none";
+  case gcd_haste_type::HASTE:             return "haste(all)";
+  case gcd_haste_type::SPELL_HASTE:       return "spell_haste";
+  case gcd_haste_type::ATTACK_HASTE:      return "attack_haste";
+  case gcd_haste_type::SPELL_CAST_SPEED:  return "spell_cast_speed";
+  case gcd_haste_type::AUTO_ATTACK_SPEED: return "auto_attack_speed";
+  default:                                return "unknown";
   }
 }
 
@@ -1356,8 +1356,8 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_HASTE:                    return "haste";
     case CACHE_ATTACK_HASTE:             return "attack_haste";
     case CACHE_SPELL_HASTE:              return "spell_haste";
-    case CACHE_ATTACK_SPEED:             return "attack_speed";
-    case CACHE_SPELL_SPEED:              return "spell_speed";
+    case CACHE_AUTO_ATTACK_SPEED:        return "auto_attack_speed";
+    case CACHE_SPELL_CAST_SPEED:         return "spell_cast_speed";
     case CACHE_MASTERY:                  return "mastery";
     case CACHE_PLAYER_DAMAGE_MULTIPLIER: return "player_dmg_mult";
     case CACHE_PLAYER_HEAL_MULTIPLIER:   return "player_heal_mult";
@@ -2705,9 +2705,9 @@ std::string util::rppm_scaling_string( unsigned s )
     return "disabled";
   }
   using sp = std::pair<rppm_scale_e, const char*>;
-  const auto scalings = {sp{RPPM_HASTE, "haste"},
-                         sp{RPPM_CRIT, "crit"},
-                         sp{RPPM_ATTACK_SPEED, "attack_speed"}};
+  const auto scalings = { sp{ RPPM_HASTE, "haste" },
+                          sp{ RPPM_CRIT, "crit" },
+                          sp{ RPPM_AUTO_ATTACK_SPEED, "auto_attack_speed" } };
   std::string r;
   int i = 0;
   for ( const auto& scaling : scalings )

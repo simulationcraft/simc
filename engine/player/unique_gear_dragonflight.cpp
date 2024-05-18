@@ -2370,7 +2370,7 @@ void way_of_controlled_currents( special_effect_t& effect )
   auto stack =
       create_buff<buff_t>( effect.player, "way_of_controlled_currents_stack", effect.player->find_spell( 381965 ) )
           ->set_name_reporting( "Stack" )
-          ->add_invalidate( CACHE_ATTACK_SPEED );
+          ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
   stack->set_default_value( stack->data().effectN( 1 ).base_value() * 0.01 );
 
@@ -5445,8 +5445,8 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       {
         current_pet_stats.composite_melee_haste = 1;
         current_pet_stats.composite_spell_haste = 1;
-        current_pet_stats.composite_melee_speed = 1;
-        current_pet_stats.composite_spell_speed = 1;
+        current_pet_stats.composite_melee_auto_attack_speed = 1;
+        current_pet_stats.composite_spell_cast_speed = 1;
       }
     }
 
@@ -7846,8 +7846,8 @@ void neltharax( special_effect_t& effect )
   auto buff = create_buff<buff_t>( effect.player, "heavens_nemesis", effect.player->find_spell( 397118 ) )
     ->set_default_value_from_effect( 1 );
 
-  if ( buff->data().effectN( 1 ).subtype() == A_MOD_RANGED_AND_MELEE_ATTACK_SPEED )
-    buff->add_invalidate( CACHE_ATTACK_SPEED );
+  if ( buff->data().effectN( 1 ).subtype() == A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED )
+    buff->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
   effect.player -> buffs.heavens_nemesis = buff;
 
