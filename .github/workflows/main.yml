@@ -157,7 +157,8 @@ jobs:
         cppVersion: [ 17 ]
         compiler: [ clang++-15 ]
         spec: [
-            deathknight_blood, deathknight_unholy, deathknight_frost
+            deathknight_blood, deathknight_unholy, deathknight_frost,
+            druid_balance
           ]
         fightstyle: [ singletarget, multitarget, dungeonslice ]
         include:
