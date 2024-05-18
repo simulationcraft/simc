@@ -187,10 +187,10 @@ jobs:
       - name: Setup
         env: 
           SPEC_STR: ${{ matrix.spec }}
-          id: split
-          run: |
-            echo "::set-output name=class::${SPEC_STR%%_*}"
-            echo "::set-output name=spec::${SPEC_STR##*_}"
+        id: split
+        run: |
+          echo "::set-output name=class::${SPEC_STR%%_*}"
+          echo "::set-output name=spec::${SPEC_STR##*_}"
 
       - name: "Log Debug"
         run: |
