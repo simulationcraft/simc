@@ -746,7 +746,7 @@ public:
     propagate_const<buff_t*> dark_talons_shadowfrost;
     propagate_const<buff_t*> dark_talons_icy_talons;
     propagate_const<buff_t*> exterminate;
-    propagate_const<buff_t*> exterminate_painful_death;
+    propagate_const<buff_t*> painful_death;
 
   } buffs;
 
@@ -4487,7 +4487,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     parse_effects( p()->buffs.dark_talons_shadowfrost, p()->talent.deathbringer.dark_talons );
     parse_effects( p()->buffs.bind_in_darkness, p()->talent.deathbringer.bind_in_darkness );
     parse_effects( p()->buffs.exterminate );
-    parse_effects( p()->buffs.exterminate_painful_death );
+    parse_effects( p()->buffs.painful_death );
 
     // San'layn
     parse_effects( p()->buffs.essence_of_the_blood_queen, p()->talent.sanlayn.frenzied_bloodthirst );
@@ -5795,10 +5795,10 @@ struct exterminate_t final : public death_knight_spell_t
     }
     if ( !this_is_secondary )
     {
-      double chance =
-          p()->talent.deathbringer.painful_death->ok() ? p()->talent.deathbringer.painful_death->effectN( 2 ).percent() :
-      p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
-      
+      double chance = p()->talent.deathbringer.painful_death->ok()
+                          ? p()->talent.deathbringer.painful_death->effectN( 2 ).percent()
+                          : p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
+
       if ( p()->rng().roll( chance ) )
       {
         get_td( p()->target )->debuff.reapers_mark->trigger();
@@ -5811,7 +5811,7 @@ struct exterminate_t final : public death_knight_spell_t
     this_is_secondary = false;
   }
 
-//private:
+  // private:
   exterminate_aoe_t* second_hit;
   bool next_is_secondary;
   bool this_is_secondary;
@@ -8662,12 +8662,12 @@ struct marrowrend_t final : public death_knight_melee_attack_t
       p()->buffs.exterminate->expire();
       if ( p()->talent.deathbringer.painful_death->ok() )
       {
-        p()->buffs.exterminate_painful_death->trigger();
+        p()->buffs.painful_death->trigger();
       }
     }
-    else if ( p()->buffs.exterminate_painful_death->up() )
+    else if ( p()->buffs.painful_death->up() )
     {
-      p()->buffs.exterminate_painful_death->expire();
+      p()->buffs.painful_death->expire();
     }
   }
 
@@ -8927,12 +8927,12 @@ struct obliterate_t final : public death_knight_melee_attack_t
       p()->buffs.exterminate->expire();
       if ( p()->talent.deathbringer.painful_death->ok() )
       {
-        p()->buffs.exterminate_painful_death->trigger();
+        p()->buffs.painful_death->trigger();
       }
     }
-    else if ( p()->buffs.exterminate_painful_death->up() )
+    else if ( p()->buffs.painful_death->up() )
     {
-      p()->buffs.exterminate_painful_death->expire();
+      p()->buffs.painful_death->expire();
     }
 
     if ( p()->buffs.killing_machine->up() )
@@ -9600,11 +9600,10 @@ struct soul_reaper_execute_t : public death_knight_spell_t
 
 struct soul_reaper_t : public death_knight_melee_attack_t
 {
-  soul_reaper_t( util::string_view name, death_knight_t* p, util::string_view options_str, const spell_data_t* data )
+  soul_reaper_t( util::string_view name, death_knight_t* p, const spell_data_t* data )
     : death_knight_melee_attack_t( name, p, data ),
       soul_reaper_execute( get_action<soul_reaper_execute_t>( name_str + "_execute", p ) )
   {
-    parse_options( options_str );
     add_child( soul_reaper_execute );
 
     hasted_ticks = false;
@@ -9676,15 +9675,16 @@ private:
 struct soul_reaper_action_t final : public soul_reaper_t
 {
   soul_reaper_action_t( util::string_view n, death_knight_t* p, util::string_view options_str )
-    : soul_reaper_t( n, p, options_str, p->talent.soul_reaper )
+    : soul_reaper_t( n, p, p->talent.soul_reaper )
   {
+    parse_options( options_str );
   }
 };
 
 struct grim_reaper_soul_reaper_t : soul_reaper_t
 {
   grim_reaper_soul_reaper_t( util::string_view name, death_knight_t* p )
-    : soul_reaper_t( name, p, "", p->spell.grim_reaper_soul_reaper )
+    : soul_reaper_t( name, p, p->spell.grim_reaper_soul_reaper )
   {
     background                         = true;
     base_costs[ RESOURCE_RUNIC_POWER ] = 0;
@@ -12552,16 +12552,18 @@ void death_knight_t::create_buffs()
           } );
 
     buffs.exterminate = make_buff( this, "exterminate", spell.exterminate_buff )
-                            ->set_expire_callback( [ this ]( buff_t* buff, int stacks, timespan_t duration ) {
-                                make_event( *sim, 500_ms, [ this ]() { get_action<exterminate_t>( "exterminate", this )->execute_on_target( this->target ); } ); 
-                              } );
+                          ->set_expire_callback( [ this ]( buff_t* buff, int stacks, timespan_t duration ) {
+                            make_event( *sim, 500_ms, [ this ]() {
+                              get_action<exterminate_t>( "exterminate", this )->execute_on_target( this->target );
+                            } );
+                          } );
 
- 
-      buffs.exterminate_painful_death =
-          make_buff( this, "exterminate_painful_death", spell.exterminate_buff_painful_death )
-              ->set_expire_callback( [ this ]( buff_t* buff, int stacks, timespan_t duration ) {
-                make_event( *sim, 500_ms, [ this ]() { get_action<exterminate_t>( "exterminate", this )->execute_on_target( this->target ); } ); 
-              } );
+  buffs.painful_death = make_buff( this, "painful_death", spell.exterminate_buff_painful_death )
+                            ->set_expire_callback( [ this ]( buff_t* buff, int stacks, timespan_t duration ) {
+                              make_event( *sim, 500_ms, [ this ]() {
+                                get_action<exterminate_t>( "exterminate", this )->execute_on_target( this->target );
+                              } );
+                            } );
 
   // San'layn
   buffs.essence_of_the_blood_queen = new essence_of_the_blood_queen_buff_t( this );
@@ -12897,6 +12899,7 @@ void death_knight_t::init_procs()
   procs.enduring_chill = get_proc( "Enduring Chill extra bounces" );
 
   procs.blood_beast = get_proc( "Blood Beast" );
+
   procs.exterminate_reapers_mark = get_proc( "Reaper's Mark from Exterminate" );
 }
 
