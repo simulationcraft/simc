@@ -2479,12 +2479,9 @@ void item::spiked_counterweight( special_effect_t& effect )
 
     struct haymaker_driver_t : public dbc_proc_callback_t
     {
-      struct haymaker_event_t;
-
       buff_t* debuff;
       const special_effect_t& effect;
       double multiplier;
-      haymaker_event_t* accumulator;
       haymaker_damage_t* action;
       action_t* on_use;
 
@@ -2536,9 +2533,9 @@ void item::spiked_counterweight( special_effect_t& effect )
           debuff( nullptr ),
           effect( e ),
           multiplier( m ),
-          accumulator( nullptr ),
           action( debug_cast<haymaker_damage_t*>( a ) ),
-          on_use( use )
+          on_use( use ),
+          accumulator( nullptr )
       {}
 
       void activate() override
@@ -2556,6 +2553,10 @@ void item::spiked_counterweight( special_effect_t& effect )
         if ( on_use->get_debuff( trigger_state->target )->check() )
           accumulator->damage += trigger_state->result_amount * multiplier;
       }
+
+      // Forward declaration does not work on MacOS Clang at least, so move definition after class
+      // definition.
+      haymaker_event_t* accumulator;
     };
 
     haymaker_driver_t* cb;
