@@ -245,7 +245,7 @@ struct simplified_player_t : public player_t
           { "two_mins_cds", 0.5,  20_s, 120_s, 3_s },
           { "30s_cds",      0.25, 15_s,  30_s, 3_s } } } },
       { "assa",    { ROLE_SPELL, 2.33, false, 1_s, 0.5,  -1, 8, 1, 11100.0, 0, {              // 234.6k
-          { "ten_mins_cds", 0.2,  40_s, 600_s },
+          { "ten_mins_cds", 0.2,  40_s, 600_s, 0_s },
           { "two_mins_cds", 1.25, 20_s, 120_s, 6_s },
           { "one_mins_cds", 1.1,  14_s,  60_s, 7_s } } } },
       { "unh",     { ROLE_SPELL, 2.73, true, 1.5_s, 0.4,  -1, 8, 1, 22500.0, 0, {             // 251.4k
@@ -1345,6 +1345,15 @@ public:
     return static_cast<const state_t*>( s );
   }
 
+  // We overload these methods with versions that take the action state as an argument.
+  // Base methods are brought up to scope to squash warnings, but set private for now.
+  // Set public if base methods needs to be accessed from a derived object in the future.
+private:
+  using ab::composite_crit_chance;
+  using ab::composite_haste;
+  using ab::composite_crit_chance_multiplier;
+
+public:
   double composite_crit_chance( const action_state_t* s ) const
   {
     return action_t::composite_crit_chance() + p( s )->cache.spell_crit_chance();
@@ -3014,7 +3023,7 @@ struct fire_breath_traveling_flame_t : public empowered_release_spell_t
   }
 
   
-  void trigger_dot( action_state_t* state )
+  void trigger_dot( action_state_t* state ) override
   {
     base_t::trigger_dot( state );
 
@@ -3131,7 +3140,7 @@ struct fire_breath_t : public empowered_charge_spell_t
       return t;
     }
 
-    void trigger_dot( action_state_t* state )
+    void trigger_dot( action_state_t* state ) override
     {
       base_t::trigger_dot( state );
       p()->get_target_data( state->target )->dots.fire_breath_traveling_flame->cancel();
@@ -4670,11 +4679,11 @@ struct engulf_t : public evoker_spell_t
   {
     using base_t = engulf_base_t<Base>;
     double engulf_mult;
-    timespan_t consume_flame_time;
-    double consume_flame_mult;
     timespan_t fan_the_flames_duration;
     action_t* consume_flame;
     empowered_release_spell_t* replicated_empower_action;
+    timespan_t consume_flame_time;
+    double consume_flame_mult;
 
     engulf_base_t( std::string_view n, evoker_t* p, const spell_data_t* s )
       : Base( n, p, s ),
@@ -4690,7 +4699,7 @@ struct engulf_t : public evoker_spell_t
       base_t::dual = true;
     }
 
-    virtual int count_dots( player_t* target ) const
+    virtual int count_dots( player_t* ) const
     {
       return 0;
     }
@@ -4703,12 +4712,12 @@ struct engulf_t : public evoker_spell_t
       return da;
     }
 
-    virtual dot_t* consumed_dot( const evoker_td_t* td ) const
+    virtual dot_t* consumed_dot( const evoker_td_t* ) const
     {
       return nullptr;
     }
 
-    virtual dot_t* replicated_dot( const evoker_td_t* td ) const
+    virtual dot_t* replicated_dot( const evoker_td_t* ) const
     {
       return nullptr;
     }

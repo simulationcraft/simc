@@ -4559,7 +4559,7 @@ struct ferocious_bite_base_t : public cat_finisher_t
     cat_finisher_t::consume_resource();
   }
 
-  virtual double energy_multiplier( const action_state_t* s ) const
+  virtual double energy_multiplier( const action_state_t* ) const
   {
     return 1.0 + ( excess_energy / max_excess_energy ) * ( 1.0 + saber_jaws_mul );
   }
@@ -4694,9 +4694,7 @@ struct rake_t : public use_fluid_form_t<DRUID_FERAL, cat_attack_t>
 {
   struct rake_bleed_t : public trigger_waning_twilight_t<cat_attack_t>
   {
-    rake_t* rake;
-
-    rake_bleed_t( druid_t* p, std::string_view n, flag_e f, rake_t* r ) : base_t( n, p, find_trigger( r ).trigger() ), rake( r )
+    rake_bleed_t( druid_t* p, std::string_view n, flag_e f, rake_t* r ) : base_t( n, p, find_trigger( r ).trigger(), f )
     {
       background = dual = true;
       // override for convoke. since this is only ever executed from rake_t, form checking is unnecessary.
@@ -4712,12 +4710,6 @@ struct rake_t : public use_fluid_form_t<DRUID_FERAL, cat_attack_t>
       // TODO: placeholder value
       if ( rng().roll( 0.2 ) )
         p()->active.bloodseeker_vines->execute_on_target( d->target );
-    }
-
-    // read persistent mul off the parent rake's table for reporting
-    void print_parsed_custom_type( report::sc_html_stream& os ) override
-    {
-      rake->print_parsed_custom_type( os );
     }
   };
 
@@ -4803,7 +4795,7 @@ struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
 {
   struct tear_t : public druid_residual_action_t<cat_attack_t>
   {
-    tear_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 391356 ) )
+    tear_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 391356 ), f )
     {
       name_str_reporting = "tear";
 
@@ -10573,7 +10565,7 @@ void druid_t::create_buffs()
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
     ->apply_affecting_aura( talent.boundless_moonlight )  // TODO: hidden buff?
     ->apply_affecting_aura( talent.the_eternal_moon )
-    ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
       if ( new_ )
         buff.boundless_moonlight_heal->trigger();
       else

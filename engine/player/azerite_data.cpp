@@ -2364,7 +2364,7 @@ void azerite_globules( special_effect_t& effect )
       target_debuff = effect.player->find_spell( 279956 );
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* s ) override
     {
       auto debuff = get_debuff( s->target );
       debuff->trigger();

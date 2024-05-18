@@ -233,6 +233,8 @@ std::string demonsurge_ability_name( demonsurge_ability ability )
       return "demonsurge_annihilation";
     case demonsurge_ability::DEATH_SWEEP:
       return "demonsurge_death_sweep";
+    default:
+      return "demonsurge_unknown";
   }
 }
 

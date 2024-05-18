@@ -5894,7 +5894,7 @@ void unique_gear::register_hotfixes_legion()
   */
 }
 
-void unique_gear::register_target_data_initializers_legion( sim_t* sim )
+void unique_gear::register_target_data_initializers_legion( sim_t* )
 {
   using namespace legion;
 }

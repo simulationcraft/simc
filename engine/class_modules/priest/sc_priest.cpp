@@ -1256,9 +1256,9 @@ public:
   double execute_percent;
   double execute_modifier;
   double deathspeaker_mult;
+  propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
   timespan_t depth_of_shadows_duration;
   double depth_of_shadows_chance;
-  propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
   propagate_const<expiation_t*> child_expiation;
   action_t* child_searing_light;
   timespan_t execute_override;
@@ -2557,10 +2557,10 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     procs(),
     background_actions(),
     active_items(),
-    pets( *this ),
-    options(),
     allies_with_atonement(),
-    state()
+    state(),
+    pets( *this ),
+    options()
 {
   create_cooldowns();
   create_gains();

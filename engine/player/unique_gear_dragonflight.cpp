@@ -11148,7 +11148,7 @@ void arcanists_edge( special_effect_t& effect )
       }
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* s ) override
     {
       if ( listener->absorb_buff_list.empty() )
         return;
@@ -11356,7 +11356,7 @@ void quick_strike( special_effect_t& effect )
     {
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* s ) override
     {
       auto atk = listener->main_hand_attack;
 
@@ -11697,7 +11697,7 @@ void register_special_effects()
   register_special_effect( 422652, DISABLED_EFFECT );  // Fyrakk's Tainted Rageheart secondary effect
 }
 
-void register_target_data_initializers( sim_t& sim )
+void register_target_data_initializers( sim_t& )
 {
 }
 

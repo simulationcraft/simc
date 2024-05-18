@@ -132,7 +132,7 @@ public:
 
   // Rolling over the damage is handled by separately via the state, so we set this to 1.0 for now.
   // TODO: Consolidate this with coeff based rolling periodics for uniform handling of all rolling periodics
-  double composite_rolling_ta_multiplier( const action_state_t* s ) const override
+  double composite_rolling_ta_multiplier( const action_state_t* ) const override
   {
     return 1.0;
   }

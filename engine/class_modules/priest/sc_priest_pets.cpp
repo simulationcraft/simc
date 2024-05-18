@@ -478,7 +478,7 @@ struct voidwraith_pet_t final : public base_fiend_pet_t
     return 0;
   }
 
-  action_t* create_action( util::string_view name, util::string_view options_str );
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
 struct void_flay_t final : public priest_pet_spell_t

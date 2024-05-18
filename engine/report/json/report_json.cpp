@@ -1115,7 +1115,7 @@ void profileset_json( const ::report::json::report_configuration_t& report_confi
 #endif
 }
 
-void dps_plot_json( const ::report::json::report_configuration_t& report_configuration, const plot_t& dps_plot,
+void dps_plot_json( const ::report::json::report_configuration_t& /* report_configuration */, const plot_t& dps_plot,
                     const sim_t& sim, js::JsonOutput& root )
 {
   for ( auto player : sim.player_list )
@@ -1146,7 +1146,7 @@ void dps_plot_json( const ::report::json::report_configuration_t& report_configu
   }
 }
 
-void reforge_plot_json( const ::report::json::report_configuration_t& report_configuration,
+void reforge_plot_json( const ::report::json::report_configuration_t& /* report_configuration */,
                         const reforge_plot_t& reforge_plot, const sim_t& sim, js::JsonOutput& root )
 {
   const auto& stat_list = reforge_plot.reforge_plot_stat_indices;

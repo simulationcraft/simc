@@ -187,7 +187,7 @@ void void_reapers_chime( special_effect_t& effect )
           queensbane = claw->execute_action;
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* s ) override
     {
       major->execute_on_target( s->target );
 
@@ -474,7 +474,7 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
           throw std::invalid_argument( "Valid thewarwithin.sikrans.shadow_arsenal_stance: flourish, decimation, barrage" );
       }
 
-      e.player->register_precombat_begin( [ this ]( player_t* p ) {
+      e.player->register_precombat_begin( [ this ]( player_t* ) {
         cycle_stance( false );
       } );
     }
@@ -1025,13 +1025,11 @@ void register_special_effects()
   // Sets
 }
 
-void register_target_data_initializers( sim_t& sim )
+void register_target_data_initializers( sim_t& )
 {
-
 }
 
 void register_hotfixes()
 {
-
 }
 }  // namespace unique_gear::thewarwithin
