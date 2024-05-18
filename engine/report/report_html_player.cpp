@@ -1532,7 +1532,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
        << "</thead>\n";
 
     os << "<tbody>\n";
-    for ( attribute_e i = ATTRIBUTE_NONE; ++i < ATTR_AGI_INT; )
+    for ( attribute_e i = ATTRIBUTE_NONE; ++i < ATTR_AGI_INT; )  // ATTRIBUTE_NONE is skipped via ++i
     {
       os.printf(
           "<tr>\n"

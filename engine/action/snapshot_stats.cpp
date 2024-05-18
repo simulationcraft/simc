@@ -61,21 +61,21 @@ void snapshot_stats_t::execute()
 {
   player_t* p = player;
 
-  if (completed)
+  if ( completed )
     return;
 
   completed = true;
 
-  if (p->nth_iteration() > 0)
+  if ( p->nth_iteration() > 0 )
     return;
 
-  if (sim->log)
-    sim->out_log.printf("%s performs %s", p->name(), name());
+  if ( sim->log )
+    sim->out_log.printf( "%s performs %s", p->name(), name() );
 
   player_collected_data_t::buffed_stats_t& buffed_stats = p->collected_data.buffed_stats_snapshot;
 
-  for (attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; ++i)
-    buffed_stats.attribute[i] = floor(p->get_attribute(i));
+  for ( attribute_e i = ATTRIBUTE_NONE; ++i < ATTRIBUTE_MAX; )  // ATTRIBUTE_NONE is skipped via ++i
+    buffed_stats.attribute[ i ] = floor( p->get_attribute( i ) );
 
   buffed_stats.resource = p->resources.max;
 
@@ -94,15 +94,16 @@ void snapshot_stats_t::execute()
   buffed_stats.corruption_resistance = p->cache.corruption_resistance();
   buffed_stats.leech = p->cache.leech();
 
-  buffed_stats.spell_power = static_cast<int>( p->cache.spell_power( SCHOOL_MAX ) * p->composite_spell_power_multiplier() );
+  buffed_stats.spell_power =
+      static_cast<int>( p->cache.spell_power( SCHOOL_MAX ) * p->composite_spell_power_multiplier() );
   buffed_stats.spell_hit = p->cache.spell_hit();
   buffed_stats.spell_crit_chance = p->cache.spell_crit_chance();
-  buffed_stats.manareg_per_second = p->resource_regen_per_second(RESOURCE_MANA);
+  buffed_stats.manareg_per_second = p->resource_regen_per_second( RESOURCE_MANA );
 
   buffed_stats.attack_power = static_cast<int>( p->cache.attack_power() * p->composite_attack_power_multiplier() );
   buffed_stats.attack_hit = p->cache.attack_hit();
-  buffed_stats.mh_attack_expertise = p->composite_melee_expertise(&(p->main_hand_weapon));
-  buffed_stats.oh_attack_expertise = p->composite_melee_expertise(&(p->off_hand_weapon));
+  buffed_stats.mh_attack_expertise = p->composite_melee_expertise( &( p->main_hand_weapon ) );
+  buffed_stats.oh_attack_expertise = p->composite_melee_expertise( &( p->off_hand_weapon ) );
   buffed_stats.attack_crit_chance = p->cache.attack_crit_chance();
 
   buffed_stats.armor = p->composite_armor();
@@ -112,7 +113,7 @@ void snapshot_stats_t::execute()
   buffed_stats.block = p->cache.block();
   buffed_stats.crit = p->cache.crit_avoidance();
 
-  double spell_hit_extra  = 0;
+  double spell_hit_extra = 0;
   double attack_hit_extra = 0;
   double expertise_extra  = 0;
 

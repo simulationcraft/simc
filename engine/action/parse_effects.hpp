@@ -666,6 +666,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   {
     auto am = player_t::composite_attribute_multiplier( attr );
 
+    assert( attr != ATTRIBUTE_NONE && "ATTRIBUTE_NONE will be out of index" );
+
     for ( const auto& i : attribute_multiplier_effects )
       if ( i.opt_enum & ( 1 << ( attr - 1 ) ) )
         am *= 1.0 + get_effect_value( i );
@@ -858,6 +860,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   double matching_gear_multiplier( attribute_e attr ) const override
   {
     double mg = player_t::matching_gear_multiplier( attr );
+
+    assert( attr != ATTRIBUTE_NONE && "ATTRIBUTE_NONE will be out of index" );
 
     for ( const auto& i : matching_armor_attribute_multiplier_effects )
       if ( i.opt_enum & ( 1 << ( attr - 1 ) ) )
