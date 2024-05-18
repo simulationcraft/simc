@@ -6809,16 +6809,17 @@ struct astral_smolder_t
       uptime( p->get_uptime( "Astral Smolder" )->collect_uptime( *p->sim ) )
   {
     proc = true;
-  }
 
-  double composite_rolling_ta_multiplier( const action_state_t* s ) const override
-  {
-    double m = residual_action_t::composite_rolling_ta_multiplier( s );
+    // double dips and snapshots eclipes via script
+    add_parse_entry( persistent_multiplier_effects )
+        .set_buff( p->buff.eclipse_lunar )
+        .set_type( USE_CURRENT )
+        .set_eff( &p->spec.eclipse_lunar->effectN( 7 ) );
 
-    m *= 1.0 + p()->buff.eclipse_lunar->check_value();
-    m *= 1.0 + p()->buff.eclipse_solar->check_value();
-
-    return m;
+    add_parse_entry( persistent_multiplier_effects )
+        .set_buff( p->buff.eclipse_solar )
+        .set_type( USE_CURRENT )
+        .set_eff( &p->spec.eclipse_solar->effectN( 8 ) );
   }
 
   void trigger_dot( action_state_t* s ) override
@@ -13324,6 +13325,9 @@ void eclipse_handler_t::advance_eclipse( eclipse_e eclipse, bool active )
 void eclipse_handler_t::update_eclipse( eclipse_e eclipse )
 {
   auto buff = get_eclipse( eclipse );
+  if ( !buff->check() )
+    return;
+
   auto val = buff->default_value;
 
   val += get_harmony( eclipse )->check_stack_value();

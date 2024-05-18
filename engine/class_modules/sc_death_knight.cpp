@@ -1538,6 +1538,9 @@ public:
     // San'layn procs
     propagate_const<proc_t*> blood_beast;
 
+    propagate_const<proc_t*> vampiric_strike;
+    propagate_const<proc_t*> vampiric_strike_waste;
+
     // Deathbringer procs
     propagate_const<proc_t*> exterminate_reapers_mark;
   } procs;
@@ -3651,7 +3654,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
       auto_attack_melee_t::impact( state );
       if ( state->result_amount > 0 )
       {
-        pet()->accumulator += state->result_amount * pet()->blood_beast_mod;
+        pet()->accumulator += state->result_amount;
       }
     }
   };
@@ -3700,7 +3703,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
   {
     if ( !sim->event_mgr.canceled )
     {
-      blood_eruption->base_dd_min = blood_eruption->base_dd_max = accumulator;
+      blood_eruption->base_dd_min = blood_eruption->base_dd_max = accumulator * blood_beast_mod;
       blood_eruption->execute();
       accumulator = 0;
     }
@@ -3973,36 +3976,6 @@ public:
 // ==========================================================================
 struct whitemane_pet_t final : public horseman_pet_t
 {
-  /*struct whitemane_td_t : public actor_target_data_t
-  {
-    struct dots_t
-    {
-      propagate_const<dot_t*> undeath_dot;
-    } whitemane_dot;
-
-    whitemane_td_t( player_t* target, whitemane_pet_t* p ) : actor_target_data_t( target, p )
-    {
-      whitemane_dot.undeath_dot = target -> get_dot( "undeath", p );
-    }
-  };
-
-  target_specific_t<whitemane_td_t> target_data;
-
-  const whitemane_td_t* find_target_data( const player_t* target ) const override
-  {
-    return target_data[ target ];
-  }
-
-  whitemane_td_t* get_target_data( player_t* target ) const override
-  {
-    whitemane_td_t*& td = target_data[ target ];
-    if ( !td )
-    {
-      td = new whitemane_td_t( target, const_cast<whitemane_pet_t*>( this ) );
-    }
-    return td;
-  } */
-
   struct death_coil_whitemane_t final : public horseman_spell_t
   {
     bool used;
@@ -4010,21 +3983,7 @@ struct whitemane_pet_t final : public horseman_pet_t
       : horseman_spell_t( p, name, p->dk()->pet_spell.whitemane_death_coil ), used( false )
     {
       parse_options( options_str );
-    }
-
-    void execute() override
-    {
-      horseman_spell_t::execute();
-      if ( dk()->bugs )
-        used = true;
-    }
-
-    bool ready() override
-    {
-      if ( dk()->bugs )
-        return !used;
-
-      return horseman_spell_t::ready();
+      cooldown->duration = 12_s; // Overriding the data cooldown to more closely represent actual in game behavior
     }
   };
 
@@ -4032,27 +3991,11 @@ struct whitemane_pet_t final : public horseman_pet_t
   {
     npc_id = owner->spell.summon_whitemane->effectN( 1 ).misc_value1();
     register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
-      if ( !c )
-      {
-        debug_cast<death_coil_whitemane_t*>( coil )->used = false;
-      }
       if ( c )
       {
         dk()->active_spells.undeath_dot->execute_on_target( dk()->target );
       }
     } );
-  }
-
-  void demise() override
-  {
-    horseman_pet_t::demise();
-    debug_cast<death_coil_whitemane_t*>( coil )->used = false;
-  }
-
-  void reset() override
-  {
-    horseman_pet_t::reset();
-    debug_cast<death_coil_whitemane_t*>( coil )->used = false;
   }
 
   void init_action_list() override
@@ -4066,15 +4009,11 @@ struct whitemane_pet_t final : public horseman_pet_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    coil = new death_coil_whitemane_t( "death_coil", this, options_str );
     if ( name == "death_coil" )
-      return coil;
+      return new death_coil_whitemane_t( "death_coil", this, options_str );
 
     return horseman_pet_t::create_action( name, options_str );
   }
-
-private:
-  death_coil_whitemane_t* coil;
 };
 
 // ==========================================================================
@@ -4113,45 +4052,13 @@ struct trollbane_pet_t final : public horseman_pet_t
       : horseman_melee_t( p, name, p->dk()->pet_spell.trollbane_obliterate ), used( false )
     {
       parse_options( options_str );
-    }
-
-    void execute() override
-    {
-      horseman_melee_t::execute();
-      if ( dk()->bugs )
-        used = true;
-    }
-
-    bool ready() override
-    {
-      if ( dk()->bugs )
-        return !used;
-
-      return horseman_melee_t::ready();
+      cooldown->duration = 15_s; // Overriding the data cooldown to more closely represent actual in game behavior
     }
   };
 
   trollbane_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "trollbane" )
   {
     npc_id = owner->spell.summon_trollbane->effectN( 1 ).misc_value1();
-    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
-      if ( !c )
-      {
-        debug_cast<obliterate_trollbane_t*>( oblit )->used = false;
-      }
-    } );
-  }
-
-  void demise() override
-  {
-    horseman_pet_t::demise();
-    debug_cast<obliterate_trollbane_t*>( oblit )->used = false;
-  }
-
-  void reset() override
-  {
-    horseman_pet_t::reset();
-    debug_cast<obliterate_trollbane_t*>( oblit )->used = false;
   }
 
   void init_action_list() override
@@ -4166,17 +4073,13 @@ struct trollbane_pet_t final : public horseman_pet_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    oblit = new obliterate_trollbane_t( "obliterate", this, options_str );
     if ( name == "obliterate" )
-      return oblit;
+      return new obliterate_trollbane_t( "obliterate", this, options_str );
     if ( name == "chains_of_ice" )
       return new trollbane_chains_of_ice_t( name, this, options_str );
 
     return horseman_pet_t::create_action( name, options_str );
   }
-
-private:
-  obliterate_trollbane_t* oblit;
 };
 
 // ==========================================================================
@@ -4187,12 +4090,6 @@ struct nazgrim_pet_t final : public horseman_pet_t
   nazgrim_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "nazgrim" )
   {
     npc_id = owner->spell.summon_nazgrim->effectN( 1 ).misc_value1();
-    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
-      if ( !c )
-      {
-        debug_cast<scourge_strike_nazgrim_t*>( scourge_strike )->used = false;
-      }
-    } );
   }
 
   struct scourge_strike_shadow_nazgrim_t final : public horseman_melee_t
@@ -4216,21 +4113,7 @@ struct nazgrim_pet_t final : public horseman_pet_t
       parse_options( options_str );
       impact_action        = scourge_strike_shadow;
       impact_action->stats = stats;
-    }
-
-    void execute() override
-    {
-      horseman_melee_t::execute();
-      if ( dk()->bugs )
-        used = true;
-    }
-
-    bool ready() override
-    {
-      if ( dk()->bugs )
-        return !used;
-
-      return horseman_melee_t::ready();
+      cooldown->duration   = 15_s; // Overriding the data cooldown to more closely represent actual in game behavior
     }
 
   private:
@@ -4241,19 +4124,6 @@ struct nazgrim_pet_t final : public horseman_pet_t
   {
     horseman_pet_t::arise();
     dk()->buffs.apocalyptic_conquest->trigger();
-  }
-
-  void demise() override
-  {
-    horseman_pet_t::demise();
-    dk()->buffs.apocalyptic_conquest->expire();
-    debug_cast<scourge_strike_nazgrim_t*>( scourge_strike )->used = false;
-  }
-
-  void reset() override
-  {
-    horseman_pet_t::reset();
-    debug_cast<scourge_strike_nazgrim_t*>( scourge_strike )->used = false;
   }
 
   void init_action_list() override
@@ -4267,15 +4137,11 @@ struct nazgrim_pet_t final : public horseman_pet_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    scourge_strike = new scourge_strike_nazgrim_t( "scourge_strike", this, options_str );
     if ( name == "scourge_strike" )
-      return scourge_strike;
+      return new scourge_strike_nazgrim_t( "scourge_strike", this, options_str );
 
     return horseman_pet_t::create_action( name, options_str );
   }
-
-private:
-  scourge_strike_nazgrim_t* scourge_strike;
 };
 
 // ==========================================================================
@@ -4351,6 +4217,37 @@ private:
 namespace
 {  // UNNAMED NAMESPACE
 
+// Custom School Change Buff struct
+struct school_change_buff_t : public buff_t
+{
+  school_change_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
+    : buff_t( p, name, spell )
+  {
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::start( stacks, value, duration );
+    for ( auto& action : actions )
+    {
+      action->set_school_override( dbc::get_school_type( school ) );
+    }
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    for ( auto& action : actions )
+    {
+      action->clear_school_override();
+    }
+  }
+
+public:
+  std::vector<action_t*> actions;
+  uint32_t school;
+};
+
 // Template for common death knight action code. See priest_action_t.
 template <class Base>
 struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_t, death_knight_td_t>
@@ -4360,12 +4257,10 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
 
   gain_t* gain;
   bool hasted_gcd;
-  bool parsed_school_expire;
-  bool recheck_school_change;
   std::vector<player_effect_t> school_change_effects;
 
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false ), parsed_school_expire( false ), recheck_school_change( false )
+    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false )
   {
     this->may_crit   = true;
     this->may_glance = false;
@@ -4415,22 +4310,9 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     if ( eff.subtype() == A_MODIFY_SCHOOL && ( action_base_t::data().affected_by_all( eff ) || force ) )
     {
       str           = "school change";
-      data.opt_enum = eff.misc_value1();
       data.type     = parse_flag_e::ALLOW_ZERO;
-      if ( data.buff != nullptr )
-      {
-        data.buff->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-          this->recheck_school_change = true;
-          if ( new_ == 0 )
-          {
-            this->parsed_school_expire = true;
-          }
-          if ( new_ > 0 )
-          {
-            this->parsed_school_expire = false;
-          }
-        } );
-      }
+      debug_cast<school_change_buff_t*>( data.buff )->school = eff.misc_value1();
+      debug_cast<school_change_buff_t*>( data.buff )->actions.push_back( this );
       return &school_change_effects;
     }
     return action_base_t::get_effect_vector( eff, data, val_mul, str, flat, force );
@@ -4601,20 +4483,6 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
 
   void execute() override
   {
-    if ( this->recheck_school_change )
-    {
-      size_t size = school_change_effects.size();
-      if ( size > 0 )
-      {
-        uint32_t school = *&school_change_effects.end()->opt_enum;
-        this->set_school_override( dbc::get_school_type( school ) );
-      }
-      if ( this->original_school != SCHOOL_NONE && this->parsed_school_expire )
-      {
-        this->clear_school_override();
-      }
-    }
-
     action_base_t::execute();
 
     // For non tank DK's, we proc the ability on CD, attached to thier own executes, to simulate it
@@ -5677,7 +5545,7 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
       p()->buffs.essence_of_the_blood_queen->extend_duration( p(), duration );
     }
 
-    if ( p()->buffs.vampiric_strike->check() || p()->buffs.gift_of_the_sanlayn->check() )
+    if ( p()->buffs.vampiric_strike->check() )
     {
       heal->execute();
       vampiric_strike->execute();
@@ -7292,7 +7160,7 @@ struct coil_of_devastation_t final : public residual_action::residual_periodic_a
     : residual_action::residual_periodic_action_t<death_knight_spell_t>( name, p, p->spell.coil_of_devastation_debuff )
   {
     background = dual = true;
-    may_miss = may_crit = false;
+    may_miss = may_crit = hasted_ticks = false;
   }
 };
 
@@ -9287,8 +9155,11 @@ struct remorseless_winter_t final : public death_knight_spell_t
 
     // Periodic behavior handled by the buff
     dot_duration = base_tick_time = 0_ms;
-    add_child( damage );
-    if (p->talent.frost.cryogenic_chamber.ok())
+    if ( p->spec.remorseless_winter->ok() )
+    {
+      add_child( damage );
+    }
+    if ( p->talent.frost.cryogenic_chamber.ok() )
     {
       add_child( get_action<cryogenic_chamber_t>( "cryogenic_chamber", p ) );
     }
@@ -11164,7 +11035,12 @@ void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
 
   if ( rng().roll( chance ) )
   {
+    if ( buffs.vampiric_strike->check() )
+    {
+      procs.vampiric_strike_waste->occur();
+    }
     buffs.vampiric_strike->trigger();
+    procs.vampiric_strike->occur();
   }
 }
 
@@ -12469,9 +12345,9 @@ void death_knight_t::create_buffs()
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
   // Shared
-  buffs.antimagic_shell = new antimagic_shell_buff_t( this );
+  buffs.antimagic_shell = make_buff<antimagic_shell_buff_t>( this );
 
-  buffs.antimagic_zone = new antimagic_zone_buff_t( this );
+  buffs.antimagic_zone = make_buff<antimagic_zone_buff_t>( this );
 
   buffs.icebound_fortitude = make_buff( this, "icebound_fortitude", talent.icebound_fortitude )
                                  ->set_duration( talent.icebound_fortitude->duration() )
@@ -12489,7 +12365,7 @@ void death_knight_t::create_buffs()
                             ->set_default_value_from_effect( 1 )
                             ->set_duration( 0_ms );  // Handled by trigger_dnd_buffs() & expire_dnd_buffs()
 
-  buffs.abomination_limb = new abomination_limb_buff_t( this );
+  buffs.abomination_limb = make_buff<abomination_limb_buff_t>( this );
 
   buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons->effectN( 1 ).trigger() )
                          ->set_default_value( talent.icy_talons->effectN( 1 ).percent() )
@@ -12513,12 +12389,12 @@ void death_knight_t::create_buffs()
 
 
   // Rider of the Apocalypse
-  buffs.antimagic_shell_horsemen = new antimagic_shell_buff_horseman_t( this );
+  buffs.antimagic_shell_horsemen = make_buff<antimagic_shell_buff_horseman_t>( this );
 
   buffs.antimagic_shell_horsemen_icd =
       make_buff( this, "antimagic_shell_horsemen_icd", pet_spell.rider_ams_icd )->set_quiet( true );
 
-  buffs.apocalyptic_conquest = new apocalyptic_conquest_buff_t( this );
+  buffs.apocalyptic_conquest = make_buff<apocalyptic_conquest_buff_t>( this );
 
   buffs.mograines_might =
       make_buff( this, "mograines_might", pet_spell.mograines_might_buff )->set_default_value_from_effect( 1 );
@@ -12530,11 +12406,11 @@ void death_knight_t::create_buffs()
   // Deathbringer
   buffs.grim_reaper = make_buff( this, "grim_reaper", spell.grim_reaper )->set_quiet( true );
 
-  buffs.bind_in_darkness = make_buff( this, "bind_in_darkness", spell.bind_in_darkness_buff )
+  buffs.bind_in_darkness = make_buff<school_change_buff_t>( this, "bind_in_darkness", spell.bind_in_darkness_buff )
                                ->set_trigger_spell( talent.deathbringer.bind_in_darkness );
 
   buffs.dark_talons_shadowfrost =
-      make_buff( this, "dark_talons_shadowfrost", spell.dark_talons_shadowfrost_buff )->set_quiet( true );
+      make_buff<school_change_buff_t>( this, "dark_talons_shadowfrost", spell.dark_talons_shadowfrost_buff )->set_quiet( true );
 
   buffs.dark_talons_icy_talons =
       make_buff( this, "dark_talons", spell.dark_talons_icy_talons_buff )
@@ -12566,19 +12442,33 @@ void death_knight_t::create_buffs()
                             } );
 
   // San'layn
-  buffs.essence_of_the_blood_queen = new essence_of_the_blood_queen_buff_t( this );
+  buffs.essence_of_the_blood_queen = make_buff<essence_of_the_blood_queen_buff_t>( this );
 
   buffs.gift_of_the_sanlayn = make_buff( this, "gift_of_the_sanlayn", spell.gift_of_the_sanlayn_buff )
                                   ->set_duration( 0_ms )
                                   ->set_default_value_from_effect( specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 )
-                                  ->add_invalidate( CACHE_HASTE );
+                                  ->add_invalidate( CACHE_HASTE )
+                                  ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+                                    if ( new_ )
+                                    {
+                                      if ( buffs.vampiric_strike->check() )
+                                      {
+                                        procs.vampiric_strike_waste->occur();
+                                      }
+                                      buffs.vampiric_strike->trigger();
+                                    }
+                                    else
+                                    {
+                                      buffs.vampiric_strike->expire();
+                                    }
+                                  } );
 
   buffs.vampiric_strike = make_buff( this, "vampiric_strike", spell.vampiric_strike_buff );
 
   // Blood
   if ( this->specialization() == DEATH_KNIGHT_BLOOD )
   {
-    buffs.blood_shield = new blood_shield_buff_t( this );
+    buffs.blood_shield = make_buff<blood_shield_buff_t>( this );
 
     buffs.bone_shield =
         make_buff( this, "bone_shield", spell.bone_shield )
@@ -12694,7 +12584,7 @@ void death_knight_t::create_buffs()
   // Frost
   if ( this->specialization() == DEATH_KNIGHT_FROST )
   {
-    buffs.breath_of_sindragosa = new breath_of_sindragosa_buff_t( this );
+    buffs.breath_of_sindragosa = make_buff<breath_of_sindragosa_buff_t>( this );
 
     buffs.cold_heart = make_buff( this, "cold_heart", talent.frost.cold_heart->effectN( 1 ).trigger() );
 
@@ -12732,9 +12622,9 @@ void death_knight_t::create_buffs()
                              gains.empower_rune_weapon );
             } );
 
-    buffs.pillar_of_frost = new pillar_of_frost_buff_t( this );
+    buffs.pillar_of_frost = make_buff<pillar_of_frost_buff_t>( this );
 
-    buffs.remorseless_winter = new remorseless_winter_buff_t( this );
+    buffs.remorseless_winter = make_buff<remorseless_winter_buff_t>( this );
 
     buffs.rime = make_buff( this, "rime", spell.rime_buff )
                      ->set_trigger_spell( spec.rime )
@@ -12772,15 +12662,15 @@ void death_knight_t::create_buffs()
             ->set_cooldown( talent.frost.unleashed_frenzy->internal_cooldown() )
             ->set_default_value( talent.frost.unleashed_frenzy->effectN( 1 ).percent() );
 
-    buffs.cryogenic_chamber = new cryogenic_chamber_buff_t( this );
+    buffs.cryogenic_chamber = make_buff<cryogenic_chamber_buff_t>( this );
   }
 
   // Unholy
   if ( this->specialization() == DEATH_KNIGHT_UNHOLY )
   {
-    buffs.dark_transformation = new dark_transformation_buff_t( this );
+    buffs.dark_transformation = make_buff<dark_transformation_buff_t>( this );
 
-    buffs.runic_corruption = new runic_corruption_buff_t( this );
+    buffs.runic_corruption = make_buff<runic_corruption_buff_t>( this );
 
     buffs.sudden_doom = make_buff( this, "sudden_doom", talent.unholy.sudden_doom->effectN( 1 ).trigger() )
                             ->set_trigger_spell( talent.unholy.sudden_doom )
@@ -12790,7 +12680,7 @@ void death_knight_t::create_buffs()
                                ->set_cooldown( 0_ms )  // Handled by the action
                                ->set_default_value_from_effect( 4 );
 
-    buffs.unholy_pact = new unholy_pact_buff_t( this );
+    buffs.unholy_pact = make_buff<unholy_pact_buff_t>( this );
 
     buffs.ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", spell.ghoulish_frenzy_player )
                                 ->set_duration( 0_ms )  // Handled by DT
@@ -12898,9 +12788,11 @@ void death_knight_t::init_procs()
 
   procs.enduring_chill = get_proc( "Enduring Chill extra bounces" );
 
-  procs.blood_beast = get_proc( "Blood Beast" );
+  procs.blood_beast           = get_proc( "Blood Beast" );
+  procs.vampiric_strike       = get_proc( "Vampiric Strike Proc" );
+  procs.vampiric_strike_waste = get_proc( "Vampiric Strike Proc Wasted" );
 
-  procs.exterminate_reapers_mark = get_proc( "Reaper's Mark from Exterminate" );
+  procs.exterminate_reapers_mark = get_proc ( "Reaper's Mark from Exterminate" );
 }
 
 // death_knight_t::init_finished ============================================

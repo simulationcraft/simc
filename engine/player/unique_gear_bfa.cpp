@@ -1531,7 +1531,7 @@ void items::briny_barnacle( special_effect_t& effect )
       return;
     }
 
-    target->register_on_demise_callback( p, [ p, choking_brine_damage, explosion ]( player_t* target ) {
+    target->register_on_demise_callback( p, [ choking_brine_damage, explosion ]( player_t* target ) {
       // Don't do anything if the sim is ending
       if ( target->sim->event_mgr.canceled )
       {
@@ -6011,7 +6011,6 @@ void unique_gear::register_special_effects_bfa()
 void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
 {
   using namespace bfa;
-  static constexpr std::array<slot_e, 2> items {{ SLOT_TRINKET_1, SLOT_TRINKET_2 }};
 
   sim->register_target_data_initializer( potion_of_focused_resolve_t() );
 }
