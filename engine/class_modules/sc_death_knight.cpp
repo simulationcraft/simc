@@ -5540,7 +5540,7 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
       p()->buffs.essence_of_the_blood_queen->extend_duration( p(), duration );
     }
 
-    if ( p()->buffs.vampiric_strike->check() )
+    if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       heal->execute();
       vampiric_strike->execute();
@@ -9473,7 +9473,10 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     : death_knight_melee_attack_t( name, p, data ),
       soul_reaper_execute( get_action<soul_reaper_execute_t>( name_str + "_execute", p ) )
   {
-    add_child( soul_reaper_execute );
+    if ( p->talent.soul_reaper.ok() || p->talent.deathbringer.grim_reaper.ok() )
+    {
+      add_child( soul_reaper_execute );
+    }
 
     hasted_ticks = false;
     dot_behavior = DOT_EXTEND;
@@ -9550,7 +9553,7 @@ struct soul_reaper_action_t final : public soul_reaper_t
   }
 };
 
-struct grim_reaper_soul_reaper_t : soul_reaper_t
+struct grim_reaper_soul_reaper_t final : public soul_reaper_t
 {
   grim_reaper_soul_reaper_t( util::string_view name, death_knight_t* p )
     : soul_reaper_t( name, p, p->spell.grim_reaper_soul_reaper )
