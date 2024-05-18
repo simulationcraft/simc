@@ -170,11 +170,14 @@ jobs:
             style_arg: fight_style=DungeonSlice
 
     env:
-      USBSAN_OPTIONS: print_stacktrace=1
+      UBSAN_OPTIONS: print_stacktrace=1
       SIMC_ARGS: output=/dev/null iterations=10
       PLAYER_ARGS: level=80
 
     steps:
+      - name: Temporary Workaround for clang-15 Builds
+        run: sudo sysctl vm.mmap_rnd_bits=28
+
       - uses: actions/cache@v4
         with:
           path: |
