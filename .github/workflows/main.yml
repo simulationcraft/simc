@@ -184,101 +184,105 @@ jobs:
             .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
-      - name: Setup
+      - name: "Setup Class"
         env: 
           SPEC_STR: ${{ matrix.spec }}
-        id: split
-        run: |
-          echo "::set-output name=class::${SPEC_STR%%_*}"
-          echo "::set-output name=spec::${SPEC_STR##*_}"
+        id: class_split
+        run: echo "::set-output name=class::${SPEC_STR%%_*}"
+
+      - name: "Setup Spec"
+        env:
+          SPEC_STR: ${{ matrix.spec }}
+        id: spec_split
+        run: echo "::set-output name=spec::${SPEC_STR##*_}"
 
       - name: "Log Debug"
         run: |
           ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS log=1 debug=1 ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ steps.split.outputs.class }}=${{ matrix.spec }} spec=${ steps.split.outputs.spec } \
+            ${{ steps.class_split.outputs.class }}=${{ matrix.spec }} spec=${ steps.spec_split.outputs.spec } \
             $PLAYER_ARGS load_default_gear=1
 
       - name: "No Talents, No Effects, No Sets"
         run: |
           ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS ${{ matrix.style_arg }} \
-            ${{ steps.split.outputs.class }}=${{ matrix.spec }} spec=${ steps.split.outputs.spec } \
+            ${{ steps.class_split.outputs.class }}=${{ matrix.spec }} spec=${ steps.spec_split.outputs.spec } \
             $PLAYER_ARGS load_default_gear=1
 
       - name: "No Talents, No Effects, All Sets"
         run: |
           ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS ${{ matrix.style_arg }} \
             enable_all_sets=1 \
-            ${{ steps.split.outputs.class }}=${{ matrix.spec }} spec=${ steps.split.outputs.spec } \
+            ${{ steps.class_split.outputs.class }}=${{ matrix.spec }} spec=${ steps.spec_split.outputs.spec } \
             $PLAYER_ARGS load_default_gear=1
 
       - name: "No Talents, All Effects, No Sets"
         run: |
           ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS ${{ matrix.style_arg }} \
             enable_all_item_effects=1 \
-            ${{ steps.split.outputs.class }}=${{ matrix.spec }} spec=${ steps.split.outputs.spec } \
+            ${{ steps.class_split.outputs.class }}=${{ matrix.spec }} spec=${ steps.spec_split.outputs.spec } \
             $PLAYER_ARGS load_default_gear=1
 
       - name: "No Talents, All Effects, All Sets"
         run: |
           ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS ${{ matrix.style_arg }} \
             enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ steps.split.outputs.class }}=${{ matrix.spec }} spec=${ steps.split.outputs.spec } \
+            ${{ steps.class_split.outputs.class }}=${{ matrix.spec }} spec=${ steps.spec_split.outputs.spec } \
             $PLAYER_ARGS load_default_gear=1
 
       - name: "Starter Talents, No Effects, No Sets"
         run: |
           ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS ${{ matrix.style_arg }} \
-            ${{ steps.split.outputs.class }}=${{ matrix.spec }} spec=${ steps.split.outputs.spec } \
+            ${{ steps.class_split.outputs.class }}=${{ matrix.spec }} spec=${ steps.spec_split.outputs.spec } \
             $PLAYER_ARGS load_default_talents=1 load_default_gear=1
 
       - name: "Starter Talents, No Effects, All Sets"
         run: |
           ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS ${{ matrix.style_arg }} \
             enable_all_sets=1 \
-            ${{ steps.split.outputs.class }}=${{ matrix.spec }} spec=${ steps.split.outputs.spec } \
+            ${{ steps.class_split.outputs.class }}=${{ matrix.spec }} spec=${ steps.spec_split.outputs.spec } \
             $PLAYER_ARGS load_default_talents=1 load_default_gear=1
 
       - name: "Starter Talents, All Effects, No Sets"
         run: |
           ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS ${{ matrix.style_arg }} \
             enable_all_item_effects=1 \
-            ${{ steps.split.outputs.class }}=${{ matrix.spec }} spec=${ steps.split.outputs.spec } \
+            ${{ steps.class_split.outputs.class }}=${{ matrix.spec }} spec=${ steps.spec_split.outputs.spec } \
             $PLAYER_ARGS load_default_talents=1 load_default_gear=1
 
       - name: "Starter Talents, All Effects, All Sets"
         run: |
           ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS ${{ matrix.style_arg }} \
             enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ steps.split.outputs.class }}=${{ matrix.spec }} spec=${ steps.split.outputs.spec } \
+            ${{ steps.class_split.outputs.class }}=${{ matrix.spec }} spec=${ steps.spec_split.outputs.spec } \
             $PLAYER_ARGS load_default_talents=1 load_default_gear=1
 
       - name: "All Talents, No Effects, No Sets"
         run: |
           ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS ${{ matrix.style_arg }} \
             enable_all_talents=1 \
-            ${{ steps.split.outputs.class }}=${{ matrix.spec }} spec=${ steps.split.outputs.spec } \
+            ${{ steps.class_split.outputs.class }}=${{ matrix.spec }} spec=${ steps.spec_split.outputs.spec } \
             $PLAYER_ARGS load_default_gear=1
 
       - name: "All Talents, No Effects, All Sets"
         run: |
           ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_sets=1 \
-            ${{ steps.split.outputs.class }}=${{ matrix.spec }} spec=${ steps.split.outputs.spec } \
+            ${{ steps.class_split.outputs.class }}=${{ matrix.spec }} spec=${ steps.spec_split.outputs.spec } \
             $PLAYER_ARGS load_default_gear=1
 
       - name: "All Talents, All Effects, No Sets"
         run: |
           ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 \
-            ${{ steps.split.outputs.class }}=${{ matrix.spec }} spec=${ steps.split.outputs.spec } \
+            ${{ steps.class_split.outputs.class }}=${{ matrix.spec }} spec=${ steps.spec_split.outputs.spec } \
             $PLAYER_ARGS load_default_gear=1
 
       - name: "All Talents, All Effects, All Sets"
         run: |
           ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ steps.split.outputs.class }}=${{ matrix.spec }} spec=${ steps.split.outputs.spec } \
+            ${{ steps.class_split.outputs.class }}=${{ matrix.spec }} spec=${ steps.spec_split.outputs.spec } \
             $PLAYER_ARGS load_default_gear=1
 
   ubuntu-run:
