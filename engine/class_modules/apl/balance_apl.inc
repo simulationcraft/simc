@@ -3,7 +3,8 @@ action_priority_list_t* def = get_action_priority_list( "default" );
 
 precombat->add_action( "moonkin_form" );
 
-def->add_action( "use_items/auto_attack" );
+def->add_action( "use_items" );
+def->add_action( "auto_attack" );
 def->add_action( "incarnation" );
 def->add_action( "celestial_alignment" );
 def->add_action( "starfire,if=!talent.lunar_calling&!buff.eclipse_solar.up" );
