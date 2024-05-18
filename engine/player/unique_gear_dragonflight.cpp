@@ -10681,7 +10681,7 @@ void cloak_of_infinite_potential( special_effect_t& effect )
   }
 
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 440393 ) );
-  for ( const auto [ stat_type, amount ] : stat_amounts )
+  for ( const auto& [ stat_type, amount ] : stat_amounts )
     debug_cast<stat_buff_t*>( buff )->add_stat( stat_type, amount );
 
   if ( effect.player->dragonflight_opts.brilliance_party > 0 )

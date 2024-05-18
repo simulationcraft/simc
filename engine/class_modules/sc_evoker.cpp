@@ -7352,7 +7352,7 @@ struct player_simplified_module_t : public module_t
   {
   }
 
-  void create_actions( player_t* p ) const override
+  void create_actions( player_t* ) const override
   {
   }
 

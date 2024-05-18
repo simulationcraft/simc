@@ -6829,6 +6829,9 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     spiritual_focus_count( 0 ),
     shuffle_count_secs( 0 ),
     gift_of_the_ox_proc_chance(),
+    efficient_training_energy( 0 ),
+    flurry_strikes_energy( 0 ),
+    flurry_strikes_damage( 0 ),
     buff(),
     gain(),
     proc(),
@@ -6839,9 +6842,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     passives(),
     rppm(),
     pets( this ),
-    efficient_training_energy( 0 ),
-    flurry_strikes_energy( 0 ),
-    flurry_strikes_damage( 0 ),
     user_options( options_t() ),
     stagger( nullptr )
 {

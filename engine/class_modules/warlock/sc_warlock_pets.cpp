@@ -1608,7 +1608,7 @@ void dreadstalker_t::arise()
 
   dreadbite_executes = 1;
 
-  if ( position() <= 1.0 )
+  if ( position() == POSITION_NONE || position() == POSITION_FRONT )
   {
     melee_on_summon = true; // Within this range, Dreadstalkers will not do a leap, so they immediately start using auto attacks
   }

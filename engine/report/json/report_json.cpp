@@ -1167,7 +1167,8 @@ void reforge_plot_json( const ::report::json::report_configuration_t& /* report_
 
       while ( j < stat_list.size() )
       {
-        dobj[ util::stat_type_abbrev( stat_list[ j++ ] ) ] = player->reforge_plot_data[ i ][ j ].value;
+        dobj[ util::stat_type_abbrev( stat_list[ j ] ) ] = player->reforge_plot_data[ i ][ j ].value;
+        j++;
       }
 
       dobj[ "dps" ] = player->reforge_plot_data[ i ][ j ].value;
