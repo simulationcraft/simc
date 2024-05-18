@@ -13348,7 +13348,8 @@ void eclipse_handler_t::datacollection_begin()
   iter.wrath->fill( 0 );
   iter.starfire->fill( 0 );
   iter.starsurge->fill( 0 );
-  iter.starfall->fill( 0 );
+  if ( iter.starfall )
+    iter.starfall->fill( 0 );
   if ( iter.fury_of_elune )
     iter.fury_of_elune->fill( 0 );
   if ( iter.new_moon )
@@ -13379,7 +13380,8 @@ void eclipse_handler_t::datacollection_end()
   end( *iter.wrath, *data.wrath );
   end( *iter.starfire, *data.starfire );
   end( *iter.starsurge, *data.starsurge );
-  end( *iter.starfall, *data.starfall );
+  if ( iter.starfall )
+    end( *iter.starfall, *data.starfall );
   if ( iter.fury_of_elune )
     end( *iter.fury_of_elune, *data.fury_of_elune );
   if ( iter.new_moon )
