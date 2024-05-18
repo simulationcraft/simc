@@ -11461,12 +11461,9 @@ void register_special_effects()
   register_special_effect( { 390172, 390183, 390190 }, enchants::writ_enchant() );  // earthen writ
   register_special_effect( { 390243, 390244, 390246 }, enchants::writ_enchant() );  // frozen writ
   register_special_effect( { 390248, 390249, 390251 }, enchants::writ_enchant() );  // wafting writ
-  register_special_effect( { 390215, 390217, 390219 },
-                           enchants::writ_enchant( STAT_STR_AGI_INT ) );     // sophic writ
-  register_special_effect( { 390346, 390347, 390348 },
-                           enchants::writ_enchant( STAT_BONUS_ARMOR ) );            // earthen devotion
-  register_special_effect( { 390222, 390227, 390229 },
-                           enchants::writ_enchant( STAT_STR_AGI_INT ) );     // sophic devotion
+  register_special_effect( { 390215, 390217, 390219 }, enchants::writ_enchant( STAT_STR_AGI_INT ) );  // sophic writ
+  register_special_effect( { 390346, 390347, 390348 }, enchants::writ_enchant( STAT_BONUS_ARMOR ) );  // earthen devotion
+  register_special_effect( { 390222, 390227, 390229 }, enchants::writ_enchant( STAT_STR_AGI_INT ) );  // sophic devotion
   register_special_effect( { 390351, 390352, 390353 }, enchants::frozen_devotion );
   register_special_effect( { 390358, 390359, 390360 }, enchants::wafting_devotion );
 

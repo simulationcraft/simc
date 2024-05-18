@@ -13408,7 +13408,8 @@ void eclipse_handler_t::merge( const eclipse_handler_t& other )
   merge( *other.data.wrath, *data.wrath );
   merge( *other.data.starfire, *data.starfire );
   merge( *other.data.starsurge, *data.starsurge );
-  merge( *other.data.starfall, *data.starfall );
+  if ( data.starfall )
+    merge( *other.data.starfall, *data.starfall );
   if ( data.fury_of_elune )
     merge( *other.data.fury_of_elune, *data.fury_of_elune );
   if ( data.new_moon )
@@ -13598,7 +13599,8 @@ public:
     balance_print_data( os, p.spec.wrath, *p.eclipse_handler.data.wrath );
     balance_print_data( os, p.talent.starfire, *p.eclipse_handler.data.starfire );
     balance_print_data( os, p.talent.starsurge, *p.eclipse_handler.data.starsurge );
-    balance_print_data( os, p.talent.starfall, *p.eclipse_handler.data.starfall );
+    if ( p.eclipse_handler.data.starfall )
+      balance_print_data( os, p.talent.starfall, *p.eclipse_handler.data.starfall );
     if ( p.eclipse_handler.data.fury_of_elune )
       balance_print_data( os, p.find_spell( 202770 ), *p.eclipse_handler.data.fury_of_elune );
     if ( p.eclipse_handler.data.new_moon )
