@@ -1062,10 +1062,10 @@ public:
   {
     auto splits = util::string_split<std::string_view>( type_str, "|" );
     auto tok1 = splits[ 0 ];
-    auto tok2 = val_str;
+    auto tok2 = std::string( val_str );
 
     if ( splits.size() > 1 )
-      tok2 = fmt::format( "{} {}", val_str, splits[ 1 ] );
+      tok2 += fmt::format( " {}", splits[ 1 ] );
 
     if ( data.buff )
     {
