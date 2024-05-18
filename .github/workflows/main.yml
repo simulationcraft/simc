@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [ dragonflight ]
+    branches: [ dragonflight, thewarwithin ] # TODO: remove if-checks for only DF branch when TWW APLS are ready
   push:
-    branches: [ dragonflight ]
+    branches: [ dragonflight, thewarwithin ]
     paths-ignore:
       - 'SpellDataDump/**'
       - 'dbc_extract3/**'
@@ -149,6 +149,7 @@ jobs:
     name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build, ubuntu-gcc-build ]
+    if: github.ref == 'refs/heads/dragonflight'
 
     strategy:
       fail-fast: false
@@ -202,6 +203,7 @@ jobs:
     name: test-${{ matrix.tier }}-${{ matrix.spec }}
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build ]
+    if: github.ref == 'refs/heads/dragonflight'
 
     strategy:
       fail-fast: false
@@ -258,7 +260,7 @@ jobs:
     name: Regenerate profiles
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build ]
-    if: ${{ github.event_name == 'push' }}
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dragonflight'
 
     strategy:
       fail-fast: false
@@ -313,6 +315,7 @@ jobs:
         run: make SANITIZE=1 -C engine debug -j 2
 
       - name: Smoke Test
+        if: github.ref == 'refs/heads/dragonflight'
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
 
   windows-VS:
@@ -349,5 +352,5 @@ jobs:
           cmake --build "${{ env.CMAKE_BUILD_DIR }}"
 
       - name: Smoke Test
-        if: ${{ matrix.runSmokeTest }}
+        if: matrix.runSmokeTest && github.ref == 'refs/heads/dragonflight'
         run: ${{ env.CMAKE_BUILD_DIR }}/simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
