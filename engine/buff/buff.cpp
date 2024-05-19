@@ -3823,6 +3823,7 @@ buff_t* damage_buff_t::apply_affecting_effect( const spelleffect_data_t& effect 
   apply_mod_affecting_effect( direct_mod, effect );
   apply_mod_affecting_effect( periodic_mod, effect );
   apply_mod_affecting_effect( auto_attack_mod, effect );
+  apply_mod_affecting_effect( crit_chance_mod, effect );
 
   return buff_t::apply_affecting_effect( effect );
 }

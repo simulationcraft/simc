@@ -174,6 +174,7 @@ public:
     buff_t* caustic_spatter;
     buff_t* crippling_poison;
     damage_buff_t* deathmark;
+    damage_buff_t* fazed;
     buff_t* find_weakness;
     buff_t* flagellation;
     buff_t* ghostly_strike;
@@ -302,7 +303,8 @@ public:
     actions::rogue_attack_t* triple_threat_mh = nullptr;
     actions::rogue_attack_t* triple_threat_oh = nullptr;
     residual_action::residual_periodic_action_t<spell_t>* doomblade = nullptr;
-    
+    actions::rogue_attack_t* unseen_blade = nullptr;
+
     struct
     {
       actions::rogue_attack_t* backstab = nullptr;
@@ -400,6 +402,11 @@ public:
     stat_buff_t* fatebound_lucky_coin;
     buff_t* edge_case; // not a buff in-game, but useful to track as a buff
     buff_t* double_jeopardy; // not a buff in-game, but useful to track as a buff
+
+    // Trickster
+    buff_t* cloud_cover;
+    buff_t* escalating_blade;
+    buff_t* flawless_form;
     
     // Assassination
     buff_t* blindside;
@@ -546,6 +553,7 @@ public:
     const spell_data_t* crimson_vial;           // No implementation
     const spell_data_t* crippling_poison;
     const spell_data_t* detection;
+    const spell_data_t* distract;
     const spell_data_t* echoing_reprimand;
     const spell_data_t* instant_poison;
     const spell_data_t* kick;
@@ -576,10 +584,16 @@ public:
     const spell_data_t* vanish_buff;
 
     // Hero Spells
+    const spell_data_t* cloud_cover_distract;
+    const spell_data_t* escalating_blade_buff;
     const spell_data_t* fatebound_coin_heads_buff;
+    const spell_data_t* fatebound_coin_heads_stacking_buff;
     const spell_data_t* fatebound_coin_tails_buff;
     const spell_data_t* fatebound_coin_tails;
     const spell_data_t* fatebound_lucky_coin_buff;
+    const spell_data_t* fazed;
+    const spell_data_t* flawless_form_buff;
+    const spell_data_t* unseen_blade;
 
   } spell;
 
@@ -990,6 +1004,30 @@ public:
       player_talent_t fateful_ending;   // TODO: Add tertiary stats
 
     } fatebound;
+
+    struct trickster_talents_t
+    {
+      player_talent_t unseen_blade;
+
+      player_talent_t surprising_strikes; 
+      player_talent_t smoke;              // No implementation
+      player_talent_t mirrors;            // No implementation
+      player_talent_t flawless_form;
+
+      player_talent_t so_tricky;          // No implementation
+      player_talent_t dont_be_suspicious;
+      player_talent_t devious_distraction;
+      player_talent_t thousand_cuts;
+      player_talent_t flickerstrike;      // TODO: Add time-based trigger opt
+
+      player_talent_t nimble_flurry;
+      player_talent_t cloud_cover;
+      player_talent_t no_scruples;
+      player_talent_t elaborate_twirl;
+
+      player_talent_t coup_de_grace;
+
+    } trickster;
 
   } talent;
 
@@ -1629,7 +1667,6 @@ public:
     // Put ability specific ones here; class/spec wide ones with labels that can effect things like trinkets in rogue_t::apply_affecting_auras.
 
     // Affecting Passive Spells
-    ab::apply_affecting_aura( p->spec.shadow_dance );
     ab::apply_affecting_aura( p->spec.shadowstep );
 
     // Affecting Passive Talents
@@ -1679,6 +1716,9 @@ public:
     ab::apply_affecting_aura( p->talent.subtlety.dark_brew );
 
     ab::apply_affecting_aura( p->talent.fatebound.destiny_defined );
+
+    ab::apply_affecting_aura( p->talent.trickster.dont_be_suspicious );
+    ab::apply_affecting_aura( p->talent.trickster.nimble_flurry );
 
     // Dynamically affected flags
     // Special things like CP, Energy, Crit, etc.
@@ -2180,6 +2220,8 @@ public:
   void trigger_caustic_spatter_debuff( const action_state_t* state );
   void trigger_shadowcraft( const action_state_t* state );
   void trigger_cut_to_the_chase( const action_state_t* state );
+  void trigger_cloud_cover( const action_state_t* state );
+  void trigger_coup_de_grace( const action_state_t* state );
   virtual bool trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* action = nullptr );
 
   // General Methods ==========================================================
@@ -2202,7 +2244,7 @@ public:
     // Cap is not currently reflected anywhere in spell data, dummy script periodic in AR effect 6 
     if ( affected_by.adrenaline_rush_gcd && t != timespan_t::zero() && p()->buffs.adrenaline_rush->check() )
     {
-      double reduction_mod = 1.0 - std::min( 0.25, 1.0 / p()->cache.attack_haste() );
+      double reduction_mod = 1.0 - std::min( 0.25, ( 1.0 / p()->cache.attack_haste() ) - 1.0 );
       t *= reduction_mod;
     }
 
@@ -2622,6 +2664,7 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
     trigger_shadow_blades_attack( state );
     trigger_dashing_scoundrel( state );
     trigger_caustic_spatter( state );
+    trigger_cloud_cover( state );
     trigger_t31_subtlety_set_bonus( state );
   }
 
@@ -2632,6 +2675,7 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
     trigger_shadow_blades_attack( d->state );
     trigger_dashing_scoundrel( d->state );
     trigger_caustic_spatter( d->state );
+    trigger_cloud_cover( d->state );
   }
 };
 
@@ -3547,6 +3591,11 @@ struct dispatch_t: public rogue_attack_t
       m *= p()->talent.outlaw.crackshot->effectN( 1 ).percent();
     }
 
+    if ( p()->buffs.escalating_blade->at_max_stacks() )
+    {
+      m *= 1.0 + p()->talent.trickster.coup_de_grace->effectN( 1 ).percent();
+    }
+
     return m;
   }
 
@@ -3575,7 +3624,9 @@ struct dispatch_t: public rogue_attack_t
       trigger_hand_of_fate( execute_state, true, !p()->buffs.blade_flurry->check() );
       trigger_cut_to_the_chase( execute_state );
     }
+
     trigger_count_the_odds( execute_state, p()->procs.count_the_odds_dispatch );
+    trigger_coup_de_grace( execute_state );
   }
 
   bool procs_main_gauche() const override
@@ -4088,6 +4139,24 @@ struct detection_t : public rogue_spell_t
   }
 };
 
+// Distract =================================================================
+
+struct distract_t : public rogue_spell_t
+{
+  distract_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
+    rogue_spell_t( name, p, p->talent.trickster.cloud_cover->ok() ? p->spell.cloud_cover_distract : p->spell.distract, options_str )
+  {
+    harmful = false;
+    set_target( p );
+  }
+
+  void execute() override
+  {
+    rogue_spell_t::execute();
+    p()->buffs.cloud_cover->trigger();
+  }
+};
+
 // Envenom ==================================================================
 
 struct envenom_t : public rogue_attack_t
@@ -4306,6 +4375,20 @@ struct eviscerate_t : public rogue_attack_t
     }
   }
 
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    // ALPHA TOCHECK -- This likely needs to be reimplemented at some point.
+    // Does it work on Shadowed Finishers?
+    if ( p()->buffs.escalating_blade->at_max_stacks() )
+    {
+      m *= 1.0 + p()->talent.trickster.coup_de_grace->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   void execute() override
   {
     p()->buffs.deeper_daggers->trigger();
@@ -4327,6 +4410,7 @@ struct eviscerate_t : public rogue_attack_t
     }
 
     trigger_cut_to_the_chase( execute_state );
+    trigger_coup_de_grace( execute_state );
   }
 
   void impact( action_state_t* state ) override
@@ -4405,12 +4489,19 @@ struct feint_t : public rogue_attack_t
 {
   feint_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ):
     rogue_attack_t( name, p, p->spell.feint, options_str )
-  { }
+  {
+    energize_amount = p->talent.trickster.unseen_blade->effectN( 1 ).base_value();
+  }
 
   void execute() override
   {
     rogue_attack_t::execute();
     p()->buffs.feint->trigger();
+
+    if ( p()->active.unseen_blade && p()->target != player )
+    {
+      p()->active.unseen_blade->execute_on_target( p()->target );
+    }
   }
 };
 
@@ -4713,6 +4804,11 @@ struct killing_spree_t : public rogue_attack_t
     trigger_restless_blades( execute_state );
     trigger_hand_of_fate( execute_state, false, !p()->buffs.blade_flurry->check() );
     p()->buffs.killing_spree->trigger( composite_dot_duration( execute_state ) );
+
+    if ( p()->talent.trickster.flawless_form->ok() )
+    {
+      p()->buffs.flawless_form->trigger(); // TOCHECK ALPHA -- Once or per tick?
+    }
   }
 
   void tick( dot_t* d ) override
@@ -4723,6 +4819,12 @@ struct killing_spree_t : public rogue_attack_t
     attack_oh->set_target( d->target );
     attack_mh->execute();
     attack_oh->execute();
+
+    // ALPHA TOCHECK -- Once or refreshing per impact?
+    if ( p()->talent.trickster.devious_distraction->ok() )
+    {
+      p()->get_target_data( d->target )->debuffs.fazed->trigger();
+    }
   }
 };
 
@@ -5356,6 +5458,17 @@ struct secret_technique_t : public rogue_attack_t
       return m;
     }
 
+    void impact( action_state_t* state ) override
+    {
+      rogue_attack_t::impact( state );
+
+      // ALPHA TOCHECK -- Does this apply on pet attacks?
+      if ( p()->talent.trickster.devious_distraction->ok() )
+      {
+        p()->get_target_data( state->target )->debuffs.fazed->trigger();
+      }
+    }
+
     // 2023-10-02 -- Clone attacks do not trigger Shadow Blades proc damage
     bool procs_shadow_blades_damage() const override
     { return secondary_trigger_type != secondary_trigger::SECRET_TECHNIQUE_CLONE; }
@@ -5412,6 +5525,11 @@ struct secret_technique_t : public rogue_attack_t
     {
       p()->buffs.cold_blood->expire();
       cold_blood_consumed_proc->occur();
+    }
+
+    if ( p()->talent.trickster.flawless_form->ok() )
+    {
+      p()->buffs.flawless_form->trigger(); // TOCHECK ALPHA -- Once or per attack?
     }
   }
 };
@@ -5738,6 +5856,20 @@ struct black_powder_t: public rogue_attack_t
     }
   }
 
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    // ALPHA TOCHECK -- This likely needs to be reimplemented at some point.
+    // Does it work on Shadowed Finishers?
+    if ( p()->buffs.escalating_blade->at_max_stacks() )
+    {
+      m *= 1.0 + p()->talent.trickster.coup_de_grace->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   void execute() override
   {
     p()->buffs.deeper_daggers->trigger();
@@ -5770,6 +5902,8 @@ struct black_powder_t: public rogue_attack_t
       p()->buffs.t29_subtlety_2pc->expire();
       p()->buffs.t29_subtlety_2pc->trigger( cast_state( execute_state )->get_combo_points() );
     }
+
+    trigger_coup_de_grace( execute_state );
   }
 
   bool trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* ) override
@@ -6717,7 +6851,7 @@ struct soulrip_cb_t : public dbc_proc_callback_t
   }
 };
 
-// Fatebound =====================================================
+// Fatebound ================================================================
 
 struct fatebound_coin_tails_t : public rogue_attack_t
 {
@@ -6741,6 +6875,34 @@ struct fatebound_coin_tails_delivered_t : public fatebound_coin_tails_t
     fatebound_coin_tails_t( name, p )
   {
     base_multiplier += p->talent.fatebound.delivered_doom->effectN( 1 ).percent();
+  }
+};
+
+// Trickster ================================================================
+
+struct unseen_blade_t : public rogue_attack_t
+{
+  unseen_blade_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->spell.unseen_blade )
+  {
+    aoe = -1;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+    p()->buffs.escalating_blade->trigger(); // ALPHA TOCHECK -- On impact or execute?
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+    p()->get_target_data( state->target )->debuffs.fazed->trigger();
+
+    if ( p()->talent.trickster.flawless_form->ok() )
+    {
+      p()->buffs.flawless_form->trigger();
+    }
   }
 };
 
@@ -7466,6 +7628,7 @@ struct slice_and_dice_t : public rogue_buff_t
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
     add_invalidate( CACHE_AUTO_ATTACK_SPEED );
     set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+    apply_affecting_aura( p->talent.trickster.thousand_cuts );
 
     if ( p->talent.rogue.recuperator->ok() )
     {
@@ -8269,25 +8432,26 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* state, bool biased, bool delivered )
 {
-  if ( !p()->talent.fatebound.hand_of_fate->ok() ) {
+  if ( !p()->talent.fatebound.hand_of_fate->ok() )
     return;
-  }
 
-  if ( cast_state( state )->get_combo_points() < p()->talent.fatebound.hand_of_fate->effectN( 1 ).base_value() ) {
+  if ( cast_state( state )->get_combo_points() < p()->talent.fatebound.hand_of_fate->effectN( 1 ).base_value() )
     return;
-  }
 
-  auto tails_action = delivered && p()->talent.fatebound.delivered_doom->ok() ? p()->active.fatebound.fatebound_coin_tails_delivered : p()->active.fatebound.fatebound_coin_tails;
+  auto tails_action = delivered && p()->talent.fatebound.delivered_doom->ok() ?
+    p()->active.fatebound.fatebound_coin_tails_delivered :
+    p()->active.fatebound.fatebound_coin_tails;
 
-
-  if ( p()->talent.fatebound.edge_case->ok() && p()->buffs.edge_case->check() ) {
+  if ( p()->talent.fatebound.edge_case->ok() && p()->buffs.edge_case->check() )
+  {
     // Consume edge case, do a tails cast, increment both coins
     p()->buffs.edge_case->expire();
     tails_action->execute_on_target( state->target );
     p()->buffs.fatebound_coin_tails->increment();
     p()->buffs.fatebound_coin_heads->increment();
 
-    if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() ) {
+    if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
+    {
       // Do it again and consume double jeopardy
       // TODO: Implement weird split double jeopardy behavior observed in-game
       p()->buffs.double_jeopardy->expire();
@@ -8298,28 +8462,32 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
     return;
   }
 
-  // No stacks of either buff or equal stacks of both buffs (thanks to only using edge case) - nothing to bias,
-  // just flip the coin
-  if ( p()->buffs.fatebound_coin_tails->total_stack() == p()->buffs.fatebound_coin_heads->total_stack() ) {
-    if ( p()->rng().roll( 0.5 ) ) {
+  // No stacks of either buff or equal stacks of both buffs (thanks to only using edge case)
+  // Nothing to bias, just flip the coin
+  if ( p()->buffs.fatebound_coin_tails->total_stack() == p()->buffs.fatebound_coin_heads->total_stack() )
+  {
+    if ( p()->rng().roll( 0.5 ) )
+    {
       // Heads
       p()->buffs.fatebound_coin_tails->expire();
       p()->buffs.fatebound_coin_heads->increment();
 
-      if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() ) {
+      if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
+      {
         p()->buffs.double_jeopardy->expire();
         p()->buffs.fatebound_coin_heads->increment();
       }
     }
-    else {
+    else
+    {
       // Tails
       tails_action->execute_on_target( state->target );
 
       p()->buffs.fatebound_coin_heads->expire();
       p()->buffs.fatebound_coin_tails->increment();
 
-
-      if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() ) {
+      if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
+      {
         p()->buffs.double_jeopardy->expire();
         tails_action->execute_on_target( state->target );
         p()->buffs.fatebound_coin_tails->increment();
@@ -8329,12 +8497,15 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
   }
 
   double odds = 0.5;
-  if (biased) {
+  if ( biased )
+  {
     // TODO: Validate how these stack with the presumed base 50/50 chance and one another
-    if (p()->talent.fatebound.mean_streak->ok()) {
+    if ( p()->talent.fatebound.mean_streak->ok() )
+    {
       odds += odds * p()->talent.fatebound.mean_streak->effectN( 1 ).percent();
     }
-    if (p()->talent.fatebound.destiny_defined->ok()) {
+    if ( p()->talent.fatebound.destiny_defined->ok() )
+    {
       odds += p()->talent.fatebound.destiny_defined->effectN( 3 ).percent();
     }
   }
@@ -8348,33 +8519,43 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
     ? p()->buffs.fatebound_coin_heads
     : p()->buffs.fatebound_coin_tails;
 
-  if ( p()->rng().roll( odds ) ) {
+  if ( p()->rng().roll( odds ) )
+  {
     // Match existing
-    if ( existing == p()->buffs.fatebound_coin_tails ) {
+    if ( existing == p()->buffs.fatebound_coin_tails )
+    {
       tails_action->execute_on_target( state->target );
     }
+
     other->expire();
     existing->increment();
 
-    if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() ) {
+    if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
+    {
       p()->buffs.double_jeopardy->expire();
-      if ( existing == p()->buffs.fatebound_coin_tails ) {
+      if ( existing == p()->buffs.fatebound_coin_tails )
+      {
         tails_action->execute_on_target( state->target );
       }
       existing->increment();
     }
   }
-  else {
+  else
+  {
     // New side
-    if ( other == p()->buffs.fatebound_coin_tails ) {
+    if ( other == p()->buffs.fatebound_coin_tails )
+    {
       tails_action->execute_on_target( state->target );
     }
+
     existing->expire();
     other->increment();
 
-    if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() ) {
+    if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
+    {
       p()->buffs.double_jeopardy->expire();
-      if ( other == p()->buffs.fatebound_coin_tails ) {
+      if ( other == p()->buffs.fatebound_coin_tails )
+      {
         tails_action->execute_on_target( state->target );
       }
       other->increment();
@@ -8787,6 +8968,35 @@ void actions::rogue_action_t<Base>::trigger_cut_to_the_chase( const action_state
 }
 
 template <typename Base>
+void actions::rogue_action_t<Base>::trigger_cloud_cover( const action_state_t* state )
+{
+  if ( !p()->talent.trickster.cloud_cover->ok() || !ab::result_is_hit( state->result ) )
+    return;
+
+  if ( !p()->buffs.cloud_cover->check() )
+    return;
+
+  p()->get_target_data( state->target )->debuffs.fazed->trigger();
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_coup_de_grace( const action_state_t* state )
+{
+  if ( !p()->talent.trickster.coup_de_grace->ok() )
+    return;
+
+  if ( !p()->buffs.escalating_blade->at_max_stacks() )
+    return;
+
+  p()->buffs.escalating_blade->expire();
+  
+  if ( p()->get_target_data( state->target )->debuffs.fazed->check() )
+  {
+    p()->buffs.flawless_form->trigger( as<int>( p()->talent.trickster.coup_de_grace->effectN( 2 ).base_value() ) );
+  }
+}
+
+template <typename Base>
 bool actions::rogue_action_t<Base>::trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* action )
 {
   if ( !p()->set_bonuses.t31_subtlety_2pc->ok() )
@@ -8878,6 +9088,9 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_period( timespan_t::zero() )
     ->set_cooldown( timespan_t::zero() );
+
+  debuffs.fazed = make_buff<damage_buff_t>( *this, "fazed", source->spell.fazed )
+    ->apply_affecting_aura( source->talent.trickster.surprising_strikes );
 
   // Type-Based Tracking for Accumulators
   bleeds = { dots.deathmark, dots.garrote, dots.garrote_deathmark, dots.internal_bleeding,
@@ -9237,6 +9450,7 @@ action_t* rogue_t::create_action( util::string_view name, util::string_view opti
   if ( name == "crimson_tempest"        ) return new crimson_tempest_t        ( name, this, options_str );
   if ( name == "deathmark"              ) return new deathmark_t              ( name, this, options_str );
   if ( name == "detection"              ) return new detection_t              ( name, this, options_str );
+  if ( name == "distract"               ) return new distract_t               ( name, this, options_str );
   if ( name == "dispatch"               ) return new dispatch_t               ( name, this, options_str );
   if ( name == "echoing_reprimand"      ) return new echoing_reprimand_t      ( name, this, options_str );
   if ( name == "envenom"                ) return new envenom_t                ( name, this, options_str );
@@ -9904,6 +10118,7 @@ void rogue_t::init_spells()
   spell.crimson_vial = find_class_spell( "Crimson Vial" );
   spell.crippling_poison = find_class_spell( "Crippling Poison" );
   spell.detection = find_spell( 56814 ); // find_class_spell( "Detection" );
+  spell.distract = find_class_spell( "Distract" );
   spell.instant_poison = find_class_spell( "Instant Poison" );
   spell.kick = find_class_spell( "Kick" );
   spell.kidney_shot = find_class_spell( "Kidney Shot" );
@@ -9918,7 +10133,7 @@ void rogue_t::init_spells()
   // Class Passives
   spell.all_rogue = find_spell( 137034 );
   spell.critical_strikes = find_spell( 157442 );
-  spell.cut_to_the_chase = find_class_spell( "Cut to the Chase");
+  spell.cut_to_the_chase = find_specialization_spell( "Cut to the Chase");
   spell.fleet_footed = find_class_spell( "Fleet Footed" );
   spell.leather_specialization = find_spell( 86092 );
 
@@ -10241,6 +10456,27 @@ void rogue_t::init_spells()
 
   talent.fatebound.fateful_ending = find_talent_spell( talent_tree::HERO, "Fateful Ending" );
 
+  // Trickster Talents
+  talent.trickster.unseen_blade = find_talent_spell( talent_tree::HERO, "Unseen Blade" );
+
+  talent.trickster.surprising_strikes = find_talent_spell( talent_tree::HERO, "Surprising Strikes" );
+  talent.trickster.smoke = find_talent_spell( talent_tree::HERO, "Smoke" );
+  talent.trickster.mirrors = find_talent_spell( talent_tree::HERO, "Mirrors" );
+  talent.trickster.flawless_form = find_talent_spell( talent_tree::HERO, "Flawless Form" );
+
+  talent.trickster.so_tricky = find_talent_spell( talent_tree::HERO, "So Tricky" );
+  talent.trickster.dont_be_suspicious = find_talent_spell( talent_tree::HERO, "Don't Be Suspicious" );
+  talent.trickster.devious_distraction = find_talent_spell( talent_tree::HERO, "Devious Distraction" );
+  talent.trickster.thousand_cuts = find_talent_spell( talent_tree::HERO, "Thousand Cuts" );
+  talent.trickster.flickerstrike = find_talent_spell( talent_tree::HERO, "Flickerstrike" );
+
+  talent.trickster.nimble_flurry = find_talent_spell( talent_tree::HERO, "Nimble Flurry" );
+  talent.trickster.cloud_cover = find_talent_spell( talent_tree::HERO, "Cloud Cover" );
+  talent.trickster.no_scruples = find_talent_spell( talent_tree::HERO, "No Scruples" );
+  talent.trickster.elaborate_twirl = find_talent_spell( talent_tree::HERO, "Elaborate Twirl" );
+
+  talent.trickster.coup_de_grace = find_talent_spell( talent_tree::HERO, "Coup de Grace" );
+
   // Class Background Spells
   spell.acrobatic_strikes_buff = talent.rogue.acrobatic_strikes->ok() ? find_spell( 455144 ) : spell_data_t::not_found();
   spell.alacrity_buff = talent.rogue.alacrity->ok() ? find_spell( 193538 ) : spell_data_t::not_found();
@@ -10252,10 +10488,19 @@ void rogue_t::init_spells()
   spell.vanish_buff = spell.vanish->ok() ? find_spell( 11327 ) : spell_data_t::not_found();
 
   // Hero Talent Background Spells
+  // Fatebound
   spell.fatebound_coin_heads_buff = talent.fatebound.hand_of_fate->ok() ? find_spell( 452923 ) : spell_data_t::not_found();
+  spell.fatebound_coin_heads_stacking_buff = talent.fatebound.hand_of_fate->ok() ? find_spell( 456479 ) : spell_data_t::not_found();
   spell.fatebound_coin_tails_buff = talent.fatebound.hand_of_fate->ok() ? find_spell( 452917 ) : spell_data_t::not_found();
   spell.fatebound_coin_tails = talent.fatebound.hand_of_fate->ok() ? find_spell( 452538 ) : spell_data_t::not_found();
   spell.fatebound_lucky_coin_buff = talent.fatebound.fateful_ending->ok() ? find_spell( 452562 ) : spell_data_t::not_found();
+
+  // Trickster
+  spell.cloud_cover_distract = talent.trickster.cloud_cover->ok() ? find_spell( as<unsigned>( talent.trickster.cloud_cover->effectN( 1 ).base_value() ) ) : spell_data_t::not_found();
+  spell.escalating_blade_buff = talent.trickster.coup_de_grace->ok() ? find_spell( 441786 ) : spell_data_t::not_found();
+  spell.unseen_blade = talent.trickster.unseen_blade->ok() ? find_spell( 441144 ) : spell_data_t::not_found();
+  spell.fazed = talent.trickster.unseen_blade->ok() ? find_spell( 441224 ) : spell_data_t::not_found();
+  spell.flawless_form_buff = ( talent.trickster.flawless_form->ok() || talent.trickster.coup_de_grace->ok() ) ? find_spell( 441326 ) : spell_data_t::not_found();
 
   // Spec Background Spells
   // Assassination
@@ -10517,13 +10762,18 @@ void rogue_t::init_spells()
   }
 
   // Fatebound
-
   if ( talent.fatebound.hand_of_fate->ok() )
   {
     active.fatebound.fatebound_coin_tails =
       get_background_action<actions::fatebound_coin_tails_t>( "fatebound_coin_tails" );
     active.fatebound.fatebound_coin_tails_delivered =
       get_background_action<actions::fatebound_coin_tails_delivered_t>( "fatebound_coin_tails_delivered" );
+  }
+
+  // Trickster
+  if ( talent.trickster.unseen_blade->ok() )
+  {
+    active.unseen_blade = get_background_action<actions::unseen_blade_t>( "unseen_blade" );
   }
 }
 
@@ -10836,7 +11086,7 @@ void rogue_t::create_buffs()
   // Shared
 
   buffs.acrobatic_strikes = make_buff<damage_buff_t>( this, "acrobatic_strikes", spell.acrobatic_strikes_buff );
-  buffs.acrobatic_strikes->set_default_value_from_effect( A_MOD_SPEED_ALWAYS );
+  buffs.acrobatic_strikes->set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS );
 
   buffs.alacrity = make_buff( this, "alacrity", spell.alacrity_buff )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
@@ -10878,14 +11128,14 @@ void rogue_t::create_buffs()
   // Fatebound
 
   buffs.fatebound_coin_heads = make_buff<damage_buff_t>( this, "fatebound_coin_heads", spell.fatebound_coin_heads_buff, false );
-  if ( spell.fatebound_coin_heads_buff->ok() )
+  if ( spell.fatebound_coin_heads_buff->ok() && spell.fatebound_coin_heads_stacking_buff->ok() )
   {
     // override and hardcode heads coin stack scaling to match what the 20%-per-extra-stack-label implies
-    auto direct_scaling_part = spell.fatebound_coin_heads_buff->effectN( 1 ).percent() * spell.fatebound_coin_heads_buff->effectN( 3 ).percent();
-    buffs.fatebound_coin_heads->set_direct_mod( spell.fatebound_coin_heads_buff, 0, direct_scaling_part,
+    auto direct_scaling_part = spell.fatebound_coin_heads_buff->effectN( 1 ).percent() * spell.fatebound_coin_heads_stacking_buff->effectN( 1 ).percent();
+    buffs.fatebound_coin_heads->set_direct_mod( spell.fatebound_coin_heads_buff, 1, direct_scaling_part,
                                                 1.0 + spell.fatebound_coin_heads_buff->effectN( 1 ).percent() - direct_scaling_part );
-    auto periodic_scaling_part = spell.fatebound_coin_heads_buff->effectN( 2 ).percent() * spell.fatebound_coin_heads_buff->effectN( 4 ).percent();
-    buffs.fatebound_coin_heads->set_periodic_mod( spell.fatebound_coin_heads_buff, 1, periodic_scaling_part,
+    auto periodic_scaling_part = spell.fatebound_coin_heads_buff->effectN( 2 ).percent() * spell.fatebound_coin_heads_stacking_buff->effectN( 2 ).percent();
+    buffs.fatebound_coin_heads->set_periodic_mod( spell.fatebound_coin_heads_buff, 2, periodic_scaling_part,
                                                   1.0 + spell.fatebound_coin_heads_buff->effectN( 2 ).percent() - periodic_scaling_part );
   }
   buffs.fatebound_coin_heads
@@ -10937,6 +11187,18 @@ void rogue_t::create_buffs()
   // Likewise, double jeopardy isn't a buff in-game, but treating it as such makes tracking it simpler
   buffs.double_jeopardy = make_buff( this, "double_jeopardy", talent.fatebound.double_jeopardy )
     ->set_duration( timespan_t::zero() ); // Shouldn't expire, used to track state
+
+  // Trickster
+
+  buffs.cloud_cover = make_buff( this, "cloud_cover", spell.cloud_cover_distract );
+
+  buffs.escalating_blade = make_buff( this, "escalating_blade", spell.escalating_blade_buff );
+
+  buffs.flawless_form = make_buff( this, "flawless_form", spell.flawless_form_buff )
+    ->apply_affecting_aura( talent.trickster.elaborate_twirl ) // Duration modifier
+    ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
+    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   // Assassination
 
@@ -11153,7 +11415,7 @@ void rogue_t::create_buffs()
 
   buffs.t31_assassination_2pc = make_buff<damage_buff_t>( this, "natureblight", spec.t31_assassination_2pc_buff )
     ->set_is_stacking_mod( true );
-  buffs.t31_assassination_2pc->set_default_value_from_effect_type( A_MOD_ATTACKSPEED_NORMALIZED )
+  buffs.t31_assassination_2pc->set_default_value_from_effect_type( A_MOD_MELEE_AUTO_ATTACK_SPEED )
     ->add_invalidate( CACHE_AUTO_ATTACK_SPEED )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 }
@@ -11448,6 +11710,40 @@ void rogue_t::init_special_effects()
     auto cb = new actions::soulrip_cb_t( this, *soulrip_driver );
     cb->initialize();
   }
+
+  if ( talent.trickster.thousand_cuts->ok() )
+  {
+    auto const thousand_cuts_driver = new special_effect_t( this );
+    thousand_cuts_driver->name_str = "thousand_cuts_driver";
+    thousand_cuts_driver->spell_id = talent.trickster.thousand_cuts->id();
+    thousand_cuts_driver->proc_flags_ = talent.trickster.thousand_cuts->proc_flags();
+    thousand_cuts_driver->proc_flags2_ = PF_ALL_DAMAGE;
+    special_effects.push_back( thousand_cuts_driver );
+
+    struct thousand_cuts_cb_t : public dbc_proc_callback_t
+    {
+      rogue_t* rogue;
+
+      thousand_cuts_cb_t( rogue_t* p, const special_effect_t& e )
+        : dbc_proc_callback_t( p, e ), rogue( p )
+      {
+      }
+
+      void execute( action_t* a, action_state_t* s ) override
+      {
+        dbc_proc_callback_t::execute( a, s );
+
+        if ( rogue->active.unseen_blade )
+        {
+          rogue->active.unseen_blade->execute_on_target( s->target );
+        }
+      }
+    };
+
+    auto cb = new thousand_cuts_cb_t( this, *thousand_cuts_driver );
+    cb->initialize();
+  }
+
 }
 
 // rogue_t::init_finished ===================================================
