@@ -12,7 +12,7 @@ def->add_action( "natures_vigil" );
 def->add_action( "convoke_the_spirits" );
 def->add_action( "stampeding_roar" );
 def->add_action( "growl" );
-def->add_action( "furious_regeneration" );
+def->add_action( "frenzied_regeneration" );
 def->add_action( "barkskin" );
 def->add_action( "survival_instincts" );
 def->add_action( "pulverize" );
