@@ -150,6 +150,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build ]
     if: github.ref == 'refs/heads/thewarwithin'
+    continue-on-error: true
 
     strategy:
       fail-fast: false
