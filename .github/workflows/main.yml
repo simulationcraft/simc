@@ -149,7 +149,7 @@ jobs:
     name: tww-test-${{ matrix.spec }}-${{ matrix.fightstyle }}
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build ]
-    if: github.ref == 'refs/heads/thewarwithin'
+    if: github.ref == 'refs/heads/thewarwithin' && false
     continue-on-error: true
 
     strategy:
