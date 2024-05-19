@@ -172,12 +172,9 @@ jobs:
     env:
       UBSAN_OPTIONS: print_stacktrace=1
       SIMC_ARGS: output=/dev/null threads=2 iterations=10 cleanup_threads=1
-      PLAYER_ARGS: level=80
+      PLAYER_ARGS: load_default_gear=1
 
     steps:
-      - name: Temporary Workaround for clang-15 Builds
-        run: sudo sysctl vm.mmap_rnd_bits=28
-
       - uses: actions/cache@v4
         with:
           path: |
@@ -200,102 +197,96 @@ jobs:
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} log=1 debug=1 ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} \
-            ${{ env.PLAYER_ARGS }} load_default_gear=1
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+
+      - name: "HTML JSON"
+        if: always()
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} html=test.html json=test.json ${{ matrix.style_arg }} \
+            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, No Effects, No Sets"
         if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} \
-            ${{ env.PLAYER_ARGS }} load_default_gear=1
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, No Effects, All Sets"
         if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} \
-            ${{ env.PLAYER_ARGS }} load_default_gear=1
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, All Effects, No Sets"
         if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_item_effects=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} \
-            ${{ env.PLAYER_ARGS }} load_default_gear=1
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, All Effects, All Sets"
         if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} \
-            ${{ env.PLAYER_ARGS }} load_default_gear=1
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "Starter Talents, No Effects, No Sets"
         if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} \
-            ${{ env.PLAYER_ARGS }} load_default_talents=1 load_default_gear=1
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
 
       - name: "Starter Talents, No Effects, All Sets"
         if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} \
-            ${{ env.PLAYER_ARGS }} load_default_talents=1 load_default_gear=1
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
 
       - name: "Starter Talents, All Effects, No Sets"
         if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_item_effects=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} \
-            ${{ env.PLAYER_ARGS }} load_default_talents=1 load_default_gear=1
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
 
       - name: "Starter Talents, All Effects, All Sets"
         if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} \
-            ${{ env.PLAYER_ARGS }} load_default_talents=1 load_default_gear=1
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
 
       - name: "All Talents, No Effects, No Sets"
         if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_talents=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} \
-            ${{ env.PLAYER_ARGS }} load_default_gear=1
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "All Talents, No Effects, All Sets"
         if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} \
-            ${{ env.PLAYER_ARGS }} load_default_gear=1
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "All Talents, All Effects, No Sets"
         if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} \
-            ${{ env.PLAYER_ARGS }} load_default_gear=1
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "All Talents, All Effects, All Sets"
         if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} \
-            ${{ env.PLAYER_ARGS }} load_default_gear=1
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
   ubuntu-run:
     name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
@@ -333,9 +324,6 @@ jobs:
             cppVersion: 20
 
     steps:
-      - name: Temporary Workaround for clang-15 Builds
-        run: sudo sysctl vm.mmap_rnd_bits=28
-    
       - uses: actions/cache@v4
         with:
           path: |
@@ -396,9 +384,6 @@ jobs:
       - name: Install Python dependencies
         run: pip3 install -r ${{ github.workspace }}/tests/requirements.txt
 
-      - name: Temporary Workaround for clang-15 Builds
-        run: sudo sysctl vm.mmap_rnd_bits=28
-
       - name: Run
         env:
           UBSAN_OPTIONS: print_stacktrace=1
@@ -435,9 +420,6 @@ jobs:
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - uses: actions/checkout@v4
-
-      - name: Temporary Workaround for clang-15 Builds
-        run: sudo sysctl vm.mmap_rnd_bits=28
 
       - name: Run
         env:
