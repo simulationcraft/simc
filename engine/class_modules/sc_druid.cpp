@@ -77,7 +77,8 @@ enum flag_e : uint32_t
   APEX         = 0x01000001,  // apex predators's craving
   TOOTHANDCLAW = 0x02000001,  // tooth and claw talent
 
-  FREE_PROCS = CONVOKE | FIRMAMENT | FLASHING | GALACTIC | ORBIT | TWIN | TREANT | LIGHTOFELUNE
+  FREE_PROCS = CONVOKE | FIRMAMENT | FLASHING | GALACTIC | ORBIT | TWIN | TREANT | LIGHTOFELUNE,
+  FREE_CASTS = APEX | TOOTHANDCLAW
 };
 
 struct druid_td_t : public actor_target_data_t
@@ -209,7 +210,7 @@ struct druid_action_data_t  // variables that need to be accessed from action_t*
 
   bool has_flag( uint32_t f ) const { return action_flags & f; }
   bool is_flag( flag_e f ) const { return ( action_flags & f ) == f; }
-  bool is_free() const { return action_flags & flag_e::FREE_PROCS; }
+  bool is_free() const { return action_flags & ( flag_e::FREE_PROCS | flag_e::FREE_CASTS ); }
 };
 
 struct eclipse_handler_t
@@ -1171,6 +1172,7 @@ public:
     // Hero Talent
     const spell_data_t* atmospheric_exposure;  // atmospheric exposure debuff
     const spell_data_t* bloodseeker_vines;
+    const spell_data_t* dreadful_wound;
   } spec;
 
   struct uptimes_t
@@ -2327,8 +2329,7 @@ struct ravage_base_t : public BASE
 {
   struct dreadful_wound_t : public DOT_BASE
   {
-    dreadful_wound_t( druid_t* p, std::string_view n, flag_e f )
-      : DOT_BASE( n, p, p->find_spell( p->specialization() == DRUID_GUARDIAN ? 451177 : 441812 ), f )
+    dreadful_wound_t( druid_t* p, std::string_view n, flag_e f ) : DOT_BASE( n, p, p->spec.dreadful_wound, f )
     {
       DOT_BASE::background = true;
 
@@ -2473,7 +2474,8 @@ public:
   {
     BASE::execute();
 
-    buff->trigger( this );
+    if ( buff )
+      buff->trigger( this );
   }
 };
 
@@ -4708,7 +4710,7 @@ struct rake_t : public use_fluid_form_t<DRUID_FERAL, cat_attack_t>
       base_t::tick( d );
 
       // TODO: placeholder value
-      if ( rng().roll( 0.2 ) )
+      if ( p()->active.bloodseeker_vines && rng().roll( 0.2 ) )
         p()->active.bloodseeker_vines->execute_on_target( d->target );
     }
   };
@@ -4886,7 +4888,7 @@ struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
       p()->buff.apex_predators_craving->trigger();
 
     // TODO: placeholder value
-    if ( rng().roll( 0.2 ) )
+    if ( p()->active.bloodseeker_vines && rng().roll( 0.2 ) )
       p()->active.bloodseeker_vines->execute_on_target( d->target );
   }
 };
@@ -7222,7 +7224,7 @@ struct moon_base_t : public druid_spell_t
     {
       druid_spell_t::init();
 
-      if ( get_suffix( name_str, "crescent_moon" ).empty() )
+      if ( p()->active.moons && get_suffix( name_str, "crescent_moon" ).empty() )
         p()->active.moons->add_child( this );
     }
   };
@@ -9968,6 +9970,7 @@ void druid_t::init_spells()
   // Hero Talents
   spec.atmospheric_exposure     = check( talent.atmospheric_exposure, 430589 );
   spec.bloodseeker_vines        = check( talent.thriving_growth, 439531 );
+  spec.dreadful_wound           = check( talent.dreadful_wound, specialization() == DRUID_FERAL ? 441812 : 451177 );
 
   // Masteries ==============================================================
   mastery.harmony             = find_mastery_spell( DRUID_RESTORATION );
@@ -10802,6 +10805,7 @@ void druid_t::create_buffs()
   add_parse_entry( attribute_multiplier_effects )
     .set_buff( buff.bear_form )
     .set_value( bear_stam )
+    .set_opt_enum( 1 << ( STAT_STAMINA - 1 ) )
     .set_eff( &find_effect( spec.bear_form_passive, A_MOD_TOTAL_STAT_PERCENTAGE ) );
 
   parse_effects( buff.bear_form );
@@ -11769,10 +11773,12 @@ void druid_t::init_special_effects()
 
     const auto driver = new special_effect_t( this );
     driver->name_str = talent.boundless_moonlight->name_cstr();
-    driver->spell_id = talent.boundless_moonlight->id();
+    // TODO: confirm if driver lasts for 12s as per spell data
+    driver->spell_id = 425217;
     special_effects.push_back( driver );
 
-    new boundless_moonlight_heal_cb_t( this, *driver );
+    auto cb = new boundless_moonlight_heal_cb_t( this, *driver );
+    cb->activate_with_buff( buff.lunar_beam );
   }
 
   if ( talent.implant.ok() && active.bloodseeker_vines )
@@ -12747,7 +12753,7 @@ void druid_t::target_mitigation( school_e school, result_amount_type type, actio
       s->result_amount *= 1.0 + td->debuff.tooth_and_claw->check_value();
 
     if ( talent.dreadful_wound.ok() && td->dots.dreadful_wound->is_ticking())
-      s->result_amount *= 1.0 + talent.dreadful_wound->effectN( 2 ).percent();
+      s->result_amount *= 1.0 + spec.dreadful_wound->effectN( 2 ).percent();
   }
 
   player_t::target_mitigation( school, type, s );
