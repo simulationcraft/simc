@@ -11008,7 +11008,7 @@ void explosive_barrage( special_effect_t& effect )
     {
       proc_spell_t::execute();
 
-      // Logs show 6 missiles fired in 3 batches of 2.
+      // Logs show 3 missiles.
       for ( size_t i = 0; i < 3; i++ )
       {
         make_event( sim, 150_ms * i, [ this ] {
@@ -11017,7 +11017,6 @@ void explosive_barrage( special_effect_t& effect )
           if ( tl.empty() )
             return;
 
-          barrage->execute_on_target( tl[ rng().range( tl.size() ) ] );
           barrage->execute_on_target( tl[ rng().range( tl.size() ) ] );
         } );
       }
