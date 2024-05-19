@@ -150,7 +150,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build ]
     if: github.ref == 'refs/heads/thewarwithin'
-    continue-on-error: true
 
     strategy:
       fail-fast: false
@@ -159,7 +158,7 @@ jobs:
         compiler: [ clang++-15 ]
         spec: [
             deathknight_blood, deathknight_unholy, deathknight_frost,
-            druid_balance
+            druid_balance, druid_feral, druid_guardian
           ]
         fightstyle: [ singletarget, multitarget, dungeonslice ]
         include:
