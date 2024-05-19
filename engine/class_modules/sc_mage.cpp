@@ -2615,7 +2615,11 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
     }
 
     if ( p->get_active_dots( d ) <= p->talents.intensifying_flame->effectN( 1 ).base_value() )
-      intensifying_flame->execute_on_target( d->target, p->talents.intensifying_flame->effectN( 2 ).percent() * d->state->result_total );
+    {
+      // 2024-05-19: Intensifying Flames deals a percentage of Ignite's base tick damage and not the damage it actually ticked for.
+      double tick_amount = p->bugs ? base_ta( d->state ) : d->state->result_total;
+      intensifying_flame->execute_on_target( d->target, p->talents.intensifying_flame->effectN( 2 ).percent() * tick_amount );
+    }
   }
 };
 
