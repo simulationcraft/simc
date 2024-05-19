@@ -2980,11 +2980,20 @@ static void enable_default_talents( player_t* player )
       i++;
 
     auto trait = trait_data_t::find( traits[ i ].id_trait_node_entry, player->is_ptr() );
-    auto tree = static_cast<talent_tree>( trait->tree_index );
 
-    player->player_traits.emplace_back( tree, traits[ i ].id_trait_node_entry, traits[ i ].rank );
-    player->sim->print_debug( "{} adding {} talent {} ({})", *player, util::talent_tree_string( tree ), trait->name,
-                              traits[ i ].rank );
+    if ( !trait->id_node )
+    {
+      player->sim->error( "{} default talent not found: id_trait_node_entry={} order={}", *player,
+                          traits[ i ].id_trait_node_entry, traits[ i ].order );
+    }
+    else
+    {
+      auto tree = static_cast<talent_tree>( trait->tree_index );
+
+      player->player_traits.emplace_back( tree, traits[ i ].id_trait_node_entry, traits[ i ].rank );
+      player->sim->print_debug( "{} adding {} talent {} ({})", *player, util::talent_tree_string( tree ), trait->name,
+                                traits[ i ].rank );
+    }
   }
 }
 
