@@ -339,6 +339,7 @@ public:
     {
       actions::rogue_attack_t* fatebound_coin_tails = nullptr;
       actions::rogue_attack_t* fatebound_coin_tails_delivered = nullptr;
+      actions::rogue_attack_t* fate_intertwined = nullptr;
     } fatebound;
   } active;
 
@@ -566,6 +567,7 @@ public:
     const spell_data_t* wound_poison;
     const spell_data_t* feint;
     const spell_data_t* sap;
+    const spell_data_t* cold_blood;
 
     // Class Passives
     const spell_data_t* all_rogue;
@@ -591,6 +593,7 @@ public:
     const spell_data_t* fatebound_coin_tails_buff;
     const spell_data_t* fatebound_coin_tails;
     const spell_data_t* fatebound_lucky_coin_buff;
+    const spell_data_t* fatebound_fate_intertwined;
     const spell_data_t* fazed;
     const spell_data_t* flawless_form_buff;
     const spell_data_t* unseen_blade;
@@ -989,15 +992,15 @@ public:
       player_talent_t chosens_revelry;
       player_talent_t tempted_fate;     // TODO: Defensive
       player_talent_t mean_streak;
-      player_talent_t inexorable_march; // NYI in-game
+      player_talent_t inexorable_march; // No implementation
       player_talent_t deaths_arrival;   // NYI in-game
 
       player_talent_t deal_fate;
       player_talent_t edge_case;        // TODO: Double jeopardy + edge case stealth break overlap bug
-      player_talent_t threads_of_fate;  // NYI in-game
+      player_talent_t fate_intertwined;
 
       player_talent_t delivered_doom;
-      player_talent_t inevitability;    // NYI in-game
+      player_talent_t inevitability;
       player_talent_t destiny_defined;  // TODO: Outlaw also gets the poison proc rate the text says is for assa? Verify in-game.
       player_talent_t double_jeopardy;  // TODO: Double jeopardy + edge case stealth break overlap bug
 
@@ -1932,7 +1935,7 @@ public:
     register_consume_buff( p()->buffs.blindside, affected_by.blindside );
     register_consume_buff( p()->buffs.cold_blood,
                            p()->buffs.cold_blood->is_affecting( &ab::data() ) && ab::data().id() != p()->talent.subtlety.secret_technique->id(),
-                           cold_blood_consumed_proc );
+                           cold_blood_consumed_proc, 0_s, false, p()->talent.fatebound.inevitability->ok() );
     register_consume_buff( p()->buffs.perforated_veins, p()->buffs.perforated_veins->is_affecting( &ab::data() ),
                            perforated_veins_consumed_proc, 1_ms ); // TOCHECK -- Ensure this still affects WM procs like it used to
     register_consume_buff( p()->buffs.the_rotten, p()->buffs.the_rotten->is_affecting_crit_chance( &ab::data() ), nullptr, 1_ms, false, true );
@@ -2199,7 +2202,8 @@ public:
   void trigger_weaponmaster( const action_state_t*, rogue_attack_t* action );
   void trigger_opportunity( const action_state_t*, rogue_attack_t* action, double modifier = 1.0 );
   void trigger_restless_blades( const action_state_t* );
-  void trigger_hand_of_fate( const action_state_t*, bool biased = false, bool delivered = false );
+  void trigger_hand_of_fate( const action_state_t*, bool biased = false, bool inevitable = false );
+  void trigger_fate_intertwined( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_venom_rush( const action_state_t* );
   void trigger_blindside( const action_state_t* );
@@ -3601,6 +3605,7 @@ struct dispatch_t: public rogue_attack_t
 
   void execute() override
   {
+    bool inevitable = p()->buffs.cold_blood->check();
     rogue_attack_t::execute();
 
     if ( p()->talent.outlaw.summarily_dispatched->ok() )
@@ -3618,10 +3623,11 @@ struct dispatch_t: public rogue_attack_t
       p()->buffs.t29_outlaw_2pc->trigger( cast_state( execute_state )->get_combo_points() );
     }
 
+    trigger_fate_intertwined( execute_state );
     if ( !is_secondary_action() )
     {
       trigger_restless_blades( execute_state );
-      trigger_hand_of_fate( execute_state, true, !p()->buffs.blade_flurry->check() );
+      trigger_hand_of_fate( execute_state, true, inevitable );
       trigger_cut_to_the_chase( execute_state );
     }
 
@@ -3721,7 +3727,7 @@ struct between_the_eyes_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     trigger_restless_blades( execute_state );
-    trigger_hand_of_fate( execute_state, false, !p()->buffs.blade_flurry->check() );
+    trigger_hand_of_fate( execute_state );
 
     if ( result_is_hit( execute_state->result ) )
     {
@@ -3916,7 +3922,7 @@ struct cold_blood_t : public rogue_spell_t
   double precombat_seconds;
 
   cold_blood_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_spell_t( name, p, p->talent.rogue.cold_blood ),
+    rogue_spell_t( name, p, p->spell.cold_blood ),
     precombat_seconds( 0.0 )
   {
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
@@ -4249,9 +4255,11 @@ struct envenom_t : public rogue_attack_t
 
   void execute() override
   {
+    bool inevitable = p()->buffs.cold_blood->check();
     rogue_attack_t::execute();
     trigger_poison_bomb( execute_state );
-    trigger_hand_of_fate( execute_state, true, true );
+    trigger_fate_intertwined( execute_state );
+    trigger_hand_of_fate( execute_state, true, inevitable );
 
     // TOCHECK -- If this consumes on execute or impact when parried
     if ( p()->talent.assassination.amplifying_poison->ok() )
@@ -4802,7 +4810,7 @@ struct killing_spree_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     trigger_restless_blades( execute_state );
-    trigger_hand_of_fate( execute_state, false, !p()->buffs.blade_flurry->check() );
+    trigger_hand_of_fate( execute_state );
     p()->buffs.killing_spree->trigger( composite_dot_duration( execute_state ) );
 
     if ( p()->talent.trickster.flawless_form->ok() )
@@ -5275,7 +5283,7 @@ struct rupture_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     trigger_scent_of_blood();
-    trigger_hand_of_fate( execute_state, false, true );
+    trigger_hand_of_fate( execute_state );
 
     if ( p()->spec.finality_rupture_buff->ok() )
     {
@@ -6161,6 +6169,7 @@ struct slice_and_dice_t : public rogue_spell_t
     rogue_spell_t::execute();
 
     trigger_restless_blades( execute_state );
+    trigger_hand_of_fate( execute_state );
 
     int cp = cast_state( execute_state )->get_combo_points();
     timespan_t snd_duration = get_triggered_duration( cp );
@@ -6867,6 +6876,12 @@ struct fatebound_coin_tails_t : public rogue_attack_t
     mul *= 1.0 + (stacks * p()->spell.fatebound_coin_tails_buff->effectN( 1 ).percent());
     return mul;
   }
+
+  bool procs_blade_flurry() const override
+  { return true; }
+
+  bool procs_caustic_spatter() const override
+  { return true; }
 };
 
 struct fatebound_coin_tails_delivered_t : public fatebound_coin_tails_t
@@ -6875,6 +6890,30 @@ struct fatebound_coin_tails_delivered_t : public fatebound_coin_tails_t
     fatebound_coin_tails_t( name, p )
   {
     base_multiplier += p->talent.fatebound.delivered_doom->effectN( 1 ).percent();
+  }
+};
+
+struct fate_intertwined_t : public rogue_attack_t
+{
+  fate_intertwined_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->spell.fatebound_fate_intertwined )
+  {
+    base_dd_min = base_dd_max = 1;
+    aoe = p->talent.fatebound.fate_intertwined->effectN( 2 ).base_value();
+    radius = data().effectN( 1 ).radius();
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    rogue_attack_t::available_targets( tl );
+
+    // Does not hit the primary target if it hits additional enemies
+    if( tl.size() > 1 )
+    {
+      range::erase_remove( tl, target );
+    }
+
+    return tl.size();
   }
 };
 
@@ -8430,7 +8469,7 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* state, bool biased, bool delivered )
+void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* state, bool biased, bool inevitable )
 {
   if ( !p()->talent.fatebound.hand_of_fate->ok() )
     return;
@@ -8438,9 +8477,16 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
   if ( cast_state( state )->get_combo_points() < p()->talent.fatebound.hand_of_fate->effectN( 1 ).base_value() )
     return;
 
-  auto tails_action = delivered && p()->talent.fatebound.delivered_doom->ok() ?
-    p()->active.fatebound.fatebound_coin_tails_delivered :
-    p()->active.fatebound.fatebound_coin_tails;
+  bool delivered = p()->sim->target_non_sleeping_list.size() <= 1;
+
+  if ( !p()->talent.fatebound.inevitability->ok() )
+  {
+    inevitable = false;
+  }
+
+  auto tails_action = delivered && p()->talent.fatebound.delivered_doom->ok()
+    ? p()->active.fatebound.fatebound_coin_tails_delivered
+    : p()->active.fatebound.fatebound_coin_tails;
 
   if ( p()->talent.fatebound.edge_case->ok() && p()->buffs.edge_case->check() )
   {
@@ -8509,6 +8555,13 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
       odds += p()->talent.fatebound.destiny_defined->effectN( 3 ).percent();
     }
   }
+  if (inevitable)
+  {
+    // TODO: Inevitable flips when you have both coins don't always produce a flip
+    // for the coin with the higher coin count. There may be an underlying "order" to an
+    // edge result that is respected; but it's probably just a bug because it makes no sense.
+    odds = 1.0;
+  }
 
   // TODO: it's an assumption that if you have both buffs (thanks, edge case) the bias prefers the one with more stacks
   // (since the last one you hit before the edge case has to be the one with more stacks)
@@ -8561,6 +8614,25 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
       other->increment();
     }
   }
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_fate_intertwined( const action_state_t* state )
+{
+  if ( !p()->talent.fatebound.fate_intertwined->ok() )
+  {
+    return;
+  }
+
+  if ( state->result != RESULT_CRIT )
+  {
+    return;
+  }
+
+  // Fate Intertwined amps pre-mitigation damage. This means nothing on assa, where Envenom is nature damage,
+  // and pre-mit and post-mit are the same, but on Outlaw where dispatch is physical, it means much more.
+  double amount = state->result_total * p()->talent.fatebound.fate_intertwined->effectN( 1 ).percent();
+  p()->active.fatebound.fate_intertwined->execute_on_target( state->target, amount );
 }
 
 template <typename Base>
@@ -10442,15 +10514,15 @@ void rogue_t::init_spells()
   talent.fatebound.chosens_revelry = find_talent_spell( talent_tree::HERO, "Chosen's Revelry" );
   talent.fatebound.tempted_fate = find_talent_spell( talent_tree::HERO, "Tempted Fate" );
   talent.fatebound.mean_streak = find_talent_spell( talent_tree::HERO, "Mean Streak" );
-  talent.fatebound.inexorable_march = find_talent_spell( talent_tree::HERO, "Inexorable March [NYI]" );
+  talent.fatebound.inexorable_march = find_talent_spell( talent_tree::HERO, "Inexorable March" );
   talent.fatebound.deaths_arrival = find_talent_spell( talent_tree::HERO, "Death's Arrival [NYI]" );
 
   talent.fatebound.deal_fate = find_talent_spell( talent_tree::HERO, "Deal Fate" );
   talent.fatebound.edge_case = find_talent_spell( talent_tree::HERO, "Edge Case" );
-  talent.fatebound.threads_of_fate = find_talent_spell( talent_tree::HERO, "Threads of Fate [NYI]" );
+  talent.fatebound.fate_intertwined = find_talent_spell( talent_tree::HERO, "Fate Intertwined" );
 
   talent.fatebound.delivered_doom = find_talent_spell( talent_tree::HERO, "Delivered Doom" );
-  talent.fatebound.inevitability = find_talent_spell( talent_tree::HERO, "Inevitability [NYI]" );
+  talent.fatebound.inevitability = find_talent_spell( talent_tree::HERO, "Inevitability" );
   talent.fatebound.destiny_defined = find_talent_spell( talent_tree::HERO, "Destiny Defined" );
   talent.fatebound.double_jeopardy = find_talent_spell( talent_tree::HERO, "Double Jeopardy" );
 
@@ -10486,6 +10558,7 @@ void rogue_t::init_spells()
   spell.shadowstep_buff = ( talent.rogue.shadowstep->ok() || spec.shadowstep->ok() ) ? find_spell( 36554 ) : spell_data_t::not_found();
   spell.subterfuge_buff = talent.rogue.subterfuge->ok() ? find_spell( 115192 ) : spell_data_t::not_found();
   spell.vanish_buff = spell.vanish->ok() ? find_spell( 11327 ) : spell_data_t::not_found();
+  spell.cold_blood = talent.rogue.cold_blood->ok() ? talent.fatebound.inevitability->ok() ? find_spell( 456330 ) : find_spell( 382245 ) : spell_data_t::not_found();
 
   // Hero Talent Background Spells
   // Fatebound
@@ -10494,6 +10567,7 @@ void rogue_t::init_spells()
   spell.fatebound_coin_tails_buff = talent.fatebound.hand_of_fate->ok() ? find_spell( 452917 ) : spell_data_t::not_found();
   spell.fatebound_coin_tails = talent.fatebound.hand_of_fate->ok() ? find_spell( 452538 ) : spell_data_t::not_found();
   spell.fatebound_lucky_coin_buff = talent.fatebound.fateful_ending->ok() ? find_spell( 452562 ) : spell_data_t::not_found();
+  spell.fatebound_fate_intertwined = talent.fatebound.fate_intertwined->ok() ? find_spell( 456306 ) : spell_data_t::not_found();
 
   // Trickster
   spell.cloud_cover_distract = talent.trickster.cloud_cover->ok() ? find_spell( as<unsigned>( talent.trickster.cloud_cover->effectN( 1 ).base_value() ) ) : spell_data_t::not_found();
@@ -10768,6 +10842,8 @@ void rogue_t::init_spells()
       get_background_action<actions::fatebound_coin_tails_t>( "fatebound_coin_tails" );
     active.fatebound.fatebound_coin_tails_delivered =
       get_background_action<actions::fatebound_coin_tails_delivered_t>( "fatebound_coin_tails_delivered" );
+    active.fatebound.fate_intertwined =
+      get_background_action<actions::fate_intertwined_t>( "fate_intertwined" );
   }
 
   // Trickster
@@ -11093,11 +11169,12 @@ void rogue_t::create_buffs()
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
     ->set_chance( talent.rogue.alacrity->ok() );
 
-  buffs.cold_blood = make_buff<damage_buff_t>( this, "cold_blood", talent.rogue.cold_blood );
+  buffs.cold_blood = make_buff<damage_buff_t>( this, "cold_blood", spell.cold_blood );
   buffs.cold_blood
     ->set_cooldown( timespan_t::zero() )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-    ->set_duration( sim->max_time / 2 );
+    ->set_duration( sim->max_time / 2 )
+    ->set_initial_stack( buffs.cold_blood->max_stack() );
 
   buffs.subterfuge = new buffs::subterfuge_t( this );
 
