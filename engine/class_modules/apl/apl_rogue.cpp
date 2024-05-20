@@ -75,13 +75,12 @@ void assassination( player_t* p )
   default_->add_action( "kick", "Interrupt on cooldown to allow simming interactions with that" );
   default_->add_action( "variable,name=single_target,value=spell_targets.fan_of_knives<2", "Conditional to check if there is only one enemy" );
   default_->add_action( "variable,name=regen_saturated,value=energy.regen_combined>35", "Combined Energy Regen needed to saturate" );
-  default_->add_action( "variable,name=not_pooling,value=(dot.deathmark.ticking|dot.kingsbane.ticking|buff.shadow_dance.up|debuff.shiv.up|cooldown.thistle_tea.full_recharge_time<20)|(buff.envenom.up&buff.envenom.remains<=2)|energy.pct>=80|fight_remains<=90,if=set_bonus.tier31_4pc", "Check if we should be using our energy" );
-  default_->add_action( "variable,name=not_pooling,value=(dot.deathmark.ticking|dot.kingsbane.ticking|buff.shadow_dance.up|debuff.shiv.up|cooldown.thistle_tea.full_recharge_time<20)|energy.pct>=80,if=!set_bonus.tier31_4pc" );
-  default_->add_action( "variable,name=sepsis_sync_remains,op=setif,condition=cooldown.deathmark.remains>cooldown.sepsis.remains&cooldown.deathmark.remains<fight_remains,value=cooldown.deathmark.remains,value_else=cooldown.sepsis.remains", "Next Sepsis cooldown time based on Deathmark syncing logic and remaining fight duration" );
+  default_->add_action( "variable,name=not_pooling,value=(dot.deathmark.ticking|dot.kingsbane.ticking|debuff.shiv.up|cooldown.thistle_tea.full_recharge_time<20)|(buff.envenom.up&buff.envenom.remains<=2)|energy.pct>=80|fight_remains<=90,if=set_bonus.tier31_4pc", "Check if we should be using our energy" );
+  default_->add_action( "variable,name=not_pooling,value=(dot.deathmark.ticking|dot.kingsbane.ticking|debuff.shiv.up|cooldown.thistle_tea.full_recharge_time<20)|energy.pct>=80,if=!set_bonus.tier31_4pc" );
   default_->add_action( "call_action_list,name=stealthed,if=stealthed.rogue|stealthed.improved_garrote|master_assassin_remains>0" );
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "slice_and_dice,if=!buff.slice_and_dice.up&dot.rupture.ticking&combo_points>=2|!talent.cut_to_the_chase&refreshable&combo_points>=4", "Put SnD up initially for Cut to the Chase, refresh with Envenom if at low duration" );
-  default_->add_action( "envenom,if=talent.cut_to_the_chase&buff.slice_and_dice.up&buff.slice_and_dice.remains<5&combo_points>=4" );
+  default_->add_action( "slice_and_dice,if=!buff.slice_and_dice.up&dot.rupture.ticking&combo_points>=2", "Put SnD up initially for Cut to the Chase, refresh with Envenom if at low duration" );
+  default_->add_action( "envenom,if=buff.slice_and_dice.up&buff.slice_and_dice.remains<5&combo_points>=4" );
   default_->add_action( "call_action_list,name=dot" );
   default_->add_action( "call_action_list,name=direct" );
   default_->add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen_combined" );
@@ -92,12 +91,10 @@ void assassination( player_t* p )
   cds->add_action( "variable,name=deathmark_ma_condition,value=!talent.master_assassin.enabled|dot.garrote.ticking", "Cooldowns Wait on Deathmark for Garrote with MA and check for Kingsbane" );
   cds->add_action( "variable,name=deathmark_kingsbane_condition,value=!talent.kingsbane|cooldown.kingsbane.remains<=2" );
   cds->add_action( "variable,name=deathmark_condition,value=!stealthed.rogue&dot.rupture.ticking&buff.envenom.up&!debuff.deathmark.up&variable.deathmark_ma_condition&variable.deathmark_kingsbane_condition", "Deathmark to be used if not stealthed, Rupture is up, and all other talent conditions are satisfied" );
-  cds->add_action( "sepsis,if=dot.rupture.remains>20&(!talent.improved_garrote&dot.garrote.ticking|talent.improved_garrote&cooldown.garrote.up&dot.garrote.pmultiplier<=1)&(target.time_to_die>10|fight_remains<10)" );
   cds->add_action( "call_action_list,name=items", "Usages for various special-case Trinkets and other Cantrips if applicable" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=dot.deathmark.ticking", "Invoke Externals to Deathmark" );
   cds->add_action( "deathmark,if=variable.deathmark_condition|fight_remains<=20" );
   cds->add_action( "call_action_list,name=shiv", "Check for Applicable Shiv usage" );
-  cds->add_action( "shadow_dance,if=talent.kingsbane&buff.envenom.up&(cooldown.deathmark.remains>=50|variable.deathmark_condition)", "Special Handling to Sync Shadow Dance to Kingsbane" );
   cds->add_action( "kingsbane,if=(debuff.shiv.up|cooldown.shiv.remains<6)&buff.envenom.up&(cooldown.deathmark.remains>=50|dot.deathmark.ticking)|fight_remains<=15" );
   cds->add_action( "thistle_tea,if=!buff.thistle_tea.up&(energy.deficit>=100+energy.regen_combined&(!talent.kingsbane|charges>=2)|(dot.kingsbane.ticking&dot.kingsbane.remains<6|!talent.kingsbane&dot.deathmark.ticking)|fight_remains<charges*6)", "Avoid overcapped energy, use on final 6 seconds of kingsbane, or use a charge during cooldowns when capped on charges" );
   cds->add_action( "call_action_list,name=misc_cds", "Potion/Racials/Other misc cooldowns" );
@@ -108,14 +105,10 @@ void assassination( player_t* p )
   direct->add_action( "variable,name=use_filler,value=combo_points.deficit>1|variable.not_pooling|!variable.single_target", "Check if we should be using a filler" );
   direct->add_action( "mutilate,if=talent.caustic_spatter&dot.rupture.ticking&(!debuff.caustic_spatter.up|debuff.caustic_spatter.remains<=2)&variable.use_filler&!variable.single_target", "Maintain Caustic Spatter" );
   direct->add_action( "ambush,if=talent.caustic_spatter&dot.rupture.ticking&(!debuff.caustic_spatter.up|debuff.caustic_spatter.remains<=2)&variable.use_filler&!variable.single_target" );
-  direct->add_action( "serrated_bone_spike,if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking", "Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target" );
-  direct->add_action( "serrated_bone_spike,target_if=min:target.time_to_die+(dot.serrated_bone_spike_dot.ticking*600),if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking" );
-  direct->add_action( "serrated_bone_spike,if=variable.use_filler&master_assassin_remains<0.8&(fight_remains<=5|cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25)", "Keep from capping charges or burn at the end of fights" );
-  direct->add_action( "serrated_bone_spike,if=variable.use_filler&master_assassin_remains<0.8&!variable.single_target&debuff.shiv.up", "When MA is not at high duration, sync with Shiv" );
   direct->add_action( "echoing_reprimand,if=variable.use_filler|fight_remains<20" );
   direct->add_action( "fan_of_knives,if=variable.use_filler&(!priority_rotation&spell_targets.fan_of_knives>=2+stealthed.rogue+talent.dragontempered_blades)", "Fan of Knives at 2+ targets or 3+ with DTB" );
   direct->add_action( "fan_of_knives,target_if=!dot.deadly_poison_dot.ticking&(!priority_rotation|dot.garrote.ticking|dot.rupture.ticking),if=variable.use_filler&spell_targets.fan_of_knives>=3", "Fan of Knives to apply poisons if inactive on any target (or any bleeding targets with priority rotation) at 3T" );
-  direct->add_action( "ambush,if=variable.use_filler&(buff.blindside.up|buff.sepsis_buff.remains<=1|stealthed.rogue)&(!dot.kingsbane.ticking|debuff.deathmark.down|buff.blindside.up)", "Ambush on Blindside/Shadow Dance, or a last resort usage of Sepsis. Do not use Ambush during Kingsbane & Deathmark." );
+  direct->add_action( "ambush,if=variable.use_filler&(buff.blindside.up|stealthed.rogue)&(!dot.kingsbane.ticking|debuff.deathmark.down|buff.blindside.up)", "Ambush on Blindside/Subterfuge. Do not use Ambush during Kingsbane & Deathmark." );
   direct->add_action( "mutilate,target_if=!dot.deadly_poison_dot.ticking&!debuff.amplifying_poison.up,if=variable.use_filler&spell_targets.fan_of_knives=2", "Tab-Mutilate to apply Deadly Poison at 2 targets" );
   direct->add_action( "mutilate,if=variable.use_filler", "Fallback Mutilate" );
 
@@ -141,28 +134,22 @@ void assassination( player_t* p )
 
   shiv->add_action( "shiv,if=talent.kingsbane&!talent.lightweight_shiv.enabled&buff.envenom.up&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(dot.kingsbane.ticking&dot.kingsbane.remains<8|cooldown.kingsbane.remains>=24)&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)|fight_remains<=charges*8", "Shiv   Shiv if talented into Kingsbane; Always sync, or prioritize the last 8 seconds" );
   shiv->add_action( "shiv,if=talent.kingsbane&talent.lightweight_shiv.enabled&buff.envenom.up&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(dot.kingsbane.ticking|cooldown.kingsbane.remains<=1)|fight_remains<=charges*8" );
-  shiv->add_action( "shiv,if=talent.arterial_precision&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&debuff.deathmark.up|fight_remains<=charges*8", "Shiv cases for Sepsis/Arterial in special circumstances" );
-  shiv->add_action( "shiv,if=talent.sepsis&!talent.kingsbane&!talent.arterial_precision&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&((cooldown.shiv.charges_fractional>0.9+talent.lightweight_shiv.enabled&variable.sepsis_sync_remains>5)|dot.sepsis.ticking|dot.deathmark.ticking|fight_remains<=charges*8)" );
-  shiv->add_action( "shiv,if=!talent.kingsbane&!talent.arterial_precision&!talent.sepsis&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)|fight_remains<=charges*8", "Fallback if no special cases apply" );
+  shiv->add_action( "shiv,if=talent.arterial_precision&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&debuff.deathmark.up|fight_remains<=charges*8", "Shiv cases for Arterial in special circumstances" );
+  shiv->add_action( "shiv,if=!talent.kingsbane&!talent.arterial_precision&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)|fight_remains<=charges*8", "Fallback if no special cases apply" );
 
   stealthed->add_action( "pool_resource,for_next=1", "Stealthed Actions" );
   stealthed->add_action( "shiv,if=talent.kingsbane&(dot.kingsbane.ticking|cooldown.kingsbane.up)&(!debuff.shiv.up&debuff.shiv.remains<1)&buff.envenom.up", "Make sure to have Shiv up during Kingsbane as a final check" );
-  stealthed->add_action( "kingsbane,if=buff.shadow_dance.remains>=2&buff.envenom.up", "Kingsbane in Shadow Dance for snapshotting Nightstalker" );
   stealthed->add_action( "envenom,if=effective_combo_points>=4&dot.kingsbane.ticking&buff.envenom.remains<=3", "Envenom to maintain the buff during Shadow Dance" );
-  stealthed->add_action( "envenom,if=effective_combo_points>=4&buff.master_assassin_aura.up&!buff.shadow_dance.up&variable.single_target", "Envenom during Master Assassin in single target" );
-  stealthed->add_action( "crimson_tempest,target_if=min:remains,if=spell_targets>=3+set_bonus.tier31_4pc&refreshable&effective_combo_points>=4&!cooldown.deathmark.ready&target.time_to_die-remains>6", "Crimson Tempest on 4+ targets to snapshot Nightstalker" );
-  stealthed->add_action( "garrote,target_if=min:remains,if=stealthed.improved_garrote&(remains<(12-buff.sepsis_buff.remains)|pmultiplier<=1|(buff.indiscriminate_carnage.up&active_dot.garrote<spell_targets.fan_of_knives))&!variable.single_target&target.time_to_die-remains>2", "Improved Garrote: Apply or Refresh with buffed Garrotes, accounting for Sepsis buff time and Indiscriminate Carnage" );
+  stealthed->add_action( "envenom,if=effective_combo_points>=4&buff.master_assassin_aura.up&variable.single_target", "Envenom during Master Assassin in single target" );
+  stealthed->add_action( "garrote,target_if=min:remains,if=stealthed.improved_garrote&(remains<12|pmultiplier<=1|(buff.indiscriminate_carnage.up&active_dot.garrote<spell_targets.fan_of_knives))&!variable.single_target&target.time_to_die-remains>2", "Improved Garrote: Apply or Refresh with buffed Garrotes, accounting for Indiscriminate Carnage" );
   stealthed->add_action( "garrote,if=stealthed.improved_garrote&(pmultiplier<=1|remains<14|!variable.single_target&buff.master_assassin_aura.remains<3)&combo_points.deficit>=1+2*talent.shrouded_suffocation" );
-  stealthed->add_action( "rupture,if=effective_combo_points>=4&(pmultiplier<=1)&(buff.shadow_dance.up|debuff.deathmark.up)", "Rupture in Shadow Dance to snapshot Nightstalker as a final resort" );
 
   vanish->add_action( "pool_resource,for_next=1,extra_amount=45", "Stealth Cooldowns   Vanish Sync for Improved Garrote with Deathmark" );
-  vanish->add_action( "shadow_dance,if=!talent.kingsbane&talent.improved_garrote&cooldown.garrote.up&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&(debuff.deathmark.up|cooldown.deathmark.remains<12|cooldown.deathmark.remains>60)&combo_points.deficit>=(spell_targets.fan_of_knives>?4)", "Shadow Dance for non-Kingsbane setups" );
-  vanish->add_action( "shadow_dance,if=!talent.kingsbane&!talent.improved_garrote&talent.master_assassin&!dot.rupture.refreshable&dot.garrote.remains>3&(debuff.deathmark.up|cooldown.deathmark.remains>60)&(debuff.shiv.up|debuff.deathmark.remains<4|dot.sepsis.ticking)&dot.sepsis.remains<3" );
   vanish->add_action( "vanish,if=!talent.master_assassin&!talent.indiscriminate_carnage&talent.improved_garrote&cooldown.garrote.up&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&(debuff.deathmark.up|cooldown.deathmark.remains<4)&combo_points.deficit>=(spell_targets.fan_of_knives>?4)", "Vanish to spread Garrote during Deathmark without Indiscriminate Carnage" );
   vanish->add_action( "pool_resource,for_next=1,extra_amount=45" );
   vanish->add_action( "vanish,if=!talent.master_assassin&talent.indiscriminate_carnage&talent.improved_garrote&cooldown.garrote.up&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&spell_targets.fan_of_knives>2", "Vanish for cleaving Garrotes with Indiscriminate Carnage" );
   vanish->add_action( "vanish,if=talent.master_assassin&talent.kingsbane&dot.kingsbane.remains<=3&dot.kingsbane.ticking&debuff.deathmark.remains<=3&dot.deathmark.ticking", "Vanish for Master Assassin during Kingsbane" );
-  vanish->add_action( "vanish,if=!talent.improved_garrote&talent.master_assassin&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.deathmark.up&(debuff.shiv.up|debuff.deathmark.remains<4|dot.sepsis.ticking)&dot.sepsis.remains<3", "Vanish fallback for Master Assassin" );
+  vanish->add_action( "vanish,if=!talent.improved_garrote&talent.master_assassin&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.deathmark.up&(debuff.shiv.up|debuff.deathmark.remains<4)", "Vanish fallback for Master Assassin" );
 }
 //assassination_apl_end
 
@@ -311,14 +298,14 @@ void subtlety( player_t* p )
   cds->add_action( "variable,name=trinket_conditions,value=(!equipped.witherbarks_branch|equipped.witherbarks_branch&trinket.witherbarks_branch.cooldown.remains<=8|equipped.bandolier_of_twisted_blades|talent.invigorating_shadowdust)", "Cooldowns  Helper Variable for Flagellation for trinket synchronisation" );
   cds->add_action( "cold_blood,if=!talent.secret_technique&combo_points>=5", "Cold Blood on 5 combo points when not playing Secret Technique" );
   cds->add_action( "sepsis,if=variable.snd_condition&target.time_to_die>=16&(buff.perforated_veins.up|!talent.perforated_veins)" );
-  cds->add_action( "flagellation,target_if=max:target.time_to_die,if=variable.snd_condition&combo_points>=5&target.time_to_die>10&(variable.trinket_conditions&cooldown.shadow_blades.remains<=3|fight_remains<=28|cooldown.shadow_blades.remains>=14&talent.invigorating_shadowdust&talent.shadow_dance)&(!talent.invigorating_shadowdust|talent.sepsis|!talent.shadow_dance|talent.invigorating_shadowdust.rank=2&spell_targets.shuriken_storm>=2|cooldown.symbols_of_death.remains<=3|buff.symbols_of_death.remains>3)", "Defines Flagellation use in a stacked manner with trinkets and Shadow Blades" );
+  cds->add_action( "flagellation,target_if=max:target.time_to_die,if=variable.snd_condition&combo_points>=5&target.time_to_die>10&(variable.trinket_conditions&cooldown.shadow_blades.remains<=3|fight_remains<=28|cooldown.shadow_blades.remains>=14&talent.invigorating_shadowdust&talent.double_dance)&(!talent.invigorating_shadowdust|talent.sepsis|!talent.double_dance|talent.invigorating_shadowdust.rank=2&spell_targets.shuriken_storm>=2|cooldown.symbols_of_death.remains<=3|buff.symbols_of_death.remains>3)", "Defines Flagellation use in a stacked manner with trinkets and Shadow Blades" );
   cds->add_action( "symbols_of_death,if=variable.snd_condition&(!buff.the_rotten.up|!set_bonus.tier30_2pc)&buff.symbols_of_death.remains<=3&(!talent.flagellation|cooldown.flagellation.remains>10|buff.shadow_dance.remains>=2&talent.invigorating_shadowdust|cooldown.flagellation.up&combo_points>=5&!talent.invigorating_shadowdust)", "Align Symbols of Death to Flagellation." );
   cds->add_action( "shadow_blades,if=variable.snd_condition&(combo_points<=1|set_bonus.tier31_4pc)&(buff.flagellation_buff.up|buff.flagellation_persist.up|!talent.flagellation)", "Align Shadow Blades to Flagellation." );
   cds->add_action( "echoing_reprimand,if=variable.snd_condition&combo_points.deficit>=3", "ER during Shadow Dance." );
   cds->add_action( "shuriken_tornado,if=variable.snd_condition&buff.symbols_of_death.up&combo_points<=2&!buff.premeditation.up&(!talent.flagellation|cooldown.flagellation.remains>20)&spell_targets.shuriken_storm>=3", "Shuriken Tornado with Symbols of Death on 3 and more targets" );
   cds->add_action( "shuriken_tornado,if=variable.snd_condition&!buff.shadow_dance.up&!buff.flagellation_buff.up&!buff.flagellation_persist.up&!buff.shadow_blades.up&spell_targets.shuriken_storm<=2&!raid_event.adds.up", "Shuriken Tornado only outside of cooldowns" );
   cds->add_action( "shadow_dance,if=!buff.shadow_dance.up&fight_remains<=8+talent.subterfuge.enabled" );
-  cds->add_action( "goremaws_bite,if=variable.snd_condition&combo_points.deficit>=3&(!cooldown.shadow_dance.up|talent.shadow_dance&buff.shadow_dance.up&!talent.invigorating_shadowdust|spell_targets.shuriken_storm<4&!talent.invigorating_shadowdust|talent.the_rotten|raid_event.adds.up)", "Goremaws Bite during Shadow Dance if possible." );
+  cds->add_action( "goremaws_bite,if=variable.snd_condition&combo_points.deficit>=3&(!cooldown.shadow_dance.up|talent.double_dance&buff.shadow_dance.up&!talent.invigorating_shadowdust|spell_targets.shuriken_storm<4&!talent.invigorating_shadowdust|talent.the_rotten|raid_event.adds.up)", "Goremaws Bite during Shadow Dance if possible." );
   cds->add_action( "thistle_tea,if=!buff.thistle_tea.up&cooldown.thistle_tea.charges_fractional>=2.5&buff.shadow_dance.remains>=4", "Thistle Tea during Shadow Dance when close to max stacks." );
   cds->add_action( "thistle_tea,if=!buff.thistle_tea.up&buff.shadow_dance.remains>=4&cooldown.secret_technique.remains<=10", "Thistle Tea during Shadow Dance when Secret Techniques is up." );
   cds->add_action( "thistle_tea,if=!buff.thistle_tea.up&(energy.deficit>=(100)|!buff.thistle_tea.up&fight_remains<=(6*cooldown.thistle_tea.charges))&(cooldown.symbols_of_death.remains>=3|buff.symbols_of_death.up)&combo_points.deficit>=2", "Thistle Tea for energy" );
@@ -350,7 +337,7 @@ void subtlety( player_t* p )
   finish->add_action( "black_powder,if=!variable.priority_rotation&spell_targets>=3" );
   finish->add_action( "eviscerate" );
 
-  stealth_cds->add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=0.75+talent.shadow_dance", "Stealth Cooldowns  Helper Variable for Shadow Dance." );
+  stealth_cds->add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=0.75+talent.double_dance", "Stealth Cooldowns  Helper Variable for Shadow Dance." );
   stealth_cds->add_action( "variable,name=rotten_cb,value=(!buff.the_rotten.up|!set_bonus.tier30_2pc)&(!talent.cold_blood|cooldown.cold_blood.remains<4|cooldown.cold_blood.remains>10)", "Helper variable to check for Cold Blood and The Rotten buff." );
   stealth_cds->add_action( "vanish,if=(combo_points.deficit>1|buff.shadow_blades.up&talent.invigorating_shadowdust)&!variable.shd_threshold&(cooldown.flagellation.remains>=60|!talent.flagellation|fight_remains<=(30*cooldown.vanish.charges))&(cooldown.symbols_of_death.remains>3|!set_bonus.tier30_2pc)&(cooldown.secret_technique.remains>=10|!talent.secret_technique|cooldown.vanish.charges>=2&talent.invigorating_shadowdust&(buff.the_rotten.up|!talent.the_rotten)&!raid_event.adds.up)", "Consider Flagellation, Symbols and Secret Technique cooldown when using Vanish with Shadow Dust." );
   stealth_cds->add_action( "pool_resource,for_next=1,extra_amount=40,if=race.night_elf", "Pool for Shadowmeld unless we are about to cap on Dance charges." );

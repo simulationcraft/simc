@@ -21,15 +21,13 @@ actions+=/variable,name=single_target,value=spell_targets.fan_of_knives<2
 # Combined Energy Regen needed to saturate
 actions+=/variable,name=regen_saturated,value=energy.regen_combined>35
 # Check if we should be using our energy
-actions+=/variable,name=not_pooling,value=(dot.deathmark.ticking|dot.kingsbane.ticking|buff.shadow_dance.up|debuff.shiv.up|cooldown.thistle_tea.full_recharge_time<20)|(buff.envenom.up&buff.envenom.remains<=2)|energy.pct>=80|fight_remains<=90,if=set_bonus.tier31_4pc
-actions+=/variable,name=not_pooling,value=(dot.deathmark.ticking|dot.kingsbane.ticking|buff.shadow_dance.up|debuff.shiv.up|cooldown.thistle_tea.full_recharge_time<20)|energy.pct>=80,if=!set_bonus.tier31_4pc
-# Next Sepsis cooldown time based on Deathmark syncing logic and remaining fight duration
-actions+=/variable,name=sepsis_sync_remains,op=setif,condition=cooldown.deathmark.remains>cooldown.sepsis.remains&cooldown.deathmark.remains<fight_remains,value=cooldown.deathmark.remains,value_else=cooldown.sepsis.remains
+actions+=/variable,name=not_pooling,value=(dot.deathmark.ticking|dot.kingsbane.ticking|debuff.shiv.up|cooldown.thistle_tea.full_recharge_time<20)|(buff.envenom.up&buff.envenom.remains<=2)|energy.pct>=80|fight_remains<=90,if=set_bonus.tier31_4pc
+actions+=/variable,name=not_pooling,value=(dot.deathmark.ticking|dot.kingsbane.ticking|debuff.shiv.up|cooldown.thistle_tea.full_recharge_time<20)|energy.pct>=80,if=!set_bonus.tier31_4pc
 actions+=/call_action_list,name=stealthed,if=stealthed.rogue|stealthed.improved_garrote|master_assassin_remains>0
 actions+=/call_action_list,name=cds
 # Put SnD up initially for Cut to the Chase, refresh with Envenom if at low duration
-actions+=/slice_and_dice,if=!buff.slice_and_dice.up&dot.rupture.ticking&combo_points>=2|!talent.cut_to_the_chase&refreshable&combo_points>=4
-actions+=/envenom,if=talent.cut_to_the_chase&buff.slice_and_dice.up&buff.slice_and_dice.remains<5&combo_points>=4
+actions+=/slice_and_dice,if=!buff.slice_and_dice.up&dot.rupture.ticking&combo_points>=2
+actions+=/envenom,if=buff.slice_and_dice.up&buff.slice_and_dice.remains<5&combo_points>=4
 actions+=/call_action_list,name=dot
 actions+=/call_action_list,name=direct
 actions+=/arcane_torrent,if=energy.deficit>=15+energy.regen_combined
@@ -42,7 +40,6 @@ actions.cds=variable,name=deathmark_ma_condition,value=!talent.master_assassin.e
 actions.cds+=/variable,name=deathmark_kingsbane_condition,value=!talent.kingsbane|cooldown.kingsbane.remains<=2
 # Deathmark to be used if not stealthed, Rupture is up, and all other talent conditions are satisfied
 actions.cds+=/variable,name=deathmark_condition,value=!stealthed.rogue&dot.rupture.ticking&buff.envenom.up&!debuff.deathmark.up&variable.deathmark_ma_condition&variable.deathmark_kingsbane_condition
-actions.cds+=/sepsis,if=dot.rupture.remains>20&(!talent.improved_garrote&dot.garrote.ticking|talent.improved_garrote&cooldown.garrote.up&dot.garrote.pmultiplier<=1)&(target.time_to_die>10|fight_remains<10)
 # Usages for various special-case Trinkets and other Cantrips if applicable
 actions.cds+=/call_action_list,name=items
 # Invoke Externals to Deathmark
@@ -50,8 +47,6 @@ actions.cds+=/invoke_external_buff,name=power_infusion,if=dot.deathmark.ticking
 actions.cds+=/deathmark,if=variable.deathmark_condition|fight_remains<=20
 # Check for Applicable Shiv usage
 actions.cds+=/call_action_list,name=shiv
-# Special Handling to Sync Shadow Dance to Kingsbane
-actions.cds+=/shadow_dance,if=talent.kingsbane&buff.envenom.up&(cooldown.deathmark.remains>=50|variable.deathmark_condition)
 actions.cds+=/kingsbane,if=(debuff.shiv.up|cooldown.shiv.remains<6)&buff.envenom.up&(cooldown.deathmark.remains>=50|dot.deathmark.ticking)|fight_remains<=15
 # Avoid overcapped energy, use on final 6 seconds of kingsbane, or use a charge during cooldowns when capped on charges
 actions.cds+=/thistle_tea,if=!buff.thistle_tea.up&(energy.deficit>=100+energy.regen_combined&(!talent.kingsbane|charges>=2)|(dot.kingsbane.ticking&dot.kingsbane.remains<6|!talent.kingsbane&dot.deathmark.ticking)|fight_remains<charges*6)
@@ -68,20 +63,13 @@ actions.direct+=/variable,name=use_filler,value=combo_points.deficit>1|variable.
 # Maintain Caustic Spatter
 actions.direct+=/mutilate,if=talent.caustic_spatter&dot.rupture.ticking&(!debuff.caustic_spatter.up|debuff.caustic_spatter.remains<=2)&variable.use_filler&!variable.single_target
 actions.direct+=/ambush,if=talent.caustic_spatter&dot.rupture.ticking&(!debuff.caustic_spatter.up|debuff.caustic_spatter.remains<=2)&variable.use_filler&!variable.single_target
-# Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target
-actions.direct+=/serrated_bone_spike,if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking
-actions.direct+=/serrated_bone_spike,target_if=min:target.time_to_die+(dot.serrated_bone_spike_dot.ticking*600),if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking
-# Keep from capping charges or burn at the end of fights
-actions.direct+=/serrated_bone_spike,if=variable.use_filler&master_assassin_remains<0.8&(fight_remains<=5|cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25)
-# When MA is not at high duration, sync with Shiv
-actions.direct+=/serrated_bone_spike,if=variable.use_filler&master_assassin_remains<0.8&!variable.single_target&debuff.shiv.up
 actions.direct+=/echoing_reprimand,if=variable.use_filler|fight_remains<20
 # Fan of Knives at 2+ targets or 3+ with DTB
 actions.direct+=/fan_of_knives,if=variable.use_filler&(!priority_rotation&spell_targets.fan_of_knives>=2+stealthed.rogue+talent.dragontempered_blades)
 # Fan of Knives to apply poisons if inactive on any target (or any bleeding targets with priority rotation) at 3T
 actions.direct+=/fan_of_knives,target_if=!dot.deadly_poison_dot.ticking&(!priority_rotation|dot.garrote.ticking|dot.rupture.ticking),if=variable.use_filler&spell_targets.fan_of_knives>=3
-# Ambush on Blindside/Shadow Dance, or a last resort usage of Sepsis. Do not use Ambush during Kingsbane & Deathmark.
-actions.direct+=/ambush,if=variable.use_filler&(buff.blindside.up|buff.sepsis_buff.remains<=1|stealthed.rogue)&(!dot.kingsbane.ticking|debuff.deathmark.down|buff.blindside.up)
+# Ambush on Blindside/Subterfuge. Do not use Ambush during Kingsbane & Deathmark.
+actions.direct+=/ambush,if=variable.use_filler&(buff.blindside.up|stealthed.rogue)&(!dot.kingsbane.ticking|debuff.deathmark.down|buff.blindside.up)
 # Tab-Mutilate to apply Deadly Poison at 2 targets
 actions.direct+=/mutilate,target_if=!dot.deadly_poison_dot.ticking&!debuff.amplifying_poison.up,if=variable.use_filler&spell_targets.fan_of_knives=2
 # Fallback Mutilate
@@ -122,36 +110,26 @@ actions.misc_cds+=/ancestral_call,if=(!talent.kingsbane&debuff.deathmark.up&debu
 # Shiv if talented into Kingsbane; Always sync, or prioritize the last 8 seconds
 actions.shiv=shiv,if=talent.kingsbane&!talent.lightweight_shiv.enabled&buff.envenom.up&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(dot.kingsbane.ticking&dot.kingsbane.remains<8|cooldown.kingsbane.remains>=24)&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)|fight_remains<=charges*8
 actions.shiv+=/shiv,if=talent.kingsbane&talent.lightweight_shiv.enabled&buff.envenom.up&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(dot.kingsbane.ticking|cooldown.kingsbane.remains<=1)|fight_remains<=charges*8
-# Shiv cases for Sepsis/Arterial in special circumstances
+# Shiv cases for Arterial in special circumstances
 actions.shiv+=/shiv,if=talent.arterial_precision&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&debuff.deathmark.up|fight_remains<=charges*8
-actions.shiv+=/shiv,if=talent.sepsis&!talent.kingsbane&!talent.arterial_precision&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&((cooldown.shiv.charges_fractional>0.9+talent.lightweight_shiv.enabled&variable.sepsis_sync_remains>5)|dot.sepsis.ticking|dot.deathmark.ticking|fight_remains<=charges*8)
 # Fallback if no special cases apply
-actions.shiv+=/shiv,if=!talent.kingsbane&!talent.arterial_precision&!talent.sepsis&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)|fight_remains<=charges*8
+actions.shiv+=/shiv,if=!talent.kingsbane&!talent.arterial_precision&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)|fight_remains<=charges*8
 
 # Stealthed Actions
 actions.stealthed=pool_resource,for_next=1
 # Make sure to have Shiv up during Kingsbane as a final check
 actions.stealthed+=/shiv,if=talent.kingsbane&(dot.kingsbane.ticking|cooldown.kingsbane.up)&(!debuff.shiv.up&debuff.shiv.remains<1)&buff.envenom.up
-# Kingsbane in Shadow Dance for snapshotting Nightstalker
-actions.stealthed+=/kingsbane,if=buff.shadow_dance.remains>=2&buff.envenom.up
 # Envenom to maintain the buff during Shadow Dance
 actions.stealthed+=/envenom,if=effective_combo_points>=4&dot.kingsbane.ticking&buff.envenom.remains<=3
 # Envenom during Master Assassin in single target
-actions.stealthed+=/envenom,if=effective_combo_points>=4&buff.master_assassin_aura.up&!buff.shadow_dance.up&variable.single_target
-# Crimson Tempest on 4+ targets to snapshot Nightstalker
-actions.stealthed+=/crimson_tempest,target_if=min:remains,if=spell_targets>=3+set_bonus.tier31_4pc&refreshable&effective_combo_points>=4&!cooldown.deathmark.ready&target.time_to_die-remains>6
-# Improved Garrote: Apply or Refresh with buffed Garrotes, accounting for Sepsis buff time and Indiscriminate Carnage
-actions.stealthed+=/garrote,target_if=min:remains,if=stealthed.improved_garrote&(remains<(12-buff.sepsis_buff.remains)|pmultiplier<=1|(buff.indiscriminate_carnage.up&active_dot.garrote<spell_targets.fan_of_knives))&!variable.single_target&target.time_to_die-remains>2
+actions.stealthed+=/envenom,if=effective_combo_points>=4&buff.master_assassin_aura.up&variable.single_target
+# Improved Garrote: Apply or Refresh with buffed Garrotes, accounting for Indiscriminate Carnage
+actions.stealthed+=/garrote,target_if=min:remains,if=stealthed.improved_garrote&(remains<12|pmultiplier<=1|(buff.indiscriminate_carnage.up&active_dot.garrote<spell_targets.fan_of_knives))&!variable.single_target&target.time_to_die-remains>2
 actions.stealthed+=/garrote,if=stealthed.improved_garrote&(pmultiplier<=1|remains<14|!variable.single_target&buff.master_assassin_aura.remains<3)&combo_points.deficit>=1+2*talent.shrouded_suffocation
-# Rupture in Shadow Dance to snapshot Nightstalker as a final resort
-actions.stealthed+=/rupture,if=effective_combo_points>=4&(pmultiplier<=1)&(buff.shadow_dance.up|debuff.deathmark.up)
 
 # Stealth Cooldowns 
 # Vanish Sync for Improved Garrote with Deathmark
 actions.vanish=pool_resource,for_next=1,extra_amount=45
-# Shadow Dance for non-Kingsbane setups
-actions.vanish+=/shadow_dance,if=!talent.kingsbane&talent.improved_garrote&cooldown.garrote.up&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&(debuff.deathmark.up|cooldown.deathmark.remains<12|cooldown.deathmark.remains>60)&combo_points.deficit>=(spell_targets.fan_of_knives>?4)
-actions.vanish+=/shadow_dance,if=!talent.kingsbane&!talent.improved_garrote&talent.master_assassin&!dot.rupture.refreshable&dot.garrote.remains>3&(debuff.deathmark.up|cooldown.deathmark.remains>60)&(debuff.shiv.up|debuff.deathmark.remains<4|dot.sepsis.ticking)&dot.sepsis.remains<3
 # Vanish to spread Garrote during Deathmark without Indiscriminate Carnage
 actions.vanish+=/vanish,if=!talent.master_assassin&!talent.indiscriminate_carnage&talent.improved_garrote&cooldown.garrote.up&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&(debuff.deathmark.up|cooldown.deathmark.remains<4)&combo_points.deficit>=(spell_targets.fan_of_knives>?4)
 actions.vanish+=/pool_resource,for_next=1,extra_amount=45
@@ -160,4 +138,4 @@ actions.vanish+=/vanish,if=!talent.master_assassin&talent.indiscriminate_carnage
 # Vanish for Master Assassin during Kingsbane
 actions.vanish+=/vanish,if=talent.master_assassin&talent.kingsbane&dot.kingsbane.remains<=3&dot.kingsbane.ticking&debuff.deathmark.remains<=3&dot.deathmark.ticking
 # Vanish fallback for Master Assassin
-actions.vanish+=/vanish,if=!talent.improved_garrote&talent.master_assassin&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.deathmark.up&(debuff.shiv.up|debuff.deathmark.remains<4|dot.sepsis.ticking)&dot.sepsis.remains<3
+actions.vanish+=/vanish,if=!talent.improved_garrote&talent.master_assassin&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.deathmark.up&(debuff.shiv.up|debuff.deathmark.remains<4)
