@@ -599,7 +599,8 @@ void monk_action_t<Base>::impact( action_state_t *s )
       {
         double damage_contribution = s->result_amount;
 
-        if ( p()->talent.shado_pan.one_versus_many->ok() && ( base_t::data().id() == 117418 || base_t::data().id() == 121253 ) )
+        if ( p()->talent.shado_pan.one_versus_many->ok() &&
+             ( base_t::data().id() == 117418 || base_t::data().id() == 121253 ) )
           damage_contribution *= ( 1.0f + p()->talent.shado_pan.one_versus_many->effectN( 1 ).percent() );
 
         p()->flurry_strikes_damage += damage_contribution;
@@ -2891,6 +2892,8 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     st_tick = new whirling_dragon_punch_st_tick_t( "whirling_dragon_punch_st_tick", p,
                                                    p->passives.whirling_dragon_punch_st_tick );
     add_child( st_tick );
+
+    apply_affecting_aura( p->talent.windwalker.revolving_whirl );
   }
 
   action_state_t *new_state() override
@@ -4651,6 +4654,9 @@ struct flurry_of_xuen_t : public monk_spell_t
     background = true;
     may_crit   = true;
 
+    aoe                 = -1;
+    reduced_aoe_targets = p.talent.windwalker.flurry_of_xuen->effectN( 2 ).base_value();
+
     // p.passives.flurry_of_xuen_driver->duration()
     // Shows 3 second duration but is 2.7s consistently in logs
     dot_duration   = timespan_t::from_seconds( 2.7 );
@@ -5070,15 +5076,8 @@ struct jadefire_stomp_damage_t : public monk_spell_t
 
     attack_power_mod.direct = p.passives.jadefire_stomp_damage->effectN( 1 ).ap_coeff();
     spell_power_mod.direct  = 0;
-  }
 
-  double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    am *= 1.0 + p()->talent.windwalker.singularly_focused_jade->effectN( 2 ).percent();
-
-    return am;
+    apply_affecting_effect( p.talent.windwalker.singularly_focused_jade->effectN( 2 ) );
   }
 
   double composite_aoe_multiplier( const action_state_t *state ) const override
@@ -5137,18 +5136,17 @@ struct jadefire_stomp_t : public monk_spell_t
 
     damage = new jadefire_stomp_damage_t( p );
     heal   = new jadefire_stomp_heal_t( p );
+    aoe    = as<int>( data().effectN( 3 ).base_value() +
+                   p.talent.windwalker.singularly_focused_jade->effectN( 3 ).base_value() );
 
     if ( p.specialization() == MONK_WINDWALKER )
     {
       apply_affecting_effect( p.talent.windwalker.singularly_focused_jade->effectN( 1 ) );
-      apply_affecting_effect( p.talent.windwalker.singularly_focused_jade->effectN( 3 ) );
 
       ww_damage = new jadefire_stomp_ww_damage_t( p );
 
       add_child( ww_damage );
     }
-
-    aoe = (int)data().effectN( 3 ).base_value();
 
     add_child( damage );
     add_child( heal );
@@ -6429,19 +6427,29 @@ struct fury_of_xuen_t : public monk_buff_t
       }
     }
   }
+
   fury_of_xuen_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
-    set_cooldown( timespan_t::zero() );
-    set_default_value_from_effect( 1 );
-    set_pct_buff_type( STAT_PCT_BUFF_CRIT );
     set_trigger_spell( p.talent.windwalker.fury_of_xuen );
+    set_default_value_from_effect( 1 );
+    set_cooldown( timespan_t::zero() );
+    set_period( s->effectN( 3 ).period() );
+
+    set_tick_callback( fury_of_xuen_callback );
+
+    set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+
     add_invalidate( CACHE_CRIT_CHANCE );
     add_invalidate( CACHE_ATTACK_CRIT_CHANCE );
     add_invalidate( CACHE_SPELL_CRIT_CHANCE );
 
-    set_period( s->effectN( 3 ).period() );
+    add_invalidate( CACHE_ATTACK_HASTE );
+    add_invalidate( CACHE_HASTE );
+    add_invalidate( CACHE_SPELL_HASTE );
 
-    set_tick_callback( fury_of_xuen_callback );
+    add_invalidate( CACHE_MASTERY );
   }
 };
 
@@ -9816,7 +9824,7 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
 
   return base_t::create_expression( name_str );
 }
-  
+
 void monk_t::merge( player_t &other )
 {
   base_t::merge( other );
