@@ -70,7 +70,7 @@ actions.cds+=/blade_flurry,if=talent.deft_maneuvers&!variable.finish_condition&(
 # Use Roll the Bones if reroll conditions are met, or with no buffs, or 2s before buffs expire with T31, or 7s before buffs expire with Vanish/Dance ready
 actions.cds+=/roll_the_bones,if=variable.rtb_reroll|rtb_buffs=0|rtb_buffs.max_remains<=2&set_bonus.tier31_4pc|rtb_buffs.max_remains<=7&(cooldown.vanish.ready)
 # Use Keep it Rolling with at least 3 buffs (4 with T31)
-actions.cds+=/keep_it_rolling,if=!variable.rtb_reroll&rtb_buffs>=3+set_bonus.tier31_4pc&(rtb_buffs>=6)
+actions.cds+=/keep_it_rolling,if=!variable.rtb_reroll&rtb_buffs>=3+set_bonus.tier31_4pc
 actions.cds+=/ghostly_strike,if=effective_combo_points<cp_max_spend
 # Use Sepsis to trigger Crackshot or if the target will survive its DoT
 actions.cds+=/sepsis,if=talent.crackshot&cooldown.between_the_eyes.ready&variable.finish_condition&!stealthed.all|!talent.crackshot&target.time_to_die>11&buff.between_the_eyes.up|fight_remains<11
