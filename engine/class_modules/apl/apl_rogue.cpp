@@ -245,7 +245,7 @@ void outlaw( player_t* p )
 
   stealth_cds->add_action( "variable,name=vanish_opportunity_condition,value=talent.fan_the_hammer.rank+talent.quick_draw+talent.audacity<talent.count_the_odds+talent.keep_it_rolling", "Stealth Cooldowns" );
   stealth_cds->add_action( "vanish,if=talent.hidden_opportunity&!talent.crackshot&!buff.audacity.up&(variable.vanish_opportunity_condition|buff.opportunity.stack<buff.opportunity.max_stack)&variable.ambush_condition", "Hidden Opportunity builds without Crackshot use Vanish if Audacity is not active and when under max Opportunity stacks" );
-  stealth_cds->add_action( "vanish,if=(!talent.hidden_opportunity|talent.crackshot)&variable.finish_condition", "Crackshot builds or builds without Hidden Opportunity use Vanish at finish condition" );
+  stealth_cds->add_action( "vanish,if=(!talent.hidden_opportunity|talent.crackshot)&variable.finish_condition&(!talent.underhanded_upper_hand|buff.adrenaline_rush.up)", "Crackshot builds or builds without Hidden Opportunity use Vanish at finish condition and hold for ADR if they have UHUH" );
   stealth_cds->add_action( "shadowmeld,if=variable.finish_condition&!cooldown.vanish.ready", "Crackshot builds use Dance at finish condition" );
 }
 //outlaw_apl_end
