@@ -530,6 +530,9 @@ class CASCObject:
                     print(f"Retrying {url} ...")
                     time.sleep(2**attempt)
                     attempt += 1
+        self.options.parser.error(
+            'Unable to fetch CDN URL file %s (too many retries), aborting ...' %
+            url)
 
     def cache_dir(self, path=None):
         dir = self.options.cache
@@ -564,7 +567,7 @@ class CASCObject:
 
         if not os.path.exists(file):
             handle = self.get_url(url, headers)
-            if handle.status_code < 200 and handle.status_code > 299:
+            if handle.status_code < 200 or handle.status_code > 299:
                 return None, False
 
             return io.BytesIO(handle.content), False
