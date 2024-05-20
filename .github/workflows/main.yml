@@ -158,7 +158,8 @@ jobs:
         compiler: [ clang++-15 ]
         spec: [
             deathknight_blood, deathknight_unholy, deathknight_frost,
-            druid_balance, druid_feral, druid_guardian
+            druid_balance, druid_feral, druid_guardian,
+            Rogue_Assassination, Rogue_Outlaw, Rogue_Subtlety
           ]
         fightstyle: [ singletarget, multitarget, dungeonslice ]
         include:
