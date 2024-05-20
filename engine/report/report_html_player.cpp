@@ -1027,7 +1027,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  "<li><span class=\"label\">trigger_gcd:</span>%.4f</li>\n"
                  "<li><span class=\"label\">gcd_type:</span>%s</li>\n"
                  "<li><span class=\"label\">min_gcd:</span>%.4f</li>\n"
-                 
+
                  "<li><span class=\"label\">cooldown:</span>%.3f</li>\n"
                  "<li><span class=\"label\">cooldown hasted:</span>%s</li>\n"
                  "<li><span class=\"label\">charges:</span>%i</li>\n"
@@ -1072,7 +1072,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
       fmt::print( os, "<li><span class=\"label\">harmful:</span>{}</li>\n",
                   a->harmful ? "true" : "false" );
-      
+
       os << "</ul>\n</div>\n";  // Close details
 
       os << "<div>\n";  // Wrap damage/weapon
@@ -2794,6 +2794,14 @@ void print_html_player_statistics( report::sc_html_stream& os, const player_t& p
         "</div>\n";
 }
 
+// print_html_player_statistics =============================================
+
+void print_html_player_mixin_reports( report::sc_html_stream& os, const player_t& p )
+{
+  for ( const std::unique_ptr<player_report_extension_t> mixin_report : p.mixin_reports )
+    mixin_report->html_customsection( os );
+}
+
 std::string find_matching_decorator( const player_t& p, std::string_view n )
 {
   std::string n_token = util::tokenize_fn( n );
@@ -3742,9 +3750,7 @@ void print_html_player_custom_section( report::sc_html_stream& os, const player_
                                        const player_processed_report_information_t& /*ri*/ )
 {
   if ( p.report_extension )
-  {
     p.report_extension->html_customsection( os );
-  }
 }
 
 // print_html_player ========================================================
@@ -5022,6 +5028,8 @@ void print_html_player_( report::sc_html_stream& os, const player_t& p )
   print_html_player_deaths( os, p, p.report_information );
 
   print_html_player_statistics( os, p, p.report_information );
+
+  print_html_player_mixin_reports( os, p );
 
   print_html_player_action_priority_list( os, p );
 

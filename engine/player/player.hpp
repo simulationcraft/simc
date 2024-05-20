@@ -347,6 +347,7 @@ struct player_t : public actor_t
   bool quiet;
   // Reporting
   std::unique_ptr<player_report_extension_t> report_extension;
+  std::vector<std::unique_ptr<player_report_extension_t>> mixin_reports;
   timespan_t arise_time;
   timespan_t iteration_fight_length;
   timespan_t iteration_waiting_time, iteration_pooling_time;
