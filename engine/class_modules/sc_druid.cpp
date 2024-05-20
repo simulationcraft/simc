@@ -1784,6 +1784,7 @@ public:
 
     if ( ab::harmful )
     {
+      // TODO: confirm what can and cannot consume lunar amplificiation
       if ( dbc::is_school( ab::school, SCHOOL_ARCANE ) && p()->buff.lunar_amplification->can_expire( this ))
       {
         if ( !ab::background )
@@ -2930,77 +2931,69 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   }
 };
 
-// for child actions that do damage based on % of parent action
-struct druid_residual_data_t
-{
-  double total_amount = 0.0;
-
-  void sc_format_to( const druid_residual_data_t& data, fmt::format_context::iterator out )
-  {
-    fmt::format_to( out, "total_amount={}", data.total_amount );
-  }
-};
-
-template <class Base, class Data = druid_residual_data_t>
+template <class Base, bool DOT = false>
 struct druid_residual_action_t : public Base
 {
-  using base_t = druid_residual_action_t<Base, Data>;
-  using state_t = druid_action_state_t<Data>;
+  using base_t = druid_residual_action_t<Base, DOT>;
 
-  double residual_mul = 0.0;
+  double residual_mul = 1.0;
 
   druid_residual_action_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
     : Base( n, p, s, f )
   {
-    Base::background = true;
+    // TODO: determine if these shoule be background as well
+    Base::proc = true;
     Base::round_base_dmg = false;
 
     Base::attack_power_mod.direct = Base::attack_power_mod.tick = 0;
     Base::spell_power_mod.direct = Base::spell_power_mod.tick = 0;
-
-    // 1 point to allow proper snapshot/update flag parsing
-    Base::base_dd_min = Base::base_dd_max = 1.0;
+    Base::weapon_multiplier = 0;
   }
 
-  action_state_t* new_state() override
+  void execute() override
   {
-    return new state_t( this, Base::target );
-  }
+    if constexpr ( DOT )
+    {
+      if ( Base::sim->debug )
+      {
+        Base::sim->print_debug( "Executing periodic residual action: base_td={} residual_mul={}", Base::base_td,
+                                residual_mul );
+      }
+    }
+    else
+    {
+      if ( Base::sim->debug )
+      {
+        Base::sim->print_debug( "Executing direct residual action: base_dd_min={} residual_mul={}", Base::base_dd_min,
+                                residual_mul );
+      }
+    }
 
-  state_t* cast_state( action_state_t* s )
-  {
-    return static_cast<state_t*>( s );
-  }
-
-  const state_t* cast_state( const action_state_t* s ) const
-  {
-    return static_cast<const state_t*>( s );
-  }
-
-  void set_amount( action_state_t* s, double v )
-  {
-    cast_state( s )->total_amount = v;
-  }
-
-  virtual double get_amount( const action_state_t* s ) const
-  {
-    return cast_state( s )->total_amount * residual_mul;
+    Base::execute();
   }
 
   double base_da_min( const action_state_t* s ) const override
   {
-    return get_amount( s );
+    if constexpr ( !DOT )
+      return Base::base_dd_min * residual_mul;
+    else
+      return 0.0;
   }
 
   double base_da_max( const action_state_t* s ) const override
   {
-    return get_amount( s );
+    if constexpr ( !DOT )
+      return Base::base_dd_min * residual_mul;
+    else
+      return 0.0;
   }
 
-  void init() override
+  double base_ta( const action_state_t* s ) const override
   {
-    Base::init();
-    Base::update_flags &= ~( STATE_MUL_TA );
+    if constexpr ( DOT )
+      return Base::base_td * residual_mul;
+    else
+      return 0.0;
   }
 };
 
@@ -3362,8 +3355,7 @@ struct brambles_buff_t : public druid_absorb_buff_t
 
     if ( s && s->action->player && s->action->player != player )
     {
-      damage->base_dd_min = damage->base_dd_max = amount;
-      damage->execute_on_target( s->action->player );
+      damage->execute_on_target( s->action->player, amount );
     }
 
     return amount;
@@ -4795,30 +4787,14 @@ struct rake_t : public use_fluid_form_t<DRUID_FERAL, cat_attack_t>
 // Rip ======================================================================
 struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
 {
-  struct tear_t : public druid_residual_action_t<cat_attack_t>
+  struct tear_t : public druid_residual_action_t<cat_attack_t, true>
   {
     tear_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 391356 ), f )
     {
       name_str_reporting = "tear";
 
-      // Rip and Tear is talent value is the amount over full duration
       residual_mul = p->talent.rip_and_tear->effectN( 1 ).percent() *
                      find_effect( this, A_PERIODIC_DAMAGE ).period() / dot_duration;
-    }
-
-    double base_da_min( const action_state_t* ) const override
-    {
-      return 0.0;
-    }
-
-    double base_da_max( const action_state_t* ) const override
-    {
-      return 0.0;
-    }
-
-    double base_ta( const action_state_t* s ) const override
-    {
-      return get_amount( s );
     }
   };
 
@@ -4872,9 +4848,8 @@ struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
       auto tick_amount = calculate_tick_amount( s, 1.0 );
       auto dot_total = tick_amount * find_dot( s->target )->ticks_left_fractional();
 
-      tear->snapshot_and_execute( s, true, [ this, dot_total ]( const action_state_t*, action_state_t* to ) {
-        tear->set_amount( to, dot_total );
-      } );
+      tear->base_td = dot_total;
+      tear->execute_on_target( s->target );
     }
   }
 
@@ -5241,12 +5216,11 @@ struct incarnation_bear_t : public berserk_bear_base_t
 };
 
 // Brambles Reflect =========================================================
-struct brambles_reflect_t : public bear_attack_t
+struct brambles_reflect_t : public druid_residual_action_t<bear_attack_t>
 {
-  brambles_reflect_t( druid_t* p ) : bear_attack_t( "brambles", p, p->find_spell( 203958 ) )
+  brambles_reflect_t( druid_t* p ) : base_t( "brambles", p, p->find_spell( 203958 ) )
   {
     background = proc = true;
-    base_dd_min = base_dd_max = 1.0;
   }
 };
 
@@ -5310,9 +5284,6 @@ struct ironfur_t : public rage_spender_t<>
     {
       background = proc = split_aoe_damage = true;
       aoe = -1;
-
-      // 1 point to allow proper snapshot/update flag parsing
-      base_dd_min = base_dd_max = 1.0;
     }
 
     double base_da_min( const action_state_t* ) const override
@@ -5808,25 +5779,11 @@ struct after_the_wildfire_heal_t : public druid_heal_t
 };
 
 // Boundless Moonlight Heal =================================================
-struct boundless_moonlight_heal_t : public druid_heal_t
+struct boundless_moonlight_heal_t : public druid_residual_action_t<druid_heal_t>
 {
-  boundless_moonlight_heal_t( druid_t* p )
-    : druid_heal_t( "boundless_moonlight", p, p->find_spell( 425206 ) )
+  boundless_moonlight_heal_t( druid_t* p ) : base_t( "boundless_moonlight", p, p->find_spell( 425206 ) )
   {
     background = proc = true;
-
-    // 1 point to allow proper snapshot/update flag parsing
-    base_dd_min = base_dd_max = 1.0;
-  }
-
-  double base_da_min( const action_state_t* ) const override
-  {
-    return p()->buff.boundless_moonlight_heal->check_value();
-  }
-
-  double base_da_max( const action_state_t* ) const override
-  {
-    return p()->buff.boundless_moonlight_heal->check_value();
   }
 };
 
@@ -5960,25 +5917,11 @@ struct efflorescence_t : public druid_heal_t
 };
 
 // Elune's Favored ==========================================================
-struct elunes_favored_heal_t : public druid_heal_t
+struct elunes_favored_heal_t : public druid_residual_action_t<druid_heal_t>
 {
-  elunes_favored_heal_t( druid_t* p )
-    : druid_heal_t( "elunes_favored", p, p->find_spell( 370602 ) )
+  elunes_favored_heal_t( druid_t* p ) : base_t( "elunes_favored", p, p->find_spell( 370602 ) )
   {
     background = proc = true;
-
-    // 1 point to allow proper snapshot/update flag parsing
-    base_dd_min = base_dd_max = 1.0;
-  }
-
-  double base_da_min( const action_state_t* ) const override
-  {
-    return p()->buff.elunes_favored->check_value();
-  }
-
-  double base_da_max( const action_state_t* ) const override
-  {
-    return p()->buff.elunes_favored->check_value();
   }
 };
 
@@ -7602,30 +7545,27 @@ struct moonfire_t : public druid_spell_t
 };
 
 // Nature's Vigil =============================================================
-template <class Base>
+template <typename Base>
+struct natures_vigil_tick_t : public Base
+{
+  natures_vigil_tick_t( druid_t* p )
+    : Base( "natures_vigil_tick", p, p->find_spell( p->specialization() == DRUID_RESTORATION ? 124988 : 124991 ) )
+  {
+    Base::dual = Base::proc = true;
+  }
+
+  player_t* _get_target( buff_t* b )
+  {
+    if constexpr ( std::is_base_of_v<druid_spell_t, Base> )
+      return b->player->target;
+    else
+      return b->player;
+  }
+};
+
+template <typename Base>
 struct natures_vigil_t : public Base
 {
-  struct natures_vigil_tick_t : public Base
-  {
-    natures_vigil_tick_t( druid_t* p )
-      : Base( "natures_vigil_tick", p, p->find_spell( p->specialization() == DRUID_RESTORATION ? 124988 : 124991 ) )
-    {
-      Base::dual = Base::proc = true;
-
-      // 1 point to allow proper snapshot/update flag parsing
-      Base::base_dd_min = Base::base_dd_max = 1.0;
-    }
-
-    double base_da_min( const action_state_t* ) const override
-    {
-      return Base::p()->buff.natures_vigil->check_value();
-    }
-
-    double base_da_max( const action_state_t* ) const override
-    {
-      return Base::p()->buff.natures_vigil->check_value();
-    }
-  };
 
   DRUID_ABILITY( natures_vigil_t, Base, "natures_vigil", p->talent.natures_vigil )
   {
@@ -7634,13 +7574,13 @@ struct natures_vigil_t : public Base
 
     if ( p->talent.natures_vigil.ok() )
     {
-      auto tick = p->get_secondary_action<natures_vigil_tick_t>( "natures_vigil_tick" );
+      auto tick = p->get_secondary_action<natures_vigil_tick_t<druid_residual_action_t<Base>>>( "natures_vigil_tick" );
       Base::replace_stats( tick );
 
       p->buff.natures_vigil->set_tick_callback( [ tick ]( buff_t* b, int, timespan_t ) {
         if ( b->check_value() )
         {
-          tick->execute();
+          tick->execute_on_target( tick->_get_target( b ), b->check_value() );
           b->current_value = 0;
         }
       } );
@@ -10542,7 +10482,7 @@ void druid_t::create_buffs()
     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
       if ( b->check_value() )
       {
-        active.elunes_favored_heal->execute();
+        active.elunes_favored_heal->execute_on_target( this, b->check_value() );
         b->current_value = 0;
       }
     } );
@@ -10567,13 +10507,7 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
     ->apply_affecting_aura( talent.boundless_moonlight )  // TODO: hidden buff?
-    ->apply_affecting_aura( talent.the_eternal_moon )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      if ( new_ )
-        buff.boundless_moonlight_heal->trigger();
-      else
-        buff.boundless_moonlight_heal->expire();
-    } );
+    ->apply_affecting_aura( talent.the_eternal_moon );
 
   buff.rage_of_the_sleeper =
       make_fallback<rage_of_the_sleeper_buff_t>( talent.rage_of_the_sleeper.ok(), this, "rage_of_the_sleeper" );
@@ -10675,7 +10609,7 @@ void druid_t::create_buffs()
           ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
             if ( b->check_value() )
             {
-              active.boundless_moonlight_heal->execute();
+              active.boundless_moonlight_heal->execute_on_target( this, b->check_value() );
               b->current_value = 0;
             }
           } );
@@ -10726,6 +10660,7 @@ void druid_t::create_buffs()
 
   buff.lunar_amplification =
       make_fallback( talent.lunar_amplification.ok(), this, "lunar_amplification", find_spell( 431250 ) )
+          // TODO: currently uses trigger flags for can_trigger, but this should be checked in a callback
           ->set_trigger_spell( talent.lunar_amplification );
 
   buff.lunar_amplification_starfall = make_fallback( talent.lunar_amplification.ok() && talent.starfall.ok(),
@@ -11714,11 +11649,12 @@ void druid_t::init_special_effects()
         moonless_night_t( druid_t* p ) : base_t( "moonless_night", p, p->find_spell( 400360 ) )
         {
           proc = true;
+
           residual_mul = p->talent.moonless_night->effectN( 1 ).percent();
         }
       };
 
-      moonless_night_t* moonless;
+      action_t* moonless;
 
       moonless_night_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e )
       {
@@ -11738,9 +11674,7 @@ void druid_t::init_special_effects()
 
       void execute( action_t*, action_state_t* s ) override
       {
-        moonless->snapshot_and_execute( s, false, [ this ]( const action_state_t* from, action_state_t* to ) {
-          moonless->set_amount( to, from->result_amount );
-        } );
+        moonless->execute_on_target( s->target, s->result_amount );
       }
     };
 
@@ -11779,6 +11713,13 @@ void druid_t::init_special_effects()
 
     auto cb = new boundless_moonlight_heal_cb_t( this, *driver );
     cb->activate_with_buff( buff.lunar_beam );
+
+    buff.lunar_beam->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        buff.boundless_moonlight_heal->trigger();
+      else
+        buff.boundless_moonlight_heal->expire();
+    } );
   }
 
   if ( talent.implant.ok() && active.bloodseeker_vines )
