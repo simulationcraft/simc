@@ -3737,14 +3737,20 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
         sim->print_debug( "{} damage buff crit chance multiplier initialized to {}", *this, crit_chance_mod.multiplier );
       }
     }
+    else if ( e.subtype() == A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS )
+    {
+      assert( crit_chance_mod.multiplier == 1.0 && crit_chance_mod.effect_idx == 0 && "Crit chance multiplier has already been set" );
+      set_crit_chance_mod( spell, idx, multiplier );
+      sim->print_debug( "{} damage debuff crit chance multiplier initialized to {}", *this, crit_chance_mod.multiplier );
+    }
     else if ( e.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS )
     {
       assert( direct_mod.multiplier == 1.0 && direct_mod.effect_idx == 0 && "Direct multiplier has already been set" );
       assert( periodic_mod.multiplier == 1.0 && periodic_mod.effect_idx == 0 && "Periodic multiplier has already been set" );
       set_direct_mod( spell, idx, multiplier );
       set_periodic_mod( spell, idx, multiplier );
-      sim->print_debug( "{} damage buff direct multiplier initialized to {}", *this, direct_mod.multiplier );
-      sim->print_debug( "{} damage buff periodic multiplier initialized to {}", *this, periodic_mod.multiplier );
+      sim->print_debug( "{} damage debuff direct multiplier initialized to {}", *this, direct_mod.multiplier );
+      sim->print_debug( "{} damage debuff periodic multiplier initialized to {}", *this, periodic_mod.multiplier );
     }
     else if ( e.subtype() == A_ADD_PCT_LABEL_MODIFIER )
     {

@@ -594,7 +594,7 @@ public:
     const spell_data_t* fatebound_coin_tails;
     const spell_data_t* fatebound_lucky_coin_buff;
     const spell_data_t* fatebound_fate_intertwined;
-    const spell_data_t* fazed;
+    const spell_data_t* fazed_debuff;
     const spell_data_t* flawless_form_buff;
     const spell_data_t* unseen_blade;
 
@@ -1607,6 +1607,8 @@ public:
     bool deathmark = false;             // Tuning Aura
     bool deepening_shadows = false;     // Trigger
     bool dragon_tempered_blades = false;// Proc Reduction
+    bool fazed_damage = false;
+    bool fazed_crit = false;
     bool flagellation = false;
     bool ghostly_strike = false;
     bool goremaws_bite = false;         // Cost Reduction
@@ -1725,20 +1727,19 @@ public:
 
     // Dynamically affected flags
     // Special things like CP, Energy, Crit, etc.
-    affected_by.shadow_blades_cp = ab::data().affected_by( p->talent.subtlety.shadow_blades->effectN( 2 ) ) ||
-      ab::data().affected_by( p->talent.subtlety.shadow_blades->effectN( 3 ) ) ||
-      ab::data().affected_by( p->talent.subtlety.shadow_blades->effectN( 4 ) );
-    affected_by.adrenaline_rush_gcd = ab::data().affected_by( p->talent.outlaw.adrenaline_rush->effectN( 3 ) );
-    
-    affected_by.broadside_cp = ab::data().affected_by( p->spec.broadside->effectN( 1 ) ) ||
-      ab::data().affected_by( p->spec.broadside->effectN( 2 ) ) ||
-      ab::data().affected_by( p->spec.broadside->effectN( 3 ) );
-
-    affected_by.audacity = ab::data().affected_by( p->spec.audacity_buff->effectN( 1 ) );
-    affected_by.blindside = ab::data().affected_by( p->spec.blindside_buff->effectN( 1 ) );
-    affected_by.danse_macabre = ab::data().affected_by( p->spec.danse_macabre_buff->effectN( 1 ) );
     affected_by.improved_ambush = ab::data().affected_by( p->talent.rogue.improved_ambush->effectN( 1 ) );
+
+    // Hero Talents
+    if ( p->talent.trickster.unseen_blade->ok() )
+    {
+      affected_by.fazed_damage = ab::data().affected_by( p->spell.fazed_debuff->effectN( 1 ) );
+      affected_by.fazed_crit = ab::data().affected_by( p->spell.fazed_debuff->effectN( 4 ) );
+    }
+    
+    // Assassination
+    affected_by.blindside = ab::data().affected_by( p->spec.blindside_buff->effectN( 1 ) );
     affected_by.master_assassin = ab::data().affected_by( p->spec.master_assassin_buff->effectN( 1 ) );
+
     affected_by.improved_shiv =
       ( p->talent.assassination.improved_shiv->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 1 ) ) ) ||
       ( p->talent.assassination.arterial_precision->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 3 ) ) );
@@ -1779,10 +1780,26 @@ public:
       affected_by.dragon_tempered_blades = ab::data().affected_by( p->talent.assassination.dragon_tempered_blades->effectN( 2 ) );
     }
 
+    // Outlaw
+    affected_by.adrenaline_rush_gcd = ab::data().affected_by( p->talent.outlaw.adrenaline_rush->effectN( 3 ) );
+
+    affected_by.broadside_cp = ( ab::data().affected_by( p->spec.broadside->effectN( 1 ) ) ||
+                                 ab::data().affected_by( p->spec.broadside->effectN( 2 ) ) ||
+                                 ab::data().affected_by( p->spec.broadside->effectN( 3 ) ) );
+
+    affected_by.audacity = ab::data().affected_by( p->spec.audacity_buff->effectN( 1 ) );
+
     if ( p->talent.outlaw.ghostly_strike->ok() )
     {
       affected_by.ghostly_strike = ab::data().affected_by( p->talent.outlaw.ghostly_strike->effectN( 3 ) );
     }
+
+    // Subtlety
+    affected_by.shadow_blades_cp = ( ab::data().affected_by( p->talent.subtlety.shadow_blades->effectN( 2 ) ) ||
+                                     ab::data().affected_by( p->talent.subtlety.shadow_blades->effectN( 3 ) ) ||
+                                     ab::data().affected_by( p->talent.subtlety.shadow_blades->effectN( 4 ) ) );
+
+    affected_by.danse_macabre = ab::data().affected_by( p->spec.danse_macabre_buff->effectN( 1 ) );
 
     if ( p->talent.subtlety.sepsis->ok() && p->spec.sepsis_buff->ok() )
     {
@@ -1794,6 +1811,7 @@ public:
       affected_by.goremaws_bite = ab::data().affected_by( p->spec.goremaws_bite_buff->effectN( 2 ) );
     }
 
+    // Set Bonuses
     if ( p->set_bonuses.t29_assassination_2pc->ok() )
     {
       affected_by.t29_assassination_2pc = ab::data().affected_by( p->spec.envenom->effectN( 7 ) );
@@ -2385,7 +2403,24 @@ public:
       m *= 1.0 + tdata->debuffs.ghostly_strike->stack_value();
     }
 
+    if ( affected_by.fazed_damage )
+    {
+      m *= 1.0 + tdata->debuffs.fazed->value_direct();
+    }
+
     return m;
+  }
+
+  double composite_target_crit_chance( player_t* target ) const override
+  {
+    double c = ab::composite_target_crit_chance( target );
+
+    if ( affected_by.fazed_crit && td( target )->debuffs.fazed->check() )
+    {
+      c += td( target )->debuffs.fazed->value_crit_chance();
+    }
+
+    return c;
   }
 
   double composite_crit_chance() const override
@@ -4498,7 +4533,12 @@ struct feint_t : public rogue_attack_t
   feint_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ):
     rogue_attack_t( name, p, p->spell.feint, options_str )
   {
-    energize_amount = p->talent.trickster.unseen_blade->effectN( 1 ).base_value();
+    if ( p->talent.trickster.unseen_blade->ok() )
+    {
+      energize_type = action_energize::ON_CAST;
+      energize_resource = RESOURCE_COMBO_POINT;
+      energize_amount = p->talent.trickster.unseen_blade->effectN( 1 ).base_value();
+    }
   }
 
   void execute() override
@@ -5223,6 +5263,11 @@ struct rupture_t : public rogue_attack_t
       add_child( secondary_trigger_type == secondary_trigger::DEATHMARK ?
                  p()->active.sanguine_blades.deathmark_rupture :
                  p()->active.sanguine_blades.rupture );
+    }
+
+    if ( !is_secondary_action() && p()->talent.assassination.serrated_bone_spike->ok() )
+    {
+      add_child( p()->active.serrated_bone_spike );
     }
   }
 
@@ -6899,7 +6944,7 @@ struct fate_intertwined_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spell.fatebound_fate_intertwined )
   {
     base_dd_min = base_dd_max = 1;
-    aoe = p->talent.fatebound.fate_intertwined->effectN( 2 ).base_value();
+    aoe = as<int>( p->talent.fatebound.fate_intertwined->effectN( 2 ).base_value() );
     radius = data().effectN( 1 ).radius();
   }
 
@@ -9161,7 +9206,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     ->set_period( timespan_t::zero() )
     ->set_cooldown( timespan_t::zero() );
 
-  debuffs.fazed = make_buff<damage_buff_t>( *this, "fazed", source->spell.fazed )
+  debuffs.fazed = make_buff<damage_buff_t>( *this, "fazed", source->spell.fazed_debuff )
     ->apply_affecting_aura( source->talent.trickster.surprising_strikes );
 
   // Type-Based Tracking for Accumulators
@@ -9177,7 +9222,9 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   // Venomous Wounds Energy Refund
   if ( source->talent.assassination.venomous_wounds->ok() )
   {
-    target->register_on_demise_callback( source, [source](player_t* target) { source->trigger_venomous_wounds_death( target ); } );
+    target->register_on_demise_callback( source, [ source ]( player_t* target ) { 
+      source->trigger_venomous_wounds_death( target );
+    } );
   }
 
   // Sepsis Cooldown Reduction
@@ -9197,15 +9244,14 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
       if ( dots.serrated_bone_spike->is_ticking() )
       {
-        double refund_max = source->cooldowns.serrated_bone_spike->charges - source->cooldowns.serrated_bone_spike->charges_fractional();
-        if ( refund_max > 1 )
+        if ( source->buffs.serrated_bone_spike_charges->check() < source->buffs.serrated_bone_spike_charges->max_stack() - 1 )
           source->procs.serrated_bone_spike_refund->occur();
-        else if ( refund_max <= 0 )
+        else if ( source->buffs.serrated_bone_spike_charges->at_max_stacks() )
           source->procs.serrated_bone_spike_waste->occur();
         else
           source->procs.serrated_bone_spike_waste_partial->occur();
 
-        source->cooldowns.serrated_bone_spike->reset( false, 1 );
+        source->buffs.serrated_bone_spike_charges->trigger();
       }
     } );
   }
@@ -10573,7 +10619,7 @@ void rogue_t::init_spells()
   spell.cloud_cover_distract = talent.trickster.cloud_cover->ok() ? find_spell( as<unsigned>( talent.trickster.cloud_cover->effectN( 1 ).base_value() ) ) : spell_data_t::not_found();
   spell.escalating_blade_buff = talent.trickster.coup_de_grace->ok() ? find_spell( 441786 ) : spell_data_t::not_found();
   spell.unseen_blade = talent.trickster.unseen_blade->ok() ? find_spell( 441144 ) : spell_data_t::not_found();
-  spell.fazed = talent.trickster.unseen_blade->ok() ? find_spell( 441224 ) : spell_data_t::not_found();
+  spell.fazed_debuff = talent.trickster.unseen_blade->ok() ? find_spell( 441224 ) : spell_data_t::not_found();
   spell.flawless_form_buff = ( talent.trickster.flawless_form->ok() || talent.trickster.coup_de_grace->ok() ) ? find_spell( 441326 ) : spell_data_t::not_found();
 
   // Spec Background Spells

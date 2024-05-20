@@ -3505,7 +3505,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
 
     if ( damage_buff )
     {
-      if ( damage_buff->is_stacking )
+      if ( damage_buff->is_stacking && damage_buff->max_stack() > 1 )
       {
         os.printf( "<h4>Damage Modifiers</h4>\n"
                   "<ul>\n"
