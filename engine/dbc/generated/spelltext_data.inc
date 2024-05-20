@@ -1,5 +1,5 @@
-// Spell text, wow build 10.2.7.54673
-static const std::array<spelltext_data_t, 21154> __spelltext_data { {
+// Spell text, wow build 10.2.7.54762
+static const std::array<spelltext_data_t, 21159> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -8349,6 +8349,9 @@ static const std::array<spelltext_data_t, 21154> __spelltext_data { {
   { 238220, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238221, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238222, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
+  { 238227, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
+  { 238228, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
+  { 238229, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238230, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238231, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238232, "Create a class set item appropriate for your Loot Specialization ($@lootspec).", 0, 0 },
@@ -8378,6 +8381,8 @@ static const std::array<spelltext_data_t, 21154> __spelltext_data { {
   { 238283, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238284, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238285, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
+  { 238286, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
+  { 238287, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238288, "Create a class set item appropriate for your Loot Specialization ($@lootspec).", 0, 0 },
   { 238289, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238292, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
@@ -20827,7 +20832,7 @@ static const std::array<spelltext_data_t, 21154> __spelltext_data { {
   { 429257, "Draw a set of aqueous spheres towards you that envelop you on contact, increasing your Mastery by $429262s1 for $429262d, stacking up to $429262u times.", 0, 0 },
   { 429262, "$@spelldesc429257", "Mastery increased by $s1.", 0 },
   { 429267, "Taking damage has a chance to call Xeri'tac's brood to your aid, attacking your foes and covering you in protective webbing which absorbs $s1 damage.", 0, 0 },
-  { 429270, "Your attacks consume $s1% of your active absorb shield to inflict Arcane damage equal to the amount consumed. ($proccooldown Sec Cooldown)", 0, 0 },
+  { 429270, "Your attacks consume $s1 of your absorb shield to inflict Arcane damage equal to the amount consumed. ($proccooldown Sec Cooldown)", 0, 0 },
   { 429271, "Envelop an ally in ancient protection, absorbing up to $s1 damage. If the protection is fully consumed, the ally gains an ancient resurgence, increasing Versatility by $429272s1 for $429272d.", "Absorbs $w1 damage.", 0 },
   { 429272, "$@spelldesc429271", "Versatility increased by $s1.", 0 },
   { 429273, "$@spelldesc429270", 0, 0 },
@@ -20836,7 +20841,7 @@ static const std::array<spelltext_data_t, 21154> __spelltext_data { {
   { 429377, "$@spelldesc429378", 0, 0 },
   { 429378, "When you attack an enemy beneath $s2% health you will attempt to Slay them, inflicting Shadow damage equal to $s3% of your maximum health.\r\n\r\nYou will only attempt to Slay an enemy once.", 0, 0 },
   { 429379, 0, "You have attempted to $@spellname429379 this enemy.", 0 },
-  { 429389, "While you are above $s1% health, your attacks consume $s2% of your maximum health to inflict Holy damage equal to the amount consumed. ($proccooldown Sec Cooldown)", 0, 0 },
+  { 429389, "While you are above $s1% health, your attacks consume $s2 health to inflict Holy damage equal to the amount consumed. ($proccooldown Sec Cooldown)", 0, 0 },
   { 429409, "$@spelldesc429389", 0, 0 },
   { 429410, "Slaying an enemy causes you to erupt, inflicting $s1 Fire damage to enemies and restoring $s2 health to allies within $429412A1 yards.", 0, 0 },
   { 429412, "$@spelldesc429410", 0, 0 },
@@ -21017,7 +21022,7 @@ static const std::array<spelltext_data_t, 21154> __spelltext_data { {
   { 436566, 0, "Every $436565t1 sec build a charge of Hailstorm. Upon reaching $436566u stacks, unleash hail on enemies within $436567A1 yards.", 0 },
   { 436573, "Your abilities have a chance to grant up to $436574i allies a shield absorbing $s1 damage, split evenly, and inflict Numbing Cold to all enemies within $436574A1 yards.\r\n\r\n$@spellicon436576 $@spellname436576\r\n$@spelldesc436576", 0, 0 },
   { 436576, "Reduces movement speed by $s1% and reduces damage dealt by $s2%. Attacking removes a stack of Numbing Cold.", 0, 0 },
-  { 436578, "Your abilities apply Brittle to enemies, accruing 10% of damage you deal. When a Brittle enemy is slain, it explodes, inflicting Frost damage to enemies within 12 yards.", 0, 0 },
+  { 436578, "Your abilities apply Brittle to enemies, accruing $s1% of damage you deal. When a Brittle enemy is slain, it explodes, inflicting Frost damage to enemies within 12 yards, divided evenly.", 0, 0 },
   { 436583, "Every $t1 sec, gain $u% $pri for every $s1% health you've lost.", 0, 0 },
   { 436586, "$s1% of your healing is collected on allies as Searing Light. After $439349d, Searing Light is consumed to heal your ally and inflict Holy damage to all enemies within $436587A1 yards.", 0, 0 },
   { 436587, "$@spelldesc436586", 0, 0 },
@@ -21124,7 +21129,7 @@ static const std::array<spelltext_data_t, 21154> __spelltext_data { {
   { 443663, "Store $s1 Static Charge every $t1 sec. Moving releases the Static Charge healing allies or damaging enemies, $s2 in total, preferring injured allies. Enemies suffer damage equal to the Static Charge and allies are healed for $s3% of the Static Charge.", 0, 0 },
   { 443770, "Your movement speed is increased by $s2% and you have immunity to falling damage. Your abilities have a chance to increase your party's Haste by $s1 for $443771d.", 0, 0 },
   { 443771, "$@spelldesc443471", "Haste increased by $w1.", 0 },
-  { 443772, "Casting your major class cooldown causes you to overload, inflicting $s1 Nature damage and stunning enemies within $443796A1 yards for $443796d.", 0, 0 },
+  { 443772, "Casting your major class cooldown causes you to overload, inflicting $s1 Nature damage and stunning enemies within $443796A1 yards for $443796d. ($proccooldown Sec Cooldown)", 0, 0 },
   { 443796, "$@spelldesc443772", 0, 0 },
   { 443855, "Your Leech is increased by $s1%. Grant $s1% of your Leech to your party.", 0, 0 },
   { 443931, "$@spelldesc431777", 0, 0 },
@@ -21156,11 +21161,11 @@ static const std::array<spelltext_data_t, 21154> __spelltext_data { {
   { 453445, "$@spelldesc429007", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.7.54673
+// spelltext hotfix entries, wow build 10.2.7.54762
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.2.7.54673
+// Spell description variables, wow build 10.2.7.54762
 static const std::array<spelldesc_vars_data_t, 450> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -21614,7 +21619,7 @@ static const std::array<spelldesc_vars_data_t, 450> __spelldesc_vars_data { {
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.7.54673
+// spelldesc_vars hotfix entries, wow build 10.2.7.54762
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
