@@ -271,8 +271,6 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) : QTabWidget( parent ), ma
   connect( choice.update_check, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.boss_type, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.tank_dummy, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
-  connect( choice.tmi_window, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
-  connect( choice.show_etmi, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.deterministic_rng, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.fight_length, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.fight_style, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
@@ -396,10 +394,6 @@ void SC_OptionsTab::createGlobalsTab()
       choice.boss_type = createChoice( 3, "Custom", "Fluffy Pillow", "Tank Dummy" ) );
   globalsLayout_middle->addRow( tr( "Tank Dummy" ),
                                 choice.tank_dummy = createChoice( 5, "None", "Weak", "Dungeon", "Raid", "Mythic" ) );
-  globalsLayout_middle->addRow( tr( "TMI Window (sec)" ), choice.tmi_window = createChoice(
-                                                              10, "0", "2", "3", "4", "5", "6", "7", "8", "9", "10" ) );
-  globalsLayout_middle->addRow( tr( "Show ETMI" ),
-                                choice.show_etmi = createChoice( 2, "Only when in group", "Always" ) );
 
   QGroupBox* globalsGroupBox_middle = new QGroupBox( tr( "Target and Tanking Options" ) );
   globalsGroupBox_middle->setLayout( globalsLayout_middle );
@@ -855,8 +849,6 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "boss_type", choice.boss_type, "Custom" );
   load_setting( settings, "pvp_mode", choice.pvp_mode, "Disable" );
   load_setting( settings, "tank_dummy", choice.tank_dummy, "None" );
-  load_setting( settings, "tmi_window_global", choice.tmi_window, "6" );
-  load_setting( settings, "show_etmi", choice.show_etmi );
   load_setting( settings, "world_lag", choice.world_lag, "Medium - 100 ms" );
   load_setting( settings, "api_client_id", api_client_id );
   load_setting( settings, "api_client_secret", api_client_secret );
@@ -949,8 +941,6 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "default_role", choice.default_role->currentText() );
   settings.setValue( "boss_type", choice.boss_type->currentText() );
   settings.setValue( "tank_dummy", choice.tank_dummy->currentText() );
-  settings.setValue( "tmi_window_global", choice.tmi_window->currentText() );
-  settings.setValue( "show_etmi", choice.show_etmi->currentText() );
   settings.setValue( "world_lag", choice.world_lag->currentText() );
   settings.setValue( "api_client_id", api_client_id->text() );
   settings.setValue( "api_client_secret", api_client_secret->text() );
@@ -1092,16 +1082,6 @@ void SC_OptionsTab::createToolTips()
       tr( "If \"Tank Dummy\" is chosen above, this drop-down selects the type of tank dummy used.\n"
           "Leaving at *None* will default back to a Fluffy Pillow." ) );
 
-  choice.tmi_window->setToolTip(
-      tr( "Specify window duration for calculating TMI. Default is 6 sec.\n"
-          "Reducing this increases the metric's sensitivity to shorter damage spikes.\n"
-          "Set to 0 if you want to vary on a per-player basis in the Simulate tab using \"tmi_window=#\"." ) );
-
-  choice.show_etmi->setToolTip(
-      tr( "Controls when ETMI is displayed in the HTML report.\n"
-          "TMI only includes damage taken and self-healing/absorbs, and treats overhealing as effective healing.\n"
-          "ETMI includes all sources of healing and absorption, and ignores overhealing." ) );
-
   choice.report_pets->setToolTip( tr( "Specify if pets get reported separately in detail." ) );
 
   choice.statistics_level->setToolTip(
@@ -1213,12 +1193,6 @@ QString SC_OptionsTab::get_globalSettings()
 
   if ( choice.challenge_mode->currentIndex() > 0 )
     options += "challenge_mode=1\n";
-
-  if ( choice.show_etmi->currentIndex() != 0 )
-    options += "show_etmi=1\n";
-
-  if ( choice.tmi_window->currentIndex() != 0 )
-    options += "tmi_window_global=" + choice.tmi_window->currentText() + "\n";
 
   // choice.boss_type controls what type of enemy is spawned
   // TMI Bosses and Tank Dummies have special module commands, and skip some settings (target_level & _race)
