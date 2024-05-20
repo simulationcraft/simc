@@ -1,4 +1,4 @@
-SimulationCraft 1027-01 for World of Warcraft 10.2.7.54673 Live
+SimulationCraft 1027-01 for World of Warcraft 10.2.7.54762 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -409,7 +409,6 @@ Description      : Stuns the target for $d.
 Tooltip          : Stunned.
 
 Name             : Vanish (id=1856) [Spell Family (8)] 
-Hotfixed         : Required Level (23 -> 17)
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
