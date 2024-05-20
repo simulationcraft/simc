@@ -2798,7 +2798,7 @@ void print_html_player_statistics( report::sc_html_stream& os, const player_t& p
 
 void print_html_player_mixin_reports( report::sc_html_stream& os, const player_t& p )
 {
-  for ( const std::unique_ptr<player_report_extension_t> mixin_report : p.mixin_reports )
+  for ( const std::unique_ptr<player_report_extension_t> &mixin_report : p.mixin_reports )
     mixin_report->html_customsection( os );
 }
 

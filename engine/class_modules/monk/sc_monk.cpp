@@ -446,9 +446,9 @@ void monk_action_t<Base>::trigger_shuffle( double time_extension )
       if ( p()->shuffle_count_secs >= quick_sip_seconds )
       {
         // Reduce stagger damage
-        double percent = p()->talent.brewmaster.quick_sip->effectN( 1 ).percent();
-        double cleared = p()->stagger->purify_percent( percent );
-        p()->stagger->add_sample( "quick_sip", cleared );
+        // double percent = p()->talent.brewmaster.quick_sip->effectN( 1 ).percent();
+        // double cleared = p()->stagger->purify_percent( percent );
+        // p()->stagger->add_sample( "quick_sip", cleared );
         p()->proc.quick_sip->occur();
 
         p()->shuffle_count_secs -= quick_sip_seconds;
@@ -1133,10 +1133,10 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
   {
     snapshot_stats_t::execute();
 
-    auto *monk                                              = debug_cast<monk_t *>( player );
-    monk->stagger->sample_data->buffed_base_value           = monk->stagger->base_value();
-    monk->stagger->sample_data->buffed_percent_player_level = monk->stagger->percent( monk->level() );
-    monk->stagger->sample_data->buffed_percent_target_level = monk->stagger->percent( target->level() );
+    // auto *monk                                              = debug_cast<monk_t *>( player );
+    // monk->stagger->sample_data->buffed_base_value           = monk->stagger->base_value();
+    // monk->stagger->sample_data->buffed_percent_player_level = monk->stagger->percent( monk->level() );
+    // monk->stagger->sample_data->buffed_percent_target_level = monk->stagger->percent( target->level() );
   }
 };
 
@@ -2293,10 +2293,10 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     if ( p()->talent.brewmaster.staggering_strikes->ok() )
     {
-      auto ap = s->composite_attack_power();
-      double cleared =
-          p()->stagger->purify_flat( ap * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() );
-      p()->stagger->add_sample( "staggering_strikes", cleared );
+      // auto ap = s->composite_attack_power();
+      // double cleared =
+      //     p()->stagger->purify_flat( ap * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() );
+      // p()->stagger->add_sample( "staggering_strikes", cleared );
     }
 
     // Martial Mixture triggers from each BoK impact
@@ -3627,8 +3627,8 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     if ( p()->spec.stagger->ok() )
     {
-      double cleared = p()->stagger->purify_flat( amount * p()->spec.touch_of_death_3_brm->effectN( 1 ).percent() );
-      p()->stagger->add_sample( "touch_of_death", cleared );
+      // double cleared = p()->stagger->purify_flat( amount * p()->spec.touch_of_death_3_brm->effectN( 1 ).percent() );
+      // p()->stagger->add_sample( "touch_of_death", cleared );
     }
   }
 };
@@ -4240,8 +4240,8 @@ struct breath_of_fire_t : public monk_spell_t
     {
       // Currently value is saved as 100% and each of the values is a divisable of 33%
       // TODO: Use parse_effect
-      double bof_stagger_bonus = p()->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent();
-      am *= 1.0 + ( p()->stagger->level_index() / 3.0 ) * bof_stagger_bonus;
+      // double bof_stagger_bonus = p()->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent();
+      // am *= 1.0 + ( p()->stagger->level_index() / 3.0 ) * bof_stagger_bonus;
     }
 
     return am;
@@ -4437,11 +4437,11 @@ struct purifying_brew_t : public monk_spell_t
     cooldown->duration *= 1 + p.talent.brewmaster.light_brewing->effectN( 2 ).percent();  // -20
   }
 
-  bool ready() override
-  {
-    // Irrealistic of in-game, but let's make sure stagger is actually present
-    return p()->stagger->is_ticking();
-  }
+  // bool ready() override
+  // {
+  //   // Irrealistic of in-game, but let's make sure stagger is actually present
+  //   return p()->stagger->is_ticking();
+  // }
 
   void execute() override
   {
@@ -4459,8 +4459,8 @@ struct purifying_brew_t : public monk_spell_t
 
     if ( p()->buff.blackout_combo->up() )
     {
-      timespan_t delay = timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() );
-      p()->stagger->delay_tick( delay );
+      // timespan_t delay = timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() );
+      // p()->stagger->delay_tick( delay );
       p()->proc.blackout_combo_purifying_brew->occur();
       p()->buff.blackout_combo->expire();
     }
@@ -4473,20 +4473,20 @@ struct purifying_brew_t : public monk_spell_t
     }
 
     // Reduce stagger damage
-    auto purifying_percent = data().effectN( 1 ).percent();
-    purifying_percent +=
-        p()->buff.brewmasters_rhythm->stack() * p()->sets->set( MONK_BREWMASTER, T29, B4 )->effectN( 1 ).percent();
+    // auto purifying_percent = data().effectN( 1 ).percent();
+    // purifying_percent +=
+    //     p()->buff.brewmasters_rhythm->stack() * p()->sets->set( MONK_BREWMASTER, T29, B4 )->effectN( 1 ).percent();
 
-    double cleared = p()->stagger->purify_percent( purifying_percent );
-    p()->stagger->add_sample( "purifying_brew", cleared );
-    p()->buff.recent_purifies->trigger( 1, cleared );
+    // double cleared = p()->stagger->purify_percent( purifying_percent );
+    // p()->stagger->add_sample( "purifying_brew", cleared );
+    // p()->buff.recent_purifies->trigger( 1, cleared );
 
     if ( p()->talent.brewmaster.gai_plins_imperial_brew->ok() )
     {
-      auto healed           = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
-      gai_plin->base_dd_min = gai_plin->base_dd_max = healed;
-      gai_plin->target                              = p();
-      gai_plin->execute();
+      // auto healed           = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
+      // gai_plin->base_dd_min = gai_plin->base_dd_max = healed;
+      // gai_plin->target                              = p();
+      // gai_plin->execute();
     }
   }
 };
@@ -5535,9 +5535,9 @@ struct gift_of_the_ox_t : public monk_heal_t
     if ( p()->talent.brewmaster.tranquil_spirit->ok() )
     {
       // Reduce stagger damage
-      double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
-      double cleared = p()->stagger->purify_percent( percent );
-      p()->stagger->add_sample( "tranquil_spirit_gift_of_the_ox", cleared );
+      // double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
+      // double cleared = p()->stagger->purify_percent( percent );
+      // p()->stagger->add_sample( "tranquil_spirit_gift_of_the_ox", cleared );
       p()->proc.tranquil_spirit_goto->occur();
     }
   }
@@ -5674,9 +5674,9 @@ struct expel_harm_t : public monk_heal_t
     if ( p()->talent.brewmaster.tranquil_spirit->ok() )
     {
       // Reduce stagger damage
-      double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
-      double cleared = p()->stagger->purify_percent( percent );
-      p()->stagger->add_sample( "tranquil_spirit_expel_harm", cleared );
+      // double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
+      // double cleared = p()->stagger->purify_percent( percent );
+      // p()->stagger->add_sample( "tranquil_spirit_expel_harm", cleared );
       p()->proc.tranquil_spirit_expel_harm->occur();
     }
   }
@@ -6906,8 +6906,7 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     passives(),
     rppm(),
     pets( this ),
-    user_options( options_t() ),
-    stagger( nullptr )
+    user_options( options_t() )
 {
   // actives
   windwalking_aura = nullptr;
@@ -7308,13 +7307,13 @@ void monk_t::collect_resource_timeline_information()
 {
   base_t::collect_resource_timeline_information();
 
-  sim->print_debug(
-      "{} current pool statistics pool_size={} pool_size_percent={} tick_size={} tick_size_percent={} cap={}", name(),
-      stagger->pool_size(), stagger->pool_size_percent(), stagger->tick_size(), stagger->tick_size_percent(),
-      resources.max[ RESOURCE_HEALTH ] );
-  stagger->sample_data->pool_size.add( sim->current_time(), stagger->pool_size() );
-  stagger->sample_data->pool_size_percent.add( sim->current_time(), stagger->pool_size_percent() );
-  stagger->sample_data->effectiveness.add( sim->current_time(), stagger->percent( target->level() ) );
+  // sim->print_debug(
+  //     "{} current pool statistics pool_size={} pool_size_percent={} tick_size={} tick_size_percent={} cap={}",
+  //     name(), stagger->pool_size(), stagger->pool_size_percent(), stagger->tick_size(), stagger->tick_size_percent(),
+  //     resources.max[ RESOURCE_HEALTH ] );
+  // stagger->sample_data->pool_size.add( sim->current_time(), stagger->pool_size() );
+  // stagger->sample_data->pool_size_percent.add( sim->current_time(), stagger->pool_size_percent() );
+  // stagger->sample_data->effectiveness.add( sim->current_time(), stagger->percent( target->level() ) );
 }
 
 bool monk_t::validate_fight_style( fight_style_e style ) const
@@ -8496,7 +8495,7 @@ void monk_t::create_buffs()
   buff.blackout_reinforcement =
       new buffs::blackout_reinforcement_t( *this, "blackout_reinforcement", find_spell( 424454 ) );
 
-  stagger = new stagger_t( this );
+  // stagger = new stagger_t( this );
 
   // ------------------------------
   // Movement
@@ -9386,9 +9385,9 @@ stat_e monk_t::convert_hybrid_stat( stat_e s ) const
 
 void monk_t::pre_analyze_hook()
 {
-  stagger->sample_data->pool_size.adjust( *sim );
-  stagger->sample_data->pool_size_percent.adjust( *sim );
-  stagger->sample_data->effectiveness.adjust( *sim );
+  // stagger->sample_data->pool_size.adjust( *sim );
+  // stagger->sample_data->pool_size_percent.adjust( *sim );
+  // stagger->sample_data->effectiveness.adjust( *sim );
 
   base_t::pre_analyze_hook();
 }
@@ -9446,8 +9445,8 @@ void monk_t::combat_begin()
     }
   }
 
-  if ( specialization() == MONK_BREWMASTER )
-    stagger->current->debuff->trigger();
+  // if ( specialization() == MONK_BREWMASTER )
+  //   stagger->current->debuff->trigger();
 
   // Melee Squirm
   // Periodic 1 YD movement to simulate combat movement
@@ -9616,8 +9615,8 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_t
 {
   base_t::assess_damage_imminent_pre_absorb( school, dtype, s );
 
-  if ( specialization() == MONK_BREWMASTER )
-    stagger->trigger( school, dtype, s );
+  // if ( specialization() == MONK_BREWMASTER )
+  //   stagger->trigger( school, dtype, s );
 }
 
 // monk_t::assess_heal ===================================================
@@ -9831,31 +9830,31 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
 std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
 {
   auto splits = util::string_split<util::string_view>( name_str, "." );
-  if ( splits.size() == 2 && splits[ 0 ] == "stagger" )
-  {
-    if ( splits[ 1 ] == "none" )
-      return make_fn_expr( name_str, [ this ] { return stagger->current_level() == stagger_t::NONE_STAGGER; } );
-    if ( splits[ 1 ] == "light" )
-      return make_fn_expr( name_str, [ this ] { return stagger->current_level() == stagger_t::LIGHT_STAGGER; } );
-    else if ( splits[ 1 ] == "moderate" )
-      return make_fn_expr( name_str, [ this ] { return stagger->current_level() == stagger_t::MODERATE_STAGGER; } );
-    else if ( splits[ 1 ] == "heavy" )
-      return make_fn_expr( name_str, [ this ] { return stagger->current_level() == stagger_t::HEAVY_STAGGER; } );
-    else if ( splits[ 1 ] == "amount" )
-      return make_fn_expr( name_str, [ this ] { return stagger->tick_size(); } );
-    else if ( splits[ 1 ] == "pct" )
-      return make_fn_expr( name_str, [ this ] { return stagger->tick_size_percent(); } );
-    else if ( splits[ 1 ] == "amounttotalpct" )
-      return make_fn_expr( name_str, [ this ] { return stagger->pool_size_percent() * 100.0; } );
-    else if ( splits[ 1 ] == "remains" )
-      return make_fn_expr( name_str, [ this ] { return stagger->remains(); } );
-    else if ( splits[ 1 ] == "amount_remains" )
-      return make_fn_expr( name_str, [ this ] { return stagger->pool_size(); } );
-    else if ( splits[ 1 ] == "ticking" )
-      return make_fn_expr( name_str, [ this ] { return stagger->is_ticking(); } );
-  }
+  // if ( splits.size() == 2 && splits[ 0 ] == "stagger" )
+  // {
+  //   if ( splits[ 1 ] == "none" )
+  //     return make_fn_expr( name_str, [ this ] { return stagger->current_level() == stagger_t::NONE_STAGGER; } );
+  //   if ( splits[ 1 ] == "light" )
+  //     return make_fn_expr( name_str, [ this ] { return stagger->current_level() == stagger_t::LIGHT_STAGGER; } );
+  //   else if ( splits[ 1 ] == "moderate" )
+  //     return make_fn_expr( name_str, [ this ] { return stagger->current_level() == stagger_t::MODERATE_STAGGER; } );
+  //   else if ( splits[ 1 ] == "heavy" )
+  //     return make_fn_expr( name_str, [ this ] { return stagger->current_level() == stagger_t::HEAVY_STAGGER; } );
+  //   else if ( splits[ 1 ] == "amount" )
+  //     return make_fn_expr( name_str, [ this ] { return stagger->tick_size(); } );
+  //   else if ( splits[ 1 ] == "pct" )
+  //     return make_fn_expr( name_str, [ this ] { return stagger->tick_size_percent(); } );
+  //   else if ( splits[ 1 ] == "amounttotalpct" )
+  //     return make_fn_expr( name_str, [ this ] { return stagger->pool_size_percent() * 100.0; } );
+  //   else if ( splits[ 1 ] == "remains" )
+  //     return make_fn_expr( name_str, [ this ] { return stagger->remains(); } );
+  //   else if ( splits[ 1 ] == "amount_remains" )
+  //     return make_fn_expr( name_str, [ this ] { return stagger->pool_size(); } );
+  //   else if ( splits[ 1 ] == "ticking" )
+  //     return make_fn_expr( name_str, [ this ] { return stagger->is_ticking(); } );
+  // }
 
-  else if ( splits.size() == 2 && splits[ 0 ] == "spinning_crane_kick" )
+  if ( splits.size() == 2 && splits[ 0 ] == "spinning_crane_kick" )
   {
     if ( splits[ 1 ] == "count" )
       return make_fn_expr( name_str, [ this ] { return mark_of_the_crane_counter(); } );
@@ -9872,11 +9871,11 @@ void monk_t::merge( player_t &other )
 {
   base_t::merge( other );
 
-  auto &other_monk = static_cast<const monk_t &>( other );
+  // auto &other_monk = static_cast<const monk_t &>( other );
 
-  stagger->sample_data->pool_size.merge( other_monk.stagger->sample_data->pool_size );
-  stagger->sample_data->pool_size_percent.merge( other_monk.stagger->sample_data->pool_size_percent );
-  stagger->sample_data->effectiveness.merge( other_monk.stagger->sample_data->effectiveness );
+  // stagger->sample_data->pool_size.merge( other_monk.stagger->sample_data->pool_size );
+  // stagger->sample_data->pool_size_percent.merge( other_monk.stagger->sample_data->pool_size_percent );
+  // stagger->sample_data->effectiveness.merge( other_monk.stagger->sample_data->effectiveness );
 }
 
 // monk_t::monk_report =================================================
@@ -9959,145 +9958,150 @@ public:
   {
     monk_bugreport( os );
 
-    // Custom Class Section
-    if ( p.specialization() == MONK_BREWMASTER )
-    {
-      os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-         << "\t\t\t\t\t<h3 class=\"toggle open\">Stagger Analysis</h3>\n"
-         << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+    //   // Custom Class Section
+    //   if ( p.specialization() == MONK_BREWMASTER )
+    //   {
+    //     os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
+    //        << "\t\t\t\t\t<h3 class=\"toggle open\">Stagger Analysis</h3>\n"
+    //        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-      os << "\t\t\t\t\t<p>Note that these charts are extremely sensitive to bucket sizes. It is not uncommon to exceed "
-            "stagger cap, etc. If you wish to see exact values, use debug output.</p>\n";
+    //     os << "\t\t\t\t\t<p>Note that these charts are extremely sensitive to bucket sizes. It is not uncommon to
+    //     exceed "
+    //           "stagger cap, etc. If you wish to see exact values, use debug output.</p>\n";
 
-      highchart::time_series_t chart_stagger_damage( highchart::build_id( p, "stagger_damage" ), *p.sim );
-      chart::generate_actor_timeline( chart_stagger_damage, p, "Stagger Pool", color::resource_color( RESOURCE_HEALTH ),
-                                      p.stagger->sample_data->pool_size );
-      chart_stagger_damage.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
-      chart_stagger_damage.set( "chart.width", "575" );
-      os << chart_stagger_damage.to_target_div();
-      p.sim->add_chart_data( chart_stagger_damage );
+    //     highchart::time_series_t chart_stagger_damage( highchart::build_id( p, "stagger_damage" ), *p.sim );
+    //     chart::generate_actor_timeline( chart_stagger_damage, p, "Stagger Pool", color::resource_color(
+    //     RESOURCE_HEALTH ),
+    //                                     p.stagger->sample_data->pool_size );
+    //     chart_stagger_damage.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+    //     chart_stagger_damage.set( "chart.width", "575" );
+    //     os << chart_stagger_damage.to_target_div();
+    //     p.sim->add_chart_data( chart_stagger_damage );
 
-      highchart::time_series_t chart_stagger_damage_pct( highchart::build_id( p, "stagger_damage_pct" ), *p.sim );
-      chart::generate_actor_timeline( chart_stagger_damage_pct, p, "Stagger Pool / maximum Health",
-                                      color::resource_color( RESOURCE_HEALTH ),
-                                      p.stagger->sample_data->pool_size_percent );
-      chart_stagger_damage_pct.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
-      chart_stagger_damage_pct.set( "chart.width", "575" );
-      os << chart_stagger_damage_pct.to_target_div();
-      p.sim->add_chart_data( chart_stagger_damage_pct );
+    //     highchart::time_series_t chart_stagger_damage_pct( highchart::build_id( p, "stagger_damage_pct" ), *p.sim );
+    //     chart::generate_actor_timeline( chart_stagger_damage_pct, p, "Stagger Pool / maximum Health",
+    //                                     color::resource_color( RESOURCE_HEALTH ),
+    //                                     p.stagger->sample_data->pool_size_percent );
+    //     chart_stagger_damage_pct.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+    //     chart_stagger_damage_pct.set( "chart.width", "575" );
+    //     os << chart_stagger_damage_pct.to_target_div();
+    //     p.sim->add_chart_data( chart_stagger_damage_pct );
 
-      highchart::time_series_t chart_stagger_pct( highchart::build_id( p, "stagger_pct" ), *p.sim );
-      chart::generate_actor_timeline( chart_stagger_pct, p, "Stagger Percent", color::resource_color( RESOURCE_HEALTH ),
-                                      p.stagger->sample_data->effectiveness );
-      chart_stagger_pct.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
-      chart_stagger_pct.set( "chart.width", "575" );
-      os << chart_stagger_pct.to_target_div();
-      p.sim->add_chart_data( chart_stagger_pct );
+    //     highchart::time_series_t chart_stagger_pct( highchart::build_id( p, "stagger_pct" ), *p.sim );
+    //     chart::generate_actor_timeline( chart_stagger_pct, p, "Stagger Percent", color::resource_color(
+    //     RESOURCE_HEALTH ),
+    //                                     p.stagger->sample_data->effectiveness );
+    //     chart_stagger_pct.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+    //     chart_stagger_pct.set( "chart.width", "575" );
+    //     os << chart_stagger_pct.to_target_div();
+    //     p.sim->add_chart_data( chart_stagger_pct );
 
-      fmt::print( os, "\t\t\t\t\t\t<p>Stagger base Unbuffed: {} Raid Buffed: {}</p>\n", p.stagger->base_value(),
-                  p.stagger->sample_data->buffed_base_value );
+    //     fmt::print( os, "\t\t\t\t\t\t<p>Stagger base Unbuffed: {} Raid Buffed: {}</p>\n", p.stagger->base_value(),
+    //                 p.stagger->sample_data->buffed_base_value );
 
-      fmt::print( os, "\t\t\t\t\t\t<p>Stagger pct (player level) Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
-                  100.0 * p.stagger->percent( p.level() ),
-                  100.0 * p.stagger->sample_data->buffed_percent_player_level );
+    //     fmt::print( os, "\t\t\t\t\t\t<p>Stagger pct (player level) Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
+    //                 100.0 * p.stagger->percent( p.level() ),
+    //                 100.0 * p.stagger->sample_data->buffed_percent_player_level );
 
-      fmt::print( os, "\t\t\t\t\t\t<p>Stagger pct (target level) Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
-                  100.0 * p.stagger->percent( p.target->level() ),
-                  100.0 * p.stagger->sample_data->buffed_percent_target_level );
+    //     fmt::print( os, "\t\t\t\t\t\t<p>Stagger pct (target level) Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
+    //                 100.0 * p.stagger->percent( p.target->level() ),
+    //                 100.0 * p.stagger->sample_data->buffed_percent_target_level );
 
-      double absorbed_mean = p.stagger->sample_data->absorbed->mean();
+    //     double absorbed_mean = p.stagger->sample_data->absorbed->mean();
 
-      fmt::print( os, "\t\t\t\t\t\t<p>Total Stagger damage added: {} / {:.2f}%</p>\n", absorbed_mean, 100.0 );
+    //     fmt::print( os, "\t\t\t\t\t\t<p>Total Stagger damage added: {} / {:.2f}%</p>\n", absorbed_mean, 100.0 );
 
-      // Purification Stats
-      os << "\t\t\t\t\t\t<table class=\"sc\">\n"
-         << "\t\t\t\t\t\t\t<tbody>\n"
-         << "\t\t\t\t\t\t\t\t<tr>\n"
-         << "\t\t\t\t\t\t\t\t\t<th class=\"left\">Purification Stats</th>\n"
-         << "\t\t\t\t\t\t\t\t\t<th>Purified</th>\n"
-         << "\t\t\t\t\t\t\t\t\t<th>Purified %</th>\n"
-         // << "\t\t\t\t\t\t\t\t\t<th>Purification Count</th>\n"
-         << "\t\t\t\t\t\t\t\t</tr>\n";
+    //     // Purification Stats
+    //     os << "\t\t\t\t\t\t<table class=\"sc\">\n"
+    //        << "\t\t\t\t\t\t\t<tbody>\n"
+    //        << "\t\t\t\t\t\t\t\t<tr>\n"
+    //        << "\t\t\t\t\t\t\t\t\t<th class=\"left\">Purification Stats</th>\n"
+    //        << "\t\t\t\t\t\t\t\t\t<th>Purified</th>\n"
+    //        << "\t\t\t\t\t\t\t\t\t<th>Purified %</th>\n"
+    //        // << "\t\t\t\t\t\t\t\t\t<th>Purification Count</th>\n"
+    //        << "\t\t\t\t\t\t\t\t</tr>\n";
 
-      auto purify_print = [ absorbed_mean, &os, this ]( std::string name, std::string key ) {
-        double mean = p.stagger->sample_data->mitigated_by_ability[ key ]->mean();
-        // int count      = p.stagger->sample_data->mitigated_by_ability[ key ]->count();
-        double percent = mean / absorbed_mean * 100.0;
-        os << "\t\t\t\t\t\t\t\t<tr>\n"
-           << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">" << name << "</td>\n"
-           << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << mean << "</td>\n"
-           << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << percent
-           << "%</td>\n"
-           // << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << count << "</td>\n"
-           << "\t\t\t\t\t\t\t\t</tr>\n";
-      };
+    //     auto purify_print = [ absorbed_mean, &os, this ]( std::string name, std::string key ) {
+    //       double mean = p.stagger->sample_data->mitigated_by_ability[ key ]->mean();
+    //       // int count      = p.stagger->sample_data->mitigated_by_ability[ key ]->count();
+    //       double percent = mean / absorbed_mean * 100.0;
+    //       os << "\t\t\t\t\t\t\t\t<tr>\n"
+    //          << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">" << name << "</td>\n"
+    //          << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << mean << "</td>\n"
+    //          << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << percent
+    //          << "%</td>\n"
+    //          // << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << count << "</td>\n"
+    //          << "\t\t\t\t\t\t\t\t</tr>\n";
+    //     };
 
-      purify_print( "Quick Sip", "quick_sip" );
-      purify_print( "Staggering Strikes", "staggering_strikes" );
-      purify_print( "Touch of Death", "touch_of_death" );
-      purify_print( "Purifying Brew", "purifying_brew" );
-      purify_print( "Tranquil Spirit: Gift of the Ox", "tranquil_spirit_gift_of_the_ox" );
-      purify_print( "Tranquil Spirit: Expel Harm", "tranquil_spirit_expel_harm" );
+    //     purify_print( "Quick Sip", "quick_sip" );
+    //     purify_print( "Staggering Strikes", "staggering_strikes" );
+    //     purify_print( "Touch of Death", "touch_of_death" );
+    //     purify_print( "Purifying Brew", "purifying_brew" );
+    //     purify_print( "Tranquil Spirit: Gift of the Ox", "tranquil_spirit_gift_of_the_ox" );
+    //     purify_print( "Tranquil Spirit: Expel Harm", "tranquil_spirit_expel_harm" );
 
-      os << "\t\t\t\t\t\t\t</tbody>\n"
-         << "\t\t\t\t\t\t</table>\n";
+    //     os << "\t\t\t\t\t\t\t</tbody>\n"
+    //        << "\t\t\t\t\t\t</table>\n";
 
-      // Stagger Level Stats
-      os << "\t\t\t\t\t\t<table class=\"sc\">\n"
-         << "\t\t\t\t\t\t\t<tbody>\n"
-         << "\t\t\t\t\t\t\t\t<tr>\n"
-         << "\t\t\t\t\t\t\t\t\t<th class=\"left\">Stagger Stats</th>\n"
-         << "\t\t\t\t\t\t\t\t\t<th>Absorbed</th>\n"
-         << "\t\t\t\t\t\t\t\t\t<th>Taken</th>\n"
-         << "\t\t\t\t\t\t\t\t\t<th>Mitigated</th>\n"
-         << "\t\t\t\t\t\t\t\t\t<th>Mitigated %</th>\n"
-         // << "\t\t\t\t\t\t\t\t\t<th>Ticks</th>\n"
-         << "\t\t\t\t\t\t\t\t</tr>\n";
+    //     // Stagger Level Stats
+    //     os << "\t\t\t\t\t\t<table class=\"sc\">\n"
+    //        << "\t\t\t\t\t\t\t<tbody>\n"
+    //        << "\t\t\t\t\t\t\t\t<tr>\n"
+    //        << "\t\t\t\t\t\t\t\t\t<th class=\"left\">Stagger Stats</th>\n"
+    //        << "\t\t\t\t\t\t\t\t\t<th>Absorbed</th>\n"
+    //        << "\t\t\t\t\t\t\t\t\t<th>Taken</th>\n"
+    //        << "\t\t\t\t\t\t\t\t\t<th>Mitigated</th>\n"
+    //        << "\t\t\t\t\t\t\t\t\t<th>Mitigated %</th>\n"
+    //        // << "\t\t\t\t\t\t\t\t\t<th>Ticks</th>\n"
+    //        << "\t\t\t\t\t\t\t\t</tr>\n";
 
-      auto stagger_print = [ absorbed_mean, &os ]( const stagger_t::stagger_level_t *level ) {
-        os << "\t\t\t\t\t\t\t\t<tr>\n"
-           << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">" << level->name_pretty << "</td>\n"
-           << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->absorbed->mean() << "</td>\n"
-           << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->taken->mean() << "</td>\n"
-           << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->mitigated->mean() << "</td>\n"
-           << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-           << ( absorbed_mean != 0.0 ? level->mitigated->mean() / absorbed_mean * 100.0 : 0 )
-           // << ( level->absorbed->mean() != 0.0 ? level->mitigated->mean() / level->absorbed->mean() * 100.0 : 0 )
-           << "%</td>\n"
-           // << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->absorbed->count() << "</td>\n"
-           << "\t\t\t\t\t\t\t\t</tr>\n";
-      };
+    //     auto stagger_print = [ absorbed_mean, &os ]( const stagger_t::stagger_level_t *level ) {
+    //       os << "\t\t\t\t\t\t\t\t<tr>\n"
+    //          << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">" << level->name_pretty << "</td>\n"
+    //          << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->absorbed->mean() << "</td>\n"
+    //          << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->taken->mean() << "</td>\n"
+    //          << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->mitigated->mean() << "</td>\n"
+    //          << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+    //          << ( absorbed_mean != 0.0 ? level->mitigated->mean() / absorbed_mean * 100.0 : 0 )
+    //          // << ( level->absorbed->mean() != 0.0 ? level->mitigated->mean() / level->absorbed->mean() * 100.0 : 0
+    //          )
+    //          << "%</td>\n"
+    //          // << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->absorbed->count() <<
+    //          "</td>\n"
+    //          << "\t\t\t\t\t\t\t\t</tr>\n";
+    //     };
 
-      for ( const stagger_t::stagger_level_t *level : p.stagger->stagger_levels )
-      {
-        stagger_print( level );
-      }
+    //     for ( const stagger_t::stagger_level_t *level : p.stagger->stagger_levels )
+    //     {
+    //       stagger_print( level );
+    //     }
 
-      double taken_mean     = p.stagger->sample_data->taken->mean();
-      double mitigated_mean = p.stagger->sample_data->mitigated->mean();
-      // int absorbed_count    = p.stagger->sample_data->absorbed->count();
+    //     double taken_mean     = p.stagger->sample_data->taken->mean();
+    //     double mitigated_mean = p.stagger->sample_data->mitigated->mean();
+    //     // int absorbed_count    = p.stagger->sample_data->absorbed->count();
 
-      os << "\t\t\t\t\t\t\t\t<tr>\n"
-         << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">"
-         << "Total"
-         << "</td>\n"
-         << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << absorbed_mean << "</td>\n"
-         << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << taken_mean << "</td>\n"
-         << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << mitigated_mean << "</td>\n"
-         << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-         << ( absorbed_mean != 0.0 ? mitigated_mean / absorbed_mean * 100.0 : 0 )
-         << "%</td>\n"
-         // << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << absorbed_count << "</td>\n"
-         << "\t\t\t\t\t\t\t\t</tr>\n";
+    //     os << "\t\t\t\t\t\t\t\t<tr>\n"
+    //        << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">"
+    //        << "Total"
+    //        << "</td>\n"
+    //        << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << absorbed_mean << "</td>\n"
+    //        << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << taken_mean << "</td>\n"
+    //        << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << mitigated_mean << "</td>\n"
+    //        << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+    //        << ( absorbed_mean != 0.0 ? mitigated_mean / absorbed_mean * 100.0 : 0 )
+    //        << "%</td>\n"
+    //        // << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << absorbed_count << "</td>\n"
+    //        << "\t\t\t\t\t\t\t\t</tr>\n";
 
-      os << "\t\t\t\t\t\t\t</tbody>\n"
-         << "\t\t\t\t\t\t</table>\n";
+    //     os << "\t\t\t\t\t\t\t</tbody>\n"
+    //        << "\t\t\t\t\t\t</table>\n";
 
-      os << "\t\t\t\t\t\t</div>\n"
-         << "\t\t\t\t\t</div>\n";
-    }
-    else
-      (void)p;
+    //     os << "\t\t\t\t\t\t</div>\n"
+    //        << "\t\t\t\t\t</div>\n";
+    //   }
+    //   else
+    //     (void)p;
   }
 
 private:

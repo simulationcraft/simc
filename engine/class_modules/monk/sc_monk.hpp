@@ -1332,7 +1332,7 @@ public:
     double squirm_frequency;
   } user_options;
 
-  stagger_t *stagger;
+  // stagger_t *stagger;
 
 private:
   target_specific_t<monk_td_t> target_data;
