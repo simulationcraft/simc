@@ -14,9 +14,9 @@
 #include "player/pet_spawner.hpp"
 #include "player/player.hpp"
 #include "sc_enums.hpp"
+#include "sc_stagger.hpp"
 #include "sim/proc.hpp"
 #include "util/timeline.hpp"
-#include "sc_stagger.hpp"
 
 #include <array>
 #include <memory>
@@ -272,10 +272,10 @@ public:
   monk_td_t( player_t *target, monk_t *p );
 };
 
-struct monk_t : public parse_player_effects_t
+struct monk_t : public stagger_t<parse_player_effects_t, monk_t>
 {
 public:
-  using base_t = parse_player_effects_t;
+  using base_t = stagger_t<parse_player_effects_t, monk_t>;
 
   // Active
   action_t *windwalking_aura;

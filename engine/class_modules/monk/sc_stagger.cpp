@@ -1,18 +1,5 @@
 #include "sc_stagger.hpp"
 
-#include "buff/buff.hpp"
-#include "dbc/spell_data.hpp"
-#include "player/player.hpp"
-#include "sc_enums.hpp"
-
-#include <string_view>
-
-template <class base_actor_t, class derived_actor_t>
-const stagger_level_t& stagger_t<base_actor_t, derived_actor_t>::get_level( size_t index )
-{
-  return debug_cast<derived_actor_t>( this )->stagger_levels->at( index );
-}
-
 // // stagger_t implementation
 // // stagger_t::debuff_t
 // stagger_t::debuff_t::debuff_t( player_t &player, std::string_view name, const spell_data_t *spell )

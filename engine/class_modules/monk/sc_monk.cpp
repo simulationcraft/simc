@@ -9895,10 +9895,6 @@ public:
 
   auto_dispose<std::vector<monk_bug *>> issues;
 
-  monk_report_t( monk_t &player ) : p( player )
-  {
-  }
-
   void monk_bugreport( report::sc_html_stream &os )
   {
     // Description: Self-explanatory
@@ -9957,155 +9953,7 @@ public:
   void html_customsection( report::sc_html_stream &os ) override
   {
     monk_bugreport( os );
-
-    //   // Custom Class Section
-    //   if ( p.specialization() == MONK_BREWMASTER )
-    //   {
-    //     os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-    //        << "\t\t\t\t\t<h3 class=\"toggle open\">Stagger Analysis</h3>\n"
-    //        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
-
-    //     os << "\t\t\t\t\t<p>Note that these charts are extremely sensitive to bucket sizes. It is not uncommon to
-    //     exceed "
-    //           "stagger cap, etc. If you wish to see exact values, use debug output.</p>\n";
-
-    //     highchart::time_series_t chart_stagger_damage( highchart::build_id( p, "stagger_damage" ), *p.sim );
-    //     chart::generate_actor_timeline( chart_stagger_damage, p, "Stagger Pool", color::resource_color(
-    //     RESOURCE_HEALTH ),
-    //                                     p.stagger->sample_data->pool_size );
-    //     chart_stagger_damage.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
-    //     chart_stagger_damage.set( "chart.width", "575" );
-    //     os << chart_stagger_damage.to_target_div();
-    //     p.sim->add_chart_data( chart_stagger_damage );
-
-    //     highchart::time_series_t chart_stagger_damage_pct( highchart::build_id( p, "stagger_damage_pct" ), *p.sim );
-    //     chart::generate_actor_timeline( chart_stagger_damage_pct, p, "Stagger Pool / maximum Health",
-    //                                     color::resource_color( RESOURCE_HEALTH ),
-    //                                     p.stagger->sample_data->pool_size_percent );
-    //     chart_stagger_damage_pct.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
-    //     chart_stagger_damage_pct.set( "chart.width", "575" );
-    //     os << chart_stagger_damage_pct.to_target_div();
-    //     p.sim->add_chart_data( chart_stagger_damage_pct );
-
-    //     highchart::time_series_t chart_stagger_pct( highchart::build_id( p, "stagger_pct" ), *p.sim );
-    //     chart::generate_actor_timeline( chart_stagger_pct, p, "Stagger Percent", color::resource_color(
-    //     RESOURCE_HEALTH ),
-    //                                     p.stagger->sample_data->effectiveness );
-    //     chart_stagger_pct.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
-    //     chart_stagger_pct.set( "chart.width", "575" );
-    //     os << chart_stagger_pct.to_target_div();
-    //     p.sim->add_chart_data( chart_stagger_pct );
-
-    //     fmt::print( os, "\t\t\t\t\t\t<p>Stagger base Unbuffed: {} Raid Buffed: {}</p>\n", p.stagger->base_value(),
-    //                 p.stagger->sample_data->buffed_base_value );
-
-    //     fmt::print( os, "\t\t\t\t\t\t<p>Stagger pct (player level) Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
-    //                 100.0 * p.stagger->percent( p.level() ),
-    //                 100.0 * p.stagger->sample_data->buffed_percent_player_level );
-
-    //     fmt::print( os, "\t\t\t\t\t\t<p>Stagger pct (target level) Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
-    //                 100.0 * p.stagger->percent( p.target->level() ),
-    //                 100.0 * p.stagger->sample_data->buffed_percent_target_level );
-
-    //     double absorbed_mean = p.stagger->sample_data->absorbed->mean();
-
-    //     fmt::print( os, "\t\t\t\t\t\t<p>Total Stagger damage added: {} / {:.2f}%</p>\n", absorbed_mean, 100.0 );
-
-    //     // Purification Stats
-    //     os << "\t\t\t\t\t\t<table class=\"sc\">\n"
-    //        << "\t\t\t\t\t\t\t<tbody>\n"
-    //        << "\t\t\t\t\t\t\t\t<tr>\n"
-    //        << "\t\t\t\t\t\t\t\t\t<th class=\"left\">Purification Stats</th>\n"
-    //        << "\t\t\t\t\t\t\t\t\t<th>Purified</th>\n"
-    //        << "\t\t\t\t\t\t\t\t\t<th>Purified %</th>\n"
-    //        // << "\t\t\t\t\t\t\t\t\t<th>Purification Count</th>\n"
-    //        << "\t\t\t\t\t\t\t\t</tr>\n";
-
-    //     auto purify_print = [ absorbed_mean, &os, this ]( std::string name, std::string key ) {
-    //       double mean = p.stagger->sample_data->mitigated_by_ability[ key ]->mean();
-    //       // int count      = p.stagger->sample_data->mitigated_by_ability[ key ]->count();
-    //       double percent = mean / absorbed_mean * 100.0;
-    //       os << "\t\t\t\t\t\t\t\t<tr>\n"
-    //          << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">" << name << "</td>\n"
-    //          << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << mean << "</td>\n"
-    //          << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << percent
-    //          << "%</td>\n"
-    //          // << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << count << "</td>\n"
-    //          << "\t\t\t\t\t\t\t\t</tr>\n";
-    //     };
-
-    //     purify_print( "Quick Sip", "quick_sip" );
-    //     purify_print( "Staggering Strikes", "staggering_strikes" );
-    //     purify_print( "Touch of Death", "touch_of_death" );
-    //     purify_print( "Purifying Brew", "purifying_brew" );
-    //     purify_print( "Tranquil Spirit: Gift of the Ox", "tranquil_spirit_gift_of_the_ox" );
-    //     purify_print( "Tranquil Spirit: Expel Harm", "tranquil_spirit_expel_harm" );
-
-    //     os << "\t\t\t\t\t\t\t</tbody>\n"
-    //        << "\t\t\t\t\t\t</table>\n";
-
-    //     // Stagger Level Stats
-    //     os << "\t\t\t\t\t\t<table class=\"sc\">\n"
-    //        << "\t\t\t\t\t\t\t<tbody>\n"
-    //        << "\t\t\t\t\t\t\t\t<tr>\n"
-    //        << "\t\t\t\t\t\t\t\t\t<th class=\"left\">Stagger Stats</th>\n"
-    //        << "\t\t\t\t\t\t\t\t\t<th>Absorbed</th>\n"
-    //        << "\t\t\t\t\t\t\t\t\t<th>Taken</th>\n"
-    //        << "\t\t\t\t\t\t\t\t\t<th>Mitigated</th>\n"
-    //        << "\t\t\t\t\t\t\t\t\t<th>Mitigated %</th>\n"
-    //        // << "\t\t\t\t\t\t\t\t\t<th>Ticks</th>\n"
-    //        << "\t\t\t\t\t\t\t\t</tr>\n";
-
-    //     auto stagger_print = [ absorbed_mean, &os ]( const stagger_t::stagger_level_t *level ) {
-    //       os << "\t\t\t\t\t\t\t\t<tr>\n"
-    //          << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">" << level->name_pretty << "</td>\n"
-    //          << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->absorbed->mean() << "</td>\n"
-    //          << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->taken->mean() << "</td>\n"
-    //          << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->mitigated->mean() << "</td>\n"
-    //          << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-    //          << ( absorbed_mean != 0.0 ? level->mitigated->mean() / absorbed_mean * 100.0 : 0 )
-    //          // << ( level->absorbed->mean() != 0.0 ? level->mitigated->mean() / level->absorbed->mean() * 100.0 : 0
-    //          )
-    //          << "%</td>\n"
-    //          // << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->absorbed->count() <<
-    //          "</td>\n"
-    //          << "\t\t\t\t\t\t\t\t</tr>\n";
-    //     };
-
-    //     for ( const stagger_t::stagger_level_t *level : p.stagger->stagger_levels )
-    //     {
-    //       stagger_print( level );
-    //     }
-
-    //     double taken_mean     = p.stagger->sample_data->taken->mean();
-    //     double mitigated_mean = p.stagger->sample_data->mitigated->mean();
-    //     // int absorbed_count    = p.stagger->sample_data->absorbed->count();
-
-    //     os << "\t\t\t\t\t\t\t\t<tr>\n"
-    //        << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">"
-    //        << "Total"
-    //        << "</td>\n"
-    //        << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << absorbed_mean << "</td>\n"
-    //        << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << taken_mean << "</td>\n"
-    //        << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << mitigated_mean << "</td>\n"
-    //        << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-    //        << ( absorbed_mean != 0.0 ? mitigated_mean / absorbed_mean * 100.0 : 0 )
-    //        << "%</td>\n"
-    //        // << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << absorbed_count << "</td>\n"
-    //        << "\t\t\t\t\t\t\t\t</tr>\n";
-
-    //     os << "\t\t\t\t\t\t\t</tbody>\n"
-    //        << "\t\t\t\t\t\t</table>\n";
-
-    //     os << "\t\t\t\t\t\t</div>\n"
-    //        << "\t\t\t\t\t</div>\n";
-    //   }
-    //   else
-    //     (void)p;
   }
-
-private:
-  monk_t &p;
 };
 
 struct monk_module_t : public module_t
@@ -10117,7 +9965,7 @@ struct monk_module_t : public module_t
   player_t *create_player( sim_t *sim, util::string_view name, race_e r ) const override
   {
     auto p              = new monk_t( sim, name, r );
-    p->report_extension = std::make_unique<monk_report_t>( *p );
+    p->report_extension = std::make_unique<monk_report_t>();
     return p;
   }
   bool valid() const override
