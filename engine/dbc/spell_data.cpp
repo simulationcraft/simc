@@ -285,7 +285,7 @@ double spelleffect_data_t::default_multiplier() const
 
         case A_MOD_MAX_RESOURCE_COST:
         case A_MOD_MAX_RESOURCE:
-        case A_MOD_INCREASE_ENERGY:
+        case A_MOD_INCREASE_RESOURCE:
         case A_PERIODIC_ENERGIZE:
           return resource_multiplier( resource_gain_type() );
 

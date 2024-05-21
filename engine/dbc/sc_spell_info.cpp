@@ -973,7 +973,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   {  32, "Increase Mounted Speed%"                      },
   {  33, "Decrease Movement Speed%"                     },
   {  34, "Increase Health"                              },
-  {  35, "Increase Energy"                              },
+  {  35, "Increase Resource"                            },
   {  36, "Shapeshift"                                   },
   {  37, "Immunity Against External Movement"           },
   {  39, "School Immunity"                              },
@@ -1488,13 +1488,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   if ( e->chain_target() != 0 )
     s << " | Chain Multiplier: " << e->chain_multiplier();
 
-  if ( e->misc_value1() != 0 || e->type() == E_ENERGIZE )
+  if ( e->type() == E_ENERGIZE || ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_INCREASE_RESOURCE ||
+                                                                   e->subtype() == A_MOD_MAX_RESOURCE ) ) )
+  {
+    s << " | Resource: "
+      << util::resource_type_string( util::translate_power_type( static_cast<power_e>( e->misc_value1() ) ) );
+  }
+  else if ( e->misc_value1() != 0 )
   {
     if ( e->affected_schools() != 0U )
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%#.x", e->misc_value1() );
-    else if ( e->type() == E_ENERGIZE )
-      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%s",
-                util::resource_type_string( util::translate_power_type( static_cast<power_e>( e->misc_value1() ) ) ) );
     else if ( e->subtype() == A_MOD_DAMAGE_FROM_SPELLS_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d (Label)", e->misc_value1() );
     else

@@ -9954,7 +9954,7 @@ void druid_t::init_base_stats()
                                             find_effect( talent.astral_communion, A_MOD_MAX_RESOURCE ).resource( RESOURCE_ASTRAL_POWER ) +
                                             find_effect( talent.expansiveness, A_MOD_MAX_RESOURCE ).resource( RESOURCE_ASTRAL_POWER );
   resources.base[ RESOURCE_ENERGY ]       = 100 +
-                                            find_effect( talent.tireless_energy, A_MOD_INCREASE_ENERGY ).resource( RESOURCE_ENERGY ) +
+                                            find_effect( talent.tireless_energy, A_MOD_INCREASE_RESOURCE ).resource( RESOURCE_ENERGY ) +
                                             find_effect( talent.fount_of_strength, A_MOD_MAX_RESOURCE ).resource( RESOURCE_ENERGY );
 
   resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + find_effect( talent.expansiveness, A_MOD_MANA_POOL_PCT ).percent();
