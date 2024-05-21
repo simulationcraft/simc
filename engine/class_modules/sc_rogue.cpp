@@ -468,6 +468,8 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* stealth;
+
     cooldown_t* adrenaline_rush;
     cooldown_t* between_the_eyes;
     cooldown_t* blade_flurry;
@@ -1144,6 +1146,8 @@ public:
     options( rogue_options_t() )
   {
     // Cooldowns
+    cooldowns.stealth                   = get_cooldown( "stealth" );
+
     cooldowns.adrenaline_rush           = get_cooldown( "adrenaline_rush" );
     cooldowns.between_the_eyes          = get_cooldown( "between_the_eyes" );
     cooldowns.blade_flurry              = get_cooldown( "blade_flurry" );
@@ -2220,7 +2224,7 @@ public:
   void trigger_weaponmaster( const action_state_t*, rogue_attack_t* action );
   void trigger_opportunity( const action_state_t*, rogue_attack_t* action, double modifier = 1.0 );
   void trigger_restless_blades( const action_state_t* );
-  void trigger_hand_of_fate( const action_state_t*, bool biased = false, bool inevitable = false );
+  void trigger_hand_of_fate( const action_state_t*, bool biased = false, bool inevitable = false, bool precombat = false );
   void trigger_fate_intertwined( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_venom_rush( const action_state_t* );
@@ -6214,7 +6218,7 @@ struct slice_and_dice_t : public rogue_spell_t
     rogue_spell_t::execute();
 
     trigger_restless_blades( execute_state );
-    trigger_hand_of_fate( execute_state );
+    trigger_hand_of_fate( execute_state, false, false, precombat_seconds > 0_s );
 
     int cp = cast_state( execute_state )->get_combo_points();
     timespan_t snd_duration = get_triggered_duration( cp );
@@ -6343,9 +6347,14 @@ struct vanish_t : public rogue_spell_t
 
 struct stealth_t : public rogue_spell_t
 {
+  double precombat_seconds;
+
   stealth_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_spell_t( name, p, p->spell.stealth, options_str )
+    rogue_spell_t( name, p, p->spell.stealth, options_str ),
+    precombat_seconds( 0.0 )
   {
+    add_option( opt_float( "precombat_seconds", precombat_seconds ) );
+    parse_options( options_str );
     harmful = false;
     set_target( p );
   }
@@ -6355,6 +6364,11 @@ struct stealth_t : public rogue_spell_t
     rogue_spell_t::execute();
     p()->buffs.stealth->trigger();
     trigger_master_of_shadows();
+
+    if ( precombat_seconds && !p()->in_combat )
+    {
+      p()->cooldowns.stealth->adjust( -timespan_t::from_seconds( precombat_seconds ), false );
+    }
   }
 
   bool ready() override
@@ -6363,12 +6377,12 @@ struct stealth_t : public rogue_spell_t
       return false;
 
     if ( !p()->in_combat )
-      return true;
+      return rogue_spell_t::ready(); // respect cd
 
     // Allow restealth for Dungeon sims against non-boss targets as Shadowmeld drops combat against trash.
     if ( ( p()->sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || p()->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE ) &&
          p()->player_t::buffs.shadowmeld->check() && !p()->target->is_boss() )
-      return true;
+      return rogue_spell_t::ready(); // respect cd
 
     if ( !p()->restealth_allowed )
       return false;
@@ -7522,10 +7536,19 @@ struct stealth_like_buff_t : public BuffBase
     if ( rogue->talent.fatebound.double_jeopardy->ok() ) {
       // double jeopardy has to trigger *after* the stealth buffs fade, since it can only be consumed by a finisher *after* stealth
       // is broken, and not by the finisher that actually breaks stealth
-      make_event( rogue->sim, 1_ms, [ this ] {
-        if ( !rogue->stealthed( STEALTH_BASIC ) )
-          rogue->buffs.double_jeopardy->trigger();
-      } );
+
+      // Unless we're at the sim start, and thus precombat - instantly apply the DJ buff in that case, since all precombat actions happen at 0s
+      if ( rogue->sim->current_time() == 0_s )
+      {
+        rogue->buffs.double_jeopardy->trigger();
+      }
+      else
+      {
+        make_event( rogue->sim, 1_ms, [ this ] {
+          if ( !rogue->stealthed( STEALTH_BASIC ) )
+            rogue->buffs.double_jeopardy->trigger();
+        } );
+      }
     }
   }
 
@@ -8514,7 +8537,7 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* state, bool biased, bool inevitable )
+void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* state, bool biased, bool inevitable, bool precombat )
 {
   if ( !p()->talent.fatebound.hand_of_fate->ok() )
     return;
@@ -8537,7 +8560,8 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
   {
     // Consume edge case, do a tails cast, increment both coins
     p()->buffs.edge_case->expire();
-    tails_action->execute_on_target( state->target );
+    if ( !precombat )
+      tails_action->execute_on_target( state->target );
     p()->buffs.fatebound_coin_tails->increment();
     p()->buffs.fatebound_coin_heads->increment();
 
@@ -8546,7 +8570,8 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
       // Do it again and consume double jeopardy
       // TODO: Implement weird split double jeopardy behavior observed in-game
       p()->buffs.double_jeopardy->expire();
-      tails_action->execute_on_target( state->target );
+      if ( !precombat )
+        tails_action->execute_on_target( state->target );
       p()->buffs.fatebound_coin_tails->increment();
       p()->buffs.fatebound_coin_heads->increment();
     }
@@ -8572,7 +8597,8 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
     else
     {
       // Tails
-      tails_action->execute_on_target( state->target );
+      if ( !precombat )
+        tails_action->execute_on_target( state->target );
 
       p()->buffs.fatebound_coin_heads->expire();
       p()->buffs.fatebound_coin_tails->increment();
@@ -8622,7 +8648,8 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
     // Match existing
     if ( existing == p()->buffs.fatebound_coin_tails )
     {
-      tails_action->execute_on_target( state->target );
+      if ( !precombat )
+        tails_action->execute_on_target( state->target );
     }
 
     other->expire();
@@ -8633,7 +8660,8 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
       p()->buffs.double_jeopardy->expire();
       if ( existing == p()->buffs.fatebound_coin_tails )
       {
-        tails_action->execute_on_target( state->target );
+        if ( !precombat )
+          tails_action->execute_on_target( state->target );
       }
       existing->increment();
     }
@@ -8643,7 +8671,8 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
     // New side
     if ( other == p()->buffs.fatebound_coin_tails )
     {
-      tails_action->execute_on_target( state->target );
+      if ( !precombat )
+        tails_action->execute_on_target( state->target );
     }
 
     existing->expire();
@@ -8654,7 +8683,8 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
       p()->buffs.double_jeopardy->expire();
       if ( other == p()->buffs.fatebound_coin_tails )
       {
-        tails_action->execute_on_target( state->target );
+        if ( !precombat )
+          tails_action->execute_on_target( state->target );
       }
       other->increment();
     }

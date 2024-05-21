@@ -6,6 +6,9 @@ actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/blade_flurry,precombat_seconds=3,if=talent.underhanded_upper_hand
+actions.precombat+=/stealth,precombat_seconds=2
+# Cancels the stealth we just set up to trigger double jeopardy
+actions.precombat+=/cancel_buff,name=stealth,if=talent.double_jeopardy
 actions.precombat+=/roll_the_bones,precombat_seconds=2
 actions.precombat+=/adrenaline_rush,precombat_seconds=1,if=talent.improved_adrenaline_rush
 actions.precombat+=/slice_and_dice,precombat_seconds=1

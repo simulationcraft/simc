@@ -170,6 +170,8 @@ void outlaw( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "blade_flurry,precombat_seconds=3,if=talent.underhanded_upper_hand" );
+  precombat->add_action( "stealth,precombat_seconds=2" );
+  precombat->add_action( "cancel_buff,name=stealth,if=talent.double_jeopardy", "Cancels the stealth we just set up to trigger double jeopardy" );
   precombat->add_action( "roll_the_bones,precombat_seconds=2" );
   precombat->add_action( "adrenaline_rush,precombat_seconds=1,if=talent.improved_adrenaline_rush" );
   precombat->add_action( "slice_and_dice,precombat_seconds=1" );
