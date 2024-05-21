@@ -1531,6 +1531,7 @@ public:
     // Festering Wound consumed by
     propagate_const<proc_t*> fw_apocalypse;
     propagate_const<proc_t*> fw_wound_spender;
+    propagate_const<proc_t*> fw_sudden_doom;
     propagate_const<proc_t*> fw_death;
 
     // Chill Streak related procs
@@ -7271,6 +7272,12 @@ struct death_coil_t final : public death_knight_spell_t
     {
       get_td( state->target )->debuff.rotten_touch->trigger();
     }
+
+    if ( p()->buffs.sudden_doom->check() && result_is_hit( state->result ) )
+    {
+      p()->burst_festering_wound( state->target, p()->talent.unholy.sudden_doom->effectN( 3 ).base_value(),
+                                  p()->procs.fw_sudden_doom );
+    }
   }
 };
 
@@ -7695,6 +7702,12 @@ struct epidemic_t final : public death_knight_spell_t
       {
         get_td( state->target )->debuff.death_rot->trigger();
       }
+    }
+
+    if ( p()->buffs.sudden_doom->check() && result_is_hit( state->result ) )
+    {
+      p()->burst_festering_wound( state->target, p()->talent.unholy.sudden_doom->effectN( 3 ).base_value(),
+                                  p()->procs.fw_sudden_doom );
     }
   }
 
@@ -12788,6 +12801,7 @@ void death_knight_t::init_procs()
   procs.fw_apocalypse    = get_proc( "Festering Wound Burst by Apocalypse" );
   procs.fw_death         = get_proc( "Festering Wound Burst by Target Death" );
   procs.fw_wound_spender = get_proc( "Festering Wound Burst by Wound Spender" );
+  procs.fw_sudden_doom   = get_proc( "Festering Wound Burst by Sudden Doom" );
 
   procs.enduring_chill = get_proc( "Enduring Chill extra bounces" );
 
