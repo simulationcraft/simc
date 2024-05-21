@@ -8079,7 +8079,7 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
                  td->dots.rupture->current_action );
 }
 
-void rogue_t::do_exsanguinate( dot_t* dot, double rate )
+[[maybe_unused]] void rogue_t::do_exsanguinate( dot_t* dot, double rate )
 {
   if ( !dot->is_ticking() )
     return;
@@ -9119,8 +9119,7 @@ bool actions::rogue_action_t<Base>::trigger_t31_subtlety_set_bonus( const action
   if ( !p()->set_bonuses.t31_subtlety_2pc->ok() )
     return false;
 
-  if ( !( action && action->secondary_trigger_type == secondary_trigger::T31_SUBTLETY_2PC ||
-          affected_by.t31_subtlety_4pc ) )
+  if ( !( ( action && action->secondary_trigger_type == secondary_trigger::T31_SUBTLETY_2PC ) || affected_by.t31_subtlety_4pc ) )
     return false;
 
   // Only triggers on a single impact for Black Powder
@@ -10543,6 +10542,7 @@ void rogue_t::init_spells()
   // Shared Talents
   spell.shadowstep = find_spell( 36554 );     // Base spell with 0 charges
 
+  /* None currently, but leaving this just in case...
   auto find_shared_talent = []( std::vector<player_talent_t*> talents ) {
     for ( const auto t : talents )
     {
@@ -10553,6 +10553,7 @@ void rogue_t::init_spells()
     }
     return *talents[ 0 ];
   };
+  */
 
   // Fatebound Talents
   talent.fatebound.hand_of_fate = find_talent_spell( talent_tree::HERO, "Hand of Fate" );
