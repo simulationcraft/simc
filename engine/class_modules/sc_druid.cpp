@@ -1908,6 +1908,7 @@ public:
     parse_effects( p()->buff.warrior_of_elune, IGNORE_STACKS );
 
     // Feral
+    parse_effects( p()->mastery.razor_claws );
     parse_effects( p()->buff.apex_predators_craving );
     parse_effects( p()->buff.berserk_cat );
     parse_effects( p()->buff.coiled_to_spring );
@@ -2704,8 +2705,6 @@ public:
       snapshots.clearcasting = parse_persistent_effects( p->buff.clearcasting_cat, IGNORE_STACKS,
                                                          p->talent.moment_of_clarity );
 
-      parse_effects( p->mastery.razor_claws );
-
       if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount )
       {
         energize_idx = find_effect_index( this, E_ENERGIZE, A_MAX, POWER_COMBO_POINT );
@@ -2720,11 +2719,6 @@ public:
               .set_eff( &eff );
         }
       }
-
-      // assume all cat attacks are done in cat form, thus get the extra range.
-      // NOTE: this is incorrect for convoke, but we assume this for now.
-      range += find_effect( p->buff.cat_form, this, A_ADD_FLAT_MODIFIER, P_RANGE ).base_value();
-      radius += find_effect( p->buff.cat_form, this, A_ADD_FLAT_MODIFIER, P_RADIUS ).base_value();
     }
   }
 
@@ -2972,7 +2966,7 @@ struct druid_residual_action_t : public Base
     Base::execute();
   }
 
-  double base_da_min( const action_state_t* s ) const override
+  double base_da_min( const action_state_t* ) const override
   {
     if constexpr ( !DOT )
       return Base::base_dd_min * residual_mul;
@@ -2980,7 +2974,7 @@ struct druid_residual_action_t : public Base
       return 0.0;
   }
 
-  double base_da_max( const action_state_t* s ) const override
+  double base_da_max( const action_state_t* ) const override
   {
     if constexpr ( !DOT )
       return Base::base_dd_min * residual_mul;
@@ -2988,7 +2982,7 @@ struct druid_residual_action_t : public Base
       return 0.0;
   }
 
-  double base_ta( const action_state_t* s ) const override
+  double base_ta( const action_state_t* ) const override
   {
     if constexpr ( DOT )
       return Base::base_td * residual_mul;
@@ -4523,14 +4517,8 @@ struct ferocious_bite_base_t : public cat_finisher_t
 
     _td->debuff.sabertooth->trigger( cp( s ) );
 
-    // TODO: confirm doesn't proc from procs
-    if ( !proc && p()->talent.bursting_growth.ok() )
-    {
-      _td->debuff.bloodseeker_vines->decrement();
-
-      if ( !_td->debuff.bloodseeker_vines->check() )
-        _td->dots.bloodseeker_vines->cancel();
-    }
+    if ( p()->talent.bursting_growth.ok() )
+      p()->active.bursting_growth->execute_on_target( s->target );
 
     if ( rampant_ferocity && s->result_amount > 0 && !rampant_ferocity->target_list().empty() )
     {
@@ -9158,8 +9146,6 @@ struct cat_melee_t : public druid_melee_t<cat_attack_t>
   {
     form_mask = form_e::CAT_FORM;
     snapshots.tigers_fury = true;
-
-    range += find_effect( p->buff.cat_form, A_MOD_AUTO_ATTACK_RANGE ).base_value();
   }
 };
 
@@ -9937,8 +9923,14 @@ void druid_t::init_base_stats()
 
   player_t::init_base_stats();
 
-  base.attack_power_per_agility  = specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ? 1.0 : 0.0;
-  base.spell_power_per_intellect = specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION ? 1.0 : 0.0;
+  switch ( specialization() )
+  {
+    case DRUID_BALANCE:
+    case DRUID_RESTORATION: base.spell_power_per_intellect = 1.0; break;
+    case DRUID_FERAL:
+    case DRUID_GUARDIAN:    base.attack_power_per_agility = 1.0;  break;
+    default: break;
+  }
 
   // Passive Talents & Spells
   auto crit = find_effect( find_specialization_spell( "Critical Strike" ), A_MOD_ALL_CRIT_CHANCE ).percent();
@@ -9947,15 +9939,15 @@ void druid_t::init_base_stats()
   base.armor_multiplier   *= 1.0 + find_effect( talent.killer_instinct, A_MOD_BASE_RESISTANCE_PCT ).percent();
 
   // Resources
-  resources.base[ RESOURCE_RAGE ]         = 100 +
-                                            find_effect( talent.fount_of_strength, A_MOD_MAX_RESOURCE ).resource( RESOURCE_RAGE );
-  resources.base[ RESOURCE_COMBO_POINT ]  = 5;
+  resources.base[ RESOURCE_RAGE ] = 100 +
+      find_effect( talent.fount_of_strength, A_MOD_INCREASE_RESOURCE, POWER_RAGE ).resource();
+  resources.base[ RESOURCE_COMBO_POINT ] = 5;
   resources.base[ RESOURCE_ASTRAL_POWER ] = 100 +
-                                            find_effect( talent.astral_communion, A_MOD_MAX_RESOURCE ).resource( RESOURCE_ASTRAL_POWER ) +
-                                            find_effect( talent.expansiveness, A_MOD_MAX_RESOURCE ).resource( RESOURCE_ASTRAL_POWER );
-  resources.base[ RESOURCE_ENERGY ]       = 100 +
-                                            find_effect( talent.tireless_energy, A_MOD_INCREASE_RESOURCE ).resource( RESOURCE_ENERGY ) +
-                                            find_effect( talent.fount_of_strength, A_MOD_MAX_RESOURCE ).resource( RESOURCE_ENERGY );
+      find_effect( talent.astral_communion, A_MOD_MAX_RESOURCE, POWER_ASTRAL_POWER ).resource() +
+      find_effect( talent.expansiveness, A_MOD_MAX_RESOURCE, POWER_ASTRAL_POWER ).resource();
+  resources.base[ RESOURCE_ENERGY ] = 100 +
+      find_effect( talent.tireless_energy, A_MOD_INCREASE_RESOURCE, POWER_ENERGY ).resource() +
+      find_effect( talent.fount_of_strength, A_MOD_MAX_RESOURCE, POWER_ENERGY ).resource();
 
   resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + find_effect( talent.expansiveness, A_MOD_MANA_POOL_PCT ).percent();
 
@@ -9976,9 +9968,12 @@ void druid_t::init_base_stats()
 
   // Energy Regen
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + find_effect( spec.feral_affinity, A_MOD_POWER_REGEN_PERCENT ).percent();
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + find_effect( spec_spell, A_MOD_POWER_REGEN_PERCENT ).percent();
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + find_effect( talent.tireless_energy, A_MOD_POWER_REGEN_PERCENT ).percent();
+  resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
+      1.0 + find_effect( spec.feral_affinity, A_MOD_POWER_REGEN_PERCENT ).percent();
+  resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
+      1.0 + find_effect( spec_spell, A_MOD_POWER_REGEN_PERCENT ).percent();
+  resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
+      1.0 + find_effect( talent.tireless_energy, A_MOD_POWER_REGEN_PERCENT ).percent();
 
   base_gcd = 1.5_s;
 }
@@ -12668,7 +12663,7 @@ void druid_t::target_mitigation( school_e school, result_amount_type type, actio
   }
 
   // TODO: this is currently bugged as it modifies the wrong effect
-  if ( !bugs && talent.empowered_shapeshifting.ok() && buff.bear_form->check() &&
+  if ( talent.empowered_shapeshifting.ok() && buff.bear_form->check() &&
        spec.bear_form_passive_2->effectN( 3 ).has_common_school( school ) )
   {
     s->result_amount *= 1.0 + talent.empowered_shapeshifting->effectN( 4 ).percent();
