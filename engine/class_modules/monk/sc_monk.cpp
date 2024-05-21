@@ -65,7 +65,7 @@ namespace actions
 
 template <class Base>
 monk_action_t<Base>::monk_action_t( std::string_view name, monk_t *player, const spell_data_t *spell )
-  : base_t( name, player, spell ),
+  : parse_action_effects_t<Base, monk_t, monk_td_t>( name, player, spell ),
     sef_ability( actions::sef_ability_e::SEF_NONE ),
     ww_mastery( false ),
     may_combo_strike( false ),
@@ -9062,34 +9062,6 @@ double monk_t::composite_melee_auto_attack_speed() const
   h *= 1.0 / ( 1.0 + buff.momentum_boost_speed->check_value() );
 
   return h;
-}
-
-// monk_t::composite_melee_crit_chance ============================================
-
-double monk_t::composite_melee_crit_chance() const
-{
-  double crit = player_t::composite_melee_crit_chance();
-
-  crit += spec.critical_strikes->effectN( 1 ).percent();
-
-  if ( buff.wisdom_of_the_wall_dodge->check() )
-    crit += buff.wisdom_of_the_wall_dodge->data().effectN( 3 ).percent() * composite_damage_versatility();
-
-  return crit;
-}
-
-// monk_t::composite_spell_crit_chance ============================================
-
-double monk_t::composite_spell_crit_chance() const
-{
-  double crit = player_t::composite_spell_crit_chance();
-
-  crit += spec.critical_strikes->effectN( 1 ).percent();
-
-  if ( buff.wisdom_of_the_wall_dodge->check() )
-    crit += buff.wisdom_of_the_wall_dodge->data().effectN( 3 ).percent() * composite_damage_versatility();
-
-  return crit;
 }
 
 // monk_t::composite_attack_power_multiplier() ==========================

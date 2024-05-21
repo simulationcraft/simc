@@ -1100,7 +1100,6 @@ public:
     // GENERAL
     const spell_data_t *blackout_kick;
     const spell_data_t *crackling_jade_lightning;
-    const spell_data_t *critical_strikes;
     const spell_data_t *expel_harm;
     const spell_data_t *leg_sweep;
     const spell_data_t *mystic_touch;
@@ -1451,8 +1450,6 @@ public:
   // player_t overrides
   action_t *create_action( util::string_view name, util::string_view options ) override;
   double composite_melee_auto_attack_speed() const override;
-  double composite_melee_crit_chance() const override;
-  double composite_spell_crit_chance() const override;
   double composite_attack_power_multiplier() const override;
   double composite_dodge() const override;
   double composite_mastery() const override;
