@@ -5051,6 +5051,16 @@ struct blood_fever_t final : public death_knight_spell_t
     cooldown->duration = 0_ms;
     may_crit           = false;  // TODO-TWW check if we can remove the override for may_crit in death_knight_action_t
   }
+
+  void impact ( action_state_t* state ) override
+  {
+    if ( p()->talent.frost.cryogenic_chamber.ok() && !p()->buffs.cryogenic_chamber->at_max_stacks() )
+    {
+      debug_cast<cryogenic_chamber_buff_t*>( p()->buffs.cryogenic_chamber )->damage +=
+          state->result_amount * p()->talent.frost.cryogenic_chamber->effectN( 1 ).percent();
+      p()->buffs.cryogenic_chamber->trigger();
+    }
+  }
 };
 // Common diseases code
 
@@ -7893,10 +7903,10 @@ struct frostwyrms_fury_t final : public death_knight_spell_t
 
 // Frost Strike =============================================================
 
-struct shattered_frost_t final : public death_knight_spell_t
+struct shattered_frost_t final : public death_knight_melee_attack_t
 {
   shattered_frost_t( util::string_view n, death_knight_t* p )
-    : death_knight_spell_t( n, p, p->spell.shattered_frost )
+    : death_knight_melee_attack_t( n, p, p->spell.shattered_frost )
   {
     background = true;
     aoe= -1;
@@ -7905,7 +7915,7 @@ struct shattered_frost_t final : public death_knight_spell_t
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
   {
-    death_knight_spell_t::available_targets( tl );
+    death_knight_melee_attack_t::available_targets( tl );
 
     auto it = range::find( tl, target );
     if (it != tl.end())
