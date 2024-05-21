@@ -65,8 +65,8 @@ talents=BUkAAAAAAAAAAAAAAAAAAAAAAAAiIJJikgkkEhIlkQiWiEJSIJhEtIhEEAAAAQSSA
 
 
 head=screaming_torchfiends_burning_scowl,id=217228,bonus_id=10359/1488/6935,gem_id=192991,enchant=incandescent_essence
-neck=terross_captive_core,id=195502,bonus_id=10359/1491/8782,gem_id=192945/192945/192945
-shoulders=screaming_torchfiends_horned_memento,id=217230,bonus_id=10359/1491
+neck=terross_captive_core,id=195502,bonus_id=10359/1488/8782,gem_id=192945/192945/192945
+shoulders=screaming_torchfiends_horned_memento,id=217230,bonus_id=10359/1488
 back=voice_of_the_silent_star,id=204465,bonus_id=10359/1495/10884
 chest=screaming_torchfiends_binding,id=217226,bonus_id=10359/1488,enchant_id=6625
 wrists=lifebound_bindings,id=193419,bonus_id=9379/10359/1485/6935,gem_id=192945,crafted_stats=36/32
