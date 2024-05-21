@@ -5052,15 +5052,6 @@ struct blood_fever_t final : public death_knight_spell_t
     may_crit           = false;  // TODO-TWW check if we can remove the override for may_crit in death_knight_action_t
   }
 
-  void impact ( action_state_t* state ) override
-  {
-    if ( p()->talent.frost.cryogenic_chamber.ok() && !p()->buffs.cryogenic_chamber->at_max_stacks() )
-    {
-      debug_cast<cryogenic_chamber_buff_t*>( p()->buffs.cryogenic_chamber )->damage +=
-          state->result_amount * p()->talent.frost.cryogenic_chamber->effectN( 1 ).percent();
-      p()->buffs.cryogenic_chamber->trigger();
-    }
-  }
 };
 // Common diseases code
 
