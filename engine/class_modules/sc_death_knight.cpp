@@ -964,16 +964,16 @@ public:
     player_talent_t march_of_darkness;  // NYI
     player_talent_t unholy_ground;
     player_talent_t control_undead;  // NYI
-    player_talent_t enfeeble;           // NYI
+    player_talent_t enfeeble;        // NYI
     player_talent_t sacrificial_pact;
     // Row 4
-    player_talent_t coldthirst;  // NYI
+    player_talent_t coldthirst;
     player_talent_t proliferating_chill;
-    player_talent_t permafrost;
+    player_talent_t permafrost;  // NYI
     player_talent_t veteran_of_the_third_war;
-    player_talent_t death_pact;
+    player_talent_t death_pact;  // NYI
     player_talent_t brittle;
-    player_talent_t deaths_reach;
+    player_talent_t deaths_reach;  // NYI
     // Row 5
     player_talent_t icy_talons;
     player_talent_t antimagic_zone;
@@ -981,10 +981,10 @@ public:
     // Row 6
     player_talent_t ice_prison;  // NYI
     player_talent_t gloom_ward;
-    player_talent_t asphyxiate;
+    player_talent_t asphyxiate;  // NYI
     player_talent_t assimilation;
-    player_talent_t wraith_walk;  // NYI
-    player_talent_t grip_of_the_dead;
+    player_talent_t wraith_walk;       // NYI
+    player_talent_t grip_of_the_dead;  // NYI
     player_talent_t soul_reaper;
     // Row 7
     player_talent_t suppression;  // NYI
@@ -992,13 +992,12 @@ public:
     player_talent_t unholy_endurance;  // NYI
     // Row 8
     player_talent_t osmosis;           // NYI
-    player_talent_t insidious_chill;  // NYI
+    player_talent_t insidious_chill;   // NYI
     player_talent_t runic_protection;  // NYI
     player_talent_t blood_draw;
-
     // Row 9
     player_talent_t rune_mastery;
-    player_talent_t subuding_grasp;    // NYI
+    player_talent_t subuding_grasp;          // NYI
     player_talent_t will_of_the_necropolis;  // NYI
     // Row 10
     player_talent_t null_magic;       // NYI
