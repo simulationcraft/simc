@@ -367,7 +367,7 @@ Effects          :
 #1 (id=559)      : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.21540 | PvP Coefficient: 0.82000 | Target: Enemy (6)
 #2 (id=560)      : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #3 (id=561)      : Trigger Spell (64): Rake
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 155722 | Target: Enemy (6)
 #4 (id=310505)   : Dummy (3)
@@ -649,7 +649,7 @@ Effects          :
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830), Rampant Ferocity (391710), Adaptive Swarm (391889), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812)
                    Family Flags: 98
 #2 (id=117350)   : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 #3 (id=479758)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830), Rampant Ferocity (391710), Adaptive Swarm (391889), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812)
@@ -684,7 +684,7 @@ Effects          :
 #1 (id=1859)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.02500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1860)     : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #3 (id=1861)     : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.70000 | Target: Enemy (6)
 Description      : Shred the target, causing $s1 Physical damage to the target.$?a231063[ Deals $231063s2% increased damage against bleeding targets.][]$?a405300[ Deals $405300s1% increased damage against bleeding targets. Applies the Bleed from Thrash.][]$?a343232[
@@ -942,9 +942,9 @@ Effects          :
 #1 (id=3726)     : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=317114)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 #3 (id=324055)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : A quick beam of $?a424606[darkness][lunar light] burns the enemy for $164812s1 $?a424606[Shadow][Arcane] damage and then an additional $164812o2 $?a424606[Shadow][Arcane] damage over $164812d$?s238049[, and causes enemies to deal $238049s1% less damage to you.][.]$?a372567[
 
 Hits a second target within $279620s1 yds of the first.][]$?s197911[
@@ -1115,7 +1115,7 @@ Attributes       : ....x... ........ ........ x.......   ........ ........ .....
                  : Is Ability (4), Allow While Mounted (24), Ignore Line of Sight (66), No Cast Log (128), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=8639)     : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : Every time you critically strike with a combo generating ability you gain an additional combo point.
 
 Name             : Predatory Swiftness (id=16974) [Spell Family (7), Passive] 
@@ -1190,7 +1190,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : No Threat (42), No Aura Icon (60), Not In Spellbook (143), Allow Entering Arena (149), No Aura Log (202), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=8739)     : Energize Power (30)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 #2 (id=8740)     : Apply Aura (6) | Unknown(94)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : You gain ${$m1/10} Rage upon shapeshifting into Bear Form.
@@ -1753,7 +1753,7 @@ Effects          :
 #3 (id=281797)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=290296)   : Energize Power (30)
-                   Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+                   Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 Description      : Mangle the target for $s2 Physical damage.$?a231064[ Deals $s3% additional damage against bleeding targets.][]
 
 |cFFFFFFFFGenerates ${$m4/10} Rage.|r
@@ -2667,7 +2667,7 @@ Effects          :
 #1 (id=68168)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=312099)   : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 Description      : Strikes all nearby enemies, dealing $s1 $?a429523[Arcane][Bleed] damage and an additional $192090o1 $?a429523[Arcane][Bleed] damage over $192090d. When applied from Bear Form, this effect can stack up to $192090u times.
 
 |cFFFFFFFFGenerates ${$m2/10} Rage.|r
@@ -3200,7 +3200,7 @@ Effects          :
 #2 (id=324053)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=324054)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : A quick beam of solar light burns the enemy for $164815s1 Nature damage and then an additional $164815o2 Nature damage over $164815d$?s231050[ to the primary target and all enemies within $164815A2 yards][].$?s137013[
 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r][]
@@ -3862,7 +3862,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Treat as Area Effect (175), No Level Up Toast (281), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=117201)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #2 (id=222211)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards
 #3 (id=222212)   : School Damage (2): physical
@@ -3870,7 +3870,7 @@ Effects          :
 #4 (id=819579)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards
 #5 (id=1031978)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : Swipe all nearby enemies, inflicting $s3 Physical damage. Deals reduced damage beyond $s4 targets.$?a231063[ Deals $231063s1% increased damage against bleeding targets.][]$?a405300[ Applies the Bleed from Thrash.][]
 
 |cFFFFFFFFAwards $s1 combo $lpoint:points;.|r
@@ -3929,7 +3929,7 @@ Effects          :
 #1 (id=117262)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.16800 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=117263)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : Strikes all nearby enemies, dealing $m1 $?a429523[Arcane][Bleed] damage and an additional $405233o1 $?a429523[Arcane][Bleed] damage over $405233d.
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
@@ -4429,7 +4429,7 @@ Attributes       : ........ ........ ..x..... .....x..   ........ ........ .....
                  : Do Not Sheath (18), No Immunities (29), Can't Crit (93), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=127241)   : Energize Power (30)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : $@spelldesc158476
 
 Name             : Treant Form (desc=Shapeshift) (id=114282) [Spell Family (7)] 
@@ -5548,7 +5548,7 @@ Effects          :
 #2 (id=216288)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.16200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=216290)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : A quick beam of lunar light burns the enemy for $s2 Arcane damage and then an additional $o1 Arcane damage over $d.
 
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
@@ -5906,7 +5906,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : No Threat (42), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=222201)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 Description      : $@spelldesc77758
 
 Name             : Mastery: Nature's Guardian (id=159195) [Spell Family (7), Passive, Hidden] 
@@ -6440,7 +6440,7 @@ Effects          :
 #1 (id=280098)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.70000 | PvP Coefficient: 1.40000 | Target: Enemy (6)
 #2 (id=280099)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : Hurl a ball of energy at the target, dealing $s1 Nature damage.$?a197911[
 
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r][]
@@ -6634,7 +6634,7 @@ Effects          :
 #1 (id=284976)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80000 | PvP Coefficient: 1.30000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=284977)   : Energize Power (30)
-                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 #3 (id=295015)   : Dummy (3)
                    Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Enemy (6)
 #4 (id=298448)   : Server Side Script (77)
@@ -7386,7 +7386,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Treat as Area Effect (175), No Level Up Toast (281), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=297726)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #2 (id=297727)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.64000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=819590)   : Dummy (3)
@@ -7549,7 +7549,7 @@ Effects          :
 #2 (id=298296)   : Apply Aura (6) | Periodic Damage (3): astral every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=739525)   : Energize Power (30)
-                   Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : Burns the target for $s1 Astral damage, and then an additional $o2 damage over $d. If dispelled, causes $356474s1 damage to the dispeller and blasts them upwards.
 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
@@ -7688,7 +7688,7 @@ Effects          :
 #1 (id=298525)   : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=298537)   : Energize Power (30)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Resource: astral_power | Target: Self (1)
 Description      : $@spelldesc202342
 
 Name             : Half Moon (desc=Artifact) (id=202768) [Spell Family (7)] 
@@ -7716,7 +7716,7 @@ Effects          :
 #2 (id=299004)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=321940)   : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : Deals $m1 Arcane damage to the target and empowers Half Moon to become Full Moon.
 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
@@ -7780,7 +7780,7 @@ Effects          :
 #1 (id=298969)   : School Damage (2): arcane
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.68000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=298970)   : Energize Power (30)
-                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 #3 (id=299005)   : Dummy (3)
                    Base Value: 202788 | Scaled Value: 202788 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=299044)   : Dummy (3)
@@ -7939,7 +7939,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=300973)   : Energize Power (30)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 Description      : $@spelldesc203962
 
 Name             : Blood Frenzy (id=203962) [Spell Family (7), Passive] 
@@ -8074,7 +8074,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : No Threat (42), Allow While Stunned (163), Allow While Fleeing (177), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=301082)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 Description      : $@spelldesc155835
 
 Name             : Rend and Tear (id=204053) [Spell Family (7), Passive] 
@@ -8187,7 +8187,7 @@ Effects          :
 #4 (id=465062)   : Trigger Spell (64): Force of Nature
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 300 | Trigger Spell: 248280 | Target: Unknown(87)
 #5 (id=736032)   : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : Summons a stand of $s1 Treants for $248280d which immediately taunt and attack enemies in the targeted area.
 
 |cFFFFFFFFGenerates ${$m5/10} Astral Power.|r
@@ -8607,7 +8607,7 @@ Effects          :
 #2 (id=312309)   : Apply Aura (6) | Periodic Dummy (226): every 0.2 seconds
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=338650)   : Energize Power (30)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #4 (id=364768)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : Unleash Ashamane's Frenzy, clawing your target $m2 times over $d for ${$210723s1*$m2} Physical damage and an additional ${$210723s3*3*$m2} Bleed damage over $210723d.
@@ -8664,7 +8664,7 @@ Attributes       : ....x... x....... ........ x.......   ........ ........ .....
                  : Is Ability (4), Do Not Log (8), Allow While Mounted (24), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Always Cast Log (255)
 Effects          :
 #1 (id=312760)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc106830
 
 Name             : Fury of Elune (id=211545) [Spell Family (7)] 
@@ -9312,8 +9312,8 @@ Effects          :
                    Family Flags: 114
 #2 (id=356851)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 26 | Target: Self (1)
-#3 (id=356852)   : Apply Aura (6) | Increase Energy (35)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+#3 (id=356852)   : Apply Aura (6) | Increase Resource (35)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 #4 (id=356853)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
@@ -9740,7 +9740,7 @@ Effects          :
 #2 (id=726523)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=726524)   : Energize Power (30)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : Deals $m1 Astral damage to the target and empowers New Moon to become Half Moon. 
 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
@@ -9772,7 +9772,7 @@ Effects          :
 #2 (id=726526)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=726527)   : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : Deals $s1 Astral damage to the target and empowers Half Moon to become Full Moon.
 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
@@ -9803,7 +9803,7 @@ Effects          :
 #1 (id=726528)   : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.66000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=726529)   : Energize Power (30)
-                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 #3 (id=726530)   : Dummy (3)
                    Base Value: 202788 | Scaled Value: 202788 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=726531)   : Dummy (3)
@@ -9870,7 +9870,7 @@ Effects          :
 #3 (id=727440)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000 | PvP Coefficient: 0.85500 | Mechanic: Bleed
 #4 (id=727443)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc274837
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
@@ -11914,7 +11914,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=837692)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : $@spelldesc338668
 
 Name             : Verdant Infusion (id=338829) [Spell Family (7), Passive] 
@@ -12225,7 +12225,7 @@ Effects          :
 #1 (id=838231)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=838232)   : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : Clearcast abilities generate $s1% of their Energy cost, and your maximum energy is increased by $s2.
 
 Name             : Oneth's Clear Vision (id=339797) [Spell Family (7)] 
@@ -12908,7 +12908,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Aura Points On Client (268), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=840759)   : Energize Power (30)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : $@spelldesc340686
 
 Name             : Sudden Ambush (id=340694) [Spell Family (7), Passive, Hidden] 
@@ -13251,7 +13251,7 @@ Attributes       : ....x... ........ ........ x.......   ........ ........ .....
                  : Is Ability (4), Allow While Mounted (24), No Cast Log (128), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=844845)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc106951
 
 Name             : Berserk (id=343223) [Spell Family (7), Passive] 
@@ -14271,7 +14271,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=905751)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc364416
 
 Name             : Cosmic Predator (id=365334) 
@@ -15469,8 +15469,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1015211)  : Apply Aura (6) | Increase Energy (35)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+#1 (id=1015211)  : Apply Aura (6) | Increase Resource (35)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 #2 (id=1027913)  : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 Description      : Maximum Energy increased by $s1 and Energy regeneration increased by $s2%.
@@ -16308,7 +16308,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1029637)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc391872
 
 Name             : Frantic Momentum (id=391875) [Spell Family (7), Passive] 
@@ -17247,7 +17247,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1031631)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : $@spelldesc88747
 
 Name             : Mastery: Astral Invocation (id=393014) [Spell Family (7), Passive] 
@@ -17501,7 +17501,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Always Cast Log (255)
 Effects          :
 #1 (id=1032700)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc391037
 
 Name             : Reinforced Fur (id=393618) [Spell Family (7), Passive] 
@@ -19227,7 +19227,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135)
 Effects          :
 #1 (id=1053251)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc106951
 
 Name             : Thrash (id=405233) [Spell Family (7)] 
@@ -19657,7 +19657,7 @@ Effects          :
 #1 (id=1072361)  : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.81100 | PvP Coefficient: 0.50000 | Target: Enemy (6)
 #2 (id=1072362)  : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Resource: astral_power | Target: Self (1)
 Description      : $@spelldesc405511
 
 Name             : Shadows of the Predator (id=408340) [Spell Family (7)] 
@@ -19830,7 +19830,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1077504)  : Energize Power (30) | Scaling Class: -2
-                   Base Value: 0 | Scaled Value: 175000.9 (coefficient=0.066667) | PvP Coefficient: 1.00000 | Misc Value: mana | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 175000.9 (coefficient=0.066667) | PvP Coefficient: 1.00000 | Resource: mana | Target: Self (1)
 Description      : $@spelldesc289237
 
 Name             : Master Shapeshifter (id=411144) [Spell Family (7)] 
@@ -19850,7 +19850,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1077505)  : Energize Power (30) | Scaling Class: -2
-                   Base Value: 0 | Scaled Value: 43750.88 (coefficient=0.016667) | PvP Coefficient: 1.00000 | Misc Value: mana | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 43750.88 (coefficient=0.016667) | PvP Coefficient: 1.00000 | Resource: mana | Target: Self (1)
 Description      : $@spelldesc289237
 
 Name             : Master Shapeshifter (id=411146) [Spell Family (7)] 
@@ -19869,7 +19869,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1077507)  : Energize Power (30) | Scaling Class: -2
-                   Base Value: 0 | Scaled Value: 43750.88 (coefficient=0.016667) | PvP Coefficient: 1.00000 | Misc Value: mana | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 43750.88 (coefficient=0.016667) | PvP Coefficient: 1.00000 | Resource: mana | Target: Self (1)
 Description      : $@spelldesc289237
 
 Name             : Master Shapeshifter (id=411267) [Spell Family (7)] 
@@ -19887,7 +19887,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1077707)  : Energize Power (30)
-                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : $@spelldesc289237
 
 Name             : Master Shapeshifter (id=411269) [Spell Family (7)] 
@@ -19905,7 +19905,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1077709)  : Energize Power (30)
-                   Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : $@spelldesc289237
 
 Name             : Master Shapeshifter (id=411270) [Spell Family (7)] 
@@ -19923,7 +19923,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1077710)  : Energize Power (30)
-                   Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : $@spelldesc289237
 
 Name             : Predator Revealed (id=411344) [Spell Family (7)] 
@@ -19945,7 +19945,7 @@ Attributes       : ....x... ........ ........ x.......   ........ ........ .....
                  : Is Ability (4), Allow While Mounted (24), No Cast Log (128), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1077871)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc408468
 
 Name             : Lunar Beam (id=414613) [Spell Family (7)] 
@@ -20650,7 +20650,7 @@ Effects          :
 #1 (id=1101681)  : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.16600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=1101682)  : Energize Power (30)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : Full Moon calls down $424058s1 Crescent $LMoon:Moons; that $Ldeals:deal; Astral damage and generate ${$m2/10} Astral Power.
 
 Name             : Boundless Moonlight (id=425206) [Spell Family (7)] 
@@ -20967,9 +20967,9 @@ Effects          :
 #1 (id=1109706)  : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.12000 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
 #2 (id=1119703)  : Energize Power (30)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 #3 (id=1119704)  : Energize Power (30)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 Description      : $@spelldesc424058
 
 Name             : Harmony of the Grove (id=428731) [Spell Family (7), Passive] 
@@ -21220,7 +21220,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1113578)  : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 #2 (id=1113580)  : Apply Aura (6) | Modify Mana Pool% (419)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your maximum mana is increased by $s2%$?a137013[ and your maximum Astral Power is increased by ${$s1/10}][].
@@ -21685,7 +21685,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1117494)  : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 Description      : $@spelldesc429520
 
 Name             : Atmospheric Exposure (id=430589) [Spell Family (7)] 
@@ -22755,10 +22755,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1136290)  : Apply Aura (6) | Increase Energy (35)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-#2 (id=1136291)  : Apply Aura (6) | Increase Energy (35)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+#1 (id=1136290)  : Apply Aura (6) | Increase Resource (35)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
+#2 (id=1136291)  : Apply Aura (6) | Increase Resource (35)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 #3 (id=1138014)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your maximum Energy and Rage are increased by $s1.
@@ -23038,7 +23038,7 @@ Attributes       : ....x... ........ ........ x.......   ........ ........ .....
                  : Is Ability (4), Allow While Mounted (24), No Cast Log (128), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1136327)  : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc441701
 
 Name             : Dreadful Wound (id=441809) [Spell Family (7), Passive] 
@@ -23373,7 +23373,7 @@ Attributes       : ....x... ........ ........ x.......   ........ ........ .....
                  : Is Ability (4), Allow While Mounted (24), No Cast Log (128), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1137860)  : Energize Power (30)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 Description      : $@spelldesc441701
 
 Name             : Elune's Grace (id=443046) [Spell Family (7), Passive, Hidden] 
@@ -24015,7 +24015,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150604)  : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : Increases maximum Astral Power by ${$s1/10}. Entering Eclipse grants ${$450599s1/10} Astral Power.
 
 
@@ -24035,7 +24035,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Always Cast Log (255)
 Effects          :
 #1 (id=1150605)  : Energize Power (30)
-                   Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : $@spelldesc450598
 
 Name             : Dreadful Wound (id=451177) [Spell Family (7)] 
@@ -24132,7 +24132,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135)
 Effects          :
 #1 (id=1158913)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc455461
 
 Name             : Lethal Preservation (id=455470) [Spell Family (7)] 

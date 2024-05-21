@@ -3485,7 +3485,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=915679)   : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: essence | Target: Self (1)
 Description      : Increases your maximum Essence to $<max>.
 Variables        : $max=${6}
 
@@ -4843,7 +4843,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=996739)   : Energize Power (30) | Scaling Class: -2
-                   Base Value: 0.5 | Scaled Value: 31500 (coefficient=0.012) | PvP Coefficient: 0.75000 | Misc Value: mana | Target: Self (1)
+                   Base Value: 0.5 | Scaled Value: 31500 (coefficient=0.012) | PvP Coefficient: 0.75000 | Resource: mana | Target: Self (1)
 Description      : $@spelldesc372233
 
 Name             : Terror of the Skies (desc=Black) (id=372245) [Spell Family (224)] 
@@ -8813,7 +8813,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1030798)  : Energize Power (30)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: essence | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Resource: essence | Target: Self (1)
 
 Name             : Hover (id=393271) [Spell Family (224), Hidden] 
 Class            : Evoker

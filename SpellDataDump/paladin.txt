@@ -562,7 +562,7 @@ Effects          :
 #1 (id=11465)    : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=1145338)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : Triggers a burst of Light on the target, dealing $25912s1 Holy damage to an enemy, or $25914s1 healing to an ally.$?s272906[  Has an additional $272906s1% critical strike chance.][]
 
 |cFFFFFFFFGenerates $s2 Holy Power.
@@ -635,7 +635,7 @@ Effects          :
 #1 (id=14488)    : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.30200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=714232)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : Hurls a divine hammer that strikes an enemy for $<damage> $?s403664[Holystrike][Holy] damage. Only usable on enemies that have less than 20% health$?s326730[, or during Avenging Wrath][].
 
 |cFFFFFFFFGenerates $s2 Holy Power.
@@ -971,7 +971,7 @@ Effects          :
 #3 (id=135933)   : Apply Aura (6) | Silence (27)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26781 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 127 | Mechanic: Silence | Target: Enemy (6)
 #4 (id=737804)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : Hurls your shield at an enemy target, dealing $s1 Holy damage, interrupting and silencing the non-Player target for $d, and then jumping to ${$x1-1} additional nearby enemies. $?a209389[
 
 Shields you for $209388d, absorbing $209389s1% as much damage as it dealt.][]$?a378285[
@@ -1067,7 +1067,7 @@ Effects          :
 #1 (id=25579)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.07100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=25580)    : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : Strike the target for $<damage> $?s403664 [Holystrike][Physical] damage.$?a196926[
 
 Reduces the cooldown of Holy Shock by ${$196926m1/-1000}.1 sec.][]
@@ -1230,7 +1230,7 @@ Effects          :
 #1 (id=46252)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.85800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=171314)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : Hammers the current target for $53595sw1 Physical damage.$?s26573&s203785[
 
 Hammer of the Righteous also causes a wave of light that hits all other targets within $88263A1 yds for $88263sw1 Holy damage.]?s26573[
@@ -2228,7 +2228,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=91369)    : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : $@spelldesc231642
 
 Name             : Glyph of the Luminous Charger (id=89401) [Spell Family (10), Passive, Hidden] 
@@ -2682,7 +2682,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=129667)   : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : You may store an additional $s1 Holy Power beyond the maximum of 3. No ability ever consumes more than 3 Holy Power.
 
 Name             : Blinding Light (id=115750) [Spell Family (10)] 
@@ -2895,7 +2895,7 @@ Effects          :
 #2 (id=171225)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.47393 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=171226)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : $@spelldesc35395
 
 Name             : Shield of the Righteous (id=132403) [Spell Family (10)] 
@@ -3563,7 +3563,7 @@ Effects          :
 #1 (id=215489)   : Dispel (38)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=215490)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and restore $s2 Holy Power.
 
 Name             : Eternal Flame (id=156322) [Spell Family (10)] 
@@ -4266,7 +4266,7 @@ Effects          :
 #1 (id=267535)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.66387 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=267536)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 #3 (id=1051842)  : Trigger Spell (64): Blade of Justice
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 404358 | Target: Enemy (6)
 Description      : $?s403826[Pierce enemies][Pierce an enemy] with a blade of light, dealing $s1 Holy damage$?s403826[ to your target and $404358s1 Holy damage to nearby enemies.][.]
@@ -5186,7 +5186,7 @@ Effects          :
 #1 (id=301056)   : Create Area Trigger (179)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 6006 | Target: Custom (18)
 #2 (id=818577)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : Throws a Blessed Hammer that spirals outward, dealing $204301s1 Holy damage to enemies and reducing the next damage they deal to you by $<shield>.
 
 |cFFFFFFFFGenerates $s2 Holy Power.
@@ -5497,7 +5497,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Aura Is Debuff (26), Always AOE Line of Sight (186), Show Mechanic as Combat Text (213), Aura Points On Client (268), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=309522)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : $@spelldesc205273
 
 Name             : Eye of Tyr (desc=Artifact) (id=209202) [Spell Family (10)] 
@@ -6006,7 +6006,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=324569)   : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : $@spelldesc205273
 
 Name             : Judgment (id=220637) [Spell Family (10)] 
@@ -6027,7 +6027,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=329035)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : $@spelldesc20271
 
 Name             : Divine Steed (id=221883) [Spell Family (10)] 
@@ -6758,7 +6758,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Do Not Report Spell Failure (71), Allow While Invisible (78), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=370192)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : $@spelldesc211557
 
 Name             : Consecration (id=243597) [Spell Family (10)] 
@@ -7128,7 +7128,7 @@ Effects          :
 #1 (id=478180)   : School Damage (2): holyfire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.92600 | PvP Coefficient: 0.72727 | Radius: 14 yards | Target: Cone Front (104)
 #2 (id=478181)   : Energize Power (30)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 #3 (id=478182)   : Trigger Spell (64): Truth's Wake
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Misc Value: 5 | Trigger Spell: 403695 | Target: Self (1)
 #4 (id=1053555)  : Trigger Spell (64): Wake of Ashes
@@ -8800,7 +8800,7 @@ Effects          :
 #2 (id=820204)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=880326)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : Throws a hammer at your target dealing $s1 Shadow damage, and empowering your next $?c3[Templar's Verdict to automatically trigger Divine Storm]?c1[Word of Glory to automatically trigger Light of Dawn][Word of Glory to automatically trigger Shield of the Righteous] with $s2% increased effectiveness.
 
 |cFFFFFFFFGenerates $s3 Holy Power.
@@ -10677,7 +10677,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Do Not Report Spell Failure (71), Allow While Invisible (78), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=845588)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : $@spelldesc223306
 
 Name             : Final Reckoning (id=343721) [Spell Family (10)] 
@@ -11070,7 +11070,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Do Not Report Spell Failure (71), Allow While Invisible (78), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=890731)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : $@spelldesc54149
 
 Name             : Divine Resonance (id=356890) 
@@ -11555,7 +11555,7 @@ Effects          :
 #3 (id=1002106)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 30 yards | Target: Custom (18) -> AOE friendly (31)
 #4 (id=1032593)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 #5 (id=1033601)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 Description      : Instantly cast $?a137029[Holy Shock]?a137028[Avenger's Shield]?a137027[Judgment][Holy Shock, Avenger's Shield, or Judgment] on up to $s1 targets within $A2 yds.$?(a384027|a386738|a387893)[
@@ -14024,7 +14024,7 @@ Effects          :
 #3 (id=1021794)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 25 yards | Target: At Caster (22) -> AOE enemy (instant) (7)
 #4 (id=1120020)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : Releases a blinding flash from your shield, causing $s2 Holy damage to all nearby enemies within $A1 yds and reducing all damage they deal to you by $s1% for $d.
 Tooltip          : Dealing $s1% less damage to the Paladin.
 
@@ -16408,7 +16408,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1049820)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : $@spelldesc383314
 
 Name             : Lightforged Blessing (id=403460) [Spell Family (10)] 
@@ -17920,7 +17920,7 @@ Effects          :
 #1 (id=1055717)  : School Damage (2): holyfire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.11116 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1055718)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : Complete the Templar combo, slash the target for $<damage> $?s403664[Holystrike][Radiant] damage, and burn them over 4 sec for 50% of the damage dealt.
 
 |cFFFFFFFFGenerate $s2 Holy Power.
@@ -17993,7 +17993,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1056072)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : $@spelldesc404542
 Tooltip          : $@spelldesc404542
 
@@ -18278,7 +18278,7 @@ Effects          :
 #1 (id=1070978)  : School Damage (2): holyfire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.90366 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1070979)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : Begin the Templar combo, striking the target for $<damage> $?s403664 [Holystrike][Radiant] damage.
 
 |cFFFFFFFFGenerates $s2 Holy Power.
@@ -18360,7 +18360,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1072476)  : Energize Power (30)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : $@spelldesc406158
 
 Name             : Justicar's Vengeance (id=408394) [Spell Family (10)] 
@@ -18927,7 +18927,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1083016)  : Energize Power (30) | Scaling Class: -2
-                   Base Value: 0.5 | Scaled Value: 1999.95 (coefficient=0.013333) | PvP Coefficient: 1.00000 | Misc Value: mana | Target: Self (1)
+                   Base Value: 0.5 | Scaled Value: 1999.95 (coefficient=0.013333) | PvP Coefficient: 1.00000 | Resource: mana | Target: Self (1)
 Description      : $@spelldesc414170
 
 Name             : Awakening (id=414193) [Spell Family (10)] 
@@ -19570,7 +19570,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Suppress Caster Procs (112), Suppress Target Procs (113), Always Cast Log (255), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1085282)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: mana | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: mana | Target: Self (1)
 Description      : $@spelldesc415364
 
 Name             : Gift of the Naaru (desc=Racial) (id=416250) [Spell Family (3)] 
@@ -23310,7 +23310,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1161209)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : $@spelldesc431474
 
 Name             : Will of the Dawn (id=456779) [Spell Family (10)] 

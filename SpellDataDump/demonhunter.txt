@@ -135,7 +135,7 @@ Effects          :
 #2 (id=227731)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.84513 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=287985)   : Energize Power (30)
-                   Base Value: 25 | Scaled Value: 25 (coefficient=0, delta coefficient=0.4) | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 (coefficient=0, delta coefficient=0.4) | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 Description      : Quickly attack for $s2 Physical damage.
 
 |cFFFFFFFFGenerates $?a258876[${$m3+$258876s3} to ${$M3+$258876s4}][$m3 to $M3] Fury.|r
@@ -818,7 +818,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=284448)   : Energize Power (30)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 Description      : $@spelldesc162794
 
 Name             : Fel Rush (id=195072) [Spell Family (107)] 
@@ -1677,9 +1677,9 @@ Effects          :
 #1 (id=298886)   : Dispel (38)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=298887)   : Energize Power (30)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #3 (id=326731)   : Energize Power (30)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: pain | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Resource: pain | Target: Self (1)
 Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and generate $?s203513[${$m3/10} Pain][$m2 Fury].
 
 Name             : Fury of the Illidari (id=202809) 
@@ -2012,7 +2012,7 @@ Effects          :
 #1 (id=300625)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60880 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=300626)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 Description      : Shears an enemy for $s1 Physical damage, and shatters $?a187827[two Lesser Soul Fragments][a Lesser Soul Fragment] from your target.
 
 |cFFFFFFFFGenerates $m2 Fury.|r
@@ -2120,7 +2120,7 @@ Effects          :
 #1 (id=300651)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.14933 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=300652)   : Energize Power (30)
-                   Base Value: 9.5 | Scaled Value: 9.5 (coefficient=0, delta coefficient=0.526316) | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 9.5 | Scaled Value: 9.5 (coefficient=0, delta coefficient=0.526316) | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 Description      : $@spelldesc203555
 
 Name             : Demon Spikes (id=203819) [Spell Family (107)] 
@@ -2519,7 +2519,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=302362)   : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: pain | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: pain | Target: Self (1)
 Description      : $@spelldesc207550
 
 Name             : Sigil of Chains (id=204843) [Spell Family (107)] 
@@ -3311,7 +3311,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=309709)   : Energize Power (30)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: pain | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Resource: pain | Target: Self (1)
 Description      : $@spelldesc207548
 
 Name             : Last Resort (id=209258) [Spell Family (107), Passive] 
@@ -3497,7 +3497,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Report Spell Failure (71), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=310970)   : Energize Power (30)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 Description      : $@spelldesc206478
 
 Name             : Consume Soul (id=210042) [Spell Family (107)] 
@@ -4088,7 +4088,7 @@ Effects          :
 #2 (id=316325)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.98407 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=316326)   : Energize Power (30)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 Description      : $@spelldesc232893
 
 Name             : Master of the Glaive (id=213405) [Spell Family (107)] 
@@ -4308,9 +4308,9 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=326008)   : Energize Power (30)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #2 (id=326009)   : Energize Power (30)
-                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: pain | Target: Self (1)
+                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Resource: pain | Target: Self (1)
 Description      : $@spelldesc183752
 
 Name             : Soul Fragment (id=219712) [Spell Family (107)] 
@@ -5507,9 +5507,9 @@ Effects          :
 #1 (id=483167)   : Apply Aura (6) | Periodic Trigger Spell (23): Immolation Aura every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 258922 | Target: Self (1)
 #2 (id=483168)   : Energize Power (30)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #3 (id=807397)   : Energize Power (30)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #4 (id=811734)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=821561)   : Apply Aura (6) | Modify Armor% (101)
@@ -5576,9 +5576,9 @@ Effects          :
 #1 (id=483172)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10028 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=483173)   : Energize Power (30)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #3 (id=807415)   : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #4 (id=1042693)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc258920
@@ -5665,7 +5665,7 @@ Effects          :
 #3 (id=706538)   : Trigger Spell (64): Fracture
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 150 | Trigger Spell: 225921
 #4 (id=706539)   : Energize Power (30)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 Description      : Rapidly slash your target for ${$225919sw1+$225921sw1} Physical damage, and shatter $s1 Lesser Soul Fragments from them.
 
 |cFFFFFFFFGenerates $s4 Fury.|r
@@ -5853,7 +5853,7 @@ Effects          :
 #1 (id=733970)   : Dispel (38)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Enemy (6)
 #2 (id=733971)   : Energize Power (30)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #3 (id=889544)   : Dispel (38)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Consume $m1 beneficial Magic effect removing it from the target$?s320313[ and granting you $s2 Fury][].
@@ -6590,7 +6590,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=808070)   : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 Description      : Increases maximum Fury by $s1.
 
 Name             : Sigil of Flame (id=320794) [Spell Family (107), Passive, Hidden] 
@@ -9096,7 +9096,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Can't Crit (93), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=889671)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 Description      : $@spelldesc355893
 
 Name             : Mortal Dance (id=356608) 
@@ -9269,7 +9269,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=904099)   : Energize Power (30)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : $@spelldesc363736
 
 Name             : Deadly Dance (id=364438) [Spell Family (107), Passive, Hidden] 
@@ -10288,7 +10288,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1026256)  : Energize Power (30)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 Description      : $@spelldesc204596
 
 Name             : Precise Sigils (id=389799) [Spell Family (107), Passive] 
@@ -11543,7 +11543,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1028806)  : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 Description      : $@spelldesc389708
 
 Name             : Blade Dance (id=391374) [Spell Family (107)] 
@@ -11712,7 +11712,7 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126)
 Effects          :
 #1 (id=1031633)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 Description      : $@spelldesc390808
 
 Name             : Fel Flame Fortification (id=393009) [Spell Family (107)] 
@@ -12390,7 +12390,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Cast While Casting (135), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1073079)  : Energize Power (30)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Resource: fury | Target: Self (1)
 Description      : $@spelldesc405507
 
 Name             : Tip the Scales (id=408795) [Spell Family (107)] 
@@ -12977,9 +12977,9 @@ Effects          :
 #1 (id=1107753)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10900 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=1107754)  : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #3 (id=1107755)  : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #4 (id=1107756)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc258920
@@ -13004,9 +13004,9 @@ Effects          :
 #1 (id=1107761)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10900 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=1107762)  : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #3 (id=1107763)  : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #4 (id=1107764)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc258920
@@ -13031,9 +13031,9 @@ Effects          :
 #1 (id=1107765)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10900 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=1107766)  : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #3 (id=1107767)  : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #4 (id=1107768)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc258920
@@ -13063,9 +13063,9 @@ Effects          :
 #1 (id=1107775)  : Apply Aura (6) | Periodic Trigger Spell (23): Immolation Aura every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 427910 | Target: Self (1)
 #2 (id=1107776)  : Energize Power (30)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #3 (id=1107777)  : Energize Power (30)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #4 (id=1107778)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=1107779)  : Apply Aura (6) | Modify Armor% (101)
@@ -13115,9 +13115,9 @@ Effects          :
 #1 (id=1107781)  : Apply Aura (6) | Periodic Trigger Spell (23): Immolation Aura every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 427911 | Target: Self (1)
 #2 (id=1107782)  : Energize Power (30)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #3 (id=1107783)  : Energize Power (30)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #4 (id=1107784)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=1107785)  : Apply Aura (6) | Modify Armor% (101)
@@ -13167,9 +13167,9 @@ Effects          :
 #1 (id=1107787)  : Apply Aura (6) | Periodic Trigger Spell (23): Immolation Aura every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 427916 | Target: Self (1)
 #2 (id=1107788)  : Energize Power (30)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #3 (id=1107789)  : Energize Power (30)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #4 (id=1107790)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=1107791)  : Apply Aura (6) | Modify Armor% (101)
@@ -13214,9 +13214,9 @@ Effects          :
 #1 (id=1107793)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10900 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=1107794)  : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #3 (id=1107795)  : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #4 (id=1107796)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc258920
@@ -13592,7 +13592,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Can't Crit (93), Not In Spellbook (143), Ignore Healing Modifiers (219), Do Not Log on Learn (355), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1109570)  : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 #2 (id=1109571)  : Direct Heal% (136)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc428607
@@ -13755,7 +13755,7 @@ Effects          :
 #1 (id=1137380)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 #2 (id=1137756)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 Description      : Throw a glaive enhanced with the essence of consumed souls at your target, dealing $s1 Physical damage and ricocheting to $x1 additional targets for ${$s1/2}.
  
 Begins a well-practiced pattern of glaivework, enhancing your next $?a212612[Chaos Strike]?s263642[Fracture][Shear] and $?a212612[Blade Dance][Soul Cleave]:
@@ -14663,7 +14663,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=1153555)  : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 Description      : Maximum Fury increased by $s1.
 
 Name             : Student of Suffering (id=452412) [Spell Family (107), Passive] 
@@ -15298,7 +15298,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Do Not Sheath (18), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1154923)  : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
 Description      : $@spelldesc452412
 
 Name             : Student of Suffering (id=453239) [Spell Family (107)] 
