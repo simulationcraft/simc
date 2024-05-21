@@ -1977,7 +1977,6 @@ public:
     parse_effects( p()->buff.feline_potential );
     parse_effects( p()->buff.harmony_of_the_grove );
     parse_effects( p()->buff.root_network );
-    parse_effects( p()->buff.strategic_infusion );
     parse_effects( p()->buff.ursine_potential );
   }
 
@@ -10679,7 +10678,9 @@ void druid_t::create_buffs()
           ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
   buff.strategic_infusion = make_fallback( talent.strategic_infusion.ok() && talent.tigers_fury.ok(),
-      this, "strategic_infusion", find_spell( 439891 ) );
+      this, "strategic_infusion", find_spell( 439891 ) )
+          ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+          ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
   buff.treants_of_the_moon = make_fallback<treants_of_the_moon_buff_t>(
       talent.treants_of_the_moon.ok() && ( talent.force_of_nature.ok() || talent.grove_guardians.ok() ),
