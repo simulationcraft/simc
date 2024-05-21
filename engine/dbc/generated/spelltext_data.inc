@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54774
-static const std::array<spelltext_data_t, 25654> __spelltext_data { {
+static const std::array<spelltext_data_t, 25655> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23700,6 +23700,7 @@ static const std::array<spelltext_data_t, 25654> __spelltext_data { {
   { 441776, "$@spelldesc441423", 0, 0 },
   { 441777, "$@spelldesc440031", 0, 0 },
   { 441786, "$@spelldesc441423", "Building to a Coup de Grace.", 0 },
+  { 441807, "An interest in mining safety significantly reduces the chance of dying to pickaxe related accidents.", "Your interest in mining safety significantly reduces the chance of dying in a pickaxe related accident.", 0 },
   { 441809, "Ravage also inflicts a Bleed that causes $?a137011[$441812s1][$451177s1] damage over $441812d and saps its victims' strength, reducing damage they deal to you by $441812s2%.\r\n\r\nDreadful Wound is not affected by Circle of Life and Death. $?a137011[If a Dreadful Wound benefiting from Tiger's Fury is re-applied, the new Dreadful Wound deals damage as if Tiger's Fury was active.][]", 0, 0 },
   { 441812, "$@spelldesc441809", "Bleeding for $w1 damage every $t1 seconds. Weakened, dealing $w2% less damage to $@auracaster.", 0 },
   { 441814, "Ravage increases your auto-attack speed by $441817s1% for $441817d.", 0, 0 },

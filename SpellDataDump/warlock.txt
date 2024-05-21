@@ -1054,7 +1054,7 @@ Attributes       : ........ ........ x....... x..x....   ........ ..x..... .....
                  : Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), No Threat (42), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=9524)     : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc980
 
 Name             : Conflagrate (id=17962) [Spell Family (5)] 
@@ -1177,7 +1177,7 @@ Effects          :
 #1 (id=10879)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=113505)   : Energize Power (30)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Unknown(25)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Resource: energy | Target: Unknown(25)
 Description      : Heals and energizes when an effect is dispelled.
 
 Name             : Immolation (id=20153) [Spell Family (5)] 
@@ -1452,7 +1452,7 @@ Attributes       : ........ x....... x....... ...x....   ...x...x ........ .....
                  : Do Not Log (8), Not Shapeshifted (16), Allow While Sitting (27), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=18882)    : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc17877
 
 Name             : Incinerate (id=29722) [Spell Family (5)] 
@@ -1698,7 +1698,7 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : Not Shapeshifted (16), Aura Is Debuff (26), Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=20750)    : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc30108
 
 Name             : Avoidance (desc=Passive) (id=32233) [Passive] 
@@ -4681,7 +4681,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Always Hit (114), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=283627)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc603
 
 Name             : Call Dreadstalkers (id=193331) [Spell Family (5)] 
@@ -4746,7 +4746,7 @@ Attributes       : ........ x....... ........ ........   ........ ........ .....
                  : Do Not Log (8), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=283938)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc348
 
 Name             : Immolate (id=193541) [Spell Family (5), Passive, Hidden] 
@@ -4787,7 +4787,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Always Hit (114), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=285036)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc686
 
 Name             : Grimoire of Sacrifice (id=196099) [Spell Family (5)] 
@@ -5316,7 +5316,7 @@ Effects          :
 #1 (id=288602)   : Server Side Script (77)
                    Base Value: 24710 | Scaled Value: 24710 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=372097)   : Energize Power (30)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : Rips a hole in time and space, opening a portal that damages your target.
 
 |cFFFFFFFFGenerates $s2 Soul Shard Fragments.|r
@@ -5855,7 +5855,7 @@ Attributes       : ........ ........ x....... x..x....   ........ ..x..... .....
                  : Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), No Threat (42), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=303112)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc198590
 
 Name             : Agony (id=210067) [Spell Family (5), Hidden] 
@@ -5873,7 +5873,7 @@ Attributes       : .......x x....... x....... x..x....   ........ ..x..... .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), No Threat (42), No Aura Icon (60), Allow Cast While Casting (135), No Aura Log (202), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=311009)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc980
 
 Name             : Boost 2.0 [Warlock] - Pause Regen & Burn Mana (id=210070) [Spell Family (5), Hidden] 
@@ -6127,7 +6127,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=321152)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc215941
 
 Name             : Grimoire of Service (id=216187) 
@@ -6724,7 +6724,7 @@ Attributes       : ........ x....... ........ ........   ........ ........ .....
                  : Do Not Log (8), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=371986)   : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc29722
 
 Name             : Conflagrate (id=245330) [Spell Family (5)] 
@@ -6743,7 +6743,7 @@ Attributes       : ........ x....... ........ ........   ........ ........ .....
                  : Do Not Log (8), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=373145)   : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc17962
 
 Name             : Shadowburn (id=245731) [Spell Family (5)] 
@@ -6762,7 +6762,7 @@ Attributes       : ........ x....... x....... ...x....   ...x...x ........ .....
                  : Do Not Log (8), Not Shapeshifted (16), Allow While Sitting (27), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=373996)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc17877
 
 Name             : Soul Shards (id=246985) [Passive] 
@@ -7256,7 +7256,7 @@ Attributes       : ....x... x....... x.x..... ........   ...x...x ........ .....
                  : Is Ability (4), Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Include In Advanced Combat Log (72), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=707728)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Unknown(27)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Unknown(27)
 Description      : $@spelldesc264364
 Tooltip          : Generates $s1 Soul Shard Fragment.
 
@@ -7374,7 +7374,7 @@ Effects          :
 #1 (id=709184)   : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 135002 | Misc Value 2: 0x109f | Radius: 5 yards | Target: Unknown(44)
 #2 (id=830602)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 #3 (id=1107331)  : None (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
 Description      : Summon a Demonic Tyrant to increase the duration of your Dreadstalkers, Vilefiend, Felguard, and up to $s3 of your Wild Imps by ${$265273m3/1000} sec. Your Demonic Tyrant increases the damage of affected demons by $265273s1%, while damaging your target.$?s334585[
@@ -8329,7 +8329,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=716125)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc196277
 
 Name             : Demonic Core (id=270171) [Spell Family (5), Hidden] 
@@ -8470,7 +8470,7 @@ Attributes       : ....x... x....... x.x..... ........   ...x...x ........ .....
                  : Is Ability (4), Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Include In Advanced Combat Log (72), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=720135)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc270545
 Tooltip          : Generates $s1 Soul Shard Fragment.
 
@@ -8491,7 +8491,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=720159)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Unknown(25)
+                   Base Value: 10 | Scaled Value: 10 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Unknown(25)
 Description      : $@spelldesc264057
 
 Name             : Wicked Maw (id=270569) [Spell Family (5)] 
@@ -8859,7 +8859,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Always Hit (114), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=737444)   : Energize Power (30)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc264178
 
 Name             : Demonbolt (id=280381) [Spell Family (5), Hidden] 
@@ -8944,7 +8944,7 @@ Attributes       : ........ x....... ........ ........   ........ ........ .....
                  : Do Not Log (8), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=740053)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc6353
 
 Name             : Demonic Power (id=281870) [Spell Family (5), Hidden] 
@@ -9099,7 +9099,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
 #1 (id=753689)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc289364
 Tooltip          : Deals $w1 Shadow damage.
 
@@ -9204,7 +9204,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=794006)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc312321
 
 Name             : Scouring Tithe (desc=Kyrian) (id=312397) [Spell Family (5), Hidden] 
@@ -11437,7 +11437,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=904129)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Friend (21)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Friend (21)
 Description      : Restores $s1 of their summoner's Soul Shards.
 
 Name             : Calamitous Crescendo (id=364320) [Hidden] 
@@ -14425,7 +14425,7 @@ Effects          :
 #1 (id=1023210)  : Server Side Script (77)
                    Base Value: 24710 | Scaled Value: 24710 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1023211)  : Energize Power (30)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : Rips a hole in time and space, opening a random portal that damages your target:
 
 $@spellicon394235$@spellname394235
@@ -17468,7 +17468,7 @@ Effects          :
 #1 (id=1124532)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.04531 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1152084)  : Energize Power (30)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : Hurl a bolt enveloped in the infernal flames of the abyss, dealing $s1 Fire damage to your enemy target and generating ${$s2/10} Soul Shards.
 
 Name             : Infernal Vitality (id=434559) [Spell Family (5)] 
@@ -18758,7 +18758,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1150554)  : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc449620
 
 Name             : Shared Fate (id=450591) [Spell Family (5)] 
@@ -18857,7 +18857,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1150863)  : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc449706
 
 Name             : Demonic Tactics (id=452894) [Spell Family (5), Passive, Hidden] 
@@ -19095,7 +19095,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1154649)  : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc453070
 
 Name             : Improved Shadow Bolt (id=453080) [Spell Family (5), Passive, Hidden] 
@@ -20008,7 +20008,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1159235)  : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc455587
 
 Name             : Infernal Fragmentation (id=456310) [Spell Family (5)] 
@@ -20047,7 +20047,7 @@ Attributes       : ....x... x....... x.x..... ........   ...x...x ........ .....
                  : Is Ability (4), Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Include In Advanced Combat Log (72), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1160432)  : Energize Power (30)
-                   Base Value: 0.5 | Scaled Value: 0.5 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Unknown(27)
+                   Base Value: 0.5 | Scaled Value: 0.5 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Unknown(27)
 Description      : $@spelldesc264364
 Tooltip          : Generates $s1 Soul Shard Fragment.
 

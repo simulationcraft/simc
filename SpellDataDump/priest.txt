@@ -257,7 +257,7 @@ Effects          :
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.09588 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=323674)   : Energize Power (30)
-                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 Description      : A word of darkness that causes $?a390707[${$s1*(1+$390707s1/100)}][$s1] Shadow damage instantly, and an additional $?a390707[${$o2*(1+$390707s1/100)}][$o2] Shadow damage over $d.$?s137033[
 
 |cFFFFFFFFGenerates ${$m3/100} Insanity.|r][]
@@ -544,7 +544,7 @@ Effects          :
 #1 (id=3283)     : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.78336 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=139174)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 #3 (id=1033758)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : Blasts the target's mind for $s1 Shadow damage$?s424509[ and increases your spell damage to the target by $424509s1% for $214621d.][.]$?s137033[
@@ -1070,7 +1070,7 @@ Effects          :
 #3 (id=340366)   : Server Side Script (77)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=1073582)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 #5 (id=1101755)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 #6 (id=1152610)  : School Damage (2): shadow
@@ -1347,7 +1347,7 @@ Effects          :
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.22216 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=323673)   : Energize Power (30)
-                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 #4 (id=841601)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.02895 | PvP Coefficient: 0.75000 | Target: Enemy (6)
 Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals you for ${($e2+$137033s17+$137033s18)*100}% of damage dealt. If Vampiric Touch is dispelled, the dispeller flees in Horror for $87204d.
@@ -2370,7 +2370,7 @@ Effects          :
 #1 (id=66820)    : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80865 | PvP Coefficient: 1.16000 | Target: Enemy (6)
 #2 (id=66821)    : Energize Power (30)
-                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 #3 (id=323988)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : Blasts the target for $s1 Shadowfrost damage.
@@ -3203,7 +3203,7 @@ Effects          :
 #3 (id=1156298)  : Apply Aura (6) | Unknown(395)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 33742 | Target: Self (1)
 #4 (id=1156299)  : Energize Power (30)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 Description      : Creates a ring of Shadow energy around you that quickly expands to a $s2 yd radius, healing allies for $120692s1 and dealing $<shadowhalodamage> Shadow damage to enemies. Healing reduced beyond $s1 targets.$?s137033[
 
 |cFFFFFFFFGenerates ${$m4/100} Insanity.|r][]
@@ -3359,7 +3359,7 @@ Effects          :
 #2 (id=1042301)  : Dummy (3)
                    Base Value: 27 | Scaled Value: 27 | PvP Coefficient: 1.00000 | Target: Custom (18)
 #3 (id=1045444)  : Energize Power (30)
-                   Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 Description      : Throw a Divine Star forward $s2 yds, healing allies in its path for $110745s1 and dealing $<shadowdstardamage> Shadow damage to enemies. After reaching its destination, the Divine Star returns to you, healing allies and damaging enemies in its path again. Healing reduced beyond $s1 targets.$?s137033[
 
 |cFFFFFFFFGenerates ${$m3/100} Insanity.|r][]
@@ -5407,7 +5407,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31), Not an Action (92), Do Not Display Range (126), Do Not Display Duration (170), No Cooldown On Tooltip (192), Aura Points On Client (268), Do Not Log Aura Refresh (291), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=293695)   : Energize Power (30)
-                   Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 Description      : $@spelldesc280752
 
 Name             : San'layn (id=199855) [Spell Family (6), Passive, Hidden] 
@@ -5459,7 +5459,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), AI Doesn't Face Target (179), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=294417)   : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Unknown(25)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Unknown(25)
 Description      : The Mindbender's melee attacks siphon energy from the target, converting it into Insanity for its master.
 
 Name             : Trail of Light (id=200128) [Spell Family (6), Passive, Hidden] 
@@ -5857,7 +5857,7 @@ Effects          :
 #1 (id=303253)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 205386 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=303254)   : Energize Power (30)
-                   Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 #3 (id=1028684)  : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 391286 | Radius: 8 yards | Target: Unknown(87)
 Description      : Aim a bolt of slow-moving Shadow energy at the destination, dealing $205386s1 Shadow damage.
@@ -5915,7 +5915,7 @@ Effects          :
 #2 (id=303383)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.92723 | PvP Coefficient: 0.89000 | Target: Enemy (6)
 #3 (id=308158)   : Energize Power (30)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 #4 (id=845538)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Sends a bolt of pure void energy at the enemy, causing $s2 Shadow damage$?s193225[, refreshing the duration of Devouring Plague on the target][]$?a231688[ and extending the duration of Shadow Word: Pain and Vampiric Touch on all nearby targets by $<ext> sec][]. 
@@ -6625,7 +6625,7 @@ Effects          :
 #2 (id=351094)   : Energize Power% (137)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=351095)   : Energize Power (30)
-                   Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and restore $?s137033[${$s3/100} Insanity][$s2% of your mana].
 
 Name             : Shadowform (id=232698) [Spell Family (6)] 
@@ -7222,7 +7222,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), AI Doesn't Face Target (179), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=623734)   : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Unknown(25)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Unknown(25)
 Description      : $@spelldesc262484
 
 Name             : Void Torrent (id=263165) [Spell Family (6)] 
@@ -7324,7 +7324,7 @@ Attributes       : ........ ........ ........ x..x...x   .....x.. ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), No Caster Aura Icon (187), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=709098)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: mana | Radius: 40 yards | Target: Raid Members (56)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: mana | Radius: 40 yards | Target: Raid Members (56)
 #2 (id=759288)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Misc Value: 1284 | Radius: 40 yards | Target: Raid Members (56)
                    Affected Spells (Label): Divine Protection (498), Shield Wall (871), Desperate Prayer (19236), Barkskin (22812), Ardent Defender (31850), Icebound Fortitude (48792), Vampiric Blood (55233), Mirror Image (55342), Unending Resolve (104773), Astral Shift (108271), Exhilaration (109304), Fortifying Brew (115203), Die by the Sword (118038), Enraged Regeneration (184364), Crimson Vial (185311), Blur (198589), Fiery Brand (204021), Blur (212800), Obsidian Scales (363916), Shield Wall (372406), Divine Protection (403876)
@@ -7945,7 +7945,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=810033)   : Energize Power (30)
-                   Base Value: 800 | Scaled Value: 800 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 800 | Scaled Value: 800 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 Description      : $@spelldesc321291
 
 Name             : Death and Madness (id=322098) [Spell Family (6)] 
@@ -8155,7 +8155,7 @@ Effects          :
 #1 (id=812824)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=819551)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 #3 (id=819578)   : Energize Power% (137)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc323673
@@ -8181,7 +8181,7 @@ Effects          :
 #1 (id=812825)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=819584)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 #3 (id=819585)   : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc323673
@@ -8551,7 +8551,7 @@ Effects          :
 #1 (id=819295)   : Energize Power% (137)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=819296)   : Energize Power (30)
-                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 Description      : $@spelldesc327661
 
 
@@ -12509,7 +12509,7 @@ Effects          :
 #7 (id=1002584)  : Trigger Spell (64): Mindgames
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 375903 | Target: Self (1)
 #8 (id=1045449)  : Energize Power (30)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 Description      : Assault an enemy's mind, dealing ${$s1*$m3/100} Shadow damage and briefly reversing their perception of reality.
 
 For $d, the next $<damage> damage they deal will heal their target, and the next $<healing> healing they deal will damage their target.$?s137033[
@@ -12780,7 +12780,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1005149)  : Energize Power (30)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 Description      : Your Void Tendril or Void Lasher Generates ${$s1/100} Insanity periodically.
 
 Name             : Throes of Pain (id=377422) [Spell Family (6), Passive, Hidden] 
@@ -12835,7 +12835,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Suppress Caster Procs (112), Do Not Display Range (126), Allow Cast While Casting (135), Suppress Weapon Procs (151), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1005271)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 #2 (id=1005272)  : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc377422
@@ -14223,7 +14223,7 @@ Effects          :
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Spike (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Echoing Void (373304), Echoing Void (373305), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394976), Mind Sear (394979), Mind Spike: Insanity (407466), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Crash (457043)
                    Family Flags: 72
 #6 (id=1156177)  : Energize Power (30)
-                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 Description      : Increases your non-periodic Shadow damage by $s1% for $d.
 
 |cFFFFFFFFGenerates ${$m6/100} Insanity.|r
@@ -14471,7 +14471,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1028592)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 Description      : $@spelldesc391228
 
 Name             : Divine Service (id=391233) [Spell Family (6), Passive, Hidden] 
@@ -15542,7 +15542,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.x ..x..... .....
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1054184)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 Description      : $@spelldesc341491
 
 Name             : Divine Image (id=405963) [Spell Family (6)] 
@@ -15708,7 +15708,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1070862)  : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Misc Value: 13 | Target: Self (1)
+                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 #2 (id=1070864)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Devouring Plague (335467)
@@ -15744,7 +15744,7 @@ Effects          :
 #1 (id=1070939)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.76557 | PvP Coefficient: 1.16000 | Target: Enemy (6)
 #2 (id=1070940)  : Energize Power (30)
-                   Base Value: 800 | Scaled Value: 800 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 800 | Scaled Value: 800 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 #3 (id=1070941)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : Blasts the target for $s1 Shadowfrost damage.
@@ -18530,7 +18530,7 @@ Effects          :
 #1 (id=1152617)  : Energize Power% (137)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1152618)  : Energize Power (30)
-                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 Description      : Shadow Word: Death consumes absorb shields from your target, dealing up to $s1% extra damage to them and granting you $?c3[$s3 Insanity][$s2% mana] if a shield was present.
 
 Name             : Void Leech (id=451963) [Spell Family (6)] 
@@ -19112,7 +19112,7 @@ Effects          :
 #1 (id=1161701)  : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 457043 | Radius: 8 yards | Target: Enemy (6)
 #2 (id=1161702)  : Energize Power (30)
-                   Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Resource: insanity | Target: Self (1)
 #3 (id=1161703)  : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 457080 | Radius: 8 yards | Target: Enemy (6)
 Description      : Hurl a bolt of slow-moving Void energy at your target, dealing $205386s1 Shadow damage to all enemies within $a1 yds.

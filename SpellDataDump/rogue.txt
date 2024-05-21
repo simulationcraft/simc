@@ -26,7 +26,7 @@ Effects          :
 #2 (id=31)       : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.57000 | PvP Coefficient: 1.30000 | Target: Enemy (6)
 #3 (id=32)       : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #4 (id=297239)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].
@@ -121,7 +121,7 @@ Effects          :
 #2 (id=281)      : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=282)      : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #4 (id=842003)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Mutilate (5374), Ambush (8676), Mutilate (27576), Ambush (385897), Ambush (430023)
@@ -156,7 +156,7 @@ Effects          :
 #1 (id=447)      : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=448)      : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #3 (id=449)      : Trigger Spell (64): Mutilate
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 5374 | Target: Enemy (6)
 #4 (id=314319)   : Trigger Spell (64): Mutilate
@@ -241,7 +241,7 @@ Effects          :
 #1 (id=535)      : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.21762 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=536)      : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : Viciously strike an enemy, causing $s1 Physical damage.
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
@@ -304,7 +304,7 @@ Effects          :
 #1 (id=538)      : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=169690)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : Gouges the eyes of an enemy target, incapacitating for $d. Damage will interrupt the effect.
 
 Must be in front of your target.
@@ -402,7 +402,7 @@ Effects          :
 #1 (id=564)      : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=565)      : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : Stuns the target for $d.
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
@@ -432,7 +432,7 @@ Effects          :
 #2 (id=138233)   : Trigger Spell (64): (18461)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 18461 | Target: Self (1)
 #3 (id=271221)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #4 (id=354085)   : Unknown(93)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Allows you to vanish from sight, entering stealth while in combat. For the first $11327d after vanishing, damage and harmful effects received will not break stealth. Also breaks movement impairing effects.
@@ -533,7 +533,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #3 (id=1135544)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : Performs an evasive maneuver, reducing damage taken from area-of-effect attacks by $s1% $?s79008[and all other damage taken by $s2% ][]for $d.$?a441146[
 
 Slashes nearby enemies with an Unseen Blade, dealing $441144s1 damage and causing targets struck to be Distracted for 5 sec.
@@ -957,7 +957,7 @@ Effects          :
 #2 (id=806022)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=806133)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #4 (id=872827)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Enemy (6)
 Description      : Attack with your $?s319032[poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]$?(a319032&a400783)[
@@ -1029,7 +1029,7 @@ Effects          :
 #1 (id=3612)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.37480 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=3613)     : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : Ambush the target, causing $s1 Physical damage.$?s383281[
 
 Has a $193315s3% chance to hit an additional time, making your next Pistol Shot half cost and double damage.][]
@@ -1166,7 +1166,7 @@ Effects          :
                    Affected Spells: Dispatch (2098), Slice and Dice (5171), Shiv (5938), Ambush (8676), Blade Flurry (13877), Pistol Shot (185763), Sinister Strike (193315), Ghostly Strike (196937), Sinister Strike (197834), Between the Eyes (315341), Slice and Dice (315496), Roll the Bones (315508), Blade Flurry (319606), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Sepsis (328305), Sepsis (328306), Sinister Strike (341541), Dreadblades (343142), Echoing Reprimand (354835), Echoing Reprimand (354838), Sepsis (375936), Sepsis (375938), Keep It Rolling (381989), Sepsis (385408), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385897), Sepsis (394026), Echoing Reprimand (394136), Echoing Reprimand (394138), Echoing Reprimand (394140), Ambush (430023)
                    Family Flags: 9, 18, 26, 29, 43, 60, 82, 98, 101, 111, 112, 113, 118, 119
 #4 (id=762250)   : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 #5 (id=840599)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -1279,7 +1279,7 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
                  : Is Ability (4), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=6472)     : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc14190
 
 Name             : Seal Fate (id=14190) [Spell Family (8), Passive] 
@@ -1323,8 +1323,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=7052)     : Apply Aura (6) | Increase Energy (35)
-                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+#1 (id=7052)     : Apply Aura (6) | Increase Resource (35)
+                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 #2 (id=295620)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 Description      : Increases your maximum Energy by $s1 and Energy regeneration by $s2%.
@@ -1416,7 +1416,7 @@ Effects          :
 #1 (id=15270)    : Dispel (38)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=15271)    : Energize Power (30)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and restore $m2 Energy.
 
 Name             : Mutilate (id=27576) [Spell Family (8)] 
@@ -1673,7 +1673,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=25761)    : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : $@spelldesc35551
 
 Name             : Fatal Flourish (id=35551) [Spell Family (8), Passive] 
@@ -1816,7 +1816,7 @@ Attributes       : ....x... ........ ........ x..x....   .....x.. ........ .....
                  : Is Ability (4), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=43999)    : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : $@spelldesc79134
 
 Name             : Cut to the Chase (id=51667) [Spell Family (8), Passive] 
@@ -2661,7 +2661,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ........ .....
                  : Allow While Stealthed (37), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=105435)   : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : $@spelldesc58423
 
 Name             : Subterfuge (id=108208) [Spell Family (8), Passive] 
@@ -2783,7 +2783,7 @@ Effects          :
 #2 (id=123504)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=123505)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #4 (id=485675)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=709929)   : Dummy (3)
@@ -2862,7 +2862,7 @@ Effects          :
 #1 (id=127100)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.19656 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=330872)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.19656 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.19656 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #3 (id=344591)   : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Throws a shuriken at an enemy target for ${$s1*$<CAP>/$AP} Physical damage.
@@ -3456,8 +3456,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Marked for Death (137619)
                    Family Flags: 84
-#5 (id=191055)   : Apply Aura (6) | Increase Energy (35)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+#5 (id=191055)   : Apply Aura (6) | Increase Resource (35)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 #6 (id=261017)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=261018)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
@@ -3532,7 +3532,7 @@ Effects          :
                    Affected Spells: Rupture (1943), Dispatch (2098), Envenom (32645), Killing Spree (51690), Killing Spree (57841), Killing Spree (57842), Crimson Tempest (121411), Eviscerate (196819), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Between the Eyes (315341), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Rupture (360826), Rupture (394031), Killing Spree (424556)
                    Family Flags: 17, 20, 32, 35, 44, 55, 81, 92, 111, 112
 #2 (id=180709)   : Energize Power (30)
-                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #3 (id=185210)   : Trigger Spell (64): Marked for Death
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 140149 | Target: Self (1)
 Description      : Marks the target, instantly granting full combo points and increasing the damage of your finishing moves by $s1% for $d. Cooldown resets if the target dies during effect.
@@ -3961,7 +3961,7 @@ Effects          :
 #1 (id=269259)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.50000 | PvP Coefficient: 1.08000 | Target: Enemy (6)
 #2 (id=269260)   : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : Strike the target, dealing $s1 Physical damage.
 
 While Stealthed, you strike through the shadows and appear behind your target up to ${5+$245623s1} yds away, dealing $245623s2% additional damage.
@@ -3992,7 +3992,7 @@ Effects          :
 #1 (id=269456)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.16000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=269457)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : Throws a poison-coated knife, dealing $s1 damage and applying your active Lethal and Non-Lethal Poisons.
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
@@ -4021,7 +4021,7 @@ Effects          :
 #1 (id=269972)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.37600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=269973)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.19656 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.19656 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #3 (id=269974)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #4 (id=1108646)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
@@ -4136,7 +4136,7 @@ Effects          :
 #1 (id=283619)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60000 | PvP Coefficient: 1.05000 | Target: Enemy (6)
 #2 (id=283620)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #3 (id=283621)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=283622)   : Dummy (3)
@@ -4299,7 +4299,7 @@ Effects          :
                    Affected Spells: Rupture (1943), Dispatch (2098), Slice and Dice (5171), Envenom (32645), Killing Spree (51690), Killing Spree (57841), Killing Spree (57842), Crimson Tempest (121411), Weaponmaster (193536), Eviscerate (196819), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Between the Eyes (315341), Slice and Dice (315496), Roll the Bones (315508), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Rupture (360826), Keep It Rolling (381989), Rupture (394031), Killing Spree (424556)
                    Family Flags: 17, 20, 32, 35, 44, 55, 81, 89, 92, 100, 111, 112, 113, 116
 #2 (id=283925)   : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #3 (id=297518)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
 #4 (id=315625)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -4666,9 +4666,9 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
                  : Is Ability (4), No Threat (42), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=289127)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #2 (id=368528)   : Energize Power (30)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 #3 (id=1105230)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc196912
@@ -4752,7 +4752,7 @@ Effects          :
 #1 (id=289165)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.60000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=289166)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #3 (id=289167)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Rupture (360826), Garrote (360830), Sepsis (375936), Sepsis (375938), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Sepsis (385408), wSerrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385897), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Envenomous Explosion (426581), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Coup de Grace (441776), Coup de Grace (450743), Fatebound Coin (Tails) (452538), Fatebound Coin (452559)
@@ -4827,7 +4827,7 @@ Effects          :
 #1 (id=289234)   : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 #2 (id=464604)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : $@spelldesc196976
 Tooltip          : Regenerating ${$s1*$d/$t1+$s2} Energy over $d.
 
@@ -5199,7 +5199,7 @@ Effects          :
 #1 (id=295616)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.65352 | PvP Coefficient: 1.30000 | Target: Enemy (6)
 #2 (id=295617)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : Punctures your target with your shadow-infused blade for $s1 Shadow damage, bypassing armor.$?s319949[ Critical strikes apply Find Weakness for $319949s1 sec.][]
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
@@ -5300,7 +5300,7 @@ Effects          :
 #1 (id=299182)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.33033 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=299183)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #3 (id=299184)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #4 (id=299185)   : School Damage (2): physical
@@ -5487,7 +5487,7 @@ Effects          :
 #5 (id=479904)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=1105121)  : Energize Power (30)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : Invoke ancient symbols of power, generating $s6 Energy and increasing damage done by $s1% for $d.
 Tooltip          : Damage done increased by $s1%.
 
@@ -5806,7 +5806,7 @@ Effects          :
 #2 (id=373277)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.53000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=373278)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #4 (id=373280)   : Trigger Spell (64): Toxic Blade
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 245389 | Target: Enemy (6)
 Description      : Stab your enemy with a toxic poisoned blade, dealing $s2 Nature damage.
@@ -6388,7 +6388,7 @@ Attributes       : ....x... ........ ........ x..x....   .....x.. ........ .....
                  : Is Ability (4), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=479090)   : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : $@spelldesc152152
 
 Name             : Master Assassin (id=256735) [Spell Family (8)] 
@@ -6866,7 +6866,7 @@ Effects          :
 #2 (id=735070)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 278681
 #3 (id=735111)   : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc278681
 Tooltip          : Haste increased by $w1.
 
@@ -7718,9 +7718,9 @@ Effects          :
 #2 (id=812548)   : Dummy (3)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000
 #3 (id=812798)   : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #4 (id=834337)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : Deal $s1 Arcane damage to an enemy, extracting their anima to Animacharge a combo point for $323558d.
 
 Damaging finishing moves that consume the same number of combo points as your Animacharge function as if they consumed $s2 combo points.
@@ -8012,7 +8012,7 @@ Effects          :
 #6 (id=874055)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 #7 (id=874064)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : Infect the target's blood, dealing $o1 Nature damage over $d. If the target survives its full duration, they suffer an additional $328306s1 damage and you gain $s6 use of any Stealth ability for $347037d.
 
 Cooldown reduced by $s3 sec if Sepsis does not last its full duration.
@@ -8097,7 +8097,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=821136)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc328547
 
 Name             : Serrated Bone Spike (id=328549) [Spell Family (8)] 
@@ -8566,7 +8566,7 @@ Attributes       : ....x... ........ ........ x..x....   .....x.. ........ .....
                  : Is Ability (4), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=840285)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : $@spelldesc340081
 
 Name             : Mutilated Flesh (id=340431) [Spell Family (8)] 
@@ -8875,7 +8875,7 @@ Effects          :
 #3 (id=841448)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=841452)   : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc340092
 Tooltip          : Damage increased by $w1%.
 
@@ -9573,7 +9573,7 @@ Attributes       : ........ ........ ........ ..x..x..   .....x.. ........ .....
                  : Aura Is Debuff (26), No Immunities (29), Allow While Stealthed (37), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=844734)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc343142
 
 Name             : Dreadblades (id=343145) [Spell Family (8)] 
@@ -9632,7 +9632,7 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
                  : Is Ability (4), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=844782)   : Energize Power (30)
-                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc343160
 
 Name             : Premeditation (id=343173) [Spell Family (8)] 
@@ -9831,7 +9831,7 @@ Effects          :
 #3 (id=880984)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=880985)   : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc340092
 Tooltip          : Damage increased by $w1%.
 
@@ -10642,7 +10642,7 @@ Effects          :
 #6 (id=1002648)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 #7 (id=1002649)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : Infect the target's blood, dealing $o1 Nature damage over $d. If the target survives its full duration, they suffer an additional $328306s1 damage and you gain $s6 use of any Stealth ability for $347037d.
 
 Cooldown reduced by $s3 sec if Sepsis does not last its full duration.
@@ -11012,7 +11012,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ........ .....
                  : Allow While Stealthed (37), Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Visible only to caster (conversations only) (343), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1012585)  : Energize Power (30)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 #2 (id=1033855)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Restore $s1 Energy. Mastery increased by ${$s2*$mas}.1% for $d.
@@ -12555,7 +12555,7 @@ Effects          :
 #6 (id=1018601)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 #7 (id=1018602)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : Infect the target's blood, dealing $o1 Nature damage over $d and gaining $s6 use of any Stealth ability. If the target survives its full duration, they suffer an additional $394026s1 damage and you gain $s6 additional use of any Stealth ability for $375939d.
 
 Cooldown reduced by $s3 sec if Sepsis does not last its full duration.
@@ -12648,9 +12648,9 @@ Effects          :
 #2 (id=1018995)  : Dummy (3)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000
 #3 (id=1018996)  : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #4 (id=1018997)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : Deal $s1 Physical damage to an enemy, extracting their anima to Animacharge a combo point for $323558d.
 
 Damaging finishing moves that consume the same number of combo points as your Animacharge function as if they consumed $s2 combo points.
@@ -12694,7 +12694,7 @@ Effects          :
 #5 (id=1019026)  : Apply Aura (6) | Proc Trigger Spell (42): Kingsbane
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 394095 | Target: Self (1)
 #6 (id=1019027)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : Release a lethal poison from your weapons and inject it into your target, dealing $s2 Nature damage instantly and an additional $o4 Nature damage over $d. 
 
 Each time you apply a Lethal Poison to a target affected by Kingsbane, Kingsbane damage increases by $394095s1%, up to ${$394095s1*$394095u}%.
@@ -12911,7 +12911,7 @@ Effects          :
 #1 (id=1019461)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.37480 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1019462)  : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc8676
 
 Name             : Take 'em by Surprise (id=385907) [Spell Family (8)] 
@@ -13638,7 +13638,7 @@ Attributes       : ....x... ........ ........ x..x....   .....x.. ........ .....
                  : Is Ability (4), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1033355)  : Energize Power (30)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc382505
 
 Name             : Rupture (id=394031) [Spell Family (8)] 
@@ -13704,7 +13704,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1033374)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc385424
 
 Name             : Scent of Blood (id=394080) [Spell Family (8)] 
@@ -13796,7 +13796,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Floating Combat Text On Cast (198), Aura Points On Client (268)
 Effects          :
 #1 (id=1033524)  : Energize Power (30)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.80000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.80000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc381828
 
 Name             : Greenskin's Wickers (id=394131) [Spell Family (8)] 
@@ -14011,7 +14011,7 @@ Effects          :
                    Affected Spells: Rupture (1943), Dispatch (2098), Slice and Dice (5171), Envenom (32645), Crimson Tempest (121411), Weaponmaster (193536), Eviscerate (196819), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Between the Eyes (315341), Slice and Dice (315496), Roll the Bones (315508), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Rupture (360826), Keep It Rolling (381989), Rupture (394031)
                    Family Flags: 17, 20, 32, 35, 44, 81, 89, 92, 100, 111, 112, 113, 116
 #2 (id=1033857)  : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #3 (id=1033858)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
 #4 (id=1033859)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -14049,7 +14049,7 @@ Effects          :
                    Affected Spells: Rupture (1943), Dispatch (2098), Slice and Dice (5171), Envenom (32645), Killing Spree (51690), Killing Spree (57841), Killing Spree (57842), Crimson Tempest (121411), Weaponmaster (193536), Eviscerate (196819), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Between the Eyes (315341), Slice and Dice (315496), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Rupture (360826), Rupture (394031), Killing Spree (424556)
                    Family Flags: 17, 20, 32, 35, 44, 55, 81, 89, 92, 100, 111, 112, 116
 #2 (id=1033862)  : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #3 (id=1033863)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
 #4 (id=1033864)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -14260,7 +14260,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
 #1 (id=1034549)  : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc385478
 Tooltip          : Grants $w1 Combo Points.
 
@@ -14582,9 +14582,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1035888)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #2 (id=1105197)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : $@spelldesc395422
 
 Name             : Dashing Scoundrel (id=395996) [Spell Family (8)] 
@@ -14603,7 +14603,7 @@ Attributes       : ....x... ........ ........ x..x....   .....x.. ........ .....
                  : Is Ability (4), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1036859)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : $@spelldesc381797
 
 Name             : Arterial Precision (id=400783) [Spell Family (8), Passive] 
@@ -15330,8 +15330,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1098747)  : Apply Aura (6) | Increase Energy (35)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+#1 (id=1098747)  : Apply Aura (6) | Increase Resource (35)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : Increases maximum Energy by $s1.
 
 Name             : Sudden Demise (id=423136) [Spell Family (8), Passive] 
@@ -15961,7 +15961,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), Requires Off-Hand Weapon (120), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), No Attack Block (256), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1105226)  : Energize Power (30)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #2 (id=1105227)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Kidney Shot (408), Rupture (1943), Slice and Dice (5171), Eviscerate (196819), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Slice and Dice (315496), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Rupture (360826), Rupture (394031), Kidney Shot (426589)
@@ -16011,7 +16011,7 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
                  : Is Ability (4), No Threat (42), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1105231)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc196912
 
 Name             : Perforated Veins (id=426602) [Spell Family (8), Hidden] 
@@ -16281,7 +16281,7 @@ Effects          :
 #1 (id=1114700)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.37480 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1114701)  : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : Ambush the target, causing $s1 Physical damage.$?s383281[
 
 Has a $193315s3% chance to hit an additional time, making your next Pistol Shot half cost and double damage.][]
@@ -17433,7 +17433,7 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
                  : Is Ability (4), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1156937)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc454419
 
 Name             : Delivered Doom (id=454426) [Spell Family (8), Passive] 
@@ -17921,7 +17921,7 @@ Effects          :
                    Affected Spells: Rupture (1943), Dispatch (2098), Slice and Dice (5171), Envenom (32645), Killing Spree (51690), Killing Spree (57841), Killing Spree (57842), Crimson Tempest (121411), Weaponmaster (193536), Eviscerate (196819), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Between the Eyes (315341), Slice and Dice (315496), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Rupture (360826), Rupture (394031), Killing Spree (424556)
                    Family Flags: 17, 20, 32, 35, 44, 55, 81, 89, 92, 100, 111, 112, 116
 #2 (id=1162753)  : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #3 (id=1162754)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
 #4 (id=1162755)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)

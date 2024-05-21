@@ -859,7 +859,7 @@ Effects          :
 #4 (id=815756)   : Trigger Spell (64): Obliterate
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 20 | Trigger Spell: 325461 | Target: Enemy (6)
 #5 (id=844534)   : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 #6 (id=1090799)  : Dummy (3)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000
 Description      : A brutal attack $?$owb==0[that deals $<2hDamage> Physical damage.][with both weapons that deals a total of $<dualWieldDamage> Physical damage.]$?a134735&a51128[
@@ -965,7 +965,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Do Not Sheath (18), Can't Crit (93), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=41190)    : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : Surrounds the Death Knight in an Anti-Magic Shell, absorbing $48707s1% of the damage dealt by harmful spells. Damage absorbed by Anti-Magic Shell energizes the Death Knight with additional Runic Power. Lasts $48707d.
 
 Name             : Frost Strike (id=49143) [Spell Family (15)] 
@@ -1067,7 +1067,7 @@ Effects          :
 #4 (id=728503)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=1030322)  : Energize Power (30)
-                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : Summon a Gargoyle into the area to bombard the target for $61777d.
 
 The Gargoyle gains $211947s1% increased damage for every $s4 Runic Power you spend.
@@ -1274,7 +1274,7 @@ Effects          :
 #1 (id=42836)    : Dispel (38)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=42837)    : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and restore ${$m2/10} Runic Power.
 
 Name             : Blood Boil (id=50842) [Spell Family (15)] 
@@ -1599,7 +1599,7 @@ Effects          :
 #1 (id=44653)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.03604 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=312640)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : Corrupts the ground targeted by the Death Knight, causing Shadow damage every sec that targets remain in the area for $43265d.
 
 Name             : Rune of Razorice (id=53343) [Hidden] 
@@ -1881,9 +1881,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Aura Never Bounces (148), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Use Target's Level for Spell Scaling (264), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=50522)    : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 #2 (id=50523)    : Energize Power (30)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : Blow the Horn of Winter, gaining $s1 $LRune:Runes; and generating ${$s2/10} Runic Power.
 
 Name             : Glyph of the Geist (desc=Unholy) (id=58640) [Spell Family (15), Passive, Hidden] 
@@ -3843,7 +3843,7 @@ Effects          :
                    Base Value: -5000 | Scaled Value: -5000 | PvP Coefficient: 1.00000 | Misc Value: 1428 | Target: Self (1)
                    Affected Spells (Category): Death Grip (49576)
 #12 (id=260813)   : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 #13 (id=752802)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3
                    Affected Spells: Veteran of the Third War (48263), Veteran of the Fourth War (319278)
@@ -4589,7 +4589,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Floating Combat Text On Cast (198), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=283849)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 Description      : Gain a Rune.
 
 Name             : Festering Wound (id=194310) [Spell Family (15)] 
@@ -5028,7 +5028,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=287148)   : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 #2 (id=312941)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Grants the Death Knight $s2 runic power.
@@ -5127,7 +5127,7 @@ Effects          :
 #1 (id=287346)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 #2 (id=287348)   : Energize Power (30)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : $@spelldesc194310
 
 Name             : Glacial Advance (id=195975) [Spell Family (15)] 
@@ -5985,7 +5985,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=306244)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 Description      : Grants the Death Knight $s1 rune.
 
 Name             : Runic Attenuation (id=207104) [Spell Family (15), Passive] 
@@ -6214,7 +6214,7 @@ Effects          :
 #3 (id=330163)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 #4 (id=345076)   : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 #5 (id=818619)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : A sweeping attack that strikes all enemies in front of you for $s2 Frost damage. This attack always critically strikes and critical strikes with Frostscythe deal $s3 times normal damage. Deals reduced damage beyond $s5 targets. 
@@ -6524,7 +6524,7 @@ Effects          :
 #5 (id=328307)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=1032417)  : Energize Power (30)
-                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : Summon a Val'kyr into the area to attack the target for $s2 sec.
 
 The Val'kyr gains $211947s1% increased damage for every $s5 Runic Power you spend.
@@ -6595,7 +6595,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=308993)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 Description      : $@spelldesc208782
 
 Name             : Heartbreaker (id=210738) 
@@ -6616,7 +6616,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=312175)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : $@spelldesc206930
 
 Name             : Remorseless Winter (desc=Talent) (id=211793) [Spell Family (15)] 
@@ -6961,7 +6961,7 @@ Effects          :
 #1 (id=327512)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=330791)   : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : While you have at least $s1 Bone Shield charges, the cost of Death Strike is reduced by ${$219788m1/-10} Runic Power.
 
 Additionally, your maximum Runic Power is increased by ${$m2/10}.
@@ -7011,7 +7011,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=327553)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 #3 (id=327573)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000
 #4 (id=327574)   : Dummy (3)
@@ -7045,7 +7045,7 @@ Effects          :
 #3 (id=361459)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=363441)   : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 Description      : Strikes the enemy, dealing $sw1 Physical damage and bursting up to $s3 Festering Wounds on the target, summoning a member of your Army of the Dead for $221180d for each burst Festering Wound.
 
 Name             : Pestilent Pustules (id=220211) 
@@ -7063,7 +7063,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Floating Combat Text On Cast (198), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=328349)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 Description      : $@spelldesc194917
 
 Name             : Blood Strike (id=220890) 
@@ -7084,7 +7084,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=329462)   : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 #2 (id=329463)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Grants the Death Knight $s2 runic power.
@@ -7127,7 +7127,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=330193)   : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : $@spelldesc207104
 
 Name             : Heartbreaker (id=221536) [Passive] 
@@ -7199,7 +7199,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : Not Shapeshifted (16), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Don't Block Mana Regen (89), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=330796)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 #2 (id=330822)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consume the essence around you to generate $s1 Rune.
@@ -7344,7 +7344,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72)
 Effects          :
 #1 (id=335447)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 Description      : $@spelldesc208782
 
 Name             : Consumption (id=224685) [Spell Family (15)] 
@@ -7704,7 +7704,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=476935)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : $@spelldesc194662
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
@@ -8637,7 +8637,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=739712)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 Description      : $@spelldesc281238
 
 Name             : Razorice (id=281425) [Passive, Hidden] 
@@ -9182,7 +9182,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=759412)   : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 Description      : Grants the Death Knight $s1 runic power.
 
 Name             : Bursting Sores (id=295878) 
@@ -9291,7 +9291,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : Is Ability (4), Do Not Sheath (18), No Threat (42), Can't Crit (93), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=777527)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 Description      : $@spelldesc296321
 
 Name             : Vision of Perfection (id=302656) 
@@ -9310,9 +9310,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : Is Ability (4), Do Not Sheath (18), No Threat (42), Can't Crit (93), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=777653)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 #2 (id=777654)   : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : $@spelldesc296321
 
 Name             : Vision of Perfection (id=302657) 
@@ -9331,7 +9331,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : Is Ability (4), Do Not Sheath (18), No Threat (42), Can't Crit (93), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=777655)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : $@spelldesc296321
 
 Name             : Breath of Sindragosa (id=303753) 
@@ -9350,7 +9350,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=779584)   : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 Description      : $@spelldesc155166
 
 Name             : Vision of Perfection (id=304185) 
@@ -9530,7 +9530,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=794300)   : Energize Power (30)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : $@spelldesc311648
 
 Name             : Shackle the Unworthy (desc=Kyrian) (id=312940) [Hidden] 
@@ -9923,7 +9923,7 @@ Effects          :
 #1 (id=802873)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=802874)   : Energize Power (30)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : $@spelldesc317610
 
 Name             : Army of the Damned (id=317776) [Spell Family (15)] 
@@ -10806,7 +10806,7 @@ Effects          :
 #1 (id=818162)   : Apply Aura (6) | Proc Trigger Spell (42): Rune of Hysteria
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 326918 | Target: Self (1)
 #2 (id=818163)   : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : Increases maximum Runic Power by ${$s2/10}.
 
 Your attacks have a chance to increase Runic Power generation by $326918s2% for $326918d.
@@ -11242,7 +11242,7 @@ Effects          :
 #1 (id=828121)   : Apply Aura (6) | Proc Trigger Spell (42): Rune of Hysteria
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 326918 | Target: Self (1)
 #2 (id=828122)   : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : $@spelldesc326913
 
 Tooltip          : $@spelldesc326913
@@ -11441,7 +11441,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=830599)   : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 Description      : $@spelldesc334583
 
 Name             : Biting Cold (id=334678) [Spell Family (15), Passive] 
@@ -12317,7 +12317,7 @@ Effects          :
 #1 (id=841677)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.03604 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=841678)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : Corrupts the ground targeted by the Death Knight, causing Shadow damage every sec that targets remain in the area for $43265d.
 
 Name             : Withering Ground (id=341344) [Spell Family (15), Passive, Hidden] 
@@ -12378,7 +12378,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Do Not Sheath (18), Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=842306)   : Energize Power (30)
-                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : $@spelldesc341724
 
 Name             : Death's Advance (desc=Rank 2) (id=343257) [Spell Family (15), Passive] 
@@ -12481,7 +12481,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=867552)   : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 Description      : $@spelldesc275699
 
 Name             : Dark Transformation (desc=Rank 2) (id=344955) [Spell Family (15)] 
@@ -13189,7 +13189,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=913784)   : Energize Power (30)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : $@spelldesc206930
 
 Name             : Gift of the Naaru (desc=Racial) (id=370626) 
@@ -13471,7 +13471,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Do Not Sheath (18), Can't Crit (93), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1000240)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : $@spelldesc374383
 
 Name             : Brittle (id=374504) [Spell Family (15), Passive, Hidden] 
@@ -13815,7 +13815,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143)
 Effects          :
 #1 (id=1003158)  : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : Increases your maximum Runic Power by ${$s1/10}.
 
 Name             : Unleashed Frenzy (id=376905) [Spell Family (15), Passive, Hidden] 
@@ -14026,7 +14026,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=1004720)  : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 Description      : $@spelldesc377073
 
 Name             : Rage of the Frozen Champion (id=377076) [Spell Family (15), Passive] 
@@ -14068,7 +14068,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Do Not Sheath (18), Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=1004723)  : Energize Power (30)
-                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : $@spelldesc377076
 
 Name             : Bonegrinder (id=377098) [Spell Family (15), Passive] 
@@ -15021,7 +15021,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1007331)  : Energize Power (30)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 #2 (id=1007332)  : Unknown(292)
                    Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 1.00000 | Misc Value: 88 | Target: Self (1)
 Description      : $@spelldesc378848
@@ -15237,7 +15237,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143)
 Effects          :
 #1 (id=1026788)  : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 #2 (id=1050309)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Runic Corruption (51460)
@@ -16228,7 +16228,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=1034327)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 Description      : $@spelldesc393621
 
 Name             : Vigorous Lifeblood (id=394570) [Spell Family (15)] 
@@ -16990,7 +16990,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=1101078)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 Description      : $@spelldesc422853
 
 Name             : Amplify Damage (id=424949) [Spell Family (15)] 
@@ -17627,7 +17627,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=1123972)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 Description      : $@spelldesc434157
 
 Name             : Blood Beast (id=434237) 
@@ -18156,7 +18156,7 @@ Effects          :
 #2 (id=1133380)  : Trigger Spell (64): Reaper's Mark
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 10 | Trigger Spell: 434765 | Target: Enemy (6)
 #3 (id=1138466)  : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 Description      : Viciously slice into the soul of your enemy, dealing $s1 Shadowfrost damage and applying Reaper's Mark.
 
 Each time you deal Shadow or Frost damage, add a stack of Reaper's Mark. After $434765d or reaching $434765u stacks, the mark explodes, dealing $?a137008[$436304s1][$436304s2] damage per stack.
@@ -19863,7 +19863,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=1141481)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: rune | Target: Self (1)
 Description      : $@spelldesc444072
 
 Name             : On a Paler Horse (id=445163) [Spell Family (15)] 
