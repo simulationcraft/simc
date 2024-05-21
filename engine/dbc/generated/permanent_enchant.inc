@@ -1,5 +1,5 @@
-// Permanent item enchants, wow build 11.0.0.54709
-static const std::array<permanent_enchant_entry_t, 945> __permanent_enchant_data { {
+// Permanent item enchants, wow build 11.0.0.54774
+static const std::array<permanent_enchant_entry_t, 954> __permanent_enchant_data { {
   { 6614,  1,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6615,  2,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6616,  3,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
@@ -170,6 +170,9 @@ static const std::array<permanent_enchant_entry_t, 945> __permanent_enchant_data
   { 7476,  3,  4, 0x00000800, 0x0000001f, "cursed_versatility"                },
   { 6194,  0,  4, 0x00000040, 0x0000001e, "damage_retaliator"                 },
   { 4444,  0,  2, 0x00000000, 0x000abff3, "dancing_steel"                     },
+  { 7529,  1,  4, 0x00000080, 0x0000001e, "daybreak_spellthread"              },
+  { 7530,  2,  4, 0x00000080, 0x0000001e, "daybreak_spellthread"              },
+  { 7531,  3,  4, 0x00000080, 0x0000001e, "daybreak_spellthread"              },
   { 5965,  0,  2, 0x00000000, 0x000ebfff, "deadly_navigation"                 },
   {  663,  0,  2, 0x00000000, 0x0004000c, "deadly_scope"                      },
   { 3273,  0,  2, 0x00000000, 0x000ae7f3, "deathfrost"                        },
@@ -802,6 +805,9 @@ static const std::array<permanent_enchant_entry_t, 945> __permanent_enchant_data
   { 2621,  0,  4, 0x00010000, 0x0000001f, "subtlety"                          },
   { 3607,  0,  2, 0x00000000, 0x0004000c, "sun_scope"                         },
   { 2671,  0,  2, 0x00000000, 0x000ae7f3, "sunfire"                           },
+  { 7532,  1,  4, 0x00000080, 0x0000001e, "sunset_spellthread"                },
+  { 7533,  2,  4, 0x00000080, 0x0000001e, "sunset_spellthread"                },
+  { 7534,  3,  4, 0x00000080, 0x0000001e, "sunset_spellthread"                },
   { 4417,  0,  4, 0x00100020, 0x0000001e, "super_armor"                       },
   { 3297,  0,  4, 0x00100020, 0x0000001e, "super_health"                      },
   { 4414,  0,  4, 0x00000200, 0x0000001e, "super_intellect"                   },
@@ -881,6 +887,9 @@ static const std::array<permanent_enchant_entry_t, 945> __permanent_enchant_data
   { 6612,  2,  4, 0x00000100, 0x0000001f, "watchers_loam"                     },
   { 6613,  3,  4, 0x00000100, 0x0000001f, "watchers_loam"                     },
   { 5000,  0,  4, 0x00000040, 0x0000001e, "watergliding_jets"                 },
+  { 7535,  1,  4, 0x00000080, 0x0000001e, "weavercloth_spellthread"           },
+  { 7536,  2,  4, 0x00000080, 0x0000001e, "weavercloth_spellthread"           },
+  { 7537,  3,  4, 0x00000080, 0x0000001e, "weavercloth_spellthread"           },
   { 7380,  1,  4, 0x00000200, 0x0000001f, "whisper_of_armored_avoidance"      },
   { 7381,  2,  4, 0x00000200, 0x0000001f, "whisper_of_armored_avoidance"      },
   { 7382,  3,  4, 0x00000200, 0x0000001f, "whisper_of_armored_avoidance"      },

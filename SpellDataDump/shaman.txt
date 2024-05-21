@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54709 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54774 thewarwithin-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -52,7 +52,7 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 1
 Range            : 300 yards
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Elemental Shaman (137040 effects: #5, #6), Enhancement Shaman (137041 effects: #6, #20), Elemental Fury (343190 effect#1), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1), Surging Shields (382033 effect#4), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Elemental Shaman (137040 effects: #5, #6), Enhancement Shaman (137041 effects: #6, #20), Elemental Fury (343190 effect#1), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1), Surging Shields (382033 effect#4), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 41, 70
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ........ 
@@ -127,7 +127,7 @@ Spell Level      : 21
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effects: #1, #4, #5), Healing Trance (60515 effect#1), Unleash Life (73685 effects: #4, #7), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #24, #28, #29), Elemental Shaman (137040 effect#23), Enhancement Shaman (137041 effect#19), Maelstrom Weapon (187881 effects: #3, #5), Elemental Rebalancers (208777 effect#1), Jonat's Focus (210607 effect#1), Tidebringer (236502 effects: #1, #2), Ancestral Reach (263790 effect#1), Flash Flood (280615 effect#1), High Tide (288675 effects: #1, #2), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Jonat's Natural Focus (335894 effect#1), Chains of Devastation (336737 effects: #1, #2), Elemental Fury (343190 effect#1), Heal the Soul (366779 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1), Focused Insight (381668 effects: #1, #2, #3), Flow of the Tides (382039 effect#2), Ancestral Reach (382732 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Spiritwalker's Tidal Totem (404523 effects: #1, #2), Stormweaver (410681 effects: #1, #2), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #4, #5, #6), Whirling Air (453409 effect#1), Surging Currents (454376 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effects: #1, #4, #5), Healing Trance (60515 effect#1), Unleash Life (73685 effects: #4, #7), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #24, #28, #29), Elemental Shaman (137040 effect#23), Enhancement Shaman (137041 effect#19), Maelstrom Weapon (187881 effects: #3, #5), Elemental Rebalancers (208777 effect#1), Jonat's Focus (210607 effect#1), Tidebringer (236502 effects: #1, #2), Ancestral Reach (263790 effect#1), Flash Flood (280615 effect#1), High Tide (288675 effects: #1, #2), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Jonat's Natural Focus (335894 effect#1), Chains of Devastation (336737 effects: #1, #2), Elemental Fury (343190 effect#1), Heal the Soul (366779 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1), Focused Insight (381668 effects: #1, #2, #3), Flow of the Tides (382039 effect#2), Ancestral Reach (382732 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Spiritwalker's Tidal Totem (404523 effects: #1, #2), Stormweaver (410681 effects: #1, #2), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #4, #5, #6), Whirling Air (453409 effect#1), Surging Currents (454376 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 8, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -281,7 +281,7 @@ Duration         : 15 seconds
 Charges          : 0 (30 seconds cooldown)
 Category         : 1569: Echo of the Elements (108283 effect#3), Totemic Surge (381867 effect#2), Healing Stream Totem (392915 effect#1), Healing Stream Totem (392916 effect#1)
 Labels           : 1658: Totemic Focus (382201 effect#2)
-Affecting spells : Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1)
+Affecting spells : Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1), Tidecaller's Guard (457496 effect#1)
 Family Flags     : 6, 15, 19, 29
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -374,7 +374,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1), Devout Spirit (319919 effect#1)
-Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effects: #2, #3, #4, #5), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #19, #20, #26, #27, #28, #29), Elemental Shaman (137040 effect#4), Enhancement Shaman (137041 effects: #11, #18), Maelstrom Weapon (187881 effects: #3, #5), Nobundo's Redemption (208764 effect#1), Elemental Rebalancers (208777 effect#1), Undulation (216251 effect#1), Flash Flood (280615 effect#1), Refreshing Waters (337974 effect#1), Swirling Currents (338340 effect#1), Elemental Fury (343190 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Primordial Fury (378193 effect#1), Refreshing Waters (378211 effect#1), Nature's Fury (381655 effect#1), Focused Insight (381668 effects: #1, #2, #3), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Refreshing Waters (393905 effect#1), Tide Turner (404072 effect#1), Stormweaver (410681 effects: #1, #2), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #4, #5, #6), Whirling Air (453409 effect#1), Surging Currents (454376 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effects: #2, #3, #4, #5), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #19, #20, #26, #27, #28, #29), Elemental Shaman (137040 effect#4), Enhancement Shaman (137041 effects: #11, #18), Maelstrom Weapon (187881 effects: #3, #5), Nobundo's Redemption (208764 effect#1), Elemental Rebalancers (208777 effect#1), Undulation (216251 effect#1), Flash Flood (280615 effect#1), Refreshing Waters (337974 effect#1), Swirling Currents (338340 effect#1), Elemental Fury (343190 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Primordial Fury (378193 effect#1), Refreshing Waters (378211 effect#1), Nature's Fury (381655 effect#1), Focused Insight (381668 effects: #1, #2, #3), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Refreshing Waters (393905 effect#1), Tide Turner (404072 effect#1), Stormweaver (410681 effects: #1, #2), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #4, #5, #6), Whirling Air (453409 effect#1), Surging Currents (454376 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 7, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -504,7 +504,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Proc Chance      : 101%
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Fire and Ice (382886 effect#1), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Fire and Ice (382886 effect#1), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Supportive Imbuements (445033 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
 Family Flags     : 21, 39, 56, 103
 Attributes       : ........ ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -1248,7 +1248,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Labels           : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12)
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #25, #28, #29), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Swirling Currents (378094 effect#1), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #25, #28, #29), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Swirling Currents (378094 effect#1), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Triggered by     : Healing Stream (5672)
 Family Flags     : 13, 41
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ...x.... ........ 
@@ -1837,7 +1837,7 @@ GCD              : 1.5 seconds
 Duration         : 18 seconds
 Charges          : 1 (6 seconds cooldown)
 Category         : 1228: Echo of the Elements (108283 effect#2), Echo of the Elements (333919 effect#2), Elemental Reverb (443418 effect#5)
-Affecting spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Torrent (200072 effect#1), Elemental Rebalancers (208777 effect#1), Nature's Fury (381655 effect#1), Wavespeaker's Blessing (381946 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Shaman Restoration 10.2 Class Set 4pc (422916 effects: #1, #2), Elemental Reverb (443418 effects: #3, #4), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Torrent (200072 effect#1), Elemental Rebalancers (208777 effect#1), Nature's Fury (381655 effect#1), Wavespeaker's Blessing (381946 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Shaman Restoration 10.2 Class Set 4pc (422916 effects: #1, #2), Elemental Reverb (443418 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 41, 68
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
@@ -2032,7 +2032,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ......x. ........ ........   ........ ........ ........ ........   
                  : Magic Heal
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Elemental Rebalancers (208777 effect#1), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Elemental Rebalancers (208777 effect#1), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 41, 94
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ..x...x. 
@@ -2138,7 +2138,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Overflowing Shores (278077 effect#2), Heavy Rainfall (338344 effect#1), Nature's Fury (381655 effect#1), Overflowing Shores (383222 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Overflowing Shores (278077 effect#2), Heavy Rainfall (338344 effect#1), Nature's Fury (381655 effect#1), Overflowing Shores (383222 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Pulse Capacitor (445032 effect#2), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 41, 87
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
@@ -2278,7 +2278,7 @@ Spell Level      : 27
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effects: #1, #3, #4, #5), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Maelstrom Weapon (187881 effect#1), Elemental Rebalancers (208777 effect#1), Undulation (216251 effect#1), Temporal Shift (225771 effect#2), Flash Flood (280615 effect#1), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Swirling Currents (338340 effect#1), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Spiritwalker's Tidal Totem (404523 effects: #1, #2), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #6), Whirling Air (453409 effect#1), Surging Currents (454376 effect#1), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effects: #1, #3, #4, #5), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Maelstrom Weapon (187881 effect#1), Elemental Rebalancers (208777 effect#1), Undulation (216251 effect#1), Temporal Shift (225771 effect#2), Flash Flood (280615 effect#1), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Swirling Currents (338340 effect#1), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Spiritwalker's Tidal Totem (404523 effects: #1, #2), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #6), Whirling Air (453409 effect#1), Surging Currents (454376 effect#1), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 41, 80
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3065,7 +3065,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Labels           : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12)
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Elemental Rebalancers (208777 effect#1), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Elemental Rebalancers (208777 effect#1), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 41, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -3479,7 +3479,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1634 | Target: Self (1)
 #5 (id=191051)   : Apply Aura (6) | Modify Block% (51)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-#6 (id=777110)   : Apply Aura (6) | Modify Ranged Attack Speed% (320)
+#6 (id=777110)   : Apply Aura (6) | Unknown(320)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 
 Name             : Restoration Shaman (id=137039) [Spell Family (11), Passive, Hidden] 
@@ -3985,7 +3985,7 @@ Charges          : 0 (45 seconds cooldown)
 Category         : 2062: Echo of the Elements (108283 effect#4), Totemic Surge (381867 effect#4), Healing Stream Totem (392915 effect#2), Healing Stream Totem (392916 effect#2)
 Labels           : 1658: Totemic Focus (382201 effect#2)
 Category Cooldown: 1 seconds
-Affecting spells : Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1)
+Affecting spells : Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1), Tidecaller's Guard (457496 effect#1)
 Family Flags     : 29, 120
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5696,7 +5696,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 Range            : 50000 yards
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Maelstrom Weapon (187881 effect#1), Elemental Rebalancers (208777 effect#1), Flash Flood (280615 effect#1), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #6), Whirling Air (453409 effect#1), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Maelstrom Weapon (187881 effect#1), Elemental Rebalancers (208777 effect#1), Flash Flood (280615 effect#1), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #6), Whirling Air (453409 effect#1), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 41, 51
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ......x. 
@@ -6227,7 +6227,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 2 seconds
 Labels           : 1703: Deluge (200076 effect#2)
-Affecting spells : Overflowing Shores (278077 effect#2), Heavy Rainfall (338344 effect#1), Nature's Fury (381655 effect#1), Overflowing Shores (383222 effect#1)
+Affecting spells : Overflowing Shores (278077 effect#2), Heavy Rainfall (338344 effect#1), Nature's Fury (381655 effect#1), Overflowing Shores (383222 effect#1), Pulse Capacitor (445032 effect#2)
 Family Flags     : 87
 Attributes       : .......x ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -6721,7 +6721,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 5 seconds
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Maelstrom Weapon (187881 effect#1), Elemental Rebalancers (208777 effect#1), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #6), Whirling Air (453409 effect#1), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Maelstrom Weapon (187881 effect#1), Elemental Rebalancers (208777 effect#1), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #6), Whirling Air (453409 effect#1), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 33, 41
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7522,7 +7522,7 @@ Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........   ........ ........ ........ ........   
                  : Generic Heal, Magic Heal
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Triggered by     : Tidebringer (236501)
 Family Flags     : 41
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
@@ -9331,7 +9331,7 @@ Name             : Restorative Mists (id=294020) [Spell Family (11)]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Triggered by     : Ascendance (114052)
 Family Flags     : 41, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9522,7 +9522,7 @@ Spell Type       : None
 Spell Level      : 7
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Staff, Fist Weapon, Dagger
-Affecting spells : Elemental Fury (60188 effect#1), Fire and Ice (382886 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Fire and Ice (382886 effect#1), Supportive Imbuements (445033 effects: #1, #2)
 Family Flags     : 21
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9629,7 +9629,7 @@ Duration         : 3600 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee
-Affecting spells : Elemental Fury (60188 effect#1), Fire and Ice (382886 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Fire and Ice (382886 effect#1), Supportive Imbuements (445033 effects: #1, #2)
 Family Flags     : 21
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
@@ -9798,7 +9798,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9865,7 +9865,7 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
 Labels           : 983: Elemental Fury (60188 effect#3), Restoration Shaman (137039 effect#8), Enhancement Shaman (137041 effect#16), Maelstrom Weapon (187881 effect#4), Lavish Harvest (339185 effect#1)
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 41
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10083,7 +10083,7 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 40 yards
 Labels           : 1177: Elemental Fury (343190 effect#3)
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 41
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -10211,7 +10211,7 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
 Labels           : 1176: Elemental Fury (343190 effect#2)
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 41
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -10344,7 +10344,7 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
 GCD              : 1.5 seconds
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 41
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
@@ -10486,7 +10486,6 @@ Spell Type       : Melee
 Range            : 30 yards
 Duration         : 15 seconds
 Labels           : 183: Spiritual Journey (214170 effect#1)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
 Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
@@ -12441,7 +12440,7 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 40 yards
 Labels           : 1177: Elemental Fury (343190 effect#3)
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 41
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -13001,7 +13000,7 @@ School           : Elemental
 Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 41
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -14429,7 +14428,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1012979)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Earthbind Totem (2484), Healing Stream Totem (5394), Tremor Totem (8143), Windfury Totem (8512), Mana Tide Totem (16191), Earthgrab Totem (51485), Spirit Link Totem (98008), Healing Tide Totem (108280), Cloudburst Totem (157153), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Earthen Wall Totem (198838), Ancestral Protection Totem (207399), Vesper Totem (324386), Poison Cleansing Totem (383013), Stoneskin Totem (383017), Tranquil Air Totem (383019)
+                   Affected Spells: Earthbind Totem (2484), Healing Stream Totem (5394), Tremor Totem (8143), Windfury Totem (8512), Mana Tide Totem (16191), Earthgrab Totem (51485), Spirit Link Totem (98008), Healing Tide Totem (108280), Cloudburst Totem (157153), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Earthen Wall Totem (198838), Ancestral Protection Totem (207399), Vesper Totem (324386), Poison Cleansing Totem (383013), Stoneskin Totem (383017), Tranquil Air Totem (383019), Surging Totem (444995)
                    Family Flags: 29
 #2 (id=1014666)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 1.00000 | Misc Value: 1569 | Target: Self (1)
@@ -14670,7 +14669,7 @@ Range            : 100 yards
 Duration         : 12 seconds
 Labels           : 1677: Improved Earthliving Weapon (382315 effect#1), Imbuement Mastery (445028 effect#3)
                  : 1679: Nature's Fury (381655 effect#2)
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ......x. 
@@ -15074,7 +15073,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1013456)  : Apply Aura (6) | Modify Stance Mask (275)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Purge (370), Earthbind Totem (2484), Healing Stream Totem (5394), Tremor Totem (8143), Windfury Totem (8512), Mana Tide Totem (16191), Earthgrab Totem (51485), Cleanse Spirit (51886), Wind Shear (57994), Purify Spirit (77130), Spirit Link Totem (98008), Healing Tide Totem (108280), Cloudburst Totem (157153), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Earthen Wall Totem (198838), Ancestral Protection Totem (207399), Vesper Totem (324386), Greater Purge (378773), Poison Cleansing Totem (383013), Stoneskin Totem (383017), Tranquil Air Totem (383019), Cleanse Spirit (440012)
+                   Affected Spells: Purge (370), Earthbind Totem (2484), Healing Stream Totem (5394), Tremor Totem (8143), Windfury Totem (8512), Mana Tide Totem (16191), Earthgrab Totem (51485), Cleanse Spirit (51886), Wind Shear (57994), Purify Spirit (77130), Spirit Link Totem (98008), Healing Tide Totem (108280), Cloudburst Totem (157153), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Earthen Wall Totem (198838), Ancestral Protection Totem (207399), Vesper Totem (324386), Greater Purge (378773), Poison Cleansing Totem (383013), Stoneskin Totem (383017), Tranquil Air Totem (383019), Cleanse Spirit (440012), Surging Totem (444995)
                    Family Flags: 29, 35, 59, 88, 109
 Description      : Cleanse Spirit, Wind Shear, Purge, and totem casts no longer cancel Ghost Wolf.
 
@@ -15402,7 +15401,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Points On Client (268)
 Effects          :
-#1 (id=1014462)  : Apply Aura (6) | Attack Speed (Normalized wDPS) (9)
+#1 (id=1014462)  : Apply Aura (6) | Auto Attack Speed (Normalized wDPS) (9)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc382888
 Tooltip          : Attack speed increased by $w1%.
@@ -16724,7 +16723,7 @@ Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=1, req_points=0, 
 Class            : Shaman
 School           : Nature
 Spell Type       : None
-Affecting spells : Praetorian's Tidecallers (210604 effect#1)
+Affecting spells : Praetorian's Tidecallers (210604 effect#1), Tidecaller's Guard (457496 effect#1)
 Family Flags     : 6
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -16749,7 +16748,7 @@ Talent Entry     : Restoration [tree=spec, row=2, col=3, max_rank=1, req_points=
 Class            : Shaman
 School           : Nature
 Spell Type       : None
-Affecting spells : Praetorian's Tidecallers (210604 effect#1)
+Affecting spells : Praetorian's Tidecallers (210604 effect#1), Tidecaller's Guard (457496 effect#1)
 Family Flags     : 6
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -18301,7 +18300,7 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 1
 Range            : 60 yards
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3)
 Family Flags     : 41
 Attributes       : ........ ........ x.x..... ...x....   ........ ........ ........ ........ 
                  : ...x.... ........ ........ .....x..   ........ .x...... ........ .....x.. 
@@ -18964,8 +18963,13 @@ Name             : Surging Totem (id=444995) [Spell Family (11)]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
+Resource         : 2% Base Mana (0) (id=306931) w/ Enhancement Shaman (id=137041)
+Resource         : 8.64% Base Mana (0) (id=306932) w/ Restoration Shaman (id=137039)
+GCD              : 1 seconds
 Duration         : 20 seconds
-Cooldown         : 20 seconds
+Cooldown         : 30 seconds
+Affecting spells : Elemental Rebalancers (208777 effect#1), Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1)
+Family Flags     : 15, 29
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -19152,6 +19156,9 @@ Talent Entry     : Totemic (Enhancement, Restoration) [tree=hero, row=3, col=2, 
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -19163,10 +19170,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1141756)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : [NYI]
-
-If you have a totem active, your totems grant you a shield absorbing damage for 30 sec every 30 seconds.
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : If you have a totem active, your totem grants you a shield absorbing ${$mhp*$s1/100} damage for $457387d every $457390d.
 
 Name             : Pulse Capacitor (id=445032) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Totemic (Enhancement, Restoration) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
@@ -19183,11 +19188,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1141757)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : [NYI]
-
-Increases the damage and healing of Surging Totem by 25%.
+#1 (id=1141757)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value 2: 3704 (Label) | Target: Self (1)
+                   Affected Spells (Label): Tremor (455622)
+#2 (id=1161195)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Healing Rain (73921), Deluge (200075)
+                   Family Flags: 87
+Description      : $?a137041[Increases the damage of Surging Totem by $s1%.][Increases the healing done by Surging Totem by $s2%.]
 
 Name             : Supportive Imbuements (id=445033) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Totemic (Enhancement, Restoration) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
@@ -19204,13 +19212,18 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1141758)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : [NYI]
+#1 (id=1141758)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Affected Spells: Flametongue Attack (10444), Flametongue Weapon (318038), Flametongue Weapon (319778)
+                   Family Flags: 21
+#2 (id=1162736)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+                   Affected Spells: Flametongue Attack (10444), Flametongue Weapon (318038), Flametongue Weapon (319778)
+                   Family Flags: 21
+Description      : $?a137041[Increases the critical strike chance of Flametongue Weapon by s1%, and its critical strike damage by s2%.][Learn a new weapon imbue, Tidecaller's Guard.
 
-$?a137041[Increases the critical strike chance of Flametongue Weapon by 15%, and its critical strike damage by 30%.][Learn a new weapon imbue, Tidecaller's Guard.
-
-Can only be applied to shields. Increases your healing done by 2% and increases the duration of your Healing Stream Totem and Cloudburst Totem by 3 sec.]
+$@spellicon457481 $@spellname457481
+$@spelldesc457481 ]
 
 Name             : Lively Totems (id=445034) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Totemic (Enhancement, Restoration) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
@@ -20084,6 +20097,9 @@ Talent Entry     : Totemic (Enhancement, Restoration) [tree=hero, row=4, col=3, 
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -20095,10 +20111,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1159161)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : [NYI]
-
-$?a137041[Casting Sundering within 40 yards of your Surging Totem causes it to create a Tremor at 200% effectiveness at the target area.][Allies affected by your Earthen Wall Totem, Ancestral Protection Totem, and Earthliving effect receive 10% increased healing from you.]
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $?a137041[Casting Sundering within 40 yards of your Surging Totem causes it to create a Tremor at 200% effectiveness at the target area.][Allies affected by your Earthen Wall Totem, Ancestral Protection Totem, and Earthliving effect receive 10% increased healing from you.]
 
 Name             : Surging Totem (id=455593) [Spell Family (11), Hidden] 
 Class            : Shaman
@@ -20141,6 +20155,7 @@ Class            : Shaman
 School           : Physical
 Spell Type       : Melee
 Range            : 30 yards
+Labels           : 3704: Pulse Capacitor (445032 effect#1)
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
 Family Flags     : 39, 58
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -20154,7 +20169,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : AI Doesn't Face Target (179)
 Effects          :
 #1 (id=1159222)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 4.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=1159269)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc444995
@@ -20208,5 +20223,124 @@ Effects          :
                    Family Flags: 39, 41
 Description      : $@spelldesc445029
 Tooltip          : Damage and healing increased by $w1%.
+
+Name             : Wind Barrier (id=457387) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Type       : Magic
+Duration         : 30 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ x....... 
+                 : ........ ........ ........ ........   ........ ........ ..x..... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   
+                 : Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Ignore Caster Absorb Modifiers (370), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=1162536)  : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+#2 (id=1162677)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : If you have a totem active, your totems grant you a shield absorbing damage for 30 sec every $s1 seconds.
+Tooltip          : Absorbs $w1 damage.
+
+Name             : Wind Barrier (id=457390) [Spell Family (11), Hidden] 
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Duration         : 30 seconds
+Attributes       : .......x ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Is Debuff (26)
+Effects          :
+#1 (id=1162539)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
+
+Name             : Tidecaller's Guard (id=457481) [Spell Family (11)] 
+Class            : Shaman
+School           : Frost
+Spell Type       : None
+GCD              : 1 seconds
+Duration         : Aura (infinite)
+Requires armor   : Shield 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not Shapeshifted (16), No Aura Icon (60), Allow Aura While Dead (116), Allow Entering Arena (149)
+Effects          :
+#1 (id=1162702)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Imbue your shield with the element of Water for $457496d. Your healing done is increased by $457496s2% and the duration of your Healing Stream Totem and Cloudburst Totem is increased by ${$457496s1/1000} sec.
+
+Name             : Tidecaller's Guard (id=457493) [Spell Family (11)] 
+Class            : Shaman
+School           : Frost
+Spell Type       : None
+Spell Level      : 10
+Requires armor   : Shield 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow Entering Arena (149)
+Effects          :
+#1 (id=1162722)  : Unknown(54)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7528 | Target: Self (1)
+Description      : $@spelldesc457481
+Tooltip          : Your healing done is increased by $w1%.
+
+$?a157153[Cloudburst][Healing Stream] Totem lasts an additional ${$w2/1000} sec.
+
+Name             : Tidecaller's Guard (id=457496) [Spell Family (11)] 
+Class            : Shaman
+School           : Frost
+Spell Type       : None
+Spell Level      : 10
+Duration         : 3600 seconds
+Requires armor   : Shield 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : No Aura Icon (60), Allow Entering Arena (149), Aura Points On Client (268)
+Effects          :
+#1 (id=1162726)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Healing Stream Totem (5394), Cloudburst Totem (157153), Healing Stream Totem (392915), Healing Stream Totem (392916)
+                   Family Flags: 6, 120
+#2 (id=1162727)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024), Tidal Reservoir (424464)
+                   Family Flags: 41
+#3 (id=1162728)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024), Tidal Reservoir (424464)
+                   Family Flags: 41
+Description      : $@spelldesc457481
+Tooltip          : Your healing done is increased by $w2%.
+
+$?a157153[Cloudburst][Healing Stream] Totem lasts an additional ${$w1/1000} sec.
 
 

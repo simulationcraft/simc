@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54709 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54774 thewarwithin-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -745,7 +745,7 @@ Labels           : 3567: Balanced Stratagem (451514 effect#1)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
                  : Cast Successful
-Affecting spells : Brewmaster Monk (137023 effects: #14, #24), Mistweaver Monk (137024 effects: #6, #7), Windwalker Monk (137025 effects: #12, #17, #20), Serenity (152173 effect#1), Dance of Chi-Ji (286587 effect#3), Weapons of Order (311054 effect#1), Dance of Chi-Ji (325202 effect#1), Fast Feet (388809 effect#2), Crane Vortex (388848 effects: #1, #2), Leverage (408503 effects: #1, #2), Efficient Training (450989 effect#5), Ordered Elements (451462 effect#1), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Brewmaster Monk (137023 effects: #14, #24), Mistweaver Monk (137024 effects: #6, #7), Windwalker Monk (137025 effects: #12, #20), Serenity (152173 effect#1), Dance of Chi-Ji (286587 effect#3), Weapons of Order (311054 effect#1), Dance of Chi-Ji (325202 effect#1), Fast Feet (388809 effect#2), Crane Vortex (388848 effects: #1, #2), Leverage (408503 effects: #1, #2), Efficient Training (450989 effect#5), Ordered Elements (451462 effect#1), Wisdom of the Wall (452684 effect#1)
 Triggered by     : Cyclone Strikes (220358), Counterstrike (383800)
 Family Flags     : 63
 Attributes       : ....x... ........ x.x..... .......x   ..x...x. ........ ........ ....xx.. 
@@ -1250,7 +1250,7 @@ Resource         : 0 Energy (3) and 15 Energy (3) per tick (id=265683) w/ Windwa
 Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 8 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#27), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effect#24), Ovyd's Winter Wrap (217642 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Elusive Mists (388681 effect#3), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Chi Harmony (423439 effect#1), Peer Into Peace (440008 effect#3), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#27), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effect#24), Ovyd's Winter Wrap (217642 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Elusive Mists (388681 effect#3), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Chi Harmony (423439 effect#1), Peer Into Peace (440008 effect#3), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 24, 48
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ .....x.. 
                  : ........ x....... ........ ......x.   ........ ........ ........ ........ 
@@ -1288,7 +1288,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Fundamental Observation (208878 effects: #1, #2), Zen Meditation (328682 effect#1), Fundamental Observation (387035 effects: #1, #2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Fundamental Observation (208878 effects: #1, #2), Zen Meditation (328682 effect#1), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 45
 Attributes       : ........ ........ x....... ........   ..x...x. ........ .x...... .....x.. 
                  : ........ ........ ........ ......x.   ........ ........ ........ ..x..... 
@@ -1397,7 +1397,7 @@ Name             : Mana Tea (id=115294) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Magic
-Max Scaling Level: 70
+Max Scaling Level: 100
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Affecting spells : Energizing Brew (422031 effects: #1, #2), Wisdom of the Wall (452684 effect#1)
@@ -1414,7 +1414,7 @@ Attributes       : ........ ........ ........ ........   ..x...x. ........ .....
                  : Is Channelled (34), Is Self Channelled (38), Name in Channel Bar (61), Spell Haste Affects Periodic (173), No Pushback (207), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=129048)   : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds | Scaling Class: -2
-                   Base Value: 3 | Scaled Value: 3000 (coefficient=0.02) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 52500 (coefficient=0.02) | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1095450)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consumes 1 stack of Mana Tea per $t1 sec to restore $s1 Mana and reduces the Mana cost of your spells by $197908s1% for ${$115869s3/1000}.2 sec per stack of Mana Tea consumed after drinking.
@@ -1428,8 +1428,8 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 14
 Cooldown         : 1 seconds
-Charges          : 1 (20 seconds cooldown)
-Category         : 1562: Brewmaster Monk (137023 effect#5), Light Brewing (325093 effect#1), Improved Purifying Brew (343743 effect#1)
+Charges          : 2 (20 seconds cooldown)
+Category         : 1562: Brewmaster Monk (137023 effect#5), Light Brewing (325093 effect#1)
 Affecting spells : Eluding Movements (184906 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 53, 111
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1449,7 +1449,7 @@ Description      : A swig of strong brew allows you to Stagger substantially mor
 Shares charges with Purifying Brew.
 
 Name             : Revival (id=115310) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Mistweaver [tree=spec, row=4, col=2, max_rank=1, req_points=0, select_idx=100]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -1460,7 +1460,7 @@ Charges          : 1 (180 seconds cooldown)
 Category         : 1933: Benevolent Faerie (327710 effect#6), Benevolent Faerie Fermata (345453 effect#6), Motes of Possibility (409276 effect#5)
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
                  : 2706: Spatial Paradox (406732 effect#10), Spatial Paradox (406789 effect#10)
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48, 60
 Attributes       : ........ ........ x....... ........   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -1538,7 +1538,7 @@ Description      : Summons a Black Ox Statue at the target location for $d, puls
 
 You may cast Provoke on the statue to taunt all enemies near the statue.
 
-Name             : Ascension (id=115396) [Passive] 
+Name             : Ascension (id=115396) [Spell Family (53), Passive] 
 Talent Entry     : Windwalker [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
@@ -1832,8 +1832,7 @@ Tooltip          : Taunted. Movement speed increased by $s3%.
 
 Name             : Teachings of the Monastery (id=116645) [Spell Family (53), Passive] 
 Talent Entry     : Windwalker [tree=spec, row=4, col=2, max_rank=1, req_points=0]
-                 : Mistweaver [tree=spec, row=4, col=1, max_rank=1, req_points=0]
-Class            : Monk
+Class            : Mistweaver Monk
 School           : Physical
 Spell Type       : None
 Labels           : 2425: Mistweaver Monk (137024 effect#21)
@@ -1842,13 +1841,13 @@ Proc Flags       : ....x... ........ ........ ........   ........ ........ .....
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : Passive (6), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=131760)   : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
@@ -1871,7 +1870,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1), Devout Spirit (319919 effect#1)
                  : 3566: Balanced Stratagem (451508 effect#1)
-Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#25), Mistweaver Monk (137024 effects: #1, #2, #22), Windwalker Monk (137025 effect#21), The Black Flame's Gamble (217006 effect#1), Ovyd's Winter Wrap (217642 effect#2), Improved Vivify (231602 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effects: #1, #2), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #1, #2), Tear of Morning (337993 effect#2), Escape from Reality (343249 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Tea of Serenity (388518 effect#1), Save Them All (390105 effects: #1, #2), Vivacious Vivification (392883 effect#1), Monk Mistweaver Class Set 4pc (393663 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Soulfang Vitality (410082 effects: #1, #2), Chi Harmony (423439 effect#1), Temple Training (442743 effect#1), August Dynasty (442850 effect#2), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Turned Fortune (450604 effect#1), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#25), Mistweaver Monk (137024 effects: #1, #2, #22), Windwalker Monk (137025 effect#21), The Black Flame's Gamble (217006 effect#1), Ovyd's Winter Wrap (217642 effect#2), Improved Vivify (231602 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effects: #1, #2), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #1, #2), Tear of Morning (337993 effect#2), Escape from Reality (343249 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Tea of Serenity (388518 effect#1), Save Them All (390105 effects: #1, #2), Vivacious Vivification (392883 effects: #1, #2), Monk Mistweaver Class Set 4pc (393663 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Soulfang Vitality (410082 effects: #1, #2), Chi Harmony (423439 effect#1), Temple Training (442743 effect#1), August Dynasty (442850 effect#2), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Turned Fortune (450604 effect#1), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 26, 48
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2473,8 +2472,8 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 23
 Cooldown         : 1 seconds
-Charges          : 1 (20 seconds cooldown)
-Category         : 1562: Brewmaster Monk (137023 effect#5), Light Brewing (325093 effect#1), Improved Purifying Brew (343743 effect#1)
+Charges          : 2 (20 seconds cooldown)
+Category         : 1562: Brewmaster Monk (137023 effect#5), Light Brewing (325093 effect#1)
 Affecting spells : Mantra of Purity (451036 effect#1), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 53, 66, 67
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2524,7 +2523,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 20 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Shelter of Rin (281301 effects: #1, #2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Tea of Serenity (388520 effect#1), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Soulfang Vitality (410082 effects: #1, #2), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Shelter of Rin (281301 effects: #1, #2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Tea of Serenity (388520 effect#1), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Soulfang Vitality (410082 effects: #1, #2), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 23, 48
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ..x..... x....... .x...... ........   ........ .x...... ........ ..x...x. 
@@ -2539,7 +2538,9 @@ Effects          :
 #1 (id=138091)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.19665 | PvP Coefficient: 1.40000 | Target: Friend (21)
 Description      : $@spelldesc115151
-Tooltip          : Restores $w1 health every $t1 sec.
+Tooltip          : Restores $w1 health every $t1 sec.$?a448392[
+
+Healing taken from $@auracaster increased by $457013s1% for the first $457013d.][]
 
 Name             : Energy Usage (id=119650) [Hidden] 
 Class            : Monk
@@ -3551,13 +3552,13 @@ Talent Entry     : Mistweaver [tree=spec, row=1, col=1, max_rank=1, req_points=0
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
-Resource         : 4.8% Base Mana (0) (id=7504)
+Resource         : 4.2% Base Mana (0) (id=7504)
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Labels           : 3566: Balanced Stratagem (451508 effect#1)
-Affecting spells : Thunder Focus Tea (116680 effect#6), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Soothing Mist (209525 effect#2), The Black Flame's Gamble (216995 effect#1), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #2, #3), Tear of Morning (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Invoke Chi-Ji, the Red Crane (344035 effect#1), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Tea of Serenity (388519 effect#2), Save Them All (390105 effects: #1, #2), Tea of Plenty (393988 effect#1), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Chi Harmony (423439 effect#1), Temple Training (442743 effect#1), Strength of the Black Ox (443112 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#6), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Soothing Mist (209525 effect#2), The Black Flame's Gamble (216995 effect#1), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #2, #3), Tear of Morning (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Invoke Chi-Ji, the Red Crane (344035 effect#1), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Tea of Serenity (388519 effect#2), Save Them All (390105 effects: #1, #2), Tea of Plenty (393988 effect#1), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Chi Harmony (423439 effect#1), Temple Training (442743 effect#1), Strength of the Black Ox (443112 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48, 67, 79
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
@@ -4006,7 +4007,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #14, #19, #26, #29), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effects: #12, #22), Ovyd's Winter Wrap (217642 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Manifestation (450875 effect#1), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #14, #19, #26, #29), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effects: #12, #22), Ovyd's Winter Wrap (217642 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Manifestation (450875 effect#1), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 38, 48, 89
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -4028,7 +4029,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #19, #26), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effect#22), Storm, Earth, and Fire (137639 effects: #1, #2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Manifestation (450875 effect#1), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #19, #26), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effect#22), Storm, Earth, and Fire (137639 effects: #1, #2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Manifestation (450875 effect#1), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48, 58
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ......x.   ........ .x...... ..x..... ......x. 
@@ -4094,7 +4095,7 @@ Effects          :
 Description      : $@spelldesc115098
 
 Name             : Invoke Niuzao, the Black Ox (id=132578) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -4399,7 +4400,7 @@ Effects          :
 #16 (id=745151)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -28.5 | Scaled Value: -28.5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 587 (Label) | Target: Self (1)
                    Affected Spells (Label): Pressure Point (278577)
-#17 (id=777114)   : Apply Aura (6) | Modify Ranged Attack Speed% (320)
+#17 (id=777114)   : Apply Aura (6) | Unknown(320)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 #18 (id=869541)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
@@ -4518,10 +4519,9 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959)
                    Family Flags: 39
-#17 (id=984590)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Spinning Crane Kick (101546), Spinning Crane Kick (322729)
-                   Family Flags: 63
+#17 (id=984590)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3701 (Label) | Target: Self (1)
+                   Affected Spells (Label): Vivacious Vivification (392883)
 #18 (id=1003545)  : Apply Aura (6) | Dummy (4)
                    Base Value: -11 | Scaled Value: -11 | PvP Coefficient: 0.00000 | Target: Self (1)
 #19 (id=1003546)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -4625,17 +4625,17 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Include In Advanced Combat Log (72), Active Threat (94), Always Hit (114), Can Proc From Procs (122), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=180816)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -58 | Scaled Value: -58 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Tiger Palm (331433), Glory of the Dawn (392959), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521), Whirling Dragon Punch (451767)
                    Family Flags: 4, 5, 8, 10, 20, 27, 32, 39, 58, 72, 118, 122
 #2 (id=181516)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -58 | Scaled Value: -58 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Tiger Palm (331433), Glory of the Dawn (392959), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521), Whirling Dragon Punch (451767)
                    Family Flags: 4, 5, 8, 10, 20, 27, 32, 39, 58, 72, 118, 122
 #3 (id=181626)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: -58 | Scaled Value: -58 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=289040)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -58 | Scaled Value: -58 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
 #5 (id=330909)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
@@ -4645,10 +4645,10 @@ Effects          :
                    Affected Spells: Storm, Earth, and Fire (137639), Storm, Earth, and Fire: Fixate (221771)
                    Family Flags: 124
 #7 (id=1157075)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: -58 | Scaled Value: -58 | PvP Coefficient: 1.00000 | Misc Value 2: 3441 (Label) | Target: Self (1)
+                   Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Misc Value 2: 3441 (Label) | Target: Self (1)
                    Affected Spells (Label): Celestial Conduit (443038)
 #8 (id=1157076)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: -58 | Scaled Value: -58 | PvP Coefficient: 1.00000 | Misc Value 2: 3448 (Label) | Target: Self (1)
+                   Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Misc Value 2: 3448 (Label) | Target: Self (1)
                    Affected Spells (Label): Celestial Conduit (443039)
 Description      : Split into 3 elemental spirits for $d, each spirit dealing ${100+$m1}% of normal damage and healing.
 
@@ -4728,7 +4728,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=181844)   : Apply Aura (6) | Modify Attack Power (99)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 140728 | Target: Self (1)
-#5 (id=186469)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
+#5 (id=186469)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=289042)   : Apply Aura (6) | Modify Power Cost% (72)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0x1008 | Target: Self (1)
@@ -5105,7 +5105,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Labels           : 2706: Spatial Paradox (406732 effect#10), Spatial Paradox (406789 effect#10)
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Triggered by     : Refreshing Jade Wind (196725)
 Family Flags     : 48, 85
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -5308,9 +5308,9 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=1160788)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your Renewing Mist spell now has ${$s5+$m1} charges and reduces the remaining cooldown of Rising Sun Kick by ${$s3/1000}.1 sec.
+Description      : Renewing Mist now has ${$s5+$m1} charges and reduces the remaining cooldown of Rising Sun Kick by ${$s3/1000}.1 sec.
 
-Your Rising Sun Kick spell now reduces the remaining cooldown of Renewing Mist by ${$s4/1000}.1 sec.
+Rising Sun Kick now reduces the remaining cooldown of Renewing Mist by ${$s4/1000}.1 sec.
 
 Name             : Gift of the Ox (id=178173) [Spell Family (53)] 
 Class            : Monk
@@ -5427,7 +5427,7 @@ Velocity         : 40 yards/sec
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Upwelling (274963 effect#2), Font of Life (279875 effect#2), Enveloping Breath (325209 effect#3), Font of Life (337209 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Grandiose Font (364417 effects: #1, #2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Monk Mistweaver Class Set 4pc (393663 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Upwelling (274963 effect#2), Font of Life (279875 effect#2), Enveloping Breath (325209 effect#3), Font of Life (337209 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Grandiose Font (364417 effects: #1, #2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Monk Mistweaver Class Set 4pc (393663 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Triggered by     : Essence Font (191837)
 Family Flags     : 48, 108
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5453,7 +5453,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 4
 Range            : 100 yards
-Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ......x. 
@@ -5693,14 +5693,13 @@ Description      : $@spelldesc196607
 Tooltip          : $?$w1>0[Healing $w1 every $t1 sec.][Suffering $w2 Nature damage every $t2 sec.]
 
 Name             : Refreshing Jade Wind (id=196725) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Nature
 Spell Type       : Melee
 Resource         : 5% Base Mana (0) (id=10578)
 Spell Level      : 1
 GCD              : 1.5 seconds
-Duration         : 15 seconds
+Duration         : 6 seconds
 Cooldown         : 45 seconds
 Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #9, #14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effects: #12, #20, #28), Weapons of Order (311054 effect#1), Yu'lon's Knowledge (443625 effect#1), Ordered Elements (451462 effect#1), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 76
@@ -5825,7 +5824,7 @@ Effects          :
 Description      : $@spelldesc196730
 
 Name             : Blackout Combo (id=196736) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -6138,7 +6137,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 18, 48, 90
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -6161,7 +6160,7 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 60 yards
 Duration         : 8 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48, 112
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -6671,6 +6670,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
 #3 (id=726759)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=1162067)  : Apply Aura (6) | Modify Armor% (101)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 Description      : $@spelldesc115308
 Tooltip          : Your Stagger is $w3% more effective.
 
@@ -6908,7 +6909,7 @@ GCD              : 1 seconds
 Duration         : 6 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Soothing Mist (209525 effect#2), The Black Flame's Gamble (216992 effect#2), Ovyd's Winter Wrap (217642 effect#2), Temporal Shift (225767 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Soothing Mist (209525 effect#2), The Black Flame's Gamble (216992 effect#2), Ovyd's Winter Wrap (217642 effect#2), Temporal Shift (225767 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 25, 48
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7763,7 +7764,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 40 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -7784,7 +7785,7 @@ Effects          :
 Description      : $@spelldesc116680
 
 Name             : Invigorating Mists (id=274586) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Mistweaver [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -7832,7 +7833,7 @@ Name             : Rising Mist (id=274912) [Spell Family (53)]
 Class            : Monk
 School           : Nature
 Spell Type       : None
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Triggered by     : Rising Mist (274909)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7950,7 +7951,7 @@ Effects          :
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
 #3 (id=1028866)  : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
-Description      : Every $s1 Chi you spend reduces the cooldown of $?s152173[Serenity][Storm, Earth, and Fire] by $?s152173[${$m3/1000}.1][${$m2/1000}] sec.
+Description      : Every $s1 Chi you spend reduces the cooldown of $?s152173[Serenity][Storm, Earth, and Fire] by $?s152173[${$m3/1000}.1][${$m2/1000}.1] sec.
 
 Name             : Bob and Weave (id=280515) [Spell Family (53), Passive] 
 Talent Entry     : Brewmaster [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
@@ -8242,7 +8243,7 @@ School           : Arcane
 Spell Type       : Magic
 Spell Level      : 4
 Range            : 100 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8362,7 +8363,7 @@ Range            : 100 yards
 GCD              : 1 seconds
 Cooldown         : 15 seconds
 Labels           : 3566: Balanced Stratagem (451508 effect#1)
-Affecting spells : Thunder Focus Tea (116680 effect#7), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #1, #2, #32), Windwalker Monk (137025 effects: #12, #23, #30), Expel Harm (322102 effect#1), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Harm Denial (336379 effect#1), Tear of Morning (337993 effect#2), Reverse Harm (342928 effect#1), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Tea of Plenty (388524 effect#1), Save Them All (390105 effects: #1, #2), Vigorous Expulsion (392900 effects: #1, #2), Profound Rebuttal (392910 effect#1), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effect#3), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#7), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #1, #2, #32), Windwalker Monk (137025 effects: #12, #23, #30), Expel Harm (322102 effect#1), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Harm Denial (336379 effect#1), Tear of Morning (337993 effect#2), Reverse Harm (342928 effect#1), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Tea of Plenty (388524 effect#1), Save Them All (390105 effects: #1, #2), Vigorous Expulsion (392900 effects: #1, #2), Profound Rebuttal (392910 effect#1), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effect#3), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Triggered by     : Healing Sphere (224863)
 Family Flags     : 17, 48, 95
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -8624,16 +8625,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Vivify (116670), Healing Sphere (163212), Expel Harm (322101), Expel Harm (451968)
                    Family Flags: 17, 26, 42, 95
-Description      : A swig of strong brew that coalesces purified chi escaping your body into a celestial guard, absorbing $<absorb> damage.$?s322510[
+Description      : A swig of strong brew that coalesces purified chi escaping your body into a celestial guard, absorbing $<absorb> damage.
 
-Purifying Stagger damage increases absorption by up to $322510s1%.][]
+Purifying Stagger damage increases absorption by up to $322510s1%.
 Tooltip          : Absorbs $w1 damage.$?$w2>0[
 Your self-healing increased by $w2%.][]
 Variables        : $absorb=${($AP*10.5)*(1+$@versadmg)}
 
 
 Name             : Improved Celestial Brew (id=322510) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -8697,7 +8697,7 @@ Spell Type       : Melee
 Resource         : 25 Energy (3) (id=192645) w/ Brewmaster Monk (id=137023)
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
-Affecting spells : Brewmaster Monk (137023 effects: #14, #24), Mistweaver Monk (137024 effects: #6, #7), Windwalker Monk (137025 effects: #12, #17, #20), Serenity (152173 effect#1), Dance of Chi-Ji (286587 effect#3), Weapons of Order (311054 effect#1), Dance of Chi-Ji (325202 effect#1), Fast Feet (388809 effect#2), Crane Vortex (388848 effects: #1, #2), Leverage (408503 effects: #1, #2), Efficient Training (450989 effect#5), Ordered Elements (451462 effect#1), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Brewmaster Monk (137023 effects: #14, #24), Mistweaver Monk (137024 effects: #6, #7), Windwalker Monk (137025 effects: #12, #20), Serenity (152173 effect#1), Dance of Chi-Ji (286587 effect#3), Weapons of Order (311054 effect#1), Dance of Chi-Ji (325202 effect#1), Fast Feet (388809 effect#2), Crane Vortex (388848 effects: #1, #2), Leverage (408503 effects: #1, #2), Efficient Training (450989 effect#5), Ordered Elements (451462 effect#1), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 63
 Attributes       : ....x... ........ x.x..... .......x   ..x...x. ........ ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8724,7 +8724,7 @@ Tooltip          : Attacking all nearby enemies for Physical damage every $10154
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Improved Invoke Niuzao, the Black Ox (id=322740) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=9, col=2, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -8983,7 +8983,7 @@ Effects          :
 Description      : Touch of Death reduces delayed Stagger damage by $s1% of damage dealt.
 
 Name             : Exploding Keg (id=325153) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=spec, row=9, col=3, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Monk
 School           : Fire
 Spell Type       : Melee
@@ -9159,7 +9159,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#6), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Soothing Mist (209525 effect#2), The Black Flame's Gamble (216995 effect#1), Clouded Focus (337476 effects: #2, #3), Tear of Morning (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Invoke Chi-Ji, the Red Crane (344035 effect#1), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Tea of Serenity (388519 effect#2), Save Them All (390105 effects: #1, #2), Tea of Plenty (393988 effect#1), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Chi Harmony (423439 effect#1), Temple Training (442743 effect#1), Strength of the Black Ox (443112 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#6), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Soothing Mist (209525 effect#2), The Black Flame's Gamble (216995 effect#1), Clouded Focus (337476 effects: #2, #3), Tear of Morning (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Invoke Chi-Ji, the Red Crane (344035 effect#1), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Tea of Serenity (388519 effect#2), Save Them All (390105 effects: #1, #2), Tea of Plenty (393988 effect#1), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Chi Harmony (423439 effect#1), Temple Training (442743 effect#1), Strength of the Black Ox (443112 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48, 79
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
@@ -9602,7 +9602,7 @@ School           : Shadow
 Spell Type       : Melee
 Spell Level      : 48
 Range            : 50000 yards
-Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
@@ -11186,7 +11186,7 @@ Spell Type       : Magic
 Spell Level      : 42
 Range            : 60 yards
 Duration         : 4.5 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48, 112
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ .....x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -11202,27 +11202,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(132) -> AOE friendly (31)
 Description      : $@spelldesc322118
 Tooltip          : Healing for $w1 every $t1 sec.
-
-Name             : Improved Purifying Brew (id=343743) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Brewmaster [tree=spec, row=6, col=3, max_rank=1, req_points=8]
-Class            : Monk
-School           : Physical
-Spell Type       : None
-Spell Level      : 47
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Effects          :
-#1 (id=867529)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1562 | Target: Self (1)
-                   Affected Spells (Category): Ironskin Brew (115308), Purifying Brew (119582)
-Description      : Purifying Brew now has 2 charges.
 
 Name             : Invoke Chi-Ji, the Red Crane (id=343818) [Spell Family (53), Passive] 
 Class            : Monk
@@ -11257,7 +11236,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
-Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -11313,7 +11292,7 @@ Velocity         : 40 yards/sec
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Upwelling (274963 effect#2), Font of Life (279875 effect#2), Enveloping Breath (325209 effect#3), Font of Life (337209 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Grandiose Font (364417 effects: #1, #2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Monk Mistweaver Class Set 4pc (393663 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Upwelling (274963 effect#2), Font of Life (279875 effect#2), Enveloping Breath (325209 effect#3), Font of Life (337209 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Grandiose Font (364417 effects: #1, #2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Monk Mistweaver Class Set 4pc (393663 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48, 108
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11459,7 +11438,7 @@ School           : Nature
 Spell Type       : Melee
 Spell Level      : 48
 Range            : 100 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Enveloping Breath (358560 effect#3), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Mending (364266 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Save Them All (390105 effects: #1, #2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395413 effect#1), Jadefire Brand (395414 effect#1), Lesson of Doubt (400097 effect#1), Press the Advantage (418361 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450763 effect#2), Aspect of Harmony (450769 effect#2), Fatal Touch (450832 effects: #1, #2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Enveloping Breath (358560 effect#3), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Mending (364266 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Save Them All (390105 effects: #1, #2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395413 effect#1), Jadefire Brand (395414 effect#1), Lesson of Doubt (400097 effect#1), Press the Advantage (418361 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450763 effect#2), Aspect of Harmony (450769 effect#2), Fatal Touch (450832 effects: #1, #2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48, 103
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ...xx... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11759,7 +11738,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 3 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#6), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Soothing Mist (209525 effect#2), The Black Flame's Gamble (216995 effect#1), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #2, #3), Tear of Morning (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Invoke Chi-Ji, the Red Crane (344035 effect#1), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Tea of Serenity (388519 effect#2), Save Them All (390105 effects: #1, #2), Tea of Plenty (393988 effect#1), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Chi Harmony (423439 effect#1), Temple Training (442743 effect#1), Strength of the Black Ox (443112 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#6), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Soothing Mist (209525 effect#2), The Black Flame's Gamble (216995 effect#1), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #2, #3), Tear of Morning (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Invoke Chi-Ji, the Red Crane (344035 effect#1), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Tea of Serenity (388519 effect#2), Save Them All (390105 effects: #1, #2), Tea of Plenty (393988 effect#1), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Chi Harmony (423439 effect#1), Temple Training (442743 effect#1), Strength of the Black Ox (443112 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48, 79
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
@@ -12368,7 +12347,7 @@ Effects          :
 Description      : Keg Smash deals an additional $s1% damage to targets affected by Breath of Fire.
 
 Name             : Gai Plin's Imperial Brew (id=383700) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Brewmaster [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12405,7 +12384,7 @@ Effects          :
 Description      : $@spelldesc383700
 
 Name             : Stormstout's Last Keg (id=383707) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12618,7 +12597,7 @@ Effects          :
 Description      : $@spelldesc325216
 
 Name             : Anvil & Stave (id=386937) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=8, col=5, max_rank=2, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=8, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Monk
 School           : Physical
@@ -12746,35 +12725,8 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 386963 | Target: Self (1)
 Description      : Your Breath of Fire ignites your right leg in flame for $386963d, causing your Blackout Kick and Spinning Crane Kick to deal $s1% additional damage as Fire damage and refresh the duration of your Breath of Fire on the target.
 
-Name             : Fundamental Observation (id=387035) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=6, col=5, max_rank=1, req_points=8]
-Class            : Monk
-School           : Physical
-Spell Type       : None
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Include In Advanced Combat Log (72), Not In Spellbook (143), Do Not Log on Learn (355)
-Effects          :
-#1 (id=1021552)  : Apply Aura (6) | Cast while Moving (Whitelist) (330)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Zen Meditation (115176)
-                   Family Flags: 45
-#2 (id=1021553)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Zen Meditation (115176)
-                   Family Flags: 45
-Description      : Zen Meditation has $s2% reduced cooldown and is no longer cancelled when you move or when you are hit by melee attacks.
-
 Name             : Elusive Footwork (id=387046) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=8, col=4, max_rank=2, req_points=20]
-                 : Effect#2 [op=set, values=(1, 2)]
-                 : Effect#3 [op=set, values=(5, 10)]
+Talent Entry     : Brewmaster [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12852,7 +12804,7 @@ Description      : $@spelldesc310454
 Tooltip          : Damage taken increased by $s1%.
 
 Name             : Weapons of Order (id=387184) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Brewmaster [tree=spec, row=9, col=4, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Arcane
 Spell Type       : Magic
@@ -12917,7 +12869,7 @@ Effects          :
 Description      : $@spelldesc310454
 
 Name             : Walk with the Ox (id=387219) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=8, col=3, max_rank=2, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=7, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(-250, -500)]
 Class            : Monk
@@ -12942,7 +12894,7 @@ Effects          :
 Description      : Abilities that grant Shuffle reduce the cooldown on Invoke Niuzao, the Black Ox by ${$s2/-1000}.2 sec, and Niuzao's Stomp deals an additional $s1% damage. 
 
 Name             : Fluidity of Motion (id=387230) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Brewmaster [tree=spec, row=6, col=5, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13056,7 +13008,7 @@ Description      : When you Blackout Kick, your Stagger is reduced by $<reduc>.
 Variables        : $reduc=${$AP*$387625s2/100}
 
 Name             : Shadowboxing Treads (id=387638) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Brewmaster [tree=spec, row=6, col=5, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13173,7 +13125,7 @@ School           : Nature
 Spell Type       : None
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13275,7 +13227,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Labels           : 2706: Spatial Paradox (406732 effect#10), Spatial Paradox (406789 effect#10)
                  : 3567: Balanced Stratagem (451514 effect#1)
-Affecting spells : Enveloping Mist (124682 effect#2), Combo Breaker: Chi Explosion (159407 effect#3), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Tear of Morning (387995 effect#2), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Combo Breaker: Chi Explosion (159407 effect#3), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Tear of Morning (387995 effect#2), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 102
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. .x.x.... .....x..   ........ ........ ........ ......x. 
@@ -13297,7 +13249,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 2706: Spatial Paradox (406732 effect#10), Spatial Paradox (406789 effect#10)
-Affecting spells : Enveloping Mist (124682 effect#2), Combo Breaker: Chi Explosion (159407 effect#3), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Tear of Morning (387995 effect#2), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Combo Breaker: Chi Explosion (159407 effect#3), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Tear of Morning (387995 effect#2), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 102
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. .x.x.... ........   ........ ........ ........ ......x. 
@@ -13381,26 +13333,27 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=1023496)  : Apply Aura (6) | Proc Trigger Spell (42): Yu'lon's Whisper
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 388040 | Target: Self (1)
-Description      : Activating Thunder Focus Tea causes you to exhale the breath of Yu'lon, healing up to $s1 allies within $388044a1 yards for ${$388044s1*($388040d/$388040t1+1)} over $388040d.
+Description      : While channeling Mana Tea you exhale the breath of Yu'lon, healing up to $s1 allies within $388044a1 yards for $388044s1 every ${$388040t1}.1 sec.
 
 Name             : Yu'lon's Whisper (id=388040) [Spell Family (53), Hidden] 
 Class            : Monk
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Duration         : 2 seconds
+Duration         : 20 seconds
+Labels           : 3724: Energizing Brew (422031 effect#3)
 Triggered by     : Yu'lon's Whisper (388038)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169)
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169), Spell Haste Affects Periodic (173)
 Effects          :
-#1 (id=1023499)  : Apply Aura (6) | Periodic Trigger Spell (23): Yu'lon's Whisper every 1 seconds
+#1 (id=1023499)  : Apply Aura (6) | Periodic Trigger Spell (23): Yu'lon's Whisper every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 388044 | Target: Self (1)
 Description      : $@spelldesc388038
 
@@ -13408,7 +13361,7 @@ Name             : Yu'lon's Whisper (id=388044) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Triggered by     : Yu'lon's Whisper (388040)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13422,7 +13375,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126)
 Effects          :
 #1 (id=1023503)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.49162 | PvP Coefficient: 1.00000 | Radius: 15 yards | Target: Unknown(136)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.03500 | PvP Coefficient: 1.00000 | Radius: 15 yards | Target: Unknown(136)
 Description      : $@spelldesc388038
 
 Name             : Jadefire Stomp (id=388193) [Spell Family (53)] 
@@ -13581,9 +13534,9 @@ Attributes       : ....x... ........ ........ .....x..   ........ ..x..... .....
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x......x ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), No Immunities (29), No Threat (42), No Aura Icon (60), Can Proc From Procs (122), Floating Combat Text On Cast (198), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Is Ability (4), No Immunities (29), No Threat (42), No Aura Icon (60), Can Proc From Procs (122), Floating Combat Text On Cast (198), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023727)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -13635,7 +13588,7 @@ School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
 Labels           : 3053: Mistweaver Monk (428200 effect#8), Singularly Focused Jade (451573 effect#2)
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Enveloping Breath (358560 effect#3), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Mending (364266 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Save Them All (390105 effects: #1, #2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395413 effect#1), Jadefire Brand (395414 effect#1), Lesson of Doubt (400097 effect#1), Press the Advantage (418361 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450763 effect#2), Aspect of Harmony (450769 effect#2), Fatal Touch (450832 effects: #1, #2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Enveloping Breath (358560 effect#3), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Mending (364266 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Save Them All (390105 effects: #1, #2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395413 effect#1), Jadefire Brand (395414 effect#1), Lesson of Doubt (400097 effect#1), Press the Advantage (418361 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450763 effect#2), Aspect of Harmony (450769 effect#2), Fatal Touch (450832 effects: #1, #2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48, 103
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ...xx... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14121,7 +14074,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
@@ -14413,7 +14366,7 @@ Effects          :
 Description      : Trigger a Zen Pulse around an ally.  Deals $s2 damage to all enemies within $A2 yds of the target. The ally is healed for $388668s1 per enemy damaged.
 
 Name             : Restoral (id=388615) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Mistweaver [tree=spec, row=4, col=2, max_rank=1, req_points=0, select_idx=200]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -14424,7 +14377,7 @@ Charges          : 1 (180 seconds cooldown)
 Category         : 1933: Benevolent Faerie (327710 effect#6), Benevolent Faerie Fermata (345453 effect#6), Motes of Possibility (409276 effect#5)
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
                  : 2706: Spatial Paradox (406732 effect#10), Spatial Paradox (406789 effect#10)
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48, 60
 Attributes       : ........ ........ x....... ........   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -14529,7 +14482,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 18, 48, 90
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -14598,8 +14551,8 @@ Description      : Reduces all damage taken by you and your target while channel
 
 Name             : Misty Peaks (id=388682) [Spell Family (53), Passive] 
 Talent Entry     : Mistweaver [tree=spec, row=9, col=5, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(0.00068, 0.004)]
-                 : Effect#3 [op=set, values=(2.5, 5)]
+                 : Effect#1 [op=set, values=(0.00245, 0.0095)]
+                 : Effect#3 [op=set, values=(4, 8)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14783,7 +14736,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1024731)  : Apply Aura (6) | Periodic Trigger Spell (23): Vivacious Vivification every 10 seconds
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 392883 | Target: Self (1)
-Description      : Every $t1 sec, your next Vivify becomes instant.
+Description      : Every $t1 sec, your next Vivify becomes instant and its healing is increased by $392883s2%.
 
 Name             : Expeditious Fortification (id=388813) [Spell Family (53), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=8, col=5, max_rank=1, req_points=20, select_idx=200]
@@ -15267,7 +15220,7 @@ Description      : $@spelldesc389575
 Tooltip          : Avoidance increased by $w1%.
 
 Name             : Face Palm (id=389942) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=8, col=6, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=8, col=7, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15506,6 +15459,7 @@ School           : Frost
 Spell Type       : None
 Spell Level      : 37
 Duration         : Aura (infinite)
+Labels           : 3701: Windwalker Monk (137025 effect#17)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........   ........ ........ ........ ........   
@@ -15525,8 +15479,12 @@ Effects          :
                    Base Value: -1500 | Scaled Value: -1500 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Vivify (116670)
                    Family Flags: 26
-Description      : Your next Vivify is instant.
-Tooltip          : Your next Vivify is instant.
+#2 (id=1160956)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Vivify (116670)
+                   Family Flags: 26
+Description      : Your next Vivify is instant and heals $s2% more.
+Tooltip          : Your next Vivify is instant and its healing is increased by $s2%.
 
 Name             : Vigorous Expulsion (id=392900) [Spell Family (53), Passive] 
 Talent Entry     : Generic [tree=class, row=7, col=1, max_rank=1, req_points=8]
@@ -16040,7 +15998,7 @@ Effects          :
 Description      : $@spelldesc392986
 
 Name             : Tranquil Spirit (id=393357) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Brewmaster [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Brewmaster [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -16062,7 +16020,7 @@ Effects          :
 Description      : When you consume a Healing Sphere or cast Expel Harm, your current Stagger amount is lowered by $s1%.
 
 Name             : Chi Surge (id=393400) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Brewmaster [tree=spec, row=10, col=5, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -16197,7 +16155,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1032621)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.75000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc238131
 
 Name             : Monk Brewmaster Class Set 2pc (id=393659) [Spell Family (53), Passive, Hidden] 
@@ -16800,7 +16758,7 @@ Description      : $@spelldesc396166
 Tooltip          : Critical strike, haste, and mastery increased by $w1%.
 
 Name             : Call to Arms (id=397251) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -16868,7 +16826,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16897,7 +16855,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Labels           : 2545: Legacy of Wisdom (404408 effect#1), Legacy of Wisdom (404408 effect#2)
                  : 3566: Balanced Stratagem (451508 effect#1)
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Triggered by     : Sheilun's Gift (399497)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17585,7 +17543,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : .......x ......x. ...x.... ........   ........ ........ ........ ......x. 
@@ -17841,7 +17799,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Press the Advantage (id=418359) [Spell Family (53), Passive, Hidden] 
 Replaces         : Tiger Palm (id=100780)
-Talent Entry     : Brewmaster [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=100, replace="Tiger Palm" (id=100780)]
+Talent Entry     : Brewmaster [tree=spec, row=9, col=4, max_rank=1, req_points=20, select_idx=100, replace="Tiger Palm" (id=100780)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17945,6 +17903,9 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Mana Tea (115294)
                    Family Flags: 64
+#3 (id=1162621)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Tick Time (19)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 19 | Misc Value 2: 3724 (Label) | Target: Self (1)
+                   Affected Spells (Label): Yu'lon's Whisper (388040)
 Description      : Mana Tea now channels $s1% faster and generates $s2% more Mana.
 
 Name             : Monk Brewmaster 10.2 Class Set 2pc (id=422886) [Spell Family (53), Passive, Hidden] 
@@ -18192,7 +18153,7 @@ Spell Type       : Magic
 Range            : 40 yards
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1), Devout Spirit (319919 effect#1)
                  : 2930: Mistweaver Monk (137024 effect#31), Improved Vivify (231602 effect#2)
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18328,7 +18289,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.00000 | Misc Value: 3 | Misc Value 2: 3133 (Label) | Target: Self (1)
                    Affected Spells (Label): Diffuse Magic (122783)
 #19 (id=1139786)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 11000 | Scaled Value: 11000 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3390 (Label) | Target: Self (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3390 (Label) | Target: Self (1)
                    Affected Spells (Label): Yu'lon's Knowledge (443625)
 #20 (id=1141413)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3429 (Label) | Target: Self (1)
@@ -18370,7 +18331,6 @@ Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=3, col=
 Class            : Paladin, Monk
 School           : Holyfire
 Spell Type       : None
-Internal Cooldown: 60 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
@@ -18390,9 +18350,11 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 431467 | Target: Self (1)
 #3 (id=1119757)  : Apply Aura (6) | Proc Trigger Spell (42): Will of the Dawn
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Trigger Spell: 431752 | Target: Self (1)
+#4 (id=1161231)  : Apply Aura (6) | Proc Trigger Spell (42): Will of the Dawn
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Trigger Spell: 456779 | Target: Self (1)
 Description      : Movement speed increased by $431462s1% while above $s1% health.
 
-When your health is brought below $s3%, your movement speed is increased by $431752s1% for $431752d. Cannot occur more than once every $proccooldown sec
+When your health is brought below $s3%, your movement speed is increased by $431752s1% for $431752d. Cannot occur more than once every $456779d.
 
 Name             : Will of the Dawn (id=431462) [Spell Family (10)] 
 Class            : Paladin, Monk
@@ -18660,7 +18622,7 @@ Effects          :
 #1 (id=1138070)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1138071)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Tiger Palm (331433)
                    Family Flags: 10
 Description      : Teachings of the Monastery has a $s1% chance to refund a charge when consumed. 
@@ -18891,7 +18853,7 @@ School           : Nature
 Spell Type       : None
 Range            : 100 yards
 Labels           : 3448: Windwalker Monk (137025 effect#26), Storm, Earth, and Fire (137639 effect#8)
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -19020,13 +18982,15 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1138783)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?c2[After Xuen assists you, your next Enveloping Mist's cast time is reduced by $443112s1% and causes Niuzao to grant an absorb shield to $443113s3 nearby allies for $443113s2% of your maximum health.]?c3[After Xuen assists you, your next Blackout Kick causes Niuzao to stomp at your target's location, dealing $443127s1 damage to nearby enemies, reduced beyond $s2 targets.][]
+#3 (id=1162170)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $?c2[After Xuen assists you, your next Enveloping Mist's cast time is reduced by $443112s1% and causes Niuzao to grant an absorb shield to $443113s3 nearby allies for $443113s2% of your maximum health.]?c3[After Xuen assists you, your next Blackout Kick refunds $s3 stacks of Teachings of the Monastery and causes Niuzao to stomp at your target's location, dealing $443127s1 damage to nearby enemies, reduced beyond $s2 targets.][]
 
 Name             : Strength of the Black Ox (id=443112) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Duration         : 20 seconds
+Duration         : 30 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ......x. ........ ........   ........ ........ ........ ........   
@@ -19045,7 +19009,7 @@ Effects          :
                    Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Breath (358560)
                    Family Flags: 79
 Description      : $@spelldesc443110
-Tooltip          : $?c2[Your next Enveloping Mist's cast time is reduced by $s1% and causes Niuzao to grant an absorb shield to $443113s3 nearby allies for $443113s2% of your maximum health.]?c3[Your next Blackout Kick causes Niuzao to stomp at your target's location, dealing $443127s1 damage to nearby enemies, reduced beyond $443110s2 targets.][]
+Tooltip          : $?c2[Your next Enveloping Mist's cast time is reduced by $s1% and causes Niuzao to grant an absorb shield to $443113s3 nearby allies for $443113s2% of your maximum health.]?c3[Your next Blackout Kick refunds $443110s3 stacks of Teachings of the Monastery and causes Niuzao to stomp at your target's location, dealing $443127s1 damage to nearby enemies, reduced beyond $443110s2 targets.][]
 
 Name             : Strength of the Black Ox (id=443113) [Spell Family (53)] 
 Class            : Monk
@@ -19067,7 +19031,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
                    Affected School(s): All
 #2 (id=1138788)  : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=1138789)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : $@spelldesc443110
@@ -19101,7 +19065,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Real PPM         : 4 (Haste multiplier)
+Real PPM         : 3 (Haste multiplier)
 Proc Flags       : ....x... ..x.x.x. x.x..x.. ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -19116,7 +19080,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1139045)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?c2[Refreshing Jade Wind and Spinning Crane Kick have a chance to cause Chi-Ji to quickly rush to $s1 allies, healing each target for $443272s1.]?c3[Rushing Jade Wind and Spinning Crane Kick have a chance to cause Chi-Ji to quickly rush to $s1 enemies, dealing $443263s1 Physical damage to each target struck.][]
+Description      : $?c2[Refreshing Jade Wind and Spinning Crane Kick have a chance to cause Chi-Ji to grant you a stack of Mana Tea and quickly rush to $s1 allies, healing each target for $443272s1.]?c3[Rushing Jade Wind and Spinning Crane Kick have a chance to cause Chi-Ji to increase your energy regeneration by $457459s1% for $457459d and quickly rush to $s1 enemies, dealing $443263s1 Physical damage to each target struck.][]
 
 Name             : Flight of the Red Crane (id=443263) [Spell Family (53)] 
 Class            : Monk
@@ -19146,7 +19110,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Velocity         : 30 yards/sec
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -19182,7 +19146,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1139104)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Consuming $?c2[$443506u stacks of Sheilun's Gift]?c3[$443424u Chi][] causes your next Storm, Earth, and Fire to call upon Yu'lon to decrease the cooldown time of $?c2[Renewing Mist, Rising Sun Kick, Life Cocoon, and Thunder Focus Tea]?c3[Rising Sun Kick, Fists of Fury, Strike of the Windlord, and Whirling Dragon Punch][] by $443421s2% for $443421d.$?c3[ 
+Description      : Consuming $?c2[$443506u stacks of Sheilun's Gift calls]?c3[$443424u Chi causes your next Strike of the Windlord to call][] upon Yu'lon to decrease the cooldown time of $?c2[Renewing Mist, Rising Sun Kick, Life Cocoon, and Thunder Focus Tea]?c3[Rising Sun Kick, Fists of Fury, Strike of the Windlord, and Whirling Dragon Punch][] by $443421s2% for $443421d.$?c3[ 
 
 The channel time of Fists of Fury is reduced by $443421s5% while Yu'lon is active.][]
 
@@ -19198,9 +19162,9 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1139298)  : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 221167 | Misc Value 2: 0x2cf | Target: Custom (18)
@@ -19525,9 +19489,9 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1139673)  : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 221167 | Misc Value 2: 0x2cf | Target: Custom (18)
@@ -19578,7 +19542,7 @@ Description      : $?c2[Refreshing Jade Wind's duration is increased by ${$s1/10
 
 
 Name             : Crane Style (id=446260) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Mistweaver [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19715,13 +19679,32 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc443028
 
+Name             : Chi Harmony (id=448392) [Spell Family (53), Passive] 
+Talent Entry     : Mistweaver [tree=spec, row=7, col=6, max_rank=1, req_points=8]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143)
+Effects          :
+#1 (id=1146848)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 8000 | Scaled Value: 8000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Renewing Mist increases its target's healing received from you by $423439s1% for the first $457013d of its duration, but cannot jump to a new target during this time.
+
 Name             : Renewing Mist (id=448430) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 20 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Shelter of Rin (281301 effects: #1, #2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Tea of Serenity (388520 effect#1), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Soulfang Vitality (410082 effects: #1, #2), Chi Harmony (423439 effect#1), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Shelter of Rin (281301 effects: #1, #2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Tea of Serenity (388520 effect#1), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Soulfang Vitality (410082 effects: #1, #2), Chi Harmony (423439 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 23, 48
 Attributes       : ........ ........ ..x..... x..x...x   ........ ........ ........ ........ 
                  : ..x..... x....... .x...... ........   ........ .x...... ........ ..x...x. 
@@ -19764,51 +19747,6 @@ Effects          :
                    Affected School(s): All
 Description      : $@spelldesc443059
 Tooltip          : Damage taken reduced by $w1%.
-
-Name             : Chi Harmony (id=448554) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=7, col=6, max_rank=1, req_points=8]
-Class            : Monk
-School           : Physical
-Spell Type       : None
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143)
-Effects          :
-#1 (id=1147101)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 8000 | Scaled Value: 8000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Renewing Mist applies Chi Harmony to its initial target, increasing their healing taken from you by $448555s1% for $448555d.
-
-Name             : Chi Harmony (id=448555) [Spell Family (53)] 
-Class            : Monk
-School           : Nature
-Spell Type       : None
-Range            : 100 yards
-Duration         : 8 seconds
-Proc Chance      : 100%
-Proc Flags       : ...x.x.. ...x.x.x .x.x.... .......x   ........ ........ ........ ........   
-                 : White Melee Taken, Yellow Melee Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Attributes       : ........ ........ ........ ...x....   .....x.. ........ ........ ........ 
-                 : ........ ......x. ........ ........   ........ ........ ........ ..x..... 
-                 : .......x ....x... ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
-                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Is Buff (140), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
-Effects          :
-#1 (id=1147102)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.30000 | Target: Friend (21)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
-                   Family Flags: 48, 102
-Description      : $@spelldesc448554
-Tooltip          : Healing taken from $@auracaster increased by $s1%.
 
 Name             : Lighter Than Air (id=449582) [Spell Family (53), Passive] 
 Talent Entry     : Generic [tree=class, row=10, col=1, max_rank=1, req_points=20]
@@ -20172,14 +20110,14 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6)
+                 : Passive (6), Can Proc From Procs (122)
 Effects          :
 #1 (id=1150327)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -20875,14 +20813,14 @@ Proc Chance      : 101%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........   .....x.. ........ ........ ........   
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ......x. ........ 
                  : ........ ........ ........ ........   
-                 : Aura Is Buff (140), Nameplate Personal Buffs/Debuffs (423), Aura Always Shown (438)
+                 : Can Proc From Procs (122), Aura Is Buff (140), Nameplate Personal Buffs/Debuffs (423), Aura Always Shown (438)
 Effects          :
 #1 (id=1150783)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -21581,7 +21519,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1151790)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?a137023[Purifying Brew removes $s1% additional Stagger and causes you to absorb up to $<value> incoming Stagger][When cast on yourself, your single-target healing spells heal for $s2% more and grant a $451452s1 heal over $451452d].
+Description      : $?a137023[Purifying Brew removes $s1% additional Stagger and causes you to absorb up to $<value> incoming Stagger][When cast on yourself, your single-target healing spells heal for $s2% more and restore an additional $451452o1 health over $451452d].
 Variables        : $value=${($AP*$s3/100)*(1+$@versadmg)*(1+$216519s1/100)}
 
 Name             : High Impact (id=451037) [Spell Family (53), Hidden] 
@@ -22004,7 +21942,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Points On Client (268)
 Effects          :
-#1 (id=1151798)  : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
+#1 (id=1151798)  : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc451294
 Tooltip          : Attack speed increased by $w1%.
@@ -22084,10 +22022,10 @@ Tooltip          : Damage received from $@auracaster increased by $w1%.
 
 Name             : Mantra of Purity (id=451452) [Spell Family (53)] 
 Class            : Monk
-School           : Physical
+School           : Nature
 Spell Type       : None
 Duration         : 6 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -22392,7 +22330,7 @@ Talent Entry     : Windwalker [tree=spec, row=10, col=1, max_rank=1, req_points=
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Internal Cooldown: 3 seconds
+Internal Cooldown: 2 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
                  : Cast Successful
@@ -22754,7 +22692,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 8
 Range            : 100 yards
-Affecting spells : Thunder Focus Tea (116680 effect#7), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #1, #2, #32), Windwalker Monk (137025 effects: #12, #23, #30), Expel Harm (322102 effect#1), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Harm Denial (336379 effect#1), Tear of Morning (337993 effect#2), Reverse Harm (342928 effect#1), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Tea of Plenty (388524 effect#1), Save Them All (390105 effects: #1, #2), Vigorous Expulsion (392900 effects: #1, #2), Profound Rebuttal (392910 effect#1), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effect#3), Renewing Mist (448430 effect#2), Chi Harmony (448555 effect#1), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#7), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #1, #2, #32), Windwalker Monk (137025 effects: #12, #23, #30), Expel Harm (322102 effect#1), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Harm Denial (336379 effect#1), Tear of Morning (337993 effect#2), Reverse Harm (342928 effect#1), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Tea of Plenty (388524 effect#1), Save Them All (390105 effects: #1, #2), Vigorous Expulsion (392900 effects: #1, #2), Profound Rebuttal (392910 effect#1), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effect#3), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 17, 48, 95
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ......x. 
@@ -22836,7 +22774,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Suppress Weapon Procs (151), Aura Points On Client (268), Area Effects Use Target Radius (328)
 Effects          :
 #1 (id=1153059)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Cone Front (104)
 Description      : $@spelldesc123904
 
 Name             : Flurry of Xuen (id=452137) [Spell Family (53), Passive, Hidden] 
@@ -22913,13 +22851,13 @@ Spell Type       : Melee
 Range            : 5 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Can't Crit (93)
+                 : Can't Crit (93), Treat as Area Effect (175)
 Effects          :
 #1 (id=1153435)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -23364,6 +23302,131 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc443294
 
-Tooltip          : Your next Storm, Earth, and Fire also summons Yu'lon to assist you.
+Tooltip          : Your next Strike of the Windlord also summons Yu'lon to assist you.
+
+Name             : Will of the Dawn (id=456779) [Spell Family (10)] 
+Class            : Paladin, Monk
+School           : Holyfire
+Spell Type       : None
+Duration         : 60 seconds
+Triggered by     : Will of the Dawn (431406)
+Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Is Debuff (26), Aura Points On Client (268)
+Effects          :
+#1 (id=1161230)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc431406
+Tooltip          : Will of the Dawn cannot activate.
+
+Name             : Chi Harmony (id=457013) [Spell Family (53), Hidden] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 8 seconds
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
+Effects          :
+#1 (id=1161636)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.30000 | Target: Friend (21)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Family Flags: 48, 102
+Description      : $@spelldesc448392
+Tooltip          : $@spelldesc448392
+
+Name             : Chi Harmony (id=457110) [Spell Family (53), Hidden] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1161799)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 8000 | Scaled Value: 8000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc448392
+
+Name             : Pressure Points (id=457389) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ..x..... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Always Hit (114)
+Effects          :
+#1 (id=1162538)  : Dispel (38)
+                   Base Value: 10 | Scaled Value: 10 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Enemy (6)
+Description      : $@spelldesc450432
+
+Name             : Refreshing Jade Wind (id=457397) [Spell Family (53), Passive] 
+Talent Entry     : Mistweaver [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143)
+Effects          :
+#1 (id=1162547)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Thunder Focus Tea summons a whirling tornado around you, causing ${$162530s1*$s3} healing over $196725d to up to $196725s2 allies within $162530A1 yards.
+
+
+Name             : Flight of the Red Crane (id=457459) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Duration         : 6 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Points On Client (268)
+Effects          :
+#1 (id=1162667)  : Apply Aura (6) | Modify Power Regen (110)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+Description      : $@spelldesc443255
+Tooltip          : Energy regeneration increased by $w1%.
 
 

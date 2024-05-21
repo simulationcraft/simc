@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 11.0.0.54709
-static const std::array<specialization_spell_entry_t, 406> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 11.0.0.54774
+static const std::array<specialization_spell_entry_t, 407> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -276,6 +276,7 @@ static const std::array<specialization_spell_entry_t, 406> __specialization_spel
   { 10,  268, 325095,      0, "Touch of Death"                    , "Rank 3" },
   { 10,  268, 346104,      0, "Windwalker Monk Two-Hand Adjustment", 0 },
   { 10,  270, 115450,      0, "Detox"                             , 0 },
+  { 10,  270, 116645,      0, "Teachings of the Monastery"        , 0 },
   { 10,  270, 117907,      0, "Mastery: Gust of Mists"            , 0 },
   { 10,  270, 120224,      0, "Leather Specialization"            , 0 },
   { 10,  270, 137024,      0, "Mistweaver Monk"                   , 0 },

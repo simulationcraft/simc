@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 11.0.0.54709
-static const std::array<item_enchantment_data_t, 5002> __spell_item_ench_data { {
+// Item enchantment data, wow build 11.0.0.54774
+static const std::array<item_enchantment_data_t, 5016> __spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },      0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 320,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720f,  0.0000f,  0.0000f },   2831, "Reinforced (+$k1 Armor)"           },
@@ -4647,7 +4647,7 @@ static const std::array<item_enchantment_data_t, 5002> __spell_item_ench_data { 
   { 7009,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "10.2.0 FX Testing - Enchant Visualt - Emerald Dream" },
   { 7010,  39998, -4,   0,  30, 0, 0,   0,   0, {   5,   0,   0 }, {   16,    0,    0 }, {      5,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "+$k1 Intellect"                    },
   { 7032,      0,  0,   0,  70, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Verdant Crush"                     },
-  { 7052,      0,  0,  70,   0, 0, 550,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 425838,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 426327, "|cnITEM_EPIC_COLOR:Incandescent Essence|r" },
+  { 7052,      0,  0,  70,  70, 0, 535,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 425838,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 426327, "|cnITEM_EPIC_COLOR:Incandescent Essence|r" },
   { 7055, 210681, -1,   0,   0, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {   9613,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "+Haste"                            },
   { 7060, 210714, -1,   0,   0, 0, 0,   0,   0, {  11,  11,   0 }, {    0,    0,    0 }, {   9618,  10881,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "+Critical Strike"                  },
   { 7061, 210715, -1,   0,   0, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {   9619,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "+Mastery"                          },
@@ -4915,7 +4915,7 @@ static const std::array<item_enchantment_data_t, 5002> __spell_item_ench_data { 
   { 7410,      0, -7,  60,  70, 180, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     61,      0,      0 }, {  0.1654f,  0.0000f,  0.0000f },      0, "+$k1 Speed |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
   { 7411,      0, -7,  60,  70, 180, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     61,      0,      0 }, {  0.2206f,  0.0000f,  0.0000f },      0, "+$k1 Speed |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
   { 7412,      0, -7,  60,  70, 180, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     61,      0,      0 }, {  0.2757f,  0.0000f,  0.0000f },      0, "+$k1 Speed |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
-  { 7413,      0, -7,  60,  70, 180, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     61, 449742,      0 }, {  0.1654f,  0.0000f,  0.0000f },      0, "Chant of Speed |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 7413,      0, -7,  60,  70, 180, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     61, 449752,      0 }, {  0.1654f,  0.0000f,  0.0000f },      0, "Chant of Speed |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
   { 7414,      0, -7,  60,  70, 180, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     61, 449743,      0 }, {  0.2206f,  0.0000f,  0.0000f },      0, "Chant of Speed |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
   { 7415,      0, -7,  60,  70, 180, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     61, 449744,      0 }, {  0.2757f,  0.0000f,  0.0000f },      0, "Chant of Speed |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
   { 7416,      0, -7,  60,  70, 180, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     61,      0,      0 }, {  0.4412f,  0.0000f,  0.0000f },      0, "Scout's March |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
@@ -5002,5 +5002,19 @@ static const std::array<item_enchantment_data_t, 5002> __spell_item_ench_data { 
   { 7524, 225243,  0,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11222,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Refurbished Supercollide-O-Tron"   },
   { 7525, 225244,  0,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11223,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Refurbished Shadowflame Rockets"   },
   { 7526,      0,  0,   0,  50, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 455832,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 455829, "Algari Weaverline"                 },
+  { 7527,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "11.0.0 FX Testing - Enchant Visual - Goblin" },
+  { 7528,      0,  0,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {  100,    0,    0 }, { 457496,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Tidecaller's Guard"                },
+  { 7529,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {      5, 457615,      0 }, {  0.5500f,  0.0000f,  0.0000f }, 457618, "+$k1 Intellect & +$387302s1% Mana |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 7530,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {      5, 457616,      0 }, {  0.6500f,  0.0000f,  0.0000f }, 457619, "+$k1 Intellect & +$387302s1% Mana |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 7531,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {      5, 457617,      0 }, {  0.7500f,  0.0000f,  0.0000f }, 457620, "+$k1 Intellect & +$387302s1% Mana |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 7532,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      5,      7,      0 }, {  0.5500f,  0.6500f,  0.0000f }, 457621, "+$k1 Intellect & +$k2 Stamina |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 7533,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      5,      7,      0 }, {  0.6500f,  0.7500f,  0.0000f }, 457622, "+$k1 Intellect & +$k2 Stamina |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 7534,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      5,      7,      0 }, {  0.7500f,  0.2020f,  0.0000f }, 457623, "+$k1 Intellect & +$k2 Stamina |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 7535,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      5,      0,      0 }, {  0.3500f,  0.0000f,  0.0000f }, 457624, "+$k1 Intellect |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 7536,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      5,      0,      0 }, {  0.4500f,  0.0000f,  0.0000f }, 457625, "+$k1 Intellect |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 7537,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      5,      0,      0 }, {  0.5500f,  0.0000f,  0.0000f }, 457626, "+$k1 Intellect |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 7538,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      7,      0,      0 }, {  0.6500f,  0.0000f,  0.0000f },      0, "Dornogal Buckle|A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 7539,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      7,      0,      0 }, {  0.7500f,  0.0000f,  0.0000f },      0, "Dornogal Buckle|A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 7540,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      7,      0,      0 }, {  0.8500f,  0.0000f,  0.0000f },      0, "Dornogal Buckle A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
 } };
 

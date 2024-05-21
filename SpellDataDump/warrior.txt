@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54709 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54774 thewarwithin-BETA
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -3126,7 +3126,7 @@ Effects          :
                    Family Flags: 49
 #7 (id=260730)   : Apply Aura (6) | Modify Block% (51)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-#8 (id=260731)   : Apply Aura (6) | Modify Ranged Attack Speed% (320)
+#8 (id=260731)   : Apply Aura (6) | Unknown(320)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 #9 (id=260732)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -15131,7 +15131,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ...x.... ........ ........ ........   
                  : Can Proc From Procs (122), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=1029338)  : Apply Aura (6) | Modify Melee Speed% (319)
+#1 (id=1029338)  : Apply Aura (6) | Modify Melee Auto Attack Speed% (319)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1038023)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Target: Self (1)
@@ -15273,7 +15273,7 @@ Attributes       : ........ ........ ........ x......x   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Allow While Mounted (24), No Aura Cancel (31), No Threat (42), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1031237)  : Apply Aura (6) | Modify Melee Speed% (319)
+#1 (id=1031237)  : Apply Aura (6) | Modify Melee Auto Attack Speed% (319)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc382946
 Tooltip          : Auto attack speed increased.
@@ -16030,7 +16030,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ...x.... ........ ........ ........   
                  : Initiates Combat (Enables Auto-Attack) (41), Can Proc From Procs (122), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1033840)  : Apply Aura (6) | Modify Melee Speed% (319)
+#1 (id=1033840)  : Apply Aura (6) | Modify Melee Auto Attack Speed% (319)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1038018)  : Apply Party Aura (35) | Modify Auto Attack Damage Done% (344)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -19194,7 +19194,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Points On Client (268)
 Effects          :
-#1 (id=1143273)  : Apply Aura (6) | Attack Speed (Normalized wDPS) (9)
+#1 (id=1143273)  : Apply Aura (6) | Auto Attack Speed (Normalized wDPS) (9)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc444778
 Tooltip          : Auto attack speed increased by $w1%.
