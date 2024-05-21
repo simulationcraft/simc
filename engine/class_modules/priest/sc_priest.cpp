@@ -3050,7 +3050,8 @@ void priest_t::init_resources( bool force )
     auto halo_insanity         = talents.halo->effectN( 2 ).resource( RESOURCE_INSANITY );
     auto shadow_crash_insanity = talents.shadow.shadow_crash->effectN( 2 ).resource( RESOURCE_INSANITY );
 
-    if ( talents.shadow.shadow_crash.enabled() )
+    // Assuming Shadow Crash and Void Crash have the same spell data
+    if ( talents.shadow.shadow_crash.enabled() || talents.shadow.void_crash.enabled() )
     {
       // Two Shadow Crash + Two Divine Star == 24 Insanity
       if ( talents.divine_star.enabled() )

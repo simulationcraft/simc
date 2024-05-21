@@ -332,6 +332,7 @@ public:
       const spell_data_t* mind_spike_insanity_spell;
       // Row 5
       player_talent_t shadow_crash;
+      player_talent_t void_crash;
       player_talent_t unfurling_darkness;
       player_talent_t void_eruption;
       const spell_data_t* void_eruption_damage;
