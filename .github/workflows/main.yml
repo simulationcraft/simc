@@ -159,7 +159,8 @@ jobs:
         spec: [
             deathknight_blood, deathknight_unholy, deathknight_frost,
             druid_balance, druid_feral, druid_guardian,
-            rogue_assassination, rogue_outlaw, rogue_subtlety
+            rogue_assassination, rogue_outlaw, rogue_subtlety,
+            demonhunter_vengeance, demonhunter_havoc
           ]
         fightstyle: [ singletarget, multitarget, dungeonslice ]
         include:
