@@ -8543,18 +8543,13 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* state, bool biased, bool inevitable )
+void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* state, bool biased, bool trigger_inevitable )
 {
   if ( !p()->talent.fatebound.hand_of_fate->ok() )
     return;
 
   if ( cast_state( state )->get_combo_points() < p()->talent.fatebound.hand_of_fate->effectN( 1 ).base_value() )
     return;
-
-  if ( !p()->talent.fatebound.inevitability->ok() )
-  {
-    inevitable = false;
-  }
 
   fatebound_t::coinflip_e result;
 
@@ -8574,7 +8569,7 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
   else
   {
     double matching_odds = 0.5;
-    if ( inevitable )
+    if ( trigger_inevitable && p()->talent.fatebound.inevitability->ok() )
     {
       // TODO: Inevitable flips when you have both coins don't always produce a flip
       // for the coin with the higher coin count. There may be an underlying "order" to an
@@ -8626,6 +8621,7 @@ void actions::rogue_action_t<Base>::execute_fatebound_coinflip( const action_sta
   {
     if ( !ab::is_precombat )
     {
+      // Don't fling tails coins at enemies precombat, since that'll start combat (assume the player knows not to have an enemy targeted)
       auto tails_action = p()->talent.fatebound.delivered_doom->ok() && p()->sim->target_non_sleeping_list.size() <= 1
         ? p()->active.fatebound.fatebound_coin_tails_delivered
         : p()->active.fatebound.fatebound_coin_tails;
