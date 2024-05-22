@@ -41,6 +41,7 @@ void fury( player_t* p )
   default_->add_action( "pummel,if=target.debuff.casting.react" );
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "ravager,if=cooldown.recklessness.remains<3|buff.recklessness.up" );
+  default_->add_action( "bladestorm,if=cooldown.recklessness.remains<3|buff.recklessness.up" );
   default_->add_action( "lights_judgment,if=buff.recklessness.down" );
   default_->add_action( "berserking,if=buff.recklessness.up" );
   default_->add_action( "blood_fury" );
@@ -186,6 +187,7 @@ void arms( player_t* p )
   execute->add_action( "thunderous_roar,if=(talent.test_of_might&rage<40)|(!talent.test_of_might&(buff.avatar.up|debuff.colossus_smash.up)&rage<70)" );
   execute->add_action( "cleave,if=spell_targets.whirlwind>2&dot.deep_wounds.remains<=gcd" );
   execute->add_action( "bladestorm,if=raid_event.adds.in>45&talent.hurricane&rage<40" );
+  execute->add_action( "ravager,if=raid_event.adds.in>45" );
   execute->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2&debuff.colossus_smash.remains<=gcd" );
   execute->add_action( "overpower,if=rage<40&buff.martial_prowess.stack<2" );
   execute->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2&buff.martial_prowess.stack=2|!talent.executioners_precision&buff.martial_prowess.stack=2" );
@@ -193,6 +195,7 @@ void arms( player_t* p )
   execute->add_action( "execute" );
   execute->add_action( "overpower" );
   execute->add_action( "bladestorm" );
+  execute->add_action( "ravager" );
   execute->add_action( "wrecking_throw" );
 
   aoe->add_action( "execute,if=buff.juggernaut.up&buff.juggernaut.remains<gcd" );
@@ -209,6 +212,7 @@ void arms( player_t* p )
   aoe->add_action( "thunderous_roar,if=buff.test_of_might.up|debuff.colossus_smash.up|dot.deep_wounds.remains" );
   aoe->add_action( "champions_spear,if=buff.test_of_might.up|debuff.colossus_smash.up|dot.deep_wounds.remains" );
   aoe->add_action( "bladestorm,if=buff.hurricane.remains<3|!talent.hurricane" );
+  aoe->add_action( "ravager" );
   aoe->add_action( "whirlwind,if=talent.storm_of_swords" );
   aoe->add_action( "cleave,if=!talent.fervor_of_battle|talent.fervor_of_battle&dot.deep_wounds.remains<=dot.deep_wounds.duration*0.3" );
   aoe->add_action( "overpower,if=buff.sweeping_strikes.up&talent.dreadnaught&!talent.test_of_might&active_enemies<3" );
@@ -247,6 +251,7 @@ void arms( player_t* p )
   single_target->add_action( "thunder_clap" );
   single_target->add_action( "slam" );
   single_target->add_action( "bladestorm" );
+  single_target->add_action( "ravager" );
   single_target->add_action( "cleave" );
   single_target->add_action( "wrecking_throw" );
 

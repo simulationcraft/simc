@@ -204,6 +204,8 @@ public:
     buff_t* charge_movement;
     buff_t* collateral_damage;
     buff_t* concussive_blows;
+    buff_t* dance_of_death_arms;
+    buff_t* dance_of_death_prot;
     buff_t* dancing_blades;
     buff_t* defensive_stance;
     buff_t* die_by_the_sword;
@@ -243,7 +245,6 @@ public:
     buff_t* whirlwind;
     buff_t* wild_strikes;
 
-    buff_t* dance_of_death_prot;
     buff_t* seeing_red;
     buff_t* seeing_red_tracking;
     buff_t* violent_outburst;
@@ -558,6 +559,7 @@ public:
       player_talent_t bloodletting;
       player_talent_t battlelord;
       player_talent_t bladestorm;
+      player_talent_t ravager;
       player_talent_t sharpened_blades;
       player_talent_t executioners_precision;
 
@@ -2062,8 +2064,16 @@ struct bladestorm_t : public warrior_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    // TODO why is this not set to be channeled so this is automatic?
-    return dot_duration * ( tick_time( s ) / base_tick_time );
+    // Haste reduces dot time, as well as the tick time for Ravager
+    timespan_t tt = tick_time( s );
+    auto full_duration = dot_duration;
+
+    if ( p() -> buff.dance_of_death_arms -> up() )
+    {
+      full_duration += p() -> talents.arms.dance_of_death -> effectN( 1 ).trigger() -> effectN( 1 ).time_value();
+    }
+
+    return full_duration * ( tt / base_tick_time );
   }
 
   void execute() override
@@ -4434,7 +4444,6 @@ struct ravager_tick_t : public warrior_attack_t
     {
       am *= 1.0 + p() -> buff.dance_of_death_prot -> value();
     }
-
     return am;
   }
 };
@@ -4467,6 +4476,11 @@ struct ravager_t : public warrior_attack_t
       // As a result, not applying the time for now, as it doesn't work.
       if ( !p() -> bugs )
         full_duration += p() -> talents.protection.dance_of_death -> effectN( 1 ).trigger() -> effectN( 1 ).time_value();
+    }
+
+    if ( p() -> buff.dance_of_death_arms -> up() )
+    {
+      full_duration += p() -> talents.arms.dance_of_death -> effectN( 1 ).trigger() -> effectN( 1 ).time_value();
     }
 
     return full_duration * ( tt / base_tick_time );
@@ -6425,6 +6439,7 @@ void warrior_t::init_spells()
   talents.arms.bloodletting                        = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodletting" );
   talents.arms.battlelord                          = find_talent_spell( talent_tree::SPECIALIZATION, "Battlelord" );
   talents.arms.bladestorm                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bladestorm", WARRIOR_ARMS );
+  talents.arms.ravager                             = find_talent_spell( talent_tree::SPECIALIZATION, "Ravager", WARRIOR_ARMS );
   talents.arms.sharpened_blades                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sharpened Blades" );
   talents.arms.executioners_precision              = find_talent_spell( talent_tree::SPECIALIZATION, "Executioner's Precision" );
 
@@ -6568,7 +6583,7 @@ void warrior_t::init_spells()
   };
 
   talents.shared.hurricane = find_shared_talent( { &talents.arms.hurricane, &talents.fury.hurricane } );
-  talents.shared.ravager = find_shared_talent( { &talents.fury.ravager, &talents.protection.ravager } );
+  talents.shared.ravager = find_shared_talent( { &talents.arms.ravager, &talents.fury.ravager, &talents.protection.ravager } );
   talents.shared.bloodsurge = find_shared_talent( { &talents.arms.bloodsurge, &talents.protection.bloodsurge } );
 
   // Convenant Abilities
@@ -7015,6 +7030,11 @@ void warrior_td_t::target_demise()
     p -> buff.dance_of_death_prot -> trigger();
   }
 
+  if ( p -> talents.arms.dance_of_death.ok() && ( dots_ravager->is_ticking() || p -> buff.bladestorm -> up() ) )
+  {
+    p -> buff.dance_of_death_arms -> trigger();
+  }
+
   if ( p -> talents.warrior.war_machine->ok() )
   {
     p->resource_gain( RESOURCE_RAGE, p -> talents.warrior.war_machine -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
@@ -7209,8 +7229,10 @@ void warrior_t::create_buffs()
 
   buff.whirlwind = make_buff( this, "whirlwind", find_spell( 85739 ) );
 
+  buff.dance_of_death_arms = make_buff( this, "dance_of_death_arms", talents.arms.dance_of_death -> effectN( 1 ).trigger() );
+
   buff.dance_of_death_prot = make_buff( this, "dance_of_death_prot", talents.protection.dance_of_death -> effectN( 1 ).trigger() )
-                                          -> set_default_value( talents.protection.dance_of_death -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
+                    -> set_default_value( talents.protection.dance_of_death -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
 
   buff.seeing_red = make_buff( this, "seeing_red", find_spell( 386486 ) );
 
