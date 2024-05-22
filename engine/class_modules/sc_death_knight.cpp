@@ -5490,8 +5490,8 @@ struct vampiric_strike_heal_t : public death_knight_heal_t
     background = true;
     may_miss = may_dodge = may_parry = false;
     target                           = p;
-    base_pct_heal =
-        p->specialization() == DEATH_KNIGHT_BLOOD ? data().effectN( 2 ).percent() : data().effectN( 3 ).percent();
+    int idx                          = p->specialization() == DEATH_KNIGHT_BLOOD ? 2 : 3;
+    base_pct_heal                    = data().effectN( idx ).percent();
   }
 };
 
@@ -5500,11 +5500,18 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
   vampiric_strike_action_base_t( util::string_view n, death_knight_t* p, util::string_view options_str,
                                  const spell_data_t* s )
     : death_knight_melee_attack_t( n, p, s ),
-      base_action( p->specialization() == DEATH_KNIGHT_BLOOD ? p->active_spells.heart_strike : p->active_spells.scourge_strike ),
+      base_action( p->specialization() == DEATH_KNIGHT_BLOOD ? p->active_spells.heart_strike
+                                                             : p->active_spells.scourge_strike ),
       heal( get_action<vampiric_strike_heal_t>( "vampiric_strike_heal", p ) ),
-      vampiric_strike( p->active_spells.vampiric_strike )
+      vampiric_strike( p->active_spells.vampiric_strike ),
+      vamp_rp_gen( 0 ),
+      base_rp_gen( 0 )
   {
     attack_power_mod.direct = 0;  // Handled by the damage action
+    aoe                     = 0;  // Handled by the damage action
+    int idx                 = p->specialization() == DEATH_KNIGHT_BLOOD ? 2 : 3;
+    vamp_rp_gen             = std::fabs( vampiric_strike->data().powerN( idx ).cost() );
+    base_rp_gen             = std::fabs( base_action->data().cost( POWER_RUNIC_POWER ) );
     parse_options( options_str );
     if ( base_action != nullptr )
     {
@@ -5524,8 +5531,40 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
     }
   }
 
+  void set_data()
+  {
+    // Dynamic RP generation based on whether Vampiric Strike is active, as it has its own generation data that may
+    // differ from the base action
+    if ( p()->buffs.vampiric_strike->check() )
+    {
+      energize_amount = vamp_rp_gen;
+      trigger_gcd     = vampiric_strike->data().gcd();
+      range           = vampiric_strike->data().max_range();
+    }
+    else
+    {
+      energize_amount = base_rp_gen;
+      trigger_gcd     = base_action->data().gcd();
+      range           = base_action->data().max_range();
+    }
+  }
+
+  double cost() const override
+  {
+    // Dynamic cost based on whether Vampiric Strike is active, as it has its own cost data that may differ from the base action
+    if ( p()->buffs.vampiric_strike->check() )
+    {
+      return vampiric_strike->data().cost( POWER_RUNE );
+    }
+    else
+    {
+      return base_action->data().cost( POWER_RUNE );
+    }
+  }
+
   void execute() override
   {
+    set_data();
     death_knight_melee_attack_t::execute();
     double chance = 0;
 
@@ -5567,6 +5606,8 @@ private:
   action_t* vampiric_strike;
   action_t* base_action;
   action_t* heal;
+  double vamp_rp_gen;
+  double base_rp_gen;
 };
 
 struct infliction_in_sorrow_t : public death_knight_spell_t
@@ -7275,7 +7316,7 @@ struct death_coil_t final : public death_knight_spell_t
 
     if ( p()->buffs.sudden_doom->check() && result_is_hit( state->result ) )
     {
-      p()->burst_festering_wound( state->target, p()->talent.unholy.sudden_doom->effectN( 3 ).base_value(),
+      p()->burst_festering_wound( state->target, as<int>( p()->talent.unholy.sudden_doom->effectN( 3 ).base_value() ),
                                   p()->procs.fw_sudden_doom );
     }
   }
@@ -7706,7 +7747,7 @@ struct epidemic_t final : public death_knight_spell_t
 
     if ( p()->buffs.sudden_doom->check() && result_is_hit( state->result ) )
     {
-      p()->burst_festering_wound( state->target, p()->talent.unholy.sudden_doom->effectN( 3 ).base_value(),
+      p()->burst_festering_wound( state->target, as<int>( p()->talent.unholy.sudden_doom->effectN( 3 ).base_value() ),
                                   p()->procs.fw_sudden_doom );
     }
   }

@@ -1880,6 +1880,7 @@ class SpellDataGenerator(DataGenerator):
           ( 434144, 0 ), # Infliction in Sorrow Damage
           ( 434246, 0 ), # Blood Eruption
           ( 434574, 0 ), # Blood Cleave
+          ( 445669, 0 ), # Vampiric Strike Range increase
           # Deathbringer
           ( 439594, 0 ), # Reapers Mark
           ( 443404, 0 ), # Wave of Souls debuff
