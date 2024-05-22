@@ -8673,6 +8673,7 @@ void demon_hunter_t::reset()
   darkglare_boon_cdr_roll                              = 0.0;
   set_bonuses.t30_havoc_2pc_fury_tracker               = 0.0;
   set_bonuses.t30_vengeance_4pc_soul_fragments_tracker = 0.0;
+  set_bonuses.t31_vengeance_4pc_fury_tracker           = 0.0;
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
