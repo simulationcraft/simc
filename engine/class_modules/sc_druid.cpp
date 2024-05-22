@@ -1175,6 +1175,26 @@ public:
     const spell_data_t* dreadful_wound;
   } spec;
 
+  struct modified_spell_t
+  {
+    // modifiable spells
+    std::unique_ptr<modified_spell_data_t> moonfire;
+    std::unique_ptr<modified_spell_data_t> starfire;
+    std::unique_ptr<modified_spell_data_t> sunfire;
+    std::unique_ptr<modified_spell_data_t> wrath;
+    
+    std::unique_ptr<modified_spell_data_t> brutal_slash;
+    std::unique_ptr<modified_spell_data_t> feral_frenzy;
+    std::unique_ptr<modified_spell_data_t> lunar_inspiration;
+    std::unique_ptr<modified_spell_data_t> primal_wrath;
+    std::unique_ptr<modified_spell_data_t> rake;
+    std::unique_ptr<modified_spell_data_t> shred;
+    std::unique_ptr<modified_spell_data_t> swipe_cat;
+    std::unique_ptr<modified_spell_data_t> thrash_cat;
+    
+    std::unique_ptr<modified_spell_data_t> mangle;
+  } modified;
+
   struct uptimes_t
   {
     uptime_t* tooth_and_claw_debuff;
@@ -1195,6 +1215,7 @@ public:
       rppm(),
       talent(),
       spec(),
+      modified(),
       uptime()
   {
     cooldown.berserk_bear          = get_cooldown( "berserk_bear" );
@@ -1650,8 +1671,8 @@ public:
 
   // Name to be used by get_dot() instead of action name
   std::string dot_name;
-  // effect index for energize effect, used in composite_energize_amount to access parsed effect
-  size_t energize_idx = 0;
+  // energize effect, used in composite_energize_amount to access parsed effect
+  const modified_spelleffect_t* energize = nullptr;
   // Restricts use of a spell based on form.
   unsigned form_mask;
 
@@ -2042,10 +2063,29 @@ public:
     return ab::cost();
   }
 
+  void set_energize( const modified_spell_data_t& m_data )
+  {
+    for ( const auto& e : m_data.effects )
+    {
+      const spelleffect_data_t& eff = e;
+      if ( eff.type() == E_ENERGIZE &&
+           util::translate_power_type( static_cast<power_e>( eff.misc_value1() ) ) == ab::energize_resource )
+      {
+        energize = &e;
+        ab::energize_amount = energize->resource();
+        ab::sim->print_debug( "{} energize {} {} from {}#{}", *this,
+                              util::resource_type_string( ab::energize_resource ), ab::energize_amount,
+                              m_data._spell.id(), eff.index() + 1 );
+
+        return;
+      }
+    }
+  }
+
   double composite_energize_amount( const action_state_t* s ) const override
   {
-    if ( energize_idx )
-      return ab::modified_effectN_resource( energize_idx, ab::energize_resource );
+    if ( energize )
+      return energize->resource();
     else
       return ab::composite_energize_amount( s );
   }
@@ -2703,21 +2743,6 @@ public:
       // TODO: confirm moc no longer buffs thrash ticks
       snapshots.clearcasting = parse_persistent_effects( p->buff.clearcasting_cat, IGNORE_STACKS,
                                                          p->talent.moment_of_clarity );
-
-      if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount )
-      {
-        energize_idx = find_effect_index( this, E_ENERGIZE, A_MAX, POWER_COMBO_POINT );
-
-        if ( !p->buff.b_inc_cat->is_fallback )
-        {
-          const auto& eff = p->spec.berserk_cat->effectN( 2 );
-          add_parse_entry( modified_effect_vec( energize_idx ) )
-              .set_buff( p->buff.b_inc_cat )
-              .set_flat( true )
-              .set_value( eff.base_value() )
-              .set_eff( &eff );
-        }
-      }
     }
   }
 
@@ -2823,6 +2848,16 @@ public:
   void init() override
   {
     base_t::init();
+
+    if ( energize && energize_resource == RESOURCE_COMBO_POINT )
+    {
+      const auto& eff = p()->spec.berserk_cat->effectN( 2 );
+      energize->add_parse_entry()
+          .set_buff( p()->buff.b_inc_cat )
+          .set_flat( true )
+          .set_value( eff.base_value() )
+          .set_eff( &eff );
+    }
 
     if ( data().ok() || has_flag( flag_e::AUTOATTACK ) )
     {
@@ -4362,7 +4397,6 @@ struct feral_frenzy_t : public cat_attack_t
       direct_bleed = false;
 
       dot_name = "feral_frenzy_tick";
-      energize_idx = 0;  // feral frenzy does not count as a cp generator for berserk extra cp
     }
 
     // Small hack to properly distinguish instant ticks from the driver, from actual periodic ticks from the bleed
@@ -4461,7 +4495,9 @@ struct ferocious_bite_base_t : public cat_finisher_t
   bool max_energy = false;
 
   ferocious_bite_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
-    : cat_finisher_t( n, p, s, f ), saber_jaws_mul( p->talent.saber_jaws->effectN( 1 ).percent() )
+    : cat_finisher_t( n, p, s, f ),
+      max_excess_energy( find_effect( this, E_POWER_BURN ).resource() ),
+      saber_jaws_mul( p->talent.saber_jaws->effectN( 1 ).percent() )
   {
     add_option( opt_bool( "max_energy", max_energy ) );
 
@@ -4471,8 +4507,6 @@ struct ferocious_bite_base_t : public cat_finisher_t
       rampant_ferocity->background = true;
       add_child( rampant_ferocity );
     }
-
-    max_excess_energy = modified_effectN( find_effect_index( this, E_POWER_BURN ) );
   }
 
   double maximum_energy() const
@@ -4698,22 +4732,27 @@ struct rake_t : public use_fluid_form_t<DRUID_FERAL, cat_attack_t>
 
   DRUID_ABILITY( rake_t, base_t, "rake", p->talent.rake )
   {
-    if ( p->talent.pouncing_strikes.ok() || p->spec.improved_prowl->ok() )
-    {
-      const auto& eff = data().effectN( 4 );
-      add_parse_entry( persistent_multiplier_effects )
-          .set_value( eff.percent() )
-          .set_func( [ this ] { return stealthed_any(); } )
-          .set_eff( &eff );
-    }
-
     aoe = std::max( aoe, 1 ) + as<int>( p->talent.doubleclawed_rake->effectN( 1 ).base_value() );
 
     if ( data().ok() )
     {
       bleed = p->get_secondary_action<rake_bleed_t>( name_str + "_bleed", f, this );
       replace_stats( bleed );
+
+      if ( p->talent.pouncing_strikes.ok() || p->spec.improved_prowl->ok() )
+      {
+        const auto& eff = data().effectN( 4 );
+        add_parse_entry( persistent_multiplier_effects )
+            .set_value( eff.percent() )
+            .set_func( [ this ] { return stealthed_any(); } )
+            .set_eff( &eff );
+      }
     }
+
+    if ( !p->modified.rake )
+      p->modified.rake = std::make_unique<modified_spell_data_t>( data() );
+
+    set_energize( *p->modified.rake );
 
     dot_name = "rake";
   }
@@ -4869,24 +4908,31 @@ struct primal_wrath_t : public cat_finisher_t
     // Manually set true so bloodtalons is decremented and we get proper snapshot reporting
     snapshots.bloodtalons = true;
 
-    parse_effect_modifiers( p->talent.circle_of_life_and_death );
-    parse_effect_modifiers( p->talent.veinripper );
-
-    rip = p->get_secondary_action<rip_t>( "rip_primal", p->find_spell( 1079 ), f );
-    rip->dot_duration = timespan_t::from_seconds( modified_effectN( 2 ) );
-    rip->dual = rip->background = true;
-    replace_stats( rip );
-    rip->base_costs[ RESOURCE_ENERGY ] = 0;
-    // mods are parsed on construction so set to false so the rip execute doesn't decrement
-    rip->snapshots.bloodtalons = false;
-
-    if ( p->talent.adaptive_swarm.ok() )
+    if ( data().ok() )
     {
-      const auto& eff = p->spec.adaptive_swarm_damage->effectN( 2 );
-      add_parse_entry( target_multiplier_effects )
-        .set_func( []( druid_td_t* td ) { return td->dots.adaptive_swarm_damage->is_ticking(); } )
-        .set_value( eff.percent() )
-        .set_eff( &eff );
+      rip = p->get_secondary_action<rip_t>( "rip_primal", p->find_spell( 1079 ), f );
+      rip->dot_duration = timespan_t::from_seconds( p->modified.primal_wrath->effectN( 2 ).base_value() );
+      rip->dual = rip->background = true;
+      replace_stats( rip );
+      rip->base_costs[ RESOURCE_ENERGY ] = 0;
+      // mods are parsed on construction so set to false so the rip execute doesn't decrement
+      rip->snapshots.bloodtalons = false;
+
+      if ( p->talent.adaptive_swarm.ok() )
+      {
+        const auto& eff = p->spec.adaptive_swarm_damage->effectN( 2 );
+        add_parse_entry( target_multiplier_effects )
+            .set_func( []( druid_td_t* td ) { return td->dots.adaptive_swarm_damage->is_ticking(); } )
+            .set_value( eff.percent() )
+            .set_eff( &eff );
+      }
+    }
+
+    if ( !p->modified.primal_wrath )
+    {
+      p->modified.primal_wrath = std::make_unique<modified_spell_data_t>( data() );
+      p->modified.primal_wrath->parse_effects( p->talent.circle_of_life_and_death )
+        ->parse_effects( p->talent.veinripper );
     }
   }
 
@@ -4918,6 +4964,11 @@ struct shred_t : public use_fluid_form_t<DRUID_FERAL,
     bleed_mul = std::max( p->talent.merciless_claws->effectN( 2 ).percent(),
                           p->talent.thrashing_claws->effectN( 1 ).percent() );
 
+    if ( !p->modified.shred )
+      p->modified.shred = std::make_unique<modified_spell_data_t>( data() );
+
+    set_energize( *p->modified.shred );
+
     if ( p->talent.pouncing_strikes.ok() )
     {
       stealth_mul = data().effectN( 3 ).percent();
@@ -4928,10 +4979,10 @@ struct shred_t : public use_fluid_form_t<DRUID_FERAL,
           .set_eff( &data().effectN( 3 ) );
 
       const auto& eff = p->find_spell( 343232 )->effectN( 1 );
-      add_parse_entry( modified_effect_vec( energize_idx ) )
+      energize->add_parse_entry()
+          .set_value( eff.base_value() )
           .set_func( [ this ] { return stealthed_any(); } )
           .set_flat( true )
-          .set_value( eff.base_value() )
           .set_eff( &eff );
     }
   }
@@ -5402,12 +5453,14 @@ struct mangle_t : public use_fluid_form_t<DRUID_GUARDIAN,
     if ( p->talent.mangle.ok() )
       bleed_mul = data().effectN( 3 ).percent();
 
-    parse_effect_modifiers( p->talent.soul_of_the_forest_bear );
-    parse_effect_modifiers( p->buff.gore );
+    if ( !p->modified.mangle )
+    {
+      p->modified.mangle = std::make_unique<modified_spell_data_t>( data() );
+      p->modified.mangle->parse_effects( p->talent.soul_of_the_forest_bear )
+        ->parse_effects( p->buff.gore );
+    }
 
-    energize_idx = find_effect_index( this, E_ENERGIZE );
-    // for reporting purposes
-    energize_amount = modified_effectN_resource( energize_idx, energize_resource );
+    set_energize( *p->modified.mangle );
 
     if ( p->talent.incarnation_bear.ok() )
     {
@@ -6448,8 +6501,7 @@ struct wild_growth_t : public druid_heal_t
     sotf_mul( p->buff.soul_of_the_forest_tree->data().effectN( 2 ).percent() ),
     inc_mod( as<int>( p->talent.incarnation_tree->effectN( 3 ).base_value() ) )
   {
-    parse_effect_modifiers( p->talent.improved_wild_growth );
-    aoe = as<int>( modified_effectN( 2 ) );
+    aoe = as<int>( data().effectN( 2 ).base_value() + p->talent.improved_wild_growth->effectN( 1 ).base_value() );
 
     // '0-tick' coeff, also unknown if this is hard set to 0.175 or based on a formula as below
     spell_power_mod.tick += decay_coeff / 2.0;
@@ -7465,36 +7517,37 @@ struct moonfire_t : public druid_spell_t
     damage = p->get_secondary_action<moonfire_damage_t>( name_str + "_dmg", f );
     replace_stats( damage );
 
+    if ( !p->modified.moonfire )
+    {
+      p->modified.moonfire = std::make_unique<modified_spell_data_t>( data() ); 
+      p->modified.moonfire->parse_effects( p->spec.astral_power )
+        ->parse_effects( p->talent.moon_guardian )
+        ->parse_effects( p->buff.galactic_guardian);
+    }
+
     if ( p->spec.astral_power->ok() && !has_flag( flag_e::TWIN ) )
     {
-      parse_effect_modifiers( p->spec.astral_power );
-      parse_effect_modifiers( p->talent.moon_guardian );
       energize_type = action_energize::ON_CAST;
       energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_idx = find_effect_index( this, E_ENERGIZE, A_MAX, POWER_ASTRAL_POWER );
-      energize_amount = modified_effectN_resource( energize_idx, energize_resource );
     }
     else if ( p->talent.galactic_guardian.ok() && !has_flag( flag_e::GALACTIC ) )
     {
-      parse_effect_modifiers( p->buff.galactic_guardian );
       energize_type = action_energize::ON_CAST;
       energize_resource = RESOURCE_RAGE;
-      energize_idx = find_effect_index( this, E_ENERGIZE, A_MAX, POWER_RAGE );
     }
     else if ( p->talent.moon_guardian.ok() && has_flag( flag_e::GALACTIC ) )
     {
-      auto rage_spell = p->find_spell( 430581 );
-      const auto& eff = find_effect( rage_spell, E_ENERGIZE );
-
       energize_type = action_energize::ON_CAST;
-      energize_resource = eff.resource_gain_type();
-      energize_amount = eff.resource();
+      energize_resource = find_effect( p->find_spell( 430581 ), E_ENERGIZE ).resource_gain_type();
       gain = p->get_gain( "Moon Guardian" );
     }
     else
     {
       energize_type = action_energize::NONE;
     }
+
+    if ( energize_type != action_energize::NONE )
+      set_energize( *p->modified.moonfire );
 
     if ( ( p->talent.twin_moonfire.ok() || p->talent.twin_moons.ok() ) && !has_flag( flag_e::TWIN ) )
     {
@@ -7977,13 +8030,12 @@ struct starfall_t : public ap_spender_t
 // Starfire =============================================================
 struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclipse_e::LUNAR>>
 {
-  size_t aoe_idx;
+  const modified_spelleffect_t* aoe_eff;
   double smolder_mul;
   double sotf_mul;
   unsigned sotf_cap;
 
   DRUID_ABILITY( starfire_t, base_t, "starfire", p->talent.starfire ),
-    aoe_idx( p->specialization() == DRUID_BALANCE ? 3 : 2 ),
     smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() ),
     sotf_mul( p->talent.soul_of_the_forest_moonkin->effectN( 2 ).percent() ),
     sotf_cap( as<unsigned>( p->talent.soul_of_the_forest_moonkin->effectN( 3 ).base_value() ) )
@@ -7991,13 +8043,21 @@ struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclips
     aoe = -1;
     reduced_aoe_targets = data().effectN( p->specialization() == DRUID_BALANCE ? 5 : 3 ).base_value();
 
-    parse_effect_modifiers( p->talent.wild_surges );
-    parse_effect_modifiers( p->buff.eclipse_lunar, p->talent.umbral_intensity );
-    parse_effect_modifiers( p->buff.warrior_of_elune, IGNORE_STACKS );
-    parse_effect_modifiers( p->talent.moon_guardian );
+    if ( !p->modified.starfire )
+    {
+      p->modified.starfire = std::make_unique<modified_spell_data_t>( data() );
+      p->modified.starfire->parse_effects( p->talent.wild_surges )
+        ->parse_effects( p->buff.eclipse_lunar, p->talent.umbral_intensity )
+        ->parse_effects( p->buff.warrior_of_elune, IGNORE_STACKS )
+        ->parse_effects( p->talent.moon_guardian );
+    }
 
-    energize_idx = find_effect_index( this, E_ENERGIZE );
-    energize_amount = modified_effectN_resource( energize_idx, energize_resource );
+    set_energize( *p->modified.starfire );
+
+    if ( p->specialization() == DRUID_BALANCE )
+      aoe_eff = &p->modified.starfire->effectN( 3 );
+    else
+      aoe_eff = &p->modified.starfire->effectN( 2 );
 
     if ( p->talent.master_shapeshifter.ok() )
     {
@@ -8092,7 +8152,7 @@ struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclips
     double cam = base_t::composite_aoe_multiplier( s );
 
     if ( s->chain_target )
-      cam *= modified_effectN_percent( aoe_idx );
+      cam *= aoe_eff->percent();
 
     return cam;
   }
@@ -8249,10 +8309,15 @@ struct sunfire_t : public druid_spell_t
     {
       damage = p->get_secondary_action<sunfire_damage_t>( "sunfire_dmg", f );
       replace_stats( damage );
-
-      parse_effect_modifiers( p->spec.astral_power );
-      energize_amount = modified_effectN_resource( find_effect_index( this, E_ENERGIZE ), RESOURCE_ASTRAL_POWER );
     }
+
+    if ( !p->modified.sunfire )
+    {
+      p->modified.sunfire = std::make_unique<modified_spell_data_t>( data() );
+      p->modified.sunfire->parse_effects( p->spec.astral_power );
+    }
+
+    set_energize( *p->modified.sunfire );
   }
 
   // needed to allow on-cast procs
@@ -8482,12 +8547,15 @@ struct wrath_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclipse_e
   {
     form_mask = NO_FORM | MOONKIN_FORM;
 
-    parse_effect_modifiers( p->spec.astral_power );
-    parse_effect_modifiers( p->talent.wild_surges );
-    parse_effect_modifiers( p->buff.eclipse_solar, p->talent.soul_of_the_forest_moonkin );
+    if ( !p->modified.wrath )
+    {
+      p->modified.wrath = std::make_unique<modified_spell_data_t>( data() );
+      p->modified.wrath->parse_effects( p->spec.astral_power )
+        ->parse_effects( p->talent.wild_surges )
+        ->parse_effects( p->buff.eclipse_solar, p->talent.soul_of_the_forest_moonkin );
+    }
 
-    energize_idx = find_effect_index( this, E_ENERGIZE );
-    energize_amount = modified_effectN_resource( energize_idx, energize_resource );
+    set_energize( *p->modified.wrath );
 
     if ( p->talent.master_shapeshifter.ok() )
     {
