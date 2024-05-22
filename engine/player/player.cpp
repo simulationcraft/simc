@@ -9749,7 +9749,7 @@ struct cancel_buff_t : public action_t
     add_option( opt_string( "name", buff_name ) );
     parse_options( options_str );
     ignore_false_positive = true;
-
+    harmful = false;
     trigger_gcd = timespan_t::zero();
   }
 

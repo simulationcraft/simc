@@ -53,6 +53,11 @@ enum stealth_type_e
   STEALTH_ALL = 0xFF
 };
 
+struct fatebound_t
+{
+  enum coinflip_e { HEADS, TAILS, EDGE };
+};
+
 namespace actions
 {
   struct rogue_attack_t;
@@ -468,6 +473,8 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* stealth;
+
     cooldown_t* adrenaline_rush;
     cooldown_t* between_the_eyes;
     cooldown_t* blade_flurry;
@@ -1144,6 +1151,8 @@ public:
     options( rogue_options_t() )
   {
     // Cooldowns
+    cooldowns.stealth                   = get_cooldown( "stealth" );
+
     cooldowns.adrenaline_rush           = get_cooldown( "adrenaline_rush" );
     cooldowns.between_the_eyes          = get_cooldown( "between_the_eyes" );
     cooldowns.blade_flurry              = get_cooldown( "blade_flurry" );
@@ -2221,6 +2230,7 @@ public:
   void trigger_opportunity( const action_state_t*, rogue_attack_t* action, double modifier = 1.0 );
   void trigger_restless_blades( const action_state_t* );
   void trigger_hand_of_fate( const action_state_t*, bool biased = false, bool inevitable = false );
+  void execute_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result );
   void trigger_fate_intertwined( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_venom_rush( const action_state_t* );
@@ -6343,9 +6353,14 @@ struct vanish_t : public rogue_spell_t
 
 struct stealth_t : public rogue_spell_t
 {
+  double precombat_seconds;
+
   stealth_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_spell_t( name, p, p->spell.stealth, options_str )
+    rogue_spell_t( name, p, p->spell.stealth, options_str ),
+    precombat_seconds( 0.0 )
   {
+    add_option( opt_float( "precombat_seconds", precombat_seconds ) );
+    parse_options( options_str );
     harmful = false;
     set_target( p );
   }
@@ -6355,6 +6370,11 @@ struct stealth_t : public rogue_spell_t
     rogue_spell_t::execute();
     p()->buffs.stealth->trigger();
     trigger_master_of_shadows();
+
+    if ( precombat_seconds && !p()->in_combat )
+    {
+      p()->cooldowns.stealth->adjust( -timespan_t::from_seconds( precombat_seconds ), false );
+    }
   }
 
   bool ready() override
@@ -6363,12 +6383,12 @@ struct stealth_t : public rogue_spell_t
       return false;
 
     if ( !p()->in_combat )
-      return true;
+      return rogue_spell_t::ready(); // respect cd
 
     // Allow restealth for Dungeon sims against non-boss targets as Shadowmeld drops combat against trash.
     if ( ( p()->sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || p()->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE ) &&
          p()->player_t::buffs.shadowmeld->check() && !p()->target->is_boss() )
-      return true;
+      return rogue_spell_t::ready(); // respect cd
 
     if ( !p()->restealth_allowed )
       return false;
@@ -7522,10 +7542,19 @@ struct stealth_like_buff_t : public BuffBase
     if ( rogue->talent.fatebound.double_jeopardy->ok() ) {
       // double jeopardy has to trigger *after* the stealth buffs fade, since it can only be consumed by a finisher *after* stealth
       // is broken, and not by the finisher that actually breaks stealth
-      make_event( rogue->sim, 1_ms, [ this ] {
-        if ( !rogue->stealthed( STEALTH_BASIC ) )
-          rogue->buffs.double_jeopardy->trigger();
-      } );
+
+      // Unless we're at the sim start, and thus precombat - instantly apply the DJ buff in that case, since all precombat actions happen at 0s
+      if ( rogue->sim->current_time() == 0_s )
+      {
+        rogue->buffs.double_jeopardy->trigger();
+      }
+      else
+      {
+        make_event( rogue->sim, 1_ms, [ this ] {
+          if ( !rogue->stealthed( STEALTH_BASIC ) )
+            rogue->buffs.double_jeopardy->trigger();
+        } );
+      }
     }
   }
 
@@ -8514,7 +8543,7 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* state, bool biased, bool inevitable )
+void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* state, bool biased, bool trigger_inevitable )
 {
   if ( !p()->talent.fatebound.hand_of_fate->ok() )
     return;
@@ -8522,141 +8551,86 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
   if ( cast_state( state )->get_combo_points() < p()->talent.fatebound.hand_of_fate->effectN( 1 ).base_value() )
     return;
 
-  bool delivered = p()->sim->target_non_sleeping_list.size() <= 1;
+  fatebound_t::coinflip_e result;
 
-  if ( !p()->talent.fatebound.inevitability->ok() )
-  {
-    inevitable = false;
-  }
-
-  auto tails_action = delivered && p()->talent.fatebound.delivered_doom->ok()
-    ? p()->active.fatebound.fatebound_coin_tails_delivered
-    : p()->active.fatebound.fatebound_coin_tails;
-
+  // Edge case - coin lands on edge
   if ( p()->talent.fatebound.edge_case->ok() && p()->buffs.edge_case->check() )
   {
-    // Consume edge case, do a tails cast, increment both coins
     p()->buffs.edge_case->expire();
-    tails_action->execute_on_target( state->target );
-    p()->buffs.fatebound_coin_tails->increment();
-    p()->buffs.fatebound_coin_heads->increment();
-
-    if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
-    {
-      // Do it again and consume double jeopardy
-      // TODO: Implement weird split double jeopardy behavior observed in-game
-      p()->buffs.double_jeopardy->expire();
-      tails_action->execute_on_target( state->target );
-      p()->buffs.fatebound_coin_tails->increment();
-      p()->buffs.fatebound_coin_heads->increment();
-    }
-    return;
+    result = fatebound_t::coinflip_e::EDGE;
   }
-
   // No stacks of either buff or equal stacks of both buffs (thanks to only using edge case)
-  // Nothing to bias, just flip the coin
-  if ( p()->buffs.fatebound_coin_tails->total_stack() == p()->buffs.fatebound_coin_heads->total_stack() )
+  // Nothing to bias, just flip the coin fairly
+  else if ( p()->buffs.fatebound_coin_tails->total_stack() == p()->buffs.fatebound_coin_heads->total_stack() )
   {
-    if ( p()->rng().roll( 0.5 ) )
-    {
-      // Heads
-      p()->buffs.fatebound_coin_tails->expire();
-      p()->buffs.fatebound_coin_heads->increment();
-
-      if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
-      {
-        p()->buffs.double_jeopardy->expire();
-        p()->buffs.fatebound_coin_heads->increment();
-      }
-    }
-    else
-    {
-      // Tails
-      tails_action->execute_on_target( state->target );
-
-      p()->buffs.fatebound_coin_heads->expire();
-      p()->buffs.fatebound_coin_tails->increment();
-
-      if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
-      {
-        p()->buffs.double_jeopardy->expire();
-        tails_action->execute_on_target( state->target );
-        p()->buffs.fatebound_coin_tails->increment();
-      }
-    }
-    return;
+    result = p()->rng().roll( 0.5 ) ? fatebound_t::coinflip_e::HEADS : fatebound_t::coinflip_e::TAILS;
   }
-
-  double odds = 0.5;
-  if ( biased )
-  {
-    // TODO: Validate how these stack with the presumed base 50/50 chance and one another
-    if ( p()->talent.fatebound.mean_streak->ok() )
-    {
-      odds += odds * p()->talent.fatebound.mean_streak->effectN( 1 ).percent();
-    }
-    if ( p()->talent.fatebound.destiny_defined->ok() )
-    {
-      odds += p()->talent.fatebound.destiny_defined->effectN( 3 ).percent();
-    }
-  }
-  if (inevitable)
-  {
-    // TODO: Inevitable flips when you have both coins don't always produce a flip
-    // for the coin with the higher coin count. There may be an underlying "order" to an
-    // edge result that is respected; but it's probably just a bug because it makes no sense.
-    odds = 1.0;
-  }
-
-  // TODO: it's an assumption that if you have both buffs (thanks, edge case) the bias prefers the one with more stacks
-  // (since the last one you hit before the edge case has to be the one with more stacks)
-  auto existing = p()->buffs.fatebound_coin_tails->total_stack() > p()->buffs.fatebound_coin_heads->total_stack()
-    ? p()->buffs.fatebound_coin_tails
-    : p()->buffs.fatebound_coin_heads;
-  auto other = existing == p()->buffs.fatebound_coin_tails
-    ? p()->buffs.fatebound_coin_heads
-    : p()->buffs.fatebound_coin_tails;
-
-  if ( p()->rng().roll( odds ) )
-  {
-    // Match existing
-    if ( existing == p()->buffs.fatebound_coin_tails )
-    {
-      tails_action->execute_on_target( state->target );
-    }
-
-    other->expire();
-    existing->increment();
-
-    if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
-    {
-      p()->buffs.double_jeopardy->expire();
-      if ( existing == p()->buffs.fatebound_coin_tails )
-      {
-        tails_action->execute_on_target( state->target );
-      }
-      existing->increment();
-    }
-  }
+  // Flip the coin, potentially with a bias toward matching the last face flipped
   else
   {
-    // New side
-    if ( other == p()->buffs.fatebound_coin_tails )
+    double matching_odds = 0.5;
+    if ( trigger_inevitable && p()->talent.fatebound.inevitability->ok() )
     {
-      tails_action->execute_on_target( state->target );
+      // TODO: Inevitable flips when you have both coins don't always produce a flip
+      // for the coin with the higher coin count. There may be an underlying "order" to an
+      // edge result that is respected; but it's probably just a bug because it makes no sense.
+      matching_odds = 1.0;
+    }
+    else if ( biased )
+    {
+      // TODO: Validate how these stack with the presumed base 50/50 chance and one another
+      if ( p()->talent.fatebound.mean_streak->ok() )
+      {
+        matching_odds += matching_odds * p()->talent.fatebound.mean_streak->effectN( 1 ).percent();
+      }
+      if ( p()->talent.fatebound.destiny_defined->ok() )
+      {
+        matching_odds += p()->talent.fatebound.destiny_defined->effectN( 3 ).percent();
+      }
     }
 
-    existing->expire();
-    other->increment();
+    // TODO: it's an assumption that if you have both buffs (thanks, edge case) the bias prefers the one with more stacks
+    // (since the last one you hit before the edge case has to be the one with more stacks)
+    const bool is_match = p()->rng().roll( matching_odds );
+    const bool current_is_heads = p()->buffs.fatebound_coin_heads->check() > p()->buffs.fatebound_coin_tails->check();
+    result = is_match ?
+      current_is_heads ? fatebound_t::coinflip_e::HEADS : fatebound_t::coinflip_e::TAILS :
+      current_is_heads ? fatebound_t::coinflip_e::TAILS : fatebound_t::coinflip_e::HEADS;
+  }
 
-    if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
+  execute_fatebound_coinflip( state, result );
+  if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
+  {
+    p()->buffs.double_jeopardy->expire();
+    execute_fatebound_coinflip( state, result );
+  }
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::execute_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result )
+{
+  if ( result == fatebound_t::coinflip_e::HEADS || result == fatebound_t::coinflip_e::EDGE )
+  {
+    p()->buffs.fatebound_coin_heads->increment();
+    if ( result != fatebound_t::coinflip_e::EDGE )
     {
-      p()->buffs.double_jeopardy->expire();
-      if ( other == p()->buffs.fatebound_coin_tails )
-      {
-        tails_action->execute_on_target( state->target );
-      }
-      other->increment();
+      p()->buffs.fatebound_coin_tails->expire();
+    }
+  }
+  if ( result == fatebound_t::coinflip_e::TAILS || result == fatebound_t::coinflip_e::EDGE )
+  {
+    if ( !ab::is_precombat )
+    {
+      // Don't fling tails coins at enemies precombat, since that'll start combat (assume the player knows not to have an enemy targeted)
+      auto tails_action = p()->talent.fatebound.delivered_doom->ok() && p()->sim->target_non_sleeping_list.size() <= 1
+        ? p()->active.fatebound.fatebound_coin_tails_delivered
+        : p()->active.fatebound.fatebound_coin_tails;
+      tails_action->execute_on_target( state->target );
+    }
+    p()->buffs.fatebound_coin_tails->increment();
+    if ( result != fatebound_t::coinflip_e::EDGE )
+    {
+      p()->buffs.fatebound_coin_heads->expire();
     }
   }
 }
