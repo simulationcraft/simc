@@ -1365,6 +1365,7 @@ public:
     const spell_data_t* vampiric_strike_heal;
     const spell_data_t* infliction_of_sorrow_damage;
     const spell_data_t* blood_beast_summon;
+    const spell_data_t* vampiric_strike_clawing_shadows;
 
     // Deathbringer spells
     const spell_data_t* reapers_mark_debuff;
@@ -5533,7 +5534,7 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
 
   void set_data()
   {
-    // Dynamic RP generation based on whether Vampiric Strike is active, as it has its own generation data that may
+    // Dynamic data based on whether Vampiric Strike is active, as it has its own data that may
     // differ from the base action
     if ( p()->buffs.vampiric_strike->check() )
     {
@@ -12245,6 +12246,7 @@ void death_knight_t::init_spells()
   spell.vampiric_strike_heal            = find_spell( 434422 );
   spell.infliction_of_sorrow_damage     = find_spell( 434144 );
   spell.blood_beast_summon              = find_spell( 434237 );
+  spell.vampiric_strike_clawing_shadows = find_spell( 445669 );
 
   // Deathbringer Spells
   spell.reapers_mark_debuff            = find_spell( 434765 );
@@ -13346,6 +13348,12 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   // Rider of the Apocalypse
   action.apply_affecting_aura( talent.rider.mawsworn_menace );
   action.apply_affecting_aura( talent.rider.hungering_thirst );
+
+  // San'layn
+  if ( talent.unholy.clawing_shadows.ok() )
+  {
+    action.apply_affecting_aura( spell.vampiric_strike_clawing_shadows );
+  }
 
   // Deathbringer
   action.apply_affecting_aura( talent.deathbringer.bind_in_darkness );
