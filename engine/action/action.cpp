@@ -5096,7 +5096,7 @@ void action_t::html_customsection( report::sc_html_stream& os )
         << "<th class=\"small\">Value</th>\n"
         << "</tr>\n";
 
-    for ( auto [ eff, val ] : entries )
+    for ( const auto& [ eff, val ] : entries )
     {
       std::string op_str;
       std::string type_str;
