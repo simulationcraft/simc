@@ -679,6 +679,7 @@ public:
     propagate_const<buff_t*> icy_talons;
     propagate_const<buff_t*> abomination_limb;
     propagate_const<buff_t*> lichborne;  // NYI
+    buff_t* frost_shield;
 
     // Runeforges
     propagate_const<buff_t*> stoneskin_gargoyle;
@@ -810,6 +811,7 @@ public:
     propagate_const<action_t*> runeforge_razorice;
     propagate_const<action_t*> runeforge_sanguination;
     action_t* abomination_limb_damage;
+    propagate_const<action_t*> permafrost;
 
     // Class Tree
     propagate_const<action_t*> blood_draw;
@@ -1001,7 +1003,7 @@ public:
     player_talent_t will_of_the_necropolis;  // NYI
     // Row 10
     player_talent_t null_magic;       // NYI
-    player_talent_t unyeilding_will;  // NYI
+    player_talent_t unyielding_will;  // NYI
     player_talent_t abomination_limb;
     player_talent_t deaths_echo;
     player_talent_t vestigial_shell;  // NYI
@@ -1262,6 +1264,7 @@ public:
     const spell_data_t* sanguination_cooldown;
     const spell_data_t* spellwarding_absorb;
     const spell_data_t* anti_magic_zone_buff;
+    const spell_data_t* frost_shield_buff;
 
     // Diseases (because they're not stored in spec data, unlike frost fever's rp gen...)
     const spell_data_t* blood_plague;
@@ -4873,6 +4876,11 @@ struct melee_t : public death_knight_melee_attack_t
         }
       }
 
+      if ( p()->talent.permafrost.ok() )
+      {
+        trigger_permafrost( s );
+      }
+
       if ( s->result == RESULT_CRIT )
       {
         if ( p()->talent.frost.killing_machine.ok() )
@@ -4990,6 +4998,19 @@ struct melee_t : public death_knight_melee_attack_t
         p()->talent.blood.bloodworms->effectN( 2 ).trigger()->effectN( 1 ).trigger()->duration(), 1 );
     // Pet spawn spelldata: 16s
     // p() -> pets.bloodworms.spawn( p() -> talent.bloodworms -> effectN( 1 ).trigger() -> duration(), 1 );
+  }
+
+  void trigger_permafrost( action_state_t* state )
+  {
+    if ( !p()->talent.permafrost.ok() || p()->buffs.frost_shield->check() )
+      return;
+
+    double amount = state->result_amount * p()->talent.permafrost->effectN( 1 ).percent();
+
+    amount *= 1.0 + p()->talent.gloom_ward->effectN( 1 ).percent();
+
+    p()->active_spells.permafrost->base_dd_min = p()->active_spells.permafrost->base_dd_max = amount;
+    p()->active_spells.permafrost->execute();
   }
 };
 
@@ -9729,7 +9750,7 @@ struct ams_parent_buff_t : public absorb_buff_t
     : absorb_buff_t( p, name, spell ),
       damage( 0 ),
       horsemen( horsemen ),
-      option( horsemen ? p->options.horsemen_ams_absorb_percent : p->options.ams_absorb_percent ),
+      option( 0 ),
       dk( p )
   {
     cooldown->duration = 0_ms;
@@ -9788,8 +9809,10 @@ struct ams_parent_buff_t : public absorb_buff_t
 private:
   double damage;
   bool horsemen;
-  double option;
   death_knight_t* dk;
+
+public:
+  double option;
 };
 
 struct antimagic_shell_buff_t : public ams_parent_buff_t
@@ -9798,6 +9821,8 @@ struct antimagic_shell_buff_t : public ams_parent_buff_t
     : ams_parent_buff_t( p, "antimagic_shell", p->spec.antimagic_shell, false )
   {
     apply_affecting_aura( p->talent.antimagic_barrier );
+    set_absorb_source( p->get_stats( "antimagic_shell" ) );
+    option = p->options.ams_absorb_percent;
   }
 };
 
@@ -9807,6 +9832,8 @@ struct antimagic_shell_buff_horseman_t : public ams_parent_buff_t
     : ams_parent_buff_t( p, "antimagic_shell_horseman", p->pet_spell.rider_ams, true )
   {
     apply_affecting_aura( p->talent.antimagic_barrier );
+    set_absorb_source( p->get_stats( "antimagic_shell_horseman" ) );
+    option = p->options.horsemen_ams_absorb_percent;
   }
 };
 
@@ -9875,6 +9902,7 @@ struct antimagic_zone_buff_t final : public absorb_buff_t
       dk( p )
   {
     set_absorb_school( SCHOOL_MAGIC );
+    set_absorb_source( p->get_stats( "antimagic_zone" ) );
   }
 
   double consume( double consumed, action_state_t* s ) override
@@ -9972,6 +10000,37 @@ struct mark_of_blood_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     get_td( target )->debuff.mark_of_blood->trigger();
+  }
+};
+
+// Permafrost ===============================================================
+struct frost_shield_buff_t final : public absorb_buff_t
+{
+  frost_shield_buff_t( death_knight_t* p ) : absorb_buff_t( p, "frost_shield", p->spell.frost_shield_buff )
+  {
+    set_absorb_source( p->get_stats( "permafrost" ) );
+    set_absorb_high_priority( true );
+  }
+};
+
+struct frost_shield_t final : public death_knight_spell_t
+{
+  frost_shield_t( util::string_view n, death_knight_t* p ) : death_knight_spell_t( n, p, p->talent.permafrost )
+  {
+    may_miss = may_crit = callbacks = false;
+    background = proc = true;
+  }
+
+  void init() override
+  {
+    death_knight_spell_t::init();
+    snapshot_flags = update_flags = 0;
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+    p()->buffs.frost_shield->trigger( 1, base_dd_min, -1.0 );
   }
 };
 
@@ -11193,6 +11252,11 @@ void death_knight_t::create_actions()
     active_spells.abomination_limb_damage = get_action<abomination_limb_damage_t>( "abomination_limb_damage", this );
   }
 
+  if ( talent.permafrost.ok() )
+  {
+    active_spells.permafrost = get_action<frost_shield_t>( "permafrost", this );
+  }
+
   // Rider of the Apocalypse
   if ( talent.rider.riders_champion.ok() )
   {
@@ -11893,7 +11957,7 @@ void death_knight_t::init_spells()
   talent.will_of_the_necropolis = find_talent_spell( talent_tree::CLASS, "Will of the Necropolis" );
   // Row 10
   talent.null_magic       = find_talent_spell( talent_tree::CLASS, "Null Magic" );
-  talent.unyeilding_will  = find_talent_spell( talent_tree::CLASS, "Unyielding Will" );
+  talent.unyielding_will  = find_talent_spell( talent_tree::CLASS, "Unyielding Will" );
   talent.abomination_limb = find_talent_spell( talent_tree::CLASS, "Abomination Limb" );
   talent.deaths_echo      = find_talent_spell( talent_tree::CLASS, "Death's Echo" );
   talent.vestigial_shell  = find_talent_spell( talent_tree::CLASS, "Vestigial Shell" );
@@ -12144,6 +12208,7 @@ void death_knight_t::init_spells()
   spell.sanguination_cooldown        = find_spell( 326809 );
   spell.spellwarding_absorb          = find_spell( 326855 );
   spell.anti_magic_zone_buff         = find_spell( 396883 );
+  spell.frost_shield_buff            = find_spell( 207203 );
 
   // Diseases
   spell.blood_plague       = find_spell( 55078 );
@@ -12448,6 +12513,8 @@ void death_knight_t::create_buffs()
                              }
                            }
                          } );
+
+  buffs.frost_shield = make_buff<frost_shield_buff_t>( this );
 
 
   // Rider of the Apocalypse
@@ -13322,6 +13389,7 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.deaths_echo );
   action.apply_affecting_aura( talent.gloom_ward );
   action.apply_affecting_aura( talent.proliferating_chill );
+  action.apply_affecting_aura( talent.unyielding_will );
 
   // Blood
   action.apply_affecting_aura( talent.blood.improved_heart_strike );
