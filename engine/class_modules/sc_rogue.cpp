@@ -523,7 +523,6 @@ public:
     gain_t* fatal_flourish;
     gain_t* energy_refund;
     gain_t* master_of_shadows;
-    gain_t* venom_rush;
     gain_t* venomous_wounds;
     gain_t* venomous_wounds_death;
     gain_t* relentless_strikes;
@@ -639,7 +638,6 @@ public:
     const spell_data_t* serrated_bone_spike_damage;
     const spell_data_t* serrated_bone_spike_energize;
     const spell_data_t* scent_of_blood_buff;
-    const spell_data_t* venom_rush_energize;
     const spell_data_t* vicious_venoms_ambush;
     const spell_data_t* vicious_venoms_mutilate_mh;
     const spell_data_t* vicious_venoms_mutilate_oh;
@@ -843,7 +841,7 @@ public:
       player_talent_t master_assassin;
 
       player_talent_t flying_daggers;
-      player_talent_t venom_rush;
+      player_talent_t sanguine_stratagem;
       player_talent_t vicious_venoms;
       player_talent_t fatal_concoction;
       player_talent_t lethal_dose;
@@ -1260,6 +1258,7 @@ public:
   double consume_cp_max() const
   {
     return COMBO_POINT_MAX + as<double>( talent.rogue.deeper_stratagem->effectN( 2 ).base_value() +
+                                         talent.assassination.sanguine_stratagem->effectN( 2 ).base_value() +
                                          talent.outlaw.devious_stratagem->effectN( 2 ).base_value() +
                                          talent.subtlety.secret_stratagem->effectN( 2 ).base_value() );
   }
@@ -1702,6 +1701,7 @@ public:
     ab::apply_affecting_aura( p->talent.assassination.thrown_precision );
     ab::apply_affecting_aura( p->talent.assassination.lightweight_shiv );
     ab::apply_affecting_aura( p->talent.assassination.flying_daggers );
+    ab::apply_affecting_aura( p->talent.assassination.sanguine_stratagem );
     ab::apply_affecting_aura( p->talent.assassination.vicious_venoms );
     ab::apply_affecting_aura( p->talent.assassination.fatal_concoction );
     ab::apply_affecting_aura( p->talent.assassination.tiny_toxic_blade );
@@ -2233,7 +2233,6 @@ public:
   void execute_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result );
   void trigger_fate_intertwined( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
-  void trigger_venom_rush( const action_state_t* );
   void trigger_blindside( const action_state_t* );
   void trigger_shadow_blades_attack( const action_state_t* );
   void trigger_sting_like_a_bee( const action_state_t* state );
@@ -3502,7 +3501,6 @@ struct ambush_t : public rogue_attack_t
     rogue_attack_t::execute();
     trigger_count_the_odds( execute_state, p()->procs.count_the_odds_ambush );
     trigger_blindside( execute_state );
-    trigger_venom_rush( execute_state );
   }
 
   void impact( action_state_t* state ) override
@@ -3527,6 +3525,9 @@ struct ambush_t : public rogue_attack_t
   { return true; }
 
   bool procs_blade_flurry() const override
+  { return true; }
+
+  bool procs_deal_fate() const override
   { return true; }
 };
 
@@ -5119,7 +5120,6 @@ struct mutilate_t : public rogue_attack_t
       oh_strike->execute_on_target( execute_state->target );
 
       trigger_blindside( execute_state );
-      trigger_venom_rush( execute_state );
       trigger_caustic_spatter_debuff( execute_state );
     }
   }
@@ -8482,7 +8482,7 @@ void actions::rogue_action_t<Base>::trigger_opportunity( const action_state_t* s
   const int stacks = 1 + as<int>( p()->talent.outlaw.fan_the_hammer->effectN( 1 ).base_value() );
   if ( p()->buffs.opportunity->trigger( stacks, buff_t::DEFAULT_VALUE(), p()->extra_attack_proc_chance() * modifier ) )
   {
-    if ( p()->talent.fatebound.deal_fate->ok() && action->data().id() == p()->spec.sinister_strike_extra_attack->id() )
+    if ( p()->talent.fatebound.deal_fate->ok() )
     {
       trigger_combo_point_gain( as<int>( p()->talent.fatebound.deal_fate->effectN( 1 ).base_value() ),
                                 p()->gains.deal_fate );
@@ -8667,18 +8667,6 @@ void actions::rogue_action_t<Base>::trigger_relentless_strikes( const action_sta
   {
     p()->resource_gain( RESOURCE_ENERGY, grant_energy, p()->gains.relentless_strikes, state->action );
   }
-}
-
-template <typename Base>
-void actions::rogue_action_t<Base>::trigger_venom_rush( const action_state_t* state )
-{
-  if ( !p()->talent.assassination.venom_rush->ok() )
-    return;
-
-  if ( !ab::result_is_hit( state->result ) || !p()->get_target_data( state->target )->is_poisoned() )
-    return;
-  
-  p()->resource_gain( RESOURCE_ENERGY, p()->spec.venom_rush_energize->effectN( 1 ).resource( RESOURCE_ENERGY ), p()->gains.venom_rush );
 }
 
 template <typename Base>
@@ -10176,6 +10164,7 @@ void rogue_t::init_base_stats()
 
   resources.base[ RESOURCE_COMBO_POINT ] = 5;
   resources.base[ RESOURCE_COMBO_POINT ] += talent.rogue.deeper_stratagem->effectN( 2 ).base_value();
+  resources.base[ RESOURCE_COMBO_POINT ] += talent.assassination.sanguine_stratagem->effectN( 2 ).base_value();
   resources.base[ RESOURCE_COMBO_POINT ] += talent.outlaw.devious_stratagem->effectN( 2 ).base_value();
   resources.base[ RESOURCE_COMBO_POINT ] += talent.subtlety.secret_stratagem->effectN( 2 ).base_value();
 
@@ -10349,7 +10338,7 @@ void rogue_t::init_spells()
   talent.assassination.master_assassin = find_talent_spell( talent_tree::SPECIALIZATION, "Master Assassin" );
 
   talent.assassination.flying_daggers = find_talent_spell( talent_tree::SPECIALIZATION, "Flying Daggers" );
-  talent.assassination.venom_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Venom Rush" );
+  talent.assassination.sanguine_stratagem = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Stratagem" );
   talent.assassination.vicious_venoms = find_talent_spell( talent_tree::SPECIALIZATION, "Vicious Venoms" );
   talent.assassination.fatal_concoction = find_talent_spell( talent_tree::SPECIALIZATION, "Fatal Concoction" );
   talent.assassination.lethal_dose = find_talent_spell( talent_tree::SPECIALIZATION, "Lethal Dose" );
@@ -10621,7 +10610,6 @@ void rogue_t::init_spells()
   spec.serrated_bone_spike_damage = talent.assassination.serrated_bone_spike->ok() ? find_spell( 385424 ) : spell_data_t::not_found();
   spec.serrated_bone_spike_energize = talent.assassination.serrated_bone_spike->ok() ? find_spell( 328548 ) : spell_data_t::not_found();
   spec.scent_of_blood_buff = talent.assassination.scent_of_blood->ok() ? find_spell( 394080 ) : spell_data_t::not_found();
-  spec.venom_rush_energize = talent.assassination.venom_rush->ok() ? find_spell( 256522 ) : spell_data_t::not_found();
   spec.vicious_venoms_ambush = talent.assassination.vicious_venoms->ok() ? find_spell( 385794 ) : spell_data_t::not_found();
   spec.vicious_venoms_mutilate_mh = talent.assassination.vicious_venoms->ok() ? find_spell( 385806 ) : spell_data_t::not_found();
   spec.vicious_venoms_mutilate_oh = talent.assassination.vicious_venoms->ok() ? find_spell( 385802 ) : spell_data_t::not_found();
@@ -10939,7 +10927,6 @@ void rogue_t::init_gains()
   gains.symbols_of_death                = get_gain( "Symbols of Death" );
   gains.symbols_of_death_t30            = get_gain( "Symbols of Death (T30)" );
   gains.the_first_dance                 = get_gain( "The First Dance " );
-  gains.venom_rush                      = get_gain( "Venom Rush" );
   gains.venomous_wounds                 = get_gain( "Venomous Vim" );
   gains.venomous_wounds_death           = get_gain( "Venomous Vim (Death)" );
   gains.deal_fate                       = get_gain( "Deal Fate" );
