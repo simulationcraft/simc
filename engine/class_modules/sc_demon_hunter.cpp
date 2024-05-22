@@ -542,11 +542,11 @@ public:
 
     struct felscarred_talents_t
     {
-      player_talent_t demonsurge;
+      player_talent_t demonsurge; // partially implemented
 
       player_talent_t wave_of_debilitation;  // NYI
       player_talent_t pursuit_of_angryness;
-      player_talent_t focused_hatred;        // NYI
+      player_talent_t focused_hatred;
       player_talent_t set_fire_to_the_pain;  // NYI
       player_talent_t improved_soul_rending;
 
