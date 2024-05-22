@@ -970,7 +970,7 @@ public:
     // Row 4
     player_talent_t coldthirst;
     player_talent_t proliferating_chill;
-    player_talent_t permafrost;  // NYI
+    player_talent_t permafrost;
     player_talent_t veteran_of_the_third_war;
     player_talent_t death_pact;  // NYI
     player_talent_t brittle;
@@ -992,9 +992,9 @@ public:
     player_talent_t blood_scent;
     player_talent_t unholy_endurance;  // NYI
     // Row 8
-    player_talent_t osmosis;           // NYI
+    player_talent_t osmosis;
     player_talent_t insidious_chill;   // NYI
-    player_talent_t runic_protection;  // NYI
+    player_talent_t runic_protection;
     player_talent_t blood_draw;
     // Row 9
     player_talent_t rune_mastery;
@@ -1002,7 +1002,7 @@ public:
     player_talent_t will_of_the_necropolis;  // NYI
     // Row 10
     player_talent_t null_magic;       // NYI
-    player_talent_t unyielding_will;  // NYI
+    player_talent_t unyielding_will;
     player_talent_t abomination_limb;
     player_talent_t deaths_echo;
     player_talent_t vestigial_shell;  // NYI
@@ -9753,6 +9753,8 @@ struct ams_parent_buff_t : public absorb_buff_t
   {
     cooldown->duration = 0_ms;
     set_absorb_school( SCHOOL_MAGIC );
+    apply_affecting_aura( p->talent.antimagic_barrier );
+    apply_affecting_aura( p->talent.osmosis );
     if ( option > 0 )
     {
       set_period( 1_s );
@@ -9818,7 +9820,6 @@ struct antimagic_shell_buff_t : public ams_parent_buff_t
   antimagic_shell_buff_t( death_knight_t* p )
     : ams_parent_buff_t( p, "antimagic_shell", p->spec.antimagic_shell, false )
   {
-    apply_affecting_aura( p->talent.antimagic_barrier );
     set_absorb_source( p->get_stats( "antimagic_shell" ) );
     option = p->options.ams_absorb_percent;
   }
@@ -9829,7 +9830,6 @@ struct antimagic_shell_buff_horseman_t : public ams_parent_buff_t
   antimagic_shell_buff_horseman_t( death_knight_t* p )
     : ams_parent_buff_t( p, "antimagic_shell_horseman", p->pet_spell.rider_ams, true )
   {
-    apply_affecting_aura( p->talent.antimagic_barrier );
     set_absorb_source( p->get_stats( "antimagic_shell_horseman" ) );
     option = p->options.horsemen_ams_absorb_percent;
   }
@@ -13026,6 +13026,9 @@ void death_knight_t::assess_heal( school_e school, result_amount_type t, action_
   if ( talent.blood.sanguine_ground.ok() && in_death_and_decay() )
     s->result_total *= 1.0 + spell.sanguine_ground->effectN( 2 ).percent();
 
+  if ( talent.osmosis.ok() && buffs.antimagic_shell->check() )
+    s->result_total *= 1.0 + buffs.antimagic_shell->data().effectN( 4 ).percent();
+
   player_t::assess_heal( school, t, s );
 }
 
@@ -13276,6 +13279,7 @@ void death_knight_t::parse_player_effects()
   parse_effects( buffs.unholy_ground, talent.unholy_ground );
   parse_effects( buffs.stoneskin_gargoyle, talent.unholy_bond );
   parse_effects( talent.veteran_of_the_third_war, spec.blood_death_knight );
+  parse_effects( talent.runic_protection );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), spell.brittle_debuff );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), spell.apocalypse_war_debuff,
                         talent.unholy_bond );
