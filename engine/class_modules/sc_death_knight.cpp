@@ -811,7 +811,6 @@ public:
     propagate_const<action_t*> runeforge_razorice;
     propagate_const<action_t*> runeforge_sanguination;
     action_t* abomination_limb_damage;
-    propagate_const<action_t*> permafrost;
 
     // Class Tree
     propagate_const<action_t*> blood_draw;
@@ -5009,8 +5008,7 @@ struct melee_t : public death_knight_melee_attack_t
 
     amount *= 1.0 + p()->talent.gloom_ward->effectN( 1 ).percent();
 
-    p()->active_spells.permafrost->base_dd_min = p()->active_spells.permafrost->base_dd_max = amount;
-    p()->active_spells.permafrost->execute();
+    p()->buffs.frost_shield->trigger( 1, amount, -1.0 );
   }
 };
 
@@ -10003,37 +10001,6 @@ struct mark_of_blood_t final : public death_knight_spell_t
   }
 };
 
-// Permafrost ===============================================================
-struct frost_shield_buff_t final : public absorb_buff_t
-{
-  frost_shield_buff_t( death_knight_t* p ) : absorb_buff_t( p, "frost_shield", p->spell.frost_shield_buff )
-  {
-    set_absorb_source( p->get_stats( "permafrost" ) );
-    set_absorb_high_priority( true );
-  }
-};
-
-struct frost_shield_t final : public death_knight_spell_t
-{
-  frost_shield_t( util::string_view n, death_knight_t* p ) : death_knight_spell_t( n, p, p->talent.permafrost )
-  {
-    may_miss = may_crit = callbacks = false;
-    background = proc = true;
-  }
-
-  void init() override
-  {
-    death_knight_spell_t::init();
-    snapshot_flags = update_flags = 0;
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-    p()->buffs.frost_shield->trigger( 1, base_dd_min, -1.0 );
-  }
-};
-
 // Rune Tap =================================================================
 
 struct rune_tap_t final : public death_knight_spell_t
@@ -11250,11 +11217,6 @@ void death_knight_t::create_actions()
   if ( talent.abomination_limb.ok() )
   {
     active_spells.abomination_limb_damage = get_action<abomination_limb_damage_t>( "abomination_limb_damage", this );
-  }
-
-  if ( talent.permafrost.ok() )
-  {
-    active_spells.permafrost = get_action<frost_shield_t>( "permafrost", this );
   }
 
   // Rider of the Apocalypse
@@ -12514,8 +12476,8 @@ void death_knight_t::create_buffs()
                            }
                          } );
 
-  buffs.frost_shield = make_buff<frost_shield_buff_t>( this );
-
+  buffs.frost_shield = make_buff<absorb_buff_t>( this, "frost_shield", spell.frost_shield_buff )
+                           ->set_absorb_high_priority( true );
 
   // Rider of the Apocalypse
   buffs.antimagic_shell_horsemen = make_buff<antimagic_shell_buff_horseman_t>( this );
