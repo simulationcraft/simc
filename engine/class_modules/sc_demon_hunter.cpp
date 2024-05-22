@@ -270,7 +270,6 @@ public:
 
   bool fodder_initiative;
   double shattered_destiny_accumulator;
-  double darkglare_boon_cdr_roll;
 
   event_t* exit_melee_event;  // Event to disable melee abilities mid-VR.
 
@@ -542,7 +541,7 @@ public:
 
     struct felscarred_talents_t
     {
-      player_talent_t demonsurge; // partially implemented
+      player_talent_t demonsurge;  // partially implemented
 
       player_talent_t wave_of_debilitation;  // NYI
       player_talent_t pursuit_of_angryness;
@@ -936,8 +935,6 @@ public:
     double movement_direction_factor = 1.8;
     // Chance every second to get hit by the fodder demon
     double fodder_to_the_flame_initiative_chance = 0.20;
-    // How many seconds of CDR from Darkglare Boon is considered a high roll
-    double darkglare_boon_cdr_high_roll_seconds = 18;
     // Chance of souls to be incidentally picked up on any movement ability due to being in pickup range
     double soul_fragment_movement_consume_chance = 0.85;
   } options;
@@ -2847,9 +2844,8 @@ struct fel_devastation_t : public demon_hunter_spell_t
       double maximum_fury_refund = p()->talent.vengeance.darkglare_boon->effectN( 4 ).base_value();
       double fury_refund         = rng().range( minimum_fury_refund, maximum_fury_refund );
 
-      p()->darkglare_boon_cdr_roll = cdr_reduction.total_seconds();
       p()->sim->print_debug( "{} rolled {}s of CDR on Fel Devastation from Darkglare Boon", *p(),
-                             p()->darkglare_boon_cdr_roll );
+                             cdr_reduction.total_seconds() );
       p()->cooldown.fel_devastation->adjust( -cdr_reduction );
       p()->resource_gain( RESOURCE_FURY, fury_refund, p()->gain.darkglare_boon );
     }
@@ -4510,7 +4506,7 @@ struct demonsurge_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( name, p, p->hero_spec.demonsurge_damage )
   {
     background = dual = true;
-    aoe = -1;
+    aoe               = -1;
   }
 
   void execute() override
@@ -7099,7 +7095,6 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, util::string_view name, race_e r )
     frailty_driver( nullptr ),
     fodder_initiative( false ),
     shattered_destiny_accumulator( 0.0 ),
-    darkglare_boon_cdr_roll( 0.0 ),
     exit_melee_event( nullptr ),
     buff(),
     talent(),
@@ -7628,16 +7623,6 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
       return this->cooldown.eye_beam->create_expression( "remains" );
     }
   }
-  else if ( util::str_compare_ci( name_str, "darkglare_boon_cdr_roll" ) )
-  {
-    return make_mem_fn_expr( name_str, *this, &demon_hunter_t::darkglare_boon_cdr_roll );
-  }
-  else if ( util::str_compare_ci( name_str, "darkglare_boon_cdr_high_roll" ) )
-  {
-    return make_fn_expr( name_str, [ this ]() {
-      return this->darkglare_boon_cdr_roll >= this->options.darkglare_boon_cdr_high_roll_seconds;
-    } );
-  }
   else if ( util::str_compare_ci( name_str, "fiery_brand_dot_primary_remains" ) )
   {
     return make_fn_expr( name_str, [ this ]() {
@@ -7722,8 +7707,6 @@ void demon_hunter_t::create_options()
   add_option( opt_float( "initial_fury", options.initial_fury, 0.0, 120 ) );
   add_option(
       opt_float( "fodder_to_the_flame_initiative_chance", options.fodder_to_the_flame_initiative_chance, 0, 1 ) );
-  add_option(
-      opt_float( "darkglare_boon_cdr_high_roll_seconds", options.darkglare_boon_cdr_high_roll_seconds, 6, 24 ) );
   add_option(
       opt_float( "soul_fragment_movement_consume_chance", options.soul_fragment_movement_consume_chance, 0, 1 ) );
 }
@@ -9149,7 +9132,6 @@ void demon_hunter_t::reset()
   metamorphosis_health                                 = 0;
   frailty_accumulator                                  = 0.0;
   shattered_destiny_accumulator                        = 0.0;
-  darkglare_boon_cdr_roll                              = 0.0;
   set_bonuses.t30_havoc_2pc_fury_tracker               = 0.0;
   set_bonuses.t30_vengeance_4pc_soul_fragments_tracker = 0.0;
 
