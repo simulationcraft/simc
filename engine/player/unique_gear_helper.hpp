@@ -592,7 +592,18 @@ action_t* create_proc_action( util::string_view name, const special_effect_t& ef
 
   if ( a == nullptr )
   {
-    a = new CLASS( effect, std::forward<ARGS>( args )... );
+    if constexpr ( std::is_constructible_v<CLASS, const special_effect_t&, ARGS...> )
+    {
+      a = new CLASS( effect, std::forward<ARGS>( args )... );
+    }
+    else if constexpr ( std::is_constructible_v<CLASS, const special_effect_t&, std::string_view, ARGS...> )
+    {
+      a = new CLASS( effect, name, std::forward<ARGS>( args )... );
+    }
+    else
+    {
+      static_assert( static_false<CLASS>, "Invalid constructor arguments for create_proc_action" );
+    }
   }
 
   return a;

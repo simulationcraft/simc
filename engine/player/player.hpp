@@ -112,7 +112,7 @@ public:
 
 struct player_t : public actor_t
 {
-  static const int default_level = 70;
+  static const int default_level = MAX_LEVEL;
 
   // static values
   player_e type;
@@ -223,8 +223,8 @@ struct player_t : public actor_t
     double health_per_stamina;
     std::array<double, SCHOOL_MAX> resource_reduction;
     double miss, dodge, parry, block;
-    double hit, expertise;
-    double spell_crit_chance, attack_crit_chance, block_reduction, mastery;
+    double hit, expertise, leech, avoidance;
+    double spell_crit_chance, attack_crit_chance, block_reduction, mastery, versatility;
     double skill, skill_debuff, distance;
     double distance_to_move;
     double moving_away;
@@ -235,6 +235,7 @@ struct player_t : public actor_t
 
     std::array<double, ATTRIBUTE_MAX> attribute_multiplier;
     double spell_power_multiplier, attack_power_multiplier, base_armor_multiplier, armor_multiplier;
+    double crit_damage_multiplier, crit_healing_multiplier;
     position_e position;
 
     friend void sc_format_to( const base_initial_current_t&, fmt::format_context::iterator );
@@ -271,7 +272,7 @@ struct player_t : public actor_t
   attack_t*  off_hand_attack;
 
   // Current attack speed (needed for dynamic attack speed adjustments)
-  double current_attack_speed;
+  double current_auto_attack_speed;
 
   player_resources_t resources;
 
@@ -308,6 +309,7 @@ struct player_t : public actor_t
   std::vector<std::pair<player_t*, std::function<void( void )>>> callbacks_on_arise;
   std::vector<std::function<void( player_t* )>> callbacks_on_kill;
   std::vector<std::function<void( player_t*, bool )>> callbacks_on_combat_state;
+  std::vector<std::function<void( bool )>> callbacks_on_movement;  // called in movement_buff_t
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -401,6 +403,7 @@ struct player_t : public actor_t
   std::unique_ptr<cooldown_t> item_cooldown;
   timespan_t default_item_group_cooldown;
   bool load_default_gear;
+  bool load_default_talents;
 
   // Misc Multipliers
   // auto attack modifier and multiplier (for Jeweled Signet of Melandrus and similar effects)
@@ -448,6 +451,7 @@ struct player_t : public actor_t
     buff_t* windwalking_movement_aura;
     buff_t* stoneform;
     buff_t* stunned;
+    buff_t* rooted;
     std::array<buff_t*, 4> ancestral_call;
     buff_t* fireblood;
     buff_t* symbol_of_hope; // Priest spell
@@ -526,7 +530,6 @@ struct player_t : public actor_t
     buff_t* wild_hunt_strategem_tracking; //night_fae/korayn - tracking buff to allow procs of wild_hunt_strategem on enemy targets
 
     // 9.0 Runecarves
-    buff_t* norgannons_sagacity_stacks;  // stacks on every cast
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
     buff_t* echo_of_eonar;               // passive self buff
 
@@ -550,13 +553,13 @@ struct player_t : public actor_t
     buff_t* elemental_chaos_air;
     buff_t* elemental_chaos_earth;
     buff_t* elemental_chaos_frost;
-    buff_t* static_empowerment; // phial of static empowerment
     buff_t* tome_of_unstable_power;
     buff_t* way_of_controlled_currents;
     buff_t* stormeaters_boon;
     buff_t* heavens_nemesis; // Neltharax, Enemy of the Sky
 
-    // 10.1 buffs
+    // 11.0 The War Within
+    buff_t* surekian_grace;  // sik'ran's shadow arsenal barrage movement speed buff
   } buffs;
 
   struct debuffs_t
@@ -719,7 +722,7 @@ struct player_t : public actor_t
     template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, std::string>>>
     operator std::string_view() const { return current_value; }
 
-    bool is_default() { return current_value == default_value; }
+    bool is_default() const { return current_value == default_value; }
 
     friend void sc_format_to( const player_option_t<T>& opt, fmt::format_context::iterator out )
     { fmt::format_to( out, "{}", opt.current_value ); }
@@ -799,10 +802,18 @@ struct player_t : public actor_t
     double rashoks_fake_overheal        = 0.4;
     // A list of stat amounts provided by the Timerunner's Advantage buff.
     player_option_t<std::string> timerunners_advantage;
+    // Number of party members using the Brilliance Tinker.
+    int brilliance_party = 1;
+    // Number of party members using the Windweaver Tinker.
+    int windweaver_party = 4;
+    // Tinker Ilvls of party members using the Windweaver Tinker. If not specified they will be your Main Hands ilvl.
+    player_option_t<std::string> windweaver_party_ilvls = "";
   } dragonflight_opts;
 
   struct thewarwithin_opt_t
   {
+    // Starting stance for Sik'rans Shadow Arsenal
+    player_option_t<std::string> sikrans_shadow_arsenal_stance = "";
   } thewarwithin_opts;
 
 private:
@@ -1049,7 +1060,7 @@ public:
   double apply_combat_rating_dr( rating_e rating, double value ) const;
 
   virtual double composite_melee_haste() const;
-  virtual double composite_melee_speed() const;
+  virtual double composite_melee_auto_attack_speed() const;
   virtual double composite_melee_attack_power() const;
   virtual double composite_weapon_attack_power_by_type( attack_power_type type ) const;
   virtual double composite_total_attack_power_by_type( attack_power_type type ) const;
@@ -1059,7 +1070,7 @@ public:
   { return 1.0; }
   virtual double composite_melee_expertise( const weapon_t* w = nullptr ) const;
   virtual double composite_spell_haste() const;
-  virtual double composite_spell_speed() const;
+  virtual double composite_spell_cast_speed() const;
   virtual double composite_spell_power( school_e school ) const;
   virtual double composite_total_spell_power( school_e school ) const;
   virtual double composite_spell_crit_chance() const;
@@ -1378,6 +1389,7 @@ public:
   void register_on_arise_callback( player_t* source, std::function<void( void )> fn );
   void register_on_kill_callback( std::function<void( player_t* )> fn );
   void register_on_combat_state_callback( std::function<void( player_t*, bool )> fn );
+  void register_movement_callback( std::function<void( bool )> fn );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();

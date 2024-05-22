@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54361 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54774 thewarwithin-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4773,7 +4773,7 @@ bonus_id={ 9152 }, quality={ uncommon }, effects={ Fists of Earthen Fury (id=398
 bonus_id={ 9153 }, quality={ rare }, effects={ Fists of Earthen Fury (id=398383, index=0, type=equip) }
 bonus_id={ 9154 }, quality={ epic }, effects={ Fists of Earthen Fury (id=398389, index=0, type=equip) }
 bonus_id={ 9155 }, quality={ common }, effects={ Shadow Barrage (id=395758, index=0, type=equip) }
-bonus_id={ 9156 }
+bonus_id={ 9156 }, ilevel={ 206 @plvl 45 - 327 @plvl 80 }
 bonus_id={ 9157 }, quality={ common }, effects={ Death Grip (id=361126, index=0, type=equip) }
 bonus_id={ 9159 }, quality={ uncommon }, effects={ Snowdrift (id=398735, index=0, type=equip) }
 bonus_id={ 9160 }, quality={ rare }, effects={ Snowdrift (id=398737, index=0, type=equip) }
@@ -5055,7 +5055,7 @@ bonus_id={ 9614 }, effects={ Verdant Tether (id=426552, index=0, type=equip) }
 bonus_id={ 9618 }, stats={ 100% Crit [0.4779] }
 bonus_id={ 9619 }, stats={ 100% Mastery [0.9558] }
 bonus_id={ 9620 }, stats={ 100% Leech [0.9558] }
-bonus_id={ 9621 }, stats={ 100% unknown [1.4337] }
+bonus_id={ 9621 }, stats={ 100% unknown [14.3370] }
 bonus_id={ 9622 }, stats={ 100% RunSpeed [0.2390] }
 bonus_id={ 9624 }, ilevel_adjust={ 3 }
 bonus_id={ 9625 }, ilevel_adjust={ 6 }
@@ -5498,31 +5498,31 @@ bonus_id={ 10274 }, quality={ epic }
 bonus_id={ 10275 }, quality={ epic }
 bonus_id={ 10276 }, quality={ epic }
 bonus_id={ 10277 }, quality={ epic }
-bonus_id={ 10278 }, quality={ epic }
-bonus_id={ 10279 }, quality={ epic }
-bonus_id={ 10280 }, quality={ epic }
-bonus_id={ 10281 }, quality={ epic }
+bonus_id={ 10278 }, quality={ rare }
+bonus_id={ 10279 }, quality={ rare }
+bonus_id={ 10280 }, quality={ rare }
+bonus_id={ 10281 }, quality={ rare }
 bonus_id={ 10282 }, quality={ rare }
 bonus_id={ 10283 }, quality={ rare }
 bonus_id={ 10284 }, quality={ rare }
 bonus_id={ 10285 }, quality={ rare }
-bonus_id={ 10286 }, quality={ rare }
-bonus_id={ 10287 }, quality={ rare }
+bonus_id={ 10286 }, quality={ uncommon }
+bonus_id={ 10287 }, quality={ uncommon }
 bonus_id={ 10288 }, quality={ uncommon }
 bonus_id={ 10289 }, quality={ uncommon }
-bonus_id={ 10290 }, quality={ epic }
-bonus_id={ 10291 }, quality={ epic }
-bonus_id={ 10292 }, quality={ epic }
-bonus_id={ 10293 }, quality={ epic }
+bonus_id={ 10290 }, quality={ rare }
+bonus_id={ 10291 }, quality={ rare }
+bonus_id={ 10292 }, quality={ rare }
+bonus_id={ 10293 }, quality={ rare }
 bonus_id={ 10294 }, quality={ rare }
 bonus_id={ 10295 }, quality={ rare }
 bonus_id={ 10296 }, quality={ rare }
 bonus_id={ 10297 }, quality={ rare }
 bonus_id={ 10298 }, quality={ epic }
 bonus_id={ 10299 }, quality={ epic }
-bonus_id={ 10300 }, desc={ Progress Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 450 @plvl 80 }
+bonus_id={ 10300 }, desc={ Beginner Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 450 @plvl 80 }
 bonus_id={ 10301 }, ilevel={ 0 @plvl 0 - 453 @plvl 80 }
-bonus_id={ 10302 }, desc={ Progress Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 456 @plvl 80 }
+bonus_id={ 10302 }, desc={ Beginner Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 456 @plvl 80 }
 bonus_id={ 10303 }, ilevel={ 0 @plvl 0 - 459 @plvl 80 }
 bonus_id={ 10304 }, ilevel={ 0 @plvl 0 - 463 @plvl 80 }
 bonus_id={ 10305 }, quality={ rare }
@@ -5569,6 +5569,7 @@ bonus_id={ 10345 }, quality={ epic }
 bonus_id={ 10346 }, quality={ epic }
 bonus_id={ 10347 }, quality={ epic }
 bonus_id={ 10348 }, quality={ epic }
+bonus_id={ 10349 }, base_ilevel={ 564 }, desc={ Beginner Crafted }
 bonus_id={ 10350 }, ilevel={ 388 @plvl 55 - 483 @plvl 90 }
 bonus_id={ 10357 }, base_ilevel={ 473 }, quality={ epic }
 bonus_id={ 10358 }, base_ilevel={ 502 }
@@ -5600,7 +5601,7 @@ bonus_id={ 10415 }, quality={ epic }
 bonus_id={ 10416 }, quality={ epic }
 bonus_id={ 10417 }, quality={ epic }
 bonus_id={ 10418 }, quality={ epic }
-bonus_id={ 10421 }, base_ilevel={ 584 }
+bonus_id={ 10421 }, base_ilevel={ 580 }
 bonus_id={ 10426 }, ilevel={ 5 @plvl 1 - 441 @plvl 70 }
 bonus_id={ 10427 }, quality={ common }, effects={ Mana Sphere (id=431501, index=0, type=equip) }
 bonus_id={ 10428 }, quality={ common }, effects={ Searing Axe (id=432490, index=0, type=equip) }
@@ -5973,17 +5974,17 @@ bonus_id={ 10807 }, effects={ Roll (id=439082, index=0, type=equip) }
 bonus_id={ 10808 }, effects={ Sprint (id=439083, index=0, type=equip) }
 bonus_id={ 10809 }, stats={ 100% Crit [0.7168] }
 bonus_id={ 10810 }, stats={ 100% Haste [0.7168] }
-bonus_id={ 10811 }, stats={ 100% unknown [2.1504] }
+bonus_id={ 10811 }, stats={ 100% unknown [21.5040] }
 bonus_id={ 10812 }, stats={ 100% Leech [1.4336] }
 bonus_id={ 10813 }, stats={ 100% Mastery [1.4336] }
 bonus_id={ 10814 }, stats={ 100% RunSpeed [0.3584] }
 bonus_id={ 10815 }, stats={ 100% Crit [0.9556] }
 bonus_id={ 10816 }, stats={ 100% Haste [0.9556] }
-bonus_id={ 10817 }, stats={ 100% unknown [2.8668] }
+bonus_id={ 10817 }, stats={ 100% unknown [28.6680] }
 bonus_id={ 10818 }, stats={ 100% Leech [1.9112] }
 bonus_id={ 10819 }, stats={ 100% Mastery [1.9112] }
 bonus_id={ 10820 }, stats={ 100% RunSpeed [0.4778] }
-bonus_id={ 10821 }, stats={ 100% Sta [0.7889] }
+bonus_id={ 10821 }, stats={ 100% Sta [1.5000] }
 bonus_id={ 10822 }, effects={ Hailstorm (id=436565, index=0, type=equip) }
 bonus_id={ 10823 }, effects={ Cold Front (id=436573, index=0, type=equip) }
 bonus_id={ 10824 }, effects={ Brittle (id=436578, index=0, type=equip) }
@@ -6006,8 +6007,8 @@ bonus_id={ 10847 }, effects={ Chi-Ji, the Red Crane (id=437072, index=0, type=eq
 bonus_id={ 10848 }, effects={ Morphing Elements (id=437495, index=0, type=use) }
 bonus_id={ 10849 }, quality={ rare }, stats={ 100% StrInt [0.2045] }
 bonus_id={ 10850 }, quality={ epic }, stats={ 100% StrInt [0.2045] }
-bonus_id={ 10851 }, quality={ rare }, stats={ 100% Sta [0.7889] }
-bonus_id={ 10852 }, quality={ epic }, stats={ 100% Sta [0.7889] }
+bonus_id={ 10851 }, quality={ rare }, stats={ 100% Sta [1.5000] }
+bonus_id={ 10852 }, quality={ epic }, stats={ 100% Sta [1.5000] }
 bonus_id={ 10853 }, quality={ rare }, stats={ 100% AgiInt [0.2045] }
 bonus_id={ 10854 }, quality={ epic }, stats={ 100% AgiInt [0.2045] }
 bonus_id={ 10855 }, quality={ rare }, stats={ 100% AgiInt [0.2045] }
@@ -6084,7 +6085,7 @@ bonus_id={ 10948 }, socket={ 3 }
 bonus_id={ 10965 }, stats={ 100% Avoidance [1.1946] }
 bonus_id={ 10966 }, stats={ 100% Crit [1.1946] }
 bonus_id={ 10967 }, stats={ 100% Haste [1.1946] }
-bonus_id={ 10968 }, stats={ 100% unknown [3.5838] }
+bonus_id={ 10968 }, stats={ 100% unknown [35.8380] }
 bonus_id={ 10969 }, stats={ 100% Leech [2.3892] }
 bonus_id={ 10970 }, stats={ 100% Mastery [2.3892] }
 bonus_id={ 10971 }, stats={ 100% RunSpeed [0.5973] }
@@ -6218,8 +6219,84 @@ bonus_id={ 11195 }, effects={ Earthen Delivery Drill (id=452929, index=0, type=u
 bonus_id={ 11200 }, stats={ 100% Avoidance [0.1925] }
 bonus_id={ 11201 }, stats={ 100% Crit [0.1925] }
 bonus_id={ 11202 }, stats={ 100% Haste [0.1925] }
-bonus_id={ 11203 }, stats={ 100% unknown [0.7700] }
+bonus_id={ 11203 }, stats={ 100% unknown [7.7000] }
 bonus_id={ 11204 }, stats={ 100% Leech [0.3850] }
 bonus_id={ 11205 }, stats={ 100% Mastery [0.3850] }
 bonus_id={ 11206 }, stats={ 100% RunSpeed [0.1925] }
 bonus_id={ 11207 }, stats={ 100% Vers [0.1925] }
+bonus_id={ 11208 }, effects={ Recalibrated Safety Fuses (id=453488, index=0, type=equip) }
+bonus_id={ 11209 }, effects={ Pouch of Pocket Grenades (id=453503, index=0, type=equip) }
+bonus_id={ 11210 }, effects={ Concealed Chaos Component (id=453813, index=0, type=equip) }
+bonus_id={ 11216 }, effects={ Blame Redirection Device (id=454450, index=0, type=equip) }
+bonus_id={ 11217 }, effects={ Complicated Fuse Box (id=454455, index=0, type=equip) }
+bonus_id={ 11219 }, effects={ Unknown Effect (id=186557) }
+bonus_id={ 11220 }, effects={ Alarm-O-Turret (id=384098, index=0, type=use) }
+bonus_id={ 11221 }, effects={ Plane Displacer (id=384081, index=0, type=use) }
+bonus_id={ 11222 }, effects={ Supercollide-O-Tron (id=384044, index=0, type=use) }
+bonus_id={ 11223 }, effects={ Shadowflame Rockets (id=407949, index=0, type=use) }
+bonus_id={ 11224 }, quality={ legendary }
+bonus_id={ 11225 }, ilevel={ 70 @plvl 70 - 90 @plvl 90 }
+bonus_id={ 11226 }, effects={ Energy Redistribution Beacon (id=455147, index=0, type=equip) }
+bonus_id={ 11227 }, ilevel={ 5 @plvl 1 - 366 @plvl 70 }
+bonus_id={ 11228 }, effects={ Excavation (id=455799, index=0, type=equip) }
+bonus_id={ 11229 }, ilevel={ 1 @plvl 1 - 400 @plvl 80 }
+bonus_id={ 11230 }, desc={ Rank 1/4 }, effects={ Adding (id=456535, index=0, type=use) }
+bonus_id={ 11231 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=456957, index=0, type=use) }
+bonus_id={ 11232 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=456979, index=0, type=use) }
+bonus_id={ 11233 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=456995, index=0, type=use) }
+bonus_id={ 11235 }, desc={ Rank 1/4 }, effects={ Adding (id=456550, index=0, type=use) }
+bonus_id={ 11236 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=456958, index=0, type=use) }
+bonus_id={ 11237 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=456980, index=0, type=use) }
+bonus_id={ 11238 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=456996, index=0, type=use) }
+bonus_id={ 11240 }, desc={ Rank 1/4 }, effects={ Adding (id=456551, index=0, type=use) }
+bonus_id={ 11241 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=456959, index=0, type=use) }
+bonus_id={ 11242 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=456981, index=0, type=use) }
+bonus_id={ 11243 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=456997, index=0, type=use) }
+bonus_id={ 11245 }, desc={ Rank 1/4 }, effects={ Adding (id=456552, index=0, type=use) }
+bonus_id={ 11246 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=456960, index=0, type=use) }
+bonus_id={ 11247 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=456982, index=0, type=use) }
+bonus_id={ 11248 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=456998, index=0, type=use) }
+bonus_id={ 11250 }, desc={ Rank 1/4 }, effects={ Adding (id=456553, index=0, type=use) }
+bonus_id={ 11251 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=456962, index=0, type=use) }
+bonus_id={ 11252 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=456983, index=0, type=use) }
+bonus_id={ 11253 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=456999, index=0, type=use) }
+bonus_id={ 11255 }, desc={ Rank 1/4 }, effects={ Adding (id=456554, index=0, type=use) }
+bonus_id={ 11256 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=456972, index=0, type=use) }
+bonus_id={ 11257 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=456994, index=0, type=use) }
+bonus_id={ 11258 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=457008, index=0, type=use) }
+bonus_id={ 11260 }, desc={ Rank 1/4 }, effects={ Adding (id=456555, index=0, type=use) }
+bonus_id={ 11261 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=456963, index=0, type=use) }
+bonus_id={ 11262 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=456984, index=0, type=use) }
+bonus_id={ 11263 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=457001, index=0, type=use) }
+bonus_id={ 11265 }, desc={ Rank 1/4 }, effects={ Adding (id=456556, index=0, type=use) }
+bonus_id={ 11266 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=456965, index=0, type=use) }
+bonus_id={ 11267 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=456987, index=0, type=use) }
+bonus_id={ 11268 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=457002, index=0, type=use) }
+bonus_id={ 11270 }, desc={ Rank 1/4 }, effects={ Adding (id=456557, index=0, type=use) }
+bonus_id={ 11271 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=456966, index=0, type=use) }
+bonus_id={ 11272 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=456988, index=0, type=use) }
+bonus_id={ 11273 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=457003, index=0, type=use) }
+bonus_id={ 11275 }, desc={ Rank 1/4 }, effects={ Adding (id=456558, index=0, type=use) }
+bonus_id={ 11276 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=456967, index=0, type=use) }
+bonus_id={ 11277 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=456989, index=0, type=use) }
+bonus_id={ 11278 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=457004, index=0, type=use) }
+bonus_id={ 11280 }, desc={ Rank 1/4 }, effects={ Adding (id=456559, index=0, type=use) }
+bonus_id={ 11281 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=456969, index=0, type=use) }
+bonus_id={ 11282 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=456990, index=0, type=use) }
+bonus_id={ 11283 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=457005, index=0, type=use) }
+bonus_id={ 11285 }, desc={ Rank 1/4 }, effects={ Adding (id=456560, index=0, type=use) }
+bonus_id={ 11286 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=456970, index=0, type=use) }
+bonus_id={ 11287 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=456991, index=0, type=use) }
+bonus_id={ 11288 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=457006, index=0, type=use) }
+bonus_id={ 11290 }, desc={ Rank 1/4 }, effects={ Adding (id=456561, index=0, type=use) }
+bonus_id={ 11291 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=456971, index=0, type=use) }
+bonus_id={ 11292 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=456993, index=0, type=use) }
+bonus_id={ 11293 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=457007, index=0, type=use) }
+bonus_id={ 11295 }, base_ilevel={ 515 }
+bonus_id={ 11297 }, base_ilevel={ 535 }
+bonus_id={ 11299 }, effects={ Radiant Focus (id=454558, index=0, type=equip) }
+bonus_id={ 11300 }, effects={ Radiant Focus (id=454558, index=0, type=equip) }
+bonus_id={ 11301 }, effects={ Radiant Focus (id=454558, index=0, type=equip) }
+bonus_id={ 11302 }, effects={ Radiant Focus (id=454558, index=0, type=equip) }
+bonus_id={ 11303 }, effects={ Blue Silken Lining (id=387335, index=0, type=equip) }
+bonus_id={ 11304 }, effects={ Blue Silken Lining (id=387335, index=0, type=equip) }

@@ -332,6 +332,7 @@ public:
       const spell_data_t* mind_spike_insanity_spell;
       // Row 5
       player_talent_t shadow_crash;
+      player_talent_t void_crash;
       player_talent_t unfurling_darkness;
       player_talent_t void_eruption;
       const spell_data_t* void_eruption_damage;
@@ -485,7 +486,20 @@ public:
 
     struct
     {
-      /* data */
+      player_talent_t power_surge;
+      player_talent_t perfected_form;
+      player_talent_t resonant_energy;
+      player_talent_t manifested_power;
+      player_talent_t shock_pulse;
+      player_talent_t incessant_screams;
+      player_talent_t word_of_supremacy;
+      player_talent_t heightened_alteration;
+      player_talent_t empowered_surges;
+      player_talent_t energy_compression;
+      player_talent_t sustained_potency;
+      player_talent_t concentrated_infusion;
+      player_talent_t energy_cycle;
+      player_talent_t divine_halo;
     } archon;
 
     struct
@@ -659,6 +673,8 @@ public:
     propagate_const<proc_t*> shadowy_apparition_swp;
     propagate_const<proc_t*> shadowy_apparition_dp;
     propagate_const<proc_t*> shadowy_apparition_mb;
+    propagate_const<proc_t*> shadowy_apparition_msi;
+    propagate_const<proc_t*> shadowy_apparition_mfi;
     propagate_const<proc_t*> mind_devourer;
     propagate_const<proc_t*> void_tendril;
     propagate_const<proc_t*> void_lasher;

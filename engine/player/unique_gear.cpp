@@ -12,6 +12,7 @@
 #include "sim/expressions.hpp"
 #include "unique_gear_dragonflight.hpp"
 #include "unique_gear_shadowlands.hpp"
+#include "unique_gear_thewarwithin.hpp"
 #include "util/util.hpp"
 
 #include <cctype>
@@ -147,6 +148,7 @@ namespace racial
 namespace generic
 {
   void windfury_totem( special_effect_t& );
+  void enable_all_item_effects( special_effect_t& );
 }
 
 /**
@@ -836,7 +838,7 @@ void gem::sinister_primal( special_effect_t& effect )
   {
     p->buffs.tempus_repit = make_buff( p, "tempus_repit", p->find_spell( 137590 ) )
       ->set_default_value_from_effect( 1 )
-      ->add_invalidate( CACHE_SPELL_SPEED )
+      ->add_invalidate( CACHE_SPELL_CAST_SPEED )
       ->set_activated( false );
   }
 
@@ -2181,9 +2183,17 @@ void item::amplification( special_effect_t& effect )
   player_t* p = effect.item -> player;
   double amp_value = 0.1;  // Seems to be 0.1 regardless of level/item level now.
   if ( !p->passive_values.amplification_1 )
+  {
     p->passive_values.amplification_1 = amp_value;
+    p->base.crit_damage_multiplier *= 1.0 + amp_value;
+    p->base.crit_healing_multiplier *= 1.0 + amp_value;
+  }
   else
+  {
     p->passive_values.amplification_2 = amp_value;
+    p->base.crit_damage_multiplier *= 1.0 + amp_value;
+    p->base.crit_healing_multiplier *= 1.0 + amp_value;
+  }
 }
 
 void item::prismatic_prison_of_pride( special_effect_t& effect )
@@ -2534,19 +2544,6 @@ void item::matrix_restabilizer( special_effect_t& effect )
   new matrix_restabilizer_cb_t( effect, buffs );
 }
 
-struct fel_burn_t : public buff_t
-{
-  fel_burn_t( const actor_pair_t& p, const special_effect_t* e, const spell_data_t* s )
-    : buff_t( p, "fel_burn", s, e ? e->item : nullptr )
-  {
-
-    set_refresh_behavior( buff_refresh_behavior::DISABLED );
-    // Add a millisecond of duration to the debuff so we ensure that the last tick (at 15 seconds)
-    // will always have the correct number of stacks.
-    set_duration( timespan_t::from_seconds( 15.001 ) );
-  }
-};
-
 struct empty_drinking_horn_damage_t : public melee_attack_t
 {
   empty_drinking_horn_damage_t( const special_effect_t& effect ) :
@@ -2557,17 +2554,7 @@ struct empty_drinking_horn_damage_t : public melee_attack_t
     base_td = data().effectN( 1 ).average( effect.item );
     weapon_multiplier = 0;
     item = effect.item;
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = melee_attack_t::composite_target_multiplier( target );
-
-    const actor_target_data_t* td = player -> get_target_data( target );
-
-    m *= td -> debuff.fel_burn -> current_stack;
-
-    return m;
+    dot_behavior = dot_behavior_e::DOT_NONE;
   }
 };
 
@@ -2591,36 +2578,7 @@ struct empty_drinking_horn_cb_t : public dbc_proc_callback_t
 
   void execute( action_t* /* a */, action_state_t* trigger_state ) override
   {
-    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
-    assert( td );
-    if ( ! td -> debuff.fel_burn -> up() )
-    {
-      td -> debuff.fel_burn -> trigger( 1 );
-      burn -> target = trigger_state -> target;
-      burn -> execute();
-    }
-    else
-    {
-      td -> debuff.fel_burn -> trigger( 1 );
-    }
-  }
-};
-
-struct empty_drinking_horn_constructor_t : public item_targetdata_initializer_t
-{
-  empty_drinking_horn_constructor_t( unsigned iid, util::span<const slot_e> s ) :
-    item_targetdata_initializer_t( iid, s )
-  {
-    debuff_fn = []( player_t* p, const special_effect_t* ) { return p->find_spell( 184256 ); };
-  }
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.fel_burn =
-        make_buff_fallback<fel_burn_t>( active, *td, "fel_burn", effect( td ), debuffs[ td->source ] );
-    td->debuff.fel_burn->reset();
+    burn->execute_on_target( trigger_state->target );
   }
 };
 
@@ -2870,54 +2828,23 @@ struct mark_of_doom_t : public buff_t
 // Prophecy of Fear base driver, handles the proccing (triggering) of Mark of Doom on targets
 struct prophecy_of_fear_driver_t : public dbc_proc_callback_t
 {
+  action_t* damage;
+  const special_effect_t* eff;
+
   prophecy_of_fear_driver_t( const special_effect_t& effect ) :
-    dbc_proc_callback_t( effect.player, effect )
-  { }
-
-  void initialize() override
+    dbc_proc_callback_t( effect.player, effect ), eff( &effect )
   {
-    dbc_proc_callback_t::initialize();
+    damage = new doom_nova_t( effect );
+  }
 
-    action_t* damage_spell = listener -> find_action( "doom_nova" );
-
-    if ( ! damage_spell )
-    {
-      damage_spell = listener -> create_proc_action( "doom_nova", effect );
-    }
-
-    if ( ! damage_spell )
-    {
-      damage_spell = new doom_nova_t( effect );
-    }
+  buff_t* create_debuff( player_t* t ) override
+  {
+    return new mark_of_doom_t( { t, listener }, eff, eff->trigger(), damage );
   }
 
   void execute( action_t* /* a */, action_state_t* trigger_state ) override
   {
-    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
-    assert( td );
-    td -> debuff.mark_of_doom -> trigger();
-  }
-};
-
-struct prophecy_of_fear_constructor_t : public item_targetdata_initializer_t
-{
-  target_specific_t<action_t> damage_actions;
-
-  prophecy_of_fear_constructor_t( unsigned iid, util::span<const slot_e> s )
-    : item_targetdata_initializer_t( iid, s ), damage_actions( false )
-  {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    action_t*& damage = damage_actions[ td->source ];
-    if ( active && !damage )
-      damage = td->source->find_action( "doom_nova" );
-
-    td->debuff.mark_of_doom =
-        make_buff_fallback<mark_of_doom_t>( active, *td, "mark_of_doom", effect( td ), debuffs[ td->source ], damage );
-    td->debuff.mark_of_doom->reset();
+    get_debuff( trigger_state->target )->trigger();
   }
 };
 
@@ -3765,6 +3692,64 @@ void generic::windfury_totem( special_effect_t& effect )
   proc->deactivate();
 }
 
+void generic::enable_all_item_effects( special_effect_t& effect )
+{
+  if ( !effect.player->sim->enable_all_item_effects )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
+  struct enable_all_item_effects_t : public action_t
+  {
+    std::vector<special_effect_t*> action_effects;
+    std::vector<special_effect_t*> buff_effects;
+
+    enable_all_item_effects_t( const special_effect_t& e )
+      : action_t( action_e::ACTION_USE, "enable_all_item_effects", e.player )
+    {
+      callbacks = false;
+      cooldown->duration = 20_s;
+    }
+
+    void init() override
+    {
+      action_t::init();
+
+      for ( auto id : thewarwithin::__tww_special_effect_ids )
+      {
+        if ( auto eff = find_special_effect( player, id ) )
+        {
+          if ( eff->custom_buff )
+            buff_effects.push_back( eff );
+
+          if ( eff->execute_action )
+            action_effects.push_back( eff );
+        }
+      }
+    }
+
+    result_e calculate_result( action_state_t* ) const override
+    {
+      return result_e::RESULT_NONE;
+    }
+
+    void execute() override
+    {
+      action_t::execute();
+
+      for ( auto eff : buff_effects )
+        eff->custom_buff->trigger();
+
+      for ( auto eff : action_effects )
+        if ( eff->execute_action->action_ready() )
+          eff->execute_action->execute();
+    }
+  };
+
+  effect.execute_action = new enable_all_item_effects_t( effect );
+}
+
 bool stat_fits_criteria( stat_e stat, stat_e criteria )
 {
   if ( !stat )
@@ -4088,28 +4073,29 @@ void unique_gear::initialize_racial_effects( player_t* player )
 
 void unique_gear::init( player_t* p )
 {
-  if ( p -> is_pet() || p -> is_enemy() ) return;
+  if ( p->is_pet() || p->is_enemy() )
+    return;
 
-  for ( size_t i = 0; i < p -> items.size(); i++ )
+  for ( size_t i = 0; i < p->items.size(); i++ )
   {
-    item_t& item = p -> items[ i ];
+    item_t& item = p->items[ i ];
 
     for ( size_t j = 0; j < item.parsed.special_effects.size(); j++ )
     {
       special_effect_t* effect = item.parsed.special_effects[ j ];
 
-      p -> sim -> print_debug( "Initializing item-based special effect {}", *effect );
+      p->sim->print_debug( "Initializing item-based special effect {}", *effect );
 
       initialize_special_effect_2( effect );
     }
   }
 
   // Generic special effects, bound to no specific item
-  for ( size_t i = 0; i < p -> special_effects.size(); i++ )
+  for ( size_t i = 0; i < p->special_effects.size(); i++ )
   {
-    special_effect_t* effect = p -> special_effects[ i ];
+    special_effect_t* effect = p->special_effects[ i ];
 
-    p -> sim -> print_debug( "Initializing generic special effect {}", *effect );
+    p->sim->print_debug( "Initializing generic special effect {}", *effect );
 
     initialize_special_effect_2( effect );
   }
@@ -4900,6 +4886,8 @@ void unique_gear::register_special_effects()
 
   dragonflight::register_special_effects();
 
+  thewarwithin::register_special_effects();
+
   /* Legacy Effects, pre-5.0 */
   register_special_effect( 45481,  "ProcOn/hit_45479Trigger"            ); /* Shattered Sun Pendant of Acumen */
   register_special_effect( 45482,  "ProcOn/hit_45480Trigger"            ); /* Shattered Sun Pendant of Might */
@@ -5082,6 +5070,7 @@ void unique_gear::register_special_effects()
 
   /* Generic "global scope" special effects */
   register_special_effect( 327942, generic::windfury_totem );
+  register_special_effect( 63604, generic::enable_all_item_effects );
 }
 
 void unique_gear::unregister_special_effects()
@@ -5104,15 +5093,11 @@ void unique_gear::register_hotfixes()
   register_hotfixes_bfa();
   shadowlands::register_hotfixes();
   dragonflight::register_hotfixes();
+  thewarwithin::register_hotfixes();
 }
 
 void unique_gear::register_target_data_initializers( sim_t* sim )
 {
-  static constexpr std::array<slot_e, 2> trinkets {{ SLOT_TRINKET_1, SLOT_TRINKET_2 }};
-
-  sim -> register_target_data_initializer( empty_drinking_horn_constructor_t( 124238, trinkets ) );
-  sim -> register_target_data_initializer( prophecy_of_fear_constructor_t( 124230, trinkets ) );
-
   register_target_data_initializers_legion( sim );
   register_target_data_initializers_bfa( sim );
   azerite::register_azerite_target_data_initializers( sim );
@@ -5121,6 +5106,8 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   covenant::soulbinds::register_target_data_initializers( sim );
 
   dragonflight::register_target_data_initializers( *sim );
+
+  thewarwithin::register_target_data_initializers( *sim );
 }
 
 special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned spell_id, special_effect_e type )

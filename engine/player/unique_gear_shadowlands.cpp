@@ -607,21 +607,35 @@ void memory_of_past_sins( special_effect_t& effect )
 {
   struct shattered_psyche_damage_t : public generic_proc_t
   {
-    shattered_psyche_damage_t( const special_effect_t& e)
-      : generic_proc_t( e, "shattered_psyche", 344664 )
+    double debuff_value;
+
+    shattered_psyche_damage_t( const special_effect_t& e )
+      : generic_proc_t( e, "shattered_psyche", 344664 ), debuff_value( e.driver()->effectN( 1 ).percent() )
     {
       callbacks = false;
+
+      target_debuff = e.player->find_spell( 344663 );
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      return generic_proc_t::create_debuff( t )
+        ->set_default_value( debuff_value );
     }
 
     double composite_target_da_multiplier( player_t* t ) const override
     {
       double m = proc_spell_t::composite_target_da_multiplier( t );
-      auto td = player->get_target_data( t );
 
-      // Assume we get about half of the value from each application of the extra ally stacks (4 allies = 2 stacks on player's first hit, 22 stacks on player's last hit etc.)
-      int base_dmg_stacks = td->debuff.shattered_psyche->check() * (player->sim->shadowlands_opts.shattered_psyche_allies + 1);
-      int bonus_dmg_stacks = player->sim->shadowlands_opts.shattered_psyche_allies / 2;
-      m *= 1.0 + ( base_dmg_stacks + bonus_dmg_stacks ) * td->debuff.shattered_psyche->check_value();
+      if ( auto debuff = find_debuff( t ) )
+      {
+        // Assume we get about half of the value from each application of the extra ally stacks (4 allies = 2 stacks on
+        // player's first hit, 22 stacks on player's last hit etc.)
+        int base_dmg_stacks = debuff->check() * ( player->sim->shadowlands_opts.shattered_psyche_allies + 1 );
+        int bonus_dmg_stacks = player->sim->shadowlands_opts.shattered_psyche_allies / 2;
+        m *= 1.0 + ( base_dmg_stacks + bonus_dmg_stacks ) * debuff->check_value();
+      }
+
       return m;
     }
 
@@ -629,8 +643,7 @@ void memory_of_past_sins( special_effect_t& effect )
     {
       proc_spell_t::impact( s );
 
-      auto td = player->get_target_data( s->target );
-      td->debuff.shattered_psyche->trigger();
+      get_debuff( s->target )->trigger();
     }
   };
 
@@ -2551,15 +2564,43 @@ void shadowed_orb_of_torment( special_effect_t& effect )
  */
 void relic_of_the_frozen_wastes_use( special_effect_t& effect )
 {
+  unsigned equip_id = 355301;
+  auto equip = find_special_effect( effect.player, equip_id );
+  assert( equip );
+
+  struct frozen_heart_t : generic_proc_t
+  {
+    frozen_heart_t( const special_effect_t& effect ) : generic_proc_t( effect, "frozen_heart", effect.trigger() )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+
+      target_debuff = effect.trigger();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+
+      get_debuff( s->target )->trigger();
+    }
+  };
+
+  auto proc = create_proc_action<frozen_heart_t>( "frozen_heart", effect );
+  equip->execute_action = proc;
+  new dbc_proc_callback_t( effect.player, *equip );
+
   struct frost_tinged_carapace_spikes_t : public generic_proc_t
   {
-    frost_tinged_carapace_spikes_t( const special_effect_t& effect, const spell_data_t* equip )
-      : generic_proc_t( effect, "frosttinged_carapace_spikes", effect.player->find_spell( 357409 ) )
+    action_t* proc;
+
+    frost_tinged_carapace_spikes_t( const special_effect_t& effect, const special_effect_t& equip )
+      : generic_proc_t( effect, "frosttinged_carapace_spikes", effect.player->find_spell( 357409 ) ),
+        proc( equip.execute_action )
     {
       background = dual = true;
       callbacks = false;
       aoe = -1;
-      base_dd_max = base_dd_min = equip->effectN( 3 ).average( effect.item );
+      base_dd_max = base_dd_min = equip.driver()->effectN( 3 ).average( effect.item );
     }
 
     void execute() override
@@ -2575,7 +2616,7 @@ void relic_of_the_frozen_wastes_use( special_effect_t& effect )
 
       for ( auto* t : sim->target_non_sleeping_list )
       {
-         if ( t->is_enemy() && player->get_target_data( t )->debuff.frozen_heart->up() )
+         if ( t->is_enemy() && proc->get_debuff( t )->up() )
           tl.push_back( t );
       }
 
@@ -2587,12 +2628,12 @@ void relic_of_the_frozen_wastes_use( special_effect_t& effect )
   {
     action_t* splash;
 
-    nerubian_ambush_t( const special_effect_t& effect, const spell_data_t* equip ) :
+    nerubian_ambush_t( const special_effect_t& effect,  const special_effect_t& equip ) :
       generic_proc_t( effect, "nerubian_ambush", effect.player->find_spell(355912) )
     {
       background = dual = true;
       callbacks = false;
-      base_dd_max = base_dd_min = equip->effectN( 2 ).average( effect.item );
+      base_dd_max = base_dd_min = equip.driver()->effectN( 2 ).average( effect.item );
     }
   };
 
@@ -2601,7 +2642,7 @@ void relic_of_the_frozen_wastes_use( special_effect_t& effect )
     action_t* ambush;
     action_t* spikes;
 
-    frostlords_call_t( const special_effect_t& effect, const spell_data_t* equip )
+    frostlords_call_t( const special_effect_t& effect, const special_effect_t& equip )
       : generic_proc_t( effect, "frostlords_call", effect.driver() ),
         ambush( create_proc_action<nerubian_ambush_t>( "nerubian_ambush", effect, equip ) ),
         spikes( create_proc_action<frost_tinged_carapace_spikes_t>( "frosttinged_carapace_spikes", effect, equip ) )
@@ -2625,30 +2666,7 @@ void relic_of_the_frozen_wastes_use( special_effect_t& effect )
     }
   };
 
-  const spell_data_t* equip = effect.player->find_spell( 355301 );
-  effect.execute_action = create_proc_action<frostlords_call_t>( "frostlords_call", effect, equip );
-}
-
-void relic_of_the_frozen_wastes_equip( special_effect_t& effect )
-{
-  struct frozen_heart_t : generic_proc_t
-  {
-    frozen_heart_t( const special_effect_t& effect ) : generic_proc_t( effect, "frozen_heart", effect.trigger() )
-    {
-      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-    }
-
-    void execute() override
-    {
-      generic_proc_t::execute();
-
-      actor_target_data_t* td = player->get_target_data( target );
-      td->debuff.frozen_heart->trigger();
-    }
-  };
-
-  effect.execute_action = create_proc_action<frozen_heart_t>( "frozen_heart", effect );
-  new dbc_proc_callback_t( effect.player, effect );
+  effect.execute_action = create_proc_action<frostlords_call_t>( "frostlords_call", effect, *equip );
 }
 
 /**Ticking Sack of Terror
@@ -2682,31 +2700,32 @@ void ticking_sack_of_terror( special_effect_t& effect )
       : dbc_proc_callback_t( effect.player, effect ),
         damage( create_proc_action<volatile_detonation_t>( "volatile_detonation", effect ) )
     {
+      target_debuff = effect.player->find_spell( effect.spell_id == 351679 ? 351682 : 367902 );
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      return dbc_proc_callback_t::create_debuff( t )
+        ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+          if ( !new_ )
+          {
+            damage->set_target( b->player );
+            damage->execute();
+          }
+        } );
     }
 
     void execute( action_t* a, action_state_t* s ) override
     {
       dbc_proc_callback_t::execute( a, s );
 
-      actor_target_data_t* td = a->player->get_target_data( s->target );
+      auto debuff = get_debuff( s->target );
 
       // Damage is dealt when the debuff falls off *or* reaches max stacks, whichever comes first
-      // This needs to be handled via a stack_change_callback, but can't be set in register_target_data_initializer
-      if ( !td->debuff.volatile_satchel->stack_change_callback )
-      {
-        td->debuff.volatile_satchel->set_stack_change_callback( [ this ]( buff_t* b, int /* old_ */, int new_ ) {
-          if ( new_ == 0 )
-          {
-            damage->set_target( b->player );
-            damage->execute();
-          }
-        } );
-      }
-
-      if ( td->debuff.volatile_satchel->at_max_stacks() )
-        td->debuff.volatile_satchel->expire();
+      if ( debuff->at_max_stacks() )
+        debuff->expire();
       else
-        td->debuff.volatile_satchel->trigger();
+        debuff->trigger();
     }
   };
 
@@ -3466,24 +3485,33 @@ void bells_of_the_endless_feast( special_effect_t& effect )
       : dbc_proc_callback_t( effect.player, effect ),
         damage( create_proc_action<rabid_devourer_chomp_t>( "rabid_devourer_chomp", effect ) )
     {
+      target_debuff = effect.trigger();
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      // the debuff spell id seems to also be a driver of some kind giving extra stacks
+      return dbc_proc_callback_t::create_debuff( t )
+        ->set_period( 0_ms )
+        ->set_cooldown( 0_ms );
     }
 
     void execute( action_t* a, action_state_t* s ) override
     {
       dbc_proc_callback_t::execute( a, s );
 
-      actor_target_data_t* td = a->player->get_target_data( s->target );
+      auto debuff = get_debuff( s->target );
 
       // NOTE: Damage triggers on the next tick of the debuff after it reaches max stacks, but I'm not sure if it's
       // worth modeling that properly, so we instead trigger it as soon as it reaches max stacks.
-      if ( td->debuff.scent_of_souls->at_max_stacks() )
+      if ( debuff->at_max_stacks() )
       {
-        td->debuff.scent_of_souls->expire();
+        debuff->expire();
         damage->execute_on_target( s->target );
       }
       else
       {
-        td->debuff.scent_of_souls->trigger();
+        debuff->trigger();
       }
     }
   };
@@ -4030,16 +4058,16 @@ void chains_of_domination( special_effect_t& effect )
       cb_driver( cb )
     {
       add_child( chain_break );
+
+      target_debuff = e.driver();
     }
 
-    void impact( action_state_t* s ) override
+    buff_t* create_debuff( player_t* t ) override
     {
-      proc_spell_t::impact( s );
-
-      actor_target_data_t* td = player->get_target_data( s->target );
-      if ( !td->debuff.chains_of_domination->stack_change_callback )
-      {
-        td->debuff.chains_of_domination->set_stack_change_callback( [this]( buff_t* b, int old_, int new_ ) {
+      return proc_spell_t::create_debuff( t )
+        ->set_period( 0_ms )
+        ->set_cooldown( 0_ms )
+        ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
           if ( old_ == 0 && new_ > 0 )
           {
             cb_driver->debuff = b;
@@ -4066,9 +4094,13 @@ void chains_of_domination( special_effect_t& effect )
             cb_driver->accumulated_damage = 0.0;
           }
         } );
-      }
+    }
 
-      td->debuff.chains_of_domination->trigger();
+    void impact( action_state_t* s ) override
+    {
+      proc_spell_t::impact( s );
+
+      get_debuff( s->target )->trigger();
     }
   };
 
@@ -5009,16 +5041,23 @@ void norgannons_sagacity( special_effect_t& effect )
 {
   effect.proc_flags2_ |= PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
 
-  auto p = effect.player;
-  if ( !p->buffs.norgannons_sagacity_stacks )
-  {
-    p->buffs.norgannons_sagacity_stacks = make_buff( p, "norgannons_sagacity_stacks", p->find_spell( 339443 ) );
-    p->buffs.norgannons_sagacity = make_buff( p, "norgannons_sagacity", p->find_spell( 339445 ) );
-  }
+  auto movement = make_buff( effect.player, "norgannons_sagacity", effect.player->find_spell( 339445 ) );
+  effect.player->buffs.norgannons_sagacity = movement;
 
-  effect.custom_buff = p->buffs.norgannons_sagacity_stacks;
+  auto stacks = make_buff( effect.player, "norgannons_sagacity_stacks", effect.player->find_spell( 339443 ) )
+    ->set_expire_callback( [ movement ]( buff_t*, int s, timespan_t ) {
+      movement->buff_duration_multiplier = s;
+      movement->trigger();
+    } );
 
-  new dbc_proc_callback_t( p, effect );
+  effect.player->register_movement_callback( [ stacks ]( bool start ) {
+    if ( start )
+      stacks->expire();
+  } );
+
+  effect.custom_buff = stacks;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void sephuzs_proclamation( special_effect_t& effect )
@@ -6072,7 +6111,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 355333, items::salvaged_fusion_amplifier );
     unique_gear::register_special_effect( 355313, items::titanic_ocular_gland );
     unique_gear::register_special_effect( 355327, items::ebonsoul_vise );
-    unique_gear::register_special_effect( 355301, items::relic_of_the_frozen_wastes_equip );
+    unique_gear::register_special_effect( 355301, DISABLED_EFFECT );
     unique_gear::register_special_effect( 355303, items::relic_of_the_frozen_wastes_use );
     unique_gear::register_special_effect( 355321, items::shadowed_orb_of_torment );
     unique_gear::register_special_effect( 351679, items::ticking_sack_of_terror );
@@ -6222,113 +6261,6 @@ void register_target_data_initializers( sim_t& sim )
   };
 
   sim.register_target_data_initializer( putrid_burst_init_t() );
-
-  // Memory of Past Sins
-  struct shattered_psyche_init_t : public item_targetdata_initializer_t
-  {
-    shattered_psyche_init_t() : item_targetdata_initializer_t( 344662, 344663 ) {}
-
-    void operator()( actor_target_data_t* td ) const override
-    {
-      bool active = init( td->source );
-
-      td->debuff.shattered_psyche = make_buff_fallback( active, *td, "shattered_psyche_debuff", debuffs[ td->source ] );
-      td->debuff.shattered_psyche->reset();
-
-      if ( active )
-        td->debuff.shattered_psyche->set_default_value( td->source->find_spell( 344662 )->effectN( 1 ).percent() );
-    }
-  };
-
-  sim.register_target_data_initializer( shattered_psyche_init_t() );
-
-  // Relic of the Frozen Wastes
-  struct frozen_heart_init_t : public item_targetdata_initializer_t
-  {
-    frozen_heart_init_t() : item_targetdata_initializer_t( 355301 ) {}
-
-    void operator()( actor_target_data_t* td ) const override
-    {
-      bool active = init( td->source );
-
-      td->debuff.frozen_heart = make_buff_fallback( active, *td, "frozen_heart", debuffs[ td->source ] );
-      td->debuff.frozen_heart->reset();
-    }
-  };
-
-  sim.register_target_data_initializer( frozen_heart_init_t() );
-
-  // Ticking Sack of Terror
-  struct volatile_satchel_init_t : public item_targetdata_initializer_t
-  {
-    volatile_satchel_init_t() : item_targetdata_initializer_t( 367901 )
-    {
-      debuff_fn = []( player_t* p, const special_effect_t* e ) {
-        if ( e->spell_id == 351679 )
-          return p->find_spell( 351682 );
-        else
-          return p->find_spell( 367902 );
-      };
-    }
-
-    const special_effect_t* find( player_t* p ) const override
-    {
-      if ( auto eff = unique_gear::find_special_effect( p, 351679 ) )
-        return eff;
-      else
-        return unique_gear::find_special_effect( p, 367901 );
-    }
-
-    void operator()( actor_target_data_t* td ) const override
-    {
-      bool active = init( td->source );
-
-      td->debuff.volatile_satchel = make_buff_fallback( active, *td, "volatile_satchel", debuffs[ td->source ] );
-      td->debuff.volatile_satchel->reset();
-    }
-  };
-
-  sim.register_target_data_initializer( volatile_satchel_init_t() );
-
-  // Bells of the Endless Feast
-  struct scent_of_souls_init_t : public item_targetdata_initializer_t
-  {
-    scent_of_souls_init_t() : item_targetdata_initializer_t( 367336 ) {}
-
-    void operator()( actor_target_data_t* td ) const override
-    {
-      bool active = init( td->source );
-
-      td->debuff.scent_of_souls = make_buff_fallback( active, *td, "scent_of_souls", debuffs[ td->source ] );
-      td->debuff.scent_of_souls->reset();
-
-      // the debuff spell id seems to also be a driver of some kind giving extra stacks
-      if ( active )
-        td->debuff.scent_of_souls->set_period( 0_ms )->set_cooldown( 0_ms );
-    }
-  };
-
-  sim.register_target_data_initializer( scent_of_souls_init_t() );
-
-  // Chains of Domination
-  struct chains_of_domination_init_t : public item_targetdata_initializer_t
-  {
-    chains_of_domination_init_t() : item_targetdata_initializer_t( 367931, 367931 ) {}
-
-    void operator()( actor_target_data_t* td ) const override
-    {
-      bool active = init( td->source );
-
-      td->debuff.chains_of_domination =
-          make_buff_fallback( active, *td, "chains_of_domination", debuffs[ td->source ] );
-      td->debuff.chains_of_domination->reset();
-
-      if ( active )
-        td->debuff.chains_of_domination->set_period( 0_ms )->set_cooldown( 0_ms );
-    }
-  };
-
-  sim.register_target_data_initializer( chains_of_domination_init_t() );
 
   // Shard of Dyz (Scouring Touch debuff)
   struct shard_of_dyz_init_t : public item_targetdata_initializer_t

@@ -1395,48 +1395,6 @@ void register_azerite_powers()
 
 void register_azerite_target_data_initializers( sim_t* sim )
 {
-  // Azerite Globules
-  sim -> register_target_data_initializer( [ sim ] ( actor_target_data_t* td ) {
-    auto&& azerite = td -> source -> azerite;
-    if ( azerite && azerite -> is_enabled( "Azerite Globules" ) )
-    {
-      assert( !td -> debuff.azerite_globules );
-
-      td -> debuff.azerite_globules = make_buff( *td, "azerite_globules", td -> source -> find_spell( 279956 ) );
-      td -> debuff.azerite_globules -> reset();
-    }
-    else
-    {
-      td -> debuff.azerite_globules = sim->auras.fallback;
-    }
-  } );
-
-  // Battlefield Focus / Precision
-  sim -> register_target_data_initializer( [ sim ] ( actor_target_data_t* td ) {
-    auto&& azerite = td -> source -> azerite;
-    if ( ! azerite )
-    {
-      return;
-    }
-
-    if ( azerite->is_enabled( "Battlefield Focus" ) )
-    {
-      td->debuff.battlefield_debuff = make_buff( *td, "battlefield_focus",
-          td->source->find_spell( 280817 ) );
-      td->debuff.battlefield_debuff->reset();
-    }
-    else if ( azerite->is_enabled( "Battlefield Precision" ) )
-    {
-      td->debuff.battlefield_debuff = make_buff( *td, "battlefield_precision",
-          td->source->find_spell( 280855 ) );
-      td->debuff.battlefield_debuff->reset();
-    }
-    else
-    {
-      td -> debuff.battlefield_debuff = sim->auras.fallback;
-    }
-  } );
-
   // Blood of the Enemy
   sim->register_target_data_initializer( [ sim ]( actor_target_data_t* td ) {
     auto essence = td->source->find_azerite_essence( "Blood of the Enemy" );
@@ -1465,20 +1423,6 @@ void register_azerite_target_data_initializers( sim_t* sim )
     else
     {
       td->debuff.condensed_lifeforce = sim->auras.fallback;
-    }
-  } );
-
-  sim->register_target_data_initializer( [ sim ] ( actor_target_data_t * td ) {
-    auto essence = td->source->find_azerite_essence( "Breath of the Dying" );
-    if ( essence.enabled() )
-    {
-      td->debuff.reaping_flames_tracker = make_buff( *td, "reaping_flames_tracker", td->source->find_spell( 311947 ) )
-        ->set_quiet( true );
-      td->debuff.reaping_flames_tracker->reset();
-    }
-    else
-    {
-      td->debuff.reaping_flames_tracker = sim->auras.fallback;
     }
   } );
 }
@@ -2416,21 +2360,19 @@ void azerite_globules( special_effect_t& effect )
   public:
     azerite_globules_proc_cb_t( const special_effect_t& effect ) :
       dbc_proc_callback_t( effect.player, effect )
-    {}
-
-    void execute( action_t* a, action_state_t* s ) override
     {
-      auto td = a -> player -> get_target_data( s -> target );
-      assert( td );
-      auto debuff = td -> debuff.azerite_globules;
-      assert( debuff );
+      target_debuff = effect.player->find_spell( 279956 );
+    }
 
-      debuff -> trigger();
-      if ( debuff -> check() == debuff -> max_stack() )
+    void execute( action_t*, action_state_t* s ) override
+    {
+      auto debuff = get_debuff( s->target );
+      debuff->trigger();
+      if ( debuff->check() == debuff->max_stack() )
       {
-        debuff -> expire();
-        proc_action -> set_target( s -> target );
-        proc_action -> execute();
+        debuff->expire();
+        proc_action->set_target( s->target );
+        proc_action->execute();
       }
     }
   };
@@ -3184,17 +3126,29 @@ void battlefield_focus_precision( special_effect_t& effect )
   {
     bf_damage_cb_t( const special_effect_t& effect ) :
       dbc_proc_callback_t( effect.player, effect )
-    { }
+    {
+      if ( auto&& azerite = effect.player->azerite )
+      {
+        if ( azerite->is_enabled( "Battlefield Focus" ) )
+        {
+          target_debuff = effect.player->find_spell( 280817 ); 
+        }
+        else if ( azerite->is_enabled( "Battlefield Precision" ) )
+        {
+          target_debuff = effect.player->find_spell( 280855 );
+        }
+      }
+    }
 
     void execute( action_t*, action_state_t* state ) override
     {
-      auto td = listener->get_target_data( state->target );
-      td->debuff.battlefield_debuff->decrement();
+      auto debuff = get_debuff( state->target );
+      debuff->decrement();
       proc_action->set_target( state->target );
       proc_action->schedule_execute();
 
       // Self-deactivate when the debuff runs out
-      if ( td->debuff.battlefield_debuff->check() == 0 )
+      if ( debuff->check() == 0 )
       {
         deactivate();
       }
@@ -3203,17 +3157,16 @@ void battlefield_focus_precision( special_effect_t& effect )
 
   struct bf_trigger_cb_t : public dbc_proc_callback_t
   {
-    action_callback_t* damage_cb;
+    dbc_proc_callback_t* damage_cb;
     unsigned stacks;
 
-    bf_trigger_cb_t( const special_effect_t& effect, action_callback_t* cb, unsigned stacks ) :
+    bf_trigger_cb_t( const special_effect_t& effect, dbc_proc_callback_t* cb, unsigned stacks ) :
       dbc_proc_callback_t( effect.player, effect ), damage_cb( cb ), stacks( stacks )
     { }
 
     void execute( action_t*, action_state_t* state ) override
     {
-      auto td = listener->get_target_data( state->target );
-      td->debuff.battlefield_debuff->trigger( stacks );
+      damage_cb->get_debuff( state->target )->trigger( stacks );
       damage_cb->activate();
     }
   };
@@ -5716,6 +5669,13 @@ struct reaping_flames_t : public azerite_essence_major_t
     hi_hp    = essence.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).base_value();
     cd_mod   = -essence.spell_ref( 1U ).effectN( 3 ).base_value();
     cd_reset = essence.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 2 ).base_value();
+
+    target_debuff = p->find_spell( 311947 );
+  }
+
+  buff_t* create_debuff( player_t* t ) override
+  {
+    return azerite_essence_major_t::create_debuff( t )->set_quiet( true );
   }
 
   void init() override
@@ -5738,8 +5698,7 @@ struct reaping_flames_t : public azerite_essence_major_t
 
         target->register_on_demise_callback( player, [ this ] ( player_t* enemy )
         {
-          auto td = player->find_target_data( enemy );
-          if ( td && td->debuff.reaping_flames_tracker->check() )
+          if ( get_debuff( enemy )->check() )
           {
             cooldown->adjust( timespan_t::from_seconds( cd_reset ) - cooldown->duration );
             damage_buff->trigger();
@@ -5777,7 +5736,7 @@ struct reaping_flames_t : public azerite_essence_major_t
     if ( damage_buff )
     {
       damage_buff->expire();
-      player->get_target_data( target )->debuff.reaping_flames_tracker->trigger();
+      get_debuff( target )->trigger();
     }
   }
 };

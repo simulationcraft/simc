@@ -1,5 +1,5 @@
-// 571 talents, wow build 11.0.0.54361
-static std::array<talent_data_t, 571> __talent_data { {
+// 568 talents, wow build 11.0.0.54774
+static std::array<talent_data_t, 568> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
   { "War Machine"                       , 15760, 0x00, 0x0001,   73,   0,   0,  316733,       0,  0 },
@@ -343,7 +343,6 @@ static std::array<talent_data_t, 571> __talent_data { {
   { "Deadly Calm"                       , 22399, 0x00, 0x0001,   71,   2,   5,  262228,       0,  0 },
   { "Bladestorm"                        , 22400, 0x00, 0x0001,   72,   2,   5,   46924,       0,  0 },
   { "Ravager"                           , 22401, 0x00, 0x0001,   73,   2,   5,  228920,       0,  0 },
-  { "Reckless Abandon"                  , 22402, 0x00, 0x0001,   72,   1,   6,  202751,       0,  0 },
   { "Photosynthesis"                    , 22403, 0x00, 0x0400,  105,   0,   6,  274902,       0,  0 },
   { "Flourish"                          , 22404, 0x00, 0x0400,  105,   2,   6,  197721,       0,  0 },
   { "Anger Management"                  , 22405, 0x00, 0x0001,   72,   0,   6,  152278,       0,  0 },
@@ -398,7 +397,7 @@ static std::array<talent_data_t, 571> __talent_data { {
   { "Living Bomb"                       , 22472, 0x00, 0x0080,   63,   2,   5,   44457,       0,  0 },
   { "Comet Storm"                       , 22473, 0x00, 0x0080,   64,   2,   5,  153595,       0,  0 },
   { "Supernova"                         , 22474, 0x00, 0x0080,   62,   2,   5,  157980,       0,  0 },
-  { "The Houndmaster's Stratagem"       , 22477, 0x00, 0x0100,  266,   0,   3,  267170,       0,  0 },
+  { "Wicked Maw"                        , 22477, 0x00, 0x0100,  266,   0,   3,  267170,       0,  0 },
   { "Demonic Consumption"               , 22479, 0x00, 0x0100,  266,   1,   6,  267215,       0,  0 },
   { "Inferno"                           , 22480, 0x00, 0x0100,  267,   0,   3,  270545,       0,  0 },
   { "Justicar's Vengeance"              , 22483, 0x00, 0x0002,   70,   1,   5,  215661,       0,  0 },
@@ -464,7 +463,6 @@ static std::array<talent_data_t, 571> __talent_data { {
   { "Impending Victory"                 , 22625, 0x00, 0x0001,   72,   1,   1,  202168,   34428,  0 },
   { "Booming Voice"                     , 22626, 0x00, 0x0001,   73,   1,   2,  202743,       0,  0 },
   { "Bounding Stride"                   , 22627, 0x00, 0x0001,    0,   1,   3,  202163,       0,  0 },
-  { "Defensive Stance"                  , 22628, 0x00, 0x0001,   71,   2,   3,  197690,       0,  0 },
   { "Rumbling Earth"                    , 22629, 0x00, 0x0001,   73,   1,   1,  275339,       0,  0 },
   { "Indomitable"                       , 22631, 0x00, 0x0001,   73,   1,   4,  202095,       0,  0 },
   { "War Machine"                       , 22632, 0x00, 0x0001,   72,   0,   0,  346002,       0,  0 },
@@ -568,7 +566,6 @@ static std::array<talent_data_t, 571> __talent_data { {
   { "Execution Sentence"                , 23467, 0x00, 0x0002,   70,   2,   0,  343527,       0,  0 },
   { "Moment of Glory"                   , 23468, 0x00, 0x0002,   66,   2,   1,  327193,       0,  0 },
   { "Blessed Hammer"                    , 23469, 0x00, 0x0002,   66,   2,   0,  204019,   35395,  0 },
-  { "Acrobatic Strikes"                 , 23470, 0x00, 0x0008,  260,   0,   1,  196924,       0,  0 },
   { "Avenging Crusader"                 , 23680, 0x00, 0x0002,   65,   1,   5,  216331,   31884,  0 },
   { "Beacon of Virtue"                  , 23681, 0x00, 0x0002,   65,   2,   6,  200025,       0,  0 },
 } };

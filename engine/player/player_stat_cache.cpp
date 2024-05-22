@@ -231,16 +231,16 @@ double player_stat_cache_t::attack_haste() const
   return _attack_haste;
 }
 
-double player_stat_cache_t::attack_speed() const
+double player_stat_cache_t::auto_attack_speed() const
 {
-  if ( !active || !valid[ CACHE_ATTACK_SPEED ] )
+  if ( !active || !valid[ CACHE_AUTO_ATTACK_SPEED ] )
   {
-    valid[ CACHE_ATTACK_SPEED ] = true;
-    _attack_speed               = player->composite_melee_speed();
+    valid[ CACHE_AUTO_ATTACK_SPEED ] = true;
+    _auto_attack_speed               = player->composite_melee_auto_attack_speed();
   }
   else
-    assert( _attack_speed == player->composite_melee_speed() );
-  return _attack_speed;
+    assert( _auto_attack_speed == player->composite_melee_auto_attack_speed() );
+  return _auto_attack_speed;
 }
 
 double player_stat_cache_t::spell_hit() const
@@ -307,16 +307,16 @@ double player_stat_cache_t::spell_haste() const
   return _spell_haste;
 }
 
-double player_stat_cache_t::spell_speed() const
+double player_stat_cache_t::spell_cast_speed() const
 {
-  if ( !active || !valid[ CACHE_SPELL_SPEED ] )
+  if ( !active || !valid[ CACHE_SPELL_CAST_SPEED ] )
   {
-    valid[ CACHE_SPELL_SPEED ] = true;
-    _spell_speed               = player->composite_spell_speed();
+    valid[ CACHE_SPELL_CAST_SPEED ] = true;
+    _spell_cast_speed               = player->composite_spell_cast_speed();
   }
   else
-    assert( _spell_speed == player->composite_spell_speed() );
-  return _spell_speed;
+    assert( _spell_cast_speed == player->composite_spell_cast_speed() );
+  return _spell_cast_speed;
 }
 
 double player_stat_cache_t::dodge() const
@@ -582,11 +582,11 @@ double player_stat_cache_t::attack_expertise() const { return _player->composite
 double player_stat_cache_t::attack_hit() const { return _player->composite_melee_hit(); }
 double player_stat_cache_t::attack_crit_chance() const { return _player->composite_melee_crit_chance(); }
 double player_stat_cache_t::attack_haste() const { return _player->composite_melee_haste(); }
-double player_stat_cache_t::attack_speed() const { return _player->composite_melee_speed(); }
+double player_stat_cache_t::auto_attack_speed() const { return _player->composite_melee_auto_attack_speed(); }
 double player_stat_cache_t::spell_hit() const { return _player->composite_spell_hit(); }
 double player_stat_cache_t::spell_crit_chance() const { return _player->composite_spell_crit_chance(); }
 double player_stat_cache_t::spell_haste() const { return _player->composite_spell_haste(); }
-double player_stat_cache_t::spell_speed() const { return _player->composite_spell_speed(); }
+double player_stat_cache_t::spell_cast_speed() const { return _player->composite_spell_cast_speed(); }
 double player_stat_cache_t::dodge() const { return _player->composite_dodge(); }
 double player_stat_cache_t::parry() const { return _player->composite_parry(); }
 double player_stat_cache_t::block() const { return _player->composite_block(); }

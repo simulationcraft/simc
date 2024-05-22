@@ -177,42 +177,42 @@ struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
   pet_melee_attack_t( util::string_view n, monk_pet_t *p, const spell_data_t *data = spell_data_t::nil() )
     : base_t( n, p, data ), trigger_mystic_touch( false )
   {
-    base_t::apply_affecting_aura( p->o()->passives.aura_monk );
+    //   base_t::apply_affecting_aura( p->o()->passives.aura_monk );
 
-    switch ( p->o()->specialization() )
-    {
-      case MONK_WINDWALKER:
-        base_t::apply_affecting_aura( p->o()->spec.windwalker_monk );
-        break;
+    //   switch ( p->o()->specialization() )
+    //   {
+    //     case MONK_WINDWALKER:
+    //       base_t::apply_affecting_aura( p->o()->spec.windwalker_monk );
+    //       break;
 
-      case MONK_BREWMASTER:
-        base_t::apply_affecting_aura( p->o()->spec.brewmaster_monk );
-        break;
+    //     case MONK_BREWMASTER:
+    //       base_t::apply_affecting_aura( p->o()->spec.brewmaster_monk );
+    //       break;
 
-      case MONK_MISTWEAVER:
-        base_t::apply_affecting_aura( p->o()->spec.mistweaver_monk );
-        break;
+    //     case MONK_MISTWEAVER:
+    //       base_t::apply_affecting_aura( p->o()->spec.mistweaver_monk );
+    //       break;
 
-      default:
-        assert( 0 );
-        break;
-    }
+    //     default:
+    //       assert( 0 );
+    //       break;
+    //   }
 
-    if ( p->o()->main_hand_weapon.group() == weapon_e::WEAPON_1H )
-    {
-      switch ( p->o()->specialization() )
-      {
-        case MONK_BREWMASTER:
-          base_t::apply_affecting_aura( p->o()->spec.two_hand_adjustment_brm );
-          break;
-        case MONK_WINDWALKER:
-          base_t::apply_affecting_aura( p->o()->spec.two_hand_adjustment_ww );
-          break;
-        default:
-          assert( 0 );
-          break;
-      }
-    }
+    //   if ( p->o()->main_hand_weapon.group() == weapon_e::WEAPON_1H )
+    //   {
+    //     switch ( p->o()->specialization() )
+    //     {
+    //       case MONK_BREWMASTER:
+    //         base_t::apply_affecting_aura( p->o()->spec.two_hand_adjustment_brm );
+    //         break;
+    //       case MONK_WINDWALKER:
+    //         base_t::apply_affecting_aura( p->o()->spec.two_hand_adjustment_ww );
+    //         break;
+    //       default:
+    //         assert( 0 );
+    //         break;
+    //     }
+    //   }
   }
 
   // Physical tick_action abilities need amount_type() override, so the
@@ -715,8 +715,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       sef_melee_attack_t::impact( state );
 
       o()->trigger_mark_of_the_crane( state );
-
-      o()->trigger_keefers_skyreach( state );
     }
   };
 
@@ -1695,8 +1693,8 @@ private:
       parse_options( options_str );
       s_data_reporting = p->o()->passives.crackling_tiger_lightning;
 
-      dot_duration       = p->o()->passives.fury_of_xuen_haste_buff->duration();
-      cooldown->duration = p->o()->passives.fury_of_xuen_haste_buff->duration();
+      dot_duration       = p->o()->passives.fury_of_xuen->duration();
+      cooldown->duration = p->o()->passives.fury_of_xuen->duration();
 
       tick_action = new crackling_tiger_lightning_tick_t( p );
     }
@@ -1721,7 +1719,7 @@ private:
 public:
   fury_of_xuen_pet_t( monk_t *owner ) : monk_pet_t( owner, "fury_of_xuen_tiger", PET_XUEN, false, true )
   {
-    // npc_id                      = o()->passives.fury_of_xuen_haste_buff->effectN( 2 ).misc_value1();
+    // npc_id                      = o()->passives.fury_of_xuen->effectN( 2 ).misc_value1();
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );

@@ -2097,9 +2097,16 @@ void carvers_eye( special_effect_t& effect )
       : dbc_proc_callback_t( e.player, e ), hp_pct( e.driver()->effectN( 3 ).base_value() ),
       buff( b )
     {
+      target_debuff = e.driver();
     }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    buff_t* create_debuff( player_t* t ) override
+    {
+      return dbc_proc_callback_t::create_debuff( t )
+        ->set_duration( timespan_t::from_seconds( target_debuff->effectN( 2 ).base_value() ) );
+    }
+
+    void trigger( action_t*, action_state_t* s ) override
     {
       // Don't proc on existing targets
       //
@@ -2108,15 +2115,15 @@ void carvers_eye( special_effect_t& effect )
       //
       // Simulationcraft cant easily model that scenario currently, so we use the action's
       // target here instead. This is probably how it is intended to work anyhow.
-      auto td = a->player->get_target_data( s->target );
-      if ( td->debuff.carvers_eye_debuff->check() )
+      auto debuff = get_debuff( s->target );
+      if ( debuff->check() )
       {
         return;
       }
 
       if ( s->target->health_percentage() > hp_pct )
       {
-        td->debuff.carvers_eye_debuff->trigger();
+        debuff->trigger();
         buff->trigger();
       }
     }
@@ -2669,28 +2676,6 @@ void register_target_data_initializers( sim_t* sim )
   };
 
   sim->register_target_data_initializer( dream_delver_init_t() );
-
-  // Carver's Eye dummy buff to track cooldown
-  struct carvers_eye_init_t : public soulbind_targetdata_initializer_t
-  {
-    carvers_eye_init_t() : soulbind_targetdata_initializer_t( "Carver's Eye", 350899 ) {}
-
-    void operator()( actor_target_data_t* td ) const override
-    {
-      bool active = init( td->source );
-
-      td->debuff.carvers_eye_debuff = make_buff_fallback( active, *td, "carvers_eye_debuff", debuffs[ td->source ] );
-      td->debuff.carvers_eye_debuff->set_quiet( true )->reset();
-
-      if ( active )
-      {
-        td->debuff.carvers_eye_debuff->set_duration(
-            timespan_t::from_seconds( soulbind( td )->effectN( 2 ).base_value() ) );
-      }
-    }
-  };
-
-  sim->register_target_data_initializer( carvers_eye_init_t() );
 
   // Soulglow Spectrometer
   struct soulglow_spectrometer_init_t : public soulbind_targetdata_initializer_t

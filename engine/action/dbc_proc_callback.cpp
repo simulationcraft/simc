@@ -5,20 +5,20 @@
 
 #include "dbc_proc_callback.hpp"
 
-#include <cassert>
-
+#include "action.hpp"
+#include "action_callback.hpp"
+#include "action_state.hpp"
 #include "buff/buff.hpp"
 #include "item/item.hpp"
 #include "item/special_effect.hpp"
 #include "player/player.hpp"
-#include "action.hpp"
-#include "action_state.hpp"
-#include "action_callback.hpp"
+#include "sim/cooldown.hpp"
 #include "sim/event.hpp"
 #include "sim/real_ppm.hpp"
-#include "sim/cooldown.hpp"
 #include "sim/sim.hpp"
 #include "util/rng.hpp"
+
+#include <cassert>
 
 struct proc_event_t : public event_t
 {
@@ -85,6 +85,55 @@ cooldown_t* dbc_proc_callback_t::get_cooldown( player_t* target )
   return target_specific_cooldown->get_cooldown( target );
 }
 
+buff_t* dbc_proc_callback_t::find_debuff( player_t* t ) const
+{
+  if ( !t )
+    return nullptr;
+
+  return target_specific_debuff[ t ];
+}
+
+buff_t* dbc_proc_callback_t::get_debuff( player_t* t )
+{
+  if ( !t )
+    t = listener->target;
+  if ( !t )
+    return nullptr;
+
+  buff_t*& debuff = target_specific_debuff[ t ];
+  if ( !debuff )
+    debuff = create_debuff( t );
+  return debuff;
+}
+
+buff_t* dbc_proc_callback_t::create_debuff( player_t* t )
+{
+  std::string name_ = target_debuff->ok() ? target_debuff->name_cstr() : effect.name();
+  util::tokenize( name_ );
+  return make_buff( actor_pair_t( t, listener ), name_, target_debuff );
+}
+
+// Set up the callback to be activated when the buff triggers, and deactivated when the buff expires.
+// NOTE: If the callback is created after player_t::init_special_effects(), such as from within create_debuffs() on a
+// new target_specific_debuff, init MUST be set to true.
+void dbc_proc_callback_t::activate_with_buff( buff_t* buff, bool init )
+{
+  if ( buff->is_fallback )
+    return;
+
+  if ( init )
+    initialize();
+
+  deactivate();
+
+  buff->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+    if ( !old_ )
+      activate();
+    else if ( !new_ )
+      deactivate();
+  } );
+}
+
 void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
 {
   cooldown_t* cd = get_cooldown( state->target );
@@ -119,7 +168,7 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
     if ( proc_action && proc_action->harmful )
     {
       // Don't allow players to harm other players, and enemies harm other enemies
-      if ( state->action && state->action->player->is_enemy() == state->target->is_enemy() )
+      if ( state->action && listener->is_enemy() == target( state )->is_enemy() )
       {
         return;
       }
@@ -173,6 +222,8 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, const special_effect_
     effect( e ),
     cooldown( nullptr ),
     target_specific_cooldown( nullptr ),
+    target_specific_debuff( false ),
+    target_debuff( spell_data_t::nil() ),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),
@@ -195,6 +246,8 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t* i, const special_effect_
     effect( e ),
     cooldown( nullptr ),
     target_specific_cooldown( nullptr ),
+    target_specific_debuff( false ),
+    target_debuff( spell_data_t::nil() ),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),
@@ -217,6 +270,8 @@ dbc_proc_callback_t::dbc_proc_callback_t( player_t* p, const special_effect_t& e
     effect( e ),
     cooldown( nullptr ),
     target_specific_cooldown( nullptr ),
+    target_specific_debuff( false ),
+    target_debuff( spell_data_t::nil() ),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),
@@ -308,10 +363,11 @@ void dbc_proc_callback_t::initialize()
 
 // Determine target for the callback (action).
 
-player_t* dbc_proc_callback_t::target( const action_state_t* state ) const
+player_t* dbc_proc_callback_t::target( const action_state_t* state, action_t* proc ) const
 {
   // Incoming event to the callback actor, or outgoing
   bool incoming = state->target == listener;
+  auto _action = proc ? proc : proc_action;
 
   // Outgoing callbacks always target the target of the state object
   if ( !incoming )
@@ -319,21 +375,24 @@ player_t* dbc_proc_callback_t::target( const action_state_t* state ) const
     return state->target;
   }
 
+  // TODO: Verify this behaviour with damage to friendly Allies.
+  bool self_hit = state->action->player == listener;
+
   // Incoming callbacks target either the callback actor, or the source of the incoming state.
   // Which is selected depends on the type of the callback proc action.
   //
   // Technically, this information is exposed in the client data, but simc needs a proper
   // targeting system first before we start using it.
-  assert( proc_action && "Cannot determine target of incoming callback, there is no proc_action" );
-  switch ( proc_action->type )
+  assert( _action && "Cannot determine target of incoming callback, there is no proc_action" );
+  switch ( _action->type )
   {
       // Heals are always targeted to the callback actor on incoming events
     case ACTION_ABSORB:
     case ACTION_HEAL:
       return listener;
-      // The rest are targeted to the source of the callback event
+      // Self Damage targets are redirected to the players main target. Else they target the player.
     default:
-      return state->action->player;
+      return self_hit ? state->action->player->target : state->action->player;
   }
 }
 

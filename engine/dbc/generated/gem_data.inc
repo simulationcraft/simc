@@ -1,5 +1,5 @@
-// Gem properties, wow build 11.0.0.54361
-static const std::array<gem_property_data_t, 2263> __gem_property_data { {
+// Gem properties, wow build 11.0.0.54774
+static const std::array<gem_property_data_t, 2267> __gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -2178,15 +2178,15 @@ static const std::array<gem_property_data_t, 2263> __gem_property_data { {
   { 4153,  7205, 0x0000000e }, // +$k1 Stamina
   { 4154,  7206, 0x0000000e }, // +$k1 Stamina
   { 4155,  7207, 0x0000000e }, // +$k1 Stamina
-  { 4156,  7211, 0x0000000e }, // +$k1 Primary Stat and +$435488s1% Maximum Mana per unique Algarian gem color
-  { 4157,  7212, 0x0000000e }, // +$k1 Primary Stat and +$435488s1% Maximum Mana per unique Algarian gem color
-  { 4158,  7213, 0x0000000e }, // +$k1 Primary Stat and +$435488s1% Maximum Mana per unique Algarian gem color
-  { 4159,  7214, 0x0000000e }, // +$k1 Primary Stat and +$435500s1% Critical Effect per unique Algarian gem color
-  { 4160,  7215, 0x0000000e }, // +$k1 Primary Stat and +$435500s1% Critical Effect per unique Algarian gem color
-  { 4161,  7216, 0x0000000e }, // +$k1 Primary Stat and +$435500s1% Critical Effect per unique Algarian gem color
-  { 4162,  7217, 0x0000000e }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algarian gem color
-  { 4163,  7218, 0x0000000e }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algarian gem color
-  { 4164,  7219, 0x0000000e }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algarian gem color
+  { 4156,  7211, 0x0000000e }, // +$k1 Primary Stat and +$435488s1% Maximum Mana per unique Algari gem color
+  { 4157,  7212, 0x0000000e }, // +$k1 Primary Stat and +$435488s1% Maximum Mana per unique Algari gem color
+  { 4158,  7213, 0x0000000e }, // +$k1 Primary Stat and +$435488s1% Maximum Mana per unique Algari gem color
+  { 4159,  7214, 0x0000000e }, // +$k1 Primary Stat and +$435500s1% Critical Effect per unique Algari gem color
+  { 4160,  7215, 0x0000000e }, // +$k1 Primary Stat and +$435500s1% Critical Effect per unique Algari gem color
+  { 4161,  7216, 0x0000000e }, // +$k1 Primary Stat and +$435500s1% Critical Effect per unique Algari gem color
+  { 4162,  7217, 0x0000000e }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algari gem color
+  { 4163,  7218, 0x0000000e }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algari gem color
+  { 4164,  7219, 0x0000000e }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algari gem color
   { 4165,  7220, 0x0000000e }, // +$k1 Primary Stat and +$435550s1% Damage Reduction when affected by Crowd Control
   { 4166,  7221, 0x0000000e }, // +$k1 Primary Stat and opponent's failed interrupt attempts grant Precognition
   { 4167,  7222, 0x0000000e }, // +$k1 Primary Stat and getting snared increases damage of your next attack by $411132s1 per stack
@@ -2212,9 +2212,9 @@ static const std::array<gem_property_data_t, 2263> __gem_property_data { {
   { 4187,  7245, 0x00000001 }, // Lifestorm
   { 4188,  7246, 0x00000001 }, // Chi-Ji, the Red Crane
   { 4189,  7250, 0x00000001 }, // Morphing Elements
-  { 4190,  7251, 0x0000000e }, // +$k1 Primary Stat and +$438874s1% perceived fame and fortune per unique Algarian gem color socketed
-  { 4191,  7252, 0x0000000e }, // +$k1 Primary Stat and +$438874s1% perceived fame and fortune per unique Algarian gem color socketed
-  { 4192,  7253, 0x0000000e }, // +$k1 Primary Stat and +$438874s1% perceived fame and fortune per unique Algarian gem color socketed
+  { 4190,  7251, 0x0000000e }, // +$k1 Primary Stat and +$438874s1% perceived fame and fortune per unique Algari gem color socketed
+  { 4191,  7252, 0x0000000e }, // +$k1 Primary Stat and +$438874s1% perceived fame and fortune per unique Algari gem color socketed
+  { 4192,  7253, 0x0000000e }, // +$k1 Primary Stat and +$438874s1% perceived fame and fortune per unique Algari gem color socketed
   { 4194,  7276, 0x01000000 }, // Vindication
   { 4195,  7277, 0x01000000 }, // Warmth
   { 4196,  7278, 0x01000000 }, // Savior
@@ -2263,5 +2263,9 @@ static const std::array<gem_property_data_t, 2263> __gem_property_data { {
   { 4240,  7504, 0x01000000 }, // Overclocked S.E.L.F.I.E. Camera
   { 4241,  7505, 0x01000000 }, // Earthen Delivery Drill
   { 4242,  7506, 0x01000000 }, // Heartseeking Health Injector
+  { 4244,  7522, 0x01000000 }, // Refurbished Alarm-O-Turret
+  { 4245,  7523, 0x01000000 }, // Refurbished Plane Displacer
+  { 4246,  7524, 0x01000000 }, // Refurbished Supercollide-O-Tron
+  { 4247,  7525, 0x01000000 }, // Refurbished Shadowflame Rockets
 } };
 

@@ -947,7 +947,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   {   6, "Charm"                                        },
   {   7, "Fear"                                         },
   {   8, "Periodic Heal"                                },
-  {   9, "Attack Speed"                                 },
+  {   9, "Auto Attack Speed (Normalized wDPS)"          },
   {  10, "Threat"                                       },
   {  11, "Taunt"                                        },
   {  12, "Stun"                                         },
@@ -973,7 +973,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   {  32, "Increase Mounted Speed%"                      },
   {  33, "Decrease Movement Speed%"                     },
   {  34, "Increase Health"                              },
-  {  35, "Increase Energy"                              },
+  {  35, "Increase Resource"                            },
   {  36, "Shapeshift"                                   },
   {  37, "Immunity Against External Movement"           },
   {  39, "School Immunity"                              },
@@ -1066,6 +1066,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 192, "Modify Ranged and Melee Haste%"               },
   { 193, "Modify All Haste%"                            },
   { 197, "Modify Attacker Crit Chance"                  },
+  { 198, "% of Misc1 Rating Added to Misc2 Rating"      },
   { 200, "Modify Experience Gained from Kills"          },
   { 213, "Modify Rage Generated From Damage Dealt"      },
   { 216, "Modify Casting Speed"                         },
@@ -1105,15 +1106,14 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 306, "Modify Crit Chance% from Caster"              },
   { 308, "Modify Crit Chance% from Caster's Spells"     },
   { 318, "Modify Mastery%"                              },
-  { 319, "Modify Melee Speed%"                          },
-  { 320, "Modify Ranged Attack Speed%"                  },
+  { 319, "Modify Melee Auto Attack Speed%"              },
   { 329, "Modify Resource Generation%"                  },
   { 330, "Cast while Moving (Whitelist)"                },
   { 332, "Override Action Spell (Misc /w Base)"         },
   { 334, "Modify Auto Attack Critical Chance"           },
   { 339, "Modify Crit Chance% from Caster's Pets"       },
   { 341, "Modify Cooldown Time (Category)"              },
-  { 342, "Modify Ranged and Melee Attack Speed%"        },
+  { 342, "Modify Ranged and Melee Auto Attack Speed%"   },
   { 343, "Modify Auto Attack Damage Taken% from Caster" },
   { 344, "Modify Auto Attack Damage Done%"              },
   { 345, "Ignore Armor%"                                },
@@ -1489,13 +1489,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   if ( e->chain_target() != 0 )
     s << " | Chain Multiplier: " << e->chain_multiplier();
 
-  if ( e->misc_value1() != 0 || e->type() == E_ENERGIZE )
+  if ( e->type() == E_ENERGIZE || ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_INCREASE_RESOURCE ||
+                                                                   e->subtype() == A_MOD_MAX_RESOURCE ) ) )
+  {
+    s << " | Resource: "
+      << util::resource_type_string( util::translate_power_type( static_cast<power_e>( e->misc_value1() ) ) );
+  }
+  else if ( e->misc_value1() != 0 )
   {
     if ( e->affected_schools() != 0U )
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%#.x", e->misc_value1() );
-    else if ( e->type() == E_ENERGIZE )
-      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%s",
-                util::resource_type_string( util::translate_power_type( static_cast<power_e>( e->misc_value1() ) ) ) );
     else if ( e->subtype() == A_MOD_DAMAGE_FROM_SPELLS_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d (Label)", e->misc_value1() );
     else
@@ -2491,6 +2494,7 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_
   {
     s << "Overriden by : " << talent->id_override_spell << std::endl;
   }
+  s << "Subtree      : " << talent->id_sub_tree << std::endl;
   // s << "Spec         : " << util::specialization_string( talent -> specialization() ) << std::endl;
   s << std::endl;
 

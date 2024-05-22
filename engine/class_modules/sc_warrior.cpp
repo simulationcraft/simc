@@ -768,7 +768,7 @@ public:
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
-  double composite_melee_speed() const override;
+  double composite_melee_auto_attack_speed() const override;
   double composite_melee_haste() const override;
   double composite_armor_multiplier() const override;
   double composite_bonus_armor() const override;
@@ -786,7 +786,7 @@ public:
   double composite_mitigation_versatility() const override;
   double composite_crit_block() const override;
   double composite_crit_avoidance() const override;
-  // double composite_melee_speed() const override;
+  // double composite_melee_auto_attack_speed() const override;
   double composite_melee_crit_chance() const override;
   double composite_melee_crit_rating() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
@@ -7069,16 +7069,16 @@ void warrior_t::create_buffs()
   buff.wild_strikes = make_buff( this, "wild_strikes", talents.warrior.wild_strikes )
       ->set_default_value( talents.warrior.wild_strikes->effectN( 2 ).base_value() / 100.0 )
       ->set_duration( find_spell( 392778 )->duration() )
-      ->add_invalidate( CACHE_ATTACK_SPEED );
+      ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
   buff.dancing_blades = make_buff( this, "dancing_blades", find_spell( 391688 ) )
       ->set_default_value( find_spell( 391688 )->effectN( 1 ).base_value() / 100.0 )
-      ->add_invalidate( CACHE_ATTACK_SPEED )
+      ->add_invalidate( CACHE_AUTO_ATTACK_SPEED )
       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC);
 
   buff.battering_ram = make_buff( this, "battering_ram", find_spell( 394313 ) )
       ->set_default_value( find_spell( 394313 )->effectN( 1 ).percent() )
-      ->add_invalidate( CACHE_ATTACK_SPEED );
+      ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
   buff.berserker_rage = make_buff( this, "berserker_rage", spell.berserker_rage )
       ->set_cooldown( timespan_t::zero() );
@@ -7783,9 +7783,9 @@ double warrior_t::composite_player_target_multiplier( player_t* target, school_e
 
 // warrior_t::composite_attack_speed ===========================================
 
-double warrior_t::composite_melee_speed() const
+double warrior_t::composite_melee_auto_attack_speed() const
 {
-  double s = player_t::composite_melee_speed();
+  double s = player_t::composite_melee_auto_attack_speed();
 
   if ( talents.warrior.furious_blows->ok() )
   {
@@ -8118,11 +8118,11 @@ double warrior_t::composite_crit_avoidance() const
   return c;
 }
 
-// warrior_t::composite_melee_speed ========================================
+// warrior_t::composite_melee_auto_attack_speed ==================================
 /*
-double warrior_t::composite_melee_speed() const
+double warrior_t::composite_melee_auto_attack_speed() const
 {
-  double s = player_t::composite_melee_speed();
+  double s = player_t::composite_melee_auto_attack_speed();
 
   return s;
 }

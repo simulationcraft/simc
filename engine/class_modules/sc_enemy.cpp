@@ -810,6 +810,8 @@ struct spell_aoe_t : public enemy_action_t<spell_t>
     aoe               = -1;
     may_crit          = false;
 
+    add_option( opt_float( "damage", base_dd_min ) );
+
     parse_options( options_str );
   }
 
@@ -833,8 +835,7 @@ struct spell_aoe_t : public enemy_action_t<spell_t>
     if ( sim->single_actor_batch )
     {
       player_t* actor = sim->player_no_pet_list[ sim->current_index ];
-      if ( !actor->is_sleeping() && !actor->is_enemy() && actor->primary_role() == ROLE_TANK && actor != this->target &&
-           actor != this->sim->heal_target )
+      if ( !actor->is_sleeping() && !actor->is_enemy() && actor != this->target )
         tl.push_back( actor );
     }
     else
@@ -2101,6 +2102,11 @@ double enemy_t::armor_coefficient( int level, tank_dummy_e dungeon_content )
     Amirdrassil, the Dream's Hope Normal: 20,872.88457229824 (ExpectedStatModID: 229; ArmorConstMod: 1.77400004864)
     Amirdrassil, the Dream's Hope Heroic: 22,814.27412342534 (ExpectedStatModID: 230; ArmorConstMod: 1.93900001049)
     Amirdrassil, the Dream's Hope Mythic: 25,014.51514720032 (ExpectedStatModID: 231; ArmorConstMod: 2.12599992752)
+    Level 70 Season 4 M0/M+: 27,485.37559607322 (ExpectedStatModID: 252; ArmorConstMod: 2.33599996567)
+    Awakened LFR: 24,308.55582045084 (ExpectedStatModID: 253; ArmorConstMod: 2.06599998474)
+    Awakened Normal: 27,485.37559607322 (ExpectedStatModID: 252; ArmorConstMod: 2.33599996567)
+    Awakened Heroic: 30,285.68260855284 (ExpectedStatModID: 251; ArmorConstMod: 2.57399988174)
+    Awakened Mythic: 33,438.97208977458 (ExpectedStatModID: 254; ArmorConstMod: 2.84200000763)
   */
   double k = dbc->armor_mitigation_constant( level );
 

@@ -27,6 +27,7 @@ struct spell_data_t;
 struct cooldown_t;
 class conduit_data_t;
 struct dot_t;
+struct buff_t;
 struct event_t;
 struct expr_t;
 struct gain_t;
@@ -398,8 +399,8 @@ public:
 
   double base_hit;
   double base_crit;
-  double crit_multiplier;
-  double crit_bonus_multiplier;
+  double crit_chance_multiplier;
+  double crit_bonus_multiplier;   // action scoped Add Percent Modifier (108): Spell Critical Damage (15)
   double crit_bonus;
   double base_dd_adder;
   double base_ta_adder;
@@ -577,6 +578,8 @@ public:
   action_t* sync_action;
   std::string signature_str;
   target_specific_t<dot_t> target_specific_dot;
+  target_specific_t<buff_t> target_specific_debuff;
+  const spell_data_t* target_debuff;
   action_priority_list_t* action_list;
 
   /**
@@ -662,6 +665,8 @@ public:
   const spell_data_t& data_reporting() const;
 
   dot_t* find_dot( player_t* target ) const;
+
+  buff_t* find_debuff( player_t* target ) const;
 
   bool is_aoe() const
   {
@@ -896,7 +901,7 @@ public:
   { return base_crit; }
 
   virtual double composite_crit_chance_multiplier() const
-  { return 1.0; }
+  { return crit_chance_multiplier; }
 
   virtual double composite_crit_damage_bonus_multiplier() const
   { return crit_bonus_multiplier; }
@@ -1103,6 +1108,10 @@ public:
   virtual void do_teleport( action_state_t* );
 
   virtual dot_t* get_dot( player_t* = nullptr );
+
+  virtual buff_t* get_debuff( player_t* = nullptr );
+
+  virtual buff_t* create_debuff( player_t* );
 
   virtual void acquire_target( retarget_source /* event */, player_t* /* context */, player_t* /* candidate_target */ );
 

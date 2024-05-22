@@ -1112,6 +1112,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    "<li><span class=\"label\">tick_may_crit:</span>%s</li>\n"
                    "<li><span class=\"label\">tick_zero:</span>%s</li>\n"
                    "<li><span class=\"label\">tick_on_application:</span>%s</li>\n"
+                   "<li><span class=\"label\">rolling_periodic:</span>%s</li>\n"
                    "<li><span class=\"label\">attack_power_mod.tick:</span>%.6f</li>\n"
                    "<li><span class=\"label\">spell_power_mod.tick:</span>%.6f</li>\n"
                    "<li><span class=\"label\">base_td:</span>%.2f</li>\n"
@@ -1125,6 +1126,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    a->tick_may_crit ? "true" : "false",
                    a->tick_zero ? "true" : "false",
                    a->tick_on_application ? "true" : "false",
+                   a->rolling_periodic ? "true" : "false",
                    a->attack_power_mod.tick,
                    a->spell_power_mod.tick,
                    a->base_td,
@@ -1196,7 +1198,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     {
       os << "<div class=\"flexwrap\">\n";
 
-      s.action_list.back()->html_customsection( os );
+      s.action_list.front()->html_customsection( os );
 
       os << "</div>";
     }
@@ -1530,7 +1532,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
        << "</thead>\n";
 
     os << "<tbody>\n";
-    for ( attribute_e i = ATTRIBUTE_NONE; ++i < ATTR_AGI_INT; )
+    for ( attribute_e i = ATTRIBUTE_NONE; ++i < ATTR_AGI_INT; )  // ATTRIBUTE_NONE is skipped via ++i
     {
       os.printf(
           "<tr>\n"
@@ -1666,22 +1668,22 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           100 * ( 1 / p.composite_spell_haste() - 1 ),
           p.composite_spell_haste_rating() );
     }
-    if ( p.composite_spell_speed() != p.composite_spell_haste() )
+    if ( p.composite_spell_cast_speed() != p.composite_spell_haste() )
     {
       os.printf(
           "<tr>\n"
-          "<th class=\"left\">Spell Speed</th>\n"
+          "<th class=\"left\">Spell Cast Speed</th>\n"
           "<td class=\"right\"></td>\n"
           "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "</tr>\n",
-          100 * ( 1 / buffed_stats.spell_speed - 1 ),
-          100 * ( 1 / p.composite_spell_speed() - 1 ),
+          100 * ( 1 / buffed_stats.spell_cast_speed - 1 ),
+          100 * ( 1 / p.composite_spell_cast_speed() - 1 ),
           p.composite_spell_haste_rating() );
     }
-    if ( p.composite_melee_speed() != p.composite_melee_haste() )
+    if ( p.composite_melee_auto_attack_speed() != p.composite_melee_haste() )
     {
       os.printf(
           "<tr>\n"
@@ -1692,8 +1694,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "</tr>\n",
-          100 * ( 1 / buffed_stats.attack_speed - 1 ),
-          100 * ( 1 / p.composite_melee_speed() - 1 ),
+          100 * ( 1 / buffed_stats.auto_attack_speed - 1 ),
+          100 * ( 1 / p.composite_melee_auto_attack_speed() - 1 ),
           p.composite_melee_haste_rating() );
     }
     os.printf(
@@ -2755,8 +2757,6 @@ void print_html_player_statistics( report::sc_html_stream& os, const player_t& p
   report_helper::print_html_sample_data( os, p, p.collected_data.hpse, "HPS(e)" );
   report_helper::print_html_sample_data( os, p, p.collected_data.heal, "Heal" );
   report_helper::print_html_sample_data( os, p, p.collected_data.htps, "HTPS" );
-  report_helper::print_html_sample_data( os, p, p.collected_data.theck_meloree_index, "TMI" );
-  report_helper::print_html_sample_data( os, p, p.collected_data.effective_theck_meloree_index, "ETMI" );
   report_helper::print_html_sample_data( os, p, p.collected_data.max_spike_amount, "MSD" );
 
   for ( const auto& sample_data : p.sample_data_list )
@@ -2785,6 +2785,7 @@ std::string find_matching_decorator( const player_t& p, std::string_view n )
 
   auto spell                = static_cast<const spell_data_t*>( p.find_talent_spell( talent_tree::CLASS, n_token, p.specialization(), true ) );
   if ( !spell->ok() ) spell = static_cast<const spell_data_t*>( p.find_talent_spell( talent_tree::SPECIALIZATION, n_token, p.specialization(), true ) );
+  if ( !spell->ok() ) spell = static_cast<const spell_data_t*>( p.find_talent_spell( talent_tree::HERO, n ) );
   if ( !spell->ok() ) spell = p.find_specialization_spell( n );
   if ( !spell->ok() ) spell = p.find_specialization_spell( n_token );
   if ( !spell->ok() ) spell = p.find_class_spell( n );
@@ -3178,17 +3179,6 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p 
 
     os << chart2.to_target_div();
     p.sim->add_chart_data( chart2 );
-
-    // Tmp Debug Visualization
-    histogram tmi_hist;
-    tmi_hist.create_histogram( p.collected_data.theck_meloree_index, 50 );
-    highchart::histogram_chart_t tmi_chart( highchart::build_id( p, "tmi_dist" ), *p.sim );
-    if ( chart::generate_distribution( tmi_chart, &p, tmi_hist.data(), "TMI",
-                                       p.collected_data.theck_meloree_index.mean(), tmi_hist.min(), tmi_hist.max() ) )
-    {
-      os << tmi_chart.to_target_div();
-      p.sim->add_chart_data( tmi_chart );
-    }
   }
 
   os << "</div>\n"; // Close DIV for charts
@@ -3499,24 +3489,55 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                     util::stat_type_string( stat.stat ),
                     stat.amount );
       }
+
+      for ( int stat_pct_buff_value = STAT_PCT_BUFF_CRIT; stat_pct_buff_value != STAT_PCT_BUFF_MAX; stat_pct_buff_value++ ) {
+        stat_pct_buff_type stat_pct_buff = static_cast<stat_pct_buff_type>(stat_pct_buff_value);
+        auto player_buffs = p.buffs.stat_pct_buffs[ stat_pct_buff ];
+        if ( range::find( player_buffs, stat_buff ) != player_buffs.end() ) {
+          os.printf( "<li><span class=\"label\">stat:</span>%s</li>\n"
+                      "<li><span class=\"label\">default:</span>%.2f%%</li>\n",
+                      util::stat_pct_buff_type_string( stat_pct_buff ),
+                      stat_buff->default_value * 100.0 );
+        }
+      }
       os << "</ul>\n";
     }
 
     if ( damage_buff )
     {
-      os.printf( "<h4>Damage Modifiers</h4>\n"
-                 "<ul>\n"
-                 "<li><span class=\"label\">direct:</span>%.2f</li>\n"
-                 "<li><span class=\"label\">periodic:</span>%.2f</li>\n"
-                 "<li><span class=\"label\">auto_attack:</span>%.2f</li>\n"
-                 "<li><span class=\"label\">crit_chance:</span>%.2f</li>\n"
-                 "<li><span class=\"label\">is_stacking:</span>%s</li>\n"
-                 "</ul>\n",
-                 damage_buff->direct_mod.multiplier,
-                 damage_buff->periodic_mod.multiplier,
-                 damage_buff->auto_attack_mod.multiplier,
-                 damage_buff->crit_chance_mod.multiplier,
-                 damage_buff->is_stacking ? "true" : "false" );
+      if ( damage_buff->is_stacking && damage_buff->max_stack() > 1 )
+      {
+        os.printf( "<h4>Damage Modifiers</h4>\n"
+                  "<ul>\n"
+                  "<li><span class=\"label\">direct:</span>%.2f + %.2f/stack</li>\n"
+                  "<li><span class=\"label\">periodic:</span>%.2f + %.2f/stack</li>\n"
+                  "<li><span class=\"label\">auto_attack:</span>%.2f + %.2f/stack</li>\n"
+                  "<li><span class=\"label\">crit_chance:</span>%.2f</li>\n"
+                  "<li><span class=\"label\">is_stacking:</span>true</li>\n"
+                  "</ul>\n",
+                  damage_buff->direct_mod.initial_multiplier,
+                  damage_buff->direct_mod.multiplier - 1.0,
+                  damage_buff->periodic_mod.initial_multiplier,
+                  damage_buff->periodic_mod.multiplier - 1.0,
+                  damage_buff->auto_attack_mod.initial_multiplier,
+                  damage_buff->auto_attack_mod.multiplier - 1.0,
+                  damage_buff->crit_chance_mod.multiplier );
+      }
+      else
+      {
+        os.printf( "<h4>Damage Modifiers</h4>\n"
+                  "<ul>\n"
+                  "<li><span class=\"label\">direct:</span>%.2f</li>\n"
+                  "<li><span class=\"label\">periodic:</span>%.2f</li>\n"
+                  "<li><span class=\"label\">auto_attack:</span>%.2f</li>\n"
+                  "<li><span class=\"label\">crit_chance:</span>%.2f</li>\n"
+                  "<li><span class=\"label\">is_stacking:</span>false</li>\n"
+                  "</ul>\n",
+                  damage_buff->direct_mod.multiplier,
+                  damage_buff->periodic_mod.multiplier,
+                  damage_buff->auto_attack_mod.multiplier,
+                  damage_buff->crit_chance_mod.multiplier );
+      }
     }
 
     if ( !constant_buffs )
@@ -3739,33 +3760,6 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
     os.printf( ", %.0f hps (%.0f aps)",
                p.collected_data.hps.mean() + p.collected_data.aps.mean(),
                p.collected_data.aps.mean() );
-    // print TMI
-    double tmi_display = p.collected_data.theck_meloree_index.mean();
-    if ( tmi_display >= 1.0e7 )
-      os.printf( ", %.2fM TMI", tmi_display / 1.0e6 );
-    else if ( std::abs( tmi_display ) <= 999.9 )
-      os.printf( ", %.3fk TMI", tmi_display / 1.0e3 );
-    else
-      os.printf( ", %.1fk TMI", tmi_display / 1.0e3 );
-    // if we're using a non-standard window, append that to the label
-    // appropriately (i.e. TMI-4.0 for a 4.0-second window)
-    if ( p.tmi_window != 6.0 )
-      os.printf( "-%1.1f", p.tmi_window );
-
-    if ( sim.show_etmi || sim.player_no_pet_list.size() > 1 )
-    {
-      double etmi_display = p.collected_data.effective_theck_meloree_index.mean();
-      if ( etmi_display >= 1.0e7 )
-        os.printf( ", %.1fk ETMI", etmi_display / 1.0e6 );
-      else if ( std::abs( etmi_display ) <= 999.9 )
-        os.printf( ", %.3fk ETMI", etmi_display / 1.0e3 );
-      else
-        os.printf( ", %.1fk ETMI", etmi_display / 1.0e3 );
-      // if we're using a non-standard window, append that to the label
-      // appropriately (i.e. TMI-4.0 for a 4.0-second window)
-      if ( p.tmi_window != 6.0 )
-        os.printf( "-%1.1f", p.tmi_window );
-    }
 
     os << "\n";
   }
@@ -3962,18 +3956,9 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
        << "<th class=\"help\" data-help=\"#help-error\">DTPS Error</th>\n"
        << "<th class=\"help\" data-help=\"#help-range\">DTPS Range</th>\n"
        << "<th>&#160;</th>\n"
-       << "<th class=\"help\" data-help=\"#help-theck-meloree-index\">TMI</th>\n"
-       << "<th class=\"help\" data-help=\"#help-error\">TMI Error</th>\n"
-       << "<th>TMI Min</th>\n"
-       << "<th>TMI Max</th>\n"
-       << "<th class=\"help\" data-help=\"#help-tmirange\">TMI Range</th>\n"
-       << "<th>&#160;</th>\n"
        << "<th class=\"help\" data-help=\"#help-msd\">MSD Mean</th>\n"
        << "<th class=\"help\" data-help=\"#help-msd\">MSD Min</th>\n"
        << "<th class=\"help\" data-help=\"#help-msd\">MSD Max</th>\n"
-       << "<th>&#160;</th>\n"
-       << "<th class=\"help\" data-help=\"#help-tmiwin\">Window</th>\n"
-       << "<th class=\"help\" data-help=\"#help-tmi-bin-size\">Bin Size</th>\n"
        << "</tr>\n"  // end second row
        << "<tr>\n";  // start third row
 
@@ -3992,69 +3977,10 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     // spacer
     os << "<td>&#160;&#160;&#160;&#160;&#160;</td>\n";
 
-    double tmi_error = sim_t::distribution_mean_error( sim, p.collected_data.theck_meloree_index );
-    double tmi_range = ( cd.theck_meloree_index.percentile( 0.5 + sim.confidence / 2 ) -
-                         cd.theck_meloree_index.percentile( 0.5 - sim.confidence / 2 ) );
-
-    // print TMI
-    if ( std::abs( cd.theck_meloree_index.mean() ) > 1.0e8 )
-      os.printf( "<td>%1.3e</td>\n", cd.theck_meloree_index.mean() );
-    else
-      os.printf( "<td>%.1fk</td>\n", cd.theck_meloree_index.mean() / 1e3 );
-
-    // print TMI error/variance
-    if ( tmi_error > 1.0e6 )
-    {
-      os.printf( "<td>%1.2e / %.2f%%</td>\n",
-                 tmi_error,
-                 cd.theck_meloree_index.mean() ? tmi_error * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
-    }
-    else
-    {
-      os.printf( "<td>%.0f / %.2f%%</td>\n",
-                 tmi_error,
-                 cd.theck_meloree_index.mean() ? tmi_error * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
-    }
-
-    // print  TMI min/max
-    if ( std::abs( cd.theck_meloree_index.min() ) > 1.0e8 )
-      os.printf( "<td>%1.2e</td>\n", cd.theck_meloree_index.min() );
-    else
-      os.printf( "<td>%.1fk</td>\n", cd.theck_meloree_index.min() / 1e3 );
-
-    if ( std::abs( cd.theck_meloree_index.max() ) > 1.0e8 )
-      os.printf( "<td>%1.2e</td>\n", cd.theck_meloree_index.max() );
-    else
-      os.printf( "<td>%.1fk</td>\n", cd.theck_meloree_index.max() / 1e3 );
-
-    // print TMI range
-    if ( tmi_range > 1.0e8 )
-    {
-      os.printf( "<td>%1.2e / %.1f%%</td>\n",
-                 tmi_range,
-                 cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
-    }
-    else
-    {
-      os.printf( "<td>%.1fk / %.1f%%</td>\n",
-                 tmi_range / 1e3,
-                 cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
-    }
-
-    // spacer
-    os << "<td>&#160;&#160;&#160;&#160;&#160;</td>\n";
-
     // print Max Spike Size stats
     os.printf( "<td>%.1f%%</td>\n", cd.max_spike_amount.mean() );
     os.printf( "<td>%.1f%%</td>\n", cd.max_spike_amount.min() );
     os.printf( "<td>%.1f%%</td>\n", cd.max_spike_amount.max() );
-
-    // spacer
-    os << "<td>&#160;&#160;&#160;&#160;&#160;</td>\n";
-
-    // print TMI window and bin size
-    os.printf( "<td>%.2fs</td>\n", p.tmi_window );
-    os.printf( "<td>%.2fs</td>\n", sim.tmi_bin_size );
 
     // End defensive table
     os << "</tr>\n"
@@ -4413,7 +4339,7 @@ void output_player_heal_summary( report::sc_html_stream& os, const player_t& act
     os << "<tr>\n";
 
   os << "<th class=\"left name\">" << util::encode_html( actor.name() ) << "</th>\n"
-     << "<th class=\"right\">" << util::to_string( actor.collected_data.hps.mean(), 0 ) << "</th>\n"
+     << "<th class=\"right\">" << util::to_string( actor.collected_data.hps.mean() + actor.collected_data.aps.mean(), 0 ) << "</th>\n"
      << "<td colspan=\"" << ( static_columns + n_optional_columns ) << "\" class=\"filler\"></td>\n"
      << "</tr>\n"
      << "</thead>\n";

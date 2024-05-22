@@ -6,7 +6,9 @@
 #pragma once
 
 #include "config.hpp"
+
 #include "action_callback.hpp"
+#include "player/target_specific.hpp"
 
 #include <functional>
 
@@ -14,10 +16,12 @@ struct action_state_t;
 struct buff_t;
 struct cooldown_t;
 struct target_specific_cooldown_t;
+struct spell_data_t;
 struct item_t;
 struct real_ppm_t;
-namespace rng {
-  struct rng_t;
+namespace rng
+{
+struct rng_t;
 }
 struct special_effect_t;
 struct weapon_t;
@@ -59,8 +63,8 @@ struct dbc_proc_callback_t : public action_callback_t
     TRIGGER
   };
 
-  using execute_fn_t = std::function<void(const dbc_proc_callback_t*, action_t*, action_state_t*)>;
-  using trigger_fn_t = std::function<bool(const dbc_proc_callback_t*, action_t*, action_state_t*)>;
+  using execute_fn_t = std::function<void( const dbc_proc_callback_t*, action_t*, action_state_t* )>;
+  using trigger_fn_t = std::function<bool( const dbc_proc_callback_t*, action_t*, action_state_t* )>;
 
   static const item_t default_item_;
 
@@ -68,12 +72,14 @@ struct dbc_proc_callback_t : public action_callback_t
   const special_effect_t& effect;
   cooldown_t* cooldown;
   target_specific_cooldown_t* target_specific_cooldown;
+  target_specific_t<buff_t> target_specific_debuff;
+  const spell_data_t* target_debuff;
 
   // Proc trigger types, cached/initialized here from special_effect_t to avoid
   // needless spell data lookups in vast majority of cases
   real_ppm_t* rppm;
-  double      proc_chance;
-  double      ppm;
+  double proc_chance;
+  double ppm;
 
   buff_t* proc_buff;
   action_t* proc_action;
@@ -92,25 +98,33 @@ struct dbc_proc_callback_t : public action_callback_t
   bool can_only_proc_from_class_abilites;
   bool can_proc_from_procs;
 
-  dbc_proc_callback_t(const item_t& i, const special_effect_t& e);
+  dbc_proc_callback_t( const item_t& i, const special_effect_t& e );
 
-  dbc_proc_callback_t(const item_t* i, const special_effect_t& e);
+  dbc_proc_callback_t( const item_t* i, const special_effect_t& e );
 
-  dbc_proc_callback_t(player_t* p, const special_effect_t& e);
+  dbc_proc_callback_t( player_t* p, const special_effect_t& e );
 
   void initialize() override;
 
   cooldown_t* get_cooldown( player_t* target );
 
-  void trigger(action_t* a, action_state_t* state) override;
+  buff_t* find_debuff( player_t* target ) const;
+
+  buff_t* get_debuff( player_t* target );
+
+  virtual buff_t* create_debuff( player_t* target );
+
+  void activate_with_buff( buff_t* buff, bool init = false );
+
+  void trigger( action_t* a, action_state_t* state ) override;
 
   // Determine target for the callback (action).
-  virtual player_t* target(const action_state_t* state) const;
+  virtual player_t* target( const action_state_t* state, action_t* proc_action = nullptr ) const;
 
   rng::rng_t& rng() const;
 
 private:
-  bool roll(action_t* action);
+  bool roll( action_t* action );
 
 protected:
   friend struct proc_event_t;
@@ -129,5 +143,5 @@ protected:
    * TODO: Buff cooldown hackery for expressions. Is this really needed or can
    * we do it in a smarter way (better expression support?)
    */
-  virtual void execute(action_t* /* a */, action_state_t* state);
+  virtual void execute( action_t* /* a */, action_state_t* state );
 };

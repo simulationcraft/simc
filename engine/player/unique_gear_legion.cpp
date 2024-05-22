@@ -816,104 +816,51 @@ void item::impact_tremor( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
-
 // Fury of the Burning Sky ==================================================
-struct solar_collapse_impact_t : public proc_spell_t
-{
-  solar_collapse_impact_t( const special_effect_t& effect ) :
-    proc_spell_t( "solar_collapse_damage", effect.player, effect.player -> find_spell( 229737 ) )
-  {
-    background = may_crit = true;
-    callbacks = false;
-    aoe = -1;
-    // FIXME: This value is returning a slightly lower damage amount vs. in game for the base ilvl trinket. (147k vs. 145k).
-    // Maybe hotfix things will fix.
-    base_dd_min = base_dd_max = data().effectN( 2 ).average( effect.item );
-  }
-};
-struct fury_of_the_burning_sky_driver_t : public dbc_proc_callback_t
-{
-  cooldown_t* icd;
-  fury_of_the_burning_sky_driver_t( const special_effect_t& effect ) :
-    dbc_proc_callback_t( effect.player, effect )
-  {
-    icd = effect.player -> get_cooldown( "solar_collapse_icd" );
-    icd -> duration = timespan_t::from_seconds( 3.0 );
-  }
-
-  void initialize() override
-  {
-    dbc_proc_callback_t::initialize();
-
-    action_t* damage_spell = listener -> find_action( "solar_collapse_damage" );
-
-    if( ! damage_spell )
-    {
-      damage_spell = listener -> create_proc_action( "solar_collapse_damage", effect );
-    }
-
-    if ( ! damage_spell )
-    {
-      damage_spell = new solar_collapse_impact_t( effect );
-    }
-  }
-
-  void execute( action_t*  /*a*/ , action_state_t* trigger_state ) override
-  {
-    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
-    assert( td );
-
-    // FIXME: This might be in the wrong place - the ICD is on the RPPM trigger event, this
-    // might only be preventing debuff application, not the actual RPPM being rolled/firing.
-    if ( icd -> up() )
-    {
-      td -> debuff.solar_collapse -> trigger();
-    }
-    icd -> start();
-  }
-};
-
-struct solar_collapse_t : public buff_t
-{
-  action_t* damage_event;
-
-  solar_collapse_t( const actor_pair_t& p, const special_effect_t* e, const spell_data_t* s, action_t* a )
-    : buff_t( p, "solar_collapse", s, e ? e->item : nullptr ), damage_event( a )
-  {
-    set_duration( timespan_t::from_seconds( 3.0 ) );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-    damage_event -> target = player;
-    damage_event -> execute();
-  }
-};
-struct fury_of_the_burning_sun_constructor_t : public item_targetdata_initializer_t
-{
-  target_specific_t<action_t> damage_actions;
-
-  fury_of_the_burning_sun_constructor_t( unsigned iid, ::util::span<const slot_e> s )
-    : item_targetdata_initializer_t( iid, s ), damage_actions( false )
-  {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-    action_t*& damage = damage_actions[ td->source ];
-    if ( active && !damage )
-      damage = td->source->find_action( "solar_collapse_damage" );
-
-    td->debuff.solar_collapse = make_buff_fallback<solar_collapse_t>(
-        active, *td, "solar_collapse", effect( td ), debuffs[ td->source ], damage );
-    td->debuff.solar_collapse->reset();
-  }
-};
 
 void item::fury_of_the_burning_sky( special_effect_t& effect )
 {
-  effect.proc_flags_ = effect.driver() -> proc_flags();
+  struct fury_of_the_burning_sky_driver_t : public dbc_proc_callback_t
+  {
+    struct solar_collapse_impact_t : public proc_spell_t
+    {
+      solar_collapse_impact_t( const special_effect_t& effect )
+        : proc_spell_t( "solar_collapse_damage", effect.player, effect.player->find_spell( 229737 ) )
+      {
+        background = may_crit = true;
+        callbacks = false;
+        aoe = -1;
+        // FIXME: This value is returning a slightly lower damage amount vs. in game for the base ilvl trinket. (147k
+        // vs. 145k). Maybe hotfix things will fix.
+        base_dd_min = base_dd_max = data().effectN( 2 ).average( effect.item );
+      }
+    };
+
+    action_t* damage;
+
+    fury_of_the_burning_sky_driver_t( const special_effect_t& effect ) : dbc_proc_callback_t( effect.player, effect )
+    {
+      target_debuff = effect.trigger();
+
+      damage = new solar_collapse_impact_t( effect );
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      return dbc_proc_callback_t::create_debuff( t )
+        ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+          if ( !new_ )
+            damage->execute_on_target( b->player );
+        } );
+    }
+
+    void execute( action_t* /*a*/, action_state_t* trigger_state ) override
+    {
+      get_debuff( trigger_state->target )->trigger();
+    }
+  };
+
+  effect.proc_flags_ = effect.driver()->proc_flags();
   effect.proc_flags2_ = PF2_ALL_HIT;
 
   new fury_of_the_burning_sky_driver_t( effect );
@@ -921,124 +868,101 @@ void item::fury_of_the_burning_sky( special_effect_t& effect )
 
 // Mrrgria's Favor ==========================================================
 
-struct thunder_ritual_impact_t : public proc_spell_t
-{
-  //TODO: Are these multipliers multiplicative with one another or should they be added together then applied?
-  // Right now we assume they are independant multipliers.
-
-  // Note: Mrrgria's Favor and Toe Knee's Promise interact to buff eachother by 30% when the other is present.
-  // However, their cooldowns are not equal, so we cannot simply treat this as a 30% permanant modifier.
-  // Instead, if we are modeling having the trinkets paired, we give mrrgria's favor an ICD event that does
-  // not effect ready() state, but instead controls the application of the 30% multiplier.
-
-  bool pair_multiplied;
-  double chest_multiplier;
-  bool pair_buffed;
-  cooldown_t* pair_icd;
-
-  thunder_ritual_impact_t( const special_effect_t& effect ) :
-    proc_spell_t( "thunder_ritual_damage", effect.player, effect.driver() -> effectN( 1 ).trigger() ),
-    pair_multiplied( false ),
-    chest_multiplier( util::composite_karazhan_empower_multiplier( effect.player ) ),
-    pair_buffed( false )
-  {
-    background = may_crit = true;
-    callbacks = false;
-    pair_icd = effect.player -> get_cooldown( "paired_trinket_icd" );
-    pair_icd -> duration = timespan_t::from_seconds( 60.0 );
-    if ( unique_gear::find_special_effect( player, 231952 ) )
-    {
-      pair_multiplied = true;
-    }
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * chest_multiplier;
-  }
-
-  void execute() override
-  {
-    // Reset pair checking
-    pair_buffed = false;
-
-    if( pair_multiplied && pair_icd -> up() )
-    {
-      pair_buffed = true;
-      pair_icd -> start();
-    }
-    spell_t::execute();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = spell_t::action_multiplier();
-    if ( pair_buffed )
-    {
-      am *= 1.3;
-    }
-    return am;
-  }
-};
-
-struct thunder_ritual_t : public buff_t
-{
-  action_t* damage_event;
-
-  thunder_ritual_t( const actor_pair_t& p, const special_effect_t* e, const spell_data_t* s, action_t* a )
-    : buff_t( p, "thunder_ritual", s, e ? e->item : nullptr ), damage_event( a )
-  {
-    set_duration( timespan_t::from_seconds( 3.0 ) );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-    damage_event -> target = player;
-    damage_event -> execute();
-  }
-};
-
-struct thunder_ritual_driver_t : public proc_spell_t
-{
-  thunder_ritual_driver_t( special_effect_t& effect ) :
-    proc_spell_t( "thunder_ritual_driver", effect.player, effect.driver() -> effectN( 1 ).trigger(), effect.item )
-  {
-    harmful = false;
-    base_dd_min = base_dd_max = 0;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    proc_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      player -> get_target_data( s -> target ) -> debuff.thunder_ritual -> trigger();
-    }
-  }
-};
-struct mrrgrias_favor_constructor_t : public item_targetdata_initializer_t
-{
-  target_specific_t<action_t> damage_actions;
-
-  mrrgrias_favor_constructor_t( unsigned iid, ::util::span<const slot_e> s )
-    : item_targetdata_initializer_t( iid, s ), damage_actions( false )
-  {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-    action_t*& damage = damage_actions[ td->source ];
-    if ( active && !damage )
-      damage = td->source->find_action( "thunder_ritual_damage" );
-
-    td->debuff.thunder_ritual = make_buff_fallback<thunder_ritual_t>(
-        active, *td, "thunder_ritual", effect( td ), debuffs[ td->source ], damage );
-    td->debuff.thunder_ritual->reset();
-  }
-};
-
 void item::mrrgrias_favor( special_effect_t& effect )
 {
+  struct thunder_ritual_driver_t : public proc_spell_t
+  {
+    struct thunder_ritual_impact_t : public proc_spell_t
+    {
+      // TODO: Are these multipliers multiplicative with one another or should they be added together then applied?
+      //  Right now we assume they are independant multipliers.
+
+      // Note: Mrrgria's Favor and Toe Knee's Promise interact to buff eachother by 30% when the other is present.
+      // However, their cooldowns are not equal, so we cannot simply treat this as a 30% permanant modifier.
+      // Instead, if we are modeling having the trinkets paired, we give mrrgria's favor an ICD event that does
+      // not effect ready() state, but instead controls the application of the 30% multiplier.
+
+      bool pair_multiplied;
+      double chest_multiplier;
+      bool pair_buffed;
+      cooldown_t* pair_icd;
+
+      thunder_ritual_impact_t( const special_effect_t& effect )
+        : proc_spell_t( "thunder_ritual_damage", effect.player, effect.driver()->effectN( 1 ).trigger() ),
+          pair_multiplied( false ),
+          chest_multiplier( util::composite_karazhan_empower_multiplier( effect.player ) ),
+          pair_buffed( false )
+      {
+        background = may_crit = true;
+        callbacks = false;
+        pair_icd = effect.player->get_cooldown( "paired_trinket_icd" );
+        pair_icd->duration = timespan_t::from_seconds( 60.0 );
+        if ( unique_gear::find_special_effect( player, 231952 ) )
+        {
+          pair_multiplied = true;
+        }
+        base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * chest_multiplier;
+      }
+
+      void execute() override
+      {
+        // Reset pair checking
+        pair_buffed = false;
+
+        if ( pair_multiplied && pair_icd->up() )
+        {
+          pair_buffed = true;
+          pair_icd->start();
+        }
+        spell_t::execute();
+      }
+
+      double action_multiplier() const override
+      {
+        double am = spell_t::action_multiplier();
+        if ( pair_buffed )
+        {
+          am *= 1.3;
+        }
+        return am;
+      }
+    };
+
+    action_t* damage;
+
+    thunder_ritual_driver_t( special_effect_t& effect )
+      : proc_spell_t( "thunder_ritual_driver", effect.player, effect.driver()->effectN( 1 ).trigger(), effect.item )
+    {
+      harmful = false;
+      base_dd_min = base_dd_max = 0;
+
+      damage = new thunder_ritual_impact_t( effect );
+      add_child( damage );
+
+      target_debuff = effect.trigger();
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      return proc_spell_t::create_debuff( t )->set_duration( 3_s )->set_stack_change_callback(
+          [ this ]( buff_t* b, int, int new_ ) {
+            if ( !new_ )
+              damage->execute_on_target( b->player );
+          } );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      proc_spell_t::impact( s );
+
+      if ( result_is_hit( s->result ) )
+      {
+        get_debuff( s->target )->trigger();
+      }
+    }
+  };
+
   effect.execute_action = new thunder_ritual_driver_t( effect );
-  effect.execute_action -> add_child( new thunder_ritual_impact_t( effect ) );
 }
 
 // Tarnished Sentinel Medallion ================================================================
@@ -1129,7 +1053,7 @@ void item::tarnished_sentinel_medallion( special_effect_t& effect )
         .pulse_time( data().effectN( 2 ).period() )
         .duration( data().duration() )
         .action( bolt )
-        .hasted( ground_aoe_params_t::SPELL_SPEED )
+        .hasted( ground_aoe_params_t::SPELL_CAST_SPEED )
         .expiration_pulse( ground_aoe_params_t::FULL_EXPIRATION_PULSE )
         .expiration_callback( [ this ]() { callback -> deactivate(); } ) );
     }
@@ -1839,27 +1763,6 @@ void item::terminus_signaling_beacon( special_effect_t& effect )
 
 // Sheath of Asara
 // TODO: In-game debuff is 255870, buff is 255856. But the spell data contains nothing of relevance.
-struct shadow_blades_constructor_t : public item_targetdata_initializer_t
-{
-  shadow_blades_constructor_t( unsigned iid, ::util::span<const slot_e> s ) :
-    item_targetdata_initializer_t( iid, s )
-  {
-    debuff_fn = []( player_t* p, const special_effect_t* ) { return p->find_spell( 253265 ); };
-  }
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.shadow_blades = make_buff_fallback(
-        active, *td, "shadow_blades_debuff", debuffs[ td->source ], effect( td ) ? effect( td )->item : nullptr );
-    td->debuff.shadow_blades->reset();
-
-    if ( active )
-      td->debuff.shadow_blades->set_default_value_from_effect( 2, 0.01 );
-  }
-};
-
 // TODO: Travel time?
 struct shadow_blade_t : public proc_spell_t
 {
@@ -1871,14 +1774,22 @@ struct shadow_blade_t : public proc_spell_t
     // multipliers (for example versatility). Best-effort nerf it down to 150 base damage and hope
     // for the best, for now.
     base_dd_min = base_dd_max = 150.0;
+
+    target_debuff = effect.player -> find_spell( 253265 );
+  }
+
+  buff_t* create_debuff( player_t* t ) override
+  {
+    return proc_spell_t::create_debuff( t )
+      ->set_default_value_from_effect( 2, 0.01 );
   }
 
   double composite_target_multiplier( player_t* target ) const override
   {
     double ctm = proc_spell_t::composite_target_multiplier( target );
 
-    if ( auto td = player -> find_target_data( target ) )
-      ctm *= 1.0 + td -> debuff.shadow_blades -> check_stack_value();
+    if ( auto debuff = find_debuff( target ) )
+      ctm *= 1.0 + debuff->check_stack_value();
 
     return ctm;
   }
@@ -1887,7 +1798,7 @@ struct shadow_blade_t : public proc_spell_t
   {
     proc_spell_t::impact( s );
 
-    player -> get_target_data( target ) -> debuff.shadow_blades -> trigger();
+    get_debuff( s->target )->trigger();
   }
 };
 
@@ -2550,171 +2461,161 @@ void item::shivermaws_jawbone( special_effect_t& effect )
 
 // Spiked Counterweight =====================================================
 
-struct haymaker_damage_t : public proc_spell_t
+void item::spiked_counterweight( special_effect_t& effect )
 {
-  haymaker_damage_t( const special_effect_t& effect ) :
-    proc_spell_t( "brutal_haymaker_vulnerability", effect.player, effect.driver() -> effectN( 2 ).trigger(), effect.item )
+  struct brutal_haymaker_initial_t : public proc_spell_t
   {
-    may_crit = may_miss = false;
-    dot_duration = timespan_t::zero();
-    base_dd_min = base_dd_max = 1; // Make sure this snapshots flags
-  }
-};
-
-struct haymaker_driver_t : public dbc_proc_callback_t
-{
-  struct haymaker_event_t;
-
-  buff_t* debuff;
-  const special_effect_t& effect;
-  double multiplier;
-  haymaker_event_t* accumulator;
-  haymaker_damage_t* action;
-
-  struct haymaker_event_t : public event_t
-  {
-    haymaker_damage_t* action;
-    haymaker_driver_t* callback;
-    buff_t* debuff;
-    double damage;
-
-    haymaker_event_t( haymaker_driver_t* cb, haymaker_damage_t* a, buff_t* d ) :
-      event_t( *a -> player, a -> data().effectN( 1 ).period() ), action( a ), callback( cb ), debuff( d ), damage( 0 )
+    struct haymaker_damage_t : public proc_spell_t
     {
-    }
-
-    const char* name() const override
-    { return "brutal_haymaker_damage"; }
-
-    void execute() override
-    {
-      if ( damage > 0 )
+      haymaker_damage_t( const special_effect_t& effect )
+        : proc_spell_t( "brutal_haymaker_vulnerability", effect.player, effect.driver()->effectN( 2 ).trigger(),
+                        effect.item )
       {
-        action -> target = debuff -> player;
-        damage = std::min( damage, debuff -> current_value );
-        action -> base_dd_min = action -> base_dd_max = damage;
-        action -> schedule_execute();
-        // 2016-10-11 - Damage increases from target multiplier debuffs do not count towards the damage cap.
-        damage /= action -> player -> composite_player_target_multiplier( action -> target, SCHOOL_PHYSICAL );
-        debuff -> current_value -= damage;
+        may_crit = may_miss = false;
+        dot_duration = timespan_t::zero();
+        base_dd_min = base_dd_max = 1;  // Make sure this snapshots flags
+      }
+    };
+
+    struct haymaker_driver_t : public dbc_proc_callback_t
+    {
+      buff_t* debuff;
+      const special_effect_t& effect;
+      double multiplier;
+      haymaker_damage_t* action;
+      action_t* on_use;
+
+      struct haymaker_event_t : public event_t
+      {
+        haymaker_damage_t* action;
+        haymaker_driver_t* callback;
+        buff_t* debuff;
+        double damage;
+
+        haymaker_event_t( haymaker_driver_t* cb, haymaker_damage_t* a, buff_t* d )
+          : event_t( *a->player, a->data().effectN( 1 ).period() ),
+            action( a ),
+            callback( cb ),
+            debuff( d ),
+            damage( 0 )
+        {}
+
+        const char* name() const override
+        {
+          return "brutal_haymaker_damage";
+        }
+
+        void execute() override
+        {
+          if ( damage > 0 )
+          {
+            action->target = debuff->player;
+            damage = std::min( damage, debuff->current_value );
+            action->base_dd_min = action->base_dd_max = damage;
+            action->schedule_execute();
+            // 2016-10-11 - Damage increases from target multiplier debuffs do not count towards the damage cap.
+            damage /= action->player->composite_player_target_multiplier( action->target, SCHOOL_PHYSICAL );
+            debuff->current_value -= damage;
+          }
+
+          if ( debuff->current_value > 0 && debuff->check() )
+            callback->accumulator = make_event<haymaker_event_t>( *action->player->sim, callback, action, debuff );
+          else
+          {
+            callback->accumulator = nullptr;
+            debuff->expire();
+          }
+        }
+      };
+
+      haymaker_driver_t( const special_effect_t& e, double m, action_t* a, action_t* use )
+        : dbc_proc_callback_t( e.player, e ),
+          debuff( nullptr ),
+          effect( e ),
+          multiplier( m ),
+          action( debug_cast<haymaker_damage_t*>( a ) ),
+          on_use( use ),
+          accumulator( nullptr )
+      {}
+
+      void activate() override
+      {
+        dbc_proc_callback_t::activate();
+
+        accumulator = make_event<haymaker_event_t>( *effect.player->sim, this, action, debuff );
       }
 
-      if ( debuff -> current_value > 0 && debuff -> check() )
-        callback -> accumulator = make_event<haymaker_event_t>( *action -> player -> sim, callback, action, debuff );
-      else
+      void execute( action_t* /* a */, action_state_t* trigger_state ) override
       {
-        callback -> accumulator = nullptr;
-        debuff -> expire();
+        if ( trigger_state->result_amount <= 0 )
+          return;
+
+        if ( on_use->get_debuff( trigger_state->target )->check() )
+          accumulator->damage += trigger_state->result_amount * multiplier;
+      }
+
+      // Forward declaration does not work on MacOS Clang at least, so move definition after class
+      // definition.
+      haymaker_event_t* accumulator;
+    };
+
+    haymaker_driver_t* cb;
+    action_t* damage;
+    double cap;
+
+    brutal_haymaker_initial_t( special_effect_t& effect )
+      : proc_spell_t( "brutal_haymaker", effect.player, effect.driver()->effectN( 1 ).trigger(), effect.item )
+    {
+      damage = new haymaker_damage_t( effect );
+      add_child( damage );
+
+      target_debuff = effect.trigger();
+      cap = target_debuff->effectN( 3 ).average( effect.item );
+
+      // Vulnerability: Deal x% of the damage dealt to the debuffed target, up to the limit.
+      // Create effect for the callback.
+      special_effect_t* effect2 = new special_effect_t( effect.item );
+      effect2->source = SPECIAL_EFFECT_SOURCE_ITEM;
+      effect2->name_str = "brutal_haymaker_accumulator";
+      effect2->proc_chance_ = 1.0;
+      effect2->proc_flags_ = PF_ALL_DAMAGE | PF_PERIODIC;
+      effect2->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+      effect.player->special_effects.push_back( effect2 );
+
+      // Create callback. We'll enable this callback whenever the debuff is active.
+      cb = new haymaker_driver_t( *effect2, target_debuff->effectN( 2 ).percent(), damage, this );
+      cb->initialize();
+      cb->deactivate();
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      return proc_spell_t::create_debuff( t )->set_default_value( cap )->set_stack_change_callback(
+          [ this ]( buff_t* b, int old, int new_ ) {
+            if ( old == 0 )
+            {
+              cb->debuff = b;
+              cb->activate();
+            }
+            else if ( new_ == 0 )
+            {
+              cb->deactivate();
+            }
+          } );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      proc_spell_t::impact( s );
+
+      if ( result_is_hit( s->result ) )
+      {
+        get_debuff( s->target )->trigger();
       }
     }
   };
 
-  haymaker_driver_t( const special_effect_t& e, double m, action_t* a )
-    : dbc_proc_callback_t( e.player, e ),
-      debuff( nullptr ),
-      effect( e ),
-      multiplier( m ),
-      accumulator( nullptr ),
-      action( debug_cast<haymaker_damage_t*>( a ) )
-  {}
-
-  void activate() override
-  {
-    dbc_proc_callback_t::activate();
-
-    accumulator = make_event<haymaker_event_t>( *effect.player -> sim, this, action, debuff );
-  }
-
-  void execute( action_t* /* a */, action_state_t* trigger_state ) override
-  {
-    if ( trigger_state -> result_amount <= 0 )
-      return;
-
-    const actor_target_data_t* td = effect.player -> find_target_data( trigger_state -> target );
-
-    if ( td && td -> debuff.brutal_haymaker -> check() )
-      accumulator -> damage += trigger_state -> result_amount * multiplier;
-  }
-};
-
-struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
-{
-  target_specific_t<action_t> damage_actions;
-
-  spiked_counterweight_constructor_t( unsigned iid, ::util::span<const slot_e> s )
-    : item_targetdata_initializer_t( iid, s ), damage_actions( false )
-  {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.brutal_haymaker = make_buff_fallback( active, *td, "brutal_haymakser", debuffs[ td->source ] );
-    td->debuff.brutal_haymaker->reset();
-
-    if ( !active )
-      return;
-
-    action_t*& damage = damage_actions[ td->source ];
-    if ( !damage )
-      damage = td->source->find_action( "brutal_haymaker_vulnerability" );
-
-    auto eff = effect( td );
-    // Vulnerability: Deal x% of the damage dealt to the debuffed target, up to the limit.
-
-    // Create effect for the callback.
-    special_effect_t* effect2 = new special_effect_t( eff->item );
-    effect2->source = SPECIAL_EFFECT_SOURCE_ITEM;
-    effect2->name_str = "brutal_haymaker_accumulator";
-    effect2->proc_chance_ = 1.0;
-    effect2->proc_flags_ = PF_ALL_DAMAGE | PF_PERIODIC;
-    effect2->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
-    eff->player->special_effects.push_back( effect2 );
-
-    // Create callback. We'll enable this callback whenever the debuff is active.
-    haymaker_driver_t* callback = new haymaker_driver_t( *effect2, eff->trigger()->effectN( 2 ).percent(), damage );
-    callback->initialize();
-    callback->deactivate();
-
-    // Create debuff with stack callback.
-    td->debuff.brutal_haymaker
-        ->set_default_value( eff->driver()->effectN( 1 ).trigger()->effectN( 3 ).average( eff->item ) )
-        ->set_stack_change_callback( [ callback ]( buff_t*, int old, int new_ ) {
-          if ( old == 0 )
-          {
-            assert( !callback->active );
-            callback->activate();
-          }
-          else if ( new_ == 0 )
-            callback->deactivate();
-        } );
-
-    // Set pointer to debuff so the callback can do its thing.
-    callback->debuff = td->debuff.brutal_haymaker;
-  }
-};
-
-struct brutal_haymaker_initial_t : public proc_spell_t
-{
-  brutal_haymaker_initial_t( special_effect_t& effect ) :
-    proc_spell_t( "brutal_haymaker", effect.player, effect.driver() -> effectN( 1 ).trigger(), effect.item )
-  {}
-
-  void impact( action_state_t* s ) override
-  {
-    proc_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      player -> get_target_data( s -> target ) -> debuff.brutal_haymaker -> trigger();
-    }
-  }
-};
-
-void item::spiked_counterweight( special_effect_t& effect )
-{
   effect.execute_action = new brutal_haymaker_initial_t( effect );
-  effect.execute_action -> add_child( new haymaker_damage_t( effect ) );
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -3009,11 +2910,11 @@ void item::whispers_in_the_dark( special_effect_t& effect )
   auto bad_amount = bad_buff_data -> effectN( 1 ).average( effect.item ) / 100.0;
 
   buff_t* bad_buff = make_buff( effect.player, "devils_due", bad_buff_data, effect.item );
-  bad_buff->add_invalidate( CACHE_SPELL_SPEED )
+  bad_buff->add_invalidate( CACHE_SPELL_CAST_SPEED )
     ->set_default_value( bad_amount );
 
   buff_t* good_buff = make_buff( effect.player, "nefarious_pact", good_buff_data, effect.item );
-  good_buff->add_invalidate( CACHE_SPELL_SPEED )
+  good_buff->add_invalidate( CACHE_SPELL_CAST_SPEED )
     ->set_default_value( good_amount )
     ->set_stack_change_callback( [ bad_buff ]( buff_t*, int old_, int ) {
       if ( old_ == 1 )
@@ -3542,10 +3443,10 @@ struct poisoned_dreams_impact_t : public proc_spell_t
   // being triggered multiple times in quick succession.
 
   cooldown_t* icd;
-  double stack_multiplier;
-  poisoned_dreams_impact_t( const special_effect_t& effect ) :
-    proc_spell_t( "poisoned_dreams_damage", effect.player, effect.player -> find_spell( 222705 ) ),
-    stack_multiplier( 1.0 )
+  dbc_proc_callback_t* cb;
+
+  poisoned_dreams_impact_t( const special_effect_t& effect, dbc_proc_callback_t* cb )
+    : proc_spell_t( "poisoned_dreams_damage", effect.player, effect.player->find_spell( 222705 ) ), cb( cb )
   {
     background = may_crit = true;
     callbacks = false;
@@ -3570,8 +3471,9 @@ struct poisoned_dreams_impact_t : public proc_spell_t
        // Also fix hardcoding
     if ( icd -> up() )
     {
-     spell_t::execute();
-     icd -> start();
+      base_multiplier = cb->get_debuff( target )->current_stack;
+      spell_t::execute();
+      icd -> start();
     }
 
   }
@@ -3601,10 +3503,7 @@ struct poisoned_dreams_damage_driver_t : public dbc_proc_callback_t
 
   void execute( action_t* /* a */ , action_state_t* trigger_state ) override
   {
-    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
-    damage -> base_multiplier = 1.0; // Reset base multiplier before each trigger so we scale linearly with #stacks, not exponentially.
     damage -> target = trigger_state -> target;
-    damage -> base_multiplier *= td -> debuff.poisoned_dreams -> current_stack;
     damage -> execute();
   }
 
@@ -3661,54 +3560,23 @@ struct poisoned_dreams_t : public buff_t
 // Prophecy of Fear base driver, handles the proccing ( triggering ) of Mark of Doom on targets
 struct bough_of_corruption_driver_t : public dbc_proc_callback_t
 {
+  action_t* damage;
+  const special_effect_t* eff;
+
   bough_of_corruption_driver_t( const special_effect_t& effect ) :
-    dbc_proc_callback_t( effect.player, effect )
+    dbc_proc_callback_t( effect.player, effect ), eff( &effect )
   {
+    damage = new poisoned_dreams_impact_t( effect, this );
   }
 
-  void initialize() override
+  buff_t* create_debuff( player_t* target ) override
   {
-    dbc_proc_callback_t::initialize();
-
-    action_t* damage_spell = listener -> find_action( "poisoned_dreams_damage" );
-
-    if( ! damage_spell )
-    {
-      damage_spell = listener -> create_proc_action( "poisoned_dreams_damage", effect );
-    }
-
-    if ( ! damage_spell )
-    {
-      damage_spell = new poisoned_dreams_impact_t( effect );
-    }
+    return new poisoned_dreams_t( { target, listener }, eff, eff->trigger(), damage );
   }
 
   void execute( action_t*  /*a*/ , action_state_t* trigger_state ) override
   {
-    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
-    assert( td );
-    td -> debuff.poisoned_dreams -> trigger();
-  }
-};
-
-struct bough_of_corruption_constructor_t : public item_targetdata_initializer_t
-{
-  target_specific_t<action_t> damage_actions;
-
-  bough_of_corruption_constructor_t( unsigned iid, ::util::span<const slot_e> s )
-    : item_targetdata_initializer_t( iid, s ), damage_actions( false )
-  {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-    action_t*& damage = damage_actions[ td->source ];
-    if ( active && !damage )
-      damage = td->source->find_action( "poisoned_dreams_damage" );
-
-    td->debuff.poisoned_dreams = make_buff_fallback<poisoned_dreams_t>(
-        active, *td, "poisoned_dreams", effect( td ), debuffs[ td->source ], damage );
-    td->debuff.poisoned_dreams->reset();
+    get_debuff( trigger_state->target )->trigger();
   }
 };
 
@@ -4081,128 +3949,144 @@ void item::tiny_oozeling_in_a_jar( special_effect_t& effect )
 
 // Figurehead of the Naglfar ================================================
 
-struct taint_of_the_sea_t : public proc_spell_t
+void item::figurehead_of_the_naglfar( special_effect_t& effect )
 {
-  taint_of_the_sea_t( const special_effect_t& effect ) :
-    proc_spell_t( "taint_of_the_sea", effect.player, effect.player -> find_spell( 215695 ), effect.item )
+  struct taint_of_the_sea_driver_t : public dbc_proc_callback_t
   {
-    base_dd_min = base_dd_max = 0;
-    base_multiplier = effect.driver() -> effectN( 1 ).percent();
-  }
+    struct taint_of_the_sea_t : public proc_spell_t
+    {
+      dbc_proc_callback_t* cb;
 
-  void init() override
-  {
-    proc_spell_t::init();
+      taint_of_the_sea_t( const special_effect_t& effect, dbc_proc_callback_t* cb )
+        : proc_spell_t( "taint_of_the_sea", effect.player, effect.player->find_spell( 215695 ), effect.item ), cb( cb )
+      {
+        base_dd_min = base_dd_max = 0;
+        base_multiplier = effect.driver()->effectN( 1 ).percent();
+      }
 
-    // Allow DA multipliers so base_multiplier may take effect.
-    snapshot_flags = STATE_MUL_DA;
-    update_flags = 0;
-  }
+      void init() override
+      {
+        proc_spell_t::init();
 
-  // Override so ONLY base_multiplier takes effect.
-  double composite_da_multiplier( const action_state_t* ) const override
-  { return base_multiplier; }
+        // Allow DA multipliers so base_multiplier may take effect.
+        snapshot_flags = STATE_MUL_DA;
+        update_flags = 0;
+      }
 
-  void execute() override
-  {
-    buff_t* d = player -> get_target_data( target ) -> debuff.taint_of_the_sea;
+      // Override so ONLY base_multiplier takes effect.
+      double composite_da_multiplier( const action_state_t* ) const override
+      {
+        return base_multiplier;
+      }
 
-    assert( d && d -> check() );
+      void execute() override
+      {
+        auto d = cb->get_debuff( target );
 
-    base_dd_min = base_dd_max = std::min( base_dd_min, d -> current_value / base_multiplier );
+        base_dd_min = base_dd_max = std::min( base_dd_min, d->current_value / base_multiplier );
 
-    proc_spell_t::execute();
+        proc_spell_t::execute();
 
-    d -> current_value -= execute_state -> result_amount;
+        d->current_value -= execute_state->result_amount;
 
-    // can't assert on any negative number because precision reasons
-    assert( d -> current_value >= -1.0 );
+        // can't assert on any negative number because precision reasons
+        assert( d->current_value >= -1.0 );
 
-    if ( d -> current_value <= 0.0 )
-      make_event( *sim, [ d ] { d -> expire(); } );
-  }
-};
+        if ( d->current_value <= 0.0 )
+          make_event( *sim, [ d ] {
+            d->expire();
+          } );
+      }
+    };
 
-struct taint_of_the_sea_driver_t : public dbc_proc_callback_t
-{
-  action_t* damage;
-  player_t* player, *active_target;
+    action_t* damage;
+    player_t* active_target;
+    double cap;
 
-  taint_of_the_sea_driver_t( const special_effect_t& effect ) :
-    dbc_proc_callback_t( effect.player, effect ),
-    damage( effect.player -> find_action( "taint_of_the_sea" ) ),
-    player( effect.player ), active_target( nullptr )
-  {}
+    taint_of_the_sea_driver_t( const special_effect_t& effect )
+      : dbc_proc_callback_t( effect.player, effect ),
+        damage( new taint_of_the_sea_t( effect, this ) ),
+        active_target( nullptr )
+    {
+      target_debuff = effect.player->find_spell( 215670 );
+      cap = target_debuff->effectN( 2 ).trigger()->effectN( 1 ).average( effect.item );
+    }
 
-  void execute( action_t* /* a */, action_state_t* trigger_state ) override
-  {
-    // If the debuff expires while a callback execute event it scheduled,
-    // the active_target will be set to nullptr just before execute is called.
-    // If that happens, just bail out.
-    if ( !active_target )
-      return;
-    if ( trigger_state -> target == active_target )
-      return;
-    if ( trigger_state -> result_amount <= 0 )
-      return;
-
-    damage -> target = active_target;
-    damage -> base_dd_min = damage -> base_dd_max = trigger_state -> result_amount;
-    damage -> execute();
-  }
-};
-
-struct figurehead_of_the_naglfar_constructor_t : public item_targetdata_initializer_t
-{
-  figurehead_of_the_naglfar_constructor_t( unsigned iid, ::util::span<const slot_e> s ) :
-    item_targetdata_initializer_t( iid, s )
-  {
-    debuff_fn = []( player_t*, const special_effect_t* e ) { return e->driver(); };
-  }
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.taint_of_the_sea = make_buff_fallback( active, *td, "taint_of_the_sea", debuffs[ td->source ] );
-    td->debuff.taint_of_the_sea->reset();
-
-    if ( !active )
-      return;
-
-    auto eff = effect( td );
-
-    // Create special effect for the damage transferral.
-    special_effect_t* effect2 = new special_effect_t( eff->item );
-    effect2->source = SPECIAL_EFFECT_SOURCE_ITEM;
-    effect2->name_str = "taint_of_the_sea_driver";
-    effect2->proc_chance_ = 1.0;
-    effect2->proc_flags_ = PF_ALL_DAMAGE;
-    effect2->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
-    eff->player->special_effects.push_back( effect2 );
-
-    // Create callback; we'll enable this callback whenever the debuff is active.
-    taint_of_the_sea_driver_t* callback = new taint_of_the_sea_driver_t( *effect2 );
-    callback->initialize();
-    callback->deactivate();
-
-    td->debuff.taint_of_the_sea
-        ->set_default_value( eff->driver()->effectN( 2 ).trigger()->effectN( 2 ).average( eff->item ) )
-        ->set_stack_change_callback( [ callback ]( buff_t* b, int old, int new_ ) {
+    buff_t* create_debuff( player_t* t ) override
+    {
+      return dbc_proc_callback_t::create_debuff( t )
+        ->set_cooldown( 0_ms )
+        ->set_default_value( cap )
+        ->set_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
           if ( old == 0 )
           {
-            assert( !callback->active );
-            callback->active_target = b->player;
-            callback->activate();
+            active_target = b->player;
+            activate();
           }
           else if ( new_ == 0 )
           {
-            callback->active_target = nullptr;
-            callback->deactivate();
+            active_target = nullptr;
+            deactivate();
           }
         } );
-  }
-};
+    }
+
+    void execute( action_t* /* a */, action_state_t* trigger_state ) override
+    {
+      // If the debuff expires while a callback execute event it scheduled,
+      // the active_target will be set to nullptr just before execute is called.
+      // If that happens, just bail out.
+      if ( !active_target )
+        return;
+      if ( trigger_state->target == active_target )
+        return;
+      if ( trigger_state->result_amount <= 0 )
+        return;
+
+      damage->target = active_target;
+      damage->base_dd_min = damage->base_dd_max = trigger_state->result_amount;
+      damage->execute();
+    }
+  };
+
+  // Create special effect for the damage transferral.
+  special_effect_t* effect2 = new special_effect_t( effect.item );
+  effect2->source = SPECIAL_EFFECT_SOURCE_ITEM;
+  effect2->name_str = "taint_of_the_sea_driver";
+  effect2->proc_chance_ = 1.0;
+  effect2->proc_flags_ = PF_ALL_DAMAGE;
+  effect2->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+  effect.player->special_effects.push_back( effect2 );
+
+  auto cb = new taint_of_the_sea_driver_t( *effect2 );
+  cb->initialize();
+  cb->deactivate();
+
+  struct apply_debuff_t : public action_t
+  {
+    dbc_proc_callback_t* cb;
+
+    apply_debuff_t( special_effect_t& effect, dbc_proc_callback_t* cb )
+      : action_t( ACTION_OTHER, "apply_taint_of_the_sea", effect.player, spell_data_t::nil() ), cb( cb )
+    {
+      background = quiet = true;
+      callbacks = false;
+    }
+
+    // Suppress assertion
+    result_e calculate_result( action_state_t* ) const override
+    { return RESULT_NONE; }
+
+    void execute() override
+    {
+      action_t::execute();
+
+      cb->get_debuff( target )->trigger();
+    }
+  };
+
+  effect.execute_action = new apply_debuff_t( effect, cb );
+}
 
 void item::fel_meteor( special_effect_t& effect )
 {
@@ -4218,43 +4102,6 @@ void item::fel_meteor( special_effect_t& effect )
   effect.execute_action = meteor;
 
   new dbc_proc_callback_t( effect.player, effect );
-}
-
-void item::figurehead_of_the_naglfar( special_effect_t& effect )
-{
-  action_t* damage_spell = effect.player -> find_action( "taint_of_the_sea" );
-  if ( ! damage_spell )
-  {
-    damage_spell = effect.player -> create_proc_action( "taint_of_the_sea", effect );
-  }
-
-  if ( ! damage_spell )
-  {
-    damage_spell = new taint_of_the_sea_t( effect );
-  }
-
-  struct apply_debuff_t : public action_t
-  {
-    apply_debuff_t( special_effect_t& effect ) :
-      action_t( ACTION_OTHER, "apply_taint_of_the_sea", effect.player, spell_data_t::nil() )
-    {
-      background = quiet = true;
-      callbacks = false;
-    }
-
-    // Suppress assertion
-    result_e calculate_result( action_state_t* ) const override
-    { return RESULT_NONE; }
-
-    void execute() override
-    {
-      action_t::execute();
-
-      player -> get_target_data( target ) -> debuff.taint_of_the_sea -> trigger();
-    }
-  };
-
-  effect.execute_action = new apply_debuff_t( effect );
 }
 
 // Chaos Talisman ===========================================================
@@ -4731,67 +4578,6 @@ void item::unstable_horrorslime( special_effect_t& effect )
 
 // Portable Manacracker =====================================================
 
-struct volatile_magic_debuff_t : public buff_t
-{
-  action_t* damage;
-
-  volatile_magic_debuff_t( actor_target_data_t& td, const spell_data_t* s, action_t* a )
-    : buff_t( td, "volatile_magic", s ), damage( a )
-  {}
-
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    bool s = buff_t::trigger( stacks, value, chance, duration );
-
-    if ( current_stack == max_stack() )
-    {
-      damage -> target = player;
-      damage -> schedule_execute();
-      expire();
-    }
-
-    return s;
-  }
-};
-
-struct portable_manacracker_constructor_t : public item_targetdata_initializer_t
-{
-  target_specific_t<action_t> damage_actions;
-
-  portable_manacracker_constructor_t( unsigned iid, ::util::span<const slot_e> s )
-    : item_targetdata_initializer_t( iid, s ), damage_actions( false )
-  {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    action_t*& damage = damage_actions[ td->source ];
-    if ( active && !damage )
-      damage = td->source->find_action( "withering_consupmtion" );
-
-    td->debuff.volatile_magic = make_buff_fallback<volatile_magic_debuff_t>(
-        active, *td, "withering_consumption", debuffs[ td->source ], damage );
-    td->debuff.volatile_magic->reset();
-  }
-};
-
-struct volatile_magic_callback_t : public dbc_proc_callback_t
-{
-  volatile_magic_callback_t( const special_effect_t& effect ) :
-    dbc_proc_callback_t( effect.item, effect )
-  {}
-
-  void execute( action_t* a, action_state_t* s ) override
-  {
-    actor_target_data_t* td = a -> player -> get_target_data( s -> target );
-
-    if ( ! td ) return;
-
-    td -> debuff.volatile_magic -> trigger();
-  }
-};
-
 void item::portable_manacracker( special_effect_t& effect )
 {
   // Set spell so we can create the DoT action.
@@ -4803,7 +4589,36 @@ void item::portable_manacracker( special_effect_t& effect )
   dot -> base_td = effect.trigger() -> effectN( 1 ).average( effect.item );
   dot -> tick_zero = true;
 
-  new volatile_magic_callback_t( effect );
+  struct volatile_magic_callback_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+
+    volatile_magic_callback_t( const special_effect_t& effect, action_t* a )
+      : dbc_proc_callback_t( effect.item, effect ), damage( a )
+    {
+      target_debuff = effect.player->find_spell( 215859 );
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      return dbc_proc_callback_t::create_debuff( t )
+        ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+          if ( new_ == b->max_stack() )
+          {
+            damage->target = b->player;
+            damage->schedule_execute();
+            b->expire();
+          }
+        } );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      get_debuff( s->target )->trigger();
+    }
+  };
+
+  new volatile_magic_callback_t( effect, dot );
 }
 
 // Infernal Alchemist Stone =================================================
@@ -4915,127 +4730,103 @@ void item::spontaneous_appendages( special_effect_t& effect )
 }
 
 // Wriggling Sinew ==========================================================
-
-struct wriggling_sinew_constructor_t : public item_targetdata_initializer_t
-{
-  struct maddening_whispers_debuff_t : public buff_t
-  {
-    action_t* action;
-
-    maddening_whispers_debuff_t( actor_target_data_t& td, const special_effect_t* e, const spell_data_t* s,
-                                 action_t* a )
-      : buff_t( td, "maddening_whispers", s, e ? e->item : nullptr ), action( a )
-    {}
-
-    void expire_override( int stacks, timespan_t dur ) override
-    {
-      buff_t::expire_override( stacks, dur );
-
-      // Schedule an execute, but snapshot state right now so we can apply the stack multiplier.
-      action_state_t* s   = action -> get_state();
-      s -> target         = player;
-      action -> snapshot_state( s, result_amount_type::DMG_DIRECT );
-      s -> target_da_multiplier *= stacks;
-      action -> schedule_execute( s );
-    }
-  };
-
-  target_specific_t<action_t> damage_actions;
-
-  wriggling_sinew_constructor_t( unsigned iid, ::util::span<const slot_e> s )
-    : item_targetdata_initializer_t( iid, s ), damage_actions( false )
-  {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    action_t*& damage = damage_actions[ td->source ];
-    if ( active && !damage )
-      damage = td->source->find_action( "maddening_whispers" );
-
-    td->debuff.maddening_whispers = make_buff_fallback<maddening_whispers_debuff_t>(
-        active, *td, "maddening_whispers", effect( td ), debuffs[ td->source ], damage );
-    td->debuff.maddening_whispers->reset();
-  }
-};
-
-struct maddening_whispers_cb_t : public dbc_proc_callback_t
-{
-  buff_t* buff;
-
-  maddening_whispers_cb_t( const special_effect_t& effect, buff_t* b ) :
-    dbc_proc_callback_t( effect.player, effect ), buff( b )
-  {}
-
-  void execute( action_t*, action_state_t* s ) override
-  {
-    if ( s -> target == s -> action -> player ) return;
-    if ( s -> result_amount <= 0 ) return;
-
-    actor_target_data_t* td = s -> action -> player -> get_target_data( s -> target );
-
-    if ( ! td ) return;
-
-    td -> debuff.maddening_whispers -> trigger();
-    buff -> decrement();
-  }
-};
-
-struct maddening_whispers_t : public buff_t
-{
-  dbc_proc_callback_t* callback;
-
-  maddening_whispers_t( const special_effect_t& effect ) :
-    buff_t( effect.player, "maddening_whispers", effect.driver(), effect.item )
-  {
-    set_cooldown( timespan_t::zero() );
-    // Stack gain effect
-    special_effect_t* effect2 = new special_effect_t( effect.item );
-    effect2 -> source       = SPECIAL_EFFECT_SOURCE_ITEM;
-    effect2 -> name_str     = "maddening_whispers_driver";
-    effect2 -> proc_chance_ = 1.0;
-    effect2 -> proc_flags_  = PF_MAGIC_SPELL | PF_NONE_SPELL;
-    effect2 -> proc_flags2_  = PF2_ALL_HIT;
-    effect.player -> special_effects.push_back( effect2 );
-
-    callback = new maddening_whispers_cb_t( *effect2, this );
-    callback -> initialize();
-    callback -> deactivate();
-  }
-
-  void start( int, double value, timespan_t duration ) override
-  {
-    // Always start at max stacks.
-    buff_t::start( max_stack(), value, duration );
-
-    callback -> activate();
-  }
-
-  void expire_override( int stacks, timespan_t remaining ) override
-  {
-    buff_t::expire_override( stacks, remaining );
-
-    callback -> deactivate();
-
-    for ( auto* t : sim->target_non_sleeping_list )
-    {
-       player -> get_target_data( t ) -> debuff.maddening_whispers -> expire();
-    }
-  }
-};
-
 void item::wriggling_sinew( special_effect_t& effect )
 {
   // Set triggered spell so we can create an action from it.
   effect.trigger_spell_id = 222050;
-  action_t* a = effect.initialize_offensive_spell_action();
-  a -> base_dd_min = a -> base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
-  a -> snapshot_flags |= STATE_MUL_DA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA;
+  auto damage = effect.initialize_offensive_spell_action();
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  damage->snapshot_flags |= STATE_MUL_DA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA;
   // Reset triggered spell; we don't want to trigger a spell on use.
   effect.trigger_spell_id = 0;
 
-  effect.custom_buff = new maddening_whispers_t( effect );
+  struct maddening_whispers_t : public buff_t
+  {
+    dbc_proc_callback_t* callback;
+
+    maddening_whispers_t( const special_effect_t& effect )
+      : buff_t( effect.player, "maddening_whispers", effect.driver(), effect.item )
+    {
+      set_cooldown( timespan_t::zero() );
+    }
+
+    void start( int, double value, timespan_t duration ) override
+    {
+      // Always start at max stacks.
+      buff_t::start( max_stack(), value, duration );
+
+      callback->activate();
+    }
+
+    void expire_override( int stacks, timespan_t remaining ) override
+    {
+      buff_t::expire_override( stacks, remaining );
+
+      callback->deactivate();
+
+      for ( auto* t : sim->target_non_sleeping_list )
+      {
+        callback->get_debuff( t )->expire();
+      }
+    }
+  };
+
+  auto buff = new maddening_whispers_t( effect );
+
+  // Stack gain effect
+  struct maddening_whispers_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* buff;
+    action_t* damage;
+
+    maddening_whispers_cb_t( const special_effect_t& effect, buff_t* b, action_t* a )
+      : dbc_proc_callback_t( effect.player, effect ), buff( b ), damage( a )
+    {
+      target_debuff = effect.player->find_spell( 222050 );
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      return dbc_proc_callback_t::create_debuff( t )->set_stack_change_callback(
+          [ this ]( buff_t* b, int old_, int new_ ) {
+            if ( !new_ )
+            {
+              // Schedule an execute, but snapshot state right now so we can apply the stack multiplier.
+              action_state_t* s = damage->get_state();
+              s->target = b->player;
+              damage->snapshot_state( s, result_amount_type::DMG_DIRECT );
+              s->target_da_multiplier *= old_;
+              damage->schedule_execute( s );
+            }
+          } );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      if ( s->target == s->action->player )
+        return;
+      if ( s->result_amount <= 0 )
+        return;
+
+      get_debuff( s->target )->trigger();
+      buff->decrement();
+    }
+  };
+
+  special_effect_t* effect2 = new special_effect_t( effect.item );
+  effect2->source = SPECIAL_EFFECT_SOURCE_ITEM;
+  effect2->name_str = "maddening_whispers_driver";
+  effect2->proc_chance_ = 1.0;
+  effect2->proc_flags_ = PF_MAGIC_SPELL | PF_NONE_SPELL;
+  effect2->proc_flags2_ = PF2_ALL_HIT;
+  effect.player->special_effects.push_back( effect2 );
+
+  auto callback = new maddening_whispers_cb_t( *effect2, buff, damage );
+  callback->initialize();
+  callback->deactivate();
+
+  buff->callback = callback;
+  effect.custom_buff = buff;
 }
 
 // Convergence of Fates =====================================================
@@ -6103,17 +5894,7 @@ void unique_gear::register_hotfixes_legion()
   */
 }
 
-void unique_gear::register_target_data_initializers_legion( sim_t* sim )
+void unique_gear::register_target_data_initializers_legion( sim_t* )
 {
   using namespace legion;
-  static constexpr std::array<slot_e, 2> trinkets {{ SLOT_TRINKET_1, SLOT_TRINKET_2 }};
-
-  sim -> register_target_data_initializer( spiked_counterweight_constructor_t( 136715, trinkets ) );
-  sim -> register_target_data_initializer( figurehead_of_the_naglfar_constructor_t( 137329, trinkets ) );
-  sim -> register_target_data_initializer( portable_manacracker_constructor_t( 137398, trinkets ) );
-  sim -> register_target_data_initializer( wriggling_sinew_constructor_t( 139326, trinkets ) );
-  sim -> register_target_data_initializer( bough_of_corruption_constructor_t( 139336, trinkets ) );
-  sim -> register_target_data_initializer( mrrgrias_favor_constructor_t( 142160, trinkets ) ) ;
-  sim -> register_target_data_initializer( fury_of_the_burning_sun_constructor_t( 140801, trinkets ) );
-  sim -> register_target_data_initializer( shadow_blades_constructor_t( 151971, trinkets ) );
 }

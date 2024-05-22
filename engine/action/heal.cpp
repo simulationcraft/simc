@@ -106,6 +106,29 @@ double heal_t::composite_versatility( const action_state_t* state ) const
   return spell_base_t::composite_versatility( state ) + player->cache.heal_versatility();
 }
 
+double heal_t::total_crit_bonus( const action_state_t* state ) const
+{
+  // duplicate of action_t::total_crit_bonus() with adjustment for final bonus calculation
+  double crit_multiplier_buffed = composite_player_critical_multiplier( state );
+
+  double base_crit_bonus = crit_bonus;
+  if ( sim->pvp_mode )
+    base_crit_bonus += sim->pvp_rules->effectN( 3 ).percent();
+
+  double damage_bonus = composite_crit_damage_bonus_multiplier() * composite_target_crit_damage_bonus_multiplier( state->target );
+
+  // for healing, 'multiplier' is additive with base bonus
+  double bonus = ( base_crit_bonus + crit_multiplier_buffed - 1.0 ) * damage_bonus;
+
+  if ( sim->debug )
+  {
+    sim->print_debug( "{} crit_bonus for {}: total={} base={} mult_buffed={} damage_bonus_mult={}", *player, *this,
+                      bonus, crit_bonus, crit_multiplier_buffed, damage_bonus );
+  }
+
+  return bonus;
+}
+
 result_amount_type heal_t::amount_type( const action_state_t* /* state */, bool periodic ) const
 {
   if ( periodic || treat_as_periodic )

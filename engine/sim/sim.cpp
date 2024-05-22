@@ -1369,23 +1369,6 @@ struct compare_dtps
   }
 };
 
-// compare_tmi==============================================================
-
-struct compare_tmi
-{
-  bool operator()( player_t* l, player_t* r ) const
-  {
-    double lv = l->collected_data.theck_meloree_index.mean();
-    double rv = r->collected_data.theck_meloree_index.mean();
-    if ( lv == rv )
-    {
-      return l->actor_index < r->actor_index;
-    }
-
-    return lv > rv;
-  }
-};
-
 // compare_name =============================================================
 
 struct compare_name
@@ -1504,14 +1487,12 @@ sim_t::sim_t()
     talent_input_format( talent_format::UNCHANGED ),
     stat_cache( 1 ),
     max_aoe_enemies( 20 ),
-    tmi_window_global( 0 ),
-    tmi_bin_size( 0.5 ),
-    show_etmi( false ),
     requires_regen_event( false ),
     single_actor_batch( false ),
     allow_experimental_specializations( false ),
     enable_all_talents( false ),
     enable_all_sets( false ),
+    enable_all_item_effects( false ),
     progressbar_type( 0 ),
     armory_retries( 3 ),
     enemy_death_pct( 0 ),
@@ -3034,7 +3015,6 @@ void sim_t::analyze()
   range::sort( players_by_hps,  compare_hps() );
   range::sort( players_by_hps_plus_aps, compare_hps_plus_aps() );
   range::sort( players_by_dtps, compare_dtps() );
-  range::sort( players_by_tmi,  compare_tmi() );
   range::sort( players_by_name, compare_name() );
   range::sort( players_by_apm, compare_apm() );
   range::sort( targets_by_name, compare_name() );
@@ -3700,6 +3680,7 @@ void sim_t::create_options()
   add_option( opt_bool( "allow_experimental_specializations", allow_experimental_specializations ) );
   add_option( opt_bool( "enable_all_talents", enable_all_talents ) );
   add_option( opt_bool( "enable_all_sets", enable_all_sets ) );
+  add_option( opt_bool( "enable_all_item_effects", enable_all_item_effects ) );
 
   // Raid buff overrides
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
@@ -3801,9 +3782,6 @@ void sim_t::create_options()
   add_option( opt_bool( "log_spell_id", log_spell_id ) );
   add_option( opt_int( "desired_targets", desired_targets ) );
   add_option( opt_int( "desired_tank_targets", desired_tank_targets ) );
-  add_option( opt_bool( "show_etmi", show_etmi ) );
-  add_option( opt_float( "tmi_window_global", tmi_window_global ) );
-  add_option( opt_float( "tmi_bin_size", tmi_bin_size ) );
   add_option( opt_bool( "enable_taunts", enable_taunts ) );
   add_option( opt_bool( "use_item_verification", use_item_verification ) );
   add_option( opt_int( "keystone_level", keystone_level, 1, 50 ) );

@@ -419,13 +419,13 @@ const char* util::gcd_haste_type_string(gcd_haste_type gcd_type)
 {
   switch (gcd_type)
   {
-  case gcd_haste_type::NONE:    return "none";
-  case gcd_haste_type::HASTE:     return "haste(all)";
-  case gcd_haste_type::SPELL_HASTE:    return "spell_haste";
-  case gcd_haste_type::ATTACK_HASTE:       return "attack_haste";
-  case gcd_haste_type::SPELL_SPEED:      return "spell_speed";
-  case gcd_haste_type::ATTACK_SPEED:      return "attack_speed";
-  default:             return "unknown";
+  case gcd_haste_type::NONE:              return "none";
+  case gcd_haste_type::HASTE:             return "haste(all)";
+  case gcd_haste_type::SPELL_HASTE:       return "spell_haste";
+  case gcd_haste_type::ATTACK_HASTE:      return "attack_haste";
+  case gcd_haste_type::SPELL_CAST_SPEED:  return "spell_cast_speed";
+  case gcd_haste_type::AUTO_ATTACK_SPEED: return "auto_attack_speed";
+  default:                                return "unknown";
   }
 }
 
@@ -1356,8 +1356,8 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_HASTE:                    return "haste";
     case CACHE_ATTACK_HASTE:             return "attack_haste";
     case CACHE_SPELL_HASTE:              return "spell_haste";
-    case CACHE_ATTACK_SPEED:             return "attack_speed";
-    case CACHE_SPELL_SPEED:              return "spell_speed";
+    case CACHE_AUTO_ATTACK_SPEED:        return "auto_attack_speed";
+    case CACHE_SPELL_CAST_SPEED:         return "spell_cast_speed";
     case CACHE_MASTERY:                  return "mastery";
     case CACHE_PLAYER_DAMAGE_MULTIPLIER: return "player_dmg_mult";
     case CACHE_PLAYER_HEAL_MULTIPLIER:   return "player_heal_mult";
@@ -1553,6 +1553,26 @@ const char* util::stat_type_string( stat_e stat )
     case STAT_CORRUPTION_RESISTANCE: return "corruption_resistance";
 
     case STAT_ALL: return "all";
+
+    default: return "unknown";
+  }
+}
+
+// stat_pct_buff_type_string =========================================================
+
+const char* util::stat_pct_buff_type_string( stat_pct_buff_type stat )
+{
+  switch ( stat )
+  {
+    case STAT_PCT_BUFF_CRIT: return "crit";
+    case STAT_PCT_BUFF_HASTE: return "haste";
+    case STAT_PCT_BUFF_VERSATILITY: return "versatility";
+    case STAT_PCT_BUFF_MASTERY: return "mastery";
+    case STAT_PCT_BUFF_STRENGTH: return "strength";
+    case STAT_PCT_BUFF_AGILITY: return "agility";
+    case STAT_PCT_BUFF_STAMINA: return "stamina";
+    case STAT_PCT_BUFF_INTELLECT: return "intellect";
+    case STAT_PCT_BUFF_SPIRIT: return "spirit";
 
     default: return "unknown";
   }
@@ -1822,8 +1842,6 @@ const char* util::scale_metric_type_string( scale_metric_e sm )
     case SCALE_METRIC_DTPS:      return "Damage Taken per Second";
     case SCALE_METRIC_DMG_TAKEN: return "Damage Taken";
     case SCALE_METRIC_HTPS:      return "Healing Taken per Second";
-    case SCALE_METRIC_TMI:       return "Theck-Meloree-Index";
-    case SCALE_METRIC_ETMI:      return "Effective Theck-Meloree-Index";
     case SCALE_METRIC_DEATHS:    return "Deaths";
     case SCALE_METRIC_TIME:      return "Fight Length";
     case SCALE_METRIC_RAID_DPS:  return "Raid Damage per Second";
@@ -1847,8 +1865,6 @@ const char* util::scale_metric_type_abbrev( scale_metric_e sm )
     case SCALE_METRIC_DTPS:      return "dtps";
     case SCALE_METRIC_DMG_TAKEN: return "dmg_taken";
     case SCALE_METRIC_HTPS:      return "htps";
-    case SCALE_METRIC_TMI:       return "tmi";
-    case SCALE_METRIC_ETMI:      return "etmi";
     case SCALE_METRIC_DEATHS:    return "deaths";
     case SCALE_METRIC_TIME:      return "time";
     case SCALE_METRIC_RAID_DPS:  return "raid_dps";
@@ -1862,9 +1878,6 @@ scale_metric_e util::parse_scale_metric( util::string_view name )
 {
   scale_metric_e sm = parse_enum<scale_metric_e, SCALE_METRIC_NONE, SCALE_METRIC_MAX, scale_metric_type_abbrev>( name );
   if ( sm != SCALE_METRIC_NONE ) return sm;
-
-  if ( name == "theck_meloree_index" ) return SCALE_METRIC_TMI;
-  if ( name == "effective_theck_meloree_index" ) return SCALE_METRIC_ETMI;
 
   return SCALE_METRIC_NONE;
 }
@@ -2692,9 +2705,9 @@ std::string util::rppm_scaling_string( unsigned s )
     return "disabled";
   }
   using sp = std::pair<rppm_scale_e, const char*>;
-  const auto scalings = {sp{RPPM_HASTE, "haste"},
-                         sp{RPPM_CRIT, "crit"},
-                         sp{RPPM_ATTACK_SPEED, "attack_speed"}};
+  const auto scalings = { sp{ RPPM_HASTE, "haste" },
+                          sp{ RPPM_CRIT, "crit" },
+                          sp{ RPPM_AUTO_ATTACK_SPEED, "auto_attack_speed" } };
   std::string r;
   int i = 0;
   for ( const auto& scaling : scalings )
@@ -3569,4 +3582,3 @@ double approx_sqrt( double arg )
 }
 
 } // namespace util
-

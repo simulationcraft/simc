@@ -52,6 +52,7 @@
 #include "player/spawner_base.hpp"
 #include "player/stats.hpp"
 #include "player/unique_gear.hpp"
+#include "player/unique_gear_thewarwithin.hpp"
 #include "sim/benefit.hpp"
 #include "sim/cooldown.hpp"
 #include "sim/cooldown_waste_data.hpp"
@@ -485,7 +486,7 @@ struct leech_t : public heal_t
 
     player->register_combat_begin( []( player_t* p ) {
       make_repeating_event( *p->sim,
-          [ p ] { return p->base_gcd * p->cache.spell_speed(); },
+          [ p ] { return p->base_gcd * p->cache.spell_cast_speed(); },
           [ p ] {
             if ( p->leech_pool > 0 )
               p->spells.leech->schedule_execute();
@@ -1131,7 +1132,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     // Attacks
     main_hand_attack( nullptr ),
     off_hand_attack( nullptr ),
-    current_attack_speed( 1.0 ),
+    current_auto_attack_speed( 1.0 ),
     // Resources
     resources(),
     // Consumables
@@ -1180,7 +1181,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     iteration_resource_overflowed(),
     rps_gain( 0 ),
     rps_loss( 0 ),
-    tmi_window( 6.0 ),
     collected_data( this ),
     // Damage
     iteration_dmg( 0 ),
@@ -1201,6 +1201,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     item_cooldown( new cooldown_t("item_cd", *this) ),
     default_item_group_cooldown( 20_s ),
     load_default_gear( false ),
+    load_default_talents( false ),
     auto_attack_modifier( 0.0 ),
     auto_attack_base_modifier( 0.0 ),
     auto_attack_multiplier( 1.0 ),
@@ -1357,10 +1358,13 @@ player_t::base_initial_current_t::base_initial_current_t() :
   block( 0 ),
   hit( 0 ),
   expertise( 0 ),
+  leech( 0 ),
+  avoidance( 0 ),
   spell_crit_chance(),
   attack_crit_chance(),
   block_reduction(),
   mastery(),
+  versatility( 0 ),
   skill( 1.0 ),
   skill_debuff( 0.0 ),
   distance( 0 ),
@@ -1375,6 +1379,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   attack_power_multiplier( 1.0 ),
   base_armor_multiplier( 1.0 ),
   armor_multiplier( 1.0 ),
+  crit_damage_multiplier( 1.0 ),
+  crit_healing_multiplier( 1.0 ),
   position( POSITION_BACK )
 {
   range::fill( attribute_multiplier, 1.0 );
@@ -1402,6 +1408,8 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " attack_crit_chance={}", s.attack_crit_chance );
   fmt::format_to( out, " block_reduction={}", s.block_reduction );
   fmt::format_to( out, " mastery={}", s.mastery );
+  fmt::format_to( out, " versatility={}", s.versatility );
+  fmt::format_to( out, " leech={}", s.leech );
   fmt::format_to( out, " skill={}", s.skill );
   fmt::format_to( out, " distance={}", s.distance );
   fmt::format_to( out, " armor_coeff={}", s.armor_coeff );
@@ -1411,6 +1419,8 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " attack_power_multiplier={}", s.attack_power_multiplier );
   fmt::format_to( out, " base_armor_multiplier={}", s.base_armor_multiplier );
   fmt::format_to( out, " armor_multiplier={}", s.armor_multiplier );
+  fmt::format_to( out, " crit_damage_multiplier={}", s.crit_damage_multiplier );
+  fmt::format_to( out, " crit_healing_multiplier={}", s.crit_healing_multiplier );
   fmt::format_to( out, " position={}", s.position );
 }
 
@@ -1421,7 +1431,7 @@ void player_t::init()
   // Validate current fight style is supported by the actor's module.
   if ( !validate_fight_style( sim->fight_style ) )
   {
-    sim->error( "Player {} does not support fight style {}, results may be unreliable.", *this,
+    sim->error( "{} does not support fight style {}, results may be unreliable.", *this,
                 util::fight_style_string( sim->fight_style ) );
   }
 
@@ -1491,9 +1501,6 @@ void player_t::init_character_properties()
   replace_spells();
   init_position();
   init_professions();
-
-  if ( sim->tmi_window_global > 0 )
-    tmi_window = sim->tmi_window_global;
 }
 
 /**
@@ -1523,26 +1530,42 @@ void player_t::init_base_stats()
 
   if ( !is_enemy() )
   {
-    base.stats.attribute[ STAT_STRENGTH ] =
-        dbc->race_base( race ).strength + dbc->attribute_base( type, level() ).strength;
-    base.stats.attribute[ STAT_AGILITY ] = dbc->race_base( race ).agility + dbc->attribute_base( type, level() ).agility;
-    base.stats.attribute[ STAT_STAMINA ] = dbc->race_base( race ).stamina + dbc->attribute_base( type, level() ).stamina;
-    base.stats.attribute[ STAT_INTELLECT ] =
-        dbc->race_base( race ).intellect + dbc->attribute_base( type, level() ).intellect;
-    base.stats.attribute[ STAT_SPIRIT ] = dbc->race_base( race ).spirit + dbc->attribute_base( type, level() ).spirit;
+    base.stats.attribute[ STAT_STRENGTH ]  = dbc->race_base( race ).strength + dbc->attribute_base( type, level() ).strength;
+    base.stats.attribute[ STAT_AGILITY ]   = dbc->race_base( race ).agility + dbc->attribute_base( type, level() ).agility;
+    base.stats.attribute[ STAT_STAMINA ]   = dbc->race_base( race ).stamina + dbc->attribute_base( type, level() ).stamina;
+    base.stats.attribute[ STAT_INTELLECT ] = dbc->race_base( race ).intellect + dbc->attribute_base( type, level() ).intellect;
+    base.stats.attribute[ STAT_SPIRIT ]    = dbc->race_base( race ).spirit + dbc->attribute_base( type, level() ).spirit;
 
     // heroic presence is treated like base stats, floored before adding in; tested 2014-07-20
-    base.stats.attribute[ STAT_STRENGTH ] += util::floor( racials.heroic_presence->effectN( 1 ).average( this ) );
-    base.stats.attribute[ STAT_AGILITY ] += util::floor( racials.heroic_presence->effectN( 2 ).average( this ) );
+    base.stats.attribute[ STAT_STRENGTH ]  += util::floor( racials.heroic_presence->effectN( 1 ).average( this ) );
+    base.stats.attribute[ STAT_AGILITY ]   += util::floor( racials.heroic_presence->effectN( 2 ).average( this ) );
     base.stats.attribute[ STAT_INTELLECT ] += util::floor( racials.heroic_presence->effectN( 3 ).average( this ) );
     // Endurance seems to be using ceiling
-    base.stats.attribute[ STAT_STAMINA ] += util::ceil( racials.endurance->effectN( 1 ).average( this ) );
+    base.stats.attribute[ STAT_STAMINA ]   += util::ceil( racials.endurance->effectN( 1 ).average( this ) );
 
-    base.spell_crit_chance        = dbc->spell_crit_base( type, level() );
-    base.attack_crit_chance       = dbc->melee_crit_base( type, level() );
+    base.spell_crit_chance        = dbc->spell_crit_base( type, level() ) +
+                                    racials.viciousness->effectN( 1 ).percent() +
+                                    racials.arcane_acuity->effectN( 1 ).percent();
+    base.attack_crit_chance       = dbc->melee_crit_base( type, level() ) +
+                                    racials.viciousness->effectN( 1 ).percent() +
+                                    racials.arcane_acuity->effectN( 1 ).percent();
+    if ( timeofday == DAY_TIME )
+    {
+      base.spell_crit_chance      += racials.touch_of_elune->effectN( 1 ).percent();
+      base.attack_crit_chance     += racials.touch_of_elune->effectN( 1 ).percent();
+    }
     base.spell_crit_per_intellect = dbc->spell_crit_scaling( type, level() );
     base.attack_crit_per_agility  = dbc->melee_crit_scaling( type, level() );
-    base.mastery                  = 8.0;
+    base.mastery                  = 8.0 + racials.awakened->effectN( 1 ).base_value();
+    base.versatility              = racials.mountaineer->effectN( 1 ).percent() +
+                                    racials.brush_it_off->effectN( 1 ).percent();
+    base.leech                    = 0.0;
+    base.avoidance                = 0.0;
+
+    base.crit_damage_multiplier   *= ( 1.0 + racials.brawn->effectN( 1 ).percent() ) *
+                                     ( 1.0 + racials.might_of_the_mountain->effectN( 1 ).percent() );
+    base.crit_healing_multiplier  *= ( 1.0 + racials.brawn->effectN( 3 ).percent() ) *
+                                     ( 1.0 + racials.might_of_the_mountain->effectN( 3 ).percent() );
 
     resources.base[ RESOURCE_HEALTH ] = dbc->health_base( type, level() );
     resources.base[ RESOURCE_MANA ]   = dbc->resource_base( type, level() );
@@ -1720,6 +1743,9 @@ void player_t::init_initial_stats()
 
     initial.stats += enchant;
     initial.stats += sim->enchant;
+
+    // crit damage multiplier meta gems
+    initial.crit_damage_multiplier *= util::crit_multiplier( meta_gem );
   }
 
   initial.stats += total_gear;
@@ -1832,30 +1858,46 @@ void player_t::init_items()
         sim->error( "{} overriding unknown item slot '{}={}'; ignoring.", *this, override_slot, override_str );
       }
     }
-  }
 
-  if ( load_default_gear )
-  {
-    uint32_t class_, spec_;
-    if ( !dbc->spec_idx( specialization(), class_, spec_ ) )
+    if ( load_default_gear )
     {
-      sim->error( "{} cannot load default gear, invalid class and/or specialization.", *this );
-      return;
+      uint32_t class_, spec_;
+      if ( !dbc->spec_idx( specialization(), class_, spec_ ) )
+      {
+        sim->error( "{} cannot load default gear, invalid class and/or specialization.", *this );
+        return;
+      }
+
+      for ( const auto& gear : character_loadout_data_t::data( class_, spec_, is_ptr() ) )
+      {
+        const auto& item = dbc->item( gear.id_item );
+        auto inv_type = static_cast<inventory_type>( item.inventory_type );
+        auto slot = util::translate_invtype( inv_type );
+
+        if ( !items[ slot ].options_str.empty() )
+        {
+          if ( inv_type == INVTYPE_WEAPON && slot == SLOT_MAIN_HAND )
+            slot = SLOT_OFF_HAND;
+          else if ( inv_type == INVTYPE_FINGER && slot == SLOT_FINGER_1 )
+            slot = SLOT_FINGER_2;
+          else if ( inv_type == INVTYPE_TRINKET && slot == SLOT_TRINKET_1 )
+            slot = SLOT_TRINKET_2;
+          else
+            continue;
+        }
+
+        items[ slot ].options_str =
+            fmt::format( ",id={},ilevel={}", gear.id_item, character_loadout_data_t::default_item_level() );
+      }
     }
 
-    for ( const auto& gear : character_loadout_data_t::data( class_, spec_, is_ptr() ) )
+    // Legendary Shadoweave Shirt used as base item for enable_all_item_effects
+    if ( sim->enable_all_item_effects )
     {
-      const auto& item = dbc->item( gear.id_item );
-      auto slot = util::translate_invtype( static_cast<inventory_type>( item.inventory_type ) );
-
-      if ( !items[ slot ].options_str.empty() )
-        continue;
-
-      items[ slot ].options_str =
-          fmt::format( ",id={},ilevel={}", gear.id_item, character_loadout_data_t::default_item_level() );
+      items[ SLOT_SHIRT ].options_str =
+          fmt::format( ",id=45037,ilevel={}", character_loadout_data_t::default_item_level() );
     }
   }
-
   // We need to simple-parse the items first, this will set up some base information, and parse out
   // simple options
   for ( auto& item : items )
@@ -2064,12 +2106,7 @@ void player_t::init_defense()
   }
 
   if ( !is_pet() && primary_role() == ROLE_TANK )
-  {
     collected_data.health_changes.collect = true;
-    collected_data.health_changes.set_bin_size( sim->tmi_bin_size );
-    collected_data.health_changes_tmi.collect = true;
-    collected_data.health_changes_tmi.set_bin_size( sim->tmi_bin_size );
-  }
 
 }
 
@@ -2119,6 +2156,21 @@ void player_t::create_special_effects()
 
     special_effects.push_back( new special_effect_t( effect ) );
   }
+
+  if ( sim->enable_all_item_effects )
+  {
+    for ( auto id : unique_gear::thewarwithin::__tww_special_effect_ids )
+    {
+      if ( unique_gear::find_special_effect( this, id ) )
+        continue;
+
+      special_effect_t effect( &items[ SLOT_SHIRT ] );
+      unique_gear::initialize_special_effect( effect, id );
+
+      special_effects.push_back( new special_effect_t( effect ) );
+    }
+  }
+
 
   unique_gear::initialize_racial_effects( this );
 
@@ -2810,8 +2862,11 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
       auto trait = node.front().first;
       size_t rank = trait->max_ranks;
+      auto _tree = static_cast<talent_tree>( trait->tree_index );
 
-      if ( !std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) &&
+      // hero talents don't seem to require a matching specialization
+      if ( _tree != talent_tree::HERO &&
+           !std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) &&
            !range::contains( trait->id_spec, player->specialization() ) )
       {
         do_error( fmt::format( "selected node {} is not available to player's spec.", id ) );
@@ -2858,8 +2913,6 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
         trait = node[ index ].first;
       }
-
-      auto _tree = static_cast<talent_tree>( trait->tree_index );
 
       player->player_traits.emplace_back( _tree, trait->id_trait_node_entry, as<unsigned>( rank ) );
 
@@ -2918,6 +2971,35 @@ static void enable_all_talents( player_t* player )
   }
 }
 
+static void enable_default_talents( player_t* player )
+{
+  player->sim->print_debug( "Loading default talents for {}.", *player );
+
+  auto traits = trait_loadout_data_t::data( player->specialization(), player->is_ptr() );
+
+  for ( size_t i = 0; i < traits.size(); i++ )
+  {
+    if ( ( i + 1 ) < traits.size() && traits[ i ].id_trait_node_entry == traits[ i + 1 ].id_trait_node_entry )
+      i++;
+
+    auto trait = trait_data_t::find( traits[ i ].id_trait_node_entry, player->is_ptr() );
+
+    if ( !trait->id_node )
+    {
+      player->sim->error( "{} default talent not found: id_trait_node_entry={} order={}", *player,
+                          traits[ i ].id_trait_node_entry, traits[ i ].order );
+    }
+    else
+    {
+      auto tree = static_cast<talent_tree>( trait->tree_index );
+
+      player->player_traits.emplace_back( tree, traits[ i ].id_trait_node_entry, traits[ i ].rank );
+      player->sim->print_debug( "{} adding {} talent {} ({})", *player, util::talent_tree_string( tree ), trait->name,
+                                traits[ i ].rank );
+    }
+  }
+}
+
 void player_t::init_talents()
 {
   sim->print_debug( "Initializing talents for {}.", *this );
@@ -2931,6 +3013,10 @@ void player_t::init_talents()
   if ( sim->enable_all_talents )
   {
     enable_all_talents( this );
+  }
+  else if ( load_default_talents )
+  {
+    enable_default_talents( this );
   }
   else
   {
@@ -3933,13 +4019,15 @@ void player_t::create_buffs()
   sim->print_debug( "Creating Auras, Buffs, and Debuffs for {}.", *this );
 
   // Infinite-Stacking Buffs and De-Buffs for everyone
-  buffs.stunned =
-      make_buff( this, "stunned" )->set_max_stack( 1 )->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-        if ( new_ == 0 )
-        {
-          schedule_ready();
-        }
-      } );
+  buffs.stunned = make_buff( this, "stunned" )
+    ->set_max_stack( 1 )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( new_ == 0 )
+        schedule_ready();
+    } );
+
+  buffs.rooted = make_buff( this, "rooted" )->set_max_stack( 1 )->set_quiet( true );
+
   debuffs.casting = make_buff( this, "casting" )->set_max_stack( 1 )->set_quiet( true );
 
   // .. for players
@@ -4252,7 +4340,7 @@ double player_t::composite_melee_haste() const
   return h;
 }
 
-double player_t::composite_melee_speed() const
+double player_t::composite_melee_auto_attack_speed() const
 {
   double h = composite_melee_haste();
 
@@ -4264,9 +4352,6 @@ double player_t::composite_melee_speed() const
 
   if ( buffs.way_of_controlled_currents && buffs.way_of_controlled_currents->check() )
     h *= 1.0 / ( 1.0 + buffs.way_of_controlled_currents->check_stack_value() );
-
-  if ( buffs.heavens_nemesis && buffs.heavens_nemesis->data().effectN( 1 ).subtype() == A_MOD_RANGED_AND_MELEE_ATTACK_SPEED && buffs.heavens_nemesis->check() )
-    h *= 1.0 / ( 1.0 + buffs.heavens_nemesis->check_stack_value() );
 
   return h;
 }
@@ -4381,20 +4466,13 @@ double player_t::composite_melee_crit_chance() const
 {
   double ac = current.attack_crit_chance;
 
-  ac += apply_combat_rating_dr( RATING_MELEE_CRIT,
-      composite_melee_crit_rating() / current.rating.attack_crit );
+  ac += apply_combat_rating_dr( RATING_MELEE_CRIT, composite_melee_crit_rating() / current.rating.attack_crit );
 
   if ( current.attack_crit_per_agility )
     ac += ( cache.agility() / current.attack_crit_per_agility / 100.0 );
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     ac += b->check_stack_value();
-
-  ac += racials.viciousness->effectN( 1 ).percent();
-  ac += racials.arcane_acuity->effectN( 1 ).percent();
-
-  if ( timeofday == DAY_TIME )
-    ac += racials.touch_of_elune->effectN( 1 ).percent();
 
   return ac;
 }
@@ -4623,7 +4701,7 @@ double player_t::composite_spell_haste() const
 /**
  * This is the old spell_haste and incorporates everything that buffs cast speed
  */
-double player_t::composite_spell_speed() const
+double player_t::composite_spell_cast_speed() const
 {
   auto speed = cache.spell_haste();
 
@@ -4690,8 +4768,7 @@ double player_t::composite_spell_crit_chance() const
 {
   double sc = current.spell_crit_chance;
 
-  sc += apply_combat_rating_dr( RATING_SPELL_CRIT,
-      composite_spell_crit_rating() / current.rating.spell_crit );
+  sc += apply_combat_rating_dr( RATING_SPELL_CRIT, composite_spell_crit_rating() / current.rating.spell_crit );
 
   if ( current.spell_crit_per_intellect > 0 )
   {
@@ -4700,14 +4777,6 @@ double player_t::composite_spell_crit_chance() const
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     sc += b->check_stack_value();
-
-  sc += racials.viciousness->effectN( 1 ).percent();
-  sc += racials.arcane_acuity->effectN( 1 ).percent();
-
-  if ( timeofday == DAY_TIME )
-  {
-    sc += racials.touch_of_elune->effectN( 1 ).percent();
-  }
 
   if ( buffs.focus_magic )
     sc += buffs.focus_magic->check_value();
@@ -4728,10 +4797,9 @@ double player_t::composite_spell_hit() const
 
 double player_t::composite_mastery() const
 {
-  double cm =
-      current.mastery + apply_combat_rating_dr( RATING_MASTERY, composite_mastery_rating() / current.rating.mastery );
+  double cm = current.mastery;
 
-  cm += racials.awakened->effectN( 1 ).base_value();
+  cm += apply_combat_rating_dr( RATING_MASTERY, composite_mastery_rating() / current.rating.mastery );
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_MASTERY ] )
     cm += b->check_stack_value();
@@ -4746,8 +4814,10 @@ double player_t::composite_bonus_armor() const
 
 double player_t::composite_damage_versatility() const
 {
-  double cdv = apply_combat_rating_dr( RATING_DAMAGE_VERSATILITY,
-      composite_damage_versatility_rating() / current.rating.damage_versatility );
+  double cdv = current.versatility;
+
+  cdv += apply_combat_rating_dr( RATING_DAMAGE_VERSATILITY,
+           composite_damage_versatility_rating() / current.rating.damage_versatility );
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     cdv += b->check_stack_value();
@@ -4760,16 +4830,15 @@ double player_t::composite_damage_versatility() const
   if ( buffs.dmf_well_fed )
     cdv += buffs.dmf_well_fed->check_value();
 
-  cdv += racials.mountaineer->effectN( 1 ).percent();
-  cdv += racials.brush_it_off->effectN( 1 ).percent();
-
   return cdv;
 }
 
 double player_t::composite_heal_versatility() const
 {
-  double chv = apply_combat_rating_dr( RATING_HEAL_VERSATILITY,
-      composite_heal_versatility_rating() / current.rating.heal_versatility );
+  double chv = current.versatility;
+
+  chv += apply_combat_rating_dr( RATING_HEAL_VERSATILITY,
+           composite_heal_versatility_rating() / current.rating.heal_versatility );
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     chv += b->check_stack_value();
@@ -4782,16 +4851,15 @@ double player_t::composite_heal_versatility() const
   if ( buffs.dmf_well_fed )
     chv += buffs.dmf_well_fed->check_value();
 
-  chv += racials.mountaineer->effectN( 1 ).percent();
-  chv += racials.brush_it_off->effectN( 1 ).percent();
-
   return chv;
 }
 
 double player_t::composite_mitigation_versatility() const
 {
-  double cmv = apply_combat_rating_dr( RATING_MITIGATION_VERSATILITY,
-      composite_mitigation_versatility_rating() / current.rating.mitigation_versatility );
+  double cmv = current.versatility / 2;
+
+  cmv += apply_combat_rating_dr( RATING_MITIGATION_VERSATILITY,
+           composite_mitigation_versatility_rating() / current.rating.mitigation_versatility );
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     cmv += b->check_stack_value() / 2;
@@ -4804,21 +4872,18 @@ double player_t::composite_mitigation_versatility() const
   if ( buffs.dmf_well_fed )
     cmv += buffs.dmf_well_fed->check_value() / 2;
 
-  cmv += racials.mountaineer->effectN( 1 ).percent() / 2;
-  cmv += racials.brush_it_off->effectN( 1 ).percent() / 2;
-
   return cmv;
 }
 
 double player_t::composite_leech() const
 {
-  return apply_combat_rating_dr( RATING_LEECH, composite_leech_rating() / current.rating.leech );
+  return current.leech + apply_combat_rating_dr( RATING_LEECH, composite_leech_rating() / current.rating.leech );
 }
 
 double player_t::composite_run_speed() const
 {
   // speed DRs using the following formula:
-  double pct = composite_speed_rating() / current.rating.speed;
+  double pct = apply_combat_rating_dr( RATING_SPEED, composite_speed_rating() / current.rating.speed );
 
   double coefficient = std::exp( -.0003 * composite_speed_rating() );
 
@@ -4827,7 +4892,7 @@ double player_t::composite_run_speed() const
 
 double player_t::composite_avoidance() const
 {
-  return composite_avoidance_rating() / current.rating.avoidance;
+  return apply_combat_rating_dr( RATING_AVOIDANCE, composite_avoidance_rating() / current.rating.avoidance );
 }
 
 double player_t::composite_corruption() const
@@ -4998,12 +5063,7 @@ double player_t::composite_player_target_crit_chance( player_t* target ) const
 
 double player_t::composite_player_critical_damage_multiplier( const action_state_t* /* s */ ) const
 {
-  double m = 1.0;
-
-  m *= 1.0 + racials.brawn->effectN( 1 ).percent();
-  m *= 1.0 + racials.might_of_the_mountain->effectN( 1 ).percent();
-  m *= 1.0 + passive_values.amplification_1;
-  m *= 1.0 + passive_values.amplification_2;
+  double m = current.crit_damage_multiplier;
 
   if ( buffs.elemental_chaos_fire )
     m *= 1.0 + buffs.elemental_chaos_fire->check_value();
@@ -5024,15 +5084,10 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
 
 double player_t::composite_player_critical_healing_multiplier() const
 {
-  double m = 1.0;
-
-  m += racials.brawn->effectN( 1 ).percent();
-  m += racials.might_of_the_mountain->effectN( 1 ).percent();
-  m += 0.5 * passive_values.amplification_1;
-  m += 0.5 * passive_values.amplification_2;
+  double m = current.crit_healing_multiplier;
 
   if ( buffs.elemental_chaos_frost )
-    m += buffs.elemental_chaos_frost->check_value();
+    m *= 1.0 + buffs.elemental_chaos_frost->check_value();
 
   return m;
 }
@@ -5067,6 +5122,9 @@ double player_t::non_stacking_movement_modifier() const
 
     if ( buffs.normalization_increase && buffs.normalization_increase->check() )
       speed = std::max( buffs.normalization_increase->data().effectN( 3 ).percent(), speed );
+
+    if ( buffs.surekian_grace && buffs.surekian_grace->check() )
+      speed = std::max( buffs.surekian_grace->check_value(), speed );
   }
 
   return speed;
@@ -5158,7 +5216,6 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
   return m;
 }
 
-// TODO: Move racial passives to init_base_stats
 double player_t::composite_rating_multiplier( rating_e rating ) const
 {
   double v = passive_rating_multiplier.get( rating );
@@ -5349,12 +5406,12 @@ void player_t::invalidate_cache( cache_e c )
       break;
 
     case CACHE_ATTACK_HASTE:
-      invalidate_cache( CACHE_ATTACK_SPEED );
+      invalidate_cache( CACHE_AUTO_ATTACK_SPEED );
       invalidate_cache( CACHE_RPPM_HASTE );
       break;
 
     case CACHE_SPELL_HASTE:
-      invalidate_cache( CACHE_SPELL_SPEED );
+      invalidate_cache( CACHE_SPELL_CAST_SPEED );
       invalidate_cache( CACHE_RPPM_HASTE );
       break;
 
@@ -5533,10 +5590,8 @@ void player_t::combat_begin()
   // necessary because food/flask are counted as resource gains, and thus provide phantom
   // gains on the timeline if not corrected
   collected_data.health_changes.previous_gain_level     = 0.0;
-  collected_data.health_changes_tmi.previous_gain_level = 0.0;
   // forcing a resource timeline data collection in combat_end() seems to have rendered this next line unnecessary
   collected_data.health_changes.previous_loss_level     = 0.0;
-  collected_data.health_changes_tmi.previous_gain_level = 0.0;
 
   for ( size_t i = 0, end = collected_data.combat_start_resource.size(); i < end; ++i )
   {
@@ -5662,12 +5717,6 @@ void player_t::datacollection_begin()
     collected_data.health_changes.timeline_normalized.clear();
   }
 
-  if ( collected_data.health_changes_tmi.collect )
-  {
-    collected_data.health_changes_tmi.timeline.clear();  // Drop Data
-    collected_data.health_changes_tmi.timeline_normalized.clear();
-  }
-
   range::for_each( buff_list, std::mem_fn( &buff_t::datacollection_begin ) );
   range::for_each( stats_list, std::mem_fn( &stats_t::datacollection_begin ) );
   range::for_each( uptime_list, std::mem_fn( &uptime_t::datacollection_begin ) );
@@ -5725,8 +5774,6 @@ void player_t::datacollection_end()
     collected_data.timeline_dmg_taken.add( sim->current_time(), 0.0 );
     collected_data.health_changes.timeline.add( sim->current_time(), 0.0 );
     collected_data.health_changes.timeline_normalized.add( sim->current_time(), 0.0 );
-    collected_data.health_changes_tmi.timeline.add( sim->current_time(), 0.0 );
-    collected_data.health_changes_tmi.timeline_normalized.add( sim->current_time(), 0.0 );
   }
   collected_data.collect_data( *this );
 
@@ -6053,9 +6100,9 @@ void player_t::reset()
 
   current_execute_type = execute_type::FOREGROUND;
 
-  current_attack_speed    = 1.0;
-  gcd_current_haste_value = 1.0;
-  gcd_type          = gcd_haste_type::NONE;
+  current_auto_attack_speed = 1.0;
+  gcd_current_haste_value   = 1.0;
+  gcd_type = gcd_haste_type::NONE;
 
   cast_delay_reaction = timespan_t::zero();
   cast_delay_occurred = timespan_t::zero();
@@ -6498,7 +6545,7 @@ void player_t::arise()
     }
   }
 
-  current_attack_speed = cache.attack_speed();
+  current_auto_attack_speed = cache.auto_attack_speed();
 
   // Requires index-based lookup since on-arise callbacks may
   // insert new on-arise callbacks to the vector.
@@ -7039,7 +7086,7 @@ stat_e player_t::normalize_by() const
   role_e role = primary_role();
   if ( role == ROLE_SPELL || role == ROLE_HEAL )
     return STAT_INTELLECT;
-  else if ( role == ROLE_TANK && ( sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_DEATHS ) &&
+  else if ( role == ROLE_TANK && sm == SCALE_METRIC_DEATHS &&
             scaling->scaling[ sm ].get_stat( STAT_STAMINA ) != 0.0 )
     return STAT_STAMINA;
   else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE || type == MONK || type == DEMON_HUNTER )
@@ -7674,7 +7721,7 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
 /**
  * Statistical data collection for damage taken.
  */
-void collect_dmg_taken_data( player_t& p, const action_state_t* s, double result_ignoring_external_absorbs )
+void collect_dmg_taken_data( player_t& p, const action_state_t* s, double /* result_ignoring_external_absorbs */ )
 {
   p.iteration_dmg_taken += s->result_amount;
 
@@ -7691,13 +7738,6 @@ void collect_dmg_taken_data( player_t& p, const action_state_t* s, double result
 
     // store value in incoming damage array for conditionals
     p.incoming_damage.push_back( {p.sim->current_time(), s->result_amount, s->action->get_school()} );
-  }
-  if ( p.collected_data.health_changes_tmi.collect )
-  {
-    // health_changes_tmi ignores external effects (e.g. external absorbs), used for raw TMI
-    p.collected_data.health_changes_tmi.timeline.add( p.sim->current_time(), result_ignoring_external_absorbs );
-    p.collected_data.health_changes_tmi.timeline_normalized.add(
-        p.sim->current_time(), result_ignoring_external_absorbs / p.resources.max[ RESOURCE_HEALTH ] );
   }
 }
 
@@ -7920,14 +7960,6 @@ void player_t::assess_heal( school_e, result_amount_type, action_state_t* s )
     double normalized =
         resources.max[ RESOURCE_HEALTH ] ? -( s->result_amount ) / resources.max[ RESOURCE_HEALTH ] : 0.0;
     collected_data.health_changes.timeline_normalized.add( sim->current_time(), normalized );
-
-    // health_changes_tmi ignores external healing - use result_total to count player overhealing as effective healing
-    if ( s->action->player == this || is_my_pet( s->action->player ) )
-    {
-      collected_data.health_changes_tmi.timeline.add( sim->current_time(), -( s->result_total ) );
-      collected_data.health_changes_tmi.timeline_normalized.add(
-          sim->current_time(), -( s->result_total ) / resources.max[ RESOURCE_HEALTH ] );
-    }
   }
 
   // store iteration heal taken
@@ -9717,7 +9749,7 @@ struct cancel_buff_t : public action_t
     add_option( opt_string( "name", buff_name ) );
     parse_options( options_str );
     ignore_false_positive = true;
-
+    harmful = false;
     trigger_gcd = timespan_t::zero();
   }
 
@@ -11291,14 +11323,14 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   if ( expression_str == "attack_haste" )
     return make_fn_expr( expression_str, [this] { return cache.attack_haste(); } );
 
-  if ( expression_str == "attack_speed" )
-    return make_fn_expr( expression_str, [this] { return cache.attack_speed(); } );
+  if ( expression_str == "auto_attack_speed" )
+    return make_fn_expr( expression_str, [this] { return cache.auto_attack_speed(); } );
 
   if ( expression_str == "spell_haste" )
     return make_fn_expr( expression_str, [this] { return cache.spell_haste(); } );
 
-  if ( expression_str == "spell_speed" )
-    return make_fn_expr( expression_str, [this] { return cache.spell_speed(); } );
+  if ( expression_str == "spell_cast_speed" )
+    return make_fn_expr( expression_str, [this] { return cache.spell_cast_speed(); } );
 
   if ( expression_str == "mastery_value" )
     return make_mem_fn_expr( expression_str, this->cache, &player_stat_cache_t::mastery_value );
@@ -12618,8 +12650,6 @@ void player_t::create_options()
   add_option( opt_func( "brain_lag_stddev", parse_brain_lag_stddev ) );
   add_option( opt_timespan( "cooldown_tolerance", cooldown_tolerance_ ) );
   add_option( opt_bool( "scale_player", scale_player ) );
-  add_option( opt_string( "tmi_output", tmi_debug_file_str ) );
-  add_option( opt_float( "tmi_window", tmi_window, 0, std::numeric_limits<double>::max() ) );
   add_option( opt_func( "spec", parse_specialization ) );
   add_option( opt_func( "specialization", parse_specialization ) );
   add_option( opt_func( "stat_timelines", parse_stat_timelines ) );
@@ -12634,6 +12664,7 @@ void player_t::create_options()
   add_option( opt_append( "spec_talents+", spec_talents_str ) );
   add_option( opt_string( "hero_talents", hero_talents_str ) );
   add_option( opt_append( "hero_talents+", hero_talents_str ) );
+  add_option( opt_bool( "load_default_talents", load_default_talents ) );
 
   // Consumables
   add_option( opt_string( "potion", potion_str ) );
@@ -12901,8 +12932,12 @@ void player_t::create_options()
   add_option( opt_bool( "dragonflight.rashoks_use_true_overheal", dragonflight_opts.rashoks_use_true_overheal ) );
   add_option( opt_float( "dragonflight.rashoks_fake_overheal", dragonflight_opts.rashoks_fake_overheal, 0.0, 1.0 ) );
   add_option( opt_string( "dragonflight.timerunners_advantage", dragonflight_opts.timerunners_advantage ) );
+  add_option( opt_int( "dragonflight.brilliance_party", dragonflight_opts.brilliance_party, 0, 4 ) );
+  add_option( opt_int( "dragonflight.windweaver_party", dragonflight_opts.windweaver_party, 0, 4 ) );
+  add_option( opt_string( "dragonflight.windweaver_party_ilvls", dragonflight_opts.windweaver_party_ilvls ) );
 
   // The War Within options
+  add_option( opt_string( "thewarwithin.sikran_shadow_arsenal_stance", thewarwithin_opts.sikrans_shadow_arsenal_stance ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )
@@ -12999,7 +13034,6 @@ void player_t::analyze( sim_t& s )
     s.players_by_hps.push_back( this );
     s.players_by_hps_plus_aps.push_back( this );
     s.players_by_dtps.push_back( this );
-    s.players_by_tmi.push_back( this );
     s.players_by_name.push_back( this );
     s.players_by_apm.push_back( this );
     s.players_by_variance.push_back( this );
@@ -13122,10 +13156,6 @@ scaling_metric_data_t player_t::scaling_for_metric( scale_metric_e metric ) cons
       return { metric, q->collected_data.dmg_taken };
     case SCALE_METRIC_HTPS:
       return { metric, q->collected_data.htps };
-    case SCALE_METRIC_TMI:
-      return { metric, q->collected_data.theck_meloree_index };
-    case SCALE_METRIC_ETMI:
-      return { metric, q->collected_data.effective_theck_meloree_index };
     case SCALE_METRIC_DEATHS:
       return { metric, q->collected_data.deaths };
     case SCALE_METRIC_TIME:
@@ -13448,9 +13478,6 @@ player_collected_data_t::player_collected_data_t( const player_t* player ) :
   atps( player->name_str + " Absorb Taken Per Second", tank_container_type( player, 2 ) ),
   absorb_taken( player->name_str + " Absorb Taken", tank_container_type( player, 2 ) ),
   deaths( player->name_str + " Deaths", tank_container_type( player, 2 ) ),
-  theck_meloree_index( player->name_str + " Theck-Meloree Index", tank_container_type( player, 1 ) ),
-  effective_theck_meloree_index( player->name_str + "Theck-Meloree Index (Effective)",
-                                 tank_container_type( player, 2 ) ),
   max_spike_amount( player->name_str + " Max Spike Value", tank_container_type( player, 2 ) ),
   target_metric( player->name_str + " Target Metric", generic_container_type( player, 1 ) ),
   resource_timelines(),
@@ -13461,7 +13488,6 @@ player_collected_data_t::player_collected_data_t( const player_t* player ) :
     ( !player->is_enemy() && ( !player->is_pet() || player->sim->report_pets_separately ) ) ? RESOURCE_MAX : 0 ),
   stat_timelines(),
   health_changes(),
-  health_changes_tmi(),
   total_iterations( 0 ),
   buffed_stats_snapshot()
 {
@@ -13502,12 +13528,8 @@ void player_collected_data_t::reserve_memory( const player_t& p )
   deaths.reserve( size );
 
   if ( !p.is_pet() && p.primary_role() == ROLE_TANK && p.type != PLAYER_SIMPLIFIED )
-  {
-    theck_meloree_index.reserve( size );
-    effective_theck_meloree_index.reserve( size );
     p.sim->num_tanks++;
   }
-}
 
 void player_collected_data_t::merge( const player_t& other_player )
 {
@@ -13544,8 +13566,6 @@ void player_collected_data_t::merge( const player_t& other_player )
   deaths.merge( other.deaths );
   timeline_dmg_taken.merge( other.timeline_dmg_taken );
   timeline_healing_taken.merge( other.timeline_healing_taken );
-  theck_meloree_index.merge( other.theck_meloree_index );
-  effective_theck_meloree_index.merge( other.effective_theck_meloree_index );
 
   for ( size_t i = 0, end = resource_lost.size(); i < end; ++i )
   {
@@ -13580,7 +13600,6 @@ void player_collected_data_t::merge( const player_t& other_player )
   }
 
   health_changes.merged_timeline.merge( other.health_changes.merged_timeline );
-  health_changes_tmi.merged_timeline.merge( other.health_changes_tmi.merged_timeline );
 }
 
 void player_collected_data_t::analyze( const player_t& p )
@@ -13609,8 +13628,6 @@ void player_collected_data_t::analyze( const player_t& p )
   atps.analyze();
   // Tank
   deaths.analyze();
-  theck_meloree_index.analyze();
-  effective_theck_meloree_index.analyze();
   max_spike_amount.analyze();
 
   if ( !p.sim->single_actor_batch )
@@ -13624,7 +13641,6 @@ void player_collected_data_t::analyze( const player_t& p )
 
     // health changes need their own divisor
     health_changes.merged_timeline.adjust( *p.sim );
-    health_changes_tmi.merged_timeline.adjust( *p.sim );
   }
   // Single actor batch mode has to analyze the timelines in relation to their own fight lengths,
   // instead of the simulation-wide fight length.
@@ -13639,30 +13655,6 @@ void player_collected_data_t::analyze( const player_t& p )
 
     // health changes need their own divisor
     health_changes.merged_timeline.adjust( fight_length );
-    health_changes_tmi.merged_timeline.adjust( fight_length );
-  }
-}
-
-// This is pretty much only useful for dev debugging at this point, would need to modify to make it useful to users
-void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* nma, const std::vector<double>& weighted_value,
-                                                   const player_t& p )
-{
-  if ( !p.tmi_debug_file_str.empty() )
-  {
-    io::ofstream f;
-    f.open( p.tmi_debug_file_str );
-    // write elements to CSV
-    f << p.name_str << " TMI data:\n";
-
-    f << "damage,healing,health chg,norm health chg,norm mov avg, weighted val\n";
-
-    for ( size_t i = 0; i < health_changes.timeline.data().size(); i++ )
-    {
-      f.printf( "%f,%f,%f,%f,%f,%f\n", timeline_dmg_taken.data()[ i ], timeline_healing_taken.data()[ i ],
-                health_changes.timeline.data()[ i ], health_changes.timeline_normalized.data()[ i ], nma->data()[ i ],
-                weighted_value[ i ] );
-    }
-    f << "\n";
   }
 }
 
@@ -13684,62 +13676,6 @@ double player_collected_data_t::calculate_max_spike_damage( const health_changes
   max_spike *= window;
 
   return max_spike;
-}
-
-double player_collected_data_t::calculate_tmi( const health_changes_timeline_t& tl, int window, double f_length,
-                                               const player_t& p )
-{
-  // The Theck-Meloree Index is a metric that attempts to quantize the smoothness of damage intake.
-  // It performs an exponentially-weighted sum of the moving average of damage intake, with larger
-  // damage spikes being weighted more heavily. A formal definition of the metric can be found here:
-  // http://www.sacredduty.net/theck-meloree-index-standard-reference-document/
-
-  // accumulator
-  double tmi = 0;
-
-  // declare sliding average timeline
-  sc_timeline_t sliding_average_tl;
-
-  // create sliding average timelines from data
-  tl.timeline_normalized.build_sliding_average_timeline( sliding_average_tl, window );
-
-  // pull the data out of the normalized sliding average timeline
-  std::vector<double> weighted_value = sliding_average_tl.data();
-
-  // define constants
-  double D  = 10;          // filtering strength
-  double c2 = 450;         // N_0, default fight length for normalization
-  double c1 = 100000 / D;  // health scale factor, determines slope of plot
-
-  for ( auto& elem : weighted_value )
-  {
-    // weighted_value is the moving average (i.e. 1-second), so multiply by window size to get damage in "window"
-    // seconds
-    elem *= window;
-
-    // calculate exponentially-weighted contribution of this data point using filter strength D
-    elem = std::exp( D * elem );
-
-    // add to the TMI total; strictly speaking this should be moved outside the for loop and turned into a sort()
-    // followed by a sum for numerical accuracy
-    tmi += elem;
-  }
-
-  // multiply by vertical offset factor c2
-  tmi *= c2;
-  // normalize for fight length - should be equivalent to dividing by tl.timeline_normalized.data().size()
-  tmi /= f_length;
-  tmi *= tl.get_bin_size();
-  // take log of result
-  tmi = std::log( tmi );
-  // multiply by health decade scale factor
-  tmi *= c1;
-
-  // if an output file has been defined, write to it
-  if ( !p.tmi_debug_file_str.empty() )
-    print_tmi_debug_csv( &sliding_average_tl, weighted_value, p );
-
-  return tmi;
 }
 
 void player_collected_data_t::collect_data( const player_t& p )
@@ -13814,41 +13750,8 @@ void player_collected_data_t::collect_data( const player_t& p )
     combat_end_resource[ i ].add( p.resources.current[ i ] );
   }
 
-  // Health Change Calculations - only needed for tanks
-  double tank_metric = 0;
   if ( !p.is_pet() && p.primary_role() == ROLE_TANK && p.type != PLAYER_SIMPLIFIED )
-  {
-    double tmi       = 0;  // TMI result
-    double etmi      = 0;  // ETMI result
-    double max_spike = 0;  // Maximum spike size
     health_changes.merged_timeline.merge( health_changes.timeline );
-    health_changes_tmi.merged_timeline.merge( health_changes_tmi.timeline );
-
-    // Calculate Theck-Meloree Index (TMI), ETMI, and maximum spike damage
-    if ( !p.is_enemy() && p.type != HEALING_ENEMY )  // Boss TMI is irrelevant, causes problems in iteration #1
-    {
-      if ( f_length )
-      {
-        // define constants and variables
-        int window = (int)std::floor( p.tmi_window / health_changes_tmi.get_bin_size() +
-                                      0.5 );  // window size, bin time replaces 1 eventually
-
-        // Standard TMI uses health_changes_tmi, ignoring externals - use health_changes_tmi
-        tmi = calculate_tmi( health_changes_tmi, window, f_length, p );
-
-        // ETMI includes external healing - use health_changes
-        etmi = calculate_tmi( health_changes, window, f_length, p );
-
-        // Max spike uses health_changes_tmi as well, ignores external heals - use health_changes_tmi
-        max_spike = calculate_max_spike_damage( health_changes_tmi, window );
-
-        tank_metric = tmi;
-      }
-    }
-    theck_meloree_index.add( tmi );
-    effective_theck_meloree_index.add( etmi );
-    max_spike_amount.add( max_spike * 100.0 );
-  }
 
   if ( p.sim->target_error > 0 && !p.is_pet() && !p.is_enemy() )
   {
@@ -13880,7 +13783,7 @@ void player_collected_data_t::collect_data( const player_t& p )
         break;
 
       case ROLE_TANK:
-        metric = tank_metric;
+        metric = dps_metric;
         break;
 
       case ROLE_HEAL:
@@ -14150,11 +14053,11 @@ void player_t::adjust_global_cooldown( gcd_haste_type gcd_type )
     case gcd_haste_type::ATTACK_HASTE:
       new_haste = cache.attack_haste();
       break;
-    case gcd_haste_type::SPELL_SPEED:
-      new_haste = cache.spell_speed();
+    case gcd_haste_type::SPELL_CAST_SPEED:
+      new_haste = cache.spell_cast_speed();
       break;
-    case gcd_haste_type::ATTACK_SPEED:
-      new_haste = cache.attack_speed();
+    case gcd_haste_type::AUTO_ATTACK_SPEED:
+      new_haste = cache.auto_attack_speed();
       break;
     // SPEED_ANY and HASTE_ANY are nonsensical, actions have to have a correct GCD haste type so
     // they can be adjusted on state changes.
@@ -14210,17 +14113,17 @@ void player_t::adjust_global_cooldown( gcd_haste_type gcd_type )
 void player_t::adjust_auto_attack( gcd_haste_type type )
 {
   // Don't adjust autoattacks on spell-derived haste
-  if ( type == gcd_haste_type::SPELL_SPEED || type == gcd_haste_type::SPELL_HASTE )
+  if ( type == gcd_haste_type::SPELL_CAST_SPEED || type == gcd_haste_type::SPELL_HASTE )
   {
     return;
   }
 
   if ( main_hand_attack )
-    main_hand_attack->reschedule_auto_attack( current_attack_speed );
+    main_hand_attack->reschedule_auto_attack( current_auto_attack_speed );
   if ( off_hand_attack )
-    off_hand_attack->reschedule_auto_attack( current_attack_speed );
+    off_hand_attack->reschedule_auto_attack( current_auto_attack_speed );
 
-  current_attack_speed = cache.attack_speed();
+  current_auto_attack_speed = cache.auto_attack_speed();
 }
 
 timespan_t find_minimum_cd( const std::vector<std::pair<const cooldown_t*, const cooldown_t*>>& list )
@@ -14603,6 +14506,11 @@ void player_t::register_on_kill_callback( std::function<void( player_t* )> fn )
 void player_t::register_on_combat_state_callback( std::function<void( player_t*, bool )> fn )
 {
   callbacks_on_combat_state.emplace_back( std::move( fn ) );
+}
+
+void player_t::register_movement_callback( std::function<void( bool )> fn )
+{
+  callbacks_on_movement.emplace_back( std::move( fn ) );
 }
 
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const

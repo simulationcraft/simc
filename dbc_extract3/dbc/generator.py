@@ -1425,6 +1425,7 @@ class SpellDataGenerator(DataGenerator):
          402813, 402894, 402896, 402897, 402898, 402903, 407961, 407982, # Igneous Tidestone
          401428, 401422, # Vessel of Searing Shadow
          407914, 407913, 407939,  # Might of the Drogbar set
+         406550, # Enduring Dreadplate
          # 10.1.5
          418076, 418527, 418547, 418773, 418774, 418775, 418776, 419591, 418588, 418999, 418605, 419052,  # Mirror of Fractured Tomorrows
          417356, 417290, 417139, 417069, 417050, 417049, # Prophetic Stonescales
@@ -1454,11 +1455,25 @@ class SpellDataGenerator(DataGenerator):
          424051, 424057, # String of Delicacies
          417138, # Fyr'alath the Dreamrender
          # 10.2.6
-         433889, 433930, 433954, 433957, 433958, 434021, 434070, 434071, 434072, # reworked Tome of Unstable Power
+         433889, 433915, 433930, 433954, 433956, 433957, 433958, 434021, 434022, 434070, 434071, 434072, 434233, # reworked Tome of Unstable Power
          433826, 433829, 433830, # reworked globe of jagged ice
          433768, 433786, # reworked umbrelskul's fractured heart
+         434069, # reworked granyth's enduring scale
          # 10.2.7
          431760, 440393, # Cloak of Infinite Potential / Timerunner's Advantage
+         432334, # Explosive Barrage Damage
+         429409, # Fervor Damage
+         437064, # Lifestorm Damage
+         429273, # Arcanist's Edge Damage
+         429377, # Slay Damage
+         # 11.0 The War Within ================================================
+         443585, # fateweaved needle
+         452279, # aberrant spellforge
+         448621, 448643, # void reaper's chime
+         442267, 442280, # befouler's syringe
+         448436, # sik'ran's shadow arsenal
+         447097, # swarmlord's authority
+         449966, # malfunctioning ethereum module
         ),
 
         # Warrior:
@@ -1688,6 +1703,12 @@ class SpellDataGenerator(DataGenerator):
             ( 424491, 0 ), ( 424492, 0 ), ( 424493, 0 ), # T31 Subtlety clone damage spells
             ( 429951, 0 ),          # Deft Maneuvers alternative Blade Flurry instant attack spell
             ( 381628, 0 ),          # Dragonflight Internal Bleeding talent spell
+
+            # The War Within
+            ( 452538, 0 ),          # Fatebound coin (tails) spell
+            ( 452917, 0 ),          # Fatebound coin (tails) buff
+            ( 452923, 0 ),          # Fatebound coin (heads) buff
+            ( 452562, 0 ),          # Lucky Coin buff
         ),
 
         # Priest:
@@ -1765,6 +1786,9 @@ class SpellDataGenerator(DataGenerator):
             ( 450140, 0 ), ( 450150, 0 ), # Void Empowerment
             ( 451963, 0 ), ( 451964, 0 ), # Void Leech
             ( 451571, 0 ),                # Embrace the Shadow
+            # Archon Hero Talents
+            ( 453983, 0 ),                # Perfected Form
+            ( 453936, 0 ), ( 453943, 0 ), # Incessant Screams
         ),
 
         # Death Knight:
@@ -1828,6 +1852,8 @@ class SpellDataGenerator(DataGenerator):
           ( 425721, 0 ), # T31 Blood 2pc buff
           ( 377445, 0 ), # Unholy Aura debuff
           # The War Within
+          ( 290577, 0 ), # Abomiantion Disease Cloud
+          ( 439539, 0 ), # Icy Death Torrent Damage
           # Rider of the Apocalypse
           ( 444505, 0 ), # Mograines Might Buff
           ( 444826, 0 ), # Trollbanes Chains of Ice Main
@@ -1840,6 +1866,10 @@ class SpellDataGenerator(DataGenerator):
           ( 444252, 0 ), # Summon Nazgrim
           ( 444254, 0 ), # Summon Trollbane
           ( 444251, 0 ), # Summon Whitemane
+          ( 454393, 0 ), # Summon Mograine 2
+          ( 454392, 0 ), # Summon Nazgrim 2
+          ( 454390, 0 ), # Summon Trollbane 2
+          ( 454389, 0 ), # Summon Whitemane 2
           ( 448229, 0 ), # Soul Reaper
           ( 445513, 0 ), # Whitemane Death Coil
           ( 445504, 0 ), # Mograine Heart Strike
@@ -1850,6 +1880,12 @@ class SpellDataGenerator(DataGenerator):
           ( 434144, 0 ), # Infliction in Sorrow Damage
           ( 434246, 0 ), # Blood Eruption
           ( 434574, 0 ), # Blood Cleave
+          ( 445669, 0 ), # Vampiric Strike Range increase
+          # Deathbringer
+          ( 439594, 0 ), # Reapers Mark
+          ( 443404, 0 ), # Wave of Souls debuff
+          ( 442664, 0 ), # Wave of Souls area dummy
+          ( 440005, 0 ), # Blood Fever damage
         ),
 
         # Shaman:
@@ -2281,23 +2317,13 @@ class SpellDataGenerator(DataGenerator):
           # The War Within
           # Class
           # Balance
-          ( 394451, 1 ), ( 450360, 1 ), ( 450361, 1 ), # touch the cosmos
           # Feral
           # Guardian
           # Restoration
-          ( 145153, 4 ), # Dream of Cenarius heal
           # Hero talents
-          ( 429438, 0 ), # blooming infusion
-          ( 425206, 0 ), ( 425217, 0 ), ( 425219, 0 ), # boundless moonlight
-          ( 429625, 0 ), ( 429676, 0 ), # cenarius' might
-          ( 451177, 0 ), # dreadful wound
-          ( 433832, 0 ), ( 434112, 0 ), # dream surge
-          ( 441827, 0 ), # killing strikes
-          ( 432846, 0 ), # lunar amplification
+          ( 425217, 0 ), ( 425219, 0 ), # boundless moonlight
           ( 441585, 0 ), ( 441602, 0 ), # ravage
-          ( 439887, 0 ), ( 439888, 0 ), # root network
           ( 439891, 0 ), ( 439893, 0 ), # strategic infusion
-          ( 428545, 0 ), # treants of the moon
         ),
         # Demon Hunter:
         (
@@ -2348,6 +2374,7 @@ class SpellDataGenerator(DataGenerator):
           ( 336640, 2 ), # Charred Flesh
           ( 203981, 2 ), # Soul Fragments
           ( 409877, 2 ), # T30 4pc Recrimination buff
+          ( 428595, 2 ), # Illuminated Sigils
 
           # Aldrachi Reaver
           ( 442294, 0 ), # Reaver's Glaive
@@ -2359,6 +2386,7 @@ class SpellDataGenerator(DataGenerator):
 
           # Fel-scarred
           ( 453314, 0 ), # Enduring Torment
+          ( 451263, 0), ( 451266, 0 ), ( 452435, 0 ), ( 452443, 0 ), ( 452449, 0 ), ( 452452, 0 ), ( 452462, 0 ), ( 452463, 0 ), ( 452489, 0 ), ( 452491, 0 ), ( 452492, 0 ), ( 452493, 0 ), ( 452499, 0 ), ( 453323, 0 ), ( 451258, 0 ), # Demonsurge
        ),
 
        # Evoker:
@@ -2497,10 +2525,10 @@ class SpellDataGenerator(DataGenerator):
     # http://github.com/mangos/mangos/blob/400/src/game/SharedDefines.h
     _effect_type_blacklist = [
         5,      # SPELL_EFFECT_TELEPORT_UNITS
-        #10,     # SPELL_EFFECT_HEAL
         16,     # SPELL_EFFECT_QUEST_COMPLETE
         18,     # SPELL_EFFECT_RESURRECT
         25,     # SPELL_EFFECT_WEAPONS
+        36,     # Learn spell
         39,     # SPELL_EFFECT_LANGUAGE
         47,     # SPELL_EFFECT_TRADESKILL
         50,     # SPELL_EFFECT_TRANS_DOOR
@@ -2606,6 +2634,7 @@ class SpellDataGenerator(DataGenerator):
         221477, # Underlight (from Underlight Angler - Legion artifact fishing pole)
         345482, # Manifest Aethershunt (Shadowlands Conduit upgrade Maw item)
         345487, # Spatial Realignment Apparatus (Shadowlands Maw additional socket item)
+        282965, # Shadow Priest Testing Spell (DNT)
     ]
 
     _spell_families = {
@@ -3093,9 +3122,10 @@ class SpellDataGenerator(DataGenerator):
                 continue
 
             self.process_spell(spell.id, ids, 0, 0, False)
-            if spell.id in ids:
-                mask_class = self._class_masks[data.class_id] or 0
-                ids[spell.id]['mask_class'] |= mask_class
+            # for spelldatadump readability, we no longer assign a class to azerite
+            # if spell.id in ids:
+            #    mask_class = self._class_masks[data.class_id] or 0
+            #    ids[spell.id]['mask_class'] |= mask_class
 
         # Azerite esssence spells
         for data in self.db('AzeriteItemMilestonePower').values():
@@ -3195,7 +3225,6 @@ class SpellDataGenerator(DataGenerator):
                 if pattern.match(spell_data.name):
                     self.process_spell(spell_id, ids, 0, 0)
 
-
         # After normal spells have been fetched, go through all spell ids,
         # and get all the relevant aura_ids for selected spells
         more_ids = { }
@@ -3215,6 +3244,13 @@ class SpellDataGenerator(DataGenerator):
                 ids[id]['mask_class'] |= data['mask_class']
                 ids[id]['mask_race'] |= data['mask_race']
 
+        # Spells with description that is entirely in the format $@spelldesc###### are assumed to be associated
+        # with spell ###### and should be included.
+        for spell_id, spell_data in self.db('Spell').items():
+            if spell_data.desc:
+                r = re.match("\$@spell(?:aura|desc)([0-9]{1,6})", spell_data.desc)
+                if r and (id := int(r.group(1))) in ids:
+                    self.process_spell(spell_id, ids, ids[id]['mask_class'], ids[id]['mask_race'])
 
         #print('filter done', datetime.datetime.now() - _start)
         return ids
@@ -3895,6 +3931,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'dragonflight_season_4',
             'bonuses': [ 1594, 1595, 1596, 1597, 1598, 1599, 1600, 1601, 1602, 1603, 1604, 1605, 1606 ],
             'tier'   : 'DF4'
+        },
+        {
+            'name'   : 'kyevezzas_cruel_implements',
+            'bonuses': [ 1613 ],
+            'tier'   : 'TWW_KCI'
         },
     ]
 

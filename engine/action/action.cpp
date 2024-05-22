@@ -425,7 +425,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     base_multiplier( 1.0 ),
     base_hit(),
     base_crit(),
-    crit_multiplier( 1.0 ),
+    crit_chance_multiplier( 1.0 ),
     crit_bonus_multiplier( 1.0 ),
     crit_bonus(),
     base_dd_adder(),
@@ -474,6 +474,8 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     sync_action(),
     signature_str(),
     target_specific_dot( false ),
+    target_specific_debuff( false ),
+    target_debuff( spell_data_t::nil() ),
     action_list(),
     starved_proc(),
     queue_failed_proc(),
@@ -1163,11 +1165,11 @@ timespan_t action_t::gcd() const
     case gcd_haste_type::ATTACK_HASTE:
       gcd_ *= composite_haste();
       break;
-    case gcd_haste_type::SPELL_SPEED:
-      gcd_ *= player->cache.spell_speed();
+    case gcd_haste_type::SPELL_CAST_SPEED:
+      gcd_ *= player->cache.spell_cast_speed();
       break;
-    case gcd_haste_type::ATTACK_SPEED:
-      gcd_ *= player->cache.attack_speed();
+    case gcd_haste_type::AUTO_ATTACK_SPEED:
+      gcd_ *= player->cache.auto_attack_speed();
       break;
     case gcd_haste_type::NONE:
     default:
@@ -1259,7 +1261,7 @@ timespan_t action_t::travel_time() const
 
 double action_t::total_crit_bonus( const action_state_t* state ) const
 {
-  double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier( state );
+  double crit_multiplier_buffed = composite_player_critical_multiplier( state );
 
   double base_crit_bonus = crit_bonus;
   if ( sim->pvp_mode )
@@ -1308,11 +1310,12 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
   // Base amount rounded to some decimal, but the exact precision is currently unknown. For now assume 3 digits as that
   // is what AP/SP multipliers seem to be rounded to.
   amount = std::round( amount * 1000 ) * 0.001;
+  // Assuming both flat value tick amount and coeff tick amount are rolled into rolling periodics. Adjust if disproven.
   amount += bonus_ta( state );
-  double rolling_ta_multiplier = state->composite_rolling_ta_multiplier();
-  amount += state->composite_spell_power() * spell_tick_power_coefficient( state ) * rolling_ta_multiplier;
-  amount += state->composite_attack_power() * attack_tick_power_coefficient( state ) * rolling_ta_multiplier;
+  amount += state->composite_spell_power() * spell_tick_power_coefficient( state );
+  amount += state->composite_attack_power() * attack_tick_power_coefficient( state );
   amount *= state->composite_ta_multiplier();
+  amount *= state->composite_rolling_ta_multiplier();
 
   double init_tick_amount = amount;
 
@@ -2084,11 +2087,11 @@ void action_t::start_gcd()
     case gcd_haste_type::ATTACK_HASTE:
       player->gcd_current_haste_value = player->cache.attack_haste();
       break;
-    case gcd_haste_type::SPELL_SPEED:
-      player->gcd_current_haste_value = player->cache.spell_speed();
+    case gcd_haste_type::SPELL_CAST_SPEED:
+      player->gcd_current_haste_value = player->cache.spell_cast_speed();
       break;
-    case gcd_haste_type::ATTACK_SPEED:
-      player->gcd_current_haste_value = player->cache.attack_speed();
+    case gcd_haste_type::AUTO_ATTACK_SPEED:
+      player->gcd_current_haste_value = player->cache.auto_attack_speed();
       break;
     default:
       break;
@@ -2556,11 +2559,18 @@ void action_t::init()
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
-  if ( ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 ) && dot_duration > 0_ms )
+  if ( has_periodic_damage_effect( data() ) ||
+       ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 || rolling_periodic ) &&
+           dot_duration > 0_ms )
+  {
     snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+  }
 
-  if ( base_dd_min > 0 || ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 ) || weapon_multiplier > 0 )
+  if ( has_direct_damage_effect( data() ) || base_dd_min > 0 || spell_power_mod.direct > 0 ||
+       attack_power_mod.direct > 0 || weapon_multiplier > 0 )
+  {
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+  }
 
   if ( player->is_pet() && ( snapshot_flags & ( STATE_MUL_DA | STATE_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA |
                                                 STATE_MUL_PERSISTENT | STATE_VERSATILITY ) ) )
@@ -4455,6 +4465,26 @@ dot_t* action_t::get_dot( player_t* t )
   return dot;
 }
 
+buff_t* action_t::get_debuff( player_t* t )
+{
+  if ( !t )
+    t = target;
+  if ( !t )
+    return nullptr;
+
+  buff_t*& debuff = target_specific_debuff[ t ];
+  if ( !debuff )
+    debuff = create_debuff( t );
+  return debuff;
+}
+
+buff_t* action_t::create_debuff( player_t* t )
+{
+  std::string name_ = target_debuff->ok() ? target_debuff->name_cstr() : name_str;
+  util::tokenize( name_ );
+  return make_buff( actor_pair_t( t, player ),  name_, target_debuff );
+}
+
 // return s_data_reporting if available, otherwise fallback to s_data
 const spell_data_t& action_t::data_reporting() const
 {
@@ -4478,6 +4508,14 @@ dot_t* action_t::find_dot( player_t* t ) const
   if ( !t )
     return nullptr;
   return target_specific_dot[ t ];
+}
+
+buff_t* action_t::find_debuff( player_t* t ) const
+{
+  if ( !t )
+    return nullptr;
+
+  return target_specific_debuff[ t ];
 }
 
 void action_t::add_child( action_t* child )
@@ -5035,7 +5073,15 @@ timespan_t action_t::distance_targeting_travel_time( action_state_t* /*s*/ ) con
 
 void action_t::html_customsection( report::sc_html_stream& os )
 {
-  if ( affecting_list.size() )
+  auto entries = affecting_list;
+
+  for ( auto a : stats->action_list )
+    if ( a != this )
+      for ( const auto& entry : a->affecting_list )
+        if ( !range::contains( entries, entry ) )
+          entries.push_back( entry );
+
+  if ( entries.size() )
   {
     os << "<div>\n"
         << "<h4>Affected By (Passive)</h4>\n"
@@ -5050,11 +5096,11 @@ void action_t::html_customsection( report::sc_html_stream& os )
         << "<th class=\"small\">Value</th>\n"
         << "</tr>\n";
 
-    for ( auto [ eff, val ] : affecting_list )
+    for ( const auto& [ eff, val ] : entries )
     {
       std::string op_str;
       std::string type_str;
-      std::string val_str = fmt::format( "{:.3f}", val );
+      std::string val_str;
 
       switch ( eff->subtype() )
       {
@@ -5062,11 +5108,13 @@ void action_t::html_customsection( report::sc_html_stream& os )
         case A_ADD_FLAT_MODIFIER:
           op_str = "ADD";
           type_str = spell_info::effect_property_str( eff );
+          val_str = fmt::format( "{:.3f}", val );
           break;
         case A_ADD_PCT_LABEL_MODIFIER:
         case A_ADD_PCT_MODIFIER:
           op_str = "PCT";
           type_str = spell_info::effect_property_str( eff );
+          val_str = fmt::format( "{:.1f}%", val * 100 );
           break;
         case A_MODIFY_SCHOOL:
           op_str = "SET";
@@ -5076,10 +5124,12 @@ void action_t::html_customsection( report::sc_html_stream& os )
         default:
           op_str = "SET";
           type_str = spell_info::effect_subtype_str( eff );
+          val_str = fmt::format( "{:.3f}", val );
           break;
       }
 
-      os.format( "<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>",
+      os.format(
+        "<tr><td>{}</td><td>{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td>{}</td><td class=\"right\">{}</td></tr>",
         type_str,
         eff->spell()->name_cstr(),
         eff->spell()->id(),
@@ -5385,6 +5435,12 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case P_CRIT_DAMAGE:
         crit_bonus_multiplier *= 1.0 + effect.percent();
         sim->print_debug( "{} critical damage bonus multiplier modified by {}%", *this, effect.base_value() );
+        value_ = effect.percent();
+        break;
+
+      case P_CRIT:
+        crit_chance_multiplier *= 1.0 + effect.percent();
+        sim->print_debug( "{} critical strike chance multiplier modified by {}%", *this, effect.base_value() );
         value_ = effect.percent();
         break;
 
