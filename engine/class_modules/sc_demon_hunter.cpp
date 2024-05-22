@@ -9461,7 +9461,7 @@ void demon_hunter_t::trigger_demonic()
 
 void demon_hunter_t::trigger_demonsurge( demonsurge_ability ability )
 {
-  if ( buff.demonsurge_abilities[ ability ]->up() )
+  if ( active.demonsurge && buff.demonsurge_abilities[ ability ]->up() )
   {
     active.demonsurge->execute_on_target( target );
     buff.demonsurge_abilities[ ability ]->expire();
