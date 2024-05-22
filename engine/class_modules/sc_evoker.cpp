@@ -739,6 +739,7 @@ struct evoker_t : public player_t
 
     // Augmentation
     const spell_data_t* close_as_clutchmates;
+    std::unique_ptr<modified_spell_data_t> ebon_might;
 
     // Devastation
 
@@ -2649,8 +2650,12 @@ public:
 
     cooldown->base_duration = 0_s;
 
-    parse_effect_modifiers( p->sets->set( EVOKER_AUGMENTATION, T30, B4 ) );
-    parse_effect_modifiers( p->spec.close_as_clutchmates, [ p = p ] { return p->close_as_clutchmates; } );
+    if ( !p->spec.ebon_might )
+    {
+      p->spec.ebon_might = std::make_unique<modified_spell_data_t>( data() );
+      p->spec.ebon_might->parse_effects( p->sets->set( EVOKER_AUGMENTATION, T30, B4 ) )
+        ->parse_effects( p->spec.close_as_clutchmates, [ p = p ] { return p->close_as_clutchmates; } );
+    }
   }
 
   action_state_t* new_state() override
@@ -2665,7 +2670,7 @@ public:
 
   double ebon_value() const
   {
-    return modified_effectN_percent( 1 );
+    return p()->spec.ebon_might->effectN( 1 ).percent();
   }
 
   const state_t* cast_state( const action_state_t* s ) const
