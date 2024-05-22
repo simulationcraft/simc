@@ -4510,12 +4510,26 @@ struct demonsurge_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( name, p, p->hero_spec.demonsurge_damage )
   {
     background = dual = true;
+    aoe = -1;
   }
 
   void execute() override
   {
     p()->buff.demonsurge->trigger();
     demon_hunter_spell_t::execute();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = demon_hunter_spell_t::composite_da_multiplier( s );
+
+    // Focused Hatred increases Demonsurge damage when hitting only one target
+    if ( s->n_targets == 1 && p()->talent.felscarred.focused_hatred->ok() )
+    {
+      m *= 1.0 + p()->talent.felscarred.focused_hatred->effectN( 1 ).percent();
+    }
+
+    return m;
   }
 };
 
