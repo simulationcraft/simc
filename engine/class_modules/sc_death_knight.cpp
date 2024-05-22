@@ -5510,8 +5510,11 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
   {
     attack_power_mod.direct = 0;  // Handled by the damage action
     aoe                     = 0;  // Handled by the damage action
-    int idx                 = p->specialization() == DEATH_KNIGHT_BLOOD ? 2 : 3;
-    vamp_rp_gen             = std::fabs( vampiric_strike->data().powerN( idx ).cost() );
+    if ( p->talent.sanlayn.vampiric_strike.ok() )
+    {
+      unsigned idx = p->specialization() == DEATH_KNIGHT_BLOOD ? 2 : 3;
+      vamp_rp_gen  = std::fabs( vampiric_strike->data().powerN( idx ).cost() );
+    }
     base_rp_gen             = std::fabs( base_action->data().cost( POWER_RUNIC_POWER ) );
     parse_options( options_str );
     if ( base_action != nullptr )
@@ -5536,7 +5539,7 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
   {
     // Dynamic data based on whether Vampiric Strike is active, as it has its own data that may
     // differ from the base action
-    if ( p()->buffs.vampiric_strike->check() )
+    if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       energize_amount = vamp_rp_gen;
       trigger_gcd     = vampiric_strike->data().gcd();
@@ -5553,7 +5556,7 @@ struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
   double cost() const override
   {
     // Dynamic cost based on whether Vampiric Strike is active, as it has its own cost data that may differ from the base action
-    if ( p()->buffs.vampiric_strike->check() )
+    if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       return vampiric_strike->data().cost( POWER_RUNE );
     }
