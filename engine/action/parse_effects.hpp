@@ -386,7 +386,7 @@ struct modified_spell_data_t : public parse_base_t
 
   modified_spell_data_t( const spell_data_t* s ) : modified_spell_data_t( *s ) {}
 
-  modified_spell_data_t( const spell_data_t& s ) : _spell( s )
+  modified_spell_data_t( const spell_data_t& s = *spell_data_t::nil() ) : _spell( s )
   {
     for ( const auto& eff : s.effects() )
       effects.emplace_back( eff );
@@ -636,7 +636,12 @@ struct modified_spell_data_t : public parse_base_t
       op_str,
       val_str );
   }*/
+
+  static const modified_spell_data_t* nil ();
 };
+
+inline const modified_spell_data_t modified_spell_data_nil_v = modified_spell_data_t();
+inline const modified_spell_data_t* modified_spell_data_t::nil() { return &modified_spell_data_nil_v; }
 
 struct parse_effects_t : public parse_base_t
 {
