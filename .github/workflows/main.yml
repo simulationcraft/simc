@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [ dragonflight, thewarwithin ] # TODO: remove if-checks for only DF branch when TWW APLS are ready
+    branches: [ thewarwithin ] # TODO: remove if-checks for only DF branch when TWW APLS are ready
   push:
-    branches: [ dragonflight, thewarwithin ]
+    branches: [ thewarwithin ]
     paths-ignore:
       - 'SpellDataDump/**'
       - 'dbc_extract3/**'
@@ -149,7 +149,6 @@ jobs:
     name: tww-test-${{ matrix.spec }}-${{ matrix.fightstyle }}
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build ]
-    if: github.ref == 'refs/heads/thewarwithin'
 
     strategy:
       fail-fast: false
