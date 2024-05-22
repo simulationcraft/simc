@@ -6353,13 +6353,13 @@ struct vanish_t : public rogue_spell_t
 
 struct stealth_t : public rogue_spell_t
 {
-  double precombat_seconds;
+  timespan_t precombat_seconds;
 
   stealth_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_spell_t( name, p, p->spell.stealth, options_str ),
-    precombat_seconds( 0.0 )
+    rogue_spell_t( name, p, p->spell.stealth ),
+    precombat_seconds( 0_s )
   {
-    add_option( opt_float( "precombat_seconds", precombat_seconds ) );
+    add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
     parse_options( options_str );
     harmful = false;
     set_target( p );
@@ -6371,9 +6371,10 @@ struct stealth_t : public rogue_spell_t
     p()->buffs.stealth->trigger();
     trigger_master_of_shadows();
 
-    if ( precombat_seconds && !p()->in_combat )
+    if ( precombat_seconds > 0_s && !p()->in_combat )
     {
-      p()->cooldowns.stealth->adjust( -timespan_t::from_seconds( precombat_seconds ), false );
+      p()->cooldowns.stealth->adjust( -precombat_seconds, false );
+      p()->buffs.stealth->cooldown->adjust( -precombat_seconds, false ); // buff cd somehow seperate from skill cd
     }
   }
 
@@ -11227,13 +11228,15 @@ void rogue_t::create_buffs()
     ->set_stack_change_callback( [this]( buff_t*, int, int new_stacks ) {
       if ( new_stacks >= 7 && talent.fatebound.fateful_ending->ok() )
         buffs.fatebound_lucky_coin->trigger();
-    } );
+    } )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buffs.fatebound_coin_tails = make_buff( this, "fatebound_coin_tails", spell.fatebound_coin_tails_buff )
     ->set_stack_change_callback( [this]( buff_t*, int, int new_stacks ) {
       if ( new_stacks >= 7 && talent.fatebound.fateful_ending->ok() )
         buffs.fatebound_lucky_coin->trigger();
-    } );
+    } )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   if ( talent.fatebound.chosens_revelry->ok() )
   {
     buffs.fatebound_coin_tails->add_invalidate( CACHE_LEECH );
@@ -11248,6 +11251,7 @@ void rogue_t::create_buffs()
   buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
   buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_STAMINA );
   buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_AGILITY ); // TODO: Add tertiary stats
+  buffs.fatebound_lucky_coin->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   register_on_combat_state_callback( [ this ]( player_t*, bool in_combat ) {
     if ( !buffs.fatebound_lucky_coin->check() )
       return;
@@ -11267,11 +11271,13 @@ void rogue_t::create_buffs()
 
   // Edge case isn't a buff in-game, but treating it as such is useful to track state
   buffs.edge_case = make_buff( this, "edge_case", talent.fatebound.edge_case )
-    ->set_duration( timespan_t::zero() ); // Shouldn't expire, used to track state
+    ->set_duration( timespan_t::zero() )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT ); // Shouldn't expire, used to track state
 
   // Likewise, double jeopardy isn't a buff in-game, but treating it as such makes tracking it simpler
   buffs.double_jeopardy = make_buff( this, "double_jeopardy", talent.fatebound.double_jeopardy )
-    ->set_duration( timespan_t::zero() ); // Shouldn't expire, used to track state
+    ->set_duration( timespan_t::zero() )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT ); // Shouldn't expire, used to track state
 
   // Trickster
 
