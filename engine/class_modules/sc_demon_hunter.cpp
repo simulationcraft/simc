@@ -533,7 +533,7 @@ public:
       player_talent_t incorruptible_spirit;  // NYI
       player_talent_t wounded_quarry;        // NYI
 
-      player_talent_t intent_pursuit;    // NYI
+      player_talent_t intent_pursuit;    // partially implemented (Blade Dance / Soul Cleave)
       player_talent_t escalation;        // NYI
       player_talent_t warblades_hunger;  // NYI
 
@@ -4954,6 +4954,10 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       }
 
       p()->buff.glaive_flurry->expire();
+      if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
+      {
+        p()->cooldown.the_hunt->adjust( -p()->talent.aldrachi_reaver.intent_pursuit->effectN( 1 ).time_value() );
+      }
     }
   }
 
@@ -6073,6 +6077,10 @@ struct soul_cleave_base_t : public demon_hunter_attack_t
       }
 
       p()->buff.glaive_flurry->expire();
+      if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
+      {
+        p()->cooldown.the_hunt->adjust( -p()->talent.aldrachi_reaver.intent_pursuit->effectN( 1 ).time_value() );
+      }
     }
   }
 };
