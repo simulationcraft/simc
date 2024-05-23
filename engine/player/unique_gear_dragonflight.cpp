@@ -11262,22 +11262,23 @@ void brilliance( special_effect_t& effect )
 {
   struct fervor_t : public generic_proc_t
   {
-    double health_percent;
     gain_t* fervor_loss;
 
     fervor_t( const special_effect_t& e )
       : generic_proc_t( e, "fervor", e.player->find_spell( 429409 ) ),
-        health_percent( e.driver()->effectN( 2 ).percent() ),
         fervor_loss( e.player->find_gain( "fervor" ) )
     {
+      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
     }
 
-    void execute()
+    void impact( action_state_t* state ) override
     {
-      base_dd_min = base_dd_max = player->max_health() * health_percent;
+      generic_proc_t::impact( state );
 
-      generic_proc_t::execute();
-      player->resource_loss( RESOURCE_HEALTH, base_dd_min, fervor_loss );
+      if ( result_is_hit( state->result ) )
+      {
+        player->resource_loss( RESOURCE_HEALTH, state->result_total, fervor_loss );
+      }
     }
   };
 
@@ -11334,50 +11335,55 @@ void brilliance( special_effect_t& effect )
 
   struct arcanists_edge_cb_t : public dbc_proc_callback_t
   {
-    double absorb_percent;
+    double absorb_max;
     action_t* damage;
 
     arcanists_edge_cb_t( const special_effect_t& e )
-      : dbc_proc_callback_t( e.player, e ), absorb_percent( e.driver()->effectN( 1 ).percent() )
+      : dbc_proc_callback_t( e.player, e ), absorb_max( e.driver()->effectN( 1 ).average( e.item ) )
     {
       damage = new arcanists_edge_t( effect );
     }
 
-    double get_current_absorb()
+    double consume_absorb()
     {
       if ( listener->absorb_buff_list.empty() )
-        return 0.0;
+        return 0;
 
-      double total_absorb = 0.0;
+      double cap_remaining = absorb_max;
+      double absorbed      = 0;
 
       for ( auto absorb : listener->absorb_buff_list )
       {
         if ( absorb->check() )
-          total_absorb += absorb->current_value;
+        {
+          double to_absorb = std::min( absorb->current_value, cap_remaining );
+          cap_remaining -= to_absorb;
+          absorbed += to_absorb;
+          absorb->consume( to_absorb );
+
+          if ( cap_remaining <= 0 )
+            break;
+        }
       }
 
-      return total_absorb;
+      return absorbed;
     }
 
-    void consume_absorb()
+    void trigger( action_t* a, action_state_t* state ) override
     {
       if ( listener->absorb_buff_list.empty() )
         return;
 
-      for ( auto absorb : listener->absorb_buff_list )
-      {
-        if ( absorb->check() )
-          absorb->consume( absorb_percent * absorb->current_value );
-      }
+      dbc_proc_callback_t::trigger( a, state );
     }
 
     void execute( action_t* a, action_state_t* s ) override
     {
-      if ( listener->absorb_buff_list.empty() )
-        return;
-
-      damage->execute_on_target( s->target, get_current_absorb() * absorb_percent );
-      consume_absorb();
+      double consumed = consume_absorb();
+      if ( consumed > 0 )
+      {
+        damage->execute_on_target( s->target, consumed );
+      }
     }
   };
 
@@ -11405,6 +11411,8 @@ void lightning_rod( special_effect_t& effect )
       : proc_spell_t( "lightning_rod", e.player, e.player->find_spell( 443473 ) ), crit_buff(buff)
     {
       base_td = e.driver()->effectN( 2 ).average( e.item );
+      
+      dot_behavior == DOT_CLIP;
     }
 
     void last_tick( dot_t* d ) override
