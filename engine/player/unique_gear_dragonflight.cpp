@@ -11036,10 +11036,24 @@ void wildfire( special_effect_t& effect )
 
     struct wildfire_dot_t : public proc_spell_t
     {
+      bool melee_hasted_ticks;
       wildfire_dot_t( const special_effect_t& e )
-        : proc_spell_t( "wildfire_dot", e.player, e.player->find_spell( 432495 ) )
+        : proc_spell_t( "wildfire_dot", e.player, e.player->find_spell( 432495 ) ), melee_hasted_ticks( false )
       {
         base_td = e.driver()->effectN( 2 ).average( e.item );
+
+        melee_hasted_ticks = data().flags( spell_attribute::SX_DOT_HASTED_MELEE );
+      }
+
+      
+      timespan_t tick_time( const action_state_t* state ) const override
+      {
+        timespan_t t = proc_spell_t::tick_time( state );
+        if ( melee_hasted_ticks )
+        {
+          t *= state->haste;
+        }
+        return t;
       }
 
       void tick( dot_t* d ) override
@@ -11407,12 +11421,16 @@ void lightning_rod( special_effect_t& effect )
   struct lightning_rod_t : public proc_spell_t
   {
     buff_t* crit_buff;
+    bool melee_hasted_ticks;
     lightning_rod_t( const special_effect_t& e, buff_t* buff)
-      : proc_spell_t( "lightning_rod", e.player, e.player->find_spell( 443473 ) ), crit_buff(buff)
+      : proc_spell_t( "lightning_rod", e.player, e.player->find_spell( 443473 ) ),
+        crit_buff( buff ),
+        melee_hasted_ticks( false )
     {
       base_td = e.driver()->effectN( 2 ).average( e.item );
       
-      dot_behavior == DOT_CLIP;
+      dot_behavior = DOT_CLIP;
+      melee_hasted_ticks = data().flags( spell_attribute::SX_DOT_HASTED_MELEE );
     }
 
     void last_tick( dot_t* d ) override
@@ -11420,6 +11438,16 @@ void lightning_rod( special_effect_t& effect )
       proc_spell_t::last_tick( d );
       
       crit_buff->trigger();
+    }
+
+    timespan_t tick_time( const action_state_t* state ) const override
+    {
+      timespan_t t = proc_spell_t::tick_time( state );
+      if ( melee_hasted_ticks )
+      {
+        t *= state->haste;
+      }
+      return t;
     }
   };
 
