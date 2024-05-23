@@ -8294,6 +8294,7 @@ struct heart_strike_t : public heart_strike_base_t
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       vampiric_strike->execute();
+      // Manually add an execute event to keep DPE calculations correct
       stats->add_execute( sim->current_time(), this->target );
       return;
     }
@@ -9334,6 +9335,7 @@ struct clawing_shadows_t final : public wound_spender_base_t
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       vampiric_strike->execute();
+      // Manually add an execute event to keep DPE calculations correct
       stats->add_execute( sim->current_time(), this->target );
       return;
     }
@@ -9403,6 +9405,7 @@ struct scourge_strike_t final : public wound_spender_base_t
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       vampiric_strike->execute();
+      // Manually add an execute event to keep DPE calculations correct
       stats->add_execute( sim->current_time(), this->target );
       return;
     }
