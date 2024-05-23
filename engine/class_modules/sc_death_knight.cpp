@@ -827,12 +827,11 @@ public:
     propagate_const<action_t*> mograines_death_and_decay;
 
     // Sanlayn
-    propagate_const<action_t*> vampiric_strike;
+    propagate_const<action_t*> vampiric_strike_heal;
     action_t* infliction_of_sorrow;
 
     // Blood
     propagate_const<action_t*> mark_of_blood_heal;
-    propagate_const<action_t*> heart_strike;
     action_t* shattering_bone;
 
     // Deathbringer
@@ -858,7 +857,6 @@ public:
     propagate_const<action_t*> festering_wound_application;
     propagate_const<action_t*> virulent_eruption;
     propagate_const<action_t*> ruptured_viscera;
-    propagate_const<action_t*> scourge_strike;
     propagate_const<action_t*> outbreak_aoe;
     action_t* unholy_pact_damage;
 
@@ -1701,6 +1699,7 @@ public:
   // San'layn
   void trigger_infliction_of_sorrow( player_t* target );
   void trigger_vampiric_strike_proc( player_t* target );
+  void trigger_sanlayn_execute_talents( bool is_vampiric );
   // Deathbringer
   void trigger_reapers_mark_death( player_t* target );
   void reapers_mark_explosion_wrapper( player_t* target, int stacks );
@@ -5515,124 +5514,6 @@ struct vampiric_strike_heal_t : public death_knight_heal_t
   }
 };
 
-struct vampiric_strike_action_base_t : public death_knight_melee_attack_t
-{
-  vampiric_strike_action_base_t( util::string_view n, death_knight_t* p, util::string_view options_str,
-                                 const spell_data_t* s )
-    : death_knight_melee_attack_t( n, p, s ),
-      base_action( p->specialization() == DEATH_KNIGHT_BLOOD ? p->active_spells.heart_strike
-                                                             : p->active_spells.scourge_strike ),
-      heal( get_action<vampiric_strike_heal_t>( "vampiric_strike_heal", p ) ),
-      vampiric_strike( p->active_spells.vampiric_strike ),
-      vamp_rp_gen( 0 ),
-      base_rp_gen( 0 )
-  {
-    attack_power_mod.direct = 0;  // Handled by the damage action
-    aoe                     = 0;  // Handled by the damage action
-    if ( p->talent.sanlayn.vampiric_strike.ok() )
-    {
-      unsigned idx = p->specialization() == DEATH_KNIGHT_BLOOD ? 2 : 3;
-      vamp_rp_gen  = std::fabs( vampiric_strike->data().powerN( idx ).cost() );
-    }
-    base_rp_gen             = std::fabs( base_action->data().cost( POWER_RUNIC_POWER ) );
-    parse_options( options_str );
-    if ( base_action != nullptr )
-    {
-      add_child( base_action );
-    }
-    if ( p->talent.sanlayn.vampiric_strike.ok() )
-    {
-      add_child( vampiric_strike );
-    }
-    else
-    {
-      name_str = base_action->name_str;
-    }
-    if ( p->talent.sanlayn.infliction_of_sorrow.ok() )
-    {
-      add_child( p->active_spells.infliction_of_sorrow );
-    }
-  }
-
-  void set_data()
-  {
-    // Dynamic data based on whether Vampiric Strike is active, as it has its own data that may
-    // differ from the base action
-    if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
-    {
-      energize_amount = vamp_rp_gen;
-      trigger_gcd     = vampiric_strike->data().gcd();
-      range           = vampiric_strike->data().max_range();
-    }
-    else
-    {
-      energize_amount = base_rp_gen;
-      trigger_gcd     = base_action->data().gcd();
-      range           = base_action->data().max_range();
-    }
-  }
-
-  double cost() const override
-  {
-    // Dynamic cost based on whether Vampiric Strike is active, as it has its own cost data that may differ from the base action
-    if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
-    {
-      return vampiric_strike->data().cost( POWER_RUNE );
-    }
-    else
-    {
-      return base_action->data().cost( POWER_RUNE );
-    }
-  }
-
-  void execute() override
-  {
-    set_data();
-    death_knight_melee_attack_t::execute();
-    double chance = 0;
-
-    if ( p()->talent.sanlayn.visceral_regeneration.ok() )
-    {
-      chance = p()->talent.sanlayn.visceral_regeneration->effectN( 1 ).percent() *
-               p()->buffs.essence_of_the_blood_queen->check();
-    }
-
-    if ( p()->talent.sanlayn.incite_terror.ok() && p()->buffs.essence_of_the_blood_queen->check() )
-    {
-      timespan_t duration =
-          p()->talent.sanlayn.incite_terror->effectN( 1 ).time_value() *
-          ( p()->talent.sanlayn.incite_terror->effectN( 2 ).percent() + p()->buffs.vampiric_strike->check() );
-      p()->buffs.essence_of_the_blood_queen->extend_duration( p(), duration );
-    }
-
-    if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
-    {
-      heal->execute();
-      vampiric_strike->execute();
-      chance *= 2;
-      if ( rng().roll( chance ) )
-      {
-        p()->replenish_rune( 1, p()->gains.visceral_regeneration );
-      }
-    }
-    else
-    {
-      base_action->execute();
-      if ( rng().roll( chance ) )
-      {
-        p()->replenish_rune( 1, p()->gains.visceral_regeneration );
-      }
-    }
-  }
-
-private:
-  action_t* vampiric_strike;
-  action_t* base_action;
-  action_t* heal;
-  double vamp_rp_gen;
-  double base_rp_gen;
-};
-
 struct infliction_in_sorrow_t : public death_knight_spell_t
 {
   infliction_in_sorrow_t( util::string_view n, death_knight_t* p )
@@ -8288,19 +8169,15 @@ struct leeching_strike_t final : public death_knight_heal_t
   }
 };
 
-struct heart_strike_damage_base_t : public death_knight_melee_attack_t
+struct heart_strike_base_t : public death_knight_melee_attack_t
 {
-  heart_strike_damage_base_t( util::string_view n, death_knight_t* p, const spell_data_t* s )
+  heart_strike_base_t( util::string_view n, death_knight_t* p, const spell_data_t* s )
     : death_knight_melee_attack_t( n, p, s ),
       heartbreaker_rp_gen( p->talent.blood.heartbreaker->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
   {
     aoe                         = 2;
     weapon                      = &( p->main_hand_weapon );
     leeching_strike             = get_action<leeching_strike_t>( "leeching_strike", p );
-    background                  = true;
-    energize_amount             = 0;    // Handled by the action
-    base_costs[ RESOURCE_RUNE ] = 0;    // Handled by the action
-    trigger_gcd                 = 0_s;  // Handled by the action
   }
 
   int n_targets() const override
@@ -8357,63 +8234,76 @@ private:
   double heartbreaker_rp_gen;
 };
 
-struct heart_strike_damage_t : public heart_strike_damage_base_t
-{
-  heart_strike_damage_t( util::string_view n, death_knight_t* p )
-    : heart_strike_damage_base_t( n, p, p->talent.blood.heart_strike )
-  {
-  }
-};
-
-struct vampiric_strike_blood_t : public heart_strike_damage_base_t
+struct vampiric_strike_blood_t : public heart_strike_base_t
 {
   vampiric_strike_blood_t( util::string_view n, death_knight_t* p )
-    : heart_strike_damage_base_t( n, p, p->spell.vampiric_strike )
+    : heart_strike_base_t( n, p, p->spell.vampiric_strike )
   {
     attack_power_mod.direct = data().effectN( 5 ).ap_coeff();
+    energize_amount         = std::fabs( data().powerN( 2 ).cost() );
+    if ( p->talent.sanlayn.infliction_of_sorrow.ok() )
+    {
+      add_child( p->active_spells.infliction_of_sorrow );
+    }
   }
 
   void execute() override
   {
-    heart_strike_damage_base_t::execute();
-    if ( p()->talent.sanlayn.the_blood_is_life.ok() )
-    {
-      trigger_blood_beast();
-    }
+    heart_strike_base_t::execute();
+    p()->trigger_sanlayn_execute_talents( true );
   }
 
   void impact( action_state_t* s ) override
   {
-    heart_strike_damage_base_t::impact( s );
-    p()->buffs.essence_of_the_blood_queen->trigger();
-    if ( !p()->buffs.gift_of_the_sanlayn->check() )
-    {
-      p()->buffs.vampiric_strike->expire();
-    }
+    heart_strike_base_t::impact( s );
     if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
     {
       p()->trigger_infliction_of_sorrow( s->target );
     }
   }
-
-  void trigger_blood_beast()
-  {
-    if ( !p()->rppm.blood_beast->trigger() )
-    {
-      return;
-    }
-
-    p()->procs.blood_beast->occur();
-    p()->pets.blood_beast.spawn( p()->spell.blood_beast_summon->duration(), 1 );
-  }
 };
 
-struct heart_strike_action_t final : public vampiric_strike_action_base_t
+struct heart_strike_t : public heart_strike_base_t
 {
-  heart_strike_action_t( util::string_view n, death_knight_t* p, util::string_view options_str )
-    : vampiric_strike_action_base_t( n, p, options_str, p->talent.blood.heart_strike )
+  heart_strike_t( util::string_view n, death_knight_t* p, util::string_view options_str )
+    : heart_strike_base_t( n, p, p->talent.blood.heart_strike ), vampiric_strike( nullptr ), vampiric_strike_cost( 0 )
   {
+    parse_options( options_str );
+    if ( p->talent.sanlayn.vampiric_strike.ok() )
+    {
+      vampiric_strike      = new vampiric_strike_blood_t( "vampiric_strike", p );
+      vampiric_strike_cost = p->spell.vampiric_strike->cost( POWER_RUNE );
+      add_child( vampiric_strike );
+    }
   }
+
+  double cost() const override
+  {
+    if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
+    {
+      return vampiric_strike_cost;
+    }
+    else
+    {
+      return base_costs[ RESOURCE_RUNE ];
+    }
+  }
+
+  void execute() override
+  {
+    if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
+    {
+      vampiric_strike->execute();
+      stats->add_execute( sim->current_time(), this->target );
+      return;
+    }
+    heart_strike_base_t::execute();
+    p()->trigger_sanlayn_execute_talents( false );
+  }
+
+private:
+  vampiric_strike_blood_t* vampiric_strike;
+  double vampiric_strike_cost;
 };
 
 // Horn of Winter ===========================================================
@@ -9306,17 +9196,13 @@ private:
 
 // Scourge Strike and Clawing Shadows =======================================
 
-struct wound_spender_damage_base_t : public death_knight_melee_attack_t
+struct wound_spender_base_t : public death_knight_melee_attack_t
 {
-  wound_spender_damage_base_t( util::string_view name, death_knight_t* p, const spell_data_t* spell )
+  wound_spender_base_t( util::string_view name, death_knight_t* p, const spell_data_t* spell )
     : death_knight_melee_attack_t( name, p, spell ),
       dnd_cleave_targets( as<int>( p->talent.unholy.scourge_strike->effectN( 4 ).base_value() ) )
   {
     weapon                      = &( player->main_hand_weapon );
-    background                  = true;
-    energize_amount             = 0;    // Handled by the action
-    base_costs[ RESOURCE_RUNE ] = 0;    // Handled by the action
-    trigger_gcd                 = 0_s;  // Handled by the action
   }
 
   // The death and decay target cap is displayed both in scourge strike's effects
@@ -9388,12 +9274,76 @@ private:
   int dnd_cleave_targets;  // For when in dnd how many targets we can cleave
 };
 
-struct clawing_shadows_t final : public wound_spender_damage_base_t
+struct vampiric_strike_unholy_t : public wound_spender_base_t
 {
-  clawing_shadows_t( util::string_view n, death_knight_t* p )
-    : wound_spender_damage_base_t( n, p, p->talent.unholy.clawing_shadows )
+  vampiric_strike_unholy_t( util::string_view n, death_knight_t* p )
+    : wound_spender_base_t( n, p, p->spell.vampiric_strike )
   {
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    energize_amount         = std::fabs( data().powerN( 3 ).cost() );
+    if ( p->talent.sanlayn.infliction_of_sorrow.ok() )
+    {
+      add_child( p->active_spells.infliction_of_sorrow );
+    }
   }
+
+  void execute() override
+  {
+    wound_spender_base_t::execute();
+    p()->trigger_sanlayn_execute_talents( true );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    wound_spender_base_t::impact( s );
+    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
+    {
+      p()->trigger_infliction_of_sorrow( s->target );
+    }
+  }
+};
+
+struct clawing_shadows_t final : public wound_spender_base_t
+{
+  clawing_shadows_t( util::string_view n, death_knight_t* p, util::string_view options_str )
+    : wound_spender_base_t( n, p, p->talent.unholy.clawing_shadows ), vampiric_strike( nullptr ), vampiric_strike_cost( 0 )
+  {
+    parse_options( options_str );
+    if ( p->talent.sanlayn.vampiric_strike.ok() )
+    {
+      vampiric_strike = new vampiric_strike_unholy_t( "vampiric_strike", p );
+      vampiric_strike_cost = p->spell.vampiric_strike->cost( POWER_RUNE );
+      add_child( vampiric_strike );
+    }
+  }
+
+  double cost() const override
+  {
+    if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
+    {
+      return vampiric_strike_cost;
+    }
+    else
+    {
+      return base_costs[ RESOURCE_RUNE ];
+    }
+  }
+
+  void execute() override
+  {
+    if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
+    {
+      vampiric_strike->execute();
+      stats->add_execute( sim->current_time(), this->target );
+      return;
+    }
+    wound_spender_base_t::execute();
+    p()->trigger_sanlayn_execute_talents( false );
+  }
+
+private:
+  vampiric_strike_unholy_t* vampiric_strike;
+  double vampiric_strike_cost;
 };
 
 struct scourge_strike_shadow_t final : public death_knight_melee_attack_t
@@ -9420,67 +9370,49 @@ struct scourge_strike_shadow_t final : public death_knight_melee_attack_t
   }
 };
 
-struct scourge_strike_t final : public wound_spender_damage_base_t
+struct scourge_strike_t final : public wound_spender_base_t
 {
-  scourge_strike_t( util::string_view n, death_knight_t* p )
-    : wound_spender_damage_base_t( n, p, p->talent.unholy.scourge_strike )
+  scourge_strike_t( util::string_view n, death_knight_t* p, util::string_view options_str )
+    : wound_spender_base_t( n, p, p->talent.unholy.scourge_strike ), vampiric_strike( nullptr ), vampiric_strike_cost( 0 )
   {
+    parse_options( options_str );
     impact_action = get_action<scourge_strike_shadow_t>( "scourge_strike_shadow", p );
     add_child( impact_action );
+    if ( p->talent.sanlayn.vampiric_strike.ok() )
+    {
+      vampiric_strike = new vampiric_strike_unholy_t( "vampiric_strike", p );
+      vampiric_strike_cost = p->spell.vampiric_strike->cost( POWER_RUNE );
+      add_child( vampiric_strike );
+    }
   }
-};
 
-struct vampiric_strike_unholy_t : public wound_spender_damage_base_t
-{
-  vampiric_strike_unholy_t( util::string_view n, death_knight_t* p )
-    : wound_spender_damage_base_t( n, p, p->spell.vampiric_strike )
+  double cost() const override
   {
-    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
+    {
+      return vampiric_strike_cost;
+    }
+    else
+    {
+      return base_costs[ RESOURCE_RUNE ];
+    }
   }
 
   void execute() override
   {
-    wound_spender_damage_base_t::execute();
-    if ( p()->talent.sanlayn.the_blood_is_life.ok() )
+    if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
-      trigger_blood_beast();
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    wound_spender_damage_base_t::impact( s );
-    p()->buffs.essence_of_the_blood_queen->trigger();
-    if ( !p()->buffs.gift_of_the_sanlayn->check() )
-    {
-      p()->buffs.vampiric_strike->expire();
-    }
-    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
-    {
-      p()->trigger_infliction_of_sorrow( s->target );
-    }
-  }
-
-  void trigger_blood_beast()
-  {
-    if ( !p()->rppm.blood_beast->trigger() )
-    {
+      vampiric_strike->execute();
+      stats->add_execute( sim->current_time(), this->target );
       return;
     }
-
-    p()->procs.blood_beast->occur();
-    p()->pets.blood_beast.spawn( p()->spell.blood_beast_summon->duration(), 1 );
+    wound_spender_base_t::execute();
+    p()->trigger_sanlayn_execute_talents( false );
   }
-};
 
-struct wound_spender_action_t final : public vampiric_strike_action_base_t
-{
-  wound_spender_action_t( util::string_view n, death_knight_t* p, util::string_view options_str )
-    : vampiric_strike_action_base_t(
-          n, p, options_str,
-          p->talent.unholy.clawing_shadows.ok() ? p->talent.unholy.clawing_shadows : p->talent.unholy.scourge_strike )
-  {
-  }
+private:
+  vampiric_strike_unholy_t* vampiric_strike;
+  double vampiric_strike_cost;
 };
 
 // Shattering Bone ==========================================================
@@ -11131,6 +11063,44 @@ void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
   }
 }
 
+void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric )
+{
+  double chance = 0;
+
+  if ( talent.sanlayn.visceral_regeneration.ok() )
+  {
+    chance = talent.sanlayn.visceral_regeneration->effectN( 1 ).percent() * buffs.essence_of_the_blood_queen->check();
+  }
+
+  if ( talent.sanlayn.incite_terror.ok() && buffs.essence_of_the_blood_queen->check() )
+  {
+    timespan_t duration = talent.sanlayn.incite_terror->effectN( 1 ).time_value() *
+                          ( talent.sanlayn.incite_terror->effectN( 2 ).percent() + buffs.vampiric_strike->check() );
+    buffs.essence_of_the_blood_queen->extend_duration( this, duration );
+  }
+
+  if ( is_vampiric )
+  {
+    active_spells.vampiric_strike_heal->execute();
+    chance *= 2;
+    if ( rppm.blood_beast->trigger() )
+    {
+      procs.blood_beast->occur();
+      pets.blood_beast.spawn( spell.blood_beast_summon->duration(), 1 );
+    }
+    buffs.essence_of_the_blood_queen->trigger();
+    if ( !buffs.gift_of_the_sanlayn->check() )
+    {
+      buffs.vampiric_strike->expire();
+    }
+  }
+
+  if ( chance > 0 && rng().roll( chance ) )
+  {
+    replenish_rune( 1, gains.visceral_regeneration );
+  }
+}
+
 void death_knight_t::trigger_reapers_mark_death( player_t* target )
 {
   // Don't pollute results at the end-of-iteration deaths of everyone
@@ -11240,9 +11210,7 @@ void death_knight_t::create_actions()
   // San'layn
   if ( talent.sanlayn.vampiric_strike.ok() )
   {
-    active_spells.vampiric_strike = specialization() == DEATH_KNIGHT_UNHOLY
-                                        ? get_action<vampiric_strike_unholy_t>( "vampiric_strike", this )
-                                        : get_action<vampiric_strike_blood_t>( "vampiric_strike", this );
+    active_spells.vampiric_strike_heal = get_action<vampiric_strike_heal_t>( "vampiric_strike_heal", this );
   }
 
   if ( talent.sanlayn.infliction_of_sorrow.ok() )
@@ -11283,7 +11251,6 @@ void death_knight_t::create_actions()
     {
       active_spells.shattering_bone = get_action<shattering_bone_t>( "shattering_bone", this );
     }
-    active_spells.heart_strike = get_action<heart_strike_damage_t>( "heart_strike", this );
   }
 
   // Unholy
@@ -11314,9 +11281,6 @@ void death_knight_t::create_actions()
     {
       active_spells.virulent_eruption = get_action<virulent_eruption_t>( "virulent_eruption", this );
     }
-    active_spells.scourge_strike = talent.unholy.clawing_shadows.ok()
-                                       ? get_action<clawing_shadows_t>( "clawing_shadows", this )
-                                       : get_action<scourge_strike_t>( "scourge_strike", this );
   }
 
   else if ( specialization() == DEATH_KNIGHT_FROST )
@@ -11418,7 +11382,7 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
   if ( name == "gorefiends_grasp" )
     return new gorefiends_grasp_t( this, options_str );
   if ( name == "heart_strike" )
-    return new heart_strike_action_t( "heart_strike_base", this, options_str );
+    return new heart_strike_t( name, this, options_str );
   if ( name == "mark_of_blood" )
     return new mark_of_blood_t( this, options_str );
   if ( name == "marrowrend" )
@@ -11462,7 +11426,7 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
   if ( name == "apocalypse" )
     return new apocalypse_t( this, options_str );
   if ( name == "clawing_shadows" )
-    return new wound_spender_action_t( "clawing_shadows_base", this, options_str );
+    return new clawing_shadows_t( name, this, options_str );
   if ( name == "dark_transformation" )
     return new dark_transformation_t( this, options_str );
   if ( name == "death_and_decay" )
@@ -11480,9 +11444,9 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
   if ( name == "raise_abomination" )
     return new raise_abomination_t( this, options_str );
   if ( name == "scourge_strike" )
-    return new wound_spender_action_t( "scourge_strike_base", this, options_str );
+    return new scourge_strike_t( name, this, options_str );
   if ( name == "soul_reaper" )
-    return new soul_reaper_action_t( "soul_reaper", this, options_str );
+    return new soul_reaper_action_t( name, this, options_str );
   if ( name == "summon_gargoyle" )
     return new summon_gargoyle_t( this, options_str );
   if ( name == "unholy_assault" )
