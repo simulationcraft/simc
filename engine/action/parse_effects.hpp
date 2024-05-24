@@ -10,6 +10,7 @@
 #include "dbc/dbc.hpp"
 #include "player/pet.hpp"
 #include "player/player.hpp"
+#include "report/decorators.hpp"
 #include "sim/sim.hpp"
 #include "util/io.hpp"
 
@@ -30,6 +31,16 @@ enum parse_flag_e
   IGNORE_STACKS,
   ALLOW_ZERO
 };
+
+static std::string value_type_name( parse_flag_e t )
+{
+  switch ( t )
+  {
+    case USE_DEFAULT: return "Default Value";
+    case USE_CURRENT: return "Current Value";
+    default:          return "Spell Data";
+  }
+}
 
 // effects dependent on player state
 struct player_effect_t
@@ -72,6 +83,44 @@ struct player_effect_t
     return buff == other.buff && value == other.value && type == other.type && use_stacks == other.use_stacks &&
            mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
   }
+
+  void print_parsed_line( report::sc_html_stream& os, const sim_t& sim, bool decorate, bool pct,
+                          std::function<std::string( uint32_t )> note_fn ) const
+  {
+    std::vector<std::string> notes;
+
+    if ( !use_stacks )
+      notes.emplace_back( "No-stacks" );
+
+    if ( mastery )
+      notes.emplace_back( "Mastery" );
+
+    if ( func )
+      notes.emplace_back( "Conditional" );
+
+    if ( note_fn )
+      notes.emplace_back( note_fn( opt_enum ) );
+
+    range::for_each( notes, []( auto& s ) { s[ 0 ] = std::toupper( s[ 0 ] ); } );
+
+    std::string val_str = mastery ? fmt::format( "{:.5f}", value * 100 )
+                          : pct   ? fmt::format( "{:.1f}%", value * 100 )
+                                  : fmt::format( "{}", value );
+
+    os.format(
+      "<td class=\"left\">{}</td>"
+      "<td class=\"right\">{}</td>"
+      "<td class=\"right\">{}</td>"
+      "<td class=\"right\">{}</td>"
+      "<td>{}</td>"
+      "<td>{}</td>""</tr>\n",
+      decorate ? report_decorators::decorated_spell_data( sim, eff->spell() ) : eff->spell()->name_cstr(),
+      eff->spell()->id(),
+      eff->index() + 1,
+      val_str,
+      value_type_name( type ),
+      util::string_join( notes ) );
+  }
 };
 
 // effects dependent on target state
@@ -103,6 +152,38 @@ struct target_effect_t
   bool operator==( const target_effect_t<TD>&  other )
   {
     return value == other.value && mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
+  }
+
+  void print_parsed_line( report::sc_html_stream& os, const sim_t& sim, bool decorate, bool pct,
+                          std::function<std::string( uint32_t )> note_fn ) const
+  {
+    std::vector<std::string> notes;
+
+    if ( mastery )
+      notes.emplace_back( "Mastery" );
+
+    if ( note_fn )
+      notes.emplace_back( note_fn( opt_enum ) );
+
+    range::for_each( notes, []( auto& s ) { s[ 0 ] = std::toupper( s[ 0 ] ); } );
+
+    std::string val_str = mastery ? fmt::format( "{:.5f}", value * 100 )
+                          : pct   ? fmt::format( "{:.1f}%", value * 100 )
+                                  : fmt::format( "{}", value );
+
+    os.format(
+      "<td class=\"left\">{}</td>"
+      "<td class=\"right\">{}</td>"
+      "<td class=\"right\">{}</td>"
+      "<td class=\"right\">{}</td>"
+      "<td>{}</td>"
+      "<td>{}</td></tr>\n",
+      decorate ? report_decorators::decorated_spell_data( sim, eff->spell() ) : eff->spell()->name_cstr(),
+      eff->spell()->id(),
+      eff->index() + 1,
+      val_str,
+      "",
+      util::string_join( notes ) );
   }
 };
 
@@ -1483,6 +1564,132 @@ public:
   {
     _force_target_effect<TD>( fn, debuff, idx, std::forward<Ts>( mods )... );
   }
+
+  void parsed_effects_html( report::sc_html_stream& os )
+  {
+    if ( total_effects_count() )
+    {
+      os << "<h3 class=\"toggle\">Player Effects</h3>\n"
+         << "<div class=\"toggle-content hide\">\n"
+         << "<table class=\"sc even\">\n"
+         << "<thead><tr>\n"
+         << "<th>Type</th><th>Spell</th><th>ID</th><th>#</th><th>Value</th><th>Source</th><th>Notes</th>\n"
+         << "</tr></thead>\n";
+
+      print_parsed_type( os, auto_attack_speed_effects, "Auto Attack Speed" );
+      print_parsed_type( os, attribute_multiplier_effects, "Attribute Multiplier" );
+      print_parsed_type( os, matching_armor_attribute_multiplier_effects, "Matching Armor" );
+      print_parsed_type( os, versatility_effects, "Versatility" );
+      print_parsed_type( os, player_multiplier_effects, "Player Multiplier" );
+      print_parsed_type( os, pet_multiplier_effects, "Pet Multiplier" );
+      print_parsed_type( os, attack_power_multiplier_effects, "Attack Power Multiplier" );
+      print_parsed_type( os, crit_chance_effects, "Crit Chance" );
+      print_parsed_type( os, leech_effects, "Leech" );
+      print_parsed_type( os, expertise_effects, "Expertise" );
+      print_parsed_type( os, crit_avoidance_effects, "Crit Avoidance" );
+      print_parsed_type( os, parry_effects, "Parry" );
+      print_parsed_type( os, armor_multiplier_effects, "Armor Multiplier" );
+      print_parsed_type( os, haste_effects, "Haste" );
+      print_parsed_type( os, mastery_effects, "Mastery" );
+      print_parsed_type( os, parry_rating_from_crit_effects, "Parry Rating from Crit" );
+      print_parsed_type( os, dodge_effects, "Dodge" );
+      print_parsed_type( os, target_multiplier_effects, "Target Multiplier" );
+      print_parsed_type( os, target_pet_multiplier_effects, "Target Pet Multiplier" );
+      print_parsed_custom_type( os );
+
+      os << "</table>\n"
+         << "</div>\n";
+    }
+  }
+
+  virtual size_t total_effects_count()
+  {
+    return auto_attack_speed_effects.size() +
+           attribute_multiplier_effects.size() +
+           matching_armor_attribute_multiplier_effects.size() +
+           versatility_effects.size() +
+           player_multiplier_effects.size() +
+           pet_multiplier_effects.size() +
+           attack_power_multiplier_effects.size() +
+           crit_chance_effects.size() +
+           leech_effects.size() +
+           expertise_effects.size() +
+           crit_avoidance_effects.size() +
+           parry_effects.size() +
+           armor_multiplier_effects.size() +
+           haste_effects.size() +
+           mastery_effects.size() +
+           parry_rating_from_crit_effects.size() +
+           dodge_effects.size() +
+           target_multiplier_effects.size() +
+           target_pet_multiplier_effects.size();
+  }
+
+  virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
+
+  template <typename U>
+  void print_parsed_type( report::sc_html_stream& os, const std::vector<U>& entries, std::string_view n,
+                          bool pct = true )
+  {
+    auto c = entries.size();
+    if( !c )
+      return;
+
+    std::function<std::string( uint32_t )> note_fn = nullptr;
+
+    if constexpr ( std::is_same_v<U, player_effect_t> )
+    {
+      if ( &entries == &attribute_multiplier_effects || &entries == &matching_armor_attribute_multiplier_effects )
+      {
+        note_fn = []( uint32_t opt ) {
+          std::vector<std::string> str_list;
+
+          for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
+            if ( opt & ( 1 << ( stat - 1 ) ) )
+              str_list.emplace_back( util::stat_type_string( stat ) );
+
+          return util::string_join( str_list );
+        };
+      }
+      else if ( &entries == &player_multiplier_effects )
+      {
+        note_fn = []( uint32_t opt ) {
+          return opt == 0x7f ? "All" : util::school_type_string( dbc::get_school_type( opt ) );
+        };
+      }
+      else if ( &entries == &pet_multiplier_effects )
+      {
+        note_fn = []( uint32_t opt ) {
+          return opt ? "Guardian" : "Pet";
+        };
+      }
+    }
+    else if constexpr ( std::is_same_v<U, target_effect_t<TD>> )
+    {
+      if ( &entries == &target_multiplier_effects )
+      {
+        note_fn = []( uint32_t opt ) {
+          return opt == 0x7f ? "All" : util::school_type_string( dbc::get_school_type( opt ) );
+        };
+      }
+      else if ( &entries == &target_pet_multiplier_effects )
+      {
+        note_fn = []( uint32_t opt ) {
+          return opt ? "Guardian" : "Pet";
+        };
+      }
+    }
+
+    os.format( "<tr class=\"left\"><td rowspan=\"{}\">{}</td>", c, n );
+
+    for ( size_t i = 0; i < c; i++ )
+    {
+      if ( i > 0 )
+        os << "<tr>";
+
+      entries[ i ].print_parsed_line( os, *sim, true, pct, note_fn );
+    }
+  }
 };
 
 template <typename BASE, typename PLAYER, typename TD>
@@ -1977,60 +2184,7 @@ public:
       if ( i > 0 )
         os << "<tr>";
 
-      print_parsed_line( os, entries[ i ], pct );
+      entries[ i ].print_parsed_line( os, *BASE::sim, false, pct, nullptr );
     }
-  }
-
-  std::string value_type_name( parse_flag_e t )
-  {
-    switch ( t )
-    {
-      case USE_DEFAULT: return "Default Value";
-      case USE_CURRENT: return "Current Value";
-      default:          return "Spell Data";
-    }
-  }
-
-  void print_parsed_line( report::sc_html_stream& os, const player_effect_t& entry, bool pct )
-  {
-    std::vector<std::string> notes;
-
-    if ( !entry.use_stacks )
-      notes.emplace_back( "No-stacks" );
-
-    if ( entry.mastery )
-      notes.emplace_back( "Mastery" );
-
-    if ( entry.func )
-      notes.emplace_back( "Conditional" );
-
-    std::string val_str = entry.mastery ? fmt::format( "{:.5f}", entry.value * 100 )
-                        : pct           ? fmt::format( "{:.1f}%", entry.value * 100 )
-                                        : fmt::format( "{}", entry.value );
-
-    os.format(
-      "<td>{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td>{}</td><td>{}</td></tr>\n",
-      entry.eff->spell()->name_cstr(),
-      entry.eff->spell()->id(),
-      entry.eff->index() + 1,
-      val_str,
-      value_type_name( entry.type ),
-      util::string_join( notes ) );
-  }
-
-  void print_parsed_line( report::sc_html_stream& os, const target_effect_t<TD>& entry, bool pct )
-  {
-    std::string val_str = entry.mastery ? fmt::format( "{:.5f}", entry.value * 100 )
-                        : pct           ? fmt::format( "{:.1f}%", entry.value * 100 )
-                                        : fmt::format( "{}", entry.value );
-
-    os.format(
-      "<td>{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td>{}</td><td>{}</td></tr>\n",
-      entry.eff->spell()->name_cstr(),
-      entry.eff->spell()->id(),
-      entry.eff->index() + 1,
-      val_str,
-      "",
-      entry.mastery ? "Mastery" : "" );
   }
 };

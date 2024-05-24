@@ -516,7 +516,9 @@ table.sc td {
 table.sc th.left,
 table.sc td.left,
 table.sc tr.left th,
-table.sc tr.left td {
+table.sc tr.left td,
+table.sc tr.right th.left,
+table.sc tr.right td.left {
     text-align: left;
     vertical-align: top;
 }
@@ -526,7 +528,9 @@ table.sc tr.left td {
 table.sc th.right,
 table.sc td.right,
 table.sc tr.right th,
-table.sc tr.right td {
+table.sc tr.right td,
+table.sc tr.left th.right,
+table.sc tr.left td.right {
     text-align: right;
     padding-right: 4px;
     vertical-align: top;
