@@ -8497,7 +8497,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.arms.improved_execute );
   action.apply_affecting_aura( talents.arms.improved_slam );
   action.apply_affecting_aura( talents.arms.sharpened_blades );
-  action.apply_affecting_aura( talents.arms.strength_of_arms ); // rage generation in spell
+  action.apply_affecting_aura( talents.arms.strength_of_arms );
   action.apply_affecting_aura( talents.arms.valor_in_victory );
 
   // Fury Auras
