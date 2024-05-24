@@ -10743,14 +10743,11 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n, proc_t
         {
           dk->active_spells.bursting_sores->execute_on_target( target );
         }
-      }
 
-      // Triggers once per target per player action:
-      // Apocalypse is 10% * n wounds burst to proc
-      // Scourge strike aoe is 1 - ( 0.9 ) ^ n targets to proc, or 10% for each target hit
-      if ( dk->talent.unholy.festermight.ok() )
-      {
-        dk->buffs.festermight->trigger( n_executes );
+        if ( dk->talent.unholy.festermight.ok() )
+        {
+          dk->buffs.festermight->trigger();
+        }
       }
 
       td->debuff.festering_wound->decrement( n_executes );
