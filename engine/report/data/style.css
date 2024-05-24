@@ -508,6 +508,11 @@ table.sc th.name {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+table.sc.left td {
+    padding: 2px;
+    text-align: left;
+    font-size: 13px;
+}
 table.sc td {
     padding: 2px;
     text-align: center;
@@ -516,9 +521,7 @@ table.sc td {
 table.sc th.left,
 table.sc td.left,
 table.sc tr.left th,
-table.sc tr.left td,
-table.sc tr.right th.left,
-table.sc tr.right td.left {
+table.sc tr.left td {
     text-align: left;
     vertical-align: top;
 }
@@ -528,9 +531,7 @@ table.sc tr.right td.left {
 table.sc th.right,
 table.sc td.right,
 table.sc tr.right th,
-table.sc tr.right td,
-table.sc tr.left th.right,
-table.sc tr.left td.right {
+table.sc tr.right td {
     text-align: right;
     padding-right: 4px;
     vertical-align: top;

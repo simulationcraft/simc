@@ -84,8 +84,9 @@ struct player_effect_t
            mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
   }
 
-  void print_parsed_line( report::sc_html_stream& os, const sim_t& sim, bool decorate, bool pct,
-                          std::function<std::string( uint32_t )> note_fn ) const
+  void print_parsed_line( report::sc_html_stream& os, const sim_t& sim, bool decorate,
+                          std::function<std::string( uint32_t )> note_fn,
+                          std::function<std::string( double )> val_str_fn ) const
   {
     std::vector<std::string> notes;
 
@@ -103,9 +104,9 @@ struct player_effect_t
 
     range::for_each( notes, []( auto& s ) { s[ 0 ] = std::toupper( s[ 0 ] ); } );
 
-    std::string val_str = mastery ? fmt::format( "{:.5f}", value * 100 )
-                          : pct   ? fmt::format( "{:.1f}%", value * 100 )
-                                  : fmt::format( "{}", value );
+    std::string val_str = val_str_fn ? val_str_fn( value )
+                          : mastery  ? fmt::format( "{:.5f}", value * 100 )
+                                     : fmt::format( "{:.1f}%", value * 100 );
 
     os.format(
       "<td class=\"left\">{}</td>"
@@ -154,8 +155,9 @@ struct target_effect_t
     return value == other.value && mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
   }
 
-  void print_parsed_line( report::sc_html_stream& os, const sim_t& sim, bool decorate, bool pct,
-                          std::function<std::string( uint32_t )> note_fn ) const
+  void print_parsed_line( report::sc_html_stream& os, const sim_t& sim, bool decorate,
+                          std::function<std::string( uint32_t )> note_fn,
+                          std::function<std::string( double )> val_str_fn ) const
   {
     std::vector<std::string> notes;
 
@@ -167,9 +169,9 @@ struct target_effect_t
 
     range::for_each( notes, []( auto& s ) { s[ 0 ] = std::toupper( s[ 0 ] ); } );
 
-    std::string val_str = mastery ? fmt::format( "{:.5f}", value * 100 )
-                          : pct   ? fmt::format( "{:.1f}%", value * 100 )
-                                  : fmt::format( "{}", value );
+    std::string val_str = val_str_fn ? val_str_fn( value )
+                          : mastery  ? fmt::format( "{:.5f}", value * 100 )
+                                     : fmt::format( "{:.1f}%", value * 100 );
 
     os.format(
       "<td class=\"left\">{}</td>"
@@ -1571,17 +1573,39 @@ public:
     {
       os << "<h3 class=\"toggle\">Player Effects</h3>\n"
          << "<div class=\"toggle-content hide\">\n"
-         << "<table class=\"sc even\">\n"
+         << "<table class=\"sc left even\">\n"
          << "<thead><tr>\n"
          << "<th>Type</th><th>Spell</th><th>ID</th><th>#</th><th>Value</th><th>Source</th><th>Notes</th>\n"
          << "</tr></thead>\n";
 
+      auto attr_note = []( uint32_t opt ) {
+        std::vector<std::string> str_list;
+
+        for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
+          if ( opt & ( 1 << ( stat - 1 ) ) )
+            str_list.emplace_back( util::stat_type_string( stat ) );
+
+        return util::string_join( str_list );
+      };
+
+      auto mult_note = []( uint32_t opt ) {
+        return opt == 0x7f ? "All" : util::school_type_string( dbc::get_school_type( opt ) );
+      };
+
+      auto pet_note = []( uint32_t opt ) {
+        return opt ? "Guardian" : "Pet";
+      };
+
+      auto mastery_val = [ this ]( double v ) {
+        return fmt::format( "{:.1f}%", v * mastery_coefficient() * 100 );
+      };
+
       print_parsed_type( os, auto_attack_speed_effects, "Auto Attack Speed" );
-      print_parsed_type( os, attribute_multiplier_effects, "Attribute Multiplier" );
-      print_parsed_type( os, matching_armor_attribute_multiplier_effects, "Matching Armor" );
+      print_parsed_type( os, attribute_multiplier_effects, "Attribute Multiplier", attr_note );
+      print_parsed_type( os, matching_armor_attribute_multiplier_effects, "Matching Armor", attr_note );
       print_parsed_type( os, versatility_effects, "Versatility" );
-      print_parsed_type( os, player_multiplier_effects, "Player Multiplier" );
-      print_parsed_type( os, pet_multiplier_effects, "Pet Multiplier" );
+      print_parsed_type( os, player_multiplier_effects, "Player Multiplier", mult_note );
+      print_parsed_type( os, pet_multiplier_effects, "Pet Multiplier", pet_note );
       print_parsed_type( os, attack_power_multiplier_effects, "Attack Power Multiplier" );
       print_parsed_type( os, crit_chance_effects, "Crit Chance" );
       print_parsed_type( os, leech_effects, "Leech" );
@@ -1590,11 +1614,11 @@ public:
       print_parsed_type( os, parry_effects, "Parry" );
       print_parsed_type( os, armor_multiplier_effects, "Armor Multiplier" );
       print_parsed_type( os, haste_effects, "Haste" );
-      print_parsed_type( os, mastery_effects, "Mastery" );
+      print_parsed_type( os, mastery_effects, "Mastery", nullptr, mastery_val );
       print_parsed_type( os, parry_rating_from_crit_effects, "Parry Rating from Crit" );
       print_parsed_type( os, dodge_effects, "Dodge" );
-      print_parsed_type( os, target_multiplier_effects, "Target Multiplier" );
-      print_parsed_type( os, target_pet_multiplier_effects, "Target Pet Multiplier" );
+      print_parsed_type( os, target_multiplier_effects, "Target Multiplier", mult_note );
+      print_parsed_type( os, target_pet_multiplier_effects, "Target Pet Multiplier", pet_note );
       print_parsed_custom_type( os );
 
       os << "</table>\n"
@@ -1629,65 +1653,21 @@ public:
 
   template <typename U>
   void print_parsed_type( report::sc_html_stream& os, const std::vector<U>& entries, std::string_view n,
-                          bool pct = true )
+                          std::function<std::string( uint32_t )> note_fn = nullptr,
+                          std::function<std::string( double )> val_str_fn = nullptr )
   {
     auto c = entries.size();
     if( !c )
       return;
 
-    std::function<std::string( uint32_t )> note_fn = nullptr;
-
-    if constexpr ( std::is_same_v<U, player_effect_t> )
-    {
-      if ( &entries == &attribute_multiplier_effects || &entries == &matching_armor_attribute_multiplier_effects )
-      {
-        note_fn = []( uint32_t opt ) {
-          std::vector<std::string> str_list;
-
-          for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
-            if ( opt & ( 1 << ( stat - 1 ) ) )
-              str_list.emplace_back( util::stat_type_string( stat ) );
-
-          return util::string_join( str_list );
-        };
-      }
-      else if ( &entries == &player_multiplier_effects )
-      {
-        note_fn = []( uint32_t opt ) {
-          return opt == 0x7f ? "All" : util::school_type_string( dbc::get_school_type( opt ) );
-        };
-      }
-      else if ( &entries == &pet_multiplier_effects )
-      {
-        note_fn = []( uint32_t opt ) {
-          return opt ? "Guardian" : "Pet";
-        };
-      }
-    }
-    else if constexpr ( std::is_same_v<U, target_effect_t<TD>> )
-    {
-      if ( &entries == &target_multiplier_effects )
-      {
-        note_fn = []( uint32_t opt ) {
-          return opt == 0x7f ? "All" : util::school_type_string( dbc::get_school_type( opt ) );
-        };
-      }
-      else if ( &entries == &target_pet_multiplier_effects )
-      {
-        note_fn = []( uint32_t opt ) {
-          return opt ? "Guardian" : "Pet";
-        };
-      }
-    }
-
-    os.format( "<tr class=\"left\"><td rowspan=\"{}\">{}</td>", c, n );
+    os.format( "<tr><td rowspan=\"{}\" style=\"background: #111\">{}</td>", c, n );
 
     for ( size_t i = 0; i < c; i++ )
     {
       if ( i > 0 )
         os << "<tr>";
 
-      entries[ i ].print_parsed_line( os, *sim, true, pct, note_fn );
+      entries[ i ].print_parsed_line( os, *sim, true, note_fn, val_str_fn );
     }
   }
 };
@@ -2133,7 +2113,7 @@ public:
       print_parsed_type( os, &base_t::dot_duration_effects, "Dot Duration" );
       print_parsed_type( os, &base_t::tick_time_effects, "Tick Time" );
       print_parsed_type( os, &base_t::recharge_multiplier_effects, "Recharge Multiplier" );
-      print_parsed_type( os, &base_t::flat_cost_effects, "Flat Cost", false );
+      print_parsed_type( os, &base_t::flat_cost_effects, "Flat Cost", []( double v ) { return fmt::to_string( v ); } );
       print_parsed_type( os, &base_t::cost_effects, "Percent Cost" );
       print_parsed_type( os, &base_t::target_multiplier_effects, "Damage on Debuff" );
       print_parsed_type( os, &base_t::target_crit_chance_effects, "Crit Chance on Debuff" );
@@ -2163,7 +2143,8 @@ public:
   virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
 
   template <typename W = base_t, typename V>
-  void print_parsed_type( report::sc_html_stream& os, V vector_ptr, std::string_view n, bool pct = true )
+  void print_parsed_type( report::sc_html_stream& os, V vector_ptr, std::string_view n,
+                          std::function<std::string( double )> val_str_fn = nullptr )
   {
     auto entries = std::invoke( vector_ptr, static_cast<W*>( this ) );
 
@@ -2184,7 +2165,7 @@ public:
       if ( i > 0 )
         os << "<tr>";
 
-      entries[ i ].print_parsed_line( os, *BASE::sim, false, pct, nullptr );
+      entries[ i ].print_parsed_line( os, *BASE::sim, false, nullptr, val_str_fn );
     }
   }
 };
