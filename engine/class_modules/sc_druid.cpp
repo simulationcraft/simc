@@ -13507,23 +13507,17 @@ public:
 
   void html_customsection( report::sc_html_stream& os ) override
   {
-    if ( p.specialization() == DRUID_FERAL )
-    {
-      os << "<div class=\"player-section custom_section\">\n";
+    os << "<div class=\"player-section custom_section\">\n";
 
+    if ( p.specialization() == DRUID_FERAL )
       feral_snapshot_table( os );
 
-      os << "</div>\n";
-    }
-
     if ( p.specialization() == DRUID_BALANCE && p.eclipse_handler.enabled() )
-    {
-      os << "<div class=\"player-section custom_section\">\n";
-
       balance_eclipse_table( os );
 
-      os << "</div>\n";
-    }
+    p.parsed_effects_html( os );
+
+    os << "</div>\n";
   }
 
   void balance_print_data( report::sc_html_stream& os, const spell_data_t* spell,
