@@ -11847,7 +11847,7 @@ void death_knight_t::init_spells()
   // Row 3
   talent.mindfreeze        = find_talent_spell( talent_tree::CLASS, "Mind Freeze" );
   talent.blinding_sleet    = find_talent_spell( talent_tree::CLASS, "Blinding Sleet" );
-  talent.antimagic_barrier = find_talent_spell( talent_tree::CLASS, "Antimagic Barrier" );
+  talent.antimagic_barrier = find_talent_spell( talent_tree::CLASS, "Anti-magic Barrier" );
   talent.march_of_darkness = find_talent_spell( talent_tree::CLASS, "March of Darkness" );
   talent.unholy_ground     = find_talent_spell( talent_tree::CLASS, "Unholy Ground" );
   talent.control_undead    = find_talent_spell( talent_tree::CLASS, "Control Undead" );
@@ -11863,7 +11863,7 @@ void death_knight_t::init_spells()
   talent.deaths_reach             = find_talent_spell( talent_tree::CLASS, "Death's Reach" );
   // Row 5
   talent.icy_talons     = find_talent_spell( talent_tree::CLASS, "Icy Talons" );
-  talent.antimagic_zone = find_talent_spell( talent_tree::CLASS, "Antimagic Zone" );
+  talent.antimagic_zone = find_talent_spell( talent_tree::CLASS, "Anti-magic Zone" );
   talent.unholy_bond    = find_talent_spell( talent_tree::CLASS, "Unholy Bond" );
   // Row 6
   talent.ice_prison       = find_talent_spell( talent_tree::CLASS, "Ice Prison" );
