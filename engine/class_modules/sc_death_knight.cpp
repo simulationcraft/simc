@@ -1361,7 +1361,6 @@ public:
     const spell_data_t* vampiric_strike;
     const spell_data_t* essence_of_the_blood_queen_buff;
     const spell_data_t* gift_of_the_sanlayn_buff;
-    const spell_data_t* vampiric_strike_buff;
     const spell_data_t* vampiric_strike_heal;
     const spell_data_t* infliction_of_sorrow_damage;
     const spell_data_t* blood_beast_summon;
@@ -11043,7 +11042,7 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target )
 
 void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
 {
-  double chance    = spell.vampiric_strike_buff->effectN( 1 ).percent();
+  double chance    = talent.sanlayn.vampiric_strike->effectN( 1 ).percent();
   double target_hp = target->health_percentage();
 
   if ( talent.sanlayn.sanguine_scent.ok() && target_hp <= talent.sanlayn.sanguine_scent->effectN( 1 ).base_value() )
@@ -12239,7 +12238,6 @@ void death_knight_t::init_spells()
   spell.vampiric_strike                 = find_spell( 433895 );
   spell.essence_of_the_blood_queen_buff = find_spell( 433925 );
   spell.gift_of_the_sanlayn_buff        = find_spell( 434153 );
-  spell.vampiric_strike_buff            = find_spell( 433901 );
   spell.vampiric_strike_heal            = find_spell( 434422 );
   spell.infliction_of_sorrow_damage     = find_spell( 434144 );
   spell.blood_beast_summon              = find_spell( 434237 );
@@ -12468,7 +12466,8 @@ void death_knight_t::create_buffs()
                                ->set_trigger_spell( talent.deathbringer.bind_in_darkness );
 
   buffs.dark_talons_shadowfrost =
-      make_buff<school_change_buff_t>( this, "dark_talons_shadowfrost", spell.dark_talons_shadowfrost_buff )->set_quiet( true );
+      make_buff<school_change_buff_t>( this, "dark_talons_shadowfrost", spell.dark_talons_shadowfrost_buff )
+          ->set_quiet( true );
 
   buffs.dark_talons_icy_talons =
       make_buff( this, "dark_talons", spell.dark_talons_icy_talons_buff )
@@ -12485,7 +12484,7 @@ void death_knight_t::create_buffs()
             }
           } );
 
-    buffs.exterminate = make_buff( this, "exterminate", spell.exterminate_buff )
+  buffs.exterminate = make_buff( this, "exterminate", spell.exterminate_buff )
                           ->set_expire_callback( [ this ]( buff_t* buff, int stacks, timespan_t duration ) {
                             make_event( *sim, 500_ms, [ this ]() {
                               get_action<exterminate_t>( "exterminate", this )->execute_on_target( this->target );
@@ -12521,7 +12520,7 @@ void death_knight_t::create_buffs()
                                     }
                                   } );
 
-  buffs.vampiric_strike = make_buff( this, "vampiric_strike", spell.vampiric_strike_buff );
+  buffs.vampiric_strike = make_buff( this, "vampiric_strike", talent.sanlayn.vampiric_strike );
 
   // Blood
   if ( this->specialization() == DEATH_KNIGHT_BLOOD )
