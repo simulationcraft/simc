@@ -4371,7 +4371,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     parse_effects( p()->mastery.dreadblade );
 
     // Rider of the Apocalypse
-    parse_effects( p()->buffs.mograines_might );
+    // parse_effects( p()->buffs.mograines_might );
     parse_effects( p()->buffs.a_feast_of_souls );
 
     // Deathbringer
@@ -8300,8 +8300,6 @@ struct heart_strike_t : public heart_strike_base_t
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       vampiric_strike->execute();
-      // Manually add an execute event to keep DPE calculations correct
-      stats->add_execute( sim->current_time(), this->target );
       return;
     }
     heart_strike_base_t::execute();
@@ -9415,8 +9413,6 @@ struct scourge_strike_t final : public wound_spender_base_t
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       vampiric_strike->execute();
-      // Manually add an execute event to keep DPE calculations correct
-      stats->add_execute( sim->current_time(), this->target );
       return;
     }
     wound_spender_base_t::execute();
@@ -13305,6 +13301,9 @@ void death_knight_t::parse_player_effects()
     parse_target_effects( d_fn( &death_knight_td_t::dots_t::unholy_blight, false ), spell.unholy_blight_dot,
                           talent.unholy.morbidity );
   }
+
+  // Rider of the Apocalypse
+  parse_effects( buffs.mograines_might, talent.rider.mograines_might );
 
   // San'layn
   parse_effects( buffs.essence_of_the_blood_queen, USE_CURRENT, talent.sanlayn.frenzied_bloodthirst );
