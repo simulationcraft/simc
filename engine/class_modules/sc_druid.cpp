@@ -3723,27 +3723,16 @@ struct cp_generator_t : public cat_attack_t
 
   cp_generator_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
     : cat_attack_t( n, p, s, f ), berserk_frenzy_mul( p->talent.berserk_frenzy->effectN( 1 ).percent() )
-  {}
-
-  void init() override
   {
-    cat_attack_t::init();
-
-    if ( proc || !p()->talent.primal_fury.ok() )
-      attack_critical.locked = true;
-
-    if ( proc )
-      return;
-
-    auto [ m_data, new_ ] = p()->set_modified_spell( &data() );
+    auto [ m_data, new_ ] = p->set_modified_spell( &data() );
 
     set_energize( m_data );
 
     if ( new_ )
     {
-      if ( p()->talent.primal_fury.ok() )
+      if ( p->talent.primal_fury.ok() )
       {
-        auto eff = &find_effect( find_trigger( p()->talent.primal_fury ).trigger(), E_ENERGIZE );
+        auto eff = &find_effect( find_trigger( p->talent.primal_fury ).trigger(), E_ENERGIZE );
         energize->add_parse_entry()
           .set_func( [ this ] { return attack_critical; } )
           .set_flat( true )
@@ -3751,16 +3740,25 @@ struct cp_generator_t : public cat_attack_t
           .set_eff( eff );
       }
 
-      if ( p()->talent.berserk.ok() )
+      if ( p->talent.berserk.ok() )
       {
-        auto eff = &p()->spec.berserk_cat->effectN( 2 );
+        auto eff = &p->spec.berserk_cat->effectN( 2 );
         energize->add_parse_entry()
-          .set_buff( p()->buff.b_inc_cat )
+          .set_buff( p->buff.b_inc_cat )
+          .set_func( [ this ] { return !proc; } )
           .set_flat( true )
           .set_value( eff->base_value() )
           .set_eff( eff );
       }
     }
+  }
+
+  void init() override
+  {
+    cat_attack_t::init();
+
+    if ( proc || !p()->talent.primal_fury.ok() )
+      attack_critical.locked = true;
   }
 
   void execute() override
@@ -4956,24 +4954,16 @@ struct shred_t : public use_fluid_form_t<DRUID_FERAL,
         .set_value( stealth_mul )
         .set_func( [ this ] { return stealthed_any(); } )
         .set_eff( &data().effectN( 3 ) );
-    }
 
-    bt_buff = p->buff.bt_shred;
-  }
-
-  void init() override
-  {
-    base_t::init();
-
-    if ( p()->talent.pouncing_strikes.ok() )
-    {
-      const auto& eff = p()->find_spell( 343232 )->effectN( 1 );
+      const auto& eff = p->find_spell( 343232 )->effectN( 1 );
       energize->add_parse_entry()
         .set_value( eff.base_value() )
         .set_func( [ this ] { return stealthed_any(); } )
         .set_flat( true )
         .set_eff( &eff );
     }
+
+    bt_buff = p->buff.bt_shred;
   }
 
   void execute() override
