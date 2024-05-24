@@ -9374,14 +9374,20 @@ struct scourge_strike_shadow_t final : public death_knight_melee_attack_t
 struct scourge_strike_t final : public wound_spender_base_t
 {
   scourge_strike_t( util::string_view n, death_knight_t* p, util::string_view options_str )
-    : wound_spender_base_t( n, p, p->talent.unholy.scourge_strike ), vampiric_strike( nullptr ), vampiric_strike_cost( 0 )
+    : wound_spender_base_t( n, p, p->talent.unholy.scourge_strike ),
+      vampiric_strike( nullptr ),
+      vampiric_strike_cost( 0 )
   {
     parse_options( options_str );
     impact_action = get_action<scourge_strike_shadow_t>( "scourge_strike_shadow", p );
     add_child( impact_action );
+    if ( p->talent.unholy.clawing_shadows.ok() )
+    {
+      background = true;  // Prevent executing this through the APL with Clawing Shadows talented
+    }
     if ( p->talent.sanlayn.vampiric_strike.ok() )
     {
-      vampiric_strike = new vampiric_strike_unholy_t( "vampiric_strike", p );
+      vampiric_strike      = new vampiric_strike_unholy_t( "vampiric_strike", p );
       vampiric_strike_cost = p->spell.vampiric_strike->cost( POWER_RUNE );
       add_child( vampiric_strike );
     }
