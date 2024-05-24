@@ -4129,6 +4129,12 @@ struct nazgrim_pet_t final : public horseman_pet_t
     dk()->buffs.apocalyptic_conquest->trigger();
   }
 
+  void demise() override
+  {
+    horseman_pet_t::demise();
+    dk()->buffs.apocalyptic_conquest->expire();
+  }
+
   void init_action_list() override
   {
     horseman_pet_t::init_action_list();
@@ -5455,6 +5461,7 @@ struct apocalyptic_conquest_buff_t final : public buff_t
     : buff_t( p, "apocalyptic_conquest", p->pet_spell.apocalyptic_conquest ), player( p ), nazgrims_conquest( 0 )
   {
     set_default_value( p->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() );
+    set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
   }
 
   // Override the value of the buff to properly capture Apocalyptic Conquest's strength buff behavior
@@ -9334,8 +9341,6 @@ struct clawing_shadows_t final : public wound_spender_base_t
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       vampiric_strike->execute();
-      // Manually add an execute event to keep DPE calculations correct
-      stats->add_execute( sim->current_time(), this->target );
       return;
     }
     wound_spender_base_t::execute();
@@ -13300,9 +13305,6 @@ void death_knight_t::parse_player_effects()
     parse_target_effects( d_fn( &death_knight_td_t::dots_t::unholy_blight, false ), spell.unholy_blight_dot,
                           talent.unholy.morbidity );
   }
-
-  // Rider of the Apocalypse
-  parse_effects( buffs.apocalyptic_conquest, USE_CURRENT );
 
   // San'layn
   parse_effects( buffs.essence_of_the_blood_queen, USE_CURRENT, talent.sanlayn.frenzied_bloodthirst );
