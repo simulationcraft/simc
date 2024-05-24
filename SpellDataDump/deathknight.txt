@@ -17115,7 +17115,7 @@ Resource         : -10 Runic Power (6) (id=305982) w/ Unholy Death Knight (id=13
 Range            : 5 yards
 Max Targets      : 8
 GCD              : 1.5 seconds
-Affecting spells : Blood Plague (55078 effect#3), Mastery: Dreadblade (77515 effects: #1, #2), Death Knight (137005 effect#2), Blood Death Knight (137008 effect#18), Death and Decay (188290 effects: #2, #3), Blood for Blood (202846 effect#1), Heart Strike (316575 effect#1), Blood for Blood (356456 effect#1), Improved Heart Strike (374717 effect#1), Death Rot (377540 effect#1), Rotten Touch (390276 effect#1), Death Knight Blood 10.1 Class Set 2pc (405499 effect#1), Gift of the San'layn (434153 effect#3)
+Affecting spells : Blood Plague (55078 effect#3), Mastery: Dreadblade (77515 effects: #1, #2), Death Knight (137005 effect#2), Blood Death Knight (137008 effect#18), Death and Decay (188290 effects: #2, #3), Blood for Blood (202846 effect#1), Heart Strike (316575 effect#1), Blood for Blood (356456 effect#1), Improved Heart Strike (374717 effect#1), Death Rot (377540 effect#1), Rotten Touch (390276 effect#1), Death Knight Blood 10.1 Class Set 2pc (405499 effect#1), Gift of the San'layn (434153 effect#3), Vampiric Strike (445669 effect#1)
 Family Flags     : 0, 24, 59, 78, 127
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -20014,6 +20014,25 @@ Effects          :
 #1 (id=1142421)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 Description      : Fires a blast of unholy energy at the target, causing $s1 Shadow damage to an enemy or healing an Undead ally for ${$s1/4}.
+
+Name             : Vampiric Strike (id=445669) [Spell Family (15), Passive, Hidden] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
+Effects          :
+#1 (id=1142642)  : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
+                   Base Value: 27 | Scaled Value: 27 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
+                   Affected Spells: Vampiric Strike (433895)
+                   Family Flags: 0
 
 Name             : Exterminate (id=447954) [Spell Family (15)] 
 Class            : Death Knight

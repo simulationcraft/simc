@@ -331,6 +331,8 @@ struct modified_spelleffect_t
 
   modified_spelleffect_t( const spelleffect_data_t& eff ) : _eff( eff ), value( eff.base_value() ) {}
 
+  modified_spelleffect_t() : _eff( spelleffect_data_t::nil() ), value( 0.0 ) {}
+
   // return base value after modifiers
   double base_value() const
   {
@@ -377,7 +379,12 @@ struct modified_spelleffect_t
 
   modify_effect_t& add_parse_entry() const
   { return conditional.emplace_back(); }
+
+  static const modified_spelleffect_t& nil();
 };
+
+inline const modified_spelleffect_t modified_spelleffect_nil_v = modified_spelleffect_t();
+inline const modified_spelleffect_t& modified_spelleffect_t::nil() { return modified_spelleffect_nil_v; }
 
 struct modified_spell_data_t : public parse_base_t
 {
@@ -386,7 +393,7 @@ struct modified_spell_data_t : public parse_base_t
 
   modified_spell_data_t( const spell_data_t* s ) : modified_spell_data_t( *s ) {}
 
-  modified_spell_data_t( const spell_data_t& s ) : _spell( s )
+  modified_spell_data_t( const spell_data_t& s = *spell_data_t::nil() ) : _spell( s )
   {
     for ( const auto& eff : s.effects() )
       effects.emplace_back( eff );
@@ -395,7 +402,9 @@ struct modified_spell_data_t : public parse_base_t
   const modified_spelleffect_t& effectN( size_t idx ) const
   {
     assert( idx > 0 && "effect index must not be zero or less" );
-    assert( idx <= _spell.effect_count() && "effect index out of bound!" );
+
+    if ( idx > effects.size() )
+      return modified_spelleffect_t::nil();
 
     return effects[ idx - 1 ];
   }
@@ -636,7 +645,12 @@ struct modified_spell_data_t : public parse_base_t
       op_str,
       val_str );
   }*/
+
+  static modified_spell_data_t* nil();
 };
+
+inline modified_spell_data_t modified_spell_data_nil_v = modified_spell_data_t();
+inline modified_spell_data_t* modified_spell_data_t::nil() { return &modified_spell_data_nil_v; }
 
 struct parse_effects_t : public parse_base_t
 {
