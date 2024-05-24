@@ -294,6 +294,7 @@ public:
     cooldown_t* ravager;
     cooldown_t* shield_slam;
     cooldown_t* shield_wall;
+    cooldown_t* single_minded_fury_icd;
     cooldown_t* shockwave;
     cooldown_t* skullsplitter;
     cooldown_t* storm_bolt;
@@ -1603,6 +1604,21 @@ struct melee_t : public warrior_attack_t
     {
       p()->buff.wild_strikes->trigger();
     }
+
+    if ( p() -> specialization() == WARRIOR_FURY &&
+          p() -> main_hand_weapon.group() == WEAPON_1H &&
+          p() -> off_hand_weapon.group() == WEAPON_1H &&
+          p() -> talents.fury.single_minded_fury->ok() &&
+          p() -> cooldown.single_minded_fury_icd->up() &&
+          s -> result == RESULT_CRIT )
+    {
+      if ( rng().roll( p() -> talents.fury.single_minded_fury->proc_chance() ) )
+      {
+        p()->cooldown.single_minded_fury_icd->start();
+        p()->buff.enrage->trigger();
+      }
+    }
+
   }
 
   void trigger_rage_gain( const action_state_t* s )
@@ -6606,7 +6622,8 @@ void warrior_t::init_spells()
   if ( specialization() == WARRIOR_FURY && main_hand_weapon.group() == WEAPON_1H &&
              off_hand_weapon.group() == WEAPON_1H && talents.fury.single_minded_fury->ok() )
   {
-    auto_attack_multiplier *= 1.0 + talents.fury.single_minded_fury->effectN( 4 ).percent();
+    auto_attack_multiplier *= 1.0 + talents.fury.single_minded_fury->effectN( 4 ).percent();  // TODO double check this in game
+    auto_attack_multiplier *= 1.0 + talents.fury.single_minded_fury->effectN( 5 ).percent();
   }
   if ( specialization() == WARRIOR_FURY && main_hand_weapon.group() == WEAPON_1H &&
        off_hand_weapon.group() == WEAPON_1H && talents.fury.frenzied_flurry->ok() )
@@ -6657,6 +6674,8 @@ void warrior_t::init_spells()
   cooldown.ravager                          = get_cooldown( "ravager" );
   cooldown.shield_slam                      = get_cooldown( "shield_slam" );
   cooldown.shield_wall                      = get_cooldown( "shield_wall" );
+  cooldown.single_minded_fury_icd           = get_cooldown( "single_minded_fury" );
+  cooldown.single_minded_fury_icd->duration = talents.fury.single_minded_fury->internal_cooldown();
   cooldown.skullsplitter                    = get_cooldown( "skullsplitter" );
   cooldown.shockwave                        = get_cooldown( "shockwave" );
   cooldown.storm_bolt                       = get_cooldown( "storm_bolt" );
