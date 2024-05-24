@@ -4414,8 +4414,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::rotten_touch ), p()->spell.rotten_touch_debuff );
 
     // Rider of the Apocalypse
-    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::chains_of_ice_trollbane_damage ),
-                          p()->pet_spell.trollbanes_chains_of_ice_debuff );
+
     // Deathbringer
 
     // San'layn
@@ -13304,6 +13303,8 @@ void death_knight_t::parse_player_effects()
 
   // Rider of the Apocalypse
   parse_effects( buffs.mograines_might, talent.rider.mograines_might );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::chains_of_ice_trollbane_damage ),
+                        pet_spell.trollbanes_chains_of_ice_debuff );
 
   // San'layn
   parse_effects( buffs.essence_of_the_blood_queen, USE_CURRENT, talent.sanlayn.frenzied_bloodthirst );
