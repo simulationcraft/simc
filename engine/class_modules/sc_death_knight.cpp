@@ -13441,14 +13441,14 @@ public:
 
   void html_customsection( report::sc_html_stream& os ) override
   {
+    os << "<div class=\"player-section custom_section\">\n";
     if ( p._runes.cumulative_waste.percentile( .5 ) > 0 )
     {
-      os << "<div class=\"player-section custom_section\">\n";
       html_rune_waste( os );
-      os << "<div class=\"clear\"></div>\n";
-      os << "</div>\n";
     }
+    os << "<div class=\"clear\"></div>\n";
     p.parsed_effects_html( os );
+    os << "</div>\n";
   }
 
 private:
