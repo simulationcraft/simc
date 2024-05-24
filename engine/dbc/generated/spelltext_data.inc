@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.7.54762
-static const std::array<spelltext_data_t, 21153> __spelltext_data { {
+static const std::array<spelltext_data_t, 21161> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -8349,6 +8349,9 @@ static const std::array<spelltext_data_t, 21153> __spelltext_data { {
   { 238220, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238221, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238222, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
+  { 238227, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
+  { 238228, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
+  { 238229, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238230, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238231, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238232, "Create a class set item appropriate for your Loot Specialization ($@lootspec).", 0, 0 },
@@ -8378,6 +8381,8 @@ static const std::array<spelltext_data_t, 21153> __spelltext_data { {
   { 238283, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238284, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238285, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
+  { 238286, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
+  { 238287, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238288, "Create a class set item appropriate for your Loot Specialization ($@lootspec).", 0, 0 },
   { 238289, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 238292, "Create a class set item appropriate for your loot specialization ($@lootspec).", 0, 0 },
@@ -20357,6 +20362,7 @@ static const std::array<spelltext_data_t, 21153> __spelltext_data { {
   { 417713, "$@spelldesc417710", "Damage taken from $@auracaster's attacks increased by $s1%.", 0 },
   { 417714, "Increases your damage and healing by $s1% during the day.", "Damage and healing increased by $s1%.", 0 },
   { 417715, "Increases your Versatility by $s1% during the night.", "Versatility increased by $s1%.", 0 },
+  { 417775, "Add a Downy Liner and Crystal Ocular Lenses to the Thought Calculating Apparatus.", 0, 0 },
   { 417792, "$@spelldesc417534", 0, 0 },
   { 417855, "Holy Shock, Holy Light, and Flash of Light critical healing increased by $s1%.", 0, 0 },
   { 417939, "Activate the Tyrstone, recording $s1% of your healing done over the next $d, up to $417959s2 healing done.", "Recording $w1% of all healing done.", 0 },
@@ -20747,6 +20753,8 @@ static const std::array<spelltext_data_t, 21153> __spelltext_data { {
   { 427071, "$@spelldesc427064", 0, 0 },
   { 427072, "$@spelldesc422956", "Mastery increased by $w1.", 0 },
   { 427113, "Weave a web of dreams beneath your target after $d, dealing $427110s1 Nature damage split between all enemies within 8 yds. Your target is immobilized for $427215d while additional enemies are slowed by $427110s2%. Less effective against enemy players.\r\n\r\nDamage increased per enemy struck, up to 5. ", 0, 0 },
+  { 427130, "Toss the Moonfish back into the waters of Amirdrassil, applying a stack of Moonfish Essence.", "The essence of the Dream fades fast. Applying more Moonfish Essence might strengthen its resolve.", 0 },
+  { 427134, "Toss the Sunfish back into the waters of Amirdrassil, applying a stack of Sunfish Essence.", "The essence of the Dream fades fast. Applying more Sunfish Essence might strengthen its resolve.", 0 },
   { 427161, "$@spelldesc422956", 0, 0 },
   { 427209, "$@spelldesc427113", 0, 0 },
   { 427212, "$@spelldesc427113", "Slowed by $w1%.", 0 },
