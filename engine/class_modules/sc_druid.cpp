@@ -4956,11 +4956,14 @@ struct shred_t : public use_fluid_form_t<DRUID_FERAL,
         .set_eff( &data().effectN( 3 ) );
 
       const auto& eff = p->find_spell( 343232 )->effectN( 1 );
-      energize->add_parse_entry()
-        .set_value( eff.base_value() )
-        .set_func( [ this ] { return stealthed_any(); } )
-        .set_flat( true )
-        .set_eff( &eff );
+      if ( !range::contains( energize->conditional, &eff, &modify_effect_t::eff ) )
+      {
+        energize->add_parse_entry()
+          .set_value( eff.base_value() )
+          .set_func( [ this ] { return stealthed_any(); } )
+          .set_flat( true )
+          .set_eff( &eff );
+      }
     }
 
     bt_buff = p->buff.bt_shred;
@@ -13516,6 +13519,7 @@ public:
       balance_eclipse_table( os );
 
     p.parsed_effects_html( os );
+    modified_spell_data_t::parsed_effects_html( os, *p.sim, p.modified_spells );
 
     os << "</div>\n";
   }
