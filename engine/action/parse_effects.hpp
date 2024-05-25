@@ -84,6 +84,8 @@ struct player_effect_t
            mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
   }
 
+  std::string value_type_name( parse_flag_e ) const;
+
   void print_parsed_line( report::sc_html_stream&, const sim_t&, bool, std::function<std::string( uint32_t )>,
                           std::function<std::string( double )> ) const;
 };

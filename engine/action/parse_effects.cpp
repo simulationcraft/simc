@@ -7,6 +7,16 @@
 
 #include "dbc/sc_spell_info.hpp"
 
+std::string player_effect_t::value_type_name( parse_flag_e t ) const
+{
+  switch ( t )
+  {
+    case USE_DEFAULT: return "Default Value";
+    case USE_CURRENT: return "Current Value";
+    default:          return "Spell Data";
+  }
+}
+
 void player_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t& sim, bool decorate,
                                          std::function<std::string( uint32_t )> note_fn,
                                          std::function<std::string( double )> val_str_fn ) const
