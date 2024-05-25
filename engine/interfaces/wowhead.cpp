@@ -129,12 +129,12 @@ bool wowhead::download_item_data( item_t& item, wowhead_e source, cache::behavio
         rapidjson::StringBuffer b;
         rapidjson::PrettyWriter< rapidjson::StringBuffer > writer(b);
         json.Accept(writer);
-        item.sim->out_debug.raw() << b.GetStringView();
+        item.sim->out_debug.raw() << b.GetString();
 
         rapidjson::StringBuffer b2;
         rapidjson::PrettyWriter< rapidjson::StringBuffer > writer2(b2);
         jsonequip.Accept(writer2);
-        item.sim->out_debug.raw() << b2.GetStringView();
+        item.sim->out_debug.raw() << b2.GetString();
       }
 
       if (!json.HasMember("slot"))

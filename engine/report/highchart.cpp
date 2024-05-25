@@ -189,7 +189,7 @@ std::string chart_t::to_data() const
   sc_json_writer_t<rapidjson::StringBuffer> writer( b, sim_ );
 
   js_.Accept( writer );
-  return fmt::format( "{{ \"target\": \"{}\", \"data\": {} }}\n", id_str_, b.GetStringView() );
+  return fmt::format( "{{ \"target\": \"{}\", \"data\": {} }}\n", id_str_, b.GetString() );
 }
 
 std::string chart_t::to_aggregate_string( bool on_click ) const
@@ -207,7 +207,7 @@ std::string chart_t::to_aggregate_string( bool on_click ) const
     // str_ += "console.log(\"Loading " + id_str_ + ": " + toggle_id_str_ + "
     // ...\" );\n";
   }
-  fmt::format_to( std::back_inserter( out ), "$('#{}').highcharts({});\n", id_str_, b.GetStringView() );
+  fmt::format_to( std::back_inserter( out ), "$('#{}').highcharts({});\n", id_str_, b.GetString() );
   if ( on_click )
   {
     fmt::format_to( std::back_inserter( out ), "}});\n" );
@@ -221,7 +221,7 @@ std::string chart_t::to_string() const
   sc_json_writer_t<rapidjson::StringBuffer> writer( b, sim_ );
 
   js_.Accept( writer );
-  auto javascript = std::string{ b.GetStringView() };
+  auto javascript = std::string{ b.GetString() };
   range::erase_remove( javascript, '\n' );
 
   auto out = fmt::memory_buffer();
@@ -256,7 +256,7 @@ std::string chart_t::to_xml() const
 
   js_.Accept( writer );
 
-  return fmt::format("<!CDATA[{}]]>", b.GetStringView());
+  return fmt::format("<!CDATA[{}]]>", b.GetString());
 }
 
 void chart_t::set_xaxis_max( double max )
