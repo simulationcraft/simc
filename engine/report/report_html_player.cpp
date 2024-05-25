@@ -1978,10 +1978,19 @@ int raidbots_talent_render_width( specialization_e spec, int height )
   }
 }
 
+std::string raidbots_domain( bool ptr )
+{
+#if SC_BETA
+  return "mimiron";
+#else
+  return ptr ? "mimiron" : "www";
+#endif
+}
+
 std::string raidbots_talent_render_src( std::string_view talent_str, unsigned level, int width, bool mini, bool ptr )
 {
   return fmt::format( "https://{}.raidbots.com/simbot/render/talents/{}?bgcolor=160f0b&level={}&width={}{}",
-                      ptr ? "mimiron" : "www", base64_to_url( talent_str ), level, width, mini ? "&mini=1" : "" );
+                      raidbots_domain( ptr ), base64_to_url( talent_str ), level, width, mini ? "&mini=1" : "" );
 }
 
 template <typename T>
