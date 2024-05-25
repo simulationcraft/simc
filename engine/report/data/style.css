@@ -518,6 +518,12 @@ table.sc td {
     text-align: center;
     font-size: 13px;
 }
+table.sc td.dark {
+    background-color: #111;
+}
+table.sc td.dark.right {
+    vertical-align: middle;
+}
 table.sc th.left,
 table.sc td.left,
 table.sc tr.left th,

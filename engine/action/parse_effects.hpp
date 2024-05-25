@@ -8,6 +8,7 @@
 #include "action/action.hpp"
 #include "buff/buff.hpp"
 #include "dbc/dbc.hpp"
+#include "dbc/sc_spell_info.hpp"
 #include "player/pet.hpp"
 #include "player/player.hpp"
 #include "report/decorators.hpp"
@@ -544,9 +545,8 @@ struct modified_spelleffect_t
 
   void print_parsed_effect( report::sc_html_stream& os, const sim_t& sim, size_t& row ) const
   {
-    auto p = permanent.size();
-    auto c = conditional.size();
-    if ( p + c == 0 )
+    auto c = size();
+    if ( !c )
       return;
 
     if ( row != 0 )
@@ -554,24 +554,29 @@ struct modified_spelleffect_t
 
     size_t row2 = 0;
 
-    os.format( "<td rowspan=\"{}\" style=\"background: #111\">#{}</td>\n", p + c, _eff.index() + 1 );
+    os.format( "<td rowspan=\"{}\" class=\"dark right\">{}</td>"
+               "<td rowspan=\"{}\" class=\"dark\">{}</td>"
+               "<td rowspan=\"{}\" class=\"dark\">{}</td>\n",
+               c, _eff.index() + 1,
+               c, spell_info::effect_type_str( &_eff ),
+               c, spell_info::effect_subtype_str( &_eff ) );
 
-    for ( size_t i = 0; i < p; i++ )
+    for ( auto eff : permanent )
     {
       if ( row != 0 && row2 != 0 )
         os << "<tr>";
 
-      print_parsed_line( os, sim, *permanent[ i ] );
+      print_parsed_line( os, sim, *eff );
       row++;
       row2++;
     }
 
-    for ( size_t i = 0; i < c; i++ )
+    for ( const auto& eff : conditional )
     {
       if ( row != 0 && row2 != 0 )
         os << "<tr>";
 
-      print_parsed_line( os, sim, conditional[ i ] );
+      print_parsed_line( os, sim, eff );
       row++;
       row2++;
     }
@@ -753,8 +758,11 @@ struct modified_spell_data_t : public parse_base_t
 
     size_t row = 0;
 
-    os.format( "<tr><td rowspan=\"{}\" style=\"background: #111\">{}</td>\n", c,
-               report_decorators::decorated_spell_data( sim, &_spell ) );
+    os.format( "<tr>"
+               "<td rowspan=\"{}\" class=\"dark\">{}</td>"
+               "<td rowspan=\"{}\" class=\"dark right\">{}</td>\n",
+               c, report_decorators::decorated_spell_data( sim, &_spell ),
+               c, _spell.id() );
 
     for ( const auto& eff : effects )
       eff.print_parsed_effect( os, sim, row );
@@ -770,7 +778,11 @@ struct modified_spell_data_t : public parse_base_t
          << "<table class=\"sc even left\">\n";
 
       os << "<thead><tr>"
-         << "<th colspan=\"2\">Spell</th>"
+         << "<th>Spell</th>"
+         << "<th>ID</th>"
+         << "<th>#</th>"
+         << "<th>Type</th>"
+         << "<th>Subtype</th>"
          << "<th>Modified By</th>"
          << "<th>ID</th>"
          << "<th>#</th>"
@@ -1725,7 +1737,7 @@ public:
     if( !c )
       return;
 
-    os.format( "<tr><td rowspan=\"{}\" style=\"background: #111\">{}</td>", c, n );
+    os.format( "<tr><td rowspan=\"{}\" class=\"dark\">{}</td>", c, n );
 
     for ( size_t i = 0; i < c; i++ )
     {
