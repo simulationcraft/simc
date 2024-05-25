@@ -32,16 +32,6 @@ enum parse_flag_e
   ALLOW_ZERO
 };
 
-static std::string value_type_name( parse_flag_e t )
-{
-  switch ( t )
-  {
-    case USE_DEFAULT: return "Default Value";
-    case USE_CURRENT: return "Current Value";
-    default:          return "Spell Data";
-  }
-}
-
 // effects dependent on player state
 struct player_effect_t
 {
