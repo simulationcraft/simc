@@ -99,6 +99,9 @@ struct player_effect_t
     if ( func )
       notes.emplace_back( "Conditional" );
 
+    if ( !buff && !func )
+      notes.emplace_back( "Passive" );
+
     if ( note_fn )
       notes.emplace_back( note_fn( opt_enum ) );
 
@@ -466,6 +469,13 @@ struct modified_spelleffect_t
   size_t size() const
   { return conditional.size() + permanent.size(); }
 
+  bool modified_by( const spelleffect_data_t& eff ) const
+  {
+    return !eff.ok() ||
+           range::contains( permanent, &eff ) ||
+           range::contains( conditional, &eff, &modify_effect_t::eff );
+  }
+
   void print_parsed_line( report::sc_html_stream& os, const sim_t& sim, const modify_effect_t& i ) const
   {
     std::string op_str = i.flat ? "ADD" : "PCT";
@@ -692,6 +702,12 @@ struct modified_spell_data_t : public parse_base_t
     if ( !_spell.affected_by_all( eff ) )
       return;
 
+    auto &effN = effects[ idx ];
+
+    // dupes are not allowed
+    if ( range::contains( effN.permanent, &eff ) || range::contains( effN.conditional, &eff, &modify_effect_t::eff ) )
+      return;
+
     if ( tmp.data.value != 0.0 )
     {
       val = tmp.data.value;
@@ -707,7 +723,6 @@ struct modified_spell_data_t : public parse_base_t
       return;
 
     std::string val_str = flat ? fmt::format( "{}", val ) : fmt::format( "{}%", val * 100 );
-    auto &effN = effects[ idx ];
 
     // always active
     if ( !tmp.data.buff && !tmp.data.func )
