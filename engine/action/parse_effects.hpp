@@ -469,10 +469,7 @@ struct modified_spelleffect_t
   void print_parsed_line( report::sc_html_stream& os, const sim_t& sim, const modify_effect_t& i ) const
   {
     std::string op_str = i.flat ? "ADD" : "PCT";
-    std::string val_str = fmt::to_string( i.value );
-    if ( !i.flat )
-      val_str += '%';
-
+    std::string val_str = i.flat ? fmt::to_string( i.value ) : ( fmt::to_string( i.value * 100 ) + '%' );
     std::vector<std::string> notes;
 
     if ( !i.use_stacks )
@@ -502,18 +499,19 @@ struct modified_spelleffect_t
   void print_parsed_line( report::sc_html_stream& os, const sim_t& sim, const spelleffect_data_t& eff ) const
   {
     std::string op_str;
-    std::string val_str = fmt::to_string( eff.base_value() );
+    std::string val_str;
 
     switch ( eff.subtype() )
     {
       case A_ADD_PCT_MODIFIER:
       case A_ADD_PCT_LABEL_MODIFIER:
         op_str = "PCT";
-        val_str += '%';
+        val_str = fmt::to_string( eff.base_value() * 100 ) + '%';
         break;
       case A_ADD_FLAT_MODIFIER:
       case A_ADD_FLAT_LABEL_MODIFIER:
         op_str = "ADD";
+        val_str = fmt::to_string( eff.base_value() );
         break;
       default:
         op_str = "UNK";
@@ -534,33 +532,38 @@ struct modified_spelleffect_t
       val_str );
   }
 
-  void print_parsed_effect( report::sc_html_stream& os, const sim_t& sim, bool &first ) const
+  void print_parsed_effect( report::sc_html_stream& os, const sim_t& sim, size_t& row ) const
   {
     auto p = permanent.size();
     auto c = conditional.size();
     if ( p + c == 0 )
       return;
 
+    if ( row != 0 )
+      os << "<tr>";
+
+    size_t row2 = 0;
+
     os.format( "<td rowspan=\"{}\" style=\"background: #111\">#{}</td>\n", p + c, _eff.index() + 1 );
 
     for ( size_t i = 0; i < p; i++ )
     {
-      if ( first )
-        first = false;
-      else
+      if ( row != 0 && row2 != 0 )
         os << "<tr>";
 
       print_parsed_line( os, sim, *permanent[ i ] );
+      row++;
+      row2++;
     }
 
     for ( size_t i = 0; i < c; i++ )
     {
-      if ( first )
-        first = false;
-      else
+      if ( row != 0 && row2 != 0 )
         os << "<tr>";
 
       print_parsed_line( os, sim, conditional[ i ] );
+      row++;
+      row2++;
     }
   }
 
@@ -704,7 +707,7 @@ struct modified_spell_data_t : public parse_base_t
       return;
 
     std::string val_str = flat ? fmt::format( "{}", val ) : fmt::format( "{}%", val * 100 );
-    auto &effN = effects[ idx - 1 ];
+    auto &effN = effects[ idx ];
 
     // always active
     if ( !tmp.data.buff && !tmp.data.func )
@@ -733,13 +736,13 @@ struct modified_spell_data_t : public parse_base_t
     if ( !c )
       return;
 
-    bool first = true;
+    size_t row = 0;
 
     os.format( "<tr><td rowspan=\"{}\" style=\"background: #111\">{}</td>\n", c,
                report_decorators::decorated_spell_data( sim, &_spell ) );
 
     for ( const auto& eff : effects )
-      eff.print_parsed_effect( os, sim, first );
+      eff.print_parsed_effect( os, sim, row );
   }
 
   static void parsed_effects_html( report::sc_html_stream& os, const sim_t& sim,
