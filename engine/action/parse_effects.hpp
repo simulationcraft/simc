@@ -463,6 +463,107 @@ struct modified_spelleffect_t
   modify_effect_t& add_parse_entry() const
   { return conditional.emplace_back(); }
 
+  size_t size() const
+  { return conditional.size() + permanent.size(); }
+
+  void print_parsed_line( report::sc_html_stream& os, const sim_t& sim, const modify_effect_t& i ) const
+  {
+    std::string op_str = i.flat ? "ADD" : "PCT";
+    std::string val_str = fmt::to_string( i.value );
+    if ( !i.flat )
+      val_str += '%';
+
+    std::vector<std::string> notes;
+
+    if ( !i.use_stacks )
+      notes.emplace_back( "No-stacks" );
+
+    if ( i.buff )
+      notes.emplace_back( "w/ Buff" );
+
+    if ( i.func )
+      notes.emplace_back( "Conditional" );
+
+    os.format(
+      "<td>{}</td>"
+      "<td class=\"right\">{}</td>"
+      "<td class=\"right\">{}</td>"
+      "<td>{}</td>"
+      "<td class=\"right\">{}</td>"
+      "<td>{}</td></tr>\n",
+      report_decorators::decorated_spell_data( sim, i.eff->spell() ),
+      i.eff->spell()->id(),
+      i.eff->index() + 1,
+      op_str,
+      val_str,
+      util::string_join( notes ) );
+  }
+
+  void print_parsed_line( report::sc_html_stream& os, const sim_t& sim, const spelleffect_data_t& eff ) const
+  {
+    std::string op_str;
+    std::string val_str = fmt::to_string( eff.base_value() );
+
+    switch ( eff.subtype() )
+    {
+      case A_ADD_PCT_MODIFIER:
+      case A_ADD_PCT_LABEL_MODIFIER:
+        op_str = "PCT";
+        val_str += '%';
+        break;
+      case A_ADD_FLAT_MODIFIER:
+      case A_ADD_FLAT_LABEL_MODIFIER:
+        op_str = "ADD";
+        break;
+      default:
+        op_str = "UNK";
+        break;
+    }
+
+    os.format(
+      "<td>{}</td>"
+      "<td class=\"right\">{}</td>"
+      "<td class=\"right\">{}</td>"
+      "<td>{}</td>"
+      "<td class=\"right\">{}</td>"
+      "<td>Passive</td></tr>\n",
+      report_decorators::decorated_spell_data( sim, eff.spell() ),
+      eff.spell()->id(),
+      eff.index() + 1,
+      op_str,
+      val_str );
+  }
+
+  void print_parsed_effect( report::sc_html_stream& os, const sim_t& sim, bool &first ) const
+  {
+    auto p = permanent.size();
+    auto c = conditional.size();
+    if ( p + c == 0 )
+      return;
+
+    os.format( "<td rowspan=\"{}\" style=\"background: #111\">#{}</td>\n", p + c, _eff.index() + 1 );
+
+    for ( size_t i = 0; i < p; i++ )
+    {
+      if ( first )
+        first = false;
+      else
+        os << "<tr>";
+
+      print_parsed_line( os, sim, *permanent[ i ] );
+    }
+
+    for ( size_t i = 0; i < c; i++ )
+    {
+      if ( first )
+        first = false;
+      else
+        os << "<tr>";
+
+      print_parsed_line( os, sim, conditional[ i ] );
+    }
+  }
+
   static const modified_spelleffect_t& nil();
 };
 
@@ -625,109 +726,48 @@ struct modified_spell_data_t : public parse_base_t
       effN.conditional.push_back( tmp.data );
     }
   }
-/*
-  void modified_effects_html( report::sc_html_stream& os )
+
+  void print_parsed_spell( report::sc_html_stream& os, const sim_t& sim )
   {
-    if ( range::count_if( effect_modifiers, []( const effect_pack_t& e ) {
-           return e.permanent.size() + e.conditional.size();
-         } ) )
+    auto c = range::accumulate( effects, 0, &modified_spelleffect_t::size );
+    if ( !c )
+      return;
+
+    bool first = true;
+
+    os.format( "<tr><td rowspan=\"{}\" style=\"background: #111\">{}</td>\n", c,
+               report_decorators::decorated_spell_data( sim, &_spell ) );
+
+    for ( const auto& eff : effects )
+      eff.print_parsed_effect( os, sim, first );
+  }
+
+  static void parsed_effects_html( report::sc_html_stream& os, const sim_t& sim,
+                                   std::vector<modified_spell_data_t*> entries )
+  {
+    if ( entries.size() )
     {
-      os << "<div>\n"
-         << "<h4>Modified Effects</h4>\n"
-         << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
+      os << "<h3 class=\"toggle\">Modified Spell Data</h3>"
+         << "<div class=\"toggle-content hide\">"
+         << "<table class=\"sc even left\">\n";
 
-      os << "<tr>\n"
-         << "<th class=\"small\">Effect</th>\n"
-         << "<th class=\"small\">Type</th>\n"
-         << "<th class=\"small\">Spell</th>\n"
-         << "<th class=\"small\">ID</th>\n"
-         << "<th class=\"small\">#</th>\n"
-         << "<th class=\"small\">+/%</th>\n"
-         << "<th class=\"small\">Value</th>\n"
-         << "</tr>\n";
+      os << "<thead><tr>"
+         << "<th colspan=\"2\">Spell</th>"
+         << "<th>Modified By</th>"
+         << "<th>ID</th>"
+         << "<th>#</th>"
+         << "<th>+/%</th>"
+         << "<th>Value</th>"
+         << "<th>Notes</th>"
+         << "</tr></thead>\n";
 
-      print_parsed_effect( os, effect_modifiers[ 0 ], "Effect 1" );
-      print_parsed_effect( os, effect_modifiers[ 1 ], "Effect 2" );
-      print_parsed_effect( os, effect_modifiers[ 2 ], "Effect 3" );
-      print_parsed_effect( os, effect_modifiers[ 3 ], "Effect 4" );
-      print_parsed_effect( os, effect_modifiers[ 4 ], "Effect 5" );
+      for ( auto m_data : entries )
+        m_data->print_parsed_spell( os, sim );
 
       os << "</table>\n"
          << "</div>\n";
     }
   }
-
-  void print_parsed_effect( report::sc_html_stream& os, const effect_pack_t& effN, std::string_view n )
-  {
-    auto p = effN.permanent.size();
-    auto c = effN.conditional.size();
-
-    if ( p + c == 0 )
-      return;
-
-    bool first_row = true;
-
-    os.format( "<tr><td rowspan=\"{}\">{}</td>\n", p + c, n );
-
-    if ( p )
-    {
-      first_row = false;
-
-      os.format( "<td rowspan=\"{}\">Permanent</td>", p );
-      for ( size_t i = 0; i < p; i++ )
-      {
-        if ( i > 0 )
-          os << "<tr>";
-
-        print_parsed_effect_line( os, *effN.permanent[ i ] );
-      }
-    }
-
-    if ( c )
-    {
-      if ( !first_row )
-        os << "<tr>";
-
-      os.format( "<td rowspan=\"{}\">Conditional</td>", c );
-      for ( size_t i = 0; i < c; i++ )
-      {
-        if ( i > 0 )
-          os << "<tr>";
-
-        print_parsed_effect_line( os, *effN.conditional[ i ].eff );
-      }
-    }
-  }
-
-  void print_parsed_effect_line( report::sc_html_stream& os, const spelleffect_data_t& eff )
-  {
-    std::string op_str;
-    std::string val_str = fmt::format( "{}", eff.base_value() );
-
-    switch ( eff.subtype() )
-    {
-      case A_ADD_PCT_MODIFIER:
-      case A_ADD_PCT_LABEL_MODIFIER:
-        op_str = "PCT";
-        val_str += '%';
-        break;
-      case A_ADD_FLAT_MODIFIER:
-      case A_ADD_FLAT_LABEL_MODIFIER:
-        op_str = "ADD";
-        break;
-      default:
-        op_str = "UNK";
-        break;
-    }
-
-    os.format(
-      "<td>{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td>{}</td><td class=\"right\">{}</td></tr>\n",
-      eff.spell()->name_cstr(),
-      eff.spell()->id(),
-      eff.index() + 1,
-      op_str,
-      val_str );
-  }*/
 
   static modified_spell_data_t* nil();
 };
@@ -1571,11 +1611,18 @@ public:
   {
     if ( total_effects_count() )
     {
-      os << "<h3 class=\"toggle\">Player Effects</h3>\n"
-         << "<div class=\"toggle-content hide\">\n"
-         << "<table class=\"sc left even\">\n"
-         << "<thead><tr>\n"
-         << "<th>Type</th><th>Spell</th><th>ID</th><th>#</th><th>Value</th><th>Source</th><th>Notes</th>\n"
+      os << "<h3 class=\"toggle\">Player Effects</h3>"
+         << "<div class=\"toggle-content hide\">"
+         << "<table class=\"sc left even\">\n";
+
+      os << "<thead><tr>"
+         << "<th>Type</th>"
+         << "<th>Spell</th>"
+         << "<th>ID</th>"
+         << "<th>#</th>"
+         << "<th>Value</th>"
+         << "<th>Source</th>"
+         << "<th>Notes</th>"
          << "</tr></thead>\n";
 
       auto attr_note = []( uint32_t opt ) {
@@ -2090,18 +2137,18 @@ public:
   {
     if ( total_effects_count() )
     {
-      os << "<div>\n"
-         << "<h4>Affected By (Dynamic)</h4>\n"
+      os << "<div>"
+         << "<h4>Affected By (Dynamic)</h4>"
          << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
 
-      os << "<tr>\n"
-         << "<th class=\"small\">Type</th>\n"
-         << "<th class=\"small\">Spell</th>\n"
-         << "<th class=\"small\">ID</th>\n"
-         << "<th class=\"small\">#</th>\n"
-         << "<th class=\"small\">Value</th>\n"
-         << "<th class=\"small\">Source</th>\n"
-         << "<th class=\"small\">Notes</th>\n"
+      os << "<tr>"
+         << "<th class=\"small\">Type</th>"
+         << "<th class=\"small\">Spell</th>"
+         << "<th class=\"small\">ID</th>"
+         << "<th class=\"small\">#</th>"
+         << "<th class=\"small\">Value</th>"
+         << "<th class=\"small\">Source</th>"
+         << "<th class=\"small\">Notes</th>"
          << "</tr>\n";
 
       print_parsed_type( os, &base_t::da_multiplier_effects, "Direct Damage" );
