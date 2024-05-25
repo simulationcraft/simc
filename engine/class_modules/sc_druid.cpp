@@ -4893,9 +4893,12 @@ struct primal_wrath_t : public cat_finisher_t
     // Manually set true so bloodtalons is decremented and we get proper snapshot reporting
     snapshots.bloodtalons = true;
 
-    auto m_data = p->set_modified_spell( &data() ).first
-      ->parse_effects( p->talent.circle_of_life_and_death )
-      ->parse_effects( p->talent.veinripper );
+    auto [ m_data, new_ ] = p->set_modified_spell( &data() );
+    if ( new_ )
+    {
+      m_data->parse_effects( p->talent.circle_of_life_and_death )
+            ->parse_effects( p->talent.veinripper );
+    }
 
     if ( data().ok() )
     {
@@ -5420,9 +5423,12 @@ struct mangle_t : public use_fluid_form_t<DRUID_GUARDIAN,
   {
     track_cd_waste = true;
 
-    auto m_data = p->set_modified_spell( &data() ).first
-      ->parse_effects( p->talent.soul_of_the_forest_bear )
-      ->parse_effects( p->buff.gore );
+    auto [ m_data, new_ ] = p->set_modified_spell( &data() );
+    if ( new_ )
+    {
+      m_data->parse_effects( p->talent.soul_of_the_forest_bear )
+            ->parse_effects( p->buff.gore );
+    }
 
     set_energize( m_data );
 
@@ -7484,10 +7490,13 @@ struct moonfire_t : public druid_spell_t
     damage = p->get_secondary_action<moonfire_damage_t>( name_str + "_dmg", f );
     replace_stats( damage );
 
-    auto m_data = p->set_modified_spell( &data() ).first
-      ->parse_effects( p->spec.astral_power )
-      ->parse_effects( p->talent.moon_guardian )
-      ->parse_effects( p->buff.galactic_guardian);
+    auto [ m_data, new_ ] = p->set_modified_spell( &data() );
+    if( new_ )
+    {
+      m_data->parse_effects( p->spec.astral_power )
+            ->parse_effects( p->talent.moon_guardian )
+            ->parse_effects( p->buff.galactic_guardian);
+    }
 
     if ( p->spec.astral_power->ok() && !has_flag( flag_e::TWIN ) )
     {
@@ -8007,11 +8016,14 @@ struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclips
     aoe = -1;
     reduced_aoe_targets = data().effectN( p->specialization() == DRUID_BALANCE ? 5 : 3 ).base_value();
 
-    auto m_data = p->set_modified_spell( &data() ).first
-      ->parse_effects( p->talent.wild_surges )
-      ->parse_effects( p->buff.eclipse_lunar, p->talent.umbral_intensity )
-      ->parse_effects( p->buff.warrior_of_elune, IGNORE_STACKS )
-      ->parse_effects( p->talent.moon_guardian );
+    auto [ m_data, new_ ] = p->set_modified_spell( &data() );
+    if ( new_ )
+    {
+      m_data->parse_effects( p->talent.wild_surges )
+            ->parse_effects( p->buff.eclipse_lunar, p->talent.umbral_intensity )
+            ->parse_effects( p->buff.warrior_of_elune, IGNORE_STACKS )
+            ->parse_effects( p->talent.moon_guardian );
+    }
 
     set_energize( m_data );
 
@@ -8266,8 +8278,9 @@ struct sunfire_t : public druid_spell_t
 
   DRUID_ABILITY( sunfire_t, druid_spell_t, "sunfire", p->talent.sunfire )
   {
-    auto m_data = p->set_modified_spell( &data() ).first
-      ->parse_effects( p->spec.astral_power );
+    auto [ m_data, new_ ] = p->set_modified_spell( &data() );
+    if ( new_ )
+      m_data->parse_effects( p->spec.astral_power );
 
     set_energize( m_data );
 
@@ -8505,10 +8518,13 @@ struct wrath_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclipse_e
   {
     form_mask = NO_FORM | MOONKIN_FORM;
 
-    auto m_data = p->set_modified_spell( &data() ).first
-      ->parse_effects( p->spec.astral_power )
-      ->parse_effects( p->talent.wild_surges )
-      ->parse_effects( p->buff.eclipse_solar, p->talent.soul_of_the_forest_moonkin );
+    auto [ m_data, new_ ] = p->set_modified_spell( &data() );
+    if ( new_ )
+    {
+      m_data->parse_effects( p->spec.astral_power )
+            ->parse_effects( p->talent.wild_surges )
+            ->parse_effects( p->buff.eclipse_solar, p->talent.soul_of_the_forest_moonkin );
+    }
 
     set_energize( m_data );
 
