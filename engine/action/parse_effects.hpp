@@ -1648,9 +1648,17 @@ public:
     return true;
   }
 
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& /*data*/,
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data,
                                                    double& val_mul, std::string& str, bool& flat, bool force ) override
   {
+    auto adjust_recharge_multiplier_warning = [ this, &data ] {
+      if ( BASE::sim->debug && data.buff && !data.buff->stack_change_callback )
+      {
+        BASE::sim->error( "WARNING: {} adjusts cooldown of {} but does not have a stack change callback.\n"
+                          "Make sure adjust_recharge_multiplier() is properly called.", *data.buff, *this );
+      }
+    };
+
     if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
     {
       str = "auto attack";
@@ -1690,6 +1698,7 @@ public:
 
         case P_COOLDOWN:
           str = "cooldown";
+          adjust_recharge_multiplier_warning();
           return &recharge_multiplier_effects;
 
         case P_RESOURCE_COST:
@@ -1730,6 +1739,7 @@ public:
     else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY )
     {
       str = "cooldown";
+      adjust_recharge_multiplier_warning();
       return &recharge_multiplier_effects;
     }
 
