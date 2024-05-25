@@ -5938,7 +5938,7 @@ void evoker_t::init_finished()
     }
   }
 
-  if ( sim->player_no_pet_list.size() <= 5 && !util::str_compare_ci( option.force_clutchmates, "no" ) ||
+  if ( ( sim->player_no_pet_list.size() <= 5 && !util::str_compare_ci( option.force_clutchmates, "no" ) ) ||
        util::str_compare_ci( option.force_clutchmates, "yes" ) )
   {
     close_as_clutchmates = true;
@@ -6950,7 +6950,8 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
 
           for ( auto p : *vec )
           {
-            if ( allied_major_cds.count( p ) && allied_major_cds[ p ] && allied_major_cds[ p ]->check() || p->type == PLAYER_SIMPLIFIED )
+            if ( ( allied_major_cds.count( p ) && allied_major_cds[ p ] && allied_major_cds[ p ]->check() ) ||
+                 p->type == PLAYER_SIMPLIFIED )
             {
               out++;
             }
