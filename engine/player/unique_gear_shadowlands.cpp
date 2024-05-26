@@ -1164,25 +1164,6 @@ void infinitely_divisible_ooze( special_effect_t& effect )
       resources.base[ RESOURCE_ENERGY ] = 100;
     }
 
-/* Uncomment and #include sc_monk.hpp if this becomes relevant again
-    void init_assessors() override
-    {
-      pet_t::init_assessors();
-      auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
-        if ( effect.player->specialization() == MONK_BREWMASTER || effect.player->specialization() == MONK_WINDWALKER ||
-             effect.player->specialization() == MONK_MISTWEAVER )
-        {
-          monk::monk_t* monk_player = static_cast<monk::monk_t*>( owner );
-          auto td                   = monk_player->find_target_data( s->target );
-          if ( !owner->bugs && td && td->debuff.bonedust_brew->check() )
-            monk_player->bonedust_brew_assessor( s );
-        }
-        return assessor::CONTINUE;
-      };
-
-      assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
-    }
-*/
     resource_e primary_resource() const override
     {
       return RESOURCE_ENERGY;
@@ -1621,26 +1602,6 @@ void shadowgrasp_totem( special_effect_t& effect )
 
       damage = new shadowgrasp_totem_damage_t ( this, effect );
     }
-
-/* Uncomment and #include sc_monk.hpp if this becomes relevant again
-    void init_assessors() override
-    {
-      pet_t::init_assessors();
-      auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
-        if ( effect.player->specialization() == MONK_BREWMASTER || effect.player->specialization() == MONK_WINDWALKER ||
-             effect.player->specialization() == MONK_MISTWEAVER  )
-        {
-          monk::monk_t* monk_player = static_cast<monk::monk_t*>( owner );
-          auto td                   = monk_player->find_target_data( s->target );
-          if ( !owner->bugs && td && td->debuff.bonedust_brew->check() )
-            monk_player->bonedust_brew_assessor( s );
-        }
-        return assessor::CONTINUE;
-      };
-
-      assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
-    }
-*/
   };
 
   struct shadowgrasp_totem_buff_t : public buff_t
