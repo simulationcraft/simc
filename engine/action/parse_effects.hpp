@@ -1654,7 +1654,7 @@ public:
     auto adjust_recharge_multiplier_warning = [ this, &data ] {
       if ( BASE::sim->debug && data.buff && !data.buff->stack_change_callback )
       {
-        BASE::sim->error( "WARNING: {} adjusts cooldown of {} but does not have a stack change callback.\n"
+        BASE::sim->error( "WARNING: {} adjusts cooldown of {} but does not have a stack change callback.\n\r"
                           "Make sure adjust_recharge_multiplier() is properly called.", *data.buff, *this );
       }
     };

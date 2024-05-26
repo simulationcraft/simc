@@ -148,6 +148,9 @@ struct druid_td_t : public actor_target_data_t
 
   druid_td_t( player_t& target, druid_t& source );
 
+  template <typename Buff = buff_t, typename... Args>
+  inline buff_t* make_debuff( bool b, Args&&... args );
+
   int hots_ticking() const;
 };
 
@@ -748,6 +751,7 @@ public:
     cooldown_t* berserk_cat;
     cooldown_t* frenzied_regeneration;
     cooldown_t* fury_of_elune;
+    cooldown_t* growl;
     cooldown_t* incarnation_bear;
     cooldown_t* incarnation_cat;
     cooldown_t* incarnation_moonkin;
@@ -1173,6 +1177,7 @@ public:
     const spell_data_t* fury_of_nature;
     const spell_data_t* incarnation_bear;
     const spell_data_t* lightning_reflexes;
+    const spell_data_t* tooth_and_claw_debuff;
     const spell_data_t* ursine_adept;
 
     // Resto
@@ -1212,6 +1217,7 @@ public:
     cooldown.berserk_cat           = get_cooldown( "berserk_cat" );
     cooldown.frenzied_regeneration = get_cooldown( "frenzied_regeneration" );
     cooldown.fury_of_elune         = get_cooldown( "fury_of_elune" );
+    cooldown.growl                 = get_cooldown( "growl" );
     cooldown.incarnation_bear      = get_cooldown( "incarnation_guardian_of_ursoc" );
     cooldown.incarnation_cat       = get_cooldown( "incarnation_avatar_of_ashamane" );
     cooldown.incarnation_moonkin   = get_cooldown( "incarnation_chosen_of_elune" );
@@ -3116,104 +3122,6 @@ struct moonkin_form_buff_t : public druid_buff_t
   }
 };
 
-// Berserk (Guardian) / Incarn Buff =========================================
-struct berserk_bear_buff_t : public druid_buff_t
-{
-  double hp_mul = 1.0;
-  bool inc;
-
-  berserk_bear_buff_t( druid_t* p, std::string_view n, const spell_data_t* s, bool b = false )
-    : base_t( p, n, s ), inc( b )
-  {
-    set_cooldown( 0_ms );
-    set_refresh_behavior( buff_refresh_behavior::EXTEND );
-
-    if ( !inc && p->specialization() == DRUID_GUARDIAN )
-      name_str_reporting = "berserk";
-
-    if ( p->talent.berserk_unchecked_aggression.ok() )
-    {
-      set_default_value_from_effect_type( A_HASTE_ALL );
-      apply_affecting_aura( p->talent.berserk_unchecked_aggression );
-      set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-    }
-
-    if ( inc )
-      hp_mul += find_effect( this, A_MOD_INCREASE_HEALTH_PERCENT ).percent();
-  }
-
-  void start( int s, double v, timespan_t d ) override
-  {
-    base_t::start( s, v, d );
-
-    if ( inc )
-    {
-      p()->resources.max[ RESOURCE_HEALTH ] *= hp_mul;
-      p()->resources.current[ RESOURCE_HEALTH ] *= hp_mul;
-      p()->recalculate_resource_max( RESOURCE_HEALTH );
-    }
-  }
-
-  void expire_override( int s, timespan_t d ) override
-  {
-    if ( inc )
-    {
-      p()->resources.max[ RESOURCE_HEALTH ] /= hp_mul;
-      p()->resources.current[ RESOURCE_HEALTH ] /= hp_mul;
-      p()->recalculate_resource_max( RESOURCE_HEALTH );
-    }
-
-    base_t::expire_override( s, d );
-  }
-};
-
-// Berserk (Feral) / Incarn Buff ============================================
-struct berserk_cat_buff_t : public druid_buff_t
-{
-  bool inc;
-
-  berserk_cat_buff_t( druid_t* p, std::string_view n, const spell_data_t* s, bool b = false )
-    : base_t( p, n, s ), inc( b )
-  {
-    set_cooldown( 0_ms );
-    if ( !inc && p->specialization() == DRUID_FERAL )
-      name_str_reporting = "berserk";
-
-    if ( inc )
-      set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
-
-    auto cp = find_effect( find_trigger( s ).trigger(), E_ENERGIZE ).resource( RESOURCE_COMBO_POINT );
-    auto gain = p->get_gain( n );
-
-    set_tick_callback(
-        [ cp, gain, this ]( buff_t*, int, timespan_t ) { player->resource_gain( RESOURCE_COMBO_POINT, cp, gain ); } );
-  }
-
-  void start( int s, double v, timespan_t d ) override
-  {
-    base_t::start( s, v, d );
-
-    if ( inc )
-      p()->buff.ashamanes_guidance->trigger();
-  }
-
-  void expire_override( int s, timespan_t d ) override
-  {
-    base_t::expire_override( s, d );
-
-    p()->gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ]+= p()->buff.overflowing_power->check();
-    p()->buff.overflowing_power->expire();
-
-    if ( inc && p()->talent.ashamanes_guidance.ok() )
-    {
-      // ashamanes guidance buff in spell-data is infinite, so we manually expire after 30 seconds here
-      // unfortunately, if incarn procs or is casted during this 30 seconds
-      // so check back if this becomes relevant
-      make_event( *sim, 30_s, [ this ]() { p()->buff.ashamanes_guidance->expire(); } );
-    }
-  }
-};
-
 // Blood Frenzy =============================================================
 struct blood_frenzy_buff_t : public druid_buff_t
 {
@@ -3314,43 +3222,6 @@ struct brambles_buff_t : public druid_absorb_buff_t
     }
 
     return amount;
-  }
-};
-
-// Celestial Alignment / Incarn Buff ========================================
-struct celestial_alignment_buff_t : public druid_buff_t
-{
-  celestial_alignment_buff_t( druid_t* p, std::string_view n, const spell_data_t* s )
-    : base_t( p, n, p->apply_override( s, p->talent.orbital_strike ) )
-  {
-    set_cooldown( 0_ms );
-    apply_affecting_aura( p->talent.greater_alignment );
-    apply_affecting_aura( p->talent.potent_enchantments );
-
-    if ( p->talent.celestial_alignment.ok() )
-    {
-      set_default_value_from_effect_type( A_HASTE_ALL );
-      set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-    }
-  }
-
-  bool trigger( int s, double v, double c, timespan_t d ) override
-  {
-    bool ret = base_t::trigger( s, v, c, d );
-
-    if ( ret )
-    {
-      p()->buff.eclipse_lunar->trigger( d );
-      p()->eclipse_handler.update_eclipse( eclipse_e::LUNAR );
-
-      p()->buff.eclipse_solar->trigger( d );
-      p()->eclipse_handler.update_eclipse( eclipse_e::SOLAR );
-
-      if ( p()->active.orbital_strike )
-        p()->active.orbital_strike->execute_on_target( p()->target );
-    }
-
-    return ret;
   }
 };
 
@@ -9890,6 +9761,7 @@ void druid_t::init_spells()
   spec.fury_of_nature           = check( talent.fury_of_nature, 370701 );
   spec.incarnation_bear         = check( talent.incarnation_bear, 102558 );
   spec.lightning_reflexes       = find_specialization_spell( "Lightning Reflexes" );
+  spec.tooth_and_claw_debuff    = find_trigger( find_trigger( talent.tooth_and_claw ).trigger() ).trigger();
   spec.ursine_adept             = find_specialization_spell( "Ursine Adept" );
 
   // Restoration Abilities
@@ -10203,12 +10075,37 @@ void druid_t::create_buffs()
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
           ->set_name_reporting( "Nature" );
 
-  buff.celestial_alignment = make_fallback<celestial_alignment_buff_t>( talent.celestial_alignment.ok(),
-      this, "celestial_alignment", spec.celestial_alignment );
+  buff.celestial_alignment =
+      make_fallback( talent.celestial_alignment.ok(), this, "celestial_alignment", spec.celestial_alignment );
 
-  buff.incarnation_moonkin = make_fallback<celestial_alignment_buff_t>( talent.incarnation_moonkin.ok(),
-      this, "incarnation_chosen_of_elune", spec.incarnation_moonkin )
-          ->add_invalidate( CACHE_CRIT_CHANCE );
+  buff.incarnation_moonkin =
+      make_fallback( talent.incarnation_moonkin.ok(), this, "incarnation_chosen_of_elune", spec.incarnation_moonkin );
+
+  buff.ca_inc = talent.incarnation_moonkin.ok() ? buff.incarnation_moonkin : buff.celestial_alignment;
+  buff.ca_inc->set_cooldown( 0_ms )
+    ->apply_affecting_aura( talent.greater_alignment )
+    ->apply_affecting_aura( talent.potent_enchantments )
+    ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+      if ( !new_ )
+      {
+        auto d = b->remains();
+
+        buff.eclipse_lunar->trigger( d );
+        eclipse_handler.update_eclipse( eclipse_e::LUNAR );
+
+        buff.eclipse_solar->trigger( d );
+        eclipse_handler.update_eclipse( eclipse_e::SOLAR );
+
+        if ( active.orbital_strike )
+          active.orbital_strike->execute_on_target( target );
+      }
+    } );
+
+  if ( talent.celestial_alignment.ok() )
+  {
+    buff.ca_inc->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  }
 
   buff.denizen_of_the_dream =
       make_fallback( talent.denizen_of_the_dream.ok(), this, "denizen_of_the_dream", find_spell( 394076 ) )
@@ -10361,11 +10258,50 @@ void druid_t::create_buffs()
   buff.apex_predators_craving = make_fallback( talent.apex_predators_craving.ok(),
       this, "apex_predators_craving", find_trigger( talent.apex_predators_craving ).trigger() );
 
-  buff.berserk_cat = make_fallback<berserk_cat_buff_t>( talent.berserk.ok(),
-      this, "berserk_cat", spec.berserk_cat );
+  buff.berserk_cat =
+      make_fallback( talent.berserk.ok(), this, "berserk_cat", spec.berserk_cat )
+          ->set_name_reporting( "berserk" )
+          ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+            if ( !new_ )
+            {
+              gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ] += buff.overflowing_power->check();
+              buff.overflowing_power->expire();
+            }
+          } );
 
-  buff.incarnation_cat = make_fallback<berserk_cat_buff_t>( talent.incarnation_cat.ok(),
-      this, "incarnation_avatar_of_ashamane", talent.incarnation_cat, true );
+  buff.incarnation_cat =
+      make_fallback( talent.incarnation_cat.ok(), this, "incarnation_avatar_of_ashamane", talent.incarnation_cat )
+          ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST )
+          ->set_stack_change_callback(
+              [ this,
+                ag_dur = timespan_t::from_seconds( find_spell( 421440 )->effectN( 1 ).base_value() ) ]
+              ( buff_t*, int old_, int new_ ) {
+                if ( !old_ )
+                {
+                  buff.ashamanes_guidance->trigger();
+                }
+                else if ( !new_ )
+                {
+                  gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ] += buff.overflowing_power->check();
+                  buff.overflowing_power->expire();
+
+                  if ( talent.ashamanes_guidance.ok() )
+                  {
+                    // ashamanes guidance buff in spell-data is infinite, so we manually expire after 30 seconds here
+                    // unfortunately, if incarn procs or is casted during this 30 seconds so check back if this becomes
+                    // relevant
+                    make_event( *sim, ag_dur, [ this ]() { buff.ashamanes_guidance->expire(); } );
+                  }
+                }
+              } );
+
+  buff.b_inc_cat = talent.incarnation_cat.ok() ? buff.incarnation_cat : buff.berserk_cat;
+  buff.b_inc_cat->set_cooldown( 0_ms )
+      ->set_tick_callback(
+          [ this,
+            cp = find_effect( find_trigger( buff.b_inc_cat ).trigger(), E_ENERGIZE ).resource( RESOURCE_COMBO_POINT ),
+            gain = get_gain( buff.b_inc_cat->name() ) ]
+          ( buff_t*, int, timespan_t ) { resource_gain( RESOURCE_COMBO_POINT, cp, gain ); } );
 
   buff.bloodtalons     = make_fallback( talent.bloodtalons.ok(), this, "bloodtalons", find_spell( 145152 ) );
   buff.bt_rake         = make_fallback<bt_dummy_buff_t>( talent.bloodtalons.ok(), this, "bt_rake" );
@@ -10421,12 +10357,11 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
-  buff.sudden_ambush = make_fallback( talent.sudden_ambush.ok(),
-      this, "sudden_ambush", find_trigger( talent.sudden_ambush ).trigger() )
+  buff.sudden_ambush =
+      make_fallback( talent.sudden_ambush.ok(), this, "sudden_ambush", find_trigger( talent.sudden_ambush ).trigger() )
           ->set_cooldown( talent.sudden_ambush->internal_cooldown() )
           ->set_chance( talent.sudden_ambush->effectN( 1 ).percent() )
           ->set_trigger_spell( talent.sudden_ambush );
-
 
   buff.tigers_fury = make_fallback( talent.tigers_fury.ok(), this, "tigers_fury", talent.tigers_fury )
     ->set_cooldown( 0_ms )
@@ -10453,11 +10388,50 @@ void druid_t::create_buffs()
       this, "after_the_wildfire", talent.after_the_wildfire->effectN( 1 ).trigger() )
           ->set_default_value( talent.after_the_wildfire->effectN( 2 ).base_value() );
 
-  buff.berserk_bear = make_fallback<berserk_bear_buff_t>(
-      talent.berserk_ravage.ok(), this, "berserk_bear", spec.berserk_bear );
+  auto berserk_cd_fn = [ this ] {
+    cooldown.growl->adjust_recharge_multiplier();
+    cooldown.mangle->adjust_recharge_multiplier();
+    cooldown.thrash_bear->adjust_recharge_multiplier();
+    cooldown.frenzied_regeneration->adjust_recharge_multiplier();
+  };
 
-  buff.incarnation_bear = make_fallback<berserk_bear_buff_t>(
-      talent.incarnation_bear.ok(), this, "incarnation_guardian_of_ursoc", spec.incarnation_bear, true );
+  buff.berserk_bear =
+      make_fallback( talent.berserk_ravage.ok(), this, "berserk_bear", spec.berserk_bear )
+          ->set_name_reporting( "berserk" )
+          ->set_stack_change_callback( [ this, berserk_cd_fn ]( buff_t*, int, int ) { berserk_cd_fn(); } );
+
+  buff.incarnation_bear =
+      make_fallback( talent.incarnation_bear.ok(), this, "incarnation_guardian_of_ursoc", spec.incarnation_bear )
+          ->set_stack_change_callback(
+              [ this,
+                berserk_cd_fn,
+                mul = 1.0 + find_effect( spec.incarnation_bear, A_MOD_INCREASE_HEALTH_PERCENT ).percent() ]
+              ( buff_t*, int old_, int new_ ) {
+                berserk_cd_fn();
+                if ( !old_ )
+                {
+                  resources.max[ RESOURCE_HEALTH ] *= mul;
+                  resources.current[ RESOURCE_HEALTH ] *= mul;
+                  recalculate_resource_max( RESOURCE_HEALTH );
+                }
+                else if ( !new_ )
+                {
+                  resources.max[ RESOURCE_HEALTH ] /= mul;
+                  resources.current[ RESOURCE_HEALTH ] /= mul;
+                  recalculate_resource_max( RESOURCE_HEALTH );
+                }
+              } );
+
+  buff.b_inc_bear = talent.incarnation_bear.ok() ? buff.incarnation_bear : buff.berserk_bear;
+  buff.b_inc_bear->set_cooldown( 0_ms )
+    ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
+
+  if ( talent.berserk_unchecked_aggression.ok() )
+  {
+    buff.b_inc_bear->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->apply_affecting_aura( talent.berserk_unchecked_aggression )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  }
 
   buff.blood_frenzy = make_fallback<blood_frenzy_buff_t>( talent.blood_frenzy.ok(), this, "blood_frenzy_buff" );
 
@@ -10722,10 +10696,6 @@ void druid_t::create_buffs()
 
   buff.wildshape_mastery =
       make_fallback( talent.wildshape_mastery.ok(), this, "wildshape_mastery", find_spell( 441685 ) );
-
-  buff.b_inc_cat  = talent.incarnation_cat.ok()     ? buff.incarnation_cat     : buff.berserk_cat;
-  buff.b_inc_bear = talent.incarnation_bear.ok()    ? buff.incarnation_bear    : buff.berserk_bear;
-  buff.ca_inc     = talent.incarnation_moonkin.ok() ? buff.incarnation_moonkin : buff.celestial_alignment;
 
   parse_effects( find_specialization_spell( "Leather Specialization" ) );
 
@@ -12702,26 +12672,13 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_
     buff.cenarion_ward->expire();
 }
 
-namespace buffs
-{
-// Stellar Amplification Debuff =============================================
-struct stellar_amplification_buff_t : public druid_buff_t
-{
-  timespan_t max_dur;
-
-  stellar_amplification_buff_t( druid_td_t& td )
-    : base_t( td, "stellar_amplification_debuff", static_cast<druid_t*>( td.source )->spec.stellar_amplification ),
-      max_dur( p()->talent.stellar_amplification->effectN( 2 ).time_value() )
-  {}
-
-  timespan_t refresh_duration( timespan_t d ) const override
-  {
-    return std::min( max_dur, remains() + d );
-  }
-};
-}  // namespace buffs
-
 // Target Data ==============================================================
+template <typename Buff, typename... Args>
+inline buff_t* druid_td_t::make_debuff( bool b, Args&&... args )
+{
+  return buff_t::make_buff_fallback<Buff>( target->is_enemy() && b, std::forward<Args>( args )... );
+}
+
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
   : actor_target_data_t( &target, &source ), dots(), hots(), debuff(), buff()
 {
@@ -12758,18 +12715,15 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     hots.wild_growth           = target.get_dot( "wild_growth", &source );
   }
 
-  using namespace buffs;
-
-  debuff.atmospheric_exposure = make_buff_fallback( source.talent.atmospheric_exposure.ok() && target.is_enemy(),
+  debuff.atmospheric_exposure = make_debuff( source.talent.atmospheric_exposure.ok(),
       *this, "atmospheric_exposure", source.spec.atmospheric_exposure );
 
-  debuff.bloodseeker_vines = make_buff_fallback( source.talent.thriving_growth.ok() && target.is_enemy(),
+  debuff.bloodseeker_vines = make_debuff( source.talent.thriving_growth.ok(),
       *this, "bloodseeker_vines_debuff", source.spec.bloodseeker_vines )
           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
           ->apply_affecting_aura( source.talent.resilient_flourishing )
           ->set_quiet( true );
-  if ( !debuff.bloodseeker_vines->is_fallback &&
-       ( source.talent.bursting_growth.ok() || source.talent.root_network.ok() ) )
+  if ( source.talent.bursting_growth.ok() || source.talent.root_network.ok() )
   {
     debuff.bloodseeker_vines->set_stack_change_callback( [ & ]( buff_t* b, int old_, int new_ ) {
       if ( new_ > old_ )
@@ -12786,28 +12740,29 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     } );
   }
 
-  debuff.pulverize = make_buff_fallback( source.talent.pulverize.ok() && target.is_enemy(),
-      *this, "pulverize_debuff", source.talent.pulverize )
-          ->set_cooldown( 0_ms )
-          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-          ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
-          ->apply_affecting_aura( source.talent.circle_of_life_and_death );
+  debuff.pulverize = make_debuff( source.talent.pulverize.ok(), *this, "pulverize_debuff", source.talent.pulverize )
+    ->set_cooldown( 0_ms )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
+    ->apply_affecting_aura( source.talent.circle_of_life_and_death );
 
-  debuff.sabertooth = make_buff_fallback( source.talent.sabertooth.ok() && target.is_enemy(),
-      *this, "sabertooth_debuff", source.spec.sabertooth )
-          ->set_max_stack( as<int>( source.resources.base[ RESOURCE_COMBO_POINT ] ) );
+  debuff.sabertooth = make_debuff( source.talent.sabertooth.ok(), *this, "sabertooth_debuff", source.spec.sabertooth )
+    ->set_max_stack( as<int>( source.resources.base[ RESOURCE_COMBO_POINT ] ) );
 
-  debuff.stellar_amplification = make_buff_fallback<stellar_amplification_buff_t>(
-      source.talent.stellar_amplification.ok() && target.is_enemy(), *this, "stellar_amplification_debuff" );
+  debuff.stellar_amplification = make_debuff( source.talent.stellar_amplification.ok(),
+      *this, "stellar_amplification_debuff", source.spec.stellar_amplification )
+          ->set_refresh_duration_callback(
+              [ dur = source.talent.stellar_amplification->effectN( 2 ).time_value() ]
+              ( const buff_t* b, timespan_t d ) { return std::min( dur, b->remains() + d ); } );
 
-  debuff.tooth_and_claw = make_buff_fallback( source.talent.tooth_and_claw.ok() && target.is_enemy(),
-      *this, "tooth_and_claw_debuff", find_trigger( find_trigger( source.talent.tooth_and_claw ).trigger() ).trigger() )
+  debuff.tooth_and_claw = make_debuff( source.talent.tooth_and_claw.ok(),
+      *this, "tooth_and_claw_debuff", source.spec.tooth_and_claw_debuff )
           ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
           ->set_stack_change_callback( [ & ]( buff_t* b, int, int new_ ) {
             source.uptime.tooth_and_claw_debuff->update( new_, b->sim->current_time() );
           } );
 
-  debuff.waning_twilight = make_buff_fallback( source.talent.waning_twilight.ok() && target.is_enemy(),
+  debuff.waning_twilight = make_debuff( source.talent.waning_twilight.ok(),
       *this, "waning_twilight", source.spec.waning_twilight )
           ->set_chance( 1.0 )
           ->set_duration( 0_ms );
