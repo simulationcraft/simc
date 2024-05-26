@@ -3595,7 +3595,7 @@ struct cp_generator_t : public cat_attack_t
     set_energize( m_data );
 
     if ( const auto& eff = find_effect( find_trigger( p->talent.primal_fury ).trigger(), E_ENERGIZE );
-         !energize->modified_by( eff ) )
+         energize && !energize->modified_by( eff ) )
     {
       energize->add_parse_entry()
           .set_func( [ this ] { return attack_critical; } )
@@ -3604,7 +3604,7 @@ struct cp_generator_t : public cat_attack_t
           .set_eff( &eff );
     }
 
-    if ( const auto& eff = p->spec.berserk_cat->effectN( 2 ); !energize->modified_by( eff ) )
+    if ( const auto& eff = p->spec.berserk_cat->effectN( 2 ); energize && !energize->modified_by( eff ) )
     {
       energize->add_parse_entry()
           .set_buff( p->buff.berserk_cat )
@@ -4817,7 +4817,7 @@ struct shred_t : public use_fluid_form_t<DRUID_FERAL,
         .set_func( [ this ] { return stealthed_any(); } )
         .set_eff( &data().effectN( 3 ) );
 
-      if ( const auto& eff = p->find_spell( 343232 )->effectN( 1 ); !energize->modified_by( eff ) )
+      if ( const auto& eff = p->find_spell( 343232 )->effectN( 1 ); energize && !energize->modified_by( eff ) )
       {
         energize->add_parse_entry()
           .set_value( eff.base_value() )
