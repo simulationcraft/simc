@@ -5,18 +5,23 @@
 
 #include "unique_gear_shadowlands.hpp"
 
+#include "action/absorb.hpp"
 #include "action/dot.hpp"
 #include "actor_target_data.hpp"
 #include "buff/buff.hpp"
-#include "class_modules/monk/sc_monk.hpp"
 #include "darkmoon_deck.hpp"
 #include "item/item.hpp"
 #include "player/action_priority_list.hpp"
+#include "player/action_variable.hpp"
+#include "player/covenant.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
+#include "player/stats.hpp"
 #include "report/decorators.hpp"
 #include "sim/cooldown.hpp"
+#include "sim/real_ppm.hpp"
 #include "sim/sim.hpp"
+#include "util/io.hpp"
 #include "unique_gear.hpp"
 #include "unique_gear_helper.hpp"
 
@@ -1159,6 +1164,7 @@ void infinitely_divisible_ooze( special_effect_t& effect )
       resources.base[ RESOURCE_ENERGY ] = 100;
     }
 
+/* Uncomment and #include sc_monk.hpp if this becomes relevant again
     void init_assessors() override
     {
       pet_t::init_assessors();
@@ -1176,7 +1182,7 @@ void infinitely_divisible_ooze( special_effect_t& effect )
 
       assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
     }
-
+*/
     resource_e primary_resource() const override
     {
       return RESOURCE_ENERGY;
@@ -1616,6 +1622,7 @@ void shadowgrasp_totem( special_effect_t& effect )
       damage = new shadowgrasp_totem_damage_t ( this, effect );
     }
 
+/* Uncomment and #include sc_monk.hpp if this becomes relevant again
     void init_assessors() override
     {
       pet_t::init_assessors();
@@ -1633,6 +1640,7 @@ void shadowgrasp_totem( special_effect_t& effect )
 
       assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
     }
+*/
   };
 
   struct shadowgrasp_totem_buff_t : public buff_t
