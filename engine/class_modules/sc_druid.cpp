@@ -701,6 +701,7 @@ public:
 
     // Restoration
     buff_t* abundance;
+    buff_t* call_of_the_elder_druid;
     buff_t* cenarion_ward;
     buff_t* clearcasting_tree;
     buff_t* flourish;
@@ -747,22 +748,15 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* berserk_bear;
-    cooldown_t* berserk_cat;
     cooldown_t* frenzied_regeneration;
     cooldown_t* fury_of_elune;
     cooldown_t* growl;
     cooldown_t* incarnation_bear;
-    cooldown_t* incarnation_cat;
-    cooldown_t* incarnation_moonkin;
-    cooldown_t* incarnation_tree;
     cooldown_t* lunar_beam;
     cooldown_t* mangle;
     cooldown_t* moon_cd;  // New / Half / Full Moon
     cooldown_t* natures_swiftness;
     cooldown_t* thrash_bear;
-    cooldown_t* tigers_fury;
-    cooldown_t* warrior_of_elune;
   } cooldown;
 
   // Gains
@@ -1213,22 +1207,15 @@ public:
       spec(),
       uptime()
   {
-    cooldown.berserk_bear          = get_cooldown( "berserk_bear" );
-    cooldown.berserk_cat           = get_cooldown( "berserk_cat" );
     cooldown.frenzied_regeneration = get_cooldown( "frenzied_regeneration" );
     cooldown.fury_of_elune         = get_cooldown( "fury_of_elune" );
     cooldown.growl                 = get_cooldown( "growl" );
     cooldown.incarnation_bear      = get_cooldown( "incarnation_guardian_of_ursoc" );
-    cooldown.incarnation_cat       = get_cooldown( "incarnation_avatar_of_ashamane" );
-    cooldown.incarnation_moonkin   = get_cooldown( "incarnation_chosen_of_elune" );
-    cooldown.incarnation_tree      = get_cooldown( "incarnation_tree_of_life" );
     cooldown.lunar_beam            = get_cooldown( "lunar_beam" );
     cooldown.mangle                = get_cooldown( "mangle" );
     cooldown.moon_cd               = get_cooldown( "moon_cd" );
     cooldown.natures_swiftness     = get_cooldown( "natures_swiftness" );
     cooldown.thrash_bear           = get_cooldown( "thrash_bear" );
-    cooldown.tigers_fury           = get_cooldown( "tigers_fury" );
-    cooldown.warrior_of_elune      = get_cooldown( "warrior_of_elune" );
 
     resource_regeneration = regen_type::DYNAMIC;
 
@@ -2148,16 +2135,12 @@ public:
 template <typename BASE>
 struct use_dot_list_t : public BASE
 {
-private:
-  druid_t* p_;
-
-public:
   using base_t = use_dot_list_t<BASE>;
 
   std::vector<dot_t*>* dot_list = nullptr;
 
   use_dot_list_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), p_( p )
+    : BASE( n, p, s, f )
   {}
 
   void init() override
@@ -2191,29 +2174,25 @@ public:
 template <specialization_e S, typename BASE>
 struct use_fluid_form_t : public BASE
 {
-private:
-  druid_t* p_;
-
-public:
   using base_t = use_fluid_form_t<S, BASE>;
 
   use_fluid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), p_( p )
+    : BASE( n, p, s, f )
   {
-    if ( p_->talent.fluid_form.ok() )
+    if ( p->talent.fluid_form.ok() )
     {
       if constexpr ( S == DRUID_BALANCE )
       {
-        if ( p_->specialization() == DRUID_BALANCE )
-          BASE::autoshift = p_->active.shift_to_moonkin;
+        if ( p->specialization() == DRUID_BALANCE )
+          BASE::autoshift = p->active.shift_to_moonkin;
       }
       else if constexpr ( S == DRUID_FERAL )
       {
-        BASE::autoshift = p_->active.shift_to_cat;
+        BASE::autoshift = p->active.shift_to_cat;
       }
       else if constexpr ( S == DRUID_GUARDIAN )
       {
-        BASE::autoshift = p_->active.shift_to_bear;
+        BASE::autoshift = p->active.shift_to_bear;
       }
     }
   }
@@ -2223,7 +2202,6 @@ template <specialization_e S, typename BASE>
 struct trigger_aggravate_wounds_t : public BASE
 {
 private:
-  druid_t* p_;
   timespan_t dot_ext = 0_ms;
   timespan_t max_ext = 0_ms;
 
@@ -2231,14 +2209,14 @@ public:
   using base_t = trigger_aggravate_wounds_t<S, BASE>;
 
   trigger_aggravate_wounds_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), p_( p )
+    : BASE( n, p, s, f )
   {
-    if ( p_->specialization() == S && p_->talent.aggravate_wounds.ok() )
+    if ( p->specialization() == S && p->talent.aggravate_wounds.ok() )
     {
       if constexpr ( S == DRUID_FERAL )
-        dot_ext = p_->talent.aggravate_wounds->effectN( 2 ).time_value();
+        dot_ext = p->talent.aggravate_wounds->effectN( 2 ).time_value();
       else if constexpr ( S == DRUID_GUARDIAN )
-        dot_ext = p_->talent.aggravate_wounds->effectN( 1 ).time_value();
+        dot_ext = p->talent.aggravate_wounds->effectN( 1 ).time_value();
 
       max_ext = timespan_t::from_seconds( p->talent.aggravate_wounds->effectN( 3 ).base_value() );
     }
@@ -2249,21 +2227,21 @@ public:
     BASE::execute();
 
     if ( dot_ext > 0_ms )
-      range::for_each( p_->dot_lists.dreadful_wound, [ this ]( dot_t* d ) { d->adjust_duration( dot_ext, max_ext ); } );
+    {
+      range::for_each( BASE::p()->dot_lists.dreadful_wound, [ this ]( dot_t* d ) {
+        d->adjust_duration( dot_ext, max_ext );
+      } );
+    }
   }
 };
 
 template <typename BASE>
 struct trigger_atmospheric_exposure_t : public BASE
 {
-private:
-  druid_t* p_;
-
-public:
   using base_t = trigger_atmospheric_exposure_t<BASE>;
 
   trigger_atmospheric_exposure_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), p_( p )
+    : BASE( n, p, s, f )
   {}
 
   void impact( action_state_t* s ) override
@@ -2275,33 +2253,58 @@ public:
   }
 };
 
+template <typename BASE>
+struct trigger_call_of_the_elder_druid_t : public BASE
+{
+private:
+  timespan_t dur;
+
+public:
+  using base_t = trigger_call_of_the_elder_druid_t<BASE>;
+
+  trigger_call_of_the_elder_druid_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f ),
+      dur( timespan_t::from_seconds( p->talent.call_of_the_elder_druid->effectN( 1 ).base_value() ) )
+  {}
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( dur > 0_ms && BASE::p()->in_combat && !BASE::p()->buff.call_of_the_elder_druid->check() )
+    {
+      BASE::p()->buff.call_of_the_elder_druid->trigger();
+      BASE::p()->buff.heart_of_the_wild->extend_duration_or_trigger( dur );
+    }
+  }
+};
+
 template <specialization_e S, typename BASE>
 struct trigger_claw_rampage_t : public BASE
 {
 private:
-  druid_t* p_;
   double proc_pct = 0.0;
 
 public:
   using base_t = trigger_claw_rampage_t<S, BASE>;
 
   trigger_claw_rampage_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), p_( p )
+    : BASE( n, p, s, f )
   {
-    if ( p_->specialization() == S && p_->talent.claw_rampage.ok() )
-      proc_pct = p_->talent.claw_rampage->effectN( 1 ).percent();
+    if ( p->specialization() == S && p->talent.claw_rampage.ok() )
+      proc_pct = p->talent.claw_rampage->effectN( 1 ).percent();
   }
 
   void execute() override
   {
     BASE::execute();
 
-    if ( proc_pct && p_->buff.b_inc_cat->check() && BASE::rng().roll( proc_pct ) )
+    if ( proc_pct && BASE::p()->buff.b_inc_cat->check() && BASE::rng().roll( proc_pct ) )
     {
       if constexpr ( S == DRUID_FERAL )
-        p_->buff.ravage_fb->trigger();
+        BASE::p()->buff.ravage_fb->trigger();
       else if constexpr ( S == DRUID_GUARDIAN )
-        p_->buff.ravage_maul->trigger();
+        BASE::p()->buff.ravage_maul->trigger();
     }
   }
 };
@@ -2310,16 +2313,15 @@ template <typename BASE>
 struct trigger_control_of_the_dream_t : public BASE
 {
 private:
-  druid_t* p_;
   timespan_t max_diff = 0_ms;
 
 public:
   using base_t = trigger_control_of_the_dream_t<BASE>;
 
   trigger_control_of_the_dream_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), p_( p )
+    : BASE( n, p, s, f )
   {
-    if ( p_->talent.control_of_the_dream.ok() )
+    if ( p->talent.control_of_the_dream.ok() )
       max_diff = timespan_t::from_seconds( p->talent.control_of_the_dream->effectN( 1 ).base_value() );
   }
 
@@ -2327,7 +2329,7 @@ public:
   {
     if ( max_diff > 0_ms && cd == timespan_t::min() && BASE::cooldown_duration() > 0_ms )
     {
-      auto diff = std::min( max_diff, p_->sim->current_time() - BASE::cooldown->ready );
+      auto diff = std::min( max_diff, BASE::sim->current_time() - BASE::cooldown->ready );
       cd = BASE::cooldown_duration() - diff;
     }
 
@@ -2339,16 +2341,15 @@ template <typename BASE>
 struct trigger_gore_t : public BASE
 {
 private:
-  druid_t* p_;
   proc_t* gore_proc = nullptr;
 
 public:
   using base_t = trigger_gore_t<BASE>;
 
   trigger_gore_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), p_( p ), gore_proc( p->get_proc( "Gore" )->collect_interval() )
+    : BASE( n, p, s, f ), gore_proc( p->get_proc( "Gore" )->collect_interval() )
   {
-    if ( p_->talent.gore.ok() )
+    if ( p->talent.gore.ok() )
       gore_proc = p->get_proc( "Gore" )->collect_interval();
   }
 
@@ -2356,9 +2357,9 @@ public:
   {
     BASE::impact( s );
 
-    if ( gore_proc && p_->buff.gore->trigger( this ) )
+    if ( gore_proc && BASE::p()->buff.gore->trigger( this ) )
     {
-      p_->cooldown.mangle->reset( true );
+      BASE::p()->cooldown.mangle->reset( true );
       gore_proc->occur();
     }
   }
@@ -2395,16 +2396,12 @@ struct ravage_base_t : public BASE
     }
   };
 
-private:
-  druid_t* p_;
-
-public:
   using base_t = ravage_base_t<BASE, DOT_BASE>;
 
   double aoe_coeff;
 
   ravage_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), p_( p )
+    : BASE( n, p, s, f )
   {
     BASE::name_str_reporting = "ravage";
 
@@ -2431,8 +2428,8 @@ public:
   {
     BASE::execute();
 
-    p_->buff.killing_strikes->trigger();
-    p_->buff.ruthless_aggression->trigger();
+    BASE::p()->buff.killing_strikes->trigger();
+    BASE::p()->buff.ruthless_aggression->trigger();
   }
 };
 
@@ -2440,19 +2437,18 @@ template <typename BASE>
 struct trigger_waning_twilight_t : public BASE
 {
 private:
-  druid_t* p_;
   int num_dots;
 
 public:
   using base_t = trigger_waning_twilight_t<BASE>;
 
   trigger_waning_twilight_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), p_( p ), num_dots( as<int>( p->talent.waning_twilight->effectN( 3 ).base_value() ) )
+    : BASE( n, p, s, f ), num_dots( as<int>( p->talent.waning_twilight->effectN( 3 ).base_value() ) )
   {}
 
   void update_waning_twilight( player_t* t )
   {
-    if ( !p_->talent.waning_twilight.ok() )
+    if ( !BASE::p()->talent.waning_twilight.ok() )
       return;
 
     auto td_ = BASE::td( t );
@@ -2492,21 +2488,20 @@ template <specialization_e S, typename BASE>
 struct trigger_wildpower_surge_t : public BASE
 {
 private:
-  druid_t* p_;
   buff_t* buff = nullptr;
 
 public:
   using base_t = trigger_wildpower_surge_t<S, BASE>;
 
   trigger_wildpower_surge_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), p_( p )
+    : BASE( n, p, s, f )
   {
-    if ( p_->specialization() == S && p_->talent.wildpower_surge.ok() )
+    if ( p->specialization() == S && p->talent.wildpower_surge.ok() )
     {
       if constexpr ( S == DRUID_FERAL )
-        buff = p_->buff.ursine_potential_counter;
+        buff = p->buff.ursine_potential_counter;
       else if constexpr ( S == DRUID_GUARDIAN )
-        buff = p_->buff.feline_potential_counter;
+        buff = p->buff.feline_potential_counter;
     }
   }
 
@@ -3511,18 +3506,21 @@ struct druid_interrupt_t : public druid_spell_t
 // Form Spells ==============================================================
 struct druid_form_t : public druid_spell_t
 {
-  form_e form;
+  form_e form = NO_FORM;
 
-  druid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f, form_e form_ )
-    : druid_spell_t( n, p, s, f ), form( form_ )
+  druid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : druid_spell_t( n, p, s, f )
   {
     harmful = reset_melee_swing = false;
     ignore_false_positive = true;
     target = p;
 
-    form_mask = ( NO_FORM | BEAR_FORM | CAT_FORM | MOONKIN_FORM ) & ~form;
-
     action_flags |= flag_e::NOUNSHIFT;
+  }
+
+  void set_form( form_e f )
+  {
+    form = f;
+    form_mask = ANY_FORM & ~form;
   }
 
   void execute() override
@@ -3534,35 +3532,46 @@ struct druid_form_t : public druid_spell_t
 };
 
 // Bear Form Spell ==========================================================
-struct bear_form_t : public druid_form_t
+struct bear_form_t : public trigger_call_of_the_elder_druid_t<druid_form_t>
 {
-  DRUID_ABILITY_B( bear_form_t, druid_form_t, "bear_form", p->find_class_spell( "Bear Form" ), BEAR_FORM ) {}
+  DRUID_ABILITY( bear_form_t, base_t, "bear_form", p->find_class_spell( "Bear Form" ) )
+  {
+    set_form( BEAR_FORM );
+  }
 
   void execute() override
   {
-    druid_form_t::execute();
+    base_t::execute();
 
     p()->buff.ursine_vigor->trigger();
   }
 };
 
 // Cat Form Spell ===========================================================
-struct cat_form_t : public druid_form_t
+struct cat_form_t : public trigger_call_of_the_elder_druid_t<druid_form_t>
 {
-  DRUID_ABILITY_B( cat_form_t, druid_form_t, "cat_form", p->find_class_spell( "Cat Form" ), CAT_FORM ) {}
+  DRUID_ABILITY( cat_form_t, base_t, "cat_form", p->find_class_spell( "Cat Form" ) )
+  {
+    set_form( CAT_FORM );
+  }
 };
 
 // Moonkin Form Spell =======================================================
 struct moonkin_form_t : public druid_form_t
 {
-  DRUID_ABILITY_B( moonkin_form_t, druid_form_t, "moonkin_form", p->spec.moonkin_form, MOONKIN_FORM ) {}
+  DRUID_ABILITY( moonkin_form_t, druid_form_t, "moonkin_form", p->spec.moonkin_form )
+  {
+    set_form( MOONKIN_FORM );
+  }
 };
 
 // Cancelform (revert to caster form)========================================
 struct cancel_form_t : public druid_form_t
 {
-  DRUID_ABILITY_B( cancel_form_t, druid_form_t, "cancelform", spell_data_t::nil(), NO_FORM )
+  DRUID_ABILITY( cancel_form_t, druid_form_t, "cancelform", spell_data_t::nil() )
   {
+    set_form( NO_FORM );
+
     trigger_gcd = 0_ms;
     use_off_gcd = true;
   }
@@ -6152,12 +6161,12 @@ struct rejuvenation_base_t : public druid_heal_t
     return pm;
   }
 
-  void impact( action_state_t* s ) override
+  void trigger_dot( action_state_t* s ) override
   {
-    if ( !td( target )->hots.rejuvenation->is_ticking() )
+    if ( !get_dot( s->target )->is_ticking() )
       p()->buff.abundance->increment();
 
-    druid_heal_t::impact( s );
+    druid_heal_t::trigger_dot( s );
   }
 
   void tick( dot_t* d ) override
@@ -7975,11 +7984,11 @@ struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclips
 };
 
 // Starsurge Spell ==========================================================
-struct starsurge_offspec_t : public druid_spell_t
+struct starsurge_offspec_t : public trigger_call_of_the_elder_druid_t<druid_spell_t>
 {
-  DRUID_ABILITY( starsurge_offspec_t, druid_spell_t, "starsurge", p->talent.starsurge )
+  DRUID_ABILITY( starsurge_offspec_t, base_t, "starsurge", p->talent.starsurge )
   {
-    form_mask = NO_FORM | MOONKIN_FORM;
+    form_mask = NO_FORM;
     base_costs[ RESOURCE_MANA ] = 0.0;  // so we don't need to enable mana regen
 
     if ( p->talent.master_shapeshifter.ok() )
@@ -10507,6 +10516,9 @@ void druid_t::create_buffs()
   // Restoration buffs
   buff.abundance = make_fallback( talent.abundance.ok(), this, "abundance", find_spell( 207640 ) )
     ->set_duration( 0_ms );
+
+  buff.call_of_the_elder_druid = make_fallback( talent.call_of_the_elder_druid.ok(),
+      this, "call_of_the_elder_druid", find_spell( 338643 ) );
 
   buff.cenarion_ward = make_fallback( talent.cenarion_ward.ok(), this, "cenarion_ward", talent.cenarion_ward );
 

@@ -2003,7 +2003,7 @@ void print_html_talent_table( report::sc_html_stream& os, const player_t& p, std
 
   for ( unsigned row = 0; row < traits.size(); row++ )
   {
-    os.format( "<tr><th class=\"left\">{}</th><td><ul class=\"float\">\n", row + 1 );
+    os.format( "<tr><th class=\"right\" style=\"width: 1em\">{}</th><td class=\"left\"><ul class=\"float\">\n", row + 1 );
 
     for ( const auto& [ trait, rank ] : traits[ row ] )
     {
