@@ -2560,8 +2560,8 @@ void action_t::init()
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
   if ( has_periodic_damage_effect( data() ) ||
-       ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 || rolling_periodic ) &&
-           dot_duration > 0_ms )
+       ( ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 || rolling_periodic ) &&
+         dot_duration > 0_ms ) )
   {
     snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
   }

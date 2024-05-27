@@ -4129,6 +4129,12 @@ struct nazgrim_pet_t final : public horseman_pet_t
     dk()->buffs.apocalyptic_conquest->trigger();
   }
 
+  void demise() override
+  {
+    horseman_pet_t::demise();
+    dk()->buffs.apocalyptic_conquest->expire();
+  }
+
   void init_action_list() override
   {
     horseman_pet_t::init_action_list();
@@ -4365,7 +4371,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     parse_effects( p()->mastery.dreadblade );
 
     // Rider of the Apocalypse
-    parse_effects( p()->buffs.mograines_might );
+    // parse_effects( p()->buffs.mograines_might );
     parse_effects( p()->buffs.a_feast_of_souls );
 
     // Deathbringer
@@ -4408,8 +4414,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::rotten_touch ), p()->spell.rotten_touch_debuff );
 
     // Rider of the Apocalypse
-    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::chains_of_ice_trollbane_damage ),
-                          p()->pet_spell.trollbanes_chains_of_ice_debuff );
+
     // Deathbringer
 
     // San'layn
@@ -5455,6 +5460,7 @@ struct apocalyptic_conquest_buff_t final : public buff_t
     : buff_t( p, "apocalyptic_conquest", p->pet_spell.apocalyptic_conquest ), player( p ), nazgrims_conquest( 0 )
   {
     set_default_value( p->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() );
+    set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
   }
 
   // Override the value of the buff to properly capture Apocalyptic Conquest's strength buff behavior
@@ -8293,8 +8299,6 @@ struct heart_strike_t : public heart_strike_base_t
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       vampiric_strike->execute();
-      // Manually add an execute event to keep DPE calculations correct
-      stats->add_execute( sim->current_time(), this->target );
       return;
     }
     heart_strike_base_t::execute();
@@ -9202,7 +9206,7 @@ struct wound_spender_base_t : public death_knight_melee_attack_t
     : death_knight_melee_attack_t( name, p, spell ),
       dnd_cleave_targets( as<int>( p->talent.unholy.scourge_strike->effectN( 4 ).base_value() ) )
   {
-    weapon                      = &( player->main_hand_weapon );
+    weapon = &( player->main_hand_weapon );
   }
 
   // The death and decay target cap is displayed both in scourge strike's effects
@@ -9334,8 +9338,6 @@ struct clawing_shadows_t final : public wound_spender_base_t
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       vampiric_strike->execute();
-      // Manually add an execute event to keep DPE calculations correct
-      stats->add_execute( sim->current_time(), this->target );
       return;
     }
     wound_spender_base_t::execute();
@@ -9410,8 +9412,6 @@ struct scourge_strike_t final : public wound_spender_base_t
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       vampiric_strike->execute();
-      // Manually add an execute event to keep DPE calculations correct
-      stats->add_execute( sim->current_time(), this->target );
       return;
     }
     wound_spender_base_t::execute();
@@ -11847,7 +11847,7 @@ void death_knight_t::init_spells()
   // Row 3
   talent.mindfreeze        = find_talent_spell( talent_tree::CLASS, "Mind Freeze" );
   talent.blinding_sleet    = find_talent_spell( talent_tree::CLASS, "Blinding Sleet" );
-  talent.antimagic_barrier = find_talent_spell( talent_tree::CLASS, "Antimagic Barrier" );
+  talent.antimagic_barrier = find_talent_spell( talent_tree::CLASS, "Anti-magic Barrier" );
   talent.march_of_darkness = find_talent_spell( talent_tree::CLASS, "March of Darkness" );
   talent.unholy_ground     = find_talent_spell( talent_tree::CLASS, "Unholy Ground" );
   talent.control_undead    = find_talent_spell( talent_tree::CLASS, "Control Undead" );
@@ -11863,7 +11863,7 @@ void death_knight_t::init_spells()
   talent.deaths_reach             = find_talent_spell( talent_tree::CLASS, "Death's Reach" );
   // Row 5
   talent.icy_talons     = find_talent_spell( talent_tree::CLASS, "Icy Talons" );
-  talent.antimagic_zone = find_talent_spell( talent_tree::CLASS, "Antimagic Zone" );
+  talent.antimagic_zone = find_talent_spell( talent_tree::CLASS, "Anti-magic Zone" );
   talent.unholy_bond    = find_talent_spell( talent_tree::CLASS, "Unholy Bond" );
   // Row 6
   talent.ice_prison       = find_talent_spell( talent_tree::CLASS, "Ice Prison" );
@@ -13302,7 +13302,9 @@ void death_knight_t::parse_player_effects()
   }
 
   // Rider of the Apocalypse
-  parse_effects( buffs.apocalyptic_conquest, USE_CURRENT );
+  parse_effects( buffs.mograines_might, talent.rider.mograines_might );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::chains_of_ice_trollbane_damage ),
+                        pet_spell.trollbanes_chains_of_ice_debuff );
 
   // San'layn
   parse_effects( buffs.essence_of_the_blood_queen, USE_CURRENT, talent.sanlayn.frenzied_bloodthirst );
@@ -13439,13 +13441,14 @@ public:
 
   void html_customsection( report::sc_html_stream& os ) override
   {
+    os << "<div class=\"player-section custom_section\">\n";
     if ( p._runes.cumulative_waste.percentile( .5 ) > 0 )
     {
-      os << "<div class=\"player-section custom_section\">\n";
       html_rune_waste( os );
-      os << "<div class=\"clear\"></div>\n";
-      os << "</div>\n";
     }
+    os << "<div class=\"clear\"></div>\n";
+    p.parsed_effects_html( os );
+    os << "</div>\n";
   }
 
 private:

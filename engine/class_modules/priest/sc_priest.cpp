@@ -280,7 +280,7 @@ struct mind_blast_t final : public mind_blast_base_t
   bool action_ready() override
   {
     if ( ( p().buffs.entropic_rift->check() ||
-           p().channeling && p().channeling->id == p().talents.shadow.void_torrent->id() ) &&
+           ( p().channeling && p().channeling->id == p().talents.shadow.void_torrent->id() ) ) &&
          p().talents.voidweaver.void_blast.enabled() && priest().specialization() == PRIEST_SHADOW )
       return false;
 
@@ -325,7 +325,7 @@ struct void_blast_shadow_t final : public mind_blast_base_t
   bool action_ready() override
   {
     bool can_cast = ( p().buffs.entropic_rift->check() ||
-                      p().channeling && p().channeling->id == p().talents.shadow.void_torrent->id() );
+                      ( p().channeling && p().channeling->id == p().talents.shadow.void_torrent->id() ) );
 
     if ( !can_cast || !p().talents.voidweaver.void_blast.enabled() || priest().specialization() != PRIEST_SHADOW )
       return false;

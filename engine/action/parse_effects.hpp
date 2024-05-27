@@ -10,6 +10,7 @@
 #include "dbc/dbc.hpp"
 #include "player/pet.hpp"
 #include "player/player.hpp"
+#include "report/decorators.hpp"
 #include "sim/sim.hpp"
 #include "util/io.hpp"
 
@@ -72,6 +73,11 @@ struct player_effect_t
     return buff == other.buff && value == other.value && type == other.type && use_stacks == other.use_stacks &&
            mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
   }
+
+  std::string value_type_name( parse_flag_e ) const;
+
+  void print_parsed_line( report::sc_html_stream&, const sim_t&, bool, std::function<std::string( uint32_t )>,
+                          std::function<std::string( double )> ) const;
 };
 
 // effects dependent on target state
@@ -103,6 +109,39 @@ struct target_effect_t
   bool operator==( const target_effect_t<TD>&  other )
   {
     return value == other.value && mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
+  }
+
+  void print_parsed_line( report::sc_html_stream& os, const sim_t& sim, bool decorate,
+                          std::function<std::string( uint32_t )> note_fn,
+                          std::function<std::string( double )> val_str_fn ) const
+  {
+    std::vector<std::string> notes;
+
+    if ( mastery )
+      notes.emplace_back( "Mastery" );
+
+    if ( note_fn )
+      notes.emplace_back( note_fn( opt_enum ) );
+
+    range::for_each( notes, []( auto& s ) { s[ 0 ] = std::toupper( s[ 0 ] ); } );
+
+    std::string val_str = val_str_fn ? val_str_fn( value )
+                          : mastery  ? fmt::format( "{:.5f}", value * 100 )
+                                     : fmt::format( "{:.1f}%", value * 100 );
+
+    os.format(
+      "<td class=\"left\">{}</td>"
+      "<td class=\"right\">{}</td>"
+      "<td class=\"right\">{}</td>"
+      "<td class=\"right\">{}</td>"
+      "<td>{}</td>"
+      "<td>{}</td></tr>\n",
+      decorate ? report_decorators::decorated_spell_data( sim, eff->spell() ) : eff->spell()->name_cstr(),
+      eff->spell()->id(),
+      eff->index() + 1,
+      val_str,
+      "",
+      util::string_join( notes ) );
   }
 };
 
@@ -334,36 +373,7 @@ struct modified_spelleffect_t
   modified_spelleffect_t() : _eff( spelleffect_data_t::nil() ), value( 0.0 ) {}
 
   // return base value after modifiers
-  double base_value() const
-  {
-    auto return_value = value;
-
-    for ( const auto& i : conditional )
-    {
-      double eff_val = i.value;
-
-      if ( i.func && !i.func() )
-        continue;  // continue to next effect if conditional effect function is false
-
-      if ( i.buff )
-      {
-        auto stack = i.buff->check();
-
-        if ( !stack )
-          continue;  // continue to next effect if stacks == 0 (buff is down)
-
-        if ( i.use_stacks )
-          eff_val *= stack;
-      }
-
-      if ( i.flat )
-        return_value += eff_val;
-      else
-        return_value *= 1.0 + eff_val;
-    }
-
-    return return_value;
-  }
+  double base_value() const;
 
   double percent() const
   { return base_value() * 0.01; }
@@ -379,6 +389,17 @@ struct modified_spelleffect_t
 
   modify_effect_t& add_parse_entry() const
   { return conditional.emplace_back(); }
+
+  size_t size() const
+  { return conditional.size() + permanent.size(); }
+
+  bool modified_by( const spelleffect_data_t& ) const;
+
+  void print_parsed_line( report::sc_html_stream&, const sim_t&, const modify_effect_t& ) const;
+
+  void print_parsed_line( report::sc_html_stream&, const sim_t&, const spelleffect_data_t& ) const;
+
+  void print_parsed_effect( report::sc_html_stream&, const sim_t&, size_t& ) const;
 
   static const modified_spelleffect_t& nil();
 };
@@ -399,15 +420,7 @@ struct modified_spell_data_t : public parse_base_t
       effects.emplace_back( eff );
   }
 
-  const modified_spelleffect_t& effectN( size_t idx ) const
-  {
-    assert( idx > 0 && "effect index must not be zero or less" );
-
-    if ( idx > effects.size() )
-      return modified_spelleffect_t::nil();
-
-    return effects[ idx - 1 ];
-  }
+  const modified_spelleffect_t& effectN( size_t ) const;
 
   operator const spell_data_t&() const
   { return _spell; }
@@ -466,185 +479,11 @@ struct modified_spell_data_t : public parse_base_t
     return this;
   }
 
-  void parse_effect( pack_t<modify_effect_t>& tmp, const spell_data_t* s_data, size_t i )
-  {
-    const auto& eff = s_data->effectN( i );
-    bool m;  // dummy throwaway
-    double val = eff.base_value();
-    double val_mul = 0.01;
-    int idx = -1;
-    bool flat = false;
+  void parse_effect( pack_t<modify_effect_t>&, const spell_data_t*, size_t );
 
-    if ( eff.type() != E_APPLY_AURA )
-      return;
+  void print_parsed_spell( report::sc_html_stream&, const sim_t& );
 
-    switch ( eff.subtype() )
-    {
-      case A_ADD_FLAT_MODIFIER:
-      case A_ADD_FLAT_LABEL_MODIFIER:
-        val_mul = 1.0;
-        flat = true;
-        break;
-      case A_ADD_PCT_MODIFIER:
-      case A_ADD_PCT_LABEL_MODIFIER:
-        break;
-      default:
-        return;
-    }
-
-    switch ( eff.property_type() )
-    {
-      case P_EFFECT_1: idx = 0; break;
-      case P_EFFECT_2: idx = 1; break;
-      case P_EFFECT_3: idx = 2; break;
-      case P_EFFECT_4: idx = 3; break;
-      case P_EFFECT_5: idx = 4; break;
-      default: return;
-    }
-
-    if ( !_spell.affected_by_all( eff ) )
-      return;
-
-    if ( tmp.data.value != 0.0 )
-    {
-      val = tmp.data.value;
-      val_mul = 1.0;
-    }
-    else
-    {
-      apply_affecting_mods( tmp, val, m, s_data, i );
-      val *= val_mul;
-    }
-
-    if ( !val )
-      return;
-
-    std::string val_str = flat ? fmt::format( "{}", val ) : fmt::format( "{}%", val * 100 );
-    auto &effN = effects[ idx - 1 ];
-
-    // always active
-    if ( !tmp.data.buff && !tmp.data.func )
-    {
-      if ( flat )
-        effN.value += val;
-      else
-        effN.value *= 1.0 + val;
-
-      effN.permanent.push_back( &eff );
-    }
-    // conditionally active
-    else
-    {
-      tmp.data.value = val;
-      tmp.data.flat = flat;
-      tmp.data.eff = &eff;
-
-      effN.conditional.push_back( tmp.data );
-    }
-  }
-/*
-  void modified_effects_html( report::sc_html_stream& os )
-  {
-    if ( range::count_if( effect_modifiers, []( const effect_pack_t& e ) {
-           return e.permanent.size() + e.conditional.size();
-         } ) )
-    {
-      os << "<div>\n"
-         << "<h4>Modified Effects</h4>\n"
-         << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
-
-      os << "<tr>\n"
-         << "<th class=\"small\">Effect</th>\n"
-         << "<th class=\"small\">Type</th>\n"
-         << "<th class=\"small\">Spell</th>\n"
-         << "<th class=\"small\">ID</th>\n"
-         << "<th class=\"small\">#</th>\n"
-         << "<th class=\"small\">+/%</th>\n"
-         << "<th class=\"small\">Value</th>\n"
-         << "</tr>\n";
-
-      print_parsed_effect( os, effect_modifiers[ 0 ], "Effect 1" );
-      print_parsed_effect( os, effect_modifiers[ 1 ], "Effect 2" );
-      print_parsed_effect( os, effect_modifiers[ 2 ], "Effect 3" );
-      print_parsed_effect( os, effect_modifiers[ 3 ], "Effect 4" );
-      print_parsed_effect( os, effect_modifiers[ 4 ], "Effect 5" );
-
-      os << "</table>\n"
-         << "</div>\n";
-    }
-  }
-
-  void print_parsed_effect( report::sc_html_stream& os, const effect_pack_t& effN, std::string_view n )
-  {
-    auto p = effN.permanent.size();
-    auto c = effN.conditional.size();
-
-    if ( p + c == 0 )
-      return;
-
-    bool first_row = true;
-
-    os.format( "<tr><td rowspan=\"{}\">{}</td>\n", p + c, n );
-
-    if ( p )
-    {
-      first_row = false;
-
-      os.format( "<td rowspan=\"{}\">Permanent</td>", p );
-      for ( size_t i = 0; i < p; i++ )
-      {
-        if ( i > 0 )
-          os << "<tr>";
-
-        print_parsed_effect_line( os, *effN.permanent[ i ] );
-      }
-    }
-
-    if ( c )
-    {
-      if ( !first_row )
-        os << "<tr>";
-
-      os.format( "<td rowspan=\"{}\">Conditional</td>", c );
-      for ( size_t i = 0; i < c; i++ )
-      {
-        if ( i > 0 )
-          os << "<tr>";
-
-        print_parsed_effect_line( os, *effN.conditional[ i ].eff );
-      }
-    }
-  }
-
-  void print_parsed_effect_line( report::sc_html_stream& os, const spelleffect_data_t& eff )
-  {
-    std::string op_str;
-    std::string val_str = fmt::format( "{}", eff.base_value() );
-
-    switch ( eff.subtype() )
-    {
-      case A_ADD_PCT_MODIFIER:
-      case A_ADD_PCT_LABEL_MODIFIER:
-        op_str = "PCT";
-        val_str += '%';
-        break;
-      case A_ADD_FLAT_MODIFIER:
-      case A_ADD_FLAT_LABEL_MODIFIER:
-        op_str = "ADD";
-        break;
-      default:
-        op_str = "UNK";
-        break;
-    }
-
-    os.format(
-      "<td>{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td>{}</td><td class=\"right\">{}</td></tr>\n",
-      eff.spell()->name_cstr(),
-      eff.spell()->id(),
-      eff.index() + 1,
-      op_str,
-      val_str );
-  }*/
+  static void parsed_effects_html( report::sc_html_stream&, const sim_t&, std::vector<modified_spell_data_t*> );
 
   static modified_spell_data_t* nil();
 };
@@ -850,31 +689,7 @@ public:
     parse_effect( pack, spell, idx, true );
   }
 
-  double get_effect_value( const player_effect_t& i, bool benefit = false ) const
-  {
-    if ( i.func && !i.func() )
-      return 0.0;
-
-    double eff_val = i.value;
-
-    if ( i.buff )
-    {
-      auto stack = benefit ? i.buff->stack() : i.buff->check();
-      if ( !stack )
-        return 0.0;
-
-      if ( i.type == USE_CURRENT )
-        eff_val = i.buff->check_value();
-
-      if ( i.use_stacks )
-        eff_val *= stack;
-    }
-
-    if ( i.mastery )
-      eff_val *= _player->cache.mastery();
-
-    return eff_val;
-  }
+  double get_effect_value( const player_effect_t&, bool benefit = false ) const;
 
   // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
   //   (int F(TD*))            func: Function taking the target_data as argument and returning an integer mutiplier
@@ -1483,6 +1298,117 @@ public:
   {
     _force_target_effect<TD>( fn, debuff, idx, std::forward<Ts>( mods )... );
   }
+
+  void parsed_effects_html( report::sc_html_stream& os )
+  {
+    if ( total_effects_count() )
+    {
+      os << "<h3 class=\"toggle\">Player Effects</h3>"
+         << "<div class=\"toggle-content hide\">"
+         << "<table class=\"sc left even\">\n";
+
+      os << "<thead><tr>"
+         << "<th>Type</th>"
+         << "<th>Spell</th>"
+         << "<th>ID</th>"
+         << "<th>#</th>"
+         << "<th>Value</th>"
+         << "<th>Source</th>"
+         << "<th>Notes</th>"
+         << "</tr></thead>\n";
+
+      auto attr_note = []( uint32_t opt ) {
+        std::vector<std::string> str_list;
+
+        for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
+          if ( opt & ( 1 << ( stat - 1 ) ) )
+            str_list.emplace_back( util::stat_type_string( stat ) );
+
+        return util::string_join( str_list );
+      };
+
+      auto mult_note = []( uint32_t opt ) {
+        return opt == 0x7f ? "All" : util::school_type_string( dbc::get_school_type( opt ) );
+      };
+
+      auto pet_note = []( uint32_t opt ) {
+        return opt ? "Guardian" : "Pet";
+      };
+
+      auto mastery_val = [ this ]( double v ) {
+        return fmt::format( "{:.1f}%", v * mastery_coefficient() * 100 );
+      };
+
+      print_parsed_type( os, auto_attack_speed_effects, "Auto Attack Speed" );
+      print_parsed_type( os, attribute_multiplier_effects, "Attribute Multiplier", attr_note );
+      print_parsed_type( os, matching_armor_attribute_multiplier_effects, "Matching Armor", attr_note );
+      print_parsed_type( os, versatility_effects, "Versatility" );
+      print_parsed_type( os, player_multiplier_effects, "Player Multiplier", mult_note );
+      print_parsed_type( os, pet_multiplier_effects, "Pet Multiplier", pet_note );
+      print_parsed_type( os, attack_power_multiplier_effects, "Attack Power Multiplier" );
+      print_parsed_type( os, crit_chance_effects, "Crit Chance" );
+      print_parsed_type( os, leech_effects, "Leech" );
+      print_parsed_type( os, expertise_effects, "Expertise" );
+      print_parsed_type( os, crit_avoidance_effects, "Crit Avoidance" );
+      print_parsed_type( os, parry_effects, "Parry" );
+      print_parsed_type( os, armor_multiplier_effects, "Armor Multiplier" );
+      print_parsed_type( os, haste_effects, "Haste" );
+      print_parsed_type( os, mastery_effects, "Mastery", nullptr, mastery_val );
+      print_parsed_type( os, parry_rating_from_crit_effects, "Parry Rating from Crit" );
+      print_parsed_type( os, dodge_effects, "Dodge" );
+      print_parsed_type( os, target_multiplier_effects, "Target Multiplier", mult_note );
+      print_parsed_type( os, target_pet_multiplier_effects, "Target Pet Multiplier", pet_note );
+      print_parsed_custom_type( os );
+
+      os << "</table>\n"
+         << "</div>\n";
+    }
+  }
+
+  virtual size_t total_effects_count()
+  {
+    return auto_attack_speed_effects.size() +
+           attribute_multiplier_effects.size() +
+           matching_armor_attribute_multiplier_effects.size() +
+           versatility_effects.size() +
+           player_multiplier_effects.size() +
+           pet_multiplier_effects.size() +
+           attack_power_multiplier_effects.size() +
+           crit_chance_effects.size() +
+           leech_effects.size() +
+           expertise_effects.size() +
+           crit_avoidance_effects.size() +
+           parry_effects.size() +
+           armor_multiplier_effects.size() +
+           haste_effects.size() +
+           mastery_effects.size() +
+           parry_rating_from_crit_effects.size() +
+           dodge_effects.size() +
+           target_multiplier_effects.size() +
+           target_pet_multiplier_effects.size();
+  }
+
+  virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
+
+  template <typename U>
+  void print_parsed_type( report::sc_html_stream& os, const std::vector<U>& entries, std::string_view n,
+                          std::function<std::string( uint32_t )> note_fn = nullptr,
+                          std::function<std::string( double )> val_str_fn = nullptr )
+  {
+    auto c = entries.size();
+    if( !c )
+      return;
+
+    os.format( "<tr><td rowspan=\"{}\" class=\"dark\">{}</td>", c, n );
+
+    for ( size_t i = 0; i < c; i++ )
+    {
+      if ( i > 0 )
+        os << "<tr>";
+
+      entries[ i ].print_parsed_line( os, *sim, true, note_fn, val_str_fn );
+    }
+  }
 };
 
 template <typename BASE, typename PLAYER, typename TD>
@@ -1722,9 +1648,17 @@ public:
     return true;
   }
 
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& /*data*/,
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data,
                                                    double& val_mul, std::string& str, bool& flat, bool force ) override
   {
+    auto adjust_recharge_multiplier_warning = [ this, &data ] {
+      if ( BASE::sim->debug && data.buff && !data.buff->stack_change_callback )
+      {
+        BASE::sim->error( "WARNING: {} adjusts cooldown of {} but does not have a stack change callback.\n\r"
+                          "Make sure adjust_recharge_multiplier() is properly called.", *data.buff, *this );
+      }
+    };
+
     if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
     {
       str = "auto attack";
@@ -1764,6 +1698,7 @@ public:
 
         case P_COOLDOWN:
           str = "cooldown";
+          adjust_recharge_multiplier_warning();
           return &recharge_multiplier_effects;
 
         case P_RESOURCE_COST:
@@ -1804,6 +1739,7 @@ public:
     else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY )
     {
       str = "cooldown";
+      adjust_recharge_multiplier_warning();
       return &recharge_multiplier_effects;
     }
 
@@ -1903,18 +1839,18 @@ public:
   {
     if ( total_effects_count() )
     {
-      os << "<div>\n"
-         << "<h4>Affected By (Dynamic)</h4>\n"
+      os << "<div>"
+         << "<h4>Affected By (Dynamic)</h4>"
          << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
 
-      os << "<tr>\n"
-         << "<th class=\"small\">Type</th>\n"
-         << "<th class=\"small\">Spell</th>\n"
-         << "<th class=\"small\">ID</th>\n"
-         << "<th class=\"small\">#</th>\n"
-         << "<th class=\"small\">Value</th>\n"
-         << "<th class=\"small\">Source</th>\n"
-         << "<th class=\"small\">Notes</th>\n"
+      os << "<tr>"
+         << "<th class=\"small\">Type</th>"
+         << "<th class=\"small\">Spell</th>"
+         << "<th class=\"small\">ID</th>"
+         << "<th class=\"small\">#</th>"
+         << "<th class=\"small\">Value</th>"
+         << "<th class=\"small\">Source</th>"
+         << "<th class=\"small\">Notes</th>"
          << "</tr>\n";
 
       print_parsed_type( os, &base_t::da_multiplier_effects, "Direct Damage" );
@@ -1926,7 +1862,7 @@ public:
       print_parsed_type( os, &base_t::dot_duration_effects, "Dot Duration" );
       print_parsed_type( os, &base_t::tick_time_effects, "Tick Time" );
       print_parsed_type( os, &base_t::recharge_multiplier_effects, "Recharge Multiplier" );
-      print_parsed_type( os, &base_t::flat_cost_effects, "Flat Cost", false );
+      print_parsed_type( os, &base_t::flat_cost_effects, "Flat Cost", []( double v ) { return fmt::to_string( v ); } );
       print_parsed_type( os, &base_t::cost_effects, "Percent Cost" );
       print_parsed_type( os, &base_t::target_multiplier_effects, "Damage on Debuff" );
       print_parsed_type( os, &base_t::target_crit_chance_effects, "Crit Chance on Debuff" );
@@ -1956,7 +1892,8 @@ public:
   virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
 
   template <typename W = base_t, typename V>
-  void print_parsed_type( report::sc_html_stream& os, V vector_ptr, std::string_view n, bool pct = true )
+  void print_parsed_type( report::sc_html_stream& os, V vector_ptr, std::string_view n,
+                          std::function<std::string( double )> val_str_fn = nullptr )
   {
     auto entries = std::invoke( vector_ptr, static_cast<W*>( this ) );
 
@@ -1977,60 +1914,7 @@ public:
       if ( i > 0 )
         os << "<tr>";
 
-      print_parsed_line( os, entries[ i ], pct );
+      entries[ i ].print_parsed_line( os, *BASE::sim, false, nullptr, val_str_fn );
     }
-  }
-
-  std::string value_type_name( parse_flag_e t )
-  {
-    switch ( t )
-    {
-      case USE_DEFAULT: return "Default Value";
-      case USE_CURRENT: return "Current Value";
-      default:          return "Spell Data";
-    }
-  }
-
-  void print_parsed_line( report::sc_html_stream& os, const player_effect_t& entry, bool pct )
-  {
-    std::vector<std::string> notes;
-
-    if ( !entry.use_stacks )
-      notes.emplace_back( "No-stacks" );
-
-    if ( entry.mastery )
-      notes.emplace_back( "Mastery" );
-
-    if ( entry.func )
-      notes.emplace_back( "Conditional" );
-
-    std::string val_str = entry.mastery ? fmt::format( "{:.5f}", entry.value * 100 )
-                        : pct           ? fmt::format( "{:.1f}%", entry.value * 100 )
-                                        : fmt::format( "{}", entry.value );
-
-    os.format(
-      "<td>{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td>{}</td><td>{}</td></tr>\n",
-      entry.eff->spell()->name_cstr(),
-      entry.eff->spell()->id(),
-      entry.eff->index() + 1,
-      val_str,
-      value_type_name( entry.type ),
-      util::string_join( notes ) );
-  }
-
-  void print_parsed_line( report::sc_html_stream& os, const target_effect_t<TD>& entry, bool pct )
-  {
-    std::string val_str = entry.mastery ? fmt::format( "{:.5f}", entry.value * 100 )
-                        : pct           ? fmt::format( "{:.1f}%", entry.value * 100 )
-                                        : fmt::format( "{}", entry.value );
-
-    os.format(
-      "<td>{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td>{}</td><td>{}</td></tr>\n",
-      entry.eff->spell()->name_cstr(),
-      entry.eff->spell()->id(),
-      entry.eff->index() + 1,
-      val_str,
-      "",
-      entry.mastery ? "Mastery" : "" );
   }
 };

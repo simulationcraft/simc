@@ -5,18 +5,23 @@
 
 #include "unique_gear_shadowlands.hpp"
 
+#include "action/absorb.hpp"
 #include "action/dot.hpp"
 #include "actor_target_data.hpp"
 #include "buff/buff.hpp"
-#include "class_modules/monk/sc_monk.hpp"
 #include "darkmoon_deck.hpp"
 #include "item/item.hpp"
 #include "player/action_priority_list.hpp"
+#include "player/action_variable.hpp"
+#include "player/covenant.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
+#include "player/stats.hpp"
 #include "report/decorators.hpp"
 #include "sim/cooldown.hpp"
+#include "sim/real_ppm.hpp"
 #include "sim/sim.hpp"
+#include "util/io.hpp"
 #include "unique_gear.hpp"
 #include "unique_gear_helper.hpp"
 
@@ -1159,24 +1164,6 @@ void infinitely_divisible_ooze( special_effect_t& effect )
       resources.base[ RESOURCE_ENERGY ] = 100;
     }
 
-    void init_assessors() override
-    {
-      pet_t::init_assessors();
-      auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
-        if ( effect.player->specialization() == MONK_BREWMASTER || effect.player->specialization() == MONK_WINDWALKER ||
-             effect.player->specialization() == MONK_MISTWEAVER )
-        {
-          monk::monk_t* monk_player = static_cast<monk::monk_t*>( owner );
-          auto td                   = monk_player->find_target_data( s->target );
-          if ( !owner->bugs && td && td->debuff.bonedust_brew->check() )
-            monk_player->bonedust_brew_assessor( s );
-        }
-        return assessor::CONTINUE;
-      };
-
-      assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
-    }
-
     resource_e primary_resource() const override
     {
       return RESOURCE_ENERGY;
@@ -1614,24 +1601,6 @@ void shadowgrasp_totem( special_effect_t& effect )
       pet_t::init_spells();
 
       damage = new shadowgrasp_totem_damage_t ( this, effect );
-    }
-
-    void init_assessors() override
-    {
-      pet_t::init_assessors();
-      auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
-        if ( effect.player->specialization() == MONK_BREWMASTER || effect.player->specialization() == MONK_WINDWALKER ||
-             effect.player->specialization() == MONK_MISTWEAVER  )
-        {
-          monk::monk_t* monk_player = static_cast<monk::monk_t*>( owner );
-          auto td                   = monk_player->find_target_data( s->target );
-          if ( !owner->bugs && td && td->debuff.bonedust_brew->check() )
-            monk_player->bonedust_brew_assessor( s );
-        }
-        return assessor::CONTINUE;
-      };
-
-      assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
     }
   };
 
