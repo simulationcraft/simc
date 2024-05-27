@@ -10409,7 +10409,7 @@ void druid_t::create_buffs()
   buff.berserk_bear =
       make_fallback( talent.berserk_ravage.ok(), this, "berserk_bear", spec.berserk_bear )
           ->set_name_reporting( "berserk" )
-          ->set_stack_change_callback( [ this, berserk_cd_fn ]( buff_t*, int, int ) { berserk_cd_fn(); } );
+          ->set_stack_change_callback( [ berserk_cd_fn ]( buff_t*, int, int ) { berserk_cd_fn(); } );
 
   buff.incarnation_bear =
       make_fallback( talent.incarnation_bear.ok(), this, "incarnation_guardian_of_ursoc", spec.incarnation_bear )

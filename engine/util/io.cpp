@@ -183,13 +183,17 @@ utf8_args::utf8_args( int, char** )
 
 std::string ansi_to_utf8( util::string_view src )
 {
-  int len = MultiByteToWideChar( CP_ACP, 0, src.data(), src.size(), NULL, 0 );
-  auto wstr = std::vector<wchar_t>(len);
-  MultiByteToWideChar( CP_ACP, 0, src.data(), src.size(), wstr.data(), wstr.size() );
-  len = WideCharToMultiByte( CP_UTF8, 0, wstr.data(), wstr.size(), NULL, 0, NULL, NULL );
-  auto str = std::vector<char>(len);
-  WideCharToMultiByte( CP_UTF8, 0, wstr.data(), wstr.size(), str.data(), str.size(), NULL, NULL );
-  return std::string(str.data(), str.size());
+  int len = MultiByteToWideChar( CP_ACP, 0, src.data(), static_cast<int>( src.size() ), NULL, 0 );
+  auto wstr = std::vector<wchar_t>( len );
+  MultiByteToWideChar( CP_ACP, 0, src.data(), static_cast<int>( src.size() ), wstr.data(),
+                       static_cast<int>( wstr.size() ) );
+
+  len = WideCharToMultiByte( CP_UTF8, 0, wstr.data(), static_cast<int>( wstr.size() ), NULL, 0, NULL, NULL );
+  auto str = std::vector<char>( len );
+  WideCharToMultiByte( CP_UTF8, 0, wstr.data(), static_cast<int>( wstr.size() ), str.data(),
+                       static_cast<int>( str.size() ), NULL, NULL );
+
+  return std::string( str.data(), str.size() );
 }
 #else
 

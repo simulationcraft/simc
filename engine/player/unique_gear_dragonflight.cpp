@@ -8379,7 +8379,7 @@ void fyralath_the_dream_render( special_effect_t& e )
         dot( d ),
         buff( b ),
         current_tick( 0 ),
-        n_ticks( data().duration() / data().effectN( 1 ).period() )
+        n_ticks( as<int>( data().duration() / data().effectN( 1 ).period() ) )
     {
       channeled = hasted_ticks = true;
       trigger_gcd = e.player->find_spell( 417131 )->gcd();
@@ -10722,7 +10722,7 @@ void cloak_of_infinite_potential( special_effect_t& effect )
       {
         // Approximate fit
         auto plvl    = effect.player->level();
-        default_ilvl = 0.156 * plvl * plvl + 2.09 * plvl - 7.96;
+        default_ilvl = static_cast<int>( 0.156 * plvl * plvl + 2.09 * plvl - 7.96 );
       }
     }
 
@@ -11351,8 +11351,8 @@ void quick_strike( special_effect_t& effect )
 
     quick_strike_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
-        min_hits( e.driver()->effectN( 1 ).base_value() ),
-        max_hits( e.driver()->effectN( 2 ).base_value() )
+        min_hits( as<int>( e.driver()->effectN( 1 ).base_value() ) ),
+        max_hits( as<int>( e.driver()->effectN( 2 ).base_value() ) )
     {
     }
 

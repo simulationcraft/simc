@@ -1978,7 +1978,7 @@ int raidbots_talent_render_width( specialization_e spec, int height )
   }
 }
 
-std::string raidbots_domain( bool ptr )
+std::string raidbots_domain( [[maybe_unused]] bool ptr )
 {
 #if SC_BETA
   return "mimiron";
