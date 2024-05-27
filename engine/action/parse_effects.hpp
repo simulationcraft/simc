@@ -410,9 +410,9 @@ inline const modified_spelleffect_t& modified_spelleffect_t::nil() { return modi
 // Modifiable spell_data_t analogue that can be used to parse and apply effect affecting effects (P_EFFECT_1-5)
 //
 // obj->parse_effects( <parse_effects arguments> ) to parse and apply permanent and conditional effects, controlled via
-//   arguments in the same manner as as action & player scoped parse_effects().
+//   arguments in the same manner as action & player scoped parse_effects().
 //
-// obj->effectN( # ) to access the modified_spelleffect_t which analogous to spelleffect_data_t.
+// obj->effectN( # ) to access the modified_spelleffect_t which is analogous to spelleffect_data_t.
 //
 // obj->effectN( # ).base_value(), .percent(), .resource(), .resource( r ) to get the dynamically modified values.
 struct modified_spell_data_t : public parse_base_t
@@ -754,9 +754,6 @@ public:
 
       if ( i.mastery )
         eff_val *= _player->cache.mastery();
-
-      if ( i.value_fn )
-        eff_val = i.value_fn( eff_val );
 
       return eff_val;
     }
