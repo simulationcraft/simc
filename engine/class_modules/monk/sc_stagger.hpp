@@ -518,8 +518,6 @@ struct stagger_report_t : player_report_extension_t
 template <class base_actor_t, class derived_actor_t /* , class derived_actor_td_t */>
 struct stagger_t : base_actor_t
 {
-  std::vector<stagger_data_t<derived_actor_t> *> *stagger_data;
-
   std::unordered_map<std::string_view, stagger_data_t<derived_actor_t> *> stagger;
 
   virtual void create_buffs() override
@@ -533,26 +531,65 @@ struct stagger_t : base_actor_t
   virtual void combat_begin() override
   {
     base_actor_t::combat_begin();
+
+    for ( auto &[ key, effect ] : stagger )
+      if ( effect->active() )
+        effect->stagger->current->trigger();
   }
 
   virtual void pre_analyze_hook() override
   {
     base_actor_t::pre_analyze_hook();
+
+    for ( auto &[ key, effect ] : stagger )
+      effect->sample_data->adjust( *sim );
   }
 
   virtual void assess_damage_imminent_pre_absorb( school_e school, result_amount_type damage_type,
                                                   action_state_t *state ) override
   {
     base_actor_t::assess_damage_imminent_pre_absorb( school, damage_type, state );
+
+    for ( auto &[ key, effect ] : stagger )
+      if ( effect->active() && effect->trigger( school, damage_type, state ) )
+        effect->stagger->trigger( school, damage_type, state );
   }
 
   virtual void merge( player_t &other ) override
   {
     base_actor_t::merge( other );
+
+    derived_actor_t *actor = debug_cast<derived_actor_t *>( other );
+    for ( auto &[ key, effect ] : stagger )
+      effect->stagger->sample_data->merge( actor.stagger[ key ]->sample_data );
   }
 
   virtual std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override
   {
+    auto splits = util::string_split<std::string_view>( name_str, "." );
+
+    for ( auto &[ key, effect ] : stagger )
+    {
+      if ( splits.size() != 2 || splits[ 0 ] != effect.name )
+        continue;
+      for ( auto &level_data : *effect->levels )
+        if ( splits[ 1 ] == levels->name() )
+          return make_fn_expr( name_str, [ effect, level_data ] {
+            return effect->stagger->current->spell_data == level_data->spell_data;
+          } );
+      if ( splits[ 1 ] == "amount" )
+        return make_fn_expr( name_str, [ effect ] { return effect->tick_size(); } );
+      if ( splits[ 1 ] == "pct" )
+        return make_fn_expr( name_str, [ effect ] { return effect->tick_size_percent(); } );
+      if ( splits[ 1 ] == "amount_remains" )
+        return make_fn_expr( name_str, [ effect ] { return effect->pool_size(); } );
+      if ( splits[ 1 ] == "amounttotalpct" )
+        return make_fn_expr( name_str, [ effect ] { return effect->pool_size_percent(); } );
+      if ( splits[ 1 ] == "remains" )
+        return make_fn_expr( name_str, [ effect ] { return effect->remains(); } );
+      if ( splits[ 1 ] == "ticking" )
+        return make_fn_expr( name_str, [ effect ] { return effect->is_ticking(); } );
+    }
     return base_actor_t::create_expression( name_str );
   }
 
@@ -566,6 +603,7 @@ struct stagger_t : base_actor_t
         std::is_base_of_v<player_t, derived_actor_t>,
         "stagger_t<.., derived_actor_t> derived_actor is not derived from player_t (should be actor derived type)" );
 
+    // TODO: Move this so it can be opted out of without grossness
     this->mixin_reports.push_back(
         std::make_unique<stagger_impl::stagger_report_t<derived_actor_t>>( static_cast<derived_actor_t *>( this ) ) );
   }
