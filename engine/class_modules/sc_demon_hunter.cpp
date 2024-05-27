@@ -321,6 +321,7 @@ public:
     buff_t* monster_rising;
     buff_t* student_of_suffering;
     buff_t* enduring_torment;
+    buff_t* pursuit_of_angryness;  // passive periodic updater buff
     std::unordered_map<demonsurge_ability, buff_t*> demonsurge_abilities;
     buff_t* demonsurge_demonic;
     buff_t* demonsurge_hardcast;
@@ -7399,6 +7400,18 @@ void demon_hunter_t::create_buffs()
                             ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
                             ->set_allow_precombat( true )
                             ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  buff.pursuit_of_angryness =
+      make_buff( this, "pursuit_of_angriness", talent.felscarred.pursuit_of_angryness )
+          ->set_quiet( true )
+          ->set_tick_zero( true )
+          ->add_invalidate( CACHE_RUN_SPEED )
+          ->set_tick_callback(
+              [ this, speed_per_fury = talent.felscarred.pursuit_of_angryness->effectN( 1 ).percent() /
+                                       talent.felscarred.pursuit_of_angryness->effectN( 1 ).base_value() ](
+                  buff_t* b, int, timespan_t ) {
+                // TOCHECK - Does this need to floor if it's not a whole number
+                b->current_value = resources.current[ RESOURCE_FURY ] * speed_per_fury;
+              } );
   buff.student_of_suffering =
       make_buff( this, "student_of_suffering", hero_spec.student_of_suffering_buff )
           ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
@@ -8497,7 +8510,7 @@ void demon_hunter_t::invalidate_cache( cache_e c )
   switch ( c )
   {
     case CACHE_MASTERY:
-      if ( mastery.demonic_presence->ok() )
+      if ( talent.demon_hunter.pursuit->ok() )
       {
         invalidate_cache( CACHE_RUN_SPEED );
       }
@@ -8812,10 +8825,7 @@ double demon_hunter_t::stacking_movement_modifier() const
 
   if ( talent.felscarred.pursuit_of_angryness->ok() )
   {
-    double current_fury = resources.current[ RESOURCE_FURY ];
-    // TOCHECK - Does this need to floor if it's not a whole number
-    double increments = current_fury / talent.felscarred.pursuit_of_angryness->effectN( 2 ).base_value();
-    ms += talent.felscarred.pursuit_of_angryness->effectN( 1 ).percent() * increments;
+    ms += buff.pursuit_of_angryness->value();
   }
 
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
@@ -8925,6 +8935,10 @@ void demon_hunter_t::combat_begin()
   if ( talent.felscarred.enduring_torment->ok() )
   {
     buff.enduring_torment->trigger();
+  }
+  if ( talent.felscarred.pursuit_of_angryness->ok() )
+  {
+    buff.pursuit_of_angryness->trigger();
   }
 }
 

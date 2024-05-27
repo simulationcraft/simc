@@ -1886,11 +1886,12 @@ public:
   {
     auto entries = std::invoke( vector_ptr, static_cast<W*>( this ) );
 
-    for ( auto a : BASE::stats->action_list )
-      if ( a != this )
-        for ( const auto& entry : std::invoke( vector_ptr, static_cast<W*>( a ) ) )
-          if ( !range::contains( entries, entry ) )
-            entries.push_back( entry );
+    if ( range::contains( BASE::stats->action_list, this ) )
+      for ( auto a : BASE::stats->action_list )
+        if ( a != this )
+          for ( const auto& entry : std::invoke( vector_ptr, static_cast<W*>( a ) ) )
+            if ( !range::contains( entries, entry ) )
+              entries.push_back( entry );
 
     auto c = entries.size();
     if ( !c )
