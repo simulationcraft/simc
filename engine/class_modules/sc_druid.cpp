@@ -7043,13 +7043,11 @@ struct moon_base_t : public druid_spell_t
     }
   };
 
-  moon_stage_e stage;
+  moon_stage_e stage = moon_stage_e::FULL_MOON;
   action_t* crescent = nullptr;
   unsigned num_crescent = 0;
 
-  moon_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f,
-               moon_stage_e moon = moon_stage_e::FULL_MOON )
-    : druid_spell_t( n, p, s, f ), stage( moon )
+  moon_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : druid_spell_t( n, p, s, f )
   {
     if ( data().ok() && p->talent.boundless_moonlight.ok() )
       crescent = p->get_secondary_action<crescent_moon_t>( "crescent_moon", f );
@@ -7129,8 +7127,10 @@ struct moon_base_t : public druid_spell_t
 // New Moon Spell ===========================================================
 struct new_moon_t : public moon_base_t
 {
-  DRUID_ABILITY_B( new_moon_t, moon_base_t, "new_moon", p->talent.new_moon, moon_stage_e::NEW_MOON )
+  DRUID_ABILITY( new_moon_t, moon_base_t, "new_moon", p->talent.new_moon )
   {
+    stage = moon_stage_e::NEW_MOON;
+
     num_crescent = as<unsigned>( p->talent.the_eternal_moon->effectN( 3 ).base_value() );
   }
 };
@@ -7138,8 +7138,10 @@ struct new_moon_t : public moon_base_t
 // Half Moon Spell ==========================================================
 struct half_moon_t : public moon_base_t
 {
-  DRUID_ABILITY_B( half_moon_t, moon_base_t, "half_moon", p->spec.half_moon, moon_stage_e::HALF_MOON )
+  DRUID_ABILITY( half_moon_t, moon_base_t, "half_moon", p->spec.half_moon )
   {
+    stage = moon_stage_e::HALF_MOON;
+
     num_crescent = as<unsigned>( p->talent.the_eternal_moon->effectN( 3 ).base_value() );
   }
 };
