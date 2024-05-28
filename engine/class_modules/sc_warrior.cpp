@@ -7248,7 +7248,7 @@ void warrior_t::create_buffs()
 
   buff.bloodcraze = make_buff( this, "bloodcraze", talents.fury.bloodcraze->effectN( 1 ).trigger() );
 
-  const spell_data_t* hurricane_trigger = find_spell( 390577 );
+  const spell_data_t* hurricane_trigger = specialization() == WARRIOR_FURY ? find_spell( 390719 ) : find_spell( 390577 );
   const spell_data_t* hurricane_buff   = find_spell( 390581 );
   buff.hurricane_driver =
       make_buff( this, "hurricane_driver", hurricane_trigger )
