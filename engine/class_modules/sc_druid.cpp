@@ -1297,7 +1297,7 @@ public:
   player_t* get_smart_target( const std::vector<player_t*>& tl, dot_t* druid_td_t::dots_t::*dot,
                               player_t* exclude = nullptr, double range = 0.0, bool really_smart = false );
 
-  modified_spell_data_t* set_modified_spell( const spell_data_t* );
+  modified_spell_data_t* get_modified_spell( const spell_data_t* );
 
   // secondary actions
   std::vector<action_t*> secondary_action_list;
@@ -2003,12 +2003,12 @@ public:
     if ( p()->talent.incarnation_cat.ok() && p()->talent.ashamanes_guidance.ok() )
     {
       parse_target_effects( [ p = p() ]( druid_td_t* td )
-          { return p->buff.ashamanes_guidance->check() && td->dots.rip->is_ticking(); },
-          p()->talent.rip, p()->spec.ashamanes_guidance_buff );
+                            { return p->buff.ashamanes_guidance->check() && td->dots.rip->is_ticking(); },
+                            p()->talent.rip, p()->spec.ashamanes_guidance_buff );
 
       parse_target_effects( [ p = p() ]( druid_td_t* td )
-          { return p->buff.ashamanes_guidance->check() && td->dots.rake->is_ticking(); },
-          find_trigger( p()->talent.rake ).trigger(), p()->spec.ashamanes_guidance_buff );
+                            { return p->buff.ashamanes_guidance->check() && td->dots.rake->is_ticking(); },
+                            find_trigger( p()->talent.rake ).trigger(), p()->spec.ashamanes_guidance_buff );
     }
 
     parse_target_effects( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage, false ),
@@ -3011,7 +3011,7 @@ public:
     {
       new_attack->base_execute_time = new_weapon.swing_time;
       new_attack->execute_event =
-          new_attack->start_action_execute_event( p_->main_hand_attack->execute_event->remains() );
+        new_attack->start_action_execute_event( p_->main_hand_attack->execute_event->remains() );
       p_->main_hand_attack->cancel();
     }
     new_attack->weapon = &new_weapon;
@@ -3599,7 +3599,7 @@ struct cp_generator_t : public cat_attack_t
   cp_generator_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
     : cat_attack_t( n, p, s, f ), berserk_frenzy_mul( p->talent.berserk_frenzy->effectN( 1 ).percent() )
   {
-    auto m_data = p->set_modified_spell( &data() );
+    auto m_data = p->get_modified_spell( &data() );
 
     set_energize( m_data );
 
@@ -3607,20 +3607,20 @@ struct cp_generator_t : public cat_attack_t
          energize && !energize->modified_by( eff ) )
     {
       energize->add_parse_entry()
-          .set_func( [ this ] { return attack_critical; } )
-          .set_flat( true )
-          .set_value( eff.resource() )
-          .set_eff( &eff );
+        .set_func( [ this ] { return attack_critical; } )
+        .set_flat( true )
+        .set_value( eff.resource() )
+        .set_eff( &eff );
     }
 
     if ( const auto& eff = p->spec.berserk_cat->effectN( 2 ); energize && !energize->modified_by( eff ) )
     {
       energize->add_parse_entry()
-          .set_buff( p->buff.berserk_cat )
-          .set_func( [ this ] { return !proc; } )
-          .set_flat( true )
-          .set_value( eff.base_value() )
-          .set_eff( &eff );
+        .set_buff( p->buff.berserk_cat )
+        .set_func( [ this ] { return !proc; } )
+        .set_flat( true )
+        .set_value( eff.base_value() )
+        .set_eff( &eff );
     }
   }
 
@@ -4764,7 +4764,7 @@ struct primal_wrath_t : public cat_finisher_t
     // Manually set true so bloodtalons is decremented and we get proper snapshot reporting
     snapshots.bloodtalons = true;
 
-    auto m_data = p->set_modified_spell( &data() )
+    auto m_data = p->get_modified_spell( &data() )
       ->parse_effects( p->talent.circle_of_life_and_death )
       ->parse_effects( p->talent.veinripper );
 
@@ -5288,7 +5288,7 @@ struct mangle_t : public use_fluid_form_t<DRUID_GUARDIAN,
   {
     track_cd_waste = true;
 
-    auto m_data = p->set_modified_spell( &data() )
+    auto m_data = p->get_modified_spell( &data() )
       ->parse_effects( p->talent.soul_of_the_forest_bear )
       ->parse_effects( p->buff.gore );
 
@@ -5300,7 +5300,7 @@ struct mangle_t : public use_fluid_form_t<DRUID_GUARDIAN,
     if ( p->talent.incarnation_bear.ok() )
     {
       inc_targets =
-          as<int>( find_effect( p->spec.incarnation_bear, this, A_ADD_FLAT_MODIFIER, P_TARGET ).base_value() );
+        as<int>( find_effect( p->spec.incarnation_bear, this, A_ADD_FLAT_MODIFIER, P_TARGET ).base_value() );
     }
   }
 
@@ -5780,13 +5780,12 @@ struct efflorescence_t : public druid_heal_t
   {
     druid_heal_t::execute();
 
-    make_event<ground_aoe_event_t>( *sim, p(),
-                                    ground_aoe_params_t()
-                                        .target( target )
-                                        .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
-                                        .pulse_time( period )
-                                        .duration( duration )
-                                        .action( heal ) );
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+      .target( target )
+      .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
+      .pulse_time( period )
+      .duration( duration )
+      .action( heal ) );
   }
 };
 
@@ -5824,8 +5823,8 @@ struct frenzied_regeneration_t : public bear_attacks::rage_spender_t<druid_heal_
       form_mask |= CAT_FORM;
 
       base_costs[ RESOURCE_ENERGY ] =
-          find_effect( p->talent.empowered_shapeshifting, this, A_ADD_FLAT_MODIFIER, P_RESOURCE_COST_1 )
-              .resource( RESOURCE_ENERGY );
+        find_effect( p->talent.empowered_shapeshifting, this, A_ADD_FLAT_MODIFIER, P_RESOURCE_COST_1 )
+          .resource( RESOURCE_ENERGY );
     }
 
     force_consume( p->buff.guardian_of_elune );
@@ -6812,11 +6811,10 @@ struct entangling_roots_t : public druid_spell_t
 struct force_of_nature_t : public trigger_control_of_the_dream_t<druid_spell_t>
 {
   unsigned num;
-  unsigned dream_surge_num;
+  unsigned dream_surge_num = 0;
 
   DRUID_ABILITY( force_of_nature_t, base_t, "force_of_nature", p->talent.force_of_nature ),
-    num( as<unsigned>( p->talent.force_of_nature->effectN( 1 ).base_value() ) ),
-    dream_surge_num( as<unsigned>( p->talent.dream_surge->effectN( 1 ).base_value() ) )
+    num( as<unsigned>( p->talent.force_of_nature->effectN( 1 ).base_value() ) )
   {
     harmful = false;
 
@@ -6832,12 +6830,10 @@ struct force_of_nature_t : public trigger_control_of_the_dream_t<druid_spell_t>
       {
         add_child( p->active.dream_burst );
 
-        if ( p->talent.power_of_the_dream.ok() )
-        {
-          dream_surge_num += as<unsigned>(
-              find_effect( p->talent.power_of_the_dream, p->talent.dream_surge, A_ADD_FLAT_LABEL_MODIFIER, P_EFFECT_1 )
-                  .base_value() );
-        }
+        auto m_data = p->get_modified_spell( p->talent.dream_surge )
+          ->parse_effects( p->talent.power_of_the_dream );
+
+        dream_surge_num = as<unsigned>( m_data->effectN( 1 ).base_value() );
       }
     }
   }
@@ -7350,7 +7346,7 @@ struct moonfire_t : public druid_spell_t
     damage = p->get_secondary_action<moonfire_damage_t>( name_str + "_dmg", f );
     replace_stats( damage );
 
-    auto m_data = p->set_modified_spell( &data() )
+    auto m_data = p->get_modified_spell( &data() )
       ->parse_effects( p->spec.astral_power )
       ->parse_effects( p->talent.moon_guardian )
       ->parse_effects( p->buff.galactic_guardian );
@@ -7873,7 +7869,7 @@ struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclips
     aoe = -1;
     reduced_aoe_targets = data().effectN( p->specialization() == DRUID_BALANCE ? 5 : 3 ).base_value();
 
-    auto m_data = p->set_modified_spell( &data() )
+    auto m_data = p->get_modified_spell( &data() )
       ->parse_effects( p->talent.wild_surges )
       ->parse_effects( p->buff.eclipse_lunar, p->talent.umbral_intensity )
       ->parse_effects( p->buff.warrior_of_elune, IGNORE_STACKS )
@@ -8132,7 +8128,7 @@ struct sunfire_t : public druid_spell_t
 
   DRUID_ABILITY( sunfire_t, druid_spell_t, "sunfire", p->talent.sunfire )
   {
-    auto m_data = p->set_modified_spell( &data() )
+    auto m_data = p->get_modified_spell( &data() )
       ->parse_effects( p->spec.astral_power );
 
     set_energize( m_data );
@@ -8189,7 +8185,7 @@ struct orbital_strike_t : public druid_spell_t
 
   orbital_strike_t( druid_t* p ) : druid_spell_t( "orbital_strike", p, p->find_spell( 361237 ) )
   {
-    aoe          = -1;
+    aoe = -1;
     travel_speed = 75.0;  // guesstimate
 
     flare = p->get_secondary_action<stellar_flare_t>( "stellar_flare_orbital_strike", p->find_spell( 202347 ) );
@@ -8371,7 +8367,7 @@ struct wrath_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclipse_e
   {
     form_mask = NO_FORM | MOONKIN_FORM;
 
-    auto m_data = p->set_modified_spell( &data() )
+    auto m_data = p->get_modified_spell( &data() )
       ->parse_effects( p->spec.astral_power )
       ->parse_effects( p->talent.wild_surges )
       ->parse_effects( p->buff.eclipse_solar, p->talent.soul_of_the_forest_moonkin );
@@ -9344,7 +9340,7 @@ void druid_t::create_pets()
     while ( i < options.adaptive_swarm_melee_targets )
     {
       auto t = swarm_targets.emplace_back(
-          module_t::heal_enemy()->create_player( sim, "swarm_melee_target_" + util::to_string( ++i ), RACE_NONE ) );
+        module_t::heal_enemy()->create_player( sim, "swarm_melee_target_" + util::to_string( ++i ), RACE_NONE ) );
       t->quiet = true;
       t->role = ROLE_ATTACK;
       sim->init_actor( t );
@@ -9353,7 +9349,7 @@ void druid_t::create_pets()
     while ( i < options.adaptive_swarm_melee_targets + options.adaptive_swarm_ranged_targets )
     {
       auto t = swarm_targets.emplace_back(
-          module_t::heal_enemy()->create_player( sim, "swarm_ranged_target_" + util::to_string( ++i ), RACE_NONE ) );
+        module_t::heal_enemy()->create_player( sim, "swarm_ranged_target_" + util::to_string( ++i ), RACE_NONE ) );
       t->quiet = true;
       t->role = ROLE_SPELL;
       sim->init_actor( t );
@@ -9380,6 +9376,7 @@ void druid_t::init_spells()
       else if constexpr ( std::is_same_v<decltype( arg ), const spell_data_t*> )
         return arg;
     }
+
     return spell_data_t::not_found();
   };
 
@@ -9825,16 +9822,17 @@ void druid_t::init_base_stats()
 
   // Resources
   resources.base[ RESOURCE_RAGE ] = 100 +
-      find_effect( talent.fount_of_strength, A_MOD_INCREASE_RESOURCE, POWER_RAGE ).resource();
+    find_effect( talent.fount_of_strength, A_MOD_INCREASE_RESOURCE, POWER_RAGE ).resource();
   resources.base[ RESOURCE_COMBO_POINT ] = 5;
   resources.base[ RESOURCE_ASTRAL_POWER ] = 100 +
-      find_effect( talent.astral_communion, A_MOD_MAX_RESOURCE, POWER_ASTRAL_POWER ).resource() +
-      find_effect( talent.expansiveness, A_MOD_MAX_RESOURCE, POWER_ASTRAL_POWER ).resource();
+    find_effect( talent.astral_communion, A_MOD_MAX_RESOURCE, POWER_ASTRAL_POWER ).resource() +
+    find_effect( talent.expansiveness, A_MOD_MAX_RESOURCE, POWER_ASTRAL_POWER ).resource();
   resources.base[ RESOURCE_ENERGY ] = 100 +
-      find_effect( talent.tireless_energy, A_MOD_INCREASE_RESOURCE, POWER_ENERGY ).resource() +
-      find_effect( talent.fount_of_strength, A_MOD_MAX_RESOURCE, POWER_ENERGY ).resource();
+    find_effect( talent.tireless_energy, A_MOD_INCREASE_RESOURCE, POWER_ENERGY ).resource() +
+    find_effect( talent.fount_of_strength, A_MOD_MAX_RESOURCE, POWER_ENERGY ).resource();
 
-  resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + find_effect( talent.expansiveness, A_MOD_MANA_POOL_PCT ).percent();
+  resources.base_multiplier[ RESOURCE_MANA ] = 1.0 +
+    find_effect( talent.expansiveness, A_MOD_MANA_POOL_PCT ).percent();
 
   // only intially activate required resources. others will be dynamically activated depending on apl
   for ( auto r = RESOURCE_HEALTH; r < RESOURCE_MAX; r++ )
@@ -9854,11 +9852,11 @@ void druid_t::init_base_stats()
   // Energy Regen
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
-      1.0 + find_effect( spec.feral_affinity, A_MOD_POWER_REGEN_PERCENT ).percent();
+    1.0 + find_effect( spec.feral_affinity, A_MOD_POWER_REGEN_PERCENT ).percent();
   resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
-      1.0 + find_effect( spec_spell, A_MOD_POWER_REGEN_PERCENT ).percent();
+    1.0 + find_effect( spec_spell, A_MOD_POWER_REGEN_PERCENT ).percent();
   resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
-      1.0 + find_effect( talent.tireless_energy, A_MOD_POWER_REGEN_PERCENT ).percent();
+    1.0 + find_effect( talent.tireless_energy, A_MOD_POWER_REGEN_PERCENT ).percent();
 
   base_gcd = 1.5_s;
 }
@@ -9870,8 +9868,8 @@ void druid_t::init_stats()
   // enable CP & energy for cat form
   if ( uses_cat_form() )
   {
-      resources.active_resource[ RESOURCE_COMBO_POINT ] = true;
-      resources.active_resource[ RESOURCE_ENERGY ] = true;
+    resources.active_resource[ RESOURCE_COMBO_POINT ] = true;
+    resources.active_resource[ RESOURCE_ENERGY ] = true;
   }
 
   // enable rage for bear form
@@ -9951,13 +9949,13 @@ void druid_t::create_buffs()
 
   // Class
   buff.forestwalk =
-      make_fallback( talent.forestwalk.ok(), this, "forestwalk", find_trigger( talent.forestwalk ).trigger() )
-          ->apply_affecting_aura( talent.forestwalk )
-          ->set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS, P_MAX, 0.0, E_APPLY_AREA_AURA_PARTY );
+    make_fallback( talent.forestwalk.ok(), this, "forestwalk", find_trigger( talent.forestwalk ).trigger() )
+      ->apply_affecting_aura( talent.forestwalk )
+      ->set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS, P_MAX, 0.0, E_APPLY_AREA_AURA_PARTY );
 
   buff.heart_of_the_wild =
-      make_fallback( talent.heart_of_the_wild.ok(), this, "heart_of_the_wild", talent.heart_of_the_wild )
-          ->set_cooldown( 0_ms );
+    make_fallback( talent.heart_of_the_wild.ok(), this, "heart_of_the_wild", talent.heart_of_the_wild )
+      ->set_cooldown( 0_ms );
   if ( specialization() == DRUID_FERAL )
   {
     buff.heart_of_the_wild->set_period( 0_ms );
@@ -9965,10 +9963,10 @@ void druid_t::create_buffs()
   else
   {
     buff.heart_of_the_wild->set_tick_callback(
-        [ g = get_gain( "Heart of the Wild" ), this ]( buff_t*, int, timespan_t ) {
-          if ( get_form() == CAT_FORM )
-            resource_gain( RESOURCE_COMBO_POINT, 1, g );
-        } );
+      [ g = get_gain( "Heart of the Wild" ), this ]( buff_t*, int, timespan_t ) {
+        if ( get_form() == CAT_FORM )
+          resource_gain( RESOURCE_COMBO_POINT, 1, g );
+      } );
   }
 
   buff.ironfur = make_fallback( talent.ironfur.ok(), this, "ironfur", talent.ironfur )
@@ -9985,56 +9983,56 @@ void druid_t::create_buffs()
   buff.innervate = make_fallback( talent.innervate.ok(), this, "innervate", talent.innervate );
 
   buff.lycaras_teachings_haste =
-      make_fallback( talent.lycaras_teachings.ok(), this, "lycaras_teachings_haste", find_spell( 378989 ) )
-          ->set_default_value( talent.lycaras_teachings->effectN( 1 ).percent() )
-          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-          ->set_name_reporting( "Haste" );
+    make_fallback( talent.lycaras_teachings.ok(), this, "lycaras_teachings_haste", find_spell( 378989 ) )
+      ->set_default_value( talent.lycaras_teachings->effectN( 1 ).percent() )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+      ->set_name_reporting( "Haste" );
 
   buff.lycaras_teachings_crit =
-      make_fallback( talent.lycaras_teachings.ok(), this, "lycaras_teachings_crit", find_spell( 378990 ) )
-          ->set_default_value( talent.lycaras_teachings->effectN( 1 ).percent() )
-          ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-          ->set_name_reporting( "Crit" );
+    make_fallback( talent.lycaras_teachings.ok(), this, "lycaras_teachings_crit", find_spell( 378990 ) )
+      ->set_default_value( talent.lycaras_teachings->effectN( 1 ).percent() )
+      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+      ->set_name_reporting( "Crit" );
 
   buff.lycaras_teachings_vers =
-      make_fallback( talent.lycaras_teachings.ok(), this, "lycaras_teachings_vers", find_spell( 378991 ) )
-          ->set_default_value( talent.lycaras_teachings->effectN( 1 ).percent() )
-          ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-          ->set_name_reporting( "Vers" );
+    make_fallback( talent.lycaras_teachings.ok(), this, "lycaras_teachings_vers", find_spell( 378991 ) )
+      ->set_default_value( talent.lycaras_teachings->effectN( 1 ).percent() )
+      ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
+      ->set_name_reporting( "Vers" );
 
   buff.lycaras_teachings_mast =
-      make_fallback( talent.lycaras_teachings.ok(), this, "lycaras_teachings_mast", find_spell( 378992 ) )
-          ->set_default_value( talent.lycaras_teachings->effectN( 1 ).base_value() )
-          ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-          ->set_name_reporting( "Mastery" );
+    make_fallback( talent.lycaras_teachings.ok(), this, "lycaras_teachings_mast", find_spell( 378992 ) )
+      ->set_default_value( talent.lycaras_teachings->effectN( 1 ).base_value() )
+      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+      ->set_name_reporting( "Mastery" );
 
   buff.lycaras_teachings =
-      make_fallback( talent.lycaras_teachings.ok(), this, "lycaras_teachings", talent.lycaras_teachings )
-          ->set_quiet( true )
-          ->set_tick_zero( true )
-          ->set_period( 5.25_s )
-          ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-            buff_t* new_buff;
+    make_fallback( talent.lycaras_teachings.ok(), this, "lycaras_teachings", talent.lycaras_teachings )
+      ->set_quiet( true )
+      ->set_tick_zero( true )
+      ->set_period( 5.25_s )
+      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+        buff_t* new_buff;
 
-            switch( get_form() )
-            {
-              case NO_FORM:      new_buff = buff.lycaras_teachings_haste; break;
-              case CAT_FORM:     new_buff = buff.lycaras_teachings_crit;  break;
-              case BEAR_FORM:    new_buff = buff.lycaras_teachings_vers;  break;
-              case MOONKIN_FORM: new_buff = buff.lycaras_teachings_mast;  break;
-              default: return;
-            }
+        switch( get_form() )
+        {
+          case NO_FORM:      new_buff = buff.lycaras_teachings_haste; break;
+          case CAT_FORM:     new_buff = buff.lycaras_teachings_crit;  break;
+          case BEAR_FORM:    new_buff = buff.lycaras_teachings_vers;  break;
+          case MOONKIN_FORM: new_buff = buff.lycaras_teachings_mast;  break;
+          default: return;
+        }
 
-            if ( !new_buff->check() )
-            {
-              buff.lycaras_teachings_haste->expire();
-              buff.lycaras_teachings_crit->expire();
-              buff.lycaras_teachings_vers->expire();
-              buff.lycaras_teachings_mast->expire();
+        if ( !new_buff->check() )
+        {
+          buff.lycaras_teachings_haste->expire();
+          buff.lycaras_teachings_crit->expire();
+          buff.lycaras_teachings_vers->expire();
+          buff.lycaras_teachings_mast->expire();
 
-              new_buff->trigger();
-            }
-          } );
+          new_buff->trigger();
+        }
+      } );
 
   buff.matted_fur = make_fallback<matted_fur_buff_t>( talent.matted_fur.ok(), this, "matted_fur" );
 
@@ -10046,12 +10044,12 @@ void druid_t::create_buffs()
     ->set_freeze_stacks( true );
 
   buff.rising_light_falling_night_day = make_fallback( talent.rising_light_falling_night.ok(),
-      this, "rising_light_falling_night__day", find_spell( 417714 ) );
+    this, "rising_light_falling_night__day", find_spell( 417714 ) );
 
   buff.rising_light_falling_night_night = make_fallback( talent.rising_light_falling_night.ok(),
-      this, "rising_light_falling_night__night", find_spell( 417715 ) )
-          ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
-          ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+    this, "rising_light_falling_night__night", find_spell( 417715 ) )
+      ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
+      ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
 
   buff.tiger_dash = make_fallback( talent.tiger_dash.ok(), this, "tiger_dash", talent.tiger_dash )
     ->set_cooldown( 0_ms )
@@ -10068,29 +10066,29 @@ void druid_t::create_buffs()
   // Multi-spec
   // The buff ID in-game is same as the talent, 61336, but the buff effects (as well as tooltip reference) is in 50322
   buff.survival_instincts =
-      make_fallback( talent.survival_instincts.ok(), this, "survival_instincts", talent.survival_instincts )
-          ->set_cooldown( 0_ms )
-          ->set_default_value( find_effect( find_spell( 50322 ), A_MOD_DAMAGE_PERCENT_TAKEN ).percent() +
-                               find_effect( talent.oakskin, find_spell( 50322 ), A_ADD_FLAT_MODIFIER ).percent() );
+    make_fallback( talent.survival_instincts.ok(), this, "survival_instincts", talent.survival_instincts )
+      ->set_cooldown( 0_ms )
+      ->set_default_value( find_effect( find_spell( 50322 ), A_MOD_DAMAGE_PERCENT_TAKEN ).percent() +
+                           find_effect( talent.oakskin, find_spell( 50322 ), A_ADD_FLAT_MODIFIER ).percent() );
 
   // Balance buffs
   buff.balance_of_all_things_arcane =
-      make_fallback( talent.balance_of_all_things.ok(), this, "balance_of_all_things_arcane", find_spell( 394050 ) )
-          ->set_reverse( true )
-          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-          ->set_name_reporting( "Arcane" );
+    make_fallback( talent.balance_of_all_things.ok(), this, "balance_of_all_things_arcane", find_spell( 394050 ) )
+      ->set_reverse( true )
+      ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+      ->set_name_reporting( "Arcane" );
 
   buff.balance_of_all_things_nature =
-      make_fallback( talent.balance_of_all_things.ok(), this, "balance_of_all_things_nature", find_spell( 394049 ) )
-          ->set_reverse( true )
-          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-          ->set_name_reporting( "Nature" );
+    make_fallback( talent.balance_of_all_things.ok(), this, "balance_of_all_things_nature", find_spell( 394049 ) )
+      ->set_reverse( true )
+      ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+      ->set_name_reporting( "Nature" );
 
   buff.celestial_alignment =
-      make_fallback( talent.celestial_alignment.ok(), this, "celestial_alignment", spec.celestial_alignment );
+    make_fallback( talent.celestial_alignment.ok(), this, "celestial_alignment", spec.celestial_alignment );
 
   buff.incarnation_moonkin =
-      make_fallback( talent.incarnation_moonkin.ok(), this, "incarnation_chosen_of_elune", spec.incarnation_moonkin );
+    make_fallback( talent.incarnation_moonkin.ok(), this, "incarnation_chosen_of_elune", spec.incarnation_moonkin );
 
   buff.ca_inc = talent.incarnation_moonkin.ok() ? buff.incarnation_moonkin : buff.celestial_alignment;
   buff.ca_inc->set_cooldown( 0_ms )
@@ -10119,10 +10117,10 @@ void druid_t::create_buffs()
   }
 
   buff.denizen_of_the_dream =
-      make_fallback( talent.denizen_of_the_dream.ok(), this, "denizen_of_the_dream", find_spell( 394076 ) )
-          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-          ->set_max_stack( 10 )
-          ->set_rppm( rppm_scale_e::RPPM_DISABLE );
+    make_fallback( talent.denizen_of_the_dream.ok(), this, "denizen_of_the_dream", find_spell( 394076 ) )
+      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+      ->set_max_stack( 10 )
+      ->set_rppm( rppm_scale_e::RPPM_DISABLE );
 
   buff.dreamstate = make_fallback( talent.natures_grace.ok(), this, "dreamstate", find_spell( 450346 ) )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
@@ -10141,13 +10139,13 @@ void druid_t::create_buffs()
     } );
 
   buff.fury_of_elune =
-      make_fallback<fury_of_elune_buff_t>( talent.fury_of_elune.ok() || talent.the_light_of_elune.ok(),
-          this, "fury_of_elune", find_spell( 202770 ) );  // hardcoded for the light of elune
+    make_fallback<fury_of_elune_buff_t>( talent.fury_of_elune.ok() || talent.the_light_of_elune.ok(),
+      this, "fury_of_elune", find_spell( 202770 ) );  // hardcoded for the light of elune
 
   buff.sundered_firmament =
-      make_fallback<fury_of_elune_buff_t>( talent.sundered_firmament.ok(),
-          this, "sundered_firmament", find_spell( 394108 ) )
-              ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
+    make_fallback<fury_of_elune_buff_t>( talent.sundered_firmament.ok(),
+      this, "sundered_firmament", find_spell( 394108 ) )
+        ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   buff.parting_skies = make_fallback( talent.sundered_firmament.ok(), this, "parting_skies", find_spell( 395110 ) )
     ->set_reverse( true )
@@ -10156,44 +10154,43 @@ void druid_t::create_buffs()
     } );
 
   buff.harmony_of_the_heavens_lunar = make_fallback( talent.harmony_of_the_heavens.ok(),
-      this, "harmony_of_the_heavens_lunar", talent.harmony_of_the_heavens )
-          ->set_default_value_from_effect( 1 )
-          ->set_max_stack( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() ) )
-          ->set_name_reporting( "Lunar" )
-          ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
-            eclipse_handler.update_eclipse( eclipse_e::LUNAR );
-          } );
+    this, "harmony_of_the_heavens_lunar", talent.harmony_of_the_heavens )
+      ->set_default_value_from_effect( 1 )
+      ->set_max_stack( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() ) )
+      ->set_name_reporting( "Lunar" )
+      ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
+        eclipse_handler.update_eclipse( eclipse_e::LUNAR );
+      } );
 
   buff.harmony_of_the_heavens_solar = make_fallback( talent.harmony_of_the_heavens.ok(),
-      this, "harmony_of_the_heavens_solar", talent.harmony_of_the_heavens )
-          ->set_default_value_from_effect( 1 )
-          ->set_max_stack( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() ) )
-          ->set_name_reporting( "Solar" )
-          ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
-            eclipse_handler.update_eclipse( eclipse_e::SOLAR );
-          } );
+    this, "harmony_of_the_heavens_solar", talent.harmony_of_the_heavens )
+      ->set_default_value_from_effect( 1 )
+      ->set_max_stack( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() ) )
+      ->set_name_reporting( "Solar" )
+      ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
+        eclipse_handler.update_eclipse( eclipse_e::SOLAR );
+      } );
 
-  buff.natures_balance =
-      make_fallback( talent.natures_balance.ok(), this, "natures_balance", talent.natures_balance )
-          ->set_quiet( true )
-          ->set_freeze_stacks( true );
+  buff.natures_balance = make_fallback( talent.natures_balance.ok(), this, "natures_balance", talent.natures_balance )
+    ->set_quiet( true )
+    ->set_freeze_stacks( true );
   const auto& nb_eff = find_effect( buff.natures_balance, A_PERIODIC_ENERGIZE );
   buff.natures_balance->set_default_value( nb_eff.resource() / nb_eff.period().total_seconds() )
     ->set_tick_callback(
-        [ ap = nb_eff.resource(),
-          cap = talent.natures_balance->effectN( 2 ).percent(),
-          g = get_gain( "Natures Balance" ),
-          this ]
-        ( buff_t*, int, timespan_t ) mutable {
-          if ( !in_combat )
-          {
-            if ( resources.current[ RESOURCE_ASTRAL_POWER ] < resources.base[ RESOURCE_ASTRAL_POWER ] * cap )
-              ap *= 3.0;
-            else
-              ap = 0;
-          }
-          resource_gain( RESOURCE_ASTRAL_POWER, ap, g );
-        } );
+      [ ap = nb_eff.resource(),
+        cap = talent.natures_balance->effectN( 2 ).percent(),
+        g = get_gain( "Natures Balance" ),
+        this ]
+      ( buff_t*, int, timespan_t ) mutable {
+        if ( !in_combat )
+        {
+          if ( resources.current[ RESOURCE_ASTRAL_POWER ] < resources.base[ RESOURCE_ASTRAL_POWER ] * cap )
+            ap *= 3.0;
+          else
+            ap = 0;
+        }
+        resource_gain( RESOURCE_ASTRAL_POWER, ap, g );
+      } );
 
   buff.orbit_breaker = make_fallback( talent.orbit_breaker.ok(), this, "orbit_breaker" )
     ->set_quiet( true )
@@ -10202,16 +10199,15 @@ void druid_t::create_buffs()
   buff.owlkin_frenzy = make_fallback( spec.moonkin_form->ok(), this, "owlkin_frenzy", find_spell( 157228 ) );
 
   buff.shooting_stars_moonfire =
-      make_fallback<shooting_stars_buff_t>( talent.shooting_stars.ok(),
-          this, "shooting_stars_moonfire", dot_lists.moonfire, active.shooting_stars_moonfire );
+    make_fallback<shooting_stars_buff_t>( talent.shooting_stars.ok(),
+      this, "shooting_stars_moonfire", dot_lists.moonfire, active.shooting_stars_moonfire );
 
   buff.shooting_stars_sunfire =
-      make_fallback<shooting_stars_buff_t>( talent.shooting_stars.ok() && talent.sunfire.ok(),
-          this, "shooting_stars_sunfire", dot_lists.sunfire, active.shooting_stars_sunfire );
+    make_fallback<shooting_stars_buff_t>( talent.shooting_stars.ok() && talent.sunfire.ok(),
+      this, "shooting_stars_sunfire", dot_lists.sunfire, active.shooting_stars_sunfire );
 
-  buff.solstice =
-      make_fallback( talent.solstice.ok(), this, "solstice", find_trigger( talent.solstice ).trigger() )
-          ->set_default_value( find_trigger( talent.solstice ).percent() );
+  buff.solstice = make_fallback( talent.solstice.ok(), this, "solstice", find_trigger( talent.solstice ).trigger() )
+    ->set_default_value( find_trigger( talent.solstice ).percent() );
 
   bool make_starfall = talent.starfall.ok() || ( talent.convoke_the_spirits.ok() && spec.moonkin_form->ok() );
   // lookup via spellid for convoke
@@ -10228,91 +10224,93 @@ void druid_t::create_buffs()
     ->set_trigger_spell( talent.starlord );
 
   buff.starweaver_starfall = make_fallback( talent.starweaver.ok() && talent.starfall.ok(),
-      this, "starweavers_warp", find_spell( 393942 ) )
-          ->set_chance( talent.starweaver->effectN( 1 ).percent() )
-          ->set_trigger_spell( talent.starweaver );
+    this, "starweavers_warp", find_spell( 393942 ) )
+      ->set_chance( talent.starweaver->effectN( 1 ).percent() )
+      ->set_trigger_spell( talent.starweaver );
 
   buff.starweaver_starsurge = make_fallback( talent.starweaver.ok(),
-      this, "starweavers_weft", find_spell( 393944 ) )
-          ->set_chance( talent.starweaver->effectN( 2 ).percent() )
-          ->set_trigger_spell( talent.starweaver );
+    this, "starweavers_weft", find_spell( 393944 ) )
+      ->set_chance( talent.starweaver->effectN( 2 ).percent() )
+      ->set_trigger_spell( talent.starweaver );
 
   buff.touch_the_cosmos_starfall = make_fallback( talent.touch_the_cosmos.ok() && talent.starfall.ok(),
-      this, "touch_the_cosmos_starfall", find_spell( 450361 ) )
-          ->set_chance( talent.touch_the_cosmos->effectN( 2 ).percent() )
-          ->set_name_reporting( "Starfall" )
-          ->set_trigger_spell( talent.touch_the_cosmos );
+    this, "touch_the_cosmos_starfall", find_spell( 450361 ) )
+      ->set_chance( talent.touch_the_cosmos->effectN( 2 ).percent() )
+      ->set_name_reporting( "Starfall" )
+      ->set_trigger_spell( talent.touch_the_cosmos );
 
   buff.touch_the_cosmos_starsurge = make_fallback( talent.touch_the_cosmos.ok(),
-      this, "touch_the_cosmos_starsurge", find_spell( 450360 ) )
-          ->set_chance( talent.touch_the_cosmos->effectN( 1 ).percent() )
-          ->set_name_reporting( "Starsurge" )
-          ->set_trigger_spell( talent.touch_the_cosmos );
+    this, "touch_the_cosmos_starsurge", find_spell( 450360 ) )
+      ->set_chance( talent.touch_the_cosmos->effectN( 1 ).percent() )
+      ->set_name_reporting( "Starsurge" )
+      ->set_trigger_spell( talent.touch_the_cosmos );
 
   buff.umbral_embrace =
-      make_fallback( talent.umbral_embrace.ok(), this, "umbral_embrace", find_trigger( talent.umbral_embrace ).trigger() )
-          ->set_trigger_spell( talent.umbral_embrace )
-          ->set_chance( 0.2 )  // TODO: harcoded value
-          ->set_default_value( talent.umbral_embrace->effectN( 1 ).percent() );
+    make_fallback( talent.umbral_embrace.ok(), this, "umbral_embrace", find_trigger( talent.umbral_embrace ).trigger() )
+      ->set_trigger_spell( talent.umbral_embrace )
+      ->set_chance( 0.2 )  // TODO: harcoded value
+      ->set_default_value( talent.umbral_embrace->effectN( 1 ).percent() );
 
   buff.umbral_inspiration =
-      make_fallback( talent.umbral_inspiration.ok(), this, "umbral_inspiration", find_spell( 450419 ) );
+    make_fallback( talent.umbral_inspiration.ok(), this, "umbral_inspiration", find_spell( 450419 ) );
 
   buff.warrior_of_elune =
-      make_fallback( talent.warrior_of_elune.ok(), this, "warrior_of_elune", talent.warrior_of_elune )
-          ->set_reverse( true );
+    make_fallback( talent.warrior_of_elune.ok(), this, "warrior_of_elune", talent.warrior_of_elune )
+      ->set_reverse( true );
 
   // Feral buffs
   buff.ashamanes_guidance = make_fallback( talent.ashamanes_guidance.ok() && talent.incarnation_cat.ok(),
-      this, "ashamanes_guidance", spec.ashamanes_guidance_buff );
+    this, "ashamanes_guidance", spec.ashamanes_guidance_buff );
 
   buff.apex_predators_craving = make_fallback( talent.apex_predators_craving.ok(),
-      this, "apex_predators_craving", find_trigger( talent.apex_predators_craving ).trigger() );
+    this, "apex_predators_craving", find_trigger( talent.apex_predators_craving ).trigger() );
 
   buff.berserk_cat =
-      make_fallback( talent.berserk.ok(), this, "berserk_cat", spec.berserk_cat )
-          ->set_name_reporting( "berserk" )
-          ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-            if ( !new_ )
-            {
-              gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ] += buff.overflowing_power->check();
-              buff.overflowing_power->expire();
-            }
-          } );
+    make_fallback( talent.berserk.ok(), this, "berserk_cat", spec.berserk_cat )
+      ->set_name_reporting( "berserk" )
+      ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+        if ( !new_ )
+        {
+          gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ] += buff.overflowing_power->check();
+          buff.overflowing_power->expire();
+        }
+      } );
 
   buff.incarnation_cat =
-      make_fallback( talent.incarnation_cat.ok(), this, "incarnation_avatar_of_ashamane", talent.incarnation_cat )
-          ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST )
-          ->set_stack_change_callback(
-              [ this,
-                ag_dur = timespan_t::from_seconds( find_spell( 421440 )->effectN( 1 ).base_value() ) ]
-              ( buff_t*, int old_, int new_ ) {
-                if ( !old_ )
-                {
-                  buff.ashamanes_guidance->trigger();
-                }
-                else if ( !new_ )
-                {
-                  gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ] += buff.overflowing_power->check();
-                  buff.overflowing_power->expire();
+    make_fallback( talent.incarnation_cat.ok(), this, "incarnation_avatar_of_ashamane", talent.incarnation_cat )
+      ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST )
+      ->set_stack_change_callback(
+        [ this,
+          ag_dur = timespan_t::from_seconds( find_spell( 421440 )->effectN( 1 ).base_value() ) ]
+        ( buff_t*, int old_, int new_ ) {
+          if ( !old_ )
+          {
+            buff.ashamanes_guidance->trigger();
+          }
+          else if ( !new_ )
+          {
+            gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ] += buff.overflowing_power->check();
+            buff.overflowing_power->expire();
 
-                  if ( talent.ashamanes_guidance.ok() )
-                  {
-                    // ashamanes guidance buff in spell-data is infinite, so we manually expire after 30 seconds here
-                    // unfortunately, if incarn procs or is casted during this 30 seconds so check back if this becomes
-                    // relevant
-                    make_event( *sim, ag_dur, [ this ]() { buff.ashamanes_guidance->expire(); } );
-                  }
-                }
-              } );
+            if ( talent.ashamanes_guidance.ok() )
+            {
+              // ashamanes guidance buff in spell-data is infinite, so we manually expire after 30 seconds here
+              // unfortunately, if incarn procs or is casted during this 30 seconds so check back if this becomes
+              // relevant
+              make_event( *sim, ag_dur, [ this ]() { buff.ashamanes_guidance->expire(); } );
+            }
+          }
+        } );
 
   buff.b_inc_cat = talent.incarnation_cat.ok() ? buff.incarnation_cat : buff.berserk_cat;
   buff.b_inc_cat->set_cooldown( 0_ms )
-      ->set_tick_callback(
-          [ this,
-            cp = find_effect( find_trigger( buff.b_inc_cat ).trigger(), E_ENERGIZE ).resource( RESOURCE_COMBO_POINT ),
-            gain = get_gain( buff.b_inc_cat->name() ) ]
-          ( buff_t*, int, timespan_t ) { resource_gain( RESOURCE_COMBO_POINT, cp, gain ); } );
+    ->set_tick_callback(
+      [ this,
+        cp = find_effect( find_trigger( buff.b_inc_cat ).trigger(), E_ENERGIZE ).resource( RESOURCE_COMBO_POINT ),
+        gain = get_gain( buff.b_inc_cat->name() ) ]
+      ( buff_t*, int, timespan_t ) {
+        resource_gain( RESOURCE_COMBO_POINT, cp, gain );
+      } );
 
   buff.bloodtalons     = make_fallback( talent.bloodtalons.ok(), this, "bloodtalons", find_spell( 145152 ) );
   buff.bt_rake         = make_fallback<bt_dummy_buff_t>( talent.bloodtalons.ok(), this, "bt_rake" );
@@ -10324,25 +10322,24 @@ void druid_t::create_buffs()
 
   // 1.05s ICD per https://github.com/simulationcraft/simc/commit/b06d0685895adecc94e294f4e3fcdd57ac909a10
   buff.clearcasting_cat = make_fallback( talent.omen_of_clarity_cat.ok(),
-       this, "clearcasting_cat", find_trigger( talent.omen_of_clarity_cat ).trigger() )
-          ->set_cooldown( 1.05_s )
-          ->apply_affecting_aura( talent.moment_of_clarity )
-          ->set_name_reporting( "clearcasting" );
+    this, "clearcasting_cat", find_trigger( talent.omen_of_clarity_cat ).trigger() )
+      ->set_cooldown( 1.05_s )
+      ->apply_affecting_aura( talent.moment_of_clarity )
+      ->set_name_reporting( "clearcasting" );
 
-  buff.coiled_to_spring =
-      make_fallback( talent.coiled_to_spring.ok(), this, "coiled_to_spring", find_spell( 449538 ) );
+  buff.coiled_to_spring = make_fallback( talent.coiled_to_spring.ok(), this, "coiled_to_spring", find_spell( 449538 ) );
 
   buff.frantic_momentum = make_fallback( talent.frantic_momentum.ok(),
-      this, "frantic_momentum", find_trigger( talent.frantic_momentum ).trigger() )
-          ->set_cooldown( talent.frantic_momentum->internal_cooldown() )
-          ->set_chance( find_trigger( talent.frantic_momentum ).percent() )
-          ->set_trigger_spell( talent.frantic_momentum )
-          ->set_default_value_from_effect_type( A_HASTE_ALL )
-          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    this, "frantic_momentum", find_trigger( talent.frantic_momentum ).trigger() )
+      ->set_cooldown( talent.frantic_momentum->internal_cooldown() )
+      ->set_chance( find_trigger( talent.frantic_momentum ).percent() )
+      ->set_trigger_spell( talent.frantic_momentum )
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buff.incarnation_cat_prowl = make_fallback( talent.incarnation_cat.ok(),
-      this, "incarnation_avatar_of_ashamane_prowl", find_effect( talent.incarnation_cat, E_TRIGGER_SPELL ).trigger() )
-          ->set_name_reporting( "Prowl" );
+    this, "incarnation_avatar_of_ashamane_prowl", find_effect( talent.incarnation_cat, E_TRIGGER_SPELL ).trigger() )
+      ->set_name_reporting( "Prowl" );
 
   buff.overflowing_power = make_fallback( talent.berserk.ok(), this, "overflowing_power", find_spell( 405189 ) )
     ->set_expire_callback( [ this ]( buff_t*, int s, timespan_t ) {
@@ -10360,19 +10357,19 @@ void druid_t::create_buffs()
     } );
 
   buff.predatory_swiftness =
-      make_fallback( talent.predatory_swiftness.ok(), this, "predatory_swiftness", find_spell( 69369 ) )
-          ->set_chance( talent.predatory_swiftness->effectN( 3 ).percent() )
-          ->set_trigger_spell( talent.predatory_swiftness );
+    make_fallback( talent.predatory_swiftness.ok(), this, "predatory_swiftness", find_spell( 69369 ) )
+      ->set_chance( talent.predatory_swiftness->effectN( 3 ).percent() )
+      ->set_trigger_spell( talent.predatory_swiftness );
 
   buff.savage_fury = make_fallback( talent.savage_fury.ok(), this, "savage_fury", find_spell( 449646 ) )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buff.sudden_ambush =
-      make_fallback( talent.sudden_ambush.ok(), this, "sudden_ambush", find_trigger( talent.sudden_ambush ).trigger() )
-          ->set_cooldown( talent.sudden_ambush->internal_cooldown() )
-          ->set_chance( talent.sudden_ambush->effectN( 1 ).percent() )
-          ->set_trigger_spell( talent.sudden_ambush );
+    make_fallback( talent.sudden_ambush.ok(), this, "sudden_ambush", find_trigger( talent.sudden_ambush ).trigger() )
+      ->set_cooldown( talent.sudden_ambush->internal_cooldown() )
+      ->set_chance( talent.sudden_ambush->effectN( 1 ).percent() )
+      ->set_trigger_spell( talent.sudden_ambush );
 
   buff.tigers_fury = make_fallback( talent.tigers_fury.ok(), this, "tigers_fury", talent.tigers_fury )
     ->set_cooldown( 0_ms )
@@ -10383,21 +10380,21 @@ void druid_t::create_buffs()
     ->apply_affecting_aura( talent.carnivorous_instinct );
 
   buff.tigers_tenacity = make_fallback( talent.tigers_tenacity.ok(),
-      this, "tigers_tenacity", find_trigger( talent.tigers_tenacity ).trigger() )
-          ->set_reverse( true );
+    this, "tigers_tenacity", find_trigger( talent.tigers_tenacity ).trigger() )
+      ->set_reverse( true );
   buff.tigers_tenacity->set_stack_change_callback(
-      [ this,
-        g = get_gain( "Tiger's Tenacity" ),
-        amt = find_effect( find_trigger( buff.tigers_tenacity ).trigger(), E_ENERGIZE ).resource() ]
-      ( buff_t*, int old_, int new_ ) {
-        if ( old_ > new_ )
-          resource_gain( RESOURCE_COMBO_POINT, amt, g );
-      } );
+    [ this,
+      g = get_gain( "Tiger's Tenacity" ),
+      amt = find_effect( find_trigger( buff.tigers_tenacity ).trigger(), E_ENERGIZE ).resource() ]
+    ( buff_t*, int old_, int new_ ) {
+      if ( old_ > new_ )
+        resource_gain( RESOURCE_COMBO_POINT, amt, g );
+    } );
 
   // Guardian buffs
   buff.after_the_wildfire = make_fallback( talent.after_the_wildfire.ok(),
-      this, "after_the_wildfire", talent.after_the_wildfire->effectN( 1 ).trigger() )
-          ->set_default_value( talent.after_the_wildfire->effectN( 2 ).base_value() );
+    this, "after_the_wildfire", talent.after_the_wildfire->effectN( 1 ).trigger() )
+      ->set_default_value( talent.after_the_wildfire->effectN( 2 ).base_value() );
 
   auto berserk_cd_fn = [ this ] {
     cooldown.growl->adjust_recharge_multiplier();
@@ -10407,31 +10404,31 @@ void druid_t::create_buffs()
   };
 
   buff.berserk_bear =
-      make_fallback( talent.berserk_ravage.ok(), this, "berserk_bear", spec.berserk_bear )
-          ->set_name_reporting( "berserk" )
-          ->set_stack_change_callback( [ berserk_cd_fn ]( buff_t*, int, int ) { berserk_cd_fn(); } );
+    make_fallback( talent.berserk_ravage.ok(), this, "berserk_bear", spec.berserk_bear )
+      ->set_name_reporting( "berserk" )
+      ->set_stack_change_callback( [ berserk_cd_fn ]( buff_t*, int, int ) { berserk_cd_fn(); } );
 
   buff.incarnation_bear =
-      make_fallback( talent.incarnation_bear.ok(), this, "incarnation_guardian_of_ursoc", spec.incarnation_bear )
-          ->set_stack_change_callback(
-              [ this,
-                berserk_cd_fn,
-                mul = 1.0 + find_effect( spec.incarnation_bear, A_MOD_INCREASE_HEALTH_PERCENT ).percent() ]
-              ( buff_t*, int old_, int new_ ) {
-                berserk_cd_fn();
-                if ( !old_ )
-                {
-                  resources.max[ RESOURCE_HEALTH ] *= mul;
-                  resources.current[ RESOURCE_HEALTH ] *= mul;
-                  recalculate_resource_max( RESOURCE_HEALTH );
-                }
-                else if ( !new_ )
-                {
-                  resources.max[ RESOURCE_HEALTH ] /= mul;
-                  resources.current[ RESOURCE_HEALTH ] /= mul;
-                  recalculate_resource_max( RESOURCE_HEALTH );
-                }
-              } );
+    make_fallback( talent.incarnation_bear.ok(), this, "incarnation_guardian_of_ursoc", spec.incarnation_bear )
+      ->set_stack_change_callback(
+        [ this,
+          berserk_cd_fn,
+          mul = 1.0 + find_effect( spec.incarnation_bear, A_MOD_INCREASE_HEALTH_PERCENT ).percent() ]
+        ( buff_t*, int old_, int new_ ) {
+          berserk_cd_fn();
+          if ( !old_ )
+          {
+            resources.max[ RESOURCE_HEALTH ] *= mul;
+            resources.current[ RESOURCE_HEALTH ] *= mul;
+            recalculate_resource_max( RESOURCE_HEALTH );
+          }
+          else if ( !new_ )
+          {
+            resources.max[ RESOURCE_HEALTH ] /= mul;
+            resources.current[ RESOURCE_HEALTH ] /= mul;
+            recalculate_resource_max( RESOURCE_HEALTH );
+          }
+        } );
 
   buff.b_inc_bear = talent.incarnation_bear.ok() ? buff.incarnation_bear : buff.berserk_bear;
   buff.b_inc_bear->set_cooldown( 0_ms )
@@ -10452,7 +10449,7 @@ void druid_t::create_buffs()
     ->set_cooldown( 0_ms );
 
   buff.dream_of_cenarius = make_fallback( talent.dream_of_cenarius_bear.ok(),
-      this, "dream_of_cenarius", talent.dream_of_cenarius_bear->effectN( 1 ).trigger() );
+    this, "dream_of_cenarius", talent.dream_of_cenarius_bear->effectN( 1 ).trigger() );
 
   buff.earthwarden = make_fallback<earthwarden_buff_t>( talent.earthwarden.ok(), this, "earthwarden" );
 
@@ -10469,19 +10466,18 @@ void druid_t::create_buffs()
     } );
 
   buff.galactic_guardian =
-      make_fallback( talent.galactic_guardian.ok(), this, "galactic_guardian", find_spell( 213708 ) );
+    make_fallback( talent.galactic_guardian.ok(), this, "galactic_guardian", find_spell( 213708 ) );
 
   buff.gore = make_fallback( talent.gore.ok(), this, "gore", find_spell( 93622 ) )
     ->set_trigger_spell( talent.gore )
     ->set_cooldown( talent.gore->internal_cooldown() );
 
-  buff.gory_fur =
-      make_fallback( talent.gory_fur.ok(), this, "gory_fur", find_trigger( talent.gory_fur ).trigger() )
-          ->set_trigger_spell( talent.gory_fur );
+  buff.gory_fur = make_fallback( talent.gory_fur.ok(), this, "gory_fur", find_trigger( talent.gory_fur ).trigger() )
+    ->set_trigger_spell( talent.gory_fur );
 
   buff.guardian_of_elune = make_fallback( talent.guardian_of_elune.ok(),
-      this, "guardian_of_elune", find_trigger( talent.guardian_of_elune ).trigger() )
-          ->set_trigger_spell( talent.guardian_of_elune );
+    this, "guardian_of_elune", find_trigger( talent.guardian_of_elune ).trigger() )
+      ->set_trigger_spell( talent.guardian_of_elune );
 
   buff.lunar_beam = make_fallback( talent.lunar_beam.ok(), this, "lunar_beam", talent.lunar_beam )
     ->set_cooldown( 0_ms )
@@ -10491,62 +10487,62 @@ void druid_t::create_buffs()
     ->apply_affecting_aura( talent.the_eternal_moon );
 
   buff.rage_of_the_sleeper =
-      make_fallback<rage_of_the_sleeper_buff_t>( talent.rage_of_the_sleeper.ok(), this, "rage_of_the_sleeper" );
+    make_fallback<rage_of_the_sleeper_buff_t>( talent.rage_of_the_sleeper.ok(), this, "rage_of_the_sleeper" );
 
-  buff.tooth_and_claw = make_fallback( talent.tooth_and_claw.ok(),
-      this, "tooth_and_claw", find_trigger( talent.tooth_and_claw ).trigger() )
-          ->set_chance( find_trigger( talent.tooth_and_claw ).percent() );
+  buff.tooth_and_claw =
+    make_fallback( talent.tooth_and_claw.ok(), this, "tooth_and_claw", find_trigger( talent.tooth_and_claw ).trigger() )
+      ->set_chance( find_trigger( talent.tooth_and_claw ).percent() );
 
   // TODO: figure out more elegant fallback method
   buff.ursocs_fury =
-      make_fallback<druid_absorb_buff_t>( talent.ursocs_fury.ok(), this, "ursocs_fury", find_spell( 372505 ) );
+    make_fallback<druid_absorb_buff_t>( talent.ursocs_fury.ok(), this, "ursocs_fury", find_spell( 372505 ) );
   if ( talent.ursocs_fury.ok() )
     debug_cast<druid_absorb_buff_t*>( buff.ursocs_fury )->set_cumulative( true );
 
   buff.vicious_cycle_mangle =
-      make_fallback( talent.vicious_cycle.ok(), this, "vicious_cycle_mangle", find_spell( 372019 ) )
-          ->set_default_value( talent.vicious_cycle->effectN( 1 ).percent() )
-          ->set_name_reporting( "Mangle" )
-          ->set_trigger_spell( talent.vicious_cycle );
+    make_fallback( talent.vicious_cycle.ok(), this, "vicious_cycle_mangle", find_spell( 372019 ) )
+      ->set_default_value( talent.vicious_cycle->effectN( 1 ).percent() )
+      ->set_name_reporting( "Mangle" )
+      ->set_trigger_spell( talent.vicious_cycle );
 
   buff.vicious_cycle_maul =
-      make_fallback( talent.vicious_cycle.ok(), this, "vicious_cycle_maul", find_spell( 372015 ) )
-          ->set_default_value( talent.vicious_cycle->effectN( 1 ).percent() )
-          ->set_name_reporting( "Maul" )
-          ->set_trigger_spell( talent.vicious_cycle );
+    make_fallback( talent.vicious_cycle.ok(), this, "vicious_cycle_maul", find_spell( 372015 ) )
+      ->set_default_value( talent.vicious_cycle->effectN( 1 ).percent() )
+      ->set_name_reporting( "Maul" )
+      ->set_trigger_spell( talent.vicious_cycle );
 
   // Restoration buffs
   buff.abundance = make_fallback( talent.abundance.ok(), this, "abundance", find_spell( 207640 ) )
     ->set_duration( 0_ms );
 
   buff.call_of_the_elder_druid = make_fallback( talent.call_of_the_elder_druid.ok(),
-      this, "call_of_the_elder_druid", find_spell( 338643 ) );
+    this, "call_of_the_elder_druid", find_spell( 338643 ) );
 
   buff.cenarion_ward = make_fallback( talent.cenarion_ward.ok(), this, "cenarion_ward", talent.cenarion_ward );
 
   buff.clearcasting_tree = make_fallback( talent.omen_of_clarity_tree.ok(),
-      this, "clearcasting_tree", find_trigger( talent.omen_of_clarity_tree ).trigger() )
-          ->set_chance( find_trigger( talent.omen_of_clarity_tree ).percent() )
-          ->set_name_reporting( "clearcasting" );
+    this, "clearcasting_tree", find_trigger( talent.omen_of_clarity_tree ).trigger() )
+      ->set_chance( find_trigger( talent.omen_of_clarity_tree ).percent() )
+      ->set_name_reporting( "clearcasting" );
 
   buff.flourish = make_fallback( talent.flourish.ok(), this, "flourish", talent.flourish )
     ->set_default_value_from_effect( 2 );
 
   buff.incarnation_tree =
-      make_fallback( talent.incarnation_tree.ok(), this, "incarnation_tree_of_life", find_spell( 5420 ) )
-          ->set_duration( find_spell( 117679 )->duration() )  // 117679 is the generic incarnation shift proxy spell
-          ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+    make_fallback( talent.incarnation_tree.ok(), this, "incarnation_tree_of_life", find_spell( 5420 ) )
+      ->set_duration( find_spell( 117679 )->duration() )  // 117679 is the generic incarnation shift proxy spell
+      ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   buff.natures_swiftness =
-      make_fallback( talent.natures_swiftness.ok(), this, "natures_swiftness", talent.natures_swiftness )
-          ->set_cooldown( 0_ms )
-          ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
-            cooldown.natures_swiftness->start();
-          } );
+    make_fallback( talent.natures_swiftness.ok(), this, "natures_swiftness", talent.natures_swiftness )
+      ->set_cooldown( 0_ms )
+      ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
+        cooldown.natures_swiftness->start();
+      } );
 
   buff.soul_of_the_forest_tree =
-      make_fallback( talent.soul_of_the_forest_tree.ok(), this, "soul_of_the_forest_tree", find_spell( 114108 ) )
-          ->set_name_reporting( "soul_of_the_forest" );
+    make_fallback( talent.soul_of_the_forest_tree.ok(), this, "soul_of_the_forest_tree", find_spell( 114108 ) )
+      ->set_name_reporting( "soul_of_the_forest" );
 
   buff.yseras_gift = make_fallback( talent.yseras_gift.ok(), this, "yseras_gift_driver", talent.yseras_gift )
     ->apply_affecting_aura( talent.waking_dream->effectN( 1 ).trigger() )
@@ -10558,70 +10554,69 @@ void druid_t::create_buffs()
 
   // Hero talents
   buff.blooming_infusion_damage =
-      make_fallback( talent.blooming_infusion.ok(), this, "blooming_infusion_damage", find_spell( 429474 ) )
-          ->set_name_reporting( "Damage" );
+    make_fallback( talent.blooming_infusion.ok(), this, "blooming_infusion_damage", find_spell( 429474 ) )
+      ->set_name_reporting( "Damage" );
 
   buff.blooming_infusion_damage_counter =
-      make_fallback( talent.blooming_infusion.ok(), this, "blooming_infusion_damage_counter" )
-          ->set_quiet( true )
-          ->set_max_stack( as<int>( talent.blooming_infusion->effectN( 1 ).base_value() ) )
-          ->set_expire_at_max_stack( true )
-          ->set_trigger_spell( talent.blooming_infusion )
-          ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
-            buff.blooming_infusion_damage->trigger();
-          } );
+    make_fallback( talent.blooming_infusion.ok(), this, "blooming_infusion_damage_counter" )
+      ->set_quiet( true )
+      ->set_max_stack( as<int>( talent.blooming_infusion->effectN( 1 ).base_value() ) )
+      ->set_expire_at_max_stack( true )
+      ->set_trigger_spell( talent.blooming_infusion )
+      ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
+        buff.blooming_infusion_damage->trigger();
+      } );
 
   buff.blooming_infusion_heal =
-      make_fallback( talent.blooming_infusion.ok(), this, "blooming_infusion_heal", find_spell( 429438 ) )
-          ->set_name_reporting( "Heal" );
+    make_fallback( talent.blooming_infusion.ok(), this, "blooming_infusion_heal", find_spell( 429438 ) )
+      ->set_name_reporting( "Heal" );
 
   buff.blooming_infusion_heal_counter =
-      make_fallback( talent.blooming_infusion.ok(), this, "blooming_infusion_heal_counter" )
-          ->set_quiet( true )
-          ->set_max_stack( as<int>( talent.blooming_infusion->effectN( 1 ).base_value() ) )
-          ->set_expire_at_max_stack( true )
-          ->set_trigger_spell( talent.blooming_infusion )
-          ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
-            buff.blooming_infusion_heal->trigger();
-          } );
+    make_fallback( talent.blooming_infusion.ok(), this, "blooming_infusion_heal_counter" )
+      ->set_quiet( true )
+      ->set_max_stack( as<int>( talent.blooming_infusion->effectN( 1 ).base_value() ) )
+      ->set_expire_at_max_stack( true )
+      ->set_trigger_spell( talent.blooming_infusion )
+      ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
+        buff.blooming_infusion_heal->trigger();
+      } );
 
   buff.boundless_moonlight_heal = make_fallback( talent.boundless_moonlight.ok() && talent.lunar_beam.ok(),
-      this, "boundless_moonlight_heal", find_spell( 425217 ) )
-          ->set_quiet( true )
-          ->set_freeze_stacks( true )
-          ->set_default_value( 0 )
-          ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-            if ( b->check_value() )
-            {
-              active.boundless_moonlight_heal->execute_on_target( this, b->check_value() );
-              b->current_value = 0;
-            }
-          } );
+    this, "boundless_moonlight_heal", find_spell( 425217 ) )
+      ->set_quiet( true )
+      ->set_freeze_stacks( true )
+      ->set_default_value( 0 )
+      ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+        if ( b->check_value() )
+        {
+          active.boundless_moonlight_heal->execute_on_target( this, b->check_value() );
+          b->current_value = 0;
+        }
+      } );
 
-  buff.bounteous_bloom =
-      make_fallback( talent.bounteous_bloom.ok(), this, "bounteous_bloom", find_spell( 429217 ) )
-          ->set_freeze_stacks( true )
-          ->set_cooldown( 0_ms );
+  buff.bounteous_bloom = make_fallback( talent.bounteous_bloom.ok(), this, "bounteous_bloom", find_spell( 429217 ) )
+    ->set_freeze_stacks( true )
+    ->set_cooldown( 0_ms );
   const auto& bb_eff = find_effect( buff.bounteous_bloom, E_APPLY_AREA_AURA_PET, A_PERIODIC_ENERGIZE );
   buff.bounteous_bloom->set_default_value( bb_eff.resource() / bb_eff.period().total_seconds() )
-      ->set_tick_callback(
-          [ ap = bb_eff.resource(),
-            g = get_gain( "Bounteous Bloom" ),
-            this ]
-          ( buff_t* b, int, timespan_t ) {
-            resource_gain( RESOURCE_ASTRAL_POWER, ap * b->check(), g );
-          } );
+    ->set_tick_callback(
+      [ ap = bb_eff.resource(),
+        g = get_gain( "Bounteous Bloom" ),
+        this ]
+      ( buff_t* b, int, timespan_t ) {
+        resource_gain( RESOURCE_ASTRAL_POWER, ap * b->check(), g );
+      } );
 
-  buff.cenarius_might = make_fallback( talent.cenarius_might.ok(),
-      this, "cenarius_might", find_trigger( talent.cenarius_might ).trigger() )
-          ->set_default_value_from_effect_type( A_HASTE_ALL )
-          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  buff.cenarius_might =
+    make_fallback( talent.cenarius_might.ok(), this, "cenarius_might", find_trigger( talent.cenarius_might ).trigger() )
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buff.dream_burst = make_fallback( talent.dream_surge.ok(), this, "dream_burst", find_spell( 433832 ) );
 
   buff.harmony_of_the_grove = make_fallback( talent.harmony_of_the_grove.ok(),
-      this, "harmony_of_the_grove", find_spell( specialization() == DRUID_RESTORATION ? 428737 : 428735 ) )
-          ->set_cooldown( 0_ms );
+    this, "harmony_of_the_grove", find_spell( specialization() == DRUID_RESTORATION ? 428737 : 428735 ) )
+      ->set_cooldown( 0_ms );
 
   buff.implant = make_fallback( talent.implant.ok(), this, "implant", find_spell( 455496 ) );
   if ( talent.implant.ok() )
@@ -10633,83 +10628,83 @@ void druid_t::create_buffs()
   }
 
   buff.killing_strikes = make_fallback( talent.killing_strikes.ok(),
-      this, "killing_strikes", find_trigger( talent.killing_strikes ).trigger() )
-          ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
-          ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-          ->add_invalidate( CACHE_ARMOR );
+    this, "killing_strikes", find_trigger( talent.killing_strikes ).trigger() )
+      ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
+      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+      ->add_invalidate( CACHE_ARMOR );
 
-  buff.killing_strikes_combat = make_fallback( talent.killing_strikes.ok(),
-      this, "killing_strikes_combat", find_spell( 441827 ) )
-          ->set_quiet( true );
+  buff.killing_strikes_combat =
+    make_fallback( talent.killing_strikes.ok(), this, "killing_strikes_combat", find_spell( 441827 ) )
+      ->set_quiet( true );
 
   buff.lunar_amplification =
-      make_fallback( talent.lunar_amplification.ok(), this, "lunar_amplification", find_spell( 431250 ) )
-          // TODO: currently uses trigger flags for can_trigger, but this should be checked in a callback
-          ->set_trigger_spell( talent.lunar_amplification );
+    make_fallback( talent.lunar_amplification.ok(), this, "lunar_amplification", find_spell( 431250 ) )
+      // TODO: currently uses trigger flags for can_trigger, but this should be checked in a callback
+      ->set_trigger_spell( talent.lunar_amplification );
 
   buff.lunar_amplification_starfall = make_fallback( talent.lunar_amplification.ok() && talent.starfall.ok(),
-      this, "lunar_amplification_starfall", find_spell( 432846 ) )
-          ->set_quiet( true );
+    this, "lunar_amplification_starfall", find_spell( 432846 ) )
+      ->set_quiet( true );
 
   buff.protective_growth =
-      make_fallback( talent.protective_growth.ok(), this, "protective_growth", find_spell( 433749 ) )
-          ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
+    make_fallback( talent.protective_growth.ok(), this, "protective_growth", find_spell( 433749 ) )
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   buff.ravage_fb = make_fallback( talent.ravage.ok() && specialization() == DRUID_FERAL,
-      this, "ravage", find_spell( 441585 ) );
+    this, "ravage", find_spell( 441585 ) );
 
   buff.ravage_maul = make_fallback( talent.ravage.ok() && specialization() == DRUID_GUARDIAN,
-      this, "ravage", find_spell( 441602 ) );
+    this, "ravage", find_spell( 441602 ) );
 
   buff.root_network = make_fallback( talent.root_network.ok(), this, "root_network", find_spell( 439887 ) );
 
   buff.ruthless_aggression = make_fallback( talent.ruthless_aggression.ok(),
-      this, "ruthless_aggression", find_trigger( talent.ruthless_aggression ).trigger() )
-          ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
+    this, "ruthless_aggression", find_trigger( talent.ruthless_aggression ).trigger() )
+      ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
   buff.strategic_infusion = make_fallback( talent.strategic_infusion.ok() && talent.tigers_fury.ok(),
-      this, "strategic_infusion", find_spell( 439891 ) )
-          ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-          ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    this, "strategic_infusion", find_spell( 439891 ) )
+      ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
   buff.treants_of_the_moon = make_fallback<treants_of_the_moon_buff_t>(
-      talent.treants_of_the_moon.ok() && ( talent.force_of_nature.ok() || talent.grove_guardians.ok() ),
-          this, "treants_of_the_moon" );
+    talent.treants_of_the_moon.ok() && ( talent.force_of_nature.ok() || talent.grove_guardians.ok() ),
+      this, "treants_of_the_moon" );
 
   buff.feline_potential = make_fallback( talent.wildpower_surge.ok() && specialization() == DRUID_GUARDIAN,
-      this, "feline_potential", find_spell( 441702 ) )
-          ->set_stack_change_callback(
-              [ this,
-                g = get_gain( "Wildpower Surge" ),
-                amt = find_effect( find_spell( 441704 ), E_ENERGIZE ).resource() ]
-              ( buff_t*, int, int new_ ) {
-                if ( new_ )
-                  resource_gain( RESOURCE_COMBO_POINT, amt, g );
-              } );
+    this, "feline_potential", find_spell( 441702 ) )
+      ->set_stack_change_callback(
+        [ this,
+          g = get_gain( "Wildpower Surge" ),
+          amt = find_effect( find_spell( 441704 ), E_ENERGIZE ).resource() ]
+        ( buff_t*, int, int new_ ) {
+          if ( new_ )
+            resource_gain( RESOURCE_COMBO_POINT, amt, g );
+        } );
 
   buff.feline_potential_counter = make_fallback( talent.wildpower_surge.ok() && specialization() == DRUID_GUARDIAN,
-      this, "feline_potential_counter", find_spell( 441701 ) )
-          ->set_trigger_spell( talent.wildpower_surge )
-          ->set_cooldown( talent.wildpower_surge->internal_cooldown() );
+    this, "feline_potential_counter", find_spell( 441701 ) )
+      ->set_trigger_spell( talent.wildpower_surge )
+      ->set_cooldown( talent.wildpower_surge->internal_cooldown() );
 
   buff.ursine_potential = make_fallback( talent.wildpower_surge.ok() && specialization() == DRUID_FERAL,
-      this, "ursine_potential", find_spell( 441698 ) )
-          ->set_stack_change_callback(
-              [ this,
-                g = get_gain( "Wildpower Surge" ),
-                amt = find_effect( find_spell( 442562 ), E_ENERGIZE ).resource() ]
-              ( buff_t*, int, int new_ ) {
-                if ( !new_ )
-                  resource_gain( RESOURCE_RAGE, amt, g );
-              } );
+    this, "ursine_potential", find_spell( 441698 ) )
+      ->set_stack_change_callback(
+        [ this,
+          g = get_gain( "Wildpower Surge" ),
+          amt = find_effect( find_spell( 442562 ), E_ENERGIZE ).resource() ]
+        ( buff_t*, int, int new_ ) {
+          if ( !new_ )
+            resource_gain( RESOURCE_RAGE, amt, g );
+        } );
 
   buff.ursine_potential_counter = make_fallback( talent.wildpower_surge.ok() && specialization() == DRUID_FERAL,
-      this, "ursine_potential_counter", find_spell( 441695 ) )
-          ->set_trigger_spell( talent.wildpower_surge )
-          ->set_cooldown( talent.wildpower_surge->internal_cooldown() );
+    this, "ursine_potential_counter", find_spell( 441695 ) )
+      ->set_trigger_spell( talent.wildpower_surge )
+      ->set_cooldown( talent.wildpower_surge->internal_cooldown() );
 
   buff.wildshape_mastery =
-      make_fallback( talent.wildshape_mastery.ok(), this, "wildshape_mastery", find_spell( 441685 ) );
+    make_fallback( talent.wildshape_mastery.ok(), this, "wildshape_mastery", find_spell( 441685 ) );
 
   parse_effects( find_specialization_spell( "Leather Specialization" ) );
 
@@ -10828,7 +10823,7 @@ void druid_t::create_actions()
   if ( talent.sundered_firmament.ok() )
   {
     auto firmament = get_secondary_action<fury_of_elune_t>(
-        "sundered_firmament", find_spell( 394106 ), flag_e::FIRMAMENT, find_spell( 394111 ), buff.sundered_firmament );
+      "sundered_firmament", find_spell( 394106 ), flag_e::FIRMAMENT, find_spell( 394111 ), buff.sundered_firmament );
     firmament->damage->base_multiplier = talent.sundered_firmament->effectN( 1 ).percent();
     firmament->s_data_reporting = talent.sundered_firmament;
     firmament->background = true;
@@ -10916,7 +10911,7 @@ void druid_t::create_actions()
   if ( talent.the_light_of_elune.ok() )
   {
     auto foe = get_secondary_action<fury_of_elune_t>(
-        "the_light_of_elune", find_spell( 202770 ), flag_e::LIGHTOFELUNE, find_spell( 211545 ), buff.fury_of_elune );
+      "the_light_of_elune", find_spell( 202770 ), flag_e::LIGHTOFELUNE, find_spell( 211545 ), buff.fury_of_elune );
     foe->s_data_reporting = talent.the_light_of_elune;
     foe->background = true;
     foe->proc = true;
@@ -11216,8 +11211,8 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
     case FIGHT_STYLE_DUNGEON_ROUTE:
     case FIGHT_STYLE_DUNGEON_SLICE:
       sim->error(
-          "Dungeon Slice and Dungeon Route fight styles do not account for reflected damage, such as Rage of the "
-          "Sleeper, Brambles, Dragonflight Season 3 set bonus, and some trinkets." );
+        "Dungeon Slice and Dungeon Route fight styles do not account for reflected damage, such as Rage of the "
+        "Sleeper, Brambles, Dragonflight Season 3 set bonus, and some trinkets." );
       return false;
     default:
       return true;
@@ -11279,13 +11274,13 @@ void druid_t::init_resources( bool force )
 {
   player_t::init_resources( force );
 
-  resources.current[ RESOURCE_RAGE ]         = 0;
-  resources.current[ RESOURCE_COMBO_POINT ]  = 0;
+  resources.current[ RESOURCE_RAGE ] = 0;
+  resources.current[ RESOURCE_COMBO_POINT ] = 0;
 
   if ( options.initial_astral_power == 0.0 && talent.natures_balance.ok() )
   {
     resources.current[ RESOURCE_ASTRAL_POWER ] =
-        resources.base[ RESOURCE_ASTRAL_POWER ] * talent.natures_balance->effectN( 2 ).percent();
+      resources.base[ RESOURCE_ASTRAL_POWER ] * talent.natures_balance->effectN( 2 ).percent();
   }
   else
   {
@@ -11433,7 +11428,7 @@ void druid_t::init_special_effects()
     driver->name_str = buff.owlkin_frenzy->name();
     driver->spell_id = spec.moonkin_form->id();
     driver->proc_chance_ =
-        find_effect( find_specialization_spell( "Owlkin Frenzy" ), A_ADD_FLAT_MODIFIER, P_PROC_CHANCE ).percent();
+      find_effect( find_specialization_spell( "Owlkin Frenzy" ), A_ADD_FLAT_MODIFIER, P_PROC_CHANCE ).percent();
     driver->custom_buff = buff.owlkin_frenzy;
     special_effects.push_back( driver );
 
@@ -11869,7 +11864,7 @@ double druid_t::resource_gain( resource_e r, double amount, gain_t* g, action_t*
     if ( g != gain.overflowing_power && over > 0 && buff.b_inc_cat->check() )
     {
       auto avail =
-          std::min( over, as<double>( buff.overflowing_power->max_stack() - buff.overflowing_power->check() ) );
+        std::min( over, as<double>( buff.overflowing_power->max_stack() - buff.overflowing_power->check() ) );
       if ( avail > 0 )
         g->overflow[ r ] -= avail;
 
@@ -11911,8 +11906,8 @@ void druid_t::precombat_init()
   if ( talent.orbit_breaker.ok() )
   {
     auto stacks = options.initial_orbit_breaker_stacks >= 0
-                      ? options.initial_orbit_breaker_stacks
-                      : rng().range( 0, as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) );
+                    ? options.initial_orbit_breaker_stacks
+                    : rng().range( 0, as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) );
 
     if ( stacks )
       buff.orbit_breaker->trigger( stacks );
@@ -11982,7 +11977,7 @@ void druid_t::combat_begin()
     if ( in_boss_encounter )
     {
       double cap =
-          std::max( resources.base[ RESOURCE_ASTRAL_POWER ] * talent.natures_balance->effectN( 2 ).percent(), 20.0 );
+        std::max( resources.base[ RESOURCE_ASTRAL_POWER ] * talent.natures_balance->effectN( 2 ).percent(), 20.0 );
       double curr = resources.current[ RESOURCE_ASTRAL_POWER ];
 
       resources.current[ RESOURCE_ASTRAL_POWER ] = std::min( cap, curr );
@@ -12039,8 +12034,8 @@ void druid_t::recalculate_resource_max( resource_e rt, gain_t* source )
 
     if ( sim->log )
     {
-        sim->print_log( "{} recalculates maximum health. old_current={:.0f} new_current={:.0f} net_health={:.0f}",
-                        name(), current_health, resources.current[ rt ], resources.current[ rt ] - current_health );
+      sim->print_log( "{} recalculates maximum health. old_current={:.0f} new_current={:.0f} net_health={:.0f}", name(),
+                      current_health, resources.current[ rt ], resources.current[ rt ] - current_health );
     }
   }
 }
@@ -12269,7 +12264,8 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
       return druid_t::create_expression( util::string_join( splits, "." ) );
     }
 
-    if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "buff" ) && util::str_compare_ci( splits[ 1 ], "fury_of_elune" ) )
+    if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "buff" ) &&
+         util::str_compare_ci( splits[ 1 ], "fury_of_elune" ) )
     {
       if ( util::str_compare_ci( splits[ 2 ], "stack" ) )
       {
@@ -12332,7 +12328,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
         state->target->target_mitigation( action->get_school(), result_amount_type::DMG_DIRECT, state );
         amount = state->result_amount;
         amount *= 1.0 + clamp( state->crit_chance + state->target_crit_chance, 0.0, 1.0 ) *
-                            action->composite_player_critical_multiplier( state );
+                          action->composite_player_critical_multiplier( state );
 
         this->resources.current[ RESOURCE_ENERGY ] = current_energy;
         this->resources.current[ RESOURCE_COMBO_POINT ] = current_cp;
@@ -12354,12 +12350,12 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
     {
       return make_fn_expr( "bt_trigger_remains", [ this ]() {
         return std::min( std::initializer_list<double>( {
-            buff.bt_rake->check() ? buff.bt_rake->remains().total_seconds() : 6.0,
-            buff.bt_shred->check() ? buff.bt_shred->remains().total_seconds() : 6.0,
-            buff.bt_moonfire->check() ? buff.bt_moonfire->remains().total_seconds() : 6.0,
-            buff.bt_swipe->check() ? buff.bt_swipe->remains().total_seconds() : 6.0,
-            buff.bt_thrash->check() ? buff.bt_thrash->remains().total_seconds() : 6.0,
-            buff.bt_feral_frenzy->check() ? buff.bt_feral_frenzy->remains().total_seconds() : 6.0
+          buff.bt_rake->check() ? buff.bt_rake->remains().total_seconds() : 6.0,
+          buff.bt_shred->check() ? buff.bt_shred->remains().total_seconds() : 6.0,
+          buff.bt_moonfire->check() ? buff.bt_moonfire->remains().total_seconds() : 6.0,
+          buff.bt_swipe->check() ? buff.bt_swipe->remains().total_seconds() : 6.0,
+          buff.bt_thrash->check() ? buff.bt_thrash->remains().total_seconds() : 6.0,
+          buff.bt_feral_frenzy->check() ? buff.bt_feral_frenzy->remains().total_seconds() : 6.0
         } ) );
       } );
     }
@@ -12460,7 +12456,7 @@ static bool parse_swarm_setup( sim_t* sim, std::string_view, std::string_view se
       auto chance = std::clamp( util::to_double( values[ 4 ] ), 0.0, 1.0 );
 
       static_cast<druid_t*>( sim->active_player )
-          ->prepull_swarm.emplace_back( min_stack, max_stack, min_dur, max_dur, chance );
+        ->prepull_swarm.emplace_back( min_stack, max_stack, min_dur, max_dur, chance );
     }
     catch ( const std::invalid_argument& msg )
     {
@@ -12730,13 +12726,13 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   }
 
   debuff.atmospheric_exposure = make_debuff( source.talent.atmospheric_exposure.ok(),
-      *this, "atmospheric_exposure", source.spec.atmospheric_exposure );
+    *this, "atmospheric_exposure", source.spec.atmospheric_exposure );
 
-  debuff.bloodseeker_vines = make_debuff( source.talent.thriving_growth.ok(),
-      *this, "bloodseeker_vines_debuff", source.spec.bloodseeker_vines )
-          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-          ->apply_affecting_aura( source.talent.resilient_flourishing )
-          ->set_quiet( true );
+  debuff.bloodseeker_vines =
+    make_debuff( source.talent.thriving_growth.ok(), *this, "bloodseeker_vines_debuff", source.spec.bloodseeker_vines )
+      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+      ->apply_affecting_aura( source.talent.resilient_flourishing )
+      ->set_quiet( true );
   if ( source.talent.bursting_growth.ok() || source.talent.root_network.ok() )
   {
     debuff.bloodseeker_vines->set_stack_change_callback( [ & ]( buff_t* b, int old_, int new_ ) {
@@ -12764,26 +12760,27 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     ->set_max_stack( as<int>( source.resources.base[ RESOURCE_COMBO_POINT ] ) );
 
   debuff.stellar_amplification = make_debuff( source.talent.stellar_amplification.ok(),
-      *this, "stellar_amplification_debuff", source.spec.stellar_amplification )
-          ->set_refresh_duration_callback(
-              [ dur = source.talent.stellar_amplification->effectN( 2 ).time_value() ]
-              ( const buff_t* b, timespan_t d ) { return std::min( dur, b->remains() + d ); } );
+    *this, "stellar_amplification_debuff", source.spec.stellar_amplification )
+      ->set_refresh_duration_callback(
+        [ dur = source.talent.stellar_amplification->effectN( 2 ).time_value() ]( const buff_t* b, timespan_t d ) {
+          return std::min( dur, b->remains() + d );
+        } );
 
-  debuff.tooth_and_claw = make_debuff( source.talent.tooth_and_claw.ok(),
-      *this, "tooth_and_claw_debuff", source.spec.tooth_and_claw_debuff )
-          ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
-          ->set_stack_change_callback( [ & ]( buff_t* b, int, int new_ ) {
-            source.uptime.tooth_and_claw_debuff->update( new_, b->sim->current_time() );
-          } );
+  debuff.tooth_and_claw =
+    make_debuff( source.talent.tooth_and_claw.ok(), *this, "tooth_and_claw_debuff", source.spec.tooth_and_claw_debuff )
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
+      ->set_stack_change_callback( [ & ]( buff_t* b, int, int new_ ) {
+        source.uptime.tooth_and_claw_debuff->update( new_, b->sim->current_time() );
+      } );
 
-  debuff.waning_twilight = make_debuff( source.talent.waning_twilight.ok(),
-      *this, "waning_twilight", source.spec.waning_twilight )
-          ->set_chance( 1.0 )
-          ->set_duration( 0_ms );
+  debuff.waning_twilight =
+    make_debuff( source.talent.waning_twilight.ok(), *this, "waning_twilight", source.spec.waning_twilight )
+      ->set_chance( 1.0 )
+      ->set_duration( 0_ms );
 
-  buff.ironbark = make_buff_fallback( source.talent.ironbark.ok() && !target.is_enemy(),
-      *this, "ironbark", source.talent.ironbark )
-          ->set_cooldown( 0_ms );
+  buff.ironbark =
+    make_buff_fallback( source.talent.ironbark.ok() && !target.is_enemy(), *this, "ironbark", source.talent.ironbark )
+      ->set_cooldown( 0_ms );
 }
 
 int druid_td_t::hots_ticking() const
@@ -12833,7 +12830,7 @@ void druid_t::shapeshift( form_e f )
     case CAT_FORM:     buff.cat_form->trigger();     break;
     case MOONKIN_FORM: buff.moonkin_form->trigger(); break;
     case NO_FORM:                                    break;
-    default: assert( 0 ); break;
+    default: assert( false ); break;
   }
 
   form = f;
@@ -12875,7 +12872,7 @@ double druid_t::calculate_expected_max_health() const
       continue;
 
     const random_prop_data_t item_data = dbc->random_property( item.item_level() );
-    int index                          = item_database::random_suffix_type( item.parsed.data );
+    int index = item_database::random_suffix_type( item.parsed.data );
     if ( item_data.p_epic[ 0 ] == 0 )
       continue;
 
@@ -12940,7 +12937,7 @@ bool druid_t::uses_moonkin_form() const
 }
 
 player_t* druid_t::get_smart_target( const std::vector<player_t*>& _tl, dot_t* druid_td_t::dots_t::*dot,
-                            player_t* exclude, double dis, bool really_smart )
+                                     player_t* exclude, double dis, bool really_smart )
 {
   if ( !_tl.size() )
     return nullptr;
@@ -12990,7 +12987,7 @@ player_t* druid_t::get_smart_target( const std::vector<player_t*>& _tl, dot_t* d
   return nullptr;
 }
 
-modified_spell_data_t* druid_t::set_modified_spell( const spell_data_t* s )
+modified_spell_data_t* druid_t::get_modified_spell( const spell_data_t* s )
 {
   if ( s && s->ok() )
   {
@@ -13065,9 +13062,10 @@ void eclipse_handler_t::init()
     ac_ap = p->find_spell( 450599 )->effectN( 1 ).resource();
   }
 
-  ga_mod = p->talent.greater_alignment->effectN( 2 ).percent();
-  ga_mod += find_effect( p->talent.potent_enchantments, p->talent.greater_alignment,
-            A_ADD_FLAT_LABEL_MODIFIER, P_EFFECT_2 ).percent();
+  auto m_data = p->get_modified_spell( p->talent.greater_alignment )
+    ->parse_effects( p->talent.potent_enchantments );
+
+  ga_mod = m_data->effectN( 2 ).percent();
 }
 
 void eclipse_handler_t::cast_wrath( druid_action_data_t* a )
@@ -13247,7 +13245,7 @@ void eclipse_handler_t::update_eclipse( eclipse_e eclipse )
 
 void eclipse_handler_t::reset_stacks()
 {
-  wrath_counter    = wrath_counter_base;
+  wrath_counter = wrath_counter_base;
   starfire_counter = starfire_counter_base;
 }
 
@@ -13281,7 +13279,7 @@ void eclipse_handler_t::datacollection_end()
 
   auto end = []( auto& from, auto& to ) {
     static_assert( std::tuple_size_v<std::remove_reference_t<decltype( from )>> <
-                       std::tuple_size_v<std::remove_reference_t<decltype( to )>>,
+                     std::tuple_size_v<std::remove_reference_t<decltype( to )>>,
                    "array size mismatch" );
 
     size_t i = 0;
@@ -13313,7 +13311,7 @@ void eclipse_handler_t::merge( const eclipse_handler_t& other )
 
   auto merge = []( auto& from, auto& to ) {
     static_assert( std::tuple_size_v<std::remove_reference_t<decltype( from )>> ==
-                       std::tuple_size_v<std::remove_reference_t<decltype( to )>>,
+                     std::tuple_size_v<std::remove_reference_t<decltype( to )>>,
                    "array size mismatch" );
 
     for ( size_t i = 0; i < from.size(); i++ )
@@ -13485,16 +13483,17 @@ public:
     if ( !total )
       return;
 
-    os.format( "<tr><td class=\"left\">{}</td>"
-               "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
-               "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
-               "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
-               "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td></tr>",
-               report_decorators::decorated_spell_data( *p.sim, spell ),
-               none / iter, none / total * 100,
-               solar / iter, solar / total * 100,
-               lunar / iter, lunar / total * 100,
-               both / iter, both / total * 100 );
+    os.format(
+      "<tr><td class=\"left\">{}</td>"
+      "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
+      "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
+      "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
+      "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td></tr>",
+      report_decorators::decorated_spell_data( *p.sim, spell ),
+      none / iter, none / total * 100,
+      solar / iter, solar / total * 100,
+      lunar / iter, lunar / total * 100,
+      both / iter, both / total * 100 );
   }
 
   void balance_eclipse_table( report::sc_html_stream& os )
