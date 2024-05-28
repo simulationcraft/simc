@@ -9005,11 +9005,12 @@ struct bear_melee_t : public druid_melee_t<bear_attack_t>
 
     energize_type = action_energize::ON_HIT;
     energize_resource = resource_e::RESOURCE_RAGE;
-    energize_amount = 4.0;
+    energize_amount = util::round( 1.75 *
+      p->bear_weapon.swing_time.total_seconds() *
+      ( 1.0 + find_effect( p->spec.bear_form_passive, A_MOD_RAGE_FROM_DAMAGE_DEALT ).percent() ), 1 );
 
     if ( p->talent.gore.ok() )
       tnc_proc = p->get_proc( "Tooth and Claw" )->collect_interval();
-
   }
 
   void execute() override
