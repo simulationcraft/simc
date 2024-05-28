@@ -2311,6 +2311,11 @@ struct bloodthirst_t : public warrior_attack_t
     {
       gushing_wound = new gushing_wound_dot_t( p );
     }
+
+    if ( p->talents.fury.swift_strikes->ok() )
+    {
+      energize_amount += p->talents.fury.swift_strikes->effectN( 2 ).resource( RESOURCE_RAGE );
+    }
   }
 
   int n_targets() const override
@@ -2433,6 +2438,11 @@ struct bloodbath_t : public warrior_attack_t
     if ( p->talents.fury.cold_steel_hot_blood.ok() )
     {
       gushing_wound = new gushing_wound_dot_t( p );
+    }
+
+    if ( p->talents.fury.swift_strikes->ok() )
+    {
+      energize_amount += p->talents.fury.swift_strikes->effectN( 2 ).resource( RESOURCE_RAGE );
     }
   }
 
