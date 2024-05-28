@@ -328,6 +328,7 @@ public:
     gain_t* revenge;
     gain_t* shield_charge;
     gain_t* shield_slam;
+    gain_t* storm_of_steel;
     gain_t* champions_spear;
     gain_t* finishing_blows;
     gain_t* whirlwind;
@@ -340,7 +341,6 @@ public:
     // Legendarys, Azerite, and Special Effects
     gain_t* execute_refund;
     gain_t* rage_from_damage_taken;
-    gain_t* ravager;
     gain_t* ceannar_rage;
     gain_t* cold_steel_hot_blood;
     gain_t* valarjar_berserking;
@@ -2029,9 +2029,10 @@ struct mortal_strike_t : public warrior_attack_t
 
 struct bladestorm_tick_t : public warrior_attack_t
 {
+  double rage_from_storm_of_steel;
   bladestorm_tick_t( warrior_t* p, util::string_view name, const spell_data_t* spell )
-    : warrior_attack_t( name, p, spell )
-
+    : warrior_attack_t( name, p, spell ),
+      rage_from_storm_of_steel( 0.0 )
   {
     dual = true;
     aoe = -1;
@@ -2041,6 +2042,14 @@ struct bladestorm_tick_t : public warrior_attack_t
     {
       impact_action = p->active.deep_wounds_ARMS;
     }
+    rage_from_storm_of_steel += p->talents.fury.storm_of_steel -> effectN( 6 ).resource( RESOURCE_RAGE );
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    if ( execute_state->n_targets > 0 )
+      p()->resource_gain( RESOURCE_RAGE, rage_from_storm_of_steel, p()->gain.storm_of_steel );
   }
 };
 
@@ -4523,23 +4532,23 @@ struct rampage_parent_t : public warrior_attack_t
 
 struct ravager_tick_t : public warrior_attack_t
 {
-  double rage_from_ravager;
+  double rage_from_storm_of_steel;
   ravager_tick_t( warrior_t* p, util::string_view name )
-    : warrior_attack_t( name, p, p->find_spell( 156287 ) ), rage_from_ravager( 0.0 )
+    : warrior_attack_t( name, p, p->find_spell( 156287 ) ), rage_from_storm_of_steel( 0.0 )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
     dual = ground_aoe = true;
-    rage_from_ravager = p->find_spell( 334934 )->effectN( 1 ).resource( RESOURCE_RAGE );
-    rage_from_ravager += p->talents.fury.storm_of_steel->effectN( 5 ).resource( RESOURCE_RAGE );
-    rage_from_ravager += p->talents.protection.storm_of_steel->effectN( 5 ).resource( RESOURCE_RAGE );
+    rage_from_storm_of_steel = p->find_spell( 334934 )->effectN( 1 ).resource( RESOURCE_RAGE );
+    rage_from_storm_of_steel += p->talents.fury.storm_of_steel->effectN( 5 ).resource( RESOURCE_RAGE );
+    rage_from_storm_of_steel += p->talents.protection.storm_of_steel->effectN( 5 ).resource( RESOURCE_RAGE );
   }
 
   void execute() override
   {
     warrior_attack_t::execute();
     if ( execute_state->n_targets > 0 )
-      p()->resource_gain( RESOURCE_RAGE, rage_from_ravager, p()->gain.ravager );
+      p()->resource_gain( RESOURCE_RAGE, rage_from_storm_of_steel, p()->gain.storm_of_steel );
   }
 
   double action_multiplier() const override
@@ -7398,9 +7407,9 @@ void warrior_t::init_gains()
   gain.lord_of_war            = get_gain( "lord_of_war" );
   gain.meat_cleaver           = get_gain( "meat_cleaver" );
   gain.valarjar_berserking    = get_gain( "valarjar_berserking" );
-  gain.ravager                = get_gain( "ravager" );
   gain.rage_from_damage_taken = get_gain( "rage_from_damage_taken" );
   gain.simmering_rage         = get_gain( "simmering_rage" );
+  gain.storm_of_steel         = get_gain( "storm_of_steel" );
   gain.execute_refund         = get_gain( "execute_refund" );
 }
 
