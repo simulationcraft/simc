@@ -2656,15 +2656,90 @@ struct charge_t : public warrior_attack_t
   }
 };
 
+// Slam =====================================================================
+
+struct slam_t : public warrior_attack_t
+{
+  bool from_Fervor;
+  int aoe_targets;
+  slam_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "slam", p, p->spell.slam ), from_Fervor( false ),
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
+  {
+    parse_options( options_str );
+    weapon                       = &( p->main_hand_weapon );
+    radius = 5;
+    if ( player->specialization() == WARRIOR_FURY )
+    {
+      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+    }
+  }
+
+  slam_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->spell.slam ), from_Fervor( false ),
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
+  {
+    background = true;
+    weapon                       = &( p->main_hand_weapon );
+    radius = 5;
+    if ( player->specialization() == WARRIOR_FURY )
+    {
+      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+    }
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->buff.meat_cleaver->check() )
+    {
+      return aoe_targets + 1;
+    }
+    return warrior_attack_t::n_targets();
+  }
+
+  double cost() const override
+  {
+    if ( from_Fervor )
+      return 0;
+
+    return warrior_attack_t::cost();
+  }
+
+  double tactician_cost() const override
+  {
+    if ( from_Fervor )
+      return 0;
+    return warrior_attack_t::cost();
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    p()->buff.meat_cleaver->decrement();
+  }
+
+  bool ready() override
+  {
+    if ( p()->main_hand_weapon.type == WEAPON_NONE )
+    {
+      return false;
+    }
+    return warrior_attack_t::ready();
+  }
+};
+
 // Cleave ===================================================================
 
 struct cleave_t : public warrior_attack_t
 {
+  slam_t* fervor_slam;
   double cost_rage;
   double frothing_berserker_chance;
   double rage_from_frothing_berserker;
   cleave_t( warrior_t* p, util::string_view options_str ) 
     : warrior_attack_t( "cleave", p, p->talents.arms.cleave ),
+    fervor_slam( nullptr ),
     frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
     rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() )
   {
@@ -2672,6 +2747,13 @@ struct cleave_t : public warrior_attack_t
     weapon = &( player->main_hand_weapon );
     aoe = -1;
     reduced_aoe_targets = 5.0;
+
+    if ( p->talents.arms.fervor_of_battle->ok() )
+    {
+      fervor_slam                               = new slam_t( "slam_cleave_fervor_of_battle", p );
+      fervor_slam->from_Fervor                  = true;
+      add_child( fervor_slam );
+    }
   }
 
   double action_multiplier() const override
@@ -2717,6 +2799,9 @@ struct cleave_t : public warrior_attack_t
     {
       p() -> buff.collateral_damage -> expire();
     }
+
+    if ( p() -> talents.arms.fervor_of_battle.ok() && num_targets_hit >= p() -> talents.arms.fervor_of_battle -> effectN( 1 ).base_value() )
+      fervor_slam->execute_on_target( target );
   }
 };
 
@@ -4236,7 +4321,6 @@ struct overpower_t : public warrior_attack_t
     if ( p()->talents.arms.battlelord->ok() && rng().roll( battlelord_chance ) )
     {
       p()->cooldown.mortal_strike->reset( true );
-      p()->cooldown.cleave->reset( true );
     }
 
     if ( p()->talents.arms.martial_prowess->ok() )
@@ -4880,79 +4964,6 @@ struct shield_slam_t : public warrior_attack_t
   }
 };
 
-// Slam =====================================================================
-
-struct slam_t : public warrior_attack_t
-{
-  bool from_Fervor;
-  int aoe_targets;
-  slam_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "slam", p, p->spell.slam ), from_Fervor( false ),
-      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
-  {
-    parse_options( options_str );
-    weapon                       = &( p->main_hand_weapon );
-    radius = 5;
-    if ( player->specialization() == WARRIOR_FURY )
-    {
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    }
-  }
-
-  slam_t( util::string_view name, warrior_t* p )
-    : warrior_attack_t( name, p, p->spell.slam ), from_Fervor( false ),
-      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
-  {
-    background = true;
-    weapon                       = &( p->main_hand_weapon );
-    radius = 5;
-    if ( player->specialization() == WARRIOR_FURY )
-    {
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    }
-  }
-
-  int n_targets() const override
-  {
-    if ( p()->buff.meat_cleaver->check() )
-    {
-      return aoe_targets + 1;
-    }
-    return warrior_attack_t::n_targets();
-  }
-
-  double cost() const override
-  {
-    if ( from_Fervor )
-      return 0;
-
-    return warrior_attack_t::cost();
-  }
-
-  double tactician_cost() const override
-  {
-    if ( from_Fervor )
-      return 0;
-    return warrior_attack_t::cost();
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    p()->buff.meat_cleaver->decrement();
-  }
-
-  bool ready() override
-  {
-    if ( p()->main_hand_weapon.type == WEAPON_NONE )
-    {
-      return false;
-    }
-    return warrior_attack_t::ready();
-  }
-};
-
 // Shockwave ================================================================
 
 struct shockwave_t : public warrior_attack_t
@@ -5298,11 +5309,11 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
       }
 
       if ( p->talents.arms.fervor_of_battle->ok() )
-    {
-      fervor_slam                               = new slam_t( "slam_fervor_of_battle", p );
-      fervor_slam->from_Fervor                  = true;
-      add_child( fervor_slam );
-    }
+      {
+        fervor_slam                               = new slam_t( "slam_whirlwind_fervor_of_battle", p );
+        fervor_slam->from_Fervor                  = true;
+        add_child( fervor_slam );
+      }
     }
   }
 
@@ -7082,7 +7093,7 @@ void warrior_t::create_buffs()
       ->set_cooldown( timespan_t::zero() )
       ->apply_affecting_aura( talents.arms.spiteful_serenity )
       -> set_stack_change_callback(
-        [ this ]( buff_t*, int /*ol*/, int cur ) {
+        [ this ]( buff_t*, int /*ol*/, int /*cur*/ ) {
           cooldown.thunder_clap -> adjust_recharge_multiplier();
         } );
 
