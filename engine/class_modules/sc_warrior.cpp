@@ -915,7 +915,7 @@ namespace
 {  // UNNAMED NAMESPACE
 // Template for common warrior action code. See priest_action_t.
 template <class Base>
-struct warrior_action_t : public parse_action_effects_t<Base, warrior_t, warrior_td_t>
+struct warrior_action_t : public parse_action_effects_t<Base, warrior_td_t>
 {
   struct affected_by_t
   {
@@ -932,7 +932,7 @@ struct warrior_action_t : public parse_action_effects_t<Base, warrior_t, warrior
   double tactician_per_rage;
 
 private:
-  using ab = parse_action_effects_t<Base, warrior_t, warrior_td_t>;
+  using ab = parse_action_effects_t<Base, warrior_td_t>;
 public:
   using base_t = warrior_action_t<Base>;
   bool track_cd_waste;

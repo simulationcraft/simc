@@ -1541,7 +1541,7 @@ namespace actions
  * don't skip it and call spell_t/heal_t or absorb_t directly.
  */
 template <typename Base>
-class demon_hunter_action_t : public parse_action_effects_t<Base, demon_hunter_t, demon_hunter_td_t>
+class demon_hunter_action_t : public parse_action_effects_t<Base, demon_hunter_td_t>
 {
 public:
   double energize_delta;
@@ -2085,7 +2085,7 @@ protected:
 
 private:
   /// typedef for the templated action type, eg. spell_t, attack_t, heal_t
-  using ab = parse_action_effects_t<Base, demon_hunter_t, demon_hunter_td_t>;
+  using ab = parse_action_effects_t<Base, demon_hunter_td_t>;
 };
 
 // ==========================================================================

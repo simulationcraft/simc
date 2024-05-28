@@ -1641,10 +1641,10 @@ public:
 };
 
 template <class Base>
-struct druid_action_t : public parse_action_effects_t<Base, druid_t, druid_td_t>, public druid_action_data_t
+struct druid_action_t : public parse_action_effects_t<Base, druid_td_t>, public druid_action_data_t
 {
 private:
-  using ab = parse_action_effects_t<Base, druid_t, druid_td_t>;
+  using ab = parse_action_effects_t<Base, druid_td_t>;
 
 public:
   using base_t = druid_action_t<Base>;

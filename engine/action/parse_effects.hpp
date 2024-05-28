@@ -16,13 +16,6 @@
 
 #include <functional>
 
-// Mixin to action base class to allow auto parsing and dynamic application of whitelist based buffs & auras.
-//
-// Make `parse_action_effects_t` the parent of module action classe with the following parameters:
-//  1) BASE: The base class of the action class. This is usually spell_t, melee_attack_t, or a template parameter
-//  2) PLAYER: The player class
-//  3) TD: The target data class
-
 enum parse_flag_e
 {
   USE_DATA,
@@ -1364,11 +1357,17 @@ public:
   }
 };
 
-template <typename BASE, typename PLAYER, typename TD>
+// Mixin to action base class to allow auto parsing and dynamic application of whitelist based buffs & auras.
+//
+// Make `parse_action_effects_t` the parent of module action classe with the following parameters:
+//  1) BASE: The base class of the action class. This is usually spell_t, melee_attack_t, or a template parameter
+//  2) TD: The target data class
+//  3) PLAYER(optional): The pet class if owner's target data should be used, instead of the pet's target data 
+template <typename BASE, typename TD, typename PLAYER = player_t >
 struct parse_action_effects_t : public BASE, public parse_effects_t
 {
 private:
-  using base_t = parse_action_effects_t<BASE, PLAYER, TD>;
+  using base_t = parse_action_effects_t<BASE, TD, PLAYER>;
 
 public:
   // auto parsed dynamic effects

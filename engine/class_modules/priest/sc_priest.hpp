@@ -920,7 +920,7 @@ namespace actions
  * spell_t/heal_t or absorb_t directly.
  */
 template <typename Base>
-struct priest_action_t : public parse_action_effects_t<Base, priest_t, priest_td_t>
+struct priest_action_t : public parse_action_effects_t<Base, priest_td_t>
 {
 protected:
   priest_t& priest()
@@ -1208,7 +1208,7 @@ public:
 
 private:
   // typedef for the templated action type, eg. spell_t, attack_t, heal_t
-  using ab = parse_action_effects_t<Base, priest_t, priest_td_t>;
+  using ab = parse_action_effects_t<Base, priest_td_t>;
 };  // namespace actions
 
 struct priest_absorb_t : public priest_action_t<absorb_t>
