@@ -2360,11 +2360,6 @@ struct bloodthirst_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p()->talents.fury.bloodcraze->ok() )
-    {
-      p()->buff.bloodcraze->trigger();
-    }
-
     p()->buff.meat_cleaver->decrement();
 
     if ( result_is_hit( execute_state->result ) )
@@ -2487,11 +2482,6 @@ struct bloodbath_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-
-    if ( p()->talents.fury.bloodcraze->ok() )
-    {
-      p()->buff.bloodcraze->trigger();
-    }
 
     p()->buff.reckless_abandon->decrement();
     p()->buff.meat_cleaver->decrement();
@@ -3816,6 +3806,11 @@ struct raging_blow_t : public warrior_attack_t
     if ( p()->talents.fury.slaughtering_strikes->ok() )
     {
       p()->buff.slaughtering_strikes->trigger();
+    }
+
+    if ( p()->talents.fury.bloodcraze->ok() )
+    {
+      p()->buff.bloodcraze->trigger();
     }
   }
 
