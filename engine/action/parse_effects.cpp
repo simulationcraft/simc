@@ -173,14 +173,39 @@ void modified_spelleffect_t::print_parsed_effect( report::sc_html_stream& os, co
     os << "<tr>";
 
   size_t row2 = 0;
+  std::string eff_str;
+
+  switch ( _eff.type() )
+  {
+    case E_APPLY_AURA:
+    case E_APPLY_AURA_PET:
+    case E_APPLY_AREA_AURA_PARTY:
+    case E_APPLY_AREA_AURA_PET:
+      switch ( _eff.subtype() )
+      {
+        case A_ADD_FLAT_MODIFIER:
+        case A_ADD_FLAT_LABEL_MODIFIER:
+          eff_str = fmt::format( "Flat {}", spell_info::effect_property_str( &_eff ) );
+          break;
+        case A_ADD_PCT_MODIFIER:
+        case A_ADD_PCT_LABEL_MODIFIER:
+          eff_str = fmt::format( "Percent {}", spell_info::effect_property_str( &_eff ) );
+          break;
+        default:
+          eff_str = spell_info::effect_subtype_str( &_eff );
+          break;
+      }
+      break;
+    default:
+      eff_str = spell_info::effect_type_str( &_eff );
+      break;
+  }
 
   os.format(
     "<td rowspan=\"{}\" class=\"dark right\">{}</td>"
-    "<td rowspan=\"{}\" class=\"dark\">{}</td>"
     "<td rowspan=\"{}\" class=\"dark\">{}</td>\n",
     c, _eff.index() + 1,
-    c, spell_info::effect_type_str( &_eff ),
-    c, spell_info::effect_subtype_str( &_eff ) );
+    c, eff_str );
 
   for ( auto eff : permanent )
   {
@@ -327,8 +352,7 @@ void modified_spell_data_t::parsed_effects_html( report::sc_html_stream& os, con
        << "<th>Spell</th>"
        << "<th>ID</th>"
        << "<th>#</th>"
-       << "<th>Type</th>"
-       << "<th>Subtype</th>"
+       << "<th>Effect</th>"
        << "<th>Modified By</th>"
        << "<th>ID</th>"
        << "<th>#</th>"
