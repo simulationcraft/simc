@@ -10,6 +10,7 @@ def get_file_as_lines( input, out_line_length ):
         str = re.sub( "\t", "", str )
         str = re.sub( "\s+", " ", str )
         str = json.dumps(str).strip('"') # Misuse to build a C string with escaped characters
+        str = re.sub( "\?", "\?", str )
         eaten_chars = 0
         out = []
         while eaten_chars < len(str):
