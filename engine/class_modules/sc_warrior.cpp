@@ -8520,7 +8520,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.warrior.concussive_blows );
   action.apply_affecting_aura( talents.warrior.crackling_thunder );
   action.apply_affecting_aura( talents.warrior.cruel_strikes );
-  action.apply_affecting_aura( talents.warrior.crushing_force ); // crit portion not active
+  action.apply_affecting_aura( talents.warrior.crushing_force );
   action.apply_affecting_aura( talents.warrior.piercing_challenge );
   action.apply_affecting_aura( talents.warrior.honed_reflexes );
   action.apply_affecting_aura( talents.warrior.thunderous_words );
