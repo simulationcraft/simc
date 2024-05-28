@@ -2297,11 +2297,6 @@ struct bloodthirst_t : public warrior_attack_t
     }
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
 
-    if ( p->talents.fury.deft_experience->ok() )
-    {
-      enrage_chance += p->talents.fury.deft_experience->effectN( 2 ).percent();
-    }
-
     if ( p->talents.fury.fresh_meat->ok() )
     {
       enrage_chance += p->talents.fury.fresh_meat->effectN( 1 ).percent();
@@ -2383,6 +2378,11 @@ struct bloodthirst_t : public warrior_attack_t
     {
       p()->buff.enrage->trigger();
       td( execute_state->target )->hit_by_fresh_meat = true;
+    }
+
+    if ( p()->buff.enrage->up() )
+    {
+      p()->buff.enrage->extend_duration( p(), p()->talents.fury.deft_experience->effectN( 2 ).time_value() );
     }
   }
 
@@ -8528,7 +8528,6 @@ void warrior_t::apply_affecting_auras( action_t& action )
   // Fury Auras
   action.apply_affecting_aura( talents.fury.bloodborne );
   action.apply_affecting_aura( talents.fury.critical_thinking );
-  action.apply_affecting_aura( talents.fury.deft_experience );
   action.apply_affecting_aura( talents.fury.improved_bloodthirst );
   action.apply_affecting_aura( talents.fury.improved_raging_blow );
   action.apply_affecting_aura( talents.fury.meat_cleaver );
