@@ -13478,7 +13478,6 @@ player_collected_data_t::player_collected_data_t( const player_t* player ) :
   atps( player->name_str + " Absorb Taken Per Second", tank_container_type( player, 2 ) ),
   absorb_taken( player->name_str + " Absorb Taken", tank_container_type( player, 2 ) ),
   deaths( player->name_str + " Deaths", tank_container_type( player, 2 ) ),
-  max_spike_amount( player->name_str + " Max Spike Value", tank_container_type( player, 2 ) ),
   target_metric( player->name_str + " Target Metric", generic_container_type( player, 1 ) ),
   resource_timelines(),
   health_pct(),
@@ -13628,7 +13627,6 @@ void player_collected_data_t::analyze( const player_t& p )
   atps.analyze();
   // Tank
   deaths.analyze();
-  max_spike_amount.analyze();
 
   if ( !p.sim->single_actor_batch )
   {
