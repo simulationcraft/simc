@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54774
-static const std::array<spelltext_data_t, 25682> __spelltext_data { {
+static const std::array<spelltext_data_t, 25681> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -6383,7 +6383,6 @@ static const std::array<spelltext_data_t, 25682> __spelltext_data { {
   { 195222, "$@spelldesc195255", "Empowered with lightning.\r\nAttacks and spellcasts have a chance to deal additional Nature damage.", 0 },
   { 195258, "Skin a creature from up to 40 yards away. Not effective on creatures above level $ctrmax2067.", 0, 0 },
   { 195283, "Getting two direct-damage critical strikes in a row with Fire spells will make your next Pyroblast or Flamestrike spell instant cast, and cause double the normal Ignite damage.", "Your next Pyroblast or Flamestrike spell is instant cast, and causes double the normal Ignite damage.", 0 },
-  { 195292, "Reach out with necrotic tendrils, dealing $s1 Shadow damage and applying Blood Plague to your target and generating $s3 Bone Shield charges.\r\n\r\n$@spellicon55078 |cFFFFFFFF$@spellname55078|r\r\n$@spelldesc55078", 0, 0 },
   { 195300, "Blackout Kick, Rising Sun Kick, and Spinning Crane Kick increase damage dealt by your next Fists of Fury by $s1%, stacking up to $195321u times.", 0, 0 },
   { 195302, 0, "Increases the mana cost of Arcane Blast by $36032w2%$?{$w5<0}[, and reduces the cast time of Arcane Blast by $w5%.][.]\r\n\r\nIncreases the number of targets hit by Arcane Barrage for 50% damage by $36032w3.", 0 },
   { 195321, "$@spelldesc195300", "Damage of your next Fists of Fury increased by $s1%.", 0 },
