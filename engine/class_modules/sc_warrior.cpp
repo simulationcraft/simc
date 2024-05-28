@@ -7080,7 +7080,11 @@ void warrior_t::create_buffs()
 
   buff.avatar = make_buff( this, "avatar", talents.warrior.avatar )
       ->set_cooldown( timespan_t::zero() )
-      ->apply_affecting_aura( talents.arms.spiteful_serenity );
+      ->apply_affecting_aura( talents.arms.spiteful_serenity )
+      -> set_stack_change_callback(
+        [ this ]( buff_t*, int /*ol*/, int cur ) {
+          cooldown.thunder_clap -> adjust_recharge_multiplier();
+        } );
 
   buff.collateral_damage = make_buff( this, "collateral_damage", find_spell( 334783 ) )
       -> set_default_value_from_effect( 1 );
