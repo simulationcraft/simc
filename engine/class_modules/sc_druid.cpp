@@ -10724,6 +10724,7 @@ void druid_t::create_buffs()
   parse_effects( buff.bear_form );
   parse_effects( buff.rage_of_the_sleeper );
   parse_effects( buff.ruthless_aggression );
+  parse_effects( buff.strategic_infusion );
   parse_effects( buff.ursine_vigor, USE_DEFAULT );
   parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 3 ),
                  bear_stam * buff.wildshape_mastery->data().effectN( 1 ).percent() );
