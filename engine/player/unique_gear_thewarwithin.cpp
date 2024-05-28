@@ -441,7 +441,9 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
       b_dam->base_dd_min = b_dam->base_dd_max = data->effectN( 6 ).average( e.item );
       add_child( b_dam );
 
-      auto b_speed = create_buff<buff_t>( e.player, e.player->find_spell( 448436 ) );
+      auto b_speed = create_buff<buff_t>( e.player, e.player->find_spell( 448436 ) )
+        ->add_invalidate( CACHE_RUN_SPEED );
+
       e.player->buffs.surekian_grace = b_speed;
 
       auto b_stack = create_buff<buff_t>( e.player, e.player->find_spell( 448433 ) );

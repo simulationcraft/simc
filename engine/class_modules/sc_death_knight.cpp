@@ -5762,15 +5762,18 @@ struct reapers_mark_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    // 5/12/24 The initial hit can have some slight delay depending on how far away the player is
-    // the return hit does not have a consistent travel time, starting with roughly a second for now
-    timespan_t first = timespan_t::from_millis( rng().range( 0, 100 ) );
-    make_event( *sim, first, [ this ]() {
-      p()->active_spells.wave_of_souls->execute();
-      timespan_t second = timespan_t::from_millis( rng().gauss( 1000, 200 ) );
-      make_repeating_event(
-          *sim, second, [ this ]() { p()->active_spells.wave_of_souls->execute(); }, 1 );
-    } );
+    if ( p()->talent.deathbringer.wave_of_souls->ok() )
+    {
+      // 5/12/24 The initial hit can have some slight delay depending on how far away the player is
+      // the return hit does not have a consistent travel time, starting with roughly a second for now
+      timespan_t first = timespan_t::from_millis( rng().range( 0, 100 ) );
+      make_event( *sim, first, [ this ]() {
+        p()->active_spells.wave_of_souls->execute();
+        timespan_t second = timespan_t::from_millis( rng().gauss( 1000, 200 ) );
+        make_repeating_event(
+            *sim, second, [ this ]() { p()->active_spells.wave_of_souls->execute(); }, 1 );
+      } );
+    }
   }
 };
 
@@ -13327,6 +13330,7 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.gloom_ward );
   action.apply_affecting_aura( talent.proliferating_chill );
   action.apply_affecting_aura( talent.unyielding_will );
+  action.apply_affecting_aura( talent.ice_prison );
 
   // Blood
   action.apply_affecting_aura( talent.blood.improved_heart_strike );

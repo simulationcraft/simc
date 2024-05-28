@@ -218,7 +218,7 @@ struct parse_base_t
   U& add_parse_entry( std::vector<U>& vec )
   { return vec.emplace_back(); }
 
-  // detectors for is_detected<>
+  // detectors for is_detected_v<>
   template <typename T> using detect_buff = decltype( T::buff );
   template <typename T> using detect_func = decltype( T::func );
   template <typename T> using detect_use_stacks = decltype( T::use_stacks );
@@ -234,7 +234,7 @@ struct parse_base_t
       if ( !data )
         return nullptr;
 
-      if constexpr ( is_detected<detect_buff, U>::value )
+      if constexpr ( is_detected_v<detect_buff, U> )
         tmp.data.buff = data;
 
       return &data->data();
@@ -318,25 +318,25 @@ struct parse_base_t
     {
       tmp.list.push_back( mod );
     }
-    else if constexpr ( std::is_invocable_v<T> && is_detected<detect_func, U>::value )
+    else if constexpr ( std::is_convertible_v<T, std::function<bool()>> && is_detected_v<detect_func, U> )
     {
       tmp.data.func = std::move( mod );
     }
     else if constexpr ( std::is_same_v<T, parse_flag_e> )
     {
-      if constexpr ( is_detected<detect_use_stacks, U>::value )
+      if constexpr ( is_detected_v<detect_use_stacks, U> )
       {
         if ( mod == IGNORE_STACKS )
           tmp.data.use_stacks = false;
       }
 
-      if constexpr ( is_detected<detect_type, U>::value )
+      if constexpr ( is_detected_v<detect_type, U> )
       {
         if ( mod == USE_DEFAULT || mod == USE_CURRENT )
           tmp.data.type = mod;
       }
     }
-    else if constexpr ( std::is_floating_point_v<T> && is_detected<detect_value, U>::value )
+    else if constexpr ( std::is_floating_point_v<T> && is_detected_v<detect_value, U> )
     {
       tmp.data.value = mod;
     }
@@ -407,6 +407,14 @@ struct modified_spelleffect_t
 inline const modified_spelleffect_t modified_spelleffect_nil_v = modified_spelleffect_t();
 inline const modified_spelleffect_t& modified_spelleffect_t::nil() { return modified_spelleffect_nil_v; }
 
+// Modifiable spell_data_t analogue that can be used to parse and apply effect affecting effects (P_EFFECT_1-5)
+//
+// obj->parse_effects( <parse_effects arguments> ) to parse and apply permanent and conditional effects, controlled via
+//   arguments in the same manner as action & player scoped parse_effects().
+//
+// obj->effectN( # ) to access the modified_spelleffect_t which is analogous to spelleffect_data_t.
+//
+// obj->effectN( # ).base_value(), .percent(), .resource(), .resource( r ) to get the dynamically modified values.
 struct modified_spell_data_t : public parse_base_t
 {
   std::vector<modified_spelleffect_t> effects;
@@ -430,25 +438,6 @@ struct modified_spell_data_t : public parse_base_t
 
   modify_effect_t& add_parse_entry( size_t idx )
   { return effects[ idx - 1 ].add_parse_entry(); }
-
-  // Syntax: parse_effect_modifiers( data[, spells|condition|ignore_mask|value|flags][,...])
-  //   (buff_t*) or
-  //   (const spell_data_t*)   data: Buff or spell to be checked for to see if effect applies. If buff is used,
-  //                                 modification will only apply if the buff is active. If spell is used, modification
-  //                                 will always apply unless an optional condition function is provided.
-  //
-  // The following optional arguments can be used in any order:
-  //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the buff
-  //   (bool F())         condition: Function that takes no arguments and returns true if the effect should apply
-  //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
-  //   (double)               value: Directly set the value, this overrides all other parsed values
-  //   (parse_flag_e)         flags: Various flags to control how the value is calculated when the action executes
-  //                  IGNORE_STACKS: Ignore stacks of the buff and don't multiply the value
-  //
-  // To access effect values of the action's spell data modified by parsed modifiers:
-  //   modified_effectN( idx )            : equivalent to effectN( idx ).base_value()
-  //   modified_effectN_percent( idx )    : equivalent to effectN( idx ).percent()
-  //   modified_effectN_resource( idx, r ): equivalent to effectN( idx ).resource( r )
 
   template <typename T, typename... Ts>
   modified_spell_data_t* parse_effects( T data, Ts... mods )
@@ -514,7 +503,7 @@ public:
     else
       val = eff.base_value();
 
-    if constexpr ( is_detected<detect_buff, U>::value && is_detected<detect_type, U>::value )
+    if constexpr ( is_detected_v<detect_buff, U> && is_detected_v<detect_type, U> )
     {
       if ( tmp.data.buff && tmp.data.type == USE_DEFAULT )
         val = tmp.data.buff->default_value * 100;
@@ -549,7 +538,7 @@ public:
     // NOTE: get_target_effect_vector is virtual and not templated, which means:
     // 1) only opt_enum reference is passed instead of the full data reference
     // 2) void* is returned and needs to be re-cast to the correct vector<U>*
-    if constexpr ( is_detected<detect_buff, U>::value )
+    if constexpr ( is_detected_v<detect_buff, U> )
     {
       vec = get_effect_vector( eff, tmp.data, val_mul, type_str, flat, force );
     }
@@ -562,7 +551,7 @@ public:
     if ( !vec )
       return;
 
-    if constexpr ( is_detected<detect_type, U>::value )
+    if constexpr ( is_detected_v<detect_type, U> )
     {
       if ( !val && tmp.data.type == parse_flag_e::USE_DATA )
         return;
@@ -582,7 +571,7 @@ public:
     if ( tmp.data.value != 0.0 )
       val_str = val_str + " (overridden)";
 
-    if constexpr ( is_detected<detect_buff, U>::value )
+    if constexpr ( is_detected_v<detect_buff, U> )
     {
       if ( tmp.data.buff )
       {
@@ -761,12 +750,12 @@ public:
   {
     if ( auto check = i.func( td ) )
     {
-      auto eff_val = i.value;
+      auto eff_val = i.value * check;
 
       if ( i.mastery )
         eff_val *= _player->cache.mastery();
 
-      return check * eff_val;
+      return eff_val;
     }
 
     return 0.0;
@@ -1897,11 +1886,12 @@ public:
   {
     auto entries = std::invoke( vector_ptr, static_cast<W*>( this ) );
 
-    for ( auto a : BASE::stats->action_list )
-      if ( a != this )
-        for ( const auto& entry : std::invoke( vector_ptr, static_cast<W*>( a ) ) )
-          if ( !range::contains( entries, entry ) )
-            entries.push_back( entry );
+    if ( range::contains( BASE::stats->action_list, this ) )
+      for ( auto a : BASE::stats->action_list )
+        if ( a != this )
+          for ( const auto& entry : std::invoke( vector_ptr, static_cast<W*>( a ) ) )
+            if ( !range::contains( entries, entry ) )
+              entries.push_back( entry );
 
     auto c = entries.size();
     if ( !c )
