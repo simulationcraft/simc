@@ -645,7 +645,6 @@ public:
       player_talent_t last_stand;
 
       player_talent_t fight_through_the_flames;
-      player_talent_t improved_heroic_throw;
       player_talent_t best_served_cold;
       player_talent_t strategist;
       player_talent_t brace_for_impact;
@@ -6556,7 +6555,6 @@ void warrior_t::init_spells()
   talents.protection.last_stand             = find_talent_spell( talent_tree::SPECIALIZATION, "Last Stand" );
 
   talents.protection.fight_through_the_flames = find_talent_spell( talent_tree::SPECIALIZATION, "Fight Through the Flames" );
-  talents.protection.improved_heroic_throw  = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Heroic Throw" );
   talents.protection.best_served_cold       = find_talent_spell( talent_tree::SPECIALIZATION, "Best Served Cold" );
   talents.protection.strategist             = find_talent_spell( talent_tree::SPECIALIZATION, "Strategist" );
   talents.protection.brace_for_impact       = find_talent_spell( talent_tree::SPECIALIZATION, "Brace for Impact" );
