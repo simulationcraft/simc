@@ -59,6 +59,50 @@ os.format(
   util::string_join( notes ) );
 }
 
+// adjust value based on effect modifying effects from mod list.
+// currently supports P_EFFECT_1-5 and A_PROC_TRIGGER_SPELL_WITH_VALUE
+// TODO: add support for P_EFFECTS to modify all effects
+template <typename T>
+void parse_base_t::apply_affecting_mod( double& val, bool& mastery, const spell_data_t* base, size_t idx, T mod )
+{
+  bool mod_is_mastery = false;
+
+  if ( mod->effect_count() && mod->flags( SX_MASTERY_AFFECTS_POINTS ) )
+  {
+    mastery = true;
+    mod_is_mastery = true;
+  }
+
+  for ( size_t i = 1; i <= mod->effect_count(); i++ )
+  {
+    const auto& eff = mod->effectN( i );
+
+    if ( eff.type() != E_APPLY_AURA )
+      continue;
+
+    if ( ( base->affected_by_all( eff ) &&
+           ( ( eff.misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff.misc_value1() == P_EFFECT_2 && idx == 2 ) ||
+             ( eff.misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff.misc_value1() == P_EFFECT_4 && idx == 4 ) ||
+             ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
+         ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() && idx == 1 ) )
+    {
+      double pct = mod_is_mastery ? eff.mastery_value() : mod_spell_effects_value( mod, eff );
+
+      if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
+        val += pct;
+      else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
+        val *= 1.0 + pct / 100;
+      else if ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE )
+        val = pct;
+    }
+  }
+}
+
+// explicit template instantiation
+// NOTE: currently only spell_data_t is required, but this can be expanded as has been in the past with conduits
+template void parse_base_t::apply_affecting_mod<const spell_data_t*>( double&, bool&, const spell_data_t*, size_t,
+                                                                      const spell_data_t* );
+
 double modified_spelleffect_t::base_value() const
 {
   auto return_value = value;

@@ -254,44 +254,8 @@ struct parse_base_t
   // castable types, such as conduits
   double mod_spell_effects_value( const spell_data_t*, const spelleffect_data_t& e ) { return e.base_value(); }
 
-  // adjust value based on effect modifying effects from mod list.
-  // currently supports P_EFFECT_1-5 and A_PROC_TRIGGER_SPELL_WITH_VALUE
-  // TODO: add support for P_EFFECTS to modify all effects
   template <typename T>
-  void apply_affecting_mod( double& val, bool& mastery, const spell_data_t* base, size_t idx, T mod )
-  {
-    bool mod_is_mastery = false;
-
-    if ( mod->effect_count() && mod->flags( SX_MASTERY_AFFECTS_POINTS ) )
-    {
-      mastery = true;
-      mod_is_mastery = true;
-    }
-
-    for ( size_t i = 1; i <= mod->effect_count(); i++ )
-    {
-      const auto& eff = mod->effectN( i );
-
-      if ( eff.type() != E_APPLY_AURA )
-        continue;
-
-      if ( ( base->affected_by_all( eff ) &&
-             ( ( eff.misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff.misc_value1() == P_EFFECT_2 && idx == 2 ) ||
-               ( eff.misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff.misc_value1() == P_EFFECT_4 && idx == 4 ) ||
-               ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
-           ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() && idx == 1 ) )
-      {
-        double pct = mod_is_mastery ? eff.mastery_value() : mod_spell_effects_value( mod, eff );
-
-        if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
-          val += pct;
-        else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
-          val *= 1.0 + pct / 100;
-        else if ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE )
-          val = pct;
-      }
-    }
-  }
+  void apply_affecting_mod( double&, bool&, const spell_data_t*, size_t, T );
 
   template <typename U>
   void apply_affecting_mods( const pack_t<U>& tmp, double& val, bool& mastery, const spell_data_t* base, size_t idx )
@@ -1886,6 +1850,9 @@ public:
   {
     auto entries = std::invoke( vector_ptr, static_cast<W*>( this ) );
 
+    // assuming the stats obj being processed isn't orphaned (as can happen in debug=1 with child actions with stats
+    // replaced by parent's stats), go through all the actions assigned to the stats obj and populate with all unique
+    // entries
     if ( range::contains( BASE::stats->action_list, this ) )
       for ( auto a : BASE::stats->action_list )
         if ( a != this )
