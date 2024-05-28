@@ -3,6 +3,7 @@
 #include "buff/buff.hpp"
 #include "dbc/spell_data.hpp"
 #include "player/player.hpp"
+#include "player/sample_data_helper.hpp"
 #include "report/charts.hpp"
 #include "report/highchart.hpp"
 #include "sim/sim.hpp"
@@ -291,68 +292,27 @@ public:
   std::vector<std::pair<const spell_data_t *, const double>> level_data;
   std::vector<std::string_view> mitigation_tokens;
 
-  std::vector<stagger_impl::level_t<derived_actor_t> *> levels;
   std::function<bool()> active;
   std::function<bool( school_e, result_amount_type, action_state_t * )> trigger_filter;
-  std::function<double()> percent;  // how to handle params?
+  std::function<double( school_e, result_amount_type, action_state_t * )> percent;
 
-  std::string_view name() const
-  {
-    return self_damage_data->name_cstr();
-  }
+  std::vector<stagger_impl::level_t<derived_actor_t> *> levels;
+  self_damage_t *self_damage;
+  level_t<derived_actor_t> *current;
+  sample_data_t *sample_data;
 
   // init
   stagger_t( derived_actor_t *player, const spell_data_t *self_damage,
              std::vector<std::pair<const spell_data_t *, const double>> level_data,
-             std::vector<std::string_view> mitigation_tokens )
-    : player( player ),
-      self_damage_data( self_damage ),
-      level_data( level_data ),
-      mitigation_tokens( mitigation_tokens )
-  {
-    if ( player->stagger.find( name() ) == player->stagger.end() )
-      player->stagger[ name() ] = this;
-    active         = [ this ]() { return true; };
-    trigger_filter = [ this ]( school_e, result_amount_type, action_state_t * ) { return true; };
-    percent        = [ this ]() { return 0.5; };
-  }
-
+             std::vector<std::string_view> mitigation_tokens );
   template <class level_type       = stagger_impl::level_t<derived_actor_t>,
             class sample_data_type = stagger_impl::sample_data_t, class self_damage_type = stagger_impl::self_damage_t>
-  void init()
-  {
-    for ( auto &[ spell_data, min_threshold ] : level_data )
-      levels.push_back( new level_type( player, name(), spell_data, min_threshold ) );
-    std::sort( levels.begin(), levels.end() );
-    current = levels.front();
-
-    self_damage = new self_damage_type( player, name(), self_damage_data );
-    sample_data = new sample_data_type( player, name(), mitigation_tokens );
-  }
-
-  void adjust_sample_data( sim_t &sim )
-  {
-    sample_data->pool_size.adjust( sim );
-    sample_data->pool_size_percent.adjust( sim );
-    sample_data->effectiveness.adjust( sim );
-  }
-
-  void merge_sample_data( stagger_t *other )
-  {
-    sample_data->pool_size.merge( other->sample_data->pool_size );
-    sample_data->pool_size_percent.merge( other->sample_data->pool_size );
-    sample_data->effectiveness.merge( other->sample_data->pool_size );
-  }
+  void init();
+  void adjust_sample_data( sim_t &sim );
+  void merge_sample_data( const stagger_t &other );
 
   // trigger
-  double trigger( school_e /* school */, result_amount_type /* damage_type */, action_state_t * /* state */ )
-  {
-    // TODO: FILL OUT IMPL
-    return 1.0;
-  }
-  // virtual double percent();
-  // virtual bool active();
-  // virtual bool trigger_filter( school_e, result_amount_type, action_state_t * );
+  double trigger( school_e school, result_amount_type damage_type, action_state_t *state );
 
   // purify
   double purify_flat( double amount, std::string_view ability_token, bool report_amount = true );
@@ -361,48 +321,22 @@ public:
   void delay_tick( timespan_t delay );  // -> return time until next tick?
 
   // information
+  std::string_view name() const;
+
   // TODO: FILL OUT IMPL
-  double pool_size()
-  {
-    return 0.0;
-  }
-  double pool_size_percent()
-  {
-    return 0.0;
-  }
-  double tick_size()
-  {
-    return 0.0;
-  }
-  double tick_size_percent()
-  {
-    return 0.0;
-  }
-  timespan_t remains()
-  {
-    return 0_ms;
-  }
-  bool is_ticking()
-  {
-    return false;
-  }
-  size_t current_level()
-  {
-    return 0;
-  }
-  double level_index()
-  {
-    return 0.0;
-  }  // avoid floating point demotion with double
+  double pool_size();
+  double pool_size_percent();
+  double tick_size();
+  double tick_size_percent();
+  timespan_t remains();
+  bool is_ticking();
+  size_t current_level();
+  double level_index();  // avoid floating point demotion with double
 
-  // private:
-  self_damage_t *self_damage;
-  level_t<derived_actor_t> *current;
-  sample_data_t *sample_data;
-
+private:
   void set_pool( double amount );
   void damage_changed( bool last_tick = false );
-  size_t find_current_level();
+  level_t<derived_actor_t> *find_current_level();
 };
 
 template <class derived_actor_t>
@@ -410,7 +344,7 @@ struct stagger_report_t : player_report_extension_t
 {
   derived_actor_t *player;
 
-  void html_customsection( report::sc_html_stream &os ) override
+  void html_customsection( report::sc_html_stream & /* os */ ) override
   {
     // os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
     //    << "\t\t\t\t\t<h3 class=\"toggle open\">Stagger Analysis</h3>\n"
@@ -581,8 +515,7 @@ struct stagger_t : base_actor_t
     base_actor_t::assess_damage_imminent_pre_absorb( school, damage_type, state );
 
     for ( auto &[ key, stagger_effect ] : stagger )
-      if ( stagger_effect->active() && stagger_effect->trigger_filter( school, damage_type, state ) )
-        stagger_effect->trigger( school, damage_type, state );
+      stagger_effect->trigger( school, damage_type, state );
   }
 
   virtual void merge( player_t &other ) override
@@ -591,7 +524,7 @@ struct stagger_t : base_actor_t
 
     derived_actor_t &actor = static_cast<derived_actor_t &>( other );
     for ( auto &[ key, stagger_effect ] : stagger )
-      stagger_effect->merge_sample_data( actor.stagger[ key ] );
+      stagger_effect->merge_sample_data( *actor.stagger[ key ] );
   }
 
   virtual std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override
@@ -645,6 +578,7 @@ struct stagger_t : base_actor_t
 // implementation
 namespace stagger_impl
 {
+// level_t impl
 template <class derived_actor_t>
 level_t<derived_actor_t>::level_t( derived_actor_t *player, std::string_view parent_name,
                                    const spell_data_t *spell_data, const double min_threshold )
@@ -678,5 +612,291 @@ template <class derived_actor_t>
 bool operator<( const level_t<derived_actor_t> &lhs, level_t<derived_actor_t> &rhs )
 {
   return lhs.min_threshold < rhs.min_threshold;
+}
+
+// stagger_t impl
+template <class derived_actor_t>
+stagger_t<derived_actor_t>::stagger_t( derived_actor_t *player, const spell_data_t *self_damage,
+                                       std::vector<std::pair<const spell_data_t *, const double>> level_data,
+                                       std::vector<std::string_view> mitigation_tokens )
+  : player( player ), self_damage_data( self_damage ), level_data( level_data ), mitigation_tokens( mitigation_tokens )
+{
+  if ( player->stagger.find( name() ) == player->stagger.end() )
+    player->stagger[ name() ] = this;
+  active         = [ this ]() { return true; };
+  trigger_filter = [ this ]( school_e, result_amount_type, action_state_t * ) { return true; };
+  percent        = [ this ]( school_e, result_amount_type, action_state_t        *) { return 0.5; };
+}
+
+template <class derived_actor_t>
+template <class level_type, class sample_data_type, class self_damage_type>
+void stagger_t<derived_actor_t>::init()
+{
+  for ( auto &[ spell_data, min_threshold ] : level_data )
+    levels.push_back( new level_type( player, name(), spell_data, min_threshold ) );
+  std::sort( levels.begin(), levels.end() );
+  current = levels.front();
+
+  self_damage = new self_damage_type( player, name(), self_damage_data );
+  sample_data = new sample_data_type( player, name(), mitigation_tokens );
+}
+
+template <class derived_actor_t>
+void stagger_t<derived_actor_t>::adjust_sample_data( sim_t &sim )
+{
+  sample_data->pool_size.adjust( sim );
+  sample_data->pool_size_percent.adjust( sim );
+  sample_data->effectiveness.adjust( sim );
+}
+
+template <class derived_actor_t>
+void stagger_t<derived_actor_t>::merge_sample_data( const stagger_t &other )
+{
+  sample_data->pool_size.merge( other.sample_data->pool_size );
+  sample_data->pool_size_percent.merge( other.sample_data->pool_size );
+  sample_data->effectiveness.merge( other.sample_data->pool_size );
+}
+
+template <class derived_actor_t>
+double stagger_t<derived_actor_t>::trigger( school_e school, result_amount_type damage_type, action_state_t *state )
+{
+  /*
+   * TODO: Implement Stagger Guard absorbs
+   *  - Must support one stagger type or a set of stagger types
+   *  - Ideally uses the standard buff interface
+   */
+  if ( state->result_amount <= 0.0 )
+    return 0.0;
+
+  if ( !active() )
+    return 0.0;
+
+  if ( !trigger_filter( school, damage_type, state ) )
+    return 0.0;
+
+  /*
+   * Example:
+   *  - result_amount   = 100
+   *  - stagger_percent = 0.7
+   *  - absorb          = 20
+   *  - pool_size       = 990
+   *  - cap             = 1000
+   *  70 = 100 * 0.7                      -> amount
+   *  20 = min( 70, 20 )                  -> absorbed
+   *  50 = 70 - 20                        -> amount
+   *  10 = 70 - max( 70 + 950 - 1000, 0 ) -> amount
+   *  70 = 100 - 10 - 20                  -> result_amount final
+   *  100 damage gets split into:
+   *   - 10 staggered
+   *   - 20 absorbed
+   *   - 30 to face (due to %)
+   *   - 40 to face (due to cap)
+   */
+
+  double amount = state->result_amount * percent( school, damage_type, state );
+  double base   = amount;
+
+  double absorb   = 0.0;
+  double absorbed = std::min( amount, absorb );
+  amount -= absorbed;
+
+  double cap = levels.back()->min_threshold * player->resources.max[ RESOURCE_HEALTH ];
+  amount -= std::max( amount + pool_size() - cap, 0.0 );
+
+  state->result_amount -= amount + absorbed;
+  state->result_mitigated -= amount + absorbed;
+
+  if ( absorbed > 0.0 )
+    player->sim->print_debug( "{} absorbed {} out of {} damage about to be added to {} pool", player->name(), absorbed,
+                              base, name() );
+
+  if ( amount <= 0.0 )
+    return 0.0;
+
+  player->sim->print_debug( "{} added {} to {} pool (base_hit={} final_hit={}, absorbed={}, overcapped={})",
+                            player->name(), amount, name(), base, amount, absorbed,
+                            std::max( amount + pool_size() - cap, 0.0 ) );
+
+  residual_action::trigger( self_damage, player, amount );
+
+  return amount;
+}
+
+template <class derived_actor_t>
+double stagger_t<derived_actor_t>::purify_flat( double amount, std::string_view ability_token, bool report_amount )
+{
+  if ( !is_ticking() )
+    return 0.0;
+
+  double pool    = pool_size();
+  double cleared = std::clamp( amount, 0.0, pool );
+  double remains = pool - cleared;
+
+  sample_data->mitigated->add( cleared );
+  current->mitigated->add( cleared );
+  sample_data->mitigated_by_ability[ ability_token ]->add( cleared );
+
+  set_pool( remains );
+  if ( report_amount )
+    player->sim->print_debug( "{} reduced {} pool from {} to {} ({})", player->name(), name(), pool, remains, cleared );
+
+  return cleared;
+}
+
+template <class derived_actor_t>
+double stagger_t<derived_actor_t>::purify_percent( double amount, std::string_view ability_token )
+{
+  double pool    = pool_size();
+  double cleared = purify_flat( amount * pool, ability_token, false );
+
+  if ( cleared )
+    player->sim->print_debug( "{} reduced {} pool by {}% from {} to {} ({})", player->name(), name(), amount * 100.0,
+                              pool, ( 1.0 - amount ) * pool, cleared );
+
+  return cleared;
+}
+
+template <class derived_actor_t>
+double stagger_t<derived_actor_t>::purify_all( std::string_view ability_token )
+{
+  return purify_flat( pool_size(), ability_token, true );
+}
+
+template <class derived_actor_t>
+void stagger_t<derived_actor_t>::delay_tick( timespan_t delay )
+{
+  dot_t *dot = self_damage->get_dot();
+  if ( !dot || !dot->is_ticking() || !dot->tick_event )
+    return;
+
+  player->sim->print_debug( "{} delayed tick scheduled of {} for {} to {}", player->name(), name(),
+                            player->sim->current_time() + dot->tick_event->remains(),
+                            player->sim->current_time() + dot->tick_event->remains() + delay );
+  dot->tick_event->reschedule( dot->tick_event->remains() + delay );
+  if ( dot->end_event )
+    dot->end_event->reschedule( dot->end_event->remains() + delay );
+}
+
+template <class derived_actor_t>
+std::string_view stagger_t<derived_actor_t>::name() const
+{
+  return self_damage_data->name_cstr();
+}
+
+template <class derived_actor_t>
+double stagger_t<derived_actor_t>::pool_size()
+{
+  dot_t *dot = self_damage->get_dot();
+  if ( !dot || !dot->state || !dot->is_ticking() )
+    return 0.0;
+
+  return self_damage->base_ta( dot->state ) * dot->ticks_left();
+}
+
+template <class derived_actor_t>
+double stagger_t<derived_actor_t>::pool_size_percent()
+{
+  return pool_size() / player->resources.max[ RESOURCE_HEALTH ];
+}
+
+template <class derived_actor_t>
+double stagger_t<derived_actor_t>::tick_size()
+{
+  dot_t *dot = self_damage->get_dot();
+  if ( !dot || !dot->state || !dot->is_ticking() )
+    return 0.0;
+
+  return self_damage->base_ta( dot->state );
+}
+
+template <class derived_actor_t>
+double stagger_t<derived_actor_t>::tick_size_percent()
+{
+  return tick_size() / player->resources.max[ RESOURCE_HEALTH ];
+}
+
+template <class derived_actor_t>
+timespan_t stagger_t<derived_actor_t>::remains()
+{
+  dot_t *dot = self_damage->get_dot();
+  if ( !dot || !dot->is_ticking() )
+    return 0_s;
+
+  return dot->remains();
+}
+
+template <class derived_actor_t>
+bool stagger_t<derived_actor_t>::is_ticking()
+{
+  dot_t *dot = self_damage->get_dot();
+  if ( !dot )
+    return false;
+
+  return dot->is_ticking();
+}
+
+template <class derived_actor_t>
+size_t stagger_t<derived_actor_t>::current_level()
+{
+  return std::distance( levels.begin(), std::find( levels.begin(), levels.end(), *current ) );
+}
+
+template <class derived_actor_t>
+double stagger_t<derived_actor_t>::level_index()
+{
+  return -1.0 * std::distance( levels.end(), std::find( levels.begin(), levels.end(), *current ) );
+}
+
+template <class derived_actor_t>
+void stagger_t<derived_actor_t>::set_pool( double amount )
+{
+  if ( !is_ticking() )
+    return;
+
+  dot_t *dot        = self_damage->get_dot();
+  auto state        = debug_cast<residual_action::residual_periodic_state_t *>( dot->state );
+  double ticks_left = dot->ticks_left();
+
+  state->tick_amount = amount / ticks_left;
+  player->sim->print_debug( "{} set {} pool amount={} ticks_left={}, tick_size={}", player->name(), name(), amount,
+                            ticks_left, amount / ticks_left );
+
+  damage_changed();
+}
+
+template <class derived_actor_t>
+void stagger_t<derived_actor_t>::damage_changed( bool last_tick )
+{
+  // TODO: Guarantee a debuff is applied by providing debuffs for all stagger_level_t's
+  if ( last_tick )
+  {
+    current->debuff->expire();
+    return;
+  }
+
+  level_t<derived_actor_t> *level = find_current_level();
+  // player->sim->print_debug( "{} level changing current={} ({}) new={} ({}) pool_size_percent={}",
+  //                           player->name(),
+  //                           current->name,
+  //                           static_cast<int>( current->level ),
+  //                           stagger_levels[ level ]->name,
+  //                           static_cast<int>( stagger_levels[ level ]->level ),
+  //                           pool_size_percent() );
+  if ( level == current )
+    return;
+
+  current->debuff->expire();
+  current = level;
+  current->debuff->trigger();
+}
+
+template <class derived_actor_t>
+level_t<derived_actor_t> *stagger_t<derived_actor_t>::find_current_level()
+{
+  double current_percent = pool_size_percent();
+  for ( const level_t<derived_actor_t> *level : levels )
+    if ( current_percent > level->min_threshold )
+      return level;
+  return levels.back();
 }
 }  // namespace stagger_impl
