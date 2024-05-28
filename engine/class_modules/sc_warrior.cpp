@@ -3511,23 +3511,6 @@ struct heroic_throw_t : public warrior_attack_t
 
     weapon    = &( player->main_hand_weapon );
     may_dodge = may_parry = may_block = false;
-
-    if ( p -> talents.protection.improved_heroic_throw -> ok() )
-    {
-      impact_action = p->active.deep_wounds_PROT;
-    }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p()->talents.protection.improved_heroic_throw->ok() )
-    {
-      am *= 1.0 + p()->talents.protection.improved_heroic_throw->effectN( 2 ).percent();
-    }
-
-    return am;
   }
 
   bool ready() override
