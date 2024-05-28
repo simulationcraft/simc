@@ -13327,6 +13327,7 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.gloom_ward );
   action.apply_affecting_aura( talent.proliferating_chill );
   action.apply_affecting_aura( talent.unyielding_will );
+  action.apply_affecting_aura( talent.ice_prison );
 
   // Blood
   action.apply_affecting_aura( talent.blood.improved_heart_strike );
