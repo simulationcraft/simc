@@ -4505,6 +4505,11 @@ struct ravager_t : public warrior_attack_t
     }
 
     warrior_attack_t::execute();
+
+    if ( p()->talents.arms.merciless_bonegrinder->ok() )
+    {
+      p()->buff.merciless_bonegrinder->trigger();
+    }
   }
 
   void tick( dot_t* d ) override
