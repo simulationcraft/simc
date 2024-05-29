@@ -161,7 +161,7 @@ void havoc( player_t* p )
   cooldown->add_action( "use_item,slot=trinket2,use_off_gcd=1,if=((cooldown.eye_beam.remains<gcd.max&active_enemies>1|buff.metamorphosis.up)&(raid_event.adds.in>trinket.2.cooldown.duration-15|raid_event.adds.remains>8)|!trinket.2.has_buff.any|fight_remains<25)&(!equipped.witherbarks_branch|trinket.1.cooldown.remains>20)&time>0" );
   cooldown->add_action( "use_item,name=witherbarks_branch,if=(talent.essence_break&cooldown.essence_break.remains<gcd.max|!talent.essence_break)&(active_enemies+3>=desired_targets+raid_event.adds.count|raid_event.adds.in>105)|fight_remains<25" );
   cooldown->add_action( "the_hunt,if=debuff.essence_break.down&(active_enemies>=desired_targets+raid_event.adds.count|raid_event.adds.in>(1+!set_bonus.tier31_2pc)*45)&time>5" );
-  cooldown->add_action( "elysian_decree,if=debuff.essence_break.down" );
+  cooldown->add_action( "sigil_of_spite,if=debuff.essence_break.down" );
 
   opener->add_action( "use_items" );
   opener->add_action( "vengeful_retreat,if=prev_gcd.1.death_sweep" );
@@ -260,13 +260,13 @@ void vengeance( player_t* p )
   fiery_demise->add_action( "fel_devastation" );
   fiery_demise->add_action( "soul_carver,if=soul_fragments.total<3" );
   fiery_demise->add_action( "the_hunt" );
-  fiery_demise->add_action( "elysian_decree,line_cd=1.85,if=fury>=40" );
+  fiery_demise->add_action( "sigil_of_spite,line_cd=1.85,if=fury>=40" );
   fiery_demise->add_action( "spirit_bomb,if=variable.can_spb" );
 
   single_target->add_action( "the_hunt", "Single Target" );
   single_target->add_action( "soul_carver" );
   single_target->add_action( "fel_devastation,if=talent.collective_anguish|(talent.stoke_the_flames&talent.burning_blood)" );
-  single_target->add_action( "elysian_decree" );
+  single_target->add_action( "sigil_of_spite" );
   single_target->add_action( "fel_devastation" );
   single_target->add_action( "soul_cleave,if=!variable.dont_cleave" );
   single_target->add_action( "fracture" );
@@ -274,7 +274,7 @@ void vengeance( player_t* p )
 
   small_aoe->add_action( "the_hunt", "2-5 targets" );
   small_aoe->add_action( "fel_devastation,if=talent.collective_anguish.enabled|(talent.stoke_the_flames.enabled&talent.burning_blood.enabled)" );
-  small_aoe->add_action( "elysian_decree,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)" );
+  small_aoe->add_action( "sigil_of_spite,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)" );
   small_aoe->add_action( "fel_devastation" );
   small_aoe->add_action( "soul_carver,if=soul_fragments.total<3" );
   small_aoe->add_action( "soul_cleave,if=(soul_fragments<=1|!talent.spirit_bomb)&!variable.dont_cleave" );
@@ -283,7 +283,7 @@ void vengeance( player_t* p )
 
   big_aoe->add_action( "fel_devastation,if=talent.collective_anguish|talent.stoke_the_flames", "6+ targets" );
   big_aoe->add_action( "the_hunt" );
-  big_aoe->add_action( "elysian_decree,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)" );
+  big_aoe->add_action( "sigil_of_spite,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)" );
   big_aoe->add_action( "fel_devastation" );
   big_aoe->add_action( "soul_carver,if=soul_fragments.total<3" );
   big_aoe->add_action( "spirit_bomb,if=soul_fragments>=4" );

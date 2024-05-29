@@ -394,7 +394,7 @@ public:
       player_talent_t collective_anguish;
       player_talent_t fodder_to_the_flame;
       player_talent_t the_hunt;
-      player_talent_t elysian_decree;
+      player_talent_t sigil_of_spite;
 
     } demon_hunter;
 
@@ -595,8 +595,8 @@ public:
     const spell_data_t* soul_fragment;
 
     // Cross-Expansion Override Spells
-    const spell_data_t* elysian_decree;
-    const spell_data_t* elysian_decree_damage;
+    const spell_data_t* sigil_of_spite;
+    const spell_data_t* sigil_of_spite_damage;
     const spell_data_t* fodder_to_the_flame;
     const spell_data_t* fodder_to_the_flame_damage;
     const spell_data_t* the_hunt;
@@ -763,7 +763,7 @@ public:
     // General
     cooldown_t* consume_magic;
     cooldown_t* disrupt;
-    cooldown_t* elysian_decree;
+    cooldown_t* sigil_of_spite;
     cooldown_t* felblade;
     cooldown_t* fel_eruption;
     cooldown_t* immolation_aura;
@@ -2128,7 +2128,7 @@ struct demon_hunter_sigil_t : public demon_hunter_spell_t
 
     if ( p->talent.vengeance.cycle_of_binding->ok() )
     {
-      sigil_cooldowns = { p->cooldown.sigil_of_flame, p->cooldown.elysian_decree, p->cooldown.sigil_of_misery,
+      sigil_cooldowns = { p->cooldown.sigil_of_flame, p->cooldown.sigil_of_spite, p->cooldown.sigil_of_misery,
                           p->cooldown.sigil_of_silence };
       sigil_cooldown_adjust =
           -timespan_t::from_seconds( p->talent.vengeance.cycle_of_binding->effectN( 1 ).base_value() );
@@ -4181,16 +4181,16 @@ struct spirit_bomb_t : public spirit_bomb_base_t
   }
 };
 
-// Elysian Decree ===========================================================
+// Sigil of Spite ===========================================================
 
-struct elysian_decree_t : public demon_hunter_spell_t
+struct sigil_of_spite_t : public demon_hunter_spell_t
 {
-  struct elysian_decree_sigil_t : public demon_hunter_sigil_t
+  struct sigil_of_spite_sigil_t : public demon_hunter_sigil_t
   {
-    elysian_decree_sigil_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
+    sigil_of_spite_sigil_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
       : demon_hunter_sigil_t( name, p, s, delay )
     {
-      reduced_aoe_targets = p->spell.elysian_decree->effectN( 1 ).base_value();
+      reduced_aoe_targets = p->spell.sigil_of_spite->effectN( 1 ).base_value();
     }
 
     void execute() override
@@ -4200,17 +4200,17 @@ struct elysian_decree_t : public demon_hunter_spell_t
     }
   };
 
-  elysian_decree_sigil_t* sigil;
-  elysian_decree_sigil_t* repeat_decree_sigil;
+  sigil_of_spite_sigil_t* sigil;
+  sigil_of_spite_sigil_t* repeat_decree_sigil;
 
-  elysian_decree_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "elysian_decree", p, p->spell.elysian_decree, options_str ),
+  sigil_of_spite_t( demon_hunter_t* p, util::string_view options_str )
+    : demon_hunter_spell_t( "sigil_of_spite", p, p->spell.sigil_of_spite, options_str ),
       sigil( nullptr ),
       repeat_decree_sigil( nullptr )
   {
-    if ( p->spell.elysian_decree->ok() )
+    if ( p->spell.sigil_of_spite->ok() )
     {
-      sigil = p->get_background_action<elysian_decree_sigil_t>( "elysian_decree_sigil", p->spell.elysian_decree_damage,
+      sigil = p->get_background_action<sigil_of_spite_sigil_t>( "sigil_of_spite_sigil", p->spell.sigil_of_spite_damage,
                                                                 ground_aoe_duration );
       sigil->stats = stats;
     }
@@ -7202,8 +7202,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new spirit_bomb_t( this, options_str );
   if ( name == "spirit_burst" )
     return new spirit_burst_t( this, options_str );
-  if ( name == "elysian_decree" )
-    return new elysian_decree_t( this, options_str );
+  if ( name == "sigil_of_spite" )
+    return new sigil_of_spite_t( this, options_str );
   if ( name == "the_hunt" )
     return new the_hunt_t( this, options_str );
   if ( name == "spectral_sight" )
@@ -8010,7 +8010,7 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.collective_anguish  = find_talent_spell( talent_tree::CLASS, "Collective Anguish" );
   talent.demon_hunter.fodder_to_the_flame = find_talent_spell( talent_tree::CLASS, "Fodder to the Flame" );
   talent.demon_hunter.the_hunt            = find_talent_spell( talent_tree::CLASS, "The Hunt" );
-  talent.demon_hunter.elysian_decree      = find_talent_spell( talent_tree::CLASS, "Elysian Decree" );
+  talent.demon_hunter.sigil_of_spite      = find_talent_spell( talent_tree::CLASS, "Sigil of Spite" );
 
   // Havoc Talents
 
@@ -8277,9 +8277,9 @@ void demon_hunter_t::init_spells()
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };
   spell.sigil_of_flame                             = find_spell_override( find_spell( 204596 ), sigil_overrides );
-  spell.elysian_decree = find_spell_override( talent.demon_hunter.elysian_decree, sigil_overrides );
-  spell.elysian_decree_damage =
-      talent.demon_hunter.elysian_decree->ok() ? find_spell( 389860 ) : spell_data_t::not_found();
+  spell.sigil_of_spite = find_spell_override( talent.demon_hunter.sigil_of_spite, sigil_overrides );
+  spell.sigil_of_spite_damage =
+      talent.demon_hunter.sigil_of_spite->ok() ? find_spell( 389860 ) : spell_data_t::not_found();
   spec.sigil_of_misery  = find_spell_override( talent.demon_hunter.sigil_of_misery, sigil_overrides );
   spec.sigil_of_silence = find_spell_override( talent.vengeance.sigil_of_silence, sigil_overrides );
   spec.sigil_of_chains  = find_spell_override( talent.vengeance.sigil_of_chains, sigil_overrides );
@@ -8629,7 +8629,7 @@ void demon_hunter_t::create_cooldowns()
   // General
   cooldown.consume_magic    = get_cooldown( "consume_magic" );
   cooldown.disrupt          = get_cooldown( "disrupt" );
-  cooldown.elysian_decree   = get_cooldown( "elysian_decree" );
+  cooldown.sigil_of_spite   = get_cooldown( "sigil_of_spite" );
   cooldown.felblade         = get_cooldown( "felblade" );
   cooldown.fel_eruption     = get_cooldown( "fel_eruption" );
   cooldown.immolation_aura  = get_cooldown( "immolation_aura" );
