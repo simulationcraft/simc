@@ -1690,7 +1690,10 @@ public:
     parse_effects( p()->buff.snapfire );
     parse_effects( p()->buff.tip_the_scales );
 
-    parse_effects( p()->buff.imminent_destruction );
+    if ( p()->talent.imminent_destruction.enabled() )
+    {
+      parse_effects( p()->buff.imminent_destruction );
+    }
 
     parse_effects( p()->buff.emerald_trance_stacking );
     parse_effects( p()->buff.emerald_trance );
@@ -1706,13 +1709,13 @@ public:
           p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ) );
     }
 
-    if ( p()->talent.chronowarden.temporal_burst.ok() )
+    if ( p()->talent.chronowarden.temporal_burst.enabled() )
     {
       auto& vec = static_cast<buffs::temporal_burst_t*>( p()->buff.temporal_burst.get() )->affected_cooldowns;
       parse_cd_effects( vec, p()->buff.temporal_burst );
     }
 
-    if ( p()->talent.flameshaper.burning_adrenaline.ok() )
+    if ( p()->talent.flameshaper.burning_adrenaline.enabled() )
     {
       parse_effects( p()->buff.burning_adrenaline, IGNORE_STACKS );
       
@@ -1720,6 +1723,11 @@ public:
       {
         parse_effects( p()->buff.burning_adrenaline_channel, IGNORE_STACKS );
       }
+    }
+
+    if ( p()->talent.scalecommander.unrelenting_siege.enabled() )
+    {
+      parse_effects( p()->buff.unrelenting_siege );
     }
   }
 
@@ -6123,6 +6131,34 @@ void evoker_t::init_finished()
     } );
   }
 
+  if ( talent.scalecommander.onslaught.enabled() )
+  {
+    register_on_combat_state_callback( [ this ]( player_t*, bool in_combat ) {
+      if ( in_combat )
+      {
+        buff.burnout->increment();
+      }
+    } );
+  }
+
+  if ( talent.scalecommander.unrelenting_siege.enabled() )
+  {
+    register_on_combat_state_callback( [ this ]( player_t*, bool in_combat ) {
+      if ( in_combat )
+      {
+        buff.unrelenting_siege->set_reverse( false );
+        if ( !buff.unrelenting_siege->check() )
+        {
+          buff.unrelenting_siege->trigger();
+        }
+      }
+      else
+      {
+        buff.unrelenting_siege->expire();
+      }
+    } );
+  }
+
   if ( talent.chronowarden.temporal_burst.ok() )
   {
     auto temporal_burst = static_cast<buffs::temporal_burst_t*>( buff.temporal_burst.get() );
@@ -6955,6 +6991,9 @@ void evoker_t::apply_affecting_auras_late( action_t& action )
   // Flameshaper
   action.apply_affecting_aura( talent.flameshaper.red_hot );
   action.apply_affecting_aura( talent.flameshaper.expanded_lungs );
+
+  // Scalecommander
+  action.apply_affecting_aura( talent.scalecommander.might_of_the_black_dragonflight );
 
   // Preservation
 }
