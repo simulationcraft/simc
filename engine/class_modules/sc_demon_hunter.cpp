@@ -5664,28 +5664,11 @@ struct fracture_t : public demon_hunter_attack_t
   {
     int soul_fragments_to_spawn;
 
-    fracture_damage_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
-      : demon_hunter_attack_t( name, p, s )
+    fracture_damage_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, int i )
+      : demon_hunter_attack_t( name, p, s ), soul_fragments_to_spawn( i )
     {
       dual     = true;
       may_miss = may_dodge = may_parry = false;
-
-      // Fracture currently spawns an even number of Soul Fragments baseline, half on main hand hit and half on
-      // offhand hit.
-      // In the event that Blizzard ever changes the baseline amount to an odd amount, we will assume that the extra
-      // Soul Fragment will be spawned by the main hand hit.
-      int number_of_soul_fragments_to_spawn = as<int>( p->talent.vengeance.fracture->effectN( 1 ).base_value() );
-      int number_of_soul_fragments_to_spawn_per_hit  = number_of_soul_fragments_to_spawn / 2;
-      int number_of_soul_fragments_to_spawn_leftover = number_of_soul_fragments_to_spawn % 2;
-      if ( weapon == &( p->main_hand_weapon ) )
-      {
-        soul_fragments_to_spawn =
-            number_of_soul_fragments_to_spawn_per_hit + number_of_soul_fragments_to_spawn_leftover;
-      }
-      else
-      {
-        soul_fragments_to_spawn = number_of_soul_fragments_to_spawn_per_hit;
-      }
     }
 
     void impact( action_state_t* s ) override
@@ -5693,7 +5676,7 @@ struct fracture_t : public demon_hunter_attack_t
       demon_hunter_attack_t::impact( s );
 
       p()->spawn_soul_fragment( soul_fragment::LESSER, soul_fragments_to_spawn );
-      for ( unsigned i = 0; i < soul_fragments_to_spawn; i++ )
+      for ( int i = 0; i < soul_fragments_to_spawn; i++ )
       {
         p()->proc.soul_fragment_from_fracture->occur();
       }
@@ -5705,8 +5688,20 @@ struct fracture_t : public demon_hunter_attack_t
   fracture_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_attack_t( "fracture", p, p->talent.vengeance.fracture, options_str )
   {
-    mh        = p->get_background_action<fracture_damage_t>( "fracture_mh", data().effectN( 2 ).trigger() );
-    oh        = p->get_background_action<fracture_damage_t>( "fracture_oh", data().effectN( 3 ).trigger() );
+    int number_of_soul_fragments_to_spawn = as<int>( data().effectN( 1 ).base_value() );
+    // divide the number in 2 as half come from main hand, half come from offhand.
+    int number_of_soul_fragments_to_spawn_per_hit = number_of_soul_fragments_to_spawn / 2;
+    // handle leftover souls in the event that blizz ever changes Fracture to an odd number of souls generated
+    int number_of_soul_fragments_to_spawn_leftover = number_of_soul_fragments_to_spawn % 2;
+
+    int mh_soul_fragments_to_spawn =
+        number_of_soul_fragments_to_spawn_per_hit + number_of_soul_fragments_to_spawn_leftover;
+    int oh_soul_fragments_to_spawn = number_of_soul_fragments_to_spawn_per_hit;
+
+    mh        = p->get_background_action<fracture_damage_t>( "fracture_mh", data().effectN( 2 ).trigger(),
+                                                             mh_soul_fragments_to_spawn );
+    oh        = p->get_background_action<fracture_damage_t>( "fracture_oh", data().effectN( 3 ).trigger(),
+                                                             oh_soul_fragments_to_spawn );
     mh->stats = oh->stats = stats;
   }
 
@@ -5765,12 +5760,6 @@ struct fracture_t : public demon_hunter_attack_t
      */
     if ( result_is_hit( s->result ) )
     {
-      int number_of_soul_fragments_to_spawn = as<int>( data().effectN( 1 ).base_value() );
-      // divide the number in 2 as half come from main hand, half come from offhand.
-      [[maybe_unused]] int number_of_soul_fragments_to_spawn_per_hit = number_of_soul_fragments_to_spawn / 2;
-      // handle leftover souls in the event that blizz ever changes Fracture to an odd number of souls generated
-      [[maybe_unused]] int number_of_soul_fragments_to_spawn_leftover = number_of_soul_fragments_to_spawn % 2;
-
       mh->set_target( s->target );
       mh->execute();
 
