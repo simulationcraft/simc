@@ -9619,14 +9619,10 @@ struct unholy_assault_t final : public death_knight_melee_attack_t
 // ==========================================================================
 
 // Anti-magic Shell =========================================================
-
 struct ams_parent_buff_t : public death_knight_absorb_buff_t
 {
   ams_parent_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell, bool horsemen )
-    : death_knight_absorb_buff_t( p, name, spell ),
-      damage( 0 ),
-      horsemen( horsemen ),
-      option( 0 )
+    : death_knight_absorb_buff_t( p, name, spell ), damage( 0 ), horsemen( horsemen ), option( 0 )
   {
     cooldown->duration = 0_ms;
     set_absorb_school( SCHOOL_MAGIC );
@@ -9661,21 +9657,21 @@ struct ams_parent_buff_t : public death_knight_absorb_buff_t
   {
     death_knight_absorb_buff_t::absorb_used( absorbed, source );
     // AMS generates 0.833~ runic power per percentage max health absorbed.
-    double rp_generated = absorbed / p()->resources.max[RESOURCE_HEALTH] * 83.333;
+    double rp_generated = absorbed / p()->resources.max[ RESOURCE_HEALTH ] * 83.333;
 
     player->resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ),
-                           horsemen ? p()->gains.antimagic_shell_horsemen : p()->gains.antimagic_shell);
+                           horsemen ? p()->gains.antimagic_shell_horsemen : p()->gains.antimagic_shell );
   }
 
   double calc_absorb()
   {
-    double max_absorb = p()->resources.max[RESOURCE_HEALTH] * p()->spec.antimagic_shell->effectN(2).percent();
+    double max_absorb = p()->resources.max[ RESOURCE_HEALTH ] * p()->spec.antimagic_shell->effectN( 2 ).percent();
 
-    max_absorb *= 1.0 + p()->talent.antimagic_barrier->effectN(2).percent();
+    max_absorb *= 1.0 + p()->talent.antimagic_barrier->effectN( 2 ).percent();
 
     max_absorb *= 1.0 + p()->cache.heal_versatility();
 
-    max_absorb *= 1.0 + p()->talent.gloom_ward->effectN(1).percent();
+    max_absorb *= 1.0 + p()->talent.gloom_ward->effectN( 1 ).percent();
 
     if ( horsemen )
       max_absorb *= 0.8;
@@ -9768,7 +9764,6 @@ private:
 };
 
 // Anti-magic Zone =========================================================
-
 struct antimagic_zone_buff_t final : public death_knight_absorb_buff_t
 {
   antimagic_zone_buff_t( death_knight_t* p )
@@ -9785,19 +9780,19 @@ struct antimagic_zone_buff_t final : public death_knight_absorb_buff_t
     s->result_absorbed *= 0.2;
     s->self_absorb_amount -= consumed - actual_consumed;
     s->result_amount += consumed - actual_consumed;
-    return absorb_buff_t::consume( actual_consumed, s );
+    return death_knight_absorb_buff_t::consume( actual_consumed, s );
   }
 
   double calc_absorb()
   {
     // HP Value doesnt appear in spell data, instead stored in a variable in spell ID 51052
-    double max_absorb = p()->resources.max[RESOURCE_HEALTH] * 1.5;
+    double max_absorb = p()->resources.max[ RESOURCE_HEALTH ] * 1.5;
 
-    max_absorb *= 1.0 + p()->talent.assimilation->effectN(1).percent();
+    max_absorb *= 1.0 + p()->talent.assimilation->effectN( 1 ).percent();
 
     max_absorb *= 1.0 + p()->cache.heal_versatility();
 
-    max_absorb *= 1.0 + p()->talent.gloom_ward->effectN(1).percent();
+    max_absorb *= 1.0 + p()->talent.gloom_ward->effectN( 1 ).percent();
 
     return max_absorb;
   }
