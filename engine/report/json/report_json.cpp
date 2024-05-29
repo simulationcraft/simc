@@ -587,7 +587,6 @@ void collected_data_to_json( JsonOutput root, const ::report::json::report_confi
       root[ "dtps" ] = cd.dmg_taken;
       root[ "timeline_dmg_taken" ] = cd.timeline_dmg_taken;
       root[ "deaths" ] = cd.deaths;
-      root[ "max_spike_amount" ] = cd.max_spike_amount;
     }
 
     root[ "heal" ] = cd.heal;

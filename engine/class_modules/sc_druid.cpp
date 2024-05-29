@@ -1641,10 +1641,10 @@ public:
 };
 
 template <class Base>
-struct druid_action_t : public parse_action_effects_t<Base, druid_t, druid_td_t>, public druid_action_data_t
+struct druid_action_t : public parse_action_effects_t<Base, druid_td_t>, public druid_action_data_t
 {
 private:
-  using ab = parse_action_effects_t<Base, druid_t, druid_td_t>;
+  using ab = parse_action_effects_t<Base, druid_td_t>;
 
 public:
   using base_t = druid_action_t<Base>;
@@ -9005,11 +9005,12 @@ struct bear_melee_t : public druid_melee_t<bear_attack_t>
 
     energize_type = action_energize::ON_HIT;
     energize_resource = resource_e::RESOURCE_RAGE;
-    energize_amount = 4.0;
+    energize_amount = util::round( 1.75 *
+      p->bear_weapon.swing_time.total_seconds() *
+      ( 1.0 + find_effect( p->spec.bear_form_passive, A_MOD_RAGE_FROM_DAMAGE_DEALT ).percent() ), 1 );
 
     if ( p->talent.gore.ok() )
       tnc_proc = p->get_proc( "Tooth and Claw" )->collect_interval();
-
   }
 
   void execute() override
@@ -10723,6 +10724,7 @@ void druid_t::create_buffs()
   parse_effects( buff.bear_form );
   parse_effects( buff.rage_of_the_sleeper );
   parse_effects( buff.ruthless_aggression );
+  parse_effects( buff.strategic_infusion );
   parse_effects( buff.ursine_vigor, USE_DEFAULT );
   parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 3 ),
                  bear_stam * buff.wildshape_mastery->data().effectN( 1 ).percent() );

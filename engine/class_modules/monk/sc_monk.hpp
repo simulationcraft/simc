@@ -82,7 +82,7 @@ enum class sef_ability_e
 };
 
 template <class Base>
-struct monk_action_t : public parse_action_effects_t<Base, monk_t, monk_td_t>
+struct monk_action_t : public parse_action_effects_t<Base, monk_td_t>
 {
   sef_ability_e sef_ability;
   bool ww_mastery;
@@ -95,7 +95,7 @@ private:
   std::array<resource_e, MONK_MISTWEAVER + 1> _resource_by_stance;
 
 public:
-  using base_t = parse_action_effects_t<Base, monk_t, monk_td_t>;
+  using base_t = parse_action_effects_t<Base, monk_td_t>;
 
   monk_action_t( std::string_view name, monk_t *player, const spell_data_t *s = spell_data_t::nil() );
   std::string full_name() const;

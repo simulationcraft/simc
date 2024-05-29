@@ -59,6 +59,50 @@ os.format(
   util::string_join( notes ) );
 }
 
+// adjust value based on effect modifying effects from mod list.
+// currently supports P_EFFECT_1-5 and A_PROC_TRIGGER_SPELL_WITH_VALUE
+// TODO: add support for P_EFFECTS to modify all effects
+template <typename T>
+void parse_base_t::apply_affecting_mod( double& val, bool& mastery, const spell_data_t* base, size_t idx, T mod )
+{
+  bool mod_is_mastery = false;
+
+  if ( mod->effect_count() && mod->flags( SX_MASTERY_AFFECTS_POINTS ) )
+  {
+    mastery = true;
+    mod_is_mastery = true;
+  }
+
+  for ( size_t i = 1; i <= mod->effect_count(); i++ )
+  {
+    const auto& eff = mod->effectN( i );
+
+    if ( eff.type() != E_APPLY_AURA )
+      continue;
+
+    if ( ( base->affected_by_all( eff ) &&
+           ( ( eff.misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff.misc_value1() == P_EFFECT_2 && idx == 2 ) ||
+             ( eff.misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff.misc_value1() == P_EFFECT_4 && idx == 4 ) ||
+             ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
+         ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() && idx == 1 ) )
+    {
+      double pct = mod_is_mastery ? eff.mastery_value() : mod_spell_effects_value( mod, eff );
+
+      if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
+        val += pct;
+      else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
+        val *= 1.0 + pct / 100;
+      else if ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE )
+        val = pct;
+    }
+  }
+}
+
+// explicit template instantiation
+// NOTE: currently only spell_data_t is required, but this can be expanded as has been in the past with conduits
+template void parse_base_t::apply_affecting_mod<const spell_data_t*>( double&, bool&, const spell_data_t*, size_t,
+                                                                      const spell_data_t* );
+
 double modified_spelleffect_t::base_value() const
 {
   auto return_value = value;
@@ -173,14 +217,39 @@ void modified_spelleffect_t::print_parsed_effect( report::sc_html_stream& os, co
     os << "<tr>";
 
   size_t row2 = 0;
+  std::string eff_str;
+
+  switch ( _eff.type() )
+  {
+    case E_APPLY_AURA:
+    case E_APPLY_AURA_PET:
+    case E_APPLY_AREA_AURA_PARTY:
+    case E_APPLY_AREA_AURA_PET:
+      switch ( _eff.subtype() )
+      {
+        case A_ADD_FLAT_MODIFIER:
+        case A_ADD_FLAT_LABEL_MODIFIER:
+          eff_str = fmt::format( "Flat {}", spell_info::effect_property_str( &_eff ) );
+          break;
+        case A_ADD_PCT_MODIFIER:
+        case A_ADD_PCT_LABEL_MODIFIER:
+          eff_str = fmt::format( "Percent {}", spell_info::effect_property_str( &_eff ) );
+          break;
+        default:
+          eff_str = spell_info::effect_subtype_str( &_eff );
+          break;
+      }
+      break;
+    default:
+      eff_str = spell_info::effect_type_str( &_eff );
+      break;
+  }
 
   os.format(
     "<td rowspan=\"{}\" class=\"dark right\">{}</td>"
-    "<td rowspan=\"{}\" class=\"dark\">{}</td>"
     "<td rowspan=\"{}\" class=\"dark\">{}</td>\n",
     c, _eff.index() + 1,
-    c, spell_info::effect_type_str( &_eff ),
-    c, spell_info::effect_subtype_str( &_eff ) );
+    c, eff_str );
 
   for ( auto eff : permanent )
   {
@@ -327,8 +396,7 @@ void modified_spell_data_t::parsed_effects_html( report::sc_html_stream& os, con
        << "<th>Spell</th>"
        << "<th>ID</th>"
        << "<th>#</th>"
-       << "<th>Type</th>"
-       << "<th>Subtype</th>"
+       << "<th>Effect</th>"
        << "<th>Modified By</th>"
        << "<th>ID</th>"
        << "<th>#</th>"

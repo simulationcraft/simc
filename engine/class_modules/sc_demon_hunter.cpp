@@ -1541,7 +1541,7 @@ namespace actions
  * don't skip it and call spell_t/heal_t or absorb_t directly.
  */
 template <typename Base>
-class demon_hunter_action_t : public parse_action_effects_t<Base, demon_hunter_t, demon_hunter_td_t>
+class demon_hunter_action_t : public parse_action_effects_t<Base, demon_hunter_td_t>
 {
 public:
   double energize_delta;
@@ -2085,7 +2085,7 @@ protected:
 
 private:
   /// typedef for the templated action type, eg. spell_t, attack_t, heal_t
-  using ab = parse_action_effects_t<Base, demon_hunter_t, demon_hunter_td_t>;
+  using ab = parse_action_effects_t<Base, demon_hunter_td_t>;
 };
 
 // ==========================================================================
@@ -5188,12 +5188,6 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
         td( s->target )->debuffs.serrated_glaive->trigger();
       }
 
-      if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
-      {
-        td( s->target )->debuffs.reavers_mark->trigger();
-        p()->buff.rending_strike->expire();
-      }
-
       // TOCHECK -- Does this proc from Relentless Onslaught?
       td( s->target )->trigger_burning_blades( s );
     }
@@ -5229,7 +5223,23 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
   void execute() override
   {
+    bool trigger_reavers_mark = p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up();
+
+    // 2024-05-28 -- Rending Strike is expired before the cast is logged:
+    // https://www.warcraftlogs.com/reports/jZr2ktWFcqRVCbAz#fight=1
+    if ( !from_onslaught && trigger_reavers_mark )
+    {
+      p()->buff.rending_strike->expire();
+    }
+
     demon_hunter_attack_t::execute();
+
+    // 2024-05-28 -- Reaver's Mark is applied before the first hit from Chaos Strike:
+    // https://www.warcraftlogs.com/reports/jZr2ktWFcqRVCbAz#fight=1
+    if ( !from_onslaught && trigger_reavers_mark )
+    {
+      td( target )->debuffs.reavers_mark->trigger();
+    }
 
     // Create Strike Events
     for ( auto& attack : attacks )

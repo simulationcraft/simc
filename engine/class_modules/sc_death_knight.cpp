@@ -4259,9 +4259,9 @@ public:
 
 // Template for common death knight action code. See priest_action_t.
 template <class Base>
-struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_t, death_knight_td_t>
+struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_td_t>
 {
-  using action_base_t = parse_action_effects_t<Base, death_knight_t, death_knight_td_t>;
+  using action_base_t = parse_action_effects_t<Base, death_knight_td_t>;
   using base_t        = death_knight_action_t<Base>;
 
   gain_t* gain;

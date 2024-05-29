@@ -2766,7 +2766,6 @@ void print_html_player_statistics( report::sc_html_stream& os, const player_t& p
   report_helper::print_html_sample_data( os, p, p.collected_data.hpse, "HPS(e)" );
   report_helper::print_html_sample_data( os, p, p.collected_data.heal, "Heal" );
   report_helper::print_html_sample_data( os, p, p.collected_data.htps, "HTPS" );
-  report_helper::print_html_sample_data( os, p, p.collected_data.max_spike_amount, "MSD" );
 
   for ( const auto& sample_data : p.sample_data_list )
   {
@@ -3857,7 +3856,18 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   else
     os << "<h3 class=\"toggle open\">Results, Spec and Gear</h3>\n";
 
-  os << "<div class=\"toggle-content flexwrap\">\n";
+  os << "<div>\n"
+     << "<div class=\"toggle-content\">\n";
+
+  if ( p.sim->players_by_name.size() == 1 )
+  {
+    auto w_ = raidbots_talent_render_width( p.specialization(), 125 );
+    os.format(
+      "<iframe src=\"{}\" width=\"{}\" height=\"125\" style=\"float: left; margin-right: 10px; margin-top: 5px;\"></iframe>\n",
+      raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
+  }
+
+  os << "<div class=\"flexwrap\">\n";
 
   if ( cd.dps.mean() > 0 )
   {
@@ -3902,7 +3912,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     os << "</tr>\n"
        << "<tr>\n";
     double hps_range =
-        ( cd.hps.percentile( 0.5 + sim.confidence / 2 ) - cd.hps.percentile( 0.5 - sim.confidence / 2 ) );
+      ( cd.hps.percentile( 0.5 + sim.confidence / 2 ) - cd.hps.percentile( 0.5 - sim.confidence / 2 ) );
     double hps_error = sim_t::distribution_mean_error( sim, cd.hps );
     os.printf(
         "<td>%.1f</td>\n"
@@ -3948,48 +3958,25 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   if ( p.primary_role() == ROLE_TANK && !p.is_enemy() )
   {
     os << "<table class=\"sc\">\n"
-       // experimental first row for stacking the tables - wasn't happy with how
-       // it looked, may return to it later
-       //<< "<tr>\n" // first row
-       //<< "<th colspan=\"3\"><a href=\"#help-dtps\"
-       // class=\"help\">DTPS</a></th>\n"
-       //<< "<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n"
-       //<< "<th colspan=\"5\"><a href=\"#help-tmi\"
-       // class=\"help\">TMI</a></th>\n"
-       //<< "<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n"
-       //<< "<th colspan=\"4\"><a href=\"#help-msd\"
-       // class=\"help\">MSD</a></th>\n"
-       //<< "</tr>\n" // end first row
-       << "<tr>\n"  // start second row
+       << "<tr>\n"
        << "<th class=\"help\" data-help=\"#help-dtps\">DTPS</th>\n"
        << "<th class=\"help\" data-help=\"#help-error\">DTPS Error</th>\n"
        << "<th class=\"help\" data-help=\"#help-range\">DTPS Range</th>\n"
-       << "<th>&#160;</th>\n"
-       << "<th class=\"help\" data-help=\"#help-msd\">MSD Mean</th>\n"
-       << "<th class=\"help\" data-help=\"#help-msd\">MSD Min</th>\n"
-       << "<th class=\"help\" data-help=\"#help-msd\">MSD Max</th>\n"
-       << "</tr>\n"  // end second row
+       << "</tr>\n"
        << "<tr>\n";  // start third row
 
     double dtps_range = ( cd.dtps.percentile( 0.5 + sim.confidence / 2 ) -
                           cd.dtps.percentile( 0.5 - sim.confidence / 2 ) );
     double dtps_error = sim_t::distribution_mean_error( sim, p.collected_data.dtps );
-    os.printf( "<td>%.1f</td>\n"
-               "<td>%.2f / %.2f%%</td>\n"
-               "<td>%.0f / %.1f%%</td>\n",
-               cd.dtps.mean(),
-               dtps_error,
-               cd.dtps.mean() ? dtps_error * 100 / cd.dtps.mean() : 0,
-               dtps_range,
-               cd.dtps.mean() ? dtps_range / cd.dtps.mean() * 100.0 : 0 );
-
-    // spacer
-    os << "<td>&#160;&#160;&#160;&#160;&#160;</td>\n";
-
-    // print Max Spike Size stats
-    os.printf( "<td>%.1f%%</td>\n", cd.max_spike_amount.mean() );
-    os.printf( "<td>%.1f%%</td>\n", cd.max_spike_amount.min() );
-    os.printf( "<td>%.1f%%</td>\n", cd.max_spike_amount.max() );
+    os.printf(
+      "<td>%.1f</td>\n"
+      "<td>%.2f / %.2f%%</td>\n"
+      "<td>%.0f / %.1f%%</td>\n",
+      cd.dtps.mean(),
+      dtps_error,
+      cd.dtps.mean() ? dtps_error * 100 / cd.dtps.mean() : 0,
+      dtps_range,
+      cd.dtps.mean() ? dtps_range / cd.dtps.mean() * 100.0 : 0 );
 
     // End defensive table
     os << "</tr>\n"
@@ -4003,11 +3990,10 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
        << "<tr>\n"
        << "<th class=\"help\" data-help=\"#help-rps-out\">RPS Out</th>\n"
        << "<th class=\"help\" data-help=\"#help-rps-in\">RPS In</th>\n"
-       << "<th>Primary Resource</th>\n"
+       << "<th>Resource</th>\n"
        << "<th class=\"help\" data-help=\"#help-waiting\">Waiting</th>\n"
        << "<th class=\"help\" data-help=\"#help-apm\">APM</th>\n"
        << "<th>Active</th>\n"
-       << "<th>Skill</th>\n"
        << "</tr>\n"
        << "<tr>\n";
 
@@ -4018,30 +4004,22 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
         "<td>%.2f%%</td>\n"
         "<td>%.1f</td>\n"
         "<td>%.1f%%</td>\n"
-        "<td>%.0f%%</td>\n"
         "</tr>\n"
         "</table>\n",
         p.rps_loss, p.rps_gain, util::inverse_tokenize( util::resource_type_string( p.primary_resource() ) ).c_str(),
         cd.fight_length.mean() ? 100.0 * cd.waiting_time.mean() / cd.fight_length.mean() : 0,
         cd.fight_length.mean() ? 60.0 * cd.executed_foreground_actions.mean() / cd.fight_length.mean() : 0,
-        sim.simulation_length.mean() ? cd.fight_length.mean() / sim.simulation_length.mean() * 100.0 : 0,
-        p.initial.skill * 100.0 );
+        sim.simulation_length.mean() ? cd.fight_length.mean() / sim.simulation_length.mean() * 100.0 : 0 );
   }
+
+  os << "</div>\n"
+     << "</div>\n";
 
   // Spec and gear
   if ( !p.is_pet() && !p.is_enemy() )
   {
-    os << "<div>\n";
-
-    if ( p.sim->players_by_name.size() == 1 )
-    {
-      auto w_ = raidbots_talent_render_width( p.specialization(), 125 );
-      os.format(
-        "<iframe src=\"{}\" width=\"{}\" height=\"125\" style=\"float: left; margin-right: 10px; margin-top: 5px;\"></iframe>\n",
-        raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
-    }
-
-    os << "<table class=\"sc spec\">\n";
+    os << "<div>\n"
+       << "<table class=\"sc spec\">\n";
 
     if ( !p.origin_str.empty() )
     {

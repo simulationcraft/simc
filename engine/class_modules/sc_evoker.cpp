@@ -1452,10 +1452,10 @@ public:
 
 // Template for base evoker action code.
 template <class Base>
-struct evoker_action_t : public parse_action_effects_t<Base, evoker_t, evoker_td_t>
+struct evoker_action_t : public parse_action_effects_t<Base, evoker_td_t>
 {
 private:
-  using ab = parse_action_effects_t<Base, evoker_t, evoker_td_t>;
+  using ab = parse_action_effects_t<Base, evoker_td_t>;
 
 public:
   spell_color_e spell_color;
