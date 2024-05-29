@@ -4202,18 +4202,44 @@ namespace
 // ==========================================================================
 // Death Knight Custom Buff Structs
 // ==========================================================================
+// Base Death Knight Buff struct
+struct death_knight_buff_t : public buff_t
+{
+  death_knight_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell ) : buff_t( p, name, spell )
+  {
+  }
+
+  death_knight_t* p() const
+  {
+    return debug_cast<death_knight_t*>( this->player );
+  }
+};
+
+// Base Death Knight Absorb Buff struct
+struct death_knight_absorb_buff_t : public absorb_buff_t
+{
+  death_knight_absorb_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
+    : absorb_buff_t( p, name, spell )
+  {
+  }
+
+  death_knight_t* p() const
+  {
+    return debug_cast<death_knight_t*>( this->player );
+  }
+};
 
 // Custom School Change Buff struct
-struct school_change_buff_t : public buff_t
+struct school_change_buff_t : public death_knight_buff_t
 {
   school_change_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
-    : buff_t( p, name, spell )
+    : death_knight_buff_t( p, name, spell )
   {
   }
 
   void start( int stacks, double value, timespan_t duration ) override
   {
-    buff_t::start( stacks, value, duration );
+    death_knight_buff_t::start( stacks, value, duration );
     for ( auto& action : actions )
     {
       action->set_school_override( dbc::get_school_type( school ) );
@@ -4222,7 +4248,7 @@ struct school_change_buff_t : public buff_t
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
+    death_knight_buff_t::expire_override( expiration_stacks, remaining_duration );
     for ( auto& action : actions )
     {
       action->clear_school_override();
@@ -4730,10 +4756,10 @@ struct unholy_pact_damage_t final : public death_knight_spell_t
 // ==========================================================================
 
 // Breath of Sindragosa =====================================================
-struct breath_of_sindragosa_buff_t : public buff_t
+struct breath_of_sindragosa_buff_t : public death_knight_buff_t
 {
   breath_of_sindragosa_buff_t( death_knight_t* p )
-    : buff_t( p, "breath_of_sindragosa", p->talent.frost.breath_of_sindragosa ),
+    : death_knight_buff_t( p, "breath_of_sindragosa", p->talent.frost.breath_of_sindragosa ),
       ticking_cost( 0.0 ),
       tick_period( p->talent.frost.breath_of_sindragosa->effectN( 1 ).period() ),
       rune_gen( as<int>( p->spell.breath_of_sindragosa_rune_gen->effectN( 1 ).base_value() ) ),
@@ -4811,14 +4837,12 @@ struct breath_of_sindragosa_buff_t : public buff_t
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
+    death_knight_buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    death_knight_t* p = debug_cast<death_knight_t*>( player );
-
-    if ( !p->sim->event_mgr.canceled )
+    if ( !p()->sim->event_mgr.canceled )
     {
       // BoS generates 2 runes when it expires
-      p->replenish_rune( rune_gen, p->gains.breath_of_sindragosa );
+      p()->replenish_rune( rune_gen, p()->gains.breath_of_sindragosa );
     }
   }
 
@@ -4830,10 +4854,12 @@ private:
 };
 
 // Pillar of Frost Buff =====================================================
-struct pillar_of_frost_buff_t final : public buff_t
+struct pillar_of_frost_buff_t final : public death_knight_buff_t
 {
   pillar_of_frost_buff_t( death_knight_t* p )
-    : buff_t( p, "pillar_of_frost", p->talent.frost.pillar_of_frost ), player( p ), runes_spent( 0 )
+    : death_knight_buff_t( p, "pillar_of_frost", p->talent.frost.pillar_of_frost ),
+      runes_spent( 0 ),
+      pillar_extension( 0 )
   {
     cooldown->duration = 0_ms;  // Controlled by the action
     set_default_value( p->talent.frost.pillar_of_frost->effectN( 1 ).percent() );
@@ -4842,29 +4868,29 @@ struct pillar_of_frost_buff_t final : public buff_t
   // Override the value of the buff to properly capture Pillar of Frost's strength buff behavior
   double value() override
   {
-    return player->talent.frost.pillar_of_frost->effectN( 1 ).percent() +
-           ( runes_spent * player->talent.frost.pillar_of_frost->effectN( 2 ).percent() );
+    return p()->talent.frost.pillar_of_frost->effectN( 1 ).percent() +
+           ( runes_spent * p()->talent.frost.pillar_of_frost->effectN( 2 ).percent() );
   }
 
   double check_value() const override
   {
-    return player->talent.frost.pillar_of_frost->effectN( 1 ).percent() +
-           ( runes_spent * player->talent.frost.pillar_of_frost->effectN( 2 ).percent() );
+    return p()->talent.frost.pillar_of_frost->effectN( 1 ).percent() +
+           ( runes_spent * p()->talent.frost.pillar_of_frost->effectN( 2 ).percent() );
   }
 
   void start( int stacks, double value, timespan_t duration ) override
   {
-    buff_t::start( stacks, value, duration );
+    death_knight_buff_t::start( stacks, value, duration );
     runes_spent      = 0;
     pillar_extension = 0;
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
+    death_knight_buff_t::expire_override( expiration_stacks, remaining_duration );
     runes_spent      = 0;
     pillar_extension = 0;
-    if ( player->talent.frost.enduring_strength.ok() )
+    if ( p()->talent.frost.enduring_strength.ok() )
     {
       trigger_enduring_strength();
     }
@@ -4872,10 +4898,10 @@ struct pillar_of_frost_buff_t final : public buff_t
 
   void refresh( int stacks, double value, timespan_t duration ) override
   {
-    buff_t::refresh( stacks, value, duration );
+    death_knight_buff_t::refresh( stacks, value, duration );
     runes_spent      = 0;
     pillar_extension = 0;
-    if ( player->talent.frost.enduring_strength.ok() )
+    if ( p()->talent.frost.enduring_strength.ok() )
     {
       trigger_enduring_strength();
     }
@@ -4883,38 +4909,35 @@ struct pillar_of_frost_buff_t final : public buff_t
 
   void extend_pillar()
   {
-    if ( pillar_extension >= as<unsigned>( player->talent.frost.the_long_winter->effectN( 2 ).base_value() ) )
+    if ( pillar_extension >= as<unsigned>( p()->talent.frost.the_long_winter->effectN( 2 ).base_value() ) )
     {
       return;
     }
 
     pillar_extension++;
-    extend_duration( player,
-                     timespan_t::from_seconds( player->talent.frost.the_long_winter->effectN( 1 ).base_value() ) );
+    extend_duration( p(), timespan_t::from_seconds( p()->talent.frost.the_long_winter->effectN( 1 ).base_value() ) );
   }
 
   void trigger_enduring_strength()
   {
-    player->buffs.enduring_strength->trigger();
-    player->buffs.enduring_strength->extend_duration(
-        player, player->talent.frost.enduring_strength->effectN( 2 ).time_value() *
-                    player->buffs.enduring_strength_builder->stack() );
-    player->buffs.enduring_strength_builder->expire();
+    p()->buffs.enduring_strength->trigger();
+    p()->buffs.enduring_strength->extend_duration( p(), p()->talent.frost.enduring_strength->effectN( 2 ).time_value() *
+                                                            p()->buffs.enduring_strength_builder->stack() );
+    p()->buffs.enduring_strength_builder->expire();
   }
 
 public:
   int runes_spent;
 
 private:
-  death_knight_t* player;
   unsigned pillar_extension;
 };
 
 // Cryogennic Chamber =======================================================
-struct cryogenic_chamber_buff_t final : public buff_t
+struct cryogenic_chamber_buff_t final : public death_knight_buff_t
 {
   cryogenic_chamber_buff_t( death_knight_t* p )
-    : buff_t( p, "cryogenic_chamber", p->spell.cryogenic_chamber_buff ),
+    : death_knight_buff_t( p, "cryogenic_chamber", p->spell.cryogenic_chamber_buff ),
       damage( 0 ),
       cryogenic_chamber_damage( get_action<cryogenic_chamber_t>( "cryogenic_chamber", p ) )
   {
@@ -4926,13 +4949,13 @@ struct cryogenic_chamber_buff_t final : public buff_t
 
   void start( int stacks, double value, timespan_t duration ) override
   {
-    buff_t::start( stacks, value, duration );
+    death_knight_buff_t::start( stacks, value, duration );
     damage = 0;
   }
 
   void expire_override( int stacks, timespan_t remains ) override
   {
-    buff_t::expire_override( stacks, remains );
+    death_knight_buff_t::expire_override( stacks, remains );
     cryogenic_chamber_damage->base_dd_min = cryogenic_chamber_damage->base_dd_max = damage;
     cryogenic_chamber_damage->execute();
     damage = 0;
@@ -4947,10 +4970,10 @@ private:
 
 // Dark Transformation ======================================================
 // Even though the buff is tied to the pet ingame, it's simpler to add it to the player
-struct dark_transformation_buff_t final : public buff_t
+struct dark_transformation_buff_t final : public death_knight_buff_t
 {
   dark_transformation_buff_t( death_knight_t* p )
-    : buff_t( p, "dark_transformation", p->talent.unholy.dark_transformation ), player( p )
+    : death_knight_buff_t( p, "dark_transformation", p->talent.unholy.dark_transformation )
   {
     set_default_value_from_effect( 1 );
     cooldown->duration = 0_ms;  // Handled by the player ability
@@ -4958,43 +4981,40 @@ struct dark_transformation_buff_t final : public buff_t
 
   void start( int stacks, double value, timespan_t duration ) override
   {
-    buff_t::start( stacks, value, duration );
-    if ( player->talent.unholy.ghoulish_frenzy.ok() )
+    death_knight_buff_t::start( stacks, value, duration );
+    if ( p()->talent.unholy.ghoulish_frenzy.ok() )
     {
-      player->buffs.ghoulish_frenzy->trigger();
-      player->pets.ghoul_pet.active_pet()->ghoulish_frenzy->trigger();
+      p()->buffs.ghoulish_frenzy->trigger();
+      p()->pets.ghoul_pet.active_pet()->ghoulish_frenzy->trigger();
     }
-    if ( player->talent.sanlayn.gift_of_the_sanlayn.ok() )
+    if ( p()->talent.sanlayn.gift_of_the_sanlayn.ok() )
     {
-      player->buffs.gift_of_the_sanlayn->trigger();
+      p()->buffs.gift_of_the_sanlayn->trigger();
     }
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-    if ( player->talent.unholy.ghoulish_frenzy.ok() )
+    death_knight_buff_t::expire_override( expiration_stacks, remaining_duration );
+    if ( p()->talent.unholy.ghoulish_frenzy.ok() )
     {
-      player->buffs.ghoulish_frenzy->expire();
-      if ( player->pets.ghoul_pet.active_pet() != nullptr )
+      p()->buffs.ghoulish_frenzy->expire();
+      if ( p()->pets.ghoul_pet.active_pet() != nullptr )
       {
-        player->pets.ghoul_pet.active_pet()->ghoulish_frenzy->expire();
+        p()->pets.ghoul_pet.active_pet()->ghoulish_frenzy->expire();
       }
     }
-    if ( player->talent.sanlayn.gift_of_the_sanlayn.ok() )
+    if ( p()->talent.sanlayn.gift_of_the_sanlayn.ok() )
     {
-      player->buffs.gift_of_the_sanlayn->expire();
+      p()->buffs.gift_of_the_sanlayn->expire();
     }
   }
-
-private:
-  death_knight_t* player;
 };
 
 // Runic Corruption =========================================================
-struct runic_corruption_buff_t final : public buff_t
+struct runic_corruption_buff_t final : public death_knight_buff_t
 {
-  runic_corruption_buff_t( death_knight_t* p ) : buff_t( p, "runic_corruption", p->spell.runic_corruption )
+  runic_corruption_buff_t( death_knight_t* p ) : death_knight_buff_t( p, "runic_corruption", p->spell.runic_corruption )
   {
     // Runic Corruption refreshes to remaining time + buff duration
     refresh_behavior = buff_refresh_behavior::EXTEND;
@@ -5006,17 +5026,17 @@ struct runic_corruption_buff_t final : public buff_t
   // the equivalent of 0.9 of a rune ( 3 / 10 seconds on 3 regenerating runes )
   timespan_t buff_duration() const override
   {
-    timespan_t initial_duration = buff_t::buff_duration();
+    timespan_t initial_duration = death_knight_buff_t::buff_duration();
 
-    return initial_duration * player->cache.attack_haste();
+    return initial_duration * p()->cache.attack_haste();
   }
 };
 
 // Apocalyptic Conquest =======================================================
-struct apocalyptic_conquest_buff_t final : public buff_t
+struct apocalyptic_conquest_buff_t final : public death_knight_buff_t
 {
   apocalyptic_conquest_buff_t( death_knight_t* p )
-    : buff_t( p, "apocalyptic_conquest", p->pet_spell.apocalyptic_conquest ), player( p ), nazgrims_conquest( 0 )
+    : death_knight_buff_t( p, "apocalyptic_conquest", p->pet_spell.apocalyptic_conquest ), nazgrims_conquest( 0 )
   {
     set_default_value( p->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() );
     set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
@@ -5025,46 +5045,43 @@ struct apocalyptic_conquest_buff_t final : public buff_t
   // Override the value of the buff to properly capture Apocalyptic Conquest's strength buff behavior
   double value() override
   {
-    return player->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() +
-           ( nazgrims_conquest * player->talent.rider.nazgrims_conquest->effectN( 2 ).percent() );
+    return p()->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() +
+           ( nazgrims_conquest * p()->talent.rider.nazgrims_conquest->effectN( 2 ).percent() );
   }
 
   double check_value() const override
   {
-    return player->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() +
-           ( nazgrims_conquest * player->talent.rider.nazgrims_conquest->effectN( 2 ).percent() );
+    return p()->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() +
+           ( nazgrims_conquest * p()->talent.rider.nazgrims_conquest->effectN( 2 ).percent() );
   }
 
   void start( int stacks, double value, timespan_t duration ) override
   {
-    buff_t::start( stacks, value, duration );
+    death_knight_buff_t::start( stacks, value, duration );
     nazgrims_conquest = 0;
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
+    death_knight_buff_t::expire_override( expiration_stacks, remaining_duration );
     nazgrims_conquest = 0;
   }
 
   void refresh( int stacks, double value, timespan_t duration ) override
   {
-    buff_t::refresh( stacks, value, duration );
+    death_knight_buff_t::refresh( stacks, value, duration );
     nazgrims_conquest = 0;
   }
 
 public:
   int nazgrims_conquest;
-
-private:
-  death_knight_t* player;
 };
 
 // Essence of the Blood Queen ================================================
-struct essence_of_the_blood_queen_buff_t final : public buff_t
+struct essence_of_the_blood_queen_buff_t final : public death_knight_buff_t
 {
   essence_of_the_blood_queen_buff_t( death_knight_t* p )
-    : buff_t( p, "essence_of_the_blood_queen", p->spell.essence_of_the_blood_queen_buff ), player( p )
+    : death_knight_buff_t( p, "essence_of_the_blood_queen", p->spell.essence_of_the_blood_queen_buff )
   {
     set_default_value( p->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 );
     apply_affecting_aura( p->talent.sanlayn.frenzied_bloodthirst );
@@ -5073,18 +5090,15 @@ struct essence_of_the_blood_queen_buff_t final : public buff_t
   // Override the value of the buff to properly capture Essence of the Blood Queens's buff behavior
   double value() override
   {
-    return ( player->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
-           ( 1.0 + player->buffs.gift_of_the_sanlayn->check_value() );
+    return ( p()->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
+           ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
   }
 
   double check_value() const override
   {
-    return ( player->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
-           ( 1.0 + player->buffs.gift_of_the_sanlayn->check_value() );
+    return ( p()->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
+           ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
   }
-
-private:
-  death_knight_t* player;
 };
 
 // ==========================================================================
@@ -9606,14 +9620,13 @@ struct unholy_assault_t final : public death_knight_melee_attack_t
 
 // Anti-magic Shell =========================================================
 
-struct ams_parent_buff_t : public absorb_buff_t
+struct ams_parent_buff_t : public death_knight_absorb_buff_t
 {
   ams_parent_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell, bool horsemen )
-    : absorb_buff_t( p, name, spell ),
+    : death_knight_absorb_buff_t( p, name, spell ),
       damage( 0 ),
       horsemen( horsemen ),
-      option( 0 ),
-      dk( p )
+      option( 0 )
   {
     cooldown->duration = 0_ms;
     set_absorb_school( SCHOOL_MAGIC );
@@ -9634,7 +9647,7 @@ struct ams_parent_buff_t : public absorb_buff_t
 
   void start( int stacks, double, timespan_t duration ) override
   {
-    absorb_buff_t::start( stacks, calc_absorb(), duration );
+    death_knight_absorb_buff_t::start( stacks, calc_absorb(), duration );
 
     if ( option > 0 )
     {
@@ -9646,23 +9659,23 @@ struct ams_parent_buff_t : public absorb_buff_t
 
   void absorb_used( double absorbed, player_t* source ) override
   {
-    absorb_buff_t::absorb_used( absorbed, source );
+    death_knight_absorb_buff_t::absorb_used( absorbed, source );
     // AMS generates 0.833~ runic power per percentage max health absorbed.
-    double rp_generated = absorbed / dk->resources.max[ RESOURCE_HEALTH ] * 83.333;
+    double rp_generated = absorbed / p()->resources.max[RESOURCE_HEALTH] * 83.333;
 
     player->resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ),
-                           horsemen ? dk->gains.antimagic_shell_horsemen : dk->gains.antimagic_shell );
+                           horsemen ? p()->gains.antimagic_shell_horsemen : p()->gains.antimagic_shell);
   }
 
   double calc_absorb()
   {
-    double max_absorb = dk->resources.max[ RESOURCE_HEALTH ] * dk->spec.antimagic_shell->effectN( 2 ).percent();
+    double max_absorb = p()->resources.max[RESOURCE_HEALTH] * p()->spec.antimagic_shell->effectN(2).percent();
 
-    max_absorb *= 1.0 + dk->talent.antimagic_barrier->effectN( 2 ).percent();
+    max_absorb *= 1.0 + p()->talent.antimagic_barrier->effectN(2).percent();
 
-    max_absorb *= 1.0 + dk->cache.heal_versatility();
+    max_absorb *= 1.0 + p()->cache.heal_versatility();
 
-    max_absorb *= 1.0 + dk->talent.gloom_ward->effectN( 1 ).percent();
+    max_absorb *= 1.0 + p()->talent.gloom_ward->effectN(1).percent();
 
     if ( horsemen )
       max_absorb *= 0.8;
@@ -9673,7 +9686,6 @@ struct ams_parent_buff_t : public absorb_buff_t
 private:
   double damage;
   bool horsemen;
-  death_knight_t* dk;
 
 public:
   double option;
@@ -9757,11 +9769,10 @@ private:
 
 // Anti-magic Zone =========================================================
 
-struct antimagic_zone_buff_t final : public absorb_buff_t
+struct antimagic_zone_buff_t final : public death_knight_absorb_buff_t
 {
   antimagic_zone_buff_t( death_knight_t* p )
-    : absorb_buff_t( p, "antimagic_zone", p->spell.anti_magic_zone_buff ),
-      dk( p )
+    : death_knight_absorb_buff_t( p, "antimagic_zone", p->spell.anti_magic_zone_buff )
   {
     set_absorb_school( SCHOOL_MAGIC );
     set_absorb_source( p->get_stats( "antimagic_zone" ) );
@@ -9780,19 +9791,16 @@ struct antimagic_zone_buff_t final : public absorb_buff_t
   double calc_absorb()
   {
     // HP Value doesnt appear in spell data, instead stored in a variable in spell ID 51052
-    double max_absorb = dk->resources.max[ RESOURCE_HEALTH ] * 1.5;
+    double max_absorb = p()->resources.max[RESOURCE_HEALTH] * 1.5;
 
-    max_absorb *= 1.0 + dk->talent.assimilation->effectN( 1 ).percent();
+    max_absorb *= 1.0 + p()->talent.assimilation->effectN(1).percent();
 
-    max_absorb *= 1.0 + dk->cache.heal_versatility();
+    max_absorb *= 1.0 + p()->cache.heal_versatility();
 
-    max_absorb *= 1.0 + dk->talent.gloom_ward->effectN( 1 ).percent();
+    max_absorb *= 1.0 + p()->talent.gloom_ward->effectN(1).percent();
 
     return max_absorb;
   }
-
-private:
-  death_knight_t* dk;
 };
 
 struct antimagic_zone_t final : public death_knight_spell_t
