@@ -325,6 +325,7 @@ public:
     gain_t* melee_main_hand;
     gain_t* melee_off_hand;
     gain_t* raging_blow;
+    gain_t* ravager;
     gain_t* revenge;
     gain_t* shield_charge;
     gain_t* shield_slam;
@@ -4506,13 +4507,16 @@ struct rampage_parent_t : public warrior_attack_t
 struct ravager_tick_t : public warrior_attack_t
 {
   double rage_from_storm_of_steel;
+  double rage_from_ravager;
   ravager_tick_t( warrior_t* p, util::string_view name )
-    : warrior_attack_t( name, p, p->find_spell( 156287 ) ), rage_from_storm_of_steel( 0.0 )
+    : warrior_attack_t( name, p, p->find_spell( 156287 ) ),
+    rage_from_storm_of_steel( 0.0 ),
+    rage_from_ravager( 0.0 )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
     dual = ground_aoe = true;
-    rage_from_storm_of_steel = p->find_spell( 334934 )->effectN( 1 ).resource( RESOURCE_RAGE );
+    rage_from_ravager = p->find_spell( 334934 )->effectN( 1 ).resource( RESOURCE_RAGE );
     rage_from_storm_of_steel += p->talents.fury.storm_of_steel->effectN( 5 ).resource( RESOURCE_RAGE );
     rage_from_storm_of_steel += p->talents.protection.storm_of_steel->effectN( 5 ).resource( RESOURCE_RAGE );
   }
@@ -4521,7 +4525,10 @@ struct ravager_tick_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     if ( execute_state->n_targets > 0 )
+    {
+      p()->resource_gain( RESOURCE_RAGE, rage_from_ravager, p()->gain.ravager );
       p()->resource_gain( RESOURCE_RAGE, rage_from_storm_of_steel, p()->gain.storm_of_steel );
+    }
   }
 
   double action_multiplier() const override
@@ -4584,7 +4591,8 @@ struct ravager_t : public warrior_attack_t
 
     if ( p()->talents.arms.merciless_bonegrinder->ok() )
     {
-      p()->buff.merciless_bonegrinder->trigger();
+      // Set a 30s time for the buff, normally it would be either 12, or 15 seconds, but duration is hasted, expiry is tied to expiry of ravager
+      p()->buff.merciless_bonegrinder->trigger(30_s);
     }
   }
 
@@ -4592,6 +4600,12 @@ struct ravager_t : public warrior_attack_t
   {
     warrior_attack_t::tick( d );
     ravager->execute();
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    warrior_attack_t::last_tick( d );
+    p()->buff.merciless_bonegrinder->expire();
   }
 };
 
@@ -7377,6 +7391,7 @@ void warrior_t::init_gains()
   gain.meat_cleaver           = get_gain( "meat_cleaver" );
   gain.valarjar_berserking    = get_gain( "valarjar_berserking" );
   gain.rage_from_damage_taken = get_gain( "rage_from_damage_taken" );
+  gain.ravager                = get_gain( "ravager" );
   gain.simmering_rage         = get_gain( "simmering_rage" );
   gain.storm_of_steel         = get_gain( "storm_of_steel" );
   gain.execute_refund         = get_gain( "execute_refund" );
