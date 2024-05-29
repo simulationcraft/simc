@@ -8127,6 +8127,12 @@ struct festering_scythe_t final : public festering_base_t
   {
     aoe = -1;
   }
+
+  void execute() override
+  {
+    festering_base_t::execute();
+    p()->buffs.festering_scythe->expire();
+  }
 };
 
 struct festering_strike_t final : public festering_base_t
