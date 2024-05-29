@@ -4202,44 +4202,40 @@ namespace
 // ==========================================================================
 // Death Knight Custom Buff Structs
 // ==========================================================================
-// Base Death Knight Buff struct
-struct death_knight_buff_t : public buff_t
+template <typename Base = buff_t, typename = std::enable_if_t<std::is_base_of_v<buff_t, Base>>>
+struct death_knight_buff_base_t : public Base
 {
-  death_knight_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell ) : buff_t( p, name, spell )
-  {
-  }
+protected:
+  using base_t = death_knight_buff_base_t<Base>;
+
+public:
+  death_knight_buff_base_t( death_knight_t* p, std::string_view n, const spell_data_t* s = spell_data_t::nil(),
+                     const item_t* item = nullptr )
+    : Base( p, n, s, item )
+  {}
+
+  death_knight_buff_base_t( death_knight_td_t& td, std::string_view n, const spell_data_t* s = spell_data_t::nil(),
+                     const item_t* item = nullptr )
+    : Base( td, n, s, item )
+  {}
 
   death_knight_t* p() const
   {
-    return debug_cast<death_knight_t*>( this->player );
-  }
-};
-
-// Base Death Knight Absorb Buff struct
-struct death_knight_absorb_buff_t : public absorb_buff_t
-{
-  death_knight_absorb_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
-    : absorb_buff_t( p, name, spell )
-  {
-  }
-
-  death_knight_t* p() const
-  {
-    return debug_cast<death_knight_t*>( this->player );
+    return debug_cast<death_knight_t*>( Base::source );
   }
 };
 
 // Custom School Change Buff struct
-struct school_change_buff_t : public death_knight_buff_t
+struct school_change_buff_t : public death_knight_buff_base_t<buff_t>
 {
   school_change_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
-    : death_knight_buff_t( p, name, spell )
+    : death_knight_buff_base_t( p, name, spell )
   {
   }
 
   void start( int stacks, double value, timespan_t duration ) override
   {
-    death_knight_buff_t::start( stacks, value, duration );
+    death_knight_buff_base_t::start( stacks, value, duration );
     for ( auto& action : actions )
     {
       action->set_school_override( dbc::get_school_type( school ) );
@@ -4248,7 +4244,7 @@ struct school_change_buff_t : public death_knight_buff_t
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    death_knight_buff_t::expire_override( expiration_stacks, remaining_duration );
+    death_knight_buff_base_t::expire_override( expiration_stacks, remaining_duration );
     for ( auto& action : actions )
     {
       action->clear_school_override();
@@ -4754,6 +4750,38 @@ struct unholy_pact_damage_t final : public death_knight_spell_t
 // ==========================================================================
 // Death Knight Buffs
 // ==========================================================================
+namespace buffs
+{
+using death_knight_buff_t = death_knight_buff_base_t<>;
+
+// Base Death Knight Absorb Buff struct
+struct death_knight_absorb_buff_t : public death_knight_buff_base_t<absorb_buff_t>
+{
+protected:
+  using base_t = death_knight_absorb_buff_t;
+
+public:
+  death_knight_absorb_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
+    : death_knight_buff_base_t( p, name, spell )
+  {
+    set_absorb_gain( p->get_gain( absorb_name() ) );
+    set_absorb_source( p->get_stats( absorb_name() ) );
+  }
+
+  bool trigger( int s, double v, double c, timespan_t d ) override
+  {
+    auto ret = death_knight_buff_base_t::trigger( s, v, c, d );
+    if ( ret && !quiet )
+      absorb_source->add_execute( 0_ms, player );
+
+    return ret;
+  }
+
+  std::string absorb_name() const
+  {
+    return util::inverse_tokenize( name_str ) + " (absorb)";
+  }
+};
 
 // Breath of Sindragosa =====================================================
 struct breath_of_sindragosa_buff_t : public death_knight_buff_t
@@ -5101,6 +5129,131 @@ struct essence_of_the_blood_queen_buff_t final : public death_knight_buff_t
   }
 };
 
+// Anti-magic Shell =========================================================
+struct ams_parent_buff_t : public death_knight_absorb_buff_t
+{
+  ams_parent_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell, bool horsemen )
+    : death_knight_absorb_buff_t( p, name, spell ), damage( 0 ), horsemen( horsemen ), option( 0 )
+  {
+    cooldown->duration = 0_ms;
+    set_absorb_school( SCHOOL_MAGIC );
+    apply_affecting_aura( p->talent.antimagic_barrier );
+    apply_affecting_aura( p->talent.osmosis );
+    if ( option > 0 )
+    {
+      set_period( 1_s );
+      set_tick_time_behavior( buff_tick_time_behavior::HASTED );
+      set_tick_callback( [ this, p ]( buff_t*, int, timespan_t ) {
+        if ( p->specialization() == DEATH_KNIGHT_UNHOLY || p->specialization() == DEATH_KNIGHT_FROST )
+        {
+          consume( damage );
+        }
+      } );
+    }
+  }
+
+  void start( int stacks, double, timespan_t duration ) override
+  {
+    death_knight_absorb_buff_t::start( stacks, calc_absorb(), duration );
+
+    if ( option > 0 )
+    {
+      double ticks = buff_duration() / tick_time();
+      double pct   = option / ticks;
+      damage       = calc_absorb() * pct;
+    }
+  };
+
+  void absorb_used( double absorbed, player_t* source ) override
+  {
+    death_knight_absorb_buff_t::absorb_used( absorbed, source );
+    // AMS generates 0.833~ runic power per percentage max health absorbed.
+    double rp_generated = absorbed / p()->resources.max[ RESOURCE_HEALTH ] * 83.333;
+
+    player->resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ),
+                           horsemen ? p()->gains.antimagic_shell_horsemen : p()->gains.antimagic_shell );
+  }
+
+  double calc_absorb()
+  {
+    double max_absorb = p()->resources.max[ RESOURCE_HEALTH ] * p()->spec.antimagic_shell->effectN( 2 ).percent();
+
+    max_absorb *= 1.0 + p()->talent.antimagic_barrier->effectN( 2 ).percent();
+
+    max_absorb *= 1.0 + p()->cache.heal_versatility();
+
+    max_absorb *= 1.0 + p()->talent.gloom_ward->effectN( 1 ).percent();
+
+    if ( horsemen )
+      max_absorb *= 0.8;
+
+    return max_absorb;
+  }
+
+private:
+  double damage;
+  bool horsemen;
+
+public:
+  double option;
+};
+
+struct antimagic_shell_buff_t : public ams_parent_buff_t
+{
+  antimagic_shell_buff_t( death_knight_t* p )
+    : ams_parent_buff_t( p, "antimagic_shell", p->spec.antimagic_shell, false )
+  {
+    set_absorb_source( p->get_stats( "antimagic_shell" ) );
+    option = p->options.ams_absorb_percent;
+  }
+};
+
+struct antimagic_shell_buff_horseman_t : public ams_parent_buff_t
+{
+  antimagic_shell_buff_horseman_t( death_knight_t* p )
+    : ams_parent_buff_t( p, "antimagic_shell_horseman", p->pet_spell.rider_ams, true )
+  {
+    set_absorb_source( p->get_stats( "antimagic_shell_horseman" ) );
+    option = p->options.horsemen_ams_absorb_percent;
+  }
+};
+
+// Anti-magic Zone =========================================================
+struct antimagic_zone_buff_t final : public death_knight_absorb_buff_t
+{
+  antimagic_zone_buff_t( death_knight_t* p )
+    : death_knight_absorb_buff_t( p, "antimagic_zone", p->spell.anti_magic_zone_buff )
+  {
+    set_absorb_school( SCHOOL_MAGIC );
+    set_absorb_source( p->get_stats( "antimagic_zone" ) );
+  }
+
+  double consume( double consumed, action_state_t* s ) override
+  {
+    double actual_consumed = consumed;
+    actual_consumed *= 0.2;  // AMZ only absorbs 20% of incoming damage
+    s->result_absorbed *= 0.2;
+    s->self_absorb_amount -= consumed - actual_consumed;
+    s->result_amount += consumed - actual_consumed;
+    return death_knight_absorb_buff_t::consume( actual_consumed, s );
+  }
+
+  double calc_absorb()
+  {
+    // HP Value doesnt appear in spell data, instead stored in a variable in spell ID 51052
+    double max_absorb = p()->resources.max[ RESOURCE_HEALTH ] * 1.5;
+
+    max_absorb *= 1.0 + p()->talent.assimilation->effectN( 1 ).percent();
+
+    max_absorb *= 1.0 + p()->cache.heal_versatility();
+
+    max_absorb *= 1.0 + p()->talent.gloom_ward->effectN( 1 ).percent();
+
+    return max_absorb;
+  }
+};
+}  // namespace buffs
+
 // ==========================================================================
 // Death Knight Attacks
 // ==========================================================================
@@ -5233,7 +5386,7 @@ struct melee_t : public death_knight_melee_attack_t
         
         if ( p()->talent.frost.the_long_winter.ok() && p()->buffs.pillar_of_frost->check() )
         {
-          debug_cast<pillar_of_frost_buff_t*>( p()->buffs.pillar_of_frost )->extend_pillar();
+          debug_cast<buffs::pillar_of_frost_buff_t*>( p()->buffs.pillar_of_frost )->extend_pillar();
         }
       }
 
@@ -5541,7 +5694,7 @@ struct frost_fever_t final : public death_knight_disease_t
 
     if ( p()->talent.frost.cryogenic_chamber.ok() && !p()->buffs.cryogenic_chamber->at_max_stacks() )
     {
-      debug_cast<cryogenic_chamber_buff_t*>( p()->buffs.cryogenic_chamber )->damage += d->state->result_amount * p()->talent.frost.cryogenic_chamber->effectN( 1 ).percent();
+      debug_cast<buffs::cryogenic_chamber_buff_t*>( p()->buffs.cryogenic_chamber )->damage += d->state->result_amount * p()->talent.frost.cryogenic_chamber->effectN( 1 ).percent();
       p()->buffs.cryogenic_chamber->trigger();
     }
   }
@@ -9618,95 +9771,7 @@ struct unholy_assault_t final : public death_knight_melee_attack_t
 // Death Knight Defensive Abilities
 // ==========================================================================
 
-// Anti-magic Shell =========================================================
-struct ams_parent_buff_t : public death_knight_absorb_buff_t
-{
-  ams_parent_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell, bool horsemen )
-    : death_knight_absorb_buff_t( p, name, spell ), damage( 0 ), horsemen( horsemen ), option( 0 )
-  {
-    cooldown->duration = 0_ms;
-    set_absorb_school( SCHOOL_MAGIC );
-    apply_affecting_aura( p->talent.antimagic_barrier );
-    apply_affecting_aura( p->talent.osmosis );
-    if ( option > 0 )
-    {
-      set_period( 1_s );
-      set_tick_time_behavior( buff_tick_time_behavior::HASTED );
-      set_tick_callback( [ this, p ]( buff_t*, int, timespan_t ) {
-        if ( p->specialization() == DEATH_KNIGHT_UNHOLY || p->specialization() == DEATH_KNIGHT_FROST )
-        {
-          consume( damage );
-        }
-      } );
-    }
-  }
-
-  void start( int stacks, double, timespan_t duration ) override
-  {
-    death_knight_absorb_buff_t::start( stacks, calc_absorb(), duration );
-
-    if ( option > 0 )
-    {
-      double ticks = buff_duration() / tick_time();
-      double pct   = option / ticks;
-      damage       = calc_absorb() * pct;
-    }
-  };
-
-  void absorb_used( double absorbed, player_t* source ) override
-  {
-    death_knight_absorb_buff_t::absorb_used( absorbed, source );
-    // AMS generates 0.833~ runic power per percentage max health absorbed.
-    double rp_generated = absorbed / p()->resources.max[ RESOURCE_HEALTH ] * 83.333;
-
-    player->resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ),
-                           horsemen ? p()->gains.antimagic_shell_horsemen : p()->gains.antimagic_shell );
-  }
-
-  double calc_absorb()
-  {
-    double max_absorb = p()->resources.max[ RESOURCE_HEALTH ] * p()->spec.antimagic_shell->effectN( 2 ).percent();
-
-    max_absorb *= 1.0 + p()->talent.antimagic_barrier->effectN( 2 ).percent();
-
-    max_absorb *= 1.0 + p()->cache.heal_versatility();
-
-    max_absorb *= 1.0 + p()->talent.gloom_ward->effectN( 1 ).percent();
-
-    if ( horsemen )
-      max_absorb *= 0.8;
-
-    return max_absorb;
-  }
-
-private:
-  double damage;
-  bool horsemen;
-
-public:
-  double option;
-};
-
-struct antimagic_shell_buff_t : public ams_parent_buff_t
-{
-  antimagic_shell_buff_t( death_knight_t* p )
-    : ams_parent_buff_t( p, "antimagic_shell", p->spec.antimagic_shell, false )
-  {
-    set_absorb_source( p->get_stats( "antimagic_shell" ) );
-    option = p->options.ams_absorb_percent;
-  }
-};
-
-struct antimagic_shell_buff_horseman_t : public ams_parent_buff_t
-{
-  antimagic_shell_buff_horseman_t( death_knight_t* p )
-    : ams_parent_buff_t( p, "antimagic_shell_horseman", p->pet_spell.rider_ams, true )
-  {
-    set_absorb_source( p->get_stats( "antimagic_shell_horseman" ) );
-    option = p->options.horsemen_ams_absorb_percent;
-  }
-};
-
+// Anti-Magic Shell ========================================================
 struct antimagic_shell_t final : public death_knight_spell_t
 {
   antimagic_shell_t( death_knight_t* p, util::string_view options_str )
@@ -9763,41 +9828,7 @@ private:
   double damage;
 };
 
-// Anti-magic Zone =========================================================
-struct antimagic_zone_buff_t final : public death_knight_absorb_buff_t
-{
-  antimagic_zone_buff_t( death_knight_t* p )
-    : death_knight_absorb_buff_t( p, "antimagic_zone", p->spell.anti_magic_zone_buff )
-  {
-    set_absorb_school( SCHOOL_MAGIC );
-    set_absorb_source( p->get_stats( "antimagic_zone" ) );
-  }
-
-  double consume( double consumed, action_state_t* s ) override
-  {
-    double actual_consumed = consumed;
-    actual_consumed *= 0.2;  // AMZ only absorbs 20% of incoming damage
-    s->result_absorbed *= 0.2;
-    s->self_absorb_amount -= consumed - actual_consumed;
-    s->result_amount += consumed - actual_consumed;
-    return death_knight_absorb_buff_t::consume( actual_consumed, s );
-  }
-
-  double calc_absorb()
-  {
-    // HP Value doesnt appear in spell data, instead stored in a variable in spell ID 51052
-    double max_absorb = p()->resources.max[ RESOURCE_HEALTH ] * 1.5;
-
-    max_absorb *= 1.0 + p()->talent.assimilation->effectN( 1 ).percent();
-
-    max_absorb *= 1.0 + p()->cache.heal_versatility();
-
-    max_absorb *= 1.0 + p()->talent.gloom_ward->effectN( 1 ).percent();
-
-    return max_absorb;
-  }
-};
-
+// Anti-Magic Zone =========================================================
 struct antimagic_zone_t final : public death_knight_spell_t
 {
   antimagic_zone_t( death_knight_t* p, util::string_view options_str )
@@ -10164,13 +10195,13 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
     if ( talent.rider.nazgrims_conquest.ok() && buffs.apocalyptic_conquest->check() )
     {
-      debug_cast<apocalyptic_conquest_buff_t*>( buffs.apocalyptic_conquest )->nazgrims_conquest += as<int>( amount );
+      debug_cast<buffs::apocalyptic_conquest_buff_t*>( buffs.apocalyptic_conquest )->nazgrims_conquest += as<int>( amount );
       invalidate_cache( CACHE_STRENGTH );
     }
 
     if ( specialization() == DEATH_KNIGHT_FROST && buffs.pillar_of_frost->up() )
     {
-      debug_cast<pillar_of_frost_buff_t*>( buffs.pillar_of_frost )->runes_spent += as<int>( amount );
+      debug_cast<buffs::pillar_of_frost_buff_t*>( buffs.pillar_of_frost )->runes_spent += as<int>(amount);
       // Manually invalidate cache when incrementing runes_spent to ensure it updates
       invalidate_cache( CACHE_STRENGTH );
     }
@@ -12295,9 +12326,16 @@ void death_knight_t::init_scaling()
 }
 
 // death_knight_t::create_buffs ===============================================
+template <typename Buff = buffs::death_knight_buff_t, typename... Args>
+static inline buff_t* make_fallback( Args&&... args )
+{
+  return buff_t::make_buff_fallback<Buff>( std::forward<Args>( args )... );
+}
+
 void death_knight_t::create_buffs()
 {
   player_t::create_buffs();
+  using namespace buffs;
 
   // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
@@ -12308,79 +12346,94 @@ void death_knight_t::create_buffs()
 
   buffs.antimagic_zone = make_buff<antimagic_zone_buff_t>( this );
 
-  buffs.icebound_fortitude = make_buff( this, "icebound_fortitude", talent.icebound_fortitude )
-                                 ->set_duration( talent.icebound_fortitude->duration() )
-                                 ->set_cooldown( 0_ms );  // Handled by the action
+  buffs.icebound_fortitude =
+      make_fallback( talent.icebound_fortitude.ok(), this, "icebound_fortitude", talent.icebound_fortitude )
+          ->set_duration( talent.icebound_fortitude->duration() )
+          ->set_cooldown( 0_ms );  // Handled by the action
 
-  buffs.rune_mastery = make_buff( this, "rune_mastery", spell.rune_mastery_buff )
+  buffs.rune_mastery = make_fallback( talent.rune_mastery.ok(), this, "rune_mastery", spell.rune_mastery_buff )
                            ->set_chance( 0.15 )  // This was found through testing 2022 July 21.  Not in spelldata.
                            ->set_default_value( talent.rune_mastery->effectN( 1 ).percent() );
 
-  buffs.unholy_strength = make_buff( this, "unholy_strength", spell.unholy_strength_buff )
-                              ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-                              ->apply_affecting_aura( talent.unholy_bond );
+  buffs.unholy_strength =
+      make_fallback( runeforge.rune_of_the_fallen_crusader, this, "unholy_strength", spell.unholy_strength_buff )
+          ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+          ->apply_affecting_aura( talent.unholy_bond );
 
-  buffs.unholy_ground = make_buff( this, "unholy_ground", spell.unholy_ground_buff )
+  buffs.unholy_ground = make_fallback( talent.unholy_ground.ok(), this, "unholy_ground", spell.unholy_ground_buff )
                             ->set_default_value_from_effect( 1 )
                             ->set_duration( 0_ms );  // Handled by trigger_dnd_buffs() & expire_dnd_buffs()
 
-  buffs.abomination_limb = make_buff( this, "abomination_limb", talent.abomination_limb )
+  buffs.abomination_limb =
+      make_fallback( talent.abomination_limb.ok(), this, "abomination_limb", talent.abomination_limb )
           ->set_cooldown( 0_ms )  // Handled by the action
           ->set_partial_tick( true )
           ->set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
             active_spells.abomination_limb_damage->execute();
           } );
 
-  buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons->effectN( 1 ).trigger() )
-                         ->set_default_value( talent.icy_talons->effectN( 1 ).percent() )
-                         ->set_cooldown( talent.icy_talons->internal_cooldown() )
-                         ->set_trigger_spell( talent.icy_talons )
-                         ->apply_affecting_aura( talent.frost.smothering_offense )
-                         ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-                           if ( talent.deathbringer.dark_talons.ok() )
-                           {
-                             if ( new_ == 1 )
-                             {
-                               buffs.dark_talons_shadowfrost->trigger();
-                             }
-                             else if ( new_ == 0 )
-                             {
-                               buffs.dark_talons_shadowfrost->expire();
-                               buffs.dark_talons_icy_talons->expire();
-                             }
-                           }
-                         } );
+  buffs.icy_talons =
+      make_fallback( talent.icy_talons.ok(), this, "icy_talons", talent.icy_talons->effectN( 1 ).trigger() )
+          ->set_default_value( talent.icy_talons->effectN( 1 ).percent() )
+          ->set_cooldown( talent.icy_talons->internal_cooldown() )
+          ->set_trigger_spell( talent.icy_talons )
+          ->apply_affecting_aura( talent.frost.smothering_offense )
+          ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+            if ( talent.deathbringer.dark_talons.ok() )
+            {
+              if ( new_ == 1 )
+              {
+                buffs.dark_talons_shadowfrost->trigger();
+              }
+              else if ( new_ == 0 )
+              {
+                buffs.dark_talons_shadowfrost->expire();
+                buffs.dark_talons_icy_talons->expire();
+              }
+            }
+          } );
 
-  buffs.frost_shield = make_buff<absorb_buff_t>( this, "frost_shield", spell.frost_shield_buff )
-                           ->set_absorb_high_priority( true );
+  buffs.frost_shield = make_fallback<death_knight_absorb_buff_t>( talent.permafrost.ok(), this, "frost_shield",
+                                                                  spell.frost_shield_buff );
+  if ( talent.permafrost.ok() )
+  {
+    // Mildly annoying workaround since make_fallback is of type buff_t, not absorb_buff_t.
+    debug_cast<death_knight_absorb_buff_t*>( buffs.frost_shield )->set_absorb_high_priority( true );
+  }
 
   // Rider of the Apocalypse
   buffs.antimagic_shell_horsemen = make_buff<antimagic_shell_buff_horseman_t>( this );
 
   buffs.antimagic_shell_horsemen_icd =
-      make_buff( this, "antimagic_shell_horsemen_icd", pet_spell.rider_ams_icd )->set_quiet( true );
+      make_fallback( talent.rider.horsemens_aid.ok(), this, "antimagic_shell_horsemen_icd", pet_spell.rider_ams_icd )
+          ->set_quiet( true );
 
   buffs.apocalyptic_conquest = make_buff<apocalyptic_conquest_buff_t>( this );
 
   buffs.mograines_might =
-      make_buff( this, "mograines_might", pet_spell.mograines_might_buff )->set_default_value_from_effect( 1 );
+      make_fallback( talent.rider.mograines_might.ok(), this, "mograines_might", pet_spell.mograines_might_buff )
+          ->set_default_value_from_effect( 1 );
 
-  buffs.a_feast_of_souls = make_buff( this, "a_feast_of_souls", spell.a_feast_of_souls_buff )
-                               ->set_duration( 0_ms )
-                               ->set_default_value_from_effect( 1 );
+  buffs.a_feast_of_souls =
+      make_fallback( talent.rider.a_feast_of_souls.ok(), this, "a_feast_of_souls", spell.a_feast_of_souls_buff )
+          ->set_duration( 0_ms )
+          ->set_default_value_from_effect( 1 );
 
   // Deathbringer
-  buffs.grim_reaper = make_buff( this, "grim_reaper", spell.grim_reaper )->set_quiet( true );
+  buffs.grim_reaper =
+      make_fallback( talent.deathbringer.grim_reaper.ok(), this, "grim_reaper", spell.grim_reaper )->set_quiet( true );
 
-  buffs.bind_in_darkness = make_buff<school_change_buff_t>( this, "bind_in_darkness", spell.bind_in_darkness_buff )
+  buffs.bind_in_darkness = make_fallback<school_change_buff_t>( talent.deathbringer.bind_in_darkness.ok(), this,
+                                                                "bind_in_darkness", spell.bind_in_darkness_buff )
                                ->set_trigger_spell( talent.deathbringer.bind_in_darkness );
 
   buffs.dark_talons_shadowfrost =
-      make_buff<school_change_buff_t>( this, "dark_talons_shadowfrost", spell.dark_talons_shadowfrost_buff )
+      make_fallback<school_change_buff_t>( talent.deathbringer.dark_talons.ok(), this, "dark_talons_shadowfrost",
+                                           spell.dark_talons_shadowfrost_buff )
           ->set_quiet( true );
 
   buffs.dark_talons_icy_talons =
-      make_buff( this, "dark_talons", spell.dark_talons_icy_talons_buff )
+      make_fallback( talent.deathbringer.dark_talons.ok(), this, "dark_talons", spell.dark_talons_icy_talons_buff )
           ->set_stack_change_callback( [ this ]( buff_t* buff_, int old_, int new_ ) {
             int it_stack_modifier = as<int>( talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
             if ( new_ > old_ )
@@ -12394,14 +12447,15 @@ void death_knight_t::create_buffs()
             }
           } );
 
-  buffs.exterminate = make_buff( this, "exterminate", spell.exterminate_buff )
+  buffs.exterminate = make_fallback( talent.deathbringer.exterminate.ok(), this, "exterminate", spell.exterminate_buff )
                           ->set_expire_callback( [ this ]( buff_t* buff, int stacks, timespan_t duration ) {
                             make_event( *sim, 500_ms, [ this ]() {
                               get_action<exterminate_t>( "exterminate", this )->execute_on_target( this->target );
                             } );
                           } );
 
-  buffs.painful_death = make_buff( this, "painful_death", spell.exterminate_buff_painful_death )
+  buffs.painful_death = make_fallback( talent.deathbringer.painful_death.ok(), this, "painful_death",
+                                       spell.exterminate_buff_painful_death )
                             ->set_expire_callback( [ this ]( buff_t* buff, int stacks, timespan_t duration ) {
                               make_event( *sim, 500_ms, [ this ]() {
                                 get_action<exterminate_t>( "exterminate", this )->execute_on_target( this->target );
@@ -12411,7 +12465,8 @@ void death_knight_t::create_buffs()
   // San'layn
   buffs.essence_of_the_blood_queen = make_buff<essence_of_the_blood_queen_buff_t>( this );
 
-  buffs.gift_of_the_sanlayn = make_buff( this, "gift_of_the_sanlayn", spell.gift_of_the_sanlayn_buff )
+  buffs.gift_of_the_sanlayn = make_fallback( talent.sanlayn.gift_of_the_sanlayn.ok(), this, "gift_of_the_sanlayn",
+                                             spell.gift_of_the_sanlayn_buff )
                                   ->set_duration( 0_ms )
                                   ->set_default_value_from_effect( specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 )
                                   ->add_invalidate( CACHE_HASTE )
@@ -12430,7 +12485,8 @@ void death_knight_t::create_buffs()
                                     }
                                   } );
 
-  buffs.vampiric_strike = make_buff( this, "vampiric_strike", talent.sanlayn.vampiric_strike );
+  buffs.vampiric_strike =
+      make_fallback( talent.sanlayn.vampiric_strike.ok(), this, "vampiric_strike", talent.sanlayn.vampiric_strike );
 
   // Blood
   if ( this->specialization() == DEATH_KNIGHT_BLOOD )
@@ -12553,15 +12609,15 @@ void death_knight_t::create_buffs()
   {
     buffs.breath_of_sindragosa = make_buff<breath_of_sindragosa_buff_t>( this );
 
-    buffs.cold_heart = make_buff( this, "cold_heart", talent.frost.cold_heart->effectN( 1 ).trigger() );
+    buffs.cold_heart = make_fallback( talent.frost.cold_heart.ok(), this, "cold_heart", talent.frost.cold_heart->effectN( 1 ).trigger() );
 
-    buffs.gathering_storm = make_buff( this, "gathering_storm", spell.gathering_storm_buff )
+    buffs.gathering_storm = make_fallback( talent.frost.gathering_storm.ok(), this, "gathering_storm", spell.gathering_storm_buff )
                                 ->set_trigger_spell( talent.frost.gathering_storm )
                                 ->set_default_value_from_effect( 1 );
 
-    buffs.inexorable_assault = make_buff( this, "inexorable_assault", spell.inexorable_assault_buff );
+    buffs.inexorable_assault = make_fallback( talent.frost.inexorable_assault.ok(), this, "inexorable_assault", spell.inexorable_assault_buff );
 
-    buffs.killing_machine = make_buff( this, "killing_machine", talent.frost.killing_machine->effectN( 1 ).trigger() )
+    buffs.killing_machine = make_fallback( talent.frost.killing_machine.ok(), this, "killing_machine", talent.frost.killing_machine->effectN( 1 ).trigger() )
                                 ->set_chance( 1.0 )
                                 ->set_default_value_from_effect( 1 )
                                 ->set_stack_change_callback( [ this ]( buff_t* buff_, int old_, int new_ ) {
@@ -12576,7 +12632,7 @@ void death_knight_t::create_buffs()
 
 
     buffs.empower_rune_weapon =
-        make_buff( this, "empower_rune_weapon", talent.frost.empower_rune_weapon )
+        make_fallback( talent.frost.empower_rune_weapon.ok(), this, "empower_rune_weapon", talent.frost.empower_rune_weapon )
             ->set_tick_zero( true )
             ->set_cooldown( 0_ms )
             ->set_period( talent.frost.empower_rune_weapon->effectN( 1 ).period() )
@@ -12625,25 +12681,25 @@ void death_knight_t::create_buffs()
                        }
                      } );
 
-    buffs.bonegrinder_crit = make_buff( this, "bonegrinder_crit", spell.bonegrinder_crit_buff )
+    buffs.bonegrinder_crit = make_fallback( talent.frost.bonegrinder.ok(), this, "bonegrinder_crit", spell.bonegrinder_crit_buff )
                                  ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
                                  ->set_cooldown( talent.frost.bonegrinder->internal_cooldown() );
 
-    buffs.bonegrinder_frost = make_buff( this, "bonegrinder_frost", spell.bonegrinder_frost_buff )
+    buffs.bonegrinder_frost = make_fallback( talent.frost.bonegrinder.ok(), this, "bonegrinder_frost", spell.bonegrinder_frost_buff )
                                   ->set_default_value( talent.frost.bonegrinder->effectN( 1 ).percent() )
                                   ->set_schools_from_effect( 1 );
 
     buffs.enduring_strength_builder =
-        make_buff( this, "enduring_strength_builder", talent.frost.enduring_strength->effectN( 1 ).trigger() );
+        make_fallback( talent.frost.enduring_strength.ok(), this, "enduring_strength_builder", talent.frost.enduring_strength->effectN( 1 ).trigger() );
 
-    buffs.enduring_strength = make_buff( this, "enduring_strength", spell.enduring_strength_buff )
+    buffs.enduring_strength = make_fallback( talent.frost.enduring_strength.ok(), this, "enduring_strength", spell.enduring_strength_buff )
                                   ->set_default_value( talent.frost.enduring_strength->effectN( 3 ).percent() );
 
-    buffs.frostwhelps_aid = make_buff( this, "frostwhelps_aid", spell.frostwhelps_aid_buff )
+    buffs.frostwhelps_aid = make_fallback( talent.frost.frostwhelps_aid.ok(), this, "frostwhelps_aid", spell.frostwhelps_aid_buff )
                                 ->set_default_value( talent.frost.frostwhelps_aid->effectN( 3 ).base_value() );
 
     buffs.unleashed_frenzy =
-        make_buff( this, "unleashed_frenzy", talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
+        make_fallback( talent.frost.unleashed_frenzy.ok(), this, "unleashed_frenzy", talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
             ->set_cooldown( talent.frost.unleashed_frenzy->internal_cooldown() )
             ->set_default_value( talent.frost.unleashed_frenzy->effectN( 1 ).percent() );
 
@@ -12657,16 +12713,16 @@ void death_knight_t::create_buffs()
 
     buffs.runic_corruption = make_buff<runic_corruption_buff_t>( this );
 
-    buffs.sudden_doom = make_buff( this, "sudden_doom", talent.unholy.sudden_doom->effectN( 1 ).trigger() )
+    buffs.sudden_doom = make_fallback( talent.unholy.sudden_doom.ok(), this, "sudden_doom", talent.unholy.sudden_doom->effectN( 1 ).trigger() )
                             ->set_trigger_spell( talent.unholy.sudden_doom )
                             ->apply_affecting_aura( talent.unholy.harbinger_of_doom );
 
-    buffs.unholy_assault = make_buff( this, "unholy_assault", talent.unholy.unholy_assault )
+    buffs.unholy_assault = make_fallback( talent.unholy.unholy_assault.ok(), this, "unholy_assault", talent.unholy.unholy_assault )
                                ->set_cooldown( 0_ms )  // Handled by the action
                                ->set_default_value_from_effect( 4 );
 
     buffs.unholy_pact =
-        make_buff( this, "unholy_pact", talent.unholy.unholy_pact->effectN( 1 ).trigger()->effectN( 1 ).trigger() )
+        make_fallback( talent.unholy.unholy_pact.ok(), this, "unholy_pact", talent.unholy.unholy_pact->effectN( 1 ).trigger()->effectN( 1 ).trigger() )
             ->set_tick_zero( true )
             ->set_period( 1.0_s )
             ->set_tick_behavior( buff_tick_behavior::CLIP )
@@ -12683,23 +12739,23 @@ void death_knight_t::create_buffs()
               }
             } );
 
-    buffs.ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", spell.ghoulish_frenzy_player )
+    buffs.ghoulish_frenzy = make_fallback( talent.unholy.ghoulish_frenzy.ok(), this, "ghoulish_frenzy", spell.ghoulish_frenzy_player )
                                 ->set_duration( 0_ms )  // Handled by DT
                                 ->set_default_value( spell.ghoulish_frenzy_player->effectN( 1 ).percent() )
                                 ->apply_affecting_aura( talent.unholy.ghoulish_frenzy );
 
-    buffs.plaguebringer = make_buff( this, "plaguebringer", spell.plaguebringer_buff )
+    buffs.plaguebringer = make_fallback( talent.unholy.plaguebringer.ok(), this, "plaguebringer", spell.plaguebringer_buff )
                               ->set_cooldown( talent.unholy.plaguebringer->internal_cooldown() )
                               ->set_default_value( talent.unholy.plaguebringer->effectN( 1 ).percent() )
                               ->set_max_stack( 1 );
 
-    buffs.festermight = make_buff( this, "festermight", spell.festermight_buff )
+    buffs.festermight = make_fallback( talent.unholy.festermight.ok(), this, "festermight", spell.festermight_buff )
                             ->set_default_value( talent.unholy.festermight->effectN( 1 ).percent() )
                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
-    buffs.commander_of_the_dead = make_buff( this, "commander_of_the_dead", spell.commander_of_the_dead );
+    buffs.commander_of_the_dead = make_fallback( talent.unholy.commander_of_the_dead.ok(), this, "commander_of_the_dead", spell.commander_of_the_dead );
 
-    buffs.defile_buff = make_buff( this, "defile", spell.defile_buff )
+    buffs.defile_buff = make_fallback( talent.unholy.defile.ok(), this, "defile", spell.defile_buff )
                             ->set_default_value( spell.defile_buff->effectN( 1 ).base_value() / 1.8 );
   }
 }
@@ -12901,7 +12957,7 @@ void death_knight_t::activate()
     register_on_kill_callback( [ this, stacks ]( player_t* ) {
       if ( !sim->event_mgr.canceled && buffs.apocalyptic_conquest->check() )
       {
-        debug_cast<apocalyptic_conquest_buff_t*>( buffs.apocalyptic_conquest )->nazgrims_conquest += stacks;
+        debug_cast<buffs::apocalyptic_conquest_buff_t*>( buffs.apocalyptic_conquest )->nazgrims_conquest += stacks;
         invalidate_cache( CACHE_STRENGTH );
       }
     } );
