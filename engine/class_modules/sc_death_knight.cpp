@@ -1718,7 +1718,6 @@ public:
   void trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance = -1.0,
                                  bool death_trigger = false );
   void start_unholy_aura();
-  void decomposition_extend_pets();
   // Start the repeated stacking of buffs, called at combat start
   void start_cold_heart();
   void start_inexorable_assault();
@@ -2309,7 +2308,9 @@ struct death_knight_pet_t : public pet_t
   timespan_t precombat_spawn_adjust;
   util::string_view pet_name;
   double army_ghoul_ap_mod;
-  timespan_t extended;
+  timespan_t decomposition_extended;
+  timespan_t decomposition_extend_limit;
+  bool decomposition_can_extend;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true,
                       bool dynamic = true )
@@ -2321,7 +2322,9 @@ struct death_knight_pet_t : public pet_t
       precombat_spawn_adjust( 0_s ),
       pet_name( name ),
       army_ghoul_ap_mod(),
-      extended( 0_s )
+      decomposition_extended( 0_s ),
+      decomposition_extend_limit( 0_s ),
+      decomposition_can_extend( false )
   {
     if ( auto_attack )
     {
@@ -2330,6 +2333,12 @@ struct death_knight_pet_t : public pet_t
 
     // Not in spell data, storing here to ensure parity between magus/apoc/army ghouls.
     army_ghoul_ap_mod = 0.4664;
+
+    if ( player->talent.unholy.decomposition.ok() )
+    {
+      decomposition_extend_limit =
+          timespan_t::from_millis( player->talent.unholy.decomposition->effectN( 3 ).base_value() );
+    }
   }
 
   void init_finished() override
@@ -2375,19 +2384,28 @@ struct death_knight_pet_t : public pet_t
   void arise() override
   {
     pet_t::arise();
-    extended = 0_s;
+    if ( decomposition_can_extend )
+    {
+      decomposition_extended = 0_s;
+    }
   }
 
   void demise() override
   {
     pet_t::demise();
-    extended = 0_s;
+    if ( decomposition_can_extend )
+    {
+      decomposition_extended = 0_s;
+    }
   }
 
   void reset() override
   {
     pet_t::reset();
-    extended = 0_s;
+    if ( decomposition_can_extend )
+    {
+      decomposition_extended = 0_s;
+    }
   }
 
   void apply_affecting_auras( action_t& action ) override
@@ -2928,6 +2946,7 @@ struct army_ghoul_pet_t final : public base_ghoul_pet_t
     : base_ghoul_pet_t( owner, name, true )
   {
     affected_by_commander_of_the_dead = true;
+    decomposition_can_extend          = true;
   }
 
   void init_base_stats() override
@@ -3630,6 +3649,7 @@ struct magus_pet_t : public death_knight_pet_t
   {
     resource_regeneration             = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
+    decomposition_can_extend          = true;
   }
 
   void init_spells() override
@@ -4238,6 +4258,7 @@ struct abomination_pet_t : public death_knight_pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 3.6_s;
     affected_by_commander_of_the_dead = true;
+    decomposition_can_extend          = true;
     owner_coeff.ap_from_ap = 2.4;
     resource_regeneration  = regen_type::DISABLED;
 
@@ -5800,8 +5821,14 @@ struct virulent_plague_t final : public death_knight_disease_t
   virulent_plague_t( util::string_view name, death_knight_t* p )
     : death_knight_disease_t( name, p, p->spell.virulent_plague ),
       ff( get_action<frost_fever_t>( "frost_fever", p ) ),
-      bp( get_action<blood_plague_t>( "blood_plague", p, true ) )
+      bp( get_action<blood_plague_t>( "blood_plague", p, true ) ),
+      decomposition_extend_duration( 0_s )
   {
+    if ( p->talent.unholy.decomposition.ok() )
+    {
+      decomposition_extend_duration =
+          timespan_t::from_millis( p->talent.unholy.decomposition->effectN( 2 ).base_value() );
+    }
   }
 
   void tick( dot_t* d ) override
@@ -5817,7 +5844,17 @@ struct virulent_plague_t final : public death_knight_disease_t
       if ( rng().roll( 0.2 ) )
       {
         debug_cast<decomposition_debuff_t*>( td->debuff.decomposition )->execute_damage();
-        p()->decomposition_extend_pets();
+
+        for ( auto& pet : p()->active_pets )
+        {
+          auto this_pet = debug_cast<pets::death_knight_pet_t*>( pet );
+          if ( this_pet->decomposition_can_extend &&
+               this_pet->decomposition_extend_limit > this_pet->decomposition_extended )
+          {
+            pet->adjust_duration( decomposition_extend_duration );
+            this_pet->decomposition_extended += decomposition_extend_duration;
+          }
+        }
       }
     }
   }
@@ -5840,13 +5877,17 @@ struct virulent_plague_t final : public death_knight_disease_t
   void last_tick( dot_t* d ) override
   {
     death_knight_disease_t::last_tick( d );
-    auto td = get_td( d->target );
-    td->debuff.decomposition->expire();
+    if ( p()->talent.unholy.decomposition.ok() )
+    {
+      auto td = get_td( d->target );
+      td->debuff.decomposition->expire();
+    }
   }
 
 private:
   propagate_const<action_t*> ff;
   propagate_const<action_t*> bp;
+  timespan_t decomposition_extend_duration;
 };
 
 // Unholy Blight DoT ====================================================
@@ -11190,66 +11231,6 @@ void death_knight_t::reapers_mark_explosion_wrapper( player_t* target, int stack
   if ( target != nullptr && !target->is_sleeping() && stacks > 0 )
   {
     debug_cast<reapers_mark_explosion_t*>( active_spells.reapers_mark_explosion )->execute_wrapper( target, stacks );
-  }
-}
-
-void death_knight_t::decomposition_extend_pets()
-{
-  timespan_t duration = timespan_t::from_millis( talent.unholy.decomposition->effectN( 2 ).base_value() );
-  timespan_t limit    = timespan_t::from_millis( talent.unholy.decomposition->effectN( 3 ).base_value() );
-
-  for ( auto& pet : pets.apoc_ghouls.active_pets() )
-  {
-    if ( pet->extended < limit )
-    {
-      pet->adjust_duration( duration );
-      pet->extended += duration;
-    }
-  }
-
-  for ( auto& pet : pets.army_ghouls.active_pets() )
-  {
-    if ( pet->extended < limit )
-    {
-      pet->adjust_duration( duration );
-      pet->extended += duration;
-    }
-  }
-
-  for ( auto& pet : pets.apoc_magus.active_pets() )
-  {
-    if ( pet->extended < limit )
-    {
-      pet->adjust_duration( duration );
-      pet->extended += duration;
-    }
-  }
-
-  for ( auto& pet : pets.army_magus.active_pets() )
-  {
-    if ( pet->extended < limit )
-    {
-      pet->adjust_duration( duration );
-      pet->extended += duration;
-    }
-  }
-
-  for ( auto& pet : pets.doomed_bidding_magus.active_pets() )
-  {
-    if ( pet->extended < limit )
-    {
-      pet->adjust_duration( duration );
-      pet->extended += duration;
-    }
-  }
-
-  for ( auto& pet : pets.abomination.active_pets() )
-  {
-    if ( pet->extended < limit )
-    {
-      pet->adjust_duration( duration );
-      pet->extended += duration;
-    }
   }
 }
 
