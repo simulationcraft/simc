@@ -2073,7 +2073,7 @@ struct bladestorm_t : public warrior_attack_t
     // Unhinged DOES work w/ Torment and Signet
     if ( p->talents.arms.unhinged->ok() )
     {
-      mortal_strike = new mortal_strike_unhinged_t( p, "mortal_strike_unhinged" );
+      mortal_strike = new mortal_strike_unhinged_t( p, "mortal_strike_bladestorm_unhinged" );
       add_child( mortal_strike );
     }
   }
@@ -4545,10 +4545,12 @@ struct ravager_tick_t : public warrior_attack_t
 struct ravager_t : public warrior_attack_t
 {
   ravager_tick_t* ravager;
+  mortal_strike_unhinged_t* mortal_strike;
   // We have to use find_spell here, rather than use the talent lookup, as both fury and protection use the same spell_id
   ravager_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "ravager", p, p->talents.shared.ravager ),
-      ravager( new ravager_tick_t( p, "ravager_tick" ) )
+      ravager( new ravager_tick_t( p, "ravager_tick" ) ),
+      mortal_strike( nullptr )
   {
     parse_options( options_str );
     ignore_false_positive   = true;
@@ -4556,6 +4558,12 @@ struct ravager_t : public warrior_attack_t
     internal_cooldown->duration = 0_s; // allow Anger Management to reduce the cd properly due to having both charges and cooldown entries
     attack_power_mod.direct = attack_power_mod.tick = 0;
     add_child( ravager );
+
+    if ( p->talents.arms.unhinged->ok() )
+    {
+      mortal_strike = new mortal_strike_unhinged_t( p, "mortal_strike_ravager_unhinged" );
+      add_child( mortal_strike );
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -4600,6 +4608,17 @@ struct ravager_t : public warrior_attack_t
   {
     warrior_attack_t::tick( d );
     ravager->execute();
+
+    // As of Dragonflight, Unhinged triggers with tick 2 and 4
+    if ( mortal_strike && ( d->current_tick == 2 || d->current_tick == 4 ) )
+    {
+      auto t = select_random_target();
+
+      if ( t )
+      {
+        mortal_strike->execute_on_target( t );
+      }
+    }
   }
 
   void last_tick( dot_t* d ) override
