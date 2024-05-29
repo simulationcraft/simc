@@ -21135,7 +21135,7 @@ static const std::array<spelltext_data_t, 21153> __spelltext_data { {
   { 444136, "$@spelldesc444128", 0, 0 },
   { 444434, "$@spelldesc444435", "Healing for $w2 every $t1 sec. \r\n$w1 healing remaining.", 0 },
   { 444435, "$s3% of damage taken grants you Healing Blood, up to $s1% of your max health. Every $444434t1 sec, $s2 Healing Blood is expended to heal you if you are injured.", 0, 0 },
-  { 444622, "Restore health to an ally and grant them a Ward of Salvation for $444622d absorbing damage equal to the overhealing.\r\n\r\nWhile Ward of Salvation persists, all healing taken grants absorb instead of healing.\r\n\r\nWhen the Ward expires, it explodes inflicting Holy damage equal to the remaining absorb to all enemies within $444628A1 yards, split evenly.", "$@spellaura444693\r\n\r\nHealing taken is added to the absorb instead of restoring health.", 0 },
+  { 444622, "Restore health to an ally and grant them a Ward of Salvation for $444622d.\r\n\r\nWhile Ward of Salvation persists, the caster's healing grants absorb in addition to healing.\r\n\r\nWhen the Ward expires, it explodes inflicting Holy damage equal to the remaining absorb to all enemies within $444628A1 yards, split evenly.", "$@spellaura444693\r\n\r\nHealing taken from $@auracaster is added to the absorb shield.", 0 },
   { 444628, "Deal Holy damage to enemies within $A1 yards, split evenly.", 0, 0 },
   { 444665, "$@spelldesc444677", "$s1% of damage taken redirected to $@auracaster.", 0 },
   { 444666, "$@spelldesc444677", 0, 0 },
@@ -21143,7 +21143,7 @@ static const std::array<spelltext_data_t, 21153> __spelltext_data { {
   { 444954, "Shroud your party members within $444954A1 yards with Void, granting them a shield absorbing damage for $444983d and reducing their health to $s2%. Damage taken from this effect is added to the absorb.", 0, 0 },
   { 444982, "Shroud your party members within $444954A1 yards with Void, granting them a shield absorbing $s1 damage for $444983d and reducing their health to $444954s2%. Damage taken from this effect is added to the absorb.", 0, 0 },
   { 444983, "$@spelldesc444954", "Absorbs $w1 damage.", 0 },
-  { 445055, "Restore $s2 health to an ally and grant them a Ward of Salvation for $444622d absorbing damage equal to the overhealing.\r\n\r\nWhile Ward of Salvation persists, all healing taken grants absorb instead of healing.\r\n\r\nWhen the Ward expires, it explodes inflicting Holy damage equal to the remaining absorb to all enemies within $444628A1 yards, split evenly.", 0, 0 },
+  { 445055, "Restore $s2 health to an ally and grant them a Ward of Salvation for $444622d.\r\n\r\nWhile Ward of Salvation persists, the caster's healing grants absorb in addition to healing.\r\n\r\nWhen the Ward expires, it explodes inflicting Holy damage equal to the remaining absorb to all enemies within $444628A1 yards, split evenly.", 0, 0 },
   { 447565, "Grants the caster $s1 $pri for $447571d.\r\n\r\nEvery $447571t2 sec gain a stack of Funeral Pyre, suffering $s2 Fire damage per stack.\r\n\r\nFuneral Pyre will be removed early if reactivated. ($447566s1 Min Cooldown)", 0, 0 },
   { 447566, "Grants the caster $pri for $447571d.\r\n\r\nEvery $447571t2 sec gain a stack of Funeral Pyre, suffering Fire damage per stack.\r\n\r\nFuneral Pyre will be removed early if reactivated. ($s1 Min Cooldown)", 0, 0 },
   { 447571, "$@spelldesc447566", "$pri increased by $w1.\r\nSuffering $w2 damage every $t2 sec.", 0 },
@@ -21156,7 +21156,10 @@ static const std::array<spelltext_data_t, 21153> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.2.7.54904
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+  {  444622,  0, "Restore health to an ally and grant them a Ward of Salvation for $444622d absorbing damage equal to the overhealing.\r\n\r\nWhile Ward of Salvation persists, all healing taken grants absorb instead of healing.\r\n\r\nWhen the Ward expires, it explodes inflicting Holy damage equal to the remaining absorb to all enemies within $444628A1 yards, split evenly.", "Restore health to an ally and grant them a Ward of Salvation for $444622d.\r\n\r\nWhile Ward of Salvation persists, the caster's healing grants absorb in addition to healing.\r\n\r\nWhen the Ward expires, it explodes inflicting Holy damage equal to the remaining absorb to all enemies within $444628A1 yards, split evenly." },
+  {  444622,  1, "$@spellaura444693\r\n\r\nHealing taken is added to the absorb instead of restoring health.", "$@spellaura444693\r\n\r\nHealing taken from $@auracaster is added to the absorb shield." },
+  {  445055,  0, "Restore $s2 health to an ally and grant them a Ward of Salvation for $444622d absorbing damage equal to the overhealing.\r\n\r\nWhile Ward of Salvation persists, all healing taken grants absorb instead of healing.\r\n\r\nWhen the Ward expires, it explodes inflicting Holy damage equal to the remaining absorb to all enemies within $444628A1 yards, split evenly.", "Restore $s2 health to an ally and grant them a Ward of Salvation for $444622d.\r\n\r\nWhile Ward of Salvation persists, the caster's healing grants absorb in addition to healing.\r\n\r\nWhen the Ward expires, it explodes inflicting Holy damage equal to the remaining absorb to all enemies within $444628A1 yards, split evenly." },
 } };
 
 // Spell description variables, wow build 10.2.7.54904
