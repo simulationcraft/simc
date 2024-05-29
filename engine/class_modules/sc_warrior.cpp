@@ -5832,6 +5832,9 @@ struct in_for_the_kill_t : public buff_t
 
   {
     add_invalidate( CACHE_ATTACK_HASTE );
+    set_duration( s->duration() +
+                  p.talents.arms.spiteful_serenity->effectN( 8 ).time_value() +
+                  p.talents.arms.blunt_instruments->effectN( 2 ).time_value() );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
