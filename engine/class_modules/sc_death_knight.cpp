@@ -603,6 +603,7 @@ struct death_knight_td_t : public actor_target_data_t
     propagate_const<buff_t*> rotten_touch;
     propagate_const<buff_t*> death_rot;
     propagate_const<buff_t*> unholy_aura;
+    buff_t* decomposition;
 
     // Rider of the Apocalypse
     propagate_const<buff_t*> chains_of_ice_trollbane_slow;
@@ -858,6 +859,7 @@ public:
     propagate_const<action_t*> ruptured_viscera;
     propagate_const<action_t*> outbreak_aoe;
     action_t* unholy_pact_damage;
+    action_t* decomposition_damage;
 
   } active_spells;
 
@@ -1137,7 +1139,7 @@ public:
       // Row 5
       player_talent_t defile;
       player_talent_t unholy_blight;
-      player_talent_t infected_claws;
+      player_talent_t festering_scythe;
       player_talent_t apocalypse;
       player_talent_t plaguebringer;
       player_talent_t clawing_shadows;
@@ -1154,7 +1156,7 @@ public:
       // Row 7
       player_talent_t vile_contagion;
       player_talent_t pestilence;
-      player_talent_t random_unknown_thingie;
+      player_talent_t infected_claws;
       player_talent_t menacing_magus;
       player_talent_t coil_of_devastation;
       player_talent_t rotten_touch;
@@ -1168,7 +1170,7 @@ public:
       player_talent_t morbidity;
       player_talent_t festermight;
       player_talent_t raise_abomination;
-      player_talent_t more_random_unknown_thing;
+      player_talent_t decomposition;
       player_talent_t unholy_aura;
       // Row 10
       player_talent_t superstrain;
@@ -1341,6 +1343,10 @@ public:
     const spell_data_t* festering_wound_damage;
     const spell_data_t* outbreak_aoe;
     const spell_data_t* unholy_aura_debuff;
+    const spell_data_t* decomposition_buff;
+    const spell_data_t* decomposition_damage;
+    const spell_data_t* festering_scythe;
+    const spell_data_t* festering_scythe_buff;
 
     // Rider of the Apocalypse non-talent spells
     const spell_data_t* a_feast_of_souls_buff;
@@ -1712,6 +1718,7 @@ public:
   void trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance = -1.0,
                                  bool death_trigger = false );
   void start_unholy_aura();
+  void decomposition_extend_pets();
   // Start the repeated stacking of buffs, called at combat start
   void start_cold_heart();
   void start_inexorable_assault();
@@ -1750,6 +1757,47 @@ public:
     entries.push_back( new T_DATA( name, T_CONTAINER() ) );
     return &( entries.back()->second );
   }
+};
+// Decomposition =========================================================
+struct decomposition_debuff_t final : public buff_t
+{
+  decomposition_debuff_t( death_knight_td_t& td, death_knight_t* p, player_t* target )
+    : buff_t( td, "decomposition", p->spell.decomposition_buff ), damage( nullptr ), target( target )
+  {
+    damage = p->active_spells.decomposition_damage;
+    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+      last_period   = stored_damage;
+      stored_damage = 0;
+    } );
+  }
+
+  void execute_damage()
+  {
+    damage->base_dd_min = damage->base_dd_max = last_period;
+    damage->execute_on_target( target );
+  }
+
+  void reset() override
+  {
+    buff_t::reset();
+    stored_damage = 0;
+    last_period   = 0;
+  }
+
+  void expire_override( int stacks, timespan_t duration ) override
+  {
+    buff_t::expire_override( stacks, duration );
+    stored_damage = 0;
+    last_period = 0;
+  }
+
+public:
+  double stored_damage;
+
+private:
+  double last_period;
+  action_t* damage;
+  player_t* target;
 };
 
 inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p ) : actor_target_data_t( target, p )
@@ -1828,6 +1876,8 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.apocalypse_war = make_buff( *this, "war", p->spell.apocalypse_war_debuff )
                               ->set_default_value_from_effect( 1 )
                               ->apply_affecting_aura( p->talent.unholy_bond );
+
+  debuff.decomposition = make_buff<decomposition_debuff_t>( *this, p, target );
 
   // Rider of the Apocalypse Debuffs
   debuff.chains_of_ice_trollbane_slow =
@@ -2259,6 +2309,7 @@ struct death_knight_pet_t : public pet_t
   timespan_t precombat_spawn_adjust;
   util::string_view pet_name;
   double army_ghoul_ap_mod;
+  timespan_t extended;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true,
                       bool dynamic = true )
@@ -2269,7 +2320,8 @@ struct death_knight_pet_t : public pet_t
       guardian( guardian ),
       precombat_spawn_adjust( 0_s ),
       pet_name( name ),
-      army_ghoul_ap_mod()
+      army_ghoul_ap_mod(),
+      extended( 0_s )
   {
     if ( auto_attack )
     {
@@ -2318,6 +2370,24 @@ struct death_knight_pet_t : public pet_t
   virtual attack_t* create_auto_attack()
   {
     return nullptr;
+  }
+
+  void arise() override
+  {
+    pet_t::arise();
+    extended = 0_s;
+  }
+
+  void demise() override
+  {
+    pet_t::demise();
+    extended = 0_s;
+  }
+
+  void reset() override
+  {
+    pet_t::reset();
+    extended = 0_s;
   }
 
   void apply_affecting_auras( action_t& action ) override
@@ -4747,6 +4817,16 @@ struct unholy_pact_damage_t final : public death_knight_spell_t
   }
 };
 
+// Decomposition ==============================================================
+struct decomposition_damage_t final : public death_knight_spell_t
+{
+  decomposition_damage_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.decomposition_damage )
+  {
+    background = true;
+  }
+};
+
 // ==========================================================================
 // Death Knight Buffs
 // ==========================================================================
@@ -5723,6 +5803,25 @@ struct virulent_plague_t final : public death_knight_disease_t
       bp( get_action<blood_plague_t>( "blood_plague", p, true ) )
   {
   }
+
+  void tick( dot_t* d ) override
+  {
+    death_knight_disease_t::tick( d );
+    if ( p()->talent.unholy.decomposition.ok() )
+    {
+      auto td = get_td( d->target );
+      debug_cast<decomposition_debuff_t*>( td->debuff.decomposition )->stored_damage +=
+          d->state->result_amount * p()->talent.unholy.decomposition->effectN( 1 ).percent();
+      // Proc chance is unknown, setting it to a random value for now
+      // TODO: FIX ME WHEN PROC RATE IS KNOWN
+      if ( rng().roll( 0.2 ) )
+      {
+        debug_cast<decomposition_debuff_t*>( td->debuff.decomposition )->execute_damage();
+        p()->decomposition_extend_pets();
+      }
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     death_knight_disease_t::impact( s );
@@ -5731,6 +5830,18 @@ struct virulent_plague_t final : public death_knight_disease_t
       ff->execute_on_target( s->target );
       bp->execute_on_target( s->target );
     }
+    if ( p()->talent.unholy.decomposition.ok() )
+    {
+      auto td = get_td( s->target );
+      td->debuff.decomposition->trigger();
+    }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    death_knight_disease_t::last_tick( d );
+    auto td = get_td( d->target );
+    td->debuff.decomposition->expire();
   }
 
 private:
@@ -11082,6 +11193,66 @@ void death_knight_t::reapers_mark_explosion_wrapper( player_t* target, int stack
   }
 }
 
+void death_knight_t::decomposition_extend_pets()
+{
+  timespan_t duration = timespan_t::from_millis( talent.unholy.decomposition->effectN( 2 ).base_value() );
+  timespan_t limit    = timespan_t::from_millis( talent.unholy.decomposition->effectN( 3 ).base_value() );
+
+  for ( auto& pet : pets.apoc_ghouls.active_pets() )
+  {
+    if ( pet->extended < limit )
+    {
+      pet->adjust_duration( duration );
+      pet->extended += duration;
+    }
+  }
+
+  for ( auto& pet : pets.army_ghouls.active_pets() )
+  {
+    if ( pet->extended < limit )
+    {
+      pet->adjust_duration( duration );
+      pet->extended += duration;
+    }
+  }
+
+  for ( auto& pet : pets.apoc_magus.active_pets() )
+  {
+    if ( pet->extended < limit )
+    {
+      pet->adjust_duration( duration );
+      pet->extended += duration;
+    }
+  }
+
+  for ( auto& pet : pets.army_magus.active_pets() )
+  {
+    if ( pet->extended < limit )
+    {
+      pet->adjust_duration( duration );
+      pet->extended += duration;
+    }
+  }
+
+  for ( auto& pet : pets.doomed_bidding_magus.active_pets() )
+  {
+    if ( pet->extended < limit )
+    {
+      pet->adjust_duration( duration );
+      pet->extended += duration;
+    }
+  }
+
+  for ( auto& pet : pets.abomination.active_pets() )
+  {
+    if ( pet->extended < limit )
+    {
+      pet->adjust_duration( duration );
+      pet->extended += duration;
+    }
+  }
+}
+
 void death_knight_t::trigger_dnd_buffs()
 {
   if ( !talent.unholy_ground.ok() && !talent.blood.sanguine_ground.ok() )
@@ -11221,6 +11392,11 @@ void death_knight_t::create_actions()
     if ( spec.outbreak->ok() || talent.unholy.unholy_blight.ok() )
     {
       active_spells.virulent_eruption = get_action<virulent_eruption_t>( "virulent_eruption", this );
+    }
+    
+    if ( talent.unholy.decomposition.ok() )
+    {
+      active_spells.decomposition_damage = get_action<decomposition_damage_t>( "decomposition", this );
     }
   }
 
@@ -11953,14 +12129,14 @@ void death_knight_t::init_spells()
   talent.unholy.runic_mastery = find_talent_spell( talent_tree::SPECIALIZATION, "Runic Mastery" );
   talent.unholy.eternal_agony = find_talent_spell( talent_tree::SPECIALIZATION, "Eternal Agony" );
   // Row 5
-  talent.unholy.defile          = find_talent_spell( talent_tree::SPECIALIZATION, "Defile" );
-  talent.unholy.unholy_blight   = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Blight" );
-  talent.unholy.infected_claws  = find_talent_spell( talent_tree::SPECIALIZATION, "Infected Claws" );
-  talent.unholy.apocalypse      = find_talent_spell( talent_tree::SPECIALIZATION, "Apocalypse" );
-  talent.unholy.plaguebringer   = find_talent_spell( talent_tree::SPECIALIZATION, "Plaguebringer" );
-  talent.unholy.clawing_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "Clawing Shadows" );
-  talent.unholy.reaping         = find_talent_spell( talent_tree::SPECIALIZATION, "Reaping" );
-  talent.unholy.all_will_serve  = find_talent_spell( talent_tree::SPECIALIZATION, "All Will Serve" );
+  talent.unholy.defile           = find_talent_spell( talent_tree::SPECIALIZATION, "Defile" );
+  talent.unholy.unholy_blight    = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Blight" );
+  talent.unholy.festering_scythe = find_talent_spell( talent_tree::SPECIALIZATION, "Festering Scythe" );
+  talent.unholy.apocalypse       = find_talent_spell( talent_tree::SPECIALIZATION, "Apocalypse" );
+  talent.unholy.plaguebringer    = find_talent_spell( talent_tree::SPECIALIZATION, "Plaguebringer" );
+  talent.unholy.clawing_shadows  = find_talent_spell( talent_tree::SPECIALIZATION, "Clawing Shadows" );
+  talent.unholy.reaping          = find_talent_spell( talent_tree::SPECIALIZATION, "Reaping" );
+  talent.unholy.all_will_serve   = find_talent_spell( talent_tree::SPECIALIZATION, "All Will Serve" );
   // Row 6
   talent.unholy.ebon_fever          = find_talent_spell( talent_tree::SPECIALIZATION, "Ebon Fever" );
   talent.unholy.bursting_sores      = find_talent_spell( talent_tree::SPECIALIZATION, "Bursting Sores" );
@@ -11970,9 +12146,9 @@ void death_knight_t::init_spells()
   talent.unholy.harbinger_of_doom   = find_talent_spell( talent_tree::SPECIALIZATION, "Harbinger of Doom" );
   talent.unholy.unholy_pact         = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Pact" );
   // Row 7
-  talent.unholy.vile_contagion = find_talent_spell( talent_tree::SPECIALIZATION, "Vile Contagion" );
-  talent.unholy.pestilence     = find_talent_spell( talent_tree::SPECIALIZATION, "Pestilence" );
-  // RANDOM UNKNOWN TALENT GOES HERE
+  talent.unholy.vile_contagion      = find_talent_spell( talent_tree::SPECIALIZATION, "Vile Contagion" );
+  talent.unholy.pestilence          = find_talent_spell( talent_tree::SPECIALIZATION, "Pestilence" );
+  talent.unholy.infected_claws      = find_talent_spell( talent_tree::SPECIALIZATION, "Infected Claws" );
   talent.unholy.menacing_magus      = find_talent_spell( talent_tree::SPECIALIZATION, "Menacing Magus" );
   talent.unholy.coil_of_devastation = find_talent_spell( talent_tree::SPECIALIZATION, "Coil of Devastation" );
   talent.unholy.rotten_touch        = find_talent_spell( talent_tree::SPECIALIZATION, "Rotten Touch" );
@@ -11986,8 +12162,8 @@ void death_knight_t::init_spells()
   talent.unholy.morbidity         = find_talent_spell( talent_tree::SPECIALIZATION, "Morbidity" );  // ITS MORBIN TIME
   talent.unholy.festermight       = find_talent_spell( talent_tree::SPECIALIZATION, "Festermight" );
   talent.unholy.raise_abomination = find_talent_spell( talent_tree::SPECIALIZATION, "Raise Abomination" );
-  // ANOTHER RANDOM UNKNOWN TALENT GOES HERE
-  talent.unholy.unholy_aura = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Aura" );
+  talent.unholy.decomposition     = find_talent_spell( talent_tree::SPECIALIZATION, "Decomposition" );
+  talent.unholy.unholy_aura       = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Aura" );
   // Row 10
   talent.unholy.superstrain           = find_talent_spell( talent_tree::SPECIALIZATION, "Superstrain" );
   talent.unholy.unholy_assault        = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Assault" );
@@ -12156,6 +12332,10 @@ void death_knight_t::init_spells()
   spell.festering_wound_damage     = find_spell( 194311 );
   spell.outbreak_aoe               = find_spell( 196780 );
   spell.unholy_aura_debuff         = find_spell( 377445 );
+  spell.decomposition_buff           = find_spell( 458233 );
+  spell.decomposition_damage         = find_spell( 458264 );
+  spell.festering_scythe           = find_spell( 458128 );
+  spell.festering_scythe_buff      = find_spell( 458123 );
 
   // Rider of the Apocalypse Spells
   spell.a_feast_of_souls_buff = find_spell( 440861 );
@@ -12757,6 +12937,7 @@ void death_knight_t::create_buffs()
 
     buffs.defile_buff = make_fallback( talent.unholy.defile.ok(), this, "defile", spell.defile_buff )
                             ->set_default_value( spell.defile_buff->effectN( 1 ).base_value() / 1.8 );
+
   }
 }
 
