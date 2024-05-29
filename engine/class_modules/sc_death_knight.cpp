@@ -730,6 +730,7 @@ public:
     propagate_const<buff_t*> plaguebringer;
     propagate_const<buff_t*> commander_of_the_dead;
     propagate_const<buff_t*> defile_buff;
+    propagate_const<buff_t*> festering_scythe;
 
     // Rider of the Apocalypse
     propagate_const<buff_t*> a_feast_of_souls;
@@ -8049,7 +8050,7 @@ struct festering_wound_t final : public death_knight_spell_t
 {
   festering_wound_t( util::string_view n, death_knight_t* p )
     : death_knight_spell_t( n, p, p->spell.festering_wound_damage ),
-      bursting_sores( get_action<bursting_sores_t>( "bursting_sores", p ) )
+      bursting_sores( get_action<bursting_sores_t>( "bursting_sores", p ) ), wounds_burst( 0 )
   {
     background = true;
     if ( p->talent.unholy.bursting_sores.ok() )
@@ -8066,18 +8067,28 @@ struct festering_wound_t final : public death_knight_spell_t
         RESOURCE_RUNIC_POWER,
         p()->spec.festering_wound->effectN( 1 ).trigger()->effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
         p()->gains.festering_wound, this );
+
+    if ( p()->talent.unholy.festering_scythe.ok() )
+    {
+      wounds_burst++;
+      if ( wounds_burst >= p()->talent.unholy.festering_scythe->effectN( 1 ).base_value() )
+      {
+        wounds_burst = 0;
+        p()->buffs.festering_scythe->trigger();
+      }
+    }
   }
 
 private:
   action_t* bursting_sores;
+  int wounds_burst;
 };
 
-struct festering_strike_t final : public death_knight_melee_attack_t
+struct festering_base_t : public death_knight_melee_attack_t
 {
-  festering_strike_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_melee_attack_t( "festering_strike", p, p->talent.unholy.festering_strike )
+  festering_base_t( util::string_view n, death_knight_t* p, const spell_data_t* s )
+    : death_knight_melee_attack_t( n, p, s )
   {
-    parse_options( options_str );
   }
 
   void impact( action_state_t* s ) override
@@ -8107,6 +8118,56 @@ struct festering_strike_t final : public death_knight_melee_attack_t
 
     return m;
   }
+};
+
+struct festering_scythe_t final : public festering_base_t
+{
+  festering_scythe_t( death_knight_t* p )
+    : festering_base_t( "festering_scythe", p, p->spell.festering_scythe )
+  {
+    aoe = -1;
+  }
+};
+
+struct festering_strike_t final : public festering_base_t
+{
+  festering_strike_t( death_knight_t* p, util::string_view options_str )
+    : festering_base_t( "festering_strike", p, p->talent.unholy.festering_strike ), festering_scythe( nullptr ), festering_scythe_cost( 0 )
+  {
+    parse_options( options_str );
+    if ( p->talent.unholy.festering_scythe.ok() )
+    {
+      festering_scythe = new festering_scythe_t( p );
+      festering_scythe_cost = festering_scythe->data().cost( POWER_RUNE );
+      add_child( festering_scythe );
+    }
+  }
+
+  double cost() const override
+  {
+    if ( p()->talent.unholy.festering_scythe.ok() && p()->buffs.festering_scythe->check() )
+    {
+      return festering_scythe_cost;
+    }
+    else
+    {
+      return base_costs[ RESOURCE_RUNE ];
+    }
+  }
+
+  void execute() override
+  {
+    if ( p()->talent.unholy.festering_scythe.ok() && p()->buffs.festering_scythe->check() )
+    {
+      festering_scythe->execute_on_target( target );
+      return;
+    }
+    festering_base_t::execute();
+  }
+
+private:
+  festering_scythe_t* festering_scythe;
+  double festering_scythe_cost;
 };
 
 // Frostscythe ==============================================================
@@ -12918,6 +12979,8 @@ void death_knight_t::create_buffs()
 
     buffs.defile_buff = make_fallback( talent.unholy.defile.ok(), this, "defile", spell.defile_buff )
                             ->set_default_value( spell.defile_buff->effectN( 1 ).base_value() / 1.8 );
+
+    buffs.festering_scythe = make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe", spell.festering_scythe_buff );
 
   }
 }
