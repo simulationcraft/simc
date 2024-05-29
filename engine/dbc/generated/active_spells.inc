@@ -1,5 +1,5 @@
-// Active class spells, wow build 11.0.0.54774
-static const std::array<active_class_spell_t, 303> __active_spells_data { {
+// Active class spells, wow build 11.0.0.54935
+static const std::array<active_class_spell_t, 305> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -155,6 +155,7 @@ static const std::array<active_class_spell_t, 303> __active_spells_data { {
   {  6,    0,  56222,      0, "Dark Command"                       },
   {  6,    0,  61999,      0, "Raise Ally"                         },
   {  6,    0, 316239,      0, "Rune Strike"                        },
+  {  6,  250, 195292,      0, "Death's Caress"                     },
   {  6,  251, 196770,      0, "Remorseless Winter"                 },
   {  6,  252,  77575,      0, "Outbreak"                           },
   {  6,  252, 207317,      0, "Epidemic"                           },
@@ -303,9 +304,10 @@ static const std::array<active_class_spell_t, 303> __active_spells_data { {
   { 13,    0, 390386,      0, "Fury of the Aspects"                },
   { 13, 1468, 360823, 365585, "Naturalize"                         },
   { 13, 1468, 361178,      0, "Mass Return"                        },
+  { 13, 1473, 361021,      0, "Sense Power"                        },
 } };
 
-// Pet active spells, wow build 11.0.0.54774
+// Pet active spells, wow build 11.0.0.54935
 static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

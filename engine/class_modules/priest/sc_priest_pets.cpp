@@ -450,7 +450,7 @@ struct voidwraith_pet_t final : public base_fiend_pet_t
   voidwraith_pet_t( priest_t* owner, util::string_view name = "voidwraith" )
     : base_fiend_pet_t( owner, name, fiend_type::Voidwraith )
   {
-    direct_power_mod = 1.0;
+    direct_power_mod = 0.5;
 
     npc_id = 224466;
 

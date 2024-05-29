@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54774 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54935 thewarwithin-BETA
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -13,7 +13,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 7.5 seconds
 Stance Mask      : 0x88000000
-Mechanic         : Shield
+Mechanic         : Unknown(222)
 Affecting spells : Improved Power Word: Shield (24191 effect#1), Rapture (47536 effects: #3, #6), Priest (137030 effect#1), Shadow Priest (137033 effect#8), Aegis of Wrath (238135 effect#2), Voidform (250844 effect#3), Kam Xi'raff (281457 effect#1), Inner Quietus (448278 effect#2)
 Family Flags     : 0
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -118,7 +118,7 @@ Charges          : 1 (8 seconds cooldown)
 Category         : 1509
 Category Cooldown: 8 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Clear Mind (337707 effect#1), Mental Agility (341167 effect#1), Prompt Deliverance (440669 effect#1)
+Affecting spells : Clear Mind (337707 effect#1), Mental Agility (341167 effect#1)
 Family Flags     : 32
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -364,7 +364,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1673: Miracle Worker (235587 effect#1)
 Stance Mask      : 0x80000000
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #2, #3, #4), Light of T'uure (208065 effect#1), Al'maiesh, the Cord of Hope (211440 effect#1), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Divine Conversation (363727 effect#3), Divine Word (372760 effect#1), Twist of Fate (390978 effects: #1, #2), Pontifex (390989 effect#1), Inspired Word (409479 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Sacred Reverence (423510 effect#2), Premonition of Piety (428930 effects: #1, #2), Resonant Energy (453846 effect#1), Perfected Form (453983 effects: #1, #2)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #2, #3, #4), Light of T'uure (208065 effect#1), Al'maiesh, the Cord of Hope (211440 effect#1), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Divine Conversation (363727 effect#3), Divine Word (372760 effect#1), Twist of Fate (390978 effects: #1, #2), Pontifex (390989 effect#1), Inspired Word (409479 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Sacred Reverence (423510 effect#2), Premonition of Piety (428930 effects: #1, #2), Prophet's Will (433905 effect#1), Resonant Energy (453846 effect#1), Perfected Form (453983 effects: #1, #2)
 Family Flags     : 10, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -394,7 +394,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Complete Healing (184914 effect#1), Apotheosis (200183 effects: #3, #4), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Temporal Shift (225770 effect#2), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Promise of Deliverance (287340 effect#1), Flash Concentration (336267 effects: #1, #2), Divine Conversation (363727 effect#2), Resonant Words (372313 effect#1), Divine Favor: Serenity (372791 effects: #1, #3), Unwavering Will (373456 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Lightweaver (390993 effects: #1, #2), Prayer Focus (394729 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Waste No Time (440683 effects: #1, #2), Resonant Energy (453846 effect#1), Perfected Form (453983 effects: #1, #2)
+Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Complete Healing (184914 effect#1), Apotheosis (200183 effects: #3, #4), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Temporal Shift (225770 effect#2), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Promise of Deliverance (287340 effect#1), Flash Concentration (336267 effects: #1, #2), Divine Conversation (363727 effect#2), Resonant Words (372313 effect#1), Divine Favor: Serenity (372791 effects: #1, #3), Unwavering Will (373456 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Lightweaver (390993 effects: #1, #2), Prayer Focus (394729 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Prophet's Will (433905 effect#1), Waste No Time (440683 effects: #1, #2), Resonant Energy (453846 effect#1), Perfected Form (453983 effects: #1, #2)
 Family Flags     : 12, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -424,7 +424,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1), Devout Spirit (319919 effect#1)
 Stance Mask      : 0x88000000
-Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Surge of Light (114255 effects: #1, #2, #3, #4, #5), Holy Priest (137031 effects: #1, #2, #16, #17, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2, #17), Shadow Priest (137033 effect#16), Complete Healing (184914 effect#1), Apotheosis (200183 effects: #3, #4), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Promise of Deliverance (287340 effect#1), Measured Contemplation (341824 effect#1), Divine Conversation (363727 effect#2), Resonant Words (372313 effect#1), Divine Favor: Serenity (372791 effects: #1, #3), Unwavering Will (373456 effects: #1, #3), From Darkness Comes Light (390617 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Improved Flash Heal (393870 effect#1), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Resonant Energy (453846 effect#1), Perfected Form (453983 effects: #1, #2)
+Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Surge of Light (114255 effects: #1, #2, #3, #4, #5), Holy Priest (137031 effects: #1, #2, #16, #17, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2, #17), Shadow Priest (137033 effect#16), Complete Healing (184914 effect#1), Apotheosis (200183 effects: #3, #4), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Promise of Deliverance (287340 effect#1), Measured Contemplation (341824 effect#1), Divine Conversation (363727 effect#2), Resonant Words (372313 effect#1), Divine Favor: Serenity (372791 effects: #1, #3), Unwavering Will (373456 effects: #1, #3), From Darkness Comes Light (390617 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Improved Flash Heal (393870 effect#1), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Prophet's Will (433905 effect#1), Resonant Energy (453846 effect#1), Perfected Form (453983 effects: #1, #2)
 Triggered by     : Surge of Light (114255)
 Family Flags     : 11, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -499,7 +499,7 @@ School           : Holy
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 7.5 seconds
-Mechanic         : Shield
+Mechanic         : Unknown(222)
 Attributes       : ........ ........ ........ x.xx.x..   ...x.x.x ..x..... xx...... ........ 
                  : ..x..... ......x. ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -598,7 +598,7 @@ GCD              : 1.5 seconds
 Duration         : 50 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Mechanic         : Shackle
+Mechanic         : Unknown(227)
 Family Flags     : 58
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ........ ........ ...x.... ........   x....... ........ ........ ........ 
@@ -752,7 +752,7 @@ Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage (3): shadow every 0.75 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.44024 | PvP Coefficient: 1.16000 | Target: Enemy (6)
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 13 | Target: Self (1)
 #4 (id=623774)   : Dummy (3)
@@ -773,7 +773,7 @@ Duration         : 4 seconds
 Cooldown         : 45 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Mechanic         : Silence
+Mechanic         : Unknown(172)
 Affecting spells : Last Word (263716 effect#1)
 Family Flags     : 53
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -820,7 +820,9 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=332014)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Increases maximum health by $?s373450[${$s1+$373450s1}][$s1]% for $d, and instantly heals you for that amount.
+#4 (id=1164957)  : Dummy (3)
+                   Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 1.00000
+Description      : Increases maximum health by $?s373450[${$s1+$373450s1}][$s1]% for $?a458718[${($458718s1+$s4)/1000}][${$s4/1000}] sec, and instantly heals you for that amount.
 Tooltip          : Maximum health increased by $w1%.
 
 Name             : Expansive Mind (desc=Racial Passive) (id=20591) [Passive] 
@@ -1470,13 +1472,16 @@ Resource         : 3.1% Base Mana (0) (id=215335)
 Spell Level      : 41
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 8 seconds
+Duration         : Aura (infinite)
 Cooldown         : 90 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Stacks           : 4 maximum
 Proc Chance      : 101%
-Affecting spells : Clarity of Mind (336067 effect#1), Exaltation (337790 effects: #2, #4), Exaltation (373042 effect#1)
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
+Affecting spells : Clarity of Mind (336067 effect#1), Exaltation (337790 effects: #2, #4), Exaltation (373042 effects: #1, #2)
 Family Flags     : 119
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... .x......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1484,12 +1489,12 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Not Shapeshifted (16), Cooldown On Event (25), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=39747)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=476560)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
 #3 (id=476561)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
@@ -1500,10 +1505,10 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
-Description      : Immediately Power Word: Shield your target, and for the next $d, Power Word: Shield has no cooldown and absorbs an additional $s2%.$?a336067[
+Description      : Immediately Power Word: Shield your target, and your next $s1 Power Word: Shields have no cooldown and absorb $s2% additional damage.$?a336067[
 
 Power Word: Shield costs $s3% less mana and its Atonement lasts $336067s2 seconds longer.][]
-Tooltip          : Power Word: Shield has no cooldown and absorbs an additional $w2%.$?a336067[ Also costs $s3% less mana.][]
+Tooltip          : Power Word: Shield has no cooldown and absorbs $w2% additional damage.$?a336067[ Also costs $s3% less mana.][]
 
 Name             : Penance (id=47540) [Spell Family (6)] 
 Class            : Discipline Priest
@@ -2068,7 +2073,7 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds
 Stance Mask      : 0x08000000
-Mechanic         : Stun
+Mechanic         : Freeze
 Family Flags     : 77
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2081,7 +2086,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=58262)    : Apply Aura (6) | Stun (12)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Mechanic: Stun | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Mechanic: Freeze | Target: Enemy (6)
 Description      : Terrifies the target in place, stunning them for $d.
 Tooltip          : Stunned.
 
@@ -2140,9 +2145,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=192423)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
+#5 (id=1164215)  : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Heals all party or raid members within $64844A1 yards for ${5*$64844s1} over $d. Each heal increases all targets' healing taken by $64844s2% for $64844d, stacking.
 
-Healing increased by $s2% when not in a raid.
+Healing reduced beyond $s5 targets.
 Tooltip          : Healing all nearby party or raid members.
 
 Name             : Divine Hymn (id=64844) [Spell Family (6)] 
@@ -2170,7 +2177,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Active Threat (94), Not a Proc (105), Allow Cast While Casting (135), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=59165)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.57000 | PvP Coefficient: 1.75000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.28000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
 #2 (id=59166)    : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : $@spelldesc64843
@@ -2323,11 +2330,13 @@ Resource         : 2.6% Base Mana (0) (id=3325)
 Spell Level      : 49
 Range            : 40 yards
 Duration         : 4 seconds
-Cooldown         : 90 seconds
+Cooldown         : 1 seconds
+Charges          : 1 (90 seconds cooldown)
+Category         : 2308: Move with Grace (337678 effect#1), Time Spiral (375254 effect#1), Move with Grace (390620 effect#1), Save the Day (458650 effect#1)
 Labels           : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381753 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
 Stance Mask      : 0x88000000
 Mechanic         : Grip
-Affecting spells : Death Denied (287723 effect#1), Move with Grace (337678 effect#1), Time Spiral (375254 effect#1), Move with Grace (390620 effect#1)
+Affecting spells : Death Denied (287723 effect#1)
 Family Flags     : 83
 Attributes       : ........ ........ x....... ........   ........ ........ ...x.... ........ 
                  : ...x.... x....... ...x.... ........   ........ ........ ........ ........ 
@@ -2514,7 +2523,7 @@ Range            : 50000 yards
 Max Targets      : 5
 Duration         : 3 seconds
 Proc Chance      : 100%
-Mechanic         : Horrify
+Mechanic         : Unknown(244)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : ........ ........ x......x x.xx..x.   ...x.x.x ........ ........ ........ 
@@ -2712,7 +2721,7 @@ Duration         : 0.5 seconds
 Cooldown         : 60 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Mechanic         : Root
+Mechanic         : Unknown(166)
 Attributes       : ........ ........ x.x..... ........   ...x...x ........ .x...... ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2755,6 +2764,7 @@ Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Labels           : 3801: Desperate Measures (458718 effect#2)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
@@ -2768,12 +2778,12 @@ Attributes       : ....x.xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Proc While Sitting (147), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=120191)   : Apply Aura (6) | Proc Trigger Spell (42): (18350)
-                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Trigger Spell: 18350 | Target: Self (1)
-#2 (id=127395)   : None (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
-#3 (id=127396)   : None (0)
-                   Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000
+#1 (id=120191)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=127395)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=127396)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When an attack brings you below $s1% health, you gain an absorption shield equal to $s2% of your maximum health for $114214d. Cannot occur more than once every $s3 sec.
 
 Name             : Void Shift (id=108968) [Spell Family (6)] 
@@ -3047,7 +3057,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 20 seconds
 Proc Chance      : 100%
-Mechanic         : Root
+Mechanic         : Unknown(166)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ x.x..... ..x....x   ...x...x ......x. ........ .....x.. 
@@ -3314,6 +3324,7 @@ School           : Holy
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 5 seconds
+Labels           : 3799: Divine Feathers (440670 effect#2)
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... x.....x. ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ....x... ........   ...x.... ........ .xx..... ........ 
@@ -3945,6 +3956,10 @@ Effects          :
 #28 (id=1108039)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2974 (Label) | Target: Self (1)
                    Affected Spells (Label): Rhapsody (390636)
+#29 (id=1164342)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Collapsing Void (448405)
+                   Family Flags: 30
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
@@ -4088,19 +4103,19 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179723)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.62500 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024), Tidal Reservoir (424464)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024), Tidal Reservoir (424464), Chain Heal (458357)
                    Family Flags: 41
 #2 (id=191046)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.62500 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024), Tidal Reservoir (424464)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024), Tidal Reservoir (424464), Chain Heal (458357)
                    Family Flags: 41
 #3 (id=191047)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 54 | Scaled Value: 54 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Elemental Blast (344645), Acid Rain (378597), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349), Tempest Strikes (428078), Tempest (452201), Tremor (455622)
+                   Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Elemental Blast (344645), Acid Rain (378597), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349), Tempest Strikes (428078), Tempest (452201), Tremor (455622), Searing Volley (458147), Surging Bolt (458267)
                    Family Flags: 39
 #4 (id=191048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 54 | Scaled Value: 54 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Elemental Blast (344645), Acid Rain (378597), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349), Tempest Strikes (428078), Tempest (452201), Tremor (455622)
+                   Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Elemental Blast (344645), Acid Rain (378597), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349), Tempest Strikes (428078), Tempest (452201), Tremor (455622), Searing Volley (458147), Surging Bolt (458267)
                    Family Flags: 39
 #5 (id=191049)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4180,11 +4195,11 @@ Effects          :
                    Family Flags: 7
 #28 (id=1131881)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.00000 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024), Tidal Reservoir (424464)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024), Tidal Reservoir (424464), Chain Heal (458357)
                    Family Flags: 41
 #29 (id=1131882)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024), Tidal Reservoir (424464)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024), Tidal Reservoir (424464), Chain Heal (458357)
                    Family Flags: 41
 Description      : Restoration Shaman core passive
 
@@ -4643,7 +4658,7 @@ Effects          :
 #1 (id=283828)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.19687 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=283829)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
 #3 (id=1072056)  : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
 Description      : Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d and slowing their movement speed by $s2%.
@@ -5637,7 +5652,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=294717)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Stun | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Freeze | Target: Enemy (6)
 Description      : $@spelldesc88625
 Tooltip          : Stunned.
 
@@ -6203,7 +6218,7 @@ Charges          : 1 (8 seconds cooldown)
 Category         : 1509
 Category Cooldown: 8 seconds
 Stance Mask      : 0x88000000
-Affecting spells : Clear Mind (337707 effect#1), Mental Agility (341167 effect#1), Prompt Deliverance (440669 effect#1)
+Affecting spells : Clear Mind (337707 effect#1), Mental Agility (341167 effect#1)
 Family Flags     : 32
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -7266,7 +7281,7 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 4 seconds
-Mechanic         : Interrupt
+Mechanic         : Unknown(259)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7419,13 +7434,13 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=721739)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.39590 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 40 yards | Target: Raid Members (56)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9.58360 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 40 yards | Target: Raid Members (56)
                    Affected School(s): All
 #2 (id=1091834)  : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Create a shield on all allies within $A1 yards, absorbing $s1 damage on each of them for $d.
 
-Absorption increased by $s2% when not in a raid.
+Absorption decreased beyond $s2 targets.
 Tooltip          : Absorbs $w1 damage.
 Variables        : $benevolence=$?a415416[${1+$415416s1/100}][${1}]
 $shield=${$SP*2.47*(1+$@versadmg)*$<benevolence>}
@@ -8577,7 +8592,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=819312)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 690 | Target: Unknown(25)
-                   Affected Spells (Label): Tranquility (740), Summon Infernal (1122), Icy Veins (12472), Adrenaline Rush (13750), Bestial Wrath (19574), Avenging Wrath (31884), Rapture (47536), Dancing Rune Weapon (49028), Berserk (50334), Pillar of Frost (51271), Feral Spirit (51533), Vampiric Blood (55233), Divine Hymn (64843), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Avatar (107574), Healing Tide Totem (108280), Spirit Shell (109964), Revival (115310), Shadow Blades (121471), Invoke Niuzao, the Black Ox (132578), Storm, Earth, and Fire (137639), Serenity (152173), Ravager (152277), Metamorphosis (187827), Combustion (190319), Metamorphosis (191427), Storm Elemental (192249), Celestial Alignment (194223), Voidform (194249), Fire Elemental (198067), Ice Form (198144), Summon Darkglare (205180), Avenging Crusader (216331), Void Eruption (228260), Crusade (231895), Summon Demonic Tyrant (265187), Apocalypse (275699), Trueshot (288613), Revival (297850), Deathmark (360194), Coordinated Assault (360952), Rewind (363534), Arcane Surge (365350), Summon Blasphemy (367679), Dragonrage (375087), Celestial Alignment (383410), Restoral (388615), Sentinel (389539), Incarnation: Chosen of Elune (390414), Dark Ascension (391109), Invoke Niuzao, the Black Ox (395267), Avatar (401150), Breath of Eons (403631), Avenging Wrath (454351), Crusade (454373)
+                   Affected Spells (Label): Tranquility (740), Summon Infernal (1122), Icy Veins (12472), Adrenaline Rush (13750), Bestial Wrath (19574), Avenging Wrath (31884), Rapture (47536), Dancing Rune Weapon (49028), Berserk (50334), Pillar of Frost (51271), Feral Spirit (51533), Vampiric Blood (55233), Divine Hymn (64843), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Avatar (107574), Healing Tide Totem (108280), Spirit Shell (109964), Revival (115310), Shadow Blades (121471), Invoke Niuzao, the Black Ox (132578), Storm, Earth, and Fire (137639), Serenity (152173), Ravager (152277), Metamorphosis (187827), Combustion (190319), Metamorphosis (191427), Storm Elemental (192249), Celestial Alignment (194223), Voidform (194249), Fire Elemental (198067), Ice Form (198144), Summon Darkglare (205180), Avenging Crusader (216331), Void Eruption (228260), Crusade (231895), Summon Demonic Tyrant (265187), Apocalypse (275699), Trueshot (288613), Revival (297850), Deathmark (360194), Coordinated Assault (360952), Rewind (363534), Arcane Surge (365350), Arcane Surge (365362), Summon Blasphemy (367679), Dragonrage (375087), Celestial Alignment (383410), Restoral (388615), Sentinel (389539), Incarnation: Chosen of Elune (390414), Dark Ascension (391109), Invoke Niuzao, the Black Ox (395267), Avatar (401150), Breath of Eons (403631), Avenging Wrath (454351), Crusade (454373)
 #2 (id=868651)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1550 | Target: Unknown(25)
                    Affected Spells (Category): Avenging Wrath (31884), Crusade (231895), Sentinel (389539)
@@ -9085,13 +9100,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ...x.... ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269)
 Effects          :
-#1 (id=835836)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Leap of Faith (73325), Leap of Faith (336471)
-                   Family Flags: 83
-#2 (id=874881)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 1898 | Target: Self (1)
-                   Affected Spells (Category): Leap of Faith (336471)
+#1 (id=835836)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 2308 | Target: Self (1)
+                   Affected Spells (Category): Leap of Faith (73325), Leap of Faith (336471)
 Description      : Leap of Faith's cooldown is reduced by |cFFFFFFFF${$s1/-1000}.1 sec|r.
 
 Name             : Clear Mind (id=337707) [Spell Family (6), Passive, Hidden] 
@@ -10096,7 +10107,7 @@ Duration         : 2 seconds
 Labels           : 2418: Blaze of Light (215768 effect#2)
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Mechanic         : Snare
+Mechanic         : Unknown(180)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10108,7 +10119,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=889701)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
 Description      : $@spelldesc215768
 Tooltip          : Movement speed decreased by $w1%.
 
@@ -11447,11 +11458,15 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269)
 Effects          :
-#1 (id=998019)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+#1 (id=998019)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Rapture (47536)
                    Family Flags: 119
-Description      : Increases the duration of Rapture by ${$s1/1000} sec.
+#2 (id=1163703)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Rapture (47536)
+                   Family Flags: 119
+Description      : Rapture enhances $s1 additional shields.
 
 Name             : Indemnity (id=373049) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=300]
@@ -11469,7 +11484,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=998034)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Atonements granted by Power Word: Shield last an additional $s1 sec.
 
 Name             : Abyssal Reverie (id=373054) [Spell Family (6), Passive, Hidden] 
@@ -12927,13 +12942,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269)
 Effects          :
-#1 (id=1027575)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Leap of Faith (73325), Leap of Faith (336471)
-                   Family Flags: 83
-#2 (id=1027576)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 1.00000 | Misc Value: 1898 | Target: Self (1)
-                   Affected Spells (Category): Leap of Faith (336471)
+#1 (id=1027575)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 1.00000 | Misc Value: 2308 | Target: Self (1)
+                   Affected Spells (Category): Leap of Faith (73325), Leap of Faith (336471)
 Description      : Reduces the cooldown of Leap of Faith by ${$s1/-1000} sec.
 
 Name             : Rhapsody (id=390622) [Spell Family (6), Passive, Hidden] 
@@ -13089,7 +13100,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Log on Learn (355)
 Effects          :
 #1 (id=1027661)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -75 | Scaled Value: -75 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
+                   Base Value: -75 | Scaled Value: -75 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
 Description      : $@spelldesc390668
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -14714,7 +14725,7 @@ Effects          :
 #1 (id=1028897)  : Apply Aura (6) | Periodic Damage (3): shadow every 0.75 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.14462 | PvP Coefficient: 1.16000 | Target: Enemy (6)
 #2 (id=1028898)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
+                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
 #3 (id=1028899)  : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 13 | Target: Self (1)
 #4 (id=1028900)  : Dummy (3)
@@ -15204,7 +15215,7 @@ Attributes       : ........ ........ ........ ........   ...x...x .x...... .....
                  : No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Active Threat (94), PvP Enabling (96), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Allow Cast While Channeling (308), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1035090)  : Dummy (3)
-                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Unknown(77)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Unknown(77)
 #2 (id=1035091)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.10500 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(76) -> AOE enemy (instant) (16)
 #3 (id=1072084)  : Dummy (3)
@@ -16710,7 +16721,7 @@ Spell Type       : Magic
 Duration         : 12 seconds
 Cooldown         : 0.5 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 2271: Perfect Vision (440661 effect#1), Narrowed Visions (440742 effect#1), Grand Reveal (440762 effect#1)
+Category         : 2271: Perfect Vision (440661 effect#1), Divine Providence (440742 effect#1)
 Category Cooldown: 0.5 seconds
 Affecting spells : Premonition of Piety (438733 effect#1), Premonition of Insight (438734 effect#1), Premonition of Solace (438854 effect#1), Clairvoyance (438855 effect#1)
 Family Flags     : 46
@@ -16725,7 +16736,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1112665)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Gain access to a spell that gives you an advantage against your fate. Using your abilities rotates through the available spells.
+Description      : Gain access to a spell that gives you an advantage against your fate.  Premonition rotates to the next spell when cast.
 
 $@spellicon428930 |cFFFFFFFF$@spellname428930|r
 $@spelldesc428930
@@ -16734,10 +16745,7 @@ $@spellicon428933 |cFFFFFFFF$@spellname428933|r
 $@spelldesc428933
 
 $@spellicon428934|cFFFFFFFF $@spellname428934|r
-$@spelldesc428934$?a428940[
-
-$@spellicon428938|cFFFFFFFF $@spellname428938|r
-$@spelldesc428938][]
+$@spelldesc428934
 
 Name             : Premonition of Piety (id=428930) [Spell Family (6)] 
 Class            : Priest
@@ -16746,12 +16754,13 @@ Spell Type       : Magic
 Duration         : 10 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 2271: Perfect Vision (440661 effect#1), Narrowed Visions (440742 effect#1), Grand Reveal (440762 effect#1)
+Category         : 2271: Perfect Vision (440661 effect#1), Divine Providence (440742 effect#1)
+Labels           : 3802: Fatebender (440743 effect#2), Fatebender (440743 effect#3)
 Category Cooldown: 1 seconds
 Proc Chance      : 101%
 Proc Flags       : ........ ..x...x. .....x.. ........   ........ ........ ........ ........   
                  : Generic Heal, Magic Heal, Helpful Periodic
-Affecting spells : Premonition of Piety (438733 effect#1), Premonition of Insight (438734 effect#1), Premonition of Solace (438854 effect#1), Clairvoyance (438855 effect#1)
+Affecting spells : Premonition of Piety (438733 effect#1), Premonition of Insight (438734 effect#1), Premonition of Solace (438854 effect#1), Clairvoyance (438855 effect#1), Fatebender (440743 effect#1)
 Family Flags     : 17
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -16775,10 +16784,8 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1138732)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-#5 (id=1138870)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Increases your healing done by $?a443551I[${$s1*(1+$440743s1/100)}.1% and causes ${$s3*(1+$440743s1/100)}%][$s1% and causes $s3%] of overhealing on players to be redistributed to up to $s4 nearby allies for $d. 
-Tooltip          : Healing done increased by ${$w5/10}.1%.
+Description      : Increases your healing done by $?a440743[${$s1}.1][$s1]% and causes $s3% of overhealing on players to be redistributed to up to $s4 nearby allies for $d. 
+Tooltip          : Healing done increased by $?a$?a440743[${$w1}.1][$w1]%.
 
 $w3% of overhealing is being redistributed to up to $s4 nearby allies.
 
@@ -16789,13 +16796,13 @@ Spell Type       : Magic
 Duration         : 20 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 2271: Perfect Vision (440661 effect#1), Narrowed Visions (440742 effect#1), Grand Reveal (440762 effect#1)
+Category         : 2271: Perfect Vision (440661 effect#1), Divine Providence (440742 effect#1)
 Category Cooldown: 1 seconds
 Stacks           : 1 initial, 6 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
                  : Cast Successful
-Affecting spells : Premonition of Piety (438733 effect#1), Premonition of Insight (438734 effect#1), Premonition of Solace (438854 effect#1), Clairvoyance (438855 effect#1)
+Affecting spells : Premonition of Piety (438733 effect#1), Premonition of Insight (438734 effect#1), Premonition of Solace (438854 effect#1), Clairvoyance (438855 effect#1), Fatebender (440743 effect#1)
 Family Flags     : 17
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16811,8 +16818,8 @@ Effects          :
                    Base Value: -5000 | Scaled Value: -5000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1139636)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
-Description      : Reduces the cooldown of your next $s2 spell casts by $?a443550[${$s1*(1+$440743s1/100)/-1000}.1][${$s1/-1000}] sec.
-Tooltip          : Your next spell cast will have a ${$w1/1000}.1 sec shorter cooldown.
+Description      : Reduces the cooldown of your next $s2 spell casts by $?a440743[${$s1/-1000}.1][${$s1/-1000}] sec.
+Tooltip          : Your next spell cast will have a $?a440743[${$w1/1000}.1][${$w1/1000}] sec shorter cooldown.
 
 Name             : Premonition of Solace (id=428934) [Spell Family (6)] 
 Class            : Priest
@@ -16821,13 +16828,13 @@ Spell Type       : Magic
 Duration         : 20 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 2271: Perfect Vision (440661 effect#1), Narrowed Visions (440742 effect#1), Grand Reveal (440762 effect#1)
+Category         : 2271: Perfect Vision (440661 effect#1), Divine Providence (440742 effect#1)
 Category Cooldown: 1 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ......x. .....x.. ........   ........ ........ ........ ........   
                  : Magic Heal, Helpful Periodic
-Affecting spells : Premonition of Piety (438733 effect#1), Premonition of Insight (438734 effect#1), Premonition of Solace (438854 effect#1), Clairvoyance (438855 effect#1)
+Affecting spells : Premonition of Piety (438733 effect#1), Premonition of Insight (438734 effect#1), Premonition of Solace (438854 effect#1), Clairvoyance (438855 effect#1), Fatebender (440743 effect#1)
 Family Flags     : 17
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16842,34 +16849,11 @@ Effects          :
 #1 (id=1112680)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3384 (Label) | Target: Self (1)
                    Affected Spells (Label): Premonition of Solace (443526)
-Description      : Your next single target healing spell increases your target's healing received by $?a443546[${$s1*(1+$440743s1/100)}][$s1]% for $443526d.
+Description      : Your next single target healing spell increases your target's healing received by $s1% for $443526d.
 Tooltip          : Your next single target healing spell increases your target's healing received by $w1% for $443526d.
 
-Name             : Premonition of Brilliance (id=428938) [Spell Family (6)] 
-Class            : Priest
-School           : Holy
-Spell Type       : Magic
-Cooldown         : 1 seconds
-Charges          : 1 (60 seconds cooldown)
-Category         : 2271: Perfect Vision (440661 effect#1), Narrowed Visions (440742 effect#1), Grand Reveal (440762 effect#1)
-Category Cooldown: 1 seconds
-Affecting spells : Premonition of Piety (438733 effect#1), Premonition of Insight (438734 effect#1), Premonition of Solace (438854 effect#1), Clairvoyance (438855 effect#1)
-Family Flags     : 17
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-Effects          :
-#1 (id=1112688)  : Energize Power% (137)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Restores $?a443554[${$s1*(1+$440743s1/100)}.1][$s1]% of your maximum mana.
-
 Name             : Clairvoyance (id=428940) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -16884,8 +16868,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1112690)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Under construction.
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : After casting Premonition of Solace, your next Premonition grants all of your Premonition effects at $s1% effectiveness.
 
 Name             : Empowered Renew (id=430538) 
 Class            : Priest
@@ -16931,25 +16915,26 @@ Tooltip          : Absorbing $w3 damage.
 Variables        : $penancedamage=${$421543s1>*($421434d/$421434t2)}
 $penancehealing=${$421544s1>*($421434d/$421434t2)}
 
-Name             : Under Construction (id=433905) [Spell Family (6), Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=1, max_rank=1, req_points=1]
+Name             : Prophet's Will (id=433905) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Duration         : 30 seconds
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1123525)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Not yet implemented.
+#1 (id=1123525)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061)
+                   Family Flags: 10, 11, 12
+Description      : $?a137032[Your Flash Heal and Power Word: Shield are $s1%][Your Flash Heal, Heal, and Holy Word: Serenity are $s1%] more effective when cast on yourself.
 
 Name             : Blessing of the Forge (id=434255) [Spell Family (10), Hidden] 
 Class            : Paladin, Priest
@@ -16994,7 +16979,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1131495)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 428930 | Scaled Value: 428930 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Premonition (428924), Premonition of Piety (428930), Premonition of Insight (428933), Premonition of Solace (428934), Premonition of Brilliance (428938), Premonition of Piety (438733), Premonition of Insight (438734), Premonition of Solace (438854), Clairvoyance (438855), Clairvoyance (440725)
+                   Affected Spells: Premonition (428924), Premonition of Piety (428930), Premonition of Insight (428933), Premonition of Solace (428934), Premonition of Piety (438733), Premonition of Insight (438734), Premonition of Solace (438854), Clairvoyance (438855), Clairvoyance (440725)
                    Family Flags: 17, 46
 
 Name             : Premonition of Insight (id=438734) [Spell Family (6), Hidden] 
@@ -17016,7 +17001,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1131496)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 428933 | Scaled Value: 428933 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Premonition (428924), Premonition of Piety (428930), Premonition of Insight (428933), Premonition of Solace (428934), Premonition of Brilliance (428938), Premonition of Piety (438733), Premonition of Insight (438734), Premonition of Solace (438854), Clairvoyance (438855), Clairvoyance (440725)
+                   Affected Spells: Premonition (428924), Premonition of Piety (428930), Premonition of Insight (428933), Premonition of Solace (428934), Premonition of Piety (438733), Premonition of Insight (438734), Premonition of Solace (438854), Clairvoyance (438855), Clairvoyance (440725)
                    Family Flags: 17, 46
 
 Name             : Premonition of Solace (id=438854) [Spell Family (6), Hidden] 
@@ -17038,7 +17023,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1131724)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 428934 | Scaled Value: 428934 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Premonition (428924), Premonition of Piety (428930), Premonition of Insight (428933), Premonition of Solace (428934), Premonition of Brilliance (428938), Premonition of Piety (438733), Premonition of Insight (438734), Premonition of Solace (438854), Clairvoyance (438855), Clairvoyance (440725)
+                   Affected Spells: Premonition (428924), Premonition of Piety (428930), Premonition of Insight (428933), Premonition of Solace (428934), Premonition of Piety (438733), Premonition of Insight (438734), Premonition of Solace (438854), Clairvoyance (438855), Clairvoyance (440725)
                    Family Flags: 17, 46
 
 Name             : Clairvoyance (id=438855) [Spell Family (6), Hidden] 
@@ -17060,7 +17045,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1131725)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 440725 | Scaled Value: 440725 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Premonition (428924), Premonition of Piety (428930), Premonition of Insight (428933), Premonition of Solace (428934), Premonition of Brilliance (428938), Premonition of Piety (438733), Premonition of Insight (438734), Premonition of Solace (438854), Clairvoyance (438855), Clairvoyance (440725)
+                   Affected Spells: Premonition (428924), Premonition of Piety (428930), Premonition of Insight (428933), Premonition of Solace (428934), Premonition of Piety (438733), Premonition of Insight (438734), Premonition of Solace (438854), Clairvoyance (438855), Clairvoyance (440725)
                    Family Flags: 17, 46
 
 Name             : Lightwell (id=439820) [Spell Family (6), Hidden] 
@@ -17096,7 +17081,7 @@ Charges          : 1 (8 seconds cooldown)
 Category         : 1509
 Category Cooldown: 8 seconds
 Stance Mask      : 0x88000000
-Affecting spells : Clear Mind (337707 effect#1), Mental Agility (341167 effect#1), Prompt Deliverance (440669 effect#1)
+Affecting spells : Clear Mind (337707 effect#1), Mental Agility (341167 effect#1)
 Family Flags     : 32
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -17133,7 +17118,7 @@ Effects          :
                    Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Perfect Vision (id=440661) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -17148,8 +17133,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1134691)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -6000 | Scaled Value: -6000 | PvP Coefficient: 1.00000 | Misc Value: 2271 | Target: Self (1)
-                   Affected Spells (Category): Premonition (428924), Premonition of Piety (428930), Premonition of Insight (428933), Premonition of Solace (428934), Premonition of Brilliance (428938)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 2271 | Target: Self (1)
+                   Affected Spells (Category): Premonition (428924), Premonition of Piety (428930), Premonition of Insight (428933), Premonition of Solace (428934)
 Description      : Reduces the cooldown of Premonition by ${$s1/-1000} sec.
 
 
@@ -17169,38 +17154,38 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1134692)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
 #2 (id=1134693)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Increases the damage absorbed by Power Word: Shield by $s1% and the healing done by Prayer of Mending by $s2%.
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $?a137032[Increases the damage absorbed by Power Word: Shield by $s1%][Increases the healing done by Prayer of Mending by $s2%.]
 
 
-Name             : Prompt Deliverance (id=440669) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=100]
+Name             : Save the Day (id=440669) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1134708)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Purify (527), Purify Disease (213634), Purify Disease (440006)
-                   Family Flags: 32
-Description      : Reduces the cooldown of Purify by ${$s1/-1000} sec.
-
+#1 (id=1134708)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : For $458650d after casting Leap of Faith you may cast it a second time for free, ignoring its cooldown.
 
 Name             : Divine Feathers (id=440670) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -17216,7 +17201,12 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1134709)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When an ally walks through your Angelic Feather, you are also granted $s1% of its effect.
+#2 (id=1164733)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3799 (Label) | Target: Self (1)
+                   Affected Spells (Label): Angelic Feather (121557)
+Description      : Your Angelic Feathers increase movement speed by an additional $s2%.
+
+When an ally walks through your Angelic Feather, you are also granted $s1% of its effect.
 
 
 Name             : Preemptive Care (id=440671) [Spell Family (6), Passive, Hidden] 
@@ -17327,7 +17317,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1134726)  : Apply Aura (6) | Proc Trigger Spell (42): Waste No Time
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 440683 | Target: Self (1)
-Description      : Premonition causes your next Power Word: Radiance, Heal, or Prayer of Healing cast to be instant and cost $440683s2% less mana.
+Description      : Premonition causes your next $?a137032[Power Word: Radiance][Heal or Prayer of Healing] cast to be instant and cost $440683s2% less mana.
 
 
 Name             : Waste No Time (id=440683) [Spell Family (6)] 
@@ -17366,7 +17356,7 @@ Name             : Clairvoyance (id=440725) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Affecting spells : Premonition of Piety (438733 effect#1), Premonition of Insight (438734 effect#1), Premonition of Solace (438854 effect#1), Clairvoyance (438855 effect#1)
+Affecting spells : Premonition of Piety (438733 effect#1), Premonition of Insight (438734 effect#1), Premonition of Solace (438854 effect#1), Clairvoyance (438855 effect#1), Fatebender (440743 effect#1)
 Family Flags     : 17
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17409,12 +17399,10 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Guardian Spirit (47788)
                    Family Flags: 75
-Description      : Pain Suppression reduces damage taken by an additional $s1%.
-
-Guardian Spirit lasts an additional ${$s2/1000} sec.
+Description      : $?a137032[Pain Suppression reduces damage taken by an additional $s1%.][Guardian Spirit lasts an additional ${$s2/1000} sec.]
 
-Name             : Narrowed Visions (id=440742) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=100]
+Name             : Divine Providence (id=440742) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=2, max_rank=1, req_points=1]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -17433,11 +17421,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1134833)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 2271 | Target: Self (1)
-                   Affected Spells (Category): Premonition (428924), Premonition of Piety (428930), Premonition of Insight (428933), Premonition of Solace (428934), Premonition of Brilliance (428938)
-Description      : Premonition gains an additional charge and now only rotates to the next spell when you cast Premonition.
+                   Affected Spells (Category): Premonition (428924), Premonition of Piety (428930), Premonition of Insight (428933), Premonition of Solace (428934)
+Description      : Premonition gains an additional charge.
 
 Name             : Fatebender (id=440743) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -17451,78 +17439,17 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1134834)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Premonition's effect is increased by $s1% if the divined spell is different than the previous Premonition.
-
-Name             : Grand Reveal (id=440757) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Proc Chance      : 101%
-Proc Flags       : ........ ......x. ........ ........   ........ ........ ........ ........   
-                 : Magic Heal
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
-Effects          :
-#1 (id=1134852)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When your Power Word: Shield is fully absorbed or your Prayer of Mending heals, gain a stack of Grand Reveal. At $440760U stacks, gain an additional charge of Premonition.
-
-Name             : Grand Reveal (id=440760) [Spell Family (6)] 
-Class            : Priest
-School           : Holy
-Spell Type       : None
-Duration         : 120 seconds
-Stacks           : 150 maximum
-Proc Chance      : 101%
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-Effects          :
-#1 (id=1134856)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc440757
-Tooltip          : Grants a charge of Premonition after Power Word: Shield is fully absorbed or Prayer of Mending heals $U times.
-
-Name             : Grand Reveal (id=440762) [Spell Family (6)] 
-Class            : Priest
-School           : Holy
-Spell Type       : None
-Duration         : 20 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 101%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-Effects          :
-#1 (id=1134860)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 2271 | Target: Self (1)
-                   Affected Spells (Category): Premonition (428924), Premonition of Piety (428930), Premonition of Insight (428933), Premonition of Solace (428934), Premonition of Brilliance (428938)
-#2 (id=1134861)  : Apply Aura (6) | Unknown(500)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2271 | Target: Self (1)
-Description      : $@spelldesc440757
-Tooltip          : Premonition can be cast for free.
+#1 (id=1134834)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Premonition of Piety (428930), Premonition of Insight (428933), Premonition of Solace (428934), Clairvoyance (440725)
+                   Family Flags: 17
+#2 (id=1164949)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3802 (Label) | Target: Self (1)
+                   Affected Spells (Label): Premonition of Piety (428930)
+#3 (id=1164950)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 3802 (Label) | Target: Self (1)
+                   Affected Spells (Label): Premonition of Piety (428930)
+Description      : Increases the effects of Premonition by $s1%.
 
 Name             : Assured Safety (id=440766) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=3, col=1, max_rank=1, req_points=1]
@@ -17543,12 +17470,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1134870)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1134871)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Power Word: Shield casts apply $s1 $Lstack:stacks; of Prayer of Mending to your target.
-
-Prayer of Mending casts apply a Power Word: Shield to your target at $s2% effectiveness.
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $?a137032[Power Word: Shield casts apply $s1 $Lstack:stacks; of Prayer of Mending to your target.][Prayer of Mending casts apply a Power Word: Shield to your target at $s2% effectiveness.]
 
 Name             : Premonition (id=443056) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -17608,79 +17533,7 @@ Effects          :
 #1 (id=1139497)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
 Description      : $@spelldesc428934
-Tooltip          : Healing taken increased by ${$w1}%.
-
-Name             : Fatebender (id=443546) [Spell Family (6), Hidden] 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Effects          :
-#1 (id=1139532)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-
-Name             : Fatebender (id=443550) [Spell Family (6), Hidden] 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Effects          :
-#1 (id=1139543)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-
-Name             : Fatebender (id=443551) [Spell Family (6), Hidden] 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Effects          :
-#1 (id=1139544)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-
-Name             : Fatebender (id=443554) [Spell Family (6), Hidden] 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Effects          :
-#1 (id=1139549)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Tooltip          : Healing received increased by $w1%.
 
 Name             : Entropic Rift (id=447444) [Spell Family (6), Passive] 
 Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=1, col=1, max_rank=1, req_points=0]
@@ -17833,7 +17686,7 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #30, #31), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Mind Devourer (338332 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25, #29), Shadow Priest (137033 effects: #1, #2, #30, #31), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Mind Devourer (338332 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1)
 Family Flags     : 30, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17908,7 +17761,7 @@ Effects          :
 #1 (id=1149476)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1149477)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : While Entropic Rift is active, your $?c3[Shadow damage is increased by $s1%] [Atonement healing is increased by $s2%].
 
 Name             : Voidheart (id=449887) [Spell Family (6)] 
@@ -18058,7 +17911,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1150048)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.28000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=1150204)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : Sends a blast of cosmic void energy at the enemy, causing $s1 Shadow damage.$?c3[
@@ -18231,7 +18084,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1151642)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Entropic Rift slows enemies by up to $s1%, increased the closer they are to its center.
 
 Name             : No Escape (id=451210) [Spell Family (6)] 
@@ -18240,7 +18093,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 1 seconds
-Mechanic         : Snare
+Mechanic         : Unknown(180)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -18252,7 +18105,7 @@ Attributes       : ........ x....... ........ ........   ........ ........ .....
                  : Do Not Log (8), Do Not Display Duration (170), Aura Points On Client (268)
 Effects          :
 #1 (id=1151650)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -80 | Scaled Value: -80 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc451204
 Tooltip          : Movement speed reduced by $w1%.
 
@@ -18372,7 +18225,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow Harmful on Friendly (373), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1152036)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.35000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1152037)  : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : Flays the enemy, causing $s1 Shadow damage. Deals $s2% additional damage to targets above 50% health.
@@ -18852,7 +18705,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
 #1 (id=1155952)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
 Description      : $@spelldesc453845
 Tooltip          : Movement speed reduced by $w1%.
 
@@ -18880,7 +18733,7 @@ Effects          :
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Spike (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Echoing Void (373304), Echoing Void (373305), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394976), Mind Sear (394979), Mind Spike: Insanity (407466), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Crash (457043)
                    Family Flags: 72
 #2 (id=1155955)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
 Description      : $@spelldesc453845
 Tooltip          : $?$w1>0[Receiving $w1% increased damage from $@auracaster. ][]$?$w2<0[Movement speed reduced by $w2%.][]
 
@@ -19163,5 +19016,58 @@ Effects          :
 #1 (id=1161749)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc205385
+
+Name             : Save the Day (id=458650) [Spell Family (6)] 
+Class            : Priest
+School           : Holy
+Spell Type       : None
+Duration         : 6 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
+Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
+                 : ..x..... ........ ........ ........   ........ x....... xx...... ......x. 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ .x...... 
+                 : ........ ........ ........ ........   
+                 : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1164771)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 2308 | Target: Self (1)
+                   Affected Spells (Category): Leap of Faith (73325), Leap of Faith (336471)
+#2 (id=1164772)  : Apply Aura (6) | Unknown(500)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2308 | Target: Self (1)
+#3 (id=1164775)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+Description      : $@spelldesc440669
+Tooltip          : Leap of Faith is free and ignores its cooldown.
+
+Name             : Desperate Measures (id=458718) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=1, max_rank=1, req_points=1, select_idx=200]
+Class            : Priest
+School           : Holy
+Spell Type       : Magic
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1164916)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1164932)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3801 (Label) | Target: Self (1)
+                   Affected Spells (Label): Angelic Bulwark (108945)
+Description      : Desperate Prayer lasts an additional ${$s1/1000} sec.
+
+Angelic Bulwark's absorption effect is increased by $s2% of your maximum health.
 
 

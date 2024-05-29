@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54774 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.54935 thewarwithin-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -5066,7 +5066,7 @@ bonus_id={ 9630 }, ilevel_adjust={ 12 }
 bonus_id={ 9631 }, ilevel_adjust={ 19 }
 bonus_id={ 9632 }, ilevel_adjust={ 26 }
 bonus_id={ 9634 }, quality={ rare }
-bonus_id={ 9637 }, ilevel={ 15 @plvl 10 - 538 @plvl 80 }
+bonus_id={ 9637 }, ilevel={ 15 @plvl 10 - 548 @plvl 80 }
 bonus_id={ 9783 }
 bonus_id={ 9784 }
 bonus_id={ 9785 }
@@ -6210,7 +6210,7 @@ bonus_id={ 11186 }, socket={ 3 }
 bonus_id={ 11187 }, socket={ 3 }
 bonus_id={ 11188 }, socket={ 3 }
 bonus_id={ 11189 }, socket={ 3 }
-bonus_id={ 11190 }, ilevel={ 15 @plvl 10 - 541 @plvl 80 }
+bonus_id={ 11190 }, ilevel={ 15 @plvl 10 - 551 @plvl 80 }
 bonus_id={ 11191 }, ilevel={ 431 @plvl 55 - 548 @plvl 90 }
 bonus_id={ 11192 }, effects={ Heartseeking Health Injector (id=452767, index=0, type=use) }
 bonus_id={ 11193 }, effects={ Lightning Tether (id=452883, index=0, type=use) }
@@ -6295,8 +6295,9 @@ bonus_id={ 11293 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=45
 bonus_id={ 11295 }, base_ilevel={ 515 }
 bonus_id={ 11297 }, base_ilevel={ 535 }
 bonus_id={ 11299 }, effects={ Radiant Focus (id=454558, index=0, type=equip) }
-bonus_id={ 11300 }, effects={ Radiant Focus (id=454558, index=0, type=equip) }
-bonus_id={ 11301 }, effects={ Radiant Focus (id=454558, index=0, type=equip) }
-bonus_id={ 11302 }, effects={ Radiant Focus (id=454558, index=0, type=equip) }
-bonus_id={ 11303 }, effects={ Blue Silken Lining (id=387335, index=0, type=equip) }
-bonus_id={ 11304 }, effects={ Blue Silken Lining (id=387335, index=0, type=equip) }
+bonus_id={ 11300 }, effects={ Evolution (id=458573, index=0, type=equip) }
+bonus_id={ 11301 }, effects={ Vivacity (id=454857, index=0, type=equip) }
+bonus_id={ 11302 }, effects={ Symbiosis (id=455534, index=0, type=equip) }
+bonus_id={ 11303 }, effects={ Dawnthread Lining (id=457665, index=0, type=equip) }
+bonus_id={ 11304 }, effects={ Duskthread Lining (id=457677, index=0, type=equip) }
+bonus_id={ 11306 }, ilevel={ 15 @plvl 10 - 554 @plvl 80 }

@@ -1,4 +1,4 @@
-// Item enchantment data, wow build 11.0.0.54774
+// Item enchantment data, wow build 11.0.0.54935
 static const std::array<item_enchantment_data_t, 5016> __spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },      0, "Sharpened III"                     },
@@ -4986,9 +4986,9 @@ static const std::array<item_enchantment_data_t, 5016> __spell_item_ench_data { 
   { 7493,      0, -7,  61,  70, 26, 0,   0,   0, {   5,   5,   0 }, {   12,    0,    0 }, {     32,     36,      0 }, {  0.4784f,  0.4784f,  0.0000f },      0, "Algari Mana Oil |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
   { 7494,      0, -7,  61,  70, 26, 0,   0,   0, {   5,   5,   0 }, {   12,    0,    0 }, {     32,     36,      0 }, {  0.5000f,  0.5000f,  0.0000f },      0, "Algari Mana Oil |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
   { 7495,      0, -7,  61,  70, 26, 0,   0,   0, {   5,   5,   0 }, {   12,    0,    0 }, {     32,     36,      0 }, {  0.6000f,  0.6000f,  0.0000f },      0, "Algari Mana Oil |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
-  { 7496,      0,  0,   0,  70, 26, 0,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 451904,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oil of Deepening Shadows |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
-  { 7497,      0,  0,   0,  70, 26, 0,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 451909,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oil of Deepening Shadows |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
-  { 7498,      0,  0,   0,  70, 26, 0,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 451912,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oil of Deepening Shadows |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
+  { 7496,      0,  0,   0,  70, 26, 0,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 451904,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oil of Deep Toxins |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 7497,      0,  0,   0,  70, 26, 0,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 451909,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oil of Deep Toxins |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
+  { 7498,      0,  0,   0,  70, 26, 0,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 451912,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oil of Deep Toxins |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
   { 7500,      0,  0,   0,  70, 26, 0,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 451928,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oil of Beladar's Grace |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
   { 7501,      0,  0,   0,  70, 26, 0,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 451933,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oil of Beladar's Grace |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
   { 7502,      0,  0,   0,  70, 26, 0,   0,   0, {   3,   0,   0 }, {   12,    0,    0 }, { 451932,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oil of Beladar's Grace |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },

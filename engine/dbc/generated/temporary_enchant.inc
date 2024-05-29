@@ -1,4 +1,4 @@
-// Temporary item enchants, wow build 11.0.0.54774
+// Temporary item enchants, wow build 11.0.0.54935
 static const std::array<temporary_enchant_entry_t, 83> __temporary_enchant_data { {
   {  2713,  0,  29453, "adamantite_sharpening_stone"  },
   {  2955,  0,  34340, "adamantite_weightstone"       },
@@ -55,9 +55,9 @@ static const std::array<temporary_enchant_entry_t, 83> __temporary_enchant_data 
   {  7496,  1, 451926, "oil_of_beladars_grace"        },
   {  7497,  2, 451925, "oil_of_beladars_grace"        },
   {  7498,  3, 451927, "oil_of_beladars_grace"        },
-  {  7496,  1, 451882, "oil_of_deepening_shadows"     },
-  {  7497,  2, 451901, "oil_of_deepening_shadows"     },
-  {  7498,  3, 451902, "oil_of_deepening_shadows"     },
+  {  7496,  1, 451882, "oil_of_deep_toxins"           },
+  {  7497,  2, 451901, "oil_of_deep_toxins"           },
+  {  7498,  3, 451902, "oil_of_deep_toxins"           },
   {  6198,  0, 322749, "porous_sharpening_stone"      },
   {  6199,  0, 322761, "porous_weightstone"           },
   {  6382,  1, 371641, "primal_razorstone"            },
