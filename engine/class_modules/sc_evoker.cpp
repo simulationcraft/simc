@@ -1823,8 +1823,11 @@ public:
 
     if ( p()->talent.scalecommander.melt_armor.ok() )
     {
-      parse_target_effects( []( evoker_td_t* t ) { return t->debuffs.melt_armor->check(); },
-                            p()->talent.scalecommander.melt_armor_debuff );
+      parse_target_effects(
+          []( actor_target_data_t* t ) {
+            return static_cast<evoker_td_t*>( t )->debuffs.melt_armor->check();
+          },
+          p()->talent.scalecommander.melt_armor_debuff );
     }
     
     if ( p()->talent.scorching_embers.ok() )
