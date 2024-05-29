@@ -1498,10 +1498,10 @@ public:
 
 // Template for base evoker action code.
 template <class Base>
-struct evoker_action_t : public parse_action_effects_t<Base, evoker_td_t>
+struct evoker_action_t : public parse_action_effects_t<Base>
 {
 private:
-  using ab = parse_action_effects_t<Base, evoker_td_t>;
+  using ab = parse_action_effects_t<Base>;
 
 public:
   spell_color_e spell_color;
@@ -1740,14 +1740,18 @@ public:
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
   void apply_debuffs_effects()
   {
-    parse_target_effects( []( evoker_td_t* t ) { return t->debuffs.shattering_star->check(); },
-                          p()->talent.shattering_star );
+    parse_target_effects(
+        []( actor_target_data_t* t ) {
+          return static_cast<evoker_td_t*>( t )->debuffs.shattering_star->check();
+        },
+        p()->talent.shattering_star );
 
     if ( p()->talent.scorching_embers.ok() )
     {
       parse_target_effects(
-          []( evoker_td_t* t ) {
-            return t->dots.fire_breath->is_ticking() || t->dots.fire_breath_traveling_flame->is_ticking();
+          []( actor_target_data_t* t ) {
+            return static_cast<evoker_td_t*>( t )->dots.fire_breath->is_ticking() ||
+                   static_cast<evoker_td_t*>( t )->dots.fire_breath_traveling_flame->is_ticking();
           },
           p()->spec.fire_breath_damage );
     }
@@ -3464,7 +3468,9 @@ struct disintegrate_t : public essence_spell_t
     if ( p->talent.feed_the_flames->ok() )
     {
       add_parse_entry( target_multiplier_effects )
-          .set_func( []( evoker_td_t* t ) { return t->debuffs.in_firestorm->check() > 0; } )
+          .set_func( []( actor_target_data_t* t ) {
+            return static_cast<evoker_td_t*>( t )->debuffs.in_firestorm->check() > 0;
+          } )
           .set_value( p->talent.feed_the_flames->effectN( 1 ).percent() )
           .set_eff( &p->talent.feed_the_flames->effectN( 1 ) );
     }
@@ -4161,9 +4167,11 @@ struct pyre_t : public essence_spell_t
       if ( p->talent.feed_the_flames->ok() )
       {
         add_parse_entry( target_multiplier_effects )
-          .set_func( []( evoker_td_t* t ) { return t->debuffs.in_firestorm->check() > 0; } )
-          .set_value( p->talent.feed_the_flames->effectN( 1 ).percent() )
-          .set_eff( &p->talent.feed_the_flames->effectN( 1 ) );
+            .set_func( []( actor_target_data_t* t ) {
+              return static_cast<evoker_td_t*>( t )->debuffs.in_firestorm->check() > 0;
+            } )
+            .set_value( p->talent.feed_the_flames->effectN( 1 ).percent() )
+            .set_eff( &p->talent.feed_the_flames->effectN( 1 ) );
       }
     }
 

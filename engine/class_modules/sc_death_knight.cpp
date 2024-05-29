@@ -621,21 +621,29 @@ using simple_data_t = std::pair<std::string, simple_sample_data_t>;
 
 // utility to create target_effect_t compatible functions from death_knight_td_t member references
 template <typename T>
-static std::function<int( death_knight_td_t* )> d_fn( T d, bool stack = true )
+static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
 {
   if constexpr ( std::is_invocable_v<T, death_knight_td_t::debuffs_t> )
   {
     if ( stack )
-      return [ d ]( death_knight_td_t* t ) { return std::invoke( d, t->debuff )->check(); };
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<death_knight_td_t*>( t )->debuff )->check();
+      };
     else
-      return [ d ]( death_knight_td_t* t ) { return std::invoke( d, t->debuff )->check() > 0; };
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<death_knight_td_t*>( t )->debuff )->check() > 0;
+      };
   }
   else if constexpr ( std::is_invocable_v<T, death_knight_td_t::dots_t> )
   {
     if ( stack )
-      return [ d ]( death_knight_td_t* t ) { return std::invoke( d, t->dot )->current_stack(); };
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<death_knight_td_t*>( t )->dot )->current_stack();
+      };
     else
-      return [ d ]( death_knight_td_t* t ) { return std::invoke( d, t->dot )->is_ticking(); };
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<death_knight_td_t*>( t )->dot )->is_ticking();
+      };
   }
   else
   {
@@ -644,7 +652,7 @@ static std::function<int( death_knight_td_t* )> d_fn( T d, bool stack = true )
   }
 }
 
-struct death_knight_t : public parse_player_effects_t<death_knight_td_t>
+struct death_knight_t : public parse_player_effects_t
 {
 public:
   // Stores the currently active death and decay ground event
@@ -4266,9 +4274,9 @@ public:
 
 // Template for common death knight action code. See priest_action_t.
 template <class Base>
-struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_td_t>
+struct death_knight_action_t : public parse_action_effects_t<Base>
 {
-  using action_base_t = parse_action_effects_t<Base, death_knight_td_t>;
+  using action_base_t = parse_action_effects_t<Base>;
   using base_t        = death_knight_action_t<Base>;
 
   gain_t* gain;
@@ -13054,7 +13062,7 @@ void death_knight_t::combat_begin()
 
 void death_knight_t::invalidate_cache( cache_e c )
 {
-  parse_player_effects_t<death_knight_td_t>::invalidate_cache( c );
+  parse_player_effects_t::invalidate_cache( c );
 
   switch ( c )
   {

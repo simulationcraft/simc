@@ -920,7 +920,7 @@ namespace actions
  * spell_t/heal_t or absorb_t directly.
  */
 template <typename Base>
-struct priest_action_t : public parse_action_effects_t<Base, priest_td_t>
+struct priest_action_t : public parse_action_effects_t<Base>
 {
 protected:
   priest_t& priest()
@@ -1138,8 +1138,11 @@ public:
     // DISCIPLINE DEBUFF EFFECTS
     if ( p().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_target_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); },
-                            p().talents.discipline.schism_debuff );
+      parse_target_effects(
+          []( actor_target_data_t* t ) {
+            return static_cast<priest_td_t*>( t )->buffs.schism->check();
+          },
+          p().talents.discipline.schism_debuff );
     }
   }
 
@@ -1208,7 +1211,7 @@ public:
 
 private:
   // typedef for the templated action type, eg. spell_t, attack_t, heal_t
-  using ab = parse_action_effects_t<Base, priest_td_t>;
+  using ab = parse_action_effects_t<Base>;
 };  // namespace actions
 
 struct priest_absorb_t : public priest_action_t<absorb_t>

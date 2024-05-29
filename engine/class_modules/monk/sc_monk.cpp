@@ -65,7 +65,7 @@ namespace actions
 
 template <class Base>
 monk_action_t<Base>::monk_action_t( std::string_view name, monk_t *player, const spell_data_t *spell )
-  : parse_action_effects_t<Base, monk_td_t>( name, player, spell ),
+  : parse_action_effects_t<Base>( name, player, spell ),
     sef_ability( actions::sef_ability_e::SEF_NONE ),
     ww_mastery( false ),
     may_combo_strike( false ),
@@ -152,7 +152,7 @@ void monk_action_t<Base>::apply_buff_effects()
 template <class Base>
 void monk_action_t<Base>::apply_debuff_effects()
 {
-  //    parse_target_effects( []( monk_td_t* t ) { return t->debuffs.weapons_of_order->check(); },
+  //    parse_target_effects( []( actor_target_data_t* t ) { return static_cast<monk_td_t*>( t )->debuffs.weapons_of_order->check(); },
   //                          p()->shared.weapons_of_order ); // True, true
 }
 
