@@ -3477,6 +3477,8 @@ T* druid_t::get_secondary_action( std::string_view n, Ts&&... args )
     a = new T( this, std::forward<Ts>( args )... );
   else if constexpr ( std::is_constructible_v<T, druid_t*, std::string_view, const spell_data_t*, Ts...> )
     a = new T( this, n, nullptr, std::forward<Ts>( args )... );
+  else if constexpr ( std::is_constructible_v<T, Ts...> )
+    a = new T( std::forward<Ts>( args )... );
   else
     static_assert( static_false<T>, "Invalid constructor arguments to get_secondary_action" );
 
@@ -3590,14 +3592,14 @@ struct cat_finisher_data_t
   }
 };
 
-struct cp_generator_t : public cat_attack_t
+struct cp_generator_t : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attack_t>
 {
   lockable_t<bool> attack_critical;
   buff_t* bt_buff = nullptr;
   double berserk_frenzy_mul;
 
   cp_generator_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : cat_attack_t( n, p, s, f ), berserk_frenzy_mul( p->talent.berserk_frenzy->effectN( 1 ).percent() )
+    : base_t( n, p, s, f ), berserk_frenzy_mul( p->talent.berserk_frenzy->effectN( 1 ).percent() )
   {
     auto m_data = p->get_modified_spell( &data() );
 
@@ -3606,6 +3608,8 @@ struct cp_generator_t : public cat_attack_t
     if ( const auto& eff = find_effect( find_trigger( p->talent.primal_fury ).trigger(), E_ENERGIZE );
          energize && !energize->modified_by( eff ) )
     {
+      // technically requires cat form, but as currently the only way to cast cp generators outside of form is via
+      // convoke, and convoke doesn't trigger as it is a proc, we are fine for now
       energize->add_parse_entry()
         .set_func( [ this ] { return attack_critical; } )
         .set_flat( true )
@@ -3626,7 +3630,7 @@ struct cp_generator_t : public cat_attack_t
 
   void init() override
   {
-    cat_attack_t::init();
+    base_t::init();
 
     if ( proc || !p()->talent.primal_fury.ok() )
       attack_critical.locked = true;
@@ -3636,7 +3640,7 @@ struct cp_generator_t : public cat_attack_t
   {
     attack_critical = false;
 
-    cat_attack_t::execute();
+    base_t::execute();
 
     if ( bt_buff )
       bt_buff->trigger();
@@ -3644,7 +3648,7 @@ struct cp_generator_t : public cat_attack_t
 
   void impact( action_state_t* s ) override
   {
-    cat_attack_t::impact( s );
+    base_t::impact( s );
 
     if ( result_is_hit( s->result ) )
     {
@@ -3658,15 +3662,14 @@ struct cp_generator_t : public cat_attack_t
 };
 
 template <class Data = cat_finisher_data_t>
-struct cp_spender_t : public cat_attack_t
+struct cp_spender_t : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attack_t>
 {
 protected:
-  using base_t = cp_spender_t<Data>;
   using state_t = druid_action_state_t<Data>;
 
 public:
   cp_spender_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : cat_attack_t( n, p, s, f )
+    : base_t( n, p, s, f )
   {
     force_consume( p->buff.overflowing_power, flag_e::CONVOKE );
   }
@@ -3705,7 +3708,7 @@ public:
     // snapshot the combo point first so composite_X calculations can correctly refer to it
     cast_state( s )->combo_points = _combo_points();
 
-    cat_attack_t::snapshot_state( s, rt );
+    base_t::snapshot_state( s, rt );
   }
 
   bool ready() override
@@ -3713,7 +3716,7 @@ public:
     if ( !background && p()->resources.current[ RESOURCE_COMBO_POINT ] < 1 )
       return false;
 
-    return cat_attack_t::ready();
+    return base_t::ready();
   }
 
   bool trigger_with_chance_per_cp( buff_t* buff, int cp )
@@ -3723,7 +3726,7 @@ public:
 
   void consume_resource() override
   {
-    cat_attack_t::consume_resource();
+    base_t::consume_resource();
 
     if ( background || !hit_any_target )
       return;
@@ -3758,7 +3761,7 @@ public:
   }
 };
 
-using cat_finisher_t = trigger_aggravate_wounds_t<DRUID_FERAL, cp_spender_t<>>;
+using cat_finisher_t = cp_spender_t<>;
 
 template <typename BASE>
 struct trigger_thrashing_claws_t : public BASE
@@ -3768,7 +3771,7 @@ struct trigger_thrashing_claws_t : public BASE
   trigger_thrashing_claws_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
     : BASE( n, p, s, f )
   {
-    if ( p->talent.thrashing_claws.ok() )
+    if ( p->active.thrashing_claws )
       BASE::impact_action = p->active.thrashing_claws;
   }
 };
@@ -4315,9 +4318,20 @@ struct feral_frenzy_t : public cat_attack_t
 // Ferocious Bite ===========================================================
 struct ferocious_bite_base_t : public cat_finisher_t
 {
+  struct rampant_ferocity_data_t
+  {
+    int combo_points = 0;
+    double energy_mul = 0.0;
+
+    void sc_format_to( const rampant_ferocity_data_t& data, fmt::format_context::iterator out )
+    {
+      fmt::format_to( out, "combo_points={} energy_mul={}", data.combo_points, data.energy_mul );
+    }
+  };
+
   struct rampant_ferocity_t : public cat_attack_t
   {
-    using state_t = druid_action_state_t<cat_finisher_data_t>;
+    using state_t = druid_action_state_t<rampant_ferocity_data_t>;
 
     rampant_ferocity_t( druid_t* p, std::string_view n ) : cat_attack_t( n, p, p->find_spell( 391710 ) )
     {
@@ -4354,7 +4368,9 @@ struct ferocious_bite_base_t : public cat_finisher_t
 
     double composite_da_multiplier( const action_state_t* s ) const override
     {
-      return cat_attack_t::composite_da_multiplier( s ) * cast_state( s )->combo_points;
+      auto state = cast_state( s );
+
+      return cat_attack_t::composite_da_multiplier( s ) * state->combo_points * ( 1.0 + state->energy_mul );
     }
   };
 
@@ -4362,12 +4378,14 @@ struct ferocious_bite_base_t : public cat_finisher_t
   double excess_energy = 0.0;
   double max_excess_energy;
   double saber_jaws_mul;
+  double rf_energy_mul_pct;
   bool max_energy = false;
 
   ferocious_bite_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
     : cat_finisher_t( n, p, s, f ),
       max_excess_energy( find_effect( this, E_POWER_BURN ).resource() ),
-      saber_jaws_mul( p->talent.saber_jaws->effectN( 1 ).percent() )
+      saber_jaws_mul( p->talent.saber_jaws->effectN( 1 ).percent() ),
+      rf_energy_mul_pct( p->talent.rampant_ferocity->effectN( 2 ).percent() )
   {
     add_option( opt_bool( "max_energy", max_energy ) );
 
@@ -4426,7 +4444,9 @@ struct ferocious_bite_base_t : public cat_finisher_t
     if ( rampant_ferocity && s->result_amount > 0 && !rampant_ferocity->target_list().empty() )
     {
       rampant_ferocity->snapshot_and_execute( s, false, [ this ]( const action_state_t* from, action_state_t* to ) {
-        debug_cast<rampant_ferocity_t*>( rampant_ferocity )->cast_state( to )->combo_points = cp( from );
+        auto state = debug_cast<rampant_ferocity_t*>( rampant_ferocity )->cast_state( to );
+        state->combo_points = cp( from );
+        state->energy_mul = energy_multiplier( from ) * rf_energy_mul_pct;
       } );
     }
   }
@@ -4446,24 +4466,15 @@ struct ferocious_bite_base_t : public cat_finisher_t
 
   virtual double energy_multiplier( const action_state_t* ) const
   {
-    return 1.0 + ( excess_energy / max_excess_energy ) * ( 1.0 + saber_jaws_mul );
+    return ( is_free() ? 1.0 : excess_energy / max_excess_energy ) * ( 1.0 + saber_jaws_mul );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     auto dam = cat_finisher_t::composite_da_multiplier( s );
-    auto energy_mul = is_free() ? 2.0 : energy_multiplier( s );
+    auto energy_mul = 1.0 + energy_multiplier( s );
     // base spell coeff is for 5CP, so we reduce if lower than 5.
     auto combo_mul = cp( s ) / p()->resources.max[ RESOURCE_COMBO_POINT ];
-
-    // ferocious_bite_max.damage expr calls action_t::calculate_direct_amount, so we must have a separate check for
-    // buff.apex_predators_craving, as the free FB from apex is redirected upon execute() which would not have happened
-    // when the expr is evaluated
-    if ( p()->buff.apex_predators_craving->check() )
-    {
-      energy_mul = 2.0;
-      combo_mul = 1.0;
-    }
 
     return dam * energy_mul * combo_mul;
   }
@@ -4791,7 +4802,7 @@ struct primal_wrath_t : public cat_finisher_t
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    return cat_attack_t::composite_da_multiplier( s ) * ( 1.0 + cp( s ) );
+    return cat_finisher_t::composite_da_multiplier( s ) * ( 1.0 + cp( s ) );
   }
 
   void impact( action_state_t* s ) override
@@ -4805,9 +4816,8 @@ struct primal_wrath_t : public cat_finisher_t
 // Shred ====================================================================
 struct shred_t : public use_fluid_form_t<DRUID_FERAL,
                           trigger_claw_rampage_t<DRUID_FERAL,
-                            trigger_aggravate_wounds_t<DRUID_FERAL,
-                              trigger_wildpower_surge_t<DRUID_FERAL,
-                                trigger_thrashing_claws_t<cp_generator_t>>>>>
+                            trigger_wildpower_surge_t<DRUID_FERAL,
+                              trigger_thrashing_claws_t<cp_generator_t>>>>
 {
   double stealth_mul = 0.0;
 
@@ -4860,9 +4870,8 @@ struct shred_t : public use_fluid_form_t<DRUID_FERAL,
 
 // Swipe (Cat) ====================================================================
 struct swipe_cat_t : public trigger_claw_rampage_t<DRUID_FERAL,
-                              trigger_aggravate_wounds_t<DRUID_FERAL,
-                                trigger_wildpower_surge_t<DRUID_FERAL,
-                                  trigger_thrashing_claws_t<cp_generator_t>>>>
+                              trigger_wildpower_surge_t<DRUID_FERAL,
+                                trigger_thrashing_claws_t<cp_generator_t>>>
 {
   DRUID_ABILITY( swipe_cat_t, base_t, "swipe_cat", p->apply_override( p->spec.swipe, p->spec.cat_form_override ) )
   {
@@ -4915,8 +4924,7 @@ struct tigers_fury_t : public cat_attack_t
 };
 
 // Thrash (Cat) =============================================================
-struct thrash_cat_t : public trigger_claw_rampage_t<DRUID_FERAL,
-                               trigger_aggravate_wounds_t<DRUID_FERAL, cp_generator_t>>
+struct thrash_cat_t : public trigger_claw_rampage_t<DRUID_FERAL, cp_generator_t>
 {
   struct thrash_cat_bleed_t : public trigger_waning_twilight_t<cat_attack_t>
   {
@@ -5301,6 +5309,13 @@ struct mangle_t : public use_fluid_form_t<DRUID_GUARDIAN,
     {
       inc_targets =
         as<int>( find_effect( p->spec.incarnation_bear, this, A_ADD_FLAT_MODIFIER, P_TARGET ).base_value() );
+    }
+
+    if ( p->talent.strike_for_the_heart.ok() )
+    {
+      impact_action = p->get_secondary_action<druid_heal_t>(
+        "strike_for_the_heart", "strike_for_the_heart", p, find_trigger( p->talent.strike_for_the_heart ).trigger() );
+      impact_action->background = true;
     }
   }
 
@@ -10362,9 +10377,10 @@ void druid_t::create_buffs()
       ->set_chance( talent.predatory_swiftness->effectN( 3 ).percent() )
       ->set_trigger_spell( talent.predatory_swiftness );
 
-  buff.savage_fury = make_fallback( talent.savage_fury.ok(), this, "savage_fury", find_spell( 449646 ) )
-    ->set_default_value_from_effect_type( A_HASTE_ALL )
-    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  buff.savage_fury =
+    make_fallback( talent.savage_fury.ok(), this, "savage_fury", find_trigger( talent.savage_fury ).trigger() )
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buff.sudden_ambush =
     make_fallback( talent.sudden_ambush.ok(), this, "sudden_ambush", find_trigger( talent.sudden_ambush ).trigger() )
@@ -10726,11 +10742,12 @@ void druid_t::create_buffs()
   parse_effects( buff.ruthless_aggression );
   parse_effects( buff.strategic_infusion );
   parse_effects( buff.ursine_vigor, USE_DEFAULT );
-  parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 3 ),
-                 bear_stam * buff.wildshape_mastery->data().effectN( 1 ).percent() );
-  parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 2 ),
+  parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 2 ),       // armor
                  find_effect( buff.bear_form, A_MOD_BASE_RESISTANCE_PCT ).percent() *
                  buff.wildshape_mastery->data().effectN( 1 ).percent() );
+  parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 3 ),       // stamina
+                 bear_stam * buff.wildshape_mastery->data().effectN( 1 ).percent() );
+  parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 4, 5 ) );  // crit avoidance & expertise
 
   parse_target_effects( d_fn( &druid_td_t::debuffs_t::bloodseeker_vines ), spec.bloodseeker_vines,
                         talent.vigorous_creepers );
@@ -10844,7 +10861,7 @@ void druid_t::create_actions()
   if ( talent.berserk_frenzy.ok() )
     active.frenzied_assault = get_secondary_action<frenzied_assault_t>( "frenzied_assault" );
 
-  if ( talent.thrashing_claws.ok() )
+  if ( talent.thrash.ok() && talent.thrashing_claws.ok() )
   {
     auto tc = get_secondary_action<thrash_cat_t::thrash_cat_bleed_t>( "thrashing_claws", flag_e::THRASHING );
     tc->s_data_reporting = talent.thrashing_claws;
@@ -12305,41 +12322,6 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
   }
   else if ( specialization() == DRUID_FERAL )
   {
-    if ( splits[ 0 ] == "action" && splits[ 1 ] == "ferocious_bite_max" && splits[ 2 ] == "damage" )
-    {
-      action_t* action = find_action( "ferocious_bite" );
-
-      return make_fn_expr( name_str, [ action, this ]() -> double {
-        action_state_t* state = action->get_state();
-        state->n_targets = 1;
-        state->chain_target = 0;
-        state->result = RESULT_HIT;
-
-        action->snapshot_state( state, result_amount_type::DMG_DIRECT );
-        state->target = action->target;
-        //  (p()->resources.current[RESOURCE_ENERGY] - cat_attack_t::cost()));
-
-        // combo_points = p()->resources.current[RESOURCE_COMBO_POINT];
-        double current_energy = this->resources.current[ RESOURCE_ENERGY ];
-        double current_cp = this->resources.current[ RESOURCE_COMBO_POINT ];
-        this->resources.current[ RESOURCE_ENERGY ] = 50;
-        this->resources.current[ RESOURCE_COMBO_POINT ] = 5;
-
-        double amount;
-        state->result_amount = action->calculate_direct_amount( state );
-        state->target->target_mitigation( action->get_school(), result_amount_type::DMG_DIRECT, state );
-        amount = state->result_amount;
-        amount *= 1.0 + clamp( state->crit_chance + state->target_crit_chance, 0.0, 1.0 ) *
-                          action->composite_player_critical_multiplier( state );
-
-        this->resources.current[ RESOURCE_ENERGY ] = current_energy;
-        this->resources.current[ RESOURCE_COMBO_POINT ] = current_cp;
-
-        action_state_t::release( state );
-        return amount;
-      } );
-    }
-
     if ( util::str_compare_ci( name_str, "active_bt_triggers" ) )
     {
       return make_fn_expr( "active_bt_triggers", [ this ]() {
@@ -12634,7 +12616,6 @@ void druid_t::target_mitigation( school_e school, result_amount_type type, actio
     }
   }
 
-  // TODO: this is currently bugged as it modifies the wrong effect
   if ( talent.empowered_shapeshifting.ok() && buff.bear_form->check() &&
        spec.bear_form_passive_2->effectN( 3 ).has_common_school( school ) )
   {
@@ -13425,6 +13406,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.astral_insight );
   action.apply_affecting_aura( talent.bestial_strength );  // TODO: does fb bonus apply to guardian
   action.apply_affecting_aura( talent.early_spring );
+  action.apply_affecting_aura( talent.empowered_shapeshifting );
   action.apply_affecting_aura( talent.groves_inspiration );
   action.apply_affecting_aura( talent.hunt_beneath_the_open_skies );
   action.apply_affecting_aura( talent.lunar_calling );
