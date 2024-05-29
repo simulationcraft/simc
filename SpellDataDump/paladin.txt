@@ -161,7 +161,7 @@ Spell Level      : 10
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 300 seconds
-Mechanic         : Unknown(250)
+Mechanic         : Invulnerable
 Affecting spells : Unbreakable Spirit (114154 effect#1), Uther's Counsel (378425 effect#1)
 Family Flags     : 22
 Attributes       : ........ ........ x.x..... ........   ........ ..x....x ........ ........ 
@@ -200,7 +200,7 @@ Cooldown         : 60 seconds
 Category         : 32
 Category Cooldown: 60 seconds
 Proc Chance      : 101%
-Mechanic         : Freeze
+Mechanic         : Stun
 Affecting spells : Improved Hammer of Justice (24188 effect#1)
 Family Flags     : 11
 Attributes       : ........ ........ x.x..... ........   ........ ........ ..x..... ........ 
@@ -234,7 +234,7 @@ Duration         : 10 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (300 seconds cooldown)
 Category         : 1392: Uther's Counsel (378425 effect#2), Improved Blessing of Protection (384909 effect#1)
-Mechanic         : Unknown(250)
+Mechanic         : Invulnerable
 Affecting spells : Uther's Guard (207558 effect#2), Echoing Blessings (339316 effect#4), Echoing Blessings (387801 effect#4)
 Family Flags     : 7
 Attributes       : ........ ........ x.x..... ........   ........ .......x ........ ........ 
@@ -417,7 +417,7 @@ GCD              : 1.5 seconds
 Duration         : 40 seconds
 Cooldown         : 15 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(241)
+Mechanic         : Turn
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting spells : Wrench Evil (339292 effects: #1, #2)
@@ -481,7 +481,7 @@ Duration         : 60 seconds
 Cooldown         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Mechanic         : Unknown(190)
+Mechanic         : Incapacitate
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Family Flags     : 2
@@ -651,7 +651,7 @@ School           : Holy
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 30 seconds
-Mechanic         : Unknown(250)
+Mechanic         : UnknownMechanic(25)
 Family Flags     : 71
 Attributes       : ........ ........ ........ ..x..x..   ...x...x ..x..... xx...... ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -969,9 +969,9 @@ Effects          :
 #1 (id=21607)    : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.66310 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
 #2 (id=135932)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26781 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Unknown(259) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26781 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Interrupt | Target: Enemy (6)
 #3 (id=135933)   : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26781 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 127 | Mechanic: Unknown(172) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26781 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 127 | Mechanic: Silence | Target: Enemy (6)
 #4 (id=737804)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 Description      : Hurls your shield at an enemy target, dealing $s1 Holy damage, interrupting and silencing the non-Player target for $d, and then jumping to ${$x1-1} additional nearby enemies. $?a209389[
@@ -1647,7 +1647,7 @@ Duration         : 3 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1587
 Proc Chance      : 101%
-Mechanic         : Unknown(286)
+Mechanic         : Taunt
 Family Flags     : 62
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ x.x..... ........ 
@@ -2319,7 +2319,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Discount Power On Miss (59), Completely Blocked (99), Taps immediately (215), No Attack Miss (249), Allow Class Ability Procs (416), Interrupts Current Cast (419)
 Effects          :
 #1 (id=102188)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Unknown(259) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Interrupt | Target: Enemy (6)
 #2 (id=1070937)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Interrupts spellcasting and prevents any spell in that school from being cast for $d.
@@ -3755,7 +3755,7 @@ Effects          :
 #1 (id=221239)   : Unknown(165)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=221240)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Unknown(180) | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Snare | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc114158
 Tooltip          : Movement slowed by $s2%.
 
@@ -3807,7 +3807,7 @@ Range            : 15 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 180 seconds
-Mechanic         : Freeze
+Mechanic         : Stun
 Attributes       : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4287,7 +4287,7 @@ Spell Level      : 26
 GCD              : 0.75 seconds
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Mechanic         : Unknown(222)
+Mechanic         : Shield
 Affecting spells : Unbreakable Spirit (114154 effect#1)
 Family Flags     : 118
 Attributes       : ........ ...x.... x.x..... .......x   ........ ........ ........ ........ 
@@ -5139,7 +5139,7 @@ Duration         : 10 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (300 seconds cooldown)
 Category         : 1392: Uther's Counsel (378425 effect#2), Improved Blessing of Protection (384909 effect#1)
-Mechanic         : Unknown(250)
+Mechanic         : Invulnerable
 Affecting spells : Uther's Guard (207558 effect#2), Echoing Blessings (339316 effect#4), Echoing Blessings (387801 effects: #4, #6)
 Family Flags     : 7, 28
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -5331,7 +5331,7 @@ School           : Holy
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 12 seconds
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Affecting spells : Consecrated Ground (204054 effect#2), Consecration in Flame (379022 effect#1)
 Family Flags     : 43
 Attributes       : ...x.... ........ .......x x.xx....   .....x.. ..x..... ........ ........ 
@@ -5448,7 +5448,7 @@ Effects          :
 #1 (id=303075)   : School Damage (2): holyfire
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.74300 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
 #2 (id=324545)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 12 yards | Mechanic: Unknown(180) | Target: Cone Front (104)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 12 yards | Mechanic: Snare | Target: Cone Front (104)
 #3 (id=324546)   : Apply Aura (6) | Periodic Damage (3): holyfire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.29400 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
 #4 (id=356924)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
@@ -5469,7 +5469,7 @@ School           : Holy
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 6 seconds
-Mechanic         : Freeze
+Mechanic         : Stun
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -5481,7 +5481,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Aura Is Debuff (26), Allow Cast While Casting (135), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=303108)   : Apply Aura (6) | Stun (12)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Freeze | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Stun | Target: Enemy (6)
 Description      : $@spelldesc205273
 Tooltip          : Stunned.
 
@@ -7160,7 +7160,7 @@ School           : Holy
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 5 seconds
-Mechanic         : Freeze
+Mechanic         : Stun
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -7172,7 +7172,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Aura Is Debuff (26), Allow Cast While Casting (135), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=478187)   : Apply Aura (6) | Stun (12)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Freeze | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Stun | Target: Enemy (6)
 Description      : $@spelldesc255937
 Tooltip          : Stunned.
 
@@ -7959,7 +7959,7 @@ School           : Holy
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 12 seconds
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -8952,7 +8952,7 @@ Effects          :
 #3 (id=835104)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=840462)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc328281
 Tooltip          : Attack speed reduced by $w3%.
 Movement speed reduced by $w4%.
@@ -12655,7 +12655,7 @@ Effects          :
 #1 (id=1015429)  : School Damage (2): holyfire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.25000 | PvP Coefficient: 0.67000 | Radius: 12 yards | Target: Cone Front (104)
 #2 (id=1015430)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 12 yards | Mechanic: Unknown(180) | Target: Cone Front (104)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 12 yards | Mechanic: Snare | Target: Cone Front (104)
 #3 (id=1015431)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Crusader Strike (132331), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Recompense (384914), Seal of the Crusader (385723), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Execution Sentence (387200), Blessing of Winter (388012), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sacred Weapon (432616), Hammer and Anvil (433717), Divine Guidance (433808), Forge's Reckoning (447258)
@@ -14711,7 +14711,7 @@ Effects          :
 #3 (id=1023438)  : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=1023439)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc328281
 Tooltip          : Attack speed reduced by $w3%.
 Movement speed reduced by $w4%.
@@ -16630,7 +16630,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1050802)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 14 yards | Mechanic: Unknown(180) | Target: Cone Front (104)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 14 yards | Mechanic: Snare | Target: Cone Front (104)
 #2 (id=1050803)  : Apply Aura (6) | Periodic Damage (3): holyfire every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.54400 | PvP Coefficient: 1.00000 | Radius: 14 yards | Target: Cone Front (104)
 #3 (id=1144192)  : Apply Aura (6) | Ignore Armor% (345)
@@ -18140,7 +18140,7 @@ Spell Type       : Melee
 Duration         : 8 seconds
 Cooldown         : 120 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(286)
+Mechanic         : Taunt
 Attributes       : ....x..x ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ..x..... ........ 
                  : ........ ...x.... .......x ........   ........ ........ ........ ........ 
@@ -18313,7 +18313,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -19873,7 +19873,7 @@ School           : Holy
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 12 seconds
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -20523,7 +20523,7 @@ Effects          :
 #2 (id=1119126)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=1119190)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc431377
 Tooltip          : Dealing $w1 Radiant damage and radiating $431581s1% of this damage to nearby enemies every $t1 sec.$?e2[
 
@@ -22483,7 +22483,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 30 yards
 Duration         : 5 seconds
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .xx..... 
@@ -23414,38 +23414,4 @@ Attributes       : .......x x....... ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Threat (42), Ignore Line of Sight (66), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1164056)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc53576
-Tooltip          : Your next spell is empowered:
-
--Flash of Light costs $w1% less Mana.
--Holy Light generates $w2 Holy Power.
--Greater Judgment prevents ${$w4-100}% more damage.
-
-Name             : Radiant Glory (id=458359) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Retribution [tree=spec, row=10, col=4, max_rank=1, req_points=20, replace="Avenging Wrath" (id=31884)]
-Class            : Paladin
-School           : Physical
-Spell Type       : None
-Internal Cooldown: 0.5 seconds
-Proc Chance      : 101%
-Proc Flags       : ....x... ....x.x. x....... ........   ..x..... ........ ........ ........   
-                 : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Cast Successful
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Spellcast Override In Spellbook (310)
-Effects          :
-#1 (id=1164292)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
-                   Base Value: 454353 | Scaled Value: 454353 | PvP Coefficient: 1.00000 | Misc Value: 231895 | Target: Self (1)
-Description      : Wake of Ashes activates $?s384392[Crusade for $454373d][Avenging Wrath for $454351d].
-
-Each Holy Power spent has a chance to activate $?s384392[Crusade for ${$454373d/2} sec][Avenging Wrath for ${$454351d/2} sec].
-
-
+#1 (id=1164056)  : Apply Aura (6) 

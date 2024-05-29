@@ -13,7 +13,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 7.5 seconds
 Stance Mask      : 0x88000000
-Mechanic         : Unknown(222)
+Mechanic         : Shield
 Affecting spells : Improved Power Word: Shield (24191 effect#1), Rapture (47536 effects: #3, #6), Priest (137030 effect#1), Shadow Priest (137033 effect#8), Aegis of Wrath (238135 effect#2), Voidform (250844 effect#3), Kam Xi'raff (281457 effect#1), Inner Quietus (448278 effect#2)
 Family Flags     : 0
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -499,7 +499,7 @@ School           : Holy
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 7.5 seconds
-Mechanic         : Unknown(222)
+Mechanic         : Shield
 Attributes       : ........ ........ ........ x.xx.x..   ...x.x.x ..x..... xx...... ........ 
                  : ..x..... ......x. ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -598,7 +598,7 @@ GCD              : 1.5 seconds
 Duration         : 50 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Mechanic         : Unknown(227)
+Mechanic         : Shackle
 Family Flags     : 58
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ........ ........ ...x.... ........   x....... ........ ........ ........ 
@@ -752,7 +752,7 @@ Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage (3): shadow every 0.75 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.44024 | PvP Coefficient: 1.16000 | Target: Enemy (6)
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 13 | Target: Self (1)
 #4 (id=623774)   : Dummy (3)
@@ -773,7 +773,7 @@ Duration         : 4 seconds
 Cooldown         : 45 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Mechanic         : Unknown(172)
+Mechanic         : Silence
 Affecting spells : Last Word (263716 effect#1)
 Family Flags     : 53
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2073,7 +2073,7 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds
 Stance Mask      : 0x08000000
-Mechanic         : Freeze
+Mechanic         : Stun
 Family Flags     : 77
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2086,7 +2086,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=58262)    : Apply Aura (6) | Stun (12)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Mechanic: Freeze | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Mechanic: Stun | Target: Enemy (6)
 Description      : Terrifies the target in place, stunning them for $d.
 Tooltip          : Stunned.
 
@@ -2335,7 +2335,7 @@ Charges          : 1 (90 seconds cooldown)
 Category         : 2308: Move with Grace (337678 effect#1), Time Spiral (375254 effect#1), Move with Grace (390620 effect#1), Save the Day (458650 effect#1)
 Labels           : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381753 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
 Stance Mask      : 0x88000000
-Mechanic         : Grip
+Mechanic         : Knockback
 Affecting spells : Death Denied (287723 effect#1)
 Family Flags     : 83
 Attributes       : ........ ........ x....... ........   ........ ........ ...x.... ........ 
@@ -2523,7 +2523,7 @@ Range            : 50000 yards
 Max Targets      : 5
 Duration         : 3 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(244)
+Mechanic         : Horrify
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : ........ ........ x......x x.xx..x.   ...x.x.x ........ ........ ........ 
@@ -2607,7 +2607,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Discount Power On Miss (59), Always Hit (114), No Partial Immunity (139), No Attack Dodge (247), No Attack Parry (248), No Attack Block (256), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=97023)    : Dummy (3)
-                   Base Value: 92832 | Scaled Value: 92832 | PvP Coefficient: 1.00000 | Radius: 0 - 1 yards | Mechanic: Grip | Target: Unknown(57) -> Unknown(47)
+                   Base Value: 92832 | Scaled Value: 92832 | PvP Coefficient: 1.00000 | Radius: 0 - 1 yards | Mechanic: Knockback | Target: Unknown(57) -> Unknown(47)
 Description      : $@spelldesc73325
 
 Name             : Altered Form (desc=Racial Passive) (id=94293) [Passive, Hidden] 
@@ -2721,7 +2721,7 @@ Duration         : 0.5 seconds
 Cooldown         : 60 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Mechanic         : Unknown(166)
+Mechanic         : Root
 Attributes       : ........ ........ x.x..... ........   ...x...x ........ .x...... ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3057,7 +3057,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 20 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(166)
+Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ x.x..... ..x....x   ...x...x ......x. ........ .....x.. 
@@ -4658,7 +4658,7 @@ Effects          :
 #1 (id=283828)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.19687 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=283829)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #3 (id=1072056)  : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
 Description      : Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d and slowing their movement speed by $s2%.
@@ -5652,7 +5652,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=294717)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Freeze | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Stun | Target: Enemy (6)
 Description      : $@spelldesc88625
 Tooltip          : Stunned.
 
@@ -7281,7 +7281,7 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 4 seconds
-Mechanic         : Unknown(259)
+Mechanic         : Interrupt
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10107,7 +10107,7 @@ Duration         : 2 seconds
 Labels           : 2418: Blaze of Light (215768 effect#2)
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10119,7 +10119,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=889701)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc215768
 Tooltip          : Movement speed decreased by $w1%.
 
@@ -13100,7 +13100,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Log on Learn (355)
 Effects          :
 #1 (id=1027661)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -75 | Scaled Value: -75 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -75 | Scaled Value: -75 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc390668
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -14725,7 +14725,7 @@ Effects          :
 #1 (id=1028897)  : Apply Aura (6) | Periodic Damage (3): shadow every 0.75 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.14462 | PvP Coefficient: 1.16000 | Target: Enemy (6)
 #2 (id=1028898)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #3 (id=1028899)  : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 13 | Target: Self (1)
 #4 (id=1028900)  : Dummy (3)
@@ -15215,7 +15215,7 @@ Attributes       : ........ ........ ........ ........   ...x...x .x...... .....
                  : No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Active Threat (94), PvP Enabling (96), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Allow Cast While Channeling (308), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1035090)  : Dummy (3)
-                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Unknown(77)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Unknown(77)
 #2 (id=1035091)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.10500 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(76) -> AOE enemy (instant) (16)
 #3 (id=1072084)  : Dummy (3)
@@ -18093,7 +18093,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 1 seconds
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -18705,7 +18705,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
 #1 (id=1155952)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc453845
 Tooltip          : Movement speed reduced by $w1%.
 
@@ -18733,7 +18733,7 @@ Effects          :
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Spike (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Echoing Void (373304), Echoing Void (373305), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394976), Mind Sear (394979), Mind Spike: Insanity (407466), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Crash (457043)
                    Family Flags: 72
 #2 (id=1155955)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc453845
 Tooltip          : $?$w1>0[Receiving $w1% increased damage from $@auracaster. ][]$?$w2<0[Movement speed reduced by $w2%.][]
 

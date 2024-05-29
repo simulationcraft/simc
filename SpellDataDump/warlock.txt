@@ -298,7 +298,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(217)
+Mechanic         : Banish
 Affecting spells : Norgannon's Foresight (236431 effect#1)
 Family Flags     : 59
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... x....... .x...... 
@@ -784,7 +784,7 @@ Duration         : 30 seconds
 Cooldown         : 30 seconds
 Labels           : 1827: Teachings of the Black Harvest (385881 effect#4), Teachings of the Black Harvest (385881 effect#5)
 Proc Chance      : 100%
-Mechanic         : Unknown(177)
+Mechanic         : Sleep
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Family Flags     : 25
@@ -825,7 +825,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Do Not Sheath (18), Active Threat (94), DoT Stacking Rule (103), Not a Proc (105), Allow Client Targeting (133), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=2216)     : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=910502)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
@@ -860,13 +860,13 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : Not Shapeshifted (16), No AutoCast (AI) (49), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=2449)     : Apply Aura (6) | Fear (7)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Mechanic: Unknown(244) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Mechanic: Horrify | Target: Enemy (6)
 #2 (id=2450)     : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=149417)   : Trigger Missiles (32)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 108396
 #4 (id=200196)   : Apply Aura (6) | Unknown(191)
-                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Mechanic: Unknown(244) | Target: Enemy (6)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Mechanic: Horrify | Target: Enemy (6)
 Description      : Horrifies an enemy target into fleeing, incapacitating for $6789d and healing you for $108396m1% of maximum health.
 Tooltip          : Incapacitated.
 
@@ -943,7 +943,7 @@ Duration         : 5 seconds
 Cooldown         : 10 seconds
 Category         : 82
 Category Cooldown: 10 seconds
-Mechanic         : Polymorph
+Mechanic         : Heal
 Family Flags     : 19
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -1155,7 +1155,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .x...
                  : Do Not Sheath (18), No AutoCast (AI) (49), Always Hit (114), Always Line of Sight (185), Allow Class Ability Procs (416), Interrupts Current Cast (419)
 Effects          :
 #1 (id=10874)    : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Unknown(259) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Interrupt | Target: Enemy (6)
 Description      : Counters the enemy's spellcast, preventing any spell from that school of magic from being cast for $19647d.
 
 Name             : Devour Magic (id=19658) 
@@ -1301,7 +1301,7 @@ Effects          :
 #1 (id=12912)    : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=12913)    : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Freeze | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Stun | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : An infernal falls from the sky, dealing $s1 Fire damage to all targets, stunning them for $d.
 Tooltip          : Stunned.
 
@@ -1661,7 +1661,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Mechanic         : Freeze
+Mechanic         : Stun
 Affecting spells : Norgannon's Foresight (236431 effect#1), Darkfury (264874 effects: #1, #2)
 Family Flags     : 44
 Attributes       : ........ ........ x....... ........   ...x...x ........ .x...... ........ 
@@ -2575,9 +2575,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=92676)    : Trigger Spell (64): Axe Toss
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 347008 | Mechanic: Unknown(259) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 347008 | Mechanic: Interrupt | Target: Enemy (6)
 #2 (id=834867)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Freeze | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Stun | Target: Enemy (6)
 Description      : The $?s108499[Wrathguard][Felguard] hurls its weapon, stunning and interrupting the target for $89766d.
 Tooltip          : Stunned for $d.
 
@@ -4361,7 +4361,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 30 seconds
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4428,7 +4428,7 @@ Duration         : 5 seconds
 Cooldown         : 10 seconds
 Category         : 82
 Category Cooldown: 10 seconds
-Mechanic         : Polymorph
+Mechanic         : Heal
 Family Flags     : 19
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -4475,7 +4475,7 @@ Effects          :
 #1 (id=242715)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.12500 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=242716)   : Apply Aura (6) | Stun (12)
-                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Freeze | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Stun | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : The infernal releases a powerful burst of flames, dealing $s1 Fire damage to nearby targets, and stunning them for $d.
 Tooltip          : Stunned.
 
@@ -4529,7 +4529,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .x...
                  : Do Not Sheath (18), No AutoCast (AI) (49), Always Hit (114), Allow Class Ability Procs (416), Interrupts Current Cast (419)
 Effects          :
 #1 (id=242924)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Unknown(259) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Interrupt | Target: Enemy (6)
 Description      : Counter an enemy's spellcast, preventing any spell from that school of magic from being cast for $19647d.
 
 Name             : Shadow Lock (desc=Special Ability) (id=171140) [Spell Family (5)] 
@@ -4600,7 +4600,7 @@ Effects          :
 #1 (id=242945)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=242946)   : Apply Aura (6) | Stun (12)
-                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Freeze | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Stun | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc171017
 Tooltip          : Stunned.
 
@@ -5110,7 +5110,7 @@ Effects          :
 #1 (id=288215)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=288216)   : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Mechanic: Unknown(172) | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Mechanic: Silence | Target: Unknown(25)
 Description      : $@spelldesc316099
 Tooltip          : Silenced.
 
@@ -9806,7 +9806,7 @@ Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Affecting spells : Norgannon's Foresight (236431 effect#1), Amplify Curse (328774 effect#3)
 Family Flags     : 113
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -11166,7 +11166,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=873981)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Unknown(259) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Interrupt | Target: Enemy (6)
 Description      : The $?s108499[Wrathguard][Felguard] hurls its weapon, stunning and interrupting the target for $89766d.
 
 Name             : Languishing Soul Detritus (id=356254) [Spell Family (5), Hidden] 
@@ -11879,7 +11879,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Show Mechanic as Combat Text (213), Aura Points On Client (268), Area Effects Use Target Radius (328), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1016387)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Radius: 12 yards | Mechanic: Unknown(180) | Target: Cone Front (104)
+                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Radius: 12 yards | Mechanic: Snare | Target: Cone Front (104)
 Description      : Slows enemies in a $A1 yard cone in front of you by $s1% for $d.
 Tooltip          : Slowed by $w1% for $d.
 
@@ -20466,11 +20466,4 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1164063)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Enemy (6)
-                   Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Bilescourge Bombers (267213), Umbral Blaze (273526), Pandemic Invocation (289367), Conflagrate (290644), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Withered Ground (325673), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072), Soul Rot (331623), Deliberate Corruption (367831), Implosion (370371), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Chaos Barrage (387985), Shadow Bolt (394238), Chaos Bolt (394246), Umbral Blaze (405802), Channel Demonfire (409890), Oblivion (417537), Searing Bolt (423886), Wicked Cleave (432120), Chaos Salvo (432596), Infernal Bolt (434506), Ruination (434636), Wither (445468), Wither (445474), Blackened Soul (445736), Malevolence (446285), Shadowbolt Volley (453176), Doom (453567), Summon Overfiend (457578), Malefic Touch (458131)
-                   Family Flags: 49
-#2 (id=1164064)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Enemy (6)
-Description      : $@spelldesc458036
-Tooltip          : Damage taken increased by $s1%.
-
-
+                   Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Bilescourge Bombers (267213), Umbral Blaze (273526), Pandemic Invocation (289367), Conflagrate (290644), Scouring Tithe (312321), Unstable Affliction (316099), 

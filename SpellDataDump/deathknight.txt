@@ -299,7 +299,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x01000000
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Affecting spells : Proliferating Chill (373930 effect#1), Ice Prison (454786 effect#2)
 Family Flags     : 2
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
@@ -313,9 +313,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Taps immediately (215), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=37500)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Unknown(180) | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Snare | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=37501)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Snare
 #3 (id=83376)    : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=879783)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
@@ -527,7 +527,7 @@ Attributes       : ........ ........ x....... ........   ........ .x...... .....
                  : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Always Hit (114), Taps immediately (215), Allow Class Ability Procs (416), Interrupts Current Cast (419)
 Effects          :
 #1 (id=39737)    : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Unknown(259) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Interrupt | Target: Enemy (6)
 Description      : Smash the target's mind with cold, interrupting spellcasting and preventing any spell in that school from being cast for $d.
 
 Name             : Death Coil (id=47541) [Spell Family (15)] 
@@ -1109,7 +1109,7 @@ School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Velocity         : 50 yards/sec
-Mechanic         : Grip
+Mechanic         : Knockback
 Affecting spells : Death's Reach (276079 effect#1)
 Family Flags     : 25
 Attributes       : ........ ........ .......x x..x....   .....x.. .x...... ........ ........ 
@@ -1137,7 +1137,7 @@ Cooldown         : 1 seconds
 Charges          : 1 (25 seconds cooldown)
 Category         : 1428: Blood Death Knight (137008 effect#4), Blood Death Knight (137008 effect#11), Grip of the Everlasting (334724 effect#1), Death's Echo (356367 effect#2)
 Stance Mask      : 0x01000000
-Mechanic         : Grip
+Mechanic         : Knockback
 Affecting spells : Death's Reach (276079 effect#1)
 Family Flags     : 25
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1840,7 +1840,7 @@ Category         : 82
 Category Cooldown: 8 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x01000000
-Mechanic         : Unknown(286)
+Mechanic         : Taunt
 Family Flags     : 60
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ..x.....   ........ ........ x.x..... ........ 
@@ -3070,7 +3070,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No AutoCast (AI) (49), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=95537)    : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Freeze | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Stun | Target: Enemy (6)
 #2 (id=95538)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.11138 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Strike an enemy with a smashing attack, dealing $s2 Physical damage and stunning for $d.
@@ -3096,7 +3096,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No AutoCast (AI) (49), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=95541)    : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Freeze | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Stun | Target: Enemy (6)
 #2 (id=95595)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.01061 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Bite and tear at a target's limbs, stunning it for $d and dealing damage.
@@ -3150,9 +3150,9 @@ Attributes       : ........ ........ ..x..... ........   ...x...x .x...... .....
                  : Do Not Sheath (18), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Always Hit (114), Can Proc From Procs (122), Taps immediately (215), No Attack Miss (249), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=95550)    : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Unknown(259) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Interrupt | Target: Enemy (6)
 #2 (id=95551)    : Apply Aura (6) | Root (455)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Mechanic: Unknown(166) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Mechanic: Root | Target: Enemy (6)
 Description      : Charge an enemy, interrupting spellcasting and immobilizing them for $d.
 Tooltip          : Immobilized.
 
@@ -3314,7 +3314,7 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds
 Stance Mask      : 0x01000000
-Mechanic         : Freeze
+Mechanic         : Stun
 Family Flags     : 84
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3355,11 +3355,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : Not Shapeshifted (16), No AutoCast (AI) (49), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), No Aura Log (202), Reset cooldown upon ending an encounter (333), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=119238)   : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Grip | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Knockback | Target: Unknown(25)
 #2 (id=192367)   : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Mechanic: Grip | Target: Unknown(63) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Mechanic: Knockback | Target: Unknown(63) -> AOE enemy (instant) (16)
 #3 (id=204723)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Mechanic: Grip | Target: Unknown(63) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Mechanic: Knockback | Target: Unknown(63) -> AOE enemy (instant) (16)
 Description      : Shadowy tendrils coil around all enemies within $A2 yards of a hostile or friendly target, pulling them to the target's location.
 
 Name             : Control Undead (id=111673) [Spell Family (15)] 
@@ -4405,7 +4405,7 @@ Effects          :
 #1 (id=279728)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.15) | AP Coefficient: 4.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=279729)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc190778
 Tooltip          : Movement speed slowed by $s2%.
 
@@ -4464,7 +4464,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=280760)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc191384
 Tooltip          : Movement slowed by $s1%.
 
@@ -5598,7 +5598,7 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 50000 yards
 Duration         : 4 seconds
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Attributes       : ........ x....... .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5770,7 +5770,7 @@ Effects          :
 #4 (id=312174)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 #5 (id=321496)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Unknown(180) | Chain Targets: 2 | Target: Enemy (6)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Snare | Chain Targets: 2 | Target: Enemy (6)
 Description      : Instantly strike the target and 1 other nearby enemy, causing $s2 Physical damage, and reducing enemies' movement speed by $s5% for $d$?s316575[
 
 |cFFFFFFFFGenerates $s3 bonus Runic Power][]$?s221536[, plus ${$210738s1/10} Runic Power per additional enemy struck][].|r
@@ -6645,7 +6645,7 @@ Attributes       : ........ ........ ........ x..x....   ........ ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), Not an Action (92), Active Threat (94), DoT Stacking Rule (103), Not a Proc (105), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Allow While Riding Vehicle (204), Show Mechanic as Combat Text (213), Allow While Charmed (261), Do Not Log Aura Refresh (291), Don't Cancel When All Effects are Disabled (353), Don't close loot window (379), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=313810)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Unknown(180) | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc196770
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -6888,7 +6888,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
-Mechanic         : Grip
+Mechanic         : Knockback
 Attributes       : ........ ........ .......x x..x....   .....x.. .x...... ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ....x... ........ 
                  : x......x ........ ........ ........   ...x.... ........ .xxx.... ........ 
@@ -7167,7 +7167,7 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
 Stance Mask      : 0x01000000
-Mechanic         : Freeze
+Mechanic         : Stun
 Family Flags     : 84
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -7405,7 +7405,7 @@ Effects          :
 #4 (id=344375)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 #5 (id=344376)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Unknown(180) | Chain Targets: 2 | Target: Enemy (6)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Snare | Chain Targets: 2 | Target: Enemy (6)
 Description      : Instantly strike the target and 1 other nearby enemy, causing $s2 Physical damage, and reducing enemies' movement speed by $s5% for $d.
 
 |cFFFFFFFFGenerates $s3 bonus Runic Power$?s221536[, plus $s4 Runic Power per additional enemy struck][].|r
@@ -7527,7 +7527,7 @@ School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Velocity         : 45 yards/sec
-Mechanic         : Grip
+Mechanic         : Knockback
 Attributes       : .......x ........ .......x x..x....   .....x.. .x...... ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ....x... ........ 
                  : x......x ........ ........ ........   ...x.... ........ .xxx.... ........ 
@@ -8011,7 +8011,7 @@ Spell Type       : Magic
 Spell Level      : 25
 Range            : 100 yards
 Duration         : 11 seconds
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Affecting spells : Grip of the Dead (273984 effect#1)
 Family Flags     : 83
 Attributes       : ...x.... ........ .......x x..x....   .....x.x ..x..... ........ ........ 
@@ -8025,7 +8025,7 @@ Attributes       : ...x.... ........ .......x x..x....   .....x.x ..x..... .....
                  : Do Not Log Immune Misses (3), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Don't close loot window (379), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=726036)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -90 | Scaled Value: -90 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -90 | Scaled Value: -90 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc273952
 Tooltip          : Movement speed reduced by $w1% from $?s152280[Defile][Death and Decay].
 
@@ -8478,7 +8478,7 @@ Effects          :
 #1 (id=735552)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.37050 | PvP Coefficient: 0.33333 | Target: Enemy (6)
 #2 (id=735553)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc279302
 Tooltip          : Movement speed slowed by $s2%.
 
@@ -9061,7 +9061,7 @@ Effects          :
 #1 (id=752231)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=752232)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : Deals $s1 Frost damage and reduces their movement speed by $s2% for $d.
 Tooltip          : Movement speed reduced by $w2%.
 
@@ -10013,7 +10013,7 @@ Effects          :
 #1 (id=803166)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.59717 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=803167)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : Deals $s1 Frost damage and reduces their movement speed by $s2% for $d.
 Tooltip          : Movement speed reduced by $w2%.
 
@@ -10023,7 +10023,7 @@ School           : Frost
 Spell Type       : Melee
 Range            : 50000 yards
 Duration         : 6 seconds
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ ..x.....   ........ ..x..... ........ ........ 
                  : x....... ........ ......x. ........   ........ ........ ........ ......x. 
                  : ....x... ........ ........ ....x...   ........ ........ ........ ........ 
@@ -10035,7 +10035,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ..x..... .....
                  : Aura Is Debuff (26), No Threat (42), Allow Dead Target (64), No Initial Threat (86), Do Not Display Range (126), No Harmful Threat (132), Ignore Combat Timer (156), Not an Attack (194), Aura Points On Client (268), Do Not Log Aura Refresh (291)
 Effects          :
 #1 (id=803364)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Self (1)
 Description      : $@spelldesc207167
 Tooltip          : Movement slowed by $w1%.
 
@@ -11028,7 +11028,7 @@ Effects          :
 #1 (id=818429)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=818430)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : Deals $o1 shadow damage over $d and slows the target by $m2%.
 Tooltip          : Suffering $o1 shadow damage over $d and slowed by $m2%.
 
@@ -11698,7 +11698,7 @@ Spell Level      : 48
 Range            : 50000 yards
 Velocity         : 50 yards/sec
 Labels           : 976
-Mechanic         : Grip
+Mechanic         : Knockback
 Affecting spells : Death's Reach (276079 effect#1)
 Family Flags     : 25
 Attributes       : ........ ........ .......x x..x....   .....x.. .x...... ........ ........ 
@@ -13794,7 +13794,7 @@ School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 3 seconds
-Mechanic         : Unknown(172)
+Mechanic         : Silence
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13806,7 +13806,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1000805)  : Apply Aura (6) | Silence (27)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Mechanic: Unknown(172) | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Mechanic: Silence | Target: Enemy (6)
 Description      : $@spelldesc206970
 
 Tooltip          : Silenced.
@@ -13953,7 +13953,7 @@ School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 3 seconds
-Mechanic         : Freeze
+Mechanic         : Stun
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ......x. 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... .....x.. 
@@ -15153,7 +15153,7 @@ School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Velocity         : 50 yards/sec
-Mechanic         : Grip
+Mechanic         : Knockback
 Affecting spells : Death's Reach (276079 effect#1)
 Family Flags     : 25
 Attributes       : ........ ........ .......x x..x....   .....x.. .x...... ........ ........ 
@@ -15205,7 +15205,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1026073)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc389679
 Tooltip          : Movement speed reduced by $w1%.
 
@@ -16033,7 +16033,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1030741)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=1030864)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.66700 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
@@ -16380,7 +16380,7 @@ Spell Type       : None
 Range            : 50000 yards
 Velocity         : 50 yards/sec
 Labels           : 976
-Mechanic         : Grip
+Mechanic         : Knockback
 Affecting spells : Death's Reach (276079 effect#1)
 Family Flags     : 25
 Attributes       : ........ ........ .......x x..x....   .....x.. .x...... ........ ........ 
@@ -16746,7 +16746,7 @@ Effects          :
 #1 (id=1076799)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.37050 | PvP Coefficient: 0.33333 | Target: Enemy (6)
 #2 (id=1076800)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc279302
 Tooltip          : Movement speed slowed by $s2%.
 
@@ -18450,7 +18450,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1134364)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=1134365)  : Apply Aura (6) | Unknown(395)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 32531 | Target: Enemy (6)
 Description      : $@spelldesc439948
@@ -18474,7 +18474,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1134368)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Unknown(25)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Unknown(25)
 Description      : $@spelldesc439948
 Tooltip          : Movement speed reduced by $w1%.
 
@@ -19781,7 +19781,7 @@ Spell Type       : Magic
 Range            : 30 yards
 Duration         : 8 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Proc Flags       : .....x.. .....x.. .x...... ........   ........ ........ ........ ........   
                  : Yellow Melee Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
@@ -19795,9 +19795,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Can Proc From Procs (122), Show Mechanic as Combat Text (213), Taps immediately (215), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1141445)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Unknown(180) | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Snare | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=1141446)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Snare
 #3 (id=1141447)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Shackles the target $?a373930[and $373930s1 nearby enemy ][]with frozen chains, reducing movement speed by $s1% for $d.
@@ -19837,7 +19837,7 @@ Spell Type       : Magic
 Range            : 30 yards
 Duration         : 4 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #7, #8), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2)
 Family Flags     : 43
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
@@ -19851,7 +19851,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Taps immediately (215), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1141462)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Unknown(180) | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Snare | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=1141463)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc444097
@@ -20391,7 +20391,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 4 seconds
-Mechanic         : Unknown(166)
+Mechanic         : Root
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -20403,7 +20403,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), Always Hit (114), Do Not Display Range (126), Suppress Weapon Procs (151), Can Cause Interrupt (235), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1157676)  : Apply Aura (6) | Root (455)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Unknown(166) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Root | Target: Enemy (6)
 Description      : $@spelldesc454786
 Tooltip          : Rooted.
 

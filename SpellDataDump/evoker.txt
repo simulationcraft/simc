@@ -504,7 +504,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Always Hit (114), Taps immediately (215), Allow Class Ability Procs (416), Interrupts Current Cast (419)
 Effects          :
 #1 (id=881542)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Unknown(259) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Interrupt | Target: Enemy (6)
 Description      : Interrupt an enemy's spellcasting and prevent any spell from that school of magic from being cast for $d.
 
 Name             : Evoker (id=353167) [Spell Family (224), Passive, Hidden] 
@@ -583,7 +583,7 @@ Duration         : 30 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
                  : 1468: Might of the Black Dragonflight (441705 effect#1), Might of the Black Dragonflight (441705 effect#2)
 Proc Chance      : 100%
-Mechanic         : Unknown(166)
+Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : ........ ........ ........ x.xx..x.   ...x.x.x ........ ........ ........ 
@@ -1684,7 +1684,7 @@ Cooldown         : 15 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Proc Chance      : 100%
-Mechanic         : Unknown(177)
+Mechanic         : Sleep
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting spells : Hover (358267 effect#5), Hover (393271 effect#1), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3)
@@ -1700,7 +1700,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... ..x..
                  : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Prevents Anim (50), Can Proc From Procs (122), Bouncy Chain Missiles (146), Limit N (165), Can Proc From Suppressed Target Procs (254), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=898166)   : Apply Aura (6) | Fear (7)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 4 | Mechanic: Unknown(177) | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 4 | Mechanic: Sleep | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=898609)   : Apply Aura (6) | Unknown(191)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Disorient an enemy for $d, causing them to sleep walk towards you. Damage has a chance to awaken them.
@@ -4228,7 +4228,7 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 3 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Affecting spells : Permeating Chill (370897 effect#2), Legacy of Coldarra (387270 effect#1)
 Triggered by     : Permeating Chill (370897), Permeating Chill (381773)
 Family Flags     : 48
@@ -4911,7 +4911,7 @@ Range            : 100 yards
 Duration         : 3 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
                  : 1468: Might of the Black Dragonflight (441705 effect#1), Might of the Black Dragonflight (441705 effect#2)
-Mechanic         : Freeze
+Mechanic         : Stun
 Triggered by     : Terror of the Skies (371032)
 Attributes       : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8508,7 +8508,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1022075)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 15 yards | Mechanic: Unknown(180) | Target: Cone Front (104)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 15 yards | Mechanic: Snare | Target: Cone Front (104)
 Description      : $@spelldesc387341
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -9473,9 +9473,9 @@ Effects          :
 #2 (id=1037395)  : School Damage (2): firestorm
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 4.30000 | PvP Coefficient: 1.12500 | Radius: 0 - 2 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #3 (id=1052932)  : Unknown(144)
-                   Base Value: 120 | Scaled Value: 120 (coefficient=0, delta coefficient=0.2) | PvP Coefficient: 1.00000 | Misc Value: -20 | Radius: 0 - 2 yards | Mechanic: Grip | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 120 | Scaled Value: 120 (coefficient=0, delta coefficient=0.2) | PvP Coefficient: 1.00000 | Misc Value: -20 | Radius: 0 - 2 yards | Mechanic: Knockback | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #4 (id=1053498)  : Unknown(144)
-                   Base Value: 120 | Scaled Value: 120 (coefficient=0, delta coefficient=0.2) | PvP Coefficient: 1.00000 | Mechanic: Grip | Target: Enemy (6)
+                   Base Value: 120 | Scaled Value: 120 (coefficient=0, delta coefficient=0.2) | PvP Coefficient: 1.00000 | Mechanic: Knockback | Target: Enemy (6)
 #5 (id=1089232)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 2 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc396286
@@ -10959,7 +10959,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ ..x..
                  : Prevents Anim (50), No Partial Immunity (139), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1072739)  : Apply Aura (6) | Stun (12)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Mechanic: Freeze | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Mechanic: Stun | Target: Enemy (6)
 Description      : $@spelldesc408543
 Tooltip          : Stunned.
 
@@ -11133,7 +11133,7 @@ School           : Firestorm
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
-Mechanic         : Grip
+Mechanic         : Knockback
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11156,7 +11156,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 3 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
-Mechanic         : Freeze
+Mechanic         : Stun
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12613,7 +12613,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 30 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(166)
+Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : ........ ........ ........ x.xx..x.   ...x.x.x ........ ........ ........ 
@@ -13352,7 +13352,7 @@ School           : Spellfrost
 Spell Type       : None
 Range            : 100 yards
 Duration         : 3 seconds
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ ..x.....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -14647,7 +14647,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Taps immediately (215), No Target Duration Mod (225), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1132984)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Radius: 6 yards | Mechanic: Unknown(180) | Target: AOE enemy (instant) (16)
+                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Radius: 6 yards | Mechanic: Snare | Target: AOE enemy (instant) (16)
 #2 (id=1132985)  : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: AOE enemy (instant) (16)
 Description      : $@spelldesc410253

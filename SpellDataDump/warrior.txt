@@ -91,7 +91,7 @@ Cooldown         : 8 seconds
 Category         : 82
 Category Cooldown: 8 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(286)
+Mechanic         : Taunt
 Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Bladestorm (389774 effect#3), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 15
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
@@ -141,7 +141,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Mechanic         : Unknown(200)
+Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Warrior Arms 10.2 Class Set 2pc (422923 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Colossal Might (440989 effect#2)
 Family Flags     : 5, 8, 9, 52, 99
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...... ...x.... 
@@ -267,7 +267,7 @@ Spell Type       : Melee
 Duration         : 6 seconds
 Cooldown         : 120 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(286)
+Mechanic         : Taunt
 Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (389774 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 70, 75
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
@@ -370,7 +370,7 @@ Attributes       : ........ ........ x.x..... ........   ...x...x .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Completely Blocked (99), Do Not Display Range (126), Show Mechanic as Combat Text (213), Enforce Facing on Primary Target Only (351), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=523)      : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Unknown(180) | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Snare | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=236708)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Maims the enemy for $s2 Physical damage, reducing movement speed by $s1% for $d.
@@ -719,7 +719,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Taps immediately (215), No Attack Miss (249), Aura Points On Client (268), Allow Class Ability Procs (416), Interrupts Current Cast (419)
 Effects          :
 #1 (id=108711)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Unknown(259) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Interrupt | Target: Enemy (6)
 Description      : Pummels the target, interrupting spellcasting and preventing any spell in that school from being cast for $d.
 
 Name             : Revenge (id=6572) [Spell Family (4)] 
@@ -861,7 +861,7 @@ Spell Level      : 21
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 30 seconds
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Affecting spells : Warrior (137047 effect#2), Disturb the Peace (339948 effect#1)
 Family Flags     : 8, 70, 71
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
@@ -2382,7 +2382,7 @@ School           : Physical
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 1 seconds
-Mechanic         : Unknown(166)
+Mechanic         : Root
 Family Flags     : 24
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -2395,7 +2395,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Always AOE Line of Sight (186), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=115753)   : Apply Aura (6) | Root (455)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Unknown(166) | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Root | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc100
 Tooltip          : Rooted.
 
@@ -2518,7 +2518,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
-Mechanic         : Unknown(200)
+Mechanic         : Bleed
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ..x..... ..x..... ..x...x. 
                  : ........ x......x ....x... ........   ........ ........ ........ ........ 
@@ -2530,7 +2530,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Can't Crit (93), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Not In Spellbook (143), Aura Never Bounces (148), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Rolling Periodic (334), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=126202)   : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 42.61437 (coefficient=0.094) | PvP Coefficient: 1.00000 | Mechanic: Unknown(200) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 42.61437 (coefficient=0.094) | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc12292
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
@@ -2541,7 +2541,7 @@ Spell Type       : Melee
 Range            : 100 yards
 Duration         : 15 seconds
 Labels           : 2957: Warrior Protection 10.2 Class Set 4pc (422928 effect#1)
-Mechanic         : Unknown(200)
+Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Bloodletting (383154 effects: #1, #2), Bloodborne (383287 effect#1), Impale (383430 effect#1), Bloodborne (385703 effect#1), Bloodborne (385704 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Thunderous Roar (397364 effect#3), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Colossal Might (440989 effect#2)
 Triggered by     : Deep Wounds (115768)
 Family Flags     : 9, 86, 120
@@ -2556,7 +2556,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=129821)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17934 | PvP Coefficient: 1.00000 | Mechanic: Unknown(200) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17934 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc115768
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
@@ -2928,7 +2928,7 @@ Spell Type       : None
 Range            : 50000 yards
 Duration         : 2 seconds
 Proc Chance      : 101%
-Mechanic         : Freeze
+Mechanic         : Stun
 Affecting spells : Recklessness (1719 effect#9), Protection Warrior (137048 effect#18), Rumbling Earth (275339 effect#3), Disturb the Peace (339948 effect#1), Unnerving Focus (384043 effect#6), Avatar (401150 effect#3), Boneshaker (429639 effect#1), Earthquaker (440992 effect#1)
 Family Flags     : 47
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
@@ -2942,7 +2942,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=170833)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Freeze | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Stun | Target: Enemy (6)
 Description      : $@spelldesc46968
 Tooltip          : Stunned.
 
@@ -2955,7 +2955,7 @@ Range            : 30 yards
 Velocity         : 25 yards/sec
 Duration         : 4 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Mechanic         : Freeze
+Mechanic         : Stun
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ..x..... ..x..... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2967,7 +2967,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Ignore Line of Sight (66), Requires Main-Hand Weapon (106), Always Hit (114), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=170838)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Freeze | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Stun | Target: Enemy (6)
 Description      : $@spelldesc107570
 Tooltip          : Stunned.
 
@@ -3772,7 +3772,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Duration         : 4 seconds
-Mechanic         : Wound
+Mechanic         : Enrage
 Affecting spells : Warpaint (208154 effect#1), Powerful Enrage (440277 effect#1)
 Triggered by     : Single-Minded Fury (81099), Trial by Combat (218826)
 Family Flags     : 58
@@ -4149,7 +4149,7 @@ Spell Level      : 1
 Range            : 8 yards
 Duration         : 4 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(166)
+Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
@@ -4163,7 +4163,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Always Show Ground Texture (190), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=292904)   : Apply Aura (6) | Root (455)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Unknown(166) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Root | Target: Enemy (6)
 Description      : $@spelldesc199045
 Tooltip          : Rooted.
 
@@ -5208,7 +5208,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Duration         : 1.5 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5262,7 +5262,7 @@ Spell Level      : 1
 Range            : 20 yards
 Duration         : 6 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Mechanic         : Unknown(200)
+Mechanic         : Bleed
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -5274,7 +5274,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Taps immediately (215), Ignore Caster Damage Modifiers (221), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), No Attack Block (256), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=320479)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Unknown(200) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc215538
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
@@ -5877,7 +5877,7 @@ School           : Physical
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 6 seconds
-Mechanic         : Unknown(180)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -5889,7 +5889,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Always AOE Line of Sight (186), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=356785)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc100
 Tooltip          : Movement slowed by $s1%.
 
@@ -5955,7 +5955,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Duration         : 2.5 seconds
 Proc Chance      : 101%
-Mechanic         : Freeze
+Mechanic         : Stun
 Family Flags     : 24
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ ........ ........ ......x. 
@@ -6471,7 +6471,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 12 seconds
-Mechanic         : Unknown(200)
+Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Mastery: Deep Wounds (262111 effects: #1, #2), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Bloodletting (383154 effects: #1, #2), Bloodborne (383287 effect#1), Impale (383430 effect#1), Bloodborne (385703 effect#1), Bloodborne (385704 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Thunderous Roar (397364 effect#3), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Colossal Might (440989 effect#2)
 Triggered by     : Mastery: Deep Wounds (262111)
 Family Flags     : 9, 19, 120
@@ -6486,7 +6486,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=623125)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.24222 | PvP Coefficient: 0.87000 | Mechanic: Unknown(200) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.24222 | PvP Coefficient: 0.87000 | Mechanic: Bleed | Target: Enemy (6)
 #2 (id=830789)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Heroic Leap (362043), Champion's Spear (376080), Annihilator (383915), Wrecking Throw (384110), Thunderous Roar (384318), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Rend (394062), Rend (394063), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Thunderous Roar (397364), Max A FX Testing Warrior Spear - (2) Damage (409404), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Reap the Storm (446005), Cleave (458459)
@@ -7357,7 +7357,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 6 seconds
-Mechanic         : Unknown(200)
+Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2)
 Triggered by     : Cold Steel, Hot Blood (288084)
 Family Flags     : 9
@@ -7372,7 +7372,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Periodic Can Crit (265), Aura Points On Client (268), Scales with Casting Item's Level (354), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=751487)   : Apply Aura (6) | Periodic Health Leech (53): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Mechanic: Unknown(200) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 #2 (id=751488)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 288080
 Description      : $@spelldesc288080
@@ -7526,7 +7526,7 @@ School           : Arcane
 Spell Type       : Magic
 Spell Level      : 48
 Range            : 50000 yards
-Mechanic         : Grip
+Mechanic         : Knockback
 Attributes       : ........ x....... .......x x..x....   ...x.x.x ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ....x... ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -7547,7 +7547,7 @@ School           : Arcane
 Spell Type       : Magic
 Spell Level      : 48
 Range            : 50000 yards
-Mechanic         : Grip
+Mechanic         : Knockback
 Attributes       : ........ ........ .......x x..x...x   ...x.x.x ..x..... ........ ....x... 
                  : ..x..... ......x. ........ ........   ........ ........ ..x.x... ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -7559,7 +7559,7 @@ Attributes       : ........ ........ .......x x..x...x   ...x.x.x ..x..... .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Allow While Invisible (78), Always Hit (114), Allow Aura While Dead (116), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), No Aura Log (202), Allow While Riding Vehicle (204), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), JumpCharge - no facing control (311), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=786863)   : Unknown(42)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0xa | Mechanic: Grip | Target: Unknown(87)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0xa | Mechanic: Knockback | Target: Unknown(87)
 Description      : $@spelldesc307865
 
 Name             : Spear of Bastion Visual (desc=Kyrian) (id=308062) 
@@ -7885,7 +7885,7 @@ Name             : Intimidating Shout (id=316594) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Mechanic         : Grip
+Mechanic         : Knockback
 Triggered by     : Intimidating Shout (316593)
 Family Flags     : 70
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8424,7 +8424,7 @@ Effects          :
 #1 (id=816653)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.20000 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
 #2 (id=822981)   : Apply Aura (6) | Stun (12)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 12 yards | Mechanic: Freeze | Target: Cone Front (104)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 12 yards | Mechanic: Stun | Target: Cone Front (104)
 #3 (id=845571)   : Trigger Spell (64): Ancient Aftershock
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 343607 | Target: Self (1)
 Description      : Unleash a wave of anima, dealing $s1 Nature damage to up to $s2 enemies and knocking them down for $d.
@@ -8459,7 +8459,7 @@ Effects          :
 #1 (id=816919)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Radius: 14 yards | Target: AOE enemy (instant) (16)
 #2 (id=845601)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 14 yards | Mechanic: Freeze | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 14 yards | Mechanic: Stun | Target: AOE enemy (instant) (16)
 Description      : $@spelldesc325886
 Tooltip          : Stunned.
 
@@ -8528,7 +8528,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=816948)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 12 yards | Mechanic: Freeze | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 12 yards | Mechanic: Stun | Target: Cone Front (104)
 #2 (id=816968)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.78000 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
 Description      : $@spelldesc325886
@@ -10657,7 +10657,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 50000 yards
 Duration         : 3 seconds
-Mechanic         : Freeze
+Mechanic         : Stun
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Weight of the Earth (208177 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Demolish (436358 effect#3)
 Family Flags     : 9, 61
 Attributes       : ....x... ........ x.x..x.. x.......   ........ ........ ........ ........ 
@@ -10671,7 +10671,7 @@ Attributes       : ....x... ........ x.x..x.. x.......   ........ ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Allow While Mounted (24), Not a Proc (105), Do Not Display Range (126), Not In Spellbook (143), Always AOE Line of Sight (186), Always Show Ground Texture (190), No PvP Battle Fatigue (387), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1110335)  : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Radius: 8 yards | Mechanic: Freeze | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Radius: 8 yards | Mechanic: Stun | Target: AOE enemy (instant) (16)
 #2 (id=1110336)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 Description      : $@spelldesc6544
@@ -11152,7 +11152,7 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 48
 Range            : 50000 yards
-Mechanic         : Grip
+Mechanic         : Knockback
 Attributes       : ........ x....... .......x x..x....   ...x.x.x ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ....x... ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -11173,7 +11173,7 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 48
 Range            : 50000 yards
-Mechanic         : Grip
+Mechanic         : Knockback
 Attributes       : ........ ........ .......x x..x...x   ...x.x.x ..x..... ........ ....x... 
                  : ..x..... ......x. ........ ........   ........ ........ ..x.x... ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -11185,7 +11185,7 @@ Attributes       : ........ ........ .......x x..x...x   ...x.x.x ..x..... .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Allow While Invisible (78), Always Hit (114), Allow Aura While Dead (116), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), No Aura Log (202), Allow While Riding Vehicle (204), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), JumpCharge - no facing control (311), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1002902)  : Unknown(42)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0xa | Mechanic: Grip | Target: Unknown(87)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0xa | Mechanic: Knockback | Target: Unknown(87)
 Description      : $@spelldesc376079
 
 Name             : Champion's Spear Visual (id=376085) [Spell Family (4)] 
@@ -13153,7 +13153,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 6 seconds
-Mechanic         : Unknown(200)
+Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Bloodletting (383154 effects: #1, #2), Bloodborne (383287 effect#1), Impale (383430 effect#1), Bloodborne (385703 effect#1), Bloodborne (385704 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Thunderous Roar (397364 effect#3), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2)
 Triggered by     : Cold Steel, Hot Blood (383958)
 Family Flags     : 9, 120
@@ -13168,7 +13168,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1018044)  : Apply Aura (6) | Periodic Health Leech (53): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 0.27000 | PvP Coefficient: 1.00000 | Mechanic: Unknown(200) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 0.27000 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 #2 (id=1018045)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 383959
 Description      : $@spelldesc288080
@@ -13217,7 +13217,7 @@ Spell Type       : Melee
 Max Targets      : Unlimited(-1)
 Duration         : 4 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Mechanic         : Unknown(200)
+Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Bloodletting (383154 effects: #1, #2), Bloodborne (383287 effect#1), Impale (383430 effect#1), Bloodborne (385703 effect#1), Bloodborne (385704 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Titanic Rage (394329 effect#1), Thunderous Roar (397364 effect#3), Avatar (401150 effects: #1, #9), Warrior Fury 10.2 Class Set 2pc (422925 effects: #2, #3), Warrior Fury 10.2 Class Set 4pc (422926 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2)
 Triggered by     : Odyn's Fury (385059)
 Family Flags     : 9, 104, 120
@@ -13234,7 +13234,7 @@ Effects          :
 #1 (id=1018080)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.72000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=1018081)  : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Mechanic: Unknown(200) | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Mechanic: Bleed | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc385059
 Tooltip          : Suffering $o3 Physical damage over $d.
 
@@ -13689,7 +13689,7 @@ Effects          :
 #2 (id=1019559)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.34200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=1020442)  : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Mechanic: Freeze | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Mechanic: Stun | Target: Enemy (6)
 #4 (id=1034853)  : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 Description      : $@spelldesc385952
@@ -13820,7 +13820,7 @@ Spell Type       : Melee
 Duration         : 6 seconds
 Cooldown         : 75 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(286)
+Mechanic         : Taunt
 Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (389774 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 70, 75
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
@@ -13838,7 +13838,7 @@ Effects          :
 #2 (id=1019881)  : Apply Aura (6) | Taunt (11)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Radius: 0 - 14 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=1020162)  : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 14 yards | Mechanic: Unknown(259) | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 14 yards | Mechanic: Interrupt | Target: At Caster (22) -> AOE enemy (15)
 Description      : Taunts all enemies within $A1 yds to attack you for $d, interrupts all spellcasting within $A1 yds and prevents any spell in that school from being cast for $d.
 
 Tooltip          : Taunted.
@@ -14374,7 +14374,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Duration         : 15 seconds
-Mechanic         : Unknown(200)
+Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Bloodletting (383154 effects: #1, #2), Bloodborne (383287 effect#1), Impale (383430 effect#1), Bloodborne (385703 effect#1), Bloodborne (385704 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Thunderous Roar (397364 effect#3), Avatar (401150 effects: #1, #9), Warrior Arms 10.2 Class Set 2pc (422923 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Colossal Might (440989 effect#2)
 Triggered by     : Rend (772), Rend (394062)
 Family Flags     : 5, 9, 52, 120
@@ -14389,7 +14389,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1024287)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26638 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Unknown(200) | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26638 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc772
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
@@ -15852,7 +15852,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Mechanic         : Unknown(200)
+Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Warrior Arms 10.2 Class Set 2pc (422923 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Colossal Might (440989 effect#2)
 Family Flags     : 5, 8, 9
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...... ...x.... 
@@ -15879,7 +15879,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Duration         : 15 seconds
-Mechanic         : Unknown(200)
+Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Warrior Arms 10.2 Class Set 2pc (422923 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Colossal Might (440989 effect#2)
 Family Flags     : 5, 9, 100
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
@@ -15893,7 +15893,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1033410)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21045 | PvP Coefficient: 0.80000 | Chain Multiplier: 1 | Mechanic: Unknown(200) | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21045 | PvP Coefficient: 0.80000 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc394062
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
@@ -16275,7 +16275,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Duration         : 8 seconds
 Labels           : 2910: Battlefield Commander (424742 effect#5)
-Mechanic         : Unknown(200)
+Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #7), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Bloodletting (383154 effects: #1, #2), Bloodborne (383287 effect#1), Impale (383430 effect#1), Unnerving Focus (384043 effect#4), Thunderous Words (384969 effect#1), Bloodborne (385703 effect#1), Bloodborne (385704 effect#1), Uproar (391572 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2)
 Triggered by     : Thunderous Roar (384318)
 Family Flags     : 9, 91, 120
@@ -16290,7 +16290,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1039589)  : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.43200 | PvP Coefficient: 0.92590 | Radius: 0 - 12 yards | Mechanic: Unknown(200) | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.43200 | PvP Coefficient: 0.92590 | Radius: 0 - 12 yards | Mechanic: Bleed | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=1102107)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 0 - 12 yards | Target: Custom (18) -> AOE enemy (instant) (16)
                    Affected School(s): All
@@ -17282,7 +17282,7 @@ Spell Type       : Melee
 Range            : 50000 yards
 Duration         : 2 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(166)
+Mechanic         : Root
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -17296,7 +17296,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Always AOE Line of Sight (186), No Attack Dodge (247), No Attack Parry (248), No Attack Block (256), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1101954)  : Apply Aura (6) | Root (455)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Unknown(166) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Root | Target: Enemy (6)
 Description      : $@spelldesc424742
 Tooltip          : Rooted.
 
@@ -17370,7 +17370,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 5 seconds
-Mechanic         : Unknown(200)
+Mechanic         : Bleed
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -17721,7 +17721,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ...x.... ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), No Redirection (35), Always Hit (114), Not In Spellbook (143), Aura Points On Client (268), Bypass Visibility Check (320)
 Effects          :
 #1 (id=1125646)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Mechanic: Unknown(180) | Target: Enemy (6)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc6343
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -19392,7 +19392,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 15 seconds
-Mechanic         : Unknown(200)
+Mechanic         : Bleed
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ..x....x ........ ........ ........   ........ ..x..... ..x..... ..x...x. 
                  : ........ .......x ....x... ........   ........ .....x.. ........ ........ 
@@ -19404,7 +19404,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1163689)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0.1793 | Scaled Value: 0.1793 | PvP Coefficient: 1.00000 | Mechanic: Unknown(200) | Target: Enemy (6)
+                   Base Value: 0.1793 | Scaled Value: 0.1793 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc115768
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
@@ -19614,7 +19614,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : No Redirection (35), No Reflection (39), Do Not Display Range (126), Show Mechanic as Combat Text (213), Aura Points On Client (268), Don't Cancel When All Effects are Disabled (353), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1164509)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Unknown(180) | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Snare | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc429639
 Tooltip          : Movement slowed by $s1%.
 
