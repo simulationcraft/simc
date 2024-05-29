@@ -170,21 +170,29 @@ using simple_data_t = std::pair<std::string, simple_sample_data_t>;
 
 // utility to create target_effect_t compatible functions from demon_hunter_td_t member references
 template <typename T>
-static std::function<int( demon_hunter_td_t* )> d_fn( T d, bool stack = true )
+static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
 {
   if constexpr ( std::is_invocable_v<T, demon_hunter_td_t::debuffs_t> )
   {
     if ( stack )
-      return [ d ]( demon_hunter_td_t* t ) { return std::invoke( d, t->debuffs )->check(); };
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<demon_hunter_td_t*>( t )->debuffs )->check();
+      };
     else
-      return [ d ]( demon_hunter_td_t* t ) { return std::invoke( d, t->debuffs )->check() > 0; };
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<demon_hunter_td_t*>( t )->debuffs )->check() > 0;
+      };
   }
   else if constexpr ( std::is_invocable_v<T, demon_hunter_td_t::dots_t> )
   {
     if ( stack )
-      return [ d ]( demon_hunter_td_t* t ) { return std::invoke( d, t->dots )->current_stack(); };
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<demon_hunter_td_t*>( t )->dots )->current_stack();
+      };
     else
-      return [ d ]( demon_hunter_td_t* t ) { return std::invoke( d, t->dots )->is_ticking(); };
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<demon_hunter_td_t*>( t )->dots )->is_ticking();
+      };
   }
   else
   {
@@ -243,10 +251,10 @@ std::string demonsurge_ability_name( demonsurge_ability ability )
  * Derived from player_t. Contains everything that defines the Demon Hunter
  * class.
  */
-class demon_hunter_t : public parse_player_effects_t<demon_hunter_td_t>
+class demon_hunter_t : public parse_player_effects_t
 {
 public:
-  using base_t = parse_player_effects_t<demon_hunter_td_t>;
+  using base_t = parse_player_effects_t;
 
   // Data collection for cooldown waste
   auto_dispose<std::vector<data_t*>> cd_waste_exec, cd_waste_cumulative;
@@ -1541,7 +1549,7 @@ namespace actions
  * don't skip it and call spell_t/heal_t or absorb_t directly.
  */
 template <typename Base>
-class demon_hunter_action_t : public parse_action_effects_t<Base, demon_hunter_td_t>
+class demon_hunter_action_t : public parse_action_effects_t<Base>
 {
 public:
   double energize_delta;
@@ -2085,7 +2093,7 @@ protected:
 
 private:
   /// typedef for the templated action type, eg. spell_t, attack_t, heal_t
-  using ab = parse_action_effects_t<Base, demon_hunter_td_t>;
+  using ab = parse_action_effects_t<Base>;
 };
 
 // ==========================================================================

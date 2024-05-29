@@ -443,21 +443,29 @@ static std::string get_suffix( std::string_view name, std::string_view base )
 
 // utility to create target_effect_t compatible functions from druid_td_t member references
 template <typename T>
-static std::function<int( druid_td_t* )> d_fn( T d, bool stack = true )
+static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
 {
   if constexpr ( std::is_invocable_v<T, druid_td_t::debuffs_t> )
   {
     if ( stack )
-      return [ d ]( druid_td_t* t ) { return std::invoke( d, t->debuff )->check(); };
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<druid_td_t*>( t )->debuff )->check();
+      };
     else
-      return [ d ]( druid_td_t* t ) { return std::invoke( d, t->debuff )->check() > 0; };
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<druid_td_t*>( t )->debuff )->check() > 0;
+      };
   }
   else if constexpr ( std::is_invocable_v<T, druid_td_t::dots_t> )
   {
     if ( stack )
-      return [ d ]( druid_td_t* t ) { return std::invoke( d, t->dots )->current_stack(); };
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<druid_td_t*>( t )->dots )->current_stack();
+      };
     else
-      return [ d ]( druid_td_t* t ) { return std::invoke( d, t->dots )->is_ticking(); };
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<druid_td_t*>( t )->dots )->is_ticking();
+      };
   }
   else
   {
@@ -466,7 +474,7 @@ static std::function<int( druid_td_t* )> d_fn( T d, bool stack = true )
   }
 }
 
-struct druid_t : public parse_player_effects_t<druid_td_t>
+struct druid_t : public parse_player_effects_t
 {
 private:
   form_e form = form_e::NO_FORM;  // Active druid form
@@ -1641,10 +1649,10 @@ public:
 };
 
 template <class Base>
-struct druid_action_t : public parse_action_effects_t<Base, druid_td_t>, public druid_action_data_t
+struct druid_action_t : public parse_action_effects_t<Base>, public druid_action_data_t
 {
 private:
-  using ab = parse_action_effects_t<Base, druid_td_t>;
+  using ab = parse_action_effects_t<Base>;
 
 public:
   using base_t = druid_action_t<Base>;
@@ -2002,12 +2010,14 @@ public:
     // Feral
     if ( p()->talent.incarnation_cat.ok() && p()->talent.ashamanes_guidance.ok() )
     {
-      parse_target_effects( [ p = p() ]( druid_td_t* td )
-                            { return p->buff.ashamanes_guidance->check() && td->dots.rip->is_ticking(); },
+      parse_target_effects( [ p = p() ]( actor_target_data_t* td )
+                              { return p->buff.ashamanes_guidance->check() &&
+                                static_cast<druid_td_t*>( td )->dots.rip->is_ticking(); },
                             p()->talent.rip, p()->spec.ashamanes_guidance_buff );
 
-      parse_target_effects( [ p = p() ]( druid_td_t* td )
-                            { return p->buff.ashamanes_guidance->check() && td->dots.rake->is_ticking(); },
+      parse_target_effects( [ p = p() ]( actor_target_data_t* td )
+                              { return p->buff.ashamanes_guidance->check() &&
+                                static_cast<druid_td_t*>( td )->dots.rake->is_ticking(); },
                             find_trigger( p()->talent.rake ).trigger(), p()->spec.ashamanes_guidance_buff );
     }
 
@@ -4793,7 +4803,8 @@ struct primal_wrath_t : public cat_finisher_t
       {
         const auto& eff = p->spec.adaptive_swarm_damage->effectN( 2 );
         add_parse_entry( target_multiplier_effects )
-          .set_func( []( druid_td_t* td ) { return td->dots.adaptive_swarm_damage->is_ticking(); } )
+          .set_func( []( actor_target_data_t* td )
+            { return static_cast<druid_td_t*>( td )->dots.adaptive_swarm_damage->is_ticking(); } )
           .set_value( eff.percent() )
           .set_eff( &eff );
       }
@@ -6557,8 +6568,8 @@ public:
 
       force_effect( other_ecl, 1, [ this ] { return umbral_embrace_check(); } );
 
-      force_target_effect( [ this, other_dot ]( druid_td_t* t ) {
-        return umbral_embrace_check() && std::invoke( other_dot, t->dots )->is_ticking();
+      force_target_effect( [ this, other_dot ]( actor_target_data_t* t ) {
+        return umbral_embrace_check() && std::invoke( other_dot, static_cast<druid_td_t*>( t )->dots )->is_ticking();
       }, other_dmg, as<unsigned>( other_dmg->effect_count() ), p->mastery.astral_invocation );
     }
   }
