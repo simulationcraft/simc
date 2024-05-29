@@ -1,4 +1,4 @@
-SimulationCraft 1027-01 for World of Warcraft 10.2.7.54847 Live
+SimulationCraft 1027-01 for World of Warcraft 10.2.7.54904 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
