@@ -2708,7 +2708,6 @@ $@spellicon191587 |cFFFFFFFF$@spellname191587|r
 $@spelldesc191587
 
 Name             : Crimson Scourge (id=81136) [Spell Family (15), Passive] 
-Talent Entry     : Blood [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
@@ -3333,7 +3332,7 @@ Description      : Lifts the enemy target off the ground, crushing their throat 
 Tooltip          : Stunned.
 
 Name             : Gorefiend's Grasp (id=108199) [Spell Family (15)] 
-Talent Entry     : Blood [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Blood [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -4678,7 +4677,7 @@ Description      : Your Blood Plague and Death and Decay deal damage $s2% more o
 Additionally, your Blood Plague leeches $s3% more Health.
 
 Name             : Rune Tap (id=194679) [Spell Family (15)] 
-Talent Entry     : Blood [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Blood [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -4911,6 +4910,7 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken
 Affecting spells : Rattlegore Bone Legplates (205816 effect#2), Foul Bulwark (206974 effect#1), Marrowrend (316746 effect#1), Improved Bone Shield (374715 effect#1), Reinforced Bones (374737 effects: #1, #2)
+Triggered by     : Bone Collector (458572)
 Family Flags     : 38
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -4973,7 +4973,6 @@ $@spellicon195181 |cFFFFFFFF$@spellname195181|r
 $@spelldesc195181
 
 Name             : Death's Caress (id=195292) [Spell Family (15)] 
-Talent Entry     : Blood [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Blood Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -5058,7 +5057,7 @@ Effects          :
 Description      : $@spelldesc195617
 
 Name             : Bloodworms (id=195679) [Spell Family (15), Passive] 
-Talent Entry     : Blood [tree=spec, row=7, col=6, max_rank=1, req_points=8]
+Talent Entry     : Blood [tree=spec, row=7, col=7, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -5687,8 +5686,7 @@ Effects          :
 Description      : $@spelldesc42650
 
 Name             : Red Thirst (id=205723) [Spell Family (15), Passive] 
-Talent Entry     : Blood [tree=spec, row=9, col=5, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(1000, 2000)]
+Talent Entry     : Blood [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -5779,7 +5777,7 @@ Description      : Instantly strike the target and 1 other nearby enemy, causing
 Tooltip          : Movement speed reduced by $s5%.
 
 Name             : Blooddrinker (id=206931) [Spell Family (15)] 
-Talent Entry     : Blood [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Blood [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=100]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -5818,7 +5816,7 @@ Tooltip          : Draining $s1 health from the target every $t1 sec.
 Dealing $s2% reduced damage to $@auracaster.
 
 Name             : Mark of Blood (id=206940) [Spell Family (15)] 
-Talent Entry     : Blood [tree=spec, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Blood [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -5892,7 +5890,7 @@ Effects          :
 Description      : Damage taken below $s3% Health is reduced by $s2%.
 
 Name             : Tightening Grasp (id=206970) [Spell Family (15), Passive] 
-Talent Entry     : Blood [tree=spec, row=9, col=3, max_rank=1, req_points=20]
+Talent Entry     : Blood [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -6997,7 +6995,7 @@ Description      : $@spelldesc219786
 Tooltip          : Death Strike cost reduced by ${$m1/-10} Runic Power.
 
 Name             : Tombstone (id=219809) [Spell Family (15)] 
-Talent Entry     : Blood [tree=spec, row=8, col=1, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Blood [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -7139,8 +7137,7 @@ Effects          :
 Description      : $@spelldesc207104
 
 Name             : Heartbreaker (id=221536) [Passive] 
-Talent Entry     : Blood [tree=spec, row=5, col=2, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(10, 20)]
+Talent Entry     : Blood [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
@@ -7188,7 +7185,7 @@ Description      : Lifts the enemy target off the ground, crushing their throat 
 Tooltip          : Stunned.
 
 Name             : Blood Tap (id=221699) [Spell Family (15)] 
-Talent Entry     : Blood [tree=spec, row=7, col=2, max_rank=1, req_points=8]
+Talent Entry     : Blood [tree=spec, row=7, col=1, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -8120,7 +8117,7 @@ Effects          :
 Description      : Bursting a Festering Wound grants you $s1 Strength for $274373d, stacking. Stacking this effect does not extend its duration.
 
 Name             : Consumption (id=274156) [Spell Family (15)] 
-Talent Entry     : Blood [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Blood [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -13662,7 +13659,7 @@ Description      : $@spelldesc374598
 Tooltip          : You may not benefit from the effects of Blood Draw.
 
 Name             : Improved Bone Shield (id=374715) [Spell Family (15), Passive] 
-Talent Entry     : Blood [tree=spec, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Blood [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13726,12 +13723,13 @@ Effects          :
                    Affected School(s): All
 Description      : Stamina increased by $s1%.
 
-Name             : Reinforced Bones (id=374737) [Spell Family (15), Passive] 
-Talent Entry     : Blood [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Name             : Reinforced Bones (id=374737) [Spell Family (15), Passive, Hidden] 
+Hotfixed         : Attributes
+Talent Entry     : Blood [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13739,7 +13737,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
 Effects          :
 #1 (id=1000743)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
@@ -13752,8 +13750,7 @@ Effects          :
 Description      : Increases Armor gained from Bone Shield by $s1% and it can stack $s2 additional times.
 
 Name             : Perseverance of the Ebon Blade (id=374747) [Passive] 
-Talent Entry     : Blood [tree=spec, row=5, col=6, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(4.01117, 8)]
+Talent Entry     : Blood [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -14747,7 +14744,7 @@ Effects          :
 Description      : Diseased enemies take $s1% increased damage from you per disease they are affected by.
 
 Name             : Leeching Strike (id=377629) [Spell Family (15), Passive] 
-Talent Entry     : Blood [tree=spec, row=6, col=1, max_rank=1, req_points=8]
+Talent Entry     : Blood [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -14809,9 +14806,7 @@ Effects          :
 Description      : Dancing Rune Weapon generates $s2 Bone Shield charges. When a charge of Bone Shield is consumed, the cooldown of Dancing Rune Weapon is reduced by ${$s1/-1000} sec.
 
 Name             : Shattering Bone (id=377640) [Spell Family (15), Passive] 
-Talent Entry     : Blood [tree=spec, row=9, col=1, max_rank=2, req_points=20]
-                 : Effect#2 [op=set, values=(1, 100)]
-                 : Effect#3 [op=mul, values=(1, 2)]
+Talent Entry     : Blood [tree=spec, row=9, col=1, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -15661,7 +15656,7 @@ Description      : $@spelldesc391090
 Tooltip          : The critical strike chance of your next Mind Blast is increased by $w1%.
 
 Name             : Blood Feast (id=391386) [Spell Family (15), Passive] 
-Talent Entry     : Blood [tree=spec, row=7, col=1, max_rank=1, req_points=8]
+Talent Entry     : Blood [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -15744,7 +15739,7 @@ Effects          :
 Description      : While Blood Shield is active, you deal $s1% increased Physical damage.
 
 Name             : Sanguine Ground (id=391458) [Spell Family (15), Passive] 
-Talent Entry     : Blood [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Blood [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -15792,7 +15787,7 @@ Tooltip          : Damage dealt increased by $s1%.
 Healing received increased by $s2%.
 
 Name             : Coagulopathy (id=391477) [Spell Family (15), Passive] 
-Talent Entry     : Blood [tree=spec, row=7, col=7, max_rank=1, req_points=8]
+Talent Entry     : Blood [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -21163,6 +21158,48 @@ Effects          :
 Description      : $@spelldesc456238
 Tooltip          : Taking $w1 Frost damage every $t sec.
 
+Name             : Decomposition (id=458233) [Spell Family (15), Hidden] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Proc Flags       : .....x.. .....x.. .x.x.... ........   ........ ........ ........ ........   
+                 : Yellow Melee Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1164082)  : Apply Aura (6) | Periodic Dummy (226): every 4 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spellldesc455398
+
+Name             : Decomposition (id=458264) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : Magic
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Can't Crit (93), Allow Aura While Dead (116), Allow Entering Arena (149), Ignore Caster Damage Modifiers (221), Disable Aura While Dead (226), Ignore Positive Damage Taken Modifiers (321)
+Effects          :
+#1 (id=1164129)  : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spellldesc455398
+
 Name             : Incite Terror (id=458478) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
@@ -21196,6 +21233,31 @@ Effects          :
 Description      : $@spelldesc434151
 Tooltip          : Taking $w1% increased Shadow damage from $@auracaster.
 
+Name             : Bone Collector (id=458572) [Spell Family (15), Passive] 
+Talent Entry     : Blood [tree=spec, row=3, col=2, max_rank=1, req_points=0]
+Class            : Death Knight
+School           : Shadow
+Spell Type       : Melee
+Proc Chance      : 101%
+Proc Flags       : ....x... x...x... x.x..... ........   ........ ........ ........ ........   
+                 : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1164650)  : Apply Aura (6) | Proc Trigger Spell (42): Bone Shield
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 195181 | Target: Self (1)
+Description      : When you would pull an enemy generate $s1 charge of Bone Shield.
+
+$@spellicon195181 |cFFFFFFFF$@spellname195181|r
+$@spelldesc195181
+
 Name             : Blooddrinker (id=458687) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
@@ -21218,5 +21280,62 @@ Effects          :
                    Affected School(s): All
 Description      : $@spelldesc206931
 Tooltip          : Dealing $s1% reduced damage to $@auracaster.
+
+Name             : Ossified Vitriol (id=458744) [Spell Family (15), Passive] 
+Talent Entry     : Blood [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143)
+Effects          :
+#1 (id=1164969)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : When you lose a Bone Shield charge the damage of your next Marrowrend is increased by 15%, stacking up to 75%.
+
+Name             : [NYI] Under Construction (id=458752) [Spell Family (15), Passive, Hidden] 
+Talent Entry     : Blood [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx x....... ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1164979)  : Apply Aura (6) | Dummy (4)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : This talent is not yet implemented and is waiting to be raised from the dead.
+
+Name             : [NYI] Under Construction (id=458753) [Spell Family (15), Passive, Hidden] 
+Talent Entry     : Blood [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx x....... ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1164980)  : Apply Aura (6) | Dummy (4)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : This talent is not yet implemented and is waiting to be raised from the dead.
 
 

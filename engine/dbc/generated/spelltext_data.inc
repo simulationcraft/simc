@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54935
-static const std::array<spelltext_data_t, 25796> __spelltext_data { {
+static const std::array<spelltext_data_t, 25802> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -25748,9 +25748,11 @@ static const std::array<spelltext_data_t, 25796> __spelltext_data { {
   { 458213, "$@spelldesc53576", "Your next spell is empowered:\r\n\r\n-Flash of Light costs $w1% less Mana.\r\n-Holy Light generates $w2 Holy Power.\r\n-Greater Judgment prevents ${$w4-100}% more damage.", 0 },
   { 458219, "$@spelldesc458036", "Damage taken increased by $s1%.", 0 },
   { 458221, "$@spelldesc445034", 0, 0 },
+  { 458233, "$@spellldesc455398", 0, 0 },
   { 458235, "$@spelldesc445034", 0, 0 },
   { 458245, "$@spelldesc29838", 0, 0 },
   { 458252, "$@spelldesc29838", "Healing ${$458245W1}.1% health every $458245t1 sec.", 0 },
+  { 458264, "$@spellldesc455398", 0, 0 },
   { 458266, "$@spelldesc445025", 0, 0 },
   { 458267, "Hurl a bolt of lightning at your Surging Totem that rebounds at your target, zapping them for $s1 Nature damage.", 0, 0 },
   { 458269, "$@spelldesc445025", "Surging Totem damage increased by $w1%.", 0 },
@@ -25781,6 +25783,7 @@ static const std::array<spelltext_data_t, 25796> __spelltext_data { {
   { 458513, "Your Supernova becomes Gravity Lapse.\r\n\r\n$@spellicon449700$@spellname449700\r\n$@spelldesc449700", 0, 0 },
   { 458524, "$@spelldesc453572", "Versatility increased by $w1.", 0 },
   { 458525, "$@spelldesc453572", "Mastery increased by $w1.", 0 },
+  { 458572, "When you would pull an enemy generate $s1 charge of Bone Shield.\r\n\r\n$@spellicon195181 |cFFFFFFFF$@spellname195181|r\r\n$@spelldesc195181", 0, 0 },
   { 458573, "$@spelldesc453575", 0, 0 },
   { 458619, "Your Hearthstone cooldown is reduced by $s2 min and gains an additional charge.", 0, "Racial Passive" },
   { 458623, "Critical Strike chance increased by $s1%. This effect is increased by $s2% while Xuen, the White Tiger is active.", 0, 0 },
@@ -25796,6 +25799,9 @@ static const std::array<spelltext_data_t, 25796> __spelltext_data { {
   { 458694, "Once per week, attune yourself to the energies of the targeted Nerub-ar Palace raid boss and gain the following aura:\r\n\r\n$@spellicon458694 $@spellname458694\r\nIncrease your Versatility by $458668s1 when fighting the targeted raid boss. This effect lasts the entire week.", 0, 0 },
   { 458718, "Desperate Prayer lasts an additional ${$s1/1000} sec.\r\n\r\nAngelic Bulwark's absorption effect is increased by $s2% of your maximum health.", 0, 0 },
   { 458724, "$@spelldesc441845", 0, 0 },
+  { 458744, "When you lose a Bone Shield charge the damage of your next Marrowrend is increased by 15%, stacking up to 75%.", 0, 0 },
+  { 458752, "This talent is not yet implemented and is waiting to be raised from the dead.", 0, 0 },
+  { 458753, "This talent is not yet implemented and is waiting to be raised from the dead.", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 11.0.0.54935
