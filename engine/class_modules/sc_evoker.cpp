@@ -107,6 +107,7 @@ struct evoker_td_t : public actor_target_data_t
     dot_t* living_flame;
     dot_t* enkindle;
     dot_t* fire_breath_traveling_flame;
+    dot_t* melt_armor;
   } dots;
 
   struct debuffs_t
@@ -114,6 +115,7 @@ struct evoker_td_t : public actor_target_data_t
     buff_t* shattering_star;
     buff_t* in_firestorm;
     buff_t* temporal_wound;
+    buff_t* melt_armor;
   } debuffs;
 
   struct buffs_t
@@ -1743,6 +1745,12 @@ public:
     parse_target_effects( []( evoker_td_t* t ) { return t->debuffs.shattering_star->check(); },
                           p()->talent.shattering_star );
 
+    if ( p()->talent.scalecommander.melt_armor.ok() )
+    {
+      parse_target_effects( []( evoker_td_t* t ) { return t->debuffs.melt_armor->check(); },
+                            p()->talent.scalecommander.melt_armor_debuff );
+    }
+    
     if ( p()->talent.scorching_embers.ok() )
     {
       parse_target_effects(
@@ -2649,6 +2657,12 @@ struct empowered_release_spell_t : public empowered_release_t<evoker_spell_t>
     }
 
     p()->buff.blazing_shards->trigger();
+
+    if ( p()->talent.scalecommander.mass_disintegrate.ok() )
+      p()->buff.mass_disintegrate_stacks->trigger();
+
+    if ( p()->talent.scalecommander.mass_eruption.ok() )
+      p()->buff.mass_eruption_stacks->trigger();
   }
 };
 
@@ -3351,6 +3365,30 @@ struct azure_strike_t : public evoker_spell_t
   }
 };
 
+struct melt_armor_dot_t : public evoker_spell_t
+{
+  melt_armor_dot_t( evoker_t* p ) : evoker_spell_t( "melt_armor_dot", p, p->talent.scalecommander.melt_armor_debuff )
+  {
+    dual = background = true;
+    aoe = -1;
+  }
+
+  bool use_full_mastery() const override
+  {
+    return p()->talent.tyranny.ok();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    evoker_spell_t::impact( s );
+  }
+
+  void execute() override
+  {
+    evoker_spell_t::execute();
+  }
+};
+
 struct deep_breath_t : public evoker_spell_t
 {
   struct deep_breath_dot_t : public evoker_spell_t
@@ -3358,6 +3396,7 @@ struct deep_breath_t : public evoker_spell_t
     deep_breath_dot_t( evoker_t* p ) : evoker_spell_t( "deep_breath_dot", p, p->find_spell( 353759 ) )
     {
       aoe = -1;
+      dual = true;
     }
 
     bool use_full_mastery() const override
@@ -3368,6 +3407,11 @@ struct deep_breath_t : public evoker_spell_t
     void impact( action_state_t* s ) override
     {
       evoker_spell_t::impact( s );
+      if ( p()->talent.scalecommander.melt_armor.ok() )
+      {
+        auto td = p()->get_target_data( s->target );
+        td->debuffs.melt_armor->trigger();
+      }
     }
 
     void execute() override
@@ -3382,6 +3426,7 @@ struct deep_breath_t : public evoker_spell_t
   };
 
   action_t* damage;
+  action_t* melt_armor_dot;
   action_t* ebon;
 
   deep_breath_t( evoker_t* p, std::string_view options_str )
@@ -3389,7 +3434,8 @@ struct deep_breath_t : public evoker_spell_t
                       p->talent.breath_of_eons.ok() ? spell_data_t::not_found() : p->find_class_spell( "Deep Breath" ),
                       options_str ),
       damage( nullptr ),
-      ebon( nullptr )
+      ebon( nullptr ),
+      melt_armor_dot( nullptr )
   {
     damage        = p->get_secondary_action<deep_breath_dot_t>( "deep_breath_dot" );
     damage->stats = stats;
@@ -3397,8 +3443,14 @@ struct deep_breath_t : public evoker_spell_t
     travel_delay = 0.9;   // guesstimate, TODO: confirm
     travel_speed = 19.5;  // guesstimate, TODO: confirm
 
-    trigger_gcd = 3_s;
+    trigger_gcd = 2_s;
     gcd_type    = gcd_haste_type::NONE;
+
+    if ( p->talent.scalecommander.maneuverability->ok() )
+    {
+      melt_armor_dot = p->get_secondary_action<melt_armor_dot_t>( "melt_armor_dot" );
+      add_child( melt_armor_dot );
+    }
 
     if ( p->specialization() == EVOKER_AUGMENTATION )
       ebon = p->get_secondary_action<ebon_might_t>(
@@ -3408,6 +3460,15 @@ struct deep_breath_t : public evoker_spell_t
   void impact( action_state_t* s ) override
   {
     evoker_spell_t::impact( s );
+
+    if ( p()->talent.scalecommander.melt_armor.ok() )
+    {
+      auto td = p()->get_target_data( s->target );
+      td->debuffs.melt_armor->trigger();
+    }
+
+    if ( melt_armor_dot && s->chain_target == 0 )
+      melt_armor_dot->execute_on_target( s->target );
 
     if ( s->chain_target == 0 )
       damage->execute_on_target( s->target );
@@ -3436,12 +3497,14 @@ struct disintegrate_t : public essence_spell_t
 {
   eternity_surge_t::eternity_surge_damage_t* eternity_surge;
   int num_ticks;
+  double mass_disint_mult;
 
   disintegrate_t( evoker_t* p, std::string_view options_str )
     : essence_spell_t( "disintegrate", p,
                        p->talent.eruption.ok() ? spell_data_t::not_found() : p->find_class_spell( "Disintegrate" ),
                        options_str ),
-      num_ticks( as<int>( dot_duration / base_tick_time ) + 1 )
+      num_ticks( as<int>( dot_duration / base_tick_time ) + 1 ),
+      mass_disint_mult( p->talent.scalecommander.mass_disintegrate->effectN( 2 ).percent() )
   {
     channeled = tick_zero = true;
 
@@ -3472,6 +3535,19 @@ struct disintegrate_t : public essence_spell_t
     add_child( eternity_surge );
   }
 
+  int max_targets() const
+  {
+    return 1 + ( p()->buff.mass_disintegrate_stacks->check() > 0 ) * 2;
+  }
+
+  int targets() const
+  {
+    std::vector<player_t*>& tl = target_list();
+    const int tl_size          = as<int>( tl.size() );
+
+    return std::min( max_targets(), tl_size );
+  }
+
   void execute() override
   {
     action_state_t* state = get_state( pre_execute_state );
@@ -3483,14 +3559,26 @@ struct disintegrate_t : public essence_spell_t
 
     action_state_t::release( state );
 
+    int targets_     = targets();
+    int virtual_buff_stacks = num_ticks * targets();
+
     // trigger the buffs first so tick-zero can get buffed
     if ( p()->buff.essence_burst->check() )
-      p()->buff.essence_burst_titanic_wrath_disintegrate->trigger( num_ticks, buff_duration );
+      p()->buff.essence_burst_titanic_wrath_disintegrate->trigger( virtual_buff_stacks, buff_duration );
 
     if ( p()->buff.iridescence_blue->check() )
-      p()->buff.iridescence_blue_disintegrate->trigger( num_ticks, buff_duration );
+      p()->buff.iridescence_blue_disintegrate->trigger( virtual_buff_stacks, buff_duration );
+
+    if ( p()->buff.mass_disintegrate_stacks->check() )
+    {
+      int max_targets_ = max_targets();
+      auto buff_size   = ( max_targets_ - targets_ ) * mass_disint_mult;
+      p()->buff.mass_disintegrate_ticks->trigger( virtual_buff_stacks, buff_size, -1, buff_duration );
+    }
 
     essence_spell_t::execute();
+
+    p()->buff.mass_disintegrate_stacks->decrement();
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
@@ -3501,6 +3589,8 @@ struct disintegrate_t : public essence_spell_t
       ta *= 1.0 + titanic_mul;
 
     ta *= 1.0 + p()->buff.iridescence_blue_disintegrate->check_value();
+
+    ta *= 1.0 + p()->buff.mass_disintegrate_ticks->check_value();
 
     return ta;
   }
@@ -3528,6 +3618,7 @@ struct disintegrate_t : public essence_spell_t
 
     p()->buff.essence_burst_titanic_wrath_disintegrate->decrement();
     p()->buff.iridescence_blue_disintegrate->decrement();
+    p()->buff.mass_disintegrate_ticks->decrement();
 
     if ( p()->talent.scintillation.ok() && rng().roll( p()->talent.scintillation->effectN( 2 ).percent() ) )
     {
@@ -4696,7 +4787,7 @@ struct breath_of_eons_t : public evoker_spell_t
     travel_delay = 0.9;   // guesstimate, TODO: confirm
     travel_speed = 19.5;  // guesstimate, TODO: confirm
 
-    trigger_gcd = 3_s;
+    trigger_gcd = 2_s;
     gcd_type    = gcd_haste_type::NONE;
 
     aoe = -1;
@@ -5490,11 +5581,12 @@ struct blistering_scales_t : public evoker_augment_t
 evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   : actor_target_data_t( target, evoker ), dots(), debuffs(), buffs()
 {
-  dots.fire_breath  = target->get_dot( "fire_breath_damage", evoker );
-  dots.disintegrate = target->get_dot( "disintegrate", evoker );
-  dots.enkindle     = target->get_dot( "enkindle", evoker );
-  dots.living_flame = target->get_dot( "living_flame_damage", evoker );
-  dots.fire_breath_traveling_flame  = target->get_dot( "fire_breath_traveling_flame", evoker );
+  dots.fire_breath                 = target->get_dot( "fire_breath_damage", evoker );
+  dots.disintegrate                = target->get_dot( "disintegrate", evoker );
+  dots.enkindle                    = target->get_dot( "enkindle", evoker );
+  dots.living_flame                = target->get_dot( "living_flame_damage", evoker );
+  dots.fire_breath_traveling_flame = target->get_dot( "fire_breath_traveling_flame", evoker );
+  dots.melt_armor                  = target->get_dot( "melt_armor_dot", evoker );
 
   debuffs.shattering_star = make_buff_fallback( evoker->talent.shattering_star.ok(), *this, "shattering_star_debuff",
                                                 evoker->talent.shattering_star )
@@ -5504,6 +5596,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   debuffs.in_firestorm = make_buff_fallback( evoker->talent.firestorm.ok(), *this, "in_firestorm" )
                              ->set_max_stack( 20 )
                              ->set_duration( 0_ms );
+
+  debuffs.melt_armor = make_buff_fallback( evoker->talent.scalecommander.melt_armor.ok(), *this, "melt_armor", evoker->talent.scalecommander.melt_armor_debuff );
 
   bool make_unbound_surge = evoker->naszuro && !target->is_enemy() && !target->is_pet();
   buffs.unbound_surge = make_buff_fallback<stat_buff_t>( make_unbound_surge, *this, "unbound_surge_" + evoker->name_str,
@@ -6784,11 +6878,13 @@ void evoker_t::create_buffs()
                                        talent.scalecommander.mass_disintegrate_buff );
   buff.mass_disintegrate_ticks  = MBF( talent.scalecommander.mass_disintegrate.ok(), this, "mass_disintegrate_ticks",
                                        talent.scalecommander.mass_disintegrate_buff )
-                                     ->set_max_stack( 4 );
+                                     ->set_max_stack( 8 );
+
   buff.mass_eruption_stacks = MBF( talent.scalecommander.mass_eruption.ok(), this, "mass_eruption_stacks",
                                    talent.scalecommander.mass_eruption_buff );
   buff.unrelenting_siege    = MBF( talent.scalecommander.unrelenting_siege.ok(), this, "unrelenting_siege",
-                                   talent.scalecommander.unrelenting_siege_buff );
+                                   talent.scalecommander.unrelenting_siege_buff )
+                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   
   if ( talent.scalecommander.unrelenting_siege.ok() )
   {
