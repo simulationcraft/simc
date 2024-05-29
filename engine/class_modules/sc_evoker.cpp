@@ -18,6 +18,54 @@ namespace
 // Evoker
 // ==========================================================================
 
+// Static helper functions
+template <typename V>
+static const spell_data_t* resolve_spell_data( V data )
+{
+  if constexpr ( std::is_invocable_v<decltype( &spell_data_t::ok ), V> )
+    return data;
+  else if constexpr ( std::is_invocable_v<decltype( &buff_t::data ), V> )
+    return &data->data();
+  else if constexpr ( std::is_invocable_v<decltype( &action_t::data ), V> )
+    return &data->data();
+  else
+    static_assert( static_false<V>, "Could not resolve find_effect argument to spell data." );
+
+  return nullptr;
+}
+
+// finds a spell effect
+// 1) first argument can be either player_talent_t, spell_data_t*, buff_t*, action_t*
+// 2) if the second argument is player_talent_t, spell_data_t*, buff_t*, or action_t* then only effects that affect it
+// are returned 3) if the third (or second if the above does not apply) argument is effect subtype, then the type is
+// assumed to be E_APPLY_AURA further arguments can be given to filter for full type + subtype + property
+template <typename T, typename U, typename... Ts>
+static const spelleffect_data_t& find_effect( T val, U type, Ts&&... args )
+{
+  const spell_data_t* data = resolve_spell_data<T>( val );
+
+  if constexpr ( std::is_same_v<U, effect_subtype_t> )
+    return spell_data_t::find_spelleffect( *data, E_APPLY_AURA, type, std::forward<Ts>( args )... );
+  else if constexpr ( std::is_same_v<U, effect_type_t> )
+    return spell_data_t::find_spelleffect( *data, type, std::forward<Ts>( args )... );
+  else
+  {
+    const spell_data_t* affected = resolve_spell_data<U>( type );
+
+    if constexpr ( sizeof...( Ts ) == 0 )
+      return spell_data_t::find_spelleffect( *data, *affected, E_APPLY_AURA );
+    else if constexpr ( std::is_same_v<std::tuple_element_t<0, std::tuple<Ts...>>, effect_subtype_t> )
+      return spell_data_t::find_spelleffect( *data, *affected, E_APPLY_AURA, std::forward<Ts>( args )... );
+    else if constexpr ( std::is_same_v<std::tuple_element_t<0, std::tuple<Ts...>>, effect_type_t> )
+      return spell_data_t::find_spelleffect( *data, *affected, std::forward<Ts>( args )... );
+    else
+      return spell_data_t::find_spelleffect( *data, *affected, E_APPLY_AURA );
+  }
+
+  return spelleffect_data_t::nil();
+}
+
+
 // Forward declarations
 struct evoker_t;
 struct simplified_player_t;
@@ -687,8 +735,6 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> limitless_potential;
     propagate_const<buff_t*> power_swell;
     propagate_const<buff_t*> snapfire;
-    propagate_const<buff_t*> feed_the_flames_stacking;
-    propagate_const<buff_t*> feed_the_flames_pyre;
     propagate_const<buff_t*> emerald_trance_stacking;
     propagate_const<buff_t*> emerald_trance;
     propagate_const<buff_t*> ebon_might_self_buff;
@@ -728,6 +774,8 @@ struct evoker_t : public player_t
     const spell_data_t* mastery;       // Mastery Spell Data
 
     const spell_data_t* tempered_scales;
+
+    const spell_data_t* fire_breath_damage;
 
     const spell_data_t* living_flame_damage;
     const spell_data_t* living_flame_heal;
@@ -818,31 +866,29 @@ struct evoker_t : public player_t
     player_talent_t essence_attunement;
     player_talent_t firestorm;  // row 6
     player_talent_t heat_wave;
-    player_talent_t titanic_wrath;
     player_talent_t honed_aggression;
     player_talent_t eternitys_span;
     player_talent_t eye_of_infinity;
     player_talent_t event_horizon;
-    player_talent_t causality;
     player_talent_t catalyze;  // row 7
     player_talent_t tyranny;
     player_talent_t charged_blast;
     player_talent_t shattering_star;
     player_talent_t snapfire;  // row 8
-    player_talent_t raging_inferno;
-    player_talent_t font_of_magic;
+    player_talent_t burnout; 
     player_talent_t onyx_legacy;
     player_talent_t spellweavers_dominance;
     player_talent_t focusing_iris;
     player_talent_t arcane_vigor;
-    player_talent_t burnout;  // row 9
-    player_talent_t imminent_destruction;
-    player_talent_t scintillation;
-    player_talent_t power_swell;
-    player_talent_t feed_the_flames;  // row 10
-    const spell_data_t* feed_the_flames_pyre_buff;
-    player_talent_t everburning_flame;
+    player_talent_t feed_the_flames;  // row 9
+    player_talent_t font_of_magic;
+    player_talent_t titanic_wrath;
     player_talent_t hoarded_power;
+    player_talent_t power_swell;
+    player_talent_t imminent_destruction;   // row 10
+    player_talent_t scorching_embers;
+    player_talent_t causality;
+    player_talent_t scintillation;
     player_talent_t iridescence;
 
     // Preservation Traits
@@ -1675,7 +1721,6 @@ public:
         parse_effects( p()->buff.burning_adrenaline_channel, IGNORE_STACKS );
       }
     }
-
   }
 
   // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
@@ -1689,6 +1734,15 @@ public:
   {
     parse_target_effects( []( evoker_td_t* t ) { return t->debuffs.shattering_star->check(); },
                           p()->talent.shattering_star );
+
+    if ( p()->talent.scorching_embers.ok() )
+    {
+      parse_target_effects(
+          []( evoker_td_t* t ) {
+            return t->dots.fire_breath->is_ticking() || t->dots.fire_breath_traveling_flame->is_ticking();
+          },
+          p()->spec.fire_breath_damage );
+    }
   }
 
   template <typename... Ts>
@@ -2493,30 +2547,11 @@ public:
       p()->buff.charged_blast->trigger();
   }
 
-  virtual void trigger_everburning_flame( action_state_t* s )
-  {
-    if ( s->chain_target == 0 && s->result_amount > 0 && s->result_type == result_amount_type::DMG_DIRECT &&
-         spell_color == SPELL_RED )
-    {
-      if ( p()->talent.everburning_flame.ok() )
-      {
-        auto ext = timespan_t::from_seconds( as<int>( p()->talent.everburning_flame->effectN( 1 ).base_value() ) );
-
-        for ( auto t : sim->target_non_sleeping_list )
-        {
-          td( t )->dots.fire_breath->adjust_duration( ext );
-          td( t )->dots.fire_breath_traveling_flame->adjust_duration( ext );
-        }
-      }
-    }
-  }
-
   void impact( action_state_t* s ) override
   {
     ab::impact( s );
 
     trigger_charged_blast( s );
-    trigger_everburning_flame( s );
   }
 
   void tick( dot_t* d ) override
@@ -3021,12 +3056,6 @@ struct fire_breath_traveling_flame_t : public empowered_release_spell_t
 
     return da + ticks * tick_damage;
   }
-
-  void trigger_everburning_flame( action_state_t* ) override
-  {
-    return;  // flame breath can't extend itself. TODO: confirm if this ever becomes a possiblity.
-  }
-
   
   void trigger_dot( action_state_t* state ) override
   {
@@ -3071,7 +3100,7 @@ struct fire_breath_t : public empowered_charge_spell_t
     timespan_t dot_dur_per_emp;
 
     fire_breath_damage_t( evoker_t* p )
-      : base_t( "fire_breath_damage", p, p->find_spell( 357209 ) ), dot_dur_per_emp( 6_s )
+      : base_t( "fire_breath_damage", p, p->spec.fire_breath_damage ), dot_dur_per_emp( 6_s )
     {
       aoe                 = -1;  // TODO: actually a cone so we need to model it if possible
       reduced_aoe_targets = 5.0;
@@ -3097,11 +3126,6 @@ struct fire_breath_t : public empowered_charge_spell_t
       auto tick_damage = s->composite_spell_power() * spell_tick_power_coefficient( s );
 
       return da + ticks * tick_damage;
-    }
-
-    void trigger_everburning_flame( action_state_t* ) override
-    {
-      return;  // flame breath can't extend itself. TODO: confirm if this ever becomes a possiblity.
     }
 
     void execute() override
@@ -3414,6 +3438,14 @@ struct disintegrate_t : public essence_spell_t
     //              nochannel macro
     ability_lag        = p->world_lag;
     ability_lag_stddev = p->world_lag_stddev;
+        
+    if ( p->talent.feed_the_flames->ok() )
+    {
+      add_parse_entry( target_multiplier_effects )
+          .set_func( []( evoker_td_t* t ) { return t->debuffs.in_firestorm->check() > 0; } )
+          .set_value( p->talent.feed_the_flames->effectN( 1 ).percent() )
+          .set_eff( &p->talent.feed_the_flames->effectN( 1 ) );
+    }
 
     add_child( eternity_surge );
   }
@@ -3523,8 +3555,6 @@ struct firestorm_t : public evoker_spell_t
     {
       dual = ground_aoe = true;
       aoe               = -1;
-
-      apply_affecting_aura( p->talent.raging_inferno );
     }
 
     double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -3539,16 +3569,19 @@ struct firestorm_t : public evoker_spell_t
   };
 
   action_t* damage;
+  timespan_t tick_period;
+  timespan_t duration;
 
-  firestorm_t( evoker_t* p, std::string_view options_str ) : firestorm_t( p, "firestorm", false, options_str )
-  {
-  }
-
-  firestorm_t( evoker_t* p, std::string_view n, bool ftf, std::string_view options_str = {} )
-    : evoker_spell_t( n, p, ftf ? p->find_spell( 368847 ) : p->talent.firestorm, options_str )
+  firestorm_t( evoker_t* p, std::string_view options_str = {} )
+    : evoker_spell_t( "firestorm", p, p->talent.firestorm, options_str ),
+      tick_period(),
+      duration()
   {
     damage        = p->get_secondary_action<firestorm_tick_t>( name_str + "_tick", name_str + "_tick" );
     damage->stats = stats;
+    
+    tick_period = find_effect( p->find_spell( 456657 ), A_PERIODIC_DAMAGE ).period();
+    duration    = data().effectN( 1 ).trigger()->duration();
   }
 
   void impact( action_state_t* s ) override
@@ -3559,8 +3592,9 @@ struct firestorm_t : public evoker_spell_t
         *sim, p(),
         ground_aoe_params_t()
             .target( s->target )
-            .pulse_time( 2_s )  // from text description, not in spell data. TODO: confirm
-            .duration( data().effectN( 1 ).trigger()->duration() )
+            .pulse_time( tick_period )
+            .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
+            .duration( duration )
             .action( damage )
             .state_callback( [ this ]( ground_aoe_params_t::state_type s, ground_aoe_event_t* e ) {
               if ( s == ground_aoe_params_t::state_type::EVENT_STARTED )
@@ -3583,6 +3617,96 @@ struct firestorm_t : public evoker_spell_t
         true );
 
     p()->buff.snapfire->expire();
+  }
+
+  // Brutal implementation of Ignore Spell Cooldown.
+  bool ready() override
+  {
+    // Check conditions that do NOT pertain to the target before cycle_targets
+    if ( !cooldown->is_ready() && !p()->buff.snapfire->check() )
+      return false;
+
+    if ( internal_cooldown->down() )
+      return false;
+
+    if ( player->is_moving() && !usable_moving() )
+      return false;
+
+    auto resource = current_resource();
+    if ( resource != RESOURCE_NONE && !player->resource_available( resource, cost() ) )
+    {
+      if ( starved_proc )
+        starved_proc->occur();
+      return false;
+    }
+
+    if ( usable_while_casting )
+    {
+      if ( execute_time() > timespan_t::zero() )
+      {
+        return false;
+      }
+
+      // Don't allow cast-while-casting spells that trigger the GCD to be ready if the GCD is still
+      // ongoing (during the cast)
+      if ( ( player->executing || player->channeling ) && gcd() > timespan_t::zero() &&
+           player->gcd_ready > sim->current_time() )
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  void update_ready( timespan_t cd_duration /* = timespan_t::min() */ ) override
+  {
+    if ( cd_waste_data )
+      cd_waste_data->add( cd_duration, time_to_execute );
+
+    if ( ( cd_duration > timespan_t::zero() ||
+           ( cd_duration == timespan_t::min() && cooldown_duration() > timespan_t::zero() ) ) &&
+         !dual )
+    {
+      timespan_t delay = timespan_t::zero();
+
+      if ( !background && !proc )
+      { /*This doesn't happen anymore due to the gcd queue, in WoD if an ability has a cooldown of 20 seconds,
+        it is usable exactly every 20 seconds with proper Lag tolerance set in game.
+        The only situation that this could happen is when world lag is over 400, as blizzard does not allow
+        custom lag tolerance to go over 400.
+        */
+        timespan_t lag = player->world_lag_override ? player->world_lag : sim->world_lag;
+        timespan_t dev = player->world_lag_stddev_override ? player->world_lag_stddev : sim->world_lag_stddev;
+        delay          = rng().gauss( lag, dev );
+        if ( delay > timespan_t::from_millis( 400 ) )
+        {
+          delay -= timespan_t::from_millis( 400 );  // Even high latency players get some benefit from CLT.
+          sim->print_debug( "{} delaying the cooldown finish of {} by {}", *player, *this, delay );
+        }
+        else
+          delay = timespan_t::zero();
+      }
+
+      if ( !p()->buff.snapfire->check() )
+      {
+        cooldown->start( this, cd_duration, delay );
+
+        sim->print_debug(
+            "{} starts cooldown for {} ({}, {}/{}). Duration={} Delay={}. Will "
+            "be ready at {}",
+            *player, *this, *cooldown, cooldown->current_charge, cooldown->charges, cd_duration, delay,
+            cooldown->ready );
+      }
+
+      if ( internal_cooldown->duration > timespan_t::zero() )
+      {
+        internal_cooldown->start( this );
+
+        sim->print_debug( "{} starts internal_cooldown for {} ({}). Will be ready at {}", *player, *this,
+                          *internal_cooldown, internal_cooldown->ready );
+      }
+    }
   }
 };
 
@@ -3664,8 +3788,6 @@ struct living_flame_t : public evoker_spell_t
     void impact( action_state_t* s ) override
     {
       Base::impact( s );
-
-      base_t::p()->buff.snapfire->trigger();
     }
   };
 
@@ -4014,12 +4136,12 @@ struct pyre_t : public essence_spell_t
       dual = true;
       aoe  = -1;
 
-      if ( p->talent.raging_inferno->ok() )
+      if ( p->talent.feed_the_flames->ok() )
       {
         add_parse_entry( target_multiplier_effects )
           .set_func( []( evoker_td_t* t ) { return t->debuffs.in_firestorm->check() > 0; } )
-          .set_value( p->talent.raging_inferno->effectN( 2 ).percent() )
-          .set_eff( &p->talent.raging_inferno->effectN( 2 ) );
+          .set_value( p->talent.feed_the_flames->effectN( 1 ).percent() )
+          .set_eff( &p->talent.feed_the_flames->effectN( 1 ) );
       }
     }
 
@@ -4063,7 +4185,6 @@ struct pyre_t : public essence_spell_t
 
   action_t* volatility;
   action_t* damage;
-  action_t* firestorm;
 
   pyre_t( evoker_t* p, std::string_view options_str ) : pyre_t( p, "pyre", p->talent.pyre, options_str )
   {
@@ -4073,8 +4194,6 @@ struct pyre_t : public essence_spell_t
     : essence_spell_t( n, p, s, o ), volatility( nullptr )
   {
     damage          = p->get_secondary_action<pyre_damage_t>( name_str + "_damage", name_str + "_damage" );
-    firestorm       = p->get_secondary_action<firestorm_t>( "firestorm_ftf", "firestorm_ftf", true );
-    firestorm->proc = true;
     damage->stats   = stats;
     damage->proc    = true;
   }
@@ -4109,9 +4228,9 @@ struct pyre_t : public essence_spell_t
   {
     essence_spell_t::execute();
     p()->buff.charged_blast->expire();
-    if ( p()->talent.feed_the_flames.enabled() && ( proc_spell_type & proc_spell_type_e::VOLATILITY ) == 0 )
+    if ( p()->talent.snapfire.enabled() && ( proc_spell_type & proc_spell_type_e::VOLATILITY ) == 0 )
     {
-      p()->buff.feed_the_flames_stacking->trigger();
+      p()->buff.snapfire->trigger();
     }
   }
 
@@ -4132,12 +4251,6 @@ struct pyre_t : public essence_spell_t
   void impact( action_state_t* s ) override
   {
     essence_spell_t::impact( s );
-
-    if ( p()->buff.feed_the_flames_pyre->up() )
-    {
-      firestorm->execute_on_target( s->target );
-      p()->buff.feed_the_flames_pyre->expire();
-    }
 
     // The captured da mul is passed along to the damage action state.
     auto state = damage->get_state();
@@ -4684,7 +4797,8 @@ struct engulf_t : public evoker_spell_t
   {
     using base_t = engulf_base_t<Base>;
     double engulf_mult;
-    timespan_t fan_the_flames_duration;
+    double fan_the_flames_mult;
+    timespan_t traveling_flame_extend;
     action_t* consume_flame;
     empowered_release_spell_t* replicated_empower_action;
     timespan_t consume_flame_time;
@@ -4693,13 +4807,14 @@ struct engulf_t : public evoker_spell_t
     engulf_base_t( std::string_view n, evoker_t* p, const spell_data_t* s )
       : Base( n, p, s ),
         engulf_mult( p->talent.flameshaper.engulf->effectN( 1 ).percent() ),
-        fan_the_flames_duration( p->talent.flameshaper.enkindle_damage->duration() *
-                                 p->talent.flameshaper.fan_the_flames->effectN( 1 ).percent() ),
+        fan_the_flames_mult( 1 + p->talent.flameshaper.fan_the_flames->effectN( 1 ).percent() ),
         consume_flame(),
         replicated_empower_action(),
         consume_flame_time(
             timespan_t::from_seconds( p->talent.flameshaper.consume_flame->effectN( 1 ).base_value() ) ),
-        consume_flame_mult( p->talent.flameshaper.consume_flame->effectN( 3 ).percent() )
+        consume_flame_mult( p->talent.flameshaper.consume_flame->effectN( 3 ).percent() ),
+        traveling_flame_extend(
+            timespan_t::from_seconds( p->talent.flameshaper.traveling_flame->effectN( 1 ).base_value() ) )
     {
       base_t::dual = true;
     }
@@ -4767,6 +4882,31 @@ struct engulf_t : public evoker_spell_t
       replicated_empower_action->schedule_execute( emp_state );
     }
 
+    void execute() override
+    {
+      Base::execute();
+
+      if ( base_t::p()->talent.flameshaper.fan_the_flames.ok() )
+      {
+        for ( auto t : base_t::sim->target_non_sleeping_list )
+        {
+          const evoker_td_t* td = base_t::p()->find_target_data( t );
+          if ( td )
+          {
+            dot_t* source_enkindle = td->dots.enkindle;
+            if ( source_enkindle->is_ticking() )
+            {
+              auto* dot_state = debug_cast<residual_action::residual_periodic_state_t*>( source_enkindle->state );
+              if ( dot_state )
+              {
+                dot_state->tick_amount *= fan_the_flames_mult;
+              }
+            }
+          }
+        }
+      }
+    }
+
     void impact( action_state_t* s ) override
     {
       Base::impact( s );
@@ -4775,15 +4915,15 @@ struct engulf_t : public evoker_spell_t
 
       if ( td )
       {
-        bool delay_refresh      = true;
         dot_t* source_effect    = consumed_dot( td );
         empower_e empower_level = get_empower_level( source_effect );
-        player_t* apply_to      = s->target;
 
         if ( base_t::p()->talent.flameshaper.traveling_flame.ok() )
         {
           if ( source_effect && source_effect->is_ticking() )
           {
+            source_effect->adjust_duration( traveling_flame_extend );
+
             if ( base_t::p()->sim->active_enemies > 1 )
             {
               // TODO: Change to spread to lowest if it fails to spread on anyone? confirm behaviour.
@@ -4795,9 +4935,7 @@ struct engulf_t : public evoker_spell_t
 
                 if ( !target_effect->is_ticking() )
                 {
-                  apply_to = t;
-
-                  delay_refresh = false;
+                  apply_dot( empower_level, t );
                   break;
                 }
               }
@@ -4816,34 +4954,6 @@ struct engulf_t : public evoker_spell_t
                                         dot_damage );
               consume_flame->execute_on_target( s->target, dot_damage );
               source_effect->adjust_duration( -consume_flame_time );
-            }
-          }
-        }
-
-        if ( base_t::p()->talent.flameshaper.traveling_flame.ok() )
-        {
-          if ( !delay_refresh )
-          {
-            apply_dot( empower_level, apply_to );
-          }
-          else
-          {
-            make_event( base_t::sim, 600_ms, [ this, empower_level, source_effect, apply_to ] {
-              if ( source_effect->is_ticking() )
-                apply_dot( empower_level, apply_to );
-            } );
-          }
-        }
-
-        if ( base_t::p()->talent.flameshaper.fan_the_flames.ok() )
-        {
-          dot_t* source_enkindle = td->dots.enkindle;
-          if ( source_enkindle->is_ticking() )
-          {
-            auto* dot_state = debug_cast<residual_action::residual_periodic_state_t*>( source_enkindle->state );
-            if ( dot_state )
-            {
-              source_enkindle->adjust_duration( fan_the_flames_duration );
             }
           }
         }
@@ -6175,7 +6285,6 @@ void evoker_t::init_spells()
   talent.essence_attunement        = ST( "Essence Attunement" );
   talent.firestorm                 = ST( "Firestorm" );  // Row 6
   talent.heat_wave                 = ST( "Heat Wave" );
-  talent.titanic_wrath             = ST( "Titanic Wrath" );
   talent.honed_aggression          = ST( "Honed Aggression" );
   talent.eternitys_span            = ST( "Eternity's Span" );
   talent.eye_of_infinity           = ST( "Eye of Infinity" );
@@ -6186,20 +6295,19 @@ void evoker_t::init_spells()
   talent.charged_blast             = ST( "Charged Blast" );
   talent.shattering_star           = ST( "Shattering Star" );
   talent.snapfire                  = ST( "Snapfire" );  // Row 8
-  talent.raging_inferno            = ST( "Raging Inferno" );
-  talent.font_of_magic             = ST( "Font of Magic" );
+  talent.burnout                   = ST( "Burnout" );  
   talent.onyx_legacy               = ST( "Onyx Legacy" );
   talent.spellweavers_dominance    = ST( "Spellweaver's Dominance" );
   talent.focusing_iris             = ST( "Focusing Iris" );
   talent.arcane_vigor              = ST( "Arcane Vigor" );
-  talent.burnout                   = ST( "Burnout" );  // Row 9
-  talent.imminent_destruction      = ST( "Imminent Destruction" );
-  talent.scintillation             = ST( "Scintillation" );
-  talent.power_swell               = ST( "Power Swell" );
-  talent.feed_the_flames           = ST( "Feed the Flames" );  // Row 10
-  talent.feed_the_flames_pyre_buff = find_spell( 411288 );
-  talent.everburning_flame         = ST( "Everburning Flame" );
+  talent.feed_the_flames           = ST( "Feed the Flames" ); // Row 9
+  talent.font_of_magic             = ST( "Font of Magic" );
+  talent.titanic_wrath             = ST( "Titanic Wrath" );
   talent.hoarded_power             = ST( "Hoarded Power" );
+  talent.power_swell               = ST( "Power Swell" );
+  talent.imminent_destruction      = ST( "Imminent Destruction" );  // Row 10
+  talent.scorching_embers          = ST( "Scorching Embers" );
+  talent.scintillation             = ST( "Scintillation" );
   talent.iridescence               = ST( "Iridescence" );
   // Preservation Traits
 
@@ -6370,7 +6478,8 @@ void evoker_t::init_spells()
   spec.devastation             = find_specialization_spell( "Devastation Evoker" );
   spec.preservation            = find_specialization_spell( "Preservation Evoker" );
   spec.augmentation            = find_specialization_spell( "Augmentation Evoker" );
-  spec.mastery                 = find_mastery_spell( specialization() );
+  spec.mastery                                     = find_mastery_spell( specialization() );
+  spec.fire_breath_damage      = find_spell( 357209 );
   spec.living_flame_damage     = find_spell( 361500 );
   spec.living_flame_heal       = find_spell( 361509 );
   spec.energizing_flame        = find_spell( 400006 );
@@ -6534,35 +6643,12 @@ void evoker_t::create_buffs()
 
   buff.snapfire = MBF( talent.snapfire.ok(), this, "snapfire", talent.snapfire->effectN( 1 ).trigger() )
                       ->set_chance( talent.snapfire->effectN( 1 ).percent() )
-                      ->set_default_value_from_effect( 2 )
-                      ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
-                        if ( new_ )
-                          cooldown.firestorm->adjust( b->data().effectN( 3 ).time_value() );
-                      } );
+                      ->set_default_value_from_effect( 2 );
 
   buff.reactive_hide = MBF( talent.reactive_hide.ok(), this, "reactive_hide", talent.reactive_hide_buff )
                            ->set_default_value_from_effect( 1, 0.01 );
 
   buff.time_skip = make_buff_fallback<time_skip_t>( talent.time_skip.ok(), this, "time_skip" );
-
-  buff.feed_the_flames_stacking = MBF( talent.feed_the_flames.ok(), this, "feed_the_flames", find_spell( 405874 ) );
-  buff.feed_the_flames_pyre =
-      MBF( talent.feed_the_flames.ok(), this, "feed_the_flames_pyre", talent.feed_the_flames_pyre_buff );
-
-  if ( talent.feed_the_flames.ok() )
-  {
-    buff.feed_the_flames_stacking
-        ->set_max_stack( as<int>( -talent.feed_the_flames_pyre_buff->effectN( 2 ).base_value() ) )
-        ->set_expire_at_max_stack( true )
-        ->set_stack_change_callback( [ this ]( buff_t* b, int old, int ) {
-          if ( old == b->max_stack() )
-          {
-            make_event( *sim, [ this ]() {
-              buff.feed_the_flames_pyre->trigger();
-            } );
-          }
-        } );
-  }
 
   buff.emerald_trance_stacking =
       MBF( sets->has_set_bonus( EVOKER_DEVASTATION, T31, B2 ), this, "emerald_trance_stacking", find_spell( 424155 ) )
