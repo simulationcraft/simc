@@ -3434,9 +3434,8 @@ class SpellDataGenerator(DataGenerator):
             fields += shapeshif_entry.field('flags_1')
             hotfix.add(shapeshif_entry, ('flags_1', 38))
 
-            mechanic = category.ref('id_mechanic')
-            fields += mechanic.field('mechanic')
-            hotfix.add(mechanic, ('mechanic', 39))
+            fields += category.field('id_mechanic')
+            hotfix.add(category, ('id_mechanic', 39))
 
             power = spell.get_link('azerite_power')
             fields += power.field('id')
@@ -3541,9 +3540,8 @@ class SpellDataGenerator(DataGenerator):
             hotfix.add(effect, ('trigger_spell', 18), ('dmg_multiplier', 19),
                 ('points_per_combo_points', 20), ('real_ppl', 21))
 
-            mechanic = effect.ref('id_mechanic')
-            fields += mechanic.field('mechanic')
-            hotfix.add(mechanic, ('mechanic', 22))
+            fields += effect.field('id_mechanic')
+            hotfix.add(effect, ('id_mechanic', 22))
 
             fields += effect.field('chain_target', 'implicit_target_1', 'implicit_target_2', 'val_mul', 'pvp_coefficient')
             hotfix.add(effect, ('chain_target', 23), ('implicit_target_1', 24),
