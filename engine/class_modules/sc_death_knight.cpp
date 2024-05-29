@@ -663,7 +663,6 @@ public:
   unsigned int
       bone_shield_charges_consumed;  // Counts how many bone shield charges have been consumed for T29 4pc blood
   unsigned int active_riders;        // Number of active Riders of the Apocalypse pets
-  unsigned int pillar_extension;    // Number of times Pillar of Frost has been extended
 
   // Buffs
   struct buffs_t
@@ -1020,7 +1019,6 @@ public:
       player_talent_t ossuary;
       player_talent_t improved_vampiric_blood;
       player_talent_t improved_heart_strike;
-      player_talent_t deaths_caress;
       // Row 5
       player_talent_t rune_tap;
       player_talent_t heartbreaker;
@@ -1575,7 +1573,6 @@ public:
       festering_wounds_target_count( 0 ),
       bone_shield_charges_consumed( 0 ),
       active_riders( 0 ),
-      pillar_extension( 0 ),
       buffs(),
       runeforge(),
       active_spells(),
@@ -3253,25 +3250,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     }
   };
 
-  struct deaths_caress_t : public drw_action_t<spell_t>
-  {
-    int stack_gain;
-    deaths_caress_t( util::string_view n, dancing_rune_weapon_pet_t* p )
-      : drw_action_t( p, n, p->dk()->talent.blood.deaths_caress ),
-        stack_gain( as<int>( data().effectN( 3 ).base_value() ) )
-
-    {
-      this->impact_action = p->ability.blood_plague;
-    }
-
-    void impact( action_state_t* state ) override
-    {
-      drw_action_t::impact( state );
-
-      dk()->buffs.bone_shield->trigger( stack_gain );
-    }
-  };
-
   struct death_strike_t : public drw_action_t<melee_attack_t>
   {
     death_strike_t( util::string_view n, dancing_rune_weapon_pet_t* p )
@@ -3376,7 +3354,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   {
     action_t* blood_plague;
     action_t* blood_boil;
-    action_t* deaths_caress;
     action_t* death_strike;
     action_t* heart_strike;
     action_t* marrowrend;
@@ -3404,10 +3381,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       ability.blood_plague = get_action<blood_plague_t>( "blood_plague", this );
       ability.blood_boil   = get_action<blood_boil_t>( "blood_boil", this );
-    }
-    if ( dk()->talent.blood.deaths_caress.ok() )
-    {
-      ability.deaths_caress = get_action<deaths_caress_t>( "deaths_caress", this );
     }
     if ( dk()->talent.death_strike.ok() )
     {
@@ -4226,6 +4199,10 @@ private:
 namespace
 {  // UNNAMED NAMESPACE
 
+// ==========================================================================
+// Death Knight Custom Buff Structs
+// ==========================================================================
+
 // Custom School Change Buff struct
 struct school_change_buff_t : public buff_t
 {
@@ -4256,6 +4233,10 @@ public:
   std::vector<action_t*> actions;
   uint32_t school;
 };
+
+// ==========================================================================
+// Death Knight Actions
+// ==========================================================================
 
 // Template for common death knight action code. See priest_action_t.
 template <class Base>
@@ -4682,7 +4663,6 @@ struct death_knight_heal_t : public death_knight_action_t<heal_t>
 // ==========================================================================
 
 // Razorice Attack ==========================================================
-
 struct razorice_attack_t final : public death_knight_melee_attack_t
 {
   razorice_attack_t( util::string_view name, death_knight_t* player )
@@ -4703,7 +4683,6 @@ struct razorice_attack_t final : public death_knight_melee_attack_t
 };
 
 // Inexorable Assault =======================================================
-
 struct inexorable_assault_damage_t final : public death_knight_spell_t
 {
   inexorable_assault_damage_t( util::string_view name, death_knight_t* p )
@@ -4713,14 +4692,14 @@ struct inexorable_assault_damage_t final : public death_knight_spell_t
   }
 };
 
-// Icy Death Torrent
+// Icy Death Torrent ========================================================
 struct icy_death_torrent_t final : public death_knight_spell_t
 {
   icy_death_torrent_t( util::string_view name, death_knight_t* p )
     : death_knight_spell_t( name, p, p->spell.icy_death_torrent_damage )
   {
     background = true;
-    aoe = -1;
+    aoe        = -1;
   }
 };
 
@@ -4731,10 +4710,207 @@ struct cryogenic_chamber_t final : public death_knight_spell_t
     : death_knight_spell_t( name, p, p->spell.cryogenic_chamber_damage )
   {
     background = true;
-    aoe = -1;
+    aoe        = -1;
   }
 };
 
+// Unholy Pact ==============================================================
+struct unholy_pact_damage_t final : public death_knight_spell_t
+{
+  unholy_pact_damage_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.unholy_pact_damage )
+  {
+    background = true;
+    aoe        = -1;
+  }
+};
+
+// ==========================================================================
+// Death Knight Buffs
+// ==========================================================================
+
+// Breath of Sindragosa =====================================================
+struct breath_of_sindragosa_buff_t : public buff_t
+{
+  breath_of_sindragosa_buff_t( death_knight_t* p )
+    : buff_t( p, "breath_of_sindragosa", p->talent.frost.breath_of_sindragosa ),
+      ticking_cost( 0.0 ),
+      tick_period( p->talent.frost.breath_of_sindragosa->effectN( 1 ).period() ),
+      rune_gen( as<int>( p->spell.breath_of_sindragosa_rune_gen->effectN( 1 ).base_value() ) ),
+      bos_damage( p->active_spells.breath_of_sindragosa_tick )
+  {
+    tick_zero          = true;
+    cooldown->duration = 0_ms;  // Handled by the action
+
+    // Extract the cost per tick from spelldata
+    for ( size_t idx = 1; idx <= data().power_count(); idx++ )
+    {
+      const spellpower_data_t& power = data().powerN( idx );
+      if ( power.aura_id() == 0 || player->dbc->spec_by_spell( power.aura_id() ) == player->specialization() )
+      {
+        ticking_cost = power.cost_per_tick();
+      }
+    }
+
+    set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
+      death_knight_t* p = debug_cast<death_knight_t*>( this->player );
+
+      // TODO: Target the last enemy targeted by the player's foreground abilities
+      // Currently use the player's target which is the first non invulnerable, active enemy found.
+      player_t* bos_target = p->target;
+
+      // On cast execute damage for no cost, and generate runes
+      if ( this->current_tick == 0 )
+      {
+        bos_damage->execute_on_target( bos_target );
+        p->replenish_rune( rune_gen, p->gains.breath_of_sindragosa );
+        return;
+      }
+
+      // If the player doesn't have enough RP to fuel this tick, BoS is cancelled and no RP is consumed
+      // This can happen if the player uses another RP spender between two ticks and is left with < 15 RP
+      if ( !p->resource_available( RESOURCE_RUNIC_POWER, this->ticking_cost ) )
+      {
+        sim->print_log(
+            "Player {} doesn't have the {} Runic Power required for current tick. Breath of Sindragosa was cancelled.",
+            p->name_str, this->ticking_cost );
+
+        // Separate the expiration event to happen immediately after tick processing
+        make_event( *sim, 0_ms, [ this ]() { this->expire(); } );
+        return;
+      }
+
+      // Else, consume the resource and update the damage tick's resource stats
+      p->resource_loss( RESOURCE_RUNIC_POWER, this->ticking_cost, nullptr, bos_damage );
+      bos_damage->stats->consume_resource( RESOURCE_RUNIC_POWER, this->ticking_cost );
+
+      // If the player doesn't have enough RP to fuel the next tick, BoS is cancelled
+      // after the RP consumption and before the damage event
+      // This is the normal BoS expiration scenario
+      if ( !p->resource_available( RESOURCE_RUNIC_POWER, this->ticking_cost ) )
+      {
+        sim->print_log(
+            "Player {} doesn't have the {} Runic Power required for next tick. Breath of Sindragosa was cancelled.",
+            p->name_str, this->ticking_cost );
+
+        // Separate the expiration event to happen immediately after tick processing
+        make_event( *sim, 0_ms, [ this ]() { this->expire(); } );
+        return;
+      }
+
+      // If there's enough resources for another tick, deal damage
+      bos_damage->execute_on_target( bos_target );
+    } );
+  }
+
+  // Breath of Sindragosa always ticks every one second, not affected by haste
+  timespan_t tick_time() const override
+  {
+    return tick_period;
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    death_knight_t* p = debug_cast<death_knight_t*>( player );
+
+    if ( !p->sim->event_mgr.canceled )
+    {
+      // BoS generates 2 runes when it expires
+      p->replenish_rune( rune_gen, p->gains.breath_of_sindragosa );
+    }
+  }
+
+private:
+  action_t*& bos_damage;
+  double ticking_cost;
+  const timespan_t tick_period;
+  int rune_gen;
+};
+
+// Pillar of Frost Buff =====================================================
+struct pillar_of_frost_buff_t final : public buff_t
+{
+  pillar_of_frost_buff_t( death_knight_t* p )
+    : buff_t( p, "pillar_of_frost", p->talent.frost.pillar_of_frost ), player( p ), runes_spent( 0 )
+  {
+    cooldown->duration = 0_ms;  // Controlled by the action
+    set_default_value( p->talent.frost.pillar_of_frost->effectN( 1 ).percent() );
+  }
+
+  // Override the value of the buff to properly capture Pillar of Frost's strength buff behavior
+  double value() override
+  {
+    return player->talent.frost.pillar_of_frost->effectN( 1 ).percent() +
+           ( runes_spent * player->talent.frost.pillar_of_frost->effectN( 2 ).percent() );
+  }
+
+  double check_value() const override
+  {
+    return player->talent.frost.pillar_of_frost->effectN( 1 ).percent() +
+           ( runes_spent * player->talent.frost.pillar_of_frost->effectN( 2 ).percent() );
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::start( stacks, value, duration );
+    runes_spent      = 0;
+    pillar_extension = 0;
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    runes_spent      = 0;
+    pillar_extension = 0;
+    if ( player->talent.frost.enduring_strength.ok() )
+    {
+      trigger_enduring_strength();
+    }
+  }
+
+  void refresh( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::refresh( stacks, value, duration );
+    runes_spent      = 0;
+    pillar_extension = 0;
+    if ( player->talent.frost.enduring_strength.ok() )
+    {
+      trigger_enduring_strength();
+    }
+  }
+
+  void extend_pillar()
+  {
+    if ( pillar_extension >= as<unsigned>( player->talent.frost.the_long_winter->effectN( 2 ).base_value() ) )
+    {
+      return;
+    }
+
+    pillar_extension++;
+    extend_duration( player,
+                     timespan_t::from_seconds( player->talent.frost.the_long_winter->effectN( 1 ).base_value() ) );
+  }
+
+  void trigger_enduring_strength()
+  {
+    player->buffs.enduring_strength->trigger();
+    player->buffs.enduring_strength->extend_duration(
+        player, player->talent.frost.enduring_strength->effectN( 2 ).time_value() *
+                    player->buffs.enduring_strength_builder->stack() );
+    player->buffs.enduring_strength_builder->expire();
+  }
+
+public:
+  int runes_spent;
+
+private:
+  death_knight_t* player;
+  unsigned pillar_extension;
+};
+
+// Cryogennic Chamber =======================================================
 struct cryogenic_chamber_buff_t final : public buff_t
 {
   cryogenic_chamber_buff_t( death_knight_t* p )
@@ -4742,7 +4918,7 @@ struct cryogenic_chamber_buff_t final : public buff_t
       damage( 0 ),
       cryogenic_chamber_damage( get_action<cryogenic_chamber_t>( "cryogenic_chamber", p ) )
   {
-    if( p->talent.frost.cryogenic_chamber.ok() )
+    if ( p->talent.frost.cryogenic_chamber.ok() )
     {
       set_max_stack( as<int>( p->talent.frost.cryogenic_chamber->effectN( 2 ).base_value() ) );
     }
@@ -4767,6 +4943,148 @@ public:
 
 private:
   action_t* cryogenic_chamber_damage;
+};
+
+// Dark Transformation ======================================================
+// Even though the buff is tied to the pet ingame, it's simpler to add it to the player
+struct dark_transformation_buff_t final : public buff_t
+{
+  dark_transformation_buff_t( death_knight_t* p )
+    : buff_t( p, "dark_transformation", p->talent.unholy.dark_transformation ), player( p )
+  {
+    set_default_value_from_effect( 1 );
+    cooldown->duration = 0_ms;  // Handled by the player ability
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::start( stacks, value, duration );
+    if ( player->talent.unholy.ghoulish_frenzy.ok() )
+    {
+      player->buffs.ghoulish_frenzy->trigger();
+      player->pets.ghoul_pet.active_pet()->ghoulish_frenzy->trigger();
+    }
+    if ( player->talent.sanlayn.gift_of_the_sanlayn.ok() )
+    {
+      player->buffs.gift_of_the_sanlayn->trigger();
+    }
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    if ( player->talent.unholy.ghoulish_frenzy.ok() )
+    {
+      player->buffs.ghoulish_frenzy->expire();
+      if ( player->pets.ghoul_pet.active_pet() != nullptr )
+      {
+        player->pets.ghoul_pet.active_pet()->ghoulish_frenzy->expire();
+      }
+    }
+    if ( player->talent.sanlayn.gift_of_the_sanlayn.ok() )
+    {
+      player->buffs.gift_of_the_sanlayn->expire();
+    }
+  }
+
+private:
+  death_knight_t* player;
+};
+
+// Runic Corruption =========================================================
+struct runic_corruption_buff_t final : public buff_t
+{
+  runic_corruption_buff_t( death_knight_t* p ) : buff_t( p, "runic_corruption", p->spell.runic_corruption )
+  {
+    // Runic Corruption refreshes to remaining time + buff duration
+    refresh_behavior = buff_refresh_behavior::EXTEND;
+    set_affects_regen( true );
+    set_stack_change_callback( [ p ]( buff_t*, int, int ) { p->_runes.update_coefficient(); } );
+  }
+
+  // Runic Corruption duration is reduced by haste so it always regenerates
+  // the equivalent of 0.9 of a rune ( 3 / 10 seconds on 3 regenerating runes )
+  timespan_t buff_duration() const override
+  {
+    timespan_t initial_duration = buff_t::buff_duration();
+
+    return initial_duration * player->cache.attack_haste();
+  }
+};
+
+// Apocalyptic Conquest =======================================================
+struct apocalyptic_conquest_buff_t final : public buff_t
+{
+  apocalyptic_conquest_buff_t( death_knight_t* p )
+    : buff_t( p, "apocalyptic_conquest", p->pet_spell.apocalyptic_conquest ), player( p ), nazgrims_conquest( 0 )
+  {
+    set_default_value( p->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() );
+    set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+  }
+
+  // Override the value of the buff to properly capture Apocalyptic Conquest's strength buff behavior
+  double value() override
+  {
+    return player->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() +
+           ( nazgrims_conquest * player->talent.rider.nazgrims_conquest->effectN( 2 ).percent() );
+  }
+
+  double check_value() const override
+  {
+    return player->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() +
+           ( nazgrims_conquest * player->talent.rider.nazgrims_conquest->effectN( 2 ).percent() );
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::start( stacks, value, duration );
+    nazgrims_conquest = 0;
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    nazgrims_conquest = 0;
+  }
+
+  void refresh( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::refresh( stacks, value, duration );
+    nazgrims_conquest = 0;
+  }
+
+public:
+  int nazgrims_conquest;
+
+private:
+  death_knight_t* player;
+};
+
+// Essence of the Blood Queen ================================================
+struct essence_of_the_blood_queen_buff_t final : public buff_t
+{
+  essence_of_the_blood_queen_buff_t( death_knight_t* p )
+    : buff_t( p, "essence_of_the_blood_queen", p->spell.essence_of_the_blood_queen_buff ), player( p )
+  {
+    set_default_value( p->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 );
+    apply_affecting_aura( p->talent.sanlayn.frenzied_bloodthirst );
+  }
+
+  // Override the value of the buff to properly capture Essence of the Blood Queens's buff behavior
+  double value() override
+  {
+    return ( player->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
+           ( 1.0 + player->buffs.gift_of_the_sanlayn->check_value() );
+  }
+
+  double check_value() const override
+  {
+    return ( player->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
+           ( 1.0 + player->buffs.gift_of_the_sanlayn->check_value() );
+  }
+
+private:
+  death_knight_t* player;
 };
 
 // ==========================================================================
@@ -4899,13 +5217,9 @@ struct melee_t : public death_knight_melee_attack_t
           p()->cooldown.icy_death_torrent_icd->start();
         }
         
-        // TODO: potentially find a cleaner way to implement the pillar extension cap
-        if ( p()->talent.frost.the_long_winter.ok() && p()->buffs.pillar_of_frost->check() &&
-             p()->pillar_extension < as<unsigned>( p()->talent.frost.the_long_winter->effectN( 2 ).base_value() ) )
+        if ( p()->talent.frost.the_long_winter.ok() && p()->buffs.pillar_of_frost->check() )
         {
-          p()->pillar_extension++;
-          p()->buffs.pillar_of_frost->extend_duration(
-              p(), timespan_t::from_seconds( p()->talent.frost.the_long_winter->effectN( 1 ).base_value() ) );
+          debug_cast<pillar_of_frost_buff_t*>( p()->buffs.pillar_of_frost )->extend_pillar();
         }
       }
 
@@ -5454,53 +5768,6 @@ struct summon_mograine_t final : public summon_rider_t
   }
 };
 
-struct apocalyptic_conquest_buff_t final : public buff_t
-{
-  apocalyptic_conquest_buff_t( death_knight_t* p )
-    : buff_t( p, "apocalyptic_conquest", p->pet_spell.apocalyptic_conquest ), player( p ), nazgrims_conquest( 0 )
-  {
-    set_default_value( p->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() );
-    set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
-  }
-
-  // Override the value of the buff to properly capture Apocalyptic Conquest's strength buff behavior
-  double value() override
-  {
-    return player->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() +
-           ( nazgrims_conquest * player->talent.rider.nazgrims_conquest->effectN( 2 ).percent() );
-  }
-
-  double check_value() const override
-  {
-    return player->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() +
-           ( nazgrims_conquest * player->talent.rider.nazgrims_conquest->effectN( 2 ).percent() );
-  }
-
-  void start( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::start( stacks, value, duration );
-    nazgrims_conquest = 0;
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-    nazgrims_conquest = 0;
-  }
-
-  void refresh( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::refresh( stacks, value, duration );
-    nazgrims_conquest = 0;
-  }
-
-public:
-  int nazgrims_conquest;
-
-private:
-  death_knight_t* player;
-};
-
 // ==========================================================================
 // San'layn Abilities
 // ==========================================================================
@@ -5527,32 +5794,6 @@ struct infliction_in_sorrow_t : public death_knight_spell_t
     background = true;
     may_miss = may_dodge = may_parry = false;
   }
-};
-
-struct essence_of_the_blood_queen_buff_t final : public buff_t
-{
-  essence_of_the_blood_queen_buff_t( death_knight_t* p )
-    : buff_t( p, "essence_of_the_blood_queen", p->spell.essence_of_the_blood_queen_buff ), player( p )
-  {
-    set_default_value( p->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 );
-    apply_affecting_aura( p->talent.sanlayn.frenzied_bloodthirst );
-  }
-
-  // Override the value of the buff to properly capture Essence of the Blood Queens's buff behavior
-  double value() override
-  {
-    return ( player->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
-           ( 1.0 + player->buffs.gift_of_the_sanlayn->check_value() );
-  }
-
-  double check_value() const override
-  {
-    return ( player->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
-           ( 1.0 + player->buffs.gift_of_the_sanlayn->check_value() );
-  }
-
-private:
-  death_knight_t* player;
 };
 
 // ==========================================================================
@@ -5791,18 +6032,6 @@ struct abomination_limb_damage_t final : public death_knight_spell_t
     background          = true;
     aoe                 = -1;
     reduced_aoe_targets = p->talent.abomination_limb->effectN( 5 ).base_value();
-  }
-};
-
-struct abomination_limb_buff_t final : public buff_t
-{
-  abomination_limb_buff_t( death_knight_t* p ) : buff_t( p, "abomination_limb", p->talent.abomination_limb )
-  {
-    cooldown->duration = 0_ms;  // Controlled by the action
-    set_tick_callback( [ this, p ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
-      p->active_spells.abomination_limb_damage->execute();
-    } );
-    set_partial_tick( true );
   }
 };
 
@@ -6308,7 +6537,6 @@ struct bonestorm_t final : public death_knight_spell_t
 };
 
 // Breath of Sindragosa =====================================================
-
 struct breath_of_sindragosa_tick_t final : public death_knight_spell_t
 {
   breath_of_sindragosa_tick_t( util::string_view n, death_knight_t* p )
@@ -6346,105 +6574,6 @@ struct breath_of_sindragosa_tick_t final : public death_knight_spell_t
 
 private:
   double ticking_cost;
-};
-
-struct breath_of_sindragosa_buff_t : public buff_t
-{
-  breath_of_sindragosa_buff_t( death_knight_t* p )
-    : buff_t( p, "breath_of_sindragosa", p->talent.frost.breath_of_sindragosa ),
-      ticking_cost( 0.0 ),
-      tick_period( p->talent.frost.breath_of_sindragosa->effectN( 1 ).period() ),
-      rune_gen( as<int>( p->spell.breath_of_sindragosa_rune_gen->effectN( 1 ).base_value() ) ),
-      bos_damage( p->active_spells.breath_of_sindragosa_tick )
-  {
-    tick_zero          = true;
-    cooldown->duration = 0_ms;  // Handled by the action
-
-    // Extract the cost per tick from spelldata
-    for ( size_t idx = 1; idx <= data().power_count(); idx++ )
-    {
-      const spellpower_data_t& power = data().powerN( idx );
-      if ( power.aura_id() == 0 || player->dbc->spec_by_spell( power.aura_id() ) == player->specialization() )
-      {
-        ticking_cost = power.cost_per_tick();
-      }
-    }
-
-    set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
-      death_knight_t* p = debug_cast<death_knight_t*>( this->player );
-
-      // TODO: Target the last enemy targeted by the player's foreground abilities
-      // Currently use the player's target which is the first non invulnerable, active enemy found.
-      player_t* bos_target = p->target;
-
-      // On cast execute damage for no cost, and generate runes
-      if ( this->current_tick == 0 )
-      {
-        bos_damage->execute_on_target( bos_target );
-        p->replenish_rune( rune_gen, p->gains.breath_of_sindragosa );
-        return;
-      }
-
-      // If the player doesn't have enough RP to fuel this tick, BoS is cancelled and no RP is consumed
-      // This can happen if the player uses another RP spender between two ticks and is left with < 15 RP
-      if ( !p->resource_available( RESOURCE_RUNIC_POWER, this->ticking_cost ) )
-      {
-        sim->print_log(
-            "Player {} doesn't have the {} Runic Power required for current tick. Breath of Sindragosa was cancelled.",
-            p->name_str, this->ticking_cost );
-
-        // Separate the expiration event to happen immediately after tick processing
-        make_event( *sim, 0_ms, [ this ]() { this->expire(); } );
-        return;
-      }
-
-      // Else, consume the resource and update the damage tick's resource stats
-      p->resource_loss( RESOURCE_RUNIC_POWER, this->ticking_cost, nullptr, bos_damage );
-      bos_damage->stats->consume_resource( RESOURCE_RUNIC_POWER, this->ticking_cost );
-
-      // If the player doesn't have enough RP to fuel the next tick, BoS is cancelled
-      // after the RP consumption and before the damage event
-      // This is the normal BoS expiration scenario
-      if ( !p->resource_available( RESOURCE_RUNIC_POWER, this->ticking_cost ) )
-      {
-        sim->print_log(
-            "Player {} doesn't have the {} Runic Power required for next tick. Breath of Sindragosa was cancelled.",
-            p->name_str, this->ticking_cost );
-
-        // Separate the expiration event to happen immediately after tick processing
-        make_event( *sim, 0_ms, [ this ]() { this->expire(); } );
-        return;
-      }
-
-      // If there's enough resources for another tick, deal damage
-      bos_damage->execute_on_target( bos_target );
-    } );
-  }
-
-  // Breath of Sindragosa always ticks every one second, not affected by haste
-  timespan_t tick_time() const override
-  {
-    return tick_period;
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    death_knight_t* p = debug_cast<death_knight_t*>( player );
-
-    if ( !p->sim->event_mgr.canceled )
-    {
-      // BoS generates 2 runes when it expires
-      p->replenish_rune( rune_gen, p->gains.breath_of_sindragosa );
-    }
-  }
-
-private:
-  action_t*& bos_damage;
-  double ticking_cost;
-  const timespan_t tick_period;
-  int rune_gen;
 };
 
 struct breath_of_sindragosa_t final : public death_knight_spell_t
@@ -6701,46 +6830,8 @@ struct dark_command_t final : public death_knight_spell_t
   }
 };
 
-// Dark Transformation and Unholy Pact ======================================
 
-struct unholy_pact_damage_t final : public death_knight_spell_t
-{
-  unholy_pact_damage_t( util::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.unholy_pact_damage )
-  {
-    background = true;
-    aoe        = -1;
-  }
-};
-
-// The ingame implementation is a mess with multiple unholy pact buffs on the player and pet
-// As well as multiple unholy pact damage spells. The simc version is simplified
-struct unholy_pact_buff_t final : public buff_t
-{
-  unholy_pact_buff_t( death_knight_t* p )
-    : buff_t( p, "unholy_pact", p->talent.unholy.unholy_pact->effectN( 1 ).trigger()->effectN( 1 ).trigger() ),
-      damage( p->active_spells.unholy_pact_damage )
-  {
-    tick_zero   = true;
-    buff_period = 1.0_s;
-    set_tick_behavior( buff_tick_behavior::CLIP );
-    set_tick_callback(
-        [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) { damage->execute(); } );
-    // Unholy pact ticks twice on buff expiration, hence the following override
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/675
-    set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      if ( !new_ )
-      {
-        damage->execute();
-        damage->execute();
-      }
-    } );
-  }
-
-private:
-  action_t*& damage;
-};
-
+// Dark Transformation ======================================================
 struct dark_transformation_damage_t final : public death_knight_spell_t
 {
   dark_transformation_damage_t( util::string_view name, death_knight_t* p )
@@ -6750,51 +6841,6 @@ struct dark_transformation_damage_t final : public death_knight_spell_t
     name_str_reporting = "dark_transformation";
     aoe                = as<int>( data().effectN( 2 ).base_value() );
   }
-};
-
-// Even though the buff is tied to the pet ingame, it's simpler to add it to the player
-struct dark_transformation_buff_t final : public buff_t
-{
-  dark_transformation_buff_t( death_knight_t* p )
-    : buff_t( p, "dark_transformation", p->talent.unholy.dark_transformation ), player( p )
-  {
-    set_default_value_from_effect( 1 );
-    cooldown->duration = 0_ms;  // Handled by the player ability
-  }
-
-  void start( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::start( stacks, value, duration );
-    if ( player->talent.unholy.ghoulish_frenzy.ok() )
-    {
-      player->buffs.ghoulish_frenzy->trigger();
-      player->pets.ghoul_pet.active_pet()->ghoulish_frenzy->trigger();
-    }
-    if ( player->talent.sanlayn.gift_of_the_sanlayn.ok() )
-    {
-      player->buffs.gift_of_the_sanlayn->trigger();
-    }
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-    if ( player->talent.unholy.ghoulish_frenzy.ok() )
-    {
-      player->buffs.ghoulish_frenzy->expire();
-      if ( player->pets.ghoul_pet.active_pet() != nullptr )
-      {
-        player->pets.ghoul_pet.active_pet()->ghoulish_frenzy->expire();
-      }
-    }
-    if ( player->talent.sanlayn.gift_of_the_sanlayn.ok() )
-    {
-      player->buffs.gift_of_the_sanlayn->expire();
-    }
-  }
-
-private:
-  death_knight_t* player;
 };
 
 struct dark_transformation_t final : public death_knight_spell_t
@@ -7071,38 +7117,6 @@ struct defile_t final : public death_and_decay_base_t
     debug_cast<defile_damage_t*>( damage )->active_defile_multiplier = 1.0;
 
     death_and_decay_base_t::execute();
-  }
-};
-
-// Death's Caress ===========================================================
-
-struct deaths_caress_t final : public death_knight_spell_t
-{
-  deaths_caress_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_spell_t( "deaths_caress", p, p->talent.blood.deaths_caress )
-  {
-    parse_options( options_str );
-    impact_action = get_action<blood_plague_t>( "blood_plague", p );
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    p()->buffs.bone_shield->trigger( as<int>( p()->talent.blood.deaths_caress->effectN( 3 ).base_value() ) );
-
-    if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
-    {
-      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.deaths_caress->execute_on_target( target );
-    }
-
-    if ( p()->talent.blood.everlasting_bond.ok() )
-    {
-      if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
-      {
-        p()->pets.everlasting_bond_pet.active_pet()->ability.deaths_caress->execute_on_target( target );
-      }
-    }
   }
 };
 
@@ -8837,73 +8851,6 @@ struct runeforge_apocalypse_pestilence_t final : public death_knight_spell_t
 };
 
 // Pillar of Frost ==========================================================
-struct pillar_of_frost_buff_t final : public buff_t
-{
-  pillar_of_frost_buff_t( death_knight_t* p )
-    : buff_t( p, "pillar_of_frost", p->talent.frost.pillar_of_frost ), player( p ), runes_spent( 0 )
-  {
-    cooldown->duration = 0_ms;  // Controlled by the action
-    set_default_value( p->talent.frost.pillar_of_frost->effectN( 1 ).percent() );
-  }
-
-  // Override the value of the buff to properly capture Pillar of Frost's strength buff behavior
-  double value() override
-  {
-    return player->talent.frost.pillar_of_frost->effectN( 1 ).percent() +
-           ( runes_spent * player->talent.frost.pillar_of_frost->effectN( 2 ).percent() );
-  }
-
-  double check_value() const override
-  {
-    return player->talent.frost.pillar_of_frost->effectN( 1 ).percent() +
-           ( runes_spent * player->talent.frost.pillar_of_frost->effectN( 2 ).percent() );
-  }
-
-  void start( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::start( stacks, value, duration );
-    runes_spent   = 0;
-    player->pillar_extension = 0;
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-    runes_spent   = 0;
-    player->pillar_extension = 0;
-    if ( player->talent.frost.enduring_strength.ok() )
-    {
-      trigger_enduring_strength();
-    }
-  }
-
-  void refresh( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::refresh( stacks, value, duration );
-    runes_spent   = 0;
-    player->pillar_extension = 0;
-    if ( player->talent.frost.enduring_strength.ok() )
-    {
-      trigger_enduring_strength();
-    }
-  }
-
-  void trigger_enduring_strength()
-  {
-    player->buffs.enduring_strength->trigger();
-    player->buffs.enduring_strength->extend_duration(
-        player, player->talent.frost.enduring_strength->effectN( 2 ).time_value() *
-                    player->buffs.enduring_strength_builder->stack() );
-    player->buffs.enduring_strength_builder->expire();
-  }
-
-public:
-  int runes_spent;
-
-private:
-  death_knight_t* player;
-};
-
 struct frostwhelps_aid_t final : public death_knight_spell_t
 {
   frostwhelps_aid_t( util::string_view name, death_knight_t* p )
@@ -9089,32 +9036,6 @@ private:
 
 public:
   bool triggered_biting_cold;
-};
-
-struct remorseless_winter_buff_t final : public buff_t
-{
-  remorseless_winter_buff_t( death_knight_t* p )
-    : buff_t( p, "remorseless_winter", p->spec.remorseless_winter ), damage( p->active_spells.remorseless_winter_tick )
-  {
-    cooldown->duration = 0_ms;  // Controlled by the action
-    set_refresh_behavior( buff_refresh_behavior::DURATION );
-    set_tick_callback(
-        [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) { damage->execute(); } );
-    set_partial_tick( true );
-    set_stack_change_callback( [ p, this ]( buff_t*, int, int new_ ) {
-      if ( !new_ )
-      {
-        p->buffs.gathering_storm->expire();
-      }
-      else
-      {
-        debug_cast<remorseless_winter_damage_t*>( damage )->triggered_biting_cold = false;
-      }
-    } );
-  }
-
-private:
-  action_t*& damage;
 };
 
 struct remorseless_winter_t final : public death_knight_spell_t
@@ -9981,28 +9902,6 @@ struct vampiric_blood_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p()->buffs.vampiric_blood->trigger();
-  }
-};
-
-// Buffs ====================================================================
-
-struct runic_corruption_buff_t final : public buff_t
-{
-  runic_corruption_buff_t( death_knight_t* p ) : buff_t( p, "runic_corruption", p->spell.runic_corruption )
-  {
-    // Runic Corruption refreshes to remaining time + buff duration
-    refresh_behavior = buff_refresh_behavior::EXTEND;
-    set_affects_regen( true );
-    set_stack_change_callback( [ p ]( buff_t*, int, int ) { p->_runes.update_coefficient(); } );
-  }
-
-  // Runic Corruption duration is reduced by haste so it always regenerates
-  // the equivalent of 0.9 of a rune ( 3 / 10 seconds on 3 regenerating runes )
-  timespan_t buff_duration() const override
-  {
-    timespan_t initial_duration = buff_t::buff_duration();
-
-    return initial_duration * player->cache.attack_haste();
   }
 };
 
@@ -11385,8 +11284,6 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
     return new dancing_rune_weapon_t( this, options_str );
   if ( name == "dark_command" )
     return new dark_command_t( this, options_str );
-  if ( name == "deaths_caress" )
-    return new deaths_caress_t( this, options_str );
   if ( name == "gorefiends_grasp" )
     return new gorefiends_grasp_t( this, options_str );
   if ( name == "heart_strike" )
@@ -11909,7 +11806,6 @@ void death_knight_t::init_spells()
   talent.blood.ossuary                 = find_talent_spell( talent_tree::SPECIALIZATION, "Ossuary" );
   talent.blood.improved_vampiric_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Vampiric Blood" );
   talent.blood.improved_heart_strike   = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Heart Strike" );
-  talent.blood.deaths_caress           = find_talent_spell( talent_tree::SPECIALIZATION, "Death's Caress" );
   // Row 5
   talent.blood.rune_tap            = find_talent_spell( talent_tree::SPECIALIZATION, "Rune Tap" );
   talent.blood.heartbreaker        = find_talent_spell( talent_tree::SPECIALIZATION, "Heartbreaker" );
@@ -12425,7 +12321,12 @@ void death_knight_t::create_buffs()
                             ->set_default_value_from_effect( 1 )
                             ->set_duration( 0_ms );  // Handled by trigger_dnd_buffs() & expire_dnd_buffs()
 
-  buffs.abomination_limb = make_buff<abomination_limb_buff_t>( this );
+  buffs.abomination_limb = make_buff( this, "abomination_limb", talent.abomination_limb )
+          ->set_cooldown( 0_ms )  // Handled by the action
+          ->set_partial_tick( true )
+          ->set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
+            active_spells.abomination_limb_damage->execute();
+          } );
 
   buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons->effectN( 1 ).trigger() )
                          ->set_default_value( talent.icy_talons->effectN( 1 ).percent() )
@@ -12687,7 +12588,25 @@ void death_knight_t::create_buffs()
 
     buffs.pillar_of_frost = make_buff<pillar_of_frost_buff_t>( this );
 
-    buffs.remorseless_winter = make_buff<remorseless_winter_buff_t>( this );
+    buffs.remorseless_winter =
+        make_buff( this, "remorseless_winter", spec.remorseless_winter )
+            ->set_cooldown( 0_ms )  // Handled by the action
+            ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+            ->set_partial_tick( true )
+            ->set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
+              active_spells.remorseless_winter_tick->execute();
+            } )
+            ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+              if ( !new_ )
+              {
+                buffs.gathering_storm->expire();
+              }
+              else
+              {
+                debug_cast<remorseless_winter_damage_t*>( active_spells.remorseless_winter_tick )
+                    ->triggered_biting_cold = false;
+              }
+            } );
 
     buffs.rime = make_buff( this, "rime", spell.rime_buff )
                      ->set_trigger_spell( spec.rime )
@@ -12743,7 +12662,23 @@ void death_knight_t::create_buffs()
                                ->set_cooldown( 0_ms )  // Handled by the action
                                ->set_default_value_from_effect( 4 );
 
-    buffs.unholy_pact = make_buff<unholy_pact_buff_t>( this );
+    buffs.unholy_pact =
+        make_buff( this, "unholy_pact", talent.unholy.unholy_pact->effectN( 1 ).trigger()->effectN( 1 ).trigger() )
+            ->set_tick_zero( true )
+            ->set_period( 1.0_s )
+            ->set_tick_behavior( buff_tick_behavior::CLIP )
+            ->set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
+              active_spells.unholy_pact_damage->execute();
+            } )
+            // Unholy pact ticks twice on buff expiration, hence the following override
+            // https://github.com/SimCMinMax/WoW-BugTracker/issues/675
+            ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+              if ( !new_ )
+              {
+                active_spells.unholy_pact_damage->execute();
+                active_spells.unholy_pact_damage->execute();
+              }
+            } );
 
     buffs.ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", spell.ghoulish_frenzy_player )
                                 ->set_duration( 0_ms )  // Handled by DT
