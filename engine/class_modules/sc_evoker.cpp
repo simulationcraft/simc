@@ -2591,8 +2591,14 @@ struct empowered_release_spell_t : public empowered_release_t<evoker_spell_t>
 {
   using base_t = empowered_release_spell_t;
 
-  empowered_release_spell_t( std::string_view n, evoker_t* p, const spell_data_t* s ) : empowered_release_t( n, p, s )
+
+  timespan_t animosity_extend;
+  timespan_t animosity_max_duration;
+  empowered_release_spell_t( std::string_view n, evoker_t* p, const spell_data_t* s )
+    : empowered_release_t( n, p, s ), animosity_extend(), animosity_max_duration()
   {
+    animosity_extend     = p->talent.animosity->effectN( 1 ).time_value();
+    animosity_max_duration = p->talent.dragonrage->duration() + p->talent.animosity->effectN( 2 ).time_value();
   }
 
   void execute() override
@@ -2604,9 +2610,17 @@ struct empowered_release_spell_t : public empowered_release_t<evoker_spell_t>
 
     p()->buff.limitless_potential->trigger();
 
-    if ( p()->talent.animosity.ok() )
+    if ( p()->talent.animosity.ok() && p()->buff.dragonrage->check() )
     {
-      p()->buff.dragonrage->extend_duration( p(), p()->talent.animosity->effectN( 1 ).time_value() );
+      timespan_t dragonrage_time =
+          p()->buff.dragonrage->elapsed( sim->current_time() ) + p()->buff.dragonrage->remains();
+
+      timespan_t extend_by = std::min( dragonrage_time + animosity_extend, animosity_max_duration ) - dragonrage_time;
+
+      if ( extend_by > timespan_t::zero() )
+      {
+        p()->buff.dragonrage->extend_duration( p(), extend_by );
+      }
     }
 
     p()->buff.power_swell->trigger();
