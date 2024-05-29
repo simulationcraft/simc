@@ -5719,6 +5719,7 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
   {
     buff_period = 0_s;
     set_cooldown( 0_s );
+    set_chance( 1 );
 
     auto bombardments_effect       = new special_effect_t( td.target );
     bombardments_effect->name_str  = "bombardments_" + td.source->name_str;
