@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 11.0.0.54774
-static const std::array<specialization_spell_entry_t, 407> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 11.0.0.54935
+static const std::array<specialization_spell_entry_t, 411> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -163,10 +163,12 @@ static const std::array<specialization_spell_entry_t, 407> __specialization_spel
   {  5,  258, 397527,      0, "Insanity"                          , 0 },
   {  5, 1452, 417191,      0, "Initial Priest"                    , 0 },
   {  6,  250,  77513,      0, "Mastery: Blood Shield"             , 0 },
+  {  6,  250,  81136,      0, "Crimson Scourge"                   , 0 },
   {  6,  250,  86537,      0, "Plate Specialization"              , 0 },
   {  6,  250, 137008,      0, "Blood Death Knight"                , 0 },
   {  6,  250, 161797,      0, "Riposte"                           , 0 },
   {  6,  250, 162702,      0, "Stat Negation Aura - Strength Tank", 0 },
+  {  6,  250, 195292,      0, "Death's Caress"                    , 0 },
   {  6,  250, 195621,      0, "Frost Fever"                       , 0 },
   {  6,  250, 374721,      0, "Blood Fortification"               , 0 },
   {  6,  251,    674,      0, "Dual Wield"                        , 0 },
@@ -295,6 +297,7 @@ static const std::array<specialization_spell_entry_t, 407> __specialization_spel
   { 10,  269, 137384,      0, "Combo Breaker"                     , 0 },
   { 10,  269, 157445,      0, "Critical Strikes"                  , 0 },
   { 10,  269, 162697,      0, "Stat Negation Aura - Agility DPS"  , 0 },
+  { 10,  269, 220357,      0, "Mark of the Crane"                 , 0 },
   { 10,  269, 261916,      0, "Blackout Kick"                     , "Rank 2" },
   { 10,  269, 261917,      0, "Blackout Kick"                     , "Rank 3" },
   { 10,  269, 322719,      0, "Afterlife"                         , "Rank 2" },
@@ -399,6 +402,7 @@ static const std::array<specialization_spell_entry_t, 407> __specialization_spel
   { 13, 1468, 361178,      0, "Mass Return"                       , 0 },
   { 13, 1468, 363510,      0, "Mastery: Life-Binder"              , 0 },
   { 13, 1468, 365262,      0, "Improved Emerald Blossom"          , 0 },
+  { 13, 1473, 361021,      0, "Sense Power"                       , 0 },
   { 13, 1473, 365261,      0, "Emerald Blossom"                   , 0 },
   { 13, 1473, 395153,      0, "Sands of Time"                     , 0 },
   { 13, 1473, 396043,      0, "Close as Clutchmates"              , 0 },

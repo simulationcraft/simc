@@ -1,15 +1,9 @@
 #ifndef CLIENT_DATA_VERSION_INC
 #define CLIENT_DATA_VERSION_INC
 
-// Client data versioning information for 11.0.0.54774
+// Client data versioning information for 11.0.0.54935
 
-#define CLIENT_DATA_WOW_VERSION "11.0.0.54774"
+#define CLIENT_DATA_WOW_VERSION "11.0.0.54935"
 #define SIMC_WOW_VERSION "1100"
-
-// Hotfix data versioning information
-
-#define CLIENT_DATA_HOTFIX_DATE "2024-05-28"
-#define CLIENT_DATA_HOTFIX_BUILD (54774)
-#define CLIENT_DATA_HOTFIX_HASH "df5feb722bbf62184fcedf811665f1d2da49e608fc07e3d994f8387857335a17"
 
 #endif /* CLIENT_DATA_VERSION_INC*/
