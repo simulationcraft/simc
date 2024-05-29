@@ -116,6 +116,7 @@ struct evoker_td_t : public actor_target_data_t
     buff_t* in_firestorm;
     buff_t* temporal_wound;
     buff_t* melt_armor;
+    buff_t* bombardments;
   } debuffs;
 
   struct buffs_t
@@ -1469,6 +1470,78 @@ public:
 
     if ( flags & STATE_VERSATILITY )
       state->versatility = composite_versatility( state );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    ab::snapshot_state( s, rt );
+    cast_state( s )->evoker = evoker;
+  }
+
+  evoker_t* p( action_state_t* s )
+  {
+    return cast_state( s )->evoker;
+  }
+
+  const evoker_t* p( const action_state_t* s ) const
+  {
+    return cast_state( s )->evoker;
+  }
+
+  evoker_td_t* td( action_state_t* s, player_t* t ) const
+  {
+    return p( s )->get_target_data( t );
+  }
+
+  const evoker_td_t* find_td( action_state_t* s, const player_t* t ) const
+  {
+    return p( s )->find_target_data( t );
+  }
+};
+
+// Template for base external evoker action code.
+template <class Base>
+struct evoker_external_scaling_action_t : public Base
+{
+private:
+  using ab = Base;  // action base, spell_t/heal_t/etc.
+
+protected:
+  using state_t = evoker_action_state_t<external_action_data>;
+
+public:
+  evoker_t* evoker;
+
+  evoker_external_scaling_action_t( std::string_view name, player_t* player,
+                                    const spell_data_t* spell = spell_data_t::nil() )
+    : ab( name, player, spell ), evoker( nullptr )
+  {
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, ab::target );
+  }
+
+  state_t* cast_state( action_state_t* s )
+  {
+    return static_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const state_t*>( s );
+  }
+
+  void snapshot_internal( action_state_t* state, unsigned flags, result_amount_type rt ) override
+  {
+    assert( state );
+
+    cast_state( state )->evoker = evoker;
+
+    assert( p( state ) );
+
+    ab::snapshot_internal( state, flags, rt );
   }
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
@@ -3583,6 +3656,17 @@ struct disintegrate_t : public essence_spell_t
     }
 
     essence_spell_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    essence_spell_t::impact( s );
+
+    if ( p()->talent.scalecommander.bombardments.ok() && p()->buff.mass_disintegrate_stacks->check() )
+    {
+      auto td = p()->get_target_data( s->target );
+      td->debuffs.bombardments->trigger();
+    }
 
     p()->buff.mass_disintegrate_stacks->decrement();
   }
@@ -5180,6 +5264,28 @@ struct engulf_t : public evoker_spell_t
     }
   }
 };
+
+struct bombardments_damage_t : public evoker_external_scaling_action_t<spell_t>
+{
+protected:
+  using base = evoker_external_scaling_action_t<spell_t>;
+
+public:
+  bombardments_damage_t( player_t* p ) : base( "bombardments", p, p->find_spell( 434481 ) )
+  {
+    may_dodge = may_parry = may_block = false;
+    background                        = true;
+    aoe                               = -1;
+    split_aoe_damage                  = true;
+  }
+
+  // TODO: MELT ARMOR
+
+  void init() override
+  {
+    spell_t::init();
+  }
+};
 }  // end namespace spells
 
 // Namespace buffs post spells
@@ -5531,6 +5637,12 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
     return eon_actions[ target ];
   }
 
+  void reset() override
+  {
+    evoker_buff_t<buff_t>::reset();
+
+    cb->deactivate();
+  }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
@@ -5551,6 +5663,99 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
     eon_stored.clear();
   }
 };
+
+struct bombardments_buff_t : public evoker_buff_t<buff_t>
+{
+  dbc_proc_callback_t* cb;
+
+  struct bombardments_cb_t : public dbc_proc_callback_t
+  {
+    evoker_t* source;
+    target_specific_t<spells::bombardments_damage_t> bombardments_actions;
+
+    bombardments_cb_t( player_t* p, const special_effect_t& e, evoker_t* source )
+      : dbc_proc_callback_t( p, e ), source( source ), bombardments_actions{ false }
+    {
+      // allow_pet_procs = true;
+      deactivate();
+      initialize();
+    }
+
+    evoker_t* p()
+    {
+      return source;
+    }
+
+    spells::bombardments_damage_t* get_bombardments_action( const player_t* target )
+    {
+      if ( bombardments_actions[ target ] != nullptr )
+        return bombardments_actions[ target ];
+
+      bombardments_actions[ target ] =
+          debug_cast<spells::bombardments_damage_t*>( target->find_action( "bombardments" ) );
+
+      return bombardments_actions[ target ];
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( s->target->is_sleeping() )
+        return;
+
+      double da = s->result_amount;
+
+      if ( da > 0 )
+      {
+        player_t* triggering_player = s->action->player->get_owner_or_self();
+        auto damage_action          = get_bombardments_action( triggering_player );
+        damage_action->evoker       = p();
+        damage_action->execute_on_target( s->target );
+      }
+    }
+  };
+
+  bombardments_buff_t( evoker_td_t& td, util::string_view name, const spell_data_t* s )
+    : evoker_buff_t<buff_t>( td, name, s )
+  {
+    buff_period = 0_s;
+    set_cooldown( 0_s );
+
+    auto bombardments_effect       = new special_effect_t( td.target );
+    bombardments_effect->name_str  = "bombardments_" + td.source->name_str;
+    bombardments_effect->type      = SPECIAL_EFFECT_EQUIP;
+    bombardments_effect->spell_id  = data().id();
+    td.target->special_effects.push_back( bombardments_effect );
+
+    cb = new bombardments_cb_t( td.target, *bombardments_effect, p() );
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    if ( !evoker_buff_t::trigger( stacks, value, chance, duration ) )
+      return false;
+
+    if ( cb )
+      cb->activate();
+
+    return true;
+  }
+
+  void reset() override
+  {
+    evoker_buff_t<buff_t>::reset();
+
+    cb->deactivate();
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    if ( cb )
+      cb->deactivate();
+  }
+};
+
 }  // namespace buffs
 
 // Namespace spells again
@@ -5607,6 +5812,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
   debuffs.melt_armor = make_buff_fallback( evoker->talent.scalecommander.melt_armor.ok(), *this, "melt_armor", evoker->talent.scalecommander.melt_armor_debuff );
 
+  debuffs.bombardments = make_buff_fallback<buffs::bombardments_buff_t>( evoker->talent.scalecommander.bombardments, *this, "bombardments",
+                                                                   evoker->talent.scalecommander.bombardments_debuff );
   bool make_unbound_surge = evoker->naszuro && !target->is_enemy() && !target->is_pet();
   buffs.unbound_surge = make_buff_fallback<stat_buff_t>( make_unbound_surge, *this, "unbound_surge_" + evoker->name_str,
                                                          evoker->find_spell( 403275 ), evoker->naszuro ? evoker->naszuro->item : nullptr );
@@ -7557,6 +7764,7 @@ struct evoker_module_t : public module_t
     new spells::fate_mirror_damage_t( p );
     new spells::fate_mirror_heal_t( p );
     new spells::breath_of_eons_damage_t( p );
+    new spells::bombardments_damage_t( p );
   }
 
 
