@@ -520,7 +520,7 @@ public:
       player_talent_t demonsurge;  // partially implemented
 
       player_talent_t wave_of_debilitation;  // No Implementation
-      player_talent_t pursuit_of_angryness;
+      player_talent_t pursuit_of_angriness;
       player_talent_t focused_hatred;
       player_talent_t set_fire_to_the_pain;  // NYI
       player_talent_t improved_soul_rending;
@@ -7373,13 +7373,13 @@ void demon_hunter_t::create_buffs()
                             ->set_allow_precombat( true )
                             ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buff.pursuit_of_angryness =
-      make_buff( this, "pursuit_of_angriness", talent.felscarred.pursuit_of_angryness )
+      make_buff( this, "pursuit_of_angriness", talent.felscarred.pursuit_of_angriness )
           ->set_quiet( true )
           ->set_tick_zero( true )
           ->add_invalidate( CACHE_RUN_SPEED )
           ->set_tick_callback(
-              [ this, speed_per_fury = talent.felscarred.pursuit_of_angryness->effectN( 1 ).percent() /
-                                       talent.felscarred.pursuit_of_angryness->effectN( 1 ).base_value() ](
+              [ this, speed_per_fury = talent.felscarred.pursuit_of_angriness->effectN( 1 ).percent() /
+                                       talent.felscarred.pursuit_of_angriness->effectN( 1 ).base_value() ](
                   buff_t* b, int, timespan_t ) {
                 // TOCHECK - Does this need to floor if it's not a whole number
                 b->current_value = resources.current[ RESOURCE_FURY ] * speed_per_fury;
@@ -8129,7 +8129,7 @@ void demon_hunter_t::init_spells()
   talent.felscarred.demonsurge = find_talent_spell( talent_tree::HERO, "Demonsurge" );
 
   talent.felscarred.wave_of_debilitation  = find_talent_spell( talent_tree::HERO, "Wave of Debilitation" );
-  talent.felscarred.pursuit_of_angryness  = find_talent_spell( talent_tree::HERO, "Pursuit of Angriness" );
+  talent.felscarred.pursuit_of_angriness  = find_talent_spell( talent_tree::HERO, "Pursuit of Angriness" );
   talent.felscarred.focused_hatred        = find_talent_spell( talent_tree::HERO, "Focused Hatred" );
   talent.felscarred.set_fire_to_the_pain  = find_talent_spell( talent_tree::HERO, "Set Fire to the Pain" );
   talent.felscarred.improved_soul_rending = find_talent_spell( talent_tree::HERO, "Improved Soul Rending" );
@@ -8795,7 +8795,7 @@ double demon_hunter_t::stacking_movement_modifier() const
     ms += cache.mastery() * talent.demon_hunter.pursuit->effectN( 1 ).mastery_value();
   }
 
-  if ( talent.felscarred.pursuit_of_angryness->ok() )
+  if ( talent.felscarred.pursuit_of_angriness->ok() )
   {
     ms += buff.pursuit_of_angryness->value();
   }
@@ -8908,7 +8908,7 @@ void demon_hunter_t::combat_begin()
   {
     buff.enduring_torment->trigger();
   }
-  if ( talent.felscarred.pursuit_of_angryness->ok() )
+  if ( talent.felscarred.pursuit_of_angriness->ok() )
   {
     buff.pursuit_of_angryness->trigger();
   }
@@ -8934,7 +8934,7 @@ void demon_hunter_t::regen( timespan_t periodicity )
 double demon_hunter_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
 {
   double amt = player_t::resource_gain( resource_type, amount, source, action );
-  if ( resource_type == RESOURCE_FURY && talent.felscarred.pursuit_of_angryness->ok() )
+  if ( resource_type == RESOURCE_FURY && talent.felscarred.pursuit_of_angriness->ok() )
   {
     invalidate_cache( CACHE_RUN_SPEED );
   }
@@ -8954,7 +8954,7 @@ double demon_hunter_t::resource_gain( resource_e resource_type, double amount, d
 double demon_hunter_t::resource_loss( resource_e resource_type, double amount, gain_t* source, action_t* action )
 {
   double amt = player_t::resource_loss( resource_type, amount, source, action );
-  if ( resource_type == RESOURCE_FURY && talent.felscarred.pursuit_of_angryness->ok() )
+  if ( resource_type == RESOURCE_FURY && talent.felscarred.pursuit_of_angriness->ok() )
   {
     invalidate_cache( CACHE_RUN_SPEED );
   }
