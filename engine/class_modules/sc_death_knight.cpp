@@ -631,22 +631,22 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
   {
     if ( stack )
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast<death_knight_td_t*>( t )->debuff )->check();
+        return std::invoke( d, debug_cast<death_knight_td_t*>( t )->debuff )->check();
       };
     else
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast<death_knight_td_t*>( t )->debuff )->check() > 0;
+        return std::invoke( d, debug_cast<death_knight_td_t*>( t )->debuff )->check() > 0;
       };
   }
   else if constexpr ( std::is_invocable_v<T, death_knight_td_t::dots_t> )
   {
     if ( stack )
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast<death_knight_td_t*>( t )->dot )->current_stack();
+        return std::invoke( d, debug_cast<death_knight_td_t*>( t )->dot )->current_stack();
       };
     else
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast<death_knight_td_t*>( t )->dot )->is_ticking();
+        return std::invoke( d, debug_cast<death_knight_td_t*>( t )->dot )->is_ticking();
       };
   }
   else
@@ -2737,7 +2737,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
       pet_melee_attack_t<ghoul_pet_t>::execute();
       if ( triggers_apocalypse && dk()->runeforge.rune_of_apocalypse && hit_any_target )
       {
-        int n = static_cast<int>( pet()->rng().range( 0, runeforge_apocalypse::MAX ) );
+        int n = as<int>( pet()->rng().range( 0, runeforge_apocalypse::MAX ) );
 
         death_knight_td_t* td = dk()->get_target_data( target );
 
@@ -8208,6 +8208,7 @@ struct festering_strike_t final : public festering_base_t
     if ( p()->talent.unholy.festering_scythe.ok() && p()->buffs.festering_scythe->check() )
     {
       festering_scythe->execute_on_target( target );
+      stats->add_execute( gcd(), target );
       return;
     }
     festering_base_t::execute();
@@ -8767,6 +8768,7 @@ struct heart_strike_t : public heart_strike_base_t
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       vampiric_strike->execute();
+      stats->add_execute( gcd(), target );
       return;
     }
     heart_strike_base_t::execute();
@@ -9722,6 +9724,7 @@ struct clawing_shadows_t final : public wound_spender_base_t
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       vampiric_strike->execute();
+      stats->add_execute( gcd(), target );
       return;
     }
     wound_spender_base_t::execute();
@@ -11773,7 +11776,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
             fmt::format( "Error in rune.time_to expression, please enter a valid amount of runes" ) );
 
       return make_fn_expr( "rune_time_to_x",
-                           [ this, n ]() { return _runes.time_to_regen( static_cast<unsigned>( n ) ); } );
+                           [ this, n ]() { return _runes.time_to_regen( as<unsigned>( n ) ); } );
     }
   }
 
