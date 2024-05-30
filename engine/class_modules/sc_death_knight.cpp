@@ -3877,6 +3877,7 @@ struct horseman_pet_t : public death_knight_pet_t
       : horseman_spell_t( p, name, p->dk()->pet_spell.rider_ams )
     {
       parse_options( options_str );
+      trigger_gcd = 1_s;
     }
 
     void execute() override
@@ -6007,8 +6008,7 @@ struct summon_whitemane_t final : public summon_rider_t
 {
   summon_whitemane_t( util::string_view name, death_knight_t* p ) : summon_rider_t( name, p, p->spell.summon_whitemane )
   {
-    if ( !p->options.individual_pet_reporting )
-      p->pets.whitemane.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    p->pets.whitemane.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     add_child( get_action<undeath_dot_t>( "undeath", p ) );
   }
 
@@ -6045,8 +6045,7 @@ struct summon_trollbane_t final : public summon_rider_t
 {
   summon_trollbane_t( util::string_view name, death_knight_t* p ) : summon_rider_t( name, p, p->spell.summon_trollbane )
   {
-    if ( !p->options.individual_pet_reporting )
-      p->pets.trollbane.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    p->pets.trollbane.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     add_child( get_action<trollbanes_icy_fury_t>( "trollbanes_icy_fury", p ) );
   }
 
@@ -6070,8 +6069,7 @@ struct summon_nazgrim_t final : public summon_rider_t
 {
   summon_nazgrim_t( util::string_view name, death_knight_t* p ) : summon_rider_t( name, p, p->spell.summon_nazgrim )
   {
-    if ( !p->options.individual_pet_reporting )
-      p->pets.nazgrim.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    p->pets.nazgrim.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
 
   void execute() override
@@ -6094,8 +6092,7 @@ struct summon_mograine_t final : public summon_rider_t
 {
   summon_mograine_t( util::string_view name, death_knight_t* p ) : summon_rider_t( name, p, p->spell.summon_mograine )
   {
-    if ( !p->options.individual_pet_reporting )
-      p->pets.mograine.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    p->pets.mograine.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
 
   void execute() override
@@ -8717,6 +8714,10 @@ struct vampiric_strike_blood_t : public heart_strike_base_t
     {
       add_child( p->active_spells.infliction_of_sorrow );
     }
+    if ( p->talent.sanlayn.the_blood_is_life.ok() )
+    {
+      p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    }
   }
 
   void execute() override
@@ -9667,6 +9668,10 @@ struct vampiric_strike_unholy_t : public wound_spender_base_t
     if ( p->talent.sanlayn.infliction_of_sorrow.ok() )
     {
       add_child( p->active_spells.infliction_of_sorrow );
+    }
+    if ( p->talent.sanlayn.the_blood_is_life.ok() )
+    {
+      p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     }
   }
 

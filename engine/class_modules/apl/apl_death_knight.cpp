@@ -411,12 +411,14 @@ std::string temporary_enchant( const player_t* p )
     default_->add_action( "call_action_list,name=st,if=active_enemies<=3" );
 
     aoe->add_action( "epidemic,if=!variable.pooling_runic_power|fight_remains<10", "Generic AoE" );
+    aoe->add_action( "festering_strike,if=debuff.festering_wound.stack<4&buff.festering_scythe.react" );
     aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=variable.pop_wounds" );
     aoe->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=!variable.pop_wounds" );
 
     aoe_burst->add_action( "epidemic,if=(rune<1|talent.bursting_sores&death_knight.fwounded_targets=0|!talent.bursting_sores)&!variable.pooling_runic_power&(active_enemies>=6|runic_power.deficit<30|buff.festermight.stack=20)", "AoE Burst" );
     aoe_burst->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1" );
     aoe_burst->add_action( "epidemic,if=!variable.pooling_runic_power|fight_remains<10" );
+    aoe_burst->add_action( "festering_strike,if=debuff.festering_wound.stack<4&buff.festering_scythe.react" );
     aoe_burst->add_action( "wound_spender" );
 
     aoe_cooldowns->add_action( "vile_contagion,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=4&cooldown.any_dnd.remains<3", "AoE Cooldowns" );
@@ -464,7 +466,7 @@ std::string temporary_enchant( const player_t* p )
     high_prio_actions->add_action( "epidemic,if=active_enemies>=4&(talent.commander_of_the_dead&buff.commander_of_the_dead.up&cooldown.apocalypse.remains<5|debuff.death_rot.up&debuff.death_rot.remains<gcd)" );
     high_prio_actions->add_action( "wound_spender,if=(cooldown.apocalypse.remains>variable.apoc_timing+3|cooldown.unholy_assault.ready|active_enemies>=3)&talent.plaguebringer&(talent.superstrain|talent.unholy_blight)&buff.plaguebringer.remains<gcd" );
     high_prio_actions->add_action( "unholy_blight,if=variable.st_planning&((!talent.apocalypse|cooldown.apocalypse.remains|!talent.summon_gargoyle)&talent.morbidity|!talent.morbidity)|variable.adds_remain|fight_remains<21" );
-    high_prio_actions->add_action( "outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&(dot.virulent_plague.refreshable|talent.superstrain&(dot.frost_fever_superstrain.refreshable|dot.blood_plague_superstrain.refreshable))&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains>15%((talent.superstrain*3)+(talent.plaguebringer*2)+(talent.ebon_fever*2)))" );
+    high_prio_actions->add_action( "outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&(dot.virulent_plague.refreshable|talent.superstrain&(dot.frost_fever.refreshable|dot.blood_plague.refreshable))&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains>15%((talent.superstrain*3)+(talent.plaguebringer*2)+(talent.ebon_fever*2)))" );
 
     racials->add_action( "arcane_torrent,if=runic_power.deficit>20&(cooldown.summon_gargoyle.remains<gcd&time>15|!talent.summon_gargoyle.enabled|pet.gargoyle.active&rune<2&debuff.festering_wound.stack<1)", "Racials" );
     racials->add_action( "blood_fury,if=(buff.blood_fury.duration+3>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(pet.army_ghoul.active&pet.army_ghoul.remains<=buff.blood_fury.duration+3|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=buff.blood_fury.duration+3|active_enemies>=2&death_and_decay.ticking)|fight_remains<=buff.blood_fury.duration+3" );
@@ -478,6 +480,7 @@ std::string temporary_enchant( const player_t* p )
     st->add_action( "death_coil,if=!variable.epidemic_priority&(!variable.pooling_runic_power&variable.spend_rp|fight_remains<10)", "Single Target" );
     st->add_action( "epidemic,if=variable.epidemic_priority&(!variable.pooling_runic_power&variable.spend_rp|fight_remains<10)" );
     st->add_action( "any_dnd,if=!death_and_decay.ticking&(active_enemies>=2|talent.unholy_ground&(pet.apoc_ghoul.active&pet.apoc_ghoul.remains>=13|pet.gargoyle.active&pet.gargoyle.remains>8|pet.army_ghoul.active&pet.army_ghoul.remains>8|!variable.pop_wounds&debuff.festering_wound.stack>=4)|talent.defile&(pet.gargoyle.active|pet.apoc_ghoul.active|pet.army_ghoul.active|buff.dark_transformation.up))&(death_knight.fwounded_targets=active_enemies|active_enemies=1)" );
+    st->add_action( "festering_strike,if=buff.festering_scythe.react&debuff.festering_wound.stack<4" );
     st->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=variable.pop_wounds|active_enemies>=2&death_and_decay.ticking" );
     st->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!variable.pop_wounds&debuff.festering_wound.stack<4" );
     st->add_action( "death_coil" );
@@ -496,11 +499,11 @@ std::string temporary_enchant( const player_t* p )
     variables->add_action( "variable,name=epidemic_priority,op=setif,value=1,value_else=0,condition=talent.improved_death_coil&!talent.coil_of_devastation&active_enemies>=3|talent.coil_of_devastation&active_enemies>=4|!talent.improved_death_coil&active_enemies>=2", "Variables" );
     variables->add_action( "variable,name=garg_setup_complete,op=setif,value=1,value_else=0,condition=active_enemies>=3|cooldown.summon_gargoyle.remains>1&(cooldown.apocalypse.remains>1|!talent.apocalypse)|!talent.summon_gargoyle|time>20" );
     variables->add_action( "variable,name=apoc_timing,op=setif,value=7,value_else=3,condition=cooldown.apocalypse.remains<10&debuff.festering_wound.stack<=4&cooldown.unholy_assault.remains>10" );
-    variables->add_action( "variable,name=pop_wounds,op=setif,value=1,value_else=0,condition=(cooldown.apocalypse.remains>variable.apoc_timing|!talent.apocalypse)&(debuff.festering_wound.stack>=1&cooldown.unholy_assault.remains<20&talent.unholy_assault&variable.st_planning|debuff.rotten_touch.up&debuff.festering_wound.stack>=1|debuff.festering_wound.stack>4|set_bonus.tier31_4pc&(pet.apoc_magus.active|pet.army_magus.active)&debuff.festering_wound.stack>=1)|fight_remains<5&debuff.festering_wound.stack>=1" );
+    variables->add_action( "variable,name=pop_wounds,op=setif,value=1,value_else=0,condition=(cooldown.apocalypse.remains>variable.apoc_timing|!talent.apocalypse)&(debuff.festering_wound.stack>=1&cooldown.unholy_assault.remains<20&talent.unholy_assault&variable.st_planning|debuff.rotten_touch.up&debuff.festering_wound.stack>=1|debuff.festering_wound.stack>4|debuff.festering_wound.stack>=1&(buff.vampiric_strike.react|buff.gift_of_the_sanlayn.remains))|fight_remains<5&debuff.festering_wound.stack>=1" );
     variables->add_action( "variable,name=pooling_runic_power,op=setif,value=1,value_else=0,condition=talent.vile_contagion&cooldown.vile_contagion.remains<3&runic_power<60&!variable.st_planning" );
     variables->add_action( "variable,name=st_planning,op=setif,value=1,value_else=0,condition=active_enemies=1&(!raid_event.adds.exists|raid_event.adds.in>15)" );
     variables->add_action( "variable,name=adds_remain,op=setif,value=1,value_else=0,condition=active_enemies>=2&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>6)" );
-    variables->add_action( "variable,name=spend_rp,op=setif,value=1,value_else=0,condition=(!talent.rotten_touch|talent.rotten_touch&!debuff.rotten_touch.up|runic_power.deficit<20)&(!set_bonus.tier31_4pc|set_bonus.tier31_4pc&!(pet.apoc_magus.active|pet.army_magus.active)|runic_power.deficit<20|rune<3)&((talent.improved_death_coil&(active_enemies=2|talent.coil_of_devastation)|rune<3|pet.gargoyle.active|buff.sudden_doom.react|cooldown.apocalypse.remains<10&debuff.festering_wound.stack>3|!variable.pop_wounds&debuff.festering_wound.stack>=4))" );
+    variables->add_action( "variable,name=spend_rp,op=setif,value=1,value_else=0,condition=(!talent.rotten_touch|talent.rotten_touch&!debuff.rotten_touch.up|runic_power.deficit<20)&(runic_power.deficit<20|rune<3)&((talent.improved_death_coil&(active_enemies=2|talent.coil_of_devastation)|rune<3|pet.gargoyle.active|buff.sudden_doom.react&(debuff.festering_wound.stack>=1&cooldown.apocalypse.remains>variable.apoc_timing|debuff.festering_wound.stack>4)|!buff.sudden_doom.react&cooldown.apocalypse.remains<10&debuff.festering_wound.stack>4|!buff.sudden_doom.react&!variable.pop_wounds&debuff.festering_wound.stack>=4|buff.gift_of_the_sanlayn.remains&(!buff.sudden_doom.react|cooldown.apocalypse.remains>variable.apoc_timing&buff.sudden_doom.react&debuff.festering_wound.stack>=1|buff.sudden_doom.react&debuff.festering_wound.stack>4)))" );
   }
   //unholy_apl_end
 
