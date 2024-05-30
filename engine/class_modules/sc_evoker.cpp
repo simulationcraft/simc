@@ -1104,6 +1104,7 @@ struct evoker_t : public player_t
     propagate_const<proc_t*> anachronism_essence_burst;
     propagate_const<proc_t*> echoing_strike;
     propagate_const<proc_t*> overwritten_leaping_flames;
+    propagate_const<proc_t*> diverted_power;
     
   } proc;
 
@@ -5338,9 +5339,14 @@ struct bombardments_damage_t : public evoker_external_scaling_action_t<spell_t>
 {
 protected:
   using base = evoker_external_scaling_action_t<spell_t>;
+  double diverted_power_chance;
+  target_specific_t<cooldown_t> cooldown_objects;
 
 public:
-  bombardments_damage_t( player_t* p ) : base( "bombardments", p, p->find_spell( 434481 ) )
+  bombardments_damage_t( player_t* p )
+    : base( "bombardments", p, p->find_spell( 434481 ) ),
+      diverted_power_chance( 0.25 ),  // Guess TODO: Test ingame.
+      cooldown_objects{ false }
   {
     may_dodge = may_parry = may_block = false;
     background                        = true;
@@ -5352,7 +5358,52 @@ public:
 
   void init() override
   {
-    spell_t::init();
+    base::init();
+  }
+
+  cooldown_t* get_cd_for_player( evoker_t* e )
+  {
+    if ( cooldown_objects[ e ] )
+      return cooldown_objects[ e ];
+
+    if ( e->talent.breath_of_eons.ok() )
+    {
+      cooldown_t* cd = e->find_cooldown( "breath_of_eons" );
+      cooldown_objects[ e ] = cd;
+      return cd;
+    }
+
+    cooldown_t* cd        = e->find_cooldown( "deep_breath" );
+    cooldown_objects[ e ] = cd;
+
+    return cd;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    base::impact( s );
+
+    if ( p( s )->talent.scalecommander.wingleader.ok() )
+    {
+      cooldown_t* cd = get_cd_for_player( p( s ) );
+
+      timespan_t cdr = -timespan_t::from_seconds(
+          std::min( p( s )->talent.scalecommander.wingleader->effectN( 1 ).base_value() * s->n_targets,
+                    p( s )->talent.scalecommander.wingleader->effectN( 2 ).base_value() ) );
+
+      cd->adjust( cdr );
+    }
+  }
+
+  void execute() override
+  {
+    base::execute();
+
+    if ( evoker && evoker->talent.scalecommander.diverted_power->ok() && rng().roll( diverted_power_chance ) )
+    {
+      evoker->buff.essence_burst->trigger();
+      evoker->proc.diverted_power->occur();
+    }
   }
 };
 }  // end namespace spells
@@ -6595,6 +6646,7 @@ void evoker_t::init_procs()
   proc.anachronism_essence_burst  = get_proc( "Anachronism" );
   proc.echoing_strike             = get_proc( "Echoing Strike" );
   proc.overwritten_leaping_flames = get_proc( "Overwritten Leaping Flames" );
+  proc.diverted_power             = get_proc( "Diverted Power" );
 }
 
 void evoker_t::init_base_stats()
