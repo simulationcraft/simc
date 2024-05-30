@@ -6296,6 +6296,16 @@ struct reavers_glaive_t : public demon_hunter_attack_t
     {
       background = dual = true;
     }
+
+    void impact( action_state_t* state ) override
+    {
+      demon_hunter_attack_t::impact( state );
+
+      if ( result_is_hit( state->result ) && p()->spec.burning_wound_debuff->ok() )
+      {
+        p()->active.burning_wound->execute_on_target( state->target );
+      }
+    }
   };
 
   reavers_glaive_t( demon_hunter_t* p, util::string_view options_str )
