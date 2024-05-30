@@ -117,7 +117,7 @@ Attributes       : ....x... ........ x....... x.......   ........ ........ .x...
                  : Is Ability (4), Not Shapeshifted (16), Allow While Mounted (24), No AutoCast (AI) (49), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=366)      : Summon Pet (56)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(32)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Summon from (32)
 Description      : Summons your first pet to you.
 
 Name             : Revive Pet (id=982) [Spell Family (9)] 
@@ -164,7 +164,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
                  : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Allow Low Level Buff (67), Suppress Target Procs (113), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=460)      : Apply Aura (6) | Unknown(121)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : Gathers information about the target beast, displaying diet, abilities, specialization, whether or not the creature is tameable, and if it is exotic.
 Tooltip          : Lore revealed.
 
@@ -352,9 +352,9 @@ Attributes       : .x..x... ........ x....... ........   ........ .x...... .....
                  : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=800)      : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #2 (id=101372)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.12600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.12600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : Fires several missiles, hitting all nearby enemies within $A2 yds of your current target for $s2 Physical damage$?s115939[ and triggering Beast Cleave][]. Deals reduced damage beyond $s1 targets.$?s19434[
 
 |cFFFFFFFFGenerates $213363s1 Focus per target hit.|r][]
@@ -513,7 +513,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : No School Immunities (90), Not a Proc (105), Suppress Caster Procs (112), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=5970)     : Unknown(55)
-                   Base Value: 10 | Scaled Value: 80 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Target: Unknown(77)
+                   Base Value: 10 | Scaled Value: 80 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Target: Channel Target (77)
 Description      : Begins taming a beast to be your companion. If you lose the beast's attention for any reason, the taming process will fail.
 
 Name             : Ice Trap (desc=Frost Trap) (id=13809) [Spell Family (9)] 
@@ -1055,7 +1055,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Ignore Caster Modifiers (125), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=18390)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=106031)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : Heals the target for $s2% of the caster's total health over $d.
@@ -1124,9 +1124,9 @@ Attributes       : ....x... ........ x....... .x......   ........ ..x..... .....
                  : Is Ability (4), Not Shapeshifted (16), Cooldown On Event (25), No Threat (42), Require All Targets (58), Allow Low Level Buff (67), Include In Advanced Combat Log (72), PvP Enabling (96), Can Proc From Procs (122), Vehicle Immunity Category (218), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=24488)    : Redirect Threat (130)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 38000 | Target: Unknown(57)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 38000 | Target: Raid Target (57)
 #2 (id=24489)    : Apply Aura (6) | Scale% (Stacking) (61)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Unknown(57)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Raid Target (57)
 #3 (id=815342)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Misdirects all threat you cause to the targeted party or raid member, beginning with your next attack within $d and lasting for $35079d.
@@ -1397,7 +1397,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .x...
                  : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49), Require All Targets (58), Always Line of Sight (185), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=45900)    : Dummy (3)
-                   Base Value: 54216 | Scaled Value: 54216 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 54216 | Scaled Value: 54216 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=45901)    : Server Side Script (77)
                    Base Value: 56651 | Scaled Value: 56651 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your pet removes all root and movement impairing effects from itself and a friendly target, and grants immunity to all such effects for $54216d.
@@ -1479,9 +1479,9 @@ Attributes       : ....x... ........ x....... ........   ........ ..x..... .....
                  : Is Ability (4), Not Shapeshifted (16), No Threat (42), Include In Advanced Combat Log (72), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Stunned By Horror Mechanic (342), Do Not Log on Learn (355), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=46148)    : Apply Aura (6) | Modify Attacker Crit Chance (197)
-                   Base Value: -10000 | Scaled Value: -10000 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
+                   Base Value: -10000 | Scaled Value: -10000 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friendly (21)
 #2 (id=46149)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
+                   Base Value: 10 | Scaled Value: 10 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friendly (21)
 Description      : Instructs your pet to protect a friendly target from critical strikes, making attacks against that target unable to be critical strikes, but $s2% of all damage taken by that target is also taken by the pet.  Lasts $d.
 Tooltip          : Immune to critical strikes, but damage transferred to the Hunter's pet.
 
@@ -1505,11 +1505,11 @@ Attributes       : ....x... ........ ........ .....x..   ........ ..x....x .....
                  : Is Ability (4), No Immunities (29), No Threat (42), Immunity Purges Effect (47), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Vehicle Immunity Category (218), Attack on Charge to Unit (242), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=46945)    : Charge (96)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=46946)    : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Friendly (21)
 #3 (id=46947)    : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Friendly (21)
 Description      : Remove all root and movement impairing effects on the target, and cause them to be immune to all such effects for $d.
 Tooltip          : Immune to root and movement impairing effects.
 
@@ -1666,7 +1666,7 @@ Attributes       : ........ ........ ........ ..x..x..   ...x.x.x ........ .x...
                  : Aura Is Debuff (26), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow Aura While Dead (116), Do Not Display Range (126), Aura Expires Offline (130), Allow Cast While Casting (135), Remove Entering Arena (162)
 Effects          :
 #1 (id=51005)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : Cannot benefit from Bloodlust or other similar effects.
 Tooltip          : Cannot benefit from Bloodlust or other similar effects.
 
@@ -1730,7 +1730,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Ignore Caster Modifiers (125), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=53091)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=106028)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : $@spelldesc28880
@@ -1757,7 +1757,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Ignore Caster Modifiers (125), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=53092)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=106025)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : $@spelldesc28880
@@ -1783,7 +1783,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Ignore Caster Modifiers (125), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=53093)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=106029)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : $@spelldesc28880
@@ -1810,7 +1810,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Ignore Caster Modifiers (125), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=53094)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=106024)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : $@spelldesc28880
@@ -1838,7 +1838,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Ignore Caster Modifiers (125), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=53096)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=106030)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : $@spelldesc28880
@@ -1866,7 +1866,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Ignore Caster Modifiers (125), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=53097)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=106026)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : $@spelldesc28880
@@ -2029,7 +2029,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : No Redirection (35), No Reflection (39), Do Not Display Range (126), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=68549)    : Dispel (38)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
 #2 (id=68550)    : Energize Power (30)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Resource: focus | Target: Self (1)
 Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and restore $s2 of your Focus.
@@ -2159,9 +2159,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=93520)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=93521)    : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 Description      : The Spirit Beast heals the current friendly target for ${$m1+(($RAP*0.6)*1)} plus an additional ${$m2+(($RAP*0.6)*.66)*($d/$t2)} over $d.
 Tooltip          : Heals $w2 every $t2 sec for $d.
 
@@ -2361,7 +2361,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
                  : No AutoCast (AI) (49), Active Threat (94), PvP Enabling (96), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=101379)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12100 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12100 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Self (18) -> At Enemy in Area (16)
 Description      : The Worm burrows into the earth, shaking the ground above dealing $<damage> Nature damage over $93433d.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $damage= ${($95714m1+(($RAP*0.60)*0.096))*8*(1+$@versadmg)*$<bmMastery>}
@@ -2385,7 +2385,7 @@ Attributes       : ........ ........ x....x.. ........   .......x ........ .x...
                  : Not Shapeshifted (16), No Active Defense (21), No Reflection (39), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), PvP Enabling (96), Taps immediately (215), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=101401)   : School Damage (2): froststorm
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18100 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Unknown(24)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18100 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Enemy (24)
 Description      : $@spelldesc92380
 
 Name             : Posthaste (id=109215) [Spell Family (9), Passive] 
@@ -2526,7 +2526,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=130452)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
 Description      : $@spelldesc109298
 Tooltip          : Webbed.
 
@@ -2574,7 +2574,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Aura Is Debuff (26), Ignore Line of Sight (66), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Do Not Log Aura Refresh (291), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=133140)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : $@spelldesc109248
 Tooltip          : Tethered to the magical arrow. Moving $109248s2 yards from the arrow will root you for $117526d.
 
@@ -2600,7 +2600,7 @@ Effects          :
 #1 (id=133385)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Stun | Target: Enemy (6)
 #2 (id=133386)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : $@spelldesc117405
 Tooltip          : Stunned.
 
@@ -2625,7 +2625,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : Is Ability (4), Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Can Proc From Procs (122), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=134935)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Friendly (21)
 Description      : $@spelldesc115939
 Tooltip          : Melee attacks also strike all other nearby enemy targets.
 
@@ -2647,7 +2647,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), Do Not Report Spell Failure (71), No Initial Threat (86), Can't Crit (93), Not a Proc (105), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=134941)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Self (18) -> At Enemy in Area (16)
 #2 (id=899824)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : Melee attacks also strike all nearby enemies. Deals reduced damage beyond $s2 targets.
@@ -2726,9 +2726,9 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Uses Ranged Slot (1), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=139841)   : Dummy (3)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Radius: 50 yards | Target: Unknown(24)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Radius: 50 yards | Target: Cone Enemy (24)
 #2 (id=139842)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.14000 | PvP Coefficient: 1.00000 | Radius: 50 yards | Target: Unknown(24)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.14000 | PvP Coefficient: 1.00000 | Radius: 50 yards | Target: Cone Enemy (24)
 Description      : $@spelldesc120360
 
 Name             : Dire Beast (id=120679) [Spell Family (9)] 
@@ -2799,7 +2799,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Ignore Caster Modifiers (125), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=141348)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=141349)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : $@spelldesc28880
@@ -2824,7 +2824,7 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x..... .....
                  : Not Shapeshifted (16), No Immunities (29), No Threat (42), Allow Dead Target (64), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=158441)   : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE Custom (8)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Self (18) -> To Area (8)
 Description      : Command your pet to retrieve the loot from a nearby corpse within $A1 yards.
 
 Name             : Fireworks (id=127933) [Spell Family (9)] 
@@ -2847,7 +2847,7 @@ Attributes       : .x...... ........ ........ ........   ........ ........ .....
                  : Uses Ranged Slot (1), Do Not Display Range (126), Force Display Castbar (155), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=162867)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 15 yards | Target: Unknown(72)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 15 yards | Target: At Random (72)
 Description      : Launch fireworks from your gun, bow or crossbow.
 
 Name             : Exhilaration (id=128594) [Spell Family (9)] 
@@ -2867,7 +2867,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Ignore Line of Sight (66), Can't Crit (93), Ignore Caster Modifiers (125), Do Not Display Range (126), Ignore Healing Modifiers (219), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Cannot Lifesteal/Leech (424), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=164149)   : Direct Heal% (136)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 Description      : $@spelldesc109304
 
 Name             : A Murder of Crows (id=131894) [Spell Family (9)] 
@@ -2918,7 +2918,7 @@ Attributes       : ........ ........ x....x.x ........   ........ ........ .....
                  : Not Shapeshifted (16), No Active Defense (21), Allow Cast While Dead (23), Do Not Display Range (126), Show Mechanic as Combat Text (213), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Don't Cancel When All Effects are Disabled (353), Ignore Damage Cancels Aura Interrupt (394), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=170318)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.21600 | PvP Coefficient: 1.40000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.21600 | PvP Coefficient: 1.40000 | Target: Any Target (25)
 Description      : Deals $s1 physical damage.
 
 Name             : Flare (id=132950) [Spell Family (9)] 
@@ -2986,7 +2986,7 @@ Attributes       : ........ ........ ........ x.xx....   ...x.x.x ..x..... .....
                  : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), No Partial Immunity (139), Not In Spellbook (143), Aura Never Bounces (148), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Show Mechanic as Combat Text (213), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=176525)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : Place a tar trap that creates a slick around itself for $13810d when the first enemy approaches it. All enemies within $13810s1 yards will be slowed by $135299s1% while in the area of effect. Trap will exist for $13809d.
 Tooltip          : Movement speed slowed by $s1%.
 
@@ -3433,7 +3433,7 @@ Effects          :
 #2 (id=224105)   : Apply Aura (6) | Periodic Power% Regen (21)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 #3 (id=228027)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : $@spelldesc159953
 Tooltip          : Regenerate $s1% of total health and focus every $t1 seconds.
 
@@ -3965,15 +3965,15 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
                  : Not Shapeshifted (16), No Immunities (29), No Threat (42), Immunity Purges Effect (47), Ignore Line of Sight (66), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Absorb Cannot Be Ignore (214), Allow While Charmed (261), Aura Points On Client (268), Do Not Log Absorb (348), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=271164)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.80000 | Misc Value: 0x7f | Target: Friend (21)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.80000 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
 #2 (id=271165)   : Apply Aura (6) | Scale% (Stacking) (61)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #3 (id=271166)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
 #4 (id=271167)   : Apply Aura (6) | Temporary Thread Reduction (103)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 Description      : $@spelldesc19574
 Tooltip          : Damage dealt increased by $w1%.
 
@@ -4171,13 +4171,13 @@ Attributes       : .x..x... ........ x...x... ........   ........ ........ .....
                  : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Vehicle Immunity Category (218), No Attack Dodge (247), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=271387)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.05273 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.05273 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone to Enemy (104)
 #2 (id=271388)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone to Enemy (104)
 #3 (id=272309)   : Knock Back (98)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 300 | Trigger Spell: 224729 | Radius: 8 yards | Mechanic: Knockback | Target: Cone Front (104)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 300 | Trigger Spell: 224729 | Radius: 8 yards | Mechanic: Knockback | Target: Cone to Enemy (104)
 #4 (id=711079)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 8 yards | Mechanic: Snare | Target: Cone Front (104)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 8 yards | Mechanic: Snare | Target: Cone to Enemy (104)
 Description      : Fires an explosion of bolts at all enemies in front of you, knocking them back, snaring them by $s4% for $d, and dealing $s1 Physical damage.$?s378771[
 
 When you fall below $378771s1% heath, Bursting Shot's cooldown is immediately reset. This can only occur once every $385646d.][]
@@ -4255,7 +4255,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .x...
                  : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49), Ignore Weaponskill (91), Not an Attack (194), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=273748)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 187699 | Radius: 3 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 187699 | Radius: 3 yards | Target: Unknown(87) -> At Enemy in Area (16)
 Description      : Hurls a tar trap to the target location that creates a $187699s1 yd radius pool of tar around itself for $13810d when the first enemy approaches. All enemies have $135299s1% reduced movement speed while in the area of effect. Trap will exist for $13809d.
 
 Name             : Tar Trap (id=187699) [Spell Family (9)] 
@@ -4356,7 +4356,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=273765)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.31000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.31000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone to Enemy (104)
 #2 (id=273766)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000
 #3 (id=739193)   : Dummy (3)
@@ -4755,7 +4755,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ..x..... .....
                  : No Redirection (35), No Reflection (39), No Threat (42), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=285379)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 104493 | Misc Value 2: 0xec6 | Radius: 0 - 3 yards | Target: Custom (18) -> Unknown(85)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 104493 | Misc Value 2: 0xec6 | Radius: 0 - 3 yards | Target: At Self (18) -> Unknown(85)
 Description      : $@spelldesc257891
 
 Name             : Lock and Load (id=194594) [Spell Family (9)] 
@@ -5084,7 +5084,7 @@ Attributes       : ........ ........ x....... .......x   ........ ..x..... .....
                  : Not Shapeshifted (16), No Aura Cancel (31), No Threat (42), No Aura Icon (60), Suppress Target Procs (113), No Summon Log (326), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=296764)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 102199 | Misc Value 2: 0xea6 | Radius: 0 - 5 yards | Target: Custom (18) -> Unknown(48)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 102199 | Misc Value 2: 0xea6 | Radius: 0 - 5 yards | Target: At Self (18) -> Unknown(48)
 #2 (id=296765)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Summon a herd of stampeding animals from the wilds around you that deal ${$201594s1*6} Physical damage to your enemies over $d.
@@ -5204,7 +5204,7 @@ Attributes       : ....x... ........ ..x..... ........   ...x...x ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=297313)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.66900 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.66900 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
 Description      : $@spelldesc199530
 
 Name             : Fury of the Eagle (id=203413) [Spell Family (9)] 
@@ -5226,7 +5226,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Active Threat (94), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Do Not Display Duration (170), Area Effects Use Target Radius (328), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=299987)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.26700 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.26700 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (22) -> Cone Enemy (24)
 Description      : $@spelldesc203415
 
 Name             : Fury of the Eagle (id=203415) [Spell Family (9)] 
@@ -5406,7 +5406,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Line of Sight (66), Allow Cast While Casting (135), Do Not Display Duration (170), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=301781)   : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 Description      : Focus the power of the Wind through your bow, dealing $sw1 damage to your target, and increases your movement speed by $s3% for $d.
 Tooltip          : Movement speed increased by $s3%.
 
@@ -5489,15 +5489,15 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
                  : Not Shapeshifted (16), No Immunities (29), No Threat (42), Immunity Purges Effect (47), Ignore Line of Sight (66), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Absorb Cannot Be Ignore (214), Allow While Charmed (261), Aura Points On Client (268), Do Not Log Absorb (348), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=306203)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 25 | Scaled Value: 25 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Unknown(25)
+                   Base Value: 25 | Scaled Value: 25 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Any Target (25)
                    Affected School(s): All
 #2 (id=306204)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Any Target (25)
 #3 (id=306205)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Any Target (25)
                    Affected School(s): All
 #4 (id=306206)   : Apply Aura (6) | Temporary Thread Reduction (103)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : $@spelldesc19574
 Tooltip          : Damage dealt increased by $w1%.
 
@@ -5548,7 +5548,7 @@ Attributes       : ......xx ........ ........ .......x   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Aura Icon (60), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=306270)   : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Radius: 0 - 80 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Radius: 0 - 80 yards | Target: At Self (22) -> Friendly in Area (30)
 Description      : $@spelldesc207068
 
 Name             : Titan's Thunder (id=207094) [Spell Family (9)] 
@@ -5569,7 +5569,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=306289)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : $@spelldesc207068
 Tooltip          : Dealing bonus Nature damage to the target every $t sec for $d.
 
@@ -5750,7 +5750,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Treat as Area Effect (175), No Level Up Toast (281), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=314957)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.97000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.97000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
 #2 (id=740187)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000
 #3 (id=740188)   : Dummy (3)
@@ -5800,7 +5800,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), Do Not Display Range (126), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=315406)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.91000 | PvP Coefficient: 1.10000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.91000 | PvP Coefficient: 1.10000 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
 Description      : $@spelldesc212431
 
 Name             : Scatter Shot (id=213691) [Spell Family (9)] 
@@ -5935,7 +5935,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=325592)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.42000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.42000 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : $@spelldesc207068
 Tooltip          : The next Dire Frenzy will deal an additional $218635s1 Nature damage on each attack.
 
@@ -6172,11 +6172,11 @@ Attributes       : ........ ........ .....x.. x..x....   ...x.x.x ........ .....
                  : No Active Defense (21), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Avoidance (102), DoT Stacking Rule (103), Not a Proc (105), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), No Aura Log (202), Allow While Riding Vehicle (204), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Caster Death Cancels Persistent Area Auras (347), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=358189)   : Unknown(144)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 300 | Radius: 0 - 5 yards | Mechanic: Knockback | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 300 | Radius: 0 - 5 yards | Mechanic: Knockback | Target: Unknown(87) -> At Enemy in Area (16)
 #2 (id=358190)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.57330 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.57330 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: Unknown(87) -> At Enemy in Area (16)
 #3 (id=743671)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: Unknown(87) -> At Enemy in Area (16)
 Description      : $@spelldesc236776
 
 Name             : Spitting Cobra (desc=Passive) (id=237838) 
@@ -6527,7 +6527,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=479673)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
@@ -6550,9 +6550,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 10235.64 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 10235.64 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: At Self (18) -> At Enemy in Area (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 10235.64 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 10235.64 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Friendly in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -6679,7 +6679,7 @@ Attributes       : .x..x... ........ x....... ........   ........ .x...... .....
                  : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Do Not Display Duration (170), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=480918)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50760 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50760 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : Fires several missiles, hitting your current target and all enemies within $A1 yards for $s1 Physical damage. Deals reduced damage beyond $2643s1 targets.$?s260393[
 
 Multi-Shot has a $260393h% chance to reduce the cooldown of Rapid Fire by ${$260393m1/10}.1 sec.][]
@@ -7204,7 +7204,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Do Not Display Range (126), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=484195)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc259495
 
 Name             : Careful Aim (id=260228) [Spell Family (9), Passive, Hidden] 
@@ -7378,7 +7378,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Allow Aura While Dead (116), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=485310)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: At Enemy in Area (16)
 #2 (id=809257)   : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Rain a volley of arrows down over $d, dealing up to ${$260247s1*12} Physical damage to any enemy in the area, and gain the effects of Trick Shots for as long as Volley is active.
@@ -7402,7 +7402,7 @@ Attributes       : .x...... ........ .......x ........   ........ ........ .....
                  : Uses Ranged Slot (1), Allow Cast While Dead (23), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=485317)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.29400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.29400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
 Description      : $@spelldesc260243
 
 Name             : Bloodseeker (id=260248) [Spell Family (9), Passive] 
@@ -7731,7 +7731,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=485573)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12335 | Target: Unknown(63)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12335 | Target: At Target (63)
 Description      : $@spelldesc259391
 
 Name             : Chakrams Missile (id=260426) [Spell Family (9), Hidden] 
@@ -7751,7 +7751,7 @@ Attributes       : .......x ........ ........ ........   ...x...x ..x..... .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Redirection (35), No Reflection (39), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Allow Cast While Casting (135), Bouncy Chain Missiles (146), Suppress Weapon Procs (151), Can Target Untargetable (216), Can Attack ImmunePC (287), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=485585)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Any Target (25)
 Description      : $@spelldesc259391
 
 Name             : Mastery: Spirit Bond (id=263135) [Spell Family (9), Passive] 
@@ -8453,9 +8453,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...
                  : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow Low Level Buff (67), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Not In Arena (297), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=708375)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 50000 yards | Target: Raid Members (56)
+                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 50000 yards | Target: Raid in Area (56)
 #2 (id=708376)   : Apply Aura (6) | Scale% (Stacking) (61)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 50000 yards | Target: Raid Members (56)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 50000 yards | Target: Raid in Area (56)
 Description      : Increases haste by $s1% for all party and raid members for $d.
 
 Allies receiving this effect will become Sated and unable to benefit from Primal Rage or similar effects again for $57724d.
@@ -8722,7 +8722,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=714405)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12253 | Target: Custom (18)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12253 | Target: At Self (18)
 Description      : Throw a pair of chakrams at your target, slicing all enemies in the chakrams' path for $259396s1 Physical damage. The chakrams will return to you, damaging enemies again.
 
 Your primary target takes $259398s2% increased damage.
@@ -9740,7 +9740,7 @@ Effects          :
 #1 (id=723721)   : Dummy (3)
                    Base Value: 53271 | Scaled Value: 53271 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=723788)   : Dummy (3)
-                   Base Value: 54216 | Scaled Value: 54216 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 54216 | Scaled Value: 54216 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 Description      : $@spelldesc53271
 
 Name             : Wildfire Cluster (id=272742) [Spell Family (9), Passive] 
@@ -9804,9 +9804,9 @@ Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=723834)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 #2 (id=723841)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 3 yards | Target: Unknown(72)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 3 yards | Target: At Random (72)
 Description      : $@spelldesc272742
 
 Name             : Wildfire Cluster (id=272745) [Spell Family (9)] 
@@ -9828,7 +9828,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=723835)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: At Enemy in Area (16)
 #2 (id=834591)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 272742
 Description      : $@spelldesc272742
@@ -9874,7 +9874,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Always Cast Log (255), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=723906)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 Description      : $@spelldesc217200
 Tooltip          : Attack speed increased by $s1%.
 
@@ -10048,7 +10048,7 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
                  : Is Ability (4), No Threat (42), Include In Advanced Combat Log (72), Vehicle Immunity Category (218), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=734157)   : Charge (96)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 Description      : $@spelldesc53480
 
 Name             : Rapid Reload (id=278530) [Spell Family (9), Passive] 
@@ -10096,7 +10096,7 @@ Attributes       : .x..x... ........ x....... ........   ........ .x...... .....
                  : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Do Not Display Duration (170), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=734355)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #2 (id=734362)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 278530
 Description      : $@spelldesc278530
@@ -10118,7 +10118,7 @@ Attributes       : .......x ........ ........ ........   ...x...x ..x..... .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Redirection (35), No Reflection (39), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Allow Cast While Casting (135), Bouncy Chain Missiles (146), Suppress Weapon Procs (151), Can Target Untargetable (216), Can Attack ImmunePC (287), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=736362)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : $@spelldesc259391
 
 Name             : Blood of the Rhino (desc=Exotic Ability) (id=280069) [Passive] 
@@ -10200,7 +10200,7 @@ Attributes       : .......x ........ ........ ...x....   .....x.. ........ .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Sitting (27), Allow While Stealthed (37), Not an Action (92), Not a Proc (105), Suppress Target Procs (113), Allow Proc While Sitting (147), Not an Attack (194), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=742822)   : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc260241
 
 Name             : Trueshot (id=288613) [Spell Family (9)] 
@@ -10315,7 +10315,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .x...
                  : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49), Ignore Weaponskill (91), Not In Spellbook Until Learned (269), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=787669)   : Trigger Missiles (32)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 308495 | Radius: 15 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 308495 | Radius: 15 yards | Target: At Enemy in Area (16)
 Description      : Fire a resonating arrow to the target location that deals $308495s1 Arcane damage to any enemy in the area, and fill the area with echoing anima for $308495d. The effect causes your attacks to ignore line of sight to enemies in the area, and you have $308498s1% increased critical strike chance against them. 
 
 Leaving the area of echoing anima will still allow the hunter to ignore line of sight towards the enemy for ${$308495s3/1000} sec.
@@ -10341,7 +10341,7 @@ Attributes       : ........ ........ x.x..... x..x....   .....x.. ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=787673)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: Unknown(87) -> At Enemy in Area (16)
 #2 (id=787858)   : Create Area Trigger (179)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 18036 | Target: Unknown(87)
 #3 (id=871241)   : Apply Aura (6) | Dummy (4)
@@ -10402,7 +10402,7 @@ Attributes       : ....x..x ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=793988)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 Description      : $@spelldesc257944
 Tooltip          : Critical strike chance increased by $s1%.
 
@@ -10702,7 +10702,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809204)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x77f | Target: Unknown(25)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x77f | Target: Any Target (25)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow, Physical
 Description      : $@spelldesc321468
 Tooltip          : Dealing $s1% less damage to the Hunter.
@@ -10952,7 +10952,7 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
                  : Not Shapeshifted (16), No Aura Cancel (31), Can Proc From Procs (122), No Caster Aura Icon (187), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=820283)   : Trigger Missiles (32)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Trigger Spell: 328837 | Radius: 12 yards | Target: AOE enemy (instant) (16)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Trigger Spell: 328837 | Radius: 12 yards | Target: At Enemy in Area (16)
 Description      : Evoke the energy of Wild Spirits at the target location, dealing $328837s3 Nature damage and apply Wild Mark to all enemy targets within the area for $328837d.
 
 While the Wild Spirits are active, each damaging ability you or your pet use against a target in the area will strike up to $328757I nearby targets for $328757s1 Nature damage.
@@ -11034,7 +11034,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Always AOE Line of Sight (186)
 Effects          :
 #1 (id=821491)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.38500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.38500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc328231
 
 Name             : Wild Spirits (desc=Night Fae) (id=328837) [Spell Family (9)] 
@@ -11066,7 +11066,7 @@ Effects          :
 #2 (id=821611)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=871320)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: Unknown(87) -> At Enemy in Area (16)
 Description      : $@spelldesc328231
 
 Name             : Death Chakram (desc=Necrolord) (id=335932) 
@@ -11486,9 +11486,9 @@ Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=834587)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 #2 (id=834588)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 3 yards | Target: Unknown(72)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 3 yards | Target: At Random (72)
 Description      : $@spelldesc272742
 
 Name             : Rylakstalker's Confounding Strikes (id=336901) [Spell Family (9), Passive] 
@@ -12731,7 +12731,7 @@ Effects          :
 #1 (id=887529)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.77500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=887530)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.12500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.12500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #3 (id=889260)   : Trigger Spell (64): Wailing Arrow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.85000 | PvP Coefficient: 1.00000 | Trigger Spell: 355596 | Target: Enemy (6)
 Description      : $@spelldesc355589
@@ -12788,7 +12788,7 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
                  : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Discount Power On Miss (59), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Force Display Castbar (155), Always AOE Line of Sight (186), Do Not Auto Select Target with Initiates Combat (220), Can Cause Interrupt (235), Not In Spellbook Until Learned (269), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=888815)   : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc355589
 Tooltip          : Silenced.
 
@@ -12831,7 +12831,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=890000)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(20)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Party in Area (20)
 Description      : $@spelldesc356262
 Tooltip          : Critical strike chance increased by $w1%.
 
@@ -12897,9 +12897,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...
                  : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow Low Level Buff (67), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=892377)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Radius: 50000 yards | Target: Raid Members (56)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Radius: 50000 yards | Target: Raid in Area (56)
 #2 (id=892378)   : Apply Aura (6) | Scale% (Stacking) (61)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 50000 yards | Target: Raid Members (56)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 50000 yards | Target: Raid in Area (56)
 Description      : $@spelldesc264667
 Tooltip          : Haste increased by $s1%.
 
@@ -13649,7 +13649,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Ignore Caster Modifiers (125), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=982055)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=982056)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : $@spelldesc28880
@@ -13711,7 +13711,7 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Allow Cast While Dead (23), Allow Aura While Dead (116), AI Doesn't Face Target (179), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=1002564)  : Create Area Trigger (179)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 25538 | Target: Unknown(63)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 25538 | Target: At Target (63)
 Description      : $@spelldesc375891
 
 Name             : Death Chakram (id=375893) [Spell Family (9)] 
@@ -15291,7 +15291,7 @@ Effects          :
 #1 (id=1023504)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Unknown(87)
 #2 (id=1023505)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 27005 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 27005 | Radius: 0 - 10 yards | Target: Unknown(87) -> At Enemy in Area (16)
 #3 (id=1032907)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Call forth a Sentinel Owl to the target location within $R yds, granting you unhindered vision. $?s388056[You and your party's][Your] attacks ignore line of sight against any target in this area.$?s388057[
@@ -15500,7 +15500,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), Do Not Report Spell Failure (71), No Initial Threat (86), Can't Crit (93), Not a Proc (105), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1025710)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Self (18) -> At Enemy in Area (16)
 #2 (id=1025711)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : $@spelldesc378207
@@ -15919,7 +15919,7 @@ Attributes       : ........ ........ ........ .......x   ........ ..x..... .....
                  : No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Aura Points On Client (268)
 Effects          :
 #1 (id=1029936)  : Apply Aura (6) | Modify Crit Damage Done% (163)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.60000 | Misc Value: 0x7f | Target: Friend (21)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.60000 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
 Description      : $@spelldesc392053
 Tooltip          : Critical damage dealt increased by $s1%.
@@ -15947,7 +15947,7 @@ Effects          :
 #1 (id=1029942)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.77500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1029943)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.12500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.12500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #3 (id=1029944)  : Trigger Spell (64): Wailing Arrow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.85000 | PvP Coefficient: 1.00000 | Trigger Spell: 392061 | Target: Enemy (6)
 Description      : $@spelldesc392060
@@ -16009,7 +16009,7 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
                  : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Discount Power On Miss (59), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Force Display Castbar (155), Always AOE Line of Sight (186), Do Not Auto Select Target with Initiates Combat (220), Can Cause Interrupt (235), Not In Spellbook Until Learned (269), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1029947)  : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc392060
 Tooltip          : Silenced.
 
@@ -16109,7 +16109,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Suppress Caster Procs (112), Suppress Target Procs (113), Can Proc From Procs (122), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1032450)  : Apply Aura (6) | Root (455)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
 Description      : $@spelldesc393344
 Tooltip          : Rooted.
 
@@ -16321,7 +16321,7 @@ Attributes       : ....x... ........ x.x..... .......x   ........ ..x..... .x.x.
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), No Threat (42), No AutoCast (AI) (49), Exclude Caster (51), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1032905)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(20)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Party in Area (20)
 Description      : $@spelldesc388045
 Tooltip          : Your attacks ignore line of sight against targets where $@auracaster's Sentinel Owl is located.
 
@@ -16341,7 +16341,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1032915)  : Apply Aura (6) | Modify Leech% (443)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(20)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Party in Area (20)
 Description      : $@spelldesc388057
 Tooltip          : Leech increased by $s1%.
 
@@ -16488,7 +16488,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Can't Crit (93), Ignore Damage Taken Modifiers (136), Aura Points On Client (268), Rolling Periodic (334)
 Effects          :
 #1 (id=1033945)  : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Any Target (25)
 Description      : $@spelldesc393648
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
@@ -17199,7 +17199,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Ignore Caster Modifiers (125), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=1086555)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=1086556)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : $@spelldesc28880
@@ -17932,7 +17932,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : Is Ability (4), Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Can Proc From Procs (122), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1123676)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Friendly (21)
 Description      : $@spelldesc115939
 Tooltip          : Melee attacks also strike all other nearby enemy targets.
 
@@ -17972,7 +17972,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1137556)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
 Description      : $@spelldesc430712
 
 Name             : Dark Chains (id=442392) [Spell Family (9)] 
@@ -18013,7 +18013,7 @@ Attributes       : ........ ........ ........ x.xx....   ...x.x.x ..x..... .....
                  : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), No Partial Immunity (139), Not In Spellbook (143), Aura Never Bounces (148), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Show Mechanic as Combat Text (213), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1137562)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : $@spelldesc430712
 Tooltip          : Movement speed slowed by $s1%.
 
@@ -18110,7 +18110,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), Do Not Display Range (126), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1140607)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc430714
 
 Name             : Shadow Lash (id=444354) [Spell Family (9), Hidden] 
@@ -18490,9 +18490,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1147441)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 #2 (id=1147451)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : $@spelldesc445710
 Tooltip          : Heals you for $w1 every $t sec.
 
@@ -19025,7 +19025,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Line of Sight (66), Not a Proc (105), Not In Spellbook (143)
 Effects          :
 #1 (id=1151620)  : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.56000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.56000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #2 (id=1151621)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc450383
