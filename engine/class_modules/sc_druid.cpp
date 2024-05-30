@@ -6482,7 +6482,7 @@ void druid_action_t<Base>::init()
     if ( !ab::background || ab::ground_aoe )
     {
       const auto& eff = p()->buff.lunar_amplification->data().effectN( 1 );
-      ab::add_parse_entry( persistent_multiplier_effects )
+      add_parse_entry( persistent_multiplier_effects )
         .set_buff( p()->buff.lunar_amplification )
         .set_value( eff.percent() )
         .set_eff( &eff );
@@ -8959,7 +8959,7 @@ struct druid_melee_t : public Base
       // Carnivorous Instinct has no curvepoint for effect#3 which modifies AA, so we use effect#1 value instead
       val += p->talent.carnivorous_instinct->effectN( 1 ).percent();
 
-      ab::add_parse_entry( ab::da_multiplier_effects )
+      add_parse_entry( ab::da_multiplier_effects )
         .set_buff( p->buff.tigers_fury )
         .set_value( val )
         .set_eff( &eff );

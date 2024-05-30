@@ -170,15 +170,14 @@ struct pack_t
   std::vector<U>* copy = nullptr;
 };
 
+template <typename U>
+static inline U& add_parse_entry( std::vector<U>& vec ) { return vec.emplace_back(); }
+
 // input interface framework
 struct parse_base_t
 {
   parse_base_t() = default;
   virtual ~parse_base_t() = default;
-
-  template <typename U>
-  U& add_parse_entry( std::vector<U>& vec )
-  { return vec.emplace_back(); }
 
   // detectors for is_detected_v<>
   template <typename T> using detect_buff = decltype( T::buff );
