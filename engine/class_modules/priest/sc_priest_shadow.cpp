@@ -1459,19 +1459,28 @@ struct void_torrent_t final : public priest_spell_t
 
   void last_tick( dot_t* d ) override
   {
-    priest_spell_t::last_tick( d );
-
     priest().buffs.void_torrent->expire();
+
+    timespan_t channeled_time = dot_duration - d->remains();
 
     if ( priest().talents.voidweaver.entropic_rift.enabled() )
     {
-      priest().trigger_entropic_rift();
-      if ( p().channeling && p().channeling->id == p().specs.mind_blast->id() )
+      if ( p().state.active_entropic_rift && p().state.active_entropic_rift->current_pulse > 0 )
       {
-        event_t::cancel( p().queueing->queue_event );
-        p().queueing = nullptr;
+        p().state.active_entropic_rift->current_pulse = 0;
+        sim->print_debug( "{} extends entropic rift by resetting ticks. New Current Pulse: {} ", p().name(),
+                          p().state.active_entropic_rift->current_pulse );
       }
+
+      priest().buffs.entropic_rift->extend_duration( player, channeled_time );
     }
+
+    if ( priest().talents.voidweaver.voidheart.enabled() )
+    {
+      priest().buffs.voidheart->extend_duration( player, channeled_time );
+    }
+
+    priest_spell_t::last_tick( d );
   }
 
   void execute() override
@@ -1486,6 +1495,11 @@ struct void_torrent_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest().spawn_idol_of_cthun( s );
+    
+    if ( priest().talents.voidweaver.entropic_rift.enabled() )
+    {
+      priest().trigger_entropic_rift();
+    }
   }
 };
 

@@ -1413,8 +1413,8 @@ public:
 
       if ( priest().talents.voidweaver.depth_of_shadows.enabled() )
       {
-        // TODO: Find out the chance? Might not be 100%.
-        if ( save_health_percentage <= depth_of_shadows_threshold )
+        // TODO: Find out the chance. Placeholder value of 90%. It is not 100% but it is is extremely high.
+        if ( save_health_percentage <= depth_of_shadows_threshold && rng().roll( 0.9 ) )
         {
           priest().get_current_main_pet().spawn( depth_of_shadows_duration );
         }
@@ -1798,6 +1798,7 @@ struct entropic_rift_t final : public priest_spell_t
                       break;
                     case ground_aoe_params_t::EVENT_STOPPED:
                       priest().buffs.entropic_rift->expire();
+                      priest().buffs.voidheart->expire();
                       priest().buffs.darkening_horizon->expire();
                       priest().buffs.collapsing_void->expire();
                       break;
