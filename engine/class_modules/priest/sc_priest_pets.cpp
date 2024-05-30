@@ -500,17 +500,6 @@ struct void_flay_t final : public priest_pet_spell_t
     // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1182
     gcd_type = !p.o().bugs ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
     trigger_gcd = 1.5_s;
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1180
-    if ( !p.o().bugs )
-    {
-      affected_by_shadow_weaving = true;
-      force_effect( p.o().buffs.twist_of_fate, 1 );
-      force_effect( p.o().buffs.shadowform, 1 );
-      force_effect( p.o().buffs.devoured_pride, 1 );
-      force_effect( p.o().buffs.voidform, 1 );
-      force_effect( p.o().buffs.voidform, 3 );        // Ancient Madness
-      force_effect( p.o().buffs.dark_ascension, 4 );  // Ancient Madness
-    }
 
     damage_mul = data().effectN( 2 ).percent();
   }
@@ -528,7 +517,7 @@ struct void_flay_t final : public priest_pet_spell_t
 
     if ( target->health_percentage() >= 50 )
     {
-      m *= 1.0 + damage_mul;
+      m *= 1.0 + damage_mul * ( target->resources.pct( RESOURCE_HEALTH ) / 2 - 1 );
     }
 
     return m;
@@ -543,6 +532,11 @@ struct void_flay_t final : public priest_pet_spell_t
       p().o().trigger_atonement( s );
 
       p().o().trigger_essence_devourer();
+
+      if ( p().o().specialization() == PRIEST_SHADOW )
+      {
+        p().o().trigger_shadow_weaving( s );
+      }
 
       if ( p().o().specialization() == PRIEST_SHADOW )
       {
