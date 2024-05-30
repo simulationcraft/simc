@@ -4803,8 +4803,7 @@ struct primal_wrath_t : public cat_finisher_t
       {
         const auto& eff = p->spec.adaptive_swarm_damage->effectN( 2 );
         add_parse_entry( target_multiplier_effects )
-          .set_func( []( actor_target_data_t* td )
-            { return static_cast<druid_td_t*>( td )->dots.adaptive_swarm_damage->is_ticking(); } )
+          .set_func( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage ) )
           .set_value( eff.percent() )
           .set_eff( &eff );
       }

@@ -134,6 +134,39 @@ struct evoker_td_t : public actor_target_data_t
   evoker_td_t( player_t* target, evoker_t* source );
 };
 
+// utility to create target_effect_t compatible functions from evoker_td_t member references
+template <typename T>
+static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
+{
+  if constexpr ( std::is_invocable_v<T, evoker_td_t::debuffs_t> )
+  {
+    if ( stack )
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<evoker_td_t*>( t )->debuff )->check();
+      };
+    else
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<evoker_td_t*>( t )->debuff )->check() > 0;
+      };
+  }
+  else if constexpr ( std::is_invocable_v<T, evoker_td_t::dots_t> )
+  {
+    if ( stack )
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<evoker_td_t*>( t )->dots )->current_stack();
+      };
+    else
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<evoker_td_t*>( t )->dots )->is_ticking();
+      };
+  }
+  else
+  {
+    static_assert( static_false<T>, "Not a valid member of evoker_td_t" );
+    return nullptr;
+  }
+}
+
 template <typename Data, typename Base = action_state_t>
 struct evoker_action_state_t : public Base, public Data
 {
@@ -1815,19 +1848,11 @@ public:
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
   void apply_debuffs_effects()
   {
-    parse_target_effects(
-        []( actor_target_data_t* t ) {
-          return static_cast<evoker_td_t*>( t )->debuffs.shattering_star->check();
-        },
-        p()->talent.shattering_star );
+    parse_target_effects( d_fn( &evoker_td_t::debuffs_t::shattering_star ), p()->talent.shattering_star );
 
     if ( p()->talent.scalecommander.melt_armor.ok() )
     {
-      parse_target_effects(
-          []( actor_target_data_t* t ) {
-            return static_cast<evoker_td_t*>( t )->debuffs.melt_armor->check();
-          },
-          p()->talent.scalecommander.melt_armor_debuff );
+      parse_target_effects( d_fn( &evoker_td_t::debuffs_t::melt_armor ), p()->talent.scalecommander.melt_armor_debuff );
     }
     
     if ( p()->talent.scorching_embers.ok() )
@@ -3607,9 +3632,7 @@ struct disintegrate_t : public essence_spell_t
     if ( p->talent.feed_the_flames->ok() )
     {
       add_parse_entry( target_multiplier_effects )
-          .set_func( []( actor_target_data_t* t ) {
-            return static_cast<evoker_td_t*>( t )->debuffs.in_firestorm->check() > 0;
-          } )
+          .set_func( d_fn( &evoker_td_t::debuffs_t::in_firestorm, false ) )
           .set_value( p->talent.feed_the_flames->effectN( 1 ).percent() )
           .set_eff( &p->talent.feed_the_flames->effectN( 1 ) );
     }
@@ -4345,9 +4368,7 @@ struct pyre_t : public essence_spell_t
       if ( p->talent.feed_the_flames->ok() )
       {
         add_parse_entry( target_multiplier_effects )
-            .set_func( []( actor_target_data_t* t ) {
-              return static_cast<evoker_td_t*>( t )->debuffs.in_firestorm->check() > 0;
-            } )
+            .set_func( d_fn( &evoker_td_t::debuffs_t::in_firestorm, false ) )
             .set_value( p->talent.feed_the_flames->effectN( 1 ).percent() )
             .set_eff( &p->talent.feed_the_flames->effectN( 1 ) );
       }
