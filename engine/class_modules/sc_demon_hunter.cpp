@@ -5809,18 +5809,18 @@ struct shear_t : public demon_hunter_attack_t
         p()->spawn_soul_fragment( soul_fragment::LESSER );
         p()->proc.soul_fragment_from_meta->occur();
       }
-    }
 
-    if ( p()->buff.t30_vengeance_4pc->up() && p()->active.fiery_brand_t30 )
-    {
-      p()->active.fiery_brand_t30->execute_on_target( s->target );
-      p()->buff.t30_vengeance_4pc->expire();
-    }
+      if ( p()->buff.t30_vengeance_4pc->up() && p()->active.fiery_brand_t30 )
+      {
+        p()->active.fiery_brand_t30->execute_on_target( s->target );
+        p()->buff.t30_vengeance_4pc->expire();
+      }
 
-    if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
-    {
-      td( target )->debuffs.reavers_mark->trigger();
-      p()->buff.rending_strike->expire();
+      if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
+      {
+        td( target )->debuffs.reavers_mark->trigger();
+        p()->buff.rending_strike->expire();
+      }
     }
   }
 
