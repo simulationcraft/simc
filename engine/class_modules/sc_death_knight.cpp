@@ -4104,7 +4104,10 @@ struct trollbane_pet_t final : public horseman_pet_t
       : horseman_spell_t( p, n, p->dk()->pet_spell.trollbanes_chains_of_ice_ability )
     {
       parse_options( options_str );
-      aoe = data().effectN( 1 ).chain_target() + as<int>( p->dk()->talent.proliferating_chill->effectN( 1 ).base_value() );
+      apply_affecting_aura( p->dk()->talent.proliferating_chill );
+      trigger_gcd = 1_s;
+      cooldown->duration = 4_s;
+      cooldown->hasted = true;
     }
 
     void impact( action_state_t* a ) override
@@ -4113,12 +4116,6 @@ struct trollbane_pet_t final : public horseman_pet_t
       auto dk_td = dk()->get_target_data( a->target );
       dk_td->debuff.chains_of_ice_trollbane_slow->trigger();
       dk_td->debuff.chains_of_ice_trollbane_damage->trigger();
-    }
-
-    bool ready() override
-    {
-      horseman_spell_t::ready();
-      return !dk()->get_target_data( target )->debuff.chains_of_ice_trollbane_slow->check();
     }
   };
 
