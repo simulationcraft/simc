@@ -21,42 +21,43 @@ void player_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
                                          std::function<std::string( uint32_t )> note_fn,
                                          std::function<std::string( double )> val_str_fn ) const
 {
-std::vector<std::string> notes;
+  std::vector<std::string> notes;
 
-if ( !use_stacks )
+  if ( !use_stacks )
     notes.emplace_back( "No-stacks" );
 
-if ( mastery )
+  if ( mastery )
     notes.emplace_back( "Mastery" );
 
-if ( func )
+  if ( func )
     notes.emplace_back( "Conditional" );
 
-if ( !buff && !func )
+  if ( !buff && !func )
     notes.emplace_back( "Passive" );
 
-if ( note_fn )
+  if ( note_fn )
     notes.emplace_back( note_fn( opt_enum ) );
 
-range::for_each( notes, []( auto& s ) { s[ 0 ] = std::toupper( s[ 0 ] ); } );
+  range::for_each( notes, []( auto& s ) { s[ 0 ] = std::toupper( s[ 0 ] ); } );
 
-std::string val_str = val_str_fn ? val_str_fn( value )
-                      : mastery  ? fmt::format( "{:.5f}", value * 100 )
-                                 : fmt::format( "{:.1f}%", value * 100 );
+  std::string val_str = val_str_fn ? val_str_fn( value )
+                        : mastery  ? fmt::format( "{:.5f}", value * 100 )
+                                   : fmt::format( "{:.1f}%", value * 100 );
 
-os.format(
-  "<td class=\"left\">{}</td>"
-  "<td class=\"right\">{}</td>"
-  "<td class=\"right\">{}</td>"
-  "<td class=\"right\">{}</td>"
-  "<td>{}</td>"
-  "<td>{}</td>""</tr>\n",
-  decorate ? report_decorators::decorated_spell_data( sim, eff->spell() ) : eff->spell()->name_cstr(),
-  eff->spell()->id(),
-  eff->index() + 1,
-  val_str,
-  value_type_name( type ),
-  util::string_join( notes ) );
+  os.format(
+    "<td class=\"left\">{}</td>"
+    "<td class=\"right\">{}</td>"
+    "<td class=\"right\">{}</td>"
+    "<td class=\"right\">{}</td>"
+    "<td>{}</td>"
+    "<td>{}</td>"
+    "</tr>\n",
+    decorate ? report_decorators::decorated_spell_data( sim, eff->spell() ) : eff->spell()->name_cstr(),
+    eff->spell()->id(),
+    eff->index() + 1,
+    val_str,
+    value_type_name( type ),
+    util::string_join( notes ) );
 }
 
 void target_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t& sim, bool decorate,
@@ -348,13 +349,13 @@ void modified_spell_data_t::parse_effect( pack_t<modify_effect_t>& tmp, const sp
     case P_EFFECT_3: idx = 2; break;
     case P_EFFECT_4: idx = 3; break;
     case P_EFFECT_5: idx = 4; break;
-    default: return;
+    default:         return;
   }
 
   if ( !_spell.affected_by_all( eff ) )
     return;
 
-  auto &effN = effects[ idx ];
+  auto& effN = effects[ idx ];
 
   // dupes are not allowed
   if ( range::contains( effN.permanent, &eff ) || range::contains( effN.conditional, &eff, &modify_effect_t::eff ) )

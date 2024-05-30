@@ -61,7 +61,7 @@ struct player_effect_t
   player_effect_t& set_opt_enum( uint32_t e )
   { opt_enum = e; return *this; }
 
-  bool operator==( const player_effect_t&  other )
+  bool operator==( const player_effect_t& other )
   {
     return buff == other.buff && value == other.value && type == other.type && use_stacks == other.use_stacks &&
            mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
@@ -650,7 +650,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
                           std::function<std::string( double )> val_str_fn = nullptr )
   {
     auto c = entries.size();
-    if( !c )
+    if ( !c )
       return;
 
     os.format( "<tr><td rowspan=\"{}\" class=\"dark\">{}</td>", c, n );
@@ -915,49 +915,18 @@ public:
     {
       switch ( eff.misc_value1() )
       {
-        case P_GENERIC:
-          str = "direct damage";
-          return &da_multiplier_effects;
-
-        case P_DURATION:
-          str = "duration";
-          return &dot_duration_effects;
-
-        case P_TICK_DAMAGE:
-          str = "tick damage";
-          return &ta_multiplier_effects;
-
-        case P_CAST_TIME:
-          str = "cast time";
-          return &execute_time_effects;
-
-        case P_GCD:
-          str = "gcd";
-          return &gcd_effects;
-
-        case P_TICK_TIME:
-          str = "tick time";
-          return &tick_time_effects;
-
-        case P_COOLDOWN:
-          str = "cooldown";
-          adjust_recharge_multiplier_warning();
-          return &recharge_multiplier_effects;
-
-        case P_RESOURCE_COST:
-          str = "cost percent";
-          return &cost_effects;
-
-        case P_CRIT:
-          str = "crit chance multiplier";
-          return &crit_chance_multiplier_effects;
-
-        case P_CRIT_DAMAGE:
-          str = "crit damage";
-          return &crit_damage_effects;
-
-        default:
-          return nullptr;
+        case P_GENERIC:       str = "direct damage";          return &da_multiplier_effects;
+        case P_DURATION:      str = "duration";               return &dot_duration_effects;
+        case P_TICK_DAMAGE:   str = "tick damage";            return &ta_multiplier_effects;
+        case P_CAST_TIME:     str = "cast time";              return &execute_time_effects;
+        case P_GCD:           str = "gcd";                    return &gcd_effects;
+        case P_TICK_TIME:     str = "tick time";              return &tick_time_effects;
+        case P_RESOURCE_COST: str = "cost percent";           return &cost_effects;
+        case P_CRIT:          str = "crit chance multiplier"; return &crit_chance_multiplier_effects;
+        case P_CRIT_DAMAGE:   str = "crit damage";            return &crit_damage_effects;
+        case P_COOLDOWN:      adjust_recharge_multiplier_warning();
+                              str = "cooldown";               return &recharge_multiplier_effects;
+        default:              return nullptr;
       }
     }
     else if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
@@ -966,17 +935,10 @@ public:
 
       switch ( eff.misc_value1() )
       {
-        case P_CRIT:
-          str = "crit chance";
-          return &crit_chance_effects;
-
-        case P_RESOURCE_COST:
-          val_mul = spelleffect_data_t::resource_multiplier( BASE::current_resource() );
-          str = "flat cost";
-          return &flat_cost_effects;
-
-        default:
-          return nullptr;
+        case P_CRIT:          str = "crit chance"; return &crit_chance_effects;
+        case P_RESOURCE_COST: val_mul = spelleffect_data_t::resource_multiplier( BASE::current_resource() );
+                              str = "flat cost";   return &flat_cost_effects;
+        default:              return nullptr;
       }
     }
     else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY )
@@ -1041,18 +1003,11 @@ public:
       switch ( eff.subtype() )
       {
         case A_MOD_DAMAGE_FROM_CASTER_SPELLS:
-        case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:
-          str = "damage";
-          return &target_multiplier_effects;
-        case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS:
-          flat = true;
-          str = "crit chance";
-          return &target_crit_chance_effects;
-        case A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS:
-          str = "crit damage";
-          return &target_crit_damage_effects;
-        default:
-          return nullptr;
+        case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:    str = "damage";      return &target_multiplier_effects;
+        case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS:     flat = true;
+                                                       str = "crit chance"; return &target_crit_chance_effects;
+        case A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS: str = "crit damage"; return &target_crit_damage_effects;
+        default:                                       return nullptr;
       }
     }
 
