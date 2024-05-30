@@ -461,7 +461,7 @@ void parse_effects_t::parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, 
   else
     val = eff.base_value();
 
-  if constexpr ( std::is_same_v<U, player_effect_t> )
+  if constexpr ( is_detected_v<detect_buff, U> && is_detected_v<detect_type, U> )
   {
     if ( tmp.data.buff && tmp.data.type == USE_DEFAULT )
       val = tmp.data.buff->default_value * 100;
@@ -493,7 +493,7 @@ void parse_effects_t::parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, 
   bool flat = false;
   std::vector<U>* vec;
 
-  if constexpr ( std::is_same_v<U, player_effect_t> )
+  if constexpr ( is_detected_v<detect_buff, U> )
     vec = get_effect_vector( eff, tmp.data, val_mul, type_str, flat, force );
   else
     vec = get_target_effect_vector( eff, tmp.data, val_mul, type_str, flat, force );
@@ -501,7 +501,7 @@ void parse_effects_t::parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, 
   if ( !vec )
     return;
 
-  if constexpr ( std::is_same_v<U, player_effect_t> )
+  if constexpr ( is_detected_v<detect_type, U> )
   {
     if ( !val && tmp.data.type == parse_flag_e::USE_DATA )
       return;
@@ -521,7 +521,7 @@ void parse_effects_t::parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, 
   if ( tmp.data.value != 0.0 )
     val_str = val_str + " (overridden)";
 
-  if constexpr ( std::is_same_v<U, player_effect_t> )
+  if constexpr ( is_detected_v<detect_buff, U> && is_detected_v<detect_type, U> )
   {
     if ( tmp.data.buff )
     {
