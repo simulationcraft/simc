@@ -738,6 +738,8 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> limitless_potential;
     propagate_const<buff_t*> power_swell;
     propagate_const<buff_t*> snapfire;
+    propagate_const<buff_t*> feed_the_flames_stacking;
+    propagate_const<buff_t*> feed_the_flames_pyre;
     propagate_const<buff_t*> emerald_trance_stacking;
     propagate_const<buff_t*> emerald_trance;
     propagate_const<buff_t*> ebon_might_self_buff;
@@ -884,6 +886,7 @@ struct evoker_t : public player_t
     player_talent_t focusing_iris;
     player_talent_t arcane_vigor;
     player_talent_t feed_the_flames;  // row 9
+    const spell_data_t* feed_the_flames_pyre_buff;
     player_talent_t font_of_magic;
     player_talent_t titanic_wrath;
     player_talent_t hoarded_power;
@@ -3758,7 +3761,9 @@ struct firestorm_t : public evoker_spell_t
     {
       auto pm = evoker_spell_t::composite_persistent_multiplier( s );
 
-      pm *= 1.0 + p()->buff.snapfire->check_value();
+      if ( !proc )
+        pm *= 1.0 + p()->buff.snapfire->check_value();
+
       pm *= 1.0 + p()->buff.iridescence_red->check_value();
 
       return pm;
@@ -3769,13 +3774,23 @@ struct firestorm_t : public evoker_spell_t
   timespan_t tick_period;
   timespan_t duration;
 
-  firestorm_t( evoker_t* p, std::string_view options_str = {} )
-    : evoker_spell_t( "firestorm", p, p->talent.firestorm, options_str ),
+  firestorm_t( evoker_t* p, std::string_view options_str ) : firestorm_t( p, "firestorm", false, options_str )
+  {
+  }
+
+  firestorm_t( evoker_t* p, std::string_view n, bool ftf, std::string_view options_str = {} )
+    : evoker_spell_t( n, p, ftf ? p->find_spell( 368847 ) : p->talent.firestorm, options_str ),
       tick_period(),
       duration()
   {
     damage        = p->get_secondary_action<firestorm_tick_t>( name_str + "_tick", name_str + "_tick" );
     damage->stats = stats;
+    
+    if ( ftf )
+    {
+      damage->proc = true;
+      proc         = true;
+    }
     
     tick_period = find_effect( p->find_spell( 456657 ), A_PERIODIC_DAMAGE ).period();
     duration    = data().effectN( 1 ).trigger()->duration();
@@ -3813,7 +3828,9 @@ struct firestorm_t : public evoker_spell_t
             } ),
         true );
 
-    p()->buff.snapfire->expire();
+    if ( !proc )
+      p()->buff.snapfire->expire();
+
   }
 
   // Brutal implementation of Ignore Spell Cooldown.
@@ -3858,6 +3875,9 @@ struct firestorm_t : public evoker_spell_t
 
   void update_ready( timespan_t cd_duration /* = timespan_t::min() */ ) override
   {
+    if ( proc )
+      return;
+
     if ( cd_waste_data )
       cd_waste_data->add( cd_duration, time_to_execute );
 
@@ -3985,6 +4005,8 @@ struct living_flame_t : public evoker_spell_t
     void impact( action_state_t* s ) override
     {
       Base::impact( s );
+
+      base_t::p()->buff.snapfire->trigger();
     }
   };
 
@@ -4382,6 +4404,7 @@ struct pyre_t : public essence_spell_t
 
   action_t* volatility;
   action_t* damage;
+  action_t* firestorm;
 
   pyre_t( evoker_t* p, std::string_view options_str ) : pyre_t( p, "pyre", p->talent.pyre, options_str )
   {
@@ -4393,6 +4416,9 @@ struct pyre_t : public essence_spell_t
     damage          = p->get_secondary_action<pyre_damage_t>( name_str + "_damage", name_str + "_damage" );
     damage->stats   = stats;
     damage->proc    = true;
+
+    firestorm = p->get_secondary_action<firestorm_t>( "firestorm_ftf", "firestorm_ftf", true );
+    add_child( firestorm );
   }
 
   action_state_t* new_state() override
@@ -4425,6 +4451,12 @@ struct pyre_t : public essence_spell_t
   {
     essence_spell_t::execute();
     p()->buff.charged_blast->expire();
+
+    if ( p()->talent.feed_the_flames.enabled() && ( proc_spell_type & proc_spell_type_e::VOLATILITY ) == 0 )
+    {
+      p()->buff.feed_the_flames_stacking->trigger();
+    }
+
     if ( p()->talent.snapfire.enabled() && ( proc_spell_type & proc_spell_type_e::VOLATILITY ) == 0 )
     {
       p()->buff.snapfire->trigger();
@@ -4448,6 +4480,12 @@ struct pyre_t : public essence_spell_t
   void impact( action_state_t* s ) override
   {
     essence_spell_t::impact( s );
+
+    if ( p()->buff.feed_the_flames_pyre->up() )
+    {
+      firestorm->execute_on_target( s->target );
+      p()->buff.feed_the_flames_pyre->expire();
+    }
 
     // The captured da mul is passed along to the damage action state.
     auto state = damage->get_state();
@@ -4971,6 +5009,12 @@ struct consume_flame_t : evoker_spell_t
     aoe = -1;
     reduced_aoe_targets = p->talent.flameshaper.consume_flame->effectN( 2 ).base_value();
   }
+
+  void init() override
+  {
+    spell_t::init();
+    snapshot_flags &= ~STATE_VERSATILITY;
+  }
 };
 
 struct enkindle_t : public residual_action::residual_periodic_action_t<evoker_spell_t>
@@ -5053,6 +5097,7 @@ struct engulf_t : public evoker_spell_t
       // Xs worth of DoT ticks even if the amount is currently less
       double ticks_left   = duration / dot_tick_time;
       double total_damage = ticks_left * tick_base_damage;
+      total_damage /= state->target_ta_multiplier;
       action_state_t::release( state );
       return total_damage;
     }
@@ -6653,6 +6698,7 @@ void evoker_t::init_spells()
   talent.focusing_iris             = ST( "Focusing Iris" );
   talent.arcane_vigor              = ST( "Arcane Vigor" );
   talent.feed_the_flames           = ST( "Feed the Flames" ); // Row 9
+  talent.feed_the_flames_pyre_buff = find_spell( 411288 );
   talent.font_of_magic             = ST( "Font of Magic" );
   talent.titanic_wrath             = ST( "Titanic Wrath" );
   talent.hoarded_power             = ST( "Hoarded Power" );
@@ -7001,6 +7047,24 @@ void evoker_t::create_buffs()
                            ->set_default_value_from_effect( 1, 0.01 );
 
   buff.time_skip = make_buff_fallback<time_skip_t>( talent.time_skip.ok(), this, "time_skip" );
+
+  buff.feed_the_flames_stacking = MBF( talent.feed_the_flames.ok(), this, "feed_the_flames", find_spell( 405874 ) );
+  buff.feed_the_flames_pyre =
+      MBF( talent.feed_the_flames.ok(), this, "feed_the_flames_pyre", talent.feed_the_flames_pyre_buff );
+
+  if ( talent.feed_the_flames.ok() )
+  {
+    buff.feed_the_flames_stacking
+        ->set_max_stack( as<int>( -talent.feed_the_flames_pyre_buff->effectN( 2 ).base_value() ) )
+        ->set_expire_at_max_stack( true )
+        ->set_stack_change_callback( [ this ]( buff_t* b, int old, int ) {
+          if ( old == b->max_stack() )
+          {
+            make_event( *sim, [ this ]() { buff.feed_the_flames_pyre->trigger(); } );
+          }
+        } );
+  }
+
 
   buff.emerald_trance_stacking =
       MBF( sets->has_set_bonus( EVOKER_DEVASTATION, T31, B2 ), this, "emerald_trance_stacking", find_spell( 424155 ) )
