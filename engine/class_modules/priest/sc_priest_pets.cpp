@@ -218,7 +218,7 @@ struct priest_pet_melee_t : public melee_attack_t
   }
 };
 
-struct priest_pet_spell_t : public parse_action_effects_t<spell_t, priest_pet_t>
+struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
 {
   bool affected_by_shadow_weaving;
   bool triggers_atonement;
@@ -355,7 +355,7 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t, priest_pet_t>
 
 private:
   // typedef for the templated action type, eg. spell_t, attack_t, heal_t
-  using ab = parse_action_effects_t<spell_t, priest_pet_t>;
+  using ab = parse_action_effects_t<spell_t>;
 };
 
 namespace fiend

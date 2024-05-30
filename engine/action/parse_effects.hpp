@@ -665,17 +665,11 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   }
 };
 
-// Mixin to action base class to allow auto parsing and dynamic application of whitelist based buffs & auras.
-//
-// Make `parse_action_effects_t` the parent of module action classe with the following parameters:
-//  1) BASE: The base class of the action class. This is usually spell_t, melee_attack_t, or a template parameter
-//  2) TD: The target data class
-//  3) PLAYER(optional): The pet class if owner's target data should be used, instead of the pet's target data 
-template <typename BASE, typename PLAYER = player_t >
+template <typename BASE>
 struct parse_action_effects_t : public BASE, public parse_effects_t
 {
 private:
-  using base_t = parse_action_effects_t<BASE, PLAYER>;
+  using base_t = parse_action_effects_t<BASE>;
 
 public:
   // auto parsed dynamic effects
@@ -695,7 +689,7 @@ public:
   std::vector<target_effect_t> target_crit_damage_effects;
   std::vector<target_effect_t> target_crit_chance_effects;
 
-  parse_action_effects_t( std::string_view name, PLAYER* player, const spell_data_t* spell )
+  parse_action_effects_t( std::string_view name, player_t* player, const spell_data_t* spell )
     : BASE( name, player, spell ), parse_effects_t( player )
   {}
 
@@ -829,21 +823,10 @@ public:
     return rm;
   }
 
-private:
-  // method for getting target data as each module may have different action scoped method
-  actor_target_data_t* _get_td( player_t* t ) const
-  {
-    if constexpr ( std::is_invocable_v<decltype( &pet_t::owner ), PLAYER> )
-      return static_cast<PLAYER*>( _player )->owner->get_target_data( t );
-    else
-      return _player->get_target_data( t );
-  }
-
-public:
   double composite_target_multiplier( player_t* t ) const override
   {
     auto tm = BASE::composite_target_multiplier( t );
-    auto td = _get_td( t );
+    auto td = _player->get_target_data( t );
 
     for ( const auto& i : target_multiplier_effects )
       tm *= 1.0 + get_target_effect_value( i, td );
@@ -854,7 +837,7 @@ public:
   double composite_target_crit_chance( player_t* t ) const override
   {
     auto cc = BASE::composite_target_crit_chance( t );
-    auto td = _get_td( t );
+    auto td = _player->get_target_data( t );
 
     for ( const auto& i : target_crit_chance_effects )
       cc += get_target_effect_value( i, td );
@@ -865,7 +848,7 @@ public:
   double composite_target_crit_damage_bonus_multiplier( player_t* t ) const override
   {
     auto cd = BASE::composite_target_crit_damage_bonus_multiplier( t );
-    auto td = _get_td( t );
+    auto td = _player->get_target_data( t );
 
     for ( const auto& i : target_crit_damage_effects )
       cd *= 1.0 + get_target_effect_value( i, td );
