@@ -8093,7 +8093,10 @@ struct festering_wound_t final : public death_knight_spell_t
 
     if ( p()->talent.unholy.festering_scythe.ok() )
     {
-      wounds_burst++;
+      if ( !p()->buffs.festering_scythe->check() )
+      {
+        wounds_burst++;
+      }
       if ( wounds_burst >= p()->talent.unholy.festering_scythe->effectN( 1 ).base_value() )
       {
         wounds_burst = 0;
