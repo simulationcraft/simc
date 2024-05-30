@@ -1450,6 +1450,7 @@ public:
     real_ppm_t* bloodworms;
     real_ppm_t* runic_attenuation;
     real_ppm_t* blood_beast;
+    real_ppm_t* decomposition;
   } rppm;
 
   // Pets and Guardians
@@ -4368,11 +4369,20 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
     : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false )
   {
-    this->may_crit   = true;
     this->may_glance = false;
     if ( this->cooldown->duration > 0_s )
     {
       this->track_cd_waste = true;
+    }
+
+    if ( !this->data().flags( spell_attribute::SX_CANNOT_CRIT ) )
+    {
+      this->may_crit = true;
+    }
+
+    if( this->data().flags( spell_attribute::SX_TICK_MAY_CRIT ) )
+    {
+      this->tick_may_crit = true;
     }
 
     // Death Knights have unique snowflake mechanism for RP energize. Base actions indicate the
@@ -4726,7 +4736,6 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     : death_knight_action_t( n, p, s ), triggers_icecap( false )
   {
     special    = true;
-    may_crit   = true;
     may_glance = false;
   }
 
@@ -4835,7 +4844,7 @@ struct hyperpyrexia_damage_t final : public residual_action::residual_periodic_a
   hyperpyrexia_damage_t ( util::string_view name, death_knight_t* p ) : residual_action::residual_periodic_action_t<death_knight_spell_t> ( name, p, p->spell.hyperpyrexia_damage )
   {
     background = true;
-    may_miss = may_crit = hasted_ticks = false;
+    may_miss = hasted_ticks = false;
   }
 };
 
@@ -5384,6 +5393,7 @@ struct melee_t : public death_knight_melee_attack_t
     : death_knight_melee_attack_t( name, p ), sync_weapons( sw ), first( true ), autos_since_last_proc( 0 ), sd_chance( 0 )
   {
     school                    = SCHOOL_PHYSICAL;
+    may_crit                  = true;
     may_glance                = true;
     background                = true;
     allow_class_ability_procs = true;
@@ -5668,7 +5678,6 @@ struct blood_fever_t final : public death_knight_spell_t
   {
     background         = true;
     cooldown->duration = 0_ms;
-    may_crit           = false;  // TODO-TWW check if we can remove the override for may_crit in death_knight_action_t
   }
 
 };
@@ -5679,8 +5688,8 @@ struct death_knight_disease_t : public death_knight_spell_t
   death_knight_disease_t( util::string_view n, death_knight_t* p, const spell_data_t* s )
     : death_knight_spell_t( n, p, s )
   {
-    tick_may_crit = background = true;
-    may_miss = may_crit = hasted_ticks = false;
+    background = true;
+    may_miss = hasted_ticks = false;
   }
 
   void tick( dot_t* d ) override
@@ -5823,7 +5832,7 @@ struct virulent_eruption_t final : public death_knight_disease_t
   virulent_eruption_t( util::string_view n, death_knight_t* p )
     : death_knight_disease_t( n, p, p->spell.virulent_erruption )
   {
-    may_crit = split_aoe_damage = true;
+    split_aoe_damage = true;
     aoe                         = -1;
   }
 };
@@ -5851,9 +5860,7 @@ struct virulent_plague_t final : public death_knight_disease_t
       auto td = get_td( d->target );
       debug_cast<decomposition_debuff_t*>( td->debuff.decomposition )->stored_damage +=
           d->state->result_amount * p()->talent.unholy.decomposition->effectN( 1 ).percent();
-      // Proc chance is unknown, setting it to a random value for now
-      // TODO: FIX ME WHEN PROC RATE IS KNOWN
-      if ( rng().roll( 0.2 ) )
+      if ( p()->rppm.decomposition->trigger() )
       {
         debug_cast<decomposition_debuff_t*>( td->debuff.decomposition )->execute_damage();
 
@@ -6291,7 +6298,6 @@ struct soul_rupture_t final : public death_knight_spell_t
     background         = true;
     cooldown->duration = 0_ms;
     aoe                = -1;
-    may_crit           = false;
   }
 };
 
@@ -6371,7 +6377,7 @@ struct abomination_limb_t : public death_knight_spell_t
   abomination_limb_t( death_knight_t* p, util::string_view options_str )
     : death_knight_spell_t( "abomination_limb", p, p->talent.abomination_limb )
   {
-    may_crit = may_miss = may_dodge = may_parry = false;
+    may_miss = may_dodge = may_parry = false;
 
     parse_options( options_str );
 
@@ -6782,7 +6788,7 @@ struct blooddrinker_t final : public death_knight_spell_t
       heal( get_action<blooddrinker_heal_t>( "blooddrinker_heal", p ) )
   {
     parse_options( options_str );
-    tick_may_crit = channeled = hasted_ticks = tick_zero = true;
+    channeled = hasted_ticks = tick_zero = true;
     base_tick_time                                       = 1.0_s;
   }
 
@@ -7337,7 +7343,6 @@ struct death_and_decay_base_t : public death_knight_spell_t
   {
     base_tick_time = dot_duration = 0_ms;  // Handled by event
     ignore_false_positive         = true;  // TODO: Is this necessary?
-    may_crit                      = false;
     // Note, radius and ground_aoe flag needs to be set in base so spell_targets expression works
     ground_aoe = true;
     radius     = data().effectN( 1 ).radius_max();
@@ -7471,7 +7476,7 @@ struct coil_of_devastation_t final : public residual_action::residual_periodic_a
     : residual_action::residual_periodic_action_t<death_knight_spell_t>( name, p, p->spell.coil_of_devastation_debuff )
   {
     background = dual = true;
-    may_miss = may_crit = hasted_ticks = false;
+    may_miss = hasted_ticks = false;
   }
 };
 
@@ -8406,7 +8411,6 @@ struct frost_strike_t final : public death_knight_melee_attack_t
       sb( false )
   {
     parse_options( options_str );
-    may_crit = false;
 
     dual = true;
 
@@ -9470,7 +9474,7 @@ struct remorseless_winter_t final : public death_knight_spell_t
     : death_knight_spell_t( "remorseless_winter", p, p->spec.remorseless_winter ),
       damage( p->active_spells.remorseless_winter_tick )
   {
-    may_crit = may_miss = may_dodge = may_parry = false;
+    may_miss = may_dodge = may_parry = false;
 
     parse_options( options_str );
 
@@ -11967,6 +11971,8 @@ void death_knight_t::init_rng()
   rppm.bloodworms        = get_rppm( "bloodworms", talent.blood.bloodworms );
   rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation );
   rppm.blood_beast       = get_rppm( "blood_beast", talent.sanlayn.the_blood_is_life );
+  rppm.decomposition     = get_rppm( "decomposition", spell.decomposition_buff );
+  rppm.decomposition->set_frequency( 15 );
 }
 
 // death_knight_t::init_base ================================================
