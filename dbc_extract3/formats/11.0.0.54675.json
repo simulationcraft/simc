@@ -1985,6 +1985,37 @@
       { "data_type": "i", "field": "id_transmog_set_3" },
       { "data_type": "i", "field": "unk_2" }
     ]
+  },
+  "UiTextureAtlas": {
+    "fields": [
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "id_icon_file_data" },
+      { "data_type": "h", "field": "width" },
+      { "data_type": "h", "field": "height" },
+      { "data_type": "b", "field": "id_ui_canvas" }
+    ]
+  },
+  "UiTextureAtlasElement": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "i", "field": "id" }
+    ]
+  },
+  "UiTextureAtlasMember": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "H", "field": "id_ui_texture_atlas" },
+      { "data_type": "h", "field": "left" },
+      { "data_type": "h", "field": "right" },
+      { "data_type": "h", "field": "top" },
+      { "data_type": "h", "field": "bottom" },
+      { "data_type": "H", "field": "id_ui_texture_atlas_element" },
+      { "data_type": "h", "field": "override_width" },
+      { "data_type": "h", "field": "override_height" },
+      { "data_type": "b", "field": "flags" },
+      { "data_type": "b", "field": "id_ui_canvas" }
+    ]
   }
 }
 
