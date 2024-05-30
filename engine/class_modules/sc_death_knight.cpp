@@ -612,6 +612,9 @@ struct death_knight_td_t : public actor_target_data_t
     // Deathbringer
     buff_t* reapers_mark;
     buff_t* wave_of_souls;
+
+    // San'layn
+    propagate_const<buff_t*> incite_terror;
   } debuff;
 
   death_knight_td_t( player_t* target, death_knight_t* p );
@@ -1372,6 +1375,7 @@ public:
     const spell_data_t* infliction_of_sorrow_damage;
     const spell_data_t* blood_beast_summon;
     const spell_data_t* vampiric_strike_clawing_shadows;
+    const spell_data_t* incite_terror_debuff;
 
     // Deathbringer spells
     const spell_data_t* reapers_mark_debuff;
@@ -1916,6 +1920,9 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 
   debuff.wave_of_souls =
       make_buff( *this, "wave_of_souls_debuff", p->spell.wave_of_souls_debuff )->set_default_value_from_effect( 1 );
+
+  // San'layn
+  debuff.incite_terror = make_buff( *this, "incite_terror", p->spell.incite_terror_debuff );
 }
 
 // ==========================================================================
@@ -4523,6 +4530,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
     // Deathbringer
 
     // San'layn
+    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::incite_terror ), p()->spell.incite_terror_debuff );
   }
 
   template <typename... Ts>
@@ -8677,6 +8685,12 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
     {
       leeching_strike->execute();
     }
+
+    if ( p()->talent.sanlayn.incite_terror.ok() )
+    {
+      auto td = get_td( state->target );
+      td->debuff.incite_terror->trigger();
+    }
   }
 
 private:
@@ -9623,6 +9637,11 @@ struct wound_spender_base_t : public death_knight_melee_attack_t
       {
         p()->trigger_whitemanes_famine( state->target, death_knight_melee_attack_t::target_list() );
       }
+    }
+
+    if ( p()->talent.sanlayn.incite_terror.ok() )
+    {
+      td->debuff.incite_terror->trigger();
     }
   }
 
@@ -11274,13 +11293,6 @@ void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric )
     chance = talent.sanlayn.visceral_regeneration->effectN( 1 ).percent() * buffs.essence_of_the_blood_queen->check();
   }
 
-  if ( talent.sanlayn.incite_terror.ok() && buffs.essence_of_the_blood_queen->check() )
-  {
-    timespan_t duration = talent.sanlayn.incite_terror->effectN( 1 ).time_value() *
-                          ( talent.sanlayn.incite_terror->effectN( 2 ).percent() + buffs.vampiric_strike->check() );
-    buffs.essence_of_the_blood_queen->extend_duration( this, duration );
-  }
-
   if ( is_vampiric )
   {
     active_spells.vampiric_strike_heal->execute();
@@ -12455,6 +12467,7 @@ void death_knight_t::init_spells()
   spell.infliction_of_sorrow_damage     = find_spell( 434144 );
   spell.blood_beast_summon              = find_spell( 434237 );
   spell.vampiric_strike_clawing_shadows = find_spell( 445669 );
+  spell.incite_terror_debuff            = find_spell( 458478 );
 
   // Deathbringer Spells
   spell.reapers_mark_debuff            = find_spell( 434765 );
@@ -13585,6 +13598,7 @@ void death_knight_t::parse_player_effects()
 
   // San'layn
   parse_effects( buffs.essence_of_the_blood_queen, USE_CURRENT, talent.sanlayn.frenzied_bloodthirst );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::incite_terror ), spell.incite_terror_debuff );
 }
 
 void death_knight_t::apply_affecting_auras( action_t& action )
