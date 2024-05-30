@@ -4104,7 +4104,7 @@ struct trollbane_pet_t final : public horseman_pet_t
       : horseman_spell_t( p, n, p->dk()->pet_spell.trollbanes_chains_of_ice_ability )
     {
       parse_options( options_str );
-      apply_affecting_aura( p->dk()->talent.proliferating_chill );
+      aoe = data().effectN( 1 ).chain_target() + as<int>( p->dk()->talent.proliferating_chill->effectN( 1 ).base_value() );
       trigger_gcd = 1_s;
       cooldown->duration = 4_s;
       cooldown->hasted = true;
