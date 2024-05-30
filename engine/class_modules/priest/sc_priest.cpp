@@ -1044,9 +1044,7 @@ struct summon_fiend_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1180
-    if ( priest().talents.shadow.idol_of_yshaarj.enabled() &&
-         ( !priest().bugs || !priest().talents.voidweaver.voidwraith.enabled() ) )
+    if ( priest().talents.shadow.idol_of_yshaarj.enabled() )
     {
       make_event( sim, [ this, s ] { priest().trigger_idol_of_yshaarj( s->target ); } );
     }
@@ -1258,7 +1256,7 @@ public:
   double deathspeaker_mult;
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
   timespan_t depth_of_shadows_duration;
-  double depth_of_shadows_chance;
+  double depth_of_shadows_threshold;
   propagate_const<expiation_t*> child_expiation;
   action_t* child_searing_light;
   timespan_t execute_override;
@@ -1272,7 +1270,7 @@ public:
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       depth_of_shadows_duration(
           timespan_t::from_seconds( p.talents.voidweaver.depth_of_shadows->effectN( 1 ).base_value() ) ),
-      depth_of_shadows_chance( p.talents.voidweaver.depth_of_shadows->effectN( 2 ).percent() ),
+      depth_of_shadows_threshold( p.talents.voidweaver.depth_of_shadows->effectN( 2 ).base_value() ),
       child_expiation( nullptr ),
       child_searing_light( priest().background_actions.searing_light ),
       execute_override( execute_override )
@@ -1415,13 +1413,10 @@ public:
 
       if ( priest().talents.voidweaver.depth_of_shadows.enabled() )
       {
-        if ( save_health_percentage <= 20 || rng().roll( depth_of_shadows_chance ) )
+        // TODO: Find out the chance? Might not be 100%.
+        if ( save_health_percentage <= depth_of_shadows_threshold )
         {
           priest().get_current_main_pet().spawn( depth_of_shadows_duration );
-          if ( priest().bugs )
-          {
-            priest().cooldowns.fiend->start();
-          }
         }
       }
 
@@ -1609,13 +1604,8 @@ struct collapsing_void_damage_t final : public priest_spell_t
   collapsing_void_damage_t( priest_t& p )
     : priest_spell_t( "collapsing_void", p, p.talents.voidweaver.collapsing_void_damage ), parent_stacks( 0 )
   {
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1183
-    if ( !priest().bugs )
-    {
-      affected_by_shadow_weaving = true;
-      force_effect( p.buffs.dark_ascension, 1 );
-    }
-
+    affected_by_shadow_weaving = true;
+    
     aoe              = -1;
     radius           = data().effectN( 1 ).radius_max();
     split_aoe_damage = 1;
@@ -1664,11 +1654,7 @@ struct entropic_rift_damage_t final : public priest_spell_t
     background = dual = true;
     radius            = parent_radius;
 
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1184
-    if ( !priest().bugs )
-    {
-      affected_by_shadow_weaving = true;
-    }
+    affected_by_shadow_weaving = true;
   }
 
   void execute() override
@@ -1780,12 +1766,7 @@ struct entropic_rift_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest().buffs.entropic_rift->extend_duration( player, 1_s );
-
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1181
-    if ( !priest().bugs )
-    {
-      priest().buffs.voidheart->extend_duration( player, 2_ms );
-    }
+    priest().buffs.voidheart->extend_duration( player, 2_ms );
 
     double size_increase_mod = priest().bugs ? 0.5 : 1.0;
 
