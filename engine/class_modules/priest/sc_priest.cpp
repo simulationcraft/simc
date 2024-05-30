@@ -1026,6 +1026,11 @@ struct summon_fiend_t final : public priest_spell_t
   {
     parse_options( options_str );
     harmful = false;
+
+    if ( p.talents.voidweaver.voidwraith.ok() && p.talents.shared.mindbender.ok() )
+    {
+      cooldown->duration = p.talents.shared.mindbender->cooldown();
+    }
   }
 
   void execute() override
