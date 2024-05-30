@@ -5196,13 +5196,13 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
   void execute() override
   {
+    demon_hunter_attack_t::execute();
+
     if ( !from_onslaught && p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
     {
       p()->buff.rending_strike->expire();
       td( target )->debuffs.reavers_mark->trigger();
     }
-
-    demon_hunter_attack_t::execute();
 
     // Create Strike Events
     for ( auto& attack : attacks )
