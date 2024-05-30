@@ -10,31 +10,6 @@
 
 namespace
 {  // UNNAMED NAMESPACE
-// ==========================================================================
-// Demon Hunter
-// ==========================================================================
-
-/* ==========================================================================
-// Shadowlands To-Do
-// ==========================================================================
-
-  Existing Issues
-  ---------------
-
-  * Add option for Greater Soul spawns on add demise (% chance?) simulating adds in M+/dungeon style situations
-
-  New Issues
-  ----------
-
-  Vengeance:
-  * Add Revel in Pain passive
-  ** Ruinous Bulwark Absorb
-
-  Maybe:
-  ** Darkness (?)
-  ** Sigil of Silence (?)
-  ** Sigil of Misery (?)
-*/
 
 // Forward Declarations
 class demon_hunter_t;
@@ -473,7 +448,7 @@ public:
       player_talent_t shear_fury;
       player_talent_t fracture;
       player_talent_t calcified_spikes;
-      player_talent_t roaring_fire;      // NYI
+      player_talent_t roaring_fire;      // No Implementation
       player_talent_t sigil_of_silence;  // Partial Implementation
       player_talent_t retaliation;
       player_talent_t meteoric_strikes;
@@ -485,13 +460,13 @@ public:
       player_talent_t burning_blood;
       player_talent_t soul_barrier;  // NYI
       player_talent_t bulk_extraction;
-      player_talent_t revel_in_pain;  // NYI
+      player_talent_t revel_in_pain;  // No Implementation
 
       player_talent_t void_reaver;
       player_talent_t fallout;
-      player_talent_t ruinous_bulwark;  // NYI
+      player_talent_t ruinous_bulwark;  // No Implementation
       player_talent_t volatile_flameblood;
-      player_talent_t fel_flame_fortification;  // NYI
+      player_talent_t fel_flame_fortification;  // No Implementation
 
       player_talent_t soul_furnace;
       player_talent_t painbringer;
@@ -500,7 +475,7 @@ public:
       player_talent_t chains_of_anger;
 
       player_talent_t focused_cleave;
-      player_talent_t soulmonger;  // NYI
+      player_talent_t soulmonger;  // No Implementation
       player_talent_t stoke_the_flames;
       player_talent_t burning_alive;
       player_talent_t cycle_of_binding;
@@ -524,7 +499,7 @@ public:
 
       player_talent_t keen_engagement;
       player_talent_t preemptive_strike;
-      player_talent_t evasive_action;  // NYI
+      player_talent_t evasive_action;  // No Implementation
       player_talent_t unhindered_assault;
       player_talent_t incisive_blade; // NYI - bugged in-game
 
@@ -544,7 +519,7 @@ public:
     {
       player_talent_t demonsurge;  // partially implemented
 
-      player_talent_t wave_of_debilitation;  // NYI
+      player_talent_t wave_of_debilitation;  // No Implementation
       player_talent_t pursuit_of_angryness;
       player_talent_t focused_hatred;
       player_talent_t set_fire_to_the_pain;  // NYI
