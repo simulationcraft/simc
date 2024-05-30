@@ -4630,7 +4630,8 @@ struct death_knight_action_t : public parse_action_effects_t<Base, death_knight_
         {
           td->debuff.reapers_mark->increment( 1 );
         }
-        else if ( this->get_school() == SCHOOL_SHADOWFROST )
+        else if ( this->get_school() == SCHOOL_SHADOWFROST || ( p()->buffs.dark_talons_shadowfrost->check() &&
+                                                                this->data().id() == p()->talent.death_strike->id() ) )
         {
           if ( p()->talent.deathbringer.bind_in_darkness->ok() )
           {
@@ -6162,7 +6163,8 @@ struct exterminate_aoe_t final : public death_knight_spell_t
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = death_knight_spell_t::composite_da_multiplier( s );
-    m *= .5;
+    // TODO-TWW keep an eye on the mult for the aoe scythe
+    m = ( m / 10 ) * 15;
     return m;
   }
 };
