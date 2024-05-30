@@ -2729,6 +2729,28 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
 
   if ( splits.size() >= 2 )
   {
+    if ( util::str_compare_ci( splits[ 0 ], "action" ) )
+    {
+      if ( util::str_compare_ci( splits[ 1 ], "shadow_crash" ) || util::str_compare_ci( splits[ 1 ], "void_crash" ) )
+      {
+        auto crash_name   = talents.shadow.void_crash.enabled() ? "void_crash" : "shadow_crash";
+        auto crash_action = find_action( crash_name );
+        
+        if ( !crash_action )
+          return expr_t::create_constant( expression_str, false );
+
+        auto expr = crash_action->create_expression( util::string_join( util::make_span( splits ).subspan( 2 ), "." ) );
+        if ( expr )
+        {
+          return expr;
+        }
+
+        auto tail = expression_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
+
+        throw std::invalid_argument( fmt::format( "Unsupported crash expression '{}'.", tail ) );
+      }
+    }
+
     if ( util::str_compare_ci( splits[ 0 ], "priest" ) )
     {
       if ( util::str_compare_ci( splits[ 1 ], "self_power_infusion" ) )
