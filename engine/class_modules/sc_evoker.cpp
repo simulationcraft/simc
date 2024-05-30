@@ -2598,7 +2598,7 @@ struct emerald_blossom_t : public essence_heal_t
     if ( extend_ebon > timespan_t::zero() )
       p()->extend_ebon( extend_ebon );
 
-    if ( p()->talent.ancient_flame->ok() )
+    if ( p()->talent.ancient_flame.ok() )
       p()->buff.ancient_flame->trigger();
 
     if ( p()->talent.panacea.ok() )
@@ -2630,7 +2630,7 @@ struct verdant_embrace_t : public evoker_heal_t
   {
     evoker_heal_t::execute();
 
-    if ( p()->talent.ancient_flame->ok() )
+    if ( p()->talent.ancient_flame.ok() )
       p()->buff.ancient_flame->trigger();
   }
 };
@@ -3527,7 +3527,7 @@ struct deep_breath_t : public evoker_spell_t
     {
       evoker_spell_t::execute();
 
-      if ( p()->talent.imminent_destruction->ok() )
+      if ( p()->talent.imminent_destruction.ok() )
       {
         p()->buff.imminent_destruction->trigger();
       }
@@ -3555,7 +3555,7 @@ struct deep_breath_t : public evoker_spell_t
     trigger_gcd = 2_s;
     gcd_type    = gcd_haste_type::NONE;
 
-    if ( p->talent.scalecommander.maneuverability->ok() )
+    if ( p->talent.scalecommander.maneuverability.ok() )
     {
       melt_armor_dot = p->get_secondary_action<melt_armor_dot_t>( "melt_armor_dot" );
       add_child( melt_armor_dot );
@@ -3633,7 +3633,7 @@ struct disintegrate_t : public essence_spell_t
     ability_lag        = p->world_lag;
     ability_lag_stddev = p->world_lag_stddev;
         
-    if ( p->talent.feed_the_flames->ok() )
+    if ( p->talent.feed_the_flames.ok() )
     {
       add_parse_entry( target_multiplier_effects )
           .set_func( d_fn( &evoker_td_t::debuffs_t::in_firestorm, false ) )
@@ -4185,7 +4185,7 @@ struct living_flame_t : public evoker_spell_t
     // Make sure the buff is definitely gone.
     p()->buff.leaping_flames->expire();
 
-    if ( p()->talent.pupil_of_alexstrasza->ok() )
+    if ( p()->talent.pupil_of_alexstrasza.ok() )
     {
       // TODO: Auto handle dummy cleave values and damage effectiveness
       if ( !damage->target_cache.is_valid )
@@ -4388,7 +4388,7 @@ struct pyre_t : public essence_spell_t
       dual = true;
       aoe  = -1;
 
-      if ( p->talent.feed_the_flames->ok() )
+      if ( p->talent.feed_the_flames.ok() )
       {
         add_parse_entry( target_multiplier_effects )
             .set_func( d_fn( &evoker_td_t::debuffs_t::in_firestorm, false ) )
@@ -4463,7 +4463,7 @@ struct pyre_t : public essence_spell_t
   {
     essence_spell_t::init();
 
-    if ( p()->talent.volatility->ok() )
+    if ( p()->talent.volatility.ok() )
     {
       if ( proc_spell_type & proc_spell_type_e::DRAGONRAGE )
         volatility = p()->action.volatility_dragonrage;
@@ -4612,7 +4612,7 @@ struct eruption_t : public essence_spell_t
     {
       double da = evoker_spell_t::composite_da_multiplier( s );
 
-      if ( p()->talent.ricocheting_pyroclast->ok() )
+      if ( p()->talent.ricocheting_pyroclast.ok() )
       {
         da *= 1 + std::min( static_cast<double>( s->n_targets ),
                             p()->talent.ricocheting_pyroclast->effectN( 2 ).base_value() ) *
@@ -4656,7 +4656,7 @@ struct eruption_t : public essence_spell_t
   {
     double da = essence_spell_t::composite_da_multiplier( s );
 
-    if ( p()->talent.ricocheting_pyroclast->ok() )
+    if ( p()->talent.ricocheting_pyroclast.ok() )
     {
       da *= 1 + std::min( static_cast<double>( s->n_targets ),
                           p()->talent.ricocheting_pyroclast->effectN( 2 ).base_value() ) *
@@ -4681,18 +4681,18 @@ struct eruption_t : public essence_spell_t
       p()->buff.trembling_earth->expire();
     }
 
-    if ( p()->talent.accretion->ok() )
+    if ( p()->talent.accretion.ok() )
     {
       p()->cooldown.upheaval->adjust( upheaval_cdr );
     }
 
-    if ( p()->talent.motes_of_possibility->ok() && rng().roll( p()->talent.motes_of_possibility->proc_chance() ) )
+    if ( p()->talent.motes_of_possibility.ok() && rng().roll( p()->talent.motes_of_possibility->proc_chance() ) )
     {
       p()->cooldown.breath_of_eons->adjust(
           -timespan_t::from_seconds( p()->talent.motes_of_possibility->effectN( 1 ).base_value() ) );
     }
 
-    if ( p()->talent.regenerative_chitin->ok() && p()->last_scales_target &&
+    if ( p()->talent.regenerative_chitin.ok() && p()->last_scales_target &&
          p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->check() )
     {
       p()->get_target_data( p()->last_scales_target )
@@ -4718,7 +4718,7 @@ struct upheaval_t : public empowered_charge_spell_t
     {
       double da = empowered_release_spell_t::composite_da_multiplier( s );
 
-      if ( p()->talent.tectonic_locus->ok() && s->chain_target == 0 )
+      if ( p()->talent.tectonic_locus.ok() && s->chain_target == 0 )
       {
         da *= 1 + p()->talent.tectonic_locus->effectN( 1 ).percent();
       }
@@ -4951,7 +4951,7 @@ struct breath_of_eons_t : public evoker_spell_t
       ebon = p->get_secondary_action<ebon_might_t>(
           "ebon_might_eons", p->talent.sands_of_time->effectN( 3 ).time_value(), "ebon_might_eons" );
 
-    if ( p->talent.overlord->ok() )
+    if ( p->talent.overlord.ok() )
     {
       eruption = p->get_secondary_action<eruption_t>( "eruption_overlord", "eruption_overlord" );
       eruption->proc = true;
@@ -5399,7 +5399,7 @@ public:
   {
     base::execute();
 
-    if ( evoker && evoker->talent.scalecommander.diverted_power->ok() && rng().roll( diverted_power_chance ) )
+    if ( evoker && evoker->talent.scalecommander.diverted_power.ok() && rng().roll( diverted_power_chance ) )
     {
       evoker->buff.essence_burst->trigger();
       evoker->proc.diverted_power->occur();
