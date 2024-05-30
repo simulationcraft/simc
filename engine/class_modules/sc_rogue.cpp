@@ -2352,7 +2352,7 @@ public:
     // Cap is not currently reflected anywhere in spell data, dummy script periodic in AR effect 6 
     if ( affected_by.adrenaline_rush_gcd && t != timespan_t::zero() && p()->buffs.adrenaline_rush->check() )
     {
-      double reduction_multiplier = std::min( 0.25, ( 1.0 / p()->cache.attack_haste() ) ) / 0.25;
+      double reduction_multiplier = std::clamp( ( 1.0 / p()->cache.attack_haste() ) - 1.0, 0.0, 0.25 ) / 0.25;
       t -= ( 200_ms * reduction_multiplier );
     }
 
