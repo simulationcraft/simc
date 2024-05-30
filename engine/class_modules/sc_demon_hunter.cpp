@@ -526,7 +526,7 @@ public:
       player_talent_t preemptive_strike;
       player_talent_t evasive_action;  // NYI
       player_talent_t unhindered_assault;
-      player_talent_t incisive_blade;
+      player_talent_t incisive_blade; // NYI - bugged in-game
 
       player_talent_t aldrachi_tactics;      // NYI
       player_talent_t army_unto_oneself;     // NYI
@@ -1722,8 +1722,6 @@ public:
     ab::parse_effects( p()->buff.t31_vengeance_2pc );
 
     // Aldrachi Reaver
-    ab::parse_effects( p()->buff.glaive_flurry, p()->talent.aldrachi_reaver.incisive_blade );
-    ab::parse_effects( p()->buff.rending_strike, p()->talent.aldrachi_reaver.incisive_blade );
 
     // Fel-scarred
     ab::parse_effects( p()->buff.enduring_torment );
