@@ -501,7 +501,7 @@ public:
       player_talent_t preemptive_strike;
       player_talent_t evasive_action;  // No Implementation
       player_talent_t unhindered_assault;
-      player_talent_t incisive_blade; // NYI - bugged in-game
+      player_talent_t incisive_blade;  // NYI - bugged in-game
 
       player_talent_t aldrachi_tactics;      // NYI
       player_talent_t army_unto_oneself;     // NYI
@@ -5196,23 +5196,13 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    bool trigger_reavers_mark = p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up();
-
-    // 2024-05-28 -- Rending Strike is expired before the cast is logged:
-    // https://www.warcraftlogs.com/reports/jZr2ktWFcqRVCbAz#fight=1
-    if ( !from_onslaught && trigger_reavers_mark )
+    if ( !from_onslaught && p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
     {
       p()->buff.rending_strike->expire();
+      td( target )->debuffs.reavers_mark->trigger();
     }
 
     demon_hunter_attack_t::execute();
-
-    // 2024-05-28 -- Reaver's Mark is applied before the first hit from Chaos Strike:
-    // https://www.warcraftlogs.com/reports/jZr2ktWFcqRVCbAz#fight=1
-    if ( !from_onslaught && trigger_reavers_mark )
-    {
-      td( target )->debuffs.reavers_mark->trigger();
-    }
 
     // Create Strike Events
     for ( auto& attack : attacks )
