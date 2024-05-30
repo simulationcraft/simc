@@ -888,8 +888,8 @@ public:
     spell_t* sigil_of_flame_t31 = nullptr;
 
     // Aldrachi Reaver
-    spell_t* art_of_the_glaive = nullptr;
-    spell_t* preemptive_strike = nullptr;
+    attack_t* art_of_the_glaive            = nullptr;
+    spell_t* preemptive_strike             = nullptr;
 
     // Fel-scarred
     action_t* burning_blades = nullptr;
@@ -4456,15 +4456,6 @@ struct sigil_of_chains_t : public demon_hunter_spell_t
   }
 };
 
-struct art_of_the_glaive_t : public demon_hunter_spell_t
-{
-  art_of_the_glaive_t( util::string_view name, demon_hunter_t* p )
-    : demon_hunter_spell_t( name, p, p->hero_spec.art_of_the_glaive_damage->effectN( 2 ).trigger() )
-  {
-    background = dual = true;
-  }
-};
-
 struct preemptive_strike_t : public demon_hunter_spell_t
 {
   preemptive_strike_t( util::string_view name, demon_hunter_t* p )
@@ -4910,18 +4901,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.glaive_flurry->up() &&
          p()->active.art_of_the_glaive )
     {
-      int number_of_slashes = p()->buff.glaive_flurry->up() && p()->buff.rending_strike->up() ? 1 : 2;
-      for ( int slash = 0; slash < number_of_slashes; slash++ )
-      {
-        for ( const spelleffect_data_t& effect : p()->hero_spec.art_of_the_glaive_damage->effects() )
-        {
-          if ( effect.type() != E_TRIGGER_SPELL )
-            continue;
-
-          make_event<delayed_execute_event_t>( *sim, p(), p()->active.art_of_the_glaive, target,
-                                               timespan_t::from_millis( effect.misc_value1() ) );
-        }
-      }
+      p()->active.art_of_the_glaive->execute_on_target( target );
 
       p()->buff.glaive_flurry->expire();
       if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
@@ -6021,20 +6001,7 @@ struct soul_cleave_base_t : public demon_hunter_attack_t
     if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.glaive_flurry->up() &&
          p()->active.art_of_the_glaive )
     {
-      // we deal double the slashes if Soul Cleave is the second ability in the Art of the Glaive combo
-      int number_of_slashes = p()->buff.glaive_flurry->up() && p()->buff.rending_strike->up() ? 1 : 2;
-      for ( int slash = 0; slash < number_of_slashes; slash++ )
-      {
-        for ( const spelleffect_data_t& effect : p()->hero_spec.art_of_the_glaive_damage->effects() )
-        {
-          if ( effect.type() != E_TRIGGER_SPELL )
-            continue;
-
-          make_event<delayed_execute_event_t>( *sim, p(), p()->active.art_of_the_glaive, target,
-                                               timespan_t::from_millis( effect.misc_value1() ) );
-        }
-      }
-
+      p()->active.art_of_the_glaive->execute_on_target( target );
       p()->buff.glaive_flurry->expire();
       if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
       {
@@ -6471,6 +6438,67 @@ struct soul_carver_t : public demon_hunter_attack_t
     demon_hunter_attack_t::tick( d );
 
     p()->spawn_soul_fragment( soul_fragment::LESSER, as<unsigned int>( data().effectN( 4 ).base_value() ) );
+  }
+};
+
+struct art_of_the_glaive_t : public demon_hunter_attack_t
+{
+  struct art_of_the_glaive_damage_t : public demon_hunter_attack_t
+  {
+    timespan_t delay;
+
+    art_of_the_glaive_damage_t( util::string_view name, demon_hunter_t* p, const spelleffect_data_t& eff,
+                                std::basic_string<char> reporting_name )
+      : demon_hunter_attack_t( name, p, eff.trigger() ), delay( timespan_t::from_millis( eff.misc_value1() ) )
+    {
+      background = dual  = true;
+      name_str_reporting = reporting_name;
+    }
+  };
+
+  std::vector<art_of_the_glaive_damage_t*> attacks;
+
+  art_of_the_glaive_t( util::string_view name, demon_hunter_t* p)
+    : demon_hunter_attack_t( name, p, p->hero_spec.art_of_the_glaive_damage )
+  {
+    background = dual = true;
+    for ( const spelleffect_data_t& effect : data().effects() )
+    {
+      if ( effect.type() != E_TRIGGER_SPELL )
+        continue;
+
+      attacks.push_back( p->get_background_action<art_of_the_glaive_damage_t>(
+          fmt::format( "art_of_the_glaive_{}", effect.index() ), effect, "art_of_the_glaive" ) );
+    }
+  }
+
+  void init_finished() override
+  {
+    demon_hunter_attack_t::init_finished();
+
+    // Use one stats object for all parts of the attack.
+    for ( auto& attack : attacks )
+    {
+      attack->stats = stats;
+    }
+  }
+
+  void execute() override
+  {
+    demon_hunter_attack_t::execute();
+
+    // if glaive flurry is up and rending strike is not up
+    // escalation causes art of the glaive to retrigger itself for 3 additional procs 300ms after initial execution
+    if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->talent.aldrachi_reaver.escalation->ok() &&
+         p()->buff.glaive_flurry->up() && !p()->buff.rending_strike->up() )
+    {
+      make_event<delayed_execute_event_t>( *sim, p(), p()->active.art_of_the_glaive, target, 300_ms );
+    }
+
+    for ( auto attack : attacks )
+    {
+      make_event<delayed_execute_event_t>( *sim, p(), attack, target, attack->delay );
+    }
   }
 };
 
