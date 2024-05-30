@@ -142,11 +142,11 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
   {
     if ( stack )
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast<evoker_td_t*>( t )->debuff )->check();
+        return std::invoke( d, static_cast<evoker_td_t*>( t )->debuffs )->check();
       };
     else
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast<evoker_td_t*>( t )->debuff )->check() > 0;
+        return std::invoke( d, static_cast<evoker_td_t*>( t )->debuffs )->check() > 0;
       };
   }
   else if constexpr ( std::is_invocable_v<T, evoker_td_t::dots_t> )
