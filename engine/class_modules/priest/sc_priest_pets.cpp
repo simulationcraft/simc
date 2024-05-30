@@ -218,7 +218,7 @@ struct priest_pet_melee_t : public melee_attack_t
   }
 };
 
-struct priest_pet_spell_t : public parse_action_effects_t<spell_t, priest_td_t, priest_pet_t>
+struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
 {
   bool affected_by_shadow_weaving;
   bool triggers_atonement;
@@ -304,7 +304,7 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t, priest_td_t, 
     // Doesn't work on the pet ayy lmao
     /*if ( p().o().specialization() == PRIEST_DISCIPLINE )
     {
-        parse_target_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); },
+        parse_target_effects( []( actor_target_data_t* t ) { return static_cast<priest_td_t*>( t )->buffs.schism->check(); },
     p().o().talents.discipline.schism_debuff );
     }*/
   }
@@ -355,7 +355,7 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t, priest_td_t, 
 
 private:
   // typedef for the templated action type, eg. spell_t, attack_t, heal_t
-  using ab = parse_action_effects_t<spell_t, priest_td_t, priest_pet_t>;
+  using ab = parse_action_effects_t<spell_t>;
 };
 
 namespace fiend

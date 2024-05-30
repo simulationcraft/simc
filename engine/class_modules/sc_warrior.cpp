@@ -145,6 +145,39 @@ struct warrior_td_t : public actor_target_data_t
   void target_demise();
 };
 
+// utility to create target_effect_t compatible functions from warrior_td_t member references
+template <typename T>
+static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
+{
+  if constexpr ( std::is_invocable_v<decltype( &buff_t::check ), std::invoke_result_t<T, warrior_td_t>> )
+  {
+    if ( stack )
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<warrior_td_t*>( t ) )->check();
+      };
+    else
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<warrior_td_t*>( t ) )->check() > 0;
+      };
+  }
+  else if constexpr ( std::is_invocable_v<decltype( &dot_t::is_ticking ), std::invoke_result_t<T, warrior_td_t>> )
+  {
+    if ( stack )
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<warrior_td_t*>( t ) )->current_stack();
+      };
+    else
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<warrior_td_t*>( t ) )->is_ticking();
+      };
+  }
+  else
+  {
+    static_assert( static_false<T>, "Not a valid member of warrior_td_t" );
+    return nullptr;
+  }
+}
+
 using data_t        = std::pair<std::string, simple_sample_data_with_min_max_t>;
 using simple_data_t = std::pair<std::string, simple_sample_data_t>;
 
@@ -873,7 +906,7 @@ namespace
 {  // UNNAMED NAMESPACE
 // Template for common warrior action code. See priest_action_t.
 template <class Base>
-struct warrior_action_t : public parse_action_effects_t<Base, warrior_td_t>
+struct warrior_action_t : public parse_action_effects_t<Base>
 {
   struct affected_by_t
   {
@@ -890,7 +923,7 @@ struct warrior_action_t : public parse_action_effects_t<Base, warrior_td_t>
   double tactician_per_rage;
 
 private:
-  using ab = parse_action_effects_t<Base, warrior_td_t>;
+  using ab = parse_action_effects_t<Base>;
 public:
   using base_t = warrior_action_t<Base>;
   bool track_cd_waste;
@@ -966,31 +999,31 @@ public:
     // Arms deep wounds spell data contains T30 2pc bonus, which is disabled/enabled via script.
     // To account for this, we parse the data twice, first ignoring effects #3, #4 & #5 via mask, then if the T30 2pc is
     // active parse again ignoring effects #1, #2.
-    parse_target_effects( []( warrior_td_t* td ) { return td->dots_deep_wounds->is_ticking(); },
+    parse_target_effects( d_fn( &warrior_td_t::dots_deep_wounds ),
                           p()->spell.deep_wounds_arms, 0b11000,
                           p()->mastery.deep_wounds_ARMS );
     if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T30, B2 ) )
     {
-      parse_target_effects( []( warrior_td_t* td ) { return td->dots_deep_wounds->is_ticking(); },
+      parse_target_effects( d_fn( &warrior_td_t::dots_deep_wounds ),
                             p()->spell.deep_wounds_arms, 0b00111 );
     }
 
     if ( p()->talents.warrior.thunderous_words->ok() )
     {
-      parse_target_effects( []( warrior_td_t* td ) { return td->dots_thunderous_roar->is_ticking(); },
+      parse_target_effects( d_fn( &warrior_td_t::dots_thunderous_roar ),
                             p()->talents.warrior.thunderous_roar->effectN( 2 ).trigger(), 0b001 );
     }
 
-    parse_target_effects( []( warrior_td_t* td ) { return td->debuffs_colossus_smash->check(); },
+    parse_target_effects( d_fn( &warrior_td_t::debuffs_colossus_smash ),
                           p()->spell.colossus_smash_debuff,
                           p()->talents.arms.blunt_instruments, p()->talents.arms.spiteful_serenity );
-    parse_target_effects( []( warrior_td_t* td ) { return td->debuffs_executioners_precision->check(); },
+    parse_target_effects( d_fn( &warrior_td_t::debuffs_executioners_precision ),
                           p()->talents.arms.executioners_precision->effectN( 1 ).trigger(),
                           p()->talents.arms.executioners_precision );
     // Fury
 
     // Protection
-    parse_target_effects( []( warrior_td_t* td ) { return td->debuffs_demoralizing_shout->check(); },
+    parse_target_effects( d_fn( &warrior_td_t::debuffs_demoralizing_shout ),
                           p()->talents.protection.demoralizing_shout,
                           p()->talents.protection.booming_voice );
   }
