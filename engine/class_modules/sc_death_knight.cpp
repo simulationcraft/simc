@@ -851,6 +851,7 @@ public:
     action_t* frost_strike_sb_offhand;
     action_t* chill_streak_damage;
     propagate_const<action_t*> icy_death_torrent_damage;
+    action_t* hyperpyrexia_damage;
 
     // Unholy
     propagate_const<action_t*> bursting_sores;
@@ -1113,7 +1114,7 @@ public:
       player_talent_t obliteration;
       player_talent_t icy_death_torrent;
       player_talent_t shattering_blade;
-      player_talent_t unknown;
+      player_talent_t hyperpyrexia;
       // Row 10
       player_talent_t arctic_assault;
       player_talent_t the_long_winter;
@@ -1207,13 +1208,13 @@ public:
       player_talent_t bind_in_darkness;  
       player_talent_t soul_rupture;      
       player_talent_t grim_reaper;       
-      player_talent_t deaths_bargain;  
+      player_talent_t deaths_bargain;     // NYI
       player_talent_t rune_carved_plates; // NYI
       player_talent_t swift_end;         
       player_talent_t painful_death;     
       player_talent_t dark_talons;
       player_talent_t wither_away;       
-      player_talent_t deaths_messenger;  // NYI
+      player_talent_t deaths_messenger;  
       player_talent_t expelling_shield;  // NYI
       player_talent_t exterminate;       
     } deathbringer;
@@ -1319,6 +1320,7 @@ public:
     const spell_data_t* cryogenic_chamber_damage;
     const spell_data_t* cryogenic_chamber_buff;
     const spell_data_t* rime_buff;
+    const spell_data_t* hyperpyrexia_damage;
 
     // Unholy
     const spell_data_t* runic_corruption;  // buff
@@ -4828,6 +4830,15 @@ struct cryogenic_chamber_t final : public death_knight_spell_t
   }
 };
 
+struct hyperpyrexia_damage_t final : public residual_action::residual_periodic_action_t<death_knight_spell_t>
+{
+  hyperpyrexia_damage_t ( util::string_view name, death_knight_t* p ) : residual_action::residual_periodic_action_t<death_knight_spell_t> ( name, p, p->spell.hyperpyrexia_damage )
+  {
+    background = true;
+    may_miss = may_crit = hasted_ticks = false;
+  }
+};
+
 // Unholy Pact ==============================================================
 struct unholy_pact_damage_t final : public death_knight_spell_t
 {
@@ -6892,6 +6903,18 @@ struct breath_of_sindragosa_tick_t final : public death_knight_spell_t
     return 0;
   }
 
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    if ( p()->talent.frost.hyperpyrexia->ok() && state->result_amount > 0 &&
+         p()->rng().roll( p()->talent.frost.hyperpyrexia->proc_chance() ) )
+    {
+      residual_action::trigger( p()->active_spells.hyperpyrexia_damage, state->target,
+                                state->result_amount * p()->talent.frost.hyperpyrexia->effectN( 1 ).percent() );
+    }
+  }
+
 private:
   double ticking_cost;
 };
@@ -8331,7 +8354,7 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
   void impact( action_state_t* s ) override
   {
     death_knight_melee_attack_t::impact( s );
-    if ( p()->talent.frost.shattered_frost.ok() && s->result_amount > 0 && sb )
+    if ( p()->talent.frost.shattered_frost->ok() && s->result_amount > 0 && sb )
     {
       if ( weapon_hand->group() == WEAPON_2H )
       {
@@ -8348,6 +8371,13 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
           trigger_shattered_frost( s->result_amount, true );
         }
       }
+    }
+
+    if ( p()->talent.frost.hyperpyrexia->ok() && s->result_amount > 0 &&
+         p()->rng().roll( p()->talent.frost.hyperpyrexia->proc_chance() ) )
+    {
+      residual_action::trigger( p()->active_spells.hyperpyrexia_damage, s->target,
+                                s->result_amount * p()->talent.frost.hyperpyrexia->effectN( 1 ).percent() );
     }
   }
 
@@ -8502,6 +8532,13 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
     death_knight_spell_t::impact( state );
 
     get_td( state->target )->debuff.razorice->trigger();
+
+    if ( p()->talent.frost.hyperpyrexia->ok() && state->result_amount > 0 &&
+         p()->rng().roll( p()->talent.frost.hyperpyrexia->proc_chance() ) )
+    {
+      residual_action::trigger( p()->active_spells.hyperpyrexia_damage, state->target,
+                                state->result_amount * p()->talent.frost.hyperpyrexia->effectN( 1 ).percent() );
+    }
   }
 
 private:
@@ -11487,6 +11524,10 @@ void death_knight_t::create_actions()
       {
         active_spells.icy_death_torrent_damage = get_action<icy_death_torrent_t>( "icy_death_torrent", this );
       }
+      if ( talent.frost.hyperpyrexia.ok() )
+      {
+        active_spells.hyperpyrexia_damage = get_action<hyperpyrexia_damage_t>( "hyperpyrexia", this );
+      }
     }
 
     if ( talent.frost.chill_streak.ok() )
@@ -12154,7 +12195,7 @@ void death_knight_t::init_spells()
   talent.frost.obliteration      = find_talent_spell( talent_tree::SPECIALIZATION, "Obliteration" );
   talent.frost.icy_death_torrent = find_talent_spell( talent_tree::SPECIALIZATION, "Icy Death Torrent" );
   talent.frost.shattering_blade  = find_talent_spell( talent_tree::SPECIALIZATION, "Shattering Blade" );
-  // UNKNOWN TALENT GOES HERE
+  talent.frost.hyperpyrexia      = find_talent_spell( talent_tree::SPECIALIZATION, "Hyperpyrexia" );
   // Row 10
   talent.frost.arctic_assault       = find_talent_spell( talent_tree::SPECIALIZATION, "Arctic Assault" );
   talent.frost.the_long_winter      = find_talent_spell( talent_tree::SPECIALIZATION, "The Long Winter" );
@@ -12355,6 +12396,7 @@ void death_knight_t::init_spells()
   spell.cryogenic_chamber_damage      = find_spell( 456371 );
   spell.cryogenic_chamber_buff        = find_spell( 456370 );
   spell.rime_buff                     = find_spell( 59052 );
+  spell.hyperpyrexia_damage           = find_spell( 458169 );
 
   // Unholy
   spell.runic_corruption           = find_spell( 51460 );
