@@ -4122,7 +4122,6 @@ struct trollbane_pet_t final : public horseman_pet_t
       : horseman_melee_t( p, name, p->dk()->pet_spell.trollbane_obliterate ), used( false )
     {
       parse_options( options_str );
-      cooldown->duration = 15_s; // Overriding the data cooldown to more closely represent actual in game behavior
     }
   };
 
@@ -4183,7 +4182,6 @@ struct nazgrim_pet_t final : public horseman_pet_t
       parse_options( options_str );
       impact_action        = scourge_strike_shadow;
       impact_action->stats = stats;
-      cooldown->duration   = 15_s; // Overriding the data cooldown to more closely represent actual in game behavior
     }
 
   private:
