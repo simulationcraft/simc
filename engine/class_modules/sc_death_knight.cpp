@@ -6164,7 +6164,7 @@ struct exterminate_aoe_t final : public death_knight_spell_t
   {
     double m = death_knight_spell_t::composite_da_multiplier( s );
     // TODO-TWW keep an eye on the mult for the aoe scythe
-    m = ( m / 10 ) * 15;
+    m = ( m / 15 ) * 10;
     return m;
   }
 };
@@ -6179,6 +6179,7 @@ struct exterminate_t final : public death_knight_spell_t
     cooldown->duration = 0_ms;
     next_is_secondary  = false;
     this_is_secondary  = false;
+    add_child( second_hit );
   }
 
   void execute() override
@@ -6211,7 +6212,7 @@ struct exterminate_t final : public death_knight_spell_t
     this_is_secondary = false;
   }
 
-  // private:
+private:
   exterminate_aoe_t* second_hit;
   bool next_is_secondary;
   bool this_is_secondary;
