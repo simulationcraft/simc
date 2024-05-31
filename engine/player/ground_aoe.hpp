@@ -109,16 +109,15 @@ struct ground_aoe_params_t
 // Delayed expiration callback for groud_aoe_event_t
 struct expiration_callback_event_t : public event_t
 {
-  const ground_aoe_params_t::param_cb_t& callback;
-  const action_state_t* pulse_state;
+  std::function<void(void)> callback;
 
   expiration_callback_event_t( sim_t& sim, const ground_aoe_params_t* p, timespan_t delay, const action_state_t* state )
-    : event_t( sim, delay ), callback( p->expiration_callback() ), pulse_state( state )
+    : event_t( sim, delay ), callback( [ fn = p->expiration_callback(), state ]() { fn( state ); } )
   {}
 
   void execute() override
   {
-    callback( pulse_state );
+    callback();
   }
 };
 
