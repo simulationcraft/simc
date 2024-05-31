@@ -6449,6 +6449,7 @@ struct soul_carver_t : public demon_hunter_attack_t
   }
 };
 
+// Art of the Glaive ===================================================
 struct art_of_the_glaive_t : public demon_hunter_attack_t
 {
   struct art_of_the_glaive_damage_t : public demon_hunter_attack_t
