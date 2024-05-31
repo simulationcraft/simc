@@ -5072,6 +5072,7 @@ struct lunar_beam_t : public bear_attack_t
     }
   };
 
+  ground_aoe_params_t params;
   action_t* damage = nullptr;
 
   DRUID_ABILITY( lunar_beam_t, bear_attack_t, "lunar_beam", p->talent.lunar_beam )
@@ -5080,6 +5081,10 @@ struct lunar_beam_t : public bear_attack_t
     {
       damage = p->get_secondary_action<lunar_beam_tick_t>( "lunar_beam_tick", f );
       replace_stats( damage );
+
+      params.pulse_time( 1_s )
+        .duration( p->buff.lunar_beam->buff_duration() )
+        .action( damage );
     }
   }
 
@@ -5092,13 +5097,12 @@ struct lunar_beam_t : public bear_attack_t
 
     p()->buff.lunar_beam->trigger();
 
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+    params.start_time( timespan_t::min() )  // reset start time
       .target( target )
       .x( p()->x_position )
-      .y( p()->y_position )
-      .pulse_time( 1_s )
-      .duration( p()->buff.lunar_beam->buff_duration() )
-      .action( damage ) );
+      .y( p()->y_position );
+
+    make_event<ground_aoe_event_t>( *sim, p(), params );
   }
 };
 
@@ -5592,6 +5596,7 @@ struct efflorescence_t : public druid_heal_t
     }
   };
 
+  ground_aoe_params_t params;
   action_t* heal;
   timespan_t duration;
   timespan_t period;
@@ -5606,6 +5611,11 @@ struct efflorescence_t : public druid_heal_t
     {
       heal = p->get_secondary_action<efflorescence_tick_t>( "efflorescence_tick" );
       replace_stats( heal );
+
+      params.hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
+        .pulse_time( period )
+        .duration( duration )
+        .action( heal );
     }
   }
 
@@ -5613,12 +5623,10 @@ struct efflorescence_t : public druid_heal_t
   {
     druid_heal_t::execute();
 
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-      .target( target )
-      .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
-      .pulse_time( period )
-      .duration( duration )
-      .action( heal ) );
+    params.start_time( timespan_t::min() )  // reset start time
+      .target( target );
+
+    make_event<ground_aoe_event_t>( *sim, p(), params );
   }
 };
 
@@ -6724,12 +6732,12 @@ struct fury_of_elune_t : public druid_spell_t
     }
   };
 
+  ground_aoe_params_t params;
   const spell_data_t* tick_spell;
   buff_t* energize;
   action_t* damage = nullptr;
   action_t* boundless = nullptr;
   timespan_t tick_period;
-  timespan_t duration_override = timespan_t::min();
 
   DRUID_ABILITY_C( fury_of_elune_t, druid_spell_t, "fury_of_elune", p->talent.fury_of_elune,
                    const spell_data_t* sd = nullptr, buff_t* b = nullptr ),
@@ -6747,10 +6755,19 @@ struct fury_of_elune_t : public druid_spell_t
       damage = p->get_secondary_action<fury_of_elune_tick_t>( name_str + "_tick", tick_spell, f );
       replace_stats( damage );
 
+      params.hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
+        .pulse_time( tick_period )
+        .duration( data().duration() )
+        .action( damage );
+
       if ( p->talent.boundless_moonlight.ok() )
       {
         boundless = p->get_secondary_action<boundless_moonlight_t>( name_str + "_boundless", f );
         add_child( boundless );
+
+        params.expiration_callback( [ this ]( const action_state_t* s ) {
+          boundless->execute_on_target( s->target );
+        } );
       }
     }
   }
@@ -6762,17 +6779,10 @@ struct fury_of_elune_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    energize->trigger( duration_override );
+    energize->trigger( params.duration() );
 
-    auto params = ground_aoe_params_t()
-      .target( target )
-      .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
-      .pulse_time( tick_period )
-      .duration( duration_override != timespan_t::min() ? duration_override : data().duration() )
-      .action( damage );
-
-    if ( boundless )
-      params.expiration_callback( [ this ]( const action_state_t* s ) { boundless->execute_on_target( s->target ); } );
+    params.start_time( timespan_t::min() )  // reset start time
+      .target( target );
 
     make_event<ground_aoe_event_t>( *sim, p(), params );
   }
@@ -8155,6 +8165,7 @@ struct wild_mushroom_t : public druid_spell_t
     }
   };
 
+  ground_aoe_params_t params;
   wild_mushroom_damage_t* damage = nullptr;
   timespan_t delay;
 
@@ -8170,6 +8181,10 @@ struct wild_mushroom_t : public druid_spell_t
       damage->gain = gain;
 
       add_child( damage->fungal );
+
+      params.pulse_time( delay )
+        .duration( delay )
+        .action( damage );
     }
   }
 
@@ -8177,13 +8192,12 @@ struct wild_mushroom_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+    params.start_time( timespan_t::min() )  // reset start time
       .target( target )
       .x( target->x_position )
-      .y( target->y_position )
-      .pulse_time( delay )
-      .duration( delay )
-      .action( damage ) );
+      .y( target->y_position );
+
+    make_event<ground_aoe_event_t>( *sim, p(), params );
   }
 };
 
@@ -10726,7 +10740,7 @@ void druid_t::create_actions()
     foe->s_data_reporting = talent.the_light_of_elune;
     foe->background = true;
     foe->proc = true;
-    foe->duration_override = talent.the_light_of_elune->effectN( 2 ).time_value();
+    foe->params.duration( talent.the_light_of_elune->effectN( 2 ).time_value() );
     active.the_light_of_elune = foe;
   }
 
