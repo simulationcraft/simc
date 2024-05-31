@@ -704,7 +704,7 @@ public:
 
   void target_debug_message( std::string_view, std::string_view, const spell_data_t*, size_t ) override;
 
-  void parsed_effects_html( report::sc_html_stream&, action_t* );
+  void parsed_effects_html( report::sc_html_stream& );
 
   virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
 
@@ -927,7 +927,7 @@ public:
     os << "</div>\n"
        << "<div>\n";
 
-    parsed_effects_html( os, this );
+    parsed_effects_html( os );
 
     os << "</div>\n";
   }

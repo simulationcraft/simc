@@ -1318,7 +1318,7 @@ void parse_action_base_t::target_debug_message( std::string_view type_str, std::
                              _action->name(), _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
 }
 
-void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os, action_t* a )
+void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os )
 {
   if ( total_effects_count() )
   {
