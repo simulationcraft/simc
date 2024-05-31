@@ -8208,7 +8208,7 @@ struct festering_strike_t final : public festering_base_t
     if ( p()->talent.unholy.festering_scythe.ok() && p()->buffs.festering_scythe->check() )
     {
       festering_scythe->execute_on_target( target );
-      stats->add_execute( gcd(), target );
+      stats->add_execute( 0_ms, target );
       return;
     }
     festering_base_t::execute();
@@ -8768,7 +8768,7 @@ struct heart_strike_t : public heart_strike_base_t
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       vampiric_strike->execute();
-      stats->add_execute( gcd(), target );
+      stats->add_execute( 0_ms, target );
       return;
     }
     heart_strike_base_t::execute();
@@ -9724,7 +9724,7 @@ struct clawing_shadows_t final : public wound_spender_base_t
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       vampiric_strike->execute();
-      stats->add_execute( gcd(), target );
+      stats->add_execute( 0_ms, target );
       return;
     }
     wound_spender_base_t::execute();
@@ -9799,7 +9799,7 @@ struct scourge_strike_t final : public wound_spender_base_t
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       vampiric_strike->execute();
-      stats->add_execute( gcd(), target );
+      stats->add_execute( 0_ms, target );
       return;
     }
     wound_spender_base_t::execute();
@@ -12663,7 +12663,7 @@ void death_knight_t::create_buffs()
                            ->set_default_value( talent.rune_mastery->effectN( 1 ).percent() );
 
   buffs.unholy_strength =
-      make_fallback( runeforge.rune_of_the_fallen_crusader, this, "unholy_strength", spell.unholy_strength_buff )
+      make_buff( this, "unholy_strength", spell.unholy_strength_buff )
           ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
           ->apply_affecting_aura( talent.unholy_bond );
 
@@ -13789,6 +13789,7 @@ struct death_knight_module_t : public module_t
     unique_gear::register_special_effect( 326864, runeforge::spellwarding );
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
   }
+
   /*
   void register_hotfixes() const override
   {
