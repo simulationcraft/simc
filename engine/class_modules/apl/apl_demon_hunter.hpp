@@ -16,4 +16,6 @@ std::string temporary_enchant_havoc( const player_t* );
 std::string temporary_enchant_vengeance( const player_t* );
 void havoc( player_t* );
 void vengeance( player_t* );
+void vengeance_aldrachi_reaver( player_t* );
+void vengeance_felscarred( player_t* );
 }  // namespace demon_hunter_apl

@@ -896,8 +896,8 @@ public:
     spell_t* sigil_of_flame_t31 = nullptr;
 
     // Aldrachi Reaver
-    attack_t* art_of_the_glaive            = nullptr;
-    spell_t* preemptive_strike             = nullptr;
+    attack_t* art_of_the_glaive = nullptr;
+    spell_t* preemptive_strike  = nullptr;
 
     // Fel-scarred
     action_t* burning_blades = nullptr;
@@ -6466,7 +6466,7 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
 
   std::vector<art_of_the_glaive_damage_t*> attacks;
 
-  art_of_the_glaive_t( util::string_view name, demon_hunter_t* p)
+  art_of_the_glaive_t( util::string_view name, demon_hunter_t* p )
     : demon_hunter_attack_t( name, p, p->hero_spec.art_of_the_glaive_damage )
   {
     background = dual = true;
@@ -7749,7 +7749,18 @@ void demon_hunter_t::init_action_list()
   }
   else if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
-    demon_hunter_apl::vengeance( this );
+    if ( talent.aldrachi_reaver.art_of_the_glaive->ok() )
+    {
+      demon_hunter_apl::vengeance_aldrachi_reaver( this );
+    }
+    else if ( talent.felscarred.demonsurge->ok() )
+    {
+      demon_hunter_apl::vengeance_felscarred( this );
+    }
+    else
+    {
+      demon_hunter_apl::vengeance( this );
+    }
   }
 
   use_default_action_list = true;
