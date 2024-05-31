@@ -3169,7 +3169,7 @@ struct shooting_stars_buff_t : public druid_buff_t
       rng().shuffle( dot_list.begin(), dot_list.end() );
     }
 
-    double procs;
+    double procs;  // no need to initialize, modf will set it
     if ( auto f = std::modf( c, &procs ); rng().roll( f ) )
       procs++;
 
@@ -3797,7 +3797,7 @@ struct adaptive_swarm_t : public cat_attack_t
 
     player_t* new_swarm_target( player_t* exclude ) const override
     {
-      auto tl = target_list();
+      auto tl = target_list();  // make a copy
 
       // because action_t::available_targets() explicitly adds the current action_t::target to the target_cache, we need
       // to explicitly remove it here as swarm should not pick an invulnerable target whenignore_invulnerable_targets is
@@ -3868,7 +3868,7 @@ struct adaptive_swarm_t : public cat_attack_t
 
     player_t* new_swarm_target( player_t* exclude ) const override
     {
-      auto tl = target_list();
+      auto tl = target_list();  // make a copy
 
       if ( exclude )
         range::erase_remove( tl, exclude );

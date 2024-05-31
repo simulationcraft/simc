@@ -413,7 +413,6 @@ protected:
 
 public:
   parse_effects_t( player_t* p ) : _player( p ) {}
-  virtual ~parse_effects_t() = default;
 
   template <typename U>
   void parse_effect( pack_t<U>&, const spell_data_t*, size_t, bool );

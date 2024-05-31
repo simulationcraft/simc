@@ -7868,7 +7868,7 @@ void monk_t::init_spells()
   // Returns first valid spell in argument list, pass highest priority to first argument
   // Returns spell_data_t::not_found() if none are valid
   auto _priority = []( auto... spell_list ) {
-    for ( auto spell : { spell_list... } )
+    for ( const auto& spell : { spell_list... } )
       if ( spell && spell->ok() )
         return spell.spell();
     return spell_data_t::not_found();
@@ -8551,7 +8551,7 @@ void monk_t::create_proc_callback( const spell_data_t *effect_driver,
   {
     // If we didn't define a custom action in initialization then
     // search action list for the first trigger we have a valid action for
-    for ( auto e : effect_driver->effects() )
+    for ( const auto& e : effect_driver->effects() )
     {
       for ( auto t : action_list )
         if ( e.trigger()->ok() && t->id == e.trigger()->id() )
@@ -8604,7 +8604,7 @@ void monk_t::create_proc_callback( const spell_data_t *effect_driver,
   // dynamically find buff
   if ( effect->name_str == "" )
   {
-    for ( auto e : effect_driver->effects() )
+    for ( const auto& e : effect_driver->effects() )
     {
       for ( auto t : buff_list )
       {
@@ -8814,11 +8814,8 @@ void monk_t::reset()
     auto stream = sim->out_debug.raw().get_stream();
     bool first  = true;
 
-    for ( auto tracker : proc_tracking )
+    for ( auto& [ name, list ] : proc_tracking )
     {
-      auto name = tracker.first;
-      auto list = tracker.second;
-
       if ( list.size() > 0 )
       {
         if ( first )

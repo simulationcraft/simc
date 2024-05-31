@@ -1847,7 +1847,7 @@ void player_t::init_items()
   // Override with item slot overrides. Note this will completely replace any player-scoped item options
   if ( is_player() )
   {
-    for ( auto [ override_slot, override_str ] : sim->item_slot_overrides )
+    for ( const auto& [ override_slot, override_str ] : sim->item_slot_overrides )
     {
       if ( auto slot = util::parse_slot_type( override_slot ); slot != SLOT_INVALID )
       {
@@ -3843,7 +3843,7 @@ void player_t::init_finished()
 
     for ( const auto& v : precombat_state_map )
     {
-      auto splits = util::string_split( v.first, "." );
+      auto splits = util::string_split<std::string_view>( v.first, "." );
 
       if ( splits.size() < 2 )
       {
@@ -5598,8 +5598,8 @@ void player_t::combat_begin()
     collected_data.combat_start_resource[ i ].add( resources.current[ i ] );
   }
 
-  auto add_timed_buff_triggers = [ this ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
-  {
+  auto add_timed_buff_triggers = [ this ]( const std::vector<timespan_t>& times, buff_t* buff,
+                                           timespan_t duration = timespan_t::min() ) {
     if ( buff )
       for ( auto t : times )
         make_event( *sim, t, [ buff, duration ] { buff->trigger( duration ); } );
@@ -5614,12 +5614,13 @@ void player_t::combat_begin()
   add_timed_buff_triggers( external_buffs.boon_of_azeroth_mythic, buffs.boon_of_azeroth_mythic );
   add_timed_buff_triggers( external_buffs.tome_of_unstable_power, buffs.tome_of_unstable_power );
 
-  auto add_timed_blessing_triggers = [ add_timed_buff_triggers ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
-  {
+  auto add_timed_blessing_triggers = [ add_timed_buff_triggers ]( const std::vector<timespan_t>& times, buff_t* buff,
+                                                                  timespan_t duration = timespan_t::min() ) {
     add_timed_buff_triggers( times, buff, duration );
   };
 
-  timespan_t summer_duration = buffs.blessing_of_summer->buff_duration() * ( 1.0 + external_buffs.blessing_of_summer_duration_multiplier );
+  timespan_t summer_duration =
+    buffs.blessing_of_summer->buff_duration() * ( 1.0 + external_buffs.blessing_of_summer_duration_multiplier );
   add_timed_blessing_triggers( external_buffs.blessing_of_summer, buffs.blessing_of_summer, summer_duration );
   add_timed_blessing_triggers( external_buffs.blessing_of_autumn, buffs.blessing_of_autumn );
   add_timed_blessing_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter );

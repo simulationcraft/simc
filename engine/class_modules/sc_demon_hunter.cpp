@@ -3514,7 +3514,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
             target_data->dots.sigil_of_flame->adjust_duration( duration_extension );
             if ( duration_extension > timespan_t::zero() )
             {
-              auto expiration = target_data->debuffs.sigil_of_flame->expiration;
+              const auto& expiration = target_data->debuffs.sigil_of_flame->expiration;
               for ( auto& i : expiration )
               {
                 i->reschedule( i->remains() + duration_extension );
