@@ -631,22 +631,22 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
   {
     if ( stack )
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, debug_cast<death_knight_td_t*>( t )->debuff )->check();
+        return std::invoke( d, static_cast<death_knight_td_t*>( t )->debuff )->check();
       };
     else
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, debug_cast<death_knight_td_t*>( t )->debuff )->check() > 0;
+        return std::invoke( d, static_cast<death_knight_td_t*>( t )->debuff )->check() > 0;
       };
   }
   else if constexpr ( std::is_invocable_v<T, death_knight_td_t::dots_t> )
   {
     if ( stack )
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, debug_cast<death_knight_td_t*>( t )->dot )->current_stack();
+        return std::invoke( d, static_cast<death_knight_td_t*>( t )->dot )->current_stack();
       };
     else
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, debug_cast<death_knight_td_t*>( t )->dot )->is_ticking();
+        return std::invoke( d, static_cast<death_knight_td_t*>( t )->dot )->is_ticking();
       };
   }
   else
