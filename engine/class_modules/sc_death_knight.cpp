@@ -9799,6 +9799,7 @@ struct scourge_strike_t final : public wound_spender_base_t
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
       vampiric_strike->execute();
+      stats->add_execute( gcd(), target );
       return;
     }
     wound_spender_base_t::execute();
