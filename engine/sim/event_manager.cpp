@@ -212,7 +212,7 @@ bool event_manager_t::execute()
     if ( e->time == current_time )
     {
 #ifndef NDEBUG
-      debug_list.push_back( e->debug() );
+      debug_list.emplace_back( e->debug() );
 #endif
       if ( ++n_events == MAX_EVENTS )
       {

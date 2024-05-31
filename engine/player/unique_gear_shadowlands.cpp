@@ -3284,7 +3284,7 @@ void the_first_sigil( special_effect_t& effect )
     void init() override
     {
       proc_spell_t::init();
-      unsigned covenant_signature_id;
+      unsigned covenant_signature_id = 0;
 
       // Find any covenant signature abilities in the action list
       for ( const auto& e : covenant_ability_entry_t::data( player->dbc->ptr ) )
@@ -3357,7 +3357,7 @@ void cosmic_gladiators_resonator( special_effect_t& effect )
       callbacks        = false;
       impact_action    = create_proc_action<gladiators_resonator_damage_t>( "gladiators_resonator_damage", effect );
       s_data_reporting = effect.driver();
-      travel_delay     = effect.driver()->effectN( 2 ).misc_value1() / 1000;
+      travel_delay     = effect.driver()->effectN( 2 ).misc_value1() * 0.001;
     }
   };
 

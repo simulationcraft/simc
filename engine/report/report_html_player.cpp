@@ -2036,21 +2036,20 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   size_t spec_points = 0;
   std::map<unsigned, size_t> hero_points;
 
-  for ( auto t : p.player_traits )
+  for ( const auto& [ _tree, _id, _rank ] : p.player_traits )
   {
-    auto trait = trait_data_t::find( std::get<1>( t ), maybe_ptr( p.dbc->ptr ) );
-    auto rank = std::get<2>( t );
+    auto trait = trait_data_t::find( _id, maybe_ptr( p.dbc->ptr ) );
 
-    switch ( std::get<0>( t ) )
+    switch ( _tree )
     {
       case talent_tree::CLASS:
-        class_traits.at( trait->row - 1 ).emplace_back( trait, rank );
-        class_points += rank;
+        class_traits.at( trait->row - 1 ).emplace_back( trait, _rank );
+        class_points += _rank;
         break;
 
       case talent_tree::SPECIALIZATION:
-        spec_traits.at( trait->row - 1 ).emplace_back( trait, rank );
-        spec_points += rank;
+        spec_traits.at( trait->row - 1 ).emplace_back( trait, _rank );
+        spec_points += _rank;
         break;
 
       case talent_tree::HERO:
@@ -2059,8 +2058,8 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
           if ( range::contains( p.player_sub_trees, id ) ||
                 range::contains( p.player_sub_traits, trait->id_trait_node_entry ) )
           {
-            hero_traits[ id ].at( trait->row - 1 ).emplace_back( trait, rank );
-            hero_points[ id ] += rank;
+            hero_traits[ id ].at( trait->row - 1 ).emplace_back( trait, _rank );
+            hero_points[ id ] += _rank;
           }
         }
         break;
@@ -3499,9 +3498,9 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
       }
 
       for ( int stat_pct_buff_value = STAT_PCT_BUFF_CRIT; stat_pct_buff_value != STAT_PCT_BUFF_MAX; stat_pct_buff_value++ ) {
-        stat_pct_buff_type stat_pct_buff = static_cast<stat_pct_buff_type>(stat_pct_buff_value);
-        auto player_buffs = p.buffs.stat_pct_buffs[ stat_pct_buff ];
-        if ( range::find( player_buffs, stat_buff ) != player_buffs.end() ) {
+        stat_pct_buff_type stat_pct_buff = static_cast<stat_pct_buff_type>( stat_pct_buff_value );
+        if ( range::contains( p.buffs.stat_pct_buffs[ static_cast<stat_pct_buff_type>( stat_pct_buff_value ) ], stat_buff ) )
+        {
           os.printf( "<li><span class=\"label\">stat:</span>%s</li>\n"
                       "<li><span class=\"label\">default:</span>%.2f%%</li>\n",
                       util::stat_pct_buff_type_string( stat_pct_buff ),

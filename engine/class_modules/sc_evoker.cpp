@@ -550,18 +550,17 @@ struct simplified_player_t : public player_t
         { SLOT_MAIN_HAND, fmt::format( ",id=202565,ilevel={}", item_level ) },
     };
 
-    for ( auto item : default_items )
+    for ( const auto& [ slot, item_str ] : default_items )
     {
-      if ( items[ item.first ].options_str.empty() )
+      if ( items[ slot ].options_str.empty() )
       {
-        items[ item.first ].options_str = item.second;
-        sim->print_debug( "{} setting gearslot {} string to {}", *this, util::slot_type_string( item.first ),
-                          item.second );
+        items[ slot ].options_str = item_str;
+        sim->print_debug( "{} setting gearslot {} string to {}", *this, util::slot_type_string( slot ), item_str );
       }
       else
       {
-        sim->print_debug( "{} already has gearslot {} string {}", *this, util::slot_type_string( item.first ),
-                          items[ item.first ].options_str );
+        sim->print_debug( "{} already has gearslot {} string {}", *this, util::slot_type_string( slot ),
+                          items[ slot ].options_str );
       }
     }
 
@@ -3594,7 +3593,7 @@ struct deep_breath_t : public evoker_spell_t
     {
       start_gcd();
       player->last_foreground_action = this;
-      auto delay                     = std::max(
+      auto delay = std::max(
           0_s, rng().gauss( p()->option.prepull_deep_breath_delay, p()->option.prepull_deep_breath_delay_stddev ) );
       player->gcd_ready = delay;
       stats->iteration_total_execute_time += delay;
@@ -4984,7 +4983,7 @@ struct breath_of_eons_t : public evoker_spell_t
     {
       start_gcd();
       player->last_foreground_action = this;
-      auto delay                     = std::max(
+      auto delay = std::max(
           0_s, rng().gauss( p()->option.prepull_deep_breath_delay, p()->option.prepull_deep_breath_delay_stddev ) );
       player->gcd_ready = delay;
       stats->iteration_total_execute_time += delay;
@@ -7773,14 +7772,14 @@ void evoker_t::target_mitigation( school_e school, result_amount_type rt, action
 {
   if ( buff.obsidian_scales->check() )
   {
-    auto eff = buff.obsidian_scales->data().effectN( 2 );
+    const auto& eff = buff.obsidian_scales->data().effectN( 2 );
     if ( eff.has_common_school( school ) )
       s->result_amount *= 1.0 + eff.percent();
   }
 
   if ( talent.inherent_resistance.ok() )
   {
-    auto eff = talent.inherent_resistance->effectN( 1 );
+    const auto& eff = talent.inherent_resistance->effectN( 1 );
     if ( eff.has_common_school( school ) )
       s->result_amount *= 1.0 + eff.percent();
   }

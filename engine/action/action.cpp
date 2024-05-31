@@ -5073,6 +5073,7 @@ timespan_t action_t::distance_targeting_travel_time( action_state_t* /*s*/ ) con
 
 void action_t::html_customsection( report::sc_html_stream& os )
 {
+  // make a copy in case original list needs to be used later
   auto entries = affecting_list;
 
   for ( auto a : stats->action_list )

@@ -2001,7 +2001,7 @@ void igneous_flowstone( special_effect_t& effect )
 
   effect.player->register_combat_begin(
       [ low_tide_trigger, high_tide_trigger, low_tide_counter, high_tide_counter ]( player_t* p ) {
-        auto starting_state = p->dragonflight_opts.flowstone_starting_state;
+        std::string_view starting_state = p->dragonflight_opts.flowstone_starting_state;
         if ( util::str_compare_ci( starting_state, "low" ) )
           low_tide_trigger->trigger();
         else if ( util::str_compare_ci( starting_state, "ebb" ) )
@@ -6463,7 +6463,7 @@ void dancing_dream_blossoms( special_effect_t& effect )
       double total_stats = 0;
 
       // populate current stat array & total stats
-      for ( auto s : stats )
+      for ( const auto& s : stats )
       {
         auto v = util::stat_value( player, s.stat );
 
@@ -10791,7 +10791,7 @@ void explosive_barrage( special_effect_t& effect )
       for ( size_t i = 0; i < 3; i++ )
       {
         make_event( sim, 150_ms * i, [ this ] {
-          auto tl = target_list();
+          const auto& tl = target_list();
 
           if ( tl.empty() )
             return;
@@ -10859,7 +10859,7 @@ void wildfire( special_effect_t& effect )
         }
         else
         {
-          auto tl = target_list();
+          const auto& tl = target_list();
           target  = tl[ rng().range( tl.size() ) ];
         }
       }
@@ -11100,7 +11100,7 @@ void arcanists_edge( special_effect_t& effect )
         }
         else
         {
-          auto tl = target_list();
+          const auto& tl = target_list();
           target  = tl[ rng().range( tl.size() ) ];
         }
       }
@@ -11327,7 +11327,7 @@ void sunstriders_flourish( special_effect_t& effect )
         }
         else
         {
-          auto tl = target_list();
+          const auto& tl = target_list();
           target  = tl[ rng().range( tl.size() ) ];
         }
       }

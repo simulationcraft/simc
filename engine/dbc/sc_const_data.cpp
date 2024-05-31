@@ -1433,8 +1433,8 @@ double dbc_t::real_ppm_modifier( unsigned spell_id, player_t* player, unsigned i
     else if ( rppm_modifier.modifier_type == RPPM_MODIFIER_ILEVEL )
     {
       assert( item_level > 0 && "Ilevel-based RPPM modifier requires non-zero item level parameter" );
-      auto base_record = random_prop_data_t::find( rppm_modifier.type, player->dbc->ptr );
-      auto ilevel_record = random_prop_data_t::find( item_level, player->dbc->ptr );
+      const auto& base_record = random_prop_data_t::find( rppm_modifier.type, player->dbc->ptr );
+      const auto& ilevel_record = random_prop_data_t::find( item_level, player->dbc->ptr );
       auto base_points = base_record.p_rare[ 0 ];
       auto ilevel_points = ilevel_record.p_rare[ 0 ];
       if ( base_points != ilevel_points )
