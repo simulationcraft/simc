@@ -41,7 +41,7 @@ struct ground_aoe_params_t
     EVENT_STOPPED       // Ground aoe event stopped
   };
 
-  using param_cb_t = std::function<void(void)>;
+  using param_cb_t = std::function<void( const action_state_t* )>;
   using state_cb_t = std::function<void(state_type, ground_aoe_event_t*)>;
 
   player_t* target_;
@@ -127,15 +127,16 @@ struct ground_aoe_params_t
 // Delayed expiration callback for groud_aoe_event_t
 struct expiration_callback_event_t : public event_t
 {
-  ground_aoe_params_t::param_cb_t callback;
+  const ground_aoe_params_t::param_cb_t& callback;
+  const action_state_t* pulse_state;
 
-  expiration_callback_event_t(sim_t& sim, const ground_aoe_params_t* p, timespan_t delay) :
-    event_t(sim, delay), callback(p -> expiration_callback())
+  expiration_callback_event_t(sim_t& sim, const ground_aoe_params_t* p, timespan_t delay, const action_state_t* state ) :
+    event_t(sim, delay), callback(p -> expiration_callback()), pulse_state( state )
   { }
 
   void execute() override
   {
-    callback();
+    callback( pulse_state );
   }
 };
 

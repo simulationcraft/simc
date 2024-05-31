@@ -6772,7 +6772,7 @@ struct fury_of_elune_t : public druid_spell_t
       .action( damage );
 
     if ( boundless )
-      params.expiration_callback( [ this ] { boundless->execute_on_target( target ); } );
+      params.expiration_callback( [ this ]( const action_state_t* s ) { boundless->execute_on_target( s->target ); } );
 
     make_event<ground_aoe_event_t>( *sim, p(), params );
   }

@@ -280,11 +280,11 @@ void ground_aoe_event_t::handle_expiration()
   // not hasted, or when pulse-based behavior is used (instead of duration-based behavior)
   if (time_left <= timespan_t::zero())
   {
-    params->expiration_callback()();
+    params->expiration_callback()( pulse_state );
   }
   // Defer until the end of the ground aoe event, even if there are no ticks left
   else
   {
-    make_event<expiration_callback_event_t>(sim(), sim(), params, time_left);
+    make_event<expiration_callback_event_t>(sim(), sim(), params, time_left, pulse_state );
   }
 }
