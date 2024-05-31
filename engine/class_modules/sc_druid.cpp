@@ -1250,6 +1250,7 @@ public:
   void init_scaling() override;
   void init_finished() override;
   void create_buffs() override;
+  void parse_player_effects();
   void create_actions() override;
   std::string default_flask() const override;
   std::string default_potion() const override;
@@ -1681,10 +1682,10 @@ public:
     // WARNING: auto attacks will NOT get processed here since they have no spell data
     if ( ab::data().ok() )
     {
-      apply_buff_effects();
+      parse_action_effects();
 
       if ( ab::type == action_e::ACTION_SPELL || ab::type == action_e::ACTION_ATTACK )
-        apply_debuffs_effects();
+        parse_target_effects();
 
       if ( ab::data().flags( spell_attribute::SX_ABILITY ) || ab::trigger_gcd > 0_ms )
         ab::not_a_proc = true;
@@ -1821,6 +1822,15 @@ public:
       b->expire();
   }
 
+  void parse_action_effects();
+  void parse_target_effects();
+
+  // lazy shortcuts so i don't have to type 'ab::'
+  template <typename... Ts>
+  void parse_effects( Ts&&... args ) { ab::parse_effects( std::forward<Ts>( args )... ); }
+  template <typename... Ts>
+  void parse_target_effects( Ts&&... args ) { ab::parse_target_effects( std::forward<Ts>( args )... ); }
+
   void parse_consume( buff_t* buff, uint32_t skip_flags = 0, size_t idx = 1, bool force = false )
   {
     if ( buff->is_fallback )
@@ -1836,211 +1846,9 @@ public:
   }
 
   void force_consume( buff_t* buff, uint32_t skip_flags = 0, size_t idx = 1 )
-  {
-    parse_consume( buff, skip_flags, idx, true );
-  }
+  { parse_consume( buff, skip_flags, idx, true ); }
 
-  void parse_consumes()
-  {
-    // Class
-    // Balance
-    parse_consume( p()->buff.starweaver_starfall );
-    parse_consume( p()->buff.starweaver_starsurge );
-    parse_consume( p()->buff.touch_the_cosmos_starfall );
-    parse_consume( p()->buff.touch_the_cosmos_starsurge );
-    // Feral
-    parse_consume( p()->buff.coiled_to_spring );
-    parse_consume( p()->buff.predatory_swiftness );
-    // Guardian
-    parse_consume( p()->buff.dream_of_cenarius );
-    parse_consume( p()->buff.gore );
-    parse_consume( p()->buff.gory_fur );
-    parse_consume( p()->buff.guardian_of_elune );
-    parse_consume( p()->buff.vicious_cycle_mangle );
-    parse_consume( p()->buff.vicious_cycle_maul );
-    // Restoration
-    parse_consume( p()->buff.natures_swiftness );
-    // Hero Talent
-    parse_consume( p()->buff.blooming_infusion_damage );
-    parse_consume( p()->buff.blooming_infusion_heal );
-    parse_consume( p()->buff.feline_potential );
-    parse_consume( p()->buff.ursine_potential );
-  }
-
-  void apply_buff_effects()
-  {
-    // Class
-    parse_effects( p()->buff.cat_form );
-    parse_effects( p()->spec.cat_form_passive_2, p()->talent.hunt_beneath_the_open_skies,
-                   [ this ] { return p()->buff.cat_form->check(); } );
-    parse_effects( p()->buff.moonkin_form );
-    parse_effects( p()->buff.rising_light_falling_night_day );
-
-    auto hotw_mask = effect_mask_t( true );
-
-    switch( p()->specialization() )
-    {
-      case DRUID_BALANCE:     hotw_mask.disable(  1,  2,  3,  13,  15 ); break;
-      case DRUID_FERAL:       hotw_mask.disable(  4,  5,  6,  14 );      break;
-      case DRUID_GUARDIAN:    hotw_mask.disable(  7,  8,  9 );           break;
-      case DRUID_RESTORATION: hotw_mask.disable( 10, 11, 12 );           break;
-      default: break;
-    }
-
-    parse_effects( p()->buff.heart_of_the_wild, hotw_mask );
-
-    // Balance
-    parse_effects( p()->mastery.astral_invocation );
-    parse_effects( p()->buff.balance_of_all_things_arcane, p()->talent.balance_of_all_things );
-    parse_effects( p()->buff.balance_of_all_things_nature, p()->talent.balance_of_all_things );
-    // due to harmony of the heavens, we parse the damage effects (#1/#7) separately and use the current buff value
-    // instead of data value
-    parse_effects( p()->buff.eclipse_lunar, effect_mask_t( true ).disable( 1, 7 ), p()->talent.umbral_intensity );
-    parse_effects( p()->buff.eclipse_lunar, effect_mask_t( false ).enable( 1, 7 ), USE_CURRENT );
-    // due to harmony of the heavens, we parse the damage effects (#1/#8) separately and use the current buff value
-    // instead of data value
-    parse_effects( p()->buff.eclipse_solar, effect_mask_t( true ).disable( 1, 8 ), p()->talent.umbral_intensity );
-    parse_effects( p()->buff.eclipse_solar, effect_mask_t( false ).enable( 1, 8 ), USE_CURRENT );
-
-    auto owl_mask = effect_mask_t( false ).enable( 1, 2, 3, 4 );
-
-    if ( p()->talent.astral_insight.ok() )
-      owl_mask.enable( 6, 7 );
-
-    if ( p()->talent.lunar_calling.ok() )
-      owl_mask.enable( 8, 9 );
-
-    parse_effects( p()->buff.incarnation_moonkin, owl_mask, p()->talent.elunes_guidance );
-    parse_effects( p()->buff.owlkin_frenzy );
-    parse_effects( p()->buff.starweaver_starfall );
-    parse_effects( p()->buff.starweaver_starsurge );
-    parse_effects( p()->buff.touch_the_cosmos_starfall );
-    parse_effects( p()->buff.touch_the_cosmos_starsurge );
-    parse_effects( p()->buff.umbral_inspiration );
-    parse_effects( p()->buff.warrior_of_elune, IGNORE_STACKS );
-
-    // Feral
-    parse_effects( p()->mastery.razor_claws );
-    parse_effects( p()->buff.apex_predators_craving );
-    parse_effects( p()->buff.berserk_cat );
-    parse_effects( p()->buff.coiled_to_spring );
-    parse_effects( p()->buff.incarnation_cat );
-    parse_effects( p()->buff.predator, USE_CURRENT );
-    parse_effects( p()->buff.predatory_swiftness );
-    parse_effects( p()->talent.taste_for_blood, [ this ] { return p()->buff.tigers_fury->check();},
-                   p()->talent.taste_for_blood->effectN( 2 ).percent() );
-    parse_effects( p()->spec.feral_overrides, [ this ] { return !p()->buff.moonkin_form->check(); } );
-
-    // Guardian
-    parse_effects( p()->buff.bear_form );
-
-    auto bear_mask = effect_mask_t( false ).enable( 1, 4, 5 );
-
-    if ( p()->talent.berserk_persistence.ok() )
-      bear_mask.enable( 2, 3 );
-
-    if ( p()->talent.incarnation_bear.ok() && p()->talent.astral_insight.ok() )
-    {
-      bear_mask.enable( 14, 15 );
-
-      if ( p()->talent.lunar_calling.ok() )
-        bear_mask.enable( 16, 17 );
-    }
-
-    parse_effects( p()->buff.berserk_bear, bear_mask, p()->talent.berserk_ravage,
-                   p()->talent.berserk_unchecked_aggression );
-    parse_effects( p()->buff.incarnation_bear, bear_mask, p()->talent.berserk_ravage,
-                   p()->talent.berserk_unchecked_aggression );
-    parse_effects( p()->buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ) );
-
-    // wrapper to bypass ab:: resoultion for compile time checks
-    struct v_ptr
-    {
-      std::vector<player_effect_t>& v;
-      v_ptr( std::vector<player_effect_t>& v ) : v( v ) {}
-      std::vector<player_effect_t>& operator*() { return v; }
-    };
-
-    // dot damage is buffed via script so copy da_mult entries to ta_mult
-    parse_effects( p()->spec.elunes_favored, v_ptr( ab::ta_multiplier_effects ), effect_mask_t( false ).enable( 1 ) );
-    parse_effects( p()->spec.fury_of_nature, v_ptr( ab::ta_multiplier_effects ), effect_mask_t( false ).enable( 1 ) );
-    if ( p()->talent.lunar_calling.ok() )
-    {
-      parse_effects( p()->spec.elunes_favored, effect_mask_t( false ).enable( 3, 4 ) );
-      parse_effects( p()->spec.fury_of_nature, effect_mask_t( false ).enable( 2, 3 ) );
-    }
-
-    parse_effects( p()->buff.gory_fur );
-    parse_effects( p()->buff.rage_of_the_sleeper );
-    parse_effects( p()->talent.reinvigoration, effect_mask_t( true ).disable( p()->talent.innate_resolve.ok() ? 1 : 2 ) );
-    parse_effects( p()->buff.tooth_and_claw, IGNORE_STACKS );
-    parse_effects( p()->buff.vicious_cycle_mangle, USE_DEFAULT );
-    parse_effects( p()->buff.vicious_cycle_maul, USE_DEFAULT );
-
-    // Restoration
-    parse_effects( p()->buff.abundance );
-    parse_effects( p()->buff.clearcasting_tree, p()->talent.flash_of_clarity );
-    parse_effects( p()->buff.incarnation_tree );
-    parse_effects( p()->buff.natures_swiftness, p()->talent.natures_splendor );
-
-    // Hero talents
-    parse_effects( p()->buff.blooming_infusion_damage );
-    parse_effects( p()->buff.blooming_infusion_heal );
-    parse_effects( p()->buff.feline_potential );
-    parse_effects( p()->buff.harmony_of_the_grove );
-    parse_effects( p()->buff.root_network );
-    parse_effects( p()->buff.ursine_potential );
-  }
-
-  void apply_debuffs_effects()
-  {
-    // Balance
-    parse_target_effects( d_fn( &druid_td_t::dots_t::moonfire ),
-                          p()->spec.moonfire_dmg, p()->mastery.astral_invocation );
-
-    parse_target_effects( d_fn( &druid_td_t::dots_t::sunfire ),
-                          p()->spec.sunfire_dmg, p()->mastery.astral_invocation );
-
-    parse_target_effects( d_fn( &druid_td_t::debuffs_t::stellar_amplification ),
-                          p()->spec.stellar_amplification );
-
-    parse_target_effects( d_fn( &druid_td_t::debuffs_t::waning_twilight ),
-                          p()->spec.waning_twilight, p()->talent.waning_twilight );
-
-    // Feral
-    if ( p()->talent.incarnation_cat.ok() && p()->talent.ashamanes_guidance.ok() )
-    {
-      parse_target_effects( [ p = p() ]( actor_target_data_t* td )
-                              { return p->buff.ashamanes_guidance->check() &&
-                                static_cast<druid_td_t*>( td )->dots.rip->is_ticking(); },
-                            p()->talent.rip, p()->spec.ashamanes_guidance_buff );
-
-      parse_target_effects( [ p = p() ]( actor_target_data_t* td )
-                              { return p->buff.ashamanes_guidance->check() &&
-                                static_cast<druid_td_t*>( td )->dots.rake->is_ticking(); },
-                            find_trigger( p()->talent.rake ).trigger(), p()->spec.ashamanes_guidance_buff );
-    }
-
-    parse_target_effects( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage, false ),
-                          p()->spec.adaptive_swarm_damage, p()->spec_spell );
-
-    parse_target_effects( d_fn( &druid_td_t::debuffs_t::sabertooth ),
-                          p()->spec.sabertooth, p()->talent.sabertooth->effectN( 2 ).percent() );
-
-    // Guardian
-    parse_target_effects( d_fn( &druid_td_t::dots_t::thrash_bear ),
-                          p()->spec.thrash_bear_bleed, p()->talent.rend_and_tear );
-
-    // Hero talent
-    parse_target_effects( d_fn( &druid_td_t::debuffs_t::atmospheric_exposure ),
-                          p()->spec.atmospheric_exposure );
-  }
-
-  // lazy shortcuts so i don't have to type 'ab::'
-  template <typename... Ts>
-  void parse_effects( Ts&&... args ) { ab::parse_effects( std::forward<Ts>( args )... ); }
-  template <typename... Ts>
-  void parse_target_effects( Ts&&... args ) { ab::parse_target_effects( std::forward<Ts>( args )... ); }
+  void parse_consumes();
 
   double cost() const override
   {
@@ -8943,8 +8751,8 @@ struct druid_melee_t : public Base
     ab::special = false;
     ab::weapon_multiplier = 1.0;
 
-    ab::apply_buff_effects();
-    ab::apply_debuffs_effects();
+    ab::parse_action_effects();
+    ab::parse_target_effects();
 
     // Auto attack mods
     ab::parse_effects( p->spec_spell );
@@ -10733,34 +10541,8 @@ void druid_t::create_buffs()
   buff.wildshape_mastery =
     make_fallback( talent.wildshape_mastery.ok(), this, "wildshape_mastery", find_spell( 441685 ) );
 
-  parse_effects( find_specialization_spell( "Leather Specialization" ) );
-
-  parse_effects( mastery.natures_guardian_AP );
-
-  auto bear_stam = spec.bear_form_passive->effectN( 2 ).percent() +
-                   spec.bear_form_2->effectN( 1 ).percent() +
-                   talent.ursocs_spirit->effectN( 1 ).percent();
-
-  add_parse_entry( attribute_multiplier_effects )
-    .set_buff( buff.bear_form )
-    .set_value( bear_stam )
-    .set_opt_enum( 1 << ( STAT_STAMINA - 1 ) )
-    .set_eff( &find_effect( spec.bear_form_passive, A_MOD_TOTAL_STAT_PERCENTAGE ) );
-
-  parse_effects( buff.bear_form );
-  parse_effects( buff.rage_of_the_sleeper );
-  parse_effects( buff.ruthless_aggression );
-  parse_effects( buff.strategic_infusion );
-  parse_effects( buff.ursine_vigor, USE_DEFAULT );
-  parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 2 ),       // armor
-                 find_effect( buff.bear_form, A_MOD_BASE_RESISTANCE_PCT ).percent() *
-                 buff.wildshape_mastery->data().effectN( 1 ).percent() );
-  parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 3 ),       // stamina
-                 bear_stam * buff.wildshape_mastery->data().effectN( 1 ).percent() );
-  parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 4, 5 ) );  // crit avoidance & expertise
-
-  parse_target_effects( d_fn( &druid_td_t::debuffs_t::bloodseeker_vines ), spec.bloodseeker_vines,
-                        talent.vigorous_creepers );
+  // call this here to ensure all buffs have been created
+  parse_player_effects();
 }
 
 // Create active actions ====================================================
@@ -13340,6 +13122,10 @@ void druid_t::moving()
     player_t::interrupt();
 }
 
+// ==========================================================================
+// DBC/Spell data based auto-parsing
+// ==========================================================================
+
 void druid_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
@@ -13428,6 +13214,232 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.tear_down_the_mighty );
   action.apply_affecting_aura( talent.the_eternal_moon );
   action.apply_affecting_aura( talent.wildstalkers_power );
+}
+
+template <class Base>
+void druid_action_t<Base>::parse_action_effects()
+{
+  // Class
+  parse_effects( p()->buff.cat_form );
+  parse_effects( p()->spec.cat_form_passive_2, p()->talent.hunt_beneath_the_open_skies,
+                 [ this ] { return p()->buff.cat_form->check(); } );
+  parse_effects( p()->buff.moonkin_form );
+  parse_effects( p()->buff.rising_light_falling_night_day );
+
+  auto hotw_mask = effect_mask_t( true );
+
+  switch( p()->specialization() )
+  {
+    case DRUID_BALANCE:     hotw_mask.disable(  1,  2,  3,  13,  15 ); break;
+    case DRUID_FERAL:       hotw_mask.disable(  4,  5,  6,  14 );      break;
+    case DRUID_GUARDIAN:    hotw_mask.disable(  7,  8,  9 );           break;
+    case DRUID_RESTORATION: hotw_mask.disable( 10, 11, 12 );           break;
+    default: break;
+  }
+
+  parse_effects( p()->buff.heart_of_the_wild, hotw_mask );
+
+  // Balance
+  parse_effects( p()->mastery.astral_invocation );
+  parse_effects( p()->buff.balance_of_all_things_arcane, p()->talent.balance_of_all_things );
+  parse_effects( p()->buff.balance_of_all_things_nature, p()->talent.balance_of_all_things );
+  // due to harmony of the heavens, we parse the damage effects (#1/#7) separately and use the current buff value
+  // instead of data value
+  parse_effects( p()->buff.eclipse_lunar, effect_mask_t( true ).disable( 1, 7 ), p()->talent.umbral_intensity );
+  parse_effects( p()->buff.eclipse_lunar, effect_mask_t( false ).enable( 1, 7 ), USE_CURRENT );
+  // due to harmony of the heavens, we parse the damage effects (#1/#8) separately and use the current buff value
+  // instead of data value
+  parse_effects( p()->buff.eclipse_solar, effect_mask_t( true ).disable( 1, 8 ), p()->talent.umbral_intensity );
+  parse_effects( p()->buff.eclipse_solar, effect_mask_t( false ).enable( 1, 8 ), USE_CURRENT );
+
+  auto owl_mask = effect_mask_t( false ).enable( 1, 2, 3, 4 );
+  if ( p()->talent.astral_insight.ok() )
+    owl_mask.enable( 6, 7 );
+  if ( p()->talent.lunar_calling.ok() )
+    owl_mask.enable( 8, 9 );
+
+  parse_effects( p()->buff.incarnation_moonkin, owl_mask, p()->talent.elunes_guidance );
+  parse_effects( p()->buff.owlkin_frenzy );
+  parse_effects( p()->buff.starweaver_starfall );
+  parse_effects( p()->buff.starweaver_starsurge );
+  parse_effects( p()->buff.touch_the_cosmos_starfall );
+  parse_effects( p()->buff.touch_the_cosmos_starsurge );
+  parse_effects( p()->buff.umbral_inspiration );
+  parse_effects( p()->buff.warrior_of_elune, IGNORE_STACKS );
+
+  // Feral
+  parse_effects( p()->mastery.razor_claws );
+  parse_effects( p()->buff.apex_predators_craving );
+  parse_effects( p()->buff.berserk_cat );
+  parse_effects( p()->buff.coiled_to_spring );
+  parse_effects( p()->buff.incarnation_cat );
+  parse_effects( p()->buff.predator, USE_CURRENT );
+  parse_effects( p()->buff.predatory_swiftness );
+  parse_effects( p()->talent.taste_for_blood, [ this ] { return p()->buff.tigers_fury->check();},
+                 p()->talent.taste_for_blood->effectN( 2 ).percent() );
+  parse_effects( p()->spec.feral_overrides, [ this ] { return !p()->buff.moonkin_form->check(); } );
+
+  // Guardian
+  parse_effects( p()->buff.bear_form );
+
+  auto bear_mask = effect_mask_t( false ).enable( 1, 4, 5 );
+  if ( p()->talent.berserk_persistence.ok() )
+    bear_mask.enable( 2, 3 );
+  if ( p()->talent.incarnation_bear.ok() && p()->talent.astral_insight.ok() )
+  {
+    bear_mask.enable( 14, 15 );
+    if ( p()->talent.lunar_calling.ok() )
+      bear_mask.enable( 16, 17 );
+  }
+
+  parse_effects( p()->buff.berserk_bear, bear_mask, p()->talent.berserk_ravage,
+                 p()->talent.berserk_unchecked_aggression );
+  parse_effects( p()->buff.incarnation_bear, bear_mask, p()->talent.berserk_ravage,
+                 p()->talent.berserk_unchecked_aggression );
+  parse_effects( p()->buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ) );
+
+  // wrapper to bypass ab:: resoultion for compile time checks
+  struct v_ptr
+  {
+    std::vector<player_effect_t>& v;
+    v_ptr( std::vector<player_effect_t>& v ) : v( v ) {}
+    std::vector<player_effect_t>& operator*() { return v; }
+  };
+
+  // dot damage is buffed via script so copy da_mult entries to ta_mult
+  parse_effects( p()->spec.elunes_favored, v_ptr( ab::ta_multiplier_effects ), effect_mask_t( false ).enable( 1 ) );
+  parse_effects( p()->spec.fury_of_nature, v_ptr( ab::ta_multiplier_effects ), effect_mask_t( false ).enable( 1 ) );
+  if ( p()->talent.lunar_calling.ok() )
+  {
+    parse_effects( p()->spec.elunes_favored, effect_mask_t( false ).enable( 3, 4 ) );
+    parse_effects( p()->spec.fury_of_nature, effect_mask_t( false ).enable( 2, 3 ) );
+  }
+
+  parse_effects( p()->buff.gory_fur );
+  parse_effects( p()->buff.rage_of_the_sleeper );
+  parse_effects( p()->talent.reinvigoration, effect_mask_t( true ).disable( p()->talent.innate_resolve.ok() ? 1 : 2 ) );
+  parse_effects( p()->buff.tooth_and_claw, IGNORE_STACKS );
+  parse_effects( p()->buff.vicious_cycle_mangle, USE_DEFAULT );
+  parse_effects( p()->buff.vicious_cycle_maul, USE_DEFAULT );
+
+  // Restoration
+  parse_effects( p()->buff.abundance );
+  parse_effects( p()->buff.clearcasting_tree, p()->talent.flash_of_clarity );
+  parse_effects( p()->buff.incarnation_tree );
+  parse_effects( p()->buff.natures_swiftness, p()->talent.natures_splendor );
+
+  // Hero talents
+  parse_effects( p()->buff.blooming_infusion_damage );
+  parse_effects( p()->buff.blooming_infusion_heal );
+  parse_effects( p()->buff.feline_potential );
+  parse_effects( p()->buff.harmony_of_the_grove );
+  parse_effects( p()->buff.root_network );
+  parse_effects( p()->buff.ursine_potential );
+}
+
+template <class Base>
+void druid_action_t<Base>::parse_target_effects()
+{
+  // Balance
+  parse_target_effects( d_fn( &druid_td_t::dots_t::moonfire ),
+                        p()->spec.moonfire_dmg, p()->mastery.astral_invocation );
+
+  parse_target_effects( d_fn( &druid_td_t::dots_t::sunfire ),
+                        p()->spec.sunfire_dmg, p()->mastery.astral_invocation );
+
+  parse_target_effects( d_fn( &druid_td_t::debuffs_t::stellar_amplification ),
+                        p()->spec.stellar_amplification );
+
+  parse_target_effects( d_fn( &druid_td_t::debuffs_t::waning_twilight ),
+                        p()->spec.waning_twilight, p()->talent.waning_twilight );
+
+  // Feral
+  if ( p()->talent.incarnation_cat.ok() && p()->talent.ashamanes_guidance.ok() )
+  {
+    parse_target_effects( [ p = p() ]( actor_target_data_t* td )
+                            { return p->buff.ashamanes_guidance->check() &&
+                              static_cast<druid_td_t*>( td )->dots.rip->is_ticking(); },
+                          p()->talent.rip, p()->spec.ashamanes_guidance_buff );
+
+    parse_target_effects( [ p = p() ]( actor_target_data_t* td )
+                            { return p->buff.ashamanes_guidance->check() &&
+                              static_cast<druid_td_t*>( td )->dots.rake->is_ticking(); },
+                          find_trigger( p()->talent.rake ).trigger(), p()->spec.ashamanes_guidance_buff );
+  }
+
+  parse_target_effects( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage, false ),
+                        p()->spec.adaptive_swarm_damage, p()->spec_spell );
+
+  parse_target_effects( d_fn( &druid_td_t::debuffs_t::sabertooth ),
+                        p()->spec.sabertooth, p()->talent.sabertooth->effectN( 2 ).percent() );
+
+  // Guardian
+  parse_target_effects( d_fn( &druid_td_t::dots_t::thrash_bear ),
+                        p()->spec.thrash_bear_bleed, p()->talent.rend_and_tear );
+
+  // Hero talent
+  parse_target_effects( d_fn( &druid_td_t::debuffs_t::atmospheric_exposure ),
+                        p()->spec.atmospheric_exposure );
+}
+
+template <class Base>
+void druid_action_t<Base>::parse_consumes()
+{
+  // Class
+  // Balance
+  parse_consume( p()->buff.starweaver_starfall );
+  parse_consume( p()->buff.starweaver_starsurge );
+  parse_consume( p()->buff.touch_the_cosmos_starfall );
+  parse_consume( p()->buff.touch_the_cosmos_starsurge );
+  // Feral
+  parse_consume( p()->buff.coiled_to_spring );
+  parse_consume( p()->buff.predatory_swiftness );
+  // Guardian
+  parse_consume( p()->buff.dream_of_cenarius );
+  parse_consume( p()->buff.gore );
+  parse_consume( p()->buff.gory_fur );
+  parse_consume( p()->buff.guardian_of_elune );
+  parse_consume( p()->buff.vicious_cycle_mangle );
+  parse_consume( p()->buff.vicious_cycle_maul );
+  // Restoration
+  parse_consume( p()->buff.natures_swiftness );
+  // Hero Talent
+  parse_consume( p()->buff.blooming_infusion_damage );
+  parse_consume( p()->buff.blooming_infusion_heal );
+  parse_consume( p()->buff.feline_potential );
+  parse_consume( p()->buff.ursine_potential );
+}
+
+void druid_t::parse_player_effects()
+{
+  parse_effects( find_specialization_spell( "Leather Specialization" ) );
+
+  parse_effects( mastery.natures_guardian_AP );
+
+  auto bear_stam = spec.bear_form_passive->effectN( 2 ).percent() +
+                   spec.bear_form_2->effectN( 1 ).percent() +
+                   talent.ursocs_spirit->effectN( 1 ).percent();
+
+  add_parse_entry( attribute_multiplier_effects )
+    .set_buff( buff.bear_form )
+    .set_value( bear_stam )
+    .set_opt_enum( 1 << ( STAT_STAMINA - 1 ) )
+    .set_eff( &find_effect( spec.bear_form_passive, A_MOD_TOTAL_STAT_PERCENTAGE ) );
+
+  parse_effects( buff.bear_form );
+  parse_effects( buff.rage_of_the_sleeper );
+  parse_effects( buff.ruthless_aggression );
+  parse_effects( buff.strategic_infusion );
+  parse_effects( buff.ursine_vigor, USE_DEFAULT );
+  parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 2 ),       // armor
+                 find_effect( buff.bear_form, A_MOD_BASE_RESISTANCE_PCT ).percent() *
+                 buff.wildshape_mastery->data().effectN( 1 ).percent() );
+  parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 3 ),       // stamina
+                 bear_stam * buff.wildshape_mastery->data().effectN( 1 ).percent() );
+  parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 4, 5 ) );  // crit avoidance & expertise
+
+  parse_target_effects( d_fn( &druid_td_t::debuffs_t::bloodseeker_vines ), spec.bloodseeker_vines,
+                        talent.vigorous_creepers );
 }
 
 /* Report Extension Class
