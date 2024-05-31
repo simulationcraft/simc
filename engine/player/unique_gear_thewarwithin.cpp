@@ -50,7 +50,7 @@ const spell_data_t* spell_from_spell_text( const special_effect_t& e, unsigned m
   if ( auto desc = e.player->dbc->spell_text( e.spell_id ).desc() )
   {
     std::cmatch m;
-    std::regex r( "\\$\\?a" + std::to_string( match_id ) + "\\[\\$@spellname([0-9]+)\\]\\[\\]" );
+    std::regex r( R"(\$\?a)" + std::to_string( match_id ) + R"(\[\$@spellname([0-9]+)\]\[\])" );
     if ( std::regex_search( desc, m, r ) )
     {
       auto id = as<unsigned>( std::stoi( m.str( 1 ) ) );
