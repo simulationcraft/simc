@@ -517,7 +517,7 @@ struct void_flay_t final : public priest_pet_spell_t
 
     if ( target->health_percentage() >= 50 )
     {
-      m *= 1.0 + damage_mul * ( target->resources.pct( RESOURCE_HEALTH ) / 2 - 1 );
+      m *= 1.0 + damage_mul * target->resources.pct( RESOURCE_HEALTH );
     }
 
     return m;
