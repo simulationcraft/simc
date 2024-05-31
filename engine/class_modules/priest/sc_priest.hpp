@@ -68,6 +68,7 @@ struct holy_fire_t;
 struct burning_vehemence_t;
 struct entropic_rift_t;
 struct collapsing_void_damage_t;
+struct halo_t;
 }  // namespace actions::spells
 
 namespace actions::heals
@@ -105,6 +106,7 @@ public:
     propagate_const<buff_t*> apathy;
     propagate_const<buff_t*> psychic_horror;
     buff_t* atonement;
+    propagate_const<buff_t*> resonant_energy;
   } buffs;
 
   priest_t& priest()
@@ -120,6 +122,40 @@ public:
   void reset();
   void target_demise();
 };
+
+
+// utility to create target_effect_t compatible functions from priest_td_t member references
+template <typename T>
+static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
+{
+  if constexpr ( std::is_invocable_v<T, priest_td_t::buffs_t> )
+  {
+    if ( stack )
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<priest_td_t*>( t )->buffs )->check();
+      };
+    else
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<priest_td_t*>( t )->buffs )->check() > 0;
+      };
+  }
+  else if constexpr ( std::is_invocable_v<T, priest_td_t::dots_t> )
+  {
+    if ( stack )
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<priest_td_t*>( t )->dots )->current_stack();
+      };
+    else
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<priest_td_t*>( t )->dots )->is_ticking();
+      };
+  }
+  else
+  {
+    static_assert( static_false<T>, "Not a valid member of priest_td_t" );
+    return nullptr;
+  }
+}
 
 /**
  * Priest class definition
@@ -209,6 +245,10 @@ public:
     propagate_const<buff_t*> darkflame_embers;
     propagate_const<buff_t*> darkflame_shroud;
     propagate_const<buff_t*> deaths_torment;
+
+    // Archon
+    propagate_const<buff_t*> power_surge;
+    propagate_const<buff_t*> sustained_potency;
 
     // Voidweaver
     propagate_const<buff_t*> voidheart;
@@ -487,8 +527,10 @@ public:
     struct
     {
       player_talent_t power_surge;
+      const spell_data_t* power_surge_buff;
       player_talent_t perfected_form;
       player_talent_t resonant_energy;
+      const spell_data_t* resonant_energy_shadow;
       player_talent_t manifested_power;
       player_talent_t shock_pulse;
       player_talent_t incessant_screams;
@@ -497,6 +539,7 @@ public:
       player_talent_t empowered_surges;
       player_talent_t energy_compression;
       player_talent_t sustained_potency;
+      const spell_data_t* sustained_potency_buff;
       player_talent_t concentrated_infusion;
       player_talent_t energy_cycle;
       player_talent_t divine_halo;
@@ -719,6 +762,7 @@ public:
     propagate_const<actions::heals::divine_aegis_t*> divine_aegis;
     propagate_const<actions::spells::entropic_rift_t*> entropic_rift;
     propagate_const<actions::spells::collapsing_void_damage_t*> collapsing_void;
+    propagate_const<actions::spells::halo_t*> halo;
   } background_actions;
 
   // Items
@@ -1078,11 +1122,12 @@ public:
     if ( p().specialization() == PRIEST_SHADOW )
     {
       parse_effects( p().buffs.devoured_pride );                 // Spell Direct and Periodic amount
-      parse_effects( p().buffs.voidform, 0x4U, IGNORE_STACKS );  // Skip E3 for AM
+      parse_effects( p().buffs.voidform, 0x4U, IGNORE_STACKS, p().talents.archon.perfected_form );  // Skip E3 for AM
       parse_effects( p().buffs.shadowform );
       parse_effects( p().buffs.mind_devourer );
       parse_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
-      parse_effects( p().buffs.dark_ascension, 0b1000U, IGNORE_STACKS );   // Buffs non-periodic spells - Skip E4
+      parse_effects( p().buffs.dark_ascension, 0b1000U, IGNORE_STACKS,
+                     p().talents.archon.perfected_form );                  // Buffs non-periodic spells - Skip E4
       parse_effects( p().buffs.mind_melt, p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
       parse_effects( p().buffs.screams_of_the_void, p().talents.shadow.screams_of_the_void );
 
@@ -1138,11 +1183,15 @@ public:
     // DISCIPLINE DEBUFF EFFECTS
     if ( p().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_target_effects(
-          []( actor_target_data_t* t ) {
-            return static_cast<priest_td_t*>( t )->buffs.schism->check();
-          },
-          p().talents.discipline.schism_debuff );
+      parse_target_effects( d_fn( &priest_td_t::buffs_t::schism, false ),
+                            p().talents.discipline.schism_debuff );
+    }
+
+    // Archon
+    if ( p().talents.archon.resonant_energy.enabled() )
+    {
+      parse_target_effects( d_fn( &priest_td_t::buffs_t::resonant_energy, false ),
+                            p().talents.archon.resonant_energy_shadow );
     }
   }
 

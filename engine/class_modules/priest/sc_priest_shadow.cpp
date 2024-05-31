@@ -1258,6 +1258,14 @@ struct dark_ascension_t final : public priest_spell_t
 
     priest().buffs.dark_ascension->trigger();
 
+    if ( priest().buffs.sustained_potency->check() )
+    {
+      priest().buffs.dark_ascension->extend_duration(
+          player, timespan_t::from_seconds( priest().buffs.sustained_potency->check() ) );
+
+      priest().buffs.sustained_potency->expire();
+    }
+
     if ( priest().talents.shadow.ancient_madness.enabled() )
     {
       priest().buffs.ancient_madness->trigger();
@@ -1310,6 +1318,14 @@ struct void_eruption_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.voidform->trigger();
+
+    if ( priest().buffs.sustained_potency->check() )
+    {
+      priest().buffs.voidform->extend_duration(
+          player, timespan_t::from_seconds( priest().buffs.sustained_potency->check() ) );
+
+      priest().buffs.sustained_potency->expire();
+    }
   }
 
   bool ready() override
