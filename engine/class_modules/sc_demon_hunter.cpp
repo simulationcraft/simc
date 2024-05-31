@@ -897,7 +897,7 @@ public:
 
     // Aldrachi Reaver
     attack_t* art_of_the_glaive = nullptr;
-    spell_t* preemptive_strike  = nullptr;
+    attack_t* preemptive_strike  = nullptr;
 
     // Fel-scarred
     action_t* burning_blades = nullptr;
@@ -4464,15 +4464,6 @@ struct sigil_of_chains_t : public demon_hunter_spell_t
   }
 };
 
-struct preemptive_strike_t : public demon_hunter_spell_t
-{
-  preemptive_strike_t( util::string_view name, demon_hunter_t* p )
-    : demon_hunter_spell_t( name, p, p->talent.aldrachi_reaver.preemptive_strike->effectN( 1 ).trigger() )
-  {
-    background = dual = true;
-  }
-};
-
 struct demonsurge_t : public demon_hunter_spell_t
 {
   demonsurge_t( util::string_view name, demon_hunter_t* p )
@@ -6508,6 +6499,15 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
     {
       make_event<delayed_execute_event_t>( *sim, p(), attack, target, attack->delay );
     }
+  }
+};
+
+struct preemptive_strike_t : public demon_hunter_attack_t
+{
+  preemptive_strike_t( util::string_view name, demon_hunter_t* p )
+    : demon_hunter_attack_t( name, p, p->talent.aldrachi_reaver.preemptive_strike->effectN( 1 ).trigger() )
+  {
+    background = dual = true;
   }
 };
 
