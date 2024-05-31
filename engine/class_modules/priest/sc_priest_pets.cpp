@@ -514,11 +514,8 @@ struct void_flay_t final : public priest_pet_spell_t
   double composite_target_multiplier( player_t* target ) const override
   {
     auto m = player->composite_player_target_multiplier( target, get_school() );
-
-    if ( target->health_percentage() >= 50 )
-    {
-      m *= 1.0 + damage_mul * target->resources.pct( RESOURCE_HEALTH );
-    }
+    
+    m *= 1.0 + damage_mul * target->resources.pct( RESOURCE_HEALTH );
 
     return m;
   }
