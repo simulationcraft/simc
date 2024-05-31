@@ -1163,3 +1163,212 @@ size_t parse_player_effects_t::total_effects_count()
          target_multiplier_effects.size() +
          target_pet_multiplier_effects.size();
 }
+
+bool parse_action_base_t::is_valid_aura( const spelleffect_data_t& eff ) const
+{
+  // Only parse apply aura effects
+  switch ( eff.type() )
+  {
+    case E_APPLY_AURA:
+    case E_APPLY_AURA_PET:
+      // TODO: more robust logic around 'party' buffs with radius
+      if ( eff.radius() )
+        return false;
+      break;
+    case E_APPLY_AREA_AURA_PARTY:
+    case E_APPLY_AREA_AURA_PET:
+      break;
+    default:
+      return false;
+  }
+
+  return true;
+}
+
+// non-templated implementation of parse_action_effects_t::get_effect_vector()
+std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spelleffect_data_t& eff,
+                                                                      player_effect_t& data, double& val_mul,
+                                                                      std::string& str, bool& flat, bool force )
+{
+  auto adjust_recharge_multiplier_warning = [ this, &data ] {
+    if ( _action->sim->debug && data.buff && !data.buff->stack_change_callback )
+    {
+      _action->sim->error( "WARNING: {} adjusts cooldown of {} but does not have a stack change callback.\n\r"
+                           "Make sure adjust_recharge_multiplier() is properly called.", *data.buff, *_action );
+    }
+  };
+
+  if ( !_action->special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
+  {
+    str = "auto attack";
+    return &da_multiplier_effects;
+  }
+  else if ( !_action->data().affected_by_all( eff ) && !force )
+  {
+    return nullptr;
+  }
+  else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
+  {
+    switch ( eff.misc_value1() )
+    {
+      case P_GENERIC:       str = "direct damage";          return &da_multiplier_effects;
+      case P_DURATION:      str = "duration";               return &dot_duration_effects;
+      case P_TICK_DAMAGE:   str = "tick damage";            return &ta_multiplier_effects;
+      case P_CAST_TIME:     str = "cast time";              return &execute_time_effects;
+      case P_GCD:           str = "gcd";                    return &gcd_effects;
+      case P_TICK_TIME:     str = "tick time";              return &tick_time_effects;
+      case P_RESOURCE_COST: str = "cost percent";           return &cost_effects;
+      case P_CRIT:          str = "crit chance multiplier"; return &crit_chance_multiplier_effects;
+      case P_CRIT_DAMAGE:   str = "crit damage";            return &crit_damage_effects;
+      case P_COOLDOWN:      adjust_recharge_multiplier_warning();
+                            str = "cooldown";               return &recharge_multiplier_effects;
+      default:              return nullptr;
+    }
+  }
+  else if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
+  {
+    flat = true;
+
+    switch ( eff.misc_value1() )
+    {
+      case P_CRIT:          str = "crit chance"; return &crit_chance_effects;
+      case P_RESOURCE_COST: val_mul = spelleffect_data_t::resource_multiplier( _action->current_resource() );
+                            str = "flat cost";   return &flat_cost_effects;
+      default:              return nullptr;
+    }
+  }
+  else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY )
+  {
+    str = "cooldown";
+    adjust_recharge_multiplier_warning();
+    return &recharge_multiplier_effects;
+  }
+
+  return nullptr;
+}
+
+void parse_action_base_t::debug_message( const player_effect_t& data, std::string_view type_str,
+                                         std::string_view val_str, bool mastery, const spell_data_t* s_data, size_t i )
+{
+  if ( data.buff )
+  {
+    _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} {} buff {} ({}#{})", _action->name(),
+                               _action->id, type_str, val_str, data.use_stacks ? "per stack of" : "with",
+                               data.buff->name(), data.buff->data().id(), i );
+  }
+  else if ( mastery && !data.func )
+  {
+    _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} from {} ({}#{})", _action->name(),
+                               _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
+  }
+  else if ( data.func )
+  {
+    _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} with condition from {} ({}#{})",
+                               _action->name(), _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
+  }
+  else
+  {
+    _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} from {} ({}#{})", _action->name(),
+                               _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
+  }
+}
+
+bool parse_action_base_t::is_valid_target_aura( const spelleffect_data_t& eff ) const
+{
+  if ( eff.type() == E_APPLY_AURA )
+    return true;
+
+  return false;
+}
+
+std::vector<target_effect_t>* parse_action_base_t::get_target_effect_vector( const spelleffect_data_t& eff,
+                                                                             target_effect_t& /* data */,
+                                                                             double& /* val_mul */, std::string& str,
+                                                                             bool& flat, bool force )
+{
+  if ( !_action->special && eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER )
+  {
+    str = "auto attack";
+    return &target_multiplier_effects;
+  }
+  else if ( !_action->data().affected_by_all( eff ) && !force )
+  {
+    return nullptr;
+  }
+  else
+  {
+    switch ( eff.subtype() )
+    {
+      case A_MOD_DAMAGE_FROM_CASTER_SPELLS:
+      case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:    str = "damage";      return &target_multiplier_effects;
+      case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS:     flat = true;
+                                                     str = "crit chance"; return &target_crit_chance_effects;
+      case A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS: str = "crit damage"; return &target_crit_damage_effects;
+      default:                                       return nullptr;
+    }
+  }
+
+  return nullptr;
+}
+
+void parse_action_base_t::target_debug_message( std::string_view type_str, std::string_view val_str,
+                                                const spell_data_t* s_data, size_t i )
+{
+  _action->sim->print_debug( "target-effects: {} ({}) {} modified by {} on targets with debuff {} ({}#{})",
+                             _action->name(), _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
+}
+
+void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os, action_t* a )
+{
+  if ( total_effects_count() )
+  {
+    os << "<div>"
+       << "<h4>Affected By (Dynamic)</h4>"
+       << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
+
+    os << "<tr>"
+       << "<th class=\"small\">Type</th>"
+       << "<th class=\"small\">Spell</th>"
+       << "<th class=\"small\">ID</th>"
+       << "<th class=\"small\">#</th>"
+       << "<th class=\"small\">Value</th>"
+       << "<th class=\"small\">Source</th>"
+       << "<th class=\"small\">Notes</th>"
+       << "</tr>\n";
+
+    using VEC = parse_action_base_t;
+    print_parsed_type( os, &VEC::da_multiplier_effects, "Direct Damage" );
+    print_parsed_type( os, &VEC::ta_multiplier_effects, "Periodic Damage" );
+    print_parsed_type( os, &VEC::crit_chance_effects, "Critical Strike Chance" );
+    print_parsed_type( os, &VEC::crit_damage_effects, "Critical Strike Damage" );
+    print_parsed_type( os, &VEC::execute_time_effects, "Execute Time" );
+    print_parsed_type( os, &VEC::gcd_effects, "GCD" );
+    print_parsed_type( os, &VEC::dot_duration_effects, "Dot Duration" );
+    print_parsed_type( os, &VEC::tick_time_effects, "Tick Time" );
+    print_parsed_type( os, &VEC::recharge_multiplier_effects, "Recharge Multiplier" );
+    print_parsed_type( os, &VEC::flat_cost_effects, "Flat Cost", []( double v ) { return fmt::to_string( v ); } );
+    print_parsed_type( os, &VEC::cost_effects, "Percent Cost" );
+    print_parsed_type( os, &VEC::target_multiplier_effects, "Damage on Debuff" );
+    print_parsed_type( os, &VEC::target_crit_chance_effects, "Crit Chance on Debuff" );
+    print_parsed_type( os, &VEC::target_crit_damage_effects, "Crit Damage on Debuff" );
+    print_parsed_custom_type( os );
+
+    os << "</table>\n"
+       << "</div>\n";
+  }
+}
+
+size_t parse_action_base_t::total_effects_count()
+{
+  return ta_multiplier_effects.size() +
+         da_multiplier_effects.size() +
+         execute_time_effects.size() +
+         gcd_effects.size() +
+         dot_duration_effects.size() +
+         tick_time_effects.size() +
+         recharge_multiplier_effects.size() +
+         cost_effects.size() +
+         flat_cost_effects.size() +
+         crit_chance_effects.size() +
+         target_multiplier_effects.size();
+}

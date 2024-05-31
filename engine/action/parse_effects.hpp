@@ -10,6 +10,7 @@
 #include "dbc/dbc.hpp"
 #include "player/pet.hpp"
 #include "player/player.hpp"
+#include "player/stats.hpp"
 #include "report/decorators.hpp"
 #include "sim/sim.hpp"
 #include "util/io.hpp"
@@ -665,14 +666,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   }
 };
 
-template <typename BASE>
-struct parse_action_effects_t : public BASE, public parse_effects_t
+struct parse_action_base_t : public parse_effects_t
 {
-private:
-  using base_t = parse_action_effects_t<BASE>;
-
-public:
-  // auto parsed dynamic effects
   std::vector<player_effect_t> ta_multiplier_effects;
   std::vector<player_effect_t> da_multiplier_effects;
   std::vector<player_effect_t> execute_time_effects;
@@ -689,8 +684,76 @@ public:
   std::vector<target_effect_t> target_crit_damage_effects;
   std::vector<target_effect_t> target_crit_chance_effects;
 
+private:
+  action_t* _action;
+
+public:
+  parse_action_base_t( player_t* p, action_t* a ) : parse_effects_t( p ), _action( a ) {}
+
+  bool is_valid_aura( const spelleffect_data_t& ) const override;
+
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t&, player_effect_t&, double&, std::string&,
+                                                   bool&, bool ) override;
+
+  void debug_message( const player_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
+                      size_t ) override;
+
+  bool is_valid_target_aura( const spelleffect_data_t& ) const override;
+
+  std::vector<target_effect_t>* get_target_effect_vector( const spelleffect_data_t&, target_effect_t&, double&,
+                                                          std::string&, bool&, bool ) override;
+
+  void target_debug_message( std::string_view, std::string_view, const spell_data_t*, size_t ) override;
+
+  void parsed_effects_html( report::sc_html_stream&, action_t* );
+
+  virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
+
+  virtual size_t total_effects_count();
+
+  template <typename W = parse_action_base_t, typename V>
+  void print_parsed_type( report::sc_html_stream& os, V vector_ptr, std::string_view n,
+                          std::function<std::string( double )> val_str_fn = nullptr )
+  {
+    auto _this = dynamic_cast<W*>( _action );
+    assert( _this );
+    auto entries = std::invoke( vector_ptr, _this );
+
+    // assuming the stats obj being processed isn't orphaned (as can happen in debug=1 with child actions with stats
+    // replaced by parent's stats), go through all the actions assigned to the stats obj and populate with all unique
+    // entries
+    if ( range::contains( _action->stats->action_list, _action ) )
+      for ( auto a : _action->stats->action_list )
+        if ( auto tmp = dynamic_cast<W*>( a ); tmp && a != _action )
+          for ( const auto& entry : std::invoke( vector_ptr, tmp ) )
+            if ( !range::contains( entries, entry ) )
+              entries.push_back( entry );
+
+    auto c = entries.size();
+    if ( !c )
+      return;
+
+    os.format( "<tr><td class=\"label\" rowspan=\"{}\">{}</td>\n", c, n );
+
+    for ( size_t i = 0; i < c; i++ )
+    {
+      if ( i > 0 )
+        os << "<tr>";
+
+      entries[ i ].print_parsed_line( os, *_action->sim, false, nullptr, val_str_fn );
+    }
+  }
+};
+
+template <typename BASE>
+struct parse_action_effects_t : public BASE, public parse_action_base_t
+{
+private:
+  using base_t = parse_action_effects_t<BASE>;
+
+public:
   parse_action_effects_t( std::string_view name, player_t* player, const spell_data_t* spell )
-    : BASE( name, player, spell ), parse_effects_t( player )
+    : BASE( name, player, spell ), parse_action_base_t( player, this )
   {}
 
   double cost_flat_modifier() const override
@@ -865,246 +928,8 @@ public:
     os << "</div>\n"
        << "<div>\n";
 
-    parsed_effects_html( os );
+    parsed_effects_html( os, this );
 
     os << "</div>\n";
-  }
-
-  bool is_valid_aura( const spelleffect_data_t& eff ) const override
-  {
-    // Only parse apply aura effects
-    switch ( eff.type() )
-    {
-      case E_APPLY_AURA:
-      case E_APPLY_AURA_PET:
-        // TODO: more robust logic around 'party' buffs with radius
-        if ( eff.radius() )
-          return false;
-        break;
-      case E_APPLY_AREA_AURA_PARTY:
-      case E_APPLY_AREA_AURA_PET:
-        break;
-      default:
-        return false;
-    }
-
-    return true;
-  }
-
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data,
-                                                   double& val_mul, std::string& str, bool& flat, bool force ) override
-  {
-    auto adjust_recharge_multiplier_warning = [ this, &data ] {
-      if ( BASE::sim->debug && data.buff && !data.buff->stack_change_callback )
-      {
-        BASE::sim->error( "WARNING: {} adjusts cooldown of {} but does not have a stack change callback.\n\r"
-                          "Make sure adjust_recharge_multiplier() is properly called.", *data.buff, *this );
-      }
-    };
-
-    if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
-    {
-      str = "auto attack";
-      return &da_multiplier_effects;
-    }
-    else if ( !BASE::data().affected_by_all( eff ) && !force )
-    {
-      return nullptr;
-    }
-    else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
-    {
-      switch ( eff.misc_value1() )
-      {
-        case P_GENERIC:       str = "direct damage";          return &da_multiplier_effects;
-        case P_DURATION:      str = "duration";               return &dot_duration_effects;
-        case P_TICK_DAMAGE:   str = "tick damage";            return &ta_multiplier_effects;
-        case P_CAST_TIME:     str = "cast time";              return &execute_time_effects;
-        case P_GCD:           str = "gcd";                    return &gcd_effects;
-        case P_TICK_TIME:     str = "tick time";              return &tick_time_effects;
-        case P_RESOURCE_COST: str = "cost percent";           return &cost_effects;
-        case P_CRIT:          str = "crit chance multiplier"; return &crit_chance_multiplier_effects;
-        case P_CRIT_DAMAGE:   str = "crit damage";            return &crit_damage_effects;
-        case P_COOLDOWN:      adjust_recharge_multiplier_warning();
-                              str = "cooldown";               return &recharge_multiplier_effects;
-        default:              return nullptr;
-      }
-    }
-    else if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
-    {
-      flat = true;
-
-      switch ( eff.misc_value1() )
-      {
-        case P_CRIT:          str = "crit chance"; return &crit_chance_effects;
-        case P_RESOURCE_COST: val_mul = spelleffect_data_t::resource_multiplier( BASE::current_resource() );
-                              str = "flat cost";   return &flat_cost_effects;
-        default:              return nullptr;
-      }
-    }
-    else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY )
-    {
-      str = "cooldown";
-      adjust_recharge_multiplier_warning();
-      return &recharge_multiplier_effects;
-    }
-
-    return nullptr;
-  }
-
-  void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str, bool mastery,
-                      const spell_data_t* s_data, size_t i ) override
-  {
-    if ( data.buff )
-    {
-      BASE::sim->print_debug( "action-effects: {} ({}) {} modified by {} {} buff {} ({}#{})", BASE::name(), BASE::id,
-                              type_str, val_str, data.use_stacks ? "per stack of" : "with", data.buff->name(),
-                              data.buff->data().id(), i );
-    }
-    else if ( mastery && !data.func )
-    {
-      BASE::sim->print_debug( "action-effects: {} ({}) {} modified by {} from {} ({}#{})", BASE::name(), BASE::id,
-                              type_str, val_str, s_data->name_cstr(), s_data->id(), i );
-    }
-    else if ( data.func )
-    {
-      BASE::sim->print_debug( "action-effects: {} ({}) {} modified by {} with condition from {} ({}#{})", BASE::name(),
-                              BASE::id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
-    }
-    else
-    {
-      BASE::sim->print_debug( "action-effects: {} ({}) {} modified by {} from {} ({}#{})", BASE::name(), BASE::id,
-                              type_str, val_str, s_data->name_cstr(), s_data->id(), i );
-    }
-  }
-
-  bool is_valid_target_aura( const spelleffect_data_t& eff ) const override
-  {
-    if ( eff.type() == E_APPLY_AURA )
-      return true;
-
-    return false;
-  }
-
-  std::vector<target_effect_t>* get_target_effect_vector( const spelleffect_data_t& eff, target_effect_t& /* data */,
-                                                          double& /* val_mul */, std::string& str, bool& flat,
-                                                          bool force ) override
-  {
-    if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER )
-    {
-      str = "auto attack";
-      return &target_multiplier_effects;
-    }
-    else if ( !BASE::data().affected_by_all( eff ) && !force )
-    {
-      return nullptr;
-    }
-    else
-    {
-      switch ( eff.subtype() )
-      {
-        case A_MOD_DAMAGE_FROM_CASTER_SPELLS:
-        case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:    str = "damage";      return &target_multiplier_effects;
-        case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS:     flat = true;
-                                                       str = "crit chance"; return &target_crit_chance_effects;
-        case A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS: str = "crit damage"; return &target_crit_damage_effects;
-        default:                                       return nullptr;
-      }
-    }
-
-    return nullptr;
-  }
-
-  void target_debug_message( std::string_view type_str, std::string_view val_str, const spell_data_t* s_data,
-                             size_t i ) override
-  {
-    BASE::sim->print_debug( "target-effects: {} ({}) {} modified by {} on targets with debuff {} ({}#{})", BASE::name(),
-                            BASE::id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
-  }
-
-  void parsed_effects_html( report::sc_html_stream& os )
-  {
-    if ( total_effects_count() )
-    {
-      os << "<div>"
-         << "<h4>Affected By (Dynamic)</h4>"
-         << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
-
-      os << "<tr>"
-         << "<th class=\"small\">Type</th>"
-         << "<th class=\"small\">Spell</th>"
-         << "<th class=\"small\">ID</th>"
-         << "<th class=\"small\">#</th>"
-         << "<th class=\"small\">Value</th>"
-         << "<th class=\"small\">Source</th>"
-         << "<th class=\"small\">Notes</th>"
-         << "</tr>\n";
-
-      print_parsed_type( os, &base_t::da_multiplier_effects, "Direct Damage" );
-      print_parsed_type( os, &base_t::ta_multiplier_effects, "Periodic Damage" );
-      print_parsed_type( os, &base_t::crit_chance_effects, "Critical Strike Chance" );
-      print_parsed_type( os, &base_t::crit_damage_effects, "Critical Strike Damage" );
-      print_parsed_type( os, &base_t::execute_time_effects, "Execute Time" );
-      print_parsed_type( os, &base_t::gcd_effects, "GCD" );
-      print_parsed_type( os, &base_t::dot_duration_effects, "Dot Duration" );
-      print_parsed_type( os, &base_t::tick_time_effects, "Tick Time" );
-      print_parsed_type( os, &base_t::recharge_multiplier_effects, "Recharge Multiplier" );
-      print_parsed_type( os, &base_t::flat_cost_effects, "Flat Cost", []( double v ) { return fmt::to_string( v ); } );
-      print_parsed_type( os, &base_t::cost_effects, "Percent Cost" );
-      print_parsed_type( os, &base_t::target_multiplier_effects, "Damage on Debuff" );
-      print_parsed_type( os, &base_t::target_crit_chance_effects, "Crit Chance on Debuff" );
-      print_parsed_type( os, &base_t::target_crit_damage_effects, "Crit Damage on Debuff" );
-      print_parsed_custom_type( os );
-
-      os << "</table>\n"
-         << "</div>\n";
-    }
-  }
-
-  virtual size_t total_effects_count()
-  {
-    return ta_multiplier_effects.size() +
-           da_multiplier_effects.size() +
-           execute_time_effects.size() +
-           gcd_effects.size() +
-           dot_duration_effects.size() +
-           tick_time_effects.size() +
-           recharge_multiplier_effects.size() +
-           cost_effects.size() +
-           flat_cost_effects.size() +
-           crit_chance_effects.size() +
-           target_multiplier_effects.size();
-  }
-
-  virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
-
-  template <typename W = base_t, typename V>
-  void print_parsed_type( report::sc_html_stream& os, V vector_ptr, std::string_view n,
-                          std::function<std::string( double )> val_str_fn = nullptr )
-  {
-    auto entries = std::invoke( vector_ptr, static_cast<W*>( this ) );
-
-    // assuming the stats obj being processed isn't orphaned (as can happen in debug=1 with child actions with stats
-    // replaced by parent's stats), go through all the actions assigned to the stats obj and populate with all unique
-    // entries
-    if ( range::contains( BASE::stats->action_list, this ) )
-      for ( auto a : BASE::stats->action_list )
-        if ( a != this )
-          for ( const auto& entry : std::invoke( vector_ptr, static_cast<W*>( a ) ) )
-            if ( !range::contains( entries, entry ) )
-              entries.push_back( entry );
-
-    auto c = entries.size();
-    if ( !c )
-      return;
-
-    os.format( "<tr><td class=\"label\" rowspan=\"{}\">{}</td>\n", c, n );
-
-    for ( size_t i = 0; i < c; i++ )
-    {
-      if ( i > 0 )
-        os << "<tr>";
-
-      entries[ i ].print_parsed_line( os, *BASE::sim, false, nullptr, val_str_fn );
-    }
   }
 };
