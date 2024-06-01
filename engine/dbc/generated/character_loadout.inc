@@ -1,6 +1,6 @@
 static constexpr int MYTHIC_TARGET_ITEM_LEVEL = 578;
 
-// Character Loadout data, wow build 11.0.0.54774
+// Character Loadout data, wow build 11.0.0.54935
 static const std::array<character_loadout_data_t, 599> __character_loadout_data { {
   { 1809, 1, 0, 154025 },
   { 1809, 1, 0, 154026 },
@@ -603,8 +603,8 @@ static const std::array<character_loadout_data_t, 599> __character_loadout_data 
   { 1787, 13, 2, 194536 },
 } };
 
-// Trait Loadout data, wow build 11.0.0.54774
-static const std::array<trait_loadout_data_t, 2239> __trait_loadout_data { {
+// Trait Loadout data, wow build 11.0.0.54935
+static const std::array<trait_loadout_data_t, 2237> __trait_loadout_data { {
   { 0, 122462, 1, 6 },
   { 0, 122463, 1, 7 },
   { 62, 80179, 1, 31 },
@@ -2259,14 +2259,12 @@ static const std::array<trait_loadout_data_t, 2239> __trait_loadout_data { {
   { 265, 91563, 2, 17 },
   { 265, 91561, 1, 18 },
   { 265, 91561, 2, 19 },
-  { 265, 91557, 1, 20 },
   { 265, 91580, 1, 21 },
   { 265, 91429, 1, 22 },
   { 265, 91429, 2, 23 },
   { 265, 91420, 1, 24 },
   { 265, 91551, 1, 25 },
   { 265, 91552, 1, 26 },
-  { 265, 91506, 1, 29 },
   { 265, 91554, 1, 30 },
   { 265, 91461, 1, 31 },
   { 265, 91461, 2, 32 },

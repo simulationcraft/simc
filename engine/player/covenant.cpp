@@ -324,7 +324,7 @@ void covenant_state_t::set_renown_level( unsigned renown_level )
     renown_spells[ entry.name ] = entry.spell_id;
   }
 
-  for ( auto spell : renown_spells )
+  for ( const auto& spell : renown_spells )
     m_renown.push_back( spell.second );
 }
 
@@ -617,7 +617,7 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
     {
       if ( conduit_id == e.id )
       {
-        auto conduitRankData = conduit_rank_entry_t::find( conduit_id, rank, m_player->is_ptr() );
+        const auto& conduitRankData = conduit_rank_entry_t::find( conduit_id, rank, m_player->is_ptr() );
         auto conduitData = conduit_data_t( m_player, conduitRankData );
         root.format( "<li class=\"nowrap\">{} ({})</li>\n",
                      report_decorators::decorated_conduit_name( sim, conduitData ), rank + 1 );
@@ -905,7 +905,7 @@ bool parse_blizzard_covenant_information( player_t*               player,
       // Soulbind spell
       if ( entry.HasMember( "trait" ) )
       {
-        auto data_entry = soulbind_ability_entry_t::find_by_soulbind_id(
+        const auto& data_entry = soulbind_ability_entry_t::find_by_soulbind_id(
             entry[ "trait" ][ "id" ].GetUint(), player->dbc->ptr );
         if ( !data_entry.spell_id )
         {

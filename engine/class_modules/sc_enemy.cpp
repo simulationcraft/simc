@@ -1899,6 +1899,7 @@ void enemy_t::reset_auto_attacks( timespan_t delay, proc_t* proc )
 
   if ( oh )
   {
+    assert( mh && "Off-hand attack without main-hand attack" );
     auto driver = debug_cast<auto_attack_off_hand_t*>( mh->driver );
 
     // the first element is off_hand_attack and it's already been rescheduled
@@ -1944,6 +1945,7 @@ void enemy_t::delay_auto_attacks( timespan_t delay, proc_t* proc )
 
   if ( oh )
   {
+    assert( mh && "Off-hand attack without main-hand attack" );
     auto driver = debug_cast<auto_attack_off_hand_t*>( mh->driver );
 
     // the first element is off_hand_attack and it's already been rescheduled

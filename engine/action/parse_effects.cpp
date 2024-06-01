@@ -21,42 +21,76 @@ void player_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
                                          std::function<std::string( uint32_t )> note_fn,
                                          std::function<std::string( double )> val_str_fn ) const
 {
-std::vector<std::string> notes;
+  std::vector<std::string> notes;
 
-if ( !use_stacks )
+  if ( !use_stacks )
     notes.emplace_back( "No-stacks" );
 
-if ( mastery )
+  if ( mastery )
     notes.emplace_back( "Mastery" );
 
-if ( func )
+  if ( func )
     notes.emplace_back( "Conditional" );
 
-if ( !buff && !func )
+  if ( !buff && !func )
     notes.emplace_back( "Passive" );
 
-if ( note_fn )
+  if ( note_fn )
     notes.emplace_back( note_fn( opt_enum ) );
 
-range::for_each( notes, []( auto& s ) { s[ 0 ] = std::toupper( s[ 0 ] ); } );
+  range::for_each( notes, []( auto& s ) { s[ 0 ] = std::toupper( s[ 0 ] ); } );
 
-std::string val_str = val_str_fn ? val_str_fn( value )
-                      : mastery  ? fmt::format( "{:.5f}", value * 100 )
-                                 : fmt::format( "{:.1f}%", value * 100 );
+  std::string val_str = val_str_fn ? val_str_fn( value )
+                        : mastery  ? fmt::format( "{:.5f}", value * 100 )
+                                   : fmt::format( "{:.1f}%", value * 100 );
 
-os.format(
-  "<td class=\"left\">{}</td>"
-  "<td class=\"right\">{}</td>"
-  "<td class=\"right\">{}</td>"
-  "<td class=\"right\">{}</td>"
-  "<td>{}</td>"
-  "<td>{}</td>""</tr>\n",
-  decorate ? report_decorators::decorated_spell_data( sim, eff->spell() ) : eff->spell()->name_cstr(),
-  eff->spell()->id(),
-  eff->index() + 1,
-  val_str,
-  value_type_name( type ),
-  util::string_join( notes ) );
+  os.format(
+    "<td class=\"left\">{}</td>"
+    "<td class=\"right\">{}</td>"
+    "<td class=\"right\">{}</td>"
+    "<td class=\"right\">{}</td>"
+    "<td>{}</td>"
+    "<td>{}</td>"
+    "</tr>\n",
+    decorate ? report_decorators::decorated_spell_data( sim, eff->spell() ) : eff->spell()->name_cstr(),
+    eff->spell()->id(),
+    eff->index() + 1,
+    val_str,
+    value_type_name( type ),
+    util::string_join( notes ) );
+}
+
+void target_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t& sim, bool decorate,
+                                         std::function<std::string( uint32_t )> note_fn,
+                                         std::function<std::string( double )> val_str_fn ) const
+{
+  std::vector<std::string> notes;
+
+  if ( mastery )
+    notes.emplace_back( "Mastery" );
+
+  if ( note_fn )
+    notes.emplace_back( note_fn( opt_enum ) );
+
+  range::for_each( notes, []( auto& s ) { s[ 0 ] = std::toupper( s[ 0 ] ); } );
+
+  std::string val_str = val_str_fn ? val_str_fn( value )
+                        : mastery  ? fmt::format( "{:.5f}", value * 100 )
+                                   : fmt::format( "{:.1f}%", value * 100 );
+
+  os.format(
+    "<td class=\"left\">{}</td>"
+    "<td class=\"right\">{}</td>"
+    "<td class=\"right\">{}</td>"
+    "<td class=\"right\">{}</td>"
+    "<td>{}</td>"
+    "<td>{}</td></tr>\n",
+    decorate ? report_decorators::decorated_spell_data( sim, eff->spell() ) : eff->spell()->name_cstr(),
+    eff->spell()->id(),
+    eff->index() + 1,
+    val_str,
+    "",
+    util::string_join( notes ) );
 }
 
 // adjust value based on effect modifying effects from mod list.
@@ -315,13 +349,13 @@ void modified_spell_data_t::parse_effect( pack_t<modify_effect_t>& tmp, const sp
     case P_EFFECT_3: idx = 2; break;
     case P_EFFECT_4: idx = 3; break;
     case P_EFFECT_5: idx = 4; break;
-    default: return;
+    default:         return;
   }
 
   if ( !_spell.affected_by_all( eff ) )
     return;
 
-  auto &effN = effects[ idx ];
+  auto& effN = effects[ idx ];
 
   // dupes are not allowed
   if ( range::contains( effN.permanent, &eff ) || range::contains( effN.conditional, &eff, &modify_effect_t::eff ) )
@@ -413,6 +447,112 @@ void modified_spell_data_t::parsed_effects_html( report::sc_html_stream& os, con
   }
 }
 
+// main effect parsing function with constexpr checks to handle player_effect_t vs target_effect_t
+template <typename U>
+void parse_effects_t::parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, size_t i, bool force )
+{
+  const auto& eff = s_data->effectN( i );
+  bool mastery = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
+  double val = 0.0;
+  double val_mul = 0.01;
+
+  if ( mastery )
+    val = eff.mastery_value();
+  else
+    val = eff.base_value();
+
+  if constexpr ( is_detected_v<detect_buff, U> && is_detected_v<detect_type, U> )
+  {
+    if ( tmp.data.buff && tmp.data.type == USE_DEFAULT )
+      val = tmp.data.buff->default_value * 100;
+
+    if ( !is_valid_aura( eff ) )
+      return;
+  }
+  else
+  {
+    if ( !is_valid_target_aura( eff ) )
+      return;
+  }
+
+  if ( tmp.data.value != 0.0 )
+  {
+    val = tmp.data.value;
+    val_mul = 1.0;
+    mastery = false;
+  }
+  else
+  {
+    apply_affecting_mods( tmp, val, mastery, s_data, i );
+
+    if ( mastery )
+      val_mul = 1.0;
+  }
+
+  std::string type_str;
+  bool flat = false;
+  std::vector<U>* vec;
+
+  if constexpr ( is_detected_v<detect_buff, U> )
+    vec = get_effect_vector( eff, tmp.data, val_mul, type_str, flat, force );
+  else
+    vec = get_target_effect_vector( eff, tmp.data, val_mul, type_str, flat, force );
+
+  if ( !vec )
+    return;
+
+  if constexpr ( is_detected_v<detect_type, U> )
+  {
+    if ( !val && tmp.data.type == parse_flag_e::USE_DATA )
+      return;
+  }
+  else
+  {
+    if ( !val )
+      return;
+  }
+
+  val *= val_mul;
+
+  std::string val_str = mastery ? fmt::format( "{:.5f}*mastery", val * 100 )
+                        : flat  ? fmt::format( "{}", val )
+                                : fmt::format( "{:.1f}%", val * ( 1 / val_mul ) );
+
+  if ( tmp.data.value != 0.0 )
+    val_str = val_str + " (overridden)";
+
+  if constexpr ( is_detected_v<detect_buff, U> && is_detected_v<detect_type, U> )
+  {
+    if ( tmp.data.buff )
+    {
+      if ( tmp.data.type == parse_flag_e::USE_CURRENT )
+        val_str = flat ? "current value" : "current value percent";
+      else if ( tmp.data.type == parse_flag_e::USE_DEFAULT )
+        val_str = val_str + " (default value)";
+    }
+
+    debug_message( tmp.data, type_str, val_str, mastery, s_data, i );
+  }
+  else
+  {
+    target_debug_message( type_str, val_str, s_data, i );
+  }
+
+  tmp.data.value = val;
+  tmp.data.mastery = mastery;
+  tmp.data.eff = &eff;
+  vec->push_back( tmp.data );
+
+  if ( tmp.copy )
+    tmp.copy->push_back( tmp.data );
+}
+
+// explicit template instantiation
+template void parse_effects_t::parse_effect<player_effect_t>( pack_t<player_effect_t>&, const spell_data_t*, size_t,
+                                                              bool );
+template void parse_effects_t::parse_effect<target_effect_t>( pack_t<target_effect_t>&, const spell_data_t*, size_t,
+                                                              bool );
+
 double parse_effects_t::get_effect_value( const player_effect_t& i, bool benefit ) const
 {
   if ( i.func && !i.func() )
@@ -437,4 +577,798 @@ double parse_effects_t::get_effect_value( const player_effect_t& i, bool benefit
     eff_val *= _player->cache.mastery();
 
   return eff_val;
+}
+
+double parse_effects_t::get_target_effect_value( const target_effect_t& i, actor_target_data_t* td ) const
+{
+  if ( auto check = i.func( td ) )
+  {
+    auto eff_val = i.value * check;
+
+    if ( i.mastery )
+      eff_val *= _player->cache.mastery();
+
+    return eff_val;
+  }
+
+  return 0.0;
+}
+
+double parse_player_effects_t::composite_melee_auto_attack_speed() const
+{
+  auto ms = player_t::composite_melee_auto_attack_speed();
+
+  for ( const auto& i : auto_attack_speed_effects )
+    ms *= 1.0 / ( 1.0 + get_effect_value( i ) );
+
+  return ms;
+}
+
+double parse_player_effects_t::composite_attribute_multiplier( attribute_e attr ) const
+{
+  auto am = player_t::composite_attribute_multiplier( attr );
+
+  assert( attr != ATTRIBUTE_NONE && "ATTRIBUTE_NONE will be out of index" );
+
+  for ( const auto& i : attribute_multiplier_effects )
+    if ( i.opt_enum & ( 1 << ( attr - 1 ) ) )
+      am *= 1.0 + get_effect_value( i );
+
+  return am;
+}
+
+double parse_player_effects_t::composite_damage_versatility() const
+{
+  auto v = player_t::composite_damage_versatility();
+
+  for ( const auto& i : versatility_effects )
+    v += get_effect_value( i );
+
+  return v;
+}
+
+double parse_player_effects_t::composite_heal_versatility() const
+{
+  auto v = player_t::composite_heal_versatility();
+
+  for ( const auto& i : versatility_effects )
+    v += get_effect_value( i );
+
+  return v;
+}
+
+double parse_player_effects_t::composite_mitigation_versatility() const
+{
+  auto v = player_t::composite_mitigation_versatility();
+
+  for ( const auto& i : versatility_effects )
+    v += get_effect_value( i ) * 0.5;
+
+  return v;
+}
+
+double parse_player_effects_t::composite_player_multiplier( school_e school ) const
+{
+  auto m = player_t::composite_player_multiplier( school );
+
+  for ( const auto& i : player_multiplier_effects )
+    if ( i.opt_enum & dbc::get_school_mask( school ) )
+      m *= 1.0 + get_effect_value( i, true );
+
+  return m;
+}
+
+double parse_player_effects_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
+{
+  auto dm = player_t::composite_player_pet_damage_multiplier( s, guardian );
+
+  for ( const auto& i : pet_multiplier_effects )
+    if ( static_cast<bool>( i.opt_enum ) == guardian )
+      dm *= 1.0 + get_effect_value( i, true );
+
+  return dm;
+}
+
+double parse_player_effects_t::composite_attack_power_multiplier() const
+{
+  auto apm = player_t::composite_attack_power_multiplier();
+
+  for ( const auto& i : attack_power_multiplier_effects )
+    apm *= 1.0 + get_effect_value( i );
+
+  return apm;
+}
+
+double parse_player_effects_t::composite_melee_crit_chance() const
+{
+  auto mcc = player_t::composite_melee_crit_chance();
+
+  for ( const auto& i : crit_chance_effects )
+    mcc += get_effect_value( i );
+
+  return mcc;
+}
+
+double parse_player_effects_t::composite_spell_crit_chance() const
+{
+  auto scc = player_t::composite_spell_crit_chance();
+
+  for ( const auto& i : crit_chance_effects )
+    scc += get_effect_value( i );
+
+  return scc;
+}
+
+double parse_player_effects_t::composite_leech() const
+{
+  auto leech = player_t::composite_leech();
+
+  for ( const auto& i : leech_effects )
+    leech += get_effect_value( i );
+
+  return leech;
+}
+
+double parse_player_effects_t::composite_melee_expertise( const weapon_t* ) const
+{
+  auto me = player_t::composite_melee_expertise( nullptr );
+
+  for ( const auto& i : expertise_effects )
+    me += get_effect_value( i );
+
+  return me;
+}
+
+double parse_player_effects_t::composite_crit_avoidance() const
+{
+  auto ca = player_t::composite_crit_avoidance();
+
+  for ( const auto& i : crit_avoidance_effects )
+    ca += get_effect_value( i );
+
+  return ca;
+}
+
+double parse_player_effects_t::composite_parry() const
+{
+  auto parry = player_t::composite_parry();
+
+  for ( const auto& i : parry_effects )
+    parry += get_effect_value( i );
+
+  return parry;
+}
+
+double parse_player_effects_t::composite_armor_multiplier() const
+{
+  auto am = player_t::composite_armor_multiplier();
+
+  for ( const auto& i : armor_multiplier_effects )
+    am *= 1.0 + get_effect_value( i );
+
+  return am;
+}
+
+double parse_player_effects_t::composite_melee_haste() const
+{
+  auto mh = player_t::composite_melee_haste();
+
+  for ( const auto& i : haste_effects )
+    mh *= 1.0 / ( 1.0 + get_effect_value( i ) );
+
+  return mh;
+}
+
+double parse_player_effects_t::composite_spell_haste() const
+{
+  auto sh = player_t::composite_spell_haste();
+
+  for ( const auto& i : haste_effects )
+    sh *= 1.0 / ( 1.0 + get_effect_value( i ) );
+
+  return sh;
+}
+
+double parse_player_effects_t::composite_mastery() const
+{
+  auto m = player_t::composite_mastery();
+
+  for ( const auto& i : mastery_effects )
+    m += get_effect_value( i );
+
+  return m;
+}
+
+double parse_player_effects_t::composite_parry_rating() const
+{
+  auto pr = player_t::composite_parry_rating();
+
+  for ( const auto& i : parry_rating_from_crit_effects )
+    pr += player_t::composite_melee_crit_rating() * get_effect_value( i );
+
+  return pr;
+}
+
+double parse_player_effects_t::composite_dodge() const
+{
+  auto dodge = player_t::composite_dodge();
+
+  for ( const auto& i : dodge_effects )
+    dodge += get_effect_value( i );
+
+  return dodge;
+}
+
+double parse_player_effects_t::matching_gear_multiplier( attribute_e attr ) const
+{
+  double mg = player_t::matching_gear_multiplier( attr );
+
+  assert( attr != ATTRIBUTE_NONE && "ATTRIBUTE_NONE will be out of index" );
+
+  for ( const auto& i : matching_armor_attribute_multiplier_effects )
+    if ( i.opt_enum & ( 1 << ( attr - 1 ) ) )
+      mg += get_effect_value( i );
+
+  return mg;
+}
+
+double parse_player_effects_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  auto tm = player_t::composite_player_target_multiplier( target, school );
+  auto td = get_target_data( target );
+
+  for ( const auto& i : target_multiplier_effects )
+    if ( i.opt_enum & dbc::get_school_mask( school ) )
+      tm *= 1.0 + get_target_effect_value( i, td );
+
+  return tm;
+}
+
+double parse_player_effects_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+{
+  auto tm = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
+  auto td = get_target_data( target );
+
+  for ( const auto& i : target_pet_multiplier_effects )
+    if ( static_cast<bool>( i.opt_enum ) == guardian )
+      tm *= 1.0 + get_target_effect_value( i, td );
+
+  return tm;
+}
+
+void parse_player_effects_t::invalidate_cache( cache_e c )
+{
+  player_t::invalidate_cache( c );
+
+  for ( const auto& i : invalidate_with_parent )
+  {
+    if ( c == i.second )
+      player_t::invalidate_cache( i.first );
+  }
+}
+
+bool parse_player_effects_t::is_valid_aura( const spelleffect_data_t& eff ) const
+{
+  switch ( eff.type() )
+  {
+    case E_APPLY_AURA:
+    case E_APPLY_AURA_PET:
+      // TODO: more robust logic around 'party' buffs with radius
+      if ( eff.radius() )
+        return false;
+      break;
+    case E_APPLY_AREA_AURA_PARTY:
+    case E_APPLY_AREA_AURA_PET:
+      break;
+    default:
+      return false;
+  }
+
+  return true;
+}
+
+std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const spelleffect_data_t& eff,
+                                                                         player_effect_t& data, double& val_mul,
+                                                                         std::string& str, bool& /* flat */,
+                                                                         bool /* force */ )
+{
+  auto invalidate = [ &data ]( cache_e c ) {
+    if ( data.buff )
+      data.buff->add_invalidate( c );
+  };
+
+  switch ( eff.subtype() )
+  {
+    case A_MOD_MELEE_AUTO_ATTACK_SPEED:
+    case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:
+      str = "auto attack speed";
+      invalidate( CACHE_AUTO_ATTACK_SPEED );
+      return &auto_attack_speed_effects;
+
+    case A_MOD_TOTAL_STAT_PERCENTAGE:
+      data.opt_enum = eff.misc_value2();
+      {
+        std::vector<std::string> str_list;
+        for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
+        {
+          if ( data.opt_enum & ( 1 << ( stat - 1 ) ) )
+          {
+            str_list.emplace_back( util::stat_type_string( stat ) );
+            invalidate( cache_from_stat( stat ) );
+          }
+        }
+        str = util::string_join( str_list );
+      }
+
+      if ( eff.spell()->equipped_class() == ITEM_CLASS_ARMOR && eff.spell()->flags( SX_REQUIRES_EQUIPPED_ARMOR_TYPE ) )
+      {
+        auto type_bit = 1U << static_cast<unsigned>( util::matching_armor_type( type ) );
+        if ( eff.spell()->equipped_subclass_mask() == type_bit )
+        {
+          str += "|with matching armor";
+          return &matching_armor_attribute_multiplier_effects;
+        }
+      }
+
+      return &attribute_multiplier_effects;
+
+    case A_MOD_VERSATILITY_PCT:
+      str = "versatility";
+      invalidate( CACHE_VERSATILITY );
+      return &versatility_effects;
+
+    case A_HASTE_ALL:
+      str = "haste";
+      invalidate( CACHE_HASTE );
+      return &haste_effects;
+
+    case A_MOD_MASTERY_PCT:
+      str = "mastery";
+      val_mul = 1.0;
+      invalidate( CACHE_MASTERY );
+      return &mastery_effects;
+
+    case A_MOD_ALL_CRIT_CHANCE:
+      str = "all crit chance";
+      invalidate( CACHE_CRIT_CHANCE );
+      return &crit_chance_effects;
+
+    case A_MOD_DAMAGE_PERCENT_DONE:
+      data.opt_enum = eff.misc_value1();
+      str = data.opt_enum == 0x7f ? "all" : util::school_type_string( dbc::get_school_type( data.opt_enum ) );
+      str += " damage";
+      invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      return &player_multiplier_effects;
+
+    case A_MOD_PET_DAMAGE_DONE:
+      data.opt_enum = 0;
+      str = "pet damage";
+      return &pet_multiplier_effects;
+
+    case A_MOD_GUARDIAN_DAMAGE_DONE:
+      data.opt_enum = 1;
+      str = "guardian damage";
+      return &pet_multiplier_effects;
+
+    case A_MOD_ATTACK_POWER_PCT:
+      str = "attack power";
+      invalidate( CACHE_ATTACK_POWER );
+      return &attack_power_multiplier_effects;
+
+    case A_MOD_LEECH_PERCENT:
+      str = "leech";
+      invalidate( CACHE_LEECH );
+      return &leech_effects;
+
+    case A_MOD_EXPERTISE:
+      str = "expertise";
+      invalidate( CACHE_EXP );
+      return &expertise_effects;
+
+    case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:
+      str = "crit avoidance";
+      invalidate( CACHE_CRIT_AVOIDANCE );
+      return &crit_avoidance_effects;
+
+    case A_MOD_PARRY_PERCENT:
+      str = "parry";
+      invalidate( CACHE_PARRY );
+      return &parry_effects;
+
+    case A_MOD_RESISTANCE_PCT:
+    case A_MOD_BASE_RESISTANCE_PCT:
+      str = "armor multiplier";
+      invalidate( CACHE_ARMOR );
+      return &armor_multiplier_effects;
+
+    case A_MOD_PARRY_FROM_CRIT_RATING:
+      str = "parry rating|of crit rating";
+      invalidate_with_parent.emplace_back( CACHE_PARRY, CACHE_CRIT_CHANCE );
+      return &parry_rating_from_crit_effects;
+
+    case A_MOD_DODGE_PERCENT:
+      str = "dodge";
+      invalidate( CACHE_DODGE );
+      return &dodge_effects;
+
+    default:
+      return nullptr;
+  }
+
+  return nullptr;
+}
+
+void parse_player_effects_t::debug_message( const player_effect_t& data, std::string_view type_str,
+                                            std::string_view val_str, bool mastery, const spell_data_t* s_data,
+                                            size_t i )
+{
+  auto splits = util::string_split<std::string_view>( type_str, "|" );
+  auto tok1 = splits[ 0 ];
+  auto tok2 = std::string( val_str );
+
+  if ( splits.size() > 1 )
+    tok2 += fmt::format( " {}", splits[ 1 ] );
+
+  if ( data.buff )
+  {
+    sim->print_debug( "player-effects: {} {} modified by {} {} buff {} ({}#{})", *this, tok1, tok2,
+                      data.use_stacks ? "per stack of" : "with", data.buff->name(), data.buff->data().id(), i );
+  }
+  else if ( mastery && !data.func )
+  {
+    sim->print_debug( "player-effects: {} {} modified by {} from {} ({}#{})", *this, tok1, tok2, s_data->name_cstr(),
+                      s_data->id(), i );
+  }
+  else if ( data.func )
+  {
+    sim->print_debug( "player-effects: {} {} modified by {} with condition from {} ({}#{})", *this, tok1, tok2,
+                      s_data->name_cstr(), s_data->id(), i );
+  }
+  else
+  {
+    sim->print_debug( "player-effects: {} {} modified by {} from {} ({}#{})", *this, tok1, tok2, s_data->name_cstr(),
+                      s_data->id(), i );
+  }
+}
+
+bool parse_player_effects_t::is_valid_target_aura( const spelleffect_data_t& eff ) const
+{
+  if ( eff.type() == E_APPLY_AURA )
+    return true;
+
+  return false;
+}
+
+std::vector<target_effect_t>* parse_player_effects_t::get_target_effect_vector( const spelleffect_data_t& eff,
+                                                                                target_effect_t& data,
+                                                                                double& /* val_mul */, std::string& str,
+                                                                                bool& /* flat */, bool /* force */ )
+{
+  switch ( eff.subtype() )
+  {
+    case A_MOD_DAMAGE_FROM_CASTER:
+      data.opt_enum = eff.misc_value1();
+      str = data.opt_enum == 0x7f ? "all" : util::school_type_string( dbc::get_school_type( data.opt_enum ) );
+      return &target_multiplier_effects;
+
+    case A_MOD_DAMAGE_FROM_CASTER_PET:
+      data.opt_enum = 0;
+      str = "pet";
+      return &target_pet_multiplier_effects;
+
+    case A_MOD_DAMAGE_FROM_CASTER_GUARDIAN:
+      data.opt_enum = 1;
+      str = "guardian";
+      return &target_pet_multiplier_effects;
+
+    default:
+      return nullptr;
+  }
+
+  return nullptr;
+}
+
+void parse_player_effects_t::target_debug_message( std::string_view type_str, std::string_view val_str,
+                                                   const spell_data_t* s_data, size_t i )
+{
+  sim->print_debug( "target-effects: Target {} damage taken modified by {} from {} ({}#{})", type_str, val_str,
+                    s_data->name_cstr(), s_data->id(), i );
+}
+
+void parse_player_effects_t::parsed_effects_html( report::sc_html_stream& os )
+{
+  if ( total_effects_count() )
+  {
+    os << "<h3 class=\"toggle\">Player Effects</h3>"
+       << "<div class=\"toggle-content hide\">"
+       << "<table class=\"sc left even\">\n";
+
+    os << "<thead><tr>"
+       << "<th>Type</th>"
+       << "<th>Spell</th>"
+       << "<th>ID</th>"
+       << "<th>#</th>"
+       << "<th>Value</th>"
+       << "<th>Source</th>"
+       << "<th>Notes</th>"
+       << "</tr></thead>\n";
+
+    auto attr_note = []( uint32_t opt ) {
+      std::vector<std::string> str_list;
+
+      for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
+        if ( opt & ( 1 << ( stat - 1 ) ) )
+          str_list.emplace_back( util::stat_type_string( stat ) );
+
+      return util::string_join( str_list );
+    };
+
+    auto mult_note = []( uint32_t opt ) {
+      return opt == 0x7f ? "All" : util::school_type_string( dbc::get_school_type( opt ) );
+    };
+
+    auto pet_note = []( uint32_t opt ) {
+      return opt ? "Guardian" : "Pet";
+    };
+
+    auto mastery_val = [ this ]( double v ) {
+      return fmt::format( "{:.1f}%", v * mastery_coefficient() * 100 );
+    };
+
+    print_parsed_type( os, auto_attack_speed_effects, "Auto Attack Speed" );
+    print_parsed_type( os, attribute_multiplier_effects, "Attribute Multiplier", attr_note );
+    print_parsed_type( os, matching_armor_attribute_multiplier_effects, "Matching Armor", attr_note );
+    print_parsed_type( os, versatility_effects, "Versatility" );
+    print_parsed_type( os, player_multiplier_effects, "Player Multiplier", mult_note );
+    print_parsed_type( os, pet_multiplier_effects, "Pet Multiplier", pet_note );
+    print_parsed_type( os, attack_power_multiplier_effects, "Attack Power Multiplier" );
+    print_parsed_type( os, crit_chance_effects, "Crit Chance" );
+    print_parsed_type( os, leech_effects, "Leech" );
+    print_parsed_type( os, expertise_effects, "Expertise" );
+    print_parsed_type( os, crit_avoidance_effects, "Crit Avoidance" );
+    print_parsed_type( os, parry_effects, "Parry" );
+    print_parsed_type( os, armor_multiplier_effects, "Armor Multiplier" );
+    print_parsed_type( os, haste_effects, "Haste" );
+    print_parsed_type( os, mastery_effects, "Mastery", nullptr, mastery_val );
+    print_parsed_type( os, parry_rating_from_crit_effects, "Parry Rating from Crit" );
+    print_parsed_type( os, dodge_effects, "Dodge" );
+    print_parsed_type( os, target_multiplier_effects, "Target Multiplier", mult_note );
+    print_parsed_type( os, target_pet_multiplier_effects, "Target Pet Multiplier", pet_note );
+    print_parsed_custom_type( os );
+
+    os << "</table>\n"
+       << "</div>\n";
+  }
+}
+
+size_t parse_player_effects_t::total_effects_count()
+{
+  return auto_attack_speed_effects.size() +
+         attribute_multiplier_effects.size() +
+         matching_armor_attribute_multiplier_effects.size() +
+         versatility_effects.size() +
+         player_multiplier_effects.size() +
+         pet_multiplier_effects.size() +
+         attack_power_multiplier_effects.size() +
+         crit_chance_effects.size() +
+         leech_effects.size() +
+         expertise_effects.size() +
+         crit_avoidance_effects.size() +
+         parry_effects.size() +
+         armor_multiplier_effects.size() +
+         haste_effects.size() +
+         mastery_effects.size() +
+         parry_rating_from_crit_effects.size() +
+         dodge_effects.size() +
+         target_multiplier_effects.size() +
+         target_pet_multiplier_effects.size();
+}
+
+bool parse_action_base_t::is_valid_aura( const spelleffect_data_t& eff ) const
+{
+  // Only parse apply aura effects
+  switch ( eff.type() )
+  {
+    case E_APPLY_AURA:
+    case E_APPLY_AURA_PET:
+      // TODO: more robust logic around 'party' buffs with radius
+      if ( eff.radius() )
+        return false;
+      break;
+    case E_APPLY_AREA_AURA_PARTY:
+    case E_APPLY_AREA_AURA_PET:
+      break;
+    default:
+      return false;
+  }
+
+  return true;
+}
+
+// non-templated implementation of parse_action_effects_t::get_effect_vector()
+std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spelleffect_data_t& eff,
+                                                                      player_effect_t& data, double& val_mul,
+                                                                      std::string& str, bool& flat, bool force )
+{
+  auto adjust_recharge_multiplier_warning = [ this, &data ] {
+    if ( _action->sim->debug && data.buff && !data.buff->stack_change_callback )
+    {
+      _action->sim->error( "WARNING: {} adjusts cooldown of {} but does not have a stack change callback.\n\r"
+                           "Make sure adjust_recharge_multiplier() is properly called.", *data.buff, *_action );
+    }
+  };
+
+  if ( !_action->special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
+  {
+    str = "auto attack";
+    return &da_multiplier_effects;
+  }
+  else if ( !_action->data().affected_by_all( eff ) && !force )
+  {
+    return nullptr;
+  }
+  else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
+  {
+    switch ( eff.misc_value1() )
+    {
+      case P_GENERIC:       str = "direct damage";          return &da_multiplier_effects;
+      case P_DURATION:      str = "duration";               return &dot_duration_effects;
+      case P_TICK_DAMAGE:   str = "tick damage";            return &ta_multiplier_effects;
+      case P_CAST_TIME:     str = "cast time";              return &execute_time_effects;
+      case P_GCD:           str = "gcd";                    return &gcd_effects;
+      case P_TICK_TIME:     str = "tick time";              return &tick_time_effects;
+      case P_RESOURCE_COST: str = "cost percent";           return &cost_effects;
+      case P_CRIT:          str = "crit chance multiplier"; return &crit_chance_multiplier_effects;
+      case P_CRIT_DAMAGE:   str = "crit damage";            return &crit_damage_effects;
+      case P_COOLDOWN:      adjust_recharge_multiplier_warning();
+                            str = "cooldown";               return &recharge_multiplier_effects;
+      default:              return nullptr;
+    }
+  }
+  else if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
+  {
+    flat = true;
+
+    switch ( eff.misc_value1() )
+    {
+      case P_CRIT:          str = "crit chance"; return &crit_chance_effects;
+      case P_RESOURCE_COST: val_mul = spelleffect_data_t::resource_multiplier( _action->current_resource() );
+                            str = "flat cost";   return &flat_cost_effects;
+      default:              return nullptr;
+    }
+  }
+  else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY )
+  {
+    str = "cooldown";
+    adjust_recharge_multiplier_warning();
+    return &recharge_multiplier_effects;
+  }
+
+  return nullptr;
+}
+
+void parse_action_base_t::debug_message( const player_effect_t& data, std::string_view type_str,
+                                         std::string_view val_str, bool mastery, const spell_data_t* s_data, size_t i )
+{
+  if ( data.buff )
+  {
+    _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} {} buff {} ({}#{})", _action->name(),
+                               _action->id, type_str, val_str, data.use_stacks ? "per stack of" : "with",
+                               data.buff->name(), data.buff->data().id(), i );
+  }
+  else if ( mastery && !data.func )
+  {
+    _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} from {} ({}#{})", _action->name(),
+                               _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
+  }
+  else if ( data.func )
+  {
+    _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} with condition from {} ({}#{})",
+                               _action->name(), _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
+  }
+  else
+  {
+    _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} from {} ({}#{})", _action->name(),
+                               _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
+  }
+}
+
+bool parse_action_base_t::is_valid_target_aura( const spelleffect_data_t& eff ) const
+{
+  if ( eff.type() == E_APPLY_AURA )
+    return true;
+
+  return false;
+}
+
+std::vector<target_effect_t>* parse_action_base_t::get_target_effect_vector( const spelleffect_data_t& eff,
+                                                                             target_effect_t& /* data */,
+                                                                             double& /* val_mul */, std::string& str,
+                                                                             bool& flat, bool force )
+{
+  if ( !_action->special && eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER )
+  {
+    str = "auto attack";
+    return &target_multiplier_effects;
+  }
+  else if ( !_action->data().affected_by_all( eff ) && !force )
+  {
+    return nullptr;
+  }
+  else
+  {
+    switch ( eff.subtype() )
+    {
+      case A_MOD_DAMAGE_FROM_CASTER_SPELLS:
+      case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:    str = "damage";      return &target_multiplier_effects;
+      case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS:     flat = true;
+                                                     str = "crit chance"; return &target_crit_chance_effects;
+      case A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS: str = "crit damage"; return &target_crit_damage_effects;
+      default:                                       return nullptr;
+    }
+  }
+
+  return nullptr;
+}
+
+void parse_action_base_t::target_debug_message( std::string_view type_str, std::string_view val_str,
+                                                const spell_data_t* s_data, size_t i )
+{
+  _action->sim->print_debug( "target-effects: {} ({}) {} modified by {} on targets with debuff {} ({}#{})",
+                             _action->name(), _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
+}
+
+void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os )
+{
+  if ( total_effects_count() )
+  {
+    os << "<div>"
+       << "<h4>Affected By (Dynamic)</h4>"
+       << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
+
+    os << "<tr>"
+       << "<th class=\"small\">Type</th>"
+       << "<th class=\"small\">Spell</th>"
+       << "<th class=\"small\">ID</th>"
+       << "<th class=\"small\">#</th>"
+       << "<th class=\"small\">Value</th>"
+       << "<th class=\"small\">Source</th>"
+       << "<th class=\"small\">Notes</th>"
+       << "</tr>\n";
+
+    using VEC = parse_action_base_t;
+    print_parsed_type( os, &VEC::da_multiplier_effects, "Direct Damage" );
+    print_parsed_type( os, &VEC::ta_multiplier_effects, "Periodic Damage" );
+    print_parsed_type( os, &VEC::crit_chance_effects, "Critical Strike Chance" );
+    print_parsed_type( os, &VEC::crit_damage_effects, "Critical Strike Damage" );
+    print_parsed_type( os, &VEC::execute_time_effects, "Execute Time" );
+    print_parsed_type( os, &VEC::gcd_effects, "GCD" );
+    print_parsed_type( os, &VEC::dot_duration_effects, "Dot Duration" );
+    print_parsed_type( os, &VEC::tick_time_effects, "Tick Time" );
+    print_parsed_type( os, &VEC::recharge_multiplier_effects, "Recharge Multiplier" );
+    print_parsed_type( os, &VEC::flat_cost_effects, "Flat Cost", []( double v ) { return fmt::to_string( v ); } );
+    print_parsed_type( os, &VEC::cost_effects, "Percent Cost" );
+    print_parsed_type( os, &VEC::target_multiplier_effects, "Damage on Debuff" );
+    print_parsed_type( os, &VEC::target_crit_chance_effects, "Crit Chance on Debuff" );
+    print_parsed_type( os, &VEC::target_crit_damage_effects, "Crit Damage on Debuff" );
+    print_parsed_custom_type( os );
+
+    os << "</table>\n"
+       << "</div>\n";
+  }
+}
+
+size_t parse_action_base_t::total_effects_count()
+{
+  return ta_multiplier_effects.size() +
+         da_multiplier_effects.size() +
+         execute_time_effects.size() +
+         gcd_effects.size() +
+         dot_duration_effects.size() +
+         tick_time_effects.size() +
+         recharge_multiplier_effects.size() +
+         cost_effects.size() +
+         flat_cost_effects.size() +
+         crit_chance_effects.size() +
+         target_multiplier_effects.size();
 }

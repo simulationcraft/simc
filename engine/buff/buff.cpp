@@ -3213,7 +3213,9 @@ stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, const stat_check_fn& c )
   if ( it != stats.end() )
   {
     it->amount += a;
-    it->check_func = std::move( c );
+
+    if ( c )
+      it->check_func = c;
   }
   else
   {
@@ -3240,7 +3242,7 @@ stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_c
   if ( i > data().effect_count() )
     return do_error( "index out of bounds" );
 
-  auto eff = data().effectN( i );
+  const auto& eff = data().effectN( i );
 
   if ( eff.subtype() == A_MOD_STAT )
   {
@@ -3292,7 +3294,7 @@ stat_buff_t* stat_buff_t::set_stat_from_effect( size_t i, double a, const stat_c
 
 stat_buff_t* stat_buff_t::add_stat_from_effect_type( effect_subtype_t type, double a, const stat_check_fn& c )
 {
-  auto eff = spell_data_t::find_spelleffect( data(), E_APPLY_AURA, type );
+  const auto& eff = spell_data_t::find_spelleffect( data(), E_APPLY_AURA, type );
   assert( eff.ok() && "Effect type not found in stat buff" );
 
   return add_stat_from_effect( eff.index() + 1, a, c );

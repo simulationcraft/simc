@@ -1258,6 +1258,14 @@ struct dark_ascension_t final : public priest_spell_t
 
     priest().buffs.dark_ascension->trigger();
 
+    if ( priest().buffs.sustained_potency->check() )
+    {
+      priest().buffs.dark_ascension->extend_duration(
+          player, timespan_t::from_seconds( priest().buffs.sustained_potency->check() ) );
+
+      priest().buffs.sustained_potency->expire();
+    }
+
     if ( priest().talents.shadow.ancient_madness.enabled() )
     {
       priest().buffs.ancient_madness->trigger();
@@ -1310,6 +1318,14 @@ struct void_eruption_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.voidform->trigger();
+
+    if ( priest().buffs.sustained_potency->check() )
+    {
+      priest().buffs.voidform->extend_duration(
+          player, timespan_t::from_seconds( priest().buffs.sustained_potency->check() ) );
+
+      priest().buffs.sustained_potency->expire();
+    }
   }
 
   bool ready() override
@@ -1459,19 +1475,28 @@ struct void_torrent_t final : public priest_spell_t
 
   void last_tick( dot_t* d ) override
   {
-    priest_spell_t::last_tick( d );
-
     priest().buffs.void_torrent->expire();
+
+    timespan_t channeled_time = dot_duration - d->remains();
 
     if ( priest().talents.voidweaver.entropic_rift.enabled() )
     {
-      priest().trigger_entropic_rift();
-      if ( p().channeling && p().channeling->id == p().specs.mind_blast->id() )
+      if ( p().state.active_entropic_rift && p().state.active_entropic_rift->current_pulse > 0 )
       {
-        event_t::cancel( p().queueing->queue_event );
-        p().queueing = nullptr;
+        p().state.active_entropic_rift->current_pulse = 0;
+        sim->print_debug( "{} extends entropic rift by resetting ticks. New Current Pulse: {} ", p().name(),
+                          p().state.active_entropic_rift->current_pulse );
       }
+
+      priest().buffs.entropic_rift->extend_duration( player, channeled_time );
     }
+
+    if ( priest().talents.voidweaver.voidheart.enabled() )
+    {
+      priest().buffs.voidheart->extend_duration( player, channeled_time );
+    }
+
+    priest_spell_t::last_tick( d );
   }
 
   void execute() override
@@ -1486,6 +1511,11 @@ struct void_torrent_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest().spawn_idol_of_cthun( s );
+    
+    if ( priest().talents.voidweaver.entropic_rift.enabled() )
+    {
+      priest().trigger_entropic_rift();
+    }
   }
 };
 
@@ -1791,8 +1821,9 @@ public:
   propagate_const<shadow_crash_dots_t*> shadow_crash_dots;
   double torment_mult;
 
-  shadow_crash_base_t( priest_t& p, util::string_view options_str, const spell_data_t* s )
-    : priest_spell_t( s->name_cstr(), p, s ),
+  shadow_crash_base_t( priest_t& p, util::string_view options_str, std::string_view name,
+                       const spell_data_t* s )
+    : priest_spell_t( name, p, s ),
       insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) ),
       shadow_crash_dots( new shadow_crash_dots_t( p, data().missile_speed(), s ) ),
       torment_mult( p.buffs.deaths_torment->data().effectN( 2 ).percent() )
@@ -1837,10 +1868,12 @@ struct shadow_crash_t final : public shadow_crash_base_t
   propagate_const<shadow_crash_damage_t*> shadow_crash_damage;
 
   shadow_crash_t( priest_t& p, util::string_view options_str )
-    : shadow_crash_base_t( p, options_str, p.talents.shadow.shadow_crash ),
-      shadow_crash_damage(
-          new shadow_crash_damage_t( "shadow_crash_damage", p, p.talents.shadow.shadow_crash->effectN( 1 ).trigger() ) )
+    : shadow_crash_base_t(
+          p, options_str, p.talents.shadow.void_crash.ok() ? "void_crash" : "shadow_crash",
+          p.talents.shadow.void_crash.ok() ? p.talents.shadow.void_crash : p.talents.shadow.shadow_crash ),
+      shadow_crash_damage( nullptr )
   {
+    shadow_crash_damage = new shadow_crash_damage_t( name_str + "_damage", p, data().effectN( 1 ).trigger() );
     add_child( shadow_crash_damage );
   }
 
@@ -1867,48 +1900,6 @@ struct shadow_crash_t final : public shadow_crash_base_t
 
       shadow_crash_damage->parent_targets = s->n_targets;
       shadow_crash_damage->schedule_execute( state );
-    }
-
-    priest_spell_t::impact( s );
-  }
-};
-
-struct void_crash_t final : public shadow_crash_base_t
-{
-  propagate_const<shadow_crash_damage_t*> void_crash_damage;
-
-  void_crash_t( priest_t& p, util::string_view options_str )
-    : shadow_crash_base_t( p, options_str, p.talents.shadow.void_crash ),
-      void_crash_damage(
-          new shadow_crash_damage_t( "void_crash_damage", p, p.talents.shadow.void_crash->effectN( 1 ).trigger() ) )
-  {
-    add_child( void_crash_damage );
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    if ( priest().talents.shadow.whispering_shadows.enabled() )
-    {
-      set_target( target );
-      shadow_crash_dots->execute();
-    }
-
-    p().buffs.deaths_torment->expire();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    if ( void_crash_damage )
-    {
-      state_t* state             = void_crash_damage->cast_state( void_crash_damage->get_state() );
-      state->target              = s->target;
-      state->deaths_torment_mult = cast_state( s )->deaths_torment_mult;
-      void_crash_damage->snapshot_state( state, void_crash_damage->amount_type( state ) );
-
-      void_crash_damage->parent_targets = s->n_targets;
-      void_crash_damage->schedule_execute( state );
     }
 
     priest_spell_t::impact( s );
@@ -2457,13 +2448,9 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   {
     return new void_eruption_t( *this, options_str );
   }
-  if ( name == "shadow_crash" )
+  if ( name == "shadow_crash" || name == "void_crash" )
   {
     return new shadow_crash_t( *this, options_str );
-  }
-  if ( name == "void_crash" )
-  {
-    return new void_crash_t( *this, options_str );
   }
   if ( name == "void_torrent" )
   {

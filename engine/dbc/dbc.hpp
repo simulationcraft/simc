@@ -370,8 +370,6 @@ public:
 
   double combat_rating( unsigned combat_rating_id, unsigned level ) const;
 
-  int resolve_item_scaling( unsigned level ) const;
-  double resolve_level_scaling( unsigned level ) const;
   double avoid_per_str_agi_by_level( unsigned level ) const;
 
   unsigned real_ppm_scale( unsigned ) const;

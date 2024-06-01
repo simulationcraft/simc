@@ -1,4 +1,4 @@
-// Embellishment data, wow build 11.0.0.54774
+// Embellishment data, wow build 11.0.0.54935
 static const std::array<embellishment_data_t, 27> __embellishment_data { {
   { "Arathor Armor Patch", 8188, 147859 },
   { "Potion Absorption Inhibitor", 8175, 147812 },
@@ -25,7 +25,7 @@ static const std::array<embellishment_data_t, 27> __embellishment_data { {
   { "Pouch of Pocket Grenades", 11209, 186418 },
   { "Concealed Chaos Module", 11210, 186441 },
   { "Energy Redistribution Beacon", 11226, 186832 },
-  { "Dawnthread Lining", 11303, 170917 },
-  { "Duskthread Lining", 11304, 170917 },
+  { "Dawnthread Lining", 11303, 187453 },
+  { "Duskthread Lining", 11304, 187454 },
 } };
 

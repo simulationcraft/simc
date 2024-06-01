@@ -1055,7 +1055,7 @@ void item::tarnished_sentinel_medallion( special_effect_t& effect )
         .action( bolt )
         .hasted( ground_aoe_params_t::SPELL_CAST_SPEED )
         .expiration_pulse( ground_aoe_params_t::FULL_EXPIRATION_PULSE )
-        .expiration_callback( [ this ]() { callback -> deactivate(); } ) );
+        .expiration_callback( [ this ]( const action_state_t* ) { callback -> deactivate(); } ) );
     }
 
     void reset() override
@@ -1120,7 +1120,7 @@ struct umbral_glaives_driver_t : public proc_spell_t
       .pulse_time( data().effectN( 2 ).period() )
       .duration( data().duration() )
       .action( storm )
-      .expiration_callback( [ this ]() {
+      .expiration_callback( [ this ]( const action_state_t* ) {
         if ( ! storm -> execute_state )
           return;
 

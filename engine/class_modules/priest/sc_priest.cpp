@@ -386,7 +386,7 @@ struct divine_star_spell_t final : public priest_spell_t
     triggers_atonement         = true;
 
     // This is not found in the affected spells for Dark Ascension, overriding it manually
-    force_effect( p.buffs.dark_ascension, 1 );
+    force_effect( p.buffs.dark_ascension, 1, p.talents.archon.perfected_form );
     // This is not found in the affected spells for Shadow Covenant, overriding it manually
     // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
     force_effect( p.buffs.shadow_covenant, 1, IGNORE_STACKS, USE_DEFAULT, p.talents.discipline.twilight_corruption );
@@ -494,37 +494,142 @@ private:
 // ==========================================================================
 struct halo_spell_t final : public priest_spell_t
 {
-  halo_spell_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
+  bool returning;
+  action_t* return_spell;
+
+  halo_spell_t( util::string_view n, priest_t& p, const spell_data_t* s, bool return_ = false )
+    : priest_spell_t( n, p, s ),
+      returning( return_ ),
+      return_spell( return_ ? nullptr : new halo_spell_t( name_str + "_return", p, s, true ) )
   {
     aoe                        = -1;
     background                 = true;
-    radius                     = data().max_range();
+    radius                     = data().max_range() + p.talents.archon.power_surge->effectN( 1 ).base_value();
     range                      = 0;
-    travel_speed               = 15;  // Rough estimate, 2021-01-03
+    travel_speed               = radius / 2; // These do not seem to match up to the animation, which would be 2.5s. TODO: Check later
     affected_by_shadow_weaving = true;
 
     // This is not found in the affected spells for Dark Ascension, overriding it manually
-    force_effect( p.buffs.dark_ascension, 1 );
+    force_effect( p.buffs.dark_ascension, 1, p.talents.archon.perfected_form );
     // This is not found in the affected spells for Shadow Covenant, overriding it manually
     // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
     force_effect( p.buffs.shadow_covenant, 1, IGNORE_STACKS, USE_DEFAULT, p.talents.discipline.twilight_corruption );
 
     triggers_atonement = true;
+
+    
+    if ( return_spell )
+    {
+      add_child( return_spell );
+    }
+  }
+
+  timespan_t travel_time() const override
+  {
+    if ( !returning )
+      return priest_spell_t::travel_time();
+
+    if ( travel_speed == 0 && travel_delay == 0 )
+      return timespan_t::from_seconds( min_travel_time );
+
+    double t = travel_delay;
+
+    if ( travel_speed > 0 )
+    {
+      double distance;
+      distance = radius - player->get_player_distance( *target );
+
+      if ( distance > 0 )
+        t += distance / travel_speed;
+    }
+
+    double v = sim->travel_variance;
+
+    if ( v )
+      t = rng().gauss( t, v );
+
+    t = std::max( t, min_travel_time );
+
+    return timespan_t::from_seconds( t );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( p().talents.archon.resonant_energy.enabled() )
+    {
+      auto td = p().get_target_data( s->target );
+      if ( td )
+        td->buffs.resonant_energy->trigger();
+    }
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( p().talents.archon.divine_halo.enabled() && !returning && return_spell )
+    {
+      make_event( sim, timespan_t::from_seconds( radius / travel_speed ), [ this ] { 
+          return_spell->execute();
+      } );
+    }
   }
 };
 
 struct halo_heal_t final : public priest_heal_t
 {
-  halo_heal_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_heal_t( n, p, s )
+  bool returning;
+  action_t* return_spell;
+  halo_heal_t( util::string_view n, priest_t& p, const spell_data_t* s, bool return_ = false )
+    : priest_heal_t( n, p, s ),
+      returning( return_ ),
+      return_spell( return_ ? nullptr : new halo_heal_t( name_str + "_return", p, s, true ) )
   {
     aoe          = -1;
     background   = true;
-    radius       = data().max_range();
+    radius       = data().max_range() + p.talents.archon.power_surge->effectN( 1 ).base_value();
     range        = 0;
-    travel_speed = 15;  // Rough estimate, 2021-01-03
+    travel_speed =
+        radius / 2;  // These do not seem to match up to the animation, which would be 2.5s. TODO: Check later
 
     reduced_aoe_targets = p.talents.halo->effectN( 1 ).base_value();
     disc_mastery        = true;
+
+    if ( return_spell )
+    {
+      add_child( return_spell );
+    }
+  }
+
+  timespan_t travel_time() const override
+  {
+    if ( !returning )
+      return priest_heal_t::travel_time();
+
+    if ( travel_speed == 0 && travel_delay == 0 )
+      return timespan_t::from_seconds( min_travel_time );
+
+    double t = travel_delay;
+
+    if ( travel_speed > 0 )
+    {
+      double distance;
+      distance = radius - player->get_player_distance( *target );
+
+      if ( distance > 0 )
+        t += distance / travel_speed;
+    }
+
+    double v = sim->travel_variance;
+
+    if ( v )
+      t = rng().gauss( t, v );
+
+    t = std::max( t, min_travel_time );
+
+    return timespan_t::from_seconds( t );
   }
 
   void execute() override
@@ -535,24 +640,41 @@ struct halo_heal_t final : public priest_heal_t
     {
       priest().buffs.twist_of_fate->trigger();
     }
+
+    if ( p().talents.archon.divine_halo.enabled() && !returning && return_spell )
+    {
+      make_event( sim, timespan_t::from_seconds( radius / travel_speed ), [ this ] { return_spell->execute(); } );
+    }
   }
 };
 
 struct halo_t final : public priest_spell_t
 {
-  halo_t( priest_t& p, util::string_view options_str )
+  halo_t( priest_t& p, util::string_view options_str ) : halo_t( p, false )
+  {
+    parse_options( options_str );
+  }
+
+  halo_t( priest_t& p, bool power_surge = false )
     : priest_spell_t( "halo", p, p.talents.halo ),
       _heal_spell_holy( new halo_heal_t( "halo_heal_holy", p, p.talents.halo_heal_holy ) ),
       _dmg_spell_holy( new halo_spell_t( "halo_damage_holy", p, p.talents.halo_dmg_holy ) ),
       _heal_spell_shadow( new halo_heal_t( "halo_heal_shadow", p, p.talents.halo_heal_shadow ) ),
       _dmg_spell_shadow( new halo_spell_t( "halo_damage_shadow", p, p.talents.halo_dmg_shadow ) )
   {
-    parse_options( options_str );
 
     add_child( _heal_spell_holy );
     add_child( _dmg_spell_holy );
     add_child( _heal_spell_shadow );
     add_child( _dmg_spell_shadow );
+
+    if ( power_surge )
+    {
+      background = dual = true;
+      energize_type     = action_energize::NONE;
+      energize_amount   = 0;
+      energize_resource = RESOURCE_NONE;
+    }
   }
 
   void execute() override
@@ -568,6 +690,30 @@ struct halo_t final : public priest_spell_t
     {
       _heal_spell_holy->execute();
       _dmg_spell_holy->execute();
+    }
+
+    if ( priest().talents.archon.power_surge.enabled() && !background )
+    {
+      priest().buffs.power_surge->trigger();
+    }
+
+    if ( priest().talents.archon.sustained_potency.enabled() )
+    {
+      bool extended = false;
+      if ( priest().buffs.voidform->check() )
+      {
+        extended = true;
+        priest().buffs.voidform->extend_duration( player, 1_s );
+      }
+      if ( priest().buffs.dark_ascension->check() )
+      {
+        extended = true;
+        priest().buffs.dark_ascension->extend_duration( player, 1_s );
+      }
+      if ( !extended )
+      {
+        priest().buffs.sustained_potency->trigger();
+      }
     }
 
     if ( priest().talents.archon.manifested_power.enabled() )
@@ -836,8 +982,11 @@ struct smite_t final : public smite_base_t
 // ==========================================================================
 struct power_infusion_t final : public priest_spell_t
 {
+  double power_infusion_magnitude;
   power_infusion_t( priest_t& p, util::string_view options_str, util::string_view name )
-    : priest_spell_t( name, p, p.talents.power_infusion )
+    : priest_spell_t( name, p, p.talents.power_infusion ),
+      power_infusion_magnitude( player->buffs.power_infusion->default_value +
+                                p.talents.archon.concentrated_infusion->effectN( 1 ).percent() )
   {
     parse_options( options_str );
     harmful = false;
@@ -850,7 +999,7 @@ struct power_infusion_t final : public priest_spell_t
     // Trigger PI on the actor only if casting on itself
     if ( priest().options.self_power_infusion || priest().talents.twins_of_the_sun_priestess.enabled() )
     {
-      player->buffs.power_infusion->trigger();
+      player->buffs.power_infusion->trigger( 1, power_infusion_magnitude );
     }
   }
 };
@@ -1026,6 +1175,11 @@ struct summon_fiend_t final : public priest_spell_t
   {
     parse_options( options_str );
     harmful = false;
+
+    if ( p.talents.voidweaver.voidwraith.ok() && p.talents.shared.mindbender.ok() )
+    {
+      cooldown->duration = p.talents.shared.mindbender->cooldown();
+    }
   }
 
   void execute() override
@@ -1044,9 +1198,7 @@ struct summon_fiend_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1180
-    if ( priest().talents.shadow.idol_of_yshaarj.enabled() &&
-         ( !priest().bugs || !priest().talents.voidweaver.voidwraith.enabled() ) )
+    if ( priest().talents.shadow.idol_of_yshaarj.enabled() )
     {
       make_event( sim, [ this, s ] { priest().trigger_idol_of_yshaarj( s->target ); } );
     }
@@ -1258,7 +1410,7 @@ public:
   double deathspeaker_mult;
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
   timespan_t depth_of_shadows_duration;
-  double depth_of_shadows_chance;
+  double depth_of_shadows_threshold;
   propagate_const<expiation_t*> child_expiation;
   action_t* child_searing_light;
   timespan_t execute_override;
@@ -1272,7 +1424,7 @@ public:
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       depth_of_shadows_duration(
           timespan_t::from_seconds( p.talents.voidweaver.depth_of_shadows->effectN( 1 ).base_value() ) ),
-      depth_of_shadows_chance( p.talents.voidweaver.depth_of_shadows->effectN( 2 ).percent() ),
+      depth_of_shadows_threshold( p.talents.voidweaver.depth_of_shadows->effectN( 2 ).base_value() ),
       child_expiation( nullptr ),
       child_searing_light( priest().background_actions.searing_light ),
       execute_override( execute_override )
@@ -1415,13 +1567,10 @@ public:
 
       if ( priest().talents.voidweaver.depth_of_shadows.enabled() )
       {
-        if ( save_health_percentage <= 20 || rng().roll( depth_of_shadows_chance ) )
+        // TODO: Find out the chance. Placeholder value of 90%. It is not 100% but it is is extremely high.
+        if ( save_health_percentage <= depth_of_shadows_threshold && rng().roll( 0.9 ) )
         {
           priest().get_current_main_pet().spawn( depth_of_shadows_duration );
-          if ( priest().bugs )
-          {
-            priest().cooldowns.fiend->start();
-          }
         }
       }
 
@@ -1609,13 +1758,8 @@ struct collapsing_void_damage_t final : public priest_spell_t
   collapsing_void_damage_t( priest_t& p )
     : priest_spell_t( "collapsing_void", p, p.talents.voidweaver.collapsing_void_damage ), parent_stacks( 0 )
   {
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1183
-    if ( !priest().bugs )
-    {
-      affected_by_shadow_weaving = true;
-      force_effect( p.buffs.dark_ascension, 1 );
-    }
-
+    affected_by_shadow_weaving = true;
+    
     aoe              = -1;
     radius           = data().effectN( 1 ).radius_max();
     split_aoe_damage = 1;
@@ -1664,11 +1808,7 @@ struct entropic_rift_damage_t final : public priest_spell_t
     background = dual = true;
     radius            = parent_radius;
 
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1184
-    if ( !priest().bugs )
-    {
-      affected_by_shadow_weaving = true;
-    }
+    affected_by_shadow_weaving = true;
   }
 
   void execute() override
@@ -1780,12 +1920,7 @@ struct entropic_rift_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest().buffs.entropic_rift->extend_duration( player, 1_s );
-
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1181
-    if ( !priest().bugs )
-    {
-      priest().buffs.voidheart->extend_duration( player, 2_ms );
-    }
+    priest().buffs.voidheart->extend_duration( player, 2_ms );
 
     double size_increase_mod = priest().bugs ? 0.5 : 1.0;
 
@@ -1817,6 +1952,7 @@ struct entropic_rift_t final : public priest_spell_t
                       break;
                     case ground_aoe_params_t::EVENT_STOPPED:
                       priest().buffs.entropic_rift->expire();
+                      priest().buffs.voidheart->expire();
                       priest().buffs.darkening_horizon->expire();
                       priest().buffs.collapsing_void->expire();
                       break;
@@ -2501,6 +2637,9 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
                           size_t idx = std::clamp( as<int>( p.allies_with_atonement.size() ) - 1, 0, 19 );
                           p.buffs.sins_of_the_many->current_value = p.specs.sins_of_the_many_data[ idx ];
                         } );
+
+  buffs.resonant_energy = make_buff_fallback( p.talents.archon.resonant_energy.enabled(), *this, "resonant_energy",
+                                              p.talents.archon.resonant_energy_shadow );
 }
 
 void priest_td_t::reset()
@@ -2729,6 +2868,28 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
 
   if ( splits.size() >= 2 )
   {
+    if ( util::str_compare_ci( splits[ 0 ], "action" ) )
+    {
+      if ( util::str_compare_ci( splits[ 1 ], "shadow_crash" ) || util::str_compare_ci( splits[ 1 ], "void_crash" ) )
+      {
+        auto crash_name   = talents.shadow.void_crash.enabled() ? "void_crash" : "shadow_crash";
+        auto crash_action = find_action( crash_name );
+        
+        if ( !crash_action )
+          return expr_t::create_constant( expression_str, false );
+
+        auto expr = crash_action->create_expression( util::string_join( util::make_span( splits ).subspan( 2 ), "." ) );
+        if ( expr )
+        {
+          return expr;
+        }
+
+        auto tail = expression_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
+
+        throw std::invalid_argument( fmt::format( "Unsupported crash expression '{}'.", tail ) );
+      }
+    }
+
     if ( util::str_compare_ci( splits[ 0 ], "priest" ) )
     {
       if ( util::str_compare_ci( splits[ 1 ], "self_power_infusion" ) )
@@ -3222,20 +3383,23 @@ void priest_t::init_spells()
   talents.shadow.echoing_void_debuff = find_spell( 373281 );
 
   // Archon Hero Talents (Holy/Shadow)
-  talents.archon.power_surge           = HT( "Power Surge" );      // NYI
-  talents.archon.perfected_form        = HT( "Perfected Form" );   // NYI
-  talents.archon.resonant_energy       = HT( "Resonant Energy" );  // NYI
-  talents.archon.manifested_power      = HT( "Manifested Power" );
-  talents.archon.shock_pulse           = HT( "Shock Pulse" );  // NYI
-  talents.archon.incessant_screams     = HT( "Incessant Screams" );
-  talents.archon.word_of_supremacy     = HT( "Word of Supremacy" );      // NYI
-  talents.archon.heightened_alteration = HT( "Heightened Alteration" );  // NYI
-  talents.archon.empowered_surges      = HT( "Empowered Surges" );       // NYI
-  talents.archon.energy_compression    = HT( "Energy Compression" );     // NYI
-  talents.archon.sustained_potency     = HT( "Sustained Potency" );      // NYI
-  talents.archon.concentrated_infusion = HT( "Concentrated Infusion" );  // NYI
-  talents.archon.energy_cycle          = HT( "Energy Cycle" );
-  talents.archon.divine_halo           = HT( "Divine Halo" );  // NYI
+  talents.archon.power_surge            = HT( "Power Surge" );
+  talents.archon.power_surge_buff       = find_spell( 453112 );
+  talents.archon.perfected_form         = HT( "Perfected Form" );
+  talents.archon.resonant_energy        = HT( "Resonant Energy" );
+  talents.archon.resonant_energy_shadow = find_spell( 453850 );
+  talents.archon.manifested_power       = HT( "Manifested Power" );
+  talents.archon.shock_pulse            = HT( "Shock Pulse" );            // NYI
+  talents.archon.incessant_screams      = HT( "Incessant Screams" );      // NYI
+  talents.archon.word_of_supremacy      = HT( "Word of Supremacy" );      // NYI
+  talents.archon.heightened_alteration  = HT( "Heightened Alteration" );  // NYI
+  talents.archon.empowered_surges       = HT( "Empowered Surges" );
+  talents.archon.energy_compression     = HT( "Energy Compression" );
+  talents.archon.sustained_potency      = HT( "Sustained Potency" );
+  talents.archon.sustained_potency_buff = find_spell( 454002 );
+  talents.archon.concentrated_infusion  = HT( "Concentrated Infusion" );  // NYI
+  talents.archon.energy_cycle           = HT( "Energy Cycle" );
+  talents.archon.divine_halo            = HT( "Divine Halo" );  // NYI
 
   // Oracle Hero Talents (Holy/Discipline)
   talents.oracle.premonition           = HT( "Premonition" );            // NYI
@@ -3355,6 +3519,13 @@ void priest_t::create_buffs()
   // Currently only used for Discipline
   buffs.void_empowerment = make_buff( this, "void_empowerment", talents.voidweaver.void_empowerment_buff )
                                ->set_default_value_from_effect( 1 );
+  // Archon
+  buffs.power_surge =
+      make_buff_fallback( talents.archon.power_surge.enabled(), this, "power_surge", talents.archon.power_surge_buff )
+          ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { background_actions.halo->execute(); } );
+
+  buffs.sustained_potency = make_buff_fallback( talents.archon.sustained_potency.enabled(), this, "sustained_potency",
+                                                talents.archon.sustained_potency_buff );
 
   create_buffs_shadow();
   create_buffs_discipline();
@@ -3379,6 +3550,7 @@ void priest_t::init_background_actions()
   background_actions.echoing_void_demise = new actions::spells::echoing_void_demise_t( *this );
   background_actions.essence_devourer    = new actions::heals::essence_devourer_t( *this );
   background_actions.atonement           = new actions::heals::atonement_t( *this );
+  background_actions.halo                = new actions::spells::halo_t( *this, true );
 
   // Voidweaver
   background_actions.entropic_rift   = new actions::spells::entropic_rift_t( *this );
@@ -3438,7 +3610,8 @@ void priest_t::apply_affecting_auras_late( action_t& action )
   action.apply_affecting_aura( talents.voidweaver.inner_quietus );
 
   // Archon Talents
-  action.apply_affecting_aura( talents.archon.perfected_form );
+  action.apply_affecting_aura( talents.archon.empowered_surges );
+  action.apply_affecting_aura( talents.archon.energy_compression );
 }
 
 void priest_t::invalidate_cache( cache_e cache )

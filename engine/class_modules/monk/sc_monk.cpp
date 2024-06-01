@@ -65,7 +65,7 @@ namespace actions
 
 template <class Base>
 monk_action_t<Base>::monk_action_t( std::string_view name, monk_t *player, const spell_data_t *spell )
-  : parse_action_effects_t<Base, monk_td_t>( name, player, spell ),
+  : parse_action_effects_t<Base>( name, player, spell ),
     sef_ability( actions::sef_ability_e::SEF_NONE ),
     ww_mastery( false ),
     may_combo_strike( false ),
@@ -152,7 +152,7 @@ void monk_action_t<Base>::apply_buff_effects()
 template <class Base>
 void monk_action_t<Base>::apply_debuff_effects()
 {
-  //    parse_target_effects( []( monk_td_t* t ) { return t->debuffs.weapons_of_order->check(); },
+  //    parse_target_effects( []( actor_target_data_t* t ) { return static_cast<monk_td_t*>( t )->debuffs.weapons_of_order->check(); },
   //                          p()->shared.weapons_of_order ); // True, true
 }
 
@@ -7868,7 +7868,7 @@ void monk_t::init_spells()
   // Returns first valid spell in argument list, pass highest priority to first argument
   // Returns spell_data_t::not_found() if none are valid
   auto _priority = []( auto... spell_list ) {
-    for ( auto spell : { spell_list... } )
+    for ( const auto& spell : { spell_list... } )
       if ( spell && spell->ok() )
         return spell.spell();
     return spell_data_t::not_found();
@@ -8551,7 +8551,7 @@ void monk_t::create_proc_callback( const spell_data_t *effect_driver,
   {
     // If we didn't define a custom action in initialization then
     // search action list for the first trigger we have a valid action for
-    for ( auto e : effect_driver->effects() )
+    for ( const auto& e : effect_driver->effects() )
     {
       for ( auto t : action_list )
         if ( e.trigger()->ok() && t->id == e.trigger()->id() )
@@ -8604,7 +8604,7 @@ void monk_t::create_proc_callback( const spell_data_t *effect_driver,
   // dynamically find buff
   if ( effect->name_str == "" )
   {
-    for ( auto e : effect_driver->effects() )
+    for ( const auto& e : effect_driver->effects() )
     {
       for ( auto t : buff_list )
       {
@@ -8814,11 +8814,8 @@ void monk_t::reset()
     auto stream = sim->out_debug.raw().get_stream();
     bool first  = true;
 
-    for ( auto tracker : proc_tracking )
+    for ( auto& [ name, list ] : proc_tracking )
     {
-      auto name = tracker.first;
-      auto list = tracker.second;
-
       if ( list.size() > 0 )
       {
         if ( first )

@@ -6,8 +6,10 @@
 #pragma once
 
 #include "config.hpp"
+
 #include "player_event.hpp"
 #include "util/timespan.hpp"
+
 #include <functional>
 
 struct action_t;
@@ -41,8 +43,8 @@ struct ground_aoe_params_t
     EVENT_STOPPED       // Ground aoe event stopped
   };
 
-  using param_cb_t = std::function<void(void)>;
-  using state_cb_t = std::function<void(state_type, ground_aoe_event_t*)>;
+  using param_cb_t = std::function<void( const action_state_t* )>;
+  using state_cb_t = std::function<void( state_type, ground_aoe_event_t* )>;
 
   player_t* target_;
   double x_, y_;
@@ -69,69 +71,49 @@ struct ground_aoe_params_t
   const param_cb_t& expiration_callback() const { return expiration_cb_; }
   const state_cb_t& state_callback() const { return state_cb_; }
 
-  ground_aoe_params_t& target(player_t* p);
+  ground_aoe_params_t& target( player_t* p );
 
-  ground_aoe_params_t& action(action_t* a);
+  ground_aoe_params_t& action( action_t* a );
 
-  ground_aoe_params_t& x(double x)
-  {
-    x_ = x; return *this;
-  }
+  ground_aoe_params_t& x( double x )
+  { x_ = x; return *this; }
 
-  ground_aoe_params_t& y(double y)
-  {
-    y_ = y; return *this;
-  }
+  ground_aoe_params_t& y( double y )
+  { y_ = y; return *this; }
 
-  ground_aoe_params_t& hasted(hasted_with state)
-  {
-    hasted_ = state; return *this;
-  }
+  ground_aoe_params_t& hasted( hasted_with state )
+  { hasted_ = state; return *this; }
 
-  ground_aoe_params_t& pulse_time(timespan_t t)
-  {
-    pulse_time_ = t; return *this;
-  }
+  ground_aoe_params_t& pulse_time( timespan_t t )
+  { pulse_time_ = t; return *this; }
 
-  ground_aoe_params_t& start_time(timespan_t t)
-  {
-    start_time_ = t; return *this;
-  }
+  ground_aoe_params_t& start_time( timespan_t t )
+  { start_time_ = t; return *this; }
 
-  ground_aoe_params_t& duration(timespan_t t)
-  {
-    duration_ = t; return *this;
-  }
+  ground_aoe_params_t& duration( timespan_t t )
+  { duration_ = t; return *this; }
 
-  ground_aoe_params_t& expiration_pulse(expiration_pulse_type state)
-  {
-    expiration_pulse_ = state; return *this;
-  }
+  ground_aoe_params_t& expiration_pulse( expiration_pulse_type state )
+  { expiration_pulse_ = state; return *this; }
 
-  ground_aoe_params_t& n_pulses(unsigned n)
-  {
-    n_pulses_ = n; return *this;
-  }
+  ground_aoe_params_t& n_pulses( unsigned n )
+  { n_pulses_ = n; return *this; }
 
-  ground_aoe_params_t& expiration_callback(const param_cb_t& cb)
-  {
-    expiration_cb_ = cb; return *this;
-  }
+  ground_aoe_params_t& expiration_callback( const param_cb_t& cb )
+  { expiration_cb_ = cb; return *this; }
 
-  ground_aoe_params_t& state_callback(const state_cb_t& cb)
-  {
-    state_cb_ = cb; return *this;
-  }
+  ground_aoe_params_t& state_callback( const state_cb_t& cb )
+  { state_cb_ = cb; return *this; }
 };
 
 // Delayed expiration callback for groud_aoe_event_t
 struct expiration_callback_event_t : public event_t
 {
-  ground_aoe_params_t::param_cb_t callback;
+  std::function<void(void)> callback;
 
-  expiration_callback_event_t(sim_t& sim, const ground_aoe_params_t* p, timespan_t delay) :
-    event_t(sim, delay), callback(p -> expiration_callback())
-  { }
+  expiration_callback_event_t( sim_t& sim, const ground_aoe_params_t* p, timespan_t delay, const action_state_t* state )
+    : event_t( sim, delay ), callback( [ fn = p->expiration_callback(), state ]() { fn( state ); } )
+  {}
 
   void execute() override
   {
@@ -152,40 +134,40 @@ struct ground_aoe_event_t : public player_event_t
 
 protected:
   template <typename Event, typename... Args>
-  friend Event* make_event(sim_t& sim, Args&&... args);
+  friend Event* make_event( sim_t& sim, Args&&... args );
   // Internal constructor to schedule next pulses, not to be used outside of the struct (or derived
   // structs)
-  ground_aoe_event_t(player_t* p, const ground_aoe_params_t* param,
-    action_state_t* ps, bool immediate_pulse = false);
+  ground_aoe_event_t( player_t* p, const ground_aoe_params_t* param, action_state_t* ps, bool immediate_pulse = false );
   static const ground_aoe_params_t* get_params( player_t*, const ground_aoe_params_t& );
   static void release_params( player_t*, const ground_aoe_params_t*& );
+
 public:
   // Make a copy of the parameters, and use that object until this event expires
-  ground_aoe_event_t(player_t* p, const ground_aoe_params_t& param, bool immediate_pulse = false);
+  ground_aoe_event_t( player_t* p, const ground_aoe_params_t& param, bool immediate_pulse = false );
 
   // Cleans up memory for any on-going ground aoe events when the iteration ends, or when the ground
   // aoe finishes during iteration.
   ~ground_aoe_event_t() override;
 
-  void set_current_pulse(unsigned v)
+  void set_current_pulse( unsigned v )
   {
     current_pulse = v;
   }
 
-  static timespan_t _time_left(const ground_aoe_params_t* params, const player_t* p);
+  static timespan_t _time_left( const ground_aoe_params_t* params, const player_t* p );
 
-  static timespan_t _pulse_time(const ground_aoe_params_t* params, const player_t* p, bool clamp = true);
+  static timespan_t _pulse_time( const ground_aoe_params_t* params, const player_t* p, bool clamp = true );
 
   timespan_t remaining_time() const
   {
-    return _time_left(params, player());
+    return _time_left( params, player() );
   }
 
   bool may_pulse() const;
 
-  virtual timespan_t pulse_time(bool clamp = true) const
+  virtual timespan_t pulse_time( bool clamp = true ) const
   {
-    return _pulse_time(params, player(), clamp);
+    return _pulse_time( params, player(), clamp );
   }
 
   virtual void schedule_event();
