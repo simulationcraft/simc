@@ -4376,9 +4376,10 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   gain_t* gain;
   bool hasted_gcd;
   std::vector<player_effect_t> school_change_effects;
+  double rp_per_tick;
 
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false )
+    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false ), rp_per_tick( 0 )
   {
     this->may_glance = false;
     if ( this->cooldown->duration > 0_s )
@@ -4400,12 +4401,23 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     // amount as a negative value resource cost in spell data, so abuse that.
     if ( this->base_costs[ RESOURCE_RUNIC_POWER ] < 0 )
     {
-      this->energize_type     = action_energize::ON_CAST;
-      this->energize_resource = RESOURCE_RUNIC_POWER;
-
       double rp_gain = std::fabs( this->base_costs[ RESOURCE_RUNIC_POWER ] );
 
-      this->energize_amount += rp_gain;
+      // action_t parse_effect_data() runs before this, and if the spell has a energize on tick amount it will set it to
+      // that type This results in the RP gain on cast being set to the incorrect value, so we need to account for it
+      // here.
+      if ( this->energize_type == action_energize::PER_TICK )
+      {
+        this->rp_per_tick     = this->energize_amount;
+        this->energize_amount = rp_gain;
+      }
+      else
+      {
+        this->energize_amount += rp_gain;
+      }
+
+      this->energize_type     = action_energize::ON_CAST;
+      this->energize_resource = RESOURCE_RUNIC_POWER;
       this->base_costs[ RESOURCE_RUNIC_POWER ] = 0;
     }
     // Always rely on custom handling via replenish_rune() for Rune energize
@@ -4606,6 +4618,16 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     }
 
     return base_gcd;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    action_base_t::tick( d );
+
+    if ( this->rp_per_tick > 0 )
+    {
+      p()->resource_gain( RESOURCE_RUNIC_POWER, this->rp_per_tick, this->gain, this );
+    }
   }
 
   void execute() override
