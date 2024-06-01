@@ -5261,11 +5261,13 @@ struct antimagic_zone_buff_t final : public death_knight_absorb_buff_t
 
 namespace debuffs
 {
+using death_knight_debuff_t = death_knight_buff_base_t<buff_t>;
+
 // Decomposition =========================================================
-struct decomposition_debuff_t final : public buff_t
+struct decomposition_debuff_t final : public death_knight_debuff_t
 {
   decomposition_debuff_t( death_knight_td_t& td, death_knight_t& p, player_t& target )
-    : buff_t( td, "decomposition", p.spell.decomposition_buff ), damage( nullptr ), target( &target )
+    : death_knight_debuff_t( td, "decomposition", p.spell.decomposition_buff ), damage( nullptr ), target( &target )
   {
     damage = p.active_spells.decomposition_damage;
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -5282,14 +5284,14 @@ struct decomposition_debuff_t final : public buff_t
 
   void reset() override
   {
-    buff_t::reset();
+    death_knight_debuff_t::reset();
     stored_damage = 0;
     last_period   = 0;
   }
 
   void expire_override( int stacks, timespan_t duration ) override
   {
-    buff_t::expire_override( stacks, duration );
+    death_knight_debuff_t::expire_override( stacks, duration );
     stored_damage = 0;
     last_period   = 0;
   }
