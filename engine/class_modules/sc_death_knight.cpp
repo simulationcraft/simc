@@ -937,6 +937,9 @@ public:
     const spell_data_t* antimagic_shell;
     const spell_data_t* chains_of_ice;
 
+    // Blood
+    const spell_data_t* crimson_scourge;
+
     // Frost
     const spell_data_t* remorseless_winter;
     const spell_data_t* might_of_the_frozen_wastes;
@@ -1023,7 +1026,6 @@ public:
     struct
     {
       // Temp storage
-      player_talent_t crimson_scourge;
       player_talent_t deaths_caress;
       // Row 1
       player_talent_t heart_strike;
@@ -12119,6 +12121,7 @@ void death_knight_t::init_spells()
   spec.blood_death_knight  = find_specialization_spell( "Blood Death Knight" );
   spec.riposte             = find_specialization_spell( "Riposte" );
   spec.blood_fortification = find_specialization_spell( "Blood Fortification" );
+  spec.crimson_scourge     = find_specialization_spell( "Crimson Scourge" );
 
   // Frost Baselines
   spec.frost_death_knight         = find_specialization_spell( "Frost Death Knight" );
@@ -12194,7 +12197,6 @@ void death_knight_t::init_spells()
 
   //////// Blood
 // spares
-  talent.blood.crimson_scourge = find_talent_spell( talent_tree::SPECIALIZATION, "Crimson Scourge" );
   talent.blood.deaths_caress           = find_talent_spell( talent_tree::SPECIALIZATION, "Death's Caress" );
 
   // Row 1
@@ -12911,7 +12913,7 @@ void death_knight_t::create_buffs()
                              ->set_default_value_from_effect( 1 );
 
     buffs.crimson_scourge = make_buff( this, "crimson_scourge", spell.crimson_scourge_buff )
-                                ->set_trigger_spell( talent.blood.crimson_scourge );
+                                ->set_trigger_spell( spec.crimson_scourge );
 
     buffs.dancing_rune_weapon = make_buff( this, "dancing_rune_weapon", spell.dancing_rune_weapon_buff )
                                     ->set_cooldown( 0_ms )
