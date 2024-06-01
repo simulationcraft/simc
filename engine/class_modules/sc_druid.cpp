@@ -481,7 +481,6 @@ private:
 public:
   eclipse_handler_t eclipse_handler;
   std::vector<std::unique_ptr<snapshot_counter_t>> counters;  // counters for snapshot tracking
-  double expected_max_health;  // For Bristling Fur calculations.
   std::vector<std::tuple<unsigned, unsigned, timespan_t, timespan_t, double>> prepull_swarm;
   std::vector<player_t*> swarm_targets;
 
@@ -1297,7 +1296,6 @@ public:
   form_e get_form() const { return form; }
   void shapeshift( form_e );
   void init_beast_weapon( weapon_t&, double );
-  double calculate_expected_max_health() const;
   const spell_data_t* apply_override( const spell_data_t* base, const spell_data_t* passive ) const;
   bool uses_form( specialization_e spec, std::string_view name, action_t* action ) const;
   bool uses_cat_form() const;
@@ -11111,8 +11109,6 @@ void druid_t::init_resources( bool force )
   {
     resources.current[ RESOURCE_ASTRAL_POWER ] = options.initial_astral_power;
   }
-
-  expected_max_health = calculate_expected_max_health();
 }
 
 
@@ -11326,7 +11322,9 @@ void druid_t::init_special_effects()
       void execute( action_t*, action_state_t* s ) override
       {
         // 1 rage per 1% of maximum health taken
-        p()->resource_gain( RESOURCE_RAGE, s->result_amount / p()->expected_max_health * 100, gain, action );
+        auto pct = s->result_amount / p()->resources.max[ RESOURCE_HEALTH ];
+
+        p()->resource_gain( RESOURCE_RAGE, pct * 100, gain, action );
       }
     };
 
@@ -11898,6 +11896,10 @@ void druid_t::invalidate_cache( cache_e c )
     case CACHE_AGILITY:
       if ( buff.ironfur->check() )
         invalidate_cache( CACHE_ARMOR );
+      break;
+
+    case CACHE_STAMINA:
+      recalculate_resource_max( RESOURCE_HEALTH );
       break;
 
     default: break;
@@ -12647,39 +12649,6 @@ void druid_t::init_beast_weapon( weapon_t& w, double swing_time )
   w.type       = WEAPON_BEAST;
   w.school     = SCHOOL_PHYSICAL;
   w.swing_time = timespan_t::from_seconds( swing_time );
-}
-
-double druid_t::calculate_expected_max_health() const
-{
-  double slot_weights = 0;
-  double prop_values  = 0;
-
-  for ( const auto& item : items )
-  {
-    if ( item.slot == SLOT_SHIRT || item.slot == SLOT_RANGED || item.slot == SLOT_TABARD ||
-         item.item_level() <= 0 )
-      continue;
-
-    const random_prop_data_t item_data = dbc->random_property( item.item_level() );
-    int index = item_database::random_suffix_type( item.parsed.data );
-    if ( item_data.p_epic[ 0 ] == 0 )
-      continue;
-
-    slot_weights += item_data.p_epic[ index ] / item_data.p_epic[ 0 ];
-
-    if ( !item.active() )
-      continue;
-
-    prop_values += item_data.p_epic[ index ];
-  }
-
-  double expected_health = ( prop_values / slot_weights ) * 8.318556;
-  expected_health += base.stats.attribute[ STAT_STAMINA ];
-  expected_health *= 1.0 + matching_gear_multiplier( ATTR_STAMINA );
-  expected_health *= 1.0 + spec.bear_form_passive->effectN( 2 ).percent();
-  expected_health *= current.health_per_stamina;
-
-  return expected_health;
 }
 
 const spell_data_t* druid_t::apply_override( const spell_data_t* base, const spell_data_t* passive ) const
