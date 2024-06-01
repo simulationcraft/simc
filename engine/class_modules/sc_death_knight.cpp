@@ -1295,7 +1295,7 @@ public:
     const spell_data_t* ossuary_buff;
     const spell_data_t* crimson_scourge_buff;
     const spell_data_t* heartrend_buff;
-    const spell_data_t* preserverence_of_the_ebon_blade_buff;
+    const spell_data_t* perserverence_of_the_ebon_blade_buff;
     const spell_data_t* voracious_buff;
     const spell_data_t* blood_draw_damage;
     const spell_data_t* blood_draw_cooldown;
@@ -12430,7 +12430,7 @@ void death_knight_t::init_spells()
   spell.ossuary_buff                         = find_spell( 219788 );
   spell.crimson_scourge_buff                 = find_spell( 81141 );
   spell.heartrend_buff                       = find_spell( 377656 );
-  spell.preserverence_of_the_ebon_blade_buff = find_spell( 374748 );
+  spell.perserverence_of_the_ebon_blade_buff = find_spell( 374748 );
   spell.voracious_buff                       = find_spell( 274009 );
   spell.blood_draw_damage                    = find_spell( 374606 );
   spell.blood_draw_cooldown                  = find_spell( 374609 );
@@ -12896,7 +12896,7 @@ void death_knight_t::create_buffs()
                            ->set_default_value_from_effect( 1 );
 
     buffs.perseverance_of_the_ebon_blade =
-        make_buff( this, "perseverance_of_the_ebon_blade", spell.preserverence_of_the_ebon_blade_buff );
+        make_buff( this, "perseverance_of_the_ebon_blade", spell.perserverence_of_the_ebon_blade_buff );
 
     buffs.rune_tap =
         make_buff( this, "rune_tap", talent.blood.rune_tap )->set_cooldown( 0_ms );  // Handled by the action
@@ -13611,7 +13611,7 @@ void death_knight_t::parse_player_effects()
     parse_effects( buffs.voracious, talent.blood.voracious );
     parse_effects( buffs.dancing_rune_weapon );
     parse_effects( buffs.bone_shield, IGNORE_STACKS, talent.blood.improved_bone_shield );
-    parse_effects( buffs.perseverance_of_the_ebon_blade, talent.blood.perseverance_of_the_ebon_blade );
+    parse_effects( buffs.perseverance_of_the_ebon_blade );
   }
 
   // Frost
