@@ -2918,7 +2918,7 @@ private:
 struct gargoyle_pet_t : public death_knight_pet_t
 {
   gargoyle_pet_t( death_knight_t* owner )
-    : death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr ), gargoyle_strike( nullptr )
+    : death_knight_pet_t( owner, "gargoyle", true, false ), gargoyle_strike( nullptr ), dark_empowerment( nullptr )
   {
     resource_regeneration             = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
@@ -3484,7 +3484,10 @@ struct magus_pet_t : public death_knight_pet_t
         if ( rng().roll( 0.95 ) )
         {
           auto it = range::find( tl, t );
-          tl.erase( it );
+          if ( it != tl.end() )
+          {
+            tl.erase( it );
+          }
         }
       }
       return tl.size();
