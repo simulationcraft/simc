@@ -9194,9 +9194,6 @@ struct outbreak_t final : public death_knight_spell_t
     parse_options( options_str );
     impact_action = p->active_spells.outbreak_aoe;
   }
-
-private:
-  propagate_const<action_t*> outbreak_aoe;
 };
 
 // Rune of Apocalpyse - Pestilence ==========================================
