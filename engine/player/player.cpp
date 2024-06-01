@@ -1626,12 +1626,14 @@ void player_t::init_base_stats()
   base.dodge = 0.03;
   base.miss = 0.03;
 
-  if (racials.quickness->ok()) // check spell data to avoid applying it to enemies.
+  // Dodge from base agility isn't affected by diminishing returns and is added here
+  if (base.dodge_per_agility > 0)
   {
-    // Dodge from base agillity isn't affected by diminishing returns and is added here
-    base.dodge += racials.quickness->effectN(1).percent() +
-      (dbc->race_base(race).agility + dbc->attribute_base(type, level()).agility) * base.dodge_per_agility;
+    base.dodge += (dbc->race_base(race).agility + dbc->attribute_base(type, level()).agility) * base.dodge_per_agility;
   }
+
+  // Night Elf dodge is additive
+  base.dodge += racials.quickness->effectN(1).percent();
 
   // Only Warriors and Paladins (and enemies) can block, defaults to 0
   if ( type == WARRIOR || type == PALADIN || type == ENEMY || type == TANK_DUMMY )
