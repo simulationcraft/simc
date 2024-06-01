@@ -1019,6 +1019,7 @@ public:
       player_talent_t ossuary;
       player_talent_t improved_vampiric_blood;
       player_talent_t improved_heart_strike;
+      player_talent_t deaths_caress;
       // Row 5
       player_talent_t rune_tap;
       player_talent_t heartbreaker;
@@ -3250,6 +3251,25 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     }
   };
 
+  struct deaths_caress_t : public drw_action_t<spell_t>
+  {
+    int stack_gain;
+    deaths_caress_t( util::string_view n, dancing_rune_weapon_pet_t* p )
+      : drw_action_t( p, n, p->dk()->talent.blood.deaths_caress ),
+        stack_gain( as<int>( data().effectN( 3 ).base_value() ) )
+
+    {
+      this->impact_action = p->ability.blood_plague;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      drw_action_t::impact( state );
+
+      dk()->buffs.bone_shield->trigger( stack_gain );
+    }
+  };
+
   struct death_strike_t : public drw_action_t<melee_attack_t>
   {
     death_strike_t( util::string_view n, dancing_rune_weapon_pet_t* p )
@@ -3354,6 +3374,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   {
     action_t* blood_plague;
     action_t* blood_boil;
+    action_t* deaths_caress;
     action_t* death_strike;
     action_t* heart_strike;
     action_t* marrowrend;
@@ -3381,6 +3402,10 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       ability.blood_plague = get_action<blood_plague_t>( "blood_plague", this );
       ability.blood_boil   = get_action<blood_boil_t>( "blood_boil", this );
+    }
+    if ( dk()->talent.blood.deaths_caress.ok() )
+    {
+      ability.deaths_caress = get_action<deaths_caress_t>( "deaths_caress", this );
     }
     if ( dk()->talent.death_strike.ok() )
     {
@@ -7284,6 +7309,38 @@ struct defile_t final : public death_and_decay_base_t
     debug_cast<defile_damage_t*>( damage )->active_defile_multiplier = 1.0;
 
     death_and_decay_base_t::execute();
+  }
+};
+
+// Death's Caress ===========================================================
+
+struct deaths_caress_t final : public death_knight_spell_t
+{
+  deaths_caress_t( death_knight_t* p, util::string_view options_str )
+    : death_knight_spell_t( "deaths_caress", p, p->talent.blood.deaths_caress )
+  {
+    parse_options( options_str );
+    impact_action = get_action<blood_plague_t>( "blood_plague", p );
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    p()->buffs.bone_shield->trigger( as<int>( p()->talent.blood.deaths_caress->effectN( 3 ).base_value() ) );
+
+    if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
+    {
+      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.deaths_caress->execute_on_target( target );
+    }
+
+    if ( p()->talent.blood.everlasting_bond.ok() )
+    {
+      if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
+      {
+        p()->pets.everlasting_bond_pet.active_pet()->ability.deaths_caress->execute_on_target( target );
+      }
+    }
   }
 };
 
@@ -11318,6 +11375,8 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
     return new dancing_rune_weapon_t( this, options_str );
   if ( name == "dark_command" )
     return new dark_command_t( this, options_str );
+  if ( name == "deaths_caress" )
+    return new deaths_caress_t( this, options_str );
   if ( name == "gorefiends_grasp" )
     return new gorefiends_grasp_t( this, options_str );
   if ( name == "heart_strike" )
@@ -11840,6 +11899,7 @@ void death_knight_t::init_spells()
   talent.blood.ossuary                 = find_talent_spell( talent_tree::SPECIALIZATION, "Ossuary" );
   talent.blood.improved_vampiric_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Vampiric Blood" );
   talent.blood.improved_heart_strike   = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Heart Strike" );
+  talent.blood.deaths_caress           = find_talent_spell( talent_tree::SPECIALIZATION, "Death's Caress" );
   // Row 5
   talent.blood.rune_tap            = find_talent_spell( talent_tree::SPECIALIZATION, "Rune Tap" );
   talent.blood.heartbreaker        = find_talent_spell( talent_tree::SPECIALIZATION, "Heartbreaker" );
