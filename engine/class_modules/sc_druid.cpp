@@ -9940,19 +9940,22 @@ void druid_t::create_buffs()
   buff.ca_inc->set_cooldown( 0_ms )
     ->apply_affecting_aura( talent.greater_alignment )
     ->apply_affecting_aura( talent.potent_enchantments )
-    ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
-      if ( !new_ )
+    ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
+      if ( !old_ )
       {
-        auto d = b->remains();
-
-        buff.eclipse_lunar->trigger( d );
+        buff.eclipse_lunar->trigger( 0_ms );
         eclipse_handler.update_eclipse( eclipse_e::LUNAR );
 
-        buff.eclipse_solar->trigger( d );
+        buff.eclipse_solar->trigger( 0_ms );
         eclipse_handler.update_eclipse( eclipse_e::SOLAR );
 
         if ( active.orbital_strike )
           active.orbital_strike->execute_on_target( target );
+      }
+      else if ( !new_ )
+      {
+        buff.eclipse_lunar->expire();
+        buff.eclipse_solar->expire();
       }
     } );
 
@@ -9974,12 +9977,16 @@ void druid_t::create_buffs()
 
   buff.eclipse_lunar = make_fallback( talent.eclipse.ok(), this, "eclipse_lunar", spec.eclipse_lunar )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
       eclipse_handler.advance_eclipse( eclipse_e::LUNAR, new_ );
     } );
 
   buff.eclipse_solar = make_fallback( talent.eclipse.ok(), this, "eclipse_solar", spec.eclipse_solar )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
       eclipse_handler.advance_eclipse( eclipse_e::SOLAR, new_ );
     } );
