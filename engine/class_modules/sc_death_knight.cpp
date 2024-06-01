@@ -938,6 +938,7 @@ public:
 
     // Blood
     const spell_data_t* crimson_scourge;
+    const spell_data_t* deaths_caress;
 
     // Frost
     const spell_data_t* remorseless_winter;
@@ -1024,8 +1025,6 @@ public:
     // Blood
     struct
     {
-      // Temp storage
-      player_talent_t deaths_caress;
       // Row 1
       player_talent_t heart_strike;
       // Row 2
@@ -3365,7 +3364,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   {
     int stack_gain;
     deaths_caress_t( util::string_view n, dancing_rune_weapon_pet_t* p )
-      : drw_action_t( p, n, p->dk()->talent.blood.deaths_caress ),
+      : drw_action_t( p, n, p->dk()->spec.deaths_caress ),
         stack_gain( as<int>( data().effectN( 3 ).base_value() ) )
 
     {
@@ -3513,7 +3512,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       ability.blood_plague = get_action<blood_plague_t>( "blood_plague", this );
       ability.blood_boil   = get_action<blood_boil_t>( "blood_boil", this );
     }
-    if ( dk()->talent.blood.deaths_caress.ok() )
+    if ( dk()->spec.deaths_caress->ok() )
     {
       ability.deaths_caress = get_action<deaths_caress_t>( "deaths_caress", this );
     }
@@ -7497,7 +7496,7 @@ struct defile_t final : public death_and_decay_base_t
 struct deaths_caress_t final : public death_knight_spell_t
 {
   deaths_caress_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_spell_t( "deaths_caress", p, p->talent.blood.deaths_caress )
+    : death_knight_spell_t( "deaths_caress", p, p->spec.deaths_caress )
   {
     parse_options( options_str );
     impact_action = get_action<blood_plague_t>( "blood_plague", p );
@@ -7507,7 +7506,7 @@ struct deaths_caress_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    p()->buffs.bone_shield->trigger( as<int>( p()->talent.blood.deaths_caress->effectN( 3 ).base_value() ) );
+    p()->buffs.bone_shield->trigger( as<int>( p()->spec.deaths_caress->effectN( 3 ).base_value() ) );
 
     if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
     {
@@ -12092,6 +12091,7 @@ void death_knight_t::init_spells()
   spec.riposte             = find_specialization_spell( "Riposte" );
   spec.blood_fortification = find_specialization_spell( "Blood Fortification" );
   spec.crimson_scourge     = find_specialization_spell( "Crimson Scourge" );
+  spec.deaths_caress       = find_specialization_spell( "Death's Caress" );
 
   // Frost Baselines
   spec.frost_death_knight         = find_specialization_spell( "Frost Death Knight" );
@@ -12166,9 +12166,6 @@ void death_knight_t::init_spells()
   talent.vestigial_shell  = find_talent_spell( talent_tree::CLASS, "Vestigial Shell" );
 
   //////// Blood
-// spares
-  talent.blood.deaths_caress           = find_talent_spell( talent_tree::SPECIALIZATION, "Death's Caress" );
-
   // Row 1
   talent.blood.heart_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Heart Strike" );
   // Row 2
