@@ -591,7 +591,6 @@ struct death_knight_td_t : public actor_target_data_t
 
     // Blood
     propagate_const<buff_t*> mark_of_blood;
-    propagate_const<buff_t*> tightening_grasp;
 
     // Frost
     propagate_const<buff_t*> piercing_chill;
@@ -1294,7 +1293,6 @@ public:
     const spell_data_t* blood_shield;
     const spell_data_t* bone_shield;
     const spell_data_t* sanguine_ground;
-    const spell_data_t* tightening_grasp_debuff;
     const spell_data_t* ossuary_buff;
     const spell_data_t* crimson_scourge_buff;
     const spell_data_t* heartrend_buff;
@@ -1842,9 +1840,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   // Blood
   debuff.mark_of_blood = make_buff( *this, "mark_of_blood", p->talent.blood.mark_of_blood )
                              ->set_cooldown( 0_ms );  // Handled by the action
-
-  debuff.tightening_grasp = make_buff( *this, "tightening_grasp", p->spell.tightening_grasp_debuff )
-                                ->set_default_value( p->spell.tightening_grasp_debuff->effectN( 1 ).percent() );
 
   // Frost
   debuff.razorice = make_buff( *this, "razorice", p->spell.razorice_debuff )
@@ -4551,7 +4546,6 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
                           p()->talent.unholy_bond );
 
     // Blood
-    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::tightening_grasp ), p()->spell.tightening_grasp_debuff );
 
     // Frost
     parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::everfrost ),
@@ -5472,19 +5466,6 @@ struct melee_t : public death_knight_melee_attack_t
       return ( weapon->slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, 0_ms ) : t / 2 ) : 0_ms;
     else
       return t;
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = death_knight_melee_attack_t::composite_target_multiplier( target );
-
-    const death_knight_td_t* td = get_td( target );
-    if ( td && p()->talent.blood.tightening_grasp.ok() )
-    {
-      m *= 1.0 + td->debuff.tightening_grasp->check_stack_value();
-    }
-
-    return m;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -8669,17 +8650,6 @@ struct gorefiends_grasp_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    death_knight_spell_t::impact( state );
-
-    if ( p()->talent.blood.tightening_grasp.ok() )
-    {
-      auto td = get_td( state->target );
-      td->debuff.tightening_grasp->trigger();
-    }
   }
 };
 
@@ -12460,7 +12430,6 @@ void death_knight_t::init_spells()
   spell.blood_shield                         = find_spell( 77535 );
   spell.bone_shield                          = find_spell( 195181 );
   spell.sanguine_ground                      = find_spell( 391459 );
-  spell.tightening_grasp_debuff              = find_spell( 374776 );
   spell.ossuary_buff                         = find_spell( 219788 );
   spell.crimson_scourge_buff                 = find_spell( 81141 );
   spell.heartrend_buff                       = find_spell( 377656 );
@@ -12930,8 +12899,7 @@ void death_knight_t::create_buffs()
                            ->set_default_value_from_effect( 1 );
 
     buffs.perseverance_of_the_ebon_blade =
-        make_buff( this, "perseverance_of_the_ebon_blade", spell.preserverence_of_the_ebon_blade_buff )
-            ->set_default_value( talent.blood.perseverance_of_the_ebon_blade->effectN( 1 ).percent() );
+        make_buff( this, "perseverance_of_the_ebon_blade", spell.preserverence_of_the_ebon_blade_buff );
 
     buffs.rune_tap =
         make_buff( this, "rune_tap", talent.blood.rune_tap )->set_cooldown( 0_ms );  // Handled by the action
@@ -13647,7 +13615,6 @@ void death_knight_t::parse_player_effects()
     parse_effects( buffs.dancing_rune_weapon );
     parse_effects( buffs.bone_shield, IGNORE_STACKS, talent.blood.improved_bone_shield );
     parse_effects( buffs.perseverance_of_the_ebon_blade, talent.blood.perseverance_of_the_ebon_blade );
-    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::tightening_grasp ), spell.tightening_grasp_debuff );
   }
 
   // Frost
