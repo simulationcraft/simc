@@ -74,8 +74,8 @@ enum flag_e : uint32_t
   LIGHTOFELUNE = 0x00080000,  // light of elune talent
   THRASHING    = 0x00100000,  // thrashing claws talent
   // free casts
-  APEX         = 0x01000001,  // apex predators's craving
-  TOOTHANDCLAW = 0x02000001,  // tooth and claw talent
+  APEX         = 0x01000000,  // apex predators's craving
+  TOOTHANDCLAW = 0x02000000,  // tooth and claw talent
 
   FREE_PROCS = CONVOKE | FIRMAMENT | FLASHING | GALACTIC | ORBIT | TWIN | TREANT | LIGHTOFELUNE,
   FREE_CASTS = APEX | TOOTHANDCLAW
