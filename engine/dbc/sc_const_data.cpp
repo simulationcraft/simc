@@ -1219,28 +1219,6 @@ double dbc_t::spell_crit_scaling( pet_e t, unsigned level ) const
   return spell_crit_scaling( util::pet_class_type( t ), level );
 }
 
-int dbc_t::resolve_item_scaling( unsigned level ) const
-{
-  assert( level > 0 && level <= MAX_LEVEL );
-#if SC_USE_PTR
-  return ptr ? __ptr_gt_item_scaling[level - 1]
-             : __gt_item_scaling[level - 1];
-#else
-  return __gt_item_scaling[ level - 1 ];
-#endif
-}
-
-double dbc_t::resolve_level_scaling( unsigned level ) const
-{
-  assert( level > 0 && level <= MAX_LEVEL );
-#if SC_USE_PTR
-  return ptr ? _ptr_gt_resolve_dps_by_level[level - 1]
-             : _gt_resolve_dps_by_level[level - 1];
-#else
-  return _gt_resolve_dps_by_level[level - 1];
-#endif
-}
-
 double dbc_t::avoid_per_str_agi_by_level( unsigned level ) const
 {
   assert( level > 0 && level <= MAX_LEVEL );
