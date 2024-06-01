@@ -1022,6 +1022,9 @@ public:
     // Blood
     struct
     {
+      // Temp storage
+      player_talent_t crimson_scourge;
+      player_talent_t deaths_caress;
       // Row 1
       player_talent_t heart_strike;
       // Row 2
@@ -1029,14 +1032,14 @@ public:
       player_talent_t blood_boil;
       // Row 3
       player_talent_t vampiric_blood;
-      player_talent_t crimson_scourge;
+      player_talent_t bone_collector;
       // Row 4
       player_talent_t ossuary;
       player_talent_t improved_vampiric_blood;
       player_talent_t improved_heart_strike;
-      player_talent_t deaths_caress;
+      player_talent_t ossified_vitriol;
       // Row 5
-      player_talent_t rune_tap;
+      player_talent_t leeching_strike;
       player_talent_t heartbreaker;
       player_talent_t foul_bulwark;
       player_talent_t dancing_rune_weapon;
@@ -1044,29 +1047,31 @@ public:
       player_talent_t perseverance_of_the_ebon_blade;
       player_talent_t relish_in_blood;
       // Row 6
-      player_talent_t leeching_strike;
-      player_talent_t improved_bone_shield;
+      player_talent_t rune_tap;
+      player_talent_t gorefiends_grasp;
       player_talent_t insatiable_blade;
-      player_talent_t blooddrinker;
-      player_talent_t consumption;
+      player_talent_t reinforced_bones;
       player_talent_t rapid_decomposition;
       // Row 7
-      player_talent_t blood_feast;
       player_talent_t blood_tap;
-      player_talent_t reinforced_bones;
+      player_talent_t improved_bone_shield;
+      player_talent_t tightening_grasp;
       player_talent_t everlasting_bond;
       player_talent_t voracious;
-      player_talent_t bloodworms;
       player_talent_t coagulopathy;
+      player_talent_t bloodworms;
       // Row 8
+      player_talent_t blood_feast;
       player_talent_t mark_of_blood;
       player_talent_t tombstone;
-      player_talent_t gorefiends_grasp;
+      // NYI TALENT
+      // NYI TALENT
       player_talent_t sanguine_ground;
       // Row 9
       player_talent_t shattering_bone;
       player_talent_t heartrend;
-      player_talent_t tightening_grasp;
+      player_talent_t blooddrinker;
+      player_talent_t consumption;
       player_talent_t iron_heart;
       player_talent_t red_thirst;
       // Row 10
@@ -12132,10 +12137,10 @@ void death_knight_t::init_spells()
   //////// Class Talent Tree
   // Row 1
   talent.icebound_fortitude = find_talent_spell( talent_tree::CLASS, "Icebound Fortitude" );
-  talent.death_strike = find_talent_spell( talent_tree::CLASS, "Death Strike" );
-  talent.raise_dead   = find_talent_spell( talent_tree::CLASS, "Raise Dead" );
+  talent.death_strike       = find_talent_spell( talent_tree::CLASS, "Death Strike" );
+  talent.raise_dead         = find_talent_spell( talent_tree::CLASS, "Raise Dead" );
   // Row 2
-  talent.runic_attenuation = find_talent_spell( talent_tree::CLASS, "Runic Attenuation" );
+  talent.runic_attenuation     = find_talent_spell( talent_tree::CLASS, "Runic Attenuation" );
   talent.improved_death_strike = find_talent_spell( talent_tree::CLASS, "Improved Death Strike" );
   talent.cleaving_strikes      = find_talent_spell( talent_tree::CLASS, "Cleaving Strikes" );
   // Row 3
@@ -12188,6 +12193,10 @@ void death_knight_t::init_spells()
   talent.vestigial_shell  = find_talent_spell( talent_tree::CLASS, "Vestigial Shell" );
 
   //////// Blood
+// spares
+  talent.blood.crimson_scourge = find_talent_spell( talent_tree::SPECIALIZATION, "Crimson Scourge" );
+  talent.blood.deaths_caress           = find_talent_spell( talent_tree::SPECIALIZATION, "Death's Caress" );
+
   // Row 1
   talent.blood.heart_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Heart Strike" );
   // Row 2
@@ -12195,14 +12204,16 @@ void death_knight_t::init_spells()
   talent.blood.blood_boil = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Boil" );
   // Row 3
   talent.blood.vampiric_blood  = find_talent_spell( talent_tree::SPECIALIZATION, "Vampiric Blood" );
-  talent.blood.crimson_scourge = find_talent_spell( talent_tree::SPECIALIZATION, "Crimson Scourge" );
+  talent.blood.bone_collector  = find_talent_spell( talent_tree::SPECIALIZATION, "Bone Collector" );
+
   // Row 4
   talent.blood.ossuary                 = find_talent_spell( talent_tree::SPECIALIZATION, "Ossuary" );
   talent.blood.improved_vampiric_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Vampiric Blood" );
   talent.blood.improved_heart_strike   = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Heart Strike" );
-  talent.blood.deaths_caress           = find_talent_spell( talent_tree::SPECIALIZATION, "Death's Caress" );
+  talent.blood.ossified_vitriol        = find_talent_spell( talent_tree::SPECIALIZATION, "Ossified Virtiol" );
+  
   // Row 5
-  talent.blood.rune_tap            = find_talent_spell( talent_tree::SPECIALIZATION, "Rune Tap" );
+  talent.blood.leeching_strike      = find_talent_spell( talent_tree::SPECIALIZATION, "Leeching Strike" );
   talent.blood.heartbreaker        = find_talent_spell( talent_tree::SPECIALIZATION, "Heartbreaker" );
   talent.blood.foul_bulwark        = find_talent_spell( talent_tree::SPECIALIZATION, "Foul Bulwark" );
   talent.blood.dancing_rune_weapon = find_talent_spell( talent_tree::SPECIALIZATION, "Dancing Rune Weapon" );
@@ -12211,29 +12222,31 @@ void death_knight_t::init_spells()
       find_talent_spell( talent_tree::SPECIALIZATION, "Perseverance of the Ebon Blade" );
   talent.blood.relish_in_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Relish in Blood" );
   // Row 6
-  talent.blood.leeching_strike      = find_talent_spell( talent_tree::SPECIALIZATION, "Leeching Strike" );
-  talent.blood.improved_bone_shield = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Bone Shield" );
+  talent.blood.rune_tap            = find_talent_spell( talent_tree::SPECIALIZATION, "Rune Tap" );
+  talent.blood.gorefiends_grasp = find_talent_spell( talent_tree::SPECIALIZATION, "Gorefiend's Grasp" );
   talent.blood.insatiable_blade     = find_talent_spell( talent_tree::SPECIALIZATION, "Insatiable Blade" );
-  talent.blood.blooddrinker         = find_talent_spell( talent_tree::SPECIALIZATION, "Blooddrinker" );
-  talent.blood.consumption          = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
+  talent.blood.reinforced_bones = find_talent_spell( talent_tree::SPECIALIZATION, "Reinforced Bones" );
   talent.blood.rapid_decomposition  = find_talent_spell( talent_tree::SPECIALIZATION, "Rapid Decomposition" );
   // Row 7
-  talent.blood.blood_feast      = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Feast" );
   talent.blood.blood_tap        = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Tap" );
-  talent.blood.reinforced_bones = find_talent_spell( talent_tree::SPECIALIZATION, "Reinforced Bones" );
+  talent.blood.improved_bone_shield = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Bone Shield" );
+  talent.blood.tightening_grasp = find_talent_spell( talent_tree::SPECIALIZATION, "Tightening Grasp" );
   talent.blood.everlasting_bond = find_talent_spell( talent_tree::SPECIALIZATION, "Everlasting Bond" );
   talent.blood.voracious        = find_talent_spell( talent_tree::SPECIALIZATION, "Voracious" );
-  talent.blood.bloodworms       = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodworms" );
   talent.blood.coagulopathy     = find_talent_spell( talent_tree::SPECIALIZATION, "Coagulopathy" );
+  talent.blood.bloodworms       = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodworms" );
   // Row 8
+  talent.blood.blood_feast      = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Feast" );
   talent.blood.mark_of_blood    = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of Blood" );
   talent.blood.tombstone        = find_talent_spell( talent_tree::SPECIALIZATION, "Tombstone" );
-  talent.blood.gorefiends_grasp = find_talent_spell( talent_tree::SPECIALIZATION, "Gorefiend's Grasp" );
+  // NYI TALENT
+  // NYI TALENT
   talent.blood.sanguine_ground  = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Ground" );
   // Row 9
   talent.blood.shattering_bone  = find_talent_spell( talent_tree::SPECIALIZATION, "Shattering Bone" );
   talent.blood.heartrend        = find_talent_spell( talent_tree::SPECIALIZATION, "Heartrend" );
-  talent.blood.tightening_grasp = find_talent_spell( talent_tree::SPECIALIZATION, "Tightening Grasp" );
+  talent.blood.blooddrinker         = find_talent_spell( talent_tree::SPECIALIZATION, "Blooddrinker" );
+  talent.blood.consumption          = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
   talent.blood.iron_heart       = find_talent_spell( talent_tree::SPECIALIZATION, "Iron Heart" );
   talent.blood.red_thirst       = find_talent_spell( talent_tree::SPECIALIZATION, "Red Thirst" );
   // Row 10
