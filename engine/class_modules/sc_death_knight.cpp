@@ -138,20 +138,20 @@ struct rune_t;
 namespace pets
 {
 struct death_knight_pet_t;
+struct ghoul_pet_t;
 struct army_ghoul_pet_t;
-struct bloodworm_pet_t;
+struct gargoyle_pet_t;
+struct risen_skulker_pet_t;
 struct dancing_rune_weapon_pet_t;
 struct everlasting_bond_pet_t;
-struct gargoyle_pet_t;
-struct ghoul_pet_t;
+struct bloodworm_pet_t;
 struct magus_pet_t;
-struct risen_skulker_pet_t;
+struct blood_beast_pet_t;
+struct horseman_pet_t;
 struct mograine_pet_t;
 struct whitemane_pet_t;
 struct trollbane_pet_t;
 struct nazgrim_pet_t;
-struct horseman_pet_t;
-struct blood_beast_pet_t;
 struct abomination_pet_t;
 }  // namespace pets
 
@@ -1471,41 +1471,41 @@ public:
   // Pets and Guardians
   struct pets_t
   {
-    spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> dancing_rune_weapon_pet;
-    spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> everlasting_bond_pet;
-    spawner::pet_spawner_t<pets::gargoyle_pet_t, death_knight_t> gargoyle;
     spawner::pet_spawner_t<pets::ghoul_pet_t, death_knight_t> ghoul_pet;
-    spawner::pet_spawner_t<pets::risen_skulker_pet_t, death_knight_t> risen_skulker;
     spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> army_ghouls;
     spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> apoc_ghouls;
+    spawner::pet_spawner_t<pets::gargoyle_pet_t, death_knight_t> gargoyle;
+    spawner::pet_spawner_t<pets::risen_skulker_pet_t, death_knight_t> risen_skulker;
+    spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> dancing_rune_weapon_pet;
+    spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> everlasting_bond_pet;
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> army_magus;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> apoc_magus;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> doomed_bidding_magus;
+    spawner::pet_spawner_t<pets::blood_beast_pet_t, death_knight_t> blood_beast;
     spawner::pet_spawner_t<pets::mograine_pet_t, death_knight_t> mograine;
     spawner::pet_spawner_t<pets::whitemane_pet_t, death_knight_t> whitemane;
     spawner::pet_spawner_t<pets::trollbane_pet_t, death_knight_t> trollbane;
     spawner::pet_spawner_t<pets::nazgrim_pet_t, death_knight_t> nazgrim;
-    spawner::pet_spawner_t<pets::blood_beast_pet_t, death_knight_t> blood_beast;
     spawner::pet_spawner_t<pets::abomination_pet_t, death_knight_t> abomination;
 
     pets_t( death_knight_t* p )
-      : dancing_rune_weapon_pet( "dancing_rune_weapon", p ),
-        everlasting_bond_pet( "everlasting_bond", p ),
-        gargoyle( "gargoyle", p ),
-        ghoul_pet( "ghoul", p ),
-        risen_skulker( "risen_skulker", p ),
+      : ghoul_pet( "ghoul", p ),
         army_ghouls( "army_ghoul", p ),
         apoc_ghouls( "apoc_ghoul", p ),
-        doomed_bidding_magus( "doomed_bidding_magus", p ),
+        gargoyle( "gargoyle", p ),
+        risen_skulker( "risen_skulker", p ),
+        dancing_rune_weapon_pet( "dancing_rune_weapon", p ),
+        everlasting_bond_pet( "everlasting_bond", p ),
         bloodworms( "bloodworm", p ),
         army_magus( "army_magus", p ),
         apoc_magus( "apoc_magus", p ),
+        doomed_bidding_magus( "doomed_bidding_magus", p ),
+        blood_beast( "blood_beast", p ),
         mograine( "mograine", p ),
         whitemane( "whitemane", p ),
         trollbane( "trollbane", p ),
         nazgrim( "nazgrim", p ),
-        blood_beast( "blood_beast", p ),
         abomination( "abomination", p )
     {
     }
@@ -3483,11 +3483,8 @@ struct magus_pet_t : public death_knight_pet_t
         // Give magus an incredibly low chance to hit any target with Ruptured Viscera
         if ( rng().roll( 0.95 ) )
         {
-          auto it = range::find( tl, target );
-          if ( it != tl.end() )
-          {
-            tl.erase( it );
-          }
+          auto it = range::find( tl, t );
+          tl.erase( it );
         }
       }
       return tl.size();
@@ -3935,9 +3932,8 @@ struct whitemane_pet_t final : public horseman_pet_t
 {
   struct death_coil_whitemane_t final : public horseman_spell_t
   {
-    bool used;
     death_coil_whitemane_t( util::string_view name, horseman_pet_t* p, util::string_view options_str )
-      : horseman_spell_t( p, name, p->dk()->pet_spell.whitemane_death_coil ), used( false )
+      : horseman_spell_t( p, name, p->dk()->pet_spell.whitemane_death_coil )
     {
       parse_options( options_str );
       cooldown->duration = 12_s; // Overriding the data cooldown to more closely represent actual in game behavior
@@ -4001,9 +3997,8 @@ struct trollbane_pet_t final : public horseman_pet_t
 
   struct obliterate_trollbane_t final : public horseman_melee_t
   {
-    bool used;
     obliterate_trollbane_t( util::string_view name, horseman_pet_t* p, util::string_view options_str )
-      : horseman_melee_t( p, name, p->dk()->pet_spell.trollbane_obliterate ), used( false )
+      : horseman_melee_t( p, name, p->dk()->pet_spell.trollbane_obliterate )
     {
       parse_options( options_str );
     }
@@ -4057,11 +4052,9 @@ struct nazgrim_pet_t final : public horseman_pet_t
 
   struct scourge_strike_nazgrim_t final : public horseman_melee_t
   {
-    bool used;
     scourge_strike_nazgrim_t( util::string_view name, horseman_pet_t* p, util::string_view options_str )
       : horseman_melee_t( p, name, p->dk()->pet_spell.nazgrim_scourge_strike_phys ),
-        scourge_strike_shadow( get_action<scourge_strike_shadow_nazgrim_t>( "scourge_strike_shadow", p ) ),
-        used( false )
+        scourge_strike_shadow( get_action<scourge_strike_shadow_nazgrim_t>( "scourge_strike_shadow", p ) )
     {
       parse_options( options_str );
       impact_action        = scourge_strike_shadow;
@@ -4113,12 +4106,7 @@ struct abomination_pet_t : public death_knight_pet_t
       : pet_spell_t( p, name, p->dk()->pet_spell.abomination_disease_cloud )
     {
       background = true;
-    }
-
-    void execute() override
-    {
-      pet_spell_t::execute();
-      dk()->active_spells.outbreak_aoe->execute();
+      execute_action = dk()->active_spells.outbreak_aoe;
     }
   };
 
@@ -4793,10 +4781,10 @@ struct breath_of_sindragosa_buff_t : public death_knight_buff_t
 {
   breath_of_sindragosa_buff_t( death_knight_t* p )
     : death_knight_buff_t( p, "breath_of_sindragosa", p->talent.frost.breath_of_sindragosa ),
+      bos_damage( p->active_spells.breath_of_sindragosa_tick ),
       ticking_cost( 0.0 ),
       tick_period( p->talent.frost.breath_of_sindragosa->effectN( 1 ).period() ),
-      rune_gen( as<int>( p->spell.breath_of_sindragosa_rune_gen->effectN( 1 ).base_value() ) ),
-      bos_damage( p->active_spells.breath_of_sindragosa_tick )
+      rune_gen( as<int>( p->spell.breath_of_sindragosa_rune_gen->effectN( 1 ).base_value() ) )
   {
     tick_zero          = true;
     cooldown->duration = 0_ms;  // Handled by the action
@@ -5267,7 +5255,7 @@ using death_knight_debuff_t = death_knight_buff_base_t<buff_t>;
 struct decomposition_debuff_t final : public death_knight_debuff_t
 {
   decomposition_debuff_t( death_knight_td_t& td, death_knight_t& p, player_t& target )
-    : death_knight_debuff_t( td, "decomposition", p.spell.decomposition_buff ), damage( nullptr ), target( &target )
+    : death_knight_debuff_t( td, "decomposition", p.spell.decomposition_buff ), damage( nullptr ), target( target )
   {
     damage = p.active_spells.decomposition_damage;
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -5279,7 +5267,7 @@ struct decomposition_debuff_t final : public death_knight_debuff_t
   void execute_damage()
   {
     damage->base_dd_min = damage->base_dd_max = last_period;
-    damage->execute_on_target( target );
+    damage->execute_on_target( &target );
   }
 
   void reset() override
@@ -5302,7 +5290,7 @@ public:
 private:
   double last_period;
   action_t* damage;
-  player_t* target;
+  player_t& target;
 };
 }  // namespace debuffs
 
@@ -5483,7 +5471,6 @@ struct melee_t : public death_knight_melee_attack_t
     double c_mid;
     double p1;
     double p2 = 1;
-    int runs  = 1;
     while ( true )
     {
       c_mid = ( c_upper + c_lower ) / 2;
@@ -5501,7 +5488,6 @@ struct melee_t : public death_knight_melee_attack_t
       }
 
       p2 = p1;
-      ++runs;
     }
 
     return c_mid;
@@ -7206,10 +7192,10 @@ struct defile_damage_t final : public death_and_decay_damage_base_t
 {
   defile_damage_t( util::string_view name, death_knight_t* p )
     : death_and_decay_damage_base_t( name, p, p->spell.defile_damage ),
-      active_defile_multiplier( 1.0 ),
       // Testing shows a 1.06 multiplicative damage increase for every tick of defile that hits an enemy
       // Can't seem to find it anywhere in defile's spelldata
-      defile_tick_multiplier( 1.06 )
+      defile_tick_multiplier( 1.06 ),
+      active_defile_multiplier( 1.0 )
   {
   }
 
@@ -8251,9 +8237,9 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
                          bool shattering_blade )
     : death_knight_melee_attack_t( n, p, s ),
       sb( shattering_blade ),
-      shattered_frost( nullptr ),
       weapon_hand( w ),
-      damage( 0 )
+      damage( 0 ),
+      shattered_frost( nullptr )
   {
     background = special = true;
     weapon               = w;
@@ -9321,7 +9307,7 @@ struct raise_dead_t final : public death_knight_spell_t
     p->pets.ghoul_pet.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     p->pets.ghoul_pet.set_event_callback(
         spawner::pet_event_type::PRE_SPAWN,
-        [ this ]( spawner::pet_event_type t, pets::ghoul_pet_t* p ) { p->precombat_spawn = is_precombat; } );
+        [ this ]( spawner::pet_event_type, pets::ghoul_pet_t* p ) { p->precombat_spawn = is_precombat; } );
     if ( p->talent.unholy.all_will_serve.ok() )
     {
       p->pets.risen_skulker.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
@@ -12674,7 +12660,7 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
             {
               p.sim->print_debug( "reapers_mark go boom" );
               p.buffs.grim_reaper->trigger();
-              // buff->expire(); TODO: Fix This
+              // buff->expire(); TODO: FIX ME
             }
           } );
 
@@ -12796,7 +12782,7 @@ void death_knight_t::create_buffs()
 
   buffs.dark_talons_icy_talons =
       make_fallback( talent.deathbringer.dark_talons.ok(), this, "dark_talons", spell.dark_talons_icy_talons_buff )
-          ->set_stack_change_callback( [ this ]( buff_t* buff_, int old_, int new_ ) {
+          ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
             int it_stack_modifier = as<int>( talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
             if ( new_ > old_ )
             {
@@ -12810,7 +12796,7 @@ void death_knight_t::create_buffs()
           } );
 
   buffs.exterminate = make_fallback( talent.deathbringer.exterminate.ok(), this, "exterminate", spell.exterminate_buff )
-                          ->set_expire_callback( [ this ]( buff_t* buff, int stacks, timespan_t duration ) {
+                          ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
                             make_event( *sim, 500_ms, [ this ]() {
                               get_action<exterminate_t>( "exterminate", this )->execute_on_target( this->target );
                             } );
@@ -12818,7 +12804,7 @@ void death_knight_t::create_buffs()
 
   buffs.painful_death = make_fallback( talent.deathbringer.painful_death.ok(), this, "painful_death",
                                        spell.exterminate_buff_painful_death )
-                            ->set_expire_callback( [ this ]( buff_t* buff, int stacks, timespan_t duration ) {
+                            ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
                               make_event( *sim, 500_ms, [ this ]() {
                                 get_action<exterminate_t>( "exterminate", this )->execute_on_target( this->target );
                               } );
@@ -13014,7 +13000,7 @@ void death_knight_t::create_buffs()
             ->set_cooldown( 0_ms )  // Handled by the action
             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
             ->set_partial_tick( true )
-            ->set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
+            ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
               active_spells.remorseless_winter_tick->execute();
             } )
             ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
@@ -13088,7 +13074,7 @@ void death_knight_t::create_buffs()
             ->set_tick_zero( true )
             ->set_period( 1.0_s )
             ->set_tick_behavior( buff_tick_behavior::CLIP )
-            ->set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
+            ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
               active_spells.unholy_pact_damage->execute();
             } )
             // Unholy pact ticks twice on buff expiration, hence the following override
