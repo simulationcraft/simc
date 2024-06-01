@@ -617,7 +617,10 @@ struct death_knight_td_t : public actor_target_data_t
     propagate_const<buff_t*> incite_terror;
   } debuff;
 
-  death_knight_td_t( player_t* target, death_knight_t* p );
+  death_knight_td_t( player_t& target, death_knight_t& p );
+
+  template <typename Buff = buff_t, typename... Args>
+  inline buff_t* make_debuff( bool b, Args&&... args );
 };
 
 using data_t        = std::pair<std::string, simple_sample_data_with_min_max_t>;
@@ -1727,7 +1730,7 @@ public:
   void trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
   void consume_killing_machine( proc_t* proc, timespan_t total_delay );
   void trigger_runic_empowerment( double rpcost );
-  void chill_streak_bounce( player_t* target );
+  void chill_streak_bounce( player_t& target );
   // Unholy
   void trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
   void burst_festering_wound( player_t* target, unsigned n = 1, proc_t* action = nullptr );
@@ -1749,11 +1752,11 @@ public:
 
   death_knight_td_t* get_target_data( player_t* target ) const override
   {
+    assert( target );
     death_knight_td_t*& td = target_data[ target ];
     if ( !td )
-    {
-      td = new death_knight_td_t( target, const_cast<death_knight_t*>( this ) );
-    }
+      td = new death_knight_td_t( *target, const_cast<death_knight_t&>( *this ) );
+
     return td;
   }
 
@@ -1773,165 +1776,33 @@ public:
     return &( entries.back()->second );
   }
 };
-// Decomposition =========================================================
-struct decomposition_debuff_t final : public buff_t
+// ==========================================================================
+// Death Knight Buff Base
+// ==========================================================================
+template <typename Base = buff_t, typename = std::enable_if_t<std::is_base_of_v<buff_t, Base>>>
+struct death_knight_buff_base_t : public Base
 {
-  decomposition_debuff_t( death_knight_td_t& td, death_knight_t* p, player_t* target )
-    : buff_t( td, "decomposition", p->spell.decomposition_buff ), damage( nullptr ), target( target )
-  {
-    damage = p->active_spells.decomposition_damage;
-    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-      last_period   = stored_damage;
-      stored_damage = 0;
-    } );
-  }
-
-  void execute_damage()
-  {
-    damage->base_dd_min = damage->base_dd_max = last_period;
-    damage->execute_on_target( target );
-  }
-
-  void reset() override
-  {
-    buff_t::reset();
-    stored_damage = 0;
-    last_period   = 0;
-  }
-
-  void expire_override( int stacks, timespan_t duration ) override
-  {
-    buff_t::expire_override( stacks, duration );
-    stored_damage = 0;
-    last_period = 0;
-  }
+protected:
+  using base_t = death_knight_buff_base_t<Base>;
 
 public:
-  double stored_damage;
+  death_knight_buff_base_t( death_knight_t* p, std::string_view n, const spell_data_t* s = spell_data_t::nil(),
+                            const item_t* item = nullptr )
+    : Base( p, n, s, item )
+  {
+  }
 
-private:
-  double last_period;
-  action_t* damage;
-  player_t* target;
+  death_knight_buff_base_t( death_knight_td_t& td, std::string_view n, const spell_data_t* s = spell_data_t::nil(),
+                            const item_t* item = nullptr )
+    : Base( td, n, s, item )
+  {
+  }
+
+  death_knight_t* p() const
+  {
+    return debug_cast<death_knight_t*>( Base::source );
+  }
 };
-
-inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p ) : actor_target_data_t( target, p )
-{
-  // Diseases
-  dot.blood_plague    = target->get_dot( "blood_plague", p );
-  dot.frost_fever     = target->get_dot( "frost_fever", p );
-  dot.virulent_plague = target->get_dot( "virulent_plague", p );
-  dot.unholy_blight   = target->get_dot( "unholy_blight_dot", p );
-  // Other dots
-  dot.soul_reaper = target->get_dot( "soul_reaper", p );
-
-  // Rider of the Apocalypse
-  dot.undeath = target->get_dot( "undeath", p );
-
-  // General Talents
-  debuff.brittle = make_buff( *this, "brittle", p->spell.brittle_debuff )->set_default_value_from_effect( 1 );
-
-  // Blood
-  debuff.mark_of_blood = make_buff( *this, "mark_of_blood", p->talent.blood.mark_of_blood )
-                             ->set_cooldown( 0_ms );  // Handled by the action
-
-  debuff.tightening_grasp = make_buff( *this, "tightening_grasp", p->spell.tightening_grasp_debuff )
-                                ->set_default_value( p->spell.tightening_grasp_debuff->effectN( 1 ).percent() );
-
-  // Frost
-  debuff.razorice = make_buff( *this, "razorice", p->spell.razorice_debuff )
-                        ->set_default_value_from_effect( 1 )
-                        ->set_period( 0_ms )
-                        ->apply_affecting_aura( p->talent.unholy_bond );
-
-  debuff.piercing_chill =
-      make_buff( *this, "piercing_chill", p->spell.piercing_chill_debuff )->set_default_value_from_effect( 1 );
-
-  debuff.everfrost = make_buff( *this, "everfrost", p->talent.frost.everfrost->effectN( 1 ).trigger() )
-                         ->set_default_value( p->talent.frost.everfrost->effectN( 1 ).percent() );
-
-  debuff.chill_streak = make_buff( *this, "chill_streak", p->spell.chill_streak_damage )
-                            ->set_quiet( true )
-                            ->set_expire_callback( [ target, p ]( buff_t*, int, timespan_t d ) {
-                              // Chill streak doesnt bounce if the target dies before the debuff expires
-                              if ( d == timespan_t::zero() )
-                              {
-                                p->chill_streak_bounce( target );
-                              }
-                            } );
-
-  // Unholy
-  debuff.festering_wound = make_buff( *this, "festering_wound", p->spell.festering_wound_debuff )
-                               ->set_cooldown( 0_ms )  // Handled by death_knight_t::trigger_festering_wound()
-                               ->set_stack_change_callback( [ p ]( buff_t*, int old_, int new_ ) {
-                                 // Update the FW target count if needed
-                                 if ( old_ == 0 )
-                                   p->festering_wounds_target_count++;
-                                 else if ( new_ == 0 )
-                                   p->festering_wounds_target_count--;
-                               } );
-
-  debuff.rotten_touch =
-      make_buff( *this, "rotten_touch", p->spell.rotten_touch_debuff )->set_default_value_from_effect( 1 );
-
-  debuff.death_rot = make_buff( *this, "death_rot", p->spell.death_rot_debuff )->set_default_value_from_effect( 1 );
-
-  debuff.unholy_aura = make_buff( *this, "unholy_aura", p->spell.unholy_aura_debuff )
-                           ->set_duration( 0_ms )  // Handled by a combat state callback trigger
-                           ->apply_affecting_aura( p->talent.unholy.unholy_aura );
-
-  // Apocalypse Death Knight Runeforge Debuffs
-  debuff.apocalypse_death = make_buff( *this, "death", p->spell.apocalypse_death_debuff )  // Effect not implemented
-                                ->apply_affecting_aura( p->talent.unholy_bond );
-
-  debuff.apocalypse_famine = make_buff( *this, "famine", p->spell.apocalypse_famine_debuff )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->apply_affecting_aura( p->talent.unholy_bond );
-
-  debuff.apocalypse_war = make_buff( *this, "war", p->spell.apocalypse_war_debuff )
-                              ->set_default_value_from_effect( 1 )
-                              ->apply_affecting_aura( p->talent.unholy_bond );
-
-  debuff.decomposition = make_buff<decomposition_debuff_t>( *this, p, target );
-
-  // Rider of the Apocalypse Debuffs
-  debuff.chains_of_ice_trollbane_slow =
-      make_buff( *this, "chains_of_ice_trollbane_slow", p->pet_spell.trollbanes_chains_of_ice_ability );
-
-  debuff.chains_of_ice_trollbane_damage =
-      make_buff( *this, "chains_of_ice_trollbane_debuff", p->pet_spell.trollbanes_chains_of_ice_debuff )
-          ->set_default_value_from_effect( 1 );
-
-  // Deathbringer
-  // TODO-TWW confirm refresh behavior with swift end?
-  debuff.reapers_mark =
-      make_buff( *this, "reapers_mark_debuff", p->spell.reapers_mark_debuff )
-          ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-          ->set_expire_at_max_stack( true )
-          ->set_can_cancel( true )
-          ->set_freeze_stacks( true )
-          ->set_expire_callback( [ p ]( buff_t* buff, int stacks, timespan_t ) {
-            p->reapers_mark_explosion_wrapper( buff->player, stacks );
-          } )
-          ->set_tick_callback( [ p ]( buff_t* buff, int, timespan_t ) {
-            // 5/7/24 the 35% appears to be in a server script
-            // the explosion is triggering anytime the target is below 35%, instantly popping fresh marks
-            // trigger is on a one second dummy periodic, giving a slight window to acquire stacks
-            size_t targets = p->sim->target_non_sleeping_list.size();
-            if ( !p->buffs.grim_reaper->check() && targets == 1 && buff->player->health_percentage() < 35 )
-            {
-              p->sim->print_debug( "reapers_mark go boom" );
-              p->buffs.grim_reaper->trigger();
-              // buff->expire(); TODO: Fix This
-            }
-          } );
-
-  debuff.wave_of_souls =
-      make_buff( *this, "wave_of_souls_debuff", p->spell.wave_of_souls_debuff )->set_default_value_from_effect( 1 );
-
-  // San'layn
-  debuff.incite_terror = make_buff( *this, "incite_terror", p->spell.incite_terror_debuff );
-}
 
 // ==========================================================================
 // Death Knight Runes ( part 2 )
@@ -4308,29 +4179,6 @@ namespace
 // ==========================================================================
 // Death Knight Custom Buff Structs
 // ==========================================================================
-template <typename Base = buff_t, typename = std::enable_if_t<std::is_base_of_v<buff_t, Base>>>
-struct death_knight_buff_base_t : public Base
-{
-protected:
-  using base_t = death_knight_buff_base_t<Base>;
-
-public:
-  death_knight_buff_base_t( death_knight_t* p, std::string_view n, const spell_data_t* s = spell_data_t::nil(),
-                     const item_t* item = nullptr )
-    : Base( p, n, s, item )
-  {}
-
-  death_knight_buff_base_t( death_knight_td_t& td, std::string_view n, const spell_data_t* s = spell_data_t::nil(),
-                     const item_t* item = nullptr )
-    : Base( td, n, s, item )
-  {}
-
-  death_knight_t* p() const
-  {
-    return debug_cast<death_knight_t*>( Base::source );
-  }
-};
-
 // Custom School Change Buff struct
 struct school_change_buff_t : public death_knight_buff_base_t<buff_t>
 {
@@ -5411,6 +5259,51 @@ struct antimagic_zone_buff_t final : public death_knight_absorb_buff_t
 };
 }  // namespace buffs
 
+namespace debuffs
+{
+// Decomposition =========================================================
+struct decomposition_debuff_t final : public buff_t
+{
+  decomposition_debuff_t( death_knight_td_t& td, death_knight_t& p, player_t& target )
+    : buff_t( td, "decomposition", p.spell.decomposition_buff ), damage( nullptr ), target( &target )
+  {
+    damage = p.active_spells.decomposition_damage;
+    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+      last_period   = stored_damage;
+      stored_damage = 0;
+    } );
+  }
+
+  void execute_damage()
+  {
+    damage->base_dd_min = damage->base_dd_max = last_period;
+    damage->execute_on_target( target );
+  }
+
+  void reset() override
+  {
+    buff_t::reset();
+    stored_damage = 0;
+    last_period   = 0;
+  }
+
+  void expire_override( int stacks, timespan_t duration ) override
+  {
+    buff_t::expire_override( stacks, duration );
+    stored_damage = 0;
+    last_period   = 0;
+  }
+
+public:
+  double stored_damage;
+
+private:
+  double last_period;
+  action_t* damage;
+  player_t* target;
+};
+}  // namespace debuffs
+
 // ==========================================================================
 // Death Knight Attacks
 // ==========================================================================
@@ -5893,11 +5786,11 @@ struct virulent_plague_t final : public death_knight_disease_t
     if ( p()->talent.unholy.decomposition.ok() )
     {
       auto td = get_td( d->target );
-      debug_cast<decomposition_debuff_t*>( td->debuff.decomposition )->stored_damage +=
+      debug_cast<debuffs::decomposition_debuff_t*>( td->debuff.decomposition )->stored_damage +=
           d->state->result_amount * p()->talent.unholy.decomposition->effectN( 1 ).percent();
       if ( p()->rppm.decomposition->trigger() )
       {
-        debug_cast<decomposition_debuff_t*>( td->debuff.decomposition )->execute_damage();
+        debug_cast<debuffs::decomposition_debuff_t*>( td->debuff.decomposition )->execute_damage();
 
         for ( auto& pet : p()->active_pets )
         {
@@ -11091,7 +10984,7 @@ void death_knight_t::start_cold_heart()
   } );
 }
 
-void death_knight_t::chill_streak_bounce( player_t* t )
+void death_knight_t::chill_streak_bounce( player_t& t )
 {
   struct cs_bounce_t : public event_t
   {
@@ -11127,7 +11020,7 @@ void death_knight_t::chill_streak_bounce( player_t* t )
     }
   };
 
-  make_event<cs_bounce_t>( *sim, this, t );
+  make_event<cs_bounce_t>( *sim, this, &t );
 }
 
 void death_knight_t::summon_rider( timespan_t duration, bool random )
@@ -12652,6 +12545,144 @@ void death_knight_t::init_scaling()
     scaling->enable( STAT_BONUS_ARMOR );
 
   scaling->disable( STAT_AGILITY );
+}
+
+// Create DoTs and Debuffs ===================================================
+template <typename Buff, typename... Args>
+inline buff_t* death_knight_td_t::make_debuff( bool b, Args&&... args )
+{
+  return buff_t::make_buff_fallback<Buff>( target->is_enemy() && b, std::forward<Args>( args )... );
+}
+inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p ) : actor_target_data_t( &target, &p )
+{
+  // Diseases
+  dot.blood_plague    = target.get_dot( "blood_plague", &p );
+  dot.frost_fever     = target.get_dot( "frost_fever", &p );
+  dot.virulent_plague = target.get_dot( "virulent_plague", &p );
+  dot.unholy_blight   = target.get_dot( "unholy_blight_dot", &p );
+  // Other dots
+  dot.soul_reaper = target.get_dot( "soul_reaper", &p );
+
+  // Rider of the Apocalypse
+  dot.undeath = target.get_dot( "undeath", &p );
+
+  using namespace debuffs;
+  // General Talents
+  debuff.brittle = make_debuff( p.talent.brittle.ok(), *this, "brittle", p.spell.brittle_debuff )
+                       ->set_default_value_from_effect( 1 );
+
+  // Blood
+  debuff.mark_of_blood =
+      make_debuff( p.talent.blood.mark_of_blood.ok(), *this, "mark_of_blood", p.talent.blood.mark_of_blood )
+          ->set_cooldown( 0_ms );  // Handled by the action
+
+  debuff.tightening_grasp =
+      make_debuff( p.talent.blood.tightening_grasp.ok(), *this, "tightening_grasp", p.spell.tightening_grasp_debuff )
+          ->set_default_value( p.spell.tightening_grasp_debuff->effectN( 1 ).percent() );
+
+  // Frost
+  debuff.razorice = make_buff( *this, "razorice", p.spell.razorice_debuff )
+                        ->set_default_value_from_effect( 1 )
+                        ->set_period( 0_ms )
+                        ->apply_affecting_aura( p.talent.unholy_bond );
+
+  debuff.piercing_chill =
+      make_debuff( p.talent.frost.piercing_chill.ok(), *this, "piercing_chill", p.spell.piercing_chill_debuff )
+          ->set_default_value_from_effect( 1 );
+
+  debuff.everfrost =
+      make_debuff( p.talent.frost.everfrost.ok(), *this, "everfrost", p.talent.frost.everfrost->effectN( 1 ).trigger() )
+          ->set_default_value( p.talent.frost.everfrost->effectN( 1 ).percent() );
+
+  debuff.chill_streak =
+      make_debuff( p.talent.frost.chill_streak.ok(), *this, "chill_streak", p.spell.chill_streak_damage )
+          ->set_quiet( true )
+          ->set_expire_callback( [ & ]( buff_t*, int, timespan_t d ) {
+            // Chill streak doesnt bounce if the target dies before the debuff expires
+            if ( d == timespan_t::zero() )
+            {
+              p.chill_streak_bounce( target );
+            }
+          } );
+
+  // Unholy
+  debuff.festering_wound =
+      make_debuff( p.spec.festering_wound->ok(), *this, "festering_wound", p.spell.festering_wound_debuff )
+          ->set_cooldown( 0_ms )  // Handled by death_knight_t::trigger_festering_wound()
+          ->set_stack_change_callback( [ & ]( buff_t*, int old_, int new_ ) {
+            // Update the FW target count if needed
+            if ( old_ == 0 )
+              p.festering_wounds_target_count++;
+            else if ( new_ == 0 )
+              p.festering_wounds_target_count--;
+          } );
+
+  debuff.rotten_touch =
+      make_debuff( p.talent.unholy.rotten_touch.ok(), *this, "rotten_touch", p.spell.rotten_touch_debuff )
+          ->set_default_value_from_effect( 1 );
+
+  debuff.death_rot = make_debuff( p.talent.unholy.death_rot.ok(), *this, "death_rot", p.spell.death_rot_debuff )
+                         ->set_default_value_from_effect( 1 );
+
+  debuff.unholy_aura = make_debuff( p.talent.unholy.unholy_aura.ok(), *this, "unholy_aura", p.spell.unholy_aura_debuff )
+                           ->set_duration( 0_ms )  // Handled by a combat state callback trigger
+                           ->apply_affecting_aura( p.talent.unholy.unholy_aura );
+
+  debuff.decomposition = make_buff<decomposition_debuff_t>( *this, p, target );
+
+  // Apocalypse Death Knight Runeforge Debuffs
+  debuff.apocalypse_death = make_buff( *this, "death", p.spell.apocalypse_death_debuff )  // Effect not implemented
+                                ->apply_affecting_aura( p.talent.unholy_bond );
+
+  debuff.apocalypse_famine = make_buff( *this, "famine", p.spell.apocalypse_famine_debuff )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->apply_affecting_aura( p.talent.unholy_bond );
+
+  debuff.apocalypse_war = make_buff( *this, "war", p.spell.apocalypse_war_debuff )
+                              ->set_default_value_from_effect( 1 )
+                              ->apply_affecting_aura( p.talent.unholy_bond );
+
+  // Rider of the Apocalypse Debuffs
+  debuff.chains_of_ice_trollbane_slow =
+      make_debuff( p.talent.rider.riders_champion.ok(), *this, "chains_of_ice_trollbane_slow",
+                   p.pet_spell.trollbanes_chains_of_ice_ability );
+
+  debuff.chains_of_ice_trollbane_damage =
+      make_debuff( p.talent.rider.riders_champion.ok(), *this, "chains_of_ice_trollbane_debuff",
+                   p.pet_spell.trollbanes_chains_of_ice_debuff )
+          ->set_default_value_from_effect( 1 );
+
+  // Deathbringer
+  // TODO-TWW confirm refresh behavior with swift end?
+  debuff.reapers_mark =
+      make_debuff( p.talent.deathbringer.reapers_mark.ok(), *this, "reapers_mark_debuff", p.spell.reapers_mark_debuff )
+          ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+          ->set_expire_at_max_stack( true )
+          ->set_can_cancel( true )
+          ->set_freeze_stacks( true )
+          ->set_expire_callback( [ & ]( buff_t* buff, int stacks, timespan_t ) {
+            p.reapers_mark_explosion_wrapper( buff->player, stacks );
+          } )
+          ->set_tick_callback( [ & ]( buff_t* buff, int, timespan_t ) {
+            // 5/7/24 the 35% appears to be in a server script
+            // the explosion is triggering anytime the target is below 35%, instantly popping fresh marks
+            // trigger is on a one second dummy periodic, giving a slight window to acquire stacks
+            size_t targets = p.sim->target_non_sleeping_list.size();
+            if ( !p.buffs.grim_reaper->check() && targets == 1 && buff->player->health_percentage() < 35 )
+            {
+              p.sim->print_debug( "reapers_mark go boom" );
+              p.buffs.grim_reaper->trigger();
+              // buff->expire(); TODO: Fix This
+            }
+          } );
+
+  debuff.wave_of_souls = make_debuff( p.talent.deathbringer.wave_of_souls.ok(), *this, "wave_of_souls_debuff",
+                                      p.spell.wave_of_souls_debuff )
+                             ->set_default_value_from_effect( 1 );
+
+  // San'layn
+  debuff.incite_terror =
+      make_debuff( p.talent.sanlayn.incite_terror.ok(), *this, "incite_terror", p.spell.incite_terror_debuff );
 }
 
 // death_knight_t::create_buffs ===============================================
