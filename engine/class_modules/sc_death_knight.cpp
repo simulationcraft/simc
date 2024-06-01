@@ -10180,9 +10180,6 @@ void runeforge::fallen_crusader( special_effect_t& effect )
   // Create unholy strength heal if necessary, buff is always created for APL support
   p->runeforge.rune_of_the_fallen_crusader = true;
   p->spell.unholy_strength_buff            = p->find_spell( 53365 );
-  p->buffs.unholy_strength                 = make_buff( p, "unholy_strength", p->spell.unholy_strength_buff )
-                                 ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-                                 ->apply_affecting_aura( p->talent.unholy_bond );
 
   effect.custom_buff = p->buffs.unholy_strength;
   effect.execute_action =
@@ -12730,6 +12727,11 @@ void death_knight_t::create_buffs()
   buffs.rune_mastery = make_fallback( talent.rune_mastery.ok(), this, "rune_mastery", spell.rune_mastery_buff )
                            ->set_chance( 0.15 )  // This was found through testing 2022 July 21.  Not in spelldata.
                            ->set_default_value( talent.rune_mastery->effectN( 1 ).percent() );
+
+  buffs.unholy_strength =
+      make_fallback( spell.unholy_strength_buff != nullptr, this, "unholy_strength", spell.unholy_strength_buff )
+          ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+          ->apply_affecting_aura( talent.unholy_bond );
 
   buffs.unholy_ground = make_fallback( talent.unholy_ground.ok(), this, "unholy_ground", spell.unholy_ground_buff )
                             ->set_default_value_from_effect( 1 )
