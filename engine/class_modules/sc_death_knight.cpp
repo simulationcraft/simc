@@ -686,6 +686,7 @@ public:
     buff_t* antimagic_shell_horsemen;
     buff_t* antimagic_shell_horsemen_icd;
     buff_t* antimagic_zone;
+    propagate_const<buff_t*> blood_draw;
     propagate_const<buff_t*> icebound_fortitude;
     propagate_const<buff_t*> rune_mastery;
     propagate_const<buff_t*> unholy_ground;
@@ -4350,6 +4351,9 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
 
   void apply_buff_effects()
   {
+    // Shared
+    parse_effects( p()->buffs.blood_draw );
+
     // Blood
     parse_effects( p()->buffs.sanguine_ground );
     parse_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
@@ -6693,6 +6697,13 @@ struct blood_draw_t final : public death_knight_spell_t
       return false;
 
     return death_knight_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    p()->buffs.blood_draw->trigger();
   }
 
 private:
@@ -12773,6 +12784,8 @@ void death_knight_t::create_buffs()
   buffs.antimagic_zone = make_fallback<antimagic_zone_buff_t>( talent.antimagic_zone.ok(), this, "antimagic_zone",
                                                                spell.anti_magic_zone_buff );
 
+  buffs.blood_draw = make_fallback( talent.blood_draw.ok(), this, "blood_draw", talent.blood_draw->effectN( 4 ).trigger());
+
   buffs.icebound_fortitude =
       make_fallback( talent.icebound_fortitude.ok(), this, "icebound_fortitude", talent.icebound_fortitude )
           ->set_duration( talent.icebound_fortitude->duration() )
@@ -13683,6 +13696,7 @@ void death_knight_t::parse_player_effects()
   // Shared
   parse_effects( spec.death_knight );
   parse_effects( spec.plate_specialization );
+  parse_effects( buffs.blood_draw, talent.blood_draw );
   parse_effects( buffs.icy_talons, talent.icy_talons );
   parse_effects( buffs.rune_mastery, talent.rune_mastery );
   parse_effects( buffs.unholy_strength, talent.unholy_bond );
