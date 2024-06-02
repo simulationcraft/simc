@@ -13,6 +13,7 @@
 #include "util/timespan.hpp"
 #include "util/util.hpp"
 
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -122,6 +123,17 @@ struct self_damage_t : residual_action::residual_periodic_action_t<spell_t>
   }
 };
 
+struct level_data_t
+{
+  const spell_data_t *spell_data;
+  const double min_threshold;
+
+  ~level_data_t()
+  {
+    std::cout << "~level_data_t();" << spell_data->name_cstr() << " " << min_threshold << std::endl;
+  }
+};
+
 template <class derived_actor_t>
 struct level_t
 {
@@ -133,6 +145,7 @@ public:
   const spell_data_t *spell_data;
   const double min_threshold;
 
+  level_t( derived_actor_t *player, std::string_view parent_name, const level_data_t &data );
   level_t( derived_actor_t *player, std::string_view parent_name, const spell_data_t *spell_data,
            const double min_threshold );
   template <class debuff_type = stagger_impl::debuff_t>
@@ -166,7 +179,7 @@ struct stagger_t
 public:
   derived_actor_t *player;
   const spell_data_t *self_damage_data;
-  std::vector<std::pair<const spell_data_t *, const double>> level_data;
+  std::vector<level_data_t> level_data;
   std::vector<std::string_view> mitigation_tokens;
 
   std::function<bool()> active;
@@ -179,8 +192,7 @@ public:
   sample_data_t *sample_data;
 
   // init
-  stagger_t( derived_actor_t *player, const spell_data_t *self_damage,
-             std::vector<std::pair<const spell_data_t *, const double>> level_data,
+  stagger_t( derived_actor_t *player, const spell_data_t *self_damage, const std::vector<level_data_t> &level_data,
              std::vector<std::string_view> mitigation_tokens );
   template <class level_type       = stagger_impl::level_t<derived_actor_t>,
             class sample_data_type = stagger_impl::sample_data_t, class self_damage_type = stagger_impl::self_damage_t>
@@ -328,6 +340,12 @@ namespace stagger_impl
 {
 // level_t impl
 template <class derived_actor_t>
+level_t<derived_actor_t>::level_t( derived_actor_t *player, std::string_view parent_name, const level_data_t &data )
+  : player( player ), parent_name( parent_name ), spell_data( data.spell_data ), min_threshold( data.min_threshold )
+{
+}
+
+template <class derived_actor_t>
 level_t<derived_actor_t>::level_t( derived_actor_t *player, std::string_view parent_name,
                                    const spell_data_t *spell_data, const double min_threshold )
   : player( player ), parent_name( parent_name ), spell_data( spell_data ), min_threshold( min_threshold )
@@ -365,23 +383,37 @@ bool operator<( const level_t<derived_actor_t> &lhs, level_t<derived_actor_t> &r
 // stagger_t impl
 template <class derived_actor_t>
 stagger_t<derived_actor_t>::stagger_t( derived_actor_t *player, const spell_data_t *self_damage,
-                                       std::vector<std::pair<const spell_data_t *, const double>> level_data,
+                                       const std::vector<level_data_t> &level_data,
                                        std::vector<std::string_view> mitigation_tokens )
-  : player( player ), self_damage_data( self_damage ), level_data( level_data ), mitigation_tokens( mitigation_tokens )
+  : player( player ),
+    self_damage_data( self_damage ),
+    level_data( std::move( level_data ) ),
+    mitigation_tokens( std::move( mitigation_tokens ) )
 {
+  for ( auto &[ spell_data, min_threshold ] : this->level_data )
+    player->sim->print_debug( "INIT LEVEL: {} {}", (void *)spell_data, min_threshold );
   if ( player->stagger.find( name() ) == player->stagger.end() )
     player->stagger[ name() ] = this;
-  active         = [ this ]() { return true; };
-  trigger_filter = [ this ]( school_e, result_amount_type, action_state_t * ) { return true; };
-  percent        = [ this ]( school_e, result_amount_type, action_state_t        *) { return 0.5; };
+  active         = []() { return true; };
+  trigger_filter = []( school_e, result_amount_type, action_state_t * ) { return true; };
+  percent        = []( school_e, result_amount_type, action_state_t        *) { return 0.5; };
 }
 
 template <class derived_actor_t>
 template <class level_type, class sample_data_type, class self_damage_type>
 void stagger_t<derived_actor_t>::init()
 {
-  for ( auto &[ spell_data, min_threshold ] : level_data )
-    levels.push_back( new level_type( player, name(), spell_data, min_threshold ) );
+  for ( auto &data : level_data )
+  {
+    player->sim->print_debug( "INIT LEVEL: {} {}", (void *)data.spell_data, data.min_threshold );
+    levels.push_back( new level_type( player, name(), data ) );
+  }
+
+  // for ( auto &[ spell_data, min_threshold ] : level_data )
+  // {
+  //   player->sim->print_debug( "INIT LEVEL: {} {}", (void*)spell_data, min_threshold );
+  //   levels.push_back( new level_type( player, name(), spell_data, min_threshold ) );
+  // }
   std::sort( levels.begin(), levels.end() );
   current = levels.front();
 

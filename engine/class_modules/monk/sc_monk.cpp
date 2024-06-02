@@ -447,7 +447,7 @@ void monk_action_t<Base>::trigger_shuffle( double time_extension )
       {
         // Reduce stagger damage
         double percent = p()->talent.brewmaster.quick_sip->effectN( 1 ).percent();
-        double cleared = p()->stagger[ "stagger" ]->purify_percent( percent, "quick_sip" );
+        p()->stagger[ "Stagger" ]->purify_percent( percent, "quick_sip" );
         p()->proc.quick_sip->occur();
 
         p()->shuffle_count_secs -= quick_sip_seconds;
@@ -8130,10 +8130,18 @@ void monk_t::init_items()
 
 void monk_t::create_buffs()
 {
+  // auto *temp = new std::vector<std::pair<const spell_data_t *, const double>>( {
+  //     { find_spell( 124275 ), 0.0 },
+  //     { find_spell( 124274 ), 0.2 },
+  //     { find_spell( 124273 ), 0.6 },
+  //     { spell_data_t::nil(), 10.0 }
+  //   } );
   stagger_impl::stagger_t( this, find_spell( 124255 ),
-                           { { find_specialization_spell( "Light Stagger" ), 0.0 },
-                             { find_specialization_spell( "Moderate Stagger" ), 0.2 },
-                             { find_specialization_spell( "Heavy Stagger" ), 0.6 } },
+                           // temp,
+                           { { find_spell( 124275 ), 0.0 },
+                             { find_spell( 124274 ), 0.2 },
+                             { find_spell( 124273 ), 0.6 },
+                             { spell_data_t::nil(), 10.0 } },
                            { "quick_sip" } );
 
   base_t::create_buffs();
