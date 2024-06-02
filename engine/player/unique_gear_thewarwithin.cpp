@@ -385,7 +385,7 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
       // TODO: confirm order is flourish->decimation->barrage
 
       // setup flourish
-      auto f_dam = create_proc_action<generic_proc_t>( "surekian_flourish", e, e.player->find_spell( 445434 ) );
+      auto f_dam = create_proc_action<generic_proc_t>( "surekian_flourish", e, 445434 );
       // TODO: confirm damage value is for entire dot and not per tick
       f_dam->base_td = data->effectN( 1 ).base_value() * ( f_dam->dot_duration / f_dam->base_tick_time );
       add_child( f_dam );
@@ -397,12 +397,12 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
       stance.emplace_back( f_dam, f_stance );
 
       // setup decimation
-      auto d_dam = create_proc_action<generic_aoe_proc_t>( "surekian_brutality", e, e.player->find_spell( 448519 ) );
+      auto d_dam = create_proc_action<generic_aoe_proc_t>( "surekian_brutality", e, 448519 );
       // TODO: confirm there is no standard +15% per target up to five
       d_dam->base_dd_min = d_dam->base_dd_max = data->effectN( 4 ).average( e.item );
       add_child( d_dam );
 
-      auto d_shield = create_proc_action<generic_proc_t>( "surekian_decimation", e, e.player->find_spell( 448090 ) );
+      auto d_shield = create_proc_action<generic_proc_t>( "surekian_decimation", e, 448090 );
       d_shield->base_dd_min = d_shield->base_dd_max = 1.0;  // for snapshot flag parsing
       add_child( d_shield );
 
@@ -435,7 +435,7 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
       stance.emplace_back( d_dam, d_stance );
 
       // setup barrage
-      auto b_dam = create_proc_action<generic_aoe_proc_t>( "surekian_barrage", e, e.player->find_spell( 445475 ) );
+      auto b_dam = create_proc_action<generic_aoe_proc_t>( "surekian_barrage", e, 445475 );
       // TODO: confirm damage isn't split and has no diminishing returns
       b_dam->split_aoe_damage = false;
       b_dam->base_dd_min = b_dam->base_dd_max = data->effectN( 6 ).average( e.item );
@@ -858,7 +858,7 @@ void fateweaved_needle( special_effect_t& effect )
       stat_amt( e.driver()->effectN( 2 ).average( e.item ) )
     {
       // TODO: damage spell data is shadowfrost and not cosmic
-      damage = create_proc_action<generic_proc_t>( "fated_pain", e, e.player->find_spell( 443585 ) );
+      damage = create_proc_action<generic_proc_t>( "fated_pain", e, 443585 );
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
     }
 
@@ -962,7 +962,7 @@ void befoulers_syringe( special_effect_t& effect )
   };
 
   // create on-next melee damage
-  auto strike = create_proc_action<generic_proc_t>( "befouling_strike", effect, effect.player->find_spell( 442280 ) );
+  auto strike = create_proc_action<generic_proc_t>( "befouling_strike", effect, 442280 );
   strike->base_dd_min = strike->base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
 
   // create on-next melee buff
@@ -988,6 +988,43 @@ void befoulers_syringe( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 // Armor
+// 457815 driver
+// 457918 nature damage driver
+// 457925 counter
+// 457928 dot
+// TODO: confirm coeff is for entire dot and not per tick
+void seal_of_the_poisoned_pact( special_effect_t& effect )
+{
+  unsigned nature_id = 457918;
+  auto nature = find_special_effect( effect.player, nature_id );
+  assert( nature && "Seal of the Poisoned Pact missing nature damage driver" );
+
+  auto dot = create_proc_action<generic_proc_t>( "venom_shock", effect, 457928 );
+  // TODO: confirm coeff is for entire dot and not per tick
+  dot->base_td = effect.driver()->effectN( 1 ).average( effect.item ) * dot->base_tick_time / dot->dot_duration;
+
+  auto counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 457925 ) )
+    ->set_expire_at_max_stack( true )
+    ->set_expire_callback( [ dot ]( buff_t* b, int, timespan_t ) {
+      dot->execute_on_target( b->player->target );
+    } );
+
+  effect.custom_buff = counter;
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  // TODO: confirm nature damage driver is entirely independent
+  nature->name_str = nature->name() + "_nature";
+  nature->custom_buff = counter;
+
+  effect.player->callbacks.register_callback_trigger_function( nature_id,
+    dbc_proc_callback_t::trigger_fn_type::CONDITION,
+    []( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
+      return dbc::has_common_school( a->get_school(), SCHOOL_NATURE );
+    } );
+
+  new dbc_proc_callback_t( effect.player, *nature );
+}
 }  // namespace items
 
 namespace sets
@@ -1023,7 +1060,8 @@ void register_special_effects()
   register_special_effect( 443384, items::fateweaved_needle );
   register_special_effect( 442205, items::befoulers_syringe );
   // Armor
-
+  register_special_effect( 457815, items::seal_of_the_poisoned_pact );
+  register_special_effect( 457918, DISABLED_EFFECT );  // seal of the poisoned pact
   // Sets
 }
 
