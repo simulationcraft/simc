@@ -1353,8 +1353,6 @@ struct denizen_of_the_dream_t : public pet_t
       // Has random delay between casts. Seems to operate at 75FPS with most delays being 31, 32, or 33 frames. Delays
       // as low as 8 frames and as high as 38 frames have been observed, but for now we will only assume 31-33 with a
       // 2:3:2 distribution.
-      static constexpr double _fps = 75;
-      static constexpr unsigned _base_delay = 31;
       double delay = 30;
 
       switch ( rng().range( 0U, 7U ) )
@@ -10801,24 +10799,14 @@ void druid_t::create_actions()
 // Default Consumables ======================================================
 std::string druid_t::default_flask() const
 {
-  if ( true_level >= 70 )
+  switch ( specialization() )
   {
-    switch ( specialization() )
-    {
-      case DRUID_GUARDIAN:
-      case DRUID_RESTORATION:
-        return "phial_of_elemental_chaos_3";
-      case DRUID_BALANCE:
-      case DRUID_FERAL:
-        return "iced_phial_of_corrupting_rage_3";
-      default:
-        return "disabled";
-    }
+    case DRUID_BALANCE:     return "tempered_mastery_3";
+    case DRUID_FERAL:       return "tempered_aggression_3";
+    case DRUID_GUARDIAN:    return "tempered_swiftness_3";
+    case DRUID_RESTORATION: return "tempered_swiftness_3";
+    default:                return "disabled";
   }
-
-  if ( true_level >= 60 )
-    return "spectral_flask_of_power";
-  return "disabled";
 }
 
 std::string druid_t::default_potion() const
