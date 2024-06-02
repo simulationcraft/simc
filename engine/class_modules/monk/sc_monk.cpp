@@ -1442,10 +1442,10 @@ struct tiger_palm_t : public monk_melee_attack_t
     sef_ability      = actions::sef_ability_e::SEF_TIGER_PALM;
     cast_during_sck  = player->specialization() != MONK_WINDWALKER;
 
-    // if ( p->specialization() == MONK_WINDWALKER )
-    //   energize_amount = p->spec.windwalker_monk->effectN( 4 ).base_value();
-    // else
-    energize_type = action_energize::NONE;
+    if ( p->specialization() == MONK_WINDWALKER )
+      energize_amount += p->spec.windwalker_monk->effectN( 4 ).base_value();
+    else
+      energize_type = action_energize::NONE;
 
     spell_power_mod.direct = 0.0;
   }
