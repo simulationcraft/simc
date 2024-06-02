@@ -35,6 +35,9 @@ void player_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
   if ( !buff && !func )
     notes.emplace_back( "Passive" );
 
+  if ( idx )
+    notes.emplace_back( "Consume" );
+
   if ( note_fn )
     notes.emplace_back( note_fn( opt_enum ) );
 
@@ -571,6 +574,8 @@ double parse_effects_t::get_effect_value( const player_effect_t& i, bool benefit
 
     if ( i.use_stacks )
       eff_val *= stack;
+
+    buff_idx_to_consume |= i.idx;
   }
 
   if ( i.mastery )
@@ -1252,9 +1257,25 @@ void parse_action_base_t::debug_message( const player_effect_t& data, std::strin
 {
   if ( data.buff )
   {
+    std::string stack_str;
+    if ( data.use_stacks )
+    {
+      if ( data.idx )
+        stack_str = "per consumed stack of";
+      else
+        stack_str = "per stack of";
+    }
+    else
+    {
+      if ( data.idx )
+        stack_str = "from consuming";
+      else
+        stack_str = "with";
+    }
+
     _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} {} buff {} ({}#{})", _action->name(),
-                               _action->id, type_str, val_str, data.use_stacks ? "per stack of" : "with",
-                               data.buff->name(), data.buff->data().id(), i );
+                               _action->id, type_str, val_str, stack_str, data.buff->name(), data.buff->data().id(),
+                               i );
   }
   else if ( mastery && !data.func )
   {
@@ -1370,5 +1391,53 @@ size_t parse_action_base_t::total_effects_count()
          cost_effects.size() +
          flat_cost_effects.size() +
          crit_chance_effects.size() +
-         target_multiplier_effects.size();
+         crit_chance_multiplier_effects.size() +
+         crit_damage_effects.size() +
+         target_multiplier_effects.size() +
+         target_crit_chance_effects.size() +
+         target_crit_damage_effects.size();
+}
+
+void parse_action_base_t::initialize_buff_list()
+{
+  auto _check_vector = [ this ]( auto& v ) {
+    for ( auto& i : v )
+    {
+      if ( i.idx == UINT32_MAX )
+      {
+        if ( i.buff && i.buff->can_expire( _action ) )
+        {
+          auto it = range::find( buff_list, i.buff );
+          if ( it == buff_list.end() )
+          {
+            assert( buff_list.size() < 32 && "Too many buffs for initialize_buff_list()" );
+            buff_list.push_back( i.buff );
+            i.idx = static_cast<uint32_t>( buff_list.size() );
+          }
+          else
+          {
+            i.idx = 1 << std::distance( buff_list.begin(), it );
+          }
+        }
+        else
+        {
+          i.idx = 0;
+        }
+      }
+    }
+  };
+
+  // only check player_effect_t vectors
+  _check_vector( ta_multiplier_effects );
+  _check_vector( da_multiplier_effects );
+  _check_vector( execute_time_effects );
+  _check_vector( gcd_effects );
+  _check_vector( dot_duration_effects );
+  _check_vector( tick_time_effects );
+  _check_vector( recharge_multiplier_effects );
+  _check_vector( cost_effects );
+  _check_vector( flat_cost_effects );
+  _check_vector( crit_chance_effects );
+  _check_vector( crit_chance_multiplier_effects );
+  _check_vector( crit_damage_effects );
 }
