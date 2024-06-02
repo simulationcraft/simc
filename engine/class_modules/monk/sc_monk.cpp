@@ -1443,7 +1443,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     cast_during_sck  = player->specialization() != MONK_WINDWALKER;
 
     if ( p->specialization() == MONK_WINDWALKER )
-      energize_amount += p->spec.windwalker_monk->effectN( 4 ).base_value();
+      energize_amount = p->baseline.windwalker.aura->effectN( 4 ).base_value();
     else
       energize_type = action_energize::NONE;
 
@@ -1973,7 +1973,7 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
     auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
 
     if ( p()->specialization() == MONK_MISTWEAVER )
-      totmResetChance += p()->spec.mistweaver_monk->effectN( 21 ).percent();
+      totmResetChance += p()->baseline.mistweaver.aura->effectN( 21 ).percent();
 
     if ( rng().roll( totmResetChance ) )
     {
@@ -2200,7 +2200,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
 
       if ( p()->specialization() == MONK_MISTWEAVER )
-        totmResetChance += p()->spec.mistweaver_monk->effectN( 21 ).percent();
+        totmResetChance += p()->baseline.mistweaver.aura->effectN( 21 ).percent();
 
       if ( rng().roll( totmResetChance ) )
       {
@@ -7972,7 +7972,7 @@ void monk_t::init_base_stats()
     case MONK_MISTWEAVER:
     {
       base.spell_power_per_intellect = 1.0;
-      // base.attack_power_per_spell_power                  = spec.mistweaver_monk->effectN( 4 ).percent();
+      // base.attack_power_per_spell_power                  = baseline.mistweaver.aura->effectN( 4 ).percent();
       resources.base[ RESOURCE_ENERGY ]                  = 0;
       resources.base[ RESOURCE_CHI ]                     = 0;
       resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
@@ -7982,15 +7982,15 @@ void monk_t::init_base_stats()
     {
       if ( base.distance < 1 )
         base.distance = 5;
-      // base_gcd += spec.windwalker_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
+      // base_gcd += baseline.windwalker.aura->effectN( 14 ).time_value();  // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
-      // base.spell_power_per_attack_power = spec.windwalker_monk->effectN( 13 ).percent();
+      // base.spell_power_per_attack_power = baseline.windwalker.aura->effectN( 13 ).percent();
       resources.base[ RESOURCE_ENERGY ] = 100;
       resources.base[ RESOURCE_ENERGY ] += talent.windwalker.ascension->effectN( 3 ).base_value();
       resources.base[ RESOURCE_ENERGY ] += talent.windwalker.inner_peace->effectN( 1 ).base_value();
       resources.base[ RESOURCE_MANA ] = 0;
       resources.base[ RESOURCE_CHI ]  = 4;
-      // resources.base[ RESOURCE_CHI ] += spec.windwalker_monk->effectN( 10 ).base_value();
+      // resources.base[ RESOURCE_CHI ] += baseline.windwalker.aura->effectN( 10 ).base_value();
       resources.base[ RESOURCE_CHI ] += talent.windwalker.ascension->effectN( 1 ).base_value();
       resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10.0;
       resources.base_regen_per_second[ RESOURCE_MANA ]   = 0;

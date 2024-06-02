@@ -1138,8 +1138,6 @@ public:
     const spell_data_t *expel_harm_2_mw;
     const spell_data_t *expel_harm_3_mw;
     const spell_data_t *leather_specialization_mw;
-    const spell_data_t *mistweaver_monk;
-    const spell_data_t *mistweaver_monk_2;
     const spell_data_t *reawaken;
 
     struct
@@ -1162,7 +1160,6 @@ public:
     const spell_data_t *touch_of_death_3_ww;
     const spell_data_t *touch_of_karma;
     const spell_data_t *two_hand_adjustment_ww;
-    const spell_data_t *windwalker_monk;
 
     struct
     {

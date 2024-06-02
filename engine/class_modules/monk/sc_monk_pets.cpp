@@ -190,7 +190,7 @@ struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
     //       break;
 
     //     case MONK_MISTWEAVER:
-    //       base_t::apply_affecting_aura( p->o()->spec.mistweaver_monk );
+    //       base_t::apply_affecting_aura( p->o()->baseline.mistweaver.aura );
     //       break;
 
     //     default:
@@ -1581,7 +1581,7 @@ public:
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
-    owner_coeff.ap_from_ap      = o()->spec.mistweaver_monk->effectN( 4 ).percent();
+    owner_coeff.ap_from_ap      = o()->baseline.mistweaver.aura->effectN( 4 ).percent();
   }
 
   void init_action_list() override
@@ -1614,7 +1614,7 @@ public:
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    owner_coeff.ap_from_ap      = o()->spec.mistweaver_monk->effectN( 4 ).percent();
+    owner_coeff.ap_from_ap      = o()->baseline.mistweaver.aura->effectN( 4 ).percent();
   }
 };
 
