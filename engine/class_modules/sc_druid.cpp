@@ -8064,6 +8064,8 @@ struct warrior_of_elune_t : public druid_spell_t
   {
     harmful = may_miss = false;
     track_cd_waste = true;
+
+    form_mask |= NO_FORM;
   }
 
   void execute() override
