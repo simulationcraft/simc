@@ -6891,7 +6891,8 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     regen_caches[ CACHE_HASTE ]        = true;
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
   }
-  user_options.initial_chi               = talent.windwalker.combat_wisdom.ok() ? 2 : 0;
+  user_options.initial_chi =
+      talent.windwalker.combat_wisdom.ok() ? (int) talent.windwalker.combat_wisdom->effectN( 1 ).base_value() : 0;
   user_options.chi_burst_healing_targets = 8;
   user_options.motc_override             = 0;
   user_options.squirm_frequency          = 15;
@@ -9353,6 +9354,10 @@ void monk_t::combat_begin()
           clamp( as<double>( user_options.initial_chi + resources.current[ RESOURCE_CHI ] ), 0.0,
                  resources.max[ RESOURCE_CHI ] );
       sim->print_debug( "Combat starting chi has been set to {}", resources.current[ RESOURCE_CHI ] );
+    }
+    else
+    {
+      resources.current[ RESOURCE_CHI ] = talent.windwalker.combat_wisdom->effectN( 1 ).base_value();
     }
 
     if ( talent.windwalker.combat_wisdom->ok() )
