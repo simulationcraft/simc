@@ -896,8 +896,8 @@ public:
     spell_t* sigil_of_flame_t31 = nullptr;
 
     // Aldrachi Reaver
-    attack_t* art_of_the_glaive = nullptr;
-    attack_t* preemptive_strike  = nullptr;
+    attack_t* art_of_the_glaive            = nullptr;
+    attack_t* preemptive_strike             = nullptr;
 
     // Fel-scarred
     action_t* burning_blades = nullptr;
@@ -7750,18 +7750,7 @@ void demon_hunter_t::init_action_list()
   }
   else if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
-    if ( talent.aldrachi_reaver.art_of_the_glaive->ok() )
-    {
-      demon_hunter_apl::vengeance_aldrachi_reaver( this );
-    }
-    else if ( talent.felscarred.demonsurge->ok() )
-    {
-      demon_hunter_apl::vengeance_felscarred( this );
-    }
-    else
-    {
-      demon_hunter_apl::vengeance( this );
-    }
+    demon_hunter_apl::vengeance( this );
   }
 
   use_default_action_list = true;
