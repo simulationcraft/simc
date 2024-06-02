@@ -7690,7 +7690,7 @@ struct starfall_t : public ap_spender_t
     } );
 
     p()->buff.starfall->trigger();
-    p()->buff.starweaver_starfall->trigger( this );
+    p()->buff.starweaver_starsurge->trigger( this );
   }
 };
 
