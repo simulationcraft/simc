@@ -590,12 +590,12 @@ void foul_behemoths_chelicera( special_effect_t& effect )
 {
   struct digestive_venom_t : public generic_proc_t
   {
-    struct tasty_juices_t : public proc_heal_t
+    struct tasty_juices_t : public generic_heal_t
     {
       buff_t* buff;
 
       tasty_juices_t( const special_effect_t& e, const spell_data_t* data )
-        : proc_heal_t( "tasty_juices", e.player, e.player->find_spell( 446805 ) )
+        : generic_heal_t( e, "tasty_juices", 446805 )
       {
         base_dd_min = base_dd_max = data->effectN( 2 ).average( e.item );
 
@@ -609,7 +609,7 @@ void foul_behemoths_chelicera( special_effect_t& effect )
 
       void impact( action_state_t* s ) override
       {
-        proc_heal_t::impact( s );
+        generic_heal_t::impact( s );
 
         if ( !buff->check() )
           buff->trigger();
@@ -818,6 +818,67 @@ void malfunctioning_ethereum_module( special_effect_t& effect )
   effect.custom_buff = counter;
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 443124 on-use
+//  e1: damage
+//  e2: trigger heal return
+// 443128 coeffs
+//  e1: damage
+//  e2: heal
+//  e3: unknown
+//  e4: cdr on kill
+// 446067 heal
+// 455162 heal return
+//  e1: dummy
+//  e2: trigger heal
+
+void abyssal_effigy( special_effect_t& effect )
+{
+  unsigned coeff_id = 443128;
+  auto coeff = find_special_effect( effect.player, coeff_id );
+  assert( coeff && "Abyssal Effigy missing coefficient effect" );
+
+  struct abyssal_gluttony_t : public generic_proc_t
+  {
+    cooldown_t* item_cd;
+    action_t* heal;
+    timespan_t cdr;
+    double heal_speed;
+
+    abyssal_gluttony_t( const special_effect_t& e, const spell_data_t* data )
+      : generic_proc_t( e, "abyssal_gluttony", e.driver() ),
+        item_cd( e.player->get_cooldown( e.cooldown_name() ) ),
+        cdr( timespan_t::from_seconds( data->effectN( 4 ).base_value() ) ),
+        heal_speed( e.trigger()->missile_speed() )
+    {
+      base_dd_min = base_dd_max = data->effectN( 1 ).average( e.item );
+
+      heal = create_proc_action<generic_heal_t>( "abyssal_gluttony_heal", e, "abyssal_glutton_heal",
+                                                 e.trigger()->effectN( 2 ).trigger() );
+      heal->name_str_reporting = "abyssal_gluttony";
+      heal->base_dd_min = heal->base_dd_max = data->effectN( 2 ).average( e.item );
+    }
+
+    void execute() override
+    {
+      bool was_sleeping = target->is_sleeping();
+
+      generic_proc_t::execute();
+
+      auto delay = timespan_t::from_seconds( player->get_player_distance( *target ) / heal_speed );
+      make_event( *sim, delay, [ this ] { heal->execute(); } );
+
+      // Assume if target wasn't sleeping but is now, it was killed by the damage
+      if ( !was_sleeping && target->is_sleeping() )
+      {
+        cooldown->adjust( -cdr );
+        item_cd->adjust( -cdr );
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<abyssal_gluttony_t>( "abyssal_gluttony", effect, coeff->driver() );
 }
 
 // Weapons
@@ -1055,6 +1116,8 @@ void register_special_effects()
   register_special_effect( 445560, items::ovinaxs_mercurial_egg );
   register_special_effect( 445066, DISABLED_EFFECT );  // ovinax's mercurial egg
   register_special_effect( 446209, items::malfunctioning_ethereum_module, true );
+  register_special_effect( 443124, items::abyssal_effigy );
+  register_special_effect( 443128, DISABLED_EFFECT );  // abyssal effigy
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
