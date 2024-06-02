@@ -888,6 +888,7 @@ public:
     propagate_const<gain_t*> start_of_combat_overflow;
 
     // Blood
+    propagate_const<gain_t*> bonestorm;
     propagate_const<gain_t*> blood_tap;
     propagate_const<gain_t*> drw_heart_strike;  // Blood Strike, Blizzard's hack to replicate HS rank 2 with DRW
     propagate_const<gain_t*> heartbreaker;
@@ -6804,7 +6805,18 @@ struct bonestorm_t final : public death_knight_spell_t
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
-    return base_tick_time * last_resource_cost / 10;
+    // https://www.wowhead.com/news/the-war-within-alpha-development-notes-new-human-racial-replacing-diplomacy-342168
+    // Blue post specifically mentions a max of 10 bones consumed, though it doesn't show up in spell description
+    // or in Spelldata.
+    int charges = std::max( p()->buffs.bone_shield->check(), 10 );
+    p()->buffs.bone_shield->decrement( charges );
+    return base_tick_time * charges / 10;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    death_knight_spell_t::tick( d );
+    p()->replenish_rune( p()->talent.blood.bonestorm->effectN( 3 ).base_value(), p()->gains.bonestorm );
   }
 };
 
@@ -13202,6 +13214,7 @@ void death_knight_t::init_gains()
   gains.coldthirst               = get_gain( "Coldthirst" );
 
   // Blood
+  gains.bonestorm        = get_gain( "Bonestorm" );
   gains.blood_tap        = get_gain( "Blood Tap" );
   gains.drw_heart_strike = get_gain( "Rune Weapon Heart Strike" );
   gains.heartbreaker     = get_gain( "Heartbreaker" );

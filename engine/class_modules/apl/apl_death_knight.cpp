@@ -173,7 +173,7 @@ std::string temporary_enchant( const player_t* p )
     standard->add_action( "consumption" );
     standard->add_action( "soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>(dot.soul_reaper.remains+5)" );
     standard->add_action( "soul_reaper,target_if=min:dot.soul_reaper.remains,if=target.time_to_pct_35<5&active_enemies>=2&target.time_to_die>(dot.soul_reaper.remains+5)" );
-    standard->add_action( "bonestorm,if=runic_power>=100" );
+    standard->add_action( "bonestorm,if=buff.bone_shield.stack>=5" );
     standard->add_action( "blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)" );
     standard->add_action( "heart_strike,if=rune.time_to_4<gcd" );
     standard->add_action( "blood_boil,if=charges_fractional>=1.1" );
