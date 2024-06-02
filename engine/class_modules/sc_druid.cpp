@@ -1350,8 +1350,26 @@ struct denizen_of_the_dream_t : public pet_t
 
     void execute() override
     {
-      // TODO: has server batching behavior, using a random value for now
-      cooldown->duration = rng().range( 0_ms, 600_ms );
+      // Has random delay between casts. Seems to operate at 75FPS with most delays being 31, 32, or 33 frames. Delays
+      // as low as 8 frames and as high as 38 frames have been observed, but for now we will only assume 31-33 with a
+      // 2:3:2 distribution.
+      static constexpr double _fps = 75;
+      static constexpr unsigned _base_delay = 31;
+      double delay = 30;
+
+      switch ( rng().range( 0U, 7U ) )
+      {
+        case 0:
+        case 1: delay += 1; break;
+        case 2:
+        case 3:
+        case 4: delay += 2; break;
+        case 5:
+        case 6: delay += 3; break;
+        default: break;
+      }
+
+      cooldown->duration = timespan_t::from_seconds( delay / 75.0 );
 
       spell_t::execute();
     }
