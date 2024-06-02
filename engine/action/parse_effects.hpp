@@ -23,7 +23,8 @@ enum parse_flag_e
   USE_DEFAULT,
   USE_CURRENT,
   IGNORE_STACKS,
-  ALLOW_ZERO
+  ALLOW_ZERO,
+  CONSUME_BUFF
 };
 
 // effects dependent on player state
@@ -37,6 +38,7 @@ struct player_effect_t
   std::function<bool()> func = nullptr;
   const spelleffect_data_t* eff = &spelleffect_data_t::nil();
   uint32_t opt_enum = UINT32_MAX;
+  uint32_t idx = 0;
 
   player_effect_t& set_buff( buff_t* b )
   { buff = b; return *this; }
@@ -186,6 +188,7 @@ struct parse_base_t
   template <typename T> using detect_use_stacks = decltype( T::use_stacks );
   template <typename T> using detect_type = decltype( T::type );
   template <typename T> using detect_value = decltype( T::value );
+  template <typename T> using detect_idx = decltype( T::idx );
 
   // handle first argument to parse_effects(), set buff if necessary and return spell_data_t*
   template <typename T, typename U>
@@ -260,6 +263,12 @@ struct parse_base_t
       {
         if ( mod == USE_DEFAULT || mod == USE_CURRENT )
           tmp.data.type = mod;
+      }
+
+      if constexpr ( is_detected_v<detect_idx, U> )
+      {
+        if ( mod == CONSUME_BUFF )
+          tmp.data.idx = UINT32_MAX;;
       }
     }
     else if constexpr ( std::is_floating_point_v<T> && is_detected_v<detect_value, U> )
@@ -410,6 +419,7 @@ struct parse_effects_t : public parse_base_t
 {
 protected:
   player_t* _player;
+  mutable uint32_t buff_idx_to_consume = 0;
 
 public:
   parse_effects_t( player_t* p ) : _player( p ) {}
@@ -680,8 +690,10 @@ struct parse_action_base_t : public parse_effects_t
   std::vector<player_effect_t> crit_chance_multiplier_effects;
   std::vector<player_effect_t> crit_damage_effects;
   std::vector<target_effect_t> target_multiplier_effects;
-  std::vector<target_effect_t> target_crit_damage_effects;
   std::vector<target_effect_t> target_crit_chance_effects;
+  std::vector<target_effect_t> target_crit_damage_effects;
+
+  std::vector<buff_t*> buff_list;
 
 private:
   action_t* _action;
@@ -703,6 +715,8 @@ public:
                                                           std::string&, bool&, bool ) override;
 
   void target_debug_message( std::string_view, std::string_view, const spell_data_t*, size_t ) override;
+
+  void initialize_buff_list();
 
   void parsed_effects_html( report::sc_html_stream& );
 
@@ -754,6 +768,27 @@ public:
   parse_action_effects_t( std::string_view name, player_t* player, const spell_data_t* spell )
     : BASE( name, player, spell ), parse_action_base_t( player, this )
   {}
+
+  void init_finished() override
+  {
+    BASE::init_finished();
+    initialize_buff_list();
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    auto buff_it = buff_list.begin();
+    while ( buff_idx_to_consume )
+    {
+      if ( buff_idx_to_consume & 1U )
+        ( *buff_it )->decrement();
+
+      buff_idx_to_consume >>= 1;
+      buff_it++;
+    }
+  }
 
   double cost_flat_modifier() const override
   {
