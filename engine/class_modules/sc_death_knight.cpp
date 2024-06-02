@@ -13071,12 +13071,9 @@ void death_knight_t::create_buffs()
           ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { active_spells.unholy_pact_damage->execute(); } )
           // Unholy pact ticks twice on buff expiration, hence the following override
           // https://github.com/SimCMinMax/WoW-BugTracker/issues/675
-          ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-            if ( !new_ )
-            {
-              active_spells.unholy_pact_damage->execute();
-              active_spells.unholy_pact_damage->execute();
-            }
+          ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
+            active_spells.unholy_pact_damage->execute();
+            active_spells.unholy_pact_damage->execute();
           } );
 
   buffs.ghoulish_frenzy =
