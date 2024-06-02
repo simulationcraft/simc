@@ -207,6 +207,8 @@ void vengeance( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* aldrachi_reaver = p->get_action_priority_list( "aldrachi_reaver" );
+  action_priority_list_t* felscarred = p->get_action_priority_list( "felscarred" );
   action_priority_list_t* maintenance = p->get_action_priority_list( "maintenance" );
   action_priority_list_t* fiery_demise = p->get_action_priority_list( "fiery_demise" );
   action_priority_list_t* single_target = p->get_action_priority_list( "single_target" );
@@ -233,17 +235,28 @@ void vengeance( player_t* p )
   default_->add_action( "disrupt,if=target.debuff.casting.react" );
   default_->add_action( "infernal_strike,use_off_gcd=1" );
   default_->add_action( "demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains" );
-  default_->add_action( "metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up&cooldown.fel_devastation.remains>12" );
   default_->add_action( "potion,use_off_gcd=1" );
   default_->add_action( "call_action_list,name=externals" );
   default_->add_action( "use_items,use_off_gcd=1" );
-  default_->add_action( "call_action_list,name=fiery_demise,if=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0" );
-  default_->add_action( "call_action_list,name=maintenance" );
-  default_->add_action( "run_action_list,name=single_target,if=variable.single_target" );
-  default_->add_action( "run_action_list,name=small_aoe,if=variable.small_aoe" );
-  default_->add_action( "run_action_list,name=big_aoe,if=variable.big_aoe" );
+  default_->add_action( "run_action_list,name=aldrachi_reaver,if=talent.art_of_the_glaive", "##################  Aldrachi Reaver # ##################" );
 
-  maintenance->add_action( "fiery_brand,if=talent.fiery_brand&((active_dot.fiery_brand=0&(cooldown.sigil_of_flame.remains<=(execute_time+gcd.remains)|cooldown.soul_carver.remains<=(execute_time+gcd.remains)|cooldown.fel_devastation.remains<=(execute_time+gcd.remains)))|(talent.down_in_flames&full_recharge_time<=(execute_time+gcd.remains)))", "Maintenance & upkeep" );
+  aldrachi_reaver->add_action( "metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up&cooldown.fel_devastation.remains>12" );
+  aldrachi_reaver->add_action( "call_action_list,name=fiery_demise,if=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0" );
+  aldrachi_reaver->add_action( "call_action_list,name=maintenance" );
+  aldrachi_reaver->add_action( "run_action_list,name=single_target,if=variable.single_target" );
+  aldrachi_reaver->add_action( "run_action_list,name=small_aoe,if=variable.small_aoe" );
+  aldrachi_reaver->add_action( "run_action_list,name=big_aoe,if=variable.big_aoe" );
+
+  default_->add_action( "run_action_list,name=felscarred,if=talent.demonsurge", "##############  Fel-scarred # ##############" );
+
+  felscarred->add_action( "metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up&cooldown.fel_devastation.remains>12" );
+  felscarred->add_action( "call_action_list,name=fiery_demise,if=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0" );
+  felscarred->add_action( "call_action_list,name=maintenance" );
+  felscarred->add_action( "run_action_list,name=single_target,if=variable.single_target" );
+  felscarred->add_action( "run_action_list,name=small_aoe,if=variable.small_aoe" );
+  felscarred->add_action( "run_action_list,name=big_aoe,if=variable.big_aoe" );
+
+  maintenance->add_action( "fiery_brand,if=talent.fiery_brand&((active_dot.fiery_brand=0&(cooldown.sigil_of_flame.remains<=(execute_time+gcd.remains)|cooldown.soul_carver.remains<=(execute_time+gcd.remains)|cooldown.fel_devastation.remains<=(execute_time+gcd.remains)))|(talent.down_in_flames&full_recharge_time<=(execute_time+gcd.remains)))", "#########  Shared # #########  Maintenance & upkeep" );
   maintenance->add_action( "sigil_of_flame,if=talent.ascending_flame|active_dot.sigil_of_flame=0" );
   maintenance->add_action( "immolation_aura" );
   maintenance->add_action( "bulk_extraction,if=((5-soul_fragments)<=spell_targets)&soul_fragments<=2" );
