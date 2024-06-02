@@ -2370,84 +2370,16 @@ struct pet_action_t : public parse_action_effects_t<Base>
     this->special = this->may_crit = true;
     if ( this->data().ok() )
     {
-      apply_buff_effects();
-      apply_debuff_effects();
+      apply_pet_action_effects();
+      if ( this->type == action_e::ACTION_SPELL || this->type == action_e::ACTION_ATTACK )
+      {
+        apply_pet_target_effects();
+      }
     }
   }
 
-  // Basic Parse Effects implementation for pets. Mostly applies to Dancing Rune Weapon currently
-  // Other pets (such as Mograine from Riders) also benefit from this due to executing spells contained in whitelists
-  // Do be careful, parsing some effects here (such as Unholys Mastery) may lead to double dipping
-  void apply_buff_effects()
-  {
-    // Blood
-    parse_effects( dk()->buffs.sanguine_ground );
-    parse_effects( dk()->buffs.heartrend, dk()->talent.blood.heartrend );
-    parse_effects( dk()->buffs.hemostasis );
-    parse_effects( dk()->buffs.crimson_scourge );
-    parse_effects( dk()->buffs.ossuary );
-    parse_effects( dk()->buffs.coagulopathy );
-
-    // Unholy
-    parse_effects( dk()->buffs.unholy_assault );
-
-    // Rider of the Apocalypse
-    parse_effects( dk()->buffs.mograines_might );
-    parse_effects( dk()->buffs.a_feast_of_souls );
-  }
-
-  void apply_debuff_effects()
-  {
-    // Shared
-    // currently failing with a read access error, DoTs/Debuffs likely not created yet?... need to dig into why
-    /*parse_target_effects(
-        []( actor_target_data_t* t ) {
-          return static_cast<death_knight_td_t*>( t )->dot.virulent_plague->is_ticking();
-        },
-        dk()->spell.virulent_plague, dk()->talent.unholy.morbidity );
-    parse_target_effects(
-        []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->dot.frost_fever->is_ticking(); },
-        dk()->spell.frost_fever, dk()->talent.unholy.morbidity );
-    parse_target_effects(
-        []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->dot.blood_plague->is_ticking(); },
-        dk()->spell.blood_plague, dk()->talent.unholy.morbidity, dk()->talent.blood.coagulopathy );
-    parse_target_effects(
-        []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->dot.unholy_blight->is_ticking(); },
-        dk()->spell.unholy_blight_dot, dk()->talent.unholy.morbidity );
-    parse_target_effects(
-        []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.apocalypse_war->check(); },
-        dk()->spell.apocalypse_war_debuff, dk()->talent.unholy_bond );
-    parse_target_effects(
-        []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.razorice->check(); },
-        dk()->spell.razorice_debuff, dk()->talent.unholy_bond );
-    parse_target_effects(
-        []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.brittle->check(); },
-        dk()->spell.brittle_debuff );
-
-    // Blood
-    parse_target_effects(
-        []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.tightening_grasp->check(); },
-        dk()->spell.tightening_grasp_debuff );
-
-    // Frost
-
-    // Unholy
-    parse_target_effects(
-        []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.death_rot->check(); },
-        dk()->spell.death_rot_debuff );
-    parse_target_effects(
-        []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.rotten_touch->check(); },
-        dk()->spell.rotten_touch_debuff );
-
-    // Rider of the Apocalypse
-
-    // Deathbringer
-
-    // San'layn
-    parse_target_effects(
-        []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.incite_terror->check(); },
-        dk()->spell.incite_terror_debuff );*/
-  }
+  void apply_pet_action_effects();
+  void apply_pet_target_effects();
 
   template <typename... Ts>
   void parse_effects( Ts&&... args )
@@ -4361,11 +4293,11 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
 
     if ( this->data().ok() )
     {
-      apply_buff_effects();
+      apply_action_effects();
 
       if ( this->type == action_e::ACTION_SPELL || this->type == action_e::ACTION_ATTACK )
       {
-        apply_debuff_effects();
+        apply_target_effects();
       }
 
       if ( this->data().flags( spell_attribute::SX_ABILITY ) || this->trigger_gcd > 0_ms )
@@ -4410,78 +4342,8 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     return 1.0;
   }
 
-  void apply_buff_effects()
-  {
-    // Blood
-    parse_effects( p()->buffs.sanguine_ground );
-    parse_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
-    parse_effects( p()->buffs.hemostasis );
-    parse_effects( p()->buffs.crimson_scourge );
-    parse_effects( p()->buffs.ossuary );
-    parse_effects( p()->buffs.coagulopathy );
-
-    // Frost
-    parse_effects( p()->buffs.rime, p()->talent.frost.improved_rime );
-    parse_effects( p()->buffs.gathering_storm );
-    parse_effects( p()->buffs.killing_machine, effect_mask_t( true ).disable( 2 ) );
-    parse_effects( p()->mastery.frozen_heart );
-
-    // Unholy
-    parse_effects( p()->buffs.unholy_assault );
-    parse_effects( p()->buffs.sudden_doom, p()->talent.unholy.harbinger_of_doom );
-    parse_effects( p()->buffs.plaguebringer, p()->talent.unholy.plaguebringer );
-    parse_effects( p()->mastery.dreadblade );
-
-    // Rider of the Apocalypse
-    parse_effects( p()->buffs.mograines_might );
-    parse_effects( p()->buffs.a_feast_of_souls );
-
-    // Deathbringer
-    parse_effects( p()->buffs.dark_talons_shadowfrost, p()->talent.deathbringer.dark_talons );
-    parse_effects( p()->buffs.bind_in_darkness, p()->talent.deathbringer.bind_in_darkness );
-    parse_effects( p()->buffs.exterminate );
-    parse_effects( p()->buffs.painful_death );
-
-    // San'layn
-    parse_effects( p()->buffs.essence_of_the_blood_queen, p()->talent.sanlayn.frenzied_bloodthirst );
-  }
-
-  void apply_debuff_effects()
-  {
-    // Shared
-    parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), p()->spell.virulent_plague,
-                          p()->talent.unholy.morbidity );
-    parse_target_effects( d_fn( &death_knight_td_t::dots_t::frost_fever ), p()->spell.frost_fever,
-                          p()->talent.unholy.morbidity );
-    parse_target_effects( d_fn( &death_knight_td_t::dots_t::blood_plague ), p()->spell.blood_plague,
-                          p()->talent.unholy.morbidity, p()->talent.blood.coagulopathy );
-    parse_target_effects( d_fn( &death_knight_td_t::dots_t::unholy_blight, false ), p()->spell.unholy_blight_dot,
-                          p()->talent.unholy.morbidity );
-    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), p()->spell.apocalypse_war_debuff,
-                          p()->talent.unholy_bond );
-    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::razorice ), p()->spell.razorice_debuff,
-                          p()->talent.unholy_bond );
-
-    // Blood
-    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::tightening_grasp ), p()->spell.tightening_grasp_debuff );
-
-    // Frost
-    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::everfrost ),
-                          p()->talent.frost.everfrost->effectN( 1 ).trigger(), p()->talent.frost.everfrost );
-    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::piercing_chill ), p()->spell.piercing_chill_debuff );
-
-    // Unholy
-    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), p()->spell.brittle_debuff );
-    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::death_rot ), p()->spell.death_rot_debuff );
-    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::rotten_touch ), p()->spell.rotten_touch_debuff );
-
-    // Rider of the Apocalypse
-
-    // Deathbringer
-
-    // San'layn
-    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::incite_terror ), p()->spell.incite_terror_debuff );
-  }
+  void apply_action_effects();
+  void apply_target_effects();
 
   template <typename... Ts>
   void parse_effects( Ts&&... args )
@@ -11415,7 +11277,7 @@ const spell_data_t* death_knight_t::cache_spell_lookup( bool fn, int id )
 {
   if( !fn )
   {
-    return spell_data_t::nil();
+    return spell_data_t::not_found();
   }
   
   return find_spell( id );
@@ -13715,6 +13577,155 @@ void death_knight_t::adjust_dynamic_cooldowns()
   player_t::adjust_dynamic_cooldowns();
 
   _runes.update_coefficient();
+}
+
+// Basic Parse Effects implementation for pets. Mostly applies to Dancing Rune Weapon currently
+// Other pets (such as Mograine from Riders) also benefit from this due to executing spells contained in whitelists
+// Do be careful, parsing some effects here (such as Unholys Mastery) may lead to double dipping
+template <class T_PET, class Base>
+void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
+{
+  // Blood
+  parse_effects( dk()->buffs.sanguine_ground );
+  parse_effects( dk()->buffs.heartrend, dk()->talent.blood.heartrend );
+  parse_effects( dk()->buffs.hemostasis );
+  parse_effects( dk()->buffs.crimson_scourge );
+  parse_effects( dk()->buffs.ossuary );
+  parse_effects( dk()->buffs.coagulopathy );
+
+  // Unholy
+  parse_effects( dk()->buffs.unholy_assault );
+
+  // Rider of the Apocalypse
+  parse_effects( dk()->buffs.mograines_might );
+  parse_effects( dk()->buffs.a_feast_of_souls );
+}
+
+template <class T_PET, class Base>
+void pets::pet_action_t<T_PET, Base>::apply_pet_target_effects()
+{
+  // Shared
+  // currently failing with a read access error, DoTs/Debuffs likely not created yet?... need to dig into why
+  /*parse_target_effects(
+      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->dot.virulent_plague->is_ticking(); },
+      dk()->spell.virulent_plague, dk()->talent.unholy.morbidity );
+  parse_target_effects(
+      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->dot.frost_fever->is_ticking(); },
+      dk()->spell.frost_fever, dk()->talent.unholy.morbidity );
+  parse_target_effects(
+      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->dot.blood_plague->is_ticking(); },
+      dk()->spell.blood_plague, dk()->talent.unholy.morbidity, dk()->talent.blood.coagulopathy );
+  parse_target_effects(
+      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->dot.unholy_blight->is_ticking(); },
+      dk()->spell.unholy_blight_dot, dk()->talent.unholy.morbidity );
+  parse_target_effects(
+      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.apocalypse_war->check(); },
+      dk()->spell.apocalypse_war_debuff, dk()->talent.unholy_bond );
+  parse_target_effects(
+      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.razorice->check(); },
+      dk()->spell.razorice_debuff, dk()->talent.unholy_bond );
+  parse_target_effects(
+      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.brittle->check(); },
+      dk()->spell.brittle_debuff );
+
+  // Blood
+  parse_target_effects(
+      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.tightening_grasp->check(); },
+      dk()->spell.tightening_grasp_debuff );
+
+  // Frost
+
+  // Unholy
+  parse_target_effects(
+      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.death_rot->check(); },
+      dk()->spell.death_rot_debuff );
+  parse_target_effects(
+      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.rotten_touch->check(); },
+      dk()->spell.rotten_touch_debuff );
+
+  // Rider of the Apocalypse
+
+  // Deathbringer
+
+  // San'layn
+  parse_target_effects(
+      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.incite_terror->check(); },
+      dk()->spell.incite_terror_debuff );*/
+}
+
+template <class Base>
+void death_knight_action_t<Base>::apply_action_effects()
+{
+  // Blood
+  parse_effects( p()->buffs.sanguine_ground );
+  parse_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
+  parse_effects( p()->buffs.hemostasis );
+  parse_effects( p()->buffs.crimson_scourge );
+  parse_effects( p()->buffs.ossuary );
+  parse_effects( p()->buffs.coagulopathy );
+
+  // Frost
+  parse_effects( p()->buffs.rime, p()->talent.frost.improved_rime );
+  parse_effects( p()->buffs.gathering_storm );
+  parse_effects( p()->buffs.killing_machine, effect_mask_t( true ).disable( 2 ) );
+  parse_effects( p()->mastery.frozen_heart );
+
+  // Unholy
+  parse_effects( p()->buffs.unholy_assault );
+  parse_effects( p()->buffs.sudden_doom, p()->talent.unholy.harbinger_of_doom );
+  parse_effects( p()->buffs.plaguebringer, p()->talent.unholy.plaguebringer );
+  parse_effects( p()->mastery.dreadblade );
+
+  // Rider of the Apocalypse
+  parse_effects( p()->buffs.mograines_might );
+  parse_effects( p()->buffs.a_feast_of_souls );
+
+  // Deathbringer
+  parse_effects( p()->buffs.dark_talons_shadowfrost, p()->talent.deathbringer.dark_talons );
+  parse_effects( p()->buffs.bind_in_darkness, p()->talent.deathbringer.bind_in_darkness );
+  parse_effects( p()->buffs.exterminate );
+  parse_effects( p()->buffs.painful_death );
+
+  // San'layn
+  parse_effects( p()->buffs.essence_of_the_blood_queen, p()->talent.sanlayn.frenzied_bloodthirst );
+}
+
+template <class Base>
+void death_knight_action_t<Base>::apply_target_effects()
+{
+  // Shared
+  parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), p()->spell.virulent_plague,
+                        p()->talent.unholy.morbidity );
+  parse_target_effects( d_fn( &death_knight_td_t::dots_t::frost_fever ), p()->spell.frost_fever,
+                        p()->talent.unholy.morbidity );
+  parse_target_effects( d_fn( &death_knight_td_t::dots_t::blood_plague ), p()->spell.blood_plague,
+                        p()->talent.unholy.morbidity, p()->talent.blood.coagulopathy );
+  parse_target_effects( d_fn( &death_knight_td_t::dots_t::unholy_blight, false ), p()->spell.unholy_blight_dot,
+                        p()->talent.unholy.morbidity );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), p()->spell.apocalypse_war_debuff,
+                        p()->talent.unholy_bond );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::razorice ), p()->spell.razorice_debuff,
+                        p()->talent.unholy_bond );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), p()->spell.brittle_debuff );
+
+  // Blood
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::tightening_grasp ), p()->spell.tightening_grasp_debuff );
+
+  // Frost
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::everfrost ),
+                        p()->talent.frost.everfrost->effectN( 1 ).trigger(), p()->talent.frost.everfrost );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::piercing_chill ), p()->spell.piercing_chill_debuff );
+
+  // Unholy
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::death_rot ), p()->spell.death_rot_debuff );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::rotten_touch ), p()->spell.rotten_touch_debuff );
+
+  // Rider of the Apocalypse
+
+  // Deathbringer
+
+  // San'layn
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::incite_terror ), p()->spell.incite_terror_debuff );
 }
 
 void death_knight_t::parse_player_effects()
