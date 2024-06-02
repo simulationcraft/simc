@@ -1298,6 +1298,7 @@ public:
     const spell_data_t* sanguine_ground;
     const spell_data_t* ossuary_buff;
     const spell_data_t* crimson_scourge_buff;
+    const spell_data_t* heartbreaker_rp_gain;
     const spell_data_t* heartrend_buff;
     const spell_data_t* perserverence_of_the_ebon_blade_buff;
     const spell_data_t* voracious_buff;
@@ -8594,7 +8595,7 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
 {
   heart_strike_base_t( util::string_view n, death_knight_t* p, const spell_data_t* s )
     : death_knight_melee_attack_t( n, p, s ),
-      heartbreaker_rp_gen( p->talent.blood.heartbreaker->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
+      heartbreaker_rp_gen( p->spell.heartbreaker_rp_gain->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
   {
     aoe                         = 2;
     weapon                      = &( p->main_hand_weapon );
@@ -12122,7 +12123,7 @@ void death_knight_t::init_spells()
   talent.blood.ossified_vitriol        = find_talent_spell( talent_tree::SPECIALIZATION, "Ossified Virtiol" );
   
   // Row 5
-  talent.blood.leeching_strike      = find_talent_spell( talent_tree::SPECIALIZATION, "Leeching Strike" );
+  talent.blood.leeching_strike     = find_talent_spell( talent_tree::SPECIALIZATION, "Leeching Strike" );
   talent.blood.heartbreaker        = find_talent_spell( talent_tree::SPECIALIZATION, "Heartbreaker" );
   talent.blood.foul_bulwark        = find_talent_spell( talent_tree::SPECIALIZATION, "Foul Bulwark" );
   talent.blood.dancing_rune_weapon = find_talent_spell( talent_tree::SPECIALIZATION, "Dancing Rune Weapon" );
@@ -12363,6 +12364,7 @@ void death_knight_t::init_spells()
   spell.sanguine_ground         = cache_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
   spell.ossuary_buff            = cache_spell_lookup( talent.blood.ossuary.ok(), 219788 );
   spell.crimson_scourge_buff    = cache_spell_lookup( spec.crimson_scourge->ok(), 81141 );
+  spell.heartbreaker_rp_gain    = cache_spell_lookup( talent.blood.heartbreaker.ok(), 210738 );
   spell.heartrend_buff          = cache_spell_lookup( talent.blood.heartrend.ok(), 377656 );
   spell.perserverence_of_the_ebon_blade_buff =
       cache_spell_lookup( talent.blood.perseverance_of_the_ebon_blade.ok(), 374748 );
