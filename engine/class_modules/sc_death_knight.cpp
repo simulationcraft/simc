@@ -703,6 +703,7 @@ public:
     absorb_buff_t* blood_shield;
     buff_t* bone_shield;
     propagate_const<buff_t*> coagulopathy;
+    propagate_const<buff_t*> consumption;
     propagate_const<buff_t*> crimson_scourge;
     propagate_const<buff_t*> dancing_rune_weapon;
     propagate_const<buff_t*> heartrend;
@@ -891,6 +892,7 @@ public:
     // Blood
     propagate_const<gain_t*> bonestorm;
     propagate_const<gain_t*> blood_tap;
+    propagate_const<gain_t*> consumption;
     propagate_const<gain_t*> drw_heart_strike;  // Blood Strike, Blizzard's hack to replicate HS rank 2 with DRW
     propagate_const<gain_t*> heartbreaker;
     propagate_const<gain_t*> tombstone;
@@ -4355,6 +4357,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     parse_effects( p()->buffs.blood_draw );
 
     // Blood
+    parse_effects( p()->buffs.consumption );
     parse_effects( p()->buffs.sanguine_ground );
     parse_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
     parse_effects( p()->buffs.hemostasis );
@@ -7055,6 +7058,9 @@ struct consumption_t final : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
+    p()->buffs.consumption->trigger();
+    p()->replenish_rune( as<unsigned int>( data().effectN( 4 ).base_value() ), p()->gains.consumption );
+
     if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
     {
       p()->pets.dancing_rune_weapon_pet.active_pet()->ability.consumption->execute_on_target( target );
@@ -7383,7 +7389,6 @@ private:
   timespan_t compute_tick_time() const
   {
     auto base = data().effectN( 3 ).period();
-    base *= 1.0 + p()->talent.blood.rapid_decomposition->effectN( 1 ).percent();
 
     return base;
   }
@@ -12976,6 +12981,8 @@ void death_knight_t::create_buffs()
                              ->set_trigger_spell( talent.blood.coagulopathy )
                              ->set_default_value_from_effect( 1 );
 
+    buffs.consumption = make_buff( this, "consumption", talent.blood.consumption );
+
     buffs.crimson_scourge = make_buff( this, "crimson_scourge", spell.crimson_scourge_buff )
                                 ->set_trigger_spell( spec.crimson_scourge );
 
@@ -13231,6 +13238,7 @@ void death_knight_t::init_gains()
   // Blood
   gains.bonestorm        = get_gain( "Bonestorm" );
   gains.blood_tap        = get_gain( "Blood Tap" );
+  gains.consumption      = get_gain( "Consumption" );
   gains.drw_heart_strike = get_gain( "Rune Weapon Heart Strike" );
   gains.heartbreaker     = get_gain( "Heartbreaker" );
   gains.tombstone        = get_gain( "Tombstone" );
