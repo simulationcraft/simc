@@ -578,6 +578,7 @@ struct base_generic_aoe_proc_t : public base_generic_proc_t<BASE>
 
 using generic_aoe_proc_t = base_generic_aoe_proc_t<proc_spell_t>;
 using generic_proc_t     = base_generic_proc_t<proc_spell_t>;
+using generic_heal_t     = base_generic_proc_t<proc_heal_t>;
 
 template <typename CLASS, typename... ARGS>
 action_t* create_proc_action( util::string_view name, const special_effect_t& effect, ARGS&&... args )
