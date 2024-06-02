@@ -3133,9 +3133,6 @@ struct melee_t : public monk_melee_attack_t
     allow_class_ability_procs           = true;
     not_a_proc                          = true;
 
-    weapon            = oh ? &( player->off_hand_weapon ) : &( player->main_hand_weapon );
-    base_execute_time = oh ? player->off_hand_weapon.swing_time : player->main_hand_weapon.swing_time;
-
     if ( player->main_hand_weapon.group() == WEAPON_1H )
     {
       if ( player->specialization() != MONK_MISTWEAVER )
@@ -3175,54 +3172,47 @@ struct melee_t : public monk_melee_attack_t
 
   void execute() override
   {
-    if ( p()->current.distance_to_move > 5 )
-    {
-      if ( weapon->slot == SLOT_MAIN_HAND )
-        player->main_hand_attack->cancel();
-      else
-        player->off_hand_attack->cancel();
-
-      return;
-    }
-
     if ( first )
       first = false;
 
-    if ( dual_threat_enabled && p()->rng().roll( p()->talent.windwalker.dual_threat->effectN( 1 ).percent() ) )
-    {
-      p()->dual_threat_kick->execute();
-      dual_threat_enabled = false;
-    }
-    else
-      monk_melee_attack_t::execute();
+    monk_melee_attack_t::execute();
   }
 
   void impact( action_state_t *s ) override
   {
-    monk_melee_attack_t::impact( s );
-
-    if ( p()->talent.brewmaster.press_the_advantage->ok() && weapon->slot == SLOT_MAIN_HAND )
-      p()->buff.press_the_advantage->trigger();
-
-    if ( result_is_hit( s->result ) )
+    if ( dual_threat_enabled && p()->rng().roll( p()->talent.windwalker.dual_threat->effectN( 1 ).percent() ) )
     {
+      s->result_total = 0;
+      p()->dual_threat_kick->execute();
+      dual_threat_enabled = false;
+    }
+    else
+    {
+      monk_melee_attack_t::impact( s );
+
       if ( p()->talent.brewmaster.press_the_advantage->ok() && weapon->slot == SLOT_MAIN_HAND )
+        p()->buff.press_the_advantage->trigger();
+
+      if ( result_is_hit( s->result ) )
       {
-        // Reduce Brew cooldown by 0.5 seconds
-        brew_cooldown_reduction( p()->talent.brewmaster.press_the_advantage->effectN( 1 ).base_value() / 1000 );
+        if ( p()->talent.brewmaster.press_the_advantage->ok() && weapon->slot == SLOT_MAIN_HAND )
+        {
+          // Reduce Brew cooldown by 0.5 seconds
+          brew_cooldown_reduction( p()->talent.brewmaster.press_the_advantage->effectN( 1 ).base_value() / 1000 );
 
-        // Trigger the Press the Advantage damage proc
-        p()->passive_actions.press_the_advantage->target = s->target;
-        p()->passive_actions.press_the_advantage->schedule_execute();
+          // Trigger the Press the Advantage damage proc
+          p()->passive_actions.press_the_advantage->target = s->target;
+          p()->passive_actions.press_the_advantage->schedule_execute();
+        }
+
+        if ( p()->buff.thunderfist->up() )
+        {
+          p()->passive_actions.thunderfist->target = s->target;
+          p()->passive_actions.thunderfist->schedule_execute();
+        }
+
+        dual_threat_enabled = true;
       }
-
-      if ( p()->buff.thunderfist->up() )
-      {
-        p()->passive_actions.thunderfist->target = s->target;
-        p()->passive_actions.thunderfist->schedule_execute();
-      }
-
-      dual_threat_enabled = true;
     }
   }
 };
@@ -3274,9 +3264,11 @@ struct auto_attack_t : public monk_melee_attack_t
 
     ignore_false_positive = true;
     trigger_gcd           = timespan_t::zero();
-    background            = true;
+//    background            = true;
 
-    p()->main_hand_attack = new melee_t( "melee_main_hand", player, sync_weapons );
+    p()->main_hand_attack                    = new melee_t( "melee_main_hand", player, sync_weapons );
+    p()->main_hand_attack->weapon            = &( player->main_hand_weapon );
+    p()->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
 
     add_child( p()->main_hand_attack );
 
@@ -3285,7 +3277,9 @@ struct auto_attack_t : public monk_melee_attack_t
       if ( !player->dual_wield() )
         return;
 
-      p()->off_hand_attack     = new melee_t( "melee_off_hand", player, sync_weapons, true );
+      p()->off_hand_attack                    = new melee_t( "melee_off_hand", player, sync_weapons, true );
+      p()->off_hand_attack->weapon            = &( player->off_hand_weapon );
+      p()->off_hand_attack->base_execute_time = player->off_hand_weapon.swing_time;
       p()->off_hand_attack->id = 1;
 
       add_child( p()->off_hand_attack );
