@@ -1398,46 +1398,61 @@ size_t parse_action_base_t::total_effects_count()
          target_crit_damage_effects.size();
 }
 
-void parse_action_base_t::initialize_buff_list()
+void parse_action_base_t::initialize_buff_list_on_vector( std::vector<player_effect_t>& vec )
 {
-  auto _check_vector = [ this ]( auto& v ) {
-    for ( auto& i : v )
+  for ( auto& i : vec )
+  {
+    if ( i.idx == UINT32_MAX )
     {
-      if ( i.idx == UINT32_MAX )
+      if ( i.buff && i.buff->can_expire( _action ) )
       {
-        if ( i.buff && i.buff->can_expire( _action ) )
+        auto it = range::find( _buff_list, i.buff );
+        if ( it == _buff_list.end() )
         {
-          auto it = range::find( buff_list, i.buff );
-          if ( it == buff_list.end() )
-          {
-            assert( buff_list.size() < 32 && "Too many buffs for initialize_buff_list()" );
-            buff_list.push_back( i.buff );
-            i.idx = static_cast<uint32_t>( buff_list.size() );
-          }
-          else
-          {
-            i.idx = 1 << std::distance( buff_list.begin(), it );
-          }
+          // max 32 buffs as buff_idx_to_consume is a uint32_t
+          assert( _buff_list.size() < 32 && "Too many buffs for initialize_buff_list()" );
+          _buff_list.push_back( i.buff );
+          i.idx = static_cast<uint32_t>( _buff_list.size() );
         }
         else
         {
-          i.idx = 0;
+          i.idx = 1 << std::distance( _buff_list.begin(), it );
         }
       }
+      else
+      {
+        i.idx = 0;
+      }
     }
-  };
+  }
+}
 
+void parse_action_base_t::initialize_buff_list()
+{
   // only check player_effect_t vectors
-  _check_vector( ta_multiplier_effects );
-  _check_vector( da_multiplier_effects );
-  _check_vector( execute_time_effects );
-  _check_vector( gcd_effects );
-  _check_vector( dot_duration_effects );
-  _check_vector( tick_time_effects );
-  _check_vector( recharge_multiplier_effects );
-  _check_vector( cost_effects );
-  _check_vector( flat_cost_effects );
-  _check_vector( crit_chance_effects );
-  _check_vector( crit_chance_multiplier_effects );
-  _check_vector( crit_damage_effects );
+  initialize_buff_list_on_vector( ta_multiplier_effects );
+  initialize_buff_list_on_vector( da_multiplier_effects );
+  initialize_buff_list_on_vector( execute_time_effects );
+  initialize_buff_list_on_vector( gcd_effects );
+  initialize_buff_list_on_vector( dot_duration_effects );
+  initialize_buff_list_on_vector( tick_time_effects );
+  initialize_buff_list_on_vector( recharge_multiplier_effects );
+  initialize_buff_list_on_vector( cost_effects );
+  initialize_buff_list_on_vector( flat_cost_effects );
+  initialize_buff_list_on_vector( crit_chance_effects );
+  initialize_buff_list_on_vector( crit_chance_multiplier_effects );
+  initialize_buff_list_on_vector( crit_damage_effects );
+}
+
+void parse_action_base_t::consume_buff_list()
+{
+  auto buff_it = _buff_list.begin();
+  while ( buff_idx_to_consume )
+  {
+    if ( buff_idx_to_consume & 1U )
+      ( *buff_it )->decrement();
+
+    buff_idx_to_consume >>= 1;
+    buff_it++;
+  }
 }
