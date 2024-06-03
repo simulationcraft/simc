@@ -591,7 +591,6 @@ struct death_knight_td_t : public actor_target_data_t
 
     // Blood
     propagate_const<buff_t*> mark_of_blood;
-    propagate_const<buff_t*> tightening_grasp;
 
     // Frost
     propagate_const<buff_t*> piercing_chill;
@@ -687,6 +686,7 @@ public:
     buff_t* antimagic_shell_horsemen;
     buff_t* antimagic_shell_horsemen_icd;
     buff_t* antimagic_zone;
+    propagate_const<buff_t*> blood_draw;
     propagate_const<buff_t*> icebound_fortitude;
     propagate_const<buff_t*> rune_mastery;
     propagate_const<buff_t*> unholy_ground;
@@ -703,6 +703,7 @@ public:
     absorb_buff_t* blood_shield;
     buff_t* bone_shield;
     propagate_const<buff_t*> coagulopathy;
+    propagate_const<buff_t*> consumption;
     propagate_const<buff_t*> crimson_scourge;
     propagate_const<buff_t*> dancing_rune_weapon;
     propagate_const<buff_t*> heartrend;
@@ -786,7 +787,9 @@ public:
     // Shared
     propagate_const<cooldown_t*>
         death_and_decay_dynamic;  // Shared cooldown object for death and decay, defile and death's due
+    propagate_const<cooldown_t*> death_grip;
     propagate_const<cooldown_t*> mind_freeze;
+
 
     // Blood
     cooldown_t* bone_shield_icd;  // internal cooldown between bone shield stack consumption
@@ -889,7 +892,9 @@ public:
     propagate_const<gain_t*> start_of_combat_overflow;
 
     // Blood
+    propagate_const<gain_t*> bonestorm;
     propagate_const<gain_t*> blood_tap;
+    propagate_const<gain_t*> consumption;
     propagate_const<gain_t*> drw_heart_strike;  // Blood Strike, Blizzard's hack to replicate HS rank 2 with DRW
     propagate_const<gain_t*> heartbreaker;
     propagate_const<gain_t*> tombstone;
@@ -939,6 +944,10 @@ public:
     const spell_data_t* rune_strike;
     const spell_data_t* antimagic_shell;
     const spell_data_t* chains_of_ice;
+
+    // Blood
+    const spell_data_t* crimson_scourge;
+    const spell_data_t* deaths_caress;
 
     // Frost
     const spell_data_t* remorseless_winter;
@@ -1032,13 +1041,14 @@ public:
       player_talent_t blood_boil;
       // Row 3
       player_talent_t vampiric_blood;
-      player_talent_t crimson_scourge;
+      player_talent_t bone_collector;
       // Row 4
       player_talent_t ossuary;
       player_talent_t improved_vampiric_blood;
       player_talent_t improved_heart_strike;
+      player_talent_t ossified_vitriol;
       // Row 5
-      player_talent_t rune_tap;
+      player_talent_t leeching_strike;
       player_talent_t heartbreaker;
       player_talent_t foul_bulwark;
       player_talent_t dancing_rune_weapon;
@@ -1046,29 +1056,31 @@ public:
       player_talent_t perseverance_of_the_ebon_blade;
       player_talent_t relish_in_blood;
       // Row 6
-      player_talent_t leeching_strike;
-      player_talent_t improved_bone_shield;
+      player_talent_t rune_tap;
+      player_talent_t gorefiends_grasp;
       player_talent_t insatiable_blade;
-      player_talent_t blooddrinker;
-      player_talent_t consumption;
+      player_talent_t reinforced_bones;
       player_talent_t rapid_decomposition;
       // Row 7
-      player_talent_t blood_feast;
       player_talent_t blood_tap;
-      player_talent_t reinforced_bones;
+      player_talent_t improved_bone_shield;
+      player_talent_t tightening_grasp;
       player_talent_t everlasting_bond;
       player_talent_t voracious;
-      player_talent_t bloodworms;
       player_talent_t coagulopathy;
+      player_talent_t bloodworms;
       // Row 8
+      player_talent_t blood_feast;
       player_talent_t mark_of_blood;
       player_talent_t tombstone;
-      player_talent_t gorefiends_grasp;
+      // NYI TALENT
+      // NYI TALENT
       player_talent_t sanguine_ground;
       // Row 9
       player_talent_t shattering_bone;
       player_talent_t heartrend;
-      player_talent_t tightening_grasp;
+      player_talent_t blooddrinker;
+      player_talent_t consumption;
       player_talent_t iron_heart;
       player_talent_t red_thirst;
       // Row 10
@@ -1289,11 +1301,11 @@ public:
     const spell_data_t* blood_shield;
     const spell_data_t* bone_shield;
     const spell_data_t* sanguine_ground;
-    const spell_data_t* tightening_grasp_debuff;
     const spell_data_t* ossuary_buff;
     const spell_data_t* crimson_scourge_buff;
+    const spell_data_t* heartbreaker_rp_gain;
     const spell_data_t* heartrend_buff;
-    const spell_data_t* preserverence_of_the_ebon_blade_buff;
+    const spell_data_t* perserverence_of_the_ebon_blade_buff;
     const spell_data_t* voracious_buff;
     const spell_data_t* blood_draw_damage;
     const spell_data_t* blood_draw_cooldown;
@@ -1620,6 +1632,7 @@ public:
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
     cooldown.death_and_decay_dynamic =
         get_cooldown( "death_and_decay" );  // Default value, changed during action construction
+    cooldown.death_grip             = get_cooldown( "death_grip" );
     cooldown.icecap_icd             = get_cooldown( "icecap" );
     cooldown.inexorable_assault_icd = get_cooldown( "inexorable_assault_icd" );
     cooldown.frigid_executioner_icd = get_cooldown( "frigid_executioner_icd" );
@@ -3228,25 +3241,30 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     }
   };
 
+  struct deaths_caress_t : public drw_action_t<spell_t>
+  {
+    int stack_gain;
+    deaths_caress_t( util::string_view n, dancing_rune_weapon_pet_t* p )
+      : drw_action_t( p, n, p->dk()->spec.deaths_caress ),
+        stack_gain( as<int>( data().effectN( 3 ).base_value() ) )
+
+    {
+      this->impact_action = p->ability.blood_plague;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      drw_action_t::impact( state );
+
+      dk()->buffs.bone_shield->trigger( stack_gain );
+    }
+  };
+
   struct death_strike_t : public drw_action_t<melee_attack_t>
   {
     death_strike_t( util::string_view n, dancing_rune_weapon_pet_t* p )
       : drw_action_t<melee_attack_t>( p, n, p->dk()->talent.death_strike )
     {
-    }
-
-    double action_multiplier() const override
-    {
-      double m = drw_action_t::action_multiplier();
-
-      // DRW isn't usually affected by talents, and doesn't proc hemostasis, yet its death strike damage is increased by
-      // hemostasis https://github.com/SimCMinMax/WoW-BugTracker/issues/241
-      m *= 1.0 + dk()->buffs.hemostasis->stack_value();
-
-      // DRW DS damage is buffed by player heartrend buff
-      m *= 1.0 + dk()->buffs.heartrend->stack_value();
-
-      return m;
     }
   };
 
@@ -3264,7 +3282,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
     int n_targets() const override
     {
-      return dk()->in_death_and_decay() ? aoe + as<int>( dk()->talent.cleaving_strikes->effectN( 2 ).base_value() )
+      return dk()->in_death_and_decay() ? aoe + as<int>( dk()->talent.cleaving_strikes->effectN( 3 ).base_value() )
                                         : aoe;
     }
 
@@ -3332,6 +3350,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   {
     action_t* blood_plague;
     action_t* blood_boil;
+    action_t* deaths_caress;
     action_t* death_strike;
     action_t* heart_strike;
     action_t* marrowrend;
@@ -3359,6 +3378,10 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       ability.blood_plague = get_action<blood_plague_t>( "blood_plague", this );
       ability.blood_boil   = get_action<blood_boil_t>( "blood_boil", this );
+    }
+    if ( dk()->spec.deaths_caress->ok() )
+    {
+      ability.deaths_caress = get_action<deaths_caress_t>( "deaths_caress", this );
     }
     if ( dk()->talent.death_strike.ok() )
     {
@@ -5308,19 +5331,6 @@ struct melee_t : public death_knight_melee_attack_t
       return t;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = death_knight_melee_attack_t::composite_target_multiplier( target );
-
-    const death_knight_td_t* td = get_td( target );
-    if ( td && p()->talent.blood.tightening_grasp.ok() )
-    {
-      m *= 1.0 + td->debuff.tightening_grasp->check_stack_value();
-    }
-
-    return m;
-  }
-
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = death_knight_melee_attack_t::composite_da_multiplier( s );
@@ -6633,6 +6643,13 @@ struct blood_draw_t final : public death_knight_spell_t
     return death_knight_spell_t::ready();
   }
 
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    p()->buffs.blood_draw->trigger();
+  }
+
 private:
   double health_threshold;
 };
@@ -6744,7 +6761,18 @@ struct bonestorm_t final : public death_knight_spell_t
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
-    return base_tick_time * last_resource_cost / 10;
+    // https://www.wowhead.com/news/the-war-within-alpha-development-notes-new-human-racial-replacing-diplomacy-342168
+    // Blue post specifically mentions a max of 10 bones consumed, though it doesn't show up in spell description
+    // or in Spelldata.
+    int charges = std::max( p()->buffs.bone_shield->check(), 10 );
+    p()->buffs.bone_shield->decrement( charges );
+    return base_tick_time * charges / 10;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    death_knight_spell_t::tick( d );
+    p()->replenish_rune( p()->talent.blood.bonestorm->effectN( 3 ).base_value(), p()->gains.bonestorm );
   }
 };
 
@@ -6970,6 +6998,9 @@ struct consumption_t final : public death_knight_melee_attack_t
   void execute() override
   {
     death_knight_melee_attack_t::execute();
+
+    p()->buffs.consumption->trigger();
+    p()->replenish_rune( as<unsigned int>( data().effectN( 4 ).base_value() ), p()->gains.consumption );
 
     if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
     {
@@ -7299,7 +7330,6 @@ private:
   timespan_t compute_tick_time() const
   {
     auto base = data().effectN( 3 ).period();
-    base *= 1.0 + p()->talent.blood.rapid_decomposition->effectN( 1 ).percent();
 
     return base;
   }
@@ -7340,6 +7370,38 @@ struct defile_t final : public death_and_decay_base_t
     debug_cast<defile_damage_t*>( damage )->active_defile_multiplier = 1.0;
 
     death_and_decay_base_t::execute();
+  }
+};
+
+// Death's Caress ===========================================================
+
+struct deaths_caress_t final : public death_knight_spell_t
+{
+  deaths_caress_t( death_knight_t* p, util::string_view options_str )
+    : death_knight_spell_t( "deaths_caress", p, p->spec.deaths_caress )
+  {
+    parse_options( options_str );
+    impact_action = get_action<blood_plague_t>( "blood_plague", p );
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    p()->buffs.bone_shield->trigger( as<int>( p()->spec.deaths_caress->effectN( 3 ).base_value() ) );
+
+    if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
+    {
+      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.deaths_caress->execute_on_target( target );
+    }
+
+    if ( p()->talent.blood.everlasting_bond.ok() )
+    {
+      if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
+      {
+        p()->pets.everlasting_bond_pet.active_pet()->ability.deaths_caress->execute_on_target( target );
+      }
+    }
   }
 };
 
@@ -8470,17 +8532,6 @@ struct gorefiends_grasp_t final : public death_knight_spell_t
     parse_options( options_str );
     aoe = -1;
   }
-
-  void impact( action_state_t* state ) override
-  {
-    death_knight_spell_t::impact( state );
-
-    if ( p()->talent.blood.tightening_grasp.ok() )
-    {
-      auto td = get_td( state->target );
-      td->debuff.tightening_grasp->trigger();
-    }
-  }
 };
 
 // Heart Strike =============================================================
@@ -8501,7 +8552,7 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
 {
   heart_strike_base_t( util::string_view n, death_knight_t* p, const spell_data_t* s )
     : death_knight_melee_attack_t( n, p, s ),
-      heartbreaker_rp_gen( p->talent.blood.heartbreaker->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
+      heartbreaker_rp_gen( p->spell.heartbreaker_rp_gain->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
   {
     aoe                         = 2;
     weapon                      = &( p->main_hand_weapon );
@@ -11498,6 +11549,8 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
     return new dancing_rune_weapon_t( this, options_str );
   if ( name == "dark_command" )
     return new dark_command_t( this, options_str );
+  if ( name == "deaths_caress" )
+    return new deaths_caress_t( this, options_str );
   if ( name == "gorefiends_grasp" )
     return new gorefiends_grasp_t( this, options_str );
   if ( name == "heart_strike" )
@@ -11935,6 +11988,8 @@ void death_knight_t::init_spells()
   spec.blood_death_knight  = find_specialization_spell( "Blood Death Knight" );
   spec.riposte             = find_specialization_spell( "Riposte" );
   spec.blood_fortification = find_specialization_spell( "Blood Fortification" );
+  spec.crimson_scourge     = find_specialization_spell( "Crimson Scourge" );
+  spec.deaths_caress       = find_specialization_spell( "Death's Caress" );
 
   // Frost Baselines
   spec.frost_death_knight         = find_specialization_spell( "Frost Death Knight" );
@@ -12016,13 +12071,16 @@ void death_knight_t::init_spells()
   talent.blood.blood_boil = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Boil" );
   // Row 3
   talent.blood.vampiric_blood  = find_talent_spell( talent_tree::SPECIALIZATION, "Vampiric Blood" );
-  talent.blood.crimson_scourge = find_talent_spell( talent_tree::SPECIALIZATION, "Crimson Scourge" );
+  talent.blood.bone_collector  = find_talent_spell( talent_tree::SPECIALIZATION, "Bone Collector" );
+
   // Row 4
   talent.blood.ossuary                 = find_talent_spell( talent_tree::SPECIALIZATION, "Ossuary" );
   talent.blood.improved_vampiric_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Vampiric Blood" );
   talent.blood.improved_heart_strike   = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Heart Strike" );
+  talent.blood.ossified_vitriol        = find_talent_spell( talent_tree::SPECIALIZATION, "Ossified Virtiol" );
+  
   // Row 5
-  talent.blood.rune_tap            = find_talent_spell( talent_tree::SPECIALIZATION, "Rune Tap" );
+  talent.blood.leeching_strike     = find_talent_spell( talent_tree::SPECIALIZATION, "Leeching Strike" );
   talent.blood.heartbreaker        = find_talent_spell( talent_tree::SPECIALIZATION, "Heartbreaker" );
   talent.blood.foul_bulwark        = find_talent_spell( talent_tree::SPECIALIZATION, "Foul Bulwark" );
   talent.blood.dancing_rune_weapon = find_talent_spell( talent_tree::SPECIALIZATION, "Dancing Rune Weapon" );
@@ -12031,29 +12089,31 @@ void death_knight_t::init_spells()
       find_talent_spell( talent_tree::SPECIALIZATION, "Perseverance of the Ebon Blade" );
   talent.blood.relish_in_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Relish in Blood" );
   // Row 6
-  talent.blood.leeching_strike      = find_talent_spell( talent_tree::SPECIALIZATION, "Leeching Strike" );
-  talent.blood.improved_bone_shield = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Bone Shield" );
+  talent.blood.rune_tap            = find_talent_spell( talent_tree::SPECIALIZATION, "Rune Tap" );
+  talent.blood.gorefiends_grasp = find_talent_spell( talent_tree::SPECIALIZATION, "Gorefiend's Grasp" );
   talent.blood.insatiable_blade     = find_talent_spell( talent_tree::SPECIALIZATION, "Insatiable Blade" );
-  talent.blood.blooddrinker         = find_talent_spell( talent_tree::SPECIALIZATION, "Blooddrinker" );
-  talent.blood.consumption          = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
+  talent.blood.reinforced_bones = find_talent_spell( talent_tree::SPECIALIZATION, "Reinforced Bones" );
   talent.blood.rapid_decomposition  = find_talent_spell( talent_tree::SPECIALIZATION, "Rapid Decomposition" );
   // Row 7
-  talent.blood.blood_feast      = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Feast" );
   talent.blood.blood_tap        = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Tap" );
-  talent.blood.reinforced_bones = find_talent_spell( talent_tree::SPECIALIZATION, "Reinforced Bones" );
+  talent.blood.improved_bone_shield = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Bone Shield" );
+  talent.blood.tightening_grasp = find_talent_spell( talent_tree::SPECIALIZATION, "Tightening Grasp" );
   talent.blood.everlasting_bond = find_talent_spell( talent_tree::SPECIALIZATION, "Everlasting Bond" );
   talent.blood.voracious        = find_talent_spell( talent_tree::SPECIALIZATION, "Voracious" );
-  talent.blood.bloodworms       = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodworms" );
   talent.blood.coagulopathy     = find_talent_spell( talent_tree::SPECIALIZATION, "Coagulopathy" );
+  talent.blood.bloodworms       = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodworms" );
   // Row 8
+  talent.blood.blood_feast      = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Feast" );
   talent.blood.mark_of_blood    = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of Blood" );
   talent.blood.tombstone        = find_talent_spell( talent_tree::SPECIALIZATION, "Tombstone" );
-  talent.blood.gorefiends_grasp = find_talent_spell( talent_tree::SPECIALIZATION, "Gorefiend's Grasp" );
+  // NYI TALENT
+  // NYI TALENT
   talent.blood.sanguine_ground  = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Ground" );
   // Row 9
   talent.blood.shattering_bone  = find_talent_spell( talent_tree::SPECIALIZATION, "Shattering Bone" );
   talent.blood.heartrend        = find_talent_spell( talent_tree::SPECIALIZATION, "Heartrend" );
-  talent.blood.tightening_grasp = find_talent_spell( talent_tree::SPECIALIZATION, "Tightening Grasp" );
+  talent.blood.blooddrinker         = find_talent_spell( talent_tree::SPECIALIZATION, "Blooddrinker" );
+  talent.blood.consumption          = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
   talent.blood.iron_heart       = find_talent_spell( talent_tree::SPECIALIZATION, "Iron Heart" );
   talent.blood.red_thirst       = find_talent_spell( talent_tree::SPECIALIZATION, "Red Thirst" );
   // Row 10
@@ -12259,11 +12319,11 @@ void death_knight_t::init_spells()
   spell.blood_shield            = cache_spell_lookup( mastery.blood_shield->ok(), 77535 );
   spell.bone_shield             = cache_spell_lookup( spec.blood_death_knight->ok(), 195181 );
   spell.sanguine_ground         = cache_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
-  spell.tightening_grasp_debuff = cache_spell_lookup( talent.blood.tightening_grasp.ok(), 374776 );
   spell.ossuary_buff            = cache_spell_lookup( talent.blood.ossuary.ok(), 219788 );
-  spell.crimson_scourge_buff    = cache_spell_lookup( talent.blood.crimson_scourge.ok(), 81141 );
+  spell.crimson_scourge_buff    = cache_spell_lookup( spec.crimson_scourge->ok(), 81141 );
+  spell.heartbreaker_rp_gain    = cache_spell_lookup( talent.blood.heartbreaker.ok(), 210738 );
   spell.heartrend_buff          = cache_spell_lookup( talent.blood.heartrend.ok(), 377656 );
-  spell.preserverence_of_the_ebon_blade_buff =
+  spell.perserverence_of_the_ebon_blade_buff =
       cache_spell_lookup( talent.blood.perseverance_of_the_ebon_blade.ok(), 374748 );
   spell.voracious_buff           = cache_spell_lookup( talent.blood.voracious.ok(), 274009 );
   spell.bonestorm_heal           = cache_spell_lookup( talent.blood.bonestorm.ok(), 196545 );
@@ -12542,10 +12602,6 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
       make_debuff( p.talent.blood.mark_of_blood.ok(), *this, "mark_of_blood", p.talent.blood.mark_of_blood )
           ->set_cooldown( 0_ms );  // Handled by the action
 
-  debuff.tightening_grasp =
-      make_debuff( p.talent.blood.tightening_grasp.ok(), *this, "tightening_grasp", p.spell.tightening_grasp_debuff )
-          ->set_default_value( p.spell.tightening_grasp_debuff->effectN( 1 ).percent() );
-
   // Frost
   debuff.razorice = make_debuff( p.runeforge.rune_of_razorice_mh || p.runeforge.rune_of_razorice_oh, *this, "razorice", p.spell.razorice_debuff )
                         ->set_default_value_from_effect( 1 )
@@ -12673,6 +12729,8 @@ void death_knight_t::create_buffs()
 
   buffs.antimagic_zone = make_fallback<antimagic_zone_buff_t>( talent.antimagic_zone.ok(), this, "antimagic_zone",
                                                                spell.anti_magic_zone_buff );
+
+  buffs.blood_draw = make_fallback( talent.blood_draw.ok(), this, "blood_draw", talent.blood_draw->effectN( 4 ).trigger());
 
   buffs.icebound_fortitude =
       make_fallback( talent.icebound_fortitude.ok(), this, "icebound_fortitude", talent.icebound_fortitude )
@@ -12864,8 +12922,10 @@ void death_knight_t::create_buffs()
                              ->set_trigger_spell( talent.blood.coagulopathy )
                              ->set_default_value_from_effect( 1 );
 
+    buffs.consumption = make_buff( this, "consumption", talent.blood.consumption );
+
     buffs.crimson_scourge = make_buff( this, "crimson_scourge", spell.crimson_scourge_buff )
-                                ->set_trigger_spell( talent.blood.crimson_scourge );
+                                ->set_trigger_spell( spec.crimson_scourge );
 
     buffs.dancing_rune_weapon = make_buff( this, "dancing_rune_weapon", spell.dancing_rune_weapon_buff )
                                     ->set_cooldown( 0_ms )
@@ -12882,8 +12942,7 @@ void death_knight_t::create_buffs()
                            ->set_default_value_from_effect( 1 );
 
     buffs.perseverance_of_the_ebon_blade =
-        make_buff( this, "perseverance_of_the_ebon_blade", spell.preserverence_of_the_ebon_blade_buff )
-            ->set_default_value( talent.blood.perseverance_of_the_ebon_blade->effectN( 1 ).percent() );
+        make_buff( this, "perseverance_of_the_ebon_blade", spell.perserverence_of_the_ebon_blade_buff );
 
     buffs.rune_tap =
         make_buff( this, "rune_tap", talent.blood.rune_tap )->set_cooldown( 0_ms );  // Handled by the action
@@ -13115,7 +13174,9 @@ void death_knight_t::init_gains()
   gains.coldthirst               = get_gain( "Coldthirst" );
 
   // Blood
+  gains.bonestorm        = get_gain( "Bonestorm" );
   gains.blood_tap        = get_gain( "Blood Tap" );
+  gains.consumption      = get_gain( "Consumption" );
   gains.drw_heart_strike = get_gain( "Rune Weapon Heart Strike" );
   gains.heartbreaker     = get_gain( "Heartbreaker" );
   gains.tombstone        = get_gain( "Tombstone" );
@@ -13292,6 +13353,9 @@ void death_knight_t::activate()
 
   if ( specialization() == DEATH_KNIGHT_UNHOLY && spec.festering_wound->ok() )
     register_on_kill_callback( [ this ]( player_t* t ) { trigger_festering_wound_death( t ); } );
+
+  if ( talent.deaths_reach.ok() )
+    register_on_kill_callback( [this]( player_t* ) { cooldown.death_grip->reset(true); } );
 
   if ( talent.rider.nazgrims_conquest.ok() )
   {
@@ -13588,7 +13652,8 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
   parse_effects( dk()->buffs.hemostasis );
   parse_effects( dk()->buffs.crimson_scourge );
   parse_effects( dk()->buffs.ossuary );
-  parse_effects( dk()->buffs.coagulopathy );
+  // Don't auto parse coag, since there is some snapshot behavior when the weapon dies
+  //parse_effects( dk()->buffs.coagulopathy );
 
   // Unholy
   parse_effects( dk()->buffs.unholy_assault );
@@ -13653,7 +13718,11 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_target_effects()
 template <class Base>
 void death_knight_action_t<Base>::apply_action_effects()
 {
+  // Shared
+  parse_effects( p()->buffs.blood_draw );
+
   // Blood
+  parse_effects( p()->buffs.consumption );
   parse_effects( p()->buffs.sanguine_ground );
   parse_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
   parse_effects( p()->buffs.hemostasis );
@@ -13706,7 +13775,6 @@ void death_knight_action_t<Base>::apply_target_effects()
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), p()->spell.brittle_debuff );
 
   // Blood
-  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::tightening_grasp ), p()->spell.tightening_grasp_debuff );
 
   // Frost
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::everfrost ),
@@ -13730,6 +13798,7 @@ void death_knight_t::parse_player_effects()
   // Shared
   parse_effects( spec.death_knight );
   parse_effects( spec.plate_specialization );
+  parse_effects( buffs.blood_draw, talent.blood_draw );
   parse_effects( buffs.icy_talons, talent.icy_talons );
   parse_effects( buffs.rune_mastery, talent.rune_mastery );
   parse_effects( buffs.unholy_strength, talent.unholy_bond );
@@ -13752,8 +13821,7 @@ void death_knight_t::parse_player_effects()
     parse_effects( buffs.voracious, talent.blood.voracious );
     parse_effects( buffs.dancing_rune_weapon );
     parse_effects( buffs.bone_shield, IGNORE_STACKS, talent.blood.improved_bone_shield );
-    parse_effects( buffs.perseverance_of_the_ebon_blade, talent.blood.perseverance_of_the_ebon_blade );
-    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::tightening_grasp ), spell.tightening_grasp_debuff );
+    parse_effects( buffs.perseverance_of_the_ebon_blade );
   }
 
   // Frost
@@ -13811,8 +13879,10 @@ void death_knight_t::apply_affecting_auras( action_t& action )
 
   // Shared
   action.apply_affecting_aura( talent.antimagic_barrier );
+  action.apply_affecting_aura( talent.assimilation );
   action.apply_affecting_aura( talent.unholy_bond );
   action.apply_affecting_aura( talent.deaths_echo );
+  action.apply_affecting_aura( talent.deaths_reach );
   action.apply_affecting_aura( talent.gloom_ward );
   action.apply_affecting_aura( talent.proliferating_chill );
   action.apply_affecting_aura( talent.unyielding_will );
