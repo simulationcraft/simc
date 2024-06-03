@@ -11130,7 +11130,7 @@ double death_knight_t::tick_damage_over_time( timespan_t duration, const dot_t* 
     return 0.0;
   }
   action_state_t* state = dot->current_action->get_state( dot->state );
-  dot->current_action->calculate_tick_amount( state, 1.0 );
+  dot->current_action->calculate_tick_amount( state, dot->current_stack() );
   double tick_base_damage  = state->result_raw;
   timespan_t dot_tick_time = dot->current_action->tick_time( state );
   double ticks_left        = duration / dot_tick_time;
