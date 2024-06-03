@@ -1726,6 +1726,7 @@ public:
   void expire_dnd_buffs();
   void parse_player_effects();
   const spell_data_t* cache_spell_lookup( bool fn, int id );
+  double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   // Rider of the Apocalypse
   void summon_rider( timespan_t duration, bool random );
   void extend_rider( double amount, pets::horseman_pet_t* rider );
@@ -6763,7 +6764,7 @@ struct bonestorm_t final : public death_knight_spell_t
   void tick( dot_t* d ) override
   {
     death_knight_spell_t::tick( d );
-    p()->replenish_rune( p()->talent.blood.bonestorm->effectN( 3 ).base_value(), p()->gains.bonestorm );
+    p()->replenish_rune( as<unsigned>( p()->talent.blood.bonestorm->effectN( 3 ).base_value() ), p()->gains.bonestorm );
   }
 };
 
@@ -11122,6 +11123,22 @@ void death_knight_t::start_a_feast_of_souls()
   } );
 }
 
+double death_knight_t::tick_damage_over_time( timespan_t duration, const dot_t* dot ) const
+{
+  if ( !dot->is_ticking() )
+  {
+    return 0.0;
+  }
+  action_state_t* state = dot->current_action->get_state( dot->state );
+  dot->current_action->calculate_tick_amount( state, 1.0 );
+  double tick_base_damage  = state->result_raw;
+  timespan_t dot_tick_time = dot->current_action->tick_time( state );
+  double ticks_left        = duration / dot_tick_time;
+  double total_damage      = ticks_left * tick_base_damage;
+  action_state_t::release( state );
+  return total_damage;
+}
+
 void death_knight_t::trigger_infliction_of_sorrow( player_t* target )
 {
   auto base_td            = get_target_data( target );
@@ -11130,33 +11147,8 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target )
   double remaining_damage = 0;
   double mod              = 0;
 
-  if ( vp_td->is_ticking() )
-  {
-    std::unique_ptr<action_state_t> vp_state;
-    double vp_tick_damage;
-    if ( !vp_state )
-    {
-      vp_state.reset( vp_td->current_action->get_state() );
-    }
-    vp_state->copy_state( vp_td->state );
-    vp_state->result = RESULT_HIT;
-    vp_tick_damage   = vp_state->action->calculate_tick_amount( vp_state.get(), vp_td->current_stack() );
-    remaining_damage += vp_tick_damage * vp_td->ticks_left();
-  }
-
-  if ( bp_td->is_ticking() )
-  {
-    std::unique_ptr<action_state_t> bp_state;
-    double bp_tick_damage;
-    if ( !bp_state )
-    {
-      bp_state.reset( bp_td->current_action->get_state() );
-    }
-    bp_state->copy_state( bp_td->state );
-    bp_state->result = RESULT_HIT;
-    bp_tick_damage   = bp_state->action->calculate_tick_amount( bp_state.get(), bp_td->current_stack() );
-    remaining_damage += bp_tick_damage * bp_td->ticks_left();
-  }
+  remaining_damage += tick_damage_over_time( vp_td->remains(), vp_td );
+  remaining_damage += tick_damage_over_time( bp_td->remains(), bp_td );
 
   if ( remaining_damage == 0 )
     return;
