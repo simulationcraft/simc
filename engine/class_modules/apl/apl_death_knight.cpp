@@ -43,17 +43,17 @@ std::string food( const player_t* p )
   std::string unholy_food;
   std::string blood_food;
 
-  if ( p->true_level >= 61 )
+  if ( p->true_level >= 71 )
   {
-    frost_food  = "sizzling_seafood_medley";
-    unholy_food = "sizzling_seafood_medley";
-    blood_food  = "great_cerulean_sea";
+    frost_food = "feast_of_the_divine_day";
+    unholy_food = "feast_of_the_divine_day";
+    blood_food = "feast_of_the_divine_day";
   }
   else
   {
-    frost_food  = "feast_of_gluttonous_hedonism";
-    unholy_food = "feast_of_gluttonous_hedonism";
-    blood_food  = "feast_of_gluttonous_hedonism";
+    frost_food = "sizzling_seafood_medley";
+    unholy_food = "sizzling_seafood_medley";
+    blood_food = "great_cerulean_sea";
   }
 
   switch ( p->specialization() )
@@ -70,7 +70,7 @@ std::string food( const player_t* p )
 
 std::string rune( const player_t* p )
 {
-  return ( p->true_level >= 61 ) ? "draconic" : "veiled";
+  return ( p->true_level >= 71 ) ? "crystallized" : "draconic";
 }
 
 std::string temporary_enchant( const player_t* p )

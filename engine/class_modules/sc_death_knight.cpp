@@ -2218,6 +2218,18 @@ struct death_knight_pet_t : public pet_t
     }
   }
 
+  target_specific_t<death_knight_td_t> dk_target_data;
+
+  death_knight_td_t* get_target_data( player_t* target ) const override
+  {
+    assert( target );
+    death_knight_td_t*& td = dk_target_data[ target ];
+    if ( !td )
+      td = new death_knight_td_t( *target, const_cast<death_knight_t&>( *dk() ) );
+
+    return td;
+  }
+
   void init_finished() override
   {
     pet_t::init_finished();
@@ -3462,7 +3474,7 @@ struct magus_pet_t : public death_knight_pet_t
 
   target_specific_t<magus_td_t> target_data;
 
-  magus_td_t* get_target_data( player_t* target ) const override
+  magus_td_t* get_magus_target_data( player_t* target ) const
   {
     magus_td_t*& td = target_data[ target ];
     if ( !td )
@@ -3542,7 +3554,7 @@ struct magus_pet_t : public death_knight_pet_t
 
       if ( result_is_hit( state->result ) && state->target->type == ENEMY_ADD )
       {
-        pet()->get_target_data( state->target )->frostbolt_debuff->trigger();
+        pet()->get_magus_target_data( state->target )->frostbolt_debuff->trigger();
       }
     }
   };
@@ -13670,52 +13682,37 @@ template <class T_PET, class Base>
 void pets::pet_action_t<T_PET, Base>::apply_pet_target_effects()
 {
   // Shared
-  // currently failing with a read access error, DoTs/Debuffs likely not created yet?... need to dig into why
-  /*parse_target_effects(
-      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->dot.virulent_plague->is_ticking(); },
-      dk()->spell.virulent_plague, dk()->talent.unholy.morbidity );
-  parse_target_effects(
-      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->dot.frost_fever->is_ticking(); },
-      dk()->spell.frost_fever, dk()->talent.unholy.morbidity );
-  parse_target_effects(
-      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->dot.blood_plague->is_ticking(); },
-      dk()->spell.blood_plague, dk()->talent.unholy.morbidity, dk()->talent.blood.coagulopathy );
-  parse_target_effects(
-      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->dot.unholy_blight->is_ticking(); },
-      dk()->spell.unholy_blight_dot, dk()->talent.unholy.morbidity );
-  parse_target_effects(
-      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.apocalypse_war->check(); },
-      dk()->spell.apocalypse_war_debuff, dk()->talent.unholy_bond );
-  parse_target_effects(
-      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.razorice->check(); },
-      dk()->spell.razorice_debuff, dk()->talent.unholy_bond );
-  parse_target_effects(
-      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.brittle->check(); },
-      dk()->spell.brittle_debuff );
+  parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), dk()->spell.virulent_plague,
+                        dk()->talent.unholy.morbidity );
+  parse_target_effects( d_fn( &death_knight_td_t::dots_t::frost_fever ), dk()->spell.frost_fever,
+                        dk()->talent.unholy.morbidity );
+  parse_target_effects( d_fn( &death_knight_td_t::dots_t::blood_plague ), dk()->spell.blood_plague,
+                        dk()->talent.unholy.morbidity, dk()->talent.blood.coagulopathy );
+  parse_target_effects( d_fn( &death_knight_td_t::dots_t::unholy_blight, false ), dk()->spell.unholy_blight_dot,
+                        dk()->talent.unholy.morbidity );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), dk()->spell.apocalypse_war_debuff,
+                        dk()->talent.unholy_bond );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::razorice ), dk()->spell.razorice_debuff,
+                        dk()->talent.unholy_bond );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), dk()->spell.brittle_debuff );
 
   // Blood
-  parse_target_effects(
-      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.tightening_grasp->check(); },
-      dk()->spell.tightening_grasp_debuff );
 
   // Frost
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::everfrost ),
+                        dk()->talent.frost.everfrost->effectN( 1 ).trigger(), dk()->talent.frost.everfrost );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::piercing_chill ), dk()->spell.piercing_chill_debuff );
 
   // Unholy
-  parse_target_effects(
-      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.death_rot->check(); },
-      dk()->spell.death_rot_debuff );
-  parse_target_effects(
-      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.rotten_touch->check(); },
-      dk()->spell.rotten_touch_debuff );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::death_rot ), dk()->spell.death_rot_debuff );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::rotten_touch ), dk()->spell.rotten_touch_debuff );
 
   // Rider of the Apocalypse
 
   // Deathbringer
 
   // San'layn
-  parse_target_effects(
-      []( actor_target_data_t* t ) { return static_cast<death_knight_td_t*>( t )->debuff.incite_terror->check(); },
-      dk()->spell.incite_terror_debuff );*/
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::incite_terror ), dk()->spell.incite_terror_debuff );
 }
 
 template <class Base>
