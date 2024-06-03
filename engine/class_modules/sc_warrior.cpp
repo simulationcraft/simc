@@ -348,6 +348,7 @@ public:
     gain_t* avatar;
     gain_t* avatar_torment;
     gain_t* avoided_attacks;
+    gain_t* battlelord;
     gain_t* bloodsurge;
     gain_t* charge;
     gain_t* critical_block;
@@ -434,8 +435,9 @@ public:
   // Procs
   struct procs_t
   {
+    proc_t* battlelord;
+    proc_t* battlelord_wasted;
     proc_t* delayed_auto_attack;
-    proc_t* glory;
     proc_t* tactician;
   } proc;
 
@@ -4298,32 +4300,26 @@ struct dreadnaught_t : warrior_attack_t
     aoe = -1;
     reduced_aoe_targets = 5.0;
     background  = true;
-
-    if ( p->talents.arms.battlelord->ok() )
-    {
-      base_multiplier *= 1.0 + p->talents.arms.battlelord->effectN( 1 ).percent();
-    }
   }
 };
+
 struct overpower_t : public warrior_attack_t
 {
   double battlelord_chance;
   double rage_from_finishing_blows;
+  double rage_from_battlelord;
   warrior_attack_t* dreadnaught;
 
   overpower_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "overpower", p, p->talents.arms.overpower ),
       battlelord_chance( p->talents.arms.battlelord->proc_chance() ),
       rage_from_finishing_blows( p->find_spell( 400806 )->effectN( 1 ).base_value() / 10.0 ),
+      rage_from_battlelord( p->talents.arms.battlelord->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) ),
       dreadnaught( nullptr )
   {
     parse_options( options_str );
     may_block = may_parry = may_dodge = false;
     weapon                            = &( p->main_hand_weapon );
-    if ( p->talents.arms.battlelord->ok() )
-    {
-      base_multiplier *= 1.0 + p->talents.arms.battlelord->effectN( 1 ).percent();
-    }
 
     if ( p->talents.arms.dreadnaught->ok() )
     {
@@ -4338,8 +4334,7 @@ struct overpower_t : public warrior_attack_t
 
     if ( dreadnaught && result_is_hit( s->result ) )
     {
-      dreadnaught->set_target( s->target );
-      dreadnaught->execute();
+      dreadnaught->execute_on_target( s->target );
     }
   }
 
@@ -4348,7 +4343,16 @@ struct overpower_t : public warrior_attack_t
     warrior_attack_t::execute();
     if ( p()->talents.arms.battlelord->ok() && rng().roll( battlelord_chance ) )
     {
+      if ( !p()->cooldown.mortal_strike->up() )
+      {
+        p()->proc.battlelord_wasted->occur();
+      }
+      else
+      {
+        p()->proc.battlelord->occur();
+      }
       p()->cooldown.mortal_strike->reset( true );
+      p()->resource_gain( RESOURCE_RAGE, rage_from_battlelord, p()->gain.battlelord );
     }
 
     if ( p()->talents.arms.martial_prowess->ok() )
@@ -7419,6 +7423,7 @@ void warrior_t::init_gains()
   gain.avatar                           = get_gain( "avatar" );
   gain.avatar_torment                   = get_gain( "avatar_torment" );
   gain.avoided_attacks                  = get_gain( "avoided_attacks" );
+  gain.battlelord                       = get_gain( "battlelord" );
   gain.bloodsurge                       = get_gain( "bloodsurge" );
   gain.charge                           = get_gain( "charge" );
   gain.conquerors_banner                = get_gain( "conquerors_banner" );
@@ -7464,8 +7469,9 @@ void warrior_t::init_position()
 void warrior_t::init_procs()
 {
   player_t::init_procs();
+  proc.battlelord          = get_proc( "Battlelord Mortal Strike reset");
+  proc.battlelord_wasted   = get_proc( "Battlelord Mortal Strike reset wasted" );
   proc.delayed_auto_attack = get_proc( "delayed_auto_attack" );
-  proc.glory               = get_proc( "glory" );
   proc.tactician           = get_proc( "tactician" );
 }
 
