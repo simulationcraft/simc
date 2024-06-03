@@ -12295,6 +12295,7 @@ void death_knight_t::init_spells()
   spell.unholy_strength_buff    = find_spell( 53365 );
   spell.brittle_debuff          = cache_spell_lookup( talent.brittle.ok(), 374557 );
   spell.dnd_buff                = cache_spell_lookup( spec.death_and_decay->ok(), 188290 );
+  spell.runic_corruption        = cache_spell_lookup( spec.death_knight->ok(), 51460 );
   spell.runic_empowerment_gain  = cache_spell_lookup( spec.frost_death_knight->ok(), 193486 );
   spell.rune_mastery_buff       = cache_spell_lookup( talent.rune_mastery.ok(), 374585 );
   spell.coldthirst_gain         = cache_spell_lookup( talent.coldthirst.ok(), 378849 );
@@ -12370,7 +12371,6 @@ void death_knight_t::init_spells()
   spell.hyperpyrexia_damage      = cache_spell_lookup( talent.frost.hyperpyrexia.ok(), 458169 );
 
   // Unholy
-  spell.runic_corruption           = cache_spell_lookup( spec.unholy_death_knight->ok(), 51460 );
   spell.runic_corruption_chance    = cache_spell_lookup( spec.unholy_death_knight->ok(), 51462 );
   spell.festering_wound_debuff     = cache_spell_lookup( spec.festering_wound->ok(), 194310 );
   spell.rotten_touch_debuff        = cache_spell_lookup( talent.unholy.rotten_touch.ok(), 390276 );
