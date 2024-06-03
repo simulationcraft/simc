@@ -27,15 +27,8 @@ CONSUMABLE_ITEM_WHITELIST = {
   # Food
   5: [
     62290,                             # Seafood Magnifique Feast
-    133578,                            # Hearty Feast (7.0)
-    133579,                            # Lavish Suramar Feast (7.0)
-    156525,                            # Galley Banquet (8.0)
     156526,                            # Bountiful Captain's Feast (8.0)
     166804,                            # Boralus Blood Sausage (8.1)
-    166240,                            # Sanguinated Feast (8.1)
-    168315,                            # Famine Evaluator And Snack Table (8.2),
-    172042,                            # Surprisingly Palatable Feast (9.0)
-    172043,                            # Feast of Gluttonous Hedonism (9.0)
     ],
   # "Other"
   8: [
@@ -66,6 +59,8 @@ CONSUMABLE_ITEM_WHITELIST = {
     191360, 191361, 191362,            # Bottled Putrescence
     191366, 191367, 191368,            # Potion of Chilled Clarity
     191399, 191400, 191401,            # Potion of Shocking Disclosure
+    # The War Within
+    224572,                            # Crystallized Augment Rune
     ]
 }
 

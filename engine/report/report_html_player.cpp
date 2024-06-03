@@ -7,6 +7,7 @@
 #include "dbc/sc_spell_info.hpp"
 #include "dbc/temporary_enchant.hpp"
 #include "dbc/trait_data.hpp"
+#include "player/consumable.hpp"
 #include "player/covenant.hpp"
 #include "player/player_talent_points.hpp"
 #include "player/scaling_metric_data.hpp"
@@ -251,7 +252,10 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   std::string name;
   if ( a )
   {
-    name = report_decorators::decorated_action( *a );
+    if ( auto con = dynamic_cast<dbc_consumable_base_t*>( a ) )
+      name = report_decorators::decorated_item_data( *s.player->sim, *con->item_data );
+    else
+      name = report_decorators::decorated_action( *a );
   }
   else
   {
@@ -3383,9 +3387,16 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
     buff_name += util::encode_html( b.player->name_str ) + "&#160;-&#160;";
 
   if ( b.data().id() )
-    buff_name += report_decorators::decorated_buff( b );
+  {
+    if ( auto con = dynamic_cast<const consumable_buff_item_data_t*>( &b ) )
+      buff_name += report_decorators::decorated_item_data( *b.player->sim, *con->item_data );
+    else
+      buff_name += report_decorators::decorated_buff( b );
+  }
   else
+  {
     buff_name += util::encode_html( b.name_str );
+  }
 
   os << "<tr>\n";
 

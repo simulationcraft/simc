@@ -274,6 +274,36 @@ public:
   }
 };
 
+class item_data_decorator_t : public decorator_data_t
+{
+  const sim_t* m_sim;
+  const dbc_item_data_t* m_item_data;
+
+public:
+  item_data_decorator_t( const sim_t* obj, const dbc_item_data_t* item ) : m_sim( obj ), m_item_data( item ) {}
+
+  void base_url( fmt::memory_buffer& buf ) const override
+  {
+    fmt::format_to( std::back_inserter( buf ), "<a href=\"https://{}.wowhead.com/item={}",
+                    report_decorators::decoration_domain( *m_sim ), m_item_data->id );
+  }
+
+  bool can_decorate() const override
+  {
+    return m_sim->decorated_tooltips && m_item_data->id > 0;
+  }
+
+  std::string url_name() const override
+  {
+    return util::encode_html( m_item_data->name );
+  }
+
+  std::string token() const override
+  {
+    return util::encode_html( util::tokenize_fn( m_item_data->name ) );
+  }
+};
+
 class buff_decorator_t : public spell_decorator_t<buff_t>
 {
 public:
@@ -474,6 +504,11 @@ std::string decorated_spell_data_item( const sim_t& sim, const spell_data_t* spe
 std::string decorated_item( const item_t& item )
 {
   return decorate( item_decorator_t( &item ) );
+}
+
+std::string decorated_item_data( const sim_t& sim, const dbc_item_data_t& item_data )
+{
+  return decorate( item_data_decorator_t( &sim, &item_data ) );
 }
 
 std::string decorated_npc( const pet_t& pet )

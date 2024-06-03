@@ -653,7 +653,7 @@ class ItemDataGenerator(DataGenerator):
                             if not effect:
                                 continue
 
-                            if effect.sub_type == 23:
+                            if effect.sub_type == 23 or effect.type == 134:
                                 filter_ilevel = False
                 elif classdata.subclass == 3:
                     filter_ilevel = False

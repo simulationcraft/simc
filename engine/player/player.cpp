@@ -2756,7 +2756,7 @@ static std::string generate_traits_hash( player_t* player )
     }
 
     // is node purchased? granted nodes are baseline 1 rank.
-    if ( rank > ( trait_data_t::is_granted( trait, player->specialization() ) ? 1 : 0 ) )
+    if ( rank > ( trait_data_t::is_granted( trait, player->specialization() ) ? 1U : 0U ) )
     {
       put_bit( 1, 1 );
     }

@@ -16,6 +16,7 @@
 #include "dbc/spell_data.hpp"
 #include "ground_aoe.hpp"
 #include "item/item.hpp"
+#include "player/consumable.hpp"
 #include "set_bonus.hpp"
 #include "sim/cooldown.hpp"
 #include "sim/real_ppm.hpp"
@@ -30,6 +31,10 @@
 namespace unique_gear::thewarwithin
 {
 std::vector<unsigned> __tww_special_effect_ids;
+
+// assuming priority for highest/lowest secondary is vers > mastery > haste > crit
+static constexpr std::array<stat_e, 4> secondary_ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING,
+                                                             STAT_HASTE_RATING, STAT_CRIT_RATING };
 
 // can be called via unqualified lookup
 void register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback = false )
@@ -66,6 +71,102 @@ const spell_data_t* spell_from_spell_text( const special_effect_t& e, unsigned m
 
 namespace consumables
 {
+static constexpr unsigned food_coeff_spell_id = 456961;
+using selector_fn = std::function<stat_e( const player_t*, util::span<const stat_e> )>;
+
+struct selector_food_buff_t : public consumable_buff_t<stat_buff_t>
+{
+
+  double amount;
+  bool highest;
+
+  selector_food_buff_t( const special_effect_t& e, bool b )
+    : consumable_buff_t( e.player, e.name(), e.driver() ), highest( b )
+  {
+    amount = e.stat_amount;
+  }
+
+  void start( int s, double v, timespan_t d ) override
+  {
+    auto stat = highest ? util::highest_stat( player, secondary_ratings )
+                        : util::lowest_stat( player, secondary_ratings );
+
+    add_stat( stat, amount );
+
+    consumable_buff_t::start( s, v, d );
+  }
+};
+
+custom_cb_t selector_food( unsigned id, bool highest, bool major = true )
+{
+  return [ = ]( special_effect_t& effect ) {
+    effect.spell_id = id;
+
+    auto coeff = effect.player->find_spell( food_coeff_spell_id );
+
+    effect.stat_amount = coeff->effectN( 4 ).average( effect.player );
+    if ( !major )
+      effect.stat_amount *= coeff->effectN( 1 ).base_value() * 0.1;
+
+    effect.custom_buff = new selector_food_buff_t( effect, highest );
+  };
+}
+
+custom_cb_t primary_food( unsigned id, stat_e stat, size_t primary_idx = 3, bool major = true )
+{
+  return [ = ]( special_effect_t& effect ) {
+    effect.spell_id = id;
+
+    auto coeff = effect.player->find_spell( food_coeff_spell_id );
+
+    auto buff = create_buff<consumable_buff_t<stat_buff_t>>( effect.player, effect.driver() );
+    
+    if ( primary_idx )
+    {
+      auto _amt = coeff->effectN( primary_idx ).average( effect.player );
+      if ( !major )
+        _amt *= coeff->effectN( 1 ).base_value() * 0.1;
+
+      buff->add_stat( effect.player->convert_hybrid_stat( stat ), _amt );
+    }
+
+    if ( primary_idx == 3 )
+    {
+      auto _amt = coeff->effectN( 8 ).average( effect.player );
+      if ( !major )
+        _amt *= coeff->effectN( 1 ).base_value() * 0.1;
+
+      buff->add_stat( STAT_STAMINA, _amt );
+    }
+
+    effect.custom_buff = buff;
+  };
+}
+
+custom_cb_t secondary_food( unsigned id, stat_e stat1, stat_e stat2 = STAT_NONE )
+{
+  return [ = ]( special_effect_t& effect ) {
+    effect.spell_id = id;
+
+    auto coeff = effect.player->find_spell( food_coeff_spell_id );
+
+    auto buff = create_buff<consumable_buff_t<stat_buff_t>>( effect.player, effect.driver() );
+
+    if ( stat2 == STAT_NONE )
+    {
+      auto _amt = coeff->effectN( 4 ).average( effect.player );
+      buff->add_stat( stat1, _amt );
+    }
+    else
+    {
+      auto _amt = coeff->effectN( 5 ).average( effect.player );
+      buff->add_stat( stat1, _amt );
+      buff->add_stat( stat2, _amt );
+    }
+
+    effect.custom_buff = buff;
+  };
+}
 }  // namespace consumables
 
 namespace enchants
@@ -733,17 +834,13 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
   auto primary = create_buff<ovinax_stat_buff_t>( effect.player, effect.player->find_spell( 449578 ), data )
     ->set_stat_from_effect_type( A_MOD_STAT, data->effectN( 1 ).average( effect.item ) );
 
-  // TODO: confirm secondary precedence in case of tie is vers > mastery > haste > crit
-  static constexpr std::array<stat_e, 4> ratings =
-      { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
-  static constexpr std::array<unsigned, 4> buff_ids =
-      { 449595, 449594, 449581, 449593 };
+  static constexpr std::array<unsigned, 4> buff_ids = { 449595, 449594, 449581, 449593 };
 
   std::unordered_map<stat_e, buff_t*> secondaries;
 
-  for ( size_t i = 0; i < ratings.size(); i++ )
+  for ( size_t i = 0; i < secondary_ratings.size(); i++ )
   {
-    auto stat_str = util::stat_type_abbrev( ratings[ i ] );
+    auto stat_str = util::stat_type_abbrev( secondary_ratings[ i ] );
     auto spell = effect.player->find_spell( buff_ids[ i ] );
     auto name = fmt::format( "{}_{}", spell->name_cstr(), stat_str );
 
@@ -751,7 +848,7 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
       ->set_stat_from_effect_type( A_MOD_RATING, data->effectN( 2 ).average( effect.item ) )
       ->set_name_reporting( stat_str );
 
-    secondaries[ ratings[ i ] ] = buff;
+    secondaries[ secondary_ratings[ i ] ] = buff;
   }
 
   // proxy buff for on-use
@@ -772,7 +869,7 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
       if ( p->is_moving() )
       {
         primary->decrement();
-        secondaries.at( util::highest_stat( p, ratings ) )->trigger();
+        secondaries.at( util::highest_stat( p, secondary_ratings ) )->trigger();
       }
       else
       {
@@ -1094,7 +1191,34 @@ namespace sets
 
 void register_special_effects()
 {
+  // NOTE: use unique_gear:: namespace for consumable registration so we don't activate them with enable_all_item_effects
   // Food
+  unique_gear::register_special_effect( 457302, consumables::selector_food( 457172, true ) );  // the sushi special
+  unique_gear::register_special_effect( 455960, consumables::selector_food( 457172, false ) );  // everything stew
+  unique_gear::register_special_effect( 454149, consumables::selector_food( 457169, true ) );  // beledar's bounty, empress' farewell, jester's board, outsider's provisions
+  unique_gear::register_special_effect( 457282, consumables::selector_food( 457170, false, false ) );  // pan seared mycobloom, hallowfall chili, coreway kabob, flash fire fillet
+  unique_gear::register_special_effect( 454087, consumables::selector_food( 457171, false, false ) );  // unseasoned field steak, roasted mycobloom, spongey scramble, skewered fillet, simple stew
+  unique_gear::register_special_effect( 457283, consumables::primary_food( 457172, STAT_STR_AGI_INT, 2 ) );  // feast of the divine day
+  unique_gear::register_special_effect( 457285, consumables::primary_food( 457172, STAT_STR_AGI_INT, 2 ) );  // feast of the midnight masquerade
+  unique_gear::register_special_effect( 457294, consumables::primary_food( 457124, STAT_STRENGTH ) );  // sizzling honey roast
+  unique_gear::register_special_effect( 457136, consumables::primary_food( 457124, STAT_AGILITY ) );  // mycobloom risotto
+  unique_gear::register_special_effect( 457295, consumables::primary_food( 457124, STAT_INTELLECT ) );  // stuffed cave peppers
+  unique_gear::register_special_effect( 457296, consumables::primary_food( 457124, STAT_STAMINA, 7 ) );  // angler's delight
+  unique_gear::register_special_effect( 457298, consumables::primary_food( 457124, STAT_STRENGTH, 3, false ) );  // meat and potatoes
+  unique_gear::register_special_effect( 457297, consumables::primary_food( 457124, STAT_AGILITY, 3, false ) );  // rib stickers
+  unique_gear::register_special_effect( 457299, consumables::primary_food( 457124, STAT_INTELLECT, 3, false ) );  // sweet and sour meatballs
+  unique_gear::register_special_effect( 457300, consumables::primary_food( 457124, STAT_STAMINA, 7, false ) );  // tender twilight jerky
+  unique_gear::register_special_effect( 457286, consumables::secondary_food( 457049, STAT_HASTE_RATING ) );  // zesty nibblers
+  unique_gear::register_special_effect( 456968, consumables::secondary_food( 457049, STAT_CRIT_RATING ) );  // fiery fish sticks
+  unique_gear::register_special_effect( 457287, consumables::secondary_food( 457049, STAT_VERSATILITY_RATING ) );  // ginger glazed fillet
+  unique_gear::register_special_effect( 457288, consumables::secondary_food( 457049, STAT_MASTERY_RATING ) );  // salty dog
+  unique_gear::register_special_effect( 457289, consumables::secondary_food( 457049, STAT_HASTE_RATING, STAT_CRIT_RATING ) );  // deepfin patty
+  unique_gear::register_special_effect( 457290, consumables::secondary_food( 457049, STAT_HASTE_RATING, STAT_VERSATILITY_RATING ) );  // sweet and spicy soup
+  unique_gear::register_special_effect( 457291, consumables::secondary_food( 457049, STAT_CRIT_RATING, STAT_VERSATILITY_RATING ) );  // fish and chips
+  unique_gear::register_special_effect( 457292, consumables::secondary_food( 457049, STAT_MASTERY_RATING, STAT_CRIT_RATING ) );  // salt baked seafood
+  unique_gear::register_special_effect( 457293, consumables::secondary_food( 457049, STAT_MASTERY_RATING, STAT_VERSATILITY_RATING ) );  // marinated tenderloins
+  unique_gear::register_special_effect( 457301, consumables::secondary_food( 457049, STAT_MASTERY_RATING, STAT_HASTE_RATING ) );  // chippy tea
+
   // Phials
   // Potions
 

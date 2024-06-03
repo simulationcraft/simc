@@ -5,11 +5,11 @@
 
 #include "consumable.hpp"
 
-#include "action/action.hpp"
 #include "action/heal.hpp"
 #include "buff/buff.hpp"
 #include "dbc/dbc.hpp"
 #include "item/item.hpp"
+#include "item/special_effect.hpp"
 #include "player.hpp"
 #include "player/unique_gear.hpp"
 #include "sc_enums.hpp"
@@ -295,235 +295,6 @@ struct health_stone_t : public heal_t
     {
       if ( player->resources.pct( RESOURCE_HEALTH ) > ( 1 - base_pct_heal ) )
         return false;
-    }
-
-    return action_t::ready();
-  }
-};
-
-// ==========================================================================
-// DBC-backed consumable base class
-// ==========================================================================
-
-struct dbc_consumable_base_t : public action_t
-{
-  std::string consumable_name;
-  std::unique_ptr<item_t> consumable_item;  // Dummy item used for quality adjustment done via ilevel
-  const dbc_item_data_t* item_data;
-  item_subclass_consumable type;
-
-  action_t* consumable_action;
-  buff_t* consumable_buff;
-  bool opt_disabled;  // Disabled through a consumable-specific "disabled" keyword
-
-  dbc_consumable_base_t( player_t* p, util::string_view name_str )
-    : action_t( ACTION_USE, name_str, p ),
-      item_data( nullptr ),
-      type( ITEM_SUBCLASS_CONSUMABLE ),
-      consumable_action( nullptr ),
-      consumable_buff( nullptr ),
-      opt_disabled( false )
-  {
-    add_option( opt_string( "name", consumable_name ) );
-    add_option( opt_string( "type", consumable_name ) );
-
-    harmful = callbacks = may_crit = may_miss = false;
-
-    trigger_gcd = timespan_t::zero();
-
-    // Consumables always target the owner
-    target = player;
-  }
-
-  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
-  {
-    auto split = util::string_split<util::string_view>( name_str, "." );
-    if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "consumable" ) )
-    {
-      auto match = util::str_compare_ci( consumable_name, split[ 1 ] );
-      return expr_t::create_constant( name_str, match );
-    }
-
-    return action_t::create_expression( name_str );
-  }
-
-  // Needed to satisfy normal execute conditions
-  result_e calculate_result( action_state_t* ) const override
-  {
-    return RESULT_HIT;
-  }
-
-  void execute() override
-  {
-    action_t::execute();
-
-    if ( consumable_action )
-    {
-      consumable_action->execute();
-    }
-
-    if ( consumable_buff )
-    {
-      consumable_buff->trigger();
-    }
-  }
-
-  // Figure out the default consumable for a given type
-  virtual std::string consumable_default() const
-  {
-    return {};
-  }
-
-  // Consumable type is fully disabled; base class just returns the option state (for the consumable
-  // type). Consumable type specialized classes take into account other options (i.e., the allow_X
-  // sim-wide options)
-  virtual bool disabled_consumable() const
-  {
-    return opt_disabled;
-  }
-
-  void init() override
-  {
-    // Figure out the default consumable name if nothing is given in the name/type parameters
-    if ( consumable_name.empty() )
-    {
-      consumable_name = consumable_default();
-      // Check for disabled string in the consumable player scope option
-      opt_disabled = util::str_compare_ci( consumable_name, "disabled" );
-    }
-    // If a specific name is given, we'll still need to parse the potentially user given "disabled"
-    // option to disable the consumable type entirely.
-    else
-    {
-      opt_disabled = util::str_compare_ci( consumable_default(), "disabled" );
-    }
-
-    if ( !disabled_consumable() )
-    {
-      item_data = find_consumable( *player->dbc, consumable_name, type );
-
-      try
-      {
-        initialize_consumable();
-      }
-      catch ( const std::exception& )
-      {
-        std::throw_with_nested( std::invalid_argument(
-            fmt::format( "Unable to initialize consumable '{}' from '{}'", signature_str, consumable_name ) ) );
-      }
-    }
-
-    action_t::init();
-  }
-
-  // Find a suitable DBC spell for the consumable. This method is overridable where needed (for
-  // example custom flasks)
-  virtual const spell_data_t* driver() const
-  {
-    if ( !item_data )
-    {
-      return spell_data_t::not_found();
-    }
-
-    for ( const item_effect_t& effect : player->dbc->item_effects( item_data->id ) )
-    {
-      // Note, bypasses level check from the spell itself, since it seems some consumable spells are
-      // flagged higher level than the actual food they are in.
-      auto ptr = dbc::find_spell( player, effect.spell_id );
-      if ( ptr && ptr->id() == effect.spell_id )
-      {
-        return ptr;
-      }
-    }
-
-    return spell_data_t::not_found();
-  }
-
-  // Overridable method to customize the special effect that is used to drive the buff creation for
-  // the consumable
-  virtual special_effect_t* create_special_effect()
-  {
-    auto effect = new special_effect_t( player );
-    effect->type = SPECIAL_EFFECT_USE;
-    effect->source = SPECIAL_EFFECT_SOURCE_ITEM;
-
-    if ( item_data && item_data->crafting_quality )
-    {
-      // Dragonflight consumables with crafting quality use the items ilevel for action/buff effect values, so if the
-      // item_data has a crafting quality, create an item for the effect to use
-      consumable_item = std::make_unique<item_t>( player, "" );
-      consumable_item->parsed.data.name = item_data->name;
-      consumable_item->parsed.data.id = item_data->id;
-      consumable_item->parsed.data.level = item_data->level;
-      consumable_item->parsed.data.inventory_type = INVTYPE_TRINKET;  // DF consumables use trinket CR multipliers
-
-      effect->item = consumable_item.get();
-    }
-
-    return effect;
-  }
-
-  // Attempts to initialize the consumable. Jumps through quite a few hoops to manage to create
-  // special effects only once, if the user input contains multiple consumable lines (as is possible
-  // with potions for example).
-  virtual void initialize_consumable()
-  {
-    if ( driver()->id() == 0 )
-    {
-      throw std::invalid_argument( "Unable to find consumable." );
-    }
-
-    // populate ID and spell data for better reporting
-    id = driver()->id();
-    s_data_reporting = driver();
-    name_str_reporting = s_data_reporting->name_cstr();
-    util::tokenize( name_str_reporting );
-
-    auto effect = unique_gear::find_special_effect( player, driver()->id(), SPECIAL_EFFECT_USE );
-    // No special effect for this consumable found, so create one
-    if ( !effect )
-    {
-      effect = create_special_effect();
-      unique_gear::initialize_special_effect( *effect, driver()->id() );
-
-      // First special effect initialization phase could not deduce a proper consumable to create
-      if ( effect->type == SPECIAL_EFFECT_NONE )
-      {
-        throw std::invalid_argument(
-            "First special effect initialization phase could not deduce a proper consumable to create." );
-      }
-
-      // Note, this needs to be added before initializing the (potentially) custom special effect,
-      // since find_special_effect for this same driver needs to find this newly created special
-      // effect, not anything the custom init might create.
-      player->special_effects.push_back( effect );
-
-      // Finally, initialize the special effect. If it's a plain old stat buff this does nothing,
-      // but some consumables require custom initialization.
-      unique_gear::initialize_special_effect_2( effect );
-    }
-
-    // And then, grab the action and buff from the special effect, if they are enabled
-    // Cooldowns are handled via potion_t::cooldown so we 0 out any on the action/buff
-    consumable_action = effect->create_action();
-    if ( consumable_action )
-    {
-      consumable_action->cooldown->duration = 0_ms;
-    }
-
-    consumable_buff = effect->create_buff();
-    if ( consumable_buff )
-    {
-      consumable_buff->set_cooldown( 0_ms );
-      consumable_buff->s_data_reporting = s_data_reporting;
-    }
-  }
-
-  bool ready() override
-  {
-    if ( disabled_consumable() )
-    {
-      return false;
     }
 
     return action_t::ready();
@@ -977,6 +748,12 @@ struct food_t : public dbc_consumable_base_t
       return driver;
     }
 
+    // Check if the driver is directly registered as a special effect
+    if ( auto db_item = unique_gear::find_special_effect_db_item( driver->id() ); db_item.size() )
+    {
+      return driver;
+    }
+
     // Find the "Well Fed" buff from the base food
     for ( const spelleffect_data_t& effect : driver->effects() )
     {
@@ -1036,10 +813,212 @@ struct food_t : public dbc_consumable_base_t
 }  // END UNNAMED NAMESPACE
 
 // ==========================================================================
+// DBC-backed consumable base class
+// ==========================================================================
+
+dbc_consumable_base_t::dbc_consumable_base_t( player_t* p, std::string_view name_str )
+  : action_t( ACTION_USE, name_str, p ),
+    item_data( nullptr ),
+    type( ITEM_SUBCLASS_CONSUMABLE ),
+    consumable_action( nullptr ),
+    consumable_buff( nullptr ),
+    opt_disabled( false )
+{
+  add_option( opt_string( "name", consumable_name ) );
+  add_option( opt_string( "type", consumable_name ) );
+
+  harmful = callbacks = may_crit = may_miss = false;
+
+  trigger_gcd = timespan_t::zero();
+
+  // Consumables always target the owner
+  target = player;
+}
+
+std::unique_ptr<expr_t> dbc_consumable_base_t::create_expression( std::string_view name_str )
+{
+  auto split = util::string_split<util::string_view>( name_str, "." );
+  if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "consumable" ) )
+  {
+    auto match = util::str_compare_ci( consumable_name, split[ 1 ] );
+    return expr_t::create_constant( name_str, match );
+  }
+
+  return action_t::create_expression( name_str );
+}
+
+void dbc_consumable_base_t::execute()
+{
+  action_t::execute();
+
+  if ( consumable_action )
+  {
+    consumable_action->execute();
+  }
+
+  if ( consumable_buff )
+  {
+    consumable_buff->trigger();
+  }
+}
+
+void dbc_consumable_base_t::init()
+{
+  // Figure out the default consumable name if nothing is given in the name/type parameters
+  if ( consumable_name.empty() )
+  {
+    consumable_name = consumable_default();
+    // Check for disabled string in the consumable player scope option
+    opt_disabled = util::str_compare_ci( consumable_name, "disabled" );
+  }
+  // If a specific name is given, we'll still need to parse the potentially user given "disabled"
+  // option to disable the consumable type entirely.
+  else
+  {
+    opt_disabled = util::str_compare_ci( consumable_default(), "disabled" );
+  }
+
+  if ( !disabled_consumable() )
+  {
+    item_data = find_consumable( *player->dbc, consumable_name, type );
+
+    try
+    {
+      initialize_consumable();
+    }
+    catch ( const std::exception& )
+    {
+      std::throw_with_nested( std::invalid_argument(
+        fmt::format( "Unable to initialize consumable '{}' from '{}'", signature_str, consumable_name ) ) );
+    }
+  }
+
+  if ( auto con_data = dynamic_cast<consumable_buff_item_data_t*>( consumable_buff ) )
+  {
+    con_data->item_data = item_data;
+  }
+
+  action_t::init();
+}
+
+// Find a suitable DBC spell for the consumable. This method is overridable where needed (for
+// example custom flasks)
+const spell_data_t* dbc_consumable_base_t::driver() const
+{
+  if ( !item_data )
+  {
+    return spell_data_t::not_found();
+  }
+
+  for ( const item_effect_t& effect : player->dbc->item_effects( item_data->id ) )
+  {
+    // Note, bypasses level check from the spell itself, since it seems some consumable spells are
+    // flagged higher level than the actual food they are in.
+    auto ptr = dbc::find_spell( player, effect.spell_id );
+    if ( ptr && ptr->id() == effect.spell_id )
+    {
+      return ptr;
+    }
+  }
+
+  return spell_data_t::not_found();
+}
+
+  // Overridable method to customize the special effect that is used to drive the buff creation for
+  // the consumable
+special_effect_t* dbc_consumable_base_t::create_special_effect()
+{
+  auto effect = new special_effect_t( player );
+  effect->type = SPECIAL_EFFECT_USE;
+  effect->source = SPECIAL_EFFECT_SOURCE_ITEM;
+
+  if ( item_data && item_data->crafting_quality )
+  {
+    // Dragonflight consumables with crafting quality use the items ilevel for action/buff effect values, so if the
+    // item_data has a crafting quality, create an item for the effect to use
+    consumable_item = std::make_unique<item_t>( player, "" );
+    consumable_item->parsed.data.name = item_data->name;
+    consumable_item->parsed.data.id = item_data->id;
+    consumable_item->parsed.data.level = item_data->level;
+    consumable_item->parsed.data.inventory_type = INVTYPE_TRINKET;  // DF consumables use trinket CR multipliers
+
+    effect->item = consumable_item.get();
+  }
+
+  return effect;
+}
+
+  // Attempts to initialize the consumable. Jumps through quite a few hoops to manage to create
+  // special effects only once, if the user input contains multiple consumable lines (as is possible
+  // with potions for example).
+void dbc_consumable_base_t::initialize_consumable()
+{
+  if ( driver()->id() == 0 )
+  {
+    throw std::invalid_argument( "Unable to find consumable." );
+  }
+
+  // populate ID and spell data for better reporting
+  id = driver()->id();
+  s_data_reporting = driver();
+  name_str_reporting = s_data_reporting->name_cstr();
+  util::tokenize( name_str_reporting );
+
+  auto effect = unique_gear::find_special_effect( player, driver()->id(), SPECIAL_EFFECT_USE );
+  // No special effect for this consumable found, so create one
+  if ( !effect )
+  {
+    effect = create_special_effect();
+    unique_gear::initialize_special_effect( *effect, driver()->id() );
+
+    // First special effect initialization phase could not deduce a proper consumable to create
+    if ( effect->type == SPECIAL_EFFECT_NONE )
+    {
+      throw std::invalid_argument(
+        "First special effect initialization phase could not deduce a proper consumable to create." );
+    }
+
+    // Note, this needs to be added before initializing the (potentially) custom special effect,
+    // since find_special_effect for this same driver needs to find this newly created special
+    // effect, not anything the custom init might create.
+    player->special_effects.push_back( effect );
+
+    // Finally, initialize the special effect. If it's a plain old stat buff this does nothing,
+    // but some consumables require custom initialization.
+    unique_gear::initialize_special_effect_2( effect );
+  }
+
+  // And then, grab the action and buff from the special effect, if they are enabled
+  // Cooldowns are handled via potion_t::cooldown so we 0 out any on the action/buff
+  consumable_action = effect->create_action();
+  if ( consumable_action )
+  {
+    consumable_action->cooldown->duration = 0_ms;
+  }
+
+  consumable_buff = effect->create_buff();
+  if ( consumable_buff )
+  {
+    consumable_buff->set_cooldown( 0_ms );
+    consumable_buff->s_data_reporting = s_data_reporting;
+  }
+}
+
+bool dbc_consumable_base_t::ready()
+{
+  if ( disabled_consumable() )
+  {
+    return false;
+  }
+
+  return action_t::ready();
+}
+
+// ==========================================================================
 // consumable_t::create_action
 // ==========================================================================
 
-action_t* consumable::create_action( player_t* p, util::string_view name, util::string_view options_str )
+action_t* consumable::create_action( player_t* p, std::string_view name, std::string_view options_str )
 {
   if ( name == "potion"                   ) return new       potion_t( p, options_str );
   if ( name == "flask" || name == "phial" ) return new        flask_t( p, options_str );
