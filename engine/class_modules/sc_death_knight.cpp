@@ -3157,32 +3157,11 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   template <typename T_ACTION>
   struct drw_action_t : public pet_action_t<dancing_rune_weapon_pet_t, T_ACTION>
   {
-    struct affected_by_t
-    {
-      bool blood_plague;
-    } affected_by;
-
     drw_action_t( dancing_rune_weapon_pet_t* p, util::string_view name, const spell_data_t* s )
       : pet_action_t<dancing_rune_weapon_pet_t, T_ACTION>( p, name, s )
     {
       this->background = true;
       this->weapon     = &( p->main_hand_weapon );
-
-      this->affected_by.blood_plague = this->data().affected_by( p->dk()->spell.blood_plague->effectN( 4 ) );
-    }
-
-    double composite_target_multiplier( player_t* target ) const override
-    {
-      double m = pet_action_t<dancing_rune_weapon_pet_t, T_ACTION>::composite_target_multiplier( target );
-
-      const death_knight_td_t* td = this->dk()->get_target_data( target );
-
-      if ( this->affected_by.blood_plague && td->dot.blood_plague->is_ticking() )
-      {
-        m *= 1.0 + this->dk()->talent.blood.coagulopathy->effectN( 1 ).percent();
-      }
-
-      return m;
     }
 
     // Override verify actor spec, the pet's abilities are blood's abilities and require blood spec in spelldata
@@ -13668,7 +13647,7 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
   parse_effects( dk()->buffs.crimson_scourge );
   parse_effects( dk()->buffs.ossuary );
   // Don't auto parse coag, since there is some snapshot behavior when the weapon dies
-  //parse_effects( dk()->buffs.coagulopathy );
+  // parse_effects( dk()->buffs.coagulopathy );
 
   // Unholy
   parse_effects( dk()->buffs.unholy_assault );
@@ -13699,9 +13678,6 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_target_effects()
   // Blood
 
   // Frost
-  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::everfrost ),
-                        dk()->talent.frost.everfrost->effectN( 1 ).trigger(), dk()->talent.frost.everfrost );
-  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::piercing_chill ), dk()->spell.piercing_chill_debuff );
 
   // Unholy
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::death_rot ), dk()->spell.death_rot_debuff );
