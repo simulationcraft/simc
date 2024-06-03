@@ -252,7 +252,7 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   std::string name;
   if ( a )
   {
-    if ( auto con = dynamic_cast<dbc_consumable_base_t*>( a ) )
+    if ( auto con = dynamic_cast<dbc_consumable_base_t*>( a ); con && con->item_data )
       name = report_decorators::decorated_item_data( *s.player->sim, *con->item_data );
     else
       name = report_decorators::decorated_action( *a );
@@ -3388,7 +3388,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
 
   if ( b.data().id() )
   {
-    if ( auto con = dynamic_cast<const consumable_buff_item_data_t*>( &b ) )
+    if ( auto con = dynamic_cast<const consumable_buff_item_data_t*>( &b ); con && con->item_data )
       buff_name += report_decorators::decorated_item_data( *b.player->sim, *con->item_data );
     else
       buff_name += report_decorators::decorated_buff( b );
