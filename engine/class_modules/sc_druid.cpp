@@ -10851,11 +10851,7 @@ std::string druid_t::default_food() const
 
 std::string druid_t::default_rune() const
 {
-  if      ( true_level >= 70 ) return "draconic";
-  else if ( true_level >= 60 ) return "veiled";
-  else if ( true_level >= 50 ) return "battle_scarred";
-  else if ( true_level >= 45 ) return "defiled";
-  else return "disabled";
+  return "crystallized";
 }
 
 std::string druid_t::default_temporary_enchant() const
