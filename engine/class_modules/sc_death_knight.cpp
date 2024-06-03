@@ -13355,7 +13355,7 @@ void death_knight_t::activate()
     register_on_kill_callback( [ this ]( player_t* t ) { trigger_festering_wound_death( t ); } );
 
   if ( talent.deaths_reach.ok() )
-    register_on_kill_callback( [this]( player_t* t) { cooldown.death_grip.reset();})
+    register_on_kill_callback( [this]( player_t* ) { cooldown.death_grip->reset(true); } );
 
   if ( talent.rider.nazgrims_conquest.ok() )
   {
