@@ -8352,34 +8352,37 @@ struct frost_strike_t final : public death_knight_melee_attack_t
 
     dual = true;
 
-    if ( p->main_hand_weapon.group() == WEAPON_2H )
+    if ( data().ok() )
     {
-      mh_delay = timespan_t::from_millis( as<int>( data().effectN( 4 ).misc_value1() ) );
-    }
+      if ( p->main_hand_weapon.group() == WEAPON_2H )
+      {
+        mh_delay = timespan_t::from_millis( as<int>( data().effectN( 4 ).misc_value1() ) );
+      }
 
-    if ( p->off_hand_weapon.type != WEAPON_NONE )
-    {
-      oh_delay = timespan_t::from_millis( as<int>( data().effectN( 3 ).misc_value1() ) );
-    }
+      if ( p->off_hand_weapon.type != WEAPON_NONE )
+      {
+        oh_delay = timespan_t::from_millis( as<int>( data().effectN( 3 ).misc_value1() ) );
+      }
 
-    add_child( mh );
-    if ( p->talent.frost.shattering_blade.ok() )
-    {
-      add_child( mh_sb );
-    }
-
-    if ( p->off_hand_weapon.type != WEAPON_NONE && p->main_hand_weapon.group() != WEAPON_2H )
-    {
-      add_child( oh );
+      add_child( mh );
       if ( p->talent.frost.shattering_blade.ok() )
       {
-        add_child( oh_sb );
+        add_child( mh_sb );
       }
-    }
-    
-    if ( p->talent.frost.shattered_frost.ok() )
-    {
-      add_child( get_action<shattered_frost_t>( "shattered_frost", p ) );
+
+      if ( p->off_hand_weapon.type != WEAPON_NONE && p->main_hand_weapon.group() != WEAPON_2H )
+      {
+        add_child( oh );
+        if ( p->talent.frost.shattering_blade.ok() )
+        {
+          add_child( oh_sb );
+        }
+      }
+
+      if ( p->talent.frost.shattered_frost.ok() )
+      {
+        add_child( get_action<shattered_frost_t>( "shattered_frost", p ) );
+      }
     }
   }
 
