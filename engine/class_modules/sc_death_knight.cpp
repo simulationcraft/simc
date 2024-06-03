@@ -787,7 +787,9 @@ public:
     // Shared
     propagate_const<cooldown_t*>
         death_and_decay_dynamic;  // Shared cooldown object for death and decay, defile and death's due
+    propagate_const<cooldown_t*> death_grip;
     propagate_const<cooldown_t*> mind_freeze;
+
 
     // Blood
     cooldown_t* bone_shield_icd;  // internal cooldown between bone shield stack consumption
@@ -1630,6 +1632,7 @@ public:
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
     cooldown.death_and_decay_dynamic =
         get_cooldown( "death_and_decay" );  // Default value, changed during action construction
+    cooldown.death_grip             = get_cooldown( "death_grip" );
     cooldown.icecap_icd             = get_cooldown( "icecap" );
     cooldown.inexorable_assault_icd = get_cooldown( "inexorable_assault_icd" );
     cooldown.frigid_executioner_icd = get_cooldown( "frigid_executioner_icd" );
@@ -3262,20 +3265,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     death_strike_t( util::string_view n, dancing_rune_weapon_pet_t* p )
       : drw_action_t<melee_attack_t>( p, n, p->dk()->talent.death_strike )
     {
-    }
-
-    double action_multiplier() const override
-    {
-      double m = drw_action_t::action_multiplier();
-
-      // DRW isn't usually affected by talents, and doesn't proc hemostasis, yet its death strike damage is increased by
-      // hemostasis https://github.com/SimCMinMax/WoW-BugTracker/issues/241
-      m *= 1.0 + dk()->buffs.hemostasis->stack_value();
-
-      // DRW DS damage is buffed by player heartrend buff
-      m *= 1.0 + dk()->buffs.heartrend->stack_value();
-
-      return m;
     }
   };
 
@@ -13365,6 +13354,9 @@ void death_knight_t::activate()
   if ( specialization() == DEATH_KNIGHT_UNHOLY && spec.festering_wound->ok() )
     register_on_kill_callback( [ this ]( player_t* t ) { trigger_festering_wound_death( t ); } );
 
+  if ( talent.deaths_reach.ok() )
+    register_on_kill_callback( [this]( player_t* t) { cooldown.death_grip.reset();})
+
   if ( talent.rider.nazgrims_conquest.ok() )
   {
     int stacks = as<int>( talent.rider.nazgrims_conquest->effectN( 1 ).base_value() );
@@ -13660,7 +13652,8 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
   parse_effects( dk()->buffs.hemostasis );
   parse_effects( dk()->buffs.crimson_scourge );
   parse_effects( dk()->buffs.ossuary );
-  parse_effects( dk()->buffs.coagulopathy );
+  // Don't auto parse coag, since there is some snapshot behavior when the weapon dies
+  //parse_effects( dk()->buffs.coagulopathy );
 
   // Unholy
   parse_effects( dk()->buffs.unholy_assault );
@@ -13886,8 +13879,10 @@ void death_knight_t::apply_affecting_auras( action_t& action )
 
   // Shared
   action.apply_affecting_aura( talent.antimagic_barrier );
+  action.apply_affecting_aura( talent.assimilation );
   action.apply_affecting_aura( talent.unholy_bond );
   action.apply_affecting_aura( talent.deaths_echo );
+  action.apply_affecting_aura( talent.deaths_reach );
   action.apply_affecting_aura( talent.gloom_ward );
   action.apply_affecting_aura( talent.proliferating_chill );
   action.apply_affecting_aura( talent.unyielding_will );
