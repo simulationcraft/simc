@@ -71,6 +71,7 @@ const spell_data_t* spell_from_spell_text( const special_effect_t& e, unsigned m
 
 namespace consumables
 {
+// Food
 static constexpr unsigned food_coeff_spell_id = 456961;
 using selector_fn = std::function<stat_e( const player_t*, util::span<const stat_e> )>;
 
@@ -167,6 +168,76 @@ custom_cb_t secondary_food( unsigned id, stat_e stat1, stat_e stat2 = STAT_NONE 
     effect.custom_buff = buff;
   };
 }
+
+// Flasks
+// TODO: can you randomize into the same stat? same bonus stat? same penalty stats?
+void flask_of_alchemical_chaos( special_effect_t& effect )
+{
+  if ( create_fallback_buffs( effect, { "flask_of_alchemical_chaos_vers", "flask_of_alchemical_chaos_mastery",
+                                        "flask_of_alchemical_chaos_haste", "flask_of_alchemical_chaos_crit" } ) )
+  {
+    return;
+  }
+
+  struct flask_of_alchemical_chaos_buff_t : public consumable_buff_t<buff_t>
+  {
+    std::vector<std::pair<buff_t*, buff_t*>> buff_list;
+
+    flask_of_alchemical_chaos_buff_t( const special_effect_t& e )
+      : consumable_buff_t( e.player, e.name(), e.driver() )
+    {
+      auto bonus = e.driver()->effectN( 5 ).average( e.item );
+      auto penalty = -( e.driver()->effectN( 6 ).average( e.item ) );
+
+      auto add_vers = create_buff<stat_buff_t>( e.player, "flask_of_alchemical_chaos_vers", e.driver() )
+        ->add_stat( STAT_VERSATILITY_RATING, bonus )->set_name_reporting( "Vers" );
+      auto add_mastery = create_buff<stat_buff_t>( e.player, "flask_of_alchemical_chaos_mastery", e.driver() )
+        ->add_stat( STAT_MASTERY_RATING, bonus )->set_name_reporting( "Mastery" );
+      auto add_haste = create_buff<stat_buff_t>( e.player, "flask_of_alchemical_chaos_haste", e.driver() )
+        ->add_stat( STAT_HASTE_RATING, bonus )->set_name_reporting( "Haste" );
+      auto add_crit = create_buff<stat_buff_t>( e.player, "flask_of_alchemical_chaos_crit", e.driver() )
+        ->add_stat( STAT_CRIT_RATING, bonus )->set_name_reporting( "Crit" );
+
+      auto sub_vers = create_buff<stat_buff_t>( e.player, "alchemical_chaos_vers_penalty", e.driver() )
+        ->add_stat( STAT_VERSATILITY_RATING, penalty )->set_quiet( true );
+      auto sub_mastery = create_buff<stat_buff_t>( e.player, "alchemical_chaos_mastery_penalty", e.driver() )
+        ->add_stat( STAT_MASTERY_RATING, penalty )->set_quiet( true );
+      auto sub_haste = create_buff<stat_buff_t>( e.player, "alchemical_chaos_haste_penalty", e.driver() )
+        ->add_stat( STAT_HASTE_RATING, penalty )->set_quiet( true );
+      auto sub_crit = create_buff<stat_buff_t>( e.player, "alchemical_chaos_crit_penalty", e.driver() )
+        ->add_stat( STAT_CRIT_RATING, penalty )->set_quiet( true );
+
+      buff_list.emplace_back( add_vers, sub_vers );
+      buff_list.emplace_back( add_mastery, sub_mastery );
+      buff_list.emplace_back( add_haste, sub_haste );
+      buff_list.emplace_back( add_crit, sub_crit );
+
+      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+        rng().shuffle( buff_list.begin(), buff_list.end() );
+        buff_list[ 0 ].first->trigger();   // bonus
+        buff_list[ 0 ].second->expire();
+        buff_list[ 1 ].first->expire();
+        buff_list[ 1 ].second->trigger();  // penalty
+        buff_list[ 2 ].first->expire();
+        buff_list[ 2 ].second->trigger();  // penalty
+        buff_list[ 3 ].first->expire();
+        buff_list[ 3 ].second->expire();
+      } );
+    }
+
+    timespan_t tick_time() const override
+    {
+      if ( current_tick == 0 )
+        return sim->rng().range( 1_ms, buff_period );
+      else
+        return buff_period;
+    }
+  };
+
+  effect.custom_buff = new flask_of_alchemical_chaos_buff_t( effect );
+}
+
+// Potions
 }  // namespace consumables
 
 namespace enchants
@@ -1191,7 +1262,7 @@ namespace sets
 
 void register_special_effects()
 {
-  // NOTE: use unique_gear:: namespace for consumable registration so we don't activate them with enable_all_item_effects
+  // NOTE: use unique_gear:: namespace for static consumables so we don't activate them with enable_all_item_effects
   // Food
   unique_gear::register_special_effect( 457302, consumables::selector_food( 457172, true ) );  // the sushi special
   unique_gear::register_special_effect( 455960, consumables::selector_food( 457172, false ) );  // everything stew
@@ -1219,7 +1290,8 @@ void register_special_effects()
   unique_gear::register_special_effect( 457293, consumables::secondary_food( 457049, STAT_MASTERY_RATING, STAT_VERSATILITY_RATING ) );  // marinated tenderloins
   unique_gear::register_special_effect( 457301, consumables::secondary_food( 457049, STAT_MASTERY_RATING, STAT_HASTE_RATING ) );  // chippy tea
 
-  // Phials
+  // Flasks
+  register_special_effect( 432021, consumables::flask_of_alchemical_chaos, true );
   // Potions
 
   // Enchants
