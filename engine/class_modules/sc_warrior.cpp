@@ -984,6 +984,8 @@ public:
     parse_effects( p()->buff.berserker_stance );
     parse_effects( p()->buff.bloodcraze, p()->talents.fury.bloodcraze );
     parse_effects( p()->buff.dancing_blades );
+    if ( p()->talents.fury.powerful_enrage->ok() )
+      parse_effects( p()->buff.enrage, 0b00011 );  // Power Enrage
     parse_effects( p()->buff.recklessness );
     parse_effects( p()->buff.slaughtering_strikes );
 
@@ -7208,7 +7210,8 @@ void warrior_t::create_buffs()
      ->add_invalidate( CACHE_ATTACK_HASTE )
      ->add_invalidate( CACHE_RUN_SPEED )
      ->set_default_value( find_spell( 184362 )->effectN( 1 ).percent() )
-     ->set_duration( find_spell( 184362 )->duration() );
+     ->set_duration( find_spell( 184362 )->duration() )
+     ->apply_affecting_aura( talents.fury.powerful_enrage );
 
   buff.frenzy = make_buff( this, "frenzy", find_spell(335082) )
                            ->set_default_value( find_spell( 335082 )->effectN( 1 ).percent() )
