@@ -11778,7 +11778,7 @@ void druid_t::combat_begin()
     }
   }
 
-  if ( specialization() == DRUID_BALANCE )
+  if ( eclipse_handler.enabled() )
   {
     eclipse_handler.reset_stacks();
 
