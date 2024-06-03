@@ -13,7 +13,7 @@ specList = ['blood', 'frost', 'unholy',  # Death Knight
             'shadow', 'shadow_ptr', 'holy', 'discipline', # Priest
             'retribution', 'protection', # Paladin
             'assassination', 'outlaw', 'subtlety', # Rogue
-            'havoc', 'vengeance', 'vengeance_aldrachi_reaver', 'vengeance_felscarred', # Demon Hunter
+            'havoc', 'vengeance', 'havoc_ptr', 'vengeance_ptr', # Demon Hunter
             'protection', 'fury', 'arms', # Warrior
            ]
 

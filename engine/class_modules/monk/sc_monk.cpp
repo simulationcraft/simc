@@ -1442,10 +1442,10 @@ struct tiger_palm_t : public monk_melee_attack_t
     sef_ability      = actions::sef_ability_e::SEF_TIGER_PALM;
     cast_during_sck  = player->specialization() != MONK_WINDWALKER;
 
-    // if ( p->specialization() == MONK_WINDWALKER )
-    //   energize_amount = p->spec.windwalker_monk->effectN( 4 ).base_value();
-    // else
-    energize_type = action_energize::NONE;
+    if ( p->specialization() == MONK_WINDWALKER )
+      energize_amount = p->baseline.windwalker.aura->effectN( 4 ).base_value();
+    else
+      energize_type = action_energize::NONE;
 
     spell_power_mod.direct = 0.0;
   }
@@ -1973,7 +1973,7 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
     auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
 
     if ( p()->specialization() == MONK_MISTWEAVER )
-      totmResetChance += p()->spec.mistweaver_monk->effectN( 21 ).percent();
+      totmResetChance += p()->baseline.mistweaver.aura->effectN( 21 ).percent();
 
     if ( rng().roll( totmResetChance ) )
     {
@@ -2200,7 +2200,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
 
       if ( p()->specialization() == MONK_MISTWEAVER )
-        totmResetChance += p()->spec.mistweaver_monk->effectN( 21 ).percent();
+        totmResetChance += p()->baseline.mistweaver.aura->effectN( 21 ).percent();
 
       if ( rng().roll( totmResetChance ) )
       {
@@ -3133,9 +3133,6 @@ struct melee_t : public monk_melee_attack_t
     allow_class_ability_procs           = true;
     not_a_proc                          = true;
 
-    weapon            = oh ? &( player->off_hand_weapon ) : &( player->main_hand_weapon );
-    base_execute_time = oh ? player->off_hand_weapon.swing_time : player->main_hand_weapon.swing_time;
-
     if ( player->main_hand_weapon.group() == WEAPON_1H )
     {
       if ( player->specialization() != MONK_MISTWEAVER )
@@ -3175,54 +3172,47 @@ struct melee_t : public monk_melee_attack_t
 
   void execute() override
   {
-    if ( p()->current.distance_to_move > 5 )
-    {
-      if ( weapon->slot == SLOT_MAIN_HAND )
-        player->main_hand_attack->cancel();
-      else
-        player->off_hand_attack->cancel();
-
-      return;
-    }
-
     if ( first )
       first = false;
 
-    if ( dual_threat_enabled && p()->rng().roll( p()->talent.windwalker.dual_threat->effectN( 1 ).percent() ) )
-    {
-      p()->dual_threat_kick->execute();
-      dual_threat_enabled = false;
-    }
-    else
-      monk_melee_attack_t::execute();
+    monk_melee_attack_t::execute();
   }
 
   void impact( action_state_t *s ) override
   {
-    monk_melee_attack_t::impact( s );
-
-    if ( p()->talent.brewmaster.press_the_advantage->ok() && weapon->slot == SLOT_MAIN_HAND )
-      p()->buff.press_the_advantage->trigger();
-
-    if ( result_is_hit( s->result ) )
+    if ( dual_threat_enabled && p()->rng().roll( p()->talent.windwalker.dual_threat->effectN( 1 ).percent() ) )
     {
+      s->result_total = 0;
+      p()->dual_threat_kick->execute();
+      dual_threat_enabled = false;
+    }
+    else
+    {
+      monk_melee_attack_t::impact( s );
+
       if ( p()->talent.brewmaster.press_the_advantage->ok() && weapon->slot == SLOT_MAIN_HAND )
+        p()->buff.press_the_advantage->trigger();
+
+      if ( result_is_hit( s->result ) )
       {
-        // Reduce Brew cooldown by 0.5 seconds
-        brew_cooldown_reduction( p()->talent.brewmaster.press_the_advantage->effectN( 1 ).base_value() / 1000 );
+        if ( p()->talent.brewmaster.press_the_advantage->ok() && weapon->slot == SLOT_MAIN_HAND )
+        {
+          // Reduce Brew cooldown by 0.5 seconds
+          brew_cooldown_reduction( p()->talent.brewmaster.press_the_advantage->effectN( 1 ).base_value() / 1000 );
 
-        // Trigger the Press the Advantage damage proc
-        p()->passive_actions.press_the_advantage->target = s->target;
-        p()->passive_actions.press_the_advantage->schedule_execute();
+          // Trigger the Press the Advantage damage proc
+          p()->passive_actions.press_the_advantage->target = s->target;
+          p()->passive_actions.press_the_advantage->schedule_execute();
+        }
+
+        if ( p()->buff.thunderfist->up() )
+        {
+          p()->passive_actions.thunderfist->target = s->target;
+          p()->passive_actions.thunderfist->schedule_execute();
+        }
+
+        dual_threat_enabled = true;
       }
-
-      if ( p()->buff.thunderfist->up() )
-      {
-        p()->passive_actions.thunderfist->target = s->target;
-        p()->passive_actions.thunderfist->schedule_execute();
-      }
-
-      dual_threat_enabled = true;
     }
   }
 };
@@ -3274,9 +3264,11 @@ struct auto_attack_t : public monk_melee_attack_t
 
     ignore_false_positive = true;
     trigger_gcd           = timespan_t::zero();
-    background            = true;
+//    background            = true;
 
-    p()->main_hand_attack = new melee_t( "melee_main_hand", player, sync_weapons );
+    p()->main_hand_attack                    = new melee_t( "melee_main_hand", player, sync_weapons );
+    p()->main_hand_attack->weapon            = &( player->main_hand_weapon );
+    p()->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
 
     add_child( p()->main_hand_attack );
 
@@ -3285,7 +3277,9 @@ struct auto_attack_t : public monk_melee_attack_t
       if ( !player->dual_wield() )
         return;
 
-      p()->off_hand_attack     = new melee_t( "melee_off_hand", player, sync_weapons, true );
+      p()->off_hand_attack                    = new melee_t( "melee_off_hand", player, sync_weapons, true );
+      p()->off_hand_attack->weapon            = &( player->off_hand_weapon );
+      p()->off_hand_attack->base_execute_time = player->off_hand_weapon.swing_time;
       p()->off_hand_attack->id = 1;
 
       add_child( p()->off_hand_attack );
@@ -6897,7 +6891,8 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     regen_caches[ CACHE_HASTE ]        = true;
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
   }
-  user_options.initial_chi               = talent.windwalker.combat_wisdom.ok() ? 2 : 0;
+  user_options.initial_chi =
+      talent.windwalker.combat_wisdom.ok() ? (int) talent.windwalker.combat_wisdom->effectN( 1 ).base_value() : 0;
   user_options.chi_burst_healing_targets = 8;
   user_options.motc_override             = 0;
   user_options.squirm_frequency          = 15;
@@ -7972,7 +7967,7 @@ void monk_t::init_base_stats()
     case MONK_MISTWEAVER:
     {
       base.spell_power_per_intellect = 1.0;
-      // base.attack_power_per_spell_power                  = spec.mistweaver_monk->effectN( 4 ).percent();
+      // base.attack_power_per_spell_power                  = baseline.mistweaver.aura->effectN( 4 ).percent();
       resources.base[ RESOURCE_ENERGY ]                  = 0;
       resources.base[ RESOURCE_CHI ]                     = 0;
       resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
@@ -7982,15 +7977,15 @@ void monk_t::init_base_stats()
     {
       if ( base.distance < 1 )
         base.distance = 5;
-      // base_gcd += spec.windwalker_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
+      // base_gcd += baseline.windwalker.aura->effectN( 14 ).time_value();  // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
-      // base.spell_power_per_attack_power = spec.windwalker_monk->effectN( 13 ).percent();
+      // base.spell_power_per_attack_power = baseline.windwalker.aura->effectN( 13 ).percent();
       resources.base[ RESOURCE_ENERGY ] = 100;
       resources.base[ RESOURCE_ENERGY ] += talent.windwalker.ascension->effectN( 3 ).base_value();
       resources.base[ RESOURCE_ENERGY ] += talent.windwalker.inner_peace->effectN( 1 ).base_value();
       resources.base[ RESOURCE_MANA ] = 0;
       resources.base[ RESOURCE_CHI ]  = 4;
-      // resources.base[ RESOURCE_CHI ] += spec.windwalker_monk->effectN( 10 ).base_value();
+      // resources.base[ RESOURCE_CHI ] += baseline.windwalker.aura->effectN( 10 ).base_value();
       resources.base[ RESOURCE_CHI ] += talent.windwalker.ascension->effectN( 1 ).base_value();
       resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10.0;
       resources.base_regen_per_second[ RESOURCE_MANA ]   = 0;
@@ -9359,6 +9354,10 @@ void monk_t::combat_begin()
           clamp( as<double>( user_options.initial_chi + resources.current[ RESOURCE_CHI ] ), 0.0,
                  resources.max[ RESOURCE_CHI ] );
       sim->print_debug( "Combat starting chi has been set to {}", resources.current[ RESOURCE_CHI ] );
+    }
+    else
+    {
+      resources.current[ RESOURCE_CHI ] = talent.windwalker.combat_wisdom->effectN( 1 ).base_value();
     }
 
     if ( talent.windwalker.combat_wisdom->ok() )

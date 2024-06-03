@@ -1350,8 +1350,24 @@ struct denizen_of_the_dream_t : public pet_t
 
     void execute() override
     {
-      // TODO: has server batching behavior, using a random value for now
-      cooldown->duration = rng().range( 0_ms, 600_ms );
+      // Has random delay between casts. Seems to operate at 75FPS with most delays being 31, 32, or 33 frames. Delays
+      // as low as 8 frames and as high as 38 frames have been observed, but for now we will only assume 31-33 with a
+      // 2:3:2 distribution.
+      double delay = 30;
+
+      switch ( rng().range( 0U, 7U ) )
+      {
+        case 0:
+        case 1: delay += 1; break;
+        case 2:
+        case 3:
+        case 4: delay += 2; break;
+        case 5:
+        case 6: delay += 3; break;
+        default: break;
+      }
+
+      cooldown->duration = timespan_t::from_seconds( delay / 75.0 );
 
       spell_t::execute();
     }
@@ -1657,7 +1673,6 @@ public:
   using base_t = druid_action_t<Base>;
 
   std::vector<player_effect_t> persistent_multiplier_effects;
-  std::vector<buff_t*> consume_buffs;
 
   // Name to be used by get_dot() instead of action name
   std::string dot_name;
@@ -1693,8 +1708,6 @@ public:
       {
         form_mask |= form_e::BEAR_FORM;
       }
-
-      parse_consumes();
     }
   }
 
@@ -1815,9 +1828,6 @@ public:
       for ( auto cd : { p()->cooldown.fury_of_elune, p()->cooldown.moon_cd, p()->cooldown.lunar_beam } )
         cd->adjust( ( *eff++ ).time_value() );
     }
-
-    for ( auto b : consume_buffs )
-      b->expire();
   }
 
   void parse_action_effects();
@@ -1828,25 +1838,6 @@ public:
   void parse_effects( Ts&&... args ) { ab::parse_effects( std::forward<Ts>( args )... ); }
   template <typename... Ts>
   void parse_target_effects( Ts&&... args ) { ab::parse_target_effects( std::forward<Ts>( args )... ); }
-
-  void parse_consume( buff_t* buff, uint32_t skip_flags = 0, size_t idx = 1, bool force = false )
-  {
-    if ( buff->is_fallback )
-      return;
-
-    if ( !force && !( ab::data().affected_by_all( buff->data().effectN( idx ) ) ) )
-      return;
-
-    if ( has_flag( skip_flags ) || !buff->can_expire( this ) )
-      return;
-
-    consume_buffs.emplace_back( buff );
-  }
-
-  void force_consume( buff_t* buff, uint32_t skip_flags = 0, size_t idx = 1 )
-  { parse_consume( buff, skip_flags, idx, true ); }
-
-  void parse_consumes();
 
   double cost() const override
   {
@@ -1935,6 +1926,12 @@ public:
       pers *= 1.0 + ab::get_effect_value( i );
 
     return pers;
+  }
+
+  void init_finished() override
+  {
+    ab::init_finished();
+    ab::initialize_buff_list_on_vector( persistent_multiplier_effects );
   }
 
   size_t total_effects_count() override
@@ -3486,9 +3483,7 @@ protected:
 public:
   cp_spender_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
     : base_t( n, p, s, f )
-  {
-    force_consume( p->buff.overflowing_power, flag_e::CONVOKE );
-  }
+  {}
 
   action_state_t* new_state() override
   {
@@ -3538,6 +3533,14 @@ public:
   bool trigger_with_chance_per_cp( buff_t* buff, int cp )
   {
     return buff->trigger( this, 1, buff_t::DEFAULT_VALUE(), buff->default_chance * cp );
+  }
+
+  void execute() override
+  {
+    base_t::execute();
+
+    if ( !has_flag( flag_e::CONVOKE ) )
+      p()->buff.overflowing_power->expire( this );
   }
 
   void consume_resource() override
@@ -4300,10 +4303,7 @@ struct ferocious_bite_t : public ferocious_bite_base_t
 {
   struct ravage_ferocious_bite_t : public ravage_base_t<ferocious_bite_base_t, use_dot_list_t<cat_attack_t>>
   {
-    ravage_ferocious_bite_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441591 ), f )
-    {
-      force_consume( p->buff.ravage_fb );
-    }
+    ravage_ferocious_bite_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441591 ), f ) {}
 
     double energy_multiplier( const action_state_t* s ) const override
     {
@@ -4332,7 +4332,8 @@ struct ferocious_bite_t : public ferocious_bite_base_t
 
   void execute() override
   {
-    if ( !has_flag( flag_e::APEX ) && p()->buff.apex_predators_craving->can_expire( this ) )
+    if ( !has_flag( flag_e::APEX ) && p()->buff.apex_predators_craving->check() &&
+         p()->buff.apex_predators_craving->can_expire( this ) )
     {
       p()->active.ferocious_bite_apex->execute_on_target( target );
       p()->buff.apex_predators_craving->expire();
@@ -4342,6 +4343,7 @@ struct ferocious_bite_t : public ferocious_bite_base_t
     if ( ravage && p()->buff.ravage_fb->check() )
     {
       ravage->execute_on_target( target );
+      p()->buff.ravage_fb->expire( this );
       return;
     }
 
@@ -4523,13 +4525,12 @@ struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
 
     if ( !p->buff.feline_potential->is_fallback )
     {
-      force_consume( p->buff.feline_potential );
-
       const auto& eff = p->buff.feline_potential->data().effectN( 1 );
       add_parse_entry( persistent_multiplier_effects )
         .set_buff( p->buff.feline_potential )
         .set_value( eff.percent() )
-        .set_eff( &eff );
+        .set_eff( &eff )
+        .set_idx( UINT32_MAX );
     }
   }
 
@@ -5036,7 +5037,10 @@ struct ironfur_t : public rage_spender_t<>
     auto dur = p()->buff.ironfur->buff_duration();
 
     if ( p()->buff.guardian_of_elune->check() )
+    {
       dur += goe_ext;
+      p()->buff.guardian_of_elune->expire( this );
+    }
 
     p()->buff.ironfur->trigger( stack, dur );
 
@@ -5157,9 +5161,11 @@ struct mangle_t : public use_fluid_form_t<DRUID_GUARDIAN,
     p()->buff.guardian_of_elune->trigger( this );
     p()->buff.vicious_cycle_maul->trigger( this, num_targets_hit );
 
-    if ( p()->buff.killing_strikes_combat->can_expire( this ) )
+    p()->buff.gore->expire( this );
+
+    if ( p()->buff.killing_strikes_combat->check() )
     {
-      p()->buff.killing_strikes_combat->expire();
+      p()->buff.killing_strikes_combat->expire( this );
       p()->buff.ravage_maul->trigger();
     }
   }
@@ -5194,10 +5200,7 @@ struct maul_t : public maul_base_t
 {
   struct ravage_maul_t : public ravage_base_t<maul_base_t, use_dot_list_t<bear_attack_t>>
   {
-    ravage_maul_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441605 ), f )
-    {
-      force_consume( p->buff.ravage_maul );
-    }
+    ravage_maul_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441605 ), f ) {}
   };
 
   action_t* ravage = nullptr;
@@ -5213,7 +5216,8 @@ struct maul_t : public maul_base_t
 
   void execute() override
   {
-    if ( !has_flag( flag_e::TOOTHANDCLAW ) && p()->buff.tooth_and_claw->can_expire( this ) )
+    if ( !has_flag( flag_e::TOOTHANDCLAW ) && p()->buff.tooth_and_claw->check() &&
+         p()->buff.tooth_and_claw->can_expire( this ) )
     {
       p()->active.maul_tooth_and_claw->execute_on_target( target );
       p()->buff.tooth_and_claw->decrement();  // TODO: adjust if cases arise where it doesn't consume
@@ -5223,6 +5227,7 @@ struct maul_t : public maul_base_t
     if ( ravage && p()->buff.ravage_maul->check() )
     {
       ravage->execute_on_target( target );
+      p()->buff.ravage_maul->expire( this );
       return;
     }
 
@@ -5318,7 +5323,8 @@ struct raze_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
 
   void execute() override
   {
-    if ( !has_flag( flag_e::TOOTHANDCLAW ) && p()->buff.tooth_and_claw->can_expire( this ) )
+    if ( !has_flag( flag_e::TOOTHANDCLAW ) && p()->buff.tooth_and_claw->check() &&
+         p()->buff.tooth_and_claw->can_expire( this ) )
     {
       p()->active.raze_tooth_and_claw->execute_on_target( target );
       p()->buff.tooth_and_claw->decrement();  // TODO: adjust if cases arise where it doesn't consume
@@ -5665,8 +5671,6 @@ struct frenzied_regeneration_t : public bear_attacks::rage_spender_t<druid_heal_
         find_effect( p->talent.empowered_shapeshifting, this, A_ADD_FLAT_MODIFIER, P_RESOURCE_COST_1 )
           .resource( RESOURCE_ENERGY );
     }
-
-    force_consume( p->buff.guardian_of_elune );
   }
 
   resource_e current_resource() const override
@@ -5685,6 +5689,8 @@ struct frenzied_regeneration_t : public bear_attacks::rage_spender_t<druid_heal_
     base_t::execute();
 
     cooldown = orig_cd;
+
+    p()->buff.guardian_of_elune->expire( this );
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -10793,24 +10799,14 @@ void druid_t::create_actions()
 // Default Consumables ======================================================
 std::string druid_t::default_flask() const
 {
-  if ( true_level >= 70 )
+  switch ( specialization() )
   {
-    switch ( specialization() )
-    {
-      case DRUID_GUARDIAN:
-      case DRUID_RESTORATION:
-        return "phial_of_elemental_chaos_3";
-      case DRUID_BALANCE:
-      case DRUID_FERAL:
-        return "iced_phial_of_corrupting_rage_3";
-      default:
-        return "disabled";
-    }
+    case DRUID_BALANCE:     return "tempered_mastery_3";
+    case DRUID_FERAL:       return "tempered_aggression_3";
+    case DRUID_GUARDIAN:    return "tempered_swiftness_3";
+    case DRUID_RESTORATION: return "tempered_swiftness_3";
+    default:                return "disabled";
   }
-
-  if ( true_level >= 60 )
-    return "spectral_flask_of_power";
-  return "disabled";
 }
 
 std::string druid_t::default_potion() const
@@ -13252,10 +13248,10 @@ void druid_action_t<Base>::parse_action_effects()
 
   parse_effects( p()->buff.incarnation_moonkin, owl_mask, p()->talent.elunes_guidance );
   parse_effects( p()->buff.owlkin_frenzy );
-  parse_effects( p()->buff.starweaver_starfall );
-  parse_effects( p()->buff.starweaver_starsurge );
-  parse_effects( p()->buff.touch_the_cosmos_starfall );
-  parse_effects( p()->buff.touch_the_cosmos_starsurge );
+  parse_effects( p()->buff.starweaver_starfall, CONSUME_BUFF );
+  parse_effects( p()->buff.starweaver_starsurge, CONSUME_BUFF );
+  parse_effects( p()->buff.touch_the_cosmos_starfall, CONSUME_BUFF );
+  parse_effects( p()->buff.touch_the_cosmos_starsurge, CONSUME_BUFF );
   parse_effects( p()->buff.umbral_inspiration );
   parse_effects( p()->buff.warrior_of_elune, IGNORE_STACKS );
 
@@ -13263,10 +13259,10 @@ void druid_action_t<Base>::parse_action_effects()
   parse_effects( p()->mastery.razor_claws );
   parse_effects( p()->buff.apex_predators_craving );
   parse_effects( p()->buff.berserk_cat );
-  parse_effects( p()->buff.coiled_to_spring );
+  parse_effects( p()->buff.coiled_to_spring, CONSUME_BUFF );
   parse_effects( p()->buff.incarnation_cat );
   parse_effects( p()->buff.predator, USE_CURRENT );
-  parse_effects( p()->buff.predatory_swiftness );
+  parse_effects( p()->buff.predatory_swiftness, CONSUME_BUFF );
   parse_effects( p()->talent.taste_for_blood, [ this ] { return p()->buff.tigers_fury->check();},
                  p()->talent.taste_for_blood->effectN( 2 ).percent() );
   parse_effects( p()->spec.feral_overrides, [ this ] { return !p()->buff.moonkin_form->check(); } );
@@ -13288,7 +13284,7 @@ void druid_action_t<Base>::parse_action_effects()
                  p()->talent.berserk_unchecked_aggression );
   parse_effects( p()->buff.incarnation_bear, bear_mask, p()->talent.berserk_ravage,
                  p()->talent.berserk_unchecked_aggression );
-  parse_effects( p()->buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ) );
+  parse_effects( p()->buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), CONSUME_BUFF );
 
   // wrapper to bypass ab:: resoultion for compile time checks
   struct v_ptr
@@ -13307,26 +13303,26 @@ void druid_action_t<Base>::parse_action_effects()
     parse_effects( p()->spec.fury_of_nature, effect_mask_t( false ).enable( 2, 3 ) );
   }
 
-  parse_effects( p()->buff.gory_fur );
+  parse_effects( p()->buff.gory_fur, CONSUME_BUFF );
   parse_effects( p()->buff.rage_of_the_sleeper );
   parse_effects( p()->talent.reinvigoration, effect_mask_t( true ).disable( p()->talent.innate_resolve.ok() ? 1 : 2 ) );
   parse_effects( p()->buff.tooth_and_claw, IGNORE_STACKS );
-  parse_effects( p()->buff.vicious_cycle_mangle, USE_DEFAULT );
-  parse_effects( p()->buff.vicious_cycle_maul, USE_DEFAULT );
+  parse_effects( p()->buff.vicious_cycle_mangle, USE_DEFAULT, CONSUME_BUFF );
+  parse_effects( p()->buff.vicious_cycle_maul, USE_DEFAULT, CONSUME_BUFF );
 
   // Restoration
   parse_effects( p()->buff.abundance );
   parse_effects( p()->buff.clearcasting_tree, p()->talent.flash_of_clarity );
   parse_effects( p()->buff.incarnation_tree );
-  parse_effects( p()->buff.natures_swiftness, p()->talent.natures_splendor );
+  parse_effects( p()->buff.natures_swiftness, p()->talent.natures_splendor, CONSUME_BUFF );
 
   // Hero talents
-  parse_effects( p()->buff.blooming_infusion_damage );
-  parse_effects( p()->buff.blooming_infusion_heal );
-  parse_effects( p()->buff.feline_potential );
+  parse_effects( p()->buff.blooming_infusion_damage, CONSUME_BUFF );
+  parse_effects( p()->buff.blooming_infusion_heal, CONSUME_BUFF );
+  parse_effects( p()->buff.feline_potential, CONSUME_BUFF );
   parse_effects( p()->buff.harmony_of_the_grove );
   parse_effects( p()->buff.root_network );
-  parse_effects( p()->buff.ursine_potential );
+  parse_effects( p()->buff.ursine_potential, CONSUME_BUFF );
 }
 
 template <class Base>
@@ -13372,34 +13368,6 @@ void druid_action_t<Base>::parse_target_effects()
   // Hero talent
   parse_target_effects( d_fn( &druid_td_t::debuffs_t::atmospheric_exposure ),
                         p()->spec.atmospheric_exposure );
-}
-
-template <class Base>
-void druid_action_t<Base>::parse_consumes()
-{
-  // Class
-  // Balance
-  parse_consume( p()->buff.starweaver_starfall );
-  parse_consume( p()->buff.starweaver_starsurge );
-  parse_consume( p()->buff.touch_the_cosmos_starfall );
-  parse_consume( p()->buff.touch_the_cosmos_starsurge );
-  // Feral
-  parse_consume( p()->buff.coiled_to_spring );
-  parse_consume( p()->buff.predatory_swiftness );
-  // Guardian
-  parse_consume( p()->buff.dream_of_cenarius );
-  parse_consume( p()->buff.gore );
-  parse_consume( p()->buff.gory_fur );
-  parse_consume( p()->buff.guardian_of_elune );
-  parse_consume( p()->buff.vicious_cycle_mangle );
-  parse_consume( p()->buff.vicious_cycle_maul );
-  // Restoration
-  parse_consume( p()->buff.natures_swiftness );
-  // Hero Talent
-  parse_consume( p()->buff.blooming_infusion_damage );
-  parse_consume( p()->buff.blooming_infusion_heal );
-  parse_consume( p()->buff.feline_potential );
-  parse_consume( p()->buff.ursine_potential );
 }
 
 void druid_t::parse_player_effects()

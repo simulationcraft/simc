@@ -385,7 +385,7 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
       // TODO: confirm order is flourish->decimation->barrage
 
       // setup flourish
-      auto f_dam = create_proc_action<generic_proc_t>( "surekian_flourish", e, e.player->find_spell( 445434 ) );
+      auto f_dam = create_proc_action<generic_proc_t>( "surekian_flourish", e, 445434 );
       // TODO: confirm damage value is for entire dot and not per tick
       f_dam->base_td = data->effectN( 1 ).base_value() * ( f_dam->dot_duration / f_dam->base_tick_time );
       add_child( f_dam );
@@ -397,12 +397,12 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
       stance.emplace_back( f_dam, f_stance );
 
       // setup decimation
-      auto d_dam = create_proc_action<generic_aoe_proc_t>( "surekian_brutality", e, e.player->find_spell( 448519 ) );
+      auto d_dam = create_proc_action<generic_aoe_proc_t>( "surekian_brutality", e, 448519 );
       // TODO: confirm there is no standard +15% per target up to five
       d_dam->base_dd_min = d_dam->base_dd_max = data->effectN( 4 ).average( e.item );
       add_child( d_dam );
 
-      auto d_shield = create_proc_action<generic_proc_t>( "surekian_decimation", e, e.player->find_spell( 448090 ) );
+      auto d_shield = create_proc_action<generic_proc_t>( "surekian_decimation", e, 448090 );
       d_shield->base_dd_min = d_shield->base_dd_max = 1.0;  // for snapshot flag parsing
       add_child( d_shield );
 
@@ -435,7 +435,7 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
       stance.emplace_back( d_dam, d_stance );
 
       // setup barrage
-      auto b_dam = create_proc_action<generic_aoe_proc_t>( "surekian_barrage", e, e.player->find_spell( 445475 ) );
+      auto b_dam = create_proc_action<generic_aoe_proc_t>( "surekian_barrage", e, 445475 );
       // TODO: confirm damage isn't split and has no diminishing returns
       b_dam->split_aoe_damage = false;
       b_dam->base_dd_min = b_dam->base_dd_max = data->effectN( 6 ).average( e.item );
@@ -590,12 +590,12 @@ void foul_behemoths_chelicera( special_effect_t& effect )
 {
   struct digestive_venom_t : public generic_proc_t
   {
-    struct tasty_juices_t : public proc_heal_t
+    struct tasty_juices_t : public generic_heal_t
     {
       buff_t* buff;
 
       tasty_juices_t( const special_effect_t& e, const spell_data_t* data )
-        : proc_heal_t( "tasty_juices", e.player, e.player->find_spell( 446805 ) )
+        : generic_heal_t( e, "tasty_juices", 446805 )
       {
         base_dd_min = base_dd_max = data->effectN( 2 ).average( e.item );
 
@@ -609,7 +609,7 @@ void foul_behemoths_chelicera( special_effect_t& effect )
 
       void impact( action_state_t* s ) override
       {
-        proc_heal_t::impact( s );
+        generic_heal_t::impact( s );
 
         if ( !buff->check() )
           buff->trigger();
@@ -820,6 +820,67 @@ void malfunctioning_ethereum_module( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 443124 on-use
+//  e1: damage
+//  e2: trigger heal return
+// 443128 coeffs
+//  e1: damage
+//  e2: heal
+//  e3: unknown
+//  e4: cdr on kill
+// 446067 heal
+// 455162 heal return
+//  e1: dummy
+//  e2: trigger heal
+
+void abyssal_effigy( special_effect_t& effect )
+{
+  unsigned coeff_id = 443128;
+  auto coeff = find_special_effect( effect.player, coeff_id );
+  assert( coeff && "Abyssal Effigy missing coefficient effect" );
+
+  struct abyssal_gluttony_t : public generic_proc_t
+  {
+    cooldown_t* item_cd;
+    action_t* heal;
+    timespan_t cdr;
+    double heal_speed;
+
+    abyssal_gluttony_t( const special_effect_t& e, const spell_data_t* data )
+      : generic_proc_t( e, "abyssal_gluttony", e.driver() ),
+        item_cd( e.player->get_cooldown( e.cooldown_name() ) ),
+        cdr( timespan_t::from_seconds( data->effectN( 4 ).base_value() ) ),
+        heal_speed( e.trigger()->missile_speed() )
+    {
+      base_dd_min = base_dd_max = data->effectN( 1 ).average( e.item );
+
+      heal = create_proc_action<generic_heal_t>( "abyssal_gluttony_heal", e, "abyssal_glutton_heal",
+                                                 e.trigger()->effectN( 2 ).trigger() );
+      heal->name_str_reporting = "abyssal_gluttony";
+      heal->base_dd_min = heal->base_dd_max = data->effectN( 2 ).average( e.item );
+    }
+
+    void execute() override
+    {
+      bool was_sleeping = target->is_sleeping();
+
+      generic_proc_t::execute();
+
+      auto delay = timespan_t::from_seconds( player->get_player_distance( *target ) / heal_speed );
+      make_event( *sim, delay, [ this ] { heal->execute(); } );
+
+      // Assume if target wasn't sleeping but is now, it was killed by the damage
+      if ( !was_sleeping && target->is_sleeping() )
+      {
+        cooldown->adjust( -cdr );
+        item_cd->adjust( -cdr );
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<abyssal_gluttony_t>( "abyssal_gluttony", effect, coeff->driver() );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -858,7 +919,7 @@ void fateweaved_needle( special_effect_t& effect )
       stat_amt( e.driver()->effectN( 2 ).average( e.item ) )
     {
       // TODO: damage spell data is shadowfrost and not cosmic
-      damage = create_proc_action<generic_proc_t>( "fated_pain", e, e.player->find_spell( 443585 ) );
+      damage = create_proc_action<generic_proc_t>( "fated_pain", e, 443585 );
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
     }
 
@@ -962,7 +1023,7 @@ void befoulers_syringe( special_effect_t& effect )
   };
 
   // create on-next melee damage
-  auto strike = create_proc_action<generic_proc_t>( "befouling_strike", effect, effect.player->find_spell( 442280 ) );
+  auto strike = create_proc_action<generic_proc_t>( "befouling_strike", effect, 442280 );
   strike->base_dd_min = strike->base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
 
   // create on-next melee buff
@@ -988,6 +1049,43 @@ void befoulers_syringe( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 // Armor
+// 457815 driver
+// 457918 nature damage driver
+// 457925 counter
+// 457928 dot
+// TODO: confirm coeff is for entire dot and not per tick
+void seal_of_the_poisoned_pact( special_effect_t& effect )
+{
+  unsigned nature_id = 457918;
+  auto nature = find_special_effect( effect.player, nature_id );
+  assert( nature && "Seal of the Poisoned Pact missing nature damage driver" );
+
+  auto dot = create_proc_action<generic_proc_t>( "venom_shock", effect, 457928 );
+  // TODO: confirm coeff is for entire dot and not per tick
+  dot->base_td = effect.driver()->effectN( 1 ).average( effect.item ) * dot->base_tick_time / dot->dot_duration;
+
+  auto counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 457925 ) )
+    ->set_expire_at_max_stack( true )
+    ->set_expire_callback( [ dot ]( buff_t* b, int, timespan_t ) {
+      dot->execute_on_target( b->player->target );
+    } );
+
+  effect.custom_buff = counter;
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  // TODO: confirm nature damage driver is entirely independent
+  nature->name_str = nature->name() + "_nature";
+  nature->custom_buff = counter;
+
+  effect.player->callbacks.register_callback_trigger_function( nature_id,
+    dbc_proc_callback_t::trigger_fn_type::CONDITION,
+    []( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
+      return dbc::has_common_school( a->get_school(), SCHOOL_NATURE );
+    } );
+
+  new dbc_proc_callback_t( effect.player, *nature );
+}
 }  // namespace items
 
 namespace sets
@@ -1018,12 +1116,15 @@ void register_special_effects()
   register_special_effect( 445560, items::ovinaxs_mercurial_egg );
   register_special_effect( 445066, DISABLED_EFFECT );  // ovinax's mercurial egg
   register_special_effect( 446209, items::malfunctioning_ethereum_module, true );
+  register_special_effect( 443124, items::abyssal_effigy );
+  register_special_effect( 443128, DISABLED_EFFECT );  // abyssal effigy
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
   register_special_effect( 442205, items::befoulers_syringe );
   // Armor
-
+  register_special_effect( 457815, items::seal_of_the_poisoned_pact );
+  register_special_effect( 457918, DISABLED_EFFECT );  // seal of the poisoned pact
   // Sets
 }
 

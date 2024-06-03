@@ -61,8 +61,11 @@ struct player_effect_t
   player_effect_t& set_eff( const spelleffect_data_t* e )
   { eff = e; return *this; }
 
-  player_effect_t& set_opt_enum( uint32_t e )
-  { opt_enum = e; return *this; }
+  player_effect_t& set_opt_enum( uint32_t o )
+  { opt_enum = o; return *this; }
+
+  player_effect_t& set_idx( uint32_t i )
+  { idx = i; return *this; }
 
   bool operator==( const player_effect_t& other )
   {
@@ -98,8 +101,8 @@ struct target_effect_t
   target_effect_t& set_eff( const spelleffect_data_t* e )
   { eff = e; return *this; }
 
-  target_effect_t& set_opt_enum( uint32_t e )
-  { opt_enum = e; return *this; }
+  target_effect_t& set_opt_enum( uint32_t o )
+  { opt_enum = o; return *this; }
 
   bool operator==( const target_effect_t& other )
   {
@@ -693,9 +696,8 @@ struct parse_action_base_t : public parse_effects_t
   std::vector<target_effect_t> target_crit_chance_effects;
   std::vector<target_effect_t> target_crit_damage_effects;
 
-  std::vector<buff_t*> buff_list;
-
 private:
+  std::vector<buff_t*> _buff_list;
   action_t* _action;
 
 public:
@@ -716,7 +718,11 @@ public:
 
   void target_debug_message( std::string_view, std::string_view, const spell_data_t*, size_t ) override;
 
+  void initialize_buff_list_on_vector( std::vector<player_effect_t>& );
+
   void initialize_buff_list();
+
+  void consume_buff_list();
 
   void parsed_effects_html( report::sc_html_stream& );
 
@@ -778,16 +784,7 @@ public:
   void execute() override
   {
     BASE::execute();
-
-    auto buff_it = buff_list.begin();
-    while ( buff_idx_to_consume )
-    {
-      if ( buff_idx_to_consume & 1U )
-        ( *buff_it )->decrement();
-
-      buff_idx_to_consume >>= 1;
-      buff_it++;
-    }
+    consume_buff_list();
   }
 
   double cost_flat_modifier() const override

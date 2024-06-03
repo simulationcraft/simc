@@ -11696,6 +11696,28 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
       throw std::invalid_argument( fmt::format( "Unsupported dragonflight. option '{}'.", splits[ 1 ] ) );
     }
+
+    if ( splits[ 0 ] == "hero_tree" )
+    {
+      if ( auto id = trait_data_t::get_hero_tree_id( splits[ 1 ] ) )
+      {
+        // check hash-activated hero trees
+        if ( range::contains( player_sub_trees, id ) )
+          return expr_t::create_constant( expression_str, 1 );
+
+        // check manually added hero talents
+        for ( auto trait_id : player_sub_traits )
+        {
+          auto trait = trait_data_t::find( trait_id, is_ptr() );
+          if ( trait->id_sub_tree == id )
+            return expr_t::create_constant( expression_str, 1 );
+        }
+
+        return expr_t::create_constant( expression_str, 0 );
+      }
+
+      throw std::invalid_argument( fmt::format( "Cannot find hero tree '{}'.", splits[ 1 ] ) );
+    }
   } // splits.size() == 2
 
 

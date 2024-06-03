@@ -23,15 +23,38 @@ actions+=/auto_attack
 actions+=/disrupt,if=target.debuff.casting.react
 actions+=/infernal_strike,use_off_gcd=1
 actions+=/demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains
-actions+=/metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up&cooldown.fel_devastation.remains>12
 actions+=/potion,use_off_gcd=1
 actions+=/call_action_list,name=externals
 actions+=/use_items,use_off_gcd=1
-actions+=/call_action_list,name=fiery_demise,if=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0
-actions+=/call_action_list,name=maintenance
-actions+=/run_action_list,name=single_target,if=variable.single_target
-actions+=/run_action_list,name=small_aoe,if=variable.small_aoe
-actions+=/run_action_list,name=big_aoe,if=variable.big_aoe
+
+###################
+# Aldrachi Reaver #
+###################
+
+actions+=/run_action_list,name=aldrachi_reaver,if=talent.art_of_the_glaive
+actions.aldrachi_reaver+=/metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up&cooldown.fel_devastation.remains>12
+actions.aldrachi_reaver+=/call_action_list,name=fiery_demise,if=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0
+actions.aldrachi_reaver+=/call_action_list,name=maintenance
+actions.aldrachi_reaver+=/run_action_list,name=single_target,if=variable.single_target
+actions.aldrachi_reaver+=/run_action_list,name=small_aoe,if=variable.small_aoe
+actions.aldrachi_reaver+=/run_action_list,name=big_aoe,if=variable.big_aoe
+
+
+###############
+# Fel-scarred #
+###############
+
+actions+=/run_action_list,name=felscarred,if=talent.demonsurge
+actions.felscarred+=/metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up&cooldown.fel_devastation.remains>12
+actions.felscarred+=/call_action_list,name=fiery_demise,if=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0
+actions.felscarred+=/call_action_list,name=maintenance
+actions.felscarred+=/run_action_list,name=single_target,if=variable.single_target
+actions.felscarred+=/run_action_list,name=small_aoe,if=variable.small_aoe
+actions.felscarred+=/run_action_list,name=big_aoe,if=variable.big_aoe
+
+##########
+# Shared #
+##########
 
 # Maintenance & upkeep
 actions.maintenance=fiery_brand,if=talent.fiery_brand&((active_dot.fiery_brand=0&(cooldown.sigil_of_flame.remains<=(execute_time+gcd.remains)|cooldown.soul_carver.remains<=(execute_time+gcd.remains)|cooldown.fel_devastation.remains<=(execute_time+gcd.remains)))|(talent.down_in_flames&full_recharge_time<=(execute_time+gcd.remains)))
