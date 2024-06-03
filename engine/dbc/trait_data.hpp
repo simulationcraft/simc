@@ -46,7 +46,7 @@ struct trait_data_t
   static const trait_data_t* find_by_trait_definition( unsigned trait_definition_id, bool ptr = false );
   static const std::string_view get_hero_tree_name( unsigned id_sub_tree, bool ptr = false );
   static const unsigned get_hero_tree_id( std::string_view name, bool ptr = false );
-
+  static bool is_granted( const trait_data_t* trait, specialization_e spec );
   static util::span<const trait_data_t> data( bool ptr = false );
   static util::span<const trait_data_t> data( talent_tree tree, bool ptr = false );
   static util::span<const trait_data_t> data( unsigned class_id, talent_tree tree, bool ptr = false );

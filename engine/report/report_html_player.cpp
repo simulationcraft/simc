@@ -2044,12 +2044,14 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
     {
       case talent_tree::CLASS:
         class_traits.at( trait->row - 1 ).emplace_back( trait, _rank );
-        class_points += _rank;
+        if ( !trait_data_t::is_granted( trait, p.specialization() ) )
+          class_points += _rank;
         break;
 
       case talent_tree::SPECIALIZATION:
         spec_traits.at( trait->row - 1 ).emplace_back( trait, _rank );
-        spec_points += _rank;
+        if ( !trait_data_t::is_granted( trait, p.specialization() ) )
+          spec_points += _rank;
         break;
 
       case talent_tree::HERO:
@@ -2059,7 +2061,8 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
                 range::contains( p.player_sub_traits, trait->id_trait_node_entry ) )
           {
             hero_traits[ id ].at( trait->row - 1 ).emplace_back( trait, _rank );
-            hero_points[ id ] += _rank;
+            if ( !trait_data_t::is_granted( trait, p.specialization() ) )
+              hero_points[ id ] += _rank;
           }
         }
         break;

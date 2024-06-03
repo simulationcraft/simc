@@ -220,6 +220,22 @@ const unsigned trait_data_t::get_hero_tree_id( std::string_view name, bool ptr )
   return 0;
 }
 
+bool trait_data_t::is_granted( const trait_data_t* trait, specialization_e spec )
+{
+  auto _tree = static_cast<talent_tree>( trait->tree_index );
+
+  // check if trait is a free class trait for the spec
+  if ( range::contains( trait->id_spec_starter, spec ) )
+    return true;
+
+  // check if the trait is the initial starting node on the spec/hero tree (1,1)
+  // we can parse this from DBC via traitcond for the nodegroup but seems unnecessary for now
+  if ( _tree == talent_tree::HERO && trait->col == 1 && trait->row == 1 )
+    return true;
+
+  return false;
+}
+
 util::span<const trait_definition_effect_entry_t> trait_definition_effect_entry_t::data( bool ptr )
 {
   return SC_DBC_GET_DATA( __trait_definition_effect_data, __ptr_trait_definition_effect_data, ptr );

@@ -2657,7 +2657,7 @@ namespace
 {
 const std::string base64_char = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 // hardcoded values from Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua
-constexpr unsigned LOADOUT_SERIALIZATION_VERSION = 1;
+constexpr unsigned LOADOUT_SERIALIZATION_VERSION = 2;
 constexpr size_t version_bits = 8;    // serialization version
 constexpr size_t spec_bits    = 16;   // specialization id
 constexpr size_t tree_bits    = 128;  // C_Traits.GetTreeHash(), optionally can be 0-filled
@@ -2745,14 +2745,25 @@ static std::string generate_traits_hash( player_t* player )
       }
     }
 
-    if ( !rank )  // is node selected?
+    if ( rank )  // is node selected?
+    {
+      put_bit( 1, 1 );
+    }
+    else
     {
       put_bit( 1, 0 );
       continue;
     }
-    else
+
+    // is node purchased? granted nodes are baseline 1 rank.
+    if ( rank > ( trait_data_t::is_granted( trait, player->specialization() ) ? 1 : 0 ) )
     {
       put_bit( 1, 1 );
+    }
+    else
+    {
+      put_bit( 1, 0 );
+      continue;
     }
 
     if ( rank == trait->max_ranks )  // is node partially ranked?
@@ -2875,45 +2886,52 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
         return;
       }
 
-      if ( get_bit( 1 ) )  // partially ranked normal trait
+      if ( !get_bit( 1 ) )  // purchased
       {
-        if ( node.size() > 1 )
-        {
-          do_error( fmt::format( "non-choice node {} has multiple entries.", id ) );
-          return;
-        }
-
-        rank = get_bit( rank_bits );
-
-        if ( rank > trait->max_ranks )
-        {
-          do_error( fmt::format( "{} ranks selected for node {} which has {} ranks max.", rank, id, trait->max_ranks ) );
-          return;
-        }
-
-        if ( rank == trait->max_ranks )
-        {
-          do_error( fmt::format( "partial rank indicated for node {} but all {} ranks are allocated.", id, rank ) );
-          return;
-        }
+        rank = 1;  // non-purchased nodes are granted at rank 1
       }
-
-      if ( get_bit( 1 ) )  // choice trait
+      else
       {
-        if ( node[ 0 ].first->node_type != 2 && node[ 0 ].first->node_type != 3 )
+        if ( get_bit( 1 ) )  // partially ranked normal trait
         {
-          do_error( fmt::format( "node {} is not a choice node but has index selection.", id ) );
-          return;
+          if ( node.size() > 1 )
+          {
+            do_error( fmt::format( "non-choice node {} has multiple entries.", id ) );
+            return;
+          }
+
+          rank = get_bit( rank_bits );
+
+          if ( rank > trait->max_ranks )
+          {
+            do_error( fmt::format( "{} ranks selected for node {}, {} ranks max.", rank, id, trait->max_ranks ) );
+            return;
+          }
+
+          if ( rank == trait->max_ranks )
+          {
+            do_error( fmt::format( "partial rank for node {} but all {} ranks are allocated.", id, rank ) );
+            return;
+          }
         }
 
-        size_t index = get_bit( choice_bits );
-        if ( index >= node.size() )
+        if ( get_bit( 1 ) )  // choice trait
         {
-          do_error( fmt::format( "index {} for choice node {} out of bounds.", index, id ) );
-          return;
-        }
+          if ( node[ 0 ].first->node_type != 2 && node[ 0 ].first->node_type != 3 )
+          {
+            do_error( fmt::format( "node {} is not a choice node but has index selection.", id ) );
+            return;
+          }
 
-        trait = node[ index ].first;
+          size_t index = get_bit( choice_bits );
+          if ( index >= node.size() )
+          {
+            do_error( fmt::format( "index {} for choice node {} out of bounds.", index, id ) );
+            return;
+          }
+
+          trait = node[ index ].first;
+        }
       }
 
       player->player_traits.emplace_back( _tree, trait->id_trait_node_entry, as<unsigned>( rank ) );
@@ -10768,12 +10786,6 @@ static player_talent_t create_talent_obj( const player_t* player, specialization
   } );
 
   auto _tree = static_cast<talent_tree>( trait->tree_index );
-
-  // check if the trait is a free class trait for the spec, or the initial starting node on the spec/hero tree (1,1)
-  bool is_starter =
-      range::find( trait->id_spec_starter, spec == SPEC_NONE ? player->_spec : spec ) != trait->id_spec_starter.end() ||
-      ( ( _tree == talent_tree::SPECIALIZATION || _tree == talent_tree::HERO ) && trait->col == 1 && trait->row == 1 );
-
   auto rank = it == player->player_traits.end() ? 0U : std::get<2>( *it );
 
   // all allocated hero talents are present but disabled if the control talent is not active unless it has been manually
@@ -10781,16 +10793,15 @@ static player_talent_t create_talent_obj( const player_t* player, specialization
   if ( _tree == talent_tree::HERO && !range::contains( player->player_sub_trees, trait->id_sub_tree ) &&
        !range::contains( player->player_sub_traits, trait->id_trait_node_entry ) && !player->sim->enable_all_talents )
   {
-    is_starter = false;
     rank = 0U;
   }
 
-  if ( ( it != player->player_traits.end() && rank == 0U ) || ( it == player->player_traits.end() && !is_starter ) )
+  if ( !rank )
   {
     return { player };  // Trait not found on player
   }
 
-  return { player, trait, is_starter ? trait->max_ranks : rank };
+  return { player, trait, rank };
 }
 
 player_talent_t player_t::find_talent_spell(
