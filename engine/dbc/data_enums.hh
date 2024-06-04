@@ -1299,8 +1299,8 @@ enum spell_attribute : unsigned
   SX_FOOD_AURA                      = 95u,
   SX_NOT_A_PROC                     = 105u,
   SX_REQ_MAIN_HAND                  = 106u,
-  SX_DISABLE_PLAYER_PROCS           = 112u,
-  SX_DISABLE_TARGET_PROCS           = 113u,
+  SX_SUPPRESS_CASTER_PROCS          = 112u,
+  SX_SUPPRESS_TARGET_PROCS          = 113u,
   SX_ALWAYS_HIT                     = 114u,
   SX_REQ_OFF_HAND                   = 120u,
   SX_TREAT_AS_PERIODIC              = 121u,
@@ -1326,6 +1326,8 @@ enum spell_attribute : unsigned
   SX_TARGET_SPECIFIC_COOLDOWN       = 330u,
   SX_ROLLING_PERIODIC               = 334u,
   SX_SCALE_ILEVEL                   = 354u,
+  SX_ENABLE_PROCS_FROM_SUPPRESSED   = 384u,  // requires SX_CAN_PROC_FROM_SUPPRESSED on driver
+  SX_CAN_PROC_FROM_SUPPRESSED       = 385u,  // requires SX_ENABLE_PROCS_FROM_SUPPRESSED on action
   SX_ONLY_PROC_FROM_CLASS_ABILITIES = 415u,
   SX_ALLOW_CLASS_ABILITY_PROCS      = 416u,
   SX_REFRESH_EXTENDS_DURATION       = 436u,

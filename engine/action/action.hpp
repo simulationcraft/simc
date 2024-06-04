@@ -108,6 +108,9 @@ public:
   /// enables/disables proc callback system on the action, like trinkets, enchants, rppm.
   bool callbacks;
 
+  /// does not trigger callbacks except for drivers with SX_CAN_PROC_FROM_SUPPRESSED
+  bool enable_proc_from_suppressed;
+
   /// Allows triggering of procs marked to only proc from class abilities.
   bool allow_class_ability_procs;
 
