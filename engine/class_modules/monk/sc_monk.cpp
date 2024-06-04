@@ -1607,6 +1607,14 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
     p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.glory_of_the_dawn->effectN( 3 ).base_value(),
                         p()->gain.glory_of_the_dawn );
   }
+
+  void impact( action_state_t *s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( p()->talent.windwalker.acclamation.ok() )
+      get_td( s->target )->debuff.acclamation->trigger();
+  }
 };
 
 // Rising Sun Kick Damage Trigger ===========================================
