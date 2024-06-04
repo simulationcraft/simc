@@ -1,4 +1,4 @@
-SimulationCraft 1027-01 for World of Warcraft 10.2.7.54847 Live
+SimulationCraft 1027-01 for World of Warcraft 10.2.7.54988 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -649,7 +649,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=6990)     : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.89750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.89750 | PvP Coefficient: 0.80000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.8)
 #2 (id=6991)     : Apply Aura (6) | Periodic Damage (3): holy every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10436 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=808675)   : Apply Aura (6) | Unknown(395)
@@ -10782,9 +10783,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=841395)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.50000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Purify (527), Mass Dispel (32375), Mass Dispel (32592), Purify Disease (213634), Purify Disease (440006)
                    Family Flags: 32, 39
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=886601)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Dispel Magic (528)
@@ -10798,13 +10800,15 @@ Effects          :
                    Affected Spells: Dispel Magic (528)
                    Family Flags: 25
 #5 (id=1102111)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.50000 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Mass Dispel (32375), Mass Dispel (32592)
                    Family Flags: 39
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #6 (id=1102112)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 3 (39)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 39 | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.50000 | Misc Value: 39 | Target: Self (1)
                    Affected Spells: Mass Dispel (32375), Mass Dispel (32592)
                    Family Flags: 39
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Reduces the mana cost of $?a137033[Purify Disease][Purify] and Mass Dispel by $s1% and Dispel Magic by $s2%.
 
 
@@ -15243,6 +15247,7 @@ Description      : $@spelldesc390992
 Tooltip          : The cast time of your next Heal is reduced by $w2% and its healing is increased by $w1%.
 
 Name             : Voice of Harmony (id=390994) [Spell Family (6), Passive, Hidden] 
+Hotfixed         : Description
 Talent Entry     : Holy [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(2, 4)]
 Class            : Priest
@@ -15260,11 +15265,17 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1028210)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1165297)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#3 (id=1165298)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Circle of Healing reduces the cooldown of Holy Word: Sanctify by $s1 sec.
 
-Prayer of Mending reduces the cooldown of Holy Word: Serenity by $s1 sec.
+Prayer of Mending reduces the cooldown of Holy Word: Serenity by $s2 sec.
 
-Holy Fire and Holy Nova reduce the cooldown of Holy Word: Chastise by $s1 sec.
+Holy Fire and Holy Nova reduce the cooldown of Holy Word: Chastise by $s3 sec.
 
 Name             : Manipulation (id=390996) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=9, col=5, max_rank=2, req_points=20]

@@ -1,4 +1,4 @@
-SimulationCraft 1027-01 for World of Warcraft 10.2.7.54847 Live
+SimulationCraft 1027-01 for World of Warcraft 10.2.7.54988 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -16827,17 +16827,20 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1033979)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.50000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Raptor Strike (186270), Carve (187708), Butchery (212436), Mongoose Bite (259387), Raptor Strike (265189), Mongoose Bite (265888)
                    Family Flags: 38, 71, 80, 96
+Hotfixed         : Base Value (-10 -> -20)
 #2 (id=1036927)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Raptor Strike (186270), Carve (187708), Butchery (212436), Mongoose Bite (259387), Raptor Strike (265189), Mongoose Bite (265888)
                    Family Flags: 38, 71, 80, 96
+Hotfixed         : Base Value (50 -> 80)
 #3 (id=1036928)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Raptor Strike (186270), Carve (187708), Butchery (212436), Mongoose Bite (259387), Raptor Strike (265189), Mongoose Bite (265888)
                    Family Flags: 38, 71, 80, 96
+Hotfixed         : Base Value (50 -> 80)
 Tooltip          : $?s259387[Mongoose Bite][Raptor Strike], Carve, and Butchery damage increased by $s2%, and Focus cost reduced by $s1.
 
 Name             : Deadly Duo (id=397568) [Spell Family (9)] 
