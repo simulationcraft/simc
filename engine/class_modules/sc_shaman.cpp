@@ -9638,7 +9638,7 @@ void shaman_t::action_init_finished( action_t& action )
          ( action.id == 1 || action.id == 2 ) ||
          // Actions with spell data associated
          ( action.data().id() != 0 &&
-           !action.data().flags( spell_attribute::SX_DISABLE_PLAYER_PROCS ) &&
+           !action.data().flags( spell_attribute::SX_SUPPRESS_CASTER_PROCS ) &&
            action.data().dmg_class() == 2U )
        ) )
   {
