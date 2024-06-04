@@ -249,7 +249,7 @@ void heal_t::assess_damage( result_amount_type heal_type, action_state_t* s )
   // New callback system; proc spells on impact.
   // Note: direct_tick_callbacks should not be used with the new system,
   // override action_t::proc_type() instead
-  if ( callbacks )
+  if ( callbacks || enable_proc_from_suppressed )
   {
     proc_types pt = s->proc_type();
     proc_types2 pt2 = s->impact_proc_type2();

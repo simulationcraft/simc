@@ -136,6 +136,12 @@ void dbc_proc_callback_t::activate_with_buff( buff_t* buff, bool init )
 
 void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
 {
+  // all actions with enable_proc_from_suppressed will also have callbacks = false, so check this first thing before
+  // processing further.
+  if ( a->enable_proc_from_suppressed )
+      if ( !can_proc_from_suppressed )
+        return;
+
   cooldown_t* cd = get_cooldown( state->target );
 
   // Fully overridden trigger condition check; if allowed, perform normal proc chance
@@ -235,7 +241,8 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, const special_effect_
     trigger_fn( nullptr ),
     execute_fn( nullptr ),
     can_only_proc_from_class_abilites( false ),
-    can_proc_from_procs( false )
+    can_proc_from_procs( false ),
+    can_proc_from_suppressed( false )
 {
   assert( e.proc_flags() != 0 );
 }
@@ -259,7 +266,8 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t* i, const special_effect_
     trigger_fn( nullptr ),
     execute_fn( nullptr ),
     can_only_proc_from_class_abilites( false ),
-    can_proc_from_procs( false )
+    can_proc_from_procs( false ),
+    can_proc_from_suppressed( false )
 {
   assert( e.proc_flags() != 0 );
 }
@@ -283,7 +291,8 @@ dbc_proc_callback_t::dbc_proc_callback_t( player_t* p, const special_effect_t& e
     trigger_fn( nullptr ),
     execute_fn( nullptr ),
     can_only_proc_from_class_abilites( false ),
-    can_proc_from_procs( false )
+    can_proc_from_procs( false ),
+    can_proc_from_suppressed( false )
 {
   assert( e.proc_flags() != 0 );
 }
@@ -359,6 +368,7 @@ void dbc_proc_callback_t::initialize()
 
   can_only_proc_from_class_abilites = effect.can_only_proc_from_class_abilites();
   can_proc_from_procs = effect.can_proc_from_procs();
+  can_proc_from_suppressed = effect.can_proc_from_suppressed();
 }
 
 // Determine target for the callback (action).

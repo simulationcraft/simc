@@ -348,6 +348,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     aoe(),
     dual(),
     callbacks( true ),
+    enable_proc_from_suppressed(),
     allow_class_ability_procs(),
     not_a_proc(),
     special(),
@@ -617,7 +618,11 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   school            = spell_data.get_school_type();
 
   // parse attributes
-  callbacks           = !spell_data.flags( spell_attribute::SX_DISABLE_PLAYER_PROCS );
+  callbacks           = !spell_data.flags( spell_attribute::SX_SUPPRESS_CASTER_PROCS );
+  // only enabled if the action is suppressed AND has enable proc from suppressed. we can assume that all actions with
+  // enabled_proc_from_suppressed passed into the callback system should only trigger callbacks that have
+  // can_proc_from_suppressed.
+  enable_proc_from_suppressed = !callbacks && spell_data.flags( spell_attribute::SX_ENABLE_PROCS_FROM_SUPPRESSED );
   tick_may_crit       = spell_data.flags( spell_attribute::SX_TICK_MAY_CRIT );
   hasted_ticks        = spell_data.flags( spell_attribute::SX_DOT_HASTED );
   tick_on_application = spell_data.flags( spell_attribute::SX_TICK_ON_APPLICATION );
@@ -1821,7 +1826,7 @@ void action_t::execute()
     // Proc generic abilities on execute.
     proc_types pt;
     proc_types2 pt2;
-    if ( execute_state && callbacks && ( pt = execute_state->proc_type() ) != PROC1_INVALID )
+    if ( execute_state && ( callbacks || enable_proc_from_suppressed ) && ( pt = execute_state->proc_type() ) != PROC1_INVALID )
     {
       // "On spell cast", only performed for foreground actions
       if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
@@ -1838,7 +1843,7 @@ void action_t::execute()
 
     // Special handling for "Cast Successful" procs
     // TODO: What happens when there is a PROC1 type handled above in addition to Cast Successful?
-    if ( execute_state && callbacks )
+    if ( execute_state && ( callbacks || enable_proc_from_suppressed ) )
     {
       pt = PROC1_CAST_SUCCESSFUL;
 

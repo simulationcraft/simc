@@ -774,6 +774,11 @@ bool special_effect_t::can_proc_from_procs() const
   return driver()->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS );
 }
 
+bool special_effect_t::can_proc_from_suppressed() const
+{
+  return driver()->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED );
+}
+
 bool special_effect_t::can_only_proc_from_class_abilites() const
 {
   if ( override_can_only_proc_from_class_abilites )
