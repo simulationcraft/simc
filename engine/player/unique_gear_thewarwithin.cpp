@@ -294,6 +294,14 @@ void potion_of_unwavering_focus( special_effect_t& effect )
 
   effect.execute_action = create_proc_action<unwavering_focus_t>( "potion_of_unwavering_focus", effect );
 }
+
+// Oils
+void oil_of_deep_toxins( special_effect_t& effect )
+{
+  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.player );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace consumables
 
 namespace enchants
@@ -1352,6 +1360,9 @@ void register_special_effects()
   // Potions
   unique_gear::register_special_effect( 431932, consumables::tempered_potion );
   unique_gear::register_special_effect( 431914, consumables::potion_of_unwavering_focus );
+
+  // Oils
+  register_special_effect( { 451904, 451909, 451912 }, consumables::oil_of_deep_toxins );
 
   // Enchants
 
