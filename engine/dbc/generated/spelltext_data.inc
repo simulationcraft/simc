@@ -1,4 +1,4 @@
-// Spell text, wow build 10.2.7.54847
+// Spell text, wow build 10.2.7.54988
 static const std::array<spelltext_data_t, 21153> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18445,7 +18445,7 @@ static const std::array<spelltext_data_t, 21153> __spelltext_data { {
   { 390989, "$@spelldesc390980", "The healing of your next Holy Word spell is increased by $w1%.", 0 },
   { 390992, "Flash Heal reduces the cast time of your next Heal within $390993d by $390993s2% and increases its healing done by $390993s1%.\r\n\r\nStacks up to $390993U times.", 0, 0 },
   { 390993, "$@spelldesc390992", "The cast time of your next Heal is reduced by $w2% and its healing is increased by $w1%.", 0 },
-  { 390994, "Circle of Healing reduces the cooldown of Holy Word: Sanctify by $s1 sec.\r\n\r\nPrayer of Mending reduces the cooldown of Holy Word: Serenity by $s1 sec.\r\n\r\nHoly Fire and Holy Nova reduce the cooldown of Holy Word: Chastise by $s1 sec.", 0, 0 },
+  { 390994, "Circle of Healing reduces the cooldown of Holy Word: Sanctify by $s1 sec.\r\n\r\nPrayer of Mending reduces the cooldown of Holy Word: Serenity by $s2 sec.\r\n\r\nHoly Fire and Holy Nova reduce the cooldown of Holy Word: Chastise by $s3 sec.", 0, 0 },
   { 390996, "Your $?a137033[Mind Blast, Mind Flay, and Mind Spike]?a137031[Smite and Holy Fire][Smite, Mind Blast, and Penance] casts reduce the cooldown of Mindgames by ${$s1/2}.1 sec.", 0, 0 },
   { 391023, "Summons an arcana orb outside of the Cobalt Assembly.", "Summons an arcana orb outside of the Cobalt Assembly.", 0 },
   { 391037, "Your combo point generating abilities have a $s1% chance to generate $s2 extra combo $Lpoint:points;.", 0, 0 },
@@ -21135,7 +21135,7 @@ static const std::array<spelltext_data_t, 21153> __spelltext_data { {
   { 444136, "$@spelldesc444128", 0, 0 },
   { 444434, "$@spelldesc444435", "Healing for $w2 every $t1 sec. \r\n$w1 healing remaining.", 0 },
   { 444435, "$s3% of damage taken grants you Healing Blood, up to $s1% of your max health. Every $444434t1 sec, $s2 Healing Blood is expended to heal you if you are injured.", 0, 0 },
-  { 444622, "Restore health to an ally and grant them a Ward of Salvation for $444622d absorbing damage equal to the overhealing.\r\n\r\nWhile Ward of Salvation persists, all healing taken grants absorb instead of healing.\r\n\r\nWhen the Ward expires, it explodes inflicting Holy damage equal to the remaining absorb to all enemies within $444628A1 yards, split evenly.", "$@spellaura444693\r\n\r\nHealing taken is added to the absorb instead of restoring health.", 0 },
+  { 444622, "Restore health to an ally and grant them a Ward of Salvation for $444622d.\r\n\r\nWhile Ward of Salvation persists, the caster's healing grants absorb in addition to healing.\r\n\r\nWhen the Ward expires, it explodes inflicting Holy damage equal to the remaining absorb to all enemies within $444628A1 yards, split evenly.", "$@spellaura444693\r\n\r\nHealing taken from $@auracaster is added to the absorb shield.", 0 },
   { 444628, "Deal Holy damage to enemies within $A1 yards, split evenly.", 0, 0 },
   { 444665, "$@spelldesc444677", "$s1% of damage taken redirected to $@auracaster.", 0 },
   { 444666, "$@spelldesc444677", 0, 0 },
@@ -21143,7 +21143,7 @@ static const std::array<spelltext_data_t, 21153> __spelltext_data { {
   { 444954, "Shroud your party members within $444954A1 yards with Void, granting them a shield absorbing damage for $444983d and reducing their health to $s2%. Damage taken from this effect is added to the absorb.", 0, 0 },
   { 444982, "Shroud your party members within $444954A1 yards with Void, granting them a shield absorbing $s1 damage for $444983d and reducing their health to $444954s2%. Damage taken from this effect is added to the absorb.", 0, 0 },
   { 444983, "$@spelldesc444954", "Absorbs $w1 damage.", 0 },
-  { 445055, "Restore $s2 health to an ally and grant them a Ward of Salvation for $444622d absorbing damage equal to the overhealing.\r\n\r\nWhile Ward of Salvation persists, all healing taken grants absorb instead of healing.\r\n\r\nWhen the Ward expires, it explodes inflicting Holy damage equal to the remaining absorb to all enemies within $444628A1 yards, split evenly.", 0, 0 },
+  { 445055, "Restore $s2 health to an ally and grant them a Ward of Salvation for $444622d.\r\n\r\nWhile Ward of Salvation persists, the caster's healing grants absorb in addition to healing.\r\n\r\nWhen the Ward expires, it explodes inflicting Holy damage equal to the remaining absorb to all enemies within $444628A1 yards, split evenly.", 0, 0 },
   { 447565, "Grants the caster $s1 $pri for $447571d.\r\n\r\nEvery $447571t2 sec gain a stack of Funeral Pyre, suffering $s2 Fire damage per stack.\r\n\r\nFuneral Pyre will be removed early if reactivated. ($447566s1 Min Cooldown)", 0, 0 },
   { 447566, "Grants the caster $pri for $447571d.\r\n\r\nEvery $447571t2 sec gain a stack of Funeral Pyre, suffering Fire damage per stack.\r\n\r\nFuneral Pyre will be removed early if reactivated. ($s1 Min Cooldown)", 0, 0 },
   { 447571, "$@spelldesc447566", "$pri increased by $w1.\r\nSuffering $w2 damage every $t2 sec.", 0 },
@@ -21155,11 +21155,12 @@ static const std::array<spelltext_data_t, 21153> __spelltext_data { {
   { 453445, "$@spelldesc429007", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.7.54847
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 10.2.7.54988
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  390994,  0, "Circle of Healing reduces the cooldown of Holy Word: Sanctify by $s1 sec.\r\n\r\nPrayer of Mending reduces the cooldown of Holy Word: Serenity by $s1 sec.\r\n\r\nHoly Fire and Holy Nova reduce the cooldown of Holy Word: Chastise by $s1 sec.", "Circle of Healing reduces the cooldown of Holy Word: Sanctify by $s1 sec.\r\n\r\nPrayer of Mending reduces the cooldown of Holy Word: Serenity by $s2 sec.\r\n\r\nHoly Fire and Holy Nova reduce the cooldown of Holy Word: Chastise by $s3 sec." },
 } };
 
-// Spell description variables, wow build 10.2.7.54847
+// Spell description variables, wow build 10.2.7.54988
 static const std::array<spelldesc_vars_data_t, 450> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -21613,7 +21614,7 @@ static const std::array<spelldesc_vars_data_t, 450> __spelldesc_vars_data { {
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.7.54847
+// spelldesc_vars hotfix entries, wow build 10.2.7.54988
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
