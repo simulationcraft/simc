@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.7.54988
-static const std::array<spelltext_data_t, 21153> __spelltext_data { {
+static const std::array<spelltext_data_t, 21154> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20357,6 +20357,7 @@ static const std::array<spelltext_data_t, 21153> __spelltext_data { {
   { 417713, "$@spelldesc417710", "Damage taken from $@auracaster's attacks increased by $s1%.", 0 },
   { 417714, "Increases your damage and healing by $s1% during the day.", "Damage and healing increased by $s1%.", 0 },
   { 417715, "Increases your Versatility by $s1% during the night.", "Versatility increased by $s1%.", 0 },
+  { 417775, "Add a Downy Liner and Crystal Ocular Lenses to the Thought Calculating Apparatus.", 0, 0 },
   { 417792, "$@spelldesc417534", 0, 0 },
   { 417855, "Holy Shock, Holy Light, and Flash of Light critical healing increased by $s1%.", 0, 0 },
   { 417939, "Activate the Tyrstone, recording $s1% of your healing done over the next $d, up to $417959s2 healing done.", "Recording $w1% of all healing done.", 0 },
@@ -20908,7 +20909,7 @@ static const std::array<spelltext_data_t, 21153> __spelltext_data { {
   { 432769, "|CFFFFFFFF- Caster buff|R\r\n|CFFFFFFFF- Breaks crowd-control|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF14 sec cooldown|R\r\nTransform into a Fae creature, gaining immunity to harmful debuffs and increased movement speed for a short duration.\r\n\r\nCannot attack while transformed.", 0, "Utility" },
   { 432770, "|CFFFFFFFF- Caster buff|R\r\n|CFFFFFFFF- Breaks crowd-control|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF12 sec cooldown|R\r\nTransform into a Fae creature, gaining immunity to harmful debuffs and increased movement speed for a short duration.\r\n\r\nCannot attack while transformed.", 0, "Utility" },
   { 432775, "Imbue your abilities with the globe's powers gaining $n charges of Frozen Wellspring. Dealing damage consumes a charge dealing $433824s1 additional Frost damage and apply Wellspring's Frost, slowing enemy movement speed by $433824s3% per stack.\r\n\r\nWhen Frozen Wellspring is fully consumed shatter all targets afflicted with Wellspring's Frost dealing $433824s2 Frost damage per stack split between all nearby targets.", "Dealing damage consumes a charge dealing $433824w1 additional Frost damage and apply Wellspring's Frost.", 0 },
-  { 432777, "Your harmful spells have a chance to create 1 to 3 Arcane Illusions of yourself that channel for 3 sec before unleashing Arcane Barrage at your targets location dealing up too ${$s1*1.1} Arcane damage to all enemies in the area.", 0, 0 },
+  { 432777, "Your harmful spells have a chance to create 1 to 3 Arcane Illusions of yourself that channel for 3 sec before unleashing Arcane Barrage at your target's location dealing up to ${$s1*1.1} Arcane damage to all enemies in the area.", 0, 0 },
   { 432995, "Falling below $s1% health activates the defense matrix for up to $433770d, absorbing $433770s2% of damage taken up to a maximum of $s3. While the matrix holds, the resonator pulses every $433770t3 sec to deal $s2 Fire damage to all nearby enemies. Damage is reduced beyond 8 enemies.\r\n\r\nThis may only occur once every $433759d.", 0, 0 },
   { 433082, "|CFFFFFFFF- Forward lunge|R\r\n|CFFFFFFFF- Hold to charge|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF12 sec cooldown|R\r\nEnvelop yourself in razor-sharp winds, then lunge forward damaging enemies in your path.\r\n\r\nHold to increase lunge distance.", 0, "Offensive" },
   { 433184, "|CFFFFFFFF- Forward lunge|R\r\n|CFFFFFFFF- Hold to charge|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF10 sec cooldown|R\r\nEnvelop yourself in razor-sharp winds, then lunge forward damaging enemies in your path.\r\n\r\nHold to increase lunge distance.", 0, "Offensive" },
@@ -21156,8 +21157,9 @@ static const std::array<spelltext_data_t, 21153> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.2.7.54988
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
   {  390994,  0, "Circle of Healing reduces the cooldown of Holy Word: Sanctify by $s1 sec.\r\n\r\nPrayer of Mending reduces the cooldown of Holy Word: Serenity by $s1 sec.\r\n\r\nHoly Fire and Holy Nova reduce the cooldown of Holy Word: Chastise by $s1 sec.", "Circle of Healing reduces the cooldown of Holy Word: Sanctify by $s1 sec.\r\n\r\nPrayer of Mending reduces the cooldown of Holy Word: Serenity by $s2 sec.\r\n\r\nHoly Fire and Holy Nova reduce the cooldown of Holy Word: Chastise by $s3 sec." },
+  {  432777,  0, "Your harmful spells have a chance to create 1 to 3 Arcane Illusions of yourself that channel for 3 sec before unleashing Arcane Barrage at your targets location dealing up too ${$s1*1.1} Arcane damage to all enemies in the area.", "Your harmful spells have a chance to create 1 to 3 Arcane Illusions of yourself that channel for 3 sec before unleashing Arcane Barrage at your target's location dealing up to ${$s1*1.1} Arcane damage to all enemies in the area." },
 } };
 
 // Spell description variables, wow build 10.2.7.54988
