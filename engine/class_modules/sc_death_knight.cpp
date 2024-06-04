@@ -5220,15 +5220,14 @@ using death_knight_debuff_t = death_knight_buff_base_t<buff_t>;
 // Decomposition =========================================================
 struct decomposition_debuff_t final : public death_knight_debuff_t
 {
-  decomposition_debuff_t( death_knight_td_t& td, death_knight_t& p, player_t& target )
-    : death_knight_debuff_t( td, "decomposition",
-                             p.talent.unholy.decomposition.ok() ? p.spell.decomposition_buff : spell_data_t::nil() ),
+  decomposition_debuff_t( death_knight_td_t& td, util::string_view n, const spell_data_t* s )
+    : death_knight_debuff_t( td, n, s ),
       damage( nullptr ),
-      target( target ),
+      target( td.target ),
       stored_damage( 0 ),
       last_period( 0 )
   {
-    damage = p.active_spells.decomposition_damage;
+    damage = p()->active_spells.decomposition_damage;
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       last_period   = stored_damage;
       stored_damage = 0;
@@ -5238,7 +5237,7 @@ struct decomposition_debuff_t final : public death_knight_debuff_t
   void execute_damage()
   {
     damage->base_dd_min = damage->base_dd_max = last_period;
-    damage->execute_on_target( &target );
+    damage->execute_on_target( target );
   }
 
   void reset() override
@@ -5268,7 +5267,7 @@ public:
 private:
   double last_period;
   action_t* damage;
-  player_t& target;
+  player_t* target;
 };
 }  // namespace debuffs
 
@@ -12638,7 +12637,7 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
                            ->set_duration( 0_ms )  // Handled by a combat state callback trigger
                            ->apply_affecting_aura( p.talent.unholy.unholy_aura );
 
-  debuff.decomposition = make_buff<decomposition_debuff_t>( *this, p, target );
+  debuff.decomposition = make_buff_fallback<decomposition_debuff_t>( p.talent.unholy.decomposition.ok(), *this, "decomposition", p.spell.decomposition_buff );
 
   // Apocalypse Death Knight Runeforge Debuffs
   debuff.apocalypse_death = make_debuff( p.runeforge.rune_of_apocalypse, *this, "death", p.spell.apocalypse_death_debuff )  // Effect not implemented
