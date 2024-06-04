@@ -1725,7 +1725,7 @@ public:
   void trigger_dnd_buffs();
   void expire_dnd_buffs();
   void parse_player_effects();
-  const spell_data_t* cache_spell_lookup( bool fn, int id );
+  const spell_data_t* conditional_spell_lookup( bool fn, int id );
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   // Rider of the Apocalypse
   void summon_rider( timespan_t duration, bool random );
@@ -10199,8 +10199,6 @@ void runeforge::razorice( special_effect_t& effect )
 
   death_knight_t* p = debug_cast<death_knight_t*>( effect.player );
 
-  p->spell.razorice_debuff = p->find_spell( 51714 );
-  p->spell.razorice_damage = p->find_spell( 50401 );
   if ( !p->active_spells.runeforge_razorice )
     p->active_spells.runeforge_razorice = get_action<razorice_attack_t>( "razorice", p );
 
@@ -11311,7 +11309,7 @@ void death_knight_t::expire_dnd_buffs()
     buffs.sanguine_ground->expire();
 }
 
-const spell_data_t* death_knight_t::cache_spell_lookup( bool fn, int id )
+const spell_data_t* death_knight_t::conditional_spell_lookup( bool fn, int id )
 {
   if( !fn )
   {
@@ -11987,8 +11985,8 @@ void death_knight_t::init_spells()
 
   // Unholy Baselines
   spec.unholy_death_knight   = find_specialization_spell( "Unholy Death Knight" );
-  spec.festering_wound       = cache_spell_lookup( spec.unholy_death_knight->ok(), 197147 );
-  spec.dark_transformation_2 = cache_spell_lookup( spec.unholy_death_knight->ok(), 325554 );
+  spec.festering_wound       = conditional_spell_lookup( spec.unholy_death_knight->ok(), 197147 );
+  spec.dark_transformation_2 = conditional_spell_lookup( spec.unholy_death_knight->ok(), 325554 );
   spec.outbreak              = find_specialization_spell( "Outbreak" );
   spec.epidemic              = find_specialization_spell( "Epidemic" );
 
@@ -12279,206 +12277,211 @@ void death_knight_t::init_spells()
 
   // Generic spells
   // Shared
-  spell.unholy_strength_buff    = find_spell( 53365 );
-  spell.brittle_debuff          = cache_spell_lookup( talent.brittle.ok(), 374557 );
-  spell.dnd_buff                = cache_spell_lookup( spec.death_and_decay->ok(), 188290 );
-  spell.runic_corruption        = cache_spell_lookup( spec.death_knight->ok(), 51460 );
-  spell.runic_empowerment_gain  = cache_spell_lookup( spec.frost_death_knight->ok(), 193486 );
-  spell.rune_mastery_buff       = cache_spell_lookup( talent.rune_mastery.ok(), 374585 );
-  spell.coldthirst_gain         = cache_spell_lookup( talent.coldthirst.ok(), 378849 );
-  spell.unholy_ground_buff      = cache_spell_lookup( talent.unholy_ground.ok(), 374271 );
-  spell.death_and_decay_damage  = cache_spell_lookup( spec.death_and_decay->ok() || talent.rider.riders_champion.ok(), 52212);
-  spell.death_coil_damage       = cache_spell_lookup( spec.death_coil->ok(), 47632 );
-  spell.death_strike_heal       = cache_spell_lookup( talent.death_strike.ok(), 45470 );
-  spell.sacrificial_pact_damage = cache_spell_lookup( talent.sacrificial_pact.ok(), 327611 );
-  spell.soul_reaper_execute     = cache_spell_lookup( talent.soul_reaper.ok(), 343295 );
-  spell.anti_magic_zone_buff    = cache_spell_lookup( talent.antimagic_zone.ok(), 396883 );
-  spell.frost_shield_buff       = cache_spell_lookup( talent.permafrost.ok(), 207203 );
-  spell.blood_draw_damage       = cache_spell_lookup( talent.blood_draw.ok(), 374606 );
-  spell.blood_draw_cooldown     = cache_spell_lookup( talent.blood_draw.ok(), 374609 );
+  spell.unholy_strength_buff   = find_spell( 53365 );
+  spell.brittle_debuff         = conditional_spell_lookup( talent.brittle.ok(), 374557 );
+  spell.dnd_buff               = conditional_spell_lookup( spec.death_and_decay->ok(), 188290 );
+  spell.runic_corruption       = conditional_spell_lookup( spec.death_knight->ok(), 51460 );
+  spell.runic_empowerment_gain = conditional_spell_lookup( spec.frost_death_knight->ok(), 193486 );
+  spell.rune_mastery_buff      = conditional_spell_lookup( talent.rune_mastery.ok(), 374585 );
+  spell.coldthirst_gain        = conditional_spell_lookup( talent.coldthirst.ok(), 378849 );
+  spell.unholy_ground_buff     = conditional_spell_lookup( talent.unholy_ground.ok(), 374271 );
+  spell.death_and_decay_damage =
+      conditional_spell_lookup( spec.death_and_decay->ok() || talent.rider.riders_champion.ok(), 52212 );
+  spell.death_coil_damage       = conditional_spell_lookup( spec.death_coil->ok(), 47632 );
+  spell.death_strike_heal       = conditional_spell_lookup( talent.death_strike.ok(), 45470 );
+  spell.sacrificial_pact_damage = conditional_spell_lookup( talent.sacrificial_pact.ok(), 327611 );
+  spell.soul_reaper_execute     = conditional_spell_lookup( talent.soul_reaper.ok(), 343295 );
+  spell.anti_magic_zone_buff    = conditional_spell_lookup( talent.antimagic_zone.ok(), 396883 );
+  spell.frost_shield_buff       = conditional_spell_lookup( talent.permafrost.ok(), 207203 );
+  spell.blood_draw_damage       = conditional_spell_lookup( talent.blood_draw.ok(), 374606 );
+  spell.blood_draw_cooldown     = conditional_spell_lookup( talent.blood_draw.ok(), 374609 );
+  spell.razorice_debuff         = find_spell( 51714 );
+  spell.razorice_damage         = find_spell( 50401 );
 
   // Diseases
-  spell.blood_plague = cache_spell_lookup( spec.blood_death_knight->ok() || talent.unholy.superstrain.ok(), 55078 );
-  spell.frost_fever  = cache_spell_lookup( talent.frost.howling_blast.ok() || talent.unholy.superstrain.ok(), 55095 );
-  spell.virulent_plague    = cache_spell_lookup( spec.outbreak->ok(), 191587 );
-  spell.virulent_erruption = cache_spell_lookup( spec.outbreak->ok(), 191685 );
+  spell.blood_plague =
+      conditional_spell_lookup( spec.blood_death_knight->ok() || talent.unholy.superstrain.ok(), 55078 );
+  spell.frost_fever =
+      conditional_spell_lookup( talent.frost.howling_blast.ok() || talent.unholy.superstrain.ok(), 55095 );
+  spell.virulent_plague    = conditional_spell_lookup( spec.outbreak->ok(), 191587 );
+  spell.virulent_erruption = conditional_spell_lookup( spec.outbreak->ok(), 191685 );
 
   // Blood
-  spell.blood_shield            = cache_spell_lookup( mastery.blood_shield->ok(), 77535 );
-  spell.bone_shield             = cache_spell_lookup( spec.blood_death_knight->ok(), 195181 );
-  spell.sanguine_ground         = cache_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
-  spell.ossuary_buff            = cache_spell_lookup( talent.blood.ossuary.ok(), 219788 );
-  spell.crimson_scourge_buff    = cache_spell_lookup( spec.crimson_scourge->ok(), 81141 );
-  spell.heartbreaker_rp_gain    = cache_spell_lookup( talent.blood.heartbreaker.ok(), 210738 );
-  spell.heartrend_buff          = cache_spell_lookup( talent.blood.heartrend.ok(), 377656 );
+  spell.blood_shield         = conditional_spell_lookup( mastery.blood_shield->ok(), 77535 );
+  spell.bone_shield          = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
+  spell.sanguine_ground      = conditional_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
+  spell.ossuary_buff         = conditional_spell_lookup( talent.blood.ossuary.ok(), 219788 );
+  spell.crimson_scourge_buff = conditional_spell_lookup( spec.crimson_scourge->ok(), 81141 );
+  spell.heartbreaker_rp_gain = conditional_spell_lookup( talent.blood.heartbreaker.ok(), 210738 );
+  spell.heartrend_buff       = conditional_spell_lookup( talent.blood.heartrend.ok(), 377656 );
   spell.perserverence_of_the_ebon_blade_buff =
-      cache_spell_lookup( talent.blood.perseverance_of_the_ebon_blade.ok(), 374748 );
-  spell.voracious_buff           = cache_spell_lookup( talent.blood.voracious.ok(), 274009 );
-  spell.bonestorm_heal           = cache_spell_lookup( talent.blood.bonestorm.ok(), 196545 );
-  spell.dancing_rune_weapon_buff = cache_spell_lookup( talent.blood.dancing_rune_weapon.ok(), 81256 );
-  spell.relish_in_blood_gains    = cache_spell_lookup( talent.blood.relish_in_blood.ok(), 317614 );
-  spell.leeching_strike_damage   = cache_spell_lookup( talent.blood.leeching_strike.ok(), 377633 );
-  spell.shattering_bone_damage   = cache_spell_lookup( talent.blood.shattering_bone.ok(), 377642 );
+      conditional_spell_lookup( talent.blood.perseverance_of_the_ebon_blade.ok(), 374748 );
+  spell.voracious_buff           = conditional_spell_lookup( talent.blood.voracious.ok(), 274009 );
+  spell.bonestorm_heal           = conditional_spell_lookup( talent.blood.bonestorm.ok(), 196545 );
+  spell.dancing_rune_weapon_buff = conditional_spell_lookup( talent.blood.dancing_rune_weapon.ok(), 81256 );
+  spell.relish_in_blood_gains    = conditional_spell_lookup( talent.blood.relish_in_blood.ok(), 317614 );
+  spell.leeching_strike_damage   = conditional_spell_lookup( talent.blood.leeching_strike.ok(), 377633 );
+  spell.shattering_bone_damage   = conditional_spell_lookup( talent.blood.shattering_bone.ok(), 377642 );
 
   // Frost
-  spell.murderous_efficiency_gain     = cache_spell_lookup( talent.frost.murderous_efficiency.ok(), 207062 );
-  spell.rage_of_the_frozen_champion   = cache_spell_lookup( talent.frost.rage_of_the_frozen_champion.ok(), 341725 );
-  spell.runic_empowerment_chance      = cache_spell_lookup( spec.frost_death_knight->ok(), 81229 );
-  spell.gathering_storm_buff          = cache_spell_lookup( talent.frost.gathering_storm.ok(), 211805 );
-  spell.inexorable_assault_buff       = cache_spell_lookup( talent.frost.inexorable_assault.ok(), 253595 );
-  spell.bonegrinder_crit_buff         = cache_spell_lookup( talent.frost.bonegrinder.ok(), 377101 );
-  spell.bonegrinder_frost_buff        = cache_spell_lookup( talent.frost.bonegrinder.ok(), 377103 );
-  spell.enduring_strength_buff        = cache_spell_lookup( talent.frost.enduring_strength.ok(), 377195 );
-  spell.frostwhelps_aid_buff          = cache_spell_lookup( talent.frost.frostwhelps_aid.ok(), 377253 );
-  spell.inexorable_assault_damage     = cache_spell_lookup( talent.frost.inexorable_assault.ok(), 253597 );
-  spell.breath_of_sindragosa_rune_gen = cache_spell_lookup( talent.frost.breath_of_sindragosa.ok(), 303753 );
-  spell.cold_heart_damage             = cache_spell_lookup( talent.frost.cold_heart.ok(), 281210 );
-  spell.chill_streak_damage           = cache_spell_lookup( talent.frost.chill_streak.ok(), 204167 );
+  spell.murderous_efficiency_gain   = conditional_spell_lookup( talent.frost.murderous_efficiency.ok(), 207062 );
+  spell.rage_of_the_frozen_champion = conditional_spell_lookup( talent.frost.rage_of_the_frozen_champion.ok(), 341725 );
+  spell.runic_empowerment_chance    = conditional_spell_lookup( spec.frost_death_knight->ok(), 81229 );
+  spell.gathering_storm_buff        = conditional_spell_lookup( talent.frost.gathering_storm.ok(), 211805 );
+  spell.inexorable_assault_buff     = conditional_spell_lookup( talent.frost.inexorable_assault.ok(), 253595 );
+  spell.bonegrinder_crit_buff       = conditional_spell_lookup( talent.frost.bonegrinder.ok(), 377101 );
+  spell.bonegrinder_frost_buff      = conditional_spell_lookup( talent.frost.bonegrinder.ok(), 377103 );
+  spell.enduring_strength_buff      = conditional_spell_lookup( talent.frost.enduring_strength.ok(), 377195 );
+  spell.frostwhelps_aid_buff        = conditional_spell_lookup( talent.frost.frostwhelps_aid.ok(), 377253 );
+  spell.inexorable_assault_damage   = conditional_spell_lookup( talent.frost.inexorable_assault.ok(), 253597 );
+  spell.breath_of_sindragosa_rune_gen = conditional_spell_lookup( talent.frost.breath_of_sindragosa.ok(), 303753 );
+  spell.cold_heart_damage             = conditional_spell_lookup( talent.frost.cold_heart.ok(), 281210 );
+  spell.chill_streak_damage           = conditional_spell_lookup( talent.frost.chill_streak.ok(), 204167 );
   spell.death_strike_offhand =
-      cache_spell_lookup( talent.death_strike.ok() && off_hand_weapon.type != WEAPON_NONE, 66188 );
-  spell.frostwyrms_fury_damage = cache_spell_lookup( talent.frost.frostwyrms_fury.ok(), 279303 );
+      conditional_spell_lookup( talent.death_strike.ok() && off_hand_weapon.type != WEAPON_NONE, 66188 );
+  spell.frostwyrms_fury_damage = conditional_spell_lookup( talent.frost.frostwyrms_fury.ok(), 279303 );
   spell.glacial_advance_damage =
-      cache_spell_lookup( talent.frost.glacial_advance.ok() || talent.frost.arctic_assault.ok(), 195975 );
-  spell.avalanche_damage           = cache_spell_lookup( talent.frost.avalanche.ok(), 207150 );
-  spell.frostwhelps_aid_damage     = cache_spell_lookup( talent.frost.frostwhelps_aid.ok(), 377245 );
-  spell.enduring_strength_cooldown = cache_spell_lookup( talent.frost.enduring_strength.ok(), 377192 );
-  spell.piercing_chill_debuff      = cache_spell_lookup( talent.frost.piercing_chill.ok(), 377359 );
-  spell.obliteration_gains         = cache_spell_lookup( talent.frost.obliteration.ok(), 281327 );
+      conditional_spell_lookup( talent.frost.glacial_advance.ok() || talent.frost.arctic_assault.ok(), 195975 );
+  spell.avalanche_damage           = conditional_spell_lookup( talent.frost.avalanche.ok(), 207150 );
+  spell.frostwhelps_aid_damage     = conditional_spell_lookup( talent.frost.frostwhelps_aid.ok(), 377245 );
+  spell.enduring_strength_cooldown = conditional_spell_lookup( talent.frost.enduring_strength.ok(), 377192 );
+  spell.piercing_chill_debuff      = conditional_spell_lookup( talent.frost.piercing_chill.ok(), 377359 );
+  spell.obliteration_gains         = conditional_spell_lookup( talent.frost.obliteration.ok(), 281327 );
   spell.frost_strike_2h =
-      cache_spell_lookup( talent.frost.frost_strike.ok() && main_hand_weapon.group() == WEAPON_2H, 325464);
+      conditional_spell_lookup( talent.frost.frost_strike.ok() && main_hand_weapon.group() == WEAPON_2H, 325464 );
   spell.frost_strike_mh =
-      cache_spell_lookup( talent.frost.frost_strike.ok() && main_hand_weapon.group() == WEAPON_1H, 222026);
+      conditional_spell_lookup( talent.frost.frost_strike.ok() && main_hand_weapon.group() == WEAPON_1H, 222026 );
   spell.frost_strike_oh =
-      cache_spell_lookup( talent.frost.frost_strike.ok() && off_hand_weapon.type != WEAPON_NONE, 66196 );
-  spell.shattered_frost          = cache_spell_lookup( talent.frost.shattered_frost.ok(), 455996 );
-  spell.icy_death_torrent_damage = cache_spell_lookup( talent.frost.icy_death_torrent.ok(), 439539 );
-  spell.cryogenic_chamber_damage = cache_spell_lookup( talent.frost.cryogenic_chamber.ok(), 456371 );
-  spell.cryogenic_chamber_buff   = cache_spell_lookup( talent.frost.cryogenic_chamber.ok(), 456370 );
-  spell.rime_buff                = cache_spell_lookup( spec.rime->ok(), 59052 );
-  spell.hyperpyrexia_damage      = cache_spell_lookup( talent.frost.hyperpyrexia.ok(), 458169 );
+      conditional_spell_lookup( talent.frost.frost_strike.ok() && off_hand_weapon.type != WEAPON_NONE, 66196 );
+  spell.shattered_frost          = conditional_spell_lookup( talent.frost.shattered_frost.ok(), 455996 );
+  spell.icy_death_torrent_damage = conditional_spell_lookup( talent.frost.icy_death_torrent.ok(), 439539 );
+  spell.cryogenic_chamber_damage = conditional_spell_lookup( talent.frost.cryogenic_chamber.ok(), 456371 );
+  spell.cryogenic_chamber_buff   = conditional_spell_lookup( talent.frost.cryogenic_chamber.ok(), 456370 );
+  spell.rime_buff                = conditional_spell_lookup( spec.rime->ok(), 59052 );
+  spell.hyperpyrexia_damage      = conditional_spell_lookup( talent.frost.hyperpyrexia.ok(), 458169 );
 
   // Unholy
-  spell.runic_corruption_chance    = cache_spell_lookup( spec.unholy_death_knight->ok(), 51462 );
-  spell.festering_wound_debuff     = cache_spell_lookup( spec.festering_wound->ok(), 194310 );
-  spell.rotten_touch_debuff        = cache_spell_lookup( talent.unholy.rotten_touch.ok(), 390276 );
-  spell.death_rot_debuff           = cache_spell_lookup( talent.unholy.death_rot.ok(), 377540 );
-  spell.coil_of_devastation_debuff = cache_spell_lookup( talent.unholy.coil_of_devastation.ok(), 390271 );
-  spell.ghoulish_frenzy_player     = cache_spell_lookup( talent.unholy.ghoulish_frenzy.ok(), 377588 );
-  spell.plaguebringer_buff         = cache_spell_lookup( talent.unholy.plaguebringer.ok(), 390178 );
-  spell.festermight_buff           = cache_spell_lookup( talent.unholy.festermight.ok(), 377591 );
-  spell.unholy_blight_dot          = cache_spell_lookup( talent.unholy.unholy_blight.ok(), 115994 );
-  spell.commander_of_the_dead      = cache_spell_lookup( talent.unholy.commander_of_the_dead.ok(), 390260 );
-  spell.defile_buff                = cache_spell_lookup( talent.unholy.defile.ok(), 218100 );
-  spell.ruptured_viscera_chance    = cache_spell_lookup( talent.unholy.ruptured_viscera.ok(), 390236 );
-  spell.apocalypse_duration        = cache_spell_lookup( talent.unholy.apocalypse.ok(), 221180 );
-  spell.apocalypse_rune_gen        = cache_spell_lookup( talent.unholy.apocalypse.ok(), 343758 );
-  spell.unholy_pact_damage         = cache_spell_lookup( talent.unholy.unholy_pact.ok(), 319236 );
-  spell.dark_transformation_damage = cache_spell_lookup( talent.unholy.dark_transformation.ok(), 344955 );
-  spell.defile_damage              = cache_spell_lookup( talent.unholy.defile.ok(), 156000 );
-  spell.epidemic_damage            = cache_spell_lookup( spec.epidemic->ok(), 212739 );
-  spell.bursting_sores_damage      = cache_spell_lookup( talent.unholy.bursting_sores.ok(), 207267 );
-  spell.festering_wound_damage     = cache_spell_lookup( spec.festering_wound->ok(), 194311 );
-  spell.outbreak_aoe               = cache_spell_lookup( spec.outbreak->ok(), 196780 );
-  spell.unholy_aura_debuff         = cache_spell_lookup( talent.unholy.unholy_aura.ok(), 377445 );
-  spell.decomposition_buff         = cache_spell_lookup( talent.unholy.decomposition.ok(), 458233 );
-  spell.decomposition_damage       = cache_spell_lookup( talent.unholy.decomposition.ok(), 458264 );
-  spell.festering_scythe           = cache_spell_lookup( talent.unholy.festering_scythe.ok(), 458128 );
-  spell.festering_scythe_buff      = cache_spell_lookup( talent.unholy.festering_scythe.ok(), 458123 );
+  spell.runic_corruption_chance    = conditional_spell_lookup( spec.unholy_death_knight->ok(), 51462 );
+  spell.festering_wound_debuff     = conditional_spell_lookup( spec.festering_wound->ok(), 194310 );
+  spell.rotten_touch_debuff        = conditional_spell_lookup( talent.unholy.rotten_touch.ok(), 390276 );
+  spell.death_rot_debuff           = conditional_spell_lookup( talent.unholy.death_rot.ok(), 377540 );
+  spell.coil_of_devastation_debuff = conditional_spell_lookup( talent.unholy.coil_of_devastation.ok(), 390271 );
+  spell.ghoulish_frenzy_player     = conditional_spell_lookup( talent.unholy.ghoulish_frenzy.ok(), 377588 );
+  spell.plaguebringer_buff         = conditional_spell_lookup( talent.unholy.plaguebringer.ok(), 390178 );
+  spell.festermight_buff           = conditional_spell_lookup( talent.unholy.festermight.ok(), 377591 );
+  spell.unholy_blight_dot          = conditional_spell_lookup( talent.unholy.unholy_blight.ok(), 115994 );
+  spell.commander_of_the_dead      = conditional_spell_lookup( talent.unholy.commander_of_the_dead.ok(), 390260 );
+  spell.defile_buff                = conditional_spell_lookup( talent.unholy.defile.ok(), 218100 );
+  spell.ruptured_viscera_chance    = conditional_spell_lookup( talent.unholy.ruptured_viscera.ok(), 390236 );
+  spell.apocalypse_duration        = conditional_spell_lookup( talent.unholy.apocalypse.ok(), 221180 );
+  spell.apocalypse_rune_gen        = conditional_spell_lookup( talent.unholy.apocalypse.ok(), 343758 );
+  spell.unholy_pact_damage         = conditional_spell_lookup( talent.unholy.unholy_pact.ok(), 319236 );
+  spell.dark_transformation_damage = conditional_spell_lookup( talent.unholy.dark_transformation.ok(), 344955 );
+  spell.defile_damage              = conditional_spell_lookup( talent.unholy.defile.ok(), 156000 );
+  spell.epidemic_damage            = conditional_spell_lookup( spec.epidemic->ok(), 212739 );
+  spell.bursting_sores_damage      = conditional_spell_lookup( talent.unholy.bursting_sores.ok(), 207267 );
+  spell.festering_wound_damage     = conditional_spell_lookup( spec.festering_wound->ok(), 194311 );
+  spell.outbreak_aoe               = conditional_spell_lookup( spec.outbreak->ok(), 196780 );
+  spell.unholy_aura_debuff         = conditional_spell_lookup( talent.unholy.unholy_aura.ok(), 377445 );
+  spell.decomposition_buff         = conditional_spell_lookup( talent.unholy.decomposition.ok(), 458233 );
+  spell.decomposition_damage       = conditional_spell_lookup( talent.unholy.decomposition.ok(), 458264 );
+  spell.festering_scythe           = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 458128 );
+  spell.festering_scythe_buff      = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 458123 );
 
   // Rider of the Apocalypse Spells
-  spell.a_feast_of_souls_buff = cache_spell_lookup( talent.rider.a_feast_of_souls.ok(), 440861 );
-  spell.summon_mograine       = cache_spell_lookup( talent.rider.riders_champion.ok(), 444248 );
-  spell.summon_whitemane      = cache_spell_lookup( talent.rider.riders_champion.ok(), 444251 );
-  spell.summon_trollbane      = cache_spell_lookup( talent.rider.riders_champion.ok(), 444254 );
-  spell.summon_nazgrim        = cache_spell_lookup( talent.rider.riders_champion.ok(), 444252 );
-  spell.summon_mograine_2     = cache_spell_lookup( talent.rider.riders_champion.ok(), 454393 );
-  spell.summon_whitemane_2    = cache_spell_lookup( talent.rider.riders_champion.ok(), 454389 );
-  spell.summon_trollbane_2    = cache_spell_lookup( talent.rider.riders_champion.ok(), 454390 );
-  spell.summon_nazgrim_2      = cache_spell_lookup( talent.rider.riders_champion.ok(), 454392 );
-  spell.apocalypse_now_data   = cache_spell_lookup( talent.rider.apocalypse_now.ok(), 444244 );
-  spell.death_charge_action   = cache_spell_lookup( talent.rider.death_charge.ok(), 444347 );
+  spell.a_feast_of_souls_buff = conditional_spell_lookup( talent.rider.a_feast_of_souls.ok(), 440861 );
+  spell.summon_mograine       = conditional_spell_lookup( talent.rider.riders_champion.ok(), 444248 );
+  spell.summon_whitemane      = conditional_spell_lookup( talent.rider.riders_champion.ok(), 444251 );
+  spell.summon_trollbane      = conditional_spell_lookup( talent.rider.riders_champion.ok(), 444254 );
+  spell.summon_nazgrim        = conditional_spell_lookup( talent.rider.riders_champion.ok(), 444252 );
+  spell.summon_mograine_2     = conditional_spell_lookup( talent.rider.riders_champion.ok(), 454393 );
+  spell.summon_whitemane_2    = conditional_spell_lookup( talent.rider.riders_champion.ok(), 454389 );
+  spell.summon_trollbane_2    = conditional_spell_lookup( talent.rider.riders_champion.ok(), 454390 );
+  spell.summon_nazgrim_2      = conditional_spell_lookup( talent.rider.riders_champion.ok(), 454392 );
+  spell.apocalypse_now_data   = conditional_spell_lookup( talent.rider.apocalypse_now.ok(), 444244 );
+  spell.death_charge_action   = conditional_spell_lookup( talent.rider.death_charge.ok(), 444347 );
 
   // San'layn Spells
-  spell.vampiric_strike                 = cache_spell_lookup( talent.sanlayn.vampiric_strike.ok(), 433895 );
-  spell.essence_of_the_blood_queen_buff = cache_spell_lookup( talent.sanlayn.vampiric_strike.ok(), 433925 );
-  spell.gift_of_the_sanlayn_buff        = cache_spell_lookup( talent.sanlayn.gift_of_the_sanlayn.ok(), 434153 );
-  spell.vampiric_strike_heal            = cache_spell_lookup( talent.sanlayn.vampiric_strike.ok(), 434422 );
-  spell.infliction_of_sorrow_damage     = cache_spell_lookup( talent.sanlayn.infliction_of_sorrow.ok(), 434144 );
-  spell.blood_beast_summon              = cache_spell_lookup( talent.sanlayn.the_blood_is_life.ok(), 434237 );
+  spell.vampiric_strike                 = conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok(), 433895 );
+  spell.essence_of_the_blood_queen_buff = conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok(), 433925 );
+  spell.gift_of_the_sanlayn_buff        = conditional_spell_lookup( talent.sanlayn.gift_of_the_sanlayn.ok(), 434153 );
+  spell.vampiric_strike_heal            = conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok(), 434422 );
+  spell.infliction_of_sorrow_damage     = conditional_spell_lookup( talent.sanlayn.infliction_of_sorrow.ok(), 434144 );
+  spell.blood_beast_summon              = conditional_spell_lookup( talent.sanlayn.the_blood_is_life.ok(), 434237 );
   spell.vampiric_strike_clawing_shadows =
-      cache_spell_lookup( talent.sanlayn.vampiric_strike.ok() && talent.unholy.clawing_shadows.ok(), 445669 );
-  spell.incite_terror_debuff = cache_spell_lookup( talent.sanlayn.incite_terror.ok(), 458478 );
+      conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok() && talent.unholy.clawing_shadows.ok(), 445669 );
+  spell.incite_terror_debuff = conditional_spell_lookup( talent.sanlayn.incite_terror.ok(), 458478 );
 
   // Deathbringer Spells
-  spell.reapers_mark_debuff            = cache_spell_lookup( talent.deathbringer.reapers_mark.ok(), 434765 );
-  spell.reapers_mark_explosion         = cache_spell_lookup( talent.deathbringer.reapers_mark.ok(), 436304 );
-  spell.grim_reaper                    = cache_spell_lookup( talent.deathbringer.grim_reaper.ok(), 443761 );
-  spell.wave_of_souls_damage           = cache_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 435802 );
-  spell.wave_of_souls_debuff           = cache_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 443404 );
-  spell.blood_fever_damage             = cache_spell_lookup( talent.deathbringer.blood_fever.ok(), 440005 );
-  spell.bind_in_darkness_buff          = cache_spell_lookup( talent.deathbringer.bind_in_darkness.ok(), 443532 );
-  spell.dark_talons_shadowfrost_buff   = cache_spell_lookup( talent.deathbringer.dark_talons.ok(), 443586 );
-  spell.dark_talons_icy_talons_buff    = cache_spell_lookup( talent.deathbringer.dark_talons.ok(), 443595 );
-  spell.soul_rupture_damage            = cache_spell_lookup( talent.deathbringer.soul_rupture.ok(), 439594 );
-  spell.grim_reaper_soul_reaper        = cache_spell_lookup( talent.deathbringer.grim_reaper.ok(), 448229 );
-  spell.exterminate_damage             = cache_spell_lookup( talent.deathbringer.exterminate.ok(), 441424 );
-  spell.exterminate_aoe                = cache_spell_lookup( talent.deathbringer.exterminate.ok(), 441426 );
-  spell.exterminate_buff               = cache_spell_lookup( talent.deathbringer.exterminate.ok(), 441416 );
-  spell.exterminate_buff_painful_death = cache_spell_lookup( talent.deathbringer.exterminate.ok(), 447954 );
+  spell.reapers_mark_debuff            = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 434765 );
+  spell.reapers_mark_explosion         = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 436304 );
+  spell.grim_reaper                    = conditional_spell_lookup( talent.deathbringer.grim_reaper.ok(), 443761 );
+  spell.wave_of_souls_damage           = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 435802 );
+  spell.wave_of_souls_debuff           = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 443404 );
+  spell.blood_fever_damage             = conditional_spell_lookup( talent.deathbringer.blood_fever.ok(), 440005 );
+  spell.bind_in_darkness_buff          = conditional_spell_lookup( talent.deathbringer.bind_in_darkness.ok(), 443532 );
+  spell.dark_talons_shadowfrost_buff   = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443586 );
+  spell.dark_talons_icy_talons_buff    = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443595 );
+  spell.soul_rupture_damage            = conditional_spell_lookup( talent.deathbringer.soul_rupture.ok(), 439594 );
+  spell.grim_reaper_soul_reaper        = conditional_spell_lookup( talent.deathbringer.grim_reaper.ok(), 448229 );
+  spell.exterminate_damage             = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441424 );
+  spell.exterminate_aoe                = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441426 );
+  spell.exterminate_buff               = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441416 );
+  spell.exterminate_buff_painful_death = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 447954 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
-  pet_spell.ghoul_claw     = cache_spell_lookup( talent.raise_dead.ok(), 91776 );
-  pet_spell.sweeping_claws = cache_spell_lookup( talent.unholy.dark_transformation.ok(), 91778 );
-  pet_spell.gnaw           = cache_spell_lookup( talent.raise_dead.ok(), 91800 );
-  pet_spell.monstrous_blow = cache_spell_lookup( talent.unholy.dark_transformation.ok(), 91797 );
+  pet_spell.ghoul_claw     = conditional_spell_lookup( talent.raise_dead.ok(), 91776 );
+  pet_spell.sweeping_claws = conditional_spell_lookup( talent.unholy.dark_transformation.ok(), 91778 );
+  pet_spell.gnaw           = conditional_spell_lookup( talent.raise_dead.ok(), 91800 );
+  pet_spell.monstrous_blow = conditional_spell_lookup( talent.unholy.dark_transformation.ok(), 91797 );
   // Army of the dead
   pet_spell.army_claw =
-      cache_spell_lookup( talent.unholy.army_of_the_dead.ok() || talent.unholy.apocalypse.ok(), 199373 );
+      conditional_spell_lookup( talent.unholy.army_of_the_dead.ok() || talent.unholy.apocalypse.ok(), 199373 );
   // All Ghouls
   pet_spell.pet_stun = find_spell( 47466 );
   // Gargoyle
-  pet_spell.gargoyle_strike  = cache_spell_lookup( talent.unholy.summon_gargoyle.ok(), 51963 );
-  pet_spell.dark_empowerment = cache_spell_lookup( talent.unholy.summon_gargoyle.ok(), 211947 );
+  pet_spell.gargoyle_strike  = conditional_spell_lookup( talent.unholy.summon_gargoyle.ok(), 51963 );
+  pet_spell.dark_empowerment = conditional_spell_lookup( talent.unholy.summon_gargoyle.ok(), 211947 );
   // Risen Skulker (all will serve)
-  pet_spell.skulker_shot = cache_spell_lookup( talent.unholy.all_will_serve.ok(), 212423 );
+  pet_spell.skulker_shot = conditional_spell_lookup( talent.unholy.all_will_serve.ok(), 212423 );
   // Magus of the dead (army of the damned)
   pet_spell.frostbolt =
-      cache_spell_lookup( talent.unholy.magus_of_the_dead.ok() || talent.unholy.doomed_bidding.ok(), 317792 );
+      conditional_spell_lookup( talent.unholy.magus_of_the_dead.ok() || talent.unholy.doomed_bidding.ok(), 317792 );
   pet_spell.shadow_bolt =
-      cache_spell_lookup( talent.unholy.magus_of_the_dead.ok() || talent.unholy.doomed_bidding.ok(), 317791 );
+      conditional_spell_lookup( talent.unholy.magus_of_the_dead.ok() || talent.unholy.doomed_bidding.ok(), 317791 );
   // Commander of the Dead Talent
-  pet_spell.commander_of_the_dead = cache_spell_lookup( talent.unholy.commander_of_the_dead.ok(), 390264 );
+  pet_spell.commander_of_the_dead = conditional_spell_lookup( talent.unholy.commander_of_the_dead.ok(), 390264 );
   // Ruptured Viscera Talent
-  pet_spell.ruptured_viscera = cache_spell_lookup( talent.unholy.ruptured_viscera.ok(), 390220 );
+  pet_spell.ruptured_viscera = conditional_spell_lookup( talent.unholy.ruptured_viscera.ok(), 390220 );
   // Ghoulish Frenzy
-  pet_spell.ghoulish_frenzy = cache_spell_lookup( talent.unholy.ghoulish_frenzy.ok(), 377589 );
+  pet_spell.ghoulish_frenzy = conditional_spell_lookup( talent.unholy.ghoulish_frenzy.ok(), 377589 );
   // DRW Spells
   pet_spell.drw_heart_strike =
-      cache_spell_lookup( talent.blood.heart_strike.ok() && talent.blood.dancing_rune_weapon.ok(), 228645 );
+      conditional_spell_lookup( talent.blood.heart_strike.ok() && talent.blood.dancing_rune_weapon.ok(), 228645 );
   pet_spell.drw_heart_strike_rp_gen =
-      cache_spell_lookup( talent.blood.heart_strike.ok() && talent.blood.dancing_rune_weapon.ok(), 220890 );
+      conditional_spell_lookup( talent.blood.heart_strike.ok() && talent.blood.dancing_rune_weapon.ok(), 220890 );
   // Rider of the Apocalypse Pet Spells
-  pet_spell.apocalyptic_conquest             = cache_spell_lookup( talent.rider.riders_champion.ok(), 444763 );
-  pet_spell.trollbanes_chains_of_ice_ability = cache_spell_lookup( talent.rider.riders_champion.ok(), 444826 );
-  pet_spell.trollbanes_chains_of_ice_debuff  = cache_spell_lookup( talent.rider.riders_champion.ok(), 444828 );
-  pet_spell.trollbanes_icy_fury_ability      = cache_spell_lookup( talent.rider.trollbanes_icy_fury.ok(), 444834 );
-  pet_spell.undeath_dot                      = cache_spell_lookup( talent.rider.riders_champion.ok(), 444633 );
-  pet_spell.undeath_range                    = cache_spell_lookup( talent.rider.riders_champion.ok(), 444631 );
-  pet_spell.mograines_death_and_decay        = cache_spell_lookup( talent.rider.riders_champion.ok(), 444474 );
-  pet_spell.mograines_might_buff             = cache_spell_lookup( talent.rider.mograines_might.ok(), 444505 );
-  pet_spell.rider_ams                        = cache_spell_lookup( talent.rider.riders_champion.ok(), 444741 );
-  pet_spell.rider_ams_icd                    = cache_spell_lookup( talent.rider.horsemens_aid.ok(), 451777 );
-  pet_spell.whitemane_death_coil             = cache_spell_lookup( talent.rider.riders_champion.ok(), 445513 );
-  pet_spell.mograine_heart_strike            = cache_spell_lookup( talent.rider.riders_champion.ok(), 445504 );
-  pet_spell.trollbane_obliterate             = cache_spell_lookup( talent.rider.riders_champion.ok(), 445507 );
-  pet_spell.nazgrim_scourge_strike_phys      = cache_spell_lookup( talent.rider.riders_champion.ok(), 445508 );
-  pet_spell.nazgrim_scourge_strike_shadow    = cache_spell_lookup( talent.rider.riders_champion.ok(), 445509 );
+  pet_spell.apocalyptic_conquest             = conditional_spell_lookup( talent.rider.riders_champion.ok(), 444763 );
+  pet_spell.trollbanes_chains_of_ice_ability = conditional_spell_lookup( talent.rider.riders_champion.ok(), 444826 );
+  pet_spell.trollbanes_chains_of_ice_debuff  = conditional_spell_lookup( talent.rider.riders_champion.ok(), 444828 );
+  pet_spell.trollbanes_icy_fury_ability   = conditional_spell_lookup( talent.rider.trollbanes_icy_fury.ok(), 444834 );
+  pet_spell.undeath_dot                   = conditional_spell_lookup( talent.rider.riders_champion.ok(), 444633 );
+  pet_spell.undeath_range                 = conditional_spell_lookup( talent.rider.riders_champion.ok(), 444631 );
+  pet_spell.mograines_death_and_decay     = conditional_spell_lookup( talent.rider.riders_champion.ok(), 444474 );
+  pet_spell.mograines_might_buff          = conditional_spell_lookup( talent.rider.mograines_might.ok(), 444505 );
+  pet_spell.rider_ams                     = conditional_spell_lookup( talent.rider.riders_champion.ok(), 444741 );
+  pet_spell.rider_ams_icd                 = conditional_spell_lookup( talent.rider.horsemens_aid.ok(), 451777 );
+  pet_spell.whitemane_death_coil          = conditional_spell_lookup( talent.rider.riders_champion.ok(), 445513 );
+  pet_spell.mograine_heart_strike         = conditional_spell_lookup( talent.rider.riders_champion.ok(), 445504 );
+  pet_spell.trollbane_obliterate          = conditional_spell_lookup( talent.rider.riders_champion.ok(), 445507 );
+  pet_spell.nazgrim_scourge_strike_phys   = conditional_spell_lookup( talent.rider.riders_champion.ok(), 445508 );
+  pet_spell.nazgrim_scourge_strike_shadow = conditional_spell_lookup( talent.rider.riders_champion.ok(), 445509 );
   // San'layn Pet Spells
-  pet_spell.blood_cleave   = cache_spell_lookup( talent.sanlayn.the_blood_is_life.ok(), 434574 );
-  pet_spell.blood_eruption = cache_spell_lookup( talent.sanlayn.the_blood_is_life.ok(), 434246 );
+  pet_spell.blood_cleave   = conditional_spell_lookup( talent.sanlayn.the_blood_is_life.ok(), 434574 );
+  pet_spell.blood_eruption = conditional_spell_lookup( talent.sanlayn.the_blood_is_life.ok(), 434246 );
   // Abomination Spells
-  pet_spell.abomination_disease_cloud = cache_spell_lookup( talent.unholy.raise_abomination.ok(), 290577 );
+  pet_spell.abomination_disease_cloud = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 290577 );
 
   // Custom/Internal cooldowns default durations
   cooldown.bone_shield_icd->duration = spell.bone_shield->internal_cooldown();
@@ -12590,7 +12593,10 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
           ->set_cooldown( 0_ms );  // Handled by the action
 
   // Frost
-  debuff.razorice = make_debuff( p.runeforge.rune_of_razorice_mh || p.runeforge.rune_of_razorice_oh, *this, "razorice", p.spell.razorice_debuff )
+  debuff.razorice = make_debuff( p.runeforge.rune_of_razorice_mh || p.runeforge.rune_of_razorice_oh ||
+                                     p.talent.frost.avalanche->ok() || p.talent.frost.glacial_advance->ok() ||
+                                     p.talent.frost.arctic_assault->ok(),
+                                 *this, "razorice", p.spell.razorice_debuff )
                         ->set_default_value_from_effect( 1 )
                         ->set_period( 0_ms )
                         ->apply_affecting_aura( p.talent.unholy_bond );
