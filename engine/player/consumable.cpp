@@ -941,6 +941,7 @@ special_effect_t* dbc_consumable_base_t::create_special_effect()
     consumable_item->parsed.data.id = item_data->id;
     consumable_item->parsed.data.level = item_data->level;
     consumable_item->parsed.data.inventory_type = INVTYPE_TRINKET;  // DF consumables use trinket CR multipliers
+    consumable_item->parsed.data.crafting_quality = item_data->crafting_quality;
 
     effect->item = consumable_item.get();
   }

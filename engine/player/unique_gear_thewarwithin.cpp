@@ -254,6 +254,46 @@ void tempered_potion( special_effect_t& effect )
 
   effect.custom_buff = buff;
 }
+
+// TODO: confirm debuff is 3%-5% (1% per rank), not 2%-5% as tooltip says
+void potion_of_unwavering_focus( special_effect_t& effect )
+{
+  struct unwavering_focus_t : public generic_proc_t
+  {
+    double mul;
+
+    unwavering_focus_t( const special_effect_t& e ) : generic_proc_t( e, e.name(), e.driver() )
+    {
+      target_debuff = e.driver();
+
+      auto rank = e.item->parsed.data.crafting_quality;
+      auto base = e.driver()->effectN( 2 ).base_value();
+
+      // TODO: confirm debuff is 3%-5% (1% per rank), not 2%-5% as tooltip says
+      mul = ( rank + base ) * 0.01;
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      auto debuff = generic_proc_t::create_debuff( t )
+        ->set_default_value( mul )
+        ->set_cooldown( 0_ms );
+
+      player->get_target_data( t )->debuff.unwavering_focus = debuff;
+
+      return debuff;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+
+      get_debuff( s->target )->trigger();
+    }
+  };
+
+  effect.execute_action = create_proc_action<unwavering_focus_t>( "potion_of_unwavering_focus", effect );
+}
 }  // namespace consumables
 
 namespace enchants
@@ -1311,6 +1351,7 @@ void register_special_effects()
 
   // Potions
   unique_gear::register_special_effect( 431932, consumables::tempered_potion );
+  unique_gear::register_special_effect( 431914, consumables::potion_of_unwavering_focus );
 
   // Enchants
 

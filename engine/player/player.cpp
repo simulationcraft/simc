@@ -5010,7 +5010,8 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
 
   if ( buffs.wild_hunt_tactics )
   {
-    double health_threshold = 100.0 - ( 100.0 - buffs.wild_hunt_tactics->data().effectN( 5 ).base_value() ) * sim->shadowlands_opts.wild_hunt_tactics_duration_multiplier;
+    double health_threshold = 100.0 - ( 100.0 - buffs.wild_hunt_tactics->data().effectN( 5 ).base_value() ) *
+                                        sim->shadowlands_opts.wild_hunt_tactics_duration_multiplier;
     // This buff is never triggered so use default_value.
     if ( target->health_percentage() > health_threshold )
     {
@@ -5027,6 +5028,7 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
   auto td = find_target_data( target );
   if ( td )
   {
+    // Always created debuffs, TODO: move to target_specific_debuffs
     m *= 1.0 + td->debuff.condensed_lifeforce->check_value();
     m *= 1.0 + td->debuff.adversary->check_value();
     m *= 1.0 + td->debuff.plagueys_preemptive_strike->check_value();
@@ -5037,6 +5039,10 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     m *= 1.0 + td->debuff.exsanguinated->check_value();
     m *= 1.0 + td->debuff.kevins_wrath->check_value();
     m *= 1.0 + td->debuff.wild_hunt_strategem->check_value();
+
+    // target specific debuffs, MUST check for null
+    if ( td->debuff.unwavering_focus )
+      m *= 1.0 + td->debuff.unwavering_focus->check_value();
   }
 
   return m;
