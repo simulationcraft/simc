@@ -2219,16 +2219,9 @@ struct death_knight_pet_t : public pet_t
     }
   }
 
-  target_specific_t<death_knight_td_t> dk_target_data;
-
   death_knight_td_t* get_target_data( player_t* target ) const override
   {
-    assert( target );
-    death_knight_td_t*& td = dk_target_data[ target ];
-    if ( !td )
-      td = new death_knight_td_t( *target, const_cast<death_knight_t&>( *dk() ) );
-
-    return td;
+    return dk()->get_target_data( target );
   }
 
   void init_finished() override
