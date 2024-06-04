@@ -477,6 +477,8 @@ const char* util::race_type_string( race_e type )
     case RACE_MECHAGNOME:          return "mechagnome";
     case RACE_DRACTHYR_ALLIANCE:   return "dracthyr_alliance";
     case RACE_DRACTHYR_HORDE:      return "dracthyr_horde";
+    case RACE_EARTHEN_ALLIANCE:    return "earthen_alliance";
+    case RACE_EARTHEN_HORDE:       return "earthen_horde";
     case RACE_MECHANICAL:          return "mechanical";
     case RACE_MAX:                 return "unknown";
     case RACE_UNKNOWN:             return "unknown";
@@ -485,7 +487,7 @@ const char* util::race_type_string( race_e type )
   return "unknown";
 }
 
-// race_type_string =========================================================
+// stats_type_string =========================================================
 
 const char* util::stats_type_string( stats_e type )
 {
@@ -503,8 +505,9 @@ const char* util::stats_type_string( stats_e type )
 
 race_e util::parse_race_type( util::string_view name )
 {
-  if ( name == "forsaken" )           return RACE_UNDEAD;
-  if ( name == "dracthyr" )           return RACE_DRACTHYR_HORDE;
+  if ( name == "forsaken" ) return RACE_UNDEAD;
+  if ( name == "dracthyr" ) return RACE_DRACTHYR_HORDE;
+  if ( name == "earthen" )  return RACE_EARTHEN_HORDE;
 
   return parse_enum_with_default<race_e, RACE_NONE, RACE_MAX, RACE_UNKNOWN, race_type_string>( name );
 }
@@ -2010,6 +2013,8 @@ unsigned util::race_id( race_e race )
     case RACE_MECHAGNOME: return 15;
     case RACE_DRACTHYR_ALLIANCE: return 17;
     case RACE_DRACTHYR_HORDE: return 16;
+    case RACE_EARTHEN_ALLIANCE: return 19;
+    case RACE_EARTHEN_HORDE: return 18;
     default: return 0;
   }
 }
@@ -2140,6 +2145,8 @@ race_e util::translate_race_id( int rid )
     case 37: return RACE_MECHAGNOME;
     case 52: return RACE_DRACTHYR_ALLIANCE;
     case 70: return RACE_DRACTHYR_HORDE;
+    case 84: return RACE_EARTHEN_HORDE;
+    case 85: return RACE_EARTHEN_ALLIANCE;
   }
 
   return RACE_NONE;
@@ -3531,6 +3538,7 @@ bool is_alliance( race_e race )
     case RACE_KUL_TIRAN:
     case RACE_MECHAGNOME:
     case RACE_DRACTHYR_ALLIANCE:
+    case RACE_EARTHEN_ALLIANCE:
       return true;
     default:
       return false;
@@ -3554,6 +3562,7 @@ bool is_horde( race_e race )
     case RACE_ZANDALARI_TROLL:
     case RACE_VULPERA:
     case RACE_DRACTHYR_HORDE:
+    case RACE_EARTHEN_HORDE:
       return true;
     default:
       return false;

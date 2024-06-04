@@ -1771,12 +1771,12 @@ static constexpr stat_data_t __gt_race_stats[] =
   {  -2,  1, -1,  2,  0 }, // Mechagnome
   {  -1,  1, -2,  2,  0 }, // Dracthyr - Horde
   {  -1,  1, -2,  2,  0 }, // Dracthyr - Alliance
-  {   0,  0,  0,  0,  0 }, // Forest Troll
-  {   0,  0,  0,  0,  0 }, // Tanuka
-  {   0,  0,  0,  0,  0 }, // Skeleton
-  {   0,  0,  0,  0,  0 }, // Ice Troll
+  {   0,  0,  0,  0,  0 }, // Earthen - Horde
+  {   0,  0,  0,  0,  0 }, // Earthen - Alliance
+  {   0,  0,  0,  0,  0 }, // Unused
+  {   0,  0,  0,  0,  0 }, // Unused
   {   2,  1,  0, -3,  0 }, // Worgen
-  {   0,  0,  0,  0,  0 }, // Gilnean
+  {   0,  0,  0,  0,  0 }, // Unused
   {   0, -2,  2,  0,  0 }, // Pandaren
   {   0, -2,  2,  0,  0 }, // Pandaren - Alliance
   {   0, -2,  2,  0,  0 }, // Pandaren - Horde
