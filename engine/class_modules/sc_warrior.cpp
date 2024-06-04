@@ -7082,7 +7082,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 
   debuffs_skullsplitter = make_buff( *this, "skullsplitter",  p.find_spell( 427040 ) )
                             ->set_default_value( p.find_spell( 427040 ) -> effectN( 1 ).percent() )
-                            ->set_stack_change_callback( [ this, &p ]( buff_t* buff_, int old_, int new_ )
+                            ->set_stack_change_callback( [ this ]( buff_t* buff_, int old_, int new_ )
                             {
                               // Dot ticks twice as fast, for half the time with skullsplitter up
                               if ( old_ == 0 )

@@ -3534,8 +3534,8 @@ struct deep_breath_t : public evoker_spell_t
   };
 
   action_t* damage;
-  action_t* melt_armor_dot;
   action_t* ebon;
+  action_t* melt_armor_dot;
 
   deep_breath_t( evoker_t* p, std::string_view options_str )
     : evoker_spell_t( "deep_breath", p,
@@ -5071,11 +5071,11 @@ struct engulf_t : public evoker_spell_t
     using base_t = engulf_base_t<Base>;
     double engulf_mult;
     double fan_the_flames_mult;
-    timespan_t traveling_flame_extend;
     action_t* consume_flame;
     empowered_release_spell_t* replicated_empower_action;
     timespan_t consume_flame_time;
     double consume_flame_mult;
+    timespan_t traveling_flame_extend;
 
     engulf_base_t( std::string_view n, evoker_t* p, const spell_data_t* s )
       : Base( n, p, s ),

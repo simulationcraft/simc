@@ -7160,7 +7160,7 @@ struct clear_the_witnesses_t : public rogue_attack_t
   }
 
   // ALPHA TOCHECK -- Just setting this to false because it'd be dumb if it worked
-  virtual bool procs_shadow_blades_damage() const
+  bool procs_shadow_blades_damage() const override
   { return false; }
 };
 
@@ -7185,7 +7185,7 @@ struct corrupt_the_blood_t : public rogue_attack_t
   }
 
   // ALPHA TOCHECK -- Just setting this to false because it'd be dumb if it worked
-  virtual bool procs_shadow_blades_damage() const
+  bool procs_shadow_blades_damage() const override
   { return false; }
 };
 
@@ -7205,7 +7205,7 @@ struct flensing_knives_t : public rogue_attack_t
   }
 
   // ALPHA TOCHECK -- Just setting this to false because it'd be dumb if it worked
-  virtual bool procs_shadow_blades_damage() const
+  bool procs_shadow_blades_damage() const override
   { return false; }
 };
 
@@ -7217,7 +7217,7 @@ struct hunt_them_down_t : public rogue_attack_t
   }
 
   // ALPHA TOCHECK -- Just setting this to false because it'd be dumb if it worked
-  virtual bool procs_shadow_blades_damage() const
+  bool procs_shadow_blades_damage() const override
   { return false; }
 };
 
@@ -7229,7 +7229,7 @@ struct singular_focus_t : public rogue_attack_t
   }
 
   // ALPHA TOCHECK -- Just setting this to false because it'd be dumb if it worked
-  virtual bool procs_shadow_blades_damage() const
+  bool procs_shadow_blades_damage() const override
   { return false; }
 };
 

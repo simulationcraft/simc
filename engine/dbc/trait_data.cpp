@@ -205,7 +205,7 @@ const std::string_view trait_data_t::get_hero_tree_name( unsigned id_sub_tree, b
   return {};
 }
 
-const unsigned trait_data_t::get_hero_tree_id( std::string_view name, bool ptr )
+unsigned trait_data_t::get_hero_tree_id( std::string_view name, bool ptr )
 {
   auto _data = SC_DBC_GET_DATA( __trait_sub_tree_data, __ptr_trait_sub_tree_data, ptr );
   auto _it = range::find_if( _data, [ name ]( const std::pair<unsigned, std::string>& entry ) {
