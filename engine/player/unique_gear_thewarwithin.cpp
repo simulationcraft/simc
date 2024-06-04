@@ -183,8 +183,7 @@ void flask_of_alchemical_chaos( special_effect_t& effect )
   {
     std::vector<std::pair<buff_t*, buff_t*>> buff_list;
 
-    flask_of_alchemical_chaos_buff_t( const special_effect_t& e )
-      : consumable_buff_t( e.player, e.name(), e.driver() )
+    flask_of_alchemical_chaos_buff_t( const special_effect_t& e ) : consumable_buff_t( e.player, e.name(), e.driver() )
     {
       auto bonus = e.driver()->effectN( 5 ).average( e.item );
       auto penalty = -( e.driver()->effectN( 6 ).average( e.item ) );
@@ -238,6 +237,23 @@ void flask_of_alchemical_chaos( special_effect_t& effect )
 }
 
 // Potions
+void tempered_potion( special_effect_t& effect )
+{
+  auto tempered_stat = STAT_NONE;
+
+  if ( auto _flask = dynamic_cast<dbc_consumable_base_t*>( effect.player->find_action( "flask" ) ) )
+    if ( auto _buff = _flask->consumable_buff; _buff && util::starts_with( _buff->name_str, "flask_of_tempered_" ) )
+      tempered_stat = static_cast<stat_buff_t*>( _buff )->stats.front().stat;
+
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.driver() );
+  auto amount = effect.driver()->effectN( 1 ).average( effect.item );
+
+  for ( auto s : secondary_ratings )
+    if ( s != tempered_stat )
+      buff->add_stat( s, amount );
+
+  effect.custom_buff = buff;
+}
 }  // namespace consumables
 
 namespace enchants
@@ -1291,8 +1307,10 @@ void register_special_effects()
   unique_gear::register_special_effect( 457301, consumables::secondary_food( 457049, STAT_MASTERY_RATING, STAT_HASTE_RATING ) );  // chippy tea
 
   // Flasks
-  register_special_effect( 432021, consumables::flask_of_alchemical_chaos, true );
+  unique_gear::register_special_effect( 432021, consumables::flask_of_alchemical_chaos, true );
+
   // Potions
+  unique_gear::register_special_effect( 431932, consumables::tempered_potion );
 
   // Enchants
 
