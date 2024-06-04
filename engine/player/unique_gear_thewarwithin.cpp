@@ -50,11 +50,6 @@ void register_special_effect( std::initializer_list<unsigned> spell_ids, custom_
     register_special_effect( id, init_callback, fallback );
 }
 
-void disabled_special_effect( unsigned spell_id )
-{
-  unique_gear::register_special_effect( spell_id, DISABLED_EFFECT );
-}
-
 const spell_data_t* spell_from_spell_text( const special_effect_t& e, unsigned match_id )
 {
   if ( auto desc = e.player->dbc->spell_text( e.spell_id ).desc() )
@@ -1425,29 +1420,29 @@ void register_special_effects()
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
-  disabled_special_effect( 444958 );   // spymaster's web
+  register_special_effect( 444958, DISABLED_EFFECT );  // spymaster's web
   register_special_effect( 444067, items::void_reapers_chime );
   register_special_effect( 445619, items::aberrant_spellforge, true );
-  disabled_special_effect( 445593 );   // aberrant spellforge
+  register_special_effect( 445593, DISABLED_EFFECT );  // aberrant spellforge
   register_special_effect( 447970, items::sikrans_shadow_arsenal );
-  disabled_special_effect( 445203 );   // sikran's shadow arsenal
+  register_special_effect( 445203, DISABLED_EFFECT );  // sikran's shadow arsenal
   register_special_effect( 444301, items::swarmlords_authority );
-  disabled_special_effect( 444292 );   // swarmlord's authority
+  register_special_effect( 444292, DISABLED_EFFECT );  // swarmlord's authority
   register_special_effect( 444264, items::foul_behemoths_chelicera );
   register_special_effect( 445560, items::ovinaxs_mercurial_egg );
-  disabled_special_effect( 445066 );   // ovinax's mercurial egg
+  register_special_effect( 445066, DISABLED_EFFECT );  // ovinax's mercurial egg
   register_special_effect( 446209, items::malfunctioning_ethereum_module, true );
   register_special_effect( 443124, items::abyssal_effigy );
-  disabled_special_effect( 443128 );   // abyssal effigy
+  register_special_effect( 443128, DISABLED_EFFECT );  // abyssal effigy
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
   register_special_effect( 442205, items::befoulers_syringe );
   // Armor
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );
-  disabled_special_effect( 457918 );   // seal of the poisoned pact
+  register_special_effect( 457918, DISABLED_EFFECT );  // seal of the poisoned pact
   // Sets
-  disabled_special_effect( 444166 );  // kye'veza's cruel implements
+  register_special_effect( 444166, DISABLED_EFFECT );  // kye'veza's cruel implements
 }
 
 void register_target_data_initializers( sim_t& )
