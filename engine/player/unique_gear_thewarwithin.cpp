@@ -306,6 +306,49 @@ void oil_of_deep_toxins( special_effect_t& effect )
 
 namespace enchants
 {
+void authority_of_radiant_power( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 448730 ) )
+    ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 2 ).average( effect.player ) );
+
+  auto damage = create_proc_action<generic_proc_t>( effect.name(), effect, 448744 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.player );
+
+  effect.spell_id = effect.trigger()->id();  // rppm driver is the effect trigger
+
+  effect.player->callbacks.register_callback_execute_function(
+    effect.spell_id, [ buff, damage ]( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) {
+      damage->execute_on_target( s->target );
+      buff->trigger();
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// TODO: confirm coeff is per tick and not for entire dot
+void authority_of_the_depths( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_proc_t>( "suffocating_darkness", effect, 449217 );
+  damage->base_td = effect.driver()->effectN( 1 ).average( effect.player );
+
+  effect.spell_id = effect.trigger()->id();  // rppm driver is the effect trigger
+
+  effect.execute_action = damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void secondary_weapon_enchant( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger()->effectN( 1 ).trigger() )
+    ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
+
+  effect.spell_id = effect.trigger()->id();  // rppm driver is the effect trigger
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace enchants
 
 namespace embellishments
@@ -1365,6 +1408,13 @@ void register_special_effects()
   register_special_effect( { 451904, 451909, 451912 }, consumables::oil_of_deep_toxins );
 
   // Enchants
+  register_special_effect( { 448710, 448714, 448716 }, enchants::authority_of_radiant_power );
+  register_special_effect( { 449221, 449223, 449222 }, enchants::authority_of_the_depths );
+  register_special_effect( { 449055, 449056, 449059,                                          // council's guile (crit)
+                             449095, 449096, 449097,                                          // stormrider's fury (haste)
+                             449112, 449113, 449114,                                          // stonebound artistry (mastery)
+                             449120, 449118, 449117 }, enchants::secondary_weapon_enchant );  // oathsworn tenacity (vers)
+
 
   // Embellishments
 
