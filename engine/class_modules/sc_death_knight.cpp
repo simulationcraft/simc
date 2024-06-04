@@ -5224,7 +5224,9 @@ struct decomposition_debuff_t final : public death_knight_debuff_t
     : death_knight_debuff_t( td, "decomposition",
                              p.talent.unholy.decomposition.ok() ? p.spell.decomposition_buff : spell_data_t::nil() ),
       damage( nullptr ),
-      target( target )
+      target( target ),
+      stored_damage( 0 ),
+      last_period( 0 )
   {
     damage = p.active_spells.decomposition_damage;
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -5243,14 +5245,14 @@ struct decomposition_debuff_t final : public death_knight_debuff_t
   {
     death_knight_debuff_t::reset();
     stored_damage = 0;
-    last_period = 0;
+    last_period   = 0;
   }
 
   void start( int stacks, double value, timespan_t duration ) override
   {
     death_knight_debuff_t::start( stacks, value, duration );
     stored_damage = 0;
-    last_period = 0;
+    last_period   = 0;
   };
 
   void expire_override( int stacks, timespan_t duration ) override
