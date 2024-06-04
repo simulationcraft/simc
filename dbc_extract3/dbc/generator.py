@@ -3933,6 +3933,11 @@ class SetBonusListGenerator(DataGenerator):
             'tier'   : 'DF4'
         },
         {
+            'name'   : 'fury_of_the_storm_rook',
+            'bonuses': [ 1612 ],
+            'tier'   : 'TWW_FSR'
+        },
+        {
             'name'   : 'kyevezzas_cruel_implements',
             'bonuses': [ 1613 ],
             'tier'   : 'TWW_KCI'

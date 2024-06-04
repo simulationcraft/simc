@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.54935
-static const std::array<spelltext_data_t, 25802> __spelltext_data { {
+static const std::array<spelltext_data_t, 25804> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23952,6 +23952,7 @@ static const std::array<spelltext_data_t, 25802> __spelltext_data { {
   { 443770, "Your movement speed is increased by $s2% and you have immunity to falling damage. Your abilities have a chance to increase your party's Haste by $s1 for $443771d.", 0, 0 },
   { 443771, "$@spelldesc443471", "Haste increased by $w1.", 0 },
   { 443772, "Casting your major class cooldown causes you to overload, inflicting $s1 Nature damage and stunning enemies within $443796A1 yards for $443796d. ($proccooldown Sec Cooldown)", 0, 0 },
+  { 443773, "While in combat there is a chance that lightning will strike nearby. Being struck by the lightning will infuse you with Rook's Fury, granting $449440s1 Haste for $449440d.", 0, 0 },
   { 443783, "Casting $?c1[Arcane Surge][Icy Veins] conjures $s1 $?c1[Arcane][Frost] Splinters.\r\n\r\nDuring $?c1[Arcane Surge][Icy Veins], whenever you conjure $?c1[an Arcane][a Frost] Splinter, you have a $s2% chance to conjure an additional $?c1[Arcane][Frost] Splinter.", 0, 0 },
   { 443788, "$@spelldesc434300", "Damage taken has a chance to summon air support from the Dracthyr.", 0 },
   { 443796, "$@spelldesc443772", 0, 0 },
@@ -24417,6 +24418,7 @@ static const std::array<spelltext_data_t, 25802> __spelltext_data { {
   { 449436, "$@spelldesc445322", 0, 0 },
   { 449437, "$@spelldesc445322", 0, 0 },
   { 449438, "$@spelldesc445322", 0, 0 },
+  { 449440, "$@spelldesc443773", "The storm flows through you, granting $w1 Haste.", 0 },
   { 449504, "Your spells have a chance of releasing spores that grant $s1 Mastery to $s2 nearby allies for $449753d. Any spores that can't find a host grant you $s3% of the Mastery instead.\r\n\r\nActivating this effect by a Nature spell causes one additional spore to be released.", 0, 0 },
   { 449537, "If you generate a combo point in excess of what you can store, your next Ferocious Bite or Primal Wrath deals $449538s1% increased direct damage.", 0, 0 },
   { 449538, "$@spelldesc449537", "Your next Ferocious Bite or Primal Wrath deals $s1% increased direct damage.", 0 },
