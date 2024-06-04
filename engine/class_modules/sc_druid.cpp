@@ -10811,42 +10811,26 @@ std::string druid_t::default_flask() const
 
 std::string druid_t::default_potion() const
 {
-  if ( true_level >= 70 ) return "elemental_potion_of_ultimate_power_3";
-
   switch ( specialization() )
   {
-    case DRUID_BALANCE:
-    case DRUID_RESTORATION:
-      return true_level >= 60 ? "spectral_intellect" : "superior_battle_potion_of_intellect";
-    case DRUID_FERAL:
-    case DRUID_GUARDIAN:
-      return true_level >= 60 ? "spectral_agility" : "superior_battle_potion_of_agility";
-    default: return "disabled";
+    case DRUID_BALANCE:     return "tempered_potion_3";
+    case DRUID_FERAL:       return "tempered_potion_3";
+    case DRUID_GUARDIAN:    return "tempered_potion_3";
+    case DRUID_RESTORATION: return "tempered_potion_3";
+    default:                return "disabled";
   }
 }
 
 std::string druid_t::default_food() const
 {
-  if ( true_level >= 70 )
+  switch ( specialization() )
   {
-    switch ( specialization() )
-    {
-      case DRUID_BALANCE:
-        return "fated_fortune_cookie";
-      case DRUID_GUARDIAN:
-        return "fated_fortune_cookie";
-      case DRUID_RESTORATION:
-        return "fated_fortune_cookie";
-      case DRUID_FERAL:
-        return "thousandbone_tongueslicer";
-      default:
-        return "disabled";
-    }
+    case DRUID_BALANCE:     return "stuffed_cave_peppers";
+    case DRUID_FERAL:       return "mycobloom_risotto";
+    case DRUID_GUARDIAN:    return "mycobloom_risotto";
+    case DRUID_RESTORATION: return "stuffed_cave_peppers";
+    default:                return "disabled";
   }
-  else if ( true_level >= 60 ) return "feast_of_gluttonous_hedonism";
-  else if ( true_level >= 55 ) return "surprisingly_palatable_feast";
-  else if ( true_level >= 45 ) return "famine_evaluator_and_snack_table";
-  else return "disabled";
 }
 
 std::string druid_t::default_rune() const
@@ -10856,19 +10840,15 @@ std::string druid_t::default_rune() const
 
 std::string druid_t::default_temporary_enchant() const
 {
-  if ( true_level < 60 ) return "disabled";
+  std::string str = "main_hand:";
 
   switch ( specialization() )
   {
-    case DRUID_BALANCE:
-      return true_level >= 70 ? "main_hand:hissing_rune_3" : "main_hand:shadowcore_oil";
-    case DRUID_RESTORATION:
-      return true_level >= 70 ? "main_hand:howling_rune_3" : "main_hand:shadowcore_oil";
-    case DRUID_FERAL:
-      return true_level >= 70 ? "main_hand:buzzing_rune_3" : "main_hand:shaded_sharpening_stone";
-    case DRUID_GUARDIAN:
-      return true_level >= 70 ? "main_hand:primal_weightstone_3" : "main_hand:shadowcore_oil";
-    default: return "disabled";
+    case DRUID_BALANCE:     return str + "algari_mana_oil_3";
+    case DRUID_FERAL:       return str + "algari_mana_oil_3";
+    case DRUID_GUARDIAN:    return str + "algari_mana_oil_3";
+    case DRUID_RESTORATION: return str + "algari_mana_oil_3";
+    default:                return "disabled";
   }
 }
 
