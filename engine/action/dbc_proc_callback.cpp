@@ -136,11 +136,10 @@ void dbc_proc_callback_t::activate_with_buff( buff_t* buff, bool init )
 
 void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
 {
-  // all actions with enable_proc_from_suppressed will also have callbacks = false, so check this first thing before
-  // processing further.
-  if ( a->enable_proc_from_suppressed )
-      if ( !can_proc_from_suppressed )
-        return;
+  // both action_t::enabled_proc_from_suppressed AND dbc_proc_callback_t::can_proc_from_suppressed are necessary if
+  // action_t::suppress_caster_procs is true
+  if ( a->suppress_caster_procs && ( !a->enable_proc_from_suppressed || !can_proc_from_suppressed ) )
+    return;
 
   cooldown_t* cd = get_cooldown( state->target );
 

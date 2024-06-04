@@ -106,10 +106,14 @@ public:
   /// If set to true, this action will not be counted toward total amount of executes in reporting. Useful for abilities with parent/children attacks.
   bool dual;
 
-  /// enables/disables proc callback system on the action, like trinkets, enchants, rppm.
+  /// enables/disables proc callback system on the action, like trinkets, enchants, rppm. this supercedes all dbc-parsed flags.
   bool callbacks;
 
-  /// does not trigger callbacks except for drivers with SX_CAN_PROC_FROM_SUPPRESSED
+  /// if true, does not trigger callbacks on caster/target.
+  bool suppress_caster_procs, suppress_target_procs;
+
+  /// can trigger callbacks on caster even if suppress_caster_proc is true, as long as the callback has can_proc_from_suppressed = true.
+  /// TODO: determine if equivalent for suppressed target procs is needed.
   bool enable_proc_from_suppressed;
 
   /// Allows triggering of procs marked to only proc from class abilities.

@@ -98,6 +98,7 @@ struct dbc_proc_callback_t : public action_callback_t
   bool can_only_proc_from_class_abilites;
   bool can_proc_from_procs;
   bool can_proc_from_suppressed;
+  // TODO: determine if SX_CAN_PROC_FROM_SUPPRESSED_TGT parsing is also needed
 
   dbc_proc_callback_t( const item_t& i, const special_effect_t& e );
 

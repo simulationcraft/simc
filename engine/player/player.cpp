@@ -7835,7 +7835,7 @@ void player_t::do_damage( action_state_t* incoming_state )
 
   // New callback system; proc abilities on incoming events.
   // TODO: How to express action causing/not causing incoming callbacks?
-  if ( incoming_state->action && incoming_state->action->callbacks )
+  if ( incoming_state->action && incoming_state->action->callbacks && !incoming_state->action->suppress_target_procs )
   {
     proc_types pt = incoming_state->proc_type();
     if ( pt != PROC1_INVALID )
