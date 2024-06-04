@@ -5242,9 +5242,15 @@ struct decomposition_debuff_t final : public death_knight_debuff_t
   void reset() override
   {
     death_knight_debuff_t::reset();
-    stored_damage = 0;
-    last_period   = 0;
+
   }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    death_knight_debuff_t::start( stacks, value, duration );
+    stored_damage = 0;
+    last_period = 0;
+  };
 
   void expire_override( int stacks, timespan_t duration ) override
   {
