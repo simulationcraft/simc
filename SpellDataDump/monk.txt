@@ -248,7 +248,7 @@ Effects          :
 #1 (id=23581)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 583.1278 (coefficient=1.28628) | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=23582)    : Apply Aura (6) | Attribute (29) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 583.1278 (coefficient=1.28628) | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 583.1278 (coefficient=1.28628) | PvP Coefficient: 1.00000 | Stat: Int | Target: Self (1)
 Description      : Increases your attack power and Intellect by $s1 for $d.
 Tooltip          : Attack power and Intellect increased by $w1.
 
@@ -7277,7 +7277,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=364982)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 21.18463 (coefficient=0.353149) | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Radius: 100 yards | Target: Friendly or Raid (118)
+                   Base Value: 0 | Scaled Value: 21.18463 (coefficient=0.353149) | PvP Coefficient: 1.00000 | Rating: Mastery | Radius: 100 yards | Target: Friendly or Raid (118)
 Description      : $@spelldesc238095
 Tooltip          : Mastery increased by $w1.
 
@@ -8067,7 +8067,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=749811)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 917504 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Rating: Haste | Target: Self (1)
 #2 (id=749812)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 287055
 #3 (id=749813)   : Summon (28)
@@ -23509,4 +23509,32 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.34000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Renewing Mist (115151), Renewing Mist (119611), Renewing Mist (448430)
                    Family Flags: 23
-#2 (id=1164426)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration
+#2 (id=1164426)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Renewing Mist (115151), Renewing Mist (119611), Renewing Mist (448430)
+                   Family Flags: 23
+Description      : Allies with Renewing Mist receive $s1% more healing from you and Renewing Mist's duration is increased by ${$s2/1000} sec.
+
+Name             : Ferociousness (id=458623) [Spell Family (53), Passive, Hidden] 
+Talent Entry     : Windwalker [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Labels           : 3800: Invoke Xuen, the White Tiger (123904 effect#3)
+Attributes       : ......xx ........ .......x .......x   ........ ..x..... ........ ........ 
+                 : x....... ........ ........ ....x...   ........ ........ xx..x... ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ....x... ........   ........ ........ ........ .x...... 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), No Aura Cancel (31), No Threat (42), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268), Don't close loot window (379), Allow during spell override (404), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1164724)  : Apply Aura (6) | Modify Critical Strike% (290)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1164725)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Critical Strike chance increased by $s1%. This effect is increased by $s2% while Xuen, the White Tiger is active.
+
+

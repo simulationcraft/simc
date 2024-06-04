@@ -15,7 +15,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=38)       : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 6.309226 (coefficient=2.2) | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 917504 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6.309226 (coefficient=2.2) | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Rating: Haste | Target: Self (1)
 Description      : Increases your melee haste by $s1 for $d.
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
@@ -8874,7 +8874,7 @@ Effects          :
 #2 (id=823066)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #3 (id=834165)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Rating: Vers | Target: Friendly (21)
 #4 (id=840441)   : Trigger Spell (64): Blessing of the Seasons
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 329720 | Target: Self (1)
 #5 (id=894823)   : Apply Aura (6) | Dummy (4)
@@ -8915,7 +8915,7 @@ Effects          :
 #2 (id=821028)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friendly (21)
 #3 (id=823067)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Rating: Mastery | Target: Friendly (21)
 #4 (id=834166)   : Cancel Aura (164)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 329720 | Target: Self (1)
 Description      : Bless an ally for $d, increasing their healing done by $s1% and healing received by $s2%.
@@ -8992,7 +8992,7 @@ Effects          :
 #2 (id=823058)   : Trigger Spell (64): Blessing of the Seasons
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 328278 | Target: Self (1)
 #3 (id=834162)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1792 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Rating: Crit | Target: Friendly (21)
 Description      : Bless an ally for $d, causing their attacks to have a $h% chance to deal $s1% additional damage as Holy.
 
 |cFFFFFFFFBlessing of the Seasons:|r Turns to Autumn after use.
@@ -9029,7 +9029,7 @@ Effects          :
 #2 (id=821268)   : Apply Aura (6) | Unknown(173)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friendly (21)
 #3 (id=823063)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 917504 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Rating: Haste | Target: Friendly (21)
 #4 (id=833967)   : Trigger Spell (64): Blessing of the Seasons
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 329722 | Target: Self (1)
 Description      : Bless an ally for $d, causing their cooldowns to recover $s1% faster.
@@ -14569,7 +14569,7 @@ Effects          :
 #2 (id=1023421)  : Trigger Spell (64): Blessing of the Seasons
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 388014 | Target: Self (1)
 #3 (id=1023422)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1792 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Rating: Crit | Target: Friendly (21)
 #4 (id=1146585)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.50000 | Target: Friendly (21)
 #5 (id=1146606)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
@@ -14629,7 +14629,7 @@ Effects          :
 #2 (id=1023427)  : Apply Aura (6) | Unknown(173)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friendly (21)
 #3 (id=1023428)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 917504 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Rating: Haste | Target: Friendly (21)
 #4 (id=1023429)  : Trigger Spell (64): Blessing of the Seasons
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 388015 | Target: Self (1)
 Description      : Bless an ally for $d, causing their cooldowns to recover $s1% faster.
@@ -14670,7 +14670,7 @@ Effects          :
 #2 (id=1023432)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #3 (id=1023433)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Rating: Vers | Target: Friendly (21)
 #4 (id=1023434)  : Trigger Spell (64): Blessing of the Seasons
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 388017 | Target: Self (1)
 #5 (id=1023435)  : Apply Aura (6) | Dummy (4)
@@ -14745,7 +14745,7 @@ Effects          :
 #2 (id=1023441)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friendly (21)
 #3 (id=1023442)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Rating: Mastery | Target: Friendly (21)
 #4 (id=1023443)  : Cancel Aura (164)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 388017 | Target: Self (1)
 Description      : Bless an ally for $d, increasing their healing done by $s1% and healing received by $s2%.

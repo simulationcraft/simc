@@ -1241,7 +1241,7 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=118955)   : Apply Aura (6) | Attribute (29) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 583.1278 (coefficient=1.28628) | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 583.1278 (coefficient=1.28628) | PvP Coefficient: 1.00000 | Stat: Int | Target: Self (1)
 Description      : Increases your Intellect by $s1 for $d.
 Tooltip          : Intellect increased by $w1.
 

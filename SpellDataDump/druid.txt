@@ -10071,7 +10071,7 @@ Attributes       : ........ ........ ..x..... ........   .....x.. ..x..... .....
                  : Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Not a Proc (105), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=735915)   : Apply Aura (6) | Attribute (29)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Stat: Agi | Target: Self (1)
 #2 (id=735916)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 279552
 Description      : $@spelldesc279552
@@ -10497,7 +10497,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=753604)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Rating: Mastery | Target: Self (1)
 #2 (id=753605)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 289314 | Target: Self (1)
 Description      : $@spelldesc289314
@@ -11175,7 +11175,7 @@ Effects          :
 #5 (id=889284)   : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #6 (id=889338)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 271.8118 (coefficient=1.052632) | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 271.8118 (coefficient=1.052632) | PvP Coefficient: 1.00000 | Rating: Mastery | Target: Friendly (21)
 Description      : Form a bond with an ally. Every $327097d, you may empower the bond for $327037d, granting you an effect based on your partner's role, and granting them an effect based on your role.
 
 $?c3[|cFFFFFFFFTank|r
@@ -11330,7 +11330,7 @@ Effects          :
 #5 (id=889249)   : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 #6 (id=889250)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 271.8118 (coefficient=1.052632) | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 271.8118 (coefficient=1.052632) | PvP Coefficient: 1.00000 | Rating: Mastery | Target: Friendly (21)
 Description      : $@spelldesc326434
 Tooltip          : Bonded with $@auracaster. Every $327097d, you may empower the bond, granting bonuses based on your respective roles.
 

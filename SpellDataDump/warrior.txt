@@ -8261,7 +8261,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=813547)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -6
-                   Base Value: 0 | Scaled Value: 1549.781 (coefficient=0.017155) | PvP Coefficient: 0.66666 | Misc Value: 33554432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1549.781 (coefficient=0.017155) | PvP Coefficient: 0.66666 | Rating: Mastery | Target: Self (1)
 #2 (id=845745)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=880295)   : Apply Aura (6) | Modify Min Speed% (305)
@@ -8380,7 +8380,7 @@ Attributes       : ........ ........ ........ x..x.x..   ...x.x.x ..x..... ...x.
                  : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Exclude Caster (51), Allow While Invisible (78), Only On Player (104), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=816612)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -6
-                   Base Value: 0 | Scaled Value: 1549.781 (coefficient=0.017155) | PvP Coefficient: 0.66667 | Misc Value: 33554432 | Radius: 0 - 30 yards | Target: At Self (18) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 1549.781 (coefficient=0.017155) | PvP Coefficient: 0.66667 | Rating: Mastery | Radius: 0 - 30 yards | Target: At Self (18) -> At Friendly in Area (31)
 #2 (id=816613)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: At Self (18) -> At Friendly in Area (31)
 #3 (id=880301)   : Apply Aura (6) | Modify Min Speed% (305)
@@ -12872,7 +12872,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Update Passives on Apply/Remove (344), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1016512)  : Apply Aura (6) | Attribute (29)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Stat: Str | Target: Self (1)
 #2 (id=1018256)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.45000 | Target: Self (1)
 Description      : Gain Strength equal to $s2% of your Armor.
@@ -16154,7 +16154,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1034882)  : Apply Aura (6) | Attribute (29)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Stat: Str | Target: Self (1)
 #2 (id=1034883)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Gain Strength equal to $s2% of your Armor.

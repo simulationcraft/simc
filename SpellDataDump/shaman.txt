@@ -934,7 +934,7 @@ Effects          :
 #1 (id=23581)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 583.1278 (coefficient=1.28628) | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=23582)    : Apply Aura (6) | Attribute (29) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 583.1278 (coefficient=1.28628) | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 583.1278 (coefficient=1.28628) | PvP Coefficient: 1.00000 | Stat: Int | Target: Self (1)
 Description      : Increases your attack power and Intellect by $s1 for $d.
 Tooltip          : Attack power and Intellect increased by $w1.
 

@@ -6841,7 +6841,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
 #1 (id=735031)   : Apply Aura (6) | Attribute (29)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Stat: Agi | Target: Self (1)
 #2 (id=735032)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 278675
 Description      : $@spelldesc278675
@@ -6863,7 +6863,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Can Proc From Procs (122), Do Not Display Duration (170), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=735068)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 917504 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Rating: Haste | Target: Self (1)
 #2 (id=735070)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 278681
 #3 (id=735111)   : Energize Power (30)

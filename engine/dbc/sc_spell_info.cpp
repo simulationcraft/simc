@@ -1538,6 +1538,20 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     s << " | Resource: "
       << util::resource_type_string( util::translate_power_type( static_cast<power_e>( e->misc_value1() ) ) );
   }
+  else if ( e->type() == E_APPLY_AURA && e->subtype() == A_MOD_STAT )
+  {
+    auto stat = e->misc_value1() == -2 ? STAT_STR_AGI_INT
+              : e->misc_value1() == -1 ? STAT_ALL
+                                       : static_cast<stat_e>( e->misc_value1() + 1 );
+    s << " | Stat: " << util::stat_type_abbrev( stat );
+  }
+  else if ( e->type() == E_APPLY_AURA && e->subtype() == A_MOD_RATING )
+  {
+    std::vector<const char*> tmp;
+    range::transform( util::translate_all_rating_mod( e->misc_value1() ), std::back_inserter( tmp ),
+                      &util::stat_type_abbrev );
+    s << " | Rating: " << util::string_join( tmp );
+  }
   else if ( e->misc_value1() != 0 )
   {
     if ( e->affected_schools() != 0U )
