@@ -609,7 +609,7 @@ void aberrant_spellforge( special_effect_t& effect )
       } );
 
   auto cb = new dbc_proc_callback_t( effect.player, *equip );
-  cb->activate_with_buff( empowerment );
+  cb->deactivate();
 
   // setup on-use effect
   /* TODO: determine when silence applies
@@ -621,7 +621,7 @@ void aberrant_spellforge( special_effect_t& effect )
   };
   */
 
-  empowerment->set_stack_change_callback( [ cb, haste, stack ]( buff_t* b, int old_, int new_ ) {
+  empowerment->set_stack_change_callback( [ cb, haste, stack ]( buff_t*, int old_, int new_ ) {
     if ( !old_ )
     {
       cb->activate();

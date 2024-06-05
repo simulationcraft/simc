@@ -5222,10 +5222,10 @@ struct decomposition_debuff_t final : public death_knight_debuff_t
 {
   decomposition_debuff_t( death_knight_td_t& td, util::string_view n, const spell_data_t* s )
     : death_knight_debuff_t( td, n, s ),
-      damage( nullptr ),
-      target( td.target ),
       stored_damage( 0 ),
-      last_period( 0 )
+      last_period( 0 ),
+      damage( nullptr ),
+      target( td.target )
   {
     damage = p()->active_spells.decomposition_damage;
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {

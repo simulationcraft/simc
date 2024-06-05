@@ -4413,7 +4413,7 @@ struct purifying_brew_t : public monk_spell_t
 
     if ( p()->talent.brewmaster.improved_celestial_brew->ok() )
     {
-      unsigned stacks = p()->stagger->level_index();
+      unsigned stacks = as<unsigned>( p()->stagger->level_index() );
       if ( stacks > 0 )
         p()->buff.purified_chi->trigger( stacks );
     }
@@ -10207,6 +10207,8 @@ double stagger_t::stagger_level_t::min_threshold( stagger_level_e level )
       return 0.6;
     case MAX_STAGGER:
       return 10.0;
+    default:
+      return -1.0;
   }
 }
 
@@ -10224,6 +10226,8 @@ std::string stagger_t::stagger_level_t::level_name( stagger_level_e level )
       return "heavy_stagger";
     case MAX_STAGGER:
       return "max_stagger";
+    default:
+      return "unknown_stagger";
   }
 }
 
@@ -10241,6 +10245,8 @@ std::string stagger_t::stagger_level_t::level_name_pretty( stagger_level_e level
       return "Heavy Stagger";
     case MAX_STAGGER:
       return "maximum Stagger";
+    default:
+      return "unknown Stagger";
   }
 }
 

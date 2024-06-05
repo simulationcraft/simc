@@ -3882,7 +3882,7 @@ struct lava_lash_t : public shaman_attack_t
 
   void move_random_target( std::vector<player_t*>& in, std::vector<player_t*>& out ) const
   {
-    auto idx = static_cast<unsigned>( rng().range( 0, in.size() ) );
+    auto idx = rng().range( 0U, as<unsigned>( in.size() ) );
     out.push_back( in[ idx ] );
     in.erase( in.begin() + idx );
   }
@@ -5115,7 +5115,7 @@ struct chain_lightning_t : public chained_base_t
          rng().roll( p()->talent.supercharge->effectN( 2 ).percent() ) )
     {
       p()->generate_maelstrom_weapon( execute_state->action,
-                                      p()->talent.supercharge->effectN( 3 ).base_value() );
+                                      as<int>( p()->talent.supercharge->effectN( 3 ).base_value() ) );
     }
 
     if ( exec_type == spell_variant::NORMAL )
@@ -6179,7 +6179,7 @@ struct lightning_bolt_t : public shaman_spell_t
          rng().roll( p()->talent.supercharge->effectN( 2 ).percent() ) )
     {
       p()->generate_maelstrom_weapon( execute_state->action,
-                                      p()->talent.supercharge->effectN( 3 ).base_value() );
+                                      as<int>( p()->talent.supercharge->effectN( 3 ).base_value() ) );
     }
   }
 
@@ -6915,7 +6915,7 @@ struct earthquake_t : public earthquake_base_t
 
       if ( !eligible_targets.empty() )
       {
-        auto idx = static_cast<unsigned>( rng().range( 0, eligible_targets.size() ) );
+        auto idx = rng().range( 0U, as<unsigned>( eligible_targets.size() ) );
         td( eligible_targets[ idx ] )->debuff.lightning_rod->trigger();
       }
     }
@@ -8769,7 +8769,7 @@ struct tempest_t : public shaman_spell_t
          rng().roll( p()->talent.supercharge->effectN( 2 ).percent() ) )
     {
       p()->generate_maelstrom_weapon( execute_state->action,
-                                      p()->talent.supercharge->effectN( 3 ).base_value() );
+                                      as<int>( p()->talent.supercharge->effectN( 3 ).base_value() ) );
     }
 
     p()->buff.tempest->expire();
@@ -8778,7 +8778,7 @@ struct tempest_t : public shaman_spell_t
     {
       if ( p()->specialization() == SHAMAN_ENHANCEMENT )
       {
-        p()->generate_maelstrom_weapon( this, p()->talent.storm_swell->effectN( 1 ).base_value() );
+        p()->generate_maelstrom_weapon( this, as<int>( p()->talent.storm_swell->effectN( 1 ).base_value() ) );
       }
       else
       {
@@ -9699,9 +9699,9 @@ void shaman_t::analyze( sim_t& sim )
   if ( talent.deeply_rooted_elements.ok() )
   {
     dre_samples.analyze();
-    dre_samples.create_histogram( dre_samples.max() - dre_samples.min() + 1 );
+    dre_samples.create_histogram( static_cast<unsigned>( dre_samples.max() - dre_samples.min() + 1 ) );
     dre_uptime_samples.analyze();
-    dre_uptime_samples.create_histogram( std::ceil( dre_uptime_samples.max() ) - std::floor( dre_uptime_samples.min() ) + 1 );
+    dre_uptime_samples.create_histogram( static_cast<unsigned>( std::ceil( dre_uptime_samples.max() ) - std::floor( dre_uptime_samples.min() ) + 1 ) );
   }
 }
 

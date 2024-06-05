@@ -2043,7 +2043,7 @@ struct empowered_release_t : public empowered_base_t<BASE>
 
       target_list.clear();
 
-      if ( sim->player_no_pet_list.size() <= n_targets() )
+      if ( as<int>( sim->player_no_pet_list.size() ) <= n_targets() )
       {
         for ( const auto& t : sim->player_no_pet_list )
         {
@@ -3137,7 +3137,7 @@ public:
       }
     }
 
-    if ( target_list.size() < n_targets() )
+    if ( as<int>( target_list.size() ) < n_targets() )
     {
       for ( auto& t : secondary_list )
       {
@@ -3147,7 +3147,7 @@ public:
       }
     }
 
-    if ( target_list.size() < n_targets() )
+    if ( as<int>( target_list.size() ) < n_targets() )
     {
       for ( auto& t : tertiary_list )
       {
@@ -3156,7 +3156,7 @@ public:
                p()->get_target_data( t )->buffs.ebon_might->up() ) <= 2 )
         {
           target_list.push_back( t );
-          if ( target_list.size() >= n_targets() )
+          if ( as<int>( target_list.size() ) >= n_targets() )
             break;
         }
       }
@@ -4673,7 +4673,7 @@ struct eruption_t : public essence_spell_t
 
     if ( p()->buff.trembling_earth->check() && t31_4pc_eruption )
     {
-      for ( size_t i = 0; i < p()->buff.trembling_earth->check(); i++ )
+      for ( int i = 0; i < p()->buff.trembling_earth->check(); i++ )
       {
         t31_4pc_eruption->execute_on_target( p()->target );
       }
@@ -4868,7 +4868,7 @@ struct prescience_t : public evoker_augment_t
 
     if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B4 ) )
     {
-      p()->buff.trembling_earth->trigger( p()->allies_with_my_prescience.size() );
+      p()->buff.trembling_earth->trigger( as<int>( p()->allies_with_my_prescience.size() ) );
     }
   }
 
@@ -5816,7 +5816,7 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
       return bombardments_actions[ target ];
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* s ) override
     {
       if ( s->target->is_sleeping() )
         return;
@@ -7243,8 +7243,9 @@ void evoker_t::create_buffs()
   
   if ( talent.scalecommander.unrelenting_siege.ok() )
   {
-    buff.unrelenting_siege->set_max_stack( talent.scalecommander.unrelenting_siege->effectN( 2 ).base_value() /
-                                           talent.scalecommander.unrelenting_siege->effectN( 1 ).base_value() );
+    buff.unrelenting_siege->set_max_stack(
+        as<int>( talent.scalecommander.unrelenting_siege->effectN( 2 ).base_value() /
+                 talent.scalecommander.unrelenting_siege->effectN( 1 ).base_value() ) );
   }
 }
 

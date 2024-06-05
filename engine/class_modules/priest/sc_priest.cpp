@@ -911,7 +911,7 @@ struct smite_base_t : public priest_spell_t
                                                   priest().find_target_data( b )->buffs.atonement->remains() < 30_s;
                                          } ) );*/
 
-          auto idx = static_cast<unsigned>( rng().range( 0, p().allies_with_atonement.size() ) );
+          auto idx = rng().range( 0U, as<unsigned>( p().allies_with_atonement.size() ) );
 
           auto it = p().allies_with_atonement[ idx ];
 
@@ -1584,11 +1584,11 @@ public:
         }
         else
         {
-          number_of_chains = priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 1 ).base_value();
+          number_of_chains = as<int>( priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 1 ).base_value() );
           // Chains amount differs if you have a Deathspeaker proc or while in execute but you still keep the modifier
           if ( priest().buffs.deathspeaker->check() || s->target->health_percentage() < execute_percent )
           {
-            number_of_chains += priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 2 ).base_value();
+            number_of_chains += as<int>( priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 2 ).base_value() );
           }
         }
 
@@ -3527,7 +3527,7 @@ void priest_t::create_buffs()
   // TODO: use some other buff id or make quiet
   buffs.darkening_horizon = make_buff( this, "darkening_horizon", talents.voidweaver.entropic_rift_aoe )
                                 ->set_max_stack( talents.voidweaver.darkening_horizon.enabled()
-                                                     ? talents.voidweaver.darkening_horizon->effectN( 2 ).base_value()
+                                                     ? as<int>( talents.voidweaver.darkening_horizon->effectN( 2 ).base_value() )
                                                      : 1 );
   buffs.collapsing_void = make_buff( this, "collapsing_void", talents.voidweaver.collapsing_void )
                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )

@@ -10872,7 +10872,7 @@ player_talent_t player_t::find_talent_spell(
   return create_talent_obj( this, traits[ 0 ] );
 }
 
-player_talent_t player_t::find_talent_spell( unsigned trait_node_entry_id, specialization_e s ) const
+player_talent_t player_t::find_talent_spell( unsigned trait_node_entry_id ) const
 {
   const trait_data_t* trait = trait_data_t::find( trait_node_entry_id, dbc->ptr );
   if ( trait == &trait_data_t::nil() )

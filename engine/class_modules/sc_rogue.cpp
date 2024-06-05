@@ -10829,7 +10829,7 @@ void rogue_t::init_spells()
 
       if ( it != player_traits.end() && std::get<2>( *it ) != 0U )
       {
-        talent.outlaw.ghostly_strike = find_talent_spell( trait->id_trait_node_entry, ROGUE_OUTLAW );
+        talent.outlaw.ghostly_strike = find_talent_spell( trait->id_trait_node_entry );
         break;
       }
     }

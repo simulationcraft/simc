@@ -1365,7 +1365,7 @@ struct holy_power_consumer_t : public Base
                            ( is_divine_storm && p->buffs.empyrean_power->up() ) ||
                            ( ( is_wog || is_sotr ) && p->buffs.bastion_of_light->up() );
 
-    int num_hopo_spent = holy_power_consumer_t::cost();
+    int num_hopo_spent = as<int>( holy_power_consumer_t::cost() );
     // Free spenders seem to count as 3 Holy Power, regardless the cost
     if ( isFreeSLDPSpender )
       num_hopo_spent = 3;
