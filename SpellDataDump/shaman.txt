@@ -11552,7 +11552,6 @@ Spell Type       : Melee
 Range            : 30 yards
 Duration         : 15 seconds
 Labels           : 183: Spiritual Journey (214170 effect#1)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
 Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
