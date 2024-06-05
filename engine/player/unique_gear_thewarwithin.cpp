@@ -417,7 +417,8 @@ void spymasters_web( special_effect_t& effect )
     void execute() override
     {
       generic_proc_t::execute();
-
+      
+      use_buff->expire();
       use_buff->trigger( stacking_buff->check() );
       stacking_buff->expire();
     }
