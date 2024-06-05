@@ -9948,7 +9948,7 @@ void druid_t::create_buffs()
   buff.ca_inc->set_cooldown( 0_ms )
     ->apply_affecting_aura( talent.greater_alignment )
     ->apply_affecting_aura( talent.potent_enchantments )
-    ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
+    ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
       if ( !old_ )
       {
         buff.eclipse_lunar->trigger( 0_ms );

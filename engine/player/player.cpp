@@ -2524,10 +2524,10 @@ void player_t::override_talent( util::string_view override_str )
 
 static void parse_traits( talent_tree tree, const std::string& opt_str, player_t* player )
 {
-  auto talents = util::string_split<util::string_view>( opt_str, "/" );
+  auto talents = util::string_split<std::string_view>( opt_str, "/" );
   for ( const auto talent : talents )
   {
-    auto talent_split = util::string_split<util::string_view>( talent, ":" );
+    auto talent_split = util::string_split<std::string_view>( talent, ":" );
     if ( talent_split.size() != 2 )
     {
       player->sim->error( "Invalid talent string {}", talent );
@@ -2607,11 +2607,22 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
       else
       {
         player->player_traits.push_back( entry );
-
       }
 
       if ( tree == talent_tree::HERO )
         player->player_sub_traits.push_back( id_entry );
+    }
+  }
+
+  // add any freely granted traits
+  for ( const auto& trait : trait_data_t::data( util::class_id( player->type ), tree, player->is_ptr() ) )
+  {
+    if ( trait_data_t::is_granted( &trait, player->specialization() ) )
+    {
+      auto id = trait.id_trait_node_entry;
+      auto it = range::find_if( player->player_traits, [ id ]( const auto& e ) { return std::get<1>( e ) == id; } );
+      if ( it == player->player_traits.end() )
+        player->player_traits.emplace_back( tree, id, 1 );
     }
   }
 }
@@ -2655,15 +2666,16 @@ static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, boo
 
 namespace
 {
+// MakeBase64ConversionTable() from Interface/AddOns/Blizzard_SharedXMLBase/ExportUtil.lua
 const std::string base64_char = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-// hardcoded values from Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua
+// hardcoded values from Interface/AddOns/Blizzard_PlayerSpells/ClassTalents/Blizzard_ClassTalentImportExport.lua
 constexpr unsigned LOADOUT_SERIALIZATION_VERSION = 2;
 constexpr size_t version_bits = 8;    // serialization version
 constexpr size_t spec_bits    = 16;   // specialization id
 constexpr size_t tree_bits    = 128;  // C_Traits.GetTreeHash(), optionally can be 0-filled
 constexpr size_t rank_bits    = 6;    // ranks purchased if node is partially filled
 constexpr size_t choice_bits  = 2;    // choice index, 0-based
-// hardcoded value from Interface/SharedXML/ExportUtil.lua
+// hardcoded value from Interface/AddOns/Blizzard_SharedXMLBase/ExportUtil.lua
 constexpr size_t byte_size    = 6;
 }
 
@@ -10785,7 +10797,7 @@ const spell_data_t* player_t::find_talent_spell( util::string_view n, specializa
   return spell_data_t::not_found();
 }
 
-static player_talent_t create_talent_obj( const player_t* player, specialization_e spec, const trait_data_t* trait )
+static player_talent_t create_talent_obj( const player_t* player, const trait_data_t* trait )
 {
   auto it = range::find_if( player->player_traits, [ trait ]( const auto& entry ) {
     return std::get<1>( entry ) == trait->id_trait_node_entry;
@@ -10837,7 +10849,7 @@ player_talent_t player_t::find_talent_spell(
     return {};  // Invalid trait
   }
 
-  return create_talent_obj( this, s, trait );
+  return create_talent_obj( this, trait );
 }
 
 player_talent_t player_t::find_talent_spell(
@@ -10857,7 +10869,7 @@ player_talent_t player_t::find_talent_spell(
     return {};  // Invalid trait
   }
 
-  return create_talent_obj( this, s, traits[ 0 ] );
+  return create_talent_obj( this, traits[ 0 ] );
 }
 
 player_talent_t player_t::find_talent_spell( unsigned trait_node_entry_id, specialization_e s ) const
@@ -10870,7 +10882,7 @@ player_talent_t player_t::find_talent_spell( unsigned trait_node_entry_id, speci
     return {};  // Invalid trait
   }
 
-  return create_talent_obj( this, s, trait );
+  return create_talent_obj( this, trait );
 }
 
 const spell_data_t* player_t::find_specialization_spell( util::string_view name,

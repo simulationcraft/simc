@@ -2000,9 +2000,6 @@ std::string raidbots_talent_render_src( std::string_view talent_str, unsigned le
 template <typename T>
 void print_html_talent_table( report::sc_html_stream& os, const player_t& p, std::string_view title, size_t points, const T& traits )
 {
-  if ( !points )
-    return;
-
   os.format( "<table class=\"sc\"><tr><th></th><th>{} Talents [{}]</th></tr>\n", title, points );
 
   for ( unsigned row = 0; row < traits.size(); row++ )
@@ -2102,15 +2099,19 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
        << "<div class=\"toggle-content hide\">\n";
   }
 
-  print_html_talent_table( os, p, util::player_type_string_long( p.type ), class_points, class_traits );
-  print_html_talent_table( os, p, util::spec_string_no_class( p ), spec_points, spec_traits );
+  if ( range::accumulate( class_traits, 0, &std::vector<talentrank_t>::size ) )
+    print_html_talent_table( os, p, util::player_type_string_long( p.type ), class_points, class_traits );
+
+  if ( range::accumulate( spec_traits, 0, &std::vector<talentrank_t>::size ) )
+    print_html_talent_table( os, p, util::spec_string_no_class( p ), spec_points, spec_traits );
 
   if ( !hero_traits.empty() )
   {
     os << "<div class=\"flexwrap\">\n";
 
     for ( const auto& [ id, traits ] : hero_traits )
-      print_html_talent_table( os, p, trait_data_t::get_hero_tree_name( id ), hero_points[ id ], traits );
+      if ( range::accumulate( traits, 0, &std::vector<talentrank_t>::size ) )
+        print_html_talent_table( os, p, trait_data_t::get_hero_tree_name( id ), hero_points[ id ], traits );
 
     os << "</div>\n";
   }
