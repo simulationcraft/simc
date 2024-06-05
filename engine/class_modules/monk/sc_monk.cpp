@@ -1158,6 +1158,12 @@ struct storm_earth_and_fire_t : public monk_spell_t
     monk_spell_t::execute();
 
     p()->summon_storm_earth_and_fire( data().duration() );
+
+    if ( p()->talent.windwalker.ordered_elements.ok() )
+    {
+      p()->cooldown.rising_sun_kick->reset( true );
+      p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.ordered_elements->effectN( 2 ).base_value() );
+    }
   }
 };
 
