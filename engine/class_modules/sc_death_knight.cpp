@@ -2198,6 +2198,7 @@ struct death_knight_pet_t : public pet_t
   timespan_t decomposition_extended;
   timespan_t decomposition_extend_limit;
   bool decomposition_can_extend;
+  bool tww1_4pc_proc;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true,
                       bool dynamic = true )
@@ -2211,7 +2212,8 @@ struct death_knight_pet_t : public pet_t
       army_ghoul_ap_mod(),
       decomposition_extended( 0_s ),
       decomposition_extend_limit( 0_s ),
-      decomposition_can_extend( false )
+      decomposition_can_extend( false ),
+      tww1_4pc_proc( false )
   {
     if ( auto_attack )
     {
@@ -2281,7 +2283,7 @@ struct death_knight_pet_t : public pet_t
       decomposition_extended = 0_s;
     }
 
-    if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ) )
+    if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ) && tww1_4pc_proc )
     {
       dk()->buffs.unholy_commander->trigger();
     }
@@ -2869,6 +2871,7 @@ struct army_ghoul_pet_t final : public base_ghoul_pet_t
   {
     affected_by_commander_of_the_dead = true;
     decomposition_can_extend          = true;
+    tww1_4pc_proc                     = true;
   }
 
   void init_base_stats() override
@@ -2954,6 +2957,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     resource_regeneration             = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
+    tww1_4pc_proc                     = true;
   }
 
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
@@ -2971,6 +2975,11 @@ struct gargoyle_pet_t : public death_knight_pet_t
     buffs.stunned->trigger( duration + rng().gauss( 200_ms, 25_ms ) );
     stun();
     reschedule_gargoyle();
+    // Gargoyle procs 2 stacks of this oddly, duplicate it here to emulate that
+    if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ) && tww1_4pc_proc )
+    {
+      dk()->buffs.unholy_commander->trigger();
+    }
   }
 
   void init_base_stats() override
@@ -3561,6 +3570,7 @@ struct magus_pet_t : public death_knight_pet_t
     resource_regeneration             = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
     decomposition_can_extend          = true;
+    tww1_4pc_proc                     = true;
   }
 
   void init_spells() override
@@ -4157,6 +4167,7 @@ struct abomination_pet_t : public death_knight_pet_t
     main_hand_weapon.swing_time = 3.6_s;
     affected_by_commander_of_the_dead = true;
     decomposition_can_extend          = true;
+    tww1_4pc_proc                     = true;
     owner_coeff.ap_from_ap = 2.4;
     resource_regeneration  = regen_type::DISABLED;
 
