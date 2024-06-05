@@ -348,6 +348,8 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     aoe(),
     dual(),
     callbacks( true ),
+    suppress_caster_procs(),
+    suppress_target_procs(),
     enable_proc_from_suppressed(),
     allow_class_ability_procs(),
     not_a_proc(),
@@ -618,21 +620,19 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   school            = spell_data.get_school_type();
 
   // parse attributes
-  callbacks           = !spell_data.flags( spell_attribute::SX_SUPPRESS_CASTER_PROCS );
-  // only enabled if the action is suppressed AND has enable proc from suppressed. we can assume that all actions with
-  // enabled_proc_from_suppressed passed into the callback system should only trigger callbacks that have
-  // can_proc_from_suppressed.
-  enable_proc_from_suppressed = !callbacks && spell_data.flags( spell_attribute::SX_ENABLE_PROCS_FROM_SUPPRESSED );
-  tick_may_crit       = spell_data.flags( spell_attribute::SX_TICK_MAY_CRIT );
-  hasted_ticks        = spell_data.flags( spell_attribute::SX_DOT_HASTED );
-  tick_on_application = spell_data.flags( spell_attribute::SX_TICK_ON_APPLICATION );
-  rolling_periodic    = spell_data.flags( spell_attribute::SX_ROLLING_PERIODIC );
-  treat_as_periodic   = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
-  ignores_armor       = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );  // TODO: better way to parse this?
-  may_miss            = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
+  suppress_caster_procs       = spell_data.flags( spell_attribute::SX_SUPPRESS_CASTER_PROCS );
+  suppress_target_procs       = spell_data.flags( spell_attribute::SX_SUPPRESS_TARGET_PROCS );
+  enable_proc_from_suppressed = spell_data.flags( spell_attribute::SX_ENABLE_PROCS_FROM_SUPPRESSED );
+  tick_may_crit               = spell_data.flags( spell_attribute::SX_TICK_MAY_CRIT );
+  hasted_ticks                = spell_data.flags( spell_attribute::SX_DOT_HASTED );
+  tick_on_application         = spell_data.flags( spell_attribute::SX_TICK_ON_APPLICATION );
+  rolling_periodic            = spell_data.flags( spell_attribute::SX_ROLLING_PERIODIC );
+  treat_as_periodic           = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
+  ignores_armor               = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );  // TODO: better way to parse this?
+  may_miss                    = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
   may_dodge = may_parry = may_block = !spell_data.flags( spell_attribute::SX_NO_D_P_B );
-  allow_class_ability_procs         = spell_data.flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS );
-  not_a_proc          = spell_data.flags( spell_attribute::SX_NOT_A_PROC );
+  allow_class_ability_procs   = spell_data.flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS );
+  not_a_proc                  = spell_data.flags( spell_attribute::SX_NOT_A_PROC );
 
   if ( spell_data.flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
     dot_behavior = dot_behavior_e::DOT_REFRESH_PANDEMIC;
@@ -1823,41 +1823,46 @@ void action_t::execute()
       execute_action->execute();
     }
 
-    // Proc generic abilities on execute.
-    proc_types pt;
-    proc_types2 pt2;
-    if ( execute_state && ( callbacks || enable_proc_from_suppressed ) && ( pt = execute_state->proc_type() ) != PROC1_INVALID )
+    if ( callbacks )
     {
-      // "On spell cast", only performed for foreground actions
-      if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
-        player->trigger_callbacks( pt, pt2, this, execute_state );
+      // Proc generic abilities on execute.
+      proc_types pt;
+      proc_types2 pt2;
 
-      // "On an execute result"
-      if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
-        player->trigger_callbacks( pt, pt2, this, execute_state );
+      if ( execute_state && ( !suppress_caster_procs || enable_proc_from_suppressed ) &&
+           ( pt = execute_state->proc_type() ) != PROC1_INVALID )
+      {
+        // "On spell cast", only performed for foreground actions
+        if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
+          player->trigger_callbacks( pt, pt2, this, execute_state );
 
-      // "On interrupt cast result"
-      if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
-        player->trigger_callbacks( pt, pt2, this, execute_state );
-    }
+        // "On an execute result"
+        if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
+          player->trigger_callbacks( pt, pt2, this, execute_state );
 
-    // Special handling for "Cast Successful" procs
-    // TODO: What happens when there is a PROC1 type handled above in addition to Cast Successful?
-    if ( execute_state && ( callbacks || enable_proc_from_suppressed ) )
-    {
-      pt = PROC1_CAST_SUCCESSFUL;
+        // "On interrupt cast result"
+        if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
+          player->trigger_callbacks( pt, pt2, this, execute_state );
+      }
 
-      // "On spell cast", only performed for foreground actions
-      if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
-        player->trigger_callbacks( pt, pt2, this, execute_state );
+      // Special handling for "Cast Successful" procs
+      // TODO: What happens when there is a PROC1 type handled above in addition to Cast Successful?
+      if ( execute_state && ( !suppress_caster_procs || enable_proc_from_suppressed ) )
+      {
+        pt = PROC1_CAST_SUCCESSFUL;
 
-      // "On an execute result"
-      if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
-        player->trigger_callbacks( pt, pt2, this, execute_state );
+        // "On spell cast", only performed for foreground actions
+        if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
+          player->trigger_callbacks( pt, pt2, this, execute_state );
 
-      // "On interrupt cast result"
-      if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
-        player->trigger_callbacks( pt, pt2, this, execute_state );
+        // "On an execute result"
+        if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
+          player->trigger_callbacks( pt, pt2, this, execute_state );
+
+        // "On interrupt cast result"
+        if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
+          player->trigger_callbacks( pt, pt2, this, execute_state );
+      }
     }
   }
 

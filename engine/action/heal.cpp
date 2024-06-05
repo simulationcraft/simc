@@ -247,25 +247,30 @@ void heal_t::assess_damage( result_amount_type heal_type, action_state_t* s )
   }
 
   // New callback system; proc spells on impact.
-  // Note: direct_tick_callbacks should not be used with the new system,
-  // override action_t::proc_type() instead
-  if ( callbacks || enable_proc_from_suppressed )
+  // Note: direct_tick_callbacks should not be used with the new system override action_t::proc_type() instead
+  if ( callbacks )
   {
     proc_types pt = s->proc_type();
     proc_types2 pt2 = s->impact_proc_type2();
+
     if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
     {
-      player->trigger_callbacks( pt, pt2, this, s );
+      if ( !suppress_caster_procs || enable_proc_from_suppressed )
+        player->trigger_callbacks( pt, pt2, this, s );
 
       // trigger healing taken callbacks
-      proc_types pt_taken = static_cast<proc_types>( pt + 1 );
-      if ( pt == PROC1_HELPFUL_PERIODIC )
-        pt_taken = PROC1_HELPFUL_PERIODIC_TAKEN;
+      if ( !suppress_target_procs )
+      {
+        proc_types pt_taken = static_cast<proc_types>( pt + 1 );
 
-      s->target->trigger_callbacks( pt_taken, pt2, this, s );
+        if ( pt == PROC1_HELPFUL_PERIODIC )
+          pt_taken = PROC1_HELPFUL_PERIODIC_TAKEN;
+
+        s->target->trigger_callbacks( pt_taken, pt2, this, s );
+      }
     }
   }
-   
+
   if ( player->spells.leech )
   {
     double leech_pct = 0;

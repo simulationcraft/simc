@@ -1342,6 +1342,7 @@ enum spell_attribute : unsigned
   SX_NO_DODGE                       = 247u,
   SX_NO_PARRY                       = 248u,
   SX_NO_MISS                        = 249u,
+  SX_CAN_PROC_FROM_SUPPRESSED_TGT   = 254u,
   SX_NO_BLOCK                       = 256u,
   SX_TICK_MAY_CRIT                  = 265u,
   SX_DURATION_HASTED                = 273u,
