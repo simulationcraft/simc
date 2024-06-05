@@ -578,10 +578,12 @@ void aberrant_spellforge( special_effect_t& effect )
   equip->spell_id = 452030;
 
   // TODO: confirm damage procs off procs
+  // NOTE: if multiple abilities can proc, re-register the trigger function for 452030 in the class module and check for
+  // all proccing abilities.
   effect.player->callbacks.register_callback_trigger_function( equip->spell_id,
       dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ id = empowered->id(), empowerment ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
-        return a->data().id() == id && empowerment->check();
+      [ id = empowered->id() ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
+        return a->data().id() == id;
       } );
 
   // TODO: confirm empowerment is not consumed by procs
@@ -591,7 +593,8 @@ void aberrant_spellforge( special_effect_t& effect )
         empowerment->expire( a );
       } );
 
-  new dbc_proc_callback_t( effect.player, *equip );
+  auto cb = new dbc_proc_callback_t( effect.player, *equip );
+  cb->activate_with_buff( empowerment );
 
   // setup on-use effect
   /* TODO: determine when silence applies
