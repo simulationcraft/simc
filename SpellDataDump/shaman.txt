@@ -277,7 +277,7 @@ Cast Time        : 2 seconds
 Velocity         : 32 yards/sec
 Labels           : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
                  : 3783: Totemic Coordination (445036 effect#1), Totemic Coordination (445036 effect#2)
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 30, 39, 56, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -425,7 +425,7 @@ Resource         : 60 Maelstrom (11) (id=215295)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lava Shock (273453 effect#1), Bottle of Swirling Maelstrom (329580 effect#4), Nature's Fury (381655 effect#1), Eye of the Storm (381708 effect#1), Electrified Shocks (382089 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lava Shock (273453 effect#1), Bottle of Swirling Maelstrom (329580 effect#4), Nature's Fury (381655 effect#1), Eye of the Storm (381708 effect#1), Electrified Shocks (382089 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 20, 39, 126
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -530,7 +530,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Proc Chance      : 101%
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Fire and Ice (382886 effect#1), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Supportive Imbuements (445033 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Fire and Ice (382886 effect#1), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Supportive Imbuements (445033 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 21, 39, 56, 103
 Attributes       : ........ ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -739,7 +739,7 @@ Class            : Shaman
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Furious Winds (184920 effect#1), Forceful Winds (262652 effect#1), Doom Winds (335903 effect#3), Doom Winds (384352 effect#2), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Imbuement Mastery (445028 effect#2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Furious Winds (184920 effect#1), Forceful Winds (262652 effect#1), Doom Winds (335903 effect#3), Doom Winds (384352 effect#2), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Imbuement Mastery (445028 effect#2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 23, 39, 58
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
@@ -840,7 +840,7 @@ Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Converging Storms (198300 effect#1), Stormbringer (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Whirling Air (453409 effect#2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Converging Storms (198300 effect#1), Stormbringer (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Whirling Air (453409 effect#2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Triggered by     : Stormstrike (17364)
 Family Flags     : 39, 58, 76
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -866,7 +866,7 @@ Spell Type       : Melee
 Spell Level      : 19
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Converging Storms (198300 effect#1), Stormbringer (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Whirling Air (453409 effect#2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Converging Storms (198300 effect#1), Stormbringer (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Whirling Air (453409 effect#2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Triggered by     : Stormstrike (17364)
 Family Flags     : 39, 58, 76
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -944,7 +944,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon, Dagger, One Hand, Off Hand
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Furious Winds (184920 effect#1), Forceful Winds (262652 effect#1), Doom Winds (335903 effect#3), Doom Winds (384352 effect#2), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Imbuement Mastery (445028 effect#2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Furious Winds (184920 effect#1), Forceful Winds (262652 effect#1), Doom Winds (335903 effect#3), Doom Winds (384352 effect#2), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Imbuement Mastery (445028 effect#2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 23, 39, 58
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
@@ -1013,7 +1013,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #12, #22, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Volcanic Surge (408572 effect#1), Initial Shaman (417374 effects: #1, #2), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #12, #22, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Volcanic Surge (408572 effect#1), Initial Shaman (417374 effects: #1, #2), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 79, 96
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -1035,7 +1035,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 17 (max 49)
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Al'Akir's Acrimony (208699 effect#1), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Surge of Power (395457 effect#1), Volcanic Surge (408572 effect#1), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Tempest (454021 effects: #1, #2), Voltaic Surge (454919 effect#1), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Al'Akir's Acrimony (208699 effect#1), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Surge of Power (395457 effect#1), Volcanic Surge (408572 effect#1), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Tempest (454021 effects: #1, #2), Voltaic Surge (454919 effect#1), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 63, 79
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -1093,7 +1093,7 @@ Duration         : 5 seconds
 Cooldown         : 30 seconds
 Category         : 1223
 Category Cooldown: 30 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Thundershock (378779 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Thundershock (378779 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 45, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1129,7 +1129,7 @@ GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Charges          : 1 (8 seconds cooldown)
 Category         : 1536: Echo of the Elements (108283 effect#1), Ascendance (114050 effect#3), Echo of the Elements (333919 effect#1), Elemental Reverb (443418 effect#1)
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #9), Elemental Shaman (137040 effects: #1, #2, #13, #21, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effect#1), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2), Call of Fire (378255 effect#1), Windspeaker's Lava Resurgence (378269 effect#1), Flux Melting (381777 effect#1), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Elemental Blast (394152 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#4), Initial Shaman (417374 effects: #1, #2), Elemental Reverb (443418 effect#2), Ancestral Swiftness (443454 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #9), Elemental Shaman (137040 effects: #1, #2, #13, #21, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effect#1), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2), Call of Fire (378255 effect#1), Windspeaker's Lava Resurgence (378269 effect#1), Flux Melting (381777 effect#1), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Elemental Blast (394152 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#4), Initial Shaman (417374 effects: #1, #2), Elemental Reverb (443418 effect#2), Ancestral Swiftness (443454 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 44, 56
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -1202,7 +1202,7 @@ Category         : 1653
 Labels           : 183: Spiritual Journey (214170 effect#1)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
 Category Cooldown: 90 seconds
-Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1), Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ .x...... ......x. 
@@ -1356,7 +1356,7 @@ Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........   ........ ........ ........ ........   
                  : Generic Heal, Magic Heal
-Affecting spells : Turn of the Tide (287300 effect#1), Turn of the Tide (287302 effects: #1, #2), Primordial Capacity (443448 effect#3)
+Affecting spells : Turn of the Tide (287300 effect#1), Turn of the Tide (287302 effects: #1, #2), Primordial Capacity (443448 effect#3), Shaman Restoration 11.0 Class Set 2pc (453705 effect#1), Shaman Restoration 11.0 Class Set 4pc (453706 effects: #1, #2, #3)
 Family Flags     : 105
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1797,7 +1797,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Off Hand
 Cooldown         : 18 seconds
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Hot Hand (215785 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Molten Assault (334033 effects: #1, #2), Primal Lava Actuators (335896 effect#1), Fire and Ice (382886 effect#1), Ashen Catalyst (390371 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Whirling Fire (453405 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Hot Hand (215785 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Molten Assault (334033 effects: #1, #2), Primal Lava Actuators (335896 effect#1), Fire and Ice (382886 effect#1), Ashen Catalyst (390371 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Whirling Fire (453405 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 56, 66, 103
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -2330,7 +2330,7 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Seismic Thunder (319343 effect#1), Bottle of Swirling Maelstrom (329580 effects: #5, #6), Eye of the Storm (381708 effect#2), Unrelenting Calamity (382685 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Seismic Thunder (319343 effect#1), Bottle of Swirling Maelstrom (329580 effects: #5, #6), Eye of the Storm (381708 effect#2), Unrelenting Calamity (382685 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 83
 Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ........ ......x. 
@@ -2962,7 +2962,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Maelstrom Weapon (187881 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Molten Weapon (224125 effects: #1, #2), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Chains of Devastation (336736 effects: #1, #2), Call of Fire (378255 effect#1), Improved Flametongue Weapon (382028 effect#1), Unrelenting Calamity (382685 effect#1), Fire and Ice (382886 effect#1), Stormkeeper (383009 effect#1), Volcanic Surge (408572 effect#1), Volcanic Strength (409833 effects: #1, #2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Maelstrom Weapon (187881 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Molten Weapon (224125 effects: #1, #2), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Chains of Devastation (336736 effects: #1, #2), Call of Fire (378255 effect#1), Improved Flametongue Weapon (382028 effect#1), Unrelenting Calamity (382685 effect#1), Fire and Ice (382886 effect#1), Stormkeeper (383009 effect#1), Volcanic Surge (408572 effect#1), Volcanic Strength (409833 effects: #1, #2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 34, 39, 103
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3055,7 +3055,7 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 16
 Range            : 40 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Al'Akir's Acrimony (208699 effect#1), Molten Weapon (224125 effects: #1, #2), Call of Fire (378255 effect#1), Improved Flametongue Weapon (382028 effect#1), Surge of Power (395457 effect#1), Volcanic Surge (408572 effect#1), Volcanic Strength (409833 effects: #1, #2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Al'Akir's Acrimony (208699 effect#1), Molten Weapon (224125 effects: #1, #2), Call of Fire (378255 effect#1), Improved Flametongue Weapon (382028 effect#1), Surge of Power (395457 effect#1), Volcanic Surge (408572 effect#1), Volcanic Strength (409833 effects: #1, #2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 79, 101, 103
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3151,7 +3151,7 @@ Range            : 100 yards
 Velocity         : 30 yards/sec
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Proc Chance      : 101%
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Converging Storms (198300 effect#1), Stormbringer (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Whirling Air (453409 effect#2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Converging Storms (198300 effect#1), Stormbringer (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Whirling Air (453409 effect#2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Triggered by     : Windstrike (115356)
 Family Flags     : 39, 58, 76
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -3178,7 +3178,7 @@ Spell Level      : 19
 Range            : 100 yards
 Velocity         : 30 yards/sec
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Converging Storms (198300 effect#1), Stormbringer (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Whirling Air (453409 effect#2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Converging Storms (198300 effect#1), Stormbringer (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Whirling Air (453409 effect#2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Triggered by     : Windstrike (115356)
 Family Flags     : 39, 58, 76
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
@@ -3271,7 +3271,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Charges          : 1 (12 seconds cooldown)
 Category         : 2077: Elemental Shaman (137040 effect#8), Elemental Blast (394152 effect#2)
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5, #12, #22, #23), Maelstrom Weapon (187881 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Eye of the Storm (381708 effect#3), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Ancestral Swiftness (443454 effects: #1, #2), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5, #12, #22, #23), Maelstrom Weapon (187881 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Eye of the Storm (381708 effect#3), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Ancestral Swiftness (443454 effects: #1, #2), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 24, 39, 56, 98, 103, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3416,7 +3416,7 @@ Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 24, 39, 79, 103, 108, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4411,7 +4411,7 @@ Spell Level      : 1
 Range            : 45 yards
 Velocity         : 90 yards/sec
 Travel Delay     : 0.75 seconds
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4501,7 +4501,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Cooldown         : 12 seconds
 Labels           : 1183: Crash Lightning (333964 effect#1)
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Storm's Eye (263795 effect#1), Crashing Storms (334308 effect#1), Nature's Fury (381655 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Voltaic Surge (454919 effect#1), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Storm's Eye (263795 effect#1), Crashing Storms (334308 effect#1), Nature's Fury (381655 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Voltaic Surge (454919 effect#1), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 56, 85, 126
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4644,7 +4644,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effects: #3, #4, #16), Elemental Shaman (137040 effects: #1, #2, #12, #22, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Crackling Surge (224127 effects: #1, #2), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Tempest (454015 effect#1), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effects: #3, #4, #16), Elemental Shaman (137040 effects: #1, #2, #12, #22, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Crackling Surge (224127 effects: #1, #2), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Tempest (454015 effect#1), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 0, 39, 56, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4673,7 +4673,7 @@ Max Targets      : 6
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Cooldown         : 6 seconds
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #17, #18), Elemental Shaman (137040 effects: #1, #2, #16, #17, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #8, #14, #15), Elemental Bellows (184919 effects: #1, #2, #3), Fire Elemental (188592 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lashing Flames (334168 effect#1), Skybreaker's Fiery Demise (336734 effect#3), Call of Fire (378255 effects: #1, #4), Flames of the Cauldron (378266 effects: #1, #2), Skybreaker's Fiery Demise (378310 effect#3), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effects: #1, #2), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #17, #18), Elemental Shaman (137040 effects: #1, #2, #16, #17, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #8, #14, #15), Elemental Bellows (184919 effects: #1, #2, #3), Fire Elemental (188592 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lashing Flames (334168 effect#1), Skybreaker's Fiery Demise (336734 effect#3), Call of Fire (378255 effects: #1, #4), Flames of the Cauldron (378266 effects: #1, #2), Skybreaker's Fiery Demise (378310 effect#3), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effects: #1, #2), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 28, 39, 56, 103, 126
 Attributes       : ........ ........ x.x..... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4753,7 +4753,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effects: #3, #4, #6), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Crackling Surge (224127 effects: #1, #2), Lightningburn (263792 effect#1), Wind Gust (263806 effects: #1, #2), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Stormkeeper (320137 effects: #1, #2), Crashing Storms (334308 effect#2), Chains of Devastation (336736 effects: #1, #2), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Crackling Thunder (409834 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Tempest (454021 effects: #1, #2), Voltaic Surge (454919 effect#1), Arc Discharge (455097 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effects: #3, #4, #6), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Crackling Surge (224127 effects: #1, #2), Lightningburn (263792 effect#1), Wind Gust (263806 effects: #1, #2), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Stormkeeper (320137 effects: #1, #2), Crashing Storms (334308 effect#2), Chains of Devastation (336736 effects: #1, #2), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Crackling Thunder (409834 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Tempest (454021 effects: #1, #2), Voltaic Surge (454919 effect#1), Arc Discharge (455097 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 1, 39, 56, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4862,6 +4862,7 @@ School           : Nature
 Spell Type       : Melee
 Spell Level      : 24
 Range            : 100 yards
+Affecting spells : Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Family Flags     : 89
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -5279,7 +5280,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 10 yards
 Max Targets      : 1
-Affecting spells : Energized Shield (24499 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Surging Shields (382033 effects: #1, #2, #3), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Energized Shield (24499 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Surging Shields (382033 effects: #1, #2, #3), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Triggered by     : Lightning Shield (192106)
 Family Flags     : 10, 39, 56, 126
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -5378,7 +5379,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 8 yards/sec
 Labels           : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 2, 39
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -5522,7 +5523,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Storm's Eye (263795 effect#1), Crashing Storms (334308 effect#1), Nature's Fury (381655 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Voltaic Surge (454919 effect#1), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Storm's Eye (263795 effect#1), Crashing Storms (334308 effect#1), Nature's Fury (381655 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Voltaic Surge (454919 effect#1), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Triggered by     : Crash Lightning (187878)
 Family Flags     : 39, 56, 85, 126
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -5549,7 +5550,7 @@ Spell Level      : 17
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #18, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #7, #8, #14, #15), Icefury (210714 effect#2), Icy Edge (224126 effects: #1, #2), Hailstorm (334196 effect#1), Fire and Ice (382886 effect#1), Ice Strike (384357 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #18, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #7, #8, #14, #15), Icefury (210714 effect#2), Icy Edge (224126 effects: #1, #2), Hailstorm (334196 effect#1), Fire and Ice (382886 effect#1), Ice Strike (384357 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 24, 31, 39, 56
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5651,7 +5652,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 40 seconds
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 16, 39, 56, 58, 103, 122
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -6926,7 +6927,7 @@ Stacks           : 4 initial, 4 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
                  : Cast Successful
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Maelstrom Weapon (187881 effect#1), Icy Edge (224126 effects: #1, #2), Maelstrom (343725 effect#8), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Primal Fracture (410018 effect#6), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Maelstrom Weapon (187881 effect#1), Icy Edge (224126 effects: #1, #2), Maelstrom (343725 effect#8), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Primal Fracture (410018 effect#6), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 24, 39, 119
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
@@ -7168,7 +7169,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Proc Chance      : 101%
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 58
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ........ ......x. 
@@ -7275,7 +7276,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Maelstrom (343725 effect#9), Legacy of the Frost Witch (384451 effects: #1, #2), Primal Fracture (410018 effect#7), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Maelstrom (343725 effect#9), Legacy of the Frost Witch (384451 effects: #1, #2), Primal Fracture (410018 effect#7), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 5, 24, 39, 79
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -7320,7 +7321,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 5 yards
 Duration         : 15 seconds
-Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1), Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -7349,7 +7350,7 @@ School           : Frost
 Spell Type       : None
 Range            : 5 yards
 Duration         : 15 seconds
-Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1), Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -7380,7 +7381,7 @@ School           : Nature
 Spell Type       : None
 Range            : 5 yards
 Duration         : 15 seconds
-Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1), Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -7472,7 +7473,7 @@ Spell Level      : 18
 Range            : 30 yards
 Duration         : 15 seconds
 Labels           : 183: Spiritual Journey (214170 effect#1)
-Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1), Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -8028,7 +8029,7 @@ Spell Type       : Melee
 Range            : 30 yards
 Duration         : 15 seconds
 Labels           : 183: Spiritual Journey (214170 effect#1)
-Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1), Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -8051,7 +8052,7 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
-Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1), Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Family Flags     : 48
 Attributes       : .......x ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8240,7 +8241,7 @@ Spell Level      : 25
 Range            : 30 yards
 Duration         : 10 seconds
 Labels           : 183: Spiritual Journey (214170 effect#1)
-Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1), Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -8357,7 +8358,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Energized Shield (24499 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Nature's Fury (381655 effect#1), Surging Shields (382033 effects: #1, #2, #3), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Energized Shield (24499 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Nature's Fury (381655 effect#1), Surging Shields (382033 effects: #1, #2, #3), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Triggered by     : Lightning Shield Overcharge (273323)
 Family Flags     : 10, 39, 56
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -8444,7 +8445,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 56
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8702,7 +8703,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 56
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8902,7 +8903,7 @@ Class            : Shaman
 School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9023,7 +9024,7 @@ Class            : Shaman
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #9), Elemental Shaman (137040 effects: #1, #2, #13, #21, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effect#1), Molten Weapon (224125 effects: #1, #2), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2), Call of Fire (378255 effect#1), Windspeaker's Lava Resurgence (378269 effect#1), Flux Melting (381777 effect#1), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Elemental Blast (394152 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#4), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Elemental Reverb (443418 effect#2), Ancestral Swiftness (443454 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #9), Elemental Shaman (137040 effects: #1, #2, #13, #21, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effect#1), Molten Weapon (224125 effects: #1, #2), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2), Call of Fire (378255 effect#1), Windspeaker's Lava Resurgence (378269 effect#1), Flux Melting (381777 effect#1), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Elemental Blast (394152 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#4), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Elemental Reverb (443418 effect#2), Ancestral Swiftness (443454 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Triggered by     : Lava Burst (51505)
 Family Flags     : 39, 44, 56, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9045,7 +9046,7 @@ Class            : Shaman
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #13, #21, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Igneous Potential (279829 effect#2), Maelstrom (343725 effect#4), Fireheart (364523 effect#2), Call of Fire (378255 effect#1), Improved Flametongue Weapon (382028 effect#1), Volcanic Surge (408572 effect#4), Initial Shaman (417374 effects: #1, #2), Elemental Reverb (443418 effect#2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #13, #21, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Igneous Potential (279829 effect#2), Maelstrom (343725 effect#4), Fireheart (364523 effect#2), Call of Fire (378255 effect#1), Improved Flametongue Weapon (382028 effect#1), Volcanic Surge (408572 effect#4), Initial Shaman (417374 effects: #1, #2), Elemental Reverb (443418 effect#2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Triggered by     : Lava Burst Overload (77451)
 Family Flags     : 39, 79, 86
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9192,7 +9193,7 @@ Class            : Shaman
 School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39
 Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ......x. 
@@ -9411,7 +9412,7 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Seismic Thunder (319343 effect#1), Bottle of Swirling Maelstrom (329580 effects: #5, #6), Eye of the Storm (381708 effect#2), Unrelenting Calamity (382685 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Seismic Thunder (319343 effect#1), Bottle of Swirling Maelstrom (329580 effects: #5, #6), Eye of the Storm (381708 effect#2), Unrelenting Calamity (382685 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 83
 Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ........ ......x. 
@@ -9708,7 +9709,7 @@ Labels           : 1678: Improved Flametongue Weapon (382028 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ x.x.x.x. x....x.. ........   ........ ........ ........ ........   
                  : Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Helpful Periodic
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Legacy of the Frost Witch (384451 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Legacy of the Frost Witch (384451 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 24, 39, 103, 126
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -9915,7 +9916,7 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
 Labels           : 983: Elemental Fury (60188 effect#3), Restoration Shaman (137039 effect#8), Enhancement Shaman (137041 effect#16), Maelstrom Weapon (187881 effect#4), Lavish Harvest (339185 effect#1)
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10348,7 +10349,7 @@ Spell Level      : 48
 Range            : 100 yards
 Max Targets      : 4
 Labels           : 1046: Elemental Fury (60188 effect#2)
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Essential Extraction (339183 effect#1), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Essential Extraction (339183 effect#1), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 56, 125, 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ........ ........ 
@@ -10514,7 +10515,7 @@ Spell Type       : Melee
 Range            : 30 yards
 Duration         : 15 seconds
 Labels           : 183: Spiritual Journey (214170 effect#1)
-Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1), Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -10570,7 +10571,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Whirling Fire (453405 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Whirling Fire (453405 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 27, 39, 56
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10595,7 +10596,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Max Targets      : 6
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Whirling Fire (453405 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Whirling Fire (453405 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 27, 39, 56, 58, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10650,7 +10651,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon, Dagger
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Whirling Fire (453405 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Whirling Fire (453405 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 27, 39, 56
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -10698,7 +10699,7 @@ School           : Fire
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Whirling Fire (453405 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Whirling Fire (453405 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 27, 39, 56
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -10728,7 +10729,7 @@ Stacks           : 5 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Whirling Fire (453405 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Whirling Fire (453405 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 27, 39, 56
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -12054,7 +12055,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon
 Cooldown         : 15 seconds
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 24, 39, 56, 75
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -12232,7 +12233,7 @@ School           : Fire
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Whirling Fire (453405 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Initial Shaman (417374 effects: #1, #2), Whirling Fire (453405 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 27, 39, 56
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -12256,7 +12257,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 50
 Labels           : 1679: Nature's Fury (381655 effect#2)
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Elemental Rebalancers (208777 effect#1), Crackling Surge (224127 effects: #1, #2), Oath of the Farseer (381785 effects: #2, #3), Maelstrom of Elements (394677 effect#1), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Elemental Rebalancers (208777 effect#1), Crackling Surge (224127 effects: #1, #2), Oath of the Farseer (381785 effects: #2, #3), Maelstrom of Elements (394677 effect#1), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Triggered by     : Ascendance (114051)
 Family Flags     : 39, 56, 102, 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12278,7 +12279,7 @@ Class            : Shaman
 School           : Elemental
 Spell Type       : Magic
 Range            : 40 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 79, 108
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12605,7 +12606,7 @@ Spell Type       : Melee
 Range            : 30 yards
 Duration         : 9 seconds
 Labels           : 183: Spiritual Journey (214170 effect#1)
-Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1), Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -12629,7 +12630,7 @@ Spell Type       : Melee
 Range            : 30 yards
 Duration         : 9 seconds
 Labels           : 183: Spiritual Journey (214170 effect#1)
-Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1), Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -12653,7 +12654,7 @@ Spell Type       : Melee
 Range            : 30 yards
 Duration         : 9 seconds
 Labels           : 183: Spiritual Journey (214170 effect#1)
-Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1), Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -12678,7 +12679,7 @@ Spell Level      : 18
 Range            : 30 yards
 Duration         : 9 seconds
 Labels           : 183: Spiritual Journey (214170 effect#1)
-Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1), Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -13728,7 +13729,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 2676: Overflowing Shores (383222 effect#2)
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 126
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ .x...... ........ 
@@ -14124,7 +14125,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Labels           : 1679: Nature's Fury (381655 effect#2)
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lava Shock (273453 effect#1), Bottle of Swirling Maelstrom (329580 effect#4), Nature's Fury (381655 effect#1), Eye of the Storm (381708 effect#1), Electrified Shocks (382089 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lava Shock (273453 effect#1), Bottle of Swirling Maelstrom (329580 effect#4), Nature's Fury (381655 effect#1), Eye of the Storm (381708 effect#1), Electrified Shocks (382089 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 20, 39, 126
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15766,7 +15767,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Fire and Ice (382886 effect#1), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Fire and Ice (382886 effect#1), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 2, 39, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -16091,7 +16092,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon
 Cooldown         : 90 seconds
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 16, 39, 58
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -16694,7 +16695,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 5 yards
 Duration         : 15 seconds
-Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1), Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -17188,7 +17189,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Max Targets      : 3
 Labels           : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Fire and Ice (382886 effect#1), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Fire and Ice (382886 effect#1), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Triggered by     : Liquid Magma Totem (192222)
 Family Flags     : 2, 39, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18411,7 +18412,7 @@ Spell Type       : Melee
 Range            : 30 yards
 Duration         : 15 seconds
 Labels           : 183: Spiritual Journey (214170 effect#1)
-Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1), Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -18501,7 +18502,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Triggered by     : Tempest Strikes (428071)
 Family Flags     : 39, 56, 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -19486,7 +19487,7 @@ Resource         : 0.2% Base Mana (0) (id=306853)
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Maelstrom Weapon (187881 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Astral Bulwark (377933 effect#2), Planes Traveler (381647 effect#2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Maelstrom Weapon (187881 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Astral Bulwark (377933 effect#2), Planes Traveler (381647 effect#2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 107, 126
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -19639,6 +19640,96 @@ Effects          :
                    Affected Spells: Earthquake (61882), Earthquake (77478), Earthquake (298762), Earthquake Overload (298765), Earthquake (329801), Earthquake (336740)
                    Family Flags: 83
 Description      : $?s117014[Elemental Blast][Earth Shock] damage increased by $s1%. Earthquake damage increased by $s2%.
+
+Name             : Shaman Elemental 11.0 Class Set 4pc (id=453685) [Spell Family (11), Passive, Hidden] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ....x... x....... ........   ........ ........ ........ ........   
+                 : Generic Hostile Spell, Magic Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
+Effects          :
+#1 (id=1155685)  : Apply Aura (6) | Proc Trigger Spell (42): Shaman Elemental 11.0 Class Set 4pc
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Trigger Spell: 457727 | Target: Self (1)
+Description      : Spending Maelstrom grants you $457727s1% increased critical strike chance and $457727s2% increased critical damage dealt.
+
+Name             : Shaman Restoration 11.0 Class Set 2pc (id=453705) [Spell Family (11), Passive, Hidden] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Proc Chance      : 100%
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
+Effects          :
+#1 (id=1155710)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 32 | Target: Self (1)
+                   Affected Spells: Tidal Waves (53390)
+                   Family Flags: 105
+Description      : Tidal Waves increases the healing of affected spells by $s1%.
+
+Name             : Shaman Restoration 11.0 Class Set 4pc (id=453706) [Spell Family (11), Passive, Hidden] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
+Effects          :
+#1 (id=1155711)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.50000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Tidal Waves (53390)
+                   Family Flags: 105
+#2 (id=1159362)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.50000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Tidal Waves (53390)
+                   Family Flags: 105
+#3 (id=1159485)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
+                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 0.50000 | Misc Value: 33 | Target: Self (1)
+                   Affected Spells: Tidal Waves (53390)
+                   Family Flags: 105
+Description      : Tidal Waves is $s1% more effective and reduces the mana cost of affected spells by $s3%.
+
+Name             : Shaman Enhancement 11.0 Class Set 4pc (id=453708) [Spell Family (11), Passive, Hidden] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
+Effects          :
+#1 (id=1155713)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Feral Spirit (51533), Feral Spirit (190185), Molten Weapon (224125), Icy Edge (224126), Crackling Surge (224127), Feral Spirit (228562), Feral Spirit (262627), Elemental Spirits (262629), Feral Spirit (271852), Feral Spirit (333957), Feral Spirit (363928), Feral Spirit (363932), Feral Spirit (363933), Feral Spirit (363941), Earthen Weapon (392375), Feral Spirit (426516)
+                   Family Flags: 48, 89
+Description      : Feral Spirits last $s1% longer.
 
 Name             : Tempest (id=454009) [Spell Family (11), Passive] 
 Talent Entry     : Stormbringer (Elemental, Enhancement) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
@@ -19932,6 +20023,26 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc454391
 Tooltip          : Haste increased by $s1%.
+
+Name             : Shaman Enhancement 11.0 Class Set 2pc (id=454838) [Spell Family (11), Passive, Hidden] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
+Effects          :
+#1 (id=1157773)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Lava Lash (60103), Windstrike (115357), Windstrike Off-Hand (115360), Crash Lightning (187874), Crash Lightning (195592), Ice Strike (342240)
+                   Family Flags: 66, 75, 76, 85
+Description      : Stormstrike, Lava Lash, Ice Strike, and Crash Lightning deal $s1% increased damage.
 
 Name             : Voltaic Surge (id=454919) [Spell Family (11), Passive] 
 Talent Entry     : Stormbringer (Elemental, Enhancement) [tree=hero, row=4, col=1, max_rank=1, req_points=1]
@@ -20241,7 +20352,7 @@ Spell Type       : Melee
 Range            : 30 yards
 Labels           : 3704: Pulse Capacitor (445032 effect#1), Totemic Rebound (458269 effect#1)
                  : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 58
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -20468,6 +20579,33 @@ Effects          :
 #1 (id=1163074)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
+Name             : Shaman Elemental 11.0 Class Set 4pc (id=457727) [Spell Family (11)] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Duration         : 5 seconds
+Triggered by     : Shaman Elemental 11.0 Class Set 4pc (453685)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1163191)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Misc Value: 7 | Target: Self (1)
+                   Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Elemental Blast (344645), Acid Rain (378597), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349), Tempest Strikes (428078), Tempest (452201), Tremor (455622), Searing Volley (458147), Surging Bolt (458267)
+                   Family Flags: 39
+#2 (id=1163192)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
+                   Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Elemental Blast (344645), Acid Rain (378597), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349), Tempest Strikes (428078), Tempest (452201), Tremor (455622), Searing Volley (458147), Surging Bolt (458267)
+                   Family Flags: 39
+Description      : $@spelldesc453685
+Tooltip          : Critical strike chance increased by $s1%.
+Critical damage dealt increased by $s2%.
+
 Name             : Oversized Totems (id=458016) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
@@ -20519,7 +20657,7 @@ Cast Time        : 2 seconds
 Velocity         : 32 yards/sec
 Labels           : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
                  : 3783: Totemic Coordination (445036 effect#1), Totemic Coordination (445036 effect#2)
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 30, 39, 56, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -20601,7 +20739,7 @@ Spell Type       : Magic
 Range            : 30 yards
 Labels           : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
                  : 3791: Pulse Capacitor (445032 effect#3), Totemic Rebound (458269 effect#2)
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 56, 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

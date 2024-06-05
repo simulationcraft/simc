@@ -339,7 +339,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Multi-Shot Damage Increase (28539 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2, #14), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#1), Target Practice (321287 effect#1), Bestial Pact (360955 effects: #3, #4), Bulletstorm (389020 effect#1), Eagletalon's True Focus (389450 effect#2), Focusing Aim (394384 effect#1), Hunter Marksmanship 10.1 Class Set 2pc (405526 effect#1), Fury Strikes (425830 effects: #1, #2), Cornered Prey (452101 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Multi-Shot Damage Increase (28539 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2, #14), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#1), Target Practice (321287 effect#1), Bestial Pact (360955 effects: #3, #4), Bulletstorm (389020 effect#1), Eagletalon's True Focus (389450 effect#2), Focusing Aim (394384 effect#1), Hunter Marksmanship 10.1 Class Set 2pc (405526 effect#1), Fury Strikes (425830 effects: #1, #2), Cornered Prey (452101 effect#1), Hunter Marksmanship 11.0 Class Set 2pc (453648 effect#1)
 Family Flags     : 1, 12, 106, 121
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -639,7 +639,7 @@ Requires weapon  : Bow, Gun, Crossbow
 Charges          : 2 (12 seconds cooldown)
 Category         : 1715: Marksmanship Hunter (137016 effect#6), Trueshot (288613 effect#3), Tactical Reload (400472 effect#2)
 Azerite Power Id : 97
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Lock and Load (194594 effects: #1, #2, #3), Bullseye (204090 effect#1), Sentinel's Sight (208913 effect#1), Gyroscopic Stabilization (235712 effects: #1, #2), Unseen Predator's Cloak (248212 effect#1), Trick Shots (257622 effect#2), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#2), Arrowstorm (263814 effect#1), Lethal Shots (269502 effect#1), Trueshot (288613 effect#4), Secrets of the Unblinking Vigil (336892 effect#1), Streamline (342076 effect#1), Bestial Pact (360955 effects: #3, #4), Hunter's Knowledge (378766 effect#1), Focused Aim (378767 effect#1), Eagletalon's True Focus (389450 effect#1), Fury Strikes (425830 effects: #1, #2), Overshadow (430716 effect#1), Sentinel Precision (450375 effects: #1, #2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Lock and Load (194594 effects: #1, #2, #3), Bullseye (204090 effect#1), Sentinel's Sight (208913 effect#1), Gyroscopic Stabilization (235712 effects: #1, #2), Unseen Predator's Cloak (248212 effect#1), Trick Shots (257622 effect#2), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#2), Arrowstorm (263814 effect#1), Lethal Shots (269502 effect#1), Trueshot (288613 effect#4), Secrets of the Unblinking Vigil (336892 effect#1), Streamline (342076 effect#1), Bestial Pact (360955 effects: #3, #4), Hunter's Knowledge (378766 effect#1), Focused Aim (378767 effect#1), Eagletalon's True Focus (389450 effect#1), Fury Strikes (425830 effects: #1, #2), Overshadow (430716 effect#1), Sentinel Precision (450375 effects: #1, #2), Moving Target (457116 effect#1)
 Triggered by     : Lock and Load (194594)
 Family Flags     : 1, 17, 106, 121
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
@@ -3872,7 +3872,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 70 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2, #14), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#2), Mastery: Spirit Bond (263135 effects: #1, #2), Target Practice (321287 effect#1), Crack Shot (321293 effect#1), Eagletalon's True Focus (336851 effect#2), Bestial Pact (360955 effects: #3, #4), Ranger (385695 effects: #1, #2), Eagletalon's True Focus (389450 effect#2), Focusing Aim (394384 effect#1), Hunter Marksmanship 10.1 Class Set 2pc (405526 effect#1), Fury Strikes (425830 effects: #1, #2), Cornered Prey (452101 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2, #14), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#2), Mastery: Spirit Bond (263135 effects: #1, #2), Target Practice (321287 effect#1), Crack Shot (321293 effect#1), Eagletalon's True Focus (336851 effect#2), Bestial Pact (360955 effects: #3, #4), Ranger (385695 effects: #1, #2), Eagletalon's True Focus (389450 effect#2), Focusing Aim (394384 effect#1), Hunter Marksmanship 10.1 Class Set 2pc (405526 effect#1), Fury Strikes (425830 effects: #1, #2), Cornered Prey (452101 effect#1), Hunter Marksmanship 11.0 Class Set 2pc (453648 effect#1)
 Triggered by     : Precise Shots (260242)
 Family Flags     : 1, 55, 105, 106, 121
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
@@ -4482,7 +4482,7 @@ Spell Type       : Ranged
 Range            : 100 yards
 Velocity         : 20 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #2, #4), Lock and Load (194594 effects: #1, #2, #3), Bullseye (204090 effect#1), Sentinel's Sight (208913 effect#1), Gyroscopic Stabilization (235712 effects: #1, #2), Unseen Predator's Cloak (248212 effect#1), Trick Shots (257622 effect#2), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#2), Arrowstorm (263814 effect#1), Lethal Shots (269502 effect#1), Trueshot (288613 effect#4), Secrets of the Unblinking Vigil (336892 effect#1), Streamline (342076 effect#1), Bestial Pact (360955 effects: #3, #4), Hunter's Knowledge (378766 effect#1), Focused Aim (378767 effect#1), Eagletalon's True Focus (389450 effect#1), Fury Strikes (425830 effects: #1, #2), Overshadow (430716 effect#1), Sentinel Precision (450375 effects: #1, #2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #2, #4), Lock and Load (194594 effects: #1, #2, #3), Bullseye (204090 effect#1), Sentinel's Sight (208913 effect#1), Gyroscopic Stabilization (235712 effects: #1, #2), Unseen Predator's Cloak (248212 effect#1), Trick Shots (257622 effect#2), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#2), Arrowstorm (263814 effect#1), Lethal Shots (269502 effect#1), Trueshot (288613 effect#4), Secrets of the Unblinking Vigil (336892 effect#1), Streamline (342076 effect#1), Bestial Pact (360955 effects: #3, #4), Hunter's Knowledge (378766 effect#1), Focused Aim (378767 effect#1), Eagletalon's True Focus (389450 effect#1), Fury Strikes (425830 effects: #1, #2), Overshadow (430716 effect#1), Sentinel Precision (450375 effects: #1, #2), Moving Target (457116 effect#1)
 Family Flags     : 17, 93, 106
 Attributes       : .x...... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ......x. 
@@ -6674,7 +6674,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Multi-Shot Damage Increase (28539 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2, #14), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#1), Target Practice (321287 effect#1), Bestial Pact (360955 effects: #3, #4), Bulletstorm (389020 effect#1), Eagletalon's True Focus (389450 effect#2), Focusing Aim (394384 effect#1), Hunter Marksmanship 10.1 Class Set 2pc (405526 effect#1), Fury Strikes (425830 effects: #1, #2), Cornered Prey (452101 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Multi-Shot Damage Increase (28539 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2, #14), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#1), Target Practice (321287 effect#1), Bestial Pact (360955 effects: #3, #4), Bulletstorm (389020 effect#1), Eagletalon's True Focus (389450 effect#2), Focusing Aim (394384 effect#1), Hunter Marksmanship 10.1 Class Set 2pc (405526 effect#1), Fury Strikes (425830 effects: #1, #2), Cornered Prey (452101 effect#1), Hunter Marksmanship 11.0 Class Set 2pc (453648 effect#1)
 Triggered by     : Precise Shots (260242)
 Family Flags     : 1, 12, 106, 121
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
@@ -7199,7 +7199,7 @@ School           : Fire
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2)
 Triggered by     : Wildfire Bomb (259496)
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -7250,7 +7250,7 @@ School           : Fire
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2)
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8508,7 +8508,7 @@ School           : Fire
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Improved Wildfire Bomb (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Bestial Pact (360955 effects: #3, #4), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Improved Wildfire Bomb (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Bestial Pact (360955 effects: #3, #4), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2)
 Family Flags     : 22, 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8961,7 +8961,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2)
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -9131,7 +9131,7 @@ School           : Fire
 Spell Type       : Ranged
 Range            : 50000 yards
 Mechanic         : Bleed
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Improved Wildfire Bomb (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Bestial Pact (360955 effects: #3, #4), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Improved Wildfire Bomb (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Bestial Pact (360955 effects: #3, #4), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2)
 Family Flags     : 22, 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9154,7 +9154,7 @@ Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2)
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -9227,7 +9227,7 @@ School           : Fire
 Spell Type       : Ranged
 Range            : 50000 yards
 Mechanic         : Bleed
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Improved Wildfire Bomb (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Bestial Pact (360955 effects: #3, #4), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Improved Wildfire Bomb (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Bestial Pact (360955 effects: #3, #4), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2)
 Family Flags     : 22, 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9253,7 +9253,7 @@ Duration         : 6 seconds
 Proc Chance      : 100%
 Proc Flags       : .....x.. .x...... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee Taken, Yellow Ranged Taken
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2)
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -9282,7 +9282,7 @@ Duration         : 9 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Mechanic         : Bleed
-Affecting spells : Improved Wildfire Bomb (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1)
+Affecting spells : Improved Wildfire Bomb (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2)
 Family Flags     : 22
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -9520,7 +9520,7 @@ Class            : Hunter
 School           : Fire
 Spell Type       : Ranged
 Range            : 50000 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Improved Wildfire Bomb (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Bestial Pact (360955 effects: #3, #4), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Improved Wildfire Bomb (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Bestial Pact (360955 effects: #3, #4), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2)
 Family Flags     : 22, 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9542,7 +9542,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 6 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Cornered Prey (452101 effect#1), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2)
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -9871,7 +9871,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Feeding Frenzy (278529 effect#2), Feeding Frenzy (279607 effect#1), Qa'pla, Eredun War Order (336830 effects: #2, #3), Bloodletting (341440 effect#1), Call of the Wild (362754 effects: #1, #2), Sharp Barbs (378205 effects: #1, #2), Hunter Beast Mastery Class Set 4pc (393647 effects: #1, #2), War Orders (393933 effects: #1, #2), Savagery (424557 effect#2), Overshadow (430716 effect#2), Furious Assault (448814 effect#2), Cornered Prey (452101 effect#1)
+Affecting spells : Feeding Frenzy (278529 effect#2), Feeding Frenzy (279607 effect#1), Qa'pla, Eredun War Order (336830 effects: #2, #3), Bloodletting (341440 effect#1), Call of the Wild (362754 effects: #1, #2), Sharp Barbs (378205 effects: #1, #2), Hunter Beast Mastery Class Set 4pc (393647 effects: #1, #2), War Orders (393933 effects: #1, #2), Savagery (424557 effect#2), Overshadow (430716 effect#2), Furious Assault (448814 effect#2), Cornered Prey (452101 effect#1), Hunter Beast Mastery 11.0 Class Set 2pc (453654 effect#1)
 Family Flags     : 10, 78
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9896,7 +9896,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Feeding Frenzy (278529 effect#2), Feeding Frenzy (279607 effect#1), Qa'pla, Eredun War Order (336830 effects: #2, #3), Bloodletting (341440 effect#1), Call of the Wild (362754 effects: #1, #2), Sharp Barbs (378205 effects: #1, #2), Hunter Beast Mastery Class Set 4pc (393647 effects: #1, #2), War Orders (393933 effects: #1, #2), Savagery (424557 effect#2), Overshadow (430716 effect#2), Furious Assault (448814 effect#2), Cornered Prey (452101 effect#1)
+Affecting spells : Feeding Frenzy (278529 effect#2), Feeding Frenzy (279607 effect#1), Qa'pla, Eredun War Order (336830 effects: #2, #3), Bloodletting (341440 effect#1), Call of the Wild (362754 effects: #1, #2), Sharp Barbs (378205 effects: #1, #2), Hunter Beast Mastery Class Set 4pc (393647 effects: #1, #2), War Orders (393933 effects: #1, #2), Savagery (424557 effect#2), Overshadow (430716 effect#2), Furious Assault (448814 effect#2), Cornered Prey (452101 effect#1), Hunter Beast Mastery 11.0 Class Set 2pc (453654 effect#1)
 Family Flags     : 10, 78
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12265,7 +12265,7 @@ Resource         : 40 Focus (2) (id=215283)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Hunter (137014 effects: #2, #3), Marksmanship Hunter (137016 effect#14), Mastery: Sniper Training (193468 effects: #1, #2), Precise Shots (260242 effect#2), Target Practice (321287 effect#1), Crack Shot (321293 effect#1), Eagletalon's True Focus (336851 effect#2), Ranger (385695 effects: #1, #2), Eagletalon's True Focus (389450 effect#2), Focusing Aim (394384 effect#1), Hunter Marksmanship 10.1 Class Set 2pc (405526 effect#1), Cornered Prey (452101 effect#1)
+Affecting spells : Hunter (137014 effects: #2, #3), Marksmanship Hunter (137016 effect#14), Mastery: Sniper Training (193468 effects: #1, #2), Precise Shots (260242 effect#2), Target Practice (321287 effect#1), Crack Shot (321293 effect#1), Eagletalon's True Focus (336851 effect#2), Ranger (385695 effects: #1, #2), Eagletalon's True Focus (389450 effect#2), Focusing Aim (394384 effect#1), Hunter Marksmanship 10.1 Class Set 2pc (405526 effect#1), Cornered Prey (452101 effect#1), Hunter Marksmanship 11.0 Class Set 2pc (453648 effect#1)
 Triggered by     : Precise Shots (260242)
 Family Flags     : 1, 2, 39, 105, 121
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
@@ -19255,6 +19255,169 @@ Effects          :
 #1 (id=1155223)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc450385
+
+Name             : Hunter Marksmanship 11.0 Class Set 2pc (id=453648) [Spell Family (9), Passive, Hidden] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
+Effects          :
+#1 (id=1155648)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Affected Spells: Multi-Shot (2643), Arcane Shot (185358), Multi-Shot (257620), Chimaera Shot (342049)
+                   Family Flags: 12, 105
+Description      : Arcane Shot and Multishot damage increased by $s1%.
+
+Name             : Hunter Marksmanship 11.0 Class Set 4pc (id=453650) [Spell Family (9), Passive, Hidden] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
+Effects          :
+#1 (id=1155650)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : Consuming Precise Shots increases the damage of your next Aimed Shot by $457116s1%, stacking up to $457116u times.
+
+Name             : Hunter Beast Mastery 11.0 Class Set 4pc (id=453651) [Spell Family (9), Passive, Hidden] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
+Effects          :
+#1 (id=1155651)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : Your pet's attacks have a $s1% chance to increase all pet damage you deal by $457072s1% for $457072d.
+
+Name             : Hunter Survival 11.0 Class Set 2pc (id=453652) [Spell Family (9), Passive, Hidden] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
+Effects          :
+#1 (id=1155652)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Affected Spells: Scorching Wildfire (259587), Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049)
+                   Family Flags: 22
+#2 (id=1161660)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Scorching Wildfire (259587), Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049)
+                   Family Flags: 22
+Description      : Wildfire Bomb damage increased by $s1%.
+
+Name             : Hunter Survival 11.0 Class Set 4pc (id=453653) [Spell Family (9), Passive, Hidden] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
+Effects          :
+#1 (id=1155653)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : $?s259387[Mongoose Bite][Raptor Strike] deals $s1% increased damage to targets affected by Wildfire Bomb.
+
+Name             : Hunter Beast Mastery 11.0 Class Set 2pc (id=453654) [Spell Family (9), Passive, Hidden] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
+Effects          :
+#1 (id=1155654)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Frenzy (272790), Frenzy (272795)
+                   Family Flags: 10
+Description      : Barbed Shot further increases your pet's attack speed by $s1%.
+
+Name             : Harmonize (id=457072) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1161737)  : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Tooltip          : Pet damage is increased by $s1%.
+
+Name             : Moving Target (id=457116) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Stacks           : 2 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ x....... x....... ........   ........ ........ ........ ........   
+                 : Yellow Ranged, Magic Hostile Spell
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1161812)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Aimed Shot (19434), Wind Arrow (191043)
+                   Family Flags: 17
+Tooltip          : The damage of your next Aimed Shot is increased by $s1%.
 
 Name             : Lunar Storm (id=457978) [Spell Family (9)] 
 Class            : Hunter

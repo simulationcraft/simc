@@ -3942,6 +3942,11 @@ class SetBonusListGenerator(DataGenerator):
             'bonuses': [ 1613 ],
             'tier'   : 'TWW_KCI'
         },
+        {
+            'name'   : 'thewarwithin_season_1',
+            'bonuses': [ 1684, 1685, 1686, 1687, 1688, 1689, 1690, 1691, 1692, 1693, 1694, 1695, 1696 ],
+            'tier'   : 'TWW1'
+        },
     ]
 
     @staticmethod
