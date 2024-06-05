@@ -733,6 +733,8 @@ public:
     propagate_const<buff_t*> enduring_strength;
     propagate_const<buff_t*> frostwhelps_aid;
     buff_t* cryogenic_chamber;
+    // Tier Sets
+    propagate_const<buff_t*> icy_vigor;
 
     // Unholy
     propagate_const<buff_t*> dark_transformation;
@@ -1349,6 +1351,8 @@ public:
     const spell_data_t* cryogenic_chamber_buff;
     const spell_data_t* rime_buff;
     const spell_data_t* hyperpyrexia_damage;
+    // Tier Sets
+    const spell_data_t* icy_vigor;
 
     // Unholy
     const spell_data_t* runic_corruption;  // buff
@@ -1482,6 +1486,7 @@ public:
     real_ppm_t* runic_attenuation;
     real_ppm_t* blood_beast;
     real_ppm_t* decomposition;
+    real_ppm_t* tww1_fdk_4pc;
   } rppm;
 
   // Pets and Guardians
@@ -10494,6 +10499,12 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       replenish_rune( 1, gains.feast_of_souls );
     }
 
+    // TWW-TODO: Might need to go into Glacial Advance damage with Arctic Assault as well. Testing needed
+    if ( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ) && rppm.tww1_fdk_4pc->trigger() )
+    {
+      buffs.icy_vigor->trigger();
+    }
+
     // Effects that only trigger if resources were spent
     if ( actual_amount > 0 )
     {
@@ -11928,6 +11939,7 @@ void death_knight_t::init_rng()
   rppm.blood_beast       = get_rppm( "blood_beast", talent.sanlayn.the_blood_is_life );
   rppm.decomposition     = get_rppm( "decomposition", spell.decomposition_buff );
   rppm.decomposition->set_frequency( 15 );
+  rppm.tww1_fdk_4pc      = get_rppm( "tww1_fdk_4pc", sets->set( DEATH_KNIGHT_FROST, TWW1, B4 ) );
 }
 
 // death_knight_t::init_base ================================================
@@ -12368,6 +12380,8 @@ void death_knight_t::init_spells()
   spell.cryogenic_chamber_buff   = conditional_spell_lookup( talent.frost.cryogenic_chamber.ok(), 456370 );
   spell.rime_buff                = conditional_spell_lookup( spec.rime->ok(), 59052 );
   spell.hyperpyrexia_damage      = conditional_spell_lookup( talent.frost.hyperpyrexia.ok(), 458169 );
+  // Tier Sets
+  spell.icy_vigor                = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ), 457189 );
 
   // Unholy
   spell.runic_corruption_chance    = conditional_spell_lookup( spec.unholy_death_knight->ok(), 51462 );
@@ -13112,6 +13126,9 @@ void death_knight_t::create_buffs()
   buffs.cryogenic_chamber = make_fallback<cryogenic_chamber_buff_t>(
       talent.frost.cryogenic_chamber.ok(), this, "cryogenic_chamber", spell.cryogenic_chamber_buff );
 
+  buffs.icy_vigor =
+      make_fallback( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ), this, "icy_vigor", spell.icy_vigor );
+
   // Unholy
   buffs.dark_transformation = make_fallback<dark_transformation_buff_t>(
       talent.unholy.dark_transformation.ok(), this, "dark_transformation", talent.unholy.dark_transformation );
@@ -13825,6 +13842,7 @@ void death_knight_t::parse_player_effects()
     parse_effects( buffs.bonegrinder_crit, talent.frost.bonegrinder );
     parse_effects( buffs.enduring_strength, talent.frost.enduring_strength );
     parse_effects( buffs.unleashed_frenzy, talent.frost.unleashed_frenzy );
+    parse_effects( buffs.icy_vigor );
   }
 
   // Unholy
@@ -13896,6 +13914,7 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   {
     action.apply_affecting_aura( spec.might_of_the_frozen_wastes );
   }
+  action.apply_affecting_aura( sets->set( DEATH_KNIGHT_FROST, TWW1, B2 ) );
 
   // Unholy
   action.apply_affecting_aura( talent.unholy.ebon_fever );
