@@ -3142,7 +3142,7 @@ public:
       for ( auto& t : secondary_list )
       {
         target_list.push_back( t );
-        if ( target_list.size() >= n_targets() )
+        if ( as<int>( target_list.size() ) >= n_targets() )
           break;
       }
     }
