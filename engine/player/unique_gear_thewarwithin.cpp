@@ -620,7 +620,7 @@ void aberrant_spellforge( special_effect_t& effect )
   };
   */
 
-  empowerment->set_stack_change_callback( [ cb, haste ]( buff_t* b, int old_, int new_ ) {
+  empowerment->set_stack_change_callback( [ cb, haste, stack ]( buff_t* b, int old_, int new_ ) {
     if ( !old_ )
     {
       cb->activate();
@@ -629,7 +629,7 @@ void aberrant_spellforge( special_effect_t& effect )
     {
       cb->deactivate();
 
-      if ( b->at_max_stacks() )
+      if ( stack->at_max_stacks() )
         haste->trigger();
     }
   } );
