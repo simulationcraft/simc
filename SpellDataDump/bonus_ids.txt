@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54935 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.55000 thewarwithin-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -5469,7 +5469,7 @@ bonus_id={ 10214 }, ilevel_adjust={ -597 }
 bonus_id={ 10215 }, ilevel_adjust={ -598 }
 bonus_id={ 10216 }, ilevel_adjust={ -599 }
 bonus_id={ 10217 }, ilevel_adjust={ -600 }
-bonus_id={ 10222 }, base_ilevel={ 584 }, desc={ Omen Crafted }
+bonus_id={ 10222 }, base_ilevel={ 593 }, desc={ Omen Crafted }
 bonus_id={ 10236 }, effects={ Opportunist (id=427054, index=0, type=equip) }
 bonus_id={ 10242 }, effects={ Sunstrider's Flourish (id=429214, index=0, type=equip) }
 bonus_id={ 10249 }, base_ilevel={ 489 }, desc={ Awakened Crafted }
@@ -5570,21 +5570,21 @@ bonus_id={ 10346 }, quality={ epic }
 bonus_id={ 10347 }, quality={ epic }
 bonus_id={ 10348 }, quality={ epic }
 bonus_id={ 10349 }, base_ilevel={ 564 }, desc={ Beginner Crafted }
-bonus_id={ 10350 }, ilevel={ 388 @plvl 55 - 483 @plvl 90 }
+bonus_id={ 10350 }, ilevel={ 362 @plvl 50 - 362 @plvl 90 }
 bonus_id={ 10357 }, base_ilevel={ 473 }, quality={ epic }
 bonus_id={ 10358 }, base_ilevel={ 502 }
 bonus_id={ 10359 }, base_ilevel={ 512 }
-bonus_id={ 10360 }, ilevel={ 388 @plvl 55 - 483 @plvl 90 }
-bonus_id={ 10361 }, ilevel={ 398 @plvl 55 - 493 @plvl 90 }
-bonus_id={ 10362 }, quality={ uncommon }, ilevel={ 415 @plvl 55 - 509 @plvl 90 }
-bonus_id={ 10363 }, quality={ uncommon }, ilevel={ 424 @plvl 55 - 515 @plvl 90 }
-bonus_id={ 10364 }, quality={ rare }, ilevel={ 424 @plvl 55 - 519 @plvl 90 }
-bonus_id={ 10365 }, quality={ rare }, ilevel={ 434 @plvl 55 - 528 @plvl 90 }
-bonus_id={ 10366 }, quality={ epic }, ilevel={ 434 @plvl 55 - 528 @plvl 90 }
-bonus_id={ 10367 }, quality={ epic }, ilevel={ 444 @plvl 55 - 538 @plvl 90 }
+bonus_id={ 10360 }, ilevel={ 362 @plvl 50 - 362 @plvl 90 }
+bonus_id={ 10361 }, ilevel={ 362 @plvl 50 - 362 @plvl 90 }
+bonus_id={ 10362 }, quality={ uncommon }, ilevel={ 434 @plvl 50 - 532 @plvl 90 }
+bonus_id={ 10363 }, quality={ uncommon }, ilevel={ 434 @plvl 50 - 538 @plvl 90 }
+bonus_id={ 10364 }, quality={ rare }, ilevel={ 441 @plvl 50 - 535 @plvl 90 }
+bonus_id={ 10365 }, quality={ rare }, ilevel={ 441 @plvl 50 - 541 @plvl 90 }
+bonus_id={ 10366 }, quality={ epic }, ilevel={ 447 @plvl 50 - 539 @plvl 90 }
+bonus_id={ 10367 }, quality={ epic }, ilevel={ 447 @plvl 50 - 545 @plvl 90 }
 bonus_id={ 10381 }, quality={ common }, effects={ Health Brew (id=438407, index=0, type=equip) }
-bonus_id={ 10382 }, ilevel={ 418 @plvl 55 - 535 @plvl 90 }
-bonus_id={ 10385 }, ilevel={ 434 @plvl 55 - 551 @plvl 90 }
+bonus_id={ 10382 }, ilevel={ 356 @plvl 55 - 551 @plvl 90 }
+bonus_id={ 10385 }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
 bonus_id={ 10391 }, quality={ common }, effects={ Slash (id=431147, index=0, type=equip) }
 bonus_id={ 10397 }, socket={ 1 }
 bonus_id={ 10405 }, effects={ Fervor (id=429389, index=0, type=equip) }
@@ -5601,7 +5601,7 @@ bonus_id={ 10415 }, quality={ epic }
 bonus_id={ 10416 }, quality={ epic }
 bonus_id={ 10417 }, quality={ epic }
 bonus_id={ 10418 }, quality={ epic }
-bonus_id={ 10421 }, base_ilevel={ 580 }
+bonus_id={ 10421 }, base_ilevel={ 593 }
 bonus_id={ 10426 }, ilevel={ 5 @plvl 1 - 441 @plvl 70 }
 bonus_id={ 10427 }, quality={ common }, effects={ Mana Sphere (id=431501, index=0, type=equip) }
 bonus_id={ 10428 }, quality={ common }, effects={ Searing Axe (id=432490, index=0, type=equip) }
@@ -5990,9 +5990,9 @@ bonus_id={ 10823 }, effects={ Cold Front (id=436573, index=0, type=equip) }
 bonus_id={ 10824 }, effects={ Brittle (id=436578, index=0, type=equip) }
 bonus_id={ 10825 }, effects={ Memory of Vengeance (id=436583, index=0, type=equip) }
 bonus_id={ 10826 }, effects={ Searing Light (id=436586, index=0, type=equip) }
-bonus_id={ 10827 }, base_ilevel={ 530 }
-bonus_id={ 10828 }, base_ilevel={ 556 }
-bonus_id={ 10829 }, base_ilevel={ 582 }
+bonus_id={ 10827 }, base_ilevel={ 538 }
+bonus_id={ 10828 }, base_ilevel={ 564 }
+bonus_id={ 10829 }, base_ilevel={ 590 }
 bonus_id={ 10835 }, socket={ 1 }
 bonus_id={ 10836 }, socket={ 2 }
 bonus_id={ 10838 }, socket={ 3 }
@@ -6113,7 +6113,7 @@ bonus_id={ 11049 }, effects={ Soulshape (id=441765, index=0, type=equip) }
 bonus_id={ 11053 }
 bonus_id={ 11054 }, quality={ rare }, ilevel={ 219 @plvl 45 - 340 @plvl 80 }
 bonus_id={ 11055 }, quality={ epic }, ilevel={ 232 @plvl 45 - 353 @plvl 80 }
-bonus_id={ 11061 }, quality={ rare }, ilevel={ 219 @plvl 45 - 340 @plvl 80 }
+bonus_id={ 11061 }, quality={ rare }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
 bonus_id={ 11062 }, quality={ epic }, ilevel={ 232 @plvl 45 - 353 @plvl 80 }
 bonus_id={ 11065 }, quality={ uncommon }
 bonus_id={ 11069 }, quality={ rare }, ilevel={ 21 @plvl 1 - 558 @plvl 80 }
@@ -6155,16 +6155,16 @@ bonus_id={ 11121 }, stats={ 100% BonusArmor [1.6000] }
 bonus_id={ 11123 }, stats={ 100% Vers [0.4779] }
 bonus_id={ 11124 }, stats={ 100% Vers [0.7168] }
 bonus_id={ 11125 }, stats={ 100% Vers [0.9556] }
-bonus_id={ 11128 }, ilevel={ 202 @plvl 65 - 535 @plvl 80 }
+bonus_id={ 11128 }, ilevel={ 356 @plvl 55 - 551 @plvl 90 }
 bonus_id={ 11134 }, effects={ Funeral Pyre (id=447565, index=0, type=equip) }
 bonus_id={ 11135 }, effects={ Bulwark of the Black Ox (id=447592, index=0, type=equip) }
 bonus_id={ 11136 }, mod_to_stat={ Crit (100) }
 bonus_id={ 11137 }, mod_to_stat={ Mastery (100) }
 bonus_id={ 11138 }, mod_to_stat={ Haste (100) }
 bonus_id={ 11139 }, mod_to_stat={ Vers (100) }
-bonus_id={ 11142 }, base_ilevel={ 564 }, quality={ epic }
-bonus_id={ 11143 }, base_ilevel={ 593 }
-bonus_id={ 11144 }, base_ilevel={ 603 }
+bonus_id={ 11142 }, base_ilevel={ 577 }, quality={ epic }
+bonus_id={ 11143 }, base_ilevel={ 606 }
+bonus_id={ 11144 }, base_ilevel={ 616 }
 bonus_id={ 11145 }, socket={ 3 }
 bonus_id={ 11146 }, socket={ 3 }
 bonus_id={ 11147 }, socket={ 3 }
@@ -6211,7 +6211,7 @@ bonus_id={ 11187 }, socket={ 3 }
 bonus_id={ 11188 }, socket={ 3 }
 bonus_id={ 11189 }, socket={ 3 }
 bonus_id={ 11190 }, ilevel={ 15 @plvl 10 - 551 @plvl 80 }
-bonus_id={ 11191 }, ilevel={ 431 @plvl 55 - 548 @plvl 90 }
+bonus_id={ 11191 }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
 bonus_id={ 11192 }, effects={ Heartseeking Health Injector (id=452767, index=0, type=use) }
 bonus_id={ 11193 }, effects={ Lightning Tether (id=452883, index=0, type=use) }
 bonus_id={ 11194 }, effects={ Breath of Neltharion (id=385520, index=0, type=use) }
@@ -6293,7 +6293,7 @@ bonus_id={ 11291 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (i
 bonus_id={ 11292 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=456993, index=0, type=use) }
 bonus_id={ 11293 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=457007, index=0, type=use) }
 bonus_id={ 11295 }, base_ilevel={ 515 }
-bonus_id={ 11297 }, base_ilevel={ 535 }
+bonus_id={ 11297 }, base_ilevel={ 545 }
 bonus_id={ 11299 }, effects={ Radiant Focus (id=454558, index=0, type=equip) }
 bonus_id={ 11300 }, effects={ Evolution (id=458573, index=0, type=equip) }
 bonus_id={ 11301 }, effects={ Vivacity (id=454857, index=0, type=equip) }
@@ -6301,3 +6301,9 @@ bonus_id={ 11302 }, effects={ Symbiosis (id=455534, index=0, type=equip) }
 bonus_id={ 11303 }, effects={ Dawnthread Lining (id=457665, index=0, type=equip) }
 bonus_id={ 11304 }, effects={ Duskthread Lining (id=457677, index=0, type=equip) }
 bonus_id={ 11306 }, ilevel={ 15 @plvl 10 - 554 @plvl 80 }
+bonus_id={ 11307 }, socket={ 1 }
+bonus_id={ 11308 }, quality={ rare }, ilevel={ 15 @plvl 10 - 551 @plvl 80 }
+bonus_id={ 11309 }, quality={ epic }, ilevel={ 15 @plvl 10 - 554 @plvl 80 }
+bonus_id={ 11310 }, quality={ rare }, ilevel={ 15 @plvl 10 - 554 @plvl 80 }
+bonus_id={ 11312 }, quality={ rare }
+bonus_id={ 11313 }, mod_to_stat={ unknown (100) }

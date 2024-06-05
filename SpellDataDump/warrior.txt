@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54935 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.55000 thewarwithin-BETA
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -92,7 +92,7 @@ Category         : 82
 Category Cooldown: 8 seconds
 Proc Chance      : 101%
 Mechanic         : Taunt
-Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Bladestorm (389774 effect#3), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 15
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ x.x..... ........ 
@@ -200,7 +200,7 @@ Cooldown         : 8 seconds
 Charges          : 1 (210 seconds cooldown)
 Category         : 1929: Symbol of Hope (265144 effect#3), Stalwart Guardian (334993 effect#2), Unbreakable Will (335629 effect#2), Defender's Aegis (397103 effect#1), Defender's Aegis (397103 effect#2)
 Labels           : 1284: Symbol of Hope (265144 effect#2)
-Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Bladestorm (389774 effect#3), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 13
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -227,7 +227,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 45 seconds
 Proc Chance      : 101%
-Affecting spells : Recklessness (1719 effect#9), Bladestorm (46924 effect#3), Warrior (137047 effect#2), Morale Killer (199023 effect#2), Booming Voice (202743 effects: #1, #2, #3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Unnerving Focus (337155 effect#6), Unnerving Focus (384043 effect#6), Thunderlord (385840 effect#3), Bladestorm (389774 effect#3), Strength of the Mountain (437068 effects: #2, #3), Bladestorm (446035 effect#3)
+Affecting spells : Recklessness (1719 effect#9), Bladestorm (46924 effect#3), Warrior (137047 effect#2), Morale Killer (199023 effect#2), Booming Voice (202743 effects: #1, #2, #3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Unnerving Focus (337155 effect#6), Unnerving Focus (384043 effect#6), Thunderlord (385840 effect#3), Strength of the Mountain (437068 effects: #2, #3), Bladestorm (446035 effect#3)
 Family Flags     : 8, 11, 17, 70
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -268,7 +268,7 @@ Duration         : 6 seconds
 Cooldown         : 120 seconds
 Proc Chance      : 101%
 Mechanic         : Taunt
-Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (389774 effect#3), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 70, 75
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ..x..... ........ 
@@ -334,8 +334,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ .......x ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Do Not Display Range (126), Treat as Area Effect (175), No Jump Pathing (208), JumpCharge - no facing control (311), Charge/JumpCharge - Use Absolute Speed (329), Allow Class Ability Procs (416)
+                 : x....... ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Do Not Display Range (126), Treat as Area Effect (175), No Jump Pathing (208), JumpCharge - no facing control (311), Charge/JumpCharge - Use Absolute Speed (329), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=512)      : Trigger Spell (64): Whirlwind
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 199658 | Target: Self (1)
@@ -407,7 +407,7 @@ Effects          :
                    Family Flags: 9
 #5 (id=737891)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Whirlwind (190411), Ravager (248439), War Machine (262232), Onslaught (315720), Ancient Aftershock (326076), Ravager (334934), Seethe (335092), Onslaught (396718), Strength of Arms (400806)
+                   Affected Spells: Whirlwind (190411), War Machine (262232), Onslaught (315720), Ancient Aftershock (326076), Ravager (334934), Seethe (335092), Onslaught (396718), Strength of Arms (400806)
                    Family Flags: 20, 37, 39, 55, 76, 77, 124
 #6 (id=737893)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
@@ -415,11 +415,11 @@ Effects          :
                    Family Flags: 0, 21, 26, 32, 41, 42, 49, 53, 55, 69, 101, 106
 #7 (id=737894)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Execute (5308), Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Execute (163201), Bladestorm (227847), Execute (280735), Execute (281000), Spear of Bastion (307871), Condemn (317349), Condemn (317485), Condemn (330325), Condemn (330334), Champion's Spear (376080), Thunderous Roar (384318), Bladestorm (389774), Thunderous Roar (397364), Max A FX Testing Warrior Spear - (2) Damage (409404), Bladestorm (446035)
+                   Affected Spells: Execute (5308), Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Execute (163201), Bladestorm (227847), Execute (280735), Execute (281000), Spear of Bastion (307871), Condemn (317349), Condemn (317485), Condemn (330325), Condemn (330334), Champion's Spear (376080), Thunderous Roar (384318), Thunderous Roar (397364), Max A FX Testing Warrior Spear - (2) Damage (409404), Bladestorm (446035)
                    Family Flags: 46, 57, 59, 91
 #8 (id=737895)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 4 (32)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
-                   Affected Spells: Thunder Clap (6343), Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Conqueror's Banner (324143), Bladestorm (389774), Thunder Blast (435222), Bladestorm (446035)
+                   Affected Spells: Thunder Clap (6343), Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Conqueror's Banner (324143), Thunder Blast (435222), Bladestorm (446035)
                    Family Flags: 7, 46, 88
 #9 (id=738384)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 5 (33)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
@@ -442,7 +442,7 @@ Requires armor   : Shield
 Cooldown         : 1 seconds
 Charges          : 1 (16 seconds cooldown)
 Category         : 1385: Warrior (137047 effect#4), Shield Block (231847 effect#1), Ararat's Bloodmirrors (248117 effect#1)
-Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Deadly Calm (262228 effect#1), Enduring Defenses (386027 effect#1), Bladestorm (389774 effect#3), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Deadly Calm (262228 effect#1), Enduring Defenses (386027 effect#1), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 12
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -502,7 +502,7 @@ Attributes       : ....x... ........ x.x..... .....x..   ........ ..x..... ...x.
 Effects          :
 #1 (id=171277)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
-Description      : Run at high speed toward an ally, intercepting all melee and ranged attacks against them for $147833d while they remain within $147833A1 yds.
+Description      : Run at high speed toward an ally, intercepting all melee attacks, ranged attacks, and harmful spells targeting them for $147833d while they remain within $147833A1 yds.
 
 Name             : Intimidating Shout (id=5246) [Spell Family (4)] 
 Talent Entry     : Generic [tree=class, row=4, col=1, max_rank=1, req_points=0]
@@ -615,8 +615,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Combat Feedback When Usable (137), Spellcast Override In Spellbook (310), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
+                 : x....... ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Combat Feedback When Usable (137), Spellcast Override In Spellbook (310), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=1900)     : Trigger Spell (64): Execute
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 280849 | Target: Enemy (6)
@@ -911,7 +911,7 @@ Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 1251
 Category Cooldown: 20 seconds
-Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Bolster (280001 effect#1), Bladestorm (389774 effect#3), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Bolster (280001 effect#1), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 51
 Attributes       : ....x... ........ x.x..... .......x   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -941,7 +941,7 @@ Spell Type       : None
 Spell Level      : 12
 Duration         : 6 seconds
 Cooldown         : 60 seconds
-Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (389774 effect#3), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 28
 Attributes       : ....x... ........ x.x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1089,7 +1089,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : .....x.x .x...x.. .x...... ........   ........ ........ ........ ........   
                  : Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
-Affecting spells : Bladestorm (46924 effect#3), Protection Warrior (137048 effect#22), Neltharion's Fury (203524 effect#4), Rebound (213915 effect#1), Bladestorm (227847 effect#3), Misshapen Mirror (335253 effect#1), Bladestorm (389774 effect#3), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Protection Warrior (137048 effect#22), Neltharion's Fury (203524 effect#4), Rebound (213915 effect#1), Bladestorm (227847 effect#3), Misshapen Mirror (335253 effect#1), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 33
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
@@ -1416,7 +1416,7 @@ Max Targets      : Unlimited(-1)
 Labels           : 3637: Storm of Steel (382953 effect#6)
 Proc Chance      : 100%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #7, #8), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3, #4), Fury Warrior (137050 effects: #1, #2, #6, #11), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Storm of Steel (382953 effects: #1, #3), Impale (383430 effect#1), Unnerving Focus (384043 effect#5), Dance of Death (390714 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2)
-Triggered by     : Bladestorm (46924), Bladestorm (227847), Bladestorm (389774), Bladestorm (446035)
+Triggered by     : Bladestorm (46924), Bladestorm (227847), Bladestorm (446035)
 Family Flags     : 9, 46
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -2287,7 +2287,7 @@ Spell Type       : None
 Spell Level      : 46
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
-Affecting spells : Bladestorm (46924 effect#3), Warrior (137047 effect#2), Bladestorm (227847 effect#3), Moment of Glory (280209 effect#2), Inspiring Presence (335034 effects: #1, #2), Bladestorm (389774 effect#3), Battlefield Commander (424742 effect#4), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Warrior (137047 effect#2), Bladestorm (227847 effect#3), Moment of Glory (280209 effect#2), Inspiring Presence (335034 effects: #1, #2), Battlefield Commander (424742 effect#4), Bladestorm (446035 effect#3)
 Family Flags     : 8, 11, 67, 68
 Attributes       : ....x... ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
@@ -2310,7 +2310,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 10 seconds
-Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Moment of Glory (280209 effect#2), Inspiring Presence (335034 effect#1), Bladestorm (389774 effect#3), Battlefield Commander (424742 effect#4), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Moment of Glory (280209 effect#2), Inspiring Presence (335034 effect#1), Battlefield Commander (424742 effect#4), Bladestorm (446035 effect#3)
 Family Flags     : 11, 68, 70
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2409,7 +2409,7 @@ GCD              : 1.5 seconds
 Velocity         : 36 yards/sec
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 30 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Storm Bolts (436162 effect#1), Bladestorm (446035 effect#3)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Storm Bolts (436162 effects: #1, #3), Bladestorm (446035 effect#3)
 Family Flags     : 8, 9, 105
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2437,7 +2437,7 @@ Spell Level      : 32
 Duration         : 20 seconds
 Cooldown         : 90 seconds
 Labels           : 771: Strive for Perfection (296320 effect#9), Immovable Object (394314 effect#1), Immovable Object (394314 effect#2), Immovable Object (394314 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unstoppable Force (275336 effects: #1, #2), Unnerving Focus (337155 effect#6), Outburst (364639 effects: #1, #2), Unnerving Focus (384043 effect#3), Spiteful Serenity (400314 effects: #1, #2, #3, #4)
 Family Flags     : 8, 32
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x....x x....... ........ 
@@ -2447,8 +2447,8 @@ Attributes       : ....x... ........ x.x..... ...x....   ........ ..x....x x....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
-                 : ........ ........ .x...... ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Immunity Purges Effect (47), Immunity to Hostile & Friendly Effects (48), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : x....... ........ .x...... ........   
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Immunity Purges Effect (47), Immunity to Hostile & Friendly Effects (48), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=118390)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75000 | Target: Self (1)
@@ -2765,7 +2765,7 @@ Duration         : 8 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 120 seconds
 Labels           : 1284: Symbol of Hope (265144 effect#2)
-Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Stalwart Guardian (334993 effect#1), Valor in Victory (383338 effect#2), Bladestorm (389774 effect#3), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Stalwart Guardian (334993 effect#1), Valor in Victory (383338 effect#2), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 97
 Attributes       : ....x... ........ x.x..... ........   ....x... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3113,7 +3113,7 @@ Effects          :
                    Family Flags: 18
 #2 (id=188987)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Charge (100), Rend (772), Cleave (845), Demoralizing Shout (1160), Slam (1464), Whirlwind (1680), Hamstring (1715), Recklessness (1719), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Revenge (6572), Battle Shout (6673), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Bladestorm (46924), Shockwave (46968), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85288), Rallying Cry (97462), Storm Bolt (107570), Avatar (107574), Dragon Roar (118000), Ravager (152277), Execute (163201), Colossus Smash (167105), Rampage (184367), Whirlwind (190411), Impending Victory (202168), Bladestorm (227847), Ravager (228920), Skullsplitter (260643), Sweeping Strikes (260708), Warbreaker (262161), Deadly Calm (262228), Execute (280735), Siegebreaker (280772), Execute (280849), Execute (281000), Spear of Bastion (307865), Onslaught (315720), Intimidating Shout (316593), Condemn (317349), Condemn (317485), Condemn (317488), Conqueror's Banner (324143), Ancient Aftershock (325886), Condemn (330325), Condemn (330334), Bloodbath (335096), Crushing Blow (335097), Mortal Strike (339385), Raise Banner (343666), Champion's Spear (376079), Wrecking Throw (384110), Thunderous Roar (384318), Odyn's Fury (385059), Shield Charge (385952), Bladestorm (389774), Rend (394062), Shattering Throw (394352), Wrecking Throw (394354), Avatar (401150), Thunder Blast (435222), Bladestorm (446035)
+                   Affected Spells: Charge (100), Rend (772), Cleave (845), Demoralizing Shout (1160), Slam (1464), Whirlwind (1680), Hamstring (1715), Recklessness (1719), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Revenge (6572), Battle Shout (6673), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Bladestorm (46924), Shockwave (46968), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85288), Rallying Cry (97462), Storm Bolt (107570), Avatar (107574), Dragon Roar (118000), Execute (163201), Colossus Smash (167105), Rampage (184367), Whirlwind (190411), Impending Victory (202168), Bladestorm (227847), Ravager (228920), Skullsplitter (260643), Sweeping Strikes (260708), Warbreaker (262161), Deadly Calm (262228), Execute (280735), Siegebreaker (280772), Execute (280849), Execute (281000), Spear of Bastion (307865), Onslaught (315720), Intimidating Shout (316593), Condemn (317349), Condemn (317485), Condemn (317488), Conqueror's Banner (324143), Ancient Aftershock (325886), Condemn (330325), Condemn (330334), Bloodbath (335096), Crushing Blow (335097), Mortal Strike (339385), Raise Banner (343666), Champion's Spear (376079), Wrecking Throw (384110), Thunderous Roar (384318), Odyn's Fury (385059), Shield Charge (385952), Rend (394062), Shattering Throw (394352), Wrecking Throw (394354), Avatar (401150), Thunder Blast (435222), Bladestorm (446035)
                    Family Flags: 8
 #3 (id=191020)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3270,7 +3270,7 @@ Effects          :
                    Family Flags: 9
 #4 (id=191015)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Bladestorm (389774), Bladestorm (446035)
+                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Bladestorm (446035)
                    Family Flags: 46
 #5 (id=191016)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3330,7 +3330,7 @@ Effects          :
                    Affected Spells (Category): Raging Blow (85288), Crushing Blow (335097)
 #6 (id=831458)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Bladestorm (389774), Bladestorm (446035)
+                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Bladestorm (446035)
                    Family Flags: 46
 #7 (id=877674)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3346,7 +3346,7 @@ Effects          :
                    Family Flags: 7
 #11 (id=1155238)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Bladestorm (389774), Bladestorm (446035)
+                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Bladestorm (446035)
                    Family Flags: 46
 #12 (id=1155555)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
@@ -3440,42 +3440,6 @@ Effects          :
 #1 (id=201261)   : Unknown(74)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1101
 Description      : $@spelldesc146974
-
-Name             : Ravager (id=152277) [Spell Family (4)] 
-Replaces         : Bladestorm (id=227847)
-Class            : Warrior
-School           : Physical
-Spell Type       : None
-Range            : 40 yards
-GCD              : 1.5 seconds
-Velocity         : 30 yards/sec
-Duration         : 12 seconds
-Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Cooldown         : 45 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
-Affecting spells : Warrior (137047 effect#2), Storm of Steel (382953 effects: #1, #3), Dance of Death (390714 effect#1), Dance of Death (393966 effects: #1, #2)
-Family Flags     : 8, 107
-Attributes       : ....x... ........ x....... .......x   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), No Aura Cancel (31), No Aura Icon (60), Spell Haste Affects Periodic (173), No Aura Log (202), Haste Affects Duration (273), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=210835)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=217166)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: At Enemy in Area (16)
-#3 (id=217506)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Throws a whirling weapon at the target location that chases nearby enemies, inflicting $<damage> Physical damage and applying Deep Wounds to all enemies over $d. Deals reduced damage beyond $156287s2 targets.
-
-|cFFFFFFFFGenerates ${$248439s1/10} Rage each time it deals damage.|r
-Tooltip          : Ravager is currently active.
-Variables        : $damage=${6*$156287s1}
 
 Name             : Anger Management (id=152278) [Spell Family (4), Passive] 
 Talent Entry     : Arms [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=0]
@@ -3627,8 +3591,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Combat Feedback When Usable (137), Allow Class Ability Procs (416)
+                 : x....... ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Combat Feedback When Usable (137), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=229520)   : Trigger Spell (64): Execute
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 260798 | Target: Enemy (6)
@@ -3688,24 +3652,6 @@ Effects          :
 #1 (id=236210)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.14170 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Smashes the enemy's armor, dealing $s1 Physical damage, and increasing damage you deal to them by $208086s1% for $208086d.
-
-Name             : Blade Twister (id=177167) 
-Class            : Warrior
-School           : Physical
-Spell Type       : Melee
-Range            : 100 yards
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-Effects          :
-#1 (id=253577)   : Weapon Damage% (31)
-                   Base Value: 160 | Scaled Value: 1.6 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Unknown(87) -> At Enemy in Area (16)
-Description      : $@spelldesc152277
 
 Name             : PvP Rules Enabled for Dummy (id=178806) 
 Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Mage, Monk, Evoker
@@ -3815,7 +3761,7 @@ Spell Type       : None
 Duration         : 8 seconds
 Cooldown         : 120 seconds
 Labels           : 1284: Symbol of Hope (265144 effect#2)
-Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Stalwart Guardian (334993 effect#1), Invigorating Fury (383468 effect#1), Bladestorm (389774 effect#3), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Stalwart Guardian (334993 effect#1), Invigorating Fury (383468 effect#1), Bladestorm (446035 effect#3)
 Family Flags     : 11, 64
 Attributes       : ....x... ........ x.x..... ........   ........ .......x x....... ........ 
                  : ........ ........ ........ .....x..   ........ ........ x....... ........ 
@@ -3978,11 +3924,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Treat as Area Effect (175), Allow Class Ability Procs (416)
+                 : x....... ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Treat as Area Effect (175), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=279027)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
@@ -4022,7 +3968,7 @@ Resource         : 35 Rage (1) (id=192515) w/ Protection Warrior (id=137048)
 Resource         : 35 Rage (1) (id=192743) w/ Initial Warrior (id=325446)
 Duration         : 12 seconds
 Cooldown         : 1 seconds
-Affecting spells : Bladestorm (46924 effect#3), Arms Warrior (137049 effect#9), Shield Mastery (184927 effect#2), Neltharion's Fury (203524 effect#4), Bladestorm (227847 effect#3), Deadly Calm (262228 effect#1), Bloodsport (279172 effect#3), Bladestorm (389774 effect#3), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Arms Warrior (137049 effect#9), Shield Mastery (184927 effect#2), Neltharion's Fury (203524 effect#4), Bladestorm (227847 effect#3), Deadly Calm (262228 effect#1), Bloodsport (279172 effect#3), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 109
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5577,31 +5523,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : $@spelldesc218826
 
-Name             : Ravager (id=227744) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Spell Type       : None
-Range            : 40 yards
-Velocity         : 30 yards/sec
-Duration         : 12 seconds
-Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Storm of Steel (382953 effects: #1, #3), Dance of Death (390714 effect#1), Dance of Death (393966 effects: #1, #2)
-Family Flags     : 107
-Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ....x... ........ 
-                 : ........ ........ ........ ........   
-                 : No Aura Cancel (31), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
-Effects          :
-#1 (id=342507)   : Apply Aura (6) | Modify Parry% (47)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc152277
-Tooltip          : $?s23922[Chance to Parry increased by $s1%.][Ravager is currently active.]
-
 Name             : Bladestorm (id=227847) [Spell Family (4)] 
 Talent Entry     : Arms [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=100]
                  : Fury [tree=spec, row=9, col=4, max_rank=1, req_points=20, select_idx=100]
@@ -6069,26 +5990,6 @@ Effects          :
                    Affected Spells: Execute (5308), Mortal Strike (12294), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Mortal Strike (339385)
                    Family Flags: 25, 29
 Description      : $@spelldesc209492
-
-Name             : Ravager (id=248439) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Spell Type       : None
-Affecting spells : Recklessness (1719 effect#5), Unnerving Focus (337155 effect#2), Unnerving Focus (384043 effect#2)
-Family Flags     : 76
-Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
-                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
-                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
-Effects          :
-#1 (id=465400)   : Energize Power (30)
-                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
-Description      : $@spelldesc152277
 
 Name             : In For The Kill (id=248621) [Spell Family (4), Passive] 
 Talent Entry     : Arms [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
@@ -6793,7 +6694,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=732931)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 23187.98 (coefficient=9.521472) | PvP Coefficient: 0.50000 | Trigger Spell: 278495 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 23805.47 (coefficient=9.521472) | PvP Coefficient: 0.50000 | Trigger Spell: 278495 | Target: Self (1)
 #2 (id=732932)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
 Description      : Overpower causes a seismic wave that deals $s1 Physical damage to enemies in a $s2 yd line.
@@ -7061,8 +6962,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Combat Feedback When Usable (137), Spellcast Override In Spellbook (310), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
+                 : x....... ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Combat Feedback When Usable (137), Spellcast Override In Spellbook (310), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=738455)   : Trigger Spell (64): Execute
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 280849 | Target: Enemy (6)
@@ -7203,8 +7104,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Combat Feedback When Usable (137), Allow Class Ability Procs (416)
+                 : x....... ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Combat Feedback When Usable (137), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=738982)   : Trigger Spell (64): Execute
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 260798 | Target: Enemy (6)
@@ -7280,7 +7181,7 @@ Effects          :
 #1 (id=751474)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 288084 | Target: Self (1)
 #2 (id=751475)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 23158.1 (coefficient=9.509202) | PvP Coefficient: 0.50000 | Trigger Spell: 288085 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 23774.8 (coefficient=9.509202) | PvP Coefficient: 0.50000 | Trigger Spell: 288085 | Target: Self (1)
 Description      : Bloodthirst critical strikes generate $<rage> additional Rage, and inflict a Gushing Wound that leeches $<damage> health over $288091d.
 Variables        : $rage=${$288087s1/10}
 $damage=${$s2*3}
@@ -8745,25 +8646,6 @@ Description      : $@spelldesc333891
 Tooltip          : Leech increased by $w1%.
 Immune to crowd control effects.
 
-Name             : Ravager (id=334769) [Spell Family (4), Hidden] 
-Class            : Warrior
-School           : Physical
-Spell Type       : None
-Max Targets      : 1
-Attributes       : .......x ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ xx...... ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151)
-Effects          :
-#1 (id=830915)   : Dummy (3)
-                   Base Value: 334770 | Scaled Value: 334770 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Self (18) -> At Enemy in Area (16)
-Description      : $@spelldesc152277
-
 Name             : Collateral Damage (id=334779) [Spell Family (4), Passive] 
 Talent Entry     : Arms [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=200]
 Class            : Warrior
@@ -9792,7 +9674,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=834981)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Whirlwind (190411), Ravager (248439), War Machine (262232), Ancient Aftershock (326076), Ravager (334934), Seethe (335092)
+                   Affected Spells: Whirlwind (190411), War Machine (262232), Ancient Aftershock (326076), Ravager (334934), Seethe (335092)
                    Family Flags: 37, 39, 55, 76, 77
 #3 (id=834982)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
@@ -9804,7 +9686,7 @@ Effects          :
                    Family Flags: 31, 57, 59
 #5 (id=834984)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 4 (32)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
-                   Affected Spells: Thunder Clap (6343), Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Bladestorm (389774), Thunder Blast (435222), Bladestorm (446035)
+                   Affected Spells: Thunder Clap (6343), Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Thunder Blast (435222), Bladestorm (446035)
                    Family Flags: 7, 46
 #6 (id=834985)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 5 (33)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
@@ -11622,14 +11504,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1014573)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Ravager (152277), Ravager (156287), Ravager (227744), Bladestorm (227847), Ravager (228920), Bladestorm (389774), Bladestorm (446035)
+                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Ravager (156287), Bladestorm (227847), Ravager (228920), Bladestorm (446035)
                    Family Flags: 46, 107
 #2 (id=1030176)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 2073 | Target: Self (1)
                    Affected Spells (Category): Ravager (228920)
 #3 (id=1030177)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -90000 | Scaled Value: -90000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Ravager (152277), Ravager (156287), Ravager (227744), Bladestorm (227847), Ravager (228920), Bladestorm (389774), Bladestorm (446035)
+                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Ravager (156287), Bladestorm (227847), Ravager (228920), Bladestorm (446035)
                    Family Flags: 46, 107
 #4 (id=1030178)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
@@ -11641,7 +11523,7 @@ Effects          :
                    Affected Spells (Label): Bladestorm (50622)
 #7 (id=1134339)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 2270 | Target: Self (1)
-                   Affected Spells (Category): Bladestorm (227847), Bladestorm (389774), Bladestorm (446035)
+                   Affected Spells (Category): Bladestorm (227847), Bladestorm (446035)
 Description      : $?c3[Ravager's damage is reduced by $s1% but it now has $s4 charges and generates ${$s5/10} additional Rage each time it deals damage.][Bladestorm and Ravager's damage are reduced by $s1% but they now have $s4 charges and generate ${$s5/10} additional Rage each time they deal damage.]
 
 Name             : Cacophonous Roar (id=382954) [Spell Family (4), Passive, Hidden] 
@@ -12678,7 +12560,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1016332)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Whirlwind (190411), Ravager (248439), War Machine (262232), Ancient Aftershock (326076), Ravager (334934), Seethe (335092)
+                   Affected Spells: Whirlwind (190411), War Machine (262232), Ancient Aftershock (326076), Ravager (334934), Seethe (335092)
                    Family Flags: 37, 39, 55, 76, 77
 #3 (id=1016333)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
@@ -12690,7 +12572,7 @@ Effects          :
                    Family Flags: 31, 38, 41, 57, 59, 91
 #5 (id=1016335)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 4 (32)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
-                   Affected Spells: Thunder Clap (6343), Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Shield Charge (385954), Bladestorm (389774), Thunder Blast (435222), Bladestorm (446035)
+                   Affected Spells: Thunder Clap (6343), Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Shield Charge (385954), Thunder Blast (435222), Bladestorm (446035)
                    Family Flags: 7, 46, 94
 #6 (id=1016336)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 5 (33)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
@@ -12779,7 +12661,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 6 seconds
 Cooldown         : 60 seconds
-Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (389774 effect#3), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 28
 Attributes       : ....x... ........ x.x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13358,7 +13240,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Duration         : 5 seconds
-Affecting spells : Bladestorm (46924 effect#3), Protection Warrior (137048 effect#22), Neltharion's Fury (203524 effect#4), Rebound (213915 effect#1), Bladestorm (227847 effect#3), Misshapen Mirror (335253 effect#1), Bladestorm (389774 effect#3), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Protection Warrior (137048 effect#22), Neltharion's Fury (203524 effect#4), Rebound (213915 effect#1), Bladestorm (227847 effect#3), Misshapen Mirror (335253 effect#1), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
 Triggered by     : Spell Reflection (23920)
 Family Flags     : 11, 33
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... ........ ........ 
@@ -13821,7 +13703,7 @@ Duration         : 6 seconds
 Cooldown         : 75 seconds
 Proc Chance      : 101%
 Mechanic         : Taunt
-Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (389774 effect#3), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 70, 75
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ..x..... ........ 
@@ -13853,7 +13735,7 @@ Duration         : Aura (infinite)
 Cooldown         : 3 seconds
 Category         : 2057
 Category Cooldown: 3 seconds
-Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (389774 effect#3), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 92
 Attributes       : ....x... ........ x.x..... x..x...x   ........ ........ ........ ........ 
                  : ....x... x....... ........ ........   ........ ........ ....x... ........ 
@@ -13885,7 +13767,7 @@ Duration         : Aura (infinite)
 Cooldown         : 3 seconds
 Category         : 2057
 Category Cooldown: 3 seconds
-Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (389774 effect#3), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11
 Attributes       : ....x... ........ x.x..... x..x...x   ........ ........ ........ ........ 
                  : ....x... x....... ........ ........   ........ ........ ....x... ........ 
@@ -13924,7 +13806,7 @@ Cooldown         : 3 seconds
 Category         : 2057
 Labels           : 2796: Protection Warrior (137048 effect#20), Protection Warrior (137048 effect#21), Fight Through the Flames (452494 effect#1)
 Category Cooldown: 3 seconds
-Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (389774 effect#3), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 92
 Attributes       : ....x... ........ x.x..... x..x...x   ........ ........ ........ ........ 
                  : ....x... x....... ........ ........   ........ ........ ....x... ........ 
@@ -14202,7 +14084,8 @@ Description      : $@spelldesc386477
 Tooltip          : At $u stacks transforms into Violent Outburst, causing your next Shield Slam or Thunderclap to to deal $386478s1%~ increased damage, generate $386478s3%~ more Rage and grant Ignore Pain.
 
 Name             : Unhinged (id=386628) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Arms [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=0]
+Talent Entry     : Fury [tree=spec, row=10, col=5, max_rank=1, req_points=20, select_idx=100]
+                 : Arms [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -14222,7 +14105,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1078844)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While Bladestorm or Ravager are active, you automatically cast a total of $s1 Mortal Strikes at your target or random nearby enemies$?a134735[, dealing $s3% of normal damage][.]
+Description      : Every other time Bladestorm or Ravager deal damage, you automatically cast a $?c1[Mortal Strike][Bloodthirst] at your target or random nearby enemy$?a134735[, dealing $s3% of normal damage.][.]
 
 
 Name             : Battlelord (id=386630) [Spell Family (4), Passive] 
@@ -14524,7 +14407,7 @@ Effects          :
 #1 (id=1025512)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1027136)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Critical Strike chance increased by $s1% and Execute immediately refunds $s2% of the Rage spent.
 
 Name             : Deft Experience (id=389308) [Spell Family (4), Passive, Hidden] 
@@ -14576,42 +14459,6 @@ Effects          :
 #2 (id=1025941)  : Dummy (3)
                    Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Rampage and Onslaught have a $s1% chance to grant Recklessness for ${$s2/1000} sec.
-
-Name             : Bladestorm (id=389774) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Spell Type       : Melee
-GCD              : 1.5 seconds
-Duration         : 6 seconds
-Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Cooldown         : 90 seconds
-Charges          : 1 (90 seconds cooldown)
-Category         : 2270: Storm of Steel (382953 effect#7)
-Affecting spells : Recklessness (1719 effects: #7, #8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Fury Warrior (137050 effects: #6, #11), Unnerving Focus (337155 effect#5), Storm of Steel (382953 effects: #1, #3), Unnerving Focus (384043 effect#5), Dance of Death (390714 effect#1)
-Family Flags     : 8, 46
-Attributes       : ....x... ........ x.x..... .....x.x   ....x... .xx....x ........ ........ 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. .x...... ........   ........ ........ ........ ........ 
-                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ....x... ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Immunity Purges Effect (47), Requires Main-Hand Weapon (106), Extra Initial Period (169), Spell Haste Affects Periodic (173), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
-Effects          :
-#1 (id=1026239)  : Apply Aura (6) | Periodic Trigger Spell (23): Bladestorm every 1 seconds
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Trigger Spell: 50622 | Target: Self (1)
-#2 (id=1026240)  : Apply Aura (6) | Mechanic Immunity (147)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1733 | Target: Self (1)
-#3 (id=1026241)  : Apply Aura (6) | Disable Abilities (263)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Challenging Shout (1161), Shield Block (2565), Last Stand (12975), Berserker Rage (18499), Spell Reflection (23920), Rallying Cry (97462), Rallying Cry (97463), Die by the Sword (118038), Enraged Regeneration (184364), Ignore Pain (190456), Berserker Shout (384100), Spell Reflection (385391), Disrupting Shout (386071), Battle Stance (386164), Berserker Stance (386196), Defensive Stance (386208), Spell Block (392966)
-                   Family Flags: 11
-Description      : Become an unstoppable storm of destructive force, striking all nearby enemies for ${(1+$d)*$50622s1} Physical damage over $d. Deals reduced damage beyond $s1 targets.
-
-You are immune to movement impairing and loss of control effects, but can use defensive abilities and can avoid attacks.
-Tooltip          : Dealing damage to all nearby enemies every $t1 sec.
-Immune to crowd control and cannot be cancelled.
 
 Name             : Berserker's Torment (id=390123) [Spell Family (4), Passive] 
 Talent Entry     : Fury [tree=class, row=10, col=3, max_rank=1, req_points=20, select_idx=0]
@@ -14708,101 +14555,6 @@ Effects          :
 #2 (id=1026755)  : Dummy (3)
                    Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Activating Avatar casts Recklessness at reduced effectiveness.
-
-Name             : Hurricane (id=390563) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=spec, row=10, col=5, max_rank=1, req_points=20, select_idx=100]
-                 : Arms [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=100]
-Class            : Warrior
-School           : Physical
-Spell Type       : None
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
-Effects          :
-#1 (id=1027495)  : Apply Aura (6) | Unknown(285)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Trigger Spell: 390567 | Target: Self (1)
-#2 (id=1027496)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=1031255)  : Dummy (3)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=1039985)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
-                   Base Value: 389774 | Scaled Value: 389774 | PvP Coefficient: 1.00000 | Misc Value: 227847 | Target: Self (1)
-Description      : While Bladestorming or Ravager is active, you gain $s2% movement speed and $s1% Strength every $?c2[$390719t1][$390577t1] sec, stacking up to $s3 times. Lasts $390581d. 
-
-Bladestorm cannot be canceled while using Hurricane.
-
-Name             : Hurricane (id=390567) [Spell Family (4), Hidden] 
-Class            : Warrior
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Proc Chance      : 100%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
-Triggered by     : Hurricane (390563)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .x...... ........ ........ .......x   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Disable Aura While Dead (226), Aura Points On Client (268), Can Proc from Suppressed Caster Procs (385), Only Proc From Class Abilities (415)
-Effects          :
-#1 (id=1027504)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : @spelldesc390563
-
-Name             : Hurricane (id=390577) [Spell Family (4), Hidden] 
-Class            : Warrior
-School           : Physical
-Spell Type       : None
-Duration         : 6 seconds
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... .x...... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273)
-Effects          :
-#1 (id=1027515)  : Apply Aura (6) | Periodic Trigger Spell (23): Hurricane every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 390581 | Target: Self (1)
-Description      : $@spelldesc390563
-
-Name             : Hurricane (id=390581) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Spell Type       : None
-Duration         : 6 seconds
-Stacks           : 6 maximum
-Proc Chance      : 101%
-Triggered by     : Hurricane (390577), Hurricane (390719)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Aura Points On Client (268)
-Effects          :
-#1 (id=1027520)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
-#2 (id=1027521)  : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc390563
-Tooltip          : Strength increased by $w1%. Movement speed increased by $w2%.
 
 Name             : Crushing Force (id=390642) [Spell Family (4), Passive] 
 Talent Entry     : Protection [tree=class, row=6, col=2, max_rank=2, req_points=8]
@@ -14938,29 +14690,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1027734)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Ravager (152277), Ravager (156287), Ravager (227744), Bladestorm (227847), Ravager (228920), Bladestorm (389774), Bladestorm (446035)
+                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Ravager (156287), Bladestorm (227847), Ravager (228920), Bladestorm (446035)
                    Family Flags: 46, 107
 Description      : $@spelldesc390713
 Tooltip          : Your next $227847?[Bladestorm][Ravager] lasts ${$s1/1000}.1 sec longer.
-
-Name             : Hurricane (id=390719) [Spell Family (4), Hidden] 
-Class            : Warrior
-School           : Physical
-Spell Type       : None
-Duration         : 4 seconds
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... .x...... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273)
-Effects          :
-#1 (id=1027741)  : Apply Aura (6) | Periodic Trigger Spell (23): Hurricane every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 390581 | Target: Self (1)
-Description      : $@spelldesc390563
 
 Name             : Mind Melt (id=391090) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Shadow [tree=unknown, row=-1, col=-1, max_rank=1, req_points=0]
@@ -15407,7 +15140,7 @@ Spell Type       : None
 Duration         : 30 seconds
 Requires armor   : Shield 
 Cooldown         : 90 seconds
-Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (389774 effect#3), Bladestorm (446035 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -15747,11 +15480,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1033239)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Ravager (152277), Ravager (156287), Ravager (227744), Ravager (228920)
+                   Affected Spells: Ravager (156287), Ravager (228920)
                    Family Flags: 107
 #2 (id=1033240)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Ravager (152277), Ravager (156287), Ravager (227744), Ravager (228920)
+                   Affected Spells: Ravager (156287), Ravager (228920)
                    Family Flags: 107
 Description      : $@spelldesc393965
 Tooltip          : Ravager last ${$393966s1/1000}.1 sec longer and deals $s2% increased damage.
@@ -16477,7 +16210,7 @@ Spell Level      : 32
 Duration         : 20 seconds
 Cooldown         : 90 seconds
 Labels           : 771: Strive for Perfection (296320 effect#9), Immovable Object (394314 effect#1), Immovable Object (394314 effect#2), Immovable Object (394314 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unstoppable Force (275336 effects: #1, #2), Unnerving Focus (337155 effect#6), Outburst (364639 effects: #1, #2), Unnerving Focus (384043 effect#3), Spiteful Serenity (400314 effects: #1, #2, #3, #4)
 Family Flags     : 8, 32
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x....x x....... ........ 
@@ -16487,8 +16220,8 @@ Attributes       : ....x... ........ x.x..... ...x....   ........ ..x....x x....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
-                 : ........ ........ .x...... ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Immunity Purges Effect (47), Immunity to Hostile & Friendly Effects (48), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : x....... ........ .x...... ........   
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Immunity Purges Effect (47), Immunity to Hostile & Friendly Effects (48), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=1046775)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75000 | Target: Self (1)
@@ -17451,10 +17184,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Update Passives on Apply/Remove (344), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1114009)  : Apply Aura (6) | Proc Trigger Spell (42): Colossal Might
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 440989 | Target: Self (1)
-Description      : Colossal Might increases damage dealt by your next Demolish by $440989s1%.
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Trigger Spell: 440989 | Target: Self (1)
+Description      : Colossal Might increases damage dealt by your next Demolish by $440989s1%, stacking up to $440989u times.
 
-$?c1[Mortal Strike][Shield Slam] grants a stack of Colossal Might, stacking up to $440989u times.
+$?c1[Mortal Strike][Shield Slam] grants a stack of Colossal Might$?c1[ and Cleave grants a stack of Colossal Might if it hits $s1 or more targets][].
 
 Name             : Dominance of the Colossus (id=429636) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
@@ -17910,7 +17643,11 @@ Effects          :
                    Family Flags: 105
 #2 (id=1127328)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Storm Bolt also hits $s1 additional nearby targets, stunning them for $s2 sec.
+#3 (id=1166311)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Storm Bolt (107570)
+                   Family Flags: 105
+Description      : Storm Bolt also hits $s1 additional nearby $Ltarget:targets;, stunning them for $s2 sec, but its cooldown is increased by ${$s3/1000} sec.
 
 Name             : Gathering Clouds (id=436201) [Spell Family (4), Passive] 
 Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
@@ -18394,7 +18131,7 @@ Name             : Demolish (id=440884) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
-Range            : 5 yards
+Range            : 10 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Colossal Might (440989 effect#1)
 Family Flags     : 9, 52, 126
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -18415,7 +18152,7 @@ Name             : Demolish (id=440886) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
-Range            : 5 yards
+Range            : 10 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Colossal Might (440989 effect#1)
 Family Flags     : 9, 52, 126
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -18436,7 +18173,7 @@ Name             : Demolish (id=440888) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
-Range            : 5 yards
+Range            : 10 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Colossal Might (440989 effect#1)
 Family Flags     : 9, 126
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 

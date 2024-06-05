@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54935 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.55000 thewarwithin-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1457,8 +1457,8 @@ Resource         : 4.374% Base Mana (0) (id=5718)
 GCD              : 1.5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (180 seconds cooldown)
-Category         : 1933: Benevolent Faerie (327710 effect#6), Benevolent Faerie Fermata (345453 effect#6), Motes of Possibility (409276 effect#5)
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Category         : 1933: Benevolent Faerie (327710 effect#6), Benevolent Faerie Fermata (345453 effect#6)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
                  : 2706: Spatial Paradox (406732 effect#10), Spatial Paradox (406789 effect#10)
 Affecting spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48, 60
@@ -1798,7 +1798,7 @@ Effects          :
 #2 (id=158599)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : Reduces the target's movement speed by $s1% for $d, duration refreshed by your melee attacks.$?s343731[ Targets already snared will be rooted for $116706d instead.][]
-Tooltip          : Movement slowed by $w1%. When struck again by Disable, you will be rooted for $116706d.
+Tooltip          : Movement slowed by $w1%.
 
 Name             : Provoke (id=116189) [Spell Family (53)] 
 Class            : Monk
@@ -1894,7 +1894,7 @@ School           : Nature
 Spell Type       : Magic
 Duration         : 30 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 2294: Endless Draught (450892 effect#1)
+Category         : 2294: Heart of the Jade Serpent (443421 effect#7), Heart of the Jade Serpent (443616 effect#7), Endless Draught (450892 effect#1)
 Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x.x.x. ........ ........   ........ ........ ........ ........   
@@ -2539,7 +2539,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.19665 | PvP Coefficient: 1.40000 | Target: Friendly (21)
 #2 (id=1164428)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48, 102
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.$?a448392[
@@ -2659,7 +2659,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
 Labels           : 2355: Fortifying Brew: Determination (322960 effect#3), Fortifying Brew (388917 effect#1), Fortifying Brew (388917 effect#2)
-Affecting spells : Ironshell Brew (388814 effects: #3, #4), Wisdom of the Wall (452684 effect#1)
+Affecting spells : Wisdom of the Wall (452684 effect#1)
 Family Flags     : 51
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3583,7 +3583,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.59750 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=290817)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Friendly (21)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48, 102
 #3 (id=874900)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.58500 | PvP Coefficient: 1.00000 | Radius: 0 - 60 yards | Target: At Friendly (132) -> At Friendly in Area (31)
@@ -4052,7 +4052,7 @@ Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ .....
 Effects          :
 #1 (id=171555)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.42000 | PvP Coefficient: 1.00000 | Target: Any Target (25)
-Description      : $@spelldesc115098
+Description      : $@spelldesc450391
 
 Name             : Chi Wave (id=132466) [Spell Family (53)] 
 Class            : Monk
@@ -4101,7 +4101,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.14202 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 #2 (id=171562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
-Description      : $@spelldesc115098
+Description      : $@spelldesc450391
 
 Name             : Invoke Niuzao, the Black Ox (id=132578) [Spell Family (53)] 
 Talent Entry     : Brewmaster [tree=spec, row=6, col=3, max_rank=1, req_points=8]
@@ -4113,7 +4113,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 25 seconds
 Cooldown         : 180 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Gift of the Celestials (388212 effects: #1, #2), Wisdom of the Wall (452684 effect#1)
 Triggered by     : Mighty Stomp (454523)
 Family Flags     : 3
@@ -4357,11 +4357,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179708)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48
 #2 (id=191104)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48
 #3 (id=191105)   : Apply Aura (6) | Unknown(312)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 117 | Target: Self (1)
@@ -4615,8 +4615,8 @@ Spell Level      : 27
 Duration         : 15 seconds
 Cooldown         : 16 seconds
 Charges          : 2 (90 seconds cooldown)
-Category         : 1592: Strive for Perfection (296320 effect#4), Strive for Perfection (299367 effect#4), Strive for Perfection (299369 effect#4), Benevolent Faerie (327710 effect#3), Benevolent Faerie Fermata (345453 effect#3), Haunted Mask (356968 effect#3), Motes of Possibility (409276 effect#3)
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Category         : 1592: Strive for Perfection (296320 effect#4), Strive for Perfection (299367 effect#4), Strive for Perfection (299369 effect#4), Benevolent Faerie (327710 effect#3), Benevolent Faerie Fermata (345453 effect#3), Haunted Mask (356968 effect#3)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
 Stacks           : 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x.x.x.x. x.x..x.. .x......   ........ ........ ........ ........   
@@ -4877,7 +4877,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 12 seconds
 Cooldown         : 90 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Wisdom of the Wall (452684 effect#1)
 Family Flags     : 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -5129,7 +5129,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ........ .....
                  : Allow While Sitting (27), Not a Proc (105), Allow Cast While Casting (135), Not In Spellbook (143), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=228215)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.13224 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Self (22) -> Friendly in Area (30)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.14500 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Self (22) -> Friendly in Area (30)
 Description      : $@spelldesc196725
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
@@ -5726,7 +5726,7 @@ Effects          :
 #1 (id=288818)   : Apply Aura (6) | Periodic Trigger Spell (23): Refreshing Jade Wind every 0.75 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 162530 | Target: Self (1)
 #2 (id=763870)   : Dummy (3)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1055763)  : Dummy (3)
                    Base Value: 21 | Scaled Value: 21 | PvP Coefficient: 1.00000
 Description      : Summon a whirling tornado around you, causing ${$162530s1*$s3} healing over $d to up to $s2 allies within $162530A1 yards.
@@ -7958,9 +7958,9 @@ Effects          :
 #1 (id=737590)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
 #2 (id=737591)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
 #3 (id=1028866)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
 Description      : Every $s1 Chi you spend reduces the cooldown of $?s152173[Serenity][Storm, Earth, and Fire] by $?s152173[${$m3/1000}.1][${$m2/1000}.1] sec.
 
 Name             : Bob and Weave (id=280515) [Spell Family (53), Passive] 
@@ -8121,7 +8121,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=752477)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 172206.6 (coefficient=70.71166) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 176792.5 (coefficient=70.71166) | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=752478)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 #3 (id=754207)   : Dummy (3)
@@ -9187,7 +9187,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #3 (id=867662)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Friendly (132) -> At Friendly in Area (31)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48, 102
 Description      : $@spelldesc343655
 Tooltip          : Heals $w1 every $t1 sec.
@@ -11766,7 +11766,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #3 (id=893951)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Friendly (132) -> At Friendly in Area (31)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48, 102
 Description      : $@spelldesc343655
 Tooltip          : Heals $w1 every $t1 sec.
@@ -11923,11 +11923,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=904134)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 450 | Scaled Value: 450 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48
 #2 (id=909995)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22)
                    Base Value: 450 | Scaled Value: 450 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48
 Description      : $@spelldesc363733
 Tooltip          : Increases healing dealt by Mistweaver spells by $s1.
@@ -14384,8 +14384,8 @@ Resource         : 4.374% Base Mana (0) (id=265570)
 GCD              : 1.5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (180 seconds cooldown)
-Category         : 1933: Benevolent Faerie (327710 effect#6), Benevolent Faerie Fermata (345453 effect#6), Motes of Possibility (409276 effect#5)
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Category         : 1933: Benevolent Faerie (327710 effect#6), Benevolent Faerie Fermata (345453 effect#6)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
                  : 2706: Spatial Paradox (406732 effect#10), Spatial Paradox (406789 effect#10)
 Affecting spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Ovyd's Winter Wrap (217642 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
 Family Flags     : 48, 60
@@ -14549,15 +14549,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Aura Points On Client (268)
 Effects          :
 #1 (id=1024517)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1037551)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #3 (id=1149949)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Soothing Mist (209525)
                    Family Flags: 24
-Description      : Reduces all damage taken by you and your target while channelling Soothing Mists by $s2%.
+Description      : Reduces all damage taken by you and your target while channelling Soothing Mists by $s1%.
 
 Name             : Misty Peaks (id=388682) [Spell Family (53), Passive] 
 Talent Entry     : Mistweaver [tree=spec, row=9, col=5, max_rank=2, req_points=20]
@@ -14611,7 +14611,7 @@ Effects          :
 Description      : Summons a White Tiger Statue at the target location for $d, pulsing $389541s1 damage to all enemies every 2 sec for $d.
 
 Name             : Dancing Mists (id=388701) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=7, col=5, max_rank=2, req_points=8]
+Talent Entry     : Mistweaver [tree=spec, row=7, col=5, max_rank=1, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Monk
 School           : Physical
@@ -14795,14 +14795,10 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Fortifying Brew (115203)
                    Family Flags: 52
-#3 (id=1150375)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Fortifying Brew (120954)
-                   Family Flags: 51
-#4 (id=1150376)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Fortifying Brew (120954)
-                   Family Flags: 51
+#3 (id=1150375)  : Apply Aura (6) | Dummy (4)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=1150376)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases your maximum health by an additional $s1% and your damage taken is reduced by an additional $s2% while Fortifying Brew is active.
 
 Name             : Rapid Diffusion (id=388847) [Spell Family (53), Passive] 
@@ -15269,11 +15265,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026709)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48
 #2 (id=1041529)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48
 Description      : Healing increased by $s1%
 Tooltip          : Healing increased by $w1%.
@@ -15299,6 +15295,7 @@ Effects          :
 #1 (id=1026908)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Description      : $@spelldesc389577
 Tooltip          : Reduces damage by $w1%.
 
 Name             : Mind Melt (id=391090) [Spell Family (6), Passive, Hidden] 
@@ -15411,10 +15408,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1028839)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
 #2 (id=1028840)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-Description      : The duration of $?s152173[Serenity][Storm, Earth, and Fire] is extended by $?s152173[${$s2/10}.1 sec every time you cast a Chi spender][${$s1/10}.1 sec for every Chi you spend].
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+Description      : The duration of $?s152173[Serenity][Storm, Earth, and Fire] is extended by $?s152173[${$s2/100}.2 sec every time you cast a Chi spender][${$s1/10}.1 sec for every Chi you spend].
 
 Name             : Hardened Soles (id=391383) [Spell Family (53), Passive, Hidden] 
 Talent Entry     : Windwalker [tree=spec, row=3, col=2, max_rank=1, req_points=0]
@@ -15558,7 +15555,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Log on Learn (355), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1031558)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 189427.3 (coefficient=77.78283) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 194471.7 (coefficient=77.78283) | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1031559)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 #3 (id=1031560)  : Dummy (3)
@@ -15723,7 +15720,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1031607)  : Apply Aura (6) | Dummy (4)
                    Base Value: -250 | Scaled Value: -250 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Abilities that activate Combo Strikes reduce the cooldown of Invoke Xuen, the White Tiger by ${$s2/-1000}.2 sec, and Xuen's damage is increased by ${$s1}%.
+Description      : Abilities cast by you or your Storm, Earth, and Fire clones that activate Combo Strikes reduce the cooldown of Invoke Xuen, the White Tiger by ${$s2/-1000}.2 sec, and Xuen's damage is increased by ${$s1}%.
 
 Name             : Last Emperor's Capacitor (id=392989) [Spell Family (53), Passive] 
 Talent Entry     : Windwalker [tree=spec, row=9, col=1, max_rank=1, req_points=20]
@@ -16569,7 +16566,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 180 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 3
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
@@ -16612,7 +16609,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1035869)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Friendly (21)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48
 Description      : $@spelldesc356705
 Tooltip          : Healing taken from $@auracaster increased by $s1%
@@ -17046,7 +17043,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1044747)  : Apply Aura (6) | Modify Healing% Based on Target Health% (354)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Uplifted Spirits (388555), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Uplifted Spirits (388555), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48, 96
 Description      : $@spelldesc400089
 Tooltip          : Your spells and abilities deal up to $s1% more healing and damage to targets, based on their current health.
@@ -18067,7 +18064,7 @@ Attributes       : ........ ........ ........ ...x....   .....x.. ........ .....
 Effects          :
 #1 (id=1099439)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.30000 | Target: Friendly (21)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48, 102
 Description      : $@spelldesc422889
 Tooltip          : Healing taken increased by $s1%.
@@ -18834,15 +18831,15 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=1160721)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 26 | Target: Self (1)
-Description      : $?c2[The August Celestials empower you, causing you to radiate ${$443039s1*$s7} healing onto up to $s3 injured allies and ${$443038s1*$s7}  Nature damage onto enemies within $s6 yds over $d, split evenly among them. Healing and damage increased by $s1% per target, up to ${$s1*$s3}%.]?c3[The August Celestials empower you, causing you to radiate ${$443038s1*$s7}  Nature damage onto enemies and ${$443039s1*$s7} healing onto up to $s3 injured allies within $443038A2 yds over $d, split evenly among them. Healing and damage increased by $s1% per enemy struck, up to ${$s1*$s3}%.][]
+Description      : $?c2[The August Celestials empower you, causing you to radiate ${$443039s1*$s7} healing onto up to $s3 injured allies and ${$443038s1*$s7} Nature damage onto enemies within $s6 yds over $d, split evenly among them. Healing and damage increased by $s1% per target, up to ${$s1*$s3}%.]?c3[The August Celestials empower you, causing you to radiate ${$443038s1*$s7} Nature damage onto enemies and ${$443039s1*$s7} healing onto up to $s3 injured allies within $443038A2 yds over $d, split evenly among them. Healing and damage increased by $s1% per enemy struck, up to ${$s1*$s3}%.][]
 
 You may move while channeling, but casting other healing or damaging spells cancels this effect.
 
-Tooltip          : Channeling the power of the August Celestials, $?c2[healing $s3 nearby allies]?c3[damaging nearby enemies][]$?a443059[
+Tooltip          : Channeling the power of the August Celestials, $?c2[healing $s3 nearby allies.]?c3[damaging nearby enemies.][]$?a443059[
 
 Damage taken reduced by $w2%.][]$?a443566[
 
-Movement speed increased by $w5%][]
+Movement speed increased by $w5%.][]
 
 Name             : Celestial Conduit (id=443038) [Spell Family (53)] 
 Class            : Monk
@@ -18935,9 +18932,9 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1138753)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?c2[Tiger Palm and Vivify have a $s1% chance to cause Xuen to claw a nearby enemy for $457917s1 Physical damage, healing a nearby ally for $s2% of the damage done.]?c3[Tiger Palm has a $s1% chance to cause Xuen to claw your target for $457917s1 Physical damage, healing a nearby ally for $s2% of the damage done.][]
+Description      : $?c2[Tiger Palm and Vivify have a $s1% chance to cause Xuen to claw a nearby enemy for $457917s1 Physical damage, healing a nearby ally for $s2% of the damage done.]?c3[Tiger Palm has a $s1% chance to cause Xuen to claw your target for $457917s1 Physical damage, healing a nearby ally for $s2% of the damage done.][Xuen claws your target for $457917s1 Physical damage, healing a nearby ally for $s2% of the damage done.]
 
-Chance is increased while $?c2[Invoke Yu'lon, the Jade Serpent or Invoke Chi-Ji, the Red Crane]?c3[Invoke Xuen, the White Tiger][] is active.
+Chance is increased while $?c2[Invoke Yu'lon, the Jade Serpent or Invoke Chi-Ji, the Red Crane]?c3[Invoke Xuen, the White Tiger][a celestial] is active.
 
 Name             : Courage of the White Tiger (id=443088) [Spell Family (53)] 
 Class            : Monk
@@ -19142,7 +19139,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1139072)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Friendly (21)
-Description      : $@spelldesc443260
+Description      : $@spelldesc443255
 
 Name             : Heart of the Jade Serpent (id=443294) [Spell Family (53), Passive] 
 Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=3, col=1, max_rank=1, req_points=1]
@@ -19204,6 +19201,9 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Fists of Fury (113656), Fists of Fury (120086), Fists of Fury (232055)
                    Family Flags: 55
+#7 (id=1166052)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Misc Value: 2294 | Target: Self (1)
+                   Affected Spells (Category): Thunder Focus Tea (116680)
 Description      : $@spelldesc443294
 
 Tooltip          : Yu'lon is decreasing the cooldown time of $?c2[Renewing Mist, Rising Sun Kick, Life Cocoon, and Thunder Focus Tea]?c3[Rising Sun Kick, Fists of Fury, Strike of the Windlord, and Whirling Dragon Punch][] by $w2%.
@@ -19214,7 +19214,7 @@ School           : Nature
 Spell Type       : None
 Range            : 100 yards
 Duration         : 60 seconds
-Stacks           : 30 maximum
+Stacks           : 45 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -19495,6 +19495,28 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Enemy (6)
 Description      : $@spelldesc443260
 
+Name             : Flight of the Red Crane (id=443614) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : Melee
+Range            : 100 yards
+Velocity         : 30 yards/sec
+Affecting spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Chi Proficiency (450426 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1)
+Family Flags     : 48
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ x....... 
+                 : ........ ........ ........ ........   
+                 : Bouncy Chain Missiles (146), Allow Class Ability Procs (416), Chain by Most Hit (440)
+Effects          :
+#1 (id=1139670)  : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Friendly (21)
+Description      : $@spelldesc443255
+
 Name             : Heart of the Jade Serpent (id=443616) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
@@ -19531,6 +19553,9 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Fists of Fury (113656), Fists of Fury (120086), Fists of Fury (232055)
                    Family Flags: 55
+#7 (id=1166053)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: 2294 | Target: Self (1)
+                   Affected Spells (Category): Thunder Focus Tea (116680)
 Description      : $@spelldesc443294
 
 Tooltip          : Yu'lon is decreasing the cooldown time of $?c2[Renewing Mist, Rising Sun Kick, Life Cocoon, and Thunder Focus Tea]?c3[Rising Sun Kick, Fists of Fury, Strike of the Windlord, and Whirling Dragon Punch][] by $w2%.
@@ -19735,7 +19760,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.19665 | PvP Coefficient: 1.40000 | Target: Friendly (21)
 #2 (id=1146908)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.30000 | Target: Friendly (21)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48, 102
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.
@@ -20091,7 +20116,7 @@ Effects          :
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #2 (id=1150318)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48
 Description      : Magical damage done increased by $s1% and healing done increased by $s2%.
 
@@ -20897,7 +20922,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=1153141)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48
 Description      : $@spelldesc450508
 Tooltip          : Healing $w1 per second.
@@ -22897,7 +22922,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1154043)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Flying Serpent Kick (101545), Spinning Crane Kick (101546), Transcendence (101643), Stance of the Fierce Tiger (103985), Spinning Crane Kick (107270), Rising Sun Kick (107428), Roll (109132), Fists of Fury (113656), Chi Torpedo (115008), Stagger (115069), Paralysis (115078), Chi Wave (115098), Expel Harm (115129), Renewing Mist (115151), Soothing Mist (115175), Zen Meditation (115176), Breath of Fire (115181), Fortifying Brew (115203), Energizing Elixir (115288), Mana Tea (115294), Ironskin Brew (115308), Revival (115310), Black Ox Brew (115399), Detox (115450), Provoke (115546), Mastery: Combo Strikes (115636), Disable (116095), Provoke (116189), Vivify (116670), Thunder Focus Tea (116680), Spear Hand Strike (116705), Blackout Kick! (116768), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Life Cocoon (116849), Fists of Fury (117418), Crackling Jade Lightning (117952), Crackling Jade Shock (117962), Leg Sweep (119381), Purifying Brew (119582), Renewing Mist (119607), Renewing Mist (119611), Fists of Fury (120086), Fortifying Brew (120954), Keg Smash (121253), Power Strikes (121283), Dampen Harm (122278), Healing Elixir (122281), Touch of Karma (122470), Diffuse Magic (122783), Crackling Jade Lightning (123333), Flying Serpent Kick (123586), Breath of Fire (123725), Invoke Xuen, the White Tiger (123904), Chi Burst (123986), Crackling Tiger Lightning (123996), Zen Pulse (124081), Stagger (124255), Heavy Stagger (124273), Moderate Stagger (124274), Light Stagger (124275), Touch of Karma (124280), Gift of the Ox (124503), Gift of the Ox (124506), Gift of the Ox (124507), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Invoke Niuzao, the Black Ox (132578), Storm, Earth, and Fire (137639), Chi Burst (148135), Rushing Jade Wind (148187), Serenity (152173), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Refreshing Jade Wind (162530), Healing Sphere (163212), Chi Sphere (163272), Gift of the Ox (178173), Rising Sun Kick (185099), Essence Font (191837), Essence Font (191840), Gust of Mists (191894), Elusive Brawler (195630), Eye of the Tiger (196608), Refreshing Jade Wind (196725), Special Delivery (196733), Mana Tea (197908), Zen Pulse (198487), Soothing Mist (198533), Blackout Kick (205523), Soothing Mist (209525), Reawaken (212051), Shuffle (215479), Detox (218164), Gift of the Ox (219556), Storm, Earth, and Fire: Fixate (221771), Stomp (227291), Surging Mist (227344), Blackout Kick (228649), Fists of Fury (232055), Chi Burst (261682), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Sunrise Technique (275673), Burst of Life (278564), Sweep the Leg (280184), Glory of the Dawn (288636), Revival (297850), Weapons of Order (310454), Weapons of Order (311123), Expel Harm (322101), Touch of Death (322109), Touch of Death (322111), Invoke Yu'lon, the Jade Serpent (322118), Ironskin Brew (322119), Shuffle (322120), Celestial Brew (322507), Spinning Crane Kick (322729), Clash (324312), Stagger (324393), Exploding Keg (325153), Invoke Chi-Ji, the Red Crane (325197), Enveloping Breath (325209), Bonedust Brew (325216), Bonedust Brew (325217), Fallen Order (326860), Faeline Stomp (327104), Faeline Stomp (327264), Gust of Mists (328748), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Yu'lon's Whisper (337268), Chi Explosion (337342), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Renewing Mist (347561), Enveloping Breath (358560), Bonedust Brew (386275), Weapons of Order (387184), Dragonfire Brew (387621), Tear of Morning (387995), Renewing Mist (387999), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388193), Jadefire Stomp (388201), Jadefire Stomp (388207), Overflowing Mists (388514), Uplifted Spirits (388555), Zen Pulse (388609), Restoral (388615), Zen Pulse (388668), Exploding Keg (388867), Glory of the Dawn (392959), Strike of the Windlord (392983), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Invoke Niuzao, the Black Ox (395267), Strike of the Windlord (395519), Strike of the Windlord (395521), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Press the Advantage (418360), Invigorating Mists (425804), Healing Elixir (428439), Transcendence: Linked Spirits (434774), Celestial Conduit (443038), Celestial Conduit (443039), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443272), Flight of the Red Crane (443611), Renewing Mist (448430), Crackling Jade Shock (449891), Crashing Momentum (450342), Mantra of Purity (451452), Energy Burst (451500), Ordered Elements (451754), Whirling Dragon Punch (451767), Dual Threat (451839), Expel Harm (451968), Flurry of Xuen (452130), Combat Wisdom (453334), Courage of the White Tiger (457917)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Flying Serpent Kick (101545), Spinning Crane Kick (101546), Transcendence (101643), Stance of the Fierce Tiger (103985), Spinning Crane Kick (107270), Rising Sun Kick (107428), Roll (109132), Fists of Fury (113656), Chi Torpedo (115008), Stagger (115069), Paralysis (115078), Chi Wave (115098), Expel Harm (115129), Renewing Mist (115151), Soothing Mist (115175), Zen Meditation (115176), Breath of Fire (115181), Fortifying Brew (115203), Energizing Elixir (115288), Mana Tea (115294), Ironskin Brew (115308), Revival (115310), Black Ox Brew (115399), Detox (115450), Provoke (115546), Mastery: Combo Strikes (115636), Disable (116095), Provoke (116189), Vivify (116670), Thunder Focus Tea (116680), Spear Hand Strike (116705), Blackout Kick! (116768), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Life Cocoon (116849), Fists of Fury (117418), Crackling Jade Lightning (117952), Crackling Jade Shock (117962), Leg Sweep (119381), Purifying Brew (119582), Renewing Mist (119607), Renewing Mist (119611), Fists of Fury (120086), Fortifying Brew (120954), Keg Smash (121253), Power Strikes (121283), Dampen Harm (122278), Healing Elixir (122281), Touch of Karma (122470), Diffuse Magic (122783), Crackling Jade Lightning (123333), Flying Serpent Kick (123586), Breath of Fire (123725), Invoke Xuen, the White Tiger (123904), Chi Burst (123986), Crackling Tiger Lightning (123996), Zen Pulse (124081), Stagger (124255), Heavy Stagger (124273), Moderate Stagger (124274), Light Stagger (124275), Touch of Karma (124280), Gift of the Ox (124503), Gift of the Ox (124506), Gift of the Ox (124507), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Invoke Niuzao, the Black Ox (132578), Storm, Earth, and Fire (137639), Chi Burst (148135), Rushing Jade Wind (148187), Serenity (152173), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Refreshing Jade Wind (162530), Healing Sphere (163212), Chi Sphere (163272), Gift of the Ox (178173), Rising Sun Kick (185099), Essence Font (191837), Essence Font (191840), Gust of Mists (191894), Elusive Brawler (195630), Eye of the Tiger (196608), Refreshing Jade Wind (196725), Special Delivery (196733), Mana Tea (197908), Zen Pulse (198487), Soothing Mist (198533), Blackout Kick (205523), Soothing Mist (209525), Reawaken (212051), Shuffle (215479), Detox (218164), Gift of the Ox (219556), Storm, Earth, and Fire: Fixate (221771), Stomp (227291), Surging Mist (227344), Blackout Kick (228649), Fists of Fury (232055), Chi Burst (261682), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Sunrise Technique (275673), Burst of Life (278564), Sweep the Leg (280184), Glory of the Dawn (288636), Revival (297850), Weapons of Order (310454), Weapons of Order (311123), Expel Harm (322101), Touch of Death (322109), Touch of Death (322111), Invoke Yu'lon, the Jade Serpent (322118), Ironskin Brew (322119), Shuffle (322120), Celestial Brew (322507), Spinning Crane Kick (322729), Clash (324312), Stagger (324393), Exploding Keg (325153), Invoke Chi-Ji, the Red Crane (325197), Enveloping Breath (325209), Bonedust Brew (325216), Bonedust Brew (325217), Fallen Order (326860), Faeline Stomp (327104), Faeline Stomp (327264), Gust of Mists (328748), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Yu'lon's Whisper (337268), Chi Explosion (337342), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Renewing Mist (347561), Enveloping Breath (358560), Bonedust Brew (386275), Weapons of Order (387184), Dragonfire Brew (387621), Tear of Morning (387995), Renewing Mist (387999), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388193), Jadefire Stomp (388201), Jadefire Stomp (388207), Overflowing Mists (388514), Uplifted Spirits (388555), Zen Pulse (388609), Restoral (388615), Zen Pulse (388668), Exploding Keg (388867), Glory of the Dawn (392959), Strike of the Windlord (392983), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Invoke Niuzao, the Black Ox (395267), Strike of the Windlord (395519), Strike of the Windlord (395521), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Press the Advantage (418360), Invigorating Mists (425804), Healing Elixir (428439), Transcendence: Linked Spirits (434774), Celestial Conduit (443038), Celestial Conduit (443039), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443272), Flight of the Red Crane (443611), Flight of the Red Crane (443614), Renewing Mist (448430), Crackling Jade Shock (449891), Crashing Momentum (450342), Mantra of Purity (451452), Energy Burst (451500), Ordered Elements (451754), Whirling Dragon Punch (451767), Dual Threat (451839), Expel Harm (451968), Flurry of Xuen (452130), Combat Wisdom (453334), Courage of the White Tiger (457917)
                    Family Flags: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127
 Description      : Critical strike damage increased by $s1%.
 Tooltip          : Critical strikes deal an additional $w1% damage.
@@ -23360,7 +23385,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1161636)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.30000 | Target: Friendly (21)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Essence Font (344006), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48, 102
 Description      : $@spelldesc448392
 Tooltip          : $@spelldesc448392
@@ -23370,15 +23395,15 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : .......x ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Allow Aura While Dead (116), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1161799)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8000 | Scaled Value: 8000 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -23423,7 +23448,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1162547)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Thunder Focus Tea summons a whirling tornado around you, causing ${$162530s1*$s3} healing over $196725d to up to $196725s2 allies within $162530A1 yards.
+Description      : Thunder Focus Tea summons a whirling tornado around you, causing $162530s1 healing every ${$196725t1}.2 sec for $196725d on to up to $196725s2 allies within $162530A1 yards.
 
 
 Name             : Flight of the Red Crane (id=457459) [Spell Family (53)] 

@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54935 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.55000 thewarwithin-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -425,7 +425,7 @@ Resource         : 60 Maelstrom (11) (id=215295)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lava Shock (273453 effect#1), Bottle of Swirling Maelstrom (329580 effect#4), Nature's Fury (381655 effect#1), Eye of the Storm (381708 effect#1), Electrified Shocks (382089 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lava Shock (273453 effect#1), Bottle of Swirling Maelstrom (329580 effect#4), Nature's Fury (381655 effect#1), Eye of the Storm (381708 effect#1), Electrified Shocks (382089 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Amplification Core (456369 effects: #1, #2)
 Family Flags     : 20, 39, 126
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1200,7 +1200,7 @@ GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Category         : 1653
 Labels           : 183: Spiritual Journey (214170 effect#1)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
 Category Cooldown: 90 seconds
 Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
 Family Flags     : 48
@@ -1896,7 +1896,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Proc Chance      : 100%
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Seismic Thunder (319343 effect#1), Bottle of Swirling Maelstrom (329580 effects: #5, #6), Eye of the Storm (381708 effect#2), Unrelenting Calamity (382685 effect#2), Primal Fracture (410018 effect#2), Maelstrom Supremacy (443447 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Seismic Thunder (319343 effect#1), Bottle of Swirling Maelstrom (329580 effects: #5, #6), Eye of the Storm (381708 effect#2), Unrelenting Calamity (382685 effect#2), Primal Fracture (410018 effect#2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#2)
 Family Flags     : 83
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
@@ -2330,7 +2330,7 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Seismic Thunder (319343 effect#1), Bottle of Swirling Maelstrom (329580 effects: #5, #6), Eye of the Storm (381708 effect#2), Unrelenting Calamity (382685 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Seismic Thunder (319343 effect#1), Bottle of Swirling Maelstrom (329580 effects: #5, #6), Eye of the Storm (381708 effect#2), Unrelenting Calamity (382685 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#2), Amplification Core (456369 effects: #1, #2)
 Family Flags     : 39, 83
 Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ........ ......x. 
@@ -2703,7 +2703,7 @@ Spell Level      : 10
 GCD              : 1 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Praetorian's Tidecallers (210604 effect#1), Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1), Current Control (404015 effect#1)
 Family Flags     : 29, 113
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
@@ -3271,7 +3271,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Charges          : 1 (12 seconds cooldown)
 Category         : 2077: Elemental Shaman (137040 effect#8), Elemental Blast (394152 effect#2)
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5, #12, #22, #23), Maelstrom Weapon (187881 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Eye of the Storm (381708 effect#3), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Ancestral Swiftness (443454 effects: #1, #2), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5, #12, #22, #23), Maelstrom Weapon (187881 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Eye of the Storm (381708 effect#3), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Ancestral Swiftness (443454 effects: #1, #2), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
 Family Flags     : 24, 39, 56, 98, 103, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3416,7 +3416,7 @@ Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
 Family Flags     : 24, 39, 79, 103, 108, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3513,7 +3513,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 
 Name             : Restoration Shaman (id=137039) [Spell Family (11), Passive, Hidden] 
-Class            : Restoration Priest, Shaman
+Class            : Restoration Shaman
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -5423,8 +5423,8 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Charges          : 1 (150 seconds cooldown)
-Category         : 1572: Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3), Benevolent Faerie (327710 effect#4), Benevolent Faerie Fermata (345453 effect#4), Haunted Mask (356968 effect#4), Motes of Possibility (409276 effect#4)
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Category         : 1572: Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3), Benevolent Faerie (327710 effect#4), Benevolent Faerie Fermata (345453 effect#4), Haunted Mask (356968 effect#4)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Call of Flame (338303 effect#1)
 Family Flags     : 124
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ....x... 
@@ -5751,10 +5751,9 @@ Resource         : 1% Base Mana (0) (id=215293)
 Spell Level      : 34
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : Aura (infinite)
 Charges          : 1 (150 seconds cooldown)
-Category         : 1572: Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3), Benevolent Faerie (327710 effect#4), Benevolent Faerie Fermata (345453 effect#4), Haunted Mask (356968 effect#4), Motes of Possibility (409276 effect#4)
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Category         : 1572: Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3), Benevolent Faerie (327710 effect#4), Benevolent Faerie Fermata (345453 effect#4), Haunted Mask (356968 effect#4)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Call of Flame (338303 effect#1)
 Family Flags     : 55
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
@@ -5771,8 +5770,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=811561)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
-#3 (id=1018762)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Calls forth a Greater Fire Elemental to rain destruction on your enemies for $188592d. 
 
 While the Fire Elemental is active, Flame Shock deals damage 
@@ -8394,7 +8391,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=725109)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 19019.52 (coefficient=7.809816) | PvP Coefficient: 0.50000 | Trigger Spell: 273463 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 19526.01 (coefficient=7.809816) | PvP Coefficient: 0.50000 | Trigger Spell: 273463 | Target: Self (1)
 Description      : Flame Shock causes your next melee ability to deal an additional $s1 Nature damage.
 
 Name             : Strength of Earth (id=273463) [Spell Family (11), Hidden] 
@@ -8528,7 +8525,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=728385)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 40041.1 (coefficient=16.44172) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 41107.39 (coefficient=16.44172) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : When your $?s192249[Storm Elemental][Fire Elemental] expires, it leaves behind a $?s192249[Spark Elemental][Ember Elemental] to continue attacking your enemies for $275385d.
 
 Name             : Ember Blast (id=275382) [Spell Family (11)] 
@@ -8629,7 +8626,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=728400)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 6454.386 (coefficient=2.650307) | PvP Coefficient: 0.50000 | Trigger Spell: 275389 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6626.267 (coefficient=2.650307) | PvP Coefficient: 0.50000 | Trigger Spell: 275389 | Target: Self (1)
 Description      : Stormstrike marks the target as a Lightning Conduit for $275391d. Stormstrike deals $s1 Nature damage to all enemies you've marked as Conduits.
 
 Name             : Lightning Conduit (id=275389) [Spell Family (11), Hidden] 
@@ -8739,11 +8736,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734578)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 16434.78 (coefficient=6.748466) | PvP Coefficient: 1.00000 | Trigger Spell: 279522 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 16872.44 (coefficient=6.748466) | PvP Coefficient: 1.00000 | Trigger Spell: 279522 | Target: Self (1)
 #2 (id=734579)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 #3 (id=734580)   : Dummy (3) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 19422.92 (coefficient=7.97546) | PvP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 19940.15 (coefficient=7.97546) | PvP Coefficient: 1.00000
 #4 (id=739329)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : Your Earth Elemental spawns Tremors that deal $s1 Physical damage to enemies within $s4 yds every $s2 seconds. Earth Elemental's auto attack damage is increased by $s3.
@@ -8765,7 +8762,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734600)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 22814.46 (coefficient=9.368098) | PvP Coefficient: 0.50000 | Trigger Spell: 279513 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 23422.01 (coefficient=9.368098) | PvP Coefficient: 0.50000 | Trigger Spell: 279513 | Target: Self (1)
 #2 (id=734601)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=734602)   : Dummy (3)
@@ -8942,7 +8939,7 @@ Effects          :
 #1 (id=736419)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 279830 | Target: Self (1)
 #2 (id=736420)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 18675.89 (coefficient=7.668712) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 19173.22 (coefficient=7.668712) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
                    Family Flags: 44, 86
 #3 (id=736422)   : Dummy (3)
@@ -9185,7 +9182,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=749619)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 18675.89 (coefficient=7.668712) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 19173.22 (coefficient=7.668712) | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=749620)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000
 Description      : Earthquake deals $s1 Physical damage instantly, and has a $s2% chance to make your next Chain Lightning be instant cast.
@@ -9386,7 +9383,7 @@ Spell Level      : 21
 Range            : 100 yards
 Duration         : 6 seconds
 Proc Chance      : 100%
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Seismic Thunder (319343 effect#1), Bottle of Swirling Maelstrom (329580 effects: #5, #6), Eye of the Storm (381708 effect#2), Unrelenting Calamity (382685 effect#2), Primal Fracture (410018 effect#2), Maelstrom Supremacy (443447 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Seismic Thunder (319343 effect#1), Bottle of Swirling Maelstrom (329580 effects: #5, #6), Eye of the Storm (381708 effect#2), Unrelenting Calamity (382685 effect#2), Primal Fracture (410018 effect#2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#2)
 Family Flags     : 79, 83
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
@@ -9414,7 +9411,7 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Seismic Thunder (319343 effect#1), Bottle of Swirling Maelstrom (329580 effects: #5, #6), Eye of the Storm (381708 effect#2), Unrelenting Calamity (382685 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Seismic Thunder (319343 effect#1), Bottle of Swirling Maelstrom (329580 effects: #5, #6), Eye of the Storm (381708 effect#2), Unrelenting Calamity (382685 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#2), Amplification Core (456369 effects: #1, #2)
 Family Flags     : 39, 83
 Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ........ ......x. 
@@ -10465,7 +10462,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 100%
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Seismic Thunder (319343 effect#1), Bottle of Swirling Maelstrom (329580 effects: #5, #6), Eye of the Storm (381708 effect#2), Unrelenting Calamity (382685 effect#2), Primal Fracture (410018 effect#2), Maelstrom Supremacy (443447 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Seismic Thunder (319343 effect#1), Bottle of Swirling Maelstrom (329580 effects: #5, #6), Eye of the Storm (381708 effect#2), Unrelenting Calamity (382685 effect#2), Primal Fracture (410018 effect#2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#2)
 Family Flags     : 83
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
@@ -11435,7 +11432,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 100%
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Seismic Thunder (319343 effect#1), Bottle of Swirling Maelstrom (329580 effects: #5, #6), Eye of the Storm (381708 effect#2), Unrelenting Calamity (382685 effect#2), Primal Fracture (410018 effect#2), Maelstrom Supremacy (443447 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Echoes of the Great Sundering (208723 effect#1), Fulmination (260111 effect#2), Seismic Thunder (319343 effect#1), Bottle of Swirling Maelstrom (329580 effects: #5, #6), Eye of the Storm (381708 effect#2), Unrelenting Calamity (382685 effect#2), Primal Fracture (410018 effect#2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#2)
 Family Flags     : 83
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
@@ -12281,7 +12278,7 @@ Class            : Shaman
 School           : Elemental
 Spell Type       : Magic
 Range            : 40 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2)
 Family Flags     : 39, 79, 108
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14127,7 +14124,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Labels           : 1679: Nature's Fury (381655 effect#2)
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lava Shock (273453 effect#1), Bottle of Swirling Maelstrom (329580 effect#4), Nature's Fury (381655 effect#1), Eye of the Storm (381708 effect#1), Electrified Shocks (382089 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Amplification Core (456369 effects: #1, #2)
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lava Shock (273453 effect#1), Bottle of Swirling Maelstrom (329580 effect#4), Nature's Fury (381655 effect#1), Eye of the Storm (381708 effect#1), Electrified Shocks (382089 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Amplification Core (456369 effects: #1, #2)
 Family Flags     : 20, 39, 126
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -19618,6 +19615,30 @@ Effects          :
 Description      : $?a137041[Your next Stormstrike or Windstrike deals $s2% increased damage and damages $s3 nearby $Lenemy:enemies; at $s4% effectiveness.][The cast time of your next healing spell is reduced by $s1%.]
 
 Tooltip          : $?a137041[Your next Stormstrike or Windstrike deals $w2% increased damage and damages $w3 nearby $Lenemy:enemies; at $w4% effectiveness.][The cast time of your next healing spell is reduced by $w1%.]
+
+Name             : Shaman Elemental 11.0 Class Set 2pc (id=453684) [Spell Family (11), Passive, Hidden] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
+Effects          :
+#1 (id=1155684)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Affected Spells: Earth Shock (8042), Elemental Blast (117014), Elemental Blast Overload (120588), Elemental Blast (344645), Earth Shock Overload (381725)
+                   Family Flags: 20, 98, 108
+#2 (id=1163160)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Affected Spells: Earthquake (61882), Earthquake (77478), Earthquake (298762), Earthquake Overload (298765), Earthquake (329801), Earthquake (336740)
+                   Family Flags: 83
+Description      : $?s117014[Elemental Blast][Earth Shock] damage increased by $s1%. Earthquake damage increased by $s2%.
 
 Name             : Tempest (id=454009) [Spell Family (11), Passive] 
 Talent Entry     : Stormbringer (Elemental, Enhancement) [tree=hero, row=1, col=1, max_rank=1, req_points=1]

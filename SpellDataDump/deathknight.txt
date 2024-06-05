@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.54935 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.55000 thewarwithin-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -880,7 +880,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
 Proc Chance      : 100%
 Stance Mask      : 0x01000000
 Proc Flags       : ....x... x...x.x. x.x..... ........   ........ ........ ........ ........   
@@ -1428,7 +1428,7 @@ Spell Type       : Magic
 Spell Level      : 29
 Duration         : 12 seconds
 Cooldown         : 60 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
 Proc Chance      : 101%
 Stance Mask      : 0x01000000
 Proc Flags       : ....x... ..x.x.x. x.x..x.. ........   ........ ........ ........ ........   
@@ -1800,7 +1800,7 @@ Spell Type       : None
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Category         : 1641
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
                  : 1284: Symbol of Hope (265144 effect#2)
 Stance Mask      : 0x01000000
 Affecting spells : Improved Vampiric Blood (317133 effects: #1, #2, #3), Vampiric Aura (334547 effects: #2, #3)
@@ -2663,9 +2663,9 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x......x ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ....x... ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=68132)    : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
@@ -5777,7 +5777,7 @@ Description      : Instantly strike the target and 1 other nearby enemy, causing
 Tooltip          : Movement speed reduced by $s5%.
 
 Name             : Blooddrinker (id=206931) [Spell Family (15)] 
-Talent Entry     : Blood [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Blood [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=100]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -7154,7 +7154,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=330519)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Heart Strike generates ${$s1/10} additional Runic Power per target hit.
+Description      : Heart Strike generates ${$210738s1/10} additional Runic Power per target hit.
 
 Name             : Asphyxiate (id=221562) [Spell Family (15)] 
 Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=1, req_points=8]
@@ -8117,7 +8117,7 @@ Effects          :
 Description      : Bursting a Festering Wound grants you $s1 Strength for $274373d, stacking. Stacking this effect does not extend its duration.
 
 Name             : Consumption (id=274156) [Spell Family (15)] 
-Talent Entry     : Blood [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Blood [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -8129,7 +8129,7 @@ Cooldown         : 30 seconds
 Stance Mask      : 0x01000000
 Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #7, #8), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2)
 Family Flags     : 43, 125, 127
-Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
+Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8137,7 +8137,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=726306)   : Health Leech (9)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1.5 | AP Coefficient: 0.78624 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone to Enemy (104)
@@ -8235,7 +8235,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 45 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1), Motes of Possibility (409276 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
 Stance Mask      : 0x01000000
 Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #7, #8), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), Army of the Damned (276837 effect#3), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2)
 Family Flags     : 43, 56, 78, 127
@@ -8278,7 +8278,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=729270)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 19422.92 (coefficient=7.97546) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 19940.15 (coefficient=7.97546) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : When empowered by Rime, Howling Blast causes a secondary burst of icy wind around you that deals $s1 Frost damage to nearby enemies.
 
 Name             : Echoing Howl (id=275918) [Spell Family (15)] 
@@ -8716,7 +8716,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=749436)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 13446.64 (coefficient=5.521472) | PvP Coefficient: 0.50000 | Trigger Spell: 286834 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 13804.72 (coefficient=5.521472) | PvP Coefficient: 0.50000 | Trigger Spell: 286834 | Target: Self (1)
 #2 (id=749437)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
 Description      : Dark Transformations ignites you and your pet with flaming chains that deal $s1 Fire damage every sec to enemies between you for $s2 sec. 
@@ -13724,7 +13724,6 @@ Effects          :
 Description      : Stamina increased by $s1%.
 
 Name             : Reinforced Bones (id=374737) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Blood [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
@@ -18663,7 +18662,7 @@ Effects          :
                    Affected Spells: Obliterate (49020), Obliterate Off-Hand (66198), Marrowrend (195182), Obliterate (222024), Obliterate (325461)
                    Family Flags: 49, 117
 Description      : $@spelldesc441378
-Tooltip          : Your next $?a137007[Marrowrend][Obliterate] costs $?a443564[1][no] Rune and does Exterminate.
+Tooltip          : Your next $?a137008[Marrowrend][Obliterate] costs $?a443564[1][no] Rune and does Exterminate.
 
 Name             : Exterminate (id=441424) [Spell Family (15)] 
 Class            : Death Knight
@@ -20754,7 +20753,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1158796)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Every $s1 Festering Wound you burst empowers Festering Strike to become Festering Scythe for $458123d.
+Description      : Every $s1 Festering Wound you burst empowers your next Festering Strike to become Festering Scythe for $458123d.
 
 $@spellicon458128$@spellname458128
 $@spelldesc458128
@@ -21300,11 +21299,15 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When you lose a Bone Shield charge the damage of your next Marrowrend is increased by 15%, stacking up to 75%.
 
-Name             : [NYI] Under Construction (id=458752) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Blood [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Name             : Carnage (id=458752) [Spell Family (15), Passive, Hidden] 
+Talent Entry     : Blood [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
+Real PPM         : 1.1 (Haste multiplier)
+Proc Flags       : ...x.x.. ........ ........ ........   ........ ........ ........ ........   
+                 : White Melee Taken, Yellow Melee Taken
 Attributes       : ......xx x....... ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -21317,7 +21320,9 @@ Attributes       : ......xx x....... ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=1164979)  : Apply Aura (6) | Dummy (4)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : This talent is not yet implemented and is waiting to be raised from the dead.
+Description      : Blooddrinker and Consumption now contribute to your Mastery: Blood Shield.
+
+Each time an enemy strikes your Blood Shield, the cooldowns of Blooddrinker and Consumption have a chance to be reset.
 
 Name             : [NYI] Under Construction (id=458753) [Spell Family (15), Passive, Hidden] 
 Talent Entry     : Blood [tree=spec, row=8, col=4, max_rank=1, req_points=20]
@@ -21337,5 +21342,27 @@ Effects          :
 #1 (id=1164980)  : Apply Aura (6) | Dummy (4)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : This talent is not yet implemented and is waiting to be raised from the dead.
+
+Name             : Festering Scythe (id=459238) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Stacks           : 20 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : No Aura Cancel (31), Not In Spellbook (143)
+Effects          :
+#1 (id=1165849)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc455397
+Tooltip          : Empowering Festering Strike.
 
 
