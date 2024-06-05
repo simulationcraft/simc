@@ -2523,6 +2523,8 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     bool clearcasting;
   } snapshots;
 
+  std::vector<player_effect_t> persistent_periodic_effects;
+  std::vector<player_effect_t> persistent_direct_effects;
   snapshot_counter_t* bt_counter = nullptr;
   snapshot_counter_t* tf_counter = nullptr;
 
@@ -2535,7 +2537,9 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     if ( data().ok() )
     {
       snapshots.bloodtalons =  parse_persistent_effects( p->buff.bloodtalons, IGNORE_STACKS );
-      snapshots.tigers_fury =  parse_persistent_effects( p->buff.tigers_fury, p->talent.carnivorous_instinct );
+      snapshots.tigers_fury =  parse_persistent_effects( p->buff.tigers_fury,
+                                                         p->talent.carnivorous_instinct,
+                                                         p->talent.tigers_tenacity );
       // TODO: confirm moc no longer buffs thrash ticks
       snapshots.clearcasting = parse_persistent_effects( p->buff.clearcasting_cat, IGNORE_STACKS,
                                                          p->talent.moment_of_clarity );
@@ -2574,43 +2578,39 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
   template <typename... Ts>
   bool parse_persistent_effects( buff_t* buff, Ts... mods )
   {
-    size_t ta_old   = ta_multiplier_effects.size();
-    size_t da_old   = da_multiplier_effects.size();
     size_t cost_old = cost_effects.size();
+    size_t ta_old = ta_multiplier_effects.size();
+    size_t da_old = da_multiplier_effects.size();
 
     parse_effects( buff, mods... );
 
-    // If there is a new entry in the ta_mul table, move it to the pers_mul table.
-    if ( ta_multiplier_effects.size() > ta_old )
-    {
-      double &ta_val = ta_multiplier_effects.back().value;
-      double da_val = 0;
+    double ta_val = ta_multiplier_effects.back().value;
+    double da_val = da_multiplier_effects.back().value;
 
-      // Any corresponding increases in the da_mul table can be removed as pers_mul covers da_mul & ta_mul
-      if ( da_multiplier_effects.size() > da_old )
+    // new entry in both tables
+    if ( ta_multiplier_effects.size() > ta_old && da_multiplier_effects.size() > da_old )
+    {
+      if ( ta_val == da_val )  // values are same
       {
-        da_val = da_multiplier_effects.back().value;
+        persistent_multiplier_effects.push_back( ta_multiplier_effects.back() );
+        ta_multiplier_effects.pop_back();
         da_multiplier_effects.pop_back();
 
-        if ( da_val != ta_val )
-        {
-          p()->sim->print_debug(
-              "WARNING: {} (id={}) spell data has inconsistent persistent multiplier benefit for {}.", buff->name(),
-              buff->data().id(), this->name() );
-        }
+        p()->sim->print_debug( "persistent-effects: {} ({}) damage modified by {}% with buff {} ({})", name(), id,
+                               persistent_multiplier_effects.back().value * 100.0, buff->name(), buff->data().id() );
       }
+      else  // values are different
+      {
+        persistent_periodic_effects.push_back( ta_multiplier_effects.back() );
+        persistent_direct_effects.push_back( da_multiplier_effects.back() );
+        ta_multiplier_effects.pop_back();
+        da_multiplier_effects.pop_back();
 
-      // snapshotting is done via custom scripting, so data can have different da/ta_mul values but the highest will apply
-      if ( da_val > ta_val )
-        ta_val = da_val;
-
-      persistent_multiplier_effects.push_back( ta_multiplier_effects.back() );
-      ta_multiplier_effects.pop_back();
-
-      p()->sim->print_debug(
-          "persistent-effects: {} ({}) damage modified by {}% with buff {} ({}), tick table has {} entries.", name(),
-          id, persistent_multiplier_effects.back().value * 100.0, buff->name(), buff->data().id(),
-          ta_multiplier_effects.size() );
+        p()->sim->print_debug( "persistent-effects: {} ({}) periodic damage modified by {}% with buff {} ({})", name(),
+                               id, persistent_periodic_effects.back().value * 100.0, buff->name(), buff->data().id() );
+        p()->sim->print_debug( "persistent-effects: {} ({}) direct damage modified by {}% with buff {} ({})", name(),
+                               id, persistent_direct_effects.back().value * 100.0, buff->name(), buff->data().id() );
+      }
 
       return true;
     }
@@ -2655,6 +2655,26 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     }
   }
 
+  void init_finished() override
+  {
+    base_t::init_finished();
+    base_t::initialize_buff_list_on_vector( persistent_periodic_effects );
+    base_t::initialize_buff_list_on_vector( persistent_direct_effects );
+  }
+
+  size_t total_effects_count() override
+  {
+    return base_t::total_effects_count() + persistent_periodic_effects.size() + persistent_direct_effects.size();
+  }
+
+  void print_parsed_custom_type( report::sc_html_stream& os ) override
+  {
+    base_t::template print_parsed_type<cat_attack_t>( os, &cat_attack_t::persistent_periodic_effects,
+                                                      "Snapshots (DOT)" );
+    base_t::template print_parsed_type<cat_attack_t>( os, &cat_attack_t::persistent_direct_effects,
+                                                      "Snapshots (Direct)" );
+  }
+
   void tick( dot_t* d ) override
   {
     base_t::tick( d );
@@ -2689,6 +2709,24 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
       if ( special && base_costs[ RESOURCE_ENERGY ] > 0 )
         p()->buff.incarnation_cat->up();
     }
+  }
+
+  double composite_persistent_multiplier( const action_state_t* s ) const override
+  {
+    auto pers = base_t::composite_persistent_multiplier( s );
+
+    if ( s->result_type == result_amount_type::DMG_DIRECT )
+    {
+      for ( const auto& i : persistent_direct_effects )
+        pers *= 1.0 + ab::get_effect_value( i );
+    }
+    else if ( s->result_type == result_amount_type::DMG_OVER_TIME )
+    {
+      for ( const auto& i : persistent_periodic_effects )
+        pers *= 1.0 + ab::get_effect_value( i );
+    }
+
+    return pers;
   }
 };
 
@@ -4435,6 +4473,11 @@ struct rake_t : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
           .set_value( eff.percent() )
           .set_func( [ this ] { return stealthed_any(); } )
           .set_eff( &eff );
+
+        add_parse_entry( bleed->persistent_multiplier_effects )
+          .set_value( eff.percent() )
+          .set_func( [ this ] { return stealthed_any(); } )
+          .set_eff( &eff );
       }
     }
 
@@ -4486,10 +4529,7 @@ struct rake_t : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
   {
     base_t::impact( s );
 
-    bleed->snapshot_and_execute( s, true, nullptr, []( const action_state_t* from, action_state_t* to ) {
-      // Copy persistent multipliers from the direct attack.
-      to->persistent_multiplier = from->persistent_multiplier;
-    } );
+    bleed->snapshot_and_execute( s, true );
   }
 };
 
