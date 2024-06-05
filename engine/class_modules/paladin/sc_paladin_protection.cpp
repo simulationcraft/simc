@@ -564,8 +564,9 @@ struct eye_of_tyr_t : public paladin_spell_t
     may_crit = true;
 
     if ( p->talents.inmost_light->ok() )
-      cooldown->duration = data().cooldown() * ( 1 + p->talents.inmost_light->effectN( 2 ).percent() );
-
+    {
+      cooldown->duration *= ( 1 + p->talents.inmost_light->effectN( 2 ).percent() );
+    }
   }
   void impact(action_state_t* s) override
   {
@@ -587,6 +588,12 @@ struct eye_of_tyr_t : public paladin_spell_t
       m *= 1.0 + p()->talents.inmost_light->effectN( 1 ).percent();
     }
     return m;
+  }
+  
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    p()->buffs.hammer_of_light_ready->trigger();
   }
 
 };

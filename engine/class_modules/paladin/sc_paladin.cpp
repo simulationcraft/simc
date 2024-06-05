@@ -1799,6 +1799,68 @@ struct hammer_and_anvil_t : public paladin_spell_t
    
 };
 
+// Hammer of Light // Light's Guidance =====================================================
+
+struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
+{
+   hammer_of_light_t( paladin_t* p, util::string_view options_str )
+     : holy_power_consumer_t( "hammer of light", p, p->find_spell( 427453 ) )
+   {
+    parse_options( options_str );
+    spell_power_mod.direct = 5.8;
+    cooldown->duration     = 60_ms;
+   }
+
+   bool target_ready( player_t* candidate_target ) override
+   {
+     if ( !p()->buffs.hammer_of_light_ready->up() )
+        {
+      return false;
+        }
+        return paladin_melee_attack_t::target_ready( candidate_target );
+   }
+
+    void execute() override
+    {
+        holy_power_consumer_t<paladin_melee_attack_t>::execute();
+        
+        if ( p()->buffs.hammer_of_light_ready->up() )
+        {
+            p()->buffs.hammer_of_light_ready->expire();
+        }
+    }
+};
+
+
+// Empyrean Hammer
+
+struct empyrean_hammer_t : public paladin_spell_t
+{
+    empyrean_hammer_t( paladin_t* p, util::string_view options_str )
+      : paladin_spell_t( "empyrean_hammer", p, p->find_spell( 431398 ) )
+    {
+    }
+
+    void execute() override
+    {
+        paladin_spell_t::execute();
+        if ( p()->talents.lights_deliverence->ok() )
+        {
+            p()->buffs.lights_deliverance->trigger();
+            }
+        }
+};
+
+void paladin_t::trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay )
+{
+        for ( int i = 0; i < number_to_trigger; i++ )
+        {
+            make_event<delayed_execute_event_t>( *sim, this, active.empyrean_hammer, target, delay );
+        }
+}
+
+
+
 // Hammer of Wrath
 
 struct hammer_of_wrath_t : public paladin_melee_attack_t
@@ -2266,6 +2328,8 @@ action_t* paladin_t::create_action( util::string_view name, util::string_view op
     return new word_of_glory_t( this, options_str );
   if ( name == "holy_armament" )
     return new holy_armament_t( this, options_str );
+  if ( name == "hammer_of_light" )
+    return new hammer_of_light_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2517,6 +2581,9 @@ void paladin_t::create_buffs()
   buffs.holy_bulwark      = make_buff( this, "holy_bulwark", find_spell( 432496 ) );
   buffs.sacred_weapon     = make_buff( this, "sacred_weapon", find_spell( 432502 ) );
   buffs.blessed_assurance = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
+  buffs.hammer_of_light_ready = make_buff( this, "hammer_of_light_ready", find_spell( 427453 ) )
+      ->set_duration(20_s);
+  buffs.lights_deliverance    = make_buff( this, "light's deliverance", find_spell( 433674 ) );
 }
 
 // paladin_t::default_potion ================================================
@@ -2781,7 +2848,7 @@ void paladin_t::init_spells()
   talents.holy_bulwark           = find_talent_spell( talent_tree::HERO, "Holy Bulwark" );
   talents.rite_of_sanctification = find_talent_spell( talent_tree::HERO, "Rite of Sanctificatiopn" );
   talents.rite_of_adjuratuion    = find_talent_spell( talent_tree::HERO, "Rite of Adjuration" );
-  talents.laying_down_arms       = find_talent_spell( talent_tree::HERO, " Laying Down Arms" );
+  talents.laying_down_arms       = find_talent_spell( talent_tree::HERO, "Laying Down Arms" );
   talents.shared_resolve         = find_talent_spell( talent_tree::HERO, "Shared Resolve" );
   talents.solidraity             = find_talent_spell( talent_tree::HERO, "Solidarity" );
   talents.divine_inspiration     = find_talent_spell( talent_tree::HERO, "Divine Inspiration" );
@@ -2794,6 +2861,7 @@ void paladin_t::init_spells()
   // Not working unless it's spell ID'd
   talents.hammer_and_anvil       = find_spell( 433718 );
   talents.blessing_of_the_forge  = find_talent_spell( talent_tree::HERO, "Blessing of the Forge" );
+  talents.lights_guidance       = find_talent_spell( talent_tree::HERO, "Lights Guidance" );
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );

@@ -85,6 +85,7 @@ public:
     action_t* holy_shield_damage;
     action_t* tyrs_enforcer_damage;
     action_t* hammer_and_anvil;
+    action_t* empyrean_hammer;
     action_t* heartfire;
     action_t* judgment_of_light;
     action_t* shield_of_vengeance_damage;
@@ -205,6 +206,9 @@ public:
     buff_t* rite_of_adjuration;
     buff_t* holy_bulwark;
     buff_t* sacred_weapon;
+    buff_t* hammer_of_light_ready;
+    buff_t* lights_deliverance;
+    buff_t* shake_the_heavens;
 
   } buffs;
 
@@ -574,6 +578,10 @@ public:
     const spell_data_t* excoriation;
     const spell_data_t* hammer_and_anvil;
     const spell_data_t* blessing_of_the_forge;
+    const spell_data_t* lights_guidance;
+    const spell_data_t* lights_deliverence;
+    const spell_data_t* hammer_of_light;
+    const spell_data_t* hammerfall;
   } talents;
 
   struct tier_sets_t
@@ -665,6 +673,7 @@ public:
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_tyrs_enforcer( action_state_t* s );
   void    trigger_hammer_and_anvil( action_state_t* s);
+  void    trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay ); 
   void    heartfire( action_state_t* s );
   void    t29_4p_prot();
   void    t31_4p_prot(action_state_t* s);
@@ -1543,6 +1552,34 @@ struct holy_power_consumer_t : public Base
       p->buffs.blessing_of_dusk->trigger();
     }
     //todo: add blessed assurance here
+  }
+};
+
+// Delayed Execute Event ====================================================
+
+struct delayed_execute_event_t : public event_t
+{
+  action_t* action;
+  player_t* target;
+
+  delayed_execute_event_t( paladin_t* p, action_t* a, player_t* t, timespan_t delay )
+    : event_t( *p->sim, delay ), action( a ), target( t )
+  {
+    assert( action->background );
+  }
+
+  const char* name() const override
+  {
+    return action->name();
+  }
+
+  void execute() override
+  {
+    if ( !target->is_sleeping() )
+    {
+      action->set_target( target );
+      action->execute();
+    }
   }
 };
 
