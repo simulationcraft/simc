@@ -827,6 +827,7 @@ public:
   void init_base_stats() override;
   void init_resources( bool force ) override;
   void init_spells() override;
+  void init_special_effects() override;
   void create_buffs() override;
   void init_scaling() override;
   void init_finished() override;

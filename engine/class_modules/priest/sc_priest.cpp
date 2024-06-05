@@ -3251,6 +3251,32 @@ void priest_t::init_finished()
                         : ( talents.shared.mindbender.enabled() ? cooldowns.mindbender : cooldowns.shadowfiend );
 }
 
+void priest_t::init_special_effects()
+{
+  if ( unique_gear::find_special_effect( this, 445593 ) &&
+       talents.voidweaver.void_blast.enabled() )  // Aberrant Spellforge
+  {
+    if ( specialization() == PRIEST_DISCIPLINE )
+    {
+      callbacks.register_callback_trigger_function(
+          452030, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+          []( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
+            return a->data().id() == 585 || a->data().id() == 450215;
+          } );
+    }
+    if ( specialization() == PRIEST_SHADOW )
+    {
+      callbacks.register_callback_trigger_function(
+          452030, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+          []( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
+            return a->data().id() == 8092 || a->data().id() == 450983;
+          } );
+    }
+  }
+
+  base_t::init_special_effects();
+}
+
 void priest_t::init_spells()
 {
   base_t::init_spells();

@@ -16,6 +16,7 @@
 #include "dbc/spell_data.hpp"
 #include "ground_aoe.hpp"
 #include "item/item.hpp"
+#include "player/action_priority_list.hpp"
 #include "player/consumable.hpp"
 #include "set_bonus.hpp"
 #include "sim/cooldown.hpp"
@@ -536,10 +537,13 @@ void aberrant_spellforge( special_effect_t& effect )
   [[maybe_unused]] auto silence_dur = effect.player->find_spell( 452350 )->duration();
 
   // create buffs
-  auto empowerment = create_buff<buff_t>( effect.player, effect.player->find_spell( 451895 ) );
+  auto empowerment = create_buff<buff_t>( effect.player, effect.player->find_spell( 451895 ) )
+                         ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
-  auto stack = create_buff<buff_t>( effect.player, effect.driver() )->set_cooldown( 0_ms )
-    ->set_default_value( data->effectN( 3 ).percent() );
+  auto stack = create_buff<buff_t>( effect.player, effect.driver() )
+                   ->set_cooldown( 0_ms )
+                   ->set_default_value( data->effectN( 3 ).percent() )
+                   ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   auto haste = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 451845 ) )
     ->set_stat_from_effect_type( A_MOD_RATING, data->effectN( 2 ).average( effect.item ) );
@@ -553,6 +557,16 @@ void aberrant_spellforge( special_effect_t& effect )
       : generic_proc_t( e, "aberrant_shadows", 451866 ), stack( b )
     {
       base_dd_min = base_dd_max = data->effectN( 1 ).average( e.item );
+
+      for ( auto a : player->action_list )
+      {
+          if ( a->action_list && a->action_list->name_str == "precombat" &&
+               a->name_str == "use_item_" + item->name_str )
+          {
+              a->harmful = false;
+              break;
+          }
+      };
     }
 
     double action_multiplier() const override
@@ -605,9 +619,19 @@ void aberrant_spellforge( special_effect_t& effect )
     make_event( *p->sim, dur, [ p ] { p->buffs.stunned->decrement(); } );
   };
   */
-  stack->set_stack_change_callback( [ haste ]( buff_t* b, int, int ) {
-    if ( b->at_max_stacks() )
-      haste->trigger();
+
+  empowerment->set_stack_change_callback( [ cb, haste ]( buff_t* b, int old_, int new_ ) {
+    if ( !old_ )
+    {
+      cb->activate();
+    }
+    if ( !new_ )
+    {
+      cb->deactivate();
+
+      if ( b->at_max_stacks() )
+        haste->trigger();
+    }
   } );
 
   effect.custom_buff = stack;
