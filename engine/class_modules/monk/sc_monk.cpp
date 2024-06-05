@@ -1159,6 +1159,12 @@ struct storm_earth_and_fire_t : public monk_spell_t
     monk_spell_t::execute();
 
     p()->summon_storm_earth_and_fire( data().duration() );
+
+    if ( p()->talent.windwalker.ordered_elements.ok() )
+    {
+      p()->cooldown.rising_sun_kick->reset( true );
+      p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.ordered_elements->effectN( 2 ).base_value(), p()->gain.ordered_elements );
+    }
   }
 };
 
@@ -8471,6 +8477,7 @@ void monk_t::init_gains()
   gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
   gain.glory_of_the_dawn        = get_gain( "glory_of_the_dawn" );
   gain.open_palm_strikes        = get_gain( "open_palm_strikes" );
+  gain.ordered_elements         = get_gain( "ordered_elements" );
   gain.power_strikes            = get_gain( "power_strikes" );
   gain.rushing_jade_wind_tick   = get_gain( "rushing_jade_wind_tick" );
   gain.tiger_palm               = get_gain( "tiger_palm" );
