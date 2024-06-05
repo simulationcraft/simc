@@ -6249,7 +6249,7 @@ void player_t::trigger_ready()
 void player_t::schedule_off_gcd_ready( timespan_t delta_time )
 {
   if ( delta_time < 0_ms )
-    delta_time = rng().gauss( 100_ms, 10_ms );
+    delta_time = rng().range( 90_ms, 110_ms );
 
   if ( active_off_gcd_list == nullptr )
   {
@@ -6298,7 +6298,7 @@ void player_t::schedule_off_gcd_ready( timespan_t delta_time )
 void player_t::schedule_cwc_ready( timespan_t delta_time )
 {
   if ( delta_time < 0_ms )
-    delta_time = rng().gauss( 100_ms, 10_ms );
+    delta_time = rng().range( 90_ms, 110_ms );
 
   if ( active_cast_while_casting_list == nullptr )
   {
@@ -6588,7 +6588,7 @@ void player_t::arise()
 
 timespan_t player_t::available() const
 {
-  return rng().gauss( 100_ms, 10_ms );
+  return rng().range( 90_ms, 110_ms );
 }
 
 /**
