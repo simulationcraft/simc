@@ -672,6 +672,7 @@ public:
     propagate_const<gain_t *> glory_of_the_dawn;
     propagate_const<gain_t *> healing_elixir;
     propagate_const<gain_t *> open_palm_strikes;
+    propagate_const<gain_t *> ordered_elements;
     propagate_const<gain_t *> power_strikes;
     propagate_const<gain_t *> rushing_jade_wind_tick;
     propagate_const<gain_t *> tiger_palm;
