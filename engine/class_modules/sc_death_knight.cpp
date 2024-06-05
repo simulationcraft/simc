@@ -746,6 +746,8 @@ public:
     propagate_const<buff_t*> commander_of_the_dead;
     propagate_const<buff_t*> defile_buff;
     propagate_const<buff_t*> festering_scythe;
+    // Tier Sets
+    propagate_const<buff_t*> unholy_commander;
 
     // Rider of the Apocalypse
     propagate_const<buff_t*> a_feast_of_souls;
@@ -1376,6 +1378,8 @@ public:
     const spell_data_t* decomposition_damage;
     const spell_data_t* festering_scythe;
     const spell_data_t* festering_scythe_buff;
+    // Tier Sets
+    const spell_data_t* unholy_commander;
 
     // Rider of the Apocalypse non-talent spells
     const spell_data_t* a_feast_of_souls_buff;
@@ -2270,6 +2274,11 @@ struct death_knight_pet_t : public pet_t
     if ( decomposition_can_extend )
     {
       decomposition_extended = 0_s;
+    }
+
+    if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ) )
+    {
+      dk()->buffs.unholy_commander->trigger();
     }
   }
 
@@ -12387,6 +12396,9 @@ void death_knight_t::init_spells()
   spell.decomposition_damage       = conditional_spell_lookup( talent.unholy.decomposition.ok(), 458264 );
   spell.festering_scythe           = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 458128 );
   spell.festering_scythe_buff      = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 458123 );
+  // Set Bonuses
+  spell.unholy_commander           = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ),
+                                                              456698 );
 
   // Rider of the Apocalypse Spells
   spell.a_feast_of_souls_buff = conditional_spell_lookup( talent.rider.a_feast_of_souls.ok(), 440861 );
@@ -13152,6 +13164,9 @@ void death_knight_t::create_buffs()
 
   buffs.festering_scythe =
       make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe", spell.festering_scythe_buff );
+
+  buffs.unholy_commander = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ), this,
+                                          "unholy_commander", spell.unholy_commander );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -13821,6 +13836,8 @@ void death_knight_t::parse_player_effects()
     parse_effects( buffs.ghoulish_frenzy, talent.unholy.ghoulish_frenzy );
     parse_effects( buffs.festermight, talent.unholy.festermight );
     parse_effects( buffs.defile_buff, spell.defile_buff->effectN( 1 ).base_value() / 1.8 );
+    parse_effects( buffs.unholy_commander );
+    parse_effects( sets->set( DEATH_KNIGHT_UNHOLY, TWW1, B2 ) );
     parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::unholy_aura ), spell.unholy_aura_debuff,
                           talent.unholy.unholy_aura );
     parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), spell.virulent_plague,

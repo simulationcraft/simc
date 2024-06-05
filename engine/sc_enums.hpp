@@ -863,7 +863,7 @@ enum set_bonus_type_e
   TWW_FSR,
   TWW_KCI,
   TWW1,
-  SET_BONUS_MAX
+  SET_BONUS_MAX,
 };
 
 enum meta_gem_e
