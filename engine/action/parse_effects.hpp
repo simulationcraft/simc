@@ -7,15 +7,9 @@
 
 #include "action/action.hpp"
 #include "buff/buff.hpp"
-#include "dbc/dbc.hpp"
-#include "player/pet.hpp"
 #include "player/player.hpp"
 #include "player/stats.hpp"
-#include "report/decorators.hpp"
-#include "sim/sim.hpp"
 #include "util/io.hpp"
-
-#include <functional>
 
 enum parse_flag_e
 {

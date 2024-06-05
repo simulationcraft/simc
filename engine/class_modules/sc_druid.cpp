@@ -6,9 +6,7 @@
 #include "config.hpp"
 
 #include "action/parse_effects.hpp"
-#include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
-#include "report/charts.hpp"
 #include "report/highchart.hpp"
 
 #include "simulationcraft.hpp"

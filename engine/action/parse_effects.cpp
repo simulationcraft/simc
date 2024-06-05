@@ -5,7 +5,10 @@
 
 #include "parse_effects.hpp"
 
+#include "dbc/dbc.hpp"
 #include "dbc/sc_spell_info.hpp"
+#include "report/decorators.hpp"
+#include "sim/sim.hpp"
 
 std::string player_effect_t::value_type_name( parse_flag_e t ) const
 {
