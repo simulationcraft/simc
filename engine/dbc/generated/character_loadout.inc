@@ -1,6 +1,6 @@
 static constexpr int MYTHIC_TARGET_ITEM_LEVEL = 578;
 
-// Character Loadout data, wow build 11.0.0.54935
+// Character Loadout data, wow build 11.0.0.55000
 static const std::array<character_loadout_data_t, 599> __character_loadout_data { {
   { 1809, 1, 0, 154025 },
   { 1809, 1, 0, 154026 },
@@ -603,10 +603,16 @@ static const std::array<character_loadout_data_t, 599> __character_loadout_data 
   { 1787, 13, 2, 194536 },
 } };
 
-// Trait Loadout data, wow build 11.0.0.54935
-static const std::array<trait_loadout_data_t, 2237> __trait_loadout_data { {
-  { 0, 122462, 1, 6 },
-  { 0, 122463, 1, 7 },
+// Trait Loadout data, wow build 11.0.0.55000
+static const std::array<trait_loadout_data_t, 2240> __trait_loadout_data { {
+  { 0, 119137, 1, 0 },
+  { 0, 119132, 1, 1 },
+  { 0, 119136, 1, 2 },
+  { 0, 119128, 1, 3 },
+  { 0, 119135, 1, 4 },
+  { 0, 119127, 1, 5 },
+  { 0, 118770, 1, 6 },
+  { 0, 118768, 1, 7 },
   { 62, 80179, 1, 31 },
   { 62, 80177, 1, 32 },
   { 62, 80171, 1, 33 },
@@ -1389,7 +1395,6 @@ static const std::array<trait_loadout_data_t, 2237> __trait_loadout_data { {
   { 250, 96280, 1, 49 },
   { 250, 96273, 1, 50 },
   { 250, 96166, 1, 51 },
-  { 250, 96267, 1, 52 },
   { 250, 96262, 1, 53 },
   { 250, 96264, 1, 54 },
   { 250, 96171, 1, 55 },
@@ -2245,8 +2250,6 @@ static const std::array<trait_loadout_data_t, 2237> __trait_loadout_data { {
   { 265, 91571, 1, 3 },
   { 265, 91568, 1, 4 },
   { 265, 91572, 1, 5 },
-  { 265, 91565, 1, 6 },
-  { 265, 91565, 2, 7 },
   { 265, 91564, 1, 8 },
   { 265, 91564, 2, 9 },
   { 265, 91566, 1, 10 },

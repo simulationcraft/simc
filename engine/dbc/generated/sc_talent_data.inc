@@ -1,5 +1,5 @@
-// 568 talents, wow build 11.0.0.54935
-static std::array<talent_data_t, 568> __talent_data { {
+// 567 talents, wow build 11.0.0.55000
+static std::array<talent_data_t, 567> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
   { "War Machine"                       , 15760, 0x00, 0x0001,   73,   0,   0,  316733,       0,  0 },
@@ -120,7 +120,6 @@ static std::array<talent_data_t, 568> __talent_data { {
   { "Germination"                       , 21651, 0x00, 0x0400,  105,   1,   6,  155675,       0,  0 },
   { "Feral Frenzy"                      , 21653, 0x00, 0x0400,  103,   2,   6,  274837,       0,  0 },
   { "New Moon"                          , 21655, 0x00, 0x0400,  102,   2,   6,  274281,       0,  0 },
-  { "Ravager"                           , 21667, 0x00, 0x0001,   71,   2,   6,  152277,  227847,  0 },
   { "Beacon of Faith"                   , 21671, 0x00, 0x0002,   65,   1,   6,  156910,       0,  0 },
   { "Ascendance"                        , 21675, 0x00, 0x0040,  262,   2,   6,  114050,       0,  0 },
   { "Power Siphon"                      , 21694, 0x00, 0x0100,  266,   1,   1,  264130,       0,  0 },

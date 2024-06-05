@@ -1,4 +1,4 @@
-// Racial abilities, wow build 11.0.0.54935
+// Racial abilities, wow build 11.0.0.55000
 static const std::array<racial_spell_entry_t, 163> __racial_spell_data { {
   { 0x0000000000000001, 0x00000000,  20598, "The Human Spirit"                   },
   { 0x0000000000000001, 0x00000000,  59752, "Will to Survive"                    },
