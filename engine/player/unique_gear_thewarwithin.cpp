@@ -1182,28 +1182,30 @@ void abyssal_effigy( special_effect_t& effect )
 
   effect.execute_action = create_proc_action<abyssal_gluttony_t>( "abyssal_gluttony", effect, coeff->driver() );
 }
+
 // Sigil of Algari Concordance
-// Might have variations based on the players Specilization. 
-// Testing on Death Knight showed only a single spawnable pet.
+// Might have variations based on the players Specilization.
+// Testing on DPS Death Knight showed only a single spawnable pet.
 // 443378 Driver
 // 452310 Summon Spell (DPS?)
 // 452335 Thunder Bolt - Casts repetedly
 // 452445 Thundering Bolt - Casts only once on spawn in testing
+// 452325, 452457, and 452498 Periodic Triggers for pet actions
 void sigil_of_algari_concordance( special_effect_t& e )
 {
-  struct thunder_bolt_t : public spell_t
+  struct thunder_bolt_silvervein_t : public spell_t
   {
     action_t* action;
-    thunder_bolt_t( pet_t* p, const special_effect_t& e, action_t* a, util::string_view options_str )
-      : spell_t( "thunder_bolt_silvervein", p, p->find_spell( 452335 ) ), action( a )
+    thunder_bolt_silvervein_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+      : spell_t( name, p, p->find_spell( 452335 ) ), action( a )
     {
-      parse_options( options_str );
+      background         = true;
       name_str_reporting = "thunder_bolt";
-      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it a guessing game.
+      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
+      // a guessing game.
       base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
-      trigger_gcd = 3_s;  // Behaves a bit oddly in game, doesnt have a CD or a cast time, but only executes every 3s
-      auto proxy  = action;
-      auto it     = range::find( proxy->child_action, data().id(), &action_t::id );
+      auto proxy                = action;
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
       if ( it != proxy->child_action.end() )
         stats = ( *it )->stats;
       else
@@ -1214,15 +1216,13 @@ void sigil_of_algari_concordance( special_effect_t& e )
   struct thundering_bolt_t : public spell_t
   {
     action_t* action;
-    thundering_bolt_t( pet_t* p, const special_effect_t& e, action_t* a, util::string_view options_str )
-      : spell_t( "thundering_bolt", p, p->find_spell( 452445 ) ), action( a )
+    thundering_bolt_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+      : spell_t( name, p, p->find_spell( 452445 ) ), action( a )
     {
-      parse_options( options_str );
-      cooldown->duration =
-          15.1_s;  // Only casts once per spawn, setting a cooldown higher than its duration to emulate this.
-      trigger_gcd = 3_s;  // Behaves a bit oddly in game, doesnt have a CD or a cast time but prevents it casting Thunder Bolt for 3s
-      aoe         = -1;
-      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it a guessing game.
+      aoe        = -1;
+      background = true;
+      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
+      // a guessing game.
       base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e.item );
       auto proxy                = action;
       auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
@@ -1237,11 +1237,31 @@ void sigil_of_algari_concordance( special_effect_t& e )
   {
     const special_effect_t& effect;
     action_t* action;
+    action_t* thunder_bolt;
+    action_t* thundering_bolt;
+    timespan_t period;
+    double ticks;
 
     silvervein_pet_t( const special_effect_t& e, action_t* a )
-      : pet_t( e.player->sim, e.player, "silvervein", true, true ), effect( e ), action( a )
+      : pet_t( e.player->sim, e.player, "silvervein", true, true ),
+        effect( e ),
+        action( a ),
+        thunder_bolt( nullptr ),
+        thundering_bolt( nullptr ),
+        period( e.player->find_spell( 452325 )->effectN( 1 ).period() ),
+        ticks( 0 )
     {
       npc_id = e.player->find_spell( 452310 )->effectN( 1 ).misc_value1();
+      // Some math to automate how many repeating events are needed to execute thunder bolt after thundering bolt and
+      // the first thunder bolt has been cast
+      ticks = ( e.player->find_spell( 452310 )->duration() - period * 2 ) / period;
+    }
+
+    void init_spells() override
+    {
+      pet_t::init_spells();
+      thunder_bolt    = new thunder_bolt_silvervein_t( "thunder_bolt_silvervein", this, effect, action );
+      thundering_bolt = new thundering_bolt_t( "thundering_bolt", this, effect, action );
     }
 
     resource_e primary_resource() const override
@@ -1249,32 +1269,15 @@ void sigil_of_algari_concordance( special_effect_t& e )
       return RESOURCE_NONE;
     }
 
-    void init_base_stats() override
+    void arise() override
     {
-      pet_t::init_base_stats();
-    }
-
-    action_t* create_action( util::string_view name, util::string_view options ) override
-    {
-      if ( name == "thundering_bolt" )
-      {
-        return new thundering_bolt_t( this, effect, action, options );
-      }
-
-      if ( name == "thunder_bolt" )
-      {
-        return new thunder_bolt_t( this, effect, action, options );
-      }
-      return pet_t::create_action( name, options );
-    }
-
-    void init_action_list() override
-    {
-      pet_t::init_action_list();
-
-      auto def = get_action_priority_list( "default" );
-      def->add_action( "thundering_bolt" );
-      def->add_action( "thunder_bolt" );
+      pet_t::arise();
+      thundering_bolt->execute();
+      make_event( *sim, period, [ this ]() {
+        thunder_bolt->execute();
+        make_repeating_event(
+            *sim, period, [ this ]() { thunder_bolt->execute(); }, as<int>( ticks ) );
+      } );
     }
   };
 
@@ -1284,7 +1287,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
     sigil_of_algari_concordance_t( const special_effect_t& e )
       : spell_t( "sigil_of_algari_concordance", e.player, e.driver() ),
-      spawner( "silvervein", e.player, [ &e, this ]( player_t* ) { return new silvervein_pet_t( e, this ); } )
+        spawner( "silvervein", e.player, [ &e, this ]( player_t* ) { return new silvervein_pet_t( e, this ); } )
     {
       spawner.set_default_duration( e.player->find_spell( 452310 )->duration() );
       background = true;
