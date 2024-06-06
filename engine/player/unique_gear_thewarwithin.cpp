@@ -1301,6 +1301,24 @@ void sigil_of_algari_concordance( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Skarmorak Shard
+// 443407 Main Buff & Driver
+// 449792 Stacking Buff
+void skarmorak_shard( special_effect_t& e )
+{
+  auto main_buff = create_buff<stat_buff_t>( e.player, e.driver() )
+                       ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.item ) );
+
+  auto on_kill_buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 449792 ) )
+                          ->add_stat_from_effect_type( A_MOD_RATING, e.player->find_spell( 449792 )->effectN( 1 ).average( e.item ) );
+
+  e.player->register_on_kill_callback( [ e, on_kill_buff ]( player_t* t ) {
+    if ( !e.player->sim->event_mgr.canceled )
+      on_kill_buff->trigger();
+  } );
+
+  e.custom_buff = main_buff;
+}
 
 // Weapons
 // 444135 driver
@@ -1581,6 +1599,8 @@ void register_special_effects()
   register_special_effect( 443124, items::abyssal_effigy );
   register_special_effect( 443128, DISABLED_EFFECT );  // abyssal effigy
   register_special_effect( 443378, items::sigil_of_algari_concordance );
+  register_special_effect( 443407, items::skarmorak_shard );
+  register_special_effect( 443409, DISABLED_EFFECT );  // skarmorak's shard
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
