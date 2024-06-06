@@ -1570,6 +1570,33 @@ void overclocked_geararang_launcher( special_effect_t& e )
   e.execute_action = use_damage;
 }
 
+// Remnant of Darkness
+// 443530 Driver
+// 451369 Buff
+// 452032 Damage
+// 451602 Transform Buff
+void remnant_of_darkness( special_effect_t& e )
+{
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "dark_swipe", e, 452032 );
+  damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+  auto transform_buff                       = create_buff<buff_t>( e.player, e.player->find_spell( 451602 ) )
+                            ->set_tick_callback( [ damage ]( buff_t*, int, timespan_t ) { damage->execute(); } );
+
+  auto stat_buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 451369 ) )
+                       ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e.item ) )
+                       ->set_stack_change_callback( [ transform_buff ]( buff_t* b, int, int ) {
+                         if ( b->at_max_stacks() )
+                         {
+                           transform_buff->trigger();
+                         }
+                       } );
+
+  transform_buff->set_expire_callback( [ stat_buff ]( buff_t*, int, timespan_t ) { stat_buff->expire(); } );
+
+  e.custom_buff = stat_buff;
+  new dbc_proc_callback_t( e.player, e );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -1855,6 +1882,7 @@ void register_special_effects()
   register_special_effect( 448904, items::ravenous_honey_buzzer );
   register_special_effect( 443411, items::overclocked_geararang_launcher );
   register_special_effect( 446764, DISABLED_EFFECT ); // overclocked gear-a-rang launcher
+  register_special_effect( 443530, items::remnant_of_darkness );
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
