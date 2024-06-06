@@ -8136,13 +8136,12 @@ void monk_t::create_buffs()
   //     { find_spell( 124273 ), 0.6 },
   //     { spell_data_t::nil(), 10.0 }
   //   } );
-  stagger_impl::stagger_t( this, find_spell( 124255 ),
-                           // temp,
-                           { { find_spell( 124275 ), 0.0 },
-                             { find_spell( 124274 ), 0.2 },
-                             { find_spell( 124273 ), 0.6 },
-                             { spell_data_t::nil(), 10.0 } },
-                           { "quick_sip" } );
+  create_stagger( { find_spell( 124255 ),
+                    { { find_spell( 124275 ), 0.0 },
+                      { find_spell( 124274 ), 0.2 },
+                      { find_spell( 124273 ), 0.6 },
+                      { spell_data_t::nil(), 10.0 } },
+                    { "quick_sip" } } );
 
   base_t::create_buffs();
 

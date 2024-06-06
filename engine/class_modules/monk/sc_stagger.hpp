@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <memory>
+#include <string_view>
 #include <vector>
 
 /*
@@ -88,6 +89,30 @@
  */
 
 // declaration
+
+struct level_data_t
+{
+  const spell_data_t *spell_data;
+  const double min_threshold;
+
+  std::string_view name() const
+  {
+    return spell_data->name_cstr();
+  }
+};
+
+struct stagger_data_t
+{
+  const spell_data_t *self_damage;
+  std::vector<level_data_t> levels;
+  std::vector<std::string_view> mitigation_tokens;
+
+  std::string_view name() const
+  {
+    return self_damage->name_cstr();
+  }
+};
+
 namespace stagger_impl
 {
 struct sample_data_t
@@ -123,17 +148,6 @@ struct self_damage_t : residual_action::residual_periodic_action_t<spell_t>
   }
 };
 
-struct level_data_t
-{
-  const spell_data_t *spell_data;
-  const double min_threshold;
-
-  ~level_data_t()
-  {
-    std::cout << "~level_data_t();" << spell_data->name_cstr() << " " << min_threshold << std::endl;
-  }
-};
-
 template <class derived_actor_t>
 struct level_t
 {
@@ -141,29 +155,31 @@ private:
   derived_actor_t *player;
 
 public:
-  std::string_view parent_name;
-  const spell_data_t *spell_data;
-  const double min_threshold;
+  const stagger_data_t &parent_data;
+  const level_data_t &data;
 
-  level_t( derived_actor_t *player, std::string_view parent_name, const level_data_t &data );
-  level_t( derived_actor_t *player, std::string_view parent_name, const spell_data_t *spell_data,
-           const double min_threshold );
+  level_t( derived_actor_t *player, const stagger_data_t &parent_data, const level_data_t &data );
+  // TODO: select types in create_stagger
   template <class debuff_type = stagger_impl::debuff_t>
   void init();
-  std::string_view name() const;
   void trigger();
   friend bool operator<( const level_t &lhs, const level_t &rhs );
+
+  std::string_view name() const
+  {
+    return data.name();
+  }
+
+  double min_threshold() const
+  {
+    return data.min_threshold;
+  }
 
   // private:
   propagate_const<debuff_t *> debuff;
   sample_data_helper_t *absorbed;
   sample_data_helper_t *taken;
   sample_data_helper_t *mitigated;
-
-  // friend bool operator==( const level_t &lhs, const level_t &rhs )
-  // {
-  //   return *lhs.spell_data == *rhs.spell_data;
-  // }
 };
 
 template <class derived_actor_t>
@@ -178,10 +194,9 @@ struct stagger_t
 
 public:
   derived_actor_t *player;
-  const spell_data_t *self_damage_data;
-  std::vector<level_data_t> level_data;
-  std::vector<std::string_view> mitigation_tokens;
+  const stagger_data_t data;
 
+  // TODO: typedef param pack?
   std::function<bool()> active;
   std::function<bool( school_e, result_amount_type, action_state_t * )> trigger_filter;
   std::function<double( school_e, result_amount_type, action_state_t * )> percent;
@@ -192,8 +207,8 @@ public:
   sample_data_t *sample_data;
 
   // init
-  stagger_t( derived_actor_t *player, const spell_data_t *self_damage, const std::vector<level_data_t> &level_data,
-             std::vector<std::string_view> mitigation_tokens );
+  stagger_t( derived_actor_t *player, const stagger_data_t &data );
+  // TODO: select types in create_stagger
   template <class level_type       = stagger_impl::level_t<derived_actor_t>,
             class sample_data_type = stagger_impl::sample_data_t, class self_damage_type = stagger_impl::self_damage_t>
   void init();
@@ -212,7 +227,6 @@ public:
   // information
   std::string_view name() const;
 
-  // TODO: FILL OUT IMPL
   double pool_size();
   double pool_size_percent();
   double tick_size();
@@ -299,7 +313,7 @@ struct stagger_t : base_actor_t
       for ( auto &level : stagger_effect->levels )
         if ( splits[ 1 ] == level->name() )
           return make_fn_expr( name_str, [ &stagger_effect = stagger_effect, &level = level ] {
-            return stagger_effect->current->spell_data == level->spell_data;
+            return stagger_effect->current->data.spell_data == level->data.spell_data;
           } );
       if ( splits[ 1 ] == "amount" )
         return make_fn_expr( name_str, [ &stagger_effect = stagger_effect ] { return stagger_effect->tick_size(); } );
@@ -317,6 +331,11 @@ struct stagger_t : base_actor_t
         return make_fn_expr( name_str, [ &stagger_effect = stagger_effect ] { return stagger_effect->is_ticking(); } );
     }
     return base_actor_t::create_expression( name_str );
+  }
+
+  void create_stagger( const stagger_data_t &data )
+  {
+    stagger[ data.name() ] = new stagger_impl::stagger_t( static_cast<derived_actor_t *>( this ), data );
   }
 
   template <typename... Args>
@@ -340,15 +359,9 @@ namespace stagger_impl
 {
 // level_t impl
 template <class derived_actor_t>
-level_t<derived_actor_t>::level_t( derived_actor_t *player, std::string_view parent_name, const level_data_t &data )
-  : player( player ), parent_name( parent_name ), spell_data( data.spell_data ), min_threshold( data.min_threshold )
-{
-}
-
-template <class derived_actor_t>
-level_t<derived_actor_t>::level_t( derived_actor_t *player, std::string_view parent_name,
-                                   const spell_data_t *spell_data, const double min_threshold )
-  : player( player ), parent_name( parent_name ), spell_data( spell_data ), min_threshold( min_threshold )
+level_t<derived_actor_t>::level_t( derived_actor_t *player, const stagger_data_t &parent_data,
+                                   const level_data_t &data )
+  : player( player ), parent_data( parent_data ), data( data )
 {
 }
 
@@ -356,16 +369,10 @@ template <class derived_actor_t>
 template <class debuff_type>
 void level_t<derived_actor_t>::init()
 {
-  absorbed  = player->get_sample_data( fmt::format( "{} added to pool while at {}.", parent_name, name() ) );
-  taken     = player->get_sample_data( fmt::format( "{} damage taken from {}.", parent_name, name() ) );
-  mitigated = player->get_sample_data( fmt::format( "{} damage mitigated while at {}.", parent_name, name() ) );
-  debuff    = make_buff<debuff_type>( player, spell_data );
-}
-
-template <class derived_actor_t>
-std::string_view level_t<derived_actor_t>::name() const
-{
-  return spell_data->name_cstr();
+  absorbed  = player->get_sample_data( fmt::format( "{} added to pool while at {}.", parent_data.name(), name() ) );
+  taken     = player->get_sample_data( fmt::format( "{} damage taken from {}.", parent_data.name(), name() ) );
+  mitigated = player->get_sample_data( fmt::format( "{} damage mitigated while at {}.", parent_data.name(), name() ) );
+  debuff    = make_buff<debuff_type>( player, data.spell_data );
 }
 
 template <class derived_actor_t>
@@ -382,18 +389,11 @@ bool operator<( const level_t<derived_actor_t> &lhs, level_t<derived_actor_t> &r
 
 // stagger_t impl
 template <class derived_actor_t>
-stagger_t<derived_actor_t>::stagger_t( derived_actor_t *player, const spell_data_t *self_damage,
-                                       const std::vector<level_data_t> &level_data,
-                                       std::vector<std::string_view> mitigation_tokens )
-  : player( player ),
-    self_damage_data( self_damage ),
-    level_data( std::move( level_data ) ),
-    mitigation_tokens( std::move( mitigation_tokens ) )
+stagger_t<derived_actor_t>::stagger_t( derived_actor_t *player, const stagger_data_t &data )
+  : player( player ), data( std::move( data ) )
 {
-  for ( auto &[ spell_data, min_threshold ] : this->level_data )
+  for ( auto &[ spell_data, min_threshold ] : data.levels )
     player->sim->print_debug( "INIT LEVEL: {} {}", (void *)spell_data, min_threshold );
-  if ( player->stagger.find( name() ) == player->stagger.end() )
-    player->stagger[ name() ] = this;
   active         = []() { return true; };
   trigger_filter = []( school_e, result_amount_type, action_state_t * ) { return true; };
   percent        = []( school_e, result_amount_type, action_state_t        *) { return 0.5; };
@@ -403,22 +403,16 @@ template <class derived_actor_t>
 template <class level_type, class sample_data_type, class self_damage_type>
 void stagger_t<derived_actor_t>::init()
 {
-  for ( auto &data : level_data )
+  for ( auto &level : data.levels )
   {
-    player->sim->print_debug( "INIT LEVEL: {} {}", (void *)data.spell_data, data.min_threshold );
-    levels.push_back( new level_type( player, name(), data ) );
+    player->sim->print_debug( "INIT LEVEL: {} {}", (void *)level.spell_data, level.min_threshold );
+    levels.push_back( new level_type( player, data, level ) );
   }
-
-  // for ( auto &[ spell_data, min_threshold ] : level_data )
-  // {
-  //   player->sim->print_debug( "INIT LEVEL: {} {}", (void*)spell_data, min_threshold );
-  //   levels.push_back( new level_type( player, name(), spell_data, min_threshold ) );
-  // }
   std::sort( levels.begin(), levels.end() );
   current = levels.front();
 
-  self_damage = new self_damage_type( player, name(), self_damage_data );
-  sample_data = new sample_data_type( player, name(), mitigation_tokens );
+  self_damage = new self_damage_type( player, name(), data.self_damage );
+  sample_data = new sample_data_type( player, name(), data.mitigation_tokens );
 }
 
 template <class derived_actor_t>
@@ -480,7 +474,7 @@ double stagger_t<derived_actor_t>::trigger( school_e school, result_amount_type 
   double absorbed = std::min( amount, absorb );
   amount -= absorbed;
 
-  double cap = levels.back()->min_threshold * player->resources.max[ RESOURCE_HEALTH ];
+  double cap = levels.back()->min_threshold() * player->resources.max[ RESOURCE_HEALTH ];
   amount -= std::max( amount + pool_size() - cap, 0.0 );
 
   state->result_amount -= amount + absorbed;
@@ -560,7 +554,7 @@ void stagger_t<derived_actor_t>::delay_tick( timespan_t delay )
 template <class derived_actor_t>
 std::string_view stagger_t<derived_actor_t>::name() const
 {
-  return self_damage_data->name_cstr();
+  return data.self_damage->name_cstr();
 }
 
 template <class derived_actor_t>
@@ -676,7 +670,7 @@ level_t<derived_actor_t> *stagger_t<derived_actor_t>::find_current_level()
 {
   double current_percent = pool_size_percent();
   for ( level_t<derived_actor_t> *level : levels )
-    if ( current_percent > level->min_threshold )
+    if ( current_percent > level->min_threshold() )
       return level;
   return levels.back();
 }
