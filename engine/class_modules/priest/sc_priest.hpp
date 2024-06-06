@@ -67,6 +67,7 @@ struct purge_the_wicked_t;
 struct holy_fire_t;
 struct burning_vehemence_t;
 struct entropic_rift_t;
+struct entropic_rift_damage_t;
 struct collapsing_void_damage_t;
 struct halo_t;
 }  // namespace actions::spells
@@ -245,6 +246,7 @@ public:
     propagate_const<buff_t*> darkflame_embers;
     propagate_const<buff_t*> darkflame_shroud;
     propagate_const<buff_t*> deaths_torment;
+    propagate_const<buff_t*> devouring_chorus;
 
     // Archon
     propagate_const<buff_t*> power_surge;
@@ -568,6 +570,7 @@ public:
       player_talent_t entropic_rift;
       const spell_data_t* entropic_rift_aoe;
       const spell_data_t* entropic_rift_damage;
+      const spell_data_t* entropic_rift_driver;
       player_talent_t no_escape;
       player_talent_t dark_energy;
       player_talent_t void_blast;
@@ -760,6 +763,7 @@ public:
     propagate_const<actions::heals::essence_devourer_t*> essence_devourer;
     propagate_const<actions::heals::atonement_t*> atonement;
     propagate_const<actions::heals::divine_aegis_t*> divine_aegis;
+    propagate_const<actions::spells::entropic_rift_damage_t*> entropic_rift_damage;
     propagate_const<actions::spells::entropic_rift_t*> entropic_rift;
     propagate_const<actions::spells::collapsing_void_damage_t*> collapsing_void;
     propagate_const<actions::spells::halo_t*> halo;
@@ -1170,6 +1174,11 @@ public:
     {
       parse_effects( p().buffs.divine_favor_chastise );
     }
+
+    if ( p().sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ) )
+    {
+      parse_effects( p().buffs.devouring_chorus );
+    }
   }
 
   // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
@@ -1191,7 +1200,7 @@ public:
     // Archon
     if ( p().talents.archon.resonant_energy.enabled() )
     {
-      parse_target_effects( d_fn( &priest_td_t::buffs_t::resonant_energy, false ),
+      parse_target_effects( d_fn( &priest_td_t::buffs_t::resonant_energy, true ),
                             p().talents.archon.resonant_energy_shadow );
     }
   }

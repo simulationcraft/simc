@@ -1800,24 +1800,23 @@ struct collapsing_void_damage_t final : public priest_spell_t
 // ==========================================================================
 struct entropic_rift_damage_t final : public priest_spell_t
 {
-  double parent_radius = 5.0;
+  double base_radius;
   entropic_rift_damage_t( priest_t& p )
-    : priest_spell_t( "entropic_rift", p, p.talents.voidweaver.entropic_rift_damage )
+    : priest_spell_t( "entropic_rift", p, p.talents.voidweaver.entropic_rift_damage ),
+      base_radius( p.talents.voidweaver.entropic_rift_aoe->effectN( 2 ).radius_max() / 2 )
   {
     aoe        = -1;
     background = dual = true;
-    radius            = parent_radius;
+    radius            = base_radius;
 
     affected_by_shadow_weaving = true;
   }
 
   void execute() override
   {
-    if ( radius != parent_radius )
-    {
-      radius                = parent_radius;
-      target_cache.is_valid = false;
-    }
+    double size_increase_mod = priest().bugs ? 0.5 : 1.0;
+    radius                   = base_radius + ( size_increase_mod * priest().buffs.collapsing_void->stack() );
+    target_cache.is_valid    = false;
 
     priest_spell_t::execute();
   }
@@ -1825,25 +1824,9 @@ struct entropic_rift_damage_t final : public priest_spell_t
 
 struct entropic_rift_t final : public priest_spell_t
 {
-  propagate_const<entropic_rift_damage_t*> damage;
-  timespan_t duration;
-  double base_radius;
-
   entropic_rift_t( priest_t& p )
-    : priest_spell_t( "entropic_rift", p, p.talents.voidweaver.entropic_rift ),
-      damage( new entropic_rift_damage_t( priest() ) ),
-      duration( priest().talents.voidweaver.entropic_rift_aoe->duration() )
+    : priest_spell_t( "entropic_rift", p, p.talents.voidweaver.entropic_rift )
   {
-    ground_aoe = true;
-    // BUG: This is extremely small to start with for some reason
-    if ( priest().bugs )
-    {
-      base_radius = radius = 4;
-    }
-    else
-    {
-      base_radius = radius = priest().talents.voidweaver.entropic_rift_aoe->effectN( 2 ).radius_max();
-    }
   }
 
   timespan_t travel_time() const override
@@ -1856,36 +1839,8 @@ struct entropic_rift_t final : public priest_spell_t
     return t;
   }
 
-  void extend_rift_size()
-  {
-    if ( !p().buffs.entropic_rift->check() )
-      return;
-
-    p().buffs.collapsing_void->trigger();
-  }
-
-  void extend_rift_duration()
-  {
-    if ( !p().buffs.entropic_rift->check() )
-      return;
-
-    if ( p().state.active_entropic_rift && p().state.active_entropic_rift->current_pulse > 0 )
-    {
-      p().state.active_entropic_rift->current_pulse--;
-      sim->print_debug( "{} extends entropic rift by removing a pulse. New Current Pulse: {} ", p().name(),
-                        p().state.active_entropic_rift->current_pulse );
-    }
-    else
-    {
-      make_event( sim, 1_s, [ this ] { extend_rift_duration(); } );
-    }
-  }
-
   void execute() override
   {
-    // reset radius
-    radius = priest().talents.voidweaver.entropic_rift_aoe->effectN( 2 ).radius_max() / 2;
-
     priest_spell_t::execute();
 
     priest().buffs.entropic_rift->trigger();
@@ -1924,43 +1879,43 @@ struct entropic_rift_t final : public priest_spell_t
 
     double size_increase_mod = priest().bugs ? 0.5 : 1.0;
 
-    make_event<ground_aoe_event_t>(
-        *sim, &priest(),
-        ground_aoe_params_t()
-            .target( target )
-            // Remove 1_s to compensate for travel
-            .n_pulses(
-                static_cast<uint32_t>( duration / timespan_t::from_seconds( data().effectN( 2 ).base_value() ) ) )
-            .pulse_time( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
-            .action( damage )
-            .x( target->x_position )
-            .y( target->y_position )
-            // Keep track of on-going rift events
-            .state_callback(
-                [ this, size_increase_mod ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
-                  switch ( type )
-                  {
-                    case ground_aoe_params_t::EVENT_CREATED:
-                      priest().state.active_entropic_rift = event;
+    //make_event<ground_aoe_event_t>(
+    //    *sim, &priest(),
+    //    ground_aoe_params_t()
+    //        .target( target )
+    //        // Remove 1_s to compensate for travel
+    //        .n_pulses(
+    //            static_cast<uint32_t>( duration / timespan_t::from_seconds( data().effectN( 2 ).base_value() ) ) )
+    //        .pulse_time( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
+    //        .action( damage )
+    //        .x( target->x_position )
+    //        .y( target->y_position )
+    //        // Keep track of on-going rift events
+    //        .state_callback(
+    //            [ this, size_increase_mod ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+    //              switch ( type )
+    //              {
+    //                case ground_aoe_params_t::EVENT_CREATED:
+    //                  priest().state.active_entropic_rift = event;
 
-                      radius = base_radius + ( size_increase_mod * priest().buffs.collapsing_void->stack() );
-                      damage->parent_radius = radius;
-                      player->sim->print_debug( "{} triggered entropic_rift with size {} radius.", priest(), radius );
-                      break;
-                    case ground_aoe_params_t::EVENT_DESTRUCTED:
-                      priest().state.active_entropic_rift = nullptr;
-                      break;
-                    case ground_aoe_params_t::EVENT_STOPPED:
-                      priest().buffs.entropic_rift->expire();
-                      priest().buffs.voidheart->expire();
-                      priest().buffs.darkening_horizon->expire();
-                      priest().buffs.collapsing_void->expire();
-                      break;
-                    default:
-                      break;
-                  }
-                } ),
-        true /* Immediate pulse */ );
+    //                  radius = base_radius + ( size_increase_mod * priest().buffs.collapsing_void->stack() );
+    //                  damage->parent_radius = radius;
+    //                  player->sim->print_debug( "{} triggered entropic_rift with size {} radius.", priest(), radius );
+    //                  break;
+    //                case ground_aoe_params_t::EVENT_DESTRUCTED:
+    //                  priest().state.active_entropic_rift = nullptr;
+    //                  break;
+    //                case ground_aoe_params_t::EVENT_STOPPED:
+    //                  priest().buffs.entropic_rift->expire();
+    //                  priest().buffs.voidheart->expire();
+    //                  priest().buffs.darkening_horizon->expire();
+    //                  priest().buffs.collapsing_void->expire();
+    //                  break;
+    //                default:
+    //                  break;
+    //              }
+    //            } ),
+    //    true /* Immediate pulse */ );
   }
 };
 
@@ -3447,6 +3402,7 @@ void priest_t::init_spells()
   talents.voidweaver.entropic_rift          = HT( "Entropic Rift" );
   talents.voidweaver.entropic_rift_aoe      = find_spell( 450193 );  // Contains AoE radius info
   talents.voidweaver.entropic_rift_damage   = find_spell( 447448 );  // Contains damage coeff
+  talents.voidweaver.entropic_rift_driver   = find_spell( 459314 );  // Contains damage coeff
   talents.voidweaver.no_escape              = HT( "No Escape" );     // NYI
   talents.voidweaver.dark_energy            = HT( "Dark Energy" );   // NYI
   talents.voidweaver.void_blast             = HT( "Void Blast" );
@@ -3522,7 +3478,26 @@ void priest_t::create_buffs()
   buffs.voidheart = make_buff( this, "voidheart", talents.voidweaver.voidheart_buff )
                         ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   // Tracking buff for the APL
-  buffs.entropic_rift = make_buff( this, "entropic_rift", talents.voidweaver.entropic_rift_aoe );
+  buffs.entropic_rift = make_buff_fallback( talents.voidweaver.entropic_rift.ok(), this, "entropic_rift",
+                                            talents.voidweaver.entropic_rift_driver );
+
+  if ( talents.voidweaver.entropic_rift.ok() )
+  {
+    buffs.entropic_rift->set_refresh_behavior( buff_refresh_behavior::DURATION )
+        ->set_tick_behavior( buff_tick_behavior::REFRESH )
+        ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+          background_actions.entropic_rift_damage->execute_on_target( state.last_entropic_rift_target );
+        } )
+        ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+          if ( !new_ )
+          {
+            buffs.voidheart->expire();
+            buffs.darkening_horizon->expire();
+            buffs.collapsing_void->expire();
+          }
+        } );
+  }
+
   // Tracking buff for Darkening Horizon extension
   // TODO: use some other buff id or make quiet
   buffs.darkening_horizon = make_buff( this, "darkening_horizon", talents.voidweaver.entropic_rift_aoe )
@@ -3579,8 +3554,9 @@ void priest_t::init_background_actions()
   background_actions.halo                = new actions::spells::halo_t( *this, true );
 
   // Voidweaver
-  background_actions.entropic_rift   = new actions::spells::entropic_rift_t( *this );
-  background_actions.collapsing_void = new actions::spells::collapsing_void_damage_t( *this );
+  background_actions.entropic_rift        = new actions::spells::entropic_rift_t( *this );
+  background_actions.entropic_rift_damage = new actions::spells::entropic_rift_damage_t( *this );
+  background_actions.collapsing_void      = new actions::spells::collapsing_void_damage_t( *this );
 
   if ( talents.discipline.divine_aegis.enabled() )
   {
@@ -3638,6 +3614,9 @@ void priest_t::apply_affecting_auras_late( action_t& action )
   // Archon Talents
   action.apply_affecting_aura( talents.archon.empowered_surges );
   action.apply_affecting_aura( talents.archon.energy_compression );
+
+  // TWW1 2pc
+  action.apply_affecting_aura( sets->set( PRIEST_SHADOW, TWW1, B2 ) );
 }
 
 void priest_t::invalidate_cache( cache_e cache )
@@ -4052,7 +4031,7 @@ void priest_t::expand_entropic_rift()
     return;
   }
 
-  background_actions.entropic_rift->extend_rift_size();
+  buffs.collapsing_void->trigger();
 }
 
 void priest_t::extend_entropic_rift()
@@ -4067,22 +4046,7 @@ void priest_t::extend_entropic_rift()
   // TODO: refactor this to make more sense
   if ( buffs.darkening_horizon->check() < max_stacks )
   {
-    timespan_t remains = 10_s;
     auto extension     = timespan_t::from_seconds( talents.voidweaver.darkening_horizon->effectN( 3 ).base_value() );
-
-    if ( state.active_entropic_rift && state.active_entropic_rift->params )
-    {
-      remains = ( state.active_entropic_rift->params->n_pulses() - state.active_entropic_rift->current_pulse ) *
-                state.active_entropic_rift->pulse_time();
-    };
-
-    remains = buffs.entropic_rift->remains();
-
-    sim->print_debug( "Extending active Entropic Rift by {}. {} duration left.", extension, extension + remains );
-
-    // TODO: figure out how to extend the active_entropic_rift
-
-    background_actions.entropic_rift->extend_rift_duration();
 
     buffs.entropic_rift->extend_duration( this, extension );
 
