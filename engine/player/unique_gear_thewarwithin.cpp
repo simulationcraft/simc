@@ -1202,7 +1202,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
     action_t* repeating_action;
     action_t* one_time_action;
     timespan_t period;
-    unsigned ticks;
+    double ticks;
 
     sigil_of_algari_concordance_pet_t( util::string_view name, const special_effect_t& e )
       : pet_t( e.player->sim, e.player, name, true, true ),
@@ -1227,7 +1227,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
       make_event( *sim, period, [ this ]() {
         repeating_action->execute();
         make_repeating_event(
-            *sim, period, [ this ]() { repeating_action->execute(); }, ticks );
+            *sim, period, [ this ]() { repeating_action->execute(); }, as<int>( ticks ) );
       } );
     }
   };
@@ -1468,6 +1468,25 @@ void skarmorak_shard( special_effect_t& e )
   } );
 
   e.custom_buff = main_buff;
+}
+
+// Void Pactstone
+// 443537 Driver
+// 450960 Damage
+// 450962 Buff
+void void_pactstone( special_effect_t& e )
+{
+  auto buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 450962 ) )
+                  // Will Throw a warning currently, as the mod rating misc_value1 is empty. Does not work in game either. 
+                  ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e.item ) );
+
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "void_pulse", e, 450960 );
+  damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+  damage->split_aoe_damage                  = true;
+
+  e.custom_buff    = buff;
+  e.execute_action = damage;
+  new dbc_proc_callback_t( e.player, e );
 }
 
 // Weapons
@@ -1751,6 +1770,7 @@ void register_special_effects()
   register_special_effect( 443378, items::sigil_of_algari_concordance );
   register_special_effect( 443407, items::skarmorak_shard );
   register_special_effect( 443409, DISABLED_EFFECT );  // skarmorak's shard
+  register_special_effect( 443537, items::void_pactstone );
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
