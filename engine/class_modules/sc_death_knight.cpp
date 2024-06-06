@@ -748,6 +748,7 @@ public:
     propagate_const<buff_t*> commander_of_the_dead;
     propagate_const<buff_t*> defile_buff;
     propagate_const<buff_t*> festering_scythe;
+    propagate_const<buff_t*> festering_scythe_stacks;
     // Tier Sets
     propagate_const<buff_t*> unholy_commander;
 
@@ -1382,6 +1383,7 @@ public:
     const spell_data_t* decomposition_damage;
     const spell_data_t* festering_scythe;
     const spell_data_t* festering_scythe_buff;
+    const spell_data_t* festering_scythe_stacking_buff;
     // Tier Sets
     const spell_data_t* unholy_commander;
 
@@ -8059,7 +8061,7 @@ struct festering_wound_t final : public death_knight_spell_t
 {
   festering_wound_t( util::string_view n, death_knight_t* p )
     : death_knight_spell_t( n, p, p->spell.festering_wound_damage ),
-      bursting_sores( get_action<bursting_sores_t>( "bursting_sores", p ) ), wounds_burst( 0 )
+      bursting_sores( get_action<bursting_sores_t>( "bursting_sores", p ) )
   {
     background = true;
     if ( p->talent.unholy.bursting_sores.ok() )
@@ -8079,21 +8081,20 @@ struct festering_wound_t final : public death_knight_spell_t
 
     if ( p()->talent.unholy.festering_scythe.ok() )
     {
-      if ( !p()->buffs.festering_scythe->check() )
+      if ( p()->buffs.festering_scythe_stacks->at_max_stacks() )
       {
-        wounds_burst++;
+        // Doesnt expire until the wound popped after reaching max
+        p()->buffs.festering_scythe_stacks->expire();
       }
-      if ( wounds_burst >= p()->talent.unholy.festering_scythe->effectN( 1 ).base_value() )
+      else
       {
-        wounds_burst = 0;
-        p()->buffs.festering_scythe->trigger();
+        p()->buffs.festering_scythe_stacks->trigger();
       }
     }
   }
 
 private:
   action_t* bursting_sores;
-  int wounds_burst;
 };
 
 struct festering_base_t : public death_knight_melee_attack_t
@@ -12421,35 +12422,35 @@ void death_knight_t::init_spells()
   spell.icy_vigor                = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ), 457189 );
 
   // Unholy
-  spell.runic_corruption_chance    = conditional_spell_lookup( spec.unholy_death_knight->ok(), 51462 );
-  spell.festering_wound_debuff     = conditional_spell_lookup( spec.festering_wound->ok(), 194310 );
-  spell.rotten_touch_debuff        = conditional_spell_lookup( talent.unholy.rotten_touch.ok(), 390276 );
-  spell.death_rot_debuff           = conditional_spell_lookup( talent.unholy.death_rot.ok(), 377540 );
-  spell.coil_of_devastation_debuff = conditional_spell_lookup( talent.unholy.coil_of_devastation.ok(), 390271 );
-  spell.ghoulish_frenzy_player     = conditional_spell_lookup( talent.unholy.ghoulish_frenzy.ok(), 377588 );
-  spell.plaguebringer_buff         = conditional_spell_lookup( talent.unholy.plaguebringer.ok(), 390178 );
-  spell.festermight_buff           = conditional_spell_lookup( talent.unholy.festermight.ok(), 377591 );
-  spell.unholy_blight_dot          = conditional_spell_lookup( talent.unholy.unholy_blight.ok(), 115994 );
-  spell.commander_of_the_dead      = conditional_spell_lookup( talent.unholy.commander_of_the_dead.ok(), 390260 );
-  spell.defile_buff                = conditional_spell_lookup( talent.unholy.defile.ok(), 218100 );
-  spell.ruptured_viscera_chance    = conditional_spell_lookup( talent.unholy.ruptured_viscera.ok(), 390236 );
-  spell.apocalypse_duration        = conditional_spell_lookup( talent.unholy.apocalypse.ok(), 221180 );
-  spell.apocalypse_rune_gen        = conditional_spell_lookup( talent.unholy.apocalypse.ok(), 343758 );
-  spell.unholy_pact_damage         = conditional_spell_lookup( talent.unholy.unholy_pact.ok(), 319236 );
-  spell.dark_transformation_damage = conditional_spell_lookup( talent.unholy.dark_transformation.ok(), 344955 );
-  spell.defile_damage              = conditional_spell_lookup( talent.unholy.defile.ok(), 156000 );
-  spell.epidemic_damage            = conditional_spell_lookup( spec.epidemic->ok(), 212739 );
-  spell.bursting_sores_damage      = conditional_spell_lookup( talent.unholy.bursting_sores.ok(), 207267 );
-  spell.festering_wound_damage     = conditional_spell_lookup( spec.festering_wound->ok(), 194311 );
-  spell.outbreak_aoe               = conditional_spell_lookup( spec.outbreak->ok(), 196780 );
-  spell.unholy_aura_debuff         = conditional_spell_lookup( talent.unholy.unholy_aura.ok(), 377445 );
-  spell.decomposition_buff         = conditional_spell_lookup( talent.unholy.decomposition.ok(), 458233 );
-  spell.decomposition_damage       = conditional_spell_lookup( talent.unholy.decomposition.ok(), 458264 );
-  spell.festering_scythe           = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 458128 );
-  spell.festering_scythe_buff      = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 458123 );
+  spell.runic_corruption_chance        = conditional_spell_lookup( spec.unholy_death_knight->ok(), 51462 );
+  spell.festering_wound_debuff         = conditional_spell_lookup( spec.festering_wound->ok(), 194310 );
+  spell.rotten_touch_debuff            = conditional_spell_lookup( talent.unholy.rotten_touch.ok(), 390276 );
+  spell.death_rot_debuff               = conditional_spell_lookup( talent.unholy.death_rot.ok(), 377540 );
+  spell.coil_of_devastation_debuff     = conditional_spell_lookup( talent.unholy.coil_of_devastation.ok(), 390271 );
+  spell.ghoulish_frenzy_player         = conditional_spell_lookup( talent.unholy.ghoulish_frenzy.ok(), 377588 );
+  spell.plaguebringer_buff             = conditional_spell_lookup( talent.unholy.plaguebringer.ok(), 390178 );
+  spell.festermight_buff               = conditional_spell_lookup( talent.unholy.festermight.ok(), 377591 );
+  spell.unholy_blight_dot              = conditional_spell_lookup( talent.unholy.unholy_blight.ok(), 115994 );
+  spell.commander_of_the_dead          = conditional_spell_lookup( talent.unholy.commander_of_the_dead.ok(), 390260 );
+  spell.defile_buff                    = conditional_spell_lookup( talent.unholy.defile.ok(), 218100 );
+  spell.ruptured_viscera_chance        = conditional_spell_lookup( talent.unholy.ruptured_viscera.ok(), 390236 );
+  spell.apocalypse_duration            = conditional_spell_lookup( talent.unholy.apocalypse.ok(), 221180 );
+  spell.apocalypse_rune_gen            = conditional_spell_lookup( talent.unholy.apocalypse.ok(), 343758 );
+  spell.unholy_pact_damage             = conditional_spell_lookup( talent.unholy.unholy_pact.ok(), 319236 );
+  spell.dark_transformation_damage     = conditional_spell_lookup( talent.unholy.dark_transformation.ok(), 344955 );
+  spell.defile_damage                  = conditional_spell_lookup( talent.unholy.defile.ok(), 156000 );
+  spell.epidemic_damage                = conditional_spell_lookup( spec.epidemic->ok(), 212739 );
+  spell.bursting_sores_damage          = conditional_spell_lookup( talent.unholy.bursting_sores.ok(), 207267 );
+  spell.festering_wound_damage         = conditional_spell_lookup( spec.festering_wound->ok(), 194311 );
+  spell.outbreak_aoe                   = conditional_spell_lookup( spec.outbreak->ok(), 196780 );
+  spell.unholy_aura_debuff             = conditional_spell_lookup( talent.unholy.unholy_aura.ok(), 377445 );
+  spell.decomposition_buff             = conditional_spell_lookup( talent.unholy.decomposition.ok(), 458233 );
+  spell.decomposition_damage           = conditional_spell_lookup( talent.unholy.decomposition.ok(), 458264 );
+  spell.festering_scythe               = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 458128 );
+  spell.festering_scythe_buff          = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 458123 );
+  spell.festering_scythe_stacking_buff = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 459238 );
   // Set Bonuses
-  spell.unholy_commander           = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ),
-                                                              456698 );
+  spell.unholy_commander = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ), 456698 );
 
   // Rider of the Apocalypse Spells
   spell.a_feast_of_souls_buff = conditional_spell_lookup( talent.rider.a_feast_of_souls.ok(), 440861 );
@@ -13218,6 +13219,11 @@ void death_knight_t::create_buffs()
 
   buffs.festering_scythe =
       make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe", spell.festering_scythe_buff );
+
+  buffs.festering_scythe_stacks =
+      make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe_stacks",
+                     spell.festering_scythe_stacking_buff )
+          ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) { buffs.festering_scythe->trigger(); } );
 
   buffs.unholy_commander = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ), this,
                                           "unholy_commander", spell.unholy_commander );
