@@ -1731,9 +1731,9 @@ struct sacred_weapon_proc_t : public Base
     // Sacred Weapon Buff
 struct sacred_weapon_t : public paladin_spell_t
 {
-    sacred_weapon_t( paladin_t* p ) : paladin_spell_t( "sacred_weapon", p )
+   sacred_weapon_t( paladin_t* p ) : paladin_spell_t( "sacred_weapon", p )
    {
-    }
+   }
    void execute() override
    {
     paladin_spell_t::execute();
@@ -3865,6 +3865,7 @@ struct paladin_module_t : public module_t
                                       ->set_cooldown( 0_ms )
                                       ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
     p->buffs.sacred_weapon = make_buff( p, "sacred_weapon", p->find_spell( 432502 ) )
+                                 ->set_chance( 1.0 )
                                  ->set_stack_change_callback( []( buff_t* buff, int old, int )
                                    {
                                    if ( old && buff->source )
