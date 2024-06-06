@@ -747,6 +747,16 @@ double parse_player_effects_t::composite_parry() const
   return parry;
 }
 
+double parse_player_effects_t::composite_base_armor_multiplier() const
+{
+  auto bam = player_t::composite_base_armor_multiplier();
+
+  for ( const auto& i : base_armor_multiplier_effects )
+    bam *= 1.0 + get_effect_value( i );
+
+  return bam;
+}
+
 double parse_player_effects_t::composite_armor_multiplier() const
 {
   auto am = player_t::composite_armor_multiplier();
@@ -983,11 +993,23 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       invalidate( CACHE_PARRY );
       return &parry_effects;
 
-    case A_MOD_RESISTANCE_PCT:
     case A_MOD_BASE_RESISTANCE_PCT:
-      str = "armor multiplier";
-      invalidate( CACHE_ARMOR );
-      return &armor_multiplier_effects;
+      if ( eff.misc_value1() & SCHOOL_MASK_PHYSICAL )
+      {
+        str = "base armor multiplier";
+        invalidate( CACHE_ARMOR );
+        return &base_armor_multiplier_effects;
+      }
+      return nullptr;
+
+    case A_MOD_RESISTANCE_PCT:
+      if ( eff.misc_value1() & SCHOOL_MASK_PHYSICAL )
+      {
+        str = "armor multiplier";
+        invalidate( CACHE_ARMOR );
+        return &armor_multiplier_effects;
+      }
+      return nullptr;
 
     case A_MOD_PARRY_FROM_CRIT_RATING:
       str = "parry rating|of crit rating";
@@ -1135,6 +1157,7 @@ void parse_player_effects_t::parsed_effects_html( report::sc_html_stream& os )
     print_parsed_type( os, expertise_effects, "Expertise" );
     print_parsed_type( os, crit_avoidance_effects, "Crit Avoidance" );
     print_parsed_type( os, parry_effects, "Parry" );
+    print_parsed_type( os, base_armor_multiplier_effects, "Base Armor Multiplier" );
     print_parsed_type( os, armor_multiplier_effects, "Armor Multiplier" );
     print_parsed_type( os, haste_effects, "Haste" );
     print_parsed_type( os, mastery_effects, "Mastery", nullptr, mastery_val );
@@ -1163,6 +1186,7 @@ size_t parse_player_effects_t::total_effects_count()
          expertise_effects.size() +
          crit_avoidance_effects.size() +
          parry_effects.size() +
+         base_armor_multiplier_effects.size() +
          armor_multiplier_effects.size() +
          haste_effects.size() +
          mastery_effects.size() +
