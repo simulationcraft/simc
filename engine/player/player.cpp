@@ -3916,6 +3916,58 @@ void player_t::init_finished()
       add_precombat_buff_state( buff, buff_state.stacks, buff_state.value, buff_state.duration );
     }
   }
+
+  buff_t* custom_buff;
+  for ( const auto& [ buff_name, c ] : custom_stat_buffs )
+  {
+    if ( c.is_percentage )
+    {
+      stat_pct_buff_type stat_pct;
+      switch ( convert_hybrid_stat( c.stat ) )
+      {
+        case STAT_CRIT_RATING:
+          stat_pct = STAT_PCT_BUFF_CRIT;
+          break;
+        case STAT_HASTE_RATING:
+          stat_pct = STAT_PCT_BUFF_HASTE;
+          break;
+        case STAT_VERSATILITY_RATING:
+          stat_pct = STAT_PCT_BUFF_VERSATILITY;
+          break;
+        case STAT_MASTERY_RATING:
+          stat_pct = STAT_PCT_BUFF_MASTERY;
+          break;
+        case STAT_STRENGTH:
+          stat_pct = STAT_PCT_BUFF_STRENGTH;
+          break;
+        case STAT_AGILITY:
+          stat_pct = STAT_PCT_BUFF_AGILITY;
+          break;
+        case STAT_STAMINA:
+          stat_pct = STAT_PCT_BUFF_STAMINA;
+          break;
+        case STAT_INTELLECT:
+          stat_pct = STAT_PCT_BUFF_INTELLECT;
+          break;
+        case STAT_SPIRIT:
+          stat_pct = STAT_PCT_BUFF_SPIRIT;
+          break;
+        default:
+          throw std::invalid_argument( fmt::format( "Unsupported 'custom_stat' percentage stat type: '{}'", util::stat_type_string( c.stat ) ) );
+      }
+
+      custom_buff = make_buff( this, buff_name )
+                      ->set_default_value( c.amount * 0.01 )
+                      ->set_pct_buff_type( stat_pct );
+      register_precombat_begin( [ custom_buff ] ( player_t* ) { custom_buff->execute(); } );
+    }
+    else
+    {
+      custom_buff = make_buff<stat_buff_t>( this, buff_name )
+                      ->add_stat( convert_hybrid_stat( c.stat ), c.amount );
+      register_precombat_begin( [ custom_buff ] ( player_t* ) { custom_buff->execute(); } );
+    }
+  }
 }
 
 void player_t::add_precombat_buff_state( buff_t* buff, int stacks, double value, timespan_t duration )
@@ -12624,6 +12676,7 @@ void player_t::copy_from( player_t* source )
   use_apl              = source->use_apl;
   apl_variable_map     = source->apl_variable_map;
   precombat_state_map  = source->precombat_state_map;
+  custom_stat_buffs    = source->custom_stat_buffs;
 
   meta_gem = source->meta_gem;
   for ( size_t i = 0; i < items.size(); i++ )
@@ -12851,6 +12904,75 @@ void player_t::create_options()
       if ( splits.size() != 2 )
         throw std::invalid_argument( fmt::format( "Invalid 'override.precombat_state' option: '{}'", value ) );
       precombat_state_map[ splits[ 0 ] ] = splits[ 1 ];
+      return true;
+    } ) );
+  add_option( opt_func( "set_custom_buff",
+    [ this ] ( sim_t*, util::string_view, util::string_view value ) {
+      if ( value.empty() )
+        return true;
+
+      auto splits = util::string_split<std::string>( value, "," );
+      std::string name{};
+      bool has_data = false;
+      std::string stat_value{};
+      for ( auto s : splits )
+      {
+        auto sub_splits = util::string_split<std::string>( s, "=" );
+
+        if ( sub_splits.size() == 1 )
+        {
+          name = fmt::format( "custom_buff_", sub_splits[ 0 ] );
+          continue;
+        }
+
+        if ( sub_splits.size() != 2 )
+          throw std::invalid_argument( fmt::format( "Invalid 'custom_stat_buff' sub option: '{}'", s ) );
+
+        if ( sub_splits[ 0 ] == "name" )
+        {
+
+        }
+        else if ( sub_splits[ 0 ] == "stat_value" )
+        {
+          stat_value = sub_splits[ 1 ];
+          has_data = true;
+        }
+        else
+        {
+          throw std::invalid_argument( fmt::format( "Unsupported 'custom_stat_buff' option: '{}'", sub_splits[ 0 ] ) );
+        }
+      }
+
+      if ( name.empty() )
+        throw std::invalid_argument( fmt::format( "Invalid 'custom_stat_buff' usage, the buff must have a name: '{}'", value ) );
+
+      // If the custom buff has no data, remove any existing buffs with the name.
+      if ( !has_data )
+      {
+        custom_stat_buffs.erase( name );
+        return true;
+      }
+
+      // Parse the data for the stat buff
+      if ( !stat_value.empty() )
+      {
+        splits = util::string_split<std::string>( stat_value, "_" );
+        if ( splits.size() != 2 )
+          throw std::invalid_argument( fmt::format( "Invalid 'custom_stat_buff' value option: '{}'", stat_value ) );
+        stat_e stat = util::parse_stat_type( splits[ 1 ] );
+        if ( stat == STAT_NONE )
+          throw std::invalid_argument( fmt::format( "Invalid 'custom_stat_buff' stat type: '{}'", splits[ 1 ] ) );
+        bool is_percentage = false;
+        if ( splits[ 0 ].back() == '%' )
+        {
+          // The stat type will be checked later when creating the buff to ensure that it supports percentage buffs.
+          is_percentage = true;
+          splits[ 0 ].pop_back();
+        }
+        double amount = util::to_double( splits[ 0 ] );
+        custom_stat_buffs[ name ] = { stat, amount, is_percentage };
+      }
+
       return true;
     } ) );
 

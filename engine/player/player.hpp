@@ -335,6 +335,15 @@ struct player_t : public actor_t
   // Precombat State
   std::unordered_map<std::string, std::string> precombat_state_map;
 
+  // Custom Buffs
+  struct custom_stat_buff_t
+  {
+    stat_e stat;
+    double amount;
+    bool is_percentage;
+  };
+  std::unordered_map<std::string, custom_stat_buff_t> custom_stat_buffs;
+
   bool quiet;
   // Reporting
   std::unique_ptr<player_report_extension_t> report_extension;
