@@ -877,11 +877,8 @@ void swarmlords_authority( special_effect_t& effect )
   auto scarab = create_proc_action<ravenous_scarab_t>( "ravenous_scarab", effect, data );
 
   // setup equip
-  // TODO: confirm equip cycle restarts on combat
-  // TODO: determine how scarabs select target
-  effect.player->register_combat_begin( [ scarab, period = data->effectN( 3 ).period() ]( player_t* p ) {
-    make_repeating_event( *p->sim, period, [ scarab ] { scarab->execute(); } );
-  } );
+  equip->execute_action = scarab;
+  new dbc_proc_callback_t( effect.player, *equip );
 
   // setup on-use
   effect.custom_buff = create_buff<buff_t>( effect.player, effect.driver() )
