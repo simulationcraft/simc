@@ -1078,14 +1078,14 @@ public:
       player_talent_t blood_feast;
       player_talent_t mark_of_blood;
       player_talent_t tombstone;
-      // NYI TALENT
+      player_talent_t blooddrinker;
+      player_talent_t consumption;
       // NYI TALENT
       player_talent_t sanguine_ground;
       // Row 9
       player_talent_t shattering_bone;
       player_talent_t heartrend;
-      player_talent_t blooddrinker;
-      player_talent_t consumption;
+      player_talent_t carnage;
       player_talent_t iron_heart;
       player_talent_t red_thirst;
       // Row 10
@@ -12150,14 +12150,14 @@ void death_knight_t::init_spells()
   talent.blood.blood_feast      = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Feast" );
   talent.blood.mark_of_blood    = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of Blood" );
   talent.blood.tombstone        = find_talent_spell( talent_tree::SPECIALIZATION, "Tombstone" );
-  // NYI TALENT
+  talent.blood.blooddrinker         = find_talent_spell( talent_tree::SPECIALIZATION, "Blooddrinker" );
+  talent.blood.consumption          = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
   // NYI TALENT
   talent.blood.sanguine_ground  = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Ground" );
   // Row 9
   talent.blood.shattering_bone  = find_talent_spell( talent_tree::SPECIALIZATION, "Shattering Bone" );
   talent.blood.heartrend        = find_talent_spell( talent_tree::SPECIALIZATION, "Heartrend" );
-  talent.blood.blooddrinker         = find_talent_spell( talent_tree::SPECIALIZATION, "Blooddrinker" );
-  talent.blood.consumption          = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
+  talent.blood.carnage          = find_talent_spell( talent_tree::SPECIALIZATION, "Carnage" );
   talent.blood.iron_heart       = find_talent_spell( talent_tree::SPECIALIZATION, "Iron Heart" );
   talent.blood.red_thirst       = find_talent_spell( talent_tree::SPECIALIZATION, "Red Thirst" );
   // Row 10
@@ -12944,6 +12944,7 @@ void death_knight_t::create_buffs()
 
     buffs.bone_shield =
         make_buff( this, "bone_shield", spell.bone_shield )
+            ->set_default_value_from_effect_type( A_MOD_ARMOR_BY_PRIMARY_STAT_PCT )
             ->set_stack_change_callback( [ this ]( buff_t*, int old_stacks, int new_stacks ) {
               if ( talent.blood.foul_bulwark.ok() )  // Change player's max health if FB is talented
               {
@@ -12971,7 +12972,8 @@ void death_knight_t::create_buffs()
               }
             } )
             // The internal cd in spelldata is for stack loss, handled in bone_shield_handler
-            ->set_cooldown( 0_ms );
+            ->set_cooldown( 0_ms )
+            ->apply_affecting_aura( talent.blood.reinforced_bones );
 
     buffs.ossuary = make_buff( this, "ossuary", spell.ossuary_buff )->set_default_value_from_effect( 1, 0.1 );
 
@@ -13561,8 +13563,7 @@ double death_knight_t::composite_bonus_armor() const
 
   if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.bone_shield->check() )
   {
-    ba += spell.bone_shield->effectN( 1 ).percent() * ( 1.0 + talent.blood.reinforced_bones->effectN( 1 ).percent() ) *
-          cache.strength();
+    ba += buffs.bone_shield->value() * cache.strength();
   }
 
   return ba;
@@ -13772,13 +13773,13 @@ void death_knight_action_t<Base>::apply_action_effects()
   parse_effects( p()->buffs.blood_draw );
 
   // Blood
+  parse_effects( p()->buffs.coagulopathy );
   parse_effects( p()->buffs.consumption );
+  parse_effects( p()->buffs.crimson_scourge );
   parse_effects( p()->buffs.sanguine_ground );
   parse_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
   parse_effects( p()->buffs.hemostasis );
-  parse_effects( p()->buffs.crimson_scourge );
   parse_effects( p()->buffs.ossuary );
-  parse_effects( p()->buffs.coagulopathy );
 
   // Frost
   parse_effects( p()->buffs.rime, p()->talent.frost.improved_rime );
@@ -13870,7 +13871,7 @@ void death_knight_t::parse_player_effects()
     parse_effects( buffs.blood_shield, talent.blood.bloodshot );
     parse_effects( buffs.voracious, talent.blood.voracious );
     parse_effects( buffs.dancing_rune_weapon );
-    parse_effects( buffs.bone_shield, IGNORE_STACKS, talent.blood.improved_bone_shield );
+    parse_effects( buffs.bone_shield, IGNORE_STACKS, talent.blood.improved_bone_shield, talent.blood.reinforced_bones );
     parse_effects( buffs.perseverance_of_the_ebon_blade );
   }
 
