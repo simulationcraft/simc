@@ -682,6 +682,8 @@ public:
     buff_t* sudden_ambush;
     buff_t* tigers_fury;
     buff_t* tigers_tenacity;
+    buff_t* tigers_strength;  // TWW1 2pc
+    buff_t* fell_prey;        // TWW1 4pc
 
     // Guardian
     buff_t* after_the_wildfire;
@@ -703,6 +705,7 @@ public:
     buff_t* ursocs_fury;
     buff_t* vicious_cycle_mangle;
     buff_t* vicious_cycle_maul;
+    buff_t* guardians_tenacity;  // TWW1 2pc
 
     // Restoration
     buff_t* abundance;
@@ -2584,13 +2587,10 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
 
     parse_effects( buff, mods... );
 
-    double ta_val = ta_multiplier_effects.back().value;
-    double da_val = da_multiplier_effects.back().value;
-
     // new entry in both tables
     if ( ta_multiplier_effects.size() > ta_old && da_multiplier_effects.size() > da_old )
     {
-      if ( ta_val == da_val )  // values are same
+      if ( ta_multiplier_effects.back().value == da_multiplier_effects.back().value )  // values are same
       {
         persistent_multiplier_effects.push_back( ta_multiplier_effects.back() );
         ta_multiplier_effects.pop_back();
@@ -2718,12 +2718,12 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     if ( s->result_type == result_amount_type::DMG_DIRECT )
     {
       for ( const auto& i : persistent_direct_effects )
-        pers *= 1.0 + ab::get_effect_value( i );
+        pers *= 1.0 + base_t::get_effect_value( i );
     }
     else if ( s->result_type == result_amount_type::DMG_OVER_TIME )
     {
       for ( const auto& i : persistent_periodic_effects )
-        pers *= 1.0 + ab::get_effect_value( i );
+        pers *= 1.0 + base_t::get_effect_value( i );
     }
 
     return pers;
@@ -3443,7 +3443,7 @@ struct cat_finisher_data_t
 
 struct cp_generator_t : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attack_t>
 {
-  lockable_t<bool> attack_critical;
+  bool attack_critical = false;
   buff_t* bt_buff = nullptr;
   double berserk_frenzy_mul;
 
@@ -3460,7 +3460,7 @@ struct cp_generator_t : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attac
       // technically requires cat form, but as currently the only way to cast cp generators outside of form is via
       // convoke, and convoke doesn't trigger as it is a proc, we are fine for now
       energize->add_parse_entry()
-        .set_func( [ this ] { return attack_critical; } )
+        .set_func( [ this ] { return !proc && attack_critical; } )
         .set_flat( true )
         .set_value( eff.resource() )
         .set_eff( &eff );
@@ -3477,14 +3477,6 @@ struct cp_generator_t : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attac
     }
   }
 
-  void init() override
-  {
-    base_t::init();
-
-    if ( proc || !p()->talent.primal_fury.ok() )
-      attack_critical.locked = true;
-  }
-
   void execute() override
   {
     attack_critical = false;
@@ -3493,6 +3485,9 @@ struct cp_generator_t : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attac
 
     if ( bt_buff )
       bt_buff->trigger();
+
+    if ( attack_critical )
+      p()->buff.fell_prey->trigger( this );
   }
 
   void impact( action_state_t* s ) override
@@ -4769,6 +4764,7 @@ struct tigers_fury_t : public cat_attack_t
     p()->buff.tigers_tenacity->trigger();
     p()->buff.strategic_infusion->trigger();
     p()->buff.savage_fury->trigger();
+    p()->buff.tigers_strength->trigger();
 
     if ( p()->buff.killing_strikes_combat->check() )
     {
@@ -6370,10 +6366,10 @@ public:
 
     p()->buff.starlord->trigger( this );
 
-    if ( p()->buff.eclipse_lunar->check() )
+    if ( p()->eclipse_handler.in_lunar() )
       p()->buff.harmony_of_the_heavens_lunar->trigger( this );
 
-    if ( p()->buff.eclipse_solar->check() )
+    if ( p()->eclipse_handler.in_solar() )
       p()->buff.harmony_of_the_heavens_solar->trigger( this );
   }
 };
@@ -7757,10 +7753,24 @@ struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclips
     auto m_data = p->get_modified_spell( &data() )
       ->parse_effects( p->talent.wild_surges )
       ->parse_effects( p->buff.eclipse_lunar, p->talent.umbral_intensity )
-      ->parse_effects( p->buff.warrior_of_elune, IGNORE_STACKS )
       ->parse_effects( p->talent.moon_guardian );
 
     set_energize( m_data );
+
+    if ( energize && p->sets->has_set_bonus( DRUID_BALANCE, TWW1, B4 ) )
+    {
+      if ( const auto& eff = p->sets->set( DRUID_BALANCE, TWW1, B4 )->effectN( 2 ); !energize->modified_by( eff ) )
+      {
+        energize->add_parse_entry()
+          .set_func( [ p ] { return p->eclipse_handler.in_lunar(); } )
+          .set_flat( true )
+          .set_value( eff.base_value() )
+          .set_eff( &eff );
+      }
+    }
+
+    // parse this last as it's percent bonus
+    m_data->parse_effects( p->buff.warrior_of_elune, IGNORE_STACKS );
 
     if ( p->specialization() == DRUID_BALANCE )
       aoe_eff = &m_data->effectN( 3 );
@@ -7790,7 +7800,7 @@ struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclips
   {
     auto mul = 1.0;
 
-    if ( sotf_mul && p()->buff.eclipse_lunar->check() && s->n_targets > 1 )
+    if ( sotf_mul && p()->eclipse_handler.in_lunar() && s->n_targets > 1 )
       mul += sotf_mul * std::min( sotf_cap, s->n_targets - 1 );
 
     return mul;
@@ -8260,10 +8270,24 @@ struct wrath_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclipse_e
 
     auto m_data = p->get_modified_spell( &data() )
       ->parse_effects( p->spec.astral_power )
-      ->parse_effects( p->talent.wild_surges )
-      ->parse_effects( p->buff.eclipse_solar, p->talent.soul_of_the_forest_moonkin );
+      ->parse_effects( p->talent.wild_surges );
 
     set_energize( m_data );
+
+    if ( energize && p->sets->has_set_bonus( DRUID_BALANCE, TWW1, B4 ) )
+    {
+      if ( const auto& eff = p->sets->set( DRUID_BALANCE, TWW1, B4 )->effectN( 1 ); !energize->modified_by( eff ) )
+      {
+        energize->add_parse_entry()
+         .set_func( [ p ] { return p->eclipse_handler.in_solar(); } )
+         .set_flat( true )
+         .set_value( eff.base_value() )
+         .set_eff( &eff );
+      }
+    }
+
+    // parse this last as it's percent bonus
+    m_data->parse_effects( p->buff.eclipse_solar, p->talent.soul_of_the_forest_moonkin );
 
     if ( p->talent.master_shapeshifter.ok() )
     {
@@ -10291,10 +10315,28 @@ void druid_t::create_buffs()
         resource_gain( RESOURCE_COMBO_POINT, amt, g );
     } );
 
+  auto cat_tww1_2pc = sets->set( DRUID_FERAL, TWW1, B2 );
+  buff.tigers_strength = make_fallback( sets->has_set_bonus( DRUID_FERAL, TWW1, B2 ),
+    this, "tigers_strength", find_trigger( cat_tww1_2pc ).trigger() )
+      ->set_trigger_spell( cat_tww1_2pc )
+      ->set_freeze_stacks( true )  // prevent buff_t::bump it buff_t::tick_t overwriting current value
+      ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+      ->set_tick_callback( [ mod = cat_tww1_2pc->effectN( 1 ).percent() ]( buff_t* b, int, timespan_t ) {
+        b->current_value += mod;
+        b->invalidate_cache();
+      } );
+
+  auto cat_tww1_4pc = sets->set( DRUID_FERAL, TWW1, B4 );
+  buff.fell_prey = make_fallback( sets->has_set_bonus( DRUID_FERAL, TWW1, B4 ),
+    this, "fell_prey", find_trigger( cat_tww1_4pc ).trigger() )
+      ->set_trigger_spell( cat_tww1_4pc )
+      ->set_cooldown( cat_tww1_4pc->internal_cooldown() );
+
   // Guardian buffs
-  buff.after_the_wildfire = make_fallback( talent.after_the_wildfire.ok(),
-    this, "after_the_wildfire", talent.after_the_wildfire->effectN( 1 ).trigger() )
-      ->set_default_value( talent.after_the_wildfire->effectN( 2 ).base_value() );
+  buff.after_the_wildfire = make_fallback( talent.after_the_wildfire.ok(), this, "after_the_wildfire",
+                                           talent.after_the_wildfire->effectN( 1 ).trigger() )
+                              ->set_default_value( talent.after_the_wildfire->effectN( 2 ).base_value() );
 
   auto berserk_cd_fn = [ this ] {
     cooldown.growl->adjust_recharge_multiplier();
@@ -10410,6 +10452,13 @@ void druid_t::create_buffs()
       ->set_default_value( talent.vicious_cycle->effectN( 1 ).percent() )
       ->set_name_reporting( "Maul" )
       ->set_trigger_spell( talent.vicious_cycle );
+
+  auto bear_tww1_2pc = sets->set( DRUID_GUARDIAN, TWW1, B2 );
+  buff.guardians_tenacity = make_fallback( sets->has_set_bonus( DRUID_GUARDIAN, TWW1, B2 ),
+    this, "guardians_tenacity", find_trigger( bear_tww1_2pc ).trigger() )
+      ->set_trigger_spell( bear_tww1_2pc )
+      ->set_cooldown( bear_tww1_2pc->internal_cooldown() )
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   // Restoration buffs
   buff.abundance = make_fallback( talent.abundance.ok(), this, "abundance", find_spell( 207640 ) )
@@ -11711,6 +11760,7 @@ double druid_t::resource_gain( resource_e r, double amount, gain_t* g, action_t*
         g->overflow[ r ] -= avail;
 
       buff.overflowing_power->trigger( as<int>( over ) );
+      over -= avail;
     }
 
     if ( talent.coiled_to_spring.ok() && over > 0 )
@@ -12418,8 +12468,9 @@ void druid_t::target_mitigation( school_e school, result_amount_type type, actio
 
   s->result_amount *= 1.0 + talent.thick_hide->effectN( 1 ).percent();
 
-  if ( talent.protective_growth.ok() )
-    s->result_amount *= 1.0 + buff.protective_growth->value();
+  s->result_amount *= 1.0 + buff.protective_growth->check_value();
+
+  s->result_amount *= 1.0 + buff.guardians_tenacity->check_stack_value();
 
   if ( spec.ursine_adept->ok() && buff.bear_form->check() )
     s->result_amount *= 1.0 + spec.ursine_adept->effectN( 2 ).percent();
@@ -13164,7 +13215,8 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.twin_moons );
   action.apply_affecting_aura( talent.wild_surges );
   action.apply_affecting_aura( talent.rattle_the_stars );
-  
+  action.apply_affecting_aura( sets->set( DRUID_BALANCE, TWW1, B2 ) );
+
   // Feral 
   action.apply_affecting_aura( spec.ashamanes_guidance );
   action.apply_affecting_aura( talent.berserk_heart_of_the_lion );
@@ -13186,6 +13238,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.untamed_savagery );
   action.apply_affecting_aura( talent.ursocs_guidance );
   action.apply_affecting_aura( talent.vulnerable_flesh );
+  action.apply_affecting_aura( sets->set( DRUID_GUARDIAN, TWW1, B4 ) );
 
   // Restoration
   action.apply_affecting_aura( spec.cenarius_guidance );
@@ -13280,6 +13333,7 @@ void druid_action_t<Base>::parse_action_effects()
   parse_effects( p()->talent.taste_for_blood, [ this ] { return p()->buff.tigers_fury->check();},
                  p()->talent.taste_for_blood->effectN( 2 ).percent() );
   parse_effects( p()->spec.feral_overrides, [ this ] { return !p()->buff.moonkin_form->check(); } );
+  parse_effects( p()->buff.fell_prey, CONSUME_BUFF );
 
   // Guardian
   parse_effects( p()->buff.bear_form );
@@ -13299,6 +13353,7 @@ void druid_action_t<Base>::parse_action_effects()
   parse_effects( p()->buff.incarnation_bear, bear_mask, p()->talent.berserk_ravage,
                  p()->talent.berserk_unchecked_aggression );
   parse_effects( p()->buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), CONSUME_BUFF );
+  parse_effects( p()->buff.guardians_tenacity );
 
   // wrapper to bypass ab:: resoultion for compile time checks
   struct v_ptr

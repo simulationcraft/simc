@@ -1453,7 +1453,7 @@ void parse_action_base_t::consume_buff_list()
   while ( buff_idx_to_consume )
   {
     if ( buff_idx_to_consume & 1U )
-      ( *buff_it )->decrement();
+      ( *buff_it )->expire();
 
     buff_idx_to_consume >>= 1;
     buff_it++;
