@@ -579,9 +579,10 @@ public:
     const spell_data_t* hammer_and_anvil;
     const spell_data_t* blessing_of_the_forge;
     const spell_data_t* lights_guidance;
-    const spell_data_t* lights_deliverence;
+    const spell_data_t* lights_deliverance;
     const spell_data_t* hammer_of_light;
     const spell_data_t* hammerfall;
+    const spell_data_t* empyrean_hammer;
   } talents;
 
   struct tier_sets_t

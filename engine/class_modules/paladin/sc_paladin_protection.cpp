@@ -844,6 +844,9 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     }
 
     p()->buffs.bulwark_of_righteous_fury->expire();
+
+    p()->trigger_empyrean_hammer( target, 1, 300_ms );
+
   }
 
   double action_multiplier() const override

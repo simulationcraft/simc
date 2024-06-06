@@ -1845,8 +1845,7 @@ struct empyrean_hammer_t : public paladin_spell_t
     void execute() override
     {
         paladin_spell_t::execute();
-        /* Flutt fix pls
-        if ( p()->talents.lights_deliverance->ok() )*/
+             if ( p()->talents.lights_deliverance->ok() )
         {
             p()->buffs.lights_deliverance->trigger();
         }
