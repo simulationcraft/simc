@@ -12798,7 +12798,7 @@ void player_t::create_options()
 
         if ( sub_splits.size() == 1 )
         {
-          name = fmt::format( "custom_buff_", sub_splits[ 0 ] );
+          name = fmt::format( "custom_buff_{}", sub_splits[ 0 ] );
           continue;
         }
 
