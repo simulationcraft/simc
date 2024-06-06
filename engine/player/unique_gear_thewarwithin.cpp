@@ -1500,6 +1500,76 @@ void ravenous_honey_buzzer( special_effect_t& e )
   e.execute_action = damage;
 }
 
+// Overlocked Gear-a-rang Launcher
+// 443411 Use Driver
+// 446764 Equip Driver
+// 446811 Use Damage
+// 449828 Equip Damage
+// 450453 Equip Buff
+void overclocked_geararang_launcher( special_effect_t& e )
+{
+  struct overclocked_strike_t : public generic_proc_t
+  {
+    buff_t* buff;
+    overclocked_strike_t( const special_effect_t& e, buff_t* buff )
+      : generic_proc_t( e, "overclocked_strike", e.player->find_spell( 449828 ) ), buff( buff )
+    {
+      background  = true;
+      base_dd_min = base_dd_max = e.player->find_spell( 446764 )->effectN( 2 ).average( e.item );
+    }
+
+    void execute() override
+    {
+      // Appears to consume the buff before executing the action
+      buff->expire();
+      generic_proc_t::execute();
+    }
+  };
+
+  auto damage_buff_spell     = e.player->find_spell( 450453 );
+  auto overclock_buff        = create_buff<buff_t>( e.player, damage_buff_spell );
+  auto damage_action         = create_proc_action<overclocked_strike_t>( "overclocked_strike", e, overclock_buff );
+
+  auto damage            = new special_effect_t( e.player );
+  damage->name_str       = "overclocked_strike_proc";
+  damage->item           = e.item;
+  damage->spell_id       = damage_buff_spell->id();
+  damage->execute_action = damage_action;
+  e.player->special_effects.push_back( damage );
+
+  auto damage_cb = new dbc_proc_callback_t( e.player, *damage );
+  damage_cb->initialize();
+  damage_cb->deactivate();
+
+  overclock_buff->set_stack_change_callback( [ damage_cb ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+    {
+      damage_cb->activate();
+    }
+    else
+    {
+      damage_cb->deactivate();
+    }
+  } );
+
+  auto equip_driver = e.player->find_spell( 446764 );
+
+  auto overclock         = new special_effect_t( e.player );
+  overclock->name_str    = "overclock";
+  overclock->item        = e.item;
+  overclock->spell_id    = equip_driver->id();
+  overclock->custom_buff = overclock_buff;
+  e.player->special_effects.push_back( overclock );
+
+  auto overclock_cb = new dbc_proc_callback_t( e.player, *overclock );
+  overclock_cb->initialize();
+  overclock_cb->activate();
+
+  // Might be worth converting to a poper ground effect event later. For now, this is close enough.
+  auto use_damage  = create_proc_action<generic_aoe_proc_t>( "geararang_serration", e, 446811 );
+  e.execute_action = use_damage;
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -1783,6 +1853,8 @@ void register_special_effects()
   register_special_effect( 443409, DISABLED_EFFECT );  // skarmorak's shard
   register_special_effect( 443537, items::void_pactstone );
   register_special_effect( 448904, items::ravenous_honey_buzzer );
+  register_special_effect( 443411, items::overclocked_geararang_launcher );
+  register_special_effect( 446764, DISABLED_EFFECT ); // overclocked gear-a-rang launcher
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
