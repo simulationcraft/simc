@@ -3795,14 +3795,12 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
   os << "\">\n";
 
   os << "<ul class=\"params\">\n";
+#if SC_BETA
+  os << "<li><b>BETA activated</b></li>\n";
+#elif SC_USE_PTR
   if ( p.dbc->ptr )
-  {
-#ifdef SC_USE_PTR
     os << "<li><b>PTR activated</b></li>\n";
-#else
-    os << "<li><b>BETA activated</b></li>\n";
 #endif
-  }
   fmt::print( os, "<li><b>Race:</b> {}</li>\n", util::inverse_tokenize( p.race_str ) );
 
   const char* pt;
@@ -3870,31 +3868,30 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   else
     os << "<h3 class=\"toggle open\">Results, Spec and Gear</h3>\n";
 
-  os << "<div>\n"
-     << "<div class=\"toggle-content\">\n";
+  os << "<div class=\"toggle-content\">\n"
+     << "<div class=\"flexwrap\">\n";
 
   if ( p.sim->players_by_name.size() == 1 )
   {
     auto w_ = raidbots_talent_render_width( p.specialization(), 125 );
     os.format(
-      "<iframe src=\"{}\" width=\"{}\" height=\"125\" style=\"float: left; margin-right: 10px; margin-top: 5px;\"></iframe>\n",
+      R"(<iframe src="{}" width="{}" height="125" style="margin-right: 10px; margin-top: 5px;"></iframe>)",
       raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
-  }
 
-  os << "<div class=\"flexwrap\">\n";
+    os << "\n";
+  }
 
   if ( cd.dps.mean() > 0 )
   {
     // Table for DPS
-    os << "<table class=\"sc\">\n"
-       << "<tr>\n";
-    os << "<th class=\"help\" data-help=\"#help-dps\">DPS</th>\n"
+    os << "<table class=\"sc\"><tr>\n"
+       << "<th class=\"help\" data-help=\"#help-dps\">DPS</th>\n"
        << "<th class=\"help\" data-help=\"#help-dpse\">DPS(e)</th>\n"
        << "<th class=\"help\" data-help=\"#help-error\">DPS Error</th>\n"
        << "<th class=\"help\" data-help=\"#help-range\">DPS Range</th>\n"
-       << "<th class=\"help\" data-help=\"#help-dpr\">DPR</th>\n";
-    os << "</tr>\n"
-       << "<tr>\n";
+       << "<th class=\"help\" data-help=\"#help-dpr\">DPR</th></tr>\n";
+
+    os << "<tr>\n";
 
     double dps_range =
         ( cd.dps.percentile( 0.5 + sim.confidence / 2 ) - cd.dps.percentile( 0.5 - sim.confidence / 2 ) );
@@ -4026,19 +4023,16 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
         sim.simulation_length.mean() ? cd.fight_length.mean() / sim.simulation_length.mean() * 100.0 : 0 );
   }
 
-  os << "</div>\n"
-     << "</div>\n";
+  os << "</div>\n";
 
   // Spec and gear
   if ( !p.is_pet() && !p.is_enemy() )
   {
-    os << "<div>\n"
-       << "<table class=\"sc spec\">\n";
+    os << "<table class=\"sc spec\">\n";
 
     if ( !p.origin_str.empty() )
     {
-      os.format( "<tr class=\"left\"><th class=\"help\" data-help=\"#help-origin\">Origin</th>\n"
-                 "<td><a href=\"{}\" class=\"ext\">{}</a></td></tr>\n",
+      os.format( R"(<tr><th class="help" data-help="#help-origin">Origin</th><td><a href="{}" class="ext">{}</a></td></tr>\n)",
                  p.origin_str, util::encode_html( p.origin_str ) );
     }
 
@@ -4120,8 +4114,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
          << "</tr>\n";
     }
 
-    os << "</table>\n"
-       << "</div>\n";
+    os << "</table>\n";
   }
 }
 

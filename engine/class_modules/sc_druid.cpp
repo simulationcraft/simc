@@ -8258,12 +8258,10 @@ struct wild_mushroom_t : public druid_spell_t
 // Wrath ====================================================================
 struct wrath_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclipse_e::SOLAR>>
 {
-  double gcd_mul;
   double smolder_mul;
   unsigned count = 0;
 
   DRUID_ABILITY( wrath_t, base_t, "wrath", p->spec.wrath ),
-    gcd_mul( find_effect( p->spec.eclipse_solar, this, A_ADD_PCT_MODIFIER, P_GCD ).percent() ),
     smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() )
   {
     form_mask = NO_FORM | MOONKIN_FORM;
