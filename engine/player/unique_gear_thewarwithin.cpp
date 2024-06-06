@@ -1579,7 +1579,8 @@ void remnant_of_darkness( special_effect_t& e )
 {
   auto damage         = create_proc_action<generic_aoe_proc_t>( "dark_swipe", e, 452032 );
   damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 2 ).average( e.item );
-  auto transform_buff                       = create_buff<buff_t>( e.player, e.player->find_spell( 451602 ) )
+
+  auto transform_buff = create_buff<buff_t>( e.player, e.player->find_spell( 451602 ) )
                             ->set_tick_callback( [ damage ]( buff_t*, int, timespan_t ) { damage->execute(); } );
 
   auto stat_buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 451369 ) )
