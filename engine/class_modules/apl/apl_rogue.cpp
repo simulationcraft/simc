@@ -248,7 +248,7 @@ void outlaw( player_t* p )
 
   stealth_cds->add_action( "vanish,if=talent.crackshot&variable.finish_condition&(buff.adrenaline_rush.up|!talent.underhanded_upper_hand&!talent.without_a_trace)", "Stealth Cooldowns  Builds with Crackshot use Vanish at finish condition. If also using Underhanded Upper Hand + Without a Trace, use Vanish only when Adrenaline Rush is active" );
   stealth_cds->add_action( "vanish,if=!talent.crackshot&talent.hidden_opportunity&!buff.audacity.up&buff.opportunity.stack<buff.opportunity.max_stack&variable.ambush_condition", "Hidden Opportunity builds without Crackshot use Vanish if Audacity is not active and when under max Opportunity stacks" );
-  stealth_cds->add_action( "vanish,if=!talent.crackshot&!talent.hidden_opportunity&(!variable.finish_condition|!talent.double_jeopardy)&(!buff.take_em_by_surprise.up|!talent.take_em_by_surprise)", "Builds without Crackshot and Hidden Opportunity use Vanish when not at finish condition to trigger Double Jeopardy, or to trigger Take 'em by Surprise" );
+  stealth_cds->add_action( "vanish,if=!talent.crackshot&!talent.hidden_opportunity&(!variable.finish_condition&talent.double_jeopardy|!buff.take_em_by_surprise.up&talent.take_em_by_surprise)", "Builds without Crackshot and Hidden Opportunity use Vanish when not at finish condition to trigger Double Jeopardy, or to trigger Take 'em by Surprise" );
   stealth_cds->add_action( "shadowmeld,if=variable.finish_condition&!cooldown.vanish.ready" );
 }
 //outlaw_apl_end

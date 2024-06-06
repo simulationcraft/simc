@@ -126,5 +126,5 @@ actions.stealth_cds=vanish,if=talent.crackshot&variable.finish_condition&(buff.a
 # Hidden Opportunity builds without Crackshot use Vanish if Audacity is not active and when under max Opportunity stacks
 actions.stealth_cds+=/vanish,if=!talent.crackshot&talent.hidden_opportunity&!buff.audacity.up&buff.opportunity.stack<buff.opportunity.max_stack&variable.ambush_condition
 # Builds without Crackshot and Hidden Opportunity use Vanish when not at finish condition to trigger Double Jeopardy, or to trigger Take 'em by Surprise
-actions.stealth_cds+=/vanish,if=!talent.crackshot&!talent.hidden_opportunity&(!variable.finish_condition|!talent.double_jeopardy)&(!buff.take_em_by_surprise.up|!talent.take_em_by_surprise)
+actions.stealth_cds+=/vanish,if=!talent.crackshot&!talent.hidden_opportunity&(!variable.finish_condition&talent.double_jeopardy|!buff.take_em_by_surprise.up&talent.take_em_by_surprise)
 actions.stealth_cds+=/shadowmeld,if=variable.finish_condition&!cooldown.vanish.ready
