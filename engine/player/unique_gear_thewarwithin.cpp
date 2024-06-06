@@ -1489,6 +1489,17 @@ void void_pactstone( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Ravenous Honey Buzzer
+// 448904 Driver
+// 448909 Damage
+void ravenous_honey_buzzer( special_effect_t& e )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "ravenous_honey_buzzer", e, 448909 );
+  damage -> split_aoe_damage = true;
+
+  e.execute_action = damage;
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -1771,6 +1782,7 @@ void register_special_effects()
   register_special_effect( 443407, items::skarmorak_shard );
   register_special_effect( 443409, DISABLED_EFFECT );  // skarmorak's shard
   register_special_effect( 443537, items::void_pactstone );
+  register_special_effect( 448904, items::ravenous_honey_buzzer );
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
