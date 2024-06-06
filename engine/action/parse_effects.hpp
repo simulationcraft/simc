@@ -7,27 +7,18 @@
 
 #include "action/action.hpp"
 #include "buff/buff.hpp"
-#include "dbc/dbc.hpp"
-#include "player/pet.hpp"
 #include "player/player.hpp"
-#include "sim/sim.hpp"
+#include "player/stats.hpp"
 #include "util/io.hpp"
-
-#include <functional>
-
-// Mixin to action base class to allow auto parsing and dynamic application of whitelist based buffs & auras.
-//
-// Make `parse_action_effects_t` the parent of module action classe with the following parameters:
-//  1) BASE: The base class of the action class. This is usually spell_t, melee_attack_t, or a template parameter
-//  2) PLAYER: The player class
-//  3) TD: The target data class
 
 enum parse_flag_e
 {
   USE_DATA,
   USE_DEFAULT,
   USE_CURRENT,
-  IGNORE_STACKS
+  IGNORE_STACKS,
+  ALLOW_ZERO,
+  CONSUME_BUFF
 };
 
 // effects dependent on player state
@@ -40,7 +31,8 @@ struct player_effect_t
   bool mastery = false;
   std::function<bool()> func = nullptr;
   const spelleffect_data_t* eff = &spelleffect_data_t::nil();
-  uint32_t opt_enum = 0xFFFFFFFF;
+  uint32_t opt_enum = UINT32_MAX;
+  uint32_t idx = 0;
 
   player_effect_t& set_buff( buff_t* b )
   { buff = b; return *this; }
@@ -63,22 +55,35 @@ struct player_effect_t
   player_effect_t& set_eff( const spelleffect_data_t* e )
   { eff = e; return *this; }
 
-  player_effect_t& set_opt_enum( uint32_t e )
-  { opt_enum = e; return *this; }
+  player_effect_t& set_opt_enum( uint32_t o )
+  { opt_enum = o; return *this; }
+
+  player_effect_t& set_idx( uint32_t i )
+  { idx = i; return *this; }
+
+  bool operator==( const player_effect_t& other )
+  {
+    return buff == other.buff && value == other.value && type == other.type && use_stacks == other.use_stacks &&
+           mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
+  }
+
+  std::string value_type_name( parse_flag_e ) const;
+
+  void print_parsed_line( report::sc_html_stream&, const sim_t&, bool, std::function<std::string( uint32_t )>,
+                          std::function<std::string( double )> ) const;
 };
 
 // effects dependent on target state
 // TODO: add value type to debuffs if it becomes necessary in the future
-template <typename TD>
 struct target_effect_t
 {
-  std::function<int( TD* )> func = nullptr;
+  std::function<int( actor_target_data_t* )> func = nullptr;
   double value = 0.0;
   bool mastery = false;
   const spelleffect_data_t* eff = &spelleffect_data_t::nil();
-  uint32_t opt_enum = 0xFFFFFFFF;
+  uint32_t opt_enum = UINT32_MAX;
 
-  target_effect_t& set_func( std::function<int( TD* )> f )
+  target_effect_t& set_func( std::function<int( actor_target_data_t* )> f )
   { func = std::move( f ); return *this; }
 
   target_effect_t& set_value( double v )
@@ -90,8 +95,16 @@ struct target_effect_t
   target_effect_t& set_eff( const spelleffect_data_t* e )
   { eff = e; return *this; }
 
-  target_effect_t& set_opt_enum( uint32_t e )
-  { opt_enum = e; return *this; }
+  target_effect_t& set_opt_enum( uint32_t o )
+  { opt_enum = o; return *this; }
+
+  bool operator==( const target_effect_t& other )
+  {
+    return value == other.value && mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
+  }
+
+  void print_parsed_line( report::sc_html_stream&, const sim_t&, bool, std::function<std::string( uint32_t )>,
+                          std::function<std::string( double )> ) const;
 };
 
 struct modify_effect_t
@@ -127,7 +140,7 @@ struct effect_mask_t
 {
   uint32_t mask;
 
-  effect_mask_t( bool b ) : mask( b ? 0 : 0xFFFFFFFF ) {}
+  effect_mask_t( bool b ) : mask( b ? 0 : UINT32_MAX ) {}
 
   effect_mask_t& disable( uint32_t i )
   { mask |= 1 << ( i - 1 ); return *this; }
@@ -154,27 +167,25 @@ struct pack_t
   U data;
   std::vector<const spell_data_t*> list;
   uint32_t mask = 0U;
+  std::vector<U>* copy = nullptr;
 };
 
-struct parse_effects_t
+template <typename U>
+static inline U& add_parse_entry( std::vector<U>& vec ) { return vec.emplace_back(); }
+
+// input interface framework
+struct parse_base_t
 {
-protected:
-  player_t* _player;
+  parse_base_t() = default;
+  virtual ~parse_base_t() = default;
 
-public:
-  parse_effects_t( player_t* p ) : _player( p ) {}
-  virtual ~parse_effects_t() = default;
-
-  template <typename U>
-  U& add_parse_entry( std::vector<U>& vec )
-  { return vec.emplace_back(); }
-
-  // detectors for is_detected<>
+  // detectors for is_detected_v<>
   template <typename T> using detect_buff = decltype( T::buff );
   template <typename T> using detect_func = decltype( T::func );
   template <typename T> using detect_use_stacks = decltype( T::use_stacks );
   template <typename T> using detect_type = decltype( T::type );
   template <typename T> using detect_value = decltype( T::value );
+  template <typename T> using detect_idx = decltype( T::idx );
 
   // handle first argument to parse_effects(), set buff if necessary and return spell_data_t*
   template <typename T, typename U>
@@ -185,7 +196,7 @@ public:
       if ( !data )
         return nullptr;
 
-      if constexpr ( is_detected<detect_buff, U>::value )
+      if constexpr ( is_detected_v<detect_buff, U> )
         tmp.data.buff = data;
 
       return &data->data();
@@ -205,44 +216,8 @@ public:
   // castable types, such as conduits
   double mod_spell_effects_value( const spell_data_t*, const spelleffect_data_t& e ) { return e.base_value(); }
 
-  // adjust value based on effect modifying effects from mod list.
-  // currently supports P_EFFECT_1-5 and A_PROC_TRIGGER_SPELL_WITH_VALUE
-  // TODO: add support for P_EFFECTS to modify all effects
   template <typename T>
-  void apply_affecting_mod( double& val, bool& mastery, const spell_data_t* base, size_t idx, T mod )
-  {
-    bool mod_is_mastery = false;
-
-    if ( mod->effect_count() && mod->flags( SX_MASTERY_AFFECTS_POINTS ) )
-    {
-      mastery = true;
-      mod_is_mastery = true;
-    }
-
-    for ( size_t i = 1; i <= mod->effect_count(); i++ )
-    {
-      const auto& eff = mod->effectN( i );
-
-      if ( eff.type() != E_APPLY_AURA )
-        continue;
-
-      if ( ( base->affected_by_all( eff ) &&
-             ( ( eff.misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff.misc_value1() == P_EFFECT_2 && idx == 2 ) ||
-               ( eff.misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff.misc_value1() == P_EFFECT_4 && idx == 4 ) ||
-               ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
-           ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() && idx == 1 ) )
-      {
-        double pct = mod_is_mastery ? eff.mastery_value() : mod_spell_effects_value( mod, eff );
-
-        if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
-          val += pct;
-        else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
-          val *= 1.0 + pct / 100;
-        else if ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE )
-          val = pct;
-      }
-    }
-  }
+  void apply_affecting_mod( double&, bool&, const spell_data_t*, size_t, T );
 
   template <typename U>
   void apply_affecting_mods( const pack_t<U>& tmp, double& val, bool& mastery, const spell_data_t* base, size_t idx )
@@ -269,31 +244,41 @@ public:
     {
       tmp.list.push_back( mod );
     }
-    else if constexpr ( std::is_invocable_v<T> && is_detected<detect_func, U>::value )
+    else if constexpr ( std::is_convertible_v<T, std::function<bool()>> && is_detected_v<detect_func, U> )
     {
       tmp.data.func = std::move( mod );
     }
     else if constexpr ( std::is_same_v<T, parse_flag_e> )
     {
-      if constexpr ( is_detected<detect_use_stacks, U>::value )
+      if constexpr ( is_detected_v<detect_use_stacks, U> )
       {
         if ( mod == IGNORE_STACKS )
           tmp.data.use_stacks = false;
       }
 
-      if constexpr ( is_detected<detect_type, U>::value )
+      if constexpr ( is_detected_v<detect_type, U> )
       {
         if ( mod == USE_DEFAULT || mod == USE_CURRENT )
           tmp.data.type = mod;
       }
+
+      if constexpr ( is_detected_v<detect_idx, U> )
+      {
+        if ( mod == CONSUME_BUFF )
+          tmp.data.idx = UINT32_MAX;;
+      }
     }
-    else if constexpr ( std::is_floating_point_v<T> && is_detected<detect_value, U>::value )
+    else if constexpr ( std::is_floating_point_v<T> && is_detected_v<detect_value, U> )
     {
       tmp.data.value = mod;
     }
     else if constexpr ( std::is_same_v<T, effect_mask_t> || ( std::is_integral_v<T> && !std::is_same_v<T, bool> ) )
     {
       tmp.mask = mod;
+    }
+    else if constexpr ( std::is_convertible_v<decltype( *std::declval<T>() ), const std::vector<U>> )
+    {
+      tmp.copy = &( *mod );
     }
     else
     {
@@ -306,111 +291,138 @@ public:
   {
     ( parse_spell_effect_mod( tmp, mods ), ... );
   }
+};
 
-  // main effect parsing function with constexpr checks to handle player_effect_t vs target_effect_t
-  template <typename U>
-  void parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, size_t i, bool force )
+struct modified_spelleffect_t
+{
+  const spelleffect_data_t& _eff;
+  double value;
+  mutable std::vector<modify_effect_t> conditional;
+  std::vector<const spelleffect_data_t*> permanent;
+
+  modified_spelleffect_t( const spelleffect_data_t& eff ) : _eff( eff ), value( eff.base_value() ) {}
+
+  modified_spelleffect_t() : _eff( spelleffect_data_t::nil() ), value( 0.0 ) {}
+
+  // return base value after modifiers
+  double base_value() const;
+
+  double percent() const
+  { return base_value() * 0.01; }
+
+  double resource( resource_e r ) const
+  { return base_value() * _eff.resource_multiplier( r ); }
+
+  double resource() const
+  { return resource( _eff.resource_gain_type() ); }
+
+  operator const spelleffect_data_t&() const
+  { return _eff; }
+
+  modify_effect_t& add_parse_entry() const
+  { return conditional.emplace_back(); }
+
+  size_t size() const
+  { return conditional.size() + permanent.size(); }
+
+  bool modified_by( const spelleffect_data_t& ) const;
+
+  void print_parsed_line( report::sc_html_stream&, const sim_t&, const modify_effect_t& ) const;
+
+  void print_parsed_line( report::sc_html_stream&, const sim_t&, const spelleffect_data_t& ) const;
+
+  void print_parsed_effect( report::sc_html_stream&, const sim_t&, size_t& ) const;
+
+  static const modified_spelleffect_t& nil();
+};
+
+inline const modified_spelleffect_t modified_spelleffect_nil_v = modified_spelleffect_t();
+inline const modified_spelleffect_t& modified_spelleffect_t::nil() { return modified_spelleffect_nil_v; }
+
+// Modifiable spell_data_t analogue that can be used to parse and apply effect affecting effects (P_EFFECT_1-5)
+//
+// obj->parse_effects( <parse_effects arguments> ) to parse and apply permanent and conditional effects, controlled via
+//   arguments in the same manner as action & player scoped parse_effects().
+//
+// obj->effectN( # ) to access the modified_spelleffect_t which is analogous to spelleffect_data_t.
+//
+// obj->effectN( # ).base_value(), .percent(), .resource(), .resource( r ) to get the dynamically modified values.
+struct modified_spell_data_t : public parse_base_t
+{
+  std::vector<modified_spelleffect_t> effects;
+  const spell_data_t& _spell;
+
+  modified_spell_data_t( const spell_data_t* s ) : modified_spell_data_t( *s ) {}
+
+  modified_spell_data_t( const spell_data_t& s = *spell_data_t::nil() ) : _spell( s )
   {
-    const auto& eff = s_data->effectN( i );
-    bool mastery = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
-    double val = 0.0;
-    double val_mul = 0.01;
-
-    if ( mastery )
-      val = eff.mastery_value();
-    else
-      val = eff.base_value();
-
-    if constexpr ( is_detected<detect_buff, U>::value && is_detected<detect_type, U>::value )
-    {
-      if ( tmp.data.buff && tmp.data.type == USE_DEFAULT )
-        val = tmp.data.buff->default_value * 100;
-
-      if ( !is_valid_aura( eff ) )
-        return;
-    }
-    else
-    {
-      if ( !is_valid_target_aura( eff ) )
-        return;
-    }
-
-    if ( tmp.data.value != 0.0 )
-    {
-      val = tmp.data.value;
-      val_mul = 1.0;
-      mastery = false;
-    }
-    else
-    {
-      apply_affecting_mods( tmp, val, mastery, s_data, i );
-
-      if ( mastery )
-        val_mul = 1.0;
-    }
-
-    if constexpr ( is_detected<detect_type, U>::value )
-    {
-      if ( !val && tmp.data.type == parse_flag_e::USE_DATA )
-        return;
-    }
-    else
-    {
-      if ( !val )
-        return;
-    }
-
-    std::string type_str;
-    bool flat = false;
-    std::vector<U>* vec;
-
-    // NOTE: get_target_effect_vector is virtual and not templated, which means:
-    // 1) only opt_enum reference is passed instead of the full data reference
-    // 2) void* is returned and needs to be re-cast to the correct vector<U>*
-    if constexpr ( is_detected<detect_buff, U>::value )
-    {
-      vec = get_effect_vector( eff, tmp.data, val_mul, type_str, flat, force );
-    }
-    else
-    {
-      vec = static_cast<std::vector<U>*>(
-          get_target_effect_vector( eff, tmp.data.opt_enum, val_mul, type_str, flat, force ) );
-    }
-
-    if ( !vec )
-      return;
-
-    val *= val_mul;
-
-    std::string val_str = mastery ? fmt::format( "{:.5f}*mastery", val * 100 )
-                          : flat  ? fmt::format( "{}", val )
-                                  : fmt::format( "{:.1f}%", val * ( 1 / val_mul ) );
-
-    if ( tmp.data.value != 0.0 )
-      val_str = val_str + " (overridden)";
-
-    if constexpr ( is_detected<detect_buff, U>::value )
-    {
-      if ( tmp.data.buff )
-      {
-        if ( tmp.data.type == parse_flag_e::USE_CURRENT )
-          val_str = flat ? "current value" : "current value percent";
-        else if ( tmp.data.type == parse_flag_e::USE_DEFAULT )
-          val_str = val_str + " (default value)";
-      }
-
-      debug_message( tmp.data, type_str, val_str, mastery, s_data, i );
-    }
-    else
-    {
-      target_debug_message( type_str, val_str, s_data, i );
-    }
-
-    tmp.data.value = val;
-    tmp.data.mastery = mastery;
-    tmp.data.eff = &eff;
-    vec->push_back( tmp.data );
+    for ( const auto& eff : s.effects() )
+      effects.emplace_back( eff );
   }
+
+  const modified_spelleffect_t& effectN( size_t ) const;
+
+  operator const spell_data_t&() const
+  { return _spell; }
+
+  operator const spell_data_t*() const
+  { return &_spell; }
+
+  modify_effect_t& add_parse_entry( size_t idx )
+  { return effects[ idx - 1 ].add_parse_entry(); }
+
+  template <typename T, typename... Ts>
+  modified_spell_data_t* parse_effects( T data, Ts... mods )
+  {
+    if ( !_spell.ok() )
+      return this;
+
+    pack_t<modify_effect_t> pack;
+    const spell_data_t* spell = resolve_parse_data( data, pack );
+
+    if ( !spell || !spell->ok() )
+      return this;
+
+    // parse mods and populate pack
+    parse_spell_effect_mods( pack, mods... );
+
+    for ( size_t i = 1; i <= spell->effect_count(); i++ )
+    {
+      if ( pack.mask & 1 << ( i - 1 ) )
+        continue;
+
+      // local copy of pack per effect
+      pack_t<modify_effect_t> tmp = pack;
+
+      parse_effect( tmp, spell, i );
+    }
+
+    return this;
+  }
+
+  void parse_effect( pack_t<modify_effect_t>&, const spell_data_t*, size_t );
+
+  void print_parsed_spell( report::sc_html_stream&, const sim_t& );
+
+  static void parsed_effects_html( report::sc_html_stream&, const sim_t&, std::vector<modified_spell_data_t*> );
+
+  static modified_spell_data_t* nil();
+};
+
+inline modified_spell_data_t modified_spell_data_nil_v = modified_spell_data_t();
+inline modified_spell_data_t* modified_spell_data_t::nil() { return &modified_spell_data_nil_v; }
+
+struct parse_effects_t : public parse_base_t
+{
+protected:
+  player_t* _player;
+  mutable uint32_t buff_idx_to_consume = 0;
+
+public:
+  parse_effects_t( player_t* p ) : _player( p ) {}
+
+  template <typename U>
+  void parse_effect( pack_t<U>&, const spell_data_t*, size_t, bool );
 
   // Syntax: parse_effects( data[, spells|condition|ignore_mask|value|flags][,...] )
   //   (buff_t*) or
@@ -439,7 +451,7 @@ public:
   //
   // Example 4: Parse buff3, only apply if my_player_t::check2() and my_player_t::check3() returns true:
   //   parse_effects( buff3, [ this ] { return p()->check2() && p()->check3(); } );
-  virtual bool is_valid_aura( const spelleffect_data_t& /* eff */ ) const { return false; }
+  virtual bool is_valid_aura( const spelleffect_data_t& ) const { return false; }
 
   virtual std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data,
                                                            double& val_mul, std::string& str, bool& flat,
@@ -493,32 +505,7 @@ public:
     parse_effect( pack, spell, idx, true );
   }
 
-  double get_effect_value( const player_effect_t& i, bool benefit = false ) const
-  {
-    if ( i.func && !i.func() )
-      return 0.0;
-
-    double eff_val = i.value;
-    int mod = 1;
-
-    if ( i.buff )
-    {
-      auto stack = benefit ? i.buff->stack() : i.buff->check();
-      if ( !stack )
-        return 0.0;
-
-      if ( i.use_stacks )
-        mod = stack;
-
-      if ( i.type == USE_CURRENT )
-        eff_val = i.buff->check_value();
-    }
-
-    if ( i.mastery )
-      eff_val *= _player->cache.mastery();
-
-    return mod * eff_val;
-  }
+  double get_effect_value( const player_effect_t&, bool benefit = false ) const;
 
   // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
   //   (int F(TD*))            func: Function taking the target_data as argument and returning an integer mutiplier
@@ -527,20 +514,20 @@ public:
   // The following optional arguments can be used in any order:
   //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the debuff
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
-  virtual bool is_valid_target_aura( const spelleffect_data_t& /* eff */ ) const { return false; }
+  virtual bool is_valid_target_aura( const spelleffect_data_t& ) const { return false; }
 
-  // Return void* as parse_effect_t is not templated and we don't know what TD is
-  virtual void* get_target_effect_vector( const spelleffect_data_t& eff, uint32_t& opt_enum, double& val_mul,
-                                          std::string& str, bool& flat, bool force ) = 0;
+  virtual std::vector<target_effect_t>* get_target_effect_vector( const spelleffect_data_t& eff, target_effect_t& data,
+                                                                  double& val_mul, std::string& str, bool& flat,
+                                                                  bool force ) = 0;
 
   virtual void target_debug_message( std::string_view type_str, std::string_view val_str, const spell_data_t* s_data,
                                      size_t i ) = 0;
 
-  // Needs a wrapper to set TD parameter, as parse_effect_t is not templated
-  template <typename TD, typename... Ts>
-  void _parse_target_effects( const std::function<int( TD* )>& fn, const spell_data_t* spell, Ts... mods )
+  template <typename... Ts>
+  void parse_target_effects( const std::function<int( actor_target_data_t* )>& fn, const spell_data_t* spell,
+                             Ts... mods )
   {
-    pack_t<target_effect_t<TD>> pack;
+    pack_t<target_effect_t> pack;
 
     if ( !spell || !spell->ok() )
       return;
@@ -556,17 +543,17 @@ public:
         continue;
 
       // local copy of pack per effect
-      pack_t<target_effect_t<TD>> tmp = pack;
+      pack_t<target_effect_t> tmp = pack;
 
       parse_effect( tmp, spell, i, false );
     }
   }
 
-  // Needs a wrapper to set TD parameter, as parse_effect_t is not templated
-  template <typename TD, typename... Ts>
-  void _force_target_effect( const std::function<int( TD* )>& fn, const spell_data_t* spell, unsigned idx, Ts... mods )
+  template <typename... Ts>
+  void force_target_effect( const std::function<int( actor_target_data_t* )>& fn, const spell_data_t* spell,
+                            unsigned idx, Ts... mods )
   {
-    pack_t<target_effect_t<TD>> pack;
+    pack_t<target_effect_t> pack;
 
     if ( !spell || !spell->ok() )
       return;
@@ -585,28 +572,14 @@ public:
     parse_effect( pack, spell, idx, true );
   }
 
-  template <typename TD>
-  double get_target_effect_value( const target_effect_t<TD>& i, TD* td ) const
-  {
-    if ( auto check = i.func( td ) )
-    {
-      auto eff_val = i.value;
-
-      if ( i.mastery )
-        eff_val *= _player->cache.mastery();
-
-      return check * eff_val;
-    }
-
-    return 0.0;
-  }
+  double get_target_effect_value( const target_effect_t&, actor_target_data_t* ) const;
 };
 
-template <typename TD>
 struct parse_player_effects_t : public player_t, public parse_effects_t
 {
-  std::vector<player_effect_t> melee_speed_effects;
+  std::vector<player_effect_t> auto_attack_speed_effects;
   std::vector<player_effect_t> attribute_multiplier_effects;
+  std::vector<player_effect_t> matching_armor_attribute_multiplier_effects;
   std::vector<player_effect_t> versatility_effects;
   std::vector<player_effect_t> player_multiplier_effects;
   std::vector<player_effect_t> pet_multiplier_effects;
@@ -616,13 +589,14 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> expertise_effects;
   std::vector<player_effect_t> crit_avoidance_effects;
   std::vector<player_effect_t> parry_effects;
+  std::vector<player_effect_t> base_armor_multiplier_effects;
   std::vector<player_effect_t> armor_multiplier_effects;
   std::vector<player_effect_t> haste_effects;
   std::vector<player_effect_t> mastery_effects;
   std::vector<player_effect_t> parry_rating_from_crit_effects;
   std::vector<player_effect_t> dodge_effects;
-  std::vector<target_effect_t<TD>> target_multiplier_effects;
-  std::vector<target_effect_t<TD>> target_pet_multiplier_effects;
+  std::vector<target_effect_t> target_multiplier_effects;
+  std::vector<target_effect_t> target_pet_multiplier_effects;
 
   // Cache Pairing, invalidate first of the pair when the second is invalidated
   std::vector<std::pair<cache_e, cache_e>> invalidate_with_parent;
@@ -631,486 +605,77 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
     : player_t( sim, type, name, race ), parse_effects_t( this )
   {}
 
-  double composite_melee_speed() const override
+  double composite_melee_auto_attack_speed() const override;
+  double composite_attribute_multiplier( attribute_e ) const override;
+  double composite_damage_versatility() const override;
+  double composite_heal_versatility() const override;
+  double composite_mitigation_versatility() const override;
+  double composite_player_multiplier( school_e ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
+  double composite_attack_power_multiplier() const override;
+  double composite_melee_crit_chance() const override;
+  double composite_spell_crit_chance() const override;
+  double composite_leech() const override;
+  double composite_melee_expertise( const weapon_t* ) const override;
+  double composite_crit_avoidance() const override;
+  double composite_parry() const override;
+  double composite_base_armor_multiplier() const override;
+  double composite_armor_multiplier() const override;
+  double composite_melee_haste() const override;
+  double composite_spell_haste() const override;
+  double composite_mastery() const override;
+  double composite_parry_rating() const override;
+  double composite_dodge() const override;
+  double matching_gear_multiplier( attribute_e ) const override;
+  double composite_player_target_multiplier( player_t*, school_e ) const override;
+  double composite_player_target_pet_damage_multiplier( player_t*, bool ) const override;
+
+  void invalidate_cache( cache_e c ) override;
+
+  bool is_valid_aura( const spelleffect_data_t& ) const override;
+
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t&, player_effect_t&, double&, std::string&,
+                                                   bool&, bool ) override;
+
+  void debug_message( const player_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
+                      size_t ) override;
+
+  bool is_valid_target_aura( const spelleffect_data_t& ) const override;
+
+  std::vector<target_effect_t>* get_target_effect_vector( const spelleffect_data_t&, target_effect_t&, double&,
+                                                          std::string&, bool&, bool ) override;
+
+  void target_debug_message( std::string_view, std::string_view, const spell_data_t*, size_t ) override;
+
+  void parsed_effects_html( report::sc_html_stream& );
+
+  virtual size_t total_effects_count();
+
+  virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
+
+  template <typename U>
+  void print_parsed_type( report::sc_html_stream& os, const std::vector<U>& entries, std::string_view n,
+                          std::function<std::string( uint32_t )> note_fn = nullptr,
+                          std::function<std::string( double )> val_str_fn = nullptr )
   {
-    auto ms = player_t::composite_melee_speed();
+    auto c = entries.size();
+    if ( !c )
+      return;
 
-    for ( const auto& i : melee_speed_effects )
-      ms *= 1.0 / ( 1.0 + get_effect_value( i ) );
+    os.format( "<tr><td rowspan=\"{}\" class=\"dark\">{}</td>", c, n );
 
-    return ms;
-  }
-
-  double composite_attribute_multiplier( attribute_e attr ) const override
-  {
-    auto am = player_t::composite_attribute_multiplier( attr );
-
-    for ( const auto& i : attribute_multiplier_effects )
-      if ( i.opt_enum & ( 1 << ( attr - 1 ) ) )
-        am *= 1.0 + get_effect_value( i );
-
-    return am;
-  }
-
-  double composite_damage_versatility() const override
-  {
-    auto v = player_t::composite_damage_versatility();
-
-    for ( const auto& i : versatility_effects )
-      v += get_effect_value( i );
-
-    return v;
-  }
-
-  double composite_heal_versatility() const override
-  {
-    auto v = player_t::composite_heal_versatility();
-
-    for ( const auto& i : versatility_effects )
-      v += get_effect_value( i );
-
-    return v;
-  }
-
-  double composite_mitigation_versatility() const override
-  {
-    auto v = player_t::composite_mitigation_versatility();
-
-    for ( const auto& i : versatility_effects )
-      v += get_effect_value( i ) * 0.5;
-
-    return v;
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    auto m = player_t::composite_player_multiplier( school );
-
-    for ( const auto& i : player_multiplier_effects )
-      if ( i.opt_enum & dbc::get_school_mask( school ) )
-        m *= 1.0 + get_effect_value( i, true );
-
-    return m;
-  }
-
-  double composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const override
-  {
-    auto dm = player_t::composite_player_pet_damage_multiplier( s, guardian );
-
-    for ( const auto& i : pet_multiplier_effects )
-      if ( static_cast<bool>( i.opt_enum ) == guardian )
-        dm *= 1.0 + get_effect_value( i, true );
-
-    return dm;
-  }
-
-  double composite_attack_power_multiplier() const override
-  {
-    auto apm = player_t::composite_attack_power_multiplier();
-
-    for ( const auto& i : attack_power_multiplier_effects )
-      apm *= 1.0 + get_effect_value( i );
-
-    return apm;
-  }
-
-  double composite_melee_crit_chance() const override
-  {
-    auto mcc = player_t::composite_melee_crit_chance();
-
-    for ( const auto& i : crit_chance_effects )
-      mcc += get_effect_value( i );
-
-    return mcc;
-  }
-
-  double composite_spell_crit_chance() const override
-  {
-    auto scc = player_t::composite_spell_crit_chance();
-
-    for ( const auto& i : crit_chance_effects )
-      scc += get_effect_value( i );
-
-    return scc;
-  }
-
-  double composite_leech() const override
-  {
-    auto leech = player_t::composite_leech();
-
-    for ( const auto& i : leech_effects )
-      leech += get_effect_value( i );
-
-    return leech;
-  }
-
-  double composite_melee_expertise( const weapon_t* ) const override
-  {
-    auto me = player_t::composite_melee_expertise( nullptr );
-
-    for ( const auto& i : expertise_effects )
-      me += get_effect_value( i );
-
-    return me;
-  }
-
-  double composite_crit_avoidance() const override
-  {
-    auto ca = player_t::composite_crit_avoidance();
-
-    for ( const auto& i : crit_avoidance_effects )
-      ca += get_effect_value( i );
-
-    return ca;
-  }
-
-  double composite_parry() const override
-  {
-    auto parry = player_t::composite_parry();
-
-    for ( const auto& i : parry_effects )
-      parry += get_effect_value( i );
-
-    return parry;
-  }
-
-  double composite_armor_multiplier() const override
-  {
-    auto am = player_t::composite_armor_multiplier();
-
-    for ( const auto& i : armor_multiplier_effects )
-      am *= 1.0 + get_effect_value( i );
-
-    return am;
-  }
-
-  double composite_melee_haste() const override
-  {
-    auto mh = player_t::composite_melee_haste();
-
-    for ( const auto& i : haste_effects )
-      mh *= 1.0 / ( 1.0 + get_effect_value( i ) );
-
-    return mh;
-  }
-
-  double composite_spell_haste() const override
-  {
-    auto sh = player_t::composite_spell_haste();
-
-    for ( const auto& i : haste_effects )
-      sh *= 1.0 / ( 1.0 + get_effect_value( i ) );
-
-    return sh;
-  }
-
-  double composite_mastery() const override
-  {
-    auto m = player_t::composite_mastery();
-
-    for ( const auto& i : mastery_effects )
-      m += get_effect_value( i );
-
-    return m;
-  }
-
-  double composite_parry_rating() const override
-  {
-    auto pr = player_t::composite_parry_rating();
-
-    for ( const auto& i : parry_rating_from_crit_effects )
-      pr += player_t::composite_melee_crit_rating() * get_effect_value( i );
-
-    return pr;
-  }
-
-  double composite_dodge() const override
-  {
-    auto dodge = player_t::composite_dodge();
-
-    for ( const auto& i : dodge_effects )
-      dodge += get_effect_value( i );
-
-    return dodge;
-  }
-
-private:
-  TD* _get_td( player_t* t ) const
-  {
-    return static_cast<TD*>( get_target_data( t ) );
-  }
-
-public:
-  double composite_player_target_multiplier( player_t* target, school_e school ) const override
-  {
-    auto tm = player_t::composite_player_target_multiplier( target, school );
-    auto td = _get_td( target );
-
-    for ( const auto& i : target_multiplier_effects )
-      if ( i.opt_enum & dbc::get_school_mask( school ) )
-        tm *= 1.0 + get_target_effect_value( i, td );
-
-    return tm;
-  }
-
-  double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override
-  {
-    auto tm = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
-    auto td = _get_td( target );
-
-    for ( const auto& i : target_pet_multiplier_effects )
-      if ( static_cast<bool>( i.opt_enum ) == guardian )
-        tm *= 1.0 + get_target_effect_value( i, td );
-
-    return tm;
-  }
-
-  void invalidate_cache( cache_e c ) override
-  {
-    player_t::invalidate_cache( c );
-
-    for ( const auto& i : invalidate_with_parent )
+    for ( size_t i = 0; i < c; i++ )
     {
-      if ( c == i.second )
-        player_t::invalidate_cache( i.first );
+      if ( i > 0 )
+        os << "<tr>";
+
+      entries[ i ].print_parsed_line( os, *sim, true, note_fn, val_str_fn );
     }
-  }
-
-  bool is_valid_aura( const spelleffect_data_t& eff ) const override
-  {
-    switch ( eff.type() )
-    {
-      case E_APPLY_AURA:
-      case E_APPLY_AURA_PET:
-        // TODO: more robust logic around 'party' buffs with radius
-        if ( eff.radius() )
-          return false;
-        break;
-      case E_APPLY_AREA_AURA_PARTY:
-      case E_APPLY_AREA_AURA_PET:
-        break;
-      default:
-        return false;
-    }
-
-    return true;
-  }
-
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data, double& val_mul,
-                                                   std::string& str, bool& /* flat */, bool /* force */ ) override
-  {
-    auto invalidate = [ &data ]( cache_e c ) {
-      if ( data.buff )
-        data.buff->add_invalidate( c );
-    };
-
-    switch ( eff.subtype() )
-    {
-      case A_MOD_MELEE_SPEED_PCT:
-      case A_MOD_RANGED_AND_MELEE_ATTACK_SPEED:
-        str = "auto attack speed";
-        invalidate( CACHE_ATTACK_SPEED );
-        return &melee_speed_effects;
-
-      case A_MOD_TOTAL_STAT_PERCENTAGE:
-        data.opt_enum = eff.misc_value2();
-        {
-          std::vector<std::string> str_list;
-          for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
-          {
-            if ( data.opt_enum & ( 1 << ( stat - 1 ) ) )
-            {
-              str_list.push_back( util::stat_type_string( stat ) );
-              invalidate( cache_from_stat( stat ) );
-            }
-          }
-          str = util::string_join( str_list );
-        }
-        return &attribute_multiplier_effects;
-
-      case A_MOD_VERSATILITY_PCT:
-        str = "versatility";
-        invalidate( CACHE_VERSATILITY );
-        return &versatility_effects;
-
-      case A_HASTE_ALL:
-        str = "haste";
-        invalidate( CACHE_HASTE );
-        return &haste_effects;
-
-      case A_MOD_MASTERY_PCT:
-        str = "mastery";
-        val_mul = 1.0;
-        invalidate( CACHE_MASTERY );
-        return &mastery_effects;
-
-      case A_MOD_ALL_CRIT_CHANCE:
-        str = "all crit chance";
-        invalidate( CACHE_CRIT_CHANCE );
-        return &crit_chance_effects;
-
-      case A_MOD_DAMAGE_PERCENT_DONE:
-        data.opt_enum = eff.misc_value1();
-        str = data.opt_enum == 0x7f ? "all" : util::school_type_string( dbc::get_school_type( data.opt_enum ) );
-        str += " damage";
-        invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-        return &player_multiplier_effects;
-
-      case A_MOD_PET_DAMAGE_DONE:
-        data.opt_enum = 0;
-        str = "pet damage";
-        return &pet_multiplier_effects;
-
-      case A_MOD_GUARDIAN_DAMAGE_DONE:
-        data.opt_enum = 1;
-        str = "guardian damage";
-        return &pet_multiplier_effects;
-
-      case A_MOD_ATTACK_POWER_PCT:
-        str = "attack power";
-        invalidate( CACHE_ATTACK_POWER );
-        return &attack_power_multiplier_effects;
-
-      case A_MOD_LEECH_PERCENT:
-        str = "leech";
-        invalidate( CACHE_LEECH );
-        return &leech_effects;
-
-      case A_MOD_EXPERTISE:
-        str = "expertise";
-        invalidate( CACHE_EXP );
-        return &expertise_effects;
-
-      case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:
-        str = "crit avoidance";
-        invalidate( CACHE_CRIT_AVOIDANCE );
-        return &crit_avoidance_effects;
-
-      case A_MOD_PARRY_PERCENT:
-        str = "parry";
-        invalidate( CACHE_PARRY );
-        return &parry_effects;
-
-      case A_MOD_RESISTANCE_PCT:
-      case A_MOD_BASE_RESISTANCE_PCT:
-        str = "armor multiplier";
-        invalidate( CACHE_ARMOR );
-        return &armor_multiplier_effects;
-
-      case A_MOD_PARRY_FROM_CRIT_RATING:
-        str = "parry rating";
-        // TODO: better debug message for this, and similar effects
-        invalidate_with_parent.push_back( { CACHE_PARRY, CACHE_CRIT_CHANCE } );
-        return &parry_rating_from_crit_effects;
-
-      case A_MOD_DODGE_PERCENT:
-        str = "dodge";
-        invalidate( CACHE_DODGE );
-        return &dodge_effects;
-
-      default:
-        return nullptr;
-    }
-
-    return nullptr;
-  }
-
-  void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str, bool mastery,
-                      const spell_data_t* s_data, size_t i ) override
-  {
-    if ( data.buff )
-    {
-      sim->print_debug( "player-effects: Player {} modified by {} {} buff {} ({}#{})", type_str, val_str,
-                        data.use_stacks ? "per stack of" : "with", data.buff->name(), data.buff->data().id(), i );
-    }
-    else if ( mastery && !data.func )
-    {
-      sim->print_debug( "player-effects: Player {} modified by {} from {} ({}#{})", type_str, val_str,
-                        s_data->name_cstr(), s_data->id(), i );
-    }
-    else if ( data.func )
-    {
-      sim->print_debug( "player-effects: Player {} modified by {} with condition from {} ({}#{})", type_str, val_str,
-                        s_data->name_cstr(), s_data->id(), i );
-    }
-    else
-    {
-      sim->print_debug( "player-effects: Player {} modified by {} from {} ({}#{})", type_str, val_str,
-                        s_data->name_cstr(), s_data->id(), i );
-    }
-  }
-
-  bool is_valid_target_aura( const spelleffect_data_t& eff ) const override
-  {
-    if ( eff.type() == E_APPLY_AURA )
-      return true;
-
-    return false;
-  }
-
-  void* get_target_effect_vector( const spelleffect_data_t& eff, uint32_t& opt_enum, double& /* val_mul */, std::string& str,
-                                  bool& /* flat */, bool /* force */ ) override
-  {
-    switch ( eff.subtype() )
-    {
-      case A_MOD_DAMAGE_FROM_CASTER:
-        opt_enum = eff.misc_value1();
-        str = opt_enum == 0x7f ? "all" : util::school_type_string( dbc::get_school_type( opt_enum ) );
-        return &target_multiplier_effects;
-
-      case A_MOD_DAMAGE_FROM_CASTER_PET:
-        opt_enum = 0;
-        str = "pet";
-        return &target_pet_multiplier_effects;
-
-      case A_MOD_DAMAGE_FROM_CASTER_GUARDIAN:
-        opt_enum = 1;
-        str = "guardian";
-        return &target_pet_multiplier_effects;
-
-      default:
-        return nullptr;
-    }
-
-    return nullptr;
-  }
-
-  void target_debug_message( std::string_view type_str, std::string_view val_str, const spell_data_t* s_data,
-                             size_t i ) override
-  {
-    sim->print_debug( "target-effects: Target {} damage taken modified by {} from {} ({}#{})", type_str, val_str,
-                      s_data->name_cstr(), s_data->id(), i );
-  }
-
-  template <typename... Ts>
-  void parse_target_effects( const std::function<int( TD* )>& fn, const spell_data_t* debuff, Ts&&... mods )
-  {
-    _parse_target_effects<TD>( fn, debuff, std::forward<Ts>( mods )... );
-  }
-
-  template <typename... Ts>
-  void force_target_effect( const std::function<int( TD* )>& fn, const spell_data_t* debuff, unsigned idx,
-                            Ts&&... mods )
-  {
-    _force_target_effect<TD>( fn, debuff, idx, std::forward<Ts>( mods )... );
   }
 };
 
-template <typename BASE, typename PLAYER, typename TD>
-struct parse_action_effects_t : public BASE, public parse_effects_t
+struct parse_action_base_t : public parse_effects_t
 {
-private:
-  struct effect_pack_t
-  {
-    std::vector<const spelleffect_data_t*> permanent;
-    double value = 0.0;
-    std::vector<modify_effect_t> conditional;
-  };
-
-  std::array<effect_pack_t, 5> effect_modifiers;
-
-public:
-  // auto parsed dynamic effects
   std::vector<player_effect_t> ta_multiplier_effects;
   std::vector<player_effect_t> da_multiplier_effects;
   std::vector<player_effect_t> execute_time_effects;
@@ -1121,16 +686,101 @@ public:
   std::vector<player_effect_t> cost_effects;
   std::vector<player_effect_t> flat_cost_effects;
   std::vector<player_effect_t> crit_chance_effects;
+  std::vector<player_effect_t> crit_chance_multiplier_effects;
   std::vector<player_effect_t> crit_damage_effects;
-  std::vector<target_effect_t<TD>> target_multiplier_effects;
-  std::vector<target_effect_t<TD>> target_crit_damage_effects;
-  std::vector<target_effect_t<TD>> target_crit_chance_effects;
+  std::vector<target_effect_t> target_multiplier_effects;
+  std::vector<target_effect_t> target_crit_chance_effects;
+  std::vector<target_effect_t> target_crit_damage_effects;
 
-  parse_action_effects_t( std::string_view name, PLAYER* player, const spell_data_t* spell )
-    : BASE( name, player, spell ), parse_effects_t( player )
+private:
+  std::vector<buff_t*> _buff_list;
+  action_t* _action;
+
+public:
+  parse_action_base_t( player_t* p, action_t* a ) : parse_effects_t( p ), _action( a ) {}
+
+  bool is_valid_aura( const spelleffect_data_t& ) const override;
+
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t&, player_effect_t&, double&, std::string&,
+                                                   bool&, bool ) override;
+
+  void debug_message( const player_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
+                      size_t ) override;
+
+  bool is_valid_target_aura( const spelleffect_data_t& ) const override;
+
+  std::vector<target_effect_t>* get_target_effect_vector( const spelleffect_data_t&, target_effect_t&, double&,
+                                                          std::string&, bool&, bool ) override;
+
+  void target_debug_message( std::string_view, std::string_view, const spell_data_t*, size_t ) override;
+
+  void initialize_buff_list_on_vector( std::vector<player_effect_t>& );
+
+  void initialize_buff_list();
+
+  void consume_buff_list();
+
+  void parsed_effects_html( report::sc_html_stream& );
+
+  virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
+
+  virtual size_t total_effects_count();
+
+  template <typename W = parse_action_base_t, typename V>
+  void print_parsed_type( report::sc_html_stream& os, V vector_ptr, std::string_view n,
+                          std::function<std::string( double )> val_str_fn = nullptr )
   {
-    for ( size_t i = 0; i < 5 && i < spell->effect_count(); i++ )
-      effect_modifiers[ i ].value = spell->effectN( i + 1 ).base_value();
+    auto _this = dynamic_cast<W*>( _action );
+    assert( _this );
+    auto entries = std::invoke( vector_ptr, _this );
+
+    // assuming the stats obj being processed isn't orphaned (as can happen in debug=1 with child actions with stats
+    // replaced by parent's stats), go through all the actions assigned to the stats obj and populate with all unique
+    // entries
+    if ( range::contains( _action->stats->action_list, _action ) )
+      for ( auto a : _action->stats->action_list )
+        if ( auto tmp = dynamic_cast<W*>( a ); tmp && a != _action )
+          for ( const auto& entry : std::invoke( vector_ptr, tmp ) )
+            if ( !range::contains( entries, entry ) )
+              entries.push_back( entry );
+
+    auto c = entries.size();
+    if ( !c )
+      return;
+
+    os.format( "<tr><td class=\"label\" rowspan=\"{}\">{}</td>\n", c, n );
+
+    for ( size_t i = 0; i < c; i++ )
+    {
+      if ( i > 0 )
+        os << "<tr>";
+
+      entries[ i ].print_parsed_line( os, *_action->sim, false, nullptr, val_str_fn );
+    }
+  }
+};
+
+template <typename BASE>
+struct parse_action_effects_t : public BASE, public parse_action_base_t
+{
+private:
+  using base_t = parse_action_effects_t<BASE>;
+
+public:
+  parse_action_effects_t( std::string_view name, player_t* player, const spell_data_t* spell )
+    : BASE( name, player, spell ), parse_action_base_t( player, this )
+  {}
+
+  void init_finished() override
+  {
+    BASE::init_finished();
+    initialize_buff_list();
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+    consume_buff_list();
   }
 
   double cost_flat_modifier() const override
@@ -1183,12 +833,22 @@ public:
     return cc;
   }
 
+  double composite_crit_chance_multiplier() const override
+  {
+    auto ccm = BASE::composite_crit_chance_multiplier();
+
+    for ( const auto& i : crit_chance_multiplier_effects )
+      ccm *= 1.0 + get_effect_value( i );
+
+    return ccm;
+  }
+
   double composite_crit_damage_bonus_multiplier() const override
   {
     auto cd = BASE::composite_crit_damage_bonus_multiplier();
 
     for ( const auto& i : crit_damage_effects )
-      cd *= get_effect_value( i );
+      cd *= 1.0 + get_effect_value( i, true );
 
     return cd;
   }
@@ -1253,21 +913,10 @@ public:
     return rm;
   }
 
-private:
-  // method for getting target data as each module may have different action scoped method
-  TD* _get_td( player_t* t ) const
-  {
-    if constexpr ( std::is_invocable_v<decltype( &pet_t::owner ), PLAYER> )
-      return static_cast<TD*>( static_cast<PLAYER*>( _player )->owner->get_target_data( t ) );
-    else
-      return static_cast<TD*>( _player->get_target_data( t ) );
-  }
-
-public:
   double composite_target_multiplier( player_t* t ) const override
   {
     auto tm = BASE::composite_target_multiplier( t );
-    auto td = _get_td( t );
+    auto td = _player->get_target_data( t );
 
     for ( const auto& i : target_multiplier_effects )
       tm *= 1.0 + get_target_effect_value( i, td );
@@ -1278,7 +927,7 @@ public:
   double composite_target_crit_chance( player_t* t ) const override
   {
     auto cc = BASE::composite_target_crit_chance( t );
-    auto td = _get_td( t );
+    auto td = _player->get_target_data( t );
 
     for ( const auto& i : target_crit_chance_effects )
       cc += get_target_effect_value( i, td );
@@ -1289,7 +938,7 @@ public:
   double composite_target_crit_damage_bonus_multiplier( player_t* t ) const override
   {
     auto cd = BASE::composite_target_crit_damage_bonus_multiplier( t );
-    auto td = _get_td( t );
+    auto td = _player->get_target_data( t );
 
     for ( const auto& i : target_crit_damage_effects )
       cd *= 1.0 + get_target_effect_value( i, td );
@@ -1302,7 +951,6 @@ public:
     os << "<div>\n";
 
     BASE::html_customsection( os );
-    modified_effects_html( os );
 
     os << "</div>\n"
        << "<div>\n";
@@ -1310,608 +958,5 @@ public:
     parsed_effects_html( os );
 
     os << "</div>\n";
-  }
-
-  bool is_valid_aura( const spelleffect_data_t& eff ) const override
-  {
-    // Only parse apply aura effects
-    switch ( eff.type() )
-    {
-      case E_APPLY_AURA:
-      case E_APPLY_AURA_PET:
-        // TODO: more robust logic around 'party' buffs with radius
-        if ( eff.radius() )
-          return false;
-        break;
-      case E_APPLY_AREA_AURA_PARTY:
-      case E_APPLY_AREA_AURA_PET:
-        break;
-      default:
-        return false;
-    }
-
-    return true;
-  }
-
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& /* data */,
-                                                   double& val_mul, std::string& str, bool& flat, bool force ) override
-  {
-    if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
-    {
-      str = "auto attack";
-      return &da_multiplier_effects;
-    }
-    else if ( !BASE::data().affected_by_all( eff ) && !force )
-    {
-      return nullptr;
-    }
-    else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
-    {
-      switch ( eff.misc_value1() )
-      {
-        case P_GENERIC:
-          str = "direct damage";
-          return &da_multiplier_effects;
-
-        case P_DURATION:
-          str = "duration";
-          return &dot_duration_effects;
-
-        case P_TICK_DAMAGE:
-          str = "tick damage";
-          return &ta_multiplier_effects;
-
-        case P_CAST_TIME:
-          str = "cast time";
-          return &execute_time_effects;
-
-        case P_GCD:
-          str = "gcd";
-          return &gcd_effects;
-
-        case P_TICK_TIME:
-          str = "tick time";
-          return &tick_time_effects;
-
-        case P_COOLDOWN:
-          str = "cooldown";
-          return &recharge_multiplier_effects;
-
-        case P_RESOURCE_COST:
-          str = "cost percent";
-          return &cost_effects;
-
-        case P_CRIT_DAMAGE:
-          str = "crit damage";
-          return &crit_damage_effects;
-
-        default:
-          return nullptr;
-      }
-    }
-    else if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
-    {
-      flat = true;
-
-      switch ( eff.misc_value1() )
-      {
-        case P_CRIT:
-          str = "crit chance";
-          return &crit_chance_effects;
-
-        case P_RESOURCE_COST:
-          val_mul = spelleffect_data_t::resource_multiplier( BASE::current_resource() );
-          str = "flat cost";
-          return &flat_cost_effects;
-
-        default:
-          return nullptr;
-      }
-    }
-
-    return nullptr;
-  }
-
-  void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str, bool mastery,
-                      const spell_data_t* s_data, size_t i ) override
-  {
-    if ( data.buff )
-    {
-      BASE::sim->print_debug( "action-effects: {} ({}) {} modified by {} {} buff {} ({}#{})", BASE::name(), BASE::id,
-                              type_str, val_str, data.use_stacks ? "per stack of" : "with", data.buff->name(),
-                              data.buff->data().id(), i );
-    }
-    else if ( mastery && !data.func )
-    {
-      BASE::sim->print_debug( "action-effects: {} ({}) {} modified by {} from {} ({}#{})", BASE::name(), BASE::id,
-                              type_str, val_str, s_data->name_cstr(), s_data->id(), i );
-    }
-    else if ( data.func )
-    {
-      BASE::sim->print_debug( "action-effects: {} ({}) {} modified by {} with condition from {} ({}#{})", BASE::name(),
-                              BASE::id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
-    }
-    else
-    {
-      BASE::sim->print_debug( "action-effects: {} ({}) {} modified by {} from {} ({}#{})", BASE::name(), BASE::id,
-                              type_str, val_str, s_data->name_cstr(), s_data->id(), i );
-    }
-  }
-
-  bool is_valid_target_aura( const spelleffect_data_t& eff ) const override
-  {
-    if ( eff.type() == E_APPLY_AURA )
-      return true;
-
-    return false;
-  }
-
-  virtual void* get_target_effect_vector( const spelleffect_data_t& eff, uint32_t& /* opt_enum */, double& /* val_mul */,
-                                          std::string& str, bool& flat, bool force ) override
-  {
-    if ( !BASE::special && eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER )
-    {
-      str = "auto attack";
-      return &target_multiplier_effects;
-    }
-    else if ( !BASE::data().affected_by_all( eff ) && !force )
-    {
-      return nullptr;
-    }
-    else
-    {
-      switch ( eff.subtype() )
-      {
-        case A_MOD_DAMAGE_FROM_CASTER_SPELLS:
-        case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:
-          str = "damage";
-          return &target_multiplier_effects;
-        case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS:
-          flat = true;
-          str = "crit chance";
-          return &target_crit_chance_effects;
-        case A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS:
-          str = "crit damage";
-          return &target_crit_damage_effects;
-        default:
-          return nullptr;
-      }
-    }
-
-    return nullptr;
-  }
-
-  void target_debug_message( std::string_view type_str, std::string_view val_str, const spell_data_t* s_data,
-                             size_t i ) override
-  {
-    BASE::sim->print_debug( "target-effects: {} ({}) {} modified by {} on targets with debuff {} ({}#{})", BASE::name(),
-                            BASE::id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
-  }
-
-  template <typename... Ts>
-  void parse_target_effects( const std::function<int( TD* )>& fn, const spell_data_t* debuff, Ts&&... mods )
-  {
-    _parse_target_effects<TD>( fn, debuff, std::forward<Ts>( mods )... );
-  }
-
-  template <typename... Ts>
-  void force_target_effect( const std::function<int( TD* )>& fn, const spell_data_t* debuff, unsigned idx,
-                            Ts&&... mods )
-  {
-    _force_target_effect<TD>( fn, debuff, idx, std::forward<Ts>( mods )... );
-  }
-
-  // Syntax: parse_effect_modifiers( data[, spells|condition|ignore_mask|value|flags][,...])
-  //   (buff_t*) or
-  //   (const spell_data_t*)   data: Buff or spell to be checked for to see if effect applies. If buff is used,
-  //                                 modification will only apply if the buff is active. If spell is used, modification
-  //                                 will always apply unless an optional condition function is provided.
-  //
-  // The following optional arguments can be used in any order:
-  //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the buff
-  //   (bool F())         condition: Function that takes no arguments and returns true if the effect should apply
-  //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
-  //   (double)               value: Directly set the value, this overrides all other parsed values
-  //   (parse_flag_e)         flags: Various flags to control how the value is calculated when the action executes
-  //                  IGNORE_STACKS: Ignore stacks of the buff and don't multiply the value
-  //
-  // To access effect values of the action's spell data modified by parsed modifiers:
-  //   modified_effectN( idx )            : equivalent to effectN( idx ).base_value()
-  //   modified_effectN_percent( idx )    : equivalent to effectN( idx ).percent()
-  //   modified_effectN_resource( idx, r ): equivalent to effectN( idx ).resource( r )
-
-  template <typename T, typename... Ts>
-  void parse_effect_modifiers( T data, Ts... mods )
-  {
-    pack_t<modify_effect_t> pack;
-    const spell_data_t* spell = resolve_parse_data( data, pack );
-
-    if ( !spell || !spell->ok() )
-      return;
-
-    // parse mods and populate pack
-    parse_spell_effect_mods( pack, mods... );
-
-    for ( size_t i = 1; i <= spell->effect_count(); i++ )
-    {
-      if ( pack.mask & 1 << ( i - 1 ) )
-        continue;
-
-      // local copy of pack per effect
-      pack_t<modify_effect_t> tmp = pack;
-
-      parse_effect_modifier( tmp, spell, i );
-    }
-  }
-
-  void parse_effect_modifier( pack_t<modify_effect_t>& tmp, const spell_data_t* s_data, size_t i )
-  {
-    const auto& eff = s_data->effectN( i );
-    bool m;  // dummy throwaway
-    double val = eff.base_value();
-    double val_mul = 0.01;
-    int idx = -1;
-    bool flat = false;
-
-    if ( eff.type() != E_APPLY_AURA )
-      return;
-
-    switch ( eff.subtype() )
-    {
-      case A_ADD_FLAT_MODIFIER:
-      case A_ADD_FLAT_LABEL_MODIFIER:
-        val_mul = 1.0;
-        flat = true;
-        break;
-      case A_ADD_PCT_MODIFIER:
-      case A_ADD_PCT_LABEL_MODIFIER:
-        break;
-      default:
-        return;
-    }
-
-    switch ( eff.property_type() )
-    {
-      case P_EFFECT_1: idx = 0; break;
-      case P_EFFECT_2: idx = 1; break;
-      case P_EFFECT_3: idx = 2; break;
-      case P_EFFECT_4: idx = 3; break;
-      case P_EFFECT_5: idx = 4; break;
-      default: return;
-    }
-
-    if ( !BASE::data().affected_by_all( eff ) )
-      return;
-
-    if ( tmp.data.value != 0.0 )
-    {
-      val = tmp.data.value;
-      val_mul = 1.0;
-    }
-    else
-    {
-      apply_affecting_mods( tmp, val, m, s_data, i );
-      val *= val_mul;
-    }
-
-    if ( !val )
-      return;
-
-    std::string val_str = flat ? fmt::format( "{}", val ) : fmt::format( "{}%", val * 100 );
-    auto &effN = effect_modifiers[ idx ];
-
-    // always active
-    if ( !tmp.data.buff && !tmp.data.func )
-    {
-      BASE::sim->print_debug( "modify-effects: {} ({}#{}) permanently modified by {} from {} ({}#{})", BASE::name(),
-                              BASE::id, idx + 1, val_str, s_data->name_cstr(), s_data->id(), i );
-
-      if ( flat )
-        effN.value += val;
-      else
-        effN.value *= 1.0 + val;
-
-      effN.permanent.push_back( &eff );
-    }
-    // conditionally active
-    else
-    {
-      BASE::sim->print_debug( "modify-effects: {} ({}#{}) conditionally modified by {} from {} ({}#{})", BASE::name(),
-                              BASE::id, idx + 1, val_str, s_data->name_cstr(), s_data->id(), i );
-
-      tmp.data.value = val;
-      tmp.data.flat = flat;
-      tmp.data.eff = &eff;
-
-      effN.conditional.push_back( tmp.data );
-    }
-  }
-
-  // return base value after modifiers
-  double modified_effectN( size_t idx ) const
-  {
-    if ( !idx )
-      return 0.0;
-
-    auto return_value = effect_modifiers[ idx - 1 ].value;
-
-    for ( const auto& i : effect_modifiers[ idx - 1 ].conditional )
-    {
-      double eff_val = i.value;
-
-      if ( i.func && !i.func() )
-        continue;  // continue to next effect if conditional effect function is false
-
-      if ( i.buff )
-      {
-        auto stack = i.buff->check();
-
-        if ( !stack )
-          continue;  // continue to next effect if stacks == 0 (buff is down)
-
-        if ( i.use_stacks )
-          eff_val *= stack;
-      }
-
-      if ( i.flat )
-        return_value += eff_val;
-      else
-        return_value *= 1.0 + eff_val;
-    }
-
-    return return_value;
-  }
-
-  double modified_effectN_percent( size_t idx ) const
-  {
-    return modified_effectN( idx ) * 0.01;
-  }
-
-  double modified_effectN_resource( size_t idx, resource_e r ) const
-  {
-    return modified_effectN( idx ) * spelleffect_data_t::resource_multiplier( r );
-  }
-
-  std::vector<modify_effect_t>& modified_effect_vec( size_t idx )
-  {
-    return effect_modifiers[ idx - 1 ].conditional;
-  }
-
-  void modified_effects_html( report::sc_html_stream& os )
-  {
-    if ( range::count_if( effect_modifiers, []( const effect_pack_t& e ) {
-           return e.permanent.size() + e.conditional.size();
-         } ) )
-    {
-      os << "<div>\n"
-         << "<h4>Modified Effects</h4>\n"
-         << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
-
-      os << "<tr>\n"
-         << "<th class=\"small\">Effect</th>\n"
-         << "<th class=\"small\">Type</th>\n"
-         << "<th class=\"small\">Spell</th>\n"
-         << "<th class=\"small\">ID</th>\n"
-         << "<th class=\"small\">#</th>\n"
-         << "<th class=\"small\">+/%</th>\n"
-         << "<th class=\"small\">Value</th>\n"
-         << "</tr>\n";
-
-      print_parsed_effect( os, effect_modifiers[ 0 ], "Effect 1" );
-      print_parsed_effect( os, effect_modifiers[ 1 ], "Effect 2" );
-      print_parsed_effect( os, effect_modifiers[ 2 ], "Effect 3" );
-      print_parsed_effect( os, effect_modifiers[ 3 ], "Effect 4" );
-      print_parsed_effect( os, effect_modifiers[ 4 ], "Effect 5" );
-
-      os << "</table>\n"
-         << "</div>\n";
-    }
-  }
-
-  void parsed_effects_html( report::sc_html_stream& os )
-  {
-    if ( total_effects_count() )
-    {
-      os << "<div>\n"
-         << "<h4>Affected By (Dynamic)</h4>\n"
-         << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
-
-      os << "<tr>\n"
-         << "<th class=\"small\">Type</th>\n"
-         << "<th class=\"small\">Spell</th>\n"
-         << "<th class=\"small\">ID</th>\n"
-         << "<th class=\"small\">#</th>\n"
-         << "<th class=\"small\">Value</th>\n"
-         << "<th class=\"small\">Source</th>\n"
-         << "<th class=\"small\">Notes</th>\n"
-         << "</tr>\n";
-
-      print_parsed_type( os, da_multiplier_effects, "Direct Damage" );
-      print_parsed_type( os, ta_multiplier_effects, "Periodic Damage" );
-      print_parsed_type( os, crit_chance_effects, "Critical Strike Chance" );
-      print_parsed_type( os, crit_damage_effects, "Critical Strike Damage" );
-      print_parsed_type( os, execute_time_effects, "Execute Time" );
-      print_parsed_type( os, gcd_effects, "GCD" );
-      print_parsed_type( os, dot_duration_effects, "Dot Duration" );
-      print_parsed_type( os, tick_time_effects, "Tick Time" );
-      print_parsed_type( os, recharge_multiplier_effects, "Recharge Multiplier" );
-
-      // assume the first non-background action in the stat's action_list is the main action and get cost effects from it
-      auto main = this;
-      auto it = range::find_if( BASE::stats->action_list, []( action_t* a ) { return !a->background; } );
-      if ( it != BASE::stats->action_list.end() )
-        main = static_cast<parse_action_effects_t<BASE, PLAYER, TD>*>( *it );
-
-      print_parsed_type( os, main->flat_cost_effects, "Flat Cost", false );
-      print_parsed_type( os, main->cost_effects, "Percent Cost" );
-
-      print_parsed_type( os, target_multiplier_effects, "Damage on Debuff" );
-      print_parsed_type( os, target_crit_chance_effects, "Crit Chance on Debuff" );
-      print_parsed_type( os, target_crit_damage_effects, "Crit Damage on Debuff" );
-      print_parsed_custom_type( os );
-
-      os << "</table>\n"
-         << "</div>\n";
-    }
-  }
-
-  virtual size_t total_effects_count()
-  {
-    return ta_multiplier_effects.size() +
-           da_multiplier_effects.size() +
-           execute_time_effects.size() +
-           gcd_effects.size() +
-           dot_duration_effects.size() +
-           tick_time_effects.size() +
-           recharge_multiplier_effects.size() +
-           cost_effects.size() +
-           flat_cost_effects.size() +
-           crit_chance_effects.size() +
-           target_multiplier_effects.size();
-  }
-
-  virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
-
-  template <typename V>
-  void print_parsed_type( report::sc_html_stream& os, const V& entries, std::string_view n, bool pct = true )
-  {
-    auto c = entries.size();
-    if ( !c )
-      return;
-
-    os.format( "<tr><td class=\"label\" rowspan=\"{}\">{}</td>\n", c, n );
-
-    for ( size_t i = 0; i < c; i++ )
-    {
-      if ( i > 0 )
-        os << "<tr>";
-
-      print_parsed_line( os, entries[ i ], pct );
-    }
-  }
-
-  std::string value_type_name( parse_flag_e t )
-  {
-    switch ( t )
-    {
-      case USE_DEFAULT: return "Default Value";
-      case USE_CURRENT: return "Current Value";
-      default:          return "Spell Data";
-    }
-  }
-
-  void print_parsed_line( report::sc_html_stream& os, const player_effect_t& entry, bool pct )
-  {
-    std::vector<std::string> notes;
-
-    if ( !entry.use_stacks )
-      notes.push_back( "No-stacks" );
-
-    if ( entry.mastery )
-      notes.push_back( "Mastery" );
-
-    if ( entry.func )
-      notes.push_back( "Conditional" );
-
-    std::string val_str = entry.mastery ? fmt::format( "{:.5f}", entry.value * 100 )
-                        : pct           ? fmt::format( "{:.1f}%", entry.value * 100 )
-                                        : fmt::format( "{}", entry.value );
-
-    os.format(
-      "<td>{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td>{}</td><td>{}</td></tr>\n",
-      entry.eff->spell()->name_cstr(),
-      entry.eff->spell()->id(),
-      entry.eff->index() + 1,
-      val_str,
-      value_type_name( entry.type ),
-      util::string_join( notes ) );
-  }
-
-  void print_parsed_line( report::sc_html_stream& os, const target_effect_t<TD>& entry, bool pct )
-  {
-    std::string val_str = entry.mastery ? fmt::format( "{:.5f}", entry.value * 100 )
-                        : pct           ? fmt::format( "{:.1f}%", entry.value * 100 )
-                                        : fmt::format( "{}", entry.value );
-
-    os.format(
-      "<td>{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td>{}</td><td>{}</td></tr>\n",
-      entry.eff->spell()->name_cstr(),
-      entry.eff->spell()->id(),
-      entry.eff->index() + 1,
-      val_str,
-      "",
-      entry.mastery ? "Mastery" : "" );
-  }
-
-  void print_parsed_effect( report::sc_html_stream& os, const effect_pack_t& effN, std::string_view n )
-  {
-    auto p = effN.permanent.size();
-    auto c = effN.conditional.size();
-
-    if ( p + c == 0 )
-      return;
-
-    bool first_row = true;
-
-    os.format( "<tr><td rowspan=\"{}\">{}</td>\n", p + c, n );
-
-    if ( p )
-    {
-      first_row = false;
-
-      os.format( "<td rowspan=\"{}\">Permanent</td>", p );
-      for ( size_t i = 0; i < p; i++ )
-      {
-        if ( i > 0 )
-          os << "<tr>";
-
-        print_parsed_effect_line( os, *effN.permanent[ i ] );
-      }
-    }
-
-    if ( c )
-    {
-      if ( !first_row )
-        os << "<tr>";
-
-      os.format( "<td rowspan=\"{}\">Conditional</td>", c );
-      for ( size_t i = 0; i < c; i++ )
-      {
-        if ( i > 0 )
-          os << "<tr>";
-
-        print_parsed_effect_line( os, *effN.conditional[ i ].eff );
-      }
-    }
-  }
-
-  void print_parsed_effect_line( report::sc_html_stream& os, const spelleffect_data_t& eff )
-  {
-    std::string op_str;
-    std::string val_str = fmt::format( "{}", eff.base_value() );
-
-    switch ( eff.subtype() )
-    {
-      case A_ADD_PCT_MODIFIER:
-      case A_ADD_PCT_LABEL_MODIFIER:
-        op_str = "PCT";
-        val_str += '%';
-        break;
-      case A_ADD_FLAT_MODIFIER:
-      case A_ADD_FLAT_LABEL_MODIFIER:
-        op_str = "ADD";
-        break;
-      default:
-        op_str = "UNK";
-        break;
-    }
-
-    os.format(
-      "<td>{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td>{}</td><td class=\"right\">{}</td></tr>\n",
-      eff.spell()->name_cstr(),
-      eff.spell()->id(),
-      eff.index() + 1,
-      op_str,
-      val_str );
   }
 };

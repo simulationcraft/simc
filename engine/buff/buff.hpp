@@ -535,6 +535,7 @@ struct damage_buff_t : public buff_t
     const spell_data_t* s_data = nullptr;
     size_t effect_idx = 0;
     double multiplier = 1.0;
+    double initial_multiplier = 1.0;
     std::vector<int> labels;
   };
 
@@ -573,11 +574,11 @@ struct damage_buff_t : public buff_t
   };
 
   damage_buff_t* set_direct_mod( double );
-  damage_buff_t* set_direct_mod( const spell_data_t*, size_t, double = 0.0 );
+  damage_buff_t* set_direct_mod( const spell_data_t*, size_t, double = 0.0, double = 1.0 );
   damage_buff_t* set_periodic_mod( double );
-  damage_buff_t* set_periodic_mod( const spell_data_t*, size_t, double = 0.0 );
+  damage_buff_t* set_periodic_mod( const spell_data_t*, size_t, double = 0.0, double = 1.0 );
   damage_buff_t* set_auto_attack_mod( double );
-  damage_buff_t* set_auto_attack_mod( const spell_data_t*, size_t, double = 0.0 );
+  damage_buff_t* set_auto_attack_mod( const spell_data_t*, size_t, double = 0.0, double = 1.0 );
   damage_buff_t* set_crit_chance_mod( double );
   damage_buff_t* set_crit_chance_mod( const spell_data_t*, size_t, double = 0.0 );
 
@@ -595,7 +596,7 @@ struct damage_buff_t : public buff_t
 
   // Get current direct damage buff multiplier value multiplied by current stacks + benefit tracking.
   double stack_value_direct()
-  { return 1.0 + current_stack * ( value_direct() - 1.0 ); }
+  { return !current_stack ? 1.0 : direct_mod.initial_multiplier + current_stack * ( value_direct() - 1.0 ); }
 
   // Get current direct damage buff multiplier value + NO benefit tracking.
   double check_value_direct() const
@@ -603,7 +604,7 @@ struct damage_buff_t : public buff_t
 
   // Get current direct damage buff multiplier value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_direct() const
-  { return 1.0 + current_stack * ( check_value_direct() - 1.0 ); }
+  { return !current_stack ? 1.0 : direct_mod.initial_multiplier + current_stack * ( check_value_direct() - 1.0 ); }
 
   // Get current periodic damage buff multiplier value + benefit tracking.
   double value_periodic()
@@ -614,7 +615,7 @@ struct damage_buff_t : public buff_t
 
   // Get current periodic damage buff multiplier value multiplied by current stacks + benefit tracking.
   double stack_value_periodic()
-  { return 1.0 + current_stack * ( value_periodic() - 1.0 ); }
+  { return !current_stack ? 1.0 : periodic_mod.initial_multiplier + current_stack * ( value_periodic() - 1.0 ); }
 
   // Get current periodic damage buff multiplier value + NO benefit tracking.
   double check_value_periodic() const
@@ -622,7 +623,7 @@ struct damage_buff_t : public buff_t
 
   // Get current periodic damage buff multiplier value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_periodic() const
-  { return 1.0 + current_stack * ( check_value_periodic() - 1.0 ); }
+  { return !current_stack ? 1.0 : periodic_mod.initial_multiplier + current_stack * ( check_value_periodic() - 1.0 ); }
 
   // Get current AA damage buff multiplier value + benefit tracking.
   double value_auto_attack()
@@ -633,7 +634,7 @@ struct damage_buff_t : public buff_t
 
   // Get current AA damage buff multiplier value multiplied by current stacks + benefit tracking.
   double stack_value_auto_attack()
-  { return 1.0 + current_stack * ( value_auto_attack() - 1.0 ); }
+  { return !current_stack ? 1.0 : auto_attack_mod.initial_multiplier + current_stack * ( value_auto_attack() - 1.0 ); }
 
   // Get current AA damage buff multiplier value + NO benefit tracking.
   double check_value_auto_attack() const
@@ -641,7 +642,7 @@ struct damage_buff_t : public buff_t
 
   // Get current AA damage buff multiplier value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_auto_attack() const
-  { return 1.0 + current_stack * ( check_value_auto_attack() - 1.0 ); }
+  { return !current_stack ? 1.0 : auto_attack_mod.initial_multiplier + current_stack * ( check_value_auto_attack() - 1.0 ); }
 
   // Get current additive crit chance buff value + benefit tracking.
   double value_crit_chance()
@@ -664,7 +665,7 @@ struct damage_buff_t : public buff_t
 
 protected:
   damage_buff_t* set_buff_mod( damage_buff_modifier_t&, double );
-  damage_buff_t* set_buff_mod( damage_buff_modifier_t&, const spell_data_t*, size_t, double );
+  damage_buff_t* set_buff_mod( damage_buff_modifier_t&, const spell_data_t*, size_t, double, double );
 };
 
 /**

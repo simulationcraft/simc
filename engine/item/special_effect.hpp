@@ -165,6 +165,7 @@ public:
   bool has_target_specific_cooldown() const;
 
   bool can_proc_from_procs() const;
+  bool can_proc_from_suppressed() const;
   bool can_only_proc_from_class_abilites() const;
   void set_can_proc_from_procs( bool );
   void set_can_only_proc_from_class_abilites( bool );

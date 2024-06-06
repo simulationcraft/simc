@@ -423,8 +423,8 @@ void to_json( JsonOutput root, const player_t& p, const player_collected_data_t:
   add_non_zero( root[ "stats" ], "attack_crit", bs.attack_crit_chance );
   add_non_zero( root[ "stats" ], "spell_haste", bs.spell_haste );
   add_non_zero( root[ "stats" ], "attack_haste", bs.attack_haste );
-  add_non_zero( root[ "stats" ], "spell_speed", bs.spell_speed );
-  add_non_zero( root[ "stats" ], "attack_speed", bs.attack_speed );
+  add_non_zero( root[ "stats" ], "spell_cast_speed", bs.spell_cast_speed );
+  add_non_zero( root[ "stats" ], "auto_attack_speed", bs.auto_attack_speed );
 
   add_non_zero( root[ "stats" ], "mastery_value", bs.mastery_value );
   add_non_zero( root[ "stats" ], "damage_versatility", bs.damage_versatility );
@@ -587,7 +587,6 @@ void collected_data_to_json( JsonOutput root, const ::report::json::report_confi
       root[ "dtps" ] = cd.dmg_taken;
       root[ "timeline_dmg_taken" ] = cd.timeline_dmg_taken;
       root[ "deaths" ] = cd.deaths;
-      root[ "max_spike_amount" ] = cd.max_spike_amount;
     }
 
     root[ "heal" ] = cd.heal;
@@ -1115,7 +1114,7 @@ void profileset_json( const ::report::json::report_configuration_t& report_confi
 #endif
 }
 
-void dps_plot_json( const ::report::json::report_configuration_t& report_configuration, const plot_t& dps_plot,
+void dps_plot_json( const ::report::json::report_configuration_t& /* report_configuration */, const plot_t& dps_plot,
                     const sim_t& sim, js::JsonOutput& root )
 {
   for ( auto player : sim.player_list )
@@ -1146,7 +1145,7 @@ void dps_plot_json( const ::report::json::report_configuration_t& report_configu
   }
 }
 
-void reforge_plot_json( const ::report::json::report_configuration_t& report_configuration,
+void reforge_plot_json( const ::report::json::report_configuration_t& /* report_configuration */,
                         const reforge_plot_t& reforge_plot, const sim_t& sim, js::JsonOutput& root )
 {
   const auto& stat_list = reforge_plot.reforge_plot_stat_indices;
@@ -1167,7 +1166,8 @@ void reforge_plot_json( const ::report::json::report_configuration_t& report_con
 
       while ( j < stat_list.size() )
       {
-        dobj[ util::stat_type_abbrev( stat_list[ j++ ] ) ] = player->reforge_plot_data[ i ][ j ].value;
+        dobj[ util::stat_type_abbrev( stat_list[ j ] ) ] = player->reforge_plot_data[ i ][ j ].value;
+        j++;
       }
 
       dobj[ "dps" ] = player->reforge_plot_data[ i ][ j ].value;

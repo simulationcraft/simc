@@ -520,7 +520,7 @@ void enchants::galeforce_striking( special_effect_t& effect )
   {
     auto spell = effect.trigger();
     buff       = make_buff( effect.player, util::tokenized_name( spell ), spell )
-               ->add_invalidate( CACHE_ATTACK_SPEED )
+               ->add_invalidate( CACHE_AUTO_ATTACK_SPEED )
                ->set_default_value( spell->effectN( 1 ).percent() )
                ->set_activated( false );
     effect.player->buffs.galeforce_striking = buff;
@@ -1531,7 +1531,7 @@ void items::briny_barnacle( special_effect_t& effect )
       return;
     }
 
-    target->register_on_demise_callback( p, [ p, choking_brine_damage, explosion ]( player_t* target ) {
+    target->register_on_demise_callback( p, [ choking_brine_damage, explosion ]( player_t* target ) {
       // Don't do anything if the sim is ending
       if ( target->sim->event_mgr.canceled )
       {
@@ -2113,7 +2113,7 @@ void items::tidestorm_codex( special_effect_t& effect )
       if ( player->bugs )
         // Assume we're queueing another spell as soon as possible, i.e.
         // after the GCD has elapsed.
-        return std::max( player->cache.spell_speed() * trigger_gcd, player->min_gcd );
+        return std::max( player->cache.spell_cast_speed() * trigger_gcd, player->min_gcd );
       else
         return dot_duration;
     }
@@ -4294,7 +4294,7 @@ void items::dreams_end( special_effect_t& effect )
   {
     effect.player->buffs.delirious_frenzy = make_buff( effect.player, "delirious_frenzy", effect.trigger() )
                                                 ->set_default_value( effect.trigger()->effectN( 1 ).percent() )
-                                                ->add_invalidate( CACHE_ATTACK_SPEED );
+                                                ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
   }
 
   new delirious_frenzy_cb_t( effect );
@@ -6011,7 +6011,6 @@ void unique_gear::register_special_effects_bfa()
 void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
 {
   using namespace bfa;
-  static constexpr std::array<slot_e, 2> items {{ SLOT_TRINKET_1, SLOT_TRINKET_2 }};
 
   sim->register_target_data_initializer( potion_of_focused_resolve_t() );
 }

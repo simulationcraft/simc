@@ -94,7 +94,7 @@ namespace js {
   sc_js_t& sc_js_t::set(util::string_view path, util::string_view value_)
   {
     if (rapidjson::Value* obj = path_value(path))
-      *obj = rapidjson::Value(value_.data(), as<rapidjson::SizeType>( value_.size() ), js_.GetAllocator());
+      obj->SetString(value_.data(), as<rapidjson::SizeType>( value_.size() ), js_.GetAllocator());
     return *this;
   }
 
@@ -205,7 +205,7 @@ namespace js {
 
     js_.Accept( writer );
 
-    os << b.GetStringView();
+    os << b.GetString();
   }
 
   JsonOutput& js::JsonOutput::operator=(const cooldown_t& v)

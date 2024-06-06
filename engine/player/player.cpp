@@ -486,7 +486,7 @@ struct leech_t : public heal_t
 
     player->register_combat_begin( []( player_t* p ) {
       make_repeating_event( *p->sim,
-          [ p ] { return p->base_gcd * p->cache.spell_speed(); },
+          [ p ] { return p->base_gcd * p->cache.spell_cast_speed(); },
           [ p ] {
             if ( p->leech_pool > 0 )
               p->spells.leech->schedule_execute();
@@ -1132,7 +1132,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     // Attacks
     main_hand_attack( nullptr ),
     off_hand_attack( nullptr ),
-    current_attack_speed( 1.0 ),
+    current_auto_attack_speed( 1.0 ),
     // Resources
     resources(),
     // Consumables
@@ -1358,10 +1358,13 @@ player_t::base_initial_current_t::base_initial_current_t() :
   block( 0 ),
   hit( 0 ),
   expertise( 0 ),
+  leech( 0 ),
+  avoidance( 0 ),
   spell_crit_chance(),
   attack_crit_chance(),
   block_reduction(),
   mastery(),
+  versatility( 0 ),
   skill( 1.0 ),
   skill_debuff( 0.0 ),
   distance( 0 ),
@@ -1376,6 +1379,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   attack_power_multiplier( 1.0 ),
   base_armor_multiplier( 1.0 ),
   armor_multiplier( 1.0 ),
+  crit_damage_multiplier( 1.0 ),
+  crit_healing_multiplier( 1.0 ),
   position( POSITION_BACK )
 {
   range::fill( attribute_multiplier, 1.0 );
@@ -1414,6 +1419,8 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " attack_power_multiplier={}", s.attack_power_multiplier );
   fmt::format_to( out, " base_armor_multiplier={}", s.base_armor_multiplier );
   fmt::format_to( out, " armor_multiplier={}", s.armor_multiplier );
+  fmt::format_to( out, " crit_damage_multiplier={}", s.crit_damage_multiplier );
+  fmt::format_to( out, " crit_healing_multiplier={}", s.crit_healing_multiplier );
   fmt::format_to( out, " position={}", s.position );
 }
 
@@ -1555,6 +1562,12 @@ void player_t::init_base_stats()
     base.leech                    = 0.0;
     base.avoidance                = 0.0;
 
+    base.base_armor_multiplier    *= ( 1.0 + racials.titanwrought_frame->effectN( 1 ).percent() );
+    base.crit_damage_multiplier   *= ( 1.0 + racials.brawn->effectN( 1 ).percent() ) *
+                                     ( 1.0 + racials.might_of_the_mountain->effectN( 1 ).percent() );
+    base.crit_healing_multiplier  *= ( 1.0 + racials.brawn->effectN( 3 ).percent() ) *
+                                     ( 1.0 + racials.might_of_the_mountain->effectN( 3 ).percent() );
+
     resources.base[ RESOURCE_HEALTH ] = dbc->health_base( type, level() );
     resources.base[ RESOURCE_MANA ]   = dbc->resource_base( type, level() );
 
@@ -1614,12 +1627,14 @@ void player_t::init_base_stats()
   base.dodge = 0.03;
   base.miss = 0.03;
 
-  if (racials.quickness->ok()) // check spell data to avoid applying it to enemies.
+  // Dodge from base agility isn't affected by diminishing returns and is added here
+  if (base.dodge_per_agility > 0)
   {
-    // Dodge from base agillity isn't affected by diminishing returns and is added here
-    base.dodge += racials.quickness->effectN(1).percent() +
-      (dbc->race_base(race).agility + dbc->attribute_base(type, level()).agility) * base.dodge_per_agility;
+    base.dodge += (dbc->race_base(race).agility + dbc->attribute_base(type, level()).agility) * base.dodge_per_agility;
   }
+
+  // Night Elf dodge is additive
+  base.dodge += racials.quickness->effectN(1).percent();
 
   // Only Warriors and Paladins (and enemies) can block, defaults to 0
   if ( type == WARRIOR || type == PALADIN || type == ENEMY || type == TANK_DUMMY )
@@ -1731,6 +1746,9 @@ void player_t::init_initial_stats()
 
     initial.stats += enchant;
     initial.stats += sim->enchant;
+
+    // crit damage multiplier meta gems
+    initial.crit_damage_multiplier *= util::crit_multiplier( meta_gem );
   }
 
   initial.stats += total_gear;
@@ -1832,7 +1850,7 @@ void player_t::init_items()
   // Override with item slot overrides. Note this will completely replace any player-scoped item options
   if ( is_player() )
   {
-    for ( auto [ override_slot, override_str ] : sim->item_slot_overrides )
+    for ( const auto& [ override_slot, override_str ] : sim->item_slot_overrides )
     {
       if ( auto slot = util::parse_slot_type( override_slot ); slot != SLOT_INVALID )
       {
@@ -2507,10 +2525,10 @@ void player_t::override_talent( util::string_view override_str )
 
 static void parse_traits( talent_tree tree, const std::string& opt_str, player_t* player )
 {
-  auto talents = util::string_split<util::string_view>( opt_str, "/" );
+  auto talents = util::string_split<std::string_view>( opt_str, "/" );
   for ( const auto talent : talents )
   {
-    auto talent_split = util::string_split<util::string_view>( talent, ":" );
+    auto talent_split = util::string_split<std::string_view>( talent, ":" );
     if ( talent_split.size() != 2 )
     {
       player->sim->error( "Invalid talent string {}", talent );
@@ -2590,11 +2608,22 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
       else
       {
         player->player_traits.push_back( entry );
-
       }
 
       if ( tree == talent_tree::HERO )
         player->player_sub_traits.push_back( id_entry );
+    }
+  }
+
+  // add any freely granted traits
+  for ( const auto& trait : trait_data_t::data( util::class_id( player->type ), tree, player->is_ptr() ) )
+  {
+    if ( trait_data_t::is_granted( &trait, player->specialization() ) )
+    {
+      auto id = trait.id_trait_node_entry;
+      auto it = range::find_if( player->player_traits, [ id ]( const auto& e ) { return std::get<1>( e ) == id; } );
+      if ( it == player->player_traits.end() )
+        player->player_traits.emplace_back( tree, id, 1 );
     }
   }
 }
@@ -2638,15 +2667,16 @@ static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, boo
 
 namespace
 {
+// MakeBase64ConversionTable() from Interface/AddOns/Blizzard_SharedXMLBase/ExportUtil.lua
 const std::string base64_char = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-// hardcoded values from Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua
-constexpr unsigned LOADOUT_SERIALIZATION_VERSION = 1;
+// hardcoded values from Interface/AddOns/Blizzard_PlayerSpells/ClassTalents/Blizzard_ClassTalentImportExport.lua
+constexpr unsigned LOADOUT_SERIALIZATION_VERSION = 2;
 constexpr size_t version_bits = 8;    // serialization version
 constexpr size_t spec_bits    = 16;   // specialization id
 constexpr size_t tree_bits    = 128;  // C_Traits.GetTreeHash(), optionally can be 0-filled
 constexpr size_t rank_bits    = 6;    // ranks purchased if node is partially filled
 constexpr size_t choice_bits  = 2;    // choice index, 0-based
-// hardcoded value from Interface/SharedXML/ExportUtil.lua
+// hardcoded value from Interface/AddOns/Blizzard_SharedXMLBase/ExportUtil.lua
 constexpr size_t byte_size    = 6;
 }
 
@@ -2728,14 +2758,25 @@ static std::string generate_traits_hash( player_t* player )
       }
     }
 
-    if ( !rank )  // is node selected?
+    if ( rank )  // is node selected?
+    {
+      put_bit( 1, 1 );
+    }
+    else
     {
       put_bit( 1, 0 );
       continue;
     }
-    else
+
+    // is node purchased? granted nodes are baseline 1 rank.
+    if ( rank > ( trait_data_t::is_granted( trait, player->specialization() ) ? 1U : 0U ) )
     {
       put_bit( 1, 1 );
+    }
+    else
+    {
+      put_bit( 1, 0 );
+      continue;
     }
 
     if ( rank == trait->max_ranks )  // is node partially ranked?
@@ -2847,56 +2888,64 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
       auto trait = node.front().first;
       size_t rank = trait->max_ranks;
+      auto _tree = static_cast<talent_tree>( trait->tree_index );
 
-      if ( !std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) &&
+      // hero talents don't seem to require a matching specialization
+      if ( _tree != talent_tree::HERO &&
+           !std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) &&
            !range::contains( trait->id_spec, player->specialization() ) )
       {
         do_error( fmt::format( "selected node {} is not available to player's spec.", id ) );
         return;
       }
 
-      if ( get_bit( 1 ) )  // partially ranked normal trait
+      if ( !get_bit( 1 ) )  // purchased
       {
-        if ( node.size() > 1 )
+        rank = 1;  // non-purchased nodes are granted at rank 1
+      }
+      else
+      {
+        if ( get_bit( 1 ) )  // partially ranked normal trait
         {
-          do_error( fmt::format( "non-choice node {} has multiple entries.", id ) );
-          return;
+          if ( node.size() > 1 )
+          {
+            do_error( fmt::format( "non-choice node {} has multiple entries.", id ) );
+            return;
+          }
+
+          rank = get_bit( rank_bits );
+
+          if ( rank > trait->max_ranks )
+          {
+            do_error( fmt::format( "{} ranks selected for node {}, {} ranks max.", rank, id, trait->max_ranks ) );
+            return;
+          }
+
+          if ( rank == trait->max_ranks )
+          {
+            do_error( fmt::format( "partial rank for node {} but all {} ranks are allocated.", id, rank ) );
+            return;
+          }
         }
 
-        rank = get_bit( rank_bits );
-
-        if ( rank > trait->max_ranks )
+        if ( get_bit( 1 ) )  // choice trait
         {
-          do_error( fmt::format( "{} ranks selected for node {} which has {} ranks max.", rank, id, trait->max_ranks ) );
-          return;
-        }
+          if ( node[ 0 ].first->node_type != 2 && node[ 0 ].first->node_type != 3 )
+          {
+            do_error( fmt::format( "node {} is not a choice node but has index selection.", id ) );
+            return;
+          }
 
-        if ( rank == trait->max_ranks )
-        {
-          do_error( fmt::format( "partial rank indicated for node {} but all {} ranks are allocated.", id, rank ) );
-          return;
+          size_t index = get_bit( choice_bits );
+          if ( index >= node.size() )
+          {
+            do_error( fmt::format( "index {} for choice node {} out of bounds.", index, id ) );
+            return;
+          }
+
+          trait = node[ index ].first;
         }
       }
-
-      if ( get_bit( 1 ) )  // choice trait
-      {
-        if ( node[ 0 ].first->node_type != 2 && node[ 0 ].first->node_type != 3 )
-        {
-          do_error( fmt::format( "node {} is not a choice node but has index selection.", id ) );
-          return;
-        }
-
-        size_t index = get_bit( choice_bits );
-        if ( index >= node.size() )
-        {
-          do_error( fmt::format( "index {} for choice node {} out of bounds.", index, id ) );
-          return;
-        }
-
-        trait = node[ index ].first;
-      }
-
-      auto _tree = static_cast<talent_tree>( trait->tree_index );
 
       player->player_traits.emplace_back( _tree, trait->id_trait_node_entry, as<unsigned>( rank ) );
 
@@ -2967,11 +3016,20 @@ static void enable_default_talents( player_t* player )
       i++;
 
     auto trait = trait_data_t::find( traits[ i ].id_trait_node_entry, player->is_ptr() );
-    auto tree = static_cast<talent_tree>( trait->tree_index );
 
-    player->player_traits.emplace_back( tree, traits[ i ].id_trait_node_entry, traits[ i ].rank );
-    player->sim->print_debug( "{} adding {} talent {} ({})", *player, util::talent_tree_string( tree ), trait->name,
-                              traits[ i ].rank );
+    if ( !trait->id_node )
+    {
+      player->sim->error( "{} default talent not found: id_trait_node_entry={} order={}", *player,
+                          traits[ i ].id_trait_node_entry, traits[ i ].order );
+    }
+    else
+    {
+      auto tree = static_cast<talent_tree>( trait->tree_index );
+
+      player->player_traits.emplace_back( tree, traits[ i ].id_trait_node_entry, traits[ i ].rank );
+      player->sim->print_debug( "{} adding {} talent {} ({})", *player, util::talent_tree_string( tree ), trait->name,
+                                traits[ i ].rank );
+    }
   }
 }
 
@@ -3139,6 +3197,8 @@ void player_t::init_spells()
   racials.mountaineer           = find_racial_spell( "Mountaineer" );
   racials.brush_it_off          = find_racial_spell( "Brush It Off" );
   racials.awakened              = find_racial_spell( "Awakened" );
+  racials.azerite_surge         = find_racial_spell( "Azerite Surge" );
+  racials.titanwrought_frame    = find_racial_spell( "Titan-Wrought Frame" );
 
   if ( is_player() )
   {
@@ -3818,7 +3878,7 @@ void player_t::init_finished()
 
     for ( const auto& v : precombat_state_map )
     {
-      auto splits = util::string_split( v.first, "." );
+      auto splits = util::string_split<std::string_view>( v.first, "." );
 
       if ( splits.size() < 2 )
       {
@@ -4315,7 +4375,7 @@ double player_t::composite_melee_haste() const
   return h;
 }
 
-double player_t::composite_melee_speed() const
+double player_t::composite_melee_auto_attack_speed() const
 {
   double h = composite_melee_haste();
 
@@ -4327,9 +4387,6 @@ double player_t::composite_melee_speed() const
 
   if ( buffs.way_of_controlled_currents && buffs.way_of_controlled_currents->check() )
     h *= 1.0 / ( 1.0 + buffs.way_of_controlled_currents->check_stack_value() );
-
-  if ( buffs.heavens_nemesis && buffs.heavens_nemesis->data().effectN( 1 ).subtype() == A_MOD_RANGED_AND_MELEE_ATTACK_SPEED && buffs.heavens_nemesis->check() )
-    h *= 1.0 / ( 1.0 + buffs.heavens_nemesis->check_stack_value() );
 
   return h;
 }
@@ -4679,7 +4736,7 @@ double player_t::composite_spell_haste() const
 /**
  * This is the old spell_haste and incorporates everything that buffs cast speed
  */
-double player_t::composite_spell_speed() const
+double player_t::composite_spell_cast_speed() const
 {
   auto speed = cache.spell_haste();
 
@@ -4968,7 +5025,8 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
 
   if ( buffs.wild_hunt_tactics )
   {
-    double health_threshold = 100.0 - ( 100.0 - buffs.wild_hunt_tactics->data().effectN( 5 ).base_value() ) * sim->shadowlands_opts.wild_hunt_tactics_duration_multiplier;
+    double health_threshold = 100.0 - ( 100.0 - buffs.wild_hunt_tactics->data().effectN( 5 ).base_value() ) *
+                                        sim->shadowlands_opts.wild_hunt_tactics_duration_multiplier;
     // This buff is never triggered so use default_value.
     if ( target->health_percentage() > health_threshold )
     {
@@ -4985,6 +5043,7 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
   auto td = find_target_data( target );
   if ( td )
   {
+    // Always created debuffs, TODO: move to target_specific_debuffs
     m *= 1.0 + td->debuff.condensed_lifeforce->check_value();
     m *= 1.0 + td->debuff.adversary->check_value();
     m *= 1.0 + td->debuff.plagueys_preemptive_strike->check_value();
@@ -4995,6 +5054,10 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     m *= 1.0 + td->debuff.exsanguinated->check_value();
     m *= 1.0 + td->debuff.kevins_wrath->check_value();
     m *= 1.0 + td->debuff.wild_hunt_strategem->check_value();
+
+    // target specific debuffs, MUST check for null
+    if ( td->debuff.unwavering_focus )
+      m *= 1.0 + td->debuff.unwavering_focus->check_value();
   }
 
   return m;
@@ -5041,12 +5104,7 @@ double player_t::composite_player_target_crit_chance( player_t* target ) const
 
 double player_t::composite_player_critical_damage_multiplier( const action_state_t* /* s */ ) const
 {
-  double m = 1.0;
-
-  m *= 1.0 + racials.brawn->effectN( 1 ).percent();
-  m *= 1.0 + racials.might_of_the_mountain->effectN( 1 ).percent();
-  m *= 1.0 + passive_values.amplification_1;
-  m *= 1.0 + passive_values.amplification_2;
+  double m = current.crit_damage_multiplier;
 
   if ( buffs.elemental_chaos_fire )
     m *= 1.0 + buffs.elemental_chaos_fire->check_value();
@@ -5067,15 +5125,10 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
 
 double player_t::composite_player_critical_healing_multiplier() const
 {
-  double m = 1.0;
-
-  m += racials.brawn->effectN( 1 ).percent();
-  m += racials.might_of_the_mountain->effectN( 1 ).percent();
-  m += 0.5 * passive_values.amplification_1;
-  m += 0.5 * passive_values.amplification_2;
+  double m = current.crit_healing_multiplier;
 
   if ( buffs.elemental_chaos_frost )
-    m += buffs.elemental_chaos_frost->check_value();
+    m *= 1.0 + buffs.elemental_chaos_frost->check_value();
 
   return m;
 }
@@ -5110,6 +5163,9 @@ double player_t::non_stacking_movement_modifier() const
 
     if ( buffs.normalization_increase && buffs.normalization_increase->check() )
       speed = std::max( buffs.normalization_increase->data().effectN( 3 ).percent(), speed );
+
+    if ( buffs.surekian_grace && buffs.surekian_grace->check() )
+      speed = std::max( buffs.surekian_grace->check_value(), speed );
   }
 
   return speed;
@@ -5391,12 +5447,12 @@ void player_t::invalidate_cache( cache_e c )
       break;
 
     case CACHE_ATTACK_HASTE:
-      invalidate_cache( CACHE_ATTACK_SPEED );
+      invalidate_cache( CACHE_AUTO_ATTACK_SPEED );
       invalidate_cache( CACHE_RPPM_HASTE );
       break;
 
     case CACHE_SPELL_HASTE:
-      invalidate_cache( CACHE_SPELL_SPEED );
+      invalidate_cache( CACHE_SPELL_CAST_SPEED );
       invalidate_cache( CACHE_RPPM_HASTE );
       break;
 
@@ -5583,8 +5639,8 @@ void player_t::combat_begin()
     collected_data.combat_start_resource[ i ].add( resources.current[ i ] );
   }
 
-  auto add_timed_buff_triggers = [ this ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
-  {
+  auto add_timed_buff_triggers = [ this ]( const std::vector<timespan_t>& times, buff_t* buff,
+                                           timespan_t duration = timespan_t::min() ) {
     if ( buff )
       for ( auto t : times )
         make_event( *sim, t, [ buff, duration ] { buff->trigger( duration ); } );
@@ -5599,12 +5655,13 @@ void player_t::combat_begin()
   add_timed_buff_triggers( external_buffs.boon_of_azeroth_mythic, buffs.boon_of_azeroth_mythic );
   add_timed_buff_triggers( external_buffs.tome_of_unstable_power, buffs.tome_of_unstable_power );
 
-  auto add_timed_blessing_triggers = [ add_timed_buff_triggers ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
-  {
+  auto add_timed_blessing_triggers = [ add_timed_buff_triggers ]( const std::vector<timespan_t>& times, buff_t* buff,
+                                                                  timespan_t duration = timespan_t::min() ) {
     add_timed_buff_triggers( times, buff, duration );
   };
 
-  timespan_t summer_duration = buffs.blessing_of_summer->buff_duration() * ( 1.0 + external_buffs.blessing_of_summer_duration_multiplier );
+  timespan_t summer_duration =
+    buffs.blessing_of_summer->buff_duration() * ( 1.0 + external_buffs.blessing_of_summer_duration_multiplier );
   add_timed_blessing_triggers( external_buffs.blessing_of_summer, buffs.blessing_of_summer, summer_duration );
   add_timed_blessing_triggers( external_buffs.blessing_of_autumn, buffs.blessing_of_autumn );
   add_timed_blessing_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter );
@@ -6085,9 +6142,9 @@ void player_t::reset()
 
   current_execute_type = execute_type::FOREGROUND;
 
-  current_attack_speed    = 1.0;
-  gcd_current_haste_value = 1.0;
-  gcd_type          = gcd_haste_type::NONE;
+  current_auto_attack_speed = 1.0;
+  gcd_current_haste_value   = 1.0;
+  gcd_type = gcd_haste_type::NONE;
 
   cast_delay_reaction = timespan_t::zero();
   cast_delay_occurred = timespan_t::zero();
@@ -6530,7 +6587,7 @@ void player_t::arise()
     }
   }
 
-  current_attack_speed = cache.attack_speed();
+  current_auto_attack_speed = cache.auto_attack_speed();
 
   // Requires index-based lookup since on-arise callbacks may
   // insert new on-arise callbacks to the vector.
@@ -7793,7 +7850,7 @@ void player_t::do_damage( action_state_t* incoming_state )
 
   // New callback system; proc abilities on incoming events.
   // TODO: How to express action causing/not causing incoming callbacks?
-  if ( incoming_state->action && incoming_state->action->callbacks )
+  if ( incoming_state->action && incoming_state->action->callbacks && !incoming_state->action->suppress_target_procs )
   {
     proc_types pt = incoming_state->proc_type();
     if ( pt != PROC1_INVALID )
@@ -9734,7 +9791,7 @@ struct cancel_buff_t : public action_t
     add_option( opt_string( "name", buff_name ) );
     parse_options( options_str );
     ignore_false_positive = true;
-
+    harmful = false;
     trigger_gcd = timespan_t::zero();
   }
 
@@ -10743,19 +10800,13 @@ const spell_data_t* player_t::find_talent_spell( util::string_view n, specializa
   return spell_data_t::not_found();
 }
 
-static player_talent_t create_talent_obj( const player_t* player, specialization_e spec, const trait_data_t* trait )
+static player_talent_t create_talent_obj( const player_t* player, const trait_data_t* trait )
 {
   auto it = range::find_if( player->player_traits, [ trait ]( const auto& entry ) {
     return std::get<1>( entry ) == trait->id_trait_node_entry;
   } );
 
   auto _tree = static_cast<talent_tree>( trait->tree_index );
-
-  // check if the trait is a free class trait for the spec, or the initial starting node on the spec/hero tree (1,1)
-  bool is_starter =
-      range::find( trait->id_spec_starter, spec == SPEC_NONE ? player->_spec : spec ) != trait->id_spec_starter.end() ||
-      ( ( _tree == talent_tree::SPECIALIZATION || _tree == talent_tree::HERO ) && trait->col == 1 && trait->row == 1 );
-
   auto rank = it == player->player_traits.end() ? 0U : std::get<2>( *it );
 
   // all allocated hero talents are present but disabled if the control talent is not active unless it has been manually
@@ -10763,16 +10814,15 @@ static player_talent_t create_talent_obj( const player_t* player, specialization
   if ( _tree == talent_tree::HERO && !range::contains( player->player_sub_trees, trait->id_sub_tree ) &&
        !range::contains( player->player_sub_traits, trait->id_trait_node_entry ) && !player->sim->enable_all_talents )
   {
-    is_starter = false;
     rank = 0U;
   }
 
-  if ( ( it != player->player_traits.end() && rank == 0U ) || ( it == player->player_traits.end() && !is_starter ) )
+  if ( !rank )
   {
     return { player };  // Trait not found on player
   }
 
-  return { player, trait, is_starter ? trait->max_ranks : rank };
+  return { player, trait, rank };
 }
 
 player_talent_t player_t::find_talent_spell(
@@ -10802,7 +10852,7 @@ player_talent_t player_t::find_talent_spell(
     return {};  // Invalid trait
   }
 
-  return create_talent_obj( this, s, trait );
+  return create_talent_obj( this, trait );
 }
 
 player_talent_t player_t::find_talent_spell(
@@ -10822,10 +10872,10 @@ player_talent_t player_t::find_talent_spell(
     return {};  // Invalid trait
   }
 
-  return create_talent_obj( this, s, traits[ 0 ] );
+  return create_talent_obj( this, traits[ 0 ] );
 }
 
-player_talent_t player_t::find_talent_spell( unsigned trait_node_entry_id, specialization_e s ) const
+player_talent_t player_t::find_talent_spell( unsigned trait_node_entry_id ) const
 {
   const trait_data_t* trait = trait_data_t::find( trait_node_entry_id, dbc->ptr );
   if ( trait == &trait_data_t::nil() )
@@ -10835,7 +10885,7 @@ player_talent_t player_t::find_talent_spell( unsigned trait_node_entry_id, speci
     return {};  // Invalid trait
   }
 
-  return create_talent_obj( this, s, trait );
+  return create_talent_obj( this, trait );
 }
 
 const spell_data_t* player_t::find_specialization_spell( util::string_view name,
@@ -11308,14 +11358,14 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   if ( expression_str == "attack_haste" )
     return make_fn_expr( expression_str, [this] { return cache.attack_haste(); } );
 
-  if ( expression_str == "attack_speed" )
-    return make_fn_expr( expression_str, [this] { return cache.attack_speed(); } );
+  if ( expression_str == "auto_attack_speed" )
+    return make_fn_expr( expression_str, [this] { return cache.auto_attack_speed(); } );
 
   if ( expression_str == "spell_haste" )
     return make_fn_expr( expression_str, [this] { return cache.spell_haste(); } );
 
-  if ( expression_str == "spell_speed" )
-    return make_fn_expr( expression_str, [this] { return cache.spell_speed(); } );
+  if ( expression_str == "spell_cast_speed" )
+    return make_fn_expr( expression_str, [this] { return cache.spell_cast_speed(); } );
 
   if ( expression_str == "mastery_value" )
     return make_mem_fn_expr( expression_str, this->cache, &player_stat_cache_t::mastery_value );
@@ -11677,6 +11727,28 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       }
 
       throw std::invalid_argument( fmt::format( "Unsupported dragonflight. option '{}'.", splits[ 1 ] ) );
+    }
+
+    if ( splits[ 0 ] == "hero_tree" )
+    {
+      if ( auto id = trait_data_t::get_hero_tree_id( splits[ 1 ] ) )
+      {
+        // check hash-activated hero trees
+        if ( range::contains( player_sub_trees, id ) )
+          return expr_t::create_constant( expression_str, 1 );
+
+        // check manually added hero talents
+        for ( auto trait_id : player_sub_traits )
+        {
+          auto trait = trait_data_t::find( trait_id, is_ptr() );
+          if ( trait->id_sub_tree == id )
+            return expr_t::create_constant( expression_str, 1 );
+        }
+
+        return expr_t::create_constant( expression_str, 0 );
+      }
+
+      throw std::invalid_argument( fmt::format( "Cannot find hero tree '{}'.", splits[ 1 ] ) );
     }
   } // splits.size() == 2
 
@@ -12922,6 +12994,7 @@ void player_t::create_options()
   add_option( opt_string( "dragonflight.windweaver_party_ilvls", dragonflight_opts.windweaver_party_ilvls ) );
 
   // The War Within options
+  add_option( opt_string( "thewarwithin.sikran_shadow_arsenal_stance", thewarwithin_opts.sikrans_shadow_arsenal_stance ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )
@@ -13462,7 +13535,6 @@ player_collected_data_t::player_collected_data_t( const player_t* player ) :
   atps( player->name_str + " Absorb Taken Per Second", tank_container_type( player, 2 ) ),
   absorb_taken( player->name_str + " Absorb Taken", tank_container_type( player, 2 ) ),
   deaths( player->name_str + " Deaths", tank_container_type( player, 2 ) ),
-  max_spike_amount( player->name_str + " Max Spike Value", tank_container_type( player, 2 ) ),
   target_metric( player->name_str + " Target Metric", generic_container_type( player, 1 ) ),
   resource_timelines(),
   health_pct(),
@@ -13612,7 +13684,6 @@ void player_collected_data_t::analyze( const player_t& p )
   atps.analyze();
   // Tank
   deaths.analyze();
-  max_spike_amount.analyze();
 
   if ( !p.sim->single_actor_batch )
   {
@@ -14037,11 +14108,11 @@ void player_t::adjust_global_cooldown( gcd_haste_type gcd_type )
     case gcd_haste_type::ATTACK_HASTE:
       new_haste = cache.attack_haste();
       break;
-    case gcd_haste_type::SPELL_SPEED:
-      new_haste = cache.spell_speed();
+    case gcd_haste_type::SPELL_CAST_SPEED:
+      new_haste = cache.spell_cast_speed();
       break;
-    case gcd_haste_type::ATTACK_SPEED:
-      new_haste = cache.attack_speed();
+    case gcd_haste_type::AUTO_ATTACK_SPEED:
+      new_haste = cache.auto_attack_speed();
       break;
     // SPEED_ANY and HASTE_ANY are nonsensical, actions have to have a correct GCD haste type so
     // they can be adjusted on state changes.
@@ -14097,17 +14168,17 @@ void player_t::adjust_global_cooldown( gcd_haste_type gcd_type )
 void player_t::adjust_auto_attack( gcd_haste_type type )
 {
   // Don't adjust autoattacks on spell-derived haste
-  if ( type == gcd_haste_type::SPELL_SPEED || type == gcd_haste_type::SPELL_HASTE )
+  if ( type == gcd_haste_type::SPELL_CAST_SPEED || type == gcd_haste_type::SPELL_HASTE )
   {
     return;
   }
 
   if ( main_hand_attack )
-    main_hand_attack->reschedule_auto_attack( current_attack_speed );
+    main_hand_attack->reschedule_auto_attack( current_auto_attack_speed );
   if ( off_hand_attack )
-    off_hand_attack->reschedule_auto_attack( current_attack_speed );
+    off_hand_attack->reschedule_auto_attack( current_auto_attack_speed );
 
-  current_attack_speed = cache.attack_speed();
+  current_auto_attack_speed = cache.auto_attack_speed();
 }
 
 timespan_t find_minimum_cd( const std::vector<std::pair<const cooldown_t*, const cooldown_t*>>& list )
@@ -14490,6 +14561,11 @@ void player_t::register_on_kill_callback( std::function<void( player_t* )> fn )
 void player_t::register_on_combat_state_callback( std::function<void( player_t*, bool )> fn )
 {
   callbacks_on_combat_state.emplace_back( std::move( fn ) );
+}
+
+void player_t::register_movement_callback( std::function<void( bool )> fn )
+{
+  callbacks_on_movement.emplace_back( std::move( fn ) );
 }
 
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const

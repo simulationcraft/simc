@@ -140,9 +140,9 @@ struct priest_pet_t : public pet_t
     return h;
   }
 
-  double composite_melee_speed() const override
+  double composite_melee_auto_attack_speed() const override
   {
-    double h = pet_t::composite_melee_speed();
+    double h = pet_t::composite_melee_auto_attack_speed();
 
     if ( buffs.power_infusion )
       h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
@@ -150,9 +150,9 @@ struct priest_pet_t : public pet_t
     return h;
   }
 
-  double composite_spell_speed() const override
+  double composite_spell_cast_speed() const override
   {
-    double h = pet_t::composite_spell_speed();
+    double h = pet_t::composite_spell_cast_speed();
 
     if ( buffs.power_infusion )
       h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
@@ -218,7 +218,7 @@ struct priest_pet_melee_t : public melee_attack_t
   }
 };
 
-struct priest_pet_spell_t : public parse_action_effects_t<spell_t, priest_pet_t, priest_td_t>
+struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
 {
   bool affected_by_shadow_weaving;
   bool triggers_atonement;
@@ -304,7 +304,7 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t, priest_pet_t,
     // Doesn't work on the pet ayy lmao
     /*if ( p().o().specialization() == PRIEST_DISCIPLINE )
     {
-        parse_target_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); },
+        parse_target_effects( []( actor_target_data_t* t ) { return static_cast<priest_td_t*>( t )->buffs.schism->check(); },
     p().o().talents.discipline.schism_debuff );
     }*/
   }
@@ -355,7 +355,7 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t, priest_pet_t,
 
 private:
   // typedef for the templated action type, eg. spell_t, attack_t, heal_t
-  using ab = parse_action_effects_t<spell_t, priest_pet_t, priest_td_t>;
+  using ab = parse_action_effects_t<spell_t>;
 };
 
 namespace fiend
@@ -450,7 +450,7 @@ struct voidwraith_pet_t final : public base_fiend_pet_t
   voidwraith_pet_t( priest_t* owner, util::string_view name = "voidwraith" )
     : base_fiend_pet_t( owner, name, fiend_type::Voidwraith )
   {
-    direct_power_mod = 1.0;
+    direct_power_mod = 0.5;
 
     npc_id = 224466;
 
@@ -478,7 +478,7 @@ struct voidwraith_pet_t final : public base_fiend_pet_t
     return 0;
   }
 
-  action_t* create_action( util::string_view name, util::string_view options_str );
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
 struct void_flay_t final : public priest_pet_spell_t
@@ -500,17 +500,6 @@ struct void_flay_t final : public priest_pet_spell_t
     // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1182
     gcd_type = !p.o().bugs ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
     trigger_gcd = 1.5_s;
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1180
-    if ( !p.o().bugs )
-    {
-      affected_by_shadow_weaving = true;
-      force_effect( p.o().buffs.twist_of_fate, 1 );
-      force_effect( p.o().buffs.shadowform, 1 );
-      force_effect( p.o().buffs.devoured_pride, 1 );
-      force_effect( p.o().buffs.voidform, 1 );
-      force_effect( p.o().buffs.voidform, 3 );        // Ancient Madness
-      force_effect( p.o().buffs.dark_ascension, 4 );  // Ancient Madness
-    }
 
     damage_mul = data().effectN( 2 ).percent();
   }
@@ -525,11 +514,8 @@ struct void_flay_t final : public priest_pet_spell_t
   double composite_target_multiplier( player_t* target ) const override
   {
     auto m = player->composite_player_target_multiplier( target, get_school() );
-
-    if ( target->health_percentage() >= 50 )
-    {
-      m *= 1.0 + damage_mul;
-    }
+    
+    m *= 1.0 + damage_mul * target->resources.pct( RESOURCE_HEALTH );
 
     return m;
   }
@@ -543,6 +529,11 @@ struct void_flay_t final : public priest_pet_spell_t
       p().o().trigger_atonement( s );
 
       p().o().trigger_essence_devourer();
+
+      if ( p().o().specialization() == PRIEST_SHADOW )
+      {
+        p().o().trigger_shadow_weaving( s );
+      }
 
       if ( p().o().specialization() == PRIEST_SHADOW )
       {
@@ -716,7 +707,7 @@ struct fiend_melee_t : public priest_pet_melee_t
       return timespan_t::zero();
 
     // Mindbender inherits haste from the player
-    timespan_t hasted_time = base_execute_time * player->cache.spell_speed();
+    timespan_t hasted_time = base_execute_time * player->cache.spell_cast_speed();
 
     return hasted_time;
   }

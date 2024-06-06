@@ -2106,7 +2106,7 @@ void carvers_eye( special_effect_t& effect )
         ->set_duration( timespan_t::from_seconds( target_debuff->effectN( 2 ).base_value() ) );
     }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( action_t*, action_state_t* s ) override
     {
       // Don't proc on existing targets
       //

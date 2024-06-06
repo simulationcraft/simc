@@ -7,6 +7,7 @@
 #include "dbc/sc_spell_info.hpp"
 #include "dbc/temporary_enchant.hpp"
 #include "dbc/trait_data.hpp"
+#include "player/consumable.hpp"
 #include "player/covenant.hpp"
 #include "player/player_talent_points.hpp"
 #include "player/scaling_metric_data.hpp"
@@ -251,7 +252,10 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   std::string name;
   if ( a )
   {
-    name = report_decorators::decorated_action( *a );
+    if ( auto con = dynamic_cast<dbc_consumable_base_t*>( a ); con && con->item_data )
+      name = report_decorators::decorated_item_data( *s.player->sim, *con->item_data );
+    else
+      name = report_decorators::decorated_action( *a );
   }
   else
   {
@@ -1112,6 +1116,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    "<li><span class=\"label\">tick_may_crit:</span>%s</li>\n"
                    "<li><span class=\"label\">tick_zero:</span>%s</li>\n"
                    "<li><span class=\"label\">tick_on_application:</span>%s</li>\n"
+                   "<li><span class=\"label\">rolling_periodic:</span>%s</li>\n"
                    "<li><span class=\"label\">attack_power_mod.tick:</span>%.6f</li>\n"
                    "<li><span class=\"label\">spell_power_mod.tick:</span>%.6f</li>\n"
                    "<li><span class=\"label\">base_td:</span>%.2f</li>\n"
@@ -1125,6 +1130,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    a->tick_may_crit ? "true" : "false",
                    a->tick_zero ? "true" : "false",
                    a->tick_on_application ? "true" : "false",
+                   a->rolling_periodic ? "true" : "false",
                    a->attack_power_mod.tick,
                    a->spell_power_mod.tick,
                    a->base_td,
@@ -1196,7 +1202,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     {
       os << "<div class=\"flexwrap\">\n";
 
-      s.action_list.back()->html_customsection( os );
+      s.action_list.front()->html_customsection( os );
 
       os << "</div>";
     }
@@ -1530,7 +1536,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
        << "</thead>\n";
 
     os << "<tbody>\n";
-    for ( attribute_e i = ATTRIBUTE_NONE; ++i < ATTR_AGI_INT; )
+    for ( attribute_e i = ATTRIBUTE_NONE; ++i < ATTR_AGI_INT; )  // ATTRIBUTE_NONE is skipped via ++i
     {
       os.printf(
           "<tr>\n"
@@ -1666,22 +1672,22 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           100 * ( 1 / p.composite_spell_haste() - 1 ),
           p.composite_spell_haste_rating() );
     }
-    if ( p.composite_spell_speed() != p.composite_spell_haste() )
+    if ( p.composite_spell_cast_speed() != p.composite_spell_haste() )
     {
       os.printf(
           "<tr>\n"
-          "<th class=\"left\">Spell Speed</th>\n"
+          "<th class=\"left\">Spell Cast Speed</th>\n"
           "<td class=\"right\"></td>\n"
           "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "</tr>\n",
-          100 * ( 1 / buffed_stats.spell_speed - 1 ),
-          100 * ( 1 / p.composite_spell_speed() - 1 ),
+          100 * ( 1 / buffed_stats.spell_cast_speed - 1 ),
+          100 * ( 1 / p.composite_spell_cast_speed() - 1 ),
           p.composite_spell_haste_rating() );
     }
-    if ( p.composite_melee_speed() != p.composite_melee_haste() )
+    if ( p.composite_melee_auto_attack_speed() != p.composite_melee_haste() )
     {
       os.printf(
           "<tr>\n"
@@ -1692,8 +1698,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "</tr>\n",
-          100 * ( 1 / buffed_stats.attack_speed - 1 ),
-          100 * ( 1 / p.composite_melee_speed() - 1 ),
+          100 * ( 1 / buffed_stats.auto_attack_speed - 1 ),
+          100 * ( 1 / p.composite_melee_auto_attack_speed() - 1 ),
           p.composite_melee_haste_rating() );
     }
     os.printf(
@@ -1976,23 +1982,29 @@ int raidbots_talent_render_width( specialization_e spec, int height )
   }
 }
 
+std::string raidbots_domain( [[maybe_unused]] bool ptr )
+{
+#if SC_BETA
+  return "mimiron";
+#else
+  return ptr ? "mimiron" : "www";
+#endif
+}
+
 std::string raidbots_talent_render_src( std::string_view talent_str, unsigned level, int width, bool mini, bool ptr )
 {
   return fmt::format( "https://{}.raidbots.com/simbot/render/talents/{}?bgcolor=160f0b&level={}&width={}{}",
-                      ptr ? "mimiron" : "www", base64_to_url( talent_str ), level, width, mini ? "&mini=1" : "" );
+                      raidbots_domain( ptr ), base64_to_url( talent_str ), level, width, mini ? "&mini=1" : "" );
 }
 
 template <typename T>
 void print_html_talent_table( report::sc_html_stream& os, const player_t& p, std::string_view title, size_t points, const T& traits )
 {
-  if ( !points )
-    return;
-
   os.format( "<table class=\"sc\"><tr><th></th><th>{} Talents [{}]</th></tr>\n", title, points );
 
   for ( unsigned row = 0; row < traits.size(); row++ )
   {
-    os.format( "<tr><th class=\"left\">{}</th><td><ul class=\"float\">\n", row + 1 );
+    os.format( "<tr><th class=\"right\" style=\"width: 1em\">{}</th><td class=\"left\"><ul class=\"float\">\n", row + 1 );
 
     for ( const auto& [ trait, rank ] : traits[ row ] )
     {
@@ -2025,21 +2037,22 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   size_t spec_points = 0;
   std::map<unsigned, size_t> hero_points;
 
-  for ( auto t : p.player_traits )
+  for ( const auto& [ _tree, _id, _rank ] : p.player_traits )
   {
-    auto trait = trait_data_t::find( std::get<1>( t ), maybe_ptr( p.dbc->ptr ) );
-    auto rank = std::get<2>( t );
+    auto trait = trait_data_t::find( _id, maybe_ptr( p.dbc->ptr ) );
 
-    switch ( std::get<0>( t ) )
+    switch ( _tree )
     {
       case talent_tree::CLASS:
-        class_traits.at( trait->row - 1 ).emplace_back( trait, rank );
-        class_points += rank;
+        class_traits.at( trait->row - 1 ).emplace_back( trait, _rank );
+        if ( !trait_data_t::is_granted( trait, p.specialization() ) )
+          class_points += _rank;
         break;
 
       case talent_tree::SPECIALIZATION:
-        spec_traits.at( trait->row - 1 ).emplace_back( trait, rank );
-        spec_points += rank;
+        spec_traits.at( trait->row - 1 ).emplace_back( trait, _rank );
+        if ( !trait_data_t::is_granted( trait, p.specialization() ) )
+          spec_points += _rank;
         break;
 
       case talent_tree::HERO:
@@ -2048,8 +2061,9 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
           if ( range::contains( p.player_sub_trees, id ) ||
                 range::contains( p.player_sub_traits, trait->id_trait_node_entry ) )
           {
-            hero_traits[ id ].at( trait->row - 1 ).emplace_back( trait, rank );
-            hero_points[ id ] += rank;
+            hero_traits[ id ].at( trait->row - 1 ).emplace_back( trait, _rank );
+            if ( !trait_data_t::is_granted( trait, p.specialization() ) )
+              hero_points[ id ] += _rank;
           }
         }
         break;
@@ -2085,15 +2099,19 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
        << "<div class=\"toggle-content hide\">\n";
   }
 
-  print_html_talent_table( os, p, util::player_type_string_long( p.type ), class_points, class_traits );
-  print_html_talent_table( os, p, util::spec_string_no_class( p ), spec_points, spec_traits );
+  if ( range::accumulate( class_traits, 0, &std::vector<talentrank_t>::size ) )
+    print_html_talent_table( os, p, util::player_type_string_long( p.type ), class_points, class_traits );
+
+  if ( range::accumulate( spec_traits, 0, &std::vector<talentrank_t>::size ) )
+    print_html_talent_table( os, p, util::spec_string_no_class( p ), spec_points, spec_traits );
 
   if ( !hero_traits.empty() )
   {
     os << "<div class=\"flexwrap\">\n";
 
     for ( const auto& [ id, traits ] : hero_traits )
-      print_html_talent_table( os, p, trait_data_t::get_hero_tree_name( id ), hero_points[ id ], traits );
+      if ( range::accumulate( traits, 0, &std::vector<talentrank_t>::size ) )
+        print_html_talent_table( os, p, trait_data_t::get_hero_tree_name( id ), hero_points[ id ], traits );
 
     os << "</div>\n";
   }
@@ -2755,7 +2773,6 @@ void print_html_player_statistics( report::sc_html_stream& os, const player_t& p
   report_helper::print_html_sample_data( os, p, p.collected_data.hpse, "HPS(e)" );
   report_helper::print_html_sample_data( os, p, p.collected_data.heal, "Heal" );
   report_helper::print_html_sample_data( os, p, p.collected_data.htps, "HTPS" );
-  report_helper::print_html_sample_data( os, p, p.collected_data.max_spike_amount, "MSD" );
 
   for ( const auto& sample_data : p.sample_data_list )
   {
@@ -2783,6 +2800,7 @@ std::string find_matching_decorator( const player_t& p, std::string_view n )
 
   auto spell                = static_cast<const spell_data_t*>( p.find_talent_spell( talent_tree::CLASS, n_token, p.specialization(), true ) );
   if ( !spell->ok() ) spell = static_cast<const spell_data_t*>( p.find_talent_spell( talent_tree::SPECIALIZATION, n_token, p.specialization(), true ) );
+  if ( !spell->ok() ) spell = static_cast<const spell_data_t*>( p.find_talent_spell( talent_tree::HERO, n ) );
   if ( !spell->ok() ) spell = p.find_specialization_spell( n );
   if ( !spell->ok() ) spell = p.find_specialization_spell( n_token );
   if ( !spell->ok() ) spell = p.find_class_spell( n );
@@ -3370,9 +3388,16 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
     buff_name += util::encode_html( b.player->name_str ) + "&#160;-&#160;";
 
   if ( b.data().id() )
-    buff_name += report_decorators::decorated_buff( b );
+  {
+    if ( auto con = dynamic_cast<const consumable_buff_item_data_t*>( &b ); con && con->item_data )
+      buff_name += report_decorators::decorated_item_data( *b.player->sim, *con->item_data );
+    else
+      buff_name += report_decorators::decorated_buff( b );
+  }
   else
+  {
     buff_name += util::encode_html( b.name_str );
+  }
 
   os << "<tr>\n";
 
@@ -3486,24 +3511,55 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                     util::stat_type_string( stat.stat ),
                     stat.amount );
       }
+
+      for ( int stat_pct_buff_value = STAT_PCT_BUFF_CRIT; stat_pct_buff_value != STAT_PCT_BUFF_MAX; stat_pct_buff_value++ ) {
+        stat_pct_buff_type stat_pct_buff = static_cast<stat_pct_buff_type>( stat_pct_buff_value );
+        if ( range::contains( p.buffs.stat_pct_buffs[ static_cast<stat_pct_buff_type>( stat_pct_buff_value ) ], stat_buff ) )
+        {
+          os.printf( "<li><span class=\"label\">stat:</span>%s</li>\n"
+                      "<li><span class=\"label\">default:</span>%.2f%%</li>\n",
+                      util::stat_pct_buff_type_string( stat_pct_buff ),
+                      stat_buff->default_value * 100.0 );
+        }
+      }
       os << "</ul>\n";
     }
 
     if ( damage_buff )
     {
-      os.printf( "<h4>Damage Modifiers</h4>\n"
-                 "<ul>\n"
-                 "<li><span class=\"label\">direct:</span>%.2f</li>\n"
-                 "<li><span class=\"label\">periodic:</span>%.2f</li>\n"
-                 "<li><span class=\"label\">auto_attack:</span>%.2f</li>\n"
-                 "<li><span class=\"label\">crit_chance:</span>%.2f</li>\n"
-                 "<li><span class=\"label\">is_stacking:</span>%s</li>\n"
-                 "</ul>\n",
-                 damage_buff->direct_mod.multiplier,
-                 damage_buff->periodic_mod.multiplier,
-                 damage_buff->auto_attack_mod.multiplier,
-                 damage_buff->crit_chance_mod.multiplier,
-                 damage_buff->is_stacking ? "true" : "false" );
+      if ( damage_buff->is_stacking && damage_buff->max_stack() > 1 )
+      {
+        os.printf( "<h4>Damage Modifiers</h4>\n"
+                  "<ul>\n"
+                  "<li><span class=\"label\">direct:</span>%.2f + %.2f/stack</li>\n"
+                  "<li><span class=\"label\">periodic:</span>%.2f + %.2f/stack</li>\n"
+                  "<li><span class=\"label\">auto_attack:</span>%.2f + %.2f/stack</li>\n"
+                  "<li><span class=\"label\">crit_chance:</span>%.2f</li>\n"
+                  "<li><span class=\"label\">is_stacking:</span>true</li>\n"
+                  "</ul>\n",
+                  damage_buff->direct_mod.initial_multiplier,
+                  damage_buff->direct_mod.multiplier - 1.0,
+                  damage_buff->periodic_mod.initial_multiplier,
+                  damage_buff->periodic_mod.multiplier - 1.0,
+                  damage_buff->auto_attack_mod.initial_multiplier,
+                  damage_buff->auto_attack_mod.multiplier - 1.0,
+                  damage_buff->crit_chance_mod.multiplier );
+      }
+      else
+      {
+        os.printf( "<h4>Damage Modifiers</h4>\n"
+                  "<ul>\n"
+                  "<li><span class=\"label\">direct:</span>%.2f</li>\n"
+                  "<li><span class=\"label\">periodic:</span>%.2f</li>\n"
+                  "<li><span class=\"label\">auto_attack:</span>%.2f</li>\n"
+                  "<li><span class=\"label\">crit_chance:</span>%.2f</li>\n"
+                  "<li><span class=\"label\">is_stacking:</span>false</li>\n"
+                  "</ul>\n",
+                  damage_buff->direct_mod.multiplier,
+                  damage_buff->periodic_mod.multiplier,
+                  damage_buff->auto_attack_mod.multiplier,
+                  damage_buff->crit_chance_mod.multiplier );
+      }
     }
 
     if ( !constant_buffs )
@@ -3739,14 +3795,12 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
   os << "\">\n";
 
   os << "<ul class=\"params\">\n";
+#if SC_BETA
+  os << "<li><b>BETA activated</b></li>\n";
+#elif SC_USE_PTR
   if ( p.dbc->ptr )
-  {
-#ifdef SC_USE_PTR
     os << "<li><b>PTR activated</b></li>\n";
-#else
-    os << "<li><b>BETA activated</b></li>\n";
 #endif
-  }
   fmt::print( os, "<li><b>Race:</b> {}</li>\n", util::inverse_tokenize( p.race_str ) );
 
   const char* pt;
@@ -3814,20 +3868,30 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   else
     os << "<h3 class=\"toggle open\">Results, Spec and Gear</h3>\n";
 
-  os << "<div class=\"toggle-content flexwrap\">\n";
+  os << "<div class=\"toggle-content\">\n"
+     << "<div class=\"flexwrap\">\n";
+
+  if ( p.sim->players_by_name.size() == 1 )
+  {
+    auto w_ = raidbots_talent_render_width( p.specialization(), 125 );
+    os.format(
+      R"(<iframe src="{}" width="{}" height="125" style="margin-right: 10px; margin-top: 5px;"></iframe>)",
+      raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
+
+    os << "\n";
+  }
 
   if ( cd.dps.mean() > 0 )
   {
     // Table for DPS
-    os << "<table class=\"sc\">\n"
-       << "<tr>\n";
-    os << "<th class=\"help\" data-help=\"#help-dps\">DPS</th>\n"
+    os << "<table class=\"sc\"><tr>\n"
+       << "<th class=\"help\" data-help=\"#help-dps\">DPS</th>\n"
        << "<th class=\"help\" data-help=\"#help-dpse\">DPS(e)</th>\n"
        << "<th class=\"help\" data-help=\"#help-error\">DPS Error</th>\n"
        << "<th class=\"help\" data-help=\"#help-range\">DPS Range</th>\n"
-       << "<th class=\"help\" data-help=\"#help-dpr\">DPR</th>\n";
-    os << "</tr>\n"
-       << "<tr>\n";
+       << "<th class=\"help\" data-help=\"#help-dpr\">DPR</th></tr>\n";
+
+    os << "<tr>\n";
 
     double dps_range =
         ( cd.dps.percentile( 0.5 + sim.confidence / 2 ) - cd.dps.percentile( 0.5 - sim.confidence / 2 ) );
@@ -3859,7 +3923,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     os << "</tr>\n"
        << "<tr>\n";
     double hps_range =
-        ( cd.hps.percentile( 0.5 + sim.confidence / 2 ) - cd.hps.percentile( 0.5 - sim.confidence / 2 ) );
+      ( cd.hps.percentile( 0.5 + sim.confidence / 2 ) - cd.hps.percentile( 0.5 - sim.confidence / 2 ) );
     double hps_error = sim_t::distribution_mean_error( sim, cd.hps );
     os.printf(
         "<td>%.1f</td>\n"
@@ -3905,48 +3969,25 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   if ( p.primary_role() == ROLE_TANK && !p.is_enemy() )
   {
     os << "<table class=\"sc\">\n"
-       // experimental first row for stacking the tables - wasn't happy with how
-       // it looked, may return to it later
-       //<< "<tr>\n" // first row
-       //<< "<th colspan=\"3\"><a href=\"#help-dtps\"
-       // class=\"help\">DTPS</a></th>\n"
-       //<< "<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n"
-       //<< "<th colspan=\"5\"><a href=\"#help-tmi\"
-       // class=\"help\">TMI</a></th>\n"
-       //<< "<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n"
-       //<< "<th colspan=\"4\"><a href=\"#help-msd\"
-       // class=\"help\">MSD</a></th>\n"
-       //<< "</tr>\n" // end first row
-       << "<tr>\n"  // start second row
+       << "<tr>\n"
        << "<th class=\"help\" data-help=\"#help-dtps\">DTPS</th>\n"
        << "<th class=\"help\" data-help=\"#help-error\">DTPS Error</th>\n"
        << "<th class=\"help\" data-help=\"#help-range\">DTPS Range</th>\n"
-       << "<th>&#160;</th>\n"
-       << "<th class=\"help\" data-help=\"#help-msd\">MSD Mean</th>\n"
-       << "<th class=\"help\" data-help=\"#help-msd\">MSD Min</th>\n"
-       << "<th class=\"help\" data-help=\"#help-msd\">MSD Max</th>\n"
-       << "</tr>\n"  // end second row
+       << "</tr>\n"
        << "<tr>\n";  // start third row
 
     double dtps_range = ( cd.dtps.percentile( 0.5 + sim.confidence / 2 ) -
                           cd.dtps.percentile( 0.5 - sim.confidence / 2 ) );
     double dtps_error = sim_t::distribution_mean_error( sim, p.collected_data.dtps );
-    os.printf( "<td>%.1f</td>\n"
-               "<td>%.2f / %.2f%%</td>\n"
-               "<td>%.0f / %.1f%%</td>\n",
-               cd.dtps.mean(),
-               dtps_error,
-               cd.dtps.mean() ? dtps_error * 100 / cd.dtps.mean() : 0,
-               dtps_range,
-               cd.dtps.mean() ? dtps_range / cd.dtps.mean() * 100.0 : 0 );
-
-    // spacer
-    os << "<td>&#160;&#160;&#160;&#160;&#160;</td>\n";
-
-    // print Max Spike Size stats
-    os.printf( "<td>%.1f%%</td>\n", cd.max_spike_amount.mean() );
-    os.printf( "<td>%.1f%%</td>\n", cd.max_spike_amount.min() );
-    os.printf( "<td>%.1f%%</td>\n", cd.max_spike_amount.max() );
+    os.printf(
+      "<td>%.1f</td>\n"
+      "<td>%.2f / %.2f%%</td>\n"
+      "<td>%.0f / %.1f%%</td>\n",
+      cd.dtps.mean(),
+      dtps_error,
+      cd.dtps.mean() ? dtps_error * 100 / cd.dtps.mean() : 0,
+      dtps_range,
+      cd.dtps.mean() ? dtps_range / cd.dtps.mean() * 100.0 : 0 );
 
     // End defensive table
     os << "</tr>\n"
@@ -3960,11 +4001,10 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
        << "<tr>\n"
        << "<th class=\"help\" data-help=\"#help-rps-out\">RPS Out</th>\n"
        << "<th class=\"help\" data-help=\"#help-rps-in\">RPS In</th>\n"
-       << "<th>Primary Resource</th>\n"
+       << "<th>Resource</th>\n"
        << "<th class=\"help\" data-help=\"#help-waiting\">Waiting</th>\n"
        << "<th class=\"help\" data-help=\"#help-apm\">APM</th>\n"
        << "<th>Active</th>\n"
-       << "<th>Skill</th>\n"
        << "</tr>\n"
        << "<tr>\n";
 
@@ -3975,35 +4015,24 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
         "<td>%.2f%%</td>\n"
         "<td>%.1f</td>\n"
         "<td>%.1f%%</td>\n"
-        "<td>%.0f%%</td>\n"
         "</tr>\n"
         "</table>\n",
         p.rps_loss, p.rps_gain, util::inverse_tokenize( util::resource_type_string( p.primary_resource() ) ).c_str(),
         cd.fight_length.mean() ? 100.0 * cd.waiting_time.mean() / cd.fight_length.mean() : 0,
         cd.fight_length.mean() ? 60.0 * cd.executed_foreground_actions.mean() / cd.fight_length.mean() : 0,
-        sim.simulation_length.mean() ? cd.fight_length.mean() / sim.simulation_length.mean() * 100.0 : 0,
-        p.initial.skill * 100.0 );
+        sim.simulation_length.mean() ? cd.fight_length.mean() / sim.simulation_length.mean() * 100.0 : 0 );
   }
+
+  os << "</div>\n";
 
   // Spec and gear
   if ( !p.is_pet() && !p.is_enemy() )
   {
-    os << "<div>\n";
-
-    if ( p.sim->players_by_name.size() == 1 )
-    {
-      auto w_ = raidbots_talent_render_width( p.specialization(), 125 );
-      os.format(
-        "<iframe src=\"{}\" width=\"{}\" height=\"125\" style=\"float: left; margin-right: 10px; margin-top: 5px;\"></iframe>\n",
-        raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
-    }
-
     os << "<table class=\"sc spec\">\n";
 
     if ( !p.origin_str.empty() )
     {
-      os.format( "<tr class=\"left\"><th class=\"help\" data-help=\"#help-origin\">Origin</th>\n"
-                 "<td><a href=\"{}\" class=\"ext\">{}</a></td></tr>\n",
+      os.format( R"(<tr><th class="help" data-help="#help-origin">Origin</th><td><a href="{}" class="ext">{}</a></td></tr>\n)",
                  p.origin_str, util::encode_html( p.origin_str ) );
     }
 
@@ -4085,8 +4114,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
          << "</tr>\n";
     }
 
-    os << "</table>\n"
-       << "</div>\n";
+    os << "</table>\n";
   }
 }
 

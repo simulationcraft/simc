@@ -3159,11 +3159,11 @@ double paladin_t::composite_melee_haste() const
   return h;
 }
 
-// paladin_t::composite_melee_speed =========================================
+// paladin_t::composite_melee_auto_attack_speed =============================
 
-double paladin_t::composite_melee_speed() const
+double paladin_t::composite_melee_auto_attack_speed() const
 {
-  double s = player_t::composite_melee_speed();
+  double s = player_t::composite_melee_auto_attack_speed();
 
   if ( talents.zealots_fervor->ok() )
     s /= 1.0 + talents.zealots_fervor->effectN( 1 ).percent();

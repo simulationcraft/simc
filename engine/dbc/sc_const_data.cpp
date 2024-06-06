@@ -739,7 +739,8 @@ double dbc::fmt_value( double v, effect_type_t type, effect_subtype_t sub_type )
         case A_MOD_MANA_REGEN_INTERRUPT:  // Meditation
         case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS: // Increase critical chance of something, Stormstrike, Mind Spike, Holy Word: Serenity
         case A_317: // Totemic Wrath, Flametongue Totem, Demonic Pact, etc ...
-        case A_MOD_MELEE_SPEED_PCT: // Windfury Totem
+        case A_MOD_MELEE_AUTO_ATTACK_SPEED:
+        case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:
           v /= 100.0;
           break;
         default:
@@ -1218,28 +1219,6 @@ double dbc_t::spell_crit_scaling( pet_e t, unsigned level ) const
   return spell_crit_scaling( util::pet_class_type( t ), level );
 }
 
-int dbc_t::resolve_item_scaling( unsigned level ) const
-{
-  assert( level > 0 && level <= MAX_LEVEL );
-#if SC_USE_PTR
-  return ptr ? __ptr_gt_item_scaling[level - 1]
-             : __gt_item_scaling[level - 1];
-#else
-  return __gt_item_scaling[ level - 1 ];
-#endif
-}
-
-double dbc_t::resolve_level_scaling( unsigned level ) const
-{
-  assert( level > 0 && level <= MAX_LEVEL );
-#if SC_USE_PTR
-  return ptr ? _ptr_gt_resolve_dps_by_level[level - 1]
-             : _gt_resolve_dps_by_level[level - 1];
-#else
-  return _gt_resolve_dps_by_level[level - 1];
-#endif
-}
-
 double dbc_t::avoid_per_str_agi_by_level( unsigned level ) const
 {
   assert( level > 0 && level <= MAX_LEVEL );
@@ -1432,8 +1411,8 @@ double dbc_t::real_ppm_modifier( unsigned spell_id, player_t* player, unsigned i
     else if ( rppm_modifier.modifier_type == RPPM_MODIFIER_ILEVEL )
     {
       assert( item_level > 0 && "Ilevel-based RPPM modifier requires non-zero item level parameter" );
-      auto base_record = random_prop_data_t::find( rppm_modifier.type, player->dbc->ptr );
-      auto ilevel_record = random_prop_data_t::find( item_level, player->dbc->ptr );
+      const auto& base_record = random_prop_data_t::find( rppm_modifier.type, player->dbc->ptr );
+      const auto& ilevel_record = random_prop_data_t::find( item_level, player->dbc->ptr );
       auto base_points = base_record.p_rare[ 0 ];
       auto ilevel_points = ilevel_record.p_rare[ 0 ];
       if ( base_points != ilevel_points )

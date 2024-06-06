@@ -1,5 +1,5 @@
-// Gem properties, wow build 11.0.0.54521
-static const std::array<gem_property_data_t, 2263> __gem_property_data { {
+// Gem properties, wow build 11.0.0.55000
+static const std::array<gem_property_data_t, 2267> __gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -2263,5 +2263,9 @@ static const std::array<gem_property_data_t, 2263> __gem_property_data { {
   { 4240,  7504, 0x01000000 }, // Overclocked S.E.L.F.I.E. Camera
   { 4241,  7505, 0x01000000 }, // Earthen Delivery Drill
   { 4242,  7506, 0x01000000 }, // Heartseeking Health Injector
+  { 4244,  7522, 0x01000000 }, // Refurbished Alarm-O-Turret
+  { 4245,  7523, 0x01000000 }, // Refurbished Plane Displacer
+  { 4246,  7524, 0x01000000 }, // Refurbished Supercollide-O-Tron
+  { 4247,  7525, 0x01000000 }, // Refurbished Shadowflame Rockets
 } };
 

@@ -17,6 +17,7 @@ struct sim_t;
 struct spell_data_t;
 struct pet_t;
 struct item_set_bonus_t;
+struct dbc_item_data_t;
 
 namespace color
 {
@@ -35,6 +36,7 @@ std::string decorated_action( const action_t& a );
 std::string decorated_spell_data( const sim_t& sim, const spell_data_t* spell );
 std::string decorated_spell_data_item( const sim_t& sim, const spell_data_t* spell, const item_t& item );
 std::string decorated_item( const item_t& item );
+std::string decorated_item_data( const sim_t& sim, const dbc_item_data_t& item_data );
 std::string decorated_npc( const pet_t& pet );
 std::string decorated_set( const sim_t& sim, const item_set_bonus_t& bonus );
 }  // namespace report_decorators

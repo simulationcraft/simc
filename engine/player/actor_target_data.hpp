@@ -42,6 +42,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* remnants_despair;            // Soulwarped Seal of Menethil DK ring
     // Dragonflight
     // The War Within
+    buff_t* unwavering_focus;            // potion of unwavering focus
   } debuff;
 
   struct atd_dot_t

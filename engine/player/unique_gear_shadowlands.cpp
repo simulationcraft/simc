@@ -5,18 +5,23 @@
 
 #include "unique_gear_shadowlands.hpp"
 
+#include "action/absorb.hpp"
 #include "action/dot.hpp"
 #include "actor_target_data.hpp"
 #include "buff/buff.hpp"
-#include "class_modules/monk/sc_monk.hpp"
 #include "darkmoon_deck.hpp"
 #include "item/item.hpp"
 #include "player/action_priority_list.hpp"
+#include "player/action_variable.hpp"
+#include "player/covenant.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
+#include "player/stats.hpp"
 #include "report/decorators.hpp"
 #include "sim/cooldown.hpp"
+#include "sim/real_ppm.hpp"
 #include "sim/sim.hpp"
+#include "util/io.hpp"
 #include "unique_gear.hpp"
 #include "unique_gear_helper.hpp"
 
@@ -1159,24 +1164,6 @@ void infinitely_divisible_ooze( special_effect_t& effect )
       resources.base[ RESOURCE_ENERGY ] = 100;
     }
 
-    void init_assessors() override
-    {
-      pet_t::init_assessors();
-      auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
-        if ( effect.player->specialization() == MONK_BREWMASTER || effect.player->specialization() == MONK_WINDWALKER ||
-             effect.player->specialization() == MONK_MISTWEAVER )
-        {
-          monk::monk_t* monk_player = static_cast<monk::monk_t*>( owner );
-          auto td                   = monk_player->find_target_data( s->target );
-          if ( !owner->bugs && td && td->debuff.bonedust_brew->check() )
-            monk_player->bonedust_brew_assessor( s );
-        }
-        return assessor::CONTINUE;
-      };
-
-      assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
-    }
-
     resource_e primary_resource() const override
     {
       return RESOURCE_ENERGY;
@@ -1614,24 +1601,6 @@ void shadowgrasp_totem( special_effect_t& effect )
       pet_t::init_spells();
 
       damage = new shadowgrasp_totem_damage_t ( this, effect );
-    }
-
-    void init_assessors() override
-    {
-      pet_t::init_assessors();
-      auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
-        if ( effect.player->specialization() == MONK_BREWMASTER || effect.player->specialization() == MONK_WINDWALKER ||
-             effect.player->specialization() == MONK_MISTWEAVER  )
-        {
-          monk::monk_t* monk_player = static_cast<monk::monk_t*>( owner );
-          auto td                   = monk_player->find_target_data( s->target );
-          if ( !owner->bugs && td && td->debuff.bonedust_brew->check() )
-            monk_player->bonedust_brew_assessor( s );
-        }
-        return assessor::CONTINUE;
-      };
-
-      assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
     }
   };
 
@@ -3315,7 +3284,7 @@ void the_first_sigil( special_effect_t& effect )
     void init() override
     {
       proc_spell_t::init();
-      unsigned covenant_signature_id;
+      unsigned covenant_signature_id = 0;
 
       // Find any covenant signature abilities in the action list
       for ( const auto& e : covenant_ability_entry_t::data( player->dbc->ptr ) )
@@ -3388,7 +3357,7 @@ void cosmic_gladiators_resonator( special_effect_t& effect )
       callbacks        = false;
       impact_action    = create_proc_action<gladiators_resonator_damage_t>( "gladiators_resonator_damage", effect );
       s_data_reporting = effect.driver();
-      travel_delay     = effect.driver()->effectN( 2 ).misc_value1() / 1000;
+      travel_delay     = effect.driver()->effectN( 2 ).misc_value1() * 0.001;
     }
   };
 
@@ -5041,16 +5010,23 @@ void norgannons_sagacity( special_effect_t& effect )
 {
   effect.proc_flags2_ |= PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
 
-  auto p = effect.player;
-  if ( !p->buffs.norgannons_sagacity_stacks )
-  {
-    p->buffs.norgannons_sagacity_stacks = make_buff( p, "norgannons_sagacity_stacks", p->find_spell( 339443 ) );
-    p->buffs.norgannons_sagacity = make_buff( p, "norgannons_sagacity", p->find_spell( 339445 ) );
-  }
+  auto movement = make_buff( effect.player, "norgannons_sagacity", effect.player->find_spell( 339445 ) );
+  effect.player->buffs.norgannons_sagacity = movement;
 
-  effect.custom_buff = p->buffs.norgannons_sagacity_stacks;
+  auto stacks = make_buff( effect.player, "norgannons_sagacity_stacks", effect.player->find_spell( 339443 ) )
+    ->set_expire_callback( [ movement ]( buff_t*, int s, timespan_t ) {
+      movement->buff_duration_multiplier = s;
+      movement->trigger();
+    } );
 
-  new dbc_proc_callback_t( p, effect );
+  effect.player->register_movement_callback( [ stacks ]( bool start ) {
+    if ( start )
+      stacks->expire();
+  } );
+
+  effect.custom_buff = stacks;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void sephuzs_proclamation( special_effect_t& effect )

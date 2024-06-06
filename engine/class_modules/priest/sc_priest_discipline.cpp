@@ -64,17 +64,17 @@ struct power_word_radiance_t final : public priest_heal_t
 
     rng().shuffle( target_list.begin() + 1, target_list.end() );*/
 
-    if ( sim->healing_no_pet_list.size() <= n_targets() )
+    if ( as<int>( sim->healing_no_pet_list.size() ) <= n_targets() )
     {
       for ( auto t : sim->healing_no_pet_list )
-        if ( t != target && ( t->is_active() || t->type == HEALING_ENEMY && !t->is_sleeping() ) )
+        if ( t != target && ( t->is_active() || ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
           target_list.push_back( t );
 
       auto offset = target_list.size();
 
       for ( auto t : sim->healing_pet_list )
       {
-        if ( t != target && ( t->is_active() || t->type == HEALING_ENEMY && !t->is_sleeping() ) )
+        if ( t != target && ( t->is_active() || ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
           target_list.push_back( t );
       }
       
@@ -88,7 +88,7 @@ struct power_word_radiance_t final : public priest_heal_t
 
     for ( auto t : sim->healing_no_pet_list )
     {
-      if ( t != target && ( t->is_active() || t->type == HEALING_ENEMY && !t->is_sleeping() ) )
+      if ( t != target && ( t->is_active() || ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
       {
         if ( !p().find_target_data( t ) || !p().find_target_data( t )->buffs.atonement->check() )
         {
@@ -101,7 +101,7 @@ struct power_word_radiance_t final : public priest_heal_t
       }
     }
 
-    if ( target_list.size() > n_targets() )
+    if ( as<int>( target_list.size() ) > n_targets() )
     {
       rng().shuffle( target_list.begin() + 1, target_list.end() );
     }
@@ -361,7 +361,7 @@ public:
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
     ab::snapshot_state( s, rt );
-    cast_state( s )->bolts      = default_bolts + p().buffs.harsh_discipline->check_stack_value();
+    cast_state( s )->bolts      = as<int>( default_bolts + p().buffs.harsh_discipline->check_stack_value() );
     cast_state( s )->snapshot_mult = 1.0 + priest().buffs.power_of_the_dark_side->check_value();
 
     if ( ( dbc::get_school_mask( s->action->school ) & SCHOOL_MASK_SHADOW ) == SCHOOL_MASK_SHADOW )
@@ -419,7 +419,7 @@ public:
 
   void move_random_target( std::vector<player_t*>& in, std::vector<player_t*>& out ) const
   {
-    auto idx = static_cast<unsigned>( rng().range( 0, in.size() ) );
+    auto idx = rng().range( 0U, as<unsigned>( in.size() ) );
     out.push_back( in[ idx ] );
     in.erase( in.begin() + idx );
   }

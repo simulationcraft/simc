@@ -264,10 +264,35 @@ class CSVDataGenerator(object):
         return True
 
 class DataGenerator(object):
-    _class_names = [ None, 'Warrior', 'Paladin', 'Hunter', 'Rogue',     'Priest', 'Death Knight', 'Shaman', 'Mage',  'Warlock', 'Monk',      'Druid',  'Demon Hunter',     'Evoker' ]
-    _class_masks = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20,           0x40,     0x80,    0x100,     0x200,       0x400,     0x800,             0x1000 ]
-    _race_names  = [ None, 'Human',   'Orc',     'Dwarf',  'Night Elf', 'Undead', 'Tauren',       'Gnome',  'Troll', 'Goblin',  'Blood Elf', 'Draenei', 'Dark Iron Dwarf', 'Vulpera', 'Mag\'har Orc', 'Mechagnome', 'Dracthyr' ] + [ None ] * 5 + [ 'Worgen', None, None, 'Pandaren', None, 'Nightborne', 'Highmountain Tauren', 'Void Elf', 'Lightforged Draenei', 'Zandalari Troll', 'Kul Tiran' ]
-    _race_masks  = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20,           0x40,     0x80,    0x100,     0x200,       0x400,     0x800,             0x1000,    0x2000,         0x4000,       0x8000,    ] + [ None ] * 5 + [ 0x200000, None, None, 0x1000000,  None, 0x4000000,    0x8000000,             0x10000000, 0x20000000,            0x40000000,        0x80000000  ]
+    _class_names = [ None,
+                     'Warrior', 'Paladin', 'Hunter', 'Rogue',
+                     'Priest', 'Death Knight', 'Shaman', 'Mage',
+                     'Warlock', 'Monk', 'Druid', 'Demon Hunter',
+                     'Evoker' ]
+    _class_masks = [ None,
+                     0x0001, 0x0002, 0x0004, 0x0008, # warrior paladin hunter rogue
+                     0x0010, 0x0020, 0x0040, 0x0080, # priest deathknight shaman mage
+                     0x0100, 0x0200, 0x0400, 0x0800, # warlock monk druid demonhunter
+                     0x1000 ]                        # evoker
+    _race_names  = [ None,
+                     'Human', 'Orc', 'Dwarf', 'Night Elf',
+                     'Undead', 'Tauren', 'Gnome', 'Troll',
+                     'Goblin', 'Blood Elf', 'Draenei', 'Dark Iron Dwarf',
+                     'Vulpera', 'Mag\'har Orc', 'Mechagnome', 'Dracthyr',
+                     None, 'Earthen', None, None,
+                     None, 'Worgen', None, None,
+                     None, 'Pandaren', 'Nightborne', 'Highmountain Tauren',
+                     'Void Elf','Lightforged Draenei', 'Zandalari Troll', 'Kul Tiran' ]
+    # simc uses race_bits left shifted by 1 compared to PlayableRaceBit in ChrRaces.db2
+    _race_masks  = [ None,
+                     0x00000001, 0x00000002, 0x00000004, 0x00000008,  # human orc dwarf nightelf
+                     0x00000010, 0x00000020, 0x00000040, 0x00000080,  # undead tauren gnome troll
+                     0x00000100, 0x00000200, 0x00000400, 0x00000800,  # goblin bloodelf draenei darkirondwarf
+                     0x00001000, 0x00002000, 0x00004000, 0x00008000,  # vulpera magharorc mechagnome dracthyr(H)
+                     None,       0x00020000, None,       None,        # dracthyr(A) earthen(H) earthen(A) unused
+                     None,       0x00200000, None,       None,        # unused worgen unused pandaren(N)
+                     None,       0x02000000, 0x04000000, 0x08000000,  # pandaren(A) pandaren(H) nightborne highmountaintauren
+                     0x10000000, 0x20000000, 0x40000000, 0x80000000 ] # voidelf lightforgeddraenei zandalaritroll kultiran
     _pet_names   = [ None, 'Ferocity', 'Tenacity', None, 'Cunning' ]
     _pet_masks   = [ None, 0x1,        0x2,        None, 0x4       ]
 
@@ -640,8 +665,8 @@ class ItemDataGenerator(DataGenerator):
                         if not spell.has_effect('type', 6):
                             continue
 
-                        # Grants armor, stats, rating or direct trigger of spells
-                        if not spell.has_effect('sub_type', [13, 22, 29, 99, 189, 465, 43, 42]):
+                        # Grants armor, stats, rating, direct trigger of spells, or debuff
+                        if not spell.has_effect('sub_type', [13, 22, 29, 99, 189, 465, 43, 42, 270]):
                             continue
 
                         filter_ilevel = False
@@ -653,7 +678,7 @@ class ItemDataGenerator(DataGenerator):
                             if not effect:
                                 continue
 
-                            if effect.sub_type == 23:
+                            if effect.sub_type == 23 or effect.type == 134:
                                 filter_ilevel = False
                 elif classdata.subclass == 3:
                     filter_ilevel = False
@@ -1458,6 +1483,7 @@ class SpellDataGenerator(DataGenerator):
          433889, 433915, 433930, 433954, 433956, 433957, 433958, 434021, 434022, 434070, 434071, 434072, 434233, # reworked Tome of Unstable Power
          433826, 433829, 433830, # reworked globe of jagged ice
          433768, 433786, # reworked umbrelskul's fractured heart
+         434069, # reworked granyth's enduring scale
          # 10.2.7
          431760, 440393, # Cloak of Infinite Potential / Timerunner's Advantage
          432334, # Explosive Barrage Damage
@@ -1466,10 +1492,14 @@ class SpellDataGenerator(DataGenerator):
          429273, # Arcanist's Edge Damage
          429377, # Slay Damage
          # 11.0 The War Within ================================================
-         443515, 443519, 443585, # fateweaved needle
-         452037, 452057, 452059, 452060, 452061, 452062, 452063, 452064, 452065, 452066, 452067, 452068, 452069, 452070, 452071, 452072, 452073, # aberrant spellforge per-spec driver
-         452350, 451845, 451866, 452279, # aberrant spellforge silence, buff, damage, unknown
-         448621, 448643, 448669, # void reaper's chime
+         443585, # fateweaved needle
+         452279, # aberrant spellforge
+         448621, 448643, # void reaper's chime
+         442267, 442280, # befouler's syringe
+         448436, # sik'ran's shadow arsenal
+         447097, # swarmlord's authority
+         449966, # malfunctioning ethereum module
+         452325, 452457, 452498, # Sigil of Algari Concordance
         ),
 
         # Warrior:
@@ -1699,6 +1729,13 @@ class SpellDataGenerator(DataGenerator):
             ( 424491, 0 ), ( 424492, 0 ), ( 424493, 0 ), # T31 Subtlety clone damage spells
             ( 429951, 0 ),          # Deft Maneuvers alternative Blade Flurry instant attack spell
             ( 381628, 0 ),          # Dragonflight Internal Bleeding talent spell
+
+            # The War Within
+            ( 452538, 0 ),          # Fatebound coin (tails) spell
+            ( 452917, 0 ),          # Fatebound coin (tails) buff
+            ( 452923, 0 ),          # Fatebound coin (heads) buff
+            ( 452562, 0 ),          # Lucky Coin buff
+            ( 457236, 0 ),          # Singular Focus damage spell
         ),
 
         # Priest:
@@ -1842,6 +1879,9 @@ class SpellDataGenerator(DataGenerator):
           ( 425721, 0 ), # T31 Blood 2pc buff
           ( 377445, 0 ), # Unholy Aura debuff
           # The War Within
+          ( 290577, 0 ), # Abomiantion Disease Cloud
+          ( 439539, 0 ), # Icy Death Torrent Damage
+          ( 458264, 0 ), ( 458233, 0 ), # Decomposition
           # Rider of the Apocalypse
           ( 444505, 0 ), # Mograines Might Buff
           ( 444826, 0 ), # Trollbanes Chains of Ice Main
@@ -1868,6 +1908,12 @@ class SpellDataGenerator(DataGenerator):
           ( 434144, 0 ), # Infliction in Sorrow Damage
           ( 434246, 0 ), # Blood Eruption
           ( 434574, 0 ), # Blood Cleave
+          ( 445669, 0 ), # Vampiric Strike Range increase
+          # Deathbringer
+          ( 439594, 0 ), # Reapers Mark
+          ( 443404, 0 ), # Wave of Souls debuff
+          ( 442664, 0 ), # Wave of Souls area dummy
+          ( 440005, 0 ), # Blood Fever damage
         ),
 
         # Shaman:
@@ -2299,23 +2345,13 @@ class SpellDataGenerator(DataGenerator):
           # The War Within
           # Class
           # Balance
-          ( 394451, 1 ), ( 450360, 1 ), ( 450361, 1 ), # touch the cosmos
           # Feral
           # Guardian
           # Restoration
-          ( 145153, 4 ), # Dream of Cenarius heal
           # Hero talents
-          ( 429438, 0 ), # blooming infusion
-          ( 425206, 0 ), ( 425217, 0 ), ( 425219, 0 ), # boundless moonlight
-          ( 429625, 0 ), ( 429676, 0 ), # cenarius' might
-          ( 451177, 0 ), # dreadful wound
-          ( 433832, 0 ), ( 434112, 0 ), # dream surge
-          ( 441827, 0 ), # killing strikes
-          ( 432846, 0 ), # lunar amplification
+          ( 425217, 0 ), ( 425219, 0 ), # boundless moonlight
           ( 441585, 0 ), ( 441602, 0 ), # ravage
-          ( 439887, 0 ), ( 439888, 0 ), # root network
           ( 439891, 0 ), ( 439893, 0 ), # strategic infusion
-          ( 428545, 0 ), # treants of the moon
         ),
         # Demon Hunter:
         (
@@ -2471,38 +2507,38 @@ class SpellDataGenerator(DataGenerator):
 
     _race_categories = [
         (),
-        ( 754, ),                # Human           0x0001
-        ( 125, ),                # Orc             0x0002
-        ( 101, ),                # Dwarf           0x0004
-        ( 126, ),                # Night-elf       0x0008
-        ( 220, ),                # Undead          0x0010
-        ( 124, ),                # Tauren          0x0020
-        ( 753, ),                # Gnome           0x0040
-        ( 733, ),                # Troll           0x0080
-        ( 790, ),                # Goblin          0x0100? not defined yet
-        ( 756, ),                # Blood elf       0x0200
-        ( 760, ),                # Draenei         0x0400
-        ( 2597, ),               # Dark Iron Dwarf 0x0800
-        ( 2775, ),               # Vulpera         0x1000
-        ( 2598, ),               # Mag'har Orc     0x2000
-        ( 2774, ),               # Mechagnome      0x4000
-        ( 2808 ),                # Dracthyr (A)    0x8000
-        (),                      # Dracthyr (H)    0x10000
-        (),                      #
-        (),                      #
-        (),                      #
-        (),                      #
-        ( 789, ),                # Worgen          0x200000
-        (),                      # Gilnean         0x400000
-        (),                      # Pandaren (N)    0x800000
-        ( 899, ),                # Pandaren (A)    0x1000000
-        (),                      # Pandaren (H)    0x2000000
-        ( 2419, ),               # Nightborne      0x4000000
-        ( 2420, ),               # Highmountain    0x8000000
-        ( 2423, ),               # Void Elf        0x10000000
-        ( 2421, ),               # Lightforged     0x20000000
-        ( 2721, ),               # Zandalari Troll 0x40000000
-        ( 2723, ),               # Kul Tiran       0x80000000
+        ( 754 ),   # Human           0x00000001
+        ( 125 ),   # Orc             0x00000002
+        ( 101 ),   # Dwarf           0x00000004
+        ( 126 ),   # Night-elf       0x00000008
+        ( 220 ),   # Undead          0x00000010
+        ( 124 ),   # Tauren          0x00000020
+        ( 753 ),   # Gnome           0x00000040
+        ( 733 ),   # Troll           0x00000080
+        ( 790 ),   # Goblin          0x00000100? not defined yet
+        ( 756 ),   # Blood elf       0x00000200
+        ( 760 ),   # Draenei         0x00000400
+        ( 2597 ),  # Dark Iron Dwarf 0x00000800
+        ( 2775 ),  # Vulpera         0x00001000
+        ( 2598 ),  # Mag'har Orc     0x00002000
+        ( 2774 ),  # Mechagnome      0x00004000
+        ( 2808 ),  # Dracthyr (H)    0x00008000
+        (),        # Dracthyr (A)    0x00010000
+        ( 2895 ),  # Earthen (H)     0x00020000
+        (),        # Earthen (A)     0x00040000
+        (),
+        (),
+        ( 789 ),   # Worgen          0x00200000
+        (),        # Gilnean         0x00400000
+        (),        # Pandaren (N)    0x00800000
+        (),        # Pandaren (A)    0x01000000
+        ( 899 ),   # Pandaren (H)    0x02000000
+        ( 2419 ),  # Nightborne      0x04000000
+        ( 2420 ),  # Highmountain    0x08000000
+        ( 2423 ),  # Void Elf        0x10000000
+        ( 2421 ),  # Lightforged     0x20000000
+        ( 2721 ),  # Zandalari Troll 0x40000000
+        ( 2723 ),  # Kul Tiran       0x80000000
     ]
 
     _skill_category_blacklist = [
@@ -2517,10 +2553,10 @@ class SpellDataGenerator(DataGenerator):
     # http://github.com/mangos/mangos/blob/400/src/game/SharedDefines.h
     _effect_type_blacklist = [
         5,      # SPELL_EFFECT_TELEPORT_UNITS
-        #10,     # SPELL_EFFECT_HEAL
         16,     # SPELL_EFFECT_QUEST_COMPLETE
         18,     # SPELL_EFFECT_RESURRECT
         25,     # SPELL_EFFECT_WEAPONS
+        36,     # Learn spell
         39,     # SPELL_EFFECT_LANGUAGE
         47,     # SPELL_EFFECT_TRADESKILL
         50,     # SPELL_EFFECT_TRANS_DOOR
@@ -2626,6 +2662,7 @@ class SpellDataGenerator(DataGenerator):
         221477, # Underlight (from Underlight Angler - Legion artifact fishing pole)
         345482, # Manifest Aethershunt (Shadowlands Conduit upgrade Maw item)
         345487, # Spatial Realignment Apparatus (Shadowlands Maw additional socket item)
+        282965, # Shadow Priest Testing Spell (DNT)
     ]
 
     _spell_families = {
@@ -3113,9 +3150,10 @@ class SpellDataGenerator(DataGenerator):
                 continue
 
             self.process_spell(spell.id, ids, 0, 0, False)
-            if spell.id in ids:
-                mask_class = self._class_masks[data.class_id] or 0
-                ids[spell.id]['mask_class'] |= mask_class
+            # for spelldatadump readability, we no longer assign a class to azerite
+            # if spell.id in ids:
+            #    mask_class = self._class_masks[data.class_id] or 0
+            #    ids[spell.id]['mask_class'] |= mask_class
 
         # Azerite esssence spells
         for data in self.db('AzeriteItemMilestonePower').values():
@@ -3215,7 +3253,6 @@ class SpellDataGenerator(DataGenerator):
                 if pattern.match(spell_data.name):
                     self.process_spell(spell_id, ids, 0, 0)
 
-
         # After normal spells have been fetched, go through all spell ids,
         # and get all the relevant aura_ids for selected spells
         more_ids = { }
@@ -3235,6 +3272,13 @@ class SpellDataGenerator(DataGenerator):
                 ids[id]['mask_class'] |= data['mask_class']
                 ids[id]['mask_race'] |= data['mask_race']
 
+        # Spells with description that is entirely in the format $@spelldesc###### are assumed to be associated
+        # with spell ###### and should be included.
+        for spell_id, spell_data in self.db('Spell').items():
+            if spell_data.desc:
+                r = re.match("\$@spell(?:aura|desc)([0-9]{1,6})", spell_data.desc)
+                if r and (id := int(r.group(1))) in ids:
+                    self.process_spell(spell_id, ids, ids[id]['mask_class'], ids[id]['mask_race'])
 
         #print('filter done', datetime.datetime.now() - _start)
         return ids
@@ -3416,9 +3460,8 @@ class SpellDataGenerator(DataGenerator):
             fields += shapeshif_entry.field('flags_1')
             hotfix.add(shapeshif_entry, ('flags_1', 38))
 
-            mechanic = category.ref('id_mechanic')
-            fields += mechanic.field('mechanic')
-            hotfix.add(mechanic, ('mechanic', 39))
+            fields += category.field('id_mechanic')
+            hotfix.add(category, ('id_mechanic', 39))
 
             power = spell.get_link('azerite_power')
             fields += power.field('id')
@@ -3523,9 +3566,8 @@ class SpellDataGenerator(DataGenerator):
             hotfix.add(effect, ('trigger_spell', 18), ('dmg_multiplier', 19),
                 ('points_per_combo_points', 20), ('real_ppl', 21))
 
-            mechanic = effect.ref('id_mechanic')
-            fields += mechanic.field('mechanic')
-            hotfix.add(mechanic, ('mechanic', 22))
+            fields += effect.field('id_mechanic')
+            hotfix.add(effect, ('id_mechanic', 22))
 
             fields += effect.field('chain_target', 'implicit_target_1', 'implicit_target_2', 'val_mul', 'pvp_coefficient')
             hotfix.add(effect, ('chain_target', 23), ('implicit_target_1', 24),
@@ -3917,9 +3959,19 @@ class SetBonusListGenerator(DataGenerator):
             'tier'   : 'DF4'
         },
         {
+            'name'   : 'fury_of_the_storm_rook',
+            'bonuses': [ 1612 ],
+            'tier'   : 'TWW_FSR'
+        },
+        {
             'name'   : 'kyevezzas_cruel_implements',
             'bonuses': [ 1613 ],
             'tier'   : 'TWW_KCI'
+        },
+        {
+            'name'   : 'thewarwithin_season_1',
+            'bonuses': [ 1684, 1685, 1686, 1687, 1688, 1689, 1690, 1691, 1692, 1693, 1694, 1695, 1696 ],
+            'tier'   : 'TWW1'
         },
     ]
 

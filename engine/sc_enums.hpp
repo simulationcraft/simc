@@ -239,7 +239,8 @@ enum race_e
   RACE_MECHAGNOME,
   RACE_DRACTHYR_ALLIANCE,
   RACE_DRACTHYR_HORDE,
-
+  RACE_EARTHEN_ALLIANCE,
+  RACE_EARTHEN_HORDE,
   RACE_UNKNOWN,
   RACE_MAX
 };
@@ -858,8 +859,10 @@ enum set_bonus_type_e
   T30_MOTD,
   T31,
   DF4,
+  TWW_FSR,
   TWW_KCI,
-  SET_BONUS_MAX
+  TWW1,
+  SET_BONUS_MAX,
 };
 
 enum meta_gem_e
@@ -1093,8 +1096,8 @@ enum cache_e
   CACHE_ATTACK_HASTE,
   CACHE_SPELL_HASTE,
   CACHE_RPPM_HASTE,
-  CACHE_ATTACK_SPEED,
-  CACHE_SPELL_SPEED,
+  CACHE_AUTO_ATTACK_SPEED,
+  CACHE_SPELL_CAST_SPEED,
   CACHE_VERSATILITY,
   CACHE_DAMAGE_VERSATILITY,
   CACHE_HEAL_VERSATILITY,
@@ -1403,11 +1406,11 @@ enum ready_e
 /// Real PPM scale stats
 enum rppm_scale_e : uint8_t
 {
-  RPPM_NONE         = 0x00,
-  RPPM_HASTE        = 0x01,
-  RPPM_CRIT         = 0x02,
-  RPPM_ATTACK_SPEED = 0x04,
-  RPPM_DISABLE      = 0xff
+  RPPM_NONE              = 0x00,
+  RPPM_HASTE             = 0x01,
+  RPPM_CRIT              = 0x02,
+  RPPM_AUTO_ATTACK_SPEED = 0x04,
+  RPPM_DISABLE           = UINT8_MAX
 };
 
 enum class action_energize
@@ -1426,9 +1429,9 @@ enum class gcd_haste_type
   // any (all) haste types
   HASTE,
   SPELL_HASTE,
-  ATTACK_HASTE, // TODO: This should probably be Range/Melee
-  SPELL_SPEED,
-  ATTACK_SPEED,
+  ATTACK_HASTE,       // TODO: This should probably be Range/Melee
+  SPELL_CAST_SPEED,   // Includes spell haste as well as cast speed effects
+  AUTO_ATTACK_SPEED,  // Includes attack haste as well as auto attack speed effects
 };
 
 enum fight_style_e

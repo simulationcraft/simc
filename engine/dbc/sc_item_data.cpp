@@ -1060,6 +1060,7 @@ const dbc_item_data_t& dbc::find_consumable( item_subclass_consumable type, bool
   switch ( type )
   {
     case ITEM_SUBCLASS_POTION:
+    case ITEM_SUBCLASS_CONSUMABLE_OTHER:  // augments are lumped in with potions
       return potion_data_index.get( ptr, f );
     case ITEM_SUBCLASS_FLASK:
       return flask_data_index.get( ptr, f );

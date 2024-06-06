@@ -106,8 +106,15 @@ public:
   /// If set to true, this action will not be counted toward total amount of executes in reporting. Useful for abilities with parent/children attacks.
   bool dual;
 
-  /// enables/disables proc callback system on the action, like trinkets, enchants, rppm.
+  /// enables/disables proc callback system on the action, like trinkets, enchants, rppm. this supercedes all dbc-parsed flags.
   bool callbacks;
+
+  /// if true, does not trigger callbacks on caster/target.
+  bool suppress_caster_procs, suppress_target_procs;
+
+  /// can trigger callbacks on caster even if suppress_caster_proc is true, as long as the callback has can_proc_from_suppressed = true.
+  /// TODO: determine if equivalent for suppressed target procs is needed.
+  bool enable_proc_from_suppressed;
 
   /// Allows triggering of procs marked to only proc from class abilities.
   bool allow_class_ability_procs;
@@ -399,8 +406,8 @@ public:
 
   double base_hit;
   double base_crit;
-  double crit_multiplier;
-  double crit_bonus_multiplier;
+  double crit_chance_multiplier;
+  double crit_bonus_multiplier;   // action scoped Add Percent Modifier (108): Spell Critical Damage (15)
   double crit_bonus;
   double base_dd_adder;
   double base_ta_adder;
@@ -901,7 +908,7 @@ public:
   { return base_crit; }
 
   virtual double composite_crit_chance_multiplier() const
-  { return 1.0; }
+  { return crit_chance_multiplier; }
 
   virtual double composite_crit_damage_bonus_multiplier() const
   { return crit_bonus_multiplier; }

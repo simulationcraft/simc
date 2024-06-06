@@ -1817,7 +1817,7 @@ timespan_t buff_t::tick_time() const
   {
     case buff_tick_time_behavior::HASTED:
       assert( player );
-      return buff_period * player->cache.spell_speed();
+      return buff_period * player->cache.spell_cast_speed();
     case buff_tick_time_behavior::CUSTOM:
       assert( tick_time_callback );
       return tick_time_callback( this, current_tick );
@@ -3059,13 +3059,13 @@ void buff_t::init_haste_type()
     {
       gcd_type = gcd_haste_type::ATTACK_HASTE;
     }
-    else if ( range::find( invalidate_list, CACHE_SPELL_SPEED ) != invalidate_list.end() )
+    else if ( range::find( invalidate_list, CACHE_SPELL_CAST_SPEED ) != invalidate_list.end() )
     {
-      gcd_type = gcd_haste_type::SPELL_SPEED;
+      gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
     }
-    else if ( range::find( invalidate_list, CACHE_ATTACK_SPEED ) != invalidate_list.end() )
+    else if ( range::find( invalidate_list, CACHE_AUTO_ATTACK_SPEED ) != invalidate_list.end() )
     {
-      gcd_type = gcd_haste_type::ATTACK_SPEED;
+      gcd_type = gcd_haste_type::AUTO_ATTACK_SPEED;
     }
   }
 }
@@ -3213,7 +3213,9 @@ stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, const stat_check_fn& c )
   if ( it != stats.end() )
   {
     it->amount += a;
-    it->check_func = std::move( c );
+
+    if ( c )
+      it->check_func = c;
   }
   else
   {
@@ -3240,7 +3242,7 @@ stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_c
   if ( i > data().effect_count() )
     return do_error( "index out of bounds" );
 
-  auto eff = data().effectN( i );
+  const auto& eff = data().effectN( i );
 
   if ( eff.subtype() == A_MOD_STAT )
   {
@@ -3292,7 +3294,7 @@ stat_buff_t* stat_buff_t::set_stat_from_effect( size_t i, double a, const stat_c
 
 stat_buff_t* stat_buff_t::add_stat_from_effect_type( effect_subtype_t type, double a, const stat_check_fn& c )
 {
-  auto eff = spell_data_t::find_spelleffect( data(), E_APPLY_AURA, type );
+  const auto& eff = spell_data_t::find_spelleffect( data(), E_APPLY_AURA, type );
   assert( eff.ok() && "Effect type not found in stat buff" );
 
   return add_stat_from_effect( eff.index() + 1, a, c );
@@ -3628,21 +3630,11 @@ absorb_buff_t* absorb_buff_t::set_cumulative( bool c )
 
 bool movement_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
 {
-  if ( player->buffs.norgannons_sagacity_stacks && player->buffs.norgannons_sagacity )
-  {
-    auto sagacity = player->buffs.norgannons_sagacity_stacks->check();
 
-    if ( sagacity )
-    {
-      player->buffs.norgannons_sagacity_stacks->expire();
-      player->buffs.norgannons_sagacity->buff_duration_multiplier = sagacity;
-      player->buffs.norgannons_sagacity->trigger();
-    }
-  }
-
-  if ( player->buffs.static_empowerment )
+  for ( const auto& cb : player->callbacks_on_movement )
   {
-    player->buffs.static_empowerment->expire();
+    if ( !check() )
+      cb( true );
   }
 
   return buff_t::trigger( stacks, value, chance, duration );
@@ -3652,6 +3644,11 @@ void movement_buff_t::expire_override( int expiration_stacks, timespan_t remaini
 {
   buff_t::expire_override( expiration_stacks, remaining_duration );
   source->finish_moving();
+
+  for ( const auto& cb : player->callbacks_on_movement )
+  {
+    cb( false );
+  }
 }
 
 // ==========================================================================
@@ -3742,14 +3739,20 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
         sim->print_debug( "{} damage buff crit chance multiplier initialized to {}", *this, crit_chance_mod.multiplier );
       }
     }
+    else if ( e.subtype() == A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS )
+    {
+      assert( crit_chance_mod.multiplier == 1.0 && crit_chance_mod.effect_idx == 0 && "Crit chance multiplier has already been set" );
+      set_crit_chance_mod( spell, idx, multiplier );
+      sim->print_debug( "{} damage debuff crit chance multiplier initialized to {}", *this, crit_chance_mod.multiplier );
+    }
     else if ( e.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS )
     {
       assert( direct_mod.multiplier == 1.0 && direct_mod.effect_idx == 0 && "Direct multiplier has already been set" );
       assert( periodic_mod.multiplier == 1.0 && periodic_mod.effect_idx == 0 && "Periodic multiplier has already been set" );
       set_direct_mod( spell, idx, multiplier );
       set_periodic_mod( spell, idx, multiplier );
-      sim->print_debug( "{} damage buff direct multiplier initialized to {}", *this, direct_mod.multiplier );
-      sim->print_debug( "{} damage buff periodic multiplier initialized to {}", *this, periodic_mod.multiplier );
+      sim->print_debug( "{} damage debuff direct multiplier initialized to {}", *this, direct_mod.multiplier );
+      sim->print_debug( "{} damage debuff periodic multiplier initialized to {}", *this, periodic_mod.multiplier );
     }
     else if ( e.subtype() == A_ADD_PCT_LABEL_MODIFIER )
     {
@@ -3828,18 +3831,20 @@ buff_t* damage_buff_t::apply_affecting_effect( const spelleffect_data_t& effect 
   apply_mod_affecting_effect( direct_mod, effect );
   apply_mod_affecting_effect( periodic_mod, effect );
   apply_mod_affecting_effect( auto_attack_mod, effect );
+  apply_mod_affecting_effect( crit_chance_mod, effect );
 
   return buff_t::apply_affecting_effect( effect );
 }
 
 damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, double multiplier )
 {
-  return set_buff_mod( mod, spell_data_t::nil(), 0, multiplier );
+  return set_buff_mod( mod, spell_data_t::nil(), 0, multiplier, 1.0 );
 }
 
-damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, const spell_data_t* s, size_t effect_idx, double multiplier )
+damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, const spell_data_t* s, size_t effect_idx, double multiplier, double initial_multiplier )
 {
   assert( mod.s_data == nullptr && mod.effect_idx == 0 );
+  mod.initial_multiplier = initial_multiplier;
 
   if( multiplier != 0.0 )
     mod.multiplier = 1.0 + multiplier;
@@ -3858,26 +3863,26 @@ damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, const s
 damage_buff_t* damage_buff_t::set_direct_mod( double multiplier )
 { return set_direct_mod( spell_data_t::nil(), 0, multiplier ); }
 
-damage_buff_t* damage_buff_t::set_direct_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
-{ return set_buff_mod( direct_mod, s, effect_idx, multiplier ); }
+damage_buff_t* damage_buff_t::set_direct_mod( const spell_data_t* s, size_t effect_idx, double multiplier, double initial_multiplier )
+{ return set_buff_mod( direct_mod, s, effect_idx, multiplier, initial_multiplier ); }
 
 damage_buff_t* damage_buff_t::set_periodic_mod( double multiplier )
 { return set_periodic_mod( spell_data_t::nil(), 0, multiplier ); }
 
-damage_buff_t* damage_buff_t::set_periodic_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
-{ return set_buff_mod( periodic_mod, s, effect_idx, multiplier ); }
+damage_buff_t* damage_buff_t::set_periodic_mod( const spell_data_t* s, size_t effect_idx, double multiplier, double initial_multiplier )
+{ return set_buff_mod( periodic_mod, s, effect_idx, multiplier, initial_multiplier ); }
 
 damage_buff_t* damage_buff_t::set_auto_attack_mod( double multiplier )
 { return set_auto_attack_mod( spell_data_t::nil(), 0, multiplier ); }
 
-damage_buff_t* damage_buff_t::set_auto_attack_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
-{ return set_buff_mod( auto_attack_mod, s, effect_idx, multiplier ); }
+damage_buff_t* damage_buff_t::set_auto_attack_mod( const spell_data_t* s, size_t effect_idx, double multiplier, double initial_multiplier )
+{ return set_buff_mod( auto_attack_mod, s, effect_idx, multiplier, initial_multiplier ); }
 
 damage_buff_t* damage_buff_t::set_crit_chance_mod( double multiplier )
 { return set_crit_chance_mod( spell_data_t::nil(), 0, multiplier ); }
 
 damage_buff_t* damage_buff_t::set_crit_chance_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
-{ return set_buff_mod( crit_chance_mod, s, effect_idx, multiplier ); }
+{ return set_buff_mod( crit_chance_mod, s, effect_idx, multiplier, 1.0 ); }
 
 bool damage_buff_t::is_affecting( const spell_data_t* s )
 {

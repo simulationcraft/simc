@@ -204,14 +204,15 @@ bool event_manager_t::execute()
 {
   unsigned n_events = 0U;
   std::vector<std::string> debug_list;
-  static const unsigned MAX_EVENTS = 500U * ( sim->single_actor_batch ? 1U : sim->player_no_pet_list.size() );
+  static const unsigned MAX_EVENTS =
+      500U * ( sim->single_actor_batch ? 1U : as<unsigned>( sim->player_no_pet_list.size() ) );
 
   while ( event_t* e = next_event() )
   {
     if ( e->time == current_time )
     {
 #ifndef NDEBUG
-      debug_list.push_back( e->debug() );
+      debug_list.emplace_back( e->debug() );
 #endif
       if ( ++n_events == MAX_EVENTS )
       {

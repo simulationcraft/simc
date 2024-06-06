@@ -1053,9 +1053,9 @@ void item::tarnished_sentinel_medallion( special_effect_t& effect )
         .pulse_time( data().effectN( 2 ).period() )
         .duration( data().duration() )
         .action( bolt )
-        .hasted( ground_aoe_params_t::SPELL_SPEED )
+        .hasted( ground_aoe_params_t::SPELL_CAST_SPEED )
         .expiration_pulse( ground_aoe_params_t::FULL_EXPIRATION_PULSE )
-        .expiration_callback( [ this ]() { callback -> deactivate(); } ) );
+        .expiration_callback( [ this ]( const action_state_t* ) { callback -> deactivate(); } ) );
     }
 
     void reset() override
@@ -1120,7 +1120,7 @@ struct umbral_glaives_driver_t : public proc_spell_t
       .pulse_time( data().effectN( 2 ).period() )
       .duration( data().duration() )
       .action( storm )
-      .expiration_callback( [ this ]() {
+      .expiration_callback( [ this ]( const action_state_t* ) {
         if ( ! storm -> execute_state )
           return;
 
@@ -2479,12 +2479,9 @@ void item::spiked_counterweight( special_effect_t& effect )
 
     struct haymaker_driver_t : public dbc_proc_callback_t
     {
-      struct haymaker_event_t;
-
       buff_t* debuff;
       const special_effect_t& effect;
       double multiplier;
-      haymaker_event_t* accumulator;
       haymaker_damage_t* action;
       action_t* on_use;
 
@@ -2536,9 +2533,9 @@ void item::spiked_counterweight( special_effect_t& effect )
           debuff( nullptr ),
           effect( e ),
           multiplier( m ),
-          accumulator( nullptr ),
           action( debug_cast<haymaker_damage_t*>( a ) ),
-          on_use( use )
+          on_use( use ),
+          accumulator( nullptr )
       {}
 
       void activate() override
@@ -2556,6 +2553,10 @@ void item::spiked_counterweight( special_effect_t& effect )
         if ( on_use->get_debuff( trigger_state->target )->check() )
           accumulator->damage += trigger_state->result_amount * multiplier;
       }
+
+      // Forward declaration does not work on MacOS Clang at least, so move definition after class
+      // definition.
+      haymaker_event_t* accumulator;
     };
 
     haymaker_driver_t* cb;
@@ -2909,11 +2910,11 @@ void item::whispers_in_the_dark( special_effect_t& effect )
   auto bad_amount = bad_buff_data -> effectN( 1 ).average( effect.item ) / 100.0;
 
   buff_t* bad_buff = make_buff( effect.player, "devils_due", bad_buff_data, effect.item );
-  bad_buff->add_invalidate( CACHE_SPELL_SPEED )
+  bad_buff->add_invalidate( CACHE_SPELL_CAST_SPEED )
     ->set_default_value( bad_amount );
 
   buff_t* good_buff = make_buff( effect.player, "nefarious_pact", good_buff_data, effect.item );
-  good_buff->add_invalidate( CACHE_SPELL_SPEED )
+  good_buff->add_invalidate( CACHE_SPELL_CAST_SPEED )
     ->set_default_value( good_amount )
     ->set_stack_change_callback( [ bad_buff ]( buff_t*, int old_, int ) {
       if ( old_ == 1 )
@@ -5893,7 +5894,7 @@ void unique_gear::register_hotfixes_legion()
   */
 }
 
-void unique_gear::register_target_data_initializers_legion( sim_t* sim )
+void unique_gear::register_target_data_initializers_legion( sim_t* )
 {
   using namespace legion;
 }

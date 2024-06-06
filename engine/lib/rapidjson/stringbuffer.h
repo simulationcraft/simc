@@ -1,6 +1,6 @@
 // Tencent is pleased to support the open source community by making RapidJSON available.
 // 
-// Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
+// Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip. All rights reserved.
 //
 // Licensed under the MIT License (the "License"); you may not use this file except
 // in compliance with the License. You may obtain a copy of the License at
@@ -23,8 +23,6 @@
 #endif
 
 #include "internal/stack.h"
-
-#include <string_view>
 
 #if defined(__clang__)
 RAPIDJSON_DIAG_PUSH
@@ -80,16 +78,7 @@ public:
         return stack_.template Bottom<Ch>();
     }
 
-    std::basic_string_view<Ch> GetStringView() const
-    {
-      return std::string_view{ stack_.template Bottom<Ch>(), GetLength() };
-    }
-
-    //! Get the size of string in bytes in the string buffer.
     size_t GetSize() const { return stack_.GetSize(); }
-
-    //! Get the length of string in Ch in the string buffer.
-    size_t GetLength() const { return stack_.GetSize() / sizeof(Ch); }
 
     static const size_t kDefaultCapacity = 256;
     mutable internal::Stack<Allocator> stack_;
