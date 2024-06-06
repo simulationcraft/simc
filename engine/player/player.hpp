@@ -654,6 +654,8 @@ struct player_t : public actor_t
     const spell_data_t* mountaineer;
     const spell_data_t* brush_it_off;
     const spell_data_t* awakened;
+    const spell_data_t* azerite_surge;
+    const spell_data_t* titanwrought_frame;
   } racials;
 
   struct antumbra_t

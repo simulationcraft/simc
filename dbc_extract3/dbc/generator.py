@@ -264,10 +264,35 @@ class CSVDataGenerator(object):
         return True
 
 class DataGenerator(object):
-    _class_names = [ None, 'Warrior', 'Paladin', 'Hunter', 'Rogue',     'Priest', 'Death Knight', 'Shaman', 'Mage',  'Warlock', 'Monk',      'Druid',  'Demon Hunter',     'Evoker' ]
-    _class_masks = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20,           0x40,     0x80,    0x100,     0x200,       0x400,     0x800,             0x1000 ]
-    _race_names  = [ None, 'Human',   'Orc',     'Dwarf',  'Night Elf', 'Undead', 'Tauren',       'Gnome',  'Troll', 'Goblin',  'Blood Elf', 'Draenei', 'Dark Iron Dwarf', 'Vulpera', 'Mag\'har Orc', 'Mechagnome', 'Dracthyr' ] + [ None ] * 5 + [ 'Worgen', None, None, 'Pandaren', None, 'Nightborne', 'Highmountain Tauren', 'Void Elf', 'Lightforged Draenei', 'Zandalari Troll', 'Kul Tiran' ]
-    _race_masks  = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20,           0x40,     0x80,    0x100,     0x200,       0x400,     0x800,             0x1000,    0x2000,         0x4000,       0x8000,    ] + [ None ] * 5 + [ 0x200000, None, None, 0x1000000,  None, 0x4000000,    0x8000000,             0x10000000, 0x20000000,            0x40000000,        0x80000000  ]
+    _class_names = [ None,
+                     'Warrior', 'Paladin', 'Hunter', 'Rogue',
+                     'Priest', 'Death Knight', 'Shaman', 'Mage',
+                     'Warlock', 'Monk', 'Druid', 'Demon Hunter',
+                     'Evoker' ]
+    _class_masks = [ None,
+                     0x0001, 0x0002, 0x0004, 0x0008, # warrior paladin hunter rogue
+                     0x0010, 0x0020, 0x0040, 0x0080, # priest deathknight shaman mage
+                     0x0100, 0x0200, 0x0400, 0x0800, # warlock monk druid demonhunter
+                     0x1000 ]                        # evoker
+    _race_names  = [ None,
+                     'Human', 'Orc', 'Dwarf', 'Night Elf',
+                     'Undead', 'Tauren', 'Gnome', 'Troll',
+                     'Goblin', 'Blood Elf', 'Draenei', 'Dark Iron Dwarf',
+                     'Vulpera', 'Mag\'har Orc', 'Mechagnome', 'Dracthyr',
+                     None, 'Earthen', None, None,
+                     None, 'Worgen', None, None,
+                     None, 'Pandaren', 'Nightborne', 'Highmountain Tauren',
+                     'Void Elf','Lightforged Draenei', 'Zandalari Troll', 'Kul Tiran' ]
+    # simc uses race_bits left shifted by 1 compared to PlayableRaceBit in ChrRaces.db2
+    _race_masks  = [ None,
+                     0x00000001, 0x00000002, 0x00000004, 0x00000008,  # human orc dwarf nightelf
+                     0x00000010, 0x00000020, 0x00000040, 0x00000080,  # undead tauren gnome troll
+                     0x00000100, 0x00000200, 0x00000400, 0x00000800,  # goblin bloodelf draenei darkirondwarf
+                     0x00001000, 0x00002000, 0x00004000, 0x00008000,  # vulpera magharorc mechagnome dracthyr(H)
+                     None,       0x00020000, None,       None,        # dracthyr(A) earthen(H) earthen(A) unused
+                     None,       0x00200000, None,       None,        # unused worgen unused pandaren(N)
+                     None,       0x02000000, 0x04000000, 0x08000000,  # pandaren(A) pandaren(H) nightborne highmountaintauren
+                     0x10000000, 0x20000000, 0x40000000, 0x80000000 ] # voidelf lightforgeddraenei zandalaritroll kultiran
     _pet_names   = [ None, 'Ferocity', 'Tenacity', None, 'Cunning' ]
     _pet_masks   = [ None, 0x1,        0x2,        None, 0x4       ]
 
@@ -2482,38 +2507,38 @@ class SpellDataGenerator(DataGenerator):
 
     _race_categories = [
         (),
-        ( 754, ),                # Human           0x0001
-        ( 125, ),                # Orc             0x0002
-        ( 101, ),                # Dwarf           0x0004
-        ( 126, ),                # Night-elf       0x0008
-        ( 220, ),                # Undead          0x0010
-        ( 124, ),                # Tauren          0x0020
-        ( 753, ),                # Gnome           0x0040
-        ( 733, ),                # Troll           0x0080
-        ( 790, ),                # Goblin          0x0100? not defined yet
-        ( 756, ),                # Blood elf       0x0200
-        ( 760, ),                # Draenei         0x0400
-        ( 2597, ),               # Dark Iron Dwarf 0x0800
-        ( 2775, ),               # Vulpera         0x1000
-        ( 2598, ),               # Mag'har Orc     0x2000
-        ( 2774, ),               # Mechagnome      0x4000
-        ( 2808 ),                # Dracthyr (A)    0x8000
-        (),                      # Dracthyr (H)    0x10000
-        (),                      #
-        (),                      #
-        (),                      #
-        (),                      #
-        ( 789, ),                # Worgen          0x200000
-        (),                      # Gilnean         0x400000
-        (),                      # Pandaren (N)    0x800000
-        ( 899, ),                # Pandaren (A)    0x1000000
-        (),                      # Pandaren (H)    0x2000000
-        ( 2419, ),               # Nightborne      0x4000000
-        ( 2420, ),               # Highmountain    0x8000000
-        ( 2423, ),               # Void Elf        0x10000000
-        ( 2421, ),               # Lightforged     0x20000000
-        ( 2721, ),               # Zandalari Troll 0x40000000
-        ( 2723, ),               # Kul Tiran       0x80000000
+        ( 754 ),   # Human           0x00000001
+        ( 125 ),   # Orc             0x00000002
+        ( 101 ),   # Dwarf           0x00000004
+        ( 126 ),   # Night-elf       0x00000008
+        ( 220 ),   # Undead          0x00000010
+        ( 124 ),   # Tauren          0x00000020
+        ( 753 ),   # Gnome           0x00000040
+        ( 733 ),   # Troll           0x00000080
+        ( 790 ),   # Goblin          0x00000100? not defined yet
+        ( 756 ),   # Blood elf       0x00000200
+        ( 760 ),   # Draenei         0x00000400
+        ( 2597 ),  # Dark Iron Dwarf 0x00000800
+        ( 2775 ),  # Vulpera         0x00001000
+        ( 2598 ),  # Mag'har Orc     0x00002000
+        ( 2774 ),  # Mechagnome      0x00004000
+        ( 2808 ),  # Dracthyr (H)    0x00008000
+        (),        # Dracthyr (A)    0x00010000
+        ( 2895 ),  # Earthen (H)     0x00020000
+        (),        # Earthen (A)     0x00040000
+        (),
+        (),
+        ( 789 ),   # Worgen          0x00200000
+        (),        # Gilnean         0x00400000
+        (),        # Pandaren (N)    0x00800000
+        (),        # Pandaren (A)    0x01000000
+        ( 899 ),   # Pandaren (H)    0x02000000
+        ( 2419 ),  # Nightborne      0x04000000
+        ( 2420 ),  # Highmountain    0x08000000
+        ( 2423 ),  # Void Elf        0x10000000
+        ( 2421 ),  # Lightforged     0x20000000
+        ( 2721 ),  # Zandalari Troll 0x40000000
+        ( 2723 ),  # Kul Tiran       0x80000000
     ]
 
     _skill_category_blacklist = [

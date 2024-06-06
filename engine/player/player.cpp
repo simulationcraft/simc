@@ -1562,6 +1562,7 @@ void player_t::init_base_stats()
     base.leech                    = 0.0;
     base.avoidance                = 0.0;
 
+    base.base_armor_multiplier    *= ( 1.0 + racials.titanwrought_frame->effectN( 1 ).percent() );
     base.crit_damage_multiplier   *= ( 1.0 + racials.brawn->effectN( 1 ).percent() ) *
                                      ( 1.0 + racials.might_of_the_mountain->effectN( 1 ).percent() );
     base.crit_healing_multiplier  *= ( 1.0 + racials.brawn->effectN( 3 ).percent() ) *
@@ -3196,6 +3197,8 @@ void player_t::init_spells()
   racials.mountaineer           = find_racial_spell( "Mountaineer" );
   racials.brush_it_off          = find_racial_spell( "Brush It Off" );
   racials.awakened              = find_racial_spell( "Awakened" );
+  racials.azerite_surge         = find_racial_spell( "Azerite Surge" );
+  racials.titanwrought_frame    = find_racial_spell( "Titan-Wrought Frame" );
 
   if ( is_player() )
   {
