@@ -1765,7 +1765,8 @@ struct holy_armaments_t : public paladin_spell_t
     harmful = false;
     hasted_gcd = true;
     name_str_reporting = "Holy Armaments";
-    apply_affecting_aura( p->find_spell(432804) );
+    if ( p->talents.forewarning->ok() )
+      apply_affecting_aura( p->talents.forewarning );
    }
 
    timespan_t execute_time() const override
@@ -2839,24 +2840,23 @@ void paladin_t::init_spells()
   talents.fading_light = find_talent_spell( talent_tree::CLASS, "Fading Light" );
 
   // Hero Talents
-  talents.holy_armaments           = find_talent_spell( talent_tree::HERO, "Holy Armaments" );
-  talents.rite_of_sanctification = find_talent_spell( talent_tree::HERO, "Rite of Sanctificatiopn" );
-  talents.rite_of_adjuratuion    = find_talent_spell( talent_tree::HERO, "Rite of Adjuration" );
-  talents.laying_down_arms       = find_talent_spell( talent_tree::HERO, " Laying Down Arms" );
+  talents.holy_armaments         = find_talent_spell( talent_tree::HERO, "Holy Armaments" );
+  talents.rite_of_sanctification = find_talent_spell( talent_tree::HERO, "Rite of Sanctification" );
+  talents.rite_of_adjuration     = find_talent_spell( talent_tree::HERO, "Rite of Adjuration" );
+  talents.laying_down_arms       = find_talent_spell( talent_tree::HERO, "Laying Down Arms" );
   talents.shared_resolve         = find_talent_spell( talent_tree::HERO, "Shared Resolve" );
-  talents.solidraity             = find_talent_spell( talent_tree::HERO, "Solidarity" );
+  talents.solidarity             = find_talent_spell( talent_tree::HERO, "Solidarity" );
   talents.divine_inspiration     = find_talent_spell( talent_tree::HERO, "Divine Inspiration" );
   talents.forewarning            = find_talent_spell( talent_tree::HERO, "Forewarning" );
   talents.valiance               = find_talent_spell( talent_tree::HERO, "Valiance" );
   talents.divine_guidance        = find_talent_spell( talent_tree::HERO, "Divine Guidance" );
   talents.blessed_assurance      = find_talent_spell( talent_tree::HERO, "Blessed Assurance" );
   talents.fear_no_evil           = find_talent_spell( talent_tree::HERO, "Fear No Evil" );
-  talents.excoriation            = find_talent_spell( talent_tree::HERO, "Excorciation" );
-  // Not working unless it's spell ID'd
-  talents.hammer_and_anvil       = find_spell( 433718 );
+  talents.excoriation            = find_talent_spell( talent_tree::HERO, "Excoriation" );
+  talents.hammer_and_anvil       = find_talent_spell( talent_tree::HERO, "Hammer and Anvil" );
   talents.blessing_of_the_forge  = find_talent_spell( talent_tree::HERO, "Blessing of the Forge" );
   // Child spell of blessing of the forge, triggered by casting shield of the righteous
-  talents.forges_reckoning       = find_spell( 447258 );
+  spells.forges_reckoning       = find_spell( 447258 );
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );

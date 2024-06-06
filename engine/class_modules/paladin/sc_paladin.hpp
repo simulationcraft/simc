@@ -359,6 +359,8 @@ public:
     const spell_data_t* cleansing_flame_damage;
     const spell_data_t* cleansing_flame_heal;
     const spell_data_t* wrathful_sanction;
+
+    const spell_data_t* forges_reckoning;
   } spells;
 
   // Talents
@@ -566,10 +568,10 @@ public:
     const spell_data_t* sacred_weapon;
     const spell_data_t* holy_armaments;
     const spell_data_t* rite_of_sanctification;
-    const spell_data_t* rite_of_adjuratuion;
+    const spell_data_t* rite_of_adjuration;
     const spell_data_t* laying_down_arms;
     const spell_data_t* shared_resolve;
-    const spell_data_t* solidraity;
+    const spell_data_t* solidarity;
     const spell_data_t* divine_inspiration;
     const spell_data_t* forewarning;
     const spell_data_t* valiance;
@@ -579,7 +581,6 @@ public:
     const spell_data_t* excoriation;
     const spell_data_t* hammer_and_anvil;
     const spell_data_t* blessing_of_the_forge;
-    const spell_data_t* forges_reckoning;
   } talents;
 
   struct tier_sets_t

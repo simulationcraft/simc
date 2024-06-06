@@ -332,7 +332,7 @@ struct tyrs_enforcer_damage_t : public paladin_spell_t
 
 struct forges_reckoning_t : public paladin_spell_t
 {
-  forges_reckoning_t( paladin_t* p ) : paladin_spell_t( "forges_reckoning", p, p->find_spell( 447258 ) )
+  forges_reckoning_t( paladin_t* p ) : paladin_spell_t( "forges_reckoning", p, p->spells.forges_reckoning )
   {
     background = proc = may_crit = true;
     may_miss                     = false;
