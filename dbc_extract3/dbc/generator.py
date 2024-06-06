@@ -1474,6 +1474,7 @@ class SpellDataGenerator(DataGenerator):
          448436, # sik'ran's shadow arsenal
          447097, # swarmlord's authority
          449966, # malfunctioning ethereum module
+         452325, 452457, 452498, # Sigil of Algari Concordance
         ),
 
         # Warrior:

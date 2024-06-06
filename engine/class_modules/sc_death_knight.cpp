@@ -2199,6 +2199,7 @@ struct death_knight_pet_t : public pet_t
   timespan_t decomposition_extend_limit;
   bool decomposition_can_extend;
   bool tww1_4pc_proc;
+  bool is_dk_pet;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true,
                       bool dynamic = true )
@@ -2213,7 +2214,8 @@ struct death_knight_pet_t : public pet_t
       decomposition_extended( 0_s ),
       decomposition_extend_limit( 0_s ),
       decomposition_can_extend( false ),
-      tww1_4pc_proc( false )
+      tww1_4pc_proc( false ),
+      is_dk_pet( true )
   {
     if ( auto_attack )
     {
@@ -5757,6 +5759,15 @@ struct virulent_plague_t final : public death_knight_disease_t
     }
   }
 
+  void extend_pet( pets::death_knight_pet_t* pet )
+  {
+    if ( pet->decomposition_can_extend && pet->decomposition_extend_limit > pet->decomposition_extended )
+    {
+      pet->adjust_duration( decomposition_extend_duration );
+      pet->decomposition_extended += decomposition_extend_duration;
+    }
+  }
+
   void tick( dot_t* d ) override
   {
     death_knight_disease_t::tick( d );
@@ -5769,15 +5780,30 @@ struct virulent_plague_t final : public death_knight_disease_t
       {
         debug_cast<debuffs::decomposition_debuff_t*>( td->debuff.decomposition )->execute_damage();
 
-        for ( auto& pet : p()->active_pets )
+        // Cant use the main `active_pets` vector here, breaks non dk pets.
+        for ( auto& pet : p()->pets.apoc_ghouls.active_pets() )
         {
-          auto this_pet = debug_cast<pets::death_knight_pet_t*>( pet );
-          if ( this_pet->decomposition_can_extend &&
-               this_pet->decomposition_extend_limit > this_pet->decomposition_extended )
-          {
-            pet->adjust_duration( decomposition_extend_duration );
-            this_pet->decomposition_extended += decomposition_extend_duration;
-          }
+          extend_pet( pet );
+        }
+        for ( auto& pet : p()->pets.army_ghouls.active_pets() )
+        {
+          extend_pet( pet );
+        }
+        for ( auto& pet : p()->pets.army_magus.active_pets() )
+        {
+          extend_pet( pet );
+        }
+        for ( auto& pet : p()->pets.apoc_magus.active_pets() )
+        {
+          extend_pet( pet );
+        }
+        for ( auto& pet : p()->pets.doomed_bidding_magus.active_pets() )
+        {
+          extend_pet( pet );
+        }
+        for ( auto& pet : p()->pets.abomination.active_pets() )
+        {
+          extend_pet( pet );
         }
       }
     }
