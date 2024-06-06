@@ -5121,7 +5121,10 @@ struct essence_of_the_blood_queen_buff_t final : public death_knight_buff_t
 struct ams_parent_buff_t : public death_knight_absorb_buff_t
 {
   ams_parent_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell, bool horsemen )
-    : death_knight_absorb_buff_t( p, name, spell ), damage( 0 ), horsemen( horsemen ), option( 0 )
+    : death_knight_absorb_buff_t( p, name, spell ),
+      damage( 0 ),
+      horsemen( horsemen ),
+      option( horsemen ? p->options.horsemen_ams_absorb_percent : p->options.ams_absorb_percent )
   {
     cooldown->duration = 0_ms;
     set_absorb_school( SCHOOL_MAGIC );
@@ -5192,7 +5195,6 @@ struct antimagic_shell_buff_t : public ams_parent_buff_t
     : ams_parent_buff_t( p, name, spell, false )
   {
     set_absorb_source( p->get_stats( "antimagic_shell" ) );
-    option = p->options.ams_absorb_percent;
   }
 };
 
@@ -5202,7 +5204,6 @@ struct antimagic_shell_buff_horseman_t : public ams_parent_buff_t
     : ams_parent_buff_t( p, name, spell, true )
   {
     set_absorb_source( p->get_stats( "antimagic_shell_horseman" ) );
-    option = p->options.horsemen_ams_absorb_percent;
   }
 };
 
