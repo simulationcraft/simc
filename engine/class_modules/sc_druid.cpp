@@ -7762,7 +7762,13 @@ struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclips
       if ( const auto& eff = p->sets->set( DRUID_BALANCE, TWW1, B4 )->effectN( 2 ); !energize->modified_by( eff ) )
       {
         energize->add_parse_entry()
-          .set_func( [ p ] { return p->eclipse_handler.in_lunar(); } )
+          .set_buff( p->buff.eclipse_lunar )
+          .set_flat( true )
+          .set_value( eff.base_value() )
+          .set_eff( &eff );
+
+        energize->add_parse_entry()
+          .set_buff( p->buff.eclipse_solar )
           .set_flat( true )
           .set_value( eff.base_value() )
           .set_eff( &eff );
@@ -8277,7 +8283,13 @@ struct wrath_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclipse_e
       if ( const auto& eff = p->sets->set( DRUID_BALANCE, TWW1, B4 )->effectN( 1 ); !energize->modified_by( eff ) )
       {
         energize->add_parse_entry()
-         .set_func( [ p ] { return p->eclipse_handler.in_solar(); } )
+         .set_buff( p->buff.eclipse_lunar )
+         .set_flat( true )
+         .set_value( eff.base_value() )
+         .set_eff( &eff );
+
+        energize->add_parse_entry()
+         .set_buff( p->buff.eclipse_solar )
          .set_flat( true )
          .set_value( eff.base_value() )
          .set_eff( &eff );
