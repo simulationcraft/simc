@@ -2342,7 +2342,7 @@ struct empowered_charge_t : public empowered_base_t<BASE>
   void execute() override
   {
     // pre-determine lag here per every execute
-    lag = ab::rng().gauss( ab::sim->channel_lag, ab::sim->channel_lag_stddev );
+    lag = ab::rng().gauss( ab::sim->channel_lag );
 
     ab::execute();
   }
@@ -3629,9 +3629,8 @@ struct disintegrate_t : public essence_spell_t
     // 25/11/2022 - Override the lag handling for Disintegrate so that it doesn't use channeled ready behavior
     //              In-game tests have shown it is possible to cast after faster than the 250ms channel_lag using a
     //              nochannel macro
-    ability_lag        = p->world_lag;
-    ability_lag_stddev = p->world_lag_stddev;
-        
+    ability_lag = p->world_lag;
+
     if ( p->talent.feed_the_flames.ok() )
     {
       add_parse_entry( target_multiplier_effects )
@@ -3913,11 +3912,11 @@ struct firestorm_t : public evoker_spell_t
     if ( cd_waste_data )
       cd_waste_data->add( cd_duration, time_to_execute );
 
-    if ( ( cd_duration > timespan_t::zero() ||
-           ( cd_duration == timespan_t::min() && cooldown_duration() > timespan_t::zero() ) ) &&
+    if ( ( cd_duration > 0_ms ||
+           ( cd_duration == timespan_t::min() && cooldown_duration() > 0_ms ) ) &&
          !dual )
     {
-      timespan_t delay = timespan_t::zero();
+      timespan_t delay = 0_ms;
 
       if ( !background && !proc )
       { /*This doesn't happen anymore due to the gcd queue, in WoD if an ability has a cooldown of 20 seconds,
@@ -3925,16 +3924,14 @@ struct firestorm_t : public evoker_spell_t
         The only situation that this could happen is when world lag is over 400, as blizzard does not allow
         custom lag tolerance to go over 400.
         */
-        timespan_t lag = player->world_lag_override ? player->world_lag : sim->world_lag;
-        timespan_t dev = player->world_lag_stddev_override ? player->world_lag_stddev : sim->world_lag_stddev;
-        delay          = rng().gauss( lag, dev );
-        if ( delay > timespan_t::from_millis( 400 ) )
+        delay          = rng().gauss( player->world_lag );
+        if ( delay > 400_ms )
         {
-          delay -= timespan_t::from_millis( 400 );  // Even high latency players get some benefit from CLT.
+          delay -= 400_ms;  // Even high latency players get some benefit from CLT.
           sim->print_debug( "{} delaying the cooldown finish of {} by {}", *player, *this, delay );
         }
         else
-          delay = timespan_t::zero();
+          delay = 0_ms;
       }
 
       if ( !p()->buff.snapfire->check() )
@@ -3948,7 +3945,7 @@ struct firestorm_t : public evoker_spell_t
             cooldown->ready );
       }
 
-      if ( internal_cooldown->duration > timespan_t::zero() )
+      if ( internal_cooldown->duration > 0_ms )
       {
         internal_cooldown->start( this );
 
@@ -6210,7 +6207,7 @@ void karnalex_the_first_light( special_effect_t& effect )
 
       if ( was_channeling && !player->readying )
       {
-        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
       }
     }
 

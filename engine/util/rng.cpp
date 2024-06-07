@@ -328,6 +328,26 @@ double stdnormal_inv( double p )
   return ( p > 0.5 ? -u : u );
 }
 
+void gauss_t::calculate_cdf()
+{
+  if ( !_cdf_set )
+  {
+    auto _mean = timespan_t::to_native( mean );
+    auto _stddev = timespan_t::to_native( stddev );
+
+    _min_cdf = stdnormal_cdf( ( 0.0 - _mean ) / _stddev );
+    _max_cdf = stdnormal_cdf( ( std::numeric_limits<double>::infinity() - _mean ) / _stddev ); 
+
+    _cdf_set = true;
+  }
+  else
+  {
+    assert( _min_cdf == stdnormal_cdf( ( 0.0 - timespan_t::to_native( mean ) ) / timespan_t::to_native( stddev ) ) );
+    assert( _max_cdf == stdnormal_cdf( ( std::numeric_limits<double>::infinity() - timespan_t::to_native( mean ) ) /
+                                       timespan_t::to_native( stddev ) ) );
+  }
+}
+
 } // rng
 #ifdef UNIT_TEST
 // Code to test functionality and performance of our RNG implementations

@@ -2512,8 +2512,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
 
     // Does not incur channel lag when interrupted by a cast-thru ability
-    ability_lag        = p->world_lag;
-    ability_lag_stddev = p->world_lag_stddev;
+    ability_lag = p->world_lag;
 
     spell_power_mod.direct = 0.0;
 
@@ -2729,8 +2728,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
     base_tick_time = dot_duration / 4;
 
-    ability_lag        = p->world_lag;
-    ability_lag_stddev = p->world_lag_stddev;
+    ability_lag = p->world_lag;
 
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
   }

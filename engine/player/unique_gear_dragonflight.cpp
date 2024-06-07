@@ -2858,7 +2858,7 @@ void manic_grieftorch( special_effect_t& effect )
       proc_spell_t::last_tick( d );
 
       if ( was_channeling && !player->readying )
-        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
     }
   };
 
@@ -4216,8 +4216,7 @@ void anshuul_the_cosmic_wanderer( special_effect_t& effect )
       interrupt_auto_attack         = false;
       effect                        = &e;
       // This is actually a cast, you can queue spells out of it - Do not incur channel lag.
-      ability_lag        = sim->queue_lag;
-      ability_lag_stddev = sim->queue_lag_stddev;
+      ability_lag = sim->queue_lag;
       // Child action handles travel time
       min_travel_time = travel_speed = travel_delay = 0;
     }
@@ -6541,8 +6540,7 @@ void belorrelos_the_sunstone( special_effect_t& effect )
       effect                        = &e;
       self_damage                   = _self_damage;
       // This is actually a cast, you can queue spells out of it - Do not incur channel lag.
-      ability_lag        = sim->queue_lag;
-      ability_lag_stddev = sim->queue_lag_stddev;
+      ability_lag = sim->queue_lag;
       // Child action handles travel time
       min_travel_time = travel_speed = travel_delay = 0;
     }
@@ -8429,7 +8427,7 @@ void fyralath_the_dream_render( special_effect_t& e )
       proc_spell_t::last_tick( d );
 
       if ( was_channeling && !player->readying )
-        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
 
       charge_impact->execute_on_target( d->target );
       buff->expire();
@@ -8598,7 +8596,7 @@ void breath_of_neltharion( special_effect_t& effect )
       generic_proc_t::last_tick( d );
 
       if ( was_channeling && !player->readying )
-        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
     }
   };
 

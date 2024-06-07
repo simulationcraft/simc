@@ -2160,7 +2160,7 @@ void items::tidestorm_codex( special_effect_t& effect )
         {
           // Without bugs, we assume that the full channel needs to happen to get
           // all six elementals. This means we need take into account channel lag.
-          wait = rng().gauss( sim->channel_lag, sim->channel_lag_stddev );
+          wait = rng().gauss( sim->channel_lag );
         }
 
         player->schedule_ready( wait );
@@ -2626,7 +2626,7 @@ void items::grongs_primal_rage( special_effect_t& effect )
         // the amount of lag + how often the key is spammed until the next ability is used.
         // Modeling this as 2 * lag for now. Might increase to 3 * lag after looking at logs of people using the
         // trinket.
-        timespan_t time = ( player->world_lag_override ? player->world_lag : sim->world_lag ) * 2.0;
+        timespan_t time = player->world_lag.mean * 2.0;
         player->schedule_ready( time );
       }
     }
@@ -3753,7 +3753,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
 
       if ( was_channeling && !player->readying )
       {
-        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
       }
     }
   };
@@ -5001,7 +5001,7 @@ void items::cyclotronic_blast( special_effect_t& effect )
 
       if ( was_channeling && !player->readying )
       {
-        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
       }
     }
   };

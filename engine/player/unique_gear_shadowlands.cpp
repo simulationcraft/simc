@@ -2498,7 +2498,7 @@ void shadowed_orb_of_torment( special_effect_t& effect )
 
       if ( was_channeling && !player->readying )
       {
-        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
       }
     }
   };
@@ -3174,7 +3174,7 @@ void resonant_reservoir( special_effect_t& effect )
         // NOTE: Preliminary estimation of time it takes for circle to expand and hit the target. Note that logs DO NOT
         // show when the missile lands and the halo begins to expand, so we will have to confirm these estimations with
         // further reviews.
-        return rng().gauss( 0.5_s, 0.25_s );
+        return rng().gauss<500,250>();
       }
     };
 

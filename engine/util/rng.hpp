@@ -29,6 +29,25 @@ namespace rng {
 double stdnormal_cdf( double u );
 double stdnormal_inv( double u );
 
+// CDF cached timespan_t gaussian distribution
+struct gauss_t
+{
+private:
+  double _min_cdf = 0.0;
+  double _max_cdf = 0.0;
+  bool _cdf_set = false;
+
+public:
+  timespan_t mean;
+  timespan_t stddev;
+
+  gauss_t( timespan_t m, timespan_t s ) : mean( m ), stddev( s ) {}
+
+  double min_cdf() const { return _min_cdf; }
+  double max_cdf() const { return _max_cdf; }
+  void calculate_cdf();
+};
+
 /**\ingroup SC_RNG
  * @brief Random number generator wrapper around an rng engine
  *
@@ -127,8 +146,19 @@ public:
   /// Timespan exponentially Modified Gaussian Distribution
   timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu );
 
+  /// Timespan CDF-cached Gaussian Distribution
+  timespan_t gauss( gauss_t& g );
+  timespan_t exgauss( gauss_t& g, timespan_t nu );
+
+  /// Timespan CDF-cached Gaussian Distribution with compile-time mean and stddev in milliseconds
+  template <unsigned MEAN, unsigned STDDEV>
+  timespan_t gauss();
+
   /// Shuffle a range: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
-  template<typename T, typename std::enable_if_t<std::is_same_v<typename std::iterator_traits<T>::iterator_category, std::random_access_iterator_tag>, int> = 0>
+  template <
+    typename T,
+    typename std::enable_if_t<
+      std::is_same_v<typename std::iterator_traits<T>::iterator_category, std::random_access_iterator_tag>, int> = 0>
   void shuffle( T first, T last )
   {
     size_t n = last - first;
@@ -369,6 +399,36 @@ template <typename Engine>
 timespan_t basic_rng_t<Engine>::exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
 {
   return gauss( mean, stddev ) + exponential( nu );
+}
+
+template <typename Engine>
+timespan_t basic_rng_t<Engine>::gauss( gauss_t& g )
+{
+  g.calculate_cdf();
+  
+  double rescaled = g.min_cdf() + real() * ( g.max_cdf() - g.min_cdf() );
+  return timespan_t::from_native( timespan_t::to_native( g.mean ) +
+                                  timespan_t::to_native( g.stddev ) * stdnormal_inv( rescaled ) );
+}
+
+template <typename Engine>
+timespan_t basic_rng_t<Engine>::exgauss( gauss_t& g, timespan_t nu )
+{
+  return gauss( g ) + exponential( nu );
+}
+
+template <typename Engine>
+template <unsigned MEAN, unsigned STDDEV>
+timespan_t basic_rng_t<Engine>::gauss()
+{
+  static constexpr auto mean = timespan_t::from_native( MEAN );
+  static constexpr auto stddev = timespan_t::from_native( STDDEV );
+
+  static const double min_cdf = stdnormal_cdf( ( 0.0 - MEAN ) / STDDEV );
+  static const double max_cdf = stdnormal_cdf( ( std::numeric_limits<double>::infinity() - MEAN ) / STDDEV );
+
+  double rescaled = min_cdf + real() * ( max_cdf - min_cdf );
+  return timespan_t::from_native( MEAN + STDDEV * stdnormal_inv( rescaled ) );
 }
 
 /// RNG Engines
