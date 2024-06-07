@@ -1821,7 +1821,8 @@ public:
       }
     }
 
-    if ( p()->talent.lunation.ok() && !ab::proc && !ab::background && dbc::is_school( ab::school, SCHOOL_ARCANE ) )
+    if ( p()->talent.lunation.ok() && has_flag( flag_e::FOREGROUND ) &&
+         dbc::has_common_school( ab::school, SCHOOL_ARCANE ) )
     {
       assert( p()->talent.lunation->effects().size() == 3 );
       auto eff = p()->talent.lunation->effects().begin();
@@ -8086,6 +8087,7 @@ struct orbital_strike_t : public druid_spell_t
 
   orbital_strike_t( druid_t* p ) : druid_spell_t( "orbital_strike", p, p->find_spell( 361237 ) )
   {
+    proc = true;
     aoe = -1;
     travel_speed = 75.0;  // guesstimate
 
