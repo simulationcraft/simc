@@ -1750,7 +1750,6 @@ void skyterrors_corrosive_organ( special_effect_t& e )
       base_dd_min = base_dd_max = equip_driver->effectN( 2 ).average( e.item );
     }
 
-
     double composite_da_multiplier( const action_state_t* s ) const override
     {
       double m = generic_proc_t::composite_da_multiplier( s );
@@ -1781,7 +1780,7 @@ void skyterrors_corrosive_organ( special_effect_t& e )
 
   auto equip_driver   = equip->driver();
   auto dot            = create_proc_action<generic_proc_t>( "volatile_acid", e, 447471 );
-  auto aoe_damage = create_proc_action<volatile_acid_splash_t>( "volatile_acid_splash", e, equip_driver, dot );
+  auto aoe_damage     = create_proc_action<volatile_acid_splash_t>( "volatile_acid_splash", e, equip_driver, dot );
   dot->dot_behavior   = DOT_NONE;  // Doesnt Refresh, just stacks
   dot->base_td        = equip_driver->effectN( 1 ).average( e.item );
   dot->execute_action = aoe_damage;
