@@ -1503,11 +1503,11 @@ void overclocked_geararang_launcher( special_effect_t& e )
   struct overclocked_strike_t : public generic_proc_t
   {
     buff_t* buff;
-    overclocked_strike_t( const special_effect_t& e, buff_t* buff )
+    overclocked_strike_t( const special_effect_t& e, buff_t* buff, const spell_data_t* equip_driver )
       : generic_proc_t( e, "overclocked_strike", e.player->find_spell( 449828 ) ), buff( buff )
     {
       background  = true;
-      base_dd_min = base_dd_max = e.player->find_spell( 446764 )->effectN( 2 ).average( e.item );
+      base_dd_min = base_dd_max = equip_driver->effectN( 2 ).average( e.item );
     }
 
     void execute() override
@@ -1518,9 +1518,16 @@ void overclocked_geararang_launcher( special_effect_t& e )
     }
   };
 
-  auto damage_buff_spell     = e.player->find_spell( 450453 );
-  auto overclock_buff        = create_buff<buff_t>( e.player, damage_buff_spell );
-  auto damage_action         = create_proc_action<overclocked_strike_t>( "overclocked_strike", e, overclock_buff );
+  unsigned equip_id = 446764;
+  auto equip        = find_special_effect( e.player, equip_id );
+  assert( equip && "Overclocked Gear-a-Rang missing equip effect" );
+
+  auto equip_driver = equip->driver();
+
+  auto damage_buff_spell = e.player->find_spell( 450453 );
+  auto overclock_buff    = create_buff<buff_t>( e.player, damage_buff_spell );
+  auto damage_action =
+      create_proc_action<overclocked_strike_t>( "overclocked_strike", e, overclock_buff, equip_driver );
 
   auto damage            = new special_effect_t( e.player );
   damage->name_str       = "overclocked_strike_proc";
@@ -1543,8 +1550,6 @@ void overclocked_geararang_launcher( special_effect_t& e )
       damage_cb->deactivate();
     }
   } );
-
-  auto equip_driver = e.player->find_spell( 446764 );
 
   auto overclock         = new special_effect_t( e.player );
   overclock->name_str    = "overclock";
@@ -1600,11 +1605,11 @@ void opressive_orators_larynx( special_effect_t& e )
   struct dark_oration_t : public generic_aoe_proc_t
   {
     double mult;
-    dark_oration_t( const special_effect_t& e )
+    dark_oration_t( const special_effect_t& e, const spell_data_t* equip_driver )
       : generic_aoe_proc_t( e, "dark_oration", e.player->find_spell( 451015 ) ), mult( 0 )
     {
       background  = true;
-      base_dd_min = base_dd_max = e.player->find_spell( 446787 )->effectN( 2 ).average( e.item );
+      base_dd_min = base_dd_max = equip_driver->effectN( 2 ).average( e.item );
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
@@ -1621,23 +1626,30 @@ void opressive_orators_larynx( special_effect_t& e )
   {
     buff_t* buff;
     action_t* damage;
+    double increase_per_stack;
     dark_oration_tick_t( const special_effect_t& e, buff_t* buff, action_t* damage )
-      : generic_proc_t( e, "dark_oration", e.driver() ), buff( buff ), damage( damage )
+      : generic_proc_t( e, "dark_oration", e.driver() ), buff( buff ), damage( damage ), increase_per_stack( 0 )
     {
-      background  = true;
-      tick_action = damage;
+      background         = true;
+      tick_action        = damage;
+      increase_per_stack = 0.25;  // Found through testing, doesnt appear to be in data
     }
 
     void execute() override
     {
-      debug_cast<dark_oration_t*>( damage )->mult = buff->stack() * 0.25;
+      debug_cast<dark_oration_t*>( damage )->mult = buff->stack() * increase_per_stack;
       buff->expire();
       generic_proc_t::execute();
     }
   };
 
-  auto equip_driver = e.player->find_spell( 446787 );
-  auto buff         = create_buff<stat_buff_t>( e.player, e.player->find_spell( 451011 ) )
+  unsigned equip_id = 446787;
+  auto equip_effect = find_special_effect( e.player, equip_id );
+  assert( equip_effect && "Opressive Orator's Larynx missing equip effect" );
+
+  auto equip_driver = equip_effect->driver();
+
+  auto buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 451011 ) )
                   ->add_stat_from_effect_type( A_MOD_STAT, equip_driver->effectN( 1 ).average( e.item ) )
                   ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
@@ -1652,7 +1664,7 @@ void opressive_orators_larynx( special_effect_t& e )
   equip_cb->initialize();
   equip_cb->activate();
 
-  auto damage        = create_proc_action<dark_oration_t>( "dark_oration", e );
+  auto damage        = create_proc_action<dark_oration_t>( "dark_oration", e, equip_driver );
   auto ticking_spell = create_proc_action<dark_oration_tick_t>( "dark_oration_tick", e, buff, damage );
 
   e.execute_action = ticking_spell;
