@@ -207,8 +207,10 @@ public:
     buff_t* holy_bulwark;
     buff_t* sacred_weapon;
     buff_t* hammer_of_light_ready;
+    buff_t* hammer_of_light_free;
     buff_t* lights_deliverance;
     buff_t* shake_the_heavens;
+    buff_t* undisputed_ruling;
 
   } buffs;
 
@@ -232,6 +234,7 @@ public:
     gain_t* hp_vm;
     gain_t* hp_crusading_strikes;
     gain_t* hp_divine_auxiliary;
+    gain_t* eye_of_tyr;
   } gains;
 
   // Spec Passives
@@ -287,6 +290,8 @@ public:
     cooldown_t* ret_aura_icd;
     cooldown_t* consecrated_blade_icd;
     cooldown_t* searing_light_icd;
+
+    cooldown_t* eye_of_tyr; // Light's Deliverance
   } cooldowns;
 
   // Passives
@@ -583,6 +588,10 @@ public:
     const spell_data_t* hammer_of_light;
     const spell_data_t* hammerfall;
     const spell_data_t* empyrean_hammer;
+    const spell_data_t* undisputed_ruling;
+    const spell_data_t* shake_the_heavens;
+    const spell_data_t* higher_calling;
+    const spell_data_t* zealous_vindication;
   } talents;
 
   struct tier_sets_t

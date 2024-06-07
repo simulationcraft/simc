@@ -412,6 +412,16 @@ struct blessed_hammer_t : public paladin_spell_t
     {
       p()->t29_4p_prot();
     }
+
+//      if ( p()->talents.higher_calling->ok() )
+    {
+      auto extension = 1000_ms;
+      if ( p()->buffs.shake_the_heavens->up() )
+      {
+        p()->buffs.shake_the_heavens->extend_duration( p(), extension );
+      }
+    }
+
   }
 };
 
@@ -548,6 +558,14 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       {
         p()->t29_4p_prot();
       }
+      if ( p()->talents.higher_calling->ok() )
+      {
+        auto extension = timespan_t::from_millis( p()->talents.higher_calling->ok() );
+        if ( p()->buffs.shake_the_heavens->up() )
+        {
+          p()->buffs.shake_the_heavens->extend_duration( p(), extension );
+        }
+      }
     }
   }
 };
@@ -594,6 +612,11 @@ struct eye_of_tyr_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
     p()->buffs.hammer_of_light_ready->trigger();
+    if (p()->talents.undisputed_ruling->ok())
+    {
+      p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.undisputed_ruling->effectN( 2 ).base_value(),
+                          p()->gains.eye_of_tyr );
+    }
   }
 
 };

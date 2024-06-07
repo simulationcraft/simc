@@ -1106,6 +1106,14 @@ struct crusader_strike_t : public paladin_melee_attack_t
     {
       p()->t29_4p_prot();
     }
+    //      if ( p()->talents.higher_calling->ok() )
+    {
+      auto extension = 1000_ms;
+      if ( p()->buffs.shake_the_heavens->up() )
+      {
+        p()->buffs.shake_the_heavens->extend_duration( p(), extension );
+      }
+    }
   }
 
   double cost() const override
@@ -1429,6 +1437,16 @@ void judgment_t::execute()
       }
     }
   }
+
+//      if ( p()->talents.higher_calling->ok() )
+  {
+    auto extension = 1000_ms;
+    if ( p()->buffs.shake_the_heavens->up() )
+    {
+      p()->buffs.shake_the_heavens->extend_duration( p(), extension );
+    }
+  }
+
 }
 
 double judgment_t::action_multiplier() const
@@ -1785,6 +1803,7 @@ void paladin_t::trigger_hammer_and_anvil( action_state_t* s )
    
    active.hammer_and_anvil->set_target( s->target );
    active.hammer_and_anvil->execute();
+
    
 }
 
@@ -1811,24 +1830,64 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     cooldown->duration     = 60_ms;
    }
 
-   bool target_ready( player_t* candidate_target ) override
+  double cost_pct_multiplier() const override
    {
-     if ( !p()->buffs.hammer_of_light_ready->up() )
-        {
-      return false;
-        }
-        return paladin_melee_attack_t::target_ready( candidate_target );
+    double c = holy_power_consumer_t::cost_pct_multiplier();
+
+    if ( p()->buffs.hammer_of_light_free->up() )
+      c *= 1.0 - 1.0;
+    if ( p()->buffs.divine_purpose->up() )
+      c *= 1.0 - 1.0;
+
+    return c;
    }
 
-    void execute() override
+   bool target_ready( player_t* candidate_target ) override
+   {
+    if ( !p()->buffs.hammer_of_light_ready->up() )
     {
-        holy_power_consumer_t<paladin_melee_attack_t>::execute();
-        
-        if ( p()->buffs.hammer_of_light_ready->up() )
-        {
-            p()->buffs.hammer_of_light_ready->expire();
-        }
+      return false;
     }
+    return paladin_melee_attack_t::target_ready( candidate_target );
+   }
+
+   void execute() override
+   {
+    holy_power_consumer_t<paladin_melee_attack_t>::execute();
+
+    if ( p()->buffs.hammer_of_light_ready->up() )
+    {
+      p()->buffs.hammer_of_light_ready->expire();
+      p()->buffs.hammer_of_light_free->expire();
+    }
+    if ( p()->talents.undisputed_ruling->ok() )
+    {
+      p()->buffs.undisputed_ruling->trigger();
+    }
+    if (p()->talents.shake_the_heavens->ok())
+    {
+     // needs spelldata help
+      p()->buffs.shake_the_heavens->trigger();
+    }
+    if (p()->talents.zealous_vindication->ok())
+    {
+      p()->trigger_empyrean_hammer( target, 2, 0_ms );
+    }
+   }
+
+   void impact( action_state_t* s ) override
+   {
+   holy_power_consumer_t::impact( s );
+    if ( p()->talents.undisputed_ruling->ok() )
+    {
+      if ( p()->talents.greater_judgment->ok() )
+      {
+        td( s->target )->debuff.judgment->trigger();
+      }
+    }
+   }
+
+
 };
 
 
@@ -1980,6 +2039,15 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
     {
       td( s->target )->debuff.judgment->trigger();
+    }
+
+//      if ( p()->talents.higher_calling->ok() )
+    {
+      auto extension = 1000_ms;
+      if ( p()->buffs.shake_the_heavens->up() )
+      {
+        p()->buffs.shake_the_heavens->extend_duration( p(), extension );
+      }
     }
   }
 
@@ -2444,6 +2512,7 @@ void paladin_t::init_gains()
   gains.hp_vm                      = get_gain( "vanguards_momentum" );
   gains.hp_crusading_strikes       = get_gain( "crusading_strikes" );
   gains.hp_divine_auxiliary        = get_gain( "divine_auxiliary" );
+  gains.eye_of_tyr                 = get_gain( "eye_of_tyr" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -2519,12 +2588,12 @@ void paladin_t::create_buffs()
   buffs.divine_purpose = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
   buffs.divine_shield  = make_buff( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                             ->set_cooldown( 0_ms );  // Let the ability handle the CD
-  buffs.blessing_of_protection = make_buff( this, "blessing_of_protection", find_spell( 1022 ) );
+  buffs.blessing_of_protection   = make_buff( this, "blessing_of_protection", find_spell( 1022 ) );
   buffs.blessing_of_spellwarding = make_buff( this, "blessing_of_spellwarding", find_spell( 204018 ) );
   buffs.strength_in_adversity    = make_buff( this, "strength_in_adversity", find_spell( 393071 ) )
                                     ->add_invalidate( CACHE_PARRY )
-                                    ->set_default_value_from_effect(1)
-                                    ->set_max_stack(5); // Buff has no stacks, but can have up to 5 different values.
+                                    ->set_default_value_from_effect( 1 )
+                                    ->set_max_stack( 5 );  // Buff has no stacks, but can have up to 5 different values.
 
   buffs.holy_avenger =
       make_buff( this, "holy_avenger", talents.holy_avenger )->set_cooldown( 0_ms );  // handled by the ability
@@ -2538,14 +2607,14 @@ void paladin_t::create_buffs()
     buffs.blessing_of_dawn->apply_affecting_aura( spec.retribution_paladin );
   }
   buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", find_spell( 385126 ) );
-  buffs.faiths_armor = make_buff( this, "faiths_armor", find_spell( 379017 ) )
-                           ->set_default_value_from_effect(1)
+  buffs.faiths_armor     = make_buff( this, "faiths_armor", find_spell( 379017 ) )
+                           ->set_default_value_from_effect( 1 )
                            ->add_invalidate( CACHE_BONUS_ARMOR );
 
   if ( talents.seal_of_order->ok() )
   {
     buffs.blessing_of_dusk->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-        double recharge_mult = 1.0 / ( 1.0 + talents.seal_of_order->effectN( 1 ).percent() );
+      double recharge_mult = 1.0 / ( 1.0 + talents.seal_of_order->effectN( 1 ).percent() );
       for ( size_t i = 3; i < 9; i++ )
       {
         // Effects 6 (Blessed Hammer) and 7 (Crusader Strike) are already in Effect 3
@@ -2555,7 +2624,8 @@ void paladin_t::create_buffs()
         spelleffect_data_t label = find_spell( 385126 )->effectN( i );
         for ( auto a : action_list )
         {
-          if ( a->cooldown->duration != 0_ms && (a->data().affected_by( label ) || a->data().affected_by_category(label) ))
+          if ( a->cooldown->duration != 0_ms &&
+               ( a->data().affected_by( label ) || a->data().affected_by_category( label ) ) )
           {
             if ( new_ == 1 )
               a->dynamic_recharge_rate_multiplier *= recharge_mult;
@@ -2570,12 +2640,12 @@ void paladin_t::create_buffs()
           }
         }
       }
-      } );
+    } );
   }
 
   buffs.relentless_inquisitor = make_buff( this, "relentless_inquisitor", find_spell( 383389 ) )
-                                ->set_default_value( find_spell( 383389 )->effectN( 1 ).percent() )
-                                ->add_invalidate( CACHE_HASTE );
+                                    ->set_default_value( find_spell( 383389 )->effectN( 1 ).percent() )
+                                    ->add_invalidate( CACHE_HASTE );
 
   if ( talents.relentless_inquisitor->ok() )
   {
@@ -2584,17 +2654,29 @@ void paladin_t::create_buffs()
   }
 
   buffs.final_verdict = make_buff( this, "final_verdict", find_spell( 337228 ) );
-  buffs.divine_resonance = make_buff( this, "divine_resonance", find_spell( 355455 ) )
+  buffs.divine_resonance =
+      make_buff( this, "divine_resonance", find_spell( 355455 ) )
           ->set_tick_callback( [ this ]( buff_t* /* b */, int /* stacks */, timespan_t /* tick_time */ ) {
-              this->active.divine_resonance->set_target( this->target );
-              this->active.divine_resonance->schedule_execute();
+            this->active.divine_resonance->set_target( this->target );
+            this->active.divine_resonance->schedule_execute();
           } );
-  buffs.holy_bulwark      = make_buff( this, "holy_bulwark", find_spell( 432496 ) );
-  buffs.sacred_weapon     = make_buff( this, "sacred_weapon", find_spell( 432502 ) );
-  buffs.blessed_assurance = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
-  buffs.hammer_of_light_ready = make_buff( this, "hammer_of_light_ready", find_spell( 427453 ) )
-      ->set_duration(20_s);
-  buffs.lights_deliverance    = make_buff( this, "lights_deliverance", find_spell( 433674 ) );
+  buffs.holy_bulwark          = make_buff( this, "holy_bulwark", find_spell( 432496 ) );
+  buffs.sacred_weapon         = make_buff( this, "sacred_weapon", find_spell( 432502 ) );
+  buffs.blessed_assurance     = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
+  buffs.hammer_of_light_ready = make_buff( this, "hammer_of_light_ready", find_spell( 427453 ) )->set_duration( 20_s );
+  buffs.hammer_of_light_free  = make_buff( this, "hammer_of_light_free", find_spell(433015) );
+  buffs.lights_deliverance    = make_buff( this, "lights_deliverance", find_spell( 433674 ) ) 
+                                ->set_expire_at_max_stack( true )
+                                 ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+                                   if ( !new_ )
+                                   {//TODO: Implement logic to check for EoT/HoL availability, unlikely to come up in sims, but good to have parity
+                                     buffs.hammer_of_light_ready->trigger();
+                                     buffs.hammer_of_light_free->trigger();
+                                   }
+                                 } );
+  buffs.undisputed_ruling    = make_buff( this, "undisputed_ruling", find_spell( 432629 ) );
+  // Trigger first effect 2s after buff initially gets applied, then every 2 seconds after, unsure if it has a partial tick after it expires with extensions
+  buffs.shake_the_heavens = make_buff( this, "shake_the_heavens", find_spell( 431536 ) );
 }
 
 // paladin_t::default_potion ================================================
@@ -2874,6 +2956,10 @@ void paladin_t::init_spells()
   talents.blessing_of_the_forge  = find_talent_spell( talent_tree::HERO, "Blessing of the Forge" );
   talents.lights_guidance       = find_talent_spell( talent_tree::HERO, "Lights Guidance" );
   talents.empyrean_hammer        = find_spell( 431398 );
+  talents.lights_deliverance     = find_talent_spell( talent_tree::HERO, "Light's Deliverance" );
+  talents.undisputed_ruling      = find_talent_spell( talent_tree::HERO, "Undisputed Ruling" );
+  talents.shake_the_heavens      = find_talent_spell( talent_tree::HERO, "Shake the Heavens" );
+  talents.zealous_vindication    = find_talent_spell( talent_tree::HERO, "Zealous Vindication" );
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
