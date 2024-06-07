@@ -347,12 +347,15 @@ void gauss_t::calculate_cdf()
   }
   else
   {
-    assert( _min_cdf == stdnormal_cdf( ( timespan_t::to_native( min ) - timespan_t::to_native( mean ) ) /
-                                       timespan_t::to_native( stddev ) ) );
-    assert( _max_cdf == stdnormal_cdf( ( ( max == timespan_t::min() ? std::numeric_limits<double>::infinity()
-                                                                    : timespan_t::to_native( max ) ) -
-                                         timespan_t::to_native( mean ) ) /
-                                       timespan_t::to_native( stddev ) ) );
+    assert( _min_cdf ==
+            stdnormal_cdf( ( static_cast<double>( timespan_t::to_native( min ) ) -
+                             static_cast<double>( timespan_t::to_native( mean ) ) ) /
+                           static_cast<double>( timespan_t::to_native( stddev ) ) ) );
+    assert( _max_cdf ==
+            stdnormal_cdf( ( ( max == timespan_t::min() ? std::numeric_limits<double>::infinity()
+                                                        : static_cast<double>( timespan_t::to_native( max ) ) ) -
+                             static_cast<double>( timespan_t::to_native( mean ) ) ) /
+                           static_cast<double>( timespan_t::to_native( stddev ) ) ) );
   }
 }
 
