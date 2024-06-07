@@ -8526,8 +8526,8 @@ private:
 
 struct glacial_advance_damage_t final : public death_knight_spell_t
 {
-  glacial_advance_damage_t( util::string_view name, death_knight_t* p, bool km = false )
-    : death_knight_spell_t( name, p, p->spell.glacial_advance_damage ), km( km )
+  glacial_advance_damage_t( util::string_view name, death_knight_t* p, bool aa = false )
+    : death_knight_spell_t( name, p, p->spell.glacial_advance_damage ), is_arctic_assault( aa )
   {
     aoe        = -1;  // TODO: Fancier targeting .. make it aoe for now
     background = true;
@@ -8547,12 +8547,17 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
     // Killing Machine glacial advcances trigger Unleashed Frenzy without spending Runic Power
     // Currently does not trigger Icy Talons, nor Obliteration rune generation
     // Can Trigger Runic Empowerment
-    if ( km )
+    if ( is_arctic_assault )
     {
-      p()->trigger_runic_empowerment( p()->talent.frost.glacial_advance->cost( POWER_RUNIC_POWER ) );
       if ( p()->talent.frost.unleashed_frenzy.ok() )
       {
         p()->buffs.unleashed_frenzy->trigger();
+      }
+
+      // TWW-TODO: Re-verify what RP effects Arctic Assault procs 
+      if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ) && p()->rppm.tww1_fdk_4pc->trigger() )
+      {
+        p()->buffs.icy_vigor->trigger();
       }
     }
   }
@@ -8572,7 +8577,7 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
   }
 
 private:
-  bool km;
+  bool is_arctic_assault;
 };
 
 struct glacial_advance_t final : public death_knight_spell_t
@@ -9193,7 +9198,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
     
     if( p->talent.frost.arctic_assault.ok() )
     {
-      add_child( get_action<glacial_advance_damage_t>( "glacial_advance_km", p, true ) );
+      add_child( get_action<glacial_advance_damage_t>( "glacial_advance_arctic_assault", p, true ) );
     }
   }
 
@@ -10574,7 +10579,6 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       replenish_rune( 1, gains.feast_of_souls );
     }
 
-    // TWW-TODO: Might need to go into Glacial Advance damage with Arctic Assault as well. Testing needed
     if ( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ) && rppm.tww1_fdk_4pc->trigger() )
     {
       buffs.icy_vigor->trigger();
@@ -10894,7 +10898,7 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
 
     if ( talent.frost.arctic_assault.ok() )
     {
-      get_action<glacial_advance_damage_t>( "glacial_advance_km", this, true )->execute();
+      get_action<glacial_advance_damage_t>( "glacial_advance_arctic_assault", this, true )->execute();
     }
 
     if ( talent.frost.frostscythe.ok() )
