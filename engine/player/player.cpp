@@ -3821,7 +3821,11 @@ void player_t::add_precombat_buff_state( buff_t* buff, int stacks, double value,
   if ( !buff->allow_precombat )
     throw std::invalid_argument( fmt::format( "Invalid buff for 'override.precombat_state' option. Precombat states for '{}' are disabled.", buff->name_str ) );
 
-  register_precombat_begin( [ buff, stacks, value, duration ] ( player_t* ) { buff->execute( stacks, value, duration ); } );
+  register_precombat_begin( [ buff, stacks, value, duration ] ( player_t* )
+  {
+    buff->execute( stacks, value, duration );
+    buff->predict();
+  } );
 }
 
 void player_t::add_precombat_cooldown_state( cooldown_t* cd, timespan_t duration )
