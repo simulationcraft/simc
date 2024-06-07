@@ -811,4 +811,50 @@ namespace warlock
                                  ->set_default_value_from_effect( 1 )
                                  ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   }
+
+  void warlock_t::create_pets()
+  {
+    for ( auto& pet : pet_name_list )
+    {
+      create_pet( pet );
+    }
+  }
+
+  void warlock_t::init_gains()
+  {
+    player_t::init_gains();
+
+    if ( specialization() == WARLOCK_AFFLICTION )
+      init_gains_affliction();
+    if ( specialization() == WARLOCK_DEMONOLOGY )
+      init_gains_demonology();
+    if ( specialization() == WARLOCK_DESTRUCTION )
+      init_gains_destruction();
+
+    gains.soul_conduit = get_gain( "soul_conduit" );
+  }
+
+  void warlock_t::init_gains_affliction()
+  {
+    gains.agony = get_gain( "agony" );
+    gains.unstable_affliction_refund = get_gain( "unstable_affliction_refund" );
+    gains.drain_soul = get_gain( "drain_soul" );
+    gains.pandemic_invocation = get_gain( "pandemic_invocation" );
+  }
+
+  void warlock_t::init_gains_demonology()
+  {
+    gains.soulbound_tyrant = get_gain( "soulbound_tyrant" );
+    gains.doom = get_gain( "doom" );
+    gains.soul_strike = get_gain( "soul_strike" );
+  }
+
+  void warlock_t::init_procs_destruction()
+  {
+    procs.reverse_entropy = get_proc( "reverse_entropy" );
+    procs.rain_of_chaos = get_proc( "rain_of_chaos" );
+    procs.chaos_maelstrom = get_proc( "chaos_maelstrom" );
+    procs.channel_demonfire = get_proc( "channel_demonfire_tier" );
+    procs.dimensional_refund = get_proc( "dimensional_refund" );
+  }
 }

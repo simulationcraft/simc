@@ -1536,14 +1536,6 @@ pet_t* warlock_t::create_pet( util::string_view pet_name, util::string_view pet_
   return nullptr;
 }
 
-void warlock_t::create_pets()
-{
-  for ( auto& pet : pet_name_list )
-  {
-    create_pet( pet );
-  }
-}
-
 void warlock_t::init_rng()
 {
   if ( specialization() == WARLOCK_AFFLICTION )
@@ -1554,20 +1546,6 @@ void warlock_t::init_rng()
     init_rng_destruction();
 
   player_t::init_rng();
-}
-
-void warlock_t::init_gains()
-{
-  player_t::init_gains();
-
-  if ( specialization() == WARLOCK_AFFLICTION )
-    init_gains_affliction();
-  if ( specialization() == WARLOCK_DEMONOLOGY )
-    init_gains_demonology();
-  if ( specialization() == WARLOCK_DESTRUCTION )
-    init_gains_destruction();
-
-  gains.soul_conduit = get_gain( "soul_conduit" );
 }
 
 void warlock_t::init_procs()

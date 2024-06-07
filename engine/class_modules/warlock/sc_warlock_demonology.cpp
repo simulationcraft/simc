@@ -1432,13 +1432,6 @@ void warlock_t::create_demonology_proc_actions()
   proc_actions.doom_brand_explosion = new actions_demonology::doom_brand_t( this );
 }
 
-void warlock_t::init_gains_demonology()
-{
-  gains.soulbound_tyrant = get_gain( "soulbound_tyrant" );
-  gains.doom = get_gain( "doom" );
-  gains.soul_strike = get_gain( "soul_strike" );
-}
-
 void warlock_t::init_rng_demonology()
 {
 }

@@ -947,14 +947,6 @@ void warlock_t::create_soul_swap_actions()
   soul_swap_state.vile_taint.action_copied = false;
 }
 
-void warlock_t::init_gains_affliction()
-{
-  gains.agony = get_gain( "agony" );
-  gains.unstable_affliction_refund = get_gain( "unstable_affliction_refund" );
-  gains.drain_soul = get_gain( "drain_soul" );
-  gains.pandemic_invocation = get_gain( "pandemic_invocation" );
-}
-
 void warlock_t::init_rng_affliction()
 {
 }

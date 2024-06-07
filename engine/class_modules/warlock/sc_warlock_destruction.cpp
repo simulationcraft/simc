@@ -1655,13 +1655,6 @@ void warlock_t::init_rng_destruction()
   rain_of_chaos_rng = get_shuffled_rng( "rain_of_chaos", 3, 20 );
 }
 
-void warlock_t::init_procs_destruction()
-{
-  procs.reverse_entropy = get_proc( "reverse_entropy" );
-  procs.rain_of_chaos = get_proc( "rain_of_chaos" );
-  procs.chaos_maelstrom = get_proc( "chaos_maelstrom" );
-  procs.channel_demonfire = get_proc( "channel_demonfire_tier" );
-  procs.dimensional_refund = get_proc( "dimensional_refund" );
-}
+
 
 }  // namespace warlock
