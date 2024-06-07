@@ -281,7 +281,7 @@ public:
   dot_behavior_e dot_behavior;
 
   /// Ability specific extra player ready delay
-  rng::gauss_t ability_lag;
+  rng::truncated_gauss_t ability_lag;
 
   /// The minimum gcd triggered no matter the haste.
   timespan_t min_gcd;

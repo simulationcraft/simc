@@ -328,7 +328,7 @@ double stdnormal_inv( double p )
   return ( p > 0.5 ? -u : u );
 }
 
-void gauss_t::calculate_cdf()
+void truncated_gauss_t::calculate_cdf()
 {
   if ( !_cdf_set )
   {

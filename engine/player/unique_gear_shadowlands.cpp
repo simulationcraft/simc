@@ -1477,7 +1477,7 @@ void anima_field_emitter( special_effect_t& effect )
 {
   struct anima_field_emitter_proc_t : public dbc_proc_callback_t
   {
-    rng::gauss_t _duration;
+    rng::truncated_gauss_t _duration;
 
     anima_field_emitter_proc_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),

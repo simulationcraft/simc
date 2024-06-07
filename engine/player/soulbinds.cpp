@@ -2215,7 +2215,7 @@ struct trial_of_doubt_t : public buff_t
   bool automatic_delay;
   timespan_t min_delay;
   shuffled_rng_t* shuffled_rng;
-  rng::gauss_t _duration;
+  rng::truncated_gauss_t _duration;
 
   trial_of_doubt_t( player_t* p )
     : buff_t( p, "trial_of_doubt", p->find_spell( 358404 ) ),

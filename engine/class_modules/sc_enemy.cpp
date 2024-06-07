@@ -904,8 +904,8 @@ struct summon_add_t : public spell_t
 
 struct pause_action_t : public action_t
 {
-  mutable rng::gauss_t _duration;
-  rng::gauss_t _cooldown;
+  mutable rng::truncated_gauss_t _duration;
+  rng::truncated_gauss_t _cooldown;
 
   pause_action_t( player_t* p, util::string_view options_str )
     : action_t( ACTION_OTHER, "pause_action", p, spell_data_t::nil() ),

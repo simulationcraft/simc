@@ -29,8 +29,9 @@ namespace rng {
 double stdnormal_cdf( double u );
 double stdnormal_inv( double u );
 
-// CDF cached timespan_t gaussian distribution
-struct gauss_t
+// CDF cached truncated timespan_t gaussian distribution
+// This is ~2x slower than non-truncated basic_rng_t::gauss( double, double )
+struct truncated_gauss_t
 {
 private:
   double _min_cdf = 0.0;
@@ -43,7 +44,7 @@ public:
   timespan_t min;
   timespan_t max;
 
-  gauss_t( timespan_t m, timespan_t s, timespan_t min = 0_ms, timespan_t max = timespan_t::min() )
+  truncated_gauss_t( timespan_t m, timespan_t s, timespan_t min = 0_ms, timespan_t max = timespan_t::min() )
     : mean( m ), stddev( s ), min( min ), max( max )
   {}
 
@@ -108,10 +109,10 @@ public:
     return range<T>( T{}, max );
   }
 
-  /// Gaussian Distribution
+  /// Gaussian Distribution, Non-truncated
   double gauss( double mean, double stddev );
 
-  // Truncated Gaussian Distribution
+  /// Truncated Gaussian Distribution
   double gauss_ab( double mean, double stddev, double min, double max );
   double gauss_a( double mean, double stddev, double min );
   double gauss_b( double mean, double stddev, double max );
@@ -138,7 +139,7 @@ public:
   /// Timespan uniform distribution in the range [min..max)
   timespan_t range( timespan_t min, timespan_t max );
 
-  /// Timespan Gaussian Distribution
+  /// Timespan Truncated Gaussian Distribution
   timespan_t gauss( timespan_t mean, timespan_t stddev );
   timespan_t gauss_ab( timespan_t mean, timespan_t stddev, timespan_t min, timespan_t max );
   timespan_t gauss_a( timespan_t mean, timespan_t stddev, timespan_t min );
@@ -150,11 +151,11 @@ public:
   /// Timespan exponentially Modified Gaussian Distribution
   timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu );
 
-  /// Timespan CDF-cached Gaussian Distribution
-  timespan_t gauss( gauss_t& g );
-  timespan_t exgauss( gauss_t& g, timespan_t nu );
+  /// Timespan CDF-cached Truncated Gaussian Distribution
+  timespan_t gauss( truncated_gauss_t& g );
+  timespan_t exgauss( truncated_gauss_t& g, timespan_t nu );
 
-  /// Timespan CDF-cached Gaussian Distribution with compile-time mean and stddev in milliseconds
+  /// Timespan CDF-cached Truncated Gaussian Distribution with compile-time mean and stddev in milliseconds
   template <unsigned MEAN, unsigned STDDEV>
   timespan_t gauss();
 
@@ -406,7 +407,7 @@ timespan_t basic_rng_t<Engine>::exgauss( timespan_t mean, timespan_t stddev, tim
 }
 
 template <typename Engine>
-timespan_t basic_rng_t<Engine>::gauss( gauss_t& g )
+timespan_t basic_rng_t<Engine>::gauss( truncated_gauss_t& g )
 {
   assert( g.stddev >= 0_ms && "Stddev must be non-negative." );
   if ( g.stddev == 0_ms )
@@ -420,7 +421,7 @@ timespan_t basic_rng_t<Engine>::gauss( gauss_t& g )
 }
 
 template <typename Engine>
-timespan_t basic_rng_t<Engine>::exgauss( gauss_t& g, timespan_t nu )
+timespan_t basic_rng_t<Engine>::exgauss( truncated_gauss_t& g, timespan_t nu )
 {
   return gauss( g ) + exponential( nu );
 }

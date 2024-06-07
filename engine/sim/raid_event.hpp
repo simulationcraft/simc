@@ -37,8 +37,8 @@ public:
   int64_t num_starts;
   timespan_t first, last;
   double first_pct, last_pct;
-  rng::gauss_t cooldown;
-  rng::gauss_t duration;
+  rng::truncated_gauss_t cooldown;
+  rng::truncated_gauss_t duration;
   int pull;
   std::string pull_target_str;
 

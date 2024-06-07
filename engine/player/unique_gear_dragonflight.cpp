@@ -6148,7 +6148,7 @@ void ashes_of_the_embersoul( special_effect_t& e )
   {
     stat_buff_t* buff;
     bool available;
-    rng::gauss_t interval;
+    rng::truncated_gauss_t interval;
 
     blazing_soul_t( const special_effect_t& e )
       : generic_proc_t( e, "blazing_soul_proc", e.player->find_spell( 426898 ) ),
@@ -8523,7 +8523,7 @@ void blue_silken_lining( special_effect_t& effect )
 {
   struct blue_silken_lining_t : public stat_buff_t
   {
-    rng::gauss_t interval;
+    rng::truncated_gauss_t interval;
 
     blue_silken_lining_t( player_t* p, std::string_view n, const spell_data_t* s )
       : stat_buff_t( p, n, s ),
@@ -9316,7 +9316,7 @@ void undulating_sporecloak( special_effect_t& effect )
 {
   struct undulating_sporecloak_t : public stat_buff_t
   {
-    rng::gauss_t interval;
+    rng::truncated_gauss_t interval;
 
     undulating_sporecloak_t( player_t* p, std::string_view n, const spell_data_t* s )
       : stat_buff_t( p, n, s ),
@@ -9370,7 +9370,7 @@ void dreamtenders_charm( special_effect_t& effect )
   // Main Crit Buff - dreaming_trance
   struct dreaming_trance_t : public stat_buff_t
   {
-    rng::gauss_t interval;
+    rng::truncated_gauss_t interval;
 
     dreaming_trance_t( player_t* p, std::string_view n, const spell_data_t* s )
       : stat_buff_t( p, n, s ),

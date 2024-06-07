@@ -166,10 +166,10 @@ struct player_t : public actor_t
   int         invert_scaling;
 
   // Reaction
-  rng::gauss_t reaction;
+  rng::truncated_gauss_t reaction;
   timespan_t  reaction_offset, reaction_max, reaction_nu;
   // Latency
-  rng::gauss_t world_lag, brain_lag;
+  rng::truncated_gauss_t world_lag, brain_lag;
   timespan_t  cooldown_tolerance_;
 
   // Data access
