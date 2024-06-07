@@ -852,6 +852,7 @@ public:
     proc_t* soul_fragment_overflow;
     proc_t* soul_fragment_from_shear;
     proc_t* soul_fragment_from_fracture;
+    proc_t* soul_fragment_from_sigil_of_spite;
     proc_t* soul_fragment_from_fallout;
     proc_t* soul_fragment_from_meta;
 
@@ -4188,8 +4189,11 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
 {
   struct sigil_of_spite_sigil_t : public demon_hunter_sigil_t
   {
+    unsigned soul_fragments_to_spawn;
+
     sigil_of_spite_sigil_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
-      : demon_hunter_sigil_t( name, p, s, delay )
+      : demon_hunter_sigil_t( name, p, s, delay ),
+        soul_fragments_to_spawn( as<unsigned>( p->spell.sigil_of_spite->effectN( 3 ).base_value() ) )
     {
       reduced_aoe_targets = p->spell.sigil_of_spite->effectN( 1 ).base_value();
     }
@@ -4197,7 +4201,11 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
     void execute() override
     {
       demon_hunter_sigil_t::execute();
-      p()->spawn_soul_fragment( soul_fragment::LESSER, 3 );
+      p()->spawn_soul_fragment( soul_fragment::LESSER, soul_fragments_to_spawn );
+      for ( int i = 0; i < soul_fragments_to_spawn; i++ )
+      {
+        p()->proc.soul_fragment_from_sigil_of_spite->occur();
+      }
     }
   };
 
@@ -7878,12 +7886,13 @@ void demon_hunter_t::init_procs()
   proc.eye_beam_canceled               = get_proc( "eye_beam_canceled" );
 
   // Vengeance
-  proc.soul_fragment_expire        = get_proc( "soul_fragment_expire" );
-  proc.soul_fragment_overflow      = get_proc( "soul_fragment_overflow" );
-  proc.soul_fragment_from_shear    = get_proc( "soul_fragment_from_shear" );
-  proc.soul_fragment_from_fracture = get_proc( "soul_fragment_from_fracture" );
-  proc.soul_fragment_from_fallout  = get_proc( "soul_fragment_from_fallout" );
-  proc.soul_fragment_from_meta     = get_proc( "soul_fragment_from_meta" );
+  proc.soul_fragment_expire              = get_proc( "soul_fragment_expire" );
+  proc.soul_fragment_overflow            = get_proc( "soul_fragment_overflow" );
+  proc.soul_fragment_from_shear          = get_proc( "soul_fragment_from_shear" );
+  proc.soul_fragment_from_fracture       = get_proc( "soul_fragment_from_fracture" );
+  proc.soul_fragment_from_sigil_of_spite = get_proc( "soul_fragment_from_sigil_of_spite" );
+  proc.soul_fragment_from_fallout        = get_proc( "soul_fragment_from_fallout" );
+  proc.soul_fragment_from_meta           = get_proc( "soul_fragment_from_meta" );
 
   // Set Bonuses
   proc.soul_fragment_from_t29_2pc   = get_proc( "soul_fragment_from_t29_2pc" );
