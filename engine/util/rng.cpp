@@ -332,10 +332,11 @@ void gauss_t::calculate_cdf()
 {
   if ( !_cdf_set )
   {
-    auto _mean = timespan_t::to_native( mean );
-    auto _stddev = timespan_t::to_native( stddev );
-    auto _min = timespan_t::to_native( min );
-    auto _max = max == timespan_t::min() ? std::numeric_limits<double>::infinity() : timespan_t::to_native( max );
+    auto _mean = static_cast<double>( timespan_t::to_native( mean ) );
+    auto _stddev = static_cast<double>( timespan_t::to_native( stddev ) );
+    auto _min = static_cast<double>( timespan_t::to_native( min ) );
+    auto _max = max == timespan_t::min() ? std::numeric_limits<double>::infinity()
+                                         : static_cast<double>( timespan_t::to_native( max ) );
 
     assert( _min <= _max && "Minimum must be less than or equal to maximum." );
 
