@@ -457,6 +457,8 @@ struct stat_buff_t : public buff_t
   gain_t* stat_gain;
   bool manual_stats_added;
 
+  virtual double buff_stat_stack_amount( const buff_stat_t&, int ) const;
+
   void bump     ( int stacks = 1, double value = -1.0 ) override;
   void decrement( int stacks = 1, double value = -1.0 ) override;
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;

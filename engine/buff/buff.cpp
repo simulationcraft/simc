@@ -3305,6 +3305,11 @@ stat_buff_t* stat_buff_t::set_stat_from_effect_type( effect_subtype_t type, doub
   return add_stat_from_effect_type( type, a, c );
 }
 
+double stat_buff_t::buff_stat_stack_amount( const buff_stat_t& buff_stat, int s ) const
+{
+  return buff_stat.stack_amount( s );
+}
+
 void stat_buff_t::bump( int stacks, double /* value */ )
 {
   buff_t::bump( stacks );
@@ -3314,7 +3319,7 @@ void stat_buff_t::bump( int stacks, double /* value */ )
     if ( buff_stat.check_func && !buff_stat.check_func( *this ) )
       continue;
 
-    double delta = buff_stat.stack_amount( current_stack ) - buff_stat.current_value;
+    double delta = buff_stat_stack_amount( buff_stat, current_stack ) - buff_stat.current_value;
     if ( delta > 0 )
     {
       player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
@@ -3344,7 +3349,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
 
     for ( auto& buff_stat : stats )
     {
-      double delta = buff_stat.current_value - buff_stat.stack_amount( new_stack );
+      double delta = buff_stat.current_value - buff_stat_stack_amount( buff_stat, new_stack );
       if ( delta > 0 )
       {
         player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );

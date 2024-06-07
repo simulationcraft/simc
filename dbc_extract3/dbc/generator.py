@@ -1501,6 +1501,7 @@ class SpellDataGenerator(DataGenerator):
          449966, # malfunctioning ethereum module
          452325, 452457, 452498, # Sigil of Algari Concordance
          452226, # Ara-Kara Sacbrood
+         455910, # voltaic stormcaller
         ),
 
         # Warrior:

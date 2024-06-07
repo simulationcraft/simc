@@ -1006,32 +1006,12 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
         cap( as<int>( data->effectN( 5 ).base_value() ) )
     {}
 
-    double buff_stat_stack_amount( const buff_stat_t& stat ) const
+    double buff_stat_stack_amount( const buff_stat_t& stat, int s ) const override
     {
       double val = std::max( 1.0, std::fabs( stat.amount ) );
-      double stack = current_stack <= cap ? current_stack : cap + ( current_stack - cap ) * cap_mul;
+      double stack = s <= cap ? s : cap + ( s - cap ) * cap_mul;
       // TODO: confirm truncation happens on final amount, and not per stack amount
       return std::copysign( std::trunc( stack * val + 1e-3 ), stat.amount );
-    }
-
-    // bypass stat_buff_t::bump entirely and call buff_t::bump directly
-    void bump( int stacks, double ) override
-    {
-      buff_t::bump( stacks );
-
-      for ( auto& buff_stat : stats )
-      {
-        if ( buff_stat.check_func && !buff_stat.check_func( *this ) )
-          continue;
-
-        double delta = buff_stat_stack_amount( buff_stat ) - buff_stat.current_value;
-        if ( delta > 0 )
-          player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > 0_ms );
-        else if ( delta < 0 )
-          player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > 0_ms );
-
-        buff_stat.current_value += delta;
-      }
     }
   };
 
@@ -1985,6 +1965,58 @@ void befoulers_syringe( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 455887 driver
+//  e1: damage coeff
+//  e2: stat coeff
+// 455888 vfx?
+// 455910 damage
+// 456652 buff
+// TODO: determine any delay in damage and if travel_delay needs to be implemented
+void voltaic_stormcaller( special_effect_t& effect )
+{
+  struct voltaic_stormstrike_t : public generic_aoe_proc_t
+  {
+    struct volatic_stormsurge_t : public stat_buff_t
+    {
+      double aoe_mul = 1.0;
+
+      volatic_stormsurge_t( player_t* p, std::string_view n, const spell_data_t* s, const special_effect_t& e )
+        : stat_buff_t( p, n, s )
+      {
+        // TODO: determine any delay in damage and if travel_delay needs to be implemented
+        add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e.item ) );
+      }
+
+      double buff_stat_stack_amount( const buff_stat_t& stat, int s ) const override
+      {
+        return stat_buff_t::buff_stat_stack_amount( stat, s ) * aoe_mul;
+      }
+    };
+
+    volatic_stormsurge_t* buff;
+
+    voltaic_stormstrike_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "voltaic_stormstrike", 455910, true )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+
+      buff = create_buff<volatic_stormsurge_t>( e.player, e.player->find_spell( 456652 ), e );
+    }
+
+    void execute() override
+    {
+      generic_aoe_proc_t::execute();
+
+      buff->aoe_mul = generic_aoe_proc_t::composite_aoe_multiplier( execute_state );
+      buff->trigger();
+    }
+  };
+
+  effect.execute_action = create_proc_action<voltaic_stormstrike_t>( "voltaic_stormstrike", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Armor
 // 457815 driver
 // 457918 nature damage driver
@@ -2113,6 +2145,7 @@ void register_special_effects()
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
   register_special_effect( 442205, items::befoulers_syringe );
+  register_special_effect( 455887, items::voltaic_stormcaller );
   // Armor
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );
   register_special_effect( 457918, DISABLED_EFFECT );  // seal of the poisoned pact
