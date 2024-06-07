@@ -1732,6 +1732,64 @@ void arakara_sacbrood( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Skyterror's Corrosive Organ
+// 444489 Use Driver
+// 444488 Equip Driver
+// 447471 DoT
+// 447495 AoE damage
+void skyterrors_corrosive_organ( special_effect_t& e )
+{
+  struct volatile_acid_splash_t : public generic_aoe_proc_t
+  {
+    volatile_acid_splash_t( const special_effect_t& e )
+      : generic_aoe_proc_t( e, "volatile_acid_splash", e.player->find_spell( 447495 ) )
+    {
+      background  = true;
+      base_dd_min = base_dd_max = e.player->find_spell( 444488 )->effectN( 2 ).average( e.item );
+    }
+
+    // Doesnt hit the target that triggered the effect
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      generic_aoe_proc_t::available_targets( tl );
+
+      auto it = range::find( tl, target );
+      if ( it != tl.end() )
+      {
+        tl.erase( it );
+      }
+
+      return tl.size();
+    }
+  };
+
+  auto equip_driver   = e.player->find_spell( 444488 );
+  auto aoe_damage     = create_proc_action<volatile_acid_splash_t>( "volatile_acid_splash", e );
+  auto dot            = create_proc_action<generic_proc_t>( "volatile_acid", e, 447471 );
+  dot->dot_behavior   = DOT_NONE;  // Doesnt Refresh, just stacks
+  dot->base_td        = equip_driver->effectN( 1 ).average( e.item );
+  dot->execute_action = aoe_damage;
+  dot->add_child( aoe_damage );
+
+  auto volatile_acid            = new special_effect_t( e.player );
+  volatile_acid->name_str       = "volatile_acid";
+  volatile_acid->spell_id       = equip_driver->id();
+  volatile_acid->execute_action = dot;
+  e.player->special_effects.push_back( volatile_acid );
+
+  auto volatile_acid_proc = new dbc_proc_callback_t( e.player, *volatile_acid );
+  volatile_acid_proc->initialize();
+  volatile_acid_proc->activate();
+
+  e.player->callbacks.register_callback_trigger_function(
+      volatile_acid->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ dot ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+        return dot->get_dot( s->target )->is_ticking();
+      } );
+
+  e.execute_action = dot;
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -2021,6 +2079,8 @@ void register_special_effects()
   register_special_effect( 443552, items::opressive_orators_larynx );
   register_special_effect( 446787, DISABLED_EFFECT ); // opressive orator's larynx
   register_special_effect( 443541, items::arakara_sacbrood );
+  register_special_effect( 444489, items::skyterrors_corrosive_organ );
+  register_special_effect( 444488, DISABLED_EFFECT );  // skyterror's corrosive organ
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
