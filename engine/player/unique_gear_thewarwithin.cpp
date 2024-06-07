@@ -1037,7 +1037,8 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
 
   // setup stat buffs
   auto primary = create_buff<ovinax_stat_buff_t>( effect.player, effect.player->find_spell( 449578 ), data )
-    ->set_stat_from_effect_type( A_MOD_STAT, data->effectN( 1 ).average( effect.item ) );
+    ->set_stat_from_effect_type( A_MOD_STAT, data->effectN( 1 ).average( effect.item ) )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   static constexpr std::array<unsigned, 4> buff_ids = { 449595, 449594, 449581, 449593 };
 
@@ -1051,7 +1052,8 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
 
     auto buff = create_buff<ovinax_stat_buff_t>( effect.player, name, spell, data )
       ->set_stat_from_effect_type( A_MOD_RATING, data->effectN( 2 ).average( effect.item ) )
-      ->set_name_reporting( stat_str );
+      ->set_name_reporting( stat_str )
+      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
     secondaries[ secondary_ratings[ i ] ] = buff;
   }
@@ -1083,11 +1085,21 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
       }
     } );
 
-  // TODO: add option to set starting stacks
-  effect.player->register_precombat_begin( [ ticks, primary /*, secondaries*/ ]( player_t* p ) {
-    primary->trigger( primary->max_stack() );
-    make_event( *p->sim, p->rng().range( 1_ms, ticks->buff_period ), [ ticks ] { ticks->trigger(); } );
-  } );
+  int initial_primary_stacks   = effect.player->thewarwithin_opts.ovinaxs_mercurial_egg_initial_primary_stacks;
+  int initial_secondary_stacks = effect.player->thewarwithin_opts.ovinaxs_mercurial_egg_initial_secondary_stacks;
+
+  effect.player->register_precombat_begin(
+      [ ticks, primary, secondaries, initial_primary_stacks, initial_secondary_stacks ]( player_t* p ) {
+        if ( initial_primary_stacks + initial_secondary_stacks > primary->max_stack() )
+        {
+          p->sim->error(
+              "Ovinax's Mercurial Egg initial stacks can not exceed '{}' combined between Primary and Secondary",
+              primary->max_stack() );
+        }
+        primary->trigger( initial_primary_stacks );
+        secondaries.at( util::highest_stat( p, secondary_ratings ) )->trigger( initial_secondary_stacks );
+        make_event( *p->sim, p->rng().range( 1_ms, ticks->buff_period ), [ ticks ] { ticks->trigger(); } );
+      } );
 
   effect.custom_buff = halt;
 }
