@@ -1650,7 +1650,7 @@ void opressive_orators_larynx( special_effect_t& e )
                   ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   auto equip         = new special_effect_t( e.player );
-  equip->name_str    = "dark_orators_lyranx";
+  equip->name_str    = "dark_orators_larynx";
   equip->item        = e.item;
   equip->spell_id    = equip_driver->id();
   equip->custom_buff = buff;
@@ -1664,6 +1664,68 @@ void opressive_orators_larynx( special_effect_t& e )
   auto ticking_spell = create_proc_action<dark_oration_tick_t>( "dark_oration_tick", e, buff, damage );
 
   e.execute_action = ticking_spell;
+}
+
+// Ara-Kara Sacbrood
+// 443541 Driver
+// 452146 Buff
+// 452226 Spiderling Buff
+// 452229 Damage
+void arakara_sacbrood( special_effect_t& e )
+{
+  struct spiderfling_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    buff_t* buff;
+    spiderfling_cb_t( const special_effect_t& e, buff_t* buff )
+      : dbc_proc_callback_t( e.player, e ), damage( nullptr ), buff( buff )
+    {
+      damage          = create_proc_action<generic_proc_t>( "spidersting", e, e.player->find_spell( 452229 ) );
+      damage->base_td = e.player->find_spell( 443541 )->effectN( 2 ).average( e.item );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      damage->execute_on_target( s->target );
+      buff->decrement();
+    }
+  };
+
+  auto spiderling_buff = create_buff<buff_t>( e.player, e.player->find_spell( 452226 ) );
+
+  auto spiderling      = new special_effect_t( e.player );
+  spiderling->name_str = "spiderling";
+  spiderling->item     = e.item;
+  spiderling->spell_id = 452226;
+  e.player->special_effects.push_back( spiderling );
+
+  auto spiderling_cb = new spiderfling_cb_t( *spiderling, spiderling_buff );
+  spiderling_cb->initialize();
+  spiderling_cb->deactivate();
+
+  spiderling_buff->set_stack_change_callback( [ spiderling_cb ]( buff_t* b, int, int new_ ) {
+    if ( new_ == 1 )
+    {
+      spiderling_cb->activate();
+    }
+    if ( new_ == 0 )
+    {
+      spiderling_cb->deactivate();
+    }
+  } );
+
+  auto buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 452146 ) )
+                  ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.item ) )
+                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                  ->set_stack_change_callback( [ spiderling_buff ]( buff_t*, int old_, int new_ ) {
+                    if ( old_ > new_ )
+                    {
+                      spiderling_buff->trigger();
+                    }
+                  } );
+
+  e.custom_buff = buff;
+  new dbc_proc_callback_t( e.player, e );
 }
 
 // Weapons
@@ -1954,6 +2016,7 @@ void register_special_effects()
   register_special_effect( 443530, items::remnant_of_darkness );
   register_special_effect( 443552, items::opressive_orators_larynx );
   register_special_effect( 446787, DISABLED_EFFECT ); // opressive orator's larynx
+  register_special_effect( 443541, items::arakara_sacbrood );
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );

@@ -1500,6 +1500,7 @@ class SpellDataGenerator(DataGenerator):
          447097, # swarmlord's authority
          449966, # malfunctioning ethereum module
          452325, 452457, 452498, # Sigil of Algari Concordance
+         452226, # Ara-Kara Sacbrood
         ),
 
         # Warrior:
