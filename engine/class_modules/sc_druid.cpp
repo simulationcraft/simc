@@ -10008,13 +10008,15 @@ void druid_t::create_buffs()
   buff.ca_inc->set_cooldown( 0_ms )
     ->apply_affecting_aura( talent.greater_alignment )
     ->apply_affecting_aura( talent.potent_enchantments )
-    ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+    ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
       if ( !old_ )
       {
-        buff.eclipse_lunar->trigger( 0_ms );
+        auto d = b->remains();
+
+        buff.eclipse_lunar->trigger( d );
         eclipse_handler.update_eclipse( eclipse_e::LUNAR );
 
-        buff.eclipse_solar->trigger( 0_ms );
+        buff.eclipse_solar->trigger( d );
         eclipse_handler.update_eclipse( eclipse_e::SOLAR );
 
         if ( active.orbital_strike )
