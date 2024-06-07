@@ -951,18 +951,4 @@ void warlock_t::init_rng_affliction()
 {
 }
 
-void warlock_t::init_procs_affliction()
-{
-  procs.nightfall = get_proc( "nightfall" );
-  procs.pandemic_invocation_shard = get_proc( "pandemic_invocation_shard" );
-  procs.tormented_crescendo = get_proc( "tormented_crescendo" );
-  procs.doom_blossom = get_proc( "doom_blossom" );
-  procs.cruel_inspiration = get_proc( "cruel_inspiration" );
-
-  for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
-  {
-    procs.malefic_rapture[ i ] = get_proc( fmt::format( "Malefic Rapture {}", i + 1 ) );
-  }
-}
-
 }  // namespace warlock

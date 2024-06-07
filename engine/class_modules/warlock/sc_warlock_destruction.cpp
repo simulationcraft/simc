@@ -1637,17 +1637,6 @@ void warlock_t::create_destruction_proc_actions()
   proc_actions.channel_demonfire = new actions_destruction::channel_demonfire_tier_t( this );
 }
 
-void warlock_t::init_gains_destruction()
-{
-  gains.immolate = get_gain( "immolate" );
-  gains.immolate_crits = get_gain( "immolate_crits" );
-  gains.incinerate_crits = get_gain( "incinerate_crits" );
-  gains.incinerate_fnb_crits = get_gain( "incinerate_fnb_crits" );
-  gains.infernal = get_gain( "infernal" );
-  gains.shadowburn_refund = get_gain( "shadowburn_refund" );
-  gains.inferno = get_gain( "inferno" );
-}
-
 void warlock_t::init_rng_destruction()
 {
   // TOCHECK: 15% chance is what is listed in spell data but during SL this was presumed to use deck of cards at 3 out of 20

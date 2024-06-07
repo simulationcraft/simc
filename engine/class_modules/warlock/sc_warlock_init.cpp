@@ -849,6 +849,73 @@ namespace warlock
     gains.soul_strike = get_gain( "soul_strike" );
   }
 
+  void warlock_t::init_gains_destruction()
+  {
+    gains.immolate = get_gain( "immolate" );
+    gains.immolate_crits = get_gain( "immolate_crits" );
+    gains.incinerate_crits = get_gain( "incinerate_crits" );
+    gains.incinerate_fnb_crits = get_gain( "incinerate_fnb_crits" );
+    gains.infernal = get_gain( "infernal" );
+    gains.shadowburn_refund = get_gain( "shadowburn_refund" );
+    gains.inferno = get_gain( "inferno" );
+  }
+
+  void warlock_t::init_procs()
+  {
+    player_t::init_procs();
+
+    if ( specialization() == WARLOCK_AFFLICTION )
+      init_procs_affliction();
+    if ( specialization() == WARLOCK_DEMONOLOGY )
+      init_procs_demonology();
+    if ( specialization() == WARLOCK_DESTRUCTION )
+      init_procs_destruction();
+
+    procs.one_shard_hog = get_proc( "one_shard_hog" );
+    procs.two_shard_hog = get_proc( "two_shard_hog" );
+    procs.three_shard_hog = get_proc( "three_shard_hog" );
+    procs.portal_summon = get_proc( "portal_summon" );
+    procs.demonic_calling = get_proc( "demonic_calling" );
+    procs.soul_conduit = get_proc( "soul_conduit" );
+    procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
+    procs.ritual_of_ruin = get_proc( "ritual_of_ruin" );
+    procs.avatar_of_destruction = get_proc( "avatar_of_destruction" );
+    procs.mayhem = get_proc( "mayhem" );
+    procs.conflagration_of_chaos_cf = get_proc( "conflagration_of_chaos_cf" );
+    procs.conflagration_of_chaos_sb = get_proc( "conflagration_of_chaos_sb" );
+    procs.demonic_inspiration = get_proc( "demonic_inspiration" );
+    procs.wrathful_minion = get_proc( "wrathful_minion" );
+    procs.inquisitors_gaze = get_proc( "inquisitors_gaze" );
+  }
+
+  void warlock_t::init_procs_affliction()
+  {
+    procs.nightfall = get_proc( "nightfall" );
+    procs.pandemic_invocation_shard = get_proc( "pandemic_invocation_shard" );
+    procs.tormented_crescendo = get_proc( "tormented_crescendo" );
+    procs.doom_blossom = get_proc( "doom_blossom" );
+    procs.cruel_inspiration = get_proc( "cruel_inspiration" );
+
+    for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
+    {
+      procs.malefic_rapture[ i ] = get_proc( fmt::format( "Malefic Rapture {}", i + 1 ) );
+    }
+  }
+
+  void warlock_t::init_procs_demonology()
+  {
+    procs.summon_random_demon = get_proc( "summon_random_demon" );
+    procs.demonic_knowledge = get_proc( "demonic_knowledge" );
+    procs.shadow_invocation = get_proc( "shadow_invocation" );
+    procs.imp_gang_boss = get_proc( "imp_gang_boss" );
+    procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );
+    procs.umbral_blaze = get_proc( "umbral_blaze" );
+    procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
+    procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
+    procs.blazing_meteor = get_proc( "blazing_meteor" );
+    procs.doomfiend = get_proc( "doomfiend" );
+  }
+
   void warlock_t::init_procs_destruction()
   {
     procs.reverse_entropy = get_proc( "reverse_entropy" );
