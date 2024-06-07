@@ -1536,18 +1536,6 @@ pet_t* warlock_t::create_pet( util::string_view pet_name, util::string_view pet_
   return nullptr;
 }
 
-void warlock_t::init_rng()
-{
-  if ( specialization() == WARLOCK_AFFLICTION )
-    init_rng_affliction();
-  if ( specialization() == WARLOCK_DEMONOLOGY )
-    init_rng_demonology();
-  if ( specialization() == WARLOCK_DESTRUCTION )
-    init_rng_destruction();
-
-  player_t::init_rng();
-}
-
 void warlock_t::init_assessors()
 {
   player_t::init_assessors();

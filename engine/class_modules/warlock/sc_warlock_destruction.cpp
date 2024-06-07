@@ -1636,14 +1636,4 @@ void warlock_t::create_destruction_proc_actions()
   proc_actions.avatar_of_destruction = new actions_destruction::avatar_of_destruction_t( this );
   proc_actions.channel_demonfire = new actions_destruction::channel_demonfire_tier_t( this );
 }
-
-void warlock_t::init_rng_destruction()
-{
-  // TOCHECK: 15% chance is what is listed in spell data but during SL this was presumed to use deck of cards at 3 out of 20
-  // May need rechecking in DF
-  rain_of_chaos_rng = get_shuffled_rng( "rain_of_chaos", 3, 20 );
-}
-
-
-
 }  // namespace warlock

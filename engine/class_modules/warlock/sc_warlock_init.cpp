@@ -924,4 +924,31 @@ namespace warlock
     procs.channel_demonfire = get_proc( "channel_demonfire_tier" );
     procs.dimensional_refund = get_proc( "dimensional_refund" );
   }
+
+  void warlock_t::init_rng()
+  {
+    if ( specialization() == WARLOCK_AFFLICTION )
+      init_rng_affliction();
+    if ( specialization() == WARLOCK_DEMONOLOGY )
+      init_rng_demonology();
+    if ( specialization() == WARLOCK_DESTRUCTION )
+      init_rng_destruction();
+
+    player_t::init_rng();
+  }
+
+  void warlock_t::init_rng_affliction()
+  {
+  }
+
+  void warlock_t::init_rng_demonology()
+  {
+  }
+
+  void warlock_t::init_rng_destruction()
+  {
+    // TOCHECK: 15% chance is what is listed in spell data but during SL this was presumed to use deck of cards at 3 out of 20
+    // May need rechecking in DF
+    rain_of_chaos_rng = get_shuffled_rng( "rain_of_chaos", 3, 20 );
+  }
 }

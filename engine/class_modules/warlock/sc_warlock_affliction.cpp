@@ -946,9 +946,4 @@ void warlock_t::create_soul_swap_actions()
   soul_swap_state.vile_taint.action->dual = true;
   soul_swap_state.vile_taint.action_copied = false;
 }
-
-void warlock_t::init_rng_affliction()
-{
-}
-
 }  // namespace warlock

@@ -1431,8 +1431,4 @@ void warlock_t::create_demonology_proc_actions()
   proc_actions.bilescourge_bombers_proc = new actions_demonology::bilescourge_bombers_proc_t( this );
   proc_actions.doom_brand_explosion = new actions_demonology::doom_brand_t( this );
 }
-
-void warlock_t::init_rng_demonology()
-{
-}
 }  // namespace warlock
