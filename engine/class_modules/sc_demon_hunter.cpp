@@ -318,6 +318,7 @@ public:
     buff_t* t30_vengeance_4pc;
     buff_t* t31_vengeance_2pc;
     buff_t* tww1_havoc_4pc;
+    buff_t* tww1_vengeance_4pc;
   } buff;
 
   // Talents
@@ -717,6 +718,8 @@ public:
     const spell_data_t* t31_vengeance_4pc;
     const spell_data_t* tww1_havoc_2pc;
     const spell_data_t* tww1_havoc_4pc;
+    const spell_data_t* tww1_vengeance_2pc;
+    const spell_data_t* tww1_vengeance_4pc;
 
     // Auxilliary
     const spell_data_t* t29_vengeance_4pc_debuff;
@@ -731,6 +734,7 @@ public:
     const spell_data_t* t31_vengeance_2pc_buff;
     const spell_data_t* t31_vengeance_4pc_proc;
     const spell_data_t* tww1_havoc_4pc_buff;
+    const spell_data_t* tww1_vengeance_4pc_buff;
   } set_bonuses;
 
   // Mastery Spells
@@ -854,6 +858,7 @@ public:
     // Set Bonuses
     proc_t* soul_fragment_from_t29_2pc;
     proc_t* soul_fragment_from_t31_4pc;
+    proc_t* soul_fragment_from_twws1_2pc;
   } proc;
 
   // RPPM objects
@@ -901,8 +906,8 @@ public:
     spell_t* sigil_of_flame_t31 = nullptr;
 
     // Aldrachi Reaver
-    attack_t* art_of_the_glaive            = nullptr;
-    attack_t* preemptive_strike             = nullptr;
+    attack_t* art_of_the_glaive = nullptr;
+    attack_t* preemptive_strike = nullptr;
 
     // Fel-scarred
     action_t* burning_blades = nullptr;
@@ -1653,6 +1658,8 @@ public:
 
       // Set Bonus Passives
       ab::apply_affecting_aura( p->set_bonuses.t30_vengeance_4pc );
+      ab::apply_affecting_aura( p->set_bonuses.tww1_vengeance_2pc );
+      ab::apply_affecting_aura( p->set_bonuses.tww1_vengeance_4pc );
 
       // Affect Flags
 
@@ -2838,6 +2845,11 @@ struct fel_devastation_t : public demon_hunter_spell_t
                              cdr_reduction.total_seconds() );
       p()->cooldown.fel_devastation->adjust( -cdr_reduction );
       p()->resource_gain( RESOURCE_FURY, fury_refund, p()->gain.darkglare_boon );
+    }
+
+    if ( p()->buff.tww1_vengeance_4pc->up() )
+    {
+      p()->buff.tww1_vengeance_4pc->expire();
     }
   }
 
@@ -6040,6 +6052,18 @@ struct soul_cleave_base_t : public demon_hunter_attack_t
         p()->cooldown.the_hunt->adjust( -p()->talent.aldrachi_reaver.intent_pursuit->effectN( 1 ).time_value() );
       }
     }
+
+    // TWWBETA TOCHECK -- Is this flat % chance or something else (deck?)
+    if ( p()->set_bonuses.tww1_vengeance_2pc->ok() &&
+         p()->rng().roll( p()->set_bonuses.tww1_vengeance_2pc->effectN( 2 ).percent() ) )
+    {
+      unsigned soul_fragments_to_spawn = static_cast<unsigned>( data().effectN( 3 ).base_value() );
+      p()->spawn_soul_fragment( soul_fragment::LESSER, soul_fragments_to_spawn );
+      for ( unsigned i = 0; i < soul_fragments_to_spawn; i++ )
+      {
+        p()->proc.soul_fragment_from_twws1_2pc->occur();
+      }
+    }
   }
 };
 
@@ -7512,6 +7536,11 @@ void demon_hunter_t::create_buffs()
       make_buff( this, "blade_rhapsody",
                  set_bonuses.tww1_havoc_4pc->ok() ? set_bonuses.tww1_havoc_4pc_buff : spell_data_t::not_found() )
           ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER );
+
+  buff.tww1_vengeance_4pc = make_buff( this, "soulfuse",
+                                       set_bonuses.tww1_vengeance_4pc->ok() ? set_bonuses.tww1_vengeance_4pc_buff
+                                                                            : spell_data_t::not_found() )
+                                ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
 }
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
@@ -7857,8 +7886,9 @@ void demon_hunter_t::init_procs()
   proc.soul_fragment_from_meta     = get_proc( "soul_fragment_from_meta" );
 
   // Set Bonuses
-  proc.soul_fragment_from_t29_2pc = get_proc( "soul_fragment_from_t29_2pc" );
-  proc.soul_fragment_from_t31_4pc = get_proc( "soul_fragment_from_t31_4pc" );
+  proc.soul_fragment_from_t29_2pc   = get_proc( "soul_fragment_from_t29_2pc" );
+  proc.soul_fragment_from_t31_4pc   = get_proc( "soul_fragment_from_t31_4pc" );
+  proc.soul_fragment_from_twws1_2pc = get_proc( "soul_fragment_from_twws1_2pc" );
 }
 
 // demon_hunter_t::init_uptimes =============================================
@@ -8351,20 +8381,22 @@ void demon_hunter_t::init_spells()
 
   // Set Bonus Items ========================================================
 
-  set_bonuses.t29_havoc_2pc     = sets->set( DEMON_HUNTER_HAVOC, T29, B2 );
-  set_bonuses.t29_havoc_4pc     = sets->set( DEMON_HUNTER_HAVOC, T29, B4 );
-  set_bonuses.t29_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, T29, B2 );
-  set_bonuses.t29_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, T29, B4 );
-  set_bonuses.t30_havoc_2pc     = sets->set( DEMON_HUNTER_HAVOC, T30, B2 );
-  set_bonuses.t30_havoc_4pc     = sets->set( DEMON_HUNTER_HAVOC, T30, B4 );
-  set_bonuses.t30_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, T30, B2 );
-  set_bonuses.t30_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, T30, B4 );
-  set_bonuses.t31_havoc_2pc     = sets->set( DEMON_HUNTER_HAVOC, T31, B2 );
-  set_bonuses.t31_havoc_4pc     = sets->set( DEMON_HUNTER_HAVOC, T31, B4 );
-  set_bonuses.t31_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, T31, B2 );
-  set_bonuses.t31_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, T31, B4 );
-  set_bonuses.tww1_havoc_2pc = sets->set( DEMON_HUNTER_HAVOC, TWW1, B2 );
-  set_bonuses.tww1_havoc_4pc = sets->set( DEMON_HUNTER_HAVOC, TWW1, B4 );
+  set_bonuses.t29_havoc_2pc      = sets->set( DEMON_HUNTER_HAVOC, T29, B2 );
+  set_bonuses.t29_havoc_4pc      = sets->set( DEMON_HUNTER_HAVOC, T29, B4 );
+  set_bonuses.t29_vengeance_2pc  = sets->set( DEMON_HUNTER_VENGEANCE, T29, B2 );
+  set_bonuses.t29_vengeance_4pc  = sets->set( DEMON_HUNTER_VENGEANCE, T29, B4 );
+  set_bonuses.t30_havoc_2pc      = sets->set( DEMON_HUNTER_HAVOC, T30, B2 );
+  set_bonuses.t30_havoc_4pc      = sets->set( DEMON_HUNTER_HAVOC, T30, B4 );
+  set_bonuses.t30_vengeance_2pc  = sets->set( DEMON_HUNTER_VENGEANCE, T30, B2 );
+  set_bonuses.t30_vengeance_4pc  = sets->set( DEMON_HUNTER_VENGEANCE, T30, B4 );
+  set_bonuses.t31_havoc_2pc      = sets->set( DEMON_HUNTER_HAVOC, T31, B2 );
+  set_bonuses.t31_havoc_4pc      = sets->set( DEMON_HUNTER_HAVOC, T31, B4 );
+  set_bonuses.t31_vengeance_2pc  = sets->set( DEMON_HUNTER_VENGEANCE, T31, B2 );
+  set_bonuses.t31_vengeance_4pc  = sets->set( DEMON_HUNTER_VENGEANCE, T31, B4 );
+  set_bonuses.tww1_havoc_2pc     = sets->set( DEMON_HUNTER_HAVOC, TWW1, B2 );
+  set_bonuses.tww1_havoc_4pc     = sets->set( DEMON_HUNTER_HAVOC, TWW1, B4 );
+  set_bonuses.tww1_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, TWW1, B2 );
+  set_bonuses.tww1_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, TWW1, B4 );
 
   // Set Bonus Auxilliary
   set_bonuses.t29_vengeance_4pc_debuff =
@@ -8381,6 +8413,8 @@ void demon_hunter_t::init_spells()
   set_bonuses.t31_vengeance_4pc_proc =
       set_bonuses.t31_vengeance_4pc->ok() ? find_spell( 425672 ) : spell_data_t::not_found();
   set_bonuses.tww1_havoc_4pc_buff = set_bonuses.tww1_havoc_4pc->ok() ? find_spell( 454628 ) : spell_data_t::not_found();
+  set_bonuses.tww1_vengeance_4pc_buff =
+      set_bonuses.tww1_vengeance_4pc->ok() ? find_spell( 454774 ) : spell_data_t::not_found();
 
   // Spell Initialization ===================================================
 
@@ -9293,6 +9327,7 @@ unsigned demon_hunter_t::consume_soul_fragments( soul_fragment type, bool heal, 
   {
     buff.painbringer->trigger( souls_consumed );
     buff.art_of_the_glaive->trigger( souls_consumed );
+    buff.tww1_vengeance_4pc->trigger( souls_consumed );
   }
 
   return souls_consumed;
