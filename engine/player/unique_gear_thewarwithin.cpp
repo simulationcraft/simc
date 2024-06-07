@@ -1187,81 +1187,30 @@ void abyssal_effigy( special_effect_t& effect )
 // Might have variations based on the players Specilization.
 // Testing on DPS Death Knight showed only a single spawnable pet.
 // 443378 Driver
-// 452310 Summon Spell (DPS?)
-// 452335 Thunder Bolt - Casts repetedly
-// 452445 Thundering Bolt - Casts only once on spawn in testing
+// 452310 Summon Spell (DPS)
+// 452335 Thunder Bolt - Damage Spell DPS
+// 452445 Thundering Bolt - One Time Spell DPS
+// 452496 Summon Spell (Tank)
+// 452545 Mighty Smash - Damage Spell Tank
+// 452514 Earthen Ire - One Time Spell Tank
+// 452890 Earthen Ire - Ticking Damage
 // 452325, 452457, and 452498 Periodic Triggers for pet actions
 void sigil_of_algari_concordance( special_effect_t& e )
 {
-  struct thunder_bolt_silvervein_t : public spell_t
+  struct sigil_of_algari_concordance_pet_t : public pet_t
   {
-    action_t* action;
-    thunder_bolt_silvervein_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
-      : spell_t( name, p, p->find_spell( 452335 ) ), action( a )
-    {
-      background         = true;
-      name_str_reporting = "thunder_bolt";
-      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
-      // a guessing game.
-      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
-      auto proxy                = action;
-      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
-      if ( it != proxy->child_action.end() )
-        stats = ( *it )->stats;
-      else
-        proxy->add_child( this );
-    }
-  };
-
-  struct thundering_bolt_t : public spell_t
-  {
-    action_t* action;
-    thundering_bolt_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
-      : spell_t( name, p, p->find_spell( 452445 ) ), action( a )
-    {
-      aoe        = -1;
-      background = true;
-      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
-      // a guessing game.
-      base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e.item );
-      auto proxy                = action;
-      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
-      if ( it != proxy->child_action.end() )
-        stats = ( *it )->stats;
-      else
-        proxy->add_child( this );
-    }
-  };
-
-  struct silvervein_pet_t : public pet_t
-  {
-    const special_effect_t& effect;
-    action_t* action;
-    action_t* thunder_bolt;
-    action_t* thundering_bolt;
+    action_t* repeating_action;
+    action_t* one_time_action;
     timespan_t period;
     double ticks;
 
-    silvervein_pet_t( const special_effect_t& e, action_t* a )
-      : pet_t( e.player->sim, e.player, "silvervein", true, true ),
-        effect( e ),
-        action( a ),
-        thunder_bolt( nullptr ),
-        thundering_bolt( nullptr ),
+    sigil_of_algari_concordance_pet_t( util::string_view name, const special_effect_t& e )
+      : pet_t( e.player->sim, e.player, name, true, true ),
+        repeating_action( nullptr ),
+        one_time_action( nullptr ),
         period( e.player->find_spell( 452325 )->effectN( 1 ).period() ),
-        ticks( 0 )
+        ticks( ( e.player->find_spell( 452310 )->duration() - period * 2 ) / period )
     {
-      npc_id = e.player->find_spell( 452310 )->effectN( 1 ).misc_value1();
-      // Some math to automate how many repeating events are needed to execute thunder bolt after thundering bolt and
-      // the first thunder bolt has been cast
-      ticks = ( e.player->find_spell( 452310 )->duration() - period * 2 ) / period;
-    }
-
-    void init_spells() override
-    {
-      pet_t::init_spells();
-      thunder_bolt    = new thunder_bolt_silvervein_t( "thunder_bolt_silvervein", this, effect, action );
-      thundering_bolt = new thundering_bolt_t( "thundering_bolt", this, effect, action );
     }
 
     resource_e primary_resource() const override
@@ -1272,35 +1221,233 @@ void sigil_of_algari_concordance( special_effect_t& e )
     void arise() override
     {
       pet_t::arise();
-      thundering_bolt->execute();
+      // TODO: Sometimes the one time action is delayed until the 2nd or 3rd tick, seems pretty random when it happens
+      // Need to explore deeper to see whats happening
+      one_time_action->execute();
       make_event( *sim, period, [ this ]() {
-        thunder_bolt->execute();
+        repeating_action->execute();
         make_repeating_event(
-            *sim, period, [ this ]() { thunder_bolt->execute(); }, as<int>( ticks ) );
+            *sim, period, [ this ]() { repeating_action->execute(); }, as<int>( ticks ) );
       } );
+    }
+  };
+
+  struct thunder_bolt_silvervein_t : public spell_t
+  {
+    thunder_bolt_silvervein_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+      : spell_t( name, p, p->find_spell( 452335 ) )
+    {
+      background         = true;
+      name_str_reporting = "thunder_bolt";
+      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
+      // a guessing game.
+      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+      auto proxy                = a;
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
+    }
+  };
+
+  struct thundering_bolt_t : public spell_t
+  {
+    thundering_bolt_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+      : spell_t( name, p, p->find_spell( 452445 ) )
+    {
+      aoe        = -1;
+      background = true;
+      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
+      // a guessing game.
+      base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e.item );
+      auto proxy                = a;
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
+    }
+  };
+
+  struct silvervein_pet_t : public sigil_of_algari_concordance_pet_t
+  {
+    action_t* action;
+    const special_effect_t& effect;
+    silvervein_pet_t( const special_effect_t& e, action_t* a )
+      : sigil_of_algari_concordance_pet_t( "silvervein", e ), action( a ), effect( e )
+    {
+    }
+
+    void create_actions() override
+    {
+      sigil_of_algari_concordance_pet_t::create_actions();
+      repeating_action = new thunder_bolt_silvervein_t( "thunder_bolt_silvervein", this, effect, action );
+      one_time_action  = new thundering_bolt_t( "thundering_bolt", this, effect, action );
+    }
+  };
+
+  struct mighty_smash_t : public spell_t
+  {
+    mighty_smash_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+      : spell_t( name, p, p->find_spell( 452545 ) )
+    {
+      aoe        = -1;
+      background = true;
+      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
+      // a guessing game.
+      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+      auto proxy                = a;
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
+    }
+  };
+
+  struct earthen_ire_damage_t : public spell_t
+  {
+    earthen_ire_damage_t( const special_effect_t& e )
+      : spell_t( "earthen_ire", e.player, e.player->find_spell( 452890 ) )
+    {
+      aoe        = -1;
+      background = true;
+      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
+      // a guessing game.
+      base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e.item );
+    }
+  };
+
+  struct earthen_ire_buff_t : public spell_t
+  {
+    buff_t* buff;
+    earthen_ire_buff_t( const special_effect_t& e, buff_t* buff )
+      : spell_t( "earthen_ire", e.player, e.player->find_spell( 452518 ) ), buff( buff )
+    {
+      background = true;
+    }
+
+    void execute() override
+    {
+      buff->trigger();
+    }
+  };
+
+  struct boulderbane_pet_t : public sigil_of_algari_concordance_pet_t
+  {
+    action_t* action;
+    const special_effect_t& effect;
+    boulderbane_pet_t( const special_effect_t& e, action_t* a, action_t* ire_buff )
+      : sigil_of_algari_concordance_pet_t( "boulderbane", e ), action( a ), effect( e )
+    {
+      one_time_action = ire_buff;
+    }
+
+    void create_actions() override
+    {
+      sigil_of_algari_concordance_pet_t::create_actions();
+      repeating_action = new mighty_smash_t( "mighty_smash", this, effect, action );
     }
   };
 
   struct sigil_of_algari_concordance_t : public spell_t
   {
-    spawner::pet_spawner_t<silvervein_pet_t> spawner;
+    spawner::pet_spawner_t<silvervein_pet_t> silvervein_spawner;
+    spawner::pet_spawner_t<boulderbane_pet_t> boulderbane_spawner;
+    bool silvervein;
+    bool boulderbane;
 
-    sigil_of_algari_concordance_t( const special_effect_t& e )
+    sigil_of_algari_concordance_t( const special_effect_t& e, action_t* ire_buff )
       : spell_t( "sigil_of_algari_concordance", e.player, e.driver() ),
-        spawner( "silvervein", e.player, [ &e, this ]( player_t* ) { return new silvervein_pet_t( e, this ); } )
+        silvervein_spawner( "silvervein", e.player,
+                            [ &e, this ]( player_t* ) { return new silvervein_pet_t( e, this ); } ),
+        boulderbane_spawner(
+            "boulderbane", e.player,
+            [ &e, this, ire_buff ]( player_t* ) { return new boulderbane_pet_t( e, this, ire_buff ); } ),
+        silvervein( false ),
+        boulderbane( false )
     {
-      spawner.set_default_duration( e.player->find_spell( 452310 )->duration() );
+      switch ( e.player->_spec )
+      {
+        case HUNTER_BEAST_MASTERY:
+        case HUNTER_MARKSMANSHIP:
+        case PRIEST_SHADOW:
+        case SHAMAN_ELEMENTAL:
+        case MAGE_ARCANE:
+        case MAGE_FIRE:
+        case MAGE_FROST:
+        case WARLOCK_AFFLICTION:
+        case WARLOCK_DEMONOLOGY:
+        case WARLOCK_DESTRUCTION:
+        case DRUID_BALANCE:
+        case EVOKER_DEVASTATION:
+        case EVOKER_AUGMENTATION:
+          silvervein = true;
+          silvervein_spawner.set_default_duration( e.player->find_spell( 452310 )->duration() );
+          break;
+        case WARRIOR_PROTECTION:
+        case PALADIN_PROTECTION:
+        case DEATH_KNIGHT_BLOOD:
+        case MONK_BREWMASTER:
+        case DRUID_GUARDIAN:
+        case DEMON_HUNTER_VENGEANCE:
+          boulderbane = true;
+          boulderbane_spawner.set_default_duration( e.player->find_spell( 452496 )->duration() );
+          break;
+        case PALADIN_HOLY:
+        case PRIEST_DISCIPLINE:
+        case PRIEST_HOLY:
+        case SHAMAN_RESTORATION:
+        case MONK_MISTWEAVER:
+        case DRUID_RESTORATION:
+        case EVOKER_PRESERVATION:
+          break;
+        case WARRIOR_ARMS:
+        case WARRIOR_FURY:
+        case PALADIN_RETRIBUTION:
+        case HUNTER_SURVIVAL:
+        case ROGUE_ASSASSINATION:
+        case ROGUE_OUTLAW:
+        case ROGUE_SUBTLETY:
+        case DEATH_KNIGHT_FROST:
+        case DEATH_KNIGHT_UNHOLY:
+        case SHAMAN_ENHANCEMENT:
+        case MONK_WINDWALKER:
+        case DRUID_FERAL:
+        case DEMON_HUNTER_HAVOC:
+        default:
+          silvervein = true;
+          silvervein_spawner.set_default_duration( e.player->find_spell( 452310 )->duration() );
+          break;
+      }
+
       background = true;
     }
 
     void execute() override
     {
       spell_t::execute();
-      spawner.spawn();
+      if ( boulderbane )
+      {
+        boulderbane_spawner.spawn();
+      }
+      else if ( silvervein )
+      {
+        silvervein_spawner.spawn();
+      }
     }
   };
 
-  e.execute_action = create_proc_action<sigil_of_algari_concordance_t>( "sigil_of_algari_concordance", e );
+  auto earthen_ire_damage = create_proc_action<earthen_ire_damage_t>( "earthen_ire", e );
+  // TODO: Figure out why the buff isnt being applied to the player? still executes earthen_ire_damage once though...?
+  auto earthen_ire_buff =
+      create_buff<buff_t>( e.player, e.player->find_spell( 452514 ) )
+          ->set_tick_callback( [ earthen_ire_damage ]( buff_t*, int, timespan_t ) { earthen_ire_damage->execute(); } );
+  auto earthen_ire_buff_action = create_proc_action<earthen_ire_buff_t>( "earthen_ire", e, earthen_ire_buff );
+
+  e.execute_action =
+      create_proc_action<sigil_of_algari_concordance_t>( "sigil_of_algari_concordance", e, earthen_ire_buff_action );
   new dbc_proc_callback_t( e.player, e );
 }
 
@@ -1315,12 +1462,274 @@ void skarmorak_shard( special_effect_t& e )
   auto on_kill_buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 449792 ) )
                           ->add_stat_from_effect_type( A_MOD_RATING, e.player->find_spell( 449792 )->effectN( 1 ).average( e.item ) );
 
-  e.player->register_on_kill_callback( [ e, on_kill_buff ]( player_t* t ) {
+  e.player->register_on_kill_callback( [ e, on_kill_buff ]( player_t* ) {
     if ( !e.player->sim->event_mgr.canceled )
       on_kill_buff->trigger();
   } );
 
   e.custom_buff = main_buff;
+}
+
+// Void Pactstone
+// 443537 Driver
+// 450960 Damage
+// 450962 Buff
+void void_pactstone( special_effect_t& e )
+{
+  auto buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 450962 ) )
+                  // Will Throw a warning currently, as the mod rating misc_value1 is empty. Does not work in game either. 
+                  ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e.item ) );
+
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "void_pulse", e, 450960 );
+  damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+  damage->split_aoe_damage                  = true;
+
+  e.custom_buff    = buff;
+  e.execute_action = damage;
+  new dbc_proc_callback_t( e.player, e );
+}
+
+// Ravenous Honey Buzzer
+// 448904 Driver
+// 448909 Damage
+void ravenous_honey_buzzer( special_effect_t& e )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "ravenous_honey_buzzer", e, 448909 );
+  damage -> split_aoe_damage = true;
+
+  e.execute_action = damage;
+}
+
+// Overlocked Gear-a-rang Launcher
+// 443411 Use Driver
+// 446764 Equip Driver
+// 446811 Use Damage
+// 449828 Equip Damage
+// 450453 Equip Buff
+void overclocked_geararang_launcher( special_effect_t& e )
+{
+  struct overclocked_strike_t : public generic_proc_t
+  {
+    buff_t* buff;
+    overclocked_strike_t( const special_effect_t& e, buff_t* buff )
+      : generic_proc_t( e, "overclocked_strike", e.player->find_spell( 449828 ) ), buff( buff )
+    {
+      background  = true;
+      base_dd_min = base_dd_max = e.player->find_spell( 446764 )->effectN( 2 ).average( e.item );
+    }
+
+    void execute() override
+    {
+      // Appears to consume the buff before executing the action
+      buff->expire();
+      generic_proc_t::execute();
+    }
+  };
+
+  auto damage_buff_spell     = e.player->find_spell( 450453 );
+  auto overclock_buff        = create_buff<buff_t>( e.player, damage_buff_spell );
+  auto damage_action         = create_proc_action<overclocked_strike_t>( "overclocked_strike", e, overclock_buff );
+
+  auto damage            = new special_effect_t( e.player );
+  damage->name_str       = "overclocked_strike_proc";
+  damage->item           = e.item;
+  damage->spell_id       = damage_buff_spell->id();
+  damage->execute_action = damage_action;
+  e.player->special_effects.push_back( damage );
+
+  auto damage_cb = new dbc_proc_callback_t( e.player, *damage );
+  damage_cb->initialize();
+  damage_cb->deactivate();
+
+  overclock_buff->set_stack_change_callback( [ damage_cb ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+    {
+      damage_cb->activate();
+    }
+    else
+    {
+      damage_cb->deactivate();
+    }
+  } );
+
+  auto equip_driver = e.player->find_spell( 446764 );
+
+  auto overclock         = new special_effect_t( e.player );
+  overclock->name_str    = "overclock";
+  overclock->item        = e.item;
+  overclock->spell_id    = equip_driver->id();
+  overclock->custom_buff = overclock_buff;
+  e.player->special_effects.push_back( overclock );
+
+  auto overclock_cb = new dbc_proc_callback_t( e.player, *overclock );
+  overclock_cb->initialize();
+  overclock_cb->activate();
+
+  // Might be worth converting to a poper ground effect event later. For now, this is close enough.
+  auto use_damage  = create_proc_action<generic_aoe_proc_t>( "geararang_serration", e, 446811 );
+  e.execute_action = use_damage;
+}
+
+// Remnant of Darkness
+// 443530 Driver
+// 451369 Buff
+// 452032 Damage
+// 451602 Transform Buff
+void remnant_of_darkness( special_effect_t& e )
+{
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "dark_swipe", e, 452032 );
+  damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+
+  auto transform_buff = create_buff<buff_t>( e.player, e.player->find_spell( 451602 ) )
+                            ->set_tick_callback( [ damage ]( buff_t*, int, timespan_t ) { damage->execute(); } );
+
+  auto stat_buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 451369 ) )
+                       ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e.item ) )
+                       ->set_stack_change_callback( [ transform_buff ]( buff_t* b, int, int ) {
+                         if ( b->at_max_stacks() )
+                         {
+                           transform_buff->trigger();
+                         }
+                       } );
+
+  transform_buff->set_expire_callback( [ stat_buff ]( buff_t*, int, timespan_t ) { stat_buff->expire(); } );
+
+  e.custom_buff = stat_buff;
+  new dbc_proc_callback_t( e.player, e );
+}
+
+// Opressive Orator's Larynx
+// 443552 Use Driver
+// 446787 Equip Driver
+// 451011 Buff
+// 451015 Damage
+void opressive_orators_larynx( special_effect_t& e )
+{
+  struct dark_oration_t : public generic_aoe_proc_t
+  {
+    double mult;
+    dark_oration_t( const special_effect_t& e )
+      : generic_aoe_proc_t( e, "dark_oration", e.player->find_spell( 451015 ) ), mult( 0 )
+    {
+      background  = true;
+      base_dd_min = base_dd_max = e.player->find_spell( 446787 )->effectN( 2 ).average( e.item );
+    }
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( state );
+
+      m *= 1.0 + mult;
+
+      return m;
+    }
+  };
+
+  struct dark_oration_tick_t : public generic_proc_t
+  {
+    buff_t* buff;
+    action_t* damage;
+    dark_oration_tick_t( const special_effect_t& e, buff_t* buff, action_t* damage )
+      : generic_proc_t( e, "dark_oration", e.driver() ), buff( buff ), damage( damage )
+    {
+      background  = true;
+      tick_action = damage;
+    }
+
+    void execute() override
+    {
+      debug_cast<dark_oration_t*>( damage )->mult = buff->stack() * 0.25;
+      buff->expire();
+      generic_proc_t::execute();
+    }
+  };
+
+  auto equip_driver = e.player->find_spell( 446787 );
+  auto buff         = create_buff<stat_buff_t>( e.player, e.player->find_spell( 451011 ) )
+                  ->add_stat_from_effect_type( A_MOD_STAT, equip_driver->effectN( 1 ).average( e.item ) )
+                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  auto equip         = new special_effect_t( e.player );
+  equip->name_str    = "dark_orators_larynx";
+  equip->item        = e.item;
+  equip->spell_id    = equip_driver->id();
+  equip->custom_buff = buff;
+  e.player->special_effects.push_back( equip );
+
+  auto equip_cb = new dbc_proc_callback_t( e.player, *equip );
+  equip_cb->initialize();
+  equip_cb->activate();
+
+  auto damage        = create_proc_action<dark_oration_t>( "dark_oration", e );
+  auto ticking_spell = create_proc_action<dark_oration_tick_t>( "dark_oration_tick", e, buff, damage );
+
+  e.execute_action = ticking_spell;
+}
+
+// Ara-Kara Sacbrood
+// 443541 Driver
+// 452146 Buff
+// 452226 Spiderling Buff
+// 452227 Spiderfling Missile
+// 452229 Damage
+void arakara_sacbrood( special_effect_t& e )
+{
+  struct spiderfling_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    action_t* missile;
+    buff_t* buff;
+    spiderfling_cb_t( const special_effect_t& e, buff_t* buff )
+      : dbc_proc_callback_t( e.player, e ), damage( nullptr ), missile( nullptr ), buff( buff )
+    {
+      damage                 = create_proc_action<generic_proc_t>( "spidersting", e, e.player->find_spell( 452229 ) );
+      damage->base_td        = e.player->find_spell( 443541 )->effectN( 2 ).average( e.item );
+      missile                = create_proc_action<generic_proc_t>( "spiderfling", e, e.player->find_spell( 452227 ) );
+      missile->impact_action = damage;
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      missile->execute_on_target( s->target );
+      buff->decrement();
+    }
+  };
+
+  auto spiderling_buff = create_buff<buff_t>( e.player, e.player->find_spell( 452226 ) );
+
+  auto spiderling      = new special_effect_t( e.player );
+  spiderling->name_str = "spiderling";
+  spiderling->item     = e.item;
+  spiderling->spell_id = 452226;
+  e.player->special_effects.push_back( spiderling );
+
+  auto spiderling_cb = new spiderfling_cb_t( *spiderling, spiderling_buff );
+  spiderling_cb->initialize();
+  spiderling_cb->deactivate();
+
+  spiderling_buff->set_stack_change_callback( [ spiderling_cb ]( buff_t*, int, int new_ ) {
+    if ( new_ == 1 )
+    {
+      spiderling_cb->activate();
+    }
+    if ( new_ == 0 )
+    {
+      spiderling_cb->deactivate();
+    }
+  } );
+
+  auto buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 452146 ) )
+                  ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e.item ) )
+                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                  ->set_stack_change_callback( [ spiderling_buff ]( buff_t*, int old_, int new_ ) {
+                    if ( old_ > new_ )
+                    {
+                      spiderling_buff->trigger();
+                    }
+                  } );
+
+  e.custom_buff = buff;
+  new dbc_proc_callback_t( e.player, e );
 }
 
 // Weapons
@@ -1604,6 +2013,14 @@ void register_special_effects()
   register_special_effect( 443378, items::sigil_of_algari_concordance );
   register_special_effect( 443407, items::skarmorak_shard );
   register_special_effect( 443409, DISABLED_EFFECT );  // skarmorak's shard
+  register_special_effect( 443537, items::void_pactstone );
+  register_special_effect( 448904, items::ravenous_honey_buzzer );
+  register_special_effect( 443411, items::overclocked_geararang_launcher );
+  register_special_effect( 446764, DISABLED_EFFECT ); // overclocked gear-a-rang launcher
+  register_special_effect( 443530, items::remnant_of_darkness );
+  register_special_effect( 443552, items::opressive_orators_larynx );
+  register_special_effect( 446787, DISABLED_EFFECT ); // opressive orator's larynx
+  register_special_effect( 443541, items::arakara_sacbrood );
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );

@@ -31,7 +31,7 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  std::string flask_name = ( p->true_level >= 61 ) ? "iced_phial_of_corrupting_rage_3" : "spectral_flask_of_power";
+  std::string flask_name = ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos" : "iced_phial_of_corrupting_rage_3";
 
   // All specs use a strength flask as default
   return flask_name;
@@ -437,12 +437,11 @@ void unholy( player_t* p )
 
   cooldowns->add_action( "summon_gargoyle,if=buff.commander_of_the_dead.up|!talent.commander_of_the_dead", "ST/Cleave Cooldowns" );
   cooldowns->add_action( "raise_dead,if=!pet.ghoul.active" );
-  cooldowns->add_action( "dark_transformation,if=cooldown.apocalypse.remains<5" );
+  cooldowns->add_action( "dark_transformation,if=cooldown.apocalypse.remains<5&!talent.gift_of_the_sanlayn" );
   cooldowns->add_action( "apocalypse,target_if=max:debuff.festering_wound.stack,if=variable.st_planning&debuff.festering_wound.stack>=4" );
-  cooldowns->add_action( "abomination_limb,if=rune<3&variable.st_planning" );
+  cooldowns->add_action( "abomination_limb,if=rune<3&variable.st_planning&!talent.vampiric_strike" );
   cooldowns->add_action( "unholy_assault,target_if=min:debuff.festering_wound.stack,if=variable.st_planning" );
-  cooldowns->add_action( "soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>5" );
-  cooldowns->add_action( "soul_reaper,target_if=min:dot.soul_reaper.remains,if=target.time_to_pct_35<5&active_enemies>=2&target.time_to_die>(dot.soul_reaper.remains+5)" );
+  cooldowns->add_action( "dark_transformation,if=cooldown.apocalypse.remains>=40&talent.gift_of_the_sanlayn" );
 
   garg_setup->add_action( "apocalypse,if=debuff.festering_wound.stack>=4&(buff.commander_of_the_dead.up&pet.gargoyle.remains<23|!talent.commander_of_the_dead)", "Garg Setup" );
   garg_setup->add_action( "soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>5" );
@@ -464,7 +463,7 @@ void unholy( player_t* p )
   high_prio_actions->add_action( "epidemic,if=active_enemies>=4&(talent.commander_of_the_dead&buff.commander_of_the_dead.up&cooldown.apocalypse.remains<5|debuff.death_rot.up&debuff.death_rot.remains<gcd)" );
   high_prio_actions->add_action( "wound_spender,if=(cooldown.apocalypse.remains>variable.apoc_timing+3|cooldown.unholy_assault.ready|active_enemies>=3)&talent.plaguebringer&(talent.superstrain|talent.unholy_blight)&buff.plaguebringer.remains<gcd" );
   high_prio_actions->add_action( "unholy_blight,if=variable.st_planning&((!talent.apocalypse|cooldown.apocalypse.remains|!talent.summon_gargoyle)&talent.morbidity|!talent.morbidity)|variable.adds_remain|fight_remains<21" );
-  high_prio_actions->add_action( "outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&(dot.virulent_plague.refreshable|talent.superstrain&(dot.frost_fever.refreshable|dot.blood_plague.refreshable))&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains>15%((talent.superstrain*3)+(talent.plaguebringer*2)+(talent.ebon_fever*2)))" );
+  high_prio_actions->add_action( "outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&(dot.virulent_plague.refreshable|talent.superstrain&(dot.frost_fever.refreshable&!talent.vampiric_strike|dot.blood_plague.refreshable))&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains>15%((talent.superstrain*3)+(talent.plaguebringer*2)+(talent.ebon_fever*2)))" );
 
   racials->add_action( "arcane_torrent,if=runic_power.deficit>20&(cooldown.summon_gargoyle.remains<gcd&time>15|!talent.summon_gargoyle.enabled|pet.gargoyle.active&rune<2&debuff.festering_wound.stack<1)", "Racials" );
   racials->add_action( "blood_fury,if=(buff.blood_fury.duration+3>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(pet.army_ghoul.active&pet.army_ghoul.remains<=buff.blood_fury.duration+3|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=buff.blood_fury.duration+3|active_enemies>=2&death_and_decay.ticking)|fight_remains<=buff.blood_fury.duration+3" );
@@ -476,13 +475,16 @@ void unholy( player_t* p )
   racials->add_action( "bag_of_tricks,if=active_enemies=1&(buff.unholy_strength.up|fight_remains<5)" );
 
   st->add_action( "festering_strike,if=cooldown.apocalypse.remains<variable.apoc_timing&buff.vampiric_strike.react&debuff.festering_wound.stack<=4&buff.essence_of_the_blood_queen.remains<=3", "Single Target" );
+  st->add_action( "soul_reaper,target_if=target.time_to_pct_35<5&target.time_to_die>5,if=!talent.vampiric_strike" );
   st->add_action( "wound_spender,if=buff.vampiric_strike.react&cooldown.apocalypse.remains>variable.apoc_timing&(buff.essence_of_the_blood_queen.remains<=3|buff.gift_of_the_sanlayn.remains<=4&buff.essence_of_the_blood_queen.remains<18|buff.essence_of_the_blood_queen.stack<5+(2*talent.frenzied_bloodthirst))" );
-  st->add_action( "death_coil,if=!variable.epidemic_priority&(!variable.pooling_runic_power&variable.spend_rp|fight_remains<10)" );
+  st->add_action( "death_coil,if=!variable.epidemic_priority&(!variable.pooling_runic_power&variable.spend_rp|fight_remains<10)&(!talent.vampiric_strike|!buff.vampiric_strike.react|!buff.gift_of_the_sanlayn.up|!debuff.festering_wound.up)" );
   st->add_action( "epidemic,if=variable.epidemic_priority&(!variable.pooling_runic_power&variable.spend_rp|fight_remains<10)" );
   st->add_action( "any_dnd,if=!death_and_decay.ticking&(active_enemies>=2|talent.unholy_ground&(pet.apoc_ghoul.active&pet.apoc_ghoul.remains>=13|pet.gargoyle.active&pet.gargoyle.remains>8|pet.army_ghoul.active&pet.army_ghoul.remains>8|!variable.pop_wounds&debuff.festering_wound.stack>=4)|talent.defile&(pet.gargoyle.active|pet.apoc_ghoul.active|pet.army_ghoul.active|buff.dark_transformation.up))&(death_knight.fwounded_targets=active_enemies|active_enemies=1)" );
   st->add_action( "festering_strike,if=buff.festering_scythe.react&debuff.festering_wound.stack<4" );
+  st->add_action( "soul_reaper,target_if=target.time_to_pct_35<5&target.time_to_die>5,if=talent.vampiric_strike&!buff.vampiric_strike.up" );
   st->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=variable.pop_wounds|active_enemies>=2&death_and_decay.ticking" );
   st->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!variable.pop_wounds&debuff.festering_wound.stack<4" );
+  st->add_action( "abomination_limb,if=talent.vampiric_strike&!buff.gift_of_the_sanlayn.up" );
   st->add_action( "death_coil" );
   st->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=!variable.pop_wounds&debuff.festering_wound.stack>=4" );
 
