@@ -2063,7 +2063,7 @@ struct trigger_atmospheric_exposure_t : public BASE
     BASE::impact( s );
 
     if ( action_t::result_is_hit( s->result ) )
-      BASE::td( s->target )->debuff.atmospheric_exposure->trigger();
+      BASE::td( s->target )->debuff.atmospheric_exposure->trigger( this );
   }
 };
 
@@ -12599,7 +12599,8 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   }
 
   debuff.atmospheric_exposure = make_debuff( source.talent.atmospheric_exposure.ok(),
-    *this, "atmospheric_exposure", source.spec.atmospheric_exposure );
+    *this, "atmospheric_exposure", source.spec.atmospheric_exposure )
+      ->set_trigger_spell( source.talent.atmospheric_exposure );
 
   debuff.bloodseeker_vines =
     make_debuff( source.talent.thriving_growth.ok(), *this, "bloodseeker_vines_debuff", source.spec.bloodseeker_vines )
