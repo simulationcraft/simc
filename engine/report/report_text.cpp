@@ -1106,7 +1106,6 @@ void print_truncated_guass_counts( std::ostream& os, const sim_t& sim )
   if ( auto c = sim.channel_lag.count() )        fmt::print( os, "  Channel Lag: {}", c );
   if ( auto c = sim.world_lag.count() )          fmt::print( os, "  World Lag: {}", c );
   if ( auto c = sim.default_aura_delay.count() ) fmt::print( os, "  Default Aura Delay: {}", c );
-  if ( auto c = sim.ready_lag.count() )          fmt::print( os, "  Ready Lag: {}", c );
 
   for ( auto p : sim.player_list )
   {
