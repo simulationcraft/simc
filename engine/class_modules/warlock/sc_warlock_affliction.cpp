@@ -912,64 +912,6 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, ut
   return nullptr;
 }
 
-void warlock_t::create_buffs_affliction()
-{
-  buffs.drain_life = make_buff( this, "drain_life" );
-  buffs.drain_life->quiet = true;
-
-  buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff )
-                        ->set_trigger_spell( talents.nightfall );
-
-  buffs.inevitable_demise = make_buff( this, "inevitable_demise", talents.inevitable_demise_buff )
-                                ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() );
-
-  buffs.soul_swap = make_buff( this, "soul_swap", talents.soul_swap_buff )
-                        ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
-                          {
-                            if ( cur == 0 )
-                            {
-                              ss_source = nullptr;
-                              soul_swap_state.corruption.action_copied = false;
-                              soul_swap_state.agony.action_copied = false;
-                              soul_swap_state.unstable_affliction.action_copied = false;
-                              soul_swap_state.siphon_life.action_copied = false;
-                              soul_swap_state.haunt.action_copied = false;
-                              soul_swap_state.soul_rot.action_copied = false;
-                              soul_swap_state.phantom_singularity.action_copied = false;
-                              soul_swap_state.vile_taint.action_copied = false;
-                            }
-                          } );
-
-  buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
-
-  buffs.haunted_soul = make_buff( this, "haunted_soul", talents.haunted_soul_buff )
-                           ->set_default_value( talents.haunted_soul_buff->effectN( 1 ).percent() );
-
-  buffs.active_haunts = make_buff( this, "active_haunts" )
-                            ->set_max_stack( 20 )
-                            ->set_stack_change_callback( [ this ]( buff_t*, int prev, int cur )
-                              {
-                                if ( talents.haunted_soul->ok() )
-                                {
-                                  if ( cur == 0 )
-                                    buffs.haunted_soul->expire();
-                                  else if ( cur > 0 && prev == 0 )
-                                    buffs.haunted_soul->trigger();
-                                }
-                              } );
-  buffs.active_haunts->quiet = true;
-
-  buffs.cruel_inspiration = make_buff( this, "cruel_inspiration", tier.cruel_inspiration )
-                                ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                                ->set_default_value_from_effect( 1 );
-
-  buffs.cruel_epiphany = make_buff( this, "cruel_epiphany", tier.cruel_epiphany )
-                             ->set_default_value_from_effect( 1 );
-
-  buffs.umbrafire_kindling = make_buff( this, "umbrafire_kindling", tier.umbrafire_kindling )
-                                 ->set_reverse( true );
-}
-
 void warlock_t::create_soul_swap_actions()
 {
   soul_swap_state.corruption.action = this->pass_corruption_action( this );

@@ -1544,97 +1544,6 @@ void warlock_t::create_pets()
   }
 }
 
-void warlock_t::create_buffs()
-{
-  player_t::create_buffs();
-
-  // Shared buffs
-  buffs.grimoire_of_sacrifice = make_buff( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice_buff )
-                                    ->set_chance( 1.0 );
-
-  buffs.demonic_synergy = make_buff( this, "demonic_synergy", talents.demonic_synergy )
-                              ->set_default_value( talents.grimoire_of_synergy->effectN( 2 ).percent() );
-
-  buffs.tormented_soul = make_buff( this, "tormented_soul", talents.tormented_soul_buff );
-
-  buffs.tormented_soul_generator = make_buff( this, "tormented_soul_generator" )
-                                       ->set_period( talents.summon_soulkeeper->effectN( 2 ).period() )
-                                       ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
-                                       ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                           buffs.tormented_soul->trigger();
-                                         } );
-  buffs.tormented_soul_generator->quiet = true;
-
-  buffs.inquisitors_gaze = make_buff( this, "inquisitors_gaze", talents.inquisitors_gaze_buff )
-                               ->set_period( 1_s )
-                               ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                 proc_actions.fel_barrage->execute_on_target( target );
-                               } );
-
-  buffs.soulburn = make_buff( this, "soulburn", talents.soulburn_buff );
-
-  buffs.pet_movement = make_buff( this, "pet_movement" )->set_max_stack( 100 );
-
-  // Affliction buffs
-  create_buffs_affliction();
-
-  buffs.soul_rot = make_buff(this, "soul_rot", talents.soul_rot)
-                       ->set_cooldown( 0_ms )
-                       ->set_duration( talents.soul_rot->duration() + sets->set( WARLOCK_AFFLICTION, T31, B2 )->effectN( 2 ).time_value() );
-
-  buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", talents.wrath_of_consumption_buff )
-                               ->set_default_value( talents.wrath_of_consumption->effectN( 2 ).percent() );
-
-  buffs.dark_harvest_haste = make_buff( this, "dark_harvest_haste", talents.dark_harvest_buff )
-                                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                                 ->set_default_value( talents.dark_harvest_buff->effectN( 1 ).percent() );
-
-  buffs.dark_harvest_crit = make_buff( this, "dark_harvest_crit", talents.dark_harvest_buff )
-                                ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                                ->set_default_value( talents.dark_harvest_buff->effectN( 2 ).percent() );
-
-  // Demonology buffs
-  create_buffs_demonology();
-
-  // Destruction buffs
-  create_buffs_destruction();
-
-  buffs.rolling_havoc = make_buff( this, "rolling_havoc", talents.rolling_havoc_buff )
-                            ->set_default_value( talents.rolling_havoc->effectN( 1 ).percent() )
-                            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-}
-
-//void warlock_t::init_items()
-//{
-//  player_t::init_items();
-//  
-//  set_bonus_type_e tier_to_enable;
-//  switch ( specialization() )
-//  {
-//    case WARLOCK_AFFLICTION:
-//      tier_to_enable = T31;
-//      break;
-//    case WARLOCK_DEMONOLOGY:
-//      tier_to_enable = T31;
-//      break;
-//    case WARLOCK_DESTRUCTION:
-//      tier_to_enable = T29;
-//      break;
-//    default:
-//      return;
-//  }
-//
-//  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
-//  {
-//    sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
-//  }
-//
-//  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
-//  {
-//    sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
-//  }
-//}
-
 void warlock_t::init_rng()
 {
   if ( specialization() == WARLOCK_AFFLICTION )
@@ -1689,29 +1598,29 @@ void warlock_t::init_procs()
   procs.inquisitors_gaze = get_proc( "inquisitors_gaze" );
 }
 
-void warlock_t::init_base_stats()
-{
-  if ( base.distance < 1.0 )
-    base.distance = 30.0;
-
-  player_t::init_base_stats();
-
-  base.attack_power_per_strength = 0.0;
-  base.attack_power_per_agility  = 0.0;
-  base.spell_power_per_intellect = 1.0;
-
-  resources.base[ RESOURCE_SOUL_SHARD ] = 5;
-
-  if ( default_pet.empty() )
-  {
-    if ( specialization() == WARLOCK_AFFLICTION )
-      default_pet = "imp";
-    else if ( specialization() == WARLOCK_DEMONOLOGY )
-      default_pet = "felguard";
-    else if ( specialization() == WARLOCK_DESTRUCTION )
-      default_pet = "imp";
-  }
-}
+//void warlock_t::init_base_stats()
+//{
+//  if ( base.distance < 1.0 )
+//    base.distance = 30.0;
+//
+//  player_t::init_base_stats();
+//
+//  base.attack_power_per_strength = 0.0;
+//  base.attack_power_per_agility  = 0.0;
+//  base.spell_power_per_intellect = 1.0;
+//
+//  resources.base[ RESOURCE_SOUL_SHARD ] = 5;
+//
+//  if ( default_pet.empty() )
+//  {
+//    if ( specialization() == WARLOCK_AFFLICTION )
+//      default_pet = "imp";
+//    else if ( specialization() == WARLOCK_DEMONOLOGY )
+//      default_pet = "felguard";
+//    else if ( specialization() == WARLOCK_DESTRUCTION )
+//      default_pet = "imp";
+//  }
+//}
 
 void warlock_t::init_assessors()
 {

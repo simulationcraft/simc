@@ -513,4 +513,302 @@ namespace warlock
     tier.flame_rift = find_spell( 423874 );
     tier.searing_bolt = find_spell( 423886 );
   }
+
+  void warlock_t::init_base_stats()
+  {
+    if ( base.distance < 1.0 )
+      base.distance = 30.0;
+
+    player_t::init_base_stats();
+
+    base.attack_power_per_strength = 0.0;
+    base.attack_power_per_agility  = 0.0;
+    base.spell_power_per_intellect = 1.0;
+
+    resources.base[ RESOURCE_SOUL_SHARD ] = 5;
+
+    if ( default_pet.empty() )
+    {
+      if ( specialization() == WARLOCK_AFFLICTION )
+        default_pet = "imp";
+      else if ( specialization() == WARLOCK_DEMONOLOGY )
+        default_pet = "felguard";
+      else if ( specialization() == WARLOCK_DESTRUCTION )
+        default_pet = "imp";
+    }
+  }
+
+  void warlock_t::create_buffs()
+  {
+    player_t::create_buffs();
+
+    // Shared buffs
+    buffs.grimoire_of_sacrifice = make_buff( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice_buff )
+                                      ->set_chance( 1.0 );
+
+    buffs.demonic_synergy = make_buff( this, "demonic_synergy", talents.demonic_synergy )
+                                ->set_default_value( talents.grimoire_of_synergy->effectN( 2 ).percent() );
+
+    buffs.tormented_soul = make_buff( this, "tormented_soul", talents.tormented_soul_buff );
+
+    buffs.tormented_soul_generator = make_buff( this, "tormented_soul_generator" )
+                                         ->set_period( talents.summon_soulkeeper->effectN( 2 ).period() )
+                                         ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+                                         ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                                             buffs.tormented_soul->trigger();
+                                           } );
+    buffs.tormented_soul_generator->quiet = true;
+
+    buffs.inquisitors_gaze = make_buff( this, "inquisitors_gaze", talents.inquisitors_gaze_buff )
+                                 ->set_period( 1_s )
+                                 ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                                   proc_actions.fel_barrage->execute_on_target( target );
+                                 } );
+
+    buffs.soulburn = make_buff( this, "soulburn", talents.soulburn_buff );
+
+    buffs.pet_movement = make_buff( this, "pet_movement" )->set_max_stack( 100 );
+
+    // Affliction buffs
+    create_buffs_affliction();
+
+    buffs.soul_rot = make_buff(this, "soul_rot", talents.soul_rot)
+                         ->set_cooldown( 0_ms )
+                         ->set_duration( talents.soul_rot->duration() + sets->set( WARLOCK_AFFLICTION, T31, B2 )->effectN( 2 ).time_value() );
+
+    buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", talents.wrath_of_consumption_buff )
+                                 ->set_default_value( talents.wrath_of_consumption->effectN( 2 ).percent() );
+
+    buffs.dark_harvest_haste = make_buff( this, "dark_harvest_haste", talents.dark_harvest_buff )
+                                   ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                   ->set_default_value( talents.dark_harvest_buff->effectN( 1 ).percent() );
+
+    buffs.dark_harvest_crit = make_buff( this, "dark_harvest_crit", talents.dark_harvest_buff )
+                                  ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                                  ->set_default_value( talents.dark_harvest_buff->effectN( 2 ).percent() );
+
+    // Demonology buffs
+    create_buffs_demonology();
+
+    // Destruction buffs
+    create_buffs_destruction();
+
+    buffs.rolling_havoc = make_buff( this, "rolling_havoc", talents.rolling_havoc_buff )
+                              ->set_default_value( talents.rolling_havoc->effectN( 1 ).percent() )
+                              ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+
+  void warlock_t::create_buffs_affliction()
+  {
+    buffs.drain_life = make_buff( this, "drain_life" );
+    buffs.drain_life->quiet = true;
+
+    buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff )
+                          ->set_trigger_spell( talents.nightfall );
+
+    buffs.inevitable_demise = make_buff( this, "inevitable_demise", talents.inevitable_demise_buff )
+                                  ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() );
+
+    buffs.soul_swap = make_buff( this, "soul_swap", talents.soul_swap_buff )
+                          ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
+                            {
+                              if ( cur == 0 )
+                              {
+                                ss_source = nullptr;
+                                soul_swap_state.corruption.action_copied = false;
+                                soul_swap_state.agony.action_copied = false;
+                                soul_swap_state.unstable_affliction.action_copied = false;
+                                soul_swap_state.siphon_life.action_copied = false;
+                                soul_swap_state.haunt.action_copied = false;
+                                soul_swap_state.soul_rot.action_copied = false;
+                                soul_swap_state.phantom_singularity.action_copied = false;
+                                soul_swap_state.vile_taint.action_copied = false;
+                              }
+                            } );
+
+    buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
+
+    buffs.haunted_soul = make_buff( this, "haunted_soul", talents.haunted_soul_buff )
+                             ->set_default_value( talents.haunted_soul_buff->effectN( 1 ).percent() );
+
+    buffs.active_haunts = make_buff( this, "active_haunts" )
+                              ->set_max_stack( 20 )
+                              ->set_stack_change_callback( [ this ]( buff_t*, int prev, int cur )
+                                {
+                                  if ( talents.haunted_soul->ok() )
+                                  {
+                                    if ( cur == 0 )
+                                      buffs.haunted_soul->expire();
+                                    else if ( cur > 0 && prev == 0 )
+                                      buffs.haunted_soul->trigger();
+                                  }
+                                } );
+    buffs.active_haunts->quiet = true;
+
+    buffs.cruel_inspiration = make_buff( this, "cruel_inspiration", tier.cruel_inspiration )
+                                  ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                  ->set_default_value_from_effect( 1 );
+
+    buffs.cruel_epiphany = make_buff( this, "cruel_epiphany", tier.cruel_epiphany )
+                               ->set_default_value_from_effect( 1 );
+
+    buffs.umbrafire_kindling = make_buff( this, "umbrafire_kindling", tier.umbrafire_kindling )
+                                   ->set_reverse( true );
+  }
+
+  void warlock_t::create_buffs_demonology()
+  {
+    buffs.demonic_core = make_buff( this, "demonic_core", min_version_check( VERSION_10_2_0 ) ? talents.demonic_core_buff : warlock_base.demonic_core_buff );
+
+    buffs.power_siphon = make_buff( this, "power_siphon", talents.power_siphon_buff )
+                             ->set_default_value_from_effect( 1 );
+
+    buffs.demonic_power = make_buff( this, "demonic_power", talents.demonic_power_buff )
+                              ->set_default_value_from_effect( 2 );
+
+    buffs.demonic_calling = make_buff( this, "demonic_calling", talents.demonic_calling_buff )
+                                ->set_chance( talents.demonic_calling->effectN( 3 ).percent() );
+
+    buffs.inner_demons = make_buff( this, "inner_demons", talents.inner_demons )
+                             ->set_period( talents.inner_demons->effectN( 1 ).period() )
+                             ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+                             ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                               warlock_pet_list.wild_imps.spawn();
+                               if ( !min_version_check( VERSION_10_2_0 ) && rng().roll( talents.inner_demons->effectN( 1 ).percent() ) )
+                               {
+                                 proc_actions.summon_random_demon->execute();
+                               }
+                             } );
+
+    buffs.nether_portal = make_buff( this, "nether_portal", talents.nether_portal_buff )
+                              ->set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
+                                if ( !sim->event_mgr.canceled && cur == 0 && talents.guldans_ambition.ok() )
+                                {
+                                  warlock_pet_list.pit_lords.spawn( talents.guldans_ambition_summon->duration(), 1u );
+                                };
+                              } );
+
+    buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", talents.dread_calling_buff )
+                              ->set_default_value( talents.dread_calling->effectN( 1 ).percent() );
+
+    buffs.shadows_bite = make_buff( this, "shadows_bite", talents.shadows_bite_buff )
+                             ->set_default_value( talents.shadows_bite->effectN( 1 ).percent() );
+
+    buffs.stolen_power_building = make_buff( this, "stolen_power_building", talents.stolen_power_stacking_buff )
+                                      ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
+                                      {
+                                        if ( cur == b->max_stack() )
+                                        {
+                                          make_event( sim, 0_ms, [ this, b ] { 
+                                            buffs.stolen_power_final->trigger();
+                                            b->expire();
+                                          } );
+                                        };
+                                      } );
+
+    buffs.stolen_power_final = make_buff( this, "stolen_power_final", talents.stolen_power_final_buff );
+
+    // TODO: This can be removed once 10.2 goes live
+    buffs.nether_portal_total = make_buff( this, "nether_portal_total" )
+                                    ->set_max_stack( !min_version_check( VERSION_10_2_0 ) ? talents.soul_glutton->max_stacks() : 1 )
+                                    ->set_refresh_behavior( buff_refresh_behavior::NONE );
+
+    buffs.demonic_servitude = make_buff( this, "demonic_servitude", talents.demonic_servitude )
+                                  ->set_default_value( talents.reign_of_tyranny->effectN( 2 ).percent() );  // TODO: temp fix for 10.2 PTR data
+
+    buffs.blazing_meteor = make_buff( this, "blazing_meteor", tier.blazing_meteor )
+                               ->set_default_value_from_effect( 1 );
+
+    buffs.rite_of_ruvaraad = make_buff( this, "rite_of_ruvaraad", tier.rite_of_ruvaraad )
+                                 ->set_default_value( tier.rite_of_ruvaraad->effectN( 1 ).percent() );
+
+    // Pet tracking buffs
+    buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
+
+    buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 8 )
+                          ->set_duration( talents.call_dreadstalkers_2->duration() );
+
+    buffs.vilefiend = make_buff( this, "vilefiend" )->set_max_stack( 1 )
+                      ->set_duration( talents.summon_vilefiend->duration() );
+
+    buffs.tyrant = make_buff( this, "tyrant" )->set_max_stack( 1 )
+                   ->set_duration( find_spell( 265187 )->duration() );
+
+    buffs.grimoire_felguard = make_buff( this, "grimoire_felguard" )->set_max_stack( 1 )
+                              ->set_duration( talents.grimoire_felguard->duration() );
+
+    buffs.prince_malchezaar = make_buff( this, "prince_malchezaar" )->set_max_stack( 1 );
+
+    buffs.eyes_of_guldan = make_buff( this, "eyes_of_guldan" )->set_max_stack( 4 );
+  }
+
+  void warlock_t::create_buffs_destruction()
+  {
+    // destruction buffs
+    buffs.backdraft = make_buff( this, "backdraft", talents.backdraft_buff );
+
+    buffs.reverse_entropy = make_buff( this, "reverse_entropy", talents.reverse_entropy_buff )
+                                ->set_default_value_from_effect( 1 )
+                                ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                ->set_trigger_spell( talents.reverse_entropy )
+                                ->set_rppm( RPPM_NONE, talents.reverse_entropy->real_ppm() );
+
+    buffs.rain_of_chaos = make_buff( this, "rain_of_chaos", talents.rain_of_chaos_buff );
+
+    buffs.impending_ruin = make_buff ( this, "impending_ruin", talents.impending_ruin_buff )
+                               ->set_max_stack( talents.impending_ruin_buff->max_stacks() + as<int>( talents.master_ritualist->effectN( 2 ).base_value() ) )
+                               ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
+                                 {
+                                   if ( cur == b->max_stack() )
+                                   {
+                                     make_event( sim, 0_ms, [ this, b ] { 
+                                       buffs.ritual_of_ruin->trigger();
+                                       b->expire();
+                                       });
+                                   };
+                                 });
+
+    buffs.ritual_of_ruin = make_buff ( this, "ritual_of_ruin", talents.ritual_of_ruin_buff );
+
+    buffs.conflagration_of_chaos_cf = make_buff( this, "conflagration_of_chaos_cf", talents.conflagration_of_chaos_cf )
+                                          ->set_default_value_from_effect( 1 );
+
+    buffs.conflagration_of_chaos_sb = make_buff( this, "conflagration_of_chaos_sb", talents.conflagration_of_chaos_sb )
+                                          ->set_default_value_from_effect( 1 );
+
+    buffs.flashpoint = make_buff( this, "flashpoint", talents.flashpoint_buff )
+                           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                           ->set_default_value( talents.flashpoint->effectN( 1 ).percent() );
+
+    buffs.crashing_chaos = make_buff( this, "crashing_chaos", talents.crashing_chaos_buff )
+                                 ->set_max_stack( std::max( as<int>( talents.crashing_chaos->effectN( 3 ).base_value() ), 1 ) )
+                                 ->set_reverse( true );
+
+    buffs.power_overwhelming = make_buff( this, "power_overwhelming", talents.power_overwhelming_buff )
+                                   ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+                                   ->set_default_value( talents.power_overwhelming->effectN( 2 ).base_value() / 10.0 )
+                                   ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+    buffs.madness_cb = make_buff( this, "madness_cb", talents.madness_cb )
+                           ->set_default_value( talents.madness_of_the_azjaqir->effectN( 1 ).percent() );
+
+    buffs.madness_rof = make_buff( this, "madness_rof", talents.madness_rof )
+                            ->set_default_value( talents.madness_of_the_azjaqir->effectN( 1 ).percent() );
+
+    buffs.madness_sb = make_buff( this, "madness_sb", talents.madness_sb )
+                           ->set_default_value( talents.madness_of_the_azjaqir->effectN( 1 ).percent() );
+
+    buffs.madness_rof_snapshot = make_buff( this, "madness_rof_snapshot" );
+
+    buffs.burn_to_ashes = make_buff( this, "burn_to_ashes", talents.burn_to_ashes_buff )
+                              ->set_default_value( talents.burn_to_ashes->effectN( 1 ).percent() );
+
+    buffs.chaos_maelstrom = make_buff( this, "chaos_maelstrom", tier.chaos_maelstrom )
+                                ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                                ->set_default_value_from_effect( 1 );
+
+    buffs.umbrafire_embers = make_buff( this, "umbrafire_embers", tier.umbrafire_embers )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+  }
 }
