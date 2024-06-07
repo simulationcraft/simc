@@ -1548,30 +1548,6 @@ void warlock_t::init_rng()
   player_t::init_rng();
 }
 
-//void warlock_t::init_base_stats()
-//{
-//  if ( base.distance < 1.0 )
-//    base.distance = 30.0;
-//
-//  player_t::init_base_stats();
-//
-//  base.attack_power_per_strength = 0.0;
-//  base.attack_power_per_agility  = 0.0;
-//  base.spell_power_per_intellect = 1.0;
-//
-//  resources.base[ RESOURCE_SOUL_SHARD ] = 5;
-//
-//  if ( default_pet.empty() )
-//  {
-//    if ( specialization() == WARLOCK_AFFLICTION )
-//      default_pet = "imp";
-//    else if ( specialization() == WARLOCK_DEMONOLOGY )
-//      default_pet = "felguard";
-//    else if ( specialization() == WARLOCK_DESTRUCTION )
-//      default_pet = "imp";
-//  }
-//}
-
 void warlock_t::init_assessors()
 {
   player_t::init_assessors();
