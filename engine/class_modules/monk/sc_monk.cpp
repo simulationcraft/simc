@@ -1482,8 +1482,7 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     double m = monk_melee_attack_t::composite_target_multiplier( target );
 
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-      if ( target != p()->target )
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) && target != p()->target )
         m *= p()->passives.t33_ww_4pc->effectN( 1 ).percent();
 
     return m;
