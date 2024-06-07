@@ -135,6 +135,9 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talent.shado_pan.one_versus_many );
   apply_affecting_aura( p()->talent.shado_pan.vigilant_watch );
 
+  // T33 Set Effects
+  //apply_affecting_aura( p()->sets->set( MONK_BREWMASTER, TWW1, B2 ) );
+
   /*
    * Temporary action-specific effects go here.
    * Does it apply a buff to a specific action?
@@ -142,6 +145,11 @@ void monk_action_t<Base>::apply_buff_effects()
    */
   parse_effects( p()->buff.press_the_advantage );
   parse_effects( p()->buff.bok_proc );
+
+  // T33 Set Effects
+  parse_effects( p()->buff.tiger_strikes );
+  parse_effects( p()->buff.tigers_ferocity );
+  //parse_effects( p()->buff.flow_of_battle );
 }
 
 // Action-related parsing of debuffs. Does not work on spells
@@ -152,7 +160,8 @@ void monk_action_t<Base>::apply_buff_effects()
 template <class Base>
 void monk_action_t<Base>::apply_debuff_effects()
 {
-  //    parse_target_effects( []( actor_target_data_t* t ) { return static_cast<monk_td_t*>( t )->debuffs.weapons_of_order->check(); },
+  //    parse_target_effects( []( actor_target_data_t* t ) { return static_cast<monk_td_t*>( t
+  //    )->debuffs.weapons_of_order->check(); },
   //                          p()->shared.weapons_of_order ); // True, true
 }
 
@@ -671,6 +680,10 @@ void monk_action_t<Base>::impact( action_state_t *s )
                                s->action->id, s->result_amount, amt );
       }
     }
+
+    // T33 Windwalker 2PC
+    if ( p()->buff.tiger_strikes->up() && base_t::data().affected_by( p()->buff.tiger_strikes->data().effectN( 1 ) ) )
+      p()->buff.tiger_strikes->decrement();
   }
 }
 
@@ -1163,7 +1176,8 @@ struct storm_earth_and_fire_t : public monk_spell_t
     if ( p()->talent.windwalker.ordered_elements.ok() )
     {
       p()->cooldown.rising_sun_kick->reset( true );
-      p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.ordered_elements->effectN( 2 ).base_value(), p()->gain.ordered_elements );
+      p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.ordered_elements->effectN( 2 ).base_value(),
+                          p()->gain.ordered_elements );
     }
   }
 };
@@ -1426,6 +1440,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
 // ==========================================================================
 // Tiger Palm
 // ==========================================================================
+
 // Tiger Palm base ability ===================================================
 struct tiger_palm_t : public monk_melee_attack_t
 {
@@ -1442,6 +1457,12 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
+    if ( p->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
+    {
+      aoe                 = -1;
+      reduced_aoe_targets = p->sets->set( MONK_WINDWALKER, TWW1, B4 )->effectN( 2 ).base_value();
+    }
+
     ww_mastery       = true;
     may_combo_strike = true;
     trigger_chiji    = true;
@@ -1454,6 +1475,17 @@ struct tiger_palm_t : public monk_melee_attack_t
       energize_type = action_energize::NONE;
 
     spell_power_mod.direct = 0.0;
+  }
+
+  double composite_target_multiplier( player_t *target ) const override
+  {
+    double m = monk_melee_attack_t::composite_target_multiplier( target );
+
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
+      if ( target != p()->target )
+        m *= p()->sets->set( MONK_WINDWALKER, TWW1, B4 )->effectN( 1 ).percent();
+
+    return m;
   }
 
   double action_multiplier() const override
@@ -1551,6 +1583,9 @@ struct tiger_palm_t : public monk_melee_attack_t
       p()->passive_actions.combat_wisdom_eh->execute();
       p()->buff.combat_wisdom->expire();
     }
+
+    // T33 Windwalker Set Bonus
+    p()->buff.tigers_ferocity->expire();
 
     face_palm      = false;
     blackout_combo = false;
@@ -1814,6 +1849,9 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
       p()->buff.ordered_elements->trigger();
+
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
+      p()->buff.tigers_ferocity->trigger();
   }
 };
 
@@ -2183,6 +2221,9 @@ struct blackout_kick_t : public monk_melee_attack_t
 
       if ( p()->talent.shado_pan.vigilant_watch->ok() )
         p()->buff.vigilant_watch->trigger();
+
+      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
+        p()->buff.tigers_ferocity->trigger();
     }
   }
 
@@ -2765,6 +2806,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
       p()->buff.whirling_dragon_punch->trigger();
     }
+
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
+      p()->buff.tigers_ferocity->trigger();
   }
 
   void last_tick( dot_t *dot ) override
@@ -2937,6 +2981,9 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     if ( p()->talent.windwalker.dance_of_chiji->ok() &&
          p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
       p()->buff.dance_of_chiji->trigger();
+
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
+      p()->buff.tigers_ferocity->trigger();
   }
 
   bool ready() override
@@ -3089,6 +3136,9 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
 
     if ( p()->talent.windwalker.rushing_jade_wind.ok() )
       p()->buff.rushing_jade_wind->trigger();
+
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
+      p()->buff.tigers_ferocity->trigger();
   }
 };
 
@@ -3278,7 +3328,7 @@ struct auto_attack_t : public monk_melee_attack_t
 
     ignore_false_positive = true;
     trigger_gcd           = timespan_t::zero();
-//    background            = true;
+    //    background            = true;
 
     p()->main_hand_attack                    = new melee_t( "melee_main_hand", player, sync_weapons );
     p()->main_hand_attack->weapon            = &( player->main_hand_weapon );
@@ -3294,7 +3344,7 @@ struct auto_attack_t : public monk_melee_attack_t
       p()->off_hand_attack                    = new melee_t( "melee_off_hand", player, sync_weapons, true );
       p()->off_hand_attack->weapon            = &( player->off_hand_weapon );
       p()->off_hand_attack->base_execute_time = player->off_hand_weapon.swing_time;
-      p()->off_hand_attack->id = 1;
+      p()->off_hand_attack->id                = 1;
 
       add_child( p()->off_hand_attack );
     }
@@ -6906,7 +6956,7 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
   }
   user_options.initial_chi =
-      talent.windwalker.combat_wisdom.ok() ? (int) talent.windwalker.combat_wisdom->effectN( 1 ).base_value() : 0;
+      talent.windwalker.combat_wisdom.ok() ? (int)talent.windwalker.combat_wisdom->effectN( 1 ).base_value() : 0;
   user_options.chi_burst_healing_targets = 8;
   user_options.motc_override             = 0;
   user_options.squirm_frequency          = 15;
@@ -7877,7 +7927,7 @@ void monk_t::init_spells()
   // Returns first valid spell in argument list, pass highest priority to first argument
   // Returns spell_data_t::not_found() if none are valid
   auto _priority = []( auto... spell_list ) {
-    for ( const auto& spell : { spell_list... } )
+    for ( const auto &spell : { spell_list... } )
       if ( spell && spell->ok() )
         return spell.spell();
     return spell_data_t::not_found();
@@ -8235,6 +8285,15 @@ void monk_t::create_buffs()
                      ->set_duration_multiplier( 3 )
                      ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
+  buff.tiger_strikes = make_buff( this, "tiger_strikes", find_spell( 454485 ) )
+                           ->set_trigger_spell( sets->set( MONK_WINDWALKER, TWW1, B2 ) );
+
+  buff.tigers_ferocity = make_buff( this, "tigers_ferocity", find_spell( 454502 ) )
+                             ->set_trigger_spell( sets->set( MONK_WINDWALKER, TWW1, B4 ) );
+
+  buff.flow_of_battle = make_buff( this, "flow_of_battle", find_spell( 457257 ) )
+                            ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );
+
   buff.weapons_of_order = make_buff( this, "weapons_of_order", find_spell( 310454 ) )
                               ->set_trigger_spell( talent.brewmaster.weapons_of_order )
                               ->set_default_value( find_spell( 310454 )->effectN( 1 ).base_value() )
@@ -8561,7 +8620,7 @@ void monk_t::create_proc_callback( const spell_data_t *effect_driver,
   {
     // If we didn't define a custom action in initialization then
     // search action list for the first trigger we have a valid action for
-    for ( const auto& e : effect_driver->effects() )
+    for ( const auto &e : effect_driver->effects() )
     {
       for ( auto t : action_list )
         if ( e.trigger()->ok() && t->id == e.trigger()->id() )
@@ -8614,7 +8673,7 @@ void monk_t::create_proc_callback( const spell_data_t *effect_driver,
   // dynamically find buff
   if ( effect->name_str == "" )
   {
-    for ( const auto& e : effect_driver->effects() )
+    for ( const auto &e : effect_driver->effects() )
     {
       for ( auto t : buff_list )
       {
@@ -8824,7 +8883,7 @@ void monk_t::reset()
     auto stream = sim->out_debug.raw().get_stream();
     bool first  = true;
 
-    for ( auto& [ name, list ] : proc_tracking )
+    for ( auto &[ name, list ] : proc_tracking )
     {
       if ( list.size() > 0 )
       {

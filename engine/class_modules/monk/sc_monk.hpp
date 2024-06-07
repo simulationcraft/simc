@@ -651,6 +651,11 @@ public:
     propagate_const<buff_t *> brewmaster_t31_4p_accumulator;
     propagate_const<buff_t *> brewmaster_t31_4p_fake_absorb;
     propagate_const<buff_t *> blackout_reinforcement;
+
+    // T32 Set Bonus
+    propagate_const<buff_t *> tiger_strikes;
+    propagate_const<buff_t *> tigers_ferocity;
+    propagate_const<buff_t *> flow_of_battle;
   } buff;
 
 public:
