@@ -1462,7 +1462,7 @@ void skarmorak_shard( special_effect_t& e )
   auto on_kill_buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 449792 ) )
                           ->add_stat_from_effect_type( A_MOD_RATING, e.player->find_spell( 449792 )->effectN( 1 ).average( e.item ) );
 
-  e.player->register_on_kill_callback( [ e, on_kill_buff ]( player_t* t ) {
+  e.player->register_on_kill_callback( [ e, on_kill_buff ]( player_t* ) {
     if ( !e.player->sim->event_mgr.canceled )
       on_kill_buff->trigger();
   } );
@@ -1707,7 +1707,7 @@ void arakara_sacbrood( special_effect_t& e )
   spiderling_cb->initialize();
   spiderling_cb->deactivate();
 
-  spiderling_buff->set_stack_change_callback( [ spiderling_cb ]( buff_t* b, int, int new_ ) {
+  spiderling_buff->set_stack_change_callback( [ spiderling_cb ]( buff_t*, int, int new_ ) {
     if ( new_ == 1 )
     {
       spiderling_cb->activate();
