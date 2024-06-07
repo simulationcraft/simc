@@ -1739,14 +1739,15 @@ void arakara_sacbrood( special_effect_t& e )
 // 447495 AoE damage
 void skyterrors_corrosive_organ( special_effect_t& e )
 {
-  struct volatile_acid_splash_t : public generic_aoe_proc_t
+  struct volatile_acid_splash_t : public generic_proc_t
   {
     action_t* dot;
     volatile_acid_splash_t( const special_effect_t& e, const spell_data_t* equip_driver, action_t* dot )
-      : generic_aoe_proc_t( e, "volatile_acid_splash", e.player->find_spell( 447495 ) ), dot( dot )
+      : generic_proc_t( e, "volatile_acid_splash", e.player->find_spell( 447495 ) ), dot( dot )
     {
-      background  = true;
-      aoe         = data().max_targets();
+      background       = true;
+      aoe              = data().max_targets();
+      split_aoe_damage = false;
       base_dd_min = base_dd_max = equip_driver->effectN( 2 ).average( e.item );
     }
 
@@ -1762,7 +1763,7 @@ void skyterrors_corrosive_organ( special_effect_t& e )
     // Doesnt hit the target that triggered the effect
     size_t available_targets( std::vector<player_t*>& tl ) const override
     {
-      generic_aoe_proc_t::available_targets( tl );
+      generic_proc_t::available_targets( tl );
 
       auto it = range::find( tl, target );
       if ( it != tl.end() )
