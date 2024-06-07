@@ -330,6 +330,9 @@ double stdnormal_inv( double p )
 
 void truncated_gauss_t::calculate_cdf()
 {
+#ifndef NDEBUG
+  _count++;
+#endif
   if ( !_cdf_set )
   {
     auto _mean = static_cast<double>( timespan_t::to_native( mean ) );

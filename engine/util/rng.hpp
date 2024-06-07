@@ -37,6 +37,9 @@ private:
   double _min_cdf = 0.0;
   double _max_cdf = 0.0;
   bool _cdf_set = false;
+#ifndef NDEBUG
+  size_t _count = 0;
+#endif
 
 public:
   timespan_t mean;
@@ -51,6 +54,9 @@ public:
   double min_cdf() const { return _min_cdf; }
   double max_cdf() const { return _max_cdf; }
   void calculate_cdf();
+#ifndef NDEBUG
+  size_t count() const { return _count; }
+#endif
 };
 
 /**\ingroup SC_RNG
