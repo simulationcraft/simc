@@ -1510,148 +1510,12 @@ void warlock_t::create_buffs_demonology()
   buffs.eyes_of_guldan = make_buff( this, "eyes_of_guldan" )->set_max_stack( 4 );
 }
 
-void warlock_t::init_spells_demonology()
+void warlock_t::create_demonology_proc_actions()
 {
-  // Talents
-  talents.call_dreadstalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Call Dreadstalkers" ); // Should be ID 104316
-  talents.call_dreadstalkers_2 = find_spell( 193332 ); // Duration data
-
-  talents.demonbolt = find_talent_spell( talent_tree::SPECIALIZATION, "Demonbolt" ); // Should be ID 264178
-
-  talents.demoniac = find_talent_spell( talent_tree::SPECIALIZATION, "Demoniac" ); // Should be ID 426115
-  talents.demonbolt_spell = find_spell( 264178 );
-  talents.demonic_core_spell = find_spell( 267102 );
-  talents.demonic_core_buff = find_spell( 264173 );
-
-  talents.dreadlash = find_talent_spell( talent_tree::SPECIALIZATION, "Dreadlash" ); // Should be ID 264078
-
-  talents.annihilan_training = find_talent_spell( talent_tree::SPECIALIZATION, "Annihilan Training" ); // Should be ID 386174
-  talents.annihilan_training_buff = find_spell( 386176 );
-
-  talents.demonic_knowledge = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Knowledge" ); // Should be ID 386185
-
-  talents.summon_vilefiend = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Vilefiend" ); // Should be ID 264119
-
-  talents.soul_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Strike" ); // Should be ID 264057. NOTE: Updated to 428344 in 10.2
-
-  talents.bilescourge_bombers = find_talent_spell( talent_tree::SPECIALIZATION, "Bilescourge Bombers" ); // Should be ID 267211
-  talents.bilescourge_bombers_aoe = find_spell( 267213 );
-
-  talents.demonic_strength = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Strength" ); // Should be ID 267171
-  
-  talents.the_houndmasters_stratagem = find_talent_spell( talent_tree::SPECIALIZATION, "The Houndmaster's Stratagem" ); // Should be ID 267170
-  talents.the_houndmasters_stratagem_debuff = find_spell( 270569 );
-
-  talents.implosion = find_talent_spell( talent_tree::SPECIALIZATION, "Implosion" ); // Should be ID 196277
-  talents.implosion_aoe = find_spell( 196278 );
-
-  talents.shadows_bite = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow's Bite" ); // Should be ID 387322
-  talents.shadows_bite_buff = find_spell( 272945 );
-
-  talents.fel_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Invocation" ); // Should be ID 428351
-
-  talents.carnivorous_stalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Stalkers" ); // Should be ID 386194
-
-  talents.shadow_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Invocation" ); // Should be ID 422054
-
-  talents.fel_and_steel = find_talent_spell( talent_tree::SPECIALIZATION, "Fel and Steel" ); // Should be ID 386200
-
-  talents.heavy_handed = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Handed" ); // Should be ID 416183
-
-  talents.power_siphon = find_talent_spell( talent_tree::SPECIALIZATION, "Power Siphon" ); // Should be ID 264130
-  talents.power_siphon_buff = find_spell( 334581 );
-
-  talents.malefic_impact = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Impact" ); // Should be ID 416341
-
-  talents.imperator = find_talent_spell( talent_tree::SPECIALIZATION, "Imp-erator" ); // Should be ID 416230
-
-  talents.grimoire_felguard = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire: Felguard" ); // Should be ID 111898
-
-  talents.bloodbound_imps = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodbound Imps" ); // Should be ID 387349
-
-  talents.spiteful_reconstitution = find_talent_spell( talent_tree::SPECIALIZATION, "Spiteful Reconstitution" ); // Should be ID 428394
-  
-  talents.inner_demons = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demons" ); // Should be ID 267216
-
-  talents.doom = find_talent_spell( talent_tree::SPECIALIZATION, "Doom" ); // Should be ID 603
-  
-  talents.demonic_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Calling" ); // Should be ID 205145
-  talents.demonic_calling_buff = find_spell( 205146 );
-
-  talents.fel_sunder = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Sunder" ); // Should be ID 387399
-  talents.fel_sunder_debuff = find_spell( 387402 );
-
-  talents.umbral_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Blaze" ); // Should be ID 405798
-  talents.umbral_blaze_dot = find_spell( 405802 );
-
-  talents.imp_gang_boss = find_talent_spell( talent_tree::SPECIALIZATION, "Imp Gang Boss" ); // Should be ID 387445
-
-  talents.kazaaks_final_curse = find_talent_spell( talent_tree::SPECIALIZATION, "Kazaak's Final Curse" ); // Should be ID 387483
-
-  talents.dread_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Calling" ); // Should be ID 387391
-  talents.dread_calling_buff = find_spell( 387393 );
-
-  talents.cavitation = find_talent_spell( talent_tree::SPECIALIZATION, "Cavitation" ); // Should be ID 416154
-
-  talents.nether_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Nether Portal" ); // Should be ID 267217
-  talents.nether_portal_buff = find_spell( 267218 );
-
-  talents.summon_demonic_tyrant = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Demonic Tyrant" ); // Should be ID 265187
-  talents.demonic_power_buff = find_spell( 265273 );
-
-  talents.antoran_armaments = find_talent_spell( talent_tree::SPECIALIZATION, "Antoran Armaments" ); // Should be ID 387494
-
-  talents.nerzhuls_volition = find_talent_spell( talent_tree::SPECIALIZATION, "Ner'zhul's Volition" ); // Should be ID 387526
-  talents.nerzhuls_volition_buff = find_spell( 421970 );
-
-  talents.stolen_power = find_talent_spell( talent_tree::SPECIALIZATION, "Stolen Power" ); // Should be ID 387602
-  talents.stolen_power_stacking_buff = find_spell( 387603 );
-  talents.stolen_power_final_buff = find_spell( 387604 );
-
-  talents.sacrificed_souls = find_talent_spell( talent_tree::SPECIALIZATION, "Sacrificed Souls" ); // Should be ID 267214
-
-  talents.soulbound_tyrant = find_talent_spell( talent_tree::SPECIALIZATION, "Soulbound Tyrant" ); // Should be ID 334585
-
-  talents.pact_of_the_imp_mother = find_talent_spell( talent_tree::SPECIALIZATION, "Pact of the Imp Mother" ); // Should be ID 387541
-
-  talents.the_expendables = find_talent_spell( talent_tree::SPECIALIZATION, "The Expendables" ); // Should be ID 387600
-
-  talents.infernal_command = find_talent_spell( talent_tree::SPECIALIZATION, "Infernal Command" ); // Should be ID 387549
-
-  talents.guldans_ambition = find_talent_spell( talent_tree::SPECIALIZATION, "Gul'dan's Ambition" ); // Should be ID 387578
-  talents.guldans_ambition_summon = find_spell( 387590 );
-  talents.soul_glutton = find_spell( 387595 );
-
-  talents.reign_of_tyranny = find_talent_spell( talent_tree::SPECIALIZATION, "Reign of Tyranny" ); // Should be ID 390173
-  talents.demonic_servitude = find_spell( 390193 );
-
-  talents.immutable_hatred = find_talent_spell( talent_tree::SPECIALIZATION, "Immutable Hatred" ); // Should be ID 405670
-
-  talents.guillotine = find_talent_spell( talent_tree::SPECIALIZATION, "Guillotine" ); // Should be ID 386833
-
-  // Additional Tier Set spell data
-
-  // T29 (Vault of the Incarnates)
-  tier.blazing_meteor = find_spell( 394776 );
-
-  // T30 (Aberrus, the Shadowed Crucible)
-  tier.rite_of_ruvaraad = find_spell( 409725 );
-
-  // T31 (Amirdrassil, the Dream's Hope)
-  tier.doom_brand = find_spell( 423585 );
-  tier.doom_brand_debuff = find_spell( 423583 );
-  tier.doom_brand_aoe = find_spell( 423584 );
-  tier.doom_bolt_volley = find_spell( 423734 );
-
   proc_actions.summon_random_demon = new actions_demonology::summon_random_demon_t( this );
   proc_actions.summon_nether_portal_demon = new actions_demonology::summon_random_demon_t( this, true );
   proc_actions.bilescourge_bombers_proc = new actions_demonology::bilescourge_bombers_proc_t( this );
   proc_actions.doom_brand_explosion = new actions_demonology::doom_brand_t( this );
-
-  // Initialize some default values for pet spawners
-  warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
-
-  warlock_pet_list.dreadstalkers.set_default_duration( talents.call_dreadstalkers_2->duration() );
 }
 
 void warlock_t::init_gains_demonology()
@@ -1677,6 +1541,11 @@ void warlock_t::init_procs_demonology()
   procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
   procs.blazing_meteor = get_proc( "blazing_meteor" );
   procs.doomfiend = get_proc( "doomfiend" );
+
+  //proc_actions.summon_random_demon = new actions_demonology::summon_random_demon_t( this );
+  //proc_actions.summon_nether_portal_demon = new actions_demonology::summon_random_demon_t( this, true );
+  //proc_actions.bilescourge_bombers_proc = new actions_demonology::bilescourge_bombers_proc_t( this );
+  //proc_actions.doom_brand_explosion = new actions_demonology::doom_brand_t( this );
 }
 
 }  // namespace warlock

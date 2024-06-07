@@ -1481,6 +1481,16 @@ void warlock_t::create_actions()
       create_soul_swap_actions();
   }
 
+  if ( specialization() == WARLOCK_DEMONOLOGY )
+  {
+    create_demonology_proc_actions();
+  }
+
+  if ( specialization() == WARLOCK_DESTRUCTION )
+  {
+    create_destruction_proc_actions();
+  }
+
   if ( talents.inquisitors_gaze->ok() )
     proc_actions.fel_barrage = new warlock::actions::fel_barrage_t( this );
 
@@ -1592,95 +1602,6 @@ void warlock_t::create_buffs()
   buffs.rolling_havoc = make_buff( this, "rolling_havoc", talents.rolling_havoc_buff )
                             ->set_default_value( talents.rolling_havoc->effectN( 1 ).percent() )
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-}
-
-void warlock_t::init_spells()
-{
-  player_t::init_spells();
-
-  version_10_2_0_data = find_spell( 422054 ); // For 10.2 version checking, new Shadow Invocation talent
-
-  // Automatic requirement checking and relevant .inc file (/engine/dbc/generated/):
-  // find_class_spell - active_spells.inc
-  // find_specialization_spell - specialization_spells.inc
-  // find_mastery_spell - mastery_spells.inc
-  // find_talent_spell - ??
-  //
-  // If there is no need to check whether a spell is known by the actor, can fall back on find_spell
-
-  // General
-  warlock_base.nethermancy = find_spell( 86091 );
-  warlock_base.drain_life = find_class_spell( "Drain Life" ); // Should be ID 234153
-  warlock_base.corruption = find_class_spell( "Corruption" ); // Should be ID 172, DoT info is in Effect 1's trigger (146739)
-  warlock_base.shadow_bolt = find_class_spell( "Shadow Bolt" ); // Should be ID 686, same for both Affliction and Demonology
-
-  // Affliction
-  warlock_base.agony = find_class_spell( "Agony" ); // Should be ID 980
-  warlock_base.agony_2 = find_spell( 231792 ); // Rank 2, +4 to max stacks
-  warlock_base.xavian_teachings = find_specialization_spell( "Xavian Teachings", WARLOCK_AFFLICTION ); // Instant cast corruption and direct damage. Direct damage is in the base corruption spell on effect 3. Should be ID 317031.
-  warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION ); // Should be ID 77215
-  warlock_base.affliction_warlock = find_specialization_spell( "Affliction Warlock", WARLOCK_AFFLICTION ); // Should be ID 137043
-
-  // Demonology
-  warlock_base.hand_of_guldan = find_class_spell( "Hand of Gul'dan" ); // Should be ID 105174
-  warlock_base.hog_impact = find_spell( 86040 ); // Contains impact damage data
-  warlock_base.wild_imp = find_spell( 104317 ); // Contains pet summoning information
-  warlock_base.fel_firebolt_2 = find_spell( 334591 ); // 20% cost reduction for Wild Imps
-  warlock_base.demonic_core = find_specialization_spell( "Demonic Core" ); // Should be ID 267102
-  warlock_base.demonic_core_buff = find_spell( 264173 ); // Buff data
-  warlock_base.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY ); // Should be ID 77219
-  warlock_base.demonology_warlock = find_specialization_spell( "Demonology Warlock", WARLOCK_DEMONOLOGY ); // Should be ID 137044
-
-  // Destruction
-  warlock_base.immolate = find_class_spell( "Immolate" ); // Should be ID 348, contains direct damage and cast data
-  warlock_base.immolate_dot = find_spell( 157736 ); // DoT data
-  warlock_base.incinerate = find_class_spell( "Incinerate" ); // Should be ID 29722
-  warlock_base.incinerate_energize = find_spell( 244670 ); // Used for resource gain information
-  warlock_base.chaotic_energies = find_mastery_spell( WARLOCK_DESTRUCTION ); // Should be ID 77220
-  warlock_base.destruction_warlock = find_specialization_spell( "Destruction Warlock", WARLOCK_DESTRUCTION ); // Should be ID 137046
-
-  warlock_t::init_spells_affliction();
-  warlock_t::init_spells_demonology();
-  warlock_t::init_spells_destruction();
-
-  // Talents
-  talents.seed_of_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Seed of Corruption" ); // Should be ID 27243
-  talents.seed_of_corruption_aoe = find_spell( 27285 ); // Explosion damage
-
-  talents.grimoire_of_sacrifice = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire of Sacrifice" ); // Aff/Destro only. Should be ID 108503
-  talents.grimoire_of_sacrifice_buff = find_spell( 196099 ); // Buff data and RPPM
-  talents.grimoire_of_sacrifice_proc = find_spell( 196100 ); // Damage data
-
-  talents.grand_warlocks_design = find_talent_spell( talent_tree::SPECIALIZATION, "Grand Warlock's Design" ); // All 3 specs. Should be ID 387084
-
-  talents.havoc = find_talent_spell( talent_tree::SPECIALIZATION, "Havoc" ); // Should be spell 80240
-  talents.havoc_debuff = find_spell( 80240 );
-
-  talents.demonic_inspiration = find_talent_spell( talent_tree::CLASS, "Demonic Inspiration" ); // Should be ID 386858
-
-  talents.wrathful_minion = find_talent_spell( talent_tree::CLASS, "Wrathful Minion" ); // Should be ID 386864
-
-  talents.grimoire_of_synergy = find_talent_spell( talent_tree::CLASS, "Grimoire of Synergy" ); // Should be ID 171975
-  talents.demonic_synergy = find_spell( 171982 );
-
-  talents.socrethars_guile   = find_talent_spell( talent_tree::CLASS, "Socrethar's Guile" ); // Should be ID 405936 //405955
-  talents.sargerei_technique = find_talent_spell( talent_tree::CLASS, "Sargerei Technique" );  // Should be ID 405955
-
-  talents.soul_conduit = find_talent_spell( talent_tree::CLASS, "Soul Conduit" ); // Should be ID 215941
-
-  talents.grim_feast = find_talent_spell( talent_tree::CLASS, "Grim Feast" ); // Should be ID 386689
-
-  talents.summon_soulkeeper = find_talent_spell( talent_tree::CLASS, "Summon Soulkeeper" ); // Should be ID 386244
-  talents.summon_soulkeeper_aoe = find_spell( 386256 );
-  talents.tormented_soul_buff = find_spell( 386251 );
-  talents.soul_combustion = find_spell( 386265 );
-
-  talents.inquisitors_gaze = find_talent_spell( talent_tree::CLASS, "Inquisitor's Gaze" ); // Should be ID 386344
-  talents.inquisitors_gaze_buff = find_spell( 388068 );
-  talents.fel_barrage = find_spell( 388070 );
-
-  talents.soulburn = find_talent_spell( talent_tree::CLASS, "Soulburn" ); // Should be ID 385899
-  talents.soulburn_buff = find_spell( 387626 );
 }
 
 void warlock_t::init_items()
