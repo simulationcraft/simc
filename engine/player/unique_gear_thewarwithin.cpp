@@ -1670,23 +1670,27 @@ void opressive_orators_larynx( special_effect_t& e )
 // 443541 Driver
 // 452146 Buff
 // 452226 Spiderling Buff
+// 452227 Spiderfling Missile
 // 452229 Damage
 void arakara_sacbrood( special_effect_t& e )
 {
   struct spiderfling_cb_t : public dbc_proc_callback_t
   {
     action_t* damage;
+    action_t* missile;
     buff_t* buff;
     spiderfling_cb_t( const special_effect_t& e, buff_t* buff )
-      : dbc_proc_callback_t( e.player, e ), damage( nullptr ), buff( buff )
+      : dbc_proc_callback_t( e.player, e ), damage( nullptr ), missile( nullptr ), buff( buff )
     {
-      damage          = create_proc_action<generic_proc_t>( "spidersting", e, e.player->find_spell( 452229 ) );
-      damage->base_td = e.player->find_spell( 443541 )->effectN( 2 ).average( e.item );
+      damage                 = create_proc_action<generic_proc_t>( "spidersting", e, e.player->find_spell( 452229 ) );
+      damage->base_td        = e.player->find_spell( 443541 )->effectN( 2 ).average( e.item );
+      missile                = create_proc_action<generic_proc_t>( "spiderfling", e, e.player->find_spell( 452227 ) );
+      missile->impact_action = damage;
     }
 
     void execute( action_t*, action_state_t* s ) override
     {
-      damage->execute_on_target( s->target );
+      missile->execute_on_target( s->target );
       buff->decrement();
     }
   };
