@@ -404,6 +404,10 @@ timespan_t basic_rng_t<Engine>::exgauss( timespan_t mean, timespan_t stddev, tim
 template <typename Engine>
 timespan_t basic_rng_t<Engine>::gauss( gauss_t& g )
 {
+  assert( g.stddev >= 0_ms && "Stddev must be non-negative." );
+  if ( g.stddev == 0_ms )
+    return g.mean;
+
   g.calculate_cdf();
   
   double rescaled = g.min_cdf() + real() * ( g.max_cdf() - g.min_cdf() );
@@ -421,6 +425,9 @@ template <typename Engine>
 template <unsigned MEAN, unsigned STDDEV>
 timespan_t basic_rng_t<Engine>::gauss()
 {
+  if ( STDDEV == 0 )
+    return timespan_t::from_native( MEAN );
+
   static constexpr auto mean = timespan_t::from_native( MEAN );
   static constexpr auto stddev = timespan_t::from_native( STDDEV );
 
