@@ -820,6 +820,19 @@ namespace warlock
     }
   }
 
+  pet_t* warlock_t::create_pet( util::string_view pet_name, util::string_view pet_type )
+  {
+    pet_t* p = find_pet( pet_name );
+    if ( p )
+      return p;
+
+    pet_t* summon_pet = create_main_pet( pet_name, pet_type );
+    if ( summon_pet )
+      return summon_pet;
+
+    return nullptr;
+  }
+
   void warlock_t::init_gains()
   {
     player_t::init_gains();
@@ -950,5 +963,90 @@ namespace warlock
     // TOCHECK: 15% chance is what is listed in spell data but during SL this was presumed to use deck of cards at 3 out of 20
     // May need rechecking in DF
     rain_of_chaos_rng = get_shuffled_rng( "rain_of_chaos", 3, 20 );
+  }
+
+  void warlock_t::init_resources( bool force )
+  {
+    player_t::init_resources( force );
+
+    resources.current[ RESOURCE_SOUL_SHARD ] = initial_soul_shards;
+  }
+
+  void warlock_t::init_action_list()
+  {
+    if ( action_list_str.empty() )
+    {
+      clear_action_priority_lists();
+
+      switch ( specialization() )
+      {
+      case WARLOCK_AFFLICTION:
+        warlock_apl::affliction( this );
+        break;
+      case WARLOCK_DEMONOLOGY:
+        warlock_apl::demonology( this );
+        break;
+      case WARLOCK_DESTRUCTION:
+        warlock_apl::destruction( this );
+        break;
+      default:
+        break;
+      }
+
+      use_default_action_list = true;
+    }
+
+    player_t::init_action_list();
+  }
+
+  void warlock_t::create_options()
+  {
+    player_t::create_options();
+
+    add_option( opt_int( "soul_shards", initial_soul_shards ) );
+    add_option( opt_string( "default_pet", default_pet ) );
+    add_option( opt_bool( "disable_felstorm", disable_auto_felstorm ) );
+  }
+
+  void warlock_t::combat_begin()
+  {
+    player_t::combat_begin();
+
+    if ( talents.summon_soulkeeper->ok() )
+      buffs.tormented_soul_generator->trigger();
+
+    if ( specialization() == WARLOCK_DEMONOLOGY && buffs.inner_demons && talents.inner_demons->ok() )
+      buffs.inner_demons->trigger();
+  }
+
+  void warlock_t::reset()
+  {
+    player_t::reset();
+
+    range::for_each( sim->target_list, [ this ]( const player_t* t ) {
+      if ( auto td = target_data[ t ] )
+      {
+        td->reset();
+      }
+
+      range::for_each( t->pet_list, [ this ]( const player_t* add ) {
+        if ( auto td = target_data[ add ] )
+        {
+          td->reset();
+        }
+      } );
+    } );
+
+    warlock_pet_list.active            = nullptr;
+    havoc_target                       = nullptr;
+    ua_target                          = nullptr;
+    agony_accumulator                  = rng().range( 0.0, 0.99 );
+    corruption_accumulator             = rng().range( 0.0, 0.99 );
+    cdf_accumulator                    = rng().range( 0.0, 0.99 );
+    dimensional_accumulator            = rng().range( 0.0, 0.99 );
+    doom_brand_accumulator             = rng().range( 0.0, 0.99 );
+    incinerate_last_target_count       = 0;
+    shadow_invocation_proc_chance        = 0.2;
+    wild_imp_spawns.clear();
   }
 }
