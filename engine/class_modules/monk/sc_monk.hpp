@@ -1398,6 +1398,10 @@ public:
     const spell_data_t *charred_dreams_dmg;
     const spell_data_t *charred_dreams_heal;
     const spell_data_t *t31_celestial_brew;
+
+    // Tier 33
+    const spell_data_t *t33_ww_4pc;
+
   } passives;
 
   // RPPM objects
