@@ -1646,7 +1646,7 @@ void opressive_orators_larynx( special_effect_t& e )
 
   auto equip_driver = e.player->find_spell( 446787 );
   auto buff         = create_buff<stat_buff_t>( e.player, e.player->find_spell( 451011 ) )
-                  ->add_stat_from_effect_type( A_MOD_RATING, equip_driver->effectN( 1 ).average( e.item ) )
+                  ->add_stat_from_effect_type( A_MOD_STAT, equip_driver->effectN( 1 ).average( e.item ) )
                   ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   auto equip         = new special_effect_t( e.player );
@@ -1719,7 +1719,7 @@ void arakara_sacbrood( special_effect_t& e )
   } );
 
   auto buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 452146 ) )
-                  ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.item ) )
+                  ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e.item ) )
                   ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                   ->set_stack_change_callback( [ spiderling_buff ]( buff_t*, int old_, int new_ ) {
                     if ( old_ > new_ )
