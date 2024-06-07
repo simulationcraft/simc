@@ -1737,7 +1737,7 @@ struct sacred_weapon_t : public paladin_spell_t
    void execute() override
    {
     paladin_spell_t::execute();
-    player->buffs.sacred_weapon->trigger();
+    player->buffs.sacred_weapon->execute();
    }
 };
 
@@ -3865,7 +3865,6 @@ struct paladin_module_t : public module_t
                                       ->set_cooldown( 0_ms )
                                       ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
     p->buffs.sacred_weapon = make_buff( p, "sacred_weapon", p->find_spell( 432502 ) )
-                                 ->set_chance( 1.0 )
                                  ->set_stack_change_callback( []( buff_t* buff, int old, int )
                                    {
                                    if ( old && buff->source )
@@ -3964,7 +3963,12 @@ struct paladin_module_t : public module_t
       sacred_weapon_effect->name_str       = "sacred_weapon_cb";
       sacred_weapon_effect->type           = SPECIAL_EFFECT_EQUIP;
       sacred_weapon_effect->spell_id       = 432502;
-      sacred_weapon_effect->cooldown_      = p->find_spell( 328281 )->internal_cooldown();
+
+      // This needs further testing, these values are wrong for sure, they're hidden in spell data, though (previous iteration of spell data said 10 RPPM Hasted)
+      // It is currently proccing around 5 times too much
+      sacred_weapon_effect->ppm_           = 10.0;
+      sacred_weapon_effect->rppm_scale_    = RPPM_HASTE;
+
       sacred_weapon_effect->execute_action = sacred_weapon_proc;
       p->special_effects.push_back( sacred_weapon_effect );
 
