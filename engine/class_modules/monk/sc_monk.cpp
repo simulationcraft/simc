@@ -136,7 +136,7 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talent.shado_pan.vigilant_watch );
 
   // T33 Set Effects
-  //apply_affecting_aura( p()->sets->set( MONK_BREWMASTER, TWW1, B2 ) );
+  // apply_affecting_aura( p()->sets->set( MONK_BREWMASTER, TWW1, B2 ) );
 
   /*
    * Temporary action-specific effects go here.
@@ -149,7 +149,7 @@ void monk_action_t<Base>::apply_buff_effects()
   // T33 Set Effects
   parse_effects( p()->buff.tiger_strikes );
   parse_effects( p()->buff.tigers_ferocity );
-  //parse_effects( p()->buff.flow_of_battle );
+  // parse_effects( p()->buff.flow_of_battle );
 }
 
 // Action-related parsing of debuffs. Does not work on spells
@@ -1460,7 +1460,8 @@ struct tiger_palm_t : public monk_melee_attack_t
     if ( p->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
     {
       aoe                 = -1;
-      reduced_aoe_targets = p->sets->set( MONK_WINDWALKER, TWW1, B4 )->effectN( 2 ).base_value();
+      full_amount_targets = 1;
+      reduced_aoe_targets = p->passives.t33_ww_4pc->effectN( 2 ).base_value();
     }
 
     ww_mastery       = true;
@@ -1481,9 +1482,8 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     double m = monk_melee_attack_t::composite_target_multiplier( target );
 
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-      if ( target != p()->target )
-        m *= p()->sets->set( MONK_WINDWALKER, TWW1, B4 )->effectN( 1 ).percent();
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) && target != p()->target )
+        m *= p()->passives.t33_ww_4pc->effectN( 1 ).percent();
 
     return m;
   }
@@ -7913,6 +7913,9 @@ void monk_t::init_spells()
   passives.charred_dreams_dmg  = find_spell( 425299 );
   passives.charred_dreams_heal = find_spell( 425298 );
   passives.t31_celestial_brew  = find_spell( 425965 );
+
+  // Tier 33
+  passives.t33_ww_4pc = find_spell( 454505 );
 
   // Mastery spells =========================================
   mastery.combo_strikes   = find_mastery_spell( MONK_WINDWALKER );

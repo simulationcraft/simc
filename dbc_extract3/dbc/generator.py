@@ -2226,6 +2226,9 @@ class SpellDataGenerator(DataGenerator):
           ( 425299, 1 ), # BrM 2-piece Charred Dreams Damage
           ( 425965, 1 ), # BrM 4-piece Celestial Brew Guard
 
+          # Tier 33
+          ( 457271, 1 ), # BrM 4-piece Flow of Battle
+          
           # Shado-Pan
           ( 451021, 0 ), # Flurry Charge (Buff)
 
