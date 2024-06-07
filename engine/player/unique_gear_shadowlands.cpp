@@ -1477,21 +1477,21 @@ void anima_field_emitter( special_effect_t& effect )
 {
   struct anima_field_emitter_proc_t : public dbc_proc_callback_t
   {
-    timespan_t max_duration;
+    rng::gauss_t _duration;
 
-    anima_field_emitter_proc_t( const special_effect_t& e ) :
-      dbc_proc_callback_t( e.player, e ),
-      max_duration( effect.player->find_spell( 345534 )->duration() )
+    anima_field_emitter_proc_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        _duration( timespan_t::from_seconds( e.player->sim->shadowlands_opts.anima_field_emitter_mean ),
+                   timespan_t::from_seconds( e.player->sim->shadowlands_opts.anima_field_emitter_stddev ), 0_ms,
+                   e.player->find_spell( 345534 )->duration() )
     { }
 
     void execute( action_t*, action_state_t* ) override
     {
-      timespan_t buff_duration = max_duration;
-      if ( listener->sim->shadowlands_opts.anima_field_emitter_mean != std::numeric_limits<double>::max() )
+      timespan_t buff_duration = _duration.max;
+      if ( _duration.mean != 0_ms )
       {
-        buff_duration = timespan_t::from_seconds( listener->sim->rng().gauss_ab( listener->sim->shadowlands_opts.anima_field_emitter_mean,
-                                                                                  listener->sim->shadowlands_opts.anima_field_emitter_stddev,
-                                                                                 0.0, max_duration.total_seconds() ) );
+        buff_duration = listener->sim->rng().gauss( _duration );
       }
 
       if ( buff_duration > timespan_t::zero() )

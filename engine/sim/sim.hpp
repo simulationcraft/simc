@@ -389,8 +389,7 @@ struct sim_t : private sc_thread_t
     /// Chance player is getting overhealed by Gluttonous Spike proc.
     double gluttonous_spike_overheal_chance = 1.0;
     /// Anima Field Emitter buff duration distribution, defaults to full duration.
-    double anima_field_emitter_mean = std::numeric_limits<double>::max(),
-           anima_field_emitter_stddev = 0.0;
+    double anima_field_emitter_mean = 0.0, anima_field_emitter_stddev = 0.0;
     /// Retarget Shadowgrasp Totem if the use_item target demises after this many seconds
     timespan_t retarget_shadowgrasp_totem = 0_s;
     /// Sets the chance for the Inscrutable Quantum Device to give no stat buff outside Bloodlust
