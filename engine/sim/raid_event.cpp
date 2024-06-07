@@ -107,29 +107,28 @@ struct adds_event_t final : public raid_event_t
     }
 
     double overlap    = 1;
-    timespan_t min_cd = cooldown;
+    timespan_t min_cd = cooldown.mean;
 
-    if ( cooldown_stddev != timespan_t::zero() )
+    if ( cooldown.stddev != 0_ms )
     {
-      min_cd -= cooldown_stddev * 6;
-      if ( min_cd <= timespan_t::zero() )
+      min_cd -= cooldown.stddev * 6;
+      if ( min_cd <= 0_ms )
       {
         throw std::invalid_argument(
-            fmt::format( "the cooldown standard deviation ({}) is too large, "
-                         "creating a too short minimum cooldown ({})",
-                         cooldown_stddev, min_cd ) );
+            fmt::format( "the cooldown standard deviation ({}) is too large, creating a too short minimum cooldown ({})",
+                         cooldown.stddev, min_cd ) );
       }
     }
 
-    if ( min_cd > timespan_t::zero() )
-      overlap = duration / min_cd;
+    if ( min_cd > 0_ms )
+      overlap = duration.mean / min_cd;
 
     if ( overlap > 1 )
     {
       throw std::invalid_argument(
-          fmt::format( "does not support overlapping add spawning in a single raid event. "
-                       "Duration ({}) > reasonable minimum cooldown ({}).",
-                       duration, min_cd ) );
+          fmt::format( "does not support overlapping add spawning in a single raid event. Duration ({}) > reasonable "
+                       "minimum cooldown ({}).",
+                       duration.mean, min_cd ) );
     }
 
     if ( !race_str.empty() )
@@ -524,10 +523,10 @@ struct pull_event_t final : raid_event_t
     force_stop = true;
     first = last = timespan_t::min();
     first_pct = last_pct = -1.0;
-    cooldown = delay;
-    duration = timespan_t::max();
-    cooldown_stddev = cooldown_min = cooldown_max = timespan_t::zero();
-    duration_stddev = duration_min = duration_max = timespan_t::zero();
+    cooldown.mean = delay;
+    duration.mean = timespan_t::max();
+    cooldown.stddev = cooldown.min = cooldown.max = 0_ms;
+    duration.stddev = duration.min = duration.max = 0_ms;
 
     name = "Pull_" + util::to_string( pull );
 
@@ -1080,12 +1079,12 @@ struct movement_event_t final : public raid_event_t
     add_option( opt_float( "move_distance_max", move_distance_max ) );
     parse_options( options_str );
 
-    if ( duration > timespan_t::zero() )
+    if ( duration.mean > 0_ms )
     {
-      move_distance = duration.total_seconds() * avg_player_movement_speed;
+      move_distance = duration.mean.total_seconds() * avg_player_movement_speed;
     }
 
-    double cooldown_move = cooldown.total_seconds();
+    double cooldown_move = cooldown.mean.total_seconds();
     if ( ( move_distance / avg_player_movement_speed ) > cooldown_move )
     {
       sim->error(
@@ -1242,7 +1241,7 @@ struct damage_event_t final : public raid_event_t
     add_option( opt_string( "type", type_str ) );
     parse_options( options_str );
 
-    if ( duration != timespan_t::zero() )
+    if ( duration.mean != 0_ms )
     {
       throw std::invalid_argument( "Damage raid event does not allow a duration." );
     }
@@ -1262,7 +1261,7 @@ struct damage_event_t final : public raid_event_t
           school      = s;
           may_crit    = false;
           background  = true;
-          trigger_gcd = timespan_t::zero();
+          trigger_gcd = 0_ms;
         }
       };
 
@@ -1303,7 +1302,7 @@ struct heal_event_t final : public raid_event_t
     add_option( opt_float( "to_pct_range", to_pct_range ) );
     parse_options( options_str );
 
-    if ( duration != timespan_t::zero() )
+    if ( duration.mean != 0_ms )
     {
       throw std::invalid_argument( "Heal raid event does not allow a duration." );
     }
@@ -1320,7 +1319,7 @@ struct heal_event_t final : public raid_event_t
           school      = SCHOOL_HOLY;
           may_crit    = false;
           background  = true;
-          trigger_gcd = timespan_t::zero();
+          trigger_gcd = 0_ms;
         }
 
         bool has_amount_result() const override { return true; }
@@ -1383,7 +1382,7 @@ struct damage_taken_debuff_event_t final : public raid_event_t
     add_option( opt_int( "amount", amount ) );
     parse_options( options_str );
 
-    if ( duration != timespan_t::zero() )
+    if ( duration.mean != 0_ms )
     {
       throw std::invalid_argument( "Damage taken raid event does not allow a duration." );
     }
@@ -1467,7 +1466,7 @@ struct buff_raid_event_t final : public raid_event_t
 
       if ( b )
       {
-        b->trigger( stacks, duration > 0_ms ? duration : timespan_t::min() );
+        b->trigger( stacks, duration.mean > 0_ms ? duration.mean : timespan_t::min() );
       }
       else
       {
@@ -1645,14 +1644,8 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
     last( timespan_t::min() ),
     first_pct( -1.0 ),
     last_pct( -1.0 ),
-    cooldown( timespan_t::zero() ),
-    cooldown_stddev( timespan_t::zero() ),
-    cooldown_min( timespan_t::zero() ),
-    cooldown_max( timespan_t::zero() ),
-    duration( timespan_t::zero() ),
-    duration_stddev( timespan_t::zero() ),
-    duration_min( timespan_t::zero() ),
-    duration_max( timespan_t::zero() ),
+    cooldown( 0_ms, 0_ms, 0_ms, 0_ms ),
+    duration( 0_ms, 0_ms, 0_ms, 0_ms ),
     pull( 0 ),
     pull_target_str(),
     distance_min( 0 ),
@@ -1662,8 +1655,8 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
     player_chance( 1.0 ),
     affected_role( ROLE_NONE ),
     player_if_expr_str(),
-    saved_duration( timespan_t::zero() ),
-    saved_cooldown( timespan_t::zero() ),
+    saved_duration( 0_ms ),
+    saved_cooldown( 0_ms ),
     player_expressions(),
     is_up( false ),
     activation_status( activation_status_e::not_yet_activated ),
@@ -1673,18 +1666,18 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
     end_event()
 {
   add_option( opt_string( "name", name ) );
-  add_option( opt_timespan( "first", first, timespan_t::zero(), timespan_t::max() ) );
-  add_option( opt_timespan( "last", last, timespan_t::zero(), timespan_t::max() ) );
+  add_option( opt_timespan( "first", first, 0_ms, timespan_t::max() ) );
+  add_option( opt_timespan( "last", last, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "first_pct", first_pct, 0.0, 100 ) );
   add_option( opt_float( "last_pct", last_pct, 0.0, 100 ) );
-  add_option( opt_timespan( "cooldown", cooldown ) );
-  add_option( opt_timespan( "cooldown_stddev", cooldown_stddev ) );
-  add_option( opt_timespan( "cooldown_min", cooldown_min ) );
-  add_option( opt_timespan( "cooldown_max", cooldown_max ) );
-  add_option( opt_timespan( "duration", duration ) );
-  add_option( opt_timespan( "duration_stddev", duration_stddev ) );
-  add_option( opt_timespan( "duration_min", duration_min ) );
-  add_option( opt_timespan( "duration_max", duration_max ) );
+  add_option( opt_timespan( "cooldown", cooldown.mean ) );
+  add_option( opt_timespan( "cooldown_stddev", cooldown.stddev ) );
+  add_option( opt_timespan( "cooldown_min", cooldown.min ) );
+  add_option( opt_timespan( "cooldown_max", cooldown.max ) );
+  add_option( opt_timespan( "duration", duration.mean ) );
+  add_option( opt_timespan( "duration_stddev", duration.stddev ) );
+  add_option( opt_timespan( "duration_min", duration.min ) );
+  add_option( opt_timespan( "duration_max", duration.max ) );
   add_option( opt_bool( "players_only", players_only ) );
   add_option( opt_float( "player_chance", player_chance, 0.0, 1.0 ) );
   add_option( opt_float( "distance_min", distance_min ) );
@@ -1698,23 +1691,15 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
 
 timespan_t raid_event_t::cooldown_time()
 {
-  timespan_t time;
-
   if ( num_starts == 0 )
-  {
-    time = timespan_t::zero();
-  }
+    return 0_ms;
   else
-  {
-    time = sim->rng().gauss_ab( cooldown, cooldown_stddev, cooldown_min, cooldown_max );
-  }
-
-  return time;
+    return sim->rng().gauss( cooldown );
 }
 
 timespan_t raid_event_t::duration_time()
 {
-  return sim->rng().gauss_ab( duration, duration_stddev, duration_min, duration_max );
+  return sim->rng().gauss( duration );
 }
 
 timespan_t raid_event_t::next_time() const
@@ -1738,7 +1723,7 @@ timespan_t raid_event_t::until_next() const
   }
   if ( duration_event )
   {
-    return duration_event->remains() + cooldown;  // avg. estimate
+    return duration_event->remains() + cooldown.mean;  // avg. estimate
   }
 
   return timespan_t::max();
@@ -1914,7 +1899,7 @@ void raid_event_t::combat_begin()
 
   if ( type == "pull" )
   {
-    start_event = make_event<start_event_t>( *sim, *sim, this, cooldown, "pull spawned" );
+    start_event = make_event<start_event_t>( *sim, *sim, this, cooldown.mean, "pull spawned" );
     return;
   }
 
@@ -2194,11 +2179,11 @@ void raid_event_t::init( sim_t* sim )
     {
       auto raid_event = create( sim, name, options );
 
-      if ( raid_event->cooldown <= timespan_t::zero() && raid_event->type != "pull" )
+      if ( raid_event->cooldown.mean <= 0_ms && raid_event->type != "pull" )
       {
         throw std::invalid_argument( "Cooldown not set or negative." );
       }
-      if ( raid_event->cooldown <= raid_event->cooldown_stddev && raid_event->type != "pull" )
+      if ( raid_event->cooldown.mean <= raid_event->cooldown.stddev && raid_event->type != "pull" )
       {
         throw std::invalid_argument( "Cooldown lower than cooldown standard deviation." );
       }
@@ -2207,15 +2192,15 @@ void raid_event_t::init( sim_t* sim )
         throw std::invalid_argument( "DungeonRoute fight style is required for pull events." );
       }
 
-      if ( raid_event->cooldown_min == timespan_t::zero() )
-        raid_event->cooldown_min = raid_event->cooldown * 0.5;
-      if ( raid_event->cooldown_max == timespan_t::zero() )
-        raid_event->cooldown_max = raid_event->cooldown * 1.5;
+      if ( raid_event->cooldown.min == 0_ms )
+        raid_event->cooldown.min = raid_event->cooldown.mean * 0.5;
+      if ( raid_event->cooldown.max == 0_ms )
+        raid_event->cooldown.max = raid_event->cooldown.mean * 1.5;
 
-      if ( raid_event->duration_min == timespan_t::zero() )
-        raid_event->duration_min = raid_event->duration * 0.5;
-      if ( raid_event->duration_max == timespan_t::zero() )
-        raid_event->duration_max = raid_event->duration * 1.5;
+      if ( raid_event->duration.min == 0_ms )
+        raid_event->duration.min = raid_event->duration.mean * 0.5;
+      if ( raid_event->duration.max == 0_ms )
+        raid_event->duration.max = raid_event->duration.mean * 1.5;
 
       // Collect other raid events assigned to a pull.
       if ( raid_event->pull > 0 && raid_event->type != "pull" )
@@ -2381,18 +2366,20 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
   if ( filter == "in" )
   {
     if ( e->type == "pull" )
-      return ( up->remains() + e->cooldown ).total_seconds();
-    else if ( e->until_next() > timespan_t::zero() )
+      return ( up->remains() + e->cooldown.mean ).total_seconds();
+    else if ( e->until_next() > 0_ms )
       return e->until_next().total_seconds();
     else
       return timespan_t::max().total_seconds();
   }
 
   if ( filter == "duration" )
-    return e->saved_duration.total_seconds() != 0.0 ? e->saved_duration.total_seconds() : e->duration.total_seconds();
+    return e->saved_duration.total_seconds() != 0.0 ? e->saved_duration.total_seconds()
+                                                    : e->duration.mean.total_seconds();
 
   if ( filter == "cooldown" )
-    return e->saved_cooldown.total_seconds() != 0.0 ? e->saved_cooldown.total_seconds() : e->cooldown.total_seconds();
+    return e->saved_cooldown.total_seconds() != 0.0 ? e->saved_cooldown.total_seconds()
+                                                    : e->cooldown.mean.total_seconds();
 
   if ( filter == "distance" )
     return e->distance_max;

@@ -7,13 +7,14 @@
 
 #include "config.hpp"
 
-#include "sc_enums.hpp"
-#include "util/timespan.hpp"
-#include "util/generic.hpp"
-#include "util/string_view.hpp"
-#include "util/format.hpp"
-#include "util/io.hpp"
 #include "report/report_helper.hpp"
+#include "sc_enums.hpp"
+#include "util/format.hpp"
+#include "util/generic.hpp"
+#include "util/io.hpp"
+#include "util/rng.hpp"
+#include "util/string_view.hpp"
+#include "util/timespan.hpp"
 
 #include <cstdint>
 #include <memory>
@@ -36,14 +37,8 @@ public:
   int64_t num_starts;
   timespan_t first, last;
   double first_pct, last_pct;
-  timespan_t cooldown;
-  timespan_t cooldown_stddev;
-  timespan_t cooldown_min;
-  timespan_t cooldown_max;
-  timespan_t duration;
-  timespan_t duration_stddev;
-  timespan_t duration_min;
-  timespan_t duration_max;
+  rng::truncated_gauss_t cooldown;
+  rng::truncated_gauss_t duration;
   int pull;
   std::string pull_target_str;
 

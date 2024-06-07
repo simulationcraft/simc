@@ -1097,6 +1097,41 @@ void print_event_manager_infos( std::ostream& os, const sim_t& sim )
 #endif
 }
 
+#ifndef NDEBUG
+void print_truncated_guass_counts( std::ostream& os, const sim_t& sim )
+{
+  fmt::print( os, "\nTruncated Gaussian Counts:\n" );
+  if ( auto c = sim.queue_lag.count() )          fmt::print( os, "  Queue Lag: {}", c );
+  if ( auto c = sim.gcd_lag.count() )            fmt::print( os, "  GCD Lag: {}", c );
+  if ( auto c = sim.channel_lag.count() )        fmt::print( os, "  Channel Lag: {}", c );
+  if ( auto c = sim.world_lag.count() )          fmt::print( os, "  World Lag: {}", c );
+  if ( auto c = sim.default_aura_delay.count() ) fmt::print( os, "  Default Aura Delay: {}", c );
+
+  for ( auto p : sim.player_list )
+  {
+    auto player = p->reaction.count() + p->world_lag.count() + p->brain_lag.count();
+    size_t ability = 0;
+    for ( auto a : p->action_list )
+      ability += a->ability_lag.count();
+
+    if ( player + ability == 0 )
+      continue;
+
+    fmt::print( os, "\n  Player: {}", p->name() );
+    if ( auto c = p->reaction.count() )         fmt::print( os, "  Reaction: {}", c );
+    if ( auto c = p->world_lag.count() )        fmt::print( os, "  World Lag: {}", c );
+    if ( auto c = p->brain_lag.count() )        fmt::print( os, "  Brain Lag: {}", c );
+
+    if ( ability == 0 )
+      continue;
+
+    fmt::print( os, "  Ability Lag:\n" );
+    for ( auto a : p->action_list )
+      if ( auto c = a->ability_lag.count() )    fmt::print( os, "    {}: {}\n", a->name(), c );
+  }
+}
+#endif
+
 void print_collected_amount( std::ostream& os, const player_t& p, const std::string& name, const extended_sample_data_t& sd )
 {
   if ( sd.sum() <= 0.0 )
@@ -1287,6 +1322,9 @@ void print_text_report( std::ostream& os, sim_t* sim, bool detail )
     print_raid_scale_factors( os, sim );
     print_reference_dps( os, *sim );
     print_event_manager_infos( os, *sim );
+#ifndef NDEBUG
+    print_truncated_guass_counts( os, *sim );
+#endif
   }
 
   fmt::print( os, "\n" );

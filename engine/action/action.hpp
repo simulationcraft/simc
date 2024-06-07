@@ -6,19 +6,21 @@
 #pragma once
 
 #include "config.hpp"
+
 #include "dbc/data_definitions.hh"
 #include "player/target_specific.hpp"
-#include "sim/cooldown_waste_data.hpp"
 #include "sc_enums.hpp"
-#include "util/timespan.hpp"
-#include "util/generic.hpp"
-#include "util/string_view.hpp"
+#include "sim/cooldown_waste_data.hpp"
 #include "util/format.hpp"
+#include "util/generic.hpp"
+#include "util/rng.hpp"
+#include "util/string_view.hpp"
+#include "util/timespan.hpp"
 
 #include <array>
-#include <vector>
 #include <memory>
 #include <string>
+#include <vector>
 
 struct action_priority_t;
 struct action_priority_list_t;
@@ -36,9 +38,6 @@ struct option_t;
 struct sim_t;
 struct player_t;
 struct proc_t;
-namespace rng {
-  struct rng_t;
-}
 struct spelleffect_data_t;
 struct stats_t;
 struct travel_event_t;
@@ -282,7 +281,7 @@ public:
   dot_behavior_e dot_behavior;
 
   /// Ability specific extra player ready delay
-  timespan_t ability_lag, ability_lag_stddev;
+  rng::truncated_gauss_t ability_lag;
 
   /// The minimum gcd triggered no matter the haste.
   timespan_t min_gcd;

@@ -464,15 +464,15 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
              "<th>World Lag:</th>\n"
              "<td>%.0f ms ( stddev = %.0f ms )</td>\n"
              "</tr>\n",
-             as<double>( sim.world_lag.total_millis() ),
-             as<double>( sim.world_lag_stddev.total_millis() ) );
+             as<double>( sim.world_lag.mean.total_millis() ),
+             as<double>( sim.world_lag.stddev.total_millis() ) );
 
   os.printf( "<tr class=\"left\">\n"
              "<th>Queue Lag:</th>\n"
              "<td>%.0f ms ( stddev = %.0f ms )</td>\n"
              "</tr>\n",
-             as<double>( sim.queue_lag.total_millis() ),
-             as<double>( sim.queue_lag_stddev.total_millis() ) );
+             as<double>( sim.queue_lag.mean.total_millis() ),
+             as<double>( sim.queue_lag.stddev.total_millis() ) );
 
   if ( sim.strict_gcd_queue )
   {
@@ -480,15 +480,15 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
                "<th>GCD Lag:</th>\n"
                "<td>%.0f ms ( stddev = %.0f ms )</td>\n"
                "</tr>\n",
-               (double)sim.gcd_lag.total_millis(),
-               (double)sim.gcd_lag_stddev.total_millis() );
+               (double)sim.gcd_lag.mean.total_millis(),
+               (double)sim.gcd_lag.stddev.total_millis() );
 
     os.printf( "<tr class=\"left\">\n"
                "<th>Channel Lag:</th>\n"
                "<td>%.0f ms ( stddev = %.0f ms )</td>\n"
                "</tr>\n",
-               (double)sim.channel_lag.total_millis(),
-               (double)sim.channel_lag_stddev.total_millis() );
+               (double)sim.channel_lag.mean.total_millis(),
+               (double)sim.channel_lag.stddev.total_millis() );
 
     os.printf( "<tr class=\"left\">\n"
                "<th>Queue GCD Reduction:</th>\n"

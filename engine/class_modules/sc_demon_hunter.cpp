@@ -1303,7 +1303,7 @@ struct soul_fragment_t
       }
       // 2024-02-12 -- Recent testing appears to show a roughly 0.76s activation time for Vengeance
       //               with some slight variance
-      return dh->rng().gauss( 760_ms, 120_ms );
+      return dh->rng().gauss<760,120>();
     }
 
     double distance = get_distance( dh );
@@ -2629,7 +2629,7 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       // Eye Beam is applied via a player aura and experiences aura delay in applying damage tick events
       // Not a perfect implementation, but closer than the instant execution in current sims
-      return rng().gauss( p()->sim->default_aura_delay, p()->sim->default_aura_delay_stddev );
+      return rng().gauss( p()->sim->default_aura_delay );
     }
   };
 
@@ -2645,8 +2645,7 @@ struct eye_beam_t : public demon_hunter_spell_t
     // 6/6/2020 - Override the lag handling for Eye Beam so that it doesn't use channeled ready behavior
     //            In-game tests have shown it is possible to cast after faster than the 250ms channel_lag using a
     //            nochannel macro
-    ability_lag        = p->world_lag;
-    ability_lag_stddev = p->world_lag_stddev;
+    ability_lag = p->world_lag;
 
     tick_action = p->get_background_action<eye_beam_tick_t>( "eye_beam_tick" );
 
@@ -3693,7 +3692,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
   // Not always relevant as GCD can be longer than the 1s + lag ability delay outside of lust
   void schedule_execute( action_state_t* s ) override
   {
-    gcd_lag = rng().gauss( sim->gcd_lag, sim->gcd_lag_stddev );
+    gcd_lag = rng().gauss( sim->gcd_lag );
     min_gcd = 1_s + gcd_lag;
     demon_hunter_spell_t::schedule_execute( s );
   }
@@ -5621,8 +5620,8 @@ struct fel_rush_t : public demon_hunter_attack_t
     // Fel Rush's loss of control causes a GCD lag after the loss ends.
     // You get roughly 100ms in which to queue the next spell up correctly.
     // Calculate this once on schedule_execute since gcd() is called multiple times
-    if ( sim->gcd_lag > 100_ms )
-      gcd_lag = rng().gauss( sim->gcd_lag - 100_ms, sim->gcd_lag_stddev );
+    if ( sim->gcd_lag.mean > 100_ms )
+      gcd_lag = rng().gauss( sim->gcd_lag.mean - 100_ms, sim->gcd_lag.stddev );
     else
       gcd_lag = 0_ms;
 

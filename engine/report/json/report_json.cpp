@@ -790,15 +790,14 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
   root[ "invert_scaling" ] = p.invert_scaling;
   root[ "reaction_offset" ] = p.reaction_offset;
   root[ "reaction_max" ] = p.reaction_max;
-  root[ "reaction_mean" ] = p.reaction_mean;
-  root[ "reaction_stddev" ] = p.reaction_stddev;
+  root[ "reaction_mean" ] = p.reaction.mean;
+  root[ "reaction_stddev" ] = p.reaction.stddev;
   root[ "reaction_nu" ] = p.reaction_nu;
-  root[ "world_lag" ] = p.world_lag;
-  root[ "brain_lag" ] = p.brain_lag;
-  root[ "brain_lag_stddev" ] = p.brain_lag_stddev;
-  root[ "world_lag_override" ] = p.world_lag_override;
-  root[ "world_lag_stddev_override" ] = p.world_lag_stddev_override;
-
+  root[ "world_lag" ] = p.world_lag.mean;
+  root[ "world_lag_stddev" ] = p.world_lag.stddev;
+  root[ "brain_lag" ] = p.brain_lag.mean;
+  root[ "brain_lag_stddev" ] = p.brain_lag.stddev;
+  
   to_json( root[ "dbc" ], *p.dbc );
 
   for ( auto i = PROFESSION_NONE; i < PROFESSION_MAX; ++i )
@@ -894,14 +893,14 @@ void to_json( JsonOutput& arr, const raid_event_t& event )
   root[ "type" ] = event.type;
   add_non_zero( root, "first", event.first );
   add_non_zero( root, "last", event.last );
-  add_non_zero( root, "cooldown", event.cooldown );
-  add_non_zero( root, "cooldown_stddev", event.cooldown_stddev );
-  add_non_zero( root, "cooldown_min", event.cooldown_min );
-  add_non_zero( root, "cooldown_max", event.cooldown_max );
-  add_non_zero( root, "duration", event.duration );
-  add_non_zero( root, "duration_stddev", event.duration_stddev );
-  add_non_zero( root, "duration_min", event.duration_min );
-  add_non_zero( root, "duration_max", event.duration_max );
+  add_non_zero( root, "cooldown", event.cooldown.mean );
+  add_non_zero( root, "cooldown_stddev", event.cooldown.stddev );
+  add_non_zero( root, "cooldown_min", event.cooldown.min );
+  add_non_zero( root, "cooldown_max", event.cooldown.max );
+  add_non_zero( root, "duration", event.duration.mean );
+  add_non_zero( root, "duration_stddev", event.duration.stddev );
+  add_non_zero( root, "duration_min", event.duration.min );
+  add_non_zero( root, "duration_max", event.duration.max );
   add_non_zero( root, "distance_min", event.distance_min );
   add_non_zero( root, "distance_max", event.distance_max );
   add_non_zero( root, "players_only", event.players_only );
@@ -1190,18 +1189,18 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   options_root[ "threads" ] = sim.threads;
   options_root[ "seed" ] = sim.seed;
   options_root[ "single_actor_batch" ] = sim.single_actor_batch;
-  options_root[ "queue_lag" ] = sim.queue_lag;
-  options_root[ "queue_lag_stddev" ] = sim.queue_lag_stddev;
-  options_root[ "gcd_lag" ] = sim.gcd_lag;
-  options_root[ "gcd_lag_stddev" ] = sim.gcd_lag_stddev;
-  options_root[ "channel_lag" ] = sim.channel_lag;
-  options_root[ "channel_lag_stddev" ] = sim.channel_lag_stddev;
+  options_root[ "queue_lag" ] = sim.queue_lag.mean;
+  options_root[ "queue_lag_stddev" ] = sim.queue_lag.stddev;
+  options_root[ "gcd_lag" ] = sim.gcd_lag.mean;
+  options_root[ "gcd_lag_stddev" ] = sim.gcd_lag.stddev;
+  options_root[ "channel_lag" ] = sim.channel_lag.mean;
+  options_root[ "channel_lag_stddev" ] = sim.channel_lag.stddev;
   options_root[ "queue_gcd_reduction" ] = sim.queue_gcd_reduction;
   options_root[ "strict_gcd_queue" ] = sim.strict_gcd_queue;
   options_root[ "confidence" ] = sim.confidence;
   options_root[ "confidence_estimator" ] = sim.confidence_estimator;
-  options_root[ "world_lag" ] = sim.world_lag;
-  options_root[ "world_lag_stddev" ] = sim.world_lag_stddev;
+  options_root[ "world_lag" ] = sim.world_lag.mean;
+  options_root[ "world_lag_stddev" ] = sim.world_lag.stddev;
   options_root[ "travel_variance" ] = sim.travel_variance;
   options_root[ "default_skill" ] = sim.default_skill;
   options_root[ "reaction_time" ] = sim.reaction_time;
@@ -1224,8 +1223,8 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   options_root[ "average_gauss" ] = sim.average_gauss;
   options_root[ "fight_style" ] = util::fight_style_string( sim.fight_style );
   options_root[ "desired_targets" ] = sim.desired_targets;
-  options_root[ "default_aura_delay" ] = sim.default_aura_delay;
-  options_root[ "default_aura_delay_stddev" ] = sim.default_aura_delay_stddev;
+  options_root[ "default_aura_delay" ] = sim.default_aura_delay.mean;
+  options_root[ "default_aura_delay_stddev" ] = sim.default_aura_delay.stddev;
   options_root[ "profileset_metric" ] = util::scale_metric_type_abbrev( sim.profileset_metric.front() );
   options_root[ "profileset_multiactor_base_name" ] = sim.profileset_multiactor_base_name;
 

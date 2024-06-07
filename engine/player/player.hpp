@@ -20,6 +20,7 @@
 #include "sc_enums.hpp"
 #include "talent.hpp"
 #include "util/cache.hpp"
+#include "util/rng.hpp"
 #include "weapon.hpp"
 
 #include <map>
@@ -74,9 +75,6 @@ struct ground_aoe_params_t;
 namespace azerite {
     class azerite_state_t;
     class azerite_essence_state_t;
-}
-namespace rng {
-    struct rng_t;
 }
 namespace io {
   class ofstream;
@@ -168,11 +166,10 @@ struct player_t : public actor_t
   int         invert_scaling;
 
   // Reaction
-  timespan_t  reaction_offset, reaction_max, reaction_mean, reaction_stddev, reaction_nu;
+  rng::truncated_gauss_t reaction;
+  timespan_t  reaction_offset, reaction_max, reaction_nu;
   // Latency
-  timespan_t  world_lag, world_lag_stddev;
-  timespan_t  brain_lag, brain_lag_stddev;
-  bool        world_lag_override, world_lag_stddev_override;
+  rng::truncated_gauss_t world_lag, brain_lag;
   timespan_t  cooldown_tolerance_;
 
   // Data access

@@ -115,15 +115,13 @@ struct sim_t : private sc_thread_t
   int         healing; // Creates healing targets. Useful for ferals, I guess.
   int global_spawn_index;
   int         max_player_level;
-  timespan_t  queue_lag, queue_lag_stddev;
-  timespan_t  gcd_lag, gcd_lag_stddev;
-  timespan_t  channel_lag, channel_lag_stddev;
+  rng::truncated_gauss_t queue_lag, gcd_lag, channel_lag;
   timespan_t  queue_gcd_reduction;
   timespan_t  default_cooldown_tolerance;
   bool         strict_gcd_queue;
   double      confidence, confidence_estimator;
   // Latency
-  timespan_t  world_lag, world_lag_stddev;
+  rng::truncated_gauss_t world_lag;
   double      travel_variance, default_skill;
   timespan_t  reaction_time, regen_periodicity;
   timespan_t  ignite_sampling_delta;
@@ -391,8 +389,7 @@ struct sim_t : private sc_thread_t
     /// Chance player is getting overhealed by Gluttonous Spike proc.
     double gluttonous_spike_overheal_chance = 1.0;
     /// Anima Field Emitter buff duration distribution, defaults to full duration.
-    double anima_field_emitter_mean = std::numeric_limits<double>::max(),
-           anima_field_emitter_stddev = 0.0;
+    double anima_field_emitter_mean = 0.0, anima_field_emitter_stddev = 0.0;
     /// Retarget Shadowgrasp Totem if the use_item target demises after this many seconds
     timespan_t retarget_shadowgrasp_totem = 0_s;
     /// Sets the chance for the Inscrutable Quantum Device to give no stat buff outside Bloodlust
@@ -546,8 +543,7 @@ struct sim_t : private sc_thread_t
   auto_dispose<std::vector<buff_t*>> buff_list;
 
   // Global aura related delay
-  timespan_t default_aura_delay;
-  timespan_t default_aura_delay_stddev;
+  rng::truncated_gauss_t default_aura_delay;
 
   auto_dispose<std::vector<cooldown_t*>> cooldown_list;
 

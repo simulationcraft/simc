@@ -28,7 +28,6 @@
 #include "sim/sim.hpp"
 #include "util/generic.hpp"
 #include "util/io.hpp"
-#include "util/rng.hpp"
 #include "util/util.hpp"
 
 #include <utility>
@@ -402,8 +401,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     ground_aoe_duration( timespan_t::zero() ),
     ap_type( attack_power_type::NONE ),
     dot_behavior( DOT_REFRESH_DURATION ),
-    ability_lag(),
-    ability_lag_stddev(),
+    ability_lag( 0_ms, 0_ms ),
     min_gcd(),
     gcd_type( gcd_haste_type::NONE ),
     trigger_gcd( p->base_gcd ),
@@ -1902,9 +1900,7 @@ void action_t::execute()
   //       Roughly should be 2*world_lag as per the normal casting delay, as logs show ~150-200ms
   if ( execute_state && !background && special && channeled && !proc && reset_auto_attack )
   {
-    timespan_t lag        = player->world_lag_override        ? player->world_lag        : sim->world_lag;
-    timespan_t lag_stddev = player->world_lag_stddev_override ? player->world_lag_stddev : sim->world_lag_stddev;
-    timespan_t total_delay = composite_dot_duration( execute_state ) + ( 2 * rng().gauss( lag, lag_stddev ) );
+    timespan_t total_delay = composite_dot_duration( execute_state ) + ( 2 * rng().gauss( player->world_lag) );
     player->reset_auto_attacks( total_delay, player->procs.reset_aa_channel );
   }
 
@@ -2198,11 +2194,11 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
   if ( cd_waste_data )
     cd_waste_data->add( cd_duration, time_to_execute );
 
-  if ( ( cd_duration > timespan_t::zero() ||
-         ( cd_duration == timespan_t::min() && cooldown_duration() > timespan_t::zero() ) ) &&
+  if ( ( cd_duration > 0_ms ||
+         ( cd_duration == timespan_t::min() && cooldown_duration() > 0_ms ) ) &&
        !dual )
   {
-    timespan_t delay = timespan_t::zero();
+    timespan_t delay = 0_ms;
 
     if ( !background && !proc )
     { /*This doesn't happen anymore due to the gcd queue, in WoD if an ability has a cooldown of 20 seconds,
@@ -2210,16 +2206,14 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
       The only situation that this could happen is when world lag is over 400, as blizzard does not allow
       custom lag tolerance to go over 400.
       */
-      timespan_t lag   = player->world_lag_override ? player->world_lag : sim->world_lag;
-      timespan_t dev   = player->world_lag_stddev_override ? player->world_lag_stddev : sim->world_lag_stddev;
-      delay = rng().gauss( lag, dev );
-      if ( delay > timespan_t::from_millis( 400 ) )
+      delay = rng().gauss( player->world_lag );
+      if ( delay > 400_ms )
       {
-        delay -= timespan_t::from_millis( 400 );  // Even high latency players get some benefit from CLT.
+        delay -= 400_ms;  // Even high latency players get some benefit from CLT.
         sim->print_debug( "{} delaying the cooldown finish of {} by {}", *player, *this, delay );
       }
       else
-        delay = timespan_t::zero();
+        delay = 0_ms;
     }
 
     cooldown->start( this, cd_duration, delay );
@@ -2230,7 +2224,7 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
           *player, *this, *cooldown, cooldown->current_charge, cooldown->charges,
           cd_duration, delay, cooldown->ready );
 
-    if ( internal_cooldown->duration > timespan_t::zero() )
+    if ( internal_cooldown->duration > 0_ms )
     {
       internal_cooldown->start( this );
 
@@ -2950,9 +2944,7 @@ void action_t::interrupt_action()
     // Interrupting a cast resets GCD, allowing the player to start doing
     // something else right away. The delay between interrupting a cast
     // and starting a new cast seems to be twice the current latency.
-    timespan_t lag        = player->world_lag_override        ? player->world_lag        : sim->world_lag;
-    timespan_t lag_stddev = player->world_lag_stddev_override ? player->world_lag_stddev : sim->world_lag_stddev;
-    player->gcd_ready = std::min( player->gcd_ready, sim->current_time() + 2 * rng().gauss( lag, lag_stddev ) );
+    player->gcd_ready = std::min( player->gcd_ready, sim->current_time() + 2 * rng().gauss( player->world_lag ) );
 
     // While an ability is casting, the auto_attack is paused during schedule_execute
     // If we interrupt the cast, we need to unpause this early by the remaining delay time
@@ -4811,7 +4803,7 @@ bool action_t::usable_during_current_cast() const
   {
     assert( player->channeling->get_dot()->end_event && "player is channeling with its dot having no end event" );
     threshold = player->channeling->get_dot()->end_event->occurs();
-    threshold += sim->channel_lag + 4 * sim->channel_lag_stddev;
+    threshold += sim->channel_lag.mean + 4 * sim->channel_lag.stddev;
   }
   else if ( player->executing )
   {

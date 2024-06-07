@@ -2980,7 +2980,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::arise();
     timespan_t duration = 2.8_s;
-    buffs.stunned->trigger( duration + rng().gauss( 200_ms, 25_ms ) );
+    buffs.stunned->trigger( duration + rng().gauss<200,25>() );
     stun();
     reschedule_gargoyle();
     // Gargoyle procs 2 stacks of this oddly, duplicate it here to emulate that
@@ -6315,7 +6315,7 @@ struct reapers_mark_t final : public death_knight_spell_t
       timespan_t first = timespan_t::from_millis( rng().range( 0, 100 ) );
       make_event( *sim, first, [ this ]() {
         p()->active_spells.wave_of_souls->execute();
-        timespan_t second = timespan_t::from_millis( rng().gauss( 1000, 200 ) );
+        timespan_t second = rng().gauss<1000,200>();
         make_repeating_event(
             *sim, second, [ this ]() { p()->active_spells.wave_of_souls->execute(); }, 1 );
       } );

@@ -10815,7 +10815,7 @@ void shaman_t::trigger_stormflurry( const action_state_t* state )
 
   auto a = state->action->id == 115356 ? action.stormflurry_ws : action.stormflurry_ss;
 
-  timespan_t delay = rng().gauss( 200_ms, 25_ms );
+  timespan_t delay = rng().gauss<200,25>();
   if ( sim->debug )
   {
     auto ss = static_cast<stormstrike_base_t*>( state->action );
