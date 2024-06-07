@@ -1256,7 +1256,7 @@ struct heartbeat_event_t : public event_t
       sim().heartbeat_event_callback();
      }
 
-     make_event<heartbeat_event_t>( sim(), sim(), rng().gauss<5250, 100>() );
+     make_event<heartbeat_event_t>( sim(), sim(), timespan_t::from_millis( rng().gauss( 5250, 100 ) ) );
    }
  };
 
