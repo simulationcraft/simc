@@ -1541,11 +1541,6 @@ void warlock_t::init_procs_demonology()
   procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
   procs.blazing_meteor = get_proc( "blazing_meteor" );
   procs.doomfiend = get_proc( "doomfiend" );
-
-  //proc_actions.summon_random_demon = new actions_demonology::summon_random_demon_t( this );
-  //proc_actions.summon_nether_portal_demon = new actions_demonology::summon_random_demon_t( this, true );
-  //proc_actions.bilescourge_bombers_proc = new actions_demonology::bilescourge_bombers_proc_t( this );
-  //proc_actions.doom_brand_explosion = new actions_demonology::doom_brand_t( this );
 }
 
 }  // namespace warlock
