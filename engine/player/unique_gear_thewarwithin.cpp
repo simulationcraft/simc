@@ -1598,6 +1598,74 @@ void remnant_of_darkness( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Opressive Orator's Larynx
+// 443552 Use Driver
+// 446787 Equip Driver
+// 451011 Buff
+// 451015 Damage
+void opressive_orators_larynx( special_effect_t& e )
+{
+  struct dark_oration_t : public generic_aoe_proc_t
+  {
+    double mult;
+    dark_oration_t( const special_effect_t& e )
+      : generic_aoe_proc_t( e, "dark_oration", e.player->find_spell( 451015 ) ), mult( 0 )
+    {
+      background  = true;
+      base_dd_min = base_dd_max = e.player->find_spell( 446787 )->effectN( 2 ).average( e.item );
+    }
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( state );
+
+      m *= 1.0 + mult;
+
+      return m;
+    }
+  };
+
+  struct dark_oration_tick_t : public generic_proc_t
+  {
+    buff_t* buff;
+    action_t* damage;
+    dark_oration_tick_t( const special_effect_t& e, buff_t* buff, action_t* damage )
+      : generic_proc_t( e, "dark_oration", e.driver() ), buff( buff ), damage( damage )
+    {
+      background  = true;
+      tick_action = damage;
+    }
+
+    void execute() override
+    {
+      debug_cast<dark_oration_t*>( damage )->mult = buff->stack() * 0.25;
+      buff->expire();
+      generic_proc_t::execute();
+    }
+  };
+
+  auto equip_driver = e.player->find_spell( 446787 );
+  auto buff         = create_buff<stat_buff_t>( e.player, e.player->find_spell( 451011 ) )
+                  ->add_stat_from_effect_type( A_MOD_RATING, equip_driver->effectN( 1 ).average( e.item ) )
+                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  auto equip         = new special_effect_t( e.player );
+  equip->name_str    = "dark_orators_lyranx";
+  equip->item        = e.item;
+  equip->spell_id    = equip_driver->id();
+  equip->custom_buff = buff;
+  e.player->special_effects.push_back( equip );
+
+  auto equip_cb = new dbc_proc_callback_t( e.player, *equip );
+  equip_cb->initialize();
+  equip_cb->activate();
+
+  auto damage        = create_proc_action<dark_oration_t>( "dark_oration", e );
+  auto ticking_spell = create_proc_action<dark_oration_tick_t>( "dark_oration_tick", e, buff, damage );
+
+  e.execute_action = ticking_spell;
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -1884,6 +1952,8 @@ void register_special_effects()
   register_special_effect( 443411, items::overclocked_geararang_launcher );
   register_special_effect( 446764, DISABLED_EFFECT ); // overclocked gear-a-rang launcher
   register_special_effect( 443530, items::remnant_of_darkness );
+  register_special_effect( 443552, items::opressive_orators_larynx );
+  register_special_effect( 446787, DISABLED_EFFECT ); // opressive orator's larynx
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
