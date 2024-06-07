@@ -337,7 +337,7 @@ void gauss_t::calculate_cdf()
     auto _min = timespan_t::to_native( min );
     auto _max = max == timespan_t::min() ? std::numeric_limits<double>::infinity() : timespan_t::to_native( max );
 
-    assert( min <= max && "Minimum must be less than or equal to maximum." );
+    assert( _min <= _max && "Minimum must be less than or equal to maximum." );
 
     _min_cdf = stdnormal_cdf( ( _min - _mean ) / _stddev );
     _max_cdf = stdnormal_cdf( ( _max - _mean ) / _stddev );
