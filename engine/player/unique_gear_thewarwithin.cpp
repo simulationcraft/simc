@@ -1745,6 +1745,7 @@ void skyterrors_corrosive_organ( special_effect_t& e )
       : generic_aoe_proc_t( e, "volatile_acid_splash", e.player->find_spell( 447495 ) )
     {
       background  = true;
+      aoe = 5;
       base_dd_min = base_dd_max = e.player->find_spell( 444488 )->effectN( 2 ).average( e.item );
     }
 
