@@ -428,14 +428,17 @@ timespan_t basic_rng_t<Engine>::gauss()
   if ( STDDEV == 0 )
     return timespan_t::from_native( MEAN );
 
-  static constexpr auto mean = timespan_t::from_native( MEAN );
-  static constexpr auto stddev = timespan_t::from_native( STDDEV );
+  static constexpr auto mean = timespan_t::to_native( timespan_t::from_millis( MEAN ) );
+  static constexpr auto stddev = timespan_t::to_native( timespan_t::from_millis( STDDEV ) );
 
-  static const double min_cdf = stdnormal_cdf( ( 0.0 - MEAN ) / STDDEV );
-  static const double max_cdf = stdnormal_cdf( ( std::numeric_limits<double>::infinity() - MEAN ) / STDDEV );
+  static const double min_cdf = stdnormal_cdf( ( 0.0 - mean ) / stddev );
+  static const double max_cdf = stdnormal_cdf( ( std::numeric_limits<double>::infinity() - mean ) / stddev );
+
+  assert( min_cdf == stdnormal_cdf( ( 0.0 - mean ) / stddev ) );
+  assert( max_cdf == stdnormal_cdf( ( std::numeric_limits<double>::infinity() - mean ) / stddev ) );
 
   double rescaled = min_cdf + real() * ( max_cdf - min_cdf );
-  return timespan_t::from_native( MEAN + STDDEV * stdnormal_inv( rescaled ) );
+  return timespan_t::from_native( mean + stddev * stdnormal_inv( rescaled ) );
 }
 
 /// RNG Engines
