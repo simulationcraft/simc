@@ -253,7 +253,7 @@ struct simple_timed_buff_t : public buff_t
       }
 
       next = next < timespan_t::max() ? next : 1_s;
-      next += timespan_t::from_millis( rng().gauss_a( 100, 25, 0 ) );
+      next += rng().gauss<100,25>();
 
       register_next_trigger( next );
 
@@ -266,7 +266,7 @@ struct simple_timed_buff_t : public buff_t
     {
       if ( cooldown && cooldown->remains() > 0_s )
       {
-        register_next_trigger( cooldown->remains() + timespan_t::from_millis( rng().gauss_a( 100, 25, 0 ) ) );
+        register_next_trigger( cooldown->remains() + rng().gauss<100,25>() );
       }
     }
 

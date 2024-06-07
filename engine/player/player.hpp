@@ -76,10 +76,6 @@ namespace azerite {
     class azerite_state_t;
     class azerite_essence_state_t;
 }
-namespace rng {
-    struct gauss_t;
-    struct rng_t;
-}
 namespace io {
   class ofstream;
 }

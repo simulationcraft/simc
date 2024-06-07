@@ -40,8 +40,12 @@ private:
 public:
   timespan_t mean;
   timespan_t stddev;
+  timespan_t min;
+  timespan_t max;
 
-  gauss_t( timespan_t m, timespan_t s ) : mean( m ), stddev( s ) {}
+  gauss_t( timespan_t m, timespan_t s, timespan_t min = 0_ms, timespan_t max = timespan_t::min() )
+    : mean( m ), stddev( s ), min( min ), max( max )
+  {}
 
   double min_cdf() const { return _min_cdf; }
   double max_cdf() const { return _max_cdf; }

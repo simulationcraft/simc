@@ -904,17 +904,13 @@ struct summon_add_t : public spell_t
 
 struct pause_action_t : public action_t
 {
-  timespan_t duration_stddev, duration_min, duration_max;
-  timespan_t cooldown_stddev, cooldown_min, cooldown_max;
+  mutable rng::gauss_t _duration;
+  rng::gauss_t _cooldown;
 
   pause_action_t( player_t* p, util::string_view options_str )
     : action_t( ACTION_OTHER, "pause_action", p, spell_data_t::nil() ),
-      duration_stddev( 0_s ),
-      duration_min( 0_s ),
-      duration_max( 0_s ),
-      cooldown_stddev( 0_s ),
-      cooldown_min( 0_s ),
-      cooldown_max( 0_s )
+      _duration( 0_ms, 0_ms, 0_ms, 0_ms ),
+      _cooldown( 0_ms, 0_ms, 0_ms, 0_ms )
   {
     // Dummy action to help model a boss attacking a different tank
     // or just diverting their attention from auto attacking the player in general
@@ -922,16 +918,15 @@ struct pause_action_t : public action_t
     interrupt_auto_attack = special = true;
 
     // Use the same duration and cooldown min/max/stddev system as raid events
-    add_option( opt_timespan( "duration", base_execute_time ) );
-    add_option( opt_timespan( "duration_stddev", duration_stddev ) );
-    add_option( opt_timespan( "duration_min", duration_min ) );
-    add_option( opt_timespan( "duration_max", duration_max ) );
+    add_option( opt_timespan( "duration", _duration.mean ) );
+    add_option( opt_timespan( "duration_stddev", _duration.stddev ) );
+    add_option( opt_timespan( "duration_min", _duration.min ) );
+    add_option( opt_timespan( "duration_max", _duration.max ) );
 
-    timespan_t cooldown_duration;
-    add_option( opt_timespan( "cooldown", cooldown_duration ) );
-    add_option( opt_timespan( "cooldown_stddev", cooldown_stddev ) );
-    add_option( opt_timespan( "cooldown_min", cooldown_min ) );
-    add_option( opt_timespan( "cooldown_max", cooldown_max ) );
+    add_option( opt_timespan( "cooldown", _cooldown.mean ) );
+    add_option( opt_timespan( "cooldown_stddev", _cooldown.stddev ) );
+    add_option( opt_timespan( "cooldown_min", _cooldown.min ) );
+    add_option( opt_timespan( "cooldown_max", _cooldown.max ) );
 
     // By default, only interrupts auto attack without resetting the swing timer, but that can be changed
     add_option( opt_bool( "reset_auto_attack", reset_auto_attack ) );
@@ -943,40 +938,49 @@ struct pause_action_t : public action_t
     // Set the cooldown and stats' name to the action's custom name
     internal_id        = p->get_action_id( name_str );
     cooldown           = p->get_cooldown( name_str );
-    cooldown->duration = cooldown_duration;
     stats              = p->get_stats( name_str, this );
 
     // Default duration and cooldown to 30s, and min/max to 0.5x and 1.5x.
     // Some sanity checks as well
 
-    if ( base_execute_time <= 0_s )
+    if ( _duration.mean <= 0_s )
     {
       sim->error( "Duration invalid or not set for action {}, setting to 30s", name() );
-    }
-    if ( duration_min <= 0_s )
-      duration_min = base_execute_time * 0.5;
-    if ( duration_max <= 0_s )
-      duration_max = base_execute_time * 1.5;
-    if ( base_execute_time <= duration_stddev )
-    {
-      sim->error( "Duration value for {} lower than standard deviation, setting stddev to 0", name() );
-      duration_stddev = 0_s;
+      _duration.mean = 30_s;
     }
 
-    if ( cooldown->duration <= 0_s )
+    if ( _duration.min <= 0_s )
+      _duration.min = _duration.mean * 0.5;
+
+    if ( _duration.max <= 0_s )
+      _duration.max = _duration.mean * 1.5;
+
+    if ( _duration.mean <= _duration.stddev )
+    {
+      sim->error( "Duration value for {} lower than standard deviation, setting stddev to 0", name() );
+      _duration.stddev = 0_s;
+    }
+
+    if ( _cooldown.mean <= 0_s )
     {
       sim->error( "Cooldown invalid or not set action {}, setting to 30s", name() );
-      cooldown->duration = 25_s;
+      _cooldown.mean = 30_s;
     }
-    if ( cooldown_min <= 0_s )
-      cooldown_min = cooldown->duration * 0.5;
-    if ( cooldown_max <= 0_s )
-      cooldown_max = cooldown->duration * 1.5;
-    if ( cooldown->duration <= cooldown_stddev )
+
+    if ( _cooldown.min <= 0_s )
+      _cooldown.min = _cooldown.mean * 0.5;
+
+    if ( _cooldown.max <= 0_s )
+      _cooldown.max = _cooldown.mean * 1.5;
+
+    if ( _cooldown.mean <= _cooldown.stddev )
     {
       sim->error( "Cooldown value for {} lower than standard deviation, setting stddev to 0", name() );
-      cooldown_stddev = 0_s;
+      _cooldown.stddev = 0_s;
     }
+
+    base_execute_time = _duration.mean;
+    cooldown->duration = _cooldown.mean;
   }
 
   // Don't trigger an assert related to result
@@ -987,12 +991,12 @@ struct pause_action_t : public action_t
 
   timespan_t execute_time() const override
   {
-    return sim->rng().gauss_ab( base_execute_time, duration_stddev, duration_min, duration_max );
+    return sim->rng().gauss( _duration );
   }
 
   void update_ready( timespan_t /* cd_duration */ ) override
   {
-    timespan_t cd = sim->rng().gauss_ab( cooldown->duration, cooldown_stddev, cooldown_min, cooldown_max );
+    timespan_t cd = sim->rng().gauss( _cooldown );
 
     action_t::update_ready( cd );
   }
@@ -1504,24 +1508,24 @@ void enemy_t::add_tank_heal_raid_event( tank_dummy_e tank_dummy )
   auto heal_name                = heal_raid_event.substr( 0, cut_pt );
   auto raid_event               = raid_event_t::create( sim, heal_name, heal_options );
 
-  if ( raid_event->cooldown <= timespan_t::zero() )
+  if ( raid_event->cooldown.mean <= 0_ms )
   {
     throw std::invalid_argument( "Cooldown not set or negative." );
   }
-  if ( raid_event->cooldown <= raid_event->cooldown_stddev )
+  if ( raid_event->cooldown.mean <= raid_event->cooldown.stddev )
   {
     throw std::invalid_argument( "Cooldown lower than cooldown standard deviation." );
   }
 
-  if ( raid_event->cooldown_min == timespan_t::zero() )
-    raid_event->cooldown_min = raid_event->cooldown * 0.5;
-  if ( raid_event->cooldown_max == timespan_t::zero() )
-    raid_event->cooldown_max = raid_event->cooldown * 1.5;
+  if ( raid_event->cooldown.min == 0_ms )
+    raid_event->cooldown.min = raid_event->cooldown.mean * 0.5;
+  if ( raid_event->cooldown.max == 0_ms )
+    raid_event->cooldown.max = raid_event->cooldown.mean * 1.5;
 
-  if ( raid_event->duration_min == timespan_t::zero() )
-    raid_event->duration_min = raid_event->duration * 0.5;
-  if ( raid_event->duration_max == timespan_t::zero() )
-    raid_event->duration_max = raid_event->duration * 1.5;
+  if ( raid_event->duration.min == 0_ms )
+    raid_event->duration.min = raid_event->duration.mean * 0.5;
+  if ( raid_event->duration.max == 0_ms )
+    raid_event->duration.max = raid_event->duration.mean * 1.5;
 
   sim->print_debug( "Successfully created '{}'.", *( raid_event.get() ) );
   sim->raid_events.push_back( std::move( raid_event ) );

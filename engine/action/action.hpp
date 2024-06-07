@@ -38,10 +38,6 @@ struct option_t;
 struct sim_t;
 struct player_t;
 struct proc_t;
-namespace rng {
-  struct gauss_t;
-  struct rng_t;
-}
 struct spelleffect_data_t;
 struct stats_t;
 struct travel_event_t;

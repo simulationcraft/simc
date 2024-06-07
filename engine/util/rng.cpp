@@ -334,16 +334,23 @@ void gauss_t::calculate_cdf()
   {
     auto _mean = timespan_t::to_native( mean );
     auto _stddev = timespan_t::to_native( stddev );
+    auto _min = timespan_t::to_native( min );
+    auto _max = max == timespan_t::min() ? std::numeric_limits<double>::infinity() : timespan_t::to_native( max );
 
-    _min_cdf = stdnormal_cdf( ( 0.0 - _mean ) / _stddev );
-    _max_cdf = stdnormal_cdf( ( std::numeric_limits<double>::infinity() - _mean ) / _stddev ); 
+    assert( min <= max && "Minimum must be less than or equal to maximum." );
+
+    _min_cdf = stdnormal_cdf( ( _min - _mean ) / _stddev );
+    _max_cdf = stdnormal_cdf( ( _max - _mean ) / _stddev );
 
     _cdf_set = true;
   }
   else
   {
-    assert( _min_cdf == stdnormal_cdf( ( 0.0 - timespan_t::to_native( mean ) ) / timespan_t::to_native( stddev ) ) );
-    assert( _max_cdf == stdnormal_cdf( ( std::numeric_limits<double>::infinity() - timespan_t::to_native( mean ) ) /
+    assert( _min_cdf == stdnormal_cdf( ( timespan_t::to_native( min ) - timespan_t::to_native( mean ) ) /
+                                       timespan_t::to_native( stddev ) ) );
+    assert( _max_cdf == stdnormal_cdf( ( ( max == timespan_t::min() ? std::numeric_limits<double>::infinity()
+                                                                    : timespan_t::to_native( max ) ) -
+                                         timespan_t::to_native( mean ) ) /
                                        timespan_t::to_native( stddev ) ) );
   }
 }
