@@ -2399,6 +2399,38 @@ void signet_of_the_priory( special_effect_t& effect )
   }
 }
 
+// 451055 driver
+//  e1: damage coeff
+//  e2: buff coeff
+// 451292 damage
+// 451303 buff
+// 443549 summon from back right?
+// 451991 summon from back left?
+// TODO: confirm damage doesn't increase per extra target
+// TODO: determine travel speed to hit target
+// TODO: determine reasonable delay to intercept
+void harvesters_edict( special_effect_t& effect )
+{
+  // TODO: confirm damage doesn't increase per extra target
+  auto damage = create_proc_action<generic_aoe_proc_t>( "volatile_blood_blast", effect, effect.driver() );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 451303 ) )
+    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
+
+  // TODO: determine travel speed to hit target
+  // TODO: determine reasonable delay to intercept
+  effect.player->callbacks.register_callback_execute_function(
+    effect.spell_id, [ damage, buff ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+      if ( cb->rng().roll( cb->listener->thewarwithin_opts.harvesters_edict_intercept_chance ) )
+        buff->trigger();
+      else
+        damage->execute();
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -2735,6 +2767,7 @@ void register_special_effects()
   register_special_effect( 443527, items::carved_blazikon_wax );
   register_special_effect( 443531, items::signet_of_the_priory );
   register_special_effect( 450877, DISABLED_EFFECT );  // signet of the priory
+  register_special_effect( 451055, items::harvesters_edict );
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );

@@ -13121,6 +13121,7 @@ void player_t::create_options()
   add_option( opt_string( "thewarwithin.signet_of_the_priory_party_stats", thewarwithin_opts.signet_of_the_priory_party_stats ) );
   add_option( opt_timespan( "thewarwithin.signet_of_the_priory_party_use_cooldown", thewarwithin_opts.signet_of_the_priory_party_use_cooldown, 120_s, 240_s ) );
   add_option( opt_timespan( "thewarwithin.signet_of_the_priory_party_use_stddev", thewarwithin_opts.signet_of_the_priory_party_use_stddev, 0_ms, 120_s ) );
+  add_option( opt_float( "thewarwithin.harvesters_edict_intercept_chance", thewarwithin_opts.harvesters_edict_intercept_chance, 0.0, 1.0 ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

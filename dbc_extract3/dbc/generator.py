@@ -1504,6 +1504,7 @@ class SpellDataGenerator(DataGenerator):
          455910, # voltaic stormcaller
          450921, 451247, # high speaker's accretion
          450882, # signet of the priory
+         451303, 451991, # harvester's edict
         ),
 
         # Warrior:

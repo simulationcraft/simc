@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.55000
-static const std::array<spelltext_data_t, 26120> __spelltext_data { {
+static const std::array<spelltext_data_t, 26123> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23894,6 +23894,7 @@ static const std::array<spelltext_data_t, 26120> __spelltext_data { {
   { 443541, "Your abilities have a chance to stir the sac, releasing an egg which grants you $s1 $pri. Each egg hatches after $29051d, and the new brood attacks your next target, inflicting $s2 Nature damage over $12096d.", 0, 0 },
   { 443544, "Your taunt abilities activate the module's refracting energy, protecting you from $451568s2% of damage taken, up to $451568s1. This may only occur once every $451779d.$?(a137048|a137028|a137023|a137010|a212613|a137008)[][\r\n\r\n|cnRED_FONT_COLOR:Valid only for tank specializations.|r]", 0, 0 },
   { 443545, "The gland releases pheromones that attract a Ceaseless Swarm of insects to surround you. Taking damage has a high chance to retaliate against attackers, inflicting ${$s1*$450969d/$450969t1} Nature damage over $450969d and reducing damage dealt to you by $s2.", 0, 0 },
+  { 443549, "Your spells and abilities have a chance to summon a bloodworker to deliver volatile black blood to your target, exploding for $s1 Shadow damage split between all nearby enemies on impact. Intercepting the delivery allows you to siphon its power, instead increasing your Mastery by $s2 for $11790d.", 0, 0 },
   { 443552, "Wave the larynx in the air to release a tormenting chorus, inflicting ${$446787s2*$d/$t1} Shadow damage over $d split between nearby enemies. Your whispers leave to join the chorus, increasing its damage before falling silent.", 0, 0 },
   { 443556, "$?a450162[Draw the blades once more to perform both strikes at the same time.\r\n\r\nWhen used or after $450157d, the pouch will seal itself to magically recharge its contents.]?a450151[Open the pouch and draw Vx's frost blade to launch a long range attack, inflicting $450044s1 Frost damage split between enemies it passes through.\r\n\r\nYou may use the pouch one additional time within $450157d before it seals itself to magically recharge its contents.][Open the pouch and draw Nx's shadow blade to quickly strike at enemies in front of you, inflictiing ${$450044s1/2} Shadow damage to all enemies hit.\r\n\r\nYou may use the pouch up to two additional times within $450157d before it seals itself to magically recharge its contents.]", 0, 0 },
   { 443557, "Your excessive healing attracts nearby shadow energy to your party, storing up to $s1 healing and restoring the target's health when they receive damage.", 0, 0 },
@@ -24680,6 +24681,7 @@ static const std::array<spelltext_data_t, 26120> __spelltext_data { {
   { 451297, "$@spelldesc451294", "Fists of Fury's damage increased by $s1%.", 0 },
   { 451298, "$@spelldesc451294", "Attack speed increased by $w1%.", 0 },
   { 451299, "$@spelldesc451029", "Absorbing $w1 damage.", 0 },
+  { 451303, "$@spelldesc443549", "Mastery increased by $w1.", 0 },
   { 451308, "Shadow Word: Death has a high chance to summon a Shadowfiend for $s1 sec when damaging targets below $s2% health.", 0, 0 },
   { 451311, "Every 2 sec siphon an amount equal to $s1% of your health from a nearby ally if they are higher health than you.", 0, 0 },
   { 451367, "$@spelldesc443527", "Versatility increased by $?a451368[${$w1+$451368w1}][${$w1}].", 0 },
@@ -24782,6 +24784,7 @@ static const std::array<spelltext_data_t, 26120> __spelltext_data { {
   { 451963, "$@spelldesc451311", 0, 0 },
   { 451964, "$@spelldesc451311", 0, 0 },
   { 451968, "Expel negative chi from your body, healing for $s1 and dealing $s2% of the amount healed as Nature damage to an enemy within $115129A1 yards.$?s322102[\r\n\r\nDraws in the positive chi of all your Healing Spheres to increase the healing of Expel Harm.][]$?s342928[\r\n\r\n|cFFFFFFFFGenerates ${$s3+$342928s2} Chi.][]", 0, 0 },
+  { 451991, "Your spells and abilities have a chance to summon a bloodworker to deliver volatile black blood to your target, exploding for $s1 Shadow damage split between all nearby enemies on impact. Intercepting the delivery allows you to siphon its power, instead increasing your Mastery by $s2 for $11790d.", 0, 0 },
   { 452030, "$@spelldesc445593", 0, 0 },
   { 452037, "$@spelldesc445593", 0, 0 },
   { 452054, "$@spelldesc443557", "Absorb $w1 damage.", 0 },

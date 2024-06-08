@@ -838,6 +838,8 @@ struct player_t : public actor_t
     player_option_t<std::string> signet_of_the_priory_party_stats;
     timespan_t signet_of_the_priory_party_use_cooldown = 120_s;
     timespan_t signet_of_the_priory_party_use_stddev = 6_s;
+    // harvester's edict chance to intercept
+    double harvesters_edict_intercept_chance = 0.5;
   } thewarwithin_opts;
 
 private:
