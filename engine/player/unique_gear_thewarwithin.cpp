@@ -2215,6 +2215,7 @@ void mereldars_toll( special_effect_t& effect )
       auto toll = new special_effect_t( t );
       toll->name_str = "mereldars_toll_debuff";
       toll->spell_id = target_debuff->id();
+      toll->disable_action();
       t->special_effects.push_back( toll );
 
       // TODO: determine if attack needs to do damage to proc vers buff
