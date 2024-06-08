@@ -31,7 +31,12 @@ namespace actions
       bool houndmasters = false;
 
       // Destruction
+      bool chaotic_energies = false;
       bool havoc = false;
+      bool roaring_blaze = false;
+      bool chaos_incarnate = false;
+      bool umbrafire_embers_dd = false;
+      bool umbrafire_embers_td = false;
     } affected_by;
 
     struct triggers_t
@@ -64,6 +69,10 @@ namespace actions
 
       affected_by.master_demonologist_dd = data().affected_by( p->warlock_base.master_demonologist->effectN( 2 ) );
       affected_by.houndmasters = data().affected_by( p->talents.the_houndmasters_stratagem_debuff->effectN( 1 ) );
+
+      affected_by.roaring_blaze = data().affected_by( p->talents.conflagrate_debuff->effectN( 1 ) );
+      affected_by.umbrafire_embers_dd = data().affected_by( p->tier.umbrafire_embers->effectN( 1 ) );
+      affected_by.umbrafire_embers_td = data().affected_by( p->tier.umbrafire_embers->effectN( 2 ) );
     }
 
     warlock_t* p()
@@ -87,11 +96,50 @@ namespace actions
 
       if ( resource_current == RESOURCE_SOUL_SHARD && p()->in_combat )
       {
+        int shards_used = as<int>( cost() );
+        int base_shards = as<int>( base_cost() ); // Power Overwhelming is ignoring any cost changes
+
         if ( p()->talents.soul_conduit->ok() )
         {
           // Soul Conduit events are delayed slightly (100 ms) in sims to avoid instantaneous reactions
           // TODO: Migrate sc_event_t to the actions.cpp file
           make_event<warlock::actions::sc_event_t>( *p()->sim, p(), as<int>( last_resource_cost ) );
+        }
+
+        if ( p()->buffs.rain_of_chaos->check() && shards_used > 0 )
+        {
+          for ( int i = 0; i < shards_used; i++ )
+          {
+            if ( p()->rain_of_chaos_rng->trigger() )
+            {
+              p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_roc->duration() );
+              p()->procs.rain_of_chaos->occur();
+            }
+          }
+        }
+
+        if ( p()->talents.ritual_of_ruin.ok() && shards_used > 0 )
+        {
+          int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
+          p()->buffs.impending_ruin->trigger( shards_used ); // Stack change callback switches Impending Ruin to Ritual of Ruin if max stacks reached
+          if ( overflow > 0 )
+          {
+            make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
+          }
+        }
+
+        if ( p()->talents.power_overwhelming->ok() && base_shards > 0 )
+        {
+          p()->buffs.power_overwhelming->trigger( base_shards );
+        }
+
+        // 2022-10-17: Spell data is missing the % chance!
+        // Need to test further, but chance appears independent of shard cost
+        // Also procs even if the cast is free due to other effects
+        if ( base_shards > 0 && p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T29, B2 ) && rng().roll( 0.2 ) )
+        {
+          p()->buffs.chaos_maelstrom->trigger();
+          p()->procs.chaos_maelstrom->occur();
         }
       }
     }
@@ -174,6 +222,18 @@ namespace actions
         m *= 1.0 + td( t )->debuffs_the_houndmasters_stratagem->check_value();
       }
 
+      if ( p()->talents.roaring_blaze.ok() && affected_by.roaring_blaze && td( t )->debuffs_conflagrate->check() )
+      {
+        m *= 1.0 + td( t )->debuffs_conflagrate->check_value();
+      }
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B4 )
+        && ( affected_by.umbrafire_embers_dd || affected_by.umbrafire_embers_td )
+        && p()->buffs.umbrafire_embers->check() )
+      {
+        m *= 1.0 + p()->buffs.umbrafire_embers->check_stack_value();
+      }
+
       return m;
     }
 
@@ -186,6 +246,17 @@ namespace actions
       if ( p()->specialization() == WARLOCK_DEMONOLOGY && affected_by.master_demonologist_dd )
       {
         m *= 1.0 + p()->cache.mastery_value();
+      }
+
+      if ( p()->specialization() == WARLOCK_DESTRUCTION && affected_by.chaotic_energies )
+      {
+        double destro_mastery_value = p()->cache.mastery_value() / 2.0;
+        double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
+
+        if ( affected_by.chaos_incarnate )
+          chaotic_energies_rng = destro_mastery_value;
+
+        m *= 1.0 + chaotic_energies_rng + destro_mastery_value;
       }
       
       return m;
