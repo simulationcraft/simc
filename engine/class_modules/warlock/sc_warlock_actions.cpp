@@ -2250,6 +2250,46 @@ namespace actions
     }
   };
 
+  struct demonic_strength_t : public warlock_spell_t
+  {
+    demonic_strength_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Demonic Strength", p, p->talents.demonic_strength )
+    {
+      parse_options( options_str );
+
+      internal_cooldown = p->get_cooldown( "felstorm_icd" );
+    }
+
+    bool ready() override
+    {
+      auto active_pet = p()->warlock_pet_list.active;
+
+      if ( !active_pet )
+        return false;
+
+      if ( active_pet->pet_type != PET_FELGUARD )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+
+    void execute() override
+    {
+      auto active_pet = p()->warlock_pet_list.active;
+      
+      warlock_spell_t::execute();
+
+      if ( active_pet->pet_type == PET_FELGUARD )
+      {
+        active_pet->buffs.demonic_strength->trigger();
+
+        debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->queue_ds_felstorm();
+
+        internal_cooldown->start( 5_s * p()->composite_spell_haste() );
+      }
+    }
+  };
+
   struct summon_demonic_tyrant_t : public warlock_spell_t
   {
     summon_demonic_tyrant_t( warlock_t* p, util::string_view options_str )
