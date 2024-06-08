@@ -2250,6 +2250,68 @@ namespace actions
     }
   };
 
+  struct bilescourge_bombers_t : public warlock_spell_t
+  {
+    struct bilescourge_bombers_tick_t : public warlock_spell_t
+    {
+      bilescourge_bombers_tick_t( warlock_t* p )
+        : warlock_spell_t( "Bilescourge Bombers (tick)", p, p->talents.bilescourge_bombers_aoe )
+      {
+        aoe = -1;
+        background = dual = direct_tick = true;
+        callbacks = false;
+        radius = p->talents.bilescourge_bombers->effectN( 1 ).radius();
+
+        base_dd_multiplier *= 1.0 + p->talents.shadow_invocation->effectN( 1 ).percent();
+      }
+    };
+
+    bilescourge_bombers_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Bilescourge Bombers", p, p->talents.bilescourge_bombers )
+    {
+      parse_options( options_str );
+
+      dot_duration = 0_ms;
+      may_miss = may_crit = false;
+      base_tick_time = 500_ms;
+
+      if ( !p->proc_actions.bilescourge_bombers_aoe_tick )
+      {
+        p->proc_actions.bilescourge_bombers_aoe_tick = new bilescourge_bombers_tick_t( p );
+        p->proc_actions.bilescourge_bombers_aoe_tick->stats = stats;
+      }
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      make_event<ground_aoe_event_t>( *sim, p(),
+                                      ground_aoe_params_t()
+                                        .target( execute_state->target )
+                                        .x( execute_state->target->x_position )
+                                        .y( execute_state->target->y_position )
+                                        .pulse_time( base_tick_time )
+                                        .duration( p()->talents.bilescourge_bombers->duration() )
+                                        .start_time( sim->current_time() )
+                                        .action( p()->proc_actions.bilescourge_bombers_aoe_tick ) );
+    }
+  };
+
+  struct bilescourge_bombers_proc_t : public warlock_spell_t
+  {
+    bilescourge_bombers_proc_t( warlock_t* p )
+      : warlock_spell_t( "Bilescourge Bombers (proc)", p, p->find_spell( 267213 ) )
+    {
+      aoe = -1;
+      background = dual = direct_tick = true;
+      callbacks = false;
+      radius = p->find_spell( 267211 )->effectN( 1 ).radius();
+
+      base_dd_multiplier *= 1.0 + p->talents.shadow_invocation->effectN( 1 ).percent();
+    }
+  };
+
   struct demonic_strength_t : public warlock_spell_t
   {
     demonic_strength_t( warlock_t* p, util::string_view options_str )
