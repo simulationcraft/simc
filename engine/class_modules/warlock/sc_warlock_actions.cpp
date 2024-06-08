@@ -637,6 +637,103 @@ namespace actions
     { return periodic->get_dot( t ); }
   };
 
+  struct shadow_bolt_t : public warlock_spell_t
+  {
+    shadow_bolt_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul_dot->ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt )
+    {
+      parse_options( options_str );
+
+      triggers.shadow_invocation_direct = true;
+
+      if ( demonology() )
+      {
+        energize_type = action_energize::ON_CAST;
+        energize_resource = RESOURCE_SOUL_SHARD;
+        energize_amount = 1.0;
+      }
+    }
+
+    timespan_t execute_time() const override
+    {
+      if ( p()->buffs.nightfall->check() )
+      {
+        return 0_ms;
+      }
+
+      return warlock_spell_t::execute_time();
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      if ( time_to_execute == 0_ms )
+        p()->buffs.nightfall->decrement();
+
+      if ( p()->talents.demonic_calling->ok() )
+        p()->buffs.demonic_calling->trigger();
+
+      p()->buffs.stolen_power_final->expire();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( result_is_hit( s->result ) )
+      {
+        if ( p()->talents.shadow_embrace->ok() )
+          td( s->target )->debuffs_shadow_embrace->trigger();
+
+        if ( p()->talents.tormented_crescendo->ok() )
+        {
+          // TODO: Migrate crescendo_check
+          if ( p()->crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
+          {
+            p()->procs.tormented_crescendo->occur();
+            p()->buffs.tormented_crescendo->trigger();
+          }
+        }
+      }
+    }
+
+    double action_multiplier() const override
+    {
+      double m = warlock_spell_t::action_multiplier();
+
+      if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
+      {
+        m *= 1.0 + p()->talents.nightfall_buff->effectN( 2 ).percent();
+      }
+
+      if ( p()->talents.sacrificed_souls.ok() )
+      {
+        // TODO: Migrate active_demon_count()
+        m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
+      }
+
+      if ( p()->talents.stolen_power.ok() && p()->buffs.stolen_power_final->check() )
+      {
+        m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 1 ).percent();
+      }
+
+      return m;
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double m = warlock_spell_t::composite_target_multiplier( t );
+
+      if ( p()->talents.withering_bolt.ok() )
+      {
+        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)( p()->talents.withering_bolt->effectN( 2 ).base_value() ), p()->get_target_data( t )->count_affliction_dots() );
+      }
+
+      return m;
+    }
+  };
+
   struct seed_of_corruption_t : public warlock_spell_t
   {
     struct seed_of_corruption_aoe_t : public warlock_spell_t
