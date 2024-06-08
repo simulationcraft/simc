@@ -2215,13 +2215,18 @@ struct trial_of_doubt_t : public buff_t
   bool automatic_delay;
   timespan_t min_delay;
   shuffled_rng_t* shuffled_rng;
+  rng::truncated_gauss_t _duration;
 
   trial_of_doubt_t( player_t* p )
     : buff_t( p, "trial_of_doubt", p->find_spell( 358404 ) ),
       automatic_delay( true ),
       // Newfound Resolve cannot be gained for 2 seconds after the Area Trigger spawns.
-      min_delay( timespan_t::from_seconds( p->find_spell( 352918 )->missile_speed() ) + 2_s )
+      min_delay( timespan_t::from_seconds( p->find_spell( 352918 )->missile_speed() ) + 2_s ),
+      _duration( 0_ms, 0_ms )
     {
+      _duration.mean = sim->shadowlands_opts.newfound_resolve_default_delay;
+      _duration.stddev = _duration.mean * sim->shadowlands_opts.newfound_resolve_delay_relstddev;
+
       // The values of 1 and 30 below are not present in the game data.
       int success_entries = 1;
       shuffled_rng = p->get_shuffled_rng( "newfound_resolve", success_entries, 30 );
@@ -2242,8 +2247,7 @@ struct trial_of_doubt_t : public buff_t
 
       if ( duration < 0_ms && automatic_delay )
       {
-        duration = sim->shadowlands_opts.newfound_resolve_default_delay;
-        duration = rng().gauss( duration, duration * sim->shadowlands_opts.newfound_resolve_delay_relstddev );
+        duration = rng().gauss( _duration );
         // You cannot face your Doubt until min_delay has passed.
         // With automatic_delay, ensure the duration is long enough.
         duration = std::max( min_delay, std::min( duration, buff_duration() ) );

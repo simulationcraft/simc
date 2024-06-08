@@ -65,7 +65,6 @@
 #include "sim/sim.hpp"
 #include "util/io.hpp"
 #include "util/plot_data.hpp"
-#include "util/rng.hpp"
 #include "util/util.hpp"
 
 #include <cctype>
@@ -756,14 +755,12 @@ bool parse_world_lag( sim_t* sim, util::string_view name, util::string_view valu
   assert( name == "world_lag" );
   (void)name;
 
-  sim->active_player->world_lag = timespan_t::from_seconds( util::to_double( value ) );
+  sim->active_player->world_lag.mean = timespan_t::from_seconds( util::to_double( value ) );
 
-  if ( sim->active_player->world_lag < timespan_t::zero() )
+  if ( sim->active_player->world_lag.mean < 0_ms )
   {
-    sim->active_player->world_lag = timespan_t::zero();
+    sim->active_player->world_lag.mean = 0_ms;
   }
-
-  sim->active_player->world_lag_override = true;
 
   return true;
 }
@@ -775,14 +772,12 @@ bool parse_world_lag_stddev( sim_t* sim, util::string_view name, util::string_vi
   assert( name == "world_lag_stddev" );
   (void)name;
 
-  sim->active_player->world_lag_stddev = timespan_t::from_seconds( util::to_double( value ) );
+  sim->active_player->world_lag.stddev = timespan_t::from_seconds( util::to_double( value ) );
 
-  if ( sim->active_player->world_lag_stddev < timespan_t::zero() )
+  if ( sim->active_player->world_lag.stddev < 0_ms )
   {
-    sim->active_player->world_lag_stddev = timespan_t::zero();
+    sim->active_player->world_lag.stddev = 0_ms;
   }
-
-  sim->active_player->world_lag_stddev_override = true;
 
   return true;
 }
@@ -794,11 +789,11 @@ bool parse_brain_lag( sim_t* sim, util::string_view name, util::string_view valu
   assert( name == "brain_lag" );
   (void)name;
 
-  sim->active_player->brain_lag = timespan_t::from_seconds( util::to_double( value ) );
+  sim->active_player->brain_lag.mean = timespan_t::from_seconds( util::to_double( value ) );
 
-  if ( sim->active_player->brain_lag < timespan_t::zero() )
+  if ( sim->active_player->brain_lag.mean < 0_ms )
   {
-    sim->active_player->brain_lag = timespan_t::zero();
+    sim->active_player->brain_lag.mean = 0_ms;
   }
 
   return true;
@@ -811,11 +806,11 @@ bool parse_brain_lag_stddev( sim_t* sim, util::string_view name, util::string_vi
   assert( name == "brain_lag_stddev" );
   (void)name;
 
-  sim->active_player->brain_lag_stddev = timespan_t::from_seconds( util::to_double( value ) );
+  sim->active_player->brain_lag.stddev = timespan_t::from_seconds( util::to_double( value ) );
 
-  if ( sim->active_player->brain_lag_stddev < timespan_t::zero() )
+  if ( sim->active_player->brain_lag.stddev < 0_ms )
   {
-    sim->active_player->brain_lag_stddev = timespan_t::zero();
+    sim->active_player->brain_lag.stddev = 0_ms;
   }
 
   return true;
@@ -999,7 +994,7 @@ void residual_action::trigger( action_t* residual_action, player_t* t, double am
     static timespan_t delay_duration( player_t* p )
     {
       // Use same delay as in buff application
-      return p->sim->rng().gauss( p->sim->default_aura_delay, p->sim->default_aura_delay_stddev );
+      return p->sim->rng().gauss( p->sim->default_aura_delay );
     }
 
     delay_event_t( player_t* t, action_t* a, double amount ) :
@@ -1094,9 +1089,9 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     timeofday( NIGHT_TIME ),  // Depends on server time, default to night that's more common for raid hours
     zandalari_loa( PAKU ),  // Default to Paku as it has some non-zero dps benefit for all specs
     vulpera_tricks( CORROSIVE ),  // default trick for damage
-    gcd_ready( timespan_t::zero() ),
-    base_gcd( timespan_t::from_seconds( 1.5 ) ),
-    min_gcd( timespan_t::from_millis( 750 ) ),
+    gcd_ready( 0_ms ),
+    base_gcd( 1.5_s ),
+    min_gcd( 750_ms ),
     gcd_type( gcd_haste_type::NONE ),
     gcd_current_haste_value( 1.0 ),
     started_waiting( timespan_t::min() ),
@@ -1104,18 +1099,13 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     active_pets(),
     invert_scaling( 0 ),
     // Reaction
-    reaction_offset( timespan_t::from_seconds( 0.1 ) ),
-    reaction_max( timespan_t::from_seconds( 1.4 ) ),
-    reaction_mean( timespan_t::from_seconds( 0.25 ) ),
-    reaction_stddev( timespan_t::zero() ),
-    reaction_nu( timespan_t::from_seconds( 0.15 ) ),
+    reaction( 250_ms, 0_ms ),
+    reaction_offset( 100_ms ),
+    reaction_max( 1.4_s ),
+    reaction_nu( 150_ms ),
     // Latency
-    world_lag( timespan_t::from_seconds( 0.1 ) ),
-    world_lag_stddev( timespan_t::min() ),
-    brain_lag( timespan_t::zero() ),
-    brain_lag_stddev( timespan_t::min() ),
-    world_lag_override( false ),
-    world_lag_stddev_override( false ),
+    world_lag( s->world_lag ),
+    brain_lag( 0_ms, timespan_t::min() ),
     cooldown_tolerance_( timespan_t::min() ),
     dbc( new dbc_t(*(s->dbc)) ),
     dbc_override( sim->dbc_override.get() ),
@@ -1126,7 +1116,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     initial(),
     current(),
     passive_rating_multiplier( 1.0 ),
-    last_cast( timespan_t::zero() ),
+    last_cast( 0_ms),
     // Defense Mechanics
     def_dr( diminishing_returns_constants_t() ),
     // Attacks
@@ -1154,8 +1144,8 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     last_foreground_action( nullptr ),
     prev_gcd_actions( 0 ),
     off_gcdactions(),
-    cast_delay_reaction( timespan_t::zero() ),
-    cast_delay_occurred( timespan_t::zero() ),
+    cast_delay_reaction( 0_ms ),
+    cast_delay_occurred( 0_ms ),
     callbacks( s ),
     use_apl( "" ),
     // Actions
@@ -1313,8 +1303,8 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
   main_hand_weapon.slot = SLOT_MAIN_HAND;
   off_hand_weapon.slot  = SLOT_OFF_HAND;
 
-  if ( reaction_stddev == timespan_t::zero() )
-    reaction_stddev = reaction_mean * 0.2;
+  if ( reaction.stddev == 0_ms )
+    reaction.stddev = reaction.mean * 0.2;
 
   action_list_information =
       "\n"
@@ -1689,10 +1679,10 @@ void player_t::init_base_stats()
     resources.base_multiplier[ r ] *= 1.0 + racials.expansive_mind->effectN( 1 ).percent();
   }
 
-  if ( world_lag_stddev < timespan_t::zero() )
-    world_lag_stddev = world_lag * 0.1;
-  if ( brain_lag_stddev < timespan_t::zero() )
-    brain_lag_stddev = brain_lag * 0.1;
+  if ( world_lag.stddev < 0_ms )
+    world_lag.stddev = world_lag.mean * 0.1;
+  if ( brain_lag.stddev < 0_ms )
+    brain_lag.stddev = brain_lag.mean * 0.1;
 
   if ( primary_role() == ROLE_TANK )
   {
@@ -3926,6 +3916,58 @@ void player_t::init_finished()
       add_precombat_buff_state( buff, buff_state.stacks, buff_state.value, buff_state.duration );
     }
   }
+
+  buff_t* custom_buff;
+  for ( const auto& [ buff_name, c ] : custom_stat_buffs )
+  {
+    if ( c.is_percentage )
+    {
+      stat_pct_buff_type stat_pct;
+      switch ( convert_hybrid_stat( c.stat ) )
+      {
+        case STAT_CRIT_RATING:
+          stat_pct = STAT_PCT_BUFF_CRIT;
+          break;
+        case STAT_HASTE_RATING:
+          stat_pct = STAT_PCT_BUFF_HASTE;
+          break;
+        case STAT_VERSATILITY_RATING:
+          stat_pct = STAT_PCT_BUFF_VERSATILITY;
+          break;
+        case STAT_MASTERY_RATING:
+          stat_pct = STAT_PCT_BUFF_MASTERY;
+          break;
+        case STAT_STRENGTH:
+          stat_pct = STAT_PCT_BUFF_STRENGTH;
+          break;
+        case STAT_AGILITY:
+          stat_pct = STAT_PCT_BUFF_AGILITY;
+          break;
+        case STAT_STAMINA:
+          stat_pct = STAT_PCT_BUFF_STAMINA;
+          break;
+        case STAT_INTELLECT:
+          stat_pct = STAT_PCT_BUFF_INTELLECT;
+          break;
+        case STAT_SPIRIT:
+          stat_pct = STAT_PCT_BUFF_SPIRIT;
+          break;
+        default:
+          throw std::invalid_argument( fmt::format( "Unsupported 'custom_stat' percentage stat type: '{}'", util::stat_type_string( c.stat ) ) );
+      }
+
+      custom_buff = make_buff( this, buff_name )
+                      ->set_default_value( c.amount * 0.01 )
+                      ->set_pct_buff_type( stat_pct );
+      register_precombat_begin( [ custom_buff ] ( player_t* ) { custom_buff->execute(); } );
+    }
+    else
+    {
+      custom_buff = make_buff<stat_buff_t>( this, buff_name )
+                      ->add_stat( convert_hybrid_stat( c.stat ), c.amount );
+      register_precombat_begin( [ custom_buff ] ( player_t* ) { custom_buff->execute(); } );
+    }
+  }
 }
 
 void player_t::add_precombat_buff_state( buff_t* buff, int stacks, double value, timespan_t duration )
@@ -3933,7 +3975,11 @@ void player_t::add_precombat_buff_state( buff_t* buff, int stacks, double value,
   if ( !buff->allow_precombat )
     throw std::invalid_argument( fmt::format( "Invalid buff for 'override.precombat_state' option. Precombat states for '{}' are disabled.", buff->name_str ) );
 
-  register_precombat_begin( [ buff, stacks, value, duration ] ( player_t* ) { buff->execute( stacks, value, duration ); } );
+  register_precombat_begin( [ buff, stacks, value, duration ] ( player_t* )
+  {
+    buff->execute( stacks, value, duration );
+    buff->predict();
+  } );
 }
 
 void player_t::add_precombat_cooldown_state( cooldown_t* cd, timespan_t duration )
@@ -6264,7 +6310,7 @@ void player_t::trigger_ready()
 void player_t::schedule_off_gcd_ready( timespan_t delta_time )
 {
   if ( delta_time < 0_ms )
-    delta_time = rng().gauss( 100_ms, 10_ms );
+    delta_time = timespan_t::from_millis( rng().gauss( 100, 10 ) );
 
   if ( active_off_gcd_list == nullptr )
   {
@@ -6313,7 +6359,7 @@ void player_t::schedule_off_gcd_ready( timespan_t delta_time )
 void player_t::schedule_cwc_ready( timespan_t delta_time )
 {
   if ( delta_time < 0_ms )
-    delta_time = rng().gauss( 100_ms, 10_ms );
+    delta_time = timespan_t::from_millis( rng().gauss( 100, 10 ) );
 
   if ( active_cast_while_casting_list == nullptr )
   {
@@ -6348,7 +6394,7 @@ void player_t::schedule_cwc_ready( timespan_t delta_time )
   else if ( channeling )
   {
     threshold = sim->current_time() + channeling->get_dot()->remains();
-    threshold += sim->channel_lag + 4 * sim->channel_lag_stddev;
+    threshold += sim->channel_lag.mean + 4 * sim->channel_lag.stddev;
   }
   else
   {
@@ -6402,7 +6448,7 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
   started_waiting = timespan_t::min();
 
   timespan_t gcd_adjust = gcd_ready - ( sim->current_time() + delta_time );
-  if ( gcd_adjust > timespan_t::zero() )
+  if ( gcd_adjust > 0_ms )
     delta_time += gcd_adjust;
 
   if ( waiting )
@@ -6415,17 +6461,16 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
   }
   else
   {
-    timespan_t lag = timespan_t::zero();
+    timespan_t lag = 0_ms;
 
     if ( last_foreground_action )
     {
-      if ( last_foreground_action->ability_lag > timespan_t::zero() )
+      if ( last_foreground_action->ability_lag.mean > 0_ms )
       {
-        timespan_t ability_lag =
-            rng().gauss( last_foreground_action->ability_lag, last_foreground_action->ability_lag_stddev );
-        timespan_t gcd_lag = rng().gauss( sim->gcd_lag, sim->gcd_lag_stddev );
+        timespan_t ability_lag = rng().gauss( last_foreground_action->ability_lag );
+        timespan_t gcd_lag = rng().gauss( sim->gcd_lag );
         timespan_t diff    = ( gcd_ready + gcd_lag ) - ( sim->current_time() + ability_lag );
-        if ( diff > timespan_t::zero() && sim->strict_gcd_queue )
+        if ( diff > 0_ms && sim->strict_gcd_queue )
         {
           lag = gcd_lag;
         }
@@ -6437,16 +6482,16 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
       }
       else if ( last_foreground_action->channeled && !last_foreground_action->interrupt_immediate_occurred )
       {
-        lag = rng().gauss( sim->channel_lag, sim->channel_lag_stddev );
+        lag = rng().gauss( sim->channel_lag );
       }
-      else if ( last_foreground_action->gcd() == timespan_t::zero() )
+      else if ( last_foreground_action->gcd() == 0_ms )
       {
-        lag = timespan_t::zero();
+        lag = 0_ms;
       }
       else
       {
-        timespan_t gcd_lag   = rng().gauss( sim->gcd_lag, sim->gcd_lag_stddev );
-        timespan_t queue_lag = rng().gauss( sim->queue_lag, sim->queue_lag_stddev );
+        timespan_t gcd_lag   = rng().gauss( sim->gcd_lag );
+        timespan_t queue_lag = rng().gauss( sim->queue_lag );
 
         timespan_t diff = ( gcd_ready + gcd_lag ) - ( sim->current_time() + queue_lag );
 
@@ -6462,16 +6507,16 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
       }
     }
 
-    if ( lag < timespan_t::zero() )
-      lag = timespan_t::zero();
+    if ( lag < 0_ms )
+      lag = 0_ms;
 
     if ( type == PLAYER_GUARDIAN )
-      lag = timespan_t::zero();  // Guardians do not seem to feel the effects of queue/gcd lag in WoD.
+      lag = 0_ms;  // Guardians do not seem to feel the effects of queue/gcd lag in WoD.
 
     delta_time += lag;
   }
 
-  if ( last_foreground_action && last_foreground_action->gcd() > timespan_t::zero() )
+  if ( last_foreground_action && last_foreground_action->gcd() > 0_ms )
   {
     // This is why "total_execute_time" is not tracked per-target!
     last_foreground_action->stats->iteration_total_execute_time += delta_time;
@@ -6479,18 +6524,18 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
 
   readying = make_event<player_ready_event_t>( *sim, *this, delta_time );
 
-  if ( was_executing && was_executing->gcd() > timespan_t::zero() && !was_executing->background &&
+  if ( was_executing && was_executing->gcd() > 0_ms && !was_executing->background &&
        !was_executing->proc && !was_executing->repeating )
   {
     // Record the last ability use time for cast_react
     cast_delay_occurred = readying->occurs();
     if ( !is_pet() )
     {
-      cast_delay_reaction = rng().gauss( brain_lag, brain_lag_stddev );
+      cast_delay_reaction = rng().gauss( brain_lag );
     }
     else
     {
-      cast_delay_reaction = timespan_t::zero();
+      cast_delay_reaction = 0_ms;
     }
 
     sim->print_debug( "{} {} schedule_ready(): cast_finishes={} cast_delay={}", *this,
@@ -6603,7 +6648,7 @@ void player_t::arise()
 
 timespan_t player_t::available() const
 {
-  return rng().gauss( 100_ms, 10_ms );
+  return timespan_t::from_millis( rng().gauss( 100, 10 ) );
 }
 
 /**
@@ -7188,7 +7233,7 @@ timespan_t player_t::time_to_percent( double percent ) const
 
 timespan_t player_t::total_reaction_time()
 {
-  return std::min( reaction_max, reaction_offset + rng().exgauss( reaction_mean, reaction_stddev, reaction_nu ) );
+  return std::min( reaction_max, reaction_offset + rng().exgauss( reaction, reaction_nu ) );
 }
 
 void player_t::stat_gain( stat_e stat, double amount, gain_t* gain, action_t* action, bool temporary_stat )
@@ -12635,6 +12680,7 @@ void player_t::copy_from( player_t* source )
   use_apl              = source->use_apl;
   apl_variable_map     = source->apl_variable_map;
   precombat_state_map  = source->precombat_state_map;
+  custom_stat_buffs    = source->custom_stat_buffs;
 
   meta_gem = source->meta_gem;
   for ( size_t i = 0; i < items.size(); i++ )
@@ -12849,8 +12895,8 @@ void player_t::create_options()
   add_option( opt_string( "skip_actions", action_list_skip ) );
   add_option( opt_string( "modify_action", modify_action ) );
   add_option( opt_string( "use_apl", use_apl ) );
-  add_option( opt_timespan( "reaction_time_mean", reaction_mean ) );
-  add_option( opt_timespan( "reaction_time_stddev", reaction_stddev ) );
+  add_option( opt_timespan( "reaction_time_mean", reaction.mean ) );
+  add_option( opt_timespan( "reaction_time_stddev", reaction.stddev ) );
   add_option( opt_timespan( "reaction_time_nu", reaction_nu ) );
   add_option( opt_timespan( "reaction_time_offset", reaction_offset ) );
   add_option( opt_timespan( "reaction_time_max", reaction_max ) );
@@ -12862,6 +12908,75 @@ void player_t::create_options()
       if ( splits.size() != 2 )
         throw std::invalid_argument( fmt::format( "Invalid 'override.precombat_state' option: '{}'", value ) );
       precombat_state_map[ splits[ 0 ] ] = splits[ 1 ];
+      return true;
+    } ) );
+  add_option( opt_func( "set_custom_buff",
+    [ this ] ( sim_t*, util::string_view, util::string_view value ) {
+      if ( value.empty() )
+        return true;
+
+      auto splits = util::string_split<std::string>( value, "," );
+      std::string name{};
+      bool has_data = false;
+      std::string stat_value{};
+      for ( auto s : splits )
+      {
+        auto sub_splits = util::string_split<std::string>( s, "=" );
+
+        if ( sub_splits.size() == 1 )
+        {
+          name = fmt::format( "custom_buff_{}", sub_splits[ 0 ] );
+          continue;
+        }
+
+        if ( sub_splits.size() != 2 )
+          throw std::invalid_argument( fmt::format( "Invalid 'custom_stat_buff' sub option: '{}'", s ) );
+
+        if ( sub_splits[ 0 ] == "name" )
+        {
+
+        }
+        else if ( sub_splits[ 0 ] == "stat_value" )
+        {
+          stat_value = sub_splits[ 1 ];
+          has_data = true;
+        }
+        else
+        {
+          throw std::invalid_argument( fmt::format( "Unsupported 'custom_stat_buff' option: '{}'", sub_splits[ 0 ] ) );
+        }
+      }
+
+      if ( name.empty() )
+        throw std::invalid_argument( fmt::format( "Invalid 'custom_stat_buff' usage, the buff must have a name: '{}'", value ) );
+
+      // If the custom buff has no data, remove any existing buffs with the name.
+      if ( !has_data )
+      {
+        custom_stat_buffs.erase( name );
+        return true;
+      }
+
+      // Parse the data for the stat buff
+      if ( !stat_value.empty() )
+      {
+        splits = util::string_split<std::string>( stat_value, "_" );
+        if ( splits.size() != 2 )
+          throw std::invalid_argument( fmt::format( "Invalid 'custom_stat_buff' value option: '{}'", stat_value ) );
+        stat_e stat = util::parse_stat_type( splits[ 1 ] );
+        if ( stat == STAT_NONE )
+          throw std::invalid_argument( fmt::format( "Invalid 'custom_stat_buff' stat type: '{}'", splits[ 1 ] ) );
+        bool is_percentage = false;
+        if ( splits[ 0 ].back() == '%' )
+        {
+          // The stat type will be checked later when creating the buff to ensure that it supports percentage buffs.
+          is_percentage = true;
+          splits[ 0 ].pop_back();
+        }
+        double amount = util::to_double( splits[ 0 ] );
+        custom_stat_buffs[ name ] = { stat, amount, is_percentage };
+      }
+
       return true;
     } ) );
 
@@ -12995,6 +13110,10 @@ void player_t::create_options()
 
   // The War Within options
   add_option( opt_string( "thewarwithin.sikran_shadow_arsenal_stance", thewarwithin_opts.sikrans_shadow_arsenal_stance ) );
+  add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_initial_primary_stacks", thewarwithin_opts.ovinaxs_mercurial_egg_initial_primary_stacks, 0, 30 ) );
+  add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_initial_secondary_stacks", thewarwithin_opts.ovinaxs_mercurial_egg_initial_secondary_stacks, 0, 30 ) );
+  add_option( opt_timespan( "thewarwithin.entropic_skardyn_core_pickup_time", thewarwithin_opts.entropic_skardyn_core_pickup_time, 0_ms, 30_s ) );
+  add_option( opt_timespan( "thewarwithin.entropic_skardyn_core_pickup_time_stddev", thewarwithin_opts.entropic_skardyn_core_pickup_time_stddev, 0_ms, 30_s ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

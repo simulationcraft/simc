@@ -298,7 +298,7 @@ struct buff_delay_t : public buff_event_t
   int stacks;
 
   buff_delay_t( buff_t* b, int stacks, double value, timespan_t d )
-    : buff_event_t( b, b->rng().gauss( b->sim->default_aura_delay, b->sim->default_aura_delay_stddev ) ),
+    : buff_event_t( b, b->rng().gauss( b->sim->default_aura_delay ) ),
       value( value ),
       duration( d ),
       stacks( stacks )
@@ -2003,7 +2003,7 @@ bool buff_t::trigger( int stacks, double value, double chance, timespan_t durati
   // by allowing procs that happen during the buff's already existing delay period to trigger at the same time as the
   // first delayed proc will happen.
   if ( ( !activated || stack_behavior == buff_stack_behavior::ASYNCHRONOUS ) && player && player->in_combat &&
-       sim->default_aura_delay > timespan_t::zero() )
+       sim->default_aura_delay.mean > 0_ms )
   {
     // Since we're storing stacks as value in buff_delay_t, _resolve default values first
     if ( reverse && current_stack > 0 )
@@ -2182,9 +2182,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
       // When Strength of Soul removes the Weakened Soul debuff completely,
       // there's a delay before the server notifies the client. Modeling
       // this effect as a world lag.
-      timespan_t lag  = p->world_lag_override ? p->world_lag : sim->world_lag;
-      timespan_t dev  = p->world_lag_stddev_override ? p->world_lag_stddev : sim->world_lag_stddev;
-      reschedule_time = rng().gauss( lag, dev );
+      reschedule_time = rng().gauss( p->world_lag );
     }
 
     event_t::cancel( expiration.front() );
@@ -3307,6 +3305,11 @@ stat_buff_t* stat_buff_t::set_stat_from_effect_type( effect_subtype_t type, doub
   return add_stat_from_effect_type( type, a, c );
 }
 
+double stat_buff_t::buff_stat_stack_amount( const buff_stat_t& buff_stat, int s ) const
+{
+  return buff_stat.stack_amount( s );
+}
+
 void stat_buff_t::bump( int stacks, double /* value */ )
 {
   buff_t::bump( stacks );
@@ -3316,7 +3319,7 @@ void stat_buff_t::bump( int stacks, double /* value */ )
     if ( buff_stat.check_func && !buff_stat.check_func( *this ) )
       continue;
 
-    double delta = buff_stat.stack_amount( current_stack ) - buff_stat.current_value;
+    double delta = buff_stat_stack_amount( buff_stat, current_stack ) - buff_stat.current_value;
     if ( delta > 0 )
     {
       player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
@@ -3346,7 +3349,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
 
     for ( auto& buff_stat : stats )
     {
-      double delta = buff_stat.current_value - buff_stat.stack_amount( new_stack );
+      double delta = buff_stat.current_value - buff_stat_stack_amount( buff_stat, new_stack );
       if ( delta > 0 )
       {
         player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );

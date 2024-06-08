@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.55000
-static const std::array<spelltext_data_t, 26116> __spelltext_data { {
+static const std::array<spelltext_data_t, 26118> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -24815,6 +24815,7 @@ static const std::array<spelltext_data_t, 26116> __spelltext_data { {
   { 452198, "When a spell consumes Clearcasting, its damage is increased by $s1%.", 0, 0 },
   { 452201, "Deal $s1 Nature damage to your target, and ${$m1*$m2/100} Nature damage to other enemy targets within $A1 yds of your target.", 0, 0 },
   { 452225, "$@spelldesc451024", 0, 0 },
+  { 452226, "Casting a harmful spell or ability launches one of your spiderlings at the enemy inflicting $443541s2 Nature damage over $12096d.", 0, 0 },
   { 452227, "$@spelldesc443541", 0, 0 },
   { 452229, "$@spelldesc443541", "Suffering $w1 Nature damage every second.", 0 },
   { 452244, "$@spelldesc383328", "Hammer of Wrath can be used on any target.", 0 },
@@ -25722,6 +25723,7 @@ static const std::array<spelltext_data_t, 26116> __spelltext_data { {
   { 457193, "Autoattacks against Marked targets deal additional 15% haste+15% mastery Plague damage.", 0, 0 },
   { 457236, "$@spelldesc457214", 0, 0 },
   { 457257, "Blackout Kick increases your damage dealt by $s1% for $d, stacking up to $u, and has a chance to reset the cooldown of Keg Smash and make its next cast cost no energy.", "Damage and healing increased by $s1%.", 0 },
+  { 457271, "Blackout Kick increases your damage dealt by $s1% for $d, stacking up to $u, and has a chance to reset the cooldown of Keg Smash and make its next cast cost no energy.", "Energy cost of your next Keg Smash reduced by $s1%.", 0 },
   { 457273, "$@spelldesc457056", "All $?c1[Nature][Shadow] damage dealt increased by $w1%.", 0 },
   { 457280, "$@spelldesc457058", "Your next $?c1[Envenom][Eviscerate] cast with maximum combo points is guaranteed to critically strike, deal $w2% additional damage, and apply $w3 stacks of Deathstalker's Mark to the target.", 0 },
   { 457282, "$@spelldesc452276\r\n\r\n$@spellicon457049 $@spellname457049  \r\nIf you spend at least 10 seconds eating you will become $@spellname457049 and gain ${$456961s4*($456961s1/10)} of your lowest secondary stat for $457170d.", 0, 0 },

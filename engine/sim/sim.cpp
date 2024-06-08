@@ -1256,8 +1256,7 @@ struct heartbeat_event_t : public event_t
       sim().heartbeat_event_callback();
      }
 
-     make_event<heartbeat_event_t>( sim(), sim(),
-                                    rng().gauss( timespan_t::from_millis( 5250 ), timespan_t::from_millis( 100 ) ) );
+     make_event<heartbeat_event_t>( sim(), sim(), timespan_t::from_millis( rng().gauss( 5250, 100 ) ) );
    }
  };
 
@@ -1456,19 +1455,15 @@ sim_t::sim_t()
     healing( 0 ),
     global_spawn_index( 0 ),
     max_player_level( -1 ),
-    queue_lag( 5_ms ),
-    queue_lag_stddev( 0_ms ),
-    gcd_lag( 150_ms ),
-    gcd_lag_stddev( 0_ms ),
-    channel_lag( 250_ms ),
-    channel_lag_stddev( 0_ms ),
+    queue_lag( 5_ms, 0_ms ),
+    gcd_lag( 150_ms, 0_ms ),
+    channel_lag( 250_ms, 0_ms ),
     queue_gcd_reduction( 100_ms ),
     default_cooldown_tolerance( 250_ms ),
     strict_gcd_queue( false ),
     confidence( 0.95 ),
     confidence_estimator( 0.0 ),
-    world_lag( 100_ms ),
-    world_lag_stddev( timespan_t::min() ),
+    world_lag( 100_ms, timespan_t::min() ),
     travel_variance( 0 ),
     default_skill( 1.0 ),
     reaction_time( 500_ms ),
@@ -1528,8 +1523,7 @@ sim_t::sim_t()
     fight_style(),
     add_waves( 0 ),
     overrides( overrides_t() ),
-    default_aura_delay( 30_ms ),
-    default_aura_delay_stddev( 5_ms ),
+    default_aura_delay( 30_ms, 5_ms ),
     azerite_status( azerite_control::DISABLED_ALL ),
     progress_bar( *this ),
     scaling( new scale_factor_control_t( this ) ),
@@ -2716,10 +2710,10 @@ void sim_t::init()
   }
   _rng.seed( seed + thread_index );
 
-  if (   queue_lag_stddev == timespan_t::zero() )   queue_lag_stddev =   queue_lag * 0.25;
-  if (     gcd_lag_stddev == timespan_t::zero() )     gcd_lag_stddev =     gcd_lag * 0.25;
-  if ( channel_lag_stddev == timespan_t::zero() ) channel_lag_stddev = channel_lag * 0.25;
-  if ( world_lag_stddev    < timespan_t::zero() ) world_lag_stddev   =   world_lag * 0.1;
+  if (   queue_lag.stddev == 0_ms )   queue_lag.stddev =   queue_lag.mean * 0.25;
+  if (     gcd_lag.stddev == 0_ms )     gcd_lag.stddev =     gcd_lag.mean * 0.25;
+  if ( channel_lag.stddev == 0_ms ) channel_lag.stddev = channel_lag.mean * 0.25;
+  if (   world_lag.stddev  < 0_ms )   world_lag.stddev =   world_lag.mean * 0.1;
 
   confidence_estimator = rng::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
@@ -3472,10 +3466,10 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
     } );
 
   if ( name_str == "channel_lag" )
-    return expr_t::create_constant( name_str, channel_lag );
+    return expr_t::create_constant( name_str, channel_lag.mean );
 
   if ( name_str == "channel_lag_stddev" )
-    return expr_t::create_constant( name_str, channel_lag_stddev );
+    return expr_t::create_constant( name_str, channel_lag.stddev );
 
   if ( util::str_compare_ci( name_str, "enemies" ) )
     return expr_t::create_constant( name_str, enemy_targets );
@@ -3698,19 +3692,19 @@ void sim_t::create_options()
   add_option( opt_func( "override.spell_data", parse_override_spell_data ) );
   add_option( opt_func( "override.target_health", parse_override_target_health ) );
   // Lag
-  add_option( opt_timespan( "channel_lag", channel_lag ) );
-  add_option( opt_timespan( "channel_lag_stddev", channel_lag_stddev ) );
-  add_option( opt_timespan( "gcd_lag", gcd_lag ) );
-  add_option( opt_timespan( "gcd_lag_stddev", gcd_lag_stddev ) );
-  add_option( opt_timespan( "queue_lag", queue_lag ) );
-  add_option( opt_timespan( "queue_lag_stddev", queue_lag_stddev ) );
+  add_option( opt_timespan( "channel_lag", channel_lag.mean ) );
+  add_option( opt_timespan( "channel_lag_stddev", channel_lag.stddev ) );
+  add_option( opt_timespan( "gcd_lag", gcd_lag.mean ) );
+  add_option( opt_timespan( "gcd_lag_stddev", gcd_lag.stddev ) );
+  add_option( opt_timespan( "queue_lag", queue_lag.mean ) );
+  add_option( opt_timespan( "queue_lag_stddev", queue_lag.stddev ) );
   add_option( opt_timespan( "queue_gcd_reduction", queue_gcd_reduction ) );
   add_option( opt_bool( "strict_gcd_queue", strict_gcd_queue ) );
   add_option( opt_timespan( "default_cooldown_tolerance", default_cooldown_tolerance ) );
-  add_option( opt_timespan( "default_world_lag", world_lag ) );
-  add_option( opt_timespan( "default_world_lag_stddev", world_lag_stddev ) );
-  add_option( opt_timespan( "default_aura_delay", default_aura_delay ) );
-  add_option( opt_timespan( "default_aura_delay_stddev", default_aura_delay_stddev ) );
+  add_option( opt_timespan( "default_world_lag", world_lag.mean ) );
+  add_option( opt_timespan( "default_world_lag_stddev", world_lag.stddev ) );
+  add_option( opt_timespan( "default_aura_delay", default_aura_delay.mean ) );
+  add_option( opt_timespan( "default_aura_delay_stddev", default_aura_delay.stddev ) );
   add_option( opt_float( "default_skill", default_skill ) );
   add_option( opt_timespan( "reaction_time", reaction_time ) );
   add_option( opt_float( "travel_variance", travel_variance ) );

@@ -1821,7 +1821,8 @@ public:
       }
     }
 
-    if ( p()->talent.lunation.ok() && !ab::proc && !ab::background && dbc::is_school( ab::school, SCHOOL_ARCANE ) )
+    if ( p()->talent.lunation.ok() && has_flag( flag_e::FOREGROUND ) &&
+         dbc::has_common_school( ab::school, SCHOOL_ARCANE ) )
     {
       assert( p()->talent.lunation->effects().size() == 3 );
       auto eff = p()->talent.lunation->effects().begin();
@@ -2063,7 +2064,7 @@ struct trigger_atmospheric_exposure_t : public BASE
     BASE::impact( s );
 
     if ( action_t::result_is_hit( s->result ) )
-      BASE::td( s->target )->debuff.atmospheric_exposure->trigger();
+      BASE::td( s->target )->debuff.atmospheric_exposure->trigger( this );
   }
 };
 
@@ -7762,7 +7763,13 @@ struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclips
       if ( const auto& eff = p->sets->set( DRUID_BALANCE, TWW1, B4 )->effectN( 2 ); !energize->modified_by( eff ) )
       {
         energize->add_parse_entry()
-          .set_func( [ p ] { return p->eclipse_handler.in_lunar(); } )
+          .set_buff( p->buff.eclipse_lunar )
+          .set_flat( true )
+          .set_value( eff.base_value() )
+          .set_eff( &eff );
+
+        energize->add_parse_entry()
+          .set_buff( p->buff.eclipse_solar )
           .set_flat( true )
           .set_value( eff.base_value() )
           .set_eff( &eff );
@@ -8080,6 +8087,7 @@ struct orbital_strike_t : public druid_spell_t
 
   orbital_strike_t( druid_t* p ) : druid_spell_t( "orbital_strike", p, p->find_spell( 361237 ) )
   {
+    proc = true;
     aoe = -1;
     travel_speed = 75.0;  // guesstimate
 
@@ -8277,7 +8285,13 @@ struct wrath_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclipse_e
       if ( const auto& eff = p->sets->set( DRUID_BALANCE, TWW1, B4 )->effectN( 1 ); !energize->modified_by( eff ) )
       {
         energize->add_parse_entry()
-         .set_func( [ p ] { return p->eclipse_handler.in_solar(); } )
+         .set_buff( p->buff.eclipse_lunar )
+         .set_flat( true )
+         .set_value( eff.base_value() )
+         .set_eff( &eff );
+
+        energize->add_parse_entry()
+         .set_buff( p->buff.eclipse_solar )
          .set_flat( true )
          .set_value( eff.base_value() )
          .set_eff( &eff );
@@ -10008,13 +10022,15 @@ void druid_t::create_buffs()
   buff.ca_inc->set_cooldown( 0_ms )
     ->apply_affecting_aura( talent.greater_alignment )
     ->apply_affecting_aura( talent.potent_enchantments )
-    ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+    ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
       if ( !old_ )
       {
-        buff.eclipse_lunar->trigger( 0_ms );
+        auto d = b->remains();
+
+        buff.eclipse_lunar->trigger( d );
         eclipse_handler.update_eclipse( eclipse_e::LUNAR );
 
-        buff.eclipse_solar->trigger( 0_ms );
+        buff.eclipse_solar->trigger( d );
         eclipse_handler.update_eclipse( eclipse_e::SOLAR );
 
         if ( active.orbital_strike )
@@ -12585,7 +12601,8 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   }
 
   debuff.atmospheric_exposure = make_debuff( source.talent.atmospheric_exposure.ok(),
-    *this, "atmospheric_exposure", source.spec.atmospheric_exposure );
+    *this, "atmospheric_exposure", source.spec.atmospheric_exposure )
+      ->set_trigger_spell( source.talent.atmospheric_exposure );
 
   debuff.bloodseeker_vines =
     make_debuff( source.talent.thriving_growth.ok(), *this, "bloodseeker_vines_debuff", source.spec.bloodseeker_vines )

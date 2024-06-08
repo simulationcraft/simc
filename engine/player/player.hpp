@@ -20,6 +20,7 @@
 #include "sc_enums.hpp"
 #include "talent.hpp"
 #include "util/cache.hpp"
+#include "util/rng.hpp"
 #include "weapon.hpp"
 
 #include <map>
@@ -74,9 +75,6 @@ struct ground_aoe_params_t;
 namespace azerite {
     class azerite_state_t;
     class azerite_essence_state_t;
-}
-namespace rng {
-    struct rng_t;
 }
 namespace io {
   class ofstream;
@@ -168,11 +166,10 @@ struct player_t : public actor_t
   int         invert_scaling;
 
   // Reaction
-  timespan_t  reaction_offset, reaction_max, reaction_mean, reaction_stddev, reaction_nu;
+  rng::truncated_gauss_t reaction;
+  timespan_t  reaction_offset, reaction_max, reaction_nu;
   // Latency
-  timespan_t  world_lag, world_lag_stddev;
-  timespan_t  brain_lag, brain_lag_stddev;
-  bool        world_lag_override, world_lag_stddev_override;
+  rng::truncated_gauss_t world_lag, brain_lag;
   timespan_t  cooldown_tolerance_;
 
   // Data access
@@ -337,6 +334,15 @@ struct player_t : public actor_t
 
   // Precombat State
   std::unordered_map<std::string, std::string> precombat_state_map;
+
+  // Custom Buffs
+  struct custom_stat_buff_t
+  {
+    stat_e stat;
+    double amount;
+    bool is_percentage;
+  };
+  std::unordered_map<std::string, custom_stat_buff_t> custom_stat_buffs;
 
   bool quiet;
   // Reporting
@@ -561,6 +567,7 @@ struct player_t : public actor_t
 
     // 11.0 The War Within
     buff_t* surekian_grace;  // sik'ran's shadow arsenal barrage movement speed buff
+    buff_t* earthen_ire;     // sigil of algari concordance tank buff
   } buffs;
 
   struct debuffs_t
@@ -818,6 +825,12 @@ struct player_t : public actor_t
   {
     // Starting stance for Sik'rans Shadow Arsenal
     player_option_t<std::string> sikrans_shadow_arsenal_stance = "";
+    // starting stacks for Ovinax's Mercurial Egg
+    int ovinaxs_mercurial_egg_initial_primary_stacks = 30;
+    int ovinaxs_mercurial_egg_initial_secondary_stacks = 0;
+    // time to pick up Entropic Skardyn Core fragment
+    timespan_t entropic_skardyn_core_pickup_time = 4_s;
+    timespan_t entropic_skardyn_core_pickup_time_stddev = 1_s;
   } thewarwithin_opts;
 
 private:

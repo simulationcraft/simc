@@ -651,6 +651,11 @@ public:
     propagate_const<buff_t *> brewmaster_t31_4p_accumulator;
     propagate_const<buff_t *> brewmaster_t31_4p_fake_absorb;
     propagate_const<buff_t *> blackout_reinforcement;
+
+    // T32 Set Bonus
+    propagate_const<buff_t *> tiger_strikes;
+    propagate_const<buff_t *> tigers_ferocity;
+    propagate_const<buff_t *> flow_of_battle;
   } buff;
 
 public:
@@ -1393,6 +1398,10 @@ public:
     const spell_data_t *charred_dreams_dmg;
     const spell_data_t *charred_dreams_heal;
     const spell_data_t *t31_celestial_brew;
+
+    // Tier 33
+    const spell_data_t *t33_ww_4pc;
+
   } passives;
 
   // RPPM objects

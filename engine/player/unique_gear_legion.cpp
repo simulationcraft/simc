@@ -2141,7 +2141,7 @@ struct bulwark_of_flame_t : public absorb_buff_t
     // the amount of lag + how often the key is spammed until the next ability is used.
     // Modeling this as 2 * lag for now. Might increase to 3 * lag after looking at logs of people using the trinket
     // (same as Draught of Souls)
-    timespan_t time = ( player -> world_lag_override ? player -> world_lag : sim -> world_lag ) * 2.0;
+    timespan_t time = player -> world_lag.mean * 2.0;
     if ( ! player -> readying )
     {
       player -> schedule_ready( time );
@@ -3775,7 +3775,7 @@ void item::draught_of_souls( special_effect_t& effect )
         // Due to the client not allowing the ability queue here, we have to wait
         // the amount of lag + how often the key is spammed until the next ability is used.
         // Modeling this as 2 * lag for now. Might increase to 3 * lag after looking at logs of people using the trinket.
-        timespan_t time = ( player -> world_lag_override ? player -> world_lag : sim -> world_lag ) * 2.0;
+        timespan_t time = player -> world_lag.mean * 2.0;
         player -> schedule_ready( time );
       }
     }

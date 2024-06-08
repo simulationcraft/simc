@@ -29,6 +29,36 @@ namespace rng {
 double stdnormal_cdf( double u );
 double stdnormal_inv( double u );
 
+// CDF cached truncated timespan_t gaussian distribution
+// This is ~2x slower than non-truncated basic_rng_t::gauss( double, double )
+struct truncated_gauss_t
+{
+private:
+  double _min_cdf = 0.0;
+  double _max_cdf = 0.0;
+  bool _cdf_set = false;
+#ifndef NDEBUG
+  size_t _count = 0;
+#endif
+
+public:
+  timespan_t mean;
+  timespan_t stddev;
+  timespan_t min;
+  timespan_t max;
+
+  truncated_gauss_t( timespan_t m, timespan_t s, timespan_t min = 0_ms, timespan_t max = timespan_t::min() )
+    : mean( m ), stddev( s ), min( min ), max( max )
+  {}
+
+  double min_cdf() const { return _min_cdf; }
+  double max_cdf() const { return _max_cdf; }
+  void calculate_cdf();
+#ifndef NDEBUG
+  size_t count() const { return _count; }
+#endif
+};
+
 /**\ingroup SC_RNG
  * @brief Random number generator wrapper around an rng engine
  *
@@ -85,10 +115,10 @@ public:
     return range<T>( T{}, max );
   }
 
-  /// Gaussian Distribution
+  /// Gaussian Distribution, Non-truncated
   double gauss( double mean, double stddev );
 
-  // Truncated Gaussian Distribution
+  /// Truncated Gaussian Distribution
   double gauss_ab( double mean, double stddev, double min, double max );
   double gauss_a( double mean, double stddev, double min );
   double gauss_b( double mean, double stddev, double max );
@@ -115,7 +145,7 @@ public:
   /// Timespan uniform distribution in the range [min..max)
   timespan_t range( timespan_t min, timespan_t max );
 
-  /// Timespan Gaussian Distribution
+  /// Timespan Truncated Gaussian Distribution
   timespan_t gauss( timespan_t mean, timespan_t stddev );
   timespan_t gauss_ab( timespan_t mean, timespan_t stddev, timespan_t min, timespan_t max );
   timespan_t gauss_a( timespan_t mean, timespan_t stddev, timespan_t min );
@@ -127,8 +157,19 @@ public:
   /// Timespan exponentially Modified Gaussian Distribution
   timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu );
 
+  /// Timespan CDF-cached Truncated Gaussian Distribution
+  timespan_t gauss( truncated_gauss_t& g );
+  timespan_t exgauss( truncated_gauss_t& g, timespan_t nu );
+
+  /// Timespan CDF-cached Truncated Gaussian Distribution with compile-time mean and stddev in milliseconds
+  template <unsigned MEAN, unsigned STDDEV>
+  timespan_t gauss();
+
   /// Shuffle a range: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
-  template<typename T, typename std::enable_if_t<std::is_same_v<typename std::iterator_traits<T>::iterator_category, std::random_access_iterator_tag>, int> = 0>
+  template <
+    typename T,
+    typename std::enable_if_t<
+      std::is_same_v<typename std::iterator_traits<T>::iterator_category, std::random_access_iterator_tag>, int> = 0>
   void shuffle( T first, T last )
   {
     size_t n = last - first;
@@ -369,6 +410,46 @@ template <typename Engine>
 timespan_t basic_rng_t<Engine>::exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
 {
   return gauss( mean, stddev ) + exponential( nu );
+}
+
+template <typename Engine>
+timespan_t basic_rng_t<Engine>::gauss( truncated_gauss_t& g )
+{
+  assert( g.stddev >= 0_ms && "Stddev must be non-negative." );
+  if ( g.stddev == 0_ms )
+    return g.mean;
+
+  g.calculate_cdf();
+  
+  double rescaled = g.min_cdf() + real() * ( g.max_cdf() - g.min_cdf() );
+  return timespan_t::from_native( timespan_t::to_native( g.mean ) +
+                                  timespan_t::to_native( g.stddev ) * stdnormal_inv( rescaled ) );
+}
+
+template <typename Engine>
+timespan_t basic_rng_t<Engine>::exgauss( truncated_gauss_t& g, timespan_t nu )
+{
+  return gauss( g ) + exponential( nu );
+}
+
+template <typename Engine>
+template <unsigned MEAN, unsigned STDDEV>
+timespan_t basic_rng_t<Engine>::gauss()
+{
+  if ( STDDEV == 0 )
+    return timespan_t::from_native( MEAN );
+
+  static constexpr auto mean = timespan_t::to_native( timespan_t::from_millis( MEAN ) );
+  static constexpr auto stddev = timespan_t::to_native( timespan_t::from_millis( STDDEV ) );
+
+  static const double min_cdf = stdnormal_cdf( ( 0.0 - mean ) / stddev );
+  static const double max_cdf = stdnormal_cdf( ( std::numeric_limits<double>::infinity() - mean ) / stddev );
+
+  assert( min_cdf == stdnormal_cdf( ( 0.0 - mean ) / stddev ) );
+  assert( max_cdf == stdnormal_cdf( ( std::numeric_limits<double>::infinity() - mean ) / stddev ) );
+
+  double rescaled = min_cdf + real() * ( max_cdf - min_cdf );
+  return timespan_t::from_native( mean + stddev * stdnormal_inv( rescaled ) );
 }
 
 /// RNG Engines

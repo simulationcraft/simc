@@ -2858,7 +2858,7 @@ void manic_grieftorch( special_effect_t& effect )
       proc_spell_t::last_tick( d );
 
       if ( was_channeling && !player->readying )
-        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
     }
   };
 
@@ -4216,8 +4216,7 @@ void anshuul_the_cosmic_wanderer( special_effect_t& effect )
       interrupt_auto_attack         = false;
       effect                        = &e;
       // This is actually a cast, you can queue spells out of it - Do not incur channel lag.
-      ability_lag        = sim->queue_lag;
-      ability_lag_stddev = sim->queue_lag_stddev;
+      ability_lag = sim->queue_lag;
       // Child action handles travel time
       min_travel_time = travel_speed = travel_delay = 0;
     }
@@ -6149,11 +6148,14 @@ void ashes_of_the_embersoul( special_effect_t& e )
   {
     stat_buff_t* buff;
     bool available;
+    rng::truncated_gauss_t interval;
 
     blazing_soul_t( const special_effect_t& e )
       : generic_proc_t( e, "blazing_soul_proc", e.player->find_spell( 426898 ) ),
         buff( make_buff<stat_buff_t>( e.player, "blazing_soul", e.player->find_spell( 426898 ) ) ),
-        available( true )
+        available( true ),
+        interval( e.player->sim->dragonflight_opts.embersoul_dire_interval,
+                  e.player->sim->dragonflight_opts.embersoul_dire_interval_stddev )
     {
       buff->set_stat_from_effect( 1, e.player->find_spell( 423021 )->effectN( 1 ).average( e.item ) );
     }
@@ -6174,15 +6176,13 @@ void ashes_of_the_embersoul( special_effect_t& e )
 
   if ( e.player->sim->dragonflight_opts.embersoul_dire_chance > 0 )
   {
-    auto dire_buff = create_proc_action<blazing_soul_t>( "blazing_soul_proc", e );
+    auto dire_buff = static_cast<blazing_soul_t*>( create_proc_action<blazing_soul_t>( "blazing_soul_proc", e ) );
 
     e.player->register_combat_begin( [ dire_buff ]( player_t* p ) {
       auto pct = p->sim->dragonflight_opts.embersoul_dire_chance;
-      auto dur = p->sim->dragonflight_opts.embersoul_dire_interval;
-      auto std = p->sim->dragonflight_opts.embersoul_dire_interval_stddev;
 
       make_repeating_event( *p->sim,
-          [ p, dur, std ] { return p->rng().gauss( dur, std ); },
+          [ p, dire_buff ] { return p->rng().gauss( dire_buff->interval ); },
           [ dire_buff, p, pct ] {
             if ( dire_buff->ready() && p->rng().roll( pct ) )
               dire_buff->execute();
@@ -6193,7 +6193,7 @@ void ashes_of_the_embersoul( special_effect_t& e )
       if ( !c )
       {
         p->sim->print_debug( "{} leaves combat, resetting Blazing Soul", p->name(), c );
-        debug_cast<blazing_soul_t*>( dire_buff ) -> available = true;
+        dire_buff->available = true;
       }
     } );
   }
@@ -6541,8 +6541,7 @@ void belorrelos_the_sunstone( special_effect_t& effect )
       effect                        = &e;
       self_damage                   = _self_damage;
       // This is actually a cast, you can queue spells out of it - Do not incur channel lag.
-      ability_lag        = sim->queue_lag;
-      ability_lag_stddev = sim->queue_lag_stddev;
+      ability_lag = sim->queue_lag;
       // Child action handles travel time
       min_travel_time = travel_speed = travel_delay = 0;
     }
@@ -8429,7 +8428,7 @@ void fyralath_the_dream_render( special_effect_t& e )
       proc_spell_t::last_tick( d );
 
       if ( was_channeling && !player->readying )
-        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
 
       charge_impact->execute_on_target( d->target );
       buff->expire();
@@ -8522,7 +8521,19 @@ void assembly_scholars_loop( special_effect_t& effect )
 
 void blue_silken_lining( special_effect_t& effect )
 {
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 387336 ) );
+  struct blue_silken_lining_t : public stat_buff_t
+  {
+    rng::truncated_gauss_t interval;
+
+    blue_silken_lining_t( player_t* p, std::string_view n, const spell_data_t* s )
+      : stat_buff_t( p, n, s ),
+        interval( p->sim->dragonflight_opts.blue_silken_lining_update_interval,
+                  p->sim->dragonflight_opts.blue_silken_lining_update_interval_stddev )
+    {}
+  };
+
+  auto buff =
+    create_buff<blue_silken_lining_t>( effect.player, effect.player->find_spell( 387336 ) );
   buff->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   bool first = !buff->manual_stats_added;
   // In some cases, the buff values from separate items don't stack. This seems to fix itself
@@ -8541,11 +8552,9 @@ void blue_silken_lining( special_effect_t& effect )
       up->update( true, p->sim->current_time() );
 
       auto pct = p->sim->dragonflight_opts.blue_silken_lining_uptime;
-      auto dur = p->sim->dragonflight_opts.blue_silken_lining_update_interval;
-      auto std = p->sim->dragonflight_opts.blue_silken_lining_update_interval_stddev;
 
       make_repeating_event( *p->sim,
-          [ p, dur, std ] { return p->rng().gauss( dur, std ); },
+          [ p, buff ] { return p->rng().gauss( buff->interval ); },
           [ buff, p, up, pct ] {
             if ( p->rng().roll( pct ) )
             {
@@ -8598,7 +8607,7 @@ void breath_of_neltharion( special_effect_t& effect )
       generic_proc_t::last_tick( d );
 
       if ( was_channeling && !player->readying )
-        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
     }
   };
 
@@ -9305,7 +9314,18 @@ void demonsbane( special_effect_t& e )
 // TODO: implement heal/shield
 void undulating_sporecloak( special_effect_t& effect )
 {
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 410231 ) );
+  struct undulating_sporecloak_t : public stat_buff_t
+  {
+    rng::truncated_gauss_t interval;
+
+    undulating_sporecloak_t( player_t* p, std::string_view n, const spell_data_t* s )
+      : stat_buff_t( p, n, s ),
+        interval( p->sim->dragonflight_opts.undulating_sporecloak_update_interval,
+                  p->sim->dragonflight_opts.undulating_sporecloak_update_interval_stddev )
+    {}
+  };
+
+  auto buff = create_buff<undulating_sporecloak_t>( effect.player, effect.player->find_spell( 410231 ) );
   buff->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 6 ).average( effect.item ) );
@@ -9321,11 +9341,9 @@ void undulating_sporecloak( special_effect_t& effect )
       up->update( true, p->sim->current_time() );
 
       auto pct = p->sim->dragonflight_opts.undulating_sporecloak_uptime;
-      auto dur = p->sim->dragonflight_opts.undulating_sporecloak_update_interval;
-      auto std = p->sim->dragonflight_opts.undulating_sporecloak_update_interval_stddev;
 
       make_repeating_event( *p->sim,
-          [ p, dur, std ] { return p->rng().gauss( dur, std ); },
+          [ p, buff ] { return p->rng().gauss( buff->interval ); },
           [ buff, p, up, pct ] {
             if ( p->rng().roll( pct ) )
             {
@@ -9350,7 +9368,18 @@ void undulating_sporecloak( special_effect_t& effect )
 void dreamtenders_charm( special_effect_t& effect )
 {
   // Main Crit Buff - dreaming_trance
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 420834 ) );
+  struct dreaming_trance_t : public stat_buff_t
+  {
+    rng::truncated_gauss_t interval;
+
+    dreaming_trance_t( player_t* p, std::string_view n, const spell_data_t* s )
+      : stat_buff_t( p, n, s ),
+        interval( p->sim->dragonflight_opts.dreamtenders_charm_update_interval,
+                  p->sim->dragonflight_opts.dreamtenders_charm_update_interval_stddev )
+    {}
+  };
+
+  auto buff = create_buff<dreaming_trance_t>( effect.player, effect.player->find_spell( 420834 ) );
   buff->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buff->set_duration( 0_s );
   bool first = !buff->manual_stats_added;
@@ -9401,11 +9430,9 @@ void dreamtenders_charm( special_effect_t& effect )
       up->update( true, p->sim->current_time() );
 
       auto pct = p->sim->dragonflight_opts.dreamtenders_charm_uptime;
-      auto dur = p->sim->dragonflight_opts.dreamtenders_charm_update_interval;
-      auto std = p->sim->dragonflight_opts.dreamtenders_charm_update_interval_stddev;
 
       make_repeating_event( *p->sim,
-          [ p, dur, std ] { return p->rng().gauss( dur, std ); },
+          [ p, buff ] { return p->rng().gauss( buff->interval ); },
           [ buff, p, regaining_power, gem_count, up, pct ] {
             if ( p->rng().roll( pct ) )
             {

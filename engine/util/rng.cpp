@@ -328,6 +328,40 @@ double stdnormal_inv( double p )
   return ( p > 0.5 ? -u : u );
 }
 
+void truncated_gauss_t::calculate_cdf()
+{
+#ifndef NDEBUG
+  _count++;
+#endif
+  if ( !_cdf_set )
+  {
+    auto _mean = static_cast<double>( timespan_t::to_native( mean ) );
+    auto _stddev = static_cast<double>( timespan_t::to_native( stddev ) );
+    auto _min = static_cast<double>( timespan_t::to_native( min ) );
+    auto _max = max == timespan_t::min() ? std::numeric_limits<double>::infinity()
+                                         : static_cast<double>( timespan_t::to_native( max ) );
+
+    assert( _min <= _max && "Minimum must be less than or equal to maximum." );
+
+    _min_cdf = stdnormal_cdf( ( _min - _mean ) / _stddev );
+    _max_cdf = stdnormal_cdf( ( _max - _mean ) / _stddev );
+
+    _cdf_set = true;
+  }
+  else
+  {
+    assert( _min_cdf ==
+            stdnormal_cdf( ( static_cast<double>( timespan_t::to_native( min ) ) -
+                             static_cast<double>( timespan_t::to_native( mean ) ) ) /
+                           static_cast<double>( timespan_t::to_native( stddev ) ) ) );
+    assert( _max_cdf ==
+            stdnormal_cdf( ( ( max == timespan_t::min() ? std::numeric_limits<double>::infinity()
+                                                        : static_cast<double>( timespan_t::to_native( max ) ) ) -
+                             static_cast<double>( timespan_t::to_native( mean ) ) ) /
+                           static_cast<double>( timespan_t::to_native( stddev ) ) ) );
+  }
+}
+
 } // rng
 #ifdef UNIT_TEST
 // Code to test functionality and performance of our RNG implementations
