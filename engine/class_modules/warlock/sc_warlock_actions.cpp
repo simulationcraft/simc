@@ -3300,6 +3300,128 @@ namespace actions
     }
   };
 
+  struct rain_of_fire_t : public warlock_spell_t
+  {
+    struct rain_of_fire_tick_t : public warlock_spell_t
+    {
+      rain_of_fire_tick_t( warlock_t* p )
+        : warlock_spell_t( "Rain of Fire (tick)", p, p->talents.rain_of_fire_tick )
+      {
+        background = dual = true;
+        aoe = -1;
+        radius = p->talents.rain_of_fire->effectN( 1 ).radius();
+
+        affected_by.chaotic_energies = true;
+        affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
+
+        base_multiplier *= 1.0 + p->talents.inferno->effectN( 2 ).percent();
+        base_multiplier *= 1.0 + p->talents.chaosbringer->effectN( 2 ).percent();
+      }
+      
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        if ( p()->talents.inferno.ok() && result_is_hit( s->result ) )
+        {
+          if ( rng().roll( p()->talents.inferno->effectN( 1 ).percent() ) )
+            p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.inferno );
+        }
+
+        if ( p()->talents.pyrogenics.ok() )
+          td( s->target )->debuffs_pyrogenics->trigger();
+      }
+
+      double composite_persistent_multiplier( const action_state_t* s ) const override
+      {
+        double m = warlock_spell_t::composite_persistent_multiplier( s );
+
+        if ( p()->buffs.crashing_chaos->check() )
+          m *= 1.0 + p()->talents.crashing_chaos->effectN( 1 ).percent();
+
+        return m;
+      }
+
+      double action_multiplier() const override
+      {
+        double m = warlock_spell_t::action_multiplier();
+
+        if ( p()->buffs.madness_rof_snapshot->check() )
+          m *= 1.0 + p()->talents.madness_of_the_azjaqir->effectN( 1 ).percent();
+
+        return m;
+      }
+    };
+
+    rain_of_fire_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Rain of Fire", p, p->talents.rain_of_fire )
+    {
+      parse_options( options_str );
+      
+      may_miss = may_crit = false;
+      base_tick_time = 1_s;
+      dot_duration = 0_s;
+      aoe = -1; // Needed to apply Pyrogenics
+
+      if ( !p->proc_actions.rain_of_fire_tick )
+      {
+        p->proc_actions.rain_of_fire_tick = new rain_of_fire_tick_t( p );
+        p->proc_actions.rain_of_fire_tick->stats = stats;
+      }
+    }
+
+    double cost_pct_multiplier() const override
+    {
+      double c = warlock_spell_t::cost_pct_multiplier();
+
+      if ( p()->buffs.ritual_of_ruin->check() )
+        c *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 5 ).percent();
+
+      return c;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->buffs.madness_rof_snapshot->expire();
+
+      if ( p()->buffs.madness_rof->check() )
+        p()->buffs.madness_rof_snapshot->trigger();
+
+      if ( p()->talents.madness_of_the_azjaqir.ok() )
+        p()->buffs.madness_rof->trigger();
+
+      if ( p()->talents.burn_to_ashes.ok() )
+        p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 3 ).base_value() ) );
+
+      make_event<ground_aoe_event_t>( *sim, p(), 
+                                      ground_aoe_params_t()
+                                        .target( execute_state->target )
+                                        .x( execute_state->target->x_position )
+                                        .y( execute_state->target->y_position )
+                                        .pulse_time( base_tick_time * player->cache.spell_haste() )
+                                        .duration( p()->talents.rain_of_fire->duration() * player->cache.spell_haste() )
+                                        .start_time( sim->current_time() )
+                                        .action( p()->proc_actions.rain_of_fire_tick ) );
+
+      if ( p()->talents.avatar_of_destruction.ok() && p()->buffs.ritual_of_ruin->check() )
+        p()->proc_actions.avatar_of_destruction->execute_on_target( target );
+
+      p()->buffs.ritual_of_ruin->expire();
+
+      p()->buffs.crashing_chaos->decrement();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( p()->talents.pyrogenics.ok() )
+        td( s->target )->debuffs_pyrogenics->trigger();
+    }
+  };
+
   struct havoc_t : public warlock_spell_t
   {
     havoc_t( warlock_t* p, util::string_view options_str )
