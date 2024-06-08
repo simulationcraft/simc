@@ -1949,6 +1949,55 @@ namespace actions
     }
   };
 
+  struct doom_brand_t : public warlock_spell_t
+  {
+    doom_brand_t( warlock_t* p ) : warlock_spell_t( "Doom Brand", p, p->tier.doom_brand_aoe )
+    {
+      aoe = -1;
+      reduce_aoe_targets = 8.0;
+      background = dual = true;
+      callbacks = false;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B4 ) )
+      {
+        double increment_max = 0.5;
+
+        int debuff_count = 1;
+        for ( auto t : target_list() )
+        {
+          if ( td( t )->debuffs_doom_brand->check() )
+            debuff_count++;
+        }
+
+        increment_max *= std::pow( debuff_count, -1.0 / 2.0 );
+
+        p()->doom_brand_accumulator += rng().range( 0.0, increment_max );
+
+        if ( p()->doom_brand_accumulator >= 1.0 )
+        {
+          p()->warlock_pet_list.doomfiends.spawn();
+          p()->procs.doomfiend->occur();
+          p()->doom_brand_accumulator -= 1.0;
+        }
+      }
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_da_multiplier();
+
+      if ( s->n_targets == 1 )
+        m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T31, B2 )->effectN( 2 ).percent();
+
+      return m;
+    }
+  };
+
   // Demonology Actions End
 }
 }
