@@ -1509,8 +1509,14 @@ void overclocked_geararang_launcher( special_effect_t& e )
   struct overclocked_strike_t : public generic_proc_t
   {
     buff_t* buff;
+    const spell_data_t* equip_driver;
+    cooldown_t* item_cd;
+
     overclocked_strike_t( const special_effect_t& e, buff_t* buff, const spell_data_t* equip_driver )
-      : generic_proc_t( e, "overclocked_strike", e.player->find_spell( 449828 ) ), buff( buff )
+      : generic_proc_t( e, "overclocked_strike", e.player->find_spell( 449828 ) ),
+        buff( buff ),
+        equip_driver( equip_driver ),
+        item_cd( e.player->get_cooldown( e.cooldown_name() ) )
     {
       background  = true;
       base_dd_min = base_dd_max = equip_driver->effectN( 2 ).average( e.item );
@@ -1520,6 +1526,7 @@ void overclocked_geararang_launcher( special_effect_t& e )
     {
       // Appears to consume the buff before executing the action
       buff->expire();
+      item_cd->adjust( timespan_t::from_seconds( -equip_driver->effectN( 1 ).base_value() ) );
       generic_proc_t::execute();
     }
   };
