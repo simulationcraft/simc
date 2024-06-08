@@ -2732,6 +2732,95 @@ namespace actions
   // Demonology Actions End
   // Destruction Actions Begin
 
+  struct immolate_t : public warlock_spell_t
+  {
+    struct immolate_dot_t : public warlock_spell_t
+    {
+      immolate_dot_t( warlock_t* p )
+        : warlock_spell_t( "Immolate", p, p->warlock_base.immolate_dot )
+      {
+        background = dual = true;
+
+        affected_by.chaotic_energies = true;
+
+        // TOCHECK: Is this necessary?
+        spell_power_mod.tick = p->warlock_base.immolate_dot->effectN( 1 ).sp_coeff();
+        dot_duration += p->talents.improved_immolate->effectN( 1 ).time_value();
+        base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
+      }
+
+      void tick( dot_t* d ) override
+      {
+        warlock_spell_t::tick( d );
+
+        if ( d->state->result == RESULT_CRIT && rng().roll( p()->warlock_base.immolate->effectN( 2 ).percent() ) )
+          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits );
+
+        p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate );
+
+        if ( p()->talents.flashpoint.ok() && d->state->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
+          p()->buffs.flashpoint->trigger();
+
+        if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B2 ) )
+        {
+          double increment_max = 0.07;
+
+          increment_max *= std::pow( p()->get_active_dots( d ), -2.0 / 3.0 );
+
+          p()->cdf_accumulator += rng().range( 0.0, increment_max );
+
+          if ( p()->cdf_accumulator >= 1.0 )
+          {
+            p()->proc_actions.channel_demonfire->execute_on_target( d->target );
+            p()->procs.channel_demonfire->occur();
+            p()->cdf_accumulator -= 1.0;
+          }
+        }
+
+        if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B2 ) )
+        {  
+          double increment_max = 0.16;
+
+          increment_max *= std::pow( p()->get_active_dots( d ), -4.0 / 9.0 );
+
+          p()->dimensional_accumulator += rng().range( 0.0, increment_max );
+
+          if ( p()->dimensional_accumulator >= 1.0 )
+          {
+            p()->cooldowns.dimensional_rift->reset( true, 1 );
+            p()->procs.dimensional_refund->occur();
+            p()->dimensional_accumulator -= 1.0;
+          }
+        }
+      }
+
+      void last_tick( dot_t* d ) override
+      {
+        if ( p()->get_active_dots( d ) == 1 )
+          p()->dimensional_accumulator = rng().range( 0.0, 0.99 );
+        
+        warlock_spell_t::last_tick( d );
+      }
+    };
+
+    immolate_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Immolate (direct)", p, p->warlock_base.immolate )
+    {
+      parse_options( options_str );
+
+      affected_by.chaotic_energies = true;
+      affected_by.havoc = true;
+
+      impact_action = new immolate_dot_t( p );
+      add_child( impact_action );
+
+      base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 1 ).percent();
+    }
+
+    dot_t* get_dot( player_t* t ) override
+    { return impact_action->get_dot( t ); }
+  };
+
   struct havoc_t : public warlock_spell_t
   {
     havoc_t( warlock_t* p, util::string_view options_str )
