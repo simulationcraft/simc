@@ -2598,6 +2598,28 @@ namespace actions
     }
   };
 
+  struct summon_vilefiend_t : public warlock_spell_t
+  {
+    summon_vilefiend_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Summon Vilefiend", p, p->talents.summon_vilefiend )
+    {
+      parse_options( options_str );
+
+      harmful = may_crit = false;
+
+      if ( p->talents.fel_invocation.ok() )
+        base_execute_time += p->talents.fel_invocation->effectN( 2 ).time_value();
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+      
+      p()->buffs.vilefiend->trigger();
+      p()->warlock_pet_list.vilefiends.spawn( p()->talents.summon_vilefiend->duration() );
+    }
+  };
+
   struct doom_brand_t : public warlock_spell_t
   {
     doom_brand_t( warlock_t* p ) : warlock_spell_t( "Doom Brand", p, p->tier.doom_brand_aoe )
