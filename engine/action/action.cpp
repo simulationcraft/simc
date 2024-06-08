@@ -2218,19 +2218,21 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
 
     cooldown->start( this, cd_duration, delay );
 
-    sim->print_debug(
-          "{} starts cooldown for {} ({}, {}/{}). Duration={} Delay={}. Will "
-          "be ready at {}",
-          *player, *this, *cooldown, cooldown->current_charge, cooldown->charges,
-          cd_duration, delay, cooldown->ready );
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} starts cooldown for {} ({}, {}/{}). Duration={} Delay={}. {}.", *player, *this, *cooldown,
+                        cooldown->current_charge, cooldown->charges,
+                        cd_duration == timespan_t::min() ? cooldown_duration() : cd_duration, delay,
+                        cooldown->ready > sim->current_time() ? fmt::format( "Will be ready at {}", cooldown->ready )
+                                                              : "Ready now" );
+    }
 
     if ( internal_cooldown->duration > 0_ms )
     {
       internal_cooldown->start( this );
 
-      sim->print_debug("{} starts internal_cooldown for {} ({}). Will be ready at {}",
-          *player, *this, *internal_cooldown, internal_cooldown->ready );
-
+      sim->print_debug( "{} starts internal_cooldown for {} ({}). Will be ready at {}", *player, *this,
+                        *internal_cooldown, internal_cooldown->ready );
     }
   }
 }
