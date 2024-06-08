@@ -827,8 +827,13 @@ struct player_t : public actor_t
     int ovinaxs_mercurial_egg_initial_primary_stacks = 30;
     int ovinaxs_mercurial_egg_initial_secondary_stacks = 0;
     // time to pick up Entropic Skardyn Core fragment
-    timespan_t entropic_skardyn_core_pickup_time = 4_s;
-    timespan_t entropic_skardyn_core_pickup_time_stddev = 1_s;
+    timespan_t entropic_skardyn_core_pickup_delay = 4_s;
+    timespan_t entropic_skardyn_core_pickup_stddev = 1_s;
+    // when to enter and how long to stay in light for carved blazikon wax
+    timespan_t carved_blazikon_wax_enter_light_delay = 4_s;
+    timespan_t carved_blazikon_wax_enter_light_stddev = 1_s;
+    timespan_t carved_blazikon_wax_stay_in_light_duration = 0_s;  // remain until the end
+    timespan_t carved_blazikon_wax_stay_in_light_stddev = 0_s;
   } thewarwithin_opts;
 
 private:

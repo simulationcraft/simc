@@ -2081,6 +2081,11 @@ struct pickup_entropic_skardyn_core_t : public action_t
   }
 };
 
+// 443380 driver
+// 449267 crystal summon
+// 449259 crystal duration
+// 449254 buff
+// TODO: determine reasonable default values for core pickup delay
 void entropic_skardyn_core( special_effect_t& effect )
 {
   if ( create_fallback_buffs( effect, { "entropic_skardyn_core" } ) )
@@ -2095,8 +2100,8 @@ void entropic_skardyn_core( special_effect_t& effect )
 
     entropic_skardyn_core_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
-        pickup( e.player->thewarwithin_opts.entropic_skardyn_core_pickup_time,
-                e.player->thewarwithin_opts.entropic_skardyn_core_pickup_time_stddev ),
+        pickup( e.player->thewarwithin_opts.entropic_skardyn_core_pickup_delay,
+                e.player->thewarwithin_opts.entropic_skardyn_core_pickup_stddev ),
         delay( timespan_t::from_seconds( e.trigger()->missile_speed() ) )
     {
       buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 449254 ) )
@@ -2243,6 +2248,55 @@ void mereldars_toll( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<mereldars_toll_t>( "mereldars_toll", effect, data, vers );
+}
+
+// 443527 driver
+//  e1: buff trigger + coeff
+//  e2: in light coeff
+// 451367 buff
+// 451368 in light buff
+// TODO: determine reasonable default for delay in entering light
+void carved_blazikon_wax( special_effect_t& effect )
+{
+  struct carved_blazikon_wax_cb_t : public dbc_proc_callback_t
+  {
+    rng::truncated_gauss_t delay;
+    rng::truncated_gauss_t remain;
+    buff_t* buff;
+    buff_t* light;
+
+    carved_blazikon_wax_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        delay( e.player->thewarwithin_opts.carved_blazikon_wax_enter_light_delay,
+               e.player->thewarwithin_opts.carved_blazikon_wax_enter_light_stddev ),
+        remain( e.player->thewarwithin_opts.carved_blazikon_wax_stay_in_light_duration,
+                e.player->thewarwithin_opts.carved_blazikon_wax_stay_in_light_stddev )
+    {
+      auto light_spell = e.player->find_spell( 451368 );
+      light =
+        create_buff<stat_buff_t>( e.player, util::tokenize_fn( light_spell->name_cstr() ) + "_light", light_spell )
+          ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e.item ) )
+          ->set_name_reporting( "In Light" );
+
+      buff = create_buff<stat_buff_t>( e.player, e.trigger() )
+        ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.item ) );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      buff->trigger();
+
+      auto wait = rng().gauss( delay );
+      auto dur = light->buff_duration() - wait;
+
+      if ( remain.mean > 0_ms )
+        dur = std::min( dur, rng().gauss( remain ) );
+
+      make_event( *light->sim, wait, [ this, dur ] { light->trigger( dur ); } );
+    }
+  };
+
+  new carved_blazikon_wax_cb_t( effect );
 }
 
 // Weapons
@@ -2578,6 +2632,7 @@ void register_special_effects()
   register_special_effect( 443538, items::empowering_crystal_of_anubikkaj );
   register_special_effect( 450561, items::mereldars_toll );
   register_special_effect( 450641, DISABLED_EFFECT );  // mereldar's toll
+  register_special_effect( 443527, items::carved_blazikon_wax );
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
