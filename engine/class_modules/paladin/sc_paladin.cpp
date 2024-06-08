@@ -1853,9 +1853,6 @@ struct divine_guidance_damage_t : public paladin_spell_t
        paladin_spell_t::execute();
        p()->buffs.divine_guidance->expire();
    }
-    background = proc = may_crit = true;
-    may_miss                     = false;
-   }
    
 };
 
@@ -2460,8 +2457,8 @@ action_t* paladin_t::create_action( util::string_view name, util::string_view op
     return new blessing_of_the_seasons_t( this, options_str );
   if ( name == "word_of_glory" )
     return new word_of_glory_t( this, options_str );
-  if ( name == "holy_armament" )
-    return new holy_armament_t( this, options_str );
+  if ( name == "holy_armaments" )
+    return new holy_armaments_t( this, options_str );
   if ( name == "hammer_of_light" )
     return new hammer_of_light_t( this, options_str );
 
