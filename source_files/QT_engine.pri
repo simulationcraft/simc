@@ -249,6 +249,7 @@ SOURCES += engine/class_modules/warlock/sc_warlock.cpp
 SOURCES += engine/class_modules/warlock/sc_warlock_affliction.cpp
 SOURCES += engine/class_modules/warlock/sc_warlock_demonology.cpp
 SOURCES += engine/class_modules/warlock/sc_warlock_destruction.cpp
+SOURCES += engine/class_modules/warlock/sc_warlock_init.cpp
 SOURCES += engine/class_modules/warlock/sc_warlock_pets.cpp
 SOURCES += engine/dbc/active_spells.cpp
 SOURCES += engine/dbc/azerite.cpp
