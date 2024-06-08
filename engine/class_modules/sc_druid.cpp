@@ -6437,9 +6437,6 @@ public:
   {
     dreamstate = p()->buff.dreamstate->up();
 
-    if ( dreamstate )
-      p()->buff.dreamstate->decrement();
-
     druid_spell_t::schedule_execute( s );
   }
 
@@ -6450,6 +6447,10 @@ public:
       set_school_override( SCHOOL_ASTRAL );
 
     druid_spell_t::execute();
+
+    if ( dreamstate && p()->buff.dreamstate->can_expire( this ) )
+      p()->buff.dreamstate->decrement();
+
     dreamstate = false;
 
     if ( embrace )
@@ -6593,9 +6594,6 @@ struct celestial_alignment_base_t : public trigger_control_of_the_dream_t<druid_
 
     p()->buff.harmony_of_the_heavens_lunar->expire();
     p()->buff.harmony_of_the_heavens_solar->expire();
-
-    if ( p()->eclipse_handler.in_eclipse() )
-      p()->buff.dreamstate->trigger();
   }
 };
 
