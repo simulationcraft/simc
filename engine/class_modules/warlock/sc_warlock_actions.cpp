@@ -861,6 +861,53 @@ namespace actions
   // Shared Class Actions End
   // Affliction Actions Begin
 
+  struct unstable_affliction_t : public warlock_spell_t
+  {
+    unstable_affliction_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Unstable Affliction", p, p->talents.unstable_affliction )
+    {
+      parse_options( options_str );
+
+      dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
+    }
+
+    unstable_affliction_t( warlock_t* p )
+      : warlock_spell_t( "Unstable Affliction", p , p->talents.soul_swap_ua )
+    {
+      dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
+    }
+
+    void execute() override
+    {
+      if ( p()->ua_target && p()->ua_target != target )
+      {
+        td( p()->ua_target )->dots_unstable_affliction->cancel();
+      }
+
+      p()->ua_target = target;
+
+      warlock_spell_t::execute();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      bool pi_trigger = p()->talents.pandemic_invocation->ok() && td( s->target )->dots_unstable_affliction->is_ticking()
+        && td( s->target )->dots_unstable_affliction->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
+
+      warlock_spell_t::impact( s );
+
+      if ( pi_trigger )
+        p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      warlock_spell_t::last_tick( d );
+
+      p()->ua_target = nullptr;
+    }
+  };
+
   struct agony_t : public warlock_spell_t
   {
     agony_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( "Agony", p, p->warlock_base.agony )
