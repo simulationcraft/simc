@@ -695,8 +695,7 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
 
       // setup flourish
       auto f_dam = create_proc_action<generic_proc_t>( "surekian_flourish", e, 445434 );
-      // TODO: confirm damage value is for entire dot and not per tick
-      f_dam->base_td = data->effectN( 1 ).average( e.item ) * ( f_dam->dot_duration / f_dam->base_tick_time );
+      f_dam->base_td = data->effectN( 1 ).average( e.item ) / ( f_dam->dot_duration / f_dam->base_tick_time );
       add_child( f_dam );
 
       auto f_stance = create_buff<stat_buff_t>( e.player, e.player->find_spell( 447962 ) )
