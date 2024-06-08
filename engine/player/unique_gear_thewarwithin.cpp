@@ -53,12 +53,12 @@ void register_special_effect( std::initializer_list<unsigned> spell_ids, custom_
     register_special_effect( id, init_callback, fallback );
 }
 
-const spell_data_t* spell_from_spell_text( const special_effect_t& e, unsigned match_id )
+const spell_data_t* spell_from_spell_text( const special_effect_t& e )
 {
   if ( auto desc = e.player->dbc->spell_text( e.spell_id ).desc() )
   {
     std::cmatch m;
-    std::regex r( R"(\$\?a)" + std::to_string( match_id ) + R"(\[\$@spellname([0-9]+)\]\[\])" );
+    std::regex r( R"(\$\?a)" + std::to_string( e.player->spec_spell->id() ) + R"(\[\$@spellname([0-9]+)\]\[\])" );
     if ( std::regex_search( desc, m, r ) )
     {
       auto id = as<unsigned>( std::stoi( m.str( 1 ) ) );
@@ -70,6 +70,40 @@ const spell_data_t* spell_from_spell_text( const special_effect_t& e, unsigned m
   }
 
   return spell_data_t::nil();
+}
+
+double role_mult( const special_effect_t& e )
+{
+  double mult = 1.0;
+
+  if ( auto vars = e.player->dbc->spell_desc_vars( e.driver()->id() ).desc_vars() )
+  {
+    std::cmatch m;
+    std::regex get_var( R"(\$rolemult=\$(.*))" );  // find the $rolemult= variable
+    if ( std::regex_search( vars, m, get_var ) )
+    {
+      const auto var = m.str( 1 );
+      std::regex get_role( R"(\??((?:a\d+\|?)*)\[\$\{([\d\.]+)\}[\d\.]*\])" );  // find each role group
+      std::sregex_iterator role_it( var.begin(), var.end(), get_role );
+      for ( std::sregex_iterator i = role_it; i != std::sregex_iterator(); i++ )
+      {
+        mult = util::to_double( i->str( 2 ) );
+        const auto role = i->str( 1 );
+        std::regex get_spec( R"(a(\d+))" );  // find each spec spell id
+        std::sregex_iterator spec_it( role.begin(), role.end(), get_spec );
+        for ( std::sregex_iterator j = spec_it; j != std::sregex_iterator(); j++ )
+        {
+          if ( util::to_unsigned_ignore_error( j->str( 1 ), 0u ) == e.player->spec_spell->id() )
+          {
+            e.player->sim->print_debug( "parsed role multiplier for special effect '{}': {}", e.name(), mult );
+            return mult;
+          }
+        }
+      }
+    }
+  }
+
+  return mult;
 }
 
 namespace consumables
@@ -542,7 +576,7 @@ void aberrant_spellforge( special_effect_t& effect )
   auto equip = find_special_effect( effect.player, equip_id );
   assert( equip && "Aberrant Spellforge missing equip effect" );
 
-  auto empowered = spell_from_spell_text( effect, effect.player->spec_spell->id() );
+  auto empowered = spell_from_spell_text( effect );
   if ( !empowered->ok() )
     return;
 
