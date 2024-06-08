@@ -1949,6 +1949,117 @@ namespace actions
     }
   };
 
+  struct demonbolt_t : public warlock_spell_t
+  {
+    demonbolt_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Demonbolt", p, p->talents.demoniac.ok() ? p->talents.demonbolt_spell : spell_data_t::not_found() )
+    {
+      parse_options( options_str );
+
+      energize_type = action_energize::ON_CAST;
+      energize_resource = RESOURCE_SOUL_SHARD;
+      energize_amount = 2.0;
+
+      triggers.shadow_invocation_direct = true;
+    }
+
+    timespan_t execute_time() const override
+    {
+      timespan_t t = warlock_spell_t::execute_time();
+
+      if ( p()->buffs.demonic_core->check() )
+        t *= 1.0 + p()->talents.demonic_core_buff->effectN( 1 ).percent();
+
+      return t;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->buffs.demonic_core->up(); // For benefit tracking
+
+      if ( p()->buffs.demonic_core->check() )
+      {
+        if ( p()->talents.spiteful_reconstitution.ok() && rng().roll( 0.3 ) )
+        {
+          p()->warlock_pet_list.wild_imps.spawn( 1u );
+          p()->procs.spiteful_reconstitution->occur();
+        }
+
+        if ( p()->talents.immutable_hatred.ok() )
+        {
+          auto active_pet = p()->warlock_pet_list.active;
+
+          if ( active_pet->pet_type == PET_FELGUARD )
+            debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->hatred_proc->execute_on_target( execute_state->target );
+        }
+
+        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B2 ) )
+          td( target )->debuffs_doom_brand->trigger();
+      }
+      else
+      {
+        if ( p()->talents.immutable_hatred.ok() && p()->bugs )
+        {
+          auto active_pet = p()->warlock_pet_list.active;
+
+          if ( active_pet->pet_type == PET_FELGUARD )
+            debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->hatred_proc->execute_on_target( execute_state->target );
+        }
+      }
+
+      p()->buffs.demonic_core->decrement();
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B2 ) )
+      {
+        timespan_t reduction = -p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 2 ).time_value();
+
+        p()->cooldowns.grimoire_felguard->adjust( reduction );
+      }
+
+      if ( p()->talents.power_siphon.ok() )
+        p()->buffs.power_siphon->decrement();
+
+      if ( p()->talents.demonic_calling.ok() )
+        p()->buffs.demonic_calling->trigger();
+
+      p()->buffs.stolen_power_final->expire();
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B4 ) && rng().roll( 0.3 ) )
+      {
+        p()->buffs.blazing_meteor->trigger();
+        p()->procs.blazing_meteor->occur();
+      }
+    }
+
+    double action_multiplier() const override
+    {
+      double m = warlock_spell_t::action_multiplier();
+
+      // TODO: Migrate active_demon_count()
+      if ( p()->talents.sacrificed_souls.ok() )
+        m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
+      
+      if ( p()->talents.power_siphon.ok() )
+        m *= 1.0 + p()->buffs.power_siphon->check_value();
+
+      if ( p()->talents.shadows_bite.ok() )
+        m *= 1.0 + p()->buffs.shadows_bite->check_value();
+
+      if ( p()->talents.stolen_power.ok() && p()->buffs.stolen_power_final->check() )
+        m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 2 ).percent();
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B2 ) )
+        m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T29, B2 )->effectN( 1 ).percent();
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B2 ) )
+        m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 1 ).percent();
+
+      return m;
+    }
+  };
+
   struct doom_brand_t : public warlock_spell_t
   {
     doom_brand_t( warlock_t* p ) : warlock_spell_t( "Doom Brand", p, p->tier.doom_brand_aoe )
