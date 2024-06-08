@@ -734,6 +734,64 @@ namespace actions
     }
   };
 
+  struct grimoire_of_sacrifice_t : public warlock_spell_t
+  {
+    grimoire_of_sacrifice_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Grimoire of Sacrifice", p, p->talents.grimoire_of_sacrifice )
+    {
+      parse_options( options_str );
+      harmful = false;
+      ignore_false_positive = true;
+      target = player;
+    }
+
+    bool ready() override
+    {
+      if ( !p()->warlock_pet_list.active )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      if ( p()->warlock_pet_list.active )
+      {
+        p()->warlock_pet_list.active->dismiss();
+        p()->warlock_pet_list.active = nullptr;
+        p()->buffs.grimoire_of_sacrifice->trigger();
+      }
+    }
+  };
+
+  struct soulburn_t : public warlock_spell_t
+  {
+    soulburn_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Soulburn", p, p->talents.soulburn )
+    {
+      parse_options( options_str );
+      harmful = false;
+      may_crit = false;
+    }
+
+    bool ready() override
+    {
+      if ( p()->buffs.soulburn->check() )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->buffs.soulburn->trigger();
+    }
+  };
+
   struct seed_of_corruption_t : public warlock_spell_t
   {
     struct seed_of_corruption_aoe_t : public warlock_spell_t
