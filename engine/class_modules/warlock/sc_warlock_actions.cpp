@@ -3462,6 +3462,47 @@ namespace actions
     }
   };
 
+  struct summon_infernal_t : public warlock_spell_t
+  {
+    summon_infernal_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Summon Infernal", p, p->talents.summon_infernal )
+    {
+      parse_options( options_str );
+
+      may_crit = false;
+      impact_action = new infernal_awakening_t( p );
+      add_child( impact_action );
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      if ( p()->talents.crashing_chaos.ok() )
+        p()->buffs.crashing_chaos->trigger();
+
+      if ( p()->talents.rain_of_chaos.ok() )
+        p()->buffs.rain_of_chaos->trigger();
+    }
+  };
+
+  struct infernal_awakening_t : public warlock_spell_t
+  {
+    infernal_awakening_t( warlock_t* p )
+      : warlock_spell_t( "Infernal Awakening", p, p->talents.infernal_awakening )
+    {
+      background = dual = true;
+      aoe = -1;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+      
+      p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_main->duration() );
+    }
+  };
+
   // Destruction Actions End
 }
 }
