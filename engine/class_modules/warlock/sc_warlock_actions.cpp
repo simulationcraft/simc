@@ -937,6 +937,70 @@ namespace actions
     }
   };
 
+  struct soul_rot_t : public warlock_spell_t
+  {
+    soul_rot_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Soul Rot", p, p->talents.soul_rot )
+    {
+      parse_options( options_str );
+      aoe = 1 + as<int>( p->talents.soul_rot->effectN( 3 ).base_value() );
+
+      if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B2 ) )
+        apply_affecting_aura( p->sets->set( WARLOCK_AFFLICTION, T31, B2 ) );
+
+      if ( p->talents.souleaters_gluttony.ok() )
+      {
+        cooldown->duration += p->talents.souleaters_gluttony->effectN( 1 ).time_value();
+      }
+    }
+
+    soul_rot_t( warlock_t* p, util::string_view opt, bool soul_swap ) : soul_rot_t( p, opt )
+    {
+      if ( soul_swap )
+      {
+        aoe = 1;
+      }
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->buffs.soul_rot->trigger();
+
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B4 ) )
+      {
+        p()->buffs.umbrafire_kindling->trigger();
+      }
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( p()->talents.dark_harvest.ok() && aoe > 1 )
+      {
+        p()->buffs.dark_harvest_haste->trigger();
+        p()->buffs.dark_harvest_crit->trigger();
+      }
+    }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_ta_multiplier( s );
+
+      // Note: Soul Swapped Soul Rot technically retains memory of who the primary target was
+      // For the moment, we will shortcut this by assuming Soul Swap copy is going on a secondary target
+      // TODO: Figure out how to model this appropriately in the case where you copy a secondary and then apply to primary
+      if ( s->chain_target == 0 && aoe > 1 )
+      {
+        m *= 1.0 + p()->talents.soul_rot->effectN( 4 ).base_value() / 10.0; // Primary target takes increased damage
+      }
+
+      return m;
+    }
+  };
+
   struct doom_blossom_t : public warlock_spell_t
   {
     doom_blossom_t( warlock_t* p ) : warlock_spell_t( "Doom Blossom", p, p->talents.doom_blossom_proc )
