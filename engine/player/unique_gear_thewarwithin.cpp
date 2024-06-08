@@ -1138,18 +1138,19 @@ void malfunctioning_ethereum_module( special_effect_t& effect )
 // 443128 coeffs
 //  e1: damage
 //  e2: heal
-//  e3: unknown
+//  e3: unknown, missing hp multiplier?
 //  e4: cdr on kill
 // 446067 heal
 // 455162 heal return
 //  e1: dummy
 //  e2: trigger heal
-
-void abyssal_effigy( special_effect_t& effect )
+// TODO: confirm heal coeff is for entire hot
+// TODO: determine magnitude of increase for missing health. currently assumed 100%
+void mad_queens_mandate( special_effect_t& effect )
 {
   unsigned coeff_id = 443128;
   auto coeff = find_special_effect( effect.player, coeff_id );
-  assert( coeff && "Abyssal Effigy missing coefficient effect" );
+  assert( coeff && "Mad Queen's Mandate missing coefficient effect" );
 
   struct abyssal_gluttony_t : public generic_proc_t
   {
@@ -1157,19 +1158,22 @@ void abyssal_effigy( special_effect_t& effect )
     action_t* heal;
     timespan_t cdr;
     double heal_speed;
+    double hp_mul;
 
     abyssal_gluttony_t( const special_effect_t& e, const spell_data_t* data )
       : generic_proc_t( e, "abyssal_gluttony", e.driver() ),
         item_cd( e.player->get_cooldown( e.cooldown_name() ) ),
         cdr( timespan_t::from_seconds( data->effectN( 4 ).base_value() ) ),
-        heal_speed( e.trigger()->missile_speed() )
+        heal_speed( e.trigger()->missile_speed() ),
+        hp_mul( data->effectN( 3 ).percent() )
     {
       base_dd_min = base_dd_max = data->effectN( 1 ).average( e.item );
 
-      heal = create_proc_action<generic_heal_t>( "abyssal_gluttony_heal", e, "abyssal_glutton_heal",
+      heal = create_proc_action<generic_heal_t>( "abyssal_gluttony_heal", e, "abyssal_gluttony_heal",
                                                  e.trigger()->effectN( 2 ).trigger() );
       heal->name_str_reporting = "abyssal_gluttony";
-      heal->base_dd_min = heal->base_dd_max = data->effectN( 2 ).average( e.item );
+      // TODO: confirm heal coeff is for entire hot
+      heal->base_td = data->effectN( 2 ).average( e.item ) * ( heal->base_tick_time / heal->dot_duration );
     }
 
     void execute() override
@@ -1187,6 +1191,15 @@ void abyssal_effigy( special_effect_t& effect )
         cooldown->adjust( -cdr );
         item_cd->adjust( -cdr );
       }
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      auto mul = 1.0 + hp_mul * ( 100 - t->health_percentage() ) * 0.01;
+
+      heal->base_td_multiplier = mul;
+
+      return generic_proc_t::composite_target_multiplier( t ) * mul;
     }
   };
 
@@ -2366,8 +2379,8 @@ void register_special_effects()
   register_special_effect( 445560, items::ovinaxs_mercurial_egg );
   register_special_effect( 445066, DISABLED_EFFECT );  // ovinax's mercurial egg
   register_special_effect( 446209, items::malfunctioning_ethereum_module, true );
-  register_special_effect( 443124, items::abyssal_effigy );
-  register_special_effect( 443128, DISABLED_EFFECT );  // abyssal effigy
+  register_special_effect( 443124, items::mad_queens_mandate );
+  register_special_effect( 443128, DISABLED_EFFECT );  // mad queen's mandate
   register_special_effect( 443378, items::sigil_of_algari_concordance );
   register_special_effect( 443407, items::skarmorak_shard );
   register_special_effect( 443409, DISABLED_EFFECT );  // skarmorak's shard
