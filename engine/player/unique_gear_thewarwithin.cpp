@@ -1198,7 +1198,8 @@ void abyssal_effigy( special_effect_t& effect )
 // Testing on DPS Death Knight showed only a single spawnable pet.
 // 443378 Driver
 // 452310 Summon Spell (DPS)
-// 452335 Thunder Bolt - Damage Spell DPS
+// 452335 Thunder Bolt - Damage Spell DPS Single Target
+// 452334 Bolt Rain - Damage Spell DPS AoE
 // 452445 Thundering Bolt - One Time Spell DPS
 // 452496 Summon Spell (Tank)
 // 452545 Mighty Smash - Damage Spell Tank
@@ -1207,20 +1208,61 @@ void abyssal_effigy( special_effect_t& effect )
 // 452325, 452457, and 452498 Periodic Triggers for pet actions
 void sigil_of_algari_concordance( special_effect_t& e )
 {
+  struct algari_pet_cast_event_t : public event_t
+  {
+    action_t* st_action;
+    action_t* aoe_action;
+    player_t* owner;
+    pet_t* pet;
+
+    algari_pet_cast_event_t( pet_t* p, action_t* st_action, action_t* aoe_action )
+      : event_t( *p, p->owner->find_spell( 452325 )->effectN( 1 ).period() ),
+        st_action( st_action ),
+        aoe_action( aoe_action ),
+        owner( p->owner ),
+        pet( p )
+    {
+    }
+
+    const char* name() const override
+    {
+      return "algari_pet_cast";
+    }
+
+    void execute() override
+    {
+      if ( pet->is_active() )
+      {
+        if ( aoe_action != nullptr && owner->sim->target_non_sleeping_list.size() > 1 )
+        {
+          aoe_action->execute();
+        }
+        else
+        {
+          st_action->execute();
+        }
+        make_event<algari_pet_cast_event_t>( sim(), pet, st_action, aoe_action );
+      }
+    }
+  };
+
   struct sigil_of_algari_concordance_pet_t : public pet_t
   {
-    action_t* repeating_action;
+    action_t* st_action;
     action_t* one_time_action;
+    action_t* aoe_action;
+    const spell_data_t* summon_spell;
     timespan_t period;
-    double ticks;
 
-    sigil_of_algari_concordance_pet_t( util::string_view name, const special_effect_t& e )
+    sigil_of_algari_concordance_pet_t( util::string_view name, const special_effect_t& e, const spell_data_t* summon_spell )
       : pet_t( e.player->sim, e.player, name, true, true ),
-        repeating_action( nullptr ),
+        st_action( nullptr ),
         one_time_action( nullptr ),
-        period( e.player->find_spell( 452325 )->effectN( 1 ).period() ),
-        ticks( ( e.player->find_spell( 452310 )->duration() - period * 2 ) / period )
+        aoe_action( nullptr ),
+        summon_spell( summon_spell ),
+        period( e.player->find_spell( 452325 )->effectN( 1 ).period() )
     {
+      npc_id = summon_spell->effectN( 1 ).misc_value1();
     }
 
     resource_e primary_resource() const override
@@ -1234,49 +1276,90 @@ void sigil_of_algari_concordance( special_effect_t& e )
       // TODO: Sometimes the one time action is delayed until the 2nd or 3rd tick, seems pretty random when it happens
       // Need to explore deeper to see whats happening
       one_time_action->execute();
-      make_event( *sim, period, [ this ]() {
-        repeating_action->execute();
-        make_repeating_event(
-            *sim, period, [ this ]() { repeating_action->execute(); }, as<int>( ticks ) );
-      } );
+      make_event<algari_pet_cast_event_t>( *sim, this, st_action, aoe_action );
     }
   };
 
-  struct thunder_bolt_silvervein_t : public spell_t
+  struct algari_concodance_pet_spell_t : public spell_t
+  {
+    algari_concodance_pet_spell_t( util::string_view n, pet_t* p, const spell_data_t* s, action_t* a )
+      : spell_t( n, p, s )
+    {
+      background = true;
+      auto proxy = a;
+      auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
+    }
+
+    player_t* p() const
+    {
+      return debug_cast<player_t*>( debug_cast<pet_t*>( this->player )->owner );
+    }
+  };
+
+  struct thunder_bolt_silvervein_t : public algari_concodance_pet_spell_t
   {
     thunder_bolt_silvervein_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
-      : spell_t( name, p, p->find_spell( 452335 ) )
+      : algari_concodance_pet_spell_t( name, p, p->find_spell( 452335 ), a )
     {
-      background         = true;
       name_str_reporting = "thunder_bolt";
       // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
       // a guessing game.
       base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
-      auto proxy                = a;
-      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
-      if ( it != proxy->child_action.end() )
-        stats = ( *it )->stats;
-      else
-        proxy->add_child( this );
     }
   };
 
-  struct thundering_bolt_t : public spell_t
+  struct bolt_rain_t : public algari_concodance_pet_spell_t
+  {
+    bolt_rain_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+      : algari_concodance_pet_spell_t( name, p, p->find_spell( 452334 ), a )
+    {
+      aoe = -1;
+      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
+      // a guessing game.
+      base_dd_min = base_dd_max = e.driver()->effectN( 3 ).average( e.item );
+    }
+  };
+
+  struct thundering_bolt_t : public algari_concodance_pet_spell_t
   {
     thundering_bolt_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
-      : spell_t( name, p, p->find_spell( 452445 ) )
+      : algari_concodance_pet_spell_t( name, p, p->find_spell( 452445 ), a )
     {
-      aoe        = -1;
-      background = true;
+      aoe = -1;
       // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
       // a guessing game.
       base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e.item );
-      auto proxy                = a;
-      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
-      if ( it != proxy->child_action.end() )
-        stats = ( *it )->stats;
-      else
-        proxy->add_child( this );
+    }
+  };
+
+  struct mighty_smash_t : public algari_concodance_pet_spell_t
+  {
+    mighty_smash_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+      : algari_concodance_pet_spell_t( name, p, p->find_spell( 452545 ), a )
+    {
+      aoe = -1;
+      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
+      // a guessing game.
+      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+    }
+  };
+
+  struct earthen_ire_buff_t : public algari_concodance_pet_spell_t
+  {
+    earthen_ire_buff_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+      : algari_concodance_pet_spell_t( name, p, e.player->find_spell( 452518 ), a )
+    {
+      background = true;
+    }
+
+    void execute() override
+    {
+      algari_concodance_pet_spell_t::execute();
+      p()->buffs.earthen_ire->trigger();
     }
   };
 
@@ -1285,62 +1368,16 @@ void sigil_of_algari_concordance( special_effect_t& e )
     action_t* action;
     const special_effect_t& effect;
     silvervein_pet_t( const special_effect_t& e, action_t* a )
-      : sigil_of_algari_concordance_pet_t( "silvervein", e ), action( a ), effect( e )
+      : sigil_of_algari_concordance_pet_t( "silvervein", e, e.player->find_spell( 452310 ) ), action( a ), effect( e )
     {
     }
 
     void create_actions() override
     {
       sigil_of_algari_concordance_pet_t::create_actions();
-      repeating_action = new thunder_bolt_silvervein_t( "thunder_bolt_silvervein", this, effect, action );
-      one_time_action  = new thundering_bolt_t( "thundering_bolt", this, effect, action );
-    }
-  };
-
-  struct mighty_smash_t : public spell_t
-  {
-    mighty_smash_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
-      : spell_t( name, p, p->find_spell( 452545 ) )
-    {
-      aoe        = -1;
-      background = true;
-      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
-      // a guessing game.
-      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
-      auto proxy                = a;
-      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
-      if ( it != proxy->child_action.end() )
-        stats = ( *it )->stats;
-      else
-        proxy->add_child( this );
-    }
-  };
-
-  struct earthen_ire_damage_t : public spell_t
-  {
-    earthen_ire_damage_t( const special_effect_t& e )
-      : spell_t( "earthen_ire", e.player, e.player->find_spell( 452890 ) )
-    {
-      aoe        = -1;
-      background = true;
-      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
-      // a guessing game.
-      base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e.item );
-    }
-  };
-
-  struct earthen_ire_buff_t : public spell_t
-  {
-    buff_t* buff;
-    earthen_ire_buff_t( const special_effect_t& e, buff_t* buff )
-      : spell_t( "earthen_ire", e.player, e.player->find_spell( 452518 ) ), buff( buff )
-    {
-      background = true;
-    }
-
-    void execute() override
-    {
-      buff->trigger();
+      st_action       = new thunder_bolt_silvervein_t( "thunder_bolt_silvervein", this, effect, action );
+      aoe_action      = new bolt_rain_t( "bolt_rain", this, effect, action );
+      one_time_action = new thundering_bolt_t( "thundering_bolt", this, effect, action );
     }
   };
 
@@ -1348,33 +1385,32 @@ void sigil_of_algari_concordance( special_effect_t& e )
   {
     action_t* action;
     const special_effect_t& effect;
-    boulderbane_pet_t( const special_effect_t& e, action_t* a, action_t* ire_buff )
-      : sigil_of_algari_concordance_pet_t( "boulderbane", e ), action( a ), effect( e )
+    boulderbane_pet_t( const special_effect_t& e, action_t* a )
+      : sigil_of_algari_concordance_pet_t( "boulderbane", e, e.player->find_spell( 452496 ) ), action( a ), effect( e )
     {
-      one_time_action = ire_buff;
     }
 
     void create_actions() override
     {
       sigil_of_algari_concordance_pet_t::create_actions();
-      repeating_action = new mighty_smash_t( "mighty_smash", this, effect, action );
+      one_time_action = new earthen_ire_buff_t( "earthen_ire_buff", this, effect, action );
+      st_action       = new mighty_smash_t( "mighty_smash", this, effect, action );
     }
   };
 
-  struct sigil_of_algari_concordance_t : public spell_t
+  struct sigil_of_algari_concordance_t : public generic_proc_t
   {
     spawner::pet_spawner_t<silvervein_pet_t> silvervein_spawner;
     spawner::pet_spawner_t<boulderbane_pet_t> boulderbane_spawner;
     bool silvervein;
     bool boulderbane;
 
-    sigil_of_algari_concordance_t( const special_effect_t& e, action_t* ire_buff )
-      : spell_t( "sigil_of_algari_concordance", e.player, e.driver() ),
+    sigil_of_algari_concordance_t( const special_effect_t& e, action_t* earthen_ire_damage )
+      : generic_proc_t( e, "sigil_of_algari_concordance", e.driver() ),
         silvervein_spawner( "silvervein", e.player,
                             [ &e, this ]( player_t* ) { return new silvervein_pet_t( e, this ); } ),
-        boulderbane_spawner(
-            "boulderbane", e.player,
-            [ &e, this, ire_buff ]( player_t* ) { return new boulderbane_pet_t( e, this, ire_buff ); } ),
+        boulderbane_spawner( "boulderbane", e.player,
+                             [ &e, this ]( player_t* ) { return new boulderbane_pet_t( e, this ); } ),
         silvervein( false ),
         boulderbane( false )
     {
@@ -1404,6 +1440,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
         case DEMON_HUNTER_VENGEANCE:
           boulderbane = true;
           boulderbane_spawner.set_default_duration( e.player->find_spell( 452496 )->duration() );
+          add_child( earthen_ire_damage );
           break;
         case PALADIN_HOLY:
         case PRIEST_DISCIPLINE:
@@ -1437,7 +1474,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
     void execute() override
     {
-      spell_t::execute();
+      generic_proc_t::execute();
       if ( boulderbane )
       {
         boulderbane_spawner.spawn();
@@ -1449,15 +1486,17 @@ void sigil_of_algari_concordance( special_effect_t& e )
     }
   };
 
-  auto earthen_ire_damage = create_proc_action<earthen_ire_damage_t>( "earthen_ire", e );
-  // TODO: Figure out why the buff isnt being applied to the player? still executes earthen_ire_damage once though...?
-  auto earthen_ire_buff =
-      create_buff<buff_t>( e.player, e.player->find_spell( 452514 ) )
+  auto earthen_ire_damage = create_proc_action<generic_aoe_proc_t>( "earthen_ire", e, e.player->find_spell( 452890 ) );
+
+  earthen_ire_damage->base_dd_min = earthen_ire_damage->base_dd_max = e.driver()->effectN( 4 ).average( e.item );
+
+  auto earthen_ire_buff_spell = e.player->find_spell( 452514 );
+  e.player->buffs.earthen_ire =
+      create_buff<buff_t>( e.player, earthen_ire_buff_spell )
           ->set_tick_callback( [ earthen_ire_damage ]( buff_t*, int, timespan_t ) { earthen_ire_damage->execute(); } );
-  auto earthen_ire_buff_action = create_proc_action<earthen_ire_buff_t>( "earthen_ire", e, earthen_ire_buff );
 
   e.execute_action =
-      create_proc_action<sigil_of_algari_concordance_t>( "sigil_of_algari_concordance", e, earthen_ire_buff_action );
+      create_proc_action<sigil_of_algari_concordance_t>( "sigil_of_algari_concordance", e, earthen_ire_damage );
   new dbc_proc_callback_t( e.player, e );
 }
 

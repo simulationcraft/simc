@@ -566,6 +566,7 @@ struct player_t : public actor_t
 
     // 11.0 The War Within
     buff_t* surekian_grace;  // sik'ran's shadow arsenal barrage movement speed buff
+    buff_t* earthen_ire;     // sigil of algari concordance tank buff
   } buffs;
 
   struct debuffs_t
