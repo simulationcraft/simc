@@ -1482,6 +1482,67 @@ namespace actions
     }
   };
 
+  struct phantom_singularity_t : public warlock_spell_t
+  {
+    struct phantom_singularity_tick_t : public warlock_spell_t
+    {
+      phantom_singularity_tick_t( warlock_t* p )
+        : warlock_spell_t( "Phantom Singularity (tick)", p, p->talents.phantom_singularity_tick )
+      {
+        background = dual = true;
+        may_miss = false;
+        aoe = -1;
+
+        if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B2 ) )
+          base_dd_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 3 ).percent();
+      }
+    };
+
+    phantom_singularity_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Phantom Singularity", p, p->talents.phantom_singularity )
+    {
+      parse_options( options_str );
+      callbacks = false;
+      hasted_ticks = true;
+      tick_action = new phantom_singularity_tick_t( p );
+
+      spell_power_mod.tick = 0;
+
+      if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B2 ) )
+        cooldown->duration += p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 2 ).time_value();
+    }
+
+    void init() override
+    {
+      warlock_spell_t::init();
+
+      update_flags &= ~STATE_HASTE;
+    }
+
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    { return ( s->action->tick_time( s ) / base_tick_time ) * dot_duration; }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      {
+        td( s->target )->debuffs_infirmity->trigger();
+      }
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      warlock_spell_t::last_tick( d );
+
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      {
+        td( d->target )->debuffs_infirmity->expire();
+      }
+    }
+  };
+
   struct haunt_t : public warlock_spell_t
   {
     haunt_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( "Haunt", p, p->talents.haunt )
