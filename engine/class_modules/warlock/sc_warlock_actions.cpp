@@ -538,5 +538,315 @@ namespace actions
       }
     }
   };
+
+  struct corruption_t : public warlock_spell_t
+  {
+    struct corruption_dot_t : public warlock_spell_t
+    {
+      corruption_dot_t( warlock_t* p ) : warlock_spell_t( "Corruption", p, p->warlock_base.corruption->effectN( 1 ).trigger() )
+      {
+        tick_zero = false;
+        background = dual = true;
+
+        if ( p->talents.absolute_corruption.ok() )
+        {
+          dot_duration = sim->expected_iteration_time > 0_ms
+            ? 2 * sim->expected_iteration_time
+            : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length ); // "Infinite" duration
+          base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent(); // 2022-09-25: Only tick damage is affected
+        }
+
+        triggers.shadow_invocation_tick = true;
+      }
+
+      void tick( dot_t* d ) override
+      {
+        warlock_spell_t::tick( d );
+
+        if ( result_is_hit( d->state->result ) )
+        {
+          if ( p()->talents.nightfall->ok() )
+          {
+            // Blizzard did not publicly release how nightfall was changed.
+            // We determined this is the probable functionality copied from Agony by first confirming the
+            // DR formula was the same and then confirming that you can get procs on 1st tick.
+            // The procs also have a regularity that suggest it does not use a proc chance or rppm.
+            // Last checked 09-28-2020.
+            double increment_max = 0.13;
+
+            double active_corruptions = p()->get_active_dots( d );
+            increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
+
+            p()->corruption_accumulator += rng().range( 0.0, increment_max );
+
+            if ( p()->corruption_accumulator >= 1 )
+            {
+              p()->procs.nightfall->occur();
+              p()->buffs.nightfall->trigger();
+              p()->corruption_accumulator -= 1.0;
+            }
+          }
+        }
+      }
+
+      double composite_ta_multiplier( const action_state_t* s ) const override
+      {
+        double m = warlock_spell_t::composite_ta_multiplier( s );
+
+        if ( p()->talents.sacrolashs_dark_strike.ok() )
+        {
+          m *= 1.0 + p()->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
+        }
+
+        return m;
+      }
+    };
+
+    corruption_dot_t* periodic;
+
+    corruption_t( warlock_t* p, util::string_view options_str, bool seed_action )
+      : warlock_spell_t( "Corruption (Direct)", p, p->warlock_base.corruption )
+    {
+      parse_options( options_str );
+
+      periodic = new corruption_dot_t( p );
+      impact_action = periodic;
+      add_child( periodic );
+
+      spell_power_mod.direct = 0; // By default, Corruption does not deal instant damage
+
+      if ( !seed_action && p->warlock_base.xavian_teachings->ok() )
+      {
+        spell_power_mod.direct = data().effectN( 3 ).sp_coeff();
+        base_execute_time *= 1.0 + p->warlock_base.xavian_teachings->effectN( 1 ).percent();
+      }
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      bool pi_trigger = p()->talents.pandemic_invocation->ok() && td( s->target )->dots_corruption->is_ticking()
+        && td( s->target )->dots_corruption->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
+
+      warlock_spell_t::impact( s );
+
+      if ( pi_trigger )
+        p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
+    }
+
+    dot_t* get_dot( player_t* t ) override
+    { return periodic->get_dot( t ); }
+  };
+
+  struct seed_of_corruption_t : public warlock_spell_t
+  {
+    struct seed_of_corruption_aoe_t : public warlock_spell_t
+    {
+      corruption_t* corruption;
+      bool cruel_epiphany;
+      bool umbrafire_kindling;
+      doom_blossom_t* doom_blossom;
+
+      seed_of_corruption_aoe_t( warlock_t* p )
+        : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
+        corruption( new corruption_t( p, "", true ) ),
+        cruel_epiphany( false ),
+        umbrafire_kindling( false ),
+        doom_blossom( new doom_blossom_t( p ) )
+      {
+        aoe = -1;
+        background = dual = true;
+
+        corruption->background = true;
+        corruption->dual = true;
+        corruption->base_costs[ RESOURCE_MANA ] = 0;
+
+        add_child( doom_blossom );
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        if ( result_is_hit( s->result ) )
+        {
+          auto tdata = td( s->target );
+
+          if ( tdata->dots_seed_of_corruption->is_ticking() && tdata->soc_threshold > 0 )
+          {
+            tdata->soc_threshold = 0;
+            tdata->dots_seed_of_corruption->cancel();
+          }
+
+          if ( p()->talents.doom_blossom.ok() && tdata->dots_unstable_affliction->is_ticking() )
+          {
+            doom_blossom->execute_on_target( s->target );
+            p()->procs.doom_blossom->occur();
+          }
+
+          // 2022-09-24 Agonizing Corruption does not apply Agony, only increments existing ones
+          if ( p()->talents.agonizing_corruption.ok() && tdata->dots_agony->is_ticking() )
+          {
+            tdata->dots_agony->increment( (int)( p()->talents.agonizing_corruption->effectN( 1 ).base_value() ) ); 
+          }
+          
+          corruption->execute_on_target( s->target );
+        }
+      }
+
+      double composite_da_multiplier( const action_state_t* s ) const override
+      {
+        double m = warlock_spell_t::composite_da_multiplier( s );
+
+        if ( p()->buffs.cruel_epiphany->check() && cruel_epiphany )
+        {
+          m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
+        }
+
+        if ( umbrafire_kindling )
+        {
+          m *= 1.0 + p()->tier.umbrafire_kindling->effectN( 2 ).percent();
+        }
+
+        return m;
+      }
+    };
+
+    seed_of_corruption_aoe_t* explosion;
+    seed_of_corruption_aoe_t* epiphany_explosion;
+    seed_of_corruption_aoe_t* umbrafire_explosion;
+
+    seed_of_corruption_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Seed of Corruption", p, p->talents.seed_of_corruption ),
+      explosion( new seed_of_corruption_aoe_t( p ) ),
+      epiphany_explosion( new seed_of_corruption_aoe_t( p ) ),
+      umbrafire_explosion( new seed_of_corruption_aoe_t( p ) )
+    {
+      parse_options( options_str );
+      may_crit = false;
+      tick_zero = false;
+      base_tick_time = dot_duration;
+      hasted_ticks = false;
+
+      add_child( explosion );
+
+      epiphany_explosion->cruel_epiphany = true;
+      add_child( epiphany_explosion );
+
+      umbrafire_explosion->umbrafire_kindling = true;
+      add_child( umbrafire_explosion );
+
+      if ( p->talents.sow_the_seeds.ok() )
+      {
+        aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
+      }
+    }
+
+    void init() override
+    {
+      warlock_spell_t::init();
+      snapshot_flags |= STATE_SP;
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      warlock_spell_t::available_targets( tl );
+
+      // Targeting behavior appears to be as follows:
+      // 1. If any targets have no current seed (in flight or ticking), they are valid
+      // 2. With Sow the Seeds, if at least one target is valid, it will only hit valid targets
+      // 3. If no targets are valid according to the above, all targets are instead valid (will refresh DoT on existing target(s) instead)
+      bool valid_target = false;
+      for ( auto t : tl )
+      {
+        if ( !( td( t )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( t ) ) )
+        {
+          valid_target = true;
+          break;
+        }
+      }
+
+      if ( valid_target )
+      {
+        range::erase_remove( tl, [ this ]( player_t* t ) {
+          return ( td( t )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( t ) );
+        } );
+      }
+
+      return tl.size();
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->buffs.cruel_epiphany->decrement();
+
+      p()->buffs.umbrafire_kindling->decrement();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( result_is_hit( s->result ) )
+      {
+        td( s->target )->soc_threshold = s->composite_spell_power() * p()->talents.seed_of_corruption->effectN( 1 ).percent();
+      }
+
+      warlock_spell_t::impact( s );
+
+      if ( s->chain_target == 0 && p()->buffs.cruel_epiphany->check() )
+      {
+        td( s->target )->debuffs_cruel_epiphany->trigger();
+      }
+
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B4 ) )
+      {
+        td( s->target )->debuffs_umbrafire_kindling->trigger();
+      }
+    }
+
+    // If Seed of Corruption is refreshed on a target, it will extend the duration
+    // but still explode at the original time, wiping the "DoT". tick() should be used instead
+    // of last_tick() to model this appropriately.
+    void tick( dot_t* d ) override
+    {
+      warlock_spell_t::tick( d );
+
+      if ( d->remains() > 0_ms )
+        d->cancel();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      // Note: We're PROBABLY okay to do this as an if/else if on tier sets because you can't have two separate 4pc bonuses at once
+      if ( td( d->target )->debuffs_cruel_epiphany->check() )
+      {
+        epiphany_explosion->set_target( d->target );
+        epiphany_explosion->schedule_execute();
+      }
+      else if ( td( d->target )->debuffs_umbrafire_kindling->check() )
+      {
+        make_event( *sim, 0_ms, [this, t = d->target ] { umbrafire_explosion->execute_on_target( t ); } );
+      }
+      else
+      {
+        explosion->set_target( d->target );
+        explosion->schedule_execute();
+      }
+
+      td( d->target )->debuffs_cruel_epiphany->expire();
+      td( d->target )->debuffs_umbrafire_kindling->expire();
+
+      warlock_spell_t::last_tick( d );
+    }
+  };
+
+  struct doom_blossom_t : public warlock_spell_t
+  {
+    doom_blossom_t( warlock_t* p ) : warlock_spell_t( "Doom Blossom", p, p->talents.doom_blossom_proc )
+    {
+      background = dual = true;
+      aoe = -1;
+    }
+  };
 }
 }
