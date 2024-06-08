@@ -1009,5 +1009,38 @@ namespace actions
       aoe = -1;
     }
   };
+
+  struct soul_flame_t : public warlock_spell_t
+  {
+    soul_flame_t( warlock_t* p ) : warlock_spell_t( "Soul Flame", p, p->talents.soul_flame_proc )
+    {
+      background = true;
+      aoe = -1;
+      reduced_aoe_targets = p->talents.soul_flame->effectN( 4 ).base_value();
+
+      base_dd_multiplier = 1.0 + p->talents.soul_flame->effectN( 2 ).percent();
+    }
+  };
+
+  struct pandemic_invocation_t : public warlock_spell_t
+  {
+    pandemic_invocation_t( warlock_t* p ) : warlock_spell_t( "Pandemic Invocation", p, p->talents.pandemic_invocation_proc )
+    {
+      background = true;
+
+      base_dd_multiplier *= 1.0 + p->talents.pandemic_invocation->effectN( 3 ).percent();
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      if ( rng().roll( p()->talents.pandemic_invocation->effectN( 2 ).percent() / 100.0 ) )
+      {
+        p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.pandemic_invocation );
+        p()->procs.pandemic_invocation_shard->occur();
+      }
+    }
+  };
 }
 }
