@@ -2061,6 +2061,126 @@ namespace actions
     }
   };
 
+  struct implosion_t : public warlock_spell_t
+  {
+    struct implosion_aoe_t : public warlock_spell_t
+    {
+      double energy_remaining = 0.0;
+      warlock_pet_t* next_imp;
+
+      implosion_aoe_t( warlock_t* p )
+        : warlock_spell_t( "Implosion (AoE)", p, p->talents.implosion_aoe )
+      {
+        aoe = -1;
+        background = dual = true;
+        callbacks = false;
+      }
+
+      double action_multiplier() const override
+      {
+        double m = warlock_spell_t::action_multiplier();
+
+        if ( debug_cast<pets::demonology::wild_imp_pet_t*>( next_imp )->buffs.imp_gang_boss->check() )
+          m *= 1.0 + p()->talents.imp_gang_boss->effectN( 2 ).percent();
+
+        if ( p()->talents.spiteful_reconstitution.ok() )
+          m *= 1.0 + p()->talents.spiteful_reconstitution->effectN( 1 ).percent();
+
+        return m;
+      }
+
+      double composite_target_multiplier( player_t* t ) const override
+      {
+        double m = warlock_spell_t::composite_target_multiplier( t );
+
+        if ( t == target )
+          m *= ( energy_remaining / 100.0 );
+
+        return m;
+      }
+
+      void execute() override
+      {
+        warlock_spell_t::execute();
+        next_imp->dismiss();
+      }
+    };
+
+    implosion_aoe_t* explosion;
+
+    implosion_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Implosion", p, p->talents.implosion ),
+      explosion( new implosion_aoe_t( p ) )
+    {
+      parse_options( options_str );
+      add_child( explosion );
+    }
+
+    bool ready() override
+    { return warlock_spell_t::ready() && p()->warlock_pet_list.wild_imps.n_active_pets() > 0; }
+
+    void execute() override
+    {
+      // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
+      timespan_t imp_travel_time = calc_imp_travel_time( 65 );
+
+      int launch_counter = 0;
+      for ( auto imp : p()->warlock_pet_list.wild_imps )
+      {
+        if ( !imp->is_sleeping() )
+        {
+          implosion_aoe_t* ex = explosion;
+          player_t* tar = target;
+          double dist = p()->get_player_distance( *tar );
+
+          imp->trigger_movement( dist, movement_direction_type::TOWARDS );
+          imp->interrupt();
+          imp->imploded = true;
+
+          // Imps launched with Implosion appear to be staggered and snapshot when they impact
+          // 2020-12-04: Implosion may have been made quicker in Shadowlands, too fast to easily discern with combat log
+          // Going to set the interval to 10 ms, which should keep all but the most extreme imp counts from bleeding into the next GCD
+          // TODO: There's an awkward possibility of Implosion seeming "ready" after casting it if all the imps have not imploded yet. Find a workaround
+          make_event( sim, 50_ms * launch_counter + imp_travel_time, [ ex, tar, imp ] {
+            if ( imp && !imp->is_sleeping() )
+            {
+              ex->energy_remaining = ( imp->resources.current[ RESOURCE_ENERGY ] );
+              ex->set_target( tar );
+              ex->next_imp = imp;
+              ex->execute();
+            }
+          } );
+
+          launch_counter++;
+        }
+      }
+
+      warlock_spell_t::execute();
+    }
+
+    timespan_t calc_imp_travel_time( double speed )
+    {
+      double t = 0;
+
+      if ( speed > 0 )
+      {
+        double distance = player->get_player_distance( *target );
+
+        if ( distance > 0 )
+          t += distance / speed;
+      }
+
+      double v = sim->travel_variance;
+
+      if ( v )
+        t = rng().gauss( t, v );
+
+      t = std::max( t, min_travel_time );
+
+      return timespan_t::from_seconds( t );
+    }
+  };
+
   struct call_dreadstalkers_t : public warlock_spell_t
   {
     call_dreadstalkers_t( warlock_t* p, util::string_view options_str )
