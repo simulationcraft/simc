@@ -1954,7 +1954,7 @@ namespace actions
     doom_brand_t( warlock_t* p ) : warlock_spell_t( "Doom Brand", p, p->tier.doom_brand_aoe )
     {
       aoe = -1;
-      reduce_aoe_targets = 8.0;
+      reduced_aoe_targets = 8.0;
       background = dual = true;
       callbacks = false;
     }
