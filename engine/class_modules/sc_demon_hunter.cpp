@@ -9240,12 +9240,6 @@ public:
         .operation( hotfix::HOTFIX_SET )
         .modifier( 16.0 )
         .verification_value( 50.0 );
-
-    hotfix::register_effect( "Demon Hunter", "2024-06-04", "Manually override bad apply aura sub-type.", 1157660 )
-        .field( "misc_value1" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0 )
-        .verification_value( 2298 );
   }
 
   void combat_begin( sim_t* ) const override

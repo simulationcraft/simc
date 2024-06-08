@@ -3555,8 +3555,8 @@ Hotfixed         : Base Value (0 -> -4)
                    Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Immolation Aura (258921), Immolation Aura (258922)
                    Family Flags: 49, 61
-#11 (id=1157660)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.00000 | Target: Self (1)
+#11 (id=1157660)  : Apply Aura (6) | Add Percent Modifier (108): Unknown(2298)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.00000 | Misc Value: 2298 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Blazing Nova (436899), Blazing Nova (436964)
                    Family Flags: 16
 Hotfixed         : NEW EFFECT
