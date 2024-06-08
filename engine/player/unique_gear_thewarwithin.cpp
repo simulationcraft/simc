@@ -1212,14 +1212,12 @@ void sigil_of_algari_concordance( special_effect_t& e )
   {
     action_t* st_action;
     action_t* aoe_action;
-    player_t* owner;
     pet_t* pet;
 
     algari_pet_cast_event_t( pet_t* p, action_t* st_action, action_t* aoe_action )
       : event_t( *p, p->owner->find_spell( 452325 )->effectN( 1 ).period() ),
         st_action( st_action ),
         aoe_action( aoe_action ),
-        owner( p->owner ),
         pet( p )
     {
     }
@@ -1233,7 +1231,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
     {
       if ( pet->is_active() )
       {
-        if ( aoe_action != nullptr && owner->sim->target_non_sleeping_list.size() > 1 )
+        if ( aoe_action != nullptr && pet->sim->target_non_sleeping_list.size() > 1 )
         {
           aoe_action->execute();
         }
@@ -1252,15 +1250,13 @@ void sigil_of_algari_concordance( special_effect_t& e )
     action_t* one_time_action;
     action_t* aoe_action;
     const spell_data_t* summon_spell;
-    timespan_t period;
 
     sigil_of_algari_concordance_pet_t( util::string_view name, const special_effect_t& e, const spell_data_t* summon_spell )
       : pet_t( e.player->sim, e.player, name, true, true ),
         st_action( nullptr ),
         one_time_action( nullptr ),
         aoe_action( nullptr ),
-        summon_spell( summon_spell ),
-        period( e.player->find_spell( 452325 )->effectN( 1 ).period() )
+        summon_spell( summon_spell )
     {
       npc_id = summon_spell->effectN( 1 ).misc_value1();
     }
@@ -1591,7 +1587,7 @@ void overclocked_geararang_launcher( special_effect_t& e )
     {
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( action_t*, action_state_t* ) override
     {
       item_cd->adjust( timespan_t::from_seconds( -equip_driver->effectN( 1 ).base_value() ) );
       buff->trigger();
