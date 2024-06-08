@@ -2730,5 +2730,49 @@ namespace actions
   };
 
   // Demonology Actions End
+  // Destruction Actions Begin
+
+  struct internal_combustion_t : public warlock_spell_t
+  {
+    internal_combustion_t( warlock_t* p )
+      : warlock_spell_t( "Internal Combustion", p, p->talents.internal_combustion )
+    {
+      background = dual = true;
+    }
+
+    void init() override
+    {
+      warlock_spell_t::init();
+
+      snapshot_flags &= STATE_NO_MULTIPLIER;
+    }
+
+    void execute() override
+    {
+      dot_t* dot = td( target )->dots_immolate;
+
+      assert( dot->current_action );
+      action_state_t* state = dot->current_action->get_state( dot->state );
+      dot->current_action->calculate_tick_amount( state, 1.0 );
+
+      double tick_base_damage = state->result_raw;
+
+      if ( td( target )->debuffs_conflagrate->up() )
+        tick_base_damage /= 1.0 + td( target )->debuffs_conflagrate->check_value();
+
+      timespan_t remaining = std::min( dot->remains(), timespan_t::from_seconds( p()->talents.internal_combustion->effectN( 1 ).base_value() ) );
+      timespan_t dot_tick_time = dot->current_action->tick_time( state );
+      double ticks_left = remaining / dot_tick_time;
+      double total_damage = ticks_left * tick_base_damage;
+
+      action_state_t::release( state );
+
+      base_dd_min = base_dd_max = total_damage;
+      warlock_spell_t::execute();
+      td( target )->dots_immolate->adjust_duration( -remaining );
+    }
+  };
+
+  // Destruction Actions End
 }
 }
