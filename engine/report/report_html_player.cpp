@@ -230,7 +230,7 @@ void print_distribution_chart( report::sc_html_stream& os,    // output stream t
   }
 }
 
-std::string output_action_name( const stats_t& s, const player_t* actor )
+std::string output_action_name( const stats_t& s, const player_t* actor, bool simple )
 {
   std::string class_attr;
   action_t* a            = nullptr;
@@ -252,12 +252,19 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   std::string name;
   if ( a )
   {
-    if ( auto con = dynamic_cast<dbc_consumable_base_t*>( a ); con && con->item_data )
-      name = report_decorators::decorated_item_data( *s.player->sim, *con->item_data );
-    else if ( a->item && &a->item->parsed.data != &dbc_item_data_t::nil() )
-      name = report_decorators::decorated_item_data( *s.player->sim, a->item->parsed.data );
+    if ( simple )
+    {
+      if ( auto con = dynamic_cast<dbc_consumable_base_t*>( a ); con && con->item_data )
+        name = report_decorators::decorated_item_data( *s.player->sim, *con->item_data );
+      else if ( a->item && &a->item->parsed.data != &dbc_item_data_t::nil() )
+        name = report_decorators::decorated_item_data( *s.player->sim, a->item->parsed.data );
+      else
+        name = report_decorators::decorated_action( *a );
+    }
     else
+    {
       name = report_decorators::decorated_action( *a );
+    }
   }
   else
   {
@@ -574,11 +581,12 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     }
   }
 
-  os << output_action_name( s, actor ) << "</td>\n";
+  auto simple = !( s.compound_amount > 0 || ( hasparent && s.parent->compound_amount > 0 ) );
+  os << output_action_name( s, actor, simple ) << "</td>\n";
 
   // DPS and DPS %
   // Skip for abilities that do no damage
-  if ( s.compound_amount > 0 || ( hasparent && s.parent->compound_amount > 0 ) )
+  if ( !simple )
   {
     std::string compound_aps;
     std::string compound_aps_pct;

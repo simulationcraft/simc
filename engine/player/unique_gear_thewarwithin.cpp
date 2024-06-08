@@ -2635,6 +2635,18 @@ void voltaic_stormcaller( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 455819 driver
+// 455821 damage
+void harvesters_interdiction( special_effect_t& effect )
+{
+  auto dot = create_proc_action<generic_proc_t>( "interdictive_injection", effect, 455821 );
+  dot->base_td = effect.driver()->effectN( 1 ).average( effect.item );
+
+  effect.execute_action = dot;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Armor
 // 457815 driver
 // 457918 nature damage driver
@@ -2773,6 +2785,7 @@ void register_special_effects()
   register_special_effect( 443384, items::fateweaved_needle );
   register_special_effect( 442205, items::befoulers_syringe );
   register_special_effect( 455887, items::voltaic_stormcaller );
+  register_special_effect( 455819, items::harvesters_interdiction );
   // Armor
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );
   register_special_effect( 457918, DISABLED_EFFECT );  // seal of the poisoned pact
