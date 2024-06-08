@@ -1266,7 +1266,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
           one_time_action->execute();
           one_time_action = nullptr;
         }
-        if ( aoe_action != nullptr && pet->sim->target_non_sleeping_list.size() > 2 )
+        else if ( aoe_action != nullptr && pet->sim->target_non_sleeping_list.size() > 2 )
         {
           aoe_action->execute();
         }
@@ -1370,7 +1370,6 @@ void sigil_of_algari_concordance( special_effect_t& e )
       scale_aoe_damage = true;
       base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e.item );
     }
-
   };
 
   struct mighty_smash_t : public algari_concodance_pet_spell_t
