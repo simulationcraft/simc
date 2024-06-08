@@ -243,12 +243,12 @@ namespace actions
 
       m *= 1.0 + p()->buffs.demonic_synergy->check_stack_value();
 
-      if ( p()->specialization() == WARLOCK_DEMONOLOGY && affected_by.master_demonologist_dd )
+      if ( demonology() && affected_by.master_demonologist_dd )
       {
         m *= 1.0 + p()->cache.mastery_value();
       }
 
-      if ( p()->specialization() == WARLOCK_DESTRUCTION && affected_by.chaotic_energies )
+      if ( destruction() && affected_by.chaotic_energies )
       {
         double destro_mastery_value = p()->cache.mastery_value() / 2.0;
         double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
@@ -266,7 +266,7 @@ namespace actions
     {
       double m = warlock_spell_t::composite_da_multiplier( s );
 
-      if ( p()->specialization() == WARLOCK_AFFLICTION && affected_by.potent_afflictions_dd )
+      if ( affliction() && affected_by.potent_afflictions_dd )
       {
         m *= 1.0 + p()->cache.mastery_value();
       }
@@ -278,7 +278,7 @@ namespace actions
     {
       double m = spell_t::composite_ta_multiplier( s );
 
-      if ( p()->specialization() == WARLOCK_AFFLICTION && affected_by.potent_afflictions_td )
+      if ( affliction() && affected_by.potent_afflictions_td )
       {
         m *= 1.0 + p()->cache.mastery_value();
       }
@@ -339,7 +339,7 @@ namespace actions
 
     int n_targets() const override
     {
-      if ( p()->specialization() == WARLOCK_DESTRUCTION && use_havoc() )
+      if ( destruction() && use_havoc() )
       {
         assert( spell_t::n_targets == 0 );
         return 2;
@@ -356,7 +356,7 @@ namespace actions
 
       // Check target list size to prevent some silly scenarios where Havoc target
       // is the only target in the list.
-      if ( p()->specialization() == WARLOCK_DESTRUCTION && tl.size() > 1 && use_havoc())
+      if ( destruction() && tl.size() > 1 && use_havoc())
       {
         // We need to make sure that the Havoc target ends up second in the target list,
         // so that Havoc spells can pick it up correctly.
@@ -375,7 +375,7 @@ namespace actions
     {
       spell_t::init();
 
-      if ( p()->specialization() == WARLOCK_DESTRUCTION && affected_by.havoc )
+      if ( destruction() && affected_by.havoc )
       {
         base_aoe_multiplier *= p()->talents.havoc_debuff->effectN( 1 ).percent();
         p()->havoc_spells.push_back( this );
@@ -386,6 +386,15 @@ namespace actions
         base_tick_time *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
       }
     }
+
+    bool affliction() const
+    { return p()->specialization() == WARLOCK_AFFLICTION; }
+
+    bool demonology() const
+    { return p()->specialization() == WARLOCK_DEMONOLOGY; }
+
+    bool destruction() const
+    { return p()->specialization() == WARLOCK_DESTRUCTION; }
   };
 }
 }
