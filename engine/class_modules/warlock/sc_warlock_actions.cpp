@@ -19,9 +19,12 @@ namespace actions
       // Class
 
       // Affliction
-      bool dread_touch;
-      bool wrath_of_consumption;
-      bool haunted_soul;
+      bool potent_afflictions_td = false;
+      bool potent_afflictions_dd = false;
+      bool dread_touch = false;
+      bool wrath_of_consumption = false;
+      bool haunted_soul  = false;
+      bool creeping_death = false;
 
       // Demonology
 
@@ -37,9 +40,12 @@ namespace actions
       tick_may_crit = true;
       weapon_multiplier = 0.0;
 
+      affected_by.potent_afflictions_td = data().affected_by( p->warlock_base.potent_afflictions->effectN( 1 ) );
+      affected_by.potent_afflictions_dd = data().affected_by( p->warlock_base.potent_afflictions->effectN( 2 ) );
       affected_by.dread_touch = data().affected_by( p->talents.dread_touch_debuff->effectN( 1 ) );
       affected_by.wrath_of_consumption = data().affected_by( p->talents.wrath_of_consumption_buff->effectN( 1 ) );
       affected_by.haunted_soul = data().affected_by( p->talents.haunted_soul_buff->effectN( 1 ) );
+      affected_by.creeping_death = data().affected_by( p->talents.creeping_death->effectN( 1 ) );
     }
 
     warlock_t* p()
@@ -145,9 +151,26 @@ namespace actions
       return m;
     }
 
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_da_multiplier( s );
+
+      if ( affected_by.potent_afflictions_dd )
+      {
+        m *= 1.0 + p()->cache.mastery_value();
+      }
+
+      return m;
+    }
+
     double composite_ta_multiplier( const action_state_t* s ) const override
     {
       double m = spell_t::composite_ta_multiplier( s );
+
+      if ( affected_by.potent_afflictions_td )
+      {
+        m *= 1.0 + p()->cache.mastery_value();
+      }
 
       if ( p()->talents.wrath_of_consumption.ok() && affected_by.wrath_of_consumption && p()->buffs.wrath_of_consumption->check() )
       {
@@ -245,6 +268,11 @@ namespace actions
       {
         base_aoe_multiplier *= p()->talents.havoc_debuff->effectN( 1 ).percent();
         p()->havoc_spells.push_back( this );
+      }
+
+      if ( p()->talents.creeping_death.ok() && affected_by.creeping_death )
+      {
+        base_tick_time *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
       }
     }
   };
