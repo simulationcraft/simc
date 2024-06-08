@@ -2250,6 +2250,96 @@ namespace actions
     }
   };
 
+  struct summon_demonic_tyrant_t : public warlock_spell_t
+  {
+    summon_demonic_tyrant_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Summon Demonic Tyrant", p, p->talents.summon_demonic_tyrant )
+    {
+      parse_options( options_str );
+
+      harmful = true; // Set to true because of 10.1 class trinket
+      may_crit = false;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+      
+      // Last tested 2021-07-13
+      // There is a chance for tyrant to get an extra cast off before reaching the required haste breakpoint.
+      // In-game testing found this can be modelled fairly closely using a normal distribution.
+      timespan_t extraTyrantTime = rng().gauss<380,220>();
+      auto tyrants = p()->warlock_pet_list.demonic_tyrants.spawn( data().duration() + extraTyrantTime );
+
+      if ( p()->talents.soulbound_tyrant.ok() )
+        p()->resource_gain( RESOURCE_SOUL_SHARD, p()-> talents.soulbound_tyrant->effectN( 1 ).base_value() / 10.0, p()->gains.soulbound_tyrant );
+
+      timespan_t extension_time = p()->talents.demonic_power_buff->effectN( 3 ).time_value();
+
+      int wild_imp_counter = 0;
+      int demon_counter = 0;
+      int imp_cap = as<int>( p()->talents.summon_demonic_tyrant->effectN( 3 ).base_value() + p()->talents.reign_of_tyranny->effectN( 1 ).base_value() );
+
+      for ( auto& pet : p()->pet_list )
+      {
+        auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
+        pet_e pet_type = lock_pet->pet_type;
+
+        if ( lock_pet == nullptr )
+          continue;
+
+        if ( lock_pet->is_sleeping() )
+          continue;
+
+        if ( pet_type == PET_DEMONIC_TYRANT )
+          continue;
+
+        if ( pet_type == PET_WILD_IMP && wild_imp_counter < imp_cap )
+        {
+          if ( lock_pet->expiration )
+            lock_pet->expiration->reschedule_time = lock_pet->expiration->time + extension_time;
+
+          lock_pet->buffs.demonic_power->trigger();
+          wild_imp_counter++;
+          demon_counter++;
+        }
+        else if ( pet_type == PET_DREADSTALKER || pet_type == PET_VILEFIEND || pet_type == PET_SERVICE_FELGUARD || lock_pet->is_main_pet )
+        {
+          if ( lock_pet->expiration )
+            lock_pet->expiration->reschedule_time = lock_pet->expiration->time + extension_time;
+
+          lock_pet->buffs.demonic_power->trigger();
+          demon_counter++;
+        }
+      }
+
+      p()->buffs.tyrant->trigger();
+
+      if ( p()->buffs.dreadstalkers->check() )
+        p()->buffs.dreadstalkers->extend_duration( p(), extension_time );
+
+      if ( p()->buffs.grimoire_felguard->check() )
+      {
+        p()->buffs.grimoire_felguard->extend_duration( p(), extension_time );
+
+        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B4 ) )
+          p()->buffs.rite_of_ruvaraad->extend_duration( p(), extension_time );
+      }
+
+      if ( p()->buffs.vilefiend->check() )
+        p()->buffs.vilefiend->extend_duration( p(), extension_time );
+
+      if ( p()->talents.reign_of_tyranny.ok() )
+      {
+        for ( auto t : tyrants )
+        {
+          if ( t->is_active() )
+            t->buffs.reign_of_tyranny->trigger( demon_counter );
+        }
+      }
+    }
+  };
+
   struct doom_brand_t : public warlock_spell_t
   {
     doom_brand_t( warlock_t* p ) : warlock_spell_t( "Doom Brand", p, p->tier.doom_brand_aoe )
