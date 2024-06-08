@@ -1210,6 +1210,15 @@ void mad_queens_mandate( special_effect_t& effect )
 // Might have variations based on the players Specilization.
 // Testing on DPS Death Knight showed only a single spawnable pet.
 // 443378 Driver
+// Effect 2: Thunder Bolt Damage
+// Effect 3: Bolt Rain Damage
+// Effect 4: Thundering Bolt Damage
+// Effect 5: Unknown
+// Effect 6: Unknown
+// Effect 7: Unknown
+// Effect 8: Unknown
+// Effect 9: Mighty Smash Damage
+// Effect 10: Earthen Ire Damage
 // 452310 Summon Spell (DPS)
 // 452335 Thunder Bolt - Damage Spell DPS Single Target
 // 452334 Bolt Rain - Damage Spell DPS AoE
@@ -1225,12 +1234,17 @@ void sigil_of_algari_concordance( special_effect_t& e )
   {
     action_t* st_action;
     action_t* aoe_action;
+    action_t* one_time_action;
+    unsigned tick;
     pet_t* pet;
 
-    algari_pet_cast_event_t( pet_t* p, action_t* st_action, action_t* aoe_action )
-      : event_t( *p, p->owner->find_spell( 452325 )->effectN( 1 ).period() ),
+    algari_pet_cast_event_t( pet_t* p, timespan_t time_to_execute, unsigned tick, action_t* st_action,
+                             action_t* aoe_action, action_t* one_time_action )
+      : event_t( *p, time_to_execute ),
         st_action( st_action ),
         aoe_action( aoe_action ),
+        one_time_action( one_time_action ),
+        tick( tick ),
         pet( p )
     {
     }
@@ -1244,7 +1258,15 @@ void sigil_of_algari_concordance( special_effect_t& e )
     {
       if ( pet->is_active() )
       {
-        if ( aoe_action != nullptr && pet->sim->target_non_sleeping_list.size() > 1 )
+        tick++;
+        // Emulates the odd behavior where sometimes it will execute the one time action the first tick
+        // while other times it will execute it later. While still guarenteeing it will cast sometime in its duration.
+        if ( one_time_action != nullptr && rng().roll( 0.33 * tick ) )
+        {
+          one_time_action->execute();
+          one_time_action = nullptr;
+        }
+        if ( aoe_action != nullptr && pet->sim->target_non_sleeping_list.size() > 2 )
         {
           aoe_action->execute();
         }
@@ -1252,7 +1274,8 @@ void sigil_of_algari_concordance( special_effect_t& e )
         {
           st_action->execute();
         }
-        make_event<algari_pet_cast_event_t>( sim(), pet, st_action, aoe_action );
+        make_event<algari_pet_cast_event_t>( sim(), pet, pet->find_spell( 452325 )->effectN( 1 ).period(), tick,
+                                             st_action, aoe_action, one_time_action );
       }
     }
   };
@@ -1280,17 +1303,16 @@ void sigil_of_algari_concordance( special_effect_t& e )
     void arise() override
     {
       pet_t::arise();
-      // TODO: Sometimes the one time action is delayed until the 2nd or 3rd tick, seems pretty random when it happens
-      // Need to explore deeper to see whats happening
-      one_time_action->execute();
-      make_event<algari_pet_cast_event_t>( *sim, this, st_action, aoe_action );
+      make_event<algari_pet_cast_event_t>( *sim, this, 0_ms, 0, st_action, aoe_action, one_time_action );
     }
   };
 
   struct algari_concodance_pet_spell_t : public spell_t
   {
+    unsigned max_scaling_targets;
+    bool scale_aoe_damage;
     algari_concodance_pet_spell_t( util::string_view n, pet_t* p, const spell_data_t* s, action_t* a )
-      : spell_t( n, p, s )
+      : spell_t( n, p, s ), max_scaling_targets( 5 ), scale_aoe_damage( false )
     {
       background = true;
       auto proxy = a;
@@ -1305,16 +1327,25 @@ void sigil_of_algari_concordance( special_effect_t& e )
     {
       return debug_cast<player_t*>( debug_cast<pet_t*>( this->player )->owner );
     }
+
+    double composite_aoe_multiplier( const action_state_t* state ) const override
+    {
+      double am = spell_t::composite_aoe_multiplier( state );
+
+      if( scale_aoe_damage )
+        am *= 1.0 + 0.15 * clamp( state->n_targets - 1u, 0u, max_scaling_targets );
+
+      return am;
+    }
   };
 
   struct thunder_bolt_silvervein_t : public algari_concodance_pet_spell_t
   {
+
     thunder_bolt_silvervein_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
       : algari_concodance_pet_spell_t( name, p, p->find_spell( 452335 ), a )
     {
       name_str_reporting = "thunder_bolt";
-      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
-      // a guessing game.
       base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
     }
   };
@@ -1325,8 +1356,6 @@ void sigil_of_algari_concordance( special_effect_t& e )
       : algari_concodance_pet_spell_t( name, p, p->find_spell( 452334 ), a )
     {
       aoe = -1;
-      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
-      // a guessing game.
       base_dd_min = base_dd_max = e.driver()->effectN( 3 ).average( e.item );
     }
   };
@@ -1337,10 +1366,11 @@ void sigil_of_algari_concordance( special_effect_t& e )
       : algari_concodance_pet_spell_t( name, p, p->find_spell( 452445 ), a )
     {
       aoe = -1;
-      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
-      // a guessing game.
+      split_aoe_damage = true;
+      scale_aoe_damage = true;
       base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e.item );
     }
+
   };
 
   struct mighty_smash_t : public algari_concodance_pet_spell_t
@@ -1349,9 +1379,9 @@ void sigil_of_algari_concordance( special_effect_t& e )
       : algari_concodance_pet_spell_t( name, p, p->find_spell( 452545 ), a )
     {
       aoe = -1;
-      // TODO: Double check the effect mapping is correct for the abilities. Nothing is referenced in tooltips making it
-      // a guessing game.
-      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+      split_aoe_damage = true;
+      scale_aoe_damage = true;
+      base_dd_min = base_dd_max = e.driver()->effectN( 9 ).average( e.item );
     }
   };
 
@@ -1501,9 +1531,9 @@ void sigil_of_algari_concordance( special_effect_t& e )
     }
   };
 
-  auto earthen_ire_damage = create_proc_action<generic_aoe_proc_t>( "earthen_ire", e, e.player->find_spell( 452890 ) );
+  auto earthen_ire_damage = create_proc_action<generic_aoe_proc_t>( "earthen_ire", e, e.player->find_spell( 452890 ), true );
 
-  earthen_ire_damage->base_dd_min = earthen_ire_damage->base_dd_max = e.driver()->effectN( 4 ).average( e.item );
+  earthen_ire_damage->base_dd_min = earthen_ire_damage->base_dd_max = e.driver()->effectN( 10 ).average( e.item );
 
   auto earthen_ire_buff_spell = e.player->find_spell( 452514 );
   e.player->buffs.earthen_ire =
