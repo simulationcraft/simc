@@ -27,10 +27,25 @@ namespace actions
       bool creeping_death = false;
 
       // Demonology
+      bool master_demonologist_dd = false;
+      bool houndmasters = false;
 
       // Destruction
       bool havoc = false;
     } affected_by;
+
+    struct triggers_t
+    {
+      // Class
+
+      // Affliction
+
+      // Demonology
+
+      // Destruction
+      bool shadow_invocation_direct = false;
+      bool shadow_invocation_tick = false;
+    } triggers;
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
     : spell_t( token, p, s ),
@@ -46,6 +61,9 @@ namespace actions
       affected_by.wrath_of_consumption = data().affected_by( p->talents.wrath_of_consumption_buff->effectN( 1 ) );
       affected_by.haunted_soul = data().affected_by( p->talents.haunted_soul_buff->effectN( 1 ) );
       affected_by.creeping_death = data().affected_by( p->talents.creeping_death->effectN( 1 ) );
+
+      affected_by.master_demonologist_dd = data().affected_by( p->warlock_base.master_demonologist->effectN( 2 ) );
+      affected_by.houndmasters = data().affected_by( p->talents.the_houndmasters_stratagem_debuff->effectN( 1 ) );
     }
 
     warlock_t* p()
@@ -115,6 +133,12 @@ namespace actions
           }
         }
       }
+
+      if ( p()->talents.shadow_invocation->ok() && triggers.shadow_invocation_direct && rng().roll( p()->shadow_invocation_proc_chance ) )
+      {
+        p()->proc_actions.bilescourge_bombers_proc->execute_on_target( s->target );
+        p()->procs.shadow_invocation->occur();
+      }
     }
 
     void tick( dot_t* d ) override
@@ -128,6 +152,12 @@ namespace actions
           p()->procs.reverse_entropy->occur();
         }
       }
+
+      if ( p()->talents.shadow_invocation.ok() && triggers.shadow_invocation_tick && rng().roll( p()->shadow_invocation_proc_chance ) )
+      {
+        p()->proc_actions.bilescourge_bombers_proc->execute_on_target( d->target );
+        p()->procs.shadow_invocation->occur();
+      }
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -139,6 +169,11 @@ namespace actions
         m *= 1.0 + td( t )->debuffs_dread_touch->check_stack_value();
       }
 
+      if ( p()->talents.the_houndmasters_stratagem.ok() && affected_by.houndmasters )
+      {
+        m *= 1.0 + td( t )->debuffs_the_houndmasters_stratagem->check_value();
+      }
+
       return m;
     }
 
@@ -147,6 +182,11 @@ namespace actions
       double m = spell_t::action_multiplier();
 
       m *= 1.0 + p()->buffs.demonic_synergy->check_stack_value();
+
+      if ( p()->specialization() == WARLOCK_DEMONOLOGY && affected_by.master_demonologist_dd )
+      {
+        m *= 1.0 + p()->cache.mastery_value();
+      }
       
       return m;
     }
@@ -155,7 +195,7 @@ namespace actions
     {
       double m = warlock_spell_t::composite_da_multiplier( s );
 
-      if ( affected_by.potent_afflictions_dd )
+      if ( p()->specialization() == WARLOCK_AFFLICTION && affected_by.potent_afflictions_dd )
       {
         m *= 1.0 + p()->cache.mastery_value();
       }
@@ -167,7 +207,7 @@ namespace actions
     {
       double m = spell_t::composite_ta_multiplier( s );
 
-      if ( affected_by.potent_afflictions_td )
+      if ( p()->specialization() == WARLOCK_AFFLICTION && affected_by.potent_afflictions_td )
       {
         m *= 1.0 + p()->cache.mastery_value();
       }
