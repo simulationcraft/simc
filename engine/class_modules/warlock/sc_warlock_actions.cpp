@@ -2732,6 +2732,254 @@ namespace actions
   // Demonology Actions End
   // Destruction Actions Begin
 
+  struct incinerate_t : public warlock_spell_t
+  {
+    struct incinerate_state_t final : public action_state_t
+    {
+      int total_hit;
+
+      incinerate_state_t( action_t* action, player_t* target )
+        : action_state_t( action, target ),
+        total_hit( 0 )
+      { }
+
+      void initialize() override
+      {
+        action_state_t::initialize();
+        total_hit = 0;
+      }
+
+      std::ostringstream& debug_str( std::ostringstream& s ) override
+      {
+        action_state_t::debug_str( s ) << " total_hit=" << total_hit;
+        return s;
+      }
+
+      void copy_state( const action_state_t* s ) override
+      {
+        action_state_t::copy_state( s );
+        total_hit = debug_cast<const incinerate_state_t*>( s )->total_hit;
+      }
+    };
+
+    struct incinerate_fnb_t : public warlock_spell_t
+    {
+      incinerate_fnb_t( warlock_t* p )
+        : warlock_spell_t( "Incinerate (Fire and Brimstone)", p, p->warlock_base.incinerate )
+      {
+        aoe = -1;
+        background = dual = true;
+
+        affected_by.chaotic_energies = true;
+
+        base_multiplier *= p->talents.fire_and_brimstone->effectN( 1 ).percent();
+      }
+
+      void init() override
+      {
+        warlock_spell_t::init();
+
+        p()->havoc_spells.push_back( this ); // Needed for proper target list invalidation
+      }
+
+      action_state_t* new_state() override
+      { return new incinerate_state_t( this, target ); }
+
+      void snapshot_state( action_state_t* s, result_amount_type rt ) override
+      {
+        debug_cast<incinerate_state_t*>( s )->total_hit = p()->incinerate_last_target_count;
+        
+        warlock_spell_t::snapshot_state( s, rt );
+      }
+
+      double cost() const override
+      { return 0.0; }
+
+      size_t available_targets( std::vector<player_t*>& tl ) const override
+      {
+        warlock_spell_t::available_targets( tl );
+
+        auto it = range::find( tl, target );
+        if ( it != tl.end() )
+          tl.erase( it );
+
+        it = range::find( tl, p()->havoc_target );
+        if ( it != tl.end() )
+          tl.erase( it );
+
+        return tl.size();
+      }
+
+      double action_multiplier() const override
+      {
+        double m = warlock_spell_t::action_multiplier();
+
+        if ( p()->talents.burn_to_ashes.ok() )
+          m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
+
+        return m;
+      }
+
+      double composite_target_multiplier( player_t* t ) const override
+      {
+        double m = warlock_spell_t::composite_target_multiplier( t );
+
+        if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
+          m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
+
+        return m;
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        if ( s->result == RESULT_CRIT )
+          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_fnb_crits );
+
+        if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B2 ) )
+        {
+          auto inc_state = debug_cast< incinerate_state_t*>( s );
+          double increment_max = 0.4;
+
+          increment_max *= std::pow( inc_state->total_hit, -2.0 / 3.0 );
+
+          p()->cdf_accumulator += rng().range( 0.0, increment_max );
+
+          if ( p()->cdf_accumulator >= 1.0 )
+          {
+            p()->proc_actions.channel_demonfire->execute_on_target( inc_state->target );
+            p()->procs.channel_demonfire->occur();
+            p()->cdf_accumulator -= 1.0;
+          }
+        }
+      }
+    };
+
+    double energize_mult;
+    incinerate_fnb_t* fnb_action;
+
+    incinerate_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Incinerate", p, p->warlock_base.incinerate ),
+      fnb_action( new incinerate_fnb_t( p ) )
+    {
+      parse_options( options_str );
+
+      energize_type = action_energize::PER_HIT;
+      energize_resource = RESOURCE_SOUL_SHARD;
+      energize_amount = ( p->warlock_base.incinerate_energize->effectN( 1 ).base_value() ) / 10.0;
+      
+      energize_mult = 1.0 + p->talents.diabolic_embers->effectN( 1 ).percent();
+      energize_amount *= energize_mult;
+
+      affected_by.chaotic_energies = true;
+      affected_by.havoc = true;
+
+      add_child( fnb_action );
+    }
+
+    action_state_t* new_state() override
+    { return new incinerate_state_t( this, target ); }
+
+    void snapshot_state( action_state_t* s, result_amount_type rt ) override
+    {
+      debug_cast<incinerate_state_t*>( s )->total_hit = p()->incinerate_last_target_count;
+      warlock_spell_t::snapshot_state( s, rt );
+    }
+
+    timespan_t execute_time() const override
+    {
+      timespan_t t = warlock_spell_t::execute_time();
+
+      if ( p()->buffs.backdraft->check() )
+        t *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
+
+      return t;
+    }
+
+    timespan_t gcd() const override
+    {
+      timespan_t t = warlock_spell_t::gcd();
+
+      if ( t == 0_ms )
+        return t;
+
+      if ( p()->buffs.backdraft->check() )
+        t *= 1.0 + p()->talents.backdraft_buff->effectN( 2 ).percent();
+
+      if ( t < min_gcd )
+        t = min_gcd;
+
+      return t;
+    }
+
+    void execute() override
+    {
+      // Update and store target count for RNG effects that trigger off Incinerate hits
+      int n = std::max( n_targets(), 1 );
+      if ( p()->talents.fire_and_brimstone.ok() )
+        n += as<int>( fnb_action->target_list().size() );
+      p()->incinerate_last_target_count = n;
+
+      warlock_spell_t::execute();
+      
+      p()->buffs.backdraft->decrement();
+
+      if ( p()->talents.fire_and_brimstone.ok() )
+        fnb_action->execute_on_target( target );
+
+      if ( p()->talents.decimation.ok() && target->health_percentage() <= p()->talents.decimation->effectN( 2 ).base_value() )
+        p()->cooldowns.soul_fire->adjust( p()->talents.decimation->effectN( 1 ).time_value() );
+
+      p()->buffs.burn_to_ashes->decrement(); // Must do after Fire and Brimstone execute so that child picks up buff
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( s->result == RESULT_CRIT )
+        p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_crits );
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B2 ) )
+      {
+        auto inc_state = debug_cast<incinerate_state_t*>( s );
+        double increment_max = 0.4;
+
+        increment_max *= std::pow( inc_state->total_hit, -2.0 / 3.0 );
+
+        p()->cdf_accumulator += rng().range( 0.0, increment_max );
+
+        if ( p()->cdf_accumulator >= 1.0 )
+        {
+          p()->proc_actions.channel_demonfire->execute_on_target( inc_state->target );
+          p()->procs.channel_demonfire->occur();
+          p()->cdf_accumulator -= 1.0;
+        }
+      }
+    }
+
+    double action_multiplier() const override
+    {
+      double m = warlock_spell_t::action_multiplier();
+
+      if ( p()->talents.burn_to_ashes.ok() )
+        m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
+
+      return m;
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double m = warlock_spell_t::composite_target_multiplier( t );
+
+      if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
+        m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
+
+      return m;
+    }
+  };
+
   struct immolate_t : public warlock_spell_t
   {
     struct immolate_dot_t : public warlock_spell_t
