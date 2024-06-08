@@ -2639,6 +2639,47 @@ namespace actions
     }
   };
 
+  struct guillotine_t : public warlock_spell_t
+  {
+    guillotine_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Guillotine", p, p->talents.guillotine )
+    {
+      parse_options( options_str );
+      
+      may_crit = false;
+      internal_cooldown = p->get_cooldown( "felstorm_icd" );
+    }
+
+    bool ready() override
+    {
+      auto active_pet = p()->warlock_pet_list.active;
+
+      if ( !active_pet )
+        return false;
+
+      if ( active_pet->pet_type != PET_FELGUARD )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+
+    void execute() override
+    {
+      auto active_pet = p()->warlock_pet_list.active;
+
+      warlock_spell_t::execute();
+
+      if ( active_pet->pet_type == PET_FELGUARD )
+      {
+        active_pet->buffs.fiendish_wrath->trigger();
+
+        debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->felguard_guillotine->execute_on_target( execute_state->target );
+
+        internal_cooldown->start( 6_s );
+      }
+    }
+  };
+
   struct doom_brand_t : public warlock_spell_t
   {
     doom_brand_t( warlock_t* p ) : warlock_spell_t( "Doom Brand", p, p->tier.doom_brand_aoe )
