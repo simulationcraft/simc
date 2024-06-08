@@ -29,6 +29,7 @@ namespace actions
       // Demonology
       bool master_demonologist_dd = false;
       bool houndmasters = false;
+      bool soul_conduit_base_cost = false;
 
       // Destruction
       bool chaotic_energies = false;
@@ -103,7 +104,7 @@ namespace actions
         {
           // Soul Conduit events are delayed slightly (100 ms) in sims to avoid instantaneous reactions
           // TODO: Migrate sc_event_t to the actions.cpp file
-          make_event<warlock::actions::sc_event_t>( *p()->sim, p(), as<int>( last_resource_cost ) );
+          make_event<warlock::actions::sc_event_t>( *p()->sim, p(), as<int>( affected_by.soul_conduit_base_cost ? base_shards : last_resource_cost ) );
         }
 
         if ( p()->buffs.rain_of_chaos->check() && shards_used > 0 )
@@ -2060,6 +2061,75 @@ namespace actions
     }
   };
 
+  struct call_dreadstalkers_t : public warlock_spell_t
+  {
+    call_dreadstalkers_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Call Dreadstalkers", p, p->talents.call_dreadstalkers )
+    {
+      parse_options( options_str );
+      may_crit = false;
+      affected_by.soul_conduit_base_cost = true;
+    }
+
+    double cost_pct_multiplier() const override
+    {
+      double m = warlock_spell_t::cost_pct_multiplier();
+
+      if ( p()->buffs.demonic_calling->check() )
+        m *= 1.0 + p()->talents.demonic_calling_buff->effectN( 1 ).percent();
+
+      return m;
+    }
+
+    timespan_t execute_time() const override
+    {
+      timespan_t t = warlock_spell_t::execute_time();
+
+      if ( p()->buffs.demonic_calling->check() )
+        t *= 1.0 + p()->talents.demonic_calling_buff->effectN( 2 ).percent();
+
+      return t;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      unsigned count = as<unsigned>( p()->talents.call_dreadstalkers->effectN( 1 ).base_value() );
+
+      // Set a randomized offset on first melee attacks after travel time. Make sure it's the same value for each dog so they're synced
+      timespan_t delay = rng().range( 0_s, 1_s );
+
+      timespan_t dur_adjust = duration_adjustment( delay );
+
+      auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration() + dur_adjust, count );
+
+      for ( auto d : dogs )
+      {
+        if ( d->is_active() )
+        {
+          d->server_action_delay = delay;
+
+          if ( p()->talents.dread_calling.ok() && !d->buffs.dread_calling->check() )
+            d->buffs.dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
+        }
+      }
+
+      if ( p()->buffs.demonic_calling->up() )
+        p()->buffs.demonic_calling->decrement();
+
+      p()->buffs.dread_calling->expire();
+    }
+
+    timespan_t duration_adjustment( timespan_t delay )
+    {
+      // Despawn events appear to be offset from the melee attack check in a correlated manner
+      // Starting with this function which mimics despawns on the "off-beats" compared to the 1s heartbeat for the melee attack
+      // This may require updating if better understanding is found for the behavior, such as a fudge from Blizzard related to player distance
+      return ( delay + 500_ms ) % 1_s;
+    }
+  };
+
   struct doom_brand_t : public warlock_spell_t
   {
     doom_brand_t( warlock_t* p ) : warlock_spell_t( "Doom Brand", p, p->tier.doom_brand_aoe )
@@ -2100,7 +2170,7 @@ namespace actions
 
     double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double m = warlock_spell_t::composite_da_multiplier();
+      double m = warlock_spell_t::composite_da_multiplier( s );
 
       if ( s->n_targets == 1 )
         m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T31, B2 )->effectN( 2 ).percent();
