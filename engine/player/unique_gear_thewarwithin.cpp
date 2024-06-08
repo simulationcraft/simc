@@ -1387,8 +1387,8 @@ void sigil_of_algari_concordance( special_effect_t& e )
     void create_actions() override
     {
       sigil_of_algari_concordance_pet_t::create_actions();
-      one_time_action = new earthen_ire_buff_t( "earthen_ire_buff", this, effect, action );
       st_action       = new mighty_smash_t( "mighty_smash", this, effect, action );
+      one_time_action = new earthen_ire_buff_t( "earthen_ire_buff", this, effect, action );
     }
   };
 
@@ -1424,8 +1424,6 @@ void sigil_of_algari_concordance( special_effect_t& e )
         case EVOKER_DEVASTATION:
         case EVOKER_AUGMENTATION:
           silvervein = true;
-          silvervein_spawner.set_creation_callback( [ this ]( player_t* ) { return new silvervein_pet_t( effect, this ); } );
-          silvervein_spawner.set_default_duration( e.player->find_spell( 452310 )->duration() );
           break;
         case WARRIOR_PROTECTION:
         case PALADIN_PROTECTION:
@@ -1434,9 +1432,6 @@ void sigil_of_algari_concordance( special_effect_t& e )
         case DRUID_GUARDIAN:
         case DEMON_HUNTER_VENGEANCE:
           boulderbane = true;
-          boulderbane_spawner.set_creation_callback( [ this ]( player_t* ) { return new boulderbane_pet_t( effect, this ); } );
-          boulderbane_spawner.set_default_duration( e.player->find_spell( 452496 )->duration() );
-          add_child( earthen_ire_damage );
           break;
         case PALADIN_HOLY:
         case PRIEST_DISCIPLINE:
@@ -1461,9 +1456,19 @@ void sigil_of_algari_concordance( special_effect_t& e )
         case DEMON_HUNTER_HAVOC:
         default:
           silvervein = true;
-          silvervein_spawner.set_creation_callback( [ this ]( player_t* ) { return new silvervein_pet_t( effect, this ); } );
-          silvervein_spawner.set_default_duration( e.player->find_spell( 452310 )->duration() );
           break;
+      }
+
+      if ( silvervein )
+      {
+        silvervein_spawner.set_creation_callback( [ this ]( player_t* ) { return new silvervein_pet_t( effect, this ); } );
+        silvervein_spawner.set_default_duration( e.player->find_spell( 452310 )->duration() );
+      }
+      if ( boulderbane )
+      {
+        boulderbane_spawner.set_creation_callback( [ this ]( player_t* ) { return new boulderbane_pet_t( effect, this ); } );
+        boulderbane_spawner.set_default_duration( e.player->find_spell( 452496 )->duration() );
+        add_child( earthen_ire_damage );
       }
 
       background = true;
@@ -1476,7 +1481,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
       {
         boulderbane_spawner.spawn();
       }
-      else if ( silvervein )
+      if ( silvervein )
       {
         silvervein_spawner.spawn();
       }
