@@ -3069,6 +3069,167 @@ namespace actions
     { return impact_action->get_dot( t ); }
   };
 
+  struct chaos_bolt_t : public warlock_spell_t
+  {
+    struct cry_havoc_t : public warlock_spell_t
+    {
+      cry_havoc_t( warlock_t* p )
+        : warlock_spell_t( "Cry Havoc", p, p->talents.cry_havoc )
+      {
+        background = dual = true;
+        aoe = -1;
+
+        // TOCHECK: Historically, base talent has doubled the sp_coeff
+        base_multiplier *= 1.0 + p->talents.cry_havoc->effectN( 1 ).percent();
+      }
+    };
+
+    internal_combustion_t* internal_combustion;
+    cry_havoc_t* cry_havoc;
+
+    chaos_bolt_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Chaos Bolt", p, p->talents.chaos_bolt )
+    {
+      parse_options( options_str );
+
+      affected_by.chaotic_energies = true;
+      affected_by.havoc = true;
+      affected_by.chaos_incarnate = p->talents.chaos_incarnate->ok();
+
+      if ( p->talents.chaosbringer.ok() )
+        base_dd_multiplier *= 1.0 + p->talents.chaosbringer->effectN( 1 ).percent();
+
+      if ( p->talents.internal_combustion.ok() )
+      {
+        internal_combustion = new internal_combustion_t( p );
+        add_child( internal_combustion );
+      }
+
+      if ( p->talents.cry_havoc.ok() )
+      {
+        cry_havoc = new cry_havoc_t( p );
+        add_child( cry_havoc );
+      }
+    }
+
+    double cost_pct_multiplier() const override
+    {
+      double c = warlock_spell_t::cost_pct_multiplier();
+
+      if ( p()->buffs.ritual_of_ruin->check() )
+        c *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 2 ).percent();
+
+      return c;
+    }
+
+    timespan_t execute_time() const override
+    {
+      timespan_t t = warlock_spell_t::execute_time();
+
+      // 2022-10-15: Backdraft is not consumed for Ritual of Ruin empowered casts, but IS hasted by it
+      if ( p()->buffs.ritual_of_ruin->check() )
+        t *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 3 ).percent();
+    
+      if ( p()->buffs.backdraft->check() )
+        t *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
+
+      if ( p()->buffs.madness_cb->check() )
+        t *= 1.0 + p()->talents.madness_of_the_azjaqir->effectN( 2 ).percent();
+
+      return t;
+    }
+
+    double action_multiplier() const override
+    {
+      double m = warlock_spell_t::action_multiplier();
+
+      if ( p()->talents.madness_of_the_azjaqir.ok() )
+        m *= 1.0 + p()->buffs.madness_cb->check_value();
+
+      if ( p()->buffs.crashing_chaos->check() )
+        m *= 1.0 + p()->talents.crashing_chaos->effectN( 2 ).percent();
+
+      return m;
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double m = warlock_spell_t::composite_target_multiplier( t );
+
+      if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
+        m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
+
+      return m;
+    }
+
+    timespan_t gcd() const override
+    {
+      timespan_t t = warlock_spell_t::gcd();
+
+      if ( t == 0_ms )
+        return t;
+
+      // 2022-10-15: Backdraft is not consumed for Ritual of Ruin empowered casts, but IS hasted by it
+      if ( p()->buffs.backdraft->check() )
+        t *= 1.0 + p()->talents.backdraft_buff->effectN( 2 ).percent();
+
+      if ( t < min_gcd )
+        t = min_gcd;
+
+      return t;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( p()->talents.internal_combustion.ok() && result_is_hit( s->result ) && td( s->target )->dots_immolate->is_ticking() )
+        internal_combustion->execute_on_target( s->target );
+
+      if ( p()->talents.cry_havoc.ok() && td( s->target )->debuffs_havoc->check() )
+        cry_havoc->execute_on_target( s->target );
+
+      if ( p()->talents.eradication.ok() && result_is_hit( s->result ) )
+        td( s->target )->debuffs_eradication->trigger();
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      // 2022-10-15: Backdraft is not consumed for Ritual of Ruin empowered casts, but IS hasted by it
+      if ( !p()->buffs.ritual_of_ruin->check() )
+        p()->buffs.backdraft->decrement();
+
+      if ( p()->talents.avatar_of_destruction.ok() && p()->buffs.ritual_of_ruin->check() )
+        p()->proc_actions.avatar_of_destruction->execute_on_target( target );
+
+      p()->buffs.ritual_of_ruin->expire();
+
+      p()->buffs.crashing_chaos->decrement();
+
+      if ( p()->talents.madness_of_the_azjaqir.ok() )
+        p()->buffs.madness_cb->trigger();
+
+      if ( p()->talents.burn_to_ashes.ok() )
+        p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 3 ).base_value() ) );
+    }
+
+    double composite_crit_chance() const override
+    {
+      return 1.0;
+    }
+
+    double calculate_direct_amount( action_state_t* s ) const override
+    {
+      warlock_spell_t::calculate_direct_amount( s );
+
+      s->result_total *= 1.0 + player->cache.spell_crit_chance();
+
+      return s->result_total;
+    }
+  };
+
   struct conflagrate_t : public warlock_spell_t
   {
     conflagrate_t( warlock_t* p, util::string_view options_str )
