@@ -1354,6 +1354,114 @@ namespace actions
     }
   };
 
+  struct drain_soul_t : public warlock_spell_t
+  {
+    struct drain_soul_state_t : public action_state_t
+    {
+      double tick_time_multiplier;
+
+      drain_soul_state_t( action_t* action, player_t* target )
+        : action_state_t( action, target ),
+        tick_time_multiplier( 1.0 )
+      { }
+
+      void initialize() override
+      {
+        action_state_t::initialize();
+        tick_time_multiplier = 1.0;
+      }
+
+      std::ostringstream& debug_str( std::ostringstream& s ) override
+      {
+        action_state_t::debug_str( s ) << " tick_time_multiplier=" << tick_time_multiplier;
+        return s;
+      }
+
+      void copy_state( const action_state_t* s ) override
+      {
+        action_state_t::copy_state( s );
+        tick_time_multiplier = debug_cast<const drain_soul_state_t*>( s )->tick_time_multiplier;
+      }
+    };
+
+    drain_soul_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Drain Soul", p, p->talents.drain_soul_dot->ok() ? p->talents.drain_soul_dot : spell_data_t::not_found() )
+    {
+      parse_options( options_str );
+      channeled = true;
+    }
+
+    action_state_t* new_state() override
+    { return new drain_soul_state_t( this, target ); }
+
+    void snapshot_state( action_state_t* s, result_amount_type rt ) override
+    {
+      debug_cast<drain_soul_state_t*>( s )->tick_time_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? p()->talents.nightfall_buff->effectN( 3 ).percent() : 0 );
+      warlock_spell_t::snapshot_state( s, rt );
+    }
+
+    timespan_t tick_time( const action_state_t* s ) const override
+    {
+      timespan_t t = warlock_spell_t::tick_time( s );
+
+      t *= debug_cast<const drain_soul_state_t*>( s )->tick_time_multiplier;
+
+      return t;
+    }
+
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    {
+      double modifier = 1.0;
+
+      if ( p()->buffs.nightfall->check() )
+        modifier += p()->talents.nightfall_buff->effectN( 4 ).percent();
+
+      timespan_t dur = dot_duration * ( ( s->haste * modifier * base_tick_time ) / base_tick_time );
+
+      return dur;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->buffs.nightfall->decrement();
+    }
+
+    void tick( dot_t* d ) override
+    {
+      warlock_spell_t::tick( d );
+
+      if ( result_is_hit( d->state->result ) )
+      {
+        if ( p()->talents.shadow_embrace->ok() )
+          td( d->target )->debuffs_shadow_embrace->trigger();
+
+        if ( p()->talents.tormented_crescendo.ok() )
+        {
+          if ( p()->crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 2 ).percent() ) )
+          {
+            p()->procs.tormented_crescendo->occur();
+            p()->buffs.tormented_crescendo->trigger();
+          }
+        }
+      }
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double m = warlock_spell_t::composite_target_multiplier( t );
+
+      if ( t->health_percentage() < p()->talents.drain_soul_dot->effectN( 3 ).base_value() )
+        m *= 1.0 + p()->talents.drain_soul_dot->effectN( 2 ).percent();
+
+      if ( p()->talents.withering_bolt.ok() )
+        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)( p()->talents.withering_bolt->effectN( 2 ).base_value() ), td( t )->count_affliction_dots() );
+
+      return m;
+    }
+  };
+
   struct summon_darkglare_t : public warlock_spell_t
   {
     summon_darkglare_t( warlock_t* p, util::string_view options_str )
