@@ -1354,6 +1354,26 @@ namespace actions
     }
   };
 
+  struct siphon_life_t : public warlock_spell_t
+  {
+    siphon_life_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Siphon Life", p, p->talents.siphon_life )
+    {
+      parse_options( options_str );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      bool pi_trigger = p()->talents.pandemic_invocation.ok() && td( s->target )->dots_siphon_life->is_ticking()
+        && td( s->target )->dots_siphon_life->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
+
+      warlock_spell_t::impact( s );
+
+      if ( pi_trigger )
+        p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
+    }
+  };
+
   struct drain_soul_t : public warlock_spell_t
   {
     struct drain_soul_state_t : public action_state_t
