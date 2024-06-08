@@ -2522,6 +2522,25 @@ namespace actions
     }
   };
 
+  struct grimoire_felguard_t : public warlock_spell_t
+  {
+    grimoire_felguard_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Grimoire: Felguard", p, p->talents.grimoire_felguard )
+    {
+      parse_options( options_str );
+
+      harmful = may_crit = false;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->warlock_pet_list.grimoire_felguards.spawn( p()->talents.grimoire_felguard->duration() );
+      p()->buffs.grimoire_felguard->trigger();
+    }
+  };
+
   struct doom_t : public warlock_spell_t
   {
     doom_t( warlock_t* p, util::string_view options_str )
