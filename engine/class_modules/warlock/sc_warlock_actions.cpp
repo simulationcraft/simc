@@ -1200,6 +1200,39 @@ namespace actions
     }
   };
 
+  struct summon_darkglare_t : public warlock_spell_t
+  {
+    summon_darkglare_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Summon Darkglare", p, p->talents.summon_darkglare )
+    {
+      parse_options( options_str );
+
+      harmful = callbacks = true; // Set to true because of 10.1 class trinket
+      may_crit = may_miss = false;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      timespan_t summon_duration = p()->talents.summon_darkglare->duration();
+
+      if ( p()->talents.malevolent_visionary.ok() )
+      {
+        summon_duration += p()->talents.malevolent_visionary->effectN( 2 ).time_value();
+      }
+
+      p()->warlock_pet_list.darkglares.spawn( summon_duration );
+
+      timespan_t darkglare_extension = timespan_t::from_seconds( p()->talents.summon_darkglare->effectN( 2 ).base_value() );
+
+      // TODO: Migrate extension helper
+      p()->darkglare_extension_helper( p(), darkglare_extension );
+
+      p()->buffs.soul_rot->extend_duration( p(), darkglare_extension ); // This dummy buff is active while Soul Rot is ticking
+    }
+  };
+
   struct soul_rot_t : public warlock_spell_t
   {
     soul_rot_t( warlock_t* p, util::string_view options_str )
