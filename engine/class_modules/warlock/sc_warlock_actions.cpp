@@ -2821,6 +2821,76 @@ namespace actions
     { return impact_action->get_dot( t ); }
   };
 
+  struct conflagrate_t : public warlock_spell_t
+  {
+    conflagrate_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Conflagrate", p, p->talents.conflagrate )
+    {
+      parse_options( options_str );
+
+      affected_by.chaotic_energies = true;
+      affected_by.havoc = true;
+
+      energize_type = action_energize::PER_HIT;
+      energize_resource = RESOURCE_SOUL_SHARD;
+      energize_amount = ( p->talents.conflagrate_2->effectN( 1 ).base_value() ) / 10.0;
+
+      cooldown->hasted = true;
+      cooldown->charges += as<int>( p->talents.improved_conflagrate->effectN( 1 ).base_value() );
+      cooldown->duration += p->talents.explosive_potential->effectN( 1 ).time_value();
+
+      base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( p()->talents.roaring_blaze.ok() && result_is_hit( s->result ) )
+        td( s->target )->debuffs_conflagrate->trigger();
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->buffs.conflagration_of_chaos_cf->expire();
+
+      if ( p()->talents.conflagration_of_chaos.ok() && rng().roll( p()->talents.conflagration_of_chaos->effectN( 1 ).percent() ) )
+      {
+        p()->buffs.conflagration_of_chaos_cf->trigger();
+        p()->procs.conflagration_of_chaos_cf->occur();
+      }
+
+      if ( p()->talents.backdraft->ok() )
+        p()->buffs.backdraft->trigger();
+
+      if ( p()->talents.decimation.ok() && target->health_percentage() <= p()->talents.decimation->effectN( 2 ).base_value() )
+        p()->cooldowns.soul_fire->adjust( p()->talents.decimation->effectN( 1 ).time_value() );
+    }
+
+    double composite_crit_chance() const override
+    {
+      if ( p()->buffs.conflagration_of_chaos_cf->check() )
+        return 1.0;
+
+      return warlock_spell_t::composite_crit_chance();
+    }
+
+    double calculate_direct_amount( action_state_t* s ) const override
+    {
+      double amt = warlock_spell_t::calculate_direct_amount( s );
+
+      if ( p()->buffs.conflagration_of_chaos_cf->check() )
+      {
+        s->result_total *= 1.0 + player->cache.spell_crit_chance();
+        return s->result_total;
+      }
+
+      return amt;
+    }
+  };
+
   struct havoc_t : public warlock_spell_t
   {
     havoc_t( warlock_t* p, util::string_view options_str )
