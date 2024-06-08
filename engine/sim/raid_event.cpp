@@ -2489,7 +2489,7 @@ void raid_event_t::report( sim_t* sim, report::sc_html_stream& os )
     {
       auto pull_event = dynamic_cast<pull_event_t*>( sim->raid_events[ i ].get() );
       std::string mobs = "";
-      for (auto mob : pull_event->spawn_parameters)
+      for ( const auto& mob : pull_event->spawn_parameters )
       {
         mobs += mob.name + " ";
       }

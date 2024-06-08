@@ -2316,7 +2316,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
         return false;
 
       //All the actions should have the same target list, so do this once only
-      auto tl = soc_list[ 0 ]->target_list();
+      const auto& tl = soc_list[ 0 ]->target_list();
 
       for ( auto t : tl )
       {

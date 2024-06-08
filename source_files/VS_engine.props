@@ -208,6 +208,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\action\dbc_proc_callback.cpp" />
 		<ClCompile Include="..\engine\action\dot.cpp" />
 		<ClCompile Include="..\engine\action\heal.cpp" />
+		<ClCompile Include="..\engine\action\parse_effects.cpp" />
 		<ClCompile Include="..\engine\action\residual_action.cpp" />
 		<ClCompile Include="..\engine\action\sequence.cpp" />
 		<ClCompile Include="..\engine\action\snapshot_stats.cpp" />

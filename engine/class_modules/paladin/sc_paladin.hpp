@@ -84,7 +84,10 @@ public:
     heal_t* beacon_of_light;
     action_t* holy_shield_damage;
     action_t* tyrs_enforcer_damage;
+    action_t* divine_guidance_damage;
+    action_t* forges_reckoning;
     action_t* hammer_and_anvil;
+    action_t* divine_guidance;
     action_t* empyrean_hammer;
     action_t* heartfire;
     action_t* judgment_of_light;
@@ -202,6 +205,7 @@ public:
 
     // TWW Hero Talents
     buff_t* blessed_assurance;
+    buff_t* divine_guidance;
     buff_t* rite_of_sanctification;
     buff_t* rite_of_adjuration;
     buff_t* holy_bulwark;
@@ -284,7 +288,7 @@ public:
     cooldown_t* wake_of_ashes;
 
     cooldown_t* blessing_of_the_seasons;
-    cooldown_t* holy_armament;
+    cooldown_t* holy_armaments;
     cooldown_t* ashen_hallow; // Radiant Embers Legendary
 
     cooldown_t* ret_aura_icd;
@@ -364,6 +368,8 @@ public:
     const spell_data_t* cleansing_flame_damage;
     const spell_data_t* cleansing_flame_heal;
     const spell_data_t* wrathful_sanction;
+
+    const spell_data_t* forges_reckoning;
   } spells;
 
   // Talents
@@ -569,11 +575,12 @@ public:
     // Hero Talents
     const spell_data_t* holy_bulwark;
     const spell_data_t* sacred_weapon;
+    const spell_data_t* holy_armaments;
     const spell_data_t* rite_of_sanctification;
-    const spell_data_t* rite_of_adjuratuion;
+    const spell_data_t* rite_of_adjuration;
     const spell_data_t* laying_down_arms;
     const spell_data_t* shared_resolve;
-    const spell_data_t* solidraity;
+    const spell_data_t* solidarity;
     const spell_data_t* divine_inspiration;
     const spell_data_t* forewarning;
     const spell_data_t* valiance;
@@ -649,7 +656,7 @@ public:
   virtual double    composite_mitigation_versatility() const override;
   virtual double    composite_mastery() const override;
   virtual double    composite_melee_haste() const override;
-  virtual double    composite_melee_speed() const override;
+  virtual double    composite_melee_auto_attack_speed() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_crit_avoidance() const override;
   virtual double    composite_parry() const override;
@@ -683,6 +690,8 @@ public:
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_tyrs_enforcer( action_state_t* s );
   void    trigger_hammer_and_anvil( action_state_t* s);
+  void    trigger_divine_guidance( action_state_t* s );
+  void    trigger_laying_down_arms();
   void    trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay ); 
   void    heartfire( action_state_t* s );
   void    t29_4p_prot();
@@ -1104,7 +1113,23 @@ public:
         else
           p()->t31_4p_prot_heal( s );
       }
-      
+      if (p()->talents.divine_inspiration->ok())
+ {
+          // No Spelldata is found, neither chance nor ppm, this is our best estimation
+          if (ab::rng().roll(0.01))
+          {
+              // Currently 100% chance to trigger sacred weapon on alpha - 05/13
+              if (ab::rng().roll(1)) {
+                  //Sacred Weapon
+                p()->active.armament[ 1 ]->execute();
+                //player()->buffs.sacred_weapon->trigger();
+              }
+              else {
+                // Holy Bulwark
+                p()->active.armament[ 0 ]->execute();
+              }
+        }
+      }
     }
   }
 
@@ -1421,7 +1446,7 @@ struct holy_power_consumer_t : public Base
                            ( is_divine_storm && p->buffs.empyrean_power->up() ) ||
                            ( ( is_wog || is_sotr ) && p->buffs.bastion_of_light->up() );
 
-    int num_hopo_spent = holy_power_consumer_t::cost();
+    int num_hopo_spent = as<int>( holy_power_consumer_t::cost() );
     // Free spenders seem to count as 3 Holy Power, regardless the cost
     if ( isFreeSLDPSpender )
       num_hopo_spent = 3;
@@ -1561,7 +1586,10 @@ struct holy_power_consumer_t : public Base
       p->buffs.blessing_of_dawn->expire();
       p->buffs.blessing_of_dusk->trigger();
     }
-    //todo: add blessed assurance here
+    if (p->talents.divine_guidance->ok())
+    {
+      p->buffs.divine_guidance->trigger();
+    }
   }
 };
 

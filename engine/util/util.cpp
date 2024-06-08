@@ -419,13 +419,13 @@ const char* util::gcd_haste_type_string(gcd_haste_type gcd_type)
 {
   switch (gcd_type)
   {
-  case gcd_haste_type::NONE:    return "none";
-  case gcd_haste_type::HASTE:     return "haste(all)";
-  case gcd_haste_type::SPELL_HASTE:    return "spell_haste";
-  case gcd_haste_type::ATTACK_HASTE:       return "attack_haste";
-  case gcd_haste_type::SPELL_SPEED:      return "spell_speed";
-  case gcd_haste_type::ATTACK_SPEED:      return "attack_speed";
-  default:             return "unknown";
+  case gcd_haste_type::NONE:              return "none";
+  case gcd_haste_type::HASTE:             return "haste(all)";
+  case gcd_haste_type::SPELL_HASTE:       return "spell_haste";
+  case gcd_haste_type::ATTACK_HASTE:      return "attack_haste";
+  case gcd_haste_type::SPELL_CAST_SPEED:  return "spell_cast_speed";
+  case gcd_haste_type::AUTO_ATTACK_SPEED: return "auto_attack_speed";
+  default:                                return "unknown";
   }
 }
 
@@ -477,6 +477,8 @@ const char* util::race_type_string( race_e type )
     case RACE_MECHAGNOME:          return "mechagnome";
     case RACE_DRACTHYR_ALLIANCE:   return "dracthyr_alliance";
     case RACE_DRACTHYR_HORDE:      return "dracthyr_horde";
+    case RACE_EARTHEN_ALLIANCE:    return "earthen_alliance";
+    case RACE_EARTHEN_HORDE:       return "earthen_horde";
     case RACE_MECHANICAL:          return "mechanical";
     case RACE_MAX:                 return "unknown";
     case RACE_UNKNOWN:             return "unknown";
@@ -485,7 +487,7 @@ const char* util::race_type_string( race_e type )
   return "unknown";
 }
 
-// race_type_string =========================================================
+// stats_type_string =========================================================
 
 const char* util::stats_type_string( stats_e type )
 {
@@ -503,8 +505,9 @@ const char* util::stats_type_string( stats_e type )
 
 race_e util::parse_race_type( util::string_view name )
 {
-  if ( name == "forsaken" )           return RACE_UNDEAD;
-  if ( name == "dracthyr" )           return RACE_DRACTHYR_HORDE;
+  if ( name == "forsaken" ) return RACE_UNDEAD;
+  if ( name == "dracthyr" ) return RACE_DRACTHYR_HORDE;
+  if ( name == "earthen" )  return RACE_EARTHEN_HORDE;
 
   return parse_enum_with_default<race_e, RACE_NONE, RACE_MAX, RACE_UNKNOWN, race_type_string>( name );
 }
@@ -1356,8 +1359,8 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_HASTE:                    return "haste";
     case CACHE_ATTACK_HASTE:             return "attack_haste";
     case CACHE_SPELL_HASTE:              return "spell_haste";
-    case CACHE_ATTACK_SPEED:             return "attack_speed";
-    case CACHE_SPELL_SPEED:              return "spell_speed";
+    case CACHE_AUTO_ATTACK_SPEED:        return "auto_attack_speed";
+    case CACHE_SPELL_CAST_SPEED:         return "spell_cast_speed";
     case CACHE_MASTERY:                  return "mastery";
     case CACHE_PLAYER_DAMAGE_MULTIPLIER: return "player_dmg_mult";
     case CACHE_PLAYER_HEAL_MULTIPLIER:   return "player_heal_mult";
@@ -1553,6 +1556,26 @@ const char* util::stat_type_string( stat_e stat )
     case STAT_CORRUPTION_RESISTANCE: return "corruption_resistance";
 
     case STAT_ALL: return "all";
+
+    default: return "unknown";
+  }
+}
+
+// stat_pct_buff_type_string =========================================================
+
+const char* util::stat_pct_buff_type_string( stat_pct_buff_type stat )
+{
+  switch ( stat )
+  {
+    case STAT_PCT_BUFF_CRIT: return "crit";
+    case STAT_PCT_BUFF_HASTE: return "haste";
+    case STAT_PCT_BUFF_VERSATILITY: return "versatility";
+    case STAT_PCT_BUFF_MASTERY: return "mastery";
+    case STAT_PCT_BUFF_STRENGTH: return "strength";
+    case STAT_PCT_BUFF_AGILITY: return "agility";
+    case STAT_PCT_BUFF_STAMINA: return "stamina";
+    case STAT_PCT_BUFF_INTELLECT: return "intellect";
+    case STAT_PCT_BUFF_SPIRIT: return "spirit";
 
     default: return "unknown";
   }
@@ -1990,6 +2013,8 @@ unsigned util::race_id( race_e race )
     case RACE_MECHAGNOME: return 15;
     case RACE_DRACTHYR_ALLIANCE: return 17;
     case RACE_DRACTHYR_HORDE: return 16;
+    case RACE_EARTHEN_ALLIANCE: return 19;
+    case RACE_EARTHEN_HORDE: return 18;
     default: return 0;
   }
 }
@@ -2120,6 +2145,8 @@ race_e util::translate_race_id( int rid )
     case 37: return RACE_MECHAGNOME;
     case 52: return RACE_DRACTHYR_ALLIANCE;
     case 70: return RACE_DRACTHYR_HORDE;
+    case 84: return RACE_EARTHEN_HORDE;
+    case 85: return RACE_EARTHEN_ALLIANCE;
   }
 
   return RACE_NONE;
@@ -2685,9 +2712,9 @@ std::string util::rppm_scaling_string( unsigned s )
     return "disabled";
   }
   using sp = std::pair<rppm_scale_e, const char*>;
-  const auto scalings = {sp{RPPM_HASTE, "haste"},
-                         sp{RPPM_CRIT, "crit"},
-                         sp{RPPM_ATTACK_SPEED, "attack_speed"}};
+  const auto scalings = { sp{ RPPM_HASTE, "haste" },
+                          sp{ RPPM_CRIT, "crit" },
+                          sp{ RPPM_AUTO_ATTACK_SPEED, "auto_attack_speed" } };
   std::string r;
   int i = 0;
   for ( const auto& scaling : scalings )
@@ -3511,6 +3538,7 @@ bool is_alliance( race_e race )
     case RACE_KUL_TIRAN:
     case RACE_MECHAGNOME:
     case RACE_DRACTHYR_ALLIANCE:
+    case RACE_EARTHEN_ALLIANCE:
       return true;
     default:
       return false;
@@ -3534,6 +3562,7 @@ bool is_horde( race_e race )
     case RACE_ZANDALARI_TROLL:
     case RACE_VULPERA:
     case RACE_DRACTHYR_HORDE:
+    case RACE_EARTHEN_HORDE:
       return true;
     default:
       return false;

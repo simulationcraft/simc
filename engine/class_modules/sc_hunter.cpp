@@ -870,7 +870,7 @@ public:
 
   double    composite_melee_crit_chance() const override;
   double    composite_spell_crit_chance() const override;
-  double    composite_melee_speed() const override;
+  double    composite_melee_auto_attack_speed() const override;
   double    composite_player_target_crit_chance( player_t* target ) const override;
   double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double    composite_player_multiplier( school_e school ) const override;
@@ -1643,7 +1643,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
       make_buff( this, "frenzy", o() -> find_spell( 272790 ) )
       -> set_default_value_from_effect( 1 )
       -> apply_affecting_aura( o() -> talents.savagery )
-      -> add_invalidate( CACHE_ATTACK_SPEED );
+      -> add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
     buffs.thrill_of_the_hunt =
       make_buff( this, "thrill_of_the_hunt", find_spell( 312365 ) )
@@ -1680,9 +1680,9 @@ struct hunter_main_pet_base_t : public stable_pet_t
         -> set_default_value_from_effect( 1 ); 
   }
 
-  double composite_melee_speed() const override
+  double composite_melee_auto_attack_speed() const override
   {
-    double ah = stable_pet_t::composite_melee_speed();
+    double ah = stable_pet_t::composite_melee_auto_attack_speed();
 
     if ( buffs.bloodseeker && buffs.bloodseeker -> check() )
       ah /= 1 + buffs.bloodseeker -> check_stack_value();
@@ -1844,7 +1844,7 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     buffs.bloodseeker =
       make_buff( this, "bloodseeker", o() -> find_spell( 260249 ) )
         -> set_default_value_from_effect( 1 )
-        -> add_invalidate( CACHE_ATTACK_SPEED );
+        -> add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
     buffs.coordinated_assault =
       make_buff( this, "coordinated_assault", o() -> find_spell( 361736 ) );
@@ -2023,7 +2023,7 @@ std::pair<timespan_t, int> dire_beast_duration( hunter_t* p )
   // attack speeds.  This is not quite perfect but more accurate
   // than plateaus.
   const timespan_t base_duration = p -> buffs.dire_beast -> buff_duration();
-  const timespan_t swing_time = 2_s * p -> cache.attack_speed();
+  const timespan_t swing_time = 2_s * p -> cache.auto_attack_speed();
   double partial_attacks_per_summon = base_duration / swing_time;
   int base_attacks_per_summon = static_cast<int>( partial_attacks_per_summon );
   partial_attacks_per_summon -= static_cast<double>( base_attacks_per_summon );
@@ -3002,7 +3002,7 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
   {
     double am = auto_attack_base_t::action_multiplier();
 
-    if ( player -> buffs.heavens_nemesis && player -> buffs.heavens_nemesis -> data().effectN( 1 ).subtype() != A_MOD_RANGED_AND_MELEE_ATTACK_SPEED )
+    if ( player -> buffs.heavens_nemesis && player -> buffs.heavens_nemesis -> data().effectN( 1 ).subtype() != A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED )
       am *= 1 + player -> buffs.heavens_nemesis -> stack_value();
 
     return am;
@@ -7581,7 +7581,7 @@ void hunter_t::create_buffs()
   buffs.bloodseeker =
     make_buff( this, "bloodseeker", find_spell( 260249 ) )
       -> set_default_value_from_effect( 1 )
-      -> add_invalidate( CACHE_ATTACK_SPEED );
+      -> add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
   buffs.tip_of_the_spear =
     make_buff( this, "tip_of_the_spear", find_spell( 260286 ) )
@@ -8021,11 +8021,11 @@ double hunter_t::composite_spell_crit_chance() const
   return crit;
 }
 
-// hunter_t::composite_melee_speed ==========================================
+// hunter_t::composite_melee_auto_attack_speed ==============================
 
-double hunter_t::composite_melee_speed() const
+double hunter_t::composite_melee_auto_attack_speed() const
 {
-  double s = player_t::composite_melee_speed();
+  double s = player_t::composite_melee_auto_attack_speed();
 
   if ( buffs.bloodseeker -> check() )
     s /= 1 + buffs.bloodseeker -> check_stack_value();

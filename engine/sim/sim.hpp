@@ -140,9 +140,6 @@ struct sim_t : private sc_thread_t
   std::string main_target_str;
   int         stat_cache;
   int         max_aoe_enemies;
-  double      tmi_window_global;
-  double      tmi_bin_size;
-  bool        show_etmi;
   bool        requires_regen_event;
   bool        single_actor_batch;
   bool        allow_experimental_specializations;

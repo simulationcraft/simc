@@ -56,7 +56,7 @@ actions+=/run_action_list,name=big_aoe,if=variable.big_aoe
 # 6+ targets
 actions.big_aoe=fel_devastation,if=talent.collective_anguish|talent.stoke_the_flames
 actions.big_aoe+=/the_hunt
-actions.big_aoe+=/elysian_decree,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)
+actions.big_aoe+=/sigil_of_spite,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)
 actions.big_aoe+=/fel_devastation
 actions.big_aoe+=/soul_carver,if=soul_fragments.total<3
 actions.big_aoe+=/spirit_bomb,if=soul_fragments>=4
@@ -76,7 +76,7 @@ actions.fiery_demise+=/felblade,if=(!talent.spirit_bomb|(cooldown.fel_devastatio
 actions.fiery_demise+=/fel_devastation
 actions.fiery_demise+=/soul_carver,if=soul_fragments.total<3
 actions.fiery_demise+=/the_hunt
-actions.fiery_demise+=/elysian_decree,line_cd=1.85,if=fury>=40
+actions.fiery_demise+=/sigil_of_spite,line_cd=1.85,if=fury>=40
 actions.fiery_demise+=/spirit_bomb,if=variable.can_spb
 
 # Filler
@@ -104,7 +104,7 @@ actions.maintenance+=/soul_cleave,if=fury.deficit<=40
 actions.single_target=the_hunt
 actions.single_target+=/soul_carver
 actions.single_target+=/fel_devastation,if=talent.collective_anguish|(talent.stoke_the_flames&talent.burning_blood)
-actions.single_target+=/elysian_decree
+actions.single_target+=/sigil_of_spite
 actions.single_target+=/fel_devastation
 actions.single_target+=/soul_cleave,if=!variable.dont_cleave
 actions.single_target+=/fracture
@@ -113,7 +113,7 @@ actions.single_target+=/call_action_list,name=filler
 # 2-5 targets
 actions.small_aoe=the_hunt
 actions.small_aoe+=/fel_devastation,if=talent.collective_anguish.enabled|(talent.stoke_the_flames.enabled&talent.burning_blood.enabled)
-actions.small_aoe+=/elysian_decree,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)
+actions.small_aoe+=/sigil_of_spite,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)
 actions.small_aoe+=/fel_devastation
 actions.small_aoe+=/soul_carver,if=soul_fragments.total<3
 actions.small_aoe+=/soul_cleave,if=(soul_fragments<=1|!talent.spirit_bomb)&!variable.dont_cleave
@@ -121,8 +121,8 @@ actions.small_aoe+=/fracture
 actions.small_aoe+=/call_action_list,name=filler
 
 head=screaming_torchfiends_burning_scowl,id=217228,bonus_id=10359/1488/6935,gem_id=192991,enchant=incandescent_essence
-neck=terross_captive_core,id=195502,bonus_id=10359/1491/8782,gem_id=192945/192945/192945
-shoulders=screaming_torchfiends_horned_memento,id=217230,bonus_id=10359/1491
+neck=terross_captive_core,id=195502,bonus_id=10359/1488/8782,gem_id=192945/192945/192945
+shoulders=screaming_torchfiends_horned_memento,id=217230,bonus_id=10359/1488
 back=voice_of_the_silent_star,id=204465,bonus_id=10359/1495/10884
 chest=screaming_torchfiends_binding,id=217226,bonus_id=10359/1488,enchant_id=6625
 wrists=lifebound_bindings,id=193419,bonus_id=9379/10359/1485/6935,gem_id=192945,crafted_stats=36/32
@@ -138,14 +138,14 @@ main_hand=thorncaller_claw,id=207784,bonus_id=10359/1488,enchant=wafting_devotio
 off_hand=stormslash,id=193688,bonus_id=10359/1488,enchant=wafting_devotion_3
 
 # Gear Summary
-# gear_ilvl=528.44
-# gear_agility=13702
-# gear_stamina=58302
+# gear_ilvl=528.06
+# gear_agility=13673
+# gear_stamina=58002
 # gear_crit_rating=5306
-# gear_haste_rating=6308
+# gear_haste_rating=6300
 # gear_mastery_rating=66
-# gear_versatility_rating=5584
-# gear_armor=7248
+# gear_versatility_rating=5559
+# gear_armor=7228
 # gear_bonus_armor=141
 # set_bonus=dragonflight_season_4_2pc=1
 # set_bonus=dragonflight_season_4_4pc=1

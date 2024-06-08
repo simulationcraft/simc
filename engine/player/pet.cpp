@@ -251,8 +251,8 @@ void pet_t::update_stats()
   sim->print_debug( "{} refreshed Haste from owner (haste={})", name(), current_pet_stats.composite_melee_haste,
                     owner->cache.attack_haste() );
 
-  current_pet_stats.composite_melee_speed = owner->cache.attack_speed();
-  current_pet_stats.composite_spell_speed = owner->cache.spell_speed();
+  current_pet_stats.composite_melee_auto_attack_speed = owner->cache.auto_attack_speed();
+  current_pet_stats.composite_spell_cast_speed = owner->cache.spell_cast_speed();
   this->adjust_dynamic_cooldowns();
 }
 
@@ -480,9 +480,9 @@ double pet_t::composite_spell_power( school_e ) const
   return sp;
 }
 
-double pet_t::composite_melee_speed() const
+double pet_t::composite_melee_auto_attack_speed() const
 {
-  return current_pet_stats.composite_melee_speed;
+  return current_pet_stats.composite_melee_auto_attack_speed;
 }
 
 double pet_t::composite_melee_haste() const
@@ -493,7 +493,7 @@ double pet_t::composite_melee_haste() const
 void pet_t::adjust_auto_attack( gcd_haste_type type ) 
 {
   player_t::adjust_auto_attack( type );
-  current_attack_speed = current_pet_stats.composite_melee_speed;
+  current_auto_attack_speed = current_pet_stats.composite_melee_auto_attack_speed;
 }
 
 double pet_t::composite_spell_haste() const
@@ -501,9 +501,9 @@ double pet_t::composite_spell_haste() const
   return current_pet_stats.composite_spell_haste;
 }
 
-double pet_t::composite_spell_speed() const
+double pet_t::composite_spell_cast_speed() const
 {
-  return current_pet_stats.composite_spell_speed;
+  return current_pet_stats.composite_spell_cast_speed;
 }
 
 double pet_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const

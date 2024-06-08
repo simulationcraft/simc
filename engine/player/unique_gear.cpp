@@ -838,7 +838,7 @@ void gem::sinister_primal( special_effect_t& effect )
   {
     p->buffs.tempus_repit = make_buff( p, "tempus_repit", p->find_spell( 137590 ) )
       ->set_default_value_from_effect( 1 )
-      ->add_invalidate( CACHE_SPELL_SPEED )
+      ->add_invalidate( CACHE_SPELL_CAST_SPEED )
       ->set_activated( false );
   }
 
@@ -2183,9 +2183,17 @@ void item::amplification( special_effect_t& effect )
   player_t* p = effect.item -> player;
   double amp_value = 0.1;  // Seems to be 0.1 regardless of level/item level now.
   if ( !p->passive_values.amplification_1 )
+  {
     p->passive_values.amplification_1 = amp_value;
+    p->base.crit_damage_multiplier *= 1.0 + amp_value;
+    p->base.crit_healing_multiplier *= 1.0 + amp_value;
+  }
   else
+  {
     p->passive_values.amplification_2 = amp_value;
+    p->base.crit_damage_multiplier *= 1.0 + amp_value;
+    p->base.crit_healing_multiplier *= 1.0 + amp_value;
+  }
 }
 
 void item::prismatic_prison_of_pride( special_effect_t& effect )
@@ -4089,9 +4097,6 @@ void unique_gear::init( player_t* p )
 
     p->sim->print_debug( "Initializing generic special effect {}", *effect );
 
-    // cache id as initialization callback can change it
-    auto driver_id = effect->spell_id;
-
     initialize_special_effect_2( effect );
   }
 }
@@ -5093,8 +5098,6 @@ void unique_gear::register_hotfixes()
 
 void unique_gear::register_target_data_initializers( sim_t* sim )
 {
-  static constexpr std::array<slot_e, 2> trinkets {{ SLOT_TRINKET_1, SLOT_TRINKET_2 }};
-
   register_target_data_initializers_legion( sim );
   register_target_data_initializers_bfa( sim );
   azerite::register_azerite_target_data_initializers( sim );

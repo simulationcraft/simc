@@ -8,6 +8,7 @@
 #include "sc_paladin.hpp"
 
 #include "simulationcraft.hpp"
+#include "action/parse_effects.hpp"
 
 // ==========================================================================
 // Paladin
@@ -70,7 +71,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.wake_of_ashes    = get_cooldown( "wake_of_ashes" );
 
   cooldowns.blessing_of_the_seasons = get_cooldown( "blessing_of_the_seasons" );
-  cooldowns.holy_armament           = get_cooldown( "holy_armament" );
+  cooldowns.holy_armaments           = get_cooldown( "holy_armaments" );
 
   cooldowns.ret_aura_icd = get_cooldown( "ret_aura_icd" );
   cooldowns.ret_aura_icd->duration = timespan_t::from_seconds( 30 );
@@ -455,6 +456,7 @@ struct consecration_t : public paladin_spell_t
       p()->buffs.sanctification_empower->execute();
     }
 
+
     paladin_spell_t::execute();
 
     // Some parameters must be updated on each cast
@@ -480,6 +482,14 @@ struct consecration_t : public paladin_spell_t
 
     else
       make_event<ground_aoe_event_t>( *sim, p(), cons_params, true /* Immediate pulse */ );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    if( p()->talents.divine_guidance->ok() )
+    {
+      p()->trigger_divine_guidance( s );
+    }
   }
 };
 
@@ -1230,24 +1240,22 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
         p()->buffs.faith_in_the_light->trigger();
       }
     }
-
-    if ( p()->specialization() == PALADIN_PROTECTION /*&& p()->talents.valiance->ok()  && p()->buffs.shining_light_free->up()*/ )
+    
+    if ( p()->specialization() == PALADIN_PROTECTION && p()->talents.valiance->ok()  && p()->buffs.shining_light_free->up() )
     {
+      timespan_t increase = timespan_t::from_seconds( p()->talents.valiance->effectN( 1 ).base_value() );
       if ( p()->buffs.holy_bulwark->up() )
       {
-        timespan_t increase = timespan_t::from_seconds( p()->talents.valiance->effectN( 1 ).base_value());
         p()->buffs.holy_bulwark->extend_duration( p(), increase );
       }
       if ( player->buffs.sacred_weapon->up() )
       {
-        timespan_t increase =
-            timespan_t::from_seconds( /* p()->talents.valiance->effectN( 1 ).base_value() */ 3000 );
-        p()->buffs.sacred_weapon->extend_duration( p(), increase );
+        player->buffs.sacred_weapon->extend_duration( p(), increase );
       }
       if ( !p()->buffs.holy_bulwark->up() && !player->buffs.sacred_weapon->up() )
       {
         timespan_t reduction = timespan_t::from_seconds( p()->talents.valiance->effectN( 1 ).base_value() );
-        p()->cooldowns.holy_armament->adjust( reduction );
+        p()->cooldowns.holy_armaments->adjust( reduction );
       }
     }
 
@@ -1727,7 +1735,6 @@ struct blessing_of_the_seasons_t : public paladin_spell_t
 };
 
 // Holy Armaments
-// TODO: Add spelldata once fetched
 //Sacred Weapon Driver 
 template <typename Base, typename Player>
 struct sacred_weapon_proc_t : public Base
@@ -1742,23 +1749,18 @@ struct sacred_weapon_proc_t : public Base
     // Sacred Weapon Buff
 struct sacred_weapon_t : public paladin_spell_t
 {
-    //TODO Add Spelldat
-    timespan_t buff_duration = 12_s;
-
-    sacred_weapon_t( paladin_t* p ) : paladin_spell_t( "sacred_weapon", p )
+   sacred_weapon_t( paladin_t* p ) : paladin_spell_t( "sacred_weapon", p )
    {
-    }
+   }
    void execute() override
    {
     paladin_spell_t::execute();
-    player->buffs.sacred_weapon->trigger();
+    player->buffs.sacred_weapon->execute();
    }
 };
 
 struct holy_bulwark_t : public paladin_spell_t
 {
-   timespan_t buff_duration = 12_s;
-
    holy_bulwark_t( paladin_t* p ) : paladin_spell_t( "holy_bulwark", p )
    {
     }
@@ -1771,15 +1773,18 @@ struct holy_bulwark_t : public paladin_spell_t
 
 // Holy Armaments
 
-struct holy_armament_t : public paladin_spell_t
+struct holy_armaments_t : public paladin_spell_t
 {
-   holy_armament_t( paladin_t* p, util::string_view options_str ) : paladin_spell_t( "holy_armament", p, spell_data_t::nil()) 
+   holy_armaments_t( paladin_t* p, util::string_view options_str ) :
+      //paladin_spell_t( "holy_armaments", p, spell_data_t::nil()) 
+      paladin_spell_t( "holy_armaments", p, p->find_spell( 432459 ) )
    {
     parse_options( options_str );
     harmful = false;
     hasted_gcd = true;
-    cooldown->duration = 20_s;
-    cooldown->charges  = 2;
+    name_str_reporting = "Holy Armaments";
+    if ( p->talents.forewarning->ok() )
+      apply_affecting_aura( p->talents.forewarning );
    }
 
    timespan_t execute_time() const override
@@ -1812,6 +1817,42 @@ struct hammer_and_anvil_t : public paladin_spell_t
    hammer_and_anvil_t( paladin_t* p )
      :  paladin_spell_t( "hammer_and_anvil", p, p->talents.hammer_and_anvil->effectN( 1 ).trigger() )
    {
+    background = proc = may_crit = true;
+    may_miss                     = false;
+   }
+   
+};
+
+void paladin_t::trigger_divine_guidance( action_state_t* s )
+{
+   active.divine_guidance_damage->set_target( s->target );
+   active.divine_guidance_damage->execute();
+}
+
+struct divine_guidance_damage_t : public paladin_spell_t
+{
+   divine_guidance_damage_t( paladin_t* p ) : paladin_spell_t( "divine_guidance", p, p->find_spell( 433808 ) )
+   {
+    proc = may_crit = true;
+    may_miss                     = false;
+    attack_power_mod.direct = 1;
+    aoe                          = 1;
+   }
+
+   double action_multiplier() const override
+   {
+    double m = paladin_spell_t::action_multiplier();
+       if (p()->buffs.divine_guidance->up())
+       {
+      m *= 1.0 + ( 1.0 * (p()->buffs.divine_guidance->stack()-1) );
+    }
+       return m;
+   }
+    void execute() override
+   {
+       paladin_spell_t::execute();
+       p()->buffs.divine_guidance->expire();
+   }
     background = proc = may_crit = true;
     may_miss                     = false;
    }
@@ -1910,6 +1951,19 @@ struct empyrean_hammer_t : public paladin_spell_t
             p()->buffs.lights_deliverance->trigger();
         }
     }
+};
+
+void paladin_t::trigger_laying_down_arms()
+{ 
+   if ( specialization() == PALADIN_PROTECTION )
+   {
+    buffs.shining_light_stacks->expire();
+    buffs.shining_light_free->trigger(); 
+   }
+   if (specialization() == PALADIN_HOLY) 
+   {
+    buffs.infusion_of_light->trigger();
+   }
 };
 
 void paladin_t::trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay )
@@ -2307,6 +2361,7 @@ void paladin_t::create_actions()
   if ( talents.hammer_and_anvil->ok() )
   {
     active.hammer_and_anvil = new hammer_and_anvil_t( this );
+    active.divine_guidance_damage  = new divine_guidance_damage_t( this );
   }
   //Templar
  // if (talents.lights_guidance->ok())
@@ -2660,6 +2715,20 @@ void paladin_t::create_buffs()
             this->active.divine_resonance->set_target( this->target );
             this->active.divine_resonance->schedule_execute();
           } );
+  buffs.holy_bulwark = make_buff( this, "holy_bulwark", find_spell( 432496 ) )
+                            ->set_cooldown( 0_s )
+                            ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+                              if ( !new_ )
+                              {
+                                buffs.shining_light_stacks->expire();
+                                buffs.shining_light_free->trigger();
+                              }
+                            } );
+//  buffs.sacred_weapon = make_buff( this, "sacred_weapon", find_spell( 432502 ) );
+
+  buffs.blessed_assurance = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
+  buffs.divine_guidance   = make_buff( this, "divine_guidance", find_spell( 433106 ) )
+                         -> set_max_stack( 5 );
   buffs.holy_bulwark          = make_buff( this, "holy_bulwark", find_spell( 432496 ) );
   buffs.sacred_weapon         = make_buff( this, "sacred_weapon", find_spell( 432502 ) );
   buffs.blessed_assurance     = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
@@ -2938,22 +3007,23 @@ void paladin_t::init_spells()
   talents.fading_light = find_talent_spell( talent_tree::CLASS, "Fading Light" );
 
   // Hero Talents
-  talents.holy_bulwark           = find_talent_spell( talent_tree::HERO, "Holy Bulwark" );
-  talents.rite_of_sanctification = find_talent_spell( talent_tree::HERO, "Rite of Sanctificatiopn" );
-  talents.rite_of_adjuratuion    = find_talent_spell( talent_tree::HERO, "Rite of Adjuration" );
+  talents.holy_armaments         = find_talent_spell( talent_tree::HERO, "Holy Armaments" );
+  talents.rite_of_sanctification = find_talent_spell( talent_tree::HERO, "Rite of Sanctification" );
+  talents.rite_of_adjuration     = find_talent_spell( talent_tree::HERO, "Rite of Adjuration" );
   talents.laying_down_arms       = find_talent_spell( talent_tree::HERO, "Laying Down Arms" );
   talents.shared_resolve         = find_talent_spell( talent_tree::HERO, "Shared Resolve" );
-  talents.solidraity             = find_talent_spell( talent_tree::HERO, "Solidarity" );
+  talents.solidarity             = find_talent_spell( talent_tree::HERO, "Solidarity" );
   talents.divine_inspiration     = find_talent_spell( talent_tree::HERO, "Divine Inspiration" );
   talents.forewarning            = find_talent_spell( talent_tree::HERO, "Forewarning" );
   talents.valiance               = find_talent_spell( talent_tree::HERO, "Valiance" );
   talents.divine_guidance        = find_talent_spell( talent_tree::HERO, "Divine Guidance" );
   talents.blessed_assurance      = find_talent_spell( talent_tree::HERO, "Blessed Assurance" );
   talents.fear_no_evil           = find_talent_spell( talent_tree::HERO, "Fear No Evil" );
-  talents.excoriation            = find_talent_spell( talent_tree::HERO, "Excorciation" );
-  // Not working unless it's spell ID'd
-  talents.hammer_and_anvil       = find_spell( 433718 );
+  talents.excoriation            = find_talent_spell( talent_tree::HERO, "Excoriation" );
+  talents.hammer_and_anvil       = find_talent_spell( talent_tree::HERO, "Hammer and Anvil" );
   talents.blessing_of_the_forge  = find_talent_spell( talent_tree::HERO, "Blessing of the Forge" );
+  // Child spell of blessing of the forge, triggered by casting shield of the righteous
+  spells.forges_reckoning       = find_spell( 447258 );
   talents.lights_guidance       = find_talent_spell( talent_tree::HERO, "Lights Guidance" );
   talents.empyrean_hammer        = find_spell( 431398 );
   talents.lights_deliverance     = find_talent_spell( talent_tree::HERO, "Light's Deliverance" );
@@ -3262,11 +3332,11 @@ double paladin_t::composite_melee_haste() const
   return h;
 }
 
-// paladin_t::composite_melee_speed =========================================
+// paladin_t::composite_melee_auto_attack_speed =============================
 
-double paladin_t::composite_melee_speed() const
+double paladin_t::composite_melee_auto_attack_speed() const
 {
-  double s = player_t::composite_melee_speed();
+  double s = player_t::composite_melee_auto_attack_speed();
 
   if ( talents.zealots_fervor->ok() )
     s /= 1.0 + talents.zealots_fervor->effectN( 1 ).percent();
@@ -3967,7 +4037,22 @@ struct paladin_module_t : public module_t
     p->buffs.blessing_of_spring = make_buff( p, "blessing_of_spring", p->find_spell( 328282 ) )
                                       ->set_cooldown( 0_ms )
                                       ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-    p->buffs.sacred_weapon = make_buff( p, "sacred_weapon", p->find_spell( 432502 ) );
+    p->buffs.sacred_weapon = make_buff( p, "sacred_weapon", p->find_spell( 432502 ) )
+                                 ->set_stack_change_callback( []( buff_t* buff, int old, int )
+                                   {
+                                   if ( old && buff->source )
+                                   {
+                                     //paladin_t* source = debug_cast<paladin_t*>( buff->source );
+                                    // source->trigger_laying_down_arms();
+                                     auto paladin = debug_cast<paladin_t*>( buff->source );
+                                     if ( paladin  )
+                                     {
+                                       paladin_t* source = debug_cast<paladin_t*>( buff->source );
+                                       source->trigger_laying_down_arms();
+                                     }
+                                   }
+                                   }
+    );
   }
 
   void create_actions( player_t* p ) const override
@@ -4037,8 +4122,8 @@ struct paladin_module_t : public module_t
           winter_cb->deactivate();
       } );
     }
-    //if ( !p->external_buffs.sacred_weapon.empty() )
-      if (true)
+    if ( p->external_buffs.sacred_weapon.empty() || p->specialization() == PALADIN_HOLY ||
+         p->specialization() == PALADIN_PROTECTION )
     {
       action_t* sacred_weapon_proc;
       if ( p->type == PALADIN )
@@ -4051,7 +4136,12 @@ struct paladin_module_t : public module_t
       sacred_weapon_effect->name_str       = "sacred_weapon_cb";
       sacred_weapon_effect->type           = SPECIAL_EFFECT_EQUIP;
       sacred_weapon_effect->spell_id       = 432502;
-      sacred_weapon_effect->cooldown_      = p->find_spell( 328281 )->internal_cooldown();
+
+      // This needs further testing, these values are wrong for sure, they're hidden in spell data, though (previous iteration of spell data said 10 RPPM Hasted)
+      // It is currently proccing around 5 times too much
+      sacred_weapon_effect->ppm_           = 10.0;
+      sacred_weapon_effect->rppm_scale_    = RPPM_HASTE;
+
       sacred_weapon_effect->execute_action = sacred_weapon_proc;
       p->special_effects.push_back( sacred_weapon_effect );
 

@@ -348,6 +348,9 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     aoe(),
     dual(),
     callbacks( true ),
+    suppress_caster_procs(),
+    suppress_target_procs(),
+    enable_proc_from_suppressed(),
     allow_class_ability_procs(),
     not_a_proc(),
     special(),
@@ -425,7 +428,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     base_multiplier( 1.0 ),
     base_hit(),
     base_crit(),
-    crit_multiplier( 1.0 ),
+    crit_chance_multiplier( 1.0 ),
     crit_bonus_multiplier( 1.0 ),
     crit_bonus(),
     base_dd_adder(),
@@ -617,17 +620,19 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   school            = spell_data.get_school_type();
 
   // parse attributes
-  callbacks           = !spell_data.flags( spell_attribute::SX_DISABLE_PLAYER_PROCS );
-  tick_may_crit       = spell_data.flags( spell_attribute::SX_TICK_MAY_CRIT );
-  hasted_ticks        = spell_data.flags( spell_attribute::SX_DOT_HASTED );
-  tick_on_application = spell_data.flags( spell_attribute::SX_TICK_ON_APPLICATION );
-  rolling_periodic    = spell_data.flags( spell_attribute::SX_ROLLING_PERIODIC );
-  treat_as_periodic   = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
-  ignores_armor       = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );  // TODO: better way to parse this?
-  may_miss            = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
+  suppress_caster_procs       = spell_data.flags( spell_attribute::SX_SUPPRESS_CASTER_PROCS );
+  suppress_target_procs       = spell_data.flags( spell_attribute::SX_SUPPRESS_TARGET_PROCS );
+  enable_proc_from_suppressed = spell_data.flags( spell_attribute::SX_ENABLE_PROCS_FROM_SUPPRESSED );
+  tick_may_crit               = spell_data.flags( spell_attribute::SX_TICK_MAY_CRIT );
+  hasted_ticks                = spell_data.flags( spell_attribute::SX_DOT_HASTED );
+  tick_on_application         = spell_data.flags( spell_attribute::SX_TICK_ON_APPLICATION );
+  rolling_periodic            = spell_data.flags( spell_attribute::SX_ROLLING_PERIODIC );
+  treat_as_periodic           = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
+  ignores_armor               = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );  // TODO: better way to parse this?
+  may_miss                    = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
   may_dodge = may_parry = may_block = !spell_data.flags( spell_attribute::SX_NO_D_P_B );
-  allow_class_ability_procs         = spell_data.flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS );
-  not_a_proc          = spell_data.flags( spell_attribute::SX_NOT_A_PROC );
+  allow_class_ability_procs   = spell_data.flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS );
+  not_a_proc                  = spell_data.flags( spell_attribute::SX_NOT_A_PROC );
 
   if ( spell_data.flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
     dot_behavior = dot_behavior_e::DOT_REFRESH_PANDEMIC;
@@ -1165,11 +1170,11 @@ timespan_t action_t::gcd() const
     case gcd_haste_type::ATTACK_HASTE:
       gcd_ *= composite_haste();
       break;
-    case gcd_haste_type::SPELL_SPEED:
-      gcd_ *= player->cache.spell_speed();
+    case gcd_haste_type::SPELL_CAST_SPEED:
+      gcd_ *= player->cache.spell_cast_speed();
       break;
-    case gcd_haste_type::ATTACK_SPEED:
-      gcd_ *= player->cache.attack_speed();
+    case gcd_haste_type::AUTO_ATTACK_SPEED:
+      gcd_ *= player->cache.auto_attack_speed();
       break;
     case gcd_haste_type::NONE:
     default:
@@ -1261,7 +1266,7 @@ timespan_t action_t::travel_time() const
 
 double action_t::total_crit_bonus( const action_state_t* state ) const
 {
-  double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier( state );
+  double crit_multiplier_buffed = composite_player_critical_multiplier( state );
 
   double base_crit_bonus = crit_bonus;
   if ( sim->pvp_mode )
@@ -1310,11 +1315,12 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
   // Base amount rounded to some decimal, but the exact precision is currently unknown. For now assume 3 digits as that
   // is what AP/SP multipliers seem to be rounded to.
   amount = std::round( amount * 1000 ) * 0.001;
+  // Assuming both flat value tick amount and coeff tick amount are rolled into rolling periodics. Adjust if disproven.
   amount += bonus_ta( state );
-  double rolling_ta_multiplier = state->composite_rolling_ta_multiplier();
-  amount += state->composite_spell_power() * spell_tick_power_coefficient( state ) * rolling_ta_multiplier;
-  amount += state->composite_attack_power() * attack_tick_power_coefficient( state ) * rolling_ta_multiplier;
+  amount += state->composite_spell_power() * spell_tick_power_coefficient( state );
+  amount += state->composite_attack_power() * attack_tick_power_coefficient( state );
   amount *= state->composite_ta_multiplier();
+  amount *= state->composite_rolling_ta_multiplier();
 
   double init_tick_amount = amount;
 
@@ -1817,41 +1823,46 @@ void action_t::execute()
       execute_action->execute();
     }
 
-    // Proc generic abilities on execute.
-    proc_types pt;
-    proc_types2 pt2;
-    if ( execute_state && callbacks && ( pt = execute_state->proc_type() ) != PROC1_INVALID )
+    if ( callbacks )
     {
-      // "On spell cast", only performed for foreground actions
-      if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
-        player->trigger_callbacks( pt, pt2, this, execute_state );
+      // Proc generic abilities on execute.
+      proc_types pt;
+      proc_types2 pt2;
 
-      // "On an execute result"
-      if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
-        player->trigger_callbacks( pt, pt2, this, execute_state );
+      if ( execute_state && ( !suppress_caster_procs || enable_proc_from_suppressed ) &&
+           ( pt = execute_state->proc_type() ) != PROC1_INVALID )
+      {
+        // "On spell cast", only performed for foreground actions
+        if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
+          player->trigger_callbacks( pt, pt2, this, execute_state );
 
-      // "On interrupt cast result"
-      if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
-        player->trigger_callbacks( pt, pt2, this, execute_state );
-    }
+        // "On an execute result"
+        if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
+          player->trigger_callbacks( pt, pt2, this, execute_state );
 
-    // Special handling for "Cast Successful" procs
-    // TODO: What happens when there is a PROC1 type handled above in addition to Cast Successful?
-    if ( execute_state && callbacks )
-    {
-      pt = PROC1_CAST_SUCCESSFUL;
+        // "On interrupt cast result"
+        if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
+          player->trigger_callbacks( pt, pt2, this, execute_state );
+      }
 
-      // "On spell cast", only performed for foreground actions
-      if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
-        player->trigger_callbacks( pt, pt2, this, execute_state );
+      // Special handling for "Cast Successful" procs
+      // TODO: What happens when there is a PROC1 type handled above in addition to Cast Successful?
+      if ( execute_state && ( !suppress_caster_procs || enable_proc_from_suppressed ) )
+      {
+        pt = PROC1_CAST_SUCCESSFUL;
 
-      // "On an execute result"
-      if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
-        player->trigger_callbacks( pt, pt2, this, execute_state );
+        // "On spell cast", only performed for foreground actions
+        if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
+          player->trigger_callbacks( pt, pt2, this, execute_state );
 
-      // "On interrupt cast result"
-      if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
-        player->trigger_callbacks( pt, pt2, this, execute_state );
+        // "On an execute result"
+        if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
+          player->trigger_callbacks( pt, pt2, this, execute_state );
+
+        // "On interrupt cast result"
+        if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
+          player->trigger_callbacks( pt, pt2, this, execute_state );
+      }
     }
   }
 
@@ -2086,11 +2097,11 @@ void action_t::start_gcd()
     case gcd_haste_type::ATTACK_HASTE:
       player->gcd_current_haste_value = player->cache.attack_haste();
       break;
-    case gcd_haste_type::SPELL_SPEED:
-      player->gcd_current_haste_value = player->cache.spell_speed();
+    case gcd_haste_type::SPELL_CAST_SPEED:
+      player->gcd_current_haste_value = player->cache.spell_cast_speed();
       break;
-    case gcd_haste_type::ATTACK_SPEED:
-      player->gcd_current_haste_value = player->cache.attack_speed();
+    case gcd_haste_type::AUTO_ATTACK_SPEED:
+      player->gcd_current_haste_value = player->cache.auto_attack_speed();
       break;
     default:
       break;
@@ -2558,11 +2569,18 @@ void action_t::init()
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
-  if ( ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 ) && dot_duration > 0_ms )
+  if ( has_periodic_damage_effect( data() ) ||
+       ( ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 || rolling_periodic ) &&
+         dot_duration > 0_ms ) )
+  {
     snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+  }
 
-  if ( base_dd_min > 0 || ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 ) || weapon_multiplier > 0 )
+  if ( has_direct_damage_effect( data() ) || base_dd_min > 0 || spell_power_mod.direct > 0 ||
+       attack_power_mod.direct > 0 || weapon_multiplier > 0 )
+  {
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+  }
 
   if ( player->is_pet() && ( snapshot_flags & ( STATE_MUL_DA | STATE_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA |
                                                 STATE_MUL_PERSISTENT | STATE_VERSATILITY ) ) )
@@ -5065,7 +5083,16 @@ timespan_t action_t::distance_targeting_travel_time( action_state_t* /*s*/ ) con
 
 void action_t::html_customsection( report::sc_html_stream& os )
 {
-  if ( affecting_list.size() )
+  // make a copy in case original list needs to be used later
+  auto entries = affecting_list;
+
+  for ( auto a : stats->action_list )
+    if ( a != this )
+      for ( const auto& entry : a->affecting_list )
+        if ( !range::contains( entries, entry ) )
+          entries.push_back( entry );
+
+  if ( entries.size() )
   {
     os << "<div>\n"
         << "<h4>Affected By (Passive)</h4>\n"
@@ -5080,7 +5107,7 @@ void action_t::html_customsection( report::sc_html_stream& os )
         << "<th class=\"small\">Value</th>\n"
         << "</tr>\n";
 
-    for ( auto [ eff, val ] : affecting_list )
+    for ( const auto& [ eff, val ] : entries )
     {
       std::string op_str;
       std::string type_str;
@@ -5419,6 +5446,12 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case P_CRIT_DAMAGE:
         crit_bonus_multiplier *= 1.0 + effect.percent();
         sim->print_debug( "{} critical damage bonus multiplier modified by {}%", *this, effect.base_value() );
+        value_ = effect.percent();
+        break;
+
+      case P_CRIT:
+        crit_chance_multiplier *= 1.0 + effect.percent();
+        sim->print_debug( "{} critical strike chance multiplier modified by {}%", *this, effect.base_value() );
         value_ = effect.percent();
         break;
 

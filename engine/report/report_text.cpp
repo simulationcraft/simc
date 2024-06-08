@@ -363,8 +363,8 @@ void print_spell_stats( std::ostream& os, const player_t& p )
       100 * ( 1 / buffed_stats.spell_haste - 1 ),
       100 * ( 1 / p.composite_spell_haste() - 1 ),
       p.composite_spell_haste_rating(),
-      100 * ( 1 / buffed_stats.spell_speed - 1 ),
-      100 * ( 1 / p.cache.spell_speed() - 1 ),
+      100 * ( 1 / buffed_stats.spell_cast_speed - 1 ),
+      100 * ( 1 / p.cache.spell_cast_speed() - 1 ),
       buffed_stats.manareg_per_second,
       p.resource_regen_per_second( RESOURCE_MANA ),
       0 );
@@ -398,8 +398,8 @@ void print_attack_stats( std::ostream& os, const player_t& p )
         100 * ( 1 / buffed_stats.attack_haste - 1 ),
         100 * ( 1 / p.composite_melee_haste() - 1 ),
         p.composite_melee_haste_rating(),
-        100 * ( 1 / buffed_stats.attack_speed - 1 ),
-        100 * ( 1 / p.composite_melee_speed() - 1 ) );
+        100 * ( 1 / buffed_stats.auto_attack_speed - 1 ),
+        100 * ( 1 / p.composite_melee_auto_attack_speed() - 1 ) );
   }
   else
   {
@@ -423,8 +423,8 @@ void print_attack_stats( std::ostream& os, const player_t& p )
         100 * ( 1 / buffed_stats.attack_haste - 1 ),
         100 * ( 1 / p.composite_melee_haste() - 1 ),
         p.composite_melee_haste_rating(),
-        100 * ( 1 / buffed_stats.attack_speed - 1 ),
-        100 * ( 1 / p.composite_melee_speed() - 1 ) );
+        100 * ( 1 / buffed_stats.auto_attack_speed - 1 ),
+        100 * ( 1 / p.composite_melee_auto_attack_speed() - 1 ) );
   }
 }
 

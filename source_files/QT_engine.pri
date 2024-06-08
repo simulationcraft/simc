@@ -205,6 +205,7 @@ SOURCES += engine/action/attack.cpp
 SOURCES += engine/action/dbc_proc_callback.cpp
 SOURCES += engine/action/dot.cpp
 SOURCES += engine/action/heal.cpp
+SOURCES += engine/action/parse_effects.cpp
 SOURCES += engine/action/residual_action.cpp
 SOURCES += engine/action/sequence.cpp
 SOURCES += engine/action/snapshot_stats.cpp

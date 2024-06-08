@@ -10,6 +10,7 @@ SRC += \
     action$(PATHSEP)dbc_proc_callback.cpp \
     action$(PATHSEP)dot.cpp \
     action$(PATHSEP)heal.cpp \
+    action$(PATHSEP)parse_effects.cpp \
     action$(PATHSEP)residual_action.cpp \
     action$(PATHSEP)sequence.cpp \
     action$(PATHSEP)snapshot_stats.cpp \

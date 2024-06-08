@@ -161,7 +161,7 @@ void havoc( player_t* p )
   cooldown->add_action( "use_item,slot=trinket2,use_off_gcd=1,if=((cooldown.eye_beam.remains<gcd.max&active_enemies>1|buff.metamorphosis.up)&(raid_event.adds.in>trinket.2.cooldown.duration-15|raid_event.adds.remains>8)|!trinket.2.has_buff.any|fight_remains<25)&(!equipped.witherbarks_branch|trinket.1.cooldown.remains>20)&time>0" );
   cooldown->add_action( "use_item,name=witherbarks_branch,if=(talent.essence_break&cooldown.essence_break.remains<gcd.max|!talent.essence_break)&(active_enemies+3>=desired_targets+raid_event.adds.count|raid_event.adds.in>105)|fight_remains<25" );
   cooldown->add_action( "the_hunt,if=debuff.essence_break.down&(active_enemies>=desired_targets+raid_event.adds.count|raid_event.adds.in>(1+!set_bonus.tier31_2pc)*45)&time>5" );
-  cooldown->add_action( "elysian_decree,if=debuff.essence_break.down" );
+  cooldown->add_action( "sigil_of_spite,if=debuff.essence_break.down" );
 
   opener->add_action( "use_items" );
   opener->add_action( "vengeful_retreat,if=prev_gcd.1.death_sweep" );
@@ -207,6 +207,8 @@ void vengeance( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* aldrachi_reaver = p->get_action_priority_list( "aldrachi_reaver" );
+  action_priority_list_t* felscarred = p->get_action_priority_list( "felscarred" );
   action_priority_list_t* maintenance = p->get_action_priority_list( "maintenance" );
   action_priority_list_t* fiery_demise = p->get_action_priority_list( "fiery_demise" );
   action_priority_list_t* single_target = p->get_action_priority_list( "single_target" );
@@ -233,17 +235,28 @@ void vengeance( player_t* p )
   default_->add_action( "disrupt,if=target.debuff.casting.react" );
   default_->add_action( "infernal_strike,use_off_gcd=1" );
   default_->add_action( "demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains" );
-  default_->add_action( "metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up&cooldown.fel_devastation.remains>12" );
   default_->add_action( "potion,use_off_gcd=1" );
   default_->add_action( "call_action_list,name=externals" );
   default_->add_action( "use_items,use_off_gcd=1" );
-  default_->add_action( "call_action_list,name=fiery_demise,if=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0" );
-  default_->add_action( "call_action_list,name=maintenance" );
-  default_->add_action( "run_action_list,name=single_target,if=variable.single_target" );
-  default_->add_action( "run_action_list,name=small_aoe,if=variable.small_aoe" );
-  default_->add_action( "run_action_list,name=big_aoe,if=variable.big_aoe" );
+  default_->add_action( "run_action_list,name=aldrachi_reaver,if=talent.art_of_the_glaive", "##################  Aldrachi Reaver # ##################" );
 
-  maintenance->add_action( "fiery_brand,if=talent.fiery_brand&((active_dot.fiery_brand=0&(cooldown.sigil_of_flame.remains<=(execute_time+gcd.remains)|cooldown.soul_carver.remains<=(execute_time+gcd.remains)|cooldown.fel_devastation.remains<=(execute_time+gcd.remains)))|(talent.down_in_flames&full_recharge_time<=(execute_time+gcd.remains)))", "Maintenance & upkeep" );
+  aldrachi_reaver->add_action( "metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up&cooldown.fel_devastation.remains>12" );
+  aldrachi_reaver->add_action( "call_action_list,name=fiery_demise,if=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0" );
+  aldrachi_reaver->add_action( "call_action_list,name=maintenance" );
+  aldrachi_reaver->add_action( "run_action_list,name=single_target,if=variable.single_target" );
+  aldrachi_reaver->add_action( "run_action_list,name=small_aoe,if=variable.small_aoe" );
+  aldrachi_reaver->add_action( "run_action_list,name=big_aoe,if=variable.big_aoe" );
+
+  default_->add_action( "run_action_list,name=felscarred,if=talent.demonsurge", "##############  Fel-scarred # ##############" );
+
+  felscarred->add_action( "metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up&cooldown.fel_devastation.remains>12" );
+  felscarred->add_action( "call_action_list,name=fiery_demise,if=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0" );
+  felscarred->add_action( "call_action_list,name=maintenance" );
+  felscarred->add_action( "run_action_list,name=single_target,if=variable.single_target" );
+  felscarred->add_action( "run_action_list,name=small_aoe,if=variable.small_aoe" );
+  felscarred->add_action( "run_action_list,name=big_aoe,if=variable.big_aoe" );
+
+  maintenance->add_action( "fiery_brand,if=talent.fiery_brand&((active_dot.fiery_brand=0&(cooldown.sigil_of_flame.remains<=(execute_time+gcd.remains)|cooldown.soul_carver.remains<=(execute_time+gcd.remains)|cooldown.fel_devastation.remains<=(execute_time+gcd.remains)))|(talent.down_in_flames&full_recharge_time<=(execute_time+gcd.remains)))", "#########  Shared # #########  Maintenance & upkeep" );
   maintenance->add_action( "sigil_of_flame,if=talent.ascending_flame|active_dot.sigil_of_flame=0" );
   maintenance->add_action( "immolation_aura" );
   maintenance->add_action( "bulk_extraction,if=((5-soul_fragments)<=spell_targets)&soul_fragments<=2" );
@@ -260,13 +273,13 @@ void vengeance( player_t* p )
   fiery_demise->add_action( "fel_devastation" );
   fiery_demise->add_action( "soul_carver,if=soul_fragments.total<3" );
   fiery_demise->add_action( "the_hunt" );
-  fiery_demise->add_action( "elysian_decree,line_cd=1.85,if=fury>=40" );
+  fiery_demise->add_action( "sigil_of_spite,line_cd=1.85,if=fury>=40" );
   fiery_demise->add_action( "spirit_bomb,if=variable.can_spb" );
 
   single_target->add_action( "the_hunt", "Single Target" );
   single_target->add_action( "soul_carver" );
   single_target->add_action( "fel_devastation,if=talent.collective_anguish|(talent.stoke_the_flames&talent.burning_blood)" );
-  single_target->add_action( "elysian_decree" );
+  single_target->add_action( "sigil_of_spite" );
   single_target->add_action( "fel_devastation" );
   single_target->add_action( "soul_cleave,if=!variable.dont_cleave" );
   single_target->add_action( "fracture" );
@@ -274,7 +287,7 @@ void vengeance( player_t* p )
 
   small_aoe->add_action( "the_hunt", "2-5 targets" );
   small_aoe->add_action( "fel_devastation,if=talent.collective_anguish.enabled|(talent.stoke_the_flames.enabled&talent.burning_blood.enabled)" );
-  small_aoe->add_action( "elysian_decree,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)" );
+  small_aoe->add_action( "sigil_of_spite,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)" );
   small_aoe->add_action( "fel_devastation" );
   small_aoe->add_action( "soul_carver,if=soul_fragments.total<3" );
   small_aoe->add_action( "soul_cleave,if=(soul_fragments<=1|!talent.spirit_bomb)&!variable.dont_cleave" );
@@ -283,7 +296,7 @@ void vengeance( player_t* p )
 
   big_aoe->add_action( "fel_devastation,if=talent.collective_anguish|talent.stoke_the_flames", "6+ targets" );
   big_aoe->add_action( "the_hunt" );
-  big_aoe->add_action( "elysian_decree,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)" );
+  big_aoe->add_action( "sigil_of_spite,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)" );
   big_aoe->add_action( "fel_devastation" );
   big_aoe->add_action( "soul_carver,if=soul_fragments.total<3" );
   big_aoe->add_action( "spirit_bomb,if=soul_fragments>=4" );

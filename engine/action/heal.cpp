@@ -106,6 +106,29 @@ double heal_t::composite_versatility( const action_state_t* state ) const
   return spell_base_t::composite_versatility( state ) + player->cache.heal_versatility();
 }
 
+double heal_t::total_crit_bonus( const action_state_t* state ) const
+{
+  // duplicate of action_t::total_crit_bonus() with adjustment for final bonus calculation
+  double crit_multiplier_buffed = composite_player_critical_multiplier( state );
+
+  double base_crit_bonus = crit_bonus;
+  if ( sim->pvp_mode )
+    base_crit_bonus += sim->pvp_rules->effectN( 3 ).percent();
+
+  double damage_bonus = composite_crit_damage_bonus_multiplier() * composite_target_crit_damage_bonus_multiplier( state->target );
+
+  // for healing, 'multiplier' is additive with base bonus
+  double bonus = ( base_crit_bonus + crit_multiplier_buffed - 1.0 ) * damage_bonus;
+
+  if ( sim->debug )
+  {
+    sim->print_debug( "{} crit_bonus for {}: total={} base={} mult_buffed={} damage_bonus_mult={}", *player, *this,
+                      bonus, crit_bonus, crit_multiplier_buffed, damage_bonus );
+  }
+
+  return bonus;
+}
+
 result_amount_type heal_t::amount_type( const action_state_t* /* state */, bool periodic ) const
 {
   if ( periodic || treat_as_periodic )
@@ -224,25 +247,30 @@ void heal_t::assess_damage( result_amount_type heal_type, action_state_t* s )
   }
 
   // New callback system; proc spells on impact.
-  // Note: direct_tick_callbacks should not be used with the new system,
-  // override action_t::proc_type() instead
+  // Note: direct_tick_callbacks should not be used with the new system override action_t::proc_type() instead
   if ( callbacks )
   {
     proc_types pt = s->proc_type();
     proc_types2 pt2 = s->impact_proc_type2();
+
     if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
     {
-      player->trigger_callbacks( pt, pt2, this, s );
+      if ( !suppress_caster_procs || enable_proc_from_suppressed )
+        player->trigger_callbacks( pt, pt2, this, s );
 
       // trigger healing taken callbacks
-      proc_types pt_taken = static_cast<proc_types>( pt + 1 );
-      if ( pt == PROC1_HELPFUL_PERIODIC )
-        pt_taken = PROC1_HELPFUL_PERIODIC_TAKEN;
+      if ( !suppress_target_procs )
+      {
+        proc_types pt_taken = static_cast<proc_types>( pt + 1 );
 
-      s->target->trigger_callbacks( pt_taken, pt2, this, s );
+        if ( pt == PROC1_HELPFUL_PERIODIC )
+          pt_taken = PROC1_HELPFUL_PERIODIC_TAKEN;
+
+        s->target->trigger_callbacks( pt_taken, pt2, this, s );
+      }
     }
   }
-   
+
   if ( player->spells.leech )
   {
     double leech_pct = 0;

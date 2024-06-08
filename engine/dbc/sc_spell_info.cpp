@@ -291,8 +291,9 @@ static constexpr auto _race_map = util::make_static_map<unsigned, util::string_v
   { 13, "Mag'har Orc"         },
   { 14, "Mechagnome"          },
   { 15, "Dracthyr"            },
+  { 17, "Earthen"             },
   { 21, "Worgen"              },
-  { 24, "Pandaren"            },
+  { 25, "Pandaren"            },
   { 26, "Nightborne"          },
   { 27, "Highmountain Tauren" },
   { 28, "Void Elf"            },
@@ -302,24 +303,62 @@ static constexpr auto _race_map = util::make_static_map<unsigned, util::string_v
 } );
 
 static constexpr auto _targeting_strings = util::make_static_map<unsigned, util::string_view>( {
-  {  1,  "Self"                },
-  {  5,  "Active Pet"          },
-  {  6,  "Enemy"               },
-  {  7,  "AOE enemy (instant)" },
-  {  8,  "AOE Custom"          },
-  { 15,  "AOE enemy"           },
-  { 18,  "Custom"              },
-  { 16,  "AOE enemy (instant)" },
-  { 21,  "Friend"              },
-  { 22,  "At Caster"           },
-  { 28,  "AOE enemy"           },
-  { 30,  "AOE friendly"        },
-  { 31,  "AOE friendly"        },
-  { 42,  "Water Totem"         },
-  { 45,  "Chain Friendly"      },
-  { 104, "Cone Front"          },
-  { 53,  "At Enemy"            },
-  { 56,  "Raid Members"        },
+  { 1,   "Self"                   },
+  { 2,   "Nearby Enemy"           },
+  { 3,   "Nearby Party"           },
+  { 4,   "Nearby Friendly"        },
+  { 5,   "Active Pet"             },
+  { 6,   "Enemy"                  },
+  { 7,   "In Area"                },
+  { 8,   "To Area"                },
+  { 15,  "Enemy in Area"          },
+  { 16,  "At Enemy in Area"       },
+  { 18,  "At Self"                },
+  { 20,  "Party in Area"          },
+  { 21,  "Friendly"               },
+  { 22,  "At Self"                },
+  { 24,  "Cone Enemy"             },
+  { 25,  "Any Target"             },
+  { 30,  "Friendly in Area"       },
+  { 31,  "At Friendly in Area"    },
+  { 32,  "Summon from"            },
+  { 34,  "At Party in Area"       },
+  { 35,  "Party Target"           },
+  { 38,  "Nearby Target"          },
+  { 45,  "Chain Friendly"         },
+  { 46,  "At Nearby"              },
+  { 53,  "At Enemy"               },
+  { 54,  "Cone (180) Enemy"       },
+  { 56,  "Raid in Area"           },
+  { 57,  "Raid Target"            },
+  { 58,  "Raid Nearby"            },
+  { 59,  "Cone Friendly"          },
+  { 60,  "Cone"                   },
+  { 61,  "Class in Area"          },
+  { 62,  "At Ground"              },
+  { 63,  "At Target"              },
+  { 72,  "At Random"              },
+  { 73,  "At Radius"              },
+  { 74,  "At Target Random"       },
+  { 75,  "At Target Radius"       },
+  { 76,  "At Channel Target"      },
+  { 77,  "Channel Target"         },
+  { 92,  "Summoner"               },
+  { 94,  "Vehicle"                },
+  { 95,  "Passenger"              },
+  { 104, "Cone to Enemy"          },
+  { 105, "Self and Passengers"    },
+  { 106, "At Channel Caster"      },
+  { 110, "Cone from Self"         },
+  { 115, "Furthest Enemy in Area" },
+  { 118, "Friendly or Raid"       },
+  { 119, "Self and Summons"       },
+  { 131, "At Summoner"            },
+  { 132, "At Friendly"            },
+  { 133, "Line to Friendly"       },
+  { 134, "Line to Enemy"          },
+  { 135, "Line from Self"         },
+  { 136, "Cone to Friendly"       },
 } );
 
 static constexpr auto _resource_strings = util::make_static_map<int, util::string_view>( {
@@ -947,7 +986,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   {   6, "Charm"                                        },
   {   7, "Fear"                                         },
   {   8, "Periodic Heal"                                },
-  {   9, "Attack Speed (Normalized wDPS)"               },
+  {   9, "Auto Attack Speed (Normalized wDPS)"          },
   {  10, "Threat"                                       },
   {  11, "Taunt"                                        },
   {  12, "Stun"                                         },
@@ -973,7 +1012,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   {  32, "Increase Mounted Speed%"                      },
   {  33, "Decrease Movement Speed%"                     },
   {  34, "Increase Health"                              },
-  {  35, "Increase Energy"                              },
+  {  35, "Increase Resource"                            },
   {  36, "Shapeshift"                                   },
   {  37, "Immunity Against External Movement"           },
   {  39, "School Immunity"                              },
@@ -1066,7 +1105,9 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 192, "Modify Ranged and Melee Haste%"               },
   { 193, "Modify All Haste%"                            },
   { 197, "Modify Attacker Crit Chance"                  },
+  { 198, "% of Misc1 Rating Added to Misc2 Rating"      },
   { 200, "Modify Experience Gained from Kills"          },
+  { 213, "Modify Rage Generated From Auto Attacks"      },
   { 216, "Modify Casting Speed"                         },
   { 218, "Apply Percent Modifier w/ Label"              },
   { 219, "Apply Flat Modifier w/ Label"                 },
@@ -1104,15 +1145,14 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 306, "Modify Crit Chance% from Caster"              },
   { 308, "Modify Crit Chance% from Caster's Spells"     },
   { 318, "Modify Mastery%"                              },
-  { 319, "Modify Melee Speed%"                          },
-  { 320, "Modify Ranged Attack Speed%"                  },
+  { 319, "Modify Melee Auto Attack Speed%"              },
   { 329, "Modify Resource Generation%"                  },
   { 330, "Cast while Moving (Whitelist)"                },
   { 332, "Override Action Spell (Misc /w Base)"         },
   { 334, "Modify Auto Attack Critical Chance"           },
   { 339, "Modify Crit Chance% from Caster's Pets"       },
   { 341, "Modify Cooldown Time (Category)"              },
-  { 342, "Modify Ranged and Melee Attack Speed%"        },
+  { 342, "Modify Ranged and Melee Auto Attack Speed%"   },
   { 343, "Modify Auto Attack Damage Taken% from Caster" },
   { 344, "Modify Auto Attack Damage Done%"              },
   { 345, "Ignore Armor%"                                },
@@ -1157,37 +1197,42 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
 } );
 
 static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::string_view>( {
-  { 130, "Charm"          },
-  { 134, "Disorient"      },
-  { 142, "Disarm"         },
-  { 147, "Distract"       },
-  { 154, "Flee"           },
-  { 158, "Grip"           },
-  { 162, "Root"           },
-  { 168, "Silence"        },
-  { 173, "Sleep"          },
-  { 176, "Snare"          },
-  { 179, "Stun"           },
-  { 183, "Freeze"         },
-  { 186, "Incapacitate"   },
-  { 196, "Bleed"          },
-  { 201, "Heal"           },
-  { 205, "Polymorph"      },
-  { 213, "Banish"         },
-  { 218, "Shield"         },
-  { 223, "Shackle"        },
-  { 228, "Mount"          },
-  { 232, "Infect"         },
-  { 237, "Turn"           },
-  { 240, "Horrify"        },
-  { 246, "Invulneraility" },
-  { 255, "Interrupt"      },
-  { 263, "Daze"           },
-  { 265, "Discover"       },
-  { 271, "Sap"            },
-  { 274, "Enrage"         },
-  { 278, "Wound"          },
-  { 282, "Taunt"          },
+  { 1,  "Charm"        },
+  { 2,  "Disorient"    },
+  { 3,  "Disarm"       },
+  { 4,  "Distract"     },
+  { 5,  "Flee"         },
+  { 6,  "Knockback"    },
+  { 7,  "Root"         },
+  { 8,  "Slow"         },
+  { 9,  "Silence"      },
+  { 10, "Sleep"        },
+  { 11, "Snare"        },
+  { 12, "Stun"         },
+  { 13, "Freeze"       },
+  { 14, "Incapacitate" },
+  { 15, "Bleed"        },
+  { 16, "Heal"         },
+  { 17, "Polymorph"    },
+  { 18, "Banish"       },
+  { 19, "Shield"       },
+  { 20, "Shackle"      },
+  { 21, "Mount"        },
+  { 22, "Infect"       },
+  { 23, "Turn"         },
+  { 24, "Horrify"      },
+  // { 25, "Invulnerable 2" },
+  { 26, "Interrupt"    },
+  { 27, "Daze"         },
+  { 28, "Discover"     },
+  { 29, "Invulnerable" },
+  { 30, "Sap"          },
+  { 31, "Enrage"       },
+  { 32, "Wound"        },
+  // { 33, "Infect 2"     },
+  // { 34, "Infect 3"     },
+  // { 35, "Infect 4"     },
+  { 36, "Taunt"        },
 } );
 
 static constexpr auto _label_strings = util::make_static_map<int, util::string_view>( {
@@ -1213,7 +1258,7 @@ std::string mechanic_str( unsigned mechanic )
   {
     return std::string( it->second );
   }
-  return fmt::format( "Unknown({})", mechanic );
+  return fmt::format( "UnknownMechanic({})", mechanic );
 }
 
 std::string label_str( int label, const dbc_t& dbc )
@@ -1488,13 +1533,30 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   if ( e->chain_target() != 0 )
     s << " | Chain Multiplier: " << e->chain_multiplier();
 
-  if ( e->misc_value1() != 0 || e->type() == E_ENERGIZE )
+  if ( e->type() == E_ENERGIZE || ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_INCREASE_RESOURCE ||
+                                                                   e->subtype() == A_MOD_MAX_RESOURCE ) ) )
+  {
+    s << " | Resource: "
+      << util::resource_type_string( util::translate_power_type( static_cast<power_e>( e->misc_value1() ) ) );
+  }
+  else if ( e->type() == E_APPLY_AURA && e->subtype() == A_MOD_STAT )
+  {
+    auto stat = e->misc_value1() == -2 ? STAT_STR_AGI_INT
+              : e->misc_value1() == -1 ? STAT_ALL
+                                       : static_cast<stat_e>( e->misc_value1() + 1 );
+    s << " | Stat: " << util::stat_type_abbrev( stat );
+  }
+  else if ( e->type() == E_APPLY_AURA && e->subtype() == A_MOD_RATING )
+  {
+    std::vector<const char*> tmp;
+    range::transform( util::translate_all_rating_mod( e->misc_value1() ), std::back_inserter( tmp ),
+                      &util::stat_type_abbrev );
+    s << " | Rating: " << util::string_join( tmp );
+  }
+  else if ( e->misc_value1() != 0 )
   {
     if ( e->affected_schools() != 0U )
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%#.x", e->misc_value1() );
-    else if ( e->type() == E_ENERGIZE )
-      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%s",
-                util::resource_type_string( util::translate_power_type( static_cast<power_e>( e->misc_value1() ) ) ) );
     else if ( e->subtype() == A_MOD_DAMAGE_FROM_SPELLS_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d (Label)", e->misc_value1() );
     else
@@ -2490,6 +2552,7 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_
   {
     s << "Overriden by : " << talent->id_override_spell << std::endl;
   }
+  s << "Subtree      : " << talent->id_sub_tree << std::endl;
   // s << "Spec         : " << util::specialization_string( talent -> specialization() ) << std::endl;
   s << std::endl;
 

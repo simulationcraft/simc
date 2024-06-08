@@ -314,7 +314,10 @@ void phial_of_static_empowerment( special_effect_t& effect )
         speed->trigger();
     } );
 
-    effect.player->buffs.static_empowerment = primary;
+    effect.player->register_movement_callback( [ primary ]( bool start ) {
+      if ( start )
+        primary->expire();
+    } );
   }
 
   effect.custom_buff = buff;
@@ -1998,7 +2001,7 @@ void igneous_flowstone( special_effect_t& effect )
 
   effect.player->register_combat_begin(
       [ low_tide_trigger, high_tide_trigger, low_tide_counter, high_tide_counter ]( player_t* p ) {
-        auto starting_state = p->dragonflight_opts.flowstone_starting_state;
+        std::string_view starting_state = p->dragonflight_opts.flowstone_starting_state;
         if ( util::str_compare_ci( starting_state, "low" ) )
           low_tide_trigger->trigger();
         else if ( util::str_compare_ci( starting_state, "ebb" ) )
@@ -2367,7 +2370,7 @@ void way_of_controlled_currents( special_effect_t& effect )
   auto stack =
       create_buff<buff_t>( effect.player, "way_of_controlled_currents_stack", effect.player->find_spell( 381965 ) )
           ->set_name_reporting( "Stack" )
-          ->add_invalidate( CACHE_ATTACK_SPEED );
+          ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
   stack->set_default_value( stack->data().effectN( 1 ).base_value() * 0.01 );
 
@@ -5442,8 +5445,8 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       {
         current_pet_stats.composite_melee_haste = 1;
         current_pet_stats.composite_spell_haste = 1;
-        current_pet_stats.composite_melee_speed = 1;
-        current_pet_stats.composite_spell_speed = 1;
+        current_pet_stats.composite_melee_auto_attack_speed = 1;
+        current_pet_stats.composite_spell_cast_speed = 1;
       }
     }
 
@@ -6460,7 +6463,7 @@ void dancing_dream_blossoms( special_effect_t& effect )
       double total_stats = 0;
 
       // populate current stat array & total stats
-      for ( auto s : stats )
+      for ( const auto& s : stats )
       {
         auto v = util::stat_value( player, s.stat );
 
@@ -6639,8 +6642,6 @@ void nymues_unraveling_spindle( special_effect_t& effect )
     double composite_target_multiplier( player_t* t ) const override
     {
       auto tm = proc_spell_t::composite_target_multiplier( t );
-
-      actor_target_data_t* td = player->get_target_data( t );
 
       // Affected By: Roots or Stuns
       // Not Affected By: Slows
@@ -7537,7 +7538,7 @@ void frozen_wellspring( special_effect_t& effect )
 
   // make proc trigger damage & debuff on target
   effect.player->callbacks.register_callback_execute_function( proc_driver->spell_id,
-      [ p = effect.player, proc, buff, proxy ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+      [ proc, buff, proxy ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
         if ( buff->check() )
         {
           proc->execute_on_target( s->target );
@@ -7684,6 +7685,28 @@ void umbrelskuls_fractured_heart_new( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Trigger and buff - 434064
+// Damage proc - 434069
+// Driver - 433000
+// this is a very simple implementation that assumes the buff always expires, no absorb buff
+void granyths_enduring_scale_new( special_effect_t& e )
+{
+  auto driver = e.player->find_spell( 433000 );
+  auto damage = create_proc_action<generic_proc_t>( "scale_burst", e, "scale_burst", e.player->find_spell( 434069 ) );
+  damage->base_dd_min = damage->base_dd_max = driver->effectN( 3 ).average( e.item );
+  damage->split_aoe_damage                  = true;
+
+  auto buff =
+      create_buff<buff_t>( e.player, e.driver() )->set_stack_change_callback( [ damage ]( buff_t* b, int, int new_ ) {
+        if ( !new_ )
+        {
+          damage->execute_on_target( b->player->target );
+        }
+      } );
+
+  e.custom_buff = buff;
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -7823,8 +7846,8 @@ void neltharax( special_effect_t& effect )
   auto buff = create_buff<buff_t>( effect.player, "heavens_nemesis", effect.player->find_spell( 397118 ) )
     ->set_default_value_from_effect( 1 );
 
-  if ( buff->data().effectN( 1 ).subtype() == A_MOD_RANGED_AND_MELEE_ATTACK_SPEED )
-    buff->add_invalidate( CACHE_ATTACK_SPEED );
+  if ( buff->data().effectN( 1 ).subtype() == A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED )
+    buff->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
   effect.player -> buffs.heavens_nemesis = buff;
 
@@ -8356,7 +8379,7 @@ void fyralath_the_dream_render( special_effect_t& e )
         dot( d ),
         buff( b ),
         current_tick( 0 ),
-        n_ticks( data().duration() / data().effectN( 1 ).period() )
+        n_ticks( as<int>( data().duration() / data().effectN( 1 ).period() ) )
     {
       channeled = hasted_ticks = true;
       trigger_gcd = e.player->find_spell( 417131 )->gcd();
@@ -10658,7 +10681,7 @@ void cloak_of_infinite_potential( special_effect_t& effect )
   }
 
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 440393 ) );
-  for ( const auto [ stat_type, amount ] : stat_amounts )
+  for ( const auto& [ stat_type, amount ] : stat_amounts )
     debug_cast<stat_buff_t*>( buff )->add_stat( stat_type, amount );
 
   if ( effect.player->dragonflight_opts.brilliance_party > 0 )
@@ -10699,7 +10722,7 @@ void cloak_of_infinite_potential( special_effect_t& effect )
       {
         // Approximate fit
         auto plvl    = effect.player->level();
-        default_ilvl = 0.156 * plvl * plvl + 2.09 * plvl - 7.96;
+        default_ilvl = static_cast<int>( 0.156 * plvl * plvl + 2.09 * plvl - 7.96 );
       }
     }
 
@@ -10768,7 +10791,7 @@ void explosive_barrage( special_effect_t& effect )
       for ( size_t i = 0; i < 3; i++ )
       {
         make_event( sim, 150_ms * i, [ this ] {
-          auto tl = target_list();
+          const auto& tl = target_list();
 
           if ( tl.empty() )
             return;
@@ -10836,7 +10859,7 @@ void wildfire( special_effect_t& effect )
         }
         else
         {
-          auto tl = target_list();
+          const auto& tl = target_list();
           target  = tl[ rng().range( tl.size() ) ];
         }
       }
@@ -11077,7 +11100,7 @@ void arcanists_edge( special_effect_t& effect )
         }
         else
         {
-          auto tl = target_list();
+          const auto& tl = target_list();
           target  = tl[ rng().range( tl.size() ) ];
         }
       }
@@ -11125,7 +11148,7 @@ void arcanists_edge( special_effect_t& effect )
       }
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* s ) override
     {
       if ( listener->absorb_buff_list.empty() )
         return;
@@ -11304,7 +11327,7 @@ void sunstriders_flourish( special_effect_t& effect )
         }
         else
         {
-          auto tl = target_list();
+          const auto& tl = target_list();
           target  = tl[ rng().range( tl.size() ) ];
         }
       }
@@ -11328,12 +11351,12 @@ void quick_strike( special_effect_t& effect )
 
     quick_strike_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
-        min_hits( e.driver()->effectN( 1 ).base_value() ),
-        max_hits( e.driver()->effectN( 2 ).base_value() )
+        min_hits( as<int>( e.driver()->effectN( 1 ).base_value() ) ),
+        max_hits( as<int>( e.driver()->effectN( 2 ).base_value() ) )
     {
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* s ) override
     {
       auto atk = listener->main_hand_attack;
 
@@ -11438,12 +11461,9 @@ void register_special_effects()
   register_special_effect( { 390172, 390183, 390190 }, enchants::writ_enchant() );  // earthen writ
   register_special_effect( { 390243, 390244, 390246 }, enchants::writ_enchant() );  // frozen writ
   register_special_effect( { 390248, 390249, 390251 }, enchants::writ_enchant() );  // wafting writ
-  register_special_effect( { 390215, 390217, 390219 },
-                           enchants::writ_enchant( STAT_STR_AGI_INT ) );     // sophic writ
-  register_special_effect( { 390346, 390347, 390348 },
-                           enchants::writ_enchant( STAT_BONUS_ARMOR ) );            // earthen devotion
-  register_special_effect( { 390222, 390227, 390229 },
-                           enchants::writ_enchant( STAT_STR_AGI_INT ) );     // sophic devotion
+  register_special_effect( { 390215, 390217, 390219 }, enchants::writ_enchant( STAT_STR_AGI_INT ) );  // sophic writ
+  register_special_effect( { 390346, 390347, 390348 }, enchants::writ_enchant( STAT_BONUS_ARMOR ) );  // earthen devotion
+  register_special_effect( { 390222, 390227, 390229 }, enchants::writ_enchant( STAT_STR_AGI_INT ) );  // sophic devotion
   register_special_effect( { 390351, 390352, 390353 }, enchants::frozen_devotion );
   register_special_effect( { 390358, 390359, 390360 }, enchants::wafting_devotion );
 
@@ -11561,6 +11581,7 @@ void register_special_effects()
   register_special_effect( 432777, items::tome_of_unstable_power_new );
   register_special_effect( 432775, items::frozen_wellspring );
   register_special_effect( 432699, items::umbrelskuls_fractured_heart_new );
+  register_special_effect( 434064, items::granyths_enduring_scale_new );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
@@ -11673,7 +11694,7 @@ void register_special_effects()
   register_special_effect( 422652, DISABLED_EFFECT );  // Fyrakk's Tainted Rageheart secondary effect
 }
 
-void register_target_data_initializers( sim_t& sim )
+void register_target_data_initializers( sim_t& )
 {
 }
 
