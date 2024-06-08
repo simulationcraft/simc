@@ -834,6 +834,10 @@ struct player_t : public actor_t
     timespan_t carved_blazikon_wax_enter_light_stddev = 1_s;
     timespan_t carved_blazikon_wax_stay_in_light_duration = 0_s;  // remain until the end
     timespan_t carved_blazikon_wax_stay_in_light_stddev = 0_s;
+    // allies with signet of the priory
+    player_option_t<std::string> signet_of_the_priory_party_stats;
+    timespan_t signet_of_the_priory_party_use_cooldown = 120_s;
+    timespan_t signet_of_the_priory_party_use_stddev = 6_s;
   } thewarwithin_opts;
 
 private:

@@ -254,6 +254,8 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   {
     if ( auto con = dynamic_cast<dbc_consumable_base_t*>( a ); con && con->item_data )
       name = report_decorators::decorated_item_data( *s.player->sim, *con->item_data );
+    else if ( a->item && &a->item->parsed.data != &dbc_item_data_t::nil() )
+      name = report_decorators::decorated_item_data( *s.player->sim, a->item->parsed.data );
     else
       name = report_decorators::decorated_action( *a );
   }

@@ -2299,6 +2299,106 @@ void carved_blazikon_wax( special_effect_t& effect )
   new carved_blazikon_wax_cb_t( effect );
 }
 
+// 443531 on-use, buff
+// 450877 equip
+//  e1: party coeff
+//  e2: buff coeff
+// 450882 party buff
+// TODO: determine reasonable default for party buff options
+// TODO: confirm you can have multiple party buffs at the same time
+void signet_of_the_priory( special_effect_t& effect )
+{
+  unsigned equip_id = 450877;
+  auto equip = find_special_effect( effect.player, equip_id );
+  assert( equip && "Signet of the Priory missing equip effect" );
+
+  auto data = equip->driver();
+
+  struct signet_of_the_priory_t : public generic_proc_t
+  {
+    std::unordered_map<stat_e, buff_t*> buffs;
+    std::unordered_map<stat_e, buff_t*> party_buffs;
+
+    rng::truncated_gauss_t party_first_use;
+    rng::truncated_gauss_t party_use;
+
+    signet_of_the_priory_t( const special_effect_t& e, const spell_data_t* data )
+      : generic_proc_t( e, "signet_of_the_priory", e.driver() ),
+        party_first_use( 0_ms, e.player->thewarwithin_opts.signet_of_the_priory_party_use_stddev ),
+        party_use( e.player->thewarwithin_opts.signet_of_the_priory_party_use_cooldown,
+                   e.player->thewarwithin_opts.signet_of_the_priory_party_use_stddev, e.driver()->cooldown() )
+    {
+      auto buff_data  = e.driver();
+      auto buff_name  = util::tokenize_fn( buff_data->name_cstr() );
+      auto buff_amt   = data->effectN( 2 ).average( e.item );
+      auto party_data = e.player->find_spell( 450882 );
+      auto party_name = util::tokenize_fn( party_data->name_cstr() );
+      auto party_amt  = data->effectN( 1 ).average( e.item );
+
+      auto add_buff = [ &, this ]( size_t i, stat_e stat ) {
+        auto stat_str = util::stat_type_abbrev( stat );
+
+        auto buff = create_buff<stat_buff_t>( e.player, fmt::format( "{}_{}", buff_name, stat_str ), buff_data )
+          ->add_stat_from_effect( i + 2, buff_amt )
+          ->set_name_reporting( stat_str );
+
+        auto party = create_buff<stat_buff_t>( e.player, fmt::format( "{}_{}", party_name, stat_str ), party_data )
+          ->add_stat_from_effect( i + 2, party_amt )
+          ->set_name_reporting( stat_str );
+
+        buffs[ stat ] = buff;
+        party_buffs[ stat ] = party;
+      };
+
+      add_buff( 1, STAT_CRIT_RATING );
+      add_buff( 2, STAT_HASTE_RATING );
+      add_buff( 3, STAT_MASTERY_RATING );
+      add_buff( 4, STAT_VERSATILITY_RATING );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+
+      buffs.at( util::highest_stat( player, secondary_ratings ) )->trigger();
+    }
+  };
+
+  effect.disable_buff();
+  auto signet = debug_cast<signet_of_the_priory_t*>(
+    create_proc_action<signet_of_the_priory_t>( "signet_of_the_priory", effect, data ) );
+  effect.execute_action = signet;  
+
+  // TODO: determine reasonable default for party buff options
+  // TODO: confirm you can have multiple party buffs at the same time
+  std::vector<buff_t*> party_buffs;
+  auto option = effect.player->thewarwithin_opts.signet_of_the_priory_party_stats;
+
+  if ( option.is_default() )
+  {
+    for ( auto stat : secondary_ratings )
+      party_buffs.push_back( signet->party_buffs.at( stat ) );
+  }
+  else
+  {
+    for ( auto s : util::string_split<std::string_view>( option, "/" ) )
+      if ( auto stat = util::parse_stat_type( s ); stat != STAT_NONE )
+        party_buffs.push_back( signet->party_buffs.at( stat ) );
+  }
+
+  for ( auto b : party_buffs )
+  {
+    effect.player->register_combat_begin( [ b, signet ]( player_t* ) {
+      make_event( *b->sim, b->rng().gauss( signet->party_first_use ), [ b, signet ] {
+        b->trigger();
+        make_repeating_event( *b->sim,
+          [ b, signet ] { return b->rng().gauss( signet->party_use ); },
+          [ b ] { b->trigger(); } );
+      } );
+    } );
+  }
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -2633,6 +2733,8 @@ void register_special_effects()
   register_special_effect( 450561, items::mereldars_toll );
   register_special_effect( 450641, DISABLED_EFFECT );  // mereldar's toll
   register_special_effect( 443527, items::carved_blazikon_wax );
+  register_special_effect( 443531, items::signet_of_the_priory );
+  register_special_effect( 450877, DISABLED_EFFECT );  // signet of the priory
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );

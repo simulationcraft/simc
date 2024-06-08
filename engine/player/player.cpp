@@ -13118,6 +13118,9 @@ void player_t::create_options()
   add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_enter_light_stddev", thewarwithin_opts.carved_blazikon_wax_enter_light_stddev, 0_ms, 15_s ) );
   add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_stay_in_light_duration", thewarwithin_opts.carved_blazikon_wax_stay_in_light_duration, 0_ms, 15_s ) );
   add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_stay_in_light_stddev", thewarwithin_opts.carved_blazikon_wax_stay_in_light_stddev, 0_ms, 15_s ) );
+  add_option( opt_string( "thewarwithin.signet_of_the_priory_party_stats", thewarwithin_opts.signet_of_the_priory_party_stats ) );
+  add_option( opt_timespan( "thewarwithin.signet_of_the_priory_party_use_cooldown", thewarwithin_opts.signet_of_the_priory_party_use_cooldown, 120_s, 240_s ) );
+  add_option( opt_timespan( "thewarwithin.signet_of_the_priory_party_use_stddev", thewarwithin_opts.signet_of_the_priory_party_use_stddev, 0_ms, 120_s ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

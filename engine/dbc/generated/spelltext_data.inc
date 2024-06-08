@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.55000
-static const std::array<spelltext_data_t, 26118> __spelltext_data { {
+static const std::array<spelltext_data_t, 26120> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -24604,6 +24604,7 @@ static const std::array<spelltext_data_t, 26118> __spelltext_data { {
   { 450867, "When Aspect of Harmony ends, any remaining vitality is released as $?a137023[damage over $450820d][healing over $450805d], split among nearby targets.", 0, 0 },
   { 450870, "During Aspect of Harmony, $?a137023[Expel Harm and Vivify withdraw vitality to heal][Rising Sun Kick, Blackout Kick, and Tiger Palm also withdraw vitality to damage enemies].", 0, 0 },
   { 450875, "Chi Burst and Chi Wave deal $s1% increased damage and healing.", 0, 0 },
+  { 450882, "Raise your signet to the Light, increasing your highest secondary stat by $s1 for $8313d. Your act inspires nearby signetbearers within your party, granting them $s2 of the same stat for.", "$?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] increased by $450877w1.", 0 },
   { 450883, "$@spelldesc450385", 0, 0 },
   { 450884, "$@spelldesc450385", "Damage taken from $@auracaster and their pets increased by $w1%.", 0 },
   { 450889, "Casting a Physical spell or ability increases the damage and healing of your next Fire or Nature spell or ability by 5%, and vice versa. Stacks up to 5.", 0, 0 },
@@ -25784,6 +25785,7 @@ static const std::array<spelltext_data_t, 26118> __spelltext_data { {
   { 457489, "Taking damage greater than $s4% of your health grants you $s1 Avoidance and increases healing taken by $s2% for $457533d. This effect may only occur every $proccooldown sec.\r\n\r\nFalling damage reduced.", 0, 0 },
   { 457493, "$@spelldesc457481", "Your healing done is increased by $w1%.\r\n\r\n$?a157153[Cloudburst][Healing Stream] Totem lasts an additional ${$w2/1000} sec.", 0 },
   { 457496, "$@spelldesc457481", "Your healing done is increased by $w2%.\r\n\r\n$?a157153[Cloudburst][Healing Stream] Totem lasts an additional ${$w1/1000} sec.", 0 },
+  { 457506, 0, "Damage done increased by $w1%.", 0 },
   { 457507, "$@spelldesc452196", 0, 0 },
   { 457512, "Gain $s1 additional max combo point.\r\n\r\nYour finishing moves that consume more than $s3 combo points have increased effects, and your finishing moves deal $s4% increased damage.", 0, 0 },
   { 457521, "Arcane Surge damage increased by ${$s2/$s1}% per Arcane Charge.", 0, 0 },

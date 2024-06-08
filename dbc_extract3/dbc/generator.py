@@ -1503,6 +1503,7 @@ class SpellDataGenerator(DataGenerator):
          452226, # Ara-Kara Sacbrood
          455910, # voltaic stormcaller
          450921, 451247, # high speaker's accretion
+         450882, # signet of the priory
         ),
 
         # Warrior:
