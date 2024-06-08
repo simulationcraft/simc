@@ -1917,6 +1917,8 @@ class SpellDataGenerator(DataGenerator):
           ( 443404, 0 ), # Wave of Souls debuff
           ( 442664, 0 ), # Wave of Souls area dummy
           ( 440005, 0 ), # Blood Fever damage
+          # Tier TWW1
+          ( 457506, 0 ), # Blood TWW1 set, Piledriver
         ),
 
         # Shaman:
