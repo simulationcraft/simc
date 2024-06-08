@@ -1482,6 +1482,60 @@ namespace actions
     }
   };
 
+  struct vile_taint_t : public warlock_spell_t
+  {
+    struct vile_taint_dot_t : public warlock_spell_t
+    {
+      vile_taint_dot_t( warlock_t* p ) : warlock_spell_t( "Vile Taint (DoT)", p, p->talents.vile_taint_dot )
+      {
+        tick_zero = background = true;
+        execute_action = new agony_t( p, "" );
+        execute_action->background = true;
+        execute_action->dual = true;
+        execute_action->base_costs[ RESOURCE_MANA ] = 0.0;
+
+        if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B2 ) )
+          base_td_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 4 ).percent();
+      }
+
+      void last_tick( dot_t* d ) override
+      {
+        warlock_spell_t::last_tick( d );
+
+        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+          td( d->target )->debuffs_infirmity->expire();
+      }
+    };
+    
+    vile_taint_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( "Vile Taint", p, p->talents.vile_taint )
+    {
+      parse_options( options_str );
+
+      impact_action = new vile_taint_dot_t( p );
+      add_child( impact_action );
+
+      if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B2 ) )
+        cooldown->duration += p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 1 ).time_value();
+    }
+
+    vile_taint_t( warlock_t* p, util::string_view opt, bool soul_swap ) : vile_taint_t( p, opt )
+    {
+      if ( soul_swap )
+      {
+        impact_action->execute_action = nullptr; // Only original Vile Taint triggers secondary effects
+        aoe = 1;
+      }
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+        td( s->target )->debuffs_infirmity->trigger();
+    }
+  };
+
   struct phantom_singularity_t : public warlock_spell_t
   {
     struct phantom_singularity_tick_t : public warlock_spell_t
