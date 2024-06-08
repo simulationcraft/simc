@@ -1365,16 +1365,18 @@ struct holy_power_consumer_t : public Base
                            ( is_divine_storm && p->buffs.empyrean_power->up() ) ||
                            ( ( is_wog || is_sotr ) && p->buffs.bastion_of_light->up() );
 
-    int num_hopo_spent = as<int>( holy_power_consumer_t::cost() );
+    double num_hopo_spent = as<double>( holy_power_consumer_t::cost() );
     // Free spenders seem to count as 3 Holy Power, regardless the cost
+    // Free Hammer of Light from Divine Purpose counts as 5 Holy Power spent, Free Hammer of Light from Light's Deliverance counts as 0 Holy Power spent
     if ( isFreeSLDPSpender )
-      num_hopo_spent = 3;
+      num_hopo_spent = 3.0;
     if ( p->talents.relentless_inquisitor->ok() )
       p->buffs.relentless_inquisitor->trigger();
 
     if ( p->buffs.crusade->check() )
     {
-      p->buffs.crusade->trigger( num_hopo_spent );
+      // Free Hammer of Light from Templar currently gives 0 stacks, needs to be adjusted later
+      p->buffs.crusade->trigger( as<int>(num_hopo_spent) );
     }
 
     if ( p->talents.righteous_protector->ok() )
