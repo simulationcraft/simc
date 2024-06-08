@@ -1502,6 +1502,7 @@ class SpellDataGenerator(DataGenerator):
          452325, 452457, 452498, # Sigil of Algari Concordance
          452226, # Ara-Kara Sacbrood
          455910, # voltaic stormcaller
+         450921, 451247, # high speaker's accretion
         ),
 
         # Warrior:

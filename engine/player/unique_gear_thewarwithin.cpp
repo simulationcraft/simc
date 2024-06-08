@@ -360,6 +360,18 @@ namespace embellishments
 
 namespace items
 {
+struct stat_buff_with_multiplier_t : public stat_buff_t
+{
+  double stat_mul = 1.0;
+
+  stat_buff_with_multiplier_t( player_t* p, std::string_view n, const spell_data_t* s ) : stat_buff_t( p, n, s ) {}
+
+  double buff_stat_stack_amount( const buff_stat_t& stat, int s ) const override
+  {
+    return stat_buff_t::buff_stat_stack_amount( stat, s ) * stat_mul;
+  }
+};
+
 // Trinkets
 // 444958 equip driver
 //  e1: stacking value
@@ -1835,6 +1847,87 @@ void skyterrors_corrosive_organ( special_effect_t& e )
   e.execute_action = dot;
 }
 
+// 443415 driver
+//  e1: trigger damage with delay?
+//  e2: damage coeff
+//  e3: buff coeff
+// 450921 damage
+// 450922 area trigger
+// 451247 buff return missile
+// 451248 buff
+// TODO: confirm damage increases by standard 15% per extra target
+// TODO: confirm buff increases by 15% per extra taget hit, up to 5.
+// TODO: confirm ticks once a second, not hasted
+// TODO: confirm buff return has 500ms delay
+// TODO: confirm 500ms delay before damage starts ticking (not including 1s tick time)
+void high_speakers_accretion( special_effect_t& effect )
+{
+  struct high_speakers_accretion_t : public generic_proc_t
+  {
+    struct high_speakers_accretion_damage_t : public generic_aoe_proc_t
+    {
+      std::vector<player_t*>& targets;
+
+      high_speakers_accretion_damage_t( const special_effect_t& e, std::vector<player_t*>& tl )
+        : generic_aoe_proc_t( e, "high_speakers_accretion_damage", 450921, true ), targets( tl )
+      {
+        base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        generic_aoe_proc_t::impact( s );
+
+        if ( as<unsigned>( targets.size() ) < 5u && !range::contains( targets, s->target ) )
+          targets.emplace_back( s->target );
+      }
+    };
+
+    ground_aoe_params_t params;
+    std::vector<player_t*> targets;
+
+    high_speakers_accretion_t( const special_effect_t& e ) : generic_proc_t( e, "high_speakers_accretion", e.driver() )
+    {
+      // TODO: confirm damage increases by standard 15% per extra target
+      auto damage =
+        create_proc_action<high_speakers_accretion_damage_t>( "high_speakers_accretion_damage", e, targets );
+      damage->stats = stats;
+
+      // TODO: confirm buff increases by 15% per extra taget hit, up to 5.
+      auto buff = create_buff<stat_buff_with_multiplier_t>( e.player, e.player->find_spell( 451248 ) );
+      buff->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 3 ).average( e.item ) );
+
+      // TODO: confirm ticks once a second, not hasted
+      // TODO: confirm buff return has 500ms delay
+      params.pulse_time( 1_s )
+        .duration( e.trigger()->duration() )
+        .action( damage )
+        .expiration_callback(
+          [ this,
+            buff,
+            delay = timespan_t::from_seconds( e.player->find_spell( 451247 )->missile_speed() ) ]
+          ( const action_state_t* ) {
+            buff->stat_mul = 1.0 + 0.15 * ( as<unsigned>( targets.size() ) - 1u );
+            make_event( *sim, delay, [ buff ] { buff->trigger(); } );
+          } );
+
+      // TODO: confirm 500ms delay before damage starts ticking (not including 1s tick time)
+      travel_delay = e.driver()->effectN( 1 ).misc_value1() * 0.001;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+
+      targets.clear();
+      params.start_time( timespan_t::min() ).target( target );  // reset start time
+      make_event<ground_aoe_event_t>( *sim, player, params );
+    }
+  };
+
+  effect.execute_action = create_proc_action<high_speakers_accretion_t>( "high_speakers_accretion", effect );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -2014,41 +2107,26 @@ void voltaic_stormcaller( special_effect_t& effect )
 {
   struct voltaic_stormstrike_t : public generic_aoe_proc_t
   {
-    struct volatic_stormsurge_t : public stat_buff_t
-    {
-      double aoe_mul = 1.0;
-
-      volatic_stormsurge_t( player_t* p, std::string_view n, const spell_data_t* s, const special_effect_t& e )
-        : stat_buff_t( p, n, s )
-      {
-        // TODO: determine any delay in damage and if travel_delay needs to be implemented
-        add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e.item ) );
-      }
-
-      double buff_stat_stack_amount( const buff_stat_t& stat, int s ) const override
-      {
-        return stat_buff_t::buff_stat_stack_amount( stat, s ) * aoe_mul;
-      }
-    };
-
-    volatic_stormsurge_t* buff;
+    stat_buff_with_multiplier_t* buff;
 
     voltaic_stormstrike_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "voltaic_stormstrike", 455910, true )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
 
-      buff = create_buff<volatic_stormsurge_t>( e.player, e.player->find_spell( 456652 ), e );
+      buff = create_buff<stat_buff_with_multiplier_t>( e.player, e.player->find_spell( 456652 ) );
+      buff->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e.item ) );
     }
 
     void execute() override
     {
       generic_aoe_proc_t::execute();
 
-      buff->aoe_mul = generic_aoe_proc_t::composite_aoe_multiplier( execute_state );
+      buff->stat_mul = generic_aoe_proc_t::composite_aoe_multiplier( execute_state );
       buff->trigger();
     }
   };
 
+  // TODO: determine any delay in damage and if travel_delay needs to be implemented
   effect.execute_action = create_proc_action<voltaic_stormstrike_t>( "voltaic_stormstrike", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -2178,6 +2256,7 @@ void register_special_effects()
   register_special_effect( 443541, items::arakara_sacbrood );
   register_special_effect( 444489, items::skyterrors_corrosive_organ );
   register_special_effect( 444488, DISABLED_EFFECT );  // skyterror's corrosive organ
+  register_special_effect( 443415, items::high_speakers_accretion );
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
