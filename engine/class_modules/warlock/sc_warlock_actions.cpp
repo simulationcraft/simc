@@ -2732,6 +2732,109 @@ namespace actions
   // Demonology Actions End
   // Destruction Actions Begin
 
+  struct shadowburn_t : public warlock_spell_t
+  {
+    shadowburn_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Shadowburn", p, p->talents.shadowburn )
+    {
+      parse_options( options_str );
+
+      cooldown->hasted = true;
+      
+      affected_by.chaotic_energies = true;
+      affected_by.havoc = true;
+      affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
+
+      base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
+
+      if ( p->talents.chaosbringer.ok() )
+        base_multiplier *= 1.0 + p->talents.chaosbringer->effectN( 3 ).percent();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( result_is_hit( s->result ) )
+      {
+        td( s->target )->debuffs_shadowburn->trigger();
+
+        if ( p()->talents.eradication.ok() )
+          td( s->target )->debuffs_eradication->trigger();
+      }
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->buffs.conflagration_of_chaos_sb->expire();
+
+      if ( p()->talents.conflagration_of_chaos.ok() && rng().roll( p()->talents.conflagration_of_chaos->effectN( 1 ).percent() ) )
+      {
+        p()->buffs.conflagration_of_chaos_sb->trigger();
+        p()->procs.conflagration_of_chaos_sb->occur();
+      }
+
+      if ( p()->talents.madness_of_the_azjaqir.ok() )
+        p()->buffs.madness_sb->trigger();
+
+      if ( p()->talents.burn_to_ashes.ok() )
+        p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 4 ).base_value() ) );
+    }
+
+    double action_multiplier() const override
+    {
+      double m = warlock_spell_t::action_multiplier();
+
+      if ( p()->talents.madness_of_the_azjaqir.ok() )
+        m *= 1.0 + p()->buffs.madness_sb->check_value();
+
+      return m;
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double m = warlock_spell_t::composite_target_multiplier( t );
+
+      if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
+        m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
+
+      return m;
+    }
+
+    double composite_target_crit_chance( player_t* t ) const override
+    {
+      double m = warlock_spell_t::composite_target_crit_chance( t );
+
+      if ( target->health_percentage() <= 20.0 )
+        m += p()->talents.shadowburn->effectN( 3 ).percent();
+
+      return m;
+    }
+
+    double composite_crit_chance() const override
+    {
+      if ( p()->buffs.conflagration_of_chaos_sb->check() )
+        return 1.0;
+
+      return warlock_spell_t::composite_crit_chance();
+    }
+
+    double calculate_direct_amount( action_state_t* state ) const override
+    {
+      double amt = warlock_spell_t::calculate_direct_amount( state );
+
+      if ( p()->buffs.conflagration_of_chaos_sb->check() )
+      {
+        state->result_total *= 1.0 + player->cache.spell_crit_chance();
+        return state->result_total;
+      }
+
+      return amt;
+    }
+  };
+
   struct internal_combustion_t : public warlock_spell_t
   {
     internal_combustion_t( warlock_t* p )
