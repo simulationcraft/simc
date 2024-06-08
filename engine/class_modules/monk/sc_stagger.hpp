@@ -14,6 +14,8 @@
 #include "util/timespan.hpp"
 #include "util/util.hpp"
 
+#include <algorithm>
+#include <functional>
 #include <iostream>
 #include <memory>
 #include <string_view>
@@ -98,6 +100,13 @@ struct level_data_t
 
   std::string_view name() const
   {
+    if ( spell_data == spell_data_t::nil() )
+    {
+      if ( min_threshold < 0 )
+        return "none";
+      else
+        return "maximum";
+    }
     return spell_data->name_cstr();
   }
 };
@@ -110,9 +119,9 @@ struct stagger_data_t
 
   std::string_view name() const
   {
-    // if ( self_damage != spell_data_t::nil() )
-    return self_damage->name_cstr();
-    // return "";
+    if ( self_damage != spell_data_t::nil() )
+      return self_damage->name_cstr();
+    return "none";
   }
 };
 
@@ -141,8 +150,10 @@ struct sample_data_t
 
 struct debuff_t : buff_t
 {
-  debuff_t( player_t *player, const level_data_t &data ) : buff_t( player, data.name(), data.spell_data )
+  debuff_t( player_t *player, const level_data_t *data ) : buff_t( player, data->name(), data->spell_data )
   {
+    base_buff_duration = 0_s;
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   }
 };
 
@@ -153,24 +164,24 @@ struct level_t
   derived_actor_t *player;
 
   // public:
-  const stagger_data_t &parent_data;
-  const level_data_t &data;
+  const stagger_data_t *parent_data;
+  const level_data_t *data;
 
-  level_t( derived_actor_t *player, const stagger_data_t &parent_data, const level_data_t &data );
+  level_t( derived_actor_t *player, const stagger_data_t *parent_data, const level_data_t *data );
   // TODO: select types in create_stagger
   template <class debuff_type = stagger_impl::debuff_t>
   void init();
   void trigger();
-  friend bool operator<( const level_t &lhs, const level_t &rhs );
+  bool operator>( const level_t<derived_actor_t> &rhs ) const;
 
   std::string_view name() const
   {
-    return data.name();
+    return data->name();
   }
 
   double min_threshold() const
   {
-    return data.min_threshold;
+    return data->min_threshold;
   }
 
   // private:
@@ -192,7 +203,7 @@ struct stagger_t
 
 public:
   derived_actor_t *player;
-  const stagger_data_t data;
+  stagger_data_t data;
 
   // TODO: typedef param pack?
   std::function<bool()> active;
@@ -207,9 +218,6 @@ public:
   // init
   stagger_t( derived_actor_t *player, const stagger_data_t &data );
   // TODO: select types in create_stagger
-  template <class level_type       = stagger_impl::level_t<derived_actor_t>,
-            class sample_data_type = stagger_impl::sample_data_t,
-            class self_damage_type = stagger_impl::self_damage_t<derived_actor_t>>
   void init();
   void adjust_sample_data( sim_t &sim );
   void merge_sample_data( const stagger_t &other );
@@ -370,7 +378,7 @@ struct stagger_t : base_actor_t
       for ( auto &level : stagger_effect->levels )
         if ( splits[ 1 ] == level->name() )
           return make_fn_expr( name_str, [ &stagger_effect = stagger_effect, &level = level ] {
-            return stagger_effect->current->data.spell_data == level->data.spell_data;
+            return stagger_effect->current->data == level->data;
           } );
       if ( splits[ 1 ] == "amount" )
         return make_fn_expr( name_str, [ &stagger_effect = stagger_effect ] { return stagger_effect->tick_size(); } );
@@ -397,13 +405,16 @@ struct stagger_t : base_actor_t
     using self_damage_type = stagger_impl::self_damage_t<derived_actor_t>;
     using sample_data_type = stagger_impl::sample_data_t;
 
-    derived_actor_t *derived_actor                           = debug_cast<derived_actor_t *>( this );
-    stagger[ data.name() ]                                   = new stagger_type( derived_actor, data );
-    stagger_impl::stagger_t<derived_actor_t> *stagger_effect = stagger[ data.name() ];
+    derived_actor_t *derived_actor        = debug_cast<derived_actor_t *>( this );
+    const auto &[ stagger_pair, success ] = stagger.insert( { data.name(), new stagger_type( derived_actor, data ) } );
+    // TODO: This probably should throw instead.
+    assert( success && "Stagger effect failed to be inserted into stagger map." );
+    auto &[ name, stagger_effect ] = *stagger_pair;
+    stagger_effect->data.levels.push_back( { spell_data_t::nil(), -1.0 } );
     for ( const level_data_t &level_data : stagger_effect->data.levels )
-      stagger[ data.name() ]->levels.emplace_back( new level_type( derived_actor, stagger_effect->data, level_data ) );
-    stagger[ data.name() ]->self_damage = new self_damage_type( derived_actor, stagger_effect );
-    stagger[ data.name() ]->sample_data = new sample_data_type( derived_actor, stagger_effect->data );
+      stagger_effect->levels.emplace_back( new level_type( derived_actor, &stagger_effect->data, &level_data ) );
+    stagger_effect->self_damage = new self_damage_type( derived_actor, stagger_effect );
+    stagger_effect->sample_data = new sample_data_type( derived_actor, stagger_effect->data );
     /*
      * use `derived_actor_t` template to conveniently provide member accesss
      * otherwise, use virtual objects
@@ -435,8 +446,8 @@ namespace stagger_impl
 {
 // level_t impl
 template <class derived_actor_t>
-level_t<derived_actor_t>::level_t( derived_actor_t *player, const stagger_data_t &parent_data,
-                                   const level_data_t &data )
+level_t<derived_actor_t>::level_t( derived_actor_t *player, const stagger_data_t *parent_data,
+                                   const level_data_t *data )
   : player( player ), parent_data( parent_data ), data( data )
 {
 }
@@ -445,9 +456,9 @@ template <class derived_actor_t>
 template <class debuff_type>
 void level_t<derived_actor_t>::init()
 {
-  absorbed  = player->get_sample_data( fmt::format( "{} added to pool while at {}.", parent_data.name(), name() ) );
-  taken     = player->get_sample_data( fmt::format( "{} damage taken from {}.", parent_data.name(), name() ) );
-  mitigated = player->get_sample_data( fmt::format( "{} damage mitigated while at {}.", parent_data.name(), name() ) );
+  absorbed  = player->get_sample_data( fmt::format( "{} added to pool while at {}.", parent_data->name(), name() ) );
+  taken     = player->get_sample_data( fmt::format( "{} damage taken from {}.", parent_data->name(), name() ) );
+  mitigated = player->get_sample_data( fmt::format( "{} damage mitigated while at {}.", parent_data->name(), name() ) );
   debuff    = make_buff<debuff_type>( player, data );
 }
 
@@ -458,9 +469,9 @@ void level_t<derived_actor_t>::trigger()
 }
 
 template <class derived_actor_t>
-bool operator<( const level_t<derived_actor_t> &lhs, level_t<derived_actor_t> &rhs )
+bool level_t<derived_actor_t>::operator>( const level_t<derived_actor_t> &rhs ) const
 {
-  return lhs.min_threshold < rhs.min_threshold;
+  return data->min_threshold > rhs.data->min_threshold;
 }
 
 // stagger_t impl
@@ -476,13 +487,18 @@ stagger_t<derived_actor_t>::stagger_t( derived_actor_t *player, const stagger_da
 }
 
 template <class derived_actor_t>
-template <class level_type, class sample_data_type, class self_damage_type>
+bool level_cmp( stagger_impl::level_t<derived_actor_t> *lhs, stagger_impl::level_t<derived_actor_t> *rhs )
+{
+  return lhs->data->min_threshold > rhs->data->min_threshold;
+}
+
+template <class derived_actor_t>
 void stagger_t<derived_actor_t>::init()
 {
+  std::sort( levels.begin(), levels.end(), level_cmp<derived_actor_t> );
   for ( auto *level : levels )
     level->init();
-  std::sort( levels.begin(), levels.end() );
-  current = levels.front();
+  current = levels.back();
 }
 
 template <class derived_actor_t>
@@ -753,12 +769,12 @@ stagger_report_t<derived_actor_t>::stagger_report_t( derived_actor_t *player ) :
 template <class derived_actor_t>
 void stagger_report_t<derived_actor_t>::html_customsection( report::sc_html_stream &os )
 {
-  os << "\t\t\t\t<div class=\"player-section stagger_sections\"\n";
+  os << "\t\t\t\t<div class=\"player-section stagger_sections\">\n";
   for ( auto &[ key, stagger_effect ] : player->stagger )
   {
-    os << fmt::format( "\t\t\t\t\t<div class=\"player-section {}\"\n", key )
+    os << fmt::format( "\t\t\t\t\t<div class=\"player-section {}\">\n", key )
        << fmt::format( "\t\t\t\t\t\t<h3 class=\"toggle\">{}</h3>\n", key )
-       << "\t\t\t\t\t\t<div class=\"toggle-content hide\"\n";
+       << "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n";
     os << "\t\t\t\t\t\t<p>Note that these charts are extremely sensitive to bucket"
        << "sizes. It is not uncommon to exceed stagger cap, etc. If you wish to "
        << "see exact values, use debug output.</p>\n";
@@ -773,11 +789,10 @@ void stagger_report_t<derived_actor_t>::html_customsection( report::sc_html_stre
       sim.add_chart_data( chart_ );
     };
 
-    chart_print( fmt::format( "{} Pool", stagger_effect->name() ), fmt::format( "{}_pool", key ),
-                 stagger_effect->sample_data->pool_size );
-    chart_print( fmt::format( "{} Pool / Maximum Health", stagger_effect->name() ),
-                 fmt::format( "{}_pool_percent", key ), stagger_effect->sample_data->pool_size_percent );
-    chart_print( fmt::format( "{} Effectiveness", stagger_effect->name() ), fmt::format( "{}_effectiveness", key ),
+    chart_print( fmt::format( "{} Pool", key ), fmt::format( "{}_pool", key ), stagger_effect->sample_data->pool_size );
+    chart_print( fmt::format( "{} Pool / Maximum Health", key ), fmt::format( "{}_pool_percent", key ),
+                 stagger_effect->sample_data->pool_size_percent );
+    chart_print( fmt::format( "{} Effectiveness", key ), fmt::format( "{}_effectiveness", key ),
                  stagger_effect->sample_data->effectiveness );
 
     double absorbed_mean = stagger_effect->sample_data->absorbed->mean();
@@ -811,8 +826,6 @@ void stagger_report_t<derived_actor_t>::html_customsection( report::sc_html_stre
 
     os << "\t\t\t\t\t\t\t</tbody>\n"
        << "\t\t\t\t\t\t</table>\n";
-
-    os << "\t\t\t\t\t\t</div>\n";
 
     os << "\t\t\t\t\t\t<table class=\"sc\">\n"
        << "\t\t\t\t\t\t\t<tbody>\n"
