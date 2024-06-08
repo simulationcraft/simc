@@ -2522,6 +2522,82 @@ namespace actions
     }
   };
 
+  struct doom_t : public warlock_spell_t
+  {
+    doom_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Doom", p, p->talents.doom )
+    {
+      parse_options( options_str );
+
+      energize_type = action_energize::PER_TICK;
+      energize_resource = RESOURCE_SOUL_SHARD;
+      energize_amount = 1.0;
+
+      hasted_ticks = true;
+
+      triggers.shadow_invocation_tick = true;
+    }
+
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    { return s->action->tick_time( s ); }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_ta_multiplier( s );
+
+      if ( p()->talents.kazaaks_final_curse.ok() )
+        m *= 1.0 + td( s->target )->debuffs_kazaaks_final_curse->check_value();
+
+      return m;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( p()->talents.kazaaks_final_curse.ok() )
+        td( s->target )->debuffs_kazaaks_final_curse->trigger( 1, pet_counter() * p()->talents.kazaaks_final_curse->effectN( 1 ).percent() );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      if ( d->time_to_next_full_tick() > 0_ms )
+        gain_energize_resource( RESOURCE_SOUL_SHARD, energize_amount, p()->gains.doom );
+
+      warlock_spell_t::last_tick( d );
+
+      td( d->target )->debuffs_kazaaks_final_curse->expire();
+    }
+
+  private:
+    int pet_counter()
+    {
+      int count = 0;
+
+      for ( auto& pet : p()->pet_list )
+      {
+        auto lock_pet = debug_cast<warlock_pet_t*>( pet );
+        pet_e pet_type = lock_pet->pet_type;
+
+        if ( lock_pet == nullptr )
+          continue;
+
+        if ( lock_pet->is_sleeping() )
+          continue;
+
+        if ( pet_type == PET_DEMONIC_TYRANT || pet_type == PET_PIT_LORD || pet_type == PET_WARLOCK_RANDOM )
+          continue;
+
+        if ( pet_type == PET_VILEFIEND )
+          continue;
+
+        count++;
+      }
+
+      return count;
+    }
+  };
+
   struct doom_brand_t : public warlock_spell_t
   {
     doom_brand_t( warlock_t* p ) : warlock_spell_t( "Doom Brand", p, p->tier.doom_brand_aoe )
