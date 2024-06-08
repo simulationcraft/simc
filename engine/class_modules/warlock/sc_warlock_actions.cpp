@@ -397,6 +397,8 @@ namespace actions
     { return p()->specialization() == WARLOCK_DESTRUCTION; }
   };
 
+  // Shared Class Actions Begin
+
   struct drain_life_t : public warlock_spell_t
   {
 
@@ -856,6 +858,98 @@ namespace actions
     }
   };
 
+  // Shared Class Actions End
+  // Affliction Actions Begin
+
+  struct agony_t : public warlock_spell_t
+  {
+    agony_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( "Agony", p, p->warlock_base.agony )
+    {
+      parse_options( options_str );
+      may_crit = false;
+
+      dot_max_stack = as<int>( data().max_stacks() + p->warlock_base.agony_2->effectN( 1 ).base_value() );
+      dot_max_stack += as<int>( p->talents.writhe_in_agony->effectN( 1 ).base_value() ); // TOCHECK: Moved this from init(), is this ok?
+    }
+
+    void last_tick ( dot_t* d ) override
+    {
+      if ( p()->get_active_dots( d ) == 1 )
+      {
+        p()->agony_accumulator = rng().range( 0.0, 0.99 );
+      }
+
+      warlock_spell_t::last_tick( d );
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      if ( p()->talents.writhe_in_agony.ok() )
+      {
+        int delta = (int)( p()->talents.writhe_in_agony->effectN( 3 ).base_value() ) - td( execute_state->target )->dots_agony->current_stack();
+
+        if ( delta > 0 )
+          td( execute_state->target )->dots_agony->increment( delta );
+      }
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      bool pi_trigger = p()->talents.pandemic_invocation->ok() && td( s->target )->dots_agony->is_ticking()
+        && td( s->target )->dots_agony->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
+
+      warlock_spell_t::impact( s );
+
+      if ( pi_trigger )
+        p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      // Blizzard has not publicly released the formula for Agony's chance to generate a Soul Shard.
+      // This set of code is based on results from 500+ Soul Shard sample sizes, and matches in-game
+      // results to within 0.1% of accuracy in all tests conducted on all targets numbers up to 8.
+      // Accurate as of 08-24-2018. TOCHECK regularly. If any changes are made to this section of
+      // code, please also update the Time_to_Shard expression in sc_warlock.cpp.
+      double increment_max = 0.368;
+
+      double active_agonies = p()->get_active_dots( d );
+      increment_max *= std::pow( active_agonies, -2.0 / 3.0 );
+
+      // 2023-09-01: Recent test noted that Creeping Death is once again renormalizing shard generation to be neutral with/without the talent.
+      if ( p()->talents.creeping_death->ok() )
+        increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
+
+      p()->agony_accumulator += rng().range( 0.0, increment_max );
+
+      if ( p()->agony_accumulator >= 1 )
+      {
+        p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );
+        p()->agony_accumulator -= 1.0;
+
+        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T29, B2 ) && rng().roll( 0.3 ) )
+        {
+          p()->buffs.cruel_inspiration->trigger();
+          p()->procs.cruel_inspiration->occur();
+
+          if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T29, B4 ) )
+            p()->buffs.cruel_epiphany->trigger( 2 );
+        }
+      }
+
+      if ( result_is_hit( d->state->result ) && p()->talents.inevitable_demise.ok() && !p()->buffs.drain_life->check() )
+      {
+        p()->buffs.inevitable_demise->trigger();
+      }
+
+      warlock_spell_t::tick( d );
+
+      td( d->state->target )->dots_agony->increment( 1 );
+    }
+  };
+
   struct seed_of_corruption_t : public warlock_spell_t
   {
     struct seed_of_corruption_aoe_t : public warlock_spell_t
@@ -1164,5 +1258,7 @@ namespace actions
       }
     }
   };
+
+  // Affliction Actions End
 }
 }
