@@ -6933,7 +6933,7 @@ struct moon_base_t : public druid_spell_t
 
   void init() override
   {
-    if ( !has_flag( flag_e::FOREGROUND ) )
+    if ( has_flag( flag_e::FOREGROUND ) )
     {
       cooldown = p()->cooldown.moon_cd;
       track_cd_waste = true;
