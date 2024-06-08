@@ -792,6 +792,70 @@ namespace actions
     }
   };
 
+  // Catchall action to trigger pet interrupt abilities via main APL.
+  struct interrupt_t : public spell_t
+  {
+    interrupt_t( util::string_view n, warlock_t* p, util::string_view options_str ) :
+      spell_t( n, p )
+    {
+      parse_options( options_str );
+      callbacks = true;
+      dual = usable_while_casting = true;
+      may_miss = may_block = may_crit = false;
+      ignore_false_positive = is_interrupt = true;
+      trigger_gcd = 0_ms;
+    }
+
+    void execute() override
+    {
+      auto* w = debug_cast<warlock_t*>( player );
+
+      auto pet = w->warlock_pet_list.active;
+
+      switch( pet->pet_type )
+      {
+        case PET_FELGUARD:
+        case PET_FELHUNTER:
+          pet->special_action->execute_on_target( target );
+          break;
+        default:
+          break;
+      }
+
+      spell_t::execute();
+    }
+
+    bool ready() override
+    {
+      auto* w = debug_cast<warlock_t*>( player );
+
+      if ( !w->warlock_pet_list.active || w->warlock_pet_list.active->is_sleeping() )
+        return false;
+
+      auto pet = w->warlock_pet_list.active;
+
+      switch( pet->pet_type )
+      {
+        case PET_FELGUARD:
+        case PET_FELHUNTER:
+          if ( !pet->special_action || !pet->special_action->cooldown->up() || !pet->special_action->ready() )
+            return false;
+
+          return spell_t::ready();
+        default:
+          return false;
+      }
+    }
+
+    bool target_ready( player_t* candidate_target ) override
+    {
+      if ( !candidate_target->debuffs.casting || !candidate_target->debuffs.casting->check() )
+        return false;
+
+      return spell_t::target_ready( candidate_target );
+    }
+  };
+
   struct seed_of_corruption_t : public warlock_spell_t
   {
     struct seed_of_corruption_aoe_t : public warlock_spell_t
