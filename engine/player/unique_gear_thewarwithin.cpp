@@ -2166,6 +2166,84 @@ void empowering_crystal_of_anubikkaj( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 450561 on-use
+// 450641 equip
+//  e1: stat coeff
+//  e2: damage coeff
+// 443539 debuff, damage, damage taken driver
+// 450551 buff
+// TODO: move vers buff to external/passive/custom buff system
+// TODO: confirm 950ms delay in damage
+// TODO: determine if attack needs to do damage to proc vers buff
+void mereldars_toll( special_effect_t& effect )
+{
+  unsigned equip_id = 450641;
+  auto equip = find_special_effect( effect.player, equip_id );
+  assert( equip && "Mereldar's Toll missing equip effect" );
+
+  auto data = equip->driver();
+
+  // TODO: move to external/passive/custom buff system
+  auto vers = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 450551 ) )
+    ->add_stat_from_effect_type( A_MOD_RATING, data->effectN( 1 ).average( effect.item ) );
+
+  struct mereldars_toll_t : public generic_proc_t
+  {
+    buff_t* vers;
+    int allies;
+
+    mereldars_toll_t( const special_effect_t& e, const spell_data_t* data, buff_t* b )
+      : generic_proc_t( e, "mereldars_toll", e.driver() ),
+        vers( b ),
+        allies( as<int>( data->effectN( 3 ).base_value() ) )
+    {
+      target_debuff = e.trigger();
+
+      impact_action = create_proc_action<generic_proc_t>( "mereldars_toll_damage", e, e.trigger() );
+      impact_action->base_dd_min = impact_action->base_dd_max = data->effectN( 2 ).average( e.item );
+      // TODO: confirm 950ms delay in damage
+      impact_action->travel_delay = e.driver()->effectN( 2 ).misc_value1() * 0.001;
+      impact_action->stats = stats;
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      auto debuff = generic_proc_t::create_debuff( t )
+        ->set_max_stack( allies )
+        ->set_reverse( true );
+
+      auto toll = new special_effect_t( t );
+      toll->name_str = "mereldars_toll_debuff";
+      toll->spell_id = target_debuff->id();
+      t->special_effects.push_back( toll );
+
+      // TODO: determine if attack needs to do damage to proc vers buff
+      t->callbacks.register_callback_execute_function(
+        toll->spell_id, [ this, debuff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+          if ( !vers->check() )
+          {
+            debuff->trigger();
+            vers->trigger();
+          }
+        } );
+
+      auto cb = new dbc_proc_callback_t( t, *toll );
+      cb->activate_with_buff( debuff, true );  // init = true as this is during runtime
+
+      return debuff;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+
+      get_debuff( s->target )->trigger();
+    }
+  };
+
+  effect.execute_action = create_proc_action<mereldars_toll_t>( "mereldars_toll", effect, data, vers );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -2497,6 +2575,8 @@ void register_special_effects()
   register_special_effect( 443415, items::high_speakers_accretion );
   register_special_effect( 443380, items::entropic_skardyn_core, true );
   register_special_effect( 443538, items::empowering_crystal_of_anubikkaj );
+  register_special_effect( 450561, items::mereldars_toll );
+  register_special_effect( 450641, DISABLED_EFFECT );  // mereldar's toll
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
