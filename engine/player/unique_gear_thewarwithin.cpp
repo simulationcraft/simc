@@ -2130,6 +2130,42 @@ void entropic_skardyn_core( special_effect_t& effect )
   new entropic_skardyn_core_cb_t( effect );
 }
 
+// 443538 driver
+//  e1: trigger buff
+// 449275 buff
+// TODO: confirm refreshing proc can change stat
+// TODO: confirm refreshing proc can pick same stat
+// TODO: confirm refreshing proc doesn't stack stats (cannot be confirmed via tooltip)
+void empowering_crystal_of_anubikkaj( special_effect_t& effect )
+{
+  std::vector<buff_t*> buffs;
+
+  auto add_buff = [ & ]( size_t i, std::string_view n ) {
+    auto name = fmt::format( "{}_{}", util::tokenize_fn( effect.trigger()->name_cstr() ), n );
+    auto b = create_buff<stat_buff_t>( effect.player, name, effect.trigger() )
+      ->add_stat_from_effect( i, effect.trigger()->effectN( i ).average( effect.item ) )
+      ->set_name_reporting( n );
+
+    buffs.push_back( b );
+  };
+
+  add_buff( 1, "Crit" );
+  add_buff( 2, "Haste" );
+  add_buff( 3, "Mastery" );
+  add_buff( 4, "Vers" );
+
+  // TODO: confirm refreshing proc can change stat
+  // TODO: confirm refreshing proc can pick same stat
+  // TODO: confirm refreshing proc doesn't stack stats (cannot be confirmed via tooltip)
+  effect.player->callbacks.register_callback_execute_function(
+    effect.spell_id, [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+      range::for_each( buffs, []( buff_t* b ) { b->expire(); } );
+      buffs[ cb->listener->rng().range( 0U, as<unsigned>( buffs.size() ) ) ]->trigger();
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -2460,6 +2496,7 @@ void register_special_effects()
   register_special_effect( 444488, DISABLED_EFFECT );  // skyterror's corrosive organ
   register_special_effect( 443415, items::high_speakers_accretion );
   register_special_effect( 443380, items::entropic_skardyn_core, true );
+  register_special_effect( 443538, items::empowering_crystal_of_anubikkaj );
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
