@@ -86,7 +86,7 @@ struct warlock_td_t : public actor_target_data_t
 
   void target_demise();
 
-  int count_affliction_dots();
+  int count_affliction_dots() const;
 };
 
 struct warlock_t : public player_t

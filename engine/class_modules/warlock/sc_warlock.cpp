@@ -1164,7 +1164,7 @@ static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
   }
 }
 
-int warlock_td_t::count_affliction_dots()
+int warlock_td_t::count_affliction_dots() const
 {
   int count = 0;
 

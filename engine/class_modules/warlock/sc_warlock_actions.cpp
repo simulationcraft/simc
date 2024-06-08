@@ -861,6 +861,160 @@ namespace actions
   // Shared Class Actions End
   // Affliction Actions Begin
 
+  struct malefic_rapture_t : public warlock_spell_t
+  {
+    struct malefic_rapture_damage_t : public warlock_spell_t
+    {
+      timespan_t t31_soulstealer_extend;
+
+      malefic_rapture_damage_t( warlock_t* p )
+        : warlock_spell_t ( "Malefic Rapture (hit)", p, p->talents.malefic_rapture_dmg ),
+        t31_soulstealer_extend( p->sets->set( WARLOCK_AFFLICTION, T31, B4 )->effectN( 1 ).time_value() )
+      {
+        background = dual = true;
+        spell_power_mod.direct = p->talents.malefic_rapture->effectN( 1 ).sp_coeff();
+        callbacks = false; // Individual hits have been observed to not proc trinkets like Psyche Shredder
+      }
+
+      double composite_da_multiplier( const action_state_t* s ) const override
+      {
+        double m = warlock_spell_t::composite_da_multiplier( s );
+
+        // TODO: Migrate count_affliction_dots()
+        m *= td( s->target )->count_affliction_dots();
+
+        m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
+
+        if ( p()->talents.focused_malignancy.ok() && td( s->target )->dots_unstable_affliction->is_ticking() )
+          m *= 1.0 + p()->talents.focused_malignancy->effectN( 1 ).percent();
+
+        if ( p()->buffs.umbrafire_kindling->check() )
+          m *= 1.0 + p()->tier.umbrafire_kindling->effectN( 1 ).percent();
+
+        return m;
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        auto target_data = td( s->target );
+
+        if ( p()->talents.dread_touch.ok() )
+        {
+          if ( target_data->dots_unstable_affliction->is_ticking() )
+            target_data->debuffs_dread_touch->trigger();
+        }
+
+        if ( p()->buffs.umbrafire_kindling->check() )
+        {
+          if ( target_data->dots_agony->is_ticking() )
+            target_data->dots_agony->adjust_duration( t31_soulstealer_extend );
+
+          if ( target_data->dots_corruption->is_ticking() )
+            target_data->dots_corruption->adjust_duration( t31_soulstealer_extend );
+
+          if ( target_data->dots_siphon_life->is_ticking() )
+            target_data->dots_siphon_life->adjust_duration( t31_soulstealer_extend );
+
+          if ( target_data->dots_unstable_affliction->is_ticking() )
+            target_data->dots_unstable_affliction->adjust_duration( t31_soulstealer_extend );
+
+          if ( target_data->debuffs_haunt->up() )
+            target_data->debuffs_haunt->extend_duration( p(), t31_soulstealer_extend );
+
+          if ( target_data->dots_vile_taint->is_ticking() )
+            target_data->dots_vile_taint->adjust_duration( t31_soulstealer_extend );
+
+          if ( target_data->dots_phantom_singularity->is_ticking() )
+            target_data->dots_phantom_singularity->adjust_duration( t31_soulstealer_extend );
+
+          if ( target_data->dots_soul_rot->is_ticking() )
+            target_data->dots_soul_rot->adjust_duration( t31_soulstealer_extend );
+        }
+      }
+
+      void execute() override
+      {
+        int d = td( target )->count_affliction_dots() - 1;
+        assert( d < as<int>( p()->procs.malefic_rapture.size() ) && "The procs.malefic_rapture array needs to be expanded." );
+
+        if ( d >= 0 && d < as<int>( p()->procs.malefic_rapture.size() ) )
+        {
+          p()->procs.malefic_rapture[ d ]->occur();
+        }
+
+        warlock_spell_t::execute();
+
+        if ( p()->buffs.umbrafire_kindling->check() )
+        {
+          p()->buffs.soul_rot->extend_duration( p(), t31_soulstealer_extend );
+        }
+      }
+    };
+
+    malefic_rapture_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Malefic Rapture", p, p->talents.malefic_rapture )
+    {
+      parse_options( options_str );
+      aoe = -1;
+
+      impact_action = new malefic_rapture_damage_t( p );
+      add_child( impact_action );
+    }
+
+    double cost_pct_multiplier() const override
+    {
+      double c= warlock_spell_t::cost_pct_multiplier();
+
+      if ( p()->buffs.tormented_crescendo->check() )
+      {
+        c *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 3 ).percent();
+      }
+
+      return c;
+    }
+
+    timespan_t execute_time() const override
+    {
+      timespan_t t = warlock_spell_t::execute_time();
+
+      if ( p()->buffs.tormented_crescendo->check() )
+      {
+        t *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 2 ).percent();
+      }
+
+      return t;
+    }
+
+    bool ready() override
+    {
+      if ( !warlock_spell_t::ready() )
+        return false;
+
+      target_cache.is_valid = false;
+      return target_list().size() > 0;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->buffs.tormented_crescendo->decrement();
+      p()->buffs.cruel_epiphany->decrement();
+      p()->buffs.umbrafire_kindling->decrement();
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl )
+    {
+      warlock_spell_t::available_targets( tl );
+
+      range::erase_remove( tl, [ this ]( player_t* t ){ return td( t )->count_affliction_dots() == 0; } );
+
+      return tl.size();
+    }
+  };
+
   struct unstable_affliction_t : public warlock_spell_t
   {
     unstable_affliction_t( warlock_t* p, util::string_view options_str )
