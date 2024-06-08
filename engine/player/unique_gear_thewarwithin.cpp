@@ -1506,28 +1506,44 @@ void ravenous_honey_buzzer( special_effect_t& e )
 // 450453 Equip Buff
 void overclocked_geararang_launcher( special_effect_t& e )
 {
-  struct overclocked_strike_t : public generic_proc_t
+  struct overclocked_strike_cb_t : public dbc_proc_callback_t
   {
     buff_t* buff;
-    const spell_data_t* equip_driver;
-    cooldown_t* item_cd;
+    action_t* overclock_strike;
 
-    overclocked_strike_t( const special_effect_t& e, buff_t* buff, const spell_data_t* equip_driver )
-      : generic_proc_t( e, "overclocked_strike", e.player->find_spell( 449828 ) ),
-        buff( buff ),
-        equip_driver( equip_driver ),
-        item_cd( e.player->get_cooldown( e.cooldown_name() ) )
+    overclocked_strike_cb_t( const special_effect_t& e, const spell_data_t* equip_driver, buff_t* buff )
+      : dbc_proc_callback_t( e.player, e ),
+      buff( buff ), overclock_strike( nullptr )
     {
-      background  = true;
-      base_dd_min = base_dd_max = equip_driver->effectN( 2 ).average( e.item );
+      overclock_strike = create_proc_action<generic_proc_t>( "overclocked_strike", e, e.player->find_spell( 449828 ) );
+      overclock_strike -> base_dd_min = overclock_strike -> base_dd_max = equip_driver->effectN( 2 ).average( e.item );
     }
 
-    void execute() override
+    void execute( action_t*, action_state_t* s ) override
     {
-      // Appears to consume the buff before executing the action
       buff->expire();
+      overclock_strike->execute_on_target( s->target );
+    }
+  };
+
+  struct overclock_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* buff;
+    cooldown_t* item_cd;
+    const spell_data_t* equip_driver;
+
+    overclock_cb_t( const special_effect_t& e, const special_effect_t& use, buff_t* buff )
+      : dbc_proc_callback_t( e.player, e ),
+        buff( buff ),
+        item_cd( e.player->get_cooldown( use.cooldown_name() ) ),
+        equip_driver( e.driver() )
+    {
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
       item_cd->adjust( timespan_t::from_seconds( -equip_driver->effectN( 1 ).base_value() ) );
-      generic_proc_t::execute();
+      buff->trigger();
     }
   };
 
@@ -1539,17 +1555,14 @@ void overclocked_geararang_launcher( special_effect_t& e )
 
   auto damage_buff_spell = e.player->find_spell( 450453 );
   auto overclock_buff    = create_buff<buff_t>( e.player, damage_buff_spell );
-  auto damage_action =
-      create_proc_action<overclocked_strike_t>( "overclocked_strike", e, overclock_buff, equip_driver );
 
   auto damage            = new special_effect_t( e.player );
   damage->name_str       = "overclocked_strike_proc";
   damage->item           = e.item;
   damage->spell_id       = damage_buff_spell->id();
-  damage->execute_action = damage_action;
   e.player->special_effects.push_back( damage );
 
-  auto damage_cb = new dbc_proc_callback_t( e.player, *damage );
+  auto damage_cb = new overclocked_strike_cb_t( *damage, equip_driver, overclock_buff );
   damage_cb->initialize();
   damage_cb->deactivate();
 
@@ -1568,10 +1581,9 @@ void overclocked_geararang_launcher( special_effect_t& e )
   overclock->name_str    = "overclock";
   overclock->item        = e.item;
   overclock->spell_id    = equip_driver->id();
-  overclock->custom_buff = overclock_buff;
   e.player->special_effects.push_back( overclock );
 
-  auto overclock_cb = new dbc_proc_callback_t( e.player, *overclock );
+  auto overclock_cb = new overclock_cb_t( *overclock, e, overclock_buff );
   overclock_cb->initialize();
   overclock_cb->activate();
 
