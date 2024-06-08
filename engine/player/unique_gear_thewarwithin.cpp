@@ -1066,17 +1066,24 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
 
   int initial_primary_stacks   = effect.player->thewarwithin_opts.ovinaxs_mercurial_egg_initial_primary_stacks;
   int initial_secondary_stacks = effect.player->thewarwithin_opts.ovinaxs_mercurial_egg_initial_secondary_stacks;
+  if ( initial_primary_stacks + initial_secondary_stacks > primary->max_stack() )
+  {
+    initial_secondary_stacks = primary->max_stack() - initial_primary_stacks;
+
+    effect.player->sim->error(
+      "Ovinax's Mercurial Egg initial stacks can not exceed '{}' combined. Primary stacks set to '{}', secondary "
+      "stacks set to '{}'.",
+      primary->max_stack(), initial_primary_stacks, initial_secondary_stacks );
+  }
 
   effect.player->register_precombat_begin(
       [ ticks, primary, secondaries, initial_primary_stacks, initial_secondary_stacks ]( player_t* p ) {
-        if ( initial_primary_stacks + initial_secondary_stacks > primary->max_stack() )
-        {
-          p->sim->error(
-              "Ovinax's Mercurial Egg initial stacks can not exceed '{}' combined between Primary and Secondary",
-              primary->max_stack() );
-        }
-        primary->trigger( initial_primary_stacks );
-        secondaries.at( util::highest_stat( p, secondary_ratings ) )->trigger( initial_secondary_stacks );
+        if ( initial_primary_stacks )
+          primary->trigger( initial_primary_stacks );
+
+        if ( initial_secondary_stacks )
+          secondaries.at( util::highest_stat( p, secondary_ratings ) )->trigger( initial_secondary_stacks );
+
         make_event( *p->sim, p->rng().range( 1_ms, ticks->buff_period ), [ ticks ] { ticks->trigger(); } );
       } );
 
