@@ -495,7 +495,7 @@ void void_reapers_chime( special_effect_t& effect )
     {
       auto damage_spell = effect.player->find_spell( 448669 );
       auto damage_name = std::string( damage_spell->name_cstr() );
-      auto damage_amount = effect.driver()->effectN( 1 ).average( effect.item );
+      auto damage_amount = effect.driver()->effectN( 1 ).average( effect.item ) * role_mult( effect );
 
       major = create_proc_action<generic_aoe_proc_t>( damage_name, effect, damage_spell );
       major->base_dd_min = major->base_dd_max = damage_amount;
@@ -605,7 +605,7 @@ void aberrant_spellforge( special_effect_t& effect )
     aberrant_shadows_t( const special_effect_t& e, const spell_data_t* data, buff_t* b )
       : generic_proc_t( e, "aberrant_shadows", 451866 ), stack( b )
     {
-      base_dd_min = base_dd_max = data->effectN( 1 ).average( e.item );
+      base_dd_min = base_dd_max = data->effectN( 1 ).average( e.item ) * role_mult( e );
 
       for ( auto a : player->action_list )
       {
@@ -708,8 +708,8 @@ void aberrant_spellforge( special_effect_t& effect )
 // 447970 on-use
 // 445434 flourish damage
 // 447962 flourish stance
-// 448519 decimation damage
-// 448090 decimation damage to shield on crit
+// 448090 decimation damage
+// 448519 decimation damage to shield on crit
 // 447978 decimation stance
 // 445475 barrage damage
 // 448036 barrage stance
@@ -741,7 +741,8 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
 
       // setup flourish
       auto f_dam = create_proc_action<generic_proc_t>( "surekian_flourish", e, 445434 );
-      f_dam->base_td = data->effectN( 1 ).average( e.item ) / ( f_dam->dot_duration / f_dam->base_tick_time );
+      f_dam->base_td =
+        data->effectN( 1 ).average( e.item ) * ( f_dam->base_tick_time / f_dam->dot_duration ) * role_mult( e );
       add_child( f_dam );
 
       auto f_stance = create_buff<stat_buff_t>( e.player, e.player->find_spell( 447962 ) )
@@ -751,12 +752,12 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
       stance.emplace_back( f_dam, f_stance );
 
       // setup decimation
-      auto d_dam = create_proc_action<generic_aoe_proc_t>( "surekian_brutality", e, 448519 );
+      auto d_dam = create_proc_action<generic_aoe_proc_t>( "surekian_decimation", e, 448090 );
       // TODO: confirm there is no standard +15% per target up to five
-      d_dam->base_dd_min = d_dam->base_dd_max = data->effectN( 4 ).average( e.item );
+      d_dam->base_dd_min = d_dam->base_dd_max = data->effectN( 4 ).average( e.item ) * role_mult( e );
       add_child( d_dam );
 
-      auto d_shield = create_proc_action<generic_proc_t>( "surekian_decimation", e, 448090 );
+      auto d_shield = create_proc_action<generic_proc_t>( "surekian_brutality", e, 448519 );
       d_shield->base_dd_min = d_shield->base_dd_max = 1.0;  // for snapshot flag parsing
       add_child( d_shield );
 
@@ -792,7 +793,7 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
       auto b_dam = create_proc_action<generic_aoe_proc_t>( "surekian_barrage", e, 445475 );
       // TODO: confirm damage isn't split and has no diminishing returns
       b_dam->split_aoe_damage = false;
-      b_dam->base_dd_min = b_dam->base_dd_max = data->effectN( 6 ).average( e.item );
+      b_dam->base_dd_min = b_dam->base_dd_max = data->effectN( 6 ).average( e.item ) * role_mult( e );
       add_child( b_dam );
 
       auto b_speed = create_buff<buff_t>( e.player, e.player->find_spell( 448436 ) )
@@ -1201,7 +1202,7 @@ void mad_queens_mandate( special_effect_t& effect )
         heal_speed( e.trigger()->missile_speed() ),
         hp_mul( data->effectN( 3 ).percent() )
     {
-      base_dd_min = base_dd_max = data->effectN( 1 ).average( e.item );
+      base_dd_min = base_dd_max = data->effectN( 1 ).average( e.item ) * role_mult( e );
 
       heal = create_proc_action<generic_heal_t>( "abyssal_gluttony_heal", e, "abyssal_gluttony_heal",
                                                  e.trigger()->effectN( 2 ).trigger() );
@@ -1906,7 +1907,7 @@ void skyterrors_corrosive_organ( special_effect_t& e )
       background       = true;
       aoe              = data().max_targets();
       split_aoe_damage = false;
-      base_dd_min = base_dd_max = equip_driver->effectN( 2 ).average( e.item );
+      base_dd_min = base_dd_max = equip_driver->effectN( 2 ).average( e.item ) * role_mult( e );
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -1941,7 +1942,7 @@ void skyterrors_corrosive_organ( special_effect_t& e )
   auto dot            = create_proc_action<generic_proc_t>( "volatile_acid", e, 447471 );
   auto aoe_damage     = create_proc_action<volatile_acid_splash_t>( "volatile_acid_splash", e, equip_driver, dot );
   dot->dot_behavior   = DOT_NONE;  // Doesnt Refresh, just stacks
-  dot->base_td        = equip_driver->effectN( 1 ).average( e.item );
+  dot->base_td        = equip_driver->effectN( 1 ).average( e.item ) * role_mult( e );
   dot->execute_action = aoe_damage;
   dot->add_child( aoe_damage );
 
