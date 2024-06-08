@@ -1758,5 +1758,197 @@ namespace actions
   };
 
   // Affliction Actions End
+  // Demonology Actions Begin
+
+  struct hand_of_guldan_t : public warlock_spell_t
+  {
+    struct umbral_blaze_dot_t : public warlock_spell_t
+    {
+      umbral_blaze_dot_t( warlock_t* p ) : warlock_spell_t( "Umbral Blaze", p, p->talents.umbral_blaze_dot )
+      {
+        background = dual = true;
+        hasted_ticks = false;
+        base_td_multiplier = 1.0 + p->talents.umbral_blaze->effectN( 2 ).percent();
+        
+        triggers.shadow_invocation_tick = true;
+      }
+    };
+
+    struct hog_impact_t : public warlock_spell_t
+    {
+      int shards_used;
+      timespan_t meteor_time;
+      umbral_blaze_dot_t* blaze;
+
+      hog_impact_t( warlock_t* p )
+        : warlock_spell_t( "Hand of Gul'dan (Impact)", p, p->warlock_base.hog_impact ),
+        shards_used( 0 ),
+        meteor_time( 400_ms )
+      {
+        aoe = -1;
+        dual = true;
+        
+        triggers.shadow_invocation_direct = true;
+
+        if ( p->talents.umbral_blaze.ok() )
+        {
+          blaze = new umbral_blaze_dot_t( p );
+          add_child( blaze );
+        }
+      }
+
+      timespan_t travel_time() const override
+      { return meteor_time; }
+
+      double action_multiplier() const override
+      {
+        double m = warlock_spell_t::action_multiplier();
+
+        m *= shards_used;
+
+        if ( p()->buffs.blazing_meteor->check() )
+          m *= 1.0 + p()->buffs.blazing_meteor->check_value();
+
+        if ( p()->talents.malefic_impact.ok() )
+          m *= 1.0 + p()->talents.malefic_impact->effectN( 1 ).percent();
+
+        return m;
+      }
+
+      double composite_crit_chance() const override
+      {
+        double m = warlock_spell_t::composite_crit_chance();
+
+        if ( p()->talents.malefic_impact.ok() )
+          m += p()->talents.malefic_impact->effectN( 2 ).percent();
+
+        return m;
+      }
+
+      void execute() override
+      {
+        warlock_spell_t::execute();
+
+        p()->buffs.blazing_meteor->expire();
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        // Only trigger Wild Imps once for the original target impact.
+        // Still keep it in impact instead of execute because of travel delay.
+        if ( result_is_hit( s->result ) && s->target == target )
+        {
+          // Wild Imp spawns appear to have been sped up in Shadowlands. Last tested 2021-04-16.
+          // Current behavior: HoG will spawn a meteor on cast finish. Travel time in spell data is 0.7 seconds.
+          // However, damage event occurs before spell effect lands, happening 0.4 seconds after cast.
+          // Imps then spawn roughly every 0.18 seconds seconds after the damage event.
+          for ( int i = 1; i <= shards_used; i++ )
+          {
+            // TODO: Migrate imp_delay_event_t and possibly revise rng formula usage
+            auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
+            p()->wild_imp_spawns.push_back( ev );
+          }
+
+          if ( p()->talents.umbral_blaze.ok() && rng().roll( p()->talents.umbral_blaze->effectN( 1 ).percent() ) )
+          {
+            blaze->execute_on_target( s->target );
+            p()->procs.umbral_blaze->occur();
+          }
+        }
+      }
+    };
+
+    hog_impact_t* impact_spell;
+
+    hand_of_guldan_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Hand of Gul'dan", p, p->warlock_base.hand_of_guldan ),
+      impact_spell( new hog_impact_t( p ) )
+    {
+      parse_options( options_str );
+
+      add_child( impact_spell );
+    }
+
+    timespan_t travel_time() const override
+    { return 0_ms; }
+
+    timespan_t execute_time() const override
+    {
+      timespan_t t = warlock_spell_t::execute_time();
+
+      if ( p()->buffs.blazing_meteor->check() )
+        t *= 1.0 + p()->tier.blazing_meteor->effectN( 2 ).percent();
+
+      return t;
+    }
+
+    bool ready() override
+    {
+      if ( p()->resources.current[ RESOURCE_SOUL_SHARD ] < 1.0 )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+
+    void execute() override
+    {
+      int shards_used = as<int>( cost() );
+      impact_spell->shards_used = shards_used;
+
+      warlock_spell_t::execute();
+
+      if ( p()->talents.demonic_knowledge.ok() && rng().roll( p()->talents.demonic_knowledge->effectN( 1 ).percent() ) )
+      {
+        p()->buffs.demonic_core->trigger();
+        p()->procs.demonic_knowledge->occur();
+      }
+
+      if ( p()->talents.dread_calling.ok() )
+        p()->buffs.dread_calling->trigger( shards_used );
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B2 ) )
+      {
+        for ( const auto target : p()->sim->target_non_sleeping_list )
+        {
+          warlock_td_t* tdata = td( target );
+
+          if ( !tdata )
+            continue;
+
+          if ( tdata->debuffs_doom_brand->check() )
+            tdata->debuffs_doom_brand->extend_duration( p(), -p()->sets->set( WARLOCK_DEMONOLOGY, T31, B2 )->effectN( 1 ).time_value() * shards_used );
+        }
+      }
+    }
+
+    void consume_resource() override
+    {
+      warlock_spell_t::consume_resource();
+
+      if ( last_resource_cost == 1.0 )
+        p()->procs.one_shard_hog->occur();
+      if ( last_resource_cost == 2.0 )
+        p()->procs.two_shard_hog->occur();
+      if ( last_resource_cost == 3.0 )
+        p()->procs.three_shard_hog->occur();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      impact_spell->execute_on_target( s->target );
+
+      if ( p()->talents.pact_of_the_imp_mother.ok() && rng().roll( p()->talents.pact_of_the_imp_mother->effectN( 1 ).percent() ) )
+      {
+        make_event( *sim, 0_ms, [this, t = target ]{ impact_spell->execute_on_target( t ); } );
+        p()->procs.pact_of_the_imp_mother->occur();
+      }
+    }
+  };
+
+  // Demonology Actions End
 }
 }
