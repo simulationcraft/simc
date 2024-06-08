@@ -2732,6 +2732,24 @@ namespace actions
   // Demonology Actions End
   // Destruction Actions Begin
 
+  struct havoc_t : public warlock_spell_t
+  {
+    havoc_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Havoc", p, p->talents.havoc )
+    {
+      parse_options( options_str );
+
+      may_crit = false;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      td( s->target )->debuffs_havoc->trigger();
+    }
+  };
+
   struct shadowburn_t : public warlock_spell_t
   {
     shadowburn_t( warlock_t* p, util::string_view options_str )
