@@ -2352,6 +2352,86 @@ namespace actions
     }
   };
 
+  struct power_siphon_t : public warlock_spell_t
+  {
+    power_siphon_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Power Siphon", p, p->talents.power_siphon )
+    {
+      parse_options( options_str );
+
+      harmful = false;
+      ignore_false_positive = true;
+
+      target = player;
+    }
+
+    bool ready() override
+    {
+      if ( is_precombat && p()->talents.inner_demons.ok() )
+        return warlock_spell_t::ready();
+
+      if ( p()->warlock_pet_list.wild_imps.n_active_pets() < 1 )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      if ( is_precombat )
+      {
+        p()->buffs.power_siphon->trigger( 2, p()->talents.power_siphon_buff->duration() );
+        p()->buffs.demonic_core->trigger( 2, p()->talents.demonic_core_buff->duration() );
+        
+        return;
+      }
+
+      auto imps = p()->warlock_pet_list.wild_imps.active_pets();
+
+      range::sort(
+        imps, []( const pets::demonology::wild_imp_pet_t* imp1, const pets::demonology::wild_imp_pet_t* imp2 ) {
+          double lv = imp1->resources.current[ RESOURCE_ENERGY ];
+          double rv = imp2->resources.current[ RESOURCE_ENERGY ];
+
+          // Power Siphon deprioritizes Wild Imps that are Gang Bosses or empowered by Summon Demonic Tyrant
+          // Padding ensures they still sort in order at the back of the list
+          lv += ( imp1->buffs.imp_gang_boss->check() || imp1->buffs.demonic_power->check() ) ? 200.0 : 0.0;
+          rv += ( imp2->buffs.imp_gang_boss->check() || imp2->buffs.demonic_power->check() ) ? 200.0 : 0.0;
+
+          if ( lv == rv )
+          {
+            timespan_t lr = imp1->expiration->remains();
+            timespan_t rr = imp2->expiration->remains();
+            if ( lr == rr )
+            {
+              return imp1->actor_spawn_index < imp2->actor_spawn_index;
+            }
+
+            return lr < rr;
+          }
+
+          return lv < rv;
+        } );
+
+      unsigned max_imps = as<int>( p()->talents.power_siphon->effectN( 1 ).base_value() );
+
+      if ( imps.size() > max_imps )
+        imps.resize( max_imps );
+
+      while ( !imps.empty() )
+      {
+        p()->buffs.power_siphon->trigger();
+        p()->buffs.demonic_core->trigger();
+        pets::demonology::wild_imp_pet_t* imp = imps.front();
+        imps.erase( imps.begin() );
+        imp->power_siphon = true;
+        imp->dismiss();
+      }
+    }
+  };
+
   struct summon_demonic_tyrant_t : public warlock_spell_t
   {
     summon_demonic_tyrant_t( warlock_t* p, util::string_view options_str )
