@@ -1969,6 +1969,90 @@ void high_speakers_accretion( special_effect_t& effect )
   effect.execute_action = create_proc_action<high_speakers_accretion_t>( "high_speakers_accretion", effect );
 }
 
+// 443380 driver
+// 449267 fragment spawn
+// 449259 fragment duration
+// 449254 buff
+struct pickup_entropic_skardyn_core_t : public action_t
+{
+  buff_t* buff = nullptr;
+  buff_t* tracker = nullptr;
+
+  pickup_entropic_skardyn_core_t( player_t* p, std::string_view opt )
+    : action_t( ACTION_OTHER, "pickup_entropic_skardyn_core", p )
+  {
+    parse_options( opt );
+
+    s_data_reporting = p->find_spell( 443380 );
+    name_str_reporting = "Pickup";
+
+    callbacks = harmful = false;
+    trigger_gcd = 0_ms;
+  }
+
+  bool ready() override
+  {
+    return tracker->check();
+  }
+
+  void execute() override
+  {
+    action_t::execute();
+
+    buff->trigger();
+    tracker->expire();
+  }
+};
+
+void entropic_skardyn_core( special_effect_t& effect )
+{
+  if ( create_fallback_buffs( effect, { "entropic_skardyn_core" } ) )
+    return;
+
+  struct entropic_skardyn_core_cb_t : public dbc_proc_callback_t
+  {
+    rng::truncated_gauss_t pickup;
+    buff_t* buff;
+    buff_t* tracker;
+    timespan_t delay;
+
+    entropic_skardyn_core_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        pickup( e.player->thewarwithin_opts.entropic_skardyn_core_pickup_time,
+                e.player->thewarwithin_opts.entropic_skardyn_core_pickup_time_stddev ),
+        delay( timespan_t::from_seconds( e.trigger()->missile_speed() ) )
+    {
+      buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 449254 ) )
+        ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e.item ) );
+
+      tracker = create_buff<buff_t>( e.player, e.trigger()->effectN( 1 ).trigger() );
+
+      if ( auto action =
+             dynamic_cast<pickup_entropic_skardyn_core_t*>( e.player->find_action( "pickup_entropic_skardyn_core" ) ) )
+      {
+        action->buff = buff;
+        action->tracker = tracker;
+      }
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      make_event( *listener->sim, delay, [ this ] {                    // delay for spawn
+        tracker->trigger();                                            // trigger tracker
+        make_event( *listener->sim, rng().gauss( pickup ), [ this ] {  // delay for pickup
+          if ( tracker->check() )                                      // check hasn't been picked up via action
+          {
+            buff->trigger();
+            tracker->expire();
+          }
+        } );
+      } );
+    }
+  };
+
+  new entropic_skardyn_core_cb_t( effect );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -2298,6 +2382,7 @@ void register_special_effects()
   register_special_effect( 444489, items::skyterrors_corrosive_organ );
   register_special_effect( 444488, DISABLED_EFFECT );  // skyterror's corrosive organ
   register_special_effect( 443415, items::high_speakers_accretion );
+  register_special_effect( 443380, items::entropic_skardyn_core, true );
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
@@ -2316,5 +2401,12 @@ void register_target_data_initializers( sim_t& )
 
 void register_hotfixes()
 {
+}
+
+action_t* create_action( player_t* p, util::string_view n, util::string_view options )
+{
+  if ( n == "pickup_entropic_skardyn_core" ) return new items::pickup_entropic_skardyn_core_t( p, options );
+
+  return nullptr;
 }
 }  // namespace unique_gear::thewarwithin

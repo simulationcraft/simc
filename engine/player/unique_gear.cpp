@@ -5083,6 +5083,8 @@ action_t* unique_gear::create_action( player_t* player, util::string_view name, 
 {
   if ( auto action = shadowlands::create_action( player, name, options ) )
     return action;
+  else if ( auto action = thewarwithin::create_action( player, name, options ) )
+    return action;
 
   return nullptr;
 }
