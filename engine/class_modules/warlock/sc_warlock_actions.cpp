@@ -103,7 +103,6 @@ namespace actions
         if ( p()->talents.soul_conduit->ok() )
         {
           // Soul Conduit events are delayed slightly (100 ms) in sims to avoid instantaneous reactions
-          // TODO: Migrate sc_event_t to the actions.cpp file
           make_event<warlock::actions::sc_event_t>( *p()->sim, p(), as<int>( affected_by.soul_conduit_base_cost ? base_shards : last_resource_cost ) );
         }
 
@@ -789,8 +788,7 @@ namespace actions
 
         if ( p()->talents.tormented_crescendo->ok() )
         {
-          // TODO: Migrate crescendo_check
-          if ( p()->crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
+          if ( crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
           {
             p()->procs.tormented_crescendo->occur();
             p()->buffs.tormented_crescendo->trigger();
@@ -810,7 +808,6 @@ namespace actions
 
       if ( p()->talents.sacrificed_souls.ok() )
       {
-        // TODO: Migrate active_demon_count()
         m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
       }
 
@@ -992,7 +989,6 @@ namespace actions
       {
         double m = warlock_spell_t::composite_da_multiplier( s );
 
-        // TODO: Migrate count_affliction_dots()
         m *= td( s->target )->count_affliction_dots();
 
         m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
@@ -1571,7 +1567,7 @@ namespace actions
 
         if ( p()->talents.tormented_crescendo.ok() )
         {
-          if ( p()->crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 2 ).percent() ) )
+          if ( crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 2 ).percent() ) )
           {
             p()->procs.tormented_crescendo->occur();
             p()->buffs.tormented_crescendo->trigger();
@@ -1756,10 +1752,27 @@ namespace actions
 
       timespan_t darkglare_extension = timespan_t::from_seconds( p()->talents.summon_darkglare->effectN( 2 ).base_value() );
 
-      // TODO: Migrate extension helper
-      p()->darkglare_extension_helper( p(), darkglare_extension );
+      darkglare_extension_helper( darkglare_extension );
 
       p()->buffs.soul_rot->extend_duration( p(), darkglare_extension ); // This dummy buff is active while Soul Rot is ticking
+    }
+
+    void darkglare_extension_helper( timespan_t darkglare_extension )
+    {
+      for ( const auto target : p()->sim->target_non_sleeping_list )
+      {
+        warlock_td_t* td = p()->get_target_data( target );
+        if ( !td )
+          continue;
+
+        td->dots_agony->adjust_duration( darkglare_extension );
+        td->dots_corruption->adjust_duration( darkglare_extension );
+        td->dots_siphon_life->adjust_duration( darkglare_extension );
+        td->dots_phantom_singularity->adjust_duration( darkglare_extension );
+        td->dots_vile_taint->adjust_duration( darkglare_extension );
+        td->dots_unstable_affliction->adjust_duration( darkglare_extension );
+        td->dots_soul_rot->adjust_duration( darkglare_extension );
+      }
     }
   };
 
@@ -1958,7 +1971,6 @@ namespace actions
           // Imps then spawn roughly every 0.18 seconds seconds after the damage event.
           for ( int i = 1; i <= shards_used; i++ )
           {
-            // TODO: Migrate imp_delay_event_t and possibly revise rng formula usage
             auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
             p()->wild_imp_spawns.push_back( ev );
           }
@@ -2149,7 +2161,6 @@ namespace actions
     {
       double m = warlock_spell_t::action_multiplier();
 
-      // TODO: Migrate active_demon_count()
       if ( p()->talents.sacrificed_souls.ok() )
         m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
       
@@ -4299,7 +4310,96 @@ namespace actions
   };
 
   // Destruction Actions End
-}  // namespace actions
+  // Helper Functions Begin
+
+  // Event for triggering delayed refunds from Soul Conduit
+  // Delay prevents instant reaction time issues for rng refunds
+  struct sc_event_t : public player_event_t
+  {
+    gain_t* shard_gain;
+    warlock_t* pl;
+    int shards_used;
+
+    sc_event_t( warlock_t* p, int c )
+      : player_event_t( *p, 100_ms ),
+      shard_gain( p->gains.soul_conduit ),
+      pl( p ),
+      shards_used( c )
+    {
+    }
+
+    virtual const char* name() const override
+    {
+      return "soul_conduit_event";
+    }
+
+    virtual void execute() override
+    {
+      double soul_conduit_rng = pl->talents.soul_conduit->effectN( 1 ).percent();
+
+      for ( int i = 0; i < shards_used; i++ )
+      {
+        if ( rng().roll( soul_conduit_rng ) )
+        {
+          pl->sim->print_log( "Soul Conduit proc occurred for Warlock {}, refunding 1.0 soul shards.", pl->name() );
+          pl->resource_gain( RESOURCE_SOUL_SHARD, 1.0, shard_gain );
+          pl->procs.soul_conduit->occur();
+        }
+      }
+    }
+  };
+
+  // Checks whether Tormented Crescendo conditions are met
+  bool crescendo_check( warlock_t* p )
+  {
+    bool agony = false;
+    bool corruption = false;
+    for ( const auto target : p->sim->target_non_sleeping_list )
+    {
+      warlock_td_t* td = p->get_target_data( target );
+      if ( !td )
+        continue;
+
+      agony = agony || td->dots_agony->is_ticking();
+      corruption = corruption || td->dots_corruption->is_ticking();
+
+      if ( agony && corruption )
+        break;
+    }
+
+    return agony && corruption && ( p->ua_target && p->get_target_data( p->ua_target )->dots_unstable_affliction->is_ticking() );
+  }
+
+  // Event for spawning Wild Imps for Demonology
+  struct imp_delay_event_t : public player_event_t
+  {
+    timespan_t diff;
+
+    imp_delay_event_t( warlock_t* p, double delay, double exp ) : player_event_t( *p, timespan_t::from_millis( delay ) )
+    { diff = timespan_t::from_millis( exp - delay ); }
+
+    virtual const char* name() const override
+    { return "imp_delay"; }
+
+    virtual void execute() override
+    {
+      warlock_t* p = static_cast<warlock_t*>( player() );
+
+      p->warlock_pet_list.wild_imps.spawn();
+
+      // Remove this event from the vector
+      auto it = std::find( p->wild_imp_spawns.begin(), p->wild_imp_spawns.end(), this );
+      if ( it != p->wild_imp_spawns.end() )
+        p->wild_imp_spawns.erase( it );
+    }
+
+    // Used for APL expressions to estimate when imp is "supposed" to spawn
+    timespan_t expected_time()
+    { return std::max( 0_ms, this->remains() + diff ); }
+  };
+
+  // Helper Functions End
+} // namespace actions
   
   // Action Creation Begin
 

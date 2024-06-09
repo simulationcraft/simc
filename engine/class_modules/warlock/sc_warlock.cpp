@@ -1643,7 +1643,7 @@ timespan_t warlock_t::time_to_imps( int count )
   }
 }
 
-void warlock_t::darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension )
+void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension )
 {
   for ( const auto target : p->sim->target_non_sleeping_list )
   {
@@ -1702,7 +1702,7 @@ void warlock_t::expendables_trigger_helper( warlock_pet_t* source )
   }
 }
 
-bool warlock_t::crescendo_check( warlock_t* p )
+bool crescendo_check( warlock_t* p )
 {
   bool agony = false;
   bool corruption = false;
