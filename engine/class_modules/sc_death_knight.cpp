@@ -694,6 +694,7 @@ public:
     propagate_const<buff_t*> abomination_limb;
     propagate_const<buff_t*> lichborne;  // NYI
     buff_t* frost_shield;
+    propagate_const<buff_t*> death_and_decay;
 
     // Runeforges
     propagate_const<buff_t*> stoneskin_gargoyle;
@@ -1737,8 +1738,6 @@ public:
   // Shared
   modified_spell_data_t* get_modified_spell( const spell_data_t* );
   bool in_death_and_decay() const;
-  void trigger_dnd_buffs();
-  void expire_dnd_buffs();
   void parse_player_effects();
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
@@ -3896,7 +3895,7 @@ struct mograine_pet_t final : public horseman_pet_t
       if ( dk->talent.rider.mograines_might.ok() )
       {
         dk->buffs.mograines_might->trigger();
-        dk->trigger_dnd_buffs();
+        dk->buffs.death_and_decay->trigger();
       }
     }
 
@@ -3906,7 +3905,7 @@ struct mograine_pet_t final : public horseman_pet_t
       if ( dk->talent.rider.mograines_might.ok() )
       {
         dk->buffs.mograines_might->expire();
-        dk->expire_dnd_buffs();
+        dk->buffs.death_and_decay->expire();
       }
     }
 
@@ -5151,6 +5150,70 @@ struct essence_of_the_blood_queen_damage_buff_t final : public death_knight_buff
   {
     return ( m_data->effectN( 2 ).percent() ) * ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
   }
+};
+
+// Death and Decay ==========================================================
+struct death_and_decay_buff_t : public death_knight_buff_t
+{
+  death_and_decay_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
+    : death_knight_buff_t( p, name, spell ), leway_buff( false )
+  {
+    // Specifically use a stack change callback here due to when its called in buff_t::expire
+    set_stack_change_callback( [ this, p ]( buff_t*, int, int new_ ) {
+      if( p->in_death_and_decay() )
+      {
+        trigger();
+      }
+      if ( new_ == 0 && !leway_buff && !p->in_death_and_decay() )
+      {
+        trigger( 4_s );
+      }
+    } );
+  }
+
+  void trigger_buffs()
+  {
+    if ( !p()->talent.unholy_ground.ok() && !p()->talent.blood.sanguine_ground.ok() )
+      return;
+
+    if ( p()->talent.unholy_ground.ok() && !p()->buffs.unholy_ground->check() )
+      p()->buffs.unholy_ground->trigger();
+
+    if ( p()->talent.blood.sanguine_ground.ok() && !p()->buffs.sanguine_ground->check() )
+      p()->buffs.sanguine_ground->trigger();
+  }
+
+  void expire_buffs()
+  {
+    if ( !p()->talent.unholy_ground.ok() && !p()->talent.blood.sanguine_ground.ok() )
+      return;
+
+    if ( p()->talent.unholy_ground.ok() && p()->buffs.unholy_ground->check() )
+      p()->buffs.unholy_ground->expire();
+
+    if ( p()->talent.blood.sanguine_ground.ok() && p()->buffs.sanguine_ground->check() )
+      p()->buffs.sanguine_ground->expire();
+  }
+
+  void start( int s, double v, timespan_t d ) override
+  {
+    death_knight_buff_t::start( s, v, d );
+    trigger_buffs();
+
+    if ( d == 4_s )
+      leway_buff = true;
+    else
+      leway_buff = false;
+  }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    death_knight_buff_t::expire_override( s, d );
+    expire_buffs();
+  }
+
+private:
+  bool leway_buff;
 };
 
 // Anti-magic Shell =========================================================
@@ -7396,11 +7459,11 @@ struct death_and_decay_base_t : public death_knight_spell_t
               {
                 case ground_aoe_params_t::EVENT_STARTED:
                   p()->active_dnd = event;
-                  p()->trigger_dnd_buffs();
+                  p()->buffs.death_and_decay->trigger();
                   break;
                 case ground_aoe_params_t::EVENT_STOPPED:
                   p()->active_dnd = nullptr;
-                  p()->expire_dnd_buffs();
+                  p()->buffs.death_and_decay->expire();
                   break;
                 default:
                   break;
@@ -11378,36 +11441,6 @@ void death_knight_t::reapers_mark_explosion_wrapper( player_t* target, int stack
   }
 }
 
-void death_knight_t::trigger_dnd_buffs()
-{
-  if ( !talent.unholy_ground.ok() && !talent.blood.sanguine_ground.ok() )
-    return;
-
-  if ( !in_death_and_decay() )
-    return;
-
-  if ( talent.unholy_ground.ok() && !buffs.unholy_ground->check() )
-    buffs.unholy_ground->trigger();
-
-  if ( talent.blood.sanguine_ground.ok() && !buffs.sanguine_ground->check() )
-    buffs.sanguine_ground->trigger();
-}
-
-void death_knight_t::expire_dnd_buffs()
-{
-  if ( !talent.unholy_ground.ok() && !talent.blood.sanguine_ground.ok() )
-    return;
-
-  if ( in_death_and_decay() )
-    return;
-
-  if ( talent.unholy_ground.ok() && buffs.unholy_ground->check() )
-    buffs.unholy_ground->expire();
-
-  if ( talent.blood.sanguine_ground.ok() && buffs.sanguine_ground->check() )
-    buffs.sanguine_ground->expire();
-}
-
 const spell_data_t* death_knight_t::conditional_spell_lookup( bool fn, int id )
 {
   if( !fn )
@@ -12889,6 +12922,8 @@ void death_knight_t::create_buffs()
               }
             }
           } );
+
+  buffs.death_and_decay = make_fallback<death_and_decay_buff_t>( spec.death_and_decay->ok(), this, "death_and_decay", spell.dnd_buff );
 
   buffs.frost_shield = make_fallback<death_knight_absorb_buff_t>( talent.permafrost.ok(), this, "frost_shield",
                                                                   spell.frost_shield_buff );
