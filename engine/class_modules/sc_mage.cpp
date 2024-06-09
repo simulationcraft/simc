@@ -5811,18 +5811,18 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   talents()
 {
   // Cooldowns
-  cooldowns.combustion         = get_cooldown( "combustion"           );
-  cooldowns.comet_storm        = get_cooldown( "comet_storm"          );
-  cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"         );
-  cooldowns.fervent_flickering = get_cooldown( "fervent_flickering"   );
-  cooldowns.fire_blast         = get_cooldown( "fire_blast"           );
-  cooldowns.flurry             = get_cooldown( "flurry"               );
-  cooldowns.from_the_ashes     = get_cooldown( "from_the_ashes"       );
-  cooldowns.frost_nova         = get_cooldown( "frost_nova"           );
-  cooldowns.frozen_orb         = get_cooldown( "frozen_orb"           );
-  cooldowns.phoenix_flames     = get_cooldown( "phoenix_flames"       );
-  cooldowns.phoenix_reborn     = get_cooldown( "phoenix_reborn"       );
-  cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind"     );
+  cooldowns.combustion         = get_cooldown( "combustion"         );
+  cooldowns.comet_storm        = get_cooldown( "comet_storm"        );
+  cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"       );
+  cooldowns.fervent_flickering = get_cooldown( "fervent_flickering" );
+  cooldowns.fire_blast         = get_cooldown( "fire_blast"         );
+  cooldowns.flurry             = get_cooldown( "flurry"             );
+  cooldowns.from_the_ashes     = get_cooldown( "from_the_ashes"     );
+  cooldowns.frost_nova         = get_cooldown( "frost_nova"         );
+  cooldowns.frozen_orb         = get_cooldown( "frozen_orb"         );
+  cooldowns.phoenix_flames     = get_cooldown( "phoenix_flames"     );
+  cooldowns.phoenix_reborn     = get_cooldown( "phoenix_reborn"     );
+  cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind"   );
 
   // Options
   resource_regeneration = regen_type::DYNAMIC;
@@ -7738,13 +7738,6 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20.0 )
       .verification_value( 0.0 );
-
-    for ( auto e_id : { 179703, 191121, 191122, 191124 } )
-      hotfix::register_effect( "Mage", "2023-05-16", fmt::format( "Base value of Frost aura's effect {} is truncated.", e_id ), e_id )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 9.0 )
-        .verification_value( 9.2 );
   }
 
   bool valid() const override { return true; }
