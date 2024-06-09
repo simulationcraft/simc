@@ -98,14 +98,7 @@ struct level_data_t
   const spell_data_t *spell_data;
   const double min_threshold;
 
-  std::string_view name() const
-  {
-    if ( spell_data != spell_data_t::nil() )
-      return spell_data->name_cstr();
-    if ( min_threshold > 0 )
-      return "maximum";
-    return "none";
-  }
+  std::string_view name() const;
 };
 
 struct stagger_data_t
@@ -114,17 +107,12 @@ struct stagger_data_t
   std::vector<level_data_t> levels;
   std::vector<std::string_view> mitigation_tokens;
 
-  std::string_view name() const
-  {
-    if ( self_damage != spell_data_t::nil() )
-      return self_damage->name_cstr();
-    return "none";
-  }
+  std::string_view name() const;
 };
 
 namespace stagger_impl
 {
-template <class derived_actor_t>
+template <class derived_actor_t, class residual_type = residual_action::residual_periodic_action_t<spell_t>>
 struct self_damage_t;
 
 struct sample_data_t
@@ -145,61 +133,37 @@ struct sample_data_t
   sample_data_t( player_t *player, const stagger_data_t &data );
 };
 
-struct debuff_t : buff_t
+template <class derived_actor_t, class buff_type = buff_t>
+struct debuff_t : buff_type
 {
-  debuff_t( player_t *player, const stagger_data_t *parent_data, const level_data_t *data )
-    : buff_t( player, util::tokenize_fn( fmt::format( "{}_{}", data->name(), parent_data->name() ) ), data->spell_data )
-  {
-    base_buff_duration = 0_s;
-    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  }
+  derived_actor_t *player;
+
+  debuff_t( derived_actor_t *player, const stagger_data_t *parent_data, const level_data_t *data );
 };
 
 template <class derived_actor_t>
 struct level_t
 {
-  // private:
   derived_actor_t *player;
-
-  // public:
   const stagger_data_t *parent_data;
   const level_data_t *data;
-
-  level_t( derived_actor_t *player, const stagger_data_t *parent_data, const level_data_t *data );
-  // TODO: select types in create_stagger
-  template <class debuff_type = stagger_impl::debuff_t>
-  void init();
-  void trigger();
-  bool operator>( const level_t<derived_actor_t> &rhs ) const;
-
-  std::string_view name() const
-  {
-    return data->name();
-  }
-
-  double min_threshold() const
-  {
-    return data->min_threshold;
-  }
-
-  // private:
-  propagate_const<debuff_t *> debuff;
+  propagate_const<debuff_t<derived_actor_t> *> debuff;
   sample_data_helper_t *absorbed;
   sample_data_helper_t *taken;
   sample_data_helper_t *mitigated;
+
+  level_t( derived_actor_t *player, const stagger_data_t *parent_data, const level_data_t *data );
+  template <class debuff_type>
+  void init();
+  void trigger();
+  bool operator>( const level_t<derived_actor_t> &rhs ) const;
+  std::string_view name() const;
+  double min_threshold() const;
 };
 
 template <class derived_actor_t>
 struct stagger_t
 {
-  // what if we want to change these friends?
-  template <class T>
-  friend struct level_t;
-  template <class T>
-  friend struct self_damage_t;
-  friend struct sample_data_t;
-
-public:
   derived_actor_t *player;
   stagger_data_t data;
 
@@ -215,7 +179,6 @@ public:
 
   // init
   stagger_t( derived_actor_t *player, const stagger_data_t &data );
-  // TODO: select types in create_stagger
   void init();
   void adjust_sample_data( sim_t &sim );
   void merge_sample_data( const stagger_t &other );
@@ -240,68 +203,23 @@ public:
   bool is_ticking();
   double level_index();  // avoid floating point demotion with double
 
-private:
   void set_pool( double amount );
   void damage_changed( bool last_tick = false );
   level_t<derived_actor_t> *find_current_level();
 };
 
-template <class derived_actor_t>
-struct self_damage_t : residual_action::residual_periodic_action_t<spell_t>
+template <class derived_actor_t, class residual_type>
+struct self_damage_t : residual_type
 {
   derived_actor_t *player;
   stagger_impl::stagger_t<derived_actor_t> *stagger_effect;
 
-  using base_t = residual_action::residual_periodic_action_t<spell_t>;
-  self_damage_t( derived_actor_t *player, stagger_impl::stagger_t<derived_actor_t> *stagger_effect )
-    : base_t( stagger_effect->data.name(), player, stagger_effect->data.self_damage ),
-      player( player ),
-      stagger_effect( stagger_effect )
-  {
-    hasted_ticks = tick_may_crit = false;
-    target                       = player;
-    stats->type                  = stats_e::STATS_NEUTRAL;
+  self_damage_t( derived_actor_t *player, stagger_impl::stagger_t<derived_actor_t> *stagger_effect );
 
-    dot_duration = 10_s;
-    dot_duration += 3_s;
-    base_tick_time = 1_s;
-  }
-
-  proc_types proc_type() const override
-  {
-    return PROC1_ANY_DAMAGE_TAKEN;
-  }
-  void impact( action_state_t *state ) override  // add to pool
-  {
-    base_t::impact( state );
-    player->sim->print_debug(
-        "{} current {} pool statistics pool_size={} pool_size_percent={} tick_size={} tick_size_percent={} cap={}",
-        player->name(), stagger_effect->data.name(), stagger_effect->pool_size(), stagger_effect->pool_size_percent(),
-        stagger_effect->tick_size(), stagger_effect->tick_size_percent(), player->resources.max[ RESOURCE_HEALTH ] );
-    stagger_effect->damage_changed();
-    stagger_effect->sample_data->absorbed->add( state->result_amount );
-    stagger_effect->current->absorbed->add( state->result_amount );
-    stagger_effect->sample_data->pool_size.add( sim->current_time(), stagger_effect->pool_size() );
-    stagger_effect->sample_data->pool_size_percent.add( sim->current_time(), stagger_effect->pool_size_percent() );
-  }
-  void assess_damage( result_amount_type type, action_state_t *state ) override  // tick from pool
-  {
-    base_t::assess_damage( type, state );
-    player->sim->print_debug(
-        "{} current {} pool statistics pool_size={} pool_size_percent={} tick_size={} tick_size_percent={} cap={}",
-        player->name(), stagger_effect->data.name(), stagger_effect->pool_size(), stagger_effect->pool_size_percent(),
-        stagger_effect->tick_size(), stagger_effect->tick_size_percent(), player->resources.max[ RESOURCE_HEALTH ] );
-    stagger_effect->damage_changed();
-    stagger_effect->sample_data->taken->add( state->result_amount );
-    stagger_effect->current->taken->add( state->result_amount );
-    stagger_effect->sample_data->pool_size.add( sim->current_time(), stagger_effect->pool_size() );
-    stagger_effect->sample_data->pool_size_percent.add( sim->current_time(), stagger_effect->pool_size_percent() );
-  }
-  void last_tick( dot_t *dot ) override  // callback on last tick
-  {
-    base_t::last_tick( dot );
-    stagger_effect->damage_changed( true );
-  }
+  proc_types proc_type() const override;
+  void impact( action_state_t *state ) override;                                  // add to pool
+  void assess_damage( result_amount_type type, action_state_t *state ) override;  // tick from pool
+  void last_tick( dot_t *dot ) override;                                          // callback on last tick
 };
 
 template <class derived_actor_t>
@@ -395,30 +313,26 @@ struct stagger_t : base_actor_t
     return base_actor_t::create_expression( name_str );
   }
 
+  // These are hypothetically placed in a sensible order of most->least likely to override
+  template <class debuff_type      = stagger_impl::debuff_t<derived_actor_t>,
+            class self_damage_type = stagger_impl::self_damage_t<derived_actor_t>,
+            class level_type       = stagger_impl::level_t<derived_actor_t>,
+            class stagger_type     = stagger_impl::stagger_t<derived_actor_t>,
+            class sample_data_type = stagger_impl::sample_data_t>
   void create_stagger( const stagger_data_t &data )
   {
-    using stagger_type     = stagger_impl::stagger_t<derived_actor_t>;
-    using level_type       = stagger_impl::level_t<derived_actor_t>;
-    using self_damage_type = stagger_impl::self_damage_t<derived_actor_t>;
-    using sample_data_type = stagger_impl::sample_data_t;
-
     derived_actor_t *derived_actor        = debug_cast<derived_actor_t *>( this );
     const auto &[ stagger_pair, success ] = stagger.insert( { data.name(), new stagger_type( derived_actor, data ) } );
     assert( success && "Stagger effect failed to be inserted into stagger map." );
     auto &[ name, stagger_effect ] = *stagger_pair;
-    stagger_effect->data.levels.push_back( { spell_data_t::nil(), -1.0 } );
-    for ( const level_data_t &level_data : stagger_effect->data.levels )
-      stagger_effect->levels.emplace_back( new level_type( derived_actor, &stagger_effect->data, &level_data ) );
+    for ( const auto &level_data : stagger_effect->data.levels )
+      stagger_effect->levels.push_back( new level_type( derived_actor, &stagger_effect->data, &level_data ) );
     stagger_effect->self_damage = new self_damage_type( derived_actor, stagger_effect );
     stagger_effect->sample_data = new sample_data_type( derived_actor, stagger_effect->data );
-    /*
-     * use `derived_actor_t` template to conveniently provide member accesss
-     * otherwise, use virtual objects
-     * Create a stagger_impl::stagger_t<derived_actor_t> (can override)
-     * Create a stagger_impl::self_damage_t<derived_actor_t> (can override)
-     * Create a stagger_impl::sample_data_t<derived_actor_t> (can override)
-     * Create levels stagger_impl::level_t<derived_actor_t> (can override)
-     */
+
+    stagger_effect->init();
+    for ( level_type *level : stagger_effect->levels )
+      level->template init<debuff_type>();
   }
 
   template <typename... Args>
@@ -440,22 +354,36 @@ struct stagger_t : base_actor_t
 // implementation
 namespace stagger_impl
 {
+// debuff_t impl
+template <class derived_actor_t, class buff_type>
+debuff_t<derived_actor_t, buff_type>::debuff_t( derived_actor_t *player, const stagger_data_t *parent_data,
+                                                const level_data_t *data )
+  : buff_type( player, util::tokenize_fn( fmt::format( "{}_{}", data->name(), parent_data->name() ) ),
+               data->spell_data ),
+    player( player )
+{
+  static_assert( std::is_base_of_v<buff_t, buff_type>, "debuff_t<..., buff_type> must be derived from buff_t." );
+  // debuff duration logic is handled by self_damage_t
+  this->base_buff_duration = 0_s;
+  this->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+}
+
 // level_t impl
 template <class derived_actor_t>
 level_t<derived_actor_t>::level_t( derived_actor_t *player, const stagger_data_t *parent_data,
                                    const level_data_t *data )
   : player( player ), parent_data( parent_data ), data( data )
 {
+  absorbed  = player->get_sample_data( fmt::format( "{} added to pool while at {}.", parent_data->name(), name() ) );
+  taken     = player->get_sample_data( fmt::format( "{} damage taken from {}.", parent_data->name(), name() ) );
+  mitigated = player->get_sample_data( fmt::format( "{} damage mitigated while at {}.", parent_data->name(), name() ) );
 }
 
 template <class derived_actor_t>
 template <class debuff_type>
 void level_t<derived_actor_t>::init()
 {
-  absorbed  = player->get_sample_data( fmt::format( "{} added to pool while at {}.", parent_data->name(), name() ) );
-  taken     = player->get_sample_data( fmt::format( "{} damage taken from {}.", parent_data->name(), name() ) );
-  mitigated = player->get_sample_data( fmt::format( "{} damage mitigated while at {}.", parent_data->name(), name() ) );
-  debuff    = make_buff<debuff_type>( player, parent_data, data );
+  debuff = make_buff<debuff_type>( player, parent_data, data );
 }
 
 template <class derived_actor_t>
@@ -470,13 +398,25 @@ bool level_t<derived_actor_t>::operator>( const level_t<derived_actor_t> &rhs ) 
   return data->min_threshold > rhs.data->min_threshold;
 }
 
+template <class derived_actor_t>
+std::string_view level_t<derived_actor_t>::name() const
+{
+  return data->name();
+}
+
+template <class derived_actor_t>
+double level_t<derived_actor_t>::min_threshold() const
+{
+  return data->min_threshold;
+}
+
 // stagger_t impl
 template <class derived_actor_t>
 stagger_t<derived_actor_t>::stagger_t( derived_actor_t *player, const stagger_data_t &data )
   : player( player ), data( std::move( data ) )
 {
-  // for ( auto &[ spell_data, min_threshold ] : data.levels )
-  //   player->sim->print_debug( "INIT LEVEL: {} {}", (void *)spell_data, min_threshold );
+  // "none" level
+  this->data.levels.push_back( { spell_data_t::nil(), -1.0 } );
   active         = []() { return true; };
   trigger_filter = []( school_e, result_amount_type, action_state_t * ) { return true; };
   percent        = []( school_e, result_amount_type, action_state_t        *) { return 0.5; };
@@ -492,8 +432,6 @@ template <class derived_actor_t>
 void stagger_t<derived_actor_t>::init()
 {
   std::sort( levels.begin(), levels.end(), level_cmp<derived_actor_t> );
-  for ( auto *level : levels )
-    level->init();
   current = levels.back();
 }
 
@@ -751,6 +689,71 @@ level_t<derived_actor_t> *stagger_t<derived_actor_t>::find_current_level()
     if ( current_percent > level->min_threshold() )
       return level;
   return levels.back();
+}
+
+template <class derived_actor_t, class residual_type>
+self_damage_t<derived_actor_t, residual_type>::self_damage_t( derived_actor_t *player,
+                                                              stagger_impl::stagger_t<derived_actor_t> *stagger_effect )
+  : residual_type( stagger_effect->name(), player, stagger_effect->data.self_damage ),
+    player( player ),
+    stagger_effect( stagger_effect )
+{
+  // to verify if base_type is of type residual_periodic_action_t<...> we'd need some extra machinery, so we won't check
+  // :) static_assert( std::is_base_of_v<residual_action::residual_periodic_action_t)
+  this->hasted_ticks = this->tick_may_crit = false;
+  this->target                             = player;
+  this->stats->type                        = stats_e::STATS_NEUTRAL;
+
+  this->dot_duration = 10_s;
+  this->dot_duration += 3_s;
+  this->base_tick_time = 1_s;
+}
+
+template <class derived_actor_t, class residual_type>
+proc_types self_damage_t<derived_actor_t, residual_type>::proc_type() const
+{
+  return PROC1_ANY_DAMAGE_TAKEN;
+}
+
+template <class derived_actor_t, class residual_type>
+void self_damage_t<derived_actor_t, residual_type>::impact( action_state_t *state )
+{
+  residual_type::impact( state );
+  this->player->sim->print_debug(
+      "{} current {} pool statistics pool_size={} pool_size_percent={} tick_size={} tick_size_percent={} cap={}",
+      this->player->name(), this->stagger_effect->data.name(), this->stagger_effect->pool_size(),
+      this->stagger_effect->pool_size_percent(), this->stagger_effect->tick_size(),
+      this->stagger_effect->tick_size_percent(), this->player->resources.max[ RESOURCE_HEALTH ] );
+  this->stagger_effect->damage_changed();
+  this->stagger_effect->sample_data->absorbed->add( state->result_amount );
+  this->stagger_effect->current->absorbed->add( state->result_amount );
+  this->stagger_effect->sample_data->pool_size.add( this->sim->current_time(), this->stagger_effect->pool_size() );
+  this->stagger_effect->sample_data->pool_size_percent.add( this->sim->current_time(),
+                                                            this->stagger_effect->pool_size_percent() );
+}
+
+template <class derived_actor_t, class residual_type>
+void self_damage_t<derived_actor_t, residual_type>::assess_damage( result_amount_type type, action_state_t *state )
+{
+  residual_type::assess_damage( type, state );
+  this->player->sim->print_debug(
+      "{} current {} pool statistics pool_size={} pool_size_percent={} tick_size={} tick_size_percent={} cap={}",
+      this->player->name(), this->stagger_effect->data.name(), this->stagger_effect->pool_size(),
+      this->stagger_effect->pool_size_percent(), this->stagger_effect->tick_size(),
+      this->stagger_effect->tick_size_percent(), this->player->resources.max[ RESOURCE_HEALTH ] );
+  this->stagger_effect->damage_changed();
+  this->stagger_effect->sample_data->taken->add( state->result_amount );
+  this->stagger_effect->current->taken->add( state->result_amount );
+  this->stagger_effect->sample_data->pool_size.add( this->sim->current_time(), this->stagger_effect->pool_size() );
+  this->stagger_effect->sample_data->pool_size_percent.add( this->sim->current_time(),
+                                                            this->stagger_effect->pool_size_percent() );
+}
+
+template <class derived_actor_t, class residual_type>
+void self_damage_t<derived_actor_t, residual_type>::last_tick( dot_t *dot )
+{
+  residual_type::last_tick( dot );
+  this->stagger_effect->damage_changed( true );
 }
 
 template <class derived_actor_t>

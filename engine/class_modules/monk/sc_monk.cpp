@@ -8124,15 +8124,28 @@ void monk_t::init_items()
 
 // monk_t::create_buffs =====================================================
 
+struct debuff_override : stagger_impl::debuff_t<monk_t>
+{
+  using base_t = stagger_impl::debuff_t<monk_t>;
+  debuff_override( monk_t *player, const stagger_data_t *parent_data, const level_data_t *data )
+    : base_t( player, parent_data, data )
+  {
+    add_invalidate( CACHE_HASTE );
+    set_default_value_from_effect_type( A_HASTE_ALL );
+    set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    apply_affecting_aura( player->talent.brewmaster.high_tolerance );
+  }
+};
+
 void monk_t::create_buffs()
 {
-  create_stagger( { find_spell( 124255 ),
-                    { { find_spell( 124275 ), 0.0 },
-                      { find_spell( 124274 ), 0.2 },
-                      { find_spell( 124273 ), 0.6 },
-                      { spell_data_t::nil(), 10.0 } },
-                    { "quick_sip", "staggering_strikes", "touch_of_death", "purifying_brew", "tranquil_spirit_eh",
-                      "tranquil_spirit_goto" } } );
+  create_stagger<debuff_override>( { find_spell( 124255 ),
+                                     { { find_spell( 124275 ), 0.0 },
+                                       { find_spell( 124274 ), 0.2 },
+                                       { find_spell( 124273 ), 0.6 },
+                                       { spell_data_t::nil(), 10.0 } },
+                                     { "quick_sip", "staggering_strikes", "touch_of_death", "purifying_brew",
+                                       "tranquil_spirit_eh", "tranquil_spirit_goto" } } );
 
   base_t::create_buffs();
 

@@ -1,5 +1,19 @@
 #include "sc_stagger.hpp"
 
+std::string_view level_data_t::name() const
+{
+  if ( spell_data != spell_data_t::nil() )
+    return spell_data->name_cstr();
+  if ( min_threshold > 0 )
+    return "maximum";
+  return "none";
+}
+
+std::string_view stagger_data_t::name() const
+{
+  return self_damage->name_cstr();
+}
+
 namespace stagger_impl
 {
 sample_data_t::sample_data_t( player_t* player, const stagger_data_t& data )
