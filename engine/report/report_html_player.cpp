@@ -3015,13 +3015,13 @@ void print_html_resource_changes_table( report::sc_html_stream& os, const player
 
     os.format( "<tr>\n"
                "<td class=\"left\">{}</td>\n"
-               "<td class=\"right\">{:.1f}</td>\n"
-               "<td class=\"right\">{:.2f}</td>\n"
-               "<td class=\"right\">{:.2f}</td>\n"
-               "<td class=\"right\">{:.1f}</td>\n"
-               "<td class=\"right\">{:.1f}</td>\n"
-               "<td class=\"right\">{:.1f}</td>\n"
-               "<td class=\"right\">{:.1f}</td>\n"
+               "<td class=\"right\">{:.1Lf}</td>\n"
+               "<td class=\"right\">{:.2Lf}</td>\n"
+               "<td class=\"right\">{:.2Lf}</td>\n"
+               "<td class=\"right\">{:.1Lf}</td>\n"
+               "<td class=\"right\">{:.1Lf}</td>\n"
+               "<td class=\"right\">{:.1Lf}</td>\n"
+               "<td class=\"right\">{:.1Lf}</td>\n"
                "</tr>\n",
                util::inverse_tokenize( util::resource_type_string( rt ) ),
                p.collected_data.combat_start_resource[ rt ].mean(),
