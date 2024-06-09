@@ -3697,6 +3697,288 @@ namespace actions
     }
   };
 
+  struct dimensional_rift_t : public warlock_spell_t
+  {
+    shadowy_tear_t* shadowy_tear;
+    unstable_tear_t* unstable_tear;
+    chaos_tear_t* chaos_tear;
+    flame_rift_t* flame_rift;
+
+    dimensional_rift_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Dimensional Rift", p, p->talents.dimensional_rift )
+    {
+      parse_options( options_str );
+      
+      harmful = true;
+
+      energize_type = action_energize::ON_CAST;
+      energize_amount = p->talents.dimensional_rift->effectN( 2 ).base_value() / 10.0;
+
+      shadowy_tear = new shadowy_tear_t( p );
+      unstable_tear = new unstable_tear_t( p );
+      chaos_tear = new chaos_tear_t( p );
+      flame_rift = new flame_rift_t( p );
+
+      add_child( shadowy_tear );
+      add_child( unstable_tear );
+      add_child( chaos_tear );
+      add_child( flame_rift );
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      int rift = rng().range( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B4 ) ? 4 : 3 );
+
+      switch ( rift )
+      {
+      case 0:
+        shadowy_tear->execute_on_target( target );
+        break;
+      case 1:
+        unstable_tear->execute_on_target( target );
+        break;
+      case 2:
+        chaos_tear->execute_on_target( target );
+        break;
+      case 3:
+        flame_rift->execute_on_target( target );
+        break;
+      default:
+        break;
+      }
+    }
+  };
+
+  struct shadowy_tear_t : public warlock_spell_t
+  {
+    struct rift_shadow_bolt_t : public warlock_spell_t
+    {
+      dimensional_cinder_t* cinder;
+
+      rift_shadow_bolt_t( warlock_t* p )
+        : warlock_spell_t( "Rift Shadow Bolt", p, p->talents.rift_shadow_bolt )
+      {
+        background = dual = true;
+
+        // TOCHECK: In the past, this double-dipped on both direct and periodic spell auras
+        base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
+
+        cinder = new dimensional_cinder_t( p );
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        double raw_damage = s->result_total;
+
+        if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B2 ) )
+        {
+          cinder->base_dd_min = cinder->base_dd_max = raw_damage * p()->sets->set( WARLOCK_DESTRUCTION, T31, B2 )->effectN( 1 ).percent();
+          cinder->execute_on_target( s->target );
+        }
+      }
+    };
+
+    struct shadow_barrage_t : public warlock_spell_t
+    {
+      shadow_barrage_t( warlock_t* p )
+        : warlock_spell_t( "Shadow Barrage", p, p->talents.shadow_barrage )
+      {
+        background = true;
+
+        tick_action = new rift_shadow_bolt_t( p );
+      }
+
+      double last_tick_factor( const dot_t* d, timespan_t t, timespan_t dur ) const override
+      { return 1.0; }
+    };
+
+    shadowy_tear_t( warlock_t* p )
+      : warlock_spell_t( "Shadowy Tear", p, p->talents.shadowy_tear_summon )
+    {
+      background = true;
+
+      impact_action = new shadow_barrage_t( p );
+    }
+  };
+
+  struct unstable_tear_t : public warlock_spell_t
+  {
+    struct chaos_barrage_tick_t : public warlock_spell_t
+    {
+      dimensional_cinder_t* cinder;
+
+      chaos_barrage_tick_t( warlock_t* p )
+        : warlock_spell_t( "Chaos Barrage (tick)", p, p->talents.chaos_barrage_tick )
+      {
+        background = dual = true;
+
+        base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
+
+        cinder = new dimensional_cinder_t( p );
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        double raw_damage = s->result_total;
+
+        if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B2 ) )
+        {
+          cinder->base_dd_min = cinder->base_dd_max = raw_damage * p()->sets->set( WARLOCK_DESTRUCTION, T31, B2 )->effectN( 1 ).percent();
+          cinder->execute_on_target( s->target );
+        }
+      }
+    };
+
+    struct chaos_barrage_t : public warlock_spell_t
+    {
+      chaos_barrage_t( warlock_t* p )
+        : warlock_spell_t( "Chaos Barrage", p, p->talents.chaos_barrage )
+      {
+        background = true;
+
+        tick_action = new chaos_barrage_tick_t( p );
+      }
+    };
+
+    unstable_tear_t( warlock_t* p )
+      : warlock_spell_t( "Unstable Tear", p, p->talents.unstable_tear_summon )
+    {
+      background = true;
+
+      impact_action = new chaos_barrage_t( p );
+    }
+  };
+
+  struct chaos_tear_t : public warlock_spell_t
+  {
+    struct rift_chaos_bolt_t : public warlock_spell_t
+    {
+      dimensional_cinder_t* cinder;
+
+      rift_chaos_bolt_t( warlock_t* p )
+        : warlock_spell_t( "Rift Chaos Bolt", p, p->talents.rift_chaos_bolt )
+      {
+        background = true;
+
+        base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
+
+        cinder = new dimensional_cinder_t( p );
+      }
+
+      double composite_crit_chance() const override
+      { return 1.0; }
+
+      double calculate_direct_amount( action_state_t* s ) const override
+      {
+        warlock_spell_t::calculate_direct_amount( s );
+
+        s->result_total *= 1.0 + player->cache.spell_crit_chance();
+
+        return s->result_total;
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        double raw_damage = s->result_total;
+
+        if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B2 ) )
+        {
+          cinder->base_dd_min = cinder->base_dd_max = raw_damage * p()->sets->set( WARLOCK_DESTRUCTION, T31, B2 )->effectN( 1 ).percent();
+          cinder->execute_on_target( s->target );
+        }
+      }
+    };
+
+    chaos_tear_t( warlock_t* p )
+      : warlock_spell_t( "Chaos Tear", p, p->talents.chaos_tear_summon )
+    {
+      background = true;
+      
+      impact_action = new rift_chaos_bolt_t( p );
+    }
+  };
+
+  struct flame_rift_t : public warlock_spell_t
+  {
+    struct searing_bolt_t : public warlock_spell_t
+    {
+      dimensional_cinder_t* cinder;
+
+      searing_bolt_t( warlock_t* p )
+        : warlock_spell_t( "Searing Bolt", p, p->tier.searing_bolt )
+      {
+        background = true;
+        dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
+
+        base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
+
+        cinder = new dimensional_cinder_t( p );
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        double raw_damage = s->result_total;
+
+        if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B2 ) )
+        {
+          cinder->base_dd_min = cinder->base_dd_max = raw_damage * p()->sets->set( WARLOCK_DESTRUCTION, T31, B2 )->effectN( 1 ).percent();
+          cinder->execute_on_target( s->target );
+        }
+      }
+    };
+
+    searing_bolt_t* bolt;
+
+    flame_rift_t( warlock_t* p )
+      : warlock_spell_t( "Flame Rift", p, p->tier.flame_rift )
+    {
+      background = true;
+      may_miss = false;
+
+      bolt = new searing_bolt_t( p );
+      add_child( bolt );
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      timespan_t min_delay = 0_ms;
+      timespan_t max_delay = timespan_t::from_seconds( p()->sets->set( WARLOCK_DESTRUCTION, T31, B4 )->effectN( 1 ).base_value() );
+      player_t* tar = target;
+
+      for ( int i = 0; i < p()->sets->set( WARLOCK_DESTRUCTION, T31, B4 )->effectN( 1 ).base_value(); i++ )
+      {
+        timespan_t delay = rng().gauss( i * 500_ms, 500_ms );
+        delay = std::min( std::max( delay, min_delay ), max_delay );
+        make_event( *sim, delay, [ this, tar ]{ this->bolt->execute_on_target( tar ); } );
+      }
+    }
+  };
+
+  struct dimensional_cinder_t : public warlock_spell_t
+  {
+    dimensional_cinder_t( warlock_t* p )
+      : warlock_spell_t( "Dimensional Cinder", p, p->tier.dimensional_cinder )
+    {
+      background = dual = true;
+      may_crit = false;
+      aoe = -1;
+
+      base_dd_min = base_dd_max = 0.0;
+    }
+  };
+
   struct internal_combustion_t : public warlock_spell_t
   {
     internal_combustion_t( warlock_t* p )
