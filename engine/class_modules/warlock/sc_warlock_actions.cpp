@@ -338,7 +338,7 @@ using namespace helpers;
     {
       if ( destruction() && use_havoc() )
       {
-        assert( spell_t::n_targets == 0 );
+        assert( spell_t::n_targets() == 0 );
         return 2;
       }
       else
