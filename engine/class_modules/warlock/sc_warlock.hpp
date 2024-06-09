@@ -716,6 +716,7 @@ public:
   bool crescendo_check( warlock_t* p ); 
   void create_actions() override;
   void create_soul_swap_actions();
+  void create_affliction_proc_actions();
   void create_demonology_proc_actions();
   void create_destruction_proc_actions();
   action_t* create_action( util::string_view name, util::string_view options ) override;

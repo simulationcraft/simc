@@ -4189,4 +4189,278 @@ namespace actions
 
   // Destruction Actions End
 }
+  // Action Creation Begin
+
+  action_t* warlock_t::create_action( util::string_view action_name, util::string_view options_str )
+  {
+    if ( specialization() == WARLOCK_AFFLICTION )
+    {
+      if ( action_t* aff_action = create_action_affliction( action_name, options_str ) )
+        return aff_action;
+    }
+
+    if ( specialization() == WARLOCK_DEMONOLOGY )
+    {
+      if ( action_t* demo_action = create_action_demonology( action_name, options_str ) )
+        return demo_action;
+    }
+
+    if ( specialization() == WARLOCK_DESTRUCTION )
+    {
+      if ( action_t* destro_action = create_action_destruction( action_name, options_str ) )
+        return destro_action;
+    }
+
+    if ( action_t* generic_action = create_action_warlock( action_name, options_str ) )
+      return generic_action;
+
+    return player_t::create_action( action_name, options_str );
+  }
+
+  action_t* warlock_t::create_action_warlock( util::string_view action_name, util::string_view options_str )
+  {
+    using namespace actions;
+
+    if ( ( action_name == "summon_pet" ) && default_pet.empty() )
+    {
+      sim->errorf( "Player %s used a generic pet summoning action without specifying a default_pet.\n", name() );
+      return nullptr;
+    }
+
+    // Pets
+    if ( action_name == "summon_felhunter" )
+      return new summon_main_pet_t( "felhunter", this );
+    if ( action_name == "summon_felguard" && specialization() == WARLOCK_DEMONOLOGY )
+      return new summon_main_pet_t( "felguard", this );
+    if ( action_name == "summon_sayaad" )
+      return new summon_main_pet_t( "sayaad", this, 366222 );
+    if ( action_name == "summon_succubus" )
+      return new summon_main_pet_t( "succubus", this, 366222 );
+    if ( action_name  == "summon_incubus" )
+      return new summon_main_pet_t( "incubus", this, 366222 );
+    if ( action_name == "summon_voidwalker" )
+      return new summon_main_pet_t( "voidwalker", this );
+    if ( action_name == "summon_imp" )
+      return new summon_main_pet_t( "imp", this );
+    if ( action_name == "summon_pet" )
+    {
+      if ( default_pet == "sayaad" || default_pet == "succubus" || default_pet == "incubus" )
+        return new summon_main_pet_t( default_pet, this, 366222 );
+
+      return new summon_main_pet_t( default_pet, this );
+    }
+
+    // Shared Spells
+    if ( action_name == "drain_life" )
+      return new drain_life_t( this, options_str );
+    if ( action_name == "corruption" && specialization() != WARLOCK_DESTRUCTION )
+      return new corruption_t( this, options_str, false );
+    if ( action_name == "shadow_bolt" && specialization() != WARLOCK_DESTRUCTION )
+      return new shadow_bolt_t( this, options_str );
+    if ( action_name == "grimoire_of_sacrifice" )
+      return new grimoire_of_sacrifice_t( this, options_str );  // aff and destro
+    if ( action_name == "interrupt" )
+      return new interrupt_t( action_name, this, options_str );
+    if ( action_name == "soulburn" )
+      return new soulburn_t( this, options_str );
+
+    return nullptr;
+  }
+
+  action_t* warlock_t::create_action_affliction( util::string_view action_name, util::string_view options_str )
+  {
+    using namespace actions;
+
+    if ( action_name == "agony" )
+      return new agony_t( this, options_str );
+    if ( action_name == "unstable_affliction" )
+      return new unstable_affliction_t( this, options_str );
+    if ( action_name == "summon_darkglare" )
+      return new summon_darkglare_t( this, options_str );
+    if ( action_name == "drain_soul" )
+      return new drain_soul_t( this, options_str );
+    if ( action_name == "haunt" )
+      return new haunt_t( this, options_str );
+    if ( action_name == "phantom_singularity" )
+      return new phantom_singularity_t( this, options_str );
+    if ( action_name == "siphon_life" )
+      return new siphon_life_t( this, options_str );
+    if ( action_name == "vile_taint" )
+      return new vile_taint_t( this, options_str );
+    if ( action_name == "malefic_rapture" )
+      return new malefic_rapture_t( this, options_str );
+    if ( action_name == "soul_rot" )
+      return new soul_rot_t( this, options_str );
+    if ( action_name == "seed_of_corruption" )
+      return new seed_of_corruption_t( this, options_str );
+
+    return nullptr;
+  }
+
+  action_t* warlock_t::create_action_demonology( util::string_view action_name, util::string_view options_str )
+  {
+    using namespace actions;
+
+    if ( action_name == "demonbolt" )
+      return new demonbolt_t( this, options_str );
+    if ( action_name == "hand_of_guldan" )
+      return new hand_of_guldan_t( this, options_str );
+    if ( action_name == "implosion" )
+      return new implosion_t( this, options_str );
+    if ( action_name == "demonic_strength" )
+      return new demonic_strength_t( this, options_str );
+    if ( action_name == "bilescourge_bombers" )
+      return new bilescourge_bombers_t( this, options_str );
+    if ( action_name == "doom" )
+      return new doom_t( this, options_str );
+    if ( action_name == "power_siphon" )
+      return new power_siphon_t( this, options_str );
+    if ( action_name == "call_dreadstalkers" )
+      return new call_dreadstalkers_t( this, options_str );
+    if ( action_name == "summon_felguard" )
+      return new summon_main_pet_t( "felguard", this );
+    if ( action_name == "summon_demonic_tyrant" )
+      return new summon_demonic_tyrant_t( this, options_str );
+    if ( action_name == "summon_vilefiend" )
+      return new summon_vilefiend_t( this, options_str );
+    if ( action_name == "grimoire_felguard" )
+      return new grimoire_felguard_t( this, options_str );
+    if ( action_name == "guillotine" )
+      return new guillotine_t( this, options_str );
+
+    return nullptr;
+  }
+
+  action_t* warlock_t::create_action_destruction( util::string_view action_name, util::string_view options_str )
+  {
+    using namespace actions;
+
+    if ( action_name == "conflagrate" )
+      return new conflagrate_t( this, options_str );
+    if ( action_name == "incinerate" )
+      return new incinerate_t( this, options_str );
+    if ( action_name == "immolate" )
+      return new immolate_t( this, options_str );
+    if ( action_name == "chaos_bolt" )
+      return new chaos_bolt_t( this, options_str );
+    if ( action_name == "rain_of_fire" )
+      return new rain_of_fire_t( this, options_str );
+    if ( action_name == "havoc" )
+      return new havoc_t( this, options_str );
+    if ( action_name == "summon_infernal" )
+      return new summon_infernal_t( this, options_str );
+    if ( action_name == "soul_fire" )
+      return new soul_fire_t( this, options_str );
+    if ( action_name == "shadowburn" )
+      return new shadowburn_t( this, options_str );
+    if ( action_name == "cataclysm" )
+      return new cataclysm_t( this, options_str );
+    if ( action_name == "channel_demonfire" )
+      return new channel_demonfire_t( this, options_str );
+    if ( action_name == "dimensional_rift" )
+      return new dimensional_rift_t( this, options_str );
+
+    return nullptr;
+  }
+
+  void warlock_t::create_actions()
+  {
+    if ( specialization() == WARLOCK_AFFLICTION )
+      create_affliction_proc_actions();
+
+    if ( specialization() == WARLOCK_DEMONOLOGY )
+      create_demonology_proc_actions();
+
+    if ( specialization() == WARLOCK_DESTRUCTION )
+      create_destruction_proc_actions();
+
+    player_t::create_actions();
+  }
+
+  void warlock_t::create_affliction_proc_actions()
+  {
+    proc_actions.soul_flame_proc = new actions::soul_flame_t( this );
+    proc_actions.pandemic_invocation_proc = new actions::pandemic_invocation_t( this );
+  }
+
+  void warlock_t::create_demonology_proc_actions()
+  {
+    proc_actions.bilescourge_bombers_proc = new actions::bilescourge_bombers_proc_t( this );
+    proc_actions.doom_brand_explosion = new actions::doom_brand_t( this );
+  }
+
+  void warlock_t::create_destruction_proc_actions()
+  {
+    proc_actions.avatar_of_destruction = new actions::avatar_of_destruction_t( this );
+    proc_actions.channel_demonfire = new actions::channel_demonfire_tier_t( this );
+  }
+
+  void warlock_t::init_assessors()
+  {
+    player_t::init_assessors();
+
+    auto assessor_fn = [ this ]( result_amount_type rt, action_state_t* s ){
+      if ( get_target_data( s->target )->dots_seed_of_corruption->is_ticking() )
+        accumulate_seed_of_corruption( get_target_data( s->target ), s->result_total );
+
+      return assessor::CONTINUE;
+    };
+
+    assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+
+    for ( auto pet : pet_list )
+    {
+      pet->assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+    }
+  }
+
+  static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
+  {
+    td->soc_threshold -= amount;
+
+    if ( td->soc_threshold <= 0 )
+    {
+      td->dots_seed_of_corruption->cancel();
+    }
+    else if ( td->source->sim->log )
+      td->source->sim->print_log( "Remaining damage to explode Seed of Corruption on {} is {}.", td->target->name_str, td->soc_threshold );
+  }
+
+  void warlock_t::init_special_effects()
+  {
+    player_t::init_special_effects();
+
+    if ( talents.grimoire_of_sacrifice.ok() )
+    {
+      auto const sac_effect = new special_effect_t( this );
+      sac_effect->name_str = "grimoire_of_sacrifice_effect";
+      sac_effect->spell_id = talents.grimoire_of_sacrifice_buff->id();
+      sac_effect->execute_action = new actions::grimoire_of_sacrifice_damage_t( this );
+      special_effects.push_back( sac_effect );
+
+      auto cb = new dbc_proc_callback_t( this, *sac_effect );
+
+      cb->initialize();
+      cb->deactivate();
+
+      buffs.grimoire_of_sacrifice->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ){
+          if ( new_ == 1 ) cb->activate();
+          else cb->deactivate();
+        } );
+    }
+
+    if ( talents.grimoire_of_synergy->ok() )
+    {
+      auto const syn_effect = new special_effect_t( this );
+      syn_effect->name_str = "demonic_synergy_effect";
+      syn_effect->spell_id = talents.grimoire_of_synergy->id();
+      special_effects.push_back( syn_effect );
+
+      auto cb = new warlock::actions::demonic_synergy_callback_t( this, *syn_effect );
+
+      cb->initialize();
+    }
+  }
+
+  // Action Creation End
 }
