@@ -7,8 +7,8 @@
 
 namespace warlock
 {
-namespace actions
-{
+using namespace helpers;
+
   struct warlock_spell_t : public spell_t
   {
     struct affected_by_t
@@ -1260,14 +1260,14 @@ namespace actions
   {
     struct seed_of_corruption_aoe_t : public warlock_spell_t
     {
-      corruption_t* corruption;
+      corruption_t* corr;
+      doom_blossom_t* doom_blossom;
       bool cruel_epiphany;
       bool umbrafire_kindling;
-      doom_blossom_t* doom_blossom;
 
       seed_of_corruption_aoe_t( warlock_t* p )
         : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
-        corruption( new corruption_t( p, "", true ) ),
+        corr( new corruption_t( p, "", true ) ),
         cruel_epiphany( false ),
         umbrafire_kindling( false ),
         doom_blossom( new doom_blossom_t( p ) )
@@ -1275,9 +1275,9 @@ namespace actions
         aoe = -1;
         background = dual = true;
 
-        corruption->background = true;
-        corruption->dual = true;
-        corruption->base_costs[ RESOURCE_MANA ] = 0;
+        corr->background = true;
+        corr->dual = true;
+        corr->base_costs[ RESOURCE_MANA ] = 0;
 
         add_child( doom_blossom );
       }
@@ -1308,7 +1308,7 @@ namespace actions
             tdata->dots_agony->increment( (int)( p()->talents.agonizing_corruption->effectN( 1 ).base_value() ) ); 
           }
           
-          corruption->execute_on_target( s->target );
+          corr->execute_on_target( s->target );
         }
       }
 
@@ -1564,7 +1564,7 @@ namespace actions
 
         if ( p()->talents.tormented_crescendo.ok() )
         {
-          if ( crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 2 ).percent() ) )
+          if ( actions::crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 2 ).percent() ) )
           {
             p()->procs.tormented_crescendo->occur();
             p()->buffs.tormented_crescendo->trigger();
@@ -1839,7 +1839,8 @@ namespace actions
 
   struct doom_blossom_t : public warlock_spell_t
   {
-    doom_blossom_t( warlock_t* p ) : warlock_spell_t( "Doom Blossom", p, p->talents.doom_blossom_proc )
+    doom_blossom_t( warlock_t* p )
+      : warlock_spell_t( "Doom Blossom", p, p->talents.doom_blossom_proc )
     {
       background = dual = true;
       aoe = -1;
@@ -4319,9 +4320,7 @@ namespace actions
   { }
 
   const char* sc_event_t::name() const
-  {
-    return "soul_conduit_event";
-  }
+  { return "soul_conduit_event"; }
 
   void sc_event_t::execute()
   {
@@ -4383,7 +4382,6 @@ namespace actions
   { return std::max( 0_ms, this->remains() + diff ); }
 
   // Helper Functions End
-} // namespace actions
   
   // Action Creation Begin
 
@@ -4573,20 +4571,20 @@ namespace actions
 
   void warlock_t::create_affliction_proc_actions()
   {
-    proc_actions.soul_flame_proc = new actions::soul_flame_t( this );
-    proc_actions.pandemic_invocation_proc = new actions::pandemic_invocation_t( this );
+    proc_actions.soul_flame_proc = new soul_flame_t( this );
+    proc_actions.pandemic_invocation_proc = new pandemic_invocation_t( this );
   }
 
   void warlock_t::create_demonology_proc_actions()
   {
-    proc_actions.bilescourge_bombers_proc = new actions::bilescourge_bombers_proc_t( this );
-    proc_actions.doom_brand_explosion = new actions::doom_brand_t( this );
+    proc_actions.bilescourge_bombers_proc = new bilescourge_bombers_proc_t( this );
+    proc_actions.doom_brand_explosion = new doom_brand_t( this );
   }
 
   void warlock_t::create_destruction_proc_actions()
   {
-    proc_actions.avatar_of_destruction = new actions::avatar_of_destruction_t( this );
-    proc_actions.channel_demonfire = new actions::channel_demonfire_tier_t( this );
+    proc_actions.avatar_of_destruction = new avatar_of_destruction_t( this );
+    proc_actions.channel_demonfire = new channel_demonfire_tier_t( this );
   }
 
   void warlock_t::init_assessors()
@@ -4629,7 +4627,7 @@ namespace actions
       auto const sac_effect = new special_effect_t( this );
       sac_effect->name_str = "grimoire_of_sacrifice_effect";
       sac_effect->spell_id = talents.grimoire_of_sacrifice_buff->id();
-      sac_effect->execute_action = new actions::grimoire_of_sacrifice_damage_t( this );
+      sac_effect->execute_action = new grimoire_of_sacrifice_damage_t( this );
       special_effects.push_back( sac_effect );
 
       auto cb = new dbc_proc_callback_t( this, *sac_effect );

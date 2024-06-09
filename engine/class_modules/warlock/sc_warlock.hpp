@@ -793,7 +793,7 @@ public:
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );
 };
 
-namespace actions
+namespace helpers
 {
   struct imp_delay_event_t : public player_event_t
   {

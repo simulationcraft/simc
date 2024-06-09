@@ -10,10 +10,6 @@
 
 namespace warlock
 {
-// Spells
-namespace actions
-{
-}  // namespace actions
 
 warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   : actor_target_data_t( target, &p ), soc_threshold( 0.0 ), warlock( p )
