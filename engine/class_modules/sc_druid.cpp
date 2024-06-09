@@ -4285,9 +4285,7 @@ struct ferocious_bite_base_t : public cat_finisher_t
     if ( !result_is_hit( s->result ) )
       return;
 
-    auto _td = td( s->target );
-
-    _td->debuff.sabertooth->trigger( cp( s ) );
+    td( s->target )->debuff.sabertooth->trigger( this, cp( s ) );
 
     if ( p()->talent.bursting_growth.ok() )
       p()->active.bursting_growth->execute_on_target( s->target );
@@ -12631,6 +12629,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     ->apply_affecting_aura( source.talent.circle_of_life_and_death );
 
   debuff.sabertooth = make_debuff( source.talent.sabertooth.ok(), *this, "sabertooth_debuff", source.spec.sabertooth )
+    ->set_trigger_spell( source.talent.sabertooth )
     ->set_max_stack( as<int>( source.resources.base[ RESOURCE_COMBO_POINT ] ) );
 
   debuff.stellar_amplification = make_debuff( source.talent.stellar_amplification.ok(),
