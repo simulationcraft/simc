@@ -814,7 +814,7 @@ namespace helpers
     virtual void execute() override;
   };
 
-  bool crescendo_check( warlock_t* );
+  bool crescendo_check( warlock_t* p );
 }
 
 namespace buffs

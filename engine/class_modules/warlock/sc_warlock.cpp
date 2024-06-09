@@ -435,6 +435,37 @@ double warlock_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
+static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
+{
+  td->soc_threshold -= amount;
+
+  if ( td->soc_threshold <= 0 )
+  {
+    td->dots_seed_of_corruption->cancel();
+  }
+  else if ( td->source->sim->log )
+    td->source->sim->print_log( "Remaining damage to explode Seed of Corruption on {} is {}.", td->target->name_str, td->soc_threshold );
+}
+
+void warlock_t::init_assessors()
+{
+  player_t::init_assessors();
+
+  auto assessor_fn = [ this ]( result_amount_type rt, action_state_t* s ){
+    if ( get_target_data( s->target )->dots_seed_of_corruption->is_ticking() )
+      accumulate_seed_of_corruption( get_target_data( s->target ), s->result_total );
+
+    return assessor::CONTINUE;
+  };
+
+  assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+
+  for ( auto pet : pet_list )
+  {
+    pet->assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+  }
+}
+
 // Used to determine how many Wild Imps are waiting to be spawned from Hand of Guldan
 int warlock_t::get_spawning_imp_count()
 {

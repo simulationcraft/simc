@@ -261,7 +261,7 @@ using namespace helpers;
 
     double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double m = warlock_spell_t::composite_da_multiplier( s );
+      double m = spell_t::composite_da_multiplier( s );
 
       if ( affliction() && affected_by.potent_afflictions_dd )
       {
@@ -785,7 +785,7 @@ using namespace helpers;
 
         if ( p()->talents.tormented_crescendo->ok() )
         {
-          if ( helpers::crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
+          if ( crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
           {
             p()->procs.tormented_crescendo->occur();
             p()->buffs.tormented_crescendo->trigger();
@@ -1574,7 +1574,7 @@ using namespace helpers;
 
         if ( p()->talents.tormented_crescendo.ok() )
         {
-          if ( helpers::crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 2 ).percent() ) )
+          if ( crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 2 ).percent() ) )
           {
             p()->procs.tormented_crescendo->occur();
             p()->buffs.tormented_crescendo->trigger();
@@ -3189,6 +3189,47 @@ using namespace helpers;
     { return impact_action->get_dot( t ); }
   };
 
+  struct internal_combustion_t : public warlock_spell_t
+  {
+    internal_combustion_t( warlock_t* p )
+      : warlock_spell_t( "Internal Combustion", p, p->talents.internal_combustion )
+    {
+      background = dual = true;
+    }
+
+    void init() override
+    {
+      warlock_spell_t::init();
+
+      snapshot_flags &= STATE_NO_MULTIPLIER;
+    }
+
+    void execute() override
+    {
+      dot_t* dot = td( target )->dots_immolate;
+
+      assert( dot->current_action );
+      action_state_t* state = dot->current_action->get_state( dot->state );
+      dot->current_action->calculate_tick_amount( state, 1.0 );
+
+      double tick_base_damage = state->result_raw;
+
+      if ( td( target )->debuffs_conflagrate->up() )
+        tick_base_damage /= 1.0 + td( target )->debuffs_conflagrate->check_value();
+
+      timespan_t remaining = std::min( dot->remains(), timespan_t::from_seconds( p()->talents.internal_combustion->effectN( 1 ).base_value() ) );
+      timespan_t dot_tick_time = dot->current_action->tick_time( state );
+      double ticks_left = remaining / dot_tick_time;
+      double total_damage = ticks_left * tick_base_damage;
+
+      action_state_t::release( state );
+
+      base_dd_min = base_dd_max = total_damage;
+      warlock_spell_t::execute();
+      td( target )->dots_immolate->adjust_duration( -remaining );
+    }
+  };
+
   struct chaos_bolt_t : public warlock_spell_t
   {
     struct cry_havoc_t : public warlock_spell_t
@@ -3817,57 +3858,16 @@ using namespace helpers;
     }
   };
 
-  struct dimensional_rift_t : public warlock_spell_t
+  struct dimensional_cinder_t : public warlock_spell_t
   {
-    shadowy_tear_t* shadowy_tear;
-    unstable_tear_t* unstable_tear;
-    chaos_tear_t* chaos_tear;
-    flame_rift_t* flame_rift;
-
-    dimensional_rift_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Dimensional Rift", p, p->talents.dimensional_rift )
+    dimensional_cinder_t( warlock_t* p )
+      : warlock_spell_t( "Dimensional Cinder", p, p->tier.dimensional_cinder )
     {
-      parse_options( options_str );
-      
-      harmful = true;
+      background = dual = true;
+      may_crit = false;
+      aoe = -1;
 
-      energize_type = action_energize::ON_CAST;
-      energize_amount = p->talents.dimensional_rift->effectN( 2 ).base_value() / 10.0;
-
-      shadowy_tear = new shadowy_tear_t( p );
-      unstable_tear = new unstable_tear_t( p );
-      chaos_tear = new chaos_tear_t( p );
-      flame_rift = new flame_rift_t( p );
-
-      add_child( shadowy_tear );
-      add_child( unstable_tear );
-      add_child( chaos_tear );
-      add_child( flame_rift );
-    }
-
-    void execute() override
-    {
-      warlock_spell_t::execute();
-
-      int rift = rng().range( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B4 ) ? 4 : 3 );
-
-      switch ( rift )
-      {
-      case 0:
-        shadowy_tear->execute_on_target( target );
-        break;
-      case 1:
-        unstable_tear->execute_on_target( target );
-        break;
-      case 2:
-        chaos_tear->execute_on_target( target );
-        break;
-      case 3:
-        flame_rift->execute_on_target( target );
-        break;
-      default:
-        break;
-      }
+      base_dd_min = base_dd_max = 0.0;
     }
   };
 
@@ -4086,57 +4086,74 @@ using namespace helpers;
     }
   };
 
-  struct dimensional_cinder_t : public warlock_spell_t
+  struct dimensional_rift_t : public warlock_spell_t
   {
-    dimensional_cinder_t( warlock_t* p )
-      : warlock_spell_t( "Dimensional Cinder", p, p->tier.dimensional_cinder )
+    shadowy_tear_t* shadowy_tear;
+    unstable_tear_t* unstable_tear;
+    chaos_tear_t* chaos_tear;
+    flame_rift_t* flame_rift;
+
+    dimensional_rift_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Dimensional Rift", p, p->talents.dimensional_rift )
     {
-      background = dual = true;
-      may_crit = false;
-      aoe = -1;
+      parse_options( options_str );
+      
+      harmful = true;
 
-      base_dd_min = base_dd_max = 0.0;
-    }
-  };
+      energize_type = action_energize::ON_CAST;
+      energize_amount = p->talents.dimensional_rift->effectN( 2 ).base_value() / 10.0;
 
-  struct internal_combustion_t : public warlock_spell_t
-  {
-    internal_combustion_t( warlock_t* p )
-      : warlock_spell_t( "Internal Combustion", p, p->talents.internal_combustion )
-    {
-      background = dual = true;
-    }
+      shadowy_tear = new shadowy_tear_t( p );
+      unstable_tear = new unstable_tear_t( p );
+      chaos_tear = new chaos_tear_t( p );
+      flame_rift = new flame_rift_t( p );
 
-    void init() override
-    {
-      warlock_spell_t::init();
-
-      snapshot_flags &= STATE_NO_MULTIPLIER;
+      add_child( shadowy_tear );
+      add_child( unstable_tear );
+      add_child( chaos_tear );
+      add_child( flame_rift );
     }
 
     void execute() override
     {
-      dot_t* dot = td( target )->dots_immolate;
-
-      assert( dot->current_action );
-      action_state_t* state = dot->current_action->get_state( dot->state );
-      dot->current_action->calculate_tick_amount( state, 1.0 );
-
-      double tick_base_damage = state->result_raw;
-
-      if ( td( target )->debuffs_conflagrate->up() )
-        tick_base_damage /= 1.0 + td( target )->debuffs_conflagrate->check_value();
-
-      timespan_t remaining = std::min( dot->remains(), timespan_t::from_seconds( p()->talents.internal_combustion->effectN( 1 ).base_value() ) );
-      timespan_t dot_tick_time = dot->current_action->tick_time( state );
-      double ticks_left = remaining / dot_tick_time;
-      double total_damage = ticks_left * tick_base_damage;
-
-      action_state_t::release( state );
-
-      base_dd_min = base_dd_max = total_damage;
       warlock_spell_t::execute();
-      td( target )->dots_immolate->adjust_duration( -remaining );
+
+      int rift = rng().range( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B4 ) ? 4 : 3 );
+
+      switch ( rift )
+      {
+      case 0:
+        shadowy_tear->execute_on_target( target );
+        break;
+      case 1:
+        unstable_tear->execute_on_target( target );
+        break;
+      case 2:
+        chaos_tear->execute_on_target( target );
+        break;
+      case 3:
+        flame_rift->execute_on_target( target );
+        break;
+      default:
+        break;
+      }
+    }
+  };
+
+  struct infernal_awakening_t : public warlock_spell_t
+  {
+    infernal_awakening_t( warlock_t* p )
+      : warlock_spell_t( "Infernal Awakening", p, p->talents.infernal_awakening )
+    {
+      background = dual = true;
+      aoe = -1;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+      
+      p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_main->duration() );
     }
   };
 
@@ -4161,23 +4178,6 @@ using namespace helpers;
 
       if ( p()->talents.rain_of_chaos.ok() )
         p()->buffs.rain_of_chaos->trigger();
-    }
-  };
-
-  struct infernal_awakening_t : public warlock_spell_t
-  {
-    infernal_awakening_t( warlock_t* p )
-      : warlock_spell_t( "Infernal Awakening", p, p->talents.infernal_awakening )
-    {
-      background = dual = true;
-      aoe = -1;
-    }
-
-    void execute() override
-    {
-      warlock_spell_t::execute();
-      
-      p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_main->duration() );
     }
   };
 
@@ -4338,7 +4338,7 @@ using namespace helpers;
   }
 
   // Checks whether Tormented Crescendo conditions are met
-  bool crescendo_check( warlock_t* p )
+  bool helpers::crescendo_check( warlock_t* p )
   {
     bool agony = false;
     bool corruption = false;
@@ -4413,8 +4413,6 @@ using namespace helpers;
 
   action_t* warlock_t::create_action_warlock( util::string_view action_name, util::string_view options_str )
   {
-    using namespace actions;
-
     if ( ( action_name == "summon_pet" ) && default_pet.empty() )
     {
       sim->errorf( "Player %s used a generic pet summoning action without specifying a default_pet.\n", name() );
@@ -4463,8 +4461,6 @@ using namespace helpers;
 
   action_t* warlock_t::create_action_affliction( util::string_view action_name, util::string_view options_str )
   {
-    using namespace actions;
-
     if ( action_name == "agony" )
       return new agony_t( this, options_str );
     if ( action_name == "unstable_affliction" )
@@ -4493,8 +4489,6 @@ using namespace helpers;
 
   action_t* warlock_t::create_action_demonology( util::string_view action_name, util::string_view options_str )
   {
-    using namespace actions;
-
     if ( action_name == "demonbolt" )
       return new demonbolt_t( this, options_str );
     if ( action_name == "hand_of_guldan" )
@@ -4525,8 +4519,6 @@ using namespace helpers;
 
   action_t* warlock_t::create_action_destruction( util::string_view action_name, util::string_view options_str )
   {
-    using namespace actions;
-
     if ( action_name == "conflagrate" )
       return new conflagrate_t( this, options_str );
     if ( action_name == "incinerate" )
@@ -4585,37 +4577,6 @@ using namespace helpers;
   {
     proc_actions.avatar_of_destruction = new avatar_of_destruction_t( this );
     proc_actions.channel_demonfire = new channel_demonfire_tier_t( this );
-  }
-
-  void warlock_t::init_assessors()
-  {
-    player_t::init_assessors();
-
-    auto assessor_fn = [ this ]( result_amount_type rt, action_state_t* s ){
-      if ( get_target_data( s->target )->dots_seed_of_corruption->is_ticking() )
-        accumulate_seed_of_corruption( get_target_data( s->target ), s->result_total );
-
-      return assessor::CONTINUE;
-    };
-
-    assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
-
-    for ( auto pet : pet_list )
-    {
-      pet->assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
-    }
-  }
-
-  static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
-  {
-    td->soc_threshold -= amount;
-
-    if ( td->soc_threshold <= 0 )
-    {
-      td->dots_seed_of_corruption->cancel();
-    }
-    else if ( td->source->sim->log )
-      td->source->sim->print_log( "Remaining damage to explode Seed of Corruption on {} is {}.", td->target->name_str, td->soc_threshold );
   }
 
   void warlock_t::init_special_effects()
