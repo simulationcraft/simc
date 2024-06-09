@@ -400,6 +400,104 @@ namespace actions
 
   // Shared Class Actions Begin
 
+  struct summon_pet_t : public warlock_spell_t
+  {
+    timespan_t summoning_duration;
+    std::string pet_name;
+    warlock_pet_t* pet;
+
+  private:
+    void _init_summon_pet_t()
+    {
+      util::tokenize( pet_name );
+      harmful = false;
+
+      if ( data().ok()
+        && std::find( p()->pet_name_list.begin(), p()->pet_name_list.end(), pet_name ) == p()->pet_name_list.end() )
+        p()->pet_name_list.push_back( pet_name );
+
+      target = player;
+    }
+
+  public:
+    summon_pet_t( util::string_view n, warlock_t* p, const spell_data_t* sd )
+      : warlock_spell_t( n, p, sd ),
+      summoning_duration( 0_ms ),
+      pet_name( n ),
+      pet( nullptr )
+    { _init_summon_pet_t(); }
+
+    summon_pet_t( util::string_view n, warlock_t* p, int id )
+      : summon_pet_t( n, p, p->find_spell( id ) )
+    { }
+
+    summon_pet_t( util::string_view n, warlock_t* p )
+      : summon_pet_t( n, p, p->find_class_spell( n ) )
+    { }
+
+    void init_finished() override
+    {
+      pet = debug_cast<warlock_pet_t*>( player->find_pet( pet_name ) );
+
+      warlock_spell_t::init_finished();
+    }
+
+    virtual void execute() override
+    {
+      pet->summon( summoning_duration );
+
+      warlock_spell_t::execute();
+    }
+
+    bool ready() override
+    {
+      if ( !pet )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+  };
+
+  struct summon_main_pet_t : public summon_pet_t
+  {
+    summon_main_pet_t( util::string_view n, warlock_t* p, int id )
+      : summon_pet_t( n, p, id )
+    { ignore_false_positive = true; }
+
+    summon_main_pet_t( util::string_view n, warlock_t* p )
+      : summon_pet_t( n, p )
+    { ignore_false_positive = true; }
+
+    void schedule_execute( action_state_t* s = nullptr ) override
+    {
+      summon_pet_t::schedule_execute( s );
+
+      if ( p()->warlock_pet_list.active )
+      {
+        p()->warlock_pet_list.active->dismiss();
+        p()->warlock_pet_list.active = nullptr;
+      }
+    }
+
+    virtual bool ready() override
+    {
+      if ( p()->warlock_pet_list.active == pet )
+        return false;
+
+      return summon_pet_t::ready();
+    }
+
+    virtual void execute() override
+    {
+      summon_pet_t::execute();
+
+      p()->warlock_pet_list.active = pet;
+
+      if ( p()->buffs.grimoire_of_sacrifice->check() )
+        p()->buffs.grimoire_of_sacrifice->expire();
+    }
+  };
+
   struct drain_life_t : public warlock_spell_t
   {
 
@@ -4331,8 +4429,6 @@ namespace actions
       return new power_siphon_t( this, options_str );
     if ( action_name == "call_dreadstalkers" )
       return new call_dreadstalkers_t( this, options_str );
-    if ( action_name == "summon_felguard" )
-      return new summon_main_pet_t( "felguard", this );
     if ( action_name == "summon_demonic_tyrant" )
       return new summon_demonic_tyrant_t( this, options_str );
     if ( action_name == "summon_vilefiend" )
