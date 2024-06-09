@@ -1161,6 +1161,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     // Reporting
     quiet( false ),
     report_extension(),
+    mixin_reports(),
     arise_time( timespan_t::min() ),
     iteration_fight_length(),
     iteration_waiting_time(),
@@ -11759,8 +11760,8 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
       if ( splits[ 1 ] == "rallied_to_victory_ally_estimate" )
       {
-        return make_fn_expr( expression_str, [ this ] { 
-          return dragonflight_opts.rallied_to_victory_ally_estimate; 
+        return make_fn_expr( expression_str, [ this ] {
+          return dragonflight_opts.rallied_to_victory_ally_estimate;
         } );
       }
 
