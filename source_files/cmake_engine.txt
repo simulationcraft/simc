@@ -243,9 +243,7 @@ class_modules/sc_rogue.cpp
 class_modules/sc_shaman.cpp
 class_modules/sc_warrior.cpp
 class_modules/warlock/sc_warlock.cpp
-class_modules/warlock/sc_warlock_affliction.cpp
-class_modules/warlock/sc_warlock_demonology.cpp
-class_modules/warlock/sc_warlock_destruction.cpp
+class_modules/warlock/sc_warlock_actions.cpp
 class_modules/warlock/sc_warlock_init.cpp
 class_modules/warlock/sc_warlock_pets.cpp
 dbc/active_spells.cpp
