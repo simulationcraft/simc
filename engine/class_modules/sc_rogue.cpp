@@ -1348,7 +1348,7 @@ public:
     double current_cp = this->current_cp( react );
 
     // ALPHA TOCHECK -- Can this be used with 0 CP? How does this work with ER?
-    if ( use_escalating_blade && current_cp > 0 )
+    if ( talent.trickster.coup_de_grace->ok() && use_escalating_blade && current_cp > 0 && buffs.escalating_blade->at_max_stacks() )
     {
       current_cp += talent.trickster.coup_de_grace->effectN( 3 ).base_value();
     }
@@ -2217,6 +2217,43 @@ public:
     make_event<secondary_action_trigger_t<base_t>>( *ab::sim, s, delay );
   }
 
+  // Residual Trigger Functions ===============================================
+
+  virtual void trigger_residual_action( const action_state_t* s, double multiplier = 1.0, bool unmitigated = true, bool reverse_target_da_multiplier = true, player_t* override_target = nullptr )
+  {
+    // Depending on the ability, may use unmitigated or mitigated results
+    const double base_damage = unmitigated ? s->result_total : s->result_amount;
+    // Target multipliers may not replicate to secondary targets, which requires reversing them out
+    const double target_da_multiplier = ( unmitigated && reverse_target_da_multiplier ) ? ( 1.0 / s->target_da_multiplier ) : 1.0;
+    const double amount = base_damage * multiplier * target_da_multiplier;
+
+    if ( amount <= 0 )
+      return;
+
+    player_t* primary_target = override_target ? override_target : s->target;
+
+    p()->sim->print_debug( "{} triggers residual {} for {:.2f} damage ({:.2f} * {} * {:.3f}) on {}",
+                           *p(), *this, amount, base_damage, multiplier, target_da_multiplier, *primary_target );
+
+    // Trigger as an event so that this happens after the impact for proc/RPPM targeting purposes
+    make_event( *p()->sim, 0_ms, [ this, amount, primary_target ]() {
+      ab::execute_on_target( primary_target, amount );
+    } );
+  }
+
+  virtual void trigger_residual_action( player_t* primary_target, double amount )
+  {
+    if ( amount <= 0 )
+      return;
+
+    p()->sim->print_debug( "{} triggers residual {} for {:.2f} damage on {}", *p(), *this, amount, *primary_target );
+
+    // Trigger as an event so that this happens after the impact for proc/RPPM targeting purposes
+    make_event( *p()->sim, 0_ms, [ this, amount, primary_target ]() {
+      ab::execute_on_target( primary_target, amount );
+    } );
+  }
+
   // Helper Functions =========================================================
 
   // Helper function for expressions. Returns the number of guaranteed generated combo points for
@@ -2542,7 +2579,7 @@ public:
 
     if ( affected_by.fazed_damage )
     {
-      m *= 1.0 + tdata->debuffs.fazed->value_direct();
+      m *= tdata->debuffs.fazed->value_direct();
     }
 
     return m;
@@ -3911,7 +3948,7 @@ struct between_the_eyes_t : public rogue_attack_t
           auto dot_state = debug_cast<residual_action::residual_periodic_state_t*>( tdata->dots.soulrip->state );
           double amount = dot_state->tick_amount * tdata->dots.soulrip->ticks_left();
           amount *= p()->set_bonuses.t30_outlaw_4pc->effectN( 1 ).percent();
-          soulreave_attack->execute_on_target( t, amount );
+          soulreave_attack->trigger_residual_action( t, amount );
           tdata->dots.soulrip->cancel();
         }
       }
@@ -4227,9 +4264,8 @@ struct crimson_tempest_t : public rogue_attack_t
 
     if ( poisoned_edges_damage )
     {
-      double multiplier = p()->set_bonuses.t30_assassination_2pc->effectN( 2 ).percent();
-      double damage = state->result_total * multiplier;
-      poisoned_edges_damage->execute_on_target( state->target, damage );
+      const double multiplier = p()->set_bonuses.t30_assassination_2pc->effectN( 2 ).percent();
+      poisoned_edges_damage->trigger_residual_action( state, multiplier );
     }
   }
 
@@ -4241,9 +4277,8 @@ struct crimson_tempest_t : public rogue_attack_t
 
     if ( poisoned_edges_damage )
     {
-      double multiplier = p()->set_bonuses.t30_assassination_2pc->effectN( 2 ).percent();
-      double damage = d->state->result_total * multiplier;
-      poisoned_edges_damage->execute_on_target( d->target, damage );
+      const double multiplier = p()->set_bonuses.t30_assassination_2pc->effectN( 2 ).percent();
+      poisoned_edges_damage->trigger_residual_action( d->state, multiplier );
     }
   }
 
@@ -5586,9 +5621,8 @@ struct rupture_t : public rogue_attack_t
 
     if ( poisoned_edges_damage )
     {
-      double multiplier = p()->set_bonuses.t30_assassination_2pc->effectN( 1 ).percent();
-      double damage = d->state->result_total * multiplier;
-      poisoned_edges_damage->execute_on_target( d->target, damage );
+      const double multiplier = p()->set_bonuses.t30_assassination_2pc->effectN( 2 ).percent();
+      poisoned_edges_damage->trigger_residual_action( d->state, multiplier );
     }
 
     if ( p()->active.deathstalker.corrupt_the_blood )
@@ -7308,7 +7342,6 @@ struct unseen_blade_t : public rogue_attack_t
   unseen_blade_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p->spell.unseen_blade )
   {
-    aoe = -1;
   }
 
   void execute() override
@@ -8732,23 +8765,7 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
     multiplier += p()->talent.trickster.nimble_flurry->effectN( 1 ).percent();
   }
 
-  // Target multipliers do not replicate to secondary targets, need to reverse them out
-  const double target_da_multiplier = ( 1.0 / state->target_da_multiplier );
-
-  // Note: Unmitigated damage as Blade Flurry target mitigation is handled on each impact
-  double damage = state->result_total * multiplier * target_da_multiplier;
-  player_t* primary_target = state->target;
-
-  p()->sim->print_debug( "{} flurries {} for {:.2f} damage ({:.2f} * {} * {:.3f})", *p(), *this, damage, state->result_total, multiplier, target_da_multiplier );
-
-  // Trigger as an event so that this happens after the impact for proc/RPPM targeting purposes
-  // Can't use schedule_execute() since multiple flurries can trigger at the same time due to Main Gauche
-  make_event( *p()->sim, 0_ms, [ this, damage, primary_target ]() {
-    if ( p()->sim->active_enemies > 1 )
-    {
-      p()->active.blade_flurry->execute_on_target( primary_target, damage );
-    }
-  } );
+  p()->active.blade_flurry->trigger_residual_action( state, multiplier );
 }
 
 template <typename Base>
@@ -9029,10 +9046,9 @@ void actions::rogue_action_t<Base>::trigger_fate_intertwined( const action_state
     return;
   }
 
-  // Fate Intertwined amps pre-mitigation damage. This means nothing on assa, where Envenom is nature damage,
-  // and pre-mit and post-mit are the same, but on Outlaw where dispatch is physical, it means much more.
-  double amount = state->result_total * p()->talent.fatebound.fate_intertwined->effectN( 1 ).percent();
-  p()->active.fatebound.fate_intertwined->execute_on_target( state->target, amount );
+  // ALPHA TOCHECK -- Double-check target modifiers in the future
+  const double multiplier = p()->talent.fatebound.fate_intertwined->effectN( 1 ).percent();
+  p()->active.fatebound.fate_intertwined->trigger_residual_action( state, multiplier, false );
 }
 
 template <typename Base>
@@ -9073,8 +9089,7 @@ void actions::rogue_action_t<Base>::trigger_shadow_blades_attack( const action_s
   if ( !p()->buffs.shadow_blades->check() || state->result_total <= 0 || !ab::result_is_hit( state->result ) || !procs_shadow_blades_damage() )
     return;
 
-  double amount = state->result_amount * p()->buffs.shadow_blades->check_value();
-  p()->active.shadow_blades_attack->execute_on_target( state->target, amount );
+  p()->active.shadow_blades_attack->trigger_residual_action( state, p()->buffs.shadow_blades->check_value(), false );
 }
 
 template <typename Base>
@@ -9238,7 +9253,7 @@ void actions::rogue_action_t<Base>::trigger_lingering_shadow( const action_state
 
   // Tooltips imply a bonus of 1% per stack, appears to use mitigated result
   double amount = state->result_mitigated * ( stacks / 100.0 );
-  p()->active.lingering_shadow->execute_on_target( state->target, amount );
+  p()->active.lingering_shadow->trigger_residual_action( state->target, amount );
 }
 
 template <typename Base>
@@ -9281,8 +9296,8 @@ void actions::rogue_action_t<Base>::trigger_sanguine_blades( const action_state_
   p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), additional_cost, RESOURCE_ENERGY,
                        *action, p()->resources.current[ RESOURCE_ENERGY ] );
 
-  double amount = state->result_amount * p()->talent.assassination.sanguine_blades->effectN( 3 ).percent();
-  action->execute_on_target( state->target, amount );
+  double multiplier = p()->talent.assassination.sanguine_blades->effectN( 3 ).percent();
+  action->trigger_residual_action( state, multiplier, false, false );
 }
 
 template <typename Base>
@@ -9301,24 +9316,7 @@ void actions::rogue_action_t<Base>::trigger_caustic_spatter( const action_state_
     return;
 
   double multiplier = p()->spec.caustic_spatter_buff->effectN( 1 ).percent();
-
-  // Target multipliers do not replicate to secondary targets, need to reverse them out
-  double target_da_multiplier = ( 1.0 / state->target_da_multiplier );
-
-  // Note: Unmitigated damage as target mitigation is handled on each impact
-  double damage = state->result_total * multiplier * target_da_multiplier;
-  player_t* primary_target = state->target;
-
-  p()->sim->print_debug( "{} spatters {} for {:.2f} damage ({:.2f} * {} * {:.3f})", *p(), *this, damage, state->result_total, multiplier, target_da_multiplier );
-
-  // Trigger as an event so that this happens after the impact for proc/RPPM targeting purposes
-  // Can't use schedule_execute() since multiple damage events can trigger at the same time
-  make_event( *p()->sim, 0_ms, [ this, damage, primary_target ]() {
-    if ( p()->sim->active_enemies > 1 )
-    {
-      p()->active.caustic_spatter->execute_on_target( primary_target, damage );
-    }
-  } );
+  p()->active.caustic_spatter->trigger_residual_action( state, multiplier );
 }
 
 template <typename Base>
@@ -9522,23 +9520,7 @@ void actions::rogue_action_t<Base>::trigger_nimble_flurry( const action_state_t*
     return;
 
   double multiplier = p()->talent.trickster.nimble_flurry->effectN( 3 ).percent();
-
-  // ALPHA TOCHECK -- Assuming it uses the same mechanics as Blade Flurry
-  // Target multipliers do not replicate to secondary targets, need to reverse them out
-  const double target_da_multiplier = ( 1.0 / state->target_da_multiplier );
-  double damage = state->result_total * multiplier * target_da_multiplier;
-  player_t* primary_target = state->target;
-
-  p()->sim->print_debug( "{} nimble flurries {} for {:.2f} damage ({:.2f} * {} * {:.3f})", *p(), *this, damage, state->result_total, multiplier, target_da_multiplier );
-
-  // Trigger as an event so that this happens after the impact for proc/RPPM targeting purposes
-  // Can't use schedule_execute() since multiple damage events can trigger at the same time
-  make_event( *p()->sim, 0_ms, [ this, damage, primary_target ]() {
-    if ( p()->sim->active_enemies > 1 )
-    {
-      p()->active.trickster.nimble_flurry->execute_on_target( primary_target, damage );
-    }
-  } );
+  p()->active.trickster.nimble_flurry->trigger_residual_action( state, multiplier );
 }
 
 template <typename Base>
@@ -10139,7 +10121,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
   }
   else if ( name_str == "effective_combo_points" )
   {
-    return make_fn_expr( name_str, [ this ]() { return current_effective_cp( true, true, true ); } );
+    return make_fn_expr( name_str, [ this ]() { return current_effective_cp( true, false, true ); } );
   }
   else if ( util::str_compare_ci( name_str, "cp_max_spend" ) )
   {
@@ -12447,9 +12429,6 @@ void rogue_t::init_special_effects()
       {
         dbc_proc_callback_t::execute( a, s );
 
-        if ( s->result_total <= 0 )
-          return;
-
         if ( rogue->sim->active_enemies == 1 )
           return;
 
@@ -12460,12 +12439,7 @@ void rogue_t::init_special_effects()
         if ( !rogue->active.deathstalker.singular_focus )
           return;
 
-        // ALPHA TOCHECK all formula rules, just using Blade Flurry/Caustic Spatter mechanics for now
-        // Target multipliers do not replicate to secondary targets, need to reverse them out
-        const double target_da_multiplier = ( 1.0 / s->target_da_multiplier );
-        // Note: Unmitigated damage as target mitigation is handled on each impact
-        double damage = s->result_total * multiplier * target_da_multiplier;
-        rogue->active.deathstalker.singular_focus->execute_on_target( debuff->player, damage );
+        rogue->active.deathstalker.singular_focus->trigger_residual_action( s, multiplier, true, true, debuff->player );
       }
     };
 
