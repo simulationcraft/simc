@@ -620,10 +620,8 @@ pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view
     return new pets::base::sayaad_pet_t( this, pet_name );
   if ( pet_name == "voidwalker" )
     return new pets::base::voidwalker_pet_t( this, pet_name );
-  if ( specialization() == WARLOCK_DEMONOLOGY )
-  {
-    return create_demo_pet( pet_name, pet_type );
-  }
+  if ( pet_name == "felguard" && specialization() == WARLOCK_DEMONOLOGY )
+    return new pets::demonology::felguard_pet_t( this, pet_name );
 
   return nullptr;
 }

@@ -790,7 +790,6 @@ public:
   void init_procs_destruction();
 
   pet_t* create_main_pet( util::string_view pet_name, util::string_view pet_type );
-  pet_t* create_demo_pet( util::string_view pet_name, util::string_view pet_type );
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );
 };
 
