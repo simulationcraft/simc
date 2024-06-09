@@ -6453,7 +6453,7 @@ public:
 
     dreamstate = false;
 
-    if ( embrace )
+    if ( embrace && p()->buff.umbral_embrace->can_expire( this ) )
     {
       clear_school_override();
       p()->buff.umbral_embrace->expire();
@@ -7995,7 +7995,7 @@ struct starsurge_t : public ap_spender_t
     base_t::impact( s );
 
     if ( p()->talent.stellar_amplification.ok() )
-      td( s->target )->debuff.stellar_amplification->trigger();
+      td( s->target )->debuff.stellar_amplification->trigger( this );
   }
 };
 
@@ -12635,6 +12635,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
 
   debuff.stellar_amplification = make_debuff( source.talent.stellar_amplification.ok(),
     *this, "stellar_amplification_debuff", source.spec.stellar_amplification )
+      ->set_trigger_spell( source.talent.stellar_amplification )
       ->set_refresh_duration_callback(
         [ dur = source.talent.stellar_amplification->effectN( 2 ).time_value() ]( const buff_t* b, timespan_t d ) {
           return std::min( dur, b->remains() + d );
