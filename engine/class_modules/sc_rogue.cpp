@@ -9037,14 +9037,10 @@ template <typename Base>
 void actions::rogue_action_t<Base>::trigger_fate_intertwined( const action_state_t* state )
 {
   if ( !p()->talent.fatebound.fate_intertwined->ok() )
-  {
     return;
-  }
 
   if ( state->result != RESULT_CRIT )
-  {
     return;
-  }
 
   // ALPHA TOCHECK -- Double-check target modifiers in the future
   const double multiplier = p()->talent.fatebound.fate_intertwined->effectN( 1 ).percent();
@@ -11385,8 +11381,11 @@ void rogue_t::init_spells()
       get_background_action<actions::fatebound_coin_tails_t>( "fatebound_coin_tails" );
     active.fatebound.fatebound_coin_tails_delivered =
       get_background_action<actions::fatebound_coin_tails_delivered_t>( "fatebound_coin_tails_delivered" );
-    active.fatebound.fate_intertwined =
-      get_background_action<actions::fate_intertwined_t>( "fate_intertwined" );
+  }
+
+  if ( talent.fatebound.fate_intertwined->ok() )
+  {
+    active.fatebound.fate_intertwined = get_background_action<actions::fate_intertwined_t>( "fate_intertwined" );
   }
 
   // Trickster
