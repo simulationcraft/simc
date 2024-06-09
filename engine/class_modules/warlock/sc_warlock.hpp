@@ -813,6 +813,8 @@ namespace actions
     virtual const char* name() const override;
     virtual void execute() override;
   };
+
+  bool crescendo_check( warlock_t* );
 }
 
 namespace buffs

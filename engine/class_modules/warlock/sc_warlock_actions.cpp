@@ -785,7 +785,7 @@ namespace actions
 
         if ( p()->talents.tormented_crescendo->ok() )
         {
-          if ( crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
+          if ( actions::crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
           {
             p()->procs.tormented_crescendo->occur();
             p()->buffs.tormented_crescendo->trigger();
