@@ -803,6 +803,16 @@ namespace actions
     virtual void execute() override;
     timespan_t expected_time();
   };
+
+  struct sc_event_t : public player_event_t
+  {
+    sc_event_t( warlock_t*, int );
+    gain_t* shard_gain;
+    warlock_t* pl;
+    int shards_used;
+    virtual const char* name() const override;
+    virtual void execute() override;
+  };
 }
 
 namespace buffs

@@ -100,7 +100,7 @@ namespace actions
         if ( p()->talents.soul_conduit->ok() )
         {
           // Soul Conduit events are delayed slightly (100 ms) in sims to avoid instantaneous reactions
-          make_event<warlock::actions::sc_event_t>( *p()->sim, p(), as<int>( affected_by.soul_conduit_base_cost ? base_shards : last_resource_cost ) );
+          make_event<sc_event_t>( *p()->sim, p(), as<int>( affected_by.soul_conduit_base_cost ? base_shards : last_resource_cost ) );
         }
 
         if ( p()->buffs.rain_of_chaos->check() && shards_used > 0 )
@@ -4311,40 +4311,32 @@ namespace actions
 
   // Event for triggering delayed refunds from Soul Conduit
   // Delay prevents instant reaction time issues for rng refunds
-  struct sc_event_t : public player_event_t
+  sc_event_t::sc_event_t( warlock_t* p, int c )
+    : player_event_t( *p, 100_ms ),
+    shard_gain( p->gains.soul_conduit ),
+    pl( p ),
+    shards_used( c )
+  { }
+
+  const char* sc_event_t::name() const
   {
-    gain_t* shard_gain;
-    warlock_t* pl;
-    int shards_used;
+    return "soul_conduit_event";
+  }
 
-    sc_event_t( warlock_t* p, int c )
-      : player_event_t( *p, 100_ms ),
-      shard_gain( p->gains.soul_conduit ),
-      pl( p ),
-      shards_used( c )
+  void sc_event_t::execute()
+  {
+    double soul_conduit_rng = pl->talents.soul_conduit->effectN( 1 ).percent();
+
+    for ( int i = 0; i < shards_used; i++ )
     {
-    }
-
-    virtual const char* name() const override
-    {
-      return "soul_conduit_event";
-    }
-
-    virtual void execute() override
-    {
-      double soul_conduit_rng = pl->talents.soul_conduit->effectN( 1 ).percent();
-
-      for ( int i = 0; i < shards_used; i++ )
+      if ( rng().roll( soul_conduit_rng ) )
       {
-        if ( rng().roll( soul_conduit_rng ) )
-        {
-          pl->sim->print_log( "Soul Conduit proc occurred for Warlock {}, refunding 1.0 soul shards.", pl->name() );
-          pl->resource_gain( RESOURCE_SOUL_SHARD, 1.0, shard_gain );
-          pl->procs.soul_conduit->occur();
-        }
+        pl->sim->print_log( "Soul Conduit proc occurred for Warlock {}, refunding 1.0 soul shards.", pl->name() );
+        pl->resource_gain( RESOURCE_SOUL_SHARD, 1.0, shard_gain );
+        pl->procs.soul_conduit->occur();
       }
     }
-  };
+  }
 
   // Checks whether Tormented Crescendo conditions are met
   bool crescendo_check( warlock_t* p )
