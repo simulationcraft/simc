@@ -785,7 +785,7 @@ using namespace helpers;
 
         if ( p()->talents.tormented_crescendo->ok() )
         {
-          if ( actions::crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
+          if ( helpers::crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
           {
             p()->procs.tormented_crescendo->occur();
             p()->buffs.tormented_crescendo->trigger();
@@ -1256,6 +1256,16 @@ using namespace helpers;
     }
   };
 
+  struct doom_blossom_t : public warlock_spell_t
+  {
+    doom_blossom_t( warlock_t* p )
+      : warlock_spell_t( "Doom Blossom", p, p->talents.doom_blossom_proc )
+    {
+      background = dual = true;
+      aoe = -1;
+    }
+  };
+
   struct seed_of_corruption_t : public warlock_spell_t
   {
     struct seed_of_corruption_aoe_t : public warlock_spell_t
@@ -1564,7 +1574,7 @@ using namespace helpers;
 
         if ( p()->talents.tormented_crescendo.ok() )
         {
-          if ( actions::crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 2 ).percent() ) )
+          if ( helpers::crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 2 ).percent() ) )
           {
             p()->procs.tormented_crescendo->occur();
             p()->buffs.tormented_crescendo->trigger();
@@ -1834,16 +1844,6 @@ using namespace helpers;
       }
 
       return m;
-    }
-  };
-
-  struct doom_blossom_t : public warlock_spell_t
-  {
-    doom_blossom_t( warlock_t* p )
-      : warlock_spell_t( "Doom Blossom", p, p->talents.doom_blossom_proc )
-    {
-      background = dual = true;
-      aoe = -1;
     }
   };
 

@@ -452,7 +452,7 @@ timespan_t warlock_t::time_to_imps( int count )
   {
     for ( auto ev : wild_imp_spawns )
     {
-      timespan_t ex = debug_cast<actions::imp_delay_event_t*>( ev )->expected_time();
+      timespan_t ex = debug_cast<helpers::imp_delay_event_t*>( ev )->expected_time();
       if ( ex > max )
         max = ex;
     }
@@ -463,7 +463,7 @@ timespan_t warlock_t::time_to_imps( int count )
     std::priority_queue<timespan_t> shortest;
     for ( auto ev : wild_imp_spawns )
     {
-      timespan_t ex = debug_cast<actions::imp_delay_event_t*>( ev )->expected_time();
+      timespan_t ex = debug_cast<helpers::imp_delay_event_t*>( ev )->expected_time();
       if ( as<int>( shortest.size() ) >= count && ex < shortest.top() )
       {
         shortest.pop();
