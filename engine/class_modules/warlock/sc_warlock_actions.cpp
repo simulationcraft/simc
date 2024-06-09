@@ -4,9 +4,6 @@
 
 #include "sc_warlock_pets.hpp"
 #include "util/util.hpp"
-#include "class_modules/apl/warlock.hpp"
-
-#include <queue>
 
 namespace warlock
 {
@@ -3803,7 +3800,7 @@ namespace actions
 
       if ( !targets.empty() )
       {
-        channel_demonfire_tick->set_target( targets[ rng().rant( size_t(), targets.size() ) ] );
+        channel_demonfire_tick->set_target( targets[ rng().range( size_t(), targets.size() ) ] );
         channel_demonfire_tick->execute();
       }
 
