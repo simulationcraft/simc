@@ -1742,6 +1742,7 @@ class SpellDataGenerator(DataGenerator):
             ( 452923, 0 ),          # Fatebound coin (heads) buff
             ( 452562, 0 ),          # Lucky Coin buff
             ( 457236, 0 ),          # Singular Focus damage spell
+            ( 459002, 0 ),          # Outlaw 11.0 Set Bonus damage spell
         ),
 
         # Priest:
