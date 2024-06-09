@@ -3543,6 +3543,131 @@ namespace actions
     }
   };
 
+  struct channel_demonfire_t : public warlock_spell_t
+  {
+    struct channel_demonfire_tick_t : public warlock_spell_t
+    {
+      channel_demonfire_tick_t( warlock_t* p )
+        : warlock_spell_t( "Channel Demonfire (tick)", p, p->talents.channel_demonfire_tick )
+      {
+        background = dual = true;
+        may_miss = false;
+        aoe = -1;
+        travel_speed = p->talents.channel_demonfire_travel->missile_speed();
+
+        affected_by.chaotic_energies = true;
+
+        // TOCHECK: Is this needed?
+        spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
+          td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+
+        if ( s->chain_target == 0 && p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B2 ) )
+        {
+          double increment_max = 0.4;
+
+          p()->cdf_accumulator += rng().range( 0.0, increment_max );
+
+          if ( p()->cdf_accumulator >= 1.0 )
+          {
+            p()->proc_actions.channel_demonfire->execute_on_target( s->target );
+            p()->procs.channel_demonfire->occur();
+            p()->cdf_accumulator -= 1.0;
+          }
+
+          if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B4 ) )
+            p()->buffs.umbrafire_embers->trigger();
+        }
+      }
+    };
+
+    channel_demonfire_tick_t* channel_demonfire_tick;
+
+    channel_demonfire_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Channel Demonfire", p, p->talents.channel_demonfire ),
+      channel_demonfire_tick( new channel_demonfire_tick_t( p ) )
+    {
+      parse_options( options_str );
+      
+      channeled = true;
+      hasted_ticks = true;
+      may_crit = false;
+
+      add_child( channel_demonfire_tick );
+
+      if ( p->talents.raging_demonfire.ok() )
+      {
+        int num_ticks = as<int>( dot_duration / base_tick_time + p->talents.raging_demonfire->effectN( 1 ).base_value() );
+        base_tick_time *= 1.0 + p->talents.raging_demonfire->effectN( 3 ).percent();
+        dot_duration = num_ticks * base_tick_time;
+      }
+    }
+
+    void init() override
+    {
+      warlock_spell_t::init();
+
+      cooldown->hasted = true;
+    }
+
+    std::vector<player_t*>& target_list() const override
+    {
+      target_cache.list = warlock_spell_t::target_list();
+
+      size_t i = target_cache.list.size();
+      while ( i > 0 )
+      {
+        i--;
+
+        if ( !td( target_cache.list[ i ] )->dots_immolate->is_ticking() )
+          target_cache.list.erase( target_cache.list.begin() + i );
+      }
+
+      return target_cache.list;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      if ( p()->buffs.umbrafire_embers->check() )
+      {
+        timespan_t base = p()->buffs.umbrafire_embers->base_buff_duration;
+        timespan_t remains = p()->buffs.umbrafire_embers->remains();
+        p()->buffs.umbrafire_embers->extend_duration( p(), base - remains );
+      }
+    }
+
+    void tick( dot_t* d ) override
+    {
+      target_cache.is_valid = false;
+
+      const auto& targets = target_list();
+
+      if ( !targets.empty() )
+      {
+        channel_demonfire_tick->set_target( targets[ rng().rant( size_t(), targets.size() ) ] );
+        channel_demonfire_tick->execute();
+      }
+
+      warlock_spell_t::tick( d );
+    }
+
+    bool ready() override
+    {
+      if ( p()->get_active_dots( td( target )->dots_immolate ) == 0 )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+  };
+
   struct internal_combustion_t : public warlock_spell_t
   {
     internal_combustion_t( warlock_t* p )
