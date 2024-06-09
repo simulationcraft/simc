@@ -3750,6 +3750,67 @@ namespace actions
     }
   };
 
+  struct soul_fire_t : public warlock_spell_t
+  {
+    immolate_t* immolate;
+
+    soul_fire_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Soul Fire", p, p->talents.soul_fire ),
+      immolate( new immolate_t( p, "" ) )
+    {
+      parse_options( options_str );
+
+      energize_type = action_energize::PER_HIT;
+      energize_resource = RESOURCE_SOUL_SHARD;
+      energize_amount = ( p->talents.soul_fire_2->effectN( 1 ).base_value() ) / 10.0;
+
+      affected_by.chaotic_energies = true;
+      affected_by.havoc = true;
+
+      base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
+
+      immolate->background = true;
+      immolate->dual = true;
+      immolate->base_costs[ RESOURCE_MANA ] = 0;
+      immolate->base_dd_multiplier = 0.0;
+    }
+
+    timespan_t execute_time() const override
+    {
+      timespan_t t = warlock_spell_t::execute_time();
+
+      if ( p()->buffs.backdraft->check() )
+        t *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
+
+      return t;
+    }
+
+    timespan_t gcd() const override
+    {
+      timespan_t t = warlock_spell_t::gcd();
+
+      if ( t == 0_ms )
+        return t;
+
+      if ( p()->buffs.backdraft->check() )
+        t *= 1.0 + p()->talents.backdraft_buff->effectN( 2 ).percent();
+
+      if ( t < min_gcd )
+        t = min_gcd;
+
+      return t;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      immolate->execute_on_target( target );
+
+      p()->buffs.backdraft->decrement();
+    }
+  };
+
   // Destruction Actions End
 }
 }
