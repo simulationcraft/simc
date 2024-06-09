@@ -5158,9 +5158,10 @@ struct death_and_decay_buff_t : public death_knight_buff_t
   death_and_decay_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
     : death_knight_buff_t( p, name, spell ), leway_buff( false )
   {
+    set_duration( 0_ms );  // Handled by things that trigger this buff.
     // Specifically use a stack change callback here due to when its called in buff_t::expire
     set_stack_change_callback( [ this, p ]( buff_t*, int, int new_ ) {
-      if( p->in_death_and_decay() )
+      if ( new_ == 0 && p->in_death_and_decay() )
       {
         trigger();
       }
