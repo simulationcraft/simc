@@ -794,6 +794,18 @@ public:
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );
 };
 
+namespace actions
+{
+  struct imp_delay_event_t : public player_event_t
+  {
+    imp_delay_event_t( warlock_t*, double, double );
+    timespan_t diff;
+    virtual const char* name() const override;
+    virtual void execute() override;
+    timespan_t expected_time();
+  };
+}
+
 namespace buffs
 {
 template <typename Base>

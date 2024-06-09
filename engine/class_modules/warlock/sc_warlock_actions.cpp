@@ -4368,32 +4368,27 @@ namespace actions
   }
 
   // Event for spawning Wild Imps for Demonology
-  struct imp_delay_event_t : public player_event_t
+  imp_delay_event_t::imp_delay_event_t( warlock_t* p, double delay, double exp ) : player_event_t( *p, timespan_t::from_millis( delay ) )
+  { diff = timespan_t::from_millis( exp - delay ); }
+
+  const char* imp_delay_event_t::name() const
+  { return "imp_delay"; }
+
+  void imp_delay_event_t::execute()
   {
-    timespan_t diff;
+    warlock_t* p = static_cast<warlock_t*>( player() );
 
-    imp_delay_event_t( warlock_t* p, double delay, double exp ) : player_event_t( *p, timespan_t::from_millis( delay ) )
-    { diff = timespan_t::from_millis( exp - delay ); }
+    p->warlock_pet_list.wild_imps.spawn();
 
-    virtual const char* name() const override
-    { return "imp_delay"; }
+    // Remove this event from the vector
+    auto it = std::find( p->wild_imp_spawns.begin(), p->wild_imp_spawns.end(), this );
+    if ( it != p->wild_imp_spawns.end() )
+      p->wild_imp_spawns.erase( it );
+  }
 
-    virtual void execute() override
-    {
-      warlock_t* p = static_cast<warlock_t*>( player() );
-
-      p->warlock_pet_list.wild_imps.spawn();
-
-      // Remove this event from the vector
-      auto it = std::find( p->wild_imp_spawns.begin(), p->wild_imp_spawns.end(), this );
-      if ( it != p->wild_imp_spawns.end() )
-        p->wild_imp_spawns.erase( it );
-    }
-
-    // Used for APL expressions to estimate when imp is "supposed" to spawn
-    timespan_t expected_time()
-    { return std::max( 0_ms, this->remains() + diff ); }
-  };
+  // Used for APL expressions to estimate when imp is "supposed" to spawn
+  timespan_t imp_delay_event_t::expected_time()
+  { return std::max( 0_ms, this->remains() + diff ); }
 
   // Helper Functions End
 } // namespace actions
