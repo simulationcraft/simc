@@ -3388,10 +3388,19 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
 
   if ( b.data().id() )
   {
-    if ( auto con = dynamic_cast<const consumable_buff_item_data_t*>( &b ); con && con->item_data )
-      buff_name += report_decorators::decorated_item_data( *b.player->sim, *con->item_data );
+    if ( constant_buffs )
+    {
+      if ( auto con = dynamic_cast<const consumable_buff_item_data_t*>( &b ); con && con->item_data )
+        buff_name += report_decorators::decorated_item_data( *b.player->sim, *con->item_data );
+      else if ( b.item && &b.item->parsed.data != &dbc_item_data_t::nil() )
+        buff_name += report_decorators::decorated_item_data( *b.player->sim, b.item->parsed.data );
+      else
+        buff_name += report_decorators::decorated_buff( b );
+    }
     else
+    {
       buff_name += report_decorators::decorated_buff( b );
+    }
   }
   else
   {
