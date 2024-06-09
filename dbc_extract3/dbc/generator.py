@@ -1506,6 +1506,7 @@ class SpellDataGenerator(DataGenerator):
          450882, # signet of the priory
          451303, 451991, # harvester's edict
          450416, 450429, 450458, 450459, 450460, # candle conductor's whistle
+         450204, # twin fang instruments
         ),
 
         # Warrior:

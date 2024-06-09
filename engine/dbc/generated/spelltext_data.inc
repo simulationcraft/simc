@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.55000
-static const std::array<spelltext_data_t, 26123> __spelltext_data { {
+static const std::array<spelltext_data_t, 26124> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26005,6 +26005,7 @@ static const std::array<spelltext_data_t, 26123> __spelltext_data { {
   { 458972, "$@spelldesc439674", "Healing for ${$s1/100}.2% of maximum health every $t sec.", 0 },
   { 458973, "$@spelldesc439674", "$@spelldesc439674", 0 },
   { 458974, "When any player uses a defensive ability with a cooldown of $458973s1 sec or longer, the idol activates and heals them for ${$458972s1/100}.2% of their maximum health every $458972t1 sec for $458972d.", 0, 0 },
+  { 459002, "Deals $s1 Shadow damage.", 0, 0 },
   { 459025, "$@spelldesc459029", 0, 0 },
   { 459026, "$@spelldesc459029", 0, 0 },
   { 459027, "$@spelldesc459029", "$@spelldesc459029", 0 },

@@ -2473,6 +2473,66 @@ void charged_stormrook_plume( special_effect_t& effect )
   effect.execute_action = damage;
 }
 
+// 443556 on use
+// 450044 equip
+//  e1: damage coeff
+//  e2: unknown coeff, dual strike?
+// 450157 use window
+// 450119 melee damage
+// 450151 can ranged strike (2nd)
+// 450158 ranged damage
+// 450340 ranged speed
+// 450162 can dual strike (3rd)
+// 450204 unknown
+// TODO: confirm can be reused instantly
+// TODO: confirm melee damage does not split
+// TODO: confirm range damage does not increase per extra target
+// TODO: fully implement triple-use if it goes live like that. for now we just cast all 3 at once
+void twin_fang_instruments( special_effect_t& effect )
+{
+  unsigned equip_id = 450044;
+  auto equip = find_special_effect( effect.player, equip_id );
+  assert( equip && "Twin Fang Instruments missing equip effect" );
+
+  auto data = equip->driver();
+
+  struct twin_fang_instruments_t : public generic_proc_t
+  {
+    action_t* melee;
+    action_t* range;
+
+    twin_fang_instruments_t( const special_effect_t& e, const spell_data_t* data )
+      : generic_proc_t( e, "twin_fang_instruments", e.driver() )
+    {
+      melee = create_proc_action<generic_aoe_proc_t>( "nxs_shadow_strike", e, e.player->find_spell( 450119 ) );
+      melee->base_dd_min = melee->base_dd_max = data->effectN( 1 ).average( e.item ) * 0.5;
+      // TODO: confirm melee damage does not split
+      melee->split_aoe_damage = false;
+      add_child( melee );
+
+      // TODO: confirm range damage does not increase per extra target
+      range = create_proc_action<generic_aoe_proc_t>( "vxs_frost_slash", e, e.player->find_spell( 450158 ) );
+      range->base_dd_min = range->base_dd_max = data->effectN( 1 ).average( e.item );
+      range->travel_speed = range->data().effectN( 3 ).trigger()->missile_speed();
+      add_child( range );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+
+      // TODO: fully implement triple-use if it goes live like that. for now we just cast all 3 at once
+      melee->execute_on_target( target );
+      range->execute_on_target( target );
+
+      melee->execute_on_target( target );
+      range->execute_on_target( target );
+    }
+  };
+
+  effect.execute_action = create_proc_action<twin_fang_instruments_t>( "twin_fang_instruments", effect, data );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -2824,7 +2884,8 @@ void register_special_effects()
   register_special_effect( 451055, items::harvesters_edict );
   register_special_effect( 443525, items::condutors_wax_whistle );
   register_special_effect( 443337, items::charged_stormrook_plume );
-
+  register_special_effect( 443556, items::twin_fang_instruments );
+  register_special_effect( 450044, DISABLED_EFFECT );  // twin fang instruments
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
