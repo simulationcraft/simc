@@ -3440,6 +3440,35 @@ namespace actions
     }
   };
 
+  struct cataclysm_t : public warlock_spell_t
+  {
+    immolate_t* immolate;
+
+    cataclysm_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Cataclysm", p, p->talents.cataclysm ),
+      immolate( new immolate_t( p, "" ) )
+    {
+      parse_options( options_str );
+
+      aoe = -1;
+
+      affected_by.chaotic_energies = true;
+
+      immolate->background = true;
+      immolate->dual = true;
+      immolate->base_costs[ RESOURCE_MANA ] = 0;
+      immolate->base_dd_multiplier = 0.0;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( result_is_hit( s->result ) )
+        immolate->execute_on_target( s->target );
+    }
+  };
+
   struct shadowburn_t : public warlock_spell_t
   {
     shadowburn_t( warlock_t* p, util::string_view options_str )
