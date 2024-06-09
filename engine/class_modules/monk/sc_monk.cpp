@@ -8139,13 +8139,41 @@ struct debuff_override : stagger_impl::debuff_t<monk_t>
 
 void monk_t::create_buffs()
 {
-  create_stagger<debuff_override>( { find_spell( 124255 ),
-                                     { { find_spell( 124275 ), 0.0 },
-                                       { find_spell( 124274 ), 0.2 },
-                                       { find_spell( 124273 ), 0.6 },
-                                       { spell_data_t::nil(), 10.0 } },
-                                     { "quick_sip", "staggering_strikes", "touch_of_death", "purifying_brew",
-                                       "tranquil_spirit_eh", "tranquil_spirit_goto" } } );
+  create_stagger<debuff_override>(
+      { find_spell( 124255 ),
+        { { find_spell( 124275 ), 0.0 },
+          { find_spell( 124274 ), 0.2 },
+          { find_spell( 124273 ), 0.6 },
+          { spell_data_t::nil(), 10.0 } },
+        { "quick_sip", "staggering_strikes", "touch_of_death", "purifying_brew", "tranquil_spirit_eh",
+          "tranquil_spirit_goto" },
+        [ this ]() { return specialization() == MONK_BREWMASTER; },
+        []( school_e, result_amount_type, action_state_t *state ) {
+          if ( state->action->id == 124255 )
+            return false;
+          return true;
+        },
+        [ this ]( school_e school, result_amount_type, action_state_t *state ) {
+          double stagger_rating = agility() * spec.stagger->effectN( 1 ).percent();
+          if ( talent.brewmaster.high_tolerance->ok() )
+            stagger_rating *= 1.0 + talent.brewmaster.high_tolerance->effectN( 5 ).percent();
+
+          if ( talent.brewmaster.fortifying_brew_determination->ok() && buff.fortifying_brew->up() )
+            stagger_rating *= 1.0 + talents.monk.fortifying_brew_buff->effectN( 6 ).percent();
+
+          if ( buff.shuffle->check() )
+            stagger_rating *= 1.0 + passives.shuffle->effectN( 1 ).percent();
+
+          double k = dbc->armor_mitigation_constant( state->target->level() );
+          k *= dbc->get_armor_constant_mod( difficulty_e::MYTHIC );
+
+          double stagger_percent = stagger_rating / ( stagger_rating + k );
+
+          if ( school != SCHOOL_PHYSICAL )
+            stagger_percent *= spec.stagger->effectN( 5 ).percent();
+
+          return std::min( stagger_percent, 0.99 );
+        } } );
 
   base_t::create_buffs();
 

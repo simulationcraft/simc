@@ -107,6 +107,10 @@ struct stagger_data_t
   std::vector<level_data_t> levels;
   std::vector<std::string_view> mitigation_tokens;
 
+  std::function<bool()> active;
+  std::function<bool( school_e, result_amount_type, action_state_t * )> trigger_filter;
+  std::function<double( school_e, result_amount_type, action_state_t * )> percent;
+
   std::string_view name() const;
 };
 
@@ -321,6 +325,8 @@ struct stagger_t : base_actor_t
             class sample_data_type = stagger_impl::sample_data_t>
   void create_stagger( const stagger_data_t &data )
   {
+    if ( !data.active() )
+      return;
     derived_actor_t *derived_actor        = debug_cast<derived_actor_t *>( this );
     const auto &[ stagger_pair, success ] = stagger.insert( { data.name(), new stagger_type( derived_actor, data ) } );
     assert( success && "Stagger effect failed to be inserted into stagger map." );
@@ -415,11 +421,11 @@ template <class derived_actor_t>
 stagger_t<derived_actor_t>::stagger_t( derived_actor_t *player, const stagger_data_t &data )
   : player( player ), data( std::move( data ) )
 {
-  // "none" level
+  // "none" level, note that we std::move'd unqualified object `data`
   this->data.levels.push_back( { spell_data_t::nil(), -1.0 } );
-  active         = []() { return true; };
-  trigger_filter = []( school_e, result_amount_type, action_state_t * ) { return true; };
-  percent        = []( school_e, result_amount_type, action_state_t        *) { return 0.5; };
+  active         = std::move( this->data.active );
+  trigger_filter = std::move( this->data.trigger_filter );
+  percent        = std::move( this->data.percent );
 }
 
 template <class derived_actor_t>
@@ -487,12 +493,15 @@ double stagger_t<derived_actor_t>::trigger( school_e school, result_amount_type 
    *   - 40 to face (due to cap)
    */
 
-  double amount = state->result_amount * percent( school, damage_type, state );
-  double base   = amount;
+  double amount   = state->result_amount * percent( school, damage_type, state );
+  double base     = amount;
+  double base_hit = state->result_amount;
 
   double absorb   = 0.0;
   double absorbed = std::min( amount, absorb );
   amount -= absorbed;
+
+  double pre_cap = amount;
 
   double cap = levels.front()->min_threshold() * player->resources.max[ RESOURCE_HEALTH ];
   amount -= std::max( amount + pool_size() - cap, 0.0 );
@@ -508,9 +517,10 @@ double stagger_t<derived_actor_t>::trigger( school_e school, result_amount_type 
     return 0.0;
 
   // TODO: Fix all prints
-  player->sim->print_debug( "{} added {} to {} pool (base_hit={} final_hit={}, absorbed={}, overcapped={})",
-                            player->name(), amount, name(), base, amount, absorbed,
-                            std::max( amount + pool_size() - cap, 0.0 ) );
+  player->sim->print_debug(
+      "{} added {} to {} pool (percent={} base_hit={} final_hit={} staggered={} absorbed={} overcapped={})",
+      player->name(), amount, name(), percent( school, damage_type, state ), base_hit, state->result_amount, amount,
+      absorbed, std::max( pre_cap + pool_size() - cap, 0.0 ) );
 
   residual_action::trigger( self_damage, player, amount );
 
@@ -764,6 +774,8 @@ stagger_report_t<derived_actor_t>::stagger_report_t( derived_actor_t *player ) :
 template <class derived_actor_t>
 void stagger_report_t<derived_actor_t>::html_customsection( report::sc_html_stream &os )
 {
+  if ( player->stagger.empty() )
+    return;
   os << "\t\t\t\t<div class=\"player-section stagger_sections\">\n";
   for ( auto &[ key, stagger_effect ] : player->stagger )
   {
