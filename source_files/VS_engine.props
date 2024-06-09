@@ -249,9 +249,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\class_modules\sc_shaman.cpp" />
 		<ClCompile Include="..\engine\class_modules\sc_warrior.cpp" />
 		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock.cpp" />
-		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock_affliction.cpp" />
-		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock_demonology.cpp" />
-		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock_destruction.cpp" />
+		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock_actions.cpp" />
 		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock_init.cpp" />
 		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock_pets.cpp" />
 		<ClCompile Include="..\engine\dbc\active_spells.cpp" />
