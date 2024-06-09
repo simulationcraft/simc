@@ -2292,10 +2292,9 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     if ( p()->talent.brewmaster.staggering_strikes->ok() )
     {
-      // auto ap = s->composite_attack_power();
-      // double cleared =
-      //     p()->stagger->purify_flat( ap * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() );
-      // p()->stagger->add_sample( "staggering_strikes", cleared );
+      p()->stagger[ "Stagger" ]->purify_flat(
+          s->composite_attack_power() * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent(),
+          "staggering_strikes" );
     }
 
     // Martial Mixture triggers from each BoK impact
@@ -3626,8 +3625,8 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     if ( p()->spec.stagger->ok() )
     {
-      // double cleared = p()->stagger->purify_flat( amount * p()->spec.touch_of_death_3_brm->effectN( 1 ).percent() );
-      // p()->stagger->add_sample( "touch_of_death", cleared );
+      p()->stagger[ "Stagger" ]->purify_flat( amount * p()->spec.touch_of_death_3_brm->effectN( 1 ).percent(),
+                                              "touch_of_death" );
     }
   }
 };
@@ -4458,34 +4457,33 @@ struct purifying_brew_t : public monk_spell_t
 
     if ( p()->buff.blackout_combo->up() )
     {
-      // timespan_t delay = timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() );
-      // p()->stagger->delay_tick( delay );
+      timespan_t delay = timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() );
+      p()->stagger[ "Stagger" ]->delay_tick( delay );
       p()->proc.blackout_combo_purifying_brew->occur();
       p()->buff.blackout_combo->expire();
     }
 
     if ( p()->talent.brewmaster.improved_celestial_brew->ok() )
     {
-      unsigned stacks = as<unsigned>( p()->stagger->level_index() );
+      double stacks = as<unsigned>( p()->stagger[ "Stagger" ]->level_index() );
       if ( stacks > 0 )
         p()->buff.purified_chi->trigger( stacks );
     }
 
     // Reduce stagger damage
-    // auto purifying_percent = data().effectN( 1 ).percent();
-    // purifying_percent +=
-    //     p()->buff.brewmasters_rhythm->stack() * p()->sets->set( MONK_BREWMASTER, T29, B4 )->effectN( 1 ).percent();
+    auto purifying_percent = data().effectN( 1 ).percent();
+    purifying_percent +=
+        p()->buff.brewmasters_rhythm->stack() * p()->sets->set( MONK_BREWMASTER, T29, B4 )->effectN( 1 ).percent();
 
-    // double cleared = p()->stagger->purify_percent( purifying_percent );
-    // p()->stagger->add_sample( "purifying_brew", cleared );
-    // p()->buff.recent_purifies->trigger( 1, cleared );
+    double cleared = p()->stagger[ "Stagger" ]->purify_percent( purifying_percent, "purifying_brew" );
+    p()->buff.recent_purifies->trigger( 1, cleared );
 
     if ( p()->talent.brewmaster.gai_plins_imperial_brew->ok() )
     {
-      // auto healed           = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
-      // gai_plin->base_dd_min = gai_plin->base_dd_max = healed;
-      // gai_plin->target                              = p();
-      // gai_plin->execute();
+      auto healed           = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
+      gai_plin->base_dd_min = gai_plin->base_dd_max = healed;
+      gai_plin->target                              = p();
+      gai_plin->execute();
     }
   }
 };
@@ -5534,9 +5532,8 @@ struct gift_of_the_ox_t : public monk_heal_t
     if ( p()->talent.brewmaster.tranquil_spirit->ok() )
     {
       // Reduce stagger damage
-      // double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
-      // double cleared = p()->stagger->purify_percent( percent );
-      // p()->stagger->add_sample( "tranquil_spirit_gift_of_the_ox", cleared );
+      double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
+      p()->stagger[ "Stagger" ]->purify_percent( percent, "tranquil_spirit_goto" );
       p()->proc.tranquil_spirit_goto->occur();
     }
   }
@@ -5673,9 +5670,8 @@ struct expel_harm_t : public monk_heal_t
     if ( p()->talent.brewmaster.tranquil_spirit->ok() )
     {
       // Reduce stagger damage
-      // double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
-      // double cleared = p()->stagger->purify_percent( percent );
-      // p()->stagger->add_sample( "tranquil_spirit_expel_harm", cleared );
+      double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
+      p()->stagger[ "Stagger" ]->purify_percent( percent, "tranquil_spirit_eh" );
       p()->proc.tranquil_spirit_expel_harm->occur();
     }
   }
@@ -8130,18 +8126,13 @@ void monk_t::init_items()
 
 void monk_t::create_buffs()
 {
-  // auto *temp = new std::vector<std::pair<const spell_data_t *, const double>>( {
-  //     { find_spell( 124275 ), 0.0 },
-  //     { find_spell( 124274 ), 0.2 },
-  //     { find_spell( 124273 ), 0.6 },
-  //     { spell_data_t::nil(), 10.0 }
-  //   } );
   create_stagger( { find_spell( 124255 ),
                     { { find_spell( 124275 ), 0.0 },
                       { find_spell( 124274 ), 0.2 },
                       { find_spell( 124273 ), 0.6 },
                       { spell_data_t::nil(), 10.0 } },
-                    { "quick_sip" } } );
+                    { "quick_sip", "staggering_strikes", "touch_of_death", "purifying_brew", "tranquil_spirit_eh",
+                      "tranquil_spirit_goto" } } );
 
   base_t::create_buffs();
 

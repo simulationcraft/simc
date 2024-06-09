@@ -100,14 +100,11 @@ struct level_data_t
 
   std::string_view name() const
   {
-    if ( spell_data == spell_data_t::nil() )
-    {
-      if ( min_threshold < 0 )
-        return "none";
-      else
-        return "maximum";
-    }
-    return spell_data->name_cstr();
+    if ( spell_data != spell_data_t::nil() )
+      return spell_data->name_cstr();
+    if ( min_threshold > 0 )
+      return "maximum";
+    return "none";
   }
 };
 
@@ -150,7 +147,8 @@ struct sample_data_t
 
 struct debuff_t : buff_t
 {
-  debuff_t( player_t *player, const level_data_t *data ) : buff_t( player, data->name(), data->spell_data )
+  debuff_t( player_t *player, const stagger_data_t *parent_data, const level_data_t *data )
+    : buff_t( player, util::tokenize_fn( fmt::format( "{}_{}", data->name(), parent_data->name() ) ), data->spell_data )
   {
     base_buff_duration = 0_s;
     set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
@@ -240,7 +238,6 @@ public:
   double tick_size_percent();
   timespan_t remains();
   bool is_ticking();
-  size_t current_level();
   double level_index();  // avoid floating point demotion with double
 
 private:
@@ -407,7 +404,6 @@ struct stagger_t : base_actor_t
 
     derived_actor_t *derived_actor        = debug_cast<derived_actor_t *>( this );
     const auto &[ stagger_pair, success ] = stagger.insert( { data.name(), new stagger_type( derived_actor, data ) } );
-    // TODO: This probably should throw instead.
     assert( success && "Stagger effect failed to be inserted into stagger map." );
     auto &[ name, stagger_effect ] = *stagger_pair;
     stagger_effect->data.levels.push_back( { spell_data_t::nil(), -1.0 } );
@@ -459,7 +455,7 @@ void level_t<derived_actor_t>::init()
   absorbed  = player->get_sample_data( fmt::format( "{} added to pool while at {}.", parent_data->name(), name() ) );
   taken     = player->get_sample_data( fmt::format( "{} damage taken from {}.", parent_data->name(), name() ) );
   mitigated = player->get_sample_data( fmt::format( "{} damage mitigated while at {}.", parent_data->name(), name() ) );
-  debuff    = make_buff<debuff_type>( player, data );
+  debuff    = make_buff<debuff_type>( player, parent_data, data );
 }
 
 template <class derived_actor_t>
@@ -560,7 +556,7 @@ double stagger_t<derived_actor_t>::trigger( school_e school, result_amount_type 
   double absorbed = std::min( amount, absorb );
   amount -= absorbed;
 
-  double cap = levels.back()->min_threshold() * player->resources.max[ RESOURCE_HEALTH ];
+  double cap = levels.front()->min_threshold() * player->resources.max[ RESOURCE_HEALTH ];
   amount -= std::max( amount + pool_size() - cap, 0.0 );
 
   state->result_amount -= amount + absorbed;
@@ -573,6 +569,7 @@ double stagger_t<derived_actor_t>::trigger( school_e school, result_amount_type 
   if ( amount <= 0.0 )
     return 0.0;
 
+  // TODO: Fix all prints
   player->sim->print_debug( "{} added {} to {} pool (base_hit={} final_hit={}, absorbed={}, overcapped={})",
                             player->name(), amount, name(), base, amount, absorbed,
                             std::max( amount + pool_size() - cap, 0.0 ) );
@@ -594,6 +591,7 @@ double stagger_t<derived_actor_t>::purify_flat( double amount, std::string_view 
 
   sample_data->mitigated->add( cleared );
   current->mitigated->add( cleared );
+  assert( sample_data->mitigated_by_ability.find( ability_token ) != sample_data->mitigated_by_ability.end() );
   sample_data->mitigated_by_ability[ ability_token ]->add( cleared );
 
   set_pool( remains );
@@ -696,15 +694,9 @@ bool stagger_t<derived_actor_t>::is_ticking()
 }
 
 template <class derived_actor_t>
-size_t stagger_t<derived_actor_t>::current_level()
-{
-  return std::distance( levels.begin(), std::find( levels.begin(), levels.end(), *current ) );
-}
-
-template <class derived_actor_t>
 double stagger_t<derived_actor_t>::level_index()
 {
-  return -1.0 * std::distance( levels.end(), std::find( levels.begin(), levels.end(), *current ) );
+  return levels.size() - std::distance( levels.begin(), std::find( levels.begin(), levels.end(), current ) ) - 1;
 }
 
 template <class derived_actor_t>
@@ -727,7 +719,6 @@ void stagger_t<derived_actor_t>::set_pool( double amount )
 template <class derived_actor_t>
 void stagger_t<derived_actor_t>::damage_changed( bool last_tick )
 {
-  // TODO: Guarantee a debuff is applied by providing debuffs for all stagger_level_t's
   if ( last_tick )
   {
     current->debuff->expire();
@@ -742,7 +733,8 @@ void stagger_t<derived_actor_t>::damage_changed( bool last_tick )
   //                           stagger_levels[ level ]->name,
   //                           static_cast<int>( stagger_levels[ level ]->level ),
   //                           pool_size_percent() );
-  // TODO: I don't like this comparison...
+  // This comparison is a little sketchy, but if we assume no one fiddles with
+  // our pointers, we're good to go.
   if ( level == current )
     return;
 
