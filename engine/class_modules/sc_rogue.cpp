@@ -313,7 +313,6 @@ public:
     actions::rogue_attack_t* triple_threat_mh = nullptr;
     actions::rogue_attack_t* triple_threat_oh = nullptr;
     residual_action::residual_periodic_action_t<spell_t>* doomblade = nullptr;
-    actions::rogue_attack_t* unseen_blade = nullptr;
 
     struct
     {
@@ -360,6 +359,11 @@ public:
       actions::rogue_attack_t* fatebound_coin_tails_delivered = nullptr;
       actions::rogue_attack_t* fate_intertwined = nullptr;
     } fatebound;
+    struct
+    {
+      actions::rogue_attack_t* nimble_flurry = nullptr;
+      actions::rogue_attack_t* unseen_blade = nullptr;
+    } trickster;
     
   } active;
 
@@ -434,8 +438,10 @@ public:
 
     // Trickster
     buff_t* cloud_cover;
+    buff_t* disorienting_strikes;
     buff_t* escalating_blade;
-    buff_t* flawless_form;
+    damage_buff_t* flawless_form;
+    buff_t* unseen_blade_cd;
     
     // Assassination
     buff_t* blindside;
@@ -637,9 +643,11 @@ public:
     const spell_data_t* hunt_them_down_damage;
     const spell_data_t* lingering_darkness_buff;
     const spell_data_t* momentum_of_despair_buff;
+    const spell_data_t* nimble_flurry_damage;
     const spell_data_t* singular_focus_damage;
     const spell_data_t* symbolic_victory_buff;
     const spell_data_t* unseen_blade;
+    const spell_data_t* unseen_blade_buff;
 
   } spell;
 
@@ -1089,10 +1097,10 @@ public:
       player_talent_t thousand_cuts;
       player_talent_t flickerstrike;      // TODO: Add time-based trigger opt
 
-      player_talent_t nimble_flurry;
+      player_talent_t disorienting_strikes;
       player_talent_t cloud_cover;
       player_talent_t no_scruples;
-      player_talent_t elaborate_twirl;
+      player_talent_t nimble_flurry;
 
       player_talent_t coup_de_grace;
 
@@ -1150,6 +1158,9 @@ public:
     proc_t* deepening_shadows;
     proc_t* flagellation_cp_spend;
     proc_t* weaponmaster;
+
+    // Trickster
+    proc_t* coup_de_grace;
 
     // Set Bonus
 
@@ -1332,9 +1343,15 @@ public:
   }
 
   // Current number of effective combo points, considering Echoing Reprimand
-  double current_effective_cp( bool use_echoing_reprimand = true, bool react = false ) const
+  double current_effective_cp( bool use_echoing_reprimand = true, bool use_escalating_blade = false, bool react = false ) const
   {
     double current_cp = this->current_cp( react );
+
+    // ALPHA TOCHECK -- Can this be used with 0 CP? How does this work with ER?
+    if ( use_escalating_blade && current_cp > 0 )
+    {
+      current_cp += talent.trickster.coup_de_grace->effectN( 3 ).base_value();
+    }
 
     if ( use_echoing_reprimand && current_cp > 0 )
     {
@@ -1342,7 +1359,7 @@ public:
         return spell.echoing_reprimand->effectN( 2 ).base_value();
     }
 
-    return current_cp;
+    return std::min( current_cp, consume_cp_max() );
   }
 
   // Extra attack proc chance for Outlaw mechanics (Sinister Strike, Audacity, Hidden Opportunity)
@@ -1797,8 +1814,8 @@ public:
 
     ab::apply_affecting_aura( p->talent.fatebound.destiny_defined );
 
+    ab::apply_affecting_aura( p->talent.trickster.disorienting_strikes );
     ab::apply_affecting_aura( p->talent.trickster.dont_be_suspicious );
-    ab::apply_affecting_aura( p->talent.trickster.nimble_flurry );
 
     // Dynamically affected flags
     // Special things like CP, Energy, Crit, etc.
@@ -1988,6 +2005,7 @@ public:
     register_damage_buff( p()->buffs.fatebound_coin_heads );
     register_damage_buff( p()->buffs.finality_eviscerate );
     register_damage_buff( p()->buffs.finality_black_powder );
+    register_damage_buff( p()->buffs.flawless_form );
     register_damage_buff( p()->buffs.kingsbane );
     register_damage_buff( p()->buffs.master_assassin );
     register_damage_buff( p()->buffs.master_assassin_aura );
@@ -2156,6 +2174,13 @@ public:
     int consume_cp = as<int>( std::min( p()->current_cp(), p()->consume_cp_max() ) );
     int effective_cp = consume_cp;
 
+    // Apply and Snapshot Escalating Blade / Coup de Grace Bonus
+    if ( p()->talent.trickster.coup_de_grace->ok() && consumes_escalating_blade() && p()->buffs.escalating_blade->at_max_stacks() )
+    {
+      effective_cp += as<int>( p()->talent.trickster.coup_de_grace->effectN( 3 ).base_value() );
+      effective_cp = std::min( as<int>( p()->consume_cp_max() ), effective_cp );
+    }
+
     // Apply and Snapshot Echoing Reprimand Buffs
     if ( p()->spell.echoing_reprimand->ok() && consumes_echoing_reprimand() )
     {
@@ -2281,6 +2306,10 @@ public:
   virtual bool consumes_echoing_reprimand() const
   { return ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ); }
 
+  // Overridable function to determine whether a finisher is working with Coup de Grace / Escalating Blade.
+  virtual bool consumes_escalating_blade() const
+  { return false; }
+
 public:
   // Ability triggers
   void spend_combo_points( const action_state_t* );
@@ -2330,6 +2359,8 @@ public:
   void trigger_deathstalkers_mark( const action_state_t* state );
   void trigger_deathstalkers_mark_debuff( const action_state_t* state, bool from_darkest_night = false );
   void trigger_flensing_knives( const action_state_t* state );
+  void trigger_unseen_blade( const action_state_t* state );
+  void trigger_nimble_flurry( const action_state_t* state );
   virtual bool trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* action = nullptr );
 
   // General Methods ==========================================================
@@ -3395,6 +3426,8 @@ struct melee_t : public rogue_attack_t
       {
         p()->active.deathstalker.hunt_them_down->execute_on_target( state->target );
       }
+
+      trigger_nimble_flurry( state );
     }
   }
 
@@ -3615,6 +3648,8 @@ struct ambush_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
+    trigger_unseen_blade( state );
+
     if ( p()->talent.outlaw.hidden_opportunity->ok() )
     {
       // 2023-11-24 -- The Audacity replacement spell currently triggers the normal Ambush spell from HO
@@ -3699,6 +3734,8 @@ struct backstab_t : public rogue_attack_t
 
     trigger_perforated_veins( state );
     trigger_flensing_knives( state );
+    trigger_unseen_blade( state );
+    trigger_nimble_flurry( state );
     trigger_weaponmaster( state, p()->active.weaponmaster.backstab );
 
     if ( state->result == RESULT_CRIT && p()->talent.subtlety.improved_backstab->ok() && p()->position() == POSITION_BACK )
@@ -3756,11 +3793,6 @@ struct dispatch_t: public rogue_attack_t
       m *= p()->talent.outlaw.crackshot->effectN( 1 ).percent();
     }
 
-    if ( p()->buffs.escalating_blade->at_max_stacks() )
-    {
-      m *= 1.0 + p()->talent.trickster.coup_de_grace->effectN( 1 ).percent();
-    }
-
     return m;
   }
 
@@ -3793,13 +3825,15 @@ struct dispatch_t: public rogue_attack_t
     }
 
     trigger_count_the_odds( execute_state, p()->procs.count_the_odds_dispatch );
-    trigger_coup_de_grace( execute_state );
   }
 
   bool procs_main_gauche() const override
   { return true; }
 
   bool procs_blade_flurry() const override
+  { return true; }
+
+  bool consumes_escalating_blade() const override
   { return true; }
 };
 
@@ -4551,20 +4585,6 @@ struct eviscerate_t : public rogue_attack_t
     }
   }
 
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    // ALPHA TOCHECK -- This likely needs to be reimplemented at some point.
-    // Does it work on Shadowed Finishers?
-    if ( p()->buffs.escalating_blade->at_max_stacks() )
-    {
-      m *= 1.0 + p()->talent.trickster.coup_de_grace->effectN( 1 ).percent();
-    }
-
-    return m;
-  }
-
   void execute() override
   {
     p()->buffs.deeper_daggers->trigger();
@@ -4586,7 +4606,6 @@ struct eviscerate_t : public rogue_attack_t
     }
 
     trigger_cut_to_the_chase( execute_state );
-    trigger_coup_de_grace( execute_state );
   }
 
   void impact( action_state_t* state ) override
@@ -4595,6 +4614,7 @@ struct eviscerate_t : public rogue_attack_t
 
     if ( bonus_attack && td( state->target )->debuffs.find_weakness->up() && result_is_hit( state->result ) )
     {
+      trigger_nimble_flurry( state ); // ALPHA TOCHECK -- Does this apply to Shadowed Finishers?
       bonus_attack->last_eviscerate_cp = cast_state( state )->get_combo_points();
       bonus_attack->execute_on_target( state->target );
     }
@@ -4610,6 +4630,9 @@ struct eviscerate_t : public rogue_attack_t
 
     return false;
   }
+
+  bool consumes_escalating_blade() const override
+  { return true; }
 };
 
 // Fan of Knives ============================================================
@@ -4704,23 +4727,12 @@ struct feint_t : public rogue_attack_t
   feint_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ):
     rogue_attack_t( name, p, p->spell.feint, options_str )
   {
-    if ( p->talent.trickster.unseen_blade->ok() )
-    {
-      energize_type = action_energize::ON_CAST;
-      energize_resource = RESOURCE_COMBO_POINT;
-      energize_amount = p->talent.trickster.unseen_blade->effectN( 1 ).base_value();
-    }
   }
 
   void execute() override
   {
     rogue_attack_t::execute();
     p()->buffs.feint->trigger();
-
-    if ( p()->active.unseen_blade && p()->target != player )
-    {
-      p()->active.unseen_blade->execute_on_target( p()->target );
-    }
   }
 };
 
@@ -4935,6 +4947,8 @@ struct gloomblade_t : public rogue_attack_t
 
     trigger_perforated_veins( state );
     trigger_flensing_knives( state ); // ALPHA TOCHECK -- Not in description, but seems like it should be intended?
+    trigger_unseen_blade( state );
+    trigger_nimble_flurry( state );
     trigger_weaponmaster( state, p()->active.weaponmaster.gloomblade );
 
     if ( state->result == RESULT_CRIT && p()->talent.subtlety.improved_backstab->ok() )
@@ -5033,6 +5047,11 @@ struct killing_spree_t : public rogue_attack_t
     if ( p()->talent.trickster.flawless_form->ok() )
     {
       p()->buffs.flawless_form->trigger(); // TOCHECK ALPHA -- Once or per tick?
+    }
+
+    if ( p()->talent.trickster.disorienting_strikes->ok() )
+    {
+      p()->buffs.disorienting_strikes->trigger();
     }
   }
 
@@ -5778,6 +5797,11 @@ struct secret_technique_t : public rogue_attack_t
     {
       p()->buffs.flawless_form->trigger(); // TOCHECK ALPHA -- Once or per attack?
     }
+
+    if ( p()->talent.trickster.disorienting_strikes->ok() )
+    {
+      p()->buffs.disorienting_strikes->trigger();
+    }
   }
 };
 
@@ -5952,6 +5976,8 @@ struct shadowstrike_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
+    trigger_unseen_blade( state );
+    trigger_nimble_flurry( state );
     trigger_weaponmaster( state, p()->active.weaponmaster.shadowstrike );
     trigger_find_weakness( state );
     trigger_inevitability( state );
@@ -6115,20 +6141,6 @@ struct black_powder_t: public rogue_attack_t
     }
   }
 
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    // ALPHA TOCHECK -- This likely needs to be reimplemented at some point.
-    // Does it work on Shadowed Finishers?
-    if ( p()->buffs.escalating_blade->at_max_stacks() )
-    {
-      m *= 1.0 + p()->talent.trickster.coup_de_grace->effectN( 1 ).percent();
-    }
-
-    return m;
-  }
-
   void execute() override
   {
     p()->buffs.deeper_daggers->trigger();
@@ -6161,8 +6173,6 @@ struct black_powder_t: public rogue_attack_t
       p()->buffs.t29_subtlety_2pc->expire();
       p()->buffs.t29_subtlety_2pc->trigger( cast_state( execute_state )->get_combo_points() );
     }
-
-    trigger_coup_de_grace( execute_state );
   }
 
   bool trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* ) override
@@ -6406,6 +6416,7 @@ struct sinister_strike_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
+    trigger_unseen_blade( execute_state );
     trigger_opportunity( execute_state, extra_attack );
     trigger_count_the_odds( execute_state, p()->procs.count_the_odds_ss );
   }
@@ -7318,6 +7329,16 @@ struct unseen_blade_t : public rogue_attack_t
   }
 };
 
+struct nimble_flurry_t : public rogue_attack_t
+{
+  nimble_flurry_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->spell.nimble_flurry_damage )
+  {
+    // ALPHA TOCHECK -- Talent has a value of 7, but AoE targets on damage spell is 5
+    aoe = as<int>( p->talent.trickster.nimble_flurry->effectN( 2 ).base_value() );
+  }
+};
+
 // ==========================================================================
 // Cancel AutoAttack
 // ==========================================================================
@@ -7538,7 +7559,7 @@ std::unique_ptr<expr_t> actions::rogue_action_t<Base>::create_expression( util::
   }
   else if ( name_str == "effective_combo_points" )
   {
-    return make_fn_expr( name_str, [ this ]() { return p()->current_effective_cp( consumes_echoing_reprimand(), true ); } );
+    return make_fn_expr( name_str, [ this ]() { return p()->current_effective_cp( consumes_echoing_reprimand(), consumes_escalating_blade(), true ); } );
   }
 
   return ab::create_expression( name_str );
@@ -8466,13 +8487,19 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     int base_cp = rs->get_combo_points( true );
     if ( rs->get_combo_points() > base_cp )
     {
-      auto it = range::find_if( p()->buffs.echoing_reprimand, [ base_cp ]( const buff_t* buff ) { return buff->check_value() == base_cp; } );
-      assert( it != p()->buffs.echoing_reprimand.end() );
-      ( *it )->expire();
-      p()->procs.echoing_reprimand[ it - p()->buffs.echoing_reprimand.begin() ]->occur();
-      animacharged_cp_proc->occur();
+      auto& buffs = p()->buffs.echoing_reprimand;
+      auto it = range::find_if( buffs, [ base_cp ]( const buff_t* buff ) { return buff->check_value() == base_cp; } );
+      if( it != buffs.end() )
+      {
+        ( *it )->expire();
+        p()->procs.echoing_reprimand[ it - p()->buffs.echoing_reprimand.begin() ]->occur();
+        animacharged_cp_proc->occur();
+      }
     }
   }
+
+  // Remove Escalating Blade Buff
+  trigger_coup_de_grace( state );
 }
 
 template <typename Base>
@@ -8698,6 +8725,11 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
     {
       multiplier += p()->talent.outlaw.precise_cuts->effectN( 1 ).percent() * ( max_targets - num_targets );
     }
+  }
+
+  if ( p()->talent.trickster.nimble_flurry->ok() && p()->buffs.flawless_form->check() )
+  {
+    multiplier += p()->talent.trickster.nimble_flurry->effectN( 1 ).percent();
   }
 
   // Target multipliers do not replicate to secondary targets, need to reverse them out
@@ -9372,10 +9404,14 @@ void actions::rogue_action_t<Base>::trigger_coup_de_grace( const action_state_t*
   if ( !p()->talent.trickster.coup_de_grace->ok() )
     return;
 
+  if ( !consumes_escalating_blade() )
+    return;
+
   if ( !p()->buffs.escalating_blade->at_max_stacks() )
     return;
 
   p()->buffs.escalating_blade->expire();
+  p()->procs.coup_de_grace->occur();
   
   if ( p()->get_target_data( state->target )->debuffs.fazed->check() )
   {
@@ -9451,6 +9487,58 @@ void actions::rogue_action_t<Base>::trigger_flensing_knives( const action_state_
     return;
 
   p()->active.deathstalker.flensing_knives->execute_on_target( state->target );
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_unseen_blade( const action_state_t* state )
+{
+  if ( !p()->talent.trickster.unseen_blade->ok() || !ab::result_is_hit( state->result ) )
+    return;
+
+  if ( p()->buffs.unseen_blade_cd->check() && !p()->buffs.disorienting_strikes->check() )
+    return;
+
+  assert( p()->active.trickster.unseen_blade );
+
+  p()->active.trickster.unseen_blade->execute_on_target( state->target );
+
+  if ( p()->buffs.disorienting_strikes->check() )
+    p()->buffs.disorienting_strikes->decrement();
+  else
+    p()->buffs.unseen_blade_cd->trigger();
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_nimble_flurry( const action_state_t* state )
+{
+  if ( !p()->talent.trickster.nimble_flurry->ok() )
+    return;
+
+  // Outlaw gains a bonus to Blade Flurry instead of triggering this effect
+  if ( p()->specialization() != ROGUE_SUBTLETY )
+    return;
+
+  if ( !p()->buffs.flawless_form->check() )
+    return;
+
+  double multiplier = p()->talent.trickster.nimble_flurry->effectN( 3 ).percent();
+
+  // ALPHA TOCHECK -- Assuming it uses the same mechanics as Blade Flurry
+  // Target multipliers do not replicate to secondary targets, need to reverse them out
+  const double target_da_multiplier = ( 1.0 / state->target_da_multiplier );
+  double damage = state->result_total * multiplier * target_da_multiplier;
+  player_t* primary_target = state->target;
+
+  p()->sim->print_debug( "{} nimble flurries {} for {:.2f} damage ({:.2f} * {} * {:.3f})", *p(), *this, damage, state->result_total, multiplier, target_da_multiplier );
+
+  // Trigger as an event so that this happens after the impact for proc/RPPM targeting purposes
+  // Can't use schedule_execute() since multiple damage events can trigger at the same time
+  make_event( *p()->sim, 0_ms, [ this, damage, primary_target ]() {
+    if ( p()->sim->active_enemies > 1 )
+    {
+      p()->active.trickster.nimble_flurry->execute_on_target( primary_target, damage );
+    }
+  } );
 }
 
 template <typename Base>
@@ -10051,7 +10139,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
   }
   else if ( name_str == "effective_combo_points" )
   {
-    return make_fn_expr( name_str, [ this ]() { return current_effective_cp( true, true ); } );
+    return make_fn_expr( name_str, [ this ]() { return current_effective_cp( true, true, true ); } );
   }
   else if ( util::str_compare_ci( name_str, "cp_max_spend" ) )
   {
@@ -10967,10 +11055,10 @@ void rogue_t::init_spells()
   talent.trickster.thousand_cuts = find_talent_spell( talent_tree::HERO, "Thousand Cuts" );
   talent.trickster.flickerstrike = find_talent_spell( talent_tree::HERO, "Flickerstrike" );
 
-  talent.trickster.nimble_flurry = find_talent_spell( talent_tree::HERO, "Nimble Flurry" );
+  talent.trickster.disorienting_strikes = find_talent_spell( talent_tree::HERO, "Disorienting Strikes" );
   talent.trickster.cloud_cover = find_talent_spell( talent_tree::HERO, "Cloud Cover" );
   talent.trickster.no_scruples = find_talent_spell( talent_tree::HERO, "No Scruples" );
-  talent.trickster.elaborate_twirl = find_talent_spell( talent_tree::HERO, "Elaborate Twirl" );
+  talent.trickster.nimble_flurry = find_talent_spell( talent_tree::HERO, "Nimble Flurry" );
 
   talent.trickster.coup_de_grace = find_talent_spell( talent_tree::HERO, "Coup de Grace" );
 
@@ -11013,8 +11101,10 @@ void rogue_t::init_spells()
   spell.cloud_cover_distract = talent.trickster.cloud_cover->ok() ? find_spell( as<unsigned>( talent.trickster.cloud_cover->effectN( 1 ).base_value() ) ) : spell_data_t::not_found();
   spell.escalating_blade_buff = talent.trickster.coup_de_grace->ok() ? find_spell( 441786 ) : spell_data_t::not_found();
   spell.unseen_blade = talent.trickster.unseen_blade->ok() ? find_spell( 441144 ) : spell_data_t::not_found();
+  spell.unseen_blade_buff = talent.trickster.unseen_blade->ok() ? find_spell( 459485 ) : spell_data_t::not_found();
   spell.fazed_debuff = talent.trickster.unseen_blade->ok() ? find_spell( 441224 ) : spell_data_t::not_found();
   spell.flawless_form_buff = ( talent.trickster.flawless_form->ok() || talent.trickster.coup_de_grace->ok() ) ? find_spell( 441326 ) : spell_data_t::not_found();
+  spell.nimble_flurry_damage = talent.trickster.nimble_flurry->ok() ? find_spell( 459497 ) : spell_data_t::not_found();
 
   // Spec Background Spells
   // Assassination
@@ -11320,7 +11410,12 @@ void rogue_t::init_spells()
   // Trickster
   if ( talent.trickster.unseen_blade->ok() )
   {
-    active.unseen_blade = get_background_action<actions::unseen_blade_t>( "unseen_blade" );
+    active.trickster.unseen_blade = get_background_action<actions::unseen_blade_t>( "unseen_blade" );
+  }
+
+  if ( talent.trickster.nimble_flurry->ok() )
+  {
+    active.trickster.nimble_flurry = get_background_action<actions::nimble_flurry_t>( "nimble_flurry" );
   }
 }
 
@@ -11430,17 +11525,19 @@ void rogue_t::init_procs()
   procs.serrated_bone_spike_waste             = get_proc( "Serrated Bone Spike Refund Wasted" );
   procs.serrated_bone_spike_waste_partial     = get_proc( "Serrated Bone Spike Refund Wasted (Partial)" );
 
-  procs.count_the_odds          = get_proc( "Count the Odds" );
-  procs.count_the_odds_ambush   = get_proc( "Count the Odds (Ambush)" );
-  procs.count_the_odds_ss       = get_proc( "Count the Odds (Sinister Strike)" );
-  procs.count_the_odds_dispatch = get_proc( "Count the Odds (Dispatch)" );
-  procs.count_the_odds_capped   = get_proc( "Count the Odds Capped" );
-  procs.roll_the_bones_wasted   = get_proc( "Roll the Bones Wasted" );
-  procs.t31_buff_extended       = get_proc( "(T31) Roll the Bones Buff Extended" );
-  procs.t31_buff_not_extended   = get_proc( "(T31) Roll the Bones Buff Not Extended" );
+  procs.count_the_odds                        = get_proc( "Count the Odds" );
+  procs.count_the_odds_ambush                 = get_proc( "Count the Odds (Ambush)" );
+  procs.count_the_odds_ss                     = get_proc( "Count the Odds (Sinister Strike)" );
+  procs.count_the_odds_dispatch               = get_proc( "Count the Odds (Dispatch)" );
+  procs.count_the_odds_capped                 = get_proc( "Count the Odds Capped" );
+  procs.roll_the_bones_wasted                 = get_proc( "Roll the Bones Wasted" );
+  procs.t31_buff_extended                     = get_proc( "(T31) Roll the Bones Buff Extended" );
+  procs.t31_buff_not_extended                 = get_proc( "(T31) Roll the Bones Buff Not Extended" );
 
-  procs.amplifying_poison_consumed           = get_proc( "Amplifying Poison Consumed" );
-  procs.amplifying_poison_deathmark_consumed = get_proc( "Amplifying Poison (Deathmark) Consumed" );
+  procs.amplifying_poison_consumed            = get_proc( "Amplifying Poison Consumed" );
+  procs.amplifying_poison_deathmark_consumed  = get_proc( "Amplifying Poison (Deathmark) Consumed" );
+
+  procs.coup_de_grace                         = get_proc( "Coup de Grace Consumed" );
 }
 
 // rogue_t::init_scaling ====================================================
@@ -11768,13 +11865,24 @@ void rogue_t::create_buffs()
 
   buffs.cloud_cover = make_buff( this, "cloud_cover", spell.cloud_cover_distract );
 
+  // ALPHA TOCHECK -- Find the proper buff spell
+  buffs.disorienting_strikes = make_buff( this, "disorienting_strikes", talent.trickster.disorienting_strikes );
+  if ( talent.trickster.disorienting_strikes->ok() )
+  {
+    buffs.disorienting_strikes
+      ->set_duration( timespan_t::zero() )
+      ->set_max_stack( as<int>( talent.trickster.disorienting_strikes->effectN( 2 ).base_value() ) )
+      ->set_initial_stack( as<int>( talent.trickster.disorienting_strikes->effectN( 2 ).base_value() ) )
+      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  }
+
   buffs.escalating_blade = make_buff( this, "escalating_blade", spell.escalating_blade_buff );
 
-  buffs.flawless_form = make_buff( this, "flawless_form", spell.flawless_form_buff )
-    ->apply_affecting_aura( talent.trickster.elaborate_twirl ) // Duration modifier
-    ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
-    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  buffs.flawless_form = make_buff<damage_buff_t>( this, "flawless_form", spell.flawless_form_buff );
+  buffs.flawless_form->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  buffs.unseen_blade_cd = make_buff( this, "unseen_blade_cooldown", spell.unseen_blade_buff )
+    ->set_quiet( true );
 
   // Assassination
 
@@ -12308,11 +12416,7 @@ void rogue_t::init_special_effects()
       void execute( action_t* a, action_state_t* s ) override
       {
         dbc_proc_callback_t::execute( a, s );
-
-        if ( rogue->active.unseen_blade )
-        {
-          rogue->active.unseen_blade->execute_on_target( s->target );
-        }
+        rogue->buffs.unseen_blade_cd->expire();
       }
     };
 
