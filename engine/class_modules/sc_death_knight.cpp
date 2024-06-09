@@ -12427,7 +12427,7 @@ void death_knight_t::init_spells()
   // Shared
   spell.unholy_strength_buff   = find_spell( 53365 );
   spell.brittle_debuff         = conditional_spell_lookup( talent.brittle.ok(), 374557 );
-  spell.dnd_buff               = conditional_spell_lookup( spec.death_and_decay->ok(), 188290 );
+  spell.dnd_buff               = conditional_spell_lookup( spec.death_and_decay->ok() || talent.unholy.defile.ok(), 188290);
   spell.runic_corruption       = conditional_spell_lookup( spec.death_knight->ok(), 51460 );
   spell.runic_empowerment_gain = conditional_spell_lookup( spec.frost_death_knight->ok(), 193486 );
   spell.rune_mastery_buff      = conditional_spell_lookup( talent.rune_mastery.ok(), 374585 );
@@ -12924,7 +12924,8 @@ void death_knight_t::create_buffs()
             }
           } );
 
-  buffs.death_and_decay = make_fallback<death_and_decay_buff_t>( spec.death_and_decay->ok(), this, "death_and_decay", spell.dnd_buff );
+  buffs.death_and_decay = make_fallback<death_and_decay_buff_t>(
+      spec.death_and_decay->ok() || talent.unholy.defile.ok(), this, "death_and_decay", spell.dnd_buff );
 
   buffs.frost_shield = make_fallback<death_knight_absorb_buff_t>( talent.permafrost.ok(), this, "frost_shield",
                                                                   spell.frost_shield_buff );
