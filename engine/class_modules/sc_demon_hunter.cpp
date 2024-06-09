@@ -5224,6 +5224,11 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     {
       p()->buff.rending_strike->expire();
       td( target )->debuffs.reavers_mark->trigger();
+
+      if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
+      {
+        p()->cooldown.the_hunt->adjust( -p()->talent.aldrachi_reaver.intent_pursuit->effectN( 1 ).time_value() );
+      }
     }
 
     // Create Strike Events
@@ -5788,8 +5793,13 @@ struct fracture_t : public demon_hunter_attack_t
 
       if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
       {
-        td( target )->debuffs.reavers_mark->trigger();
         p()->buff.rending_strike->expire();
+        td( target )->debuffs.reavers_mark->trigger();
+
+        if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
+        {
+          p()->cooldown.the_hunt->adjust( -p()->talent.aldrachi_reaver.intent_pursuit->effectN( 1 ).time_value() );
+        }
       }
     }
   }
@@ -5849,8 +5859,13 @@ struct shear_t : public demon_hunter_attack_t
 
       if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
       {
-        td( target )->debuffs.reavers_mark->trigger();
         p()->buff.rending_strike->expire();
+        td( target )->debuffs.reavers_mark->trigger();
+
+        if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
+        {
+          p()->cooldown.the_hunt->adjust( -p()->talent.aldrachi_reaver.intent_pursuit->effectN( 1 ).time_value() );
+        }
       }
     }
   }
