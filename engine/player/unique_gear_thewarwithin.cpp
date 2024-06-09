@@ -2407,18 +2407,19 @@ void signet_of_the_priory( special_effect_t& effect )
 // 443549 summon from back right?
 // 451991 summon from back left?
 // TODO: confirm damage doesn't increase per extra target
-// TODO: determine travel speed to hit target
+// TODO: determine travel speed to hit target, assuming 5yd/s based on 443549 range/duration
 // TODO: determine reasonable delay to intercept
 void harvesters_edict( special_effect_t& effect )
 {
   // TODO: confirm damage doesn't increase per extra target
   auto damage = create_proc_action<generic_aoe_proc_t>( "volatile_blood_blast", effect, effect.driver() );
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  // TODO: determine travel speed to hit target, assuming 5yd/s based on 443549 range/duration
+  damage->travel_speed = 5.0; 
 
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 451303 ) )
     ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
 
-  // TODO: determine travel speed to hit target
   // TODO: determine reasonable delay to intercept
   effect.player->callbacks.register_callback_execute_function(
     effect.spell_id, [ damage, buff ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
@@ -2427,6 +2428,28 @@ void harvesters_edict( special_effect_t& effect )
       else
         damage->execute();
     } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 443525 driver
+//  e1: damage coeff
+// 450429 damage
+// 450416 unknown, cart travel path?
+// 450458 unknown, cart travel path?
+// 450459 unknown, cart travel path?
+// 450460 unknown, cart travel path?
+// TODO: confirm damage does not increase per extra target
+// TODO: determine travel speed/delay, assuming 7.5yd/s based on summed cart path(?) radius/duration
+void candle_conductors_whistle( special_effect_t& effect )
+{
+  // TODO: confirm damage does not increase per extra target
+  auto damage = create_proc_action<generic_proc_t>( "collision", effect, 450429 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  // TODO: determine travel speed/delay, assuming 7.5yd/s based on summed cart path(?) radius/duration
+  damage->travel_speed = 7.5;
+
+  effect.execute_action = damage;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -2780,6 +2803,7 @@ void register_special_effects()
   register_special_effect( 443531, items::signet_of_the_priory );
   register_special_effect( 450877, DISABLED_EFFECT );  // signet of the priory
   register_special_effect( 451055, items::harvesters_edict );
+  register_special_effect( 443525, items::candle_conductors_whistle );
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );

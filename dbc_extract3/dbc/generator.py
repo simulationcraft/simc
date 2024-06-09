@@ -1505,6 +1505,7 @@ class SpellDataGenerator(DataGenerator):
          450921, 451247, # high speaker's accretion
          450882, # signet of the priory
          451303, 451991, # harvester's edict
+         450416, 450429, 450458, 450459, 450460, # candle conductor's whistle
         ),
 
         # Warrior:
