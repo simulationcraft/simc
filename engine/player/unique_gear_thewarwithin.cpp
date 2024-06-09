@@ -2441,7 +2441,7 @@ void harvesters_edict( special_effect_t& effect )
 // 450460 unknown, cart travel path?
 // TODO: confirm damage does not increase per extra target
 // TODO: determine travel speed/delay, assuming 7.5yd/s based on summed cart path(?) radius/duration
-void candle_conductors_whistle( special_effect_t& effect )
+void condutors_wax_whistle( special_effect_t& effect )
 {
   // TODO: confirm damage does not increase per extra target
   auto damage = create_proc_action<generic_proc_t>( "collision", effect, 450429 );
@@ -2803,7 +2803,7 @@ void register_special_effects()
   register_special_effect( 443531, items::signet_of_the_priory );
   register_special_effect( 450877, DISABLED_EFFECT );  // signet of the priory
   register_special_effect( 451055, items::harvesters_edict );
-  register_special_effect( 443525, items::candle_conductors_whistle );
+  register_special_effect( 443525, items::condutors_wax_whistle );
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
